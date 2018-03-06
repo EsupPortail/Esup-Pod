@@ -41,25 +41,24 @@ Icon?
 
 # Custom files  #
 #################
-pod_project/pod_project/settings.py
-pod_project/pod_project/settings_local.py
-pod_project/pod_project/urls.py
-pod_project/pod_project/wsgi.py
+pod/settings.py
+pod/settings_local.py
+pod/urls.py
+pod/wsgi.py
 import_data/
-pod_project/media/
-*pods/fixtures/
+media/
+pod/*/fixtures/
 ## Others
 jwplayer/
-pod_project/static/
-pod_project/pods/viewsv1.py
+pod/static/
 *.bak
 .coverage
 
 # Theme files #
 ###############
-/pod_project/core/theme/*
-!/pod_project/core/theme/DEFAULT/
-/pod_project/core/theme/DEFAULT/config.codekit
+/pod/theme/*
+!/pod/theme/DEFAULT/
+/pod/theme/DEFAULT/config.codekit
 
 # IDE Files #
 #############

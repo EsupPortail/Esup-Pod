@@ -8,7 +8,7 @@ import os
 ##
 # Local settings import
 #
-from pod_project.settings_local import *
+from pod.settings_local import *
 
 
 ##
@@ -45,12 +45,12 @@ MIDDLEWARE = [
 ##
 # Full Python import path to root URL file
 #
-ROOT_URLCONF = 'pod_project.urls'
+ROOT_URLCONF = 'pod.urls'
 
 ##
 # Full Python path of WSGI app object Django's built-in-servers (e.g. runserver) will use
 #
-WSGI_APPLICATION = 'pod_project.wsgi.application'
+WSGI_APPLICATION = 'pod.wsgi.application'
 
 ##
 # Settings for all template engines to be used
@@ -94,9 +94,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 USE_I18N = True
 USE_L10N = True
-LOCALE_PATHS = (
-	os.path.join(BASE_DIR, 'locale'),
-)
 
 ##
 # Time zone support is enabled (True) or not (False)
