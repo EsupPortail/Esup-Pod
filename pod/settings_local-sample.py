@@ -16,8 +16,12 @@ import os
 # https://docs.djangoproject.com/en/1.11/ref/settings/#secret-key
 #
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ''
+SECRET_KEY = 'eua2)@ne(97$kr@3zxuf@t067n26r2hql2$-2q89w%=a^kir6%'
 
+##
+# Base folder
+#
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ##
 # DEBUG mode activation
@@ -32,7 +36,7 @@ DEBUG = True
 # that this Django site is allowed to serve.
 #
 # https://docs.djangoproject.com/en/1.11/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['pod.univ.fr']
+ALLOWED_HOSTS = ['localhost']
 
 ##
 # A dictionary containing the settings for all databases
@@ -63,13 +67,24 @@ LANGUAGES = (
 TIME_ZONE = 'UTC'
 
 ##
-# Base folder
-#
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-##
 # Static files (assets, CSS, JavaScript, fonts...)
 #
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+##
+# Dynamic files (user managed content: videos, subtitles, documents, etc...)
+#
+# https://docs.djangoproject.com/en/1.11/ref/settings/#media-url
+# https://docs.djangoproject.com/en/1.11/ref/settings/#media-root
+#
+# WARNING: this folder must have previously been created.
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+##
+# Template settings
+#
+TEMPLATE_THEME = 'DEFAULT'
+TITLE_SITE = 'Pod'

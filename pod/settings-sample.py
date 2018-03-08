@@ -6,9 +6,10 @@ Django version : 1.11.10.
 import os
 
 ##
-# Local settings import
+# Local and applications settings import
 #
 from pod.settings_local import *
+from pod.filemanager.settings import *
 
 
 ##
@@ -26,6 +27,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Applications
+    'pod.main',
+    'pod.filemanager',
 ]
 
 ##
@@ -58,7 +62,9 @@ WSGI_APPLICATION = 'pod.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'theme', TEMPLATE_THEME, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -66,10 +72,19 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # Local contexts
+                'pod.main.context_processors.context_settings'
             ],
         },
     },
 ]
+
+##
+# Settings exposed in templates
+#
+TEMPLATE_VISIBLE_SETTINGS = (
+    'TITLE_SITE',
+)
 
 ##
 # Password validation
