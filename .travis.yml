@@ -9,6 +9,9 @@ env:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
+  - pip install flake8 .
+before_script:
+  - "flake8 . --max-complexity=7"
 # command to run tests
 script:
   - pytest # or py.test for Python versions 3.5 and below
