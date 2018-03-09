@@ -9,7 +9,6 @@ import os
 # Local and applications settings import
 #
 from pod.settings_local import *
-from pod.filemanager.settings import *
 
 
 ##
@@ -27,9 +26,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Applications
+    # Exterior Applications
+    'bootstrap4',
+    # Pod Applications
     'pod.main',
-    'pod.filemanager',
 ]
 
 ##

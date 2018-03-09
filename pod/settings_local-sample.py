@@ -16,7 +16,7 @@ import os
 # https://docs.djangoproject.com/en/1.11/ref/settings/#secret-key
 #
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'eua2)@ne(97$kr@3zxuf@t067n26r2hql2$-2q89w%=a^kir6%'
+SECRET_KEY = ''
 
 ##
 # Base folder
