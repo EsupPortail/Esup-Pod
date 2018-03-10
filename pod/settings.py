@@ -23,7 +23,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Exterior Applications
-    'bootstrap4',
     'ckeditor',
     'tagging',
     # Pod Applications
