@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'ckeditor',
     # Pod Applications
     'pod.main',
+    'pod.authentication',
 ]
 
 ##
