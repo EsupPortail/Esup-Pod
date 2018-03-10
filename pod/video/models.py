@@ -14,6 +14,7 @@ from tagging.fields import TagField
 
 import os
 import time
+import unicodedata
 
 import logging
 logger = logging.getLogger(__name__)
@@ -31,6 +32,11 @@ CURSUS_CODES = getattr(
         ('D', _("Doctorate")),
         ('1', _("Other"))
     ))
+
+
+def remove_accents(input_str):
+    nkfd_form = unicodedata.normalize('NFKD', input_str)
+    return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
 
 
 def get_storage_path(instance, filename):
@@ -99,6 +105,12 @@ class Video(models.Model):
             u'Viewing this video will not be possible without this password.'),
         max_length=50, blank=True, null=True)
     tags = TagField()
+
+    def save(self, *args, **kwargs):
+        tags = remove_accents(self.tags)
+        print(self.tags, type(self.tags), tags)
+        self.tags = tags
+        super(Video, self).save(*args, **kwargs)
 
     def duration_in_time(self):
         return time.strftime('%H:%M:%S', time.gmtime(self.duration))
