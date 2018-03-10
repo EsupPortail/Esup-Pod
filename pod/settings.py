@@ -117,6 +117,10 @@ USE_TZ = True
 ##
 # Logging configuration https://docs.djangoproject.com/fr/1.11/topics/logging/
 #
+LOG_DIRECTORY = os.path.join(BASE_DIR, 'log')
+if not os.path.exists(LOG_DIRECTORY):
+    os.mkdir(LOG_DIRECTORY)
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
