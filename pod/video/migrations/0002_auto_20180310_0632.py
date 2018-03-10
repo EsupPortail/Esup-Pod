@@ -15,6 +15,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='video',
             name='password',
-            field=models.CharField(blank=True, help_text='Viewing this video will not be possible without this password.', max_length=50, null=True, verbose_name='password'),
+            field=models.CharField(blank=True,
+                                   help_text='Viewing this video will '
+                                   + 'not be possible without this password.',
+                                   max_length=50,
+                                   null=True,
+                                   verbose_name='password'),
         ),
     ]
