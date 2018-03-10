@@ -16,11 +16,20 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='video',
             name='restrict_access_to_groups',
-            field=models.ManyToManyField(blank=True, help_text='Select one or more groups who can access to this video', to='auth.Group', verbose_name='Goups'),
+            field=models.ManyToManyField(blank=True,
+                                         help_text='Select one or more groups '
+                                         + 'who can access to this video',
+                                         to='auth.Group',
+                                         verbose_name='Goups'),
         ),
         migrations.AlterField(
             model_name='video',
             name='tags',
-            field=tagging.fields.TagField(blank=True, help_text='Separate tags with spaces, enclose the tags consist of several words in quotation marks.', max_length=255, verbose_name='Tags'),
+            field=tagging.fields.TagField(blank=True,
+                                          help_text='Separate tags with '
+                                          + 'spaces, enclose the tags consist '
+                                          + 'of several words in quotation '
+                                          + 'marks.',
+                                          max_length=255, verbose_name='Tags'),
         ),
     ]
