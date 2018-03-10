@@ -16,6 +16,10 @@ VERSION = '2.0.0'
 # Installed applications list
 #
 INSTALLED_APPS = [
+    # put in first https://github.com/deschler/django-
+    # modeltranslation/issues/408 AND http://django-modeltranslation.
+    # readthedocs.io/en/latest/installation.html#installed-apps
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -25,7 +29,6 @@ INSTALLED_APPS = [
     # Exterior Applications
     'ckeditor',
     'tagging',
-    'modeltranslation',
     # Pod Applications
     'pod.main',
     'pod.authentication',
