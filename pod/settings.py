@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     # Exterior Applications
     'ckeditor',
     'tagging',
+    'modeltranslation',
     # Pod Applications
     'pod.main',
     'pod.authentication',
