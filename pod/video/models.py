@@ -27,6 +27,8 @@ logger = logging.getLogger(__name__)
 
 VIDEOS_DIR = getattr(
     settings, 'VIDEOS_DIR', 'videos')
+FILES_DIR = getattr(
+    settings, 'FILES_DIR', 'files')
 MAIN_LANG_CHOICES = getattr(
     settings, 'MAIN_LANG_CHOICES', (('fr', _('French')),))
 CURSUS_CODES = getattr(
@@ -63,8 +65,16 @@ def get_storage_path_video(instance, filename):
 
 
 def get_upload_path_files(instance, filename):
-    user_hash = Owner.objects.get(user=instance.created_by).hashkey
-    return 'files/{0}/{1}'.format(user_hash, filename)
+    fname, dot, extension = filename.rpartition('.')
+    try:
+        fname.index("/")
+        return os.path.join(FILES_DIR,
+                            '%s/%s.%s' % (os.path.dirname(fname),
+                                          slugify(os.path.basename(fname)),
+                                          extension))
+    except ValueError:
+        return os.path.join(FILES_DIR,
+                            '%s.%s' % (slugify(fname), extension))
 
 
 def get_nextautoincrement(mymodel):
