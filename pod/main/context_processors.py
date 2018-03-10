@@ -3,7 +3,6 @@ from django.core.exceptions import ImproperlyConfigured
 
 
 def context_settings(request):
-
     new_settings = {}
     for attr in getattr(django_settings, 'TEMPLATE_VISIBLE_SETTINGS', []):
         try:
@@ -11,6 +10,4 @@ def context_settings(request):
         except AttributeError:
             m = "TEMPLATE_VISIBLE_SETTINGS: '{0}' does not exist".format(attr)
             raise ImproperlyConfigured(m)
-
-return new_settings
-
+    return new_settings
