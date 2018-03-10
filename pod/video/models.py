@@ -34,6 +34,8 @@ CURSUS_CODES = getattr(
         ('1', _("Other"))
     ))
 
+# FUNCTIONS
+
 
 def remove_accents(input_str):
     nkfd_form = unicodedata.normalize('NFKD', input_str)
@@ -63,6 +65,54 @@ def get_nextautoincrement(mymodel):
     row = cursor.fetchone()
     cursor.close()
     return row[0]
+
+# MODELS
+
+
+class Type(models.Model):
+    title = models.CharField(_('Title'), max_length=100, unique=True)
+    slug = models.SlugField(
+        _('Slug'), unique=True, max_length=100,
+        help_text=_(
+            u'Used to access this instance, the "slug" is a short label '
+            + 'containing only letters, numbers, underscore or dash top.'))
+    description = models.TextField(null=True, blank=True)
+    # add image to put icon
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Type, self).save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['title']
+        verbose_name = _('Type')
+        verbose_name_plural = _('Types')
+
+
+class Discipline(models.Model):
+    title = models.CharField(_('title'), max_length=100, unique=True)
+    slug = models.SlugField(
+        _('slug'), unique=True, max_length=100,
+        help_text=_(
+            u'Used to access this instance, the "slug" is a short label '
+            + 'containing only letters, numbers, underscore or dash top.'))
+    description = models.TextField(null=True, blank=True)
+    # add image to put icon
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Discipline, self).save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['title']
+        verbose_name = _('Discipline')
+        verbose_name_plural = _('Disciplines')
 
 
 class Video(models.Model):
@@ -121,6 +171,7 @@ class Video(models.Model):
         u'Separate tags with spaces, '
         + 'enclose the tags consist of several words in quotation marks.'),
         verbose_name=_('Tags'))
+    # add image to put thumbnails
 
     def save(self, *args, **kwargs):
         newid = -1
