@@ -46,6 +46,6 @@ def create_owner_profile(sender, instance, created, **kwargs):
             print(msg)
 
 
-@receiver(post_save, sender=Owner)
-def check_hashkey(sender, instance, created, **kwargs):
-    print('coucou')
+# @receiver(post_save, sender=Owner)
+# def check_hashkey(sender, instance, created, **kwargs):
+#    print('coucou')
