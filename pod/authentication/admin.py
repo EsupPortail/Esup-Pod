@@ -57,6 +57,7 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('-is_superuser', 'username', )
     inlines = (OwnerInline, )
 
+
 # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)

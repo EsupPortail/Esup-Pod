@@ -7,12 +7,14 @@ from django.db.models.signals import post_save
 import hashlib
 
 import logging
+import traceback
 logger = logging.getLogger(__name__)
 
 AUTH_TYPE = getattr(
     settings, 'AUTH_TYPE', (('local', _('local')), ('CAS', 'CAS')))
 AFFILIATION = getattr(
-    settings, 'AUTH_TYPE', (('member', _('member')), ('student', _('student'))))
+    settings, 'AUTH_TYPE',
+    (('member', _('member')), ('student', _('student'))))
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
 
 
