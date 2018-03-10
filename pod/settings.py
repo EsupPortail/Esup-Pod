@@ -126,7 +126,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'handlers': {
         'file': {
-            'level': 'DEBUG',
+            # 'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': 'pod/log/django.log',
         },
@@ -141,12 +141,12 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['file', 'console', 'mail_admins'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
         'pod.*': {
             'handlers': ['file', 'console', 'mail_admins'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
     },
