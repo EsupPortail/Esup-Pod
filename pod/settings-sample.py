@@ -15,7 +15,6 @@ for variable in dir(local):
     if variable == variable.upper():
         locals()[variable] = getattr(local, variable)
 
-
 ##
 # Version of the project
 #

@@ -13,21 +13,18 @@ class OwnerInline(admin.StackedInline):
     model = Owner
     can_delete = False
     verbose_name_plural = 'owners'
+    readonly_fields = ('hashkey',)
 
     def get_fields(self, request, obj=None):
         fields = list(super(OwnerInline, self).get_fields(request, obj))
         exclude_set = set()
         # obj will be None on the add page, and something on change pages
-        if obj:
-            exclude_set.add('hashkey')
-        else:
+        if not obj:
             exclude_set.add('hashkey')
             exclude_set.add('auth_type')
             exclude_set.add('affiliation')
             exclude_set.add('commentaire')
         return [f for f in fields if f not in exclude_set]
-
-# Define a new User admin
 
 
 class UserAdmin(BaseUserAdmin):
