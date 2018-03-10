@@ -42,9 +42,6 @@ Icon?
 # Custom files  #
 #################
 pod/settings.py
-pod/settings_local.py
-pod/urls.py
-pod/wsgi.py
 import_data/
 media/
 pod/*/fixtures/
