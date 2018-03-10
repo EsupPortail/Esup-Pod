@@ -22,7 +22,5 @@ class OwnerTestCase(TestCase):
         owner = Owner.objects.get(user__username="pod")
         hashkey = hashlib.sha256(
             (SECRET_KEY + "pod").encode('utf-8')).hexdigest()
-        # cat = Animal.objects.get(name="cat")
         self.assertEqual(owner.hashkey, hashkey)
         print("ok OwnerTestCase")
-        # self.assertEqual(cat.speak(), 'The cat says "meow"')
