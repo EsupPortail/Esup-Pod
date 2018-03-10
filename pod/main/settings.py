@@ -95,4 +95,4 @@ TITLE_SITE = 'Pod'
 # CKeditor settings
 #
 CKEDITOR_BASEPATH = os.path.join(
-    getattr(settings, 'STATIC_URL', '/static/'), 'ckeditor', 'ckeditor')
+    getattr(settings, 'STATIC_URL', '/static/'), 'ckeditor', 'ckeditor')+"/"
