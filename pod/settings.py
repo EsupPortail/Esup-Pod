@@ -111,6 +111,40 @@ USE_L10N = True
 USE_TZ = True
 
 ##
+# Logging configuration https://docs.djangoproject.com/fr/1.11/topics/logging/
+#
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/django/debug.log',
+        },
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console', 'mail_admins'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'pod.*': {
+            'handlers': ['file', 'console', 'mail_admins'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
+##
 # Applications settings (and settings locale if any)
 #
 # Add settings
