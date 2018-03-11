@@ -6,7 +6,10 @@ from pod import settings
 
 
 import os
-
+##
+# flatpages
+##
+SITE_ID = 1
 
 ##
 # The secret key for your particular Django installation.
