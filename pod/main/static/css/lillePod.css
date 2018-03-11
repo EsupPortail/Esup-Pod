@@ -16,9 +16,20 @@ padding-top: 5rem;
     justify-content: center;
 }
 .octicon{
-    height: 25px;
+    /*height: 25px;*/
     width: auto;
 }
+.card-header {
+    position:absolute; 
+    width:100%; 
+    background: rgba(0, 0, 0, 0.6);
+    padding: 0 1.25rem;
+    
+}
+.card-header .text-muted {
+    color:white !important; 
+}
+
 /* vignettes video */
 @media (max-width: 575.98px) {
     .pod-flex-direction{

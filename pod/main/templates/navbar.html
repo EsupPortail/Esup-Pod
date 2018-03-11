@@ -1,0 +1,74 @@
+{% load staticfiles %}
+    <div class="container">
+      <a class="navbar-brand" href="#">
+              <img src="{% static 'img/logoPod.svg' %}" height="48" alt="logo"/>
+              <strong>Pod</strong>
+              
+        </a>
+        
+        
+        <ul class="nav">
+        <li class="nav-item">
+        <a class="btn btn-light btn-sm my-2 mr-sm-2" data-toggle="collapse" href="#listeChaines" role="button" aria-expanded="false" aria-controls="listeChaines">
+        <svg height="32" class="octicon octicon-mortar-board" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M7.83 9.19L4 8c-4-8 0 1.5 0 2.5S5.8 12 8 12s4-.5 4-1.5V8L8.17 9.19a.73.73 0 0 1-.36 0h.02zm.28-6.39a.34.34 0 0 0-.2 0L.27 5.18a.35.35 0 0 0 0 .67L2 6.4v1.77c-.3.17-.5.5-.5.86 0 .19.05.36.14.5-.08.14-.14.31-.14.5v2.58c0 .55 2 .55 2 0v-2.58c0-.19-.05-.36-.14-.5.08-.14.14-.31.14-.5 0-.38-.2-.69-.5-.86V6.72l4.89 1.53c.06.02.14.02.2 0l7.64-2.38a.35.35 0 0 0 0-.67L8.1 2.81l.01-.01zM8.02 6c-.55 0-1-.22-1-.5s.45-.5 1-.5 1 .22 1 .5-.45.5-1 .5z"></path></svg>
+        
+        
+        <span>Chaines</span> </a>
+        </li>
+        <li class="nav-item">
+          <button type="button" class="btn btn-light btn-sm my-2 mr-sm-2" data-toggle="modal" data-target=".bd-example-modal-lg">
+          <svg version="1.1" width="24" height="32" viewBox="0 0 12 16" class="octicon octicon-person" aria-hidden="true"><path fill-rule="evenodd" d="M12 14.002a.998.998 0 0 1-.998.998H1.001A1 1 0 0 1 0 13.999V13c0-2.633 4-4 4-4s.229-.409 0-1c-.841-.62-.944-1.59-1-4 .173-2.413 1.867-3 3-3s2.827.586 3 3c-.056 2.41-.159 3.38-1 4-.229.59 0 1 0 1s4 1.367 4 4v1.002z"/></svg> <span>Utilisateurs</span></button>
+        </li>
+        <li class="nav-item">
+        <a class=" btn btn-light btn-sm my-2 mr-sm-2" data-toggle="collapse" href="#listeTypes" role="button" aria-expanded="false" aria-controls="listeTypes"><svg height="32" class="octicon octicon-mortar-board" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M7.83 9.19L4 8c-4-8 0 1.5 0 2.5S5.8 12 8 12s4-.5 4-1.5V8L8.17 9.19a.73.73 0 0 1-.36 0h.02zm.28-6.39a.34.34 0 0 0-.2 0L.27 5.18a.35.35 0 0 0 0 .67L2 6.4v1.77c-.3.17-.5.5-.5.86 0 .19.05.36.14.5-.08.14-.14.31-.14.5v2.58c0 .55 2 .55 2 0v-2.58c0-.19-.05-.36-.14-.5.08-.14.14-.31.14-.5 0-.38-.2-.69-.5-.86V6.72l4.89 1.53c.06.02.14.02.2 0l7.64-2.38a.35.35 0 0 0 0-.67L8.1 2.81l.01-.01zM8.02 6c-.55 0-1-.22-1-.5s.45-.5 1-.5 1 .22 1 .5-.45.5-1 .5z"></path></svg> <span>Types</span></a>
+        </li>
+    </ul>
+    
+       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+       <div class="collapse navbar-collapse" id="navbarSupportedContent">
+       <form class="form-inline flex-1 mb-sm-2 mb-md-0 ">
+              <input class="form-control form-control-sm mx-sm-1 d-sm-block col-sm-12 col-md-8" type="text" placeholder="Rechercher" aria-label="rechercher">
+              <button class="btn btn-outline-success btn-sm sr-only" type="submit">Rechercher</button>
+       </form>
+       <ul class="nav flex-column flex-md-row">
+        <li class="nav-item"><a class="btn btn-outline-success btn-sm my-2 mr-sm-2" href="http://example.com" >Ajouter une nouvelle vidéo</a>
+           </li>
+           
+            
+             <li class="nav-item">
+             <div class="dropdown">
+           <button class="btn btn-outline-success dropdown-toggle btn-sm my-2 mr-sm-2" href="http://example.com" id="dropdown-info" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Paul Debian</button>
+          <div class="dropdown-menu" aria-labelledby="dropdown-info">
+            <a class="dropdown-item" href="#"><svg version="1.1" width="24" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true"><image width="16" height="16" xlink:href="octicons/svg/organization.svg" /></svg>Administration</a>
+            <a class="dropdown-item" href="#"><svg version="1.1" width="24" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true"><image width="16" height="16" xlink:href="octicons/svg/person.svg" /></svg>Profil</a>
+            <hr/>
+            <a class="dropdown-item" href="#"><svg version="1.1" width="24" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true"><image width="16" height="16" xlink:href="octicons/svg/device-camera-video.svg" /></svg>Mes vidéos</a>
+            <a class="dropdown-item" href="#"><svg version="1.1" width="24" height="16" viewBox="0 0 12 16" class="octicon octicon-file-binary" aria-hidden="true"><image width="12" height="16" xlink:href="octicons/svg/radio-tower.svg" /></svg>Mes chaînes</a>
+            <a class="dropdown-item" href="#"><svg version="1.1" width="24" height="16" viewBox="0 0 12 16" class="octicon octicon-file-binary" aria-hidden="true"><image width="12" height="16" xlink:href="octicons/svg/list-ordered.svg" /></svg>Mes playlists</a>
+            <hr/>
+            <a class="dropdown-item" href="#"><svg version="1.1" width="24" height="16" viewBox="0 0 12 16" class="octicon octicon-file-binary" aria-hidden="true"><image width="12" height="16" xlink:href="octicons/svg/lock.svg" /></svg>Déconnexion</a>
+          </div>
+         </div>
+
+             </li>
+             <li class="nav-item">
+              <div class="btn-group">
+            <button type="button" class="btn btn-sm btn-sm my-2 mr-sm-2 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Fr
+            </button>
+            <div class="dropdown-menu">
+            <a class="dropdown-item" href="#">En</a>
+            <a class="dropdown-item" href="#">Sp</a>
+            </div>
+        </div>
+              
+              
+            </li>
+       </ul>
+    </div>
+      
+    </div>
+    
+    

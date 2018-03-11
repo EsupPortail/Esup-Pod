@@ -15,7 +15,7 @@
 
     <!-- octicons -->
     <link rel="stylesheet" href="{% static 'css/octicons.css' %}" media="screen" title="no title">
-     <link rel="stylesheet" href="{% static 'css/lillePod.css' %}" media="screen" title="no title">
+    <link rel="stylesheet" href="{% static 'css/lillePod.css' %}" media="screen" title="no title">
     
 
     <title>{{ TITLE_SITE }} - {% block page_title %}{% endblock %}</title>
@@ -23,161 +23,13 @@
     {% block page_extra_head %}{% endblock %}
 </head>
   <body>
-  
-  <!-- barre nav-->
-  <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
-  	
-  	<div class="container">
-  		<a class="navbar-brand" href="#">
-              <img src="{% static 'img/logoPod.svg' %}" height="48" alt="logo"/>
-              <strong>Pod</strong>
-              
-        </a>
-        
-        
-        <ul class="nav">
-			  <li class="nav-item">
-				<a class="btn btn-light btn-sm my-2 mr-sm-2" data-toggle="collapse" href="#listeChaines" role="button" aria-expanded="false" aria-controls="listeChaines">
-				<svg height="32" class="octicon octicon-mortar-board" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M7.83 9.19L4 8c-4-8 0 1.5 0 2.5S5.8 12 8 12s4-.5 4-1.5V8L8.17 9.19a.73.73 0 0 1-.36 0h.02zm.28-6.39a.34.34 0 0 0-.2 0L.27 5.18a.35.35 0 0 0 0 .67L2 6.4v1.77c-.3.17-.5.5-.5.86 0 .19.05.36.14.5-.08.14-.14.31-.14.5v2.58c0 .55 2 .55 2 0v-2.58c0-.19-.05-.36-.14-.5.08-.14.14-.31.14-.5 0-.38-.2-.69-.5-.86V6.72l4.89 1.53c.06.02.14.02.2 0l7.64-2.38a.35.35 0 0 0 0-.67L8.1 2.81l.01-.01zM8.02 6c-.55 0-1-.22-1-.5s.45-.5 1-.5 1 .22 1 .5-.45.5-1 .5z"></path></svg>
-				
-				
-				<span>Chaines</span> </a>
-			  </li>
-			  <li class="nav-item">
-			  	<button type="button" class="btn btn-light btn-sm my-2 mr-sm-2" data-toggle="modal" data-target=".bd-example-modal-lg">
-					<svg version="1.1" width="24" height="32" viewBox="0 0 12 16" class="octicon octicon-person" aria-hidden="true"><path fill-rule="evenodd" d="M12 14.002a.998.998 0 0 1-.998.998H1.001A1 1 0 0 1 0 13.999V13c0-2.633 4-4 4-4s.229-.409 0-1c-.841-.62-.944-1.59-1-4 .173-2.413 1.867-3 3-3s2.827.586 3 3c-.056 2.41-.159 3.38-1 4-.229.59 0 1 0 1s4 1.367 4 4v1.002z"/></svg> <span>Utilisateurs</span></button>
-			  </li>
-			  <li class="nav-item">
-				<a class=" btn btn-light btn-sm my-2 mr-sm-2" data-toggle="collapse" href="#listeTypes" role="button" aria-expanded="false" aria-controls="listeTypes"><svg height="32" class="octicon octicon-mortar-board" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M7.83 9.19L4 8c-4-8 0 1.5 0 2.5S5.8 12 8 12s4-.5 4-1.5V8L8.17 9.19a.73.73 0 0 1-.36 0h.02zm.28-6.39a.34.34 0 0 0-.2 0L.27 5.18a.35.35 0 0 0 0 .67L2 6.4v1.77c-.3.17-.5.5-.5.86 0 .19.05.36.14.5-.08.14-.14.31-.14.5v2.58c0 .55 2 .55 2 0v-2.58c0-.19-.05-.36-.14-.5.08-.14.14-.31.14-.5 0-.38-.2-.69-.5-.86V6.72l4.89 1.53c.06.02.14.02.2 0l7.64-2.38a.35.35 0 0 0 0-.67L8.1 2.81l.01-.01zM8.02 6c-.55 0-1-.22-1-.5s.45-.5 1-.5 1 .22 1 .5-.45.5-1 .5z"></path></svg> <span>Types</span></a>
-			  </li>
-		</ul>
-		
-       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    		<span class="navbar-toggler-icon"></span>
-  		</button>
-       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-       <form class="form-inline flex-1 mb-sm-2 mb-md-0 ">
-              <input class="form-control form-control-sm mx-sm-1 d-sm-block col-sm-12 col-md-8" type="text" placeholder="Rechercher" aria-label="rechercher">
-              <button class="btn btn-outline-success btn-sm sr-only" type="submit">Rechercher</button>
-       </form>
-       <ul class="nav flex-column flex-md-row">
-       	<li class="nav-item"><a class="btn btn-outline-success btn-sm my-2 mr-sm-2" href="http://example.com" >Ajouter une nouvelle vidéo</a>
-           </li>
-           
-            
-             <li class="nav-item">
-             <div class="dropdown">
-					 <button class="btn btn-outline-success dropdown-toggle btn-sm my-2 mr-sm-2" href="http://example.com" id="dropdown-info" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Paul Debian</button>
-					<div class="dropdown-menu" aria-labelledby="dropdown-info">
-					  <a class="dropdown-item" href="#"><svg version="1.1" width="24" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true"><image width="16" height="16" xlink:href="octicons/svg/organization.svg" /></svg>Administration</a>
-					  <a class="dropdown-item" href="#"><svg version="1.1" width="24" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true"><image width="16" height="16" xlink:href="octicons/svg/person.svg" /></svg>Profil</a>
-					  <hr/>
-					  <a class="dropdown-item" href="#"><svg version="1.1" width="24" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true"><image width="16" height="16" xlink:href="octicons/svg/device-camera-video.svg" /></svg>Mes vidéos</a>
-					  <a class="dropdown-item" href="#"><svg version="1.1" width="24" height="16" viewBox="0 0 12 16" class="octicon octicon-file-binary" aria-hidden="true"><image width="12" height="16" xlink:href="octicons/svg/radio-tower.svg" /></svg>Mes chaînes</a>
-					  <a class="dropdown-item" href="#"><svg version="1.1" width="24" height="16" viewBox="0 0 12 16" class="octicon octicon-file-binary" aria-hidden="true"><image width="12" height="16" xlink:href="octicons/svg/list-ordered.svg" /></svg>Mes playlists</a>
-					  <hr/>
-					  <a class="dropdown-item" href="#"><svg version="1.1" width="24" height="16" viewBox="0 0 12 16" class="octicon octicon-file-binary" aria-hidden="true"><image width="12" height="16" xlink:href="octicons/svg/lock.svg" /></svg>Déconnexion</a>
-					</div>
-				 </div>
-
-             </li>
-             <li class="nav-item">
-            	<div class="btn-group">
-					  <button type="button" class="btn btn-sm btn-sm my-2 mr-sm-2 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						Fr
-					  </button>
-					  <div class="dropdown-menu">
-						<a class="dropdown-item" href="#">En</a>
-						<a class="dropdown-item" href="#">Sp</a>
-					  </div>
-				</div>
-            	
-            	
-            </li>
-       </ul>
-		</div>
-      
-  	</div>
-  	
-  	
-  	
-  </nav><!-- fin barre nav-->
-  <!-- collapse et accordion pour les chaines, types, users -->
-  <div class="collapse fixed-top pod-mt-7 bg-light liste-collapse" id="listeChaines">
-  	<div class="container">
-	  <div class="p-5">
-	  	<h3>Chaines</h3>
-		<ul class="row list-unstyled">
-			<li class="col-6"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Fusce sed tortor in mauris</a> </li>
-			<li class="col-6"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Mauris aliquet metus ut</a> </li>
-			<li class="col-6"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Sed faucibus risus quis </a></li>
-			<li class="col-6"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Praesent ac nulla rutrum,</a> </li>
-			<li class="col-6"><a class="btn btn-sm btn-outline-secondary mb-1" href="">aa Fusce sed tortor in mauris</a> </li>
-			<li class="col-6"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Mauris aliquet metus ut</a> </li>
-			<li class="col-6"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Sed faucibus risus quis </a></li>
-			<li class="col-6"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Praesent ac nulla rutrum,</a> </li>
-			<li class="col-6"><a class="btn btn-sm btn-outline-secondary mb-1" href="">aa Fusce sed tortor in mauris</a> </li>
-			<li class="col-6"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Mauris aliquet metus ut</a> </li>
-			<li class="col-6"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Sed faucibus risus quis </a></li>
-			<li class="col-6"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Praesent ac nulla rutrum,</a> </li>
-			<li class="col-6"><a class="btn btn-sm btn-outline-secondary mb-1" href="">aa Fusce sed tortor in mauris</a> </li>
-			<li class="col-6"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Mauris aliquet metus ut</a> </li>
-			<li class="col-6"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Sed faucibus risus quis </a></li>
-			<li class="col-6"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Praesent ac nulla rutrum,</a> </li>
-			
-		</ul>
-	  </div>
-	</div>
-</div>
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-
-      <div class="modal-header">
-        <h4 class="modal-title" id="myLargeModalLabel">Utilisateurs</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-    </div>
-  </div>
-</div>
- <div class="collapse fixed-top pod-mt-7 bg-light liste-collapse" id="listeTypes">
-  	<div class="container">
-	  <div class="p-5">
-	  	<h3>Types de vidéos</h3>
-		<ul class="row">
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Fusce sed tortor in mauris</a> </li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Mauris aliquet metus ut</a> </li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Sed faucibus risus quis </a></li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Praesent ac nulla rutrum,</a> </li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Donec non dui nec </a></li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Vestibulum porttitor </a></li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Fusce sed tortor in mauris</a> </li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Mauris aliquet metus ut</a> </li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Sed faucibus risus quis </a></li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Fusce sed tortor in mauris</a> </li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Mauris aliquet metus ut</a> </li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Sed faucibus risus quis </a></li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Praesent ac nulla rutrum,</a> </li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Donec non dui nec </a></li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Vestibulum porttitor </a></li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Fusce sed tortor in mauris</a> </li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Mauris aliquet metus ut</a> </li>
-			<li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1" href="">Sed faucibus risus quis </a></li>
-			
-		</ul>
-	  </div>
-	</div>
-</div>
-<!-- fin modal, accordion -->
+<!-- barre nav-->
+<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+{% include 'navbar.html' %}
+</nav><!-- fin barre nav-->
+{% include 'navbar_collapse.html' %}
 <div class="container">
-	
 	<main role="main" class="mt-3">
-
         <nav aria-label="breadcrumb" class="breadcrumb d-flex justify-content-between p-0">
           <ol class="breadcrumb p-1 pl-4 mb-0">
             <li class="breadcrumb-item"><a href="#">Accueil</a></li>
@@ -190,463 +42,71 @@
             </a>
           </div>
         </nav>
- 
         <div class="row">
-
-          <div class="col order-12 order-md-1">
-          <!-- contenu page statique -->
-          <div class="jumbotron">
-          	{% block page_content %}
-            <h1>Bienvenue sur la plateforme de podcasts ULille.Pod !</h1>
-            <p class="lead">Pod est un service d'hébergement et de diffusion de fichiers vidéo ou audio produits par l'Université de Lille.</p>
-            <p>Pod permet également aux auteurs de chapitrer et d’enrichir leurs vidéos par l’ajout de textes (sous-titres par exemple), d’images, de liens Web, de menus…</p>
-            <p>L’usage de pod doit se faire dans le respect des mentions légales et des recommandations.</p>
-            <p><a href="#">Besoin d’aide ? … Foire aux Questions / Tutoriels Pod</a></p>
-            <!-- <a class="btn btn-lg btn-primary" href="#" role="button">View navbar docs &raquo;</a> -->
-            {% endblock page_content %}
-          </div>
-          <!-- fin contenu page statique -->
-          <h3>Dernières vidéos déposées</h3>
-          <!-- liste vignette vidéo 3 par ligne -->
-          <div class="row">
-
-              <div class="col-12 col-md-6 col-lg-4 mb-2">
-				<div class="card mb-4 box-shadow border-secondary"> <!-- the good one -->
-                <div class="card-header" style="position:absolute; width:100%; background: rgba(0, 0, 0, 0.6);padding: 0 1.25rem;">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted time">00:03:08</small>
-                    <span class="text-muted icons">
-                      <span title="Ce contenu est interactif.">
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" fill="#6c757d;">
-                          <path fill-rule="evenodd" d="M3 5c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1zm8 0c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm0 6c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm2-10H5v2.17c.36.19.64.47.83.83h2.34c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H5.83c-.42.8-1.33 1.28-2.34 1.03-.73-.17-1.34-.78-1.52-1.52C1.72 4.49 2.2 3.59 3 3.17V1H1c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1l5-5h2.17c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H6.99L4 15h9c.55 0 1-.45 1-1V2c0-.55-.45-1-1-1z"></path>
-                      </span>
-                      <span title="Contenu de type vidéo." >
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" style="fill:#6c757d;">
-                          <path fill-rule="evenodd" d="M15.2 2.09L10 5.72V3c0-.55-.45-1-1-1H1c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V9.28l5.2 3.63c.33.23.8 0 .8-.41v-10c0-.41-.47-.64-.8-.41z"></path>
-                      </span>
-                    </span>
-                  </div>
-                </div>
-                <a href="#">
-                <img class="card-img-top" src="https://pod.univ-lille1.fr/media/filer_public_thumbnails/filer_public/99/fd/99fd85ec-2254-4b87-a76c-a6294db7586b/une_p3.jpg__285x160_q85_crop_subsampling-2_upscale.jpg" alt="Card image cap" />
-                </a>
-                <div class="card-body">
-                  <h6 class="card-subtitle"><a href="#"> se former pour sauver</a></h6>
-                </div>
-              </div>
-             </div>
-			<div class="col-12 col-md-6 col-lg-4 mb-2">
-				<div class="card mb-4 box-shadow border-secondary"> <!-- the good one -->
-                <div class="card-header" style="position:absolute; width:100%; background: rgba(0, 0, 0, 0.6);padding: 0 1.25rem;">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted time">00:03:08</small>
-                    <span class="text-muted icons">
-                      <span title="Ce contenu est interactif.">
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" fill="#6c757d;">
-                          <path fill-rule="evenodd" d="M3 5c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1zm8 0c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm0 6c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm2-10H5v2.17c.36.19.64.47.83.83h2.34c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H5.83c-.42.8-1.33 1.28-2.34 1.03-.73-.17-1.34-.78-1.52-1.52C1.72 4.49 2.2 3.59 3 3.17V1H1c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1l5-5h2.17c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H6.99L4 15h9c.55 0 1-.45 1-1V2c0-.55-.45-1-1-1z"></path>
-                      </span>
-                      <span title="Contenu de type vidéo." >
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" style="fill:#6c757d;">
-                          <path fill-rule="evenodd" d="M15.2 2.09L10 5.72V3c0-.55-.45-1-1-1H1c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V9.28l5.2 3.63c.33.23.8 0 .8-.41v-10c0-.41-.47-.64-.8-.41z"></path>
-                      </span>
-                    </span>
-                  </div>
-                </div>
-                <a href="#">
-                <img class="card-img-top" src="https://pod.univ-lille1.fr/media/filer_public_thumbnails/filer_public/bd/52/bd5251d6-edeb-4260-aeeb-a399c41e5ca3/4938_2.png__285x160_q85_crop_subsampling-2_upscale.jpg" alt="Card image cap" />
-                </a>
-                <div class="card-body">
-                  <h6 class="card-subtitle"><a href="#"> se former pour sauver</a></h6>
-                </div>
-              </div>
-              </div>
-<div class="col-12 col-md-6 col-lg-4 mb-2">
-<div class="card mb-4 box-shadow border-secondary"> <!-- the good one -->
-                <div class="card-header" style="position:absolute; width:100%; background: rgba(0, 0, 0, 0.6);padding: 0 1.25rem;">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted time">00:03:08</small>
-                    <span class="text-muted icons">
-                      <span title="Ce contenu est interactif.">
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" fill="#6c757d;">
-                          <path fill-rule="evenodd" d="M3 5c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1zm8 0c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm0 6c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm2-10H5v2.17c.36.19.64.47.83.83h2.34c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H5.83c-.42.8-1.33 1.28-2.34 1.03-.73-.17-1.34-.78-1.52-1.52C1.72 4.49 2.2 3.59 3 3.17V1H1c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1l5-5h2.17c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H6.99L4 15h9c.55 0 1-.45 1-1V2c0-.55-.45-1-1-1z"></path>
-                      </span>
-                      <span title="Contenu de type vidéo." >
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" style="fill:#6c757d;">
-                          <path fill-rule="evenodd" d="M15.2 2.09L10 5.72V3c0-.55-.45-1-1-1H1c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V9.28l5.2 3.63c.33.23.8 0 .8-.41v-10c0-.41-.47-.64-.8-.41z"></path>
-                      </span>
-                    </span>
-                  </div>
-                </div>
-                <a href="#">
-                <img class="card-img-top" src="https://pod.univ-lille1.fr/media/filer_public_thumbnails/filer_public/54/cb/54cb74fc-bbe4-4ad7-9ca1-f3d6acd105d6/3946_2.png__285x160_q85_crop_subsampling-2_upscale.jpg" alt="Card image cap" />
-                </a>
-                <div class="card-body">
-                  <h6 class="card-subtitle"><a href="#"> se former pour sauver</a></h6>
-                </div>
-              </div>
-
-              </div>
-<div class="col-12 col-md-6 col-lg-4 mb-2">
-<div class="card mb-4 box-shadow border-secondary"> <!-- the good one -->
-                <div class="card-header" style="position:absolute; width:100%; background: rgba(0, 0, 0, 0.6);padding: 0 1.25rem;">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted time">00:03:08</small>
-                    <span class="text-muted icons">
-                      <span title="Ce contenu est interactif.">
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" fill="#6c757d;">
-                          <path fill-rule="evenodd" d="M3 5c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1zm8 0c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm0 6c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm2-10H5v2.17c.36.19.64.47.83.83h2.34c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H5.83c-.42.8-1.33 1.28-2.34 1.03-.73-.17-1.34-.78-1.52-1.52C1.72 4.49 2.2 3.59 3 3.17V1H1c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1l5-5h2.17c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H6.99L4 15h9c.55 0 1-.45 1-1V2c0-.55-.45-1-1-1z"></path>
-                      </span>
-                      <span title="Contenu de type vidéo." >
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" style="fill:#6c757d;">
-                          <path fill-rule="evenodd" d="M15.2 2.09L10 5.72V3c0-.55-.45-1-1-1H1c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V9.28l5.2 3.63c.33.23.8 0 .8-.41v-10c0-.41-.47-.64-.8-.41z"></path>
-                      </span>
-                    </span>
-                  </div>
-                </div>
-                <a href="#">
-                <img class="card-img-top" src="https://pod.univ-lille1.fr/media/filer_public/b6/95/b69548d5-bf15-4b39-a615-cbd998b9c335/0730-sequence-voiture_2.png" alt="Card image cap" />
-                </a>
-                <div class="card-body">
-                  <h6 class="card-subtitle"><a href="#"> se former pour sauver</a></h6>
-                </div>
-              </div>
-              </div>
-<div class="col-12 col-md-6 col-lg-4 mb-2">
-<div class="card mb-4 box-shadow border-secondary"> <!-- the good one -->
-                <div class="card-header" style="position:absolute; width:100%; background: rgba(0, 0, 0, 0.6);padding: 0 1.25rem;">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted time">00:03:08</small>
-                    <span class="text-muted icons">
-                      <span title="Ce contenu est interactif.">
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" fill="#6c757d;">
-                          <path fill-rule="evenodd" d="M3 5c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1zm8 0c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm0 6c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm2-10H5v2.17c.36.19.64.47.83.83h2.34c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H5.83c-.42.8-1.33 1.28-2.34 1.03-.73-.17-1.34-.78-1.52-1.52C1.72 4.49 2.2 3.59 3 3.17V1H1c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1l5-5h2.17c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H6.99L4 15h9c.55 0 1-.45 1-1V2c0-.55-.45-1-1-1z"></path>
-                      </span>
-                      <span title="Contenu de type vidéo." >
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" style="fill:#6c757d;">
-                          <path fill-rule="evenodd" d="M15.2 2.09L10 5.72V3c0-.55-.45-1-1-1H1c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V9.28l5.2 3.63c.33.23.8 0 .8-.41v-10c0-.41-.47-.64-.8-.41z"></path>
-                      </span>
-                    </span>
-                  </div>
-                </div>
-                <a href="#">
-                <img class="card-img-top" src="https://pod.univ-lille1.fr/media/filer_public/4b/99/4b99ffbd-9b16-4f1a-8871-65f46d68e2eb/4956_2.png" alt="Card image cap" />
-                </a>
-                <div class="card-body">
-                  <h6 class="card-subtitle"><a href="#"> se former pour sauver</a></h6>
-                </div>
-              </div>
-              </div>
-<div class="col-12 col-md-6 col-lg-4 mb-2">
-<div class="card mb-4 box-shadow border-secondary"> <!-- the good one -->
-                <div class="card-header" style="position:absolute; width:100%; background: rgba(0, 0, 0, 0.6);padding: 0 1.25rem;">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted time">00:03:08</small>
-                    <span class="text-muted icons">
-                      <span title="Ce contenu est interactif.">
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" fill="#6c757d;">
-                          <path fill-rule="evenodd" d="M3 5c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1zm8 0c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm0 6c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm2-10H5v2.17c.36.19.64.47.83.83h2.34c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H5.83c-.42.8-1.33 1.28-2.34 1.03-.73-.17-1.34-.78-1.52-1.52C1.72 4.49 2.2 3.59 3 3.17V1H1c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1l5-5h2.17c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H6.99L4 15h9c.55 0 1-.45 1-1V2c0-.55-.45-1-1-1z"></path>
-                      </span>
-                      <span title="Contenu de type vidéo." >
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" style="fill:#6c757d;">
-                          <path fill-rule="evenodd" d="M15.2 2.09L10 5.72V3c0-.55-.45-1-1-1H1c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V9.28l5.2 3.63c.33.23.8 0 .8-.41v-10c0-.41-.47-.64-.8-.41z"></path>
-                      </span>
-                    </span>
-                  </div>
-                </div>
-                <a href="#">
-                <img class="card-img-top" src="https://pod.univ-lille1.fr/media/filer_public/64/66/646697b2-1f0a-4289-9ea9-606104dd28cd/presentation.png" alt="Card image cap" />
-                </a>
-                <div class="card-body">
-                  <h6 class="card-subtitle"><a href="#"> se former pour sauver</a></h6>
-                </div>
-              </div>
-              </div>
-<div class="col-12 col-md-6 col-lg-4 mb-2">
-<div class="card mb-4 box-shadow border-secondary"> <!-- the good one -->
-                <div class="card-header" style="position:absolute; width:100%; background: rgba(0, 0, 0, 0.6);padding: 0 1.25rem;">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted time">00:03:08</small>
-                    <span class="text-muted icons">
-                      <span title="Ce contenu est interactif.">
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" fill="#6c757d;">
-                          <path fill-rule="evenodd" d="M3 5c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1zm8 0c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm0 6c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm2-10H5v2.17c.36.19.64.47.83.83h2.34c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H5.83c-.42.8-1.33 1.28-2.34 1.03-.73-.17-1.34-.78-1.52-1.52C1.72 4.49 2.2 3.59 3 3.17V1H1c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1l5-5h2.17c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H6.99L4 15h9c.55 0 1-.45 1-1V2c0-.55-.45-1-1-1z"></path>
-                      </span>
-                      <span title="Contenu de type vidéo." >
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" style="fill:#6c757d;">
-                          <path fill-rule="evenodd" d="M15.2 2.09L10 5.72V3c0-.55-.45-1-1-1H1c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V9.28l5.2 3.63c.33.23.8 0 .8-.41v-10c0-.41-.47-.64-.8-.41z"></path>
-                      </span>
-                    </span>
-                  </div>
-                </div>
-                <a href="#">
-                <img class="card-img-top" src="https://pod.univ-lille1.fr/media/filer_public_thumbnails/filer_public/99/fd/99fd85ec-2254-4b87-a76c-a6294db7586b/une_p3.jpg__285x160_q85_crop_subsampling-2_upscale.jpg" alt="Card image cap" />
-                </a>
-                <div class="card-body">
-                  <h6 class="card-subtitle"><a href="#"> se former pour sauver</a></h6>
-                </div>
-              </div>
-              </div>
-<div class="col-12 col-md-6 col-lg-4 mb-2">
-<div class="card mb-4 box-shadow border-secondary"> <!-- the good one -->
-                <div class="card-header" style="position:absolute; width:100%; background: rgba(0, 0, 0, 0.6);padding: 0 1.25rem;">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted time">00:03:08</small>
-                    <span class="text-muted icons">
-                      <span title="Ce contenu est interactif.">
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" fill="#6c757d;">
-                          <path fill-rule="evenodd" d="M3 5c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1zm8 0c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm0 6c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm2-10H5v2.17c.36.19.64.47.83.83h2.34c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H5.83c-.42.8-1.33 1.28-2.34 1.03-.73-.17-1.34-.78-1.52-1.52C1.72 4.49 2.2 3.59 3 3.17V1H1c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1l5-5h2.17c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H6.99L4 15h9c.55 0 1-.45 1-1V2c0-.55-.45-1-1-1z"></path>
-                      </span>
-                      <span title="Contenu de type vidéo." >
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" style="fill:#6c757d;">
-                          <path fill-rule="evenodd" d="M15.2 2.09L10 5.72V3c0-.55-.45-1-1-1H1c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V9.28l5.2 3.63c.33.23.8 0 .8-.41v-10c0-.41-.47-.64-.8-.41z"></path>
-                      </span>
-                    </span>
-                  </div>
-                </div>
-                <a href="#">
-                <img class="card-img-top" src="https://pod.univ-lille1.fr/media/filer_public_thumbnails/filer_public/99/fd/99fd85ec-2254-4b87-a76c-a6294db7586b/une_p3.jpg__285x160_q85_crop_subsampling-2_upscale.jpg" alt="Card image cap" />
-                </a>
-                <div class="card-body">
-                  <h6 class="card-subtitle"><a href="#"> se former pour sauver</a></h6>
-                </div>
-              </div>
-              </div>
-		<div class="col-12 col-md-6 col-lg-4 mb-2">
-			<div class="card mb-4 box-shadow border-secondary"> <!-- the good one -->
-                <div class="card-header" style="position:absolute; width:100%; background: rgba(0, 0, 0, 0.6);padding: 0 1.25rem;">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-muted time">00:03:08</small>
-                    <span class="text-muted icons">
-                      <span title="Ce contenu est interactif.">
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" fill="#6c757d;">
-                          <path fill-rule="evenodd" d="M3 5c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1zm8 0c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm0 6c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm2-10H5v2.17c.36.19.64.47.83.83h2.34c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H5.83c-.42.8-1.33 1.28-2.34 1.03-.73-.17-1.34-.78-1.52-1.52C1.72 4.49 2.2 3.59 3 3.17V1H1c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1l5-5h2.17c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H6.99L4 15h9c.55 0 1-.45 1-1V2c0-.55-.45-1-1-1z"></path>
-                      </span>
-                      <span title="Contenu de type vidéo." >
-                        <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true" style="fill:#6c757d;">
-                          <path fill-rule="evenodd" d="M15.2 2.09L10 5.72V3c0-.55-.45-1-1-1H1c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V9.28l5.2 3.63c.33.23.8 0 .8-.41v-10c0-.41-.47-.64-.8-.41z"></path>
-                      </span>
-                    </span>
-                  </div>
-                </div>
-                <a href="#">
-                <img class="card-img-top" src="https://pod.univ-lille1.fr/media/filer_public_thumbnails/filer_public/99/fd/99fd85ec-2254-4b87-a76c-a6294db7586b/une_p3.jpg__285x160_q85_crop_subsampling-2_upscale.jpg" alt="Card image cap" />
-                </a>
-                <div class="card-body">
-                  <h6 class="card-subtitle"><a href="#"> se former pour sauver</a></h6>
-                </div>
-              </div>
-          </div> <!-- fin liste video (row) -->
-		</div>
-          <div class="hightlight">
-            <div class="d-flex justify-content-end">
-              <p><a class="btn btn-lg btn-primary" href="#" role="button">Voir toutes les vidéos &raquo;</a></p>
-            </div>
-          </div> <!-- fin contenu central -->
-	</div>
-          <aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
-            <div class="card card-body">
-              <h5 class="card-title">
-                <svg height="32" class="octicon octicon-broadcast" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M9 9H8c.55 0 1-.45 1-1V7c0-.55-.45-1-1-1H7c-.55 0-1 .45-1 1v1c0 .55.45 1 1 1H6c-.55 0-1 .45-1 1v2h1v3c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-3h1v-2c0-.55-.45-1-1-1zM7 7h1v1H7V7zm2 4H8v4H7v-4H6v-1h3v1zm2.09-3.5c0-1.98-1.61-3.59-3.59-3.59A3.593 3.593 0 0 0 4 8.31v1.98c-.61-.77-1-1.73-1-2.8 0-2.48 2.02-4.5 4.5-4.5S12 5.01 12 7.49c0 1.06-.39 2.03-1 2.8V8.31c.06-.27.09-.53.09-.81zm3.91 0c0 2.88-1.63 5.38-4 6.63v-1.05a6.553 6.553 0 0 0 3.09-5.58A6.59 6.59 0 0 0 7.5.91 6.59 6.59 0 0 0 .91 7.5c0 2.36 1.23 4.42 3.09 5.58v1.05A7.497 7.497 0 0 1 7.5 0C11.64 0 15 3.36 15 7.5z"></path></svg> 
-                Partager
-              </h5>
-              <p class="card-text text-center">
-                <a target="_blank" href="http://www.facebook.com/sharer.php?u=https%3A//pod.univ-lille1.fr/" class="btn btn-facebook btn-sm" title="Partager sur Facebook"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/F_icon.svg/200px-F_icon.svg" height="24" alt="facebook" /> </a>
-                <a target="_blank" href="http://twitter.com/share?url=https%3A//pod.univ-lille1.fr/" class="btn btn-twitter btn-sm" title="Partager sur Twitter"> <img src="https://upload.wikimedia.org/wikipedia/fr/c/c8/Twitter_Bird.svg" height="24" alt="twitter" /> </a>
-                <a target="_blank" href="https://plus.google.com/share?url=https%3A//pod.univ-lille1.fr/" class="btn btn-google-plus btn-sm" title="Partager sur Google+"> <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Google_plus.svg" height="24" alt="google" /> </a>
-              </p>
-            </div>
-            <div class="card card-body">
-              <h5 class="card-title">
-                <svg height="32" class="octicon octicon-repo" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>
-                Disciplines
-                <a href="#" class="float-right"><svg height="32" class="octicon octicon-arrow-right" viewBox="0 0 10 16" version="1.1" width="20" aria-hidden="true"><path fill-rule="evenodd" d="M10 8L4 3v3H0v4h4v3z"></path></svg></a>
-              </h5>
-              <p class="card-text">
-                <form class="form" method="get">
-                  <select class="form-control" onchange="this.options[this.selectedIndex].getAttribute('data-value') &amp;&amp; (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="discipline">
-                      <option value="#" class="btn btn-default btn-sm btn-block">Disciplines...</option>
-                      
-                          <option value="biologie" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=biologie">Biologie  (51)</option>
-                      
-                          <option value="chimie" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=chimie">Chimie  (61)</option>
-                      
-                          <option value="comptabilite" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=comptabilite">Comptabilité  (2)</option>
-                      
-                          <option value="ecologie" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=ecologie">Ecologie  (12)</option>
-                      
-                          <option value="genie-des-systemes-industriels" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=genie-des-systemes-industriels">Génie des Systèmes Industriels  (21)</option>
-                      
-                          <option value="gestion" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=gestion">Gestion  (10)</option>
-                      
-                          <option value="informatique" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=informatique">Informatique  (278)</option>
-                      
-                          <option value="ingenierie-mathematiques" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=ingenierie-mathematiques">Ingénierie Mathématiques  (3)</option>
-                      
-                          <option value="mathematiques" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=mathematiques">Mathématiques  (437)</option>
-                      
-                          <option value="mecanique-genie-civil-genie-mecanique" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=mecanique-genie-civil-genie-mecanique">Mécanique, Génie civil, Génie mécanique  (20)</option>
-                      
-                          <option value="micro-nanotechnologies-telecommunications" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=micro-nanotechnologies-telecommunications">Micro-Nanotechnologies, Télécommunications  (10)</option>
-                      
-                          <option value="nutrition-sciences-des-aliments-et-agroalimentaire" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=nutrition-sciences-des-aliments-et-agroalimentaire">Nutrition Sciences des Aliments et Agroalimentaire  (35)</option>
-                      
-                          <option value="physique" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=physique">Physique  (613)</option>
-                      
-                          <option value="sciences-de-leducation" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=sciences-de-leducation">Sciences de l'Education  (890)</option>
-                      
-                          <option value="sciences-de-la-terre-de-lunivers-et-de-lenvironnement" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=sciences-de-la-terre-de-lunivers-et-de-lenvironnement">Sciences de la Terre, de l'Univers et de l'Environnement  (33)</option>
-                      
-                          <option value="sciences-humaines-et-sociales" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=sciences-humaines-et-sociales">Sciences Humaines et Sociales  (126)</option>
-                      
-                          <option value="spectroscopie-avancee-en-chimie" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=spectroscopie-avancee-en-chimie">Spectroscopie avancée en chimie  (1)</option>
-                      
-                  </select>
-                  <input value="Valider" class="btn btn-default btn-sm sr-only" type="submit">
-              </form>
-              </p>
-              
-            </div>
-            <div class="card card-body">
-              <h5 class="card-title">
-                <svg height="32" class="octicon octicon-tag" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M7.73 1.73C7.26 1.26 6.62 1 5.96 1H3.5C2.13 1 1 2.13 1 3.5v2.47c0 .66.27 1.3.73 1.77l6.06 6.06c.39.39 1.02.39 1.41 0l4.59-4.59a.996.996 0 0 0 0-1.41L7.73 1.73zM2.38 7.09c-.31-.3-.47-.7-.47-1.13V3.5c0-.88.72-1.59 1.59-1.59h2.47c.42 0 .83.16 1.13.47l6.14 6.13-4.73 4.73-6.13-6.15zM3.01 3h2v2H3V3h.01z"></path></svg> 
-                Mots clés
-                <a href="#" class="float-right"><svg height="32" class="octicon octicon-arrow-right" viewBox="0 0 10 16" version="1.1" width="20" aria-hidden="true"><path fill-rule="evenodd" d="M10 8L4 3v3H0v4h4v3z"></path></svg></a>
-              </h5>
-              <p class="card-text">
-                <a href="/videos/?tag=physique">
-                    <span style="font-size:16px">physique</span>
-                    <span class="badge">256</span>
-                </a>
-                <a href="/videos/?tag=exo7">
-                    <span style="font-size:15px">exo7</span>
-                    <span class="badge">195</span>
-                </a>
-                <a href="/videos/?tag=math">
-                    <span style="font-size:14px">math</span>
-                    <span class="badge">142</span>
-                </a>
-                <a href="/videos/?tag=ga3p">
-                    <span style="font-size:13px">ga3p</span>
-                    <span class="badge">100</span>
-                </a>
-                <a href="/videos/?tag=video">
-                    <span style="font-size:13px">video</span>
-                    <span class="badge">96</span>
-                </a>
-                <a href="/videos/?tag=cours">
-                    <span style="font-size:13px">cours</span>
-                    <span class="badge">95</span>
-                </a>
-                <a href="/videos/?tag=ipm">
-                    <span style="font-size:13px">ipm</span>
-                    <span class="badge">95</span>
-                </a>
-                <a href="/videos/?tag=exercice">
-                    <span style="font-size:13px">exercice</span>
-                    <span class="badge">88</span>
-                </a>
-                <a href="/videos/?tag=master">
-                    <span style="font-size:13px">master</span>
-                    <span class="badge">80</span>
-                </a>
-            
-                <a href="/videos/?tag=web">
-                    <span style="font-size:12px">web</span>
-                    <span class="badge">71</span>
-                </a>
-                <a href="/videos/?tag=algebre">
-                    <span style="font-size:12px">algebre</span>
-                    <span class="badge">66</span>
-                </a>
-                <a href="/videos/?tag=physique-a-main-levee">
-                    <span style="font-size:12px">physique a main levee</span>
-                    <span class="badge">61</span>
-                </a>
-                <a href="/videos/?tag=tpe">
-                    <span style="font-size:12px">tpe</span>
-                    <span class="badge">61</span>
-                </a>
-                <a href="/videos/?tag=informatique">
-                    <span style="font-size:12px">informatique</span>
-                    <span class="badge">55</span>
-                </a>
-                <a href="/videos/?tag=filmer-le-travail">
-                    <span style="font-size:12px">filmer le travail</span>
-                    <span class="badge">50</span>
-                </a>
-                <a href="/videos/?tag=css">
-                    <span style="font-size:12px">css</span>
-                    <span class="badge">45</span>
-                </a>
-                <a href="/videos/?tag=analyse">
-                    <span style="font-size:12px">analyse</span>
-                    <span class="badge">44</span>
-                </a>
-                <a href="/videos/?tag=accompagnement">
-                    <span style="font-size:12px">accompagnement</span>
-                    <span class="badge">41</span>
-                </a>
-                <a href="/videos/?tag=pression">
-                    <span style="font-size:12px">pression</span>
-                    <span class="badge">40</span>
-                </a>
-                <a href="/videos/?tag=e-services">
-                    <span style="font-size:12px">e-services</span>
-                    <span class="badge">38</span>
-                </a>
-              </p>
-            </div>
-          </aside>
-        </div> <!-- fin flex -->
-      </main>
-</div>
-	<footer class="text-muted bg-dark pt-2">
-
-      <div class="container">
-        <p class="float-right">
-        <a href="#">Haut de page</a>
-        </p>
-        <div class="row">
-          <div class="col-md-4">
-            <img src="https://www.univ-lille.fr/typo3conf/ext/ul2fpfb/Resources/Public/assets/img/UL-BLANC-2014.svg" alt="" height="71" width="215">
-            <p class="footer-contact">
-              <span class="footer-contact-title">Université de Lille</span><br>
-              42, rue Paul Duez<br>
-              59000 Lille - France
-            </p>
-          </div>
-          <div class="col-md-4">
-            <a href="/contact_us/" title="Contactez nous" >
-            &gt;  Contactez nous
-            </a><br>
-            <a href="https://github.com/esupportail/pod/wiki/Foire-Aux-Questions" title="Foire aux questions">
-            &gt;  Foire aux questions
-            </a><br>
-            <a href="/credits/" title="Crédits">
-            &gt; Crédits
-            </a><br>
-            <a href="/mentions/" title="Mentions légales">
-            &gt;  Mentions légales
-            </a><br>
-          </div>
-          <div class="col-md-4">
-            <a href="https://www.esup-portail.org/" title="Esup Portail : Communauté d'établissements francais d'enseignement supérieur pour l'innovation numérique" target="_blank">&gt;  <abbr title="Esup Portail : Communauté d'établissements francais d'enseignement supérieur pour l'innovation numérique">Esup Portail</abbr></a><br>
-            <a href="https://github.com/EsupPortail/pod" target="_blank">&gt;  Projet Pod (Github)</a><br>
-            <a href="http://www.univ-lille1.fr" title="Université Lille1">&gt; Université de Lille, sciences et technologies</a><br>
-          </div>
-        </div>
-        <p>Pod plateforme de vidéo de l'unviersité de Lille - <a href="https://github.com/EsupPortail/podv2" target="_blank" title="GitHub">Release 2.1</a></p>
-      </div>
-    </footer>
-
-
-
-
+        	<div class="col order-12 order-md-1">
+				<!-- contenu page statique -->
+				<div class="jumbotron">
+					{% block page_content %}
+						<p> Contenu block page_content </p>
+					{% endblock page_content %}
+				</div>
+				<!-- fin contenu page statique -->
+				<h3>Dernières vidéos déposées</h3>
+				<!-- liste vignette vidéo 4 par ligne -->
+				<div class="row">
+					<div class="col-12 col-md-6 col-lg-3 mb-2">
+					{% include "videos/card.html" %}
+             		</div>
+					<div class="col-12 col-md-6 col-lg-3 mb-2">
+					{% include "videos/card.html" %}
+              		</div>
+					<div class="col-12 col-md-6 col-lg-3 mb-2">
+					{% include "videos/card.html" %}
+					</div>
+					<div class="col-12 col-md-6 col-lg-3 mb-2">
+					{% include "videos/card.html" %}
+					</div>
+					<div class="col-12 col-md-6 col-lg-3 mb-2">
+					{% include "videos/card.html" %}
+             		</div>
+					<div class="col-12 col-md-6 col-lg-3 mb-2">
+					{% include "videos/card.html" %}
+              		</div>
+					<div class="col-12 col-md-6 col-lg-3 mb-2">
+					{% include "videos/card.html" %}
+					</div>
+					<div class="col-12 col-md-6 col-lg-3 mb-2">
+					{% include "videos/card.html" %}
+					</div>
+					<div class="col-12 col-md-6 col-lg-3 mb-2">
+					{% include "videos/card.html" %}
+             		</div>
+					<div class="col-12 col-md-6 col-lg-3 mb-2">
+					{% include "videos/card.html" %}
+              		</div>
+					<div class="col-12 col-md-6 col-lg-3 mb-2">
+					{% include "videos/card.html" %}
+					</div>
+					<div class="col-12 col-md-6 col-lg-3 mb-2">
+					{% include "videos/card.html" %}
+					</div>
+				</div>
+				<div class="hightlight">
+					<div class="d-flex justify-content-end">
+					  <p><a class="btn btn-lg btn-primary" href="#" role="button">Voir toutes les vidéos &raquo;</a></p>
+					</div>
+				</div> <!-- fin hightlight -->
+        	</div> <!-- fin col order-12 order-md-1 -->
+        	<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
+			{% include 'aside.html'%}
+			</aside>
+        </div> <!-- fin row -->
+    </main>
+</div> <!-- fin container -->
+<footer class="text-muted bg-dark pt-2">
+{% include 'footer.html' %}
+</footer>
 <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-<!--
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
--->
 <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
-
 	</body>
 </html>
