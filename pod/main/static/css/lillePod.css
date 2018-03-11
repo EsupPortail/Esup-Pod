@@ -1,0 +1,37 @@
+body {
+/*min-height: 75rem;*/
+padding-top: 5rem;
+}
+.pod-mt-7{
+    margin-top: 5rem;
+}
+#listeChaines{
+    max-height: 30rem;
+}
+.liste-collapse{
+    z-index: 900;
+}
+.flex-1{
+    flex: 1;
+    justify-content: center;
+}
+.octicon{
+    height: 25px;
+    width: auto;
+}
+/* vignettes video */
+@media (max-width: 575.98px) {
+    .pod-flex-direction{
+        flex-direction: column;
+    }
+}
+@media screen and (min-width:768px){
+      .card-img-top {
+        max-height:184.13px;
+      }
+}
+@media screen and (min-width:992px){
+      .card-img-top {
+        max-height:195.36px;
+      }
+}

@@ -20,6 +20,7 @@ class PageForm(FlatpageForm):
         widgets = {
             'content_fr': CKEditorWidget(config_name='complete'),
             'content_en': CKEditorWidget(config_name='complete'),
+            'content_nl_NL': CKEditorWidget(config_name='complete'),
         }
 
 
