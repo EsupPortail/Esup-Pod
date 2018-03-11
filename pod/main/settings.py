@@ -62,7 +62,8 @@ DATABASES = {
 LANGUAGE_CODE = 'fr'
 LANGUAGES = (
     ('fr', 'Français'),
-    ('en', 'English')
+    ('en', 'English'),
+    ('nl-NL', 'Dutch (Netherlands)')
 )
 
 ##

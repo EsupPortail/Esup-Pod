@@ -41,7 +41,8 @@ class CustomFlatPageAdmin(TranslationAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
-        obj.sites = Site.objects.filter(id=SITE_ID)
+        # obj.sites = Site.objects.filter(id=SITE_ID)
+        obj.sites.add(Site.objects.get(id=SITE_ID))
         obj.save()
 
 # Unregister the default FlatPage admin and register CustomFlatPageAdmin.
