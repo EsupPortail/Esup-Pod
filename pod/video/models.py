@@ -11,8 +11,10 @@ try:
 except ImportError:
     from django.contrib.auth.models import User as Owner
 try:
-    from filepicker.models import CustomImageModel
+    __import__('pod.filepicker')
+    FILEPICKER = True
 except ImportError:
+    FILEPICKER = False
     pass
 from datetime import datetime
 from ckeditor.fields import RichTextField
@@ -287,11 +289,14 @@ class Video(models.Model):
         u'Separate tags with spaces, '
         + 'enclose the tags consist of several words in quotation marks.'),
         verbose_name=_('Tags'))
-    try:
-        thumbnail = models.ForeignKey(CustomImageModel,
-                                      blank=True, null=True,
-                                      verbose_name=_('Thumbnails'))
-    except NameError:
+    if FILEPICKER:
+        thumbnail = models.CharField(
+            _('Thumbnail'),
+            null=True,
+            blank=True,
+            max_length=255
+        )
+    else:
         thumbnail = models.ImageField(
             _('Thumbnail'), null=True, upload_to=get_upload_path_files,
             blank=True, max_length=255)

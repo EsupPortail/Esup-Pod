@@ -6,6 +6,17 @@ from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
+from pod.video.forms import VideoForm
+
+# Register your models here.
+
+
+class VideoAdmin(admin.ModelAdmin):
+
+    form = VideoForm
+
+    class Media:
+        js = ('js/jquery.tools.min.js',)
 
 
 class ChannelAdmin(TranslationAdmin):
@@ -35,4 +46,4 @@ admin.site.register(Channel, ChannelAdmin)
 admin.site.register(Type, TypeAdmin)
 admin.site.register(Discipline, DisciplineAdmin)
 admin.site.register(Theme, ThemeAdmin)
-admin.site.register(Video)
+admin.site.register(Video, VideoAdmin)
