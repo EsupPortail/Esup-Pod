@@ -55,7 +55,7 @@ DATABASES = {
 
 ##
 # Internationalization and localization.
-# 
+#
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 LANGUAGE_CODE = 'fr'
 LANGUAGES = (
