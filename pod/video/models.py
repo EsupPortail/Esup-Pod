@@ -45,6 +45,23 @@ CURSUS_CODES = getattr(
 DEFAULT_TYPE_ID = getattr(
     settings, 'DEFAULT_TYPE_ID', 1)
 
+LICENCE_CHOICES = getattr(
+    settings, 'LICENCE_CHOICES', (
+        ('BY', _("Attribution")),
+        ('BY ND', _("Attribution + Pas de Modification")),
+        ('BY NC ND', _(
+            "Attribution + Pas d’Utilisation Commerciale + Pas de Modification"
+        )),
+        ('BY NC', _("Attribution + Pas d’Utilisation Commerciale")),
+        ('BY NC SA',
+            _(
+                "Attribution + Pas d’Utilisation Commerciale + "
+                + "Partage dans les mêmes conditions"
+            )),
+        ('BY SA', _(
+            "Attribution + Partage dans les mêmes conditions"))
+    ))
+
 # FUNCTIONS
 
 
@@ -307,6 +324,10 @@ class Video(models.Model):
         Channel, verbose_name=_('Channels'), blank=True)
     theme = models.ManyToManyField(
         Theme, verbose_name=_('Themes'), blank=True)
+
+    licence = models.CharField(
+        _('Licence'), max_length=8,
+        choices=LICENCE_CHOICES, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         newid = -1
