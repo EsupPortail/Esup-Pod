@@ -1,8 +1,8 @@
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 
-def context_settings(request):
 
+def context_settings(request):
 
     new_settings = {}
     for attr in getattr(django_settings, 'TEMPLATE_VISIBLE_SETTINGS', []):
