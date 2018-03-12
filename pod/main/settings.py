@@ -3,6 +3,9 @@ Django local settings for pod_project.
 
 Django version : 1.11.10.
 """
+from pod import settings
+
+
 import os
 
 
