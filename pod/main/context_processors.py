@@ -6,8 +6,8 @@ def context_settings(request):
 	for attr in getattr(django_settings, 'TEMPLATE_VISIBLE_SETTINGS', []):
 		try:
 			new_settings[attr] = getattr(django_settings, attr)
-		except:
+		except AttributeError:
 			m = "TEMPLATE_VISIBLE_SETTINGS: '{0}' does not exist".format(attr)
-			raise ImproperlyConfigured
+			raise ImproperlyConfigured(m)
 
 	return new_settings

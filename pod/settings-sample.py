@@ -8,7 +8,7 @@ import os
 ##
 # Local and applications settings import
 #
-from pod.settings_local import *
+import pod.settings_local
 
 
 ##
@@ -52,7 +52,8 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'pod.urls'
 
 ##
-# Full Python path of WSGI app object Django's built-in-servers (e.g. runserver) will use
+# Full Python path of WSGI app object Django's built-in-servers
+# (e.g. runserver) will use
 #
 WSGI_APPLICATION = 'pod.wsgi.application'
 
@@ -91,13 +92,16 @@ TEMPLATE_VISIBLE_SETTINGS = (
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME':
+        'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
