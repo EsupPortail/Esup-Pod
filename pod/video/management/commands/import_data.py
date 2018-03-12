@@ -1,12 +1,19 @@
 from django.utils import translation
 from django.core.management.base import BaseCommand
 from django.core import serializers
+from django.conf import settings
+from pod.authentication.models import Owner
+import os
+
+BASE_DIR = getattr(
+    settings, 'BASE_DIR', '/home/pod/django_projects/podv2/pod')
 
 
 class Command(BaseCommand):
     args = 'Channel Theme Type User Discipline'
     help = 'Import from V1'
-    valid_args = ['Channel', 'Theme', 'Type', 'User', 'Discipline', 'FlatPage']
+    valid_args = ['Channel', 'Theme', 'Type', 'User', 'Discipline', 'FlatPage',
+                  'UserProfile']
 
     def add_arguments(self, parser):
         parser.add_argument('import')
@@ -14,20 +21,30 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # Activate a fixed locale fr
         translation.activate('fr')
+        print(BASE_DIR)
         if options['import'] and options['import'] in self.valid_args:
             type_to_import = options['import']
-            filepath = "../../import/" + type_to_import + ".json"
+            filepath = os.path.join(BASE_DIR, '../../import/',
+                                    type_to_import + ".json")
             self.migrate_to_v2(filepath, type_to_import)
             with open(filepath, "r") as infile:
                 data = serializers.deserialize("json", infile)
                 for obj in data:
-                    obj.save()
+                    if type_to_import == 'UserProfile':
+                        owner = Owner.objects.get(user_id=obj.object.user_id)
+                        owner.auth_type = obj.object.auth_type
+                        owner.affiliation = obj.object.affiliation
+                        owner.commentaire = obj.object.commentaire
+                        #todo image
+                        owner.save()
+                    else:
+                        obj.save()
         else:
             print(
                 "******* Warning: you must give some arguments: %s *******"
                 % self.args)
 
-    def migrate_to_v2(filepath, type_to_import):
+    def migrate_to_v2(self, filepath, type_to_import):
         f = open(filepath, 'r')
         filedata = f.read()
         f.close()
@@ -47,11 +64,14 @@ class Command(BaseCommand):
             newdata = filedata.replace(
                 "pods.discipline", "video.discipline")
             newdata = newdata.replace("headband", "icon")
+        if type_to_import == 'UserProfile':
+            newdata = filedata.replace(
+                "core.userprofile", "authentication.owner"
+            )
+            newdata = newdata.replace("\"image\":", "\"userpicture\":")
         f = open(filepath, 'w')
         f.write(newdata)
         f.close()
-
-
 """
 SAVE FROM PODV1
 
@@ -84,5 +104,8 @@ with open("Discipline.json", "w") as out:
 with open("FlatPage.json", "w") as out:
     json_serailizer.serialize(FlatPage.objects.all(), stream=out)
 
+from core.models import UserProfile
+with open("UserProfile.json", "w") as out:
+    json_serailizer.serialize(UserProfile.objects.all(), stream=out, fields=('user','auth_type', 'affiliation', 'commentaire', 'image'))
 
 """
