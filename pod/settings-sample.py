@@ -5,24 +5,11 @@ Django version : 1.11.10.
 """
 import os
 
+
 ##
 # Local and applications settings import
 #
-from .settings_local import (
-    SECRET_KEY, 
-    BASE_DIR,
-    DEBUG,
-    DATABASES,
-    LANGUAGE_CODE,
-    LANGUAGES,
-    TIME_ZONE,
-    STATIC_URL,
-    STATIC_ROOT,
-    MEDIA_URL,
-    MEDIA_ROOT,
-    TEMPLATE_THEME,
-    TITLE_SITE,
-)
+from .settings_local import *
 
 
 ##
