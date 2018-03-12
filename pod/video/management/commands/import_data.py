@@ -35,7 +35,7 @@ class Command(BaseCommand):
                         owner.auth_type = obj.object.auth_type
                         owner.affiliation = obj.object.affiliation
                         owner.commentaire = obj.object.commentaire
-                        #todo image
+                        # todo image
                         owner.save()
                     else:
                         obj.save()
@@ -48,30 +48,29 @@ class Command(BaseCommand):
         f = open(filepath, 'r')
         filedata = f.read()
         f.close()
-        newdata = ""
-        if type_to_import == 'Channel':
-            newdata = filedata.replace("pods.channel", "video.channel")
-        if type_to_import == 'Theme':
-            newdata = filedata.replace("pods.theme", "video.theme")
-        if type_to_import == 'Type':
-            newdata = filedata.replace("pods.type", "video.type")
-            newdata = newdata.replace("headband", "icon")
-        if type_to_import == 'User':
-            newdata = filedata.replace("", "")
-        if type_to_import == 'FlatPage':
-            newdata = filedata.replace("", "")
-        if type_to_import == 'Discipline':
-            newdata = filedata.replace(
-                "pods.discipline", "video.discipline")
-            newdata = newdata.replace("headband", "icon")
-        if type_to_import == 'UserProfile':
-            newdata = filedata.replace(
-                "core.userprofile", "authentication.owner"
-            )
-            newdata = newdata.replace("\"image\":", "\"userpicture\":")
+        newdata = self.get_new_data(type_to_import, filedata)
         f = open(filepath, 'w')
         f.write(newdata)
         f.close()
+
+    def get_new_data(self, type_to_import, filedata):
+        newdata = ""
+        if type_to_import in ('Channel', 'Theme', 'Type', 'Discipline'):
+            newdata = filedata.replace(
+                "pods." + type_to_import.lower(),
+                "video." + +type_to_import.lower()
+            )
+        if type_to_import in ('Type', 'Discipline'):
+            newdata = newdata.replace("headband", "icon")
+        if type_to_import in ('User', 'FlatPage'):
+            newdata = filedata
+        if type_to_import == 'UserProfile':
+            newdata = filedata.replace(
+                "core.userprofile", "authentication.owner"
+            ).replace("\"image\":", "\"userpicture\":")
+        return newdata
+
+
 """
 SAVE FROM PODV1
 
@@ -106,6 +105,7 @@ with open("FlatPage.json", "w") as out:
 
 from core.models import UserProfile
 with open("UserProfile.json", "w") as out:
-    json_serailizer.serialize(UserProfile.objects.all(), stream=out, fields=('user','auth_type', 'affiliation', 'commentaire', 'image'))
+    json_serailizer.serialize(UserProfile.objects.all(), stream=out, fields=(\
+        'user','auth_type', 'affiliation', 'commentaire', 'image'))
 
 """
