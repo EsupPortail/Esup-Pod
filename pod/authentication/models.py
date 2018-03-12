@@ -4,18 +4,41 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-import hashlib
+from django.apps import apps
+from django.template.defaultfilters import slugify
+try:
+    from filepicker.models import CustomImageModel
+except ImportError:
+    pass
 
+import hashlib
+import os
 import logging
 import traceback
 logger = logging.getLogger(__name__)
 
+FILEPICKER = True if apps.is_installed('filepicker') else False
 AUTH_TYPE = getattr(
     settings, 'AUTH_TYPE', (('local', _('local')), ('CAS', 'CAS')))
 AFFILIATION = getattr(
     settings, 'AUTH_TYPE',
     (('member', _('member')), ('student', _('student'))))
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
+FILES_DIR = getattr(
+    settings, 'FILES_DIR', 'files')
+
+
+def get_upload_path_files(instance, filename):
+    fname, dot, extension = filename.rpartition('.')
+    try:
+        fname.index("/")
+        return os.path.join(FILES_DIR,
+                            '%s/%s.%s' % (os.path.dirname(fname),
+                                          slugify(os.path.basename(fname)),
+                                          extension))
+    except ValueError:
+        return os.path.join(FILES_DIR,
+                            '%s.%s' % (slugify(fname), extension))
 
 
 class Owner(models.Model):
@@ -27,6 +50,14 @@ class Owner(models.Model):
     commentaire = models.TextField(_('Comment'), blank=True, default="")
     hashkey = models.CharField(
         max_length=64, unique=True, blank=True, default="")
+    if FILEPICKER:
+        userpicture = models.ForeignKey(CustomImageModel,
+                                        blank=True, null=True,
+                                        verbose_name=_('Picture'))
+    else:
+        userpicture = models.ImageField(
+            _('Picture'), null=True, upload_to=get_upload_path_files,
+            blank=True, max_length=255)
 
     def __str__(self):
         return "%s %s (%s)" % (self.user.first_name, self.user.last_name,

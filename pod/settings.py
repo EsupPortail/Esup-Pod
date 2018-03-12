@@ -30,14 +30,14 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     # Exterior Applications
     'ckeditor',
-    'file_picker',
-    'file_picker.uploads',
-    'sorl.thumbnail',
+    # 'file_picker',
+    # 'file_picker.uploads',
+    # 'sorl.thumbnail',
     'tagging',
     # Pod Applications
     'pod.main',
     'pod.authentication',
-    'pod.filepicker',
+    # 'pod.filepicker',
     'pod.video',
 ]
 
