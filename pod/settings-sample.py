@@ -8,8 +8,9 @@ import os
 
 ##
 # Local and applications settings import
-#
-from .settings_local import *
+# 
+from pod.settings_local import *
+from pod.main.settings import *
 
 
 ##
@@ -29,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Exterior Applications
     'bootstrap4',
+    'ckeditor',
     # Pod Applications
     'pod.main',
 ]
