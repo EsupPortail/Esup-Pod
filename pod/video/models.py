@@ -110,6 +110,12 @@ def get_nextautoincrement(mymodel):
 # MODELS
 
 
+class VideoImageModel(models.Model):
+    image = models.ImageField(
+        _('Image'), null=True, upload_to=get_upload_path_files,
+        blank=True, max_length=255)
+
+
 class Channel(models.Model):
     title = models.CharField(_('Title'), max_length=100, unique=True)
     slug = models.SlugField(
@@ -125,9 +131,9 @@ class Channel(models.Model):
                                      blank=True, null=True,
                                      verbose_name=_('Headband'))
     else:
-        headband = models.ImageField(
-            _('Headband'), null=True, upload_to=get_upload_path_files,
-            blank=True, max_length=255)
+        headband = models.ForeignKey(VideoImageModel,
+                                     blank=True, null=True,
+                                     verbose_name=_('Thumbnails'))
     color = models.CharField(
         _('Background color'), max_length=10, blank=True, null=True)
     style = models.TextField(_('Extra style'), null=True, blank=True)
@@ -171,9 +177,9 @@ class Theme(models.Model):
                                      blank=True, null=True,
                                      verbose_name=_('Headband'))
     else:
-        headband = models.ImageField(
-            _('Headband'), null=True, upload_to=get_upload_path_files,
-            blank=True, max_length=255)
+        headband = models.ForeignKey(VideoImageModel,
+                                     blank=True, null=True,
+                                     verbose_name=_('Thumbnails'))
 
     channel = models.ForeignKey(
         'Channel', related_name='themes', verbose_name=_('Channel'))
@@ -204,9 +210,9 @@ class Type(models.Model):
                                  blank=True, null=True,
                                  verbose_name=_('Icon'))
     else:
-        icon = models.ImageField(
-            _('Icon'), null=True, upload_to=get_upload_path_files,
-            blank=True, max_length=255)
+        icon = models.ForeignKey(VideoImageModel,
+                                 blank=True, null=True,
+                                 verbose_name=_('Thumbnails'))
 
     def __str__(self):
         return "%s" % (self.title)
@@ -234,9 +240,9 @@ class Discipline(models.Model):
                                  blank=True, null=True,
                                  verbose_name=_('Icon'))
     else:
-        icon = models.ImageField(
-            _('Icon'), null=True, upload_to=get_upload_path_files,
-            blank=True, max_length=255)
+        icon = models.ForeignKey(VideoImageModel,
+                                 blank=True, null=True,
+                                 verbose_name=_('Thumbnails'))
 
     def __str__(self):
         return "%s" % (self.title)
@@ -312,9 +318,9 @@ class Video(models.Model):
                                       blank=True, null=True,
                                       verbose_name=_('Thumbnails'))
     else:
-        thumbnail = models.ImageField(
-            _('Thumbnail'), null=True, upload_to=get_upload_path_files,
-            blank=True, max_length=255)
+        thumbnail = models.ForeignKey(VideoImageModel,
+                                      blank=True, null=True,
+                                      verbose_name=_('Thumbnails'))
 
     type = models.ForeignKey(Type, verbose_name=_('Type'),
                              default=DEFAULT_TYPE_ID)

@@ -41,6 +41,12 @@ def get_upload_path_files(instance, filename):
                             '%s.%s' % (slugify(fname), extension))
 
 
+class AuthenticationImageModel(models.Model):
+    image = models.ImageField(
+        _('Image'), null=True, upload_to=get_upload_path_files,
+        blank=True, max_length=255)
+
+
 class Owner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     auth_type = models.CharField(
@@ -55,9 +61,9 @@ class Owner(models.Model):
                                         blank=True, null=True,
                                         verbose_name=_('Picture'))
     else:
-        userpicture = models.ImageField(
-            _('Picture'), null=True, upload_to=get_upload_path_files,
-            blank=True, max_length=255)
+        userpicture = models.ForeignKey(AuthenticationImageModel,
+                                        blank=True, null=True,
+                                        verbose_name=_('Picture'))
 
     def __str__(self):
         return "%s %s (%s)" % (self.user.first_name, self.user.last_name,
@@ -79,8 +85,3 @@ def create_owner_profile(sender, instance, created, **kwargs):
             msg += '\n%s' % traceback.format_exc()
             logger.error(msg)
             print(msg)
-
-
-# @receiver(post_save, sender=Owner)
-# def check_hashkey(sender, instance, created, **kwargs):
-#    print('coucou')

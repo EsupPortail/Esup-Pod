@@ -21,11 +21,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # Activate a fixed locale fr
         translation.activate('fr')
-        print(BASE_DIR)
         if options['import'] and options['import'] in self.valid_args:
             type_to_import = options['import']
             filepath = os.path.join(BASE_DIR, '../../import/',
                                     type_to_import + ".json")
+            print(type_to_import, filepath)
             self.migrate_to_v2(filepath, type_to_import)
             with open(filepath, "r") as infile:
                 data = serializers.deserialize("json", infile)
@@ -42,7 +42,7 @@ class Command(BaseCommand):
         else:
             print(
                 "******* Warning: you must give some arguments: %s *******"
-                % self.args)
+                % self.valid_args)
 
     def migrate_to_v2(self, filepath, type_to_import):
         f = open(filepath, 'r')
@@ -58,7 +58,7 @@ class Command(BaseCommand):
         if type_to_import in ('Channel', 'Theme', 'Type', 'Discipline'):
             newdata = filedata.replace(
                 "pods." + type_to_import.lower(),
-                "video." + +type_to_import.lower()
+                "video." + type_to_import.lower()
             )
         if type_to_import in ('Type', 'Discipline'):
             newdata = newdata.replace("headband", "icon")
