@@ -7,9 +7,13 @@ import os
 
 
 ##
-# Local and applications settings import
+# Applications settings
 #
-from .settings_local import *
+from pod.main import settings as local
+
+for variable in dir(local):
+    if variable == variable.upper():
+        locals()[variable] = getattr(local, variable)
 
 
 ##
@@ -29,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Exterior Applications
     'bootstrap4',
+    'ckeditor',
     # Pod Applications
     'pod.main',
 ]
@@ -65,7 +70,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'theme', TEMPLATE_THEME, 'templates')
+            os.path.join(local.BASE_DIR, 'theme', local.TEMPLATE_THEME, 'templates')
         ],
         'APP_DIRS': True,
         'OPTIONS': {

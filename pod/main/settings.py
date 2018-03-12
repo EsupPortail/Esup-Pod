@@ -3,6 +3,9 @@ Django local settings for pod_project.
 
 Django version : 1.11.10.
 """
+from pod import settings
+
+
 import os
 
 
@@ -52,7 +55,7 @@ DATABASES = {
 
 ##
 # Internationalization and localization.
-# 
+#
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 LANGUAGE_CODE = 'fr'
 LANGUAGES = (
@@ -88,3 +91,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 #
 TEMPLATE_THEME = 'DEFAULT'
 TITLE_SITE = 'Pod'
+
+##
+# CKeditor settings
+#
+CKEDITOR_BASEPATH = os.path.join(
+    getattr(settings, 'STATIC_URL', '/static/'), 'ckeditor', 'ckeditor')
