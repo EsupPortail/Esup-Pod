@@ -7,10 +7,13 @@ import os
 
 
 ##
-# Local and applications settings import
-# 
-from pod.settings_local import *
-from pod.main.settings import *
+# Applications settings
+#
+from pod.main import settings as local
+
+for variable in dir(local):
+    if variable == variable.upper():
+        locals()[variable] = getattr(local, variable)
 
 
 ##
