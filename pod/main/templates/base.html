@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load i18n %}
 <!doctype html>
 <html lang="fr">
   <head>
@@ -32,9 +33,14 @@
 	<main role="main" class="mt-3">
         <nav aria-label="breadcrumb" class="breadcrumb d-flex justify-content-between p-0">
           <ol class="breadcrumb p-1 pl-4 mb-0">
+          	{% block breadcrumbs %}
+                <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+			{% endblock breadcrumbs %}
+			<!--
             <li class="breadcrumb-item"><a href="#">Accueil</a></li>
             <li class="breadcrumb-item"><a href="#">Vidéos</a></li>
             <li class="breadcrumb-item active" aria-current="page">Visionner une vidéo</li>
+        	-->
           </ol>
           <div class="p-0">
             <a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside">
@@ -51,9 +57,10 @@
 					{% endblock page_content %}
 				</div>
 				<!-- fin contenu page statique -->
-				<h3>Dernières vidéos déposées</h3>
+				<h3>{% block video_list_title %}Dernières vidéos déposées{% endblock video_list_title %}</h3>
 				<!-- liste vignette vidéo 4 par ligne -->
 				<div class="row">
+					{% block video_list %}
 					<div class="col-12 col-md-6 col-lg-3 mb-2">
 					{% include "videos/card.html" %}
              		</div>
@@ -90,6 +97,7 @@
 					<div class="col-12 col-md-6 col-lg-3 mb-2">
 					{% include "videos/card.html" %}
 					</div>
+					{% endblock video_list %}
 				</div>
 				<div class="hightlight">
 					<div class="d-flex justify-content-end">
@@ -108,5 +116,31 @@
 </footer>
 <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
 <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
+<script>
+var listUser = {{LISTOWNER|safe}};
+
+$('#ownerboxnavbar').keyup(function() {
+	if($(this).val() && $(this).val().length > 2) {
+		var valThis = $(this).val().toLowerCase();
+		var letter = $(this).val().charAt(0).toLowerCase();
+		var nbuser = listUser[letter].length;
+		$("#accordion").html("");
+		for(i=0; i<nbuser; i++) {
+			var lastname = listUser[letter][i][2].toLowerCase();
+			if(lastname.indexOf(valThis) != -1) $("#accordion").append('<li><a href="">'+listUser[letter][i][1]+' '+listUser[letter][i][2]+' ('+listUser[letter][i][3]+')</a></li>');
+		}
+	} else {
+		$("#accordion").html("");
+	}
+});
+$(".showUser").on('click', function() {
+	var letter = $(this).attr("data-target").toLowerCase();
+	var nbuser = listUser[letter].length;
+	$("#accordion").html("");
+	for(i=0; i<nbuser; i++) {
+		$("#accordion").append('<li><a href="">'+listUser[letter][i][1]+' '+listUser[letter][i][2]+' ('+listUser[letter][i][3]+')</a></li>');
+	}
+})
+</script>
 	</body>
 </html>

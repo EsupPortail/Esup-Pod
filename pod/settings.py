@@ -83,7 +83,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 # Local contexts
-                'pod.main.context_processors.context_settings'
+                'pod.main.context_processors.context_settings',
+                'pod.main.context_processors.context_navbar'
             ],
         },
     },

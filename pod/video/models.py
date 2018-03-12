@@ -182,10 +182,10 @@ class Type(models.Model):
     try:
         icon = models.ForeignKey(CustomImageModel,
                                  blank=True, null=True,
-                                 verbose_name=_('Headband'))
+                                 verbose_name=_('Icon'))
     except NameError:
         icon = models.ImageField(
-            _('Headband'), null=True, upload_to=get_upload_path_files,
+            _('Icon'), null=True, upload_to=get_upload_path_files,
             blank=True, max_length=255)
 
     def __str__(self):
@@ -212,10 +212,10 @@ class Discipline(models.Model):
     try:
         icon = models.ForeignKey(CustomImageModel,
                                  blank=True, null=True,
-                                 verbose_name=_('Headband'))
+                                 verbose_name=_('Icon'))
     except NameError:
         icon = models.ImageField(
-            _('Headband'), null=True, upload_to=get_upload_path_files,
+            _('Icon'), null=True, upload_to=get_upload_path_files,
             blank=True, max_length=255)
 
     def __str__(self):
