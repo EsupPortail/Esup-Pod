@@ -5,17 +5,6 @@ Django version : 1.11.10.
 """
 import os
 
-
-##
-# Applications settings
-#
-#from pod.main import settings as local
-
-# for variable in dir(local):
-#    if variable == variable.upper():
-#        locals()[variable] = getattr(local, variable)
-
-
 ##
 # Version of the project
 #
@@ -34,9 +23,6 @@ INSTALLED_APPS = [
     # Exterior Applications
     'bootstrap4',
     'ckeditor',
-    'file_picker',
-    'file_picker.uploads',
-    'sorl.thumbnail',
     # Pod Applications
     'pod.main',
     'pod.authentication',
