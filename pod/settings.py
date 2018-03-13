@@ -9,11 +9,11 @@ import os
 ##
 # Applications settings
 #
-from pod.main import settings as local
+#from pod.main import settings as local
 
-for variable in dir(local):
-    if variable == variable.upper():
-        locals()[variable] = getattr(local, variable)
+# for variable in dir(local):
+#    if variable == variable.upper():
+#        locals()[variable] = getattr(local, variable)
 
 
 ##
@@ -34,10 +34,33 @@ INSTALLED_APPS = [
     # Exterior Applications
     'bootstrap4',
     'ckeditor',
+    'file_picker',
+    'file_picker.uploads',
+    'sorl.thumbnail',
     # Pod Applications
     'pod.main',
     'pod.authentication',
 ]
+
+##
+# Applications settings (and settings locale if any)
+#
+for application in INSTALLED_APPS:
+    if application.startswith('pod'):
+        path = application.replace('.', os.path.sep) + '/settings.py'
+        if os.path.exists(path):
+            _temp = __import__(application, globals(), locals(), ['settings'])
+            for variable in (dir(_temp.settings)):
+                if variable == variable.upper():
+                    locals()[variable] = getattr(_temp.settings, variable)
+        path = application.replace('.', os.path.sep) + '/settings_local.py'
+        if os.path.exists(path):
+            _temp = __import__(application, globals(),
+                               locals(), ['settings_local'])
+            for variable in (dir(_temp.settings_local)):
+                if variable == variable.upper():
+                    locals()[variable] = getattr(
+                        _temp.settings_local, variable)
 
 ##
 # Activated middleware components
@@ -71,8 +94,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(local.BASE_DIR, 'theme',
-                         local.TEMPLATE_THEME, 'templates')
+            os.path.join(BASE_DIR, 'theme', TEMPLATE_THEME, 'templates')
         ],
         'APP_DIRS': True,
         'OPTIONS': {

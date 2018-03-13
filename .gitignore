@@ -41,7 +41,6 @@ Icon?
 
 # Custom files  #
 #################
-pod/settings.py
 import_data/
 media/
 pod/*/fixtures/
