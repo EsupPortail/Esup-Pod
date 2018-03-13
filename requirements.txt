@@ -1,3 +1,4 @@
 Django==1.11.10
 django-bootstrap4==0.0.6
+django-ckeditor==5.3.1
 sorl-thumbnail==12.4a1

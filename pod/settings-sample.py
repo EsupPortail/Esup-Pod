@@ -5,10 +5,15 @@ Django version : 1.11.10.
 """
 import os
 
+
 ##
-# Local and applications settings import
+# Applications settings
 #
-from pod.settings_local import *
+from pod.main import settings as local
+
+for variable in dir(local):
+    if variable == variable.upper():
+        locals()[variable] = getattr(local, variable)
 
 
 ##
@@ -28,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Exterior Applications
     'bootstrap4',
+    'ckeditor',
     # Pod Applications
     'pod.main',
 ]
@@ -52,7 +58,8 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'pod.urls'
 
 ##
-# Full Python path of WSGI app object Django's built-in-servers (e.g. runserver) will use
+# Full Python path of WSGI app object Django's built-in-servers
+# (e.g. runserver) will use
 #
 WSGI_APPLICATION = 'pod.wsgi.application'
 
@@ -63,7 +70,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'theme', TEMPLATE_THEME, 'templates')
+            os.path.join(local.BASE_DIR, 'theme', local.TEMPLATE_THEME, 'templates')
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -90,18 +97,13 @@ TEMPLATE_VISIBLE_SETTINGS = (
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': "django.contrib.auth.password_validation.{0}".format(validator)}
+    for validator in [
+        'UserAttributeSimilarityValidator',
+        'MinimumLengthValidator',
+        'CommonPasswordValidator',
+        'NumericPasswordValidator',
+    ]
 ]
 
 ##
