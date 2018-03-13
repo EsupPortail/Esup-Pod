@@ -1,6 +1,5 @@
 """
 Django local settings for pod_project.
-
 Django version : 1.11.10.
 """
 from pod import settings
@@ -19,7 +18,7 @@ import os
 # https://docs.djangoproject.com/en/1.11/ref/settings/#secret-key
 #
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'eua2)@ne(97$kr@3zxuf@t067n26r2hql2$-2q89w%=a^kir6%'
+SECRET_KEY = 'A_CHANGER'
 
 ##
 # Base folder
@@ -95,5 +94,5 @@ TITLE_SITE = 'Pod'
 ##
 # CKeditor settings
 #
-CKEDITOR_BASEPATH = os.path.join(
-    getattr(settings, 'STATIC_URL', '/static/'), 'ckeditor', 'ckeditor')
+CKEDITOR_BASEPATH = CKEDITOR_BASEPATH = getattr(
+    settings, 'STATIC_URL', '/static/') + 'ckeditor/ckeditor/'

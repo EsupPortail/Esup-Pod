@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'ckeditor',
     # Pod Applications
     'pod.main',
+    'pod.authentication',
 ]
 
 ##
@@ -70,7 +71,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(local.BASE_DIR, 'theme', local.TEMPLATE_THEME, 'templates')
+            os.path.join(local.BASE_DIR, 'theme',
+                         local.TEMPLATE_THEME, 'templates')
         ],
         'APP_DIRS': True,
         'OPTIONS': {
