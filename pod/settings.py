@@ -23,9 +23,13 @@ INSTALLED_APPS = [
     # Exterior Applications
     'bootstrap4',
     'ckeditor',
+    'file_picker',
+    'file_picker.uploads',
+    'sorl.thumbnail',
     # Pod Applications
     'pod.main',
     'pod.authentication',
+    'pod.filepicker',
 ]
 
 ##
