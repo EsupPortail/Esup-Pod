@@ -4,6 +4,8 @@ Django global settings for pod_project.
 Django version : 1.11.10.
 """
 import os
+from pod.main.settings import BASE_DIR
+from pod.main.settings import TEMPLATE_THEME
 
 ##
 # Version of the project
@@ -21,32 +23,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Exterior Applications
-    'bootstrap4',
     'ckeditor',
+    'tagging',
     # Pod Applications
     'pod.main',
     'pod.authentication',
+    'pod.video'
 ]
-
-##
-# Applications settings (and settings locale if any)
-#
-for application in INSTALLED_APPS:
-    if application.startswith('pod'):
-        path = application.replace('.', os.path.sep) + '/settings.py'
-        if os.path.exists(path):
-            _temp = __import__(application, globals(), locals(), ['settings'])
-            for variable in (dir(_temp.settings)):
-                if variable == variable.upper():
-                    locals()[variable] = getattr(_temp.settings, variable)
-        path = application.replace('.', os.path.sep) + '/settings_local.py'
-        if os.path.exists(path):
-            _temp = __import__(application, globals(),
-                               locals(), ['settings_local'])
-            for variable in (dir(_temp.settings_local)):
-                if variable == variable.upper():
-                    locals()[variable] = getattr(
-                        _temp.settings_local, variable)
 
 ##
 # Activated middleware components
@@ -126,3 +109,27 @@ USE_L10N = True
 # Time zone support is enabled (True) or not (False)
 #
 USE_TZ = True
+
+##
+# Applications settings (and settings locale if any)
+#
+# Add settings
+for application in INSTALLED_APPS:
+    if application.startswith('pod'):
+        path = application.replace('.', os.path.sep) + '/settings.py'
+        if os.path.exists(path):
+            _temp = __import__(application, globals(), locals(), ['settings'])
+            for variable in (dir(_temp.settings)):
+                if variable == variable.upper():
+                    locals()[variable] = getattr(_temp.settings, variable)
+# add local settings
+for application in INSTALLED_APPS:
+    if application.startswith('pod'):
+        path = application.replace('.', os.path.sep) + '/settings_local.py'
+        if os.path.exists(path):
+            _temp = __import__(application, globals(),
+                               locals(), ['settings_local'])
+            for variable in (dir(_temp.settings_local)):
+                if variable == variable.upper():
+                    locals()[variable] = getattr(
+                        _temp.settings_local, variable)

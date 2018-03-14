@@ -1,4 +1,5 @@
 from django.db import models
+from django.db import connection
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import get_language
@@ -14,6 +15,7 @@ from tagging.fields import TagField
 
 import os
 import time
+import unicodedata
 
 import logging
 logger = logging.getLogger(__name__)
@@ -33,6 +35,11 @@ CURSUS_CODES = getattr(
     ))
 
 
+def remove_accents(input_str):
+    nkfd_form = unicodedata.normalize('NFKD', input_str)
+    return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
+
+
 def get_storage_path(instance, filename):
     """ Get the storage path. Instance needs to implement owner """
     fname, dot, extension = filename.rpartition('.')
@@ -45,6 +52,17 @@ def get_storage_path(instance, filename):
     except ValueError:
         return os.path.join(VIDEOS_DIR, instance.owner.hashkey,
                             '%s.%s' % (slugify(fname), extension))
+
+
+def get_nextautoincrement(mymodel):
+    cursor = connection.cursor()
+    cursor.execute(
+        "SELECT Auto_increment FROM information_schema.tables "
+        + "WHERE table_name='%s';" %
+        mymodel._meta.db_table)
+    row = cursor.fetchone()
+    cursor.close()
+    return row[0]
 
 
 class Video(models.Model):
@@ -92,13 +110,38 @@ class Video(models.Model):
             + 'the video will only be accessible to authenticated users.'),
         default=False)
     restrict_access_to_groups = models.ManyToManyField(
-        Group, blank=True, verbose_name=_('Goups'))
+        Group, blank=True, verbose_name=_('Goups'),
+        help_text=_(u'Select one or more groups who can access to this video'))
     password = models.CharField(
         _('password'),
         help_text=_(
             u'Viewing this video will not be possible without this password.'),
         max_length=50, blank=True, null=True)
-    tags = TagField()
+    tags = TagField(help_text=_(
+        u'Separate tags with spaces, '
+        + 'enclose the tags consist of several words in quotation marks.'),
+        verbose_name=_('Tags'))
+
+    def save(self, *args, **kwargs):
+        newid = -1
+        if not self.id:
+            try:
+                newid = get_nextautoincrement(Video)
+            except Exception:
+                try:
+                    newid = Video.objects.latest('id').id
+                    newid += 1
+                except Exception:
+                    newid = 1
+        else:
+            newid = self.id
+        newid = '%04d' % newid
+        self.slug = "%s-%s" % (newid, slugify(self.title))
+        self.tags = remove_accents(self.tags)
+        super(Video, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return "%s - %s" % ('%04d' % self.id, self.title)
 
     def duration_in_time(self):
         return time.strftime('%H:%M:%S', time.gmtime(self.duration))
