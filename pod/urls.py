@@ -15,6 +15,7 @@ urlpatterns = [
 
     # Exterior apps
     url(r'^file-picker/', include(file_picker.site.urls)),
+    url(r'^file-picker/', include('pod.filepicker.urls')),
 ]
 
 if settings.DEBUG:

@@ -13,11 +13,13 @@ import os
 
 
 def get_upload_path(instance, filename):
-	user_hash = Owner.objects.get(user=instance.created_by).hashkey
-	return 'files/{0}/{1}'.format(user_hash, filename)
+    user_hash = Owner.objects.get(user=instance.created_by).hashkey
+    return 'files/{0}/{1}'.format(user_hash, filename)
+
 
 class CustomFileModel(BaseFileModel):
-	file = models.FileField(upload_to=get_upload_path)
+    file = models.FileField(upload_to=get_upload_path)
+
 
 class CustomImageModel(BaseFileModel):
-	file = models.ImageField(upload_to=get_upload_path)
+    file = models.ImageField(upload_to=get_upload_path)
