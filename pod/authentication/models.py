@@ -28,6 +28,10 @@ class Owner(models.Model):
     hashkey = models.CharField(
         max_length=64, unique=True, blank=True, default="")
 
+    def __str__(self):
+        return "%s %s (%s)" % (self.user.first_name, self.user.last_name,
+                               self.user.username)
+
     def save(self, *args, **kwargs):
         self.hashkey = hashlib.sha256(
             (SECRET_KEY + self.user.username).encode('utf-8')).hexdigest()

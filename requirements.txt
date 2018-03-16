@@ -4,3 +4,4 @@ sorl-thumbnail==12.4a1
 django-file-picker==0.9.1
 Pillow==5.0.0
 django-tagging==0.4.6
+django-modeltranslation==0.12.2
