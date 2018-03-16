@@ -26,15 +26,18 @@ INSTALLED_APPS = [
     'file_picker',
     'file_picker.uploads',
     'sorl.thumbnail',
+    'tagging',
     # Pod Applications
     'pod.main',
     'pod.authentication',
     'pod.filepicker',
+    'pod.video',
 ]
 
 ##
 # Applications settings (and settings locale if any)
 #
+# Add settings
 for application in INSTALLED_APPS:
     if application.startswith('pod'):
         path = application.replace('.', os.path.sep) + '/settings.py'
@@ -43,6 +46,10 @@ for application in INSTALLED_APPS:
             for variable in (dir(_temp.settings)):
                 if variable == variable.upper():
                     locals()[variable] = getattr(_temp.settings, variable)
+
+# add local settings
+for application in INSTALLED_APPS:
+    if application.startswith('pod'):
         path = application.replace('.', os.path.sep) + '/settings_local.py'
         if os.path.exists(path):
             _temp = __import__(application, globals(),

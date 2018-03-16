@@ -19,7 +19,10 @@ import file_picker
 import os
 import json
 import tempfile
+import logging
 import datetime
+
+logger = logging.getLogger(__name__)
 
 
 class CustomFilePicker(file_picker.FilePickerBase):
@@ -36,11 +39,15 @@ class CustomFilePicker(file_picker.FilePickerBase):
             else:
                 value = str(value)
             extra[name] = value
-        extra['delete'] = '<form action="' + reverse('delete-files', kwargs={'file': str(
-            getattr(obj, 'id')), 'ext': str(getattr(obj, 'file_type'))}) + '">'
-        extra['delete'] += '<input type="hidden" name="csrfmiddlewaretoken" value="' + \
-            get_token(request) + '">'
-        extra['delete'] += '<button type="button" class="delete">Delete</button></form>'
+        url = reverse('delete-files', kwargs={
+            'file': str(getattr(obj, 'id')),
+            'ext': str(getattr(obj, 'file_type'))
+        })
+        extra['delete'] = '<form action="' + url + '">'
+        extra['delete'] += '<input type="hidden" name="' + \
+            'csrfmiddlewaretoken" value="' + get_token(request) + '">'
+        extra['delete'] += '<button type="button" class="delete">' + \
+            'Delete</button></form>'
         return {
             'name': str(obj),
             'url': getattr(obj, self.field).url,
@@ -58,16 +65,19 @@ class CustomFilePicker(file_picker.FilePickerBase):
             for chunk in f.chunks():
                 fn.write(chunk)
             fn.close()
-            return HttpResponse(json.dumps({'name': fn.name}), content_type='application/json')
+            return HttpResponse(json.dumps({'name': fn.name}),
+                                content_type='application/json')
         else:
             form = self.form(request.POST or None, initial={
                              'created_by': request.user.id})
             if form.is_valid():
                 obj = form.save()
                 data = self.append(obj, request)
-                return HttpResponse(json.dumps(data), content_type='application/json')
+                return HttpResponse(json.dumps(data),
+                                    content_type='application/json')
             data = {'form': form.as_table()}
-            return HttpResponse(json.dumps(data), content_type='application/json')
+            return HttpResponse(json.dumps(data),
+                                content_type='application/json')
 
     def get_queryset(self, search, user):
         qs = Q()
@@ -130,12 +140,10 @@ class CustomImagePicker(CustomFilePicker):
         if thumb:
             json['link_content'] = [img.format(
                 thumb.url, 'image', thumb.width, thumb.height), ]
-            json['insert'] = ['<img src="%s" />' %
-                              getattr(obj, self.field).url, ]
         else:
             json['link_content'] = [img.format('', 'Not Found', 100, 100), ]
-            json['insert'] = [img.format('', 'Not Found', 100, 100), ]
         return json
+
 
 file_picker.site.register(CustomFileModel, CustomFilePicker, name='file')
 file_picker.site.register(CustomImageModel, CustomImagePicker, name='img')

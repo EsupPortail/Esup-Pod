@@ -4,12 +4,9 @@ Override File and Image models from file_picker
 
 django-file-picker : 0.9.1.
 """
-from django.conf import settings
 from django.db import models
 from file_picker.uploads.models import BaseFileModel
 from pod.authentication.models import Owner
-
-import os
 
 
 def get_upload_path(instance, filename):
