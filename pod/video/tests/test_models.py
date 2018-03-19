@@ -50,7 +50,10 @@ class ChannelTestCase(TestCase):
         self.assertEqual(channel.visible, False)
         self.assertFalse(channel.slug == slugify("blabla"))
         self.assertEqual(channel.color, None)
-        self.assertEqual(channel.description, _('-- sorry, no translation provided --'))
+        self.assertEqual(
+            channel.description,
+            _('-- sorry, no translation provided --')
+        )
         if isinstance(channel.headband, ImageFieldFile):
             self.assertEqual(channel.headband.name, '')
 
@@ -127,7 +130,10 @@ class ThemeTestCase(TestCase):
             self.assertEqual(theme.headband.name, '')
         self.assertEqual(theme.__str__(), "ChannelTest1: Theme1")
         self.assertEqual(theme.video_count, 0)
-        self.assertEqual(theme.description, _('-- sorry, no translation provided --'))
+        self.assertEqual(
+            theme.description,
+            _('-- sorry, no translation provided --')
+        )
         # self.assertEqual(
         #    theme.get_absolute_url(), "/" + theme.channel.slug + "/"
         #    + theme.slug + "/")
@@ -192,7 +198,10 @@ class TypeTestCase(TestCase):
             self.assertEqual(type1.icon.name, '')
         self.assertEqual(type1.__str__(), "Type1")
         self.assertEqual(type1.video_count, 0)
-        self.assertEqual(type1.description, _('-- sorry, no translation provided --'))
+        self.assertEqual(
+            type1.description,
+            _('-- sorry, no translation provided --')
+        )
         print(
             "   --->  test_Type_null_attribut of TypeTestCase : OK !")
 
@@ -243,7 +252,10 @@ class DisciplineTestCase(TestCase):
             self.assertEqual(discipline1.icon.name, '')
         self.assertEqual(discipline1.__str__(), "Discipline1")
         self.assertEqual(discipline1.video_count, 0)
-        self.assertEqual(discipline1.description, _('-- sorry, no translation provided --'))
+        self.assertEqual(
+            discipline1.description,
+            _('-- sorry, no translation provided --')
+        )
         print(
             "   --->  test_Type_null_attribut of TypeTestCase : OK !")
 
@@ -303,7 +315,10 @@ class VideoTestCase(TestCase):
         video = Video.objects.get(id=1)
         self.assertEqual(video.video.name, "test.mp4")
         self.assertEqual(video.allow_downloading, False)
-        self.assertEqual(video.description, _('-- sorry, no translation provided --'))
+        self.assertEqual(
+            video.description,
+            _('-- sorry, no translation provided --')
+        )
         self.assertEqual(video.slug,
                          "%04d-%s" % (video.id, slugify(video.title)))
         date = datetime.today()
