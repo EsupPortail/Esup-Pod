@@ -26,6 +26,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django.contrib.flatpages',
     # Exterior Applications
     'ckeditor',
     'file_picker',
@@ -51,6 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Pages statiques
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
 
 ##
@@ -71,7 +75,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'theme', TEMPLATE_THEME, 'templates')
+            os.path.join(BASE_DIR, 'theme', TEMPLATE_THEME, 'templates'),
+            os.path.join(BASE_DIR, 'main', 'templates'),
+            os.path.join(BASE_DIR, 'main', 'templates', 'flatpages'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -130,7 +136,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'handlers': {
         'file': {
-            'level': 'DEBUG',
+            # 'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': 'pod/log/django.log',
         },

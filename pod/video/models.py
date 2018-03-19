@@ -4,6 +4,7 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import get_language
 from django.template.defaultfilters import slugify
+from django.db.models import Sum
 from django.contrib.auth.models import Group
 try:
     from pod.authentication.models import Owner
@@ -148,7 +149,6 @@ class Theme(models.Model):
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'))
     description = models.TextField(null=True, blank=True)
-    # add headband
     try:
         headband = models.ForeignKey(CustomImageModel,
                                      blank=True, null=True,
@@ -181,7 +181,6 @@ class Type(models.Model):
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'))
     description = models.TextField(null=True, blank=True)
-    # add icon
     try:
         icon = models.ForeignKey(CustomImageModel,
                                  blank=True, null=True,
@@ -212,7 +211,6 @@ class Discipline(models.Model):
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'))
     description = models.TextField(null=True, blank=True)
-    # add icon
     try:
         icon = models.ForeignKey(CustomImageModel,
                                  blank=True, null=True,
@@ -307,6 +305,10 @@ class Video(models.Model):
                              default=DEFAULT_TYPE_ID)
     discipline = models.ManyToManyField(
         Discipline, blank=True, verbose_name=_('Disciplines'))
+    channel = models.ManyToManyField(
+        Channel, verbose_name=_('Channels'), blank=True)
+    theme = models.ManyToManyField(
+        Theme, verbose_name=_('Themes'), blank=True)
 
     def save(self, *args, **kwargs):
         newid = -1
@@ -329,6 +331,12 @@ class Video(models.Model):
     def __str__(self):
         return "%s - %s" % ('%04d' % self.id, self.title)
 
+    def get_viewcount(self):
+        count_sum = self.viewcount_set.all().aggregate(Sum('count'))
+        if count_sum['count__sum'] is None:
+            return 0
+        return count_sum['count__sum']
+
     def duration_in_time(self):
         return time.strftime('%H:%M:%S', time.gmtime(self.duration))
 
@@ -339,6 +347,6 @@ class Video(models.Model):
 class ViewCount(models.Model):
     video = models.ForeignKey(Video)
     date = models.DateField(
-        _(u'Date'), auto_now=True)
+        _(u'Date'), default=datetime.now)
     count = models.IntegerField(
         _('Number of view'), default=0, editable=False)

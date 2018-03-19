@@ -6,7 +6,10 @@ from pod import settings
 
 
 import os
-
+##
+# flatpages
+##
+SITE_ID = 1
 
 ##
 # The secret key for your particular Django installation.
@@ -59,7 +62,8 @@ DATABASES = {
 LANGUAGE_CODE = 'fr'
 LANGUAGES = (
     ('fr', 'Français'),
-    ('en', 'English')
+    ('en', 'English'),
+    ('nl-NL', 'Dutch (Netherlands)')
 )
 
 ##
