@@ -7,6 +7,7 @@ from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
 from pod.video.forms import VideoForm
+from pod.completion.admin import ContributorAdmin
 
 # Register your models here.
 
@@ -14,6 +15,9 @@ from pod.video.forms import VideoForm
 class VideoAdmin(admin.ModelAdmin):
 
     form = VideoForm
+    inlines = [
+        ContributorAdmin
+    ]
 
     class Media:
         js = ('js/jquery.tools.min.js',)
