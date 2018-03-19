@@ -85,8 +85,13 @@ class CustomFilePicker(file_picker.FilePickerBase):
             for name in self.field_names:
                 comparision = {}
                 comparision[name] = search
-                qs = qs | Q(name_contains=search, created_by=user)
+                if user.is_superuser:
+                    qs = qs | Q(name__contains=search)
+                else:
+                    qs = qs | Q(name__contains=search, created_by=user)
             queryset = self.model.objects.filter(qs)
+        elif user.is_superuser:
+            queryset = self.model.objects.all()
         else:
             queryset = self.model.objects.filter(created_by=user)
         if self.ordering:
