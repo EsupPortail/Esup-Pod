@@ -14,5 +14,7 @@ before_script:
   - "flake8 --max-complexity=7"
 # command to run tests
 script:
+  - python manage.py makemigrations
+  - python manage.py migrate
   - python manage.py test
 #  - pytest # or py.test for Python versions 3.5 and below
