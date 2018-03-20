@@ -2,6 +2,12 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from pod.video.models import Video
+try:
+    __import__('pod.filepicker')
+    FILEPICKER = True
+except:
+    FILEPICKER = False
+    pass
 
 import base64
 
@@ -83,3 +89,64 @@ class Contributor(models.Model):
 
     def get_noscript_mail(self):
         return self.email_address.replace('@', "__AT__")
+
+
+class Document(models.Model):
+
+    video = models.ForeignKey(Video, verbose_name=_('Video'))
+    if FILEPICKER:
+        document = models.CharField(
+            verbose_name=_('Document'),
+            null=True,
+            blank=True,
+            max_length=255
+        )
+    else:
+        document = models.FileField(
+            verbose_name=_('Document'),
+            null=True,
+            blank=True
+        )
+
+    class Meta:
+        verbose_name = _('Document')
+        verbose_name_plural = _('Documents')
+
+    def clean(self):
+        msg = list()
+        msg = self.verify_document() + self.verify_not_same_document()
+        if len(msg) > 0:
+            raise ValidationError(msg)
+
+    def verify_document(self):
+        msg = list()
+        if not self.document:
+            msg.append(_('Please enter a document.'))
+        if len(msg) > 0:
+            return msg
+        else:
+            return list()
+
+    def verify_not_same_document(self):
+        msg = list()
+        list_doc = Document.objects.filter(video=self.video)
+        if self.id:
+            list_doc = list_doc.exclude(id=self.id)
+        if len(list_doc) > 0:
+            for element in list_doc:
+                if self.document == element.document:
+                    msg.append(
+                        _('This document is already contained ' +
+                          'in the list')
+                    )
+            if len(msg) > 0:
+                return msg
+        return list()
+
+    def __str__(self):
+        return u'Document: {0} - Video: {1}'.format(
+            self.document,
+            self.video)
+
+    def icon(self):
+        return self.document.name.split('.')[-1]

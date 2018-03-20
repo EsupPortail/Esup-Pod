@@ -8,6 +8,7 @@ from pod.video.models import Type
 from pod.video.models import Discipline
 from pod.video.forms import VideoForm
 from pod.completion.admin import ContributorAdmin
+from pod.completion.admin import DocumentAdmin
 
 # Register your models here.
 
@@ -16,7 +17,8 @@ class VideoAdmin(admin.ModelAdmin):
 
     form = VideoForm
     inlines = [
-        ContributorAdmin
+        ContributorAdmin,
+        DocumentAdmin
     ]
 
     class Media:
