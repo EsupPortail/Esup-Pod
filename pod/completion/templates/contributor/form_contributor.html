@@ -1,0 +1,24 @@
+<!-- HTML for contributor form. Don't use this file alone it must be integrated into another template ! -->
+<form id="form_contributor" action="{% url 'video_completion_contributor' slug=video.slug %}" method="POST">
+	{% csrf_token %}
+	<div id="form_content" class="form-container">
+		{% if form_contributor.errors or form_contributor.non_field_errors %}
+			{% trans 'Your form contains errors:' %}<br />
+			{% for error in form_contributor.non_field_errors %}
+				- {{error}}<br />
+			{% endfor %}
+		{% endif %}
+		{% for field_hidden in form_contributor.hidden_fields %}
+			{{field_hidden}}
+		{% endfor %}
+		{% for field in form_contributor.visible_fields %}
+			{{field}}
+		{% endfor %}
+		{% if form_contributor.instance %}
+			<input type="hidden" id="id_contributor" name="contributor_id" value="{{form_contributor.instance.id}}">
+		{% endif %}
+		<input type="hidden" name="action" value="save"/>
+		<input type="submit" id="save_contributor" value="{% trans 'save' %}" class="btn btn-info"/>
+		<input type="reset" action="cancel" id="cancel_contributor" value="{% trans 'cancel' %}" class="btn btn-danger"/>
+	</div>
+</form>

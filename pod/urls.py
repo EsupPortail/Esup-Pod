@@ -15,8 +15,13 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     # Exterior apps
+    # GED
     url(r'^file-picker/', include(file_picker.site.urls)),
+    # Locale apps
+    # GED
     url(r'^file-picker/', include('pod.filepicker.urls')),
+    # Completion
+    url(r'^', include('pod.completion.urls')),
 ]
 
 if settings.DEBUG:
