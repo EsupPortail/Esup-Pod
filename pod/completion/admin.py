@@ -8,7 +8,7 @@ from pod.completion.forms import TrackForm
 try:
     __import__('pod.filepicker')
     FILEPICKER = True
-except:
+except ImportError:
     FILEPICKER = False
     pass
 
@@ -65,6 +65,7 @@ class OverlayInline(admin.TabularInline):
 
     def has_add_permission(self, request):
         return False
+
 
 admin.site.register(Contributor)
 if FILEPICKER:

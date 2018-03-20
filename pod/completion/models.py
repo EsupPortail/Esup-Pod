@@ -9,7 +9,7 @@ from pod.video.models import Video
 try:
     __import__('pod.filepicker')
     FILEPICKER = True
-except:
+except ImportError:
     FILEPICKER = False
     pass
 
@@ -214,16 +214,16 @@ class Track(models.Model):
         msg = list()
         if not self.kind:
             msg.append(_('Please enter a kind.'))
-        if self.kind != 'subtitles' and self.kind != 'captions':
+        elif self.kind != 'subtitles' and self.kind != 'captions':
             msg.append(_('Please enter a correct kind.'))
         if not self.lang:
             msg.append(_('Please enter a language.'))
-        if not (self.lang in settings.PREF_LANG_CHOICES or
-            not self.lang in settings.ALL_LANG_CHOICES):
+        elif (self.lang not in settings.PREF_LANG_CHOICES or
+              self.lang not in settings.ALL_LANG_CHOICES):
             msg.append(_('Please enter a correct language.'))
         if not self.src:
             msg.append(_('Please specify a track file.'))
-        if not str(self.src).lower().endswith('.vtt'):
+        elif not str(self.src).lower().endswith('.vtt'):
             msg.append(_('Only ".vtt" format is allowed.'))
         if len(msg) > 0:
             return msg
@@ -236,7 +236,7 @@ class Track(models.Model):
         if self.id:
             list_track = list_track.exclude(id=self.id)
         if len(list_track) > 0:
-            for element in list_trackpods:
+            for element in list_track:
                 if self.kind == element.kind and self.lang == element.lang:
                     msg.append(_('There is already a subtitle with the ' +
                                  'same kind and language in the list.'))
@@ -360,7 +360,7 @@ class Overlay(models.Model):
             for element in list_overlay:
                 if not (self.time_start < element.time_start and
                         self.time_end <= element.time_start and
-                        self.time_start >= elemnt.time_end and
+                        self.time_start >= element.time_end and
                         self.time_end > element.time_end):
                     msg.append(_('There is an overlap with the overlay {0}, ' +
                                  'please change time start and/or ' +
@@ -374,11 +374,11 @@ class Overlay(models.Model):
         if not self.id:
             try:
                 newid = get_nextautoincrement(Overlay)
-            except:
+            except Exception:
                 try:
                     newid = Overlay.objects.latest('id').id
                     newid += 1
-                except:
+                except Exception:
                     newid = 1
         else:
             newid = self.id

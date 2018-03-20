@@ -4,7 +4,6 @@ Unit tests for completion models
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
-from pod.video.models import Type
 from pod.video.models import Video
 from pod.authentication.models import Owner
 from pod.completion.models import Contributor
@@ -14,11 +13,9 @@ from pod.completion.models import Track
 try:
     __import__('pod.filepicker')
     FILEPICKER = True
-except:
+except ImportError:
     FILEPICKER = False
     pass
-
-import datetime
 
 
 class ContributorModelTestCase(TestCase):
@@ -178,6 +175,7 @@ class OverlayModelTestCase(TestCase):
         Overlay.objects.get(id=2).delete()
         self.assertTrue(Overlay.objects.all().count() == 0)
         print(" [OverlayModel --- END] ")
+
 
 class TrackModelTestCase(TestCase):
 

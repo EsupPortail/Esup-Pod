@@ -14,7 +14,7 @@ from pod.completion.admin import TrackInline
 try:
     __import__('pod.filepicker')
     FILEPICKER = True
-except:
+except ImportError:
     FILEPICKER = False
     pass
 

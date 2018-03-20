@@ -17,15 +17,16 @@ class DocumentForm(forms.ModelForm):
         model = Document
         fields = '__all__'
 
+
 class TrackForm(forms.ModelForm):
 
-	def __init__(self, *args, **kwargs):
-		super(TrackForm, self).__init__(*args, **kwargs)
-		pickers = {'file': "file"}
-		self.fields['src'].widget = CustomFilePickerWidget(
-			pickers=pickers)
-		self.fields['src'].disabled = True
+    def __init__(self, *args, **kwargs):
+        super(TrackForm, self).__init__(*args, **kwargs)
+        pickers = {'file': "file"}
+        self.fields['src'].widget = CustomFilePickerWidget(
+            pickers=pickers)
+        self.fields['src'].disabled = True
 
-	class Meta(object):
-		model = Track
-		fields = '__all__'
+    class Meta(object):
+        model = Track
+        fields = '__all__'
