@@ -1,7 +1,10 @@
 from django.db import models
+from django.db import connection
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+from django.template.defaultfilters import slugify
 from pod.video.models import Video
+from ckeditor.fields import RichTextField
 try:
     __import__('pod.filepicker')
     FILEPICKER = True
@@ -10,6 +13,17 @@ except:
     pass
 
 import base64
+
+
+def get_nextautoincrement(model):
+    cursor = connection.cursor()
+    cursor.execute(
+        'SELECT Auto_increment FROM information_schema.tables ' +
+        'WHERE table_name="{0}";'.format(model._meta.db_table)
+    )
+    row = cursor.fetchone()
+    cursor.close()
+    return row[0]
 
 
 class Contributor(models.Model):
@@ -150,3 +164,142 @@ class Document(models.Model):
 
     def icon(self):
         return self.document.name.split('.')[-1]
+
+
+class Overlay(models.Model):
+
+    POSITION_CHOICES = (
+        ('top-left', _(u'top-left')),
+        ('top', _(u'top')),
+        ('top-right', _(u'top-right')),
+        ('right', _(u'right')),
+        ('bottom-right', _(u'bottom-right')),
+        ('bottom', _(u'bottom')),
+        ('bottom-left', _(u'bottom-left')),
+        ('left', _(u'left')),
+    )
+
+    video = models.ForeignKey(Video, verbose_name=_('Video'))
+    title = models.CharField(_('Title'), max_length=100)
+    slug = models.SlugField(
+        _('Slug'),
+        unique=True,
+        max_length=105,
+        help_text=_(u'Used to access this instance, this "slug" is a short ' +
+                    'label containing only letters, numbers, underscore or ' +
+                    'dash top.'),
+        editable=False
+
+    )
+    time_start = models.PositiveIntegerField(
+        _('Start time'),
+        default=1,
+        help_text=_(u'Start time of the overlay, in seconds.')
+    )
+    time_end = models.PositiveIntegerField(
+        _('End time'),
+        default=2,
+        help_text=_(u'End time of the overlay, in seconds.')
+    )
+    content = RichTextField(
+        _('Content'),
+        null=False,
+        blank=False,
+        config_name='complete'
+    )
+    position = models.CharField(
+        _('Position'),
+        max_length=100,
+        null=True,
+        blank=False,
+        choices=POSITION_CHOICES,
+        default='bottom-right',
+        help_text=_(u'Position of the overlay.')
+    )
+    background = models.BooleanField(
+        _('Show background'),
+        default=True,
+        help_text=_(u'Show the background of the overlay.')
+    )
+
+    class Meta:
+        verbose_name = _('Overlay')
+        verbose_name_plural = _('Overlays')
+        ordering = ['time_start']
+
+    def clean(self):
+        msg = list()
+        msg += self.verify_title_items()
+        msg += self.verify_time_items()
+        msg += self.verify_overlap()
+        if len(msg) > 0:
+            raise ValidationError(msg)
+
+    def verify_title_items(self):
+        msg = list()
+        if not self.title or self.title == '':
+            msg.append(_('Please enter a title.'))
+        elif len(self.title) < 2 or len(self.title) > 100:
+            msg.append(_('Please enter a title from 2 to 100 characters.'))
+        if len(msg) > 0:
+            return msg
+        else:
+            return list()
+
+    def verify_time_items(self):
+        msg = list()
+        if self.time_start > self.time_end:
+            msg.append(
+                _('The value of the time start field is greater than ' +
+                  'the value of the end time field.'))
+        elif self.time_end > self.video.duration:
+            msg.append(_('The value of time end field is greater than the ' +
+                         'video duration.'))
+        elif self.time_start == self.time_end:
+            msg.append(_('Time end field and time start field can\'t ' +
+                         'be equal.'))
+        if len(msg) > 0:
+            return msg
+        else:
+            return list()
+
+    def verify_overlap(self):
+        msg = list()
+        instance = None
+        if self.slug:
+            instance = Overlay.objects.get(slug=self.slug)
+        list_overlay = Overlay.objects.filter(video=self.video)
+        if instance:
+            list_overlay = list_overlay.exclude(id=instance.id)
+        if len(list_overlay) > 0:
+            for element in list_overlay:
+                if not (self.time_start < element.time_start and
+                        self.time_end <= element.time_start and
+                        self.time_start >= elemnt.time_end and
+                        self.time_end > element.time_end):
+                    msg.append(_('There is an overlap with the overlay {0}, ' +
+                                 'please change time start and/or ' +
+                                 'time end values.'))
+            if len(msg) > 0:
+                return msg
+        return list()
+
+    def save(self, *args, **kwargs):
+        newid = -1
+        if not self.id:
+            try:
+                newid = get_nextautoincrement(Overlay)
+            except:
+                try:
+                    newid = Overlay.objects.latest('id').id
+                    newid += 1
+                except:
+                    newid = 1
+        else:
+            newid = self.id
+        newid = '{0}'.format(newid)
+        self.slug = '{0}-{1}'.format(newid, slugify(self.title))
+        super(Overlay, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return 'Overlay: {0} - Video: {1}'.format(self.title, self.video)

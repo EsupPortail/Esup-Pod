@@ -7,8 +7,15 @@ from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
 from pod.video.forms import VideoForm
-from pod.completion.admin import ContributorAdmin
-from pod.completion.admin import DocumentAdmin
+from pod.completion.admin import ContributorInline
+from pod.completion.admin import DocumentInline
+from pod.completion.admin import OverlayInline
+try:
+    __import__('pod.filepicker')
+    FILEPICKER = True
+except:
+    FILEPICKER = False
+    pass
 
 # Register your models here.
 
@@ -17,8 +24,9 @@ class VideoAdmin(admin.ModelAdmin):
 
     form = VideoForm
     inlines = [
-        ContributorAdmin,
-        DocumentAdmin
+        ContributorInline,
+        DocumentInline,
+        OverlayInline
     ]
 
     class Media:
@@ -52,4 +60,7 @@ admin.site.register(Channel, ChannelAdmin)
 admin.site.register(Type, TypeAdmin)
 admin.site.register(Discipline, DisciplineAdmin)
 admin.site.register(Theme, ThemeAdmin)
-admin.site.register(Video, VideoAdmin)
+if FILEPICKER:
+    admin.site.register(Video, VideoAdmin)
+else:
+    admin.site.register(Video)

@@ -9,6 +9,7 @@ from pod.video.models import Video
 from pod.authentication.models import Owner
 from pod.completion.models import Contributor
 from pod.completion.models import Document
+from pod.completion.models import Overlay
 try:
     __import__('pod.filepicker')
     FILEPICKER = True
@@ -64,6 +65,9 @@ class ContributorModelTestCase(TestCase):
         print(" ---> test_attributs : OK !")
 
     def test_clean(self):
+        Contributor.objects.get(id=1).delete()
+        Contributor.objects.get(id=2).delete()
+        self.assertTrue(Contributor.objects.all().count() == 0)
         print(" [ContributorModel --- END] ")
 
 
@@ -100,9 +104,9 @@ class DocumentModelTestCase(TestCase):
         video = Video.objects.get(id=1)
         self.assertEqual(document.video, video)
         if FILEPICKER:
-        	self.assertTrue(isinstance(document.document, str))
+            self.assertTrue(isinstance(document.document, str))
         else:
-        	self.assertTrue(document.document.name, 'testfile.txt')
+            self.assertTrue(document.document.name, 'testfile.txt')
 
         print(" ---> test_attributs_full : OK !")
 
@@ -115,4 +119,61 @@ class DocumentModelTestCase(TestCase):
         print(" ---> test_attributs : OK !")
 
     def test_clean(self):
-    	print(" [DocumentModel --- END] ")
+        Document.objects.get(id=1).delete()
+        Document.objects.get(id=2).delete()
+        self.assertTrue(Document.objects.all().count() == 0)
+        print(" [DocumentModel --- END] ")
+
+
+class OverlayModelTestCase(TestCase):
+
+    def setUp(self):
+        user = User.objects.create(username='test')
+        owner = Owner.objects.get(user__username='test')
+        video = Video.objects.create(
+            title='video',
+            owner=owner,
+            video='test.mp4'
+        )
+        Overlay.objects.create(
+            video=video,
+            title='overlay',
+            content='test',
+            time_end=5,
+            position='top-left'
+        )
+        Overlay.objects.create(
+            video=video,
+            title='overlay2',
+            content='test'
+        )
+
+    def test_attributs_full(self):
+        overlay = Overlay.objects.get(id=1)
+        video = Video.objects.get(id=1)
+        self.assertEqual(overlay.video, video)
+        self.assertEqual(overlay.title, 'overlay')
+        self.assertEqual(overlay.content, 'test')
+        self.assertEqual(overlay.time_end, 5)
+        self.assertEqual(overlay.position, 'top-left')
+
+        print(" ---> test_attributs_full : OK !")
+
+    def test_attributs(self):
+        overlay = Overlay.objects.get(id=2)
+        video = Video.objects.get(id=1)
+        self.assertEqual(overlay.video, video)
+        self.assertEqual(overlay.title, 'overlay2')
+        self.assertEqual(overlay.content, 'test')
+        self.assertEqual(overlay.time_start, 1)
+        self.assertEqual(overlay.time_end, 2)
+        self.assertEqual(overlay.position, 'bottom-right')
+        self.assertTrue(overlay.background)
+
+        print(" ---> test_attributs : OK !")
+
+    def test_clean(self):
+        Overlay.objects.get(id=1).delete()
+        Overlay.objects.get(id=2).delete()
+        self.assertTrue(Overlay.objects.all().count() == 0)
+        print(" [OverlayModel --- END] ")
