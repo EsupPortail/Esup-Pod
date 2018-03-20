@@ -10,6 +10,7 @@ from pod.authentication.models import Owner
 from pod.completion.models import Contributor
 from pod.completion.models import Document
 from pod.completion.models import Overlay
+from pod.completion.models import Track
 try:
     __import__('pod.filepicker')
     FILEPICKER = True
@@ -177,3 +178,48 @@ class OverlayModelTestCase(TestCase):
         Overlay.objects.get(id=2).delete()
         self.assertTrue(Overlay.objects.all().count() == 0)
         print(" [OverlayModel --- END] ")
+
+class TrackModelTestCase(TestCase):
+
+    def setUp(self):
+        user = User.objects.create(username='test')
+        owner = Owner.objects.get(user__username='test')
+        video = Video.objects.create(
+            title='video',
+            owner=owner,
+            video='test.mp4'
+        )
+        Track.objects.create(
+            video=video,
+            lang='fr',
+            kind='captions'
+        )
+        Track.objects.create(
+            video=video,
+            lang='en'
+        )
+
+    def test_attributs_full(self):
+        track = Track.objects.get(id=1)
+        video = Video.objects.get(id=1)
+        self.assertEqual(track.video, video)
+        self.assertEqual(track.lang, 'fr')
+        self.assertEqual(track.kind, 'captions')
+
+        print(" ---> test_attributs_full : OK !")
+
+    def test_attributs(self):
+        track = Track.objects.get(id=2)
+        video = Video.objects.get(id=1)
+        self.assertEqual(track.video, video)
+        self.assertEqual(track.lang, 'en')
+        self.assertEqual(track.kind, 'subtitles')
+        self.assertEqual(track.src, None)
+
+        print(" ---> test_attributs : OK !")
+
+    def test_clean(self):
+        Track.objects.get(id=1).delete()
+        Track.objects.get(id=2).delete()
+        self.assertTrue(Overlay.objects.all().count() == 0)
+        print(" [TrackModel --- END] ")

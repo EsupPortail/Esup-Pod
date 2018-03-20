@@ -10,6 +10,7 @@ from pod.video.forms import VideoForm
 from pod.completion.admin import ContributorInline
 from pod.completion.admin import DocumentInline
 from pod.completion.admin import OverlayInline
+from pod.completion.admin import TrackInline
 try:
     __import__('pod.filepicker')
     FILEPICKER = True
@@ -26,6 +27,7 @@ class VideoAdmin(admin.ModelAdmin):
     inlines = [
         ContributorInline,
         DocumentInline,
+        TrackInline,
         OverlayInline
     ]
 

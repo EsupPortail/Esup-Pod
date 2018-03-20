@@ -1,10 +1,11 @@
 from django.db import models
 from django.db import connection
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
-from pod.video.models import Video
 from ckeditor.fields import RichTextField
+from pod.video.models import Video
 try:
     __import__('pod.filepicker')
     FILEPICKER = True
@@ -164,6 +165,90 @@ class Document(models.Model):
 
     def icon(self):
         return self.document.name.split('.')[-1]
+
+
+class Track(models.Model):
+
+    KIND_CHOICES = (
+        ('subtitles', _('subtitles')),
+        ('captions', _('captions')),
+    )
+    LANG_CHOICES = (
+        ('', settings.PREF_LANG_CHOICES),
+        ('----------', settings.ALL_LANG_CHOICES),
+    )
+
+    video = models.ForeignKey(Video, verbose_name=_('Video'))
+    kind = models.CharField(
+        _('Kind'),
+        max_length=10,
+        choices=KIND_CHOICES,
+        default='subtitles'
+    )
+    lang = models.CharField(_('Language'), max_length=2, choices=LANG_CHOICES)
+    if FILEPICKER:
+        src = models.CharField(
+            _('Subtitle file'),
+            null=True,
+            blank=True,
+            max_length=255,
+        )
+    else:
+        src = models.FileField(
+            _('Subtitle file'),
+            null=True,
+            blank=True,
+        )
+
+    class Meta:
+        verbose_name = _('Track')
+        verbose_name_plural = _('Tracks')
+
+    def clean(self):
+        msg = list()
+        msg = self.verify_attributs() + self.verify_not_same_track()
+        if len(msg) > 0:
+            raise ValidationError(msg)
+
+    def verify_attributs(self):
+        msg = list()
+        if not self.kind:
+            msg.append(_('Please enter a kind.'))
+        if self.kind != 'subtitles' and self.kind != 'captions':
+            msg.append(_('Please enter a correct kind.'))
+        if not self.lang:
+            msg.append(_('Please enter a language.'))
+        if not (self.lang in settings.PREF_LANG_CHOICES or
+            not self.lang in settings.ALL_LANG_CHOICES):
+            msg.append(_('Please enter a correct language.'))
+        if not self.src:
+            msg.append(_('Please specify a track file.'))
+        if not str(self.src).lower().endswith('.vtt'):
+            msg.append(_('Only ".vtt" format is allowed.'))
+        if len(msg) > 0:
+            return msg
+        else:
+            return list()
+
+    def verify_not_same_track(self):
+        msg = list()
+        list_track = Track.objects.filter(video=self.video)
+        if self.id:
+            list_track = list_track.exclude(id=self.id)
+        if len(list_track) > 0:
+            for element in list_trackpods:
+                if self.kind == element.kind and self.lang == element.lang:
+                    msg.append(_('There is already a subtitle with the ' +
+                                 'same kind and language in the list.'))
+                    return msg
+        return list()
+
+    def __str__(self):
+        return u'{0} - File: {1} - Video: {2}'.format(
+            self.kind,
+            self.src,
+            self.video
+        )
 
 
 class Overlay(models.Model):
