@@ -1,0 +1,38 @@
+<!-- HTML for document list. Don't use this file alone it must be integrated into another template ! -->
+<div class="panel panel-primary" overflow: auto>
+	<div class="panel-heading">
+		<h3 class="panel-title">{% trans 'List of additional resources' %}&nbsp;{{list_document|length}}</h3>
+	</div>
+	<table class="table table-striped table-condensed scroll" id="table_list_documents">
+		<thead>
+			<tr>
+				<th class="document_name">{% trans 'Document' %}</th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for document in list_document %}
+				<tr>
+					<td class="document_name">{{document.name}}</td>
+					<td>
+						<form class="form_modif" action="{% url 'video_completion_document' slug=video.slug %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="action" value="modify"/>
+							<input type="hidden" name="id" value="{{document.id}}"/>
+							<input type="submit" title="{% trans 'Edit the additional resource' %}" value="{% trans 'modify' %}" class="edt_document btn btn-info btn-sm"/>
+						</form>
+					</td>
+					<td>
+						<form class="form_delete" action="{% url 'video_completion_document' slug=video.slug %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="action" value="delete"/>
+							<input type="hidden" name="id" value="{{document.id}}"/>
+							<input type="submit" title="{% trans 'Delete the additional resource' %}" value="{% trans 'delete' %}" class="edt_document btn btn-danger btn-sm"/>
+						</form>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
