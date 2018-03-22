@@ -1,4 +1,5 @@
 <!-- HTML for document list. Don't use this file alone it must be integrated into another template ! -->
+{% load i18n %}
 <div class="panel panel-primary" overflow: auto>
 	<div class="panel-heading">
 		<h3 class="panel-title">{% trans 'List of subtitle or caption files' %}&nbsp;{{list_track|length}}</h3>
@@ -15,7 +16,7 @@
 			{% for track in list_track %}
 				<tr>
 					<td class="track_kind">{% trans track.kind %}</td>
-					<td class="track_lang">{% get_label_lang track.lang %}</td>
+					<td class="track_lang">{{track.lang}}</td>
 					<td class="track_src">{{track.src}}</td>
 					<td>
 						<form class="form_modif" action="{% url 'video_completion_track' slug=video.slug %}" method="POST">

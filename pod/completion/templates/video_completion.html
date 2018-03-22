@@ -1,0 +1,101 @@
+<!-- HTML for completion main page. -->
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% block extra_head %}
+	<!-- media -->
+	<link rel="stylesheet" href="{% static 'css/filepicker.overlay.css' %}"/>
+	<link rel="stylesheet" href="{% static 'css/completion.css' %}"/>
+	<script src="{% static 'js/jquery.tools.min.js' %}"></script>
+	<script src="{% static 'js/main.js' %}"></script>
+	<script src="{% static 'js/ajaxupload.js' %}"></script>
+    <script src="{% static 'js/jquery.filepicker.js' %}"></script>
+	<script src="{% static 'js/completion.js' %}"></script>
+{% endblock %}
+{% block content %}
+	<article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+		<ol class="breadcrumb">
+			<li><a href="{ url 'owner_videos_list' %}">{% trans 'My videos' %}</a></li>
+			<li class="active">{% trans 'Completion video' %} "{{video.title}}"</li>
+		</ol>
+		<div class="row" id="info-video">
+			<div id="accordeon" class="col-md-9">
+				<li>
+					<a id="section_contributor" href="#" title="{% trans 'Display &quot;Contributor(s)&quot; section' %}" class="title">
+						{% trans 'Contributor(s)' %}&nbsp;<span class="glyphicon glyphicon-chevron down"></span>
+					</a>
+				</li>
+				<li class="contenuTitre">
+					&nbsp;
+					<span id="list_contributor">
+						{% include 'contributor/list_contributor.html' %}
+					</span>
+					<span id="form_contributor">
+						{% if form_contributor %}
+							{% include 'contributor/form_contributor.html' with form_contributor=form_contributor %}
+						{% endif %}
+					</span>
+					<form class="form_new" id="form_new_contributor" action="{% url 'video_completion_contributor' slug=video.slug %}" method="POST">
+						{% csrf_token %}
+						<input type="hidden" name="action" value="new"/>
+						<input type="submit" value="{% trans 'Add a new contributor' %}" class="new_contributor btn btn-info"/>
+					</form>
+				</li>
+				&nbsp;
+				{% if request.user.is_staff %}
+					<li>
+						<a id="section_track" href="#" title="{% trans 'Display $quot;Subtitle(s) and Caption(s) $quot; section' %}" class="title">
+							{% trans 'Subtitle(s) and Caption(s)' %}&nbsp;<span class="glyphicon glyphicon-chevron-down"></span>
+						</a>
+					</li>
+					<li class="contenuTitre">
+						<span id="list_track">
+							{% include 'track/list_track.html' %}
+						</span>
+						&nbsp;
+						<span id="form_track">
+							{% if form_track %}
+								{% include 'track/form_track.html' with form_track=form_track %}
+							{% endif %}
+						</span>
+						<form class="form_new" id="form_new_track" action="{% url 'video_completion_track' slug=video.slug %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="action" value="new"/>
+							<input type="submit" value="{% trans 'Add a new subtitle or caption file' %}" class="new_track btn btn-info"/>
+						</form>
+					</li>
+					&nbsp;
+				{% endif %}
+			</div>
+			<!--
+			<aside class="col-sm-3 panel panel-info">
+				<div class="widget user-tools">
+					<h4>
+						<span class="glyphicon glyphicon-wrench"></span>
+						{% trans 'Edit the video' %}
+					</h4>
+				</div>
+				<div class="widget">
+					<h4>
+						<span class="glyphicon glyphicon-info-sign"></span>
+						{% trans 'Information' %}
+					</h4>
+					{% if request.user.is_staff %}
+						<p>{% trans 'Several web sites allows you to subtitle or caption videos (for example: Amera).' %}</p>
+						<p>{% trans 'You can add several subtitle or caption files to a single video (for example, in order to subtitle or caption this video in several languages).' %}</p>
+						<p>{% trans 'Those files must be in ".vtt" format.' %}</p>
+						<p>{% trans 'For this purpose, you will need the URL of your video. This URL is a direct access to this video. Please do not communicate it outside of this site in order to avoid any misuse.' %}</p>
+						<input id="direct_video_link" maxlength="250" value="TODO" type="text"/>
+						<p>{% trans 'Overlay allows you to display text (with or without html tag) over the video at specific times.' %}</p>
+					{% else %}
+						<p>
+							{% trans 'Your current permission do not allow you to add subtitle files, overlays or documents to download videos. Please contact us to add these rights.' %} :
+							<a href="mailto:{{HELP_MAIL}}">{{HELP_MAIL}}</a>
+						</p>
+					{% endif %}
+				</div>
+			</aside>
+			-->
+		</div>
+	</article>
+{% endblock content %}

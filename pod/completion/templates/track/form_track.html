@@ -1,4 +1,6 @@
 <!-- HTML for track form. Don't use this file alone it must be integrated into another template ! -->
+{% load i18n %}
+{% load staticfiles %}
 <form id="form_track" action="{% url 'video_completion_track' slug=video.slug %}" method="POST">
 	{% csrf_token %}
 	<div id="form_content" class="form-container">
@@ -8,12 +10,7 @@
 				- {{error}}<br />
 			{% endfor %}
 		{% endif %}
-		{% for field_hidden in form_track.hidden_fields %}
-			{{field_hidden}}
-		{% endfor %}
-		{% for field in form_track.visible_fields %}
-			{{field}}
-		{% endfor %}
+		{{form_track.as_p}}
 		{% if form_track.instance %}
 			<input type="hidden" id="id_track" name="track_id" value="{{form_track.instance.id}}">
 		{% endif %}
@@ -22,3 +19,4 @@
 		<input type="reset" action="cancel" id="cancel_track" value="{% trans 'cancel' %}" class="btn btn-danger"/>
 	</div>
 </form>
+<script src="{% static 'js/filepicker.custom.js' %}"></script>

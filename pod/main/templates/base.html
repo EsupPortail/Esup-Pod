@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-{% load bootstrap4 %}
 {% load staticfiles %}
 <html lang="fr">
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>{{ TITLE_SITE }} - {% block bootstrap4_title %}{% endblock %}</title>
-		{% bootstrap_css %}
-		{% bootstrap_javascript jquery=True %}
-		{% block bootstrap4_extra_head %}{% endblock %}
+		<title>{{ TITLE_SITE }} - {% block title %}{% endblock %}</title>
+		<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}"/>
+		<script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+		{% block extra_head %}{% endblock %}
 	</head>
 	<body>
 		{% block content %}{% endblock %}

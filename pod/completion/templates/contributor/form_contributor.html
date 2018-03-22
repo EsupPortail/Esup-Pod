@@ -1,4 +1,5 @@
 <!-- HTML for contributor form. Don't use this file alone it must be integrated into another template ! -->
+{% load i18n %}
 <form id="form_contributor" action="{% url 'video_completion_contributor' slug=video.slug %}" method="POST">
 	{% csrf_token %}
 	<div id="form_content" class="form-container">
