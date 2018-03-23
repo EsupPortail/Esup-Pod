@@ -65,6 +65,28 @@
 						</form>
 					</li>
 					&nbsp;
+					<li>
+						<a id="section_document" href="#" title="{% trans 'Display &quot; Additional resource(s)&quot; section' %}" class="title">
+							{% trans 'Additional resource(s)' %}&nbsp;<span class="glyphicon glyphicon-chevron-down"></span>
+						</a>
+					</li>
+					<li class="contenuTitre">
+						<span id="list_document">
+							{% include 'document/list_document.html' %}
+						</span>
+						&nbsp;
+						<span id="form_document">
+							{% if form_document %}
+								{% include 'document/form_document.html' with form_document=form_document %}
+							{% endif %}
+						</span>
+						<form class="form_new" id="form_new_document" action="{% url 'video_completion_document' slug=video.slug %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="action" value="new"/>
+							<input type="submit" value="{% trans 'Add a new additional resource' %}" class="new_document btn btn-info"/>
+						</form>
+					</li>
+					&nbsp;
 				{% endif %}
 			</div>
 			<!--

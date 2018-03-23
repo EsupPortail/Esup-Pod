@@ -3,8 +3,8 @@ from pod.completion.models import Contributor
 from pod.completion.models import Document
 from pod.completion.models import Overlay
 from pod.completion.models import Track
-from pod.completion.forms import DocumentForm
-from pod.completion.forms import TrackForm
+from pod.completion.forms import DocumentAdminForm
+from pod.completion.forms import TrackAdminForm
 try:
     __import__('pod.filepicker')
     FILEPICKER = True
@@ -33,7 +33,7 @@ class DocumentInline(admin.TabularInline):
 
 class DocumentAdmin(admin.ModelAdmin):
 
-    form = DocumentForm
+    form = DocumentAdminForm
 
     class Media:
         js = ('js/jquery.tools.min.js',)
@@ -50,7 +50,7 @@ class TrackInline(admin.TabularInline):
 
 class TrackAdmin(admin.ModelAdmin):
 
-    form = TrackForm
+    form = TrackAdminForm
 
     class Media:
         js = ('js/jquery.tools.min.js',)

@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 from ckeditor.fields import RichTextField
 from pod.video.models import Video
+from pod.filepicker.models import CustomFileModel
 try:
     __import__('pod.filepicker')
     FILEPICKER = True
@@ -137,6 +138,8 @@ class Document(models.Model):
         msg = list()
         if not self.document:
             msg.append(_('Please enter a document.'))
+        if not self.document.startswith('/media/'):
+            msg.append(_('Please enter a correct path for the document.'))
         if len(msg) > 0:
             return msg
         else:
@@ -163,8 +166,8 @@ class Document(models.Model):
             self.document,
             self.video)
 
-    def icon(self):
-        return self.document.name.split('.')[-1]
+    def name(self):
+        return CustomFileModel.objects.get(file=self.document.split('/media/')[1]).name
 
 
 class Track(models.Model):
@@ -218,12 +221,11 @@ class Track(models.Model):
             msg.append(_('Please enter a correct kind.'))
         if not self.lang:
             msg.append(_('Please enter a language.'))
-        elif (self.lang not in settings.PREF_LANG_CHOICES or
-              self.lang not in settings.ALL_LANG_CHOICES):
-            msg.append(_('Please enter a correct language.'))
         if not self.src:
             msg.append(_('Please specify a track file.'))
-        elif not str(self.src).lower().endswith('.vtt'):
+        elif not self.src.startswith('/media/'):
+            msg.append(_('Please enter a correct path for the track file.'))
+        elif not self.src.endswith('.vtt'):
             msg.append(_('Only ".vtt" format is allowed.'))
         if len(msg) > 0:
             return msg
@@ -249,6 +251,9 @@ class Track(models.Model):
             self.src,
             self.video
         )
+
+    def name(self):
+        return CustomFileModel.objects.get(file=self.src.split('/media/')[1]).name
 
 
 class Overlay(models.Model):

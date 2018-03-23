@@ -44,7 +44,18 @@ class DocumentForm(forms.ModelForm):
         pickers = {'file': "file"}
         self.fields['document'].widget = CustomFilePickerWidget(
             pickers=pickers)
-        self.fields['document'].disabled = True
+
+    class Meta(object):
+        model = Document
+        fields = '__all__'
+
+class DocumentAdminForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(DocumentAdminForm, self).__init__(*args, **kwargs)
+        pickers = {'file': "file"}
+        self.fields['document'].widget = CustomFilePickerWidget(
+            pickers=pickers)
 
     class Meta(object):
         model = Document
@@ -68,8 +79,20 @@ class TrackForm(forms.ModelForm):
         pickers = {'file': "file"}
         self.fields['src'].widget = CustomFilePickerWidget(
             pickers=pickers)
-        self.fields['src'].disabled = True
 
     class Meta(object):
         model = Track
         fields = '__all__'
+
+class TrackAdminForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(TrackAdminForm, self).__init__(*args, **kwargs)
+        pickers = {'file': "file"}
+        self.fields['src'].widget = CustomFilePickerWidget(
+            pickers=pickers)
+
+    class Meta(object):
+        model = Track
+        fields = '__all__'
+

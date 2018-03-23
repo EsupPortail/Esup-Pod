@@ -1,6 +1,7 @@
 from django.db import models
 from django.db import connection
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import get_language
 from django.template.defaultfilters import slugify
@@ -309,6 +310,13 @@ class Video(models.Model):
         Channel, verbose_name=_('Channels'), blank=True)
     theme = models.ManyToManyField(
         Theme, verbose_name=_('Themes'), blank=True)
+
+    def clean(self):
+        msg = list()
+        if self.thumbnail and not self.thumbnail.startswith('/media/'):
+            msg.append(_('Please enter a correct path for the thumbnail.'))
+        if len(msg) > 0:
+            raise ValidationError(msg)
 
     def save(self, *args, **kwargs):
         newid = -1

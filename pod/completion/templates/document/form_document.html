@@ -1,4 +1,6 @@
 <!-- HTML for document form. Don't use this file alone it must be integrated into another template ! -->
+{% load i18n %}
+{% load staticfiles %}
 <form id="form_document" action="{% url 'video_completion_document' slug=video.slug %}" method="POST">
 	{% csrf_token %}
 	<div id="form_content" class="form-container">
@@ -14,11 +16,9 @@
 		{% for field in form_document.visible_fields %}
 			{{field}}
 		{% endfor %}
-		{% if form_document.instance %}
-			<input type="hidden" id="id_document" name="document_id" value="{{form_document.instance.id}}">
-		{% endif %}
 		<input type="hidden" name="action" value="save"/>
 		<input type="submit" id="save_document" value="{% trans 'save' %}" class="btn btn-info"/>
 		<input type="reset" action="cancel" id="cancel_document" value="{% trans 'cancel' %}" class="btn btn-danger"/>
 	</div>
 </form>
+<script src="{% static 'js/filepicker.custom.js' %}"></script>

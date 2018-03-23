@@ -11,9 +11,6 @@
 			{% endfor %}
 		{% endif %}
 		{{form_track.as_p}}
-		{% if form_track.instance %}
-			<input type="hidden" id="id_track" name="track_id" value="{{form_track.instance.id}}">
-		{% endif %}
 		<input type="hidden" name="action" value="save"/>
 		<input type="submit" id="save_track" value="{% trans 'save' %}" class="btn btn-info"/>
 		<input type="reset" action="cancel" id="cancel_track" value="{% trans 'cancel' %}" class="btn btn-danger"/>

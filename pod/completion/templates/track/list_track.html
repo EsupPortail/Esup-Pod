@@ -17,7 +17,7 @@
 				<tr>
 					<td class="track_kind">{% trans track.kind %}</td>
 					<td class="track_lang">{{track.lang}}</td>
-					<td class="track_src">{{track.src}}</td>
+					<td class="track_src">{{track.name}}</td>
 					<td>
 						<form class="form_modif" action="{% url 'video_completion_track' slug=video.slug %}" method="POST">
 							{% csrf_token %}

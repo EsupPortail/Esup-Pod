@@ -10,7 +10,6 @@ class VideoForm(forms.ModelForm):
         pickers = {'image': "img"}
         self.fields['thumbnail'].widget = CustomFilePickerWidget(
             pickers=pickers)
-        self.fields['thumbnail'].disabled = True
 
     class Meta(object):
         model = Video

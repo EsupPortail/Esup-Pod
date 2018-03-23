@@ -293,7 +293,7 @@ function verify_fields(form) {
 				.after("<span class='form-help-inline'>{% trans 'Please specify a track file.' %}</span>")
 				.parents('div.form-group').addClass('has-error');
 		}
-		if (document.getElementById('id_src').innerText.split('.').pop() != 'vtt') {
+		if (document.getElementById('id_src').value.split('.').pop() != 'vtt') {
 			$('input#id_src')
 				.after("<span class='form-help-inline'>{% trans 'Only .vtt format is allowed.' %}</span>")
 				.parents('div.form-group').addClass('has-error');

@@ -10,8 +10,9 @@ from pod.authentication.models import Owner
 
 
 def get_upload_path(instance, filename):
+    name, ext = filename.split('.')
     user_hash = Owner.objects.get(user=instance.created_by).hashkey
-    return 'files/{0}/{1}'.format(user_hash, filename)
+    return 'files/{0}/{1}.{2}'.format(user_hash, name, ext)
 
 
 class CustomFileModel(BaseFileModel):
