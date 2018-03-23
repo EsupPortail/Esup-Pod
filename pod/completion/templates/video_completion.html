@@ -15,11 +15,13 @@
 {% block content %}
 	<article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
 		<ol class="breadcrumb">
+			<!-- TODO
 			<li><a href="{ url 'owner_videos_list' %}">{% trans 'My videos' %}</a></li>
 			<li class="active">{% trans 'Completion video' %} "{{video.title}}"</li>
+			-->
 		</ol>
 		<div class="row" id="info-video">
-			<div id="accordeon" class="col-md-9">
+			<div id="accordeon" class="col-sm-9">
 				<li>
 					<a id="section_contributor" href="#" title="{% trans 'Display &quot;Contributor(s)&quot; section' %}" class="title">
 						{% trans 'Contributor(s)' %}&nbsp;<span class="glyphicon glyphicon-chevron down"></span>
@@ -87,9 +89,29 @@
 						</form>
 					</li>
 					&nbsp;
+					<li>
+						<a id="section_overlay" href="#" title="{% trans 'Display &quot; Overlay(s)&quot; section' %}" class="title">
+							{% trans 'Overlay(s)' %}&nbsp;<span class="glyphicon glyphicon-chevron-down"></span>
+						</a>
+					</li>
+					<li class="contenuTitre">
+						<span id="list_overlay">
+							{% include 'overlay/list_overlay.html' %}
+						</span>
+						&nbsp;
+						<span id="form_overlay">
+							{% if form_overlay %}
+								{% include 'overlay/form_overlay.html' with form_overlay=form_overlay %}
+							{% endif %}
+						</span>
+						<form class="form_new" id="form_new_overlay" action="{% url 'video_completion_overlay' slug=video.slug %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="action" value="new"/>
+							<input type="submit" value="{% trans 'Add a new overlay' %}" class="new_overlay btn btn-info"/>
+						</form>
+					</li>
 				{% endif %}
 			</div>
-			<!--
 			<aside class="col-sm-3 panel panel-info">
 				<div class="widget user-tools">
 					<h4>
@@ -117,7 +139,6 @@
 					{% endif %}
 				</div>
 			</aside>
-			-->
 		</div>
 	</article>
 {% endblock content %}

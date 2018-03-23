@@ -61,7 +61,9 @@ table#table_list_contributors thead th.contributor_name {
 }
 
 /** Filepicker override **/
-*, :after, :before {
+div.file-picker-overlay,
+div.file-picker,
+ul.css-tabs a {
 	box-sizing: content-box;
 }
 textarea#id_description {
