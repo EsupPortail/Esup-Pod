@@ -1,9 +1,6 @@
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
@@ -140,7 +137,7 @@ def video_completion_contributor(request, slug):
         if request.POST.get('action') and request.POST['action'] == 'delete':
             contributor = get_object_or_404(
                 Contributor, id=request.POST['id'])
-            contributor_delete = contributor.delete()
+            contributor.delete()
             list_contributor = video.contributor_set.all()
             if request.is_ajax():
                 some_data_to_dump = {
@@ -278,7 +275,7 @@ def video_completion_document(request, slug):
 
         if request.POST.get('action') and request.POST['action'] == 'delete':
             document = get_object_or_404(Document, id=request.POST['id'])
-            document_delete = document.delete()
+            document.delete()
             list_document = video.document_set.all()
             if request.is_ajax():
                 some_data_to_dump = {
@@ -413,7 +410,7 @@ def video_completion_track(request, slug):
 
         if request.POST.get('action') and request.POST['action'] == 'delete':
             track = get_object_or_404(Track, id=request.POST['id'])
-            track_delete = track.delete()
+           	track.delete()
             list_track = video.track_set.all()
             if request.is_ajax():
                 some_data_to_dump = {
@@ -539,7 +536,7 @@ def video_completion_overlay(request, slug):
 
         if request.POST.get('action') and request.POST['action'] == 'delete':
             overlay = get_object_or_404(Overlay, id=request.POST['id'])
-            overlay_delete = overlay.delete()
+            overlay.delete()
             list_overlay = video.overlay_set.all()
             if request.is_ajax():
                 some_data_to_dump = {

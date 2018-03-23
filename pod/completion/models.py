@@ -167,7 +167,8 @@ class Document(models.Model):
             self.video)
 
     def name(self):
-        return CustomFileModel.objects.get(file=self.document.split('/media/')[1]).name
+        return CustomFileModel.objects.get(
+            file=self.document.split('/media/')[1]).name
 
 
 class Track(models.Model):
@@ -253,7 +254,8 @@ class Track(models.Model):
         )
 
     def name(self):
-        return CustomFileModel.objects.get(file=self.src.split('/media/')[1]).name
+        return CustomFileModel.objects.get(
+            file=self.src.split('/media/')[1]).name
 
 
 class Overlay(models.Model):
