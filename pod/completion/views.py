@@ -410,7 +410,7 @@ def video_completion_track(request, slug):
 
         if request.POST.get('action') and request.POST['action'] == 'delete':
             track = get_object_or_404(Track, id=request.POST['id'])
-           	track.delete()
+            track.delete()
             list_track = video.track_set.all()
             if request.is_ajax():
                 some_data_to_dump = {

@@ -2,7 +2,8 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load staticfiles %}
-{% block extra_head %}
+{% block page_title %}{% trans 'Completion video' %} "{{video.title}}"{% endblock page_title %}
+{% block page_extra_head %}
 	<!-- media -->
 	<link rel="stylesheet" href="{% static 'css/filepicker.overlay.css' %}"/>
 	<link rel="stylesheet" href="{% static 'css/completion.css' %}"/>
@@ -11,14 +12,14 @@
 	<script src="{% static 'js/ajaxupload.js' %}"></script>
     <script src="{% static 'js/jquery.filepicker.js' %}"></script>
 	<script src="{% static 'js/completion.js' %}"></script>
-{% endblock %}
+{% endblock page_extra_head %}
 {% block content %}
 	<article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
 		<ol class="breadcrumb">
-			<!-- TODO
-			<li><a href="{ url 'owner_videos_list' %}">{% trans 'My videos' %}</a></li>
-			<li class="active">{% trans 'Completion video' %} "{{video.title}}"</li>
-			-->
+			{% block breadcrumbs %}
+				{{block.super}}
+				<li class="active">&nbsp;{% trans 'Completion video' %} "{{video.title}}"</li>
+			{% endblock breadcrumbs %}
 		</ol>
 		<div class="row" id="info-video">
 			<div id="accordeon" class="col-sm-9">
