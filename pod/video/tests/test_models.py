@@ -52,8 +52,7 @@ class ChannelTestCase(TestCase):
         self.assertEqual(channel.color, None)
         self.assertEqual(
             channel.description,
-            _('-- sorry, no translation provided --')
-        )
+            _('-- sorry, no translation provided --'))
         if isinstance(channel.headband, ImageFieldFile):
             self.assertEqual(channel.headband.name, '')
 
@@ -132,8 +131,7 @@ class ThemeTestCase(TestCase):
         self.assertEqual(theme.video_count, 0)
         self.assertEqual(
             theme.description,
-            _('-- sorry, no translation provided --')
-        )
+            _('-- sorry, no translation provided --'))
         # self.assertEqual(
         #    theme.get_absolute_url(), "/" + theme.channel.slug + "/"
         #    + theme.slug + "/")
@@ -200,8 +198,7 @@ class TypeTestCase(TestCase):
         self.assertEqual(type1.video_count, 0)
         self.assertEqual(
             type1.description,
-            _('-- sorry, no translation provided --')
-        )
+            _('-- sorry, no translation provided --'))
         print(
             "   --->  test_Type_null_attribut of TypeTestCase : OK !")
 
@@ -254,8 +251,7 @@ class DisciplineTestCase(TestCase):
         self.assertEqual(discipline1.video_count, 0)
         self.assertEqual(
             discipline1.description,
-            _('-- sorry, no translation provided --')
-        )
+            _('-- sorry, no translation provided --'))
         print(
             "   --->  test_Type_null_attribut of TypeTestCase : OK !")
 
