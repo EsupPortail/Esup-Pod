@@ -30,6 +30,7 @@ table.scroll thead th {
 	width: 10%;
 	height: 20px;
 	line-height: 20px;
+	border-bottom: 0;
 }
 table.scroll thead tr th {
 	height: 27px;
@@ -60,6 +61,11 @@ table#table_list_contributors thead th.contributor_name {
 	padding: 4px 15px;
 }
 
+/** Aside **/
+.info-card {
+	display: none;
+}
+
 /** Filepicker override **/
 div.file-picker-overlay,
 div.file-picker,
@@ -68,4 +74,9 @@ ul.css-tabs a {
 }
 textarea#id_description {
 	line-height: normal;
+}
+
+/** Bootstrap override **/
+.card-title {
+	margin: .45rem;
 }

@@ -1,8 +1,8 @@
 <!-- HTML for document list. Don't use this file alone it must be integrated into another template ! -->
 {% load i18n %}
-<div class="panel panel-primary" overflow: auto>
-	<div class="panel-heading">
-		<h3 class="panel-title">{% trans 'List of subtitle or caption files' %}&nbsp;{{list_track|length}}</h3>
+<div overflow: auto>
+	<div class="panel-heading bg-primary text-white">
+		<h4 class="card-title">{% trans 'List of subtitle or caption files' %}&nbsp;({{list_track|length}})</h3>
 	</div>
 	<table class="table table-striped table-condensed scroll" id="table_list_tracks">
 		<thead>

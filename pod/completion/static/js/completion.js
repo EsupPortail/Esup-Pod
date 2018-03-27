@@ -118,6 +118,8 @@ $(document).on('submit', '#page-video form', function(event) {
 				window.location.origin + href,
 				{'action': 'new'}
 			);
+			$('.info-card').hide();
+			$('#'+name_form+'-info').show();
 		}
 		jqxhr.done(function(data) {
 			if (data.indexOf(form) == 1) {
@@ -335,3 +337,5 @@ function verify_fields(form) {
 	}
 	return msg;
 }
+
+$('.new-contributor').on('click')
