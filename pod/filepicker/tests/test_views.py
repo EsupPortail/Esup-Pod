@@ -180,8 +180,8 @@ class CustomFilePickerTestCase(TestCase):
         })
         self.assertEqual(response.status_code, 200)
 
-        test2 = User.objects.get(id=2)
-        test2 = authenticate(username='test2', password='hello')
+        # test2 = User.objects.get(id=2)
+        # test2 = authenticate(username='test2', password='hello')
         login = self.client.login(username='test2', password='hello')
         self.assertTrue(login)
         response = self.client.get('/file-picker/file/files/')
@@ -189,8 +189,8 @@ class CustomFilePickerTestCase(TestCase):
         search = json.loads(response.content)['result']
         self.assertTrue(len(search) == 0)
 
-        superuser = User.objects.get(id=3)
-        superuser = authenticate(username='superuser', password='hello')
+        # superuser = User.objects.get(id=3)
+        # superuser = authenticate(username='superuser', password='hello')
         login = self.client.login(username='superuser', password='hello')
         self.assertTrue(login)
         response = self.client.get('/file-picker/file/files/')

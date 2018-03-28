@@ -100,3 +100,11 @@ TITLE_SITE = 'Pod'
 #
 CKEDITOR_BASEPATH = os.path.join(
     getattr(settings, 'STATIC_URL', '/static/'), 'ckeditor', 'ckeditor') + "/"
+
+##
+# Main menu settings:
+#
+# Do not show inactive users in “Owners” main menu list.
+MENUBAR_HIDE_INACTIVE_OWNERS = False
+# Show only staff users in “Owners” main menu list.
+MENUBAR_SHOW_STAFF_OWNERS_ONLY = False

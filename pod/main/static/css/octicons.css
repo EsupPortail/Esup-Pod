@@ -1,0 +1,7 @@
+.octicon {
+  display: inline-block;
+  /*vertical-align: text-top;*/
+  fill: currentColor;
+  vertical-align: middle;
+  margin-right: 2px;
+}
