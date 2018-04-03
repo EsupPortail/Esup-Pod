@@ -16,12 +16,9 @@ from django.middleware.csrf import get_token
 from django.utils.text import capfirst
 from sorl.thumbnail.helpers import ThumbnailError
 from sorl.thumbnail import get_thumbnail
-from pod.filepicker.forms import CustomFileForm
-from pod.filepicker.forms import CustomImageForm
 from pod.filepicker.forms import AjaxItemForm
 from pod.filepicker.forms import QueryForm
-from pod.filepicker.models import CustomFileModel
-from pod.filepicker.models import CustomImageModel
+
 
 import os
 import json
@@ -53,15 +50,17 @@ def model_to_AjaxItemForm(model):
 class FilePickerBase(object):
     model = None
     form = None
+    structure = None
     page_size = 4
     link_headers = ['Insert File', ]
     extra_headers = None
     columns = None
     ordering = None
 
-    def __init__(self, name, model):
+    def __init__(self, name, model, structure):
         self.name = name
         self.model = model
+        self.structure = structure
         if not self.form:
             self.form = model_to_AjaxItemForm(self.model)
         self.field_names = [f.name for f in model._meta.get_fields()]
@@ -70,15 +69,16 @@ class FilePickerBase(object):
             self.columns = self.field_names
         extra_headers = list()
         for field_name in self.field_names:
+            field = model._meta.get_field(field_name)
+            if isinstance(field, (models.ImageField, models.FileField)):
+                self.field = field_name
+        for field_name in self.field_names:
             try:
                 field = model._meta.get_field(field_name)
             except models.FieldDoesNotExist:
                 self.field_names.remove(field_name)
                 continue
-            if isinstance(field, (models.ImageField, models.FileField,)):
-                self.field = field_name
-                self.field_names.remove(field_name)
-            elif isinstance(field, (models.ForeignKey, models.ManyToManyField)):
+            if isinstance(field, (models.ForeignKey, models.ManyToManyField)):
                 self.field_names.remove(field_name)
         for field_name in self.columns:
             try:
@@ -114,6 +114,8 @@ class FilePickerBase(object):
                 name='upload-file'),
             url(r'^delete/file/(?P<file>[\-\d\w]+)/$', self.delete,
                 name='delete-file'),
+            url(r'^directories/$',
+                self.list_dirs, name='list-directories'),
         ]
         return (urlpatterns, None, self.name)
 
@@ -124,10 +126,16 @@ class FilePickerBase(object):
         data['urls'] = {
             'browse': {
                 'files': reverse(
-                    'filepicker:{0}:list-files'.format(self.name)),
-                'upload': reverse(
-                    'filepicker:{0}:upload-file'.format(self.name)),
-            }
+                    'filepicker:{0}:list-files'.format(self.name))
+            },
+            'upload': {
+                'file': reverse(
+                    'filepicker:{0}:upload-file'.format(self.name))
+            },
+            'directories': {
+                'file': reverse(
+                    'filepicker:{0}:list-directories'.format(self.name))
+            },
         }
         return HttpResponse(json.dumps(data), content_type='application/json')
 
@@ -140,10 +148,10 @@ class FilePickerBase(object):
             else:
                 value = str(value)
             extra[name] = value
-        url = reverse('delete-files', kwargs={
-            'file': str(getattr(obj, 'id')),
-            'ext': str(getattr(obj, 'file_type'))
-        })
+        url = reverse(
+            'filepicker:{0}:delete-file'.format(self.name),
+            kwargs={'file': str(getattr(obj, 'id'))}
+        )
         extra['delete'] = '<form action="' + url + '">'
         extra['delete'] += '<input type="hidden" name="' + \
             'csrfmiddlewaretoken" value="' + get_token(request) + '">'
@@ -157,7 +165,7 @@ class FilePickerBase(object):
             'link_content': ['Click to insert'],
         }
 
-    def get_files(self, search, user, directory):
+    def get_files(self, search, user, directory='Home'):
         qs = Q()
         if search:
             for name in self.field_names:
@@ -166,22 +174,40 @@ class FilePickerBase(object):
                 qs = qs | Q(
                     name_contains=search,
                     created_by=user,
-                    directory=directory)
+                    directory__name=directory)
             queryset = self.model.objects.filter(qs)
         else:
-            queryset = self.model.objects.filter(created_by=user)
+            queryset = self.model.objects.filter(
+                created_by=user,
+                directory__name=directory)
         if self.ordering:
             queryset = queryset.order_by(self.ordering)
         else:
             queryset = queryset.order_by('-pk')
         return queryset
 
-    def get_dirs(self, user):
-        queryset = UserDirectory.objects.filter(owner=user)
-        dirs = list()
-        for query in queryset:
-            dirs.append(query.get_path)
-        return dirs
+    def get_dirs(self, user, directory):
+        current = self.structure.objects.get(
+            owner__user=user, name=directory)
+        parent = current.parent.name if current.parent else directory
+        children = current.children.all()
+        response = dict()
+        if children:
+            response[directory] = list()
+            response['parent'] = parent
+            for child in children:
+                response[directory].append({
+                    'name': child.name,
+                    'last': False if child.children.all() else True,
+                    'size': self.model.objects.filter(
+                        directory__name=child.name).count(),
+                })
+        return response
+
+    def list_dirs(self, request):
+        response = self.get_dirs(request.user, request.GET['directory'])
+        data = {'result': response}
+        return HttpResponse(json.dumps(data), content_type='application/json')
 
     def upload_file(self, request):
         if 'userfile' in request.FILES:
@@ -201,7 +227,7 @@ class FilePickerBase(object):
                 initial={'created_by': request.user.id})
             if form.is_valid():
                 obj = form.save()
-                data = self.append(obj)
+                data = self.append(obj, request)
                 return HttpResponse(
                     json.dumps(data),
                     content_type='application/json')
@@ -216,8 +242,9 @@ class FilePickerBase(object):
             return HttpResponseServerError()
         page = form.cleaned_data['page']
         result = []
-        qs = self.get_queryset(form.cleaned_data['search'], request.user)
-        pages = Paginator(qs, self.page_size)
+        files = self.get_files(
+            form.cleaned_data['search'], request.user, request.GET['directory'])
+        pages = Paginator(files, self.page_size)
         try:
             page_obj = pages.page(page)
         except EmptyPage:
@@ -255,7 +282,7 @@ class ImagePickerBase(FilePickerBase):
     link_headers = ['Thumbnail', ]
 
     def append(self, obj, request):
-        json = super(CustomImagePicker, self).append(obj, request)
+        json = super(ImagePickerBase, self).append(obj, request)
         img = '<img src="{0}" alt="{1}" width="{2}" height="{3}" />'
         try:
             thumb = get_thumbnail(obj.file.path, '100x100',

@@ -45,7 +45,10 @@
         var self = this,
             tabs = null,
             browse_pane = null,
-            upload_pane = null;
+            upload_pane = null,
+            dir_pane = null,
+            current_dir = 'Home',
+            back_dir = null;
         root.data('overlay').onLoad(function () {
             this.getOverlay().data('filePicker').load();
             $('.file-picker-overlay').css('z-index', '1');
@@ -54,6 +57,7 @@
         root.data('overlay').onClose(function () {
             upload_pane.empty();
             browse_pane.empty();
+            dir_pane.empty();
             $('.plupload').remove();
         });
         root.append($('<div>').addClass('file-picker'));
@@ -77,16 +81,75 @@
                 });
                 $.get(conf.url, function (response) {
                     conf.urls = response.urls;
-                    self.getFiles();
+                    self.getDir();
+                    self.current_dir = 'Home';
                 });
             },
 
             tabClick: function (e, index) {
                 $('.plupload').remove();
-                if (index === 1) {
+                if (index === 2) {
                     self.getForm();
+                } else if (index === 1) {
+                    self.getFiles({'directory': self.current_dir});
                 } else if (index === 0) {
-                    self.getFiles();
+                    self.getDir(self.current_dir);
+                }
+            },
+
+            getDir: function(data) {
+                if (!data) {
+                    $.get(conf.urls.directories.file, {directory: 'Home'}, function (response) {
+                        self.displayDir(response);
+                    });
+                } else {
+                    $.get(conf.urls.directories.file, {directory: data}, function (response) {
+                        self.displayDir(response);
+                    });
+                }
+            },
+
+            displayDir: function(data) {
+                var dirs = data.result;
+                var current = Object.keys(dirs)[0]
+                var pane = root.find('.file-picker-directories');
+                pane.empty();
+                pane.append($('<h2>').text('Directories - ' + current));
+                var table = $('<table>').addClass('directories-list');
+                var newdir = $('<tr>');
+                $.each(dirs[current], function(index, dir) {
+                    var a = $('<a>').click(function (e) {
+                        if (!dir.last) {
+                            self.getDir(dir.name);
+                            self.current_dir = dir.name;
+                        }
+                    });
+                    if (dir.last) {
+                        var img = $('<img>').attr('src', '/static/img/directory-closed.png');
+                        a.addClass('file-picker-directory closed');
+                    } else {
+                        var img = $('<img>').attr('src', '/static/img/directory-opened.png');
+                        a.addClass('file-picker-directory opened');
+                    }
+                    a.append(img).append(dir.name);
+                    newdir.append($('<td>').append(a));
+                });
+                var newsize = $('<tr>');
+                $.each(dirs[current], function(index, dir) {
+                    var td = $('<td>').text('Files: ' + dir.size);
+                    newsize.append(td);
+                });
+                table.append(newdir);
+                table.append(newsize);
+                pane.append(table);
+                if (current != 'Home') {
+                    var back = $('<a>').click(function (e) {
+                        self.getDir(dirs.parent);
+                        self.current_dir = dirs.parent;
+                    });
+                    back.addClass('file-picker-back');
+                    back.append($('<img>').attr('src', '/static/img/back.png'));
+                    pane.append(back);
                 }
             },
             
@@ -199,7 +262,7 @@
             displayFiles: function (data) {
                 var files = data.result;
                 browse_pane.empty();
-                browse_pane.append($('<h2>').text('Select file to insert'));
+                browse_pane.append($('<h2>').text('Select file to insert / ' + self.current_dir));
                 var table = $('<table>').addClass('file-list');
                 var tr = $('<tr>');
                 var form = $('<form>').attr({
@@ -317,9 +380,12 @@
         
         // setup tabs
         tabs = $('<ul>').addClass('css-tabs').addClass('file-picker-tabs');
+        tabs.append($('<li>').append($('<a>').attr('href', '#').text('Directories')));
         tabs.append($('<li>').append($('<a>').attr('href', '#').text('Browse')));
         tabs.append($('<li>').append($('<a>').attr('href', '#').text('Upload')));
         var panes = $('<div>').addClass('panes');
+        dir_pane = $('<div>').addClass('file-picker-directories').addClass('pane');
+        panes.append(dir_pane);
         browse_pane = $('<div>').addClass('file-picker-browse').addClass('pane');
         browse_pane.append($('<h2>').text('Browse for a file'));
         panes.append(browse_pane);
