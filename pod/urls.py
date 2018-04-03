@@ -17,7 +17,7 @@ urlpatterns = [
     url(r'^i18n/', include('django.conf.urls.i18n')),
 ]
 
-if apps.is_installed('filepicker'):
+if apps.is_installed('pod.filepicker'):
     from pod.filepicker.sites import site as filepicker_site
     urlpatterns += [url(r'^file-picker/', include(filepicker_site.urls)), ]
 

@@ -43,7 +43,7 @@ class UserDirectory(models.Model):
 
 
 def get_upload_path(instance, filename):
-    user_hash = Owner.objects.get(user=instance.created_by).hashkey
+    user_hash = instance.created_by.hashkey
     return 'files/{0}/{1}/{2}/'.format(
         user_hash,
         instance.directory.get_path(),
@@ -58,7 +58,7 @@ class BaseFileModel(models.Model):
         null=True, blank=True)
     file_type = models.CharField(
         max_length=16, blank=True)
-    data_created = models.DateTimeField()
+    date_created = models.DateTimeField()
     date_modified = models.DateTimeField()
     created_by = models.ForeignKey(
         Owner,
@@ -77,7 +77,7 @@ class BaseFileModel(models.Model):
         abstract = True
         ordering = ('-date_modified',)
 
-    def save(self):
+    def save(self, **kwargs):
         now = timezone.now()
         if not self.pk:
             self.date_created = now
@@ -91,7 +91,7 @@ class BaseFileModel(models.Model):
         return super(BaseFileModel, self).save(**kwargs)
 
     def __str__(self):
-        return 'File: {0} - Owner: {1}'.format(self.name, self.owner.username)
+        return 'File: {0} - Owner: {1}'.format(self.name, self.created_by.user.username)
 
 
 class CustomFileModel(BaseFileModel):
