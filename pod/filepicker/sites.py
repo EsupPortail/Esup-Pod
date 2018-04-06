@@ -26,7 +26,7 @@ class FilePickerSite(object):
                 return FilePickerBase
         return FilePickerBase
 
-    def register(self, model_or_iterable, class_=None, name=None, structure=None, **options):
+    def register(self, model_or_iterable, class_=None, name=None, structure=None, configure=None, **options):
         if isinstance(model_or_iterable, ModelBase):
             model_or_iterable = [model_or_iterable]
         for model in model_or_iterable:
@@ -39,7 +39,7 @@ class FilePickerSite(object):
             else:
                 picker_class = self.guess_default(model)
             self._registry.append(
-                {'name': name, 'picker': picker_class(name, model, structure)})
+                {'name': name, 'picker': picker_class(name, model, structure, configure)})
 
     def get_urls(self):
         urlpatterns = [

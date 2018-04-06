@@ -15,6 +15,22 @@ import pod.filepicker
 import os
 
 
+class UserDirectoryForm(forms.ModelForm):
+
+    class Meta(object):
+        model = UserDirectory
+        fields = ('name', 'owner', 'parent')
+        labels = {
+            'name': _('Name'),
+            'owner': _('Owner'),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(UserDirectoryForm, self).__init__(*args, **kwargs)
+        self.fields['parent'].widget = forms.HiddenInput()
+        self.fields['owner'].widget = forms.HiddenInput()
+
+
 class CustomFileForm(forms.ModelForm):
     file = forms.CharField(
         widget=forms.widgets.HiddenInput(),
@@ -63,9 +79,11 @@ class CustomImageForm(forms.ModelForm):
             'description': _('Description'),
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, form_data, *args, **kwargs):
         super(CustomImageForm, self).__init__(*args, **kwargs)
         self.fields['created_by'].widget = forms.HiddenInput()
+        self.fields['directory'].queryset = UserDirectory.objects.filter(
+            users=form_data['user'].id, parent__name=form_data['directory'])
 
     def clean_file(self):
         name, ext = os.path.splitext(self.cleaned_data['file'])
@@ -91,7 +109,6 @@ class CustomFilePicker(FilePickerBase):
 
     def get_files(self, search, user, directory=None):
         owner = Owner.objects.get(id=user.id)
-        dirs = self.get_dirs(user)
         directory = directory.name if directory else 'Home'
         return super(CustomImagePicker, self).get_files(
             search, owner, directory)
@@ -111,13 +128,13 @@ class CustomImagePicker(ImagePickerBase):
     columns = ('name', 'file_type', 'date_modified',)
     link_headers = ['Thumbnail', ]
 
-    def get_files(self, search, user, directory='Home'):
+    def get_files(self, search, user, directory='Home', shared=None):
         owner = Owner.objects.get(id=user.id)
-        dirs = self.get_dirs(user, directory)
+        dirs = self.get_dirs(user, directory, shared)
         return super(CustomImagePicker, self).get_files(
             search, owner, directory)
 
-    def get_dirs(self, user, directory):
+    def get_dirs(self, user, directory, shared=None):
         owner = Owner.objects.get(id=user.id)
         queryset = self.structure.objects.filter(owner=owner)
         if not queryset:
@@ -125,10 +142,17 @@ class CustomImagePicker(ImagePickerBase):
                 name='Home',
                 owner=owner)
         return super(CustomImagePicker, self).get_dirs(
-            user, directory)
+            user, directory, shared)
 
 
 pod.filepicker.site.register(
-    CustomFileModel, CustomFilePicker, name='file', structure=UserDirectory)
+    CustomFileModel,
+    CustomFilePicker,
+    name='file',
+    structure=UserDirectory)
 pod.filepicker.site.register(
-    CustomImageModel, CustomImagePicker, name='img', structure=UserDirectory)
+    CustomImageModel,
+    CustomImagePicker,
+    name='img',
+    structure=UserDirectory,
+    configure=UserDirectoryForm)

@@ -30,6 +30,10 @@ class UserDirectory(models.Model):
         verbose_name = _('User directory')
         verbose_name_plural = _('User directories')
 
+    def save(self, **kwargs):
+        super(UserDirectory, self).save(**kwargs)
+        self.users.add(self.owner)
+
     def __str__(self):
         return '{0}'.format(self.name)
 
@@ -40,6 +44,15 @@ class UserDirectory(models.Model):
             return self.parent.get_path(path)
         else:
             return os.path.join(self.name, path)
+
+    def get_users(self):
+        users = list()
+        for user in self.users.all():
+            users.append(user.user.username)
+        if users:
+            return users
+        else:
+            return _('You share this folder with nobody')
 
 
 def get_upload_path(instance, filename):

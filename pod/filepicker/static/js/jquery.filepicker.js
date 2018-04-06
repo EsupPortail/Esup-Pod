@@ -47,8 +47,9 @@
             browse_pane = null,
             upload_pane = null,
             dir_pane = null,
-            current_dir = 'Home',
-            back_dir = null;
+            shared_dir_pane = null,
+            current_dir = null,
+            current_shared = null;
         root.data('overlay').onLoad(function () {
             this.getOverlay().data('filePicker').load();
             $('.file-picker-overlay').css('z-index', '1');
@@ -58,6 +59,7 @@
             upload_pane.empty();
             browse_pane.empty();
             dir_pane.empty();
+            shared_dir_pane.empty();
             $('.plupload').remove();
         });
         root.append($('<div>').addClass('file-picker'));
@@ -83,18 +85,60 @@
                     conf.urls = response.urls;
                     self.getDir();
                     self.current_dir = 'Home';
+                    self.current_shared = 'All';
                 });
             },
 
             tabClick: function (e, index) {
                 $('.plupload').remove();
-                if (index === 2) {
+                if (index === 3) {
                     self.getForm();
-                } else if (index === 1) {
+                } else if (index === 2) {
                     self.getFiles({'directory': self.current_dir});
+                } else if (index === 1) {
+                    self.getSharedDir({'directory': self.current_shared});
                 } else if (index === 0) {
-                    self.getDir(self.current_dir);
+                    self.getDir({'directory': self.current_dir});
                 }
+            },
+
+            getSharedDir: function(data) {
+                if (!data) {
+                    $.get(conf.urls.shared.file, {directory: 'All'}, function (response) {
+                        self.displaySharedDir(response);
+                    });
+                } else {
+                    $.get(conf.urls.shared.file, data, function (response) {
+                        self.displaySharedDir(response);
+                    });
+                }
+            },
+
+            displaySharedDir: function(data) {
+                var dirs = data.result;
+                var pane = root.find('.file-picker-shared');
+                pane.empty();
+                var title = $('<h2>').text('Shared directories');
+                pane.append(title);
+                if (dirs['All'].length > 0) {
+                    pane.append($('<h3>').text('List of directories :'));
+                    var table = $('<table>').addClass('directories-list');
+                    var newdir = $('<tr>');
+                    $.each(dirs['All'], function(index, dir) {
+                        var a = $('<a>').click(function (e) {
+                            self.getFiles({'directory': dir.name, 'shared': dir.owner});
+                        });
+                        var img = $('<img>').attr('src', '/static/img/directory-closed.png');
+                        a.addClass('file-picker-directory closed');
+                        a.append(img).append(dir.name);
+                        newdir.append($('<td>').append(a));
+                    });
+                    table.append(newdir);
+                } else {
+                    pane.append($('<h3>').text('No one is currently sharing directories with you.'));
+                }
+
+                pane.append(table);
             },
 
             getDir: function(data) {
@@ -103,10 +147,136 @@
                         self.displayDir(response);
                     });
                 } else {
-                    $.get(conf.urls.directories.file, {directory: data}, function (response) {
+                    $.get(conf.urls.directories.file, data, function (response) {
                         self.displayDir(response);
                     });
                 }
+            },
+
+            editDir: function(data) {
+                if (!data) {
+                    $.get(conf.urls.directories.configure, {action: 'new', parent: self.current_dir}, function (response) {
+                        self.displayConfigure(response, 'new');
+                    });
+                } else {
+                    $.get(conf.urls.directories.configure, data, function (response) {
+                        self.displayConfigure(response, data.action);
+                    });
+                }
+            },
+
+            saveDir: function(data) {
+                if (!data) {
+                    return 0;
+                } else {
+                    $.post(conf.urls.directories.configure, data, function (response) {
+                        if (response.errors) {
+                            $.each(response.errors, function (idx) {
+                                console.error(this);
+                            });
+                            return;
+                        } else {
+                            self.getDir({directory: response.parent});
+                        }
+                    });
+                }
+            },
+
+            displayConfigure: function(data, action) {
+                var pane = root.find('.file-picker-directories');
+                pane.empty();
+                var form = $('<form>').attr({
+                    'method': 'post',
+                    'class': 'configure_form',
+                });
+                if (action == 'new') {
+                    var table = $('<table>').html(data.form);
+                    form.append(table);
+                    var action = $('<input>').attr({
+                        'type': 'hidden',
+                        'name': 'action',
+                        'value': 'new'
+                    });
+                    form.append(action);
+                    var submit = $('<input>').attr({
+                        'type': 'submit',
+                        'value': 'Submit'
+                    }).click(function (e) {
+                        e.preventDefault();
+                        var form = dir_pane.find('.configure_form');
+                        data = {};
+                        $(':input', form).each(function () {
+                            data[this.name] = this.value;
+                        });
+                        self.saveDir(data);
+                    });
+                    form.append(submit);
+                }
+                if (action == 'edit') {
+                    var table = $('<table>').html(data.form);
+                    form.append(table);
+                    var action = $('<input>').attr({
+                        'type': 'hidden',
+                        'name': 'action',
+                        'value': 'edit',
+                    });
+                    form.append(action);
+                    var id = $('<input>').attr({
+                        'type': 'hidden',
+                        'name': 'id',
+                        'value': data.id
+                    });
+                    form.append(id);
+                    var submit = $('<input>').attr({
+                        'type': 'submit',
+                        'value': 'Submit'
+                    }).click(function (e) {
+                        e.preventDefault();
+                        var form = dir_pane.find('.configure_form');
+                        data = {};
+                        $(':input', form).each(function () {
+                            data[this.name] = this.value;
+                        });
+                        self.saveDir(data);
+                    });
+                    form.append(submit);
+                }
+                if (action == 'delete') {
+                    form.append($('<p>').text('Are you sure you want to delete this directory ?'));
+                    var action = $('<input>').attr({
+                        'type': 'hidden',
+                        'name': 'action',
+                        'value': 'delete',
+                    });
+                    form.append(action);
+                    var id = $('<input>').attr({
+                        'type': 'hidden',
+                        'name': 'id',
+                        'value': data.id
+                    });
+                    form.append(id);
+                    var submit = $('<input>').attr({
+                        'type': 'submit',
+                        'value': 'Yes'
+                    }).click(function (e) {
+                        e.preventDefault();
+                        var form = dir_pane.find('.configure_form');
+                        data = {};
+                        $(':input', form).each(function () {
+                            data[this.name] = this.value;
+                        });
+                        self.saveDir(data);
+                    });
+                    form.append(submit);
+                }
+                var cancel = $('<input>').attr({
+                    'type': 'button',
+                    'value': 'No'
+                }).click(function (e) {
+                    self.getDir({'directory': self.current_dir});
+                });
+                form.append(cancel);
+                pane.append(form);
             },
 
             displayDir: function(data) {
@@ -114,48 +284,126 @@
                 var current = Object.keys(dirs)[0]
                 var pane = root.find('.file-picker-directories');
                 pane.empty();
-                pane.append($('<h2>').text('Directories - ' + current));
-                var table = $('<table>').addClass('directories-list');
-                var newdir = $('<tr>');
-                $.each(dirs[current], function(index, dir) {
-                    var a = $('<a>').click(function (e) {
-                        if (!dir.last) {
-                            self.getDir(dir.name);
-                            self.current_dir = dir.name;
-                        }
-                    });
-                    if (dir.last) {
-                        var img = $('<img>').attr('src', '/static/img/directory-closed.png');
-                        a.addClass('file-picker-directory closed');
-                    } else {
-                        var img = $('<img>').attr('src', '/static/img/directory-opened.png');
-                        a.addClass('file-picker-directory opened');
-                    }
-                    a.append(img).append(dir.name);
-                    newdir.append($('<td>').append(a));
-                });
-                var newsize = $('<tr>');
-                $.each(dirs[current], function(index, dir) {
-                    var td = $('<td>').text('Files: ' + dir.size);
-                    newsize.append(td);
-                });
-                table.append(newdir);
-                table.append(newsize);
-                pane.append(table);
+                var title = $('<h2>').text(current);
+                // Back Button
                 if (current != 'Home') {
                     var back = $('<a>').click(function (e) {
-                        self.getDir(dirs.parent);
+                        self.getDir({'directory': dirs.parent});
                         self.current_dir = dirs.parent;
                     });
                     back.addClass('file-picker-back');
                     back.append($('<img>').attr('src', '/static/img/back.png'));
                     pane.append(back);
                 }
+                // View Button
+                var view = $('<a>').click(function (e) {
+                    $('.file-picker-tabs li a')[2].click()
+                });
+                var img = $('<img>').attr('src', '/static/img/view.png');
+                view.addClass('file-picker-directory view');
+                view.append(img);
+                pane.append(view);
+                pane.append(title);
+                // Sub Directories category
+                pane.append($('<h3>').text('Sub-directories :'));
+                // List of sub directories
+                if (dirs[current].length > 0) {
+                    var table = $('<table>').addClass('directories-list');
+                    var newdir = null;
+                    var newsize = null;
+                    $.each(dirs[current], function(index, dir) {
+                        if (index % 5 == 0) {
+                            newdir = $('<tr>');
+                            newsize = $('<tr>');
+                            table.append(newdir);
+                            table.append(newsize);
+                        }
+                        var a = $('<a>').click(function (e) {
+                            self.getDir({'directory': dir.name});
+                            self.current_dir = dir.name;
+                        });
+                        if (dir.last && dir.size == 0) {
+                            var img = $('<img>').attr('src', '/static/img/directory-closed.png');
+                            a.addClass('file-picker-directory closed');
+                        } else {
+                            var img = $('<img>').attr('src', '/static/img/directory-opened.png');
+                            a.addClass('file-picker-directory opened');
+                        }
+                        a.append(img).append(dir.name);
+                        newdir.append($('<td>').append(a));
+
+                        //
+
+                        var td = $('<td>').text('Files: ' + dir.size);
+                        var edit = $('<a>').click(function (e) {
+                            self.editDir(
+                                {'action': 'edit',
+                                 'name': dir.name,
+                                 'parent': current});
+                        });
+                        var img = $('<img>').attr('src', '/static/img/edit.png');
+                        edit.addClass('file-picker-directory edit');
+                        edit.append(img);
+                        td.append(edit);
+
+                        var del = $('<a>').click(function (e) {
+                            self.editDir(
+                                {'action': 'delete',
+                                 'name': dir.name,
+                                 'parent': current});
+                        });
+                        var img = $('<img>').attr('src', '/static/img/delete.png');
+                        del.addClass('file-picker-directory delete');
+                        del.append(img);
+                        td.append(del);
+
+                        newsize.append(td);
+                    });
+                    // Add directory button at end
+                    var img = $('<img>').attr('src', '/static/img/add.png');
+                    var add = $('<a>').click(function (e) {
+                        self.editDir();
+                    });
+                    add.addClass('file-picker-directory add');
+                    add.append(img);
+                    newdir.append(add);
+                    table.append(newdir);
+                    table.append(newsize);
+                    pane.append(table);
+                } else {
+                    // Add directory button at end
+                    var img = $('<img>').attr('src', '/static/img/add.png');
+                    var add = $('<a>').click(function (e) {
+                        self.editDir();
+                    });
+                    add.addClass('file-picker-directory add');
+                    add.append(img);
+                    pane.append($('<p>').text('No sub-directories.').append(add));
+                }
+                // Current directory info category
+                pane.append($('<hr>'));
+                pane.append($('<h3>').text('Info'));
+                pane.append($('<p>').text('You have ' + dirs['size'] + ' file(s) in this directory.'));
+                if (current != 'Home') {
+                    if (Array.isArray(dirs['share'])) {
+                        var users = $('<p>').text('Shared with: ');
+                        var ul = $('<ul>');
+                        $.each(dirs['share'], function (idx, user) {
+                            ul.append($('<li>').text(user));
+                        });
+                        users.append(ul);
+                        pane.append(users);
+                    } else {
+                        pane.append($('<p>').text('Shared with: nobody.'));
+                    }
+                } else {
+                    pane.append($('<p>').text('The "Home" folder cannot be shared.'));
+                }
             },
             
             getForm: function (data) {
                 if (!data) {
-                    $.get(conf.urls.upload.file, {}, function (response) {
+                    $.get(conf.urls.upload.file, {directory: self.current_dir}, function (response) {
                         self.displayForm(response);
                         self.setupUpload();
                     });
@@ -195,7 +443,7 @@
             displayForm: function (data) {
                 var pane = root.find('.file-picker-upload');
                 pane.empty();
-                pane.append($('<h2>').text('Select file to upload'));
+                pane.append($('<h2>').text('Select file to upload / ' + self.current_dir));
                 var browse = $('<input>').val('Select a file').attr({
                     'type': 'button',
                     'id': 'select-a-file'
@@ -284,7 +532,8 @@
                     }).addClass('search_val').click(function (e) {
                         e.preventDefault();
                         self.getFiles({
-                            'search': browse_pane.find('.search_val').val()
+                            'search': browse_pane.find('.search_val').val(),
+                            'directory': self.current_dir
                         });
                     })
                 );
@@ -323,8 +572,11 @@
                 if (data.has_next) {
                     next.click(function (e) {
                         e.preventDefault();
-                        self.getFiles({'page': data.page + 1, 
-                        'search': browse_pane.find('.search_val').val()});
+                        self.getFiles({
+                            'page': data.page + 1, 
+                            'search': browse_pane.find('.search_val').val(),
+                            'directory': self.current_dir
+                        });
                     });
                 } else {
                     next.css('color', '#bbb');
@@ -381,11 +633,14 @@
         // setup tabs
         tabs = $('<ul>').addClass('css-tabs').addClass('file-picker-tabs');
         tabs.append($('<li>').append($('<a>').attr('href', '#').text('Directories')));
+        tabs.append($('<li>').append($('<a>').attr('href', '#').text('Shared Directories')));
         tabs.append($('<li>').append($('<a>').attr('href', '#').text('Browse')));
         tabs.append($('<li>').append($('<a>').attr('href', '#').text('Upload')));
         var panes = $('<div>').addClass('panes');
         dir_pane = $('<div>').addClass('file-picker-directories').addClass('pane');
         panes.append(dir_pane);
+        shared_dir_pane = $('<div>').addClass('file-picker-shared').addClass('pane');
+        panes.append(shared_dir_pane);
         browse_pane = $('<div>').addClass('file-picker-browse').addClass('pane');
         browse_pane.append($('<h2>').text('Browse for a file'));
         panes.append(browse_pane);

@@ -30,11 +30,50 @@
     width:35px;
 }
 .file-picker-directory.opened img {
-    width: 50%;
-}
-.file-picker-directory.opened img {
-    width: 42%;
     margin-right: 3px;
+}
+.file-picker-directory.opened {
+    cursor: pointer;
+}
+.file-picker-directory.view img {
+    position: absolute;
+    margin-top: 5px;
+    margin-left: 520px;
+    width: 20px;
+}
+.file-picker-directory.add img,
+.file-picker-directory.delete img {
+    width: 15px;
+    margin-left: 4px;
+}
+.file-picker-directory.edit img {
+    width: 30px;
+}
+.file-picker-directory.view img,
+.file-picker-directory.edit img,
+.file-picker-directory.delete img,
+.file-picker-directory.opened img,
+.file-picker-directory.add img,
+.file-picker-back img {
+    cursor: pointer;
+}
+.file-picker-directories.pane {
+    overflow: auto;
+    width: 91%;
+    height: 82%;
+}
+.file-picker-directories.pane ul {
+    margin-left: 5px;
+}
+.file-picker-directories.pane td {
+    vertical-align: text-top;
+}
+.file-picker-directories.pane h2 {
+    text-align: left;
+}
+.file-picker-back img {
+    position: absolute;
+    margin-left: 550px;
 }
 
 /* root element for tabs  */
