@@ -115,18 +115,24 @@
             },
 
             displaySharedDir: function(data) {
+                console.log(data);
                 var dirs = data.result;
                 var pane = root.find('.file-picker-shared');
                 pane.empty();
                 var title = $('<h2>').text('Shared directories');
                 pane.append(title);
-                if (dirs['All'].length > 0) {
-                    pane.append($('<h3>').text('List of directories :'));
+                pane.append($('<h3>').text('Directories I have access to :'));
+                if ('All' in dirs) {
                     var table = $('<table>').addClass('directories-list');
-                    var newdir = $('<tr>');
+                    var newdir = null;
                     $.each(dirs['All'], function(index, dir) {
+                        if (index % 5 == 0) {
+                            var newdir = $('<tr>');
+                            table.append(newdir);
+                        }
                         var a = $('<a>').click(function (e) {
-                            self.getFiles({'directory': dir.name, 'shared': dir.owner});
+                            self.current_dir(dir.name);
+                            $('.file-picker-tabs li a')[2].click();
                         });
                         var img = $('<img>').attr('src', '/static/img/directory-closed.png');
                         a.addClass('file-picker-directory closed');
@@ -134,11 +140,33 @@
                         newdir.append($('<td>').append(a));
                     });
                     table.append(newdir);
+                    pane.append(table);
                 } else {
-                    pane.append($('<h3>').text('No one is currently sharing directories with you.'));
+                    pane.append($('<p>').text('No one is currently sharing directories with you.'));
                 }
-
-                pane.append(table);
+                if ('Self' in dirs) {
+                    pane.append($('<h3>').text('My shared directories :'));
+                    var table = $('<table>').addClass('directories-list');
+                    var newdir = null;
+                    $.each(dirs['Self'], function(index, dir) {
+                        if (index % 5 == 0) {
+                            var newdir = $('<tr>');
+                            table.append(newdir);
+                        }
+                        var a = $('<a>').click(function (e) {
+                            self.current_dir = dir.name;
+                            $('.file-picker-tabs li a')[2].click();
+                        });
+                        var img = $('<img>').attr('src', '/static/img/directory-closed.png');
+                        a.addClass('file-picker-directory closed');
+                        a.append(img).append(dir.name);
+                        newdir.append($('<td>').append(a));
+                    });
+                    table.append(newdir);
+                    pane.append(table);
+                } else {
+                    pane.append($('<p>').text('Currently, you do not share any of your directories.'));
+                }
             },
 
             getDir: function(data) {
