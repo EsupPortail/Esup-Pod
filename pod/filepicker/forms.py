@@ -6,7 +6,6 @@ django-file-picker : 0.9.1.
 """
 from django import forms
 from django.core.files.base import ContentFile
-from django.utils.translation import ugettext as _
 
 import os
 

@@ -47,9 +47,7 @@
             browse_pane = null,
             upload_pane = null,
             dir_pane = null,
-            shared_dir_pane = null,
-            current_dir = null,
-            current_shared = null;
+            current_dir = {};
         root.data('overlay').onLoad(function () {
             this.getOverlay().data('filePicker').load();
             $('.file-picker-overlay').css('z-index', '1');
@@ -59,7 +57,6 @@
             upload_pane.empty();
             browse_pane.empty();
             dir_pane.empty();
-            shared_dir_pane.empty();
             $('.plupload').remove();
         });
         root.append($('<div>').addClass('file-picker'));
@@ -83,96 +80,29 @@
                 });
                 $.get(conf.url, function (response) {
                     conf.urls = response.urls;
+                    self.current_dir = {};
+                    self.current_dir.name = 'Home';
                     self.getDir();
-                    self.current_dir = 'Home';
-                    self.current_shared = 'All';
                 });
             },
 
             tabClick: function (e, index) {
                 $('.plupload').remove();
-                if (index === 3) {
+                if (index === 2) {
                     self.getForm();
-                } else if (index === 2) {
-                    self.getFiles({'directory': self.current_dir});
                 } else if (index === 1) {
-                    self.getSharedDir({'directory': self.current_shared});
+                    self.getFiles({'directory': self.current_dir.id});
                 } else if (index === 0) {
-                    self.getDir({'directory': self.current_dir});
-                }
-            },
-
-            getSharedDir: function(data) {
-                if (!data) {
-                    $.get(conf.urls.shared.file, {directory: 'All'}, function (response) {
-                        self.displaySharedDir(response);
-                    });
-                } else {
-                    $.get(conf.urls.shared.file, data, function (response) {
-                        self.displaySharedDir(response);
-                    });
-                }
-            },
-
-            displaySharedDir: function(data) {
-                console.log(data);
-                var dirs = data.result;
-                var pane = root.find('.file-picker-shared');
-                pane.empty();
-                var title = $('<h2>').text('Shared directories');
-                pane.append(title);
-                pane.append($('<h3>').text('Directories I have access to :'));
-                if ('All' in dirs) {
-                    var table = $('<table>').addClass('directories-list');
-                    var newdir = null;
-                    $.each(dirs['All'], function(index, dir) {
-                        if (index % 5 == 0) {
-                            var newdir = $('<tr>');
-                            table.append(newdir);
-                        }
-                        var a = $('<a>').click(function (e) {
-                            self.current_dir(dir.name);
-                            $('.file-picker-tabs li a')[2].click();
-                        });
-                        var img = $('<img>').attr('src', '/static/img/directory-closed.png');
-                        a.addClass('file-picker-directory closed');
-                        a.append(img).append(dir.name);
-                        newdir.append($('<td>').append(a));
-                    });
-                    table.append(newdir);
-                    pane.append(table);
-                } else {
-                    pane.append($('<p>').text('No one is currently sharing directories with you.'));
-                }
-                if ('Self' in dirs) {
-                    pane.append($('<h3>').text('My shared directories :'));
-                    var table = $('<table>').addClass('directories-list');
-                    var newdir = null;
-                    $.each(dirs['Self'], function(index, dir) {
-                        if (index % 5 == 0) {
-                            var newdir = $('<tr>');
-                            table.append(newdir);
-                        }
-                        var a = $('<a>').click(function (e) {
-                            self.current_dir = dir.name;
-                            $('.file-picker-tabs li a')[2].click();
-                        });
-                        var img = $('<img>').attr('src', '/static/img/directory-closed.png');
-                        a.addClass('file-picker-directory closed');
-                        a.append(img).append(dir.name);
-                        newdir.append($('<td>').append(a));
-                    });
-                    table.append(newdir);
-                    pane.append(table);
-                } else {
-                    pane.append($('<p>').text('Currently, you do not share any of your directories.'));
+                    self.getDir({'directory': self.current_dir.id});
                 }
             },
 
             getDir: function(data) {
                 if (!data) {
-                    $.get(conf.urls.directories.file, {directory: 'Home'}, function (response) {
+                    $.get(conf.urls.directories.file, {}, function (response) {
                         self.displayDir(response);
+                        self.current_dir.id = response.result.id;
+                        self.current_dir.name = response.result.parent;
                     });
                 } else {
                     $.get(conf.urls.directories.file, data, function (response) {
@@ -183,7 +113,7 @@
 
             editDir: function(data) {
                 if (!data) {
-                    $.get(conf.urls.directories.configure, {action: 'new', parent: self.current_dir}, function (response) {
+                    $.get(conf.urls.directories.configure, {action: 'new', id: self.current_dir.id}, function (response) {
                         self.displayConfigure(response, 'new');
                     });
                 } else {
@@ -199,12 +129,16 @@
                 } else {
                     $.post(conf.urls.directories.configure, data, function (response) {
                         if (response.errors) {
-                            $.each(response.errors, function (idx) {
-                                console.error(this);
+                            $.each(response.errors, function(idx, category) {
+                                $.each(category, function(idx, error) {
+                                    $('#configure_form_errors').empty();
+                                    var msg = $('<p>').text(error);
+                                    $('#configure_form_errors').append(msg);
+                                });
                             });
                             return;
                         } else {
-                            self.getDir({directory: response.parent});
+                            self.getDir({directory: self.current_dir.id});
                         }
                     });
                 }
@@ -297,27 +231,28 @@
                     });
                     form.append(submit);
                 }
-                var cancel = $('<input>').attr({
-                    'type': 'button',
-                    'value': 'No'
-                }).click(function (e) {
-                    self.getDir({'directory': self.current_dir});
+                var cancel = $('<a>').click(function (e) {
+                    self.getDir({'directory': self.current_dir.id});
                 });
-                form.append(cancel);
+                cancel.addClass('file-picker-back');
+                cancel.append($('<img>').attr('src', '/static/img/back.png'));
+                pane.append(cancel);
                 pane.append(form);
+                pane.append($('<div>').attr('id', 'configure_form_errors'));
             },
 
             displayDir: function(data) {
                 var dirs = data.result;
-                var current = Object.keys(dirs)[0]
+                var current = Object.keys(dirs)[0];
                 var pane = root.find('.file-picker-directories');
                 pane.empty();
-                var title = $('<h2>').text(current);
+                var title = $('<h2>').text(dirs['path']);
                 // Back Button
                 if (current != 'Home') {
                     var back = $('<a>').click(function (e) {
-                        self.getDir({'directory': dirs.parent});
-                        self.current_dir = dirs.parent;
+                        self.getDir({'directory': dirs.id});
+                        self.current_dir.id = dirs.id;
+                        self.current_dir.name = dirs.parent;
                     });
                     back.addClass('file-picker-back');
                     back.append($('<img>').attr('src', '/static/img/back.png'));
@@ -347,8 +282,9 @@
                             table.append(newsize);
                         }
                         var a = $('<a>').click(function (e) {
-                            self.getDir({'directory': dir.name});
-                            self.current_dir = dir.name;
+                            self.getDir({'directory': dir.id});
+                            self.current_dir.id = dir.id;
+                            self.current_dir.name = dir.name;
                         });
                         if (dir.last && dir.size == 0) {
                             var img = $('<img>').attr('src', '/static/img/directory-closed.png');
@@ -366,8 +302,7 @@
                         var edit = $('<a>').click(function (e) {
                             self.editDir(
                                 {'action': 'edit',
-                                 'name': dir.name,
-                                 'parent': current});
+                                 'id': dir.id});
                         });
                         var img = $('<img>').attr('src', '/static/img/edit.png');
                         edit.addClass('file-picker-directory edit');
@@ -412,26 +347,11 @@
                 pane.append($('<hr>'));
                 pane.append($('<h3>').text('Info'));
                 pane.append($('<p>').text('You have ' + dirs['size'] + ' file(s) in this directory.'));
-                if (current != 'Home') {
-                    if (Array.isArray(dirs['share'])) {
-                        var users = $('<p>').text('Shared with: ');
-                        var ul = $('<ul>');
-                        $.each(dirs['share'], function (idx, user) {
-                            ul.append($('<li>').text(user));
-                        });
-                        users.append(ul);
-                        pane.append(users);
-                    } else {
-                        pane.append($('<p>').text('Shared with: nobody.'));
-                    }
-                } else {
-                    pane.append($('<p>').text('The "Home" folder cannot be shared.'));
-                }
             },
             
             getForm: function (data) {
                 if (!data) {
-                    $.get(conf.urls.upload.file, {directory: self.current_dir}, function (response) {
+                    $.get(conf.urls.upload.file, {directory: self.current_dir.id}, function (response) {
                         self.displayForm(response);
                         self.setupUpload();
                     });
@@ -471,7 +391,7 @@
             displayForm: function (data) {
                 var pane = root.find('.file-picker-upload');
                 pane.empty();
-                pane.append($('<h2>').text('Select file to upload / ' + self.current_dir));
+                pane.append($('<h2>').text('Select file to upload / ' + self.current_dir.name));
                 var browse = $('<input>').val('Select a file').attr({
                     'type': 'button',
                     'id': 'select-a-file'
@@ -538,7 +458,7 @@
             displayFiles: function (data) {
                 var files = data.result;
                 browse_pane.empty();
-                browse_pane.append($('<h2>').text('Select file to insert / ' + self.current_dir));
+                browse_pane.append($('<h2>').text('Select file to insert / ' + self.current_dir.name));
                 var table = $('<table>').addClass('file-list');
                 var tr = $('<tr>');
                 var form = $('<form>').attr({
@@ -561,7 +481,7 @@
                         e.preventDefault();
                         self.getFiles({
                             'search': browse_pane.find('.search_val').val(),
-                            'directory': self.current_dir
+                            'directory': self.current_dir.id
                         });
                     })
                 );
@@ -603,7 +523,7 @@
                         self.getFiles({
                             'page': data.page + 1, 
                             'search': browse_pane.find('.search_val').val(),
-                            'directory': self.current_dir
+                            'directory': self.current_dir.id
                         });
                     });
                 } else {
@@ -661,14 +581,11 @@
         // setup tabs
         tabs = $('<ul>').addClass('css-tabs').addClass('file-picker-tabs');
         tabs.append($('<li>').append($('<a>').attr('href', '#').text('Directories')));
-        tabs.append($('<li>').append($('<a>').attr('href', '#').text('Shared Directories')));
         tabs.append($('<li>').append($('<a>').attr('href', '#').text('Browse')));
         tabs.append($('<li>').append($('<a>').attr('href', '#').text('Upload')));
         var panes = $('<div>').addClass('panes');
         dir_pane = $('<div>').addClass('file-picker-directories').addClass('pane');
         panes.append(dir_pane);
-        shared_dir_pane = $('<div>').addClass('file-picker-shared').addClass('pane');
-        panes.append(shared_dir_pane);
         browse_pane = $('<div>').addClass('file-picker-browse').addClass('pane');
         browse_pane.append($('<h2>').text('Browse for a file'));
         panes.append(browse_pane);

@@ -1,5 +1,6 @@
 from django import forms
 from django.core.files.base import ContentFile
+from django.core.exceptions import NON_FIELD_ERRORS
 from django.utils.translation import ugettext as _
 from pod.filepicker.views import FilePickerBase
 from pod.filepicker.views import ImagePickerBase
@@ -19,16 +20,22 @@ class UserDirectoryForm(forms.ModelForm):
 
     class Meta(object):
         model = UserDirectory
-        fields = ('name', 'owner', 'parent')
+        fields = ('name', 'owner', 'parent',)
         labels = {
             'name': _('Name'),
-            'owner': _('Owner'),
+        }
+        error_messages = {
+            NON_FIELD_ERRORS: {
+                'unique_together':
+                    _('A directory with this name already exist' +
+                        ' in this directory'),
+            }
         }
 
     def __init__(self, *args, **kwargs):
         super(UserDirectoryForm, self).__init__(*args, **kwargs)
-        self.fields['parent'].widget = forms.HiddenInput()
         self.fields['owner'].widget = forms.HiddenInput()
+        self.fields['parent'].widget = forms.HiddenInput()
 
 
 class CustomFileForm(forms.ModelForm):
@@ -47,6 +54,8 @@ class CustomFileForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CustomFileForm, self).__init__(*args, **kwargs)
+        self.fields['created_by'].widget = forms.HiddenInput()
+        self.fields['directory'].disabled = True
 
     def clean_file(self):
         name, ext = os.path.splitext(self.cleaned_data['file'])
@@ -79,11 +88,10 @@ class CustomImageForm(forms.ModelForm):
             'description': _('Description'),
         }
 
-    def __init__(self, form_data, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(CustomImageForm, self).__init__(*args, **kwargs)
         self.fields['created_by'].widget = forms.HiddenInput()
-        self.fields['directory'].queryset = UserDirectory.objects.filter(
-            users=form_data['user'].id, parent__name=form_data['directory'])
+        self.fields['directory'].disabled = True
 
     def clean_file(self):
         name, ext = os.path.splitext(self.cleaned_data['file'])
@@ -107,20 +115,17 @@ class CustomFilePicker(FilePickerBase):
     columns = ('name', 'file_type', 'date_modified',)
     extra_headers = ('Name', 'File type', 'Date modified', 'Delete')
 
-    def get_files(self, search, user, directory=None):
+    def get_files(self, search, user, directory):
         owner = Owner.objects.get(id=user.id)
-        directory = directory.name if directory else 'Home'
-        return super(CustomImagePicker, self).get_files(
+        return super(CustomFilePicker, self).get_files(
             search, owner, directory)
 
-    def get_dirs(self, user):
+    def get_dirs(self, user, directory=None):
         owner = Owner.objects.get(id=user.id)
         queryset = self.structure.objects.filter(owner=owner)
         if not queryset:
-            queryset = self.structure.objects.create(
-                name='Home',
-                owner=owner)
-        return super(CustomFilePicker, self).get_dirs(user)
+            queryset = self.structure.objects.create(name='Home', owner=owner)
+        return super(CustomFilePicker, self).get_dirs(user, directory)
 
 
 class CustomImagePicker(ImagePickerBase):
@@ -128,28 +133,25 @@ class CustomImagePicker(ImagePickerBase):
     columns = ('name', 'file_type', 'date_modified',)
     link_headers = ['Thumbnail', ]
 
-    def get_files(self, search, user, directory='Home', shared=None):
+    def get_files(self, search, user, directory):
         owner = Owner.objects.get(id=user.id)
-        dirs = self.get_dirs(user, directory, shared)
         return super(CustomImagePicker, self).get_files(
             search, owner, directory)
 
-    def get_dirs(self, user, directory, shared=None):
+    def get_dirs(self, user, directory=None):
         owner = Owner.objects.get(id=user.id)
         queryset = self.structure.objects.filter(owner=owner)
         if not queryset:
-            return self.structure.objects.create(
-                name='Home',
-                owner=owner)
-        return super(CustomImagePicker, self).get_dirs(
-            user, directory, shared)
+            self.structure.objects.create(name='Home', owner=owner)
+        return super(CustomImagePicker, self).get_dirs(user, directory)
 
 
 pod.filepicker.site.register(
     CustomFileModel,
     CustomFilePicker,
     name='file',
-    structure=UserDirectory)
+    structure=UserDirectory,
+    configure=UserDirectoryForm)
 pod.filepicker.site.register(
     CustomImageModel,
     CustomImagePicker,

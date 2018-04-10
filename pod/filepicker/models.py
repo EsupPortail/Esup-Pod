@@ -20,19 +20,11 @@ class UserDirectory(models.Model):
     parent = models.ForeignKey(
         'self', blank=True, null=True, related_name='children')
     owner = models.ForeignKey(Owner, verbose_name=_('Owner'))
-    users = models.ManyToManyField(
-        Owner,
-        related_name='users_directory',
-        verbose_name=_('Users directory'),
-        blank=True)
 
     class Meta:
+        unique_together = (('name', 'parent', 'owner'),)
         verbose_name = _('User directory')
         verbose_name_plural = _('User directories')
-
-    def save(self, **kwargs):
-        super(UserDirectory, self).save(**kwargs)
-        self.users.add(self.owner)
 
     def __str__(self):
         return '{0}'.format(self.name)
@@ -44,15 +36,6 @@ class UserDirectory(models.Model):
             return self.parent.get_path(path)
         else:
             return os.path.join(self.name, path)
-
-    def get_users(self):
-        users = list()
-        for user in self.users.all():
-            users.append(user.user.username)
-        if users:
-            return users
-        else:
-            return _('You share this folder with nobody')
 
 
 def get_upload_path(instance, filename):
@@ -67,10 +50,8 @@ def get_upload_path(instance, filename):
 class BaseFileModel(models.Model):
     name = models.CharField(_('Name'), max_length=255)
     description = models.TextField(_('Description'), blank=True)
-    file_size = models.PositiveIntegerField(
-        null=True, blank=True)
-    file_type = models.CharField(
-        max_length=16, blank=True)
+    file_size = models.PositiveIntegerField(null=True, blank=True)
+    file_type = models.CharField(max_length=16, blank=True)
     date_created = models.DateTimeField()
     date_modified = models.DateTimeField()
     created_by = models.ForeignKey(
@@ -104,7 +85,8 @@ class BaseFileModel(models.Model):
         return super(BaseFileModel, self).save(**kwargs)
 
     def __str__(self):
-        return 'File: {0} - Owner: {1}'.format(self.name, self.created_by.user.username)
+        return '{0}'.format(
+            self.name, self.created_by.user.username)
 
 
 class CustomFileModel(BaseFileModel):

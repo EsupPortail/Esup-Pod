@@ -29,6 +29,8 @@
     height:35px;
     width:35px;
 }
+
+/* directory list */
 .file-picker-directory.opened img {
     margin-right: 3px;
 }
@@ -74,6 +76,9 @@
 .file-picker-back img {
     position: absolute;
     margin-left: 550px;
+}
+#configure_form_errors {
+    color: red;
 }
 
 /* root element for tabs  */

@@ -6,4 +6,4 @@ class FilePickerConfig(AppConfig):
     name = 'pod.filepicker'
 
     def ready(self):
-    	autodiscover_modules('file_pickers')
+        autodiscover_modules('file_pickers')

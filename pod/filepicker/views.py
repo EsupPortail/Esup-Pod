@@ -4,12 +4,10 @@ Override FilePickerBase and ImagePickerBase
 
 django-file-picker : 0.9.1.
 """
-from django.conf import settings
 from django.conf.urls import url
 from django.core.paginator import Paginator, EmptyPage
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models import Count
 from django.db.models import Q
 from django.db.models.base import FieldDoesNotExist
 from django.http import HttpResponse, HttpResponseServerError
@@ -119,10 +117,9 @@ class FilePickerBase(object):
                 name='delete-file'),
             url(r'^directories/$',
                 self.list_dirs, name='list-directories'),
-            url(r'^directories/configure/$', self.protect(self.conf_dirs, True),
+            url(r'^directories/configure/$',
+                self.protect(self.conf_dirs, True),
                 name='configure-directories'),
-            url(r'^directories/shared/$',
-                self.list_shared, name='list-shared'),
         ]
         return (urlpatterns, None, self.name)
 
@@ -144,10 +141,6 @@ class FilePickerBase(object):
                     'filepicker:{0}:list-directories'.format(self.name)),
                 'configure': reverse(
                     'filepicker:{0}:configure-directories'.format(self.name))
-            },
-            'shared': {
-                'file': reverse(
-                    'filepicker:{0}:list-shared'.format(self.name))
             },
         }
         return HttpResponse(json.dumps(data), content_type='application/json')
@@ -183,8 +176,7 @@ class FilePickerBase(object):
             if request.GET['action'] == 'edit':
                 directory = self.structure.objects.get(
                     owner=request.user.id,
-                    name=request.GET['name'],
-                    parent__name=request.GET['parent'])
+                    id=request.GET['id'])
                 form = self.configure(instance=directory)
                 data = {'form': form.as_table(), 'id': directory.id}
                 return HttpResponse(
@@ -192,7 +184,7 @@ class FilePickerBase(object):
             if request.GET['action'] == 'new':
                 directory = self.structure.objects.get(
                     owner=request.user.id,
-                    name=request.GET['parent'])
+                    id=request.GET['id'])
                 form = self.configure(initial={
                     'owner': request.user.id,
                     'parent': directory})
@@ -210,11 +202,12 @@ class FilePickerBase(object):
         if request.POST:
             if request.POST['action'] == 'edit':
                 directory = self.structure.objects.get(
+                    owner__user=request.user.id,
                     id=request.POST['id'])
                 form = self.configure(request.POST, instance=directory)
                 if form.is_valid():
                     form.save()
-                    data = {'parent': directory.parent.name}
+                    data = {'response': 'OK'}
                     return HttpResponse(json.dumps(data),
                                         content_type='application/json')
                 data = {'form': form.as_table()}
@@ -227,9 +220,11 @@ class FilePickerBase(object):
                     data = {'parent': directory.parent.name}
                     return HttpResponse(json.dumps(data),
                                         content_type='application/json')
-                data = {'form': form.as_table()}
-                return HttpResponse(
-                    json.dumps(data), content_type='application/json')
+                else:
+                    data = {'form': form.as_table(),
+                            'errors': form.errors}
+                    return HttpResponse(
+                        json.dumps(data), content_type='application/json')
             if request.POST['action'] == 'delete':
                 directory = self.structure.objects.get(
                     id=request.POST['id'])
@@ -238,126 +233,63 @@ class FilePickerBase(object):
                 return HttpResponse(
                     json.dumps(data), content_type='application/json')
 
-    def get_files(self, search, user, directory='Home'):
+    def get_files(self, search, user, directory):
         qs = Q()
         if search:
             for name in self.field_names:
                 comparision = dict()
                 comparision[name] = search
                 qs = qs | Q(
-                    name_contains=search,
+                    name__contains=search,
                     created_by=user,
-                    directory__name=directory)
+                    directory=directory)
             queryset = self.model.objects.filter(qs)
         else:
             queryset = self.model.objects.filter(
                 created_by=user,
-                directory__name=directory)
+                directory=directory)
         if self.ordering:
             queryset = queryset.order_by(self.ordering)
         else:
             queryset = queryset.order_by('-pk')
         return queryset
 
-    ###
-    # Get the specified directory of a user and his childrens if exists
-    ###
-    # Return dict:
-    # {
-    #   directory:
-    #   [
-    #       {
-    #           name: 'Name of the child dir',
-    #           last: 'If they have children or not',
-    #           size: 'Number of files in this child dir'
-    #       },
-    #       {
-    #           ...etc...
-    #       },
-    #   ],
-    #   parent: 'Parent of the directory',
-    #   size: 'Number of files in this directory',
-    #   share: 'If exists, list of users who can used this directory'
-    # }
-    ###
-    def get_dirs(self, user, directory, shared=None):
-        try:
+    def get_dirs(self, user, directory=None):
+        if directory:
             current = self.structure.objects.get(
-                owner__user=user, name=directory)
-        except Exception:
+                owner__user=user, id=directory)
+        else:
             current = self.structure.objects.get(
-                users__user=user, name=directory, owner__user__username=shared)
-        parent = current.parent.name if current.parent else directory
+                owner__user=user, name='Home')
+
+        parent = current.parent if current.parent else current
         children = current.children.all()
 
         response = dict()
-        response[directory] = list()
-        response['parent'] = parent
+        response[current.name] = list()
+        response['path'] = current.get_path()
+        response['parent'] = parent.name
         response['size'] = self.model.objects.filter(
             directory=current, created_by__user=user).count()
-        response['share'] = current.get_users()
+        response['id'] = parent.id
         if children:
             for child in children:
-                response[directory].append({
+                response[current.name].append({
                     'name': child.name,
                     'last': False if child.children.all() else True,
                     'size': self.model.objects.filter(
                         directory=child,
                         created_by__user=user).count(),
+                    'id': child.id,
                 })
         return response
 
     def list_dirs(self, request):
-        directory = request.GET['directory']
-        response = self.get_dirs(request.user, directory)
-        data = {'result': response}
-        return HttpResponse(json.dumps(data), content_type='application/json')
-
-    def get_shared(self, user, directory, owner=None):
-        response = dict()
-        list_dirs = None
-        owner_dir = None
-        if directory == 'All':
-            my_dirs = self.structure.objects.annotate(
-                num_users=Count('users')).filter(
-                users__user=user, num_users__gt=1)
-            list_dirs = my_dirs.exclude(owner__user=user)
-
-            if list_dirs:
-                response['All'] = list()
-                for directory in list_dirs:
-                    response['All'].append({
-                        'name': directory.name,
-                        'size': self.model.objects.filter(
-                            directory=directory,
-                            created_by=directory.owner).count(),
-                        'owner': directory.owner.user.username,
-                    })
-            if my_dirs:
-                response['Self'] = list()
-                for directory in my_dirs:
-                    response['Self'].append({
-                        'name': directory.name,
-                        'size': self.model.objects.filter(
-                            directory=directory,
-                            created_by=directory.owner).count(),
-                        'owner': directory.owner.user.username,
-                    })
-            return response
+        if request.GET.get('directory'):
+            directory = request.GET['directory']
+            response = self.get_dirs(request.user, directory)
         else:
-            owner_dir = self.structure.objects.get(
-                users__user=user, name=directory, owner__user__username=owner)
-
-            if owner_dir:
-                response['size'] = self.model.objects.filter(
-                    directory=owner_dir,
-                    created_by=owner_dir.owner).count()
-            return response
-
-    def list_shared(self, request):
-        directory = request.GET['directory']
-        owner = request.GET['owner'] if request.GET.get('owner') else None
-        response = self.get_shared(request.user, directory, owner)
+            response = self.get_dirs(request.user)
         data = {'result': response}
         return HttpResponse(json.dumps(data), content_type='application/json')
 
@@ -374,20 +306,28 @@ class FilePickerBase(object):
                 json.dumps({'name': fn.name}),
                 content_type='application/json')
         else:
-            form_data = {
-                'user': request.user,
-                'directory': request.GET['directory']
-            }
-            form = self.form(
-                form_data,
-                request.POST or None,
-                initial={'created_by': request.user.id})
+            if request.GET:
+                try:
+                    directory = self.structure.objects.get(
+                        owner__user=request.user, id=request.GET['directory'])
+                except Exception:
+                    directory = self.structure.objects.get(
+                        users__user=request.user, id=request.GET['directory'])
+                form = self.form(
+                    initial={'created_by': request.user.id,
+                             'directory': directory.id})
+            else:
+                form = self.form(request.POST, initial={
+                    'created_by': request.user.id,
+                    'directory': request.POST['directory']
+                })
             if form.is_valid():
                 obj = form.save()
                 data = self.append(obj, request)
                 return HttpResponse(
                     json.dumps(data),
                     content_type='application/json')
+
             data = {'form': form.as_table()}
             return HttpResponse(
                 json.dumps(data),
@@ -395,14 +335,18 @@ class FilePickerBase(object):
 
     def list(self, request):
         form = QueryForm(request.GET)
-        directory = request.GET['directory']
-        shared = request.GET['shared'] if request.GET.get('shared') else None
         if not form.is_valid():
             return HttpResponseServerError()
         page = form.cleaned_data['page']
         result = []
-        files = self.get_files(
-            form.cleaned_data['search'], request.user, directory, shared)
+
+        if request.GET.get('directory'):
+            directory = request.GET['directory']
+            files = self.get_files(
+                form.cleaned_data['search'], request.user, directory)
+        else:
+            files = self.get_files(
+                form.cleaned_data['search'], request.user)
         pages = Paginator(files, self.page_size)
         try:
             page_obj = pages.page(page)
