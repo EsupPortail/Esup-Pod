@@ -163,6 +163,7 @@ class FilePickerBase(object):
             'csrfmiddlewaretoken" value="' + get_token(request) + '">'
         extra['delete'] += '<button type="button" class="delete">' + \
             'Delete</button></form>'
+        extra['id'] = str(getattr(obj, 'id'))
         return {
             'name': str(obj),
             'url': getattr(obj, self.field).url,

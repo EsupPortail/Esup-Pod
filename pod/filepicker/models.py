@@ -4,6 +4,7 @@ Override File and Image models from file_picker
 
 django-file-picker : 0.9.1.
 """
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext as _
@@ -25,6 +26,14 @@ class UserDirectory(models.Model):
         unique_together = (('name', 'parent', 'owner'),)
         verbose_name = _('User directory')
         verbose_name_plural = _('User directories')
+
+    def clean(self):
+        if self == self.parent:
+            raise ValidationError('A directory cannot be its own parent.')
+        if self.name == 'Home':
+            same_home = UserDirectory.objects.filter(owner=self.owner, name='Home')
+            if same_home:
+                raise ValidationError('A user cannot have have multiple home directories.')
 
     def __str__(self):
         return '{0}'.format(self.name)

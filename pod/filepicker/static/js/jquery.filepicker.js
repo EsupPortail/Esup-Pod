@@ -499,7 +499,7 @@
                     var tr = $('<tr>');            
                     $.each(file.link_content, function (idx, value) {
                         var a = $('<a>').click(function (e) {
-                            $(self).trigger("onImageClick", [file.insert[idx]]);
+                            $(self).trigger("onImageClick", file.extra);
                         });
                         a.append(value);
                         tr.append($('<td>').append(a));
@@ -629,8 +629,10 @@ function get_file_picker_types(el) {
     return picker_names;
 }
 
-
-function insertAtCaret(areaId,text) { 
+/*
+function insertAtCaret(areaId,text) {
+    console.log(areaId);
+    console.log(text); 
     var txtarea = document.getElementById(areaId);
     var scrollPos = txtarea.scrollTop;
     var strPos = 0;
@@ -657,4 +659,11 @@ function insertAtCaret(areaId,text) {
         txtarea.focus();
     }
     txtarea.scrollTop = scrollPos;
+}
+*/
+
+function insertAtCaret(areaId, text) {
+    var txtarea = $('#'+areaId);
+    txtarea.attr('value', text.id);
+    $('#file-picker-path').text(text.name + ' (' + text.file_type + ') ');
 }

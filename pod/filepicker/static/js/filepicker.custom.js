@@ -23,6 +23,7 @@ jQuery(document).ready(function($) {
                 var conf = $(overlay).data('filePicker').getConf();
                 conf.url = pickers.image;
                 $('input.simple-filepicker').attr('value', '');
+                $('#file-picker-path').text('Select a file...');
                 $(overlay).data('overlay').load();
             }).prependTo(parent);
         }
@@ -36,9 +37,13 @@ jQuery(document).ready(function($) {
                 var conf = $(overlay).data('filePicker').getConf();
                 conf.url = pickers.file;
                 $('input.simple-filepicker').attr('value', '');
+                $('#file-picker-path').text('Select a file...');
                 $(overlay).data('overlay').load();
             }).prependTo(parent);
 		}
+        var file_path = $('<p>').attr('id', 'file-picker-path');
+        file_path.text('Select a file...');
+        file_path.appendTo(parent);
 	}
 
 	$('input.simple-filepicker').each(function(idx, el) {
@@ -50,6 +55,7 @@ jQuery(document).ready(function($) {
 				install_file_picker(el, picker_names, response.pickers);
 			});
 		}
+        $(this).hide();
 	});
 
     var baseInsertAtCaret = insertAtCaret;

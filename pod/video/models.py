@@ -8,7 +8,7 @@ from django.db.models import Sum
 from django.contrib.auth.models import Group
 from django.apps import apps
 try:
-    from filepicker.models import CustomImageModel
+    from pod.filepicker.models import CustomImageModel
 except ImportError:
     pass
 try:
@@ -27,7 +27,7 @@ import unicodedata
 import logging
 logger = logging.getLogger(__name__)
 
-FILEPICKER = True if apps.is_installed('filepicker') else False
+FILEPICKER = True if apps.is_installed('pod.filepicker') else False
 VIDEOS_DIR = getattr(
     settings, 'VIDEOS_DIR', 'videos')
 FILES_DIR = getattr(
