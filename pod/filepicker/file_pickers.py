@@ -134,15 +134,13 @@ class CustomImagePicker(ImagePickerBase):
     link_headers = ['Thumbnail', ]
 
     def get_files(self, search, user, directory):
-        owner = Owner.objects.get(id=user.id)
         return super(CustomImagePicker, self).get_files(
-            search, owner, directory)
+            search, user, directory)
 
     def get_dirs(self, user, directory=None):
-        owner = Owner.objects.get(id=user.id)
-        queryset = self.structure.objects.filter(owner=owner)
+        queryset = self.structure.objects.filter(owner=user)
         if not queryset:
-            self.structure.objects.create(name='Home', owner=owner)
+            self.structure.objects.create(name='Home', owner=user)
         return super(CustomImagePicker, self).get_dirs(user, directory)
 
 

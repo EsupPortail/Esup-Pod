@@ -203,7 +203,7 @@ class FilePickerBase(object):
         if request.POST:
             if request.POST['action'] == 'edit':
                 directory = self.structure.objects.get(
-                    owner__user=request.user.id,
+                    owner=request.user.id,
                     id=request.POST['id'])
                 form = self.configure(request.POST, instance=directory)
                 if form.is_valid():
@@ -258,10 +258,10 @@ class FilePickerBase(object):
     def get_dirs(self, user, directory=None):
         if directory:
             current = self.structure.objects.get(
-                owner__user=user, id=directory)
+                owner=user, id=directory)
         else:
             current = self.structure.objects.get(
-                owner__user=user, name='Home')
+                owner=user, name='Home')
 
         parent = current.parent if current.parent else current
         children = current.children.all()
@@ -271,7 +271,7 @@ class FilePickerBase(object):
         response['path'] = current.get_path()
         response['parent'] = parent.name
         response['size'] = self.model.objects.filter(
-            directory=current, created_by__user=user).count()
+            directory=current, created_by=user).count()
         response['id'] = parent.id
         if children:
             for child in children:
@@ -280,7 +280,7 @@ class FilePickerBase(object):
                     'last': False if child.children.all() else True,
                     'size': self.model.objects.filter(
                         directory=child,
-                        created_by__user=user).count(),
+                        created_by=user).count(),
                     'id': child.id,
                 })
         return response
@@ -308,18 +308,14 @@ class FilePickerBase(object):
                 content_type='application/json')
         else:
             if request.GET:
-                try:
-                    directory = self.structure.objects.get(
-                        owner__user=request.user, id=request.GET['directory'])
-                except Exception:
-                    directory = self.structure.objects.get(
-                        users__user=request.user, id=request.GET['directory'])
+                directory = self.structure.objects.get(
+                    owner=request.user, id=request.GET['directory'])
                 form = self.form(
-                    initial={'created_by': request.user.id,
+                    initial={'created_by': request.user,
                              'directory': directory.id})
             else:
                 form = self.form(request.POST, initial={
-                    'created_by': request.user.id,
+                    'created_by': request.user,
                     'directory': request.POST['directory']
                 })
             if form.is_valid():
