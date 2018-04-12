@@ -1,3 +1,24 @@
+$(document).on('click', '.delete-file', function() {
+    var url = $(this).parent().attr('action');
+    var data = {
+        'csrfmiddlewaretoken': $(this).parent().find('input').attr('value')
+    }
+    if (confirm('Are you sure ?')) {
+        $.ajax({
+            url: url,
+            type: 'post',
+            data: data,
+            success: function(){
+                alert('File successfully deleted.');
+                $('.search_val').click();
+            },
+            fail: function(){
+                alert('Error ! Cannot delete the file.');
+            }
+        });
+    }
+});
+
 jQuery(document).ready(function($) {
 
 	var FILE_PICKER_ROOT = '/file-picker/';

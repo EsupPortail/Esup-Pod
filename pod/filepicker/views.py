@@ -161,7 +161,7 @@ class FilePickerBase(object):
         extra['delete'] = '<form action="' + url + '">'
         extra['delete'] += '<input type="hidden" name="' + \
             'csrfmiddlewaretoken" value="' + get_token(request) + '">'
-        extra['delete'] += '<button type="button" class="delete">' + \
+        extra['delete'] += '<button type="button" class="delete-file">' + \
             'Delete</button></form>'
         extra['id'] = str(getattr(obj, 'id'))
         return {

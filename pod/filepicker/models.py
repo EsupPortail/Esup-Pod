@@ -31,9 +31,11 @@ class UserDirectory(models.Model):
         if self == self.parent:
             raise ValidationError('A directory cannot be its own parent.')
         if self.name == 'Home':
-            same_home = UserDirectory.objects.filter(owner=self.owner, name='Home')
+            same_home = UserDirectory.objects.filter(
+                owner=self.owner, name='Home')
             if same_home:
-                raise ValidationError('A user cannot have have multiple home directories.')
+                raise ValidationError(
+                    'A user cannot have have multiple home directories.')
 
     def __str__(self):
         return '{0}'.format(self.name)
@@ -48,12 +50,16 @@ class UserDirectory(models.Model):
 
 
 def get_upload_path(instance, filename):
-    user_hash = instance.created_by.hashkey
-    return 'files/{0}/{1}/{2}/'.format(
-        user_hash,
-        instance.directory.get_path(),
-        filename
-    )
+    if instance.created_by.owner:
+        user_hash = instance.created_by.owner.hashkey
+        return 'files/{0}/{1}/{2}/'.format(
+            user_hash,
+            instance.directory.get_path(),
+            filename)
+    else:
+        return 'files/{0}/{1}/'.format(
+            instance.directory.get_path(),
+            filename)
 
 
 class BaseFileModel(models.Model):
@@ -95,7 +101,7 @@ class BaseFileModel(models.Model):
 
     def __str__(self):
         return '{0}'.format(
-            self.name, self.created_by.user.username)
+            self.name, self.created_by.username)
 
 
 class CustomFileModel(BaseFileModel):
@@ -114,3 +120,5 @@ class CustomImageModel(BaseFileModel):
     class Meta:
         verbose_name = _('Image')
         verbose_name_plural = _('Images')
+
+    
