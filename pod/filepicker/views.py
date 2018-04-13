@@ -344,8 +344,8 @@ class FilePickerBase(object):
                     directory = self.structure.objects.get(
                         owner=request.user, name='Home')
                 form = self.form(
-                        initial={'created_by': request.user,
-                                 'directory': directory.id})
+                    initial={'created_by': request.user,
+                             'directory': directory.id})
             if form.is_valid():
                 obj = form.save()
                 data = self.append(obj, request)
@@ -408,6 +408,7 @@ class FilePickerBase(object):
             else:
                 return HttpResponseServerError()
         return HttpResponseBadRequest()
+
 
 class ImagePickerBase(FilePickerBase):
     link_headers = ['Thumbnail', ]

@@ -8,10 +8,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext as _
-try:
-    from pod.authentication.models import Owner
-except ImportError:
-    from django.contrib.auth.models import User as Owner
+from django.contrib.auth.models import User as Owner
 
 import os
 
@@ -121,5 +118,3 @@ class CustomImageModel(BaseFileModel):
     class Meta:
         verbose_name = _('Image')
         verbose_name_plural = _('Images')
-
-    

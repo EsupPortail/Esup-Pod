@@ -20,15 +20,28 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CustomFileModel',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, verbose_name='Name')),
-                ('description', models.TextField(blank=True, verbose_name='Description')),
-                ('file_size', models.PositiveIntegerField(blank=True, null=True)),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True,
+                                        serialize=False,
+                                        verbose_name='ID')),
+                ('name', models.CharField(max_length=255,
+                                          verbose_name='Name')),
+                ('description', models.TextField(
+                    blank=True, verbose_name='Description')),
+                ('file_size', models.PositiveIntegerField(blank=True,
+                                                          null=True)),
                 ('file_type', models.CharField(blank=True, max_length=16)),
                 ('date_created', models.DateTimeField()),
                 ('date_modified', models.DateTimeField()),
-                ('file', models.FileField(max_length=255, upload_to=pod.filepicker.models.get_upload_path)),
-                ('created_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='filepicker_customfilemodel_created', to=settings.AUTH_USER_MODEL)),
+                ('file', models.FileField(
+                    max_length=255,
+                    upload_to=pod.filepicker.models.get_upload_path)),
+                ('created_by', models.ForeignKey(
+                    blank=True,
+                    null=True,
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='filepicker_customfilemodel_created',
+                    to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'Fichier',
@@ -38,15 +51,28 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CustomImageModel',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, verbose_name='Name')),
-                ('description', models.TextField(blank=True, verbose_name='Description')),
-                ('file_size', models.PositiveIntegerField(blank=True, null=True)),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True,
+                                        serialize=False,
+                                        verbose_name='ID')),
+                ('name', models.CharField(max_length=255,
+                                          verbose_name='Name')),
+                ('description', models.TextField(
+                    blank=True, verbose_name='Description')),
+                ('file_size', models.PositiveIntegerField(blank=True,
+                                                          null=True)),
                 ('file_type', models.CharField(blank=True, max_length=16)),
                 ('date_created', models.DateTimeField()),
                 ('date_modified', models.DateTimeField()),
-                ('file', models.ImageField(max_length=255, upload_to=pod.filepicker.models.get_upload_path)),
-                ('created_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='filepicker_customimagemodel_created', to=settings.AUTH_USER_MODEL)),
+                ('file', models.ImageField(
+                    max_length=255,
+                    upload_to=pod.filepicker.models.get_upload_path)),
+                ('created_by', models.ForeignKey(
+                    blank=True,
+                    null=True,
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='filepicker_customimagemodel_created',
+                    to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'Image',
@@ -56,10 +82,22 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UserDirectory',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, verbose_name='Name')),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL, verbose_name='Owner')),
-                ('parent', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='filepicker.UserDirectory')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True,
+                                        serialize=False,
+                                        verbose_name='ID')),
+                ('name', models.CharField(max_length=255,
+                                          verbose_name='Name')),
+                ('owner', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE,
+                    to=settings.AUTH_USER_MODEL,
+                    verbose_name='Owner')),
+                ('parent', models.ForeignKey(
+                    blank=True,
+                    null=True,
+                    on_delete=django.db.models.deletion.CASCADE,
+                    related_name='children',
+                    to='filepicker.UserDirectory')),
             ],
             options={
                 'verbose_name': 'User directory',
@@ -69,22 +107,36 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='customimagemodel',
             name='directory',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='filepicker.UserDirectory'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='filepicker.UserDirectory'),
         ),
         migrations.AddField(
             model_name='customimagemodel',
             name='modified_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='filepicker_customimagemodel_modified', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='filepicker_customimagemodel_modified',
+                to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='customfilemodel',
             name='directory',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='filepicker.UserDirectory'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                to='filepicker.UserDirectory'),
         ),
         migrations.AddField(
             model_name='customfilemodel',
             name='modified_by',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='filepicker_customfilemodel_modified', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='filepicker_customfilemodel_modified',
+                to=settings.AUTH_USER_MODEL),
         ),
         migrations.AlterUniqueTogether(
             name='userdirectory',

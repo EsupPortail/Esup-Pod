@@ -4,7 +4,6 @@ Unit tests for filepicker models
 from django.test import TestCase
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from pod.filepicker.models import CustomFileModel
 from pod.filepicker.models import CustomImageModel
@@ -212,7 +211,6 @@ class UserDirectoryTestCase(TestCase):
         print(" ---> test_attributs : OK ! --- UserDirectory")
 
     def test_same_parent(self):
-        user = User.objects.get(id=1)
         home = UserDirectory.objects.get(id=1)
         UserDirectory.objects.filter(id=1).update(parent=home)
         self.assertEqual(home.parent, None)

@@ -21,6 +21,7 @@ class UserDirectoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'owner')
     ordering = ('owner',)
 
+
 admin.site.register(UserDirectory, UserDirectoryAdmin)
 
 

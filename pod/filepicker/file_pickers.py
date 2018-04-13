@@ -7,10 +7,6 @@ from pod.filepicker.views import ImagePickerBase
 from pod.filepicker.models import CustomFileModel
 from pod.filepicker.models import CustomImageModel
 from pod.filepicker.models import UserDirectory
-try:
-    from pod.authentication.models import Owner
-except ImportError:
-    from django.contrib.auth.models import User as Owner
 
 import pod.filepicker
 import os

@@ -18,6 +18,8 @@ import os
 ##
 # FILE VIEWS
 #
+
+
 class FileViewsTestCase(TestCase):
 
     def setUp(self):
@@ -273,6 +275,8 @@ class FileViewsTestCase(TestCase):
 ##
 # DIRECTORY VIEWS
 #
+
+
 class DirectoryViewTestCase(TestCase):
 
     def setUp(self):
