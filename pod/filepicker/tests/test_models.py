@@ -2,6 +2,7 @@
 Unit tests for filepicker models
 """
 from django.test import TestCase
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -11,6 +12,7 @@ from pod.filepicker.models import UserDirectory
 from datetime import datetime
 
 import os
+import shutil
 
 
 class CustomFileModelTestCase(TestCase):
@@ -58,9 +60,9 @@ class CustomFileModelTestCase(TestCase):
             self.assertTrue('files/' + user.owner.hashkey +
                             '/Home/testfile' in file.file.path)
         else:
-            self.assertTrue('files/Home/testfile' in file.file.path)
+            self.assertTrue('files/test/Home/testfile' in file.file.path)
 
-        print(" ---> test_attributs_full : OK !")
+        print(" ---> test_attributs_full : OK ! --- CustomFileModel")
 
     def test_attributs(self):
         user = User.objects.get(id=1)
@@ -77,20 +79,25 @@ class CustomFileModelTestCase(TestCase):
             self.assertTrue('files/' + user.owner.hashkey +
                             '/Home/testfile' in file.file.path)
         else:
-            self.assertTrue('files/Home/testfile' in file.file.path)
+            self.assertTrue('files/test/Home/testfile' in file.file.path)
 
-        print(" ---> test_attributs : OK !")
+        print(" [ BEGIN FILEPICKER_TEST_MODELS ] ")
+        print(". ---> test_attributs : OK ! --- CustomFileModel")
 
-    def test_clean(self):
-        file1 = CustomFileModel.objects.get(id=1)
-        file2 = CustomFileModel.objects.get(id=2)
-        os.remove(file1.file.path)
-        os.remove(file2.file.path)
-        file1.delete()
-        file2.delete()
-        self.assertFalse(CustomFileModel.objects.all())
-
-        print(" [CustomFileModel --- END] ")
+    def tearDown(self):
+        user = User.objects.get(id=1)
+        if user.owner:
+            hashkey = user.owner.hashkey
+            if os.path.exists(os.path.join(
+                    settings.MEDIA_ROOT, 'files', hashkey)):
+                shutil.rmtree(os.path.join(
+                    settings.MEDIA_ROOT, 'files', hashkey))
+        else:
+            username = user.username
+            if os.path.exists(os.path.join(
+                    settings.MEDIA_ROOT, 'files', username)):
+                shutil.rmtree(os.path.join(
+                    settings.MEDIA_ROOT, 'files', username))
 
 
 class CustomImageModelTestCase(TestCase):
@@ -138,9 +145,9 @@ class CustomImageModelTestCase(TestCase):
             self.assertTrue('files/' + user.owner.hashkey +
                             '/Home/testimage' in file.file.path)
         else:
-            self.assertTrue('files/Home/testimage' in file.file.path)
+            self.assertTrue('files/test/Home/testimage' in file.file.path)
 
-        print(" ---> test_attributs_full : OK !")
+        print(" ---> test_attributs_full : OK ! --- CustomImageModel")
 
     def test_attributs(self):
         user = User.objects.get(id=1)
@@ -157,20 +164,24 @@ class CustomImageModelTestCase(TestCase):
             self.assertTrue('files/' + user.owner.hashkey +
                             '/Home/testimage' in file.file.path)
         else:
-            self.assertTrue('files/Home/testimage' in file.file.path)
+            self.assertTrue('files/test/Home/testimage' in file.file.path)
 
-        print(" ---> test_attributs : OK !")
+        print(" ---> test_attributs : OK ! --- CustomImageModel")
 
-    def test_clean(self):
-        file1 = CustomImageModel.objects.get(id=1)
-        file2 = CustomImageModel.objects.get(id=2)
-        os.remove(file1.file.path)
-        os.remove(file2.file.path)
-        file1.delete()
-        file2.delete()
-        self.assertFalse(CustomImageModel.objects.all())
-
-        print(" [CustomImageModel --- END ] ")
+    def tearDown(self):
+        user = User.objects.get(id=1)
+        if user.owner:
+            hashkey = user.owner.hashkey
+            if os.path.exists(os.path.join(
+                    settings.MEDIA_ROOT, 'files', hashkey)):
+                shutil.rmtree(os.path.join(
+                    settings.MEDIA_ROOT, 'files', hashkey))
+        else:
+            username = user.username
+            if os.path.exists(os.path.join(
+                    settings.MEDIA_ROOT, 'files', username)):
+                shutil.rmtree(os.path.join(
+                    settings.MEDIA_ROOT, 'files', username))
 
 
 class UserDirectoryTestCase(TestCase):
@@ -189,7 +200,7 @@ class UserDirectoryTestCase(TestCase):
         self.assertEqual(child.owner, user)
         self.assertEqual(child.parent, parent)
 
-        print(" ---> test_attributs_full : OK !")
+        print(" ---> test_attributs_full : OK ! --- UserDirectory")
 
     def test_attributs(self):
         user = User.objects.get(id=1)
@@ -198,7 +209,7 @@ class UserDirectoryTestCase(TestCase):
         self.assertEqual(home.owner, user)
         self.assertEqual(home.parent, None)
 
-        print(" ---> test_attributs : OK !")
+        print(" ---> test_attributs : OK ! --- UserDirectory")
 
     def test_same_parent(self):
         user = User.objects.get(id=1)
@@ -206,7 +217,8 @@ class UserDirectoryTestCase(TestCase):
         UserDirectory.objects.filter(id=1).update(parent=home)
         self.assertEqual(home.parent, None)
 
-        print(" ---> test_same_parent : OK !")
+        print(" ---> test_same_parent : OK ! --- UserDirectory")
+        print(" [ END FILEPICKER_TEST_MODELS ] ")
 
     def test_path(self):
         home = UserDirectory.objects.get(id=1)
@@ -216,10 +228,8 @@ class UserDirectoryTestCase(TestCase):
         self.assertEqual(images.get_path(), 'Home/Images/')
         self.assertEqual(documents.get_path(), 'Home/Documents/')
 
-        print(" ---> test_path : OK !")
+        print(" ---> test_path : OK ! --- UserDirectory")
 
-    def test_clean(self):
+    def tearDown(self):
         UserDirectory.objects.get(id=1).delete()
         self.assertFalse(UserDirectory.objects.all())
-
-        print(" [UserDirectoryModel --- END] ")
