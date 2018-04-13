@@ -7,6 +7,10 @@ from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
 from pod.video.forms import VideoForm
+from pod.video.forms import ChannelForm
+from pod.video.forms import ThemeForm
+from pod.video.forms import TypeForm
+from pod.video.forms import DisciplineForm
 
 # Register your models here.
 
@@ -20,26 +24,42 @@ class VideoAdmin(admin.ModelAdmin):
 
 
 class ChannelAdmin(TranslationAdmin):
+    form = ChannelForm
     list_display = ('title', 'visible',)
     prepopulated_fields = {'slug': ('title',)}
     filter_horizontal = ('owners', 'users',)
     list_editable = ('visible', )
     ordering = ('title',)
 
+    class Media:
+        js = ('js/jquery.tools.min.js',)
+
 
 class TypeAdmin(TranslationAdmin):
+    form = TypeForm
     prepopulated_fields = {'slug': ('title',)}
+
+    class Media:
+        js = ('js/jquery.tools.min.js',)
 
 
 class DisciplineAdmin(TranslationAdmin):
+    form = DisciplineForm
     prepopulated_fields = {'slug': ('title',)}
+
+    class Media:
+        js = ('js/jquery.tools.min.js',)
 
 
 class ThemeAdmin(TranslationAdmin):
+    form = ThemeForm
     list_display = ('title', 'channel')
     list_filter = ['channel']
     prepopulated_fields = {'slug': ('title',)}
     ordering = ('channel', 'title')
+
+    class Media:
+        js = ('js/jquery.tools.min.js',)
 
 
 admin.site.register(Channel, ChannelAdmin)

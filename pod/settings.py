@@ -30,15 +30,13 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     # Exterior Applications
     'ckeditor',
-    'file_picker',
-    'file_picker.uploads',
     'sorl.thumbnail',
     'tagging',
     # Pod Applications
     'pod.main',
     'pod.authentication',
-    'pod.filepicker',
     'pod.video',
+    'pod.filepicker',
 ]
 
 ##
@@ -87,7 +85,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 # Local contexts
-                'pod.main.context_processors.context_settings'
+                'pod.main.context_processors.context_settings',
+                'pod.main.context_processors.context_navbar'
             ],
         },
     },

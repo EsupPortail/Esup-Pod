@@ -5,10 +5,25 @@ Use custom models for Image and File
 django-file-picker : 0.9.1.
 """
 from django.contrib import admin
-from .models import CustomFileModel, CustomImageModel
-from file_picker.uploads.models import Image, File
+from pod.filepicker.models import CustomFileModel
+from pod.filepicker.models import CustomImageModel
+from pod.filepicker.models import UserDirectory
 
-admin.site.unregister(Image)
-admin.site.unregister(File)
+
+class UserDirectoryAdmin(admin.ModelAdmin):
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj and obj.name == 'Home':
+            return ('parent',)
+        else:
+            return ()
+
+    list_display = ('name', 'owner')
+    ordering = ('owner',)
+
+
+admin.site.register(UserDirectory, UserDirectoryAdmin)
+
+
 admin.site.register(CustomImageModel)
 admin.site.register(CustomFileModel)

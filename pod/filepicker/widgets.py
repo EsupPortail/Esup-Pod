@@ -1,7 +1,7 @@
 from django import forms
 
 
-class BaseFilePickerWidget(forms.URLInput):
+class BaseFilePickerWidget(forms.TextInput):
 
     def __init__(self, pickers, *args, **kwargs):
         self.pickers = pickers

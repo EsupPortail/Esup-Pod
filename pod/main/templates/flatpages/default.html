@@ -1,11 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>{{ flatpage.title }}</title>
-</head>
-<body>
-    <h1>FLATPAGE : {{ flatpage.title }}</h1>
-    Contenu :
-    {{ flatpage.content }}
-</body>
-</html>
+{% extends 'base.html' %}
+{% block page_title %}{{ flatpage.title }}{% endblock %}
+{% block page_content %}
+{{ flatpage.content }}
+{% endblock page_content %}
