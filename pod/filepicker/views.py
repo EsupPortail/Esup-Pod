@@ -10,7 +10,10 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Q
 from django.db.models.base import FieldDoesNotExist
-from django.http import HttpResponse, HttpResponseServerError
+from django.http import HttpResponse
+from django.http import HttpResponseServerError
+from django.http import HttpResponseBadRequest
+from django.http import HttpResponseNotFound
 from django.middleware.csrf import get_token
 from django.utils.text import capfirst
 from sorl.thumbnail.helpers import ThumbnailError
@@ -175,17 +178,23 @@ class FilePickerBase(object):
     def conf_dirs(self, request):
         if request.GET:
             if request.GET['action'] == 'edit':
-                directory = self.structure.objects.get(
-                    owner=request.user.id,
-                    id=request.GET['id'])
+                try:
+                    directory = self.structure.objects.get(
+                        owner=request.user.id,
+                        id=request.GET['id'])
+                except Exception:
+                    return HttpResponseNotFound('Directory not found !')
                 form = self.configure(instance=directory)
                 data = {'form': form.as_table(), 'id': directory.id}
                 return HttpResponse(
                     json.dumps(data), content_type='application/json')
             if request.GET['action'] == 'new':
-                directory = self.structure.objects.get(
-                    owner=request.user.id,
-                    id=request.GET['id'])
+                try:
+                    directory = self.structure.objects.get(
+                        owner=request.user.id,
+                        id=request.GET['id'])
+                except Exception:
+                    return HttpResponseNotFound('Directory not found !')
                 form = self.configure(initial={
                     'owner': request.user.id,
                     'parent': directory})
@@ -193,27 +202,34 @@ class FilePickerBase(object):
                 return HttpResponse(
                     json.dumps(data), content_type='application/json')
             if request.GET['action'] == 'delete':
-                directory = self.structure.objects.get(
-                    owner=request.user.id,
-                    name=request.GET['name'],
-                    parent__name=request.GET['parent'])
+                try:
+                    directory = self.structure.objects.get(
+                        owner=request.user.id,
+                        id=request.GET['id'])
+                except Exception:
+                    return HttpResponseNotFound('Directory not found !')
                 data = {'id': directory.id}
                 return HttpResponse(
                     json.dumps(data), content_type='application/json')
         if request.POST:
             if request.POST['action'] == 'edit':
-                directory = self.structure.objects.get(
-                    owner=request.user.id,
-                    id=request.POST['id'])
+                try:
+                    directory = self.structure.objects.get(
+                        owner=request.user.id,
+                        id=request.POST['id'])
+                except Exception:
+                    return HttpResponseNotFound('Directory not found !')
                 form = self.configure(request.POST, instance=directory)
                 if form.is_valid():
                     form.save()
                     data = {'response': 'OK'}
                     return HttpResponse(json.dumps(data),
                                         content_type='application/json')
-                data = {'form': form.as_table()}
-                return HttpResponse(
-                    json.dumps(data), content_type='application/json')
+                else:
+                    data = {'form': form.as_table(),
+                            'errors': form.errors}
+                    return HttpResponse(
+                        json.dumps(data), content_type='application/json')
             if request.POST['action'] == 'new':
                 form = self.configure(request.POST)
                 if form.is_valid():
@@ -227,12 +243,20 @@ class FilePickerBase(object):
                     return HttpResponse(
                         json.dumps(data), content_type='application/json')
             if request.POST['action'] == 'delete':
-                directory = self.structure.objects.get(
-                    id=request.POST['id'])
-                directory.delete()
+                try:
+                    directory = self.structure.objects.get(
+                        id=request.POST['id'])
+                except Exception:
+                    return HttpResponseNotFound('Directory not found !')
+                if directory.name != 'Home':
+                    directory.delete()
+                else:
+                    return HttpResponseBadRequest(
+                        'Home directory cannot be deleted !')
                 data = {'parent': directory.parent.name}
                 return HttpResponse(
                     json.dumps(data), content_type='application/json')
+        return HttpResponseBadRequest('Bad request')
 
     def get_files(self, search, user, directory):
         qs = Q()
@@ -307,17 +331,21 @@ class FilePickerBase(object):
                 json.dumps({'name': fn.name}),
                 content_type='application/json')
         else:
-            if request.GET:
-                directory = self.structure.objects.get(
-                    owner=request.user, id=request.GET['directory'])
-                form = self.form(
-                    initial={'created_by': request.user,
-                             'directory': directory.id})
-            else:
+            if request.method == 'POST':
                 form = self.form(request.POST, initial={
                     'created_by': request.user,
                     'directory': request.POST['directory']
                 })
+            else:
+                if request.GET.get('directory'):
+                    directory = self.structure.objects.get(
+                        owner=request.user, id=request.GET['directory'])
+                else:
+                    directory = self.structure.objects.get(
+                        owner=request.user, name='Home')
+                form = self.form(
+                        initial={'created_by': request.user,
+                                 'directory': directory.id})
             if form.is_valid():
                 obj = form.save()
                 data = self.append(obj, request)
@@ -342,8 +370,10 @@ class FilePickerBase(object):
             files = self.get_files(
                 form.cleaned_data['search'], request.user, directory)
         else:
+            directory = self.structure.objects.get(
+                owner=request.user, name='Home').id
             files = self.get_files(
-                form.cleaned_data['search'], request.user)
+                form.cleaned_data['search'], request.user, directory)
         pages = Paginator(files, self.page_size)
         try:
             page_obj = pages.page(page)
@@ -366,17 +396,18 @@ class FilePickerBase(object):
         return HttpResponse(json.dumps(data), content_type='application/json')
 
     def delete(self, request, file):
-        f = self.model.objects.get(id=file)
-        if os.path.isfile(f.file.path):
-            os.remove(f.file.path)
-            f.delete()
-            data = {'status': 'OK'}
-            return HttpResponse(
-                json.dumps(data),
-                content_type='application/json')
-        else:
-            return HttpResponseServerError()
-
+        if request.method == 'POST':
+            f = self.model.objects.get(id=file)
+            if os.path.isfile(f.file.path):
+                os.remove(f.file.path)
+                f.delete()
+                data = {'status': 'OK'}
+                return HttpResponse(
+                    json.dumps(data),
+                    content_type='application/json')
+            else:
+                return HttpResponseServerError()
+        return HttpResponseBadRequest()
 
 class ImagePickerBase(FilePickerBase):
     link_headers = ['Thumbnail', ]

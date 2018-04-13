@@ -312,8 +312,7 @@
                         var del = $('<a>').click(function (e) {
                             self.editDir(
                                 {'action': 'delete',
-                                 'name': dir.name,
-                                 'parent': current});
+                                 'id': dir.id});
                         });
                         var img = $('<img>').attr('src', '/static/img/delete.png');
                         del.addClass('file-picker-directory delete');
