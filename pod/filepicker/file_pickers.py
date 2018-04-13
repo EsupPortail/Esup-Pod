@@ -116,15 +116,13 @@ class CustomFilePicker(FilePickerBase):
     extra_headers = ('Name', 'File type', 'Date modified', 'Delete')
 
     def get_files(self, search, user, directory):
-        owner = Owner.objects.get(id=user.id)
         return super(CustomFilePicker, self).get_files(
-            search, owner, directory)
+            search, user, directory)
 
     def get_dirs(self, user, directory=None):
-        owner = Owner.objects.get(id=user.id)
-        queryset = self.structure.objects.filter(owner=owner)
+        queryset = self.structure.objects.filter(owner=user, name='Home')
         if not queryset:
-            queryset = self.structure.objects.create(name='Home', owner=owner)
+            queryset = self.structure.objects.create(name='Home', owner=user)
         return super(CustomFilePicker, self).get_dirs(user, directory)
 
 
@@ -138,7 +136,7 @@ class CustomImagePicker(ImagePickerBase):
             search, user, directory)
 
     def get_dirs(self, user, directory=None):
-        queryset = self.structure.objects.filter(owner=user)
+        queryset = self.structure.objects.filter(owner=user, name='Home')
         if not queryset:
             self.structure.objects.create(name='Home', owner=user)
         return super(CustomImagePicker, self).get_dirs(user, directory)

@@ -57,7 +57,8 @@ def get_upload_path(instance, filename):
             instance.directory.get_path(),
             filename)
     else:
-        return 'files/{0}/{1}/'.format(
+        return 'files/{0}/{1}/{2}/'.format(
+            instance.created_by.username,
             instance.directory.get_path(),
             filename)
 
