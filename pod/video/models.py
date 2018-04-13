@@ -7,16 +7,16 @@ from django.utils.translation import get_language
 from django.template.defaultfilters import slugify
 from django.db.models import Sum
 from django.contrib.auth.models import Group
+from django.apps import apps
+try:
+    from pod.filepicker.models import CustomImageModel
+except ImportError:
+    pass
 try:
     from pod.authentication.models import Owner
 except ImportError:
     from django.contrib.auth.models import User as Owner
-try:
-    __import__('pod.filepicker')
-    FILEPICKER = True
-except ImportError:
-    FILEPICKER = False
-    pass
+
 from datetime import datetime
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
@@ -28,7 +28,7 @@ import unicodedata
 import logging
 logger = logging.getLogger(__name__)
 
-
+FILEPICKER = True if apps.is_installed('pod.filepicker') else False
 VIDEOS_DIR = getattr(
     settings, 'VIDEOS_DIR', 'videos')
 FILES_DIR = getattr(
@@ -104,11 +104,11 @@ class Channel(models.Model):
     description = RichTextField(_('Description'),
                                 config_name='complete', blank=True)
     # add headband
-    try:
+    if FILEPICKER:
         headband = models.ForeignKey(CustomImageModel,
                                      blank=True, null=True,
                                      verbose_name=_('Headband'))
-    except NameError:
+    else:
         headband = models.ImageField(
             _('Headband'), null=True, upload_to=get_upload_path_files,
             blank=True, max_length=255)
@@ -150,14 +150,15 @@ class Theme(models.Model):
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'))
     description = models.TextField(null=True, blank=True)
-    try:
+    if FILEPICKER:
         headband = models.ForeignKey(CustomImageModel,
                                      blank=True, null=True,
                                      verbose_name=_('Headband'))
-    except NameError:
+    else:
         headband = models.ImageField(
             _('Headband'), null=True, upload_to=get_upload_path_files,
             blank=True, max_length=255)
+
     channel = models.ForeignKey(
         'Channel', related_name='themes', verbose_name=_('Channel'))
 
@@ -182,11 +183,11 @@ class Type(models.Model):
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'))
     description = models.TextField(null=True, blank=True)
-    try:
+    if FILEPICKER:
         icon = models.ForeignKey(CustomImageModel,
                                  blank=True, null=True,
                                  verbose_name=_('Icon'))
-    except NameError:
+    else:
         icon = models.ImageField(
             _('Icon'), null=True, upload_to=get_upload_path_files,
             blank=True, max_length=255)
@@ -212,11 +213,11 @@ class Discipline(models.Model):
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'))
     description = models.TextField(null=True, blank=True)
-    try:
+    if FILEPICKER:
         icon = models.ForeignKey(CustomImageModel,
                                  blank=True, null=True,
                                  verbose_name=_('Icon'))
-    except NameError:
+    else:
         icon = models.ImageField(
             _('Icon'), null=True, upload_to=get_upload_path_files,
             blank=True, max_length=255)
@@ -291,12 +292,9 @@ class Video(models.Model):
         + 'enclose the tags consist of several words in quotation marks.'),
         verbose_name=_('Tags'))
     if FILEPICKER:
-        thumbnail = models.CharField(
-            _('Thumbnail'),
-            null=True,
-            blank=True,
-            max_length=255
-        )
+        thumbnail = models.ForeignKey(CustomImageModel,
+                                      blank=True, null=True,
+                                      verbose_name=_('Thumbnails'))
     else:
         thumbnail = models.ImageField(
             _('Thumbnail'), null=True, upload_to=get_upload_path_files,

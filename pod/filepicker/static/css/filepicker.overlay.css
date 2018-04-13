@@ -1,0 +1,202 @@
+/* the overlayed element */
+.file-picker-overlay {
+
+    /* initially overlay is hidden */
+    display: none;
+
+    /* growing background image */
+    background-image: url(../img/white.png);
+
+    /*
+        width after the growing animation finishes
+        height is automatically calculated
+    */
+    width: 583px;
+    height: 450px;
+
+    /* some padding to layout nested elements nicely  */
+    padding: 35px;
+
+    /* a little styling */
+/*    font-size:11px;*/
+}
+
+/* default close button positioned on upper right corner */
+.file-picker-overlay .close {
+    background-image:url(../img/close.png);
+    position:absolute; right:5px; top:5px;
+    cursor:pointer;
+    height:35px;
+    width:35px;
+}
+
+/* directory list */
+.file-picker-directory.opened img {
+    margin-right: 3px;
+}
+.file-picker-directory.opened {
+    cursor: pointer;
+}
+.file-picker-directory.view img {
+    position: absolute;
+    margin-top: 5px;
+    margin-left: 520px;
+    width: 20px;
+}
+.file-picker-directory.add img,
+.file-picker-directory.delete img {
+    width: 15px;
+    margin-left: 4px;
+}
+.file-picker-directory.edit img {
+    width: 30px;
+}
+.file-picker-directory.view img,
+.file-picker-directory.edit img,
+.file-picker-directory.delete img,
+.file-picker-directory.opened img,
+.file-picker-directory.add img,
+.file-picker-back img {
+    cursor: pointer;
+}
+.file-picker-directories.pane {
+    overflow: auto;
+    width: 91%;
+    height: 82%;
+}
+.file-picker-directories.pane ul {
+    margin-left: 5px;
+}
+.file-picker-directories.pane td {
+    vertical-align: text-top;
+}
+.file-picker-directories.pane h2 {
+    text-align: left;
+}
+.file-picker-back img {
+    position: absolute;
+    margin-left: 550px;
+}
+#configure_form_errors {
+    color: red;
+}
+
+/* root element for tabs  */
+ul.css-tabs {
+	margin: 0 !important;
+	padding: 0;
+	height: 30px;
+	border-bottom: 1px solid #417690;
+}
+
+/* single tab */
+ul.css-tabs li {
+	float: left;
+	padding: 0;
+	margin: 0;
+	list-style-type: none;
+}
+
+/* link inside the tab. uses a background image */
+ul.css-tabs a {
+    display: block;
+	position: relative;
+	float: left;
+	top: 1px;
+	height: 12px;
+	margin: 0 2px 0 3px;
+	padding: 8px 30px;
+	font-size: 12px;
+	text-decoration: none;
+	border: 1px solid #417690;
+	border-bottom: 0px;
+	background-color: #417690;
+	color: #FFF;
+	-moz-border-radius-topleft: 6px;
+	-moz-border-radius-topright: 6px;
+	-webkit-border-top-left-radius: 6px;
+	-webkit-border-top-right-radius: 6px;
+}
+
+ul.css-tabs a:hover {
+	background-color: #B3C8D3;
+	color: #417690;
+	-webkit-transition: background-color 0.1s linear;
+    -moz-transition: background-color 0.1s linear;
+    -o-transition: background-color 0.1s linear;
+}
+
+/* selected tab */
+ul.css-tabs a.current {
+	background-color: #FFF;
+	border-bottom: 1px solid #FFF;
+	color: #417690;
+	cursor: default;
+}
+
+
+/* tab pane */
+div.panes div.pane {
+	display: none;
+	position: absolute;
+	padding-top: 5px;
+}
+
+/* Select Files */
+
+.file-picker-overlay .file-picker-search {
+    margin-bottom: 1em;
+}
+
+.file-picker-overlay .file-picker-search input {
+    margin-left: 5px;
+}
+
+.file-picker-overlay .scrollable {
+    width: 584px;
+    height: 350px;
+    overflow: auto;
+    border-top: 1px solid #EEE;
+}
+
+.file-picker-overlay .scrollable table {
+    width: 100%;
+}
+
+.file-picker-overlay .scrollable table img {
+    -moz-border-radius: 5px;
+    -khtml-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+.file-picker-overlay #select-a-file {
+    font-size: 12px;
+}
+
+.file-picker-overlay .runtime {
+    font-size: 10px;
+    color: #BBB;
+}
+
+.file-picker-overlay .upload-list {
+    margin-top: 8px;
+}
+
+.plupload {
+    cursor: pointer;
+}
+div.panes h2 {
+    font-size: 16px;
+    color: #333333;
+    font-weight: bold;
+    background: none;
+    padding: 0px;
+    margin: 0px;
+    margin-left: 5px;
+}
+div.footer {
+    margin-left:5px;
+}
+.wym_skin_default .wym_buttons li.wym_tools_file_add a {
+    background: url(../img/attach.png) no-repeat center center;
+}
