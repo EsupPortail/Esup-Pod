@@ -21,10 +21,6 @@ table.scroll tbody {
 	overflow-y: auto;
 	overflow-x: hidden;
 }
-table.scroll tbody,
-table.scroll thead {
-	display: block;
-}
 table.scroll tbody td,
 table.scroll thead th {
 	width: 10%;
@@ -60,6 +56,9 @@ table#table_list_contributors thead th.contributor_name {
 	border-top-right-radius: 3px;
 	padding: 4px 15px;
 }
+
+/** Forms **/
+
 
 /** Aside **/
 .info-card {

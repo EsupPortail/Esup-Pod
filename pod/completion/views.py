@@ -21,7 +21,37 @@ import json
 
 @csrf_protect
 def video_completion(request, slug):
-    return HttpResponse('TODO')
+    if not request.user.is_authenticated():
+        return PermissionDenied
+    video = get_object_or_404(Video, slug=slug)
+
+    if request.user != video.owner and not request.user.is_superuser:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot complement this video.'))
+        raise PermissionDenied
+    elif request.user.is_staff:
+        list_contributor = video.contributor_set.all()
+        list_track = video.track_set.all()
+        list_document = video.document_set.all()
+        list_overlay = video.overlay_set.all()
+    else:
+        list_contributor = video.contributor_set.all()
+
+    if request.user.is_staff:
+        return render(
+            request,
+            'video_completion.html',
+            {'video': video,
+             'list_contributor': list_contributor,
+             'list_track': list_track,
+             'list_document': list_document,
+             'list_overlay': list_overlay})
+    else:
+        return render(
+            request,
+            'video_completion.html',
+            {'video': video,
+             'list_contributor': list_contributor})
 
 
 @csrf_protect

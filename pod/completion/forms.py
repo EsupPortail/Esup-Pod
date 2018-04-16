@@ -17,11 +17,14 @@ class ContributorForm(forms.ModelForm):
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
             if self.fields[myField].required:
-                self.fields[myField].widget.attrs['class'] = 'required'
+                self.fields[myField].widget.attrs['class'] = 'form-control required'
                 label_unicode = u'{0}'.format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
                     '{0} <span class="special_class">*</span>'.format(
                         label_unicode))
+            else:
+                self.fields[myField].widget.attrs['class'] = 'form-control'
+        self.fields['role'].widget.attrs['class'] = 'custom-select'
 
     class Meta(object):
         model = Contributor
@@ -37,11 +40,13 @@ class DocumentForm(forms.ModelForm):
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
             if self.fields[myField].required:
-                self.fields[myField].widget.attrs['class'] = 'required'
+                self.fields[myField].widget.attrs['class'] = 'form-control required'
                 label_unicode = '{0}'.format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
                     '{0} <span class="special_class">*</span>'.format(
                         label_unicode))
+            else:
+                self.fields[myField].widget.attrs['class'] = 'form-control'
         pickers = {'file': "file"}
         self.fields['document'].widget = CustomFilePickerWidget(
             pickers=pickers)
@@ -73,11 +78,15 @@ class TrackForm(forms.ModelForm):
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
             if self.fields[myField].required or myField == 'src':
-                self.fields[myField].widget.attrs['class'] = 'required'
+                self.fields[myField].widget.attrs['class'] = 'form-control required'
                 label_unicode = u'{0}'.format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
                     '{0} <span class="special_class">*</span>'.format(
                         label_unicode))
+            else:
+                self.fields[myField].widget.attrs['class'] = 'form-control'
+        self.fields['kind'].widget.attrs['class'] = 'custom-select'
+        self.fields['lang'].widget.attrs['class'] = 'custom-select'
         pickers = {'file': "file"}
         self.fields['src'].widget = CustomFilePickerWidget(
             pickers=pickers)
@@ -119,11 +128,15 @@ class OverlayForm(forms.ModelForm):
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
             if self.fields[myField].required:
-                self.fields[myField].widget.attrs['class'] = 'required'
+                self.fields[myField].widget.attrs['class'] = 'form-control required'
                 label_unicode = u'{0}'.format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
                     '{0} <span class="special_class">*</span>'.format(
                         label_unicode))
+            else:
+                self.fields[myField].widget.attrs['class'] = 'form-control'
+        self.fields['position'].widget.attrs['class'] = 'custom-select'
+        self.fields['background'].widget.attrs['class'] = 'form-check-input'
 
     class Meta(object):
         model = Overlay

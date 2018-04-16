@@ -13,14 +13,14 @@
 			</tr>
 		</thead>
 		<tbody>
-			{% for document in list_document %}
+			{% for doc in list_document %}
 				<tr>
-					<td class="document_name">{{document.name}}</td>
+					<td class="document_name">{{doc.document.name}} ({{doc.document.file_type}})</td>
 					<td>
 						<form class="form_modif" action="{% url 'video_completion_document' slug=video.slug %}" method="POST">
 							{% csrf_token %}
 							<input type="hidden" name="action" value="modify"/>
-							<input type="hidden" name="id" value="{{document.id}}"/>
+							<input type="hidden" name="id" value="{{doc.id}}"/>
 							<input type="submit" title="{% trans 'Edit the additional resource' %}" value="{% trans 'modify' %}" class="edt_document btn btn-info btn-sm"/>
 						</form>
 					</td>
@@ -28,7 +28,7 @@
 						<form class="form_delete" action="{% url 'video_completion_document' slug=video.slug %}" method="POST">
 							{% csrf_token %}
 							<input type="hidden" name="action" value="delete"/>
-							<input type="hidden" name="id" value="{{document.id}}"/>
+							<input type="hidden" name="id" value="{{doc.id}}"/>
 							<input type="submit" title="{% trans 'Delete the additional resource' %}" value="{% trans 'delete' %}" class="edt_document btn btn-danger btn-sm"/>
 						</form>
 					</td>

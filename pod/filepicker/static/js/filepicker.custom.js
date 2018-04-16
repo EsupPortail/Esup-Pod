@@ -83,6 +83,5 @@ jQuery(document).ready(function($) {
     insertAtCaret = function(areaId, text) {
         $('input.simple-filepicker').attr('value', '');
         baseInsertAtCaret(areaId, text);
-        $('input.simple-filepicker').attr('value', text);
     }
 });

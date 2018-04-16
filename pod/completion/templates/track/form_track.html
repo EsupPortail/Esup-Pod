@@ -10,7 +10,18 @@
 				- {{error}}<br />
 			{% endfor %}
 		{% endif %}
-		{{form_track.as_p}}
+		{% for field_hidden in form_track.hidden_fields %}
+			{{field_hidden}}
+		{% endfor %}
+		{% for field in form_track.visible_fields %}
+			<div class="form-group row">
+				<label for="{{field.auto_id}}" class="col-sm-2 col-form-label">{{field.label}}</label>
+				<div class="col-sm-10">{{field}}</div>
+			</div>
+		{% endfor %}
+		{% if form_track.instance %}
+			<input type="hidden" id="id_track" name="track_id" value="{{form_track.instance.id}}">
+		{% endif %}
 		<input type="hidden" name="action" value="save"/>
 		<input type="submit" id="save_track" value="{% trans 'save' %}" class="btn btn-info"/>
 		<input type="reset" action="cancel" id="cancel_track" value="{% trans 'cancel' %}" class="btn btn-danger"/>

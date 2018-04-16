@@ -111,11 +111,11 @@ class Document(models.Model):
 
     video = models.ForeignKey(Video, verbose_name=_('Video'))
     if FILEPICKER:
-        document = models.CharField(
-            verbose_name=_('Document'),
+        document = models.ForeignKey(
+            CustomFileModel,
             null=True,
             blank=True,
-            max_length=255
+            verbose_name=_('Document')
         )
     else:
         document = models.FileField(
@@ -138,8 +138,6 @@ class Document(models.Model):
         msg = list()
         if not self.document:
             msg.append(_('Please enter a document.'))
-        if not self.document.startswith('/media/'):
-            msg.append(_('Please enter a correct path for the document.'))
         if len(msg) > 0:
             return msg
         else:
@@ -163,12 +161,8 @@ class Document(models.Model):
 
     def __str__(self):
         return u'Document: {0} - Video: {1}'.format(
-            self.document,
+            self.document.name,
             self.video)
-
-    def name(self):
-        return CustomFileModel.objects.get(
-            file=self.document.split('/media/')[1]).name
 
 
 class Track(models.Model):
@@ -191,12 +185,10 @@ class Track(models.Model):
     )
     lang = models.CharField(_('Language'), max_length=2, choices=LANG_CHOICES)
     if FILEPICKER:
-        src = models.CharField(
-            _('Subtitle file'),
-            null=True,
-            blank=True,
-            max_length=255,
-        )
+        src = models.ForeignKey(CustomFileModel,
+                                blank=True,
+                                null=True,
+                                verbose_name=_('Subtitle file'))
     else:
         src = models.FileField(
             _('Subtitle file'),
@@ -224,9 +216,7 @@ class Track(models.Model):
             msg.append(_('Please enter a language.'))
         if not self.src:
             msg.append(_('Please specify a track file.'))
-        elif not self.src.startswith('/media/'):
-            msg.append(_('Please enter a correct path for the track file.'))
-        elif not self.src.endswith('.vtt'):
+        elif not self.src.file_type == 'VTT':
             msg.append(_('Only ".vtt" format is allowed.'))
         if len(msg) > 0:
             return msg
@@ -249,13 +239,9 @@ class Track(models.Model):
     def __str__(self):
         return u'{0} - File: {1} - Video: {2}'.format(
             self.kind,
-            self.src,
+            self.src.name,
             self.video
         )
-
-    def name(self):
-        return CustomFileModel.objects.get(
-            file=self.src.split('/media/')[1]).name
 
 
 class Overlay(models.Model):

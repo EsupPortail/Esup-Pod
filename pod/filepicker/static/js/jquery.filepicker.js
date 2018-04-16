@@ -664,5 +664,5 @@ function insertAtCaret(areaId,text) {
 function insertAtCaret(areaId, text) {
     var txtarea = $('#'+areaId);
     txtarea.attr('value', text.id);
-    $('#file-picker-path').text(text.name + ' (' + text.file_type + ') ');
+    $('#file-picker-path').text(text.name + ' (' + text.file_type + ')');
 }
