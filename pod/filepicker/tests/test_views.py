@@ -287,8 +287,7 @@ class DirectoryViewTestCase(TestCase):
         UserDirectory.objects.create(owner=user, name='Child', parent=home)
 
     def test_list_directories(self):
-        user = User.objects.get(id=1)
-        user = authenticate(username='test', password='hello')
+        authenticate(username='test', password='hello')
         login = self.client.login(username='test', password='hello')
         self.assertTrue(login)
         response = self.client.get('/file-picker/file/directories/')
@@ -311,8 +310,7 @@ class DirectoryViewTestCase(TestCase):
         print(" ---> test_list_directories : OK!")
 
     def test_edit_directory(self):
-        user = User.objects.get(id=1)
-        user = authenticate(username='test', password='hello')
+        authenticate(username='test', password='hello')
         login = self.client.login(username='test', password='hello')
         self.assertTrue(login)
         response = self.client.get('/file-picker/file/directories/configure/')
@@ -350,8 +348,7 @@ class DirectoryViewTestCase(TestCase):
         print(". ---> test_edit_directory : OK !")
 
     def test_new_directory(self):
-        user = User.objects.get(id=1)
-        user = authenticate(username='test', password='hello')
+        authenticate(username='test', password='hello')
         login = self.client.login(username='test', password='hello')
         self.assertTrue(login)
         response = self.client.get('/file-picker/file/directories/configure/')
@@ -397,8 +394,7 @@ class DirectoryViewTestCase(TestCase):
         print(" [ END FILEPICKER_DIRECTORY VIEWS ] ")
 
     def test_delete_directory(self):
-        user = User.objects.get(id=1)
-        user = authenticate(username='test', password='hello')
+        authenticate(username='test', password='hello')
         login = self.client.login(username='test', password='hello')
         self.assertTrue(login)
         response = self.client.get('/file-picker/file/directories/configure/')
