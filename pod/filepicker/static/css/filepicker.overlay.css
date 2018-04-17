@@ -77,8 +77,18 @@
     position: absolute;
     margin-left: 550px;
 }
-#configure_form_errors {
+#configure_form_errors,
+.errors-list p {
     color: red;
+}
+.errors-list {
+    position: absolute;
+    left: 70%;
+    bottom: 80%;
+    border: 2px red solid;
+    padding: 5px;
+    border-radius: 5%;
+    display: none;
 }
 
 /* root element for tabs  */
@@ -199,4 +209,8 @@ div.footer {
 }
 .wym_skin_default .wym_buttons li.wym_tools_file_add a {
     background: url(../img/attach.png) no-repeat center center;
+}
+.add_to_model {
+    position: absolute;
+    bottom: 5px;
 }
