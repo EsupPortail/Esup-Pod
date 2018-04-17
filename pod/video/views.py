@@ -6,15 +6,13 @@ from django.views.decorators.csrf import csrf_protect
 
 from pod.video.models import Video
 
-from string import find
-
 # Create your views here.
 
 
 @csrf_protect
 def video(request, slug):
     try:
-        id = int(slug[:find(slug, "-")])
+        id = int(slug[:slug.find("-")])
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
     video = get_object_or_404(Video, id=id)

@@ -300,12 +300,9 @@ class Video(models.Model):
     main_lang = models.CharField(
         _('Main language'), max_length=2,
         choices=MAIN_LANG_CHOICES, default=get_language())
-    overview = models.ImageField(
-        _('Overview'), null=True, upload_to=get_upload_path_files,
-        blank=True, max_length=255, editable=False)
     duration = models.IntegerField(
         _('Duration'), default=0, editable=False, blank=True)
-    infoVideo = models.TextField(null=True, blank=True, editable=False)
+
     is_draft = models.BooleanField(
         verbose_name=_('Draft'),
         help_text=_(
@@ -339,6 +336,10 @@ class Video(models.Model):
                                       blank=True, null=True,
                                       verbose_name=_('Thumbnails'))
 
+    overview = models.ImageField(
+        _('Overview'), null=True, upload_to=get_upload_path_files,
+        blank=True, max_length=255, editable=False)
+
     type = models.ForeignKey(Type, verbose_name=_('Type'),
                              default=DEFAULT_TYPE_ID)
     discipline = models.ManyToManyField(
@@ -354,6 +355,7 @@ class Video(models.Model):
 
     encoding_in_progress = models.BooleanField(
         _('Encoding in progress'), default=False, editable=False)
+    # encoding_status = 
 
     def save(self, *args, **kwargs):
         newid = -1
@@ -389,7 +391,7 @@ class Video(models.Model):
     duration_in_time.allow_tags = True
 
     def get_absolute_url(self):
-        return reverse('pod.video.views.video', args=[str(self.slug)])
+        return reverse('video', args=[str(self.slug)])
 
 
 class ViewCount(models.Model):

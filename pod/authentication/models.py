@@ -74,6 +74,10 @@ class Owner(models.Model):
             (SECRET_KEY + self.user.username).encode('utf-8')).hexdigest()
         super(Owner, self).save(*args, **kwargs)
 
+    @property
+    def email(self):
+        return self.user.email
+
 
 @receiver(post_save, sender=User)
 def create_owner_profile(sender, instance, created, **kwargs):
