@@ -13,14 +13,17 @@ from pod.video.views import video
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+
+    # Exterior apps
     url(r'^i18n/', include('django.conf.urls.i18n')),
 
     # App video
     url(r'^video/(?P<slug>[\-\d\w]+)/$', video, name='video')
 ]
 
-if apps.is_installed('filepicker'):
-    urlpatterns += [url(r'^file-picker/', include('pod.filepicker.urls')), ]
+if apps.is_installed('pod.filepicker'):
+    from pod.filepicker.sites import site as filepicker_site
+    urlpatterns += [url(r'^file-picker/', include(filepicker_site.urls)), ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,

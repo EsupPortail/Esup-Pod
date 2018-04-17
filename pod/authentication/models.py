@@ -7,7 +7,7 @@ from django.db.models.signals import post_save
 from django.apps import apps
 from django.template.defaultfilters import slugify
 try:
-    from filepicker.models import CustomImageModel
+    from pod.filepicker.models import CustomImageModel
 except ImportError:
     pass
 
@@ -17,7 +17,7 @@ import logging
 import traceback
 logger = logging.getLogger(__name__)
 
-FILEPICKER = True if apps.is_installed('filepicker') else False
+FILEPICKER = True if apps.is_installed('pod.filepicker') else False
 AUTH_TYPE = getattr(
     settings, 'AUTH_TYPE', (('local', _('local')), ('CAS', 'CAS')))
 AFFILIATION = getattr(
