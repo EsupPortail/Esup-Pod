@@ -44,6 +44,23 @@ DEBUG = True
 ALLOWED_HOSTS = ['localhost']
 
 ##
+# A tuple that lists people who get code error notifications
+#   when DEBUG=False and a view raises an exception.
+#
+#   https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-ADMINS
+#
+ADMINS = (
+    ('Name', 'adminmail@univ.fr'),
+)
+##
+# A tuple that lists people who get other notifications
+#   email from contact_us / end of encoding / report video
+#
+#   https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-MANAGERS
+MANAGERS = (
+    ('Name', 'adminmail@univ.fr'),
+)
+##
 # A dictionary containing the settings for all databases
 # to be used with Django.
 #

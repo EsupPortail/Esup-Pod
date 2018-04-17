@@ -7,6 +7,7 @@ from django.template.defaultfilters import slugify
 from django.db.models import Sum
 from django.contrib.auth.models import Group
 from django.apps import apps
+from django.urls import reverse
 try:
     from filepicker.models import CustomImageModel
 except ImportError:
@@ -61,7 +62,23 @@ LICENCE_CHOICES = getattr(
         ('BY SA', _(
             "Attribution + Partage dans les mêmes conditions"))
     ))
-
+FORMAT_CHOICES = getattr(
+    settings, 'FORMAT_CHOICES', (
+        ("video/mp4", 'video/mp4'),
+        ("video/mp2t", 'video/mp2t'),
+        ("video/webm", 'video/webm'),
+        ("audio/mp3", "audio/mp3"),
+        ("audio/wav", "audio/wav"),
+        ("application/x-mpegURL", "application/x-mpegURL"),
+    ))
+ENCODING_CHOICES = getattr(
+    settings, 'ENCODING_CHOICES', (
+        ("audio", "audio"),
+        ("360p", "360p"),
+        ("480p", "480p"),
+        ("720p", "720p"),
+        ("playlist", "playlist")
+    ))
 # FUNCTIONS
 
 
@@ -335,6 +352,9 @@ class Video(models.Model):
         _('Licence'), max_length=8,
         choices=LICENCE_CHOICES, blank=True, null=True)
 
+    encoding_in_progress = models.BooleanField(
+        _('Encoding in progress'), default=False, editable=False)
+
     def save(self, *args, **kwargs):
         newid = -1
         if not self.id:
@@ -368,10 +388,144 @@ class Video(models.Model):
     duration_in_time.short_description = _('Duration')
     duration_in_time.allow_tags = True
 
+    def get_absolute_url(self):
+        return reverse('pod.video.views.video', args=[str(self.slug)])
+
 
 class ViewCount(models.Model):
-    video = models.ForeignKey(Video)
+    video = models.ForeignKey(Video, verbose_name=_('Video'))
     date = models.DateField(
         _(u'Date'), default=datetime.now)
     count = models.IntegerField(
         _('Number of view'), default=0, editable=False)
+
+
+class VideoRendition(models.Model):
+    resolution = models.CharField(
+        _('resolution'),
+        max_length=250,
+        help_text="Please use the only format x. i.e.: "
+        + "<em>640x360</em> or <em>1280x720</em> or <em>1920x1080</em>.")
+    video_bitrate = models.CharField(
+        _('bitrate video'),
+        max_length=250,
+        help_text="Please use the only format k. i.e.: "
+        + "<em>300k</em> or <em>600k</em> or <em>1000k</em>.")
+    audio_bitrate = models.CharField(
+        _('bitrate audio'),
+        max_length=250,
+        help_text="Please use the only format k. i.e.: "
+        + "<em>300k</em> or <em>600k</em> or <em>1000k</em>.")
+    encode_mp4 = models.BooleanField(_('Make a MP4 version'), default=False)
+
+    def __str__(self):
+        return "%s - %s" % ('%04d' % self.id, self.resolution)
+
+
+class EncodingVideo(models.Model):
+    name = models.CharField(
+        _('Name'),
+        max_length=10,
+        choices=ENCODING_CHOICES,
+        default="360p")
+    video = models.ForeignKey(Video, verbose_name=_('Video'))
+    rendition = models.ForeignKey(
+        VideoRendition, verbose_name=_('rendition'))
+    encoding_format = models.CharField(
+        _('Format'),
+        max_length=22,
+        choices=FORMAT_CHOICES,
+        default="video/mp4")
+    source_file = models.FileField(
+        _('encoding source file'),
+        upload_to=get_storage_path_video,
+        max_length=255)
+
+    def __str__(self):
+        return "%s - %s - %s - %s - %s" % ('%04d' % self.id,
+                                           self.name,
+                                           self.video,
+                                           self.rendition.resolution,
+                                           self.encoding_format)
+
+    @property
+    def owner(self):
+        return self.video.owner
+
+    def delete(self):
+        if self.source_file:
+            if os.path.isfile(self.source_file.path):
+                os.remove(self.source_file.path)
+        super(EncodingVideo, self).delete()
+
+
+class EncodingAudio(models.Model):
+    name = models.CharField(
+        _('Name'), max_length=10, choices=ENCODING_CHOICES, default="360p")
+    video = models.ForeignKey(Video, verbose_name=_('Video'))
+    encoding_format = models.CharField(
+        _('Format'), max_length=22, choices=FORMAT_CHOICES,
+        default="video/mp4")
+    source_file = models.FileField(
+        _('encoding source file'),
+        upload_to=get_storage_path_video,
+        max_length=255)
+
+    def __str__(self):
+        return "%s - %s - %s - %s" % ('%04d' % self.id,
+                                      self.name,
+                                      self.video,
+                                      self.encoding_format)
+
+    @property
+    def owner(self):
+        return self.video.owner
+
+    def delete(self):
+        if self.source_file:
+            if os.path.isfile(self.source_file.path):
+                os.remove(self.source_file.path)
+        super(EncodingAudio, self).delete()
+
+
+class PlaylistM3U8(models.Model):
+    name = models.CharField(
+        _('Name'),
+        max_length=10,
+        choices=ENCODING_CHOICES,
+        default="360p")
+    video = models.ForeignKey(Video, verbose_name=_('Video'))
+    encoding_format = models.CharField(
+        _('Format'),
+        max_length=22,
+        choices=FORMAT_CHOICES,
+        default="video/mp4")
+    source_file = models.FileField(
+        _('encoding source file'),
+        upload_to=get_storage_path_video,
+        max_length=255)
+
+    def __str__(self):
+        return "%s - %s - %s - %s" % ('%04d' % self.id,
+                                      self.name,
+                                      self.video,
+                                      self.encoding_format)
+
+    @property
+    def owner(self):
+        return self.video.owner
+
+    def delete(self):
+        if self.source_file:
+            if os.path.isfile(self.source_file.path):
+                os.remove(self.source_file.path)
+        super(PlaylistM3U8, self).delete()
+
+
+class EncodingLog(models.Model):
+    video = models.ForeignKey(Video, verbose_name=_('Video'), editable=False)
+    log = models.TextField(null=True, blank=True, editable=False)
+
+    def __str__(self):
+        return "%s - %s" % ('%04d' % self.id,
+                            self.video)

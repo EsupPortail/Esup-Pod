@@ -8,11 +8,15 @@ from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.apps import apps
+from pod.video.views import video
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^i18n/', include('django.conf.urls.i18n')),
+
+    # App video
+    url(r'^video/(?P<slug>[\-\d\w]+)/$', video, name='video')
 ]
 
 if apps.is_installed('filepicker'):
