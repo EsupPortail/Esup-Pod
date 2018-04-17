@@ -318,15 +318,6 @@ function verify_fields(form) {
 				.before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please select a document.' %}</span>")
 				.parents('div.form-group').addClass('has-error');
 		}
-		$('#table_list_documents tbody > tr').each(function() {
-			var id = parseInt(document.getElementById('id_document').value);
-			var name_doc = document.getElementById('id_document_description_txt').innerHTML;
-			if (id != $(this).find('input(name=id]')[0].value && name_doc == $(this).find('td[class=download_document]')[0].innerHTML) {
-				var text = "{% trans 'There is already a download with the same name of document in the list.' %}.";
-				msg += '<br/>' + text;
-				return msg;
-			}
-		});
 	} else if (form == 'form_overlay') {
 		var tags = /<script.+?>|<iframe.+?>/;
 		if (tags.exec(document.getElementById('id_content').value) != null) {

@@ -13,15 +13,18 @@ from pod.completion.models import Track
 try:
     __import__('pod.filepicker')
     FILEPICKER = True
+    from pod.filepicker.models import CustomFileModel
+    from pod.filepicker.models import UserDirectory
 except ImportError:
     FILEPICKER = False
     pass
+from datetime import datetime
 
 
 class ContributorModelTestCase(TestCase):
 
     def setUp(self):
-        test = User.objects.create(username='test')
+        User.objects.create(username='test')
         owner = Owner.objects.get(user__username='test')
         video = Video.objects.create(
             title='video',
@@ -49,7 +52,7 @@ class ContributorModelTestCase(TestCase):
         self.assertEqual(contributor.role, 'actor')
         self.assertEqual(contributor.weblink, 'http://pod.com')
 
-        print(" ---> test_attributs_full : OK !")
+        print(" ---> test_attributs_full : OK ! --- ContributorModel")
 
     def test_attributs(self):
         contributor = Contributor.objects.get(id=2)
@@ -60,13 +63,13 @@ class ContributorModelTestCase(TestCase):
         self.assertEqual(contributor.role, 'author')
         self.assertEqual(contributor.weblink, None)
 
-        print(" ---> test_attributs : OK !")
+        print(" [ BEGIN COMPLETION_TEST_MODELS ] ")
+        print(" ---> test_attributs : OK ! --- ContributorModel")
 
     def test_clean(self):
         Contributor.objects.get(id=1).delete()
         Contributor.objects.get(id=2).delete()
         self.assertTrue(Contributor.objects.all().count() == 0)
-        print(" [ContributorModel --- END] ")
 
 
 class DocumentModelTestCase(TestCase):
@@ -80,19 +83,30 @@ class DocumentModelTestCase(TestCase):
             video='test.mp4'
         )
         if FILEPICKER:
-            Document.objects.create(
-                video=video,
-                document='/media/files/' + owner.hashkey + '/testfile.txt'
+            testfile = SimpleUploadedFile(
+                name='testfile.vtt',
+                content=open(
+                    './pod/completion/tests/testfile.vtt', 'rb').read(),
+                content_type='text/plain')
+            home = UserDirectory.objects.create(name='Home', owner=user)
+            file = CustomFileModel.objects.create(
+                name='testfile',
+                date_created=datetime.now(),
+                date_modified=datetime.now(),
+                created_by=user,
+                modified_by=user,
+                directory=home,
+                file=testfile
             )
         else:
             file = SimpleUploadedFile(
-                name='testfile.txt',
+                name='testfile.vtt',
                 content=open(
-                    './pod/filepicker/tests/testfile.txt', 'rb').read(),
+                    './pod/completion/tests/testfile.vtt', 'rb').read(),
                 content_type='text/plain')
-            Document.objects.create(
-                video=video,
-                document=file)
+        Document.objects.create(
+            video=video,
+            document=file)
         Document.objects.create(
             video=video
         )
@@ -102,11 +116,11 @@ class DocumentModelTestCase(TestCase):
         video = Video.objects.get(id=1)
         self.assertEqual(document.video, video)
         if FILEPICKER:
-            self.assertTrue(isinstance(document.document, str))
+            self.assertTrue(document.document.name, 'testfile')
         else:
             self.assertTrue(document.document.name, 'testfile.txt')
 
-        print(" ---> test_attributs_full : OK !")
+        print(" ---> test_attributs_full : OK ! --- DocumentModel")
 
     def test_attributs(self):
         document = Document.objects.get(id=2)
@@ -114,19 +128,18 @@ class DocumentModelTestCase(TestCase):
         self.assertEqual(document.video, video)
         self.assertEqual(document.document, None)
 
-        print(" ---> test_attributs : OK !")
+        print(" ---> test_attributs : OK ! --- DocumentModel")
 
     def test_clean(self):
         Document.objects.get(id=1).delete()
         Document.objects.get(id=2).delete()
         self.assertTrue(Document.objects.all().count() == 0)
-        print(" [DocumentModel --- END] ")
 
 
 class OverlayModelTestCase(TestCase):
 
     def setUp(self):
-        user = User.objects.create(username='test')
+        User.objects.create(username='test')
         owner = Owner.objects.get(user__username='test')
         video = Video.objects.create(
             title='video',
@@ -155,7 +168,7 @@ class OverlayModelTestCase(TestCase):
         self.assertEqual(overlay.time_end, 5)
         self.assertEqual(overlay.position, 'top-left')
 
-        print(" ---> test_attributs_full : OK !")
+        print(" ---> test_attributs_full : OK ! --- OverlayModel")
 
     def test_attributs(self):
         overlay = Overlay.objects.get(id=2)
@@ -168,13 +181,12 @@ class OverlayModelTestCase(TestCase):
         self.assertEqual(overlay.position, 'bottom-right')
         self.assertTrue(overlay.background)
 
-        print(" ---> test_attributs : OK !")
+        print(" ---> test_attributs : OK ! --- OverlayModel")
 
     def test_clean(self):
         Overlay.objects.get(id=1).delete()
         Overlay.objects.get(id=2).delete()
         self.assertTrue(Overlay.objects.all().count() == 0)
-        print(" [OverlayModel --- END] ")
 
 
 class TrackModelTestCase(TestCase):
@@ -187,10 +199,33 @@ class TrackModelTestCase(TestCase):
             owner=owner,
             video='test.mp4'
         )
+        if FILEPICKER:
+            testfile = SimpleUploadedFile(
+                name='testfile.vtt',
+                content=open(
+                    './pod/completion/tests/testfile.vtt', 'rb').read(),
+                content_type='text/plain')
+            home = UserDirectory.objects.create(name='Home', owner=user)
+            file = CustomFileModel.objects.create(
+                name='testfile',
+                date_created=datetime.now(),
+                date_modified=datetime.now(),
+                created_by=user,
+                modified_by=user,
+                directory=home,
+                file=testfile
+            )
+        else:
+            file = SimpleUploadedFile(
+                name='testfile.vtt',
+                content=open(
+                    './pod/completion/tests/testfile.vtt', 'rb').read(),
+                content_type='text/plain')
         Track.objects.create(
             video=video,
             lang='fr',
-            kind='captions'
+            kind='captions',
+            src=file
         )
         Track.objects.create(
             video=video,
@@ -203,8 +238,9 @@ class TrackModelTestCase(TestCase):
         self.assertEqual(track.video, video)
         self.assertEqual(track.lang, 'fr')
         self.assertEqual(track.kind, 'captions')
+        self.assertEqual(track.src.name, 'testfile')
 
-        print(" ---> test_attributs_full : OK !")
+        print(" ---> test_attributs_full : OK ! --- TrackModel")
 
     def test_attributs(self):
         track = Track.objects.get(id=2)
@@ -214,10 +250,10 @@ class TrackModelTestCase(TestCase):
         self.assertEqual(track.kind, 'subtitles')
         self.assertEqual(track.src, None)
 
-        print(" ---> test_attributs : OK !")
+        print(" ---> test_attributs : OK ! --- TrackModel")
 
     def test_clean(self):
         Track.objects.get(id=1).delete()
         Track.objects.get(id=2).delete()
         self.assertTrue(Overlay.objects.all().count() == 0)
-        print(" [TrackModel --- END] ")
+        print(" [ END COMPLETION_TEST_MODELS ] ")

@@ -1,6 +1,6 @@
-from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.http import HttpResponse
+from django.http import HttpResponseForbidden
 from django.template.loader import render_to_string
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
@@ -22,13 +22,13 @@ import json
 @csrf_protect
 def video_completion(request, slug):
     if not request.user.is_authenticated():
-        return PermissionDenied
+        return HttpResponseForbidden('You need to be authenticated.')
     video = get_object_or_404(Video, slug=slug)
 
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner.user and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
-        raise PermissionDenied
+        return HttpResponseForbidden('Only the owner can add completion.')
     elif request.user.is_staff:
         list_contributor = video.contributor_set.all()
         list_track = video.track_set.all()
@@ -57,12 +57,12 @@ def video_completion(request, slug):
 @csrf_protect
 def video_completion_contributor(request, slug):
     if not request.user.is_authenticated():
-        raise PermissionDenied
+        return HttpResponseForbidden()
     video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner.user and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
-        raise PermissionDenied
+        return HttpResponseForbidden()
 
     list_contributor = video.contributor_set.all()
     list_track = video.track_set.all()
@@ -114,7 +114,7 @@ def video_completion_contributor(request, slug):
                 else:
                     return render(
                         request,
-                        'videos/video_completion.html',
+                        'video_completion.html',
                         {'video': video,
                          'list_contributor': list_contributor,
                          'list_document': list_document,
@@ -132,16 +132,15 @@ def video_completion_contributor(request, slug):
                     }
                     data = json.dumps(some_data_to_dump)
                     return HttpResponse(data, content_type='application/json')
-                else:
-                    return render(
-                        request,
-                        'video_completion.html',
-                        {'video': video,
-                         'list_contributor': list_contributor,
-                         'form_contributor': form_contributor,
-                         'list_document': list_document,
-                         'list_track': list_track,
-                         'list_overlay': list_overlay})
+                return render(
+                    request,
+                    'video_completion.html',
+                    {'video': video,
+                     'list_contributor': list_contributor,
+                     'form_contributor': form_contributor,
+                     'list_document': list_document,
+                     'list_track': list_track,
+                     'list_overlay': list_overlay})
 
         if request.POST.get('action') and request.POST['action'] == 'modify':
             contributor = get_object_or_404(
@@ -153,16 +152,15 @@ def video_completion_contributor(request, slug):
                     'contributor/form_contributor.html',
                     {'form_contributor': form_contributor,
                      'video': video})
-            else:
-                return render(
-                    request,
-                    'video_completion.html',
-                    {'video': video,
-                     'list_contributor': list_contributor,
-                     'form_contributor': form_contributor,
-                     'list_document': list_document,
-                     'list_track': list_track,
-                     'list_overlay': list_overlay})
+            return render(
+                request,
+                'video_completion.html',
+                {'video': video,
+                 'list_contributor': list_contributor,
+                 'form_contributor': form_contributor,
+                 'list_document': list_document,
+                 'list_track': list_track,
+                 'list_overlay': list_overlay})
 
         if request.POST.get('action') and request.POST['action'] == 'delete':
             contributor = get_object_or_404(
@@ -179,14 +177,13 @@ def video_completion_contributor(request, slug):
                 }
                 data = json.dumps(some_data_to_dump)
                 return HttpResponse(data, content_type='application/json')
-            else:
-                return render(
-                    request,
-                    'video_completion.html',
-                    {'video': video,
-                     'list_document': list_document,
-                     'list_track': list_track,
-                     'list_overlay': list_overlay})
+            return render(
+                request,
+                'video_completion.html',
+                {'video': video,
+                 'list_document': list_document,
+                 'list_track': list_track,
+                 'list_overlay': list_overlay})
 
     return render(
         request,
@@ -200,13 +197,13 @@ def video_completion_contributor(request, slug):
 
 @csrf_protect
 def video_completion_document(request, slug):
-    if not request.user.is_authenticated():
-        raise PermissionDenied
+    if not request.user.is_authenticated() or not request.user.is_staff:
+        return HttpResponseForbidden()
     video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner.user and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
-        raise PermissionDenied
+        return HttpResponseForbidden()
 
     list_contributor = video.contributor_set.all()
     list_document = video.document_set.all()
@@ -235,6 +232,14 @@ def video_completion_document(request, slug):
 
         if request.POST.get('action') and request.POST['action'] == 'save':
             form_document = DocumentForm(request.POST)
+            if (request.POST.get('document_id') and
+                    request.POST['document_id'] != 'None'):
+                document = get_object_or_404(
+                    Document, id=request.POST['document_id'])
+                form_document = DocumentForm(
+                    request.POST, instance=document)
+            else:
+                form_document = DocumentForm(request.POST)
             if form_document.is_valid():
                 form_document.save()
                 list_document = video.document_set.all()
@@ -340,12 +345,12 @@ def video_completion_document(request, slug):
 @csrf_protect
 def video_completion_track(request, slug):
     if not request.user.is_authenticated() or not request.user.is_staff:
-        raise PermissionDenied
+        return HttpResponseForbidden()
     video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner.user and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
-        raise PermissionDenied
+        return HttpResponseForbidden()
 
     list_contributor = video.contributor_set.all()
     list_track = video.track_set.all()
@@ -374,6 +379,14 @@ def video_completion_track(request, slug):
 
         if request.POST.get('action') and request.POST['action'] == 'save':
             form_track = TrackForm(request.POST)
+            if (request.POST.get('track_id') and
+                    request.POST['track_id'] != 'None'):
+                track = get_object_or_404(
+                    Track, id=request.POST['track_id'])
+                form_track = TrackForm(
+                    request.POST, instance=track)
+            else:
+                form_track = TrackForm(request.POST)
             if form_track.is_valid():
                 form_track.save()
                 list_track = video.track_set.all()
@@ -474,21 +487,21 @@ def video_completion_track(request, slug):
 
 @csrf_protect
 def video_completion_overlay(request, slug):
-    if not request.user.is_authenticated() or not request.user.is_superuser:
-        raise PermissionDenied
+    if not request.user.is_authenticated() or not request.user.is_staff:
+        return HttpResponseForbidden()
     video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner.user and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
-        raise PermissionDenied
+        return HttpResponseForbidden()
 
     list_contributor = video.contributor_set.all()
     list_document = video.document_set.all()
     list_track = video.track_set.all()
     list_overlay = video.overlay_set.all()
 
-    if request.POST:
-        if request.POST.get('action') and request.POST['action'] == 'new':
+    if request.POST and request.POST.get('action'):
+        if request.POST['action'] == 'new':
             form_overlay = OverlayForm(initial={'video': video})
             if request.is_ajax():
                 return render(
@@ -496,19 +509,26 @@ def video_completion_overlay(request, slug):
                     'overlay/form_overlay.html',
                     {'form_overlay': form_overlay,
                      'video': video})
-            else:
-                return render(
-                    request,
-                    'video_completion.html',
-                    {'video': video,
-                     'list_contributor': list_contributor,
-                     'list_document': list_document,
-                     'list_track': list_track,
-                     'list_overlay': list_overlay,
-                     'form_overlay': form_overlay})
+            return render(
+                request,
+                'video_completion.html',
+                {'video': video,
+                 'list_contributor': list_contributor,
+                 'list_document': list_document,
+                 'list_track': list_track,
+                 'list_overlay': list_overlay,
+                 'form_overlay': form_overlay})
 
-        if request.POST.get('action') and request.POST['action'] == 'save':
+        elif request.POST['action'] == 'save':
             form_overlay = OverlayForm(request.POST)
+            if (request.POST.get('overlay_id') and
+                    request.POST['overlay_id'] != 'None'):
+                overlay = get_object_or_404(
+                    Overlay, id=request.POST['overlay_id'])
+                form_overlay = OverlayForm(
+                    request.POST, instance=overlay)
+            else:
+                form_overlay = OverlayForm(request.POST)
             if form_overlay.is_valid():
                 form_overlay.save()
                 list_overlay = video.overlay_set.all()
@@ -522,15 +542,14 @@ def video_completion_overlay(request, slug):
                     }
                     data = json.dumps(some_data_to_dump)
                     return HttpResponse(data, content_type='application/json')
-                else:
-                    return render(
-                        request,
-                        'video_completion.html',
-                        {'video': video,
-                         'list_contributor': list_contributor,
-                         'list_document': list_document,
-                         'list_track': list_track,
-                         'list_overlay': list_overlay})
+                return render(
+                    request,
+                    'video_completion.html',
+                    {'video': video,
+                     'list_contributor': list_contributor,
+                     'list_document': list_document,
+                     'list_track': list_track,
+                     'list_overlay': list_overlay})
             else:
                 if request.is_ajax():
                     some_data_to_dump = {
@@ -543,17 +562,6 @@ def video_completion_overlay(request, slug):
                     }
                     data = json.dumps(some_data_to_dump)
                     return HttpResponse(data, content_type='application/json')
-
-        if request.POST.get('action') and request.POST['action'] == 'modify':
-            overlay = get_object_or_404(Overlay, id=request.POST['id'])
-            form_overlay = OverlayForm(instance=overlay)
-            if request.is_ajax():
-                return render(
-                    request,
-                    'overlay/form_overlay.html',
-                    {'form_overlay': form_overlay,
-                     'video': video})
-            else:
                 return render(
                     request,
                     'video_completion.html',
@@ -564,7 +572,26 @@ def video_completion_overlay(request, slug):
                      'list_overlay': list_overlay,
                      'form_overlay': form_overlay})
 
-        if request.POST.get('action') and request.POST['action'] == 'delete':
+        elif request.POST['action'] == 'modify':
+            overlay = get_object_or_404(Overlay, id=request.POST['id'])
+            form_overlay = OverlayForm(instance=overlay)
+            if request.is_ajax():
+                return render(
+                    request,
+                    'overlay/form_overlay.html',
+                    {'form_overlay': form_overlay,
+                     'video': video})
+            return render(
+                request,
+                'video_completion.html',
+                {'video': video,
+                 'list_contributor': list_contributor,
+                 'list_document': list_document,
+                 'list_track': list_track,
+                 'list_overlay': list_overlay,
+                 'form_overlay': form_overlay})
+
+        elif request.POST['action'] == 'delete':
             overlay = get_object_or_404(Overlay, id=request.POST['id'])
             overlay.delete()
             list_overlay = video.overlay_set.all()

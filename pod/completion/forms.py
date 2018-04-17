@@ -17,7 +17,8 @@ class ContributorForm(forms.ModelForm):
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
             if self.fields[myField].required:
-                self.fields[myField].widget.attrs['class'] = 'form-control required'
+                self.fields[myField].widget.attrs[
+                    'class'] = 'form-control required'
                 label_unicode = u'{0}'.format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
                     '{0} <span class="special_class">*</span>'.format(
@@ -40,7 +41,8 @@ class DocumentForm(forms.ModelForm):
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
             if self.fields[myField].required:
-                self.fields[myField].widget.attrs['class'] = 'form-control required'
+                self.fields[myField].widget.attrs[
+                    'class'] = 'form-control required'
                 label_unicode = '{0}'.format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
                     '{0} <span class="special_class">*</span>'.format(
@@ -78,7 +80,8 @@ class TrackForm(forms.ModelForm):
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
             if self.fields[myField].required or myField == 'src':
-                self.fields[myField].widget.attrs['class'] = 'form-control required'
+                self.fields[myField].widget.attrs[
+                    'class'] = 'form-control required'
                 label_unicode = u'{0}'.format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
                     '{0} <span class="special_class">*</span>'.format(
@@ -128,7 +131,8 @@ class OverlayForm(forms.ModelForm):
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
             if self.fields[myField].required:
-                self.fields[myField].widget.attrs['class'] = 'form-control required'
+                self.fields[myField].widget.attrs[
+                    'class'] = 'form-control required'
                 label_unicode = u'{0}'.format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
                     '{0} <span class="special_class">*</span>'.format(
