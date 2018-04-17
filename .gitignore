@@ -44,6 +44,7 @@ Icon?
 import_data/
 media/
 pod/*/fixtures/
+settings_local.py
 ## Others
 jwplayer/
 pod/static/
