@@ -20,6 +20,13 @@ urlpatterns = [
 if apps.is_installed('pod.filepicker'):
     from pod.filepicker.sites import site as filepicker_site
     urlpatterns += [url(r'^file-picker/', include(filepicker_site.urls)), ]
+if apps.is_installed('pod.chapters'):
+    from pod.chapters.views import video_chapter
+    urlpatterns += [
+        url(r'^video_chapter/(?P<slug>[\-\d\w]+)/$',
+        video_chapter, 
+        name='video_chapter'), 
+    ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,

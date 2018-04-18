@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'pod.authentication',
     'pod.video',
     'pod.filepicker',
+    'pod.chapters',
 ]
 
 ##
