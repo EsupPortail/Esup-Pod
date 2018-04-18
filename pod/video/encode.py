@@ -3,6 +3,7 @@ from django.core.mail import send_mail
 from django.core.mail import mail_admins
 from django.core.mail import mail_managers
 from django.utils.translation import ugettext_lazy as _
+from django.core.files.images import ImageFile
 
 from pod.video.models import VideoRendition
 from pod.video.models import EncodingVideo
@@ -12,6 +13,7 @@ from pod.video.models import PlaylistM3U8
 from pod.video.models import Video
 
 from fractions import Fraction
+from webvtt import WebVTT, Caption
 import logging
 import os
 import time
@@ -103,19 +105,13 @@ def encode_video(video_id):
 
         # LAUNCH COMMAND
         if data_video["is_video"]:
-            # MAKE THUMBNAILS
-            # if int(video_to_encode.duration) > 3:
-            #    add_thumbnails(VIDEO_ID, in_width, in_height, folder)
-            # MAKE OVERVIEW
-            # if nb_frames > 100:
-            # add_overview(data_video["duration"], source)
-            
+
             static_params = FFMPEG_STATIC_PARAMS % {
                 'nb_threads': FFMPEG_NB_THREADS,
                 'key_frames_interval': data_video["key_frames_interval"]
             }
             # create video encoding command
-            """
+            
             video_encoding_cmd = get_video_encoding_cmd(
                 static_params,
                 data_video["in_height"],
@@ -126,27 +122,31 @@ def encode_video(video_id):
             video_msg = encoding_video(
                 source, video_encoding_cmd, data_video, video_to_encode)
             encoding_log_msg += video_msg
-            """
+            
             video_360 = EncodingVideo.objects.get(
-                    name="360p",
-                    video=video_to_encode,
-                    encoding_format="video/mp4")
+                name="360p",
+                video=video_to_encode,
+                encoding_format="video/mp4")
 
-            add_overview(data_video["duration"], video_360.source_file.path )
+            encoding_log_msg += add_overview(data_video["duration"],
+                         video_360.source_file.path,
+                         data_video["output_dir"],
+                         video_id)
+            #thumbnails
 
         else:  # not is_video:
             encoding_log_msg += encode_m4a(
                 source,
-                data_video.output_dir,
+                data_video["output_dir"],
                 video_to_encode)
 
         # generate MP3 file for all file sent
-        """
+        
         encoding_log_msg += encode_mp3(
             source,
-            data_video.output_dir,
+            data_video["output_dir"],
             video_to_encode)
-        """
+        
     else:  # NOT : if os.path.exists
         encoding_log_msg += "Wrong file or path : "\
             + "\n%s" % video_to_encode.video.path
@@ -159,22 +159,22 @@ def encode_video(video_id):
     encoding_log.save()
 
     # SEND EMAIL TO OWNER
-    # if EMAIL_ON_ENCODING_COMPLETION:
-    #    send_email_encoding(video_to_encode)
+    if EMAIL_ON_ENCODING_COMPLETION:
+        send_email_encoding(video_to_encode)
 
 
 def prepare_video(video_to_encode):
     encoding_log_msg = ""
     source = "%s" % video_to_encode.video.path
     # remove previous encoding
-    """
+    
     encoding_log_msg += remove_previous_encoding_video(
         video_to_encode)
     encoding_log_msg += remove_previous_encoding_audio(
         video_to_encode)
     encoding_log_msg += remove_previous_encoding_playlist(
         video_to_encode)
-    """
+    
     # Get video data
     command = GET_INFO_VIDEO % {'ffprobe': FFPROBE, 'source': source}
 
@@ -290,14 +290,14 @@ def get_video_encoding_cmd(static_params, in_height, video_id, output_dir):
 
                 name = "%sp" % height
 
-                cmd = " %s -vf " %(static_params,)
-                cmd+= "scale=w=%s:h=%s:force_original_aspect_ratio=decrease" % (
-                         width, height)
+                cmd = " %s -vf " % (static_params,)
+                cmd += "scale=w=%s:h=%s:force_original_aspect_ratio=decrease" % (
+                    width, height)
                 cmd += " -b:v %s -maxrate %sk -bufsize %sk -b:a %s" % (
                     bitrate, int(maxrate), int(bufsize), audiorate)
                 cmd_hls += cmd + " -hls_playlist_type vod -hls_time %s \
                     -hls_flags single_file %s/%s.m3u8" % (
-                        SEGMENT_TARGET_DURATION, output_dir, name)
+                    SEGMENT_TARGET_DURATION, output_dir, name)
                 list_m3u8.append(
                     {"name": name, 'rendition': rendition})
 
@@ -310,7 +310,7 @@ def get_video_encoding_cmd(static_params, in_height, video_id, output_dir):
                         {"name": name, 'rendition': rendition})
                 master_playlist += "#EXT-X-STREAM-INF:BANDWIDTH=%s,\
                     RESOLUTION=%s\n%s.m3u8\n" % (
-                        bandwidth, resolution, name)
+                    bandwidth, resolution, name)
         else:
             msg += "\nerror in resolution %s" % resolution
             send_email(msg, video_id)
@@ -511,26 +511,95 @@ def save_mp4_files(list_mp4, output_dir, video_to_encode):
     return msg
 
 
-############################################################### 
+###############################################################
 # OVERVIEW
-############################################################### 
+###############################################################
 
-#"rm %(out)s;for i in $(seq 0 99); do nice -19 ffmpegthumbnailer -t $i%% -s %(scale)s -c jpeg -i \"%(src)s\" -o %(out)s_strip$i.jpg; nice -19 montage -geometry +0+0 %(out)s %(out)s_strip$i.jpg %(out)s; done; rm %(out)s_strip*.jpg"
-def add_overview(duration, source):
-    for i in range(0,99):
-        percent = "%s" %i
+def add_overview(duration, source, output_dir, video_id):
+    msg = ""
+    overviewfilename = '%(output_dir)s/overview.vtt' % {
+        'output_dir': output_dir}
+    image_width = 180  # width of generate image file
+
+    if os.path.isfile("%(output_dir)s/overview.png" % {
+        'output_dir': output_dir
+    }):
+        os.remove("%(output_dir)s/overview.png" % {'output_dir': output_dir})
+    if os.path.isfile(overviewfilename):
+        os.remove(overviewfilename)
+    for i in range(0, 99):
+        percent = "%s" % i
         percent += "%"
-        cmd_ffmpegthumbnailer = "ffmpegthumbnailer -t \"%(percent)s\" -s \"180\" -i %(source)s -c png -o %(source)s_strip%(num)s.png" %{ "percent":percent, 'source':source, 'num':i}
+        cmd_ffmpegthumbnailer = "ffmpegthumbnailer -t \"%(percent)s\" \
+        -s \"%(image_width)s\" -i %(source)s -c png \
+        -o %(source)s_strip%(num)s.png" % {
+            "percent": percent,
+            'source': source,
+            'num': i,
+            'image_width': image_width
+        }
         ffmpegthumbnailer = subprocess.getoutput(cmd_ffmpegthumbnailer)
-        cmd_montage = "montage -geometry +0+0 %(source)s_overview.png %(source)s_strip%(num)s.png %(source)s_overview.png" %{ "percent":percent+"%", 'source':source, 'num':i}
+        cmd_montage = "montage -geometry +0+0 %(output_dir)s/overview.png \
+        %(source)s_strip%(num)s.png %(output_dir)s/overview.png" % {
+            "percent": percent + "%",
+            'source': source,
+            'num': i,
+            'output_dir': output_dir
+        }
         montage = subprocess.getoutput(cmd_montage)
-        print(montage)
-    
+        if os.path.isfile("%(source)s_strip%(num)s.png" % {
+            'source': source,
+            'num': i
+        }):
+            os.remove("%(source)s_strip%(num)s.png" %
+                      {'source': source, 'num': i})
+    # get image size
+    overview = ImageFile(
+        open("%(output_dir)s/overview.png" % {'output_dir': output_dir}, 'rb'))
+    image_height = int(overview.height)
+    image_url = 'overview.png'
+    overview.close()
+    # creating webvtt file
+    webvtt = WebVTT()
+    for i in range(0, 99):
+        start = format(float(duration * i / 100), '.3f')
+        end = format(float(duration * (i + 1) / 100), '.3f')
+        # creating a caption with a list of lines
+        start_time = time.strftime('%H:%M:%S', time.gmtime(
+            int(str(start).split('.')[0]))) + ".%s" % (str(start).split('.')[1])
+        end_time = time.strftime('%H:%M:%S', time.gmtime(
+            int(str(end).split('.')[0]))) + ".%s" % (str(end).split('.')[1])
+        caption = Caption(
+            '%s' % start_time,
+            '%s' % end_time,
+            '%s#xywh=%d,%d,%d,%d' % (
+                image_url, image_width * i, 0, image_width, image_height)
+        )
+        webvtt.captions.append(caption)
+    webvtt.save(overviewfilename)
 
+    if os.access(overviewfilename, os.F_OK):  # outfile exists
+        # There was a error cause the outfile size is zero
+        if (os.stat(overviewfilename).st_size > 0):
+            # save file in bdd
+            video_to_encode = Video.objects.get(id=video_id)
+            video_to_encode.overview = overviewfilename.replace(
+                settings.MEDIA_ROOT + '/', '')
+            video_to_encode.save()
+        else:
+            os.remove(overviewfilename)
+            msg += "\nERROR OVERVIEW %s Output size is 0" % overviewfilename
+            log.error(msg)
+            send_email(msg, video_to_encode.id)
+    else:
+        msg += "\nERROR OVERVIEW %s DOES NOT EXIST" % overviewfilename
+        log.error(msg)
+        send_email(msg, video_to_encode.id)
+    return msg
 
-############################################################### 
+###############################################################
 # REMOVE ENCODING
-############################################################### 
+###############################################################
 
 
 def remove_previous_encoding_video(video_to_encode):
