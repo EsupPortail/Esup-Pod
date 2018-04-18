@@ -554,6 +554,7 @@ def add_overview(duration, source, output_dir, video_id):
     image_width = 180  # width of generate image file
 
     remove_old_overview_file(overviewfilename, overviewimagefilename)
+
     # create overviewimagefilename
     for i in range(0, 99):
         percent = "%s" % i
@@ -581,6 +582,8 @@ def add_overview(duration, source, output_dir, video_id):
         }):
             os.remove("%(source)s_strip%(num)s.png" %
                       {'source': source, 'num': i})
+
+    # create overview vtt
     # get image size
     overview = ImageFile(open(overviewimagefilename, 'rb'))
     image_height = int(overview.height)
@@ -590,7 +593,6 @@ def add_overview(duration, source, output_dir, video_id):
     for i in range(0, 99):
         start = format(float(duration * i / 100), '.3f')
         end = format(float(duration * (i + 1) / 100), '.3f')
-        # creating a caption with a list of lines
         start_time = time.strftime(
             '%H:%M:%S',
             time.gmtime(int(str(start).split('.')[0]))
@@ -607,6 +609,7 @@ def add_overview(duration, source, output_dir, video_id):
         webvtt.captions.append(caption)
     webvtt.save(overviewfilename)
 
+    # record in Video model
     if os.access(overviewfilename, os.F_OK):  # outfile exists
         # There was a error cause the outfile size is zero
         if (os.stat(overviewfilename).st_size > 0):
@@ -624,6 +627,7 @@ def add_overview(duration, source, output_dir, video_id):
         msg += "\nERROR OVERVIEW %s DOES NOT EXIST" % overviewfilename
         log.error(msg)
         send_email(msg, video_to_encode.id)
+
     return msg
 
 ###############################################################
