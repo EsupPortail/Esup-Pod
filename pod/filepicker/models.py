@@ -93,6 +93,8 @@ class BaseFileModel(models.Model):
             pass
         path, ext = os.path.splitext(self.file.name)
         self.file_type = ext.lstrip('.').upper()
+        if not self.name or self.name == "":
+            self.name = os.path.basename(path)
         return super(BaseFileModel, self).save(**kwargs)
 
     def __str__(self):
