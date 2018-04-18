@@ -355,7 +355,8 @@ class Video(models.Model):
 
     encoding_in_progress = models.BooleanField(
         _('Encoding in progress'), default=False, editable=False)
-    # encoding_status = 
+    encoding_step = models.CharField(
+        _('Encoding step'), max_length=50, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         newid = -1

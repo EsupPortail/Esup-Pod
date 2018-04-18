@@ -75,12 +75,20 @@ ADD_THUMBNAILS_CMD = "nice -19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -t 10
 ADD_OVERVIEW_CMD = "rm %(out)s;for i in $(seq 0 99); do nice -19 ffmpegthumbnailer -t $i%% -s %(scale)s -c jpeg -i \"%(src)s\" -o %(out)s_strip$i.jpg; nice -19 montage -geometry +0+0 %(out)s %(out)s_strip$i.jpg %(out)s; done; rm %(out)s_strip*.jpg"
 
 
+def change_encoding_step(video_id, num_step, desc):
+    video_to_encode = Video.objects.get(id=video_id)
+    video_to_encode.encoding_step = '{"etape":%d,"desc":"%s"}'%(num_step,%desc)
+    video_to_encode.save()
+
 # first function to encode file sent to Pod
 
 def encode_video(video_id):
     start = "Start at : %s" % time.ctime()
     if DEBUG:
         print(start)
+
+    change_encoding_step(video_id, 0, "start")
+
     video_to_encode = Video.objects.get(id=video_id)
     video_to_encode.encoding_in_progress = True
     video_to_encode.save()
@@ -95,6 +103,7 @@ def encode_video(video_id):
         # PREPARE VIDEO
         source = "%s" % video_to_encode.video.path
         # get data of file sent
+        change_encoding_step(video_id, 1, "Get Data from file")
         data_video = prepare_video(video_to_encode)
 
         encoding_log_msg += data_video["encoding_log_msg"]
@@ -104,21 +113,25 @@ def encode_video(video_id):
         video_to_encode.save()
 
         # LAUNCH COMMAND
+        
         if data_video["is_video"]:
-
+            change_encoding_step(video_id, 2, "Encoding video")
             static_params = FFMPEG_STATIC_PARAMS % {
                 'nb_threads': FFMPEG_NB_THREADS,
                 'key_frames_interval': data_video["key_frames_interval"]
             }
             # create video encoding command
-            
+            change_encoding_step(video_id, 2, 
+                "Encoding : create encoding command")
             video_encoding_cmd = get_video_encoding_cmd(
                 static_params,
                 data_video["in_height"],
                 video_to_encode.id,
                 data_video["output_dir"])
             encoding_log_msg += video_encoding_cmd["msg"]
-            
+
+            change_encoding_step(video_id, 2, "Encoding : encoding video")
+
             video_msg = encoding_video(
                 source, video_encoding_cmd, data_video, video_to_encode)
             encoding_log_msg += video_msg
@@ -128,20 +141,23 @@ def encode_video(video_id):
                 video=video_to_encode,
                 encoding_format="video/mp4")
 
+            change_encoding_step(video_id, 2, "Encoding : create overview")
             encoding_log_msg += add_overview(data_video["duration"],
                          video_360.source_file.path,
                          data_video["output_dir"],
                          video_id)
             #thumbnails
+            change_encoding_step(video_id, 2, "Encoding : create thumbnails")
 
         else:  # not is_video:
+            change_encoding_step(video_id, 2, "Encoding : encoding audio")
             encoding_log_msg += encode_m4a(
                 source,
                 data_video["output_dir"],
                 video_to_encode)
 
         # generate MP3 file for all file sent
-        
+        change_encoding_step(video_id, 3, "Encoding : encoding audio")
         encoding_log_msg += encode_mp3(
             source,
             data_video["output_dir"],
@@ -162,6 +178,11 @@ def encode_video(video_id):
     if EMAIL_ON_ENCODING_COMPLETION:
         send_email_encoding(video_to_encode)
 
+    change_encoding_step(video_id, 0, "done")
+
+    video_to_encode = Video.objects.get(id=video_id)
+    video_to_encode.encoding_in_progress = False
+    video_to_encode.save()
 
 def prepare_video(video_to_encode):
     encoding_log_msg = ""
