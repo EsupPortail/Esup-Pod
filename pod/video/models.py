@@ -8,6 +8,8 @@ from django.db.models import Sum
 from django.contrib.auth.models import Group
 from django.apps import apps
 from django.urls import reverse
+from django.core.exceptions import ValidationError
+
 try:
     from pod.filepicker.models import CustomImageModel
 except ImportError:
@@ -407,6 +409,7 @@ class VideoRendition(models.Model):
     resolution = models.CharField(
         _('resolution'),
         max_length=250,
+        unique=True,
         help_text="Please use the only format x. i.e.: "
         + "<em>640x360</em> or <em>1280x720</em> or <em>1920x1080</em>.")
     video_bitrate = models.CharField(
@@ -423,6 +426,33 @@ class VideoRendition(models.Model):
 
     def __str__(self):
         return "%s - %s" % ('%04d' % self.id, self.resolution)
+
+    def clean(self):
+        if self.resolution:
+            if not 'x' in self.resolution:
+                raise ValidationError(VideoRendition._meta.get_field('resolution').help_text)
+            else:
+                res = self.resolution.replace('x','')
+                if not res.isdigit(): 
+                    raise ValidationError(VideoRendition._meta.get_field('resolution').help_text)
+        if self.video_bitrate:
+            if not 'k' in self.video_bitrate:
+                msg = "Error in %s : " %_('bitrate video')
+                raise ValidationError(msg + VideoRendition._meta.get_field('video_bitrate').help_text)
+            else:
+                vb = self.video_bitrate.replace('k','')
+                if not vb.isdigit():
+                    msg = "Error in %s : " %_('bitrate video')
+                    raise ValidationError(msg + VideoRendition._meta.get_field('video_bitrate').help_text)
+        if self.audio_bitrate:
+            if not 'k' in self.audio_bitrate:
+                msg = "Error in %s : " %_('bitrate audio')
+                raise ValidationError(msg + VideoRendition._meta.get_field('audio_bitrate').help_text)
+            else:
+                vb = self.audio_bitrate.replace('k','')
+                if not vb.isdigit():
+                    msg = "Error in %s : " %_('bitrate audio')
+                    raise ValidationError(msg + VideoRendition._meta.get_field('audio_bitrate').help_text)
 
 
 class EncodingVideo(models.Model):

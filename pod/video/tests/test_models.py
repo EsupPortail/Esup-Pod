@@ -1,9 +1,12 @@
 from django.test import TestCase
+from django.test import override_settings
 from django.db.models import Count
 from django.template.defaultfilters import slugify
 from django.db.models.fields.files import ImageFieldFile
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
+from django.core.exceptions import ValidationError
 
 from pod.video.models import Channel
 from pod.video.models import Theme
@@ -17,6 +20,7 @@ from pod.video.models import Video
 from pod.video.models import ViewCount
 from pod.video.models import get_storage_path_video
 from pod.video.models import VIDEOS_DIR
+from pod.video.models import VideoRendition
 
 from datetime import datetime
 from datetime import timedelta
@@ -29,6 +33,15 @@ import os
 """
 
 
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+)
 class ChannelTestCase(TestCase):
 
     def setUp(self):
@@ -105,6 +118,15 @@ class ChannelTestCase(TestCase):
 """
 
 
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+)
 class ThemeTestCase(TestCase):
 
     def setUp(self):
@@ -178,6 +200,15 @@ class ThemeTestCase(TestCase):
 """
 
 
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+)
 class TypeTestCase(TestCase):
 
     def setUp(self):
@@ -232,6 +263,15 @@ class TypeTestCase(TestCase):
 """
 
 
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+)
 class DisciplineTestCase(TestCase):
 
     def setUp(self):
@@ -286,6 +326,15 @@ class DisciplineTestCase(TestCase):
 """
 
 
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+)
 class VideoTestCase(TestCase):
 
     def setUp(self):
@@ -360,3 +409,100 @@ class VideoTestCase(TestCase):
 
         print(
             "   --->  test_Video_many_attributs of VideoTestCase : OK !")
+
+
+"""
+    test the Video Rendition
+"""
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+)
+class VideoRenditionTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def create_video_rendition(self, resolution="640x360", video_bitrate="1000k", audio_bitrate="300k", encode_mp4=False):
+        return VideoRendition.objects.create(resolution=resolution, video_bitrate=video_bitrate, audio_bitrate=audio_bitrate, encode_mp4=encode_mp4)
+
+    def test_VideoRendition_creation_by_default(self):
+        vr = self.create_video_rendition()
+        self.assertTrue(isinstance(vr, VideoRendition))
+        self.assertEqual(vr.__str__(), "%s - %s" %
+                         ('%04d' % vr.id, vr.resolution))
+        clean = vr.clean()
+        print(
+            " --->  test_VideoRendition_creation_by_default of VideoRenditionTestCase : OK !")
+
+    def test_VideoRendition_creation_with_values(self):
+        print("check resolution error")
+        vr = self.create_video_rendition(resolution="totototo")
+        self.assertTrue(isinstance(vr, VideoRendition))
+        self.assertEqual(vr.__str__(), "%s - %s" %
+                         ('%04d' % vr.id, vr.resolution))
+        self.assertRaises(ValidationError, vr.clean)
+        vr = self.create_video_rendition(resolution="totoxtoto")
+        self.assertTrue(isinstance(vr, VideoRendition))
+        self.assertEqual(vr.__str__(), "%s - %s" %
+                         ('%04d' % vr.id, vr.resolution))
+        self.assertRaises(ValidationError, vr.clean)
+        print("check video bitrate error")
+        vr = self.create_video_rendition(
+            resolution="640x360", video_bitrate="dfk")
+        self.assertTrue(isinstance(vr, VideoRendition))
+        self.assertEqual(vr.__str__(), "%s - %s" %
+                         ('%04d' % vr.id, vr.resolution))
+        self.assertRaises(ValidationError, vr.clean)
+        vr = self.create_video_rendition(
+            resolution="640x360", video_bitrate="100")
+        self.assertTrue(isinstance(vr, VideoRendition))
+        self.assertEqual(vr.__str__(), "%s - %s" %
+                         ('%04d' % vr.id, vr.resolution))
+        self.assertRaises(ValidationError, vr.clean)
+        print("check audio bitrate error")
+        vr = self.create_video_rendition(
+            resolution="640x360", audio_bitrate="dfk")
+        self.assertTrue(isinstance(vr, VideoRendition))
+        self.assertEqual(vr.__str__(), "%s - %s" %
+                         ('%04d' % vr.id, vr.resolution))
+        self.assertRaises(ValidationError, vr.clean)
+        vr = self.create_video_rendition(
+            resolution="640x360", audio_bitrate="100")
+        self.assertTrue(isinstance(vr, VideoRendition))
+        self.assertEqual(vr.__str__(), "%s - %s" %
+                         ('%04d' % vr.id, vr.resolution))
+        self.assertRaises(ValidationError, vr.clean)
+        print(
+            " --->  test_VideoRendition_creation_with_values of VideoRenditionTestCase : OK !")
+
+"""
+    test the Video Encoding model
+"""
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+)
+class EncodingVideoTestCase(TestCase):
+    
+    def setUp(self):
+        print ("create video")
+        User.objects.create(username="pod", password="pod1234pod")
+        owner1 = Owner.objects.get(user__username="pod")
+        Video.objects.create(
+            title="Video1", owner=owner1, video="test.mp4")
+        print ("create rendition")
+        VideoRendition.objects.create(resolution="640x360", video_bitrate="1000k", audio_bitrate="300k", encode_mp4=False)
+        print(" --->  SetUp of VideoTestCase : OK !")
