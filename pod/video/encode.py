@@ -4,7 +4,9 @@ from django.core.mail import mail_admins
 from django.core.mail import mail_managers
 from django.utils.translation import ugettext_lazy as _
 from django.core.files.images import ImageFile
+from django.core.files import File
 from django.apps import apps
+
 
 from pod.video.models import VideoRendition
 from pod.video.models import EncodingVideo
@@ -13,10 +15,6 @@ from pod.video.models import EncodingLog
 from pod.video.models import PlaylistM3U8
 from pod.video.models import Video
 from pod.video.models import VideoImageModel
-try:
-    from pod.filepicker.models import CustomImageModel
-except ImportError:
-    pass
 
 from fractions import Fraction
 from webvtt import WebVTT, Caption
@@ -27,6 +25,13 @@ import subprocess
 import json
 import re
 import tempfile
+
+if apps.is_installed('pod.filepicker'):
+    try:
+        from pod.filepicker.models import CustomImageModel
+        from pod.filepicker.models import UserDirectory
+    except ImportError:
+        pass
 
 FILEPICKER = True if apps.is_installed('pod.filepicker') else False
 
@@ -41,7 +46,8 @@ SEGMENT_TARGET_DURATION = getattr(settings, 'SEGMENT_TARGET_DURATION', 2)
 # maximum accepted bitrate fluctuations
 MAX_BITRATE_RATIO = getattr(settings, 'MAX_BITRATE_RATIO', 1.07)
 # maximum buffer size between bitrate conformance checks
-RATE_MONITOR_BUFFER_RATIO = getattr(settings, 'RATE_MONITOR_BUFFER_RATIO', 1.5)
+RATE_MONITOR_BUFFER_RATIO = getattr(
+    settings, 'RATE_MONITOR_BUFFER_RATIO', 1.5)
 # maximum threads use by ffmpeg
 FFMPEG_NB_THREADS = getattr(settings, 'FFMPEG_NB_THREADS', 0)
 
@@ -128,6 +134,7 @@ def encode_video(video_id):
         # LAUNCH COMMAND
 
         if data_video["is_video"]:
+
             change_encoding_step(video_id, 2, "Encoding video")
             static_params = FFMPEG_STATIC_PARAMS % {
                 'nb_threads': FFMPEG_NB_THREADS,
@@ -159,11 +166,11 @@ def encode_video(video_id):
                                              video_360.source_file.path,
                                              data_video["output_dir"],
                                              video_id)
+
             # thumbnails
             change_encoding_step(video_id, 2, "Encoding : create thumbnails")
             encoding_log_msg += add_thumbnails(
                 video_360.source_file.path,
-                data_video["output_dir"],
                 video_id)
 
         else:  # not is_video:
@@ -587,7 +594,21 @@ def add_thumbnails(source, video_id):
             # There was a error cause the outfile size is zero
             if (os.stat(thumbnailfilename).st_size > 0):
                 if FILEPICKER:
-
+                    video_to_encode = Video.objects.get(id=video_id)
+                    homedir, created = UserDirectory.objects.get_or_create(
+                        name='home',
+                        owner=video_to_encode.owner.user,
+                        parent=None)
+                    videodir, created = UserDirectory.objects.get_or_create(
+                        name='%s' % video_to_encode.slug,
+                        owner=video_to_encode.owner.user,
+                        parent=homedir)
+                    thumbnail = CustomImageModel(directory=videodir)
+                    thumbnail.file.save(
+                        "%d_%s.png" % (video_id, i),
+                        File(open(thumbnailfilename)),
+                        save=True)
+                    thumbnail.save()
                 else:
                     thumbnail = VideoImageModel()
                     thumbnail.file.save(
@@ -602,13 +623,16 @@ def add_thumbnails(source, video_id):
 
             else:
                 os.remove(thumbnailfilename)
-                msg += "\nERROR THUMBNAILS %s Output size is 0" % thumbnailfilename
+                msg += "\nERROR THUMBNAILS %s " % thumbnailfilename
+                msg += "Output size is 0"
                 log.error(msg)
                 send_email(msg, video_id)
         else:
             msg += "\nERROR THUMBNAILS %s DOES NOT EXIST" % thumbnailfilename
             log.error(msg)
             send_email(msg, video_id)
+    if DEBUG:
+        print(msg)
     return msg
 
 ###############################################################

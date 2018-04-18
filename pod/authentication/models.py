@@ -42,7 +42,7 @@ def get_upload_path_files(instance, filename):
 
 
 class AuthenticationImageModel(models.Model):
-    image = models.ImageField(
+    file = models.ImageField(
         _('Image'), null=True, upload_to=get_upload_path_files,
         blank=True, max_length=255)
 
