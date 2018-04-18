@@ -596,7 +596,7 @@ def add_thumbnails(source, video_id):
                 if FILEPICKER:
                     video_to_encode = Video.objects.get(id=video_id)
                     homedir, created = UserDirectory.objects.get_or_create(
-                        name='home',
+                        name='Home',
                         owner=video_to_encode.owner.user,
                         parent=None)
                     videodir, created = UserDirectory.objects.get_or_create(
