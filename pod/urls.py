@@ -9,6 +9,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.apps import apps
 
+if apps.is_installed('pod.filepicker'):
+    from pod.filepicker.sites import site as filepicker_site
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -18,7 +20,6 @@ urlpatterns = [
 ]
 
 if apps.is_installed('pod.filepicker'):
-    from pod.filepicker.sites import site as filepicker_site
     urlpatterns += [url(r'^file-picker/', include(filepicker_site.urls)), ]
 
 if settings.DEBUG:
