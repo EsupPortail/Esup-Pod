@@ -603,24 +603,28 @@ def add_thumbnails(source, video_id):
                         name='%s' % video_to_encode.slug,
                         owner=video_to_encode.owner.user,
                         parent=homedir)
-                    thumbnail = CustomImageModel(directory=videodir)
+                    thumbnail = CustomImageModel(
+                        directory=videodir,
+                        created_by=video_to_encode.owner.user
+                    )
                     thumbnail.file.save(
                         "%d_%s.png" % (video_id, i),
-                        File(open(thumbnailfilename)),
+                        File(open(thumbnailfilename, "rb")),
                         save=True)
                     thumbnail.save()
                 else:
                     thumbnail = VideoImageModel()
                     thumbnail.file.save(
                         "%d_%s.png" % (video_id, i),
-                        File(open(thumbnailfilename)),
+                        File(open(thumbnailfilename, "rb")),
                         save=True)
                     thumbnail.save()
-
+                if i == 0:
                     video_to_encode = Video.objects.get(id=video_id)
                     video_to_encode.thumbnail = thumbnail
                     video_to_encode.save()
-
+                # remove tempfile
+                os.remove(thumbnailfilename)
             else:
                 os.remove(thumbnailfilename)
                 msg += "\nERROR THUMBNAILS %s " % thumbnailfilename
