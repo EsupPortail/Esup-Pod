@@ -104,6 +104,7 @@ def encode_video(video_id):
         source = "%s" % video_to_encode.video.path
         # get data of file sent
         change_encoding_step(video_id, 1, "Get Data from file")
+
         data_video = prepare_video(video_to_encode)
 
         encoding_log_msg += data_video["encoding_log_msg"]
@@ -189,7 +190,6 @@ def prepare_video(video_to_encode):
     encoding_log_msg = ""
     source = "%s" % video_to_encode.video.path
     # remove previous encoding
-
     encoding_log_msg += remove_previous_encoding_video(
         video_to_encode)
     encoding_log_msg += remove_previous_encoding_audio(
@@ -202,7 +202,7 @@ def prepare_video(video_to_encode):
 
     ffproberesult = subprocess.getoutput(command)
     info = json.loads(ffproberesult)
-    encoding_log_msg += "ffprobe command : %s" % command
+    encoding_log_msg += "\nffprobe command : %s" % command
     encoding_log_msg += "%s" % json.dumps(
         info, sort_keys=True, indent=4, separators=(',', ': '))
 
@@ -276,7 +276,9 @@ def encoding_video(source, video_encoding_cmd, data_video, video_to_encode):
     video_msg += "\nEnd Encoding video : %s" % time.ctime()
 
     with open(data_video["output_dir"] + "/encoding.log", "a") as f:
+        f.write('\n\ffmpegvideoHLS:\n\n')
         f.write(ffmpegvideoHLS)
+        f.write('\n\ffmpegvideoMP4:\n\n')
         f.write(ffmpegvideoMP4)
 
     if DEBUG:
@@ -382,8 +384,11 @@ def encode_m4a(source, output_dir, video_to_encode):
         log.error(msg)
         send_email(msg, video_to_encode.id)
 
-    with open(output_dir + "/encoding.log", "a+b") as f:
+    with open(output_dir + "/encoding.log", "a") as f:
+        f.write('\n\nffmpegaudio:\n\n')
         f.write(ffmpegaudio)
+    if DEBUG:
+        print(msg)
     return msg
 
 
@@ -420,8 +425,11 @@ def encode_mp3(source, output_dir, video_to_encode):
         log.error(msg)
         send_email(msg, video_to_encode.id)
 
-    with open(output_dir + "/encoding.log", "a+b") as f:
+    with open(output_dir + "/encoding.log", "a") as f:
+        f.write('\n\ffmpegaudiomp3:\n\n')
         f.write(ffmpegaudiomp3)
+    if DEBUG:
+        print(msg)
     return msg
 
 
@@ -431,10 +439,6 @@ def save_m3u8_files(list_m3u8, output_dir, video_to_encode, master_playlist):
         # check size of file
         videofilenameM3u8 = os.path.join(output_dir, "%s.m3u8" % m3u8['name'])
         videofilenameTS = os.path.join(output_dir, "%s.ts" % m3u8['name'])
-        if DEBUG:
-            print("- videofilenameM3u8 :\n%s" % videofilenameM3u8)
-            print("- videofilenameTS :\n%s" % videofilenameTS)
-
         msg += "\n- videofilenameM3u8 :\n%s" % videofilenameM3u8
         msg += "\n- videofilenameTS :\n%s" % videofilenameTS
 
@@ -506,9 +510,7 @@ def save_mp4_files(list_mp4, output_dir, video_to_encode):
     for mp4 in list_mp4:
         # check size of file
         videofilename = os.path.join(output_dir, "%s.mp4" % mp4['name'])
-        if DEBUG:
-            print("- videofilename :\n%s" % videofilename)
-        msg += "- videofilename :\n%s" % videofilename
+        msg += "\n- videofilename :\n%s" % videofilename
         if os.access(videofilename, os.F_OK):  # outfile exists
             # There was a error cause the outfile size is zero
             if (os.stat(videofilename).st_size > 0):
@@ -531,6 +533,8 @@ def save_mp4_files(list_mp4, output_dir, video_to_encode):
             msg += "\nERROR ENCODING MP4 %s DOES NOT EXIST" % mp4['name']
             log.error(msg)
             send_email(msg, video_to_encode.id)
+    if DEBUG:
+        print(msg)
     return msg
 
 
@@ -545,7 +549,7 @@ def remove_old_overview_file(overviewfilename, overviewimagefilename):
 
 
 def add_overview(duration, source, output_dir, video_id):
-    msg = ""
+    msg = "\nCREATE OVERVIEW : %s" % time.ctime()
     overviewfilename = '%(output_dir)s/overview.vtt' % {
         'output_dir': output_dir}
     image_url = 'overview.png'
@@ -556,6 +560,7 @@ def add_overview(duration, source, output_dir, video_id):
     remove_old_overview_file(overviewfilename, overviewimagefilename)
 
     # create overviewimagefilename
+    msg += "\ncreate overview image file"
     for i in range(0, 99):
         percent = "%s" % i
         percent += "%"
@@ -584,6 +589,7 @@ def add_overview(duration, source, output_dir, video_id):
                       {'source': source, 'num': i})
 
     # create overview vtt
+    msg += "\ncreate overview vtt file"
     # get image size
     overview = ImageFile(open(overviewimagefilename, 'rb'))
     image_height = int(overview.height)
@@ -610,6 +616,7 @@ def add_overview(duration, source, output_dir, video_id):
     webvtt.save(overviewfilename)
 
     # record in Video model
+    msg += "\nstore vtt file in bdd with video model overview field"
     if os.access(overviewfilename, os.F_OK):  # outfile exists
         # There was a error cause the outfile size is zero
         if (os.stat(overviewfilename).st_size > 0):
@@ -627,6 +634,9 @@ def add_overview(duration, source, output_dir, video_id):
         msg += "\nERROR OVERVIEW %s DOES NOT EXIST" % overviewfilename
         log.error(msg)
         send_email(msg, video_to_encode.id)
+
+    if DEBUG:
+        print(msg)
 
     return msg
 
