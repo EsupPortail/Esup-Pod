@@ -71,16 +71,16 @@ ENCODE_MP3_CMD = getattr(
 EMAIL_ON_ENCODING_COMPLETION = getattr(
     settings, 'EMAIL_ON_ENCODING_COMPLETION', True)
 
-ADD_THUMBNAILS_CMD = "nice -19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -t 10%% -o %(out)s_2.png && nice -19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -t 50%% -o %(out)s_3.png && nice -19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -t 75%% -o %(out)s_4.png"
-ADD_OVERVIEW_CMD = "rm %(out)s;for i in $(seq 0 99); do nice -19 ffmpegthumbnailer -t $i%% -s %(scale)s -c jpeg -i \"%(src)s\" -o %(out)s_strip$i.jpg; nice -19 montage -geometry +0+0 %(out)s %(out)s_strip$i.jpg %(out)s; done; rm %(out)s_strip*.jpg"
-
 
 def change_encoding_step(video_id, num_step, desc):
     video_to_encode = Video.objects.get(id=video_id)
-    video_to_encode.encoding_step = '{"etape":%d,"desc":"%s"}'%(num_step,%desc)
+    video_to_encode.encoding_step = '{"etape":%d,"desc":"%s"}' % (
+        num_step, desc
+    )
     video_to_encode.save()
 
 # first function to encode file sent to Pod
+
 
 def encode_video(video_id):
     start = "Start at : %s" % time.ctime()
@@ -113,7 +113,7 @@ def encode_video(video_id):
         video_to_encode.save()
 
         # LAUNCH COMMAND
-        
+
         if data_video["is_video"]:
             change_encoding_step(video_id, 2, "Encoding video")
             static_params = FFMPEG_STATIC_PARAMS % {
@@ -121,8 +121,8 @@ def encode_video(video_id):
                 'key_frames_interval': data_video["key_frames_interval"]
             }
             # create video encoding command
-            change_encoding_step(video_id, 2, 
-                "Encoding : create encoding command")
+            change_encoding_step(video_id, 2,
+                                 "Encoding : create encoding command")
             video_encoding_cmd = get_video_encoding_cmd(
                 static_params,
                 data_video["in_height"],
@@ -135,7 +135,7 @@ def encode_video(video_id):
             video_msg = encoding_video(
                 source, video_encoding_cmd, data_video, video_to_encode)
             encoding_log_msg += video_msg
-            
+
             video_360 = EncodingVideo.objects.get(
                 name="360p",
                 video=video_to_encode,
@@ -143,10 +143,10 @@ def encode_video(video_id):
 
             change_encoding_step(video_id, 2, "Encoding : create overview")
             encoding_log_msg += add_overview(data_video["duration"],
-                         video_360.source_file.path,
-                         data_video["output_dir"],
-                         video_id)
-            #thumbnails
+                                             video_360.source_file.path,
+                                             data_video["output_dir"],
+                                             video_id)
+            # thumbnails
             change_encoding_step(video_id, 2, "Encoding : create thumbnails")
 
         else:  # not is_video:
@@ -162,7 +162,7 @@ def encode_video(video_id):
             source,
             data_video["output_dir"],
             video_to_encode)
-        
+
     else:  # NOT : if os.path.exists
         encoding_log_msg += "Wrong file or path : "\
             + "\n%s" % video_to_encode.video.path
@@ -184,18 +184,19 @@ def encode_video(video_id):
     video_to_encode.encoding_in_progress = False
     video_to_encode.save()
 
+
 def prepare_video(video_to_encode):
     encoding_log_msg = ""
     source = "%s" % video_to_encode.video.path
     # remove previous encoding
-    
+
     encoding_log_msg += remove_previous_encoding_video(
         video_to_encode)
     encoding_log_msg += remove_previous_encoding_audio(
         video_to_encode)
     encoding_log_msg += remove_previous_encoding_playlist(
         video_to_encode)
-    
+
     # Get video data
     command = GET_INFO_VIDEO % {'ffprobe': FFPROBE, 'source': source}
 
@@ -312,8 +313,9 @@ def get_video_encoding_cmd(static_params, in_height, video_id, output_dir):
                 name = "%sp" % height
 
                 cmd = " %s -vf " % (static_params,)
-                cmd += "scale=w=%s:h=%s:force_original_aspect_ratio=decrease" % (
+                cmd += "scale=w=%s:h=%s:" % (
                     width, height)
+                cmd += "force_original_aspect_ratio=decrease"
                 cmd += " -b:v %s -maxrate %sk -bufsize %sk -b:a %s" % (
                     bitrate, int(maxrate), int(bufsize), audiorate)
                 cmd_hls += cmd + " -hls_playlist_type vod -hls_time %s \
@@ -535,19 +537,24 @@ def save_mp4_files(list_mp4, output_dir, video_to_encode):
 ###############################################################
 # OVERVIEW
 ###############################################################
+def remove_old_overview_file(overviewfilename, overviewimagefilename):
+    if os.path.isfile(overviewimagefilename):
+        os.remove(overviewimagefilename)
+    if os.path.isfile(overviewfilename):
+        os.remove(overviewfilename)
+
 
 def add_overview(duration, source, output_dir, video_id):
     msg = ""
     overviewfilename = '%(output_dir)s/overview.vtt' % {
         'output_dir': output_dir}
+    image_url = 'overview.png'
+    overviewimagefilename = '%(output_dir)s/%(image_url)s' % {
+        'output_dir': output_dir, 'image_url': image_url}
     image_width = 180  # width of generate image file
 
-    if os.path.isfile("%(output_dir)s/overview.png" % {
-        'output_dir': output_dir
-    }):
-        os.remove("%(output_dir)s/overview.png" % {'output_dir': output_dir})
-    if os.path.isfile(overviewfilename):
-        os.remove(overviewfilename)
+    remove_old_overview_file(overviewfilename, overviewimagefilename)
+    # create overviewimagefilename
     for i in range(0, 99):
         percent = "%s" % i
         percent += "%"
@@ -559,7 +566,7 @@ def add_overview(duration, source, output_dir, video_id):
             'num': i,
             'image_width': image_width
         }
-        ffmpegthumbnailer = subprocess.getoutput(cmd_ffmpegthumbnailer)
+        subprocess.getoutput(cmd_ffmpegthumbnailer)
         cmd_montage = "montage -geometry +0+0 %(output_dir)s/overview.png \
         %(source)s_strip%(num)s.png %(output_dir)s/overview.png" % {
             "percent": percent + "%",
@@ -567,7 +574,7 @@ def add_overview(duration, source, output_dir, video_id):
             'num': i,
             'output_dir': output_dir
         }
-        montage = subprocess.getoutput(cmd_montage)
+        subprocess.getoutput(cmd_montage)
         if os.path.isfile("%(source)s_strip%(num)s.png" % {
             'source': source,
             'num': i
@@ -575,10 +582,8 @@ def add_overview(duration, source, output_dir, video_id):
             os.remove("%(source)s_strip%(num)s.png" %
                       {'source': source, 'num': i})
     # get image size
-    overview = ImageFile(
-        open("%(output_dir)s/overview.png" % {'output_dir': output_dir}, 'rb'))
+    overview = ImageFile(open(overviewimagefilename, 'rb'))
     image_height = int(overview.height)
-    image_url = 'overview.png'
     overview.close()
     # creating webvtt file
     webvtt = WebVTT()
@@ -586,8 +591,11 @@ def add_overview(duration, source, output_dir, video_id):
         start = format(float(duration * i / 100), '.3f')
         end = format(float(duration * (i + 1) / 100), '.3f')
         # creating a caption with a list of lines
-        start_time = time.strftime('%H:%M:%S', time.gmtime(
-            int(str(start).split('.')[0]))) + ".%s" % (str(start).split('.')[1])
+        start_time = time.strftime(
+            '%H:%M:%S',
+            time.gmtime(int(str(start).split('.')[0]))
+        )
+        start_time += ".%s" % (str(start).split('.')[1])
         end_time = time.strftime('%H:%M:%S', time.gmtime(
             int(str(end).split('.')[0]))) + ".%s" % (str(end).split('.')[1])
         caption = Caption(
