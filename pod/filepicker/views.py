@@ -336,6 +336,20 @@ class FilePickerBase(object):
                     'created_by': request.user,
                     'directory': request.POST['directory']
                 })
+                if form.is_valid():
+                    obj = form.save()
+                    data = self.append(obj, request)
+                    return HttpResponse(
+                        json.dumps(data),
+                        content_type='application/json')
+                else:
+                    errors = dict()
+                    for name, error in form.errors.items():
+                        errors[name] = error
+                    data = {'errors': errors}
+                    return HttpResponse(
+                        json.dumps(data),
+                        content_type='application/json')
             else:
                 if request.GET.get('directory'):
                     directory = self.structure.objects.get(
@@ -346,12 +360,6 @@ class FilePickerBase(object):
                 form = self.form(
                     initial={'created_by': request.user,
                              'directory': directory.id})
-            if form.is_valid():
-                obj = form.save()
-                data = self.append(obj, request)
-                return HttpResponse(
-                    json.dumps(data),
-                    content_type='application/json')
 
             data = {'form': form.as_table()}
             return HttpResponse(
@@ -397,16 +405,11 @@ class FilePickerBase(object):
 
     def delete(self, request, file):
         if request.method == 'POST':
-            f = self.model.objects.get(id=file)
-            if os.path.isfile(f.file.path):
-                os.remove(f.file.path)
-                f.delete()
-                data = {'status': 'OK'}
-                return HttpResponse(
-                    json.dumps(data),
-                    content_type='application/json')
-            else:
-                return HttpResponseServerError()
+            f = self.model.objects.get(id=file).delete()
+            data = {'status': 'OK'}
+            return HttpResponse(
+                json.dumps(data),
+                content_type='application/json')
         return HttpResponseBadRequest()
 
 

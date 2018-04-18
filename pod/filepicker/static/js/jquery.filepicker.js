@@ -357,31 +357,20 @@
                 } else {
                     $.post(conf.urls.upload.file, data, function (response) {
                         if (response.errors) {
-                            $.each(response.errors, function (idx) {
-                                console.error(this);
+                            $('.errors-list').empty();
+                            $.each(response.errors, function (name, error) {
+                                var msg = $('<p>').text(name + ': ' + error[0]);
+                                $('.errors-list').append(msg);
                             });
+                            $('.errors-list').show();
                             return;
                         }
                         if (response.insert) {
-                            $(self).trigger("onImageClick", [response.insert]);
+                            $(self).trigger("onImageClick", [response.extra]);
                             self.getForm();
                         } else {
                             self.displayForm(response);
                             self.setupUpload();
-                            var upload_form = upload_pane.find('.upload_form');
-                            var submit = $('<input>').attr({
-                                'type': 'submit',
-                                'value': 'Submit'
-                            }).click(function (e) {
-                                e.preventDefault();
-                                var upload_form = upload_pane.find('.upload_form');
-                                data = {};
-                                $(':input', upload_form).each(function () {
-                                    data[this.name] = this.value;
-                                });
-                                self.getForm(data);
-                            });
-                            upload_form.append(submit);
                         }
                     });
                 }
@@ -400,6 +389,7 @@
                 pane.append(runtime);
                 pane.append($('<ul>').addClass('upload-list'));
                 pane.append($('<h3>').text('File details'));
+                pane.append($('<div>').addClass('errors-list'));
                 var form = $('<form>').attr({
                     'method': 'post',
                     'class': 'upload_form',
@@ -420,6 +410,7 @@
             },
             
             setupUpload: function () {
+                $('.add_to_model').remove();
                 var ajaxUpload = new AjaxUpload('select-a-file', {
                     action: conf.urls.upload.file,
                     autoSubmit: true,
@@ -450,7 +441,7 @@
                         });
                         var upload_form = upload_pane.find('.upload_form');
                         upload_form.append(submit);
-                    }
+                    },
                 });
             },
 
