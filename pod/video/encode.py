@@ -92,6 +92,8 @@ def change_encoding_step(video_id, num_step, desc):
     video_to_encode.save()
 
 # first function to encode file sent to Pod
+
+
 def encode_video(video_id):
     start = "Start at : %s" % time.ctime()
     if DEBUG:
@@ -160,9 +162,9 @@ def encode_video(video_id):
             # thumbnails
             change_encoding_step(video_id, 2, "Encoding : create thumbnails")
             encoding_log_msg += add_thumbnails(
-                                             video_360.source_file.path,
-                                             data_video["output_dir"],
-                                             video_id)
+                video_360.source_file.path,
+                data_video["output_dir"],
+                video_id)
 
         else:  # not is_video:
             change_encoding_step(video_id, 2, "Encoding : encoding audio")
@@ -553,14 +555,20 @@ def save_mp4_files(list_mp4, output_dir, video_to_encode):
 ###############################################################
 # THUMBNAILS
 ###############################################################
-# nice -19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -t 10%% -o %(out)s_2.png && nice -19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -t 50%% -o %(out)s_3.png && nice -19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -t 75%% -o %(out)s_4.png"
+# nice -19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -t 10%% -o
+# %(out)s_2.png && nice -19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -t
+# 50%% -o %(out)s_3.png && nice -19 ffmpegthumbnailer -i \"%(src)s\" -s
+# 256x256 -t 75%% -o %(out)s_4.png"
+
+
 def add_thumbnails(source, video_id):
     msg = "\nCREATE THUMBNAILS : %s" % time.ctime()
-    tempimgfile = tempfile.NamedTemporaryFile(dir=FILE_UPLOAD_TEMP_DIR,suffix='')
-    image_width = 360 # default size of image
+    tempimgfile = tempfile.NamedTemporaryFile(
+        dir=FILE_UPLOAD_TEMP_DIR, suffix='')
+    image_width = 360  # default size of image
     msg += "\ncreate thumbnails image file"
     for i in range(0, 3):
-        percent = str((i+1)*25)+"%"
+        percent = str((i + 1) * 25) + "%"
         cmd_ffmpegthumbnailer = "ffmpegthumbnailer -t \"%(percent)s\" \
         -s \"%(image_width)s\" -i %(source)s -c png \
         -o %(tempfile)s_%(num)s.png" % {
@@ -568,22 +576,30 @@ def add_thumbnails(source, video_id):
             'source': source,
             'num': i,
             'image_width': image_width,
-            'tempfile':tempimgfile.name
+            'tempfile': tempimgfile.name
         }
         subprocess.getoutput(cmd_ffmpegthumbnailer)
         thumbnailfilename = "%(tempfile)s_%(num)s.png" % {
             'num': i,
-            'tempfile':tempimgfile.name
+            'tempfile': tempimgfile.name
         }
         if os.access(thumbnailfilename, os.F_OK):  # outfile exists
             # There was a error cause the outfile size is zero
             if (os.stat(thumbnailfilename).st_size > 0):
-                # save file in bdd
-                print("save in bdd")
-                # ############################################### TODO !
-                # if filepicker save in file picker
-                # else save in videoimagemodel
-                # ############################################### END TODO !
+                if FILEPICKER:
+
+                else:
+                    thumbnail = VideoImageModel()
+                    thumbnail.file.save(
+                        "%d_%s.png" % (video_id, i),
+                        File(open(thumbnailfilename)),
+                        save=True)
+                    thumbnail.save()
+
+                    video_to_encode = Video.objects.get(id=video_id)
+                    video_to_encode.thumbnail = thumbnail
+                    video_to_encode.save()
+
             else:
                 os.remove(thumbnailfilename)
                 msg += "\nERROR THUMBNAILS %s Output size is 0" % thumbnailfilename
@@ -594,10 +610,12 @@ def add_thumbnails(source, video_id):
             log.error(msg)
             send_email(msg, video_id)
     return msg
-    
+
 ###############################################################
 # OVERVIEW
 ###############################################################
+
+
 def remove_old_overview_file(overviewfilename, overviewimagefilename):
     if os.path.isfile(overviewimagefilename):
         os.remove(overviewimagefilename)
