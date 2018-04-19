@@ -2,8 +2,6 @@
 Django local settings for pod_project.
 Django version : 1.11.10.
 """
-from pod import settings
-
 
 import os
 ##
@@ -115,8 +113,7 @@ TITLE_SITE = 'Pod'
 ##
 # CKeditor settings
 #
-CKEDITOR_BASEPATH = os.path.join(
-    getattr(settings, 'STATIC_URL', '/static/'), 'ckeditor', 'ckeditor') + "/"
+CKEDITOR_BASEPATH = os.path.join(STATIC_URL, 'ckeditor', "/")
 
 ##
 # Main menu settings:
