@@ -38,7 +38,8 @@ table.scroll thead th {
 	line-height: 20px;
 }
 table.scroll thead th.chapter_title,
-table.scroll thead th.chapter_time {
+table.scroll thead th.chapter_time_start,
+table.scroll thead th.chapter_time_end {
 	white-space: nowrap;
 }
 #list_chapter .panel-heading {

@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.http import HttpResponseForbidden
+from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
@@ -9,6 +10,7 @@ from django.views.decorators.csrf import csrf_protect
 from pod.video.models import Video
 from pod.chapters.models import Chapter
 from pod.chapters.forms import ChapterForm
+from pod.chapters.utils import chapter_to_vtt
 
 import json
 
@@ -16,13 +18,13 @@ import json
 @csrf_protect
 def video_chapter(request, slug):
     if not request.user.is_authenticated():
-        return HttpResponseForbidden('You need to be authenticated.')
+        return HttpResponseForbidden(_(u'You need to be authenticated.'))
     video = get_object_or_404(Video, slug=slug)
 
     if request.user != video.owner.user and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot chapter this video.'))
-        return HttpResponseForbidden('Only the owner can add chapter.')
+        return HttpResponseForbidden(u('Only the owner can add chapter.'))
 
     list_chapter = video.chapter_set.all()
     if request.POST:
@@ -135,3 +137,20 @@ def video_chapter(request, slug):
         'video_chapter.html',
         {'video': video,
          'list_chapter': list_chapter})
+
+def get_chapter_vtt(request, slug):
+	if not request.user.is_authenticated():
+		return HttpResponseForbidden(_(u'You need to be authenticated'))
+	video = get_object_or_404(Video, slug=slug)
+
+	if request.user != video.owner.user and not request.user.is_superuser:
+		return HttpResponseForbidden(_(u'You cannot access to this file.'))
+
+	list_chapter = video.chapter_set.all()
+	if list_chapter:
+		some_data_to_dump = {
+			'vtt': chapter_to_vtt(list_chapter, video)
+		}
+		data = json.dumps(some_data_to_dump)
+		return HttpResponse(data, content_type='application/json')
+	return HttpResponseNotFound()

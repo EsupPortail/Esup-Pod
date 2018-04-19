@@ -9,12 +9,14 @@ class ChapterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ChapterForm, self).__init__(*args, **kwargs)
         self.fields['video'].widget = forms.HiddenInput()
-        self.fields['time'].widget.attrs['min'] = 0
+        self.fields['time_start'].widget.attrs['min'] = 0
+        self.fields['time_end'].widget.attrs['min'] = 1
         try:
-            self.fields['time'].widget.attrs[
+            self.fields['time_start'].widget.attrs[
                 'max'] = self.instance.video.duration - 1
         except Exception:
-            self.fields['time'].widget.attrs['max'] = 36000
+            self.fields['time_start'].widget.attrs['max'] = 36000
+            self.fields['time_end'].widget.attrs['max'] = 36000
         for myField in self.fields:
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
