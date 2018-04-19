@@ -309,13 +309,6 @@ class Video(models.Model):
     theme = models.ManyToManyField(
         Theme, verbose_name=_('Themes'), blank=True)
 
-    def clean(self):
-        msg = list()
-        if self.thumbnail and not self.thumbnail.startswith('/media/'):
-            msg.append(_('Please enter a correct path for the thumbnail.'))
-        if len(msg) > 0:
-            raise ValidationError(msg)
-
     def save(self, *args, **kwargs):
         newid = -1
         if not self.id:

@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin
 
@@ -15,12 +16,8 @@ from pod.completion.admin import ContributorInline
 from pod.completion.admin import DocumentInline
 from pod.completion.admin import OverlayInline
 from pod.completion.admin import TrackInline
-try:
-    __import__('pod.filepicker')
+if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
-except ImportError:
-    FILEPICKER = False
-    pass
 
 # Register your models here.
 
@@ -67,7 +64,7 @@ class DisciplineAdmin(TranslationAdmin):
         js = ('js/jquery.tools.min.js',)
 
 
-class ThemeAdmin(TranslationAdmin):
+class ThemeAdmin(admin.ModelAdmin):
     form = ThemeForm
     list_display = ('title', 'channel')
     list_filter = ['channel']
@@ -77,15 +74,8 @@ class ThemeAdmin(TranslationAdmin):
     class Media:
         js = ('js/jquery.tools.min.js',)
 
-if FILEPICKER:
-    admin.site.register(Channel, ChannelAdmin)
-    admin.site.register(Type, TypeAdmin)
-    admin.site.register(Discipline, DisciplineAdmin)
-    admin.site.register(Theme, ThemeAdmin)
-    admin.site.register(Video, VideoAdmin)
-else:
-    admin.site.register(Channel)
-    admin.site.register(Type)
-    admin.site.register(Discipline)
-    admin.site.register(Theme)
-    admin.site.register(Video)
+admin.site.register(Channel, ChannelAdmin)
+admin.site.register(Type, TypeAdmin)
+admin.site.register(Discipline, DisciplineAdmin)
+admin.site.register(Theme, ThemeAdmin)
+admin.site.register(Video, VideoAdmin)
