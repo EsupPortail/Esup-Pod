@@ -1,7 +1,6 @@
 from django.db import models
 from django.db import connection
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import get_language
 from django.template.defaultfilters import slugify
