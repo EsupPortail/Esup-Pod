@@ -28,7 +28,8 @@ class ChapterModelTestCase(TestCase):
         Chapter.objects.create(
             video=video,
             title='Chaptertest',
-            time=1
+            time_start=1,
+            time_end=2
         )
         Chapter.objects.create(
             video=video,
@@ -40,17 +41,21 @@ class ChapterModelTestCase(TestCase):
         video = Video.objects.get(id=1)
         self.assertEqual(chapter.video, video)
         self.assertEqual(chapter.title, 'Chaptertest')
-        self.assertEqual(chapter.slug, 'chaptertest')
-        self.assertEqual(chapter.time, 1)
+        self.assertEqual(chapter.slug, '{0}-{1}'.format('1', 'chaptertest'))
+        self.assertEqual(chapter.time_start, 1)
+        self.assertEqual(chapter.time_end, 2)
 
         print(" ---> test_attributs_full : OK ! --- ChapterModel")
+        print(" [ END CHAPTER_TEST MODEL ] ")
 
     def test_attributs(self):
         chapter = Chapter.objects.get(id=2)
         video = Video.objects.get(id=1)
         self.assertEqual(chapter.video, video)
         self.assertEqual(chapter.title, 'Chaptertest2')
-        self.assertEqual(chapter.slug, 'chaptertest2')
-        self.assertEqual(chapter.time, 0)
+        self.assertEqual(chapter.slug, '{0}-{1}'.format('2', 'chaptertest2'))
+        self.assertEqual(chapter.time_start, 0)
+        self.assertEqual(chapter.time_end, 1)
 
+        print(" [ BEGIN CHAPTER_TEST MODEL ] ")
         print(" ---> test_attributs : OK ! --- ChapterModel")

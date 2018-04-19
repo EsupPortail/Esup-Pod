@@ -97,7 +97,7 @@ class Chapter(models.Model):
         else:
             newid = self.id
         newid = '{0}'.format(newid)
-        self.slug = '{0}-{0}'.format(newid, slugify(self.title))
+        self.slug = '{0}-{1}'.format(newid, slugify(self.title))
         super(Chapter, self).save(*args, **kwargs)
 
     def __str__(self):
