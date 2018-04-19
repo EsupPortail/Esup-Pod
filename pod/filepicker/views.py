@@ -405,16 +405,11 @@ class FilePickerBase(object):
 
     def delete(self, request, file):
         if request.method == 'POST':
-            f = self.model.objects.get(id=file)
-            if os.path.isfile(f.file.path):
-                os.remove(f.file.path)
-                f.delete()
-                data = {'status': 'OK'}
-                return HttpResponse(
-                    json.dumps(data),
-                    content_type='application/json')
-            else:
-                return HttpResponseServerError()
+            f = self.model.objects.get(id=file).delete()
+            data = {'status': 'OK'}
+            return HttpResponse(
+                json.dumps(data),
+                content_type='application/json')
         return HttpResponseBadRequest()
 
 
