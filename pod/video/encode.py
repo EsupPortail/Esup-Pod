@@ -4,6 +4,7 @@ from django.core.mail import mail_admins
 from django.core.mail import mail_managers
 from django.utils.translation import ugettext_lazy as _
 from django.core.files.images import ImageFile
+from django.apps import apps
 
 from pod.video.models import VideoRendition
 from pod.video.models import EncodingVideo
@@ -11,6 +12,11 @@ from pod.video.models import EncodingAudio
 from pod.video.models import EncodingLog
 from pod.video.models import PlaylistM3U8
 from pod.video.models import Video
+from pod.video.models import VideoImageModel
+try:
+    from pod.filepicker.models import CustomImageModel
+except ImportError:
+    pass
 
 from fractions import Fraction
 from webvtt import WebVTT, Caption
@@ -20,7 +26,9 @@ import time
 import subprocess
 import json
 import re
+import tempfile
 
+FILEPICKER = True if apps.is_installed('pod.filepicker') else False
 
 FFMPEG = getattr(settings, 'FFMPEG', 'ffmpeg')
 FFPROBE = getattr(settings, 'FFPROBE', 'ffprobe')
@@ -71,17 +79,19 @@ ENCODE_MP3_CMD = getattr(
 EMAIL_ON_ENCODING_COMPLETION = getattr(
     settings, 'EMAIL_ON_ENCODING_COMPLETION', True)
 
+FILE_UPLOAD_TEMP_DIR = getattr(
+    settings, 'FILE_UPLOAD_TEMP_DIR', '/tmp')
 
+
+# function to store each step of encoding process
 def change_encoding_step(video_id, num_step, desc):
     video_to_encode = Video.objects.get(id=video_id)
-    video_to_encode.encoding_step = '{"etape":%d,"desc":"%s"}' % (
+    video_to_encode.encoding_step = '{"step":%d,"desc":"%s"}' % (
         num_step, desc
     )
     video_to_encode.save()
 
 # first function to encode file sent to Pod
-
-
 def encode_video(video_id):
     start = "Start at : %s" % time.ctime()
     if DEBUG:
@@ -149,6 +159,10 @@ def encode_video(video_id):
                                              video_id)
             # thumbnails
             change_encoding_step(video_id, 2, "Encoding : create thumbnails")
+            encoding_log_msg += add_thumbnails(
+                                             video_360.source_file.path,
+                                             data_video["output_dir"],
+                                             video_id)
 
         else:  # not is_video:
             change_encoding_step(video_id, 2, "Encoding : encoding audio")
@@ -536,8 +550,51 @@ def save_mp4_files(list_mp4, output_dir, video_to_encode):
     if DEBUG:
         print(msg)
     return msg
-
-
+###############################################################
+# THUMBNAILS
+###############################################################
+# nice -19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -t 10%% -o %(out)s_2.png && nice -19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -t 50%% -o %(out)s_3.png && nice -19 ffmpegthumbnailer -i \"%(src)s\" -s 256x256 -t 75%% -o %(out)s_4.png"
+def add_thumbnails(source, video_id):
+    msg = "\nCREATE THUMBNAILS : %s" % time.ctime()
+    tempimgfile = tempfile.NamedTemporaryFile(dir=FILE_UPLOAD_TEMP_DIR,suffix='')
+    image_width = 360 # default size of image
+    msg += "\ncreate thumbnails image file"
+    for i in range(0, 3):
+        percent = str((i+1)*25)+"%"
+        cmd_ffmpegthumbnailer = "ffmpegthumbnailer -t \"%(percent)s\" \
+        -s \"%(image_width)s\" -i %(source)s -c png \
+        -o %(tempfile)s_%(num)s.png" % {
+            "percent": percent,
+            'source': source,
+            'num': i,
+            'image_width': image_width,
+            'tempfile':tempimgfile.name
+        }
+        subprocess.getoutput(cmd_ffmpegthumbnailer)
+        thumbnailfilename = "%(tempfile)s_%(num)s.png" % {
+            'num': i,
+            'tempfile':tempimgfile.name
+        }
+        if os.access(thumbnailfilename, os.F_OK):  # outfile exists
+            # There was a error cause the outfile size is zero
+            if (os.stat(thumbnailfilename).st_size > 0):
+                # save file in bdd
+                print("save in bdd")
+                # ############################################### TODO !
+                # if filepicker save in file picker
+                # else save in videoimagemodel
+                # ############################################### END TODO !
+            else:
+                os.remove(thumbnailfilename)
+                msg += "\nERROR THUMBNAILS %s Output size is 0" % thumbnailfilename
+                log.error(msg)
+                send_email(msg, video_id)
+        else:
+            msg += "\nERROR THUMBNAILS %s DOES NOT EXIST" % thumbnailfilename
+            log.error(msg)
+            send_email(msg, video_id)
+    return msg
+    
 ###############################################################
 # OVERVIEW
 ###############################################################
@@ -629,11 +686,11 @@ def add_overview(duration, source, output_dir, video_id):
             os.remove(overviewfilename)
             msg += "\nERROR OVERVIEW %s Output size is 0" % overviewfilename
             log.error(msg)
-            send_email(msg, video_to_encode.id)
+            send_email(msg, video_id)
     else:
         msg += "\nERROR OVERVIEW %s DOES NOT EXIST" % overviewfilename
         log.error(msg)
-        send_email(msg, video_to_encode.id)
+        send_email(msg, video_id)
 
     if DEBUG:
         print(msg)
