@@ -425,7 +425,7 @@ class VideoRendition(models.Model):
     encode_mp4 = models.BooleanField(_('Make a MP4 version'), default=False)
 
     def __str__(self):
-        return "%s - %s" % ('%04d' % self.id, self.resolution)
+        return "VideoRendition num %s with resolution %s" % ('%04d' % self.id, self.resolution)
 
     def clean(self):
         if self.resolution:
@@ -460,7 +460,10 @@ class EncodingVideo(models.Model):
         _('Name'),
         max_length=10,
         choices=ENCODING_CHOICES,
-        default="360p")
+        default="360p",
+        help_text="Please use the only format in encoding choices :"
+        + " %s" %' '.join(str(key) for key,value in ENCODING_CHOICES)
+        )
     video = models.ForeignKey(Video, verbose_name=_('Video'))
     rendition = models.ForeignKey(
         VideoRendition, verbose_name=_('rendition'))
@@ -468,18 +471,32 @@ class EncodingVideo(models.Model):
         _('Format'),
         max_length=22,
         choices=FORMAT_CHOICES,
-        default="video/mp4")
+        default="video/mp4",
+        help_text="Please use the only format in format choices :"
+        + " %s" %' '.join(str(key) for key,value in FORMAT_CHOICES))
     source_file = models.FileField(
         _('encoding source file'),
         upload_to=get_storage_path_video,
         max_length=255)
+    
+    def clean(self):
+        if self.name:
+            if not self.name in dict(ENCODING_CHOICES):
+                raise ValidationError(
+                    EncodingVideo._meta.get_field('name').help_text
+                    )
+        if self.encoding_format:
+            if not self.encoding_format in dict(FORMAT_CHOICES):
+                raise ValidationError(
+                    EncodingVideo._meta.get_field('encoding_format').help_text
+                    )
 
     def __str__(self):
-        return "%s - %s - %s - %s - %s" % ('%04d' % self.id,
-                                           self.name,
-                                           self.video,
-                                           self.rendition.resolution,
-                                           self.encoding_format)
+        return "EncodingVideo num : %s with resolution %s for video %s in %s"\
+        % ('%04d' % self.id,
+           self.name,
+           self.video.id,
+           self.encoding_format)
 
     @property
     def owner(self):
@@ -494,18 +511,34 @@ class EncodingVideo(models.Model):
 
 class EncodingAudio(models.Model):
     name = models.CharField(
-        _('Name'), max_length=10, choices=ENCODING_CHOICES, default="360p")
+        _('Name'), max_length=10, choices=ENCODING_CHOICES, default="audio",
+        help_text="Please use the only format in encoding choices :"
+        + " %s" %' '.join(str(key) for key,value in ENCODING_CHOICES))
     video = models.ForeignKey(Video, verbose_name=_('Video'))
     encoding_format = models.CharField(
         _('Format'), max_length=22, choices=FORMAT_CHOICES,
-        default="video/mp4")
+        default="audio/mp3",
+        help_text="Please use the only format in format choices :"
+        + " %s" %' '.join(str(key) for key,value in FORMAT_CHOICES))
     source_file = models.FileField(
         _('encoding source file'),
         upload_to=get_storage_path_video,
         max_length=255)
 
+    def clean(self):
+        if self.name:
+            if not self.name in dict(ENCODING_CHOICES):
+                raise ValidationError(
+                    EncodingAudio._meta.get_field('name').help_text
+                    )
+        if self.encoding_format:
+            if not self.encoding_format in dict(FORMAT_CHOICES):
+                raise ValidationError(
+                    EncodingAudio._meta.get_field('encoding_format').help_text
+                    )
+
     def __str__(self):
-        return "%s - %s - %s - %s" % ('%04d' % self.id,
+        return "EncodingAudio num : %s for video %s in %s" % ('%04d' % self.id,
                                       self.name,
                                       self.video,
                                       self.encoding_format)
