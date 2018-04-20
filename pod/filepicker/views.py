@@ -68,22 +68,23 @@ class FilePickerBase(object):
         if not self.form:
             self.form = model_to_AjaxItemForm(self.model)
         self.field_names = [f.name for f in model._meta.get_fields()]
-        build_headers = not self.columns or not self.extra_headers
+
         if not self.columns:
             self.columns = self.field_names
+
+        self.populate_field(model)
+
+    def populate_field(self, model):
+        build_headers = not self.columns or not self.extra_headers
         extra_headers = list()
+
         for field_name in self.field_names:
             field = model._meta.get_field(field_name)
             if isinstance(field, (models.ImageField, models.FileField)):
                 self.field = field_name
-        for field_name in self.field_names:
-            try:
-                field = model._meta.get_field(field_name)
-            except models.FieldDoesNotExist:
-                self.field_names.remove(field_name)
-                continue
             if isinstance(field, (models.ForeignKey, models.ManyToManyField)):
                 self.field_names.remove(field_name)
+
         for field_name in self.columns:
             try:
                 field = model._meta.get_field(field_name)
@@ -91,6 +92,7 @@ class FilePickerBase(object):
                 self.field_names.remove(field_name)
                 continue
             extra_headers.append(capfirst(field.verbose_name))
+
         if build_headers:
             self.extra_headers = extra_headers
 
@@ -405,7 +407,7 @@ class FilePickerBase(object):
 
     def delete(self, request, file):
         if request.method == 'POST':
-            f = self.model.objects.get(id=file).delete()
+            self.model.objects.get(id=file).delete()
             data = {'status': 'OK'}
             return HttpResponse(
                 json.dumps(data),
