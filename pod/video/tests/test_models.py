@@ -496,7 +496,7 @@ class VideoRenditionTestCase(TestCase):
     }
 )
 class EncodingVideoTestCase(TestCase):
-    
+
     def setUp(self):
         print ("create video")
         User.objects.create(username="pod", password="pod1234pod")
@@ -504,5 +504,12 @@ class EncodingVideoTestCase(TestCase):
         Video.objects.create(
             title="Video1", owner=owner1, video="test.mp4")
         print ("create rendition")
-        VideoRendition.objects.create(resolution="640x360", video_bitrate="1000k", audio_bitrate="300k", encode_mp4=False)
+        VideoRendition.objects.create(
+            resolution="640x360", video_bitrate="1000k", audio_bitrate="300k", encode_mp4=False)
         print(" --->  SetUp of VideoTestCase : OK !")
+
+# EncodingAudio
+
+# PlaylistM3U8
+
+# EncodingLog
