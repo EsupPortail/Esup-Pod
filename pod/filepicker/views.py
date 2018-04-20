@@ -73,11 +73,9 @@ class FilePickerBase(object):
             self.columns = self.field_names
 
         self.populate_field(model)
+        self.verify_column(model)
 
     def populate_field(self, model):
-        build_headers = not self.columns or not self.extra_headers
-        extra_headers = list()
-
         for field_name in self.field_names:
             field = model._meta.get_field(field_name)
             if isinstance(field, (models.ImageField, models.FileField)):
@@ -85,6 +83,9 @@ class FilePickerBase(object):
             if isinstance(field, (models.ForeignKey, models.ManyToManyField)):
                 self.field_names.remove(field_name)
 
+    def verify_column(self, model):
+        build_headers = not self.columns or not self.extra_headers
+        extra_headers = list()
         for field_name in self.columns:
             try:
                 field = model._meta.get_field(field_name)
@@ -92,7 +93,6 @@ class FilePickerBase(object):
                 self.field_names.remove(field_name)
                 continue
             extra_headers.append(capfirst(field.verbose_name))
-
         if build_headers:
             self.extra_headers = extra_headers
 
