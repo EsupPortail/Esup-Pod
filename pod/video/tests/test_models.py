@@ -22,6 +22,8 @@ from pod.video.models import get_storage_path_video
 from pod.video.models import VIDEOS_DIR
 from pod.video.models import VideoRendition
 from pod.video.models import EncodingVideo
+from pod.video.models import EncodingAudio
+from pod.video.models import PlaylistVideo
 
 from datetime import datetime
 from datetime import timedelta
@@ -558,8 +560,138 @@ class EncodingVideoTestCase(TestCase):
         self.assertEqual(ev.name, "error")
         self.assertRaises(ValidationError, ev.clean)
         print(" --->  SetUp of test_EncodingVideo_with_false_attributs : OK !")
-# EncodingAudio
 
-# PlaylistM3U8
+"""
+    test the Audio Encoding model
+"""
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+)
+class EncodingAudioTestCase(TestCase):
+
+    def setUp(self):
+        User.objects.create(username="pod", password="pod1234pod")
+        owner1 = Owner.objects.get(user__username="pod")
+        Video.objects.create(
+            title="Video1", owner=owner1, video="test.mp4")
+        print(" --->  SetUp of EncodingAudioTestCase : OK !")
+
+    def test_EncodingVideo_null_attributs(self):
+        ea = EncodingAudio.objects.create(
+            video=Video.objects.get(id=1)
+            )
+        self.assertTrue(isinstance(ea, EncodingAudio))
+        easlug = "EncodingAudio num : %s for video %s in %s"\
+        % ('%04d' % ea.id,
+           ea.video.id,
+           ea.encoding_format)
+        self.assertEqual(ea.__str__(), easlug)
+        self.assertEqual(ea.name, "audio")
+        self.assertEqual(ea.encoding_format, "audio/mp3")
+        self.assertEqual(ea.owner, Video.objects.get(id=1).owner)
+        ea.clean()
+        print(" --->  test_EncodingVideo_null_attributs : OK !")
+
+    def test_EncodingAudio_with_attributs(self):
+        ea = EncodingAudio.objects.create(
+            video=Video.objects.get(id=1),
+            name="audio",
+            encoding_format = "video/mp4")
+        self.assertTrue(isinstance(ea, EncodingAudio))
+        easlug = "EncodingAudio num : %s for video %s in %s"\
+        % ('%04d' % ea.id,
+           ea.video.id,
+           ea.encoding_format)
+        self.assertEqual(ea.__str__(), easlug)
+        self.assertEqual(ea.name, "audio")
+        self.assertEqual(ea.encoding_format, "video/mp4")
+        self.assertEqual(ea.owner, Video.objects.get(id=1).owner)
+        ea.clean()
+        print(" --->  test_EncodingAudio_with_attributs : OK !")
+
+    def test_EncodingAudio_with_false_attributs(self):
+        ea = EncodingAudio.objects.create(
+            video=Video.objects.get(id=1),
+            name="error",
+            encoding_format = "error")
+        self.assertTrue(isinstance(ea, EncodingAudio))
+        self.assertEqual(ea.name, "error")
+        self.assertRaises(ValidationError, ea.clean)
+        print(" --->  test_EncodingAudio_with_false_attributs : OK !")
+
+
+"""
+    test the PlaylistM3U8 model
+"""
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+)
+class PlaylistVideoTestCase(TestCase):
+
+    def setUp(self):
+        User.objects.create(username="pod", password="pod1234pod")
+        owner1 = Owner.objects.get(user__username="pod")
+        Video.objects.create(
+            title="Video1", owner=owner1, video="test.mp4")
+        print(" --->  SetUp of PlaylistVideoTestCase : OK !")
+
+    def test_PlaylistVideo_null_attributs(self):
+        pv = PlaylistVideo.objects.create(
+            video=Video.objects.get(id=1)
+            )
+        self.assertTrue(isinstance(pv, PlaylistVideo))
+        pvslug = "Playlist num : %s for video %s in %s"\
+        % ('%04d' % pv.id,
+           pv.video.id,
+           pv.encoding_format)
+        self.assertEqual(pv.__str__(), pvslug)
+        self.assertEqual(pv.name, "360p")
+        self.assertEqual(pv.encoding_format, "application/x-mpegURL")
+        self.assertEqual(pv.owner, Video.objects.get(id=1).owner)
+        pv.clean()
+        print(" --->  test_PlaylistVideo_null_attributs : OK !")
+
+    def test_PlaylistVideo_with_attributs(self):
+        pv = PlaylistVideo.objects.create(
+            video=Video.objects.get(id=1),
+            name="audio",
+            encoding_format = "video/mp4")
+        self.assertTrue(isinstance(pv, PlaylistVideo))
+        pvslug = "Playlist num : %s for video %s in %s"\
+        % ('%04d' % pv.id,
+           pv.video.id,
+           pv.encoding_format)
+        self.assertEqual(pv.__str__(), pvslug)
+        self.assertEqual(pv.name, "audio")
+        self.assertEqual(pv.encoding_format, "video/mp4")
+        self.assertEqual(pv.owner, Video.objects.get(id=1).owner)
+        pv.clean()
+        print(" --->  test_PlaylistVideo_with_attributs : OK !")
+
+    def test_PlaylistVideo_with_false_attributs(self):
+        pv = PlaylistVideo.objects.create(
+            video=Video.objects.get(id=1),
+            name="error",
+            encoding_format = "error")
+        self.assertTrue(isinstance(pv, PlaylistVideo))
+        self.assertEqual(pv.name, "error")
+        self.assertRaises(ValidationError, pv.clean)
+        print(" --->  test_PlaylistVideo_with_false_attributs : OK !")
 
 # EncodingLog

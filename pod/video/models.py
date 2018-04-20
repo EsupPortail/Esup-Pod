@@ -538,10 +538,10 @@ class EncodingAudio(models.Model):
                     )
 
     def __str__(self):
-        return "EncodingAudio num : %s for video %s in %s" % ('%04d' % self.id,
-                                      self.name,
-                                      self.video,
-                                      self.encoding_format)
+        return "EncodingAudio num : %s for video %s in %s" % (
+            '%04d' % self.id,
+            self.video.id,
+            self.encoding_format)
 
     @property
     def owner(self):
@@ -554,28 +554,39 @@ class EncodingAudio(models.Model):
         super(EncodingAudio, self).delete()
 
 
-class PlaylistM3U8(models.Model):
+class PlaylistVideo(models.Model):
     name = models.CharField(
-        _('Name'),
-        max_length=10,
-        choices=ENCODING_CHOICES,
-        default="360p")
+        _('Name'), max_length=10, choices=ENCODING_CHOICES, default="360p",
+        help_text="Please use the only format in encoding choices :"
+        + " %s" %' '.join(str(key) for key,value in ENCODING_CHOICES))
     video = models.ForeignKey(Video, verbose_name=_('Video'))
     encoding_format = models.CharField(
-        _('Format'),
-        max_length=22,
-        choices=FORMAT_CHOICES,
-        default="video/mp4")
+        _('Format'), max_length=22, choices=FORMAT_CHOICES,
+        default="application/x-mpegURL",
+        help_text="Please use the only format in format choices :"
+        + " %s" %' '.join(str(key) for key,value in FORMAT_CHOICES))
     source_file = models.FileField(
         _('encoding source file'),
         upload_to=get_storage_path_video,
         max_length=255)
 
+    def clean(self):
+        if self.name:
+            if not self.name in dict(ENCODING_CHOICES):
+                raise ValidationError(
+                    PlaylistVideo._meta.get_field('name').help_text
+                    )
+        if self.encoding_format:
+            if not self.encoding_format in dict(FORMAT_CHOICES):
+                raise ValidationError(
+                    PlaylistVideo._meta.get_field('encoding_format').help_text
+                    )
+
     def __str__(self):
-        return "%s - %s - %s - %s" % ('%04d' % self.id,
-                                      self.name,
-                                      self.video,
-                                      self.encoding_format)
+        return "Playlist num : %s for video %s in %s" % (
+            '%04d' % self.id,
+            self.video.id,
+            self.encoding_format)
 
     @property
     def owner(self):
@@ -585,7 +596,7 @@ class PlaylistM3U8(models.Model):
         if self.source_file:
             if os.path.isfile(self.source_file.path):
                 os.remove(self.source_file.path)
-        super(PlaylistM3U8, self).delete()
+        super(PlaylistVideo, self).delete()
 
 
 class EncodingLog(models.Model):

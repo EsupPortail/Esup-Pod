@@ -10,7 +10,7 @@ from pod.video.models import VideoRendition
 from pod.video.models import EncodingVideo
 from pod.video.models import EncodingAudio
 from pod.video.models import EncodingLog
-from pod.video.models import PlaylistM3U8
+from pod.video.models import PlaylistVideo
 
 from pod.video.forms import VideoForm
 from pod.video.forms import ChannelForm
@@ -80,7 +80,7 @@ class EncodingAudioAdmin(admin.ModelAdmin):
     list_display = ('name', 'video', 'encoding_format')
 
 
-class PlaylistM3U8Admin(admin.ModelAdmin):
+class PlaylistVideoAdmin(admin.ModelAdmin):
     list_display = ('name', 'video', 'encoding_format')
 
 
@@ -103,4 +103,4 @@ admin.site.register(EncodingVideo, EncodingVideoAdmin)
 admin.site.register(EncodingAudio, EncodingAudioAdmin)
 admin.site.register(VideoRendition, VideoRenditionAdmin)
 admin.site.register(EncodingLog, EncodingLogAdmin)
-admin.site.register(PlaylistM3U8, PlaylistM3U8Admin)
+admin.site.register(PlaylistVideo, PlaylistVideoAdmin)

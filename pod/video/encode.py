@@ -12,7 +12,7 @@ from pod.video.models import VideoRendition
 from pod.video.models import EncodingVideo
 from pod.video.models import EncodingAudio
 from pod.video.models import EncodingLog
-from pod.video.models import PlaylistM3U8
+from pod.video.models import PlaylistVideo
 from pod.video.models import Video
 from pod.video.models import VideoImageModel
 
@@ -480,13 +480,13 @@ def save_m3u8_files(list_m3u8, output_dir, video_to_encode, master_playlist):
                     settings.MEDIA_ROOT + '/', '')
                 encoding.save()
 
-                playlistM3U8, created = PlaylistM3U8.objects.get_or_create(
+                playlist, created = PlaylistVideo.objects.get_or_create(
                     name=m3u8['name'],
                     video=video_to_encode,
                     encoding_format="application/x-mpegURL")
-                playlistM3U8.source_file = videofilenameM3u8.replace(
+                playlist.source_file = videofilenameM3u8.replace(
                     settings.MEDIA_ROOT + '/', '')
-                playlistM3U8.save()
+                playlist.save()
 
             else:
                 msg += "\nERROR ENCODING M3U8 %s Output size is 0" % m3u8[
@@ -504,13 +504,13 @@ def save_m3u8_files(list_m3u8, output_dir, video_to_encode, master_playlist):
     if os.access(output_dir + "/playlist.m3u8", os.F_OK):
         if (os.stat(output_dir + "/playlist.m3u8").st_size > 0):
 
-            playlistM3U8, created = PlaylistM3U8.objects.get_or_create(
+            playlist, created = PlaylistVideo.objects.get_or_create(
                 name="playlist",
                 video=video_to_encode,
                 encoding_format="application/x-mpegURL")
-            playlistM3U8.source_file = output_dir.replace(
+            playlist.source_file = output_dir.replace(
                 settings.MEDIA_ROOT + '/', '') + "/playlist.m3u8"
-            playlistM3U8.save()
+            playlist.save()
 
             msg += "\n- Playlist :\n%s" % output_dir + \
                 "/playlist.m3u8"
@@ -783,7 +783,7 @@ def remove_previous_encoding_audio(video_to_encode):
 def remove_previous_encoding_playlist(video_to_encode):
     msg = "\n"
     # Remove previous encoding Playlist
-    previous_playlist = PlaylistM3U8.objects.filter(video=video_to_encode)
+    previous_playlist = PlaylistVideo.objects.filter(video=video_to_encode)
     if len(previous_playlist) > 0:
         if DEBUG:
             print("DELETE PREVIOUS PLAYLIST M3U8")
