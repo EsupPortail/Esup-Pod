@@ -41,6 +41,9 @@
 						<input type="hidden" name="action" value="new"/>
 						<input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-info"/>
 					</form>
+					<form id="form_vtt" action="{% url 'get_chapter_vtt' slug=video.slug %}" method="GET">
+						<input type="submit" id="get_chapter_vtt" value="{% trans 'Get the VTT file' %}" class="btn btn-info"/>
+					</form>
 				</div>
 				<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
 					<div class="widget user-tools">

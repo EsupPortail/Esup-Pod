@@ -49,6 +49,7 @@ table.scroll thead th.chapter_time_end {
 	padding: 4px 15px;
 }
 #form_chapter,
-#form_new {
+#form_new,
+#form_vtt {
 	padding: 10px;
 }
