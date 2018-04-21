@@ -296,12 +296,14 @@ class Video(models.Model):
         _(u'Date of event'), default=datetime.now, blank=True, null=True)
     description = RichTextField(
         _('Description'), config_name='complete', blank=True)
+
     cursus = models.CharField(
         _('University course'), max_length=1,
         choices=CURSUS_CODES, default="0")
     main_lang = models.CharField(
         _('Main language'), max_length=2,
         choices=MAIN_LANG_CHOICES, default=get_language())
+
     duration = models.IntegerField(
         _('Duration'), default=0, editable=False, blank=True)
 
@@ -357,8 +359,6 @@ class Video(models.Model):
 
     encoding_in_progress = models.BooleanField(
         _('Encoding in progress'), default=False, editable=False)
-    encoding_step = models.CharField(
-        _('Encoding step'), max_length=50, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         newid = -1
@@ -398,7 +398,8 @@ class Video(models.Model):
 
 
 class ViewCount(models.Model):
-    video = models.ForeignKey(Video, verbose_name=_('Video'))
+    video = models.ForeignKey(Video, verbose_name=_('Video'),
+                                 editable=False)
     date = models.DateField(
         _(u'Date'), default=datetime.now)
     count = models.IntegerField(
@@ -430,29 +431,39 @@ class VideoRendition(models.Model):
     def clean(self):
         if self.resolution:
             if not 'x' in self.resolution:
-                raise ValidationError(VideoRendition._meta.get_field('resolution').help_text)
+                raise ValidationError(
+                    VideoRendition._meta.get_field('resolution').help_text)
             else:
-                res = self.resolution.replace('x','')
-                if not res.isdigit(): 
-                    raise ValidationError(VideoRendition._meta.get_field('resolution').help_text)
+                res = self.resolution.replace('x', '')
+                if not res.isdigit():
+                    raise ValidationError(
+                        VideoRendition._meta.get_field('resolution').help_text)
         if self.video_bitrate:
             if not 'k' in self.video_bitrate:
-                msg = "Error in %s : " %_('bitrate video')
-                raise ValidationError(msg + VideoRendition._meta.get_field('video_bitrate').help_text)
+                msg = "Error in %s : " % _('bitrate video')
+                raise ValidationError(
+                    msg + VideoRendition._meta.get_field(
+                        'video_bitrate').help_text)
             else:
-                vb = self.video_bitrate.replace('k','')
+                vb = self.video_bitrate.replace('k', '')
                 if not vb.isdigit():
-                    msg = "Error in %s : " %_('bitrate video')
-                    raise ValidationError(msg + VideoRendition._meta.get_field('video_bitrate').help_text)
+                    msg = "Error in %s : " % _('bitrate video')
+                    raise ValidationError(
+                        msg + VideoRendition._meta.get_field(
+                            'video_bitrate').help_text)
         if self.audio_bitrate:
             if not 'k' in self.audio_bitrate:
-                msg = "Error in %s : " %_('bitrate audio')
-                raise ValidationError(msg + VideoRendition._meta.get_field('audio_bitrate').help_text)
+                msg = "Error in %s : " % _('bitrate audio')
+                raise ValidationError(
+                    msg + VideoRendition._meta.get_field(
+                        'audio_bitrate').help_text)
             else:
-                vb = self.audio_bitrate.replace('k','')
+                vb = self.audio_bitrate.replace('k', '')
                 if not vb.isdigit():
-                    msg = "Error in %s : " %_('bitrate audio')
-                    raise ValidationError(msg + VideoRendition._meta.get_field('audio_bitrate').help_text)
+                    msg = "Error in %s : " % _('bitrate audio')
+                    raise ValidationError(
+                        msg + VideoRendition._meta.get_field(
+                            'audio_bitrate').help_text)
 
 
 class EncodingVideo(models.Model):
@@ -462,8 +473,8 @@ class EncodingVideo(models.Model):
         choices=ENCODING_CHOICES,
         default="360p",
         help_text="Please use the only format in encoding choices :"
-        + " %s" %' '.join(str(key) for key,value in ENCODING_CHOICES)
-        )
+        + " %s" % ' '.join(str(key) for key, value in ENCODING_CHOICES)
+    )
     video = models.ForeignKey(Video, verbose_name=_('Video'))
     rendition = models.ForeignKey(
         VideoRendition, verbose_name=_('rendition'))
@@ -473,30 +484,30 @@ class EncodingVideo(models.Model):
         choices=FORMAT_CHOICES,
         default="video/mp4",
         help_text="Please use the only format in format choices :"
-        + " %s" %' '.join(str(key) for key,value in FORMAT_CHOICES))
+        + " %s" % ' '.join(str(key) for key, value in FORMAT_CHOICES))
     source_file = models.FileField(
         _('encoding source file'),
         upload_to=get_storage_path_video,
         max_length=255)
-    
+
     def clean(self):
         if self.name:
             if not self.name in dict(ENCODING_CHOICES):
                 raise ValidationError(
                     EncodingVideo._meta.get_field('name').help_text
-                    )
+                )
         if self.encoding_format:
             if not self.encoding_format in dict(FORMAT_CHOICES):
                 raise ValidationError(
                     EncodingVideo._meta.get_field('encoding_format').help_text
-                    )
+                )
 
     def __str__(self):
         return "EncodingVideo num : %s with resolution %s for video %s in %s"\
-        % ('%04d' % self.id,
-           self.name,
-           self.video.id,
-           self.encoding_format)
+            % ('%04d' % self.id,
+               self.name,
+               self.video.id,
+               self.encoding_format)
 
     @property
     def owner(self):
@@ -513,13 +524,13 @@ class EncodingAudio(models.Model):
     name = models.CharField(
         _('Name'), max_length=10, choices=ENCODING_CHOICES, default="audio",
         help_text="Please use the only format in encoding choices :"
-        + " %s" %' '.join(str(key) for key,value in ENCODING_CHOICES))
+        + " %s" % ' '.join(str(key) for key, value in ENCODING_CHOICES))
     video = models.ForeignKey(Video, verbose_name=_('Video'))
     encoding_format = models.CharField(
         _('Format'), max_length=22, choices=FORMAT_CHOICES,
         default="audio/mp3",
         help_text="Please use the only format in format choices :"
-        + " %s" %' '.join(str(key) for key,value in FORMAT_CHOICES))
+        + " %s" % ' '.join(str(key) for key, value in FORMAT_CHOICES))
     source_file = models.FileField(
         _('encoding source file'),
         upload_to=get_storage_path_video,
@@ -530,12 +541,12 @@ class EncodingAudio(models.Model):
             if not self.name in dict(ENCODING_CHOICES):
                 raise ValidationError(
                     EncodingAudio._meta.get_field('name').help_text
-                    )
+                )
         if self.encoding_format:
             if not self.encoding_format in dict(FORMAT_CHOICES):
                 raise ValidationError(
                     EncodingAudio._meta.get_field('encoding_format').help_text
-                    )
+                )
 
     def __str__(self):
         return "EncodingAudio num : %s for video %s in %s" % (
@@ -558,13 +569,13 @@ class PlaylistVideo(models.Model):
     name = models.CharField(
         _('Name'), max_length=10, choices=ENCODING_CHOICES, default="360p",
         help_text="Please use the only format in encoding choices :"
-        + " %s" %' '.join(str(key) for key,value in ENCODING_CHOICES))
+        + " %s" % ' '.join(str(key) for key, value in ENCODING_CHOICES))
     video = models.ForeignKey(Video, verbose_name=_('Video'))
     encoding_format = models.CharField(
         _('Format'), max_length=22, choices=FORMAT_CHOICES,
         default="application/x-mpegURL",
         help_text="Please use the only format in format choices :"
-        + " %s" %' '.join(str(key) for key,value in FORMAT_CHOICES))
+        + " %s" % ' '.join(str(key) for key, value in FORMAT_CHOICES))
     source_file = models.FileField(
         _('encoding source file'),
         upload_to=get_storage_path_video,
@@ -575,12 +586,12 @@ class PlaylistVideo(models.Model):
             if not self.name in dict(ENCODING_CHOICES):
                 raise ValidationError(
                     PlaylistVideo._meta.get_field('name').help_text
-                    )
+                )
         if self.encoding_format:
             if not self.encoding_format in dict(FORMAT_CHOICES):
                 raise ValidationError(
                     PlaylistVideo._meta.get_field('encoding_format').help_text
-                    )
+                )
 
     def __str__(self):
         return "Playlist num : %s for video %s in %s" % (
@@ -600,9 +611,19 @@ class PlaylistVideo(models.Model):
 
 
 class EncodingLog(models.Model):
-    video = models.ForeignKey(Video, verbose_name=_('Video'), editable=False)
+    video = models.OneToOneField(Video, verbose_name=_('Video'),
+                                 editable=False, on_delete=models.CASCADE)
     log = models.TextField(null=True, blank=True, editable=False)
 
     def __str__(self):
-        return "%s - %s" % ('%04d' % self.id,
-                            self.video)
+        return "Log for encoding video %s" % (self.video.id)
+
+
+class EncodingStep(models.Model):
+    video = models.OneToOneField(Video, verbose_name=_('Video'),
+                                 editable=False, on_delete=models.CASCADE)
+    step = models.CharField(null=True,
+                            max_length=255, blank=True, editable=False)
+
+    def __str__(self):
+        return "Step for encoding video %s" % (self.video.id)

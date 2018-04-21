@@ -15,6 +15,7 @@ from pod.video.models import EncodingLog
 from pod.video.models import PlaylistVideo
 from pod.video.models import Video
 from pod.video.models import VideoImageModel
+from pod.video.models import EncodingStep
 
 from fractions import Fraction
 from webvtt import WebVTT, Caption
@@ -91,11 +92,11 @@ FILE_UPLOAD_TEMP_DIR = getattr(
 
 # function to store each step of encoding process
 def change_encoding_step(video_id, num_step, desc):
-    video_to_encode = Video.objects.get(id=video_id)
-    video_to_encode.encoding_step = '{"step":%d,"desc":"%s"}' % (
+    encoding_step, created = EncodingStep.objects.get_or_create(id=video_id)
+    encoding_step.step = '{"step":%d,"desc":"%s"}' % (
         num_step, desc
     )
-    video_to_encode.save()
+    encoding_step.save()
 
 # first function to encode file sent to Pod
 
