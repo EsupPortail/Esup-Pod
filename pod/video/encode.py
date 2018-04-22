@@ -18,7 +18,7 @@ from pod.video.models import VideoImageModel
 from pod.video.models import EncodingStep
 
 from fractions import Fraction
-from webvtt import WebVTT, Caption
+# from webvtt import WebVTT, Caption
 import logging
 import os
 import time
@@ -92,48 +92,153 @@ FILE_UPLOAD_TEMP_DIR = getattr(
 
 # function to store each step of encoding process
 def change_encoding_step(video_id, num_step, desc):
-    encoding_step, created = EncodingStep.objects.get_or_create(id=video_id)
-    encoding_step.step = '{"step":%d,"desc":"%s"}' % (
-        num_step, desc
-    )
+    encoding_step, created = EncodingStep.objects.get_or_create(
+        video=Video.objects.get(id=video_id))
+    encoding_step.num_step = num_step
+    encoding_step.desc_step = desc
     encoding_step.save()
+    if DEBUG:
+        print("step: %d - desc: %s" % (
+            num_step, desc
+        ))
 
-# first function to encode file sent to Pod
+
+def add_encoding_log(video_id, log):
+    encoding_log, created = EncodingLog.objects.get_or_create(
+        video=Video.objects.get(id=video_id))
+    if encoding_log.log :
+        encoding_log.log += "\n\n%s" % log
+    else :
+        encoding_log.log = "\n\n%s" % log
+    encoding_log.save()
+    if DEBUG:
+        print(log)
+
+
+def check_file(path_file):
+    if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
+        return True
+    return False
+
+
+def remove_old_data(video_id):
+    video_to_encode = Video.objects.get(id=video_id)
+    encoding_log_msg = ""
+    encoding_log_msg += remove_previous_encoding_video(
+        video_to_encode)
+    encoding_log_msg += remove_previous_encoding_audio(
+        video_to_encode)
+    encoding_log_msg += remove_previous_encoding_playlist(
+        video_to_encode)
+    return encoding_log_msg
+
+
+def get_video_data(video_id):
+    video_to_encode = Video.objects.get(id=video_id)
+    msg = ""
+    source = "%s" % video_to_encode.video.path
+    command = GET_INFO_VIDEO % {'ffprobe': FFPROBE, 'source': source}
+    ffproberesult = subprocess.getoutput(command)
+    msg += "\nffprobe command : %s" % command
+    info = json.loads(ffproberesult)
+    msg += "%s" % json.dumps(
+        info, sort_keys=True, indent=4, separators=(',', ': '))
+    is_video = False
+    in_height = 0
+    duration = 0
+    if len(info["streams"]) > 0:
+        is_video = True
+        if info["streams"][0].get('height'):
+            in_height = info["streams"][0]['height']
+        if info["streams"][0]['avg_frame_rate']:
+            # nb img / sec.
+            avg_frame_rate = info["streams"][0]['avg_frame_rate']
+            key_frames_interval = int(round(Fraction(avg_frame_rate)))
+
+    if info["format"].get('duration'):
+        duration = int(float("%s" % info["format"]['duration']))
+
+    msg += "\nIN_HEIGHT : %s" % in_height
+    msg += "\nKEY FRAMES INTERVAL : %s" % key_frames_interval
+    msg += "\nDURATION : %s" % duration
+    return {
+        'msg': msg,
+        'is_video': is_video,
+        'in_height': in_height,
+        'key_frames_interval': key_frames_interval,
+        'duration': duration
+    }
 
 
 def encode_video(video_id):
     start = "Start at : %s" % time.ctime()
-    if DEBUG:
-        print(start)
 
     change_encoding_step(video_id, 0, "start")
+    add_encoding_log(video_id, start)
 
     video_to_encode = Video.objects.get(id=video_id)
     video_to_encode.encoding_in_progress = True
     video_to_encode.save()
 
-    encoding_log = EncodingLog.objects.get_or_create(video=video_to_encode)[0]
-    encoding_log.log = "%s" % start
-    encoding_log.save()
+    if check_file(video_to_encode.video.path):
 
-    encoding_log_msg = ""
+        change_encoding_step(video_id, 1, "remove old data")
+        remove_msg = remove_old_data(video_id)
+        add_encoding_log(video_id, "remove old data : %s" % remove_msg)
 
-    if os.path.exists(video_to_encode.video.path):
-        # PREPARE VIDEO
-        source = "%s" % video_to_encode.video.path
-        # get data of file sent
-        change_encoding_step(video_id, 1, "Get Data from file")
-
-        data_video = prepare_video(video_to_encode)
-
-        encoding_log_msg += data_video["encoding_log_msg"]
-
+        change_encoding_step(video_id, 2, "get video data")
+        video_data = {}
+        try:
+        	video_data = get_video_data(video_id)
+        	add_encoding_log(video_id, "get video data : %s" % video_data["msg"])
+        except ValueError:
+        	change_encoding_step(video_id, -1, "Error in get video data")
+        	# SEND EMAIL ALERT
+        	return False
+        
         video_to_encode = Video.objects.get(id=video_id)
-        video_to_encode.duration = data_video["duration"]
+        video_to_encode.duration = video_data["duration"]
         video_to_encode.save()
 
-        # LAUNCH COMMAND
+        # create video dir
+        change_encoding_step(video_id, 3, "create output dir")
+        dirname = os.path.dirname(source)
+        output_dir = os.path.join(dirname, "%04d" % video_to_encode.id)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        add_encoding_log(video_id, "output_dir : %s" % output_dir)
 
+        if video_data["is_video"]:
+            # encodage_video
+            static_params = FFMPEG_STATIC_PARAMS % {
+                'nb_threads': FFMPEG_NB_THREADS,
+                'key_frames_interval': data_video["key_frames_interval"]
+            }
+            # create encoding video command
+            # video_command = get_video_command(video_id)
+            # launch encode video
+            # save files
+        else:
+            # encodage_audio_m4a
+            print("encoding audio")
+
+        # encodage_audio_mp3
+
+        # envois mail fin encodage
+
+        video_to_encode = Video.objects.get(id=video_id)
+        video_to_encode.encoding_in_progress = False
+        video_to_encode.save()
+
+    else:
+        msg = "Wrong file or path : "\
+            + "\n%s" % video_to_encode.video.path
+        add_encoding_log(video_id, msg)
+        change_encoding_step(video_id, -1, msg)
+        send_email(msg, video_id)
+
+        #######################################################################
+"""
         if data_video["is_video"]:
 
             change_encoding_step(video_id, 2, "Encoding video")
@@ -208,65 +313,7 @@ def encode_video(video_id):
     video_to_encode = Video.objects.get(id=video_id)
     video_to_encode.encoding_in_progress = False
     video_to_encode.save()
-
-
-def prepare_video(video_to_encode):
-    encoding_log_msg = ""
-    source = "%s" % video_to_encode.video.path
-    # remove previous encoding
-    encoding_log_msg += remove_previous_encoding_video(
-        video_to_encode)
-    encoding_log_msg += remove_previous_encoding_audio(
-        video_to_encode)
-    encoding_log_msg += remove_previous_encoding_playlist(
-        video_to_encode)
-
-    # Get video data
-    command = GET_INFO_VIDEO % {'ffprobe': FFPROBE, 'source': source}
-
-    ffproberesult = subprocess.getoutput(command)
-    info = json.loads(ffproberesult)
-    encoding_log_msg += "\nffprobe command : %s" % command
-    encoding_log_msg += "%s" % json.dumps(
-        info, sort_keys=True, indent=4, separators=(',', ': '))
-
-    is_video = False
-    in_height = 0
-    duration = 0
-
-    if len(info["streams"]) > 0:
-        is_video = True
-        if info["streams"][0].get('height'):
-            in_height = info["streams"][0]['height']
-        if info["streams"][0]['avg_frame_rate']:
-            # nb img / sec.
-            avg_frame_rate = info["streams"][0]['avg_frame_rate']
-            key_frames_interval = int(round(Fraction(avg_frame_rate)))
-
-    if info["format"].get('duration'):
-        duration = int(float("%s" % info["format"]['duration']))
-
-    encoding_log_msg += "\nIN_HEIGHT : %s" % in_height
-    encoding_log_msg += "\nDURATION : %s" % duration
-
-    # CREATE OUPUT DIR
-    dirname = os.path.dirname(source)
-    output_dir = os.path.join(dirname, "%04d" % video_to_encode.id)
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    encoding_log_msg += "\noutput_dir : %s" % output_dir
-
-    if DEBUG:
-        print("prepare_video : \n%s " % encoding_log_msg)
-
-    return {
-        'is_video': is_video,
-        'output_dir': output_dir,
-        'in_height': in_height,
-        'duration': duration,
-        'key_frames_interval': key_frames_interval,
-        'encoding_log_msg': encoding_log_msg
-    }
+"""
 
 
 def encoding_video(source, video_encoding_cmd, data_video, video_to_encode):
@@ -755,13 +802,12 @@ def remove_previous_encoding_video(video_to_encode):
     previous_encoding_video = EncodingVideo.objects.filter(
         video=video_to_encode)
     if len(previous_encoding_video) > 0:
-        if DEBUG:
-            print("DELETE PREVIOUS ENCODING")
-
         msg += "\nDELETE PREVIOUS ENCODING VIDEO"
         # previous_encoding.delete()
         for encoding in previous_encoding_video:
             encoding.delete()
+    else:
+    	msg += "Video : Nothing to delete"
     return msg
 
 
@@ -771,13 +817,12 @@ def remove_previous_encoding_audio(video_to_encode):
     previous_encoding_audio = EncodingAudio.objects.filter(
         video=video_to_encode)
     if len(previous_encoding_audio) > 0:
-        if DEBUG:
-            print("DELETE PREVIOUS ENCODING")
-
         msg += "\nDELETE PREVIOUS ENCODING AUDIO"
         # previous_encoding.delete()
         for encoding in previous_encoding_audio:
             encoding.delete()
+    else:
+    	msg += "Audio : Nothing to delete"
     return msg
 
 
@@ -786,14 +831,12 @@ def remove_previous_encoding_playlist(video_to_encode):
     # Remove previous encoding Playlist
     previous_playlist = PlaylistVideo.objects.filter(video=video_to_encode)
     if len(previous_playlist) > 0:
-        if DEBUG:
-            print("DELETE PREVIOUS PLAYLIST M3U8")
-
         msg += "DELETE PREVIOUS PLAYLIST M3U8"
         # previous_encoding.delete()
         for encoding in previous_playlist:
             encoding.delete()
-
+    else:
+    	msg += "Playlist : Nothing to delete"
     return msg
 
 

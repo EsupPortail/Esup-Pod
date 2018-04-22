@@ -399,7 +399,7 @@ class Video(models.Model):
 
 class ViewCount(models.Model):
     video = models.ForeignKey(Video, verbose_name=_('Video'),
-                                 editable=False)
+                              editable=False)
     date = models.DateField(
         _(u'Date'), default=datetime.now)
     count = models.IntegerField(
@@ -622,8 +622,9 @@ class EncodingLog(models.Model):
 class EncodingStep(models.Model):
     video = models.OneToOneField(Video, verbose_name=_('Video'),
                                  editable=False, on_delete=models.CASCADE)
-    step = models.CharField(null=True,
-                            max_length=255, blank=True, editable=False)
+    num_step = models.IntegerField(default=0, editable=False)
+    desc_step = models.CharField(null=True,
+                                 max_length=255, blank=True, editable=False)
 
     def __str__(self):
         return "Step for encoding video %s" % (self.video.id)
