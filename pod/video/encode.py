@@ -149,14 +149,19 @@ def get_video_data(video_id):
     is_video = False
     in_height = 0
     duration = 0
+    key_frames_interval = 0
     if len(info["streams"]) > 0:
         is_video = True
         if info["streams"][0].get('height'):
             in_height = info["streams"][0]['height']
-        if info["streams"][0]['avg_frame_rate']:
-            # nb img / sec.
-            avg_frame_rate = info["streams"][0]['avg_frame_rate']
-            key_frames_interval = int(round(Fraction(avg_frame_rate)))
+        if info["streams"][0]['avg_frame_rate'] or info["streams"][0]['r_frame_rate']:
+            if info["streams"][0]['avg_frame_rate'] != "0/0":
+                # nb img / sec.
+                frame_rate = info["streams"][0]['avg_frame_rate']
+                key_frames_interval = int(round(Fraction(frame_rate)))
+            else:
+                frame_rate = info["streams"][0]['r_frame_rate']
+                key_frames_interval = int(round(Fraction(frame_rate)))
 
     if info["format"].get('duration'):
         duration = int(float("%s" % info["format"]['duration']))
@@ -176,6 +181,11 @@ def get_video_data(video_id):
 def get_video_command_mp4(video_id, video_data, output_dir):
     in_height = video_data["in_height"]
     renditions = VideoRendition.objects.filter(encode_mp4=True)
+    static_params = FFMPEG_STATIC_PARAMS % {
+        'nb_threads': FFMPEG_NB_THREADS,
+        'key_frames_interval': video_data["key_frames_interval"]
+    }
+    list_file = []
     for rendition in renditions:
         resolution = rendition.resolution
         bitrate = rendition.video_bitrate
@@ -212,6 +222,11 @@ def get_video_command_mp4(video_id, video_data, output_dir):
 def get_video_command_playlist(video_id, video_data, output_dir):
     in_height = video_data["in_height"]
     master_playlist = "#EXTM3U\n#EXT-X-VERSION:3\n"
+    static_params = FFMPEG_STATIC_PARAMS % {
+        'nb_threads': FFMPEG_NB_THREADS,
+        'key_frames_interval': video_data["key_frames_interval"]
+    }
+    list_file = []
     renditions = VideoRendition.objects.all()
     for rendition in renditions:
         resolution = rendition.resolution
@@ -288,9 +303,33 @@ def encode_video_mp4(source, cmd, output_dir):
     return msg
 
 
-def save_playlist_file(video_id, list_file):
+def save_mp4_file(video_id, list_file, output_dir):
     msg = ""
-    video_to_encode = Video.objects.get(video_id)
+    video_to_encode = Video.objects.get(id=video_id)
+    for file in list_file:
+        videofilenameMp4 = os.path.join(output_dir, "%s.mp4" % file['name'])
+        msg += "\n- videofilenameMp4 :\n%s" % videofilenameMp4
+        if check_file(videofilenameMp4):
+            encoding, created = EncodingVideo.objects.get_or_create(
+                name=file['name'],
+                video=video_to_encode,
+                rendition=file['rendition'],
+                encoding_format="video/mp4")
+            encoding.source_file = videofilenameMp4.replace(
+                settings.MEDIA_ROOT + '/', '')
+            encoding.save()
+        else:
+            msg = "save_mp4_file Wrong file or path : "\
+                + "\n%s " % (videofilenameMp4)
+            add_encoding_log(video_id, msg)
+            change_encoding_step(video_id, -1, msg)
+            send_email(msg, video_id)
+    return msg
+
+
+def save_playlist_file(video_id, list_file, output_dir):
+    msg = ""
+    video_to_encode = Video.objects.get(id=video_id)
     for file in list_file:
         videofilenameM3u8 = os.path.join(output_dir, "%s.m3u8" % file['name'])
         videofilenameTS = os.path.join(output_dir, "%s.ts" % file['name'])
@@ -324,10 +363,10 @@ def save_playlist_file(video_id, list_file):
     return msg
 
 
-def save_playlist_master(video_id, output_dir, playlist_master):
+def save_playlist_master(video_id, output_dir, master_playlist):
     msg = ""
     playlist_master_file = output_dir + "/playlist.m3u8"
-    video_to_encode = Video.objects.get(video_id)
+    video_to_encode = Video.objects.get(id=video_id)
     with open(playlist_master_file, "w") as f:
         f.write(master_playlist)
     if check_file(playlist_master_file):
@@ -376,7 +415,7 @@ def encode_video(video_id):
                              video_data["msg"])
         except ValueError:
             msg = "Error in get video data"
-                change_encoding_step(video_id, -1, msg)
+            change_encoding_step(video_id, -1, msg)
             add_encoding_log(video_id, msg)
             send_email(msg, video_id)
             return False
@@ -387,7 +426,7 @@ def encode_video(video_id):
 
         # create video dir
         change_encoding_step(video_id, 3, "create output dir")
-        dirname = os.path.dirname(source)
+        dirname = os.path.dirname(video_to_encode.video.path)
         output_dir = os.path.join(dirname, "%04d" % video_to_encode.id)
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
@@ -396,10 +435,6 @@ def encode_video(video_id):
         change_encoding_step(video_id, 4, "encoding video file")
         if video_data["is_video"]:
             # encodage_video
-            static_params = FFMPEG_STATIC_PARAMS % {
-                'nb_threads': FFMPEG_NB_THREADS,
-                'key_frames_interval': data_video["key_frames_interval"]
-            }
             # create encoding video command
             change_encoding_step(video_id, 4,
                                  "encoding video file : get video command")
@@ -441,7 +476,8 @@ def encode_video(video_id):
                                  "encoding video file : save_playlist_file")
             msg = save_playlist_file(
                 video_id,
-                video_command_playlist["list_file"])
+                video_command_playlist["list_file"],
+                output_dir)
             add_encoding_log(
                 video_id,
                 "save_playlist_file : %s" % msg)
@@ -451,10 +487,29 @@ def encode_video(video_id):
             msg = save_playlist_master(
                 video_id,
                 output_dir,
-                get_video_command_playlist["master_playlist"])
+                video_command_playlist["master_playlist"])
             add_encoding_log(
                 video_id,
                 "save_playlist_master : %s" % msg)
+            # save mp4 files
+            change_encoding_step(video_id, 4,
+                                 "encoding video file : save_mp4_file")
+            msg = save_mp4_file(
+                video_id,
+                video_command_mp4["list_file"],
+                output_dir)
+            add_encoding_log(
+                video_id,
+                "save_mp4_file : %s" % msg)
+
+            # get the lower size of encoding mp4
+            # video_mp4 = EncodingVideo.objects.get(
+            #
+            #    video=video_to_encode,
+            #    encoding_format="video/mp4")
+            # create overview
+            # create thumbnail
+
         else:
             # encodage_audio_m4a
             print("encoding audio")
@@ -476,29 +531,6 @@ def encode_video(video_id):
 
         #######################################################################
 """
-        if data_video["is_video"]:
-
-            change_encoding_step(video_id, 2, "Encoding video")
-            static_params = FFMPEG_STATIC_PARAMS % {
-                'nb_threads': FFMPEG_NB_THREADS,
-                'key_frames_interval': data_video["key_frames_interval"]
-            }
-            # create video encoding command
-            change_encoding_step(video_id, 2,
-                                 "Encoding : create encoding command")
-            video_encoding_cmd = get_video_encoding_cmd(
-                static_params,
-                data_video["in_height"],
-                video_to_encode.id,
-                data_video["output_dir"])
-            encoding_log_msg += video_encoding_cmd["msg"]
-
-            change_encoding_step(video_id, 2, "Encoding : encoding video")
-
-            video_msg = encoding_video(
-                source, video_encoding_cmd, data_video, video_to_encode)
-            encoding_log_msg += video_msg
-
             video_360 = EncodingVideo.objects.get(
                 name="360p",
                 video=video_to_encode,
@@ -740,110 +772,6 @@ def encode_mp3(source, output_dir, video_to_encode):
         print(msg)
     return msg
 
-
-def save_m3u8_files(list_m3u8, output_dir, video_to_encode, master_playlist):
-    msg = "\n"
-    for m3u8 in list_m3u8:
-        # check size of file
-        videofilenameM3u8 = os.path.join(output_dir, "%s.m3u8" % m3u8['name'])
-        videofilenameTS = os.path.join(output_dir, "%s.ts" % m3u8['name'])
-        msg += "\n- videofilenameM3u8 :\n%s" % videofilenameM3u8
-        msg += "\n- videofilenameTS :\n%s" % videofilenameTS
-
-        if (os.access(videofilenameM3u8, os.F_OK)
-                and os.access(videofilenameTS, os.F_OK)):
-            # There was a error cause the outfile size is zero
-            if (os.stat(videofilenameTS).st_size > 0
-                    and os.stat(videofilenameM3u8).st_size > 0):
-                # save file in bdd
-                encoding, created = EncodingVideo.objects.get_or_create(
-                    name=m3u8['name'],
-                    video=video_to_encode,
-                    rendition=m3u8['rendition'],
-                    encoding_format="video/mp2t")
-                encoding.source_file = videofilenameTS.replace(
-                    settings.MEDIA_ROOT + '/', '')
-                encoding.save()
-
-                playlist, created = PlaylistVideo.objects.get_or_create(
-                    name=m3u8['name'],
-                    video=video_to_encode,
-                    encoding_format="application/x-mpegURL")
-                playlist.source_file = videofilenameM3u8.replace(
-                    settings.MEDIA_ROOT + '/', '')
-                playlist.save()
-
-            else:
-                msg += "\nERROR ENCODING M3U8 %s Output size is 0" % m3u8[
-                    'name']
-                log.error(msg)
-                send_email(msg, video_to_encode.id)
-        else:
-            msg += "\nERROR ENCODING M3U8 %s DOES NOT EXIST" % m3u8['name']
-            log.error(msg)
-            send_email(msg, video_to_encode.id)
-
-    # PLAYLIST
-    with open(output_dir + "/playlist.m3u8", "w") as f:
-        f.write(master_playlist)
-    if os.access(output_dir + "/playlist.m3u8", os.F_OK):
-        if (os.stat(output_dir + "/playlist.m3u8").st_size > 0):
-
-            playlist, created = PlaylistVideo.objects.get_or_create(
-                name="playlist",
-                video=video_to_encode,
-                encoding_format="application/x-mpegURL")
-            playlist.source_file = output_dir.replace(
-                settings.MEDIA_ROOT + '/', '') + "/playlist.m3u8"
-            playlist.save()
-
-            msg += "\n- Playlist :\n%s" % output_dir + \
-                "/playlist.m3u8"
-        else:
-            os.remove(output_dir + "/playlist.m3u8")
-            msg += "\nERROR ENCODING PLAYLIST M3U8 %s Output size is 0" % m3u8[
-                'name']
-            log.error(msg)
-            send_email(msg, video_to_encode.id)
-    else:
-        msg += "\nERROR ENCODING M3U8 %s DOES NOT EXIST" % m3u8['name']
-        log.error(msg)
-        send_email(msg, video_to_encode.id)
-
-    return msg
-
-
-def save_mp4_files(list_mp4, output_dir, video_to_encode):
-    msg = "\n"
-    for mp4 in list_mp4:
-        # check size of file
-        videofilename = os.path.join(output_dir, "%s.mp4" % mp4['name'])
-        msg += "\n- videofilename :\n%s" % videofilename
-        if os.access(videofilename, os.F_OK):  # outfile exists
-            # There was a error cause the outfile size is zero
-            if (os.stat(videofilename).st_size > 0):
-                # save file in bdd
-                encoding, created = EncodingVideo.objects.get_or_create(
-                    name=mp4['name'],
-                    video=video_to_encode,
-                    rendition=mp4['rendition'],
-                    encoding_format="video/mp4")
-                encoding.source_file = videofilename.replace(
-                    settings.MEDIA_ROOT + '/', '')
-                encoding.save()
-            else:
-                os.remove(videofilename)
-                msg += "\nERROR ENCODING MP4 %s Output size is 0" % mp4[
-                    'name']
-                log.error(msg)
-                send_email(msg, video_to_encode.id)
-        else:
-            msg += "\nERROR ENCODING MP4 %s DOES NOT EXIST" % mp4['name']
-            log.error(msg)
-            send_email(msg, video_to_encode.id)
-    if DEBUG:
-        print(msg)
-    return msg
 ###############################################################
 # THUMBNAILS
 ###############################################################
