@@ -18,7 +18,7 @@ from pod.video.models import VideoImageModel
 from pod.video.models import EncodingStep
 
 from fractions import Fraction
-# from webvtt import WebVTT, Caption
+from webvtt import WebVTT, Caption
 import logging
 import os
 import time
@@ -106,9 +106,9 @@ def change_encoding_step(video_id, num_step, desc):
 def add_encoding_log(video_id, log):
     encoding_log, created = EncodingLog.objects.get_or_create(
         video=Video.objects.get(id=video_id))
-    if encoding_log.log :
+    if encoding_log.log:
         encoding_log.log += "\n\n%s" % log
-    else :
+    else:
         encoding_log.log = "\n\n%s" % log
     encoding_log.save()
     if DEBUG:
@@ -140,6 +140,9 @@ def get_video_data(video_id):
     command = GET_INFO_VIDEO % {'ffprobe': FFPROBE, 'source': source}
     ffproberesult = subprocess.getoutput(command)
     msg += "\nffprobe command : %s" % command
+    add_encoding_log(
+        video_id,
+        "command : %s \n ffproberesult : %s" % (command, ffproberesult))
     info = json.loads(ffproberesult)
     msg += "%s" % json.dumps(
         info, sort_keys=True, indent=4, separators=(',', ': '))
@@ -170,6 +173,83 @@ def get_video_data(video_id):
     }
 
 
+def get_video_command_mp4(video_id, video_data, output_dir):
+    in_height = video_data["in_height"]
+    renditions = VideoRendition.objects.filter(encode_mp4=True)
+    for rendition in renditions:
+        resolution = rendition.resolution
+        bitrate = rendition.video_bitrate
+        audiorate = rendition.audio_bitrate
+        encode_mp4 = rendition.encode_mp4
+        width = resolution.split("x")[0]
+        height = resolution.split("x")[1]
+        if in_height >= int(height):
+            int_bitrate = int(
+                re.search("(\d+)k", bitrate, re.I).groups()[0])
+            maxrate = int_bitrate * MAX_BITRATE_RATIO
+            bufsize = int_bitrate * RATE_MONITOR_BUFFER_RATIO
+            bandwidth = int_bitrate * 1000
+
+            name = "%sp" % height
+
+            cmd = " %s -vf " % (static_params,)
+            cmd += "scale=w=%s:h=%s:" % (
+                width, height)
+            cmd += "force_original_aspect_ratio=decrease"
+            cmd += " -b:v %s -maxrate %sk -bufsize %sk -b:a %s" % (
+                bitrate, int(maxrate), int(bufsize), audiorate)
+
+            cmd += " -movflags faststart -write_tmcd 0 \"%s/%s.mp4\"" % (
+                output_dir, name)
+            list_file.append(
+                {"name": name, 'rendition': rendition})
+    return {
+        'cmd': cmd,
+        'list_file': list_file
+    }
+
+
+def get_video_command_playlist(video_id, video_data, output_dir):
+    in_height = video_data["in_height"]
+    master_playlist = "#EXTM3U\n#EXT-X-VERSION:3\n"
+    renditions = VideoRendition.objects.all()
+    for rendition in renditions:
+        resolution = rendition.resolution
+        bitrate = rendition.video_bitrate
+        audiorate = rendition.audio_bitrate
+        encode_mp4 = rendition.encode_mp4
+        width = resolution.split("x")[0]
+        height = resolution.split("x")[1]
+        if in_height >= int(height):
+            int_bitrate = int(
+                re.search("(\d+)k", bitrate, re.I).groups()[0])
+            maxrate = int_bitrate * MAX_BITRATE_RATIO
+            bufsize = int_bitrate * RATE_MONITOR_BUFFER_RATIO
+            bandwidth = int_bitrate * 1000
+
+            name = "%sp" % height
+
+            cmd = " %s -vf " % (static_params,)
+            cmd += "scale=w=%s:h=%s:" % (
+                width, height)
+            cmd += "force_original_aspect_ratio=decrease"
+            cmd += " -b:v %s -maxrate %sk -bufsize %sk -b:a %s" % (
+                bitrate, int(maxrate), int(bufsize), audiorate)
+            cmd += " -hls_playlist_type vod -hls_time %s \
+                -hls_flags single_file %s/%s.m3u8" % (
+                SEGMENT_TARGET_DURATION, output_dir, name)
+            list_file.append(
+                {"name": name, 'rendition': rendition})
+            master_playlist += "#EXT-X-STREAM-INF:BANDWIDTH=%s,\
+                RESOLUTION=%s\n%s.m3u8\n" % (
+                bandwidth, resolution, name)
+    return {
+        'cmd': cmd,
+        'list_file': list_file,
+        'master_playlist': master_playlist
+    }
+
+
 def encode_video(video_id):
     start = "Start at : %s" % time.ctime()
 
@@ -189,13 +269,16 @@ def encode_video(video_id):
         change_encoding_step(video_id, 2, "get video data")
         video_data = {}
         try:
-        	video_data = get_video_data(video_id)
-        	add_encoding_log(video_id, "get video data : %s" % video_data["msg"])
+            video_data = get_video_data(video_id)
+            add_encoding_log(video_id, "get video data : %s" %
+                             video_data["msg"])
         except ValueError:
-        	change_encoding_step(video_id, -1, "Error in get video data")
-        	# SEND EMAIL ALERT
-        	return False
-        
+            msg = "Error in get video data"
+                change_encoding_step(video_id, -1, msg)
+            add_encoding_log(video_id, msg)
+            send_email(msg, video_id)
+            return False
+
         video_to_encode = Video.objects.get(id=video_id)
         video_to_encode.duration = video_data["duration"]
         video_to_encode.save()
@@ -208,6 +291,7 @@ def encode_video(video_id):
             os.makedirs(output_dir)
         add_encoding_log(video_id, "output_dir : %s" % output_dir)
 
+        change_encoding_step(video_id, 4, "encoding video file")
         if video_data["is_video"]:
             # encodage_video
             static_params = FFMPEG_STATIC_PARAMS % {
@@ -215,7 +299,16 @@ def encode_video(video_id):
                 'key_frames_interval': data_video["key_frames_interval"]
             }
             # create encoding video command
-            # video_command = get_video_command(video_id)
+            change_encoding_step(video_id, 4,
+                                 "encoding video file : get video command")
+            video_command_playlist = get_video_command_playlist(video_id)
+            add_encoding_log(
+                video_id,
+                "video_command_playlist : %s" % video_command_playlist["cmd"])
+            video_command_mp4 = get_video_command_mp4(video_id)
+            add_encoding_log(
+                video_id,
+                "video_command_mp4 : %s" % video_command_mp4["cmd"])
             # launch encode video
             # save files
         else:
@@ -807,7 +900,7 @@ def remove_previous_encoding_video(video_to_encode):
         for encoding in previous_encoding_video:
             encoding.delete()
     else:
-    	msg += "Video : Nothing to delete"
+        msg += "Video : Nothing to delete"
     return msg
 
 
@@ -822,7 +915,7 @@ def remove_previous_encoding_audio(video_to_encode):
         for encoding in previous_encoding_audio:
             encoding.delete()
     else:
-    	msg += "Audio : Nothing to delete"
+        msg += "Audio : Nothing to delete"
     return msg
 
 
@@ -836,7 +929,7 @@ def remove_previous_encoding_playlist(video_to_encode):
         for encoding in previous_playlist:
             encoding.delete()
     else:
-    	msg += "Playlist : Nothing to delete"
+        msg += "Playlist : Nothing to delete"
     return msg
 
 
