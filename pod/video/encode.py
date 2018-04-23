@@ -250,6 +250,108 @@ def get_video_command_playlist(video_id, video_data, output_dir):
     }
 
 
+def encode_video_playlist(source, cmd, output_dir):
+
+    ffmpegPlaylistCommand = "%s %s -i %s %s" % (
+        FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
+
+    msg = "ffmpegPlaylistCommand :\n%s" % ffmpegPlaylistCommand
+    msg += "Encoding Playlist : %s" % time.ctime()
+
+    ffmpegvideo = subprocess.getoutput(ffmpegPlaylistCommand)
+
+    msg += "End Encoding Playlist : %s" % time.ctime()
+
+    with open(output_dir + "/encoding.log", "a") as f:
+        f.write('\n\nffmpegvideoPlaylist:\n\n')
+        f.write(ffmpegvideo)
+
+    return msg
+
+
+def encode_video_mp4(source, cmd, output_dir):
+
+    ffmpegMp4Command = "%s %s -i %s %s" % (
+        FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
+
+    msg = "ffmpegPlaylistCommand :\n%s" % ffmpegMp4Command
+    msg += "Encoding Mp4 : %s" % time.ctime()
+
+    ffmpegvideo = subprocess.getoutput(ffmpegMp4Command)
+
+    msg += "End Encoding Mp4 : %s" % time.ctime()
+
+    with open(output_dir + "/encoding.log", "a") as f:
+        f.write('\n\nffmpegvideoMP4:\n\n')
+        f.write(ffmpegvideo)
+
+    return msg
+
+
+def save_playlist_file(video_id, list_file):
+    msg = ""
+    video_to_encode = Video.objects.get(video_id)
+    for file in list_file:
+        videofilenameM3u8 = os.path.join(output_dir, "%s.m3u8" % file['name'])
+        videofilenameTS = os.path.join(output_dir, "%s.ts" % file['name'])
+        msg += "\n- videofilenameM3u8 :\n%s" % videofilenameM3u8
+        msg += "\n- videofilenameTS :\n%s" % videofilenameTS
+
+        if check_file(videofilenameM3u8) and check_file(videofilenameTS):
+
+            encoding, created = EncodingVideo.objects.get_or_create(
+                name=file['name'],
+                video=video_to_encode,
+                rendition=file['rendition'],
+                encoding_format="video/mp2t")
+            encoding.source_file = videofilenameTS.replace(
+                settings.MEDIA_ROOT + '/', '')
+            encoding.save()
+
+            playlist, created = PlaylistVideo.objects.get_or_create(
+                name=file['name'],
+                video=video_to_encode,
+                encoding_format="application/x-mpegURL")
+            playlist.source_file = videofilenameM3u8.replace(
+                settings.MEDIA_ROOT + '/', '')
+            playlist.save()
+        else:
+            msg = "save_playlist_file Wrong file or path : "\
+                + "\n%s and %s" % (videofilenameM3u8, videofilenameTS)
+            add_encoding_log(video_id, msg)
+            change_encoding_step(video_id, -1, msg)
+            send_email(msg, video_id)
+    return msg
+
+
+def save_playlist_master(video_id, output_dir, playlist_master):
+    msg = ""
+    playlist_master_file = output_dir + "/playlist.m3u8"
+    video_to_encode = Video.objects.get(video_id)
+    with open(playlist_master_file, "w") as f:
+        f.write(master_playlist)
+    if check_file(playlist_master_file):
+        playlist, created = PlaylistVideo.objects.get_or_create(
+            name="playlist",
+            video=video_to_encode,
+            encoding_format="application/x-mpegURL")
+        playlist.source_file = output_dir.replace(
+            settings.MEDIA_ROOT + '/', '') + "/playlist.m3u8"
+        playlist.save()
+
+        msg += "\n- Playlist :\n%s" % playlist_master_file
+    else:
+        msg = "save_playlist_master Wrong file or path : "\
+            + "\n%s" % playlist_master_file
+        add_encoding_log(video_id, msg)
+        change_encoding_step(video_id, -1, msg)
+        send_email(msg, video_id)
+    return msg
+# ##########################################################################
+# ##########################################################################
+# ##########################################################################
+
+
 def encode_video(video_id):
     start = "Start at : %s" % time.ctime()
 
@@ -301,16 +403,58 @@ def encode_video(video_id):
             # create encoding video command
             change_encoding_step(video_id, 4,
                                  "encoding video file : get video command")
-            video_command_playlist = get_video_command_playlist(video_id)
+            video_command_playlist = get_video_command_playlist(
+                video_id,
+                video_data,
+                output_dir)
             add_encoding_log(
                 video_id,
                 "video_command_playlist : %s" % video_command_playlist["cmd"])
-            video_command_mp4 = get_video_command_mp4(video_id)
+            video_command_mp4 = get_video_command_mp4(
+                video_id,
+                video_data,
+                output_dir)
             add_encoding_log(
                 video_id,
                 "video_command_mp4 : %s" % video_command_mp4["cmd"])
             # launch encode video
-            # save files
+            change_encoding_step(video_id, 4,
+                                 "encoding video file : encode_video_playlist")
+            msg = encode_video_playlist(
+                video_to_encode.video.path,
+                video_command_playlist["cmd"],
+                output_dir)
+            add_encoding_log(
+                video_id,
+                "encode_video_playlist : %s" % msg)
+            change_encoding_step(video_id, 4,
+                                 "encoding video file : encode_video_mp4")
+            msg = encode_video_mp4(
+                video_to_encode.video.path,
+                video_command_mp4["cmd"],
+                output_dir)
+            add_encoding_log(
+                video_id,
+                "encode_video_mp4 : %s" % msg)
+            # save playlist files
+            change_encoding_step(video_id, 4,
+                                 "encoding video file : save_playlist_file")
+            msg = save_playlist_file(
+                video_id,
+                video_command_playlist["list_file"])
+            add_encoding_log(
+                video_id,
+                "save_playlist_file : %s" % msg)
+            # save_playlist_master
+            change_encoding_step(video_id, 4,
+                                 "encoding video file : save_playlist_master")
+            msg = save_playlist_master(
+                video_id,
+                output_dir,
+                get_video_command_playlist["master_playlist"])
+            add_encoding_log(
+                video_id,
+                "save_playlist_master : %s" % msg)
         else:
             # encodage_audio_m4a
             print("encoding audio")
