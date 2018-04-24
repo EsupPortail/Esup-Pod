@@ -79,6 +79,7 @@ ENCODING_CHOICES = getattr(
         ("360p", "360p"),
         ("480p", "480p"),
         ("720p", "720p"),
+        ("1080p", "1080p"),
         ("playlist", "playlist")
     ))
 # FUNCTIONS
@@ -425,6 +426,13 @@ class VideoRendition(models.Model):
         + "<em>300k</em> or <em>600k</em> or <em>1000k</em>.")
     encode_mp4 = models.BooleanField(_('Make a MP4 version'), default=False)
 
+    @property
+    def height(self):
+        return int(self.resolution.split("x")[1])
+    @property
+    def width(self):
+        return int(self.resolution.split("x")[0])
+
     def __str__(self):
         return "VideoRendition num %s with resolution %s" % ('%04d' % self.id, self.resolution)
 
@@ -512,6 +520,13 @@ class EncodingVideo(models.Model):
     @property
     def owner(self):
         return self.video.owner
+
+    @property
+    def height(self):
+        return int(self.rendition.resolution.split("x")[1])
+    @property
+    def width(self):
+        return int(self.rendition.resolution.split("x")[0])
 
     def delete(self):
         if self.source_file:

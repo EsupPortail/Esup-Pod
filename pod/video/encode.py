@@ -63,8 +63,9 @@ FFMPEG_STATIC_PARAMS = getattr(
     'FFMPEG_STATIC_PARAMS',
     " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf 20 "
     + "-sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" "
-    + "-deinterlace -threads %(nb_threads)s -g %(key_frames_interval)s "
-    + "-keyint_min %(key_frames_interval)s ")
+    + "-deinterlace -threads %(nb_threads)s ")
+# + "-deinterlace -threads %(nb_threads)s -g %(key_frames_interval)s "
+# + "-keyint_min %(key_frames_interval)s ")
 
 FFMPEG_MISC_PARAMS = getattr(settings, 'MISC_PARAMS', " -hide_banner -y ")
 
@@ -154,6 +155,7 @@ def get_video_data(video_id):
         is_video = True
         if info["streams"][0].get('height'):
             in_height = info["streams"][0]['height']
+        """    
         if info["streams"][0]['avg_frame_rate'] or info["streams"][0]['r_frame_rate']:
             if info["streams"][0]['avg_frame_rate'] != "0/0":
                 # nb img / sec.
@@ -162,7 +164,7 @@ def get_video_data(video_id):
             else:
                 frame_rate = info["streams"][0]['r_frame_rate']
                 key_frames_interval = int(round(Fraction(frame_rate)))
-
+        """
     if info["format"].get('duration'):
         duration = int(float("%s" % info["format"]['duration']))
 
@@ -186,6 +188,7 @@ def get_video_command_mp4(video_id, video_data, output_dir):
         'key_frames_interval': video_data["key_frames_interval"]
     }
     list_file = []
+    cmd = ""
     for rendition in renditions:
         resolution = rendition.resolution
         bitrate = rendition.video_bitrate
@@ -202,7 +205,7 @@ def get_video_command_mp4(video_id, video_data, output_dir):
 
             name = "%sp" % height
 
-            cmd = " %s -vf " % (static_params,)
+            cmd += " %s -vf " % (static_params,)
             cmd += "scale=w=%s:h=%s:" % (
                 width, height)
             cmd += "force_original_aspect_ratio=decrease"
@@ -227,6 +230,7 @@ def get_video_command_playlist(video_id, video_data, output_dir):
         'key_frames_interval': video_data["key_frames_interval"]
     }
     list_file = []
+    cmd = ""
     renditions = VideoRendition.objects.all()
     for rendition in renditions:
         resolution = rendition.resolution
@@ -244,7 +248,7 @@ def get_video_command_playlist(video_id, video_data, output_dir):
 
             name = "%sp" % height
 
-            cmd = " %s -vf " % (static_params,)
+            cmd += " %s -vf " % (static_params,)
             cmd += "scale=w=%s:h=%s:" % (
                 width, height)
             cmd += "force_original_aspect_ratio=decrease"
@@ -386,6 +390,113 @@ def save_playlist_master(video_id, output_dir, master_playlist):
         change_encoding_step(video_id, -1, msg)
         send_email(msg, video_id)
     return msg
+
+
+def remove_previous_overview(overviewfilename, overviewimagefilename):
+    if os.path.isfile(overviewimagefilename):
+        os.remove(overviewimagefilename)
+    if os.path.isfile(overviewfilename):
+        os.remove(overviewfilename)
+
+
+def create_overview_image(video_id, source, nb_img, image_width, overviewimagefilename):
+    msg = "\ncreate overview image file"
+
+    for i in range(0, nb_img):
+        stamp = "%s" % i
+        if nb_img == 99:
+            stamp += "%"
+        else:
+            stamp = time.strftime('%H:%M:%S', time.gmtime(i))
+        cmd_ffmpegthumbnailer = "ffmpegthumbnailer -t \"%(stamp)s\" \
+        -s \"%(image_width)s\" -i %(source)s -c png \
+        -o %(overviewimagefilename)s_strip%(num)s.png" % {
+            "stamp": stamp,
+            'source': source,
+            'num': i,
+            'overviewimagefilename': overviewimagefilename,
+            'image_width': image_width
+        }
+        subprocess.getoutput(cmd_ffmpegthumbnailer)
+        cmd_montage = "montage -geometry +0+0 %(overviewimagefilename)s \
+        %(overviewimagefilename)s_strip%(num)s.png %(overviewimagefilename)s" % {
+            'overviewimagefilename': overviewimagefilename,
+            'num': i
+        }
+        subprocess.getoutput(cmd_montage)
+        if os.path.isfile("%(overviewimagefilename)s_strip%(num)s.png" % {
+            'overviewimagefilename': overviewimagefilename,
+            'num': i
+        }):
+            os.remove("%(overviewimagefilename)s_strip%(num)s.png" %
+                      {'overviewimagefilename': overviewimagefilename, 'num': i})
+    if check_file(overviewimagefilename):
+        msg += "\n- overviewimagefilename :\n%s" % overviewimagefilename
+    else:
+        msg = "overviewimagefilename Wrong file or path : "\
+            + "\n%s" % overviewimagefilename
+        add_encoding_log(video_id, msg)
+        change_encoding_step(video_id, -1, msg)
+        send_email(msg, video_id)
+
+
+def create_overview_vtt(video_id, nb_img,
+                        image_width, image_height, duration,
+                        overviewfilename, image_url):
+    msg = "\ncreate overview vtt file"
+
+    # creating webvtt file
+    webvtt = WebVTT()
+    for i in range(0, nb_img):
+        if nb_img == 99:
+            start = format(float(duration * i / 100), '.3f')
+            end = format(float(duration * (i + 1) / 100), '.3f')
+        else:
+            start = format(float(i), '.3f')
+            end = format(float(i+1), '.3f')
+
+        start_time = time.strftime(
+            '%H:%M:%S',
+            time.gmtime(int(str(start).split('.')[0]))
+        )
+        start_time += ".%s" % (str(start).split('.')[1])
+        end_time = time.strftime('%H:%M:%S', time.gmtime(
+            int(str(end).split('.')[0]))) + ".%s" % (str(end).split('.')[1])
+        caption = Caption(
+            '%s' % start_time,
+            '%s' % end_time,
+            '%s#xywh=%d,%d,%d,%d' % (
+                image_url, image_width * i, 0, image_width, image_height)
+        )
+        webvtt.captions.append(caption)
+    webvtt.save(overviewfilename)
+    if check_file(overviewfilename):
+        msg += "\n- overviewfilename :\n%s" % overviewfilename
+    else:
+        msg = "overviewfilename Wrong file or path : "\
+            + "\n%s" % overviewfilename
+        add_encoding_log(video_id, msg)
+        change_encoding_step(video_id, -1, msg)
+        send_email(msg, video_id)
+    return msg
+
+
+def save_overview_vtt(video_id, overviewfilename):
+    msg = "\nstore vtt file in bdd with video model overview field"
+    if check_file(overviewfilename):
+        # save file in bdd
+        video_to_encode = Video.objects.get(id=video_id)
+        video_to_encode.overview = overviewfilename.replace(
+            settings.MEDIA_ROOT + '/', '')
+        video_to_encode.save()
+        msg += "\n- save_overview_vtt :\n%s" % overviewfilename
+    else:
+        msg += "\nERROR OVERVIEW %s Output size is 0" % overviewfilename
+        add_encoding_log(video_id, msg)
+        change_encoding_step(video_id, -1, msg)
+        send_email(msg, video_id)
+    return msg
+
 # ##########################################################################
 # ##########################################################################
 # ##########################################################################
@@ -503,11 +614,51 @@ def encode_video(video_id):
                 "save_mp4_file : %s" % msg)
 
             # get the lower size of encoding mp4
-            # video_mp4 = EncodingVideo.objects.get(
-            #
-            #    video=video_to_encode,
-            #    encoding_format="video/mp4")
+            ev = EncodingVideo.objects.filter(
+                video=video_to_encode, encoding_format="video/mp4")
+            video_mp4 = sorted(ev, key=lambda m: m.height)[0]
+
             # create overview
+            overviewfilename = '%(output_dir)s/overview.vtt' % {
+                'output_dir': output_dir}
+            image_url = 'overview.png'
+            overviewimagefilename = '%(output_dir)s/%(image_url)s' % {
+                'output_dir': output_dir, 'image_url': image_url}
+            image_width = video_mp4.width / 4  # width of generate image file
+            change_encoding_step(video_id, 4,
+                                 "encoding video file : remove_previous_overview")
+            remove_previous_overview(overviewfilename, overviewimagefilename)
+            if video_data["duration"] > 99:
+                nb_img = 99
+            else:
+                nb_img = video_data["duration"]
+            change_encoding_step(video_id, 4,
+                                 "encoding video file : create_overview_image")
+            msg = create_overview_image(
+                video_id,
+                video_mp4.video.video.path,
+                nb_img, image_width, overviewimagefilename)
+            add_encoding_log(
+                video_id,
+                "create_overview_image : %s" % msg)
+            change_encoding_step(video_id, 4,
+                                 "encoding video file : create_overview_vtt")
+            overview = ImageFile(open(overviewimagefilename, 'rb'))
+            image_height = int(overview.height)
+            overview.close()
+            image_url = os.path.basename(overviewimagefilename)
+            msg = create_overview_vtt(
+                video_id, nb_img, image_width, image_height,
+                video_data["duration"], overviewfilename, image_url)
+            add_encoding_log(
+                video_id,
+                "create_overview_vtt : %s" % msg)
+            change_encoding_step(video_id, 4,
+                                 "encoding video file : save_overview_vtt")
+            msg = save_overview_vtt(video_id, overviewfilename)
+            add_encoding_log(
+                video_id,
+                "save_overview_vtt : %s" % msg)
             # create thumbnail
 
         else:
@@ -855,13 +1006,6 @@ def add_thumbnails(source, video_id):
 ###############################################################
 # OVERVIEW
 ###############################################################
-
-
-def remove_old_overview_file(overviewfilename, overviewimagefilename):
-    if os.path.isfile(overviewimagefilename):
-        os.remove(overviewimagefilename)
-    if os.path.isfile(overviewfilename):
-        os.remove(overviewfilename)
 
 
 def add_overview(duration, source, output_dir, video_id):
