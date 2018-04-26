@@ -429,49 +429,48 @@ class VideoRendition(models.Model):
     @property
     def height(self):
         return int(self.resolution.split("x")[1])
+
     @property
     def width(self):
         return int(self.resolution.split("x")[0])
 
     def __str__(self):
-        return "VideoRendition num %s with resolution %s" % ('%04d' % self.id, self.resolution)
+        return "VideoRendition num %s with resolution %s" % (
+            '%04d' % self.id, self.resolution)
 
     def clean(self):
-        if self.resolution:
-            if not 'x' in self.resolution:
+        if self.resolution and 'x' not in self.resolution:
+            raise ValidationError(
+                VideoRendition._meta.get_field('resolution').help_text)
+        else:
+            res = self.resolution.replace('x', '')
+            if not res.isdigit():
                 raise ValidationError(
                     VideoRendition._meta.get_field('resolution').help_text)
-            else:
-                res = self.resolution.replace('x', '')
-                if not res.isdigit():
-                    raise ValidationError(
-                        VideoRendition._meta.get_field('resolution').help_text)
-        if self.video_bitrate:
-            if not 'k' in self.video_bitrate:
+        if self.video_bitrate and 'k' not in self.video_bitrate:
+            msg = "Error in %s : " % _('bitrate video')
+            raise ValidationError(
+                msg + VideoRendition._meta.get_field(
+                    'video_bitrate').help_text)
+        else:
+            vb = self.video_bitrate.replace('k', '')
+            if not vb.isdigit():
                 msg = "Error in %s : " % _('bitrate video')
                 raise ValidationError(
                     msg + VideoRendition._meta.get_field(
                         'video_bitrate').help_text)
-            else:
-                vb = self.video_bitrate.replace('k', '')
-                if not vb.isdigit():
-                    msg = "Error in %s : " % _('bitrate video')
-                    raise ValidationError(
-                        msg + VideoRendition._meta.get_field(
-                            'video_bitrate').help_text)
-        if self.audio_bitrate:
-            if not 'k' in self.audio_bitrate:
+        if self.audio_bitrate and 'k' not in self.audio_bitrate:
+            msg = "Error in %s : " % _('bitrate audio')
+            raise ValidationError(
+                msg + VideoRendition._meta.get_field(
+                    'audio_bitrate').help_text)
+        else:
+            vb = self.audio_bitrate.replace('k', '')
+            if not vb.isdigit():
                 msg = "Error in %s : " % _('bitrate audio')
                 raise ValidationError(
                     msg + VideoRendition._meta.get_field(
                         'audio_bitrate').help_text)
-            else:
-                vb = self.audio_bitrate.replace('k', '')
-                if not vb.isdigit():
-                    msg = "Error in %s : " % _('bitrate audio')
-                    raise ValidationError(
-                        msg + VideoRendition._meta.get_field(
-                            'audio_bitrate').help_text)
 
 
 class EncodingVideo(models.Model):
@@ -500,12 +499,12 @@ class EncodingVideo(models.Model):
 
     def clean(self):
         if self.name:
-            if not self.name in dict(ENCODING_CHOICES):
+            if self.name not in dict(ENCODING_CHOICES):
                 raise ValidationError(
                     EncodingVideo._meta.get_field('name').help_text
                 )
         if self.encoding_format:
-            if not self.encoding_format in dict(FORMAT_CHOICES):
+            if self.encoding_format not in dict(FORMAT_CHOICES):
                 raise ValidationError(
                     EncodingVideo._meta.get_field('encoding_format').help_text
                 )
@@ -524,6 +523,7 @@ class EncodingVideo(models.Model):
     @property
     def height(self):
         return int(self.rendition.resolution.split("x")[1])
+
     @property
     def width(self):
         return int(self.rendition.resolution.split("x")[0])
@@ -553,12 +553,12 @@ class EncodingAudio(models.Model):
 
     def clean(self):
         if self.name:
-            if not self.name in dict(ENCODING_CHOICES):
+            if self.name not in dict(ENCODING_CHOICES):
                 raise ValidationError(
                     EncodingAudio._meta.get_field('name').help_text
                 )
         if self.encoding_format:
-            if not self.encoding_format in dict(FORMAT_CHOICES):
+            if self.encoding_format not in dict(FORMAT_CHOICES):
                 raise ValidationError(
                     EncodingAudio._meta.get_field('encoding_format').help_text
                 )
@@ -598,12 +598,12 @@ class PlaylistVideo(models.Model):
 
     def clean(self):
         if self.name:
-            if not self.name in dict(ENCODING_CHOICES):
+            if self.name not in dict(ENCODING_CHOICES):
                 raise ValidationError(
                     PlaylistVideo._meta.get_field('name').help_text
                 )
         if self.encoding_format:
-            if not self.encoding_format in dict(FORMAT_CHOICES):
+            if self.encoding_format not in dict(FORMAT_CHOICES):
                 raise ValidationError(
                     PlaylistVideo._meta.get_field('encoding_format').help_text
                 )
