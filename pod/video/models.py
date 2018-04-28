@@ -9,6 +9,11 @@ from django.contrib.auth.models import Group
 from django.apps import apps
 from django.urls import reverse
 from django.core.exceptions import ValidationError
+from django.dispatch import receiver
+# from django.db.models.signals import post_save
+# from django.db.models.signals import pre_save
+from django.db.models.signals import pre_delete
+# from django.db.models.signals import post_delete
 
 try:
     from pod.filepicker.models import CustomImageModel
@@ -396,6 +401,56 @@ class Video(models.Model):
 
     def get_absolute_url(self):
         return reverse('video', args=[str(self.slug)])
+
+    def delete(self):
+        if self.video:
+            if os.path.isfile(self.video.path):
+                os.remove(self.video.path)
+        if self.overview:
+            if os.path.isfile(self.overview.path):
+                os.remove(self.overview.path)
+        super(Video, self).delete()
+
+
+def remove_video_file(video):
+    if video.video:
+        log_file = os.path.join(
+            os.path.dirname(video.video.path),
+            video.id,
+            'encoding.log')
+        if os.path.isfile(log_file):
+            os.remove(log_file)
+    if video.overview:
+        image_overview = os.path.join(
+            os.path.dirname(video.overview.path), 'overview.png')
+        if os.path.isfile(image_overview):
+            os.remove(image_overview)
+        video.overview.delete()
+
+
+@receiver(pre_delete, sender=Video,
+          dispatch_uid='pre_delete-video_files_removal')
+def video_files_removal(sender, instance, using, **kwargs):
+
+    remove_video_file(instance)
+
+    previous_encoding_video = EncodingVideo.objects.filter(
+        video=instance)
+    if len(previous_encoding_video) > 0:
+        for encoding in previous_encoding_video:
+            encoding.delete()
+
+    previous_encoding_audio = EncodingAudio.objects.filter(
+        video=instance)
+    if len(previous_encoding_audio) > 0:
+        for encoding in previous_encoding_audio:
+            encoding.delete()
+
+    previous_encoding_playlist = PlaylistVideo.objects.filter(
+        video=instance)
+    if len(previous_encoding_playlist) > 0:
+        for encoding in previous_encoding_playlist:
+            encoding.delete()
 
 
 class ViewCount(models.Model):

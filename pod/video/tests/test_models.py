@@ -445,7 +445,7 @@ class VideoTestCase(TestCase):
         # check delete view count cascade
         self.assertEqual(ViewCount.objects.all().count(), 0)
         print(
-            "   --->  test_delete_object of VideoRenditionTestCase : OK !")
+            "   --->  test_delete_object of Video : OK !")
 
 
 """
@@ -463,11 +463,12 @@ class VideoTestCase(TestCase):
     }
 )
 class VideoRenditionTestCase(TestCase):
-    fixtures = ['initial_data.json', ]
+    # fixtures = ['initial_data.json', ]
 
     def create_video_rendition(self, resolution="640x360",
                                video_bitrate="1000k",
                                audio_bitrate="300k", encode_mp4=False):
+        # print("create_video_rendition : %s" % resolution)
         return VideoRendition.objects.create(
             resolution=resolution,
             video_bitrate=video_bitrate,
@@ -487,7 +488,7 @@ class VideoRenditionTestCase(TestCase):
             VideoRenditionTestCase : OK !")
 
     def test_VideoRendition_creation_with_values(self):
-        print("check resolution error")
+        # print("check resolution error")
         vr = self.create_video_rendition(resolution="totototo")
         self.assertTrue(isinstance(vr, VideoRendition))
         self.assertEqual(
@@ -504,7 +505,7 @@ class VideoRenditionTestCase(TestCase):
         self.assertRaises(ValidationError, vr.clean)
         print("check video bitrate error")
         vr = self.create_video_rendition(
-            resolution="640x360", video_bitrate="dfk")
+            resolution="640x361", video_bitrate="dfk")
         self.assertTrue(isinstance(vr, VideoRendition))
         self.assertEqual(
             vr.__str__(),
@@ -512,7 +513,7 @@ class VideoRenditionTestCase(TestCase):
             ('%04d' % vr.id, vr.resolution))
         self.assertRaises(ValidationError, vr.clean)
         vr = self.create_video_rendition(
-            resolution="640x360", video_bitrate="100")
+            resolution="640x362", video_bitrate="100")
         self.assertTrue(isinstance(vr, VideoRendition))
         self.assertEqual(
             vr.__str__(),
@@ -521,7 +522,7 @@ class VideoRenditionTestCase(TestCase):
         self.assertRaises(ValidationError, vr.clean)
         print("check audio bitrate error")
         vr = self.create_video_rendition(
-            resolution="640x360", audio_bitrate="dfk")
+            resolution="640x363", audio_bitrate="dfk")
         self.assertTrue(isinstance(vr, VideoRendition))
         self.assertEqual(
             vr.__str__(),
@@ -529,7 +530,7 @@ class VideoRenditionTestCase(TestCase):
             ('%04d' % vr.id, vr.resolution))
         self.assertRaises(ValidationError, vr.clean)
         vr = self.create_video_rendition(
-            resolution="640x360", audio_bitrate="100")
+            resolution="640x364", audio_bitrate="100")
         self.assertTrue(isinstance(vr, VideoRendition))
         self.assertEqual(
             vr.__str__(),
@@ -541,7 +542,7 @@ class VideoRenditionTestCase(TestCase):
             VideoRenditionTestCase : OK !")
 
     def test_delete_object(self):
-        self.create_video_rendition()
+        self.create_video_rendition(resolution="640x365")
         VideoRendition.objects.get(id=1).delete()
         self.assertEqual(VideoRendition.objects.all().count(), 0)
 
@@ -582,11 +583,9 @@ class EncodingVideoTestCase(TestCase):
             video=Video.objects.get(id=1),
             rendition=VideoRendition.objects.get(resolution="640x360"))
         self.assertTrue(isinstance(ev, EncodingVideo))
-        evslug = "EncodingVideo num : %s with resolution %s for video %s \
-        in %s" % ('%04d' % ev.id,
-                  ev.name,
-                  ev.video.id,
-                  ev.encoding_format)
+        evslug = "EncodingVideo num : %s with resolution %s " % (
+            '%04d' % ev.id, ev.name)
+        evslug += "for video %s in %s" % (ev.video.id, ev.encoding_format)
         self.assertEqual(ev.__str__(), evslug)
         self.assertEqual(ev.name, "360p")
         self.assertEqual(ev.encoding_format, "video/mp4")
@@ -601,11 +600,9 @@ class EncodingVideoTestCase(TestCase):
             name="480p",
             encoding_format="audio/mp3")
         self.assertTrue(isinstance(ev, EncodingVideo))
-        evslug = "EncodingVideo num : %s with resolution %s for video %s \
-        in %s" % ('%04d' % ev.id,
-                  ev.name,
-                  ev.video.id,
-                  ev.encoding_format)
+        evslug = "EncodingVideo num : %s with resolution %s " % (
+            '%04d' % ev.id, ev.name)
+        evslug += "for video %s in %s" % (ev.video.id, ev.encoding_format)
         self.assertEqual(ev.__str__(), evslug)
         self.assertEqual(ev.name, "480p")
         self.assertEqual(ev.encoding_format, "audio/mp3")
@@ -871,21 +868,24 @@ class EncodingStepTestCase(TestCase):
         es = EncodingStep.objects.create(
             video=Video.objects.get(id=1)
         )
-        self.assertTrue(isinstance(es, EncodingLog))
+        self.assertTrue(isinstance(es, EncodingStep))
         esslug = "Step for encoding video %s" % (es.video.id)
         self.assertEqual(es.__str__(), esslug)
-        self.assertEqual(es.step, None)
+        self.assertEqual(es.num_step, 0)
+        self.assertEqual(es.desc_step, None)
         print(" --->  test_EncodingStepTestCase_null_attributs : OK !")
 
     def test_EncodingStepTestCase_with_attributs(self):
         es = EncodingStep.objects.create(
             video=Video.objects.get(id=1),
-            step="encoding step"
+            num_step=1,
+            desc_step="encoding step",
         )
         self.assertTrue(isinstance(es, EncodingStep))
         esslug = "Step for encoding video %s" % (es.video.id)
         self.assertEqual(es.__str__(), esslug)
-        self.assertEqual(es.log, "encoding step")
+        self.assertEqual(es.num_step, 1)
+        self.assertEqual(es.desc_step, "encoding step")
         print(" --->  test_EncodingStepTestCase_with_attributs : OK !")
 
     def test_delete_object(self):

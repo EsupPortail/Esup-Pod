@@ -58,6 +58,12 @@ GET_INFO_VIDEO = getattr(
     "%(ffprobe)s -v quiet -show_format -show_streams -select_streams v:0 "
     + "-print_format json -i %(source)s")
 
+GET_INFO_AUDIO = getattr(
+    settings,
+    'GET_INFO_AUDIO',
+    "%(ffprobe)s -v quiet -show_format -show_streams -select_streams a:0 "
+    + "-print_format json -i %(source)s")
+
 FFMPEG_STATIC_PARAMS = getattr(
     settings,
     'FFMPEG_STATIC_PARAMS',
@@ -309,24 +315,11 @@ def encode_video(video_id):
                 "create_and_save_thumbnails : %s" % msg)
         else:
             # if file is audio, encoding to m4a for player
-            change_encoding_step(
-                video_id, 4,
-                "encoding audio file")
-            msg = encode_video_m4a(
-                video_id, video_to_encode.video.path, output_dir)
-            add_encoding_log(
-                video_id,
-                "encode_video_m4a : %s" % msg)
+            encode_m4a(video_id, video_data["contain_audio"],
+                       video_to_encode.video.path, output_dir)
 
-        # encodage_audio_mp3 for all file !
-        change_encoding_step(
-            video_id, 4,
-            "encoding audio mp3 file")
-        msg = encode_video_mp3(
-            video_id, video_to_encode.video.path, output_dir)
-        add_encoding_log(
-            video_id,
-            "encode_video_mp3 : %s" % msg)
+        encode_mp3(video_id, video_data["contain_audio"],
+                   video_to_encode.video.path, output_dir)
 
         # envois mail fin encodage
         if EMAIL_ON_ENCODING_COMPLETION:
@@ -365,6 +358,7 @@ def get_video_data(video_id):
     msg += "%s" % json.dumps(
         info, sort_keys=True, indent=4, separators=(',', ': '))
     is_video = False
+    contain_audio = False
     in_height = 0
     duration = 0
     key_frames_interval = 0
@@ -383,6 +377,20 @@ def get_video_data(video_id):
                 frame_rate = info["streams"][0]['r_frame_rate']
                 key_frames_interval = int(round(Fraction(frame_rate)))
         """
+
+    # check audio
+    command = GET_INFO_AUDIO % {'ffprobe': FFPROBE, 'source': source}
+    ffproberesult = subprocess.getoutput(command)
+    msg += "\nffprobe command : %s" % command
+    add_encoding_log(
+        video_id,
+        "command : %s \n ffproberesult : %s" % (command, ffproberesult))
+    info = json.loads(ffproberesult)
+    msg += "%s" % json.dumps(
+        info, sort_keys=True, indent=4, separators=(',', ': '))
+    if len(info["streams"]) > 0:
+        contain_audio = True
+
     if info["format"].get('duration'):
         duration = int(float("%s" % info["format"]['duration']))
 
@@ -392,6 +400,7 @@ def get_video_data(video_id):
     return {
         'msg': msg,
         'is_video': is_video,
+        'contain_audio': contain_audio,
         'in_height': in_height,
         'key_frames_interval': key_frames_interval,
         'duration': duration
@@ -500,6 +509,44 @@ def save_mp4_file(video_id, list_file, output_dir):
 ###############################################################
 # AUDIO
 ###############################################################
+
+
+def encode_m4a(video_id, contain_audio, source, output_dir):
+    msg = ""
+    if contain_audio:
+        change_encoding_step(
+            video_id, 4,
+            "encoding audio file")
+        msg = encode_video_m4a(
+            video_id, source, output_dir)
+        add_encoding_log(
+            video_id,
+            "encode_video_m4a : %s" % msg)
+    else:
+        msg = "\n%s\nNO VIDEO AND AUDIO FOUND !!!!\n%s\n" % (
+            20 * "-", 20 * "-")
+        add_encoding_log(video_id, msg)
+        change_encoding_step(video_id, -1, msg)
+        send_email(msg, video_id)
+
+
+def encode_mp3(video_id, contain_audio, source, output_dir):
+    # encodage_audio_mp3 for all file !
+    msg = ""
+    if contain_audio:
+        change_encoding_step(
+            video_id, 4,
+            "encoding audio mp3 file")
+        msg = encode_video_mp3(
+            video_id, source, output_dir)
+        add_encoding_log(
+            video_id,
+            "encode_video_mp3 : %s" % msg)
+    else:
+        msg = "No stream audio found"
+        add_encoding_log(
+            video_id,
+            "encode_video_mp3 : %s" % msg)
 
 
 def encode_video_m4a(video_id, source, output_dir):
@@ -871,6 +918,10 @@ def create_and_save_thumbnails(source, image_width, video_id):
                     File(open(thumbnailfilename, "rb")),
                     save=True)
                 thumbnail.save()
+                if i == 0:
+                    video_to_encode = Video.objects.get(id=video_id)
+                    video_to_encode.thumbnail = thumbnail
+                    video_to_encode.save()
             else:
                 thumbnail = VideoImageModel()
                 thumbnail.file.save(
@@ -878,10 +929,10 @@ def create_and_save_thumbnails(source, image_width, video_id):
                     File(open(thumbnailfilename, "rb")),
                     save=True)
                 thumbnail.save()
-            if i == 0:
-                video_to_encode = Video.objects.get(id=video_id)
-                video_to_encode.thumbnail = thumbnail
-                video_to_encode.save()
+                if i == 0:
+                    video_to_encode = Video.objects.get(id=video_id)
+                    video_to_encode.thumbnail = thumbnail
+                    video_to_encode.save()
             # remove tempfile
             msg += "\n- thumbnailfilename %s :\n%s" % (i, thumbnail.file.path)
             os.remove(thumbnailfilename)
@@ -901,6 +952,21 @@ def create_and_save_thumbnails(source, image_width, video_id):
 
 def remove_old_data(video_id):
     video_to_encode = Video.objects.get(id=video_id)
+    video_to_encode.thumbnail = None
+    if video_to_encode.overview:
+        image_overview = os.path.join(
+            os.path.dirname(video_to_encode.overview.path), 'overview.png')
+        if os.path.isfile(image_overview):
+            os.remove(image_overview)
+        video_to_encode.overview.delete()
+    video_to_encode.overview = None
+    video_to_encode.save()
+
+    encoding_log, created = EncodingLog.objects.get_or_create(
+        video=Video.objects.get(id=video_id))
+    encoding_log.log = ""
+    encoding_log.save()
+
     encoding_log_msg = ""
     encoding_log_msg += remove_previous_encoding_video(
         video_to_encode)
