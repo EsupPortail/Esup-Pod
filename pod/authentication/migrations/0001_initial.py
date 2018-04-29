@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
+import pod.authentication.models
 
 
 class Migration(migrations.Migration):
@@ -12,11 +13,18 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('filepicker', '0001_initial'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
+        migrations.CreateModel(
+            name='AuthenticationImageModel',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('image', models.ImageField(blank=True, max_length=255, null=True, upload_to=pod.authentication.models.get_upload_path_files, verbose_name='Image')),
+            ],
+        ),
         migrations.CreateModel(
             name='Owner',
             fields=[
