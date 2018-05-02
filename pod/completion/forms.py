@@ -40,7 +40,7 @@ class DocumentForm(forms.ModelForm):
             self.fields['video'].widget = HiddenInput()
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
-            if self.fields[myField].required:
+            if self.fields[myField].required or myField == 'document':
                 self.fields[myField].widget.attrs[
                     'class'] = 'form-control required'
                 label_unicode = '{0}'.format(self.fields[myField].label)

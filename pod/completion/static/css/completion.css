@@ -57,6 +57,11 @@ table#table_list_contributors thead th.contributor_name {
 	padding: 4px 15px;
 }
 
+#id_background {
+	margin-left: 0.25rem;
+	position: inherit;
+}
+
 /** Forms **/
 
 

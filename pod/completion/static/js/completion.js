@@ -58,10 +58,6 @@ $(document).on('reset', '#page-video form', function(event) {
 	var form_new = 'form_new_' + name_form;
 	var list = 'list_' + name_form
 	$('span#' + id_form).html('');
-	if (id_form != 'form_contributor') {
-		$('span#' + id_form).unwrap();
-		$('span#' + list).unwrap();
-	}
 	$('form#' + form_new).show();
 	$('form').show();
 	$('a.title').css('display', 'initial');
@@ -100,11 +96,6 @@ $(document).on('submit', '#page-video form', function(event) {
 		$('form.form_delete').hide();
 		$('a.title').css('display', 'none');
 		hide_others_sections(name_form);
-		if (name_form != 'contributor') {
-			$('span#' + form).wrapAll('<div class="col-sm-6"></div>');
-			$('span#' + list).wrapAll('<div class="col-sm-6"></div>');
-			manageResize(name_form);
-		}
 		var elt = $(this).parents('tr');
 		//$('#' + form).html(ajax_image);
 		if (action == 'modify') {
@@ -295,7 +286,7 @@ function verify_fields(form) {
 				.after("<span class='form-help-inline'>{% trans 'Please specify a track file.' %}</span>")
 				.parents('div.form-group').addClass('has-error');
 		}
-		if (document.getElementById('file-picker-path').innerHTML.split(' ').pop() != '(VTT)') {
+		if (document.getElementById('file-picker-path').innerHTML.split(' ')[1] != '(VTT)') {
 			$('input#id_src')
 				.after("<span class='form-help-inline'>{% trans 'Only .vtt format is allowed.' %}</span>")
 				.parents('div.form-group').addClass('has-error');
