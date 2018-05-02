@@ -3,7 +3,6 @@ from django.core.management.base import BaseCommand
 from django.core import serializers
 from django.conf import settings
 from django.apps import apps
-from tagging.models import Tag
 from pod.video.models import Video
 try:
     from pod.authentication.models import Owner
@@ -97,6 +96,7 @@ class Command(BaseCommand):
         video = Video.objects.get(id=video_id)
         video.tags = ', '.join(list_tag)
         video.save()
+
 
 """
 SAVE FROM PODV1

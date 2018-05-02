@@ -15,14 +15,10 @@ from django.dispatch import receiver
 # from django.db.models.signals import pre_save
 from django.db.models.signals import pre_delete
 # from django.db.models.signals import post_delete
-
 try:
     from pod.filepicker.models import CustomImageModel
 except ImportError:
     pass
-
-
-
 from datetime import datetime
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField

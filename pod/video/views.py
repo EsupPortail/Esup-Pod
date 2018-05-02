@@ -11,6 +11,7 @@ from pod.video.models import Video
 # Create your views here.
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
 
+
 def videos(request):
     videos_list = VIDEOS
     page = request.GET.get('page', 1)
