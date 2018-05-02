@@ -2,7 +2,7 @@
 <div class="card mb-4 box-shadow border-secondary"> <!-- the good one -->
     <div class="card-header" style="">
         <div class="d-flex justify-content-between align-items-center">
-            <small class="text-muted time">00:03:08</small>
+            <small class="text-muted time">{{video.duration_in_time}}</small>
             <span class="text-muted small">
                 <span title="Ce contenu est interactif.">
                     <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true">
@@ -17,11 +17,11 @@
             </span>
         </div>
     </div>
-    <a href="#">
+    <a href="{{video.get_absolute_url}}" title="{{video.title}}">
         <img class="card-img-top" src="https://pod.univ-lille1.fr/media/filer_public_thumbnails/filer_public/99/fd/99fd85ec-2254-4b87-a76c-a6294db7586b/une_p3.jpg__285x160_q85_crop_subsampling-2_upscale.jpg" alt="Card image cap" />
     </a>
     <div class="card-body">
-      <h6 class="card-subtitle small"><a href="#"> se former pour sauver</a></h6>
+      <h6 class="card-subtitle small"><a href="{{video.get_absolute_url}}" title="{{video.title}}">{{video.title}}</a></h6>
     </div>
 </div>
 {% endspaceless %}

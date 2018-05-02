@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-
+{% load i18n %}
 {% load staticfiles %}
 
 {% block page_content %}
-
-  <div class="infinite-container">
+  <h3>Les vidéos</h3>
+  <div class="row infinite-container">
     {% include "videos/video_list.html" %}
   </div>
 
@@ -16,7 +16,6 @@
     Loading...
   </div>
 
-  
 {% endblock page_content %}
 
 {% block more_script %}

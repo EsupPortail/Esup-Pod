@@ -1,5 +1,7 @@
+{% spaceless %}
 {% for video in videos %}
-<div class="col-12 col-md-6 col-lg-3 mb-2">
+<div class="infinite-item col-12 col-md-6 col-lg-3 mb-2">
 {% include "videos/card.html" %}
 </div>
 {% endfor %}
+{% endspaceless %}
