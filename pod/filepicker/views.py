@@ -68,10 +68,8 @@ class FilePickerBase(object):
         if not self.form:
             self.form = model_to_AjaxItemForm(self.model)
         self.field_names = [f.name for f in model._meta.get_fields()]
-
         if not self.columns:
             self.columns = self.field_names
-
         self.populate_field(model)
         self.verify_column(model)
 
@@ -80,6 +78,7 @@ class FilePickerBase(object):
             field = model._meta.get_field(field_name)
             if isinstance(field, (models.ImageField, models.FileField)):
                 self.field = field_name
+        for field_name in self.field_names:
             if isinstance(field, (models.ForeignKey, models.ManyToManyField)):
                 self.field_names.remove(field_name)
 
@@ -178,7 +177,7 @@ class FilePickerBase(object):
         }
 
     def conf_dirs(self, request):
-        if request.GET:
+        if request.GET and request.GET.get('action'):
             if request.GET['action'] == 'edit':
                 try:
                     directory = self.structure.objects.get(
@@ -213,7 +212,7 @@ class FilePickerBase(object):
                 data = {'id': directory.id}
                 return HttpResponse(
                     json.dumps(data), content_type='application/json')
-        if request.POST:
+        if request.POST and request.POST.get('action'):
             if request.POST['action'] == 'edit':
                 try:
                     directory = self.structure.objects.get(

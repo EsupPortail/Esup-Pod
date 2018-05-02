@@ -17,7 +17,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-
 class UserDirectory(models.Model):
     name = models.CharField(_('Name'), max_length=255)
     parent = models.ForeignKey(
@@ -50,16 +49,18 @@ class UserDirectory(models.Model):
         else:
             return os.path.join(self.name, path)
 
+
 @receiver(post_save, sender=Owner)
 def create_owner_directory(sender, instance, created, **kwargs):
     if created:
         try:
             UserDirectory.objects.create(owner=instance, name='Home')
-        except Exception:
+        except Exception as e:
             msg = '\n Create owner directory ***** Error:{0}'.format(e)
             msg += '\n{0}'.traceback.format_exc()
             logger.error(msg)
             print(msg)
+
 
 def get_upload_path(instance, filename):
     if instance.created_by.owner:

@@ -1,0 +1,86 @@
+.form-help-inline,
+.special_class {
+	color: red;
+}
+
+/** Table scroll **/
+table.scroll {
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+table.scroll .btn-sm,
+table.scroll .btn-group-sm > .btn {
+	border-radius: 3px;
+	font-size: 12px;
+	line-height: 0.5;
+	padding: 5px 10px;
+}
+table.scroll tbody {
+	max-height: 100px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+table.scroll tbody td,
+table.scroll thead th {
+	width: 10%;
+	height: 20px;
+	line-height: 20px;
+	border-bottom: 0;
+}
+table.scroll thead tr th {
+	height: 27px;
+	line-height: 27px;
+	text-align: left;
+}
+
+/** Table contributor **/
+table#table_list_contributors tbody td.contributor_name,
+table#table_list_contributors thead th.contributor_name {
+	width: 20%;
+}
+
+/** Accordeon for lists **/
+#accordeon li,
+#accordeon div {
+	list-style: none;
+}
+
+/** Lists style **/
+#list_contributor .panel-heading,
+#list_track .panel-heading,
+#list_document .panel-heading,
+#list_overlay .panel-heading {
+	border-bottom: 1px solid transparent;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	padding: 4px 15px;
+}
+
+#id_background {
+	margin-left: 0.25rem;
+	position: inherit;
+}
+
+/** Forms **/
+
+
+/** Aside **/
+.info-card {
+	display: none;
+}
+
+/** Filepicker override **/
+div.file-picker-overlay,
+div.file-picker,
+ul.css-tabs a {
+	box-sizing: content-box;
+}
+textarea#id_description {
+	line-height: normal;
+}
+
+/** Bootstrap override **/
+.card-title {
+	margin: .45rem;
+}

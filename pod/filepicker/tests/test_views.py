@@ -26,7 +26,6 @@ class FileViewsTestCase(TestCase):
         user = User.objects.create(username='test', password='azerty')
         user.set_password('hello')
         user.save()
-        UserDirectory.objects.create(owner=user, name='Home')
 
     def test_home(self):
         UserDirectory.objects.get(id=1).delete()
@@ -283,7 +282,7 @@ class DirectoryViewTestCase(TestCase):
         user = User.objects.create(username='test', password='azerty')
         user.set_password('hello')
         user.save()
-        home = UserDirectory.objects.create(owner=user, name='Home')
+        home = UserDirectory.objects.get(owner=user, name='Home')
         UserDirectory.objects.create(owner=user, name='Child', parent=home)
 
     def test_list_directories(self):

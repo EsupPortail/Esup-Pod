@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.contrib import admin
 from modeltranslation.admin import TranslationAdmin
 
@@ -18,6 +19,12 @@ from pod.video.forms import ChannelForm
 from pod.video.forms import ThemeForm
 from pod.video.forms import TypeForm
 from pod.video.forms import DisciplineForm
+from pod.completion.admin import ContributorInline
+from pod.completion.admin import DocumentInline
+from pod.completion.admin import OverlayInline
+from pod.completion.admin import TrackInline
+if apps.is_installed('pod.filepicker'):
+    FILEPICKER = True
 
 
 # Register your models here.
@@ -25,6 +32,12 @@ from pod.video.forms import DisciplineForm
 
 class VideoAdmin(admin.ModelAdmin):
     form = VideoForm
+    inlines = [
+        ContributorInline,
+        DocumentInline,
+        TrackInline,
+        OverlayInline
+    ]
 
     class Media:
         js = ('js/jquery.tools.min.js',)
@@ -58,7 +71,7 @@ class DisciplineAdmin(TranslationAdmin):
         js = ('js/jquery.tools.min.js',)
 
 
-class ThemeAdmin(TranslationAdmin):
+class ThemeAdmin(admin.ModelAdmin):
     form = ThemeForm
     list_display = ('title', 'channel')
     list_filter = ['channel']
@@ -67,7 +80,6 @@ class ThemeAdmin(TranslationAdmin):
 
     class Media:
         js = ('js/jquery.tools.min.js',)
-
 
 class EncodingVideoAdmin(admin.ModelAdmin):
     list_display = ('video', 'get_resolution', 'encoding_format')
@@ -98,7 +110,6 @@ class EncodingLogAdmin(admin.ModelAdmin):
 class EncodingStepAdmin(admin.ModelAdmin):
     list_display = ('video',)
     readonly_fields = ('video', 'num_step', 'desc_step')
-
 
 admin.site.register(Channel, ChannelAdmin)
 admin.site.register(Type, TypeAdmin)

@@ -17,7 +17,7 @@ if apps.is_installed('pod.filepicker'):
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
-    # Exterior apps
+    # Translation
     url(r'^i18n/', include('django.conf.urls.i18n')),
 
     # App video
@@ -27,6 +27,8 @@ urlpatterns = [
 
 if apps.is_installed('pod.filepicker'):
     urlpatterns += [url(r'^file-picker/', include(filepicker_site.urls)), ]
+if apps.is_installed('pod.completion'):
+    urlpatterns += [url(r'^', include('pod.completion.urls')), ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
