@@ -10,14 +10,9 @@ from pod.video.models import Type
 
 import json
 
-try:
-    from pod.authentication.models import Owner
-    ORDER_BY = 'user__last_name'
-    VALUES_LIST = ['user__username', 'user__first_name', 'user__last_name']
-except ImportError:
-    from django.contrib.auth.models import User as Owner
-    ORDER_BY = 'last_name'
-    VALUES_LIST = ['username', 'first_name', 'last_name']
+from django.contrib.auth.models import User as Owner
+ORDER_BY = 'last_name'
+VALUES_LIST = ['username', 'first_name', 'last_name']
 
 MENUBAR_HIDE_INACTIVE_OWNERS = getattr(
     django_settings, 'MENUBAR_HIDE_INACTIVE_OWNERS', False)

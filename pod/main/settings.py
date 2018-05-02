@@ -122,3 +122,11 @@ CKEDITOR_BASEPATH = os.path.join(STATIC_URL, 'ckeditor', "/")
 MENUBAR_HIDE_INACTIVE_OWNERS = False
 # Show only staff users in “Owners” main menu list.
 MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
+
+##
+# Video tiers apps settings
+# 
+FORCE_LOWERCASE_TAGS = True
+MAX_TAG_LENGTH = 50
+
+
