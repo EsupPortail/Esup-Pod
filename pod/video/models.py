@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import get_language
 from django.template.defaultfilters import slugify
 from django.db.models import Sum
+from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.apps import apps
 from django.urls import reverse
@@ -19,10 +20,8 @@ try:
     from pod.filepicker.models import CustomImageModel
 except ImportError:
     pass
-try:
-    from pod.authentication.models import Owner
-except ImportError:
-    from django.contrib.auth.models import User as Owner
+
+
 
 from datetime import datetime
 from ckeditor.fields import RichTextField
@@ -100,12 +99,12 @@ def get_storage_path_video(instance, filename):
     fname, dot, extension = filename.rpartition('.')
     try:
         fname.index("/")
-        return os.path.join(VIDEOS_DIR, instance.owner.hashkey,
+        return os.path.join(VIDEOS_DIR, instance.owner.owner.hashkey,
                             '%s/%s.%s' % (os.path.dirname(fname),
                                           slugify(os.path.basename(fname)),
                                           extension))
     except ValueError:
-        return os.path.join(VIDEOS_DIR, instance.owner.hashkey,
+        return os.path.join(VIDEOS_DIR, instance.owner.owner.hashkey,
                             '%s.%s' % (slugify(fname), extension))
 
 
@@ -163,10 +162,10 @@ class Channel(models.Model):
         _('Background color'), max_length=10, blank=True, null=True)
     style = models.TextField(_('Extra style'), null=True, blank=True)
     owners = models.ManyToManyField(
-        Owner, related_name='owners_channels', verbose_name=_('Owners'),
+        User, related_name='owners_channels', verbose_name=_('Owners'),
         blank=True)
     users = models.ManyToManyField(
-        Owner, related_name='users_channels', verbose_name=_('Users'),
+        User, related_name='users_channels', verbose_name=_('Users'),
         blank=True)
     visible = models.BooleanField(
         verbose_name=_('Visible'),
@@ -296,7 +295,7 @@ class Video(models.Model):
                                 + 'a short label containing only letters, '
                                 + 'numbers, underscore or dash top.'),
                             editable=False)
-    owner = models.ForeignKey(Owner, verbose_name=_('Owner'))
+    owner = models.ForeignKey(User, verbose_name=_('Owner'))
     date_added = models.DateField(_('Date added'), default=datetime.now)
     date_evt = models.DateField(
         _(u'Date of event'), default=datetime.now, blank=True, null=True)
@@ -416,7 +415,7 @@ def remove_video_file(video):
     if video.video:
         log_file = os.path.join(
             os.path.dirname(video.video.path),
-            video.id,
+            "%04d" % video.id,
             'encoding.log')
         if os.path.isfile(log_file):
             os.remove(log_file)
