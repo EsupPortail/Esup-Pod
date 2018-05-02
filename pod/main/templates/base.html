@@ -57,53 +57,7 @@
 					{% endblock page_content %}
 				</div>
 				<!-- fin contenu page statique -->
-				<h3>{% block video_list_title %}Dernières vidéos déposées{% endblock video_list_title %}</h3>
-				<!-- liste vignette vidéo 4 par ligne -->
-				<div class="row">
-					{% block video_list %}
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-             		</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-              		</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-					</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-					</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-             		</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-              		</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-					</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-					</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-             		</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-              		</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-					</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-					</div>
-					{% endblock video_list %}
-				</div>
-				<div class="hightlight">
-					<div class="d-flex justify-content-end">
-					  <p><a class="btn btn-lg btn-primary" href="#" role="button">Voir toutes les vidéos &raquo;</a></p>
-					</div>
-				</div> <!-- fin hightlight -->
+                {% include "videos/last_videos.html" %}
         	</div> <!-- fin col order-12 order-md-1 -->
         	<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
 			{% include 'aside.html'%}
@@ -116,6 +70,7 @@
 </footer>
 <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
 <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
+
 <script>
 var listUser = {{LISTOWNER|safe}};
 
@@ -142,5 +97,7 @@ $(".showUser").on('click', function() {
 	}
 })
 </script>
+{% block more_script %}
+{% endblock more_script %}
 	</body>
 </html>

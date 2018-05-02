@@ -1,46 +1,5 @@
-{% extends 'base.html' %}
-{% block page_title %}VIDEO LIST TITLE{% endblock %}
-{% block page_content %}
-{% endblock page_content %}
-{% block breadcrumbs %}
-    <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
-{% endblock breadcrumbs %}
-{% block video_list_title %}Dernières vidéos déposées{% endblock video_list_title %}
-{% block video_list %}
+{% for video in videos %}
 <div class="col-12 col-md-6 col-lg-3 mb-2">
 {% include "videos/card.html" %}
 </div>
-<div class="col-12 col-md-6 col-lg-3 mb-2">
-{% include "videos/card.html" %}
-</div>
-<div class="col-12 col-md-6 col-lg-3 mb-2">
-{% include "videos/card.html" %}
-</div>
-<div class="col-12 col-md-6 col-lg-3 mb-2">
-{% include "videos/card.html" %}
-</div>
-<div class="col-12 col-md-6 col-lg-3 mb-2">
-{% include "videos/card.html" %}
-</div>
-<div class="col-12 col-md-6 col-lg-3 mb-2">
-{% include "videos/card.html" %}
-</div>
-<div class="col-12 col-md-6 col-lg-3 mb-2">
-{% include "videos/card.html" %}
-</div>
-<div class="col-12 col-md-6 col-lg-3 mb-2">
-{% include "videos/card.html" %}
-</div>
-<div class="col-12 col-md-6 col-lg-3 mb-2">
-{% include "videos/card.html" %}
-</div>
-<div class="col-12 col-md-6 col-lg-3 mb-2">
-{% include "videos/card.html" %}
-</div>
-<div class="col-12 col-md-6 col-lg-3 mb-2">
-{% include "videos/card.html" %}
-</div>
-<div class="col-12 col-md-6 col-lg-3 mb-2">
-{% include "videos/card.html" %}
-</div>
-{% endblock video_list_title %}
+{% endfor %}
