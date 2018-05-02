@@ -2,8 +2,6 @@
 Django local settings for pod_project.
 Django version : 1.11.10.
 """
-from pod import settings
-
 
 import os
 ##
@@ -43,6 +41,23 @@ DEBUG = True
 # https://docs.djangoproject.com/en/1.11/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ['localhost']
 
+##
+# A tuple that lists people who get code error notifications
+#   when DEBUG=False and a view raises an exception.
+#
+#   https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-ADMINS
+#
+ADMINS = (
+    ('Name', 'adminmail@univ.fr'),
+)
+##
+# A tuple that lists people who get other notifications
+#   email from contact_us / end of encoding / report video
+#
+#   https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-MANAGERS
+MANAGERS = (
+    ('Name', 'adminmail@univ.fr'),
+)
 ##
 # A dictionary containing the settings for all databases
 # to be used with Django.
@@ -98,8 +113,7 @@ TITLE_SITE = 'Pod'
 ##
 # CKeditor settings
 #
-CKEDITOR_BASEPATH = os.path.join(
-    getattr(settings, 'STATIC_URL', '/static/'), 'ckeditor', 'ckeditor') + "/"
+CKEDITOR_BASEPATH = os.path.join(STATIC_URL, 'ckeditor', "/")
 
 ##
 # Main menu settings:
@@ -108,3 +122,11 @@ CKEDITOR_BASEPATH = os.path.join(
 MENUBAR_HIDE_INACTIVE_OWNERS = False
 # Show only staff users in “Owners” main menu list.
 MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
+
+##
+# Video tiers apps settings
+# 
+FORCE_LOWERCASE_TAGS = True
+MAX_TAG_LENGTH = 50
+
+

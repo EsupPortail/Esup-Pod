@@ -1,0 +1,27 @@
+<!-- HTML for document form. Don't use this file alone it must be integrated into another template ! -->
+{% load i18n %}
+{% load staticfiles %}
+<form id="form_document" action="{% url 'video_completion_document' slug=video.slug %}" method="POST">
+	{% csrf_token %}
+	<div id="form_content" class="form-container">
+		{% if form_document.errors or form_document.non_field_errors %}
+			{% trans 'Your form contains errors:' %}<br />
+			{% for error in form_document.non_field_errors %}
+				- {{error}}<br />
+			{% endfor %}
+		{% endif %}
+		{% for field_hidden in form_document.hidden_fields %}
+			{{field_hidden}}
+		{% endfor %}
+		{% for field in form_document.visible_fields %}
+			<div class="form-group row">
+				<label for="{{field.auto_id}}" class="col-sm-2 col-form-label">{{field.label}}</label>
+				<div class="col-sm-10">{{field}}</div>
+			</div>
+		{% endfor %}
+		<input type="hidden" name="action" value="save"/>
+		<input type="submit" id="save_document" value="{% trans 'save' %}" class="btn btn-info"/>
+		<input type="reset" action="cancel" id="cancel_document" value="{% trans 'cancel' %}" class="btn btn-danger"/>
+	</div>
+</form>
+<script src="{% static 'js/filepicker.custom.js' %}"></script>

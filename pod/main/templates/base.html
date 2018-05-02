@@ -2,145 +2,151 @@
 {% load i18n %}
 <!doctype html>
 <html lang="fr">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+	<head>
+	    <!-- Required meta tags -->
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	    <meta name="description" content="">
+	    <meta name="author" content="">
 
-    <link rel="icon" href="{% static 'images/favicon.png' %}">
+	    <link rel="icon" href="{% static 'images/favicon.png' %}">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap.min.css' %}" crossorigin="anonymous">
+	    <!-- Bootstrap CSS -->
+	    <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap.min.css' %}" crossorigin="anonymous">
 
-    <!-- octicons -->
-    <link rel="stylesheet" href="{% static 'css/octicons.css' %}" media="screen" title="no title">
-    <link rel="stylesheet" href="{% static 'css/lillePod.css' %}" media="screen" title="no title">
-    
+	    <!-- octicons -->
+	    <link rel="stylesheet" href="{% static 'css/octicons.css' %}" media="screen" title="no title">
+	    <link rel="stylesheet" href="{% static 'css/lillePod.css' %}" media="screen" title="no title">
 
-    <title>{{ TITLE_SITE }} - {% block page_title %}{% endblock %}</title>
+	    <!-- JS -->
+	    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+		<script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
 
-    {% block page_extra_head %}{% endblock %}
-</head>
-  <body>
-<!-- barre nav-->
-<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
-{% include 'navbar.html' %}
-</nav><!-- fin barre nav-->
-{% include 'navbar_collapse.html' %}
-<div class="container">
-	<main role="main" class="mt-3">
-        <nav aria-label="breadcrumb" class="breadcrumb d-flex justify-content-between p-0">
-          <ol class="breadcrumb p-1 pl-4 mb-0">
-          	{% block breadcrumbs %}
-                <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
-			{% endblock breadcrumbs %}
-			<!--
-            <li class="breadcrumb-item"><a href="#">Accueil</a></li>
-            <li class="breadcrumb-item"><a href="#">Vidéos</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Visionner une vidéo</li>
-        	-->
-          </ol>
-          <div class="p-0">
-            <a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside">
-              <svg height="32" class="octicon octicon-grabber" viewBox="0 0 8 16" version="1.1" width="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 4v1H0V4h8zM0 8h8V7H0v1zm0 3h8v-1H0v1z"></path></svg>
-            </a>
-          </div>
-        </nav>
-        <div class="row">
-        	<div class="col order-12 order-md-1">
-				<!-- contenu page statique -->
-				<div class="jumbotron">
-					{% block page_content %}
-						<p> Contenu block page_content </p>
-					{% endblock page_content %}
-				</div>
-				<!-- fin contenu page statique -->
-				<h3>{% block video_list_title %}Dernières vidéos déposées{% endblock video_list_title %}</h3>
-				<!-- liste vignette vidéo 4 par ligne -->
-				<div class="row">
-					{% block video_list %}
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-             		</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-              		</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-					</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-					</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-             		</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-              		</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-					</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-					</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-             		</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-              		</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-					</div>
-					<div class="col-12 col-md-6 col-lg-3 mb-2">
-					{% include "videos/card.html" %}
-					</div>
-					{% endblock video_list %}
-				</div>
-				<div class="hightlight">
-					<div class="d-flex justify-content-end">
-					  <p><a class="btn btn-lg btn-primary" href="#" role="button">Voir toutes les vidéos &raquo;</a></p>
-					</div>
-				</div> <!-- fin hightlight -->
-        	</div> <!-- fin col order-12 order-md-1 -->
-        	<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
-			{% include 'aside.html'%}
-			</aside>
-        </div> <!-- fin row -->
-    </main>
-</div> <!-- fin container -->
-<footer class="text-muted bg-dark pt-2">
-{% include 'footer.html' %}
-</footer>
-<script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-<script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
-<script>
-var listUser = {{LISTOWNER|safe}};
+	    <title>{{ TITLE_SITE }} - {% block page_title %}{% endblock %}</title>
 
-$('#ownerboxnavbar').keyup(function() {
-	if($(this).val() && $(this).val().length > 2) {
-		var valThis = $(this).val().toLowerCase();
-		var letter = $(this).val().charAt(0).toLowerCase();
-		var nbuser = listUser[letter].length;
-		$("#accordion").html("");
-		for(i=0; i<nbuser; i++) {
-			var lastname = listUser[letter][i][2].toLowerCase();
-			if(lastname.indexOf(valThis) != -1) $("#accordion").append('<li><a href="">'+listUser[letter][i][1]+' '+listUser[letter][i][2]+' ('+listUser[letter][i][3]+')</a></li>');
-		}
-	} else {
-		$("#accordion").html("");
-	}
-});
-$(".showUser").on('click', function() {
-	var letter = $(this).attr("data-target").toLowerCase();
-	var nbuser = listUser[letter].length;
-	$("#accordion").html("");
-	for(i=0; i<nbuser; i++) {
-		$("#accordion").append('<li><a href="">'+listUser[letter][i][1]+' '+listUser[letter][i][2]+' ('+listUser[letter][i][3]+')</a></li>');
-	}
-})
-</script>
+	    {% block page_extra_head %}{% endblock %}
+	</head>
+	<body>
+		<!-- barre nav-->
+		<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+		{% include 'navbar.html' %}
+		</nav><!-- fin barre nav-->
+		{% include 'navbar_collapse.html' %}
+		{% block content %}
+		<div class="container">
+			<main role="main" class="mt-3">
+		        <nav aria-label="breadcrumb" class="breadcrumb d-flex justify-content-between p-0">
+		          <ol class="breadcrumb p-1 pl-4 mb-0">
+		          	{% block breadcrumbs %}
+		                <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+					{% endblock breadcrumbs %}
+					<!--
+		            <li class="breadcrumb-item"><a href="#">Accueil</a></li>
+		            <li class="breadcrumb-item"><a href="#">Vidéos</a></li>
+		            <li class="breadcrumb-item active" aria-current="page">Visionner une vidéo</li>
+		        	-->
+		          </ol>
+		          <div class="p-0">
+		            <a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside">
+		              <svg height="32" class="octicon octicon-grabber" viewBox="0 0 8 16" version="1.1" width="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 4v1H0V4h8zM0 8h8V7H0v1zm0 3h8v-1H0v1z"></path></svg>
+		            </a>
+		          </div>
+		        </nav>
+		        <div class="row">
+		        	<div class="col order-12 order-md-1">
+						<!-- contenu page statique -->
+						<div class="jumbotron">
+							{% block page_content %}
+								<p> Contenu block page_content </p>
+							{% endblock page_content %}
+						</div>
+						<!-- fin contenu page statique -->
+						<h3>{% block video_list_title %}Dernières vidéos déposées{% endblock video_list_title %}</h3>
+						<!-- liste vignette vidéo 4 par ligne -->
+						<div class="row">
+							{% block video_list %}
+							<div class="col-12 col-md-6 col-lg-3 mb-2">
+							{% include "videos/card.html" %}
+		             		</div>
+							<div class="col-12 col-md-6 col-lg-3 mb-2">
+							{% include "videos/card.html" %}
+		              		</div>
+							<div class="col-12 col-md-6 col-lg-3 mb-2">
+							{% include "videos/card.html" %}
+							</div>
+							<div class="col-12 col-md-6 col-lg-3 mb-2">
+							{% include "videos/card.html" %}
+							</div>
+							<div class="col-12 col-md-6 col-lg-3 mb-2">
+							{% include "videos/card.html" %}
+		             		</div>
+							<div class="col-12 col-md-6 col-lg-3 mb-2">
+							{% include "videos/card.html" %}
+		              		</div>
+							<div class="col-12 col-md-6 col-lg-3 mb-2">
+							{% include "videos/card.html" %}
+							</div>
+							<div class="col-12 col-md-6 col-lg-3 mb-2">
+							{% include "videos/card.html" %}
+							</div>
+							<div class="col-12 col-md-6 col-lg-3 mb-2">
+							{% include "videos/card.html" %}
+		             		</div>
+							<div class="col-12 col-md-6 col-lg-3 mb-2">
+							{% include "videos/card.html" %}
+		              		</div>
+							<div class="col-12 col-md-6 col-lg-3 mb-2">
+							{% include "videos/card.html" %}
+							</div>
+							<div class="col-12 col-md-6 col-lg-3 mb-2">
+							{% include "videos/card.html" %}
+							</div>
+							{% endblock video_list %}
+						</div>
+						<div class="hightlight">
+							<div class="d-flex justify-content-end">
+							  <p><a class="btn btn-lg btn-primary" href="#" role="button">Voir toutes les vidéos &raquo;</a></p>
+							</div>
+						</div> <!-- fin hightlight -->
+		        	</div> <!-- fin col order-12 order-md-1 -->
+		        	<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
+					{% include 'aside.html'%}
+					</aside>
+		        </div> <!-- fin row -->
+		    </main>
+		</div> <!-- fin container -->
+		{% endblock content %}
+		<footer class="text-muted bg-dark pt-2">
+		{% include 'footer.html' %}
+		</footer>
+		<script>
+		var listUser = {{LISTOWNER|safe}};
+
+		$('#ownerboxnavbar').keyup(function() {
+			if($(this).val() && $(this).val().length > 2) {
+				var valThis = $(this).val().toLowerCase();
+				var letter = $(this).val().charAt(0).toLowerCase();
+				var nbuser = listUser[letter].length;
+				$("#accordion").html("");
+				for(i=0; i<nbuser; i++) {
+					var lastname = listUser[letter][i][2].toLowerCase();
+					if(lastname.indexOf(valThis) != -1) $("#accordion").append('<li><a href="">'+listUser[letter][i][1]+' '+listUser[letter][i][2]+' ('+listUser[letter][i][3]+')</a></li>');
+				}
+			} else {
+				$("#accordion").html("");
+			}
+		});
+		$(".showUser").on('click', function() {
+			var letter = $(this).attr("data-target").toLowerCase();
+			var nbuser = listUser[letter].length;
+			$("#accordion").html("");
+			for(i=0; i<nbuser; i++) {
+				$("#accordion").append('<li><a href="">'+listUser[letter][i][1]+' '+listUser[letter][i][2]+' ('+listUser[letter][i][3]+')</a></li>');
+			}
+		})
+		</script>
+		{% block more_script %}
+		{% endblock more_script %}
 	</body>
 </html>

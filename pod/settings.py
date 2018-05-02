@@ -35,8 +35,9 @@ INSTALLED_APPS = [
     # Pod Applications
     'pod.main',
     'pod.authentication',
-    'pod.video',
     'pod.filepicker',
+    'pod.video',
+    'pod.completion',
     'pod.chapters',
 ]
 
@@ -77,6 +78,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'theme', TEMPLATE_THEME, 'templates'),
             os.path.join(BASE_DIR, 'main', 'templates'),
             os.path.join(BASE_DIR, 'main', 'templates', 'flatpages'),
+            os.path.join(BASE_DIR, 'completion', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
