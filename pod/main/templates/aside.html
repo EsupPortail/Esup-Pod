@@ -1,3 +1,4 @@
+{% load i18n %}
 {% spaceless %}
 <div class="card card-body">
 <h5 class="card-title">
@@ -5,57 +6,25 @@
 Partager
 </h5>
 <p class="card-text text-center">
-<a target="_blank" href="http://www.facebook.com/sharer.php?u=https%3A//pod.univ-lille1.fr/" class="btn btn-facebook btn-sm" title="Partager sur Facebook"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/F_icon.svg/200px-F_icon.svg" height="24" alt="facebook" /> </a>
-<a target="_blank" href="http://twitter.com/share?url=https%3A//pod.univ-lille1.fr/" class="btn btn-twitter btn-sm" title="Partager sur Twitter"> <img src="https://upload.wikimedia.org/wikipedia/fr/c/c8/Twitter_Bird.svg" height="24" alt="twitter" /> </a>
-<a target="_blank" href="https://plus.google.com/share?url=https%3A//pod.univ-lille1.fr/" class="btn btn-google-plus btn-sm" title="Partager sur Google+"> <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Google_plus.svg" height="24" alt="google" /> </a>
+<a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-facebook btn-sm" title="{% trans "Share on" %} Facebook"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/F_icon.svg/200px-F_icon.svg" height="24" alt="facebook" /> </a>
+<a target="_blank" href="http://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-twitter btn-sm" title="{% trans "Share on" %} Twitter"> <img src="https://upload.wikimedia.org/wikipedia/fr/c/c8/Twitter_Bird.svg" height="24" alt="twitter" /> </a>
+<a target="_blank" href="https://plus.google.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-google-plus btn-sm" title="{% trans "Share on" %} Google+"> <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Google_plus.svg" height="24" alt="google" /> </a>
 </p>
 </div>
 
 <div class="card card-body">
   <h5 class="card-title">
     <svg height="32" class="octicon octicon-repo" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M4 9H3V8h1v1zm0-3H3v1h1V6zm0-2H3v1h1V4zm0-2H3v1h1V2zm8-1v12c0 .55-.45 1-1 1H6v2l-1.5-1.5L3 16v-2H1c-.55 0-1-.45-1-1V1c0-.55.45-1 1-1h10c.55 0 1 .45 1 1zm-1 10H1v2h2v-1h3v1h5v-2zm0-10H2v9h9V1z"></path></svg>
-    Disciplines
-    <a href="#" class="float-right"><svg height="32" class="octicon octicon-arrow-right" viewBox="0 0 10 16" version="1.1" width="20" aria-hidden="true"><path fill-rule="evenodd" d="M10 8L4 3v3H0v4h4v3z"></path></svg></a>
+    {% trans 'Disciplines' %}
+    <a href="#" class="float-right" title="{% trans 'See all' %} {% trans 'Disciplines' %}" ><svg height="32" class="octicon octicon-arrow-right" viewBox="0 0 10 16" version="1.1" width="20" aria-hidden="true"><path fill-rule="evenodd" d="M10 8L4 3v3H0v4h4v3z"></path></svg></a>
   </h5>
   <p class="card-text">
     <form class="form" method="get">
       <select class="form-control" onchange="this.options[this.selectedIndex].getAttribute('data-value') &amp;&amp; (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="discipline">
-          <option value="#" class="btn btn-default btn-sm btn-block">Disciplines...</option>
-          
-              <option value="biologie" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=biologie">Biologie  (51)</option>
-          
-              <option value="chimie" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=chimie">Chimie  (61)</option>
-          
-              <option value="comptabilite" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=comptabilite">Comptabilité  (2)</option>
-          
-              <option value="ecologie" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=ecologie">Ecologie  (12)</option>
-          
-              <option value="genie-des-systemes-industriels" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=genie-des-systemes-industriels">Génie des Systèmes Industriels  (21)</option>
-          
-              <option value="gestion" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=gestion">Gestion  (10)</option>
-          
-              <option value="informatique" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=informatique">Informatique  (278)</option>
-          
-              <option value="ingenierie-mathematiques" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=ingenierie-mathematiques">Ingénierie Mathématiques  (3)</option>
-          
-              <option value="mathematiques" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=mathematiques">Mathématiques  (437)</option>
-          
-              <option value="mecanique-genie-civil-genie-mecanique" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=mecanique-genie-civil-genie-mecanique">Mécanique, Génie civil, Génie mécanique  (20)</option>
-          
-              <option value="micro-nanotechnologies-telecommunications" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=micro-nanotechnologies-telecommunications">Micro-Nanotechnologies, Télécommunications  (10)</option>
-          
-              <option value="nutrition-sciences-des-aliments-et-agroalimentaire" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=nutrition-sciences-des-aliments-et-agroalimentaire">Nutrition Sciences des Aliments et Agroalimentaire  (35)</option>
-          
-              <option value="physique" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=physique">Physique  (613)</option>
-          
-              <option value="sciences-de-leducation" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=sciences-de-leducation">Sciences de l'Education  (890)</option>
-          
-              <option value="sciences-de-la-terre-de-lunivers-et-de-lenvironnement" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=sciences-de-la-terre-de-lunivers-et-de-lenvironnement">Sciences de la Terre, de l'Univers et de l'Environnement  (33)</option>
-          
-              <option value="sciences-humaines-et-sociales" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=sciences-humaines-et-sociales">Sciences Humaines et Sociales  (126)</option>
-          
-              <option value="spectroscopie-avancee-en-chimie" class="btn btn-default btn-sm btn-block" data-value="/videos/?discipline=spectroscopie-avancee-en-chimie">Spectroscopie avancée en chimie  (1)</option>
-          
+          <option value="#" class="btn btn-default btn-sm btn-block">{% trans 'Disciplines' %}...</option>
+          {% for disc in DISCIPLINES %}
+          <option value="{{disc.slug}}" class="btn btn-default btn-sm btn-block" data-value="{% url 'videos' %}?discipline={{disc.slug}}">{{disc.title}}  ({{disc.video_count}})</option>
+          {% endfor %}
       </select>
       <input value="Valider" class="btn btn-default btn-sm sr-only" type="submit">
   </form>

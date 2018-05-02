@@ -7,6 +7,7 @@ from django.db.models.functions import Substr, Lower
 from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import Type
+from pod.video.models import Discipline
 
 import json
 
@@ -33,7 +34,7 @@ def context_settings(request):
 
 def context_navbar(request):
     channels = Channel.objects.filter(
-        visible=True,
+        visible=True, video__is_draft=False
     ).distinct().annotate(
         video_count=Count("video", distinct=True)
     ).prefetch_related(
@@ -43,7 +44,13 @@ def context_navbar(request):
             video_count=Count("video", distinct=True)
         )))
     types = Type.objects.filter(
+        video__is_draft=False
     ).distinct().annotate(video_count=Count("video", distinct=True))
+
+    disciplines = Discipline.objects.filter(
+        video__is_draft=False
+    ).distinct().annotate(video_count=Count("video", distinct=True))
+
     owners_filter_args = {}
     if MENUBAR_HIDE_INACTIVE_OWNERS:
         owners_filter_args['is_active'] = True
@@ -68,4 +75,4 @@ def context_navbar(request):
                 listowner[owner[4]] = [owner]
 
     return {'CHANNELS': channels, 'TYPES': types, 'OWNERS': owners,
-            'LISTOWNER': json.dumps(listowner)}
+            'DISCIPLINES':disciplines, 'LISTOWNER': json.dumps(listowner)}

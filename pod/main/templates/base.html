@@ -22,12 +22,12 @@
             .jumbotron {
                 padding: 1rem 2rem;
             }
-            .card-body {
+            .infinite-item .card-body {
                 padding: 1.1rem;
                 height: 3.5rem;
                 overflow: hidden;
             }
-            .card-header .octicon {
+            .infinite-item .card-header .octicon {
                 height:1rem;
             }
             
@@ -90,7 +90,9 @@
 						{% include "videos/last_videos.html" %}
 		        	</div> <!-- fin col order-12 order-md-1 -->
 		        	<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
-					{% include 'aside.html'%}
+                        {% block page_aside %}
+					       {% include 'aside.html'%}
+                        {% endblock page_aside %}
 					</aside>
 		        </div> <!-- fin row -->
 		    </main>
