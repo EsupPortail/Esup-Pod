@@ -315,6 +315,9 @@ def encode_video(video_id):
                 "create_and_save_thumbnails : %s" % msg)
         else:
             # if file is audio, encoding to m4a for player
+            video_to_encode = Video.objects.get(id=video_id)
+            video_to_encode.is_video = False
+            video_to_encode.save()
             encode_m4a(video_id, video_data["contain_audio"],
                        video_to_encode.video.path, output_dir)
 

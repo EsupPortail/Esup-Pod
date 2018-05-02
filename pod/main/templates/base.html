@@ -30,6 +30,19 @@
             .card-header .octicon {
                 height:1rem;
             }
+            
+            div.card a{
+             overflow:hidden;
+            }
+            div.card a img {
+             transition:-webkit-transform .5s ease;
+             transition:transform .5s ease;
+             transition:transform .5s ease, -webkit-transform .5s ease
+            }
+            div.card a:hover>img {
+             -webkit-transform:scale(1.1);
+             transform:scale(1.1)
+            }
         </style>
 	    <!-- JS -->
 	    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>

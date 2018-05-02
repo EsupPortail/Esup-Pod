@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_protect
 from pod.video.models import Video
 
 # Create your views here.
-VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
+VIDEOS = Video.objects.all() # filter(encoding_in_progress=False, is_draft=False)
 
 
 def videos(request):

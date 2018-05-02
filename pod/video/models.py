@@ -361,6 +361,9 @@ class Video(models.Model):
     encoding_in_progress = models.BooleanField(
         _('Encoding in progress'), default=False, editable=False)
 
+    is_video = models.BooleanField(
+        _('Is Video'), default=True, editable=False)
+
     def save(self, *args, **kwargs):
         newid = -1
         if not self.id:

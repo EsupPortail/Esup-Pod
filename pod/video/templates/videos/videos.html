@@ -2,8 +2,14 @@
 {% load i18n %}
 {% load staticfiles %}
 
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item">{% trans 'Videos' %}</li>{% endblock %}
+
+{% block page_title %}{% trans "Videos" %}{% endblock %}
+
+
 {% block page_content %}
-  <h3>Les vidéos</h3>
+  <h3>{% trans "Videos" %}</h3>
   <div class="row infinite-container">
     {% include "videos/video_list.html" %}
   </div>
