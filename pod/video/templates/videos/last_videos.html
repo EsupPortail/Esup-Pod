@@ -1,0 +1,12 @@
+{% if last_videos %}
+<h3>Dernières vidéos déposées</h3>
+<!-- liste vignette vidéo 4 par ligne -->
+<div class="row">
+{% include "videos/video_list.html" with videos=last_videos %}
+</div>
+<div class="hightlight">
+     <div class="d-flex justify-content-end">
+       <p><a class="btn btn-lg btn-primary" href="#" role="button">Voir toutes les vidéos &raquo;</a></p>
+     </div>
+</div> <!-- fin hightlight -->
+{% endif %}

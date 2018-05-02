@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block page_content %}
+
+  <div class="infinite-container">
+    {% include "videos/video_list.html" %}
+  </div>
+
+  {% if videos.has_next %}
+    <a class="infinite-more-link" href="?page={{ videos.next_page_number }}">More</a>
+  {% endif %}
+
+  <div class="loading" style="display: none;">
+    Loading...
+  </div>
+
+  
+{% endblock page_content %}
+
+{% block more_script %}
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite.min.js' %}"></script>
+<script>
+  var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+      $('.loading').show();
+    },
+    onAfterPageLoad: function ($items) {
+      $('.loading').hide();
+    }
+  });
+</script>
+{% endblock more_script %}

@@ -903,15 +903,15 @@ def create_and_save_thumbnails(source, image_width, video_id):
                 video_to_encode = Video.objects.get(id=video_id)
                 homedir, created = UserDirectory.objects.get_or_create(
                     name='Home',
-                    owner=video_to_encode.owner.user,
+                    owner=video_to_encode.owner,
                     parent=None)
                 videodir, created = UserDirectory.objects.get_or_create(
                     name='%s' % video_to_encode.slug,
-                    owner=video_to_encode.owner.user,
+                    owner=video_to_encode.owner,
                     parent=homedir)
                 thumbnail = CustomImageModel(
                     directory=videodir,
-                    created_by=video_to_encode.owner.user
+                    created_by=video_to_encode.owner
                 )
                 thumbnail.file.save(
                     "%d_%s.png" % (video_id, i),

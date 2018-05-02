@@ -9,6 +9,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.apps import apps
 from pod.video.views import video
+from pod.video.views import videos
 
 if apps.is_installed('pod.filepicker'):
     from pod.filepicker.sites import site as filepicker_site
@@ -20,7 +21,8 @@ urlpatterns = [
     url(r'^i18n/', include('django.conf.urls.i18n')),
 
     # App video
-    url(r'^video/(?P<slug>[\-\d\w]+)/$', video, name='video')
+    url(r'^videos/$', videos, name='videos'),
+    url(r'^video/(?P<slug>[\-\d\w]+)/$', video, name='video'),
 ]
 
 if apps.is_installed('pod.filepicker'):

@@ -2,7 +2,15 @@ from django.utils import translation
 from django.core.management.base import BaseCommand
 from django.core import serializers
 from django.conf import settings
-from pod.authentication.models import Owner
+from django.apps import apps
+try:
+    from pod.authentication.models import Owner
+except ImportError:
+    pass
+    # from django.contrib.auth.models import User as Owner
+
+AUTHENTICATION = True if apps.is_installed('pod.authentication') else False
+
 import os
 
 BASE_DIR = getattr(
@@ -13,7 +21,7 @@ class Command(BaseCommand):
     args = 'Channel Theme Type User Discipline'
     help = 'Import from V1'
     valid_args = ['Channel', 'Theme', 'Type', 'User', 'Discipline', 'FlatPage',
-                  'UserProfile']
+                  'UserProfile', 'Pod']
 
     def add_arguments(self, parser):
         parser.add_argument('import')
@@ -30,7 +38,7 @@ class Command(BaseCommand):
             with open(filepath, "r") as infile:
                 data = serializers.deserialize("json", infile)
                 for obj in data:
-                    if type_to_import == 'UserProfile':
+                    if AUTHENTICATION and type_to_import == 'UserProfile':
                         owner = Owner.objects.get(user_id=obj.object.user_id)
                         owner.auth_type = obj.object.auth_type
                         owner.affiliation = obj.object.affiliation
@@ -68,6 +76,11 @@ class Command(BaseCommand):
             newdata = filedata.replace(
                 "core.userprofile", "authentication.owner"
             ).replace("\"image\":", "\"userpicture\":")
+        if type_to_import == 'Pod':
+            newdata = filedata.replace(
+                "pods.Pod",
+                "video.Video"
+            )
         return newdata
 
 
@@ -79,33 +92,42 @@ from pods.models import Theme
 from pods.models import Type
 from pods.models import User
 from pods.models import Discipline
-from django.core import serializers
+from pods.models import Pod
 from django.contrib.flatpages.models import FlatPage
 
+from django.core import serializers
 jsonserializer = serializers.get_serializer("json")
-json_serailizer = jsonserializer()
+json_serializer = jsonserializer()
 
 with open("Channel.json", "w") as out:
-    json_serailizer.serialize(Channel.objects.all(), stream=out)
+    json_serializer.serialize(Channel.objects.all(), stream=out)
 
 with open("Theme.json", "w") as out:
-    json_serailizer.serialize(Theme.objects.all(), stream=out)
+    json_serializer.serialize(Theme.objects.all(), stream=out)
 
 with open("Type.json", "w") as out:
-    json_serailizer.serialize(Type.objects.all(), stream=out)
+    json_serializer.serialize(Type.objects.all(), stream=out)
 
 with open("User.json", "w") as out:
-    json_serailizer.serialize(User.objects.all(), stream=out)
+    json_serializer.serialize(User.objects.all(), stream=out)
 
 with open("Discipline.json", "w") as out:
-    json_serailizer.serialize(Discipline.objects.all(), stream=out)
+    json_serializer.serialize(Discipline.objects.all(), stream=out)
 
 with open("FlatPage.json", "w") as out:
-    json_serailizer.serialize(FlatPage.objects.all(), stream=out)
+    json_serializer.serialize(FlatPage.objects.all(), stream=out)
 
 from core.models import UserProfile
 with open("UserProfile.json", "w") as out:
-    json_serailizer.serialize(UserProfile.objects.all(), stream=out, fields=(\
+    json_serializer.serialize(UserProfile.objects.all(), stream=out, fields=(\
         'user','auth_type', 'affiliation', 'commentaire', 'image'))
+
+video_fields = ('video', 'allow_donwloading', 'is_360', 'title', 'slug', 
+    'owner', 'date_added', 'date_evt', 'cursus', 'main_lang', 'description', 
+    'duration', 'type', 'tags', 'discipline', 'channel', 'theme', 'is_draft',
+    'is_restricted', 'password')
+with open("Pod.json", "w") as out:
+    json_serializer.serialize(
+        Pod.objects.all(), stream=out, fields=video_fields)
 
 """

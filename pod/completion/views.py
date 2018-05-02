@@ -19,6 +19,8 @@ from pod.completion.forms import OverlayForm
 
 import json
 
+ACTION = ['new', 'save', 'modify', 'delete']
+
 
 @csrf_protect
 def video_completion(request, slug):
@@ -26,7 +28,7 @@ def video_completion(request, slug):
         return HttpResponseForbidden('You need to be authenticated.')
     video = get_object_or_404(Video, slug=slug)
 
-    if request.user != video.owner.user and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         return HttpResponseForbidden('Only the owner can add completion.')
@@ -60,7 +62,7 @@ def video_completion_contributor(request, slug):
     if not request.user.is_authenticated():
         return HttpResponseForbidden()
     video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner.user and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         return HttpResponseForbidden()
@@ -71,15 +73,11 @@ def video_completion_contributor(request, slug):
     list_overlay = video.overlay_set.all()
 
     if request.POST and request.POST.get('action'):
-        try:
-            func = getattr(
-                'pod.filepicker.views',
-                'video_completion_contributor_{0}'.format(
-                    request.POST['action']))
-        except AttributeError:
-            return HttpResponseBadRequest()
-        else:
-            return func(request, video)
+        if request.POST['action'] in ACTION:
+            return eval(
+                'video_completion_contributor_{0}(request, video)'.format(
+                    request.POST['action'])
+            )
     else:
         return render(
             request,
@@ -235,7 +233,7 @@ def video_completion_document(request, slug):
     if not request.user.is_authenticated() or not request.user.is_staff:
         return HttpResponseForbidden()
     video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner.user and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         return HttpResponseForbidden()
@@ -246,14 +244,11 @@ def video_completion_document(request, slug):
     list_overlay = video.overlay_set.all()
 
     if request.POST and request.POST.get('action'):
-        try:
-            func = getattr(
-                'pod.filepicker.views',
-                'video_completion_document_{0}'.format(request.POST['action']))
-        except AttributeError:
-            return HttpResponseBadRequest()
-        else:
-            return func(request, video)
+        if request.POST['action'] in ACTION:
+            return eval(
+                'video_completion_document_{0}(request, video)'.format(
+                    request.POST['action'])
+            )
     else:
         return render(
             request,
@@ -415,7 +410,7 @@ def video_completion_track(request, slug):
     if not request.user.is_authenticated() or not request.user.is_staff:
         return HttpResponseForbidden()
     video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner.user and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         return HttpResponseForbidden()
@@ -426,14 +421,11 @@ def video_completion_track(request, slug):
     list_overlay = video.overlay_set.all()
 
     if request.POST and request.POST.get('action'):
-        try:
-            func = getattr(
-                'pod.filepicker.views',
-                'video_completion_track_{0}'.format(request.POST['action']))
-        except AttributeError:
-            return HttpResponseBadRequest()
-        else:
-            return func(request, video)
+        if request.POST['action'] in ACTION:
+            return eval(
+                'video_completion_track_{0}(request, video)'.format(
+                    request.POST['action'])
+            )
     else:
         return render(
             request,
@@ -588,7 +580,7 @@ def video_completion_overlay(request, slug):
     if not request.user.is_authenticated() or not request.user.is_staff:
         return HttpResponseForbidden()
     video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner.user and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         return HttpResponseForbidden()
@@ -599,14 +591,11 @@ def video_completion_overlay(request, slug):
     list_overlay = video.overlay_set.all()
 
     if request.POST and request.POST.get('action'):
-        try:
-            func = getattr(
-                'pod.filepicker.views',
-                'video_completion_overlay_{0}'.format(request.POST['action']))
-        except AttributeError:
-            return HttpResponseBadRequest()
-        else:
-            return func(request, video)
+        if request.POST['action'] in ACTION:
+            return eval(
+                'video_completion_overlay_{0}(request, video)'.format(
+                    request.POST['action'])
+            )
     else:
         return render(
             request,
