@@ -1,7 +1,6 @@
 from django.contrib import messages
 from django.http import HttpResponse
 from django.http import HttpResponseForbidden
-from django.http import HttpResponseBadRequest
 from django.template.loader import render_to_string
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
