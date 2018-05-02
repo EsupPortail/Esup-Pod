@@ -22,7 +22,7 @@ class CustomFileModelTestCase(TestCase):
             name='testfile.txt',
             content=open('./pod/filepicker/tests/testfile.txt', 'rb').read(),
             content_type='text/plain')
-        home = UserDirectory.objects.create(name='Home', owner=test)
+        home = UserDirectory.objects.get(name='Home', owner=test)
         CustomFileModel.objects.create(
             name='testfile',
             description='testfile',
@@ -55,6 +55,7 @@ class CustomFileModelTestCase(TestCase):
         self.assertTrue(isinstance(file.date_modified, datetime))
         self.assertEqual(file.created_by, user)
         self.assertEqual(file.modified_by, user)
+        self.assertEqual(file.directory.name, 'Home')
         if user.owner:
             self.assertTrue('files/' + user.owner.hashkey +
                             '/Home/testfile' in file.file.path)
@@ -74,6 +75,7 @@ class CustomFileModelTestCase(TestCase):
         self.assertTrue(isinstance(file.date_modified, datetime))
         self.assertEqual(file.created_by, user)
         self.assertEqual(file.modified_by, user)
+        self.assertEqual(file.directory.name, 'Home')
         if user.owner:
             self.assertTrue('files/' + user.owner.hashkey +
                             '/Home/testfile' in file.file.path)
@@ -107,7 +109,7 @@ class CustomImageModelTestCase(TestCase):
             name='testimage.jpg',
             content=open('./pod/filepicker/tests/testimage.jpg', 'rb').read(),
             content_type='image/jpeg')
-        home = UserDirectory.objects.create(name='Home', owner=test)
+        home = UserDirectory.objects.get(name='Home', owner=test)
         CustomImageModel.objects.create(
             name='testimage',
             description='testimage',
@@ -140,6 +142,7 @@ class CustomImageModelTestCase(TestCase):
         self.assertTrue(isinstance(file.date_modified, datetime))
         self.assertEqual(file.created_by, user)
         self.assertEqual(file.modified_by, user)
+        self.assertEqual(file.directory.name, 'Home')
         if user.owner:
             self.assertTrue('files/' + user.owner.hashkey +
                             '/Home/testimage' in file.file.path)
@@ -159,6 +162,7 @@ class CustomImageModelTestCase(TestCase):
         self.assertTrue(isinstance(file.date_modified, datetime))
         self.assertEqual(file.created_by, user)
         self.assertEqual(file.modified_by, user)
+        self.assertEqual(file.directory.name, 'Home')
         if user.owner:
             self.assertTrue('files/' + user.owner.hashkey +
                             '/Home/testimage' in file.file.path)
@@ -187,7 +191,7 @@ class UserDirectoryTestCase(TestCase):
 
     def setUp(self):
         test = User.objects.create(username='test')
-        home = UserDirectory.objects.create(name='Home', owner=test)
+        home = UserDirectory.objects.get(name='Home', owner=test)
         UserDirectory.objects.create(name='Images', owner=test, parent=home)
         UserDirectory.objects.create(name='Documents', owner=test, parent=home)
 
