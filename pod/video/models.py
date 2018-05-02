@@ -364,6 +364,12 @@ class Video(models.Model):
     is_video = models.BooleanField(
         _('Is Video'), default=True, editable=False)
 
+    class Meta:
+        ordering = ['-date_added', '-id']
+        get_latest_by = 'date_added'
+        verbose_name = _("video")
+        verbose_name_plural = _("videos")
+
     def save(self, *args, **kwargs):
         newid = -1
         if not self.id:

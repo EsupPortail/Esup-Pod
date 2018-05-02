@@ -142,7 +142,7 @@
         <h3><svg height="32" class="octicon octicon-versions" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M13 3H7c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zm-1 8H8V5h4v6zM4 4h1v1H4v6h1v1H4c-.55 0-1-.45-1-1V5c0-.55.45-1 1-1zM1 5h1v1H1v4h1v1H1c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1z"></path></svg>&nbsp;{% trans 'Types of videos'%}</h3>
         <ul class="row list-unstyled">
             {% for type in TYPES %}
-                <li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1 col-12 text-left text-truncate" href="#{{type.title}}" title="{{type.title}} ({{type.video_count}})">
+                <li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1 col-12 text-left text-truncate" href="{% url 'videos' %}?type={{type.slug}}" title="{{type.title}} ({{type.video_count}})">
                     {% if type.icon %}<img src="{{type.icon.url}}" alt="{{type.title}}" class="octicon" style="max-height:32px; max-width:32px;"/>{% else %}<svg height="32" class="octicon octicon-file-media" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M6 5h2v2H6V5zm6-.5V14c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V2c0-.55.45-1 1-1h7.5L12 4.5zM11 5L8 2H1v11l3-5 2 4 2-2 3 3V5z"></path></svg>{% endif %}{{type.title}} ({{type.video_count}})</a> </li>
             {% endfor %}
         </ul>

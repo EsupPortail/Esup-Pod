@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load tagging_tags %}
 {% spaceless %}
 <div class="card card-body">
 <h5 class="card-title">
@@ -35,91 +36,16 @@ Partager
 <div class="card card-body">
   <h5 class="card-title">
     <svg height="32" class="octicon octicon-tag" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M7.73 1.73C7.26 1.26 6.62 1 5.96 1H3.5C2.13 1 1 2.13 1 3.5v2.47c0 .66.27 1.3.73 1.77l6.06 6.06c.39.39 1.02.39 1.41 0l4.59-4.59a.996.996 0 0 0 0-1.41L7.73 1.73zM2.38 7.09c-.31-.3-.47-.7-.47-1.13V3.5c0-.88.72-1.59 1.59-1.59h2.47c.42 0 .83.16 1.13.47l6.14 6.13-4.73 4.73-6.13-6.15zM3.01 3h2v2H3V3h.01z"></path></svg> 
-    Mots clés
+    {% trans 'Tags' %}
     <a href="#" class="float-right"><svg height="32" class="octicon octicon-arrow-right" viewBox="0 0 10 16" version="1.1" width="20" aria-hidden="true"><path fill-rule="evenodd" d="M10 8L4 3v3H0v4h4v3z"></path></svg></a>
   </h5>
   <p class="card-text">
-    <a href="/videos/?tag=physique">
-        <span style="font-size:16px">physique</span>
-        <span class="badge">256</span>
+    {% tag_cloud_for_model video.Video as tagscloud with steps=16 min_count=30 distribution=log %}
+    {% for tag in tagscloud %}
+    <a href="{% url 'videos' %}?tag={{ tag.name|urlencode }}" style="font-size:{{ tag.font_size }}px" title="{{tag.name}}" class="badge">
+        {{tag.name}}&nbsp;<span class="badge badge-pill badge-info">{{tag.count}}</span>
     </a>
-    <a href="/videos/?tag=exo7">
-        <span style="font-size:15px">exo7</span>
-        <span class="badge">195</span>
-    </a>
-    <a href="/videos/?tag=math">
-        <span style="font-size:14px">math</span>
-        <span class="badge">142</span>
-    </a>
-    <a href="/videos/?tag=ga3p">
-        <span style="font-size:13px">ga3p</span>
-        <span class="badge">100</span>
-    </a>
-    <a href="/videos/?tag=video">
-        <span style="font-size:13px">video</span>
-        <span class="badge">96</span>
-    </a>
-    <a href="/videos/?tag=cours">
-        <span style="font-size:13px">cours</span>
-        <span class="badge">95</span>
-    </a>
-    <a href="/videos/?tag=ipm">
-        <span style="font-size:13px">ipm</span>
-        <span class="badge">95</span>
-    </a>
-    <a href="/videos/?tag=exercice">
-        <span style="font-size:13px">exercice</span>
-        <span class="badge">88</span>
-    </a>
-    <a href="/videos/?tag=master">
-        <span style="font-size:13px">master</span>
-        <span class="badge">80</span>
-    </a>
-
-    <a href="/videos/?tag=web">
-        <span style="font-size:12px">web</span>
-        <span class="badge">71</span>
-    </a>
-    <a href="/videos/?tag=algebre">
-        <span style="font-size:12px">algebre</span>
-        <span class="badge">66</span>
-    </a>
-    <a href="/videos/?tag=physique-a-main-levee">
-        <span style="font-size:12px">physique a main levee</span>
-        <span class="badge">61</span>
-    </a>
-    <a href="/videos/?tag=tpe">
-        <span style="font-size:12px">tpe</span>
-        <span class="badge">61</span>
-    </a>
-    <a href="/videos/?tag=informatique">
-        <span style="font-size:12px">informatique</span>
-        <span class="badge">55</span>
-    </a>
-    <a href="/videos/?tag=filmer-le-travail">
-        <span style="font-size:12px">filmer le travail</span>
-        <span class="badge">50</span>
-    </a>
-    <a href="/videos/?tag=css">
-        <span style="font-size:12px">css</span>
-        <span class="badge">45</span>
-    </a>
-    <a href="/videos/?tag=analyse">
-        <span style="font-size:12px">analyse</span>
-        <span class="badge">44</span>
-    </a>
-    <a href="/videos/?tag=accompagnement">
-        <span style="font-size:12px">accompagnement</span>
-        <span class="badge">41</span>
-    </a>
-    <a href="/videos/?tag=pression">
-        <span style="font-size:12px">pression</span>
-        <span class="badge">40</span>
-    </a>
-    <a href="/videos/?tag=e-services">
-        <span style="font-size:12px">e-services</span>
-        <span class="badge">38</span>
-    </a>
+    {% endfor %}
   </p>
 </div>
 {% endspaceless %}

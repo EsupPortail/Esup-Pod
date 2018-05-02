@@ -47,6 +47,7 @@
 	    <!-- JS -->
 	    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
 		<script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/js.cookie.js' %}"></script>
 
 	    <title>{{ TITLE_SITE }} - {% block page_title %}{% endblock %}</title>
 
@@ -101,6 +102,7 @@
 		<footer class="text-muted bg-dark pt-2">
 		{% include 'footer.html' %}
 		</footer>
+        
 		<script>
 		var listUser = {{LISTOWNER|safe}};
 
@@ -126,6 +128,25 @@
 				$("#accordion").append('<li><a href="">'+listUser[letter][i][1]+' '+listUser[letter][i][2]+' ('+listUser[letter][i][3]+')</a></li>');
 			}
 		})
+
+        $(document).ready(function () {
+            //when a group is shown, save it as the active accordion group
+            $("#collapseAside").on('shown.bs.collapse', function () {
+                Cookies.set('activeCollapseAside', "open");
+                //alert("Cookie");
+            });
+            $("#collapseAside").on('hidden.bs.collapse', function () {
+                Cookies.remove('activeCollapseAside');
+            });
+            var last = Cookies.get('activeCollapseAside');
+            if (last != null) {
+                //show the account_last visible group
+                $("#collapseAside").addClass("show");
+            } else {
+                $("#collapseAside").removeClass("show");
+            }
+        });
+
 		</script>
 		{% block more_script %}
 		{% endblock more_script %}

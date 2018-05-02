@@ -14,6 +14,13 @@ VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
 
 def videos(request):
     videos_list = VIDEOS
+
+    if request.GET.getlist('type'):
+        videos_list = videos_list.filter(type__slug__in=request.GET.getlist('type'))
+
+    if request.GET.getlist('discipline'):
+        videos_list = videos_list.filter(discipline__slug__in=request.GET.getlist('discipline'))
+
     page = request.GET.get('page', 1)
     paginator = Paginator(videos_list, 12)
     try:
