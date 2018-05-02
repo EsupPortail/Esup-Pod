@@ -8,7 +8,7 @@ from pod.filepicker.models import CustomFileModel
 from pod.filepicker.models import CustomImageModel
 from pod.filepicker.models import UserDirectory
 
-import pod.filepicker
+from pod.filepicker.sites import site
 import os
 
 
@@ -138,13 +138,14 @@ class CustomImagePicker(ImagePickerBase):
         return super(CustomImagePicker, self).get_dirs(user, directory)
 
 
-pod.filepicker.site.register(
+site.register(
     CustomFileModel,
     CustomFilePicker,
     name='file',
     structure=UserDirectory,
     configure=UserDirectoryForm)
-pod.filepicker.site.register(
+
+site.register(
     CustomImageModel,
     CustomImagePicker,
     name='img',

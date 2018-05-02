@@ -5,12 +5,17 @@ Override File and Image models from file_picker
 django-file-picker : 0.9.1.
 """
 from django.core.exceptions import ValidationError
+from django.db.models.signals import post_save
 from django.db import models
+from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.contrib.auth.models import User as Owner
 
 import os
+import logging
+logger = logging.getLogger(__name__)
+
 
 
 class UserDirectory(models.Model):
@@ -45,6 +50,16 @@ class UserDirectory(models.Model):
         else:
             return os.path.join(self.name, path)
 
+@receiver(post_save, sender=Owner)
+def create_owner_directory(sender, instance, created, **kwargs):
+    if created:
+        try:
+            UserDirectory.objects.create(owner=instance, name='Home')
+        except Exception:
+            msg = '\n Create owner directory ***** Error:{0}'.format(e)
+            msg += '\n{0}'.traceback.format_exc()
+            logger.error(msg)
+            print(msg)
 
 def get_upload_path(instance, filename):
     if instance.created_by.owner:
@@ -93,6 +108,8 @@ class BaseFileModel(models.Model):
             pass
         path, ext = os.path.splitext(self.file.name)
         self.file_type = ext.lstrip('.').upper()
+        if not self.name or self.name == "":
+            self.name = os.path.basename(path)
         return super(BaseFileModel, self).save(**kwargs)
 
     def __str__(self):
