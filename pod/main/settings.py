@@ -113,7 +113,7 @@ TITLE_SITE = 'Pod'
 ##
 # CKeditor settings
 #
-CKEDITOR_BASEPATH = os.path.join(STATIC_URL, 'ckeditor', "/")
+# CKEDITOR_BASEPATH = os.path.join(STATIC_URL, 'ckeditor', "/")
 
 ##
 # Main menu settings:

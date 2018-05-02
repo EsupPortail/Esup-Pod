@@ -81,6 +81,7 @@ class ThemeAdmin(admin.ModelAdmin):
     class Media:
         js = ('js/jquery.tools.min.js',)
 
+
 class EncodingVideoAdmin(admin.ModelAdmin):
     list_display = ('video', 'get_resolution', 'encoding_format')
 
@@ -110,6 +111,7 @@ class EncodingLogAdmin(admin.ModelAdmin):
 class EncodingStepAdmin(admin.ModelAdmin):
     list_display = ('video',)
     readonly_fields = ('video', 'num_step', 'desc_step')
+
 
 admin.site.register(Channel, ChannelAdmin)
 admin.site.register(Type, TypeAdmin)
