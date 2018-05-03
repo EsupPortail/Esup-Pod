@@ -488,6 +488,17 @@ class Video(models.Model):
     def get_thumbnail_card(self):
         return '<img class="card-img-top" src="%s" alt="%s" />' % (self.get_thumbnail_url(), self.title)
 
+    def get_playlist_master(self):
+        try:
+            return PlaylistVideo.objects.get(name="playlist", video=self, encoding_format="application/x-mpegURL")
+        except PlaylistVideo.DoesNotExist:
+            return None
+
+    def get_video_m4a(self):
+        try:
+            return EncodingAudio.objects.get(name="audio", video=self, encoding_format="video/mp4")
+        except EncodingAudio.DoesNotExist:
+            return None
 
 def remove_video_file(video):
     if video.video:
