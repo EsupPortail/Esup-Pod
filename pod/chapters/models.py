@@ -1,8 +1,20 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db import connection
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
 from pod.video.models import Video
+
+
+def get_nextautoincrement(model):
+    cursor = connection.cursor()
+    cursor.execute(
+        'SELECT Auto_increment FROM information_schema.tables ' +
+        'WHERE table_name="{0}";'.format(model._meta.db_table)
+    )
+    row = cursor.fetchone()
+    cursor.close()
+    return row[0]
 
 
 class Chapter(models.Model):
@@ -33,7 +45,8 @@ class Chapter(models.Model):
 
     def clean(self):
         msg = list()
-        msg = self.verify_title_items() + self.verify_time() + self.verify_overlap()
+        msg = self.verify_title_items() + self.verify_time() 
+        msg = msg + self.verify_overlap()
         if len(msg) > 0:
             raise ValidationError(msg)
 
@@ -73,9 +86,9 @@ class Chapter(models.Model):
         if len(list_chapter) > 0:
             for element in list_chapter:
                 if not ((self.time_start < element.time_start and
-                        self.time_end <= element.time_start) or
+                         self.time_end <= element.time_start) or
                         (self.time_start >= element.time_end and
-                        self.time_end > element.time_end)):
+                         self.time_end > element.time_end)):
                     msg.append(_('There is an overlap with ' +
                                  'the chapter {0}, '.format(element.title) +
                                  'please change time start and/or ' +
@@ -93,7 +106,7 @@ class Chapter(models.Model):
                 try:
                     newid = Chapter.objects.latest('id').id
                     newid += 1
-                except:
+                except Exception:
                     newid = 1
         else:
             newid = self.id
