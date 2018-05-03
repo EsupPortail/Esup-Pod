@@ -6,6 +6,8 @@ class ChapterAdmin(admin.ModelAdmin):
 
     list_display = ('title', 'video',)
     list_display_links = ('title',)
+
+
 admin.site.register(Chapter, ChapterAdmin)
 
 

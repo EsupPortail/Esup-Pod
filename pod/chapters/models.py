@@ -29,6 +29,7 @@ class Chapter(models.Model):
         verbose_name = _('Chapter')
         verbose_name_plural = _('Chapters')
         ordering = ['time_start']
+        unique_together = ('title', 'time_start', 'time_end', )
 
     def clean(self):
         msg = list()

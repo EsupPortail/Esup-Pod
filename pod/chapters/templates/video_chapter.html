@@ -5,7 +5,12 @@
 {% block page_title %}{% trans 'Chapter video' %} "{{video.title}}" {% endblock page_title %}
 {% block page_extra_head %}
 	<!-- media -->
+	<link rel="stylesheet" href="{% static 'css/filepicker.overlay.css' %}"/>
 	<link rel="stylesheet" href="{% static 'css/chapters.css' %}"/>
+	<script src="{% static 'js/jquery.tools.min.js' %}"></script>
+	<script src="{% static 'js/main.js' %}"></script>
+	<script src="{% static 'js/ajaxupload.js' %}"></script>
+    <script src="{% static 'js/jquery.filepicker.js' %}"></script>
 {% endblock page_extra_head %}
 {% block content %}
 	<article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
@@ -32,6 +37,9 @@
 						{% if form_chapter %}
 							{% include 'chapter/form_chapter.html' with form_chapter=form_chapter %}
 						{% endif %}
+						{% if form_import %}
+							{% include 'chapter/form_chapter_import.html' with form_import=form_import %}
+						{% endif %}
 					</span>
 					<span id="list_chapter">
 						{% include 'chapter/list_chapter.html' %}
@@ -40,9 +48,6 @@
 						{% csrf_token %}
 						<input type="hidden" name="action" value="new"/>
 						<input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-info"/>
-					</form>
-					<form id="form_vtt" action="{% url 'get_chapter_vtt' slug=video.slug %}" method="GET">
-						<input type="submit" id="get_chapter_vtt" value="{% trans 'Get the VTT file' %}" class="btn btn-info"/>
 					</form>
 				</div>
 				<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">

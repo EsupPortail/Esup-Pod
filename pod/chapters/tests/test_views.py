@@ -4,25 +4,18 @@ Unit tests for chapters views
 from django.apps import apps
 from django.test import TestCase
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from pod.video.models import Video
 from pod.chapters.models import Chapter
-if apps.is_installed('pod.authentication'):
-    AUTH = True
-    from django.contrib.auth.models import User
-    from pod.authentication.models import Owner
-else:
-    AUTH = False
-    from django.contrib.auth.models import User
 
 
 class ChapterViewsTestCase(TestCase):
 
     def setUp(self):
-        user = User.objects.create(username='test', password='azerty')
-        user.set_password('hello')
-        user.save()
-        owner = Owner.objects.get(user__username='test')
-        video = Video.objects.create(
+        owner = User.objects.create(username='test', password='azerty')
+        owner.set_password('hello')
+        owner.save()
+        Video.objects.create(
             title='videotest',
             owner=owner,
             video='test.mp4',

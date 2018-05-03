@@ -1,28 +1,27 @@
+import os
+import time
+import datetime
+
 from django.conf import settings
 from django.core.files import File
 from django.apps import apps
 from django.utils import timezone
 from webvtt import WebVTT, Caption
-from datetime import datetime
+from pod.chapters.models import Chapter
 if apps.is_installed('pod.authentication'):
     AUTH = True
-    from pod.authentication.models import Owner
-else:
-    from django.contrib.auth.models import User
 if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
     from pod.filepicker.models import CustomFileModel
     from pod.filepicker.models import UserDirectory
 
-import os
-
 
 def chapter_to_vtt(list_chapter, video):
     webvtt = WebVTT()
     for chapter in list_chapter:
-        start = datetime.utcfromtimestamp(
+        start = datetime.datetime.utcfromtimestamp(
             chapter.time_start).strftime('%H:%M:%S.%f')[:-3]
-        end = datetime.utcfromtimestamp(
+        end = datetime.datetime.utcfromtimestamp(
             chapter.time_end).strftime('%H:%M:%S.%f')[:-3]
         caption = Caption(
             '{0}'.format(start),
@@ -63,17 +62,39 @@ def chapter_to_vtt(list_chapter, video):
             file=file)
         os.remove(file_path)
         path = os.path.join(
-        	settings.MEDIA_URL, 
-        	'files', 
-        	video.owner.hashkey, 
-        	'Home', 
-        	file.name)
+            settings.MEDIA_URL,
+            'files',
+            video.owner.hashkey,
+            'Home',
+            file.name)
     else:
         path = os.path.join(
-        	settings.MEDIA_URL, 
-        	'files', 
-        	video.owner.username, 
-        	'Home', 
-        	file.name)
+            settings.MEDIA_URL,
+            'files',
+            video.owner.username,
+            'Home',
+            file.name)
 
     return path
+
+
+def vtt_to_chapter(vtt, video):
+    Chapter.objects.filter(video=video).delete()
+    if FILEPICKER:
+        webvtt = WebVTT().read(vtt.file.path)
+    for caption in webvtt:
+        time_start = time.strptime(caption.start.split('.')[0], '%H:%M:%S')
+        time_start = datetime.timedelta(
+            hours=time_start.tm_hour,
+            minutes=time_start.tm_min,
+            seconds=time_start.tm_sec).total_seconds()
+        time_end = time.strptime(caption.end.split('.')[0], '%H:%M:%S')
+        time_end = datetime.timedelta(
+            hours=time_end.tm_hour,
+            minutes=time_end.tm_min,
+            seconds=time_end.tm_sec).total_seconds()
+        Chapter.objects.create(
+            video=video,
+            title=caption.text,
+            time_start=int(time_start),
+            time_end=int(time_end))
