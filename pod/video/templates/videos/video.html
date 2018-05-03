@@ -135,12 +135,15 @@
 
 {% block more_script %}
 <script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/lang/fr.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
 <script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
 <script src="{% static 'js/videojs-contrib-quality-levels.min.js' %}"></script>
 <script src="{% static 'js/videojs-hls-quality-selector.min.js' %}"></script>
 <script>
 var options = {
-  notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)"
+  notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
+  language: "fr" //en or nl
 }
 var player = videojs('pod-video', options);
 
