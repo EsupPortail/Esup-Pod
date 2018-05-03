@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+
+{% block breadcrumbs %}{{ block.super }} 
+{% if theme %}
+<li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+{% for t in theme.get_all_parents reversed %}
+{% if t is not theme %}
+<li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
+{% endif %}
+{% endfor %}
+<li class="breadcrumb-item active" aria-current="page">{{theme.title}}</li>
+{% else %}
+<li class="breadcrumb-item active" aria-current="page">{{channel.title}}</li>
+{% endif %}
+{% endblock %}
+
+{% block page_title %}{{channel.title}}{% endblock %}
+
+
+{% block page_content %}
+
+  <h3>{{channel.title}}</h3>
+  
+  
+  <div id="treeview">
+    <ul class="list-group">
+
+    </ul>
+  </div>
+
+
+
+  <!--
+   for t in theme.get_all_children %}
+     if t is not theme %}
+    <a href=" url 'theme' slug_c=channel.slug slug_t=t.slug%}" title="t.title}}" class="ml-t.get_all_parents|length}}">t.title}}</a><br/>
+     endif %}
+   endfor %}
+  -->
+  <div class="row infinite-container">
+    {% include "videos/video_list.html" %}
+  </div>
+
+  {% if videos.has_next %}
+    <a class="infinite-more-link" href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{%endif%}page={{ videos.next_page_number }}">More</a>
+  {% endif %}
+
+  <div class="loading" style="display: none;">
+    Loading...
+  </div>
+
+{% endblock page_content %}
+
+{% block page_aside %}
+    {% include 'aside.html'%}
+{% endblock page_aside %}
+
+
+{% block more_script %}
+<script type="text/javascript">
+  var listTheme = {{theme.get_all_tree_children|safe}};
+  $.each(listTheme, function(i, val) {
+    var link = '<a href="{% url 'channel' slug_c=channel.slug %}'+val.slug+'" title="'+val.title+'">'+val.title+'</a>';
+    var child = val.child;
+    var count = Object.keys(child).length;
+    var showmore = '<span class="badge badge-light">-</span>';
+    if(count>0) {
+      showmore = '<a href="#" data-id="'+i+'" class="showmore badge badge-light">+</a>';
+    }
+    $("#treeview .list-group").append("<li>"+showmore+" "+link+" - "+i+"</li>");
+  });
+  $(".showmore").on('click', function(){
+    var themetoshow = listTheme[$(this).data("id")].child;
+    var list = "<ul>";
+    $.each(themetoshow, function(i, val) {
+      var link = '<a href="{% url 'channel' slug_c=channel.slug %}'+val.slug+'" title="'+val.title+'">'+val.title+'</a>';
+      var child = val.child;
+      var count = Object.keys(child).length;
+      var showmore = '<span class="badge badge-light">-</span>';
+      if(count>0) {
+        showmore = '<a href="#" data-id="'+i+'" class="showmore badge badge-light">+</a>';
+      }
+      list+="<li>"+link+"</li>";
+    });
+    list += "</ul>";
+    $(this).parent('li').append(list);
+    
+    return false;
+  });
+  </script>
+{% endblock more_script %}

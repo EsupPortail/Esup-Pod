@@ -7,11 +7,37 @@ from django.core.exceptions import SuspiciousOperation
 from django.views.decorators.csrf import csrf_protect
 
 from pod.video.models import Video
+from pod.video.models import Channel
+from pod.video.models import Theme
 from tagging.models import TaggedItem
 
 # Create your views here.
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
 
+def channel(request, slug_c, slug_t=None):
+    channel = get_object_or_404(Channel, slug=slug_c)
+
+    videos_list = VIDEOS.filter(channel=channel)
+
+    theme = None
+    if slug_t:
+        theme = get_object_or_404(Theme, slug=slug_t)
+
+    page = request.GET.get('page', 1)
+    full_path = ""
+    if page:
+        full_path = request.get_full_path().replace(
+            "?page=%s" % page, "").replace("&page=%s" % page, "")
+    paginator = Paginator(videos_list, 12)
+    try:
+        videos = paginator.page(page)
+    except PageNotAnInteger:
+        videos = paginator.page(1)
+    except EmptyPage:
+        videos = paginator.page(paginator.num_pages)
+
+    return render(request, 'channel/channel.html',
+        {'channel':channel, 'videos': videos, 'theme':theme})
 
 def videos(request):
     videos_list = VIDEOS

@@ -1,28 +1,6 @@
 {% load i18n %}
 {% load tagging_tags %}
 {% spaceless %}
-<style>
-  #filterType div.collapse:not(.show), #filterDiscipline div.collapse:not(.show), #filterTag div.collapse:not(.show) {
-      height: 148px !important;
-      overflow: hidden;
-    
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;  
-  }
-
-  #filterType div.collapsing, #filterDiscipline div.collapsing, #filterTag  div.collapsing{
-      min-height: 148px !important;
-  }
-
-  #filterType a.collapsed:after, #filterDiscipline a.collapsed:after, #filterTag a.collapsed:after {
-      content: '+';
-  }
-
-  #filterType a:not(.collapsed):after, #filterDiscipline a:not(.collapsed):after, #filterTag  a:not(.collapsed):after {
-      content: '-';
-  }
-</style>
 <div class="card card-body">
 <h4 class="card-title">{% trans "Filters"%}</h4>
 <p class="card-text">
@@ -33,28 +11,6 @@
         <input placeholder="{% trans "Search" %}" id="ownerbox" type="text" class="form-control">
     </div>
     <div class="form-group navList owners" id="collapseFilterOwner">
-        <!-- TODO -->
-        <script>
-          var listUserChecked = {{owners|safe}};
-          $('#ownerbox').keyup(function() {
-            if($(this).val() && $(this).val().length > 2) {
-              var valThis = $(this).val().toLowerCase();
-              var letter = valThis.charAt(0);
-              var nbuser = listUser[letter].length;
-              /*$("#accordion").html("");*/
-              $("#collapseFilterOwner .added").prop('checked', false).remove();
-              for(i=0; i<nbuser; i++) {
-                var lastname = listUser[letter][i]["last_name"].toLowerCase();
-                if(lastname.indexOf(valThis) != -1 && listUserChecked.indexOf(listUser[letter][i]["username"])==-1 ) {
-                  var chekboxhtml = '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="'+listUser[letter][i]["username"]+'" id="id'+listUser[letter][i]["username"]+'"><label class="form-check-label" for="id'+listUser[letter][i]["username"]+'">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</label></div>';
-                  $("#collapseFilterOwner").append(chekboxhtml);
-                }
-              }
-            } else {
-              $("#collapseFilterOwner .added").prop('checked', false).remove();
-            }
-          });
-        </script>
         {% for owner in OWNERS %}
         {% if owner.username in owners %}
         <div class="form-check">
@@ -140,4 +96,25 @@
     </form>
 </p>
 </div>
+<script>
+var listUserChecked = {{owners|safe}};
+$('#ownerbox').keyup(function() {
+  if($(this).val() && $(this).val().length > 2) {
+    var valThis = $(this).val().toLowerCase();
+    var letter = valThis.charAt(0);
+    var nbuser = listUser[letter].length;
+    /*$("#accordion").html("");*/
+    $("#collapseFilterOwner .added").prop('checked', false).remove();
+    for(i=0; i<nbuser; i++) {
+      var lastname = listUser[letter][i]["last_name"].toLowerCase();
+      if(lastname.indexOf(valThis) != -1 && listUserChecked.indexOf(listUser[letter][i]["username"])==-1 ) {
+        var chekboxhtml = '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="'+listUser[letter][i]["username"]+'" id="id'+listUser[letter][i]["username"]+'"><label class="form-check-label" for="id'+listUser[letter][i]["username"]+'">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</label></div>';
+        $("#collapseFilterOwner").append(chekboxhtml);
+      }
+    }
+  } else {
+    $("#collapseFilterOwner .added").prop('checked', false).remove();
+  }
+});
+</script>
 {% endspaceless %}

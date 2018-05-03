@@ -9,16 +9,16 @@
             {% for channel in CHANNELS %}
                 {% if channel.themes.all.count > 0 %}
                     <li class="col-12 dropdown-submenu">
-                         - &nbsp;<a class="" href="#{{channel.title}}" title="{{channel.title}}">{{channel.title}} ({{channel.video_count}})</a>
+                         - &nbsp;<a class="" href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">{{channel.title}} ({{channel.video_count}})</a>
                         <ul class="dropdown-menu col-12">
                             {% for theme in channel.themes.all %}
-                                <li class="col-12" > <a href="#{{theme.title}}" title="{{theme.title}}">{{theme.title}} ({{theme.video_count}})</a> </li>
+                                <li class="col-12" > <a href="{% url 'theme' slug_c=channel.slug slug_t=theme.slug%}" title="{{theme.title}}">{{theme.title}} ({{theme.video_count}})</a> </li>
                             {% endfor %}
                         </ul>
                     </li>
                 {% else %}
                     <li class="col-12">
-                     - &nbsp;<a class="" href="#{{channel.title}}" title="{{channel.title}}">{{channel.title}} ({{channel.video_count}})</a>
+                     - &nbsp;<a class="" href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">{{channel.title}} ({{channel.video_count}})</a>
                     </li>
                 {% endif %}
             {% empty %}

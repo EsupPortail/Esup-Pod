@@ -10,6 +10,7 @@ from django.contrib.auth.models import Group
 from django.apps import apps
 from django.urls import reverse
 from django.core.exceptions import ValidationError
+from django.contrib.sites.shortcuts import get_current_site
 from django.dispatch import receiver
 # from django.db.models.signals import post_save
 # from django.db.models.signals import pre_save
@@ -26,6 +27,7 @@ from tagging.fields import TagField
 import os
 import time
 import unicodedata
+import json
 
 import logging
 logger = logging.getLogger(__name__)
@@ -82,6 +84,8 @@ ENCODING_CHOICES = getattr(
         ("1080p", "1080p"),
         ("playlist", "playlist")
     ))
+DEFAULT_THUMBNAIL = getattr(
+    settings, 'DEFAULT_THUMBNAIL', 'img/default.png')
 # FUNCTIONS
 
 
@@ -184,7 +188,7 @@ class Channel(models.Model):
 
 
 class Theme(models.Model):
-    parentId = models.ForeignKey('self', null=True, blank=True)
+    parentId = models.ForeignKey('self', null=True, blank=True, related_name="children")
     title = models.CharField(_('Title'), max_length=100, unique=True)
     slug = models.SlugField(
         _('Slug'), unique=True, max_length=100,
@@ -210,6 +214,34 @@ class Theme(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Theme, self).save(*args, **kwargs)
+
+    def get_all_children(self):
+        children = {} #[self]
+        try:
+            child_list = self.children.all()
+        except AttributeError:
+            return children
+        for child in child_list:
+            children["%s" %child.id] = {"title":"%s" %child.title, "slug":"%s" %child.slug, "child":child.get_all_children()}
+            #children.extend(child.get_all_children())
+        return children
+
+    def get_all_tree_children(self):
+        return json.dumps(self.get_all_children())
+
+    def get_all_parents(self):
+        parents = [self]
+        if self.parentId is not None:
+            parent = self.parentId
+            parents.extend(parent.get_all_parents())
+        return parents
+
+    def clean(self):
+        if self.parentId in self.get_all_children():
+            raise ValidationError("A theme cannot have itself \
+                    or one of its' children as parent.")
+        if self.parentId and self.parentId not in self.channel.themes.all():
+            raise ValidationError("A theme have to be in the same channel that his parent")
 
     class Meta:
         ordering = ['title']
@@ -415,6 +447,20 @@ class Video(models.Model):
                 os.remove(self.overview.path)
         super(Video, self).delete()
 
+    def get_thumbnail_url(self):
+        request = None
+        if self.thumbnail:
+            thumbnail_url = ''.join(
+            ['//', get_current_site(request).domain, self.thumbnail.file.url])
+        else:
+            thumbnail_url = ''.join(
+            ['//', get_current_site(request).domain, settings.STATIC_URL, DEFAULT_THUMBNAIL])
+        return thumbnail_url
+
+    def get_thumbnail_card(self):
+        return '<img class="card-img-top" src="%s" alt="%s" />' %(self.get_thumbnail_url(), self.title)
+
+
 
 def remove_video_file(video):
     if video.video:
@@ -492,6 +538,11 @@ class VideoRendition(models.Model):
     @property
     def width(self):
         return int(self.resolution.split("x")[0])
+
+    class Meta:
+        # ordering = ['height'] # Not work
+        verbose_name = _("rendition")
+        verbose_name_plural = _("renditions")
 
     def __str__(self):
         return "VideoRendition num %s with resolution %s" % (

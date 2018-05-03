@@ -42,7 +42,7 @@
         </div>
     </div>
     <a href="{{video.get_absolute_url}}" title="{{video.title}}">
-        <img class="card-img-top" src="https://pod.univ-lille1.fr/media/filer_public_thumbnails/filer_public/99/fd/99fd85ec-2254-4b87-a76c-a6294db7586b/une_p3.jpg__285x160_q85_crop_subsampling-2_upscale.jpg" alt="Card image cap" />
+        {{video.get_thumbnail_card|safe}}
     </a>
     <div class="card-body">
       <h6 class="card-subtitle small"><a href="{{video.get_absolute_url}}" title="{{video.title}}">{{video.title}}</a></h6>

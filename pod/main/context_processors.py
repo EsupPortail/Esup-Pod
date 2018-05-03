@@ -8,6 +8,7 @@ from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
+from pod.video.models import Video
 
 import json
 
@@ -19,6 +20,8 @@ MENUBAR_HIDE_INACTIVE_OWNERS = getattr(
     django_settings, 'MENUBAR_HIDE_INACTIVE_OWNERS', False)
 MENUBAR_SHOW_STAFF_OWNERS_ONLY = getattr(
     django_settings, 'MENUBAR_SHOW_STAFF_OWNERS_ONLY', False)
+HOMEPAGE_SHOWS_PASSWORDED = getattr(django_settings, 'HOMEPAGE_SHOWS_PASSWORDED', True)
+HOMEPAGE_SHOWS_RESTRICTED = getattr(django_settings, 'HOMEPAGE_SHOWS_RESTRICTED', True)
 
 
 def context_settings(request):
@@ -74,5 +77,15 @@ def context_navbar(request):
             else:
                 listowner[owner['fl_name']] = [owner]
 
+    LAST_VIDEOS = None
+    if request.path == "/":
+        filter_args = {"encoding_in_progress":False, "is_draft":False}
+        if not HOMEPAGE_SHOWS_PASSWORDED:
+            filter_args['password'] = ""
+        if not HOMEPAGE_SHOWS_RESTRICTED:
+            filter_args['is_restricted'] = False
+        LAST_VIDEOS = Video.objects.filter(**filter_args).exclude(channel__visible=0)[:12]
+    
     return {'CHANNELS': channels, 'TYPES': types, 'OWNERS': owners,
-            'DISCIPLINES':disciplines, 'LISTOWNER': json.dumps(listowner)}
+            'DISCIPLINES':disciplines, 'LISTOWNER': json.dumps(listowner),
+            'LAST_VIDEOS':LAST_VIDEOS}

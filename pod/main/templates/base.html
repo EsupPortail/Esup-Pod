@@ -31,7 +31,7 @@
                 height:0.9rem;
                 margin:0.1rem;
             }
-            
+            /** Vignette video **/
             div.card a{
              overflow:hidden;
             }
@@ -43,6 +43,28 @@
             div.card a:hover>img {
              -webkit-transform:scale(1.1);
              transform:scale(1.1)
+             z-index:0;
+            }
+            /** aside list video **/
+            #filterType div.collapse:not(.show), #filterDiscipline div.collapse:not(.show), #filterTag div.collapse:not(.show) {
+                height: 148px !important;
+                overflow: hidden;
+                
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;  
+            }
+
+            #filterType div.collapsing, #filterDiscipline div.collapsing, #filterTag  div.collapsing{
+                min-height: 148px !important;
+            }
+
+            #filterType a.collapsed:after, #filterDiscipline a.collapsed:after, #filterTag a.collapsed:after {
+                content: '+';
+            }
+
+            #filterType a:not(.collapsed):after, #filterDiscipline a:not(.collapsed):after, #filterTag  a:not(.collapsed):after {
+                content: '-';
             }
         </style>
 	    <!-- JS -->

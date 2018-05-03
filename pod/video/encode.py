@@ -431,6 +431,8 @@ def create_outputdir(video_id, video_path):
 def get_video_command_mp4(video_id, video_data, output_dir):
     in_height = video_data["in_height"]
     renditions = VideoRendition.objects.filter(encode_mp4=True)
+    # the lower height in first
+    renditions = sorted(renditions, key=lambda m: m.height)
     static_params = FFMPEG_STATIC_PARAMS % {
         'nb_threads': FFMPEG_NB_THREADS,
         'key_frames_interval': video_data["key_frames_interval"]
@@ -442,7 +444,7 @@ def get_video_command_mp4(video_id, video_data, output_dir):
         audiorate = rendition.audio_bitrate
         width = rendition.width
         height = rendition.height
-        if in_height >= int(height):
+        if in_height >= int(height) or rendition == renditions[0]:
             int_bitrate = int(
                 re.search("(\d+)k", bitrate, re.I).groups()[0])
             maxrate = int_bitrate * MAX_BITRATE_RATIO
@@ -645,13 +647,15 @@ def get_video_command_playlist(video_id, video_data, output_dir):
     list_file = []
     cmd = ""
     renditions = VideoRendition.objects.all()
+    # the lower height in first
+    renditions = sorted(renditions, key=lambda m: m.height)
     for rendition in renditions:
         resolution = rendition.resolution
         bitrate = rendition.video_bitrate
         audiorate = rendition.audio_bitrate
         width = rendition.width
         height = rendition.height
-        if in_height >= int(height):
+        if in_height >= int(height) or rendition == renditions[0]:
             int_bitrate = int(
                 re.search("(\d+)k", bitrate, re.I).groups()[0])
             maxrate = int_bitrate * MAX_BITRATE_RATIO
@@ -917,7 +921,7 @@ def create_and_save_thumbnails(source, image_width, video_id):
                     created_by=video_to_encode.owner
                 )
                 thumbnail.file.save(
-                    "%d_%s.png" % (video_id, i),
+                    "%s_%s.png" % (video_to_encode.slug, i),
                     File(open(thumbnailfilename, "rb")),
                     save=True)
                 thumbnail.save()
