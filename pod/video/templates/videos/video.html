@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item"><a href="{% url "videos"%}">{% trans 'Videos' %}</a><li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>{% endblock %}
+
+{% block page_title %}{{video.title}}{% endblock %}
+
+
+{% block page_content %}
+
+  <h3>{{video.title}}</h3>
+  <video id="my-video" class="video-js" controls preload="auto" width="100%" height="264"
+  poster="{{video.get_thumbnail_url}}" data-setup="{}">
+    <p class="vjs-no-js">
+      To view this video please enable JavaScript, and consider upgrading to a web browser that
+      <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+    </p>
+  </video>
+  
+
+{% endblock page_content %}
+
+{% block page_aside %}
+    <div class="card card-body">
+    <h5 class="card-title">
+    <svg height="32" class="octicon octicon-versions" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M13 3H7c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zm-1 8H8V5h4v6zM4 4h1v1H4v6h1v1H4c-.55 0-1-.45-1-1V5c0-.55.45-1 1-1zM1 5h1v1H1v4h1v1H1c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1z"></path></svg>
+    {% trans "take Note"%}
+    </h5>
+    <div class="card-text">
+      <p>Prenez des notes</p>
+    </div>
+    </div>
+    {% include 'aside.html'%}
+{% endblock page_aside %}
+
+
+{% block more_script %}
+
+
+{% endblock more_script %}
