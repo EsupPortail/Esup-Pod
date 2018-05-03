@@ -14,6 +14,7 @@ from tagging.models import TaggedItem
 # Create your views here.
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
 
+
 def channel(request, slug_c, slug_t=None):
     channel = get_object_or_404(Channel, slug=slug_c)
 
@@ -22,6 +23,8 @@ def channel(request, slug_c, slug_t=None):
     theme = None
     if slug_t:
         theme = get_object_or_404(Theme, slug=slug_t)
+        list_theme = theme.get_all_children_flat()
+        videos_list = videos_list.filter(theme__in=list_theme)
 
     page = request.GET.get('page', 1)
     full_path = ""
@@ -37,7 +40,8 @@ def channel(request, slug_c, slug_t=None):
         videos = paginator.page(paginator.num_pages)
 
     return render(request, 'channel/channel.html',
-        {'channel':channel, 'videos': videos, 'theme':theme})
+                  {'channel': channel, 'videos': videos, 'theme': theme})
+
 
 def videos(request):
     videos_list = VIDEOS
@@ -74,7 +78,7 @@ def videos(request):
         "owners": request.GET.getlist('owner'),
         "disciplines": request.GET.getlist('discipline'),
         "tags_slug": request.GET.getlist('tag'),
-        "full_path":full_path
+        "full_path": full_path
     })
 
 
@@ -86,4 +90,6 @@ def video(request, slug):
         raise SuspiciousOperation('Invalid video id')
     video = get_object_or_404(Video, id=id)
 
-    return HttpResponse("You're looking video %s." % video)
+    return render(request, 'videos/video.html', {
+        'video': video}
+    )

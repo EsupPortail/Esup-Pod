@@ -1,7 +1,12 @@
+{% load i18n %}
 {% spaceless %}
 {% for video in videos %}
 <div class="infinite-item col-12 col-md-6 col-lg-3 mb-2">
 {% include "videos/card.html" %}
+</div>
+{% empty %}
+<div class="col-12 col-md-6 col-lg-3 mb-2">
+<p>{% trans "Sorry, no video found" %}</p>
 </div>
 {% endfor %}
 {% endspaceless %}

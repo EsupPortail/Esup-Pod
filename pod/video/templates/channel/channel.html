@@ -2,6 +2,22 @@
 {% load i18n %}
 {% load staticfiles %}
 
+{% block page_extra_head %}
+<meta name="description" content="channel.description|metaformat|safe|striptags|truncatechars:150" />
+<!-- Open Graph data -->
+<meta property="og:title" content="{{ channel.title }}" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
+<meta property="og:description" content="channel.description|metaformat|safe|striptags|truncatechars:250" />
+<meta property="og:site_name" content="{{ TITLE_SITE }}" />
+<style>
+  #treeview ul.list-group li{
+    padding: 0;
+  }
+</style>
+{% endblock %}
+
 
 {% block breadcrumbs %}{{ block.super }} 
 {% if theme %}
@@ -23,23 +39,28 @@
 {% block page_content %}
 
   <h3>{{channel.title}}</h3>
-  
-  
-  <div id="treeview">
-    <ul class="list-group">
 
-    </ul>
+  {% if channel.headband %}
+  <div align="center" class="channelheader">
+      <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="img-responsive" />
   </div>
+  {% endif %}
+  {% if channel.description %}
+      {{ channel.description|safe }}
+  {% endif %}
 
-
-
-  <!--
-   for t in theme.get_all_children %}
-     if t is not theme %}
-    <a href=" url 'theme' slug_c=channel.slug slug_t=t.slug%}" title="t.title}}" class="ml-t.get_all_parents|length}}">t.title}}</a><br/>
-     endif %}
-   endfor %}
-  -->
+  {% if theme %}
+  <h4>{{theme.title}}</h4>
+  {% if theme.headband %}
+  <div align="center" class="channelheader">
+      <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" />
+  </div>
+  {% endif %}
+  {% if theme.description %}
+      {{ theme.description|safe }}
+  {% endif %}
+  {%endif%}
+  <p>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</p>
   <div class="row infinite-container">
     {% include "videos/video_list.html" %}
   </div>
@@ -55,13 +76,46 @@
 {% endblock page_content %}
 
 {% block page_aside %}
+    <div class="card card-body">
+    <h5 class="card-title">
+    <svg height="32" class="octicon octicon-versions" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M13 3H7c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zm-1 8H8V5h4v6zM4 4h1v1H4v6h1v1H4c-.55 0-1-.45-1-1V5c0-.55.45-1 1-1zM1 5h1v1H1v4h1v1H1c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1z"></path></svg>
+    {% if theme %}
+    {% trans 'Sub Themes of ' %}{{ theme.title }}
+    {% else %}
+    {% trans 'Themes of ' %}{{ channel.title }}
+    {% endif %}
+    </h5>
+    <div class="card-text" id="treeview">
+      <ul class="list-group list-group-flush small">
+
+      </ul>
+    </div>
+    </div>
     {% include 'aside.html'%}
 {% endblock page_aside %}
 
 
 {% block more_script %}
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite.min.js' %}"></script>
+<script>
+  var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+      $('.loading').show();
+    },
+    onAfterPageLoad: function ($items) {
+      $('.loading').hide();
+    }
+  });
+</script>
 <script type="text/javascript">
-  var listTheme = {{theme.get_all_tree_children|safe}};
+{% comment %} Put always channel theme with active link ??? {% endcomment %}
+  {% if theme %}
+  var listTheme = {{theme.get_all_children_tree_json|safe}};
+  {% else %}
+  var listTheme = {{channel.get_all_theme_json|safe}};
+  {% endif %}
   $.each(listTheme, function(i, val) {
     var link = '<a href="{% url 'channel' slug_c=channel.slug %}'+val.slug+'" title="'+val.title+'">'+val.title+'</a>';
     var child = val.child;
@@ -70,25 +124,54 @@
     if(count>0) {
       showmore = '<a href="#" data-id="'+i+'" class="showmore badge badge-light">+</a>';
     }
-    $("#treeview .list-group").append("<li>"+showmore+" "+link+" - "+i+"</li>");
+    $("#treeview .list-group").append("<li class=\"list-group-item\">"+showmore+" "+link+"</li>");
   });
-  $(".showmore").on('click', function(){
-    var themetoshow = listTheme[$(this).data("id")].child;
+  if(Object.keys(listTheme).length==0) {
+    $("#treeview .list-group").append("<li class=\"list-group-item\">{% trans "No sub theme" %}</li>");
+  }
+
+  var showmore = function(event) {
+    event.preventDefault();
+    var str = ""+$(this).data("id");
+    var res = str.split("-");
+    var nbid = res.length;
+    var tab = listTheme[res[0]].child;
+    for(i=1; i<nbid; i++) {
+      tab = tab[res[i]].child;
+    }
+    var themetoshow = tab; //listTheme[$(this).data("id")].child;
     var list = "<ul>";
     $.each(themetoshow, function(i, val) {
       var link = '<a href="{% url 'channel' slug_c=channel.slug %}'+val.slug+'" title="'+val.title+'">'+val.title+'</a>';
       var child = val.child;
       var count = Object.keys(child).length;
-      var showmore = '<span class="badge badge-light">-</span>';
+      var showmore = '<a href="#" data-id="'+str+'-'+i+'" class="showless badge badge-light">-</a>';
       if(count>0) {
-        showmore = '<a href="#" data-id="'+i+'" class="showmore badge badge-light">+</a>';
+        showmore = '<a href="#" data-id="'+str+'-'+i+'" class="showmore badge badge-light">+</a>';
       }
-      list+="<li>"+link+"</li>";
+      list+="<li class=\"list-group-item\">"+showmore+" "+link+"</li>";
     });
     list += "</ul>";
     $(this).parent('li').append(list);
-    
+    $(this).removeClass("showmore").addClass("showless").text('-');
+    $(this).off( "click", showmore );
+    $(".showmore").on('click', showmore);
+    $(".showless").on('click', showless);
     return false;
-  });
+  };
+  var showless = function(event) {
+    event.preventDefault();
+    console.log("showless = "+$( this ).parent('li').children( "ul" ).length);
+    if($( this ).parent('li').children( "ul" ).length > 0) {
+      $( this ).parent('li').children( "ul" ).remove();
+      $(this).removeClass("showless").addClass("showmore").text('+');
+      $(this).off( "click", showless );
+      $(".showmore").on('click', showmore);
+      $(".showless").on('click', showless);
+    }
+  }
+  $(".showmore").on('click', showmore);
+  $(".showless").on('click', showless);
+
   </script>
 {% endblock more_script %}

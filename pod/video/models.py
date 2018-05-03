@@ -182,13 +182,27 @@ class Channel(models.Model):
     def __str__(self):
         return "%s" % (self.title)
 
+    def get_all_theme(self):
+        list_theme = {}
+        for theme in self.themes.filter(parentId=None):
+            list_theme["%s" % theme.id]= {
+                "title": "%s" % theme.title,
+                "slug": "%s" % theme.slug,
+                "child": theme.get_all_children_tree()
+            }
+        return list_theme
+
+    def get_all_theme_json(self):
+        return json.dumps(self.get_all_theme())
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Channel, self).save(*args, **kwargs)
 
 
 class Theme(models.Model):
-    parentId = models.ForeignKey('self', null=True, blank=True, related_name="children")
+    parentId = models.ForeignKey(
+        'self', null=True, blank=True, related_name="children")
     title = models.CharField(_('Title'), max_length=100, unique=True)
     slug = models.SlugField(
         _('Slug'), unique=True, max_length=100,
@@ -215,19 +229,32 @@ class Theme(models.Model):
         self.slug = slugify(self.title)
         super(Theme, self).save(*args, **kwargs)
 
-    def get_all_children(self):
-        children = {} #[self]
+    def get_all_children_tree(self):
+        children = {}  # [self]
         try:
             child_list = self.children.all()
         except AttributeError:
             return children
         for child in child_list:
-            children["%s" %child.id] = {"title":"%s" %child.title, "slug":"%s" %child.slug, "child":child.get_all_children()}
-            #children.extend(child.get_all_children())
+            children["%s" % child.id] = {
+                "title": "%s" % child.title,
+                "slug": "%s" % child.slug,
+                "child": child.get_all_children_tree()
+            }
         return children
 
-    def get_all_tree_children(self):
-        return json.dumps(self.get_all_children())
+    def get_all_children_flat(self):
+        children = [self]
+        try:
+            child_list = self.children.all()
+        except AttributeError:
+            return children
+        for child in child_list:
+            children.extend(child.get_all_children_flat())
+        return children
+
+    def get_all_children_tree_json(self):
+        return json.dumps(self.get_all_children_tree())
 
     def get_all_parents(self):
         parents = [self]
@@ -237,11 +264,12 @@ class Theme(models.Model):
         return parents
 
     def clean(self):
-        if self.parentId in self.get_all_children():
+        if self.parentId in self.get_all_children_flat():
             raise ValidationError("A theme cannot have itself \
                     or one of its' children as parent.")
         if self.parentId and self.parentId not in self.channel.themes.all():
-            raise ValidationError("A theme have to be in the same channel that his parent")
+            raise ValidationError(
+                "A theme have to be in the same channel that his parent")
 
     class Meta:
         ordering = ['title']
@@ -451,15 +479,14 @@ class Video(models.Model):
         request = None
         if self.thumbnail:
             thumbnail_url = ''.join(
-            ['//', get_current_site(request).domain, self.thumbnail.file.url])
+                ['//', get_current_site(request).domain, self.thumbnail.file.url])
         else:
             thumbnail_url = ''.join(
-            ['//', get_current_site(request).domain, settings.STATIC_URL, DEFAULT_THUMBNAIL])
+                ['//', get_current_site(request).domain, settings.STATIC_URL, DEFAULT_THUMBNAIL])
         return thumbnail_url
 
     def get_thumbnail_card(self):
-        return '<img class="card-img-top" src="%s" alt="%s" />' %(self.get_thumbnail_url(), self.title)
-
+        return '<img class="card-img-top" src="%s" alt="%s" />' % (self.get_thumbnail_url(), self.title)
 
 
 def remove_video_file(video):
