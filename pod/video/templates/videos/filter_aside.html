@@ -1,5 +1,67 @@
+{% load i18n %}
+{% load tagging_tags %}
 {% spaceless %}
 <div class="card card-body">
-<h5 class="card-title">videos aside</h5>
+<h5 class="card-title">{% trans "Filters"%}</h5>
+<p class="card-text">
+    <form action="{% url 'videos' %}" method="get" id="filters">
+    <fieldset>
+    <legend class="h6"> {% trans "Users" %}</legend>
+    <div class="form-group">
+        <input placeholder="{% trans "Search" %}" id="ownerbox" type="text" class="form-control">
+    </div>
+    <div class="form-group navList owners">
+        <!-- TODO -->
+    </div>
+    </fieldset>
+    <button type="submit" class="btn btn-primary">{% trans "Filter"%}</button>
+    <fieldset>
+    <legend class="h6"> {% trans "Types"%}</legend>
+    <div class="form-group">
+    {% for type in TYPES %}
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="type" 
+          value="{{type.slug}}" id="id{{type.slug}}" {% if type.slug in types %}checked{% endif %}>
+          <label class="form-check-label" for="id{{type.slug}}">
+            {{type}}
+          </label>
+        </div>
+    {%endfor%}
+    </div>
+    </fieldset>
+    <button type="submit" class="btn btn-primary">{% trans "Filter"%}</button>
+    <fieldset>
+    <legend>{% trans "Disciplines"%}</legend>
+    <div class="form-group">
+    {% for discipline in DISCIPLINES %}
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="discipline" 
+          value="{{discipline.slug}}" id="id{{discipline.slug}}" {% if discipline.slug in disciplines %}checked{% endif %}>
+          <label class="form-check-label" for="id{{discipline.slug}}">
+            {{discipline}}
+          </label>
+        </div>
+    {%endfor%}
+    </div>
+    </fieldset>
+    <button type="submit" class="btn btn-primary">{% trans "Filter"%}</button>
+    <fieldset>
+    <legend><span class="glyphicon glyphicon-tags"></span> {% trans "Tags"%}</legend>
+    <div class="form-group">
+    {% tag_cloud_for_model video.Video as tagscloud with steps=16 min_count=30 distribution=linear %}
+    {% for tag in tagscloud %}
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="tag" 
+      value="{{tag.name}}" id="id{{tag.name}}" {% if tag.name in tags_slug %}checked{% endif %}>
+      <label class="form-check-label" for="id{{tag.name}}">
+        {{tag.name}}
+      </label>
+    </div>
+    {% endfor %}
+    </div>
+    </fieldset>
+    <button type="submit" class="btn btn-primary">{% trans "Filter"%}</button>
+    </form>
+</p>
 </div>
 {% endspaceless %}

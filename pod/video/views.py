@@ -16,10 +16,14 @@ def videos(request):
     videos_list = VIDEOS
 
     if request.GET.getlist('type'):
-        videos_list = videos_list.filter(type__slug__in=request.GET.getlist('type'))
-
+        videos_list = videos_list.filter(
+            type__slug__in=request.GET.getlist('type'))
     if request.GET.getlist('discipline'):
-        videos_list = videos_list.filter(discipline__slug__in=request.GET.getlist('discipline'))
+        videos_list = videos_list.filter(
+            discipline__slug__in=request.GET.getlist('discipline'))
+    if request.GET.getlist('owner'):
+        videos_list = videos_list.filter(
+            owner__username__in=request.GET.getlist('owner'))
 
     page = request.GET.get('page', 1)
     paginator = Paginator(videos_list, 12)
@@ -29,7 +33,12 @@ def videos(request):
         videos = paginator.page(1)
     except EmptyPage:
         videos = paginator.page(paginator.num_pages)
-    return render(request, 'videos/videos.html', {'videos': videos})
+    return render(request, 'videos/videos.html', {
+        'videos': videos,
+        "types": request.GET.getlist('type'), 
+        "owners": request.GET.getlist('owner'), 
+        "disciplines": request.GET.getlist('discipline')
+    })
 
 
 @csrf_protect
