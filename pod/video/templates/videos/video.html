@@ -170,7 +170,8 @@ var player = videojs('pod-video', options);
     });
   {% endif %}
   /** get all mp4 format **/
-
+  var mp4_sources = {{video.get_video_mp4_json|safe}};
+  
 {% else %}
   {% if video.get_video_m4a %}
   var srcOptions = {

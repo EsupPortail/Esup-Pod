@@ -500,6 +500,17 @@ class Video(models.Model):
         except EncodingAudio.DoesNotExist:
             return None
 
+    def get_video_mp4(self):
+        return EncodingVideo.objects.filter(video=self, encoding_format="video/mp4")
+
+    def get_video_mp4_json(self):
+        list_src = []
+        list_video = sorted(self.get_video_mp4(), key=lambda m: m.height)
+        for video in list_video:
+            list_src.append({'type':video.encoding_format, 'src':video.source_file.url, 'height':video.height})
+        return list_src
+        # return json.dumps(self.get_video_mp4())
+
 def remove_video_file(video):
     if video.video:
         log_file = os.path.join(
