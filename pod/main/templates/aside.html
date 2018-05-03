@@ -40,12 +40,15 @@ Partager
     <a href="#" class="float-right"><svg height="32" class="octicon octicon-arrow-right" viewBox="0 0 10 16" version="1.1" width="20" aria-hidden="true"><path fill-rule="evenodd" d="M10 8L4 3v3H0v4h4v3z"></path></svg></a>
   </h5>
   <p class="card-text">
-    {% tag_cloud_for_model video.Video as tagscloud with steps=16 min_count=30 distribution=log %}
-    {% for tag in tagscloud %}
+    <!-- tag_cloud_for_model video.Video as tagscloud with steps=16 min_count=30 distribution=log -->
+    {% tag_cloud_for_model video.Video as tagscloud with distribution=log steps=16 min_count=4 %}
+    {% with tagslist=tagscloud|dictsortreversed:"count"|slice:":20" %}
+    {% for tag in tagslist %}
     <a href="{% url 'videos' %}?tag={{ tag.name|urlencode }}" style="font-size:{{ tag.font_size }}px" title="{{tag.name}}" class="badge">
         {{tag.name}}&nbsp;<span class="badge badge-pill badge-info">{{tag.count}}</span>
     </a>
     {% endfor %}
+    {% endwith %}
   </p>
 </div>
 {% endspaceless %}

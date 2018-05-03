@@ -64,15 +64,15 @@ def context_navbar(request):
         ORDER_BY).annotate(video_count=Count(
             "video", distinct=True)).annotate(
         fl_name=Lower(Substr(ORDER_BY, 1, 1))).order_by(
-        'fl_name').values_list(*list(VALUES_LIST))
+        'fl_name').values(*list(VALUES_LIST))
 
     listowner = {}
     for owner in owners:
-        if owner[4] != '':
-            if listowner.get(owner[4]):
-                listowner[owner[4]].append(owner)
+        if owner['fl_name'] != '':
+            if listowner.get(owner['fl_name']):
+                listowner[owner['fl_name']].append(owner)
             else:
-                listowner[owner[4]] = [owner]
+                listowner[owner['fl_name']] = [owner]
 
     return {'CHANNELS': channels, 'TYPES': types, 'OWNERS': owners,
             'DISCIPLINES':disciplines, 'LISTOWNER': json.dumps(listowner)}

@@ -28,7 +28,8 @@
                 overflow: hidden;
             }
             .infinite-item .card-header .octicon {
-                height:1rem;
+                height:0.9rem;
+                margin:0.1rem;
             }
             
             div.card a{
@@ -109,12 +110,12 @@
 		$('#ownerboxnavbar').keyup(function() {
 			if($(this).val() && $(this).val().length > 2) {
 				var valThis = $(this).val().toLowerCase();
-				var letter = $(this).val().charAt(0).toLowerCase();
+				var letter = valThis.charAt(0);
 				var nbuser = listUser[letter].length;
 				$("#accordion").html("");
 				for(i=0; i<nbuser; i++) {
-					var lastname = listUser[letter][i][2].toLowerCase();
-					if(lastname.indexOf(valThis) != -1) $("#accordion").append('<li><a href="">'+listUser[letter][i][1]+' '+listUser[letter][i][2]+' ('+listUser[letter][i][3]+')</a></li>');
+					var lastname = listUser[letter][i]["last_name"].toLowerCase();
+					if(lastname.indexOf(valThis) != -1) $("#accordion").append('<li><a href="{% url 'videos' %}?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</a></li>');
 				}
 			} else {
 				$("#accordion").html("");
@@ -125,7 +126,7 @@
 			var nbuser = listUser[letter].length;
 			$("#accordion").html("");
 			for(i=0; i<nbuser; i++) {
-				$("#accordion").append('<li><a href="">'+listUser[letter][i][1]+' '+listUser[letter][i][2]+' ('+listUser[letter][i][3]+')</a></li>');
+				$("#accordion").append('<li><a href="{% url 'videos' %}?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</a></li>');
 			}
 		})
 
@@ -142,9 +143,9 @@
             if (last != null) {
                 //show the account_last visible group
                 $("#collapseAside").addClass("show");
-            } else {
+            } /*else {
                 $("#collapseAside").removeClass("show");
-            }
+            }*/
         });
 
 		</script>

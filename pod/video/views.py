@@ -7,6 +7,7 @@ from django.core.exceptions import SuspiciousOperation
 from django.views.decorators.csrf import csrf_protect
 
 from pod.video.models import Video
+from tagging.models import TaggedItem
 
 # Create your views here.
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
@@ -24,8 +25,16 @@ def videos(request):
     if request.GET.getlist('owner'):
         videos_list = videos_list.filter(
             owner__username__in=request.GET.getlist('owner'))
+    if request.GET.getlist('tag'):
+        videos_list = TaggedItem.objects.get_union_by_model(
+            videos_list,
+            request.GET.getlist('tag'))
 
     page = request.GET.get('page', 1)
+    full_path = ""
+    if page:
+        full_path = request.get_full_path().replace(
+            "?page=%s" % page, "").replace("&page=%s" % page, "")
     paginator = Paginator(videos_list, 12)
     try:
         videos = paginator.page(page)
@@ -35,9 +44,11 @@ def videos(request):
         videos = paginator.page(paginator.num_pages)
     return render(request, 'videos/videos.html', {
         'videos': videos,
-        "types": request.GET.getlist('type'), 
-        "owners": request.GET.getlist('owner'), 
-        "disciplines": request.GET.getlist('discipline')
+        "types": request.GET.getlist('type'),
+        "owners": request.GET.getlist('owner'),
+        "disciplines": request.GET.getlist('discipline'),
+        "tags_slug": request.GET.getlist('tag'),
+        "full_path":full_path
     })
 
 
