@@ -185,7 +185,7 @@ class Channel(models.Model):
     def get_all_theme(self):
         list_theme = {}
         for theme in self.themes.filter(parentId=None):
-            list_theme["%s" % theme.id]= {
+            list_theme["%s" % theme.id] = {
                 "title": "%s" % theme.title,
                 "slug": "%s" % theme.slug,
                 "child": theme.get_all_children_tree()
@@ -507,9 +507,11 @@ class Video(models.Model):
         list_src = []
         list_video = sorted(self.get_video_mp4(), key=lambda m: m.height)
         for video in list_video:
-            list_src.append({'type':video.encoding_format, 'src':video.source_file.url, 'height':video.height})
+            list_src.append(
+                {'type': video.encoding_format, 'src': video.source_file.url, 'height': video.height})
         return list_src
         # return json.dumps(self.get_video_mp4())
+
 
 def remove_video_file(video):
     if video.video:
