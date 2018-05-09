@@ -37,8 +37,15 @@
 						{% if form_chapter %}
 							{% include 'chapter/form_chapter.html' with form_chapter=form_chapter %}
 						{% endif %}
+						<h4>Import / Export</h4>
 						{% if form_import %}
 							{% include 'chapter/form_chapter_import.html' with form_import=form_import %}
+							&nbsp;
+							<form id="form_vtt_export" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
+								{% csrf_token %}
+								<input type="hidden" name="action" value="export"/>
+								<input type="submit" id="get_chapter_vtt" value="{% trans 'Export chapters' %}" class="btn btn-info"/>
+							</form>
 						{% endif %}
 					</span>
 					<span id="list_chapter">

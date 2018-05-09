@@ -93,6 +93,14 @@ def vtt_to_chapter(vtt, video):
             hours=time_end.tm_hour,
             minutes=time_end.tm_min,
             seconds=time_end.tm_sec).total_seconds()
+
+        if (time_start > video.duration or time_start < 0 or
+                time_start > time_end):
+            return 'The VTT file contains a chapter started at an ' + \
+                   'incorrect time in the video : {0}'.format(caption.text)
+        if time_end > video.duration or time_end < 0 or time_end < time_start:
+            return 'The VTT file contains a chapter ended at an incorrect ' + \
+                   'time in the video : {0}'.format(caption.text)
         Chapter.objects.create(
             video=video,
             title=caption.text,

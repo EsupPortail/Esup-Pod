@@ -1,5 +1,7 @@
 from django.http import HttpResponse
 from django.http import HttpResponseForbidden
+from django.http import HttpResponseBadRequest
+from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
@@ -10,11 +12,10 @@ from pod.video.models import Video
 from pod.chapters.models import Chapter
 from pod.chapters.forms import ChapterForm
 from pod.chapters.forms import ChapterImportForm
-from pod.chapters.utils import vtt_to_chapter
 
 import json
 
-ACTION = ['new', 'save', 'modify', 'delete', 'cancel', 'import']
+ACTION = ['new', 'save', 'modify', 'delete', 'cancel', 'import', 'export']
 
 
 @csrf_protect
@@ -48,7 +49,7 @@ def video_chapter_new(request, video):
     list_chapter = video.chapter_set.all()
 
     form_chapter = ChapterForm(initial={'video': video})
-    form_import = ChapterImportForm(user=request.user)
+    form_import = ChapterImportForm(user=request.user, video=video)
     if request.is_ajax():
         return render(
             request,
@@ -171,14 +172,27 @@ def video_chapter_cancel(request, video):
         {'video': video,
          'list_chapter': list_chapter})
 
+def video_chapter_export(request, video):
+    list_chapter = video.chapter_set.all()
+
+    if not request.POST:
+        return HttpResponseBadRequest('Bad request')
+    if list_chapter:
+        some_data_to_dump = {
+            'vtt': chapter_to_vtt(list_chapter, video)
+        }
+        data = json.dumps(some_data_to_dump)
+        return HttpResponse(data, content_type='application/json')
+    else:
+        return HttpResponseNotFound('This video has no chapters.')
 
 def video_chapter_import(request, video):
     list_chapter = video.chapter_set.all()
 
     form_chapter = ChapterForm(initial={'video': video})
-    form_import = ChapterImportForm(request.POST, user=request.user)
+    form_import = ChapterImportForm(
+        request.POST, user=request.user, video=video)
     if form_import.is_valid():
-        vtt_to_chapter(form_import.cleaned_data['file'], video)
         list_chapter = video.chapter_set.all()
         if request.is_ajax():
             some_data_to_dump = {
@@ -200,6 +214,7 @@ def video_chapter_import(request, video):
                 {'video': video,
                  'list_chapter': list_chapter})
     else:
+        print(form_import.errors)
         if request.is_ajax():
             some_data_to_dump = {
                 'errors': '{0}'.format(_('Please correct errors.')),
