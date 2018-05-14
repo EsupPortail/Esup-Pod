@@ -1,6 +1,10 @@
+import os
+
 from django.apps import apps
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db import connection
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
 from ckeditor.fields import RichTextField
@@ -9,6 +13,19 @@ if apps.is_installed('pod.filepicker'):
     from pod.filepicker.models import CustomImageModel
     from pod.filepicker.models import CustomFileModel
     FILEPICKER = True
+FILES_DIR = getattr(
+    settings, 'FILES_DIR', 'files')
+
+
+def get_nextautoincrement(model):
+    cursor = connection.cursor()
+    cursor.execute(
+        'SELECT Auto_increment FROM information_schema.tables ' +
+        'WHERE table_name="{0}";'.format(model._meta.db_table)
+    )
+    row = cursor.fetchone()
+    cursor.close()
+    return row[0]
 
 
 def get_upload_path_files(instance, filename):
@@ -59,7 +76,8 @@ class Enrichment(models.Model):
         unique=True,
         max_length=105,
         help_text=_(u'Used to access this instance, the "slug" is a short ' +
-                    'label containing only letters, numbers, underscore or dash top.'),
+                    'label containing only letters, numbers, ' +
+                    'underscore or dash top.'),
         editable=False)
     stop_video = models.BooleanField(
         _('Stop video'),
@@ -74,7 +92,11 @@ class Enrichment(models.Model):
         default=1,
         help_text=_('End of enrichment display in seconds.'))
     type = models.CharField(
-        _('Type'), max_length=10, choices=ENRICH_CHOICES, null=True, blank=True)
+        _('Type'),
+        max_length=10,
+        choices=ENRICH_CHOICES,
+        null=True,
+        blank=True)
     if FILEPICKER:
         image = models.ForeignKey(
             CustomImageModel, verbose_name=_('Image'), null=True, blank=True)
@@ -115,6 +137,17 @@ class Enrichment(models.Model):
         if len(msg) > 0:
             raise ValidationError(msg)
 
+    def verify_type(self, type):
+        typelist = {
+            'image': self.image,
+            'richtext': self.richtext,
+            'weblink': self.weblink,
+            'document': self.document,
+            'embed': self.embed
+        }
+        if not typelist[type]:
+            return _('Please enter a correct {0}.'.format(type))
+
     def verify_all_fields(self):
         msg = list()
         if (not self.title or self.title == '' or len(self.title) < 2 or
@@ -128,17 +161,10 @@ class Enrichment(models.Model):
                 self.end > self.video.duration):
             msg.append(_('Please enter a correct end field between 1 and ' +
                          '{0}.'.format(self.video.duration)))
-        if self.type == 'image' and not self.image:
-            msg.append(_('Please enter a correct image.'))
-        elif self.type == 'richtext' and not self.richtext:
-            msg.append(_('Please enter a correct richtext.'))
-        elif self.type == 'weblink' and not self.weblink:
-            msg.append(_('Please enter a correct weblink.'))
-        elif self.type == 'document' and not self.document:
-            msg.append(_('Please enter a correct document.'))
-        elif self.type == 'embed' and not self.embed:
-            msg.append(_('Please enter a correct embed.'))
-        elif not self.type:
+        if self.type:
+            if self.verify_type(self.type):
+                msg.append(self.verify_type(self.type))
+        else:
             msg.append(_('Please enter a type in index field.'))
 
         if len(msg) > 0:
@@ -155,7 +181,8 @@ class Enrichment(models.Model):
                   'of end field.'))
         if self.end > video.duration:
             msg.append(
-                _('The value of end field is greater than the video duration.'))
+                _('The value of end field is greater than ' +
+                    'the video duration.'))
         if self.start == self.end:
             msg.append(
                 _('End field and start field can\'t be equal.'))
@@ -175,7 +202,7 @@ class Enrichment(models.Model):
             list_enrichment = list_enrichment.exclude(id=instance.id)
         if len(list_enrichment) > 0:
             for element in list_enrichment:
-                if (not (self.start < element.start and
+                if not ((self.start < element.start and
                          self.end <= element.start) or
                         (self.start >= element.end and
                          self.end > element.end)):
@@ -183,8 +210,8 @@ class Enrichment(models.Model):
                         _('There is an overlap with ' +
                           'the enrichment {0}, '.format(element.title) +
                           'please change start and/or end values.'))
-                if len(msg) > 0:
-                    return msg
+            if len(msg) > 0:
+                return msg
         return list()
 
         def save(self, *args, **kwargs):
