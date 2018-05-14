@@ -5,7 +5,6 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from pod.video.models import Video
-from pod.authentication.models import Owner
 from pod.completion.models import Contributor
 from pod.completion.models import Document
 from pod.completion.models import Overlay
