@@ -1,0 +1,31 @@
+<!-- HTML for chapter import form. Don't use this file alone it must be integrated into another template ! -->
+{% load i18n %}
+{% load staticfiles %}
+<form id="form_chapter_import" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
+	{% csrf_token %}
+	<div id="formcontent" class="form-container">
+		{% if form_import.errors or form_import.non_field_errors %}
+			{% trans 'One or more errors have been found in the form:' %}<br />
+			{% for error in form_import.non_field_errors %}
+				- {{error}}<br />
+			{% endfor %}
+		{% endif %}
+		{% for field_hidden in form_import.hidden_fields %}
+			{{field_hidden}}
+		{% endfor %}
+		{% for field in form_import.visible_fields %}
+			<div class="form-group row">
+				<label for="{{field.auto_id}}" class="col-sm-2 col-form-label">{{field.label}}</label>
+				<div class="col-sm-10">{{field}}</div>
+			</div>
+			{% for error in field.errors %}
+				<div class="alert alert-danger">
+					<strong>{{error|escape}}</strong>
+				</div>
+			{% endfor %}
+		{% endfor %}
+		<input type="hidden" name="action" value="import"/>
+		<input type="submit" id="save_chapter_import" value="{% trans 'Import chapters' %}" class="btn btn-info"/>
+	</div>
+</form>
+<script src="{% static 'js/filepicker.custom.js' %}"></script>

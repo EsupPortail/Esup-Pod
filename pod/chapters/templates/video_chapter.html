@@ -1,0 +1,81 @@
+<!-- HTML for chapter main page. -->
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% block page_title %}{% trans 'Chapter video' %} "{{video.title}}" {% endblock page_title %}
+{% block page_extra_head %}
+	<!-- media -->
+	<link rel="stylesheet" href="{% static 'css/filepicker.overlay.css' %}"/>
+	<link rel="stylesheet" href="{% static 'css/chapters.css' %}"/>
+	<script src="{% static 'js/jquery.tools.min.js' %}"></script>
+	<script src="{% static 'js/main.js' %}"></script>
+	<script src="{% static 'js/ajaxupload.js' %}"></script>
+    <script src="{% static 'js/jquery.filepicker.js' %}"></script>
+{% endblock page_extra_head %}
+{% block content %}
+	<article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+		<main role="main" class="mt-3">
+			<nav aria-label="breadcrumb" class="breadcrumb d-flex justify-content-between p-0">
+				<ol class="breadcrumb p-1 p1-4 mb-0">
+					{% block breadcrumbs %}
+						{{block.super}}
+						<li class="active">&nbsp;{% trans 'Chapter video' %} "{{video.title}}"</li>
+					{% endblock breadcrumbs %}
+				</ol>
+				<div class="p-0">
+					<a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside">
+						<svg height="32" class="octicon octicon-grabber" viewBox="0 0 8 16" version="1.1" width="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 4v1H0V4h8zM0 8h8V7H0v1zm0 3h8v-1H0v1z"></path></svg>
+					</a>
+				</div>
+			</nav>
+			<span id="chapter_player">
+				<!-- TODO : FUTURE PLAYER -->
+			</span>
+			<div class="row" id="info_video">
+				<div class="col-sm-9">
+					<span id="form_chapter">
+						{% if form_chapter %}
+							{% include 'chapter/form_chapter.html' with form_chapter=form_chapter %}
+						{% endif %}
+						<h4>Import / Export</h4>
+						{% if form_import %}
+							{% include 'chapter/form_chapter_import.html' with form_import=form_import %}
+							&nbsp;
+							<form id="form_vtt_export" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
+								{% csrf_token %}
+								<input type="hidden" name="action" value="export"/>
+								<input type="submit" id="get_chapter_vtt" value="{% trans 'Export chapters' %}" class="btn btn-info"/>
+							</form>
+						{% endif %}
+					</span>
+					<span id="list_chapter">
+						{% include 'chapter/list_chapter.html' %}
+					</span>
+					<form id="form_new" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
+						{% csrf_token %}
+						<input type="hidden" name="action" value="new"/>
+						<input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-info"/>
+					</form>
+				</div>
+				<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
+					<div class="widget user-tools">
+						<h4>
+							{% trans 'Edit the video' %}
+						</h4>
+					</div>
+					<div class="card info-card">
+						<div class="card bg-info text-white">
+							<h4 class="card-title">{% trans 'Chapters' %}</h4>
+						</div>
+						<div class="card-body">
+							<p>{% trans '"Add a new chapter" allows you to add a new chapter, "modify" allows you to modify it and "delete" allows you to remove the chapter.' %}</p>
+							<p>{% trans 'Start playback of the video, pause the video and click on "Get time from the player" to fill in the field untitled "Start time".' %}</p>
+							<p>{% trans 'The chapters cannot start at the same time.' %}</p>
+							<p>{% trans 'You must save your chapters to view the result.' %}</p>
+						</div>
+					</div>
+				</aside>
+			</div>
+		</main>
+	</article>
+{% endblock content %}

@@ -1,0 +1,43 @@
+<!-- HTML for chapter list. Don't use this file alone it must be integrated into another template ! -->
+{% load i18n %}
+<div class="container" overflow: auto>
+	<div class="panel-heading bg-primary text-white">
+		<h4 class="card-title">{% trans 'List of chapters' %}&nbsp;({{list_chapter|length}})</h4>
+	</div>
+	<table class="table table-striped table-condensed scroll" id="table_list_chapter">
+		<thead>
+			<tr>
+				<th class="chapter_title">{% trans 'Title' %}</th>
+				<th class="chapter_time_start">{% trans 'Start time' %}</th>
+				<th class="chapter_time_end">{% trans 'End time' %}</th>
+				<th>&nbsp;</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for chapter in list_chapter %}
+				<tr>
+					<td class="chapter_title">{{chapter.title}}</td>
+					<td class="chapter_time_start">{{chapter.time_start}}</td>
+					<td class="chapter_time_end">{{chapter.time_end}}</td>
+					<td>
+						<form class="form_modif" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="action" value="modify"/>
+							<input type="hidden" name="id" value="{{chapter.id}}"/>
+							<input type="submit" title="{% trans 'Edit the chapter' %}" value="{% trans 'Modify' %}" class="btn btn-info btn-sm"/>
+						</form>
+					</td>
+					<td>
+						<form class="form_delete" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="action" value="delete"/>
+							<input type="hidden" name="id" value="{{chapter.id}}"/>
+							<input type="submit" title="{% trans 'Delete the chapter' %}" value="{% trans 'Delete' %}" class="btn btn-danger btn-sm"/>
+						</form>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
