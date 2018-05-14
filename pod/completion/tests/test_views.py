@@ -3,6 +3,7 @@ Unit tests for completion views
 """
 from django.apps import apps
 from django.test import TestCase
+from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import authenticate
 from pod.video.models import Video
@@ -17,13 +18,6 @@ if apps.is_installed('pod.filepicker'):
     from pod.filepicker.models import UserDirectory
 else:
     FILEPICKER = False
-if apps.is_installed('pod.authentication'):
-    AUTH = True
-    from django.contrib.auth.models import User
-    from pod.authentication.models import Owner
-else:
-    AUTH = False
-    from django.contrib.auth.models import User
 
 
 class CompletionViewsTestCase(TestCase):
@@ -36,9 +30,6 @@ class CompletionViewsTestCase(TestCase):
             username='staff', password='azerty', is_staff=True)
         staff.set_password('hello')
         staff.save()
-        if AUTH:
-            user = Owner.objects.get(user__username='test')
-            staff = Owner.objects.get(user__username='staff')
         Video.objects.create(
             title='videotest',
             owner=user,
@@ -91,8 +82,6 @@ class CompletionContributorViewsTestCase(TestCase):
             username='staff', password='azerty', is_staff=True)
         staff.set_password('hello')
         staff.save()
-        if AUTH:
-            staff = Owner.objects.get(user__username='staff')
         Video.objects.create(
             title='videotest2',
             owner=staff,
@@ -244,8 +233,6 @@ class CompletionTrackViewsTestCase(TestCase):
         staff.save()
         if FILEPICKER:
             UserDirectory.objects.create(owner=staff, name='Home')
-        if AUTH:
-            staff = Owner.objects.get(user__username='staff')
         Video.objects.create(
             title='videotest2',
             owner=staff,
@@ -439,8 +426,6 @@ class CompletionDocumentViewsTestCase(TestCase):
         staff.save()
         if FILEPICKER:
             UserDirectory.objects.create(owner=staff, name='Home')
-        if AUTH:
-            staff = Owner.objects.get(user__username='staff')
         Video.objects.create(
             title='videotest2',
             owner=staff,
@@ -639,8 +624,6 @@ class CompletionOverlayViewsTestCase(TestCase):
             username='staff', password='azerty', is_staff=True)
         staff.set_password('hello')
         staff.save()
-        if AUTH:
-            staff = Owner.objects.get(user__username='staff')
         Video.objects.create(
             title='videotest2',
             owner=staff,
