@@ -214,22 +214,22 @@ class Enrichment(models.Model):
                 return msg
         return list()
 
-        def save(self, *args, **kwargs):
-            newid = -1
-            if not self.id:
+    def save(self, *args, **kwargs):
+        newid = -1
+        if not self.id:
+            try:
+                newid = get_nextautoincrement(Enrichment)
+            except Exception:
                 try:
-                    newid = get_nextautoincrement(Enrichment)
+                    newid = Enrichment.objects.latest('id').id
+                    newid += 1
                 except Exception:
-                    try:
-                        newid = Enrichment.objects.latest('id').id
-                        newid += 1
-                    except Exception:
-                        newid = 1
-            else:
-                newid = self.id
-            newid = '{0}'.format(newid)
-            self.slug = '{0} - {1}'.format(newid, slugify(self.title))
-            super(Enrichment, self).save(*args, **kwargs)
+                    newid = 1
+        else:
+            newid = self.id
+        newid = '{0}'.format(newid)
+        self.slug = '{0} - {1}'.format(newid, slugify(self.title))
+        super(Enrichment, self).save(*args, **kwargs)
 
-        def __str__(self):
-            return u'Media : {0} - Video: {1}'.format(self.title, self.video)
+    def __str__(self):
+        return u'Media : {0} - Video: {1}'.format(self.title, self.video)

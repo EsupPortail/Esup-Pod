@@ -1,0 +1,73 @@
+<!-- HTML for enrichment main page. -->
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% block page_title %}{% trans 'Enrichment of the video' %} "{{video.title}}" {% endblock page_title %}
+{% block page_extra_head %}
+	<!-- media -->
+	<link rel="stylesheet" href="{% static 'css/filepicker.overlay.css' %}"/>
+	<link rel="stylesheet" href="{% static 'css/enrichment.css' %}"/>
+	<script src="{% static 'js/jquery.tools.min.js' %}"></script>
+	<script src="{% static 'js/main.js' %}"></script>
+	<script src="{% static 'js/ajaxupload.js' %}"></script>
+    <script src="{% static 'js/jquery.filepicker.js' %}"></script>
+    <script src="{% static 'js/enrichment.js' %}"></script>
+    <!-- TODO : videojs and extraheadplayer -->
+{% endblock page_extra_head %}
+{% block content %}
+	<article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+		<main role="main" class="mt-3">
+			<nav aria-label="breadcrumb" class="breadcrumb d-flex justify-content-between p-0">
+				<ol class="breadcrumb p-1 p1-4 mb-0">
+					{% block breadcrumbs %}
+						{{block.super}}
+						<li class="active">&nbsp;{% trans 'Enrich video' %} "{{video.title}}"</li>
+					{% endblock breadcrumbs %}
+				</ol>
+				<div class="p-0">
+					<a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside">
+						<svg height="32" class="octicon octicon-grabber" viewBox="0 0 8 16" version="1.1" width="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 4v1H0V4h8zM0 8h8V7H0v1zm0 3h8v-1H0v1z"></path></svg>
+					</a>
+				</div>
+			</nav>
+			<span id="enrich_player">
+				<!-- TODO : FUTURE PLAYER -->
+			</span>
+			<div class="row" id="info_video">
+				<div class="col-sm-9">
+					<span id="list_enrich">
+						{% include 'enrichment/list_enrichment.html' %}
+					</span>
+					<span id="form_enrich">
+						{% if form_enrichment %}
+							{% include 'enrichment/form_enrichment.html' with form_enrichment=form_enrichment %}
+						{% endif %}
+					</span>
+					<form id="form_new" action="{% url 'video_enrichment' slug=video.slug %}" method="POST">
+						{% csrf_token %}
+						<input type="hidden" name="action" value="new"/>
+						<input type="submit" id="add_new_enrichment" value="{% trans 'Add a new enrichment' %}" class="btn btn-info"/>
+					</form>
+				</div>
+				<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
+					<div class="widget user-tools">
+						<h4>
+							{% trans 'Edit the video' %}
+						</h4>
+					</div>
+					<div class="card info-card">
+						<div class="card bg-info text-white">
+							<h4 class="card-title">{% trans 'Informations' %}</h4>
+						</div>
+						<div class="card-body">
+							<p>{% trans 'The title field is required and must contains from 2 to 100 characters.' %}</p>
+							<p>{% trans 'The fields "Start" and "End" must contain an indication value in seconds. Start playback of the video, pause the video and click on "Get time from the player" to fill in the field untitled "Start". Then do the same to fill in the field untitled "End".' %}</p>
+							<p>{% trans 'You cannot overlap enrichments.' %}</p>
+							<p>{% trans 'You must save your enrichments to view the result.' %}</p>
+						</div>
+					</div>
+				</aside>
+			</div>
+		</main>
+	</article>
+{% endblock content %}

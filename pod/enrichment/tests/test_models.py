@@ -32,7 +32,7 @@ class EnrichmentModelTestCase(TestCase):
                 content_type='text/plain')
             home = UserDirectory.objects.create(name='Home', owner=owner)
             file = CustomImageModel.objects.create(
-                name='testfile',
+                name='testimage',
                 date_created=datetime.now(),
                 date_modified=datetime.now(),
                 created_by=owner,
@@ -75,6 +75,7 @@ class EnrichmentModelTestCase(TestCase):
             self.assertEqual(enrichment.image.name, 'testimage.jpg')
 
         print(" ---> test_attributs_full : OK ! --- EnrichmentModel")
+        print(" [ END ENRICHMENT_TEST MODEL ] ")
 
     def test_attributs(self):
         enrichment = Enrichment.objects.get(id=2)
@@ -87,6 +88,7 @@ class EnrichmentModelTestCase(TestCase):
         self.assertEqual(enrichment.type, 'weblink')
         self.assertEqual(enrichment.weblink, 'http://test.com')
 
+        print(" [ BEGIN ENRICHMENT_TEST MODEL ] ")
         print(" ---> test_attributs : OK ! --- EnrichmentModel")
 
     def test_clean(self):

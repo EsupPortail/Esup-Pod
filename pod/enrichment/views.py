@@ -58,7 +58,8 @@ def video_enrichment_new(request, video):
             request,
             'video_enrichment.html',
             {'video': video,
-             'list_enrichment': list_enrichment})
+             'list_enrichment': list_enrichment,
+             'form_enrichment': form_enrichment})
 
 
 def video_enrichment_save(request, video):
