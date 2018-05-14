@@ -24,8 +24,7 @@ from datetime import datetime
 class ContributorModelTestCase(TestCase):
 
     def setUp(self):
-        User.objects.create(username='test')
-        owner = Owner.objects.get(user__username='test')
+        owner = User.objects.create(username='test')
         video = Video.objects.create(
             title='video',
             owner=owner,
@@ -75,8 +74,7 @@ class ContributorModelTestCase(TestCase):
 class DocumentModelTestCase(TestCase):
 
     def setUp(self):
-        user = User.objects.create(username='test')
-        owner = Owner.objects.get(user__username='test')
+        owner = User.objects.create(username='test')
         video = Video.objects.create(
             title='video',
             owner=owner,
@@ -88,13 +86,13 @@ class DocumentModelTestCase(TestCase):
                 content=open(
                     './pod/completion/tests/testfile.vtt', 'rb').read(),
                 content_type='text/plain')
-            home = UserDirectory.objects.create(name='Home', owner=user)
+            home = UserDirectory.objects.create(name='Home', owner=owner)
             file = CustomFileModel.objects.create(
                 name='testfile',
                 date_created=datetime.now(),
                 date_modified=datetime.now(),
-                created_by=user,
-                modified_by=user,
+                created_by=owner,
+                modified_by=owner,
                 directory=home,
                 file=testfile
             )
@@ -139,8 +137,7 @@ class DocumentModelTestCase(TestCase):
 class OverlayModelTestCase(TestCase):
 
     def setUp(self):
-        User.objects.create(username='test')
-        owner = Owner.objects.get(user__username='test')
+        owner = User.objects.create(username='test')
         video = Video.objects.create(
             title='video',
             owner=owner,
@@ -192,8 +189,7 @@ class OverlayModelTestCase(TestCase):
 class TrackModelTestCase(TestCase):
 
     def setUp(self):
-        user = User.objects.create(username='test')
-        owner = Owner.objects.get(user__username='test')
+        owner = User.objects.create(username='test')
         video = Video.objects.create(
             title='video',
             owner=owner,
@@ -205,13 +201,13 @@ class TrackModelTestCase(TestCase):
                 content=open(
                     './pod/completion/tests/testfile.vtt', 'rb').read(),
                 content_type='text/plain')
-            home = UserDirectory.objects.create(name='Home', owner=user)
+            home = UserDirectory.objects.create(name='Home', owner=owner)
             file = CustomFileModel.objects.create(
                 name='testfile',
                 date_created=datetime.now(),
                 date_modified=datetime.now(),
-                created_by=user,
-                modified_by=user,
+                created_by=owner,
+                modified_by=owner,
                 directory=home,
                 file=testfile
             )
