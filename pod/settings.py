@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'pod.video',
     'pod.completion',
     'pod.chapters',
+    'pod.enrichment',
 ]
 
 ##
