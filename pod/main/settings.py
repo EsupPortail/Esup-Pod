@@ -45,7 +45,7 @@ ALLOWED_HOSTS = ['localhost']
 # A tuple that lists people who get code error notifications
 #   when DEBUG=False and a view raises an exception.
 #
-#   https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-ADMINS
+# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-ADMINS
 #
 ADMINS = (
     ('Name', 'adminmail@univ.fr'),
@@ -54,7 +54,7 @@ ADMINS = (
 # A tuple that lists people who get other notifications
 #   email from contact_us / end of encoding / report video
 #
-#   https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-MANAGERS
+# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-MANAGERS
 MANAGERS = (
     ('Name', 'adminmail@univ.fr'),
 )
@@ -125,7 +125,7 @@ MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
 
 ##
 # Video tiers apps settings
-# 
+#
 FORCE_LOWERCASE_TAGS = True
 MAX_TAG_LENGTH = 50
 
@@ -133,9 +133,8 @@ MAX_TAG_LENGTH = 50
 # AUTH CAS
 #
 LOGIN_URL = '/authentication_login/'
-USE_CAS = True
-CAS_SERVER_URL = "https://cas-test.univ-lille.fr/"
+USE_CAS = False
+CAS_SERVER_URL = "your cas serveur URL here"
 CAS_LOGOUT_COMPLETELY = True
 CAS_ADMIN_AUTH = False
 CAS_GATEWAY = False
-

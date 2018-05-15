@@ -27,6 +27,7 @@ else:
     def authentication_login_gateway(request):
         return HttpResponse("You must set CAS_GATEWAY to True to use this view")
 
+
 def authentication_login(request):
     referrer = request.GET['referrer'] if request.GET.get('referrer') else '/'
     if request.user.is_authenticated():

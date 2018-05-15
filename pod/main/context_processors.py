@@ -20,8 +20,14 @@ MENUBAR_HIDE_INACTIVE_OWNERS = getattr(
     django_settings, 'MENUBAR_HIDE_INACTIVE_OWNERS', False)
 MENUBAR_SHOW_STAFF_OWNERS_ONLY = getattr(
     django_settings, 'MENUBAR_SHOW_STAFF_OWNERS_ONLY', False)
-HOMEPAGE_SHOWS_PASSWORDED = getattr(django_settings, 'HOMEPAGE_SHOWS_PASSWORDED', True)
-HOMEPAGE_SHOWS_RESTRICTED = getattr(django_settings, 'HOMEPAGE_SHOWS_RESTRICTED', True)
+HOMEPAGE_SHOWS_PASSWORDED = getattr(
+    django_settings,
+    'HOMEPAGE_SHOWS_PASSWORDED',
+    True)
+HOMEPAGE_SHOWS_RESTRICTED = getattr(
+    django_settings,
+    'HOMEPAGE_SHOWS_RESTRICTED',
+    True)
 
 
 def context_settings(request):
@@ -77,15 +83,18 @@ def context_navbar(request):
             else:
                 listowner[owner['fl_name']] = [owner]
 
-    LAST_VIDEOS = None
-    if request.path == "/":
-        filter_args = {"encoding_in_progress":False, "is_draft":False}
-        if not HOMEPAGE_SHOWS_PASSWORDED:
-            filter_args['password'] = ""
-        if not HOMEPAGE_SHOWS_RESTRICTED:
-            filter_args['is_restricted'] = False
-        LAST_VIDEOS = Video.objects.filter(**filter_args).exclude(channel__visible=0)[:12]
-    
+    LAST_VIDEOS = get_last_videos() if request.path == "/" else None
+
     return {'CHANNELS': channels, 'TYPES': types, 'OWNERS': owners,
-            'DISCIPLINES':disciplines, 'LISTOWNER': json.dumps(listowner),
-            'LAST_VIDEOS':LAST_VIDEOS}
+            'DISCIPLINES': disciplines, 'LISTOWNER': json.dumps(listowner),
+            'LAST_VIDEOS': LAST_VIDEOS}
+
+
+def get_last_videos():
+    filter_args = {"encoding_in_progress": False, "is_draft": False}
+    if not HOMEPAGE_SHOWS_PASSWORDED:
+        filter_args['password'] = ""
+    if not HOMEPAGE_SHOWS_RESTRICTED:
+        filter_args['is_restricted'] = False
+    return Video.objects.filter(
+        **filter_args).exclude(channel__visible=0)[:12]
