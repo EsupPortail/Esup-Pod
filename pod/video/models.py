@@ -508,7 +508,7 @@ class Video(models.Model):
         list_video = sorted(self.get_video_mp4(), key=lambda m: m.height)
         for video in list_video:
             list_src.append(
-                {'type': video.encoding_format, 'src': video.source_file.url, 'height': video.height})
+                {'type': video.encoding_format, 'src': video.source_file.url, 'height': video.height, 'label':video.name})
         return list_src
         # return json.dumps(self.get_video_mp4())
 

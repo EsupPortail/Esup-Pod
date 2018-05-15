@@ -93,3 +93,13 @@ def video(request, slug):
     return render(request, 'videos/video.html', {
         'video': video}
     )
+
+@csrf_protect
+def video_edit(request, slug=None):
+
+    form = "Formulaire de creation/edition d'une video"
+
+    return render(request, 'videos/video_edit.html', {
+        'form': form}
+    )
+

@@ -5,7 +5,17 @@
 
 {% block page_extra_head %}
 <link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/quality-selector.css' %}" rel="stylesheet">
+
 <script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
+<script src="{% static 'js/silvermine-videojs-quality-selector.min.js' %}"></script>
+<script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
+<script src="{% static 'js/videojs-contrib-quality-levels.min.js' %}"></script>
+<script src="{% static 'js/videojs-hls-quality-selector.min.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/lang/fr.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
+
 <style>
 .scrollspy-video {
     position: relative;
@@ -16,11 +26,9 @@
 </style>
 {% endblock page_extra_head %}
 
-
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item"><a href="{% url "videos"%}">{% trans 'Videos' %}</a><li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>{% endblock %}
 
 {% block page_title %}{{video.title}}{% endblock %}
-
 
 {% block page_content %}
 <meta itemprop="duration" content="{{ video.duration }}" />
@@ -28,17 +36,17 @@
 <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
 <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=360" />
 
-  <video id="pod-video" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="none" height="360"
-  poster="{{video.get_thumbnail_url}}" data-setup='{"fluid": true, "playbackRates": [0.5, 1, 1.5, 2] }'>
-    <p class="vjs-no-js">
-      To view this video please enable JavaScript, and consider upgrading to a web browser that
-      <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-    </p>
-    <!--
-    <track kind="captions" src="../shared/example-captions.vtt" srclang="en" label="English"></track>
-    <track kind="subtitles" src="../shared/example-captions.vtt" srclang="en" label="English"></track>
-    -->
-  </video>
+<video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
+poster="{{video.get_thumbnail_url}}" data-setup='{}'>
+  <p class="vjs-no-js">
+    To view this video please enable JavaScript, and consider upgrading to a web browser that
+    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+  </p>
+  <!--
+  <track kind="captions" src="../shared/example-captions.vtt" srclang="en" label="English"></track>
+  <track kind="subtitles" src="../shared/example-captions.vtt" srclang="en" label="English"></track>
+  -->
+</video>
 
 <nav id="navbar-example2" class="navbar navbar-light bg-light">
   <a class="navbar-brand" href="#">{{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}</a>
@@ -134,26 +142,26 @@
 
 
 {% block more_script %}
-<script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
-<script src="{% static 'video-js-6.8.0/lang/fr.js' %}"></script>
-<script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
-<script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
-<script src="{% static 'js/videojs-contrib-quality-levels.min.js' %}"></script>
-<script src="{% static 'js/videojs-hls-quality-selector.min.js' %}"></script>
 <script>
 var options = {
   notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
-  language: "fr" //en or nl
+  language: "fr", //en or nl
+  fluid: true, 
+  playbackRates: [0.5, 1, 1.5, 2]
 }
-var player = videojs('pod-video', options);
+var player = videojs('podvideoplayer', options, function(){});
 
 {% if video.is_video %}
+  /** get all mp4 format **/
+  var mp4_sources = {{video.get_video_mp4_json|safe}};
+  
   {% if video.get_playlist_master %}
     var srcOptions = {
       src: '{{video.get_playlist_master.source_file.url}}',
       type: '{{video.get_playlist_master.encoding_format}}',
     };
     player.on('loadedmetadata', function() {
+      console.log('LOADEDMETADATA');
       var qualityLevels = this.qualityLevels();
     });
     //Add source to player
@@ -164,30 +172,30 @@ var player = videojs('pod-video', options);
       e.stopImmediatePropagation();
       var error = player.error();
       if(error.code == 3) {
-        console.log('error!', error.code, error.type , error.message);
-        alert("change source to mp4");
+        //console.log('error!', error.code, error.type , error.message);
+        if(player.src().indexOf("m3u8")!=-1){
+          //alert("change source to mp4");
+          player.src(mp4_sources);
+          player.controlBar.addChild('QualitySelector');
+          player.play();
+        }
       }
     });
+  {% else %}
+    player.src(mp4_sources);
+    player.controlBar.addChild('QualitySelector');
   {% endif %}
-  /** get all mp4 format **/
-  var mp4_sources = {{video.get_video_mp4_json|safe}};
   
 {% else %}
   {% if video.get_video_m4a %}
-  var srcOptions = {
+    var srcOptions = {
       src: '{{video.get_video_m4a.source_file.url}}',
       type: '{{video.get_video_m4a.encoding_format}}',
     };
-  //Add source to player
-  player.src(srcOptions);
+    //Add source to player
+    player.src(srcOptions);
   {% endif %}
 {% endif %}
-
-
-
-
-
-
-
 </script>
+
 {% endblock more_script %}
