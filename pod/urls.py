@@ -10,6 +10,7 @@ from django.contrib import admin
 from django.apps import apps
 from pod.video.views import video
 from pod.video.views import videos
+from django.contrib.auth import views as auth_views
 
 if apps.is_installed('pod.filepicker'):
     from pod.filepicker.sites import site as filepicker_site
@@ -23,6 +24,13 @@ urlpatterns = [
     # App video
     url(r'^videos/$', videos, name='videos'),
     url(r'^video/(?P<slug>[\-\d\w]+)/$', video, name='video'),
+
+    # auth cas
+    #url(r'^accounts/login/$', auth_views.LoginView.as_view()),
+    url(r'^accounts/login/$', auth_views.login, {'redirect_authenticated_user':True}, name='local-login'),
+    url(r'^accounts/logout/$', auth_views.logout, {'next_page': '/'}, name='local-logout'),
+    url(r'^accounts/change-password/$', auth_views.PasswordChangeView.as_view()),
+    url(r'^sso-cas/', include('django_cas.urls')),
 ]
 
 if apps.is_installed('pod.filepicker'):

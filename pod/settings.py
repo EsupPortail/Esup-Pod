@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'sorl.thumbnail',
     'tagging',
+    'django_cas',
     # Pod Applications
     'pod.main',
     'pod.authentication',
@@ -55,8 +56,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # Pages statiques
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    # 'django_cas.middleware.CASMiddleware',
 ]
 
+"""
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', 
+    'django_cas.backends.CASBackend',
+
+)
+"""
 ##
 # Full Python import path to root URL file
 #
