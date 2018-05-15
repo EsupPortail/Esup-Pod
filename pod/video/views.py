@@ -1,8 +1,12 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
+from django.http import HttpResponse
 from django.core.exceptions import SuspiciousOperation
+from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_protect
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 
 from pod.video.models import Video
 from pod.video.models import Channel
@@ -39,7 +43,7 @@ def channel(request, slug_c, slug_t=None):
 
     if request.is_ajax():
         return render(
-            request, 'videos/video_list.html', 
+            request, 'videos/video_list.html',
             {'videos': videos, "full_path": full_path})
 
     return render(request, 'channel/channel.html',
@@ -87,7 +91,7 @@ def videos(request):
 
     if request.is_ajax():
         return render(
-            request, 'videos/video_list.html', 
+            request, 'videos/video_list.html',
             {'videos': videos, "full_path": full_path})
 
     return render(request, 'videos/videos.html', {
@@ -100,17 +104,97 @@ def videos(request):
     })
 
 
+def is_in_video_groups(user, video):
+    return user.groups.filter(
+        name__in=[
+            name[0]
+            for name in video.restrict_access_to_groups.values_list('name')
+        ]
+    ).exists()
+
+
 @csrf_protect
-def video(request, slug):
+def video(request, slug, slug_c=None, slug_t=None):
     try:
         id = int(slug[:slug.find("-")])
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
     video = get_object_or_404(Video, id=id)
 
-    return render(request, 'videos/video.html', {
-        'video': video}
+    channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
+    theme = get_object_or_404(Theme, slug=slug_t) if slug_t else None
+
+    is_draft = video.is_draft
+    is_restricted = video.is_restricted
+    is_restricted_to_group = video.restrict_access_to_groups.all().exists()
+    is_password_protected = (video.password is not None)
+
+    is_access_protected = (
+        is_draft
+        or is_restricted
+        or is_restricted_to_group
+        or is_password_protected
     )
+
+    print(is_access_protected, is_draft, is_restricted,
+          is_restricted_to_group, is_password_protected)
+
+    if is_access_protected:
+        print("access protected")
+
+        access_granted_for_draft = request.user.is_authenticated() and (
+            request.user == video.owner or request.user.is_superuser)
+        access_granted_for_restricted = (
+            request.user.is_authenticated() and not is_restricted_to_group)
+        access_granted_for_group = (
+            request.user.is_authenticated()
+            and is_in_video_groups(request.user, video)
+        )
+
+        show_page = (
+            (is_draft and access_granted_for_draft)
+            or (
+                is_restricted
+                and access_granted_for_restricted
+                and is_password_protected is False)
+            or (
+                is_restricted_to_group
+                and access_granted_for_group
+                and is_password_protected is False)
+            or (
+                is_password_protected
+                and access_granted_for_draft
+            )
+            or (
+                is_password_protected
+                and request.POST.password == video.password
+            )
+        )
+        if show_page:
+            return render(
+                request, 'videos/video.html', {
+                    'channel': channel,
+                    'video': video,
+                    'theme': theme,
+                }
+            )
+        else:
+            if is_password_protected:
+                return HttpResponse("show form password")
+            elif request.user.is_authenticated():
+                messages.add_message(
+                    request, messages.ERROR, _(u'You cannot watch this video.'))
+                raise PermissionDenied
+            else:
+                return HttpResponse("redirect to login page")
+    else:
+        return render(
+            request, 'videos/video.html', {
+                'channel': channel,
+                'video': video,
+                'theme': theme,
+            }
+        )
 
 
 @csrf_protect

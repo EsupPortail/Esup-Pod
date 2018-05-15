@@ -446,7 +446,16 @@ class Video(models.Model):
         newid = '%04d' % newid
         self.slug = "%s-%s" % (newid, slugify(self.title))
         self.tags = remove_accents(self.tags)
+
         super(Video, self).save(*args, **kwargs)
+
+    def clean(self,*args, **kwargs):
+        if self.restrict_access_to_groups.all().exists() and self.is_restricted == False:
+            raise ValidationError(
+                _("Please, checked restricted access if check groups"))
+        if self.is_draft and self.is_restricted == True:
+            raise ValidationError(
+                _("If Draft, restricted access be not checked"))
 
     def __str__(self):
         return "%s - %s" % ('%04d' % self.id, self.title)
