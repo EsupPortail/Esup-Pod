@@ -12,6 +12,7 @@ from pod.video.models import Video
 from pod.chapters.models import Chapter
 from pod.chapters.forms import ChapterForm
 from pod.chapters.forms import ChapterImportForm
+from pod.chapters.utils import chapter_to_vtt
 
 import json
 
@@ -172,6 +173,7 @@ def video_chapter_cancel(request, video):
         {'video': video,
          'list_chapter': list_chapter})
 
+
 def video_chapter_export(request, video):
     list_chapter = video.chapter_set.all()
 
@@ -185,6 +187,7 @@ def video_chapter_export(request, video):
         return HttpResponse(data, content_type='application/json')
     else:
         return HttpResponseNotFound('This video has no chapters.')
+
 
 def video_chapter_import(request, video):
     list_chapter = video.chapter_set.all()
@@ -214,14 +217,15 @@ def video_chapter_import(request, video):
                 {'video': video,
                  'list_chapter': list_chapter})
     else:
-        print(form_import.errors)
         if request.is_ajax():
             some_data_to_dump = {
                 'errors': '{0}'.format(_('Please correct errors.')),
                 'form': render_to_string(
-                    'chapter/form_chapter_import.html',
+                    'chapter/form_chapter.html',
                     {'video': video,
-                     'form_import': form_import})
+                     'form_import': form_import,
+                     'form_chapter': form_chapter,
+                     'csrf_token': request.COOKIES['csrftoken']})
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')

@@ -11,6 +11,23 @@
 	<script src="{% static 'js/main.js' %}"></script>
 	<script src="{% static 'js/ajaxupload.js' %}"></script>
     <script src="{% static 'js/jquery.filepicker.js' %}"></script>
+    <script src="{% static 'js/chapters.js' %}"></script>
+    <script>
+    	var num = 0,
+	    name = '';
+		// For the form
+		var video_duration = {{video.duration}}
+		// For the Cancel button
+		$(document).on('reset', 'form', function(e) {
+			$('span#form_chapter').html('');
+			//$('span#form_chapter').unwrap();
+			//$('span#list_chapter').unwrap();
+			$('form#form_new').show();
+			$('form').show();
+			$('table tr').removeClass('info');
+			manageResize();
+		});
+	</script>
 {% endblock page_extra_head %}
 {% block content %}
 	<article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
@@ -36,16 +53,6 @@
 					<span id="form_chapter">
 						{% if form_chapter %}
 							{% include 'chapter/form_chapter.html' with form_chapter=form_chapter %}
-						{% endif %}
-						<h4>Import / Export</h4>
-						{% if form_import %}
-							{% include 'chapter/form_chapter_import.html' with form_import=form_import %}
-							&nbsp;
-							<form id="form_vtt_export" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
-								{% csrf_token %}
-								<input type="hidden" name="action" value="export"/>
-								<input type="submit" id="get_chapter_vtt" value="{% trans 'Export chapters' %}" class="btn btn-info"/>
-							</form>
 						{% endif %}
 					</span>
 					<span id="list_chapter">

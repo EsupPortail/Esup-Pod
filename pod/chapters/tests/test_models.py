@@ -1,7 +1,6 @@
 """
 Unit tests for chapters models
 """
-from django.apps import apps
 from django.test import TestCase
 from django.contrib.auth.models import User
 from pod.video.models import Video
