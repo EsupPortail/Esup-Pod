@@ -11,18 +11,7 @@
 {% block page_content %}
 
   <h3>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h3>
-
-  <div class="row infinite-container">
-    {% include "videos/video_list.html" %}
-  </div>
-
-  {% if videos.has_next %}
-    <a class="infinite-more-link" href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{%endif%}page={{ videos.next_page_number }}">More</a>
-  {% endif %}
-
-  <div class="loading" style="display: none;">
-    Loading...
-  </div>
+  {% include "videos/video_list.html" %}
 
 {% endblock page_content %}
 

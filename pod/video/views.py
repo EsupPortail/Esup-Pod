@@ -37,6 +37,11 @@ def channel(request, slug_c, slug_t=None):
     except EmptyPage:
         videos = paginator.page(paginator.num_pages)
 
+    if request.is_ajax():
+        return render(
+            request, 'videos/video_list.html', 
+            {'videos': videos, "full_path": full_path})
+
     return render(request, 'channel/channel.html',
                   {'channel': channel,
                    'videos': videos,
@@ -79,6 +84,12 @@ def videos(request):
         videos = paginator.page(1)
     except EmptyPage:
         videos = paginator.page(paginator.num_pages)
+
+    if request.is_ajax():
+        return render(
+            request, 'videos/video_list.html', 
+            {'videos': videos, "full_path": full_path})
+
     return render(request, 'videos/videos.html', {
         'videos': videos,
         "types": request.GET.getlist('type'),
