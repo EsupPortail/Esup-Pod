@@ -1,23 +1,24 @@
 {% extends 'base.html' %}
-
+{% load i18n %}
 {% load staticfiles %}
+
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Videos" %}</li>{% endblock %}
+
+{% block page_title %}{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}{% endblock %}
+
 
 {% block page_content %}
 
-  <div class="infinite-container">
-    {% include "videos/video_list.html" %}
-  </div>
+  <h3>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h3>
+  {% include "videos/video_list.html" %}
 
-  {% if videos.has_next %}
-    <a class="infinite-more-link" href="?page={{ videos.next_page_number }}">More</a>
-  {% endif %}
-
-  <div class="loading" style="display: none;">
-    Loading...
-  </div>
-
-  
 {% endblock page_content %}
+
+{% block page_aside %}
+    {% include 'videos/filter_aside.html'%}
+{% endblock page_aside %}
+
 
 {% block more_script %}
 <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>

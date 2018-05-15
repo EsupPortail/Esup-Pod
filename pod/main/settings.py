@@ -132,6 +132,10 @@ MAX_TAG_LENGTH = 50
 ##
 # AUTH CAS
 #
-CAS_SERVER_URL = "https://cas-dev.univ-lille.fr/"
+LOGIN_URL = '/authentication_login/'
+USE_CAS = True
+CAS_SERVER_URL = "https://cas-test.univ-lille.fr/"
 CAS_LOGOUT_COMPLETELY = True
 CAS_ADMIN_AUTH = False
+CAS_GATEWAY = False
+
