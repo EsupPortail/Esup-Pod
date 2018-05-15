@@ -1,5 +1,3 @@
-# from django.shortcuts import render
-from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
@@ -40,10 +38,13 @@ def channel(request, slug_c, slug_t=None):
         videos = paginator.page(paginator.num_pages)
 
     return render(request, 'channel/channel.html',
-                  {'channel': channel, 'videos': videos, 'theme': theme})
+                  {'channel': channel,
+                   'videos': videos,
+                   'theme': theme,
+                   'full_path': full_path})
 
 
-def videos(request):
+def get_videos_list(request):
     videos_list = VIDEOS
 
     if request.GET.getlist('type'):
@@ -59,12 +60,18 @@ def videos(request):
         videos_list = TaggedItem.objects.get_union_by_model(
             videos_list,
             request.GET.getlist('tag'))
+    return videos_list
+
+
+def videos(request):
+    videos_list = get_videos_list(request)
 
     page = request.GET.get('page', 1)
     full_path = ""
     if page:
         full_path = request.get_full_path().replace(
             "?page=%s" % page, "").replace("&page=%s" % page, "")
+
     paginator = Paginator(videos_list, 12)
     try:
         videos = paginator.page(page)
@@ -94,6 +101,7 @@ def video(request, slug):
         'video': video}
     )
 
+
 @csrf_protect
 def video_edit(request, slug=None):
 
@@ -102,4 +110,3 @@ def video_edit(request, slug=None):
     return render(request, 'videos/video_edit.html', {
         'form': form}
     )
-

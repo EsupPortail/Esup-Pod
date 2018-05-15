@@ -39,7 +39,7 @@ if apps.is_installed('pod.chapters'):
 
 urlpatterns += [
     url(r'^(?P<slug_c>[\-\d\w]+)/$', channel, name='channel'),
-    #url(r'^(?P<slug_c>[\-\d\w]+)/edit$',
+    # url(r'^(?P<slug_c>[\-\d\w]+)/edit$',
     #    'pods.views.channel_edit', name='channel_edit'),
     url(r'^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$',
         channel, name='theme'),
