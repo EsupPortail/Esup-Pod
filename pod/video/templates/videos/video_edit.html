@@ -4,16 +4,60 @@
 {% load tagging_tags %}
 
 {% block page_extra_head %}
-
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
+<!-- form . media -->
+{{form.media}}
+<!-- fin form . media -->
+<!--
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/base.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}" />
+-->
 {% endblock page_extra_head %}
 
 
-{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item"><a href="#">{% trans 'Mes videos' %}</a><li class="breadcrumb-item active" aria-current="page">{{form.instance.title}}</li>{% endblock %}
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item"><a href="#">{% trans 'Mes videos' %}</a><li class="breadcrumb-item active" aria-current="page">{% if form.instance.title %}{{form.instance.title}}{% else %}{% trans "Add a new video" %}{%endif%}</li>{% endblock %}
 
-{% block page_title %}{{form.instance.title}}{% endblock %}
+{% block page_title %}{% if form.instance.title %}{{form.instance.title}}{% else %}{% trans "Add a new video" %}{%endif%}{% endblock %}
 
 
 {% block page_content %}
+<h3>{% if form.instance.title %}{{form.instance.title}}{% else %}{% trans "Add a new video" %}{%endif%}</h3>
+
+{% if form.instance.slug %}
+<form id="video_form" method="post"
+    action="{% url 'video_edit' slug=form.instance.slug %}"
+    accept-charset="utf-8" enctype="multipart/form-data">
+{% else %}
+<form id="video_form" method="post"
+    action="{% url 'video_edit' %}"
+    accept-charset="utf-8" enctype="multipart/form-data">
+{% endif %}
+    {% csrf_token %}
+    <div>
+        <fieldset>
+            {% for field in form %}
+            <div class="form-group">
+                {{ field.errors }}
+                {% if "form-check-input" in field.field.widget.attrs.class %}
+                <div class="form-check">
+                {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label" >{{ field.label }}</label>
+                </div>
+                {% else %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label> {{ field }}
+                {% endif %}
+                {% if field.help_text %}
+                <small id="{ field.id_for_label }}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </fieldset>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
 
 
 {% endblock page_content %}

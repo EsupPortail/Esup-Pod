@@ -14,6 +14,8 @@ from pod.video.models import Channel
 from pod.video.models import Theme
 from tagging.models import TaggedItem
 
+from pod.video.forms import VideoForm
+
 # Create your views here.
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
 
@@ -199,11 +201,28 @@ def video(request, slug, slug_c=None, slug_t=None):
 
 
 @csrf_protect
-@login_required(redirect_field_name='referrer') # (login_url='/accounts/login/')
+# (login_url='/accounts/login/')
+@login_required(redirect_field_name='referrer')
 def video_edit(request, slug=None):
 
-    form = "Formulaire de creation/edition d'une video"
+    video = get_object_or_404(Pod, slug=slug) if slug else None
 
+    if video and request.user != video.owner and not request.user.is_superuser:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot edit this video.'))
+        raise PermissionDenied
+
+    form = VideoForm(
+        instance=video,
+        is_staff=request.user.is_staff,
+        is_superuser=request.user.is_superuser
+    )
+    """
+    if request.method == 'POST':
+        form = VideoForm(request.POST, request.FILES, instance=video)
+        if form.is_valid():
+            return HttpResponseRedirect('/thanks/')
+    """
     return render(request, 'videos/video_edit.html', {
         'form': form}
     )

@@ -123,6 +123,35 @@ TEMPLATE_THEME = 'DEFAULT'
 # CKeditor settings
 #
 # CKEDITOR_BASEPATH = os.path.join(STATIC_URL, 'ckeditor', "/")
+CKEDITOR_UPLOAD_PATH = os.path.join(MEDIA_ROOT, 'uploads')
+CKEDITOR_CONFIGS = {
+    'complete': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': '100%'
+    },
+    'default': {
+        'height': 300,
+        'width': '100%',
+        'toolbar': 'custom',
+        'language': 'fr',
+        'toolbar_custom': [
+            {'name': 'basicstyles', 'items': [
+                'Bold', 'Italic', 'Underline', 'Strike', 'Subscript',
+                'Superscript', '-', 'RemoveFormat'
+            ]
+            },
+            {'name': 'paragraph', 'items': [
+                'NumberedList', 'BulletedList',
+                '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv',
+                '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight',
+                'JustifyBlock', '-', 'BidiLtr', 'BidiRtl'
+            ]},
+            {'name': 'links', 'items': ['Link', 'Unlink', 'Anchor']},
+            {'name': 'tools', 'items': ['Maximize']}
+        ],
+    }
+}
 
 ##
 # Main menu settings:

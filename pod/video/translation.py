@@ -24,12 +24,12 @@ class ThemeTranslationOptions(TranslationOptions):
 
 
 class ChannelTranslationOptions(TranslationOptions):
-    fallback_values = _('-- sorry, no translation provided --')
+    # fallback_values = _('-- sorry, no translation provided --')
     fields = ('title', 'description')
 
 
 class VideoTranslationOptions(TranslationOptions):
-    fallback_values = _('-- sorry, no translation provided --')
+    # fallback_values = _('-- sorry, no translation provided --')
     fields = ('title', 'description')
 
 
