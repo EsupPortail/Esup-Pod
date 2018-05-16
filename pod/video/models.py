@@ -10,6 +10,7 @@ from django.contrib.auth.models import Group
 from django.apps import apps
 from django.urls import reverse
 from django.core.exceptions import ValidationError
+from django.contrib.sites.shortcuts import get_current_site
 from django.dispatch import receiver
 # from django.db.models.signals import post_save
 # from django.db.models.signals import pre_save
@@ -26,6 +27,7 @@ from tagging.fields import TagField
 import os
 import time
 import unicodedata
+import json
 
 import logging
 logger = logging.getLogger(__name__)
@@ -82,6 +84,8 @@ ENCODING_CHOICES = getattr(
         ("1080p", "1080p"),
         ("playlist", "playlist")
     ))
+DEFAULT_THUMBNAIL = getattr(
+    settings, 'DEFAULT_THUMBNAIL', 'img/default.png')
 # FUNCTIONS
 
 
@@ -178,13 +182,27 @@ class Channel(models.Model):
     def __str__(self):
         return "%s" % (self.title)
 
+    def get_all_theme(self):
+        list_theme = {}
+        for theme in self.themes.filter(parentId=None):
+            list_theme["%s" % theme.id] = {
+                "title": "%s" % theme.title,
+                "slug": "%s" % theme.slug,
+                "child": theme.get_all_children_tree()
+            }
+        return list_theme
+
+    def get_all_theme_json(self):
+        return json.dumps(self.get_all_theme())
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Channel, self).save(*args, **kwargs)
 
 
 class Theme(models.Model):
-    parentId = models.ForeignKey('self', null=True, blank=True)
+    parentId = models.ForeignKey(
+        'self', null=True, blank=True, related_name="children")
     title = models.CharField(_('Title'), max_length=100, unique=True)
     slug = models.SlugField(
         _('Slug'), unique=True, max_length=100,
@@ -210,6 +228,48 @@ class Theme(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Theme, self).save(*args, **kwargs)
+
+    def get_all_children_tree(self):
+        children = {}  # [self]
+        try:
+            child_list = self.children.all()
+        except AttributeError:
+            return children
+        for child in child_list:
+            children["%s" % child.id] = {
+                "title": "%s" % child.title,
+                "slug": "%s" % child.slug,
+                "child": child.get_all_children_tree()
+            }
+        return children
+
+    def get_all_children_flat(self):
+        children = [self]
+        try:
+            child_list = self.children.all()
+        except AttributeError:
+            return children
+        for child in child_list:
+            children.extend(child.get_all_children_flat())
+        return children
+
+    def get_all_children_tree_json(self):
+        return json.dumps(self.get_all_children_tree())
+
+    def get_all_parents(self):
+        parents = [self]
+        if self.parentId is not None:
+            parent = self.parentId
+            parents.extend(parent.get_all_parents())
+        return parents
+
+    def clean(self):
+        if self.parentId in self.get_all_children_flat():
+            raise ValidationError("A theme cannot have itself \
+                    or one of its' children as parent.")
+        if self.parentId and self.parentId not in self.channel.themes.all():
+            raise ValidationError(
+                "A theme have to be in the same channel that his parent")
 
     class Meta:
         ordering = ['title']
@@ -361,6 +421,15 @@ class Video(models.Model):
     encoding_in_progress = models.BooleanField(
         _('Encoding in progress'), default=False, editable=False)
 
+    is_video = models.BooleanField(
+        _('Is Video'), default=True, editable=False)
+
+    class Meta:
+        ordering = ['-date_added', '-id']
+        get_latest_by = 'date_added'
+        verbose_name = _("video")
+        verbose_name_plural = _("videos")
+
     def save(self, *args, **kwargs):
         newid = -1
         if not self.id:
@@ -377,7 +446,16 @@ class Video(models.Model):
         newid = '%04d' % newid
         self.slug = "%s-%s" % (newid, slugify(self.title))
         self.tags = remove_accents(self.tags)
+
         super(Video, self).save(*args, **kwargs)
+
+    def clean(self,*args, **kwargs):
+        if self.restrict_access_to_groups.all().exists() and self.is_restricted == False:
+            raise ValidationError(
+                _("Please, checked restricted access if check groups"))
+        if self.is_draft and self.is_restricted == True:
+            raise ValidationError(
+                _("If Draft, restricted access be not checked"))
 
     def __str__(self):
         return "%s - %s" % ('%04d' % self.id, self.title)
@@ -405,6 +483,57 @@ class Video(models.Model):
             if os.path.isfile(self.overview.path):
                 os.remove(self.overview.path)
         super(Video, self).delete()
+
+    def get_thumbnail_url(self):
+        request = None
+        if self.thumbnail:
+            thumbnail_url = ''.join(
+                ['//',
+                 get_current_site(request).domain,
+                 self.thumbnail.file.url])
+        else:
+            thumbnail_url = ''.join(
+                ['//',
+                 get_current_site(request).domain,
+                 settings.STATIC_URL,
+                 DEFAULT_THUMBNAIL])
+        return thumbnail_url
+
+    def get_thumbnail_card(self):
+        return '<img class="card-img-top" src="%s" alt="%s" />' % (
+            self.get_thumbnail_url(), self.title)
+
+    def get_playlist_master(self):
+        try:
+            return PlaylistVideo.objects.get(
+                name="playlist",
+                video=self,
+                encoding_format="application/x-mpegURL")
+        except PlaylistVideo.DoesNotExist:
+            return None
+
+    def get_video_m4a(self):
+        try:
+            return EncodingAudio.objects.get(
+                name="audio", video=self, encoding_format="video/mp4")
+        except EncodingAudio.DoesNotExist:
+            return None
+
+    def get_video_mp4(self):
+        return EncodingVideo.objects.filter(
+            video=self, encoding_format="video/mp4")
+
+    def get_video_mp4_json(self):
+        list_src = []
+        list_video = sorted(self.get_video_mp4(), key=lambda m: m.height)
+        for video in list_video:
+            list_src.append(
+                {'type': video.encoding_format,
+                 'src': video.source_file.url,
+                 'height': video.height,
+                 'label': video.name})
+        return list_src
+        # return json.dumps(self.get_video_mp4())
 
 
 def remove_video_file(video):
@@ -483,6 +612,11 @@ class VideoRendition(models.Model):
     @property
     def width(self):
         return int(self.resolution.split("x")[0])
+
+    class Meta:
+        # ordering = ['height'] # Not work
+        verbose_name = _("rendition")
+        verbose_name_plural = _("renditions")
 
     def __str__(self):
         return "VideoRendition num %s with resolution %s" % (

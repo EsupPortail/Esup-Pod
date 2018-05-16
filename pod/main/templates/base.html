@@ -18,10 +18,59 @@
 	    <!-- octicons -->
 	    <link rel="stylesheet" href="{% static 'css/octicons.css' %}" media="screen" title="no title">
 	    <link rel="stylesheet" href="{% static 'css/lillePod.css' %}" media="screen" title="no title">
+        <style>
+            .jumbotron {
+                padding: 1rem 2rem;
+            }
+            .infinite-item .card-body {
+                padding: 1.1rem;
+                height: 3.5rem;
+                overflow: hidden;
+            }
+            .infinite-item .card-header .octicon {
+                height:0.9rem;
+                margin:0.1rem;
+            }
+            /** Vignette video **/
+            div.card a{
+             overflow:hidden;
+            }
+            div.card a img {
+             transition:-webkit-transform .5s ease;
+             transition:transform .5s ease;
+             transition:transform .5s ease, -webkit-transform .5s ease
+            }
+            div.card a:hover>img {
+             -webkit-transform:scale(1.1);
+             transform:scale(1.1)
+             z-index:0;
+            }
+            /** aside list video **/
+            #filterType div.collapse:not(.show), #filterDiscipline div.collapse:not(.show), #filterTag div.collapse:not(.show) {
+                height: 148px !important;
+                overflow: hidden;
+                
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;  
+            }
 
+            #filterType div.collapsing, #filterDiscipline div.collapsing, #filterTag  div.collapsing{
+                min-height: 148px !important;
+            }
+
+            #filterType a.collapsed:after, #filterDiscipline a.collapsed:after, #filterTag a.collapsed:after {
+                content: '+';
+            }
+
+            #filterType a:not(.collapsed):after, #filterDiscipline a:not(.collapsed):after, #filterTag  a:not(.collapsed):after {
+                content: '-';
+            }
+        </style>
 	    <!-- JS -->
 	    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
 		<script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/js.cookie.js' %}"></script>
 
 	    <title>{{ TITLE_SITE }} - {% block page_title %}{% endblock %}</title>
 
@@ -62,56 +111,12 @@
 							{% endblock page_content %}
 						</div>
 						<!-- fin contenu page statique -->
-						<h3>{% block video_list_title %}Dernières vidéos déposées{% endblock video_list_title %}</h3>
-						<!-- liste vignette vidéo 4 par ligne -->
-						<div class="row">
-							{% block video_list %}
-							<div class="col-12 col-md-6 col-lg-3 mb-2">
-							{% include "videos/card.html" %}
-		             		</div>
-							<div class="col-12 col-md-6 col-lg-3 mb-2">
-							{% include "videos/card.html" %}
-		              		</div>
-							<div class="col-12 col-md-6 col-lg-3 mb-2">
-							{% include "videos/card.html" %}
-							</div>
-							<div class="col-12 col-md-6 col-lg-3 mb-2">
-							{% include "videos/card.html" %}
-							</div>
-							<div class="col-12 col-md-6 col-lg-3 mb-2">
-							{% include "videos/card.html" %}
-		             		</div>
-							<div class="col-12 col-md-6 col-lg-3 mb-2">
-							{% include "videos/card.html" %}
-		              		</div>
-							<div class="col-12 col-md-6 col-lg-3 mb-2">
-							{% include "videos/card.html" %}
-							</div>
-							<div class="col-12 col-md-6 col-lg-3 mb-2">
-							{% include "videos/card.html" %}
-							</div>
-							<div class="col-12 col-md-6 col-lg-3 mb-2">
-							{% include "videos/card.html" %}
-		             		</div>
-							<div class="col-12 col-md-6 col-lg-3 mb-2">
-							{% include "videos/card.html" %}
-		              		</div>
-							<div class="col-12 col-md-6 col-lg-3 mb-2">
-							{% include "videos/card.html" %}
-							</div>
-							<div class="col-12 col-md-6 col-lg-3 mb-2">
-							{% include "videos/card.html" %}
-							</div>
-							{% endblock video_list %}
-						</div>
-						<div class="hightlight">
-							<div class="d-flex justify-content-end">
-							  <p><a class="btn btn-lg btn-primary" href="#" role="button">Voir toutes les vidéos &raquo;</a></p>
-							</div>
-						</div> <!-- fin hightlight -->
+						{% include "videos/last_videos.html" %}
 		        	</div> <!-- fin col order-12 order-md-1 -->
 		        	<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
-					{% include 'aside.html'%}
+                        {% block page_aside %}
+					       {% include 'aside.html'%}
+                        {% endblock page_aside %}
 					</aside>
 		        </div> <!-- fin row -->
 		    </main>
@@ -120,18 +125,30 @@
 		<footer class="text-muted bg-dark pt-2">
 		{% include 'footer.html' %}
 		</footer>
+        
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
 		<script>
 		var listUser = {{LISTOWNER|safe}};
 
 		$('#ownerboxnavbar').keyup(function() {
 			if($(this).val() && $(this).val().length > 2) {
 				var valThis = $(this).val().toLowerCase();
-				var letter = $(this).val().charAt(0).toLowerCase();
+				var letter = valThis.charAt(0);
 				var nbuser = listUser[letter].length;
 				$("#accordion").html("");
 				for(i=0; i<nbuser; i++) {
-					var lastname = listUser[letter][i][2].toLowerCase();
-					if(lastname.indexOf(valThis) != -1) $("#accordion").append('<li><a href="">'+listUser[letter][i][1]+' '+listUser[letter][i][2]+' ('+listUser[letter][i][3]+')</a></li>');
+					var lastname = listUser[letter][i]["last_name"].toLowerCase();
+					if(lastname.indexOf(valThis) != -1) $("#accordion").append('<li><a href="{% url 'videos' %}?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</a></li>');
 				}
 			} else {
 				$("#accordion").html("");
@@ -142,11 +159,31 @@
 			var nbuser = listUser[letter].length;
 			$("#accordion").html("");
 			for(i=0; i<nbuser; i++) {
-				$("#accordion").append('<li><a href="">'+listUser[letter][i][1]+' '+listUser[letter][i][2]+' ('+listUser[letter][i][3]+')</a></li>');
+				$("#accordion").append('<li><a href="{% url 'videos' %}?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</a></li>');
 			}
 		})
+
+        $(document).ready(function () {
+            //when a group is shown, save it as the active accordion group
+            $("#collapseAside").on('shown.bs.collapse', function () {
+                Cookies.set('activeCollapseAside', "open");
+                //alert("Cookie");
+            });
+            $("#collapseAside").on('hidden.bs.collapse', function () {
+                Cookies.remove('activeCollapseAside');
+            });
+            var last = Cookies.get('activeCollapseAside');
+            if (last != null) {
+                //show the account_last visible group
+                $("#collapseAside").addClass("show");
+            } /*else {
+                $("#collapseAside").removeClass("show");
+            }*/
+        });
+
 		</script>
 		{% block more_script %}
 		{% endblock more_script %}
+
 	</body>
 </html>
