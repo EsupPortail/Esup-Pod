@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% load tagging_tags %}
+
+{% block page_extra_head %}
+
+{% endblock page_extra_head %}
+
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item"><a href="#">{% trans 'Mes videos' %}</a><li class="breadcrumb-item active" aria-current="page">{{form.instance.title}}</li>{% endblock %}
+
+{% block page_title %}{{form.instance.title}}{% endblock %}
+
+
+{% block page_content %}
+
+
+{% endblock page_content %}
+
+{% block page_aside %}
+
+{% endblock page_aside %}
+
+
+{% block more_script %}
+
+{% endblock more_script %}

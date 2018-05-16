@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% load tagging_tags %}
+
+{% block page_extra_head %}
+<link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/quality-selector.css' %}" rel="stylesheet">
+
+<script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
+<script src="{% static 'js/silvermine-videojs-quality-selector.min.js' %}"></script>
+<script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
+<script src="{% static 'js/videojs-contrib-quality-levels.min.js' %}"></script>
+<script src="{% static 'js/videojs-hls-quality-selector.min.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/lang/fr.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
+
+<style>
+.scrollspy-video {
+    position: relative;
+    height: 200px;
+    margin-top: .5rem;
+    overflow: auto;
+}
+</style>
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item"><a href="{% url "videos"%}">{% trans 'Videos' %}</a><li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>{% endblock %}
+
+{% block page_title %}{{video.title}}{% endblock %}
+
+{% block page_content %}
+<meta itemprop="duration" content="{{ video.duration }}" />
+<meta itemprop="thumbnailUrl" content="{{ video.thumbnail.url }}" />
+<meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
+<meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=360" />
+
+<video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
+poster="{{video.get_thumbnail_url}}" data-setup='{}'>
+  <p class="vjs-no-js">
+    To view this video please enable JavaScript, and consider upgrading to a web browser that
+    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+  </p>
+  <!--
+  <track kind="captions" src="../shared/example-captions.vtt" srclang="en" label="English"></track>
+  <track kind="subtitles" src="../shared/example-captions.vtt" srclang="en" label="English"></track>
+  -->
+</video>
+
+<nav id="navbar-example2" class="navbar navbar-light bg-light">
+  <a class="navbar-brand" href="#">{{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}</a>
+  <ul class="nav nav-pills">
+    <li class="nav-item">
+      <a class="nav-link" href="#summary">{% trans 'Summary' %}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#infos">{% trans 'Infos' %}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#downloads">{% trans 'Downloads' %}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#embed">{% trans 'Embed/Share' %}</a>
+    </li>
+  </ul>
+</nav>
+
+<div data-spy="scroll" data-target="#navbar-example2" data-offset="0" class="scrollspy-video">
+  <h4 id="summary">{% trans 'Summary' %}</h4>
+  <div class="scrollspy-content">
+    <p>{{ video.description|safe }}</p>
+    {% tags_for_object video as tag_list %}
+    {% if tag_list %}
+    <p>{% trans 'Tags' %}:&nbsp;
+      {% for tag in tag_list %}
+       <a href="{% url 'videos' %}?tag={{ tag.slug }}" title="{{ tag }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+           <span class="label label-default">{{ tag }}</span>
+       </a>
+      {% endfor %}
+    </p>
+    {% endif %}
+  </div>
+  <h4 id="infos">{% trans 'Infos' %}</h4>
+  <div class="scrollspy-content">
+    {% trans 'Added by' %}: <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ video.owner.get_full_name }}</a><br/>
+    {% trans 'Updated on' %}: <strong>{{ video.date_added }}</strong><br/>
+    {% trans 'Duration' %}: <strong>{{ video.duration_in_time }}</strong><br/>
+    {% trans 'Number of view(s)' %}: <strong>{{ video.get_viewcount }}</strong><br/>
+    {% trans 'Type' %}: <a href="{% url 'videos' %}?type={{ video.type.slug }}" title="{{ video.type.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ video.type.title }}</a>
+
+    {% if video.discipline.all %}<br/>{% trans 'Disciplines' %}:&nbsp;
+      {% for disc in video.discipline.all %}
+      <a href="{% url 'videos' %}?discipline={{ disc.slug }}" title="{{ disc.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+          {{ disc.title }}
+          
+      </a>
+      {% endfor %}
+    {%endif%}
+  </div>
+  <h4 id="downloads">{% trans 'Downloads' %}</h4>
+  <div class="scrollspy-content">...</div>
+  <h4 id="embed">{% trans 'Embed/Share' %}</h4>
+  <div class="scrollspy-content">
+  {% if not video.is_restricted and not video.password %}
+    <p>
+        <label>{% trans 'Social Networks' %}</label>
+        <a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-facebook btn-sm" title="{% trans "Share on" %} Facebook"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/F_icon.svg/200px-F_icon.svg" height="24" alt="facebook" /> </a>
+<a target="_blank" href="http://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-twitter btn-sm" title="{% trans "Share on" %} Twitter"> <img src="https://upload.wikimedia.org/wikipedia/fr/c/c8/Twitter_Bird.svg" height="24" alt="twitter" /> </a>
+<a target="_blank" href="https://plus.google.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-google-plus btn-sm" title="{% trans "Share on" %} Google+"> <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Google_plus.svg" height="24" alt="google" /> </a>
+    </p>
+    <hr />
+  {% endif %}
+    <p>
+      <span class="form-group">
+      <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page' %}</label>
+      <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="https://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+      </span>
+      <span class="form-group">
+      <label for="txtpartage">{% trans 'Use this link to share the video' %}</label>
+      <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
+      </span>
+    </p>
+  </div>
+</div>
+
+{% endblock page_content %}
+
+{% block page_aside %}
+    <div class="card card-body">
+    <h5 class="card-title">
+    <svg height="32" class="octicon octicon-pencil" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M0 11.592v3h3l8-8-3-3-8 8zm3 2H1v-2h1v1h1v1zm10.3-9.3l-1.3 1.3-3-3 1.3-1.3a.996.996 0 0 1 1.41 0l1.59 1.59c.39.39.39 1.02 0 1.41z"></path></svg>
+    {% trans "take Note"%}
+    </h5>
+    <div class="card-text">
+      <p>Prenez des notes</p>
+      <div id="info"></div>
+    </div>
+    </div>
+    {% include 'aside.html'%}
+{% endblock page_aside %}
+
+
+{% block more_script %}
+<script>
+var options = {
+  notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
+  language: "fr", //en or nl
+  fluid: true, 
+  playbackRates: [0.5, 1, 1.5, 2]
+}
+var player = videojs('podvideoplayer', options, function(){});
+
+{% if video.is_video %}
+  /** get all mp4 format **/
+  var mp4_sources = {{video.get_video_mp4_json|safe}};
+  
+  {% if video.get_playlist_master %}
+    var srcOptions = {
+      src: '{{video.get_playlist_master.source_file.url}}',
+      type: '{{video.get_playlist_master.encoding_format}}',
+    };
+    player.on('loadedmetadata', function() {
+      console.log('LOADEDMETADATA');
+      var qualityLevels = this.qualityLevels();
+    });
+    //Add source to player
+    player.src(srcOptions);
+    //add quality selector to player
+    player.hlsQualitySelector();
+    player.on("error", function(e){
+      e.stopImmediatePropagation();
+      var error = player.error();
+      if(error.code == 3) {
+        //console.log('error!', error.code, error.type , error.message);
+        if(player.src().indexOf("m3u8")!=-1){
+          //alert("change source to mp4");
+          player.src(mp4_sources);
+          player.controlBar.addChild('QualitySelector');
+          player.play();
+        }
+      }
+    });
+  {% else %}
+    player.src(mp4_sources);
+    player.controlBar.addChild('QualitySelector');
+  {% endif %}
+  
+{% else %}
+  {% if video.get_video_m4a %}
+    var srcOptions = {
+      src: '{{video.get_video_m4a.source_file.url}}',
+      type: '{{video.get_video_m4a.encoding_format}}',
+    };
+    //Add source to player
+    player.src(srcOptions);
+  {% endif %}
+{% endif %}
+</script>
+
+{% endblock more_script %}
