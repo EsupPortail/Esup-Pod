@@ -10,6 +10,7 @@
 <script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
 <!-- form . media -->
+<script type="text/javascript" src="{% static 'js/jquery.tools.min.js' %}"></script>
 {{form.media}}
 <!-- fin form . media -->
 <!--
@@ -40,6 +41,7 @@
     <div>
         <fieldset>
             {% for field in form %}
+            {% if not field.is_hidden %}
             <div class="form-group">
                 {{ field.errors }}
                 {% if "form-check-input" in field.field.widget.attrs.class %}
@@ -53,6 +55,7 @@
                 <small id="{ field.id_for_label }}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
                 {% endif %}
             </div>
+            {% endif %}
             {% endfor %}
         </fieldset>
     </div>

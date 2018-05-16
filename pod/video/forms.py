@@ -10,22 +10,30 @@ from pod.video.models import Discipline
 
 from ckeditor.widgets import CKEditorWidget
 
+from django.conf import settings
+
 
 class VideoForm(forms.ModelForm):
     required_css_class = 'required'
 
     def __init__(self, *args, **kwargs):
-        self.is_staff = kwargs.pop('is_staff')
-        self.is_superuser = kwargs.pop('is_superuser')
+        self.is_staff = kwargs.pop('is_staff') if kwargs.get('is_staff') else self.is_staff
+        self.is_superuser = kwargs.pop('is_superuser') if kwargs.get('is_superuser') else self.is_superuser
         super(VideoForm, self).__init__(*args, **kwargs)
         pickers = {'image': "img"}
         self.fields['thumbnail'].widget = CustomFilePickerWidget(
             pickers=pickers)
-
         self.fields['video'].widget = widgets.AdminFileWidget(attrs={
             'class': 'form-control-file'})
-        self.fields['description'].widget = CKEditorWidget(config_name='default')
-        self.fields['description_fr'].widget = CKEditorWidget(config_name='default')
+
+        if self.is_staff == False:
+            self.fields['description'].widget = CKEditorWidget(config_name='default')
+            for key, value in settings.LANGUAGES:
+                self.fields['description_%s'%key.replace('-','_')].widget = CKEditorWidget(config_name='default')
+
+        # hide default langage
+        self.fields['description_%s'%settings.LANGUAGE_CODE].widget = forms.HiddenInput()
+        self.fields['title_%s'%settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
         for myField in self.fields:
             if self.fields[myField].widget.__class__.__name__ == 'CheckboxInput':

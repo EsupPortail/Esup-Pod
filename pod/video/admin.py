@@ -28,16 +28,29 @@ if apps.is_installed('pod.filepicker'):
 
 
 # Register your models here.
+class VideoSuperAdminForm(VideoForm):
+    is_staff = True
+    is_superuser = True
 
+class VideoAdminForm(VideoForm):
+    is_staff = True
+    is_superuser = False
 
 class VideoAdmin(admin.ModelAdmin):
-    form = VideoForm
+    # form = VideoForm
     inlines = [
         ContributorInline,
         DocumentInline,
         TrackInline,
         OverlayInline
     ]
+
+    def get_form(self, request, obj=None, **kwargs):
+        if request.user.is_superuser:
+            kwargs['form'] = VideoSuperAdminForm
+        else:
+            kwargs['form'] = VideoAdminForm
+        return super(VideoAdmin, self).get_form(request, obj, **kwargs)
 
     class Media:
         js = ('js/jquery.tools.min.js',)
