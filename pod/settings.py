@@ -104,13 +104,6 @@ TEMPLATES = [
 ]
 
 ##
-# Settings exposed in templates
-#
-TEMPLATE_VISIBLE_SETTINGS = (
-    'TITLE_SITE',
-)
-
-##
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [

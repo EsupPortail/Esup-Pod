@@ -118,7 +118,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Template settings
 #
 TEMPLATE_THEME = 'DEFAULT'
-TITLE_SITE = 'Pod'
 
 ##
 # CKeditor settings
