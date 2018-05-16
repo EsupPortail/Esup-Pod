@@ -1,6 +1,9 @@
 <!-- HTML for chapter form. Don't use this file alone it must be integrated into another template ! -->
 {% load i18n %}
 {% load staticfiles %}
+<div class="panel-heading bg-primary text-white">
+	<h4 class="card-title">{% trans 'Create / Edit chapters' %}</h4>
+</div>
 <form id="form_chapter" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
 	{% csrf_token %}
 	<div id="formcontent" class="form-container">
@@ -27,6 +30,10 @@
 		<input type="reset" action="cancel" id="cancel_chapter" value="{% trans 'Cancel' %}" class="btn btn-danger" />
 	</div>
 </form>
+&nbsp;
+<div class="panel-heading bg-primary text-white">
+	<h4 class="card-title">{% trans 'Import chapters' %}</h4>
+</div>
 <form id="form_chapter_import" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
 	{% csrf_token %}
 	<div id="formcontent" class="form-container">
@@ -53,11 +60,5 @@
 		<input type="hidden" name="action" value="import"/>
 		<input type="submit" id="save_chapter_import" value="{% trans 'Import chapters' %}" class="btn btn-info"/>
 	</div>
-</form>
-&nbsp;
-<form id="form_vtt_export" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
-	{% csrf_token %}
-	<input type="hidden" name="action" value="export"/>
-	<input type="submit" id="get_chapter_vtt" value="{% trans 'Export chapters' %}" class="btn btn-info"/>
 </form>
 <script src="{% static 'js/filepicker.custom.js' %}"></script>

@@ -16,13 +16,15 @@ from django.dispatch import receiver
 # from django.db.models.signals import pre_save
 from django.db.models.signals import pre_delete
 # from django.db.models.signals import post_delete
-try:
-    from pod.filepicker.models import CustomImageModel
-except ImportError:
-    pass
 from datetime import datetime
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
+if apps.is_installed('pod.filepicker'):
+    from pod.filepicker.models import CustomImageModel
+    from pod.filepicker.models import CustomFileModel
+    FILEPICKER = True
+if apps.is_installed('pod.chapters'):
+    CHAPTERS = True
 
 import os
 import time
@@ -446,16 +448,7 @@ class Video(models.Model):
         newid = '%04d' % newid
         self.slug = "%s-%s" % (newid, slugify(self.title))
         self.tags = remove_accents(self.tags)
-
         super(Video, self).save(*args, **kwargs)
-
-    def clean(self,*args, **kwargs):
-        if self.restrict_access_to_groups.all().exists() and self.is_restricted == False:
-            raise ValidationError(
-                _("Please, checked restricted access if check groups"))
-        if self.is_draft and self.is_restricted == True:
-            raise ValidationError(
-                _("If Draft, restricted access be not checked"))
 
     def __str__(self):
         return "%s - %s" % ('%04d' % self.id, self.title)
@@ -488,53 +481,56 @@ class Video(models.Model):
         request = None
         if self.thumbnail:
             thumbnail_url = ''.join(
-                ['//',
-                 get_current_site(request).domain,
-                 self.thumbnail.file.url])
+                ['//', get_current_site(request).domain, self.thumbnail.file.url])
         else:
             thumbnail_url = ''.join(
-                ['//',
-                 get_current_site(request).domain,
-                 settings.STATIC_URL,
-                 DEFAULT_THUMBNAIL])
+                ['//', get_current_site(request).domain, settings.STATIC_URL, DEFAULT_THUMBNAIL])
         return thumbnail_url
 
     def get_thumbnail_card(self):
-        return '<img class="card-img-top" src="%s" alt="%s" />' % (
-            self.get_thumbnail_url(), self.title)
+        return '<img class="card-img-top" src="%s" alt="%s" />' % (self.get_thumbnail_url(), self.title)
 
     def get_playlist_master(self):
         try:
-            return PlaylistVideo.objects.get(
-                name="playlist",
-                video=self,
-                encoding_format="application/x-mpegURL")
+            return PlaylistVideo.objects.get(name="playlist", video=self, encoding_format="application/x-mpegURL")
         except PlaylistVideo.DoesNotExist:
             return None
 
     def get_video_m4a(self):
         try:
-            return EncodingAudio.objects.get(
-                name="audio", video=self, encoding_format="video/mp4")
+            return EncodingAudio.objects.get(name="audio", video=self, encoding_format="video/mp4")
         except EncodingAudio.DoesNotExist:
             return None
 
     def get_video_mp4(self):
-        return EncodingVideo.objects.filter(
-            video=self, encoding_format="video/mp4")
+        return EncodingVideo.objects.filter(video=self, encoding_format="video/mp4")
 
     def get_video_mp4_json(self):
         list_src = []
         list_video = sorted(self.get_video_mp4(), key=lambda m: m.height)
         for video in list_video:
             list_src.append(
-                {'type': video.encoding_format,
-                 'src': video.source_file.url,
-                 'height': video.height,
-                 'label': video.name})
+                {'type': video.encoding_format, 'src': video.source_file.url, 'height': video.height, 'label':video.name})
         return list_src
         # return json.dumps(self.get_video_mp4())
 
+    def get_chapters_file(self):
+        list_chapter = self.chapter_set.all()
+        if CHAPTERS and list_chapter:
+            if FILEPICKER:
+                chapters = CustomFileModel.objects.get(
+                    name='chapter_{0}'.format(self.title),
+                    created_by=self.owner,
+                    directory__name='Home').file
+                return os.path.join(
+                    settings.MEDIA_URL,
+                    chapters.name)
+            else:
+                return os.path.join(
+                    settings.MEDIA_URL,
+                    'files',
+                    self.owner.username,
+                    'chapter_{0}'.format(self.title))
 
 def remove_video_file(video):
     if video.video:

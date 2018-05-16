@@ -47,8 +47,10 @@ def chapter_to_vtt(list_chapter, video):
         home = UserDirectory.objects.get(
             owner=video.owner, name='Home')
         CustomFileModel.objects.filter(
-            name='chapter_{0}'.format(video.title)).delete()
-        CustomFileModel.objects.create(
+            name='chapter_{0}'.format(video.title),
+            created_by=video.owner,
+            directory=home).delete()
+        new = CustomFileModel.objects.create(
             name='chapter_{0}'.format(video.title),
             file_size=os.path.getsize(file_path),
             file_type='VTT',
@@ -61,10 +63,8 @@ def chapter_to_vtt(list_chapter, video):
         os.remove(file_path)
         path = os.path.join(
             settings.MEDIA_URL,
-            'files',
-            base_dir,
-            'Home',
-            file.name)
+            new.file.name)
+        print(new.file.path)
     else:
         path = os.path.join(
             settings.MEDIA_URL,

@@ -26,26 +26,20 @@ function manageResize() {
     On save action, a request is sent with the form after a pair of
         validation functions are runned.
 ***/
-$(document).on("submit", "#form_chapter", function (e) {
+$(document).on("submit", "form#form_chapter", function (e) {
+    console.log('entre');
     $(this).show();
     e.preventDefault();
     var jqxhr= '';
     var action = $(this).find('input[name=action]').val();
-    if(action == "modify" || action == "new"){
+    if(action == "modify"){
         $('form#form_new').hide();
         $('form.form_modif').hide();
         $('form.form_delete').hide();
-        //$('span#form_chapter').wrapAll("<div class = 'col-sm-6' ></div>");
-        //$('span#list_chapter').wrapAll("<div class = 'col-sm-6' ></div>");
         manageResize();
-        //$('#form_chapter').html(ajax_image);
         var elt = $(this).parents('tr');
-        if (action == "modify"){
-            var id = $(this).find('input[name=id]').val();
-            jqxhr = $.post( window.location.href, {"action":"modify", "id": id });
-        }else{
-            jqxhr = $.post( window.location.href, {"action":"new"} );
-        }
+        var id = $(this).find('input[name=id]').val();
+        jqxhr = $.post( window.location.href, {"action":"modify", "id": id });
         jqxhr.done(function(data){
             if(data.indexOf("form_chapter")==-1) {
                 show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
@@ -64,7 +58,6 @@ $(document).on("submit", "#form_chapter", function (e) {
             manageResize();
         });
     }else if(action == "delete"){
-        //$('form').show();
         var deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this chapter?' %}");
         if (deleteConfirm){
             var id = $(this).find('input[name=id]').val();
@@ -90,7 +83,6 @@ $(document).on("submit", "#form_chapter", function (e) {
         verify_start_title_items();
         if (!($("span").hasClass("form-help-inline"))){
             var msg = "";
-            //msg += overlaptest();
             if(msg != "") {
                 show_messages(msg, 'danger');
             } else {
@@ -102,13 +94,9 @@ $(document).on("submit", "#form_chapter", function (e) {
                 jqxhr.done(function(data){
                     if(data.list_chapter || data.form) {
                         if(data.errors){
-                            //alert(data.errors);
                             get_form(data.form);
                         }else{
-                            refresh_list_and_player(data);
-                            $('span#form_chapter').unwrap();
-                            $('span#list_chapter').unwrap();
-                            manageResize();
+                            location.reload();
                         }
                     } else {
                         show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
@@ -125,7 +113,7 @@ $(document).on("submit", "#form_chapter", function (e) {
     }
 });
 
-$(document).on("submit", "#form_chapter_import", function (e) {
+$(document).on("submit", "form#form_chapter_import", function (e) {
 	$(this).show();
     e.preventDefault();
     var jqxhr= '';
@@ -155,32 +143,37 @@ $(document).on("submit", "#form_chapter_import", function (e) {
     }
 });
 
-$(document).on("submit", "#form_vtt_export", function (e) {
-	$(this).show();
+$(document).on("submit", "form#form_new", function (e) {
     e.preventDefault();
     var jqxhr= '';
     var action = $(this).find('input[name=action]').val();
-    if (action == "import") {
-    	jqxhr = $.post(
-    		jqxhr = $.post( window.location.href, {"action":"export"} 
-    	);
-    	jqxhr.done(function(data){
-	        if(data.list_chapter || data.form) {
-	            if(data.errors){
-	                get_form(data.form);
-	            }else{
-	                refresh_list_and_player(data);
-	                manageResize();
-	            }
-	        } else {
-	            show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
-	        }
-	    });
-	    jqxhr.fail(function($xhr) {
-	        var data = $xhr.status+ " : " +$xhr.statusText;
-	        show_messages("{% trans 'Error during recording.' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}", 'danger');
-	    });
+    if (action == "new") {
+        $('form#form_new').hide();
+        $('form.form_modif').hide();
+        $('form.form_delete').hide();
+        manageResize();
+        var elt = $(this).parents('tr');
+        jqxhr = $.post( window.location.href, {"action":"new"} );
+        jqxhr.done(function(data){
+            if(data.indexOf("form_chapter")==-1) {
+                show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
+            } else {
+                get_form(data);
+                elt.addClass('info');
+            }
+        });
+        jqxhr.fail(function($xhr) {
+            var data = $xhr.status+ " : " +$xhr.statusText;
+            show_messages("{% trans 'Error getting form.' %} " + "("+data+")"+ "{% trans 'The form could not be recovered.'%}", 'danger');
+            $('form.form_modif').show();
+            $('form.form_delete').show();
+            $('form#form_new').show();
+            $('#form_chapter').html("");
+            manageResize();
+        });
+    }
 });
+
 /*** Refreshes the player with updates and shows the list of enrichments ***/
 function refresh_list_and_player(data){
     delete videojs.players['player_video']
@@ -189,7 +182,6 @@ function refresh_list_and_player(data){
     $("span#chapter_player").html(data.player);
     $("span#list_chapter").html(data.list_chapter);
     loadVideo();
-    //alert("{% trans 'The changes have been saved.' %}");
 };
 /*** Verify if value of field respect form field ***/
 function verify_start_title_items(){
@@ -226,14 +218,15 @@ function overlaptest(){
 */
 /*** Display element of form enrich ***/
 function get_form(data) {
-    //fadeIn().delay(3000).fadeOut()
     $("#form_chapter").hide().html(data).fadeIn();
     $("input#id_time")
         .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-xs'>{% trans 'Get time from the player'%}</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
 };
+
 $(document).on('change','input#id_time',function() {
     $(this).parent().find("span.getfromvideo span.timecode").html(" "+parseInt($(this).val()).toHHMMSS());
 });
+
 $(document).on('click','#page-video span.getfromvideo a',function(e) {
     e.preventDefault();
     if(!(typeof myPlayer === 'undefined')) {

@@ -5,13 +5,25 @@
 {% block page_title %}{% trans 'Chapter video' %} "{{video.title}}" {% endblock page_title %}
 {% block page_extra_head %}
 	<!-- media -->
+	<link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
+	<link href="{% static 'css/quality-selector.css' %}" rel="stylesheet">
 	<link rel="stylesheet" href="{% static 'css/filepicker.overlay.css' %}"/>
 	<link rel="stylesheet" href="{% static 'css/chapters.css' %}"/>
+	<link rel="stylesheet" href="{% static 'css/videojs-chapters.css' %}"/>
 	<script src="{% static 'js/jquery.tools.min.js' %}"></script>
 	<script src="{% static 'js/main.js' %}"></script>
 	<script src="{% static 'js/ajaxupload.js' %}"></script>
     <script src="{% static 'js/jquery.filepicker.js' %}"></script>
+    <script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
+	<script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
+	<script src="{% static 'js/silvermine-videojs-quality-selector.min.js' %}"></script>
+	<script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
+	<script src="{% static 'js/videojs-contrib-quality-levels.min.js' %}"></script>
+	<script src="{% static 'js/videojs-hls-quality-selector.min.js' %}"></script>
+	<script src="{% static 'video-js-6.8.0/lang/fr.js' %}"></script>
+	<script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
     <script src="{% static 'js/chapters.js' %}"></script>
+    <script src="{% static 'js/videojs-chapters.js' %}"></script>
     <script>
     	var num = 0,
 	    name = '';
@@ -20,8 +32,6 @@
 		// For the Cancel button
 		$(document).on('reset', 'form', function(e) {
 			$('span#form_chapter').html('');
-			//$('span#form_chapter').unwrap();
-			//$('span#list_chapter').unwrap();
 			$('form#form_new').show();
 			$('form').show();
 			$('table tr').removeClass('info');
@@ -46,17 +56,42 @@
 				</div>
 			</nav>
 			<span id="chapter_player">
-				<!-- TODO : FUTURE PLAYER -->
+				<video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
+				poster="{{video.get_thumbnail_url}}" data-setup='{}'>
+				  <p class="vjs-no-js">
+				    To view this video please enable JavaScript, and consider upgrading to a web browser that
+				    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+				  </p>
+				  <source src="https://d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8" type="application/x-mpegURL">
+				  <!--
+				  -->
+				</video>
+				{% if video.chapter_set.all %}
+					<div class="chapters-list inactive" role="menu">
+						<p>Chapters</p>
+						<ol id="chapters-list"></ol>
+					</div>
+					<ul id="chapters">
+						{% for chap in video.chapter_set.all %}
+							<li data-start="{{chap.time_start}}"
+							    data-end="{{chap.time_end}}"
+							    data-title="{{chap.title}}"
+							    data-id="{{chap.id}}">
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
 			</span>
+			<hr/>
 			<div class="row" id="info_video">
 				<div class="col-sm-9">
+					<span id="list_chapter">
+						{% include 'chapter/list_chapter.html' %}
+					</span>
 					<span id="form_chapter">
 						{% if form_chapter %}
 							{% include 'chapter/form_chapter.html' with form_chapter=form_chapter %}
 						{% endif %}
-					</span>
-					<span id="list_chapter">
-						{% include 'chapter/list_chapter.html' %}
 					</span>
 					<form id="form_new" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
 						{% csrf_token %}
@@ -86,3 +121,79 @@
 		</main>
 	</article>
 {% endblock content %}
+{% block more_script %}
+<script>
+	var options = {
+	  notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
+	  language: "fr", //en or nl
+	  fluid: true, 
+	  playbackRates: [0.5, 1, 1.5, 2]
+	}
+	var player = videojs('podvideoplayer', options, function(){});
+
+	{% if video.is_video %}
+	  /** get all mp4 format **/
+	  var mp4_sources = {{video.get_video_mp4_json|safe}};
+	  
+	  {% if video.get_playlist_master %}
+	    var srcOptions = {
+	      src: '{{video.get_playlist_master.source_file.url}}',
+	      type: '{{video.get_playlist_master.encoding_format}}',
+	    };
+	    player.on('loadedmetadata', function() {
+	      console.log('LOADEDMETADATA');
+	      var qualityLevels = this.qualityLevels();
+	    });
+	    //Add source to player
+	    player.src(srcOptions);
+	    //add quality selector to player
+	    player.hlsQualitySelector();
+	    player.on("error", function(e){
+	      e.stopImmediatePropagation();
+	      var error = player.error();
+	      if(error.code == 3) {
+	        //console.log('error!', error.code, error.type , error.message);
+	        if(player.src().indexOf("m3u8")!=-1){
+	          //alert("change source to mp4");
+	          player.src(mp4_sources);
+	          player.controlBar.addChild('QualitySelector');
+	          player.play();
+	        }
+	      }
+	    });
+	  {% else %}
+	    player.src(mp4_sources);
+	    player.controlBar.addChild('QualitySelector');
+	  {% endif %}
+
+	  
+	{% else %}
+	  {% if video.get_video_m4a %}
+	    var srcOptions = {
+	      src: '{{video.get_video_m4a.source_file.url}}',
+	      type: '{{video.get_video_m4a.encoding_format}}',
+	    };
+	    //Add source to player
+	    player.src(srcOptions);
+	  {% endif %}
+	{% endif %}
+	{% if video.chapter_set.all %}
+		player.videoJsChapters();
+		player.on('timeupdate', timeupdate);
+
+		function timeupdate(event) {
+			var t = player.currentTime();
+			var chapters = player.getGroupedChapters() || 0;
+			var i = 0;
+			if (chapters != 0) {
+				for (i; i < chapters.id.length; i++) {
+					$('#'+chapters.id[i]).attr('class', 'current');
+					if (t < chapters.start[i] || t > chapters.end[i]) {
+						$('#'+chapters.id[i]).removeClass('current');
+					}
+				}
+			}
+		}
+	{% endif %}
+</script>
+{% endblock more_script %}
