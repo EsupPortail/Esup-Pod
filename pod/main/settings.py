@@ -133,13 +133,7 @@ MAX_TAG_LENGTH = 50
 # AUTH CAS
 #
 LOGIN_URL = '/authentication_login/'
-USE_CAS = False
-CAS_SERVER_URL = "your cas serveur URL here"
-CAS_LOGOUT_COMPLETELY = True
-CAS_ADMIN_AUTH = False
-CAS_GATEWAY = False
 CAS_RESPONSE_CALLBACKS = (
-    'pod.main.populatedCASbackend.populateUser', #function call to add some information to user login by CAS
+    'pod.authentication.populatedCASbackend.populateUser',
+    # function call to add some information to user login by CAS
 )
-POPULATE_USER = None # None OR CAS OR LDAP
-USER_ID = "uid" #use to find the username of the user login by CAS

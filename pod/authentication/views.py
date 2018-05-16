@@ -2,8 +2,6 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils.http import urlencode, urlquote
-from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
 
 from django_cas.decorators import gateway
@@ -25,7 +23,8 @@ if CAS_GATEWAY:
         })
 else:
     def authentication_login_gateway(request):
-        return HttpResponse("You must set CAS_GATEWAY to True to use this view")
+        return HttpResponse(
+            "You must set CAS_GATEWAY to True to use this view")
 
 
 def authentication_login(request):

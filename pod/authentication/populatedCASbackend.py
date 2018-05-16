@@ -13,7 +13,6 @@ from ldap3.core.exceptions import LDAPAttributeError
 from ldap3.core.exceptions import LDAPInvalidFilterError
 
 import logging
-import traceback
 logger = logging.getLogger(__name__)
 
 POPULATE_USER = getattr(
@@ -81,61 +80,16 @@ def populateUser(tree):
     owner.save()
 
     if POPULATE_USER == 'CAS':
-        # Mail
-        mail_element = tree.find(
-            './/{http://www.yale.edu/tp/cas}%s' % USER_CAS_MAPPING_ATTRIBUTES["mail"])
-        user.email = mail_element.text if mail_element is not None else ""
-        # first_name
-        first_name_element = tree.find(
-            './/{http://www.yale.edu/tp/cas}%s' % USER_CAS_MAPPING_ATTRIBUTES["first_name"])
-        user.first_name = first_name_element.text if first_name_element is not None else ""
-        # last_name
-        last_name_element = tree.find(
-            './/{http://www.yale.edu/tp/cas}%s' % USER_CAS_MAPPING_ATTRIBUTES["last_name"])
-        user.last_name = last_name_element.text if last_name_element is not None else ""
-        user.save()
-        # affiliation
-        affiliation_element = tree.findall(
-            './/{http://www.yale.edu/tp/cas}%s' % USER_CAS_MAPPING_ATTRIBUTES["affiliation"])
-        for affiliation in affiliation_element:
-            if affiliation.text in AFFILIATION_STAFF:
-                user.is_staff = True
-            if CREATE_GROUP_FOM_AFFILIATION:
-                group, group_created = Group.objects.get_or_create(
-                    name=affiliation.text)
-                user.groups.add(group)
-        user.save()
-        owner.affiliation = affiliation_element[0].text
-        owner.save()
-
+        populate_user_from_tree(user, owner, tree)
     if POPULATE_USER == 'LDAP' and LDAP_SERVER['url'] != '':
         list_value = []
         for val in USER_LDAP_MAPPING_ATTRIBUTES.values():
             list_value.append(str(val))
         conn = get_ldap_conn()
-        if conn:
+        if conn is not None:
             entry = get_entry(conn, username, list_value)
             if entry is not None:
-                user.email = entry[USER_LDAP_MAPPING_ATTRIBUTES['mail']].value if USER_LDAP_MAPPING_ATTRIBUTES.get(
-                    'mail') and entry[USER_LDAP_MAPPING_ATTRIBUTES['mail']] else ""
-                user.first_name = entry[USER_LDAP_MAPPING_ATTRIBUTES['first_name']].value if USER_LDAP_MAPPING_ATTRIBUTES.get(
-                    'first_name') and entry[USER_LDAP_MAPPING_ATTRIBUTES['first_name']] else ""
-                user.last_name = entry[USER_LDAP_MAPPING_ATTRIBUTES['last_name']].value if USER_LDAP_MAPPING_ATTRIBUTES.get(
-                    'last_name') and entry[USER_LDAP_MAPPING_ATTRIBUTES['last_name']] else ""
-                user.save()
-                owner.affiliation = entry[USER_LDAP_MAPPING_ATTRIBUTES['primaryAffiliation']].value if USER_LDAP_MAPPING_ATTRIBUTES.get(
-                    'primaryAffiliation') and entry[USER_LDAP_MAPPING_ATTRIBUTES['primaryAffiliation']] else AFFILIATION[0][0]
-                owner.save()
-                affiliations = entry[USER_LDAP_MAPPING_ATTRIBUTES['affiliations']].values if USER_LDAP_MAPPING_ATTRIBUTES.get(
-                    'affiliations') and entry[USER_LDAP_MAPPING_ATTRIBUTES['affiliations']] else None
-                for affiliation in affiliations:
-                    if affiliation in AFFILIATION_STAFF:
-                        user.is_staff = True
-                    if CREATE_GROUP_FOM_AFFILIATION:
-                        group, group_created = Group.objects.get_or_create(
-                            name=affiliation.text)
-                        user.groups.add(group)
-                user.save()
+                populate_user_from_entry(user, owner, entry)
 
 
 def get_ldap_conn():
@@ -169,3 +123,87 @@ def get_entry(conn, username, list_value):
         logger.error(
             "LDAPInvalidFilterError, invalid filter: {0}".format(err))
         return None
+
+
+def populate_user_from_entry(user, owner, entry):
+    user.email = (
+        entry[USER_LDAP_MAPPING_ATTRIBUTES['mail']].value if (
+            USER_LDAP_MAPPING_ATTRIBUTES.get('mail')
+            and entry[USER_LDAP_MAPPING_ATTRIBUTES['mail']]
+        ) else ""
+    )
+    user.first_name = (
+        entry[USER_LDAP_MAPPING_ATTRIBUTES['first_name']].value if (
+            USER_LDAP_MAPPING_ATTRIBUTES.get('first_name')
+            and entry[USER_LDAP_MAPPING_ATTRIBUTES['first_name']]
+        ) else ""
+    )
+    user.last_name = (
+        entry[USER_LDAP_MAPPING_ATTRIBUTES['last_name']].value if (
+            USER_LDAP_MAPPING_ATTRIBUTES.get('last_name')
+            and entry[USER_LDAP_MAPPING_ATTRIBUTES['last_name']]
+        ) else ""
+    )
+    user.save()
+    owner.affiliation = (
+        entry[USER_LDAP_MAPPING_ATTRIBUTES['primaryAffiliation']].value if (
+            USER_LDAP_MAPPING_ATTRIBUTES.get('primaryAffiliation')
+            and entry[USER_LDAP_MAPPING_ATTRIBUTES['primaryAffiliation']]
+        ) else AFFILIATION[0][0]
+    )
+    owner.save()
+    affiliations = (
+        entry[USER_LDAP_MAPPING_ATTRIBUTES['affiliations']].values if (
+            USER_LDAP_MAPPING_ATTRIBUTES.get('affiliations')
+            and entry[USER_LDAP_MAPPING_ATTRIBUTES['affiliations']]
+        ) else None
+    )
+    for affiliation in affiliations:
+        if affiliation in AFFILIATION_STAFF:
+            user.is_staff = True
+        if CREATE_GROUP_FOM_AFFILIATION:
+            group, group_created = Group.objects.get_or_create(
+                name=affiliation)
+            user.groups.add(group)
+    user.save()
+
+
+def populate_user_from_tree(user, owner, tree):
+    # Mail
+    mail_element = tree.find(
+        './/{http://www.yale.edu/tp/cas}%s' % (
+            USER_CAS_MAPPING_ATTRIBUTES["mail"])
+    )
+    user.email = mail_element.text if mail_element is not None else ""
+    # first_name
+    first_name_element = tree.find(
+        './/{http://www.yale.edu/tp/cas}%s' % (
+            USER_CAS_MAPPING_ATTRIBUTES["first_name"])
+    )
+    user.first_name = (
+        first_name_element.text if first_name_element is not None else ""
+    )
+    # last_name
+    last_name_element = tree.find(
+        './/{http://www.yale.edu/tp/cas}%s' % (
+            USER_CAS_MAPPING_ATTRIBUTES["last_name"])
+    )
+    user.last_name = (
+        last_name_element.text if last_name_element is not None else ""
+    )
+    user.save()
+    # affiliation
+    affiliation_element = tree.findall(
+        './/{http://www.yale.edu/tp/cas}%s' % (
+            USER_CAS_MAPPING_ATTRIBUTES["affiliation"])
+    )
+    for affiliation in affiliation_element:
+        if affiliation.text in AFFILIATION_STAFF:
+            user.is_staff = True
+        if CREATE_GROUP_FOM_AFFILIATION:
+            group, group_created = Group.objects.get_or_create(
+                name=affiliation.text)
+            user.groups.add(group)
+    user.save()
+    owner.affiliation = affiliation_element[0].text
+    owner.save()
