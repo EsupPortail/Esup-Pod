@@ -7,6 +7,7 @@ from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.decorators import login_required
 
 from pod.video.models import Video
 from pod.video.models import Channel
@@ -198,6 +199,7 @@ def video(request, slug, slug_c=None, slug_t=None):
 
 
 @csrf_protect
+@login_required(redirect_field_name='referrer') # (login_url='/accounts/login/')
 def video_edit(request, slug=None):
 
     form = "Formulaire de creation/edition d'une video"
