@@ -88,6 +88,16 @@ LANGUAGES = (
 TIME_ZONE = 'UTC'
 
 ##
+# The directory to temporarily store data while uploading files.
+#
+#   If None, the standard temporary directory for the operating system
+#   will be used.
+#
+# https://docs.djangoproject.com/en/1.11/ref/settings/#file-upload-temp-dir
+#
+FILE_UPLOAD_TEMP_DIR = os.path.join(os.path.sep, 'var', 'tmp')
+
+##
 # Static files (assets, CSS, JavaScript, fonts...)
 #
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
