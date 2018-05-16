@@ -50,15 +50,13 @@ jQuery(document).ready(function($) {
         }
         if (pickers.file) {
             var conf = $(overlay).data('filePicker').getConf();
-            conf.url = pickers.image;
+            conf.url = pickers.file;
             var anchor = $('<a>').text('Insert File').attr({
                 'name': 'filepicker-file',
                 'title': 'Insert File',
                 'href': '#'
             }).css('display', 'block').click(function(e) {
                 e.preventDefault();
-                var conf = $(overlay).data('filePicker').getConf();
-                conf.url = pickers.file;
                 $('input.simple-filepicker').attr('value', '');
                 $('#file-picker-path').text('Select a file...');
                 $(overlay).data('overlay').load();
@@ -71,7 +69,14 @@ jQuery(document).ready(function($) {
                 conf.urls = response.urls;
             }).done(function() {
                 $.get(conf.urls.browse.file, {id: el.value}, function (response) {
-                    file_path.text(response.result);
+                    file_path.text(response.result.name);
+                    var thumb = $('<img>');
+                    thumb.attr('id', 'file-picker-thumbnail');
+                    thumb.attr('src', response.result.thumbnail);
+                    thumb.attr('alt', 'Thumbnail');
+                    thumb.attr('width', 50);
+                    thumb.attr('height', 50);
+                    thumb.appendTo(file_path);
                 });
             });
         }

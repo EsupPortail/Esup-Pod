@@ -170,7 +170,8 @@ class FilePickerBase(object):
         extra['delete'] = '<form action="' + url + '">'
         extra['delete'] += '<input type="hidden" name="' + \
             'csrfmiddlewaretoken" value="' + get_token(request) + '">'
-        extra['delete'] += '<button type="button" class="delete-file btn btn-danger">' + \
+        extra['delete'] += '<button type="button" ' + \
+            'class="delete-file btn btn-danger">' + \
             'Delete</button></form>'
         extra['id'] = str(getattr(obj, 'id'))
         return {
@@ -290,8 +291,11 @@ class FilePickerBase(object):
             return HttpResponseBadRequest('Bad request')
         else:
             result = get_object_or_404(self.model, id=request.GET['id'])
-            data = {'result': '{0} ({1}) '.format(
-                result.name, result.file_type)}
+            data = {'result': {
+                'name': '{0} ({1}) '.format(result.name, result.file_type),
+                'thumbnail': '/static/img/file.png'
+            }
+            }
             return HttpResponse(
                 json.dumps(data), content_type='application/json')
 
@@ -447,3 +451,26 @@ class ImagePickerBase(FilePickerBase):
         else:
             json['link_content'] = [img.format('', 'Not Found', 100, 100), ]
         return json
+
+    def get_file(self, request):
+        if not request.GET or not request.GET.get('id'):
+            return HttpResponseBadRequest('Bad request')
+        else:
+            result = get_object_or_404(self.model, id=request.GET['id'])
+            try:
+                thumb = get_thumbnail(result.file.path, '100x100',
+                                      crop='center', quality=99)
+            except ThumbnailError:
+                logger.exception()
+                thumb = None
+            if thumb:
+                url = thumb.url
+            else:
+                url = '/static/img/picture.png'
+            data = {'result': {
+                'name': '{0} ({1}) '.format(result.name, result.file_type),
+                'thumbnail': url
+            }
+            }
+            return HttpResponse(
+                json.dumps(data), content_type='application/json')
