@@ -7,6 +7,8 @@ from django.db.models.functions import Substr, Lower
 from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import Type
+from pod.video.models import Discipline
+from pod.video.models import Video
 
 import json
 
@@ -18,6 +20,8 @@ MENUBAR_HIDE_INACTIVE_OWNERS = getattr(
     django_settings, 'MENUBAR_HIDE_INACTIVE_OWNERS', False)
 MENUBAR_SHOW_STAFF_OWNERS_ONLY = getattr(
     django_settings, 'MENUBAR_SHOW_STAFF_OWNERS_ONLY', False)
+HOMEPAGE_SHOWS_PASSWORDED = getattr(django_settings, 'HOMEPAGE_SHOWS_PASSWORDED', True)
+HOMEPAGE_SHOWS_RESTRICTED = getattr(django_settings, 'HOMEPAGE_SHOWS_RESTRICTED', True)
 
 
 def context_settings(request):
@@ -33,7 +37,7 @@ def context_settings(request):
 
 def context_navbar(request):
     channels = Channel.objects.filter(
-        visible=True,
+        visible=True, video__is_draft=False
     ).distinct().annotate(
         video_count=Count("video", distinct=True)
     ).prefetch_related(
@@ -43,7 +47,13 @@ def context_navbar(request):
             video_count=Count("video", distinct=True)
         )))
     types = Type.objects.filter(
+        video__is_draft=False
     ).distinct().annotate(video_count=Count("video", distinct=True))
+
+    disciplines = Discipline.objects.filter(
+        video__is_draft=False
+    ).distinct().annotate(video_count=Count("video", distinct=True))
+
     owners_filter_args = {}
     if MENUBAR_HIDE_INACTIVE_OWNERS:
         owners_filter_args['is_active'] = True
@@ -57,15 +67,25 @@ def context_navbar(request):
         ORDER_BY).annotate(video_count=Count(
             "video", distinct=True)).annotate(
         fl_name=Lower(Substr(ORDER_BY, 1, 1))).order_by(
-        'fl_name').values_list(*list(VALUES_LIST))
+        'fl_name').values(*list(VALUES_LIST))
 
     listowner = {}
     for owner in owners:
-        if owner[4] != '':
-            if listowner.get(owner[4]):
-                listowner[owner[4]].append(owner)
+        if owner['fl_name'] != '':
+            if listowner.get(owner['fl_name']):
+                listowner[owner['fl_name']].append(owner)
             else:
-                listowner[owner[4]] = [owner]
+                listowner[owner['fl_name']] = [owner]
 
+    LAST_VIDEOS = None
+    if request.path == "/":
+        filter_args = {"encoding_in_progress":False, "is_draft":False}
+        if not HOMEPAGE_SHOWS_PASSWORDED:
+            filter_args['password'] = ""
+        if not HOMEPAGE_SHOWS_RESTRICTED:
+            filter_args['is_restricted'] = False
+        LAST_VIDEOS = Video.objects.filter(**filter_args).exclude(channel__visible=0)[:12]
+    
     return {'CHANNELS': channels, 'TYPES': types, 'OWNERS': owners,
-            'LISTOWNER': json.dumps(listowner)}
+            'DISCIPLINES':disciplines, 'LISTOWNER': json.dumps(listowner),
+            'LAST_VIDEOS':LAST_VIDEOS}
