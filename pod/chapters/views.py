@@ -144,6 +144,7 @@ def video_chapter_delete(request, video):
     chapter = get_object_or_404(Chapter, id=request.POST['id'])
     chapter.delete()
     list_chapter = video.chapter_set.all()
+    chapter_to_vtt(list_chapter, video)
     if request.is_ajax():
         some_data_to_dump = {
             'list_chapter': render_to_string(
@@ -179,6 +180,7 @@ def video_chapter_import(request, video):
         request.POST, user=request.user, video=video)
     if form_import.is_valid():
         list_chapter = video.chapter_set.all()
+        chapter_to_vtt(list_chapter, video)
         if request.is_ajax():
             some_data_to_dump = {
                 'list_chapter': render_to_string(

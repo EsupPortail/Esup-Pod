@@ -9,7 +9,6 @@
 	<link href="{% static 'css/quality-selector.css' %}" rel="stylesheet">
 	<link rel="stylesheet" href="{% static 'css/filepicker.overlay.css' %}"/>
 	<link rel="stylesheet" href="{% static 'css/chapters.css' %}"/>
-	<link rel="stylesheet" href="{% static 'css/videojs-chapters.css' %}"/>
 	<script src="{% static 'js/jquery.tools.min.js' %}"></script>
 	<script src="{% static 'js/main.js' %}"></script>
 	<script src="{% static 'js/ajaxupload.js' %}"></script>
@@ -23,7 +22,6 @@
 	<script src="{% static 'video-js-6.8.0/lang/fr.js' %}"></script>
 	<script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
     <script src="{% static 'js/chapters.js' %}"></script>
-    <script src="{% static 'js/videojs-chapters.js' %}"></script>
     <script>
     	var num = 0,
 	    name = '';
@@ -58,29 +56,14 @@
 			<span id="chapter_player">
 				<video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
 				poster="{{video.get_thumbnail_url}}" data-setup='{}'>
-				  <p class="vjs-no-js">
-				    To view this video please enable JavaScript, and consider upgrading to a web browser that
-				    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-				  </p>
-				  <source src="https://d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8" type="application/x-mpegURL">
-				  <!--
-				  -->
+					<p class="vjs-no-js">
+					  To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+					</p>
+					<source src="https://d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8" type="application/x-mpegURL">
+					{% if video.chapter_set.all %}
+						<track src="{{video.get_chapters_file}}" kind="chapters" srclang="en" label="Chapters" default>
+					{% endif %}
 				</video>
-				{% if video.chapter_set.all %}
-					<div class="chapters-list inactive" role="menu">
-						<p>Chapters</p>
-						<ol id="chapters-list"></ol>
-					</div>
-					<ul id="chapters">
-						{% for chap in video.chapter_set.all %}
-							<li data-start="{{chap.time_start}}"
-							    data-end="{{chap.time_end}}"
-							    data-title="{{chap.title}}"
-							    data-id="{{chap.id}}">
-							</li>
-						{% endfor %}
-					</ul>
-				{% endif %}
 			</span>
 			<hr/>
 			<div class="row" id="info_video">
@@ -176,24 +159,6 @@
 	    //Add source to player
 	    player.src(srcOptions);
 	  {% endif %}
-	{% endif %}
-	{% if video.chapter_set.all %}
-		player.videoJsChapters();
-		player.on('timeupdate', timeupdate);
-
-		function timeupdate(event) {
-			var t = player.currentTime();
-			var chapters = player.getGroupedChapters() || 0;
-			var i = 0;
-			if (chapters != 0) {
-				for (i; i < chapters.id.length; i++) {
-					$('#'+chapters.id[i]).attr('class', 'current');
-					if (t < chapters.start[i] || t > chapters.end[i]) {
-						$('#'+chapters.id[i]).removeClass('current');
-					}
-				}
-			}
-		}
 	{% endif %}
 </script>
 {% endblock more_script %}

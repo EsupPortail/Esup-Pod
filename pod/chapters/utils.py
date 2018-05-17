@@ -19,6 +19,7 @@ if apps.is_installed('pod.filepicker'):
 
 def chapter_to_vtt(list_chapter, video):
     webvtt = WebVTT()
+    i = 0
     for chapter in list_chapter:
         start = datetime.datetime.utcfromtimestamp(
             chapter.time_start).strftime('%H:%M:%S.%f')[:-3]
@@ -28,7 +29,9 @@ def chapter_to_vtt(list_chapter, video):
             '{0}'.format(start),
             '{0}'.format(end),
             '{0}'.format(chapter.title))
+        caption.identifier = 'Chapter {0}'.format(i)
         webvtt.captions.append(caption)
+        i = i + 1
     base_dir = None
     if AUTH:
         base_dir = Owner.objects.get(id=video.owner.id).hashkey
