@@ -5,14 +5,37 @@
 {% block page_title %}{% trans 'Enrichment of the video' %} "{{video.title}}" {% endblock page_title %}
 {% block page_extra_head %}
 	<!-- media -->
+	<link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
+	<link href="{% static 'css/quality-selector.css' %}" rel="stylesheet">
 	<link rel="stylesheet" href="{% static 'css/filepicker.overlay.css' %}"/>
 	<link rel="stylesheet" href="{% static 'css/enrichment.css' %}"/>
 	<script src="{% static 'js/jquery.tools.min.js' %}"></script>
 	<script src="{% static 'js/main.js' %}"></script>
 	<script src="{% static 'js/ajaxupload.js' %}"></script>
     <script src="{% static 'js/jquery.filepicker.js' %}"></script>
+    <script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
+	<script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
+	<script src="{% static 'js/silvermine-videojs-quality-selector.min.js' %}"></script>
+	<script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
+	<script src="{% static 'js/videojs-contrib-quality-levels.min.js' %}"></script>
+	<script src="{% static 'js/videojs-hls-quality-selector.min.js' %}"></script>
+	<script src="{% static 'video-js-6.8.0/lang/fr.js' %}"></script>
+	<script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
     <script src="{% static 'js/enrichment.js' %}"></script>
-    <!-- TODO : videojs and extraheadplayer -->
+    <script>
+    	var num = 0,
+	    name = '';
+		/*** For the form ***/;
+		var video_duration = {{video.duration}};
+		/*** For the Cancel button ***/
+		$(document).on("reset", "#page-video form", function (e) {
+		    $("span#form_enrich").html("");
+		    $('form#form_new').show();
+		    $('form').show();
+		    $("table tr").removeClass("info");
+		    manageResize();
+		});
+	</script>
 {% endblock page_extra_head %}
 {% block content %}
 	<article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
@@ -31,8 +54,16 @@
 				</div>
 			</nav>
 			<span id="enrich_player">
-				<!-- TODO : FUTURE PLAYER -->
+				<video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360" poster="{{video.get_thumbnail_url}}" data-setup='{}'>
+					<p class="vjs-no-js">
+						To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+					</p>
+					<source src="https://d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8" type="application/x-mpegURL">
+				</video>
+				{% if video.enrichment_set.all %}
+				{% endif %}
 			</span>
+			<hr/>
 			<div class="row" id="info_video">
 				<div class="col-sm-9">
 					<span id="list_enrich">

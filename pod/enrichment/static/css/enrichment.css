@@ -24,6 +24,7 @@ table.scroll thead tr th {
 	height: 27px;
 	line-height: 27px;
 	text-align: left;
+	border: none;
 }
 table.scroll tbody {
 	max-height: 200px;
@@ -43,13 +44,20 @@ table.scroll thead th.enrich_start,
 table.scroll thead th.enrich_end {
 	white-space: nowrap;
 }
-#list_enrich .panel-heading {
+#list_enrich .panel-heading,
+#form_enrich .panel-heading {
 	border-bottom: 1px solid transparent;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
 	padding: 4px 15px;
 }
-#form_enrich,
-#form_new {
+#form_enrich {
 	padding: 10px;
+}
+form#form_enrich {
+	background-color: rgba(0, 0, 0, .05);
+}
+#form_new {
+	padding-left: 12px;
+	padding-bottom: 10px;
 }
