@@ -140,7 +140,6 @@ def video(request, slug, slug_c=None, slug_t=None):
           is_restricted_to_group, is_password_protected)
 
     if is_access_protected:
-        print("access protected")
 
         access_granted_for_draft = request.user.is_authenticated() and (
             request.user == video.owner or request.user.is_superuser)

@@ -6,3 +6,4 @@ Pillow==5.0.0
 django-tagging==0.4.6
 django-modeltranslation==0.12.2
 wbvtt-py==0.4.1
+django-cas-sso==1.1.7
