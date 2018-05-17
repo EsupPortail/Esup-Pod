@@ -4,19 +4,7 @@
 {% load tagging_tags %}
 
 {% block page_extra_head %}
-<script type="text/javascript" src="/admin/jsi18n/"></script>
-<script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
-<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-<script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
-<!-- form . media -->
-<script type="text/javascript" src="{% static 'js/jquery.tools.min.js' %}"></script>
-{{form.media}}
-<!-- fin form . media -->
-<!--
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/base.css' %}" />
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}" />
--->
+
 {% endblock page_extra_head %}
 
 
@@ -26,23 +14,30 @@
 
 
 {% block page_content %}
+{% spaceless %}
 <h3>{% if form.instance.title %}{{form.instance.title}}{% else %}{% trans "Add a new video" %}{%endif%}</h3>
-
 {% if form.instance.slug %}
 <form id="video_form" method="post"
     action="{% url 'video_edit' slug=form.instance.slug %}"
-    accept-charset="utf-8" enctype="multipart/form-data">
+    accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
 {% else %}
 <form id="video_form" method="post"
     action="{% url 'video_edit' %}"
-    accept-charset="utf-8" enctype="multipart/form-data">
+    accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
 {% endif %}
     {% csrf_token %}
     <div>
         <fieldset>
             {% for field in form %}
-            {% if not field.is_hidden %}
-            <div class="form-group">
+            {% if not field.is_hidden %}{% spaceless %}
+            <div class="form-group {% if field.field.required %}form-group-required {%endif%}
+                {% if "description_" in field.name or "title_"  in field.name %}collapse hide{% endif %}
+                {% if "description_" in field.name %} description{%endif%}
+                {% if "title_" in field.name %} title{%endif%}
+                {% with 'is_restricted restrict_access_to_groups password' as res %}
+                {% if field.name in res.split %}collapse restricted_access{% endif %}
+                {% endwith %}
+                " >
                 {{ field.errors }}
                 {% if "form-check-input" in field.field.widget.attrs.class %}
                 <div class="form-check">
@@ -52,24 +47,155 @@
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label> {{ field }}
                 {% endif %}
                 {% if field.help_text %}
-                <small id="{ field.id_for_label }}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
                 {% endif %}
+                {% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
+                {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
             </div>
+            {% endspaceless %}
+            {% else %}
+            {{ field }}
             {% endif %}
+            
             {% endfor %}
         </fieldset>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
-
+{% endspaceless %}
 {% endblock page_content %}
 
 {% block page_aside %}
+<div class="card card-body">
+    <h5 class="card-title">{% trans "Uploading" %}</h5>
+    <div class="card-text" >
+        <p>{% blocktrans with form.VIDEO_MAX_UPLOAD_SIZE as video_max_upload_size %}The file size must be lower than {{video_max_upload_size}} Go.{% endblocktrans %}</p>
+        <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
+        <p>{% trans "While sending your file, do not close your browser until you have received a message of success or failure." %}</p>
+        <p>{% trans "An email will be sent to you when all encoding tasks are completed." %}<p>
+    </div>
+</div>
+<div class="card card-body">
+    <h5 class="card-title">{% trans "Mandatory fields" %}</h5>
+    <div class="card-text" >
+        <p>{% trans "Fields marked with an asterisk are mandatory."%}</p>
+    </div>
+</div>
 
+<div class="card card-body">
+    <h5 class="card-title">{% trans "Form fields"%}</h5>
+    <div class="card-text" id="formfields">
+        {% for title, values in form.VIDEO_FORM_FIELDS_HELP_TEXT.items %}
+            <div class="card card-body p-1">
+                <button class="btn btn-sm-light" id="heading-{{forloop.counter}}" data-toggle="collapse" data-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}">
+                    {{title}}
+                </button>
+                <div id="collapse-{{forloop.counter}}" class="collapse hide card-text small" aria-labelledby="heading-{{forloop.counter}}" data-parent="#formfields">
+                    {% for value in values %}
+                    <p>{{value}}</p>
+                    {%endfor%}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 {% endblock page_aside %}
 
 
 {% block more_script %}
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
+<!-- form . media -->
+<script type="text/javascript" src="{% static 'js/jquery.tools.min.js' %}"></script>
+{{form.media}}
+<!-- fin form . media -->
+<script>
+/** Restrict access **/
+$('#id_is_draft').change(function(){
+    restricted_access();
+});
+var restricted_access = function() {
+    if($('#id_is_draft').prop( "checked" )){
+        $('.restricted_access').addClass('hide');
+        $('.restricted_access').removeClass('show');
+        $("#id_password").val('');
+        $("#id_restrict_access_to_groups option:selected").prop("selected", false);
+        $("#id_is_restricted").prop( "checked", false );
+    } else {
+        $('.restricted_access').addClass('show');
+        $('.restricted_access').removeClass('hide');
+    }
+}
+restricted_access();
+/** end restrict access **/
+/** channel **/
+var listTheme = new Array();
+{% for channel in form.channel.field.queryset %}
+listTheme["channel_{{channel.id}}"] = {{channel.get_all_theme_json|safe}};
+{% endfor %}
 
+var initial = new Array();
+
+$('#id_theme option:selected').each(function () {
+    initial.push($(this).val());
+});
+
+$('#id_theme option').remove();
+
+$('#id_channel').change(function() {
+    $('#id_theme option').remove();
+    var str = get_option(listTheme["channel_"+$(this).val()], 0, []);
+    $('#id_theme').append(str);
+});
+
+$("#id_channel option:selected").each(function () {
+    var str = get_option(listTheme["channel_"+$(this).val()], 0, initial);
+    $('#id_theme').append(str);
+});
+
+var get_option = function(tab, level=0, tab_selected) {
+    var option = ""
+    var prefix = ""
+    for(i=0;i<level;i++) prefix+="&nbsp;";
+    if(level!=0) prefix+="|-";
+    $.each(tab, function(i, val) {
+        if($.inArray(i, tab_selected) > -1)
+            option += '<option selected value="'+i+'">'+prefix+" "+val.title+'</option>';
+        else
+            option += '<option value="'+i+'">'+prefix+" "+val.title+'</option>';
+        var child = val.child;
+        var count = Object.keys(child).length;
+        if(count>0) {
+            option += get_option(val.child, level+=1);
+        }
+    });
+    return option;
+}
+/** end channel **/
+</script>
+<script>
+/** formulaire **/
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+</script>
 {% endblock more_script %}

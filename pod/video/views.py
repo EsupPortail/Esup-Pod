@@ -215,14 +215,28 @@ def video_edit(request, slug=None):
     form = VideoForm(
         instance=video,
         is_staff=request.user.is_staff,
-        is_superuser=request.user.is_superuser
+        is_superuser=request.user.is_superuser,
+        current_user=request.user
     )
-    """
+
     if request.method == 'POST':
-        form = VideoForm(request.POST, request.FILES, instance=video)
+        form = VideoForm(
+            request.POST,
+            request.FILES,
+            instance=video,
+            is_staff=request.user.is_staff,
+            is_superuser=request.user.is_superuser,
+            current_user=request.user
+        )
         if form.is_valid():
-            return HttpResponseRedirect('/thanks/')
-    """
+            print('valid')
+            return HttpResponse("Youpi")
+        else:
+            print('non valid')
+            return render(request, 'videos/video_edit.html', {
+                'form': form}
+            )
+
     return render(request, 'videos/video_edit.html', {
         'form': form}
     )

@@ -70,12 +70,13 @@
             .django-ckeditor-widget {
                 width: 100%;
             }
+            /** video form **/
+            .required { color:red;}
+            .form-group-required {
+                border-left: 3px solid rgba(201, 76, 76, 0.3);
+                padding-left : 5px;
+            }
         </style>
-	    <!-- JS -->
-	    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-		<script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
-        <script src="{% static 'js/js.cookie.js' %}"></script>
-
 	    <title>{{ TITLE_SITE }} - {% block page_title %}{% endblock %}</title>
 
 	    {% block page_extra_head %}{% endblock %}
@@ -140,6 +141,10 @@
         </div>
         {% endfor %}
         {% endif %}
+        <!-- JS -->
+        <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+        <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/js.cookie.js' %}"></script>
 
 		<script>
 		var listUser = {{LISTOWNER|safe}};
@@ -186,7 +191,7 @@
         });
 
 		</script>
-        
+
 		{% block more_script %}
 		{% endblock more_script %}
 

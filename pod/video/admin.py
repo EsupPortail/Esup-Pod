@@ -1,5 +1,6 @@
 from django.apps import apps
 from django.contrib import admin
+from django.utils.functional import curry
 from modeltranslation.admin import TranslationAdmin
 
 from pod.video.models import Video
@@ -23,6 +24,7 @@ from pod.completion.admin import ContributorInline
 from pod.completion.admin import DocumentInline
 from pod.completion.admin import OverlayInline
 from pod.completion.admin import TrackInline
+
 if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
 
@@ -50,8 +52,9 @@ class VideoAdmin(admin.ModelAdmin):
             kwargs['form'] = VideoSuperAdminForm
         else:
             kwargs['form'] = VideoAdminForm
-        return super(VideoAdmin, self).get_form(request, obj, **kwargs)
-
+        form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
+        return form
+        
     class Media:
         js = ('js/jquery.tools.min.js',)
 

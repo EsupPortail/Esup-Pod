@@ -55,18 +55,18 @@ DEFAULT_TYPE_ID = getattr(
 LICENCE_CHOICES = getattr(
     settings, 'LICENCE_CHOICES', (
         ('BY', _("Attribution")),
-        ('BY ND', _("Attribution + Pas de Modification")),
+        ('BY ND', _("Attribution + Pas d’Oeuvre dérivée (BY-ND)")),
         ('BY NC ND', _(
-            "Attribution + Pas d’Utilisation Commerciale + Pas de Modification"
+            "Attribution + Utilisation Non Commerciale + "
+            + "Pas d’Oeuvre dérivée (BY-NC-ND)"
         )),
-        ('BY NC', _("Attribution + Pas d’Utilisation Commerciale")),
-        ('BY NC SA',
-            _(
-                "Attribution + Pas d’Utilisation Commerciale + "
-                + "Partage dans les mêmes conditions"
-            )),
+        ('BY NC', _("Attribution + Utilisation Non Commerciale (BY-NC)")),
+        ('BY NC SA', _(
+            "Attribution + Utilisation Non Commerciale + "
+            + "Partage dans les mêmes conditions (BY-NC-SA)"
+        )),
         ('BY SA', _(
-            "Attribution + Partage dans les mêmes conditions"))
+            "Attribution + Partage dans les mêmes conditions (BY-SA)"))
     ))
 FORMAT_CHOICES = getattr(
     settings, 'FORMAT_CHOICES', (
