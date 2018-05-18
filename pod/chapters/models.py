@@ -45,7 +45,7 @@ class Chapter(models.Model):
 
     def clean(self):
         msg = list()
-        msg = self.verify_title_items() + self.verify_time() 
+        msg = self.verify_title_items() + self.verify_time()
         msg = msg + self.verify_overlap()
         if len(msg) > 0:
             raise ValidationError(msg)

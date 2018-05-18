@@ -42,14 +42,53 @@ table.scroll thead th.chapter_time_start,
 table.scroll thead th.chapter_time_end {
 	white-space: nowrap;
 }
-#list_chapter .panel-heading {
+#list_chapter .panel-heading,
+#form_chapter .panel-heading {
 	border-bottom: 1px solid transparent;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
 	padding: 4px 15px;
 }
+#form_new {
+	padding-left: 12px;
+	padding-bottom: 10px;
+}
 #form_chapter,
-#form_new,
+#form_chapter_import,
 #form_vtt {
 	padding: 10px;
+}
+form#form_chapter,
+form#form_chapter_import {
+	background-color: rgba(0, 0, 0, .05);
+}
+.form-group.row p {
+	padding: 2px;
+}
+
+/** Filepicker override **/
+div.file-picker-overlay,
+div.file-picker,
+ul.css-tabs a {
+	box-sizing: content-box;
+}
+textarea#id_description {
+	line-height: normal;
+}
+div.file-picker-overlay input[type="text"],
+div.file-picker-overlay textarea, 
+div.file-picker-overlay select {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px 6px;
+    margin-top: 0;
+}
+.file-list a:hover {
+	cursor: pointer;
+	color: #007bff !important;
+}
+
+/** Bootstrap override **/
+.card-title {
+	margin: .45rem;
 }
