@@ -1,7 +1,5 @@
 from django.http import HttpResponse
 from django.http import HttpResponseForbidden
-from django.http import HttpResponseBadRequest
-from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
@@ -12,6 +10,7 @@ from pod.video.models import Video
 from pod.chapters.models import Chapter
 from pod.chapters.forms import ChapterForm
 from pod.chapters.forms import ChapterImportForm
+from pod.chapters.utils import chapter_to_vtt
 
 import json
 
@@ -38,11 +37,13 @@ def video_chapter(request, slug):
                     request.POST['action'])
             )
     else:
+        chapters = video.get_chapters_file()
         return render(
             request,
             'video_chapter.html',
             {'video': video,
-             'list_chapter': list_chapter})
+             'list_chapter': list_chapter,
+             'chapters': chapters})
 
 
 def video_chapter_new(request, video):
@@ -80,16 +81,13 @@ def video_chapter_save(request, video):
     if form_chapter.is_valid():
         form_chapter.save()
         list_chapter = video.chapter_set.all()
+        chapter_to_vtt(list_chapter, video)
         if request.is_ajax():
             some_data_to_dump = {
                 'list_chapter': render_to_string(
                     'chapter/list_chapter.html',
                     {'list_chapter': list_chapter,
                      'video': video}),
-                'player': render_to_string(
-                    'video_player.html',
-                    {'video': video,
-                     'csrf_token': request.COOKIES['csrftoken']})
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
@@ -146,6 +144,7 @@ def video_chapter_delete(request, video):
     chapter = get_object_or_404(Chapter, id=request.POST['id'])
     chapter.delete()
     list_chapter = video.chapter_set.all()
+    chapter_to_vtt(list_chapter, video)
     if request.is_ajax():
         some_data_to_dump = {
             'list_chapter': render_to_string(
@@ -172,19 +171,6 @@ def video_chapter_cancel(request, video):
         {'video': video,
          'list_chapter': list_chapter})
 
-def video_chapter_export(request, video):
-    list_chapter = video.chapter_set.all()
-
-    if not request.POST:
-        return HttpResponseBadRequest('Bad request')
-    if list_chapter:
-        some_data_to_dump = {
-            'vtt': chapter_to_vtt(list_chapter, video)
-        }
-        data = json.dumps(some_data_to_dump)
-        return HttpResponse(data, content_type='application/json')
-    else:
-        return HttpResponseNotFound('This video has no chapters.')
 
 def video_chapter_import(request, video):
     list_chapter = video.chapter_set.all()
@@ -194,16 +180,13 @@ def video_chapter_import(request, video):
         request.POST, user=request.user, video=video)
     if form_import.is_valid():
         list_chapter = video.chapter_set.all()
+        chapter_to_vtt(list_chapter, video)
         if request.is_ajax():
             some_data_to_dump = {
                 'list_chapter': render_to_string(
                     'chapter/list_chapter.html',
                     {'list_chapter': list_chapter,
                      'video': video}),
-                'player': render_to_string(
-                    'video_player.html',
-                    {'video': video,
-                     'csrf_token': request.COOKIES['csrftoken']})
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
@@ -214,14 +197,15 @@ def video_chapter_import(request, video):
                 {'video': video,
                  'list_chapter': list_chapter})
     else:
-        print(form_import.errors)
         if request.is_ajax():
             some_data_to_dump = {
                 'errors': '{0}'.format(_('Please correct errors.')),
                 'form': render_to_string(
-                    'chapter/form_chapter_import.html',
+                    'chapter/form_chapter.html',
                     {'video': video,
-                     'form_import': form_import})
+                     'form_import': form_import,
+                     'form_chapter': form_chapter,
+                     'csrf_token': request.COOKIES['csrftoken']})
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
