@@ -217,22 +217,44 @@ function overlaptest(){
 };
 */
 /*** Display element of form enrich ***/
-function get_form(data) {
-    $("#form_chapter").hide().html(data).fadeIn();
-    $("input#id_time")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-xs'>{% trans 'Get time from the player'%}</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
+Number.prototype.toHHMMSS = function() {
+    var seconds = Math.floor(this),
+        hours = Math.floor(seconds / 3600);
+    seconds -= hours*3600;
+    var minutes = Math.floor(seconds / 60);
+    seconds -= minutes*60;
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    return hours+':'+minutes+':'+seconds;
 };
 
-$(document).on('change','input#id_time',function() {
+function get_form(data) {
+    $("#form_chapter").hide().html(data).fadeIn();
+    $("input#id_time_start")
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-sm'>{% trans 'Get time from the player'%}</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
+    $("input#id_time_end")
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-info btn-sm'>{% trans 'Get time from the player'%}</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
+};
+
+$(document).on('change','input#id_time_start',function() {
+    $(this).parent().find("span.getfromvideo span.timecode").html(" "+parseInt($(this).val()).toHHMMSS());
+});
+$(document).on('change','input#id_time_end',function() {
     $(this).parent().find("span.getfromvideo span.timecode").html(" "+parseInt($(this).val()).toHHMMSS());
 });
 
 $(document).on('click','#page-video span.getfromvideo a',function(e) {
     e.preventDefault();
-    if(!(typeof myPlayer === 'undefined')) {
+    if(!(typeof player === 'undefined')) {
         if($(this).context.id == "getfromvideo_start"){
-            $("input#id_time").val(parseInt(myPlayer.currentTime()));
-            $("input#id_time").trigger('change');
+            $("input#id_time_start").val(parseInt(player.currentTime()));
+            $("input#id_time_start").trigger('change');
+        }
+        if($(this).context.id == "getfromvideo_end"){
+            $("input#id_time_end").val(parseInt(player.currentTime()));
+            $("input#id_time_end").trigger('change');
         }
     }
 });
