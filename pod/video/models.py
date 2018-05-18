@@ -1,3 +1,9 @@
+import os
+import time
+import unicodedata
+import json
+import logging
+
 from django.db import models
 from django.db import connection
 from django.conf import settings
@@ -26,12 +32,6 @@ if apps.is_installed('pod.filepicker'):
 if apps.is_installed('pod.chapters'):
     CHAPTERS = True
 
-import os
-import time
-import unicodedata
-import json
-
-import logging
 logger = logging.getLogger(__name__)
 
 FILEPICKER = True if apps.is_installed('pod.filepicker') else False
@@ -481,36 +481,50 @@ class Video(models.Model):
         request = None
         if self.thumbnail:
             thumbnail_url = ''.join(
-                ['//', get_current_site(request).domain, self.thumbnail.file.url])
+                ['//',
+                 get_current_site(request).domain,
+                 self.thumbnail.file.url])
         else:
             thumbnail_url = ''.join(
-                ['//', get_current_site(request).domain, settings.STATIC_URL, DEFAULT_THUMBNAIL])
+                ['//',
+                 get_current_site(request).domain,
+                 settings.STATIC_URL,
+                 DEFAULT_THUMBNAIL])
         return thumbnail_url
 
     def get_thumbnail_card(self):
-        return '<img class="card-img-top" src="%s" alt="%s" />' % (self.get_thumbnail_url(), self.title)
+        return '<img class="card-img-top" src="%s" alt="%s" />' % (
+            self.get_thumbnail_url(), self.title)
 
     def get_playlist_master(self):
         try:
-            return PlaylistVideo.objects.get(name="playlist", video=self, encoding_format="application/x-mpegURL")
+            return PlaylistVideo.objects.get(
+                name="playlist",
+                video=self,
+                encoding_format="application/x-mpegURL")
         except PlaylistVideo.DoesNotExist:
             return None
 
     def get_video_m4a(self):
         try:
-            return EncodingAudio.objects.get(name="audio", video=self, encoding_format="video/mp4")
+            return EncodingAudio.objects.get(
+                name="audio", video=self, encoding_format="video/mp4")
         except EncodingAudio.DoesNotExist:
             return None
 
     def get_video_mp4(self):
-        return EncodingVideo.objects.filter(video=self, encoding_format="video/mp4")
+        return EncodingVideo.objects.filter(
+            video=self, encoding_format="video/mp4")
 
     def get_video_mp4_json(self):
         list_src = []
         list_video = sorted(self.get_video_mp4(), key=lambda m: m.height)
         for video in list_video:
             list_src.append(
-                {'type': video.encoding_format, 'src': video.source_file.url, 'height': video.height, 'label':video.name})
+                {'type': video.encoding_format,
+                 'src': video.source_file.url,
+                 'height': video.height,
+                 'label': video.name})
         return list_src
         # return json.dumps(self.get_video_mp4())
 
@@ -531,6 +545,7 @@ class Video(models.Model):
                     'files',
                     self.owner.username,
                     'chapter_{0}'.format(self.title))
+
 
 def remove_video_file(video):
     if video.video:
