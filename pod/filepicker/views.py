@@ -16,6 +16,7 @@ from django.http import HttpResponseBadRequest
 from django.http import HttpResponseNotFound
 from django.middleware.csrf import get_token
 from django.utils.text import capfirst
+from django.shortcuts import get_object_or_404
 from sorl.thumbnail.helpers import ThumbnailError
 from sorl.thumbnail import get_thumbnail
 from pod.filepicker.forms import AjaxItemForm
@@ -115,6 +116,8 @@ class FilePickerBase(object):
         urlpatterns = [
             url(r'^$', self.setup, name='init'),
             url(r'^files/$', self.list, name='list-files'),
+            url(r'^file/$',
+                self.get_file, name='get-file'),
             url(r'^upload/file/$', self.protect(self.upload_file, True),
                 name='upload-file'),
             url(r'^delete/file/(?P<file>[\-\d\w]+)/$', self.delete,
@@ -134,7 +137,9 @@ class FilePickerBase(object):
         data['urls'] = {
             'browse': {
                 'files': reverse(
-                    'filepicker:{0}:list-files'.format(self.name))
+                    'filepicker:{0}:list-files'.format(self.name)),
+                'file': reverse(
+                    'filepicker:{0}:get-file'.format(self.name))
             },
             'upload': {
                 'file': reverse(
@@ -279,6 +284,16 @@ class FilePickerBase(object):
         else:
             queryset = queryset.order_by('-pk')
         return queryset
+
+    def get_file(self, request):
+        if not request.GET or not request.GET.get('id'):
+            return HttpResponseBadRequest('Bad request')
+        else:
+            result = get_object_or_404(self.model, id=request.GET['id'])
+            data = {'result': '{0} ({1}) '.format(
+                result.name, result.file_type)}
+            return HttpResponse(
+                json.dumps(data), content_type='application/json')
 
     def get_dirs(self, user, directory=None):
         if directory:

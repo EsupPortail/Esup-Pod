@@ -35,20 +35,22 @@ jQuery(document).ready(function($) {
         }).insertBefore($(el));
         var parent = $(el).parent();
         if (pickers.image) {
+            var conf = $(overlay).data('filePicker').getConf();
+            conf.url = pickers.image;
             var anchor = $('<a>').text('Insert Image').attr({
                 'name': 'filepicker-image',
                 'title': 'Insert Image',
                 'href': '#'
             }).css('display', 'block').click(function(e) {
                 e.preventDefault();
-                var conf = $(overlay).data('filePicker').getConf();
-                conf.url = pickers.image;
                 $('input.simple-filepicker').attr('value', '');
                 $('#file-picker-path').text('Select a file...');
                 $(overlay).data('overlay').load();
             }).prependTo(parent);
         }
         if (pickers.file) {
+            var conf = $(overlay).data('filePicker').getConf();
+            conf.url = pickers.image;
             var anchor = $('<a>').text('Insert File').attr({
                 'name': 'filepicker-file',
                 'title': 'Insert File',
@@ -64,6 +66,15 @@ jQuery(document).ready(function($) {
 		}
         var file_path = $('<p>').attr('id', 'file-picker-path');
         file_path.text('Select a file...');
+        if ($('input.simple-filepicker').attr('value') != '') {
+            $.get(conf.url, function (response) {
+                conf.urls = response.urls;
+            }).done(function() {
+                $.get(conf.urls.browse.file, {id: el.value}, function (response) {
+                    file_path.text(response.result);
+                });
+            });
+        }
         file_path.appendTo(parent);
 	}
 
