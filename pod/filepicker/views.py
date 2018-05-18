@@ -290,8 +290,11 @@ class FilePickerBase(object):
             return HttpResponseBadRequest('Bad request')
         else:
             result = get_object_or_404(self.model, id=request.GET['id'])
-            data = {'result': '{0} ({1}) '.format(
-                result.name, result.file_type)}
+            data = {'result': {
+                'name': '{0} ({1}) '.format(result.name, result.file_type),
+                'thumbnail': '/static/img/file.png'
+            }
+            }
             return HttpResponse(
                 json.dumps(data), content_type='application/json')
 
@@ -447,3 +450,26 @@ class ImagePickerBase(FilePickerBase):
         else:
             json['link_content'] = [img.format('', 'Not Found', 100, 100), ]
         return json
+
+    def get_file(self, request):
+        if not request.GET or not request.GET.get('id'):
+            return HttpResponseBadRequest('Bad request')
+        else:
+            result = get_object_or_404(self.model, id=request.GET['id'])
+            try:
+                thumb = get_thumbnail(result.file.path, '100x100',
+                                      crop='center', quality=99)
+            except ThumbnailError:
+                logger.exception()
+                thumb = None
+            if thumb:
+                url = thumb.url
+            else:
+                url = '/static/img/picture.png'
+            data = {'result': {
+                'name': '{0} ({1}) '.format(result.name, result.file_type),
+                'thumbnail': url
+            }
+            }
+            return HttpResponse(
+                json.dumps(data), content_type='application/json')
