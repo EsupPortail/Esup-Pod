@@ -65,3 +65,30 @@ form#form_chapter_import {
 .form-group.row p {
 	padding: 2px;
 }
+
+/** Filepicker override **/
+div.file-picker-overlay,
+div.file-picker,
+ul.css-tabs a {
+	box-sizing: content-box;
+}
+textarea#id_description {
+	line-height: normal;
+}
+div.file-picker-overlay input[type="text"],
+div.file-picker-overlay textarea, 
+div.file-picker-overlay select {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px 6px;
+    margin-top: 0;
+}
+.file-list a:hover {
+	cursor: pointer;
+	color: #007bff !important;
+}
+
+/** Bootstrap override **/
+.card-title {
+	margin: .45rem;
+}
