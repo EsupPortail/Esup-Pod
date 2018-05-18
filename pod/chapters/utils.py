@@ -9,6 +9,7 @@ from django.utils import timezone
 from webvtt import WebVTT, Caption
 from pod.chapters.models import Chapter
 if apps.is_installed('pod.authentication'):
+    from pod.authentication.models import Owner
     AUTH = True
 if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
@@ -18,6 +19,7 @@ if apps.is_installed('pod.filepicker'):
 
 def chapter_to_vtt(list_chapter, video):
     webvtt = WebVTT()
+    i = 0
     for chapter in list_chapter:
         start = datetime.datetime.utcfromtimestamp(
             chapter.time_start).strftime('%H:%M:%S.%f')[:-3]
@@ -27,51 +29,50 @@ def chapter_to_vtt(list_chapter, video):
             '{0}'.format(start),
             '{0}'.format(end),
             '{0}'.format(chapter.title))
+        caption.identifier = 'Chapter {0}'.format(i)
         webvtt.captions.append(caption)
+        i = i + 1
+    base_dir = None
     if AUTH:
-        file_path = os.path.join(
-            settings.MEDIA_ROOT,
-            'files',
-            video.owner.hashkey,
-            'Home',
-            'chapter_{0}.vtt'.format(video.title))
+        base_dir = Owner.objects.get(id=video.owner.id).hashkey
     else:
-        file_path = os.path.join(
-            settings.MEDIA_ROOT,
-            'files',
-            video.owner.username,
-            'Home',
-            'chapter_{0}.vtt'.format(video.title))
+        base_dir = video.owner.username
+    file_path = os.path.join(
+        settings.MEDIA_ROOT,
+        'files',
+        base_dir,
+        'Home',
+        'chapter_{0}.vtt'.format(video.title))
     webvtt.save(file_path)
     file = File(open(file_path))
     file.name = 'chapter_{0}.vtt'.format(video.title)
     if FILEPICKER:
         home = UserDirectory.objects.get(
-            owner=video.owner.user, name='Home')
+            owner=video.owner, name='Home')
         CustomFileModel.objects.filter(
-            name='chapter_{0}'.format(video.title)).delete()
-        CustomFileModel.objects.create(
+            name='chapter_{0}'.format(video.title),
+            created_by=video.owner,
+            directory=home).delete()
+        new = CustomFileModel.objects.create(
             name='chapter_{0}'.format(video.title),
             file_size=os.path.getsize(file_path),
             file_type='VTT',
             date_created=timezone.now(),
             date_modified=timezone.now(),
-            created_by=video.owner.user,
-            modified_by=video.owner.user,
+            created_by=video.owner,
+            modified_by=video.owner,
             directory=home,
             file=file)
         os.remove(file_path)
         path = os.path.join(
             settings.MEDIA_URL,
-            'files',
-            video.owner.hashkey,
-            'Home',
-            file.name)
+            new.file.name)
+        print(new.file.path)
     else:
         path = os.path.join(
             settings.MEDIA_URL,
             'files',
-            video.owner.username,
+            base_dir,
             'Home',
             file.name)
 

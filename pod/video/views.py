@@ -182,7 +182,8 @@ def video(request, slug, slug_c=None, slug_t=None):
                 return HttpResponse("show form password")
             elif request.user.is_authenticated():
                 messages.add_message(
-                    request, messages.ERROR, _(u'You cannot watch this video.'))
+                    request, messages.ERROR,
+                    _(u'You cannot watch this video.'))
                 raise PermissionDenied
             else:
                 return HttpResponse("redirect to login page")

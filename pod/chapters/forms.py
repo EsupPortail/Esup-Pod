@@ -57,6 +57,7 @@ class ChapterImportForm(forms.Form):
                 pickers=pickers)
             self.fields['file'].queryset = CustomFileModel.objects.filter(
                 created_by=self.user)
+        self.fields['file'].label = 'File to import'
 
     def clean_file(self):
         msg = vtt_to_chapter(self.cleaned_data['file'], self.video)
