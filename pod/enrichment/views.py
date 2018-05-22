@@ -85,7 +85,7 @@ def video_enrichment_save(request, video):
                 'player': render_to_string(
                     'videos/video_player.html', {
                         'video': video,
-                        'csrf_token': request.COOKIES['csrf_token']
+                        'csrf_token': request.COOKIES['csrftoken']
                     })
             }
             data = json.dumps(some_data_to_dump)

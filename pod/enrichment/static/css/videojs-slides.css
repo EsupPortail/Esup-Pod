@@ -1,0 +1,19 @@
+.vjs-slides {
+	display: block;
+}
+.video-slides {
+	display: flex;
+	z-index: 1;
+	position: absolute;
+	right: 10px;
+	bottom: 34px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.video-slides li {
+	display: none;
+}
+.video-slides li img {
+	max-width: 100%;
+}

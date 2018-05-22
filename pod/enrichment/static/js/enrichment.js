@@ -28,23 +28,19 @@ function manageResize() {
     On save action, a request is sent with the form after a pair of
         validation functions are runned.
 ***/
-$(document).on("submit", "#page-video form", function (e) {
+$(document).on("submit", "form#form_enrich", function (e) {
     $('form').show();
     e.preventDefault();
     var jqxhr= '';
     var action = $(this).find('input[name=action]').val();
-    if(action == "modify" || action == "new"){
+    if(action == "modify"){
         $('form#form_new').hide();
         $('form.form_modif').hide();
         $('form.form_delete').hide();
         manageResize();
         var elt = $(this).parents('tr');
-        if (action == "modify"){
-            var id = $(this).find('input[name=id]').val();
-            jqxhr = $.post( window.location.href, {"action":"modify", "id": id });
-        }else{
-            jqxhr = $.post( window.location.href, {"action":"new"} );
-        }
+        var id = $(this).find('input[name=id]').val();
+        jqxhr = $.post( window.location.href, {"action":"modify", "id": id });
         jqxhr.done(function(data){
             if(data.indexOf("form_enrich")==-1) {
                 show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
@@ -123,6 +119,37 @@ $(document).on("submit", "#page-video form", function (e) {
         }
     }
 });
+
+$(document).on("submit", "form#form_new", function (e) {
+    e.preventDefault();
+    var jqxhr= '';
+    var action = $(this).find('input[name=action]').val();
+    if (action == "new") {
+        $('form#form_new').hide();
+        $('form.form_modif').hide();
+        $('form.form_delete').hide();
+        manageResize();
+        var elt = $(this).parents('tr');
+        jqxhr = $.post( window.location.href, {"action":"new"} );
+        jqxhr.done(function(data){
+            if(data.indexOf("form_enrich")==-1) {
+                show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
+            } else {
+                get_form(data);
+                elt.addClass('info');
+            }
+        });
+        jqxhr.fail(function($xhr) {
+            var data = $xhr.status+ " : " +$xhr.statusText;
+            show_messages("{% trans 'Error getting form.' %} " + "("+data+")"+ "{% trans 'The form could not be recovered.'%}", 'danger');
+            $('form.form_modif').show();
+            $('form.form_delete').show();
+            $('form#form_new').show();
+            $('#form_enrich').html("");
+            manageResize();
+        });
+    }
+});
 /*** Function show the item selected by type field ***/
 $(document).on('change', '#page-video select#id_type', function() {
     enrich_type();
@@ -162,11 +189,11 @@ function get_form(data) {
     manageResize();
 };
 function enrich_type(){
-    $("img[id^='id_image']").parents('div.form-group').hide();
+    $("#id_image").parents('div.form-group').hide();
     $("textarea#id_richtext").parents('div.form-group:first').hide();
-    $("#id_weblink").parent('div.form-group').hide();
-    $("img[id^='id_document']").parents('div.form-group').hide();
-    $("#id_embed").parent('div.form-group').hide();
+    $("#id_weblink").parents('div.form-group').hide();
+    $("#id_document").parents('div.form-group').hide();
+    $("#id_embed").parents('div.form-group').hide();
     var val = $("select#id_type").val();
     if (val != '') {
         $("#form_enrich").find('[id^="id_' + val + '"]').parents('div.form-group:first').show();
@@ -293,3 +320,97 @@ function overlaptest(){
     });
     return msg;
 };
+
+function changeDisplay(disp, duration) {
+    duration = (typeof duration == 'undefined' ? 500 : duration);
+    vid_width = parseInt(disp.split('/')[0]);
+    slide_width = parseInt(disp.split('/')[1]);
+
+    if (animation_complete === true) {
+        animation_complete = false;
+        if (vid_width == 100 && slide_width > 0) {
+            $('video').css('zIndex', videozindex + 1);
+            $('.vjs-slide').css('zIndex', videozindex + 2);
+
+            $('.video-js .vjs-tech').animate(
+                {
+                    width: vid_width + '%',
+                    height: '100%',
+                    left: '0%'
+                },
+                duration
+            );
+            $('.video-js .vjs-slide').animate(
+                {
+                    width: slide_width + '%',
+                    height: slide_width + '%',
+                    left: (100 - slide_width) + '%'
+                },
+                duration,
+                function() {
+                    animation_complete = true;
+                    if($('.vjs-slide article img').length) {
+                        var top = parseInt(($('.vjs-slide article').height()-$('.vjs-slide article img').height())/2);
+                        $('.vjs-slide article img').attr("style","top:"+top+"px;position:relative;");
+                    }
+                }
+            );
+        } else {
+            if (slide_width == 100 && vid_width > 0) {
+                $('video').css('zIndex', videozindex + 2);
+                $('.vjs-slide').css('zIndex', videozindex + 1);
+                $('.video-js .vjs-tech').animate(
+                    {
+                        width: vid_width + '%',
+                        height: vid_width + '%',
+                        left: '0%'
+                    },
+                    duration
+                );
+                $('.video-js .vjs-slide').animate(
+                    {
+                        width: slide_width + '%',
+                        height: slide_height + '%',
+                        left: (100 - slide_width) + '%'
+                    },
+                    duration,function() {
+                        animation_complete = true;
+                        if($('.vjs-slide article img').length) {
+                            var top = parseInt(($('.vjs-slide article').height()-$('.vjs-slide article img').height())/2);
+                            $('.vjs-slide article img').attr("style","top:"+top+"px;position:relative;");
+                        }
+                    }
+                );
+            } else {
+                $('.video-js .vjs-tech').animate(
+                    {
+                        width: vid_width + '%',
+                        height: '100%',
+                        left: '0%'
+                    },
+                    duration
+                );
+                $('.video-js .vjs-slide').animate(
+                    {
+                        width: slide_width + '%',
+                        height: slide_height + '%',
+                        left: (100 - slide_width) + '%'
+                    },
+                    duration,
+                    function() {
+                        animation_complete = true;
+                        if($('.vjs-slide article img').length) {
+                            var top = parseInt(($('#player_video_html5_api').height()-$('.vjs-slide article img').height())/2);
+                            $('.vjs-slide article img').attr("style","top:"+top+"px;position:relative;");
+                        }
+                    }
+                );
+            }
+        }
+        if (isPlaying) {
+            myPlayer.play();
+        } else {
+            myPlayer.pause();
+        }
+    }
+}
