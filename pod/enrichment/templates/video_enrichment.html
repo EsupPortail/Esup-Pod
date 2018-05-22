@@ -102,3 +102,61 @@
 		</main>
 	</article>
 {% endblock content %}
+{% block more_script %}
+<script>
+	var options = {
+	  notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
+	  language: "fr", //en or nl
+	  fluid: true, 
+	  playbackRates: [0.5, 1, 1.5, 2]
+	}
+	var player = videojs('podvideoplayer', options, function(){});
+
+	{% if video.is_video %}
+	  /** get all mp4 format **/
+	  var mp4_sources = {{video.get_video_mp4_json|safe}};
+	  
+	  {% if video.get_playlist_master %}
+	    var srcOptions = {
+	      src: '{{video.get_playlist_master.source_file.url}}',
+	      type: '{{video.get_playlist_master.encoding_format}}',
+	    };
+	    player.on('loadedmetadata', function() {
+	      console.log('LOADEDMETADATA');
+	      var qualityLevels = this.qualityLevels();
+	    });
+	    //Add source to player
+	    player.src(srcOptions);
+	    //add quality selector to player
+	    player.hlsQualitySelector();
+	    player.on("error", function(e){
+	      e.stopImmediatePropagation();
+	      var error = player.error();
+	      if(error.code == 3) {
+	        //console.log('error!', error.code, error.type , error.message);
+	        if(player.src().indexOf("m3u8")!=-1){
+	          //alert("change source to mp4");
+	          player.src(mp4_sources);
+	          player.controlBar.addChild('QualitySelector');
+	          player.play();
+	        }
+	      }
+	    });
+	  {% else %}
+	    player.src(mp4_sources);
+	    player.controlBar.addChild('QualitySelector');
+	  {% endif %}
+
+	  
+	{% else %}
+	  {% if video.get_video_m4a %}
+	    var srcOptions = {
+	      src: '{{video.get_video_m4a.source_file.url}}',
+	      type: '{{video.get_video_m4a.encoding_format}}',
+	    };
+	    //Add source to player
+	    player.src(srcOptions);
+	  {% endif %}
+	{% endif %}
+</script>
+{% endblock more_script %}
