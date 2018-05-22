@@ -626,7 +626,7 @@ function get_file_picker_types(el) {
 }
 
 function insertAtCaret(areaId, text) {
-    var txtarea = $('.simple-filepicker');
+    var txtarea = $('#'+areaId);
     txtarea.attr('value', text.id);
     var file_path = $('#file-picker-path');
     file_path.text(text.name + ' (' + text.file_type + ') ');
