@@ -21,7 +21,9 @@ class CustomFilePickerWidget(BaseFilePickerWidget):
         super(CustomFilePickerWidget, self).__init__(pickers, *args, **kwargs)
 
     class Media:
-        css = {'all': ('css/filepicker.overlay.css',)}
+        css = {
+            'all': ('css/filepicker.overlay.css',),
+        }
         js = ('js/ajaxupload.js',
               'js/jquery.filepicker.js',
               'js/filepicker.custom.js',)
