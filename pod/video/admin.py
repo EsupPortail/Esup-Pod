@@ -1,6 +1,10 @@
 from django.apps import apps
 from django.contrib import admin
-from django.utils.functional import curry
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from django.utils.html import format_html
+from django.utils.translation import ugettext_lazy as _
+
 from modeltranslation.admin import TranslationAdmin
 
 from pod.video.models import Video
@@ -28,24 +32,62 @@ from pod.completion.admin import TrackInline
 if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
 
+# Ordering user by username !
+User._meta.ordering = ["username"]
+
+
+def url_to_edit_object(obj):
+    url = reverse(
+        'admin:%s_%s_change' % (obj._meta.app_label, obj._meta.model_name),
+        args=[obj.id])
+    return format_html('<a href="{}">{}</a>', url, obj.__str__())
 
 # Register your models here.
+
+
 class VideoSuperAdminForm(VideoForm):
     is_staff = True
     is_superuser = True
+
 
 class VideoAdminForm(VideoForm):
     is_staff = True
     is_superuser = False
 
+
 class VideoAdmin(admin.ModelAdmin):
-    # form = VideoForm
+    change_form_template = 'progressbarupload/change_form.html'
+    add_form_template = 'progressbarupload/change_form.html'
+
+    list_display = ('id', 'title', 'get_owner_by_name', 'type', 'date_added',
+                    'viewcount', 'is_draft', 'is_restricted',
+                    'password', 'duration_in_time', 'encoding_in_progress',
+                    'get_encoding_step', 'get_thumbnail_admin')
+    list_display_links = ('id', 'title')
+    list_filter = ('date_added', 'channel', 'type', 'is_draft')
+    list_editable = ('is_draft', 'is_restricted')
+    search_fields = ['id', 'title', 'video',
+                     'owner__username', 'owner__first_name',
+                     'owner__last_name']
+    list_per_page = 20
+    filter_horizontal = ('discipline', 'channel', 'theme',)
+    readonly_fields = ('duration', 'encoding_in_progress',
+                       'get_encoding_step')
+
     inlines = [
         ContributorInline,
         DocumentInline,
         TrackInline,
         OverlayInline
     ]
+
+    def get_owner_by_name(self, obj):
+        owner = obj.owner
+        url = url_to_edit_object(owner)
+        return u'%s %s (%s)' % (owner.first_name, owner.last_name, url)
+
+    get_owner_by_name.allow_tags = True
+    get_owner_by_name.short_description = _('Owner')
 
     def get_form(self, request, obj=None, **kwargs):
         if request.user.is_superuser:
@@ -54,7 +96,7 @@ class VideoAdmin(admin.ModelAdmin):
             kwargs['form'] = VideoAdminForm
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form
-        
+
     class Media:
         js = ('js/jquery.tools.min.js',)
 

@@ -96,6 +96,13 @@ TIME_ZONE = 'UTC'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#file-upload-temp-dir
 #
 FILE_UPLOAD_TEMP_DIR = os.path.join(os.path.sep, 'var', 'tmp')
+# https://github.com/ouhouhsami/django-progressbarupload
+FILE_UPLOAD_HANDLERS = (
+    "progressbarupload.uploadhandler.ProgressBarUploadHandler",
+    "django.core.files.uploadhandler.MemoryFileUploadHandler",
+    "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+)
+PROGRESSBARUPLOAD_INCLUDE_JQUERY = False
 
 ##
 # Static files (assets, CSS, JavaScript, fonts...)

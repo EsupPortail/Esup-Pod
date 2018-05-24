@@ -18,6 +18,7 @@ from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.contrib.sites.shortcuts import get_current_site
 from django.dispatch import receiver
+from django.utils.html import format_html
 # from django.db.models.signals import post_save
 # from django.db.models.signals import pre_save
 from django.db.models.signals import pre_delete
@@ -453,17 +454,41 @@ class Video(models.Model):
     def __str__(self):
         return "%s - %s" % ('%04d' % self.id, self.title)
 
+    @property
+    def viewcount(self):
+        return self.get_viewcount()
+    viewcount.fget.short_description = _('Sum of view')
+
+    @property
+    def get_encoding_step(self):
+        es = EncodingStep.objects.get(video=self)
+        return "%s : %s" % (es.num_step, es.desc_step)
+    get_encoding_step.fget.short_description = _('Encoding step')
+
+    @property
+    def get_thumbnail_admin(self):
+        return format_html('<img style="max-width:100px" '
+                           'src="%s" alt="%s" />' % (
+                               self.get_thumbnail_url(),
+                               self.title
+                           )
+                           )
+    get_thumbnail_admin.fget.short_description = _('Thumbnails')
+
+    def get_thumbnail_card(self):
+        return '<img class="card-img-top" src="%s" alt="%s" />' % (
+            self.get_thumbnail_url(), self.title)
+
+    @property
+    def duration_in_time(self):
+        return time.strftime('%H:%M:%S', time.gmtime(self.duration))
+    duration_in_time.fget.short_description = _('Duration')
+
     def get_viewcount(self):
         count_sum = self.viewcount_set.all().aggregate(Sum('count'))
         if count_sum['count__sum'] is None:
             return 0
         return count_sum['count__sum']
-
-    def duration_in_time(self):
-        return time.strftime('%H:%M:%S', time.gmtime(self.duration))
-
-    duration_in_time.short_description = _('Duration')
-    duration_in_time.allow_tags = True
 
     def get_absolute_url(self):
         return reverse('video', args=[str(self.slug)])
@@ -491,10 +516,6 @@ class Video(models.Model):
                  settings.STATIC_URL,
                  DEFAULT_THUMBNAIL])
         return thumbnail_url
-
-    def get_thumbnail_card(self):
-        return '<img class="card-img-top" src="%s" alt="%s" />' % (
-            self.get_thumbnail_url(), self.title)
 
     def get_playlist_master(self):
         try:

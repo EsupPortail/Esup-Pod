@@ -25,6 +25,8 @@ urlpatterns = [
 
     # Translation
     url(r'^i18n/', include('django.conf.urls.i18n')),
+    #progressbar
+    url(r'^progressbarupload/', include('progressbarupload.urls')),
 
     # App video
     url(r'^videos/$', videos, name='videos'),
