@@ -30,14 +30,7 @@
         <fieldset>
             {% for field in form %}
             {% if not field.is_hidden %}{% spaceless %}
-            <div class="form-group {% if field.field.required %}form-group-required {%endif%}
-                {% if "description_" in field.name or "title_"  in field.name %}collapse hide{% endif %}
-                {% if "description_" in field.name %} description{%endif%}
-                {% if "title_" in field.name %} title{%endif%}
-                {% with 'is_restricted restrict_access_to_groups password' as res %}
-                {% if field.name in res.split %}collapse restricted_access{% endif %}
-                {% endwith %}
-                " >
+            <div class="form-group {% if field.field.required %}form-group-required {%endif%}{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}" >
                 {{ field.errors }}
                 {% if "form-check-input" in field.field.widget.attrs.class %}
                 <div class="form-check">
@@ -46,9 +39,11 @@
                 {% else %}
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label> {{ field }}
                 {% endif %}
+
                 {% if field.help_text %}
                 <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
                 {% endif %}
+
                 {% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
                 {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
             </div>
@@ -86,7 +81,7 @@
 <div class="card card-body">
     <h5 class="card-title">{% trans "Form fields"%}</h5>
     <div class="card-text" id="formfields">
-        {% for title, values in form.VIDEO_FORM_FIELDS_HELP_TEXT.items %}
+        {% for title, values in form.VIDEO_FORM_FIELDS_HELP_TEXT.items|dictsort:0 %}
             <div class="card card-body p-1">
                 <button class="btn btn-sm-light" id="heading-{{forloop.counter}}" data-toggle="collapse" data-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}">
                     {{title}}
@@ -179,6 +174,12 @@ var get_option = function(tab, level=0, tab_selected) {
 </script>
 <script>
 /** formulaire **/
+var video_max_upload_size = {{form.VIDEO_MAX_UPLOAD_SIZE}}*1024*1024*1024;
+var showalert = function(message,alerttype) {
+    $('body').append('<div id="formalertdiv" class="alert ' +  alerttype + ' alert-dismissible fade show"  role="alert">'+message+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    setTimeout(function() { $("#formalertdiv").remove(); }, 5000);
+};
+var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfor%}";
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 (function() {
   'use strict';
@@ -188,9 +189,30 @@ var get_option = function(tab, level=0, tab_selected) {
     // Loop over them and prevent submission
     var validation = Array.prototype.filter.call(forms, function(form) {
       form.addEventListener('submit', function(event) {
+        //check file extension and file size
+        
         if (form.checkValidity() === false) {
+          showalert("{% trans "Errors appear in the form, please correct it"%}","alert-danger");
           event.preventDefault();
           event.stopPropagation();
+        } else {
+            var fileInput = $('#id_video');
+            if(fileInput.get(0).files.length){
+                var fileSize = fileInput.get(0).files[0].size;
+                var fileName = fileInput.get(0).files[0].name;
+                var extension = fileName.substring(fileName.lastIndexOf('.')+1);
+                if(listext.indexOf(extension) !== -1) {
+                    if(fileSize>video_max_upload_size){
+                        showalert("{% trans "The file size exceeds the maximum allowed value : "%} {{form.VIDEO_MAX_UPLOAD_SIZE}} Go.","alert-danger");
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                } else {
+                    showalert("{% trans "The file extension not in the allowed extension : "%} "+listext+".","alert-danger");
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+            }
         }
         form.classList.add('was-validated');
       }, false);

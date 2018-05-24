@@ -38,7 +38,7 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
     )
 )
 VIDEO_MAX_UPLOAD_SIZE = getattr(
-    settings, 'VIDEO_MAX_UPLOAD_SIZE', 4)
+    settings, 'VIDEO_MAX_UPLOAD_SIZE', 1)
 
 VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
     settings, 'VIDEO_FORM_FIELDS_HELP_TEXT', {
@@ -137,8 +137,8 @@ class VideoForm(forms.ModelForm):
         self.fields['thumbnail'].widget = CustomFilePickerWidget(
             pickers=pickers)
 
-        self.fields['video'].widget = widgets.AdminFileWidget(attrs={
-            'class': 'form-control-file'})
+        videoattrs = {"class": "form-control-file", "accept":"audio/*, video/*, .%s"%', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS))}
+        self.fields['video'].widget = widgets.AdminFileWidget(attrs=videoattrs)
         valid_ext = FileExtensionValidator(VIDEO_ALLOWED_EXTENSIONS)
         self.fields['video'].validators = [valid_ext, FileSizeValidator]
 
