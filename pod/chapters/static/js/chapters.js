@@ -1,4 +1,4 @@
-$(window).load(function() {
+$(window).on('load', function() {
 	manageResize();
 });
 
@@ -27,54 +27,11 @@ function manageResize() {
         validation functions are runned.
 ***/
 $(document).on("submit", "form#form_chapter", function (e) {
-    console.log('entre');
     $(this).show();
     e.preventDefault();
     var jqxhr= '';
     var action = $(this).find('input[name=action]').val();
-    if(action == "modify"){
-        $('form#form_new').hide();
-        $('form.form_modif').hide();
-        $('form.form_delete').hide();
-        manageResize();
-        var elt = $(this).parents('tr');
-        var id = $(this).find('input[name=id]').val();
-        jqxhr = $.post( window.location.href, {"action":"modify", "id": id });
-        jqxhr.done(function(data){
-            if(data.indexOf("form_chapter")==-1) {
-                show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
-            } else {
-                get_form(data);
-                elt.addClass('info');
-            }
-        });
-        jqxhr.fail(function($xhr) {
-            var data = $xhr.status+ " : " +$xhr.statusText;
-            show_messages("{% trans 'Error getting form.' %} " + "("+data+")"+ "{% trans 'The form could not be recovered.'%}", 'danger');
-            $('form.form_modif').show();
-            $('form.form_delete').show();
-            $('form#form_new').show();
-            $('#form_chapter').html("");
-            manageResize();
-        });
-    }else if(action == "delete"){
-        var deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this chapter?' %}");
-        if (deleteConfirm){
-            var id = $(this).find('input[name=id]').val();
-            jqxhr = $.post( window.location.href, {"action":"delete", "id": id });
-            jqxhr.done(function(data){
-                if(data.list_chapter) {
-                    refresh_list_and_player(data);
-                } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
-                }
-            });
-            jqxhr.fail(function($xhr) {
-                var data = $xhr.status+ " : " +$xhr.statusText;
-                show_messages("{% trans 'Error during deletion.' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}", 'danger');
-            });
-        }
-    }else if(action == "save"){
+    if (action == "save") {
         $('form#form_new').hide();
         $('form.form_modif').hide();
         $('form.form_delete').hide();
@@ -86,7 +43,7 @@ $(document).on("submit", "form#form_chapter", function (e) {
             if(msg != "") {
                 show_messages(msg, 'danger');
             } else {
-                var data_form = $( "form#form_chapter" ).serializeArray();
+                var data_form = $("form#form_chapter").serializeArray();
                 jqxhr = $.post(
                     $( "form#form_chapter" ).attr("action"),
                     data_form
@@ -174,6 +131,62 @@ $(document).on("submit", "form#form_new", function (e) {
     }
 });
 
+$(document).on("submit", "form.form_modif", function (e) {
+    e.preventDefault();
+    var jqxhr= '';
+    var action = $(this).find('input[name=action]').val();
+    if (action == "modify") {
+        $('form#form_new').hide();
+        $('form.form_modif').hide();
+        $('form.form_delete').hide();
+        manageResize();
+        var elt = $(this).parents('tr');
+        var id = $(this).find('input[name=id]').val();
+        jqxhr = $.post( window.location.href, {"action": "modify", "id": id });
+        jqxhr.done(function(data) {
+            if(data.indexOf("form_chapter") == -1) {
+                show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
+            } else {
+                get_form(data);
+                elt.addClass('info');
+            }
+        });
+        jqxhr.fail(function($xhr) {
+            var data = $xhr.status+ " : " +$xhr.statusText;
+            show_messages("{% trans 'Error getting form.' %} " + "("+data+")"+ "{% trans 'The form could not be recovered.'%}", 'danger');
+            $('form.form_modif').show();
+            $('form.form_delete').show();
+            $('form#form_new').show();
+            $('#form_chapter').html("");
+            manageResize();
+        });
+    }
+});
+
+$(document).on("submit", "form.form_delete", function (e) {
+    e.preventDefault();
+    var jqxhr= '';
+    var action = $(this).find('input[name=action]').val();
+    if(action == "delete") {
+        var deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this chapter?' %}");
+        if (deleteConfirm){
+            var id = $(this).find('input[name=id]').val();
+            jqxhr = $.post( window.location.href, {"action":"delete", "id": id });
+            jqxhr.done(function(data){
+                if(data.list_chapter) {
+                    refresh_list_and_player(data);
+                } else {
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
+                }
+            });
+            jqxhr.fail(function($xhr) {
+                var data = $xhr.status+ " : " +$xhr.statusText;
+                show_messages("{% trans 'Error during deletion.' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}", 'danger');
+            });
+        }
+    }
+});
+
 /*** Refreshes the player with updates and shows the list of enrichments ***/
 function refresh_list_and_player(data){
     delete videojs.players['player_video']
@@ -201,7 +214,7 @@ function verify_start_title_items(){
     		.parents('div.form-group').addClass('has-error');
     }
 };
-/* TODO
+
 function overlaptest(){
     var new_start = parseInt(document.getElementById("id_time_start").value);
   	var new_end = parseInt(document.getElementById("id_time_end").value);
@@ -215,7 +228,7 @@ function overlaptest(){
     });
     return msg;
 };
-*/
+
 /*** Display element of form enrich ***/
 Number.prototype.toHHMMSS = function() {
     var seconds = Math.floor(this),
