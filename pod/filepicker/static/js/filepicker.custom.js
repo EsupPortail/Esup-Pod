@@ -43,8 +43,8 @@ jQuery(document).ready(function($) {
                 'href': '#'
             }).css('display', 'block').click(function(e) {
                 e.preventDefault();
-                $('input.simple-filepicker').attr('value', '');
-                $('#file-picker-path').text('Select a file...');
+                $(el).attr('value', '');
+                $(el).next().text('Select a file...');
                 $(overlay).data('overlay').load();
             }).prependTo(parent);
         }
@@ -57,14 +57,14 @@ jQuery(document).ready(function($) {
                 'href': '#'
             }).css('display', 'block').click(function(e) {
                 e.preventDefault();
-                $('input.simple-filepicker').attr('value', '');
-                $('#file-picker-path').text('Select a file...');
+                $(el).attr('value', '');
+                $(el).next().text('Select a file...');
                 $(overlay).data('overlay').load();
             }).prependTo(parent);
 		}
         var file_path = $('<p>').attr('id', 'file-picker-path');
         file_path.text('Select a file...');
-        if ($('input.simple-filepicker').attr('value') != '') {
+        if ($(el).attr('value') != '') {
             $.get(conf.url, function (response) {
                 conf.urls = response.urls;
             }).done(function() {
@@ -97,7 +97,7 @@ jQuery(document).ready(function($) {
 
     var baseInsertAtCaret = insertAtCaret;
     insertAtCaret = function(areaId, text) {
-        $('input.simple-filepicker').attr('value', '');
+        $('#'+areaId).attr('value', '');
         return baseInsertAtCaret(areaId, text);
     }
 });

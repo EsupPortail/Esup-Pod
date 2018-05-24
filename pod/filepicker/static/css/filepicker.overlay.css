@@ -152,6 +152,15 @@ div.panes div.pane {
 	padding-top: 5px;
 }
 
+div.panes td {
+    font-size: 13px;
+    line-height: 16px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+    padding: 8px;
+    font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+}
+
 /* Select Files */
 
 .file-picker-overlay .file-picker-search {
@@ -190,6 +199,36 @@ div.panes div.pane {
 
 .file-picker-overlay .upload-list {
     margin-top: 8px;
+}
+
+.file-picker-upload label {
+    display: block;
+    padding: 4px 10px 0 0;
+    float: left;
+    width: 160px;
+    word-wrap: break-word;
+    line-height: 1;
+    font-weight: normal;
+    color: #666;
+    font-size: 13px;
+}
+
+.file-picker-upload h3 {
+    font-size: 14px;
+    margin: .8em 0 .3em 0;
+    margin-top: 0.8em;
+    color: #666;
+    font-weight: bold;
+}
+
+.file-picker-upload button,
+.file-picker-upload input[type="submit"] {
+    background: #79aec8;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
 }
 
 .plupload {

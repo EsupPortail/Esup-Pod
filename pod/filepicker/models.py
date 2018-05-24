@@ -126,12 +126,6 @@ class CustomFileModel(BaseFileModel):
         verbose_name = _('File')
         verbose_name_plural = _('Files')
 
-    def clean(self):
-        if self.file:
-            name, ext = os.path.splitext(self.file.name)
-            if ext in ['.jpg', '.jpeg', '.png', '.gif', '.bmp']:
-                raise ValidationError(u'Image not allowed.')
-
     def delete(self):
         if self.file:
             if os.path.isfile(self.file.path):
@@ -146,12 +140,6 @@ class CustomImageModel(BaseFileModel):
     class Meta:
         verbose_name = _('Image')
         verbose_name_plural = _('Images')
-
-    def clean(self):
-        if self.file:
-            name, ext = os.path.splitext(self.file.name)
-            if ext not in ['.jpg', '.jpeg', '.png', '.gif', '.bmp']:
-                raise ValidationError(u'Must be a image.')
 
     def delete(self):
         if self.file:
