@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% load thumbnail %}
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item"><a href="{% url 'my_channels' %}" title="{% trans 'My channels' %}">{% trans 'My channels' %}</a><li class="breadcrumb-item active" aria-current="page">{{channel.title}}</li>{% endblock %}
+
+{% block page_title %}
+{% trans "Editing the channel's themes" %} "{{channel.title}}"
+{% endblock %}
+
+
+{% block page_content %}
+<h3>{% trans "Editing the channel's themes" %} "{{channel.title}}"
+    <a href="{% url 'channel' slug_c=channel.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-dark btn-sm">
+<svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>
+</a>
+</h3>
+
+<span id="list_chapter">
+    {% include 'channel/list_theme.html' with list_theme=channel.themes.all %}
+</span>
+<span id="form_theme">
+    {% if form_theme %}
+        {% include 'channel/form_theme.html' %}
+    {% endif %}
+</span>
+<form id="form_new" action="{% url 'theme_edit' slug=channel.slug %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="new"/>
+    <input type="submit" id="add_new_theme" value="{% trans 'Add a new theme' %}" class="btn btn-info"/>
+</form>
+
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{{ block.super }}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+<div class="card card-body">
+    <h5 class="card-title">{% trans "Mandatory fields" %}</h5>
+    <div class="card-text" >
+        <p>{% trans "Fields marked with an asterisk are mandatory."%}</p>
+    </div>
+</div>
+{% endblock page_aside %}
+
+{% block more_script %}
+<script>
+function manageResize() {
+    var $table = $('table.scroll'),
+        $bodyCells = $table.find('tbody tr:first').children(),
+        colWidth;
+        // Adjust the width of thead cells when window resizes
+        $(window).resize(function() {
+            // Get the tbody columns width array
+            colWidth = $bodyCells.map(function() {
+                return $(this).width();
+            }).get();
+            // Set the width of thead columns
+            $table.find('thead tr').children().each(function(i, v) {
+                $(v).width(colWidth[i]);
+            });
+        }).resize(); // Trigger resize handler
+}
+manageResize();
+
+function get_form(data) {
+    $("#form_theme").hide().html(data).fadeIn();
+};
+
+var showalert = function(message,alerttype) {
+    $('body').append('<div id="formalertdiv" class="alert ' +  alerttype + ' alert-dismissible fade show"  role="alert">'+message+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    setTimeout(function() { $("#formalertdiv").remove(); }, 5000);
+};
+
+
+$(document).on("submit", "form#form_new", function (e) {
+    e.preventDefault();
+    var jqxhr= '';
+    var action = $(this).find('input[name=action]').val();
+    if (action == "new") {
+        $('form#form_new').hide();
+        $('form.form_modif').hide();
+        $('form.form_delete').hide();
+        manageResize();
+        var elt = $(this).parents('tr');
+        jqxhr = $.post( window.location.href, {"action":"new", "csrfmiddlewaretoken":$('form#form_new input[name="csrfmiddlewaretoken"]').val()} );
+        jqxhr.done(function(data){
+            if(data.indexOf("form_theme")==-1) {
+                showalert("{% trans 'You are no longer authenticated. Please log in again.' %}", 'alert-danger');
+            } else {
+                get_form(data);
+                elt.addClass('info');
+            }
+        });
+        jqxhr.fail(function($xhr) {
+            var data = $xhr.status+ " : " +$xhr.statusText;
+            showalert("{% trans 'Error getting form.' %} " + "("+data+")"+ "{% trans 'The form could not be recovered.'%}", 'alert-danger');
+            $('form.form_modif').show();
+            $('form.form_delete').show();
+            $('form#form_new').show();
+            $('#form_theme').html("");
+            manageResize();
+        });
+    }
+});
+
+</script>
+{% endblock more_script %}

@@ -17,6 +17,7 @@ from tagging.models import TaggedItem
 
 from pod.video.forms import VideoForm
 from pod.video.forms import ChannelForm
+from pod.video.forms import ThemeForm
 
 # Create your views here.
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
@@ -97,6 +98,7 @@ def channel_edit(request, slug):
                 _(u'One or more errors have been found in the form.'))
     return render(request, 'channel/channel_edit.html', {'form': channel_form})
 
+
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def theme_edit(request, slug):
@@ -106,7 +108,16 @@ def theme_edit(request, slug):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot edit this channel.'))
         raise PermissionDenied
+
+    if request.POST and request.is_ajax():
+        form_theme = ThemeForm(initial={"channel": channel})
+        return render(request, "channel/form_theme.html",
+                                  {'form_theme': form_theme,
+                                   'channel': channel}
+                                  )
+
     return render(request, 'channel/theme_edit.html', {'channel': channel})
+
 
 @login_required(redirect_field_name='referrer')
 def my_videos(request):
@@ -305,13 +316,20 @@ def video_edit(request, slug=None):
             current_user=request.user
         )
         if form.is_valid():
-            print('valid')
-            return HttpResponse("Youpi")
-        else:
-            print('non valid')
-            return render(request, 'videos/video_edit.html', {
-                'form': form}
+            video = form.save(commit=False)
+            if request.POST.get('owner') and request.POST.get('owner') != "":
+                video.owner = form.cleaned_data['owner']
+            else:
+                video.owner = request.user
+            video.save()
+            messages.add_message(
+                request, messages.INFO,
+                _('The changes have been saved.')
             )
+        else:
+            messages.add_message(
+                request, messages.ERROR,
+                _(u'One or more errors have been found in the form.'))
 
     return render(request, 'videos/video_edit.html', {
         'form': form}

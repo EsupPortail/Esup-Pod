@@ -1,0 +1,32 @@
+<!-- HTML for chapter form. Don't use this file alone it must be integrated into another template ! -->
+{% load i18n %}
+{% load staticfiles %}
+<div class="panel-heading bg-primary text-white">
+	<h4 class="card-title">{% trans 'Create / Edit theme' %}</h4>
+</div>
+<form id="form_theme" action="{% url 'theme_edit' slug=channel.slug %}" method="POST">
+	{% csrf_token %}
+	<div id="formcontent" class="form-container">
+		{% if form_theme.errors or form_theme.non_field_errors %}
+			{% trans 'One or more errors have been found in the form:' %}<br />
+			{% for error in form_theme.non_field_errors %}
+				- {{error}}<br />
+			{% endfor %}
+		{% endif %}
+		{% for field_hidden in form_theme.hidden_fields %}
+			{{field_hidden}}
+		{% endfor %}
+		{% for field in form_theme.visible_fields %}
+			<div class="form-group row">
+				<label for="{{field.auto_id}}" class="col-sm-2 col-form-label">{{field.label}}</label>
+				<div class="col-sm-10">{{field}}</div>
+			</div>
+		{% endfor %}
+		{% if form_theme.instance %}
+			<input type="hidden" id="id_theme" name="theme_id" value="{{form_theme.instance.id}}"/>
+		{% endif %}
+		<input type="hidden" name="action" value="save"/>
+		<input type="submit" id="save_chapter" value="{% trans 'Save' %}" class="btn btn-info"/>
+		<input type="reset" action="cancel" id="cancel_theme" value="{% trans 'Cancel' %}" class="btn btn-danger" />
+	</div>
+</form>
