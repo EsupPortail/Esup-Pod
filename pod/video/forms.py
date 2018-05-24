@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib.admin import widgets
-from django.contrib.auth.models import User as Owner
 from django.conf import settings
 from django.utils.safestring import mark_safe
 from django.core.validators import FileExtensionValidator
@@ -160,7 +159,9 @@ class VideoForm(forms.ModelForm):
         self.is_staff = kwargs.pop(
             'is_staff') if 'is_staff' in kwargs.keys() else self.is_staff
         self.is_superuser = kwargs.pop(
-            'is_superuser') if 'is_superuser' in kwargs.keys() else self.is_superuser
+            'is_superuser') if (
+            'is_superuser' in kwargs.keys()
+        ) else self.is_superuser
 
         self.current_user = kwargs.pop(
             'current_user') if kwargs.get('current_user') else None
@@ -175,7 +176,7 @@ class VideoForm(forms.ModelForm):
         self.fields['thumbnail'].widget = CustomFilePickerWidget(
             pickers=pickers)
 
-        #self.fields['video'].widget = widgets.AdminFileWidget(attrs=videoattrs)
+        # fields['video'].widget = widgets.AdminFileWidget(attrs=videoattrs)
         valid_ext = FileExtensionValidator(VIDEO_ALLOWED_EXTENSIONS)
         self.fields['video'].validators = [valid_ext, FileSizeValidator]
         self.fields['video'].widget.attrs['class'] = self.videoattrs["class"]

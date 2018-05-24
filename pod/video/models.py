@@ -370,12 +370,12 @@ class Video(models.Model):
     date_evt = models.DateField(
         _(u'Date of event'), default=datetime.now, blank=True, null=True)
     description = RichTextField(
-        _('Description'), 
-        config_name='complete', 
-        blank=True, 
+        _('Description'),
+        config_name='complete',
+        blank=True,
         help_text=_("In this field you can describe your content, "
-            "add all needed related information, and "
-            "format the result using the toolbar."))
+                    "add all needed related information, and "
+                    "format the result using the toolbar."))
 
     cursus = models.CharField(
         _('University course'), max_length=1,
@@ -434,19 +434,19 @@ class Video(models.Model):
         blank=True,
         verbose_name=_('Disciplines'),
         help_text=_('Hold down "Control", or "Command" '
-            'on a Mac, to select more than one.'))
+                    'on a Mac, to select more than one.'))
     channel = models.ManyToManyField(
         Channel,
         verbose_name=_('Channels'),
         blank=True,
         help_text=_('Hold down "Control", or "Command" '
-            'on a Mac, to select more than one.'))
+                    'on a Mac, to select more than one.'))
     theme = models.ManyToManyField(
         Theme,
         verbose_name=_('Themes'),
         blank=True,
         help_text=_('Hold down "Control", or "Command" '
-            'on a Mac, to select more than one.'))
+                    'on a Mac, to select more than one.'))
 
     licence = models.CharField(
         _('Licence'), max_length=8,
