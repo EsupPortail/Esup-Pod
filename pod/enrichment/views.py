@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_protect
 from pod.video.models import Video
 from pod.enrichment.models import Enrichment
 from pod.enrichment.forms import EnrichmentForm
+from pod.enrichment.utils import enrichment_to_vtt
 
 import json
 
@@ -76,17 +77,13 @@ def video_enrichment_save(request, video):
     if form_enrichment.is_valid():
         form_enrichment.save()
         list_enrichment = video.enrichment_set.all()
+        enrichment_to_vtt(list_enrichment, video)
         if request.is_ajax():
             some_data_to_dump = {
                 'list_enrichment': render_to_string(
-                    'enrichment/list_enrichment.html', {
-                        'list_enrichment': list_enrichment, 'video': video
-                    }),
-                'player': render_to_string(
-                    'videos/video_player.html', {
-                        'video': video,
-                        'csrf_token': request.COOKIES['csrftoken']
-                    })
+                    'enrichment/list_enrichment.html',
+                    {'list_enrichment': list_enrichment,
+                     'video': video}),
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
@@ -102,8 +99,8 @@ def video_enrichment_save(request, video):
                 'errors': '{0}'.format(_('Please correct errors.')),
                 'form': render_to_string(
                     'enrichment/form_enrichment.html', {
-                        'video': video, 'form_enrichment': form_enrichment
-                    })
+                        'video': video, 
+                        'form_enrichment': form_enrichment})
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
@@ -132,22 +129,21 @@ def video_enrichment_modify(request, video):
             request,
             'video_enrichment.html',
             {'video': video,
-             'list_enrichment': list_enrichment})
+             'list_enrichment': list_enrichment,
+             'form_enrichment': form_enrichment})
 
 
 def video_enrichment_delete(request, video):
     enrich = get_object_or_404(Enrichment, id=request.POST['id'])
     enrich.delete()
     list_enrichment = video.enrichment_set.all()
+    enrichment_to_vtt(list_enrichment, video)
     if request.is_ajax():
         some_data_to_dump = {
             'list_enrichment': render_to_string(
                 'enrichment/list_enrichment.html', {
-                    'list_enrichment': list_enrichment, 'video': video
-                }),
-            'player': render_to_string(
-                'videos/video_player.html', {
-                    'video': video, 'csrf_token': request.COOKIES['csrf_token']
+                    'list_enrichment': list_enrichment, 
+                    'video': video
                 })
         }
         data = json.dumps(some_data_to_dump)

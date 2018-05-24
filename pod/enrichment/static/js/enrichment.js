@@ -1,6 +1,6 @@
 /*** table scroll ***/
 // Change the selector if needed
-$(window).load(function(){
+$(window).on('load', function(){
     manageResize();
 });
 /*** end table scroll ***/
@@ -29,54 +29,11 @@ function manageResize() {
         validation functions are runned.
 ***/
 $(document).on("submit", "form#form_enrich", function (e) {
-    $('form').show();
+    $(this).show();
     e.preventDefault();
     var jqxhr= '';
     var action = $(this).find('input[name=action]').val();
-    if(action == "modify"){
-        $('form#form_new').hide();
-        $('form.form_modif').hide();
-        $('form.form_delete').hide();
-        manageResize();
-        var elt = $(this).parents('tr');
-        var id = $(this).find('input[name=id]').val();
-        jqxhr = $.post( window.location.href, {"action":"modify", "id": id });
-        jqxhr.done(function(data){
-            if(data.indexOf("form_enrich")==-1) {
-                show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
-            } else {
-                get_form(data);
-                elt.addClass('info');
-            }
-        });
-        jqxhr.fail(function($xhr) {
-            var data = $xhr.status+ " : " +$xhr.statusText;
-            show_messages("{% trans 'Error getting form.' %} " + "("+data+")"+ "{% trans 'The form could not be recovered.'%}", 'danger');
-            $('form.form_modif').show();
-            $('form.form_delete').show();
-            $('form#form_new').show();
-            $('#form_enrich').html("");
-            manageResize();
-        });
-    }else if(action == "delete"){
-        //$('form').show();
-        var deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this enrichment?' %}");
-        if (deleteConfirm){
-            var id = $(this).find('input[name=id]').val();
-            jqxhr = $.post( window.location.href, {"action":"delete", "id": id });
-            jqxhr.done(function(data){
-                if(data.list_enrich) {
-                    refresh_list_and_player(data);
-                } else {
-                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
-                }
-            });
-            jqxhr.fail(function($xhr) {
-                var data = $xhr.status+ " : " +$xhr.statusText;
-                show_messages("{% trans 'Error during deletion.' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}", 'danger');
-            });
-        }
-    }else if(action == "save"){
+    if(action == "save"){
         $('form#form_new').hide();
         $('form.form_modif').hide();
         $('form.form_delete').hide();
@@ -98,7 +55,6 @@ $(document).on("submit", "form#form_enrich", function (e) {
                 jqxhr.done(function(data){
                     if(data.list_enrich || data.form) {
                         if(data.errors){
-                            //alert(data.errors);
                             get_form(data.form);
                         }else{
                             refresh_list_and_player(data);
@@ -150,6 +106,62 @@ $(document).on("submit", "form#form_new", function (e) {
         });
     }
 });
+
+$(document).on("submit", "form.form_modif", function (e) {
+    e.preventDefault();
+    var jqxhr= '';
+    var action = $(this).find('input[name=action]').val();
+    if(action == "modify") {
+        $('form#form_new').hide();
+        $('form.form_modif').hide();
+        $('form.form_delete').hide();
+        manageResize();
+        var elt = $(this).parents('tr');
+        var id = $(this).find('input[name=id]').val();
+        jqxhr = $.post( window.location.href, {"action":"modify", "id": id });
+        jqxhr.done(function(data){
+            if(data.indexOf("form_enrich")==-1) {
+                show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
+            } else {
+                get_form(data);
+                elt.addClass('info');
+            }
+        });
+        jqxhr.fail(function($xhr) {
+            var data = $xhr.status+ " : " +$xhr.statusText;
+            show_messages("{% trans 'Error getting form.' %} " + "("+data+")"+ "{% trans 'The form could not be recovered.'%}", 'danger');
+            $('form.form_modif').show();
+            $('form.form_delete').show();
+            $('form#form_new').show();
+            $('#form_enrich').html("");
+            manageResize();
+        });
+    }
+});
+
+$(document).on("submit", "form.form_delete", function (e) {
+    e.preventDefault();
+    var jqxhr= '';
+    var action = $(this).find('input[name=action]').val();
+    if(action == "delete") {
+        var deleteConfirm = confirm( "{% trans 'Are you sure you want to delete this enrichment?' %}");
+        if (deleteConfirm){
+            var id = $(this).find('input[name=id]').val();
+            jqxhr = $.post( window.location.href, {"action":"delete", "id": id });
+            jqxhr.done(function(data){
+                if(data.list_enrich) {
+                    refresh_list_and_player(data);
+                } else {
+                    show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
+                }
+            });
+            jqxhr.fail(function($xhr) {
+                var data = $xhr.status+ " : " +$xhr.statusText;
+                show_messages("{% trans 'Error during deletion.' %} " + "("+data+")<br/>"+"{% trans 'No data could be deleted.' %}", 'danger');
+            });
+        }
+    }
+})
 /*** Function show the item selected by type field ***/
 $(document).on('change', '#page-video select#id_type', function() {
     enrich_type();

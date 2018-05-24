@@ -44,15 +44,31 @@ class VideoSlides {
 	appendSliderItem() {
 		var keys = Object.keys(this.slidesItems);
 		for (let i = 0; i <= keys.length - 1; i++) {
-			// Create an image and li tag
-			const img = document.createElement('img');
+			// Create the slide depend on their type
+			var type = this.slidesItems[i].type;
+			var slide = null;
+			if (type == 'image') {
+				slide = document.createElement('img');
+				slide.src = this.slidesItems[i].url;
+				slide.alt = this.slidesItems[i].title;
+				slide.width = player.currentDimensions().width / 2;
+				slide.height = player.currentDimensions().height / 2;
+			} else if (type == 'document') {
+				slide = document.createElement('embed');
+				slide.src = this.slidesItems[i].url;
+				slide.alt = this.slidesItems[i].title;
+				slides.type = 'application/pdf';
+				slide.width = player.currentDimensions().width / 2;
+				slide.height = player.currentDimensions().height / 2;
+			}
 			const li = document.createElement('li');
-
 			// Added src and class name
-			img.src = this.slidesItems[i].url;
-			li.className = 'slide_' + this.slidesItems[i].time;
+			li.setAttribute('data-start', this.slidesItems[i].start);
+			li.setAttribute('data-end', this.slidesItems[i].end);
+			li.setAttribute('data-type', this.slidesItems[i].type);
+			li.setAttribute('id', 'slide_'+i);
 			// Append image into li
-			li.appendChild(img);
+			li.appendChild(slide);
 			// Append li into ul list
 			this.slides.appendChild(li);
 		}
@@ -70,19 +86,15 @@ class VideoSlides {
 
 		var keys = Object.keys(this.slidesItems);
 		for (let i = 0; i <= keys.length - 1; i++) {
-			if (currentTime == this.slidesItems[i].time && this.oldTime !== currentTime) {
-				const firstItem = (i === 0) ? 0 : 1;
-				const oldItem = 'slide_' + this.slidesItems[i - firstItem].time;
-				const currentItem = 'slide_' + this.slidesItems[i].time;
-				const beforeSlide = document.getElementsByClassName(oldItem)[0];
-				const currentSlide = document.getElementsByClassName(currentItem)[0];
-
-				beforeSlide.style.display = 'none';
+			if (currentTime >= this.slidesItems[i].start && currentTime < this.slidesItems[i].end) {
+				const currentSlide = document.getElementById('slide_'+i);
 				currentSlide.style.display = 'block';
-				this.oldTime = currentTime;
-				return false;
+			} else {
+				const oldSlide = document.getElementById('slide_'+i);
+				oldSlide.style.display = 'none';
 			}
 		}
+		return false;
 	}
 }
 

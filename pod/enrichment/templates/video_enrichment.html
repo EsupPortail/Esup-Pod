@@ -7,9 +7,10 @@
 	<!-- media -->
 	<link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet"/>
 	<link href="{% static 'css/quality-selector.css' %}" rel="stylesheet"/>
+	<link href="{% static 'css/filepicker.overlay.css' %}" rel="stylesheet"/>
 	<link rel="stylesheet" href="{% static 'css/enrichment.css' %}"/>
 	<link rel="stylesheet" href="{% static 'css/videojs-slides.css' %}"/>
-	<script src="{% static 'js/jquery.tools.min.js' %}"></script>
+	<script src="http://cdn.jquerytools.org/1.2.6/full/jquery.tools.min.js"></script>
 	<script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
 	<script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
@@ -58,6 +59,9 @@
 						To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
 					</p>
 					<source src="https://d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8" type="application/x-mpegURL">
+					{% if video.enrichment_set.all %}
+						<track kind="metadata" src="{{video.get_enrichments_file}}">
+					{% endif %}
 				</video>
 			</span>
 			<hr/>
@@ -144,17 +148,30 @@
 	    player.controlBar.addChild('QualitySelector');
 	  {% endif %}
 	  {% if video.enrichment_set.all %}
-	  	slide = [
-	  		{
-	  			url: '/media/testimg.jpeg',
-	  			time: 5
-	  		},
-	  		{
-	  			url: '/media/testimg.jpeg',
-	  			time: 50
+	  	player.ready(function() {
+	  		var tracks = player.textTracks();
+	  		var metadataTrack;
+	  		for (let i = 0; i < tracks.length; i++) {
+	  			var track = tracks[i];
+	  			if (track.kind === 'metadata' && track.label === '') {
+	  				metadataTrack = track;
+	  			}
 	  		}
-	  	]
-	  	player.slides(slide);
+	  		metadataTrack.addEventListener('cuechange', function() {
+	  			var slide = [];
+	  			for (let i = 0; i < this.cues.length; i++) {
+			  		data = JSON.parse(this.cues[i].text);
+			  		slide.push({
+			  			title: data.title,
+			  			url: data.url,
+			  			type: data.type,
+			  			start: this.cues[i].startTime,
+			  			end: this.cues[i].endTime
+			  		});
+			  	}
+			  	player.slides(slide);
+	  		});
+	  	});
 	  {% endif %}
 	{% else %}
 	  {% if video.get_video_m4a %}
