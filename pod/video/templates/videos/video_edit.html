@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load staticfiles %}
 {% load tagging_tags %}
+{% load progress_bar %}
 
 {% block page_extra_head %}
 
@@ -53,7 +54,17 @@
             {% endif %}
             
             {% endfor %}
+            
         </fieldset>
+        <div class="card" id='js-process'>
+          <div class="card-body">
+            <h5 class="card-title">{% trans "Sending, please wait." %}</h5>
+            <p class="card-text">{% progress_bar %}</p>
+          </div>
+          <div class="card-footer">
+            {% trans "The page will refresh after the upload completes." %}
+          </div>
+        </div>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
@@ -107,6 +118,7 @@
 <!-- form . media -->
 <script type="text/javascript" src="{% static 'js/jquery.tools.min.js' %}"></script>
 {{form.media}}
+{% progress_bar_media %}
 <!-- fin form . media -->
 <script>
 /** Restrict access **/
@@ -174,6 +186,7 @@ var get_option = function(tab, level=0, tab_selected) {
 </script>
 <script>
 /** formulaire **/
+$("#js-process").hide();
 var video_max_upload_size = {{form.VIDEO_MAX_UPLOAD_SIZE}}*1024*1024*1024;
 var showalert = function(message,alerttype) {
     $('body').append('<div id="formalertdiv" class="alert ' +  alerttype + ' alert-dismissible fade show"  role="alert">'+message+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
@@ -200,12 +213,17 @@ var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfo
             if(fileInput.get(0).files.length){
                 var fileSize = fileInput.get(0).files[0].size;
                 var fileName = fileInput.get(0).files[0].name;
-                var extension = fileName.substring(fileName.lastIndexOf('.')+1);
+                var extension = fileName.substring(fileName.lastIndexOf('.')+1).toLowerCase();
                 if(listext.indexOf(extension) !== -1) {
                     if(fileSize>video_max_upload_size){
                         showalert("{% trans "The file size exceeds the maximum allowed value : "%} {{form.VIDEO_MAX_UPLOAD_SIZE}} Go.","alert-danger");
                         event.preventDefault();
                         event.stopPropagation();
+                    } else {
+                        $("#video_form fieldset").hide();
+                        $("#video_form button").hide();
+                        $("#js-process").show();
+                        window.scrollTo($("#js-process").scrollTop(), 0); 
                     }
                 } else {
                     showalert("{% trans "The file extension not in the allowed extension : "%} "+listext+".","alert-danger");

@@ -174,6 +174,7 @@ class VideoForm(forms.ModelForm):
             if self.current_user is not None:
                 self.fields['owner'].queryset = Owner.objects.filter(
                     id=self.current_user.id)
+                self.fields['owner'].initial=self.current_user
             else:
                 pass
         else:
