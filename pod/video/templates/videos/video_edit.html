@@ -38,8 +38,14 @@
             </p>
             {% endif %}
             {% for field in form %}
-            {% if not field.is_hidden %}{% spaceless %}
-            <div class="form-group {% if field.field.required %}form-group-required {%endif%}{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}" >
+            
+            {% if field.is_hidden %}
+            {{field}}
+            {% else %}
+            {% spaceless %}
+            <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
+            <div class="list-group-item">
+            <div class="form-group {% if field.field.required %}form-group-required {%endif%}" >
                 {{ field.errors }}
                 {% if "form-check-input" in field.field.widget.attrs.class %}
                 <div class="form-check">
@@ -50,7 +56,6 @@
                 {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br/>{%endif%}
                 {{ field }}
                 {% endif %}
-
                 {% if field.help_text %}
                 <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
                 {% endif %}
@@ -59,9 +64,9 @@
                 {% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
                 {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
             </div>
+            </div>
+            </div>
             {% endspaceless %}
-            {% else %}
-            {{ field }}
             {% endif %}
             
             {% endfor %}
