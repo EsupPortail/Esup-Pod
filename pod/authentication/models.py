@@ -22,7 +22,15 @@ AUTH_TYPE = getattr(
     settings, 'AUTH_TYPE', (('local', _('local')), ('CAS', 'CAS')))
 AFFILIATION = getattr(
     settings, 'AUTH_TYPE',
-    (('member', _('member')), ('student', _('student'))))
+    (
+        ('member', _('member')),
+        ('student', _('student')),
+        ('staff', _('staff')),
+        ('affiliate', _('affiliate')),
+        ('employee', _('employee')),
+        ('faculty', _('faculty'))
+    )
+)
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
 FILES_DIR = getattr(
     settings, 'FILES_DIR', 'files')

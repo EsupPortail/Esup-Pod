@@ -43,35 +43,40 @@ jQuery(document).ready(function($) {
                 'href': '#'
             }).css('display', 'block').click(function(e) {
                 e.preventDefault();
-                $('input.simple-filepicker').attr('value', '');
-                $('#file-picker-path').text('Select a file...');
+                $(el).attr('value', '');
+                $(el).next().text('Select a file...');
                 $(overlay).data('overlay').load();
             }).prependTo(parent);
         }
         if (pickers.file) {
             var conf = $(overlay).data('filePicker').getConf();
-            conf.url = pickers.image;
+            conf.url = pickers.file;
             var anchor = $('<a>').text('Insert File').attr({
                 'name': 'filepicker-file',
                 'title': 'Insert File',
                 'href': '#'
             }).css('display', 'block').click(function(e) {
                 e.preventDefault();
-                var conf = $(overlay).data('filePicker').getConf();
-                conf.url = pickers.file;
-                $('input.simple-filepicker').attr('value', '');
-                $('#file-picker-path').text('Select a file...');
+                $(el).attr('value', '');
+                $(el).next().text('Select a file...');
                 $(overlay).data('overlay').load();
             }).prependTo(parent);
 		}
         var file_path = $('<p>').attr('id', 'file-picker-path');
         file_path.text('Select a file...');
-        if ($('input.simple-filepicker').attr('value') != '') {
+        if ($(el).attr('value') != '') {
             $.get(conf.url, function (response) {
                 conf.urls = response.urls;
             }).done(function() {
                 $.get(conf.urls.browse.file, {id: el.value}, function (response) {
-                    file_path.text(response.result);
+                    file_path.text(response.result.name);
+                    var thumb = $('<img>');
+                    thumb.attr('id', 'file-picker-thumbnail');
+                    thumb.attr('src', response.result.thumbnail);
+                    thumb.attr('alt', 'Thumbnail');
+                    thumb.attr('width', 50);
+                    thumb.attr('height', 50);
+                    thumb.appendTo(file_path);
                 });
             });
         }
@@ -92,7 +97,7 @@ jQuery(document).ready(function($) {
 
     var baseInsertAtCaret = insertAtCaret;
     insertAtCaret = function(areaId, text) {
-        $('input.simple-filepicker').attr('value', '');
+        $('#'+areaId).attr('value', '');
         return baseInsertAtCaret(areaId, text);
     }
 });

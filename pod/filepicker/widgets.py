@@ -2,6 +2,10 @@ from django import forms
 
 
 class BaseFilePickerWidget(forms.TextInput):
+    """
+    FilePicker base widget. Can be add on a CustomFileModel or
+    CustomImageModel foreignkey field.
+    """
 
     def __init__(self, pickers, *args, **kwargs):
         self.pickers = pickers
@@ -15,13 +19,20 @@ class BaseFilePickerWidget(forms.TextInput):
 
 
 class CustomFilePickerWidget(BaseFilePickerWidget):
+    """
+    FilePicker custom widget. It's the widget you can use and personnalize.
+    All JavaScripts and Stylesheets needed for FilePicker are added here.
+    """
 
     def __init__(self, pickers, *args, **kwargs):
         kwargs['classes'] = ['simple-filepicker']
         super(CustomFilePickerWidget, self).__init__(pickers, *args, **kwargs)
 
     class Media:
-        css = {'all': ('css/filepicker.overlay.css',)}
-        js = ('js/ajaxupload.js',
+        css = {
+            'all': ('css/filepicker.overlay.css',),
+        }
+        js = ('js/jquery.overlay.js',
+              'js/ajaxupload.js',
               'js/jquery.filepicker.js',
               'js/filepicker.custom.js',)

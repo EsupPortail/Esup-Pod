@@ -5,6 +5,7 @@ Override FilePickerBase and ImagePickerBase
 django-file-picker : 0.9.1.
 """
 from django.conf.urls import url
+from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -16,6 +17,7 @@ from django.http import HttpResponseBadRequest
 from django.http import HttpResponseNotFound
 from django.middleware.csrf import get_token
 from django.utils.text import capfirst
+from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
 from sorl.thumbnail.helpers import ThumbnailError
 from sorl.thumbnail import get_thumbnail
@@ -34,6 +36,9 @@ logger = logging.getLogger(__name__)
 
 FIELD_EXCLUDES = (models.ImageField, models.FileField,)
 
+FILE_MAX_UPLOAD_SIZE = getattr(
+    settings, 'FILE_MAX_UPLOAD_SIZE', 100)
+
 
 def model_to_AjaxItemForm(model):
     exclude = list()
@@ -51,6 +56,33 @@ def model_to_AjaxItemForm(model):
 
 
 class FilePickerBase(object):
+    """
+    The FilePicker main class.
+
+    Parameters
+    ----------
+    name : str
+        The name of this FilePicker instance
+    model : django.db.models.base.ModelBase
+        BaseFileModel
+    structure : django.db.models.base.ModelBase
+        UserDirectory
+    configure : django.forms.models.ModelFormMetaclass
+        UserDirectoryForm
+
+    Self
+    ----
+    Previously explained fields : name, model, structure, configure AND
+
+    form : AjaxItemForm
+        The file form
+    field_names : list
+        List of field names from model
+    columns : list
+        List of fields which will be used and displayed
+        in the file browser interface
+    """
+
     model = None
     form = None
     structure = None
@@ -75,6 +107,17 @@ class FilePickerBase(object):
         self.verify_column(model)
 
     def populate_field(self, model):
+        """
+        Function that find a File or Image field in the model and create a
+        variable to access it more easily.
+        Delete from field_name all ForeignKey and ManyToMany fields.
+
+        Parameters
+        ----------
+        model : django.db.models.base.ModelBase
+            BaseFileModel
+        """
+
         for field_name in self.field_names:
             field = model._meta.get_field(field_name)
             if isinstance(field, (models.ImageField, models.FileField)):
@@ -84,6 +127,18 @@ class FilePickerBase(object):
                 self.field_names.remove(field_name)
 
     def verify_column(self, model):
+        """
+        Function that checks the fields in the columns variable. Remove all
+        incorrect fields.
+        If build_headers is true, the verbose name of this fields are used
+        to name the column headers in the file browser interface.
+
+        Parameters
+        ----------
+        model : django.db.models.base.ModelBase
+            BaseFileModel
+        """
+
         build_headers = not self.columns or not self.extra_headers
         extra_headers = list()
         for field_name in self.columns:
@@ -97,6 +152,23 @@ class FilePickerBase(object):
             self.extra_headers = extra_headers
 
     def protect(self, view, csrf_exempt=False):
+        """
+        Function that protect a view with a csrf_token.
+
+        Parameters
+        ----------
+        view : function
+            A view function
+        csrf_exempt : boolean
+            True - csrf_token needed for the view
+            False - csrf_token disabled for the view
+
+        Return
+        ------
+        function : wrapper
+            return the view if correct
+            return an HttpResponse with a exception if not
+        """
 
         def wrapper(*args, **kwargs):
             data = dict()
@@ -113,6 +185,15 @@ class FilePickerBase(object):
         return wrapper
 
     def get_urls(self):
+        """
+        Function that define the urls used by the apps.
+
+        Return
+        ------
+        tuple
+            The urlpatterns associated to this FilePickerBase instance
+        """
+
         urlpatterns = [
             url(r'^$', self.setup, name='init'),
             url(r'^files/$', self.list, name='list-files'),
@@ -133,6 +214,25 @@ class FilePickerBase(object):
     urls = property(get_urls)
 
     def setup(self, request):
+        """
+        Function that builds the urls needed by FilePicker front-end.
+        The urls are defined as follows :
+            'filepicker:<FilePickerBase instance name>:<url name>'
+        By default :
+            'browse': view(s) that get information about files
+            'upload': view(s) that adds files
+            'directories': view(s) that manages the user directories
+
+        Parameters
+        ----------
+        request : RequestObject
+
+        Return
+        ------
+        HttpResponse
+            List of urls in a dictionnary
+        """
+
         data = dict()
         data['urls'] = {
             'browse': {
@@ -155,6 +255,35 @@ class FilePickerBase(object):
         return HttpResponse(json.dumps(data), content_type='application/json')
 
     def append(self, obj, request):
+        """
+        Function that return information about files.
+
+        Parameters
+        ----------
+        obj : CustomFileModel
+            A file
+        request : RequestObject
+
+        Return
+        ------
+        dictionnary : {
+            name : name of file,
+            url : url to this file,
+            extra : {
+                name : name of file,
+                file_type : type of file (extension),
+                data_modified : last modification (MM/DD/YY),
+                delete : delete form for this file,
+                id : file identifier
+            },
+            insert : [
+                url to this file
+            ],
+            link_content : The message on the button who
+                insert the file
+        }
+        """
+
         extra = {}
         for name in self.columns:
             value = getattr(obj, name)
@@ -170,7 +299,8 @@ class FilePickerBase(object):
         extra['delete'] = '<form action="' + url + '">'
         extra['delete'] += '<input type="hidden" name="' + \
             'csrfmiddlewaretoken" value="' + get_token(request) + '">'
-        extra['delete'] += '<button type="button" class="delete-file btn btn-danger">' + \
+        extra['delete'] += '<button type="button" ' + \
+            'class="delete-file btn btn-danger">' + \
             'Delete</button></form>'
         extra['id'] = str(getattr(obj, 'id'))
         return {
@@ -182,6 +312,18 @@ class FilePickerBase(object):
         }
 
     def conf_dirs(self, request):
+        """
+        View that manage actions on directories : edit, new and delete
+
+        Parameters
+        ----------
+        request : RequestObject
+
+        Return
+        ------
+        HttpResponse
+        """
+
         if request.GET and request.GET.get('action'):
             if request.GET['action'] == 'edit':
                 try:
@@ -265,6 +407,28 @@ class FilePickerBase(object):
         return HttpResponseBadRequest('Bad request')
 
     def get_files(self, search, user, directory):
+        """
+        Function that returns one or more files according to a search
+        pattern given by the user. If no search pattern, returns all files of
+        a user.
+        Files can be returned in a specific order.
+        In any case the queries are made in a single directory.
+
+        Parameters
+        ----------
+        search : str
+            Search pattern (by title)
+        user : User
+            User request object
+        directory : UserDirectory
+            The directory where we are looking
+
+        Return
+        ------
+        queryset
+            Set of found files
+        """
+
         qs = Q()
         if search:
             for name in self.field_names:
@@ -286,16 +450,71 @@ class FilePickerBase(object):
         return queryset
 
     def get_file(self, request):
+        """
+        View that return information on a single file.
+
+        Parameters
+        ----------
+        request : RequestObject
+
+        Return
+        ------
+        HttpResponse
+            A dictionnary with information about this file
+            {
+                name : filename (filetype),
+                thumbnail : url of the thumbnail
+            }
+        """
+
         if not request.GET or not request.GET.get('id'):
             return HttpResponseBadRequest('Bad request')
         else:
             result = get_object_or_404(self.model, id=request.GET['id'])
-            data = {'result': '{0} ({1}) '.format(
-                result.name, result.file_type)}
+            data = {'result': {
+                'name': '{0} ({1}) '.format(result.name, result.file_type),
+                'thumbnail': '/static/img/file.png'
+            }
+            }
             return HttpResponse(
                 json.dumps(data), content_type='application/json')
 
     def get_dirs(self, user, directory=None):
+        """
+        Function that return information about a specific directory otherwise
+        about the Home directory.
+
+        Parameters
+        ----------
+        user : User
+            User request object
+        directory : UserDirectory
+            The desired directory or None
+
+        Return
+        ------
+        dictionnary
+            A dictionnary with informations about the directory. Exemple with
+            Home :
+            {
+                Home : [
+                    {
+                        name : children name,
+                        last : if this children don't have children himself,
+                        size : number of files in this children,
+                        id : children identifier
+                    },
+                    {
+                        ...
+                    }
+                ],
+                path : the path to this directory,
+                parent : name of the parent of this directory,
+                size : number of files in this directory,
+                id : directory identifier
+            }
+        """
+
         if directory:
             current = self.structure.objects.get(
                 owner=user, id=directory)
@@ -326,6 +545,20 @@ class FilePickerBase(object):
         return response
 
     def list_dirs(self, request):
+        """
+        View that return a list of directory
+
+        Parameters
+        ----------
+        request : RequestObject
+
+        Return
+        ------
+        HttpResponse
+            The list of directory according to the current position
+            of the user in his tree
+        """
+
         if request.GET.get('directory'):
             directory = request.GET['directory']
             response = self.get_dirs(request.user, directory)
@@ -335,11 +568,28 @@ class FilePickerBase(object):
         return HttpResponse(json.dumps(data), content_type='application/json')
 
     def upload_file(self, request):
+        """
+        View that manage the uploading of files
+
+        Parameters
+        ----------
+        request : RequestObject
+
+        Return
+        ------
+        HttpResponse
+        """
+
         if 'userfile' in request.FILES:
             name, ext = os.path.splitext(request.FILES['userfile'].name)
             fn = tempfile.NamedTemporaryFile(
                 prefix=name, suffix=ext, delete=False)
             f = request.FILES['userfile']
+            if f.size > FILE_MAX_UPLOAD_SIZE * 1024 * 1024:
+                return HttpResponse(
+                    json.dumps(
+                        {'errors': _('File size is too large (>100MB)')}),
+                    content_type='application/json')
             for chunk in f.chunks():
                 fn.write(chunk)
             fn.close()
@@ -367,12 +617,8 @@ class FilePickerBase(object):
                         json.dumps(data),
                         content_type='application/json')
             else:
-                if request.GET.get('directory'):
-                    directory = self.structure.objects.get(
-                        owner=request.user, id=request.GET['directory'])
-                else:
-                    directory = self.structure.objects.get(
-                        owner=request.user, name='Home')
+                directory = self.structure.objects.get(
+                    owner=request.user, id=request.GET.get('directory'))
                 form = self.form(
                     initial={'created_by': request.user,
                              'directory': directory.id})
@@ -383,6 +629,32 @@ class FilePickerBase(object):
                 content_type='application/json')
 
     def list(self, request):
+        """
+        View that return a list of files according to the current position
+        of the user in his directories tree
+
+        Parameters
+        ----------
+        request : RequestObject
+
+        Return
+        ------
+        HttpResponse
+            A dictionnary with the list of files :
+            {
+                page : current page number,
+                pages : number of page,
+                search : the search pattern possibly filled by the user,
+                result : queryset of found files,
+                has_next : if page after the current page,
+                has_previous : if page before the current page,
+                link_headers : headers for the insert file link cell of the
+                    file table,
+                extra_headers : headers for the columns of the file table,
+                columns : data of the files that will be displayed
+            }
+        """
+
         form = QueryForm(request.GET)
         if not form.is_valid():
             return HttpResponseServerError()
@@ -420,6 +692,20 @@ class FilePickerBase(object):
         return HttpResponse(json.dumps(data), content_type='application/json')
 
     def delete(self, request, file):
+        """
+        View that manages the deletion of files
+
+        Parameters
+        ----------
+        request : RequestObject
+        file : int
+            Identifier of the file to delete
+
+        Return
+        ------
+        HttpResponse
+        """
+
         if request.method == 'POST':
             self.model.objects.get(id=file).delete()
             data = {'status': 'OK'}
@@ -430,9 +716,63 @@ class FilePickerBase(object):
 
 
 class ImagePickerBase(FilePickerBase):
+    """
+    The ImagePicker main class. Extend FilePickerBase.
+
+    Parameters
+    ----------
+    name : str
+        The name of this ImagePicker instance
+    model : django.db.models.base.ModelBase
+        BaseFileModel
+    structure : django.db.models.base.ModelBase
+        UserDirectory
+    configure : django.forms.models.ModelFormMetaclass
+        UserDirectoryForm
+
+    Self
+    ----
+    Previously explained fields : name, model, structure, configure AND
+
+    form : AjaxItemForm
+        The file form
+    field_names : list
+        List of field names from model
+    columns : list
+        List of fields which will be used and displayed
+        in the file browser interface
+    """
+
     link_headers = ['Thumbnail', ]
 
     def append(self, obj, request):
+        """
+        Function that return information about images.
+
+        Parameters
+        ----------
+        obj : CustomImageModel
+            A image
+        request : RequestObject
+
+        Return
+        ------
+        dictionnary : {
+            name : name of image,
+            url : url to this image,
+            extra : {
+                name : name of image,
+                file_type : type of image (extension),
+                data_modified : last modification (MM/DD/YY),
+                delete : delete form for this image,
+                id : image identifier
+            },
+            insert : [
+                url to this image for thumbnail
+            ],
+            link_content : Thumbnail on the button who insert the image
+        }
+        """
         json = super(ImagePickerBase, self).append(obj, request)
         img = '<img src="{0}" alt="{1}" width="{2}" height="{3}" />'
         try:
@@ -447,3 +787,42 @@ class ImagePickerBase(FilePickerBase):
         else:
             json['link_content'] = [img.format('', 'Not Found', 100, 100), ]
         return json
+
+    def get_file(self, request):
+        """
+        View that return information on a single image.
+
+        Parameters
+        ----------
+        request : RequestObject
+
+        Return
+        ------
+        HttpResponse
+            A dictionnary with information about this image
+            {
+                name : image name (filetype),
+                thumbnail : url of the thumbnail
+            }
+        """
+        if not request.GET or not request.GET.get('id'):
+            return HttpResponseBadRequest('Bad request')
+        else:
+            result = get_object_or_404(self.model, id=request.GET['id'])
+            try:
+                thumb = get_thumbnail(result.file.path, '100x100',
+                                      crop='center', quality=99)
+            except ThumbnailError:
+                logger.exception()
+                thumb = None
+            if thumb:
+                url = thumb.url
+            else:
+                url = '/static/img/picture.png'
+            data = {'result': {
+                'name': '{0} ({1}) '.format(result.name, result.file_type),
+                'thumbnail': url
+            }
+            }
+            return HttpResponse(
+                json.dumps(data), content_type='application/json')

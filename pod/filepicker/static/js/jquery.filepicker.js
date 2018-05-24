@@ -343,7 +343,6 @@
                     pane.append($('<p>').text('No sub-directories.').append(add));
                 }
                 // Current directory info category
-                pane.append($('<hr>'));
                 pane.append($('<h3>').text('Info'));
                 pane.append($('<p>').text('You have ' + dirs['size'] + ' file(s) in this directory.'));
             },
@@ -422,9 +421,15 @@
                         $('.add_to_model').remove();
                     },
                     onComplete: function(file, response) {
-                        $('.runtime').html(
-                            'Uploading ... Complete'
-                        );
+                        if (response.errors) {
+                            $('.runtime').html(
+                                '<font color="red">'+response.errors+'</font>'
+                            );
+                        } else {
+                            $('.runtime').html(
+                                'Uploading ... Complete'
+                            );
+                        }
                         var submit = $('<input>').attr({
                             'class': 'add_to_model',
                             'type': 'submit',
@@ -489,7 +494,13 @@
                     var tr = $('<tr>');            
                     $.each(file.link_content, function (idx, value) {
                         var a = $('<a>').click(function (e) {
-                            $(self).trigger("onImageClick", file.extra);
+                            var info = {
+                                'name': file.extra.name,
+                                'file_type': file.extra.file_type,
+                                'id': file.extra.id,
+                                'thumbnail': file.link_content[0]
+                            }
+                            $(self).trigger("onImageClick", info);
                         });
                         a.append(value);
                         tr.append($('<td>').append(a));
@@ -559,7 +570,7 @@
         // callbacks    
         $.each(['onImageClick'], function (i, name) {
             // configuration
-            if ($.isFunction(conf[name])) { 
+            if ($.isFunction(conf[name])) {
                 $(self).bind(name, conf[name]); 
             }
             self[name] = function (fn) {
@@ -620,7 +631,21 @@ function get_file_picker_types(el) {
 }
 
 function insertAtCaret(areaId, text) {
-    var txtarea = $('.simple-filepicker');
+    var txtarea = $('#'+areaId);
     txtarea.attr('value', text.id);
-    $('#file-picker-path').text(text.name + ' (' + text.file_type + ') ');
+    var file_path = txtarea.next();
+    file_path.text(text.name + ' (' + text.file_type + ') ');
+    var regex = /^<img.*/;
+    var thumb = $('<img>');
+    thumb.attr('id', 'file-picker-thumbnail');
+    thumb.attr('alt', 'Thumbnail');
+    thumb.attr('width', 50);
+    thumb.attr('height', 50);
+    if (text.thumbnail.match(regex)) {
+        regex = /\/media\/.*.jpg/;
+        thumb.attr('src', text.thumbnail.match(regex));
+    } else {
+        thumb.attr('src', '/static/img/file.png');
+    }
+    thumb.appendTo(file_path);
 }
