@@ -9,7 +9,7 @@
 {% endblock page_extra_head %}
 
 
-{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item"><a href="#">{% trans 'Mes videos' %}</a><li class="breadcrumb-item active" aria-current="page">{% if form.instance.title %}{{form.instance.title}}{% else %}{% trans "Add a new video" %}{%endif%}</li>{% endblock %}
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a><li class="breadcrumb-item active" aria-current="page">{% if form.instance.title %}{{form.instance.title}}{% else %}{% trans "Add a new video" %}{%endif%}</li>{% endblock %}
 
 {% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Add a new video" %}{%endif%}{% endblock %}
 

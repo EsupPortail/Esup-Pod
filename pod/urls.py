@@ -15,6 +15,8 @@ from pod.video.views import video
 from pod.video.views import video_edit
 from pod.video.views import channel
 from pod.video.views import videos
+from pod.video.views import my_videos
+from pod.video.views import my_channels
 from django.contrib.auth import views as auth_views
 
 if apps.is_installed('pod.filepicker'):
@@ -33,6 +35,10 @@ urlpatterns = [
     url(r'^video/(?P<slug>[\-\d\w]+)/$', video, name='video'),
     url(r'^video_edit/$', video_edit, name='video_edit'),
     url(r'^video_edit/(?P<slug>[\-\d\w]+)/$', video_edit, name='video_edit'),
+    # my channels
+    url(r'^my_channels/$', my_channels, name='my_channels'),
+    # my videos
+    url(r'^my_videos/$', my_videos, name='my_videos'),
 
     # auth cas
     url(r'^authentication_login/$',

@@ -56,6 +56,39 @@ def channel(request, slug_c, slug_t=None):
                    'full_path': full_path})
 
 
+@login_required(redirect_field_name='referrer')
+def my_channels(request):
+    return render(request, 'channel/my_channels.html', {'channels': channels})
+
+
+@login_required(redirect_field_name='referrer')
+def my_videos(request):
+    videos_list = request.user.video_set.all()
+    page = request.GET.get('page', 1)
+
+    full_path = ""
+    if page:
+        full_path = request.get_full_path().replace(
+            "?page=%s" % page, "").replace("&page=%s" % page, "")
+
+    paginator = Paginator(videos_list, 12)
+    try:
+        videos = paginator.page(page)
+    except PageNotAnInteger:
+        videos = paginator.page(1)
+    except EmptyPage:
+        videos = paginator.page(paginator.num_pages)
+
+    if request.is_ajax():
+        return render(
+            request, 'videos/video_list.html',
+            {'videos': videos, "full_path": full_path})
+
+    return render(request, 'videos/my_videos.html', {
+        'videos': videos, "full_path": full_path
+    })
+
+
 def get_videos_list(request):
     videos_list = VIDEOS
 

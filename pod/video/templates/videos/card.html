@@ -46,6 +46,9 @@
     </a>
     <div class="card-body">
       <h6 class="card-subtitle small"><a href="{{video.get_absolute_url}}" title="{{video.title}}">{{video.title}}</a></h6>
+      {% if request.user and video.owner == request.user %}
+      <footer class="blockquote-footer">Someone famous in <cite title="Source Title">Source Title</cite></footer>
+      {% endif %}
     </div>
 </div>
 {% endspaceless %}
