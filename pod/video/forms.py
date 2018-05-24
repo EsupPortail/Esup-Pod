@@ -317,7 +317,6 @@ class ChannelForm(forms.ModelForm):
         model = Channel
         fields = '__all__'
 
-
 class ThemeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -326,10 +325,36 @@ class ThemeForm(forms.ModelForm):
         self.fields['headband'].widget = CustomFilePickerWidget(
             pickers=pickers)
 
+        # hide default langage
+        self.fields['description_%s' %
+                    settings.LANGUAGE_CODE].widget = forms.HiddenInput()
+        self.fields['title_%s' %
+                    settings.LANGUAGE_CODE].widget = forms.HiddenInput()
+
+        self.fields = add_placeholder_and_asterisk(self.fields)
+
     class Meta(object):
         model = Theme
         fields = '__all__'
 
+class FrontThemeForm(ThemeForm):
+    def __init__(self, *args, **kwargs):
+
+        super(FrontThemeForm, self).__init__(*args, **kwargs)
+        pickers = {'image': "img"}
+        self.fields['headband'].widget = CustomFilePickerWidget(
+            pickers=pickers)
+
+        self.fields['channel'].widget = forms.HiddenInput()
+        self.fields["parentId"].label = _('Theme parent')
+        if 'channel' in self.initial.keys():
+            themes_queryset = Theme.objects.filter(channel=self.initial['channel'])
+            self.fields["parentId"].queryset = themes_queryset
+
+
+    class Meta(object):
+        model = Theme
+        fields = '__all__'
 
 class TypeForm(forms.ModelForm):
 

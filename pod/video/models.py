@@ -222,7 +222,7 @@ class Theme(models.Model):
     else:
         headband = models.ForeignKey(VideoImageModel,
                                      blank=True, null=True,
-                                     verbose_name=_('Thumbnails'))
+                                     verbose_name=_('Headband'))
 
     channel = models.ForeignKey(
         'Channel', related_name='themes', verbose_name=_('Channel'))

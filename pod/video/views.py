@@ -17,7 +17,7 @@ from tagging.models import TaggedItem
 
 from pod.video.forms import VideoForm
 from pod.video.forms import ChannelForm
-from pod.video.forms import ThemeForm
+from pod.video.forms import FrontThemeForm
 
 # Create your views here.
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
@@ -110,13 +110,13 @@ def theme_edit(request, slug):
         raise PermissionDenied
 
     if request.POST and request.is_ajax():
-        form_theme = ThemeForm(initial={"channel": channel})
+        form_theme = FrontThemeForm(initial={"channel": channel})
         return render(request, "channel/form_theme.html",
                                   {'form_theme': form_theme,
                                    'channel': channel}
                                   )
-
-    return render(request, 'channel/theme_edit.html', {'channel': channel})
+    form_theme = FrontThemeForm(initial={"channel": channel})
+    return render(request, 'channel/theme_edit.html', {'channel': channel, 'form_theme':form_theme})
 
 
 @login_required(redirect_field_name='referrer')

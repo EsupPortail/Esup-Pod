@@ -152,7 +152,7 @@ class ThemeAdmin(admin.ModelAdmin):
     form = ThemeForm
     list_display = ('title', 'channel')
     list_filter = ['channel']
-    prepopulated_fields = {'slug': ('title',)}
+    # prepopulated_fields = {'slug': ('title',)}
     ordering = ('channel', 'title')
 
     class Media:
