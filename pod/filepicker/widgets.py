@@ -3,7 +3,7 @@ from django import forms
 
 class BaseFilePickerWidget(forms.TextInput):
     """
-    FilePicker base widget. Can be add on a CustomFileModel or 
+    FilePicker base widget. Can be add on a CustomFileModel or
     CustomImageModel foreignkey field.
     """
 
@@ -21,7 +21,7 @@ class BaseFilePickerWidget(forms.TextInput):
 class CustomFilePickerWidget(BaseFilePickerWidget):
     """
     FilePicker custom widget. It's the widget you can use and personnalize.
-    All JavaScripts and Stylesheets needed for FilePicker are added here. 
+    All JavaScripts and Stylesheets needed for FilePicker are added here.
     """
 
     def __init__(self, pickers, *args, **kwargs):

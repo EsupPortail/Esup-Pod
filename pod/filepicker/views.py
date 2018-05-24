@@ -79,7 +79,7 @@ class FilePickerBase(object):
     field_names : list
         List of field names from model
     columns : list
-        List of fields which will be used and displayed 
+        List of fields which will be used and displayed
         in the file browser interface
     """
 
@@ -108,9 +108,9 @@ class FilePickerBase(object):
 
     def populate_field(self, model):
         """
-        Function that find a File or Image field in the model and create a 
+        Function that find a File or Image field in the model and create a
         variable to access it more easily.
-        Delete from field_name all ForeignKey and ManyToMany fields. 
+        Delete from field_name all ForeignKey and ManyToMany fields.
 
         Parameters
         ----------
@@ -266,7 +266,7 @@ class FilePickerBase(object):
 
         Return
         ------
-        dictionnary : { 
+        dictionnary : {
             name : name of file,
             url : url to this file,
             extra : {
@@ -410,7 +410,7 @@ class FilePickerBase(object):
         """
         Function that returns one or more files according to a search
         pattern given by the user. If no search pattern, returns all files of
-        a user. 
+        a user.
         Files can be returned in a specific order.
         In any case the queries are made in a single directory.
 
@@ -481,7 +481,7 @@ class FilePickerBase(object):
 
     def get_dirs(self, user, directory=None):
         """
-        Function that return information about a specific directory otherwise 
+        Function that return information about a specific directory otherwise
         about the Home directory.
 
         Parameters
@@ -617,12 +617,8 @@ class FilePickerBase(object):
                         json.dumps(data),
                         content_type='application/json')
             else:
-                if request.GET.get('directory'):
-                    directory = self.structure.objects.get(
-                        owner=request.user, id=request.GET['directory'])
-                else:
-                    directory = self.structure.objects.get(
-                        owner=request.user, name='Home')
+                directory = self.structure.objects.get(
+                    owner=request.user, id=request.GET.get('directory'))
                 form = self.form(
                     initial={'created_by': request.user,
                              'directory': directory.id})
@@ -743,7 +739,7 @@ class ImagePickerBase(FilePickerBase):
     field_names : list
         List of field names from model
     columns : list
-        List of fields which will be used and displayed 
+        List of fields which will be used and displayed
         in the file browser interface
     """
 
@@ -761,7 +757,7 @@ class ImagePickerBase(FilePickerBase):
 
         Return
         ------
-        dictionnary : { 
+        dictionnary : {
             name : name of image,
             url : url to this image,
             extra : {
