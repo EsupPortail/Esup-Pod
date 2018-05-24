@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 
 from pod.video.models import Video
 from pod.video.models import Channel
@@ -58,6 +59,8 @@ def channel(request, slug_c, slug_t=None):
 
 @login_required(redirect_field_name='referrer')
 def my_channels(request):
+    channels = request.user.owners_channels.all().annotate(
+        video_count=Count("video", distinct=True))
     return render(request, 'channel/my_channels.html', {'channels': channels})
 
 

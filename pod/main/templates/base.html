@@ -45,6 +45,18 @@
              transform:scale(1.1)
              z-index:0;
             }
+            .card-footer {
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                border:none;
+            }
+            .card-footer a{
+                /*color: #ddd;*/
+            }
+            .card-footer .octicon{
+                height: 1rem;
+            }
             /** aside list video **/
             #filterType div.collapse:not(.show), #filterDiscipline div.collapse:not(.show), #filterTag div.collapse:not(.show) {
                 height: 148px !important;
@@ -87,6 +99,7 @@
                 left: 50%;
                 transform: translate(-50%, 0);
             }
+
         </style>
 	    <title>{{ TITLE_SITE }} - {% block page_title %}{% endblock %}</title>
 
@@ -114,8 +127,8 @@
 		          </ol>
 		          <div class="p-0">
                     {% block collapse_page_aside %}
-		            <a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside">
-		              <svg height="32" class="octicon octicon-grabber" viewBox="0 0 8 16" version="1.1" width="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 4v1H0V4h8zM0 8h8V7H0v1zm0 3h8v-1H0v1z"></path></svg>
+		            <a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" >
+		              <span data-toggle="tooltip" data-placement="top" title="{% trans "Open/Close the aside" %}><svg height="32" class="octicon octicon-grabber" viewBox="0 0 8 16" version="1.1" width="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 4v1H0V4h8zM0 8h8V7H0v1zm0 3h8v-1H0v1z"></path></svg></span>
 		            </a>
                     {% endblock collapse_page_aside %}
 		          </div>
