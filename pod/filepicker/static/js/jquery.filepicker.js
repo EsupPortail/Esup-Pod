@@ -343,7 +343,6 @@
                     pane.append($('<p>').text('No sub-directories.').append(add));
                 }
                 // Current directory info category
-                pane.append($('<hr>'));
                 pane.append($('<h3>').text('Info'));
                 pane.append($('<p>').text('You have ' + dirs['size'] + ' file(s) in this directory.'));
             },
@@ -423,7 +422,6 @@
                     },
                     onComplete: function(file, response) {
                         if (response.errors) {
-                            console.log('passe');
                             $('.runtime').html(
                                 '<font color="red">'+response.errors+'</font>'
                             );
