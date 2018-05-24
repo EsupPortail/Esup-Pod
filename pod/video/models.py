@@ -467,8 +467,12 @@ class Video(models.Model):
 
     @property
     def get_thumbnail_admin(self):
-        return format_html('<img style="max-width:100px" src="%s" alt="%s" />' % (
-            self.get_thumbnail_url(), self.title))
+        return format_html('<img style="max-width:100px" '
+                           'src="%s" alt="%s" />' % (
+                               self.get_thumbnail_url(),
+                               self.title
+                           )
+                           )
     get_thumbnail_admin.fget.short_description = _('Thumbnails')
 
     def get_thumbnail_card(self):

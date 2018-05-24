@@ -205,7 +205,7 @@ def video(request, slug, slug_c=None, slug_t=None):
 @login_required(redirect_field_name='referrer')
 def video_edit(request, slug=None):
 
-    video = get_object_or_404(Pod, slug=slug) if slug else None
+    video = get_object_or_404(Video, slug=slug) if slug else None
 
     if video and request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
