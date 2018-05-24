@@ -342,31 +342,50 @@ class Discipline(models.Model):
 
 class Video(models.Model):
     video = models.FileField(
-        _('Video'),  upload_to=get_storage_path_video, max_length=255)
+        _('Video'),  upload_to=get_storage_path_video, max_length=255,
+        help_text=_(
+            'You can send an audio or video file.')
+    )
 
     allow_downloading = models.BooleanField(
-        _('allow downloading'), default=False)
-    is_360 = models.BooleanField(_('video 360'), default=False)
-    title = models.CharField(_('Title'), max_length=250)
+        _('allow downloading'), default=False, help_text=_(
+            'Check this box if you to allow downloading of the encoded files'))
+    is_360 = models.BooleanField(_('video 360'), default=False, help_text=_(
+        'Check this box if you want to use the 360 player for the video'))
+    title = models.CharField(
+        _('Title'),
+        max_length=250,
+        help_text=_("Please choose a title as short and accurate as "
+                    "possible, reflecting the main subject / context "
+                    "of the content.(max length : 250 characters)")
+    )
     slug = models.SlugField(_('Slug'), unique=True, max_length=255,
                             help_text=_(
                                 'Used to access this instance, the "slug" is '
-                                + 'a short label containing only letters, '
-                                + 'numbers, underscore or dash top.'),
+                                'a short label containing only letters, '
+                                'numbers, underscore or dash top.'),
                             editable=False)
     owner = models.ForeignKey(User, verbose_name=_('Owner'))
     date_added = models.DateField(_('Date added'), default=datetime.now)
     date_evt = models.DateField(
         _(u'Date of event'), default=datetime.now, blank=True, null=True)
     description = RichTextField(
-        _('Description'), config_name='complete', blank=True)
+        _('Description'), 
+        config_name='complete', 
+        blank=True, 
+        help_text=_("In this field you can describe your content, "
+            "add all needed related information, and "
+            "format the result using the toolbar."))
 
     cursus = models.CharField(
         _('University course'), max_length=1,
-        choices=CURSUS_CODES, default="0")
+        choices=CURSUS_CODES, default="0",
+        help_text=_("Select an university course as "
+                    "audience target of the content."))
     main_lang = models.CharField(
         _('Main language'), max_length=2,
-        choices=MAIN_LANG_CHOICES, default=get_language())
+        choices=MAIN_LANG_CHOICES, default=get_language(),
+        help_text=_("Select the main language used in the content."))
 
     duration = models.IntegerField(
         _('Duration'), default=0, editable=False, blank=True)
@@ -374,26 +393,26 @@ class Video(models.Model):
     is_draft = models.BooleanField(
         verbose_name=_('Draft'),
         help_text=_(
-            u'If this box is checked, '
-            + 'the video will be visible and accessible only by you.'),
+            'If this box is checked, '
+            'the video will be visible and accessible only by you.'),
         default=True)
     is_restricted = models.BooleanField(
-        verbose_name=_(u'Restricted access'),
+        verbose_name=_('Restricted access'),
         help_text=_(
-            u'If this box is checked, '
-            + 'the video will only be accessible to authenticated users.'),
+            'If this box is checked, '
+            'the video will only be accessible to authenticated users.'),
         default=False)
     restrict_access_to_groups = models.ManyToManyField(
         Group, blank=True, verbose_name=_('Goups'),
-        help_text=_(u'Select one or more groups who can access to this video'))
+        help_text=_('Select one or more groups who can access to this video'))
     password = models.CharField(
         _('password'),
         help_text=_(
-            u'Viewing this video will not be possible without this password.'),
+            'Viewing this video will not be possible without this password.'),
         max_length=50, blank=True, null=True)
     tags = TagField(help_text=_(
-        u'Separate tags with spaces, '
-        + 'enclose the tags consist of several words in quotation marks.'),
+        'Separate tags with spaces, '
+        'enclose the tags consist of several words in quotation marks.'),
         verbose_name=_('Tags'))
     if FILEPICKER:
         thumbnail = models.ForeignKey(CustomImageModel,
@@ -411,11 +430,23 @@ class Video(models.Model):
     type = models.ForeignKey(Type, verbose_name=_('Type'),
                              default=DEFAULT_TYPE_ID)
     discipline = models.ManyToManyField(
-        Discipline, blank=True, verbose_name=_('Disciplines'))
+        Discipline,
+        blank=True,
+        verbose_name=_('Disciplines'),
+        help_text=_('Hold down "Control", or "Command" '
+            'on a Mac, to select more than one.'))
     channel = models.ManyToManyField(
-        Channel, verbose_name=_('Channels'), blank=True)
+        Channel,
+        verbose_name=_('Channels'),
+        blank=True,
+        help_text=_('Hold down "Control", or "Command" '
+            'on a Mac, to select more than one.'))
     theme = models.ManyToManyField(
-        Theme, verbose_name=_('Themes'), blank=True)
+        Theme,
+        verbose_name=_('Themes'),
+        blank=True,
+        help_text=_('Hold down "Control", or "Command" '
+            'on a Mac, to select more than one.'))
 
     licence = models.CharField(
         _('Licence'), max_length=8,

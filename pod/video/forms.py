@@ -46,7 +46,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
     settings,
     'VIDEO_FORM_FIELDS_HELP_TEXT',
     {
-        _("Video field"): [
+        _("File field"): [
             _("You can send an audio or video file."),
             _("The following formats are supported: %s" %
               ', '.join(map(str, VIDEO_ALLOWED_EXTENSIONS)))
@@ -148,12 +148,20 @@ class FileSizeValidator(object):
 
 class VideoForm(forms.ModelForm):
     required_css_class = 'required'
+    videoattrs = {
+        "class": "form-control-file",
+        "accept": "audio/*, video/*, .%s" %
+        ', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS)),
+    }
+    video = forms.FileField(label=_(u'File'))
 
     def __init__(self, *args, **kwargs):
-        self.is_staff = kwargs.pop('is_staff') if kwargs.get(
-            'is_staff') else self.is_staff
-        self.is_superuser = kwargs.pop('is_superuser') if kwargs.get(
-            'is_superuser') else self.is_superuser
+
+        self.is_staff = kwargs.pop(
+            'is_staff') if 'is_staff' in kwargs.keys() else self.is_staff
+        self.is_superuser = kwargs.pop(
+            'is_superuser') if 'is_superuser' in kwargs.keys() else self.is_superuser
+
         self.current_user = kwargs.pop(
             'current_user') if kwargs.get('current_user') else None
 
@@ -167,17 +175,18 @@ class VideoForm(forms.ModelForm):
         self.fields['thumbnail'].widget = CustomFilePickerWidget(
             pickers=pickers)
 
-        videoattrs = {
-            "class": "form-control-file",
-            "accept": "audio/*, video/*, .%s" %
-            ', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS))
-        }
-        self.fields['video'].widget = widgets.AdminFileWidget(attrs=videoattrs)
+        #self.fields['video'].widget = widgets.AdminFileWidget(attrs=videoattrs)
         valid_ext = FileExtensionValidator(VIDEO_ALLOWED_EXTENSIONS)
         self.fields['video'].validators = [valid_ext, FileSizeValidator]
+        self.fields['video'].widget.attrs['class'] = self.videoattrs["class"]
+        self.fields['video'].widget.attrs['accept'] = self.videoattrs["accept"]
+
+        if self.instance.encoding_in_progress:
+            del self.fields['video']
 
         # change ckeditor config for no staff user
         if self.is_staff is False:
+            del self.fields['thumbnail']
             self.fields['description'].widget = CKEditorWidget(
                 config_name='default')
             for key, value in settings.LANGUAGES:
@@ -205,14 +214,18 @@ class VideoForm(forms.ModelForm):
                 del self.fields['channel']
                 del self.fields['theme']
 
-        #if self.is_superuser and self.current_user is not None:
+        # if self.is_superuser and self.current_user is not None:
         #    self.fields['owner'].queryset = Owner.objects.filter(
         #        id=self.current_user.id)
+
         if not self.is_superuser:
             del self.fields['date_added']
             del self.fields['owner']
 
         self.fields = add_placeholder_and_asterisk(self.fields)
+        # remove required=True for videofield if instance
+        if self.fields.get('video') and self.instance and self.instance.video:
+            del self.fields["video"].widget.attrs["required"]
 
     class Meta(object):
         model = Video

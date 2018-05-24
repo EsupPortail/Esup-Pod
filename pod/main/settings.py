@@ -42,6 +42,15 @@ DEBUG = True
 ALLOWED_HOSTS = ['localhost']
 
 ##
+# Session settings
+#
+#   https://docs.djangoproject.com/en/1.11/ref/settings/#session-cookie-age
+#   https://docs.djangoproject.com/en/1.11/ref/settings/#session-expire-at-browser-close
+#
+SESSION_COOKIE_AGE = 14400
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+##
 # A tuple that lists people who get code error notifications
 #   when DEBUG=False and a view raises an exception.
 #

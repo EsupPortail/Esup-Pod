@@ -11,12 +11,12 @@
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item"><a href="#">{% trans 'Mes videos' %}</a><li class="breadcrumb-item active" aria-current="page">{% if form.instance.title %}{{form.instance.title}}{% else %}{% trans "Add a new video" %}{%endif%}</li>{% endblock %}
 
-{% block page_title %}{% if form.instance.title %}{{form.instance.title}}{% else %}{% trans "Add a new video" %}{%endif%}{% endblock %}
+{% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Add a new video" %}{%endif%}{% endblock %}
 
 
 {% block page_content %}
 {% spaceless %}
-<h3>{% if form.instance.title %}{{form.instance.title}}{% else %}{% trans "Add a new video" %}{%endif%}</h3>
+<h3>{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Add a new video" %}{%endif%}</h3>
 {% if form.instance.slug %}
 <form id="video_form" method="post"
     action="{% url 'video_edit' slug=form.instance.slug %}"
@@ -29,6 +29,14 @@
     {% csrf_token %}
     <div>
         <fieldset>
+            {% if form.errors %}
+            <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+            {% endif %}
+            {% if form.instance.encoding_in_progress %}
+            <p class="text-info">
+                {% trans "The video is currently being encoded." %}
+            </p>
+            {% endif %}
             {% for field in form %}
             {% if not field.is_hidden %}{% spaceless %}
             <div class="form-group {% if field.field.required %}form-group-required {%endif%}{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}" >
@@ -38,12 +46,15 @@
                 {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label" >{{ field.label }}</label>
                 </div>
                 {% else %}
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label> {{ field }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label> 
+                {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br/>{%endif%}
+                {{ field }}
                 {% endif %}
 
                 {% if field.help_text %}
                 <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
                 {% endif %}
+                {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
 
                 {% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
                 {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
@@ -66,7 +77,9 @@
           </div>
         </div>
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+    </div>
 </form>
 
 {% endspaceless %}
@@ -145,10 +158,10 @@ var listTheme = new Array();
 listTheme["channel_{{channel.id}}"] = {{channel.get_all_theme_json|safe}};
 {% endfor %}
 
-var initial = new Array();
+var tab_initial = new Array();
 
 $('#id_theme option:selected').each(function () {
-    initial.push($(this).val());
+    tab_initial.push($(this).val());
 });
 
 $('#id_theme option').remove();
@@ -159,15 +172,10 @@ $('#id_channel').change(function() {
     $('#id_theme').append(str);
 });
 
-$("#id_channel option:selected").each(function () {
-    var str = get_option(listTheme["channel_"+$(this).val()], 0, initial);
-    $('#id_theme').append(str);
-});
-
 var get_option = function(tab, level=0, tab_selected) {
     var option = ""
     var prefix = ""
-    for(i=0;i<level;i++) prefix+="&nbsp;";
+    for(i=0;i<level;i++) prefix+="&nbsp;&nbsp;";
     if(level!=0) prefix+="|-";
     $.each(tab, function(i, val) {
         if($.inArray(i, tab_selected) > -1)
@@ -182,6 +190,10 @@ var get_option = function(tab, level=0, tab_selected) {
     });
     return option;
 }
+$("#id_channel option:selected").each(function () {
+    var str = get_option(listTheme["channel_"+$(this).val()], 0, tab_initial);
+    $('#id_theme').append(str);
+});
 /** end channel **/
 </script>
 <script>
@@ -205,6 +217,7 @@ var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfo
         //check file extension and file size
         
         if (form.checkValidity() === false) {
+          window.scrollTo($("#video_form").scrollTop(), 0); 
           showalert("{% trans "Errors appear in the form, please correct it"%}","alert-danger");
           event.preventDefault();
           event.stopPropagation();
@@ -216,6 +229,7 @@ var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfo
                 var extension = fileName.substring(fileName.lastIndexOf('.')+1).toLowerCase();
                 if(listext.indexOf(extension) !== -1) {
                     if(fileSize>video_max_upload_size){
+                        window.scrollTo($("#video_form").scrollTop(), 0); 
                         showalert("{% trans "The file size exceeds the maximum allowed value : "%} {{form.VIDEO_MAX_UPLOAD_SIZE}} Go.","alert-danger");
                         event.preventDefault();
                         event.stopPropagation();
@@ -226,6 +240,7 @@ var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfo
                         window.scrollTo($("#js-process").scrollTop(), 0); 
                     }
                 } else {
+                    window.scrollTo($("#video_form").scrollTop(), 0); 
                     showalert("{% trans "The file extension not in the allowed extension : "%} "+listext+".","alert-danger");
                     event.preventDefault();
                     event.stopPropagation();

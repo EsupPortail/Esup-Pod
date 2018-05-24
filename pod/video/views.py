@@ -201,7 +201,6 @@ def video(request, slug, slug_c=None, slug_t=None):
 
 
 @csrf_protect
-# (login_url='/accounts/login/')
 @login_required(redirect_field_name='referrer')
 def video_edit(request, slug=None):
 
