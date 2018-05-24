@@ -190,7 +190,7 @@ class VideoForm(forms.ModelForm):
         self.fields['title_%s' %
                     settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
-        # QuerySet
+        # QuerySet for channels and theme
         if self.current_user is not None:
             user_channels = Channel.objects.all() if self.is_superuser else (
                 self.current_user.owners_channels.all(
@@ -205,9 +205,9 @@ class VideoForm(forms.ModelForm):
                 del self.fields['channel']
                 del self.fields['theme']
 
-        if self.is_superuser and self.current_user is not None:
-            self.fields['owner'].queryset = Owner.objects.filter(
-                id=self.current_user.id)
+        #if self.is_superuser and self.current_user is not None:
+        #    self.fields['owner'].queryset = Owner.objects.filter(
+        #        id=self.current_user.id)
         if not self.is_superuser:
             del self.fields['date_added']
             del self.fields['owner']
