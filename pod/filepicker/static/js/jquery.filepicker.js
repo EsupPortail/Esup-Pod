@@ -343,7 +343,6 @@
                     pane.append($('<p>').text('No sub-directories.').append(add));
                 }
                 // Current directory info category
-                pane.append($('<hr>'));
                 pane.append($('<h3>').text('Info'));
                 pane.append($('<p>').text('You have ' + dirs['size'] + ' file(s) in this directory.'));
             },
@@ -422,9 +421,15 @@
                         $('.add_to_model').remove();
                     },
                     onComplete: function(file, response) {
-                        $('.runtime').html(
-                            'Uploading ... Complete'
-                        );
+                        if (response.errors) {
+                            $('.runtime').html(
+                                '<font color="red">'+response.errors+'</font>'
+                            );
+                        } else {
+                            $('.runtime').html(
+                                'Uploading ... Complete'
+                            );
+                        }
                         var submit = $('<input>').attr({
                             'class': 'add_to_model',
                             'type': 'submit',
@@ -628,7 +633,7 @@ function get_file_picker_types(el) {
 function insertAtCaret(areaId, text) {
     var txtarea = $('#'+areaId);
     txtarea.attr('value', text.id);
-    var file_path = $('#file-picker-path');
+    var file_path = txtarea.next();
     file_path.text(text.name + ' (' + text.file_type + ') ');
     var regex = /^<img.*/;
     var thumb = $('<img>');

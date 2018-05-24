@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.utils.translation import ugettext as _
@@ -10,6 +11,35 @@ from pod.filepicker.models import UserDirectory
 
 from pod.filepicker.sites import site
 import os
+
+FILE_ALLOWED_EXTENSIONS = getattr(
+    settings, 'FILE_ALLOWED_EXTENSIONS', (
+        '.doc',
+        '.docx',
+        '.odt',
+        '.pdf',
+        '.xls',
+        '.xlsx',
+        '.ods',
+        '.ppt',
+        '.pptx',
+        '.txt',
+        '.html',
+        '.htm',
+        '.vtt',
+        '.srt',
+    )
+)
+IMAGE_ALLOWED_EXTENSIONS = getattr(
+    settings, 'IMAGE_ALLOWED_EXTENSIONS', (
+        '.jpg',
+        '.jpeg',
+        '.bmp',
+        '.png',
+        '.gif',
+        '.tiff',
+    )
+)
 
 
 class UserDirectoryForm(forms.ModelForm):
@@ -55,9 +85,9 @@ class CustomFileForm(forms.ModelForm):
 
     def clean_file(self):
         name, ext = os.path.splitext(self.cleaned_data['file'])
-        if ext in ['.jpg', '.jpeg', '.png', '.gif', '.bmp']:
+        if ext not in FILE_ALLOWED_EXTENSIONS:
             raise forms.ValidationError(
-                u'Image not allowed.')
+                _('File type not allowed : {0}'.format(ext)))
         return self.cleaned_data['file']
 
     def save(self, commit=True):
@@ -91,9 +121,9 @@ class CustomImageForm(forms.ModelForm):
 
     def clean_file(self):
         name, ext = os.path.splitext(self.cleaned_data['file'])
-        if ext not in ['.jpg', '.jpeg', '.png', '.gif', '.bmp']:
+        if ext not in IMAGE_ALLOWED_EXTENSIONS:
             raise forms.ValidationError(
-                u'Must be a image.')
+                _('File type not allowed : {0}'.format(ext)))
         return self.cleaned_data['file']
 
     def save(self, commit=True):
