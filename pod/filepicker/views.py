@@ -5,6 +5,7 @@ Override FilePickerBase and ImagePickerBase
 django-file-picker : 0.9.1.
 """
 from django.conf.urls import url
+from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -16,6 +17,7 @@ from django.http import HttpResponseBadRequest
 from django.http import HttpResponseNotFound
 from django.middleware.csrf import get_token
 from django.utils.text import capfirst
+from django.utils.translation import ugettext as _
 from django.shortcuts import get_object_or_404
 from sorl.thumbnail.helpers import ThumbnailError
 from sorl.thumbnail import get_thumbnail
@@ -34,6 +36,8 @@ logger = logging.getLogger(__name__)
 
 FIELD_EXCLUDES = (models.ImageField, models.FileField,)
 
+FILE_MAX_UPLOAD_SIZE = getattr(
+    settings, 'FILE_MAX_UPLOAD_SIZE', 100)
 
 def model_to_AjaxItemForm(model):
     exclude = list()
@@ -344,6 +348,11 @@ class FilePickerBase(object):
             fn = tempfile.NamedTemporaryFile(
                 prefix=name, suffix=ext, delete=False)
             f = request.FILES['userfile']
+            if f.size > FILE_MAX_UPLOAD_SIZE * 1024 * 1024:
+                return HttpResponse(
+                    json.dumps(
+                        {'errors': _('File size is too large (>100MB)')}),
+                    content_type='application/json')
             for chunk in f.chunks():
                 fn.write(chunk)
             fn.close()
