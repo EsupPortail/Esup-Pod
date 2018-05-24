@@ -27,7 +27,7 @@
     accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
 {% endif %}
     {% csrf_token %}
-    <div>
+    <div class="list-group">
         <fieldset>
             {% if form.errors %}
             <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>

@@ -16,6 +16,7 @@ from pod.video.models import Theme
 from tagging.models import TaggedItem
 
 from pod.video.forms import VideoForm
+from pod.video.forms import ChannelForm
 
 # Create your views here.
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
@@ -62,6 +63,19 @@ def my_channels(request):
     channels = request.user.owners_channels.all().annotate(
         video_count=Count("video", distinct=True))
     return render(request, 'channel/my_channels.html', {'channels': channels})
+
+
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+def channel_edit(request, slug):
+    channel = get_object_or_404(Channel, slug=slug)
+    if (request.user not in channel.owners.all()
+            and not request.user.is_superuser):
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot edit this channel.'))
+        raise PermissionDenied
+    channel_form = ChannelForm(instance=channel)
+    return render(request, 'channel/channel_edit.html', {'form': channel_form})
 
 
 @login_required(redirect_field_name='referrer')
