@@ -74,9 +74,39 @@ def channel_edit(request, slug):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot edit this channel.'))
         raise PermissionDenied
-    channel_form = ChannelForm(instance=channel)
+    channel_form = ChannelForm(
+        instance=channel,
+        is_staff=request.user.is_staff,
+        is_superuser=request.user.is_superuser)
+    if request.POST:
+        channel_form = ChannelForm(
+            request.POST,
+            instance=channel,
+            is_staff=request.user.is_staff,
+            is_superuser=request.user.is_superuser
+        )
+        if channel_form.is_valid():
+            channel = channel_form.save()
+            messages.add_message(
+                request, messages.INFO,
+                _('The changes have been saved.')
+            )
+        else:
+            messages.add_message(
+                request, messages.ERROR,
+                _(u'One or more errors have been found in the form.'))
     return render(request, 'channel/channel_edit.html', {'form': channel_form})
 
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+def theme_edit(request, slug):
+    channel = get_object_or_404(Channel, slug=slug)
+    if (request.user not in channel.owners.all()
+            and not request.user.is_superuser):
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot edit this channel.'))
+        raise PermissionDenied
+    return render(request, 'channel/theme_edit.html', {'channel': channel})
 
 @login_required(redirect_field_name='referrer')
 def my_videos(request):
@@ -188,9 +218,6 @@ def video(request, slug, slug_c=None, slug_t=None):
         or is_restricted_to_group
         or is_password_protected
     )
-
-    print(is_access_protected, is_draft, is_restricted,
-          is_restricted_to_group, is_password_protected)
 
     if is_access_protected:
 

@@ -8,6 +8,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 from django.core.exceptions import ValidationError
 
+from django.contrib.auth.models import User
+
 from pod.filepicker.widgets import CustomFilePickerWidget
 from pod.video.models import Video
 from pod.video.models import Channel
@@ -265,13 +267,51 @@ def add_placeholder_and_asterisk(fields):
 
 
 class ChannelForm(forms.ModelForm):
+    users = forms.ModelMultipleChoiceField(
+        User.objects.all(),
+        widget=widgets.FilteredSelectMultiple(
+            _("Users"),
+            False,
+            attrs={}),
+        required=False,
+        label=_('Users'))
+    owners = forms.ModelMultipleChoiceField(
+        User.objects.all(),
+        widget=widgets.FilteredSelectMultiple(_("Owners"), False, attrs={}),
+        required=False,
+        label=_('Owners'))
 
     def __init__(self, *args, **kwargs):
+        self.is_staff = kwargs.pop(
+            'is_staff') if 'is_staff' in kwargs.keys() else self.is_staff
+        self.is_superuser = kwargs.pop(
+            'is_superuser') if (
+            'is_superuser' in kwargs.keys()
+        ) else self.is_superuser
 
         super(ChannelForm, self).__init__(*args, **kwargs)
         pickers = {'image': "img"}
         self.fields['headband'].widget = CustomFilePickerWidget(
             pickers=pickers)
+
+        if not hasattr(self, 'admin_form'):
+            del self.fields['visible']
+
+        # change ckeditor config for no staff user
+        if self.is_staff is False or self.is_superuser is False:
+            del self.fields['headband']
+            self.fields['description'].widget = CKEditorWidget(
+                config_name='default')
+            for key, value in settings.LANGUAGES:
+                self.fields['description_%s' % key.replace(
+                    '-', '_')].widget = CKEditorWidget(config_name='default')
+        # hide default langage
+        self.fields['description_%s' %
+                    settings.LANGUAGE_CODE].widget = forms.HiddenInput()
+        self.fields['title_%s' %
+                    settings.LANGUAGE_CODE].widget = forms.HiddenInput()
+
+        self.fields = add_placeholder_and_asterisk(self.fields)
 
     class Meta(object):
         model = Channel

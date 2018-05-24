@@ -149,7 +149,8 @@ class Channel(models.Model):
         _('Slug'), unique=True, max_length=100,
         help_text=_(
             u'Used to access this instance, the "slug" is a short label '
-            + 'containing only letters, numbers, underscore or dash top.'))
+            + 'containing only letters, numbers, underscore or dash top.'),
+        editable=False)
     description = RichTextField(_('Description'),
                                 config_name='complete', blank=True)
     # add headband
@@ -211,7 +212,8 @@ class Theme(models.Model):
         _('Slug'), unique=True, max_length=100,
         help_text=_(
             u'Used to access this instance, the "slug" is a short label '
-            + 'containing only letters, numbers, underscore or dash top.'))
+            + 'containing only letters, numbers, underscore or dash top.'),
+        editable=False)
     description = models.TextField(null=True, blank=True)
     if FILEPICKER:
         headband = models.ForeignKey(CustomImageModel,

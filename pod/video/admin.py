@@ -101,13 +101,32 @@ class VideoAdmin(admin.ModelAdmin):
         js = ('js/jquery.tools.min.js',)
 
 
-class ChannelAdmin(TranslationAdmin):
-    form = ChannelForm
+class ChannelSuperAdminForm(ChannelForm):
+    is_staff = True
+    is_superuser = True
+    admin_form = True
+
+
+class ChannelAdminForm(ChannelForm):
+    is_staff = True
+    is_superuser = False
+    admin_form = True
+
+
+class ChannelAdmin(admin.ModelAdmin):
     list_display = ('title', 'visible',)
-    prepopulated_fields = {'slug': ('title',)}
+    #prepopulated_fields = {'slug': ('title',)}
     filter_horizontal = ('owners', 'users',)
     list_editable = ('visible', )
     ordering = ('title',)
+
+    def get_form(self, request, obj=None, **kwargs):
+        if request.user.is_superuser:
+            kwargs['form'] = ChannelSuperAdminForm
+        else:
+            kwargs['form'] = ChannelAdminForm
+        form = super(ChannelAdmin, self).get_form(request, obj, **kwargs)
+        return form
 
     class Media:
         js = ('js/jquery.tools.min.js',)
