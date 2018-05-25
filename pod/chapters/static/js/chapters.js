@@ -26,7 +26,7 @@ function manageResize() {
     On save action, a request is sent with the form after a pair of
         validation functions are runned.
 ***/
-$(document).on("submit", "form#form_chapter", function (e) {
+$(document).on("submit", "#formcontent", function (e) {
     $(this).show();
     e.preventDefault();
     var jqxhr= '';
