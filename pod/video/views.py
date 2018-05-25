@@ -99,6 +99,11 @@ def channel_edit(request, slug):
     return render(request, 'channel/channel_edit.html', {'form': channel_form})
 
 
+# ############################################################################
+# THEME EDIT
+# ############################################################################
+
+
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def theme_edit(request, slug):
@@ -110,13 +115,38 @@ def theme_edit(request, slug):
         raise PermissionDenied
 
     if request.POST and request.is_ajax():
-        form_theme = FrontThemeForm(initial={"channel": channel})
-        return render(request, "channel/form_theme.html",
-                                  {'form_theme': form_theme,
-                                   'channel': channel}
-                                  )
+        # new 
+        if request.POST['action'] == 'new':
+            form_theme = FrontThemeForm(initial={"channel": channel})
+            return render(request, "channel/form_theme.html",
+                      {'form_theme': form_theme,
+                       'channel': channel}
+                      )
+        # modify
+        if request.POST['action'] == 'modify':
+            theme = get_object_or_404(Theme, id=request.POST['id'])
+            form_theme = FrontThemeForm(instance=theme)
+            return render(request, "channel/form_theme.html",
+                      {'form_theme': form_theme,
+                       'channel': channel}
+                      )
+        # delete
+        if request.POST['action'] == 'delete':
+            theme = get_object_or_404(Theme, id=request.POST['id'])
+            theme.delete()
+            return render(request, "channel/list_theme.html",
+                      {'list_theme': channel.themes.all(),
+                       'channel': channel}
+                      )
+
+        
     form_theme = FrontThemeForm(initial={"channel": channel})
-    return render(request, 'channel/theme_edit.html', {'channel': channel, 'form_theme':form_theme})
+    return render(request, 'channel/theme_edit.html', {'channel': channel})
+
+
+# ############################################################################
+# MY VIDEOS
+# ############################################################################
 
 
 @login_required(redirect_field_name='referrer')
