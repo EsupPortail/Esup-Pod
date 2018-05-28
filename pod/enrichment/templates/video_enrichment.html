@@ -69,19 +69,21 @@
 			<hr/>
 			<div class="row" id="info_video">
 				<div class="col-sm-9">
-					<span id="list_enrich">
+					<div id="list_enrich">
 						{% include 'enrichment/list_enrichment.html' %}
-					</span>
-					<span id="form_enrich">
+					</div>
+					<div id="form_enrich">
 						{% if form_enrichment %}
 							{% include 'enrichment/form_enrichment.html' with form_enrichment=form_enrichment %}
 						{% endif %}
-					</span>
-					<form id="form_new" action="{% url 'video_enrichment' slug=video.slug %}" method="POST">
-						{% csrf_token %}
-						<input type="hidden" name="action" value="new"/>
-						<input type="submit" id="add_new_enrichment" value="{% trans 'Add a new enrichment' %}" class="btn btn-info"/>
-					</form>
+					</div>
+					{% if not form_enrichment %}
+						<form id="form_new" class="get_form" action="{% url 'video_enrichment' slug=video.slug %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="action" value="new"/>
+							<input type="submit" id="add_new_enrichment" value="{% trans 'Add a new enrichment' %}" class="btn btn-info"/>
+						</form>
+					{% endif %}
 				</div>
 				<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
 					<div class="widget user-tools">

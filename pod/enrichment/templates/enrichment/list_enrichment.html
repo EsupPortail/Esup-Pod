@@ -23,7 +23,7 @@
 					<td class="enrich_start">{{enrich.start}}</td>
 					<td class="enrich_end">{{enrich.end}}</td>
 					<td>
-						<form class="form_modif" action="{% url 'video_enrichment' slug=video.slug %}" method="POST">
+						<form class="get_form" action="{% url 'video_enrichment' slug=video.slug %}" method="POST">
 							{% csrf_token %}
 							<input type="hidden" name="action" value="modify"/>
 							<input type="hidden" name="id" value="{{enrich.id}}"/>
@@ -31,7 +31,7 @@
 						</form>
 					</td>
 					<td>
-						<form class="form_delete" action="{% url 'video_enrichment' slug=video.slug %}" method="POST">
+						<form class="get_form" action="{% url 'video_enrichment' slug=video.slug %}" method="POST">
 							{% csrf_token %}
 							<input type="hidden" name="action" value="delete"/>
 							<input type="hidden" name="id" value="{{enrich.id}}"/>
