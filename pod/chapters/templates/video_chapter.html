@@ -19,18 +19,7 @@
 	<script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
     <script src="{% static 'js/chapters.js' %}"></script>
     <script>
-    	var num = 0,
-	    name = '';
-		// For the form
 		var video_duration = {{video.duration}}
-		// For the Cancel button
-		$(document).on('reset', 'form', function(e) {
-			$('span#form_chapter').html('');
-			$('form#form_new').show();
-			$('form').show();
-			$('table tr').removeClass('info');
-			manageResize();
-		});
 	</script>
 {% endblock page_extra_head %}
 {% block content %}
@@ -64,19 +53,21 @@
 			<hr/>
 			<div class="row" id="info_video">
 				<div class="col-sm-9">
-					<span id="list_chapter">
+					<div id="list_chapter">
 						{% include 'chapter/list_chapter.html' %}
-					</span>
-					<span id="form_chapter">
+					</div>
+					<div id="form_chapter">
 						{% if form_chapter %}
 							{% include 'chapter/form_chapter.html' with form_chapter=form_chapter %}
 						{% endif %}
-					</span>
-					<form id="form_new" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
-						{% csrf_token %}
-						<input type="hidden" name="action" value="new"/>
-						<input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-info"/>
-					</form>
+					</div>
+					{% if not form_chapter %}
+						<form id="form_new" class="get_form" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="action" value="new"/>
+							<input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-info"/>
+						</form>
+					{% endif %}
 				</div>
 				<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
 					<div class="widget user-tools">
