@@ -4,11 +4,11 @@
 {% load staticfiles %}
 {% block page_title %}{% trans 'Enrichment of the video' %} "{{video.title}}" {% endblock page_title %}
 {% block page_extra_head %}
-	<!-- media -->
+	<!-- stylesheets -->
 	<link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet"/>
 	<link href="{% static 'css/quality-selector.css' %}" rel="stylesheet"/>
 	<link rel="stylesheet" href="{% static 'css/enrichment.css' %}"/>
-	<link rel="stylesheet" href="{% static 'css/videojs-slides.css' %}"/>
+	<!-- javascripts -->
 	<script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
 	<script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
@@ -19,7 +19,6 @@
 	<script src="{% static 'video-js-6.8.0/lang/fr.js' %}"></script>
 	<script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
     <script src="{% static 'js/enrichment.js' %}"></script>
-    <script src="{% static 'js/videojs-slides.js' %}"></script>
     <script>
     	var num = 0,
 	    name = '';
@@ -34,6 +33,11 @@
 		    manageResize();
 		});
 	</script>
+	{% if video.enrichment_set.all %}
+		<link rel="stylesheet" href="{% static 'css/videojs-slides.css' %}"/>
+		<link rel="stylesheet" href="{% static 'css/slide.css' %}"/>
+		<script src="{% static 'js/videojs-slides.js' %}"></script>
+	{% endif %}
 {% endblock page_extra_head %}
 {% block content %}
 	<article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
@@ -155,16 +159,16 @@
 	  				metadataTrack = track;
 	  			}
 	  		}
-	  		metadataTrack.addEventListener('cuechange', function() {
+	  		player.on('loadedmetadata', function() {
 	  			var slide = [];
-	  			for (let i = 0; i < this.cues.length; i++) {
-			  		data = JSON.parse(this.cues[i].text);
+	  			for (let i = 0; i < metadataTrack.cues.length; i++) {
+			  		data = JSON.parse(metadataTrack.cues[i].text);
 			  		slide.push({
 			  			title: data.title,
 			  			url: data.url,
 			  			type: data.type,
-			  			start: this.cues[i].startTime,
-			  			end: this.cues[i].endTime
+			  			start: metadataTrack.cues[i].startTime,
+			  			end: metadataTrack.cues[i].endTime
 			  		});
 			  	}
 			  	player.slides(slide);

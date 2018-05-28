@@ -28,7 +28,7 @@ function manageResize() {
     On save action, a request is sent with the form after a pair of
         validation functions are runned.
 ***/
-$(document).on("submit", "form#form_enrich", function (e) {
+$(document).on("submit", "#formcontent", function (e) {
     $(this).show();
     e.preventDefault();
     var jqxhr= '';
@@ -175,7 +175,6 @@ function refresh_list_and_player(data){
     $("span#list_enrich").html(data.list_enrich);
     manageResize();
     loadVideo();
-    //alert("{% trans 'The changes have been saved.' %}");
 };
 /*** Display element of form enrich ***/
 Number.prototype.toHHMMSS = function() {

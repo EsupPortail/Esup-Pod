@@ -1,6 +1,7 @@
 <!-- HTML for enrichment form. Don't use this file alone it must be integrated into another template ! -->
 {% load i18n %}
 {% load staticfiles %}
+{{form_enrichment.media}}
 <div class="panel-heading bg-primary text-white">
 	<h4 class="card-title">{% trans 'Create / Edit enrichments' %}</h4>
 </div>
@@ -30,4 +31,3 @@
 		<input type="reset" action="cancel" id="cancel_enrichment" value="{% trans 'Cancel' %}" class="btn btn-danger" />
 	</div>
 </form>
-{{form_enrichment.media}}

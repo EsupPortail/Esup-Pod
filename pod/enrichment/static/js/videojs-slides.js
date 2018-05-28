@@ -60,6 +60,9 @@ class VideoSlides {
 				slides.type = 'application/pdf';
 				slide.width = player.currentDimensions().width / 2;
 				slide.height = player.currentDimensions().height / 2;
+			} else if (type == 'richtext') {
+				slide = document.createElement('div');
+				slide.innerHTML = this.slidesItems[i].url;
 			}
 			const li = document.createElement('li');
 			// Added src and class name
@@ -83,15 +86,22 @@ class VideoSlides {
 	 */
 	slideShow(time) {
 		const currentTime = Math.floor(time);
+		var videoplayer = document.getElementsByClassName('vjs-tech')[0];
 
 		var keys = Object.keys(this.slidesItems);
+		var active = false;
 		for (let i = 0; i <= keys.length - 1; i++) {
 			if (currentTime >= this.slidesItems[i].start && currentTime < this.slidesItems[i].end) {
 				const currentSlide = document.getElementById('slide_'+i);
 				currentSlide.style.display = 'block';
+				videoplayer.setAttribute('style', 'width: 50%');
+				active = true;
 			} else {
 				const oldSlide = document.getElementById('slide_'+i);
 				oldSlide.style.display = 'none';
+				if (!active) {
+					videoplayer.setAttribute('style', 'width: 100%');
+				}
 			}
 		}
 		return false;
