@@ -31,6 +31,8 @@ def enrichment_to_vtt(list_enrichment, video):
             url = enrich.richtext
         elif enrich.type == 'weblink':
             url = enrich.weblink
+        elif enrich.type == 'embed':
+            url = enrich.embed
         caption = Caption(
             '{0}'.format(start),
             '{0}'.format(end),

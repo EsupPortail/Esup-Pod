@@ -17,3 +17,22 @@
 .video-slides li img {
 	max-width: 100%;
 }
+.vjs-chapbar {
+	color: red;
+	top: -0.5rem;
+	height: 100%;
+	position: relative;
+	background: rgba(100, 100, 100, 0.5);
+}
+.vjs-chapbar-holder {
+	height: 100%;
+}
+.vjs-chapbar-chap {
+	height: 100%;
+	float: left;
+	width: 100%;
+	left: 0;
+	right: 0;
+	position: absolute;
+	background-color: #ffe800;
+}

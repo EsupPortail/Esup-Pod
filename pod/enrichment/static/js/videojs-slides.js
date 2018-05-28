@@ -3,6 +3,13 @@ var videojs = window.videojs;
 
 const defaults = {};
 const registerPlugin = videojs.registerPlugin || videojs.plugin;
+const slide_color = {
+	'document': 'yellow',
+	'image': 'purple',
+	'richtext': 'blue',
+	'weblink': 'red',
+	'embed': 'green'
+};
 
 /**
  * VideoSlides component
@@ -33,6 +40,7 @@ class VideoSlides {
 		this.slides.className = 'video-slides';
 		controlBar.parentNode.insertBefore(this.slides, controlBar);
 		this.appendSliderItem();
+		this.slideBar();
 	}
 
 	/**
@@ -70,6 +78,9 @@ class VideoSlides {
 				slides.type = 'text/html';
 				slide.width = player.currentDimensions().width / 2;
 				slide.height = player.currentDimensions().height / 2;
+			} else if (type == 'embed') {
+				slide = document.createElement('div');
+				slide.innerHTML = this.slidesItems[i].url;
 			}
 			const li = document.createElement('li');
 			// Added src and class name
@@ -112,6 +123,38 @@ class VideoSlides {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * slideBar function to show position of the slides above the reading bar
+	 *
+	 * @return {void} doesn't return anything
+	 * @function slideBar
+	 */
+	slideBar() {
+		const progressbar = document.getElementsByClassName('vjs-progress-holder')[0];
+		console.log(progressbar);
+		// Create the slidebar
+		var slidebar = document.createElement('div');
+		slidebar.className = 'vjs-chapbar';
+		var slidebar_holder = document.createElement('div');
+		slidebar_holder.className = 'vjs-chapbar-holder';
+		slidebar.appendChild(slidebar_holder);
+		progressbar.appendChild(slidebar);
+		// Create slide(s) into the slidebar
+		var duration = player.duration();
+		var keys = Object.keys(this.slidesItems);
+		for (let i = 0; i <= keys.length - 1; i++) {
+			var slidebar_left = (parseInt(this.slidesItems[i].start) / duration) * 100;
+			var slidebar_width = (parseInt(this.slidesItems[i].end) / duration) * 100 - slidebar_left;
+			var id = this.slidesItems[i].id;
+			var type = this.slidesItems[i].type;
+			var newslide = document.createElement('div');
+			newslide.className = 'vjs-chapbar-chap';
+			newslide.style = 'left: ' + slidebar_left + '%; width: ' + slidebar_width + '%; background-color: ' + slide_color[type];
+			newslide.id = 'slidebar_' + i;
+			slidebar_holder.appendChild(newslide); 
+		}
 	}
 }
 

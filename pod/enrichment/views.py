@@ -137,7 +137,8 @@ def video_enrichment_delete(request, video):
     enrich = get_object_or_404(Enrichment, id=request.POST['id'])
     enrich.delete()
     list_enrichment = video.enrichment_set.all()
-    enrichment_to_vtt(list_enrichment, video)
+    if list_enrichment:
+        enrichment_to_vtt(list_enrichment, video)
     if request.is_ajax():
         some_data_to_dump = {
             'list_enrichment': render_to_string(
