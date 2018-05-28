@@ -110,7 +110,7 @@ var sendform = function(elt, action) {
                 method: 'POST',
                 url: window.location.href,
                 data: {'action': 'save'} + data_form,
-                datType: 'html'
+                dataType: 'html'
 
             });
             jqxhr.done(function(data) {
