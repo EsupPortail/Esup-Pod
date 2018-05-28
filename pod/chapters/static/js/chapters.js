@@ -114,14 +114,16 @@ var sendform = function(elt, action) {
 
             });
             jqxhr.done(function(data) {
-                if (data.list_chapter || data.form) {
+                if (data.indexOf('list_chapter') == -1 && data.indexOf('form') == -1) {
+                    showalert('You are no longer authenticated. Please log in again.', 'alert-danger');
+                } else {
+                    data = JSON.parse(data);
                     if (data.errors) {
                         show_form(data.form);
+                        $('form#form_chapter').show();
                     } else {
                         location.reload();
                     }
-                } else {
-                    showalert('You are no longer authenticated. Please log in again.', 'alert-danger');
                 }
             });
             jqxhr.fail(function($xhr) {
