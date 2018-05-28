@@ -144,15 +144,25 @@ class VideoImageModel(models.Model):
 
 
 class Channel(models.Model):
-    title = models.CharField(_('Title'), max_length=100, unique=True)
+    title = models.CharField(
+        _('Title'),
+        max_length=100,
+        unique=True,
+        help_text=_("Please choose a title as short and accurate as "
+                    "possible, reflecting the main subject / context "
+                    "of the content.(max length : 100 characters)"))
     slug = models.SlugField(
         _('Slug'), unique=True, max_length=100,
         help_text=_(
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'),
         editable=False)
-    description = RichTextField(_('Description'),
-                                config_name='complete', blank=True)
+    description = RichTextField(
+        _('Description'),
+        config_name='complete', blank=True,
+        help_text=_("In this field you can describe your content, "
+                    "add all needed related information, and "
+                    "format the result using the toolbar."))
     # add headband
     if FILEPICKER:
         headband = models.ForeignKey(CustomImageModel,
@@ -163,8 +173,13 @@ class Channel(models.Model):
                                      blank=True, null=True,
                                      verbose_name=_('Thumbnails'))
     color = models.CharField(
-        _('Background color'), max_length=10, blank=True, null=True)
-    style = models.TextField(_('Extra style'), null=True, blank=True)
+        _('Background color'),
+        max_length=10, blank=True, null=True,
+        help_text=_("The background color for your channel. "
+                    "You can use the format #. i.e.: #ff0000 for red"))
+    style = models.TextField(
+        _('Extra style'), null=True, blank=True,
+        help_text=_("The style will be added to your channel to show it"))
     owners = models.ManyToManyField(
         User, related_name='owners_channels', verbose_name=_('Owners'),
         blank=True)
@@ -206,15 +221,24 @@ class Channel(models.Model):
 
 class Theme(models.Model):
     parentId = models.ForeignKey(
-        'self', null=True, blank=True, related_name="children")
-    title = models.CharField(_('Title'), max_length=100, unique=True)
+        'self', null=True, blank=True, related_name="children",
+        verbose_name=_('Theme parent'))
+    title = models.CharField(
+        _('Title'), max_length=100,
+        help_text=_("Please choose a title as short and accurate as "
+                    "possible, reflecting the main subject / context "
+                    "of the content.(max length : 100 characters)"))
     slug = models.SlugField(
         _('Slug'), unique=True, max_length=100,
         help_text=_(
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'),
         editable=False)
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField(
+        _('Description'), null=True, blank=True,
+        help_text=_("In this field you can describe your content, "
+                    "add all needed related information, and "
+                    "format the result using the toolbar."))
     if FILEPICKER:
         headband = models.ForeignKey(CustomImageModel,
                                      blank=True, null=True,
@@ -363,8 +387,8 @@ class Video(models.Model):
     )
     slug = models.SlugField(_('Slug'), unique=True, max_length=255,
                             help_text=_(
-                                'Used to access this instance, the "slug" is '
-                                'a short label containing only letters, '
+        'Used to access this instance, the "slug" is '
+        'a short label containing only letters, '
                                 'numbers, underscore or dash top.'),
                             editable=False)
     owner = models.ForeignKey(User, verbose_name=_('Owner'))
@@ -759,11 +783,12 @@ class EncodingVideo(models.Model):
                 )
 
     def __str__(self):
-        return "EncodingVideo num : %s with resolution %s for video %s in %s"\
+        return (
+            "EncodingVideo num : %s with resolution %s for video %s in %s"
             % ('%04d' % self.id,
                self.name,
                self.video.id,
-               self.encoding_format)
+               self.encoding_format))
 
     @property
     def owner(self):

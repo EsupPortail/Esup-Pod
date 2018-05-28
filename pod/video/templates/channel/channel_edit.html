@@ -2,6 +2,25 @@
 {% load i18n %}
 {% load staticfiles %}
 {% load thumbnail %}
+{% block page_extra_head %}
+<style>
+.selector {
+    width: 100% !important;
+}
+.selector select {
+    width:100% !important;
+}
+.selector-available, .selector-chosen {
+    width: 47% !important;
+}
+{{form.instance.style}}
+{% if form.instance.color %}
+body {
+  background-color: {{form.instance.color}};
+}
+{%endif%}
+</style>
+{% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item"><a href="{% url 'my_channels' %}" title="{% trans 'My channels' %}">{% trans 'My channels' %}</a><li class="breadcrumb-item active" aria-current="page">{% if form.instance.title %}{{form.instance.title}}{%endif%}</li>{% endblock %}
 
@@ -11,14 +30,19 @@
 
 
 {% block page_content %}
-<h3>{% if form.instance.title %}{% trans "Editing the channel" %} "{{form.instance.title}}"{%endif%}
+<h3>{% if form.instance.title %}{% trans "Editing the channel" %} {{form.instance.title}}{%endif%}
+<span class="float-right">
     <a href="{% url 'channel' slug_c=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-dark btn-sm">
-<svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>
-</a>
-<a href="{% url 'theme_edit' slug=form.instance.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-success btn-sm float-right">
-{% trans "Themes" %}
-</a>
+        <svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>{% trans "View the channel"%}
+    </a>
+    <a href="{% url 'theme_edit' slug=form.instance.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-dark btn-sm">
+        <svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>{% trans "Edit the themes"%}
+    </a>
+</span>
 </h3>
+{% if form.instance.headband %}
+<img src="{{ form.instance.headband.file.url }}" alt="{% trans 'Headband' %} {{ form.instance.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
+{% endif %}
 {% if form.instance.slug %}
 <form id="channel_form" method="post"
     action="{% url 'channel_edit' slug=form.instance.slug %}"
@@ -30,10 +54,10 @@
         {% if form.errors %}
         <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
         {% endif %}
-        {% for field in form %}
-            {% if field.is_hidden %}
-            {{field}}
-            {% else %}
+        {% for field_hidden in form.hidden_fields %}
+            {{field_hidden}}
+        {% endfor %}
+        {% for field in form.visible_fields %}
             {% spaceless %}
             <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
             <div class="list-group-item">
@@ -44,8 +68,7 @@
                 {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label" >{{ field.label }}</label>
                 </div>
                 {% else %}
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label> 
-                {% if field.name == "owners" or field.name == "users" %}&nbsp;:&nbsp;{%endif%}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {{ field }}
                 {% endif %}
                 {% if field.help_text %}
@@ -59,8 +82,7 @@
             </div>
             </div>
             {% endspaceless %}
-            {% endif %}
-            {% endfor %}
+        {% endfor %}
         </fieldset>
     </div>
     <div class="text-center">
@@ -78,6 +100,23 @@
     <h5 class="card-title">{% trans "Mandatory fields" %}</h5>
     <div class="card-text" >
         <p>{% trans "Fields marked with an asterisk are mandatory."%}</p>
+    </div>
+</div>
+<div class="card card-body">
+    <h5 class="card-title">{% trans "Form fields"%}</h5>
+    <div class="card-text" id="formfields">
+        {% for title, values in form.CHANNEL_FORM_FIELDS_HELP_TEXT.items %}
+            <div class="card card-body p-1">
+                <button class="btn btn-sm-light" id="heading-{{forloop.counter}}" data-toggle="collapse" data-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
+                    {{title}}
+                </button>
+                <div id="collapse-{{forloop.counter}}" class="collapse hide card-text small" aria-labelledby="heading-{{forloop.counter}}" data-parent="#formfields">
+                    {% for value in values %}
+                    <p>{{value}}</p>
+                    {%endfor%}
+                </div>
+            </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock page_aside %}

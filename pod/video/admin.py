@@ -40,7 +40,7 @@ def url_to_edit_object(obj):
     url = reverse(
         'admin:%s_%s_change' % (obj._meta.app_label, obj._meta.model_name),
         args=[obj.id])
-    return format_html('<a href="{}">{}</a>', url, obj.__str__())
+    return format_html('<a href="{}">{}</a>', url, obj.username)
 
 # Register your models here.
 
@@ -114,11 +114,23 @@ class ChannelAdminForm(ChannelForm):
 
 
 class ChannelAdmin(admin.ModelAdmin):
-    list_display = ('title', 'visible',)
-    #prepopulated_fields = {'slug': ('title',)}
+
+    def get_owners(self, obj):
+        owners = []
+        for owner in obj.owners.all():
+            url = url_to_edit_object(owner)
+            owners.append('%s %s (%s)' % (
+                owner.first_name, owner.last_name, url))
+        return ', '.join(owners)
+
+    get_owners.allow_tags = True
+    get_owners.short_description = _('Owners')
+
+    list_display = ('title', 'get_owners', 'visible',)
     filter_horizontal = ('owners', 'users',)
     list_editable = ('visible', )
     ordering = ('title',)
+    list_filter = ['visible']
 
     def get_form(self, request, obj=None, **kwargs):
         if request.user.is_superuser:
@@ -127,6 +139,16 @@ class ChannelAdmin(admin.ModelAdmin):
             kwargs['form'] = ChannelAdminForm
         form = super(ChannelAdmin, self).get_form(request, obj, **kwargs)
         return form
+
+    class Media:
+        js = ('js/jquery.tools.min.js',)
+
+
+class ThemeAdmin(admin.ModelAdmin):
+    form = ThemeForm
+    list_display = ('title', 'channel')
+    list_filter = ['channel']
+    ordering = ('channel', 'title')
 
     class Media:
         js = ('js/jquery.tools.min.js',)
@@ -143,17 +165,6 @@ class TypeAdmin(TranslationAdmin):
 class DisciplineAdmin(TranslationAdmin):
     form = DisciplineForm
     prepopulated_fields = {'slug': ('title',)}
-
-    class Media:
-        js = ('js/jquery.tools.min.js',)
-
-
-class ThemeAdmin(admin.ModelAdmin):
-    form = ThemeForm
-    list_display = ('title', 'channel')
-    list_filter = ['channel']
-    # prepopulated_fields = {'slug': ('title',)}
-    ordering = ('channel', 'title')
 
     class Media:
         js = ('js/jquery.tools.min.js',)

@@ -18,6 +18,7 @@ from pod.video.models import Type
 from pod.video.models import Discipline
 
 from ckeditor.widgets import CKEditorWidget
+from collections import OrderedDict
 
 VIDEO_ALLOWED_EXTENSIONS = getattr(
     settings, 'VIDEO_ALLOWED_EXTENSIONS', (
@@ -46,13 +47,13 @@ VIDEO_MAX_UPLOAD_SIZE = getattr(
 VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
     settings,
     'VIDEO_FORM_FIELDS_HELP_TEXT',
-    {
-        _("File field"): [
+    OrderedDict([
+        (_("File field"), [
             _("You can send an audio or video file."),
             _("The following formats are supported: %s" %
               ', '.join(map(str, VIDEO_ALLOWED_EXTENSIONS)))
-        ],
-        _("Title field"): [
+        ]),
+        (_("Title field"), [
             _("Please choose a title as short and accurate as possible, "
                 "reflecting the main subject / context of the content."),
             _("You can use the “Description” field below for all "
@@ -60,39 +61,39 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
             _("You may add contributors later using the second button of "
               "the content edition toolbar: they will appear in the “Info” "
               "tab at the bottom of the audio / video player.")
-        ],
-        _("Date of the event field"): [
+        ]),
+        (_("Date of the event field"), [
             _("Enter the date of the event, if applicable, in the "
                 "AAAA-MM-JJ format.")
-        ],
-        _("University course"): [
+        ]),
+        (_("University course"), [
             _("Select an university course as audience target of "
                 "the content."),
             _("Choose “None / All” if it does not apply or if all are "
                 "concerned, or “Other” for an audience outside "
                 "the european LMD scheme.")
-        ],
-        _("Main language"): [
+        ]),
+        (_("Main language"), [
             _("Select the main language used in the content.")
-        ],
-        _("Description"): [
+        ]),
+        (_("Description"), [
             _("In this field you can describe your content, add all needed "
                 "related information, and format the result "
                 "using the toolbar.")
-        ],
-        _("Type"): [
+        ]),
+        (_("Type"), [
             _("Select the type of your content. If the type you wish does "
                 "not appear in the list, please temporary select “Other” "
                 "and contact us to explain your needs.")
-        ],
-        _("Disciplines"): [
+        ]),
+        (_("Disciplines"), [
             _("Select the discipline to which your content belongs. "
                 "If the discipline you wish does not appear in the list, "
                 "please select nothing and contact us to explain your needs."),
             _('Hold down "Control", or "Command" on a Mac, '
               'to select more than one.')
-        ],
-        _("Channels / Themes"): [
+        ]),
+        (_("Channels / Themes"), [
             _("Select the channel in which you want your content to appear."),
             _("Themes related to this channel will "
                 "appear in the “Themes” list below."),
@@ -101,27 +102,71 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
             _("If the channel or Themes you wish does not appear "
                 "in the list, please select nothing and contact "
                 "us to explain your needs.")
-        ],
-        _("Draft"): [
+        ]),
+        (_("Draft"), [
             _("In “Draft mode”, the content shows nowhere and nobody "
                 "else but you can see it.")
-        ],
-        _("Restricted access"): [
+        ]),
+        (_("Restricted access"), [
             _("If you don't select “Draft mode”, you can restrict "
                 "the content access to only people who can log in")
-        ],
-        _("Password"): [
+        ]),
+        (_("Password"), [
             _("If you don't select “Draft mode”, you can add a password "
                 "which will be asked to anybody willing to watch "
                 "your content."),
             _("If your video is in a playlist the password of your "
                 "video will be removed automatically.")
-        ],
-        _("Tags"): [
+        ]),
+        (_("Tags"), [
             _("Please try to add only relevant keywords that can be "
                 "useful to other users.")
-        ]
-    })
+        ])
+    ]))
+
+
+CHANNEL_FORM_FIELDS_HELP_TEXT = getattr(
+    settings,
+    'CHANNEL_FORM_FIELDS_HELP_TEXT',
+    OrderedDict([
+        (_("Title field"), [
+            _("Please choose a title as short and accurate as possible, "
+                "reflecting the main subject / context of the content."),
+            _("You can use the “Description” field below for all "
+                "additional information.")
+        ]),
+        (_("Description"), [
+            _("In this field you can describe your content, add all needed "
+                "related information, and format the result "
+                "using the toolbar.")
+        ]),
+        (("%s / %s" % (_('Extra style'), _('Background color'))), [
+            _("In this field you can add some style to personnalize "
+                "your channel.")
+        ]),
+        (("%s / %s" % (_("Owners"), _('Users'))), [
+            _("Owners can add videos to this channel "
+                "and access this page to customize the channel."),
+            _("Users can only add videos to this channel")
+        ])
+    ]))
+
+THEME_FORM_FIELDS_HELP_TEXT = getattr(
+    settings,
+    'THEME_FORM_FIELDS_HELP_TEXT',
+    OrderedDict([
+        (_("Title field"), [
+            _("Please choose a title as short and accurate as possible, "
+                "reflecting the main subject / context of the content."),
+            _("You can use the “Description” field below for all "
+                "additional information.")
+        ]),
+        (_("Description"), [
+            _("In this field you can describe your content, add all needed "
+                "related information, and format the result "
+                "using the toolbar.")
+        ])
+    ]))
 
 
 @deconstructible
@@ -155,6 +200,16 @@ class VideoForm(forms.ModelForm):
         ', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS)),
     }
     video = forms.FileField(label=_(u'File'))
+
+    def clean(self):
+        cleaned_data = super(VideoForm, self).clean()
+        cleaned_data['description_%s' %
+                     settings.LANGUAGE_CODE
+                     ] = cleaned_data['description']
+        cleaned_data[
+            'title_%s' %
+            settings.LANGUAGE_CODE
+        ] = cleaned_data['title']
 
     def __init__(self, *args, **kwargs):
 
@@ -203,6 +258,18 @@ class VideoForm(forms.ModelForm):
                     settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
         # QuerySet for channels and theme
+        self.set_queryset()
+
+        if not self.is_superuser:
+            del self.fields['date_added']
+            del self.fields['owner']
+
+        self.fields = add_placeholder_and_asterisk(self.fields)
+        # remove required=True for videofield if instance
+        if self.fields.get('video') and self.instance and self.instance.video:
+            del self.fields["video"].widget.attrs["required"]
+
+    def set_queryset(self):
         if self.current_user is not None:
             user_channels = Channel.objects.all() if self.is_superuser else (
                 self.current_user.owners_channels.all(
@@ -216,19 +283,6 @@ class VideoForm(forms.ModelForm):
             else:
                 del self.fields['channel']
                 del self.fields['theme']
-
-        # if self.is_superuser and self.current_user is not None:
-        #    self.fields['owner'].queryset = Owner.objects.filter(
-        #        id=self.current_user.id)
-
-        if not self.is_superuser:
-            del self.fields['date_added']
-            del self.fields['owner']
-
-        self.fields = add_placeholder_and_asterisk(self.fields)
-        # remove required=True for videofield if instance
-        if self.fields.get('video') and self.instance and self.instance.video:
-            del self.fields["video"].widget.attrs["required"]
 
     class Meta(object):
         model = Video
@@ -281,6 +335,16 @@ class ChannelForm(forms.ModelForm):
         required=False,
         label=_('Owners'))
 
+    def clean(self):
+        cleaned_data = super(ChannelForm, self).clean()
+        cleaned_data['description_%s' %
+                     settings.LANGUAGE_CODE
+                     ] = cleaned_data['description']
+        cleaned_data[
+            'title_%s' %
+            settings.LANGUAGE_CODE
+        ] = cleaned_data['title']
+
     def __init__(self, *args, **kwargs):
         self.is_staff = kwargs.pop(
             'is_staff') if 'is_staff' in kwargs.keys() else self.is_staff
@@ -288,6 +352,8 @@ class ChannelForm(forms.ModelForm):
             'is_superuser') if (
             'is_superuser' in kwargs.keys()
         ) else self.is_superuser
+
+        self.CHANNEL_FORM_FIELDS_HELP_TEXT = CHANNEL_FORM_FIELDS_HELP_TEXT
 
         super(ChannelForm, self).__init__(*args, **kwargs)
         pickers = {'image': "img"}
@@ -317,6 +383,7 @@ class ChannelForm(forms.ModelForm):
         model = Channel
         fields = '__all__'
 
+
 class ThemeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -333,12 +400,26 @@ class ThemeForm(forms.ModelForm):
 
         self.fields = add_placeholder_and_asterisk(self.fields)
 
+    def clean(self):
+        cleaned_data = super(ThemeForm, self).clean()
+        cleaned_data['description_%s' %
+                     settings.LANGUAGE_CODE
+                     ] = cleaned_data['description']
+        cleaned_data[
+            'title_%s' %
+            settings.LANGUAGE_CODE
+        ] = cleaned_data['title']
+
     class Meta(object):
         model = Theme
         fields = '__all__'
 
+
 class FrontThemeForm(ThemeForm):
+
     def __init__(self, *args, **kwargs):
+
+        self.THEME_FORM_FIELDS_HELP_TEXT = THEME_FORM_FIELDS_HELP_TEXT
 
         super(FrontThemeForm, self).__init__(*args, **kwargs)
         pickers = {'image': "img"}
@@ -346,15 +427,16 @@ class FrontThemeForm(ThemeForm):
             pickers=pickers)
 
         self.fields['channel'].widget = forms.HiddenInput()
-        self.fields["parentId"].label = _('Theme parent')
+        # self.fields["parentId"].label = _('Theme parent')
         if 'channel' in self.initial.keys():
-            themes_queryset = Theme.objects.filter(channel=self.initial['channel'])
+            themes_queryset = Theme.objects.filter(
+                channel=self.initial['channel'])
             self.fields["parentId"].queryset = themes_queryset
-
 
     class Meta(object):
         model = Theme
         fields = '__all__'
+
 
 class TypeForm(forms.ModelForm):
 

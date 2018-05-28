@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from django.template.loader import render_to_string
 
 from pod.video.models import Video
 from pod.video.models import Channel
@@ -19,8 +20,11 @@ from pod.video.forms import VideoForm
 from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
 
-# Create your views here.
+import json
+
+
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
+THEME_ACTION = ['new', 'modify', 'delete', 'save']
 
 
 def channel(request, slug_c, slug_t=None):
@@ -115,33 +119,79 @@ def theme_edit(request, slug):
         raise PermissionDenied
 
     if request.POST and request.is_ajax():
-        # new 
-        if request.POST['action'] == 'new':
-            form_theme = FrontThemeForm(initial={"channel": channel})
-            return render(request, "channel/form_theme.html",
-                      {'form_theme': form_theme,
-                       'channel': channel}
-                      )
-        # modify
-        if request.POST['action'] == 'modify':
-            theme = get_object_or_404(Theme, id=request.POST['id'])
-            form_theme = FrontThemeForm(instance=theme)
-            return render(request, "channel/form_theme.html",
-                      {'form_theme': form_theme,
-                       'channel': channel}
-                      )
-        # delete
-        if request.POST['action'] == 'delete':
-            theme = get_object_or_404(Theme, id=request.POST['id'])
-            theme.delete()
-            return render(request, "channel/list_theme.html",
-                      {'list_theme': channel.themes.all(),
-                       'channel': channel}
-                      )
+        if request.POST['action'] in THEME_ACTION:
+            return eval(
+                'theme_edit_{0}(request, channel)'.format(
+                    request.POST['action'])
+            )
 
-        
     form_theme = FrontThemeForm(initial={"channel": channel})
-    return render(request, 'channel/theme_edit.html', {'channel': channel})
+    return render(request,
+                  'channel/theme_edit.html',
+                  {'channel': channel,
+                   'form_theme': form_theme})
+
+
+def theme_edit_new(request, channel):
+    form_theme = FrontThemeForm(initial={"channel": channel})
+    return render(request, "channel/form_theme.html",
+                  {'form_theme': form_theme,
+                   'channel': channel}
+                  )
+
+
+def theme_edit_modify(request, channel):
+    theme = get_object_or_404(Theme, id=request.POST['id'])
+    form_theme = FrontThemeForm(instance=theme)
+    return render(request, "channel/form_theme.html",
+                  {'form_theme': form_theme,
+                   'channel': channel}
+                  )
+
+
+def theme_edit_delete(request, channel):
+    theme = get_object_or_404(Theme, id=request.POST['id'])
+    theme.delete()
+    rendered = render_to_string("channel/list_theme.html",
+                                {'list_theme': channel.themes.all(),
+                                 'channel': channel}, request)
+    list_element = {
+        'list_element': rendered
+    }
+    data = json.dumps(list_element)
+    return HttpResponse(data, content_type='application/json')
+
+
+def theme_edit_save(request, channel):
+    form_theme = None
+
+    if (request.POST.get("theme_id")
+            and request.POST.get("theme_id") != "None"):
+        theme = get_object_or_404(Theme, id=request.POST['theme_id'])
+        form_theme = FrontThemeForm(request.POST, instance=theme)
+    else:
+        form_theme = FrontThemeForm(request.POST)
+
+    if form_theme.is_valid():
+        form_theme.save()
+        rendered = render_to_string("channel/list_theme.html",
+                                    {'list_theme': channel.themes.all(),
+                                     'channel': channel}, request)
+        list_element = {
+            'list_element': rendered
+        }
+        data = json.dumps(list_element)
+        return HttpResponse(data, content_type='application/json')
+    else:
+        rendered = render_to_string("channel/form_theme.html",
+                                    {'form_theme': form_theme,
+                                     'channel': channel}, request)
+        some_data_to_dump = {
+            'errors': "%s" % _('Please correct errors'),
+            'form': rendered
+        }
+        data = json.dumps(some_data_to_dump)
+        return HttpResponse(data, content_type='application/json')
 
 
 # ############################################################################
