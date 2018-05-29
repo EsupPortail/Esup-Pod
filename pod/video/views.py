@@ -70,6 +70,11 @@ def my_channels(request):
     return render(request, 'channel/my_channels.html', {'channels': channels})
 
 
+# ############################################################################
+# CHANNEL EDIT
+# ############################################################################
+
+
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def channel_edit(request, slug):

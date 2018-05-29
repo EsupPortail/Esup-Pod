@@ -354,7 +354,7 @@ class VideoTestCase(TestCase):
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
-        owner1 = Owner.objects.get(user__username="pod")
+        # owner1 = Owner.objects.get(user__username="pod")
         Video.objects.create(
             title="Video1", owner=user, video="test.mp4")
         type = Type.objects.create(title="autre")

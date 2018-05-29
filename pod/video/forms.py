@@ -203,13 +203,15 @@ class VideoForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(VideoForm, self).clean()
-        cleaned_data['description_%s' %
-                     settings.LANGUAGE_CODE
-                     ] = cleaned_data['description']
-        cleaned_data[
-            'title_%s' %
-            settings.LANGUAGE_CODE
-        ] = cleaned_data['title']
+        if 'description' in cleaned_data.keys():
+            cleaned_data['description_%s' %
+                         settings.LANGUAGE_CODE
+                         ] = cleaned_data['description']
+        if 'title' in cleaned_data.keys():
+            cleaned_data[
+                'title_%s' %
+                settings.LANGUAGE_CODE
+            ] = cleaned_data['title']
 
     def __init__(self, *args, **kwargs):
 
@@ -337,13 +339,15 @@ class ChannelForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(ChannelForm, self).clean()
-        cleaned_data['description_%s' %
-                     settings.LANGUAGE_CODE
-                     ] = cleaned_data['description']
-        cleaned_data[
-            'title_%s' %
-            settings.LANGUAGE_CODE
-        ] = cleaned_data['title']
+        if 'description' in cleaned_data.keys():
+            cleaned_data['description_%s' %
+                         settings.LANGUAGE_CODE
+                         ] = cleaned_data['description']
+        if 'title' in cleaned_data.keys():
+            cleaned_data[
+                'title_%s' %
+                settings.LANGUAGE_CODE
+            ] = cleaned_data['title']
 
     def __init__(self, *args, **kwargs):
         self.is_staff = kwargs.pop(
@@ -402,13 +406,15 @@ class ThemeForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(ThemeForm, self).clean()
-        cleaned_data['description_%s' %
-                     settings.LANGUAGE_CODE
-                     ] = cleaned_data['description']
-        cleaned_data[
-            'title_%s' %
-            settings.LANGUAGE_CODE
-        ] = cleaned_data['title']
+        if 'description' in cleaned_data.keys():
+            cleaned_data['description_%s' %
+                         settings.LANGUAGE_CODE
+                         ] = cleaned_data['description']
+        if 'title' in cleaned_data.keys():
+            cleaned_data[
+                'title_%s' %
+                settings.LANGUAGE_CODE
+            ] = cleaned_data['title']
 
     class Meta(object):
         model = Theme
