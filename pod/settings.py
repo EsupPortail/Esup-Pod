@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'tagging',
     'django_cas',
+    'progressbarupload', # https://github.com/ouhouhsami/django-progressbarupload
     # Pod Applications
     'pod.main',
     'pod.authentication',
@@ -104,13 +105,6 @@ TEMPLATES = [
         },
     },
 ]
-
-##
-# Settings exposed in templates
-#
-TEMPLATE_VISIBLE_SETTINGS = (
-    'TITLE_SITE',
-)
 
 ##
 # Password validation
