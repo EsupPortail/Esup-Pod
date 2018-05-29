@@ -301,13 +301,6 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         raise SuspiciousOperation('Invalid video id')
     video = get_object_or_404(Video, id=id)
 
-    if slug_private and slug_private == video.get_hashkey():
-        return render(
-            request, 'videos/video.html', {
-                'video': video
-            }
-        )
-
     channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
     theme = get_object_or_404(Theme, slug=slug_t) if slug_t else None
 
@@ -324,7 +317,9 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     )
 
     if is_access_protected:
-
+        access_granted_for_private = (
+            slug_private and slug_private == video.get_hashkey()
+        )
         access_granted_for_draft = request.user.is_authenticated() and (
             request.user == video.owner or request.user.is_superuser)
         access_granted_for_restricted = (
@@ -335,6 +330,8 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         )
 
         show_page = (
+            access_granted_for_private
+            or
             (is_draft and access_granted_for_draft)
             or (
                 is_restricted

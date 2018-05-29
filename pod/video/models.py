@@ -554,7 +554,7 @@ class Video(models.Model):
 
     def get_hashkey(self):
         return hashlib.sha256(
-            ("%s-%s" %(SECRET_KEY, self.id)).encode('utf-8')).hexdigest()
+            ("%s-%s" % (SECRET_KEY, self.id)).encode('utf-8')).hexdigest()
 
     def delete(self):
         if self.video:
