@@ -84,10 +84,8 @@ urlpatterns += [
         channel, name='theme'),
     url(r'^(?P<slug_c>[\-\d\w]+)/video/(?P<slug>[\-\d\w]+)/$',
         video, name='video'),
-    url(r'(^(?P<slug_c>[\-\d\w]+)/'
-        '(?P<slug_t>[\-\d\w]+)/video/'
-        '(?P<slug>[\-\d\w]+)/$)',
-        video, name='video'),
+    url(r'^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)'
+        r'/video/(?P<slug>[\-\d\w]+)/$', video, name='video'),
 ]
 
 
