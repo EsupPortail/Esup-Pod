@@ -37,13 +37,13 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     django_settings,
     'TEMPLATE_VISIBLE_SETTINGS',
     {
-        'TITLE_SITE':'Pod',
-        'TITLE_ETB':'University name',
-        'LOGO_SITE':'images/logo_compact.png',
-        'LOGO_COMPACT_SITE':'images/logo_compact_site.png',
-        'LOGO_ETB':'images/logo_etb.png',
-        'LOGO_PLAYER':'images/logo_player.png',
-        'LOGO_SERVICE':'images/logo_service.png',
+        'TITLE_SITE': 'Pod',
+        'TITLE_ETB': 'University name',
+        'LOGO_SITE': 'images/logo_compact.png',
+        'LOGO_COMPACT_SITE': 'images/logo_compact_site.png',
+        'LOGO_ETB': 'images/logo_etb.png',
+        'LOGO_PLAYER': 'images/logo_player.png',
+        'LOGO_SERVICE': 'images/logo_service.png',
     }
 )
 
@@ -54,7 +54,7 @@ def context_settings(request):
         try:
             new_settings[sett] = TEMPLATE_VISIBLE_SETTINGS[sett]
         except AttributeError:
-            m = "TEMPLATE_VISIBLE_SETTINGS: '{0}' does not exist".format(attr)
+            m = "TEMPLATE_VISIBLE_SETTINGS: '{0}' does not exist".format(sett)
             raise ImproperlyConfigured(m)
     return new_settings
 
