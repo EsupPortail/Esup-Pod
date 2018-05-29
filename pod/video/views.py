@@ -10,6 +10,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.template.loader import render_to_string
+from django.conf import settings
+from django.shortcuts import redirect
 
 from pod.video.models import Video
 from pod.video.models import Channel
@@ -25,6 +27,10 @@ import json
 
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
 THEME_ACTION = ['new', 'modify', 'delete', 'save']
+
+# ############################################################################
+# CHANNEL
+# ############################################################################
 
 
 def channel(request, slug_c, slug_t=None):
@@ -195,7 +201,7 @@ def theme_edit_save(request, channel):
 
 
 # ############################################################################
-# MY VIDEOS
+# VIDEOS
 # ############################################################################
 
 
@@ -243,7 +249,7 @@ def get_videos_list(request):
         videos_list = TaggedItem.objects.get_union_by_model(
             videos_list,
             request.GET.getlist('tag'))
-    return videos_list
+    return videos_list.distinct()
 
 
 def videos(request):
@@ -357,7 +363,9 @@ def video(request, slug, slug_c=None, slug_t=None):
                     _(u'You cannot watch this video.'))
                 raise PermissionDenied
             else:
-                return HttpResponse("redirect to login page")
+                return redirect(
+                    '%s?referrer=%s' % (settings.LOGIN_URL, request.path)
+                )
     else:
         return render(
             request, 'videos/video.html', {
