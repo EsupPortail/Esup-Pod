@@ -363,7 +363,9 @@ def video(request, slug, slug_c=None, slug_t=None):
                     _(u'You cannot watch this video.'))
                 raise PermissionDenied
             else:
-                return redirect('%s?referrer=%s' % (settings.LOGIN_URL, request.path))
+                return redirect(
+                    '%s?referrer=%s' % (settings.LOGIN_URL, request.path)
+                )
     else:
         return render(
             request, 'videos/video.html', {
