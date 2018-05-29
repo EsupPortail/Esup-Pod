@@ -3,7 +3,6 @@ from django.test import override_settings
 from django.conf import settings
 from django.test import Client
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
 
 from pod.video.models import Channel
 from pod.video.models import Theme
@@ -92,7 +91,7 @@ class MyChannelsTestView(TestCase):
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
-        user2 = User.objects.create(username="pod2", password="pod1234pod")
+        User.objects.create(username="pod2", password="pod1234pod")
         c1 = Channel.objects.create(title="ChannelTest1")
         c1.owners.add(user)
         c2 = Channel.objects.create(title="ChannelTest2")
@@ -131,7 +130,7 @@ class ChannelEditTestView(TestCase):
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
-        user2 = User.objects.create(username="pod2", password="pod1234pod")
+        User.objects.create(username="pod2", password="pod1234pod")
         c1 = Channel.objects.create(title="ChannelTest1")
         c1.owners.add(user)
         print(" --->  SetUp of ChannelEditTestView : OK !")
@@ -151,7 +150,8 @@ class ChannelEditTestView(TestCase):
         response = self.client.get("/channel_edit/%s/" % channel.slug)
         self.assertEqual(response.status_code, 403)
         print(
-            " --->  test_channel_edit_get_request of ChannelEditTestView : OK !")
+            " --->  test_channel_edit_get_request"
+            " of ChannelEditTestView : OK !")
 
     def test_channel_edit_post_request(self):
         self.client = Client()
@@ -159,10 +159,14 @@ class ChannelEditTestView(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         response = self.client.post(
-            '/channel_edit/%s/' % channel.slug, {'title': "ChannelTest1", 'description': '<p>bl</p>\r\n'}, follow=True)
+            '/channel_edit/%s/' % channel.slug, {
+                'title': "ChannelTest1",
+                'description': '<p>bl</p>\r\n'
+            }, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(b"The changes have been saved." in response.content)
         c = Channel.objects.get(title="ChannelTest1")
         self.assertEqual(c.description, '<p>bl</p>')
         print(
-            "   --->  test_channel_edit_post_request of ChannelEditTestView : OK !")
+            "   --->  test_channel_edit_post_request"
+            " of ChannelEditTestView : OK !")

@@ -18,10 +18,6 @@ try:
     from pod.filepicker.models import UserDirectory
 except ImportError:
     pass
-try:
-    from pod.authentication.models import Owner
-except ImportError:
-    from django.contrib.auth.models import User as Owner
 from pod.video.models import Video
 from pod.video.models import ViewCount
 from pod.video.models import get_storage_path_video
@@ -354,7 +350,6 @@ class VideoTestCase(TestCase):
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
-        # owner1 = Owner.objects.get(user__username="pod")
         Video.objects.create(
             title="Video1", owner=user, video="test.mp4")
         type = Type.objects.create(title="autre")
@@ -364,11 +359,11 @@ class VideoTestCase(TestCase):
         if FILEPICKER:
             homedir, created = UserDirectory.objects.get_or_create(
                 name='Home',
-                owner=owner1.user,
+                owner=user,
                 parent=None)
             thumbnail = CustomImageModel.objects.create(
                 directory=homedir,
-                created_by=owner1.user,
+                created_by=user,
                 file="blabla.jpg")
         else:
             thumbnail = VideoImageModel.objects.create(file="blabla.jpg")
@@ -377,7 +372,7 @@ class VideoTestCase(TestCase):
             type=type, title="Video2",
             date_added=datetime.today(),
             owner=user, date_evt=datetime.today(),
-            video=os.path.join(VIDEOS_DIR, owner1.hashkey,
+            video=os.path.join(VIDEOS_DIR, user.owner.hashkey,
                                '%s.%s' % (slugify(fname), extension)),
             allow_downloading=True, description="fl",
             thumbnail=thumbnail, is_draft=False, duration=3)
