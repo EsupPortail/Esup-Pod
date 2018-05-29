@@ -55,6 +55,11 @@ class AuthenticationImageModel(models.Model):
         blank=True, max_length=255)
 
 
+def get_name(self):
+    return '%s %s (%s)' % (self.first_name, self.last_name, self.username)
+
+User.add_to_class("__str__", get_name)
+
 class Owner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     auth_type = models.CharField(

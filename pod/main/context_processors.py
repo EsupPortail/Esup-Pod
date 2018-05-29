@@ -30,11 +30,29 @@ HOMEPAGE_SHOWS_RESTRICTED = getattr(
     True)
 
 
+##
+# Settings exposed in templates
+#
+TEMPLATE_VISIBLE_SETTINGS = getattr(
+    django_settings,
+    'TEMPLATE_VISIBLE_SETTINGS',
+    {
+        'TITLE_SITE':'Pod',
+        'TITLE_ETB':'University name',
+        'LOGO_SITE':'images/logo_compact.png',
+        'LOGO_COMPACT_SITE':'images/logo_compact_site.png',
+        'LOGO_ETB':'images/logo_etb.png',
+        'LOGO_PLAYER':'images/logo_player.png',
+        'LOGO_SERVICE':'images/logo_service.png',
+    }
+)
+
+
 def context_settings(request):
     new_settings = {}
-    for attr in getattr(django_settings, 'TEMPLATE_VISIBLE_SETTINGS', []):
+    for sett in TEMPLATE_VISIBLE_SETTINGS:
         try:
-            new_settings[attr] = getattr(django_settings, attr)
+            new_settings[sett] = TEMPLATE_VISIBLE_SETTINGS[sett]
         except AttributeError:
             m = "TEMPLATE_VISIBLE_SETTINGS: '{0}' does not exist".format(attr)
             raise ImproperlyConfigured(m)

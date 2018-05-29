@@ -42,6 +42,15 @@ DEBUG = True
 ALLOWED_HOSTS = ['localhost']
 
 ##
+# Session settings
+#
+#   https://docs.djangoproject.com/en/1.11/ref/settings/#session-cookie-age
+#   https://docs.djangoproject.com/en/1.11/ref/settings/#session-expire-at-browser-close
+#
+SESSION_COOKIE_AGE = 14400
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+##
 # A tuple that lists people who get code error notifications
 #   when DEBUG=False and a view raises an exception.
 #
@@ -88,6 +97,23 @@ LANGUAGES = (
 TIME_ZONE = 'UTC'
 
 ##
+# The directory to temporarily store data while uploading files.
+#
+#   If None, the standard temporary directory for the operating system
+#   will be used.
+#
+# https://docs.djangoproject.com/en/1.11/ref/settings/#file-upload-temp-dir
+#
+FILE_UPLOAD_TEMP_DIR = os.path.join(os.path.sep, 'var', 'tmp')
+# https://github.com/ouhouhsami/django-progressbarupload
+FILE_UPLOAD_HANDLERS = (
+    "progressbarupload.uploadhandler.ProgressBarUploadHandler",
+    "django.core.files.uploadhandler.MemoryFileUploadHandler",
+    "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+)
+PROGRESSBARUPLOAD_INCLUDE_JQUERY = False
+
+##
 # Static files (assets, CSS, JavaScript, fonts...)
 #
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -108,12 +134,40 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Template settings
 #
 TEMPLATE_THEME = 'DEFAULT'
-TITLE_SITE = 'Pod'
 
 ##
 # CKeditor settings
 #
 # CKEDITOR_BASEPATH = os.path.join(STATIC_URL, 'ckeditor', "/")
+CKEDITOR_UPLOAD_PATH = os.path.join(MEDIA_ROOT, 'uploads')
+CKEDITOR_CONFIGS = {
+    'complete': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': '100%'
+    },
+    'default': {
+        'height': 300,
+        'width': '100%',
+        'toolbar': 'custom',
+        'language': 'fr',
+        'toolbar_custom': [
+            {'name': 'basicstyles', 'items': [
+                'Bold', 'Italic', 'Underline', 'Strike', 'Subscript',
+                'Superscript', '-', 'RemoveFormat'
+            ]
+            },
+            {'name': 'paragraph', 'items': [
+                'NumberedList', 'BulletedList',
+                '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv',
+                '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight',
+                'JustifyBlock', '-', 'BidiLtr', 'BidiRtl'
+            ]},
+            {'name': 'links', 'items': ['Link', 'Unlink', 'Anchor']},
+            {'name': 'tools', 'items': ['Maximize']}
+        ],
+    }
+}
 
 ##
 # Main menu settings:
