@@ -80,7 +80,7 @@ class ChannelTestCase(TestCase):
         self.assertEqual(channel.color, None)
         self.assertEqual(
             channel.description,
-            _('-- sorry, no translation provided --')
+            ''
         )
         if isinstance(channel.headband, ImageFieldFile):
             self.assertEqual(channel.headband.name, '')
@@ -169,7 +169,7 @@ class ThemeTestCase(TestCase):
         self.assertEqual(theme.video_count, 0)
         self.assertEqual(
             theme.description,
-            _('-- sorry, no translation provided --')
+            None
         )
         # self.assertEqual(
         #    theme.get_absolute_url(), "/" + theme.channel.slug + "/"
@@ -195,7 +195,7 @@ class ThemeTestCase(TestCase):
         theme1 = Theme.objects.get(title="Theme1")
         theme2 = Theme.objects.get(title="Theme2")
         self.assertEqual(theme2.parentId, theme1)
-        self.assertIn(theme2, theme1.theme_set.all())
+        self.assertIn(theme2, theme1.children.all())
         print(
             "   --->  test_Theme_with_parent of ThemeTestCase : OK !")
 
@@ -353,10 +353,10 @@ class DisciplineTestCase(TestCase):
 class VideoTestCase(TestCase):
 
     def setUp(self):
-        User.objects.create(username="pod", password="pod1234pod")
+        user = User.objects.create(username="pod", password="pod1234pod")
         owner1 = Owner.objects.get(user__username="pod")
         Video.objects.create(
-            title="Video1", owner=owner1, video="test.mp4")
+            title="Video1", owner=user, video="test.mp4")
         type = Type.objects.create(title="autre")
         filename = "test.mp4"
         fname, dot, extension = filename.rpartition('.')
@@ -376,7 +376,7 @@ class VideoTestCase(TestCase):
         video2 = Video.objects.create(
             type=type, title="Video2",
             date_added=datetime.today(),
-            owner=owner1, date_evt=datetime.today(),
+            owner=user, date_evt=datetime.today(),
             video=os.path.join(VIDEOS_DIR, owner1.hashkey,
                                '%s.%s' % (slugify(fname), extension)),
             allow_downloading=True, description="fl",
@@ -393,13 +393,13 @@ class VideoTestCase(TestCase):
         self.assertEqual(video.allow_downloading, False)
         self.assertEqual(
             video.description,
-            _('-- sorry, no translation provided --')
+            ""
         )
         self.assertEqual(video.slug,
                          "%04d-%s" % (video.id, slugify(video.title)))
         date = datetime.today()
 
-        self.assertEqual(video.owner, Owner.objects.get(user__username="pod"))
+        self.assertEqual(video.owner, User.objects.get(username="pod"))
         self.assertEqual(video.date_added.year, date.year)
         self.assertEqual(video.date_added.month, date.month)
         self.assertEqual(video.date_added.day, date.day)
@@ -567,10 +567,9 @@ class VideoRenditionTestCase(TestCase):
 class EncodingVideoTestCase(TestCase):
 
     def setUp(self):
-        User.objects.create(username="pod", password="pod1234pod")
-        owner1 = Owner.objects.get(user__username="pod")
+        user = User.objects.create(username="pod", password="pod1234pod")
         Video.objects.create(
-            title="Video1", owner=owner1, video="test.mp4")
+            title="Video1", owner=user, video="test.mp4")
         VideoRendition.objects.create(
             resolution="640x360",
             video_bitrate="1000k",
@@ -649,10 +648,9 @@ class EncodingVideoTestCase(TestCase):
 class EncodingAudioTestCase(TestCase):
 
     def setUp(self):
-        User.objects.create(username="pod", password="pod1234pod")
-        owner1 = Owner.objects.get(user__username="pod")
+        user = User.objects.create(username="pod", password="pod1234pod")
         Video.objects.create(
-            title="Video1", owner=owner1, video="test.mp4")
+            title="Video1", owner=user, video="test.mp4")
         print(" --->  SetUp of EncodingAudioTestCase : OK !")
 
     def test_EncodingVideo_null_attributs(self):
@@ -726,10 +724,9 @@ class EncodingAudioTestCase(TestCase):
 class PlaylistVideoTestCase(TestCase):
 
     def setUp(self):
-        User.objects.create(username="pod", password="pod1234pod")
-        owner1 = Owner.objects.get(user__username="pod")
+        user = User.objects.create(username="pod", password="pod1234pod")
         Video.objects.create(
-            title="Video1", owner=owner1, video="test.mp4")
+            title="Video1", owner=user, video="test.mp4")
         print(" --->  SetUp of PlaylistVideoTestCase : OK !")
 
     def test_PlaylistVideo_null_attributs(self):
@@ -803,10 +800,9 @@ class PlaylistVideoTestCase(TestCase):
 class EncodingLogTestCase(TestCase):
 
     def setUp(self):
-        User.objects.create(username="pod", password="pod1234pod")
-        owner1 = Owner.objects.get(user__username="pod")
+        user = User.objects.create(username="pod", password="pod1234pod")
         Video.objects.create(
-            title="Video1", owner=owner1, video="test.mp4")
+            title="Video1", owner=user, video="test.mp4")
         print(" --->  SetUp of EncodingLogTestCase : OK !")
 
     def test_EncodingLogTestCase_null_attributs(self):
@@ -858,10 +854,9 @@ class EncodingLogTestCase(TestCase):
 class EncodingStepTestCase(TestCase):
 
     def setUp(self):
-        User.objects.create(username="pod", password="pod1234pod")
-        owner1 = Owner.objects.get(user__username="pod")
+        user = User.objects.create(username="pod", password="pod1234pod")
         Video.objects.create(
-            title="Video1", owner=owner1, video="test.mp4")
+            title="Video1", owner=user, video="test.mp4")
         print(" --->  SetUp of EncodingLogTestCase : OK !")
 
     def test_EncodingStepTestCase_null_attributs(self):
