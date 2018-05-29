@@ -35,6 +35,8 @@ urlpatterns = [
     # App video
     url(r'^videos/$', videos, name='videos'),
     url(r'^video/(?P<slug>[\-\d\w]+)/$', video, name='video'),
+    url(r'^video/(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$', video,
+        name='video_private'),
     url(r'^video_edit/$', video_edit, name='video_edit'),
     url(r'^video_edit/(?P<slug>[\-\d\w]+)/$', video_edit, name='video_edit'),
     # my channels

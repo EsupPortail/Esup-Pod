@@ -294,12 +294,19 @@ def is_in_video_groups(user, video):
 
 
 @csrf_protect
-def video(request, slug, slug_c=None, slug_t=None):
+def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     try:
         id = int(slug[:slug.find("-")])
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
     video = get_object_or_404(Video, id=id)
+
+    if slug_private and slug_private == video.get_hashkey():
+        return render(
+            request, 'videos/video.html', {
+                'video': video
+            }
+        )
 
     channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
     theme = get_object_or_404(Theme, slug=slug_t) if slug_t else None
