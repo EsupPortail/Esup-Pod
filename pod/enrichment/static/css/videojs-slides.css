@@ -13,9 +13,31 @@
 	position: absolute;
 	left: 50%;
 	top: 25%;
+	-webkit-user-select: none;
+}
+.video-slides li div {
+	background-color: #fff;
+	color: #000;
 }
 .video-slides li img {
 	max-width: 100%;
+}
+.pip-slide {
+	left: 80% !important;
+	top: 0 !important;
+}
+.pip-slide img {
+	height: 10%;
+}
+.full-slide {
+	position: relative !important;
+	left: 0 !important;
+	top: 0 !important;
+}
+.full-slide img {
+	height: 100%;
+	width: 100%;
+	padding-right: 5%;
 }
 .vjs-chapbar {
 	color: red;

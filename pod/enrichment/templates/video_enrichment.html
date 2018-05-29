@@ -175,7 +175,9 @@
 			  	}
 			  	player.slides(slide);
 	  		});
-	  	});
+			$('.vjs-big-play-button').css('z-index', 2)
+			$('.vjs-control-bar').css('z-index', 3);
+		});
 	  {% endif %}
 	{% else %}
 	  {% if video.get_video_m4a %}

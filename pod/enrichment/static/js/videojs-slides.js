@@ -10,6 +10,14 @@ const slide_color = {
 	'weblink': 'red',
 	'embed': 'green'
 };
+const slide_mode_list = {
+	'off': '100/0',
+	'default': '50/50',
+	'pip media': '100/20',
+	'pip video': '20/100'
+};
+var slide_mode = 'default';
+var currentSlide = null;
 
 /**
  * VideoSlides component
@@ -24,6 +32,10 @@ class VideoSlides {
 		this.slidesItems = items;
 		this.oldTime = 0;
 		this.appendSlider();
+		this.slideButton();
+		this.slideMode();
+		currentSlide = document.getElementById('slide_0');
+		player.trigger('changemode', slide_mode);
 	}
 
 	/**
@@ -110,16 +122,11 @@ class VideoSlides {
 		var active = false;
 		for (let i = 0; i <= keys.length - 1; i++) {
 			if (currentTime >= this.slidesItems[i].start && currentTime < this.slidesItems[i].end) {
-				const currentSlide = document.getElementById('slide_'+i);
+				currentSlide = document.getElementById('slide_'+i);
 				currentSlide.style.display = 'block';
-				videoplayer.setAttribute('style', 'width: 50%');
-				active = true;
 			} else {
 				const oldSlide = document.getElementById('slide_'+i);
 				oldSlide.style.display = 'none';
-				if (!active) {
-					videoplayer.setAttribute('style', 'width: 100%');
-				}
 			}
 		}
 		return false;
@@ -133,7 +140,6 @@ class VideoSlides {
 	 */
 	slideBar() {
 		const progressbar = document.getElementsByClassName('vjs-progress-holder')[0];
-		console.log(progressbar);
 		// Create the slidebar
 		var slidebar = document.createElement('div');
 		slidebar.className = 'vjs-chapbar';
@@ -155,6 +161,109 @@ class VideoSlides {
 			newslide.id = 'slidebar_' + i;
 			slidebar_holder.appendChild(newslide); 
 		}
+	}
+
+	/**
+	 * slideMode function to change display mode for the slides.
+	 *
+	 * @return {void} does'nt return anything
+	 * @function slideMode
+	 */
+	slideMode() {
+		player.on('changemode', function (e, mode) {
+			var videoplayer = document.getElementsByClassName('vjs-tech')[0];
+			if (mode in slide_mode_list) {
+				var video = slide_mode_list[mode].split('/')[0];
+				var slide = slide_mode_list[mode].split('/')[1];
+				videoplayer.setAttribute('style', 'width: ' + video + '%');
+				videoplayer.style.zIndex = 1;
+				currentSlide.setAttribute('style', 'width: ' + slide + '%');
+				currentSlide.classList.remove('pip-slide');
+				currentSlide.classList.remove('full-slide');
+				currentSlide.style.zIndex = 'auto';
+				if (mode == 'pip media') {
+					currentSlide.className = 'pip-slide';
+					currentSlide.style.zIndex = 2;
+				}
+				if (mode == 'pip video') {
+					currentSlide.className = 'full-slide';
+					videoplayer.style.zIndex = 1;
+				}
+			}
+		});
+	}
+
+	/**
+	 * slideButton function create a button on the player to manage slides.
+	 *
+	 * @return {void} doesn't return anything
+	 * @function slideButton
+	 */
+	slideButton() {
+		// Create the slide view mode
+		var vjs_menu_item = videojs.getComponent('MenuItem');
+		var SlideMode = videojs.extend(vjs_menu_item, {
+			constructor: function(player, options={}) {
+				options.label = options.mode;
+				vjs_menu_item.call(this, player, options);
+				this.on('click', this.onClick);
+				this.addClass('vjs-slide-mode');
+				this.controlText('Turn to ' + options.mode);
+			},
+			onClick: function() {
+				this.setAttribute('aria-checked', true);
+				this.addClass('vjs-selected');
+				player.trigger('changemode', this.el().firstChild.innerHTML);
+
+				var available = document.getElementsByClassName('vjs-slide-mode');
+				for (let e of available) {
+					if (e.firstChild.innerHTML != this.el().firstChild.innerHTML) {
+						e.setAttribute('aria-checked', false);
+						e.classList.remove('vjs-selected');
+					}
+				}
+			}
+		});
+
+		// Create the slide manager menu title
+		var SlideTitle = videojs.extend(vjs_menu_item, {
+			constructor: function(player, options = {}) {
+				vjs_menu_item.call(this, player, options);
+				this.off('click');
+			}
+		});
+
+		// Create the slide menu manager
+		var vjs_menu_button = videojs.getComponent('MenuButton');
+		var SlideButton = videojs.extend(vjs_menu_button, {
+			constructor: function(player, options = {}) {
+				vjs_menu_button.call(this, player, options);
+				this.addClass('vjs-slide-manager');
+				this.controlText('Open slide manager');
+			},
+			createItems: function() {
+				var items = [];
+
+				items.push(new SlideTitle(player, {
+					el: videojs.dom.createEl('li', {
+						className: 'vjs-menu-title vjs-slide-manager-title',
+						innerHTML: 'Slide'
+					})
+				}));
+
+				for (let e in slide_mode_list) {
+					items.push(new SlideMode(player, {
+						mode: e
+					}));
+				}
+
+				return items;
+			}
+		});
+		var newbutton = new SlideButton(player);
+		newbutton.addClass('vjs-icon-circle');
+
+		player.controlBar.el().insertBefore(newbutton.el(), document.getElementsByClassName('vjs-fullscreen-control')[0]);
 	}
 }
 
