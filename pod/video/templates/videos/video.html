@@ -84,6 +84,45 @@ body {
 {%endif%}
 {%endif%}
 
+{% if form %}
+<p>{% trans 'This video is protected by password, please fill in and click send.' %}</p>
+<form method="post" action="{{ request.get_full_path }}" id="video_password_form" class='needs-validation' novalidate>
+    {% csrf_token %}
+    <div class="list-group">
+    <fieldset>
+        <legend>{% trans 'Password required' %}</legend>
+        {% if form.errors %}
+        <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+        {% endif %}
+        {% for field_hidden in form.hidden_fields %}
+            {{field_hidden}}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+            {% spaceless %}
+            <div class="list-group-item">
+            <div class="form-group {% if field.field.required %}form-group-required {%endif%}" >
+                {{ field.errors }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label> 
+                {{ field }}
+                {% if field.help_text %}
+                <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                {% endif %}
+                {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+            </div>
+            </div>
+            {% endspaceless %}
+            {% endfor %}
+        <div class="text-center">
+            <button type="submit" class="btn btn-success">{% trans "Send" %}</button>
+        </div>
+    </fieldset>
+    </div>
+</form>
+<p>
+  {% trans 'If you do not have the password for this content, please' %} <a href="#?owner={{video.owner.id}}&video={{video.id}}">{% trans 'contact its owner' %}</a>.
+</p>
+
+{% else %}
 <video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
 poster="{{video.get_thumbnail_url}}" data-setup='{}'>
   <p class="vjs-no-js">
@@ -183,7 +222,7 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
     </p>
   </div>
 </div>
-
+{%endif%}
 {% endblock page_content %}
 
 {% block page_aside %}
@@ -202,6 +241,35 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
 
 
 {% block more_script %}
+
+{% if form %}
+<script>
+var showalert = function(message,alerttype) {
+    $('body').append('<div id="formalertdiv" class="alert ' +  alerttype + ' alert-dismissible fade show"  role="alert">'+message+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    setTimeout(function() { $("#formalertdiv").remove(); }, 5000);
+};
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          window.scrollTo($("#video_password_form").scrollTop(), 0); 
+          showalert("{% trans "Errors appear in the form, please correct it"%}","alert-danger");
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+</script>
+{% else %}
 <script>
 var options = {
   notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
@@ -271,5 +339,5 @@ var player = videojs('podvideoplayer', options, function(){});
   {% endif %}
 {% endif %}
 </script>
-
+{% endif %}
 {% endblock more_script %}

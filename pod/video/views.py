@@ -21,6 +21,7 @@ from tagging.models import TaggedItem
 from pod.video.forms import VideoForm
 from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
+from pod.video.forms import VideoPasswordForm
 
 import json
 
@@ -347,7 +348,8 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
             )
             or (
                 is_password_protected
-                and request.POST.password == video.password
+                and request.POST.get('password')
+                and request.POST.get('password') == video.password
             )
         )
         if show_page:
@@ -360,7 +362,16 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
             )
         else:
             if is_password_protected:
-                return HttpResponse("show form password")
+                form = VideoPasswordForm(
+                    request.POST) if request.POST else VideoPasswordForm()
+                return render(
+                    request, 'videos/video.html', {
+                        'channel': channel,
+                        'video': video,
+                        'theme': theme,
+                        'form': form
+                    }
+                )
             elif request.user.is_authenticated():
                 messages.add_message(
                     request, messages.ERROR,
