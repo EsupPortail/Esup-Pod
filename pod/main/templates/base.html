@@ -102,6 +102,10 @@
             }
 
         </style>
+        <!-- Javascript -->
+        <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+        <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/js.cookie.js' %}"></script>
 	    <title>{{ TITLE_SITE }} - {% block page_title %}{% endblock %}</title>
 
 	    {% block page_extra_head %}{% endblock %}
@@ -171,10 +175,6 @@
         </div>
         {% endif %}
         <!-- JS -->
-        <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-        <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
-        <script src="{% static 'js/js.cookie.js' %}"></script>
-
 		<script>
 		var listUser = {{LISTOWNER|safe}};
 

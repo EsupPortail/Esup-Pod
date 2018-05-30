@@ -1,8 +1,4 @@
 $(window).on('load', function() {
-	manageResize('contributor');
-	manageResize('track');
-	manageResize('document');
-	manageResize('overlay');
 	$('li.contenuTitre').css('display', 'none');
 
 	var accordeon_head = $('#accordeon li a.title');
@@ -29,24 +25,6 @@ $(window).on('load', function() {
 	});
 });
 
-// Table scroll
-function manageResize(name_form) {
-	var $table = '';
-	$table = $('table#table_list_' + name_form + 's');
-	var $body_cells = $table.find('tbody tr:first').children();
-	var col_width;
-
-	function resize() {
-		col_width = $body_cells.map(function() {
-			return $(this).width();
-		}).get();
-		$table.find('thead tr').children().each(function(i, v) {
-			$(v).width(col_width[i]);
-		});
-	};
-	resize();
-}
-
 // Video form
 var num = 0;
 var name = '';
@@ -62,7 +40,6 @@ $(document).on('reset', '#page-video form', function(event) {
 	$('form').show();
 	$('a.title').css('display', 'initial');
 	$('table tr').removeClass('info');
-	manageResize(name_form);
 });
 
 //SUBMIT
@@ -182,10 +159,11 @@ $(document).on('submit', '#page-video form', function(event) {
 						} else {
 							refresh_list(data, form, list);
 							if (name_form != 'contributor') {
+								/**
 								$('span#' + form).unwrap();
 								$('span#' + list).unwrap();
+								**/
 							}
-							manageResize(name_form);
 							$(window).scrollTop(100);
 							show_messages("{% trans 'Changes have been saved.' %}", 'info');
 						}
