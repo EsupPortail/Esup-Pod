@@ -3,6 +3,7 @@ import time
 import unicodedata
 import json
 import logging
+import hashlib
 
 from django.db import models
 from django.db import connection
@@ -18,6 +19,7 @@ from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.contrib.sites.shortcuts import get_current_site
 from django.dispatch import receiver
+from django.utils.html import format_html
 # from django.db.models.signals import post_save
 # from django.db.models.signals import pre_save
 from django.db.models.signals import pre_delete
@@ -55,18 +57,18 @@ DEFAULT_TYPE_ID = getattr(
 LICENCE_CHOICES = getattr(
     settings, 'LICENCE_CHOICES', (
         ('BY', _("Attribution")),
-        ('BY ND', _("Attribution + Pas de Modification")),
+        ('BY ND', _("Attribution + Pas d’Oeuvre dérivée (BY-ND)")),
         ('BY NC ND', _(
-            "Attribution + Pas d’Utilisation Commerciale + Pas de Modification"
+            "Attribution + Utilisation Non Commerciale + "
+            + "Pas d’Oeuvre dérivée (BY-NC-ND)"
         )),
-        ('BY NC', _("Attribution + Pas d’Utilisation Commerciale")),
-        ('BY NC SA',
-            _(
-                "Attribution + Pas d’Utilisation Commerciale + "
-                + "Partage dans les mêmes conditions"
-            )),
+        ('BY NC', _("Attribution + Utilisation Non Commerciale (BY-NC)")),
+        ('BY NC SA', _(
+            "Attribution + Utilisation Non Commerciale + "
+            + "Partage dans les mêmes conditions (BY-NC-SA)"
+        )),
         ('BY SA', _(
-            "Attribution + Partage dans les mêmes conditions"))
+            "Attribution + Partage dans les mêmes conditions (BY-SA)"))
     ))
 FORMAT_CHOICES = getattr(
     settings, 'FORMAT_CHOICES', (
@@ -88,6 +90,9 @@ ENCODING_CHOICES = getattr(
     ))
 DEFAULT_THUMBNAIL = getattr(
     settings, 'DEFAULT_THUMBNAIL', 'img/default.png')
+SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
+
+
 # FUNCTIONS
 
 
@@ -133,6 +138,7 @@ def get_nextautoincrement(mymodel):
     cursor.close()
     return row[0]
 
+
 # MODELS
 
 
@@ -143,14 +149,25 @@ class VideoImageModel(models.Model):
 
 
 class Channel(models.Model):
-    title = models.CharField(_('Title'), max_length=100, unique=True)
+    title = models.CharField(
+        _('Title'),
+        max_length=100,
+        unique=True,
+        help_text=_("Please choose a title as short and accurate as "
+                    "possible, reflecting the main subject / context "
+                    "of the content.(max length : 100 characters)"))
     slug = models.SlugField(
         _('Slug'), unique=True, max_length=100,
         help_text=_(
             u'Used to access this instance, the "slug" is a short label '
-            + 'containing only letters, numbers, underscore or dash top.'))
-    description = RichTextField(_('Description'),
-                                config_name='complete', blank=True)
+            + 'containing only letters, numbers, underscore or dash top.'),
+        editable=False)
+    description = RichTextField(
+        _('Description'),
+        config_name='complete', blank=True,
+        help_text=_("In this field you can describe your content, "
+                    "add all needed related information, and "
+                    "format the result using the toolbar."))
     # add headband
     if FILEPICKER:
         headband = models.ForeignKey(CustomImageModel,
@@ -161,8 +178,13 @@ class Channel(models.Model):
                                      blank=True, null=True,
                                      verbose_name=_('Thumbnails'))
     color = models.CharField(
-        _('Background color'), max_length=10, blank=True, null=True)
-    style = models.TextField(_('Extra style'), null=True, blank=True)
+        _('Background color'),
+        max_length=10, blank=True, null=True,
+        help_text=_("The background color for your channel. "
+                    "You can use the format #. i.e.: #ff0000 for red"))
+    style = models.TextField(
+        _('Extra style'), null=True, blank=True,
+        help_text=_("The style will be added to your channel to show it"))
     owners = models.ManyToManyField(
         User, related_name='owners_channels', verbose_name=_('Owners'),
         blank=True)
@@ -204,14 +226,24 @@ class Channel(models.Model):
 
 class Theme(models.Model):
     parentId = models.ForeignKey(
-        'self', null=True, blank=True, related_name="children")
-    title = models.CharField(_('Title'), max_length=100, unique=True)
+        'self', null=True, blank=True, related_name="children",
+        verbose_name=_('Theme parent'))
+    title = models.CharField(
+        _('Title'), max_length=100,
+        help_text=_("Please choose a title as short and accurate as "
+                    "possible, reflecting the main subject / context "
+                    "of the content.(max length : 100 characters)"))
     slug = models.SlugField(
         _('Slug'), unique=True, max_length=100,
         help_text=_(
             u'Used to access this instance, the "slug" is a short label '
-            + 'containing only letters, numbers, underscore or dash top.'))
-    description = models.TextField(null=True, blank=True)
+            + 'containing only letters, numbers, underscore or dash top.'),
+        editable=False)
+    description = models.TextField(
+        _('Description'), null=True, blank=True,
+        help_text=_("In this field you can describe your content, "
+                    "add all needed related information, and "
+                    "format the result using the toolbar."))
     if FILEPICKER:
         headband = models.ForeignKey(CustomImageModel,
                                      blank=True, null=True,
@@ -219,7 +251,7 @@ class Theme(models.Model):
     else:
         headband = models.ForeignKey(VideoImageModel,
                                      blank=True, null=True,
-                                     verbose_name=_('Thumbnails'))
+                                     verbose_name=_('Headband'))
 
     channel = models.ForeignKey(
         'Channel', related_name='themes', verbose_name=_('Channel'))
@@ -341,31 +373,50 @@ class Discipline(models.Model):
 
 class Video(models.Model):
     video = models.FileField(
-        _('Video'),  upload_to=get_storage_path_video, max_length=255)
+        _('Video'),  upload_to=get_storage_path_video, max_length=255,
+        help_text=_(
+            'You can send an audio or video file.')
+    )
 
     allow_downloading = models.BooleanField(
-        _('allow downloading'), default=False)
-    is_360 = models.BooleanField(_('video 360'), default=False)
-    title = models.CharField(_('Title'), max_length=250)
+        _('allow downloading'), default=False, help_text=_(
+            'Check this box if you to allow downloading of the encoded files'))
+    is_360 = models.BooleanField(_('video 360'), default=False, help_text=_(
+        'Check this box if you want to use the 360 player for the video'))
+    title = models.CharField(
+        _('Title'),
+        max_length=250,
+        help_text=_("Please choose a title as short and accurate as "
+                    "possible, reflecting the main subject / context "
+                    "of the content.(max length : 250 characters)")
+    )
     slug = models.SlugField(_('Slug'), unique=True, max_length=255,
                             help_text=_(
-                                'Used to access this instance, the "slug" is '
-                                + 'a short label containing only letters, '
-                                + 'numbers, underscore or dash top.'),
+        'Used to access this instance, the "slug" is '
+        'a short label containing only letters, '
+                                'numbers, underscore or dash top.'),
                             editable=False)
     owner = models.ForeignKey(User, verbose_name=_('Owner'))
     date_added = models.DateField(_('Date added'), default=datetime.now)
     date_evt = models.DateField(
         _(u'Date of event'), default=datetime.now, blank=True, null=True)
     description = RichTextField(
-        _('Description'), config_name='complete', blank=True)
+        _('Description'),
+        config_name='complete',
+        blank=True,
+        help_text=_("In this field you can describe your content, "
+                    "add all needed related information, and "
+                    "format the result using the toolbar."))
 
     cursus = models.CharField(
         _('University course'), max_length=1,
-        choices=CURSUS_CODES, default="0")
+        choices=CURSUS_CODES, default="0",
+        help_text=_("Select an university course as "
+                    "audience target of the content."))
     main_lang = models.CharField(
         _('Main language'), max_length=2,
-        choices=MAIN_LANG_CHOICES, default=get_language())
+        choices=MAIN_LANG_CHOICES, default=get_language(),
+        help_text=_("Select the main language used in the content."))
 
     duration = models.IntegerField(
         _('Duration'), default=0, editable=False, blank=True)
@@ -373,26 +424,26 @@ class Video(models.Model):
     is_draft = models.BooleanField(
         verbose_name=_('Draft'),
         help_text=_(
-            u'If this box is checked, '
-            + 'the video will be visible and accessible only by you.'),
+            'If this box is checked, '
+            'the video will be visible and accessible only by you.'),
         default=True)
     is_restricted = models.BooleanField(
-        verbose_name=_(u'Restricted access'),
+        verbose_name=_('Restricted access'),
         help_text=_(
-            u'If this box is checked, '
-            + 'the video will only be accessible to authenticated users.'),
+            'If this box is checked, '
+            'the video will only be accessible to authenticated users.'),
         default=False)
     restrict_access_to_groups = models.ManyToManyField(
         Group, blank=True, verbose_name=_('Goups'),
-        help_text=_(u'Select one or more groups who can access to this video'))
+        help_text=_('Select one or more groups who can access to this video'))
     password = models.CharField(
         _('password'),
         help_text=_(
-            u'Viewing this video will not be possible without this password.'),
+            'Viewing this video will not be possible without this password.'),
         max_length=50, blank=True, null=True)
     tags = TagField(help_text=_(
-        u'Separate tags with spaces, '
-        + 'enclose the tags consist of several words in quotation marks.'),
+        'Separate tags with spaces, '
+        'enclose the tags consist of several words in quotation marks.'),
         verbose_name=_('Tags'))
     if FILEPICKER:
         thumbnail = models.ForeignKey(CustomImageModel,
@@ -410,11 +461,23 @@ class Video(models.Model):
     type = models.ForeignKey(Type, verbose_name=_('Type'),
                              default=DEFAULT_TYPE_ID)
     discipline = models.ManyToManyField(
-        Discipline, blank=True, verbose_name=_('Disciplines'))
+        Discipline,
+        blank=True,
+        verbose_name=_('Disciplines'),
+        help_text=_('Hold down "Control", or "Command" '
+                    'on a Mac, to select more than one.'))
     channel = models.ManyToManyField(
-        Channel, verbose_name=_('Channels'), blank=True)
+        Channel,
+        verbose_name=_('Channels'),
+        blank=True,
+        help_text=_('Hold down "Control", or "Command" '
+                    'on a Mac, to select more than one.'))
     theme = models.ManyToManyField(
-        Theme, verbose_name=_('Themes'), blank=True)
+        Theme,
+        verbose_name=_('Themes'),
+        blank=True,
+        help_text=_('Hold down "Control", or "Command" '
+                    'on a Mac, to select more than one.'))
 
     licence = models.CharField(
         _('Licence'), max_length=8,
@@ -453,20 +516,48 @@ class Video(models.Model):
     def __str__(self):
         return "%s - %s" % ('%04d' % self.id, self.title)
 
+    @property
+    def viewcount(self):
+        return self.get_viewcount()
+    viewcount.fget.short_description = _('Sum of view')
+
+    @property
+    def get_encoding_step(self):
+        es = EncodingStep.objects.get(video=self)
+        return "%s : %s" % (es.num_step, es.desc_step)
+    get_encoding_step.fget.short_description = _('Encoding step')
+
+    @property
+    def get_thumbnail_admin(self):
+        return format_html('<img style="max-width:100px" '
+                           'src="%s" alt="%s" />' % (
+                               self.get_thumbnail_url(),
+                               self.title
+                           )
+                           )
+    get_thumbnail_admin.fget.short_description = _('Thumbnails')
+
+    def get_thumbnail_card(self):
+        return '<img class="card-img-top" src="%s" alt="%s" />' % (
+            self.get_thumbnail_url(), self.title)
+
+    @property
+    def duration_in_time(self):
+        return time.strftime('%H:%M:%S', time.gmtime(self.duration))
+    duration_in_time.fget.short_description = _('Duration')
+
     def get_viewcount(self):
         count_sum = self.viewcount_set.all().aggregate(Sum('count'))
         if count_sum['count__sum'] is None:
             return 0
         return count_sum['count__sum']
 
-    def duration_in_time(self):
-        return time.strftime('%H:%M:%S', time.gmtime(self.duration))
-
-    duration_in_time.short_description = _('Duration')
-    duration_in_time.allow_tags = True
-
     def get_absolute_url(self):
         return reverse('video', args=[str(self.slug)])
+
+    def get_hashkey(self):
+        return hashlib.sha256(
+            ("%s-%s" % (SECRET_KEY, self.id)).encode('utf-8')).hexdigest()
 
     def delete(self):
         if self.video:
@@ -491,10 +582,6 @@ class Video(models.Model):
                  settings.STATIC_URL,
                  DEFAULT_THUMBNAIL])
         return thumbnail_url
-
-    def get_thumbnail_card(self):
-        return '<img class="card-img-top" src="%s" alt="%s" />' % (
-            self.get_thumbnail_url(), self.title)
 
     def get_playlist_master(self):
         try:
@@ -705,11 +792,12 @@ class EncodingVideo(models.Model):
                 )
 
     def __str__(self):
-        return "EncodingVideo num : %s with resolution %s for video %s in %s"\
+        return (
+            "EncodingVideo num : %s with resolution %s for video %s in %s"
             % ('%04d' % self.id,
                self.name,
                self.video.id,
-               self.encoding_format)
+               self.encoding_format))
 
     @property
     def owner(self):

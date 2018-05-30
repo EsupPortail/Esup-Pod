@@ -5,10 +5,8 @@
       "fields": {
           "description": "",
           "title": "Other",
-          "title_en": "Other",
-          "title_fr": "Autres",
           "icon": null,
-          "slug": "autres"
+          "slug": "other"
       }
   },
   {

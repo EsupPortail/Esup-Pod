@@ -43,7 +43,8 @@ Icon?
 #################
 import_data/
 media/
-pod/*/fixtures/
+# pod/*/fixtures/
+pod/*/migrations/
 settings_local.py
 ## Others
 jwplayer/
