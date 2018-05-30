@@ -191,3 +191,17 @@ CAS_RESPONSE_CALLBACKS = (
     'pod.authentication.populatedCASbackend.populateUser',
     # function call to add some information to user login by CAS
 )
+
+##
+# eMail settings
+#
+#   https://docs.djangoproject.com/en/1.11/ref/settings/#email-host
+#   https://docs.djangoproject.com/en/1.11/ref/settings/#email-port
+#   https://docs.djangoproject.com/en/1.11/ref/settings/#default-from-email
+#
+#   username: EMAIL_HOST_USER
+#   password: EMAIL_HOST_PASSWORD
+#   
+EMAIL_HOST = 'smtp.univ.fr'
+EMAIL_PORT = 25
+DEFAULT_FROM_EMAIL = 'noreply@univ.fr'

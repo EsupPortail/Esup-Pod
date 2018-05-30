@@ -13,6 +13,7 @@ from pod.authentication.views import authentication_logout
 from pod.authentication.views import authentication_login_gateway
 from pod.video.views import video
 from pod.video.views import video_edit
+from pod.video.views import video_delete
 from pod.video.views import channel
 from pod.video.views import videos
 from pod.video.views import my_videos
@@ -39,6 +40,8 @@ urlpatterns = [
         name='video_private'),
     url(r'^video_edit/$', video_edit, name='video_edit'),
     url(r'^video_edit/(?P<slug>[\-\d\w]+)/$', video_edit, name='video_edit'),
+    url(r'^video_delete/(?P<slug>[\-\d\w]+)/$',
+        video_delete, name='video_delete'),
     # my channels
     url(r'^my_channels/$', my_channels, name='my_channels'),
     url(r'^channel_edit/(?P<slug>[\-\d\w]+)/$',
