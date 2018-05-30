@@ -48,7 +48,7 @@ class DocumentAdmin(admin.ModelAdmin):
     search_fields = ['id', 'document__name', 'video__title']
 
     class Media:
-        js = ('js/jquery.tools.min.js',)
+        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
 
 
 admin.site.register(Document, DocumentAdmin)
@@ -73,7 +73,7 @@ class TrackAdmin(admin.ModelAdmin):
     search_fields = ['id', 'src__name', 'kind', 'video__title']
 
     class Media:
-        js = ('js/jquery.tools.min.js',)
+        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
 
 
 admin.site.register(Track, TrackAdmin)
