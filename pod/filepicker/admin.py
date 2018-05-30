@@ -22,6 +22,7 @@ class UserDirectoryAdmin(admin.ModelAdmin):
     list_display_links = ('name',)
     list_filter = ('owner',)
     ordering = ('name', 'owner',)
+    search_fields = ['id', 'name', 'owner__username']
 
 
 admin.site.register(UserDirectory, UserDirectoryAdmin)
@@ -31,9 +32,10 @@ class CustomImageModelAdmin(admin.ModelAdmin):
 
     list_display = ('name', 'file_type', 'created_by',)
     list_display_links = ('name',)
-    list_filter = ('name', 'created_by',)
+    list_filter = ('file_type',)
     ordering = ('name', 'created_by',)
     readonly_fields = ('file_size', 'file_type',)
+    search_fields = ['id', 'name', 'file_type', 'created_by__username']
 
 
 admin.site.register(CustomImageModel, CustomImageModelAdmin)
@@ -43,9 +45,10 @@ class CustomFileModelAdmin(admin.ModelAdmin):
 
     list_display = ('name', 'file_type', 'created_by',)
     list_display_links = ('name',)
-    list_filter = ('name', 'created_by',)
+    list_filter = ('file_type',)
     ordering = ('name', 'created_by',)
     readonly_fields = ('file_size', 'file_type',)
+    search_fields = ['id', 'name', 'file_type', 'created_by__username']
 
 
 admin.site.register(CustomFileModel, CustomFileModelAdmin)
