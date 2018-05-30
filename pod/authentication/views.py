@@ -46,7 +46,7 @@ def authentication_login(request):
 
 
 def authentication_logout(request):
-    if settings.USE_CAS:
+    if USE_CAS:
         return redirect('django_cas:logout')
     else:
         url = reverse('local-logout')

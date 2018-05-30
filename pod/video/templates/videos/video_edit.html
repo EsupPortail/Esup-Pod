@@ -108,7 +108,7 @@
         {% for title, values in form.VIDEO_FORM_FIELDS_HELP_TEXT.items %}
             <div class="card card-body p-1">
                 <button class="btn btn-sm-light" id="heading-{{forloop.counter}}" data-toggle="collapse" data-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
-                    {{title}}
+                    {% trans title %}
                 </button>
                 <div id="collapse-{{forloop.counter}}" class="collapse hide card-text small" aria-labelledby="heading-{{forloop.counter}}" data-parent="#formfields">
                     {% for value in values %}

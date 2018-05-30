@@ -29,7 +29,7 @@ urlpatterns = [
 
     # Translation
     url(r'^i18n/', include('django.conf.urls.i18n')),
-    #progressbar
+    # progressbar
     url(r'^progressbarupload/', include('progressbarupload.urls')),
 
     # App video
@@ -39,7 +39,8 @@ urlpatterns = [
     url(r'^video_edit/(?P<slug>[\-\d\w]+)/$', video_edit, name='video_edit'),
     # my channels
     url(r'^my_channels/$', my_channels, name='my_channels'),
-    url(r'^channel_edit/(?P<slug>[\-\d\w]+)/$', channel_edit, name='channel_edit'),
+    url(r'^channel_edit/(?P<slug>[\-\d\w]+)/$',
+        channel_edit, name='channel_edit'),
     url(r'^theme_edit/(?P<slug>[\-\d\w]+)/$', theme_edit, name='theme_edit'),
     # my videos
     url(r'^my_videos/$', my_videos, name='my_videos'),
@@ -83,7 +84,9 @@ urlpatterns += [
         channel, name='theme'),
     url(r'^(?P<slug_c>[\-\d\w]+)/video/(?P<slug>[\-\d\w]+)/$',
         video, name='video'),
-    url(r'^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/video/(?P<slug>[\-\d\w]+)/$',
+    url(r'(^(?P<slug_c>[\-\d\w]+)/'
+        '(?P<slug_t>[\-\d\w]+)/video/'
+        '(?P<slug>[\-\d\w]+)/$)',
         video, name='video'),
 ]
 
