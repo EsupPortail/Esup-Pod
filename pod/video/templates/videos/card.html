@@ -16,19 +16,11 @@
                     <svg height="32" class="octicon octicon-circle-slash" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M7 1C3.14 1 0 4.14 0 8s3.14 7 7 7 7-3.14 7-7-3.14-7-7-7zm0 1.3c1.3 0 2.5.44 3.47 1.17l-8 8A5.755 5.755 0 0 1 1.3 8c0-3.14 2.56-5.7 5.7-5.7zm0 11.41c-1.3 0-2.5-.44-3.47-1.17l8-8c.73.97 1.17 2.17 1.17 3.47 0 3.14-2.56 5.7-5.7 5.7z"></path></svg>
                 </span>
                 {% endif %}
-                <!--
-                <span title="{% trans 'This content is interactive.' %}">
-                    <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true">
-                        <path fill-rule="evenodd" d="M3 5c0-.55.45-1 1-1s1 .45 1 1-.45 1-1 1-1-.45-1-1zm8 0c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm0 6c0-.55-.45-1-1-1s-1 .45-1 1 .45 1 1 1 1-.45 1-1zm2-10H5v2.17c.36.19.64.47.83.83h2.34c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H5.83c-.42.8-1.33 1.28-2.34 1.03-.73-.17-1.34-.78-1.52-1.52C1.72 4.49 2.2 3.59 3 3.17V1H1c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1l5-5h2.17c.42-.78 1.33-1.28 2.34-1.05.75.19 1.36.8 1.53 1.55.31 1.38-.72 2.59-2.05 2.59-.8 0-1.48-.44-1.83-1.09H6.99L4 15h9c.55 0 1-.45 1-1V2c0-.55-.45-1-1-1z"></path>
-                    </svg>
-                </span>
-                -->
                 {% if video.chapter_set.all %}
                 <span title="{% trans 'This content is chaptered.' %}">
                     <svg height="32" class="octicon octicon-list-unordered" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M2 13c0 .59 0 1-.59 1H.59C0 14 0 13.59 0 13c0-.59 0-1 .59-1h.81c.59 0 .59.41.59 1H2zm2.59-9h6.81c.59 0 .59-.41.59-1 0-.59 0-1-.59-1H4.59C4 2 4 2.41 4 3c0 .59 0 1 .59 1zM1.41 7H.59C0 7 0 7.41 0 8c0 .59 0 1 .59 1h.81c.59 0 .59-.41.59-1 0-.59 0-1-.59-1h.01zm0-5H.59C0 2 0 2.41 0 3c0 .59 0 1 .59 1h.81c.59 0 .59-.41.59-1 0-.59 0-1-.59-1h.01zm10 5H4.59C4 7 4 7.41 4 8c0 .59 0 1 .59 1h6.81c.59 0 .59-.41.59-1 0-.59 0-1-.59-1h.01zm0 5H4.59C4 12 4 12.41 4 13c0 .59 0 1 .59 1h6.81c.59 0 .59-.41.59-1 0-.59 0-1-.59-1h.01z"></path></svg>
                 </span>
                 {% endif %}
-                
                 {% if video.is_video %}
                 <span title="{% trans 'Video content.' %}" >
                     <svg version="1.1" width="16" height="16" viewBox="0 0 16 16" class="octicon octicon-file-binary" aria-hidden="true">
@@ -43,9 +35,21 @@
             </span>
         </div>
     </div>
+    {% if channel %}
+    {% if theme %}
+    <a href="{% url 'video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}" title="{{video.title}}">
+        {{video.get_thumbnail_card|safe}}
+    </a>
+    {% else %}
+    <a href="{% url 'video' slug_c=channel.slug slug=video.slug %}" title="{{video.title}}">
+        {{video.get_thumbnail_card|safe}}
+    </a>
+    {% endif %}
+    {% else %}
     <a href="{{video.get_absolute_url}}" title="{{video.title}}">
         {{video.get_thumbnail_card|safe}}
     </a>
+    {% endif %}
     <div class="card-body">
       
       {% if request.user and video.owner == request.user %}
@@ -59,7 +63,22 @@
       </footer>
       {% endif %}
 
-      <h6 class="card-subtitle small"><a href="{{video.get_absolute_url}}" title="{{video.title}}">{{video.title}}</a></h6>
+      <h6 class="card-subtitle small">
+        {% if channel %}
+        {% if theme %}
+        <a href="{% url 'video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}" title="{{video.title}}">
+            {{video.title}}
+        </a>
+        {% else %}
+        <a href="{% url 'video' slug_c=channel.slug slug=video.slug %}" title="{{video.title}}">
+            {{video.title}}
+        </a>
+        {% endif %}
+        {% else %}
+        <a href="{{video.get_absolute_url}}" title="{{video.title}}">{{video.title}}</a>
+        {% endif %}
+      </h6>
+
     </div>
 </div>
 {% endspaceless %}

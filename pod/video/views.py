@@ -21,6 +21,7 @@ from tagging.models import TaggedItem
 from pod.video.forms import VideoForm
 from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
+from pod.video.forms import VideoPasswordForm
 
 import json
 
@@ -294,7 +295,7 @@ def is_in_video_groups(user, video):
 
 
 @csrf_protect
-def video(request, slug, slug_c=None, slug_t=None):
+def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     try:
         id = int(slug[:slug.find("-")])
     except ValueError:
@@ -317,7 +318,9 @@ def video(request, slug, slug_c=None, slug_t=None):
     )
 
     if is_access_protected:
-
+        access_granted_for_private = (
+            slug_private and slug_private == video.get_hashkey()
+        )
         access_granted_for_draft = request.user.is_authenticated() and (
             request.user == video.owner or request.user.is_superuser)
         access_granted_for_restricted = (
@@ -328,6 +331,8 @@ def video(request, slug, slug_c=None, slug_t=None):
         )
 
         show_page = (
+            access_granted_for_private
+            or
             (is_draft and access_granted_for_draft)
             or (
                 is_restricted
@@ -343,7 +348,8 @@ def video(request, slug, slug_c=None, slug_t=None):
             )
             or (
                 is_password_protected
-                and request.POST.password == video.password
+                and request.POST.get('password')
+                and request.POST.get('password') == video.password
             )
         )
         if show_page:
@@ -356,7 +362,16 @@ def video(request, slug, slug_c=None, slug_t=None):
             )
         else:
             if is_password_protected:
-                return HttpResponse("show form password")
+                form = VideoPasswordForm(
+                    request.POST) if request.POST else VideoPasswordForm()
+                return render(
+                    request, 'videos/video.html', {
+                        'channel': channel,
+                        'video': video,
+                        'theme': theme,
+                        'form': form
+                    }
+                )
             elif request.user.is_authenticated():
                 messages.add_message(
                     request, messages.ERROR,

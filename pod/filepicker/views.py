@@ -14,7 +14,6 @@ from django.db.models.base import FieldDoesNotExist
 from django.http import HttpResponse
 from django.http import HttpResponseServerError
 from django.http import HttpResponseBadRequest
-from django.http import HttpResponseNotFound
 from django.middleware.csrf import get_token
 from django.utils.text import capfirst
 from django.utils.translation import ugettext as _
@@ -323,88 +322,85 @@ class FilePickerBase(object):
         ------
         HttpResponse
         """
+        ACTION = ['new', 'edit', 'delete']
 
-        if request.GET and request.GET.get('action'):
-            if request.GET['action'] == 'edit':
-                try:
-                    directory = self.structure.objects.get(
-                        owner=request.user.id,
-                        id=request.GET['id'])
-                except Exception:
-                    return HttpResponseNotFound('Directory not found !')
-                form = self.configure(instance=directory)
-                data = {'form': form.as_table(), 'id': directory.id}
-                return HttpResponse(
-                    json.dumps(data), content_type='application/json')
-            if request.GET['action'] == 'new':
-                try:
-                    directory = self.structure.objects.get(
-                        owner=request.user.id,
-                        id=request.GET['id'])
-                except Exception:
-                    return HttpResponseNotFound('Directory not found !')
-                form = self.configure(initial={
-                    'owner': request.user.id,
-                    'parent': directory})
-                data = {'form': form.as_table()}
-                return HttpResponse(
-                    json.dumps(data), content_type='application/json')
-            if request.GET['action'] == 'delete':
-                try:
-                    directory = self.structure.objects.get(
-                        owner=request.user.id,
-                        id=request.GET['id'])
-                except Exception:
-                    return HttpResponseNotFound('Directory not found !')
-                data = {'id': directory.id}
-                return HttpResponse(
-                    json.dumps(data), content_type='application/json')
-        if request.POST and request.POST.get('action'):
-            if request.POST['action'] == 'edit':
-                try:
-                    directory = self.structure.objects.get(
-                        owner=request.user.id,
-                        id=request.POST['id'])
-                except Exception:
-                    return HttpResponseNotFound('Directory not found !')
-                form = self.configure(request.POST, instance=directory)
-                if form.is_valid():
-                    form.save()
-                    data = {'response': 'OK'}
-                    return HttpResponse(json.dumps(data),
-                                        content_type='application/json')
-                else:
-                    data = {'form': form.as_table(),
-                            'errors': form.errors}
-                    return HttpResponse(
-                        json.dumps(data), content_type='application/json')
-            if request.POST['action'] == 'new':
-                form = self.configure(request.POST)
-                if form.is_valid():
-                    directory = form.save()
-                    data = {'parent': directory.parent.name}
-                    return HttpResponse(json.dumps(data),
-                                        content_type='application/json')
-                else:
-                    data = {'form': form.as_table(),
-                            'errors': form.errors}
-                    return HttpResponse(
-                        json.dumps(data), content_type='application/json')
-            if request.POST['action'] == 'delete':
-                try:
-                    directory = self.structure.objects.get(
-                        id=request.POST['id'])
-                except Exception:
-                    return HttpResponseNotFound('Directory not found !')
-                if directory.name != 'Home':
-                    directory.delete()
-                else:
-                    return HttpResponseBadRequest(
-                        'Home directory cannot be deleted !')
-                data = {'parent': directory.parent.name}
-                return HttpResponse(
-                    json.dumps(data), content_type='application/json')
+        if request.POST or request.GET:
+            if (request.POST.get('action') in ACTION or
+                    request.GET.get('action') in ACTION):
+                return eval(
+                    'self.conf_dirs_{0}(request)'.format((
+                        request.GET.get('action') or
+                        request.POST.get('action'))))
+
         return HttpResponseBadRequest('Bad request')
+
+    def conf_dirs_new(self, request):
+
+        if request.GET:
+            directory = get_object_or_404(
+                self.structure, owner=request.user.id, id=request.GET['id'])
+            form = self.configure(initial={
+                'owner': request.user.id,
+                'parent': directory})
+            data = {'form': form.as_table()}
+            return HttpResponse(
+                json.dumps(data), content_type='application/json')
+        if request.POST:
+            form = self.configure(request.POST)
+            if form.is_valid():
+                directory = form.save()
+                data = {'parent': directory.parent.name}
+                return HttpResponse(json.dumps(data),
+                                    content_type='application/json')
+            else:
+                data = {'form': form.as_table(),
+                        'errors': form.errors}
+                return HttpResponse(
+                    json.dumps(data), content_type='application/json')
+
+    def conf_dirs_edit(self, request):
+
+        if request.GET:
+            directory = get_object_or_404(
+                self.structure, owner=request.user.id, id=request.GET['id'])
+            form = self.configure(instance=directory)
+            data = {'form': form.as_table(), 'id': directory.id}
+            return HttpResponse(
+                json.dumps(data), content_type='application/json')
+        if request.POST:
+            directory = get_object_or_404(
+                self.structure, owner=request.user.id, id=request.POST['id'])
+            form = self.configure(request.POST, instance=directory)
+            if form.is_valid():
+                form.save()
+                data = {'response': 'OK'}
+                return HttpResponse(json.dumps(data),
+                                    content_type='application/json')
+            else:
+                data = {'form': form.as_table(),
+                        'errors': form.errors}
+                return HttpResponse(
+                    json.dumps(data), content_type='application/json')
+
+    def conf_dirs_delete(self, request):
+
+        if request.GET:
+            directory = get_object_or_404(
+                self.structure, owner=request.user.id, id=request.GET['id'])
+            data = {'id': directory.id}
+            return HttpResponse(
+                json.dumps(data), content_type='application/json')
+        if request.POST:
+            directory = get_object_or_404(
+                self.structure, owner=request.user.id, id=request.POST['id'])
+            if directory.name != 'Home':
+                directory.delete()
+            else:
+                return HttpResponseBadRequest(
+                    'Home directory cannot be deleted !')
+            data = {'parent': directory.parent.name}
+            return HttpResponse(
+                json.dumps(data), content_type='application/json')
 
     def get_files(self, search, user, directory):
         """

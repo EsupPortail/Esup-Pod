@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.contrib import admin
 from pod.completion.models import Contributor
 from pod.completion.models import Document
@@ -5,12 +6,8 @@ from pod.completion.models import Overlay
 from pod.completion.models import Track
 from pod.completion.forms import DocumentAdminForm
 from pod.completion.forms import TrackAdminForm
-try:
-    __import__('pod.filepicker')
+if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
-except ImportError:
-    FILEPICKER = False
-    pass
 
 
 class ContributorInline(admin.TabularInline):
@@ -20,6 +17,17 @@ class ContributorInline(admin.TabularInline):
 
     def has_add_permission(self, request):
         return False
+
+
+class ContributorAdmin(admin.ModelAdmin):
+
+    list_display = ('name', 'role', 'video',)
+    list_display_links = ('name',)
+    list_filter = ('role',)
+    search_fields = ['id', 'name', 'role', 'video__title']
+
+
+admin.site.register(Contributor, ContributorAdmin)
 
 
 class DocumentInline(admin.TabularInline):
@@ -33,10 +41,17 @@ class DocumentInline(admin.TabularInline):
 
 class DocumentAdmin(admin.ModelAdmin):
 
-    form = DocumentAdminForm
+    if FILEPICKER:
+        form = DocumentAdminForm
+    list_display = ('document', 'video',)
+    list_display_links = ('document',)
+    search_fields = ['id', 'document__name', 'video__title']
 
     class Media:
-        js = ('js/jquery.tools.min.js',)
+        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
+
+
+admin.site.register(Document, DocumentAdmin)
 
 
 class TrackInline(admin.TabularInline):
@@ -50,10 +65,18 @@ class TrackInline(admin.TabularInline):
 
 class TrackAdmin(admin.ModelAdmin):
 
-    form = TrackAdminForm
+    if FILEPICKER:
+        form = TrackAdminForm
+    list_display = ('src', 'kind', 'video',)
+    list_display_links = ('src',)
+    list_filter = ('kind',)
+    search_fields = ['id', 'src__name', 'kind', 'video__title']
 
     class Media:
-        js = ('js/jquery.tools.min.js',)
+        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
+
+
+admin.site.register(Track, TrackAdmin)
 
 
 class OverlayInline(admin.TabularInline):
@@ -67,11 +90,11 @@ class OverlayInline(admin.TabularInline):
         return False
 
 
-admin.site.register(Contributor)
-if FILEPICKER:
-    admin.site.register(Document, DocumentAdmin)
-    admin.site.register(Track, TrackAdmin)
-else:
-    admin.site.register(Document)
-    admin.site.register(Track)
-admin.site.register(Overlay)
+class OverlayAdmin(admin.ModelAdmin):
+
+    list_display = ('title', 'video',)
+    list_display_links = ('title',)
+    search_fields = ['id', 'title', 'video__title']
+
+
+admin.site.register(Overlay, OverlayAdmin)

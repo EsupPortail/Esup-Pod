@@ -15,7 +15,10 @@
 <script src="{% static 'js/videojs-hls-quality-selector.min.js' %}"></script>
 <script src="{% static 'video-js-6.8.0/lang/fr.js' %}"></script>
 <script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
-
+{% if video.overlay_set.all %}
+  <link href="{% static 'css/videojs-overlay.css' %}" rel="stylesheet">
+  <script src="{% static 'js/videojs-overlay.js' %}"></script>
+{% endif %}
 <style>
 .scrollspy-video {
     position: relative;
@@ -23,12 +26,36 @@
     margin-top: .5rem;
     overflow: auto;
 }
+{{channel.style}}
+{% if channel.color %}
+body {
+  background-color: {{channel.color}};
+}
+{%endif%}
 </style>
 {% endblock page_extra_head %}
 
-{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item"><a href="{% url "videos"%}">{% trans 'Videos' %}</a><li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>{% endblock %}
+{% block breadcrumbs %}{{ block.super }} 
+{%if channel %}
+{% if theme %}
+<li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+{% for t in theme.get_all_parents reversed %}
+{% if t is not theme %}
+<li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
+{% endif %}
+{% endfor %}
+<li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=theme.slug%}">{{theme.title}}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>
+{% else %}
+<li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>
+{% endif %}
+{% else %}
+<li class="breadcrumb-item"><a href="{% url "videos"%}">{% trans 'Videos' %}</a><li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>
+{% endif %}
+{% endblock %}
 
-{% block page_title %}{{video.title}}{% endblock %}
+{% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}{{video.title}}{% endblock %}
 
 {% block page_content %}
 <meta itemprop="duration" content="{{ video.duration }}" />
@@ -36,6 +63,66 @@
 <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
 <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=360" />
 
+{%if channel %}
+<h3>{{channel.title}}{% if request.user in channel.owners.all %}<span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-dark btn-sm"><svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>{% trans "Edit the channel"%}</a></span>{%endif%}</h3>
+{% if channel.headband %}
+<img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
+{% endif %}
+{% if channel.description %}
+{{ channel.description|safe }}
+{% endif %}
+{% if theme %}
+<h4>{{theme.title}}</h4>
+{% if theme.headband %}
+<div align="center" class="channelheader">
+    <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" />
+</div>
+{% endif %}
+{% if theme.description %}
+{{ theme.description|safe }}
+{% endif %}
+{%endif%}
+{%endif%}
+
+{% if form %}
+<p>{% trans 'This video is protected by password, please fill in and click send.' %}</p>
+<form method="post" action="{{ request.get_full_path }}" id="video_password_form" class='needs-validation' novalidate>
+    {% csrf_token %}
+    <div class="list-group">
+    <fieldset>
+        <legend>{% trans 'Password required' %}</legend>
+        {% if form.errors %}
+        <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+        {% endif %}
+        {% for field_hidden in form.hidden_fields %}
+            {{field_hidden}}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+            {% spaceless %}
+            <div class="list-group-item">
+            <div class="form-group {% if field.field.required %}form-group-required {%endif%}" >
+                {{ field.errors }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label> 
+                {{ field }}
+                {% if field.help_text %}
+                <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                {% endif %}
+                {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+            </div>
+            </div>
+            {% endspaceless %}
+            {% endfor %}
+        <div class="text-center">
+            <button type="submit" class="btn btn-success">{% trans "Send" %}</button>
+        </div>
+    </fieldset>
+    </div>
+</form>
+<p>
+  {% trans 'If you do not have the password for this content, please' %} <a href="#?owner={{video.owner.id}}&video={{video.id}}">{% trans 'contact its owner' %}</a>.
+</p>
+
+{% else %}
 <video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
 poster="{{video.get_thumbnail_url}}" data-setup='{}'>
   <p class="vjs-no-js">
@@ -47,7 +134,18 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
   <track kind="subtitles" src="../shared/example-captions.vtt" srclang="en" label="English"></track>
   -->
 </video>
-
+{% if video.overlay_set.all %}
+<ul id="overlays" style="display: none">
+  {% for overlay in video.overlay_set.all %}
+    <li data-timestart="{{overlay.time_start}}"
+        data-timeend="{{overlay.time_end}}"
+        data-content="{{overlay.content}}"
+        data-position="{{overlay.position}}"
+        data-background="{{overlay.background}}">
+    </li>
+  {% endfor %}
+</ul>
+{% endif %}
 <nav id="navbar-example2" class="navbar navbar-light bg-light">
   <a class="navbar-brand" href="#">{{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}</a>
   <ul class="nav nav-pills">
@@ -123,7 +221,7 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
     </p>
   </div>
 </div>
-
+{%endif%}
 {% endblock page_content %}
 
 {% block page_aside %}
@@ -142,6 +240,35 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
 
 
 {% block more_script %}
+
+{% if form %}
+<script>
+var showalert = function(message,alerttype) {
+    $('body').append('<div id="formalertdiv" class="alert ' +  alerttype + ' alert-dismissible fade show"  role="alert">'+message+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    setTimeout(function() { $("#formalertdiv").remove(); }, 5000);
+};
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          window.scrollTo($("#video_password_form").scrollTop(), 0); 
+          showalert("{% trans "Errors appear in the form, please correct it"%}","alert-danger");
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+</script>
+{% else %}
 <script>
 var options = {
   notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
@@ -185,7 +312,21 @@ var player = videojs('podvideoplayer', options, function(){});
     player.src(mp4_sources);
     player.controlBar.addChild('QualitySelector');
   {% endif %}
-  
+  {% if video.overlay_set.all %}
+    var list_overlays = [];
+    $('ul#overlays li').each(function() {
+      list_overlays.push({
+        content: $(this).attr('data-content'),
+        align: $(this).attr('data-position'),
+        showBackground: $(this).attr('data-background'),
+        start: parseInt($(this).attr('data-timestart')),
+        end: parseInt($(this).attr('data-timeend'))
+      });
+    });
+    player.overlay({
+      overlays: list_overlays
+    });
+  {% endif %}
 {% else %}
   {% if video.get_video_m4a %}
     var srcOptions = {
@@ -197,5 +338,5 @@ var player = videojs('podvideoplayer', options, function(){});
   {% endif %}
 {% endif %}
 </script>
-
+{% endif %}
 {% endblock more_script %}
