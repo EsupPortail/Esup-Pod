@@ -362,7 +362,8 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
             )
         else:
             if is_password_protected:
-                form = VideoPasswordForm(request.POST) if request.POST else VideoPasswordForm()
+                form = VideoPasswordForm(
+                    request.POST) if request.POST else VideoPasswordForm()
                 return render(
                     request, 'videos/video.html', {
                         'channel': channel,

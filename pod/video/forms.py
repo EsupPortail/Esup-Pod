@@ -445,7 +445,9 @@ class FrontThemeForm(ThemeForm):
 
 
 class VideoPasswordForm(forms.Form):
-    password = forms.CharField(label=_(u'Password'), widget=forms.PasswordInput())
+    password = forms.CharField(
+        label=_(u'Password'),
+        widget=forms.PasswordInput())
 
     def __init__(self, *args, **kwargs):
         super(VideoPasswordForm, self).__init__(*args, **kwargs)
