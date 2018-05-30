@@ -1,10 +1,7 @@
 """
 Unit tests for chapters views
 """
-import os
-
 from django.apps import apps
-from django.conf import settings
 from django.test import TestCase
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
@@ -16,9 +13,6 @@ if apps.is_installed('pod.filepicker'):
     from pod.filepicker.models import UserDirectory
     from datetime import datetime
     FILEPICKER = True
-if apps.is_installed('pod.authentication'):
-    from pod.authentication.models import Owner
-    AUTH = True
 
 
 class ChapterViewsTestCase(TestCase):
