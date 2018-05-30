@@ -36,7 +36,7 @@ class DocumentAdmin(admin.ModelAdmin):
     form = DocumentAdminForm
 
     class Media:
-        js = ('js/jquery.tools.min.js',)
+        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
 
 
 class TrackInline(admin.TabularInline):
@@ -53,7 +53,7 @@ class TrackAdmin(admin.ModelAdmin):
     form = TrackAdminForm
 
     class Media:
-        js = ('js/jquery.tools.min.js',)
+        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
 
 
 class OverlayInline(admin.TabularInline):
