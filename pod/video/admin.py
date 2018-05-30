@@ -24,10 +24,15 @@ from pod.video.forms import ChannelForm
 from pod.video.forms import ThemeForm
 from pod.video.forms import TypeForm
 from pod.video.forms import DisciplineForm
-from pod.completion.admin import ContributorInline
-from pod.completion.admin import DocumentInline
-from pod.completion.admin import OverlayInline
-from pod.completion.admin import TrackInline
+if apps.is_installed('pod.completion'):
+    COMPLETION = True
+    from pod.completion.admin import ContributorInline
+    from pod.completion.admin import DocumentInline
+    from pod.completion.admin import OverlayInline
+    from pod.completion.admin import TrackInline
+if apps.is_installed('pod.chapters'):
+    CHAPTER = True
+    from pod.chapters.admin import ChapterInline
 
 if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
@@ -74,12 +79,18 @@ class VideoAdmin(admin.ModelAdmin):
     readonly_fields = ('duration', 'encoding_in_progress',
                        'get_encoding_step')
 
-    inlines = [
-        ContributorInline,
-        DocumentInline,
-        TrackInline,
-        OverlayInline
-    ]
+    inlines = []
+    if COMPLETION:
+        inlines += [
+            ContributorInline,
+            DocumentInline,
+            TrackInline,
+            OverlayInline
+        ]
+    if CHAPTER:
+        inlines += [
+            ChapterInline
+        ]
 
     def get_owner_by_name(self, obj):
         owner = obj.owner
