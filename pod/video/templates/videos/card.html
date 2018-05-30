@@ -52,14 +52,9 @@
     {% endif %}
     <div class="card-body">
       
-      {% if request.user and video.owner == request.user %}
+      {% if video.owner == request.user or request.user.is_superuser %}
       <footer class="card-footer p-0 m-0">
-        <a href="{% url 'video_edit' slug=video.slug %}" title="{% trans "Edit the video"%}" class="p-0 m-0 btn btn-light btn-sm pl-1"><svg height="8" class="octicon octicon-pencil" viewBox="0 0 14 16" version="1.1" width="7" aria-hidden="true"><path fill-rule="evenodd" d="M0 12v3h3l8-8-3-3-8 8zm3 2H1v-2h1v1h1v1zm10.3-9.3L12 6 9 3l1.3-1.3a.996.996 0 0 1 1.41 0l1.59 1.59c.39.39.39 1.02 0 1.41z"></path></svg></a>
-        <a href="{% url 'video_completion' slug=video.slug %}" title="{% trans "Complete the video"%}" class="p-0 m-0 btn btn-light btn-sm pl-1"><svg height="32" class="octicon octicon-file-submodule" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M10 7H4v7h9c.55 0 1-.45 1-1V8h-4V7zM9 9H5V8h4v1zm4-5H7V3c0-.66-.31-1-1-1H1c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h2V7c0-.55.45-1 1-1h6c.55 0 1 .45 1 1h3V5c0-.55-.45-1-1-1zM6 4H1V3h5v1z"></path></svg></a>
-        <a href="{% url 'video_chapter' slug=video.slug %}" title="{% trans "Chapter the video"%}" class="p-0 m-0 btn btn-light btn-sm pl-1"><svg height="32" class="octicon octicon-tasklist" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M15.41 9H7.59C7 9 7 8.59 7 8c0-.59 0-1 .59-1h7.81c.59 0 .59.41.59 1 0 .59 0 1-.59 1h.01zM9.59 4C9 4 9 3.59 9 3c0-.59 0-1 .59-1h5.81c.59 0 .59.41.59 1 0 .59 0 1-.59 1H9.59zM0 3.91l1.41-1.3L3 4.2 7.09 0 8.5 1.41 3 6.91l-3-3zM7.59 12h7.81c.59 0 .59.41.59 1 0 .59 0 1-.59 1H7.59C7 14 7 13.59 7 13c0-.59 0-1 .59-1z"></path></svg></a>
-        <a href="#" class="p-0 m-0 btn btn-light btn-sm pl-1" title="{% trans "Delete the video." %}">
-        <svg height="32" class="octicon octicon-trashcan" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M11 2H9c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1H2c-.55 0-1 .45-1 1v1c0 .55.45 1 1 1v9c0 .55.45 1 1 1h7c.55 0 1-.45 1-1V5c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1zm-1 12H3V5h1v8h1V5h1v8h1V5h1v8h1V5h1v9zm1-10H2V3h9v1z"></path></svg>
-        </a>
+        {% include "videos/link_video.html" %}
       </footer>
       {% endif %}
 

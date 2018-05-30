@@ -446,11 +446,22 @@ class FrontThemeForm(ThemeForm):
 
 class VideoPasswordForm(forms.Form):
     password = forms.CharField(
-        label=_(u'Password'),
+        label=_('Password'),
         widget=forms.PasswordInput())
 
     def __init__(self, *args, **kwargs):
         super(VideoPasswordForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)
+
+
+class VideoDeleteForm(forms.Form):
+    agree = forms.BooleanField(
+        label=_('I agree'),
+        help_text=_('Delete video cannot be undo'),
+        widget=forms.CheckboxInput())
+
+    def __init__(self, *args, **kwargs):
+        super(VideoDeleteForm, self).__init__(*args, **kwargs)
         self.fields = add_placeholder_and_asterisk(self.fields)
 
 
