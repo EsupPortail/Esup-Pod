@@ -91,6 +91,8 @@ ENCODING_CHOICES = getattr(
 DEFAULT_THUMBNAIL = getattr(
     settings, 'DEFAULT_THUMBNAIL', 'img/default.png')
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
+
+
 # FUNCTIONS
 
 
@@ -135,6 +137,7 @@ def get_nextautoincrement(mymodel):
     row = cursor.fetchone()
     cursor.close()
     return row[0]
+
 
 # MODELS
 
