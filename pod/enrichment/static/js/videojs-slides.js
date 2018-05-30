@@ -124,10 +124,15 @@ class VideoSlides {
 			if (currentTime >= this.slidesItems[i].start && currentTime < this.slidesItems[i].end) {
 				currentSlide = document.getElementById('slide_'+i);
 				currentSlide.style.display = 'block';
+				active = true;
+				player.trigger('changemode', slide_mode);
 			} else {
 				const oldSlide = document.getElementById('slide_'+i);
 				oldSlide.style.display = 'none';
 			}
+		}
+		if (!active) {
+			player.trigger('changemode', 'off');
 		}
 		return false;
 	}
@@ -175,12 +180,12 @@ class VideoSlides {
 			if (mode in slide_mode_list) {
 				var video = slide_mode_list[mode].split('/')[0];
 				var slide = slide_mode_list[mode].split('/')[1];
-				videoplayer.setAttribute('style', 'width: ' + video + '%');
+				videoplayer.style.width = video + '%';
 				videoplayer.style.zIndex = 1;
-				currentSlide.setAttribute('style', 'width: ' + slide + '%');
 				currentSlide.classList.remove('pip-slide');
 				currentSlide.classList.remove('full-slide');
 				currentSlide.style.zIndex = 'auto';
+				currentSlide.style.width = slide + '%';
 				if (mode == 'pip media') {
 					currentSlide.className = 'pip-slide';
 					currentSlide.style.zIndex = 2;
@@ -190,6 +195,7 @@ class VideoSlides {
 					videoplayer.style.zIndex = 1;
 				}
 			}
+			document.getElementsByClassName('vjs-slide-manager')[0].firstChild.firstChild.innerHTML = slide_mode;
 		});
 	}
 
@@ -214,6 +220,7 @@ class VideoSlides {
 				this.setAttribute('aria-checked', true);
 				this.addClass('vjs-selected');
 				player.trigger('changemode', this.el().firstChild.innerHTML);
+				slide_mode = this.el().firstChild.innerHTML;
 
 				var available = document.getElementsByClassName('vjs-slide-mode');
 				for (let e of available) {
@@ -240,6 +247,7 @@ class VideoSlides {
 				vjs_menu_button.call(this, player, options);
 				this.addClass('vjs-slide-manager');
 				this.controlText('Open slide manager');
+				this.el().firstChild.firstChild.innerHTML = slide_mode;
 			},
 			createItems: function() {
 				var items = [];
@@ -261,7 +269,6 @@ class VideoSlides {
 			}
 		});
 		var newbutton = new SlideButton(player);
-		newbutton.addClass('vjs-icon-circle');
 
 		player.controlBar.el().insertBefore(newbutton.el(), document.getElementsByClassName('vjs-fullscreen-control')[0]);
 	}

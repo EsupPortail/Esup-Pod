@@ -35,7 +35,6 @@
 	</script>
 	{% if video.enrichment_set.all %}
 		<link rel="stylesheet" href="{% static 'css/videojs-slides.css' %}"/>
-		<link rel="stylesheet" href="{% static 'css/slide.css' %}"/>
 		<script src="{% static 'js/videojs-slides.js' %}"></script>
 	{% endif %}
 {% endblock page_extra_head %}
@@ -60,7 +59,6 @@
 					<p class="vjs-no-js">
 						To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
 					</p>
-					<source src="https://d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8" type="application/x-mpegURL">
 					{% if video.enrichment_set.all %}
 						<track kind="metadata" src="{{video.get_enrichments_file}}">
 					{% endif %}
@@ -151,7 +149,17 @@
 	    player.src(mp4_sources);
 	    player.controlBar.addChild('QualitySelector');
 	  {% endif %}
-	  {% if video.enrichment_set.all %}
+	{% else %}
+	  {% if video.get_video_m4a %}
+	    var srcOptions = {
+	      src: '{{video.get_video_m4a.source_file.url}}',
+	      type: '{{video.get_video_m4a.encoding_format}}',
+	    };
+	    //Add source to player
+	    player.src(srcOptions);
+	  {% endif %}
+	{% endif %}
+	{% if video.enrichment_set.all %}
 	  	player.ready(function() {
 	  		var tracks = player.textTracks();
 	  		var metadataTrack;
@@ -178,16 +186,6 @@
 			$('.vjs-big-play-button').css('z-index', 2)
 			$('.vjs-control-bar').css('z-index', 3);
 		});
-	  {% endif %}
-	{% else %}
-	  {% if video.get_video_m4a %}
-	    var srcOptions = {
-	      src: '{{video.get_video_m4a.source_file.url}}',
-	      type: '{{video.get_video_m4a.encoding_format}}',
-	    };
-	    //Add source to player
-	    player.src(srcOptions);
-	  {% endif %}
 	{% endif %}
 </script>
 {% endblock more_script %}
