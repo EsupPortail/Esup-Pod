@@ -3,6 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from pod.authentication.models import Owner
+from pod.authentication.forms import OwnerAdminForm
 from django.utils.html import format_html
 
 # Define an inline admin descriptor for Owner model
@@ -11,6 +12,7 @@ from django.utils.html import format_html
 
 class OwnerInline(admin.StackedInline):
     model = Owner
+    form = OwnerAdminForm
     can_delete = False
     verbose_name_plural = 'owners'
     readonly_fields = ('hashkey',)
@@ -25,6 +27,9 @@ class OwnerInline(admin.StackedInline):
             exclude_set.add('affiliation')
             exclude_set.add('commentaire')
         return [f for f in fields if f not in exclude_set]
+
+    class Media:
+        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
 
 
 class UserAdmin(BaseUserAdmin):

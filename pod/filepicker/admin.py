@@ -18,12 +18,34 @@ class UserDirectoryAdmin(admin.ModelAdmin):
         else:
             return ()
 
-    list_display = ('name', 'owner')
-    ordering = ('owner',)
+    list_display = ('name', 'owner',)
+    list_display_links = ('name',)
+    list_filter = ('owner',)
+    ordering = ('name', 'owner',)
 
 
 admin.site.register(UserDirectory, UserDirectoryAdmin)
 
 
-admin.site.register(CustomImageModel)
-admin.site.register(CustomFileModel)
+class CustomImageModelAdmin(admin.ModelAdmin):
+
+    list_display = ('name', 'file_type', 'created_by',)
+    list_display_links = ('name',)
+    list_filter = ('name', 'created_by',)
+    ordering = ('name', 'created_by',)
+    readonly_fields = ('file_size', 'file_type',)
+
+
+admin.site.register(CustomImageModel, CustomImageModelAdmin)
+
+
+class CustomFileModelAdmin(admin.ModelAdmin):
+
+    list_display = ('name', 'file_type', 'created_by',)
+    list_display_links = ('name',)
+    list_filter = ('name', 'created_by',)
+    ordering = ('name', 'created_by',)
+    readonly_fields = ('file_size', 'file_type',)
+
+
+admin.site.register(CustomFileModel, CustomFileModelAdmin)
