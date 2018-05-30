@@ -15,7 +15,10 @@
 <script src="{% static 'js/videojs-hls-quality-selector.min.js' %}"></script>
 <script src="{% static 'video-js-6.8.0/lang/fr.js' %}"></script>
 <script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
-
+{% if video.overlay_set.all %}
+  <link href="{% static 'css/videojs-overlay.css' %}" rel="stylesheet">
+  <script src="{% static 'js/videojs-overlay.js' %}"></script>
+{% endif %}
 <style>
 .scrollspy-video {
     position: relative;
@@ -131,7 +134,18 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
   <track kind="subtitles" src="../shared/example-captions.vtt" srclang="en" label="English"></track>
   -->
 </video>
-
+{% if video.overlay_set.all %}
+<ul id="overlays" style="display: none">
+  {% for overlay in video.overlay_set.all %}
+    <li data-timestart="{{overlay.time_start}}"
+        data-timeend="{{overlay.time_end}}"
+        data-content="{{overlay.content}}"
+        data-position="{{overlay.position}}"
+        data-background="{{overlay.background}}">
+    </li>
+  {% endfor %}
+</ul>
+{% endif %}
 <nav id="navbar-example2" class="navbar navbar-light bg-light">
   <a class="navbar-brand" href="#">{{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}</a>
   <ul class="nav nav-pills">
@@ -298,7 +312,21 @@ var player = videojs('podvideoplayer', options, function(){});
     player.src(mp4_sources);
     player.controlBar.addChild('QualitySelector');
   {% endif %}
-  
+  {% if video.overlay_set.all %}
+    var list_overlays = [];
+    $('ul#overlays li').each(function() {
+      list_overlays.push({
+        content: $(this).attr('data-content'),
+        align: $(this).attr('data-position'),
+        showBackground: $(this).attr('data-background'),
+        start: parseInt($(this).attr('data-timestart')),
+        end: parseInt($(this).attr('data-timeend'))
+      });
+    });
+    player.overlay({
+      overlays: list_overlays
+    });
+  {% endif %}
 {% else %}
   {% if video.get_video_m4a %}
     var srcOptions = {
