@@ -1,7 +1,7 @@
 from django import forms
-from django.contrib.admin import widgets
 from pod.authentication.models import Owner
 from pod.filepicker.widgets import CustomFilePickerWidget
+
 
 class OwnerAdminForm(forms.ModelForm):
 

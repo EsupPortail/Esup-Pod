@@ -23,18 +23,63 @@
     margin-top: .5rem;
     overflow: auto;
 }
+{{channel.style}}
+{% if channel.color %}
+body {
+  background-color: {{channel.color}};
+}
+{%endif%}
 </style>
 {% endblock page_extra_head %}
 
-{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item"><a href="{% url "videos"%}">{% trans 'Videos' %}</a><li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>{% endblock %}
+{% block breadcrumbs %}{{ block.super }} 
+{%if channel %}
+{% if theme %}
+<li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+{% for t in theme.get_all_parents reversed %}
+{% if t is not theme %}
+<li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
+{% endif %}
+{% endfor %}
+<li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=theme.slug%}">{{theme.title}}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>
+{% else %}
+<li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>
+{% endif %}
+{% else %}
+<li class="breadcrumb-item"><a href="{% url "videos"%}">{% trans 'Videos' %}</a><li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>
+{% endif %}
+{% endblock %}
 
-{% block page_title %}{{video.title}}{% endblock %}
+{% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}{{video.title}}{% endblock %}
 
 {% block page_content %}
 <meta itemprop="duration" content="{{ video.duration }}" />
 <meta itemprop="thumbnailUrl" content="{{ video.thumbnail.url }}" />
 <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
 <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=360" />
+
+{%if channel %}
+<h3>{{channel.title}}{% if request.user in channel.owners.all %}<span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-dark btn-sm"><svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>{% trans "Edit the channel"%}</a></span>{%endif%}</h3>
+{% if channel.headband %}
+<img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
+{% endif %}
+{% if channel.description %}
+{{ channel.description|safe }}
+{% endif %}
+{% if theme %}
+<h4>{{theme.title}}</h4>
+{% if theme.headband %}
+<div align="center" class="channelheader">
+    <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" />
+</div>
+{% endif %}
+{% if theme.description %}
+{{ theme.description|safe }}
+{% endif %}
+{%endif%}
+{%endif%}
 
 <video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
 poster="{{video.get_thumbnail_url}}" data-setup='{}'>
