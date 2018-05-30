@@ -444,6 +444,14 @@ class FrontThemeForm(ThemeForm):
         fields = '__all__'
 
 
+class VideoPasswordForm(forms.Form):
+    password = forms.CharField(label=_(u'Password'), widget=forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        super(VideoPasswordForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)
+
+
 class TypeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
