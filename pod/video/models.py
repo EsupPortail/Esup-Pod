@@ -3,6 +3,7 @@ import time
 import unicodedata
 import json
 import logging
+import hashlib
 
 from django.db import models
 from django.db import connection
@@ -89,6 +90,9 @@ ENCODING_CHOICES = getattr(
     ))
 DEFAULT_THUMBNAIL = getattr(
     settings, 'DEFAULT_THUMBNAIL', 'img/default.png')
+SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
+
+
 # FUNCTIONS
 
 
@@ -133,6 +137,7 @@ def get_nextautoincrement(mymodel):
     row = cursor.fetchone()
     cursor.close()
     return row[0]
+
 
 # MODELS
 
@@ -549,6 +554,10 @@ class Video(models.Model):
 
     def get_absolute_url(self):
         return reverse('video', args=[str(self.slug)])
+
+    def get_hashkey(self):
+        return hashlib.sha256(
+            ("%s-%s" % (SECRET_KEY, self.id)).encode('utf-8')).hexdigest()
 
     def delete(self):
         if self.video:

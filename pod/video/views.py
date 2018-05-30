@@ -294,7 +294,7 @@ def is_in_video_groups(user, video):
 
 
 @csrf_protect
-def video(request, slug, slug_c=None, slug_t=None):
+def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     try:
         id = int(slug[:slug.find("-")])
     except ValueError:
@@ -317,7 +317,9 @@ def video(request, slug, slug_c=None, slug_t=None):
     )
 
     if is_access_protected:
-
+        access_granted_for_private = (
+            slug_private and slug_private == video.get_hashkey()
+        )
         access_granted_for_draft = request.user.is_authenticated() and (
             request.user == video.owner or request.user.is_superuser)
         access_granted_for_restricted = (
@@ -328,6 +330,8 @@ def video(request, slug, slug_c=None, slug_t=None):
         )
 
         show_page = (
+            access_granted_for_private
+            or
             (is_draft and access_granted_for_draft)
             or (
                 is_restricted
