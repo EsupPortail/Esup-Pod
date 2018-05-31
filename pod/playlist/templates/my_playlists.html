@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My playlists" %}</li>{% endblock %}
+
+{% block page_title %}
+{% blocktrans count counter=playlists.paginator.count %}{{ counter }} playlist found{% plural %}{{ counter }} playlistss found{% endblocktrans %}
+{% endblock %}
