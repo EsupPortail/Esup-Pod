@@ -28,7 +28,7 @@ def enrichment_to_vtt(list_enrichment, video):
         elif enrich.type == 'document':
             url = enrich.document.file.url
         elif enrich.type == 'richtext':
-            url = enrich.richtext
+            url = ''.join(enrich.richtext.splitlines())
         elif enrich.type == 'weblink':
             url = enrich.weblink
         elif enrich.type == 'embed':

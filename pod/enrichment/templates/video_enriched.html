@@ -116,6 +116,24 @@
       		<div id="info"></div>
     	</div>
     </div>
+    <div class="card card-body">
+    	<h5 class="card-title">
+    		{% trans 'Informations' %}
+    	</h5>
+    	<div class="card-text">
+    		<p>{% trans 'To help you, the different types of enrichments have specific colors' %}:</p>
+    		<p>
+    			<ul>
+    				<li><font color="purple">{% trans 'Image' %}</font></li>
+    				<li><font color="yellow">{% trans 'Document' %}</font></li>
+    				<li><font color="blue">{% trans 'Richtext' %}</font></li>
+    				<li><font color="red">{% trans 'Weblink' %}</font></li>
+    				<li><font color="green">{% trans 'Embed' %}</font></li>
+    			</ul>
+    		</p>
+    		<p>{% trans 'There are visible on the video playback bar.' %}</p>
+    	</div>
+    </div>
 {% endblock page_aside %}
 
 {% block more_script %}

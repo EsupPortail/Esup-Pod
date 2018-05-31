@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load staticfiles %}
 {{form_enrichment.media}}
-<div class="panel-heading bg-primary text-white">
+<div class="panel-heading">
 	<h4 class="card-title">{% trans 'Create / Edit enrichments' %}</h4>
 </div>
 <form id="form_enrich" class="form_save" action="{% url 'video_enrichment' slug=video.slug %}" method="POST">
