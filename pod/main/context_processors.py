@@ -48,7 +48,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         'LOGO_COMPACT_SITE': 'img/logo_compact_site.png',
         'LOGO_ETB': 'img/logo_etb.svg',
         'LOGO_PLAYER': 'img/logo_player.png',
-        'LOGO_SERVICE': 'img/logo_service.png',
+        'FOOTER_TEXT': ('',)
         # 'FAVICON': 'img/favicon.png',
         # 'CSS_OVERRIDE' : 'custom/etab.css'
     }

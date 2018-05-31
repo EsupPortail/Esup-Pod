@@ -10,8 +10,9 @@
     <img src="{% static LOGO_ETB %}" alt="" height="71" width="215">
     <p class="footer-contact">
       <span class="footer-contact-title">{{TITLE_ETB}}</span><br>
-      42, rue Paul Duez<br>
-      59000 Lille - France
+      {% for text in FOOTER_TEXT %}
+      {{text|safe}}<br>
+      {% endfor %}
     </p>
   </div>
   <div class="col-md-4">
