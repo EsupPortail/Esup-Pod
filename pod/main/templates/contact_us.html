@@ -5,34 +5,26 @@
 
 {% block breadcrumbs %}
 {{ block.super }} 
-<li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
-<li class="breadcrumb-item"><a href="{% url 'video' slug=video.slug %}" title="{{video.title}}">{{video.title}}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{% trans "Delete" %}</li>
+<li class="breadcrumb-item active" aria-current="page">{% trans "Contact us" %}</li>
 {% endblock %}
 
 {% block page_title %}
-{% trans "Deleting the video" %} {{form.instance.title}}
+{% trans "Contact us" %}
 {% endblock %}
 
 
 {% block page_content %}
-<h3>{% trans "Deleting the video" %} {{video.title}}
-<span class="float-right">
-<a href="{% url 'video' slug=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-dark btn-sm">
-    <svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>{% trans "Back to the video"%}
-</a>
-</span>
-</h3>
-<p>{% trans 'To delete the video, please checked in and click send.' %}</p>
-<form method="post" action="{{ request.get_full_path }}" id="video_delete_form" class='needs-validation' novalidate>
+<h3>{% trans "Contact us" %}</h3>
+
+<form method="post" action="{{ request.get_full_path }}" id="contact_us" class='needs-validation' novalidate>
     {% csrf_token %}
     <div class="list-group">
     <fieldset>
-        <legend>{% trans 'Agree required' %}</legend>
         {% if form.errors %}
         <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
         {% endif %}
         {% for field_hidden in form.hidden_fields %}
+            {{ field_hidden.errors }}
             {{field_hidden}}
             {% endfor %}
             {% for field in form.visible_fields %}
@@ -59,7 +51,9 @@
             {% endfor %}
         <div class="text-center mt-1">
             <button type="submit" class="btn btn-success">{% trans "Send" %}</button>
-            <a href="{% url 'video' slug=video.slug %}" title="{{video.title}}" class="btn btn-info">{% trans "Back to the video"%}</a>
+        </div>
+        <div class="float-right mt-1">
+            <a href="{{form.initial.url_referrer}}" title="{% trans "Back to the previous page"%}" class="btn btn-info">{% trans "Back to the previous page"%}</a>
         </div>
     </fieldset>
     </div>
@@ -68,9 +62,17 @@
 {% endblock page_content %}
 
 {% block collapse_page_aside %}
+{{block.super}}
 {% endblock collapse_page_aside %}
 
 {% block page_aside %}
+<div class="card card-body">
+    <h5 class="card-title">{% trans "Mandatory fields" %}</h5>
+    <div class="card-text" >
+        <p>{% trans "Fields marked with an asterisk are mandatory."%}</p>
+    </div>
+</div>
+{{block.super}}
 {% endblock page_aside %}
 
 {% block more_script %}
@@ -99,10 +101,5 @@ var showalert = function(message,alerttype) {
     });
   }, false);
 })();
-</script>
-<script>
-  $(document).ready(function () {
-    $("#collapseAside").collapse('hide');
-  });
 </script>
 {% endblock more_script %}

@@ -8,3 +8,4 @@ webvtt-py==0.4.1
 django-cas-sso==1.1.7
 ldap3==2.5
 django-progressbarupload==0.1.7
+django-simple-captcha==0.5.7

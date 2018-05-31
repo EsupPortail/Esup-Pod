@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'tagging',
     'django_cas',
-    # https://github.com/ouhouhsami/django-progressbarupload
+    'captcha',
     'progressbarupload',
     # Pod Applications
     'pod.main',
