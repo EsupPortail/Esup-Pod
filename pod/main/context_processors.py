@@ -4,6 +4,8 @@ from django.db.models import Count
 from django.db.models import Prefetch
 from django.db.models.functions import Substr, Lower
 
+from pod.main.models import LinkFooter
+
 from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import Type
@@ -29,7 +31,10 @@ HOMEPAGE_SHOWS_RESTRICTED = getattr(
     'HOMEPAGE_SHOWS_RESTRICTED',
     True)
 
-
+VERSION = getattr(
+    django_settings,
+    'VERSION',
+    '2.X')
 ##
 # Settings exposed in templates
 #
@@ -39,11 +44,13 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     {
         'TITLE_SITE': 'Pod',
         'TITLE_ETB': 'University name',
-        'LOGO_SITE': 'images/logo_compact.png',
-        'LOGO_COMPACT_SITE': 'images/logo_compact_site.png',
-        'LOGO_ETB': 'images/logo_etb.png',
-        'LOGO_PLAYER': 'images/logo_player.png',
-        'LOGO_SERVICE': 'images/logo_service.png',
+        'LOGO_SITE': 'img/logo_compact.png',
+        'LOGO_COMPACT_SITE': 'img/logo_compact_site.png',
+        'LOGO_ETB': 'img/logo_etb.svg',
+        'LOGO_PLAYER': 'img/logo_player.png',
+        'LOGO_SERVICE': 'img/logo_service.png',
+        # 'FAVICON': 'img/favicon.png',
+        # 'CSS_OVERRIDE' : 'custom/etab.css'
     }
 )
 
@@ -78,6 +85,8 @@ def context_navbar(request):
         video__is_draft=False
     ).distinct().annotate(video_count=Count("video", distinct=True))
 
+    linkFooter = LinkFooter.objects.all()
+
     owners_filter_args = {}
     if MENUBAR_HIDE_INACTIVE_OWNERS:
         owners_filter_args['is_active'] = True
@@ -105,7 +114,7 @@ def context_navbar(request):
 
     return {'CHANNELS': channels, 'TYPES': types, 'OWNERS': owners,
             'DISCIPLINES': disciplines, 'LISTOWNER': json.dumps(listowner),
-            'LAST_VIDEOS': LAST_VIDEOS}
+            'LAST_VIDEOS': LAST_VIDEOS, 'LINK_FOOTER': linkFooter, 'VERSION':VERSION}
 
 
 def get_last_videos():
