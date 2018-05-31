@@ -16,10 +16,6 @@ table.scroll .btn-group-sm > .btn {
 	line-height: 0.5;
 	padding: 5px 10px;
 }
-table.scroll tbody,
-table.scroll thead {
-	display: block;
-}
 table.scroll thead tr th {
 	height: 27px;
 	line-height: 27px;
@@ -57,7 +53,11 @@ table.scroll thead th.enrich_end {
 form#form_enrich {
 	background-color: rgba(0, 0, 0, .05);
 }
-#form_new {
+#form_new,
+.video_back {
 	padding-left: 12px;
-	padding-bottom: 10px;
+	margin-bottom: 10px;
+}
+.video_back button {
+	margin-bottom: 10px;
 }
