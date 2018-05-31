@@ -1,18 +1,11 @@
 """
 Unit tests for enrichment views
 """
-from django.apps import apps
 from django.test import TestCase
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.core.files.uploadedfile import SimpleUploadedFile
 from pod.video.models import Video
 from pod.enrichment.models import Enrichment
-if apps.is_installed('pod.filepicker'):
-    from pod.filepicker.models import CustomImageModel
-    from pod.filepicker.models import UserDirectory
-    from datetime import datetime
-    FILEPICKER = True
 
 
 class EnrichmentViewsTestCase(TestCase):

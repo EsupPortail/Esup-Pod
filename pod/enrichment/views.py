@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import PermissionDenied
+from django.core.exceptions import SuspiciousOperation
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.shortcuts import render
@@ -12,6 +13,7 @@ from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
 from pod.video.models import Video
 from pod.video.views import is_in_video_groups
+from pod.video.forms import VideoPasswordForm
 from pod.enrichment.models import Enrichment
 from pod.enrichment.forms import EnrichmentForm
 from pod.enrichment.utils import enrichment_to_vtt

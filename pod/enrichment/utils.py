@@ -22,17 +22,7 @@ def enrichment_to_vtt(list_enrichment, video):
             enrich.start).strftime('%H:%M:%S.%f')[:-3]
         end = datetime.datetime.utcfromtimestamp(
             enrich.end).strftime('%H:%M:%S.%f')[:-3]
-        url = ''
-        if enrich.type == 'image':
-            url = enrich.image.file.url
-        elif enrich.type == 'document':
-            url = enrich.document.file.url
-        elif enrich.type == 'richtext':
-            url = ''.join(enrich.richtext.splitlines())
-        elif enrich.type == 'weblink':
-            url = enrich.weblink
-        elif enrich.type == 'embed':
-            url = enrich.embed
+        url = enrichment_to_vtt_type(enrich)
         caption = Caption(
             '{0}'.format(start),
             '{0}'.format(end),
@@ -90,3 +80,16 @@ def enrichment_to_vtt(list_enrichment, video):
             file.name)
 
     return path
+
+
+def enrichment_to_vtt_type(enrich):
+    if enrich.type == 'image':
+        return enrich.image.file.url
+    elif enrich.type == 'document':
+        return enrich.document.file.url
+    elif enrich.type == 'richtext':
+        return ''.join(enrich.richtext.splitlines())
+    elif enrich.type == 'weblink':
+        return enrich.weblink
+    elif enrich.type == 'embed':
+        return enrich.embed

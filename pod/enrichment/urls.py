@@ -6,7 +6,7 @@ urlpatterns = [
     url(r'^video_enrichment/(?P<slug>[\-\d\w]+)/$',
         video_enrichment,
         name='video_enrichment'),
-   	url(r'^video_enriched/(?P<slug>[\-\d\w]+)/$',
-   		video_enriched,
-   		name='video_enriched'),
+    url(r'^video_enriched/(?P<slug>[\-\d\w]+)/$',
+        video_enriched,
+        name='video_enriched'),
 ]
