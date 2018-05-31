@@ -10,14 +10,18 @@
 	    <meta name="description" content="">
 	    <meta name="author" content="">
 
-	    <link rel="icon" href="{% static 'images/favicon.png' %}">
-
+        {% if FAVICON %}
+	    <link rel="icon" href="{% static FAVICON %}">
+        {% endif %}
 	    <!-- Bootstrap CSS -->
 	    <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap.min.css' %}" crossorigin="anonymous">
 
 	    <!-- octicons -->
 	    <link rel="stylesheet" href="{% static 'css/octicons.css' %}" media="screen" title="no title">
 	    <link rel="stylesheet" href="{% static 'css/lillePod.css' %}" media="screen" title="no title">
+        {% if CSS_OVERRIDE %}
+        <link rel="stylesheet" href="{% static CSS_OVERRIDE %}" media="screen" title="no title">
+        {% endif %}
         <style>
             .jumbotron {
                 padding: 1rem 2rem;

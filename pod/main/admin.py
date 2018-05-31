@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 from modeltranslation.admin import TranslationAdmin
+from pod.main.models import LinkFooter
 
 
 SITE_ID = getattr(settings, 'SITE_ID', 1)
@@ -46,8 +47,12 @@ class CustomFlatPageAdmin(TranslationAdmin):
         obj.sites.add(Site.objects.get(id=SITE_ID))
         obj.save()
 
+
+class LinkFooterAdmin(TranslationAdmin):
+    list_display = ('title', 'url', )
+
+
 # Unregister the default FlatPage admin and register CustomFlatPageAdmin.
-
-
 admin.site.unregister(FlatPage)
 admin.site.register(FlatPage, CustomFlatPageAdmin)
+admin.site.register(LinkFooter, LinkFooterAdmin)
