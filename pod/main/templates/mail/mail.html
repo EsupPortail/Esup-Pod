@@ -2,6 +2,6 @@
 <p>{% trans "Hello" %},</p>
 <p>{% trans "The user" %} {{ name }} (<a href="{{email}}">{{email}}</a>) {% trans "send a message from" %} <strong>{{TITLE_SITE}}</strong></p>
 <p>{% trans "Here is the message sent" %} :</p>
-<p>{{message}}</p>
+<p>{{message|safe}}</p>
 <p>{% trans "Referrer page" %} : <a href="{{url_referrer}}">{{url_referrer}}</a></p>
 <p>{% trans "Regards" %}.</p>
