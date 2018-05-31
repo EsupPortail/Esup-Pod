@@ -10,6 +10,8 @@ SUBJECT_CHOICES = getattr(
         ('', '-----'),
         ('info', _('Request more information')),
         ('contribute', _('Learn more about how to contribute')),
+        ('request_password', _('Password request for a video')),
+        ('inappropriate_content', _('Report inappropriate content')),
         ('bug', _('Correction or bug report')),
         ('other', _('Other (please specify)'))
     ))

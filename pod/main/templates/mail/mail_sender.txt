@@ -1,0 +1,6 @@
+{% load i18n %}
+{% trans "Hello" %},\n\n
+{% trans "You just send a message from" %} **{{TITLE_SITE}}**\n\n
+{% trans "Here is the message sent" %} :\n\n
+{{message}}\n\n
+{% trans "Regards" %}\n\n
