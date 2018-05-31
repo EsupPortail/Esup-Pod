@@ -8,9 +8,12 @@ from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.apps import apps
+from django.contrib.auth import views as auth_views
+
 from pod.authentication.views import authentication_login
 from pod.authentication.views import authentication_logout
 from pod.authentication.views import authentication_login_gateway
+
 from pod.video.views import video
 from pod.video.views import video_edit
 from pod.video.views import video_delete
@@ -20,7 +23,9 @@ from pod.video.views import my_videos
 from pod.video.views import my_channels
 from pod.video.views import channel_edit
 from pod.video.views import theme_edit
-from django.contrib.auth import views as auth_views
+from pod.main.views import contact_us
+
+
 
 if apps.is_installed('pod.filepicker'):
     from pod.filepicker.sites import site as filepicker_site
@@ -70,6 +75,10 @@ urlpatterns = [
     url(r'^accounts/reset-password/$',
         auth_views.PasswordResetView.as_view()),
     url(r'^sso-cas/', include('django_cas.urls')),
+
+    #contact_us
+    url(r'^contact_us/$', contact_us, name='contact_us')
+    # url(r'^captcha/', include('captcha.urls'))
 ]
 
 if apps.is_installed('pod.filepicker'):

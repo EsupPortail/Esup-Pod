@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.admin import widgets
 from django.conf import settings
-from django.utils.safestring import mark_safe
 from django.core.validators import FileExtensionValidator
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import ugettext_lazy as _
@@ -16,6 +15,8 @@ from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
+
+from pod.main.forms import add_placeholder_and_asterisk
 
 from ckeditor.widgets import CKEditorWidget
 from collections import OrderedDict
@@ -292,34 +293,6 @@ class VideoForm(forms.ModelForm):
         widgets = {'date_added': widgets.AdminDateWidget,
                    'date_evt': widgets.AdminDateWidget,
                    }
-
-
-def add_placeholder_and_asterisk(fields):
-    for myField in fields:
-        classname = fields[myField].widget.__class__.__name__
-        if classname == 'CheckboxInput':
-            if fields[myField].widget.attrs.get('class'):
-                fields[myField].widget.attrs[
-                    'class'] += ' form-check-input'
-            else:
-                fields[myField].widget.attrs[
-                    'class'] = 'form-check-input '
-        else:
-            fields[myField].widget.attrs[
-                'placeholder'] = fields[myField].label
-            if fields[myField].required:
-                fields[myField].label = mark_safe(
-                    "%s <span class=\"required\">*</span>" %
-                    fields[myField].label
-                )
-                fields[myField].widget.attrs["required"] = "true"
-            if fields[myField].widget.attrs.get('class'):
-                fields[myField].widget.attrs[
-                    'class'] += ' form-control'
-            else:
-                fields[myField].widget.attrs[
-                    'class'] = 'form-control '
-    return fields
 
 
 class ChannelForm(forms.ModelForm):

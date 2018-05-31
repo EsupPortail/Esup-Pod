@@ -459,7 +459,7 @@ def video_delete(request, slug=None):
         if form.is_valid():
             video.delete()
             messages.add_message(
-                request, messages.INFO, _(u'The video has been deleted.'))
+                request, messages.INFO, _('The video has been deleted.'))
             return redirect(
                 reverse('my_videos')
             )
