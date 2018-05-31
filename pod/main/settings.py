@@ -201,7 +201,7 @@ CAS_RESPONSE_CALLBACKS = (
 #
 #   username: EMAIL_HOST_USER
 #   password: EMAIL_HOST_PASSWORD
-#   
+#
 EMAIL_HOST = 'smtp.univ.fr'
 EMAIL_PORT = 25
 DEFAULT_FROM_EMAIL = 'noreply@univ.fr'
