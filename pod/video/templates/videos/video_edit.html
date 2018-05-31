@@ -106,6 +106,23 @@
 
 {% block page_aside %}
 {% if form.instance.title %}
+{% if request.user.is_staff or request.user.is_superuser %}
+    <div class="card card-body">
+        <h5 class="card-title">Staff - {% trans "Alternative version" %}</h5>
+        <div class="card-text">
+            <p>{% trans 'As a staff member you can add enrichments, interactivities or improve its accessability.' %}</p>
+            <p>
+                <div class="input-group-button">
+                    <a href="{% url 'video_enrichment' slug=form.instance.slug %}" title="{% trans 'Enrich the video' %}" class="p-0 m-0 btn btn-light btn-sm pl-1">
+                        <svg height="32" class="octicon octicon-diff" viewBox="0 0 13 16" version="1.1" width="26" aria-hidden="true"><path fill-rule="evenodd" d="M6 7h2v1H6v2H5V8H3V7h2V5h1v2zm-3 6h5v-1H3v1zM7.5 2L11 5.5V15c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V3c0-.55.45-1 1-1h6.5zM10 6L7 3H1v12h9V6zM8.5 0H3v1h5l4 4v8h1V4.5L8.5 0z"></path></svg>
+                    </a>
+                    <!-- Interactive -->
+                    <!-- Accessible -->
+                </div>
+            </p>
+        </div>
+    </div>
+{% endif %}
 <div class="card card-body">
     <h5 class="card-title">{% trans 'Embed/Share (Private Mode)' %}</h5>
     <div class="card-text" >
@@ -167,7 +184,6 @@
 <script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
 <!-- form . media -->
-<script type="text/javascript" src="{% static 'js/jquery.tools.min.js' %}"></script>
 {{form.media}}
 {% progress_bar_media %}
 <!-- fin form . media -->
