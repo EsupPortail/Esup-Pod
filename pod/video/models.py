@@ -555,6 +555,11 @@ class Video(models.Model):
     def get_absolute_url(self):
         return reverse('video', args=[str(self.slug)])
 
+    def get_full_url(self, request=None):
+        full_url = ''.join(
+            ['//', get_current_site(request).domain, self.get_absolute_url()])
+        return full_url
+
     def get_hashkey(self):
         return hashlib.sha256(
             ("%s-%s" % (SECRET_KEY, self.id)).encode('utf-8')).hexdigest()

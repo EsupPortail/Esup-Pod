@@ -11,6 +11,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 
+from pod.video.models import Video
+
 
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
 CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [
@@ -24,7 +26,17 @@ def contact_us(request):
         request.GET.get('owner')
         and User.objects.filter(id=request.GET.get('owner')).first()) else None
 
-    video = request.GET.get('video')
+    video = Video.objects.get(id=request.GET.get('video')) if (
+        request.GET.get('video')
+        and Video.objects.filter(
+            id=request.GET.get('video')).first()
+    ) else None
+
+    description = "%s: %s\n%s: %s%s\n\n" % (
+        _('Title'),
+        video.title, _('Link'),
+        'https:' if request.is_secure() else 'http:',
+        video.get_full_url(request)) if video else None
 
     send_subject = request.GET.get('subject') if (
         request.GET.get('subject')
@@ -39,15 +51,18 @@ def contact_us(request):
 
     form = ContactUsForm(
         request,
-        initial={'url_referrer': url_referrer, 'subject': send_subject})
+        initial={'url_referrer': url_referrer,
+                 'subject': send_subject, 'description': description})
 
     if request.method == "POST":
         form = ContactUsForm(request, request.POST)
         if form.is_valid():
             name = form.cleaned_data['name']
-            form_subject = form.cleaned_data['subject'] if form.cleaned_data.get('subject') else send_subject
+            form_subject = form.cleaned_data['subject'] if (
+                form.cleaned_data.get('subject')
+            ) else send_subject
             subject = "[ %s ] %s" % (
-                TITLE_SITE, 
+                TITLE_SITE,
                 dict(SUBJECT_CHOICES)[form_subject])
             email = form.cleaned_data['email']
             message = form.cleaned_data['description']
@@ -75,17 +90,20 @@ def contact_us(request):
             msg.send(fail_silently=False)
 
             # EMAIL TO SENDER
-            subject = "[ %s ] %s %s" % (TITLE_SITE, _('your message intitled'), dict(
-                SUBJECT_CHOICES)[form_subject])
+            subject = "[ %s ] %s %s" % (
+                TITLE_SITE, _('your message intitled'),
+                dict(SUBJECT_CHOICES)[form_subject])
 
-            text_content = loader.get_template('mail/mail_sender.txt').render({
-                'TITLE_SITE': TITLE_SITE,
-                'message': message
-            })
-            html_content = loader.get_template('mail/mail_sender.html').render({
-                'TITLE_SITE': TITLE_SITE,
-                'message': message.replace("\n", "<br/>")
-            })
+            text_content = loader.get_template('mail/mail_sender.txt').render(
+                {
+                    'TITLE_SITE': TITLE_SITE,
+                    'message': message
+                })
+            html_content = loader.get_template('mail/mail_sender.html').render(
+                {
+                    'TITLE_SITE': TITLE_SITE,
+                    'message': message.replace("\n", "<br/>")
+                })
             msg = EmailMultiAlternatives(
                 subject, text_content, HELP_MAIL, [email])
             msg.attach_alternative(html_content, "text/html")

@@ -26,7 +26,6 @@ from pod.video.views import theme_edit
 from pod.main.views import contact_us
 
 
-
 if apps.is_installed('pod.filepicker'):
     from pod.filepicker.sites import site as filepicker_site
 
@@ -76,7 +75,7 @@ urlpatterns = [
         auth_views.PasswordResetView.as_view()),
     url(r'^sso-cas/', include('django_cas.urls')),
 
-    #contact_us
+    # contact_us
     url(r'^contact_us/$', contact_us, name='contact_us')
     # url(r'^captcha/', include('captcha.urls'))
 ]

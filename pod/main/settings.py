@@ -44,8 +44,8 @@ ALLOWED_HOSTS = ['localhost']
 ##
 # Session settings
 #
-#   https://docs.djangoproject.com/en/1.11/ref/settings/#session-cookie-age
-#   https://docs.djangoproject.com/en/1.11/ref/settings/#session-expire-at-browser-close
+# https://docs.djangoproject.com/en/1.11/ref/settings/#session-cookie-age
+# https://docs.djangoproject.com/en/1.11/ref/settings/#session-expire-at-browser-close
 #
 SESSION_COOKIE_AGE = 14400
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -195,13 +195,13 @@ CAS_RESPONSE_CALLBACKS = (
 ##
 # eMail settings
 #
-#   https://docs.djangoproject.com/en/1.11/ref/settings/#email-host
-#   https://docs.djangoproject.com/en/1.11/ref/settings/#email-port
-#   https://docs.djangoproject.com/en/1.11/ref/settings/#default-from-email
+# https://docs.djangoproject.com/en/1.11/ref/settings/#email-host
+# https://docs.djangoproject.com/en/1.11/ref/settings/#email-port
+# https://docs.djangoproject.com/en/1.11/ref/settings/#default-from-email
 #
 #   username: EMAIL_HOST_USER
 #   password: EMAIL_HOST_PASSWORD
-#   
+#
 EMAIL_HOST = 'smtp.univ.fr'
 EMAIL_PORT = 25
 DEFAULT_FROM_EMAIL = 'noreply@univ.fr'
