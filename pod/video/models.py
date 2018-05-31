@@ -3,6 +3,7 @@ import time
 import unicodedata
 import json
 import logging
+import hashlib
 
 from django.db import models
 from django.db import connection
@@ -32,6 +33,8 @@ if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
 if apps.is_installed('pod.chapters'):
     CHAPTERS = True
+if apps.is_installed('pod.enrichment'):
+    ENRICHMENT = True
 
 logger = logging.getLogger(__name__)
 
@@ -89,6 +92,9 @@ ENCODING_CHOICES = getattr(
     ))
 DEFAULT_THUMBNAIL = getattr(
     settings, 'DEFAULT_THUMBNAIL', 'img/default.png')
+SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
+
+
 # FUNCTIONS
 
 
@@ -133,6 +139,7 @@ def get_nextautoincrement(mymodel):
     row = cursor.fetchone()
     cursor.close()
     return row[0]
+
 
 # MODELS
 
@@ -550,6 +557,15 @@ class Video(models.Model):
     def get_absolute_url(self):
         return reverse('video', args=[str(self.slug)])
 
+    def get_full_url(self, request=None):
+        full_url = ''.join(
+            ['//', get_current_site(request).domain, self.get_absolute_url()])
+        return full_url
+
+    def get_hashkey(self):
+        return hashlib.sha256(
+            ("%s-%s" % (SECRET_KEY, self.id)).encode('utf-8')).hexdigest()
+
     def delete(self):
         if self.video:
             if os.path.isfile(self.video.path):
@@ -623,6 +639,24 @@ class Video(models.Model):
                     'files',
                     self.owner.username,
                     'chapter_{0}'.format(self.title))
+
+    def get_enrichments_file(self):
+        list_enrichment = self.enrichment_set.all()
+        if ENRICHMENT and list_enrichment:
+            if FILEPICKER:
+                enrichments = CustomFileModel.objects.get(
+                    name='enrich_{0}'.format(self.title),
+                    created_by=self.owner,
+                    directory__name='Home').file
+                return os.path.join(
+                    settings.MEDIA_URL,
+                    enrichments.name)
+            else:
+                return os.path.join(
+                    settings.MEDIA_URL,
+                    'files',
+                    self.owner.username,
+                    'enrichment_{0}'.format(self.title))
 
 
 def remove_video_file(video):

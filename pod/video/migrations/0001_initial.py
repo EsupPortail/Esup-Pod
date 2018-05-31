@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('filepicker', '0002_auto_20180418_0410'),
+        ('filepicker', '0001_initial'),
         ('auth', '0008_alter_user_username_max_length'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]

@@ -9,14 +9,32 @@
 {% endblock page_extra_head %}
 
 
-{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a><li class="breadcrumb-item active" aria-current="page">{% if form.instance.title %}{{form.instance.title}}{% else %}{% trans "Add a new video" %}{%endif%}</li>{% endblock %}
+{% block breadcrumbs %}{{ block.super }} 
+<li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a>
+{% if form.instance.title %}
+<li class="breadcrumb-item"><a href="{% url 'video' slug=form.instance.slug %}" title="{{form.instance.title}}">{{form.instance.title}}</a>
+<li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
+{%else%}
+<li class="breadcrumb-item active" aria-current="page">{% trans "Add a new video" %}</li>
+{%endif%}
+{% endblock %}
 
 {% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Add a new video" %}{%endif%}{% endblock %}
 
 
 {% block page_content %}
 {% spaceless %}
-<h3>{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Add a new video" %}{%endif%}</h3>
+<h3>{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"
+<span class="float-right">
+    <a href="{% url 'video' slug=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-dark btn-sm">
+        <svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>{% trans "View the video"%}
+    </a>
+    <a href="{% url 'video_delete' slug=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-dark btn-sm">
+        <svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>{% trans "Delete the video"%}
+    </a>
+</span>
+{% else %}{% trans "Add a new video" %}{%endif%}
+</h3>
 {% if form.instance.slug %}
 <form id="video_form" method="post"
     action="{% url 'video_edit' slug=form.instance.slug %}"
@@ -87,6 +105,43 @@
 {% endblock page_content %}
 
 {% block page_aside %}
+{% if form.instance.title %}
+{% if request.user.is_staff or request.user.is_superuser %}
+    <div class="card card-body">
+        <h5 class="card-title">Staff - {% trans "Alternative version" %}</h5>
+        <div class="card-text">
+            <p>{% trans 'As a staff member you can add enrichments, interactivities or improve its accessability.' %}</p>
+            <p>
+                <div class="input-group-button">
+                    <a href="{% url 'video_enrichment' slug=form.instance.slug %}" title="{% trans 'Enrich the video' %}" class="p-0 m-0 btn btn-light btn-sm pl-1">
+                        <svg height="32" class="octicon octicon-diff" viewBox="0 0 13 16" version="1.1" width="26" aria-hidden="true"><path fill-rule="evenodd" d="M6 7h2v1H6v2H5V8H3V7h2V5h1v2zm-3 6h5v-1H3v1zM7.5 2L11 5.5V15c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V3c0-.55.45-1 1-1h6.5zM10 6L7 3H1v12h9V6zM8.5 0H3v1h5l4 4v8h1V4.5L8.5 0z"></path></svg>
+                    </a>
+                    <!-- Interactive -->
+                    <!-- Accessible -->
+                </div>
+            </p>
+        </div>
+    </div>
+{% endif %}
+<div class="card card-body">
+    <h5 class="card-title">{% trans 'Embed/Share (Private Mode)' %}</h5>
+    <div class="card-text" >
+        <p>{% trans 'Use this link to share the video in private mode' %}</p>
+        <p>
+
+            <div class="input-group">
+              <input class="form-control form-control-sm form-control-plaintext" type="text" name="txtpartageprive" id="txtpartageprive" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video/{{ form.instance.slug }}/{{ form.instance.get_hashkey }}/" readonly/>
+              <div class="input-group-button">
+                <clipboard-copy aria-label="Copy to clipboard" class="btn btn-sm btn-default" tabindex="0" role="button" id="btnpartageprive">
+                  <svg class="octicon octicon-clippy" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path></svg>
+                </clipboard-copy>
+              </div>
+            </div>
+        </p>
+        
+    </div>
+</div>
+{% endif %}
 <div class="card card-body">
     <h5 class="card-title">{% trans "Uploading" %}</h5>
     <div class="card-text" >
@@ -108,7 +163,7 @@
         {% for title, values in form.VIDEO_FORM_FIELDS_HELP_TEXT.items %}
             <div class="card card-body p-1">
                 <button class="btn btn-sm-light" id="heading-{{forloop.counter}}" data-toggle="collapse" data-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
-                    {{title}}
+                    {% trans title %}
                 </button>
                 <div id="collapse-{{forloop.counter}}" class="collapse hide card-text small" aria-labelledby="heading-{{forloop.counter}}" data-parent="#formfields">
                     {% for value in values %}
@@ -129,11 +184,18 @@
 <script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
 <!-- form . media -->
-<script type="text/javascript" src="{% static 'js/jquery.tools.min.js' %}"></script>
 {{form.media}}
 {% progress_bar_media %}
 <!-- fin form . media -->
 <script>
+/*** Copy to clipboard ***/
+$('#btnpartageprive').click(function() {
+      var copyText = document.getElementById("txtpartageprive");
+      copyText.select();
+      document.execCommand("copy");
+      showalert("{% trans "text copied"%}","alert-info");
+  });
+
 /** Restrict access **/
 $('#id_is_draft').change(function(){
     restricted_access();

@@ -33,7 +33,8 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'tagging',
     'django_cas',
-    'progressbarupload', # https://github.com/ouhouhsami/django-progressbarupload
+    'captcha',
+    'progressbarupload',
     # Pod Applications
     'pod.main',
     'pod.authentication',
@@ -63,7 +64,7 @@ MIDDLEWARE = [
 
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend', 
+    'django.contrib.auth.backends.ModelBackend',
     'django_cas.backends.CASBackend',
 )
 
@@ -89,6 +90,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'main', 'templates'),
             os.path.join(BASE_DIR, 'main', 'templates', 'flatpages'),
             os.path.join(BASE_DIR, 'completion', 'templates'),
+            os.path.join(BASE_DIR, 'enrichment', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {

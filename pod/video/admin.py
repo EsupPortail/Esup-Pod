@@ -28,6 +28,7 @@ from pod.completion.admin import ContributorInline
 from pod.completion.admin import DocumentInline
 from pod.completion.admin import OverlayInline
 from pod.completion.admin import TrackInline
+from pod.enrichment.admin import EnrichmentInline
 if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
 
@@ -98,7 +99,7 @@ class VideoAdmin(admin.ModelAdmin):
         return form
 
     class Media:
-        js = ('js/jquery.tools.min.js',)
+        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
 
 
 class ChannelSuperAdminForm(ChannelForm):
@@ -141,7 +142,7 @@ class ChannelAdmin(admin.ModelAdmin):
         return form
 
     class Media:
-        js = ('js/jquery.tools.min.js',)
+        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
 
 
 class ThemeAdmin(admin.ModelAdmin):
@@ -151,7 +152,7 @@ class ThemeAdmin(admin.ModelAdmin):
     ordering = ('channel', 'title')
 
     class Media:
-        js = ('js/jquery.tools.min.js',)
+        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
 
 
 class TypeAdmin(TranslationAdmin):
@@ -159,7 +160,7 @@ class TypeAdmin(TranslationAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
     class Media:
-        js = ('js/jquery.tools.min.js',)
+        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
 
 
 class DisciplineAdmin(TranslationAdmin):
@@ -167,7 +168,7 @@ class DisciplineAdmin(TranslationAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
     class Media:
-        js = ('js/jquery.tools.min.js',)
+        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
 
 
 class EncodingVideoAdmin(admin.ModelAdmin):

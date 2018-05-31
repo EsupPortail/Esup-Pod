@@ -13,15 +13,17 @@ class EnrichmentInline(admin.TabularInline):
     def has_add_permission(self, request):
         return False
 
+
 class EnrichmentAdmin(admin.ModelAdmin):
 
-	form = EnrichmentAdminForm
-	list_display = ('title', 'type', 'video',)
+    form = EnrichmentAdminForm
+    list_display = ('title', 'type', 'video',)
 
-	class Media:
-		js = ('js/jquery.tools.min.js',)
+    class Media:
+        js = ('js/jquery.tools.min.js',)
+
 
 if FILEPICKER:
-	admin.site.register(Enrichment, EnrichmentAdmin)
+    admin.site.register(Enrichment, EnrichmentAdmin)
 else:
-	admin.site.register(Enrichment)
+    admin.site.register(Enrichment)

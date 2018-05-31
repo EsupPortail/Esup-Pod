@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.admin import widgets
 from django.conf import settings
-from django.utils.safestring import mark_safe
 from django.core.validators import FileExtensionValidator
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import ugettext_lazy as _
@@ -16,6 +15,8 @@ from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
+
+from pod.main.forms import add_placeholder_and_asterisk
 
 from ckeditor.widgets import CKEditorWidget
 from collections import OrderedDict
@@ -48,12 +49,12 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
     settings,
     'VIDEO_FORM_FIELDS_HELP_TEXT',
     OrderedDict([
-        (_("File field"), [
+        ("File field", [
             _("You can send an audio or video file."),
             _("The following formats are supported: %s" %
               ', '.join(map(str, VIDEO_ALLOWED_EXTENSIONS)))
         ]),
-        (_("Title field"), [
+        ("Title field", [
             _("Please choose a title as short and accurate as possible, "
                 "reflecting the main subject / context of the content."),
             _("You can use the “Description” field below for all "
@@ -62,38 +63,38 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
               "the content edition toolbar: they will appear in the “Info” "
               "tab at the bottom of the audio / video player.")
         ]),
-        (_("Date of the event field"), [
+        ("Date of the event field", [
             _("Enter the date of the event, if applicable, in the "
                 "AAAA-MM-JJ format.")
         ]),
-        (_("University course"), [
+        ("University course", [
             _("Select an university course as audience target of "
                 "the content."),
             _("Choose “None / All” if it does not apply or if all are "
                 "concerned, or “Other” for an audience outside "
                 "the european LMD scheme.")
         ]),
-        (_("Main language"), [
+        ("Main language", [
             _("Select the main language used in the content.")
         ]),
-        (_("Description"), [
+        ("Description", [
             _("In this field you can describe your content, add all needed "
                 "related information, and format the result "
                 "using the toolbar.")
         ]),
-        (_("Type"), [
+        ("Type", [
             _("Select the type of your content. If the type you wish does "
                 "not appear in the list, please temporary select “Other” "
                 "and contact us to explain your needs.")
         ]),
-        (_("Disciplines"), [
+        ("Disciplines", [
             _("Select the discipline to which your content belongs. "
                 "If the discipline you wish does not appear in the list, "
                 "please select nothing and contact us to explain your needs."),
             _('Hold down "Control", or "Command" on a Mac, '
               'to select more than one.')
         ]),
-        (_("Channels / Themes"), [
+        ("Channels / Themes", [
             _("Select the channel in which you want your content to appear."),
             _("Themes related to this channel will "
                 "appear in the “Themes” list below."),
@@ -103,22 +104,22 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 "in the list, please select nothing and contact "
                 "us to explain your needs.")
         ]),
-        (_("Draft"), [
+        ("Draft", [
             _("In “Draft mode”, the content shows nowhere and nobody "
                 "else but you can see it.")
         ]),
-        (_("Restricted access"), [
+        ("Restricted access", [
             _("If you don't select “Draft mode”, you can restrict "
                 "the content access to only people who can log in")
         ]),
-        (_("Password"), [
+        ("Password", [
             _("If you don't select “Draft mode”, you can add a password "
                 "which will be asked to anybody willing to watch "
                 "your content."),
             _("If your video is in a playlist the password of your "
                 "video will be removed automatically.")
         ]),
-        (_("Tags"), [
+        ("Tags", [
             _("Please try to add only relevant keywords that can be "
                 "useful to other users.")
         ])
@@ -203,13 +204,15 @@ class VideoForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(VideoForm, self).clean()
-        cleaned_data['description_%s' %
-                     settings.LANGUAGE_CODE
-                     ] = cleaned_data['description']
-        cleaned_data[
-            'title_%s' %
-            settings.LANGUAGE_CODE
-        ] = cleaned_data['title']
+        if 'description' in cleaned_data.keys():
+            cleaned_data['description_%s' %
+                         settings.LANGUAGE_CODE
+                         ] = cleaned_data['description']
+        if 'title' in cleaned_data.keys():
+            cleaned_data[
+                'title_%s' %
+                settings.LANGUAGE_CODE
+            ] = cleaned_data['title']
 
     def __init__(self, *args, **kwargs):
 
@@ -292,34 +295,6 @@ class VideoForm(forms.ModelForm):
                    }
 
 
-def add_placeholder_and_asterisk(fields):
-    for myField in fields:
-        classname = fields[myField].widget.__class__.__name__
-        if classname == 'CheckboxInput':
-            if fields[myField].widget.attrs.get('class'):
-                fields[myField].widget.attrs[
-                    'class'] += ' form-check-input'
-            else:
-                fields[myField].widget.attrs[
-                    'class'] = 'form-check-input '
-        else:
-            fields[myField].widget.attrs[
-                'placeholder'] = fields[myField].label
-            if fields[myField].required:
-                fields[myField].label = mark_safe(
-                    "%s <span class=\"required\">*</span>" %
-                    fields[myField].label
-                )
-                fields[myField].widget.attrs["required"] = "true"
-            if fields[myField].widget.attrs.get('class'):
-                fields[myField].widget.attrs[
-                    'class'] += ' form-control'
-            else:
-                fields[myField].widget.attrs[
-                    'class'] = 'form-control '
-    return fields
-
-
 class ChannelForm(forms.ModelForm):
     users = forms.ModelMultipleChoiceField(
         User.objects.all(),
@@ -337,13 +312,15 @@ class ChannelForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(ChannelForm, self).clean()
-        cleaned_data['description_%s' %
-                     settings.LANGUAGE_CODE
-                     ] = cleaned_data['description']
-        cleaned_data[
-            'title_%s' %
-            settings.LANGUAGE_CODE
-        ] = cleaned_data['title']
+        if 'description' in cleaned_data.keys():
+            cleaned_data['description_%s' %
+                         settings.LANGUAGE_CODE
+                         ] = cleaned_data['description']
+        if 'title' in cleaned_data.keys():
+            cleaned_data[
+                'title_%s' %
+                settings.LANGUAGE_CODE
+            ] = cleaned_data['title']
 
     def __init__(self, *args, **kwargs):
         self.is_staff = kwargs.pop(
@@ -402,13 +379,15 @@ class ThemeForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(ThemeForm, self).clean()
-        cleaned_data['description_%s' %
-                     settings.LANGUAGE_CODE
-                     ] = cleaned_data['description']
-        cleaned_data[
-            'title_%s' %
-            settings.LANGUAGE_CODE
-        ] = cleaned_data['title']
+        if 'description' in cleaned_data.keys():
+            cleaned_data['description_%s' %
+                         settings.LANGUAGE_CODE
+                         ] = cleaned_data['description']
+        if 'title' in cleaned_data.keys():
+            cleaned_data[
+                'title_%s' %
+                settings.LANGUAGE_CODE
+            ] = cleaned_data['title']
 
     class Meta(object):
         model = Theme
@@ -436,6 +415,27 @@ class FrontThemeForm(ThemeForm):
     class Meta(object):
         model = Theme
         fields = '__all__'
+
+
+class VideoPasswordForm(forms.Form):
+    password = forms.CharField(
+        label=_('Password'),
+        widget=forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        super(VideoPasswordForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)
+
+
+class VideoDeleteForm(forms.Form):
+    agree = forms.BooleanField(
+        label=_('I agree'),
+        help_text=_('Delete video cannot be undo'),
+        widget=forms.CheckboxInput())
+
+    def __init__(self, *args, **kwargs):
+        super(VideoDeleteForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)
 
 
 class TypeForm(forms.ModelForm):
