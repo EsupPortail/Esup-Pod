@@ -1,0 +1,152 @@
+{% load i18n %}
+{% load navbar %}
+<!-- collapse et accordion pour les chaines, types, users -->
+  <div class="collapse fixed-top pod-mt-7 bg-light liste-collapse" id="listeChaines">
+    <div class="container">
+      <div class="row p-5">
+        <h3 class="col-12"><svg height="32" class="octicon octicon-mortar-board" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M7.83 9.19L4 8c-4-8 0 1.5 0 2.5S5.8 12 8 12s4-.5 4-1.5V8L8.17 9.19a.73.73 0 0 1-.36 0h.02zm.28-6.39a.34.34 0 0 0-.2 0L.27 5.18a.35.35 0 0 0 0 .67L2 6.4v1.77c-.3.17-.5.5-.5.86 0 .19.05.36.14.5-.08.14-.14.31-.14.5v2.58c0 .55 2 .55 2 0v-2.58c0-.19-.05-.36-.14-.5.08-.14.14-.31.14-.5 0-.38-.2-.69-.5-.86V6.72l4.89 1.53c.06.02.14.02.2 0l7.64-2.38a.35.35 0 0 0 0-.67L8.1 2.81l.01-.01zM8.02 6c-.55 0-1-.22-1-.5s.45-.5 1-.5 1 .22 1 .5-.45.5-1 .5z"></path></svg>&nbsp;{% trans "Channels" %}</h3>
+        <ul class="col-6 list-unstyled">
+            {% for channel in CHANNELS %}
+                {% if channel.themes.all.count > 0 %}
+                    <li class="col-12 dropdown-submenu">
+                         - &nbsp;<a class="" href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">{{channel.title}} ({{channel.video_count}})</a>
+                        <ul class="dropdown-menu col-12">
+                            {% for theme in channel.themes.all %}
+                                <li class="col-12" > <a href="{% url 'theme' slug_c=channel.slug slug_t=theme.slug%}" title="{{theme.title}}">{{theme.title}} ({{theme.video_count}})</a> </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="col-12">
+                     - &nbsp;<a class="" href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">{{channel.title}} ({{channel.video_count}})</a>
+                    </li>
+                {% endif %}
+            {% empty %}
+            <li> {% trans "No channels found" %} </li>
+            {%endfor%}
+        </ul>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myLargeModalLabel">{% trans "Users"%}</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-12  p-2">
+                <p>{% trans 'Use the input to filter user by last name or click on button letter to show the list.'%}</p>
+                <input placeholder="Rechercher" id="ownerboxnavbar" class="form-control" type="text">
+            </div>
+            <div class="row p-2">
+              <div class="col-3">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="A">
+                    A
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="B">
+                    B
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="C">
+                    C
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="D">
+                    D
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="E">
+                    E
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="F">
+                    F
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="G">
+                    G
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="H">
+                    H
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="I">
+                    I
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="J">
+                    J
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="K">
+                    K
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="L">
+                    L
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="M">
+                    M
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="N">
+                    N
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="O">
+                    O
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="P">
+                    P
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="Q">
+                    Q
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="R">
+                    R
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="S">
+                    S
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="T">
+                    T
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="U">
+                    U
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="V">
+                    V
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="W">
+                    W
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="X">
+                    X
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="Y">
+                    Y
+                </button>
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="Z">
+                    Z
+                </button>
+              </div>
+              <div class="col-9" >
+                <ul class="list-unstyled" id="accordion" style="max-height:400px; overflow:auto">
+                    <li>&nbsp;</li>
+                </ul>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ <div class="collapse fixed-top pod-mt-7 bg-light liste-collapse" id="listeTypes">
+    <div class="container">
+      <div class="p-5">
+        <h3><svg height="32" class="octicon octicon-versions" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M13 3H7c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zm-1 8H8V5h4v6zM4 4h1v1H4v6h1v1H4c-.55 0-1-.45-1-1V5c0-.55.45-1 1-1zM1 5h1v1H1v4h1v1H1c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1z"></path></svg>&nbsp;{% trans 'Types of videos'%}</h3>
+        <ul class="row list-unstyled">
+            {% for type in TYPES %}
+                <li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1 col-12 text-left text-truncate" href="{% url 'videos' %}?type={{type.slug}}" title="{{type.title}} ({{type.video_count}})">
+                    {% if type.icon %}<img src="{{type.icon.url}}" alt="{{type.title}}" class="octicon" style="max-height:32px; max-width:32px;"/>{% else %}<svg height="32" class="octicon octicon-file-media" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M6 5h2v2H6V5zm6-.5V14c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V2c0-.55.45-1 1-1h7.5L12 4.5zM11 5L8 2H1v11l3-5 2 4 2-2 3 3V5z"></path></svg>{% endif %}{{type.title}} ({{type.video_count}})</a> </li>
+            {% endfor %}
+        </ul>
+      </div>
+    </div>
+</div>
+<!-- fin modal, accordion -->

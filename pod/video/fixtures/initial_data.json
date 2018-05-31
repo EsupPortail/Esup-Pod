@@ -1,0 +1,42 @@
+[
+  {
+      "pk": 1,
+      "model": "video.type",
+      "fields": {
+          "description": "",
+          "title": "Other",
+          "icon": null,
+          "slug": "other"
+      }
+  },
+  {
+    "model": "video.videorendition", 
+    "pk": 1, 
+    "fields": {
+      "resolution": "640x360", 
+      "video_bitrate": "1000k", 
+      "audio_bitrate": "96k", 
+      "encode_mp4": true
+    }
+  }, 
+  {
+    "model": "video.videorendition", 
+    "pk": 2, 
+    "fields": {
+      "resolution": "1280x720", 
+      "video_bitrate": "2000k", 
+      "audio_bitrate": "128k", 
+      "encode_mp4": true
+    }
+  }, 
+  {
+    "model": "video.videorendition", 
+    "pk": 3, 
+    "fields": {
+      "resolution": "1920x1080", 
+      "video_bitrate": "3000k", 
+      "audio_bitrate": "192k", 
+      "encode_mp4": false
+    }
+  }
+]

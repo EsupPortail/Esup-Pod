@@ -1,0 +1,318 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% load tagging_tags %}
+{% load progress_bar %}
+
+{% block page_extra_head %}
+
+{% endblock page_extra_head %}
+
+
+{% block breadcrumbs %}{{ block.super }} 
+<li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a>
+{% if form.instance.title %}
+<li class="breadcrumb-item"><a href="{% url 'video' slug=form.instance.slug %}" title="{{form.instance.title}}">{{form.instance.title}}</a>
+<li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
+{%else%}
+<li class="breadcrumb-item active" aria-current="page">{% trans "Add a new video" %}</li>
+{%endif%}
+{% endblock %}
+
+{% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Add a new video" %}{%endif%}{% endblock %}
+
+
+{% block page_content %}
+{% spaceless %}
+<h3>{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"
+<span class="float-right">
+    <a href="{% url 'video' slug=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-dark btn-sm">
+        <svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>{% trans "View the video"%}
+    </a>
+    <a href="{% url 'video_delete' slug=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-dark btn-sm">
+        <svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>{% trans "Delete the video"%}
+    </a>
+</span>
+{% else %}{% trans "Add a new video" %}{%endif%}
+</h3>
+{% if form.instance.slug %}
+<form id="video_form" method="post"
+    action="{% url 'video_edit' slug=form.instance.slug %}"
+    accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
+{% else %}
+<form id="video_form" method="post"
+    action="{% url 'video_edit' %}"
+    accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
+{% endif %}
+    {% csrf_token %}
+    <div class="list-group">
+        <fieldset>
+            {% if form.errors %}
+            <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+            {% endif %}
+            {% if form.instance.encoding_in_progress %}
+            <p class="text-info">
+                {% trans "The video is currently being encoded." %}
+            </p>
+            {% endif %}
+            {% for field_hidden in form.hidden_fields %}
+            {{field_hidden}}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+            {% spaceless %}
+            <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
+            <div class="list-group-item">
+            <div class="form-group {% if field.field.required %}form-group-required {%endif%}" >
+                {{ field.errors }}
+                {% if "form-check-input" in field.field.widget.attrs.class %}
+                <div class="form-check">
+                {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label" >{{ field.label }}</label>
+                </div>
+                {% else %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label> 
+                {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br/>{%endif%}
+                {{ field }}
+                {% endif %}
+                {% if field.help_text %}
+                <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                {% endif %}
+                {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+
+                {% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
+                {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
+            </div>
+            </div>
+            </div>
+            {% endspaceless %}
+            {% endfor %}
+        </fieldset>
+        <div class="card" id='js-process'>
+          <div class="card-body">
+            <h5 class="card-title">{% trans "Sending, please wait." %}</h5>
+            <p class="card-text">{% progress_bar %}</p>
+          </div>
+          <div class="card-footer">
+            {% trans "The page will refresh after the upload completes." %}
+          </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+    </div>
+</form>
+
+{% endspaceless %}
+{% endblock page_content %}
+
+{% block page_aside %}
+{% if form.instance.title %}
+{% if request.user.is_staff or request.user.is_superuser %}
+    <div class="card card-body">
+        <h5 class="card-title">Staff - {% trans "Alternative version" %}</h5>
+        <div class="card-text">
+            <p>{% trans 'As a staff member you can add enrichments, interactivities or improve its accessability.' %}</p>
+            <p>
+                <div class="input-group-button">
+                    <a href="{% url 'video_enrichment' slug=form.instance.slug %}" title="{% trans 'Enrich the video' %}" class="p-0 m-0 btn btn-light btn-sm pl-1">
+                        <svg height="32" class="octicon octicon-diff" viewBox="0 0 13 16" version="1.1" width="26" aria-hidden="true"><path fill-rule="evenodd" d="M6 7h2v1H6v2H5V8H3V7h2V5h1v2zm-3 6h5v-1H3v1zM7.5 2L11 5.5V15c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V3c0-.55.45-1 1-1h6.5zM10 6L7 3H1v12h9V6zM8.5 0H3v1h5l4 4v8h1V4.5L8.5 0z"></path></svg>
+                    </a>
+                    <!-- Interactive -->
+                    <!-- Accessible -->
+                </div>
+            </p>
+        </div>
+    </div>
+{% endif %}
+<div class="card card-body">
+    <h5 class="card-title">{% trans 'Embed/Share (Private Mode)' %}</h5>
+    <div class="card-text" >
+        <p>{% trans 'Use this link to share the video in private mode' %}</p>
+        <p>
+
+            <div class="input-group">
+              <input class="form-control form-control-sm form-control-plaintext" type="text" name="txtpartageprive" id="txtpartageprive" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video/{{ form.instance.slug }}/{{ form.instance.get_hashkey }}/" readonly/>
+              <div class="input-group-button">
+                <clipboard-copy aria-label="Copy to clipboard" class="btn btn-sm btn-default" tabindex="0" role="button" id="btnpartageprive">
+                  <svg class="octicon octicon-clippy" viewBox="0 0 14 16" version="1.1" width="14" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M2 13h4v1H2v-1zm5-6H2v1h5V7zm2 3V8l-3 3 3 3v-2h5v-2H9zM4.5 9H2v1h2.5V9zM2 12h2.5v-1H2v1zm9 1h1v2c-.02.28-.11.52-.3.7-.19.18-.42.28-.7.3H1c-.55 0-1-.45-1-1V4c0-.55.45-1 1-1h3c0-1.11.89-2 2-2 1.11 0 2 .89 2 2h3c.55 0 1 .45 1 1v5h-1V6H1v9h10v-2zM2 5h8c0-.55-.45-1-1-1H8c-.55 0-1-.45-1-1s-.45-1-1-1-1 .45-1 1-.45 1-1 1H3c-.55 0-1 .45-1 1z"></path></svg>
+                </clipboard-copy>
+              </div>
+            </div>
+        </p>
+        
+    </div>
+</div>
+{% endif %}
+<div class="card card-body">
+    <h5 class="card-title">{% trans "Uploading" %}</h5>
+    <div class="card-text" >
+        <p>{% blocktrans with form.VIDEO_MAX_UPLOAD_SIZE as video_max_upload_size %}The file size must be lower than {{video_max_upload_size}} Go.{% endblocktrans %}</p>
+        <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
+        <p>{% trans "While sending your file, do not close your browser until you have received a message of success or failure." %}</p>
+        <p>{% trans "An email will be sent to you when all encoding tasks are completed." %}<p>
+    </div>
+</div>
+<div class="card card-body">
+    <h5 class="card-title">{% trans "Mandatory fields" %}</h5>
+    <div class="card-text" >
+        <p>{% trans "Fields marked with an asterisk are mandatory."%}</p>
+    </div>
+</div>
+<div class="card card-body">
+    <h5 class="card-title">{% trans "Form fields"%}</h5>
+    <div class="card-text" id="formfields">
+        {% for title, values in form.VIDEO_FORM_FIELDS_HELP_TEXT.items %}
+            <div class="card card-body p-1">
+                <button class="btn btn-sm-light" id="heading-{{forloop.counter}}" data-toggle="collapse" data-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
+                    {% trans title %}
+                </button>
+                <div id="collapse-{{forloop.counter}}" class="collapse hide card-text small" aria-labelledby="heading-{{forloop.counter}}" data-parent="#formfields">
+                    {% for value in values %}
+                    <p>{{value}}</p>
+                    {%endfor%}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock page_aside %}
+
+
+{% block more_script %}
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+<script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
+<!-- form . media -->
+{{form.media}}
+{% progress_bar_media %}
+<!-- fin form . media -->
+<script>
+/*** Copy to clipboard ***/
+$('#btnpartageprive').click(function() {
+      var copyText = document.getElementById("txtpartageprive");
+      copyText.select();
+      document.execCommand("copy");
+      showalert("{% trans "text copied"%}","alert-info");
+  });
+
+/** Restrict access **/
+$('#id_is_draft').change(function(){
+    restricted_access();
+});
+var restricted_access = function() {
+    if($('#id_is_draft').prop( "checked" )){
+        $('.restricted_access').addClass('hide');
+        $('.restricted_access').removeClass('show');
+        $("#id_password").val('');
+        $("#id_restrict_access_to_groups option:selected").prop("selected", false);
+        $("#id_is_restricted").prop( "checked", false );
+    } else {
+        $('.restricted_access').addClass('show');
+        $('.restricted_access').removeClass('hide');
+    }
+}
+restricted_access();
+/** end restrict access **/
+/** channel **/
+var listTheme = new Array();
+{% for channel in form.channel.field.queryset %}
+listTheme["channel_{{channel.id}}"] = {{channel.get_all_theme_json|safe}};
+{% endfor %}
+
+var tab_initial = new Array();
+
+$('#id_theme option:selected').each(function () {
+    tab_initial.push($(this).val());
+});
+
+$('#id_theme option').remove();
+
+$('#id_channel').change(function() {
+    $('#id_theme option').remove();
+    var str = get_option(listTheme["channel_"+$(this).val()], 0, []);
+    $('#id_theme').append(str);
+});
+
+var get_option = function(tab, level=0, tab_selected) {
+    var option = ""
+    var prefix = ""
+    for(i=0;i<level;i++) prefix+="&nbsp;&nbsp;";
+    if(level!=0) prefix+="|-";
+    $.each(tab, function(i, val) {
+        if($.inArray(i, tab_selected) > -1)
+            option += '<option selected value="'+i+'">'+prefix+" "+val.title+'</option>';
+        else
+            option += '<option value="'+i+'">'+prefix+" "+val.title+'</option>';
+        var child = val.child;
+        var count = Object.keys(child).length;
+        if(count>0) {
+            option += get_option(val.child, level+=1);
+        }
+    });
+    return option;
+}
+$("#id_channel option:selected").each(function () {
+    var str = get_option(listTheme["channel_"+$(this).val()], 0, tab_initial);
+    $('#id_theme').append(str);
+});
+/** end channel **/
+</script>
+<script>
+/** formulaire **/
+$("#js-process").hide();
+var video_max_upload_size = {{form.VIDEO_MAX_UPLOAD_SIZE}}*1024*1024*1024;
+var showalert = function(message,alerttype) {
+    $('body').append('<div id="formalertdiv" class="alert ' +  alerttype + ' alert-dismissible fade show"  role="alert">'+message+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    setTimeout(function() { $("#formalertdiv").remove(); }, 5000);
+};
+var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfor%}";
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        //check file extension and file size
+        
+        if (form.checkValidity() === false) {
+          window.scrollTo($("#video_form").scrollTop(), 0); 
+          showalert("{% trans "Errors appear in the form, please correct it"%}","alert-danger");
+          event.preventDefault();
+          event.stopPropagation();
+        } else {
+            var fileInput = $('#id_video');
+            if(fileInput.get(0).files.length){
+                var fileSize = fileInput.get(0).files[0].size;
+                var fileName = fileInput.get(0).files[0].name;
+                var extension = fileName.substring(fileName.lastIndexOf('.')+1).toLowerCase();
+                if(listext.indexOf(extension) !== -1) {
+                    if(fileSize>video_max_upload_size){
+                        window.scrollTo($("#video_form").scrollTop(), 0); 
+                        showalert("{% trans "The file size exceeds the maximum allowed value : "%} {{form.VIDEO_MAX_UPLOAD_SIZE}} Go.","alert-danger");
+                        event.preventDefault();
+                        event.stopPropagation();
+                    } else {
+                        $("#video_form fieldset").hide();
+                        $("#video_form button").hide();
+                        $("#js-process").show();
+                        window.scrollTo($("#js-process").scrollTop(), 0); 
+                    }
+                } else {
+                    window.scrollTo($("#video_form").scrollTop(), 0); 
+                    showalert("{% trans "The file extension not in the allowed extension : "%} "+listext+".","alert-danger");
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+            }
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+</script>
+{% endblock more_script %}
