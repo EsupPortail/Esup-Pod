@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'pod.video',
     'pod.completion',
     'pod.chapters',
+    'pod.enrichment',
 ]
 
 ##
@@ -89,6 +90,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'main', 'templates'),
             os.path.join(BASE_DIR, 'main', 'templates', 'flatpages'),
             os.path.join(BASE_DIR, 'completion', 'templates'),
+            os.path.join(BASE_DIR, 'enrichment', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {

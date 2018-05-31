@@ -28,7 +28,7 @@ from pod.completion.admin import ContributorInline
 from pod.completion.admin import DocumentInline
 from pod.completion.admin import OverlayInline
 from pod.completion.admin import TrackInline
-
+from pod.enrichment.admin import EnrichmentInline
 if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
 
@@ -78,7 +78,8 @@ class VideoAdmin(admin.ModelAdmin):
         ContributorInline,
         DocumentInline,
         TrackInline,
-        OverlayInline
+        OverlayInline,
+        EnrichmentInline
     ]
 
     def get_owner_by_name(self, obj):

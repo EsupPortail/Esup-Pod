@@ -86,6 +86,8 @@ if apps.is_installed('pod.completion'):
     urlpatterns += [url(r'^', include('pod.completion.urls')), ]
 if apps.is_installed('pod.chapters'):
     urlpatterns += [url(r'^', include('pod.chapters.urls')), ]
+if apps.is_installed('pod.enrichment'):
+    urlpatterns += [url(r'^', include('pod.enrichment.urls')), ]
 
 urlpatterns += [
     url(r'^(?P<slug_c>[\-\d\w]+)/$', channel, name='channel'),
