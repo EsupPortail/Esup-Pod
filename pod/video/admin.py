@@ -33,7 +33,9 @@ if apps.is_installed('pod.completion'):
 if apps.is_installed('pod.chapters'):
     CHAPTER = True
     from pod.chapters.admin import ChapterInline
-
+if apps.is_installed('pod.enrichment'):
+    ENRICHMENT = True
+    from pod.enrichment.admin import EnrichmentInline
 if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
 
@@ -90,6 +92,10 @@ class VideoAdmin(admin.ModelAdmin):
     if CHAPTER:
         inlines += [
             ChapterInline
+        ]
+    if ENRICHMENT:
+        inlines += [
+            EnrichmentInline
         ]
 
     def get_owner_by_name(self, obj):

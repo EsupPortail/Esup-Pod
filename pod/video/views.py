@@ -12,6 +12,7 @@ from django.db.models import Count
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.shortcuts import redirect
+from django.urls import reverse
 
 from pod.video.models import Video
 from pod.video.models import Channel
@@ -21,6 +22,8 @@ from tagging.models import TaggedItem
 from pod.video.forms import VideoForm
 from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
+from pod.video.forms import VideoPasswordForm
+from pod.video.forms import VideoDeleteForm
 
 import json
 
@@ -347,7 +350,8 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
             )
             or (
                 is_password_protected
-                and request.POST.password == video.password
+                and request.POST.get('password')
+                and request.POST.get('password') == video.password
             )
         )
         if show_page:
@@ -360,7 +364,16 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
             )
         else:
             if is_password_protected:
-                return HttpResponse("show form password")
+                form = VideoPasswordForm(
+                    request.POST) if request.POST else VideoPasswordForm()
+                return render(
+                    request, 'videos/video.html', {
+                        'channel': channel,
+                        'video': video,
+                        'theme': theme,
+                        'form': form
+                    }
+                )
             elif request.user.is_authenticated():
                 messages.add_message(
                     request, messages.ERROR,
@@ -424,5 +437,38 @@ def video_edit(request, slug=None):
                 _(u'One or more errors have been found in the form.'))
 
     return render(request, 'videos/video_edit.html', {
+        'form': form}
+    )
+
+
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+def video_delete(request, slug=None):
+
+    video = get_object_or_404(Video, slug=slug) if slug else None
+
+    if video and request.user != video.owner and not request.user.is_superuser:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot delete this video.'))
+        raise PermissionDenied
+
+    form = VideoDeleteForm()
+
+    if request.method == "POST":
+        form = VideoDeleteForm(request.POST)
+        if form.is_valid():
+            video.delete()
+            messages.add_message(
+                request, messages.INFO, _('The video has been deleted.'))
+            return redirect(
+                reverse('my_videos')
+            )
+        else:
+            messages.add_message(
+                request, messages.ERROR,
+                _(u'One or more errors have been found in the form.'))
+
+    return render(request, 'videos/video_delete.html', {
+        'video': video,
         'form': form}
     )

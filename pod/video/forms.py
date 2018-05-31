@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.admin import widgets
 from django.conf import settings
-from django.utils.safestring import mark_safe
 from django.core.validators import FileExtensionValidator
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import ugettext_lazy as _
@@ -16,6 +15,8 @@ from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
+
+from pod.main.forms import add_placeholder_and_asterisk
 
 from ckeditor.widgets import CKEditorWidget
 from collections import OrderedDict
@@ -294,34 +295,6 @@ class VideoForm(forms.ModelForm):
                    }
 
 
-def add_placeholder_and_asterisk(fields):
-    for myField in fields:
-        classname = fields[myField].widget.__class__.__name__
-        if classname == 'CheckboxInput':
-            if fields[myField].widget.attrs.get('class'):
-                fields[myField].widget.attrs[
-                    'class'] += ' form-check-input'
-            else:
-                fields[myField].widget.attrs[
-                    'class'] = 'form-check-input '
-        else:
-            fields[myField].widget.attrs[
-                'placeholder'] = fields[myField].label
-            if fields[myField].required:
-                fields[myField].label = mark_safe(
-                    "%s <span class=\"required\">*</span>" %
-                    fields[myField].label
-                )
-                fields[myField].widget.attrs["required"] = "true"
-            if fields[myField].widget.attrs.get('class'):
-                fields[myField].widget.attrs[
-                    'class'] += ' form-control'
-            else:
-                fields[myField].widget.attrs[
-                    'class'] = 'form-control '
-    return fields
-
-
 class ChannelForm(forms.ModelForm):
     users = forms.ModelMultipleChoiceField(
         User.objects.all(),
@@ -442,6 +415,27 @@ class FrontThemeForm(ThemeForm):
     class Meta(object):
         model = Theme
         fields = '__all__'
+
+
+class VideoPasswordForm(forms.Form):
+    password = forms.CharField(
+        label=_('Password'),
+        widget=forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        super(VideoPasswordForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)
+
+
+class VideoDeleteForm(forms.Form):
+    agree = forms.BooleanField(
+        label=_('I agree'),
+        help_text=_('Delete video cannot be undo'),
+        widget=forms.CheckboxInput())
+
+    def __init__(self, *args, **kwargs):
+        super(VideoDeleteForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)
 
 
 class TypeForm(forms.ModelForm):
