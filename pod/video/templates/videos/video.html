@@ -19,6 +19,10 @@
   <link href="{% static 'css/videojs-overlay.css' %}" rel="stylesheet">
   <script src="{% static 'js/videojs-overlay.js' %}"></script>
 {% endif %}
+{% if video.overview %}
+<link href="{% static 'css/videojs-vtt-thumbnails.css' %}" rel="stylesheet">
+<script src="{% static 'js/videojs-vtt-thumbnails.min.js' %}"></script>
+{% endif %}
 <style>
 .scrollspy-video {
     position: relative;
@@ -129,10 +133,6 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
     To view this video please enable JavaScript, and consider upgrading to a web browser that
     <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
   </p>
-  <!--
-  <track kind="captions" src="../shared/example-captions.vtt" srclang="en" label="English"></track>
-  <track kind="subtitles" src="../shared/example-captions.vtt" srclang="en" label="English"></track>
-  -->
 </video>
 {% if video.overlay_set.all %}
 <ul id="overlays" style="display: none">
@@ -321,8 +321,9 @@ var player = videojs('podvideoplayer', options, function(){});
       type: '{{video.get_playlist_master.encoding_format}}',
     };
     player.on('loadedmetadata', function() {
-      console.log('LOADEDMETADATA');
+      //console.log('LOADEDMETADATA');
       var qualityLevels = this.qualityLevels();
+
     });
     //Add source to player
     player.src(srcOptions);
@@ -345,6 +346,7 @@ var player = videojs('podvideoplayer', options, function(){});
     player.src(mp4_sources);
     player.controlBar.addChild('QualitySelector');
   {% endif %}
+
   {% if video.overlay_set.all %}
     var list_overlays = [];
     $('ul#overlays li').each(function() {
@@ -360,6 +362,14 @@ var player = videojs('podvideoplayer', options, function(){});
       overlays: list_overlays
     });
   {% endif %}
+
+  {% if video.overview %}
+    //add overview
+    player.vttThumbnails({
+      src: '{% if request.is_secure %}https://{%else%}http://{% endif %}{{request.get_host}}{{video.overview.url}}'
+    });
+  {%endif%}
+
 {% else %}
   {% if video.get_video_m4a %}
     var srcOptions = {
