@@ -48,7 +48,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         'LOGO_COMPACT_SITE': 'img/logo_compact_site.png',
         'LOGO_ETB': 'img/logo_etb.svg',
         'LOGO_PLAYER': 'img/logo_player.png',
-        'FOOTER_TEXT': ('',)
+        'FOOTER_TEXT': ('',),
         # 'FAVICON': 'img/favicon.png',
         # 'CSS_OVERRIDE' : 'custom/etab.css'
     }
@@ -114,7 +114,8 @@ def context_navbar(request):
 
     return {'CHANNELS': channels, 'TYPES': types, 'OWNERS': owners,
             'DISCIPLINES': disciplines, 'LISTOWNER': json.dumps(listowner),
-            'LAST_VIDEOS': LAST_VIDEOS, 'LINK_FOOTER': linkFooter, 'VERSION':VERSION}
+            'LAST_VIDEOS': LAST_VIDEOS, 'LINK_FOOTER': linkFooter,
+            'VERSION': VERSION}
 
 
 def get_last_videos():

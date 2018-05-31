@@ -47,8 +47,10 @@ class CustomFlatPageAdmin(TranslationAdmin):
         obj.sites.add(Site.objects.get(id=SITE_ID))
         obj.save()
 
+
 class LinkFooterAdmin(TranslationAdmin):
     list_display = ('title', 'url', )
+
 
 # Unregister the default FlatPage admin and register CustomFlatPageAdmin.
 admin.site.unregister(FlatPage)
