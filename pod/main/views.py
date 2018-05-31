@@ -72,14 +72,14 @@ def contact_us(request):
                 'email': email,
                 'TITLE_SITE': TITLE_SITE,
                 'message': message,
-                'url_referrer': url_referrer
+                'url_referrer': form.cleaned_data['url_referrer']
             })
             html_content = loader.get_template('mail/mail.html').render({
                 'name': name,
                 'email': email,
                 'TITLE_SITE': TITLE_SITE,
                 'message': message.replace("\n", "<br/>"),
-                'url_referrer': url_referrer
+                'url_referrer': form.cleaned_data['url_referrer']
             })
 
             dest_email = [owner.email] if owner else CONTACT_US_EMAIL
