@@ -2,7 +2,7 @@ from django import forms
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-# from captcha.fields import CaptchaField
+from captcha.fields import CaptchaField
 
 SUBJECT_CHOICES = getattr(
     settings,
@@ -61,9 +61,8 @@ class ContactUsForm(forms.Form):
         widget=forms.Textarea(),
         required=True)
 
-    # captcha = CaptchaField(
-    # label=_(u'Please indicate the result of the following operation
-    # hereunder'))
+    captcha = CaptchaField(
+    label=_('Please indicate the result of the following operation hereunder'))
 
     url_referrer = forms.URLField(required=False, widget=forms.HiddenInput())
 

@@ -76,8 +76,8 @@ urlpatterns = [
     url(r'^sso-cas/', include('django_cas.urls')),
 
     # contact_us
-    url(r'^contact_us/$', contact_us, name='contact_us')
-    # url(r'^captcha/', include('captcha.urls'))
+    url(r'^contact_us/$', contact_us, name='contact_us'),
+    url(r'^captcha/', include('captcha.urls')),
 ]
 
 if apps.is_installed('pod.filepicker'):

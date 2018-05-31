@@ -205,3 +205,10 @@ CAS_RESPONSE_CALLBACKS = (
 EMAIL_HOST = 'smtp.univ.fr'
 EMAIL_PORT = 25
 DEFAULT_FROM_EMAIL = 'noreply@univ.fr'
+
+##
+# Captcha config
+#
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+# ('captcha.helpers.noise_arcs','captcha.helpers.noise_dots',)
+CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
