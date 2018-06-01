@@ -300,7 +300,7 @@ def is_in_video_groups(user, video):
     ).exists()
 
 
-def get_note_form(request):
+def get_note_form(request,video):
     notesForm = None
     if request.user.is_authenticated:
         note, created = Notes.objects.get_or_create(
@@ -316,7 +316,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
     video = get_object_or_404(Video, id=id)
-    notesForm = get_note_form(request)
+    notesForm = get_note_form(request, video)
     channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
     theme = get_object_or_404(Theme, slug=slug_t) if slug_t else None
 
