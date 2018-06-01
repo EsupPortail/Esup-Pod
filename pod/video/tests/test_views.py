@@ -11,6 +11,7 @@ from pod.video.models import Theme
 from pod.video.models import Video
 from pod.video.models import Type
 from pod.video.models import Discipline
+from pod.video.models import Notes
 
 import os
 import re
@@ -598,3 +599,172 @@ class VideoEditTestView(TestCase):
         print(
             "   --->  test_video_edit_post_request"
             " of VideoEditTestView : OK !")
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class video_deleteTestView(TestCase):
+
+    def setUp(self):
+        user = User.objects.create(username="pod", password="pod1234pod")
+        User.objects.create(username="pod2", password="pod1234pod")
+        Video.objects.create(
+            title="Video1", owner=user,
+            video="test1.mp4")
+        print(" --->  SetUp of video_deleteTestView : OK !")
+
+    def test_video_delete_get_request(self):
+        self.client = Client()
+        video = Video.objects.get(title="Video1")
+        response = self.client.get("/video_delete/%s/" % video.slug)
+        self.assertEqual(response.status_code, 302)
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.get("/video_delete/slugauhasard/")
+        self.assertEqual(response.status_code, 404)
+        response = self.client.get("/video_delete/%s/" % video.slug)
+        self.assertEqual(response.status_code, 200)
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        response = self.client.get("/video_delete/%s/" % video.slug)
+        self.assertEqual(response.status_code, 403)
+        print(
+            " --->  test_video_edit_get_request"
+            " of video_deleteTestView : OK !")
+
+    def test_video_delete_post_request(self):
+        self.client = Client()
+        video = Video.objects.get(title="Video1")
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.post(
+            "/video_delete/%s/" % video.slug,
+            {
+                'agree': True,
+            })
+        self.assertRedirects(response, '/my_videos/')
+        self.assertEqual(Video.objects.all().count(), 0)
+        print(
+            " --->  test_video_edit_post_request"
+            " of video_deleteTestView : OK !")
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class video_notesTestView(TestCase):
+
+    def setUp(self):
+        user = User.objects.create(username="pod", password="pod1234pod")
+        Video.objects.create(
+            title="Video1", owner=user,
+            video="test1.mp4")
+        print(" --->  SetUp of video_notesTestView : OK !")
+
+    def test_video_notesTestView_get_request(self):
+        self.client = Client()
+        video = Video.objects.get(title="Video1")
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.get("/video/%s/" % video.slug)
+        note = Notes.objects.get(
+            user=User.objects.get(username="pod"),
+            video=video)
+        self.client.logout()
+        response = self.client.get("/video_notes/%s/" % note.id)
+        self.assertEqual(response.status_code, 302)
+        self.client.force_login(self.user)
+        response = self.client.get("/video_notes/%s/" % note.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['notesForm'].instance, note)
+        print(
+            " --->  test_video_notesTestView_get_request"
+            " of video_notesTestView : OK !")
+
+    def test_video_notesTestView_post_request(self):
+        self.client = Client()
+        video = Video.objects.get(title="Video1")
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        note = Notes.objects.create(
+            user=User.objects.get(username="pod"),
+            video=video)
+        self.assertEqual(note.note, None)
+        response = self.client.post(
+            "/video_notes/%s/" % note.id,
+            {
+                'user': self.user.id,
+                'video': video.id,
+                'note': 'coucou'
+            })
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(b"The note has been saved." in response.content)
+        note = Notes.objects.get(
+            user=User.objects.get(id=self.user.id),
+            video=video)
+        self.assertEqual(note.note, 'coucou')
+        print(
+            " --->  test_video_notesTestView_post_request"
+            " of video_notesTestView : OK !")
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class video_countTestView(TestCase):
+
+    def setUp(self):
+        user = User.objects.create(username="pod", password="pod1234pod")
+        Video.objects.create(
+            title="Video1", owner=user,
+            video="test1.mp4")
+        print(" --->  SetUp of video_countTestView : OK !")
+
+    def test_video_countTestView_get_request(self):
+        self.client = Client()
+        video = Video.objects.get(title="Video1")
+        response = self.client.get("/video_count/2/")
+        self.assertEqual(response.status_code, 404)
+        response = self.client.get("/video_count/%s/" % video.id)
+        self.assertEqual(response.status_code, 403)
+        print(
+            " --->  test_video_countTestView_get_request"
+            " of video_countTestView : OK !")
+
+    def test_video_countTestView_post_request(self):
+        self.client = Client()
+        video = Video.objects.get(title="Video1")
+        print("count : %s" %video.get_viewcount())
+        self.assertEqual(video.get_viewcount(), 0)
+        response = self.client.post(
+            "/video_count/%s/" % video.id,
+            {})
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(b"ok" in response.content)
+        self.assertEqual(video.get_viewcount(), 1)
+        print(
+            " --->  test_video_countTestView_post_request"
+            " of video_countTestView : OK !")
+

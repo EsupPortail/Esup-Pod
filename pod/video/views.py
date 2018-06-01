@@ -456,9 +456,9 @@ def video_edit(request, slug=None):
 @login_required(redirect_field_name='referrer')
 def video_delete(request, slug=None):
 
-    video = get_object_or_404(Video, slug=slug) if slug else None
+    video = get_object_or_404(Video, slug=slug)
 
-    if video and request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot delete this video.'))
         raise PermissionDenied
@@ -510,7 +510,6 @@ def video_notes(request, id):
 @csrf_protect
 def video_count(request, id):
     video  = get_object_or_404(Video, id=id)
-    # ViewCount
     if request.method == "POST":
         viewCount, created = ViewCount.objects.get_or_create(video=video, date=datetime.now())
         viewCount.count +=1

@@ -38,7 +38,7 @@ $(document).ready(function () {
         {% endspaceless %}
     {% endfor %}
     {% if notesForm.instance.id %}
-        <input type="hidden" id="id_note" name="note_id" value="{{notesForm.instance.id}}"/>
+        <input type="hidden" id="note_id" name="note_id" value="{{notesForm.instance.id}}"/>
     {% endif %}
     <div class="text-center mt-1">
         <button type="submit" class="btn btn-success btn-sm">{% trans "Save" %}</button>
