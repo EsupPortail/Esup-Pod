@@ -10,9 +10,9 @@
 
 
 {% block breadcrumbs %}{{ block.super }} 
-<li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a>
+<li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
 {% if form.instance.title %}
-<li class="breadcrumb-item"><a href="{% url 'video' slug=form.instance.slug %}" title="{{form.instance.title}}">{{form.instance.title}}</a>
+<li class="breadcrumb-item"><a href="{% url 'video' slug=form.instance.slug %}" title="{{form.instance.title}}">{{form.instance.title}}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
 {%else%}
 <li class="breadcrumb-item active" aria-current="page">{% trans "Add a new video" %}</li>
