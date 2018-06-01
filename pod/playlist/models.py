@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
 from pod.video.models import Video
 
@@ -25,7 +26,7 @@ class Playlist(models.Model):
                     ' label containing only letters, numbers, underscore' +
                     ' or dash top.'))
     owner = models.ForeignKey(User, verbose_name=_('Owner'))
-    description = models.CharField(
+    description = models.TextField(
         _('Description'),
         max_length=255,
         null=True,
@@ -56,11 +57,14 @@ class Playlist(models.Model):
         else:
             newid = self.id
         newid = '{0}'.format(newid)
-        self.slug = '{0} - {1}'.format(newid, slugify(self.title))
+        self.slug = '{0}-{1}'.format(newid, slugify(self.title))
         super(Playlist, self).save(*args, **kwargs)
 
     def __str__(self):
         return '{0}'.format(self.title)
+
+    def get_first(self):
+        return PlaylistElement.objects.get(playlist=self, position=1)
 
 
 class PlaylistElement(models.Model):
@@ -72,6 +76,7 @@ class PlaylistElement(models.Model):
         help_text=_('Position of the video in a playlist.'))
 
     class Meta:
+        unique_together = ('playlist', 'position',)
         ordering = ['position', 'id']
         verbose_name = _('Playlist element')
         verbose_name_plural = _('Playlist elements')

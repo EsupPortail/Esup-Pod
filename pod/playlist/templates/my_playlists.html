@@ -5,5 +5,19 @@
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My playlists" %}</li>{% endblock %}
 
 {% block page_title %}
-{% blocktrans count counter=playlists.paginator.count %}{{ counter }} playlist found{% plural %}{{ counter }} playlistss found{% endblocktrans %}
+	{% blocktrans count counter=playlists.paginator.count %}{{ counter }} playlist found{% plural %}{{ counter }} playlistss found{% endblocktrans %}
 {% endblock %}
+
+{% block page_content %}
+	{% if playlists.paginator.count == 0 %}
+		<h3>{% trans 'No playlist found' %}</h3>
+		<p class="alert alert-info">{% trans 'You have not created any playlists yet, please use the "Add a new playlist" button to add one.' %}</p>
+		<a href="{% url 'playlist' %}" class="btn btn-success">{% trans 'Add a new playlist' %}</a>
+	{% else %}
+		<h3>{% blocktrans count counter=playlists.paginator.count %}{{ counter }} playlist found{% plural %}{{ counter }} playlistss found{% endblocktrans %}</h3>
+		{% include 'playlist/playlist_list.html' %}
+	{% endif %}
+{% endblock page_content %}
+
+{% block collapse_page_aside %}{% endblock collapse_page_aside %}
+{% block page_aside %}{% endblock page_aside %}

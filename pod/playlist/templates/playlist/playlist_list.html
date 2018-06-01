@@ -1,0 +1,32 @@
+{% load i18n %}
+{% spaceless %}
+<div class="row infinite-container">
+	{% for playlist in playlists %}
+		<div class="card">
+			<img class="card-img-top" src="{{playlist.get_first.video.get_thumbnail_url}}" alt="Playlist thumbnail" width="150" height="150">
+			<div class="card-body">
+				<h5 class="card-title">{{playlist.title}}</h5>
+				<p class="card-text">
+					{{playlist.description}}
+				</p>
+				<a href="{% url 'playlist' slug=playlist.slug %}" class="btn btn-sm btn-primary">{% trans 'Edit' %}</a>
+				&nbsp;
+				<a href='#' class="btn btn-sm btn-dark">
+					<!-- TODO : icon -->
+					{% trans 'Launch' %}
+				</a>
+			</div>
+		</div>
+		{% empty %}
+		<div class="col-12 col-md-6 col-lg-3 mb-2">
+			<p>{% trans "Sorry, no playlist found" %}</p>
+		</div>
+	{% endfor %}
+	</div>
+	{% if playlists.has_next %}
+		<a class="infinite-more-link" href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{%endif%}page={{ playlists.next_page_number }}">More</a>
+	{% endif %}
+	<div class="loading" style="display: none;">
+	Loading...
+</div>
+{% endspaceless %}
