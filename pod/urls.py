@@ -23,6 +23,7 @@ from pod.video.views import my_videos
 from pod.video.views import my_channels
 from pod.video.views import channel_edit
 from pod.video.views import theme_edit
+from pod.video.views import video_notes
 from pod.main.views import contact_us
 
 
@@ -46,6 +47,8 @@ urlpatterns = [
     url(r'^video_edit/(?P<slug>[\-\d\w]+)/$', video_edit, name='video_edit'),
     url(r'^video_delete/(?P<slug>[\-\d\w]+)/$',
         video_delete, name='video_delete'),
+    url(r'^video_notes/(?P<id>[\d]+)/$',
+        video_notes, name='video_notes'),
     # my channels
     url(r'^my_channels/$', my_channels, name='my_channels'),
     url(r'^channel_edit/(?P<slug>[\-\d\w]+)/$',

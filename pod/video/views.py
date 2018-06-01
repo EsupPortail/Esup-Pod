@@ -17,6 +17,7 @@ from django.urls import reverse
 from pod.video.models import Video
 from pod.video.models import Channel
 from pod.video.models import Theme
+from pod.video.models import Notes
 from tagging.models import TaggedItem
 
 from pod.video.forms import VideoForm
@@ -24,6 +25,7 @@ from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
+from pod.video.forms import NotesForm
 
 import json
 
@@ -303,7 +305,11 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
     video = get_object_or_404(Video, id=id)
-
+    if request.user.is_authenticated:
+        note, created = Notes.objects.get_or_create(user=request.user,video=video)
+        notesForm = NotesForm(instance=note)
+    else:
+        notesForm = None
     channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
     theme = get_object_or_404(Theme, slug=slug_t) if slug_t else None
 
@@ -360,6 +366,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                     'channel': channel,
                     'video': video,
                     'theme': theme,
+                    'notesForm':notesForm
                 }
             )
         else:
@@ -371,7 +378,8 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                         'channel': channel,
                         'video': video,
                         'theme': theme,
-                        'form': form
+                        'form': form,
+                        'notesForm':notesForm
                     }
                 )
             elif request.user.is_authenticated():
@@ -389,6 +397,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                 'channel': channel,
                 'video': video,
                 'theme': theme,
+                'notesForm':notesForm
             }
         )
 
@@ -471,4 +480,27 @@ def video_delete(request, slug=None):
     return render(request, 'videos/video_delete.html', {
         'video': video,
         'form': form}
+    )
+
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+def video_notes(request, id):
+
+    note = get_object_or_404(Notes, id=id)
+    notesForm = NotesForm(instance=note)
+
+    if request.method == "POST":
+        notesForm = NotesForm(request.POST, instance=note)
+        if notesForm.is_valid():
+            notesForm.save()
+            messages.add_message(
+                request, messages.INFO, _('The note has been saved.'))
+        else:
+            messages.add_message(
+                request, messages.ERROR,
+                _(u'One or more errors have been found in the form.'))
+
+    return render(request, 'videos/video_notes.html', {
+        'video': video,
+        'notesForm': notesForm}
     )

@@ -15,6 +15,7 @@ from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
+from pod.video.models import Notes
 
 from pod.main.forms import add_placeholder_and_asterisk
 
@@ -461,4 +462,18 @@ class DisciplineForm(forms.ModelForm):
 
     class Meta(object):
         model = Discipline
+        fields = '__all__'
+
+
+class NotesForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(NotesForm, self).__init__(*args, **kwargs)
+        self.fields["user"].widget = forms.HiddenInput()
+        self.fields["video"].widget = forms.HiddenInput()
+        self.fields["note"].widget.attrs["cols"]=20
+        self.fields["note"].widget.attrs["rows"]=5
+
+    class Meta(object):
+        model = Notes
         fields = '__all__'
