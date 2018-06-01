@@ -18,6 +18,7 @@ from pod.video.models import Video
 from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import Notes
+from pod.video.models import ViewCount
 from tagging.models import TaggedItem
 
 from pod.video.forms import VideoForm
@@ -28,6 +29,7 @@ from pod.video.forms import VideoDeleteForm
 from pod.video.forms import NotesForm
 
 import json
+from datetime import datetime
 
 
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
@@ -504,3 +506,14 @@ def video_notes(request, id):
         'video': video,
         'notesForm': notesForm}
     )
+
+@csrf_protect
+def video_count(request, id):
+    video  = get_object_or_404(Video, id=id)
+    # ViewCount
+    if request.method == "POST":
+        viewCount, created = ViewCount.objects.get_or_create(video=video, date=datetime.now())
+        viewCount.count +=1
+        viewCount.save()
+        return HttpResponse("ok")
+    return HttpResponse("nok")
