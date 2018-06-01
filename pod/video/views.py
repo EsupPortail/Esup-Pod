@@ -300,7 +300,7 @@ def is_in_video_groups(user, video):
     ).exists()
 
 
-def get_note_form(request,video):
+def get_note_form(request, video):
     notesForm = None
     if request.user.is_authenticated:
         note, created = Notes.objects.get_or_create(

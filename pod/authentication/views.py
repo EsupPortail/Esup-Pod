@@ -59,14 +59,16 @@ def authentication_logout(request):
         url += '?next=/'
         return redirect(url)
 
+
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def userpicture(request):
 
     frontOwnerForm = FrontOwnerForm(instance=request.user.owner)
-    
+
     if request.method == "POST":
-        frontOwnerForm = FrontOwnerForm(request.POST, instance=request.user.owner)
+        frontOwnerForm = FrontOwnerForm(
+            request.POST, instance=request.user.owner)
         if frontOwnerForm.is_valid():
             frontOwnerForm.save()
             messages.add_message(

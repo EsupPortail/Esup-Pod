@@ -5,6 +5,7 @@ from django.apps import apps
 
 FILEPICKER = True if apps.is_installed('pod.filepicker') else False
 
+
 class OwnerAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -18,7 +19,9 @@ class OwnerAdminForm(forms.ModelForm):
         model = Owner
         fields = '__all__'
 
+
 class FrontOwnerForm(OwnerAdminForm):
+
     class Meta(object):
         model = Owner
         fields = ('userpicture',)
