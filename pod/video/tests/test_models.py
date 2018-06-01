@@ -913,7 +913,8 @@ class NotesTestCase(TestCase):
             video=Video.objects.get(id=1)
         )
         self.assertTrue(isinstance(note, Notes))
-        self.assertEqual(note.__str__(), "%s-%s" % (note.user.username, note.video))
+        self.assertEqual(note.__str__(), "%s-%s" %
+                         (note.user.username, note.video))
         self.assertEqual(note.note, None)
         print(" --->  test_NotesTestCase_null_attributs : OK !")
 
@@ -924,7 +925,8 @@ class NotesTestCase(TestCase):
             note="coucou"
         )
         self.assertTrue(isinstance(note, Notes))
-        self.assertEqual(note.__str__(), "%s-%s" % (note.user.username, note.video))
+        self.assertEqual(note.__str__(), "%s-%s" %
+                         (note.user.username, note.video))
         self.assertEqual(note.note, "coucou")
         print(" --->  test_NotesTestCase_with_attributs : OK !")
 

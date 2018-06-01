@@ -203,13 +203,16 @@ class EncodingStepAdmin(admin.ModelAdmin):
     list_display = ('video',)
     readonly_fields = ('video', 'num_step', 'desc_step')
 
+
 class NotesAdmin(admin.ModelAdmin):
-    list_display = ('video','user')
+    list_display = ('video', 'user')
     # readonly_fields = ('video', 'num_step', 'desc_step')
 
+
 class ViewCountAdmin(admin.ModelAdmin):
-    list_display = ('video','date','count')
-    readonly_fields = ('video','date','count')
+    list_display = ('video', 'date', 'count')
+    readonly_fields = ('video', 'date', 'count')
+
 
 admin.site.register(Channel, ChannelAdmin)
 admin.site.register(Type, TypeAdmin)

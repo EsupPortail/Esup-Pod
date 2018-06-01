@@ -16,7 +16,6 @@ from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
 from pod.video.models import Notes
-from pod.video.models import ViewCount
 
 from pod.main.forms import add_placeholder_and_asterisk
 

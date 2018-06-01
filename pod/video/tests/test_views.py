@@ -756,7 +756,7 @@ class video_countTestView(TestCase):
     def test_video_countTestView_post_request(self):
         self.client = Client()
         video = Video.objects.get(title="Video1")
-        print("count : %s" %video.get_viewcount())
+        print("count : %s" % video.get_viewcount())
         self.assertEqual(video.get_viewcount(), 0)
         response = self.client.post(
             "/video_count/%s/" % video.id,
@@ -767,4 +767,3 @@ class video_countTestView(TestCase):
         print(
             " --->  test_video_countTestView_post_request"
             " of video_countTestView : OK !")
-
