@@ -951,3 +951,16 @@ class EncodingStep(models.Model):
 
     def __str__(self):
         return "Step for encoding video %s" % (self.video.id)
+
+
+class Notes(models.Model):
+    user = models.ForeignKey(User)
+    video = models.ForeignKey(Video)
+    note = models.TextField(_('Note'), null=True, blank=True)
+
+    class Meta:
+        verbose_name = _("Note")
+        verbose_name_plural = _("Notes")
+
+    def __str__(self):
+        return "%s-%s" % (self.user.username, self.video)
