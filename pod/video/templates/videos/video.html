@@ -134,6 +134,9 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
     <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
   </p>
 </video>
+<form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
+{% csrf_token %}
+</form>
 {% if video.overlay_set.all %}
 <ul id="overlays" style="display: none">
   {% for overlay in video.overlay_set.all %}
@@ -334,6 +337,14 @@ var options = {
   playbackRates: [0.5, 1, 1.5, 2]
 }
 var player = videojs('podvideoplayer', options, function(){});
+
+player.on('firstplay', function(){
+    var data_form = $( "#video_count_form" ).serializeArray();
+    jqxhr = $.post(
+      $( "#video_count_form" ).attr("action"),
+      data_form
+    );
+});
 
 {% if video.is_video %}
   /** get all mp4 format **/

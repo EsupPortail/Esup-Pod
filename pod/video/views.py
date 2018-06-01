@@ -516,4 +516,6 @@ def video_count(request, id):
         viewCount.count +=1
         viewCount.save()
         return HttpResponse("ok")
-    return HttpResponse("nok")
+    messages.add_message(
+            request, messages.ERROR, _(u'You cannot access to this view.'))
+    raise PermissionDenied
