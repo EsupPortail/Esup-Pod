@@ -6,7 +6,7 @@ from django.utils.deconstruct import deconstructible
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 from django.core.exceptions import ValidationError
-
+from django.apps import apps
 from django.contrib.auth.models import User
 
 from pod.filepicker.widgets import CustomFilePickerWidget
@@ -21,6 +21,8 @@ from pod.main.forms import add_placeholder_and_asterisk
 
 from ckeditor.widgets import CKEditorWidget
 from collections import OrderedDict
+
+FILEPICKER = True if apps.is_installed('pod.filepicker') else False
 
 VIDEO_ALLOWED_EXTENSIONS = getattr(
     settings, 'VIDEO_ALLOWED_EXTENSIONS', (
@@ -232,10 +234,10 @@ class VideoForm(forms.ModelForm):
         self.VIDEO_FORM_FIELDS_HELP_TEXT = VIDEO_FORM_FIELDS_HELP_TEXT
 
         super(VideoForm, self).__init__(*args, **kwargs)
-
-        pickers = {'image': "img"}
-        self.fields['thumbnail'].widget = CustomFilePickerWidget(
-            pickers=pickers)
+        if FILEPICKER:
+            pickers = {'image': "img"}
+            self.fields['thumbnail'].widget = CustomFilePickerWidget(
+                pickers=pickers)
 
         # fields['video'].widget = widgets.AdminFileWidget(attrs=videoattrs)
         valid_ext = FileExtensionValidator(VIDEO_ALLOWED_EXTENSIONS)
@@ -334,9 +336,10 @@ class ChannelForm(forms.ModelForm):
         self.CHANNEL_FORM_FIELDS_HELP_TEXT = CHANNEL_FORM_FIELDS_HELP_TEXT
 
         super(ChannelForm, self).__init__(*args, **kwargs)
-        pickers = {'image': "img"}
-        self.fields['headband'].widget = CustomFilePickerWidget(
-            pickers=pickers)
+        if FILEPICKER:
+            pickers = {'image': "img"}
+            self.fields['headband'].widget = CustomFilePickerWidget(
+                pickers=pickers)
 
         if not hasattr(self, 'admin_form'):
             del self.fields['visible']
@@ -366,9 +369,10 @@ class ThemeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ThemeForm, self).__init__(*args, **kwargs)
-        pickers = {'image': "img"}
-        self.fields['headband'].widget = CustomFilePickerWidget(
-            pickers=pickers)
+        if FILEPICKER:
+            pickers = {'image': "img"}
+            self.fields['headband'].widget = CustomFilePickerWidget(
+                pickers=pickers)
 
         # hide default langage
         self.fields['description_%s' %
@@ -402,9 +406,6 @@ class FrontThemeForm(ThemeForm):
         self.THEME_FORM_FIELDS_HELP_TEXT = THEME_FORM_FIELDS_HELP_TEXT
 
         super(FrontThemeForm, self).__init__(*args, **kwargs)
-        pickers = {'image': "img"}
-        self.fields['headband'].widget = CustomFilePickerWidget(
-            pickers=pickers)
 
         self.fields['channel'].widget = forms.HiddenInput()
         # self.fields["parentId"].label = _('Theme parent')
@@ -443,9 +444,10 @@ class TypeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(TypeForm, self).__init__(*args, **kwargs)
-        pickers = {'image': "img"}
-        self.fields['icon'].widget = CustomFilePickerWidget(
-            pickers=pickers)
+        if FILEPICKER:
+            pickers = {'image': "img"}
+            self.fields['icon'].widget = CustomFilePickerWidget(
+                pickers=pickers)
 
     class Meta(object):
         model = Type
@@ -456,9 +458,10 @@ class DisciplineForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(DisciplineForm, self).__init__(*args, **kwargs)
-        pickers = {'image': "img"}
-        self.fields['icon'].widget = CustomFilePickerWidget(
-            pickers=pickers)
+        if FILEPICKER:
+            pickers = {'image': "img"}
+            self.fields['icon'].widget = CustomFilePickerWidget(
+                pickers=pickers)
 
     class Meta(object):
         model = Discipline
