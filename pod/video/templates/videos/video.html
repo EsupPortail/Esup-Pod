@@ -264,8 +264,11 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
 {% trans "take Note"%}
 </h5>
 <div class="card-text">
-  <p>Prenez des notes</p>
-  <div id="info"></div>
+    {% if request.user.is_authenticated %}
+    {% include 'videos/video_notes.html' %}
+    {% else %}
+    <p>{% trans 'You must be logged in to take notes.' %}</p>
+    {% endif %}
 </div>
 </div>
     {% include 'aside.html'%}
@@ -273,13 +276,15 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
 
 
 {% block more_script %}
-
-{% if form %}
 <script>
 var showalert = function(message,alerttype) {
     $('body').append('<div id="formalertdiv" class="alert ' +  alerttype + ' alert-dismissible fade show"  role="alert">'+message+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
     setTimeout(function() { $("#formalertdiv").remove(); }, 5000);
 };
+</script>
+{% if form %}
+<script>
+
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 (function() {
   'use strict';
@@ -302,6 +307,25 @@ var showalert = function(message,alerttype) {
 })();
 </script>
 {% else %}
+<script>
+/** NOTES **/
+$(document).on("submit", "#video_notes_form", function (e) {
+    e.preventDefault();
+    var jqxhr= '';
+    var data_form = $( "#video_notes_form" ).serializeArray();
+    jqxhr = $.post(
+        $( "#video_notes_form" ).attr("action"),
+        data_form
+    );
+    jqxhr.done(function(data){
+        $( "#video_notes_form" ).parent().html(data);
+    });
+    jqxhr.fail(function($xhr) {
+        var data = $xhr.status+ " : " +$xhr.statusText;
+        showalert("{% trans 'Error during recording.' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}", "alert-danger");
+    });
+});
+</script>
 <script>
 var options = {
   notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",

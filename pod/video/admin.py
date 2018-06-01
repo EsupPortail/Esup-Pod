@@ -18,6 +18,7 @@ from pod.video.models import EncodingAudio
 from pod.video.models import EncodingLog
 from pod.video.models import EncodingStep
 from pod.video.models import PlaylistVideo
+from pod.video.models import Notes
 
 from pod.video.forms import VideoForm
 from pod.video.forms import ChannelForm
@@ -201,6 +202,10 @@ class EncodingStepAdmin(admin.ModelAdmin):
     list_display = ('video',)
     readonly_fields = ('video', 'num_step', 'desc_step')
 
+class NotesAdmin(admin.ModelAdmin):
+    list_display = ('video','user')
+    # readonly_fields = ('video', 'num_step', 'desc_step')
+
 
 admin.site.register(Channel, ChannelAdmin)
 admin.site.register(Type, TypeAdmin)
@@ -213,3 +218,4 @@ admin.site.register(VideoRendition, VideoRenditionAdmin)
 admin.site.register(EncodingLog, EncodingLogAdmin)
 admin.site.register(EncodingStep, EncodingStepAdmin)
 admin.site.register(PlaylistVideo, PlaylistVideoAdmin)
+admin.site.register(Notes, NotesAdmin)
