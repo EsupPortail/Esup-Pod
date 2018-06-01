@@ -13,6 +13,7 @@ from django.contrib.auth import views as auth_views
 from pod.authentication.views import authentication_login
 from pod.authentication.views import authentication_logout
 from pod.authentication.views import authentication_login_gateway
+from pod.authentication.views import userpicture
 
 from pod.video.views import video
 from pod.video.views import video_edit
@@ -79,6 +80,8 @@ urlpatterns = [
         auth_views.PasswordChangeView.as_view()),
     url(r'^accounts/reset-password/$',
         auth_views.PasswordResetView.as_view()),
+    url(r'^accounts/userpicture/$', userpicture, name='userpicture'),
+
     url(r'^sso-cas/', include('django_cas.urls')),
 
     # contact_us

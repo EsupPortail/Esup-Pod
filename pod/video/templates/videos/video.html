@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load staticfiles %}
 {% load tagging_tags %}
+{% load thumbnail %}
 
 {% block page_extra_head %}
 <link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
@@ -192,7 +193,11 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
   </div>
   <h4 id="infos">{% trans 'Infos' %}</h4>
   <div class="scrollspy-content">
-    {% trans 'Added by' %}: <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ video.owner.get_full_name }}</a><br/>
+    {% trans 'Added by' %}: <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+    {% thumbnail video.owner.owner.userpicture.file "x34" as im %}
+        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}">
+    {% endthumbnail %}
+    {{ video.owner.get_full_name }}</a><br/>
     {% trans 'Updated on' %}: <strong>{{ video.date_added }}</strong><br/>
     {% trans 'Duration' %}: <strong>{{ video.duration_in_time }}</strong><br/>
     {% trans 'Number of view(s)' %}: <strong>{{ video.get_viewcount }}</strong><br/>
@@ -279,12 +284,7 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
 
 
 {% block more_script %}
-<script>
-var showalert = function(message,alerttype) {
-    $('body').append('<div id="formalertdiv" class="alert ' +  alerttype + ' alert-dismissible fade show"  role="alert">'+message+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-    setTimeout(function() { $("#formalertdiv").remove(); }, 5000);
-};
-</script>
+
 {% if form %}
 <script>
 
