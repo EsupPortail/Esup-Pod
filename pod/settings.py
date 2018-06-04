@@ -195,15 +195,15 @@ for application in INSTALLED_APPS:
 # AUTH CAS
 #
 try:
-  if USE_CAS is True:
-    AUTHENTICATION_BACKENDS = (
-        'django.contrib.auth.backends.ModelBackend',
-        'django_cas.backends.CASBackend',
-    )
-    CAS_RESPONSE_CALLBACKS = (
-    'pod.authentication.populatedCASbackend.populateUser',
-        # function call to add some information to user login by CAS
-    )
-    MIDDLEWARE.append('django_cas.middleware.CASMiddleware')
+    if USE_CAS is True:
+        AUTHENTICATION_BACKENDS = (
+            'django.contrib.auth.backends.ModelBackend',
+            'django_cas.backends.CASBackend',
+        )
+        CAS_RESPONSE_CALLBACKS = (
+            'pod.authentication.populatedCASbackend.populateUser',
+            # function call to add some information to user login by CAS
+        )
+        MIDDLEWARE.append('django_cas.middleware.CASMiddleware')
 except NameError:
     pass

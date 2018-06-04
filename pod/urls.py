@@ -49,10 +49,14 @@ urlpatterns = [
 
     url(r'^rss-video/$', RssSiteVideosFeed(), name='rss-video'),
     url(r'^rss-audio/$', RssSiteAudiosFeed(), name='rss-audio'),
-    url(r'^rss-video/(?P<slug_c>[\-\d\w]+)/$', RssSiteVideosFeed(), name='rss-video'),
-    url(r'^rss-audio/(?P<slug_c>[\-\d\w]+)/$', RssSiteAudiosFeed(), name='rss-audio'),
-    url(r'^rss-video/(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$', RssSiteVideosFeed(), name='rss-video'),
-    url(r'^rss-audio/(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$', RssSiteAudiosFeed(), name='rss-audio'),
+    url(r'^rss-video/(?P<slug_c>[\-\d\w]+)/$',
+        RssSiteVideosFeed(), name='rss-video'),
+    url(r'^rss-audio/(?P<slug_c>[\-\d\w]+)/$',
+        RssSiteAudiosFeed(), name='rss-audio'),
+    url(r'^rss-video/(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$',
+        RssSiteVideosFeed(), name='rss-video'),
+    url(r'^rss-audio/(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$',
+        RssSiteAudiosFeed(), name='rss-audio'),
 
     url(r'^video/(?P<slug>[\-\d\w]+)/$', video, name='video'),
     url(r'^video/(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$', video,
@@ -100,7 +104,7 @@ urlpatterns = [
 ]
 
 if USE_CAS:
-    urlpatterns += [url(r'^sso-cas/', include('django_cas.urls')),]
+    urlpatterns += [url(r'^sso-cas/', include('django_cas.urls')), ]
 
 if apps.is_installed('pod.filepicker'):
     urlpatterns += [url(r'^file-picker/', include(filepicker_site.urls)), ]

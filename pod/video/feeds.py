@@ -1,6 +1,4 @@
 from django.contrib.syndication.views import Feed
-from pod.video.models import Video
-from django.utils.feedgenerator import Atom1Feed
 from django.utils.feedgenerator import Rss201rev2Feed
 from datetime import datetime
 from django.conf import settings
@@ -8,10 +6,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
-from django.conf.urls.static import static
 
 from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
-from pod.video.views import VIDEOS, get_videos_list
+from pod.video.views import get_videos_list
 
 from pod.video.models import EncodingAudio
 from pod.video.models import Channel
@@ -20,8 +17,10 @@ from pod.video.models import Theme
 TITLE_ETB = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_ETB', 'University')
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
 LOGO_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'LOGO_SITE', 'img/logoPod.svg')
-CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [
-                           mail for name, mail in getattr(settings, 'ADMINS')])
+CONTACT_US_EMAIL = getattr(
+    settings,
+    'CONTACT_US_EMAIL',
+    [mail for name, mail in getattr(settings, 'ADMINS')])
 
 
 class RssFeedGenerator(Rss201rev2Feed):
@@ -47,7 +46,9 @@ class RssFeedGenerator(Rss201rev2Feed):
         handler.startElement(
             'itunes:category', {'text': self.feed['iTunes_category']['text']})
         handler.addQuickElement(
-            'itunes:category', '', {'text': self.feed['iTunes_category']['sub']})
+            'itunes:category',
+            '',
+            {'text': self.feed['iTunes_category']['sub']})
         handler.endElement('itunes:category')
         handler.addQuickElement('itunes:explicit',
                                 self.feed['iTunes_explicit'])
@@ -80,7 +81,8 @@ class RssSiteVideosFeed(Feed):
     def feed_extra_kwargs(self, obj):
         return {
             'image_url': ''.join([settings.STATIC_URL, LOGO_SITE]),
-            'iTunes_category': {'text': 'Education', 'sub': 'Higher Education'},
+            'iTunes_category': {'text': 'Education',
+                                'sub': 'Higher Education'},
             'iTunes_explicit': 'clean',
             'iTunes_name': self.author_name,
             'iTunes_email': self.author_email
@@ -114,7 +116,10 @@ class RssSiteVideosFeed(Feed):
                 theme.title, theme.channel.title)
             list_theme = theme.get_all_children_flat()
             videos_list = videos_list.filter(theme__in=list_theme)
-            self.link = reverse('theme', kwargs={'slug_c': theme.channel.slug, 'slug_t':theme.slug})
+            self.link = reverse(
+                'theme', kwargs={
+                    'slug_c': theme.channel.slug,
+                    'slug_t': theme.slug})
 
         return videos_list
 
@@ -134,7 +139,10 @@ class RssSiteVideosFeed(Feed):
         return item.owner.email
 
     def item_author_link(self, item):
-        return ''.join([self.author_link, reverse('videos'), "?owner=%s" % item.owner.username])
+        return ''.join([
+            self.author_link,
+            reverse('videos'),
+            "?owner=%s" % item.owner.username])
 
     def item_description(self, item):
         description = "%s<br/>" % item.get_thumbnail_admin
@@ -143,22 +151,25 @@ class RssSiteVideosFeed(Feed):
         return description
 
     def item_pubdate(self, item):
-        return datetime.strptime(item.date_added.strftime('%Y-%m-%d'), '%Y-%m-%d')
+        return datetime.strptime(
+            item.date_added.strftime('%Y-%m-%d'), '%Y-%m-%d')
 
     def item_updateddate(self, item):
-        return datetime.strptime(item.date_added.strftime('%Y-%m-%d'), '%Y-%m-%d')
+        return datetime.strptime(
+            item.date_added.strftime('%Y-%m-%d'), '%Y-%m-%d')
 
     def item_enclosure_url(self, item):
         if item.get_video_mp4().count() > 0:
             mp4 = sorted(item.get_video_mp4(), key=lambda m: m.height)[0]
             return ''.join([self.author_link, mp4.source_file.url])
         elif item.get_video_m4a():
-            return ''.join([self.author_link, item.get_video_m4a().source_file.url])
+            return ''.join([
+                self.author_link,
+                item.get_video_m4a().source_file.url])
         return ""
 
     def item_enclosure_mime_type(self, item):
         if item.get_video_mp4().count() > 0 or item.get_video_m4a():
-            mp4 = sorted(item.get_video_mp4(), key=lambda m: m.height)[0]
             return "video/mp4"
         return ""
 
@@ -178,6 +189,7 @@ class RssSiteVideosFeed(Feed):
 
 
 class RssSiteAudiosFeed(RssSiteVideosFeed):
+
     def item_enclosure_url(self, item):
         try:
             mp3 = EncodingAudio.objects.get(
@@ -188,8 +200,6 @@ class RssSiteAudiosFeed(RssSiteVideosFeed):
 
     def item_enclosure_mime_type(self, item):
         try:
-            mp3 = EncodingAudio.objects.get(
-                name="audio", video=item, encoding_format="audio/mp3")
             return "audio/mpeg"
         except EncodingAudio.DoesNotExist:
             return ""
@@ -201,4 +211,3 @@ class RssSiteAudiosFeed(RssSiteVideosFeed):
             return mp3.source_file.size
         except EncodingAudio.DoesNotExist:
             return ""
-        
