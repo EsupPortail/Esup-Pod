@@ -630,7 +630,7 @@ class Video(models.Model):
             "description": u'%s' % self.description,
             "thumbnail": u'%s' % self.get_thumbnail_url(),
             "duration": u'%s' % self.duration,
-            "tags": [tag.name for tag in Tag.objects.get_for_object(self)],
+            "tags": list(Tag.objects.get_for_object(self).values('name')),
             "type": {"title": self.type.title, "slug": self.type.slug},
             "disciplines": list(self.discipline.all().values('title', 'slug')),
             "channels": list(self.channel.all().values('title','slug')),

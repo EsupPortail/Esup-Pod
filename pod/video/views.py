@@ -32,7 +32,8 @@ import json
 from datetime import datetime
 
 
-VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
+# VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
+VIDEOS = Video.objects.filter(is_draft=False)
 THEME_ACTION = ['new', 'modify', 'delete', 'save']
 
 # ############################################################################
