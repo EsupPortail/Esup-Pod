@@ -66,6 +66,8 @@
 		<hr/>
 		{% if form.instance.playlistelement_set.all %}
 			{% include 'playlist/playlist_element_list.html' %}
+		{% else %}
+			<p>{% trans 'This playlist has no videos yet.' %}</p>
 		{% endif %}
 		<hr/>
 		<a href="{% url 'my_playlists' %}" class="btn btn-primary">{% trans 'Back to my playlists' %}</a>

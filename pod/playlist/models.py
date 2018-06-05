@@ -63,8 +63,11 @@ class Playlist(models.Model):
     def __str__(self):
         return '{0}'.format(self.title)
 
-    def get_first(self):
-        return PlaylistElement.objects.get(playlist=self, position=1)
+    def first(self):
+    	return PlaylistElement.objects.get(playlist=self, position=1)
+
+    def elements(self):
+    	return PlaylistElement.objects.filter(playlist=self)
 
 
 class PlaylistElement(models.Model):

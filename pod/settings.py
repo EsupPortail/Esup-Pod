@@ -92,6 +92,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'main', 'templates', 'flatpages'),
             os.path.join(BASE_DIR, 'completion', 'templates'),
             os.path.join(BASE_DIR, 'enrichment', 'templates'),
+            os.path.join(BASE_DIR, 'playlist', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
