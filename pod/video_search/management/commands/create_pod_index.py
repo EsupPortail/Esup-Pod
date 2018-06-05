@@ -24,4 +24,5 @@ class Command(BaseCommand):
             if e.status_code == 400:
                 print("Pod index already exists: %s" % e.error)
             else:
-                print("An error occured during index creation: %s-%s" % (e.status_code, e.error))
+                print("An error occured during index creation: %s-%s" %
+                      (e.status_code, e.error))

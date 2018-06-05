@@ -88,9 +88,6 @@
                   "index": false
                 }
               }
-            },
-            "slug": {
-              "type":"keyword"
             }
           }
         },

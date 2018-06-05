@@ -20,10 +20,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.sites.shortcuts import get_current_site
 from django.dispatch import receiver
 from django.utils.html import format_html
-# from django.db.models.signals import post_save
-# from django.db.models.signals import pre_save
 from django.db.models.signals import pre_delete
-# from django.db.models.signals import post_delete
+from tagging.models import Tag
 from datetime import datetime
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
@@ -620,7 +618,35 @@ class Video(models.Model):
                  'height': video.height,
                  'label': video.name})
         return list_src
-        # return json.dumps(self.get_video_mp4())
+
+    def get_json_to_index(self):
+        data_to_dump = {
+            'id': self.id,
+            'title': u'%s' % self.title,
+            'owner': u'%s' % self.owner.username,
+            'owner_full_name': u'%s' % self.owner.get_full_name(),
+            "date_added": u'%s' % self.date_added.strftime('%Y-%m-%dT%H:%M:%S') if self.date_added else None,
+            "date_evt": u'%s' % self.date_evt.strftime('%Y-%m-%dT%H:%M:%S') if self.date_evt else None,
+            "description": u'%s' % self.description,
+            "thumbnail": u'%s' % self.get_thumbnail_url(),
+            "duration": u'%s' % self.duration,
+            "tags": [tag.name for tag in Tag.objects.get_for_object(self)],
+            "type": {"title": self.type.title, "slug": self.type.slug},
+            "disciplines": list(self.discipline.all().values('title', 'slug')),
+            "channels": list(self.channel.all().values('title','slug')),
+            "themes": list(self.theme.all().values('title', 'slug')),
+            "contributors": list(self.contributor_set.values('name', 'role')),
+            "chapters": list(self.chapter_set.values('title', 'slug')),
+            "overlays": list(self.overlay_set.values('title', 'slug')),
+            "full_url": self.get_full_url(),
+            "is_restricted": self.is_restricted,
+            "password": True if self.password != "" else False,
+            "duration_in_time": self.duration_in_time,
+            "mediatype": "video" if self.is_video else "audio",
+            "cursus": u'%s' % self.cursus,
+            "main_lang": u'%s' % self.main_lang,
+        }
+        return json.dumps(data_to_dump)
 
     def get_chapters_file(self):
         list_chapter = self.chapter_set.all()
