@@ -2,6 +2,7 @@ from django.conf import settings
 from pod.video.models import Video
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import TransportError
+from django.utils import translation
 
 import json
 import logging
@@ -12,15 +13,19 @@ ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 
 
 def index_es(video):
+    translation.activate(settings.LANGUAGE_CODE)
     es = Elasticsearch(ES_URL)
     try:
-        res = es.index(index="pod", doc_type='pod', id=video.id,
-                       body=video.get_json_to_index(), refresh=True)
-        logger.info(res)
-        return res
+        data = video.get_json_to_index()
+        if data != '{}':
+            res = es.index(index="pod", doc_type='pod', id=video.id,
+                           body=data, refresh=True)
+            logger.info(res)
+            return res
     except TransportError as e:
         logger.error("An error occured during index creation: %s-%s : %s" %
                      (e.status_code, e.error, e.info['error']['reason']))
+    translation.deactivate()
 
 
 def delete_es(video):

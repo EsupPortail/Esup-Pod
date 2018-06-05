@@ -4,6 +4,7 @@ from pod.video_search.forms import SearchForm
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from pod.video.models import Video
 
 import json
 
@@ -30,9 +31,9 @@ def search_videos(request):
     # request parameters
     selected_facets = request.GET.getlist(
         'selected_facets') if request.GET.getlist('selected_facets') else []
-    page = request.GET.get('page') if request.GET.get('page') else 0
+    page = request.GET.get('page', 0)
     try:
-        page = int(page.encode('utf-8'))
+        page = int(page)
     except:
         page = 0
     size = 12
@@ -76,7 +77,7 @@ def search_videos(request):
                 "query":    "%s" % search_word,
                 "operator": "and",
                 "fields": ["_id", "title^1.1", "owner^0.9", "owner_full_name^0.9", "description^0.6", "tags.name^1",
-                           "contributors^0.6", "chapters.title^0.5", "enrichments.title^0.5", "type.title^0.6", "disciplines.title^0.6", "channels.title^0.6"
+                           "contributors^0.6", "chapters.title^0.5", "type.title^0.6", "disciplines.title^0.6", "channels.title^0.6"
                            ]
             }
         }
@@ -153,7 +154,7 @@ def search_videos(request):
         else:
             if agg_term == "type.slug":
                 del result["aggregations"]["type_title"]
-            if agg_term == "tags.slug":
+            if agg_term == "tags.name":
                 del result["aggregations"]["tags_name"]
             if agg_term == "disciplines.slug":
                 del result["aggregations"]["disciplines_title"]
@@ -169,25 +170,21 @@ def search_videos(request):
                 if tab[0] == value:
                     value = tab[1]
 
-        url_value = u'%s'.decode('latin1') % url_value
-        url_value = url_value.encode('utf-8')
-        url_value = urllib2.quote(url_value)
         link = request.get_full_path().replace(
             "&selected_facets=%s:%s" % (term, url_value), "")
         msg_title = (u'Remove selection')
-        remove_selected_facet += u'&nbsp;<a href="%s" title="%s"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>%s</a>&nbsp;' % (
+        remove_selected_facet += u'&nbsp;<a href="%s" title="%s">&times;%s</a>&nbsp;' % (
             link, msg_title, value)
 
-    # Pagination mayby better idea ?
-    objects = []
-    for i in range(0, result["hits"]["total"]):
-        objects.append(i)
-    paginator = Paginator(objects, size)
-    try:
-        search_pagination = paginator.page(page + 1)
-    except:
-        search_pagination = paginator.page(paginator.num_pages)
+    full_path = request.get_full_path().replace(
+            "?page=%s" % page, "").replace("&page=%s" % page, "")
 
+    list_id = [hit["_id"] for hit in result["hits"]["hits"]]
+    videos = Video.objects.filter(id__in=list_id)
+    num_result = result["hits"]["total"]
+    videos.has_next = ((page + 1) * 12) < num_result
+    videos.next_page_number = page + 1
+    
     return render(request, "search/search.html",
-                  {"result": result, "page": page,
-                   "search_pagination": search_pagination, "form": searchForm, "remove_selected_facet": remove_selected_facet})
+                  {"full_path": full_path, "videos": videos, "num_result": num_result, "aggregations": result["aggregations"],
+                   "form": searchForm, "remove_selected_facet": remove_selected_facet})

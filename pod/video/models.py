@@ -43,7 +43,14 @@ VIDEOS_DIR = getattr(
 FILES_DIR = getattr(
     settings, 'FILES_DIR', 'files')
 MAIN_LANG_CHOICES = getattr(
-    settings, 'MAIN_LANG_CHOICES', (('fr', _('French')),))
+    settings, 'MAIN_LANG_CHOICES', (
+        ('zh', _('Chinese')),
+        ('es', _('Spanish')),
+        ('de', _('German')),
+        ('pl', _('Polish')),
+        ('en', _('English')),
+        ('fr', _('French')),
+    ))
 CURSUS_CODES = getattr(
     settings, 'CURSUS_CODES', (
         ('0', _("None / All")),
@@ -52,6 +59,10 @@ CURSUS_CODES = getattr(
         ('D', _("Doctorate")),
         ('1', _("Other"))
     ))
+
+MAIN_LANG_CHOICES_DICT = {key: value for key, value in MAIN_LANG_CHOICES}
+CURSUS_CODES_DICT = {key: value for key, value in CURSUS_CODES}
+
 DEFAULT_TYPE_ID = getattr(
     settings, 'DEFAULT_TYPE_ID', 1)
 
@@ -651,8 +662,8 @@ class Video(models.Model):
                 "password": True if self.password != "" else False,
                 "duration_in_time": self.duration_in_time,
                 "mediatype": "video" if self.is_video else "audio",
-                "cursus": u'%s' % self.cursus,
-                "main_lang": u'%s' % self.main_lang,
+                "cursus": "%s" % CURSUS_CODES_DICT[self.cursus],
+                "main_lang": "%s" % MAIN_LANG_CHOICES_DICT[self.main_lang],
             }
             return json.dumps(data_to_dump)
         except ObjectDoesNotExist as e:
