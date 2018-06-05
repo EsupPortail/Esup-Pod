@@ -28,6 +28,7 @@ from pod.video.views import video_notes
 from pod.video.views import video_count
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 from pod.main.views import contact_us
+from pod.video_search.views import search_videos
 
 
 if apps.is_installed('pod.filepicker'):
@@ -76,6 +77,8 @@ urlpatterns = [
     url(r'^theme_edit/(?P<slug>[\-\d\w]+)/$', theme_edit, name='theme_edit'),
     # my videos
     url(r'^my_videos/$', my_videos, name='my_videos'),
+
+    url(r'^search/$', search_videos, name='search_videos'),
 
     # auth cas
     url(r'^authentication_login/$',

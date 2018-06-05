@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Search" %}</li>{% endblock %}
+
+{% block page_title %}{% endblock %}
+
+
+{% block page_content %}
+<h3>{% trans "Search" %}</h3>
+{% endblock page_content %}

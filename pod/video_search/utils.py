@@ -13,7 +13,6 @@ ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 
 def index_es(video):
     es = Elasticsearch(ES_URL)
-    print(video.id)
     try:
         res = es.index(index="pod", doc_type='pod', id=video.id,
                        body=video.get_json_to_index(), refresh=True)
