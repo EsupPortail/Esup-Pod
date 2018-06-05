@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load staticfiles %}
 {% load tagging_tags %}
+{% load thumbnail %}
 
 {% block page_extra_head %}
 <link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
@@ -18,6 +19,10 @@
 {% if video.overlay_set.all %}
   <link href="{% static 'css/videojs-overlay.css' %}" rel="stylesheet">
   <script src="{% static 'js/videojs-overlay.js' %}"></script>
+{% endif %}
+{% if video.overview %}
+<link href="{% static 'css/videojs-vtt-thumbnails.css' %}" rel="stylesheet">
+<script src="{% static 'js/videojs-vtt-thumbnails.min.js' %}"></script>
 {% endif %}
 <style>
 .scrollspy-video {
@@ -119,7 +124,7 @@ body {
     </div>
 </form>
 <p>
-  {% trans 'If you do not have the password for this content, please' %} <a href="#?owner={{video.owner.id}}&video={{video.id}}">{% trans 'contact its owner' %}</a>.
+  {% trans 'If you do not have the password for this content, please' %} <a href="{% url 'contact_us' %}?owner={{video.owner.id}}&video={{video.id}}&subject=request_password">{% trans 'contact its owner' %}</a>.
 </p>
 
 {% else %}
@@ -129,11 +134,10 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
     To view this video please enable JavaScript, and consider upgrading to a web browser that
     <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
   </p>
-  <!--
-  <track kind="captions" src="../shared/example-captions.vtt" srclang="en" label="English"></track>
-  <track kind="subtitles" src="../shared/example-captions.vtt" srclang="en" label="English"></track>
-  -->
 </video>
+<form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
+{% csrf_token %}
+</form>
 {% if video.overlay_set.all %}
 <ul id="overlays" style="display: none">
   {% for overlay in video.overlay_set.all %}
@@ -147,7 +151,10 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
 </ul>
 {% endif %}
 <nav id="navbar-example2" class="navbar navbar-light bg-light">
-  <a class="navbar-brand" href="#">{{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}</a>
+  <span class="navbar-brand" >{{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
+  <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
+    <svg height="32" class="octicon octicon-report" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H7l-4 4v-4H1a1 1 0 0 1-1-1V2zm1 0h14v9H6.5L4 13.5V11H1V2zm6 6h2v2H7V8zm0-5h2v4H7V3z"></path></svg></a>
+    </span>
   <ul class="nav nav-pills">
     <li class="nav-item">
       <a class="nav-link" href="#summary">{% trans 'Summary' %}</a>
@@ -186,7 +193,11 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
   </div>
   <h4 id="infos">{% trans 'Infos' %}</h4>
   <div class="scrollspy-content">
-    {% trans 'Added by' %}: <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ video.owner.get_full_name }}</a><br/>
+    {% trans 'Added by' %}: <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+    {% thumbnail video.owner.owner.userpicture.file "x34" as im %}
+        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}">
+    {% endthumbnail %}
+    {{ video.owner.get_full_name }}</a><br/>
     {% trans 'Updated on' %}: <strong>{{ video.date_added }}</strong><br/>
     {% trans 'Duration' %}: <strong>{{ video.duration_in_time }}</strong><br/>
     {% trans 'Number of view(s)' %}: <strong>{{ video.get_viewcount }}</strong><br/>
@@ -261,8 +272,11 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
 {% trans "take Note"%}
 </h5>
 <div class="card-text">
-  <p>Prenez des notes</p>
-  <div id="info"></div>
+    {% if request.user.is_authenticated %}
+    {% include 'videos/video_notes.html' %}
+    {% else %}
+    <p>{% trans 'You must be logged in to take notes.' %}</p>
+    {% endif %}
 </div>
 </div>
     {% include 'aside.html'%}
@@ -273,10 +287,7 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
 
 {% if form %}
 <script>
-var showalert = function(message,alerttype) {
-    $('body').append('<div id="formalertdiv" class="alert ' +  alerttype + ' alert-dismissible fade show"  role="alert">'+message+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-    setTimeout(function() { $("#formalertdiv").remove(); }, 5000);
-};
+
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 (function() {
   'use strict';
@@ -300,6 +311,25 @@ var showalert = function(message,alerttype) {
 </script>
 {% else %}
 <script>
+/** NOTES **/
+$(document).on("submit", "#video_notes_form", function (e) {
+    e.preventDefault();
+    var jqxhr= '';
+    var data_form = $( "#video_notes_form" ).serializeArray();
+    jqxhr = $.post(
+        $( "#video_notes_form" ).attr("action"),
+        data_form
+    );
+    jqxhr.done(function(data){
+        $( "#video_notes_form" ).parent().html(data);
+    });
+    jqxhr.fail(function($xhr) {
+        var data = $xhr.status+ " : " +$xhr.statusText;
+        showalert("{% trans 'Error during recording.' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}", "alert-danger");
+    });
+});
+</script>
+<script>
 var options = {
   notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
   language: "fr", //en or nl
@@ -307,6 +337,14 @@ var options = {
   playbackRates: [0.5, 1, 1.5, 2]
 }
 var player = videojs('podvideoplayer', options, function(){});
+
+player.on('firstplay', function(){
+    var data_form = $( "#video_count_form" ).serializeArray();
+    jqxhr = $.post(
+      $( "#video_count_form" ).attr("action"),
+      data_form
+    );
+});
 
 {% if video.is_video %}
   /** get all mp4 format **/
@@ -318,8 +356,9 @@ var player = videojs('podvideoplayer', options, function(){});
       type: '{{video.get_playlist_master.encoding_format}}',
     };
     player.on('loadedmetadata', function() {
-      console.log('LOADEDMETADATA');
+      //console.log('LOADEDMETADATA');
       var qualityLevels = this.qualityLevels();
+
     });
     //Add source to player
     player.src(srcOptions);
@@ -342,6 +381,7 @@ var player = videojs('podvideoplayer', options, function(){});
     player.src(mp4_sources);
     player.controlBar.addChild('QualitySelector');
   {% endif %}
+
   {% if video.overlay_set.all %}
     var list_overlays = [];
     $('ul#overlays li').each(function() {
@@ -357,6 +397,14 @@ var player = videojs('podvideoplayer', options, function(){});
       overlays: list_overlays
     });
   {% endif %}
+
+  {% if video.overview %}
+    //add overview
+    player.vttThumbnails({
+      src: '{% if request.is_secure %}https://{%else%}http://{% endif %}{{request.get_host}}{{video.overview.url}}'
+    });
+  {%endif%}
+
 {% else %}
   {% if video.get_video_m4a %}
     var srcOptions = {

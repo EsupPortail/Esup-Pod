@@ -13,6 +13,7 @@ from django.contrib.auth import views as auth_views
 from pod.authentication.views import authentication_login
 from pod.authentication.views import authentication_logout
 from pod.authentication.views import authentication_login_gateway
+from pod.authentication.views import userpicture
 
 from pod.video.views import video
 from pod.video.views import video_edit
@@ -23,11 +24,17 @@ from pod.video.views import my_videos
 from pod.video.views import my_channels
 from pod.video.views import channel_edit
 from pod.video.views import theme_edit
+from pod.video.views import video_notes
+from pod.video.views import video_count
+from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 from pod.main.views import contact_us
 
 
 if apps.is_installed('pod.filepicker'):
     from pod.filepicker.sites import site as filepicker_site
+
+USE_CAS = getattr(
+    settings, 'USE_CAS', False)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -39,6 +46,18 @@ urlpatterns = [
 
     # App video
     url(r'^videos/$', videos, name='videos'),
+
+    url(r'^rss-video/$', RssSiteVideosFeed(), name='rss-video'),
+    url(r'^rss-audio/$', RssSiteAudiosFeed(), name='rss-audio'),
+    url(r'^rss-video/(?P<slug_c>[\-\d\w]+)/$',
+        RssSiteVideosFeed(), name='rss-video'),
+    url(r'^rss-audio/(?P<slug_c>[\-\d\w]+)/$',
+        RssSiteAudiosFeed(), name='rss-audio'),
+    url(r'^rss-video/(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$',
+        RssSiteVideosFeed(), name='rss-video'),
+    url(r'^rss-audio/(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$',
+        RssSiteAudiosFeed(), name='rss-audio'),
+
     url(r'^video/(?P<slug>[\-\d\w]+)/$', video, name='video'),
     url(r'^video/(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$', video,
         name='video_private'),
@@ -46,6 +65,10 @@ urlpatterns = [
     url(r'^video_edit/(?P<slug>[\-\d\w]+)/$', video_edit, name='video_edit'),
     url(r'^video_delete/(?P<slug>[\-\d\w]+)/$',
         video_delete, name='video_delete'),
+    url(r'^video_notes/(?P<id>[\d]+)/$',
+        video_notes, name='video_notes'),
+    url(r'^video_count/(?P<id>[\d]+)/$',
+        video_count, name='video_count'),
     # my channels
     url(r'^my_channels/$', my_channels, name='my_channels'),
     url(r'^channel_edit/(?P<slug>[\-\d\w]+)/$',
@@ -73,12 +96,15 @@ urlpatterns = [
         auth_views.PasswordChangeView.as_view()),
     url(r'^accounts/reset-password/$',
         auth_views.PasswordResetView.as_view()),
-    url(r'^sso-cas/', include('django_cas.urls')),
+    url(r'^accounts/userpicture/$', userpicture, name='userpicture'),
 
     # contact_us
     url(r'^contact_us/$', contact_us, name='contact_us'),
     url(r'^captcha/', include('captcha.urls')),
 ]
+
+if USE_CAS:
+    urlpatterns += [url(r'^sso-cas/', include('django_cas.urls')), ]
 
 if apps.is_installed('pod.filepicker'):
     urlpatterns += [url(r'^file-picker/', include(filepicker_site.urls)), ]
@@ -93,8 +119,6 @@ if apps.is_installed('pod.playlist'):
 
 urlpatterns += [
     url(r'^(?P<slug_c>[\-\d\w]+)/$', channel, name='channel'),
-    # url(r'^(?P<slug_c>[\-\d\w]+)/edit$',
-    #    'pods.views.channel_edit', name='channel_edit'),
     url(r'^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$',
         channel, name='theme'),
     url(r'^(?P<slug_c>[\-\d\w]+)/video/(?P<slug>[\-\d\w]+)/$',

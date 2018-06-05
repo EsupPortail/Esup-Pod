@@ -17,6 +17,8 @@ from django.urls import reverse
 from pod.video.models import Video
 from pod.video.models import Channel
 from pod.video.models import Theme
+from pod.video.models import Notes
+from pod.video.models import ViewCount
 from tagging.models import TaggedItem
 
 from pod.video.forms import VideoForm
@@ -24,8 +26,10 @@ from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
+from pod.video.forms import NotesForm
 
 import json
+from datetime import datetime
 
 
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
@@ -296,6 +300,15 @@ def is_in_video_groups(user, video):
     ).exists()
 
 
+def get_note_form(request, video):
+    notesForm = None
+    if request.user.is_authenticated:
+        note, created = Notes.objects.get_or_create(
+            user=request.user, video=video)
+        notesForm = NotesForm(instance=note)
+    return notesForm
+
+
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     try:
@@ -303,7 +316,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
     video = get_object_or_404(Video, id=id)
-
+    notesForm = get_note_form(request, video)
     channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
     theme = get_object_or_404(Theme, slug=slug_t) if slug_t else None
 
@@ -360,6 +373,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                     'channel': channel,
                     'video': video,
                     'theme': theme,
+                    'notesForm': notesForm
                 }
             )
         else:
@@ -371,7 +385,8 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                         'channel': channel,
                         'video': video,
                         'theme': theme,
-                        'form': form
+                        'form': form,
+                        'notesForm': notesForm
                     }
                 )
             elif request.user.is_authenticated():
@@ -389,6 +404,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                 'channel': channel,
                 'video': video,
                 'theme': theme,
+                'notesForm': notesForm
             }
         )
 
@@ -445,9 +461,9 @@ def video_edit(request, slug=None):
 @login_required(redirect_field_name='referrer')
 def video_delete(request, slug=None):
 
-    video = get_object_or_404(Video, slug=slug) if slug else None
+    video = get_object_or_404(Video, slug=slug)
 
-    if video and request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot delete this video.'))
         raise PermissionDenied
@@ -472,3 +488,41 @@ def video_delete(request, slug=None):
         'video': video,
         'form': form}
     )
+
+
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+def video_notes(request, id):
+
+    note = get_object_or_404(Notes, id=id)
+    notesForm = NotesForm(instance=note)
+
+    if request.method == "POST":
+        notesForm = NotesForm(request.POST, instance=note)
+        if notesForm.is_valid():
+            notesForm.save()
+            messages.add_message(
+                request, messages.INFO, _('The note has been saved.'))
+        else:
+            messages.add_message(
+                request, messages.ERROR,
+                _(u'One or more errors have been found in the form.'))
+
+    return render(request, 'videos/video_notes.html', {
+        'video': video,
+        'notesForm': notesForm}
+    )
+
+
+@csrf_protect
+def video_count(request, id):
+    video = get_object_or_404(Video, id=id)
+    if request.method == "POST":
+        viewCount, created = ViewCount.objects.get_or_create(
+            video=video, date=datetime.now())
+        viewCount.count += 1
+        viewCount.save()
+        return HttpResponse("ok")
+    messages.add_message(
+        request, messages.ERROR, _(u'You cannot access to this view.'))
+    raise PermissionDenied

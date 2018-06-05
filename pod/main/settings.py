@@ -187,10 +187,7 @@ MAX_TAG_LENGTH = 50
 # AUTH CAS
 #
 LOGIN_URL = '/authentication_login/'
-CAS_RESPONSE_CALLBACKS = (
-    'pod.authentication.populatedCASbackend.populateUser',
-    # function call to add some information to user login by CAS
-)
+
 
 ##
 # eMail settings

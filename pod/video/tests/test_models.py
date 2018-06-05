@@ -29,6 +29,7 @@ from pod.video.models import PlaylistVideo
 from pod.video.models import EncodingLog
 from pod.video.models import EncodingStep
 from pod.video.models import VideoImageModel
+from pod.video.models import Notes
 
 from datetime import datetime
 from datetime import timedelta
@@ -887,3 +888,55 @@ class EncodingStepTestCase(TestCase):
 
         print(
             "   --->  test_delete_object of EncodingStepTestCase : OK !")
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+)
+class NotesTestCase(TestCase):
+
+    def setUp(self):
+        user = User.objects.create(username="pod", password="pod1234pod")
+        Video.objects.create(
+            title="Video1", owner=user, video="test.mp4")
+        print(" --->  SetUp of EncodingLogTestCase : OK !")
+
+    def test_NotesTestCase_null_attributs(self):
+        note = Notes.objects.create(
+            user=User.objects.get(username="pod"),
+            video=Video.objects.get(id=1)
+        )
+        self.assertTrue(isinstance(note, Notes))
+        self.assertEqual(note.__str__(), "%s-%s" %
+                         (note.user.username, note.video))
+        self.assertEqual(note.note, None)
+        print(" --->  test_NotesTestCase_null_attributs : OK !")
+
+    def test_NotesTestCase_with_attributs(self):
+        note = Notes.objects.create(
+            user=User.objects.get(username="pod"),
+            video=Video.objects.get(id=1),
+            note="coucou"
+        )
+        self.assertTrue(isinstance(note, Notes))
+        self.assertEqual(note.__str__(), "%s-%s" %
+                         (note.user.username, note.video))
+        self.assertEqual(note.note, "coucou")
+        print(" --->  test_NotesTestCase_with_attributs : OK !")
+
+    def test_delete_object(self):
+        Notes.objects.create(
+            user=User.objects.get(username="pod"),
+            video=Video.objects.get(id=1)
+        )
+        Notes.objects.get(id=1).delete()
+        self.assertEqual(Notes.objects.all().count(), 0)
+
+        print(
+            "   --->  test_delete_object of NotesTestCase : OK !")

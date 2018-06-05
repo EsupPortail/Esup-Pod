@@ -2,5 +2,5 @@
 <p>{% trans "Hello" %},</p>
 <p>{% trans "You just send a message from" %} <strong>{{TITLE_SITE}}</strong></p>
 <p>{% trans "Here is the message sent" %} : </p>
-<p>{{message}}</p>
+<p>{{message|safe}}</p>
 <p>{% trans "Regards" %}</p>
