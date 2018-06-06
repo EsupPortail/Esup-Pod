@@ -143,10 +143,8 @@ USE_TZ = True
 # curl -X GET http://127.0.0.1:8000/api/example/ -H 'Authorization: Token
 # 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'
 REST_FRAMEWORK = {
-    #'DEFAULT_FILTER_BACKENDS': (
-    #    'rest_framework.filters.DjangoFilterBackend',
-    #),
-    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
@@ -154,7 +152,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAdminUser',
     ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': (
+        'rest_framework.pagination.PageNumberPagination'),
     'PAGE_SIZE': 12
 }
 

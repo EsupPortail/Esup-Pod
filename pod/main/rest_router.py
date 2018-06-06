@@ -8,6 +8,8 @@ if apps.is_installed('pod.filepicker'):
     from pod.filepicker import rest_views as filepicker_views
 if apps.is_installed('pod.completion'):
     from pod.completion import rest_views as completion_views
+if apps.is_installed('pod.enrichment'):
+    from pod.enrichment import rest_views as enrichment_views
 
 
 router = routers.DefaultRouter()
@@ -33,6 +35,14 @@ if apps.is_installed('pod.completion'):
     router.register(r'documents', completion_views.DocumentViewSet)
     router.register(r'tracks', completion_views.TrackViewSet)
     router.register(r'overlays', completion_views.OverlayViewSet)
+
+if apps.is_installed('pod.enrichment'):
+    router.register(r'enrichments', enrichment_views.EnrichmentViewSet)
+    router.register(r'enrichments-file',
+                    enrichment_views.EnrichmentFileViewSet)
+    router.register(r'enrichments-image',
+                    enrichment_views.EnrichmentImageViewSet)
+
 
 if apps.is_installed('pod.chapters'):
     router.register(r'chapters', chapter_views.ChapterViewSet)

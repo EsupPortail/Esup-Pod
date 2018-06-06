@@ -56,4 +56,3 @@ class TrackViewSet(viewsets.ModelViewSet):
 class OverlayViewSet(viewsets.ModelViewSet):
     queryset = Overlay.objects.all()
     serializer_class = OverlaySerializer
-
