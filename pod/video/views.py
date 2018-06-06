@@ -448,6 +448,10 @@ def video_edit(request, slug=None):
                 request, messages.INFO,
                 _('The changes have been saved.')
             )
+            if request.POST.get('_saveandsee'):
+                return redirect(
+                    reverse('video', args=(video.slug,))
+                )
         else:
             messages.add_message(
                 request, messages.ERROR,

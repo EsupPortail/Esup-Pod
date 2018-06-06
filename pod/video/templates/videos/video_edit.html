@@ -97,7 +97,9 @@
         </div>
     </div>
     <div class="text-center">
-        <button type="submit" class="btn btn-primary">{% trans "Save" %}</button>
+        <button type="submit" class="btn btn-primary btn-sm" name="_continue" value="">{% trans 'Save and continue editing' %}</button> 
+        {% if form.instance.title %}<button type="submit" class="btn btn-primary btn-sm" name="_saveandsee" value="{{form.instance.get_full_url}}">{% trans 'Save and see' %}</button> {%endif%}
+        <a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}" class="btn btn-success btn-sm">{% trans 'back to my videos' %}</a>
     </div>
 </form>
 

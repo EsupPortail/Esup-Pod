@@ -30,8 +30,8 @@
   </button>
   
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <form class="form-inline flex-1 mb-sm-2 mb-md-0 ">
-          <input class="form-control form-control-sm mx-sm-1 d-sm-block col-sm-12 col-md-8" type="text" placeholder="Rechercher" aria-label="rechercher">
+    <form class="form-inline flex-1 mb-sm-2 mb-md-0 " role="search" method="get" action="{% url "search_videos" %}">
+          <input class="form-control form-control-sm mx-sm-1 d-sm-block col-sm-12 col-md-8" type="text" placeholder="Rechercher" aria-label="rechercher" autofocus="autofocus" name="q" >
           <button class="btn btn-outline-success btn-sm sr-only" type="submit">{% trans "Search" %}</button>
     </form>
     <ul class="nav flex-column flex-md-row">
