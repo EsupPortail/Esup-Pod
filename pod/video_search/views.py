@@ -1,9 +1,7 @@
 from django.shortcuts import render
 from elasticsearch import Elasticsearch
 from pod.video_search.forms import SearchForm
-from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from pod.video.models import Video
 
 import json
@@ -43,30 +41,32 @@ def search_videos(request):
 
     # Filter query
     filter_search = {}
-    filter_query = ""
 
     if len(selected_facets) > 0 or start_date or end_date:
         filter_search = []
         for facet in selected_facets:
-            try:
+            if ":" in facet:
                 term = facet.split(":")[0]
                 value = facet.split(":")[1]
-            except:
-                continue
-            filter_search.append({
-                "term": {
-                    "%s" % term: "%s" % value
-                }
-            })
+                filter_search.append({
+                    "term": {
+                        "%s" % term: "%s" % value
+                    }
+                })
+
         if start_date or end_date:
             filter_date_search = {}
             filter_date_search["range"] = {"date_added": {}}
             if start_date:
                 filter_date_search["range"]["date_added"][
-                    "gte"] = "%04d-%02d-%02d" % (start_date.year, start_date.month, start_date.day)
+                    "gte"] = "%04d-%02d-%02d" % (start_date.year,
+                                                 start_date.month,
+                                                 start_date.day)
             if end_date:
                 filter_date_search["range"]["date_added"][
-                    "lte"] = "%04d-%02d-%02d" % (end_date.year, end_date.month, end_date.day)
+                    "lte"] = "%04d-%02d-%02d" % (end_date.year,
+                                                 end_date.month,
+                                                 end_date.day)
 
             filter_search.append(filter_date_search)
 
@@ -77,9 +77,19 @@ def search_videos(request):
             "multi_match": {
                 "query":    "%s" % search_word,
                 "operator": "and",
-                "fields": ["_id", "title^1.1", "owner^0.9", "owner_full_name^0.9", "description^0.6", "tags.name^1",
-                           "contributors^0.6", "chapters.title^0.5", "type.title^0.6", "disciplines.title^0.6", "channels.title^0.6"
-                           ]
+                "fields": [
+                    "_id",
+                    "title^1.1",
+                    "owner^0.9",
+                    "owner_full_name^0.9",
+                    "description^0.6",
+                    "tags.name^1",
+                    "contributors^0.6",
+                    "chapters.title^0.5",
+                    "type.title^0.6",
+                    "disciplines.title^0.6",
+                    "channels.title^0.6"
+                ]
             }
         }
 
@@ -124,13 +134,17 @@ def search_videos(request):
 
     for attr in aggsAttrs:
         bodysearch["aggs"][attr.replace(".", "_")] = {
-            "terms": {"field": attr + ".raw", "size": 5, "order": {"_count": "desc"}}}
+            "terms": {"field": attr + ".raw",
+                      "size": 5,
+                      "order": {"_count": "desc"}}}
 
     # add cursus and main_lang 'cursus', 'main_lang',
     bodysearch["aggs"]['cursus'] = {
         "terms": {"field": "cursus", "size": 5, "order": {"_count": "desc"}}}
     bodysearch["aggs"]['main_lang'] = {
-        "terms": {"field": "main_lang", "size": 5, "order": {"_count": "desc"}}}
+        "terms": {"field": "main_lang",
+                  "size": 5,
+                  "order": {"_count": "desc"}}}
 
     if settings.DEBUG:
         print(json.dumps(bodysearch, indent=4))
@@ -142,29 +156,28 @@ def search_videos(request):
 
     remove_selected_facet = ""
     for facet in selected_facets:
-        try:
+        if ":" in facet:
             term = facet.split(":")[0]
             value = facet.split(":")[1]
-        except:
-            continue
-        agg_term = term.replace(".raw", "")
-        if result["aggregations"].get(agg_term):
-            del result["aggregations"][agg_term]
-        else:
-            if agg_term == "type.slug":
-                del result["aggregations"]["type_title"]
-            if agg_term == "tags.slug":
-                del result["aggregations"]["tags_name"]
-            if agg_term == "disciplines.slug":
-                del result["aggregations"]["disciplines_title"]
+            agg_term = term.replace(".raw", "")
+            if result["aggregations"].get(agg_term):
+                del result["aggregations"][agg_term]
+            else:
+                if agg_term == "type.slug":
+                    del result["aggregations"]["type_title"]
+                if agg_term == "tags.slug":
+                    del result["aggregations"]["tags_name"]
+                if agg_term == "disciplines.slug":
+                    del result["aggregations"]["disciplines_title"]
 
         # Create link to remove facet
         url_value = value
         link = request.get_full_path().replace(
             "&selected_facets=%s:%s" % (term, url_value), "")
         msg_title = (u'Remove selection')
-        remove_selected_facet += u'&nbsp;<a href="%s" title="%s">&times;%s</a>&nbsp;' % (
-            link, msg_title, value)
+        remove_selected_facet += (
+            '&nbsp;<a href="%s" title="%s">&times;%s</a>&nbsp;' % (
+                link, msg_title, value))
 
     full_path = request.get_full_path().replace(
         "?page=%s" % page, "").replace("&page=%s" % page, "")
@@ -179,5 +192,9 @@ def search_videos(request):
             request, 'videos/video_list.html',
             {'videos': videos, "full_path": full_path})
     return render(request, "search/search.html",
-                  {"full_path": full_path, "videos": videos, "num_result": num_result, "aggregations": result["aggregations"],
-                   "form": searchForm, "remove_selected_facet": remove_selected_facet})
+                  {"full_path": full_path,
+                   "videos": videos,
+                   "num_result": num_result,
+                   "aggregations": result["aggregations"],
+                   "form": searchForm,
+                   "remove_selected_facet": remove_selected_facet})

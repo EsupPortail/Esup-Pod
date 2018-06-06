@@ -1,5 +1,4 @@
 from django.conf import settings
-from pod.video.models import Video
 from elasticsearch import Elasticsearch
 from elasticsearch.exceptions import TransportError
 from django.utils import translation
@@ -32,12 +31,16 @@ def delete_es(video):
     es = Elasticsearch(ES_URL)
     try:
         delete = es.delete(
-            index="pod", doc_type='pod', id=video.id, refresh=True, ignore=[400, 404])
+            index="pod", doc_type='pod',
+            id=video.id, refresh=True, ignore=[400, 404])
         logger.info(delete)
         return delete
     except TransportError as e:
-        logger.error("An error occured during index video %s deletion: %s-%s : %s" %
-                     (video.id, e.status_code, e.error, e.info['error']['reason']))
+        logger.error("An error occured during index"
+                     " video %s deletion: %s-%s : %s" %
+                     (video.id, e.status_code,
+                      e.error, e.info['error']['reason']))
+
 
 def create_index_es():
     es = Elasticsearch(ES_URL)
@@ -53,8 +56,10 @@ def create_index_es():
         if e.status_code == 400:
             logger.error("Pod index already exists: %s" % e.error)
         else:
-            logger.error("An error occured during index creation: %s-%s : %s" %
-                  (e.status_code, e.error, e.info['error']['reason']))
+            logger.error("An error occured during"
+                         " index creation: %s-%s : %s" %
+                         (e.status_code, e.error, e.info['error']['reason']))
+
 
 def delete_index_es():
     es = Elasticsearch(ES_URL)
@@ -63,5 +68,6 @@ def delete_index_es():
         logger.info(delete)
         return delete
     except TransportError as e:
-        logger.error("An error occured during index video deletion: %s-%s : %s" %
+        logger.error("An error occured during"
+                     " index video deletion: %s-%s : %s" %
                      (e.status_code, e.error, e.info['error']['reason']))
