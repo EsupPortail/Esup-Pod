@@ -12,3 +12,4 @@ django-simple-captcha==0.5.7
 urllib3==1.22
 elasticsearch==6.2.0
 djangorestframework==3.8.2
+django-filter==1.1.0

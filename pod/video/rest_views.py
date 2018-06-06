@@ -127,6 +127,7 @@ class DisciplineViewSet(viewsets.ModelViewSet):
 class VideoViewSet(viewsets.ModelViewSet):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
+    filter_fields = ('owner', 'type', 'date_added', 'channel', 'discipline')
 
 
 class VideoRenditionViewSet(viewsets.ModelViewSet):

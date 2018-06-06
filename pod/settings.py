@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'progressbarupload',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
     # Pod Applications
     'pod.main',
     'pod.authentication',
@@ -145,7 +146,7 @@ REST_FRAMEWORK = {
     #'DEFAULT_FILTER_BACKENDS': (
     #    'rest_framework.filters.DjangoFilterBackend',
     #),
-    #'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
