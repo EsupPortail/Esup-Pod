@@ -318,7 +318,7 @@ class Theme(models.Model):
                 "A theme have to be in the same channel that his parent")
 
     class Meta:
-        ordering = ['title']
+        ordering = ['channel', 'title']
         verbose_name = _('Theme')
         verbose_name_plural = _('Themes')
 
