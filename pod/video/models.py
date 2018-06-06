@@ -758,7 +758,7 @@ class ViewCount(models.Model):
     video = models.ForeignKey(Video, verbose_name=_('Video'),
                               editable=False)
     date = models.DateField(
-        _(u'Date'), default=datetime.now(), editable=False)
+        _(u'Date'), default=datetime.now, editable=False)
     count = models.IntegerField(
         _('Number of view'), default=0, editable=False)
 
