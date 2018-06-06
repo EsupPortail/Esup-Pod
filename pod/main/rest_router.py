@@ -10,7 +10,11 @@ if apps.is_installed('pod.filepicker'):
 router = routers.DefaultRouter()
 router.register(r'users', authentication_views.UserViewSet)
 router.register(r'groups', authentication_views.GroupViewSet)
+router.register(r'owners', authentication_views.OwnerViewSet)
+router.register(r'images_owner',
+                authentication_views.AuthenticationImageModelViewSet)
 
+router.register(r'images_video', video_views.VideoImageModelViewSet)
 router.register(r'channels', video_views.ChannelViewSet)
 router.register(r'themes', video_views.ThemeViewSet)
 router.register(r'types', video_views.TypeViewSet)
@@ -24,6 +28,9 @@ router.register(r'playlist_videos', video_views.PlaylistVideoViewSet)
 router.register(r'chapters', chapter_views.ChapterViewSet)
 
 if apps.is_installed('pod.filepicker'):
-    router.register(r'directories', filepicker_views.UserDirectorySerializerViewSet)
-    router.register(r'files', filepicker_views.CustomFileModelSerializerViewSet)
-    router.register(r'images', filepicker_views.CustomImageModelSerializerViewSet)
+    router.register(r'directories',
+                    filepicker_views.UserDirectorySerializerViewSet)
+    router.register(r'files',
+                    filepicker_views.CustomFileModelSerializerViewSet)
+    router.register(r'images',
+                    filepicker_views.CustomImageModelSerializerViewSet)
