@@ -647,7 +647,12 @@ class Video(models.Model):
                 "description": u'%s' % self.description,
                 "thumbnail": u'%s' % self.get_thumbnail_url(),
                 "duration": u'%s' % self.duration,
-                "tags": list(Tag.objects.get_for_object(self).values('name')),
+                "tags": list([
+                    {
+                        'name': name[0],
+                        'slug':slugify(name)
+                    } for name in Tag.objects.get_for_object(
+                        self).values_list('name')]),
                 "type": {"title": self.type.title, "slug": self.type.slug},
                 "disciplines": list(self.discipline.all().values(
                     'title', 'slug')),

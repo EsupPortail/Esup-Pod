@@ -31,6 +31,7 @@ def search_videos(request):
     # request parameters
     selected_facets = request.GET.getlist(
         'selected_facets') if request.GET.getlist('selected_facets') else []
+    print(selected_facets)
     page = request.GET.get('page', 0)
     try:
         page = int(page)
@@ -121,8 +122,6 @@ def search_videos(request):
     else:
         bodysearch["query"]["function_score"]["query"] = query
 
-    #bodysearch["query"] = query
-
     for attr in aggsAttrs:
         bodysearch["aggs"][attr.replace(".", "_")] = {
             "terms": {"field": attr + ".raw", "size": 5, "order": {"_count": "desc"}}}
@@ -154,22 +153,13 @@ def search_videos(request):
         else:
             if agg_term == "type.slug":
                 del result["aggregations"]["type_title"]
-            if agg_term == "tags.name":
+            if agg_term == "tags.slug":
                 del result["aggregations"]["tags_name"]
             if agg_term == "disciplines.slug":
                 del result["aggregations"]["disciplines_title"]
 
         # Create link to remove facet
         url_value = value
-        if agg_term == "cursus":
-            for tab in settings.CURSUS_CODES:
-                if tab[0] == value:
-                    value = tab[1]
-        if agg_term == "main_lang":
-            for tab in settings.ALL_LANG_CHOICES:
-                if tab[0] == value:
-                    value = tab[1]
-
         link = request.get_full_path().replace(
             "&selected_facets=%s:%s" % (term, url_value), "")
         msg_title = (u'Remove selection')
@@ -177,14 +167,17 @@ def search_videos(request):
             link, msg_title, value)
 
     full_path = request.get_full_path().replace(
-            "?page=%s" % page, "").replace("&page=%s" % page, "")
+        "?page=%s" % page, "").replace("&page=%s" % page, "")
 
-    list_id = [hit["_id"] for hit in result["hits"]["hits"]]
-    videos = Video.objects.filter(id__in=list_id)
+    list_videos_id = [hit["_id"] for hit in result["hits"]["hits"]]
+    videos = Video.objects.filter(id__in=list_videos_id)
     num_result = result["hits"]["total"]
     videos.has_next = ((page + 1) * 12) < num_result
     videos.next_page_number = page + 1
-    
+    if request.is_ajax():
+        return render(
+            request, 'videos/video_list.html',
+            {'videos': videos, "full_path": full_path})
     return render(request, "search/search.html",
                   {"full_path": full_path, "videos": videos, "num_result": num_result, "aggregations": result["aggregations"],
                    "form": searchForm, "remove_selected_facet": remove_selected_facet})

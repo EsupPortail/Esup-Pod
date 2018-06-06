@@ -10,19 +10,24 @@
 
 {% block page_content %}
 
+<span class="float-right">
+<a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" >
+  {% trans "open/close menu" %}
+</a>
+</span>
 <h3>{% trans "Search results" %}</h3>
 <p>{% blocktrans count counter=num_result %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</p>
+
 {% if remove_selected_facet != "" %}
-<!-- Add link to remove facets selected -->
 <p><strong>{% trans 'Remove filters' %} : </strong>{{remove_selected_facet|safe}}</p>
 {% endif %}
-{{full_path}}
 
 {% include "videos/video_list.html" %}
 
 {% endblock page_content %}
 
 {% block page_aside %}
+
 <div class="card card-body">
     <h5 class="card-title">{% trans "Search" %}</h5>
     <div class="card-text" >
@@ -36,7 +41,7 @@
         {% for field in form.visible_fields %}
         {% spaceless %}
         {{ field.errors }}
-        <div class="form-group"><!-- <label for="{{ field.id_for_label }}">{{ field.label }}</label> --> {{field}}</div>
+        <div class="form-group"><!-- <label for="{{ field.id_for_label }}">{{ field.label }}</label>--> {{field}}</div>
         {% endspaceless %}
         {%endfor%}
         <div class="text-center">
@@ -45,6 +50,7 @@
         </form>
     </div>
 </div>
+
 <div class="card card-body">
     <h5 class="card-title">{% trans 'faceting' %}</h5>
     <div class="card-text" >
@@ -78,7 +84,7 @@
             {# Provide only the top 5 type #}
             {% for tag in aggregations.tags_name.buckets %}
                 <dd>
-                    <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=tags.name:{{ tag.key }}">
+                    <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=tags.slug:{{ tag.key|slugify }}">
                         {{ tag.key }}
                     </a>
                     ({{ tag.doc_count }})
@@ -139,9 +145,11 @@
         </dl>
     </div>
 </div>
+
 {% endblock page_aside %}
 
 {% block more_script %}
+
 <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
 <script src="{% static 'js/infinite.min.js' %}"></script>
 <script>
@@ -155,13 +163,14 @@
     }
   });
 </script>
-
 <script type="text/javascript" src="/admin/jsi18n/"></script>
 <script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
+
 {{ form.media }}
+
 {% endblock more_script %}
 
 
