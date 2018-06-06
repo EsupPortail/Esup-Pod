@@ -1,9 +1,10 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.utils import translation
 from pod.video.models import Video
 from django.conf import settings
 from pod.video.views import VIDEOS
-from pod.video_search.utils import index_es, delete_es, delete_index_es, create_index_es
+from pod.video_search.utils import index_es, delete_es
+from pod.video_search.utils import delete_index_es, create_index_es
 
 
 class Command(BaseCommand):
@@ -29,20 +30,27 @@ class Command(BaseCommand):
                 index_es(video)
         elif options['video_id']:
             for video_id in options['video_id']:
-                try:
-                    video = Video.objects.get(pk=video_id)
-                    if video.is_draft == False:
-                        index_es(video)
-                        self.stdout.write(
-                            self.style.SUCCESS('Successfully index Video "%s"' % video_id))
-                    else:
-                        delete_es(video)
-                except Video.DoesNotExist:
-                    self.stdout.write(
-                        self.style.ERROR('Video "%s" does not exist' % video_id))
+                self.manage_es(video_id)
         else:
             self.stdout.write(
                 self.style.ERROR(
-                    "******* Warning: you must give some arguments: %s *******"
+                    "****** Warning: you must give some arguments: %s ******"
                     % self.args))
         translation.deactivate()
+
+    def manage_es(self, video_id):
+        try:
+            video = Video.objects.get(pk=video_id)
+            if video.is_draft is False:
+                index_es(video)
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        'Successfully index Video "%s"' % video_id)
+                )
+            else:
+                delete_es(video)
+        except Video.DoesNotExist:
+            self.stdout.write(
+                self.style.ERROR(
+                    'Video "%s" does not exist' % video_id)
+            )
