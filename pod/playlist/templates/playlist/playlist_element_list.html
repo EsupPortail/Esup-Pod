@@ -1,6 +1,5 @@
 <!-- HTML for playlist element list. Don't use this file alone it must be integrated into another template ! -->
 {% load i18n %}
-{% load staticfiles %}
 <div overflow: auto>
 	<div class="panel-heading">
 		<h4 class="card-title">{% trans 'List of videos' %}&nbsp;({{list_videos|length}})</h3>
@@ -48,5 +47,3 @@
         <button id="save-position" type="submit" class="btn btn-primary">{% trans "Save" %}</button>
 	</div>
 </div>
-<link href="{% static 'css/playlist.css' %}" rel="stylesheet">
-<script src="{% static 'js/playlist.js' %}"></script>

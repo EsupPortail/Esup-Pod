@@ -20,6 +20,10 @@
   <link href="{% static 'css/videojs-overlay.css' %}" rel="stylesheet">
   <script src="{% static 'js/videojs-overlay.js' %}"></script>
 {% endif %}
+{% if request.user.playlist_set.all %}
+<link href="{% static 'css/playlist.css' %}" rel="stylesheet">
+<script src="{% static 'js/playlist.js' %}"></script>
+{% endif %}
 {% if video.overview %}
 <link href="{% static 'css/videojs-vtt-thumbnails.css' %}" rel="stylesheet">
 <script src="{% static 'js/videojs-vtt-thumbnails.min.js' %}"></script>
@@ -154,7 +158,29 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
   <span class="navbar-brand" >{{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
   <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
     <svg height="32" class="octicon octicon-report" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H7l-4 4v-4H1a1 1 0 0 1-1-1V2zm1 0h14v9H6.5L4 13.5V11H1V2zm6 6h2v2H7V8zm0-5h2v4H7V3z"></path></svg></a>
-    </span>
+  <div class="btn-group">
+    {% if request.user.playlist_set.all %}
+    <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <svg height="32" class="octicon octicon-star" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path></svg>
+    </a>
+    <div class="dropdown-menu">
+      <h6 class="dropdown-header">{% trans 'My playlists' %}</h6>
+      {% csrf_token %}
+      <ul class="list-group">
+      {% for playlist in request.user.playlist_set.all %}
+        {% if video in playlist.videos %}
+          <li class="list-group-item disabled" data-slug="{{playlist.slug}}">{{playlist.title}}
+            <svg height="32" class="octicon octicon-check" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5L12 5z"></path></svg>
+          </li>
+        {% else %}
+          <li class="list-group-item playlist-item" data-slug="{{playlist.slug}}">{{playlist.title}}</li>
+        {% endif %}
+      {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+  </span>
   <ul class="nav nav-pills">
     <li class="nav-item">
       <a class="nav-link" href="#summary">{% trans 'Summary' %}</a>

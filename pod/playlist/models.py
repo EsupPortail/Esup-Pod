@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
@@ -64,10 +65,22 @@ class Playlist(models.Model):
         return '{0}'.format(self.title)
 
     def first(self):
-    	return PlaylistElement.objects.get(playlist=self, position=1)
+        return PlaylistElement.objects.get(playlist=self, position=1)
 
-    def elements(self):
-    	return PlaylistElement.objects.filter(playlist=self)
+    def last(self):
+        last = PlaylistElement.objects.filter(
+            playlist=self).order_by('-position')
+        if last:
+            return last[0].position + 1
+        else:
+            return 1
+
+    def videos(self):
+        videos = list()
+        elements = PlaylistElement.objects.filter(playlist=self)
+        for element in elements:
+            videos.append(element.video)
+        return videos
 
 
 class PlaylistElement(models.Model):
@@ -79,7 +92,7 @@ class PlaylistElement(models.Model):
         help_text=_('Position of the video in a playlist.'))
 
     class Meta:
-        unique_together = ('playlist', 'position',)
+        unique_together = ('playlist', 'video',)
         ordering = ['position', 'id']
         verbose_name = _('Playlist element')
         verbose_name_plural = _('Playlist elements')

@@ -1,19 +1,25 @@
 .select-position {
 	display: none;
 }
-
 .playlist-delete {
 	position: absolute;
-	left: 90%;
+	left: 95%;
+	bottom: 95%;
 	color: #df0000;
 }
-
 .playlist-delete:hover {
 	color: #ff0000;
 }
-
 .octicon-eye {
 	position: absolute;
 	left: 5px;
+	color: black;
+}
+.playlist-item:hover:not(.disabled) {
+	background-color: #007bff;
 	color: white;
+	cursor: pointer;
+}
+.playlist-item.active {
+
 }
