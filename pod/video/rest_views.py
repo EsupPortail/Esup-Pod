@@ -8,8 +8,8 @@ class ChannelSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Channel
-        fields = ('id', 'url', 'title', 'description',
-                  'color', 'style', 'owners', 'users', 'visible', 'themes') #themes ?, headband
+        fields = ('id', 'url', 'title', 'description', 'headband',
+                  'color', 'style', 'owners', 'users', 'visible', 'themes')
 
 
 class ThemeSerializer(serializers.HyperlinkedModelSerializer):
@@ -17,7 +17,7 @@ class ThemeSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Theme
         fields = (
-            'url', 'parentId', 'title', 'description', 'channel')
+            'url', 'parentId', 'title', 'headband', 'description', 'channel')
 
 # ViewSets define the view behavior.
 
