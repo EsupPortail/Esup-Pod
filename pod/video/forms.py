@@ -293,7 +293,7 @@ class VideoForm(forms.ModelForm):
     class Meta(object):
         model = Video
         fields = '__all__'
-        widgets = {'date_added': widgets.AdminDateWidget,
+        widgets = {'date_added': widgets.AdminSplitDateTime,
                    'date_evt': widgets.AdminDateWidget,
                    }
 

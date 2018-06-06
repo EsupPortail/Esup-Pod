@@ -409,7 +409,7 @@ class Video(models.Model):
                                 'numbers, underscore or dash top.'),
                             editable=False)
     owner = models.ForeignKey(User, verbose_name=_('Owner'))
-    date_added = models.DateField(_('Date added'), default=datetime.now)
+    date_added = models.DateTimeField(_('Date added'), default=datetime.now)
     date_evt = models.DateField(
         _(u'Date of event'), default=datetime.now, blank=True, null=True)
     description = RichTextField(
