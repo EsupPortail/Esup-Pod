@@ -35,6 +35,9 @@ INSTALLED_APPS = [
     'django_cas',
     'captcha',
     'progressbarupload',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'django_filters',
     # Pod Applications
     'pod.main',
     'pod.authentication',
@@ -125,11 +128,35 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 USE_I18N = True
 USE_L10N = True
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
 
 ##
 # Time zone support is enabled (True) or not (False)
 #
 USE_TZ = True
+
+##
+# WEBservices with rest API
+#
+# curl -X GET http://127.0.0.1:8000/api/example/ -H 'Authorization: Token
+# 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAdminUser',
+    ),
+    'DEFAULT_PAGINATION_CLASS': (
+        'rest_framework.pagination.PageNumberPagination'),
+    'PAGE_SIZE': 12
+}
+
 
 ##
 # Logging configuration https://docs.djangoproject.com/fr/1.11/topics/logging/

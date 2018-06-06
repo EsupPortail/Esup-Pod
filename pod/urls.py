@@ -28,6 +28,7 @@ from pod.video.views import video_notes
 from pod.video.views import video_count
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 from pod.main.views import contact_us
+from pod.main.rest_router import router
 from pod.video_search.views import search_videos
 
 
@@ -100,6 +101,9 @@ urlpatterns = [
     url(r'^accounts/reset-password/$',
         auth_views.PasswordResetView.as_view()),
     url(r'^accounts/userpicture/$', userpicture, name='userpicture'),
+    # rest framework
+    url(r'^api-auth/', include('rest_framework.urls')),
+    url(r'^rest/', include(router.urls)),
 
     # contact_us
     url(r'^contact_us/$', contact_us, name='contact_us'),
