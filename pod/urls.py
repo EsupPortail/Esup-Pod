@@ -103,7 +103,7 @@ urlpatterns = [
     url(r'^accounts/userpicture/$', userpicture, name='userpicture'),
     # rest framework
     url(r'^api-auth/', include('rest_framework.urls')),
-    url(r'^rest-api/', include(router.urls)),
+    url(r'^rest/', include(router.urls)),
 
     # contact_us
     url(r'^contact_us/$', contact_us, name='contact_us'),

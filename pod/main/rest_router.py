@@ -2,9 +2,12 @@ from rest_framework import routers
 from django.apps import apps
 from pod.authentication import rest_views as authentication_views
 from pod.video import rest_views as video_views
-from pod.chapters import rest_views as chapter_views
+if apps.is_installed('pod.chapters'):
+    from pod.chapters import rest_views as chapter_views
 if apps.is_installed('pod.filepicker'):
     from pod.filepicker import rest_views as filepicker_views
+if apps.is_installed('pod.completion'):
+    from pod.completion import rest_views as completion_views
 
 
 router = routers.DefaultRouter()
@@ -25,7 +28,14 @@ router.register(r'encodings_video', video_views.EncodingVideoViewSet)
 router.register(r'encodings_audio', video_views.EncodingAudioViewSet)
 router.register(r'playlist_videos', video_views.PlaylistVideoViewSet)
 
-router.register(r'chapters', chapter_views.ChapterViewSet)
+if apps.is_installed('pod.completion'):
+    router.register(r'contributors', completion_views.ContributorViewSet)
+    router.register(r'documents', completion_views.DocumentViewSet)
+    router.register(r'tracks', completion_views.TrackViewSet)
+    router.register(r'overlays', completion_views.OverlayViewSet)
+
+if apps.is_installed('pod.chapters'):
+    router.register(r'chapters', chapter_views.ChapterViewSet)
 
 if apps.is_installed('pod.filepicker'):
     router.register(r'directories',
