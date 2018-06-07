@@ -15,11 +15,3 @@
 	left: 5px;
 	color: black;
 }
-.playlist-item:hover:not(.disabled) {
-	background-color: #007bff;
-	color: white;
-	cursor: pointer;
-}
-.playlist-item.active {
-
-}
