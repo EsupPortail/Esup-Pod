@@ -17,6 +17,8 @@ from pod.video.models import Video
 from pod.video.models import VideoImageModel
 from pod.video.models import EncodingStep
 
+from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
+
 # from fractions import Fraction # use for keyframe
 from webvtt import WebVTT, Caption
 import logging
@@ -26,6 +28,7 @@ import subprocess
 import json
 import re
 import tempfile
+import threading
 
 if apps.is_installed('pod.filepicker'):
     try:
@@ -95,6 +98,22 @@ EMAIL_ON_ENCODING_COMPLETION = getattr(
 
 FILE_UPLOAD_TEMP_DIR = getattr(
     settings, 'FILE_UPLOAD_TEMP_DIR', '/tmp')
+
+TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
+CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [
+                           mail for name, mail in getattr(settings, 'ADMINS')])
+HELP_MAIL = getattr(settings, 'HELP_MAIL', 'noreply@univ.fr')
+
+# ##########################################################################
+# ENCODE VIDEO : THREAD TO LAUNCH ENCODE
+# ##########################################################################
+
+def start_encode(video_id):
+    log.info("START ENCODE VIDEO ID %s" % video_id)
+    t = threading.Thread(target=encode_video,
+                         args=[video_id])
+    t.setDaemon(True)
+    t.start()
 
 
 # ##########################################################################
@@ -1051,9 +1070,9 @@ def send_email(msg, video_id):
 def send_email_encoding(video_to_encode):
     if DEBUG:
         print("SEND EMAIL ON ENCODING COMPLETION")
-    content_url = video_to_encode.get_absolute_url()
+    content_url = "http:%s" %video_to_encode.get_full_url()
     subject = "[%s] %s" % (
-        settings.TITLE_SITE,
+        TITLE_SITE,
         _(u"Encoding #%(content_id)s completed") % {
             'content_id': video_to_encode.id
         }
@@ -1062,12 +1081,12 @@ def send_email_encoding(video_to_encode):
         _(u"The content “%(content_title)s” has been encoded to Web "
             + "formats, and is now available on %(site_title)s.") % {
             'content_title': video_to_encode.title,
-            'site_title': settings.TITLE_SITE
+            'site_title': TITLE_SITE
         },
         _(u"You will find it here:"),
         content_url
     )
-    from_email = settings.DEFAULT_FROM_EMAIL
+    from_email = HELP_MAIL
     to_email = []
     to_email.append(video_to_encode.owner.email)
     html_message = ""
@@ -1077,7 +1096,7 @@ def send_email_encoding(video_to_encode):
         _(u"The content “%(content_title)s” has been encoded to Web "
             + "formats, and is now available on %(site_title)s.") % {
             'content_title': '<b>%s</b>' % video_to_encode.title,
-            'site_title': settings.TITLE_SITE
+            'site_title': TITLE_SITE
         },
         _(u"You will find it here:"),
         content_url,
