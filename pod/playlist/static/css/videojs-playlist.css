@@ -17,6 +17,9 @@
 	display: inline-block;
 	font-size: small;
 }
+.playlist-videos p svg {
+	width: 70%;
+}
 .playlist-videos .card {
 	margin-top: 1.5rem;
 	margin-left: 2.3rem;
@@ -33,10 +36,7 @@
 .playlist-counter {
 	text-align: right;
 	font-size: small;
-	display: inline-flex;
-	position: absolute;
-	left: 85%;
-	top: 3%;
+	display: flex;
 }
 .playlist-options:hover {
 	color: #007bff !important;

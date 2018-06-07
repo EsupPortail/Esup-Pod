@@ -37,16 +37,16 @@
     </div>
     {% if channel %}
     {% if theme %}
-    <a href="{% url 'video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}" title="{{video.title}}">
+    <a href="{% url 'video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
         {{video.get_thumbnail_card|safe}}
     </a>
     {% else %}
-    <a href="{% url 'video' slug_c=channel.slug slug=video.slug %}" title="{{video.title}}">
+    <a href="{% url 'video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
         {{video.get_thumbnail_card|safe}}
     </a>
     {% endif %}
     {% else %}
-    <a href="{{video.get_absolute_url}}" title="{{video.title}}">
+    <a href="{{video.get_absolute_url}}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
         {{video.get_thumbnail_card|safe}}
     </a>
     {% endif %}
@@ -61,16 +61,16 @@
       <h6 class="card-subtitle small">
         {% if channel %}
         {% if theme %}
-        <a href="{% url 'video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}" title="{{video.title}}">
+        <a href="{% url 'video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
             {{video.title}}
         </a>
         {% else %}
-        <a href="{% url 'video' slug_c=channel.slug slug=video.slug %}" title="{{video.title}}">
+        <a href="{% url 'video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
             {{video.title}}
         </a>
         {% endif %}
         {% else %}
-        <a href="{{video.get_absolute_url}}" title="{{video.title}}">{{video.title}}</a>
+        <a href="{{video.get_absolute_url}}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">{{video.title}}</a>
         {% endif %}
       </h6>
 

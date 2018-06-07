@@ -16,7 +16,7 @@
     </div>
     <div class="playlist-videos">
     {% for pvideo in playlist.videos %}
-    	{% include 'videos/card.html' with video=pvideo %}
+    	{% include 'videos/card.html' with video=pvideo playlist=playlist %}
     	{% if video.playlistelement_set.first.position == pvideo.playlistelement_set.first.position %}
     		<p><svg height="32" class="octicon octicon-chevron-up" viewBox="0 0 10 16" version="1.1" width="20" aria-hidden="true"><path fill-rule="evenodd" d="M10 10l-1.5 1.5L5 7.75 1.5 11.5 0 10l5-5 5 5z"></path></svg></p>
     	{% else %}
@@ -31,17 +31,23 @@
 		const current_position = parseInt({{video.playlistelement_set.first.position}});
 		const current_element = $('.playlist-videos .card')[{{video.playlistelement_set.first.position}} - 1];
 		const next_element = $('.playlist-videos .card')[{{video.playlistelement_set.first.position}}];
-		const parameter = /(\?|\&)([^=]+)\=([^&]+)/gm;
-		var playlist = window.location.href.match(parameter)[0].split('=')[1];
+		const parameter = [
+			/(playlist)\=([^&]+)/, /(auto)\=([^&]+)/, /(loop)\=([^&]+)/
+		];
+		var playlist = window.location.href.match(parameter[0])[2];
+		var auto_on, loop_on = false;
 
 		current_element.style = 'border: 2px solid #007bff !important';
-		if (window.location.href.split('auto=')[1] == 'on') {
+
+		if (window.location.href.match(parameter[1])) {
 			$('#auto').attr('active', 'on');
 			$('#auto').css('color', '#007bff');
+			auto_on = true;
 		}
-		if (window.location.href.split('loop=')[1] == 'on') {
+		if (window.location.href.match(parameter[2])) {
 			$('#loop').attr('active', 'on');
 			$('#loop').css('color', '#007bff');
+			loop_on = true;
 		}
 		
 		player.on('ended', function() {
@@ -66,6 +72,6 @@
 		$('#loop').on('click', function() {
 			$(this).attr('active', $(this).attr('active') == 'off' ? 'on' : 'off');
 			$(this).css('color', $(this).attr('active') == 'on' ? '#007bff' : 'black');
-		})
+		});
 	});
 </script>
