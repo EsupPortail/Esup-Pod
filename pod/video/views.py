@@ -36,7 +36,8 @@ import json
 from datetime import datetime
 
 
-VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
+# VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
+VIDEOS = Video.objects.filter(is_draft=False)
 THEME_ACTION = ['new', 'modify', 'delete', 'save']
 
 # ############################################################################
@@ -456,6 +457,14 @@ def video_edit(request, slug=None):
                 request, messages.INFO,
                 _('The changes have been saved.')
             )
+            if request.POST.get('_saveandsee'):
+                return redirect(
+                    reverse('video', args=(video.slug,))
+                )
+            else:
+                return redirect(
+                    reverse('video_edit', args=(video.slug,))
+                )
         else:
             messages.add_message(
                 request, messages.ERROR,

@@ -17,14 +17,14 @@ from django.contrib.auth.models import Group
 from django.apps import apps
 from django.urls import reverse
 from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.sites.shortcuts import get_current_site
 from django.dispatch import receiver
 from django.utils.html import format_html
-# from django.db.models.signals import post_save
-# from django.db.models.signals import pre_save
 from django.db.models.signals import pre_delete
-# from django.db.models.signals import post_delete
+from tagging.models import Tag
 from datetime import datetime
+from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
 if apps.is_installed('pod.filepicker'):
@@ -44,7 +44,14 @@ VIDEOS_DIR = getattr(
 FILES_DIR = getattr(
     settings, 'FILES_DIR', 'files')
 MAIN_LANG_CHOICES = getattr(
-    settings, 'MAIN_LANG_CHOICES', (('fr', _('French')),))
+    settings, 'MAIN_LANG_CHOICES', (
+        ('zh', _('Chinese')),
+        ('es', _('Spanish')),
+        ('de', _('German')),
+        ('pl', _('Polish')),
+        ('en', _('English')),
+        ('fr', _('French')),
+    ))
 CURSUS_CODES = getattr(
     settings, 'CURSUS_CODES', (
         ('0', _("None / All")),
@@ -53,6 +60,10 @@ CURSUS_CODES = getattr(
         ('D', _("Doctorate")),
         ('1', _("Other"))
     ))
+
+MAIN_LANG_CHOICES_DICT = {key: value for key, value in MAIN_LANG_CHOICES}
+CURSUS_CODES_DICT = {key: value for key, value in CURSUS_CODES}
+
 DEFAULT_TYPE_ID = getattr(
     settings, 'DEFAULT_TYPE_ID', 1)
 
@@ -308,7 +319,7 @@ class Theme(models.Model):
                 "A theme have to be in the same channel that his parent")
 
     class Meta:
-        ordering = ['title']
+        ordering = ['channel', 'title']
         verbose_name = _('Theme')
         verbose_name_plural = _('Themes')
 
@@ -399,9 +410,9 @@ class Video(models.Model):
                                 'numbers, underscore or dash top.'),
                             editable=False)
     owner = models.ForeignKey(User, verbose_name=_('Owner'))
-    date_added = models.DateField(_('Date added'), default=datetime.now)
+    date_added = models.DateTimeField(_('Date added'), default=timezone.now())
     date_evt = models.DateField(
-        _(u'Date of event'), default=datetime.now, blank=True, null=True)
+        _(u'Date of event'), default=timezone.now(), blank=True, null=True)
     description = RichTextField(
         _('Description'),
         config_name='complete',
@@ -620,7 +631,51 @@ class Video(models.Model):
                  'height': video.height,
                  'label': video.name})
         return list_src
-        # return json.dumps(self.get_video_mp4())
+
+    def get_json_to_index(self):
+        try:
+            data_to_dump = {
+                'id': self.id,
+                'title': u'%s' % self.title,
+                'owner': u'%s' % self.owner.username,
+                'owner_full_name': u'%s' % self.owner.get_full_name(),
+                "date_added": u'%s' % self.date_added.strftime(
+                    '%Y-%m-%dT%H:%M:%S'
+                ) if self.date_added else None,
+                "date_evt": u'%s' % self.date_evt.strftime(
+                    '%Y-%m-%dT%H:%M:%S'
+                ) if self.date_evt else None,
+                "description": u'%s' % self.description,
+                "thumbnail": u'%s' % self.get_thumbnail_url(),
+                "duration": u'%s' % self.duration,
+                "tags": list([
+                    {
+                        'name': name[0],
+                        'slug':slugify(name)
+                    } for name in Tag.objects.get_for_object(
+                        self).values_list('name')]),
+                "type": {"title": self.type.title, "slug": self.type.slug},
+                "disciplines": list(self.discipline.all().values(
+                    'title', 'slug')),
+                "channels": list(self.channel.all().values('title', 'slug')),
+                "themes": list(self.theme.all().values('title', 'slug')),
+                "contributors": list(self.contributor_set.values(
+                    'name', 'role')),
+                "chapters": list(self.chapter_set.values('title', 'slug')),
+                "overlays": list(self.overlay_set.values('title', 'slug')),
+                "full_url": self.get_full_url(),
+                "is_restricted": self.is_restricted,
+                "password": True if self.password != "" else False,
+                "duration_in_time": self.duration_in_time,
+                "mediatype": "video" if self.is_video else "audio",
+                "cursus": "%s" % CURSUS_CODES_DICT[self.cursus],
+                "main_lang": "%s" % MAIN_LANG_CHOICES_DICT[self.main_lang],
+            }
+            return json.dumps(data_to_dump)
+        except ObjectDoesNotExist as e:
+            logger.error("An error occured during get_json_to_index"
+                         " for video %s: %s" % (self.id, e))
+            return json.dumps({})
 
     def get_chapters_file(self):
         list_chapter = self.chapter_set.all()
@@ -704,7 +759,7 @@ class ViewCount(models.Model):
     video = models.ForeignKey(Video, verbose_name=_('Video'),
                               editable=False)
     date = models.DateField(
-        _(u'Date'), default=datetime.now(), editable=False)
+        _(u'Date'), default=datetime.now, editable=False)
     count = models.IntegerField(
         _('Number of view'), default=0, editable=False)
 
