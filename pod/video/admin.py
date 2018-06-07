@@ -109,25 +109,22 @@ class VideoAdmin(admin.ModelAdmin):
 
         if obj.encoding_in_progress:
             fieldsets = deepcopy(fieldsets)
-            for fieldset in fieldsets:
-                if 'video' in fieldset[1]['fields']:
-                    if type(fieldset[1]['fields']) == tuple:
-                        fieldset[1]['fields'] = list(fieldset[1]['fields'])
-                    fieldset[1]['fields'].remove('video')
-                    break
+            fieldsets = self.remove_field_in_fieldset(fieldsets, 'video')
 
         if not request.user.is_superuser:
             fieldsets = deepcopy(fieldsets)
-            for fieldset in fieldsets:
-                if 'date_added' in fieldset[1]['fields']:
-                    if type(fieldset[1]['fields']) == tuple:
-                        fieldset[1]['fields'] = list(fieldset[1]['fields'])
-                    fieldset[1]['fields'].remove('date_added')
-                if 'owner' in fieldset[1]['fields']:
-                    if type(fieldset[1]['fields']) == tuple:
-                        fieldset[1]['fields'] = list(fieldset[1]['fields'])
-                    fieldset[1]['fields'].remove('owner')
+            fieldsets = self.remove_field_in_fieldset(fieldsets, 'date_added')
+            fieldsets = self.remove_field_in_fieldset(fieldsets, 'owner')
 
+        return fieldsets
+
+    def remove_field_in_fieldset(self, fieldsets, field):
+        for fieldset in fieldsets:
+            if field in fieldset[1]['fields']:
+                if type(fieldset[1]['fields']) == tuple:
+                    fieldset[1]['fields'] = list(fieldset[1]['fields'])
+                fieldset[1]['fields'].remove(field)
+                break
         return fieldsets
 
     actions = ['encode_video']

@@ -108,6 +108,7 @@ HELP_MAIL = getattr(settings, 'HELP_MAIL', 'noreply@univ.fr')
 # ENCODE VIDEO : THREAD TO LAUNCH ENCODE
 # ##########################################################################
 
+
 def start_encode(video_id):
     log.info("START ENCODE VIDEO ID %s" % video_id)
     t = threading.Thread(target=encode_video,
@@ -1070,7 +1071,7 @@ def send_email(msg, video_id):
 def send_email_encoding(video_to_encode):
     if DEBUG:
         print("SEND EMAIL ON ENCODING COMPLETION")
-    content_url = "http:%s" %video_to_encode.get_full_url()
+    content_url = "http:%s" % video_to_encode.get_full_url()
     subject = "[%s] %s" % (
         TITLE_SITE,
         _(u"Encoding #%(content_id)s completed") % {

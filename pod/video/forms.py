@@ -228,7 +228,6 @@ class VideoForm(forms.ModelForm):
         video = super(VideoForm, self).save(commit, *args, **kwargs)
         if hasattr(self, 'launch_encode'):
             video.launch_encode = self.launch_encode
-            print("video.launch_encode %s" % video.launch_encode)
         return video
 
     def clean(self):
@@ -237,8 +236,6 @@ class VideoForm(forms.ModelForm):
             'video' in cleaned_data.keys()
             and hasattr(self.instance, 'video')
             and cleaned_data['video'] != self.instance.video)
-
-        print("launch_encode %s" % self.launch_encode)
 
         if 'description' in cleaned_data.keys():
             cleaned_data['description_%s' %
@@ -278,8 +275,8 @@ class VideoForm(forms.ModelForm):
         self.fields['video'].widget.attrs['class'] = self.videoattrs["class"]
         self.fields['video'].widget.attrs['accept'] = self.videoattrs["accept"]
 
-        if self.fields.get('video') and self.instance.encoding_in_progress:
-            del self.fields['video']  # .widget = forms.HiddenInput()
+        if self.instance.encoding_in_progress:
+            self.remove_field('video')  # .widget = forms.HiddenInput()
 
         # change ckeditor config for no staff user
         if self.is_staff is False:
@@ -300,15 +297,17 @@ class VideoForm(forms.ModelForm):
         self.set_queryset()
 
         if not self.is_superuser:
-            if self.fields.get('date_added'):
-                del self.fields['date_added']
-            if self.fields.get('owner'):
-                del self.fields['owner']
+            self.remove_field('date_added')
+            self.remove_field('owner')
 
         self.fields = add_placeholder_and_asterisk(self.fields)
         # remove required=True for videofield if instance
         if self.fields.get('video') and self.instance and self.instance.video:
             del self.fields["video"].widget.attrs["required"]
+
+    def remove_field(self, field):
+        if self.fields.get(field):
+            del self.fields[field]
 
     def set_queryset(self):
         if self.current_user is not None:
@@ -329,7 +328,7 @@ class VideoForm(forms.ModelForm):
         model = Video
         fields = '__all__'
         widgets = {
-            #'date_added': widgets.AdminSplitDateTime,
+            # 'date_added': widgets.AdminSplitDateTime,
             'date_evt': widgets.AdminDateWidget,
         }
         initial = {
