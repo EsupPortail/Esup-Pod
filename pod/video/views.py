@@ -452,6 +452,10 @@ def video_edit(request, slug=None):
                 return redirect(
                     reverse('video', args=(video.slug,))
                 )
+            else:
+                return redirect(
+                    reverse('video_edit', args=(video.slug,))
+                )
         else:
             messages.add_message(
                 request, messages.ERROR,
