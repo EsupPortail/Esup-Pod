@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db import connection
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
 from pod.video.models import Video

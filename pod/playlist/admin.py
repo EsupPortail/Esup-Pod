@@ -11,14 +11,16 @@ class PlaylistAdmin(admin.ModelAdmin):
     ordering = ('title', 'id',)
     list_filter = ['visible']
 
+
 admin.site.register(Playlist, PlaylistAdmin)
 
 
 class PlaylistElementAdmin(admin.ModelAdmin):
 
-	list_display = ('playlist', 'video', 'position',)
-	list_display_links = ('playlist',)
-	list_editable = ('position',)
-	ordering = ('playlist__title', 'id',)
+    list_display = ('playlist', 'video', 'position',)
+    list_display_links = ('playlist',)
+    list_editable = ('position',)
+    ordering = ('playlist__title', 'id',)
+
 
 admin.site.register(PlaylistElement, PlaylistElementAdmin)

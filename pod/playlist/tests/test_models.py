@@ -134,13 +134,13 @@ class PlaylistElementModelTestCase(TestCase):
             video='test.mp4',
             is_draft=False
         )
-        video3 = Video.objects.create(
+        Video.objects.create(
             title='video3',
             type=videotype,
             owner=owner,
             video='test.mp4'
         )
-        video4 = Video.objects.create(
+        Video.objects.create(
             title='video4',
             type=videotype,
             owner=owner,

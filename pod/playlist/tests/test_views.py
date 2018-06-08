@@ -137,12 +137,12 @@ class PlaylistViewsTestCase(TestCase):
         )
         video1 = Video.objects.get(id=1)
         video2 = Video.objects.get(id=2)
-        element = PlaylistElement.objects.create(
+        PlaylistElement.objects.create(
             playlist=playlist,
             video=video1,
             position=1
         )
-        element = PlaylistElement.objects.create(
+        PlaylistElement.objects.create(
             playlist=playlist,
             video=video2,
             position=2
@@ -189,12 +189,12 @@ class PlaylistViewsTestCase(TestCase):
         )
         video1 = Video.objects.get(id=1)
         video2 = Video.objects.get(id=2)
-        element1 = PlaylistElement.objects.create(
+        PlaylistElement.objects.create(
             playlist=playlist,
             video=video1,
             position=1
         )
-        element2 = PlaylistElement.objects.create(
+        PlaylistElement.objects.create(
             playlist=playlist,
             video=video2,
             position=2
@@ -249,7 +249,7 @@ class PlaylistViewsTestCase(TestCase):
             visible=False
         )
         video1 = Video.objects.get(id=1)
-        element1 = PlaylistElement.objects.create(
+        PlaylistElement.objects.create(
             playlist=playlist,
             video=video1,
             position=1

@@ -3,11 +3,11 @@ from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
 from pod.playlist.models import Playlist

@@ -9,7 +9,7 @@ class PlaylistForm(forms.ModelForm):
         super(PlaylistForm, self).__init__(*args, **kwargs)
         self.fields['owner'].widget = HiddenInput()
         for myField in self.fields:
-        	self.fields[myField].widget.attrs['class'] = 'form-control'
+            self.fields[myField].widget.attrs['class'] = 'form-control'
         self.fields['visible'].widget.attrs['class'] = 'form-check-input'
 
     class Meta:
