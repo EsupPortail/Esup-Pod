@@ -53,12 +53,13 @@
                 position: absolute;
                 bottom: 0;
                 right: 0;
+                /*width: 100%;
+                text-align: center;*/
                 border:none;
+                /*background: rgba(220,220,220);*/
+                /*height: 1rem;*/
             }
-            .card-footer a{
-                /*color: #ddd;*/
-            }
-            .card-footer .octicon{
+            .card-footer .feather, .card-header .feather{
                 height: 1rem;
             }
             /** aside list video **/
@@ -116,7 +117,7 @@
 	</head>
 	<body>
 		<!-- barre nav-->
-		<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+		<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light m-0 p-0">
 		{% include 'navbar.html' %}
 		</nav><!-- fin barre nav-->
 		{% include 'navbar_collapse.html' %}
@@ -131,8 +132,8 @@
 		          </ol>
 		          <div class="p-0">
                     {% block collapse_page_aside %}
-		            <a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" >
-		              <svg height="32" class="octicon octicon-grabber" viewBox="0 0 8 16" version="1.1" width="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 4v1H0V4h8zM0 8h8V7H0v1zm0 3h8v-1H0v1z"></path></svg>
+		            <a class="btn btn-primary btn-sm collapseAside" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" >
+		              <i data-feather="corner-left-up"></i><i data-feather="menu"></i>
 		            </a>
                     {% endblock collapse_page_aside %}
 		          </div>
@@ -210,18 +211,26 @@
             //when a group is shown, save it as the active accordion group
             $("#collapseAside").on('shown.bs.collapse', function () {
                 Cookies.set('activeCollapseAside', "open");
-                //alert("Cookie");
+                $(".collapseAside").html('<i data-feather="corner-left-up"></i><i data-feather="menu"></i>');
+                feather.replace({ class: 'align-bottom'});
             });
             $("#collapseAside").on('hidden.bs.collapse', function () {
-                Cookies.remove('activeCollapseAside');
+                Cookies.set('activeCollapseAside', "close");
+                $(".collapseAside").html('<i data-feather="corner-left-down"></i><i data-feather="menu"></i>');
+                feather.replace({ class: 'align-bottom'});
             });
             var last = Cookies.get('activeCollapseAside');
-            if (last != null) {
+            //alert('last '+last);
+            if (last != null && last=="close") {
                 //show the account_last visible group
+                $("#collapseAside").addClass("hide");
+                $(".collapseAside").html('<i data-feather="corner-left-down"></i><i data-feather="menu"></i>');
+                feather.replace({ class: 'align-bottom'});
+            } else {
                 $("#collapseAside").addClass("show");
-            } /*else {
-                $("#collapseAside").removeClass("show");
-            }*/
+                $(".collapseAside").html('<i data-feather="corner-left-up"></i><i data-feather="menu"></i>');
+                feather.replace({ class: 'align-bottom'});
+            } 
             TriggerAlertClose();
         });
 
@@ -274,6 +283,9 @@
 
 		{% block more_script %}
 		{% endblock more_script %}
-
+        <script src="{% static 'feather-icons/feather.min.js' %}"></script>
+        <script>
+          feather.replace({ class: 'align-bottom'});
+        </script>
 	</body>
 </html>
