@@ -272,6 +272,12 @@ def encode_video(video_id):
             # get the lower size of encoding mp4
             ev = EncodingVideo.objects.filter(
                 video=video_to_encode, encoding_format="video/mp4")
+            if ev.count() == 0:
+                msg = "NO MP4 FILES FOUND !"
+                add_encoding_log(video_id, msg)
+                change_encoding_step(video_id, -1, msg)
+                send_email(msg, video_id)
+                return
             video_mp4 = sorted(ev, key=lambda m: m.height)[0]
 
             # create overview
@@ -285,10 +291,8 @@ def encode_video(video_id):
                 video_id, 4,
                 "encoding video file : 7/11 remove_previous_overview")
             remove_previous_overview(overviewfilename, overviewimagefilename)
-            if video_data["duration"] > 99:
-                nb_img = 99
-            else:
-                nb_img = video_data["duration"]
+            nb_img = 99 if (
+                video_data["duration"] > 99) else video_data["duration"]
             change_encoding_step(
                 video_id, 4,
                 "encoding video file : 8/11 create_overview_image")
@@ -462,7 +466,6 @@ def get_video_command_mp4(video_id, video_data, output_dir):
     for rendition in renditions:
         bitrate = rendition.video_bitrate
         audiorate = rendition.audio_bitrate
-        width = rendition.width
         height = rendition.height
         if in_height >= int(height) or rendition == renditions[0]:
             int_bitrate = int(
@@ -473,9 +476,8 @@ def get_video_command_mp4(video_id, video_data, output_dir):
             name = "%sp" % height
 
             cmd += " %s -vf " % (static_params,)
-            cmd += "scale=w=%s:h=%s:" % (
-                width, height)
-            cmd += "force_original_aspect_ratio=decrease"
+            cmd += "\"scale=-2:%s\"" % (height)
+            # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -b:v %s -maxrate %sk -bufsize %sk -b:a %s" % (
                 bitrate, int(maxrate), int(bufsize), audiorate)
 
@@ -673,7 +675,6 @@ def get_video_command_playlist(video_id, video_data, output_dir):
         resolution = rendition.resolution
         bitrate = rendition.video_bitrate
         audiorate = rendition.audio_bitrate
-        width = rendition.width
         height = rendition.height
         if in_height >= int(height) or rendition == renditions[0]:
             int_bitrate = int(
@@ -685,9 +686,9 @@ def get_video_command_playlist(video_id, video_data, output_dir):
             name = "%sp" % height
 
             cmd += " %s -vf " % (static_params,)
-            cmd += "scale=w=%s:h=%s:" % (
-                width, height)
-            cmd += "force_original_aspect_ratio=decrease"
+            cmd += "\"scale=-2:%s\"" % (height)
+            # cmd += "scale=w=%s:h=%s:" % (width, height)
+            # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -b:v %s -maxrate %sk -bufsize %sk -b:a %s" % (
                 bitrate, int(maxrate), int(bufsize), audiorate)
             cmd += " -hls_playlist_type vod -hls_time %s \
@@ -1054,7 +1055,7 @@ def remove_previous_encoding_playlist(video_to_encode):
 
 
 def send_email(msg, video_id):
-    subject = "[" + settings.TITLE_SITE + \
+    subject = "[" + TITLE_SITE + \
         "] Error Encoding Video id:%s" % video_id
     message = "Error Encoding  video id : %s\n%s" % (
         video_id, msg)

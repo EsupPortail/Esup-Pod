@@ -28,6 +28,10 @@
 <link href="{% static 'css/videojs-vtt-thumbnails.css' %}" rel="stylesheet">
 <script src="{% static 'js/videojs-vtt-thumbnails.min.js' %}"></script>
 {% endif %}
+{% if video.is_360 %}
+<link href="{% static 'videojs-vr/videojs-vr.css' %}" rel="stylesheet">
+<script src="{% static 'videojs-vr/videojs-vr.min.js' %}"></script>
+{% endif %}
 <style>
 .scrollspy-video {
     position: relative;
@@ -209,6 +213,7 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
 <div data-spy="scroll" data-target="#navbar-example2" data-offset="0" class="scrollspy-video">
   <h4 id="summary">{% trans 'Summary' %}</h4>
   <div class="scrollspy-content">
+    {% if video.is_360 %}<p class="text-info">{% trans "This is a 360 degree video. To look around click and drag your mouse on the video."%}</p>{% endif %}
     <p>{{ video.description|safe }}</p>
     {% tags_for_object video as tag_list %}
     {% if tag_list %}
@@ -434,6 +439,9 @@ player.on('firstplay', function(){
       src: '{% if request.is_secure %}https://{%else%}http://{% endif %}{{request.get_host}}{{video.overview.url}}'
     });
   {%endif%}
+  {% if video.is_360 %}
+    player.vr({projection: '360'});
+  {% endif %}
 
 {% else %}
   {% if video.get_video_m4a %}
