@@ -16,10 +16,19 @@ padding-top: 5rem;
     flex: 1;
     justify-content: center;
 }
-.octicon{
-    height: 1.5rem;
-    width: auto;
+.jumbotron {
+    padding: 1rem 2rem;
 }
+.infinite-item .card-body {
+    padding: 1.1rem;
+    height: 3.5rem;
+    overflow: hidden;
+}
+.infinite-item .card-header .octicon {
+    height:0.9rem;
+    margin:0.1rem;
+}
+/*** CARD ***/
 .card-header {
     position:absolute; 
     width:100%; 
@@ -29,6 +38,32 @@ padding-top: 5rem;
 }
 .card-header .text-muted {
     color:white !important; 
+}
+div.card a{
+ overflow:hidden;
+}
+div.card a img {
+ transition:-webkit-transform .5s ease;
+ transition:transform .5s ease;
+ transition:transform .5s ease, -webkit-transform .5s ease
+}
+div.card a:hover>img {
+ -webkit-transform:scale(1.1);
+ transform:scale(1.1)
+ z-index:0;
+}
+.card-footer {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    /*width: 100%;
+    text-align: center;*/
+    border:none;
+    /*background: rgba(220,220,220);*/
+    /*height: 1rem;*/
+}
+.card-footer .feather, .card-header .feather{
+    height: 1rem;
 }
 /* menu channels */
 .dropdown-submenu > .dropdown-menu {
@@ -58,7 +93,49 @@ padding-top: 5rem;
   margin-right: -10px;
 }
 
-/* menu user */
+/** aside list video **/
+#filterType div.collapse:not(.show), #filterDiscipline div.collapse:not(.show), #filterTag div.collapse:not(.show) {
+    height: 148px !important;
+    overflow: hidden;
+    
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+}
+
+#filterType div.collapsing, #filterDiscipline div.collapsing, #filterTag  div.collapsing{
+    min-height: 148px !important;
+}
+
+#filterType a.collapsed:after, #filterDiscipline a.collapsed:after, #filterTag a.collapsed:after {
+    content: '+';
+}
+
+#filterType a:not(.collapsed):after, #filterDiscipline a:not(.collapsed):after, #filterTag  a:not(.collapsed):after {
+    content: '-';
+}
+/** ckeditor **/
+.django-ckeditor-widget {
+    width: 100%;
+}
+/** video form **/
+.required { color:red;}
+.form-group-required {
+    border-left: 3px solid rgba(201, 76, 76, 0.3);
+    padding-left : 5px;
+}
+.form-group-required .errors {
+    background-color: rgba(201, 76, 76, 0.3);
+}
+#base-message-alert, #formalertdiv{
+    position:fixed;
+    top:50%;
+    text-align: center;
+    margin:0 auto;
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index:1000;
+}
 
 /* vignettes video */
 @media (max-width: 575.98px) {
