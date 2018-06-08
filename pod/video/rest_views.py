@@ -4,10 +4,8 @@ from pod.video.models import VideoRendition, EncodingVideo, EncodingAudio
 from pod.video.models import PlaylistVideo
 from rest_framework import serializers, viewsets
 from rest_framework.views import APIView
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import renderers
-from rest_framework import filters
 from django.template.loader import render_to_string
 
 

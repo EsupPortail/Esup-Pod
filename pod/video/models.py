@@ -706,7 +706,7 @@ class Video(models.Model):
                 'dc.contributor': ", ".join(contributors),
                 "dc.date": '%s' % self.date_added.strftime('%Y/%m/%d'),
                 "dc.type": "video" if self.is_video else "audio",
-                "dc.identifier": "http:%s" %self.get_full_url(),
+                "dc.identifier": "http:%s" % self.get_full_url(),
                 "dc.language": '%s' % self.main_lang,
                 'dc.coverage': DEFAULT_DC_COVERAGE,
                 'dc.rights': self.licence if (

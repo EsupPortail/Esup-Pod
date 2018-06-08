@@ -1,11 +1,11 @@
 from django import template
-#from HTMLParser import HTMLParser
 from html.parser import HTMLParser
 
 import re
 
 register = template.Library()
 parser = HTMLParser()
+
 
 @register.filter(name='metaformat')
 def metaformat(content):
