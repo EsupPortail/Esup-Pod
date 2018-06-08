@@ -1,7 +1,11 @@
 from rest_framework import routers
 from django.apps import apps
+from django.conf.urls import url
+from django.conf.urls import include
 from pod.authentication import rest_views as authentication_views
 from pod.video import rest_views as video_views
+
+
 if apps.is_installed('pod.chapters'):
     from pod.chapters import rest_views as chapter_views
 if apps.is_installed('pod.filepicker'):
@@ -54,3 +58,8 @@ if apps.is_installed('pod.filepicker'):
                     filepicker_views.CustomFileModelSerializerViewSet)
     router.register(r'images',
                     filepicker_views.CustomImageModelSerializerViewSet)
+
+urlpatterns = [
+    url(r'dublincore/$', video_views.DublinCoreView.as_view(), name='dublincore'),
+    url(r'^', include(router.urls)),
+]
