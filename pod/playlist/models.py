@@ -96,3 +96,23 @@ class PlaylistElement(models.Model):
         ordering = ['position', 'id']
         verbose_name = _('Playlist element')
         verbose_name_plural = _('Playlist elements')
+
+    def clean(self):
+        if self.video.is_draft:
+            raise ValidationError(
+                _('A video in draft mode cannot be added to a playlist.'))
+        if self.video.password:
+            raise ValidationError(
+                _('A video with a password cannot be added to a playlist.'))
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super(PlaylistElement, self).save(*args, **kwargs)
+
+    def delete(self):
+        elements = PlaylistElement.objects.filter(
+            playlist=self.playlist, position__gt=self.position)
+        for element in elements:
+            element.position = element.position - 1
+            element.save()
+        super(PlaylistElement, self).delete()
