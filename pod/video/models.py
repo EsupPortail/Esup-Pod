@@ -17,22 +17,25 @@ from django.contrib.auth.models import Group
 from django.apps import apps
 from django.urls import reverse
 from django.core.exceptions import ValidationError
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.sites.shortcuts import get_current_site
 from django.dispatch import receiver
 from django.utils.html import format_html
-# from django.db.models.signals import post_save
-# from django.db.models.signals import pre_save
 from django.db.models.signals import pre_delete
-# from django.db.models.signals import post_delete
+from tagging.models import Tag
 from datetime import datetime
+from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
+
 if apps.is_installed('pod.filepicker'):
     from pod.filepicker.models import CustomImageModel
     from pod.filepicker.models import CustomFileModel
     FILEPICKER = True
 if apps.is_installed('pod.chapters'):
     CHAPTERS = True
+if apps.is_installed('pod.enrichment'):
+    ENRICHMENT = True
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +45,14 @@ VIDEOS_DIR = getattr(
 FILES_DIR = getattr(
     settings, 'FILES_DIR', 'files')
 MAIN_LANG_CHOICES = getattr(
-    settings, 'MAIN_LANG_CHOICES', (('fr', _('French')),))
+    settings, 'MAIN_LANG_CHOICES', (
+        ('zh', _('Chinese')),
+        ('es', _('Spanish')),
+        ('de', _('German')),
+        ('pl', _('Polish')),
+        ('en', _('English')),
+        ('fr', _('French')),
+    ))
 CURSUS_CODES = getattr(
     settings, 'CURSUS_CODES', (
         ('0', _("None / All")),
@@ -51,6 +61,10 @@ CURSUS_CODES = getattr(
         ('D', _("Doctorate")),
         ('1', _("Other"))
     ))
+
+MAIN_LANG_CHOICES_DICT = {key: value for key, value in MAIN_LANG_CHOICES}
+CURSUS_CODES_DICT = {key: value for key, value in CURSUS_CODES}
+
 DEFAULT_TYPE_ID = getattr(
     settings, 'DEFAULT_TYPE_ID', 1)
 
@@ -91,6 +105,29 @@ ENCODING_CHOICES = getattr(
 DEFAULT_THUMBNAIL = getattr(
     settings, 'DEFAULT_THUMBNAIL', 'img/default.png')
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
+
+##
+# Settings exposed in templates
+#
+TEMPLATE_VISIBLE_SETTINGS = getattr(
+    settings,
+    'TEMPLATE_VISIBLE_SETTINGS',
+    {
+        'TITLE_SITE': 'Pod',
+        'TITLE_ETB': 'University name',
+        'LOGO_SITE': 'img/logo_compact.png',
+        'LOGO_COMPACT_SITE': 'img/logo_compact_site.png',
+        'LOGO_ETB': 'img/logo_etb.svg',
+        'LOGO_PLAYER': 'img/logo_player.png',
+        'FOOTER_TEXT': ('',),
+        # 'FAVICON': 'img/favicon.png',
+        # 'CSS_OVERRIDE' : 'custom/etab.css'
+    }
+)
+TITLE_ETB = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_ETB', 'University')
+DEFAULT_DC_COVERAGE = getattr(
+    settings, 'DEFAULT_DC_COVERAGE', TITLE_ETB + " - Town - Country")
+DEFAULT_DC_RIGHTS = getattr(settings, 'DEFAULT_DC_RIGHT', "BY-NC-SA")
 
 
 # FUNCTIONS
@@ -306,7 +343,7 @@ class Theme(models.Model):
                 "A theme have to be in the same channel that his parent")
 
     class Meta:
-        ordering = ['title']
+        ordering = ['channel', 'title']
         verbose_name = _('Theme')
         verbose_name_plural = _('Themes')
 
@@ -375,9 +412,7 @@ class Video(models.Model):
     video = models.FileField(
         _('Video'),  upload_to=get_storage_path_video, max_length=255,
         help_text=_(
-            'You can send an audio or video file.')
-    )
-
+            'You can send an audio or video file.'))
     allow_downloading = models.BooleanField(
         _('allow downloading'), default=False, help_text=_(
             'Check this box if you to allow downloading of the encoded files'))
@@ -388,18 +423,18 @@ class Video(models.Model):
         max_length=250,
         help_text=_("Please choose a title as short and accurate as "
                     "possible, reflecting the main subject / context "
-                    "of the content.(max length : 250 characters)")
-    )
-    slug = models.SlugField(_('Slug'), unique=True, max_length=255,
-                            help_text=_(
-        'Used to access this instance, the "slug" is '
-        'a short label containing only letters, '
-                                'numbers, underscore or dash top.'),
-                            editable=False)
+                    "of the content.(max length : 250 characters)"))
+    slug = models.SlugField(
+        _('Slug'), unique=True, max_length=255,
+        help_text=_(
+            'Used to access this instance, the "slug" is '
+            'a short label containing only letters, '
+            'numbers, underscore or dash top.'),
+        editable=False)
     owner = models.ForeignKey(User, verbose_name=_('Owner'))
-    date_added = models.DateField(_('Date added'), default=datetime.now)
+    date_added = models.DateTimeField(_('Date added'), default=timezone.now())
     date_evt = models.DateField(
-        _(u'Date of event'), default=datetime.now, blank=True, null=True)
+        _('Date of event'), default=timezone.now(), blank=True, null=True)
     description = RichTextField(
         _('Description'),
         config_name='complete',
@@ -407,7 +442,6 @@ class Video(models.Model):
         help_text=_("In this field you can describe your content, "
                     "add all needed related information, and "
                     "format the result using the toolbar."))
-
     cursus = models.CharField(
         _('University course'), max_length=1,
         choices=CURSUS_CODES, default="0",
@@ -417,10 +451,8 @@ class Video(models.Model):
         _('Main language'), max_length=2,
         choices=MAIN_LANG_CHOICES, default=get_language(),
         help_text=_("Select the main language used in the content."))
-
     duration = models.IntegerField(
         _('Duration'), default=0, editable=False, blank=True)
-
     is_draft = models.BooleanField(
         verbose_name=_('Draft'),
         help_text=_(
@@ -453,11 +485,9 @@ class Video(models.Model):
         thumbnail = models.ForeignKey(VideoImageModel,
                                       blank=True, null=True,
                                       verbose_name=_('Thumbnails'))
-
     overview = models.ImageField(
         _('Overview'), null=True, upload_to=get_upload_path_files,
         blank=True, max_length=255, editable=False)
-
     type = models.ForeignKey(Type, verbose_name=_('Type'),
                              default=DEFAULT_TYPE_ID)
     discipline = models.ManyToManyField(
@@ -478,14 +508,11 @@ class Video(models.Model):
         blank=True,
         help_text=_('Hold down "Control", or "Command" '
                     'on a Mac, to select more than one.'))
-
     licence = models.CharField(
         _('Licence'), max_length=8,
         choices=LICENCE_CHOICES, blank=True, null=True)
-
     encoding_in_progress = models.BooleanField(
         _('Encoding in progress'), default=False, editable=False)
-
     is_video = models.BooleanField(
         _('Is Video'), default=True, editable=False)
 
@@ -555,6 +582,11 @@ class Video(models.Model):
     def get_absolute_url(self):
         return reverse('video', args=[str(self.slug)])
 
+    def get_full_url(self, request=None):
+        full_url = ''.join(
+            ['//', get_current_site(request).domain, self.get_absolute_url()])
+        return full_url
+
     def get_hashkey(self):
         return hashlib.sha256(
             ("%s-%s" % (SECRET_KEY, self.id)).encode('utf-8')).hexdigest()
@@ -613,7 +645,79 @@ class Video(models.Model):
                  'height': video.height,
                  'label': video.name})
         return list_src
-        # return json.dumps(self.get_video_mp4())
+
+    def get_json_to_index(self):
+        try:
+            data_to_dump = {
+                'id': self.id,
+                'title': u'%s' % self.title,
+                'owner': u'%s' % self.owner.username,
+                'owner_full_name': u'%s' % self.owner.get_full_name(),
+                "date_added": u'%s' % self.date_added.strftime(
+                    '%Y-%m-%dT%H:%M:%S'
+                ) if self.date_added else None,
+                "date_evt": u'%s' % self.date_evt.strftime(
+                    '%Y-%m-%dT%H:%M:%S'
+                ) if self.date_evt else None,
+                "description": u'%s' % self.description,
+                "thumbnail": u'%s' % self.get_thumbnail_url(),
+                "duration": u'%s' % self.duration,
+                "tags": list([
+                    {
+                        'name': name[0],
+                        'slug':slugify(name)
+                    } for name in Tag.objects.get_for_object(
+                        self).values_list('name')]),
+                "type": {"title": self.type.title, "slug": self.type.slug},
+                "disciplines": list(self.discipline.all().values(
+                    'title', 'slug')),
+                "channels": list(self.channel.all().values('title', 'slug')),
+                "themes": list(self.theme.all().values('title', 'slug')),
+                "contributors": list(self.contributor_set.values(
+                    'name', 'role')),
+                "chapters": list(self.chapter_set.values('title', 'slug')),
+                "overlays": list(self.overlay_set.values('title', 'slug')),
+                "full_url": self.get_full_url(),
+                "is_restricted": self.is_restricted,
+                "password": True if self.password != "" else False,
+                "duration_in_time": self.duration_in_time,
+                "mediatype": "video" if self.is_video else "audio",
+                "cursus": "%s" % CURSUS_CODES_DICT[self.cursus],
+                "main_lang": "%s" % MAIN_LANG_CHOICES_DICT[self.main_lang],
+            }
+            return json.dumps(data_to_dump)
+        except ObjectDoesNotExist as e:
+            logger.error("An error occured during get_json_to_index"
+                         " for video %s: %s" % (self.id, e))
+            return json.dumps({})
+
+    def get_dublin_core(self):
+        contributors = []
+        for contrib in self.contributor_set.values_list('name', 'role'):
+            contributors.append(" ".join(contrib))
+        try:
+            data_to_dump = {
+                'dc.title': '%s' % self.title,
+                'dc.creator': '%s' % self.owner.get_full_name(),
+                'dc.description': '%s' % self.description,
+                'dc.subject': '%s' % ', '.join(
+                    self.discipline.all().values_list('title', flat=True)),
+                'dc.publisher': TITLE_ETB,
+                'dc.contributor': ", ".join(contributors),
+                "dc.date": '%s' % self.date_added.strftime('%Y/%m/%d'),
+                "dc.type": "video" if self.is_video else "audio",
+                "dc.identifier": "http:%s" % self.get_full_url(),
+                "dc.language": '%s' % self.main_lang,
+                'dc.coverage': DEFAULT_DC_COVERAGE,
+                'dc.rights': self.licence if (
+                    self.licence) else DEFAULT_DC_RIGHTS,
+                "dc.format":  "video/mp4" if self.is_video else "audio/mp3"
+            }
+            return data_to_dump
+        except ObjectDoesNotExist as e:
+            logger.error("An error occured during get_json_to_index"
+                         " for video %s: %s" % (self.id, e))
+            return {}
 
     def get_chapters_file(self):
         list_chapter = self.chapter_set.all()
@@ -632,6 +736,24 @@ class Video(models.Model):
                     'files',
                     self.owner.username,
                     'chapter_{0}'.format(self.title))
+
+    def get_enrichments_file(self):
+        list_enrichment = self.enrichment_set.all()
+        if ENRICHMENT and list_enrichment:
+            if FILEPICKER:
+                enrichments = CustomFileModel.objects.get(
+                    name='enrich_{0}'.format(self.title),
+                    created_by=self.owner,
+                    directory__name='Home').file
+                return os.path.join(
+                    settings.MEDIA_URL,
+                    enrichments.name)
+            else:
+                return os.path.join(
+                    settings.MEDIA_URL,
+                    'files',
+                    self.owner.username,
+                    'enrichment_{0}'.format(self.title))
 
 
 def remove_video_file(video):
@@ -679,7 +801,7 @@ class ViewCount(models.Model):
     video = models.ForeignKey(Video, verbose_name=_('Video'),
                               editable=False)
     date = models.DateField(
-        _(u'Date'), default=datetime.now)
+        _(u'Date'), default=datetime.now, editable=False)
     count = models.IntegerField(
         _('Number of view'), default=0, editable=False)
 
@@ -926,3 +1048,16 @@ class EncodingStep(models.Model):
 
     def __str__(self):
         return "Step for encoding video %s" % (self.video.id)
+
+
+class Notes(models.Model):
+    user = models.ForeignKey(User)
+    video = models.ForeignKey(Video)
+    note = models.TextField(_('Note'), null=True, blank=True)
+
+    class Meta:
+        verbose_name = _("Note")
+        verbose_name_plural = _("Notes")
+
+    def __str__(self):
+        return "%s-%s" % (self.user.username, self.video)

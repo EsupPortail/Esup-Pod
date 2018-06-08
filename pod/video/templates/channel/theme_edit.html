@@ -14,7 +14,9 @@ body {
 </style>
 {% endblock page_extra_head %}
 
-{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item"><a href="{% url 'my_channels' %}" title="{% trans 'My channels' %}">{% trans 'My channels' %}</a><li class="breadcrumb-item active" aria-current="page">{{channel.title}}</li>{% endblock %}
+{% block breadcrumbs %}{{ block.super }} 
+<li class="breadcrumb-item"><a href="{% url 'my_channels' %}" title="{% trans 'My channels' %}">{% trans 'My channels' %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{channel.title}}</li>{% endblock %}
 
 {% block page_title %}
 {% trans "Editing the channel's themes" %} "{{channel.title}}"

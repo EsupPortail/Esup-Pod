@@ -33,8 +33,11 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'tagging',
     'django_cas',
-    # https://github.com/ouhouhsami/django-progressbarupload
+    'captcha',
     'progressbarupload',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'django_filters',
     # Pod Applications
     'pod.main',
     'pod.authentication',
@@ -42,6 +45,8 @@ INSTALLED_APPS = [
     'pod.video',
     'pod.completion',
     'pod.chapters',
+    'pod.enrichment',
+    'pod.video_search'
 ]
 
 ##
@@ -58,13 +63,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # Pages statiques
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'django_cas.middleware.CASMiddleware',
 ]
 
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'django_cas.backends.CASBackend',
+    # 'django_cas.backends.CASBackend',
 )
 
 ##
@@ -89,6 +93,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, 'main', 'templates'),
             os.path.join(BASE_DIR, 'main', 'templates', 'flatpages'),
             os.path.join(BASE_DIR, 'completion', 'templates'),
+            os.path.join(BASE_DIR, 'enrichment', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -123,11 +128,35 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 USE_I18N = True
 USE_L10N = True
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
 
 ##
 # Time zone support is enabled (True) or not (False)
 #
 USE_TZ = True
+
+##
+# WEBservices with rest API
+#
+# curl -X GET http://127.0.0.1:8000/api/example/ -H 'Authorization: Token
+# 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAdminUser',
+    ),
+    'DEFAULT_PAGINATION_CLASS': (
+        'rest_framework.pagination.PageNumberPagination'),
+    'PAGE_SIZE': 12
+}
+
 
 ##
 # Logging configuration https://docs.djangoproject.com/fr/1.11/topics/logging/
@@ -190,3 +219,19 @@ for application in INSTALLED_APPS:
                 if variable == variable.upper():
                     locals()[variable] = getattr(
                         _temp.settings_local, variable)
+##
+# AUTH CAS
+#
+try:
+    if USE_CAS is True:
+        AUTHENTICATION_BACKENDS = (
+            'django.contrib.auth.backends.ModelBackend',
+            'django_cas.backends.CASBackend',
+        )
+        CAS_RESPONSE_CALLBACKS = (
+            'pod.authentication.populatedCASbackend.populateUser',
+            # function call to add some information to user login by CAS
+        )
+        MIDDLEWARE.append('django_cas.middleware.CASMiddleware')
+except NameError:
+    pass

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
+from copy import deepcopy
 
 from modeltranslation.admin import TranslationAdmin
 
@@ -18,6 +19,8 @@ from pod.video.models import EncodingAudio
 from pod.video.models import EncodingLog
 from pod.video.models import EncodingStep
 from pod.video.models import PlaylistVideo
+from pod.video.models import Notes
+from pod.video.models import ViewCount
 
 from pod.video.forms import VideoForm
 from pod.video.forms import ChannelForm
@@ -33,7 +36,9 @@ if apps.is_installed('pod.completion'):
 if apps.is_installed('pod.chapters'):
     CHAPTER = True
     from pod.chapters.admin import ChapterInline
-
+if apps.is_installed('pod.enrichment'):
+    ENRICHMENT = True
+    from pod.enrichment.admin import EnrichmentInline
 if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
 
@@ -91,6 +96,10 @@ class VideoAdmin(admin.ModelAdmin):
         inlines += [
             ChapterInline
         ]
+    if ENRICHMENT:
+        inlines += [
+            EnrichmentInline
+        ]
 
     def get_owner_by_name(self, obj):
         owner = obj.owner
@@ -107,6 +116,39 @@ class VideoAdmin(admin.ModelAdmin):
             kwargs['form'] = VideoAdminForm
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form
+
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = super(VideoAdmin, self).get_fieldsets(request, obj)
+        if not obj:
+            return fieldsets
+
+        if obj.encoding_in_progress:
+            fieldsets = deepcopy(fieldsets)
+            fieldsets = self.remove_field_in_fieldset(fieldsets, 'video')
+
+        if not request.user.is_superuser:
+            fieldsets = deepcopy(fieldsets)
+            fieldsets = self.remove_field_in_fieldset(fieldsets, 'date_added')
+            fieldsets = self.remove_field_in_fieldset(fieldsets, 'owner')
+
+        return fieldsets
+
+    def remove_field_in_fieldset(self, fieldsets, field):
+        for fieldset in fieldsets:
+            if field in fieldset[1]['fields']:
+                if type(fieldset[1]['fields']) == tuple:
+                    fieldset[1]['fields'] = list(fieldset[1]['fields'])
+                fieldset[1]['fields'].remove(field)
+                break
+        return fieldsets
+
+    actions = ['encode_video']
+
+    def encode_video(self, request, queryset):
+        for item in queryset:
+            item.launch_encode = True
+            item.save()
+    encode_video.short_description = _('Encode selected')
 
     class Media:
         js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
@@ -212,6 +254,16 @@ class EncodingStepAdmin(admin.ModelAdmin):
     readonly_fields = ('video', 'num_step', 'desc_step')
 
 
+class NotesAdmin(admin.ModelAdmin):
+    list_display = ('video', 'user')
+    # readonly_fields = ('video', 'num_step', 'desc_step')
+
+
+class ViewCountAdmin(admin.ModelAdmin):
+    list_display = ('video', 'date', 'count')
+    readonly_fields = ('video', 'date', 'count')
+
+
 admin.site.register(Channel, ChannelAdmin)
 admin.site.register(Type, TypeAdmin)
 admin.site.register(Discipline, DisciplineAdmin)
@@ -223,3 +275,5 @@ admin.site.register(VideoRendition, VideoRenditionAdmin)
 admin.site.register(EncodingLog, EncodingLogAdmin)
 admin.site.register(EncodingStep, EncodingStepAdmin)
 admin.site.register(PlaylistVideo, PlaylistVideoAdmin)
+admin.site.register(Notes, NotesAdmin)
+admin.site.register(ViewCount, ViewCountAdmin)

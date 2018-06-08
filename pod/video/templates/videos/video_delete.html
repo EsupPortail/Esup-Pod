@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+
+{% block breadcrumbs %}
+{{ block.super }} 
+<li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'video' slug=video.slug %}" title="{{video.title}}">{{video.title}}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{% trans "Delete" %}</li>
+{% endblock %}
+
+{% block page_title %}
+{% trans "Deleting the video" %} {{video.title}}
+{% endblock %}
+
+
+{% block page_content %}
+<h3>{% trans "Deleting the video" %} {{video.title}}
+<span class="float-right">
+<a href="{% url 'video' slug=video.slug %}" title="{% trans "View the video"%}" class="btn btn btn-outline-dark btn-sm">
+    <svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>{% trans "Back to the video"%}
+</a>
+</span>
+</h3>
+<p>{% trans 'To delete the video, please checked in and click send.' %}</p>
+<form method="post" action="{{ request.get_full_path }}" id="video_delete_form" class='needs-validation' novalidate>
+    {% csrf_token %}
+    <div class="list-group">
+    <fieldset>
+        <legend>{% trans 'Agree required' %}</legend>
+        {% if form.errors %}
+        <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+        {% endif %}
+        {% for field_hidden in form.hidden_fields %}
+            {{field_hidden}}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+            {% spaceless %}
+            <div class="list-group-item">
+            <div class="form-group {% if field.field.required %}form-group-required {%endif%}" >
+                {{ field.errors }}
+                {% if "form-check-input" in field.field.widget.attrs.class %}
+                <div class="form-check">
+                {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label" >{{ field.label }}</label>
+                </div>
+                {% else %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label> 
+                {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br/>{%endif%}
+                {{ field }}
+                {% endif %}
+                {% if field.help_text %}
+                <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                {% endif %}
+                {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+            </div>
+            </div>
+            {% endspaceless %}
+            {% endfor %}
+        <div class="text-center mt-1">
+            <button type="submit" class="btn btn-success">{% trans "Send" %}</button>
+            <a href="{% url 'video' slug=video.slug %}" title="{{video.title}}" class="btn btn-info">{% trans "Back to the video"%}</a>
+        </div>
+    </fieldset>
+    </div>
+</form>
+
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+{% block more_script %}
+<script>
+var showalert = function(message,alerttype) {
+    $('body').append('<div id="formalertdiv" class="alert ' +  alerttype + ' alert-dismissible fade show"  role="alert">'+message+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+    setTimeout(function() { $("#formalertdiv").remove(); }, 5000);
+};
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          window.scrollTo($("#video_delete_form").scrollTop(), 0); 
+          showalert("{% trans "Errors appear in the form, please correct it"%}","alert-danger");
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+</script>
+<script>
+  $(document).ready(function () {
+    $("#collapseAside").collapse('hide');
+  });
+</script>
+{% endblock more_script %}

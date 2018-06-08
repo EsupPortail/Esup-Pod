@@ -17,6 +17,8 @@ from pod.video.models import Video
 from pod.video.models import VideoImageModel
 from pod.video.models import EncodingStep
 
+from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
+
 # from fractions import Fraction # use for keyframe
 from webvtt import WebVTT, Caption
 import logging
@@ -26,6 +28,7 @@ import subprocess
 import json
 import re
 import tempfile
+import threading
 
 if apps.is_installed('pod.filepicker'):
     try:
@@ -95,6 +98,23 @@ EMAIL_ON_ENCODING_COMPLETION = getattr(
 
 FILE_UPLOAD_TEMP_DIR = getattr(
     settings, 'FILE_UPLOAD_TEMP_DIR', '/tmp')
+
+TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
+CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [
+                           mail for name, mail in getattr(settings, 'ADMINS')])
+HELP_MAIL = getattr(settings, 'HELP_MAIL', 'noreply@univ.fr')
+
+# ##########################################################################
+# ENCODE VIDEO : THREAD TO LAUNCH ENCODE
+# ##########################################################################
+
+
+def start_encode(video_id):
+    log.info("START ENCODE VIDEO ID %s" % video_id)
+    t = threading.Thread(target=encode_video,
+                         args=[video_id])
+    t.setDaemon(True)
+    t.start()
 
 
 # ##########################################################################
@@ -252,6 +272,12 @@ def encode_video(video_id):
             # get the lower size of encoding mp4
             ev = EncodingVideo.objects.filter(
                 video=video_to_encode, encoding_format="video/mp4")
+            if ev.count() == 0:
+                msg = "NO MP4 FILES FOUND !"
+                add_encoding_log(video_id, msg)
+                change_encoding_step(video_id, -1, msg)
+                send_email(msg, video_id)
+                return
             video_mp4 = sorted(ev, key=lambda m: m.height)[0]
 
             # create overview
@@ -265,10 +291,8 @@ def encode_video(video_id):
                 video_id, 4,
                 "encoding video file : 7/11 remove_previous_overview")
             remove_previous_overview(overviewfilename, overviewimagefilename)
-            if video_data["duration"] > 99:
-                nb_img = 99
-            else:
-                nb_img = video_data["duration"]
+            nb_img = 99 if (
+                video_data["duration"] > 99) else video_data["duration"]
             change_encoding_step(
                 video_id, 4,
                 "encoding video file : 8/11 create_overview_image")
@@ -442,7 +466,6 @@ def get_video_command_mp4(video_id, video_data, output_dir):
     for rendition in renditions:
         bitrate = rendition.video_bitrate
         audiorate = rendition.audio_bitrate
-        width = rendition.width
         height = rendition.height
         if in_height >= int(height) or rendition == renditions[0]:
             int_bitrate = int(
@@ -453,9 +476,8 @@ def get_video_command_mp4(video_id, video_data, output_dir):
             name = "%sp" % height
 
             cmd += " %s -vf " % (static_params,)
-            cmd += "scale=w=%s:h=%s:" % (
-                width, height)
-            cmd += "force_original_aspect_ratio=decrease"
+            cmd += "\"scale=-2:%s\"" % (height)
+            # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -b:v %s -maxrate %sk -bufsize %sk -b:a %s" % (
                 bitrate, int(maxrate), int(bufsize), audiorate)
 
@@ -653,7 +675,6 @@ def get_video_command_playlist(video_id, video_data, output_dir):
         resolution = rendition.resolution
         bitrate = rendition.video_bitrate
         audiorate = rendition.audio_bitrate
-        width = rendition.width
         height = rendition.height
         if in_height >= int(height) or rendition == renditions[0]:
             int_bitrate = int(
@@ -665,9 +686,9 @@ def get_video_command_playlist(video_id, video_data, output_dir):
             name = "%sp" % height
 
             cmd += " %s -vf " % (static_params,)
-            cmd += "scale=w=%s:h=%s:" % (
-                width, height)
-            cmd += "force_original_aspect_ratio=decrease"
+            cmd += "\"scale=-2:%s\"" % (height)
+            # cmd += "scale=w=%s:h=%s:" % (width, height)
+            # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -b:v %s -maxrate %sk -bufsize %sk -b:a %s" % (
                 bitrate, int(maxrate), int(bufsize), audiorate)
             cmd += " -hls_playlist_type vod -hls_time %s \
@@ -1034,7 +1055,7 @@ def remove_previous_encoding_playlist(video_to_encode):
 
 
 def send_email(msg, video_id):
-    subject = "[" + settings.TITLE_SITE + \
+    subject = "[" + TITLE_SITE + \
         "] Error Encoding Video id:%s" % video_id
     message = "Error Encoding  video id : %s\n%s" % (
         video_id, msg)
@@ -1051,9 +1072,9 @@ def send_email(msg, video_id):
 def send_email_encoding(video_to_encode):
     if DEBUG:
         print("SEND EMAIL ON ENCODING COMPLETION")
-    content_url = video_to_encode.get_absolute_url()
+    content_url = "http:%s" % video_to_encode.get_full_url()
     subject = "[%s] %s" % (
-        settings.TITLE_SITE,
+        TITLE_SITE,
         _(u"Encoding #%(content_id)s completed") % {
             'content_id': video_to_encode.id
         }
@@ -1062,12 +1083,12 @@ def send_email_encoding(video_to_encode):
         _(u"The content “%(content_title)s” has been encoded to Web "
             + "formats, and is now available on %(site_title)s.") % {
             'content_title': video_to_encode.title,
-            'site_title': settings.TITLE_SITE
+            'site_title': TITLE_SITE
         },
         _(u"You will find it here:"),
         content_url
     )
-    from_email = settings.DEFAULT_FROM_EMAIL
+    from_email = HELP_MAIL
     to_email = []
     to_email.append(video_to_encode.owner.email)
     html_message = ""
@@ -1077,7 +1098,7 @@ def send_email_encoding(video_to_encode):
         _(u"The content “%(content_title)s” has been encoded to Web "
             + "formats, and is now available on %(site_title)s.") % {
             'content_title': '<b>%s</b>' % video_to_encode.title,
-            'site_title': settings.TITLE_SITE
+            'site_title': TITLE_SITE
         },
         _(u"You will find it here:"),
         content_url,

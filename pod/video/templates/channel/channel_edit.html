@@ -22,7 +22,10 @@ body {
 </style>
 {% endblock page_extra_head %}
 
-{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item"><a href="{% url 'my_channels' %}" title="{% trans 'My channels' %}">{% trans 'My channels' %}</a><li class="breadcrumb-item active" aria-current="page">{% if form.instance.title %}{{form.instance.title}}{%endif%}</li>{% endblock %}
+{% block breadcrumbs %}{{ block.super }} 
+<li class="breadcrumb-item"><a href="{% url 'my_channels' %}" title="{% trans 'My channels' %}">{% trans 'My channels' %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{% if form.instance.title %}{{form.instance.title}}{%endif%}</li>
+{% endblock %}
 
 {% block page_title %}
 {% if form.instance.title %}{% trans "Editing the channel" %} "{{form.instance.title}}"{%endif%}
@@ -136,8 +139,6 @@ body {
     text-align: left;
 }
 </style>
-
-<script type="text/javascript" src="{% static 'js/jquery.tools.min.js' %}"></script>
 {{form.media}}
 <script>
 /** formulaire **/

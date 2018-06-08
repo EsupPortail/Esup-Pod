@@ -10,14 +10,18 @@
 	    <meta name="description" content="">
 	    <meta name="author" content="">
 
-	    <link rel="icon" href="{% static 'images/favicon.png' %}">
-
+        {% if FAVICON %}
+	    <link rel="icon" href="{% static FAVICON %}">
+        {% endif %}
 	    <!-- Bootstrap CSS -->
 	    <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap.min.css' %}" crossorigin="anonymous">
 
 	    <!-- octicons -->
 	    <link rel="stylesheet" href="{% static 'css/octicons.css' %}" media="screen" title="no title">
 	    <link rel="stylesheet" href="{% static 'css/lillePod.css' %}" media="screen" title="no title">
+        {% if CSS_OVERRIDE %}
+        <link rel="stylesheet" href="{% static CSS_OVERRIDE %}" media="screen" title="no title">
+        {% endif %}
         <style>
             .jumbotron {
                 padding: 1rem 2rem;
@@ -124,11 +128,6 @@
 		          	{% block breadcrumbs %}
 		                <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
 					{% endblock breadcrumbs %}
-					<!--
-		            <li class="breadcrumb-item"><a href="#">Accueil</a></li>
-		            <li class="breadcrumb-item"><a href="#">Vidéos</a></li>
-		            <li class="breadcrumb-item active" aria-current="page">Visionner une vidéo</li>
-		        	-->
 		          </ol>
 		          <div class="p-0">
                     {% block collapse_page_aside %}
@@ -175,6 +174,12 @@
         </div>
         {% endif %}
         <!-- JS -->
+        <script>
+        var showalert = function(message,alerttype) {
+            $('body').append('<div id="formalertdiv" class="alert ' +  alerttype + ' alert-dismissible fade show"  role="alert">'+message+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+            setTimeout(function() { $("#formalertdiv").remove(); }, 5000);
+        };
+        </script>
 		<script>
 		var listUser = {{LISTOWNER|safe}};
 
@@ -217,6 +222,52 @@
             } /*else {
                 $("#collapseAside").removeClass("show");
             }*/
+            TriggerAlertClose();
+        });
+
+        function TriggerAlertClose() {
+            window.setTimeout(function () {
+                $(".alert").fadeTo(1000, 0).slideUp(1000, function () {
+                    $(this).remove();
+                });
+            }, 5000);
+        }
+        /*** USER PICTURE ***/
+
+        $(document).on("click", ".get_form_userpicture",function() {
+            jqxhr = $.get(
+                "{% url "userpicture" %}"
+            );
+            jqxhr.done(function(data){
+                $('body').append(data);
+                $('#userpictureModal').modal('show');
+            });
+            jqxhr.fail(function($xhr) {
+                var data = $xhr.status+ " : " +$xhr.statusText;
+                showalert("{% trans 'Error during recording.' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}", "alert-danger");
+            });
+        });
+        $(document).on('hidden.bs.modal', '#userpictureModal', function (e) {
+          $('#userpictureModal').remove();
+        });
+        $(document).on("submit", "#userpicture_form", function (e) {
+            e.preventDefault();
+            var jqxhr= '';
+            var data_form = $( "#userpicture_form" ).serializeArray();
+            jqxhr = $.post(
+                $( "#userpicture_form" ).attr("action"),
+                data_form
+            );
+            jqxhr.done(function(data){
+                $( "#userpicture_form" ).html($(data).find("#userpicture_form").html());
+                if($(data).find("#userpictureurl").val()) {
+                    $(".get_form_userpicture").html('<img src="'+$(data).find("#userpictureurl").val()+'" height="34" class="rounded" alt="">{% trans 'Change your picture' %}');
+                }
+            });
+            jqxhr.fail(function($xhr) {
+                var data = $xhr.status+ " : " +$xhr.statusText;
+                showalert("{% trans 'Error during recording.' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}", "alert-danger");
+            });
         });
 
 		</script>

@@ -1,24 +1,40 @@
 from django import forms
 from django.contrib.admin import widgets
 from django.conf import settings
-from django.utils.safestring import mark_safe
 from django.core.validators import FileExtensionValidator
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 from django.core.exceptions import ValidationError
-
+from django.apps import apps
 from django.contrib.auth.models import User
 
-from pod.filepicker.widgets import CustomFilePickerWidget
 from pod.video.models import Video
 from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
+from pod.video.models import Notes
+from pod.video.encode import start_encode
+
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+
+from pod.main.forms import add_placeholder_and_asterisk
 
 from ckeditor.widgets import CKEditorWidget
 from collections import OrderedDict
+
+import datetime
+
+if apps.is_installed('pod.filepicker'):
+    from pod.filepicker.widgets import CustomFilePickerWidget
+
+FILEPICKER = True if apps.is_installed('pod.filepicker') else False
+
+ENCODE_VIDEO = getattr(settings,
+                       'ENCODE_VIDEO',
+                       start_encode)
 
 VIDEO_ALLOWED_EXTENSIONS = getattr(
     settings, 'VIDEO_ALLOWED_EXTENSIONS', (
@@ -192,6 +208,13 @@ class FileSizeValidator(object):
                 })
 
 
+@receiver(post_save, sender=Video)
+def launch_encode(sender, instance, created, **kwargs):
+    if hasattr(instance, 'launch_encode') and instance.launch_encode is True:
+        instance.launch_encode = False
+        ENCODE_VIDEO(instance.id)
+
+
 class VideoForm(forms.ModelForm):
     required_css_class = 'required'
     videoattrs = {
@@ -201,8 +224,19 @@ class VideoForm(forms.ModelForm):
     }
     video = forms.FileField(label=_(u'File'))
 
+    def save(self, commit=True, *args, **kwargs):
+        video = super(VideoForm, self).save(commit, *args, **kwargs)
+        if hasattr(self, 'launch_encode'):
+            video.launch_encode = self.launch_encode
+        return video
+
     def clean(self):
         cleaned_data = super(VideoForm, self).clean()
+        self.launch_encode = (
+            'video' in cleaned_data.keys()
+            and hasattr(self.instance, 'video')
+            and cleaned_data['video'] != self.instance.video)
+
         if 'description' in cleaned_data.keys():
             cleaned_data['description_%s' %
                          settings.LANGUAGE_CODE
@@ -230,10 +264,10 @@ class VideoForm(forms.ModelForm):
         self.VIDEO_FORM_FIELDS_HELP_TEXT = VIDEO_FORM_FIELDS_HELP_TEXT
 
         super(VideoForm, self).__init__(*args, **kwargs)
-
-        pickers = {'image': "img"}
-        self.fields['thumbnail'].widget = CustomFilePickerWidget(
-            pickers=pickers)
+        if FILEPICKER:
+            pickers = {'image': "img"}
+            self.fields['thumbnail'].widget = CustomFilePickerWidget(
+                pickers=pickers)
 
         # fields['video'].widget = widgets.AdminFileWidget(attrs=videoattrs)
         valid_ext = FileExtensionValidator(VIDEO_ALLOWED_EXTENSIONS)
@@ -242,7 +276,7 @@ class VideoForm(forms.ModelForm):
         self.fields['video'].widget.attrs['accept'] = self.videoattrs["accept"]
 
         if self.instance.encoding_in_progress:
-            del self.fields['video']
+            self.remove_field('video')  # .widget = forms.HiddenInput()
 
         # change ckeditor config for no staff user
         if self.is_staff is False:
@@ -263,13 +297,17 @@ class VideoForm(forms.ModelForm):
         self.set_queryset()
 
         if not self.is_superuser:
-            del self.fields['date_added']
-            del self.fields['owner']
+            self.remove_field('date_added')
+            self.remove_field('owner')
 
         self.fields = add_placeholder_and_asterisk(self.fields)
         # remove required=True for videofield if instance
         if self.fields.get('video') and self.instance and self.instance.video:
             del self.fields["video"].widget.attrs["required"]
+
+    def remove_field(self, field):
+        if self.fields.get(field):
+            del self.fields[field]
 
     def set_queryset(self):
         if self.current_user is not None:
@@ -283,43 +321,20 @@ class VideoForm(forms.ModelForm):
                     channel__in=user_channels).order_by('channel', 'title')
                 self.fields["theme"].queryset = list_theme
             else:
-                del self.fields['channel']
-                del self.fields['theme']
+                self.fields['channel'].widgets = forms.HiddenInput()
+                self.fields['theme'].widgets = forms.HiddenInput()
 
     class Meta(object):
         model = Video
         fields = '__all__'
-        widgets = {'date_added': widgets.AdminDateWidget,
-                   'date_evt': widgets.AdminDateWidget,
-                   }
-
-
-def add_placeholder_and_asterisk(fields):
-    for myField in fields:
-        classname = fields[myField].widget.__class__.__name__
-        if classname == 'CheckboxInput':
-            if fields[myField].widget.attrs.get('class'):
-                fields[myField].widget.attrs[
-                    'class'] += ' form-check-input'
-            else:
-                fields[myField].widget.attrs[
-                    'class'] = 'form-check-input '
-        else:
-            fields[myField].widget.attrs[
-                'placeholder'] = fields[myField].label
-            if fields[myField].required:
-                fields[myField].label = mark_safe(
-                    "%s <span class=\"required\">*</span>" %
-                    fields[myField].label
-                )
-                fields[myField].widget.attrs["required"] = "true"
-            if fields[myField].widget.attrs.get('class'):
-                fields[myField].widget.attrs[
-                    'class'] += ' form-control'
-            else:
-                fields[myField].widget.attrs[
-                    'class'] = 'form-control '
-    return fields
+        widgets = {
+            # 'date_added': widgets.AdminSplitDateTime,
+            'date_evt': widgets.AdminDateWidget,
+        }
+        initial = {
+            'date_added': datetime.date.today,
+            'date_evt': datetime.date.today,
+        }
 
 
 class ChannelForm(forms.ModelForm):
@@ -360,9 +375,10 @@ class ChannelForm(forms.ModelForm):
         self.CHANNEL_FORM_FIELDS_HELP_TEXT = CHANNEL_FORM_FIELDS_HELP_TEXT
 
         super(ChannelForm, self).__init__(*args, **kwargs)
-        pickers = {'image': "img"}
-        self.fields['headband'].widget = CustomFilePickerWidget(
-            pickers=pickers)
+        if FILEPICKER:
+            pickers = {'image': "img"}
+            self.fields['headband'].widget = CustomFilePickerWidget(
+                pickers=pickers)
 
         if not hasattr(self, 'admin_form'):
             del self.fields['visible']
@@ -392,9 +408,10 @@ class ThemeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ThemeForm, self).__init__(*args, **kwargs)
-        pickers = {'image': "img"}
-        self.fields['headband'].widget = CustomFilePickerWidget(
-            pickers=pickers)
+        if FILEPICKER:
+            pickers = {'image': "img"}
+            self.fields['headband'].widget = CustomFilePickerWidget(
+                pickers=pickers)
 
         # hide default langage
         self.fields['description_%s' %
@@ -428,9 +445,6 @@ class FrontThemeForm(ThemeForm):
         self.THEME_FORM_FIELDS_HELP_TEXT = THEME_FORM_FIELDS_HELP_TEXT
 
         super(FrontThemeForm, self).__init__(*args, **kwargs)
-        pickers = {'image': "img"}
-        self.fields['headband'].widget = CustomFilePickerWidget(
-            pickers=pickers)
 
         self.fields['channel'].widget = forms.HiddenInput()
         # self.fields["parentId"].label = _('Theme parent')
@@ -444,13 +458,35 @@ class FrontThemeForm(ThemeForm):
         fields = '__all__'
 
 
+class VideoPasswordForm(forms.Form):
+    password = forms.CharField(
+        label=_('Password'),
+        widget=forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        super(VideoPasswordForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)
+
+
+class VideoDeleteForm(forms.Form):
+    agree = forms.BooleanField(
+        label=_('I agree'),
+        help_text=_('Delete video cannot be undo'),
+        widget=forms.CheckboxInput())
+
+    def __init__(self, *args, **kwargs):
+        super(VideoDeleteForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)
+
+
 class TypeForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(TypeForm, self).__init__(*args, **kwargs)
-        pickers = {'image': "img"}
-        self.fields['icon'].widget = CustomFilePickerWidget(
-            pickers=pickers)
+        if FILEPICKER:
+            pickers = {'image': "img"}
+            self.fields['icon'].widget = CustomFilePickerWidget(
+                pickers=pickers)
 
     class Meta(object):
         model = Type
@@ -461,10 +497,25 @@ class DisciplineForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(DisciplineForm, self).__init__(*args, **kwargs)
-        pickers = {'image': "img"}
-        self.fields['icon'].widget = CustomFilePickerWidget(
-            pickers=pickers)
+        if FILEPICKER:
+            pickers = {'image': "img"}
+            self.fields['icon'].widget = CustomFilePickerWidget(
+                pickers=pickers)
 
     class Meta(object):
         model = Discipline
+        fields = '__all__'
+
+
+class NotesForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(NotesForm, self).__init__(*args, **kwargs)
+        self.fields["user"].widget = forms.HiddenInput()
+        self.fields["video"].widget = forms.HiddenInput()
+        self.fields["note"].widget.attrs["cols"] = 20
+        self.fields["note"].widget.attrs["rows"] = 5
+
+    class Meta(object):
+        model = Notes
         fields = '__all__'
