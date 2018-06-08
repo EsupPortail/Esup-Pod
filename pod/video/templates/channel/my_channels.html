@@ -17,7 +17,7 @@
 {% for channel in channels %}
 <li class="list-group-item d-flex justify-content-between align-items-center">
 <span>
-  <a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the channel"%}" class="btn btn-light btn-sm"><svg height="8" class="octicon octicon-pencil" viewBox="0 0 14 16" version="1.1" width="7" aria-hidden="true"><path fill-rule="evenodd" d="M0 12v3h3l8-8-3-3-8 8zm3 2H1v-2h1v1h1v1zm10.3-9.3L12 6 9 3l1.3-1.3a.996.996 0 0 1 1.41 0l1.59 1.59c.39.39.39 1.02 0 1.41z"></path></svg></a>
+  <a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the channel"%}" class="btn btn-light btn-sm"><i data-feather="edit"></i>&nbsp;</a>
 <a href="{% url 'channel' slug_c=channel.slug %}" title="{{channel.title}}">
 {% if channel.headband %}<!-- <img src="{{channel.headband.file.url}}" class="rounded img-thumbnail" alt="{{channel.title}}"> -->
 {% thumbnail channel.headband.file "x34" as im %}

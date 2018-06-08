@@ -691,6 +691,12 @@ class Video(models.Model):
                          " for video %s: %s" % (self.id, e))
             return json.dumps({})
 
+    def get_main_lang(self):
+        return "%s" % MAIN_LANG_CHOICES_DICT[self.main_lang]
+
+    def get_cursus(self):
+        return "%s" % CURSUS_CODES_DICT[self.cursus]
+
     def get_dublin_core(self):
         contributors = []
         for contrib in self.contributor_set.values_list('name', 'role'):

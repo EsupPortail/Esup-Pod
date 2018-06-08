@@ -3,11 +3,11 @@
 {% spaceless %}
 <div class="card card-body">
 <h4 class="card-title">
-<svg height="32" class="octicon octicon-settings" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 7H3V2h1v5zm-1 7h1v-3H3v3zm5 0h1V8H8v6zm5 0h1v-2h-1v2zm1-12h-1v6h1V2zM9 2H8v2h1V2zM5 8H2c-.55 0-1 .45-1 1s.45 1 1 1h3c.55 0 1-.45 1-1s-.45-1-1-1zm5-3H7c-.55 0-1 .45-1 1s.45 1 1 1h3c.55 0 1-.45 1-1s-.45-1-1-1zm5 4h-3c-.55 0-1 .45-1 1s.45 1 1 1h3c.55 0 1-.45 1-1s-.45-1-1-1z"></path></svg>{% trans "Filters"%}</h4>
+<i data-feather="sliders"></i>&nbsp;{% trans "Filters"%}</h4>
 <p class="card-text">
     <form action="{% url 'videos' %}" method="get" id="filters">
     <fieldset>
-    <legend  class="h5"> {% trans "Users" %}</legend>
+    <legend  class="h5"><i data-feather="users"></i> {% trans "Users" %} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
     <div class="form-group">
         <input placeholder="{% trans "Search" %}" id="ownerbox" type="text" class="form-control">
     </div>
@@ -25,10 +25,10 @@
     </div>
     </fieldset>
     
-    <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button>
+    
 
-    <fieldset class="border-right border-bottom">
-    <legend class="h5"> {% trans "Types"%}</legend>
+    <fieldset class="border-right border-bottom mt-2">
+    <legend class="h5"><i data-feather="tv"></i> {% trans "Types"%} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
     <div id="filterType">
     <div class="form-group collapse" id="collapseFilterType">
     {% for type in TYPES %}
@@ -47,10 +47,10 @@
     </div><!-- type -->
     </fieldset>
     
-    <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button>
+    <!-- <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button> -->
     
-    <fieldset class="border-right border-bottom">
-    <legend class="h5">{% trans "Disciplines"%}</legend>
+    <fieldset class="border-right border-bottom mt-2">
+    <legend class="h5"><i data-feather="book"></i> {% trans "Disciplines"%} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
     <div id="filterDiscipline">
     <div class="form-group collapse" id="collapseFilterDiscipline">
     {% for discipline in DISCIPLINES %}
@@ -69,10 +69,10 @@
     </div><!-- filterdiscipline -->
     </fieldset>
 
-    <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button>
+    <!-- <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button> -->
 
-    <fieldset class="border-right border-bottom">
-    <legend class="h5">{% trans "Tags"%}</legend>
+    <fieldset class="border-right border-bottom mt-2">
+    <legend class="h5"><i data-feather="tag"></i> {% trans "Tags"%}<button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
     <div id="filterTag">
     <div class="form-group collapse" id="collapseFilterTag">
     {% tags_for_model video.Video as tagscloud with counts %}
@@ -93,7 +93,7 @@
     {% endwith %}
     </div>
     </fieldset>
-    <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button>
+    <!-- <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button> -->
     </form>
 </p>
 </div>

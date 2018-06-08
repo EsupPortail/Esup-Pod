@@ -13,15 +13,15 @@
   <ul class="nav">
     <li class="nav-item">
         <a class="btn btn-light btn-sm my-2 mr-sm-2" data-toggle="collapse" href="#listeChaines" role="button" aria-expanded="false" aria-controls="listeChaines">
-        <svg height="32" class="octicon octicon-mortar-board" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M7.83 9.19L4 8c-4-8 0 1.5 0 2.5S5.8 12 8 12s4-.5 4-1.5V8L8.17 9.19a.73.73 0 0 1-.36 0h.02zm.28-6.39a.34.34 0 0 0-.2 0L.27 5.18a.35.35 0 0 0 0 .67L2 6.4v1.77c-.3.17-.5.5-.5.86 0 .19.05.36.14.5-.08.14-.14.31-.14.5v2.58c0 .55 2 .55 2 0v-2.58c0-.19-.05-.36-.14-.5.08-.14.14-.31.14-.5 0-.38-.2-.69-.5-.86V6.72l4.89 1.53c.06.02.14.02.2 0l7.64-2.38a.35.35 0 0 0 0-.67L8.1 2.81l.01-.01zM8.02 6c-.55 0-1-.22-1-.5s.45-.5 1-.5 1 .22 1 .5-.45.5-1 .5z"></path></svg>    
-        <span>{% trans "Channels" %}</span> </a>
+        <i data-feather="youtube"></i>&nbsp;<span>{% trans "Channels" %}</span> </a>
     </li>
     <li class="nav-item">
           <button type="button" class="btn btn-light btn-sm my-2 mr-sm-2" data-toggle="modal" data-target=".bd-example-modal-lg">
-          <svg height="32" class="octicon octicon-organization" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M16 12.999c0 .439-.45 1-1 1H7.995c-.539 0-.994-.447-.995-.999H1c-.54 0-1-.561-1-1 0-2.634 3-4 3-4s.229-.409 0-1c-.841-.621-1.058-.59-1-3 .058-2.419 1.367-3 2.5-3s2.442.58 2.5 3c.058 2.41-.159 2.379-1 3-.229.59 0 1 0 1s1.549.711 2.42 2.088C9.196 9.369 10 8.999 10 8.999s.229-.409 0-1c-.841-.62-1.058-.59-1-3 .058-2.419 1.367-3 2.5-3s2.437.581 2.495 3c.059 2.41-.158 2.38-1 3-.229.59 0 1 0 1s3.005 1.366 3.005 4"></path></svg><span>{% trans "Users"%}</span></button>
+          <i data-feather="users"></i>&nbsp;<span>{% trans "Users"%}</span></button>
         </li>
         <li class="nav-item">
-        <a class=" btn btn-light btn-sm my-2 mr-sm-2" data-toggle="collapse" href="#listeTypes" role="button" aria-expanded="false" aria-controls="listeTypes"><svg height="32" class="octicon octicon-versions" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M13 3H7c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zm-1 8H8V5h4v6zM4 4h1v1H4v6h1v1H4c-.55 0-1-.45-1-1V5c0-.55.45-1 1-1zM1 5h1v1H1v4h1v1H1c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1z"></path></svg><span>{% trans "Types"%}</span></a>
+        <a class=" btn btn-light btn-sm my-2 mr-sm-2" data-toggle="collapse" href="#listeTypes" role="button" aria-expanded="false" aria-controls="listeTypes">
+          <i data-feather="tv"></i>&nbsp;<span>{% trans "Types"%}</span></a>
     </li>
   </ul>
     
@@ -50,7 +50,7 @@
           <div class="dropdown-menu" aria-labelledby="dropdown-info">
             {% if request.user.is_superuser  %}
               <a class="dropdown-item" href="{% url 'admin:index' %}">
-                <svg height="32" class="octicon octicon-organization" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M16 12.999c0 .439-.45 1-1 1H7.995c-.539 0-.994-.447-.995-.999H1c-.54 0-1-.561-1-1 0-2.634 3-4 3-4s.229-.409 0-1c-.841-.621-1.058-.59-1-3 .058-2.419 1.367-3 2.5-3s2.442.58 2.5 3c.058 2.41-.159 2.379-1 3-.229.59 0 1 0 1s1.549.711 2.42 2.088C9.196 9.369 10 8.999 10 8.999s.229-.409 0-1c-.841-.62-1.058-.59-1-3 .058-2.419 1.367-3 2.5-3s2.437.581 2.495 3c.059 2.41-.158 2.38-1 3-.229.59 0 1 0 1s3.005 1.366 3.005 4"></path></svg>Administration
+                <i data-feather="cpu"></i>&nbsp;Administration
               </a>
             {% endif %}
             {% if request.user.is_staff or request.user.is_superuser %}
@@ -59,22 +59,26 @@
               <img src="{{user.owner.userpicture.file.url}}" height="34" class='rounded' alt="{{user}}">
               {% trans 'Change your picture' %}</button>
             {% else %}
-            <button class="btn btn-link dropdown-item get_form_userpicture"><svg height="32" class="octicon octicon-person" viewBox="0 0 12 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M12 14.002a.998.998 0 0 1-.998.998H1.001A1 1 0 0 1 0 13.999V13c0-2.633 4-4 4-4s.229-.409 0-1c-.841-.62-.944-1.59-1-4 .173-2.413 1.867-3 3-3s2.827.586 3 3c-.056 2.41-.159 3.38-1 4-.229.59 0 1 0 1s4 1.367 4 4v1.002z"></path></svg>{% trans 'Add your picture' %}</button>
+            <button class="btn btn-link dropdown-item get_form_userpicture">
+              <i data-feather="image"></i>&nbsp;{% trans 'Add your picture' %}</button>
             {% endif %}
             {% endif %}
             <hr/>
-            <a class="dropdown-item" href="{% url 'my_videos' %}" title="{% trans 'My videos' %}"><svg height="32" class="octicon octicon-device-camera-video" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M15.2 2.09L10 5.72V3c0-.55-.45-1-1-1H1c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V9.28l5.2 3.63c.33.23.8 0 .8-.41v-10c0-.41-.47-.64-.8-.41z"></path></svg>{% trans 'My videos' %}</a>
+            <a class="dropdown-item" href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">
+              <i data-feather="film"></i>&nbsp;{% trans 'My videos' %}</a>
             {% if request.user.owners_channels.all %}
-            <a class="dropdown-item" href="{% url 'my_channels' %}" title="{% trans 'My channels' %}"><svg height="32" class="octicon octicon-radio-tower" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4.79 6.11c.25-.25.25-.67 0-.92-.32-.33-.48-.76-.48-1.19 0-.43.16-.86.48-1.19.25-.26.25-.67 0-.92a.613.613 0 0 0-.45-.19c-.16 0-.33.06-.45.19-.57.58-.85 1.35-.85 2.11 0 .76.29 1.53.85 2.11.25.25.66.25.9 0zM2.33.52a.651.651 0 0 0-.92 0C.48 1.48.01 2.74.01 3.99c0 1.26.47 2.52 1.4 3.48.25.26.66.26.91 0s.25-.68 0-.94c-.68-.7-1.02-1.62-1.02-2.54 0-.92.34-1.84 1.02-2.54a.66.66 0 0 0 .01-.93zm5.69 5.1A1.62 1.62 0 1 0 6.4 4c-.01.89.72 1.62 1.62 1.62zM14.59.53a.628.628 0 0 0-.91 0c-.25.26-.25.68 0 .94.68.7 1.02 1.62 1.02 2.54 0 .92-.34 1.83-1.02 2.54-.25.26-.25.68 0 .94a.651.651 0 0 0 .92 0c.93-.96 1.4-2.22 1.4-3.48A5.048 5.048 0 0 0 14.59.53zM8.02 6.92c-.41 0-.83-.1-1.2-.3l-3.15 8.37h1.49l.86-1h4l.84 1h1.49L9.21 6.62c-.38.2-.78.3-1.19.3zm-.01.48L9.02 11h-2l.99-3.6zm-1.99 5.59l1-1h2l1 1h-4zm5.19-11.1c-.25.25-.25.67 0 .92.32.33.48.76.48 1.19 0 .43-.16.86-.48 1.19-.25.26-.25.67 0 .92a.63.63 0 0 0 .9 0c.57-.58.85-1.35.85-2.11 0-.76-.28-1.53-.85-2.11a.634.634 0 0 0-.9 0z"></path></svg>{% trans 'My channels' %}</a>
+            <a class="dropdown-item" href="{% url 'my_channels' %}" title="{% trans 'My channels' %}">
+              <i data-feather="youtube"></i>&nbsp;{% trans 'My channels' %}</a>
             {% endif %}
 
-            <a class="dropdown-item" href="#"><svg height="32" class="octicon octicon-list-ordered" viewBox="0 0 12 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M12 13c0 .59 0 1-.59 1H4.59C4 14 4 13.59 4 13c0-.59 0-1 .59-1h6.81c.59 0 .59.41.59 1H12zM4.59 4h6.81c.59 0 .59-.41.59-1 0-.59 0-1-.59-1H4.59C4 2 4 2.41 4 3c0 .59 0 1 .59 1zm6.81 3H4.59C4 7 4 7.41 4 8c0 .59 0 1 .59 1h6.81c.59 0 .59-.41.59-1 0-.59 0-1-.59-1zM2 1h-.72c-.3.19-.58.25-1.03.34V2H1v2.14H.16V5H3v-.86H2V1zm.25 8.13c-.17 0-.45.03-.66.06.53-.56 1.14-1.25 1.14-1.89C2.71 6.52 2.17 6 1.37 6c-.59 0-.97.2-1.38.64l.58.58c.19-.19.38-.38.64-.38.28 0 .48.16.48.52 0 .53-.77 1.2-1.7 2.06V10h3l-.09-.88h-.66l.01.01zm-.08 3.78v-.03c.44-.19.64-.47.64-.86 0-.7-.56-1.11-1.44-1.11-.48 0-.89.19-1.28.52l.55.64c.25-.2.44-.31.69-.31.27 0 .42.13.42.36 0 .27-.2.44-.86.44v.75c.83 0 .98.17.98.47 0 .25-.23.38-.58.38-.28 0-.56-.14-.81-.38l-.48.66c.3.36.77.56 1.41.56.83 0 1.53-.41 1.53-1.16 0-.5-.31-.81-.77-.94v.01z"></path></svg>Mes playlists</a>
+            <a class="dropdown-item" href="#"><i data-feather="airplay"></i>&nbsp;Mes playlists</a>
 
             <hr/>
-            <a class="dropdown-item" href="{% url 'authentication_logout' %}" title="{% trans 'Log out' %}"><svg height="32" class="octicon octicon-sign-out" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M12 9V7H8V5h4V3l4 3-4 3zm-2 3H6V3L2 1h8v3h1V1c0-.55-.45-1-1-1H1C.45 0 0 .45 0 1v11.38c0 .39.22.73.55.91L6 16.01V13h4c.55 0 1-.45 1-1V8h-1v4z"></path></svg>{% trans 'Log out' %}</a>
+            <a class="dropdown-item" href="{% url 'authentication_logout' %}" title="{% trans 'Log out' %}">
+              <i data-feather="log-out"></i>&nbsp;{% trans 'Log out' %}</a>
           </div>
             {% else %}
-            <a class="btn btn-success btn-sm my-2 mr-sm-2" href="{% url 'authentication_login' %}?referrer={{request.build_absolute_uri|urlencode}}" id="se-connecter" aria-haspopup="true" aria-expanded="false">{% trans 'Log in' %}</a>
+            <a class="btn btn-success btn-sm my-2 mr-sm-2" href="{% url 'authentication_login' %}?referrer={{request.build_absolute_uri|urlencode}}" id="se-connecter" aria-haspopup="true" aria-expanded="false"><i data-feather="log-in"></i>{% trans 'Log in' %}</a>
             {%endif%}
             <!-- bouton se connecter -->
             <!--
@@ -88,10 +92,10 @@
             <button type="button" class="btn btn-sm btn-sm my-2 mr-sm-2 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {{LANGUAGE_CODE}}
             </button>
-            <div class="dropdown-menu">
+            <div class="dropdown-menu p-0 m-0">
               {% for language in languages %}
               {% if language.code != LANGUAGE_CODE %}
-              <form class="form form-inline dropdown-item" action="{% url 'set_language' %}" method="post">
+              <form class="form form-inline dropdown-item p-0 m-0" action="{% url 'set_language' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="language" value="{{ language.code }}" />
                 <input type="submit" value="{{ language.name_local }} ({{ language.code }})" class="btn btn-sm btn-sm my-2 mr-sm-2" />
