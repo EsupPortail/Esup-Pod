@@ -291,10 +291,8 @@ def encode_video(video_id):
                 video_id, 4,
                 "encoding video file : 7/11 remove_previous_overview")
             remove_previous_overview(overviewfilename, overviewimagefilename)
-            if video_data["duration"] > 99:
-                nb_img = 99
-            else:
-                nb_img = video_data["duration"]
+            nb_img = 99 if (
+                video_data["duration"] > 99) else video_data["duration"]
             change_encoding_step(
                 video_id, 4,
                 "encoding video file : 8/11 create_overview_image")
@@ -468,7 +466,6 @@ def get_video_command_mp4(video_id, video_data, output_dir):
     for rendition in renditions:
         bitrate = rendition.video_bitrate
         audiorate = rendition.audio_bitrate
-        width = rendition.width
         height = rendition.height
         if in_height >= int(height) or rendition == renditions[0]:
             int_bitrate = int(
@@ -678,7 +675,6 @@ def get_video_command_playlist(video_id, video_data, output_dir):
         resolution = rendition.resolution
         bitrate = rendition.video_bitrate
         audiorate = rendition.audio_bitrate
-        width = rendition.width
         height = rendition.height
         if in_height >= int(height) or rendition == renditions[0]:
             int_bitrate = int(
