@@ -27,6 +27,7 @@ from datetime import datetime
 from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
+
 if apps.is_installed('pod.filepicker'):
     from pod.filepicker.models import CustomImageModel
     from pod.filepicker.models import CustomFileModel
@@ -104,6 +105,29 @@ ENCODING_CHOICES = getattr(
 DEFAULT_THUMBNAIL = getattr(
     settings, 'DEFAULT_THUMBNAIL', 'img/default.png')
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
+
+##
+# Settings exposed in templates
+#
+TEMPLATE_VISIBLE_SETTINGS = getattr(
+    settings,
+    'TEMPLATE_VISIBLE_SETTINGS',
+    {
+        'TITLE_SITE': 'Pod',
+        'TITLE_ETB': 'University name',
+        'LOGO_SITE': 'img/logo_compact.png',
+        'LOGO_COMPACT_SITE': 'img/logo_compact_site.png',
+        'LOGO_ETB': 'img/logo_etb.svg',
+        'LOGO_PLAYER': 'img/logo_player.png',
+        'FOOTER_TEXT': ('',),
+        # 'FAVICON': 'img/favicon.png',
+        # 'CSS_OVERRIDE' : 'custom/etab.css'
+    }
+)
+TITLE_ETB = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_ETB', 'University')
+DEFAULT_DC_COVERAGE = getattr(
+    settings, 'DEFAULT_DC_COVERAGE', TITLE_ETB + " - Town - Country")
+DEFAULT_DC_RIGHTS = getattr(settings, 'DEFAULT_DC_RIGHT', "BY-NC-SA")
 
 
 # FUNCTIONS
@@ -388,9 +412,7 @@ class Video(models.Model):
     video = models.FileField(
         _('Video'),  upload_to=get_storage_path_video, max_length=255,
         help_text=_(
-            'You can send an audio or video file.')
-    )
-
+            'You can send an audio or video file.'))
     allow_downloading = models.BooleanField(
         _('allow downloading'), default=False, help_text=_(
             'Check this box if you to allow downloading of the encoded files'))
@@ -401,18 +423,18 @@ class Video(models.Model):
         max_length=250,
         help_text=_("Please choose a title as short and accurate as "
                     "possible, reflecting the main subject / context "
-                    "of the content.(max length : 250 characters)")
-    )
-    slug = models.SlugField(_('Slug'), unique=True, max_length=255,
-                            help_text=_(
-        'Used to access this instance, the "slug" is '
-        'a short label containing only letters, '
-                                'numbers, underscore or dash top.'),
-                            editable=False)
+                    "of the content.(max length : 250 characters)"))
+    slug = models.SlugField(
+        _('Slug'), unique=True, max_length=255,
+        help_text=_(
+            'Used to access this instance, the "slug" is '
+            'a short label containing only letters, '
+            'numbers, underscore or dash top.'),
+        editable=False)
     owner = models.ForeignKey(User, verbose_name=_('Owner'))
     date_added = models.DateTimeField(_('Date added'), default=timezone.now())
     date_evt = models.DateField(
-        _(u'Date of event'), default=timezone.now(), blank=True, null=True)
+        _('Date of event'), default=timezone.now(), blank=True, null=True)
     description = RichTextField(
         _('Description'),
         config_name='complete',
@@ -420,7 +442,6 @@ class Video(models.Model):
         help_text=_("In this field you can describe your content, "
                     "add all needed related information, and "
                     "format the result using the toolbar."))
-
     cursus = models.CharField(
         _('University course'), max_length=1,
         choices=CURSUS_CODES, default="0",
@@ -430,10 +451,8 @@ class Video(models.Model):
         _('Main language'), max_length=2,
         choices=MAIN_LANG_CHOICES, default=get_language(),
         help_text=_("Select the main language used in the content."))
-
     duration = models.IntegerField(
         _('Duration'), default=0, editable=False, blank=True)
-
     is_draft = models.BooleanField(
         verbose_name=_('Draft'),
         help_text=_(
@@ -466,11 +485,9 @@ class Video(models.Model):
         thumbnail = models.ForeignKey(VideoImageModel,
                                       blank=True, null=True,
                                       verbose_name=_('Thumbnails'))
-
     overview = models.ImageField(
         _('Overview'), null=True, upload_to=get_upload_path_files,
         blank=True, max_length=255, editable=False)
-
     type = models.ForeignKey(Type, verbose_name=_('Type'),
                              default=DEFAULT_TYPE_ID)
     discipline = models.ManyToManyField(
@@ -491,14 +508,11 @@ class Video(models.Model):
         blank=True,
         help_text=_('Hold down "Control", or "Command" '
                     'on a Mac, to select more than one.'))
-
     licence = models.CharField(
         _('Licence'), max_length=8,
         choices=LICENCE_CHOICES, blank=True, null=True)
-
     encoding_in_progress = models.BooleanField(
         _('Encoding in progress'), default=False, editable=False)
-
     is_video = models.BooleanField(
         _('Is Video'), default=True, editable=False)
 
@@ -676,6 +690,34 @@ class Video(models.Model):
             logger.error("An error occured during get_json_to_index"
                          " for video %s: %s" % (self.id, e))
             return json.dumps({})
+
+    def get_dublin_core(self):
+        contributors = []
+        for contrib in self.contributor_set.values_list('name', 'role'):
+            contributors.append(" ".join(contrib))
+        try:
+            data_to_dump = {
+                'dc.title': '%s' % self.title,
+                'dc.creator': '%s' % self.owner.get_full_name(),
+                'dc.description': '%s' % self.description,
+                'dc.subject': '%s' % ', '.join(
+                    self.discipline.all().values_list('title', flat=True)),
+                'dc.publisher': TITLE_ETB,
+                'dc.contributor': ", ".join(contributors),
+                "dc.date": '%s' % self.date_added.strftime('%Y/%m/%d'),
+                "dc.type": "video" if self.is_video else "audio",
+                "dc.identifier": self.get_full_url(),
+                "dc.language": '%s' % self.main_lang,
+                'dc.coverage': DEFAULT_DC_COVERAGE,
+                'dc.rights': self.licence if (
+                    self.licence) else DEFAULT_DC_RIGHTS,
+                "dc.format":  "video/mp4" if self.is_video else "audio/mp3"
+            }
+            return data_to_dump
+        except ObjectDoesNotExist as e:
+            logger.error("An error occured during get_json_to_index"
+                         " for video %s: %s" % (self.id, e))
+            return {}
 
     def get_chapters_file(self):
         list_chapter = self.chapter_set.all()
