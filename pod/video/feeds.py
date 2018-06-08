@@ -7,12 +7,30 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 
-from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from pod.video.views import get_videos_list
 
 from pod.video.models import EncodingAudio
 from pod.video.models import Channel
 from pod.video.models import Theme
+
+##
+# Settings exposed in templates
+#
+TEMPLATE_VISIBLE_SETTINGS = getattr(
+    settings,
+    'TEMPLATE_VISIBLE_SETTINGS',
+    {
+        'TITLE_SITE': 'Pod',
+        'TITLE_ETB': 'University name',
+        'LOGO_SITE': 'img/logo_compact.png',
+        'LOGO_COMPACT_SITE': 'img/logo_compact_site.png',
+        'LOGO_ETB': 'img/logo_etb.svg',
+        'LOGO_PLAYER': 'img/logo_player.png',
+        'FOOTER_TEXT': ('',),
+        # 'FAVICON': 'img/favicon.png',
+        # 'CSS_OVERRIDE' : 'custom/etab.css'
+    }
+)
 
 TITLE_ETB = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_ETB', 'University')
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
@@ -21,6 +39,10 @@ CONTACT_US_EMAIL = getattr(
     settings,
     'CONTACT_US_EMAIL',
     [mail for name, mail in getattr(settings, 'ADMINS')])
+
+DEFAULT_DC_COVERAGE = getattr(
+    settings, 'DEFAULT_DC_COVERAGE', TITLE_ETB + " - Town - Country")
+DEFAULT_DC_RIGHTS = getattr(settings, 'DEFAULT_DC_RIGHT', "BY-NC-SA")
 
 
 class RssFeedGenerator(Rss201rev2Feed):
@@ -77,6 +99,7 @@ class RssSiteVideosFeed(Feed):
     categories = ["Education"]
     author_link = ''
     feed_type = RssFeedGenerator
+    feed_copyright = DEFAULT_DC_COVERAGE + " " + DEFAULT_DC_RIGHTS
 
     def feed_extra_kwargs(self, obj):
         return {

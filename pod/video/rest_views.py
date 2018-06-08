@@ -3,6 +3,13 @@ from pod.video.models import VideoImageModel, Type, Discipline, Video
 from pod.video.models import VideoRendition, EncodingVideo, EncodingAudio
 from pod.video.models import PlaylistVideo
 from rest_framework import serializers, viewsets
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import renderers
+from django.template.loader import render_to_string
+
+
+from pod.video.views import VIDEOS
 
 # Serializers define the API representation.
 
@@ -148,3 +155,46 @@ class EncodingAudioViewSet(viewsets.ModelViewSet):
 class PlaylistVideoViewSet(viewsets.ModelViewSet):
     queryset = PlaylistVideo.objects.all()
     serializer_class = PlaylistVideoSerializer
+
+
+class XmlTextRenderer(renderers.BaseRenderer):
+    media_type = 'text/xml'
+    format = 'xml'
+    charset = 'utf-8'
+
+    def render(self, data, media_type=None, renderer_context=None):
+        if type(data) is dict:
+            data_str = ""
+            for k, v in data.iteritems():
+                data_str += str(k + ': ' + v).encode(self.charset)
+            return data_str
+        else:
+            return data.encode(self.charset)
+
+
+class DublinCoreView(APIView):
+
+    renderer_classes = (XmlTextRenderer, )
+    pagination_class = 'rest_framework.pagination.PageNumberPagination'
+    page_size = 12
+
+    def get(self, request, format=None):
+        list_videos = VIDEOS
+        if request.GET:
+            list_videos = VIDEOS.filter(**request.GET.dict())
+        xmlcontent = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+        xmlcontent += ("<!DOCTYPE rdf:RDF PUBLIC "
+                       "\"-//DUBLIN CORE//DCMES DTD 2002/07/31//EN\" \n")
+        xmlcontent += ("\"http://dublincore.org/documents/2002/07"
+                       "/31/dcmes-xml/dcmes-xml-dtd.dtd\">\n")
+        xmlcontent += ("<rdf:RDF xmlns:rdf="
+                       "\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\""
+                       " xmlns:dc =\"http://purl.org/dc/elements/1.1/\">\n")
+        for video in list_videos:
+            rendered = render_to_string(
+                'videos/dublincore.html',
+                {'video': video, "xml": True},
+                request)
+            xmlcontent += rendered
+        xmlcontent += "</rdf:RDF>"
+        return Response(xmlcontent)
