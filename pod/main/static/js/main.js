@@ -1,6 +1,6 @@
 
 /*** USE TO SHOW THEME FROM CHANNELS ***/
-var get_list = function(tab, level=0, tab_selected=[], tag_type="option", attrs='', add_link=false) {
+var get_list = function(tab, level=0, tab_selected=[], tag_type="option", li_class='', attrs='', add_link=false, current="") {
     var list = ""
     var prefix = ""
     for(i=0;i<level;i++) prefix+="&nbsp;&nbsp;";
@@ -8,11 +8,14 @@ var get_list = function(tab, level=0, tab_selected=[], tag_type="option", attrs=
     $.each(tab, function(i, val) {
         var title = add_link ? '<a href="'+val.url+'">'+val.title+'</a>' : val.title;
         var selected = $.inArray(i, tab_selected) > -1 ? "selected" : "";
-        list += '<'+tag_type+' '+selected+' '+attrs+' value="'+i+'">'+prefix+" "+title+'</'+tag_type+'>';
+        var list_class = 'class="'+li_class;
+        if(val.slug==current) list_class+=' list-group-item-info"';
+        else list_class+='"';
+        list += '<'+tag_type+' '+selected+' '+list_class+' '+attrs+' value="'+i+'" id="theme_'+i+'">'+prefix+" "+title+'</'+tag_type+'>';
         var child = val.child;
         var count = Object.keys(child).length;
         if(count>0) {
-            list += get_list(val.child, level+=1, tab_selected, tag_type, attrs, add_link);
+            list += get_list(val.child, level+=1, tab_selected, tag_type, li_class, attrs, add_link, current);
         }
     });
     return list;
@@ -20,10 +23,11 @@ var get_list = function(tab, level=0, tab_selected=[], tag_type="option", attrs=
 
 /*** CHANNELS IN NAVBAR ***/
 $("#list-channels .show-themes").mouseenter(function() {
-    var str = get_list(listTheme["channel_"+$(this).data('id')], 0, [], "li", 'class="list-group-item"',true);
+    var str = get_list(listTheme["channel_"+$(this).data('id')], 0, [], tag_type="li", li_class="list-group-item", attrs='', add_link=true, current="");
     $(this).children('.list-group').html(str).show();
     $(this).addClass('list-group-item-info');
 });
+
 $("#list-channels .show-themes").mouseleave(function() {
     $(this).children('.list-group').html("").hide();
     $(this).removeClass('list-group-item-info');

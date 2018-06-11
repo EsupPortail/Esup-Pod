@@ -88,16 +88,11 @@ body {
 {% block page_aside %}
     <div class="card card-body p-2 mt-1">
     <h5 class="card-title pl-2">
-    <svg height="32" class="octicon octicon-versions" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M13 3H7c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zm-1 8H8V5h4v6zM4 4h1v1H4v6h1v1H4c-.55 0-1-.45-1-1V5c0-.55.45-1 1-1zM1 5h1v1H1v4h1v1H1c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1z"></path></svg>
-    {% if theme %}
-    {% trans 'Sub Themes of ' %}{{ theme.title }}
-    {% else %}
-    {% trans 'Themes of ' %}{{ channel.title }}
-    {% endif %}
+      <i data-feather="list"></i>&nbsp;
+      {% trans 'Themes of ' %}{{ channel.title }}
     </h5>
     <div class="card-text" id="treeview">
-      <ul class="list-group list-group-flush small">
-
+      <ul class="list-group list-group-flush {% if channel.themes.count > 5 %}small{%endif%}" id="ultreeview" style="max-height:300px; overflow:auto;">
       </ul>
     </div>
     </div>
@@ -120,68 +115,12 @@ body {
   });
 </script>
 <script type="text/javascript">
-{% comment %} Put always channel theme with active link ??? {% endcomment %}
-  {% if theme %}
-  var listTheme = {{theme.get_all_children_tree_json|safe}};
-  {% else %}
-  var listTheme = {{channel.get_all_theme_json|safe}};
-  {% endif %}
-  $.each(listTheme, function(i, val) {
-    var link = '<a href="{% url 'channel' slug_c=channel.slug %}'+val.slug+'" title="'+val.title+'">'+val.title+'</a>';
-    var child = val.child;
-    var count = Object.keys(child).length;
-    var showmore = '<span class="badge badge-light">-</span>';
-    if(count>0) {
-      showmore = '<a href="#" data-id="'+i+'" class="showmore badge badge-light">+</a>';
-    }
-    $("#treeview .list-group").append("<li class=\"list-group-item\">"+showmore+" "+link+"</li>");
-  });
-  if(Object.keys(listTheme).length==0) {
-    $("#treeview .list-group").append("<li class=\"list-group-item\">{% trans "No sub theme" %}</li>");
-  }
-
-  var showmore = function(event) {
-    event.preventDefault();
-    var str = ""+$(this).data("id");
-    var res = str.split("-");
-    var nbid = res.length;
-    var tab = listTheme[res[0]].child;
-    for(i=1; i<nbid; i++) {
-      tab = tab[res[i]].child;
-    }
-    var themetoshow = tab; //listTheme[$(this).data("id")].child;
-    var list = "<ul>";
-    $.each(themetoshow, function(i, val) {
-      var link = '<a href="{% url 'channel' slug_c=channel.slug %}'+val.slug+'" title="'+val.title+'">'+val.title+'</a>';
-      var child = val.child;
-      var count = Object.keys(child).length;
-      var showmore = '<a href="#" data-id="'+str+'-'+i+'" class="showless badge badge-light">-</a>';
-      if(count>0) {
-        showmore = '<a href="#" data-id="'+str+'-'+i+'" class="showmore badge badge-light">+</a>';
-      }
-      list+="<li class=\"list-group-item\">"+showmore+" "+link+"</li>";
-    });
-    list += "</ul>";
-    $(this).parent('li').append(list);
-    $(this).removeClass("showmore").addClass("showless").text('-');
-    $(this).off( "click", showmore );
-    $(".showmore").on('click', showmore);
-    $(".showless").on('click', showless);
-    return false;
-  };
-  var showless = function(event) {
-    event.preventDefault();
-    console.log("showless = "+$( this ).parent('li').children( "ul" ).length);
-    if($( this ).parent('li').children( "ul" ).length > 0) {
-      $( this ).parent('li').children( "ul" ).remove();
-      $(this).removeClass("showless").addClass("showmore").text('+');
-      $(this).off( "click", showless );
-      $(".showmore").on('click', showmore);
-      $(".showless").on('click', showless);
-    }
-  }
-  $(".showmore").on('click', showmore);
-  $(".showless").on('click', showless);
-
-  </script>
+var str = get_list(listTheme["channel_"+{{channel.id}}], 0, [], tag_type="li", li_class="list-group-item", attrs='', add_link=true, current="{{theme.slug}}");
+$("#ultreeview").html(str);
+setTimeout(function(){ 
+var position = parseInt($("#ultreeview li.list-group-item-info").position().top) - parseInt($("#ultreeview li").first().position().top);
+console.log(position);
+$("#ultreeview").scrollTop(position); 
+}, 1500);
+</script>
 {% endblock more_script %}
