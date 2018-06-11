@@ -3,11 +3,12 @@ body {
 padding-top: 3.5rem;
 }
 .pod-mt-7{
-    margin-top: 5rem;
+    margin-top: 3.5rem;
 }
 #listeChaines{
     max-height: 30rem;
     overflow: auto;
+    border-bottom: 1px solid black;
 }
 .liste-collapse{
     z-index: 900;
