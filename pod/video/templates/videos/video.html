@@ -182,7 +182,7 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
   <div class="btn-group">
     {% if request.user.playlist_set.all %}
     <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <i data-feather="alert-star"></i>
+      <i data-feather="star"></i>
     </a>
     <div class="dropdown-menu">
       <h6 class="dropdown-header">{% trans 'My playlists' %}</h6>
@@ -191,7 +191,7 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
       {% for playlist in request.user.playlist_set.all %}
         {% if video in playlist.videos %}
           <li class="list-group-item disabled" data-slug="{{playlist.slug}}">{{playlist.title}}
-            <i data-feather="alert-check"></i>
+            <i data-feather="check"></i>
           </li>
         {% else %}
           <li class="list-group-item playlist-item" data-slug="{{playlist.slug}}">{{playlist.title}}</li>
