@@ -96,7 +96,13 @@ function TriggerAlertClose() {
         });
     }, 5000);
 }
-/*** FORM THEME AND USER PICTURE ***/
+/*** FORM THEME, NOTES AND USER PICTURE ***/
+/** NOTES **/
+$(document).on("submit", "#video_notes_form", function (e) {
+    e.preventDefault();
+    var data_form = $( "#video_notes_form" ).serializeArray();
+    send_form_data($( "#video_notes_form" ).attr("action"), data_form, "show_form_notes", "post");
+});
 $(document).on("click", ".get_form_userpicture", function() {
 	send_form_data($(this).data('url'), {}, "append_picture_form", "get");
 });
@@ -143,6 +149,9 @@ var send_form_data = function(url,data_form, fct, method="post") {
         var data = $xhr.status+ " : " +$xhr.statusText;
         showalert(gettext("Error during exchange") + "("+data+")<br/>"+gettext("No data could be stored."), "alert-danger");
     });
+}
+var show_form_notes = function(data) {
+	$( "#video_notes_form" ).parent().html(data);
 }
 var show_form_theme_new = function(data) {
 	if(data.indexOf(id_form)==-1) {
@@ -330,23 +339,7 @@ var videocheck = function(form,event) {
         }
     }
 }
-/** NOTES **/
-$(document).on("submit", "#video_notes_form", function (e) {
-    e.preventDefault();
-    var jqxhr= '';
-    var data_form = $( "#video_notes_form" ).serializeArray();
-    jqxhr = $.post(
-        $( "#video_notes_form" ).attr("action"),
-        data_form
-    );
-    jqxhr.done(function(data){
-        $( "#video_notes_form" ).parent().html(data);
-    });
-    jqxhr.fail(function($xhr) {
-        var data = $xhr.status+ " : " +$xhr.statusText;
-        showalert(gettext("Error during recording.") + "("+data+")<br/>"+gettext("No data could be stored."), "alert-danger");
-    });
-});
+
 /***** SHOW ALERT *****/
 var showalert = function(message,alerttype) {
     $('body').append('<div id="formalertdiv" class="alert ' +  alerttype + ' alert-dismissible fade show"  role="alert">'+message+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
