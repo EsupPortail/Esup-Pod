@@ -97,6 +97,7 @@ body {
     </div>
     </div>
     {% include 'aside.html'%}
+    {% include 'videos/footer_link.html' %}
 {% endblock page_aside %}
 
 
@@ -115,12 +116,12 @@ body {
   });
 </script>
 <script type="text/javascript">
-var str = get_list(listTheme["channel_"+{{channel.id}}], 0, [], tag_type="li", li_class="list-group-item", attrs='', add_link=true, current="{{theme.slug}}");
+var str = get_list(listTheme["channel_"+{{channel.id}}], 0, [], tag_type="li", li_class="list-group-item", attrs='', add_link=true, current="{{theme.slug}}", channel="");
 $("#ultreeview").html(str);
 setTimeout(function(){ 
 var position = parseInt($("#ultreeview li.list-group-item-info").position().top) - parseInt($("#ultreeview li").first().position().top);
 console.log(position);
 $("#ultreeview").scrollTop(position); 
-}, 1500);
+}, 500);
 </script>
 {% endblock more_script %}

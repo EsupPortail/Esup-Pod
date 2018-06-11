@@ -316,47 +316,8 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
 {% if form %}
 <script>
 
-// Example starter JavaScript for disabling form submissions if there are invalid fields
-(function() {
-  'use strict';
-  window.addEventListener('load', function() {
-    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    var forms = document.getElementsByClassName('needs-validation');
-    // Loop over them and prevent submission
-    var validation = Array.prototype.filter.call(forms, function(form) {
-      form.addEventListener('submit', function(event) {
-        if (form.checkValidity() === false) {
-          window.scrollTo($("#video_password_form").scrollTop(), 0); 
-          showalert("{% trans "Errors appear in the form, please correct it"%}","alert-danger");
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        form.classList.add('was-validated');
-      }, false);
-    });
-  }, false);
-})();
 </script>
 {% else %}
-<script>
-/** NOTES **/
-$(document).on("submit", "#video_notes_form", function (e) {
-    e.preventDefault();
-    var jqxhr= '';
-    var data_form = $( "#video_notes_form" ).serializeArray();
-    jqxhr = $.post(
-        $( "#video_notes_form" ).attr("action"),
-        data_form
-    );
-    jqxhr.done(function(data){
-        $( "#video_notes_form" ).parent().html(data);
-    });
-    jqxhr.fail(function($xhr) {
-        var data = $xhr.status+ " : " +$xhr.statusText;
-        showalert("{% trans 'Error during recording.' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}", "alert-danger");
-    });
-});
-</script>
 <script>
 var options = {
   notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",

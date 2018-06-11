@@ -138,6 +138,24 @@ div.card a:hover>img {
     z-index:1000;
 }
 
+/** channel form **/
+#channel_form .selector {
+    width: 100% !important;
+}
+#channel_form .selector select {
+    width:100% !important;
+}
+#channel_form .selector-available, #channel_form .selector-chosen {
+    width: 47% !important;
+}
+#channel_form .selector-available h2, #channel_form .selector-chosen h2 {
+    margin: 0;
+    padding: 8px;
+    font-weight: 400;
+    font-size: 13px;
+    text-align: left;
+}
+
 /* vignettes video */
 @media (max-width: 575.98px) {
     .pod-flex-direction{
