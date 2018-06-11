@@ -67,6 +67,7 @@ def context_settings(request):
 
 
 def context_navbar(request):
+    """
     channels = Channel.objects.filter(
         visible=True, video__is_draft=False
     ).distinct().annotate(
@@ -74,6 +75,15 @@ def context_navbar(request):
     ).prefetch_related(
         Prefetch("themes", queryset=Theme.objects.filter(
             parentId=None
+        ).distinct().annotate(
+            video_count=Count("video", distinct=True)
+        )))
+    """
+    channels = Channel.objects.all(
+    ).distinct().annotate(
+        video_count=Count("video", distinct=True)
+    ).prefetch_related(
+        Prefetch("themes", queryset=Theme.objects.all(
         ).distinct().annotate(
             video_count=Count("video", distinct=True)
         )))

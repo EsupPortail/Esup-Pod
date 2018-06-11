@@ -1,28 +1,28 @@
 {% load i18n %}
 {% load navbar %}
+<div id="navbar_collapse">
 <!-- collapse et accordion pour les chaines, types, users -->
-  <div class="collapse fixed-top pod-mt-7 bg-light liste-collapse" id="listeChaines">
+<div class="collapse fixed-top pod-mt-7 bg-light liste-collapse" id="listeChaines" data-parent="#navbar_collapse">
     <div class="container">
-      <div class="row p-5">
-        <h3 class="col-12"><svg height="32" class="octicon octicon-mortar-board" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M7.83 9.19L4 8c-4-8 0 1.5 0 2.5S5.8 12 8 12s4-.5 4-1.5V8L8.17 9.19a.73.73 0 0 1-.36 0h.02zm.28-6.39a.34.34 0 0 0-.2 0L.27 5.18a.35.35 0 0 0 0 .67L2 6.4v1.77c-.3.17-.5.5-.5.86 0 .19.05.36.14.5-.08.14-.14.31-.14.5v2.58c0 .55 2 .55 2 0v-2.58c0-.19-.05-.36-.14-.5.08-.14.14-.31.14-.5 0-.38-.2-.69-.5-.86V6.72l4.89 1.53c.06.02.14.02.2 0l7.64-2.38a.35.35 0 0 0 0-.67L8.1 2.81l.01-.01zM8.02 6c-.55 0-1-.22-1-.5s.45-.5 1-.5 1 .22 1 .5-.45.5-1 .5z"></path></svg>&nbsp;{% trans "Channels" %}</h3>
-        <ul class="col-6 list-unstyled">
+      <div class="row pt-1 pl-0 pr-0">
+        <h3 class="col-12"><i data-feather="youtube"></i>&nbsp;{% trans "Channels" %}</h3>
+        <ul class="col-8 list-group list-group-flush" id="list-channels">
             {% for channel in CHANNELS %}
-                {% if channel.themes.all.count > 0 %}
-                    <li class="col-12 dropdown-submenu">
-                         - &nbsp;<a class="" href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">{{channel.title}} ({{channel.video_count}})</a>
-                        <ul class="dropdown-menu col-12">
-                            {% for theme in channel.themes.all %}
-                                <li class="col-12" > <a href="{% url 'theme' slug_c=channel.slug slug_t=theme.slug%}" title="{{theme.title}}">{{theme.title}} ({{theme.video_count}})</a> </li>
-                            {% endfor %}
+                {% if channel.visible %}
+                    <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if channel.themes.all.count > 0 %}show-themes{%endif%}" data-id="{{channel.id}}">
+                        <a class="" href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">{{channel.title}}</a>
+                        <span>
+                            <span class="badge badge-primary badge-pill">{{channel.video_count}}</span>
+                            {% if channel.themes.all.count > 0 %}<i data-feather="chevrons-right"></i>{% else %}<i data-feather="minus"></i>{%endif%}
+                        </span>
+                        {% if channel.themes.all.count > 0 %}
+                        <ul style="position: absolute; top: 0; margin-left: 100%; margin-top: 0; display:none;" class="dropdown-menu col-5 list-group list-group-flush">
                         </ul>
-                    </li>
-                {% else %}
-                    <li class="col-12">
-                     - &nbsp;<a class="" href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">{{channel.title}} ({{channel.video_count}})</a>
+                        {%endif%}
                     </li>
                 {% endif %}
             {% empty %}
-            <li> {% trans "No channels found" %} </li>
+            <li class="list-group-item"> {% trans "No channels found" %} </li>
             {%endfor%}
         </ul>
       </div>
@@ -33,7 +33,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" id="myLargeModalLabel">{% trans "Users"%}</h4>
+        <h4 class="modal-title align-bottom" id="myLargeModalLabel"><i data-feather="users"></i>&nbsp;{% trans "Users"%}</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
@@ -46,87 +46,87 @@
             </div>
             <div class="row p-2">
               <div class="col-3">
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="A">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="A">
                     A
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="B">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="B">
                     B
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="C">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="C">
                     C
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="D">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="D">
                     D
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="E">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="E">
                     E
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="F">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="F">
                     F
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="G">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="G">
                     G
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="H">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="H">
                     H
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="I">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="I">
                     I
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="J">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="J">
                     J
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="K">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="K">
                     K
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="L">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="L">
                     L
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="M">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="M">
                     M
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="N">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="N">
                     N
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="O">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="O">
                     O
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="P">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="P">
                     P
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="Q">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="Q">
                     Q
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="R">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="R">
                     R
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="S">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="S">
                     S
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="T">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="T">
                     T
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="U">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="U">
                     U
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="V">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="V">
                     V
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="W">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="W">
                     W
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="X">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="X">
                     X
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="Y">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="Y">
                     Y
                 </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser" data-target="Z">
+                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="Z">
                     Z
                 </button>
               </div>
               <div class="col-9" >
-                <ul class="list-unstyled" id="accordion" style="max-height:400px; overflow:auto">
+                <ul class="list-unstyled" id="accordion" style="max-height:350px; overflow:auto">
                     <li>&nbsp;</li>
                 </ul>
               </div>
@@ -136,10 +136,10 @@
     </div>
   </div>
 </div>
- <div class="collapse fixed-top pod-mt-7 bg-light liste-collapse" id="listeTypes">
+<div class="collapse fixed-top pod-mt-7 bg-light liste-collapse" id="listeTypes" data-parent="#navbar_collapse">
     <div class="container">
       <div class="p-5">
-        <h3><svg height="32" class="octicon octicon-versions" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M13 3H7c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zm-1 8H8V5h4v6zM4 4h1v1H4v6h1v1H4c-.55 0-1-.45-1-1V5c0-.55.45-1 1-1zM1 5h1v1H1v4h1v1H1c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1z"></path></svg>&nbsp;{% trans 'Types of videos'%}</h3>
+        <h3><i data-feather="tv"></i>&nbsp;{% trans 'Types of videos'%}</h3>
         <ul class="row list-unstyled">
             {% for type in TYPES %}
                 <li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1 col-12 text-left text-truncate" href="{% url 'videos' %}?type={{type.slug}}" title="{{type.title}} ({{type.video_count}})">
@@ -150,3 +150,4 @@
     </div>
 </div>
 <!-- fin modal, accordion -->
+</div>

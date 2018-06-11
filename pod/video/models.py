@@ -243,12 +243,16 @@ class Channel(models.Model):
     def __str__(self):
         return "%s" % (self.title)
 
+    def get_absolute_url(self):
+        return reverse('channel', args=[str(self.slug)])
+
     def get_all_theme(self):
         list_theme = {}
         for theme in self.themes.filter(parentId=None):
             list_theme["%s" % theme.id] = {
                 "title": "%s" % theme.title,
                 "slug": "%s" % theme.slug,
+                "url": "%s" %theme.get_absolute_url(),
                 "child": theme.get_all_children_tree()
             }
         return list_theme
@@ -296,6 +300,9 @@ class Theme(models.Model):
     def __str__(self):
         return "%s: %s" % (self.channel.title, self.title)
 
+    def get_absolute_url(self):
+        return reverse('theme', args=[str(self.channel.slug), str(self.slug)])
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Theme, self).save(*args, **kwargs)
@@ -310,6 +317,7 @@ class Theme(models.Model):
             children["%s" % child.id] = {
                 "title": "%s" % child.title,
                 "slug": "%s" % child.slug,
+                "url": "%s" %child.get_absolute_url(),
                 "child": child.get_all_children_tree()
             }
         return children
@@ -690,6 +698,12 @@ class Video(models.Model):
             logger.error("An error occured during get_json_to_index"
                          " for video %s: %s" % (self.id, e))
             return json.dumps({})
+
+    def get_main_lang(self):
+        return "%s" % MAIN_LANG_CHOICES_DICT[self.main_lang]
+
+    def get_cursus(self):
+        return "%s" % CURSUS_CODES_DICT[self.cursus]
 
     def get_dublin_core(self):
         contributors = []

@@ -38,10 +38,8 @@
     },
     onAfterPageLoad: function ($items) {
       $('.loading').hide();
+      feather.replace({ class: 'align-bottom'});
     }
-  });
-  $(document).ready(function () {
-    $("#collapseAside").collapse('hide');
   });
 </script>
 {% endblock more_script %}

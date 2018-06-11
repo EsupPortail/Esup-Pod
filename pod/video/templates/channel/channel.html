@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load staticfiles %}
+{% load video_filters %}
 
 {% block page_extra_head %}
-<meta name="description" content="channel.description|metaformat|safe|striptags|truncatechars:150" />
+<meta name="description" content="{{channel.description|metaformat|safe|striptags|truncatechars:150}}" />
 <!-- Open Graph data -->
 <meta property="og:title" content="{{ channel.title }}" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
 <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
-<meta property="og:description" content="channel.description|metaformat|safe|striptags|truncatechars:250" />
+<meta property="og:description" content="{{channel.description|metaformat|safe|striptags|truncatechars:250}}" />
 <meta property="og:site_name" content="{{ TITLE_SITE }}" />
 <style>
 #treeview ul.list-group li{
@@ -47,15 +48,16 @@ body {
   <h3>{{channel.title}}
     <span class="float-right">
       {% if theme %}
-      <a href="{% url "rss-video" slug_c=channel.slug slug_t=theme.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><svg width="16" height="16" class="octicon octicon-broadcast" viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M9 9H8c.55 0 1-.45 1-1V7c0-.55-.45-1-1-1H7c-.55 0-1 .45-1 1v1c0 .55.45 1 1 1H6c-.55 0-1 .45-1 1v2h1v3c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-3h1v-2c0-.55-.45-1-1-1zM7 7h1v1H7V7zm2 4H8v4H7v-4H6v-1h3v1zm2.09-3.5c0-1.98-1.61-3.59-3.59-3.59A3.593 3.593 0 0 0 4 8.31v1.98c-.61-.77-1-1.73-1-2.8 0-2.48 2.02-4.5 4.5-4.5S12 5.01 12 7.49c0 1.06-.39 2.03-1 2.8V8.31c.06-.27.09-.53.09-.81zm3.91 0c0 2.88-1.63 5.38-4 6.63v-1.05a6.553 6.553 0 0 0 3.09-5.58A6.59 6.59 0 0 0 7.5.91 6.59 6.59 0 0 0 .91 7.5c0 2.36 1.23 4.42 3.09 5.58v1.05A7.497 7.497 0 0 1 7.5 0C11.64 0 15 3.36 15 7.5z"></path></svg>Video</a>
-      <a href="{% url "rss-audio" slug_c=channel.slug slug_t=theme.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><svg width="16" height="16" class="octicon octicon-broadcast" viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M9 9H8c.55 0 1-.45 1-1V7c0-.55-.45-1-1-1H7c-.55 0-1 .45-1 1v1c0 .55.45 1 1 1H6c-.55 0-1 .45-1 1v2h1v3c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-3h1v-2c0-.55-.45-1-1-1zM7 7h1v1H7V7zm2 4H8v4H7v-4H6v-1h3v1zm2.09-3.5c0-1.98-1.61-3.59-3.59-3.59A3.593 3.593 0 0 0 4 8.31v1.98c-.61-.77-1-1.73-1-2.8 0-2.48 2.02-4.5 4.5-4.5S12 5.01 12 7.49c0 1.06-.39 2.03-1 2.8V8.31c.06-.27.09-.53.09-.81zm3.91 0c0 2.88-1.63 5.38-4 6.63v-1.05a6.553 6.553 0 0 0 3.09-5.58A6.59 6.59 0 0 0 7.5.91 6.59 6.59 0 0 0 .91 7.5c0 2.36 1.23 4.42 3.09 5.58v1.05A7.497 7.497 0 0 1 7.5 0C11.64 0 15 3.36 15 7.5z"></path></svg>Audio</a>
+      <a href="{% url "rss-video" slug_c=channel.slug slug_t=theme.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
+      <a href="{% url "rss-audio" slug_c=channel.slug slug_t=theme.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
       {% else %}
-      <a href="{% url "rss-video" slug_c=channel.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><svg width="16" height="16" class="octicon octicon-broadcast" viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M9 9H8c.55 0 1-.45 1-1V7c0-.55-.45-1-1-1H7c-.55 0-1 .45-1 1v1c0 .55.45 1 1 1H6c-.55 0-1 .45-1 1v2h1v3c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-3h1v-2c0-.55-.45-1-1-1zM7 7h1v1H7V7zm2 4H8v4H7v-4H6v-1h3v1zm2.09-3.5c0-1.98-1.61-3.59-3.59-3.59A3.593 3.593 0 0 0 4 8.31v1.98c-.61-.77-1-1.73-1-2.8 0-2.48 2.02-4.5 4.5-4.5S12 5.01 12 7.49c0 1.06-.39 2.03-1 2.8V8.31c.06-.27.09-.53.09-.81zm3.91 0c0 2.88-1.63 5.38-4 6.63v-1.05a6.553 6.553 0 0 0 3.09-5.58A6.59 6.59 0 0 0 7.5.91 6.59 6.59 0 0 0 .91 7.5c0 2.36 1.23 4.42 3.09 5.58v1.05A7.497 7.497 0 0 1 7.5 0C11.64 0 15 3.36 15 7.5z"></path></svg>Video</a>
-      <a href="{% url "rss-audio" slug_c=channel.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><svg width="16" height="16" class="octicon octicon-broadcast" viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M9 9H8c.55 0 1-.45 1-1V7c0-.55-.45-1-1-1H7c-.55 0-1 .45-1 1v1c0 .55.45 1 1 1H6c-.55 0-1 .45-1 1v2h1v3c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-3h1v-2c0-.55-.45-1-1-1zM7 7h1v1H7V7zm2 4H8v4H7v-4H6v-1h3v1zm2.09-3.5c0-1.98-1.61-3.59-3.59-3.59A3.593 3.593 0 0 0 4 8.31v1.98c-.61-.77-1-1.73-1-2.8 0-2.48 2.02-4.5 4.5-4.5S12 5.01 12 7.49c0 1.06-.39 2.03-1 2.8V8.31c.06-.27.09-.53.09-.81zm3.91 0c0 2.88-1.63 5.38-4 6.63v-1.05a6.553 6.553 0 0 0 3.09-5.58A6.59 6.59 0 0 0 7.5.91 6.59 6.59 0 0 0 .91 7.5c0 2.36 1.23 4.42 3.09 5.58v1.05A7.497 7.497 0 0 1 7.5 0C11.64 0 15 3.36 15 7.5z"></path></svg>Audio</a>
+      <a href="{% url "rss-video" slug_c=channel.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
+      <a href="{% url "rss-audio" slug_c=channel.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
       {% endif %}
     </span>
     {% if request.user in channel.owners.all %}
-    <span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-dark btn-sm"><svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>{% trans "Edit the channel"%}</a></span>{%endif%}</h3>
+    <span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-dark btn-sm">
+      <i data-feather="edit"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{%endif%}</h3>
 
   {% if channel.headband %}
   <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
@@ -84,22 +86,18 @@ body {
 {% endblock page_content %}
 
 {% block page_aside %}
-    <div class="card card-body">
-    <h5 class="card-title">
-    <svg height="32" class="octicon octicon-versions" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M13 3H7c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zm-1 8H8V5h4v6zM4 4h1v1H4v6h1v1H4c-.55 0-1-.45-1-1V5c0-.55.45-1 1-1zM1 5h1v1H1v4h1v1H1c-.55 0-1-.45-1-1V6c0-.55.45-1 1-1z"></path></svg>
-    {% if theme %}
-    {% trans 'Sub Themes of ' %}{{ theme.title }}
-    {% else %}
-    {% trans 'Themes of ' %}{{ channel.title }}
-    {% endif %}
+    <div class="card card-body p-2 mt-1">
+    <h5 class="card-title pl-2">
+      <i data-feather="list"></i>&nbsp;
+      {% trans 'Themes of ' %}{{ channel.title }}
     </h5>
     <div class="card-text" id="treeview">
-      <ul class="list-group list-group-flush small">
-
+      <ul class="list-group list-group-flush {% if channel.themes.count > 5 %}small{%endif%}" id="ultreeview" style="max-height:300px; overflow:auto;">
       </ul>
     </div>
     </div>
     {% include 'aside.html'%}
+    {% include 'videos/footer_link.html' %}
 {% endblock page_aside %}
 
 
@@ -118,68 +116,12 @@ body {
   });
 </script>
 <script type="text/javascript">
-{% comment %} Put always channel theme with active link ??? {% endcomment %}
-  {% if theme %}
-  var listTheme = {{theme.get_all_children_tree_json|safe}};
-  {% else %}
-  var listTheme = {{channel.get_all_theme_json|safe}};
-  {% endif %}
-  $.each(listTheme, function(i, val) {
-    var link = '<a href="{% url 'channel' slug_c=channel.slug %}'+val.slug+'" title="'+val.title+'">'+val.title+'</a>';
-    var child = val.child;
-    var count = Object.keys(child).length;
-    var showmore = '<span class="badge badge-light">-</span>';
-    if(count>0) {
-      showmore = '<a href="#" data-id="'+i+'" class="showmore badge badge-light">+</a>';
-    }
-    $("#treeview .list-group").append("<li class=\"list-group-item\">"+showmore+" "+link+"</li>");
-  });
-  if(Object.keys(listTheme).length==0) {
-    $("#treeview .list-group").append("<li class=\"list-group-item\">{% trans "No sub theme" %}</li>");
-  }
-
-  var showmore = function(event) {
-    event.preventDefault();
-    var str = ""+$(this).data("id");
-    var res = str.split("-");
-    var nbid = res.length;
-    var tab = listTheme[res[0]].child;
-    for(i=1; i<nbid; i++) {
-      tab = tab[res[i]].child;
-    }
-    var themetoshow = tab; //listTheme[$(this).data("id")].child;
-    var list = "<ul>";
-    $.each(themetoshow, function(i, val) {
-      var link = '<a href="{% url 'channel' slug_c=channel.slug %}'+val.slug+'" title="'+val.title+'">'+val.title+'</a>';
-      var child = val.child;
-      var count = Object.keys(child).length;
-      var showmore = '<a href="#" data-id="'+str+'-'+i+'" class="showless badge badge-light">-</a>';
-      if(count>0) {
-        showmore = '<a href="#" data-id="'+str+'-'+i+'" class="showmore badge badge-light">+</a>';
-      }
-      list+="<li class=\"list-group-item\">"+showmore+" "+link+"</li>";
-    });
-    list += "</ul>";
-    $(this).parent('li').append(list);
-    $(this).removeClass("showmore").addClass("showless").text('-');
-    $(this).off( "click", showmore );
-    $(".showmore").on('click', showmore);
-    $(".showless").on('click', showless);
-    return false;
-  };
-  var showless = function(event) {
-    event.preventDefault();
-    console.log("showless = "+$( this ).parent('li').children( "ul" ).length);
-    if($( this ).parent('li').children( "ul" ).length > 0) {
-      $( this ).parent('li').children( "ul" ).remove();
-      $(this).removeClass("showless").addClass("showmore").text('+');
-      $(this).off( "click", showless );
-      $(".showmore").on('click', showmore);
-      $(".showless").on('click', showless);
-    }
-  }
-  $(".showmore").on('click', showmore);
-  $(".showless").on('click', showless);
-
-  </script>
+var str = get_list(listTheme["channel_"+{{channel.id}}], 0, [], tag_type="li", li_class="list-group-item", attrs='', add_link=true, current="{{theme.slug}}", channel="");
+$("#ultreeview").html(str);
+setTimeout(function(){ 
+var position = parseInt($("#ultreeview li.list-group-item-info").position().top) - parseInt($("#ultreeview li").first().position().top);
+console.log(position);
+$("#ultreeview").scrollTop(position); 
+}, 500);
+</script>
 {% endblock more_script %}

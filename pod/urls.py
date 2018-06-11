@@ -9,6 +9,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.apps import apps
 from django.contrib.auth import views as auth_views
+from django.views.i18n import JavaScriptCatalog
 
 from pod.authentication.views import authentication_login
 from pod.authentication.views import authentication_logout
@@ -44,6 +45,7 @@ urlpatterns = [
 
     # Translation
     url(r'^i18n/', include('django.conf.urls.i18n')),
+    url(r'^jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     # progressbar
     url(r'^progressbarupload/', include('progressbarupload.urls')),
 
@@ -111,10 +113,11 @@ urlpatterns = [
     url(r'^contact_us/$', contact_us, name='contact_us'),
     url(r'^captcha/', include('captcha.urls')),
 ]
-
+# CAS
 if USE_CAS:
     urlpatterns += [url(r'^sso-cas/', include('django_cas.urls')), ]
 
+# APPS
 if apps.is_installed('pod.filepicker'):
     urlpatterns += [url(r'^file-picker/', include(filepicker_site.urls)), ]
 if apps.is_installed('pod.completion'):
@@ -126,6 +129,7 @@ if apps.is_installed('pod.enrichment'):
 if apps.is_installed('pod.playlist'):
     urlpatterns += [url(r'^', include('pod.playlist.urls')), ]
 
+# CHANNELS
 urlpatterns += [
     url(r'^(?P<slug_c>[\-\d\w]+)/$', channel, name='channel'),
     url(r'^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$',
@@ -135,7 +139,6 @@ urlpatterns += [
     url(r'^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)'
         r'/video/(?P<slug>[\-\d\w]+)/$', video, name='video'),
 ]
-
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
