@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from pod.video.models import Video
-from pod.chapters.models import Chapter
+from pod.chapter.models import Chapter
 if apps.is_installed('pod.filepicker'):
     from pod.filepicker.models import CustomFileModel
     from pod.filepicker.models import UserDirectory
@@ -18,9 +18,13 @@ if apps.is_installed('pod.filepicker'):
 class ChapterViewsTestCase(TestCase):
 
     def setUp(self):
-        owner = User.objects.create(username='test', password='azerty')
+        owner = User.objects.create(
+            username='test', password='azerty', is_staff=True)
         owner.set_password('hello')
         owner.save()
+        owner2 = User.objects.create(username='test2', password='azerty')
+        owner2.set_password('hello')
+        owner2.save()
         Video.objects.create(
             title='videotest',
             owner=owner,
@@ -28,10 +32,23 @@ class ChapterViewsTestCase(TestCase):
             duration=20
         )
 
+    def test_video_chapter_nostaff(self):
+        video = Video.objects.get(id=1)
+        response = self.client.get('/video_chapter/{0}/'.format(video.slug))
+        self.assertEqual(response.status_code, 302)
+        authenticate(username='test2', password='hello')
+        login = self.client.login(username='test2', password='hello')
+        self.assertTrue(login)
+        response = self.client.get('/video_chapter/{0}/'.format(video.slug))
+        self.assertEqual(response.status_code, 302)
+
+        print(" ---> test_video_chapter_nostaff : OK!")
+        print(" [ END CHAPTER VIEWS ] ")
+
     def test_video_chapter(self):
         video = Video.objects.get(id=1)
         response = self.client.get('/video_chapter/{0}/'.format(video.slug))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
         authenticate(username='test', password='hello')
         login = self.client.login(username='test', password='hello')
         self.assertTrue(login)
@@ -74,7 +91,6 @@ class ChapterViewsTestCase(TestCase):
         self.assertContains(response, 'testchapter')
 
         print(" ---> test_video_chapter_new : OK!")
-        print(" [ END CHAPTER VIEWS ] ")
 
     def test_video_chapter_edit(self):
         video = Video.objects.get(id=1)
@@ -144,7 +160,7 @@ class ChapterViewsTestCase(TestCase):
         file = SimpleUploadedFile(
             name='testfile.vtt',
             content=open(
-                './pod/chapters/tests/testfile.vtt', 'rb').read(),
+                './pod/chapter/tests/testfile.vtt', 'rb').read(),
             content_type='text/plain')
         if FILEPICKER:
             home = UserDirectory.objects.get(id=1)
