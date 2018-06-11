@@ -1,5 +1,5 @@
 from django.contrib import admin
-from pod.chapters.models import Chapter
+from pod.chapter.models import Chapter
 
 
 class ChapterAdmin(admin.ModelAdmin):

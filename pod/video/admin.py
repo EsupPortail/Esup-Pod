@@ -33,9 +33,9 @@ if apps.is_installed('pod.completion'):
     from pod.completion.admin import DocumentInline
     from pod.completion.admin import OverlayInline
     from pod.completion.admin import TrackInline
-if apps.is_installed('pod.chapters'):
+if apps.is_installed('pod.chapter'):
     CHAPTER = True
-    from pod.chapters.admin import ChapterInline
+    from pod.chapter.admin import ChapterInline
 if apps.is_installed('pod.enrichment'):
     ENRICHMENT = True
     from pod.enrichment.admin import EnrichmentInline

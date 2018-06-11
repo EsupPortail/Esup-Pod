@@ -119,8 +119,8 @@ if apps.is_installed('pod.filepicker'):
     urlpatterns += [url(r'^file-picker/', include(filepicker_site.urls)), ]
 if apps.is_installed('pod.completion'):
     urlpatterns += [url(r'^', include('pod.completion.urls')), ]
-if apps.is_installed('pod.chapters'):
-    urlpatterns += [url(r'^', include('pod.chapters.urls')), ]
+if apps.is_installed('pod.chapter'):
+    urlpatterns += [url(r'^', include('pod.chapter.urls')), ]
 if apps.is_installed('pod.enrichment'):
     urlpatterns += [url(r'^', include('pod.enrichment.urls')), ]
 

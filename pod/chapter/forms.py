@@ -2,8 +2,8 @@ from django import forms
 from django.apps import apps
 from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
-from pod.chapters.models import Chapter
-from pod.chapters.utils import vtt_to_chapter
+from pod.chapter.models import Chapter
+from pod.chapter.utils import vtt_to_chapter
 if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
     from pod.filepicker.models import CustomFileModel
@@ -16,13 +16,11 @@ class ChapterForm(forms.ModelForm):
         super(ChapterForm, self).__init__(*args, **kwargs)
         self.fields['video'].widget = forms.HiddenInput()
         self.fields['time_start'].widget.attrs['min'] = 0
-        self.fields['time_end'].widget.attrs['min'] = 1
         try:
             self.fields['time_start'].widget.attrs[
                 'max'] = self.instance.video.duration - 1
         except Exception:
             self.fields['time_start'].widget.attrs['max'] = 36000
-            self.fields['time_end'].widget.attrs['max'] = 36000
         for myField in self.fields:
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label

@@ -32,8 +32,6 @@ if apps.is_installed('pod.filepicker'):
     from pod.filepicker.models import CustomImageModel
     from pod.filepicker.models import CustomFileModel
     FILEPICKER = True
-if apps.is_installed('pod.chapters'):
-    CHAPTERS = True
 if apps.is_installed('pod.enrichment'):
     ENRICHMENT = True
 
@@ -724,24 +722,6 @@ class Video(models.Model):
             logger.error("An error occured during get_json_to_index"
                          " for video %s: %s" % (self.id, e))
             return {}
-
-    def get_chapters_file(self):
-        list_chapter = self.chapter_set.all()
-        if CHAPTERS and list_chapter:
-            if FILEPICKER:
-                chapters = CustomFileModel.objects.get(
-                    name='chapter_{0}'.format(self.title),
-                    created_by=self.owner,
-                    directory__name='Home').file
-                return os.path.join(
-                    settings.MEDIA_URL,
-                    chapters.name)
-            else:
-                return os.path.join(
-                    settings.MEDIA_URL,
-                    'files',
-                    self.owner.username,
-                    'chapter_{0}'.format(self.title))
 
     def get_enrichments_file(self):
         list_enrichment = self.enrichment_set.all()

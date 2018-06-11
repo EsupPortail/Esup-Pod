@@ -164,16 +164,10 @@ function verify_start_title_items(){
             .parents('div.form-group').addClass('has-error');
         return false;
     }
-    if ( document.getElementById("id_time_start").value == "" || document.getElementById("id_time_start").value < 0 || document.getElementById("id_time_start").value >= video_duration || document.getElementById("id_time_start").value >= document.getElementById("id_time_end").value ) {
+    if ( document.getElementById("id_time_start").value == "" || document.getElementById("id_time_start").value < 0 || document.getElementById("id_time_start").value >= video_duration) {
         $("input#id_time_start")
             .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct start field between 0 and' %} " + (video_duration -1) + "</span>")
             .parents('div.form-group').addClass('has-error');
-        return false;
-    }
-    if ( document.getElementById("id_time_end").value == "" || document.getElementById("id_time_end").value <= 0 || document.getElementById("id_time_end").value >= video_duration || document.getElementById("id_time_end").value <= document.getElementById("id_time_start").value ) {
-    	$("input#id_time_end")
-    		.before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct end field between 1 and' %} " + (video_duration - 1) + "</span>")
-    		.parents('div.form-group').addClass('has-error');
         return false;
     }
     return true;
@@ -181,7 +175,6 @@ function verify_start_title_items(){
 
 function overlaptest(){
     var new_start = parseInt(document.getElementById("id_time_start").value);
-  	var new_end = parseInt(document.getElementById("id_time_end").value);
   	var id = parseInt(document.getElementById("id_chapter").value);
     var msg = "";
     $('ul#chapters li').each(function() {
@@ -220,10 +213,6 @@ $(document).on('click','#page-video span.getfromvideo a',function(e) {
         if($(this).context.id == "getfromvideo_start"){
             $("input#id_time_start").val(parseInt(player.currentTime()));
             $("input#id_time_start").trigger('change');
-        }
-        if($(this).context.id == "getfromvideo_end"){
-            $("input#id_time_end").val(parseInt(player.currentTime()));
-            $("input#id_time_end").trigger('change');
         }
     }
 });

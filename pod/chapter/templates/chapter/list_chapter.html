@@ -9,7 +9,6 @@
 			<tr>
 				<th class="chapter_title">{% trans 'Title' %}</th>
 				<th class="chapter_time_start">{% trans 'Start time' %}</th>
-				<th class="chapter_time_end">{% trans 'End time' %}</th>
 				<th>&nbsp;</th>
 				<th>&nbsp;</th>
 			</tr>
@@ -18,8 +17,7 @@
 			{% for chapter in list_chapter %}
 				<tr>
 					<td class="chapter_title">{{chapter.title}}</td>
-					<td class="chapter_time_start">{{chapter.time_start}}</td>
-					<td class="chapter_time_end">{{chapter.time_end}}</td>
+					<td class="chapter_time_start">{{chapter.chapter_in_time}}</td>
 					<td>
 						<form class="get_form" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
 							{% csrf_token %}

@@ -1,4 +1,4 @@
-from .models import Chapter
+from pod.chapter.models import Chapter
 from rest_framework import serializers, viewsets
 
 # Serializers define the API representation.
