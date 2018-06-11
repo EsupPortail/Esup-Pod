@@ -1,3 +1,4 @@
+from django.apps import apps
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
@@ -27,6 +28,9 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import NotesForm
+
+if apps.is_installed('pod.playlist'):
+    from pod.playlist.models import Playlist
 
 import json
 from datetime import datetime
@@ -320,6 +324,9 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     notesForm = get_note_form(request, video)
     channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
     theme = get_object_or_404(Theme, slug=slug_t) if slug_t else None
+    playlist = get_object_or_404(
+        Playlist,
+        slug=request.GET['playlist']) if request.GET.get('playlist') else None
 
     is_draft = video.is_draft
     is_restricted = video.is_restricted
@@ -374,7 +381,8 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                     'channel': channel,
                     'video': video,
                     'theme': theme,
-                    'notesForm': notesForm
+                    'notesForm': notesForm,
+                    'playlist': playlist
                 }
             )
         else:
@@ -405,7 +413,8 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                 'channel': channel,
                 'video': video,
                 'theme': theme,
-                'notesForm': notesForm
+                'notesForm': notesForm,
+                'playlist': playlist
             }
         )
 

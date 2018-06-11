@@ -126,6 +126,8 @@ if apps.is_installed('pod.chapters'):
     urlpatterns += [url(r'^', include('pod.chapters.urls')), ]
 if apps.is_installed('pod.enrichment'):
     urlpatterns += [url(r'^', include('pod.enrichment.urls')), ]
+if apps.is_installed('pod.playlist'):
+    urlpatterns += [url(r'^', include('pod.playlist.urls')), ]
 
 # CHANNELS
 urlpatterns += [

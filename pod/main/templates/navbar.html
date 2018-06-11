@@ -70,9 +70,8 @@
             <a class="dropdown-item" href="{% url 'my_channels' %}" title="{% trans 'My channels' %}">
               <i data-feather="youtube"></i>&nbsp;{% trans 'My channels' %}</a>
             {% endif %}
-
-            <a class="dropdown-item" href="#"><i data-feather="airplay"></i>&nbsp;Mes playlists</a>
-
+            <a class="dropdown-item" href="{% url 'my_playlists' %}" title="{% trans 'My playlists' %}">
+              <i data-feather="airplay"></i>&nbsp;Mes playlists</a>
             <hr/>
             <a class="dropdown-item" href="{% url 'authentication_logout' %}" title="{% trans 'Log out' %}">
               <i data-feather="log-out"></i>&nbsp;{% trans 'Log out' %}</a>
