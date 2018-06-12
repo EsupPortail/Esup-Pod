@@ -4,7 +4,7 @@
 <div class="panel-heading bg-primary text-white">
 	<h4 class="card-title">{% trans 'Create / Edit chapters' %}</h4>
 </div>
-<form id="form_chapter" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
+<form id="form_chapter" class="form_save" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
 	{% csrf_token %}
 	<div id="formcontent" class="form-container">
 		{% if form_chapter.errors or form_chapter.non_field_errors %}
@@ -34,7 +34,7 @@
 <div class="panel-heading bg-primary text-white">
 	<h4 class="card-title">{% trans 'Import chapters' %}</h4>
 </div>
-<form id="form_chapter_import" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
+<form id="form_chapter_import" class="form_save" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
 	{% csrf_token %}
 	<div id="formcontent" class="form-container">
 		{% if form_import.errors or form_import.non_field_errors %}
@@ -61,4 +61,4 @@
 		<input type="submit" id="save_chapter_import" value="{% trans 'Import chapters' %}" class="btn btn-info"/>
 	</div>
 </form>
-<script src="{% static 'js/filepicker.custom.js' %}"></script>
+{{form_import.media}}

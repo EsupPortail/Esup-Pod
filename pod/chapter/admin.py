@@ -1,11 +1,12 @@
 from django.contrib import admin
-from pod.chapters.models import Chapter
+from pod.chapter.models import Chapter
 
 
 class ChapterAdmin(admin.ModelAdmin):
 
     list_display = ('title', 'video',)
     list_display_links = ('title',)
+    search_fields = ['id', 'title', 'video__title']
 
 
 admin.site.register(Chapter, ChapterAdmin)

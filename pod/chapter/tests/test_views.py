@@ -1,32 +1,30 @@
 """
 Unit tests for chapters views
 """
-import os
-
 from django.apps import apps
-from django.conf import settings
 from django.test import TestCase
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from pod.video.models import Video
-from pod.chapters.models import Chapter
+from pod.chapter.models import Chapter
 if apps.is_installed('pod.filepicker'):
     from pod.filepicker.models import CustomFileModel
     from pod.filepicker.models import UserDirectory
     from datetime import datetime
     FILEPICKER = True
-if apps.is_installed('pod.authentication'):
-    from pod.authentication.models import Owner
-    AUTH = True
 
 
 class ChapterViewsTestCase(TestCase):
 
     def setUp(self):
-        owner = User.objects.create(username='test', password='azerty')
+        owner = User.objects.create(
+            username='test', password='azerty', is_staff=True)
         owner.set_password('hello')
         owner.save()
+        owner2 = User.objects.create(username='test2', password='azerty')
+        owner2.set_password('hello')
+        owner2.save()
         Video.objects.create(
             title='videotest',
             owner=owner,
@@ -34,10 +32,23 @@ class ChapterViewsTestCase(TestCase):
             duration=20
         )
 
+    def test_video_chapter_nostaff(self):
+        video = Video.objects.get(id=1)
+        response = self.client.get('/video_chapter/{0}/'.format(video.slug))
+        self.assertEqual(response.status_code, 302)
+        authenticate(username='test2', password='hello')
+        login = self.client.login(username='test2', password='hello')
+        self.assertTrue(login)
+        response = self.client.get('/video_chapter/{0}/'.format(video.slug))
+        self.assertEqual(response.status_code, 302)
+
+        print(" ---> test_video_chapter_nostaff : OK!")
+        print(" [ END CHAPTER VIEWS ] ")
+
     def test_video_chapter(self):
         video = Video.objects.get(id=1)
         response = self.client.get('/video_chapter/{0}/'.format(video.slug))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
         authenticate(username='test', password='hello')
         login = self.client.login(username='test', password='hello')
         self.assertTrue(login)
@@ -80,7 +91,6 @@ class ChapterViewsTestCase(TestCase):
         self.assertContains(response, 'testchapter')
 
         print(" ---> test_video_chapter_new : OK!")
-        print(" [ END CHAPTER VIEWS ] ")
 
     def test_video_chapter_edit(self):
         video = Video.objects.get(id=1)
@@ -150,7 +160,7 @@ class ChapterViewsTestCase(TestCase):
         file = SimpleUploadedFile(
             name='testfile.vtt',
             content=open(
-                './pod/chapters/tests/testfile.vtt', 'rb').read(),
+                './pod/chapter/tests/testfile.vtt', 'rb').read(),
             content_type='text/plain')
         if FILEPICKER:
             home = UserDirectory.objects.get(id=1)
@@ -175,57 +185,3 @@ class ChapterViewsTestCase(TestCase):
         self.assertEqual(result.title, 'Testchapter')
 
         print(" ---> test_video_chapter_import : OK!")
-
-    def test_video_chapter_export(self):
-        video = Video.objects.get(id=1)
-        Chapter.objects.create(
-            title='chap1',
-            time_start=1,
-            time_end=2,
-            video=video
-        )
-        Chapter.objects.create(
-            title='chap2',
-            time_start=3,
-            time_end=4,
-            video=video
-        )
-        authenticate(username='test', password='hello')
-        login = self.client.login(username='test', password='hello')
-        self.assertTrue(login)
-        response = self.client.post(
-            '/video_chapter/{0}/'.format(video.slug),
-            data={'action': 'export'})
-        self.assertEqual(response.status_code, 200)
-        if AUTH:
-            owner = Owner.objects.get(id=1)
-            base_dir = owner.hashkey
-        else:
-            user = User.objects.get(id=1)
-            base_dir = user.username
-        path = os.path.join(
-            settings.MEDIA_URL,
-            'files',
-            base_dir,
-            'Home',
-            'chapter_{0}'.format(video.title)
-        )
-        self.assertContains(response, path)
-        if FILEPICKER:
-            path = CustomFileModel.objects.get(id=1).file.path
-            file = open(path).read()
-            vtt = '00:00:01.000 --> 00:00:02.000\nchap1\n\n' + \
-                '00:00:03.000 --> 00:00:04.000\nchap2'
-            self.assertTrue(vtt in file)
-        else:
-            path = os.path.join(
-                settings.MEDIA_ROOT,
-                'files',
-                base_dir,
-                'Home',
-                'chapter_{0}.vtt'.format(video.title)
-            )
-            file = open(path).read()
-            vtt = '00:00:01.000 --> 00:00:02.000\nchap1\n\n' + \
-                '00:00:03.000 --> 00:00:04.000\nchap2'
-            self.assertTrue(vtt in file)

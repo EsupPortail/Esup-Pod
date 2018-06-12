@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from pod.chapters.views import video_chapter
+from pod.chapter.views import video_chapter
 
 urlpatterns = [
     url(r'^video_chapter/(?P<slug>[\-\d\w]+)/$',

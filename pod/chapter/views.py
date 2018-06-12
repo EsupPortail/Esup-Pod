@@ -4,13 +4,14 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
 from pod.video.models import Video
-from pod.chapters.models import Chapter
-from pod.chapters.forms import ChapterForm
-from pod.chapters.forms import ChapterImportForm
-from pod.chapters.utils import chapter_to_vtt
+from pod.chapter.models import Chapter
+from pod.chapter.forms import ChapterForm
+from pod.chapter.forms import ChapterImportForm
 
 import json
 
@@ -18,11 +19,10 @@ ACTION = ['new', 'save', 'modify', 'delete', 'cancel', 'import', 'export']
 
 
 @csrf_protect
+@login_required
+@staff_member_required
 def video_chapter(request, slug):
-    if not request.user.is_authenticated():
-        return HttpResponseForbidden(_(u'You need to be authenticated.'))
     video = get_object_or_404(Video, slug=slug)
-
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot chapter this video.'))
@@ -37,13 +37,11 @@ def video_chapter(request, slug):
                     request.POST['action'])
             )
     else:
-        chapters = video.get_chapters_file()
         return render(
             request,
             'video_chapter.html',
             {'video': video,
-             'list_chapter': list_chapter,
-             'chapters': chapters})
+             'list_chapter': list_chapter})
 
 
 def video_chapter_new(request, video):
@@ -81,7 +79,6 @@ def video_chapter_save(request, video):
     if form_chapter.is_valid():
         form_chapter.save()
         list_chapter = video.chapter_set.all()
-        chapter_to_vtt(list_chapter, video)
         if request.is_ajax():
             some_data_to_dump = {
                 'list_chapter': render_to_string(
@@ -144,7 +141,6 @@ def video_chapter_delete(request, video):
     chapter = get_object_or_404(Chapter, id=request.POST['id'])
     chapter.delete()
     list_chapter = video.chapter_set.all()
-    chapter_to_vtt(list_chapter, video)
     if request.is_ajax():
         some_data_to_dump = {
             'list_chapter': render_to_string(
@@ -180,7 +176,6 @@ def video_chapter_import(request, video):
         request.POST, user=request.user, video=video)
     if form_import.is_valid():
         list_chapter = video.chapter_set.all()
-        chapter_to_vtt(list_chapter, video)
         if request.is_ajax():
             some_data_to_dump = {
                 'list_chapter': render_to_string(

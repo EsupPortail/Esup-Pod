@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'pod.filepicker',
     'pod.video',
     'pod.completion',
-    'pod.chapters',
+    'pod.chapter',
     'pod.enrichment',
     'pod.playlist',
     'pod.video_search',
