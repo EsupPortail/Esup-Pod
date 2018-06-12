@@ -1,31 +1,32 @@
 """
 Unit tests for completion models
 """
+from django.apps import apps
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.exceptions import ValidationError
 from pod.video.models import Video
+from pod.video.models import Type
 from pod.completion.models import Contributor
 from pod.completion.models import Document
 from pod.completion.models import Overlay
 from pod.completion.models import Track
-try:
-    __import__('pod.filepicker')
+from datetime import datetime
+if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
     from pod.filepicker.models import CustomFileModel
     from pod.filepicker.models import UserDirectory
-except ImportError:
-    FILEPICKER = False
-    pass
-from datetime import datetime
 
 
 class ContributorModelTestCase(TestCase):
 
     def setUp(self):
         owner = User.objects.create(username='test')
+        videotype = Type.objects.create(title='others')
         video = Video.objects.create(
             title='video',
+            type=videotype,
             owner=owner,
             video='test.mp4'
         )
@@ -64,18 +65,46 @@ class ContributorModelTestCase(TestCase):
         print(" [ BEGIN COMPLETION_TEST_MODELS ] ")
         print(" ---> test_attributs : OK ! --- ContributorModel")
 
-    def test_clean(self):
+    def test_bad_attributs(self):
+        video = Video.objects.get(id=1)
+        contributor = Contributor()
+        contributor.video = video
+        contributor.role = 'actor'
+        self.assertRaises(ValidationError, contributor.clean)
+        contributor.name = 't'
+        self.assertRaises(ValidationError, contributor.clean)
+        contributor.name = 'test'
+        contributor.role = None
+        self.assertRaises(ValidationError, contributor.clean)
+
+        print(" ---> test_bad_attributs : OK ! --- ContributorModel")
+
+    def test_same(self):
+        video = Video.objects.get(id=1)
+        contributor = Contributor()
+        contributor.video = video
+        contributor.name = 'contributor'
+        contributor.role = 'actor'
+        self.assertRaises(ValidationError, contributor.clean)
+
+        print(" ---> test_same : OK ! --- ContributorModel")
+
+    def test_delete(self):
         Contributor.objects.get(id=1).delete()
         Contributor.objects.get(id=2).delete()
         self.assertTrue(Contributor.objects.all().count() == 0)
+
+        print(" ---> test_delete : OK ! --- ContributorModel")
 
 
 class DocumentModelTestCase(TestCase):
 
     def setUp(self):
         owner = User.objects.create(username='test')
+        videotype = Type.objects.create(title='others')
         video = Video.objects.create(
             title='video',
+            type=videotype,
             owner=owner,
             video='test.mp4'
         )
@@ -127,25 +156,31 @@ class DocumentModelTestCase(TestCase):
 
         print(" ---> test_attributs : OK ! --- DocumentModel")
 
-    def test_clean(self):
+    def test_delete(self):
         Document.objects.get(id=1).delete()
         Document.objects.get(id=2).delete()
         self.assertTrue(Document.objects.all().count() == 0)
+
+        print(" ---> test_delete : OK ! --- DocumentModel")
 
 
 class OverlayModelTestCase(TestCase):
 
     def setUp(self):
         owner = User.objects.create(username='test')
+        videotype = Type.objects.create(title='others')
         video = Video.objects.create(
             title='video',
+            type=videotype,
             owner=owner,
-            video='test.mp4'
+            video='test.mp4',
+            duration=10
         )
         Overlay.objects.create(
             video=video,
             title='overlay',
             content='test',
+            time_start=1,
             time_end=5,
             position='top-left'
         )
@@ -161,6 +196,7 @@ class OverlayModelTestCase(TestCase):
         self.assertEqual(overlay.video, video)
         self.assertEqual(overlay.title, 'overlay')
         self.assertEqual(overlay.content, 'test')
+        self.assertEqual(overlay.time_start, 1)
         self.assertEqual(overlay.time_end, 5)
         self.assertEqual(overlay.position, 'top-left')
 
@@ -179,18 +215,61 @@ class OverlayModelTestCase(TestCase):
 
         print(" ---> test_attributs : OK ! --- OverlayModel")
 
-    def test_clean(self):
+    def test_title(self):
+        video = Video.objects.get(id=1)
+        overlay = Overlay()
+        overlay.video = video
+        overlay.content = 'test'
+        self.assertRaises(ValidationError, overlay.clean)
+        overlay.title = 't'
+        self.assertRaises(ValidationError, overlay.clean)
+
+        print(" ---> test_title : OK ! --- OverlayModel")
+
+    def test_times(self):
+        video = Video.objects.get(id=1)
+        overlay = Overlay()
+        overlay.video = video
+        overlay.title = 'test'
+        overlay.content = 'test'
+        overlay.time_start = 7
+        overlay.time_end = 6
+        self.assertRaises(ValidationError, overlay.clean)
+        overlay.time_end = 11
+        self.assertRaises(ValidationError, overlay.clean)
+        overlay.time_end = 7
+        self.assertRaises(ValidationError, overlay.clean)
+
+        print(" ---> test_times : OK ! --- OverlayModel")
+
+    def test_overlap(self):
+        video = Video.objects.get(id=1)
+        overlay = Overlay()
+        overlay.video = video
+        overlay.title = 'test'
+        overlay.content = 'test'
+        overlay.time_start = 2
+        overlay.time_end = 3
+        self.assertRaises(ValidationError, overlay.clean)
+
+        print(" ---> test_overlap : OK ! --- OverlayModel")
+
+    def test_delete(self):
         Overlay.objects.get(id=1).delete()
         Overlay.objects.get(id=2).delete()
         self.assertTrue(Overlay.objects.all().count() == 0)
+
+        print(" ---> test_delete : OK ! --- OverlayModel")
 
 
 class TrackModelTestCase(TestCase):
 
     def setUp(self):
         owner = User.objects.create(username='test')
+        videotype = Type.objects.create(title='others')
         video = Video.objects.create(
             title='video',
+            type=videotype,
             owner=owner,
             video='test.mp4'
         )
@@ -247,8 +326,35 @@ class TrackModelTestCase(TestCase):
 
         print(" ---> test_attributs : OK ! --- TrackModel")
 
-    def test_clean(self):
+    def test_bad_attributs(self):
+        track = Track.objects.get(id=1)
+        track.kind = None
+        self.assertRaises(ValidationError, track.clean)
+        track.kind = 'other'
+        self.assertRaises(ValidationError, track.clean)
+        track.kind = 'captions'
+        track.lang = None
+        self.assertRaises(ValidationError, track.clean)
+        track.lang = 'en'
+        track.src = None
+        self.assertRaises(ValidationError, track.clean)
+
+        print(" ---> test_bad_attributs : OK ! --- TrackModel")
+
+    def test_same(self):
+        video = Video.objects.get(id=1)
+        track = Track()
+        track.video = video
+        track.kind = 'captions'
+        track.lang = 'en'
+        self.assertRaises(ValidationError, track.clean)
+
+        print(" ---> test_same : OK ! --- TrackModel")
+        print(" [ END COMPLETION_TEST_MODELS ] ")
+
+    def test_delete(self):
         Track.objects.get(id=1).delete()
         Track.objects.get(id=2).delete()
         self.assertTrue(Overlay.objects.all().count() == 0)
-        print(" [ END COMPLETION_TEST_MODELS ] ")
+
+        print(" ---> test_delete : OK ! --- TrackModel")

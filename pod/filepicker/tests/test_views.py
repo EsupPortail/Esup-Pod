@@ -48,7 +48,9 @@ class FileViewsTestCase(TestCase):
         user = authenticate(username='test', password='hello')
         login = self.client.login(username='test', password='hello')
         self.assertTrue(login)
-        response = self.client.get('/file-picker/file/upload/file/')
+        response = self.client.get(
+            '/file-picker/file/upload/file/?directory={0}'.format(
+                directory.id))
         self.assertEqual(response.status_code, 200)
         self.assertTrue('form' in str(response.content))
         with open('./pod/filepicker/tests/testfile.txt', 'rb') as testfile:
@@ -76,7 +78,9 @@ class FileViewsTestCase(TestCase):
         user = authenticate(username='test', password='hello')
         login = self.client.login(username='test', password='hello')
         self.assertTrue(login)
-        response = self.client.get('/file-picker/img/upload/file/')
+        response = self.client.get(
+            '/file-picker/img/upload/file/?directory={0}'.format(
+                directory.id))
         self.assertEqual(response.status_code, 200)
         self.assertTrue('form' in str(response.content))
         with open('./pod/filepicker/tests/testimage.jpg', 'rb') as testimage:
