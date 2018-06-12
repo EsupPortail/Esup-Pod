@@ -407,8 +407,13 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                     _(u'You cannot watch this video.'))
                 raise PermissionDenied
             else:
+                iframe_param = 'is_iframe=true&' if (
+                    request.GET.get('is_iframe')) else ''
                 return redirect(
-                    '%s?referrer=%s' % (settings.LOGIN_URL, request.path)
+                    '%s?%sreferrer=%s' % (
+                        settings.LOGIN_URL,
+                        iframe_param,
+                        request.get_full_path())
                 )
     else:
         return render(
