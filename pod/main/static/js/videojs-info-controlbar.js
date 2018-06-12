@@ -16,7 +16,7 @@
         /*
          * Chapter menu button
          */
-        var MenuButton = videojs.getComponent('MenuButton');
+        var MenuButton = videojs.getComponent('Button');
 
         var InfoMenuButton = videojs.extend(MenuButton, {
             constructor: function(player, options){
@@ -24,12 +24,17 @@
                 MenuButton.call(this, player, options);
                 this.el().setAttribute('aria-label', 'Info');
                 videojs.dom.addClass(this.el(), 'vjs-info-button');
+                this.controlText('Information');
+                //this.el().parent.style.color="white";
+                this.el().setAttribute(
+                    "style", 
+                    "color:white; stroke:white; background-image: url(/static/feather-icons/icons/info.svg); background-repeat: no-repeat; background-position: center; "
+                    ); 
             }
         });
         InfoMenuButton.prototype.handleClick = function(event){
             MenuButton.prototype.handleClick.call(this, event);
-            alert('coucou');
-            
+            show_info_video();
         };
         MenuButton.registerComponent('InfoMenuButton', InfoMenuButton);
 

@@ -16,13 +16,14 @@
         /*
          * Chapter menu button
          */
-        var MenuButton = videojs.getComponent('MenuButton');
+        var MenuButton = videojs.getComponent('Button');
 
         var LogoMenuButton = videojs.extend(MenuButton, {
             constructor: function(player, options){
                 options.label = 'Logo';
                 MenuButton.call(this, player, options);
                 this.el().setAttribute('aria-label', options.linktitle);
+                this.controlText(options.linktitle);
                 videojs.dom.addClass(this.el(), 'vjs-logo-button');
                 this.el().setAttribute("style", "background-image: url("+options.imgsrc+"); background-repeat: no-repeat;  background-position: center; "); 
                 this.link = options.link;
