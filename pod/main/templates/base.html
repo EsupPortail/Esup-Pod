@@ -17,7 +17,7 @@
 	    <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap.min.css' %}" crossorigin="anonymous">
 
 	    <!-- octicons -->
-	    <link rel="stylesheet" href="{% static 'css/lillePod.css' %}" media="screen" title="no title">
+	    <link rel="stylesheet" href="{% static 'css/pod.css' %}" media="screen" title="no title">
         {% if CSS_OVERRIDE %}
         <link rel="stylesheet" href="{% static CSS_OVERRIDE %}" media="screen" title="no title">
         {% endif %}
@@ -25,6 +25,7 @@
         <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
         <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
         <script src="{% static 'js/js.cookie.js' %}"></script>
+        <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 	    <title>{{ TITLE_SITE }} - {% block page_title %}{% endblock %}</title>
 
 	    {% block page_extra_head %}{% endblock %}
@@ -89,112 +90,15 @@
         </div>
         {% endif %}
         <!-- JS -->
-        <script>
-        var showalert = function(message,alerttype) {
-            $('body').append('<div id="formalertdiv" class="alert ' +  alerttype + ' alert-dismissible fade show"  role="alert">'+message+'<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
-            setTimeout(function() { $("#formalertdiv").remove(); }, 5000);
-        };
-        </script>
 		<script>
-		var listUser = {{LISTOWNER|safe}};
-
-		$('#ownerboxnavbar').keyup(function() {
-			if($(this).val() && $(this).val().length > 2) {
-				var valThis = $(this).val().toLowerCase();
-				var letter = valThis.charAt(0);
-				var nbuser = listUser[letter].length;
-				$("#accordion").html("");
-				for(i=0; i<nbuser; i++) {
-					var lastname = listUser[letter][i]["last_name"].toLowerCase();
-					if(lastname.indexOf(valThis) != -1) $("#accordion").append('<li><a href="{% url 'videos' %}?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</a></li>');
-				}
-			} else {
-				$("#accordion").html("");
-			}
-		});
-		$(".showUser").on('click', function() {
-			var letter = $(this).attr("data-target").toLowerCase();
-			var nbuser = listUser[letter].length;
-			$("#accordion").html("");
-			for(i=0; i<nbuser; i++) {
-				$("#accordion").append('<li><a href="{% url 'videos' %}?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</a></li>');
-			}
-		})
-
-        $(document).ready(function () {
-            //when a group is shown, save it as the active accordion group
-            $("#collapseAside").on('shown.bs.collapse', function () {
-                Cookies.set('activeCollapseAside', "open");
-                $(".collapseAside").html('<i data-feather="corner-left-up"></i><i data-feather="menu"></i>');
-                feather.replace({ class: 'align-bottom'});
-            });
-            $("#collapseAside").on('hidden.bs.collapse', function () {
-                Cookies.set('activeCollapseAside', "close");
-                $(".collapseAside").html('<i data-feather="corner-left-down"></i><i data-feather="menu"></i>');
-                feather.replace({ class: 'align-bottom'});
-            });
-            var last = Cookies.get('activeCollapseAside');
-            //alert('last '+last);
-            if (last != null && last=="close") {
-                //show the account_last visible group
-                $("#collapseAside").addClass("hide");
-                $(".collapseAside").html('<i data-feather="corner-left-down"></i><i data-feather="menu"></i>');
-                feather.replace({ class: 'align-bottom'});
-            } else {
-                $("#collapseAside").addClass("show");
-                $(".collapseAside").html('<i data-feather="corner-left-up"></i><i data-feather="menu"></i>');
-                feather.replace({ class: 'align-bottom'});
-            } 
-            TriggerAlertClose();
-        });
-
-        function TriggerAlertClose() {
-            window.setTimeout(function () {
-                $(".alert").fadeTo(1000, 0).slideUp(1000, function () {
-                    $(this).remove();
-                });
-            }, 5000);
-        }
-        /*** USER PICTURE ***/
-
-        $(document).on("click", ".get_form_userpicture",function() {
-            jqxhr = $.get(
-                "{% url "userpicture" %}"
-            );
-            jqxhr.done(function(data){
-                $('body').append(data);
-                $('#userpictureModal').modal('show');
-            });
-            jqxhr.fail(function($xhr) {
-                var data = $xhr.status+ " : " +$xhr.statusText;
-                showalert("{% trans 'Error during recording.' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}", "alert-danger");
-            });
-        });
-        $(document).on('hidden.bs.modal', '#userpictureModal', function (e) {
-          $('#userpictureModal').remove();
-        });
-        $(document).on("submit", "#userpicture_form", function (e) {
-            e.preventDefault();
-            var jqxhr= '';
-            var data_form = $( "#userpicture_form" ).serializeArray();
-            jqxhr = $.post(
-                $( "#userpicture_form" ).attr("action"),
-                data_form
-            );
-            jqxhr.done(function(data){
-                $( "#userpicture_form" ).html($(data).find("#userpicture_form").html());
-                if($(data).find("#userpictureurl").val()) {
-                    $(".get_form_userpicture").html('<img src="'+$(data).find("#userpictureurl").val()+'" height="34" class="rounded" alt="">{% trans 'Change your picture' %}');
-                }
-            });
-            jqxhr.fail(function($xhr) {
-                var data = $xhr.status+ " : " +$xhr.statusText;
-                showalert("{% trans 'Error during recording.' %} " + "("+data+")<br/>"+"{% trans 'No data could be stored.' %}", "alert-danger");
-            });
-        });
-
+        /** CHANNELS **/
+        var listTheme = new Array();
+        {% for channel in CHANNELS %}{% if channel.themes.count > 0 %}listTheme["channel_{{channel.id}}"] = {{channel.get_all_theme_json|safe}};{% endif %}{% endfor %}
+        /** USERS **/
+        var listUser = {{LISTOWNER|safe}};
+        var urlvideos = "{% url 'videos' %}";
 		</script>
-
+        <script src="{% static 'js/main.js' %}"></script>
 		{% block more_script %}
 		{% endblock more_script %}
         <script src="{% static 'feather-icons/feather.min.js' %}"></script>

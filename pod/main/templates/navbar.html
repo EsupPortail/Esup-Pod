@@ -55,11 +55,11 @@
             {% endif %}
             {% if request.user.is_staff or request.user.is_superuser %}
             {% if request.user.owner.userpicture  %}
-            <button class="btn btn-link dropdown-item get_form_userpicture" >
+            <button class="btn btn-link dropdown-item get_form_userpicture" data-url="{% url "userpicture" %}">
               <img src="{{user.owner.userpicture.file.url}}" height="34" class='rounded' alt="{{user}}">
               {% trans 'Change your picture' %}</button>
             {% else %}
-            <button class="btn btn-link dropdown-item get_form_userpicture">
+            <button class="btn btn-link dropdown-item get_form_userpicture"  data-url="{% url "userpicture" %}">
               <i data-feather="image"></i>&nbsp;{% trans 'Add your picture' %}</button>
             {% endif %}
             {% endif %}
@@ -70,9 +70,8 @@
             <a class="dropdown-item" href="{% url 'my_channels' %}" title="{% trans 'My channels' %}">
               <i data-feather="youtube"></i>&nbsp;{% trans 'My channels' %}</a>
             {% endif %}
-
-            <a class="dropdown-item" href="#"><i data-feather="airplay"></i>&nbsp;Mes playlists</a>
-
+            <a class="dropdown-item" href="{% url 'my_playlists' %}" title="{% trans 'My playlists' %}">
+              <i data-feather="airplay"></i>&nbsp;Mes playlists</a>
             <hr/>
             <a class="dropdown-item" href="{% url 'authentication_logout' %}" title="{% trans 'Log out' %}">
               <i data-feather="log-out"></i>&nbsp;{% trans 'Log out' %}</a>

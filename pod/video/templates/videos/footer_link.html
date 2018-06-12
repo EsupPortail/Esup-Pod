@@ -1,0 +1,12 @@
+{% load i18n %}
+<div class="card card-body p-2 mt-1">
+    <h5 class="card-title pl-2">
+      <i data-feather="link"></i>&nbsp;
+      {% trans "link" %}
+    </h5>
+    <div class="card-text" >
+        {% for link in LINK_FOOTER %}<p><a href="{{link.url}}" title="{{link.title}}" >&gt;  {{link.title}}</a></p>{% endfor %}
+    </div>
+</div>
+
+    

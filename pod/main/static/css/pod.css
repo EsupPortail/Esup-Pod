@@ -3,11 +3,12 @@ body {
 padding-top: 3.5rem;
 }
 .pod-mt-7{
-    margin-top: 5rem;
+    margin-top: 3.5rem;
 }
 #listeChaines{
     max-height: 30rem;
     overflow: auto;
+    border-bottom: 1px solid black;
 }
 .liste-collapse{
     z-index: 900;
@@ -135,6 +136,24 @@ div.card a:hover>img {
     left: 50%;
     transform: translate(-50%, 0);
     z-index:1000;
+}
+
+/** channel form **/
+#channel_form .selector {
+    width: 100% !important;
+}
+#channel_form .selector select {
+    width:100% !important;
+}
+#channel_form .selector-available, #channel_form .selector-chosen {
+    width: 47% !important;
+}
+#channel_form .selector-available h2, #channel_form .selector-chosen h2 {
+    margin: 0;
+    padding: 8px;
+    font-weight: 400;
+    font-size: 13px;
+    text-align: left;
 }
 
 /* vignettes video */
