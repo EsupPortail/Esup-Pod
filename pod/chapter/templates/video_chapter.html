@@ -7,12 +7,8 @@
 	<!-- media -->
 	<link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
 	<link href="{% static 'css/quality-selector.css' %}" rel="stylesheet">
-	<link rel="stylesheet" href="{% static 'css/filepicker.overlay.css' %}"/>
-	<link rel="stylesheet" href="{% static 'css/chapters.css' %}"/>
-	<script src="{% static 'js/jquery.tools.min.js' %}"></script>
+	<link href="{% static 'css/chapters.css' %}" rel="stylesheet">
 	<script src="{% static 'js/main.js' %}"></script>
-	<script src="{% static 'js/ajaxupload.js' %}"></script>
-    <script src="{% static 'js/jquery.filepicker.js' %}"></script>
     <script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
 	<script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
 	<script src="{% static 'js/silvermine-videojs-quality-selector.min.js' %}"></script>
@@ -22,19 +18,12 @@
 	<script src="{% static 'video-js-6.8.0/lang/fr.js' %}"></script>
 	<script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
     <script src="{% static 'js/chapters.js' %}"></script>
+    {% if video.chapter_set.all %}
+    	<link href="{% static 'css/videojs-chapters.css' %}" rel="stylesheet">
+    	<script src="{% static 'js/videojs-chapters.js' %}"></script>
+    {% endif %}
     <script>
-    	var num = 0,
-	    name = '';
-		// For the form
 		var video_duration = {{video.duration}}
-		// For the Cancel button
-		$(document).on('reset', 'form', function(e) {
-			$('span#form_chapter').html('');
-			$('form#form_new').show();
-			$('form').show();
-			$('table tr').removeClass('info');
-			manageResize();
-		});
 	</script>
 {% endblock page_extra_head %}
 {% block content %}
@@ -60,27 +49,41 @@
 					  To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
 					</p>
 					<source src="https://d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8" type="application/x-mpegURL">
-					{% if video.chapter_set.all %}
-						<track src="{{video.get_chapters_file}}" kind="chapters" srclang="en" label="Chapters" default>
-					{% endif %}
 				</video>
+				{% if video.chapter_set.all %}
+					<div class="chapters-list inactive" role="menu">
+						<h6>Chapters</h6>
+						<ol id="chapters-list"></ol>
+					</div>
+					<ul id="chapters">
+						{% for chapter in video.chapter_set.all %}
+							<li data-start="{{chapter.time_start}}"
+								data-id="{{chapter.id}}"
+								data-title="{{chapter.title}}">
+								{{chapter.title}}
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
 			</span>
 			<hr/>
 			<div class="row" id="info_video">
 				<div class="col-sm-9">
-					<span id="list_chapter">
+					<div id="list_chapter">
 						{% include 'chapter/list_chapter.html' %}
-					</span>
-					<span id="form_chapter">
+					</div>
+					<div id="form_chapter">
 						{% if form_chapter %}
 							{% include 'chapter/form_chapter.html' with form_chapter=form_chapter %}
 						{% endif %}
-					</span>
-					<form id="form_new" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
-						{% csrf_token %}
-						<input type="hidden" name="action" value="new"/>
-						<input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-info"/>
-					</form>
+					</div>
+					{% if not form_chapter %}
+						<form id="form_new" class="get_form" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
+							{% csrf_token %}
+							<input type="hidden" name="action" value="new"/>
+							<input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-info"/>
+						</form>
+					{% endif %}
 				</div>
 				<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
 					<div class="widget user-tools">
@@ -159,6 +162,11 @@
 	    //Add source to player
 	    player.src(srcOptions);
 	  {% endif %}
+	{% endif %}
+	{% if video.chapter_set.all %}
+		player.videoJsChapters();
+		$('.vjs-big-play-button').css('z-index', 2)
+		$('.vjs-control-bar').css('z-index', 3);
 	{% endif %}
 </script>
 {% endblock more_script %}

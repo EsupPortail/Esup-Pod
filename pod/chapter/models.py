@@ -1,3 +1,5 @@
+import time
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db import connection
@@ -32,16 +34,12 @@ class Chapter(models.Model):
         _('Start time'),
         default=0,
         help_text=_(u'Start time of the chapter, in seconds.'))
-    time_end = models.PositiveIntegerField(
-        _('End time'),
-        default=1,
-        help_text=_(u'End time of the chapter, in seconds.'))
 
     class Meta:
         verbose_name = _('Chapter')
         verbose_name_plural = _('Chapters')
         ordering = ['time_start']
-        unique_together = ('title', 'time_start', 'time_end', )
+        unique_together = ('title', 'time_start', 'video',)
 
     def clean(self):
         msg = list()
@@ -61,16 +59,10 @@ class Chapter(models.Model):
 
     def verify_time(self):
         msg = list()
-        if self.time_start > self.time_end:
-            msg.append(
-                _('The value of the time start field is greater than the ' +
-                    'value of the end time field.'))
-        elif self.time_end > self.video.duration:
-            msg.append(_('The value of time end field is greater than the ' +
-                         'video duration.'))
-        elif self.time_start == self.time_end:
-            msg.append(_('Time end field and time start field can\'t ' +
-                         'be equal.'))
+        if (self.time_start == '' or self.time_start < 0 or
+                self.time_start >= self.video.duration):
+            msg.append(_('Please enter a correct start field between 0 and ' +
+                         '{0}'.format(self.video.duration - 1)))
         if len(msg) > 0:
             return msg
         return list()
@@ -85,14 +77,11 @@ class Chapter(models.Model):
             list_chapter = list_chapter.exclude(id=instance.id)
         if len(list_chapter) > 0:
             for element in list_chapter:
-                if not ((self.time_start < element.time_start and
-                         self.time_end <= element.time_start) or
-                        (self.time_start >= element.time_end and
-                         self.time_end > element.time_end)):
-                    msg.append(_('There is an overlap with ' +
-                                 'the chapter {0}, '.format(element.title) +
-                                 'please change time start and/or ' +
-                                 'time end values.'))
+                if self.time_start == element.time_start:
+                    msg.append(
+                        _('There is an overlap with the chapter ' +
+                            '{0}, please change start and/or ' +
+                            'end values.'.format(element.title)))
             if len(msg) > 0:
                 return msg
         return list()
@@ -113,6 +102,11 @@ class Chapter(models.Model):
         newid = '{0}'.format(newid)
         self.slug = '{0}-{1}'.format(newid, slugify(self.title))
         super(Chapter, self).save(*args, **kwargs)
+
+    @property
+    def chapter_in_time(self):
+        return time.strftime('%H:%M:%S', time.gmtime(self.time_start))
+    chapter_in_time.fget.short_description = _('Start time')
 
     def __str__(self):
         return u'Chapter: {0} - video: {0}'.format(self.title, self.video)
