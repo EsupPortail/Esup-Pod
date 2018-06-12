@@ -1,11 +1,13 @@
 from django.contrib import messages
 from django.http import HttpResponse
-from django.http import HttpResponseForbidden
 from django.template.loader import render_to_string
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.exceptions import PermissionDenied
 from pod.video.models import Video
 from pod.completion.models import Contributor
 from pod.completion.forms import ContributorForm
@@ -22,15 +24,13 @@ ACTION = ['new', 'save', 'modify', 'delete']
 
 
 @csrf_protect
+@login_required
 def video_completion(request, slug):
-    if not request.user.is_authenticated():
-        return HttpResponseForbidden('You need to be authenticated.')
     video = get_object_or_404(Video, slug=slug)
-
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
-        return HttpResponseForbidden('Only the owner can add completion.')
+        raise PermissionDenied
     elif request.user.is_staff:
         list_contributor = video.contributor_set.all()
         list_track = video.track_set.all()
@@ -57,19 +57,20 @@ def video_completion(request, slug):
 
 
 @csrf_protect
+@login_required
 def video_completion_contributor(request, slug):
-    if not request.user.is_authenticated():
-        return HttpResponseForbidden()
     video = get_object_or_404(Video, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
-        return HttpResponseForbidden()
-
-    list_contributor = video.contributor_set.all()
-    list_track = video.track_set.all()
-    list_document = video.document_set.all()
-    list_overlay = video.overlay_set.all()
+        raise PermissionDenied
+    elif request.user.is_staff:
+        list_contributor = video.contributor_set.all()
+        list_track = video.track_set.all()
+        list_document = video.document_set.all()
+        list_overlay = video.overlay_set.all()
+    else:
+        list_contributor = video.contributor_set.all()
 
     if request.POST and request.POST.get('action'):
         if request.POST['action'] in ACTION:
@@ -77,15 +78,22 @@ def video_completion_contributor(request, slug):
                 'video_completion_contributor_{0}(request, video)'.format(
                     request.POST['action'])
             )
-    else:
+
+    elif request.user.is_staff:
         return render(
             request,
             'video_completion.html',
             {'video': video,
              'list_contributor': list_contributor,
-             'list_document': list_document,
              'list_track': list_track,
+             'list_document': list_document,
              'list_overlay': list_overlay})
+    else:
+        return render(
+            request,
+            'video_completion.html',
+            {'video': video,
+             'list_contributor': list_contributor})
 
 
 def video_completion_contributor_new(request, video):
@@ -228,14 +236,14 @@ def video_completion_contributor_delete(request, video):
 
 
 @csrf_protect
+@login_required
+@staff_member_required
 def video_completion_document(request, slug):
-    if not request.user.is_authenticated() or not request.user.is_staff:
-        return HttpResponseForbidden()
     video = get_object_or_404(Video, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
-        return HttpResponseForbidden()
+        raise PermissionDenied
 
     list_contributor = video.contributor_set.all()
     list_document = video.document_set.all()
@@ -405,14 +413,14 @@ def video_completion_document_delete(request, video):
 
 
 @csrf_protect
+@login_required
+@staff_member_required
 def video_completion_track(request, slug):
-    if not request.user.is_authenticated() or not request.user.is_staff:
-        return HttpResponseForbidden()
     video = get_object_or_404(Video, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
-        return HttpResponseForbidden()
+        raise PermissionDenied
 
     list_contributor = video.contributor_set.all()
     list_track = video.track_set.all()
@@ -575,14 +583,14 @@ def video_completion_track_delete(request, video):
 
 
 @csrf_protect
+@login_required
+@staff_member_required
 def video_completion_overlay(request, slug):
-    if not request.user.is_authenticated() or not request.user.is_staff:
-        return HttpResponseForbidden()
     video = get_object_or_404(Video, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
-        return HttpResponseForbidden()
+        raise PermissionDenied
 
     list_contributor = video.contributor_set.all()
     list_document = video.document_set.all()
