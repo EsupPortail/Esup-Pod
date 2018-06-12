@@ -81,7 +81,6 @@ class ChapterModelTestCase(TestCase):
 
     def test_overlap(self):
         video = Video.objects.get(id=1)
-        chapter1 = Chapter.objects.get(id=1)
         chapter = Chapter()
         chapter.video = video
         chapter.title = 'test'
