@@ -23,7 +23,7 @@ from django.dispatch import receiver
 from django.utils.html import format_html
 from django.db.models.signals import pre_delete
 from tagging.models import Tag
-from datetime import datetime
+from datetime import datetime, date
 from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
@@ -250,7 +250,7 @@ class Channel(models.Model):
             list_theme["%s" % theme.id] = {
                 "title": "%s" % theme.title,
                 "slug": "%s" % theme.slug,
-                "url": "%s" %theme.get_absolute_url(),
+                "url": "%s" % theme.get_absolute_url(),
                 "child": theme.get_all_children_tree()
             }
         return list_theme
@@ -315,7 +315,7 @@ class Theme(models.Model):
             children["%s" % child.id] = {
                 "title": "%s" % child.title,
                 "slug": "%s" % child.slug,
-                "url": "%s" %child.get_absolute_url(),
+                "url": "%s" % child.get_absolute_url(),
                 "child": child.get_all_children_tree()
             }
         return children
@@ -438,9 +438,9 @@ class Video(models.Model):
             'numbers, underscore or dash top.'),
         editable=False)
     owner = models.ForeignKey(User, verbose_name=_('Owner'))
-    date_added = models.DateTimeField(_('Date added'), default=timezone.now())
+    date_added = models.DateTimeField(_('Date added'), default=timezone.now)
     date_evt = models.DateField(
-        _('Date of event'), default=timezone.now(), blank=True, null=True)
+        _('Date of event'), default=date.today, blank=True, null=True)
     description = RichTextField(
         _('Description'),
         config_name='complete',

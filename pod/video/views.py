@@ -29,11 +29,11 @@ from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import NotesForm
 
-if apps.is_installed('pod.playlist'):
-    from pod.playlist.models import Playlist
-
 import json
 from datetime import datetime
+
+if apps.is_installed('pod.playlist'):
+    from pod.playlist.models import Playlist
 
 
 # VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
