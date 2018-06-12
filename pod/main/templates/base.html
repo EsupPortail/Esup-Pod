@@ -21,6 +21,9 @@
         {% if CSS_OVERRIDE %}
         <link rel="stylesheet" href="{% static CSS_OVERRIDE %}" media="screen" title="no title">
         {% endif %}
+        {% if request.GET.is_iframe %}
+        <link rel="stylesheet" href="{% static 'css/iframe.css' %}" media="screen" title="no title">
+        {% endif %}
         <!-- Javascript -->
         <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
         <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
