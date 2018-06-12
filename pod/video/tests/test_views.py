@@ -498,7 +498,23 @@ class VideoTestView(TestCase):
         response = self.client.get("/video/%s/" % v.slug)
         self.assertEqual(response.status_code, 200)
         # TODO test with password
+        v.is_restricted = False
+        # v.restrict_access_to_groups = None
+        v.password = "password"
+        v.save()
+        self.client.logout()
+        response = self.client.get("/video/%s/" % v.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context["form"])
         # TODO test with hashkey
+        response = self.client.get("/video/%s/%s/" % (v.slug, v.get_hashkey()))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual("form" in response.context.keys(), False)
+        v.is_draft = True
+        v.save()
+        response = self.client.get("/video/%s/%s/" % (v.slug, v.get_hashkey()))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual("form" in response.context.keys(), False)
 
 
 @override_settings(

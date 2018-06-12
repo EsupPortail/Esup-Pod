@@ -252,7 +252,7 @@ class Channel(models.Model):
             list_theme["%s" % theme.id] = {
                 "title": "%s" % theme.title,
                 "slug": "%s" % theme.slug,
-                "url": "%s" %theme.get_absolute_url(),
+                "url": "%s" % theme.get_absolute_url(),
                 "child": theme.get_all_children_tree()
             }
         return list_theme
@@ -317,7 +317,7 @@ class Theme(models.Model):
             children["%s" % child.id] = {
                 "title": "%s" % child.title,
                 "slug": "%s" % child.slug,
-                "url": "%s" %child.get_absolute_url(),
+                "url": "%s" % child.get_absolute_url(),
                 "child": child.get_all_children_tree()
             }
         return children

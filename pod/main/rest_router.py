@@ -60,6 +60,7 @@ if apps.is_installed('pod.filepicker'):
                     filepicker_views.CustomImageModelSerializerViewSet)
 
 urlpatterns = [
-    url(r'dublincore/$', video_views.DublinCoreView.as_view(), name='dublincore'),
+    url(r'dublincore/$', video_views.DublinCoreView.as_view(),
+        name='dublincore'),
     url(r'^', include(router.urls)),
 ]
