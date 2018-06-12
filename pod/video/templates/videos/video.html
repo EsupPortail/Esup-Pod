@@ -144,20 +144,20 @@ body {
     </div>
 </form>
 <p>
-  {% trans 'If you do not have the password for this content, please' %} <a href="{% url 'contact_us' %}?owner={{video.owner.id}}&video={{video.id}}&subject=request_password">{% trans 'contact its owner' %}</a>.
+  {% trans 'If you do not have the password for this content, please' %} <a href="{% url 'contact_us' %}?owner={{video.owner.id}}&video={{video.id}}&subject=request_password" title="{% trans 'contact its owner' %}" {% if request.GET.is_iframe %}target="_blank"{%endif%}>{% trans 'contact its owner' %}</a>.
 </p>
 
 {% else %}
 {% if playlist %}
   {% include 'playlist/playlist_player.html' with playlist=playlist %}
 {% endif %}
+
 <video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
 poster="{{video.get_thumbnail_url}}" data-setup='{}'>
   <p class="vjs-no-js">
     To view this video please enable JavaScript, and consider upgrading to a web browser that
     <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
   </p>
-  <source src="http://media.w3.org/2010/05/sintel/trailer.mp4" type="video/mp4">
 </video>
 <form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
 {% csrf_token %}
@@ -174,7 +174,7 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
   {% endfor %}
 </ul>
 {% endif %}
-<nav id="navbar-example2" class="navbar navbar-light bg-light">
+<nav id="navbar-video" class="navbar navbar-light bg-light">
   <span class="navbar-brand" >{{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
   <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
       <i data-feather="alert-octagon"></i>
@@ -222,96 +222,7 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
     {% endif %}
   </ul>
 </nav>
-
-<div data-spy="scroll" data-target="#navbar-example2" data-offset="0" class="scrollspy-video">
-  <h5 id="summary"><i data-feather="align-justify"></i>&nbsp;{% trans 'Summary' %}</h5>
-  <div class="scrollspy-content">
-    {% if video.is_360 %}<p class="text-info">{% trans "This is a 360 degree video. To look around click and drag your mouse on the video."%}</p>{% endif %}
-    <p>{{ video.description|safe }}</p>
-    {% tags_for_object video as tag_list %}
-    {% if tag_list %}
-    <p>{% trans 'Tags' %}:&nbsp;
-      {% for tag in tag_list %}
-       <a href="{% url 'videos' %}?tag={{ tag.slug }}" title="{{ tag }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
-           <span class="label label-default">{{ tag }}</span>
-       </a>
-      {% endfor %}
-    </p>
-    {% endif %}
-  </div>
-  <hr/>
-  <!-- INFO -->
-  <h5 id="infos"><i data-feather="info"></i>&nbsp;{% trans 'Infos' %}</h5>
-  <div class="scrollspy-content">
-    <p>
-    {% trans 'Added by' %}: <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
-    {% thumbnail video.owner.owner.userpicture.file "x34" as im %}
-        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}">
-    {% endthumbnail %}
-    {{ video.owner.get_full_name }}</a><br/>
-    {% trans 'Updated on' %}: <strong>{{ video.date_added }}</strong><br/>
-    {% trans 'Duration' %}: <strong>{{ video.duration_in_time }}</strong><br/>
-    {% trans 'Number of view(s)' %}: <strong>{{ video.get_viewcount }}</strong><br/>
-    {% trans 'Type' %}: <a href="{% url 'videos' %}?type={{ video.type.slug }}" title="{{ video.type.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ video.type.title }}</a><br/>
-    {% trans "Main language" %}: <strong>{{video.get_main_lang}}</strong>
-    {% if video.cursus and video.cursus != '0' %}<br/>{% trans 'Audience' %}:{{video.get_cursus}}{%endif%}
-    {% if video.discipline.all %}<br/>{% trans 'Disciplines' %}:&nbsp;
-      {% for disc in video.discipline.all %}
-      <a href="{% url 'videos' %}?discipline={{ disc.slug }}" title="{{ disc.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
-          {{ disc.title }}
-      </a>
-      {% endfor %}
-    {%endif%}
-    </p>
-  </div>
-  <hr/>
-  <!-- Download -->
-  <h5 id="downloads"><i data-feather="download"></i>&nbsp;{% trans 'Downloads' %}</h5>
-  <div class="scrollspy-content"><p>...</p></div>
-  <hr/>
-  <!-- Embed Share -->
-  <h5 id="embed"><i data-feather="cast"></i>&nbsp;{% trans 'Embed/Share' %}</h5>
-  <div class="scrollspy-content">
-  {% if not video.is_restricted and not video.password %}
-    <p>
-        <label>{% trans 'Social Networks' %}</label>
-        <a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-facebook btn-sm" title="{% trans "Share on" %} Facebook"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/F_icon.svg/200px-F_icon.svg" height="24" alt="facebook" /> </a>
-        <a target="_blank" href="http://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-twitter btn-sm" title="{% trans "Share on" %} Twitter"> <img src="https://upload.wikimedia.org/wikipedia/fr/c/c8/Twitter_Bird.svg" height="24" alt="twitter" /> </a>
-        <a target="_blank" href="https://plus.google.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-google-plus btn-sm" title="{% trans "Share on" %} Google+"> <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Google_plus.svg" height="24" alt="google" /> </a>
-    </p>
-    <hr />
-  {% endif %}
-    <p>
-      <span class="form-group">
-      <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page' %}</label>
-      <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="https://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
-      </span>
-      <span class="form-group">
-      <label for="txtpartage">{% trans 'Use this link to share the video' %}</label>
-      <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
-      </span>
-    </p>
-  </div>
-  {% if video.enrichment_set.all %}
-  <hr/>
-  <!-- Version -->
-  <h5 id="version">{% trans 'Version' %}</h5>
-  <div class="scrollspy-content">
-    <p>
-      {% trans 'Here you will find alternative version of the video if they exist : Enriched, Interactive and Accessible.' %}
-    </p>
-    {% if video.enrichment_set.all %}
-    <small class="video_back">
-      <a href="{% url 'video_enriched' slug=video.slug %}">
-        <button class="btn btn-default" title="Go to enriched video">{% trans 'Enriched version' %}</button>
-      </a>
-    </small>
-    {% endif %}
-    <!-- Interactive -->
-    <!-- Accessible -->
-  </div>
-  {% endif %}
-</div>
+{% include 'videos/video-info.html'%}
 {%endif%}
 {% endblock page_content %}
 
@@ -343,101 +254,7 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
 
 
 {% block more_script %}
-
-{% if form %}
-<script>
-
-</script>
-{% else %}
-<script>
-var options = {
-  notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
-  language: "fr", //en or nl
-  fluid: true, 
-  playbackRates: [0.5, 1, 1.5, 2]
-}
-var player = videojs('podvideoplayer', options, function(){});
-
-player.on('firstplay', function(){
-    var data_form = $( "#video_count_form" ).serializeArray();
-    jqxhr = $.post(
-      $( "#video_count_form" ).attr("action"),
-      data_form
-    );
-});
-
-{% if video.is_video %}
-  /** get all mp4 format **/
-  var mp4_sources = {{video.get_video_mp4_json|safe}};
-  
-  {% if video.get_playlist_master %}
-    var srcOptions = {
-      src: '{{video.get_playlist_master.source_file.url}}',
-      type: '{{video.get_playlist_master.encoding_format}}',
-    };
-    player.on('loadedmetadata', function() {
-      //console.log('LOADEDMETADATA');
-      var qualityLevels = this.qualityLevels();
-
-    });
-    //Add source to player
-    player.src(srcOptions);
-    //add quality selector to player
-    player.hlsQualitySelector();
-    player.on("error", function(e){
-      e.stopImmediatePropagation();
-      var error = player.error();
-      if(error.code == 3) {
-        //console.log('error!', error.code, error.type , error.message);
-        if(player.src().indexOf("m3u8")!=-1){
-          //alert("change source to mp4");
-          player.src(mp4_sources);
-          player.controlBar.addChild('QualitySelector');
-          player.play();
-        }
-      }
-    });
-  {% else %}
-    player.src(mp4_sources);
-    player.controlBar.addChild('QualitySelector');
-  {% endif %}
-
-  {% if video.overlay_set.all %}
-    var list_overlays = [];
-    $('ul#overlays li').each(function() {
-      list_overlays.push({
-        content: $(this).attr('data-content'),
-        align: $(this).attr('data-position'),
-        showBackground: $(this).attr('data-background'),
-        start: parseInt($(this).attr('data-timestart')),
-        end: parseInt($(this).attr('data-timeend'))
-      });
-    });
-    player.overlay({
-      overlays: list_overlays
-    });
-  {% endif %}
-
-  {% if video.overview %}
-    //add overview
-    player.vttThumbnails({
-      src: '{% if request.is_secure %}https://{%else%}http://{% endif %}{{request.get_host}}{{video.overview.url}}'
-    });
-  {%endif%}
-  {% if video.is_360 %}
-    player.vr({projection: '360'});
-  {% endif %}
-
-{% else %}
-  {% if video.get_video_m4a %}
-    var srcOptions = {
-      src: '{{video.get_video_m4a.source_file.url}}',
-      type: '{{video.get_video_m4a.encoding_format}}',
-    };
-    //Add source to player
-    player.src(srcOptions);
-  {% endif %}
-{% endif %}
-</script>
+{% if not form %}
+{% include 'videos/video-script.html'%}
 {% endif %}
 {% endblock more_script %}

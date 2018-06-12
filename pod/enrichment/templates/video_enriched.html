@@ -94,7 +94,7 @@
 	  <source src="https://d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8" type="application/x-mpegURL">
 	  <track kind="metadata" src="{{video.get_enrichments_file}}">
 	</video>
-	<nav id="navbar-example2" class="navbar navbar-light bg-light">
+	<nav id="navbar-video" class="navbar navbar-light bg-light">
   		<a class="navbar-brand" href="#">({% trans 'Enriched' %}) {{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}</a>
 		<small class="video_back">
 			<a href="{% url 'video' slug=video.slug %}">

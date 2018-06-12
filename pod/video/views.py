@@ -328,6 +328,9 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         Playlist,
         slug=request.GET['playlist']) if request.GET.get('playlist') else None
 
+    template_video = 'videos/video-iframe.html' if (
+        request.GET.get('is_iframe')) else 'videos/video.html'
+
     is_draft = video.is_draft
     is_restricted = video.is_restricted
     is_restricted_to_group = video.restrict_access_to_groups.all().exists()
@@ -377,7 +380,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         )
         if show_page:
             return render(
-                request, 'videos/video.html', {
+                request, template_video, {
                     'channel': channel,
                     'video': video,
                     'theme': theme,
@@ -404,12 +407,17 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                     _(u'You cannot watch this video.'))
                 raise PermissionDenied
             else:
+                iframe_param = 'is_iframe=true&' if (
+                    request.GET.get('is_iframe')) else ''
                 return redirect(
-                    '%s?referrer=%s' % (settings.LOGIN_URL, request.path)
+                    '%s?%sreferrer=%s' % (
+                        settings.LOGIN_URL,
+                        iframe_param,
+                        request.get_full_path())
                 )
     else:
         return render(
-            request, 'videos/video.html', {
+            request, template_video, {
                 'channel': channel,
                 'video': video,
                 'theme': theme,

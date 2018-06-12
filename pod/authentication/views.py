@@ -35,11 +35,13 @@ else:
 
 def authentication_login(request):
     referrer = request.GET['referrer'] if request.GET.get('referrer') else '/'
+    iframe_param = 'is_iframe=true&' if (
+        request.GET.get('is_iframe')) else ''
     if request.user.is_authenticated():
         return redirect(referrer)
     if USE_CAS and CAS_GATEWAY:
         url = reverse('authentication_login_gateway')
-        url += '?next=%s' % referrer
+        url += '?%snext=%s' % (iframe_param, referrer)
         return redirect(url)
     elif USE_CAS:
         return render(request, 'authentication/login.html', {
@@ -47,7 +49,7 @@ def authentication_login(request):
         })
     else:
         url = reverse('local-login')
-        url += '?next=%s' % referrer
+        url += '?%snext=%s' % (iframe_param, referrer)
         return redirect(url)
 
 
