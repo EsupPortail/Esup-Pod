@@ -443,6 +443,7 @@
                             });
                             data.file = response.name;
                             self.getForm(data);
+                            $('.file-picker-tabs a')[1].click();
                         });
                         var upload_form = upload_pane.find('.upload_form');
                         upload_form.append(submit);

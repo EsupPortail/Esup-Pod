@@ -780,8 +780,11 @@ class ImagePickerBase(FilePickerBase):
         if thumb:
             json['link_content'] = [img.format(
                 thumb.url, 'image', thumb.width, thumb.height), ]
+            json['extra']['thumbnail'] = img.format(
+                thumb.url, 'image', thumb.width, thumb.height)
         else:
             json['link_content'] = [img.format('', 'Not Found', 100, 100), ]
+            json['extra']['thumbnail'] = img.format('', 'Not Found', 100, 100)
         return json
 
     def get_file(self, request):
