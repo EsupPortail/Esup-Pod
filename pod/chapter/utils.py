@@ -1,20 +1,12 @@
-import os
 import time
 import datetime
 
-from django.conf import settings
-from django.core.files import File
 from django.apps import apps
-from django.utils import timezone
-from webvtt import WebVTT, Caption
+from webvtt import WebVTT
 from pod.chapter.models import Chapter
-if apps.is_installed('pod.authentication'):
-    from pod.authentication.models import Owner
-    AUTH = True
 if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
-    from pod.filepicker.models import CustomFileModel
-    from pod.filepicker.models import UserDirectory
+
 
 def vtt_to_chapter(vtt, video):
     Chapter.objects.filter(video=video).delete()
@@ -32,7 +24,7 @@ def vtt_to_chapter(vtt, video):
         if time_start > video.duration or time_start < 0:
             return 'The VTT file contains a chapter started at an ' + \
                    'incorrect time in the video : {0}'.format(caption.text)
-        
+
         new = Chapter()
         new.title = caption.text
         new.time_start = time_start
