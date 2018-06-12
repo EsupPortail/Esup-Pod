@@ -47,6 +47,10 @@
     <link href="{% static 'videojs-vr/videojs-vr.css' %}" rel="stylesheet">
     <script src="{% static 'videojs-vr/videojs-vr.min.js' %}"></script>
     {% endif %}
+    <script src="{% static 'js/videojs-logo-controlbar.js' %}"></script>
+
+    <script src="{% static 'js/videojs-info-controlbar.js' %}"></script>
+
     <style>
         body{
             margin: 0;
@@ -68,6 +72,14 @@
             border: 1% #ccc solid;
             box-shadow: 0 0 20px rgba(50, 50, 50, 0.95);
         }
+        .video-js .vjs-info-button .vjs-icon-placeholder,.vjs-icon-chapters {
+         font-family:VideoJS;
+         font-weight:400;
+         font-style:normal
+        }
+        .video-js .vjs-info-button .vjs-icon-placeholder:before,.vjs-icon-chapters:before {
+         content: url('data:image/svg+xml; utf8, <svg class="" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-reactid="656"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="8"></line></svg>');
+        }
     </style>
 </head>
 <body>
@@ -76,7 +88,7 @@
 <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
 <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" />
 <div class="player_wrapper" id="div-video-wrapper">
-    <video id="podvideoplayer" class="video-js vjs-default-skin vjs-big-play-centered" poster="{{video.get_thumbnail_url}}"  crossorigin="anonymous" controls >
+    <video id="podvideoplayer" class="video-js vjs-default-skin vjs-big-play-centered" poster="{{video.get_thumbnail_url}}"  crossorigin="anonymous" {% if request.GET.nocontrol and request.GET.nocontrol == 'false' %} autoplay {%else%} controls {% if request.GET.autoplay and request.GET.autoplay == 'true' %} autoplay{%endif%}{%endif%} >
         <p class="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading to a web browser that
             <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
@@ -111,6 +123,5 @@
   window.onresize = resizeVideoJs; // Call the function on resize
 </script>
 {% endif %}
-
 {% endblock more_script %}
 </html>

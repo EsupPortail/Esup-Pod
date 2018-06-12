@@ -51,6 +51,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         'FOOTER_TEXT': ('',),
         # 'FAVICON': 'img/favicon.png',
         # 'CSS_OVERRIDE' : 'custom/etab.css'
+        # 'LINK_PLAYER':''
     }
 )
 
