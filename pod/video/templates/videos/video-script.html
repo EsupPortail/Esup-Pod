@@ -32,7 +32,9 @@ player.on('firstplay', function(){
     player.on('loadedmetadata', function() {
       //console.log('LOADEDMETADATA');
       var qualityLevels = this.qualityLevels();
-
+      {% if request.GET.start and request.GET.start != '0' %}
+      player.currentTime({{request.GET.start}});
+      {%endif%}
     });
     //Add source to player
     player.src(srcOptions);
@@ -99,6 +101,11 @@ player.on('firstplay', function(){
     {%endif%}
     //add logo to the player
     player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
+    player.on('loadedmetadata', function() {
+      {% if request.GET.start and request.GET.start != '0' %}
+      player.currentTime({{request.GET.start}});
+      {%endif%}
+    });
   {% endif %}
 {% endif %}
 </script>

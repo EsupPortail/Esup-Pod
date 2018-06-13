@@ -115,14 +115,48 @@
     <hr />
   {% endif %}
     <p>
-      <span class="form-group">
-      <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page' %}</label>
-      <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="https://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
-      </span>
-      <span class="form-group">
-      <label for="txtpartage">{% trans 'Use this link to share the video' %}</label>
-      <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
-      </span>
+      <div class="list-group">
+        <fieldset>
+        <div class="list-group-item">
+          <div class="form-group">
+          <div class="form-check">
+          <input type="checkbox" id="autoplay" class="form-check-input" /><label for="autoplay" class="form-check-label" >{% trans 'Autoplay' %}</label>
+          <small id="autoplayHelp" class="form-text text-muted">{% trans 'Check the box to autoplay the video.' %}</small>
+          </div>
+          </div>
+        </div>
+        <div class="list-group-item">
+          <div class="form-group">
+          <div class="form-check">
+          <input type="checkbox" id="loop" class="form-check-input" /><label for="loop" class="form-check-label" >{% trans 'Loop' %}</label>
+          <small id="loopHelp" class="form-text text-muted">{% trans 'Check the box to loop the video.' %}</small>
+          </div>
+          </div>
+        </div>
+        <div class="list-group-item">
+          <div class="form-group ">
+            <div class="form-check">
+              <input name="displaytime" class="form-check-input " id="displaytime" type="checkbox">
+              <label for="displaytime" class="form-check-label">{% trans 'Start video' %}</label>
+              <input type="text" class="start-at input-sm" name="txtposition" id="txtposition" readonly />
+            </div>
+            <small id="displaytimeHelp" class="form-text text-muted">{% trans 'Check the box to indicate the beginning of playing desired.' %}</small>
+          </div>
+        </div>
+        <div class="list-group-item">
+          <div class="form-group ">
+            <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page' %}:</label>
+            <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="https://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+          </div>
+        </div>
+        <div class="list-group-item">
+          <div class="form-group">
+            <label for="txtpartage">{% trans 'Use this link to share the video' %} :</label>
+            <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
+          </div>
+        </div>
+        </fieldset>
+      </div>
     </p>
   </div>
   {% if video.enrichment_set.all %}

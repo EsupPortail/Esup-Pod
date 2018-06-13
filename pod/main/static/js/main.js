@@ -1,6 +1,88 @@
+/** FUNCTIONS **/
+
 function linkTo_UnCryptMailto( s ) {
     location.href="mailto:"+window.atob(s);
 }
+
+Number.prototype.toHHMMSS = function() {
+    var seconds = Math.floor(this),
+        hours = Math.floor(seconds / 3600);
+    seconds -= hours*3600;
+    var minutes = Math.floor(seconds / 60);
+    seconds -= minutes*60;
+
+    if (hours   < 10) {hours   = "0"+hours;}
+    if (minutes < 10) {minutes = "0"+minutes;}
+    if (seconds < 10) {seconds = "0"+seconds;}
+    return hours+':'+minutes+':'+seconds;
+};
+
+// Edit the iframe and share link code
+function writeInFrame() {
+    // Iframe
+    var str = $('#txtintegration').val();
+    // Autoplay
+    if ($('#autoplay').is(':checked')) {
+            if(str.indexOf('autoplay=true') < 0){
+                str = str.replace('is_iframe=true', 'is_iframe=true&autoplay=true');
+            }
+    } else if (str.indexOf('autoplay=true') > 0) {
+        str = str.replace('&autoplay=true', '');
+    }
+    // Loop
+    if ($('#loop').is(':checked')) {
+            if(str.indexOf('loop=true') < 0){
+                str = str.replace('is_iframe=true', 'is_iframe=true&loop=true');
+            }
+    } else if (str.indexOf('loop=true') > 0) {
+        str = str.replace('&loop=true', '');
+    }
+    $('#txtintegration').val(str);
+
+    // Share link
+    var link = $('#txtpartage').val();
+    // Autoplay
+    if ($('#autoplay').is(':checked')) {
+        if(link.indexOf('autoplay=true') <0){
+                link = link.replace('is_iframe=true', 'is_iframe=true&autoplay=true');
+            }
+
+    } else if (link.indexOf('autoplay=true') >0) {
+       link = link.replace('&autoplay=true', '');
+    }
+    // Autoplay
+    if ($('#loop').is(':checked')) {
+        if(link.indexOf('loop=true') <0){
+                link = link.replace('is_iframe=true', 'is_iframe=true&loop=true');
+            }
+
+    } else if (link.indexOf('loop=true') >0) {
+       link = link.replace('&loop=true', '');
+    }
+    $('#txtpartage').val(link);
+}
+$(document).on('change', '#autoplay', function() {
+    writeInFrame();
+});
+$(document).on('change', '#loop', function() {
+    writeInFrame();
+});
+
+$(document).on('change', "#displaytime", function(e) {
+    if($('#displaytime').is(':checked')){
+        if($('#txtpartage').val().indexOf('start')<0){
+             $('#txtpartage').val($('#txtpartage').val()+'?start='+parseInt(player.currentTime()));
+             var valeur = $('#txtintegration').val();
+             $('#txtintegration').val(valeur.replace('/?', '/?start=' + parseInt(player.currentTime())+'&'));
+        }
+        $('#txtposition').val(player.currentTime().toHHMMSS());
+    }else{
+         $('#txtpartage').val($('#txtpartage').val().replace(/(\?start=)\d+/, ''));
+         $('#txtintegration').val($('#txtintegration').val().replace(/(start=)\d+&/, ''));
+         $('#txtposition').val("");
+    }
+});
+
 /*** USE TO SHOW THEME FROM CHANNELS ***/
 var get_list = function(tab, level=0, tab_selected=[], tag_type="option", li_class='', attrs='', add_link=false, current="", channel="") {
     var list = ""

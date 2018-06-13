@@ -104,7 +104,7 @@
 <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
 <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" />
 <div class="player_wrapper" id="div-video-wrapper">
-    <video id="podvideoplayer" class="video-js vjs-default-skin vjs-big-play-centered" poster="{{video.get_thumbnail_url}}"  crossorigin="anonymous" {% if request.GET.nocontrol and request.GET.nocontrol == 'false' %} autoplay {%else%} controls {% if request.GET.autoplay and request.GET.autoplay == 'true' %} autoplay{%endif%}{%endif%} >
+    <video id="podvideoplayer" class="video-js vjs-default-skin vjs-big-play-centered" poster="{{video.get_thumbnail_url}}"  crossorigin="anonymous" {% if request.GET.nocontrol and request.GET.nocontrol == 'false' %} autoplay {%else%} controls {% if request.GET.autoplay and request.GET.autoplay == 'true' %} autoplay{%endif%}{%endif%} {% if request.GET.loop and request.GET.loop == 'true' %} loop{%endif%} >
         <p class="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading to a web browser that
             <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
