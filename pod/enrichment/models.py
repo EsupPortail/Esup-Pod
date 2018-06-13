@@ -75,9 +75,9 @@ class Enrichment(models.Model):
         _('slug'),
         unique=True,
         max_length=105,
-        help_text=_(u'Used to access this instance, the "slug" is a short ' +
-                    'label containing only letters, numbers, ' +
-                    'underscore or dash top.'),
+        help_text=_('Used to access this instance, the "slug" is a short' +
+                    ' label containing only letters, numbers, underscore' +
+                    ' or dash top.'),
         editable=False)
     stop_video = models.BooleanField(
         _('Stop video'),
@@ -167,7 +167,7 @@ class Enrichment(models.Model):
             if self.verify_type(self.type):
                 msg.append(self.verify_type(self.type))
         else:
-            msg.append(_('Please enter a type in index field.'))
+            msg.append(_('Please enter a type.'))
 
         if len(msg) > 0:
             return msg
