@@ -213,7 +213,7 @@ function hide_others_sections(name_form) {
 			var section = sections[i];
 			var text = section.text;
 			var name_section = '\'' + text.replace(/\s/g, '') + '\''
-			section.title = "{% trans 'Display " + name_section + " section' %}";
+			section.title = gettext('Display') + " " + name_section + " " + gettext('section');
 			section.firstElementChild.className = 'glyphicon glyphicon-chevron-down';
 		}
 	}
