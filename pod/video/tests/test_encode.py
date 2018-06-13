@@ -84,7 +84,6 @@ class EncodeTestCase(TestCase):
             os.path.dirname(video),
             "%04d" % video_to_encode.id,
             'encoding.log')
-        
 
         list_mp2t = EncodingVideo.objects.filter(
             video=video_to_encode,
