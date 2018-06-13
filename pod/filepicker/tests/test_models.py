@@ -83,22 +83,14 @@ class CustomFileModelTestCase(TestCase):
             self.assertTrue('files/test/Home/testfile' in file.file.path)
 
         print(" [ BEGIN FILEPICKER_TEST_MODELS ] ")
-        print(". ---> test_attributs : OK ! --- CustomFileModel")
+        print(" ---> test_attributs : OK ! --- CustomFileModel")
 
-    def tearDown(self):
-        user = User.objects.get(id=1)
-        if user.owner:
-            hashkey = user.owner.hashkey
-            if os.path.exists(os.path.join(
-                    settings.MEDIA_ROOT, 'files', hashkey)):
-                shutil.rmtree(os.path.join(
-                    settings.MEDIA_ROOT, 'files', hashkey))
-        else:
-            username = user.username
-            if os.path.exists(os.path.join(
-                    settings.MEDIA_ROOT, 'files', username)):
-                shutil.rmtree(os.path.join(
-                    settings.MEDIA_ROOT, 'files', username))
+    def test_delete(self):
+        CustomFileModel.objects.get(id=1).delete()
+        CustomFileModel.objects.get(id=2).delete()
+        self.assertFalse(CustomFileModel.objects.all())
+
+        print(" ---> test_delete : OK ! --- CustomFileModel")
 
 
 class CustomImageModelTestCase(TestCase):
@@ -171,20 +163,12 @@ class CustomImageModelTestCase(TestCase):
 
         print(" ---> test_attributs : OK ! --- CustomImageModel")
 
-    def tearDown(self):
-        user = User.objects.get(id=1)
-        if user.owner:
-            hashkey = user.owner.hashkey
-            if os.path.exists(os.path.join(
-                    settings.MEDIA_ROOT, 'files', hashkey)):
-                shutil.rmtree(os.path.join(
-                    settings.MEDIA_ROOT, 'files', hashkey))
-        else:
-            username = user.username
-            if os.path.exists(os.path.join(
-                    settings.MEDIA_ROOT, 'files', username)):
-                shutil.rmtree(os.path.join(
-                    settings.MEDIA_ROOT, 'files', username))
+    def test_delete(self):
+        CustomImageModel.objects.get(id=1).delete()
+        CustomImageModel.objects.get(id=2).delete()
+        self.assertFalse(CustomImageModel.objects.all())
+
+        print(" ---> test_delete : OK ! --- CustomImageModel")
 
 
 class UserDirectoryTestCase(TestCase):
@@ -232,6 +216,8 @@ class UserDirectoryTestCase(TestCase):
 
         print(" ---> test_path : OK ! --- UserDirectory")
 
-    def tearDown(self):
+    def test_delete(self):
         UserDirectory.objects.get(id=1).delete()
         self.assertFalse(UserDirectory.objects.all())
+
+        print(" ---> test_delete : OK ! --- UserDirectory")
