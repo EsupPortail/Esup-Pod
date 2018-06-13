@@ -5,7 +5,9 @@ from django.apps import apps
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.exceptions import ValidationError
 from pod.video.models import Video
+from pod.video.models import Type
 from pod.enrichment.models import Enrichment
 if apps.is_installed('pod.filepicker'):
     from pod.filepicker.models import CustomImageModel
@@ -18,8 +20,10 @@ class EnrichmentModelTestCase(TestCase):
 
     def setUp(self):
         owner = User.objects.create(username='test')
+        videotype = Type.objects.create(title='others')
         video = Video.objects.create(
             title='video',
+            type=videotype,
             owner=owner,
             video='test.mp4',
             duration=20
@@ -75,7 +79,6 @@ class EnrichmentModelTestCase(TestCase):
             self.assertEqual(enrichment.image.name, 'testimage.jpg')
 
         print(" ---> test_attributs_full : OK ! --- EnrichmentModel")
-        print(" [ END ENRICHMENT_TEST MODEL ] ")
 
     def test_attributs(self):
         enrichment = Enrichment.objects.get(id=2)
@@ -91,7 +94,51 @@ class EnrichmentModelTestCase(TestCase):
         print(" [ BEGIN ENRICHMENT_TEST MODEL ] ")
         print(" ---> test_attributs : OK ! --- EnrichmentModel")
 
-    def test_clean(self):
+    def test_type(self):
+        video = Video.objects.get(id=1)
+        enrichment = Enrichment()
+        enrichment.title = 'test'
+        enrichment.video = video
+        enrichment.type = 'badtype'
+        self.assertRaises(ValidationError, enrichment.clean)
+
+        print(" ---> test_type : OK ! --- EnrichmentModel")
+        print(" [ END ENRICHMENT_TEST MODEL ] ")
+
+    def test_bad_attributs(self):
+        video = Video.objects.get(id=1)
+        enrichment = Enrichment()
+        enrichment.video = video
+        enrichment.type = 'image'
+        enrichment.start = 1
+        enrichment.end = 2
+        self.assertRaises(ValidationError, enrichment.clean)
+        enrichment.title = 't'
+        self.assertRaises(ValidationError, enrichment.clean)
+        enrichment.start = None
+        self.assertRaises(ValidationError, enrichment.clean)
+        enrichment.start = -1
+        self.assertRaises(ValidationError, enrichment.clean)
+        enrichment.start = 21
+        self.assertRaises(ValidationError, enrichment.clean)
+
+        print(" ---> test_bad_attributs : OK ! --- EnrichmentModel")
+
+    def test_overlap(self):
+        video = Video.objects.get(id=1)
+        enrichment = Enrichment()
+        enrichment.video = video
+        enrichment.type = 'image'
+        enrichment.title = 'test'
+        enrichment.start = 1
+        enrichment.end = 3
+        self.assertRaises(ValidationError, enrichment.clean)
+
+        print(" ---> test_overlap : OK ! --- EnrichmentModel")
+
+    def test_delete(self):
         Enrichment.objects.get(id=1).delete()
         Enrichment.objects.get(id=2).delete()
         self.assertTrue(Enrichment.objects.all().count() == 0)
+
+        print(" ---> test_delete : OK ! --- EnrichmentModel")
