@@ -115,7 +115,6 @@ def context_navbar(request):
             "video", distinct=True)).annotate(
         fl_name=Lower(Substr(ORDER_BY, 1, 1))).order_by(
         'fl_name').values(*list(VALUES_LIST))
-    print(owners.count())
     listowner = {}
     for owner in owners:
         if owner['fl_name'] != '':
