@@ -2,16 +2,12 @@
 Unit tests for filepicker models
 """
 from django.test import TestCase
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from pod.filepicker.models import CustomFileModel
 from pod.filepicker.models import CustomImageModel
 from pod.filepicker.models import UserDirectory
 from datetime import datetime
-
-import os
-import shutil
 
 
 class CustomFileModelTestCase(TestCase):

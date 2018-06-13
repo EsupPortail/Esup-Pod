@@ -77,6 +77,7 @@ def create_owner_directory(sender, instance, created, **kwargs):
             logger.error(msg)
             print(msg)
 
+
 def get_upload_path(instance, filename):
     if instance.created_by.owner:
         user_hash = instance.created_by.owner.hashkey
