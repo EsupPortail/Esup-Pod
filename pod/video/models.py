@@ -637,6 +637,13 @@ class Video(models.Model):
         except EncodingAudio.DoesNotExist:
             return None
 
+    def get_video_mp3(self):
+        try:
+            return EncodingAudio.objects.get(
+                name="audio", video=self, encoding_format="audio/mp3")
+        except EncodingAudio.DoesNotExist:
+            return None
+
     def get_video_mp4(self):
         return EncodingVideo.objects.filter(
             video=self, encoding_format="video/mp4")

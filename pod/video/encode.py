@@ -348,15 +348,16 @@ def encode_video(video_id):
         encode_mp3(video_id, video_data["contain_audio"],
                    video_to_encode.video.path, output_dir)
 
-        # envois mail fin encodage
-        if EMAIL_ON_ENCODING_COMPLETION:
-            send_email_encoding(video_to_encode)
-
         change_encoding_step(video_id, 0, "done")
 
         video_to_encode = Video.objects.get(id=video_id)
         video_to_encode.encoding_in_progress = False
         video_to_encode.save()
+
+        # envois mail fin encodage
+        if EMAIL_ON_ENCODING_COMPLETION:
+            send_email_encoding(video_to_encode)
+
 
     else:
         msg = "Wrong file or path : "\

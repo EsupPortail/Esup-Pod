@@ -44,10 +44,42 @@
     {%endif%}
     </p>
   </div>
+  {% if video.allow_downloading or video.document_set.all %}
   <hr/>
   <!-- Download -->
   <h5 id="downloads"><i data-feather="download"></i>&nbsp;{% trans 'Downloads' %}</h5>
-  <div class="scrollspy-content"><p>...</p></div>
+  <div class="scrollspy-content">
+    {% if video.allow_downloading %}
+    <p>{% trans 'Video file(s)' %} :
+      {% for vid in video.get_video_mp4 %}
+      <form method="post" action="{% url 'download_file' %}">
+        {% csrf_token %}
+        <input type="hidden" value="{{vid.source_file.name}}" name="filename" />
+        <input type="submit" class="btn btn-link btn-sm" value="{{vid.name}} ({{vid.encoding_format}} - {{ vid.source_file.size|filesizeformat }})">
+      </form>
+      {% endfor %}
+      {% if video.get_video_mp3 %}
+      <form method="post" action="{% url 'download_file' %}">
+        {% csrf_token %}
+        <input type="hidden" value="{{video.get_video_mp3.source_file.name}}" name="filename" />
+        <input type="submit" class="btn btn-link btn-sm" value="{{video.get_video_mp3.name}} ({{video.get_video_mp3.encoding_format}} - {{ video.get_video_mp3.source_file.size|filesizeformat }})">
+      </form>
+      {% endif %}
+    </p>
+    {%endif%}
+    {% if video.document_set.all %}
+    <p>{% trans 'Document' %} :
+      {% for doc in video.document_set.all %}
+      <form method="post" action="{% url 'download_file' %}">
+        {% csrf_token %}
+        <input type="hidden" value="{{doc.document.file.name}}" name="filename" />
+        <input type="submit" class="btn btn-link btn-sm" value="{{doc.document.name}} ({{doc.document.file_type}} - {{ doc.document.file.size|filesizeformat }})">
+      </form>
+      {% endfor%}
+    </p>
+    {% endif %}
+  </div>
+  {% endif %}
   <hr/>
   <!-- Embed Share -->
   <h5 id="embed"><i data-feather="cast"></i>&nbsp;{% trans 'Embed/Share' %}</h5>
@@ -64,7 +96,7 @@
     <p>
       <span class="form-group">
       <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page' %}</label>
-      <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="https://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true&amp;size=240" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+      <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="https://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
       </span>
       <span class="form-group">
       <label for="txtpartage">{% trans 'Use this link to share the video' %}</label>

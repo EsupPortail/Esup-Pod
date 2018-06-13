@@ -28,7 +28,7 @@ from pod.video.views import theme_edit
 from pod.video.views import video_notes
 from pod.video.views import video_count
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
-from pod.main.views import contact_us
+from pod.main.views import contact_us, download_file
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
 
@@ -109,6 +109,7 @@ urlpatterns = [
     # contact_us
     url(r'^contact_us/$', contact_us, name='contact_us'),
     url(r'^captcha/', include('captcha.urls')),
+    url(r'^download/$', download_file, name='download_file'),
 ]
 # CAS
 if USE_CAS:

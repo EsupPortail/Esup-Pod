@@ -11,13 +11,29 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 
-from pod.video.models import Video
+from django.http import HttpResponse
+from wsgiref.util import FileWrapper
 
+from pod.video.models import Video
+import os
+import mimetypes
 
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
 CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [
                            mail for name, mail in getattr(settings, 'ADMINS')])
 HELP_MAIL = getattr(settings, 'HELP_MAIL', 'noreply@univ.fr')
+
+@csrf_protect
+def download_file(request):
+    if request.POST and request.POST.get("filename"):
+        filename = os.path.join(settings.MEDIA_ROOT, request.POST["filename"])
+        wrapper = FileWrapper(open(filename, 'rb'))
+        response = HttpResponse(wrapper, content_type=mimetypes.guess_type(filename)[0])
+        response['Content-Length'] = os.path.getsize(filename)
+        response['Content-Disposition'] = 'attachment; filename="%s"' % os.path.basename(filename)
+        return response
+    else:
+        raise PermissionDenied
 
 
 @csrf_protect

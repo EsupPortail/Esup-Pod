@@ -210,13 +210,15 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}'>
     <li class="nav-item">
       <a class="nav-link" href="#infos">{% trans 'Infos' %}</a>
     </li>
+    {% if video.allow_downloading or video.document_set.all %}
     <li class="nav-item">
       <a class="nav-link" href="#downloads">{% trans 'Downloads' %}</a>
     </li>
+    {% endif %}
     <li class="nav-item">
       <a class="nav-link" href="#embed">{% trans 'Embed/Share' %}</a>
     </li>
-    {% if video.enrichment_set.all %}
+    {% if video.enrichment_set.all %} {# todo after or video.interactive or video.accessible... #}
     <li class="nav-item">
       <a class="nav-link" href="#version">{% trans 'Version' %}</a>
     </li>
