@@ -108,8 +108,8 @@ class Contributor(models.Model):
             self.video, self.name, self.role)
 
     def get_base_mail(self):
-        return u'{0}'.format(
-            base64.b64encode(self.email_address.encode('utf-8')))
+        data = base64.b64encode(self.email_address.encode())
+        return data
 
     def get_noscript_mail(self):
         return self.email_address.replace('@', "__AT__")

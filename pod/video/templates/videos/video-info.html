@@ -7,8 +7,9 @@
   <h5 id="summary"><i data-feather="align-justify"></i>&nbsp;{% trans 'Summary' %}</h5>
   <div class="scrollspy-content">
     {% if video.is_360 %}<p class="text-info">{% trans "This is a 360 degree video. To look around click and drag your mouse on the video."%}</p>{% endif %}
-    <p>{{ video.description|safe }}</p>
     {% tags_for_object video as tag_list %}
+    {% if video.description or tag_list %}
+    <p>{{ video.description|safe }}</p>
     {% if tag_list %}
     <p>{% trans 'Tags' %}:&nbsp;
       {% for tag in tag_list %}
@@ -17,6 +18,9 @@
        </a>
       {% endfor %}
     </p>
+    {% endif %}
+    {% else %}
+    <p>[...]</p>
     {% endif %}
   </div>
   <hr/>
@@ -42,7 +46,24 @@
       </a>
       {% endfor %}
     {%endif%}
+    {% if video.contributor_set.all %}
+    <p>{% trans 'Contributor' %} : <br/>
+      {% for contrib in video.contributor_set.all %}
+      - {{ contrib.name }} ({% trans contrib.role %})
+      {% if contrib.email_address %}
+      <a href="javascript:linkTo_UnCryptMailto('{{ contrib.get_base_mail }}');" title="{% trans "send an email" %}">
+        <i data-feather="mail"></i>
+      </a>
+      {% endif %}
+      {% if contrib.weblink %}
+        <a href="{{ contrib.weblink }}" target="_blank" title="{% trans "go to his web link" %} : {{ contrib.weblink }}">
+            <i data-feather="external-link"></i>
+        </a>
+      {% endif %}
+       <br/>
+      {% endfor %}
     </p>
+    {% endif %}
   </div>
   {% if video.allow_downloading or video.document_set.all %}
   <hr/>

@@ -1,4 +1,6 @@
-
+function linkTo_UnCryptMailto( s ) {
+    location.href="mailto:"+window.atob(s);
+}
 /*** USE TO SHOW THEME FROM CHANNELS ***/
 var get_list = function(tab, level=0, tab_selected=[], tag_type="option", li_class='', attrs='', add_link=false, current="", channel="") {
     var list = ""
