@@ -80,7 +80,11 @@ class EncodeTestCase(TestCase):
         # tester la suppression de la video et la suppression en cascade
         video_to_encode = Video.objects.get(id=1)
         video = video_to_encode.video.path
-        overview = video_to_encode.overview.path
+        log_file = os.path.join(
+            os.path.dirname(video),
+            "%04d" % video_to_encode.id,
+            'encoding.log')
+        
 
         list_mp2t = EncodingVideo.objects.filter(
             video=video_to_encode,
@@ -100,7 +104,7 @@ class EncodeTestCase(TestCase):
 
         video_to_encode.delete()
         self.assertTrue(not os.path.exists(video))
-        self.assertTrue(not os.path.exists(overview))
+        self.assertTrue(not os.path.exists(log_file))
         self.assertTrue(not os.path.exists(playlist_master_file))
 
         self.assertEqual(list_mp2t.count(), 0)
@@ -109,7 +113,7 @@ class EncodeTestCase(TestCase):
 
         self.assertEqual(EncodingLog.objects.filter(
             video__id=1).count(), 0)
-        self.assertEqual(len(os.listdir(os.path.dirname(overview))), 0)
+        self.assertEqual(len(os.listdir(os.path.dirname(log_file))), 0)
 
         print(
             "   --->  test_delete_object of EncodeTestCase : OK !")
