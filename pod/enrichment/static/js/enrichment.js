@@ -2,9 +2,9 @@ var id_form = 'form_enrich';
 function show_form(data) {
     $('#'+id_form).hide().html(data).fadeIn();
     $("input#id_start")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-sm'>Get time from the player</a><span class='timecode'></span></span>");
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode'></span></span>");
     $("input#id_end")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-info btn-sm'>Get time from the player</a><span class='timecode'></span></span>");
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-info btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode'></span></span>");
     enrich_type();
 };
 
@@ -14,7 +14,7 @@ var showalert = function(message, alerttype) {
 };
 
 var ajaxfail = function(data) {
-    showalert('Error getting form. (' + data + ') The form could not be recovered.', 'alert-danger');
+    showalert(gettext('Error getting form.') + ' (' + data + ') ' + gettext('The form could not be recovered.'), 'alert-danger');
     $('form.get_form').show();
     show_form('');
 };
@@ -49,7 +49,7 @@ var sendandgetform = function(elt, action) {
         });
         jqxhr.done(function(data) {
             if (data.indexOf(id_form) == -1) {
-                showalert('You are no longer authenticated. Please log in again.', 'alert-danger');
+                showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
             } else {
                 show_form(data);
             }
@@ -69,7 +69,7 @@ var sendandgetform = function(elt, action) {
         });
         jqxhr.done(function(data) {
             if (data.indexOf(id_form) == -1) {
-                showalert('You are no longer authenticated. Please log in again.', 'alert-danger');
+                showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
             } else {
                 show_form(data);
                 $(elt).addClass('info');
@@ -90,7 +90,7 @@ var sendandgetform = function(elt, action) {
         });
         jqxhr.done(function(data) {
             if (data.indexOf('list_enrichment') == -1) {
-                showalert('You are no longer authenticated. Please log in again.', 'alert-danger');
+                showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
             } else {
                 location.reload();
             }
@@ -117,7 +117,7 @@ var sendform = function(elt, action) {
             });
             jqxhr.done(function(data) {
                 if (data.indexOf('list_enrichment') == -1 && data.indexOf('form') == -1) {
-                    showalert('You are no longer authenticated. Please log in again.', 'alert-danger');
+                    showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
                 } else {
                     data = JSON.parse(data);
                     if (data.errors) {
@@ -133,7 +133,7 @@ var sendform = function(elt, action) {
                 ajaxfail(data);
             });
         } else {
-            showalert('One or more errors have been found in the form.', 'alert-danger');
+            showalert(gettext('One or more errors have been found in the form.'), 'alert-danger');
         }
     }
     if (action == 'import') {
@@ -146,7 +146,7 @@ var sendform = function(elt, action) {
         });
         jqxhr.done(function(data) {
             if (data.indexOf('list_enrichment') == -1) {
-                showalert('You are no longer authenticated. Please log in again.', 'alert-danger');
+                showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
             } else {
                 location.reload();
             }
@@ -180,9 +180,9 @@ Number.prototype.toHHMMSS = function() {
 function get_form(data) {
     $("#form_enrich").hide().html(data).fadeIn();
     $("input#id_start")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-sm'>{% trans 'Get time from the player'%}</a><span class='timecode'></span></span>");
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode'></span></span>");
     $("input#id_end")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-info btn-sm'>{% trans 'Get time from the player'%}</a><span class='timecode'></span></span>");
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-info btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode'></span></span>");
     enrich_type();
     manageResize();
 };
@@ -220,19 +220,19 @@ function verify_fields(){
     var error = false;
     if ( document.getElementById("id_title").value == "" || document.getElementById("id_title").value.length < 2 || document.getElementById("id_title").value.length > 100 ) {
         $("input#id_title")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a title from 2 to 100 characters.' %} </span>")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('Please enter a title from 2 to 100 characters.') + "</span>")
             .parents('div.form-group').addClass('has-error');
         error = true;
     }
     if ( document.getElementById("id_start").value == "" || document.getElementById("id_start").value < 0 || document.getElementById("id_start").value >= video_duration ){
         $("input#id_start")
-            .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct start from 0 to ' %}" + (video_duration -1) + "</span>")
+            .before("<span class='form-help-inline'>&nbsp; &nbsp;" + gettext('Please enter a correct start from 0 to ') + (video_duration -1) + "</span>")
             .parents('div.form-group').addClass('has-error');
         error = true;
     }
     if ( document.getElementById("id_end").value == "" || document.getElementById("id_end").value <= 0 || document.getElementById("id_end").value > video_duration ){
         $("input#id_end")
-            .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct end from 1 to ' %} " + video_duration + "</span>")
+            .before("<span class='form-help-inline'>&nbsp; &nbsp;" + gettext('Please enter a correct end from 1 to ') + video_duration + "</span>")
             .parents('div.form-group').addClass('has-error');
         error = true;
     }
@@ -240,7 +240,7 @@ function verify_fields(){
         case "image":
             if($("#id_image_thumbnail_img").attr('src') == "/static/filer/icons/nofile_48x48.png"){ //check with id_image value
                 $("img#id_image_thumbnail_img")
-                    .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct image.' %} </span>")
+                    .before("<span class='form-help-inline'>&nbsp; &nbsp;" + gettext('Please enter a correct image.') + "</span>")
                     .parents('div.form-group').addClass('has-error');
                 error = true;
             }
@@ -248,7 +248,7 @@ function verify_fields(){
         case "richtext":
             if(document.getElementById("id_richtext").value == ""){
                 $("textarea#id_richtext")
-                    .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct richtext.' %} </span>")
+                    .before("<span class='form-help-inline'>&nbsp; &nbsp;" + gettext('Please enter a correct richtext.') + "</span>")
                     .parents('div.form-group').addClass('has-error');
                 error = true;
             }
@@ -256,13 +256,13 @@ function verify_fields(){
         case "weblink":
             if(document.getElementById("id_weblink").value == ""){
                 $("input#id_weblink")
-                    .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct weblink.' %} </span>")
+                    .before("<span class='form-help-inline'>&nbsp; &nbsp;" + gettext('Please enter a correct weblink.') + "</span>")
                     .parents('div.form-group').addClass('has-error');
                 error = true;
             } else {
                 if(document.getElementById("id_weblink").value > 200){
                     $("input#id_weblink")
-                        .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Weblink must be less than 200 characters.' %} </span>")
+                        .before("<span class='form-help-inline'>&nbsp; &nbsp;" + gettext('Weblink must be less than 200 characters.') + "</span>")
                         .parents('div.form-group').addClass('has-error');
                     error = true;
                 }
@@ -271,7 +271,7 @@ function verify_fields(){
         case "document":
             if($("#id_document_thumbnail_img").attr('src') == "/static/filer/icons/nofile_48x48.png"){ //check with id_document value
                 $("img#id_document_thumbnail_img")
-                    .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please select a document.' %} </span>")
+                    .before("<span class='form-help-inline'>&nbsp; &nbsp;" + gettext('Please select a document.') +  "</span>")
                     .parents('div.form-group').addClass('has-error');
                 error = true;
             }
@@ -279,13 +279,13 @@ function verify_fields(){
         case "embed":
             if(document.getElementById("id_embed").value == ""){
                 $("textarea#id_embed")
-                    .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a correct embed.' %} </span>")
+                    .before("<span class='form-help-inline'>&nbsp; &nbsp;" + gettext('Please enter a correct embed.') + "</span>")
                     .parents('div.form-group').addClass('has-error');
                 error = true;
             } else {
                 if(document.getElementById("id_embed").value > 300){
                     $("input#id_weblink")
-                    .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Embed field must be less than 300 characters.' %} </span>")
+                    .before("<span class='form-help-inline'>&nbsp; &nbsp;" + gettext('Embed field must be less than 300 characters.') + "</span>")
                     .parents('div.form-group').addClass('has-error');
                 error = true;
                 }
@@ -293,7 +293,7 @@ function verify_fields(){
             break;
         default:
             $("select#id_type")
-                .before("<span class='form-help-inline'>&nbsp; &nbsp;{% trans 'Please enter a type in index field.' %} </span>")
+                .before("<span class='form-help-inline'>&nbsp; &nbsp;" + gettext('Please enter a type in index field.') + "</span>")
                 .parents('div.form-group').addClass('has-error');
             error = true;
     }
@@ -305,11 +305,11 @@ function verify_end_start_items(){
     new_start = parseInt(document.getElementById("id_start").value);
     new_end = parseInt(document.getElementById("id_end").value);
     if(new_start > new_end){
-        msg = "{% trans 'The start field value is greater than the end field one.' %}";
+        msg = gettext('The start field value is greater than the end field one.');
     }else if(new_end > video_duration){
-        msg = "{% trans 'The end field value is greater than the video duration.' %}";
+        msg = gettext('The end field value is greater than the video duration.');
     }else if (new_start == new_end){
-        msg = "{% trans 'End field and start field cannot be equal.' %}";
+        msg = gettext('End field and start field cannot be equal.');
     }
     if (msg) {
         return msg;
@@ -327,8 +327,8 @@ function overlaptest(){
         var data_start = parseInt($(this).attr('data-start'));
         var data_end = parseInt($(this).attr('data-end'));
         if (id != $(this).attr('data-id') && !(new_start< data_start && new_end <= data_start || new_start >= data_end &&  new_end > data_end)){
-            var text = "{% trans 'There is an overlap with the enrichment '%}" + '"' +$(this).attr('data-title')+'"' ;
-            text += "{% trans ', please change start and/or end values.' %}.";
+            var text = gettext('There is an overlap with the enrichment ') + '"' + $(this).attr('data-title') + '"' ;
+            text += ", " + gettext('please change start and/or end values.');
             msg+="<br/>"+ text ;
         }
     });
