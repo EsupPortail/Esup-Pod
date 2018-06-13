@@ -358,7 +358,6 @@ def encode_video(video_id):
         if EMAIL_ON_ENCODING_COMPLETION:
             send_email_encoding(video_to_encode)
 
-
     else:
         msg = "Wrong file or path : "\
             + "\n%s" % video_to_encode.video.path
