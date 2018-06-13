@@ -2,9 +2,9 @@ var id_form = "form_chapter";
 function show_form(data) {
     $('#'+id_form).hide().html(data).fadeIn();
     $("input#id_time_start")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-sm'>Get time from the player</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
     $("input#id_time_end")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-info btn-sm'>Get time from the player</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-info btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
 };
 
 var showalert = function(message, alerttype) {
@@ -13,7 +13,7 @@ var showalert = function(message, alerttype) {
 };
 
 var ajaxfail = function(data) {
-    showalert('Error getting form. (' + data + ') The form could not be recovered.', 'alert-danger');
+    showalert(gettext('Error getting form.') + ' (' + data + ') ' + gettext('The form could not be recovered.'), 'alert-danger');
     $('form.get_form').show();
     show_form('');
 };
@@ -48,7 +48,7 @@ var sendandgetform = function(elt, action) {
         });
         jqxhr.done(function(data) {
             if (data.indexOf(id_form) == -1) {
-                showalert('You are no longer authenticated. Please log in again.', 'alert-danger');
+                showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
             } else {
                 show_form(data);
             }
@@ -68,7 +68,7 @@ var sendandgetform = function(elt, action) {
         });
         jqxhr.done(function(data) {
             if (data.indexOf(id_form) == -1) {
-                showalert('You are no longer authenticated. Please log in again.', 'alert-danger');
+                showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
             } else {
                 show_form(data);
                 $(elt).addClass('info');
@@ -89,7 +89,7 @@ var sendandgetform = function(elt, action) {
         });
         jqxhr.done(function(data) {
             if (data.indexOf('list_chapter') == -1) {
-                showalert('You are no longer authenticated. Please log in again.', 'alert-danger');
+                showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
             } else {
                 location.reload();
             }
@@ -115,7 +115,7 @@ var sendform = function(elt, action) {
             });
             jqxhr.done(function(data) {
                 if (data.indexOf('list_chapter') == -1 && data.indexOf('form') == -1) {
-                    showalert('You are no longer authenticated. Please log in again.', 'alert-danger');
+                    showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
                 } else {
                     data = JSON.parse(data);
                     if (data.errors) {
@@ -131,7 +131,7 @@ var sendform = function(elt, action) {
                 ajaxfail(data);
             });
         } else {
-            showalert('One or more errors have been found in the form.', 'alert-danger');
+            showalert(gettext('One or more errors have been found in the form.'), 'alert-danger');
         }
     }
     if (action == 'import') {
@@ -144,7 +144,7 @@ var sendform = function(elt, action) {
         });
         jqxhr.done(function(data) {
             if (data.indexOf('list_chapter') == -1) {
-                showalert('You are no longer authenticated. Please log in again.', 'alert-danger');
+                showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
             } else {
                 location.reload();
             }
@@ -160,13 +160,13 @@ var sendform = function(elt, action) {
 function verify_start_title_items(){
     if ( document.getElementById("id_title").value == "" || document.getElementById("id_title").value.length < 2 || document.getElementById("id_title").value.length > 100 ) {
         $("input#id_title")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a title from 2 to 100 characters.' %} </span>")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('Please enter a title from 2 to 100 characters.') + "</span>")
             .parents('div.form-group').addClass('has-error');
         return false;
     }
     if ( document.getElementById("id_time_start").value == "" || document.getElementById("id_time_start").value < 0 || document.getElementById("id_time_start").value >= video_duration) {
         $("input#id_time_start")
-            .before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a correct start field between 0 and' %} " + (video_duration -1) + "</span>")
+            .before("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('Please enter a correct start field between 0 and') + " " + (video_duration -1) + "</span>")
             .parents('div.form-group').addClass('has-error');
         return false;
     }
@@ -179,7 +179,7 @@ function overlaptest(){
     var msg = "";
     $('ul#chapters li').each(function() {
         if ((id != $(this).attr('data-id')) && new_start == $(this).attr('data-start')) {
-            var text = "{% trans 'The chapter' %}  "+ '"' +$(this).attr('data-title')+'"'+ "  {% trans 'starts at the same time.' %}";
+            var text = gettext('The chapter') + ' "' + $(this).attr('data-title') + '" ' + gettext('starts at the same time.');
             msg+="<br/>"+ text ;
         }
     });

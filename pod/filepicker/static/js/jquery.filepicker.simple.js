@@ -40,9 +40,9 @@ jQuery(document).ready(function($) {
         }).insertBefore($(el));
         var parent = $(el).parent();
         if (pickers.image) {
-            var anchor = $('<a>').text('Insert Image').attr({
+            var anchor = $('<a>').text(gettext('Insert Image')).attr({
                 'name': 'filepicker-image',
-                'title': 'Insert Image',
+                'title': gettext('Insert Image'),
                 'href': '#'
             }).css('display', 'block').click(function(e) {
                 e.preventDefault();
@@ -52,9 +52,9 @@ jQuery(document).ready(function($) {
             }).prependTo(parent);
         }
         if (pickers.file) {
-            var anchor = $('<a>').text('Insert File').attr({
+            var anchor = $('<a>').text(gettext('Insert File')).attr({
                 'name': 'filepicker-file',
-                'title': 'Insert File',
+                'title': gettext('Insert File'),
                 'href': '#'
             }).css('display', 'block').click(function(e) {
                 e.preventDefault();

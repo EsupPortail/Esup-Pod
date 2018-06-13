@@ -20,7 +20,7 @@ class EnrichmentAdmin(admin.ModelAdmin):
     list_display = ('title', 'type', 'video',)
 
     class Media:
-        js = ('js/jquery.tools.min.js',)
+        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
 
 
 if FILEPICKER:
