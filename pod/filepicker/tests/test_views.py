@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.utils.encoding import force_text
 from pod.filepicker.models import CustomFileModel
 from pod.filepicker.models import CustomImageModel
 from pod.filepicker.models import UserDirectory
@@ -58,7 +59,7 @@ class FileViewsTestCase(TestCase):
                 '/file-picker/file/upload/file/', data={'userfile': testfile})
         self.assertEqual(response.status_code, 200)
         self.assertTrue('name' in str(response.content))
-        newfile = json.loads(response.content)['name']
+        newfile = json.loads(force_text(response.content))['name']
         response = self.client.post('/file-picker/file/upload/file/', data={
             'name': 'testfile',
             'created_by': user.id,
@@ -88,7 +89,7 @@ class FileViewsTestCase(TestCase):
                 '/file-picker/file/upload/file/', data={'userfile': testimage})
         self.assertEqual(response.status_code, 200)
         self.assertTrue('name' in str(response.content))
-        newfile = json.loads(response.content)['name']
+        newfile = json.loads(force_text(response.content))['name']
         response = self.client.post('/file-picker/img/upload/file/', data={
             'name': 'testimage',
             'created_by': user.id,
@@ -111,7 +112,7 @@ class FileViewsTestCase(TestCase):
         self.assertTrue(login)
         response = self.client.get('/file-picker/file/files/')
         self.assertEqual(response.status_code, 200)
-        result = json.loads(response.content)['result']
+        result = json.loads(force_text(response.content))['result']
         self.assertTrue(len(result) == 0)
         file = SimpleUploadedFile(
             name='testfile.txt',
@@ -128,7 +129,7 @@ class FileViewsTestCase(TestCase):
             file=file)
         response = self.client.get('/file-picker/file/files/')
         self.assertEqual(response.status_code, 200)
-        result = json.loads(response.content)['result']
+        result = json.loads(force_text(response.content))['result']
         self.assertTrue(len(result) == 1)
 
         print(" ---> test_list_files : OK!")
@@ -141,7 +142,7 @@ class FileViewsTestCase(TestCase):
         self.assertTrue(login)
         response = self.client.get('/file-picker/img/files/')
         self.assertEqual(response.status_code, 200)
-        result = json.loads(response.content)['result']
+        result = json.loads(force_text(response.content))['result']
         self.assertTrue(len(result) == 0)
         file = SimpleUploadedFile(
             name='testimage.jpg',
@@ -158,7 +159,7 @@ class FileViewsTestCase(TestCase):
             file=file)
         response = self.client.get('/file-picker/img/files/')
         self.assertEqual(response.status_code, 200)
-        result = json.loads(response.content)['result']
+        result = json.loads(force_text(response.content))['result']
         self.assertTrue(len(result) == 1)
 
         print(" ---> test_list_images : OK!")
@@ -226,7 +227,7 @@ class FileViewsTestCase(TestCase):
         self.assertTrue(login)
         response = self.client.get('/file-picker/file/files/?search=testfile')
         self.assertEqual(response.status_code, 200)
-        result = json.loads(response.content)['result']
+        result = json.loads(force_text(response.content))['result']
         self.assertTrue(len(result) == 0)
         file = SimpleUploadedFile(
             name='testfile.txt',
@@ -243,19 +244,19 @@ class FileViewsTestCase(TestCase):
             file=file)
         response = self.client.get('/file-picker/file/files/?search=testfile')
         self.assertEqual(response.status_code, 200)
-        result = json.loads(response.content)['result']
+        result = json.loads(force_text(response.content))['result']
         self.assertTrue(len(result) == 1)
         response = self.client.get('/file-picker/file/files/?search=test')
         self.assertEqual(response.status_code, 200)
-        result = json.loads(response.content)['result']
+        result = json.loads(force_text(response.content))['result']
         self.assertTrue(len(result) == 1)
         response = self.client.get('/file-picker/file/files/?search=file')
         self.assertEqual(response.status_code, 200)
-        result = json.loads(response.content)['result']
+        result = json.loads(force_text(response.content))['result']
         self.assertTrue(len(result) == 1)
         response = self.client.get('/file-picker/file/files/?search=teestfile')
         self.assertEqual(response.status_code, 200)
-        result = json.loads(response.content)['result']
+        result = json.loads(force_text(response.content))['result']
         self.assertTrue(len(result) == 0)
 
         print(" ---> test_search : OK!")
@@ -295,18 +296,18 @@ class DirectoryViewTestCase(TestCase):
         self.assertTrue(login)
         response = self.client.get('/file-picker/file/directories/')
         self.assertEqual(response.status_code, 200)
-        result = json.loads(response.content)['result']
+        result = json.loads(force_text(response.content))['result']
         self.assertTrue('Home' in result)
         self.assertTrue(len(result['Home']) == 1)
         response = self.client.get('/file-picker/img/directories/')
         self.assertEqual(response.status_code, 200)
-        result = json.loads(response.content)['result']
+        result = json.loads(force_text(response.content))['result']
         self.assertTrue('Home' in result)
         self.assertTrue(len(result['Home']) == 1)
         response = self.client.get(
             '/file-picker/file/directories/?directory=2')
         self.assertEqual(response.status_code, 200)
-        result = json.loads(response.content)['result']
+        result = json.loads(force_text(response.content))['result']
         self.assertTrue('Child' in result)
         self.assertTrue(len(result['Child']) == 0)
 
@@ -321,9 +322,9 @@ class DirectoryViewTestCase(TestCase):
         response = self.client.get(
             '/file-picker/file/directories/configure/?action=edit&id=2')
         self.assertTrue(response.status_code, 200)
-        result = json.loads(response.content)['id']
+        result = json.loads(force_text(response.content))['id']
         self.assertTrue(result == 2)
-        result = json.loads(response.content)['form']
+        result = json.loads(force_text(response.content))['form']
         self.assertTrue('Child' in result)
         response = self.client.post(
             '/file-picker/file/directories/configure/',
@@ -345,7 +346,7 @@ class DirectoryViewTestCase(TestCase):
                   'action': 'edit',
                   ':': 'Submit'})
         self.assertEqual(response.status_code, 200)
-        result = json.loads(response.content)['errors']
+        result = json.loads(force_text(response.content))['errors']
         self.assertTrue(len(result['__all__']) == 1)
 
         print(". ---> test_edit_directory : OK !")
@@ -359,7 +360,7 @@ class DirectoryViewTestCase(TestCase):
         response = self.client.get(
             '/file-picker/file/directories/configure/?action=new&id=2')
         self.assertTrue(response.status_code, 200)
-        result = json.loads(response.content)
+        result = json.loads(force_text(response.content))
         self.assertTrue('form' in result)
         response = self.client.post(
             '/file-picker/file/directories/configure/',
@@ -369,7 +370,7 @@ class DirectoryViewTestCase(TestCase):
                   'action': 'new',
                   ':': 'Submit'})
         self.assertTrue(response.status_code, 200)
-        result = json.loads(response.content)
+        result = json.loads(force_text(response.content))
         self.assertTrue('parent' in result)
         self.assertTrue('Child' in result['parent'])
         response = self.client.post(
@@ -380,7 +381,7 @@ class DirectoryViewTestCase(TestCase):
                   'action': 'new',
                   ':': 'Submit'})
         self.assertTrue(response.status_code, 200)
-        result = json.loads(response.content)['errors']
+        result = json.loads(force_text(response.content))['errors']
         self.assertTrue(len(result['__all__']) == 1)
         response = self.client.post(
             '/file-picker/file/directories/configure/',
@@ -390,7 +391,7 @@ class DirectoryViewTestCase(TestCase):
                   'action': 'new',
                   ':': 'Submit'})
         self.assertTrue(response.status_code, 200)
-        result = json.loads(response.content)['errors']
+        result = json.loads(force_text(response.content))['errors']
         self.assertTrue(len(result['__all__']) == 1)
 
         print(" ---> test_new_directory : OK!")

@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.test import override_settings
 from django.core.files.temp import NamedTemporaryFile
 from django.contrib.auth.models import User
-from django.core.files import File
+
 
 from pod.video.models import Video
 from pod.video import encode
@@ -11,20 +11,12 @@ from pod.video.models import EncodingVideo
 # from pod.video.models import EncodingAudio
 from pod.video.models import EncodingLog
 from pod.video.models import PlaylistVideo
-try:
-    from pod.authentication.models import Owner
-except ImportError:
-    from django.contrib.auth.models import User as Owner
 
-import urllib3
 import shutil
 import os
 
-URL_VIDEO_TO_TEST = getattr(
-    settings, 'URL_VIDEO_TO_TEST', "http://pod.univ-lille1.fr/media/pod.mp4")
-URL_AUDIO_TO_TEST = getattr(
-    settings, 'URL_AUDIO_TO_TEST', "http://pod.univ-lille1.fr/media/pod.mp3")
-HTTP_PROXY = getattr(settings, 'HTTP_PROXY', None)
+VIDEO_TEST = getattr(
+    settings, 'VIDEO_TEST', 'pod/main/static/video_test/pod.mp4')
 
 
 @override_settings(
@@ -40,32 +32,18 @@ class EncodeTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        User.objects.create(username="pod", password="pod1234pod")
-        owner1 = Owner.objects.get(user__username="pod")
+        user = User.objects.create(username="pod", password="pod1234pod")
+        # owner1 = Owner.objects.get(user__username="pod")
         video = Video.objects.create(
-            title="Video1", owner=owner1, video="test.mp4")
-        print("Download video file from %s" % URL_VIDEO_TO_TEST)
-        tempfile = NamedTemporaryFile(delete=True)
-        if HTTP_PROXY:
-            proxy = urllib3.ProxyManager(settings.HTTP_PROXY)
-            with proxy.request(
-                    'GET',
-                    URL_VIDEO_TO_TEST,
-                    preload_content=False) as r, open(
-                    tempfile.name, 'wb') as out_file:
-                shutil.copyfileobj(r, out_file)
-        else:
-            http = urllib3.PoolManager()
-            with http.request(
-                    'GET',
-                    URL_VIDEO_TO_TEST,
-                    preload_content=False) as r, open(
-                    tempfile.name, 'wb') as out_file:
-                shutil.copyfileobj(r, out_file)
-        video.video.save("test.mp4", File(tempfile))
+            title="Video1", owner=user, video="test.mp4")
 
+        tempfile = NamedTemporaryFile(delete=True)
+        video.video.save("test.mp4", tempfile)
+        dest = os.path.join(settings.MEDIA_ROOT, video.video.name)
+        shutil.copyfile(
+            VIDEO_TEST, dest)
         print("\n ---> Start Encoding")
-        encode.encode_video(1)
+        encode.encode_video(video.id)
         print("\n ---> End Encoding")
 
         print(" --->  SetUp of EncodeTestCase : OK !")
@@ -131,7 +109,6 @@ class EncodeTestCase(TestCase):
 
         self.assertEqual(EncodingLog.objects.filter(
             video__id=1).count(), 0)
-
         self.assertEqual(len(os.listdir(os.path.dirname(overview))), 0)
 
         print(
