@@ -16,7 +16,7 @@ var showalert = function(message, alerttype) {
 var ajaxfail = function(data) {
     showalert('Error getting form. (' + data + ') The form could not be recovered.', 'alert-danger');
     $('form.get_form').show();
-    show_from('');
+    show_form('');
 };
 
 $(document).on('click', '#cancel_enrichment', function() {
@@ -89,7 +89,7 @@ var sendandgetform = function(elt, action) {
             dataType: 'html'
         });
         jqxhr.done(function(data) {
-            if (data.indexOf('list_chapter') == -1) {
+            if (data.indexOf('list_enrichment') == -1) {
                 showalert('You are no longer authenticated. Please log in again.', 'alert-danger');
             } else {
                 location.reload();
@@ -112,7 +112,7 @@ var sendform = function(elt, action) {
             var jqxhr = $.ajax({
                 method: 'POST',
                 url: window.location.href,
-                data: {'action': 'save'} + data_form,
+                data: data_form,
                 dataType: 'html'
             });
             jqxhr.done(function(data) {
