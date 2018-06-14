@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-14 09:09+0000\n"
+"POT-Creation-Date: 2018-06-14 12:54+0000\n"
 "PO-Revision-Date: 2018-06-14 10:13+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -116,7 +116,7 @@ msgstr "Mot de passe ou identifiant perdu ?"
 #: pod/video/templates/videos/video_delete.html:33
 #: pod/video/templates/videos/video_edit.html:51
 #: pod/video/templates/videos/video_notes.html:23 pod/video/views.py:120
-#: pod/video/views.py:479 pod/video/views.py:511 pod/video/views.py:535
+#: pod/video/views.py:479 pod/video/views.py:512 pod/video/views.py:536
 #: pod/video_search/templates/search/search.html:36
 msgid "One or more errors have been found in the form."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
@@ -131,6 +131,10 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 #: pod/video/templates/videos/video_notes.html:36
 msgid "Please provide a valid value for this field"
 msgstr "Veuillez renseigner une valeur valide pour ce champ"
+
+#: pod/authentication/views.py:77
+msgid "Your picture has been saved."
+msgstr "Votre image a été sauvegardée."
 
 #: pod/chapter/models.py:23 pod/completion/models.py:56
 #: pod/enrichment/models.py:72
@@ -1941,7 +1945,7 @@ msgid "You just send a message from"
 msgstr "Vous venez d'envoyer un message depuis"
 
 #: pod/main/templates/navbar.html:16 pod/main/templates/navbar_collapse.html:8
-#: pod/video/models.py:239 pod/video/models.py:507
+#: pod/video/forms.py:112 pod/video/models.py:239 pod/video/models.py:507
 msgid "Channels"
 msgstr "Chaînes"
 
@@ -2352,9 +2356,9 @@ msgstr ""
 "Maintenez \"Control\", ou \"Command\" sur un Mac, pour en sélectionner "
 "plusieurs."
 
-#: pod/video/forms.py:112
-msgid "Channels / Themes"
-msgstr "Chaînes / Thèmes"
+#: pod/video/forms.py:112 pod/video/models.py:354 pod/video/models.py:513
+msgid "Themes"
+msgstr "Thèmes"
 
 #: pod/video/forms.py:113
 msgid "Select the channel in which you want your content to appear."
@@ -2569,10 +2573,6 @@ msgstr "Thème parent"
 #: pod/video/models.py:353
 msgid "Theme"
 msgstr "Thème"
-
-#: pod/video/models.py:354 pod/video/models.py:513
-msgid "Themes"
-msgstr "Thèmes"
 
 #: pod/video/models.py:368 pod/video/models.py:398
 msgid "Icon"
@@ -3139,19 +3139,19 @@ msgstr "Les modifications ont été sauvegardés."
 msgid "You cannot edit this video."
 msgstr "Vous ne pouvez éditer cette vidéo."
 
-#: pod/video/views.py:494
+#: pod/video/views.py:495
 msgid "You cannot delete this video."
 msgstr "Vous ne pouvez supprimer cette vidéo."
 
-#: pod/video/views.py:504
+#: pod/video/views.py:505
 msgid "The video has been deleted."
 msgstr "La vidéo a été supprimée."
 
-#: pod/video/views.py:531
+#: pod/video/views.py:532
 msgid "The note has been saved."
 msgstr "La note a été sauvegardée."
 
-#: pod/video/views.py:553
+#: pod/video/views.py:554
 msgid "You cannot access to this view."
 msgstr "Vous ne pouvez accéder à cette vue."
 
@@ -3183,3 +3183,6 @@ msgstr "facettage"
 #: pod/video_search/views.py:55
 msgid "Remove selection"
 msgstr "Retirer la sélection"
+
+#~ msgid "Channels / Themes"
+#~ msgstr "Chaînes / Thèmes"
