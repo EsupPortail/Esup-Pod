@@ -9,11 +9,11 @@ $(document).on('click', '.delete-file', function() {
             type: 'post',
             data: data,
             success: function(){
-                alert('File successfully deleted.');
+                alert(gettext('File successfully deleted.'));
                 $('.search_val').click();
             },
             fail: function(){
-                alert('Error ! Cannot delete the file.');
+                alert(gettext('Error ! Cannot delete the file.'));
             }
         });
     }
@@ -37,33 +37,33 @@ jQuery(document).ready(function($) {
         if (pickers.image) {
             var conf = $(overlay).data('filePicker').getConf();
             conf.url = pickers.image;
-            var anchor = $('<a>').text('Insert Image').attr({
+            var anchor = $('<a>').text(gettext('Insert Image')).attr({
                 'name': 'filepicker-image',
-                'title': 'Insert Image',
+                'title': gettext('Insert Image'),
                 'href': '#'
             }).css('display', 'block').click(function(e) {
                 e.preventDefault();
                 $(el).attr('value', '');
-                $(el).next().text('Select a file...');
+                $(el).next().text(gettext('Select a file...'));
                 $(overlay).data('overlay').load();
             }).prependTo(parent);
         }
         if (pickers.file) {
             var conf = $(overlay).data('filePicker').getConf();
             conf.url = pickers.file;
-            var anchor = $('<a>').text('Insert File').attr({
+            var anchor = $('<a>').text(gettext('Insert File')).attr({
                 'name': 'filepicker-file',
-                'title': 'Insert File',
+                'title': gettext('Insert File'),
                 'href': '#'
             }).css('display', 'block').click(function(e) {
                 e.preventDefault();
                 $(el).attr('value', '');
-                $(el).next().text('Select a file...');
+                $(el).next().text(gettext('Select a file...'));
                 $(overlay).data('overlay').load();
             }).prependTo(parent);
 		}
         var file_path = $('<p>').attr('id', 'file-picker-path');
-        file_path.text('Select a file...');
+        file_path.text(gettext('Select a file...'));
         if ($(el).attr('value') != '') {
             $.get(conf.url, function (response) {
                 conf.urls = response.urls;
@@ -73,7 +73,7 @@ jQuery(document).ready(function($) {
                     var thumb = $('<img>');
                     thumb.attr('id', 'file-picker-thumbnail');
                     thumb.attr('src', response.result.thumbnail);
-                    thumb.attr('alt', 'Thumbnail');
+                    thumb.attr('alt', gettext('Thumbnail'));
                     thumb.attr('width', 50);
                     thumb.attr('height', 50);
                     thumb.appendTo(file_path);

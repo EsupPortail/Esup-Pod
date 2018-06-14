@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-14 12:54+0000\n"
-"PO-Revision-Date: 2018-06-14 10:13+0200\n"
+"POT-Creation-Date: 2018-06-14 14:20+0000\n"
+"PO-Revision-Date: 2018-06-14 17:03+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -53,7 +53,7 @@ msgstr "universitée"
 #: pod/authentication/models.py:54 pod/enrichment/models.py:46
 #: pod/enrichment/models.py:102
 #: pod/enrichment/templates/video_enriched.html:127
-#: pod/filepicker/models.py:141 pod/video/models.py:182
+#: pod/filepicker/models.py:157 pod/video/models.py:182
 msgid "Image"
 msgstr "Image"
 
@@ -339,7 +339,7 @@ msgstr "consultant"
 msgid "contributor"
 msgstr "contributeur"
 
-#: pod/completion/models.py:23
+#: pod/completion/models.py:23 pod/completion/tests/test_views.py:185
 msgid "editor"
 msgstr "editeur"
 
@@ -1310,77 +1310,63 @@ msgstr "Supprimer les fichiers de sous-titres ou de légendes"
 msgid "Completion video"
 msgstr "Complétion de la vidéo"
 
-#: pod/completion/templates/video_completion.html:32
+#: pod/completion/templates/video_completion.html:26
 msgid "Display &quot;Contributor(s)&quot; section"
 msgstr "Afficher la section $quot;Contributeur(s)&quot;"
 
-#: pod/completion/templates/video_completion.html:33
-#: pod/completion/templates/video_completion.html:130
+#: pod/completion/templates/video_completion.html:27
+#: pod/completion/templates/video_completion.html:121
 msgid "Contributor(s)"
 msgstr "Contributeur(s)"
 
-#: pod/completion/templates/video_completion.html:49
+#: pod/completion/templates/video_completion.html:43
 msgid "Add a new contributor"
 msgstr "Ajouter un nouveau contributeur"
 
-#: pod/completion/templates/video_completion.html:55
+#: pod/completion/templates/video_completion.html:49
 msgid "Display &quot;Subtitle(s) and Caption(s) &quot; section"
 msgstr "Afficher la section &quot;Sous-titre(s) et Légende(s)&quot;"
 
-#: pod/completion/templates/video_completion.html:56
-#: pod/completion/templates/video_completion.html:140
+#: pod/completion/templates/video_completion.html:50
+#: pod/completion/templates/video_completion.html:130
 msgid "Subtitle(s) and Caption(s)"
 msgstr "Sous-tires et légendes"
 
-#: pod/completion/templates/video_completion.html:72
+#: pod/completion/templates/video_completion.html:66
 msgid "Add a new subtitle or caption file"
 msgstr "Ajouter un nouveau fichier de sous-titres ou de légende"
 
-#: pod/completion/templates/video_completion.html:77
+#: pod/completion/templates/video_completion.html:71
 msgid "Display &quot; Additional resource(s)&quot; section"
 msgstr "Afficher la section quot;Document(s) complémentaire(s)&quot;"
 
-#: pod/completion/templates/video_completion.html:78
-#: pod/completion/templates/video_completion.html:154
+#: pod/completion/templates/video_completion.html:72
+#: pod/completion/templates/video_completion.html:143
 msgid "Additional resource(s)"
 msgstr "Documents complémentaires"
 
-#: pod/completion/templates/video_completion.html:94
+#: pod/completion/templates/video_completion.html:88
 msgid "Add a new additional resource"
 msgstr "Ajouter un document complémentaire"
 
-#: pod/completion/templates/video_completion.html:99
+#: pod/completion/templates/video_completion.html:93
 msgid "Display &quot; Overlay(s)&quot; section"
 msgstr "Afficher la section &quot;Superposition(s)&quot;"
 
-#: pod/completion/templates/video_completion.html:100
-#: pod/completion/templates/video_completion.html:164
+#: pod/completion/templates/video_completion.html:94
+#: pod/completion/templates/video_completion.html:152
 msgid "Overlay(s)"
 msgstr "Superposition(s)"
 
-#: pod/completion/templates/video_completion.html:116
+#: pod/completion/templates/video_completion.html:110
 msgid "Add a new overlay"
 msgstr "Ajouter une nouvelle superposition"
 
 #: pod/completion/templates/video_completion.html:124
-msgid "Important"
-msgstr "Important"
-
-#: pod/completion/templates/video_completion.html:126
-msgid ""
-"Here you can consult the description of the different types of completion."
-msgstr ""
-"Ici vous pouvez consulter la description des différents types de complétion."
-
-#: pod/completion/templates/video_completion.html:127
-msgid "Open a completion form to see its description."
-msgstr "Ouvrez le formulaire de la complétion pour voir sa description."
-
-#: pod/completion/templates/video_completion.html:133
 msgid "List of people related to this video."
 msgstr "Liste des contributeurs relatifs à cette vidéo."
 
-#: pod/completion/templates/video_completion.html:134
+#: pod/completion/templates/video_completion.html:125
 msgid ""
 "A contributor must at least have a name and a role. You can also join the "
 "email of this contributor as well as a link (professional website for "
@@ -1389,11 +1375,11 @@ msgstr ""
 "Un contributeur doit au moins avoir un nom et un rôle. Vous pouvez aussi "
 "joindre son courriel ainsi qu'un lien web (site professionnel par exemple)."
 
-#: pod/completion/templates/video_completion.html:143
+#: pod/completion/templates/video_completion.html:133
 msgid "Subtitle(s) and/or captions(s) related to this video."
 msgstr "Sous-titre(s) et/ou légende(s) relatifs à cette vidéo."
 
-#: pod/completion/templates/video_completion.html:144
+#: pod/completion/templates/video_completion.html:134
 msgid ""
 "Several web sites allows you to subtitle or caption videos (for example: "
 "Amara)"
@@ -1401,21 +1387,21 @@ msgstr ""
 "Plusieurs sites web permettent de créer des sous-titres ou des légendes (par "
 "exemple: Amara)"
 
-#: pod/completion/templates/video_completion.html:145
+#: pod/completion/templates/video_completion.html:135
 msgid ""
-"You can add several subtitle or caption files to a single video (for "
-"example, in order to subtitle or caption this video in several languages)"
+"You can add several subtitle or caption files to a signle video (for "
+"example, in order to subtitle or caption this video in several languages"
 msgstr ""
-"Vous pouvez ajouter plusieurs sous-titres ou légendes à une même vidéo (par "
-"exemple, pour fournir des sous-titres et des légendes dans plusieurs langues)"
+"Vous pouvez ajouter plusieurs sous-titres ou légendes pour une même vidéo "
+"(par exemple, dans le but de traduire une vidéo en plusieurs langues)"
 
-#: pod/completion/templates/video_completion.html:146
+#: pod/completion/templates/video_completion.html:136
 msgid "Subtitles and/or caption(s) files must be in \".vtt\" format."
 msgstr ""
 "Les fichiers de sous-titres et/ou de légendes doivent être au format \".vtt"
 "\"."
 
-#: pod/completion/templates/video_completion.html:147
+#: pod/completion/templates/video_completion.html:137
 msgid ""
 "You will need the URL of this video to make subtitles and/or captions. This "
 "URL is a direct access to this video. Please do not communicate it outside "
@@ -1426,7 +1412,7 @@ msgstr ""
 "communiquer en dehors de ce site pour éviter toutes utilisations "
 "malencontreuses. "
 
-#: pod/completion/templates/video_completion.html:157
+#: pod/completion/templates/video_completion.html:146
 msgid ""
 "Document(s) related to this video. These documents will be downloadable by "
 "users."
@@ -1434,7 +1420,7 @@ msgstr ""
 "Document(s) relatifs à cette vidéo. Ces documents seront téléchargeables par "
 "les utilisateurs."
 
-#: pod/completion/templates/video_completion.html:158
+#: pod/completion/templates/video_completion.html:147
 msgid ""
 "Be careful, not to be confused with enrichment. These documents are attached "
 "to the video, not integrated."
@@ -1442,7 +1428,7 @@ msgstr ""
 "Attention, à ne pas confondre avec les enrichissements. Ces documents sont "
 "joints à la vidéo, pas intégrés."
 
-#: pod/completion/templates/video_completion.html:167
+#: pod/completion/templates/video_completion.html:155
 msgid ""
 "Overlay allows you to display text (with ou without html tag) over the video "
 "at specific times and positions."
@@ -1450,7 +1436,7 @@ msgstr ""
 "Les superpositions vous permettent d'afficher un texte (avec ou sans balise "
 "html) par dessus la vidéo à un moment et à un endroit spécifique."
 
-#: pod/completion/templates/video_completion.html:168
+#: pod/completion/templates/video_completion.html:156
 msgid ""
 "You can add a solid background or a transparent background to the text you "
 "want to display with the option \"Show background\""
@@ -1469,7 +1455,7 @@ msgstr "Vous ne pouvez pas compléter cette vidéo."
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
 
-#: pod/enrichment/models.py:55 pod/filepicker/models.py:126
+#: pod/enrichment/models.py:55 pod/filepicker/models.py:142
 #: pod/video/forms.py:225
 msgid "File"
 msgstr "Fichier"
@@ -1722,8 +1708,8 @@ msgid "You cannot watch this video."
 msgstr "Vous ne pouvez pas voir cette vidéo."
 
 #: pod/filepicker/file_pickers.py:51 pod/filepicker/file_pickers.py:76
-#: pod/filepicker/file_pickers.py:112 pod/filepicker/models.py:21
-#: pod/filepicker/models.py:80 pod/main/forms.py:49 pod/video/models.py:876
+#: pod/filepicker/file_pickers.py:112 pod/filepicker/models.py:25
+#: pod/filepicker/models.py:96 pod/main/forms.py:49 pod/video/models.py:876
 #: pod/video/models.py:939 pod/video/models.py:984
 msgid "Name"
 msgstr "Nom"
@@ -1737,7 +1723,7 @@ msgid "Directory"
 msgstr "Répertoire"
 
 #: pod/filepicker/file_pickers.py:78 pod/filepicker/file_pickers.py:114
-#: pod/filepicker/models.py:81 pod/main/forms.py:59 pod/playlist/models.py:32
+#: pod/filepicker/models.py:97 pod/main/forms.py:59 pod/playlist/models.py:32
 #: pod/video/forms.py:95 pod/video/forms.py:154 pod/video/forms.py:180
 #: pod/video/models.py:201 pod/video/models.py:282 pod/video/models.py:445
 msgid "Description"
@@ -1748,26 +1734,30 @@ msgstr "Description"
 msgid "File type not allowed : {0}"
 msgstr "Type de fichier non autorisé : {0}"
 
-#: pod/filepicker/models.py:24 pod/playlist/models.py:30
+#: pod/filepicker/models.py:28 pod/playlist/models.py:30
 #: pod/playlist/templates/playlist/playlist_element_list.html:12
 #: pod/video/admin.py:110 pod/video/models.py:440
 #: pod/video_search/templates/search/search.html:59
 msgid "Owner"
 msgstr "Propriétaire"
 
-#: pod/filepicker/models.py:28
+#: pod/filepicker/models.py:32
 msgid "User directory"
 msgstr "Répertoire utilisateur"
 
-#: pod/filepicker/models.py:29
+#: pod/filepicker/models.py:33
 msgid "User directories"
 msgstr "Répertoires utilisateur"
 
-#: pod/filepicker/models.py:127
+#: pod/filepicker/models.py:74
+msgid "Create owner directory has failed."
+msgstr "La création du répertoire racine a échoué."
+
+#: pod/filepicker/models.py:143
 msgid "Files"
 msgstr "Fichiers"
 
-#: pod/filepicker/models.py:142
+#: pod/filepicker/models.py:158
 msgid "Images"
 msgstr "Images"
 
@@ -1876,7 +1866,7 @@ msgstr "Mots clés"
 
 #: pod/main/templates/base.html:49
 msgid "Home"
-msgstr "Racine"
+msgstr "Home"
 
 #: pod/main/templates/contact_us.html:8 pod/main/templates/contact_us.html:12
 #: pod/main/templates/contact_us.html:17
@@ -2101,7 +2091,7 @@ msgstr ""
 #: pod/playlist/templates/my_playlists.html:21
 #: pod/playlist/templates/playlist.html:25
 #: pod/playlist/templates/playlist.html:31
-#: pod/playlist/templates/playlist.html:39
+#: pod/playlist/templates/playlist.html:39 pod/playlist/tests/test_views.py:64
 msgid "Add a new playlist"
 msgstr "Ajouter une nouvelle playlist"
 
@@ -2127,7 +2117,9 @@ msgid "Edit"
 msgstr "Éditer"
 
 #: pod/playlist/templates/playlist.html:31
-#: pod/playlist/templates/playlist.html:37
+#: pod/playlist/templates/playlist.html:37 pod/playlist/tests/test_views.py:77
+#: pod/playlist/tests/test_views.py:101 pod/playlist/tests/test_views.py:160
+#: pod/playlist/tests/test_views.py:212 pod/playlist/tests/test_views.py:267
 msgid "Editing the playlist"
 msgstr "Éditer la playlist"
 
@@ -3183,6 +3175,18 @@ msgstr "facettage"
 #: pod/video_search/views.py:55
 msgid "Remove selection"
 msgstr "Retirer la sélection"
+
+#~ msgid "Important"
+#~ msgstr "Important"
+
+#~ msgid ""
+#~ "Here you can consult the description of the different types of completion."
+#~ msgstr ""
+#~ "Ici vous pouvez consulter la description des différents types de "
+#~ "complétion."
+
+#~ msgid "Open a completion form to see its description."
+#~ msgstr "Ouvrez le formulaire de la complétion pour voir sa description."
 
 #~ msgid "Channels / Themes"
 #~ msgstr "Chaînes / Thèmes"
