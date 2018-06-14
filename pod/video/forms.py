@@ -67,7 +67,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
         (_("File field"), [
             _("You can send an audio or video file."),
             _("The following formats are supported: %s") %
-              ', '.join(map(str, VIDEO_ALLOWED_EXTENSIONS))
+            ', '.join(map(str, VIDEO_ALLOWED_EXTENSIONS))
         ]),
         (_("Title field"), [
             _("Please choose a title as short and accurate as possible, "
