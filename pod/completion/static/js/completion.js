@@ -5,8 +5,6 @@ $(window).on('load', function() {
 	var accordeon_body = $('#accordeon li.contenuTitre');
 
 	accordeon_head.first().addClass('active').parent().next().slideDown('normal');
-	accordeon_head.first().children().removeClass('glyphicon glyphicon-chevron-down');
-	accordeon_head.first().children().addClass('glyphicon glyphicon-chevron-up');
 
 	// Click on .titre
 	accordeon_head.on('click', function(event) {
@@ -14,13 +12,9 @@ $(window).on('load', function() {
 		if ($(this).attr('class') != 'title active') {
 			$(this).parent().next().slideToggle('normal');
 			$(this).addClass('active');
-			$(this).children().removeClass('glyphicon-chevron-down');
-			$(this).children().addClass('glyphicon-chevron-up');
 		} else if ($(this).attr('class') == 'title active') {
 			$(this).parent().next().slideUp('normal');
 			$(this).removeClass('active');
-			$(this).children().removeClass('glyphicon-chevron-up');
-			$(this).children().addClass('glyphicon-chevron-down');
 		}
 	});
 });
@@ -30,7 +24,7 @@ var num = 0;
 var name = '';
 
 // RESET
-$(document).on('reset', '#page-video form', function(event) {
+$(document).on('reset', '#accordeon form', function(event) {
 	var id_form = $(this).attr('id');
 	var name_form = id_form.substring(5, id_form.length);
 	var form_new = 'form_new_' + name_form;
@@ -51,7 +45,7 @@ var ajaxfail = function(data, form) {
 };
 
 //SUBMIT
-$(document).on('submit', '#page-video form', function(e) {
+$(document).on('submit', '#accordeon form', function(e) {
 	e.preventDefault();
 	var jqxhr = '';
 	var exp = /_([a-z]*)\s?/g;
