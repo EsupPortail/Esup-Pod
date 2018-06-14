@@ -81,7 +81,7 @@
                 $.get(conf.url, function (response) {
                     conf.urls = response.urls;
                     self.current_dir = {};
-                    self.current_dir.name = 'Home';
+                    self.current_dir.name = gettext('Home');
                     self.getDir();
                 });
             },
@@ -157,12 +157,12 @@
                     var action = $('<input>').attr({
                         'type': 'hidden',
                         'name': 'action',
-                        'value': 'new'
+                        'value': gettext('new')
                     });
                     form.append(action);
                     var submit = $('<input>').attr({
                         'type': 'submit',
-                        'value': 'Submit'
+                        'value': gettext('Submit')
                     }).click(function (e) {
                         e.preventDefault();
                         var form = dir_pane.find('.configure_form');
@@ -180,7 +180,7 @@
                     var action = $('<input>').attr({
                         'type': 'hidden',
                         'name': 'action',
-                        'value': 'edit',
+                        'value': gettext('edit'),
                     });
                     form.append(action);
                     var id = $('<input>').attr({
@@ -191,7 +191,7 @@
                     form.append(id);
                     var submit = $('<input>').attr({
                         'type': 'submit',
-                        'value': 'Submit'
+                        'value': gettext('Submit')
                     }).click(function (e) {
                         e.preventDefault();
                         var form = dir_pane.find('.configure_form');
@@ -204,11 +204,11 @@
                     form.append(submit);
                 }
                 if (action == 'delete') {
-                    form.append($('<p>').text('Are you sure you want to delete this directory ?'));
+                    form.append($('<p>').text(gettext('Are you sure you want to delete this directory ?')));
                     var action = $('<input>').attr({
                         'type': 'hidden',
                         'name': 'action',
-                        'value': 'delete',
+                        'value': gettext('delete'),
                     });
                     form.append(action);
                     var id = $('<input>').attr({
@@ -219,7 +219,7 @@
                     form.append(id);
                     var submit = $('<input>').attr({
                         'type': 'submit',
-                        'value': 'Yes'
+                        'value': gettext('Yes')
                     }).click(function (e) {
                         e.preventDefault();
                         var form = dir_pane.find('.configure_form');
@@ -268,7 +268,7 @@
                 pane.append(view);
                 pane.append(title);
                 // Sub Directories category
-                pane.append($('<h3>').text('Sub-directories :'));
+                pane.append($('<h3>').text(gettext('Sub-directories :')));
                 // List of sub directories
                 if (dirs[current].length > 0) {
                     var table = $('<table>').addClass('directories-list');
@@ -340,11 +340,11 @@
                     });
                     add.addClass('file-picker-directory add');
                     add.append(img);
-                    pane.append($('<p>').text('No sub-directories.').append(add));
+                    pane.append($('<p>').text(gettext('No sub-directories.')).append(add));
                 }
                 // Current directory info category
                 pane.append($('<h3>').text('Info'));
-                pane.append($('<p>').text('You have ' + dirs['size'] + ' file(s) in this directory.'));
+                pane.append($('<p>').text(gettext('You have') + ' ' + dirs['size'] + ' ' + gettext(' file(s) in this directory.')));
             },
             
             getForm: function (data) {
@@ -378,8 +378,8 @@
             displayForm: function (data) {
                 var pane = root.find('.file-picker-upload');
                 pane.empty();
-                pane.append($('<h2>').text('Select file to upload / ' + self.current_dir.name));
-                var browse = $('<input>').val('Select a file').attr({
+                pane.append($('<h2>').text(gettext('Select file to upload') + ' / ' + self.current_dir.name));
+                var browse = $('<input>').val(gettext('Select a file')).attr({
                     'type': 'button',
                     'id': 'select-a-file'
                 }).addClass('select-a-file');
@@ -416,7 +416,7 @@
                     responseType: 'json',
                     onSubmit: function(file, extension) {
                         $('.runtime').html(
-                            'Uploading ...'
+                            gettext('Uploading ...')
                         );
                         $('.add_to_model').remove();
                     },
@@ -427,13 +427,13 @@
                             );
                         } else {
                             $('.runtime').html(
-                                'Uploading ... Complete'
+                                gettext('Uploading ... Complete')
                             );
                         }
                         var submit = $('<input>').attr({
                             'class': 'add_to_model',
                             'type': 'submit',
-                            'value': 'Submit'
+                            'value': gettext('Submit')
                         }).click(function (e) {
                             e.preventDefault();
                             var upload_form = upload_pane.find('.upload_form');
@@ -454,7 +454,7 @@
             displayFiles: function (data) {
                 var files = data.result;
                 browse_pane.empty();
-                browse_pane.append($('<h2>').text('Select file to insert / ' + self.current_dir.name));
+                browse_pane.append($('<h2>').text(gettext('Select file to insert') + ' / ' + self.current_dir.name));
                 var table = $('<table>').addClass('file-list');
                 var tr = $('<tr>');
                 var form = $('<form>').attr({
@@ -472,7 +472,7 @@
                 form.append(
                     $('<input>').attr({
                         'type': 'submit',
-                        'value': 'Search'
+                        'value': gettext('Search')
                     }).addClass('search_val').click(function (e) {
                         e.preventDefault();
                         self.getFiles({
@@ -582,14 +582,14 @@
         
         // setup tabs
         tabs = $('<ul>').addClass('css-tabs').addClass('file-picker-tabs');
-        tabs.append($('<li>').append($('<a>').attr('href', '#').text('Directories')));
-        tabs.append($('<li>').append($('<a>').attr('href', '#').text('Browse')));
-        tabs.append($('<li>').append($('<a>').attr('href', '#').text('Upload')));
+        tabs.append($('<li>').append($('<a>').attr('href', '#').text(gettext('Directories'))));
+        tabs.append($('<li>').append($('<a>').attr('href', '#').text(gettext('Browse'))));
+        tabs.append($('<li>').append($('<a>').attr('href', '#').text(gettext('Upload'))));
         var panes = $('<div>').addClass('panes');
         dir_pane = $('<div>').addClass('file-picker-directories').addClass('pane');
         panes.append(dir_pane);
         browse_pane = $('<div>').addClass('file-picker-browse').addClass('pane');
-        browse_pane.append($('<h2>').text('Browse for a file'));
+        browse_pane.append($('<h2>').text(gettext('Browse for a file')));
         panes.append(browse_pane);
         upload_pane = $('<div>').addClass('file-picker-upload').attr({'id': 'file-picker-upload'}).addClass('pane');
         panes.append(upload_pane);
@@ -639,7 +639,7 @@ function insertAtCaret(areaId, text) {
     var regex = /^<img.*/;
     var thumb = $('<img>');
     thumb.attr('id', 'file-picker-thumbnail');
-    thumb.attr('alt', 'Thumbnail');
+    thumb.attr('alt', gettext('Thumbnail'));
     thumb.attr('width', 50);
     thumb.attr('height', 50);
     if (text.thumbnail.match(regex)) {
