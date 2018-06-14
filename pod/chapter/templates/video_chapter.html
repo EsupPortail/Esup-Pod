@@ -26,86 +26,76 @@
 		var video_duration = {{video.duration}}
 	</script>
 {% endblock page_extra_head %}
-{% block content %}
-	<article id="page-video" class="container" role="main" itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
-		<main role="main" class="mt-3">
-			<nav aria-label="breadcrumb" class="breadcrumb d-flex justify-content-between p-0">
-				<ol class="breadcrumb p-1 p1-4 mb-0">
-					{% block breadcrumbs %}
-						{{block.super}}
-						<li class="active">&nbsp;{% trans 'Chapter video' %} "{{video.title}}"</li>
-					{% endblock breadcrumbs %}
-				</ol>
-				<div class="p-0">
-					<a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside">
-						<svg height="32" class="octicon octicon-grabber" viewBox="0 0 8 16" version="1.1" width="16" aria-hidden="true"><path fill-rule="evenodd" d="M8 4v1H0V4h8zM0 8h8V7H0v1zm0 3h8v-1H0v1z"></path></svg>
-					</a>
-				</div>
-			</nav>
-			<span id="chapter_player">
-				<video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
-				poster="{{video.get_thumbnail_url}}" data-setup='{}'>
-					<p class="vjs-no-js">
-					  To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-					</p>
-				</video>
-				{% if video.chapter_set.all %}
-					<div class="chapters-list inactive" role="menu">
-						<h6>Chapters</h6>
-						<ol id="chapters-list"></ol>
-					</div>
-					<ul id="chapters">
-						{% for chapter in video.chapter_set.all %}
-							<li data-start="{{chapter.time_start}}"
-								data-id="{{chapter.id}}"
-								data-title="{{chapter.title}}">
-								{{chapter.title}}
-							</li>
-						{% endfor %}
-					</ul>
-				{% endif %}
-			</span>
-			<hr/>
-			<div class="row" id="info_video">
-				<div class="col-sm-9">
-					<div id="list_chapter">
-						{% include 'chapter/list_chapter.html' %}
-					</div>
-					<div id="form_chapter">
-						{% if form_chapter %}
-							{% include 'chapter/form_chapter.html' with form_chapter=form_chapter %}
-						{% endif %}
-					</div>
-					{% if not form_chapter %}
-						<form id="form_new" class="get_form" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
-							{% csrf_token %}
-							<input type="hidden" name="action" value="new"/>
-							<input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-info"/>
-						</form>
-					{% endif %}
-				</div>
-				<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
-					<div class="widget user-tools">
-						<h4>
-							{% trans 'Edit the video' %}
-						</h4>
-					</div>
-					<div class="card info-card">
-						<div class="card bg-info text-white">
-							<h4 class="card-title">{% trans 'Chapters' %}</h4>
-						</div>
-						<div class="card-body">
-							<p>{% trans '"Add a new chapter" allows you to add a new chapter, "modify" allows you to modify it and "delete" allows you to remove the chapter.' %}</p>
-							<p>{% trans 'Start playback of the video, pause the video and click on "Get time from the player" to fill in the field untitled "Start time".' %}</p>
-							<p>{% trans 'The chapters cannot start at the same time.' %}</p>
-							<p>{% trans 'You must save your chapters to view the result.' %}</p>
-						</div>
-					</div>
-				</aside>
+{% block breadcrumbs %}
+	{{block.super}}
+	<li class="breadcrumb-item active" aria-current="page">
+		<a href="{% url 'video' slug=video.slug %}">
+			{{video.title}}
+		</a>
+	</li>
+	<li class="breadcrumb-item" aria-current="page">
+		{% trans 'Chapter video' %}
+	</li>
+{% endblock %}
+{% block page_content %}
+	<span id="chapter_player">
+		<video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
+		poster="{{video.get_thumbnail_url}}" data-setup='{}'>
+			<p class="vjs-no-js">
+			  To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+			</p>
+		</video>
+		{% if video.chapter_set.all %}
+			<div class="chapters-list inactive" role="menu">
+				<h6>Chapters</h6>
+				<ol id="chapters-list"></ol>
 			</div>
-		</main>
-	</article>
-{% endblock content %}
+			<ul id="chapters">
+				{% for chapter in video.chapter_set.all %}
+					<li data-start="{{chapter.time_start}}"
+						data-id="{{chapter.id}}"
+						data-title="{{chapter.title}}">
+						{{chapter.title}}
+					</li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+	</span>
+	<hr/>
+	<div class="row" id="info_video">
+		<div class="col-sm-9">
+			<div id="list_chapter">
+				{% include 'chapter/list_chapter.html' %}
+			</div>
+			<div id="form_chapter">
+				{% if form_chapter %}
+					{% include 'chapter/form_chapter.html' with form_chapter=form_chapter %}
+				{% endif %}
+			</div>
+			{% if not form_chapter %}
+				<form id="form_new" class="get_form" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
+					{% csrf_token %}
+					<input type="hidden" name="action" value="new"/>
+					<input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-info"/>
+				</form>
+			{% endif %}
+		</div>
+	</div>
+{% endblock page_content %}
+{% block page_aside %}
+	{% include 'aside.html' %}
+	<div id="chapter-info" class="card card-body p-2 mt-1">
+		<button class="btn btn-sm-light" id="heading-0" data-toggle="collapse" data-target="#collapse-0" aria-expanded="true" aria-controls="collapse-0" style="white-space: normal !important; word-wrap: break-word; word-break: normal;">
+			{% trans 'Chapters' %}
+		</button>
+		<div id="collapse-0" class="collapse hide card-text small">
+			<p>{% trans '"Add a new chapter" allows you to add a new chapter, "modify" allows you to modify it and "delete" allows you to remove the chapter.' %}</p>
+			<p>{% trans 'Start playback of the video, pause the video and click on "Get time from the player" to fill in the field untitled "Start time".' %}</p>
+			<p>{% trans 'The chapters cannot start at the same time.' %}</p>
+			<p>{% trans 'You must save your chapters to view the result.' %}</p>
+		</div>
+	</div>
+{% endblock page_aside %}
 {% block more_script %}
 <script>
 	var options = {
