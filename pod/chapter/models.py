@@ -26,9 +26,9 @@ class Chapter(models.Model):
         _('slug'),
         unique=True,
         max_length=105,
-        help_text=_(
-            u'Used to access this instance, the "slug" is a short label ' +
-            'containing only letters, number, underscore or dash top.'),
+        help_text=_('Used to access this instance, the "slug" is a short' +
+                    ' label containing only letters, numbers, underscore' +
+                    ' or dash top.'),
         editable=False)
     time_start = models.PositiveIntegerField(
         _('Start time'),
