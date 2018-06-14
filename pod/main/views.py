@@ -91,7 +91,7 @@ def contact_us(request):
 
             # EMAIL TO SENDER
             subject = "[ %s ] %s %s" % (
-                TITLE_SITE, _('your message intitled'),
+                TITLE_SITE, _('your message untitled'),
                 dict(SUBJECT_CHOICES)[form_subject])
 
             text_content = loader.get_template('mail/mail_sender.txt').render(

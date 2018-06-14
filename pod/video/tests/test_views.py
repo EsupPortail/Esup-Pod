@@ -592,7 +592,7 @@ class VideoEditTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(b"The changes have been saved." in response.content)
         v = Video.objects.get(title="VideoTest1")
-        p = re.compile(r'^videos/([\d\w]+)/file_([\d\w]+).mp4$')
+        p = re.compile(r'^videos/([\d\w]+)/file([_\d\w]*).mp4$')
         self.assertRegexpMatches(v.video.name, p)
         # new one
         videofile = SimpleUploadedFile(

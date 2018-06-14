@@ -2,20 +2,33 @@ language: python
 #sudo: false
 #virtualenv:
 #  system_site_packages: true
-python:
-  - "3.5"
+os:
+    - linux
+sudo: required
+dist: trusty
+before_install:
+    - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo add-apt-repository -y ppa:mc3man/trusty-media; fi
+    - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get update; fi
+    - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y ffmpeg; fi
+    - if [ "$TRAVIS_OS_NAME" == "linux" ]; then sudo apt-get install -y ffmpegthumbnailer; fi
 #env:
 #  - DJANGO="Django>=1.11.0,<1.12.0"
+python:
+        - "3.5"
+        - "3.6"
+services:
+    - elasticsearch
 # command to install dependencies
 install:
-  - pip install -r requirements.txt
-  - pip install flake8
+    - pip install -r requirements.txt
+    - pip install flake8
 before_script:
-        # - "flake8 --max-complexity=7"
-  - "flake8 --max-complexity=7 --exclude .git,pod/*/migrations/*.py"
+    - sleep 10
+    - "flake8 --max-complexity=7 --exclude .git,pod/*/migrations/*.py"
 # command to run tests
 script:
-  - python manage.py makemigrations
-  - python manage.py migrate
-  - python manage.py test
+    - python manage.py create_pod_index
+    - python manage.py makemigrations
+    - python manage.py migrate
+    - python manage.py test
 #  - pytest # or py.test for Python versions 3.5 and below

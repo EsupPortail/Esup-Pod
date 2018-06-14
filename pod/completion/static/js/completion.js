@@ -5,8 +5,6 @@ $(window).on('load', function() {
 	var accordeon_body = $('#accordeon li.contenuTitre');
 
 	accordeon_head.first().addClass('active').parent().next().slideDown('normal');
-	accordeon_head.first().children().removeClass('glyphicon glyphicon-chevron-down');
-	accordeon_head.first().children().addClass('glyphicon glyphicon-chevron-up');
 
 	// Click on .titre
 	accordeon_head.on('click', function(event) {
@@ -14,13 +12,9 @@ $(window).on('load', function() {
 		if ($(this).attr('class') != 'title active') {
 			$(this).parent().next().slideToggle('normal');
 			$(this).addClass('active');
-			$(this).children().removeClass('glyphicon-chevron-down');
-			$(this).children().addClass('glyphicon-chevron-up');
 		} else if ($(this).attr('class') == 'title active') {
 			$(this).parent().next().slideUp('normal');
 			$(this).removeClass('active');
-			$(this).children().removeClass('glyphicon-chevron-up');
-			$(this).children().addClass('glyphicon-chevron-down');
 		}
 	});
 });
@@ -30,7 +24,7 @@ var num = 0;
 var name = '';
 
 // RESET
-$(document).on('reset', '#page-video form', function(event) {
+$(document).on('reset', '#accordeon form', function(event) {
 	var id_form = $(this).attr('id');
 	var name_form = id_form.substring(5, id_form.length);
 	var form_new = 'form_new_' + name_form;
@@ -42,145 +36,165 @@ $(document).on('reset', '#page-video form', function(event) {
 	$('table tr').removeClass('info');
 });
 
-//SUBMIT
-$(document).on('submit', '#page-video form', function(event) {
-	event.preventDefault();
-	$('form').show();
-	var jqxhr = '';
-	var action = $(this).find('input[name=action]').val();
-	var class_form = $(this).attr('class');
-	var id_form = $(this).attr('id');
-	var form = '';
-	var list = '';
-	var name_form = '';
-	var exp = /_([a-z]*)\s?/g;
-	var result_regexp = '';
+function show_form(data, form) {
+	$('#'+form).hide().html(data).fadeIn();
+};
 
+var ajaxfail = function(data, form) {
+	showalert(gettext('Error getting form.') + ' (' + data + ') ' + gettext('The form could not be recovered.'), 'alert-danger');
+};
+
+//SUBMIT
+$(document).on('submit', '#accordeon form', function(e) {
+	e.preventDefault();
+	var jqxhr = '';
+	var exp = /_([a-z]*)\s?/g;
+	var id_form = $(this).attr('id');
+	var name_form = '';
+	var result_regexp = '';
 	if (id_form == undefined) {
 		var form_class = $(this).find('input[type=submit]').attr('class');
 		result_regexp = exp.exec(form_class);
-		name_form = result_regexp[1]
+		name_form = result_regexp[1];
 	} else {
 		result_regexp = id_form.split(exp);
 		name_form = result_regexp[result_regexp.length - 2];
 	}
-	form = 'form_' + name_form;
-	list = 'list_' + name_form;
-	var href = $(this).attr('action')
-	if (action == 'modify' || action == 'new') {
-		$('form.form_new').hide();
-		$('form.form_modif').hide();
-		$('form.form_delete').hide();
-		$('a.title').css('display', 'none');
-		hide_others_sections(name_form);
-		var elt = $(this).parents('tr');
-		//$('#' + form).html(ajax_image);
-		if (action == 'modify') {
-			var id = $(this).find('input[name=id]').val();
-			jqxhr = $.post(
-				window.location.origin + href,
-				{'action': 'modify', 'id': id}
-			);
-		} else {
-			jqxhr = $.post(
-				window.location.origin + href,
-				{'action': 'new'}
-			);
-			$('.info-card').hide();
-			$('#'+name_form+'-info').show();
-		}
+	var form = 'form_' + name_form;
+	var list = 'list_' + name_form;
+	var action = $(this).find('input[name=action]').val();
+	sendandgetform(this, action, name_form, form, list);
+});
+
+var sendandgetform = function(elt, action, name, form, list) {
+	var href = $(elt).attr('action');
+	if (action == 'new') {
+		$('.info-card').hide();
+		$('#' + name + '-info').show();
+		var jqxhr = $.ajax({
+			method: 'POST',
+			url: window.location.origin + href,
+			data: {'action': 'new', 'csrfmiddlewaretoken': $(elt).find('input[name="csrfmiddlewaretoken"]').val()},
+			dataType: 'html'
+		});
 		jqxhr.done(function(data) {
-			if (data.indexOf(form) == 1) {
-				show_messages("{% trans 'You are no longer authenticated. Please log in again.' %}", 'danger', true);
+			if (data.indexOf(form) == -1) {
+				showalert(gettext('You are no longer authenticated. Please log in again.', 'alert-danger'));
 			} else {
-				get_form(data, form);
-				elt.addClass('info');
+				show_form(data, form);
 			}
 		});
 		jqxhr.fail(function($xhr) {
 			var data = $xhr.status + ' : ' + $xhr.statusText;
-			show_messages("{% trans 'Error getting form.' %} (" + data + ") {% trans 'The form could not be recovered.' %}", 'danger');
+			ajaxfail(data);
 			$('form.form_modif').show();
 			$('form.form_delete').show();
 			$('form.form_new').show();
 			$('#' + form).html('');
 		});
-	} else if (action == 'delete') {
+		$('form.form_new').hide();
+		$('form.form_modif').hide();
+		$('form.form_delete').hide();
+		$('a.title').css('display', 'none');
+		hide_others_sections(name);
+	}
+	if (action == 'modify') {
+		var id = $(elt).find('input[name=id]').val();
+		var jqxhr = $.ajax({
+			method: 'POST',
+			url: window.location.origin + href,
+			data: {'action': 'modify', 'id': id, 'csrfmiddlewaretoken': $(elt).find('input[name="csrfmiddlewaretoken"]').val()},
+			dataType: 'html'
+		});
+		jqxhr.done(function(data) {
+			if (data.indexOf(form) == -1) {
+				showalert(gettext('You are no longer authenticated. Please log in again.', 'alert-danger'));
+			} else {
+				show_form(data, form);
+			}
+		});
+		jqxhr.fail(function($xhr) {
+			var data = $xhr.status + ' : ' + $xhr.statusText;
+			ajaxfail(data, form);
+			$('form.form_modif').show();
+			$('form.form_delete').show();
+			$('form.form_new').show();
+			$('#' + form).html('');
+		});
+		$('form.form_new').hide();
+		$('form.form_modif').hide();
+		$('form.form_delete').hide();
+		$('a.title').css('display', 'none');
+		hide_others_sections(name);
+	}
+	if (action == 'delete') {
 		var deleteConfirm = '';
-		if (name_form == 'track') {
-			deleteConfirm = confirm("{% trans 'Are you sure you want to delete this file ?' %}");
-		} else if (name_form == 'contributor') {
-			deleteConfirm = confirm("{% trans 'Are you sure you want to delete this contributor ? %}");
-		} else if (name_form == 'document') {
-			deleteConfirm = confirm("{% trans 'Are you sure you want to delete this document ? %}");
-		} else if (name_form == 'overlay') {
-			deleteConfirm = confirm("{% trans 'Are tou sure you want to delete this overlay ? %}");
+		if (name == 'track') {
+			deleteConfirm = confirm(gettext('Are you sure you want to delete this file ?'));
+		} else if (name == 'contributor') {
+			deleteConfirm = confirm(gettext('Are you sure you want to delete this contributor ?'));
+		} else if (name == 'document') {
+			deleteConfirm = confirm(gettext('Are you sure you want to delete this document ?'));
+		} else if (name == 'overlay') {
+			deleteConfirm = confirm(gettext('Are you sure you want to delete this overlay ?'));
 		}
 		if (deleteConfirm) {
-			var id = $(this).find('input[name=id]').val();
-			jqxhr = $.post(
-				window.location.origin + href,
-				{'action': 'delete', 'id': id}
-			);
+			var id = $(elt).find('input[name=id]').val();
+			jqxhr = $.ajax({
+				method: 'POST',
+				url: window.location.origin + href,
+				data: {'action': 'delete', 'id': id, 'csrfmiddlewaretoken': $(elt).find('input[name="csrfmiddlewaretoken"]').val()},
+				dataType: 'html'
+			});
 			jqxhr.done(function(data) {
+				data = JSON.parse(data);
 				if (data.list_data) {
 					refresh_list(data, form, list);
-					manageResize(name_form);
 				} else {
-					show_messages("{% trans 'You are no longer authenticated. Please log in again' %}", 'danger', true);
+					showalert(gettext('You are no longer authenticated. Please log in again.', 'alert-danger'));
 				}
 			});
 			jqxhr.fail(function($xhr) {
 				var data = $xhr.status + ' : ' + $xhr.statusText;
-				show_messages("{% trans 'Error during deletion.' %} (" + data + ") {% trans 'No data could be deleted.' %}", 'danger');
+				ajaxfail(data, form);
 			});
 		}
-	} else if (action == 'save') {
-		$('form.form_new').hide();
-		$('form.form_modif').hide();
-		$('form.form_delete').hide();
+	}
+	if (action == 'save') {
 		$('.form-help-inline').parents('div.form-group').removeClass('has-error');
 		$('.form-help-inline').remove();
-		msg = verify_fields(form);
-		if (!($('span').hasClass('form-help-inline'))) {
-			if(msg != '') {
-				show_messages(msg, 'danger')
-			} else {
-				var data_form = $('form#' + form).serializeArray();
-				var href = $('form#' + form).attr('action');
-				jqxhr = $.post(
-					window.location.origin + href,
-					data_form
-				);
-				jqxhr.done(function(data) {
-					if (data.list_data || data.form) {
-						if (data.errors) {
-							get_form(data.form, form);
-						} else {
-							refresh_list(data, form, list);
-							if (name_form != 'contributor') {
-								/**
-								$('span#' + form).unwrap();
-								$('span#' + list).unwrap();
-								**/
-							}
-							$(window).scrollTop(100);
-							show_messages("{% trans 'Changes have been saved.' %}", 'info');
-						}
+		if (verify_fields()) {
+			var data_form = $('form#' + form).serialize();
+			var jqxhr = $.ajax({
+				method: 'POST',
+				url: window.location.origin + href,
+				data: data_form,
+				dataType: 'html'
+			});
+			jqxhr.done(function(data) {
+				data = JSON.parse(data);
+				if (data.list_data || data.form) {
+					if (data.errors) {
+						show_form(data.form, form);
 					} else {
-						show_messages("{% trans 'You are no longer authenticated. Please log in again' %}", 'danger', true);
+						refresh_list(data, form, list);
+						$(window).scrollTop(100);
+						showalert(gettext('Changes have been saved.'), 'alert-info');
 					}
-				});
-				jqxhr.fail(function($xhr) {
-					var data = $xhr.status + ' : ' + $xhr.statusText;
-					show_messages("{% trans 'Error during recording. (" + data + ") {% trans 'No data could be stored.' %}", 'danger');
-				});
-			}
-		} else {
-			show_messages("{% trans 'Errors found in the form, please correct it.' %}", 'danger');
+				} else {
+					showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
+				}
+			});
+			jqxhr.fail(function($xhr) {
+				var data = $xhr.status + ' : ' + $xhr.statusText;
+				ajaxfail(data, form);
+			});
+			$('form.form_new').hide();
+			$('form.form_modif').hide();
+			$('form.form_delete').hide();
 		}
 	}
-});
+}
 
 // Hide others sections
 function hide_others_sections(name_form) {
@@ -193,7 +207,7 @@ function hide_others_sections(name_form) {
 			var section = sections[i];
 			var text = section.text;
 			var name_section = '\'' + text.replace(/\s/g, '') + '\''
-			section.title = "{% trans 'Display " + name_section + " section' %}";
+			section.title = gettext('Display') + " " + name_section + " " + gettext('section');
 			section.firstElementChild.className = 'glyphicon glyphicon-chevron-down';
 		}
 	}
@@ -209,38 +223,36 @@ function refresh_list(data, form, list) {
 	$('span#' + list).html(data.list_data);
 }
 
-// Get form
-function get_form(data, form) {
-	$('#' + form).hide().html(data).fadeIn();
-}
-
 // Check fields
 function verify_fields(form) {
-	var msg = '';
+	var error = false;
 	if (form == 'form_contributor') {
 		if ((document.getElementById('id_name').value == '') || (document.getElementById('id_name').value.length < 2) || (document.getElementById('id_name').length > 200)) {
 			$('input#id_name')
-				.before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a name from 2 to 100 caracteres.' %}</span>")
+				.before("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('Please enter a name from 2 to 100 caracteres.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
+			error = true;
 		}
 		if (document.getElementById('id_weblink').value.length >= 200) {
 			$('input#id_weblink')
-				.before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'You cannot enter a weblink with more than 200 caracteres.' %}</span>")
+				.before("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('You cannot enter a weblink with more than 200 caracteres.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
+			error = true;
 		}
 		if (document.getElementById('id_role').value == '') {
 			$('select#id_role')
-				.before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please enter a role.' %}</span>")
+				.before("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('Please enter a role.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
+			error = true;
 		}
 		var id = parseInt(document.getElementById('id_contributor').value);
 		var new_role = document.getElementById('id_role').value;
 		var new_name = document.getElementById('id_name').value;
 		$('#table_list_contributors tbody > tr').each(function() {
 			if (id != $(this).find('input[name=id]')[0].value && $(this).find('td[class=contributor_name]')[0].innerHTML == new_name && $(this).find('td[class=contributor_role]')[0].innerHTML == new_role) {
-				var text = "{% trans 'There is already a contributor with this same name and role in the list.' %}.";
-				msg += '<br/>' + text;
-				return msg;
+				var text = gettext('There is already a contributor with this same name and role in the list.');
+				showalert(text, 'alert-danger');
+				error = true;
 			}
 		});
 	} else if (form == 'form_track') {
@@ -249,25 +261,29 @@ function verify_fields(form) {
 		var kind = element.options[element.selectedIndex].text;
 		if (value != 'subtitles' && value != 'captions') {
 			$('select#id_kind')
-				.after("<span class='form-help-inline'>{% trans 'Please enter a correct kind.' %}</span>")
+				.after("<span class='form-help-inline'>" + gettext('Please enter a correct kind.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
+			error = true;
 		}
 		var element = document.getElementById('id_lang');
 		var lang = element.options[element.selectedIndex].text;
 		if (element.options[element.selectedIndex].value == '') {
 			$('select#id_lang')
-				.after("<span class='form-help-inline'>{% trans 'Please select a language.' %}</span>")
+				.after("<span class='form-help-inline'>" + gettext('Please select a language.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
+			error = true;
 		}
 		if (document.getElementById('id_src').value == '') {
 			$('input#id_src')
-				.after("<span class='form-help-inline'>{% trans 'Please specify a track file.' %}</span>")
+				.after("<span class='form-help-inline'>" + gettext('Please specify a track file.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
+			error = true;
 		}
 		if (document.getElementById('file-picker-path').innerHTML.split(' ')[1] != '(VTT)') {
 			$('input#id_src')
-				.after("<span class='form-help-inline'>{% trans 'Only .vtt format is allowed.' %}</span>")
+				.after("<span class='form-help-inline'>" + gettext('Only .vtt format is allowed.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
+			error = true;
 		}
 		var is_duplicate = false;
 		$('#table_list_tracks > tbody > tr').each(function() {
@@ -278,24 +294,27 @@ function verify_fields(form) {
 		});
 		if (is_duplicate) {
 			$('input#id_src')
-				.after("<br><span class='form-help-inline'>{% trans 'There is already a track with the same kind and language in the list.' %}</span>")
+				.after("<br><span class='form-help-inline'>" + gettext('There is already a track with the same kind and language in the list.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
+			error = true;
 		}
 	} else if (form == 'form_document') {
 		if ($('img#id_document_thumbnail_img').attr('src') == '/static/icons/nofile_48x48.png') {
 			$('img#id_document_thubmanil_img')
-				.before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Please select a document.' %}</span>")
+				.before("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('Please select a document.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
+			error = true;
 		}
 	} else if (form == 'form_overlay') {
 		var tags = /<script.+?>|<iframe.+?>/;
 		if (tags.exec(document.getElementById('id_content').value) != null) {
 			$('textarea#id_content')
-				.before("<span class='form-help-inline'>&nbsp;&nbsp;{% trans 'Iframe and Script tags are not allowed.' %}</span>")
+				.before("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('Iframe and Script tags are not allowed.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
+			error = true;
 		}
 	}
-	return msg;
+	return !error;
 }
 
 $('.new-contributor').on('click')

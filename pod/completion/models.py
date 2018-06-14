@@ -1,3 +1,6 @@
+import base64
+
+from django.apps import apps
 from django.db import models
 from django.db import connection
 from django.conf import settings
@@ -6,15 +9,35 @@ from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 from ckeditor.fields import RichTextField
 from pod.video.models import Video
-from pod.filepicker.models import CustomFileModel
-try:
-    __import__('pod.filepicker')
+if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
-except ImportError:
-    FILEPICKER = False
-    pass
+    from pod.filepicker.models import CustomFileModel
 
-import base64
+ROLE_CHOICES = getattr(
+    settings, 'ROLE_CHOICES', (
+        ('actor', _('actor')),
+        ('author', _('author')),
+        ('designer', _('designer')),
+        ('consultant', _('consultant')),
+        ('contributor', _('contributor')),
+        ('editor', _('editor')),
+        ('speaker', _('speaker')),
+        ('soundman', _('soundman')),
+        ('director', _('director')),
+        ('writer', _('writer')),
+        ('technician', _('technician')),
+        ('voice-over', _('voice-over')),
+    ))
+KIND_CHOICES = getattr(
+    settings, 'KIND_CHOICES', (
+        ('subtitles', _('subtitles')),
+        ('captions', _('captions')),
+    ))
+LANG_CHOICES = getattr(
+    settings, 'LANG_CHOICES', (
+        ('', settings.PREF_LANG_CHOICES),
+        ('----------', settings.ALL_LANG_CHOICES),
+    ))
 
 
 def get_nextautoincrement(model):
@@ -29,21 +52,6 @@ def get_nextautoincrement(model):
 
 
 class Contributor(models.Model):
-
-    ROLE_CHOICES = (
-        ('actor', _('actor')),
-        ('author', _('author')),
-        ('designer', _('designer')),
-        ('consultant', _('consultant')),
-        ('contributor', _('contributor')),
-        ('editor', _('editor')),
-        ('speaker', _('speaker')),
-        ('soundman', _('soundman')),
-        ('director', _('director')),
-        ('writer', _('writer')),
-        ('technician', _('technician')),
-        ('voice-over', _('voice-over')),
-    )
 
     video = models.ForeignKey(Video, verbose_name=_('video'))
     name = models.CharField(_('lastname / firstname'), max_length=200)
@@ -167,15 +175,6 @@ class Document(models.Model):
 
 class Track(models.Model):
 
-    KIND_CHOICES = (
-        ('subtitles', _('subtitles')),
-        ('captions', _('captions')),
-    )
-    LANG_CHOICES = (
-        ('', settings.PREF_LANG_CHOICES),
-        ('----------', settings.ALL_LANG_CHOICES),
-    )
-
     video = models.ForeignKey(Video, verbose_name=_('Video'))
     kind = models.CharField(
         _('Kind'),
@@ -263,9 +262,9 @@ class Overlay(models.Model):
         _('Slug'),
         unique=True,
         max_length=105,
-        help_text=_(u'Used to access this instance, this "slug" is a short ' +
-                    'label containing only letters, numbers, underscore or ' +
-                    'dash top.'),
+        help_text=_('Used to access this instance, the "slug" is a short' +
+                    ' label containing only letters, numbers, underscore' +
+                    ' or dash top.'),
         editable=False
 
     )

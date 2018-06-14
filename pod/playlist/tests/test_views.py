@@ -6,6 +6,7 @@ import json
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from django.utils.translation import ugettext_lazy as _
 from pod.video.models import Video
 from pod.video.models import Type
 from pod.playlist.models import Playlist
@@ -60,7 +61,7 @@ class PlaylistViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'playlist.html')
         self.assertContains(response, 'playlist_form')
-        self.assertContains(response, 'Add a new playlist')
+        self.assertContains(response, _('Add a new playlist'))
         response = self.client.post(
             '/playlist/',
             data={'action': 'edit',
@@ -73,7 +74,7 @@ class PlaylistViewsTestCase(TestCase):
         result = Playlist.objects.all()
         self.assertTrue(result)
         self.assertTemplateUsed(response, 'playlist.html')
-        self.assertContains(response, 'Editing the playlist')
+        self.assertContains(response, _('Editing the playlist'))
         self.assertContains(response, 'playlist1')
 
         print(" ---> test_playlist_create : OK!")
@@ -97,7 +98,7 @@ class PlaylistViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'playlist.html')
         self.assertContains(response, 'playlist_form')
-        self.assertContains(response, 'Editing the playlist')
+        self.assertContains(response, _('Editing the playlist'))
         self.assertContains(response, 'playlist1')
         response = self.client.post(
             '/playlist/{0}/'.format(playlist.slug),
@@ -156,7 +157,7 @@ class PlaylistViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'playlist.html')
         self.assertContains(response, 'playlist_form')
-        self.assertContains(response, 'Editing the playlist')
+        self.assertContains(response, _('Editing the playlist'))
         self.assertContains(response, 'playlist1')
         self.assertContains(response, 'video1')
         self.assertContains(response, 'video2')
@@ -208,7 +209,7 @@ class PlaylistViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'playlist.html')
         self.assertContains(response, 'playlist_form')
-        self.assertContains(response, 'Editing the playlist')
+        self.assertContains(response, _('Editing the playlist'))
         self.assertContains(response, 'playlist1')
         self.assertContains(response, 'video1')
         self.assertContains(response, 'video2')
@@ -263,7 +264,7 @@ class PlaylistViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'playlist.html')
         self.assertContains(response, 'playlist_form')
-        self.assertContains(response, 'Editing the playlist')
+        self.assertContains(response, _('Editing the playlist'))
         self.assertContains(response, 'playlist1')
         self.assertContains(response, 'video1')
         response = self.client.post(

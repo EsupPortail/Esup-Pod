@@ -45,6 +45,7 @@ import_data/
 media/
 # pod/*/fixtures/
 pod/*/migrations/
+pod/custom/*
 settings_local.py
 ## Others
 jwplayer/

@@ -6,6 +6,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import authenticate
+from django.utils.translation import ugettext_lazy as _
 from pod.video.models import Video
 from pod.completion.models import Contributor
 from pod.completion.models import Document
@@ -16,8 +17,6 @@ if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
     from pod.filepicker.models import CustomFileModel
     from pod.filepicker.models import UserDirectory
-else:
-    FILEPICKER = False
 
 
 class CompletionViewsTestCase(TestCase):
@@ -44,7 +43,7 @@ class CompletionViewsTestCase(TestCase):
     def test_video_completion_user(self):
         video = Video.objects.get(id=1)
         response = self.client.get('/video_completion/{0}/'.format(video.slug))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
         authenticate(username='test', password='hello')
         login = self.client.login(username='test', password='hello')
         self.assertTrue(login)
@@ -59,7 +58,7 @@ class CompletionViewsTestCase(TestCase):
     def test_video_completion_staff(self):
         video = Video.objects.get(id=2)
         response = self.client.get('/video_completion/{0}/'.format(video.slug))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
         authenticate(username='staff', password='hello')
         login = self.client.login(username='staff', password='hello')
         self.assertTrue(login)
@@ -92,7 +91,7 @@ class CompletionContributorViewsTestCase(TestCase):
         video = Video.objects.get(id=1)
         response = self.client.get(
             '/video_completion_contributor/{0}/'.format(video.slug))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
         authenticate(username='staff', password='hello')
         login = self.client.login(username='staff', password='hello')
         self.assertTrue(login)
@@ -183,7 +182,7 @@ class CompletionContributorViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_contributor')
         self.assertContains(response, 'testcontributor2')
-        self.assertContains(response, 'editor')
+        self.assertContains(response, _('editor'))
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, 'testcontributor2')
 
@@ -243,7 +242,7 @@ class CompletionTrackViewsTestCase(TestCase):
         video = Video.objects.get(id=1)
         response = self.client.get(
             '/video_completion_track/{0}/'.format(video.slug))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
         authenticate(username='staff', password='hello')
         login = self.client.login(username='staff', password='hello')
         self.assertTrue(login)
@@ -436,7 +435,7 @@ class CompletionDocumentViewsTestCase(TestCase):
         video = Video.objects.get(id=1)
         response = self.client.get(
             '/video_completion_document/{0}/'.format(video.slug))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
         authenticate(username='staff', password='hello')
         login = self.client.login(username='staff', password='hello')
         self.assertTrue(login)
@@ -635,7 +634,7 @@ class CompletionOverlayViewsTestCase(TestCase):
         video = Video.objects.get(id=1)
         response = self.client.get(
             '/video_completion_overlay/{0}/'.format(video.slug))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
         authenticate(username='staff', password='hello')
         login = self.client.login(username='staff', password='hello')
         self.assertTrue(login)

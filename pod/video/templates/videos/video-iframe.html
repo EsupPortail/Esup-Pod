@@ -1,0 +1,177 @@
+{% load i18n %}
+{% load staticfiles %}
+{% load tagging_tags %}
+{% load thumbnail %}
+{% load video_filters %}
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{ TITLE_SITE }} - {{video.title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }}" />
+    <!-- Open Graph data -->
+    <meta property="og:title" content="{{ video.title }}" />
+    <meta property="og:type" content="video" />
+    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+    <meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{ video.get_thumbnail_url }}" />
+    <meta property="og:description" content="{{ video.description|metaformat|safe|striptags|truncatechars:250 }}" />
+    <meta property="og:site_name" content="{{ TITLE_SITE }}" />
+    <!-- End Open Graph data -->
+
+
+    <link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/quality-selector.css' %}" rel="stylesheet">
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
+    <script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
+    <script src="{% static 'js/silvermine-videojs-quality-selector.min.js' %}"></script>
+    <script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
+    <script src="{% static 'js/videojs-contrib-quality-levels.min.js' %}"></script>
+    <script src="{% static 'js/videojs-hls-quality-selector.min.js' %}"></script>
+    <script src="{% static 'video-js-6.8.0/lang/fr.js' %}"></script>
+    <script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
+    {% if video.overlay_set.all %}
+      <link href="{% static 'css/videojs-overlay.css' %}" rel="stylesheet">
+      <script src="{% static 'js/videojs-overlay.js' %}"></script>
+    {% endif %}
+    {% if request.user.playlist_set.all %}
+      <link href="{% static 'css/playlist.css' %}" rel="stylesheet">
+      <script src="{% static 'js/playlist.js' %}"></script>
+    {% endif %}
+    {% if video.overview %}
+    <link href="{% static 'css/videojs-vtt-thumbnails.css' %}" rel="stylesheet">
+    <script src="{% static 'js/videojs-vtt-thumbnails.min.js' %}"></script>
+    {% endif %}
+    {% if video.is_360 %}
+    <link href="{% static 'videojs-vr/videojs-vr.css' %}" rel="stylesheet">
+    <script src="{% static 'videojs-vr/videojs-vr.min.js' %}"></script>
+    {% endif %}
+    <script src="{% static 'js/videojs-logo-controlbar.js' %}"></script>
+
+    <script src="{% static 'js/videojs-info-controlbar.js' %}"></script>
+
+    <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap.min.css' %}" crossorigin="anonymous">
+    <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
+
+    <style>
+        body{
+            margin: 0;
+            padding:0;
+            background-color: black;
+            height: 100%;
+        }
+        /* Add extra classes for a variable width / height*/
+        #div-video-wrapper {
+            position: absolute;
+            display:block;
+            width: 100%;
+            height: 100%;
+        }
+        #podvideoplayer {
+            margin-left: auto;
+            margin-right: auto;
+            /*border-radius: 1%;
+            border: 1% #ccc solid;*/
+            /*box-shadow: 0 0 20px rgba(50, 50, 50, 0.95);*/
+        }
+        #info-video {
+            position:relative;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 1%;
+            border: 1px #ccc solid;
+            box-shadow: 0 0 10px rgba(50, 50, 50, 0.95);
+            padding: 5px;
+            /*margin:5%;*/
+            background-color: rgba(50, 50, 50, 0.50);
+            overflow: auto;
+        }
+        .scrollspy-video {
+            padding:10px;
+            background-color: rgba(220, 220, 220, 0.70);
+        }
+        .close {
+            margin:10px;
+            border: 1px solid black !important;
+            color: black !important;
+        }
+    </style>
+</head>
+<body>
+<meta itemprop="duration" content="{{ video.duration }}" />
+<meta itemprop="thumbnailUrl" content="{{ video.get_thumbnail_url }}" />
+<meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
+<meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" />
+<div class="player_wrapper" id="div-video-wrapper">
+    <video id="podvideoplayer" class="video-js vjs-default-skin vjs-big-play-centered" poster="{{video.get_thumbnail_url}}"  crossorigin="anonymous" {% if request.GET.nocontrol and request.GET.nocontrol == 'false' %} autoplay {%else%} controls {% if request.GET.autoplay and request.GET.autoplay == 'true' %} autoplay{%endif%}{%endif%} >
+        <p class="vjs-no-js">
+            To view this video please enable JavaScript, and consider upgrading to a web browser that
+            <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+        </p>
+    </video>
+    <form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
+    {% csrf_token %}
+    </form>
+    <div id="info-video" style="display:none">
+        <button type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {% include 'videos/video-info.html'%}
+    </div>
+</div>
+{% block more_script %}
+{% if not form %}
+{% include 'videos/video-script.html'%}
+<script>
+// Responsive
+  var hdres = 1920/1080;
+  function resizeVideoJs(){
+        var width = document.getElementById(player.id()).parentElement.offsetWidth;
+        var height = document.getElementById(player.id()).parentElement.offsetHeight;
+        var ratio = width/height;
+        if(ratio<hdres) {
+            player.width(width);
+            player.height(width / hdres);
+            var margintop = parseInt((height - player.height())/2);
+            document.getElementById("podvideoplayer").style.marginTop = margintop+"px";
+        } else {
+            player.height(height);
+            player.width(height*hdres);
+            document.getElementById("podvideoplayer").style.marginTop = "0px";
+        }
+        player.height(player.height()-7);
+        if(document.getElementById("info-video").style.display=="block") {
+            resizeInfoVideo();
+        }
+  }
+  resizeVideoJs(); // Initialize the function right now
+  window.onresize = resizeVideoJs; // Call the function on resize
+</script>
+<script>
+var show_info_video = function() {
+    if(document.getElementById("info-video").style.display=="none") {
+        document.getElementById("info-video").style.display="block";
+        resizeInfoVideo();
+        player.pause();
+    } else {
+        document.getElementById("info-video").style.display="none";
+        player.play();
+    }
+}
+function resizeInfoVideo() {
+    var height = document.getElementById("podvideoplayer").offsetHeight-30-player.controlBar.el_.offsetHeight;
+    var width = document.getElementById("podvideoplayer").offsetWidth-30;
+    var margintop = document.getElementById("podvideoplayer").offsetHeight-10;
+    document.getElementById("info-video").style.width = width+"px";
+    document.getElementById("info-video").style.height = height+"px";
+    document.getElementById("info-video").style.marginTop = "-"+margintop+"px";
+}
+$(document).on('click', '.close', function(){
+    document.getElementById("info-video").style.display="none";
+    player.play();
+});
+</script>
+{% endif %}
+{% endblock more_script %}
+</html>

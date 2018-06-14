@@ -75,9 +75,9 @@ class Enrichment(models.Model):
         _('slug'),
         unique=True,
         max_length=105,
-        help_text=_(u'Used to access this instance, the "slug" is a short ' +
-                    'label containing only letters, numbers, ' +
-                    'underscore or dash top.'),
+        help_text=_('Used to access this instance, the "slug" is a short' +
+                    ' label containing only letters, numbers, underscore' +
+                    ' or dash top.'),
         editable=False)
     stop_video = models.BooleanField(
         _('Stop video'),
@@ -132,8 +132,10 @@ class Enrichment(models.Model):
 
     def clean(self):
         msg = list()
-        msg = self.verify_end_start_item() + self.verify_all_fields() + \
-            self.overlap()
+        msg = self.verify_all_fields()
+        if len(msg) > 0:
+            raise ValidationError(msg)
+        msg = self.verify_end_start_item() + self.overlap()
         if len(msg) > 0:
             raise ValidationError(msg)
 
@@ -145,7 +147,7 @@ class Enrichment(models.Model):
             'document': self.document,
             'embed': self.embed
         }
-        if not typelist[type]:
+        if type not in typelist:
             return _('Please enter a correct {0}.'.format(type))
 
     def verify_all_fields(self):
@@ -153,7 +155,7 @@ class Enrichment(models.Model):
         if (not self.title or self.title == '' or len(self.title) < 2 or
                 len(self.title) > 100):
             msg.append(_('Please enter a title from 2 to 100 characters.'))
-        if (self.start == '' or self.start < 0 or
+        if (not self.start or self.start == '' or self.start < 0 or
                 self.start >= self.video.duration):
             msg.append(_('Please enter a correct start field between 0 and ' +
                          '{0}.'.format(self.video.duration - 1)))
@@ -165,7 +167,7 @@ class Enrichment(models.Model):
             if self.verify_type(self.type):
                 msg.append(self.verify_type(self.type))
         else:
-            msg.append(_('Please enter a type in index field.'))
+            msg.append(_('Please enter a type.'))
 
         if len(msg) > 0:
             return msg
@@ -183,7 +185,7 @@ class Enrichment(models.Model):
             msg.append(
                 _('The value of end field is greater than ' +
                     'the video duration.'))
-        if self.start == self.end:
+        if self.end and self.start == self.end:
             msg.append(
                 _('End field and start field can\'t be equal.'))
 

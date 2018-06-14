@@ -472,7 +472,7 @@ class Video(models.Model):
             'the video will only be accessible to authenticated users.'),
         default=False)
     restrict_access_to_groups = models.ManyToManyField(
-        Group, blank=True, verbose_name=_('Goups'),
+        Group, blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who can access to this video'))
     password = models.CharField(
         _('password'),

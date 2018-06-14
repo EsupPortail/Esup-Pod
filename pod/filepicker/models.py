@@ -4,16 +4,20 @@ Override File and Image models from file_picker
 
 django-file-picker : 0.9.1.
 """
+import os
+import logging
+import shutil
+import traceback
+
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.db import models
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import ugettext as _
-from django.contrib.auth.models import User as Owner
+from django.contrib.auth.models import User
 
-import os
-import logging
 logger = logging.getLogger(__name__)
 
 
@@ -21,7 +25,7 @@ class UserDirectory(models.Model):
     name = models.CharField(_('Name'), max_length=255)
     parent = models.ForeignKey(
         'self', blank=True, null=True, related_name='children')
-    owner = models.ForeignKey(Owner, verbose_name=_('Owner'))
+    owner = models.ForeignKey(User, verbose_name=_('Owner'))
 
     class Meta:
         unique_together = (('name', 'parent', 'owner'),)
@@ -49,15 +53,27 @@ class UserDirectory(models.Model):
         else:
             return os.path.join(self.name, path)
 
+    def delete(self):
+        path = os.path.join(settings.MEDIA_ROOT, 'files')
+        if self.owner.owner:
+            path = os.path.join(path, self.owner.owner.hashkey)
+        else:
+            path = os.path.join(path, self.owner.username)
+        path = os.path.join(path, self.get_path())
+        if os.path.exists(path):
+            shutil.rmtree(path)
+        super(UserDirectory, self).delete()
 
-@receiver(post_save, sender=Owner)
+
+@receiver(post_save, sender=User)
 def create_owner_directory(sender, instance, created, **kwargs):
     if created:
         try:
             UserDirectory.objects.create(owner=instance, name='Home')
         except Exception as e:
-            msg = '\n Create owner directory ***** Error:{0}'.format(e)
-            msg += '\n{0}'.traceback.format_exc()
+            msg = _('Create owner directory has failed.')
+            msg += '{0}'.format(e)
+            msg += '\n{0}'.format(traceback.format_exc())
             logger.error(msg)
             print(msg)
 
@@ -84,11 +100,11 @@ class BaseFileModel(models.Model):
     date_created = models.DateTimeField()
     date_modified = models.DateTimeField()
     created_by = models.ForeignKey(
-        Owner,
+        User,
         related_name='%(app_label)s_%(class)s_created',
         on_delete=models.CASCADE)
     modified_by = models.ForeignKey(
-        Owner,
+        User,
         related_name='%(app_label)s_%(class)s_modified',
         null=True,
         blank=True,
