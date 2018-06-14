@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-14 14:20+0000\n"
-"PO-Revision-Date: 2018-06-14 16:21+0200\n"
+"PO-Revision-Date: 2018-06-14 17:03+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -1866,7 +1866,7 @@ msgstr "Mots clés"
 
 #: pod/main/templates/base.html:49
 msgid "Home"
-msgstr "Racine"
+msgstr "Home"
 
 #: pod/main/templates/contact_us.html:8 pod/main/templates/contact_us.html:12
 #: pod/main/templates/contact_us.html:17

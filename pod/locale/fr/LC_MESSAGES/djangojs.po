@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-06-14 14:43+0000\n"
-"PO-Revision-Date: 2018-06-14 16:45+0200\n"
+"PO-Revision-Date: 2018-06-14 17:03+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -246,7 +246,7 @@ msgstr "Vignette"
 
 #: pod/filepicker/static/js/jquery.filepicker.js:84
 msgid "Home"
-msgstr "Racine"
+msgstr "Home"
 
 #: pod/filepicker/static/js/jquery.filepicker.js:160
 msgid "new"
