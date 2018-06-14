@@ -64,12 +64,12 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
     settings,
     'VIDEO_FORM_FIELDS_HELP_TEXT',
     OrderedDict([
-        ("File field", [
+        ("{0}".format(_("File field")), [
             _("You can send an audio or video file."),
-            _("The following formats are supported: %s" %
-              ', '.join(map(str, VIDEO_ALLOWED_EXTENSIONS)))
+            _("The following formats are supported: %s") %
+            ', '.join(map(str, VIDEO_ALLOWED_EXTENSIONS))
         ]),
-        ("Title field", [
+        ("{0}".format(_("Title field")), [
             _("Please choose a title as short and accurate as possible, "
                 "reflecting the main subject / context of the content."),
             _("You can use the “Description” field below for all "
@@ -78,38 +78,38 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
               "the content edition toolbar: they will appear in the “Info” "
               "tab at the bottom of the audio / video player.")
         ]),
-        ("Date of the event field", [
+        ("{0}".format(_("Date of the event field")), [
             _("Enter the date of the event, if applicable, in the "
                 "AAAA-MM-JJ format.")
         ]),
-        ("University course", [
+        ("{0}".format(_("University course")), [
             _("Select an university course as audience target of "
                 "the content."),
             _("Choose “None / All” if it does not apply or if all are "
                 "concerned, or “Other” for an audience outside "
                 "the european LMD scheme.")
         ]),
-        ("Main language", [
+        ("{0}".format(_("Main language")), [
             _("Select the main language used in the content.")
         ]),
-        ("Description", [
+        ("{0}".format(_("Description")), [
             _("In this field you can describe your content, add all needed "
                 "related information, and format the result "
                 "using the toolbar.")
         ]),
-        ("Type", [
+        ("{0}".format(_("Type")), [
             _("Select the type of your content. If the type you wish does "
                 "not appear in the list, please temporary select “Other” "
                 "and contact us to explain your needs.")
         ]),
-        ("Disciplines", [
+        ("{0}".format(_("Disciplines")), [
             _("Select the discipline to which your content belongs. "
                 "If the discipline you wish does not appear in the list, "
                 "please select nothing and contact us to explain your needs."),
             _('Hold down "Control", or "Command" on a Mac, '
               'to select more than one.')
         ]),
-        ("Channels / Themes", [
+        ("{0} / {1}".format(_("Channels"), _("Themes")), [
             _("Select the channel in which you want your content to appear."),
             _("Themes related to this channel will "
                 "appear in the “Themes” list below."),
@@ -119,22 +119,22 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 "in the list, please select nothing and contact "
                 "us to explain your needs.")
         ]),
-        ("Draft", [
+        ("{0}".format(_("Draft")), [
             _("In “Draft mode”, the content shows nowhere and nobody "
                 "else but you can see it.")
         ]),
-        ("Restricted access", [
+        ("{0}".format(_("Restricted access")), [
             _("If you don't select “Draft mode”, you can restrict "
                 "the content access to only people who can log in")
         ]),
-        ("Password", [
+        ("{0}".format(_("Password")), [
             _("If you don't select “Draft mode”, you can add a password "
                 "which will be asked to anybody willing to watch "
                 "your content."),
             _("If your video is in a playlist the password of your "
                 "video will be removed automatically.")
         ]),
-        ("Tags", [
+        ("{0}".format(_("Tags")), [
             _("Please try to add only relevant keywords that can be "
                 "useful to other users.")
         ])
@@ -145,22 +145,22 @@ CHANNEL_FORM_FIELDS_HELP_TEXT = getattr(
     settings,
     'CHANNEL_FORM_FIELDS_HELP_TEXT',
     OrderedDict([
-        (_("Title field"), [
+        ("{0}".format(_("Title field")), [
             _("Please choose a title as short and accurate as possible, "
                 "reflecting the main subject / context of the content."),
             _("You can use the “Description” field below for all "
                 "additional information.")
         ]),
-        (_("Description"), [
+        ("{0}".format(_("Description")), [
             _("In this field you can describe your content, add all needed "
                 "related information, and format the result "
                 "using the toolbar.")
         ]),
-        (("%s / %s" % (_('Extra style'), _('Background color'))), [
+        (("{0} / {1}".format(_('Extra style'), _('Background color'))), [
             _("In this field you can add some style to personnalize "
                 "your channel.")
         ]),
-        (("%s / %s" % (_("Owners"), _('Users'))), [
+        (("{0} / {1}".format(_("Owners"), _('Users'))), [
             _("Owners can add videos to this channel "
                 "and access this page to customize the channel."),
             _("Users can only add videos to this channel")
@@ -171,13 +171,13 @@ THEME_FORM_FIELDS_HELP_TEXT = getattr(
     settings,
     'THEME_FORM_FIELDS_HELP_TEXT',
     OrderedDict([
-        (_("Title field"), [
+        ("{0}".format(_("Title field")), [
             _("Please choose a title as short and accurate as possible, "
                 "reflecting the main subject / context of the content."),
             _("You can use the “Description” field below for all "
                 "additional information.")
         ]),
-        (_("Description"), [
+        ("{0}".format(_("Description")), [
             _("In this field you can describe your content, add all needed "
                 "related information, and format the result "
                 "using the toolbar.")

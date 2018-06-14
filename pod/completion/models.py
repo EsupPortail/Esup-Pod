@@ -262,9 +262,9 @@ class Overlay(models.Model):
         _('Slug'),
         unique=True,
         max_length=105,
-        help_text=_(u'Used to access this instance, this "slug" is a short ' +
-                    'label containing only letters, numbers, underscore or ' +
-                    'dash top.'),
+        help_text=_('Used to access this instance, the "slug" is a short' +
+                    ' label containing only letters, numbers, underscore' +
+                    ' or dash top.'),
         editable=False
 
     )

@@ -6,6 +6,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import authenticate
+from django.utils.translation import ugettext_lazy as _
 from pod.video.models import Video
 from pod.completion.models import Contributor
 from pod.completion.models import Document
@@ -181,7 +182,7 @@ class CompletionContributorViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_contributor')
         self.assertContains(response, 'testcontributor2')
-        self.assertContains(response, 'editor')
+        self.assertContains(response, _('editor'))
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, 'testcontributor2')
 

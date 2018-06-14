@@ -478,6 +478,7 @@ def video_edit(request, slug=None):
                 request, messages.ERROR,
                 _(u'One or more errors have been found in the form.'))
 
+    print(form.VIDEO_FORM_FIELDS_HELP_TEXT)
     return render(request, 'videos/video_edit.html', {
         'form': form}
     )
