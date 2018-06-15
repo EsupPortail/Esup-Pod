@@ -21,6 +21,7 @@ from pod.video.models import EncodingStep
 from pod.video.models import PlaylistVideo
 from pod.video.models import Notes
 from pod.video.models import ViewCount
+from pod.video.models import VideoToDelete
 
 from pod.video.forms import VideoForm
 from pod.video.forms import ChannelForm
@@ -256,8 +257,9 @@ class EncodingStepAdmin(admin.ModelAdmin):
 
 class NotesAdmin(admin.ModelAdmin):
     list_display = ('video', 'user')
-    # readonly_fields = ('video', 'num_step', 'desc_step')
 
+class VideoToDeleteAdmin(admin.ModelAdmin):
+    list_display = ('date_deletion', )
 
 class ViewCountAdmin(admin.ModelAdmin):
     list_display = ('video', 'date', 'count')
@@ -276,4 +278,5 @@ admin.site.register(EncodingLog, EncodingLogAdmin)
 admin.site.register(EncodingStep, EncodingStepAdmin)
 admin.site.register(PlaylistVideo, PlaylistVideoAdmin)
 admin.site.register(Notes, NotesAdmin)
+admin.site.register(VideoToDelete, VideoToDeleteAdmin)
 admin.site.register(ViewCount, ViewCountAdmin)

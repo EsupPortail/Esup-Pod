@@ -5,7 +5,6 @@ Django version : 1.11.10.
 """
 import os
 from pod.main.settings import BASE_DIR
-from pod.main.settings import TEMPLATE_THEME
 
 ##
 # Version of the project
@@ -90,14 +89,6 @@ WSGI_APPLICATION = 'pod.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'theme', TEMPLATE_THEME, 'templates'),
-            os.path.join(BASE_DIR, 'main', 'templates'),
-            os.path.join(BASE_DIR, 'main', 'templates', 'flatpages'),
-            os.path.join(BASE_DIR, 'completion', 'templates'),
-            os.path.join(BASE_DIR, 'enrichment', 'templates'),
-            os.path.join(BASE_DIR, 'playlist', 'templates'),
-        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
