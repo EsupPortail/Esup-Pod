@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Videos" %}</li>{% endblock %}
+
+{% block page_title %}{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}{% endblock %}
+
+
+{% block page_content %}
+
+  <h3>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
+    <span class="float-right">
+      <a href="{% url "rss-video"%}?{{request.GET.urlencode}}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm">
+        <i data-feather="rss"></i>&nbsp;Video</a>
+      <a href="{% url "rss-audio"%}?{{request.GET.urlencode}}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm">
+        <i data-feather="rss"></i>&nbsp;Audio</a>
+    </span>
+  </h3>
+
+  {% include "videos/video_list.html" %}
+
+{% endblock page_content %}
+
+{% block page_aside %}
+    {% include 'videos/filter_aside.html'%}
+{% endblock page_aside %}
+
+
+{% block more_script %}
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite.min.js' %}"></script>
+<script>
+  var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+      $('.loading').show();
+    },
+    onAfterPageLoad: function ($items) {
+      $('.loading').hide();
+      feather.replace({ class: 'align-bottom'});
+    }
+  });
+</script>
+{% endblock more_script %}

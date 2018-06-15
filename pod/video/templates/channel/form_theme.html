@@ -1,0 +1,49 @@
+<!-- HTML for theme form. Don't use this file alone it must be integrated into another template ! -->
+{% load i18n %}
+{% load staticfiles %}
+<h4 class="form-title">
+	{% if form_theme.instance.title %}{% trans "Editing the theme" %} {{form_theme.instance.title}}{% else %}{% trans "Add a new theme" %}{%endif%}
+</h4>
+<form id="form_theme" action="{% url 'theme_edit' slug=channel.slug %}" method="post">
+	{% csrf_token %}
+	<div id="formcontent" class="form-container">
+		{% if form_theme.errors or form_theme.non_field_errors %}
+			{% trans 'One or more errors have been found in the form:' %}<br />
+			{% for error in form_theme.non_field_errors %}
+				- {{error}}<br />
+			{% endfor %}
+			{% for error in form_theme.errors %}
+				- {{error}}<br />
+			{% endfor %}
+		{% endif %}
+		{% for field_hidden in form_theme.hidden_fields %}
+			{{field_hidden}}
+		{% endfor %}
+		{% for field in form_theme.visible_fields %}
+		{% spaceless %}
+            <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
+            <div class="list-group-item">
+			<div class="form-group row">
+				{{ field.errors }}
+				<label for="{{field.auto_id}}" class="col-sm-2 col-form-label">{{field.label}}</label>
+				<div class="col-sm-10">{{field}}
+				{% if field.help_text %}
+                <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                {% endif %}
+                </div>
+				{% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
+                {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
+			</div>
+			</div>
+			</div>
+		{% endspaceless %}
+		{% endfor %}
+		{% if form_theme.instance %}
+			<input type="hidden" id="id_theme" name="theme_id" value="{{form_theme.instance.id}}"/>
+		{% endif %}
+		<input type="hidden" name="action" value="save"/>
+		<input type="submit" id="save_theme" value="{% trans 'Save' %}" class="btn btn-info"/>
+		<input type="reset" action="cancel" id="cancel_theme" value="{% trans 'Cancel' %}" class="btn btn-danger" />
+	</div>
+</form>
+{{form_theme.media}}

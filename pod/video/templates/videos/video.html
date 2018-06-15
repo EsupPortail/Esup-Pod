@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% load tagging_tags %}
+{% load thumbnail %}
+{% load video_filters %}
+
+{% block page_extra_head %}
+<meta name="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }}" />
+<!-- Open Graph data -->
+<meta property="og:title" content="{{ video.title }}" />
+<meta property="og:type" content="video" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{ video.get_thumbnail_url }}" />
+<meta property="og:description" content="{{ video.description|metaformat|safe|striptags|truncatechars:250 }}" />
+<meta property="og:site_name" content="{{ TITLE_SITE }}" />
+<!-- End Open Graph data -->
+
+
+<link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/quality-selector.css' %}" rel="stylesheet">
+
+<script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
+<script src="{% static 'js/silvermine-videojs-quality-selector.min.js' %}"></script>
+<script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
+<script src="{% static 'js/videojs-contrib-quality-levels.min.js' %}"></script>
+<script src="{% static 'js/videojs-hls-quality-selector.min.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/lang/fr.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
+{% if video.overlay_set.all %}
+  <link href="{% static 'css/videojs-overlay.css' %}" rel="stylesheet">
+  <script src="{% static 'js/videojs-overlay.js' %}"></script>
+{% endif %}
+{% if video.chapter_set.all %}
+  <link href="{% static 'css/videojs-chapters.css' %}" rel="stylesheet">
+  <script src="{% static 'js/videojs-chapters.js' %}"></script>
+{% endif %}
+{% if request.user.playlist_set.all %}
+  <link href="{% static 'css/playlist.css' %}" rel="stylesheet">
+  <script src="{% static 'js/playlist.js' %}"></script>
+{% endif %}
+{% if video.overview %}
+<link href="{% static 'css/videojs-vtt-thumbnails.css' %}" rel="stylesheet">
+<script src="{% static 'js/videojs-vtt-thumbnails.min.js' %}"></script>
+{% endif %}
+{% if video.is_360 %}
+<link href="{% static 'videojs-vr/videojs-vr.css' %}" rel="stylesheet">
+<script src="{% static 'videojs-vr/videojs-vr.min.js' %}"></script>
+{% endif %}
+<script src="{% static 'js/videojs-logo-controlbar.js' %}"></script>
+<style>
+.scrollspy-video {
+    position: relative;
+    height: 355px;
+    margin-top: .5rem;
+    overflow: auto;
+}
+{{channel.style}}
+{% if channel.color %}
+body {
+  background-color: {{channel.color}};
+}
+{%endif%}
+</style>
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}{{ block.super }} 
+{%if channel %}
+{% if theme %}
+<li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+{% for t in theme.get_all_parents reversed %}
+{% if t is not theme %}
+<li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
+{% endif %}
+{% endfor %}
+<li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=theme.slug%}">{{theme.title}}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>
+{% else %}
+<li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>
+{% endif %}
+{% else %}
+<li class="breadcrumb-item"><a href="{% url "videos"%}">{% trans 'Videos' %}</a><li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>
+{% endif %}
+{% endblock %}
+
+{% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}{{video.title}}{% endblock %}
+
+{% block page_content %}
+<meta itemprop="duration" content="{{ video.duration }}" />
+<meta itemprop="thumbnailUrl" content="{{ video.get_thumbnail_url }}" />
+<meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
+<meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" />
+
+{%if channel %}
+<h3>{{channel.title}}{% if request.user in channel.owners.all %}<span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-dark btn-sm"><svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>{% trans "Edit the channel"%}</a></span>{%endif%}</h3>
+{% if channel.headband %}
+<img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
+{% endif %}
+{% if channel.description %}
+{{ channel.description|safe }}
+{% endif %}
+{% if theme %}
+<h4>{{theme.title}}</h4>
+{% if theme.headband %}
+<div align="center" class="channelheader">
+    <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" />
+</div>
+{% endif %}
+{% if theme.description %}
+{{ theme.description|safe }}
+{% endif %}
+{%endif%}
+{%endif%}
+
+{% if form %}
+<p>{% trans 'This video is protected by password, please fill in and click send.' %}</p>
+<form method="post" action="{{ request.get_full_path }}" id="video_password_form" class='needs-validation' novalidate>
+    {% csrf_token %}
+    <div class="list-group">
+    <fieldset>
+        <legend>{% trans 'Password required' %}</legend>
+        {% if form.errors %}
+        <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+        {% endif %}
+        {% for field_hidden in form.hidden_fields %}
+            {{field_hidden}}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+            {% spaceless %}
+            <div class="list-group-item">
+            <div class="form-group {% if field.field.required %}form-group-required {%endif%}" >
+                {{ field.errors }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label> 
+                {{ field }}
+                {% if field.help_text %}
+                <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                {% endif %}
+                {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+            </div>
+            </div>
+            {% endspaceless %}
+            {% endfor %}
+        <div class="text-center mt-1">
+            <button type="submit" class="btn btn-success">{% trans "Send" %}</button>
+        </div>
+    </fieldset>
+    </div>
+</form>
+<p>
+  {% trans 'If you do not have the password for this content, please' %} <a href="{% url 'contact_us' %}?owner={{video.owner.id}}&video={{video.id}}&subject=request_password" title="{% trans 'contact its owner' %}" {% if request.GET.is_iframe %}target="_blank"{%endif%}>{% trans 'contact its owner' %}</a>.
+</p>
+
+{% else %}
+{% if playlist %}
+  {% include 'playlist/playlist_player.html' with playlist=playlist %}
+{% endif %}
+
+<video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
+poster="{{video.get_thumbnail_url}}" data-setup='{}' {% if request.GET.nocontrol and request.GET.nocontrol == 'false' %} autoplay {%else%} controls {% if request.GET.autoplay and request.GET.autoplay == 'true' %} autoplay{%endif%}{%endif%} {% if request.GET.loop and request.GET.loop == 'true' %} loop{%endif%}>
+  <p class="vjs-no-js">
+    To view this video please enable JavaScript, and consider upgrading to a web browser that
+    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+  </p>
+</video>
+
+<form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
+{% csrf_token %}
+</form>
+{% if video.overlay_set.all %}
+<ul id="overlays" style="display: none">
+  {% for overlay in video.overlay_set.all %}
+    <li data-timestart="{{overlay.time_start}}"
+        data-timeend="{{overlay.time_end}}"
+        data-content="{{overlay.content}}"
+        data-position="{{overlay.position}}"
+        data-background="{{overlay.background}}">
+    </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% if video.chapter_set.all %}
+  <div class="chapters-list inactive" role="menu">
+    <h6>Chapters</h6>
+    <ol id="chapters-list"></ol>
+  </div>
+  <ul id="chapters">
+    {% for chapter in video.chapter_set.all %}
+      <li data-start="{{chapter.time_start}}"
+        data-id="{{chapter.id}}"
+        data-title="{{chapter.title}}">
+        {{chapter.title}}
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+<nav id="navbar-video" class="navbar navbar-light bg-light">
+  <span class="navbar-brand" >{{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
+  <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
+      <i data-feather="alert-octagon"></i>
+  </a>  
+  <div class="btn-group">
+    {% if request.user.playlist_set.all %}
+    <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <i data-feather="star"></i>
+    </a>
+    <div class="dropdown-menu">
+      <h6 class="dropdown-header">{% trans 'My playlists' %}</h6>
+      {% csrf_token %}
+      <ul class="list-group">
+      {% for playlist in request.user.playlist_set.all %}
+        {% if video in playlist.videos %}
+          <li class="list-group-item disabled" data-slug="{{playlist.slug}}">{{playlist.title}}
+            <i data-feather="check"></i>
+          </li>
+        {% else %}
+          <li class="list-group-item playlist-item" data-slug="{{playlist.slug}}">{{playlist.title}}</li>
+        {% endif %}
+      {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+  </span>
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
+      <a class="nav-link" href="#summary">{% trans 'Summary' %}</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#infos">{% trans 'Infos' %}</a>
+    </li>
+    {% if video.allow_downloading or video.document_set.all %}
+    <li class="nav-item">
+      <a class="nav-link" href="#downloads">{% trans 'Downloads' %}</a>
+    </li>
+    {% endif %}
+    <li class="nav-item">
+      <a class="nav-link" href="#embed">{% trans 'Embed/Share' %}</a>
+    </li>
+    {% if video.enrichment_set.all %} {# todo after or video.interactive or video.accessible... #}
+    <li class="nav-item">
+      <a class="nav-link" href="#version">{% trans 'Version' %}</a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% include 'videos/video-info.html'%}
+{%endif%}
+{% endblock page_content %}
+
+{% block page_aside %}
+
+
+{% if video.owner == request.user or request.user.is_superuser %}
+<div class="card card-body p-2 mt-1">
+<h5 class="card-title pl-2"><i data-feather="settings"></i>&nbsp;{% trans "Manage video"%}</h5>
+      <div class="card-text text-center">
+        {% include "videos/link_video.html" %}
+      </div>
+</div>
+{% endif %}
+<div class="card card-body p-2 mt-1">
+<h5 class="card-title pl-2">
+  <i data-feather="edit"></i>&nbsp;{% trans "take Note"%}
+</h5>
+<div class="card-text">
+    {% if request.user.is_authenticated %}
+    {% include 'videos/video_notes.html' %}
+    {% else %}
+    <p>{% trans 'You must be logged in to take notes.' %}</p>
+    {% endif %}
+</div>
+</div>
+    {% include 'aside.html'%}
+{% endblock page_aside %}
+
+
+{% block more_script %}
+{% if not form %}
+{% include 'videos/video-script.html'%}
+{% endif %}
+{% endblock more_script %}

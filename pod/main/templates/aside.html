@@ -1,0 +1,54 @@
+{% load i18n %}
+{% load tagging_tags %}
+{% spaceless %}
+<div class="card card-body p-2 mt-1">
+<h5 class="card-title pl-2">
+<i data-feather="share-2"></i>&nbsp;{% trans 'Share' %}
+</h5>
+<p class="card-text text-center">
+<a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-facebook btn-sm" title="{% trans "Share on" %} Facebook"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/F_icon.svg/200px-F_icon.svg" height="24" alt="facebook" /> </a>
+<a target="_blank" href="http://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-twitter btn-sm" title="{% trans "Share on" %} Twitter"> <img src="https://upload.wikimedia.org/wikipedia/fr/c/c8/Twitter_Bird.svg" height="24" alt="twitter" /> </a>
+<a target="_blank" href="https://plus.google.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-google-plus btn-sm" title="{% trans "Share on" %} Google+"> <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Google_plus.svg" height="24" alt="google" /> </a>
+</p>
+</div>
+
+<div class="card card-body p-2 mt-1">
+  <h5 class="card-title pl-2">
+    <i data-feather="book"></i>&nbsp;{% trans 'Disciplines' %}
+    <!--
+    <a href="#" class="float-right" title="{% trans 'See all' %} {% trans 'Disciplines' %}" ><svg height="32" class="octicon octicon-arrow-right" viewBox="0 0 10 16" version="1.1" width="20" aria-hidden="true"><path fill-rule="evenodd" d="M10 8L4 3v3H0v4h4v3z"></path></svg></a>
+    -->
+  </h5>
+  <p class="card-text">
+    <form class="form" method="get">
+      <select class="form-control" onchange="this.options[this.selectedIndex].getAttribute('data-value') &amp;&amp; (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="discipline">
+          <option value="#" class="btn btn-default btn-sm btn-block">{% trans 'Disciplines' %}...</option>
+          {% for disc in DISCIPLINES %}
+          <option value="{{disc.slug}}" class="btn btn-default btn-sm btn-block" data-value="{% url 'videos' %}?discipline={{disc.slug}}">{{disc.title}}  ({{disc.video_count}})</option>
+          {% endfor %}
+      </select>
+      <input value="Valider" class="btn btn-default btn-sm sr-only" type="submit">
+  </form>
+  </p>
+  
+</div>
+
+<div class="card card-body p-2 mt-1">
+  <h5 class="card-title pl-2">
+    <i data-feather="tag"></i>&nbsp;{% trans 'Tags' %}
+    <!-- <a href="#" class="float-right"><svg height="32" class="octicon octicon-arrow-right" viewBox="0 0 10 16" version="1.1" width="20" aria-hidden="true"><path fill-rule="evenodd" d="M10 8L4 3v3H0v4h4v3z"></path></svg></a>
+    -->
+  </h5>
+  <p class="card-text">
+    <!-- tag_cloud_for_model video.Video as tagscloud with steps=16 min_count=30 distribution=log -->
+    {% tag_cloud_for_model video.Video as tagscloud with distribution=log steps=16 min_count=4 %}
+    {% with tagslist=tagscloud|dictsortreversed:"count"|slice:":20" %}
+    {% for tag in tagslist %}
+    <a href="{% url 'videos' %}?tag={{ tag.name|urlencode }}" style="font-size:{{ tag.font_size }}px" title="{{tag.name}}" class="badge">
+        {{tag.name}}&nbsp;<span class="badge badge-pill badge-info align-top small">{{tag.count}}</span>
+    </a>
+    {% endfor %}
+    {% endwith %}
+  </p>
+</div>
+{% endspaceless %}

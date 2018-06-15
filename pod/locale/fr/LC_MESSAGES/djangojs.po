@@ -1,0 +1,360 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-06-14 14:43+0000\n"
+"PO-Revision-Date: 2018-06-14 17:03+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 1.8.7.1\n"
+
+#: pod/chapter/static/js/chapters.js:5 pod/chapter/static/js/chapters.js:7
+#: pod/enrichment/static/js/enrichment.js:5
+#: pod/enrichment/static/js/enrichment.js:7
+#: pod/enrichment/static/js/enrichment.js:183
+#: pod/enrichment/static/js/enrichment.js:185
+msgid "Get time from the player"
+msgstr "Obtenir le temps du lecteur"
+
+#: pod/chapter/static/js/chapters.js:16
+#: pod/completion/static/js/completion.js:44
+#: pod/enrichment/static/js/enrichment.js:17
+msgid "Error getting form."
+msgstr "Erreur durant l'obtention du formulaire."
+
+#: pod/chapter/static/js/chapters.js:16
+#: pod/completion/static/js/completion.js:44
+#: pod/enrichment/static/js/enrichment.js:17
+msgid "The form could not be recovered."
+msgstr "Le formulaire ne peut pas être récupéré."
+
+#: pod/chapter/static/js/chapters.js:51 pod/chapter/static/js/chapters.js:71
+#: pod/chapter/static/js/chapters.js:92 pod/chapter/static/js/chapters.js:118
+#: pod/chapter/static/js/chapters.js:147
+#: pod/completion/static/js/completion.js:82
+#: pod/completion/static/js/completion.js:111
+#: pod/completion/static/js/completion.js:154
+#: pod/completion/static/js/completion.js:185
+#: pod/enrichment/static/js/enrichment.js:52
+#: pod/enrichment/static/js/enrichment.js:72
+#: pod/enrichment/static/js/enrichment.js:93
+#: pod/enrichment/static/js/enrichment.js:120
+#: pod/enrichment/static/js/enrichment.js:149 pod/main/static/js/main.js:158
+#: pod/main/static/js/main.js:165 pod/main/static/js/main.js:176
+#: pod/main/static/js/main.js:190
+msgid "You are no longer authenticated. Please log in again."
+msgstr "Vous n'êtes plus authentifié. Veuillez vous reconnectez."
+
+#: pod/chapter/static/js/chapters.js:134
+#: pod/enrichment/static/js/enrichment.js:136 pod/main/static/js/main.js:182
+msgid "One or more errors have been found in the form."
+msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
+
+#: pod/chapter/static/js/chapters.js:163
+#: pod/enrichment/static/js/enrichment.js:223
+msgid "Please enter a title from 2 to 100 characters."
+msgstr "Veuillez entrer un titre contenant entre 2 et 100 caractères."
+
+#: pod/chapter/static/js/chapters.js:169
+msgid "Please enter a correct start field between 0 and"
+msgstr "Veuillez entrer un correct temps de début compris entre 0 et"
+
+#: pod/chapter/static/js/chapters.js:182
+msgid "The chapter"
+msgstr "Le chapitre"
+
+#: pod/chapter/static/js/chapters.js:182
+msgid "starts at the same time."
+msgstr "commencent au même moment."
+
+#: pod/completion/static/js/completion.js:133
+msgid "Are you sure you want to delete this file ?"
+msgstr "Êtes-vous sûre de vouloir supprimer ce fichier ?"
+
+#: pod/completion/static/js/completion.js:135
+msgid "Are you sure you want to delete this contributor ?"
+msgstr "Êtes-vous sûre de vouloir supprimer ce contributeur ?"
+
+#: pod/completion/static/js/completion.js:137
+msgid "Are you sure you want to delete this document ?"
+msgstr "Êtes-vous sûre de vouloir supprimer ce document ?"
+
+#: pod/completion/static/js/completion.js:139
+msgid "Are you sure you want to delete this overlay ?"
+msgstr "Êtes-vous sûre de vouloir supprimer cette superposition ?"
+
+#: pod/completion/static/js/completion.js:182
+msgid "Changes have been saved."
+msgstr "Les modifications ont été sauvegardés."
+
+#: pod/completion/static/js/completion.js:210
+msgid "Display"
+msgstr "Afficher"
+
+#: pod/completion/static/js/completion.js:210
+msgid "section"
+msgstr "section"
+
+#: pod/completion/static/js/completion.js:232
+msgid "Please enter a name from 2 to 100 caracteres."
+msgstr "Veuillez entrer un nom entre 2 et 200 caractères."
+
+#: pod/completion/static/js/completion.js:238
+msgid "You cannot enter a weblink with more than 200 caracteres."
+msgstr "Vous ne pouvez pas entrer un lien web avec plus de 200 caractères."
+
+#: pod/completion/static/js/completion.js:244
+msgid "Please enter a role."
+msgstr "Veuillez entrer un rôle."
+
+#: pod/completion/static/js/completion.js:253
+msgid ""
+"There is already a contributor with this same name and role in the list."
+msgstr ""
+"Il existe déjà un contributeur avec le même nom et le même rôle dans cette "
+"liste."
+
+#: pod/completion/static/js/completion.js:264
+msgid "Please enter a correct kind."
+msgstr "Veuillez entrer un genre correct."
+
+#: pod/completion/static/js/completion.js:272
+msgid "Please select a language."
+msgstr "Veuillez renseigner une langue."
+
+#: pod/completion/static/js/completion.js:278
+msgid "Please specify a track file."
+msgstr "Veuillez joindre un fichier de piste vidéo."
+
+#: pod/completion/static/js/completion.js:284
+msgid "Only .vtt format is allowed."
+msgstr "Seulement le format \".vtt\" est autorisé."
+
+#: pod/completion/static/js/completion.js:297
+msgid "There is already a track with the same kind and language in the list."
+msgstr ""
+"Il existe déjà une piste vidéo avec le même genre et la même langue dans la "
+"liste."
+
+#: pod/completion/static/js/completion.js:304
+#: pod/enrichment/static/js/enrichment.js:274
+msgid "Please select a document."
+msgstr "Veuillez joindre un document."
+
+#: pod/completion/static/js/completion.js:312
+msgid "Iframe and Script tags are not allowed."
+msgstr "Les balises Iframe et Script ne sont pas autorisés."
+
+#: pod/enrichment/static/js/enrichment.js:229
+msgid "Please enter a correct start from 0 to "
+msgstr "Veuillez entrer un correct temps de début compris entre 0 et"
+
+#: pod/enrichment/static/js/enrichment.js:235
+msgid "Please enter a correct end from 1 to "
+msgstr "Veuillez entrer un correct temps de fin compris entre 1 et"
+
+#: pod/enrichment/static/js/enrichment.js:243
+msgid "Please enter a correct image."
+msgstr "Veuillez joindre une image correct."
+
+#: pod/enrichment/static/js/enrichment.js:251
+msgid "Please enter a correct richtext."
+msgstr "Veuillez entrer un texte riche correct."
+
+#: pod/enrichment/static/js/enrichment.js:259
+msgid "Please enter a correct weblink."
+msgstr "Veuillez entrer un lien web correct."
+
+#: pod/enrichment/static/js/enrichment.js:265
+msgid "Weblink must be less than 200 characters."
+msgstr "Un lien web doit contenir moins de 200 caractères."
+
+#: pod/enrichment/static/js/enrichment.js:282
+msgid "Please enter a correct embed."
+msgstr "Veuillez entrer une intégration correct."
+
+#: pod/enrichment/static/js/enrichment.js:288
+msgid "Embed field must be less than 300 characters."
+msgstr "Un lien d'intégration doit être inférieur à 300 caractères."
+
+#: pod/enrichment/static/js/enrichment.js:296
+msgid "Please enter a type in index field."
+msgstr "Veuillez entrer un type."
+
+#: pod/enrichment/static/js/enrichment.js:308
+msgid "The start field value is greater than the end field one."
+msgstr "Le temps de début est supérieur au temps de fin."
+
+#: pod/enrichment/static/js/enrichment.js:310
+msgid "The end field value is greater than the video duration."
+msgstr "La temps de fin est supérieur à la durée de la vidéo."
+
+#: pod/enrichment/static/js/enrichment.js:312
+msgid "End field and start field cannot be equal."
+msgstr "Le commencement et la fin ne peuvent être équivalents."
+
+#: pod/enrichment/static/js/enrichment.js:330
+msgid "There is an overlap with the enrichment "
+msgstr "Il y a un chevauchement avec l'enrichissement"
+
+#: pod/enrichment/static/js/enrichment.js:331
+msgid "please change start and/or end values."
+msgstr "veuillez changer de valeur de début et/ou de fin."
+
+#: pod/filepicker/static/js/filepicker.custom.js:12
+msgid "File successfully deleted."
+msgstr "Le fichier a été supprimé."
+
+#: pod/filepicker/static/js/filepicker.custom.js:16
+msgid "Error ! Cannot delete the file."
+msgstr "Erreur ! Le fichier ne peut pas être supprimé."
+
+#: pod/filepicker/static/js/filepicker.custom.js:40
+#: pod/filepicker/static/js/filepicker.custom.js:42
+#: pod/filepicker/static/js/jquery.filepicker.simple.js:43
+#: pod/filepicker/static/js/jquery.filepicker.simple.js:45
+msgid "Insert Image"
+msgstr "Insérer une image"
+
+#: pod/filepicker/static/js/filepicker.custom.js:47
+#: pod/filepicker/static/js/filepicker.custom.js:61
+#: pod/filepicker/static/js/filepicker.custom.js:66
+msgid "Select a file..."
+msgstr "Sélectionner un fichier..."
+
+#: pod/filepicker/static/js/filepicker.custom.js:54
+#: pod/filepicker/static/js/filepicker.custom.js:56
+#: pod/filepicker/static/js/jquery.filepicker.simple.js:55
+#: pod/filepicker/static/js/jquery.filepicker.simple.js:57
+msgid "Insert File"
+msgstr "Insérer un fichier"
+
+#: pod/filepicker/static/js/filepicker.custom.js:76
+#: pod/filepicker/static/js/jquery.filepicker.js:642
+msgid "Thumbnail"
+msgstr "Vignette"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:84
+msgid "Home"
+msgstr "Home"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:160
+msgid "new"
+msgstr "nouveau"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:165
+#: pod/filepicker/static/js/jquery.filepicker.js:194
+#: pod/filepicker/static/js/jquery.filepicker.js:436
+msgid "Submit"
+msgstr "Soumettre"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:183
+msgid "edit"
+msgstr "editer"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:207
+msgid "Are you sure you want to delete this directory ?"
+msgstr "Êtes-vous sûre de vouloir supprimer ce répertoire ?"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:211
+msgid "delete"
+msgstr "supprimer"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:222
+msgid "Yes"
+msgstr "Oui"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:271
+msgid "Sub-directories :"
+msgstr "Sous-répertoires :"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:343
+msgid "No sub-directories."
+msgstr "Pas de sous-répertoires."
+
+#: pod/filepicker/static/js/jquery.filepicker.js:347
+msgid "You have"
+msgstr "Vous avez"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:347
+msgid " file(s) in this directory."
+msgstr "fichier(s) dans ce répertoire."
+
+#: pod/filepicker/static/js/jquery.filepicker.js:381
+msgid "Select file to upload"
+msgstr "Sélectionnez un fichier à mettre en ligne"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:382
+msgid "Select a file"
+msgstr "Sélectionnez un fichier"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:419
+msgid "Uploading ..."
+msgstr "Mise en ligne ..."
+
+#: pod/filepicker/static/js/jquery.filepicker.js:430
+msgid "Uploading ... Complete"
+msgstr "Mise en ligne ... Terminé"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:457
+msgid "Select file to insert"
+msgstr "Sélectionnez un fichier à insérer"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:475
+msgid "Search"
+msgstr "Rechercher"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:585
+msgid "Directories"
+msgstr "Répertoires"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:586
+msgid "Browse"
+msgstr "Parcourir"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:587
+msgid "Upload"
+msgstr "Mettre en ligne"
+
+#: pod/filepicker/static/js/jquery.filepicker.js:592
+msgid "Browse for a file"
+msgstr "Parcourir les fichiers"
+
+#: pod/main/static/js/main.js:135
+msgid "Are you sure you want to delete this element?"
+msgstr "Êtes-vous sûre de vouloir supprimer cet élément ?"
+
+#: pod/main/static/js/main.js:150
+msgid "Error during exchange"
+msgstr "Erreur durant le téléversement"
+
+#: pod/main/static/js/main.js:150
+msgid "No data could be stored."
+msgstr "Aucune donnée ne peut être stockée."
+
+#: pod/main/static/js/main.js:270
+msgid "text copied"
+msgstr "texte copié"
+
+#: pod/main/static/js/main.js:302
+msgid "Errors appear in the form, please correct it"
+msgstr "Des erreurs sont présent dans le formulaire, veuillez les corriger"
+
+#: pod/main/static/js/main.js:325
+msgid "The file size exceeds the maximum allowed value :"
+msgstr "La fichier dépasse la taille maximum autorisée :"
+
+#: pod/main/static/js/main.js:336
+msgid "The file extension not in the allowed extension :"
+msgstr ""
+"Cette extension de fichier n'est pas présent dans les extensions autorisées :"
