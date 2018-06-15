@@ -1062,3 +1062,18 @@ class Notes(models.Model):
 
     def __str__(self):
         return "%s-%s" % (self.user.username, self.video)
+
+class VideoToDelete(models.Model):
+    date_deletion = models.DateField(
+        _('Date for deletion'), default=date.today)
+    video = models.ManyToManyField(
+        Video,
+        verbose_name=_('Videos'),
+        help_text=_('Hold down "Control", or "Command" '
+                    'on a Mac, to select more than one.'))
+    class Meta:
+        verbose_name = _("Video to delete")
+        verbose_name_plural = _("Videos to delete")
+
+    def __str__(self):
+        return "%s-%s" % (self.date, self.video.count())

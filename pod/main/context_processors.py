@@ -98,7 +98,10 @@ def context_navbar(request):
 
     linkFooter = LinkFooter.objects.all()
 
-    owners_filter_args = {}
+    
+    owners_filter_args = {
+        'video__is_draft': False,
+    }
     if MENUBAR_HIDE_INACTIVE_OWNERS:
         owners_filter_args['is_active'] = True
     if MENUBAR_SHOW_STAFF_OWNERS_ONLY:
@@ -112,7 +115,6 @@ def context_navbar(request):
             "video", distinct=True)).annotate(
         fl_name=Lower(Substr(ORDER_BY, 1, 1))).order_by(
         'fl_name').values(*list(VALUES_LIST))
-
     listowner = {}
     for owner in owners:
         if owner['fl_name'] != '':

@@ -131,11 +131,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 ##
-# Template settings
-#
-TEMPLATE_THEME = 'DEFAULT'
-
-##
 # CKeditor settings
 #
 # CKEDITOR_BASEPATH = os.path.join(STATIC_URL, 'ckeditor', "/")
