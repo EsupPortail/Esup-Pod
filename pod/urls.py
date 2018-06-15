@@ -10,6 +10,7 @@ from django.contrib import admin
 from django.apps import apps
 from django.contrib.auth import views as auth_views
 from django.views.i18n import JavaScriptCatalog
+from django.utils.translation import ugettext_lazy as _
 
 from pod.authentication.views import authentication_login
 from pod.authentication.views import authentication_logout
@@ -141,3 +142,7 @@ urlpatterns += [
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
+
+# Change admin site title
+admin.site.site_header = _("Pod Administration")
+admin.site.site_title = _("Pod Administration")
