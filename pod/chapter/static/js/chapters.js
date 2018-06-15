@@ -109,7 +109,7 @@ var sendform = function(elt, action) {
             var jqxhr = $.ajax({
                 method: 'POST',
                 url: window.location.href,
-                data: {'action': 'save'} + data_form,
+                data: data_form,
                 dataType: 'html'
 
             });
