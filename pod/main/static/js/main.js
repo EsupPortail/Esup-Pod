@@ -43,23 +43,27 @@ function writeInFrame() {
     var link = $('#txtpartage').val();
     // Autoplay
     if ($('#autoplay').is(':checked')) {
-        if(link.indexOf('autoplay=true') <0){
-                link = link.replace('is_iframe=true', 'is_iframe=true&autoplay=true');
+        if(link.indexOf('autoplay=true') < 0){
+                if(link.indexOf('?') < 0) link = link+"?autoplay=true";
+                else link = link+"&autoplay=true";
             }
 
     } else if (link.indexOf('autoplay=true') >0) {
-       link = link.replace('&autoplay=true', '');
+       link = link.replace('&autoplay=true', '').replace('?autoplay=true&', '?');
     }
-    // Autoplay
+    // Loop
     if ($('#loop').is(':checked')) {
         if(link.indexOf('loop=true') <0){
-                link = link.replace('is_iframe=true', 'is_iframe=true&loop=true');
+                if(link.indexOf('?') < 0) link = link+"?loop=true";
+                else link = link+"&loop=true";
             }
 
     } else if (link.indexOf('loop=true') >0) {
-       link = link.replace('&loop=true', '');
+       link = link.replace('&loop=true', '').replace('?loop=true&', '?');
     }
     $('#txtpartage').val(link);
+    var img = document.getElementById("qrcode");
+    img.src = "//chart.apis.google.com/chart?cht=qr&chs=200x200&chl="+link;
 }
 $(document).on('change', '#autoplay', function() {
     writeInFrame();
@@ -81,6 +85,8 @@ $(document).on('change', "#displaytime", function(e) {
          $('#txtintegration').val($('#txtintegration').val().replace(/(start=)\d+&/, ''));
          $('#txtposition').val("");
     }
+    var img = document.getElementById("qrcode");
+    img.src = "//chart.apis.google.com/chart?cht=qr&chs=200x200&chl="+$('#txtpartage').val();
 });
 
 /*** USE TO SHOW THEME FROM CHANNELS ***/

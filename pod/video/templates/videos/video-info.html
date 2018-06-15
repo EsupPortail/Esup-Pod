@@ -155,6 +155,12 @@
             <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
           </div>
         </div>
+        <div class="list-group-item">
+          <div class="form-group">
+            <label for="qrcode">{% trans 'QR code for this link' %} :</label>
+            <img src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" alt="qrcode" id="qrcode"/>
+          </div>
+        </div>
         </fieldset>
       </div>
     </p>
