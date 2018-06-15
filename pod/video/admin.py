@@ -258,8 +258,10 @@ class EncodingStepAdmin(admin.ModelAdmin):
 class NotesAdmin(admin.ModelAdmin):
     list_display = ('video', 'user')
 
+
 class VideoToDeleteAdmin(admin.ModelAdmin):
     list_display = ('date_deletion', )
+
 
 class ViewCountAdmin(admin.ModelAdmin):
     list_display = ('video', 'date', 'count')

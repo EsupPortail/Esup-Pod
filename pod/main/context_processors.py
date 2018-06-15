@@ -98,7 +98,6 @@ def context_navbar(request):
 
     linkFooter = LinkFooter.objects.all()
 
-    
     owners_filter_args = {
         'video__is_draft': False,
     }
