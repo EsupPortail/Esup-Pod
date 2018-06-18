@@ -43,21 +43,13 @@ Icon?
 #################
 import_data/
 media/
-# pod/*/fixtures/
 pod/*/migrations/
 pod/custom/*
 settings_local.py
 ## Others
-jwplayer/
 pod/static/
 *.bak
 .coverage
-
-# Theme files #
-###############
-/pod/theme/*
-!/pod/theme/DEFAULT/
-/pod/theme/DEFAULT/config.codekit
 
 # IDE Files #
 #############
