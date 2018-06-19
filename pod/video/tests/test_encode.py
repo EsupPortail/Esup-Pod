@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from pod.video.models import Video
 from pod.video import encode
 from pod.video.models import EncodingVideo
-# from pod.video.models import EncodingAudio
+from pod.video.models import EncodingAudio
 from pod.video.models import EncodingLog
 from pod.video.models import PlaylistVideo
 
@@ -18,6 +18,8 @@ import os
 VIDEO_TEST = getattr(
     settings, 'VIDEO_TEST', 'pod/main/static/video_test/pod.mp4')
 
+AUDIO_TEST = getattr(
+    settings, 'VIDEO_TEST', 'pod/main/static/video_test/pod.mp3')
 
 @override_settings(
     MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
@@ -36,15 +38,25 @@ class EncodeTestCase(TestCase):
         # owner1 = Owner.objects.get(user__username="pod")
         video = Video.objects.create(
             title="Video1", owner=user, video="test.mp4")
-
         tempfile = NamedTemporaryFile(delete=True)
         video.video.save("test.mp4", tempfile)
         dest = os.path.join(settings.MEDIA_ROOT, video.video.name)
         shutil.copyfile(
             VIDEO_TEST, dest)
-        print("\n ---> Start Encoding")
+        print("\n ---> Start Encoding video")
         encode.encode_video(video.id)
-        print("\n ---> End Encoding")
+        print("\n ---> End Encoding video")
+
+        audio = Video.objects.create(
+            title="Audio1", owner=user, video="test.mp3")
+        tempfile = NamedTemporaryFile(delete=True)
+        audio.video.save("test.mp3", tempfile)
+        dest = os.path.join(settings.MEDIA_ROOT, audio.video.name)
+        shutil.copyfile(
+            AUDIO_TEST, dest)
+        print("\n ---> Start Encoding audio")
+        encode.encode_video(audio.id)
+        print("\n ---> End Encoding audio")
 
         print(" --->  SetUp of EncodeTestCase : OK !")
 
@@ -75,6 +87,24 @@ class EncodeTestCase(TestCase):
         self.assertTrue(video_to_encode.thumbnail)
         print(
             " --->  test_encode_video of EncodeTestCase : OK !")
+
+    def test_result_encoding_audio(self):
+        # video id=1 et audio id=2
+        audio = Video.objects.get(id=2)
+        list_m4a = EncodingAudio.objects.filter(
+            video=audio,
+            encoding_format="video/mp4")
+        list_mp3 = EncodingAudio.objects.filter(
+            video=audio,
+            encoding_format="audio/mp3")
+        el = EncodingLog.objects.get(video=audio)
+        self.assertTrue("NO VIDEO AND AUDIO FOUND" not in el.log)
+        self.assertTrue(len(list_mp3) > 0)
+        self.assertTrue(len(list_m4a) > 0)
+        self.assertFalse(audio.overview)
+        self.assertFalse(audio.thumbnail)
+        print(
+            " --->  test_result_encoding_audio of EncodeTestCase : OK !")
 
     def test_delete_object(self):
         # tester la suppression de la video et la suppression en cascade
@@ -113,6 +143,17 @@ class EncodeTestCase(TestCase):
         self.assertEqual(EncodingLog.objects.filter(
             video__id=1).count(), 0)
         self.assertEqual(len(os.listdir(os.path.dirname(log_file))), 0)
+
+        audio = Video.objects.get(id=2)
+        audio_video_path = audio.video.path
+        audio_log_file = os.path.join(
+            os.path.dirname(video),
+            "%04d" % audio.id,
+            'encoding.log')
+        audio.delete()
+        self.assertTrue(not os.path.exists(audio_video_path))
+        self.assertTrue(not os.path.exists(audio_log_file))
+        self.assertEqual(len(os.listdir(os.path.dirname(audio_log_file))), 0)
 
         print(
             "   --->  test_delete_object of EncodeTestCase : OK !")
