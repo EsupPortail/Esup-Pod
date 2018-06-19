@@ -1,6 +1,6 @@
 ## Plateforme Pod : Gérez vos vidéos
 
-### [Installation](installation.md "Installation")
+### [Installation de la plateforme](./installation.md "Installation de la plateforme Pod")
 
 
 
