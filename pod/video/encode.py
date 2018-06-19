@@ -597,9 +597,8 @@ def encode_video_m4a(video_id, source, output_dir):
             name="audio",
             video=video_to_encode,
             encoding_format="video/mp4")
-        encoding.source_file = output_dir.replace(
+        encoding.source_file = audiofilename.replace(
             settings.MEDIA_ROOT + '/', '')
-        + "/audio_%s.m4a" % AUDIO_BITRATE
         encoding.save()
         msg += "\n- encode_video_m4a :\n%s" % audiofilename
     else:
