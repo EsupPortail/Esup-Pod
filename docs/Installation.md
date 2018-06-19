@@ -1,4 +1,4 @@
-# Installation
+# Installation de la plateforme
 
 Les commandes suivantes ont été lancées sur une distribution Debian 9.4 "stretch".
 
@@ -84,7 +84,7 @@ Résolution des deltas: 100% (3076/3076), fait.
 (django_pod) pod@pod1-test:~/django_projects$ cd podv2/
 ```
 
-## Installation
+## Applications tierces
 ### Installation de toutes les librairies python :
 
 ```
