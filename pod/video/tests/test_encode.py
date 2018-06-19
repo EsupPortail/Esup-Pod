@@ -21,6 +21,7 @@ VIDEO_TEST = getattr(
 AUDIO_TEST = getattr(
     settings, 'VIDEO_TEST', 'pod/main/static/video_test/pod.mp3')
 
+
 @override_settings(
     MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
     DATABASES={
