@@ -1,7 +1,7 @@
 Django==1.11.10
 django-ckeditor==5.3.1
 sorl-thumbnail==12.4a1
-Pillow==5.0.0
+Pillow==5.1.0
 django-tagging==0.4.6
 django-modeltranslation==0.12.2
 webvtt-py==0.4.1
@@ -13,3 +13,4 @@ urllib3==1.22
 elasticsearch==6.2.0
 djangorestframework==3.8.2
 django-filter==1.1.0
+sorl-thumbnail==12.4.1
