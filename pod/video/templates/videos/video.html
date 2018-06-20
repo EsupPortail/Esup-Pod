@@ -117,44 +117,8 @@ body {
   {% include 'playlist/playlist_player.html' with playlist=playlist %}
 {% endif %}
 
-<video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
-poster="{{video.get_thumbnail_url}}" data-setup='{}' {% if request.GET.nocontrol and request.GET.nocontrol == 'false' %} autoplay {%else%} controls {% if request.GET.autoplay and request.GET.autoplay == 'true' %} autoplay{%endif%}{%endif%} {% if request.GET.loop and request.GET.loop == 'true' %} loop{%endif%}>
-  <p class="vjs-no-js">
-    To view this video please enable JavaScript, and consider upgrading to a web browser that
-    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-  </p>
-</video>
+{% include 'videos/video-element.html' %}
 
-<form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
-{% csrf_token %}
-</form>
-{% if video.overlay_set.all %}
-<ul id="overlays" style="display: none">
-  {% for overlay in video.overlay_set.all %}
-    <li data-timestart="{{overlay.time_start}}"
-        data-timeend="{{overlay.time_end}}"
-        data-content="{{overlay.content}}"
-        data-position="{{overlay.position}}"
-        data-background="{{overlay.background}}">
-    </li>
-  {% endfor %}
-</ul>
-{% endif %}
-{% if video.chapter_set.all %}
-  <div class="chapters-list inactive" role="menu">
-    <h6>Chapters</h6>
-    <ol id="chapters-list"></ol>
-  </div>
-  <ul id="chapters">
-    {% for chapter in video.chapter_set.all %}
-      <li data-start="{{chapter.time_start}}"
-        data-id="{{chapter.id}}"
-        data-title="{{chapter.title}}">
-        {{chapter.title}}
-      </li>
-    {% endfor %}
-  </ul>
-{% endif %}
 <nav id="navbar-video" class="navbar navbar-light bg-light">
   <span class="navbar-brand" >{{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
   <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
