@@ -207,10 +207,10 @@ $(document).on('change','input#id_time_end',function() {
     $(this).parent().find("span.getfromvideo span.timecode").html(" "+parseInt($(this).val()).toHHMMSS());
 });
 
-$(document).on('click','#page-video span.getfromvideo a',function(e) {
+$(document).on('click','#info_video span.getfromvideo a',function(e) {
     e.preventDefault();
     if(!(typeof player === 'undefined')) {
-        if($(this).context.id == "getfromvideo_start"){
+        if($(this).attr('id') == "getfromvideo_start"){
             $("input#id_time_start").val(parseInt(player.currentTime()));
             $("input#id_time_start").trigger('change');
         }

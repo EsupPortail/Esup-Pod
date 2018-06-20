@@ -130,25 +130,23 @@
             </p>
         </div>
     </div>
-{% endif %}
-<div class="card card-body p-2 mt-1">
-    <h5 class="card-title pl-2">{% trans 'Embed/Share (Private Mode)' %}</h5>
-    <div class="card-text" >
-        <p>{% trans 'Use this link to share the video in private mode' %}</p>
-        <p>
-
-            <div class="input-group">
-              <input class="form-control form-control-sm form-control-plaintext" type="text" name="txtpartageprive" id="txtpartageprive" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video/{{ form.instance.slug }}/{{ form.instance.get_hashkey }}/" readonly/>
-              <div class="input-group-button">
-                <clipboard-copy aria-label="Copy to clipboard" class="btn btn-sm btn-default" tabindex="0" role="button" id="btnpartageprive">
-                  <i data-feather="copy"></i>
-                </clipboard-copy>
-              </div>
-            </div>
-        </p>
-        
+    <div class="card card-body p-2 mt-1">
+        <h5 class="card-title pl-2">{% trans 'Embed/Share (Private Mode)' %}</h5>
+        <div class="card-text" >
+            <p>{% trans 'Use this link to share the video in private mode' %}</p>
+            <p>
+                <div class="input-group">
+                  <input class="form-control form-control-sm form-control-plaintext" type="text" name="txtpartageprive" id="txtpartageprive" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video/{{ form.instance.slug }}/{{ form.instance.get_hashkey }}/" readonly/>
+                  <div class="input-group-button">
+                    <clipboard-copy aria-label="Copy to clipboard" class="btn btn-sm btn-default" tabindex="0" role="button" id="btnpartageprive">
+                      <i data-feather="copy"></i>
+                    </clipboard-copy>
+                  </div>
+                </div>
+            </p>
+        </div>
     </div>
-</div>
+{% endif %}
 {% endif %}
 <div class="card card-body p-2 mt-1">
     <h5 class="card-title pl-2">{% trans "Uploading" %}</h5>
