@@ -35,10 +35,9 @@ KIND_CHOICES = getattr(
     ))
 LANG_CHOICES = getattr(
     settings, 'LANG_CHOICES', (
-        ('', settings.PREF_LANG_CHOICES),
-        ('----------', settings.ALL_LANG_CHOICES),
+        (settings.PREF_LANG_CHOICES + (('', '--------'),) +settings.ALL_LANG_CHOICES)
     ))
-
+LANG_CHOICES_DICT = {value[0]:value[1] for value in LANG_CHOICES}
 
 def get_nextautoincrement(model):
     cursor = connection.cursor()
@@ -194,6 +193,10 @@ class Track(models.Model):
             null=True,
             blank=True,
         )
+
+    def get_label_lang(self):
+        print(LANG_CHOICES_DICT)
+        return "%s" % LANG_CHOICES_DICT[self.lang]
 
     class Meta:
         verbose_name = _('Track')
