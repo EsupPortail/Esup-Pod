@@ -6,9 +6,8 @@ from pod.completion.models import Contributor
 from pod.completion.models import Document
 from pod.completion.models import Track
 from pod.completion.models import Overlay
-if apps.is_installed('pod.filepicker'):
+if apps.is_installed('pod.podfile'):
     FILEPICKER = True
-    from pod.filepicker.widgets import CustomFilePickerWidget
     from pod.podfile.widgets import CustomFileWidget
 
 

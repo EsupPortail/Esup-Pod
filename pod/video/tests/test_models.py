@@ -14,8 +14,8 @@ from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
 try:
-    from pod.filepicker.models import CustomImageModel
-    from pod.filepicker.models import UserDirectory
+    from pod.podfile.models import CustomImageModel
+    from pod.podfile.models import UserDirectory
 except ImportError:
     pass
 from pod.video.models import Video
@@ -36,7 +36,7 @@ from datetime import timedelta
 
 import os
 
-FILEPICKER = True if apps.is_installed('pod.filepicker') else False
+FILEPICKER = True if apps.is_installed('pod.podfile') else False
 
 
 # Create your tests here.

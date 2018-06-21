@@ -27,9 +27,6 @@ from collections import OrderedDict
 
 import datetime
 
-if apps.is_installed('pod.filepicker'):
-    from pod.filepicker.widgets import CustomFilePickerWidget
-
 if apps.is_installed('pod.podfile'):
     from pod.podfile.widgets import CustomFileWidget
 

@@ -4,10 +4,10 @@ from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from pod.chapter.models import Chapter
 from pod.chapter.utils import vtt_to_chapter
-if apps.is_installed('pod.filepicker'):
+if apps.is_installed('pod.podfile'):
     FILEPICKER = True
-    from pod.filepicker.models import CustomFileModel
-    from pod.filepicker.widgets import CustomFilePickerWidget
+    from pod.podfile.models import CustomFileModel
+    from pod.podfile.widgets import CustomFileWidget
 
 
 class ChapterForm(forms.ModelForm):
@@ -50,9 +50,7 @@ class ChapterImportForm(forms.Form):
         self.video = kwargs.pop('video')
         super(ChapterImportForm, self).__init__(*args, **kwargs)
         if FILEPICKER:
-            pickers = {'file': "file"}
-            self.fields['file'].widget = CustomFilePickerWidget(
-                pickers=pickers)
+            self.fields['file'].widget = CustomFileWidget(type = "file")
             self.fields['file'].queryset = CustomFileModel.objects.filter(
                 created_by=self.user)
         self.fields['file'].label = 'File to import'

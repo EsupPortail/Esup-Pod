@@ -4,7 +4,7 @@ import datetime
 from django.apps import apps
 from webvtt import WebVTT
 from pod.chapter.models import Chapter
-if apps.is_installed('pod.filepicker'):
+if apps.is_installed('pod.podfile'):
     FILEPICKER = True
 
 

@@ -30,14 +30,14 @@ import re
 import tempfile
 import threading
 
-if apps.is_installed('pod.filepicker'):
+if apps.is_installed('pod.podfile'):
     try:
-        from pod.filepicker.models import CustomImageModel
-        from pod.filepicker.models import UserDirectory
+        from pod.podfile.models import CustomImageModel
+        from pod.podfile.models import UserFolder
     except ImportError:
         pass
 
-FILEPICKER = True if apps.is_installed('pod.filepicker') else False
+FILEPICKER = True if apps.is_installed('pod.podfile') else False
 
 FFMPEG = getattr(settings, 'FFMPEG', 'ffmpeg')
 FFPROBE = getattr(settings, 'FFPROBE', 'ffprobe')
@@ -928,16 +928,14 @@ def create_and_save_thumbnails(source, image_width, video_id):
         if check_file(thumbnailfilename):
             if FILEPICKER:
                 video_to_encode = Video.objects.get(id=video_id)
-                homedir, created = UserDirectory.objects.get_or_create(
-                    name='Home',
-                    owner=video_to_encode.owner,
-                    parent=None)
-                videodir, created = UserDirectory.objects.get_or_create(
+                homedir, created = UserFolder.objects.get_or_create(
+                    name='home',
+                    owner=video_to_encode.owner)
+                videodir, created = UserFolder.objects.get_or_create(
                     name='%s' % video_to_encode.slug,
-                    owner=video_to_encode.owner,
-                    parent=homedir)
+                    owner=video_to_encode.owner)
                 thumbnail = CustomImageModel(
-                    directory=videodir,
+                    folder=videodir,
                     created_by=video_to_encode.owner
                 )
                 thumbnail.file.save(

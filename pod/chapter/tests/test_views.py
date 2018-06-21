@@ -8,9 +8,9 @@ from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from pod.video.models import Video
 from pod.chapter.models import Chapter
-if apps.is_installed('pod.filepicker'):
-    from pod.filepicker.models import CustomFileModel
-    from pod.filepicker.models import UserDirectory
+if apps.is_installed('pod.podfile'):
+    from pod.podfile.models import CustomFileModel
+    from pod.podfile.models import UserFolder
     from datetime import datetime
     FILEPICKER = True
 
@@ -163,15 +163,12 @@ class ChapterViewsTestCase(TestCase):
                 './pod/chapter/tests/testfile.vtt', 'rb').read(),
             content_type='text/plain')
         if FILEPICKER:
-            home = UserDirectory.objects.get(id=1)
+            home = UserFolder.objects.get(id=1)
             user = User.objects.get(id=1)
             file = CustomFileModel.objects.create(
                 name='testfile',
-                date_created=datetime.now(),
-                date_modified=datetime.now(),
                 created_by=user,
-                modified_by=user,
-                directory=home,
+                folder=home,
                 file=file
             ).id
         response = self.client.post(

@@ -7,7 +7,7 @@ from django.db.models.signals import post_save
 from django.apps import apps
 from django.template.defaultfilters import slugify
 try:
-    from pod.filepicker.models import CustomImageModel
+    from pod.podfile.models import CustomImageModel
 except ImportError:
     pass
 

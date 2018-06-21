@@ -13,10 +13,10 @@ from pod.completion.models import Document
 from pod.completion.models import Overlay
 from pod.completion.models import Track
 from datetime import datetime
-if apps.is_installed('pod.filepicker'):
+if apps.is_installed('pod.podfile'):
     FILEPICKER = True
-    from pod.filepicker.models import CustomFileModel
-    from pod.filepicker.models import UserDirectory
+    from pod.podfile.models import CustomFileModel
+    from pod.podfile.models import UserDirectory
 
 
 class ContributorModelTestCase(TestCase):

@@ -40,8 +40,6 @@ if apps.is_installed('pod.chapter'):
 if apps.is_installed('pod.enrichment'):
     ENRICHMENT = True
     from pod.enrichment.admin import EnrichmentInline
-if apps.is_installed('pod.filepicker'):
-    FILEPICKER = True
 
 # Ordering user by username !
 User._meta.ordering = ["username"]
@@ -198,7 +196,10 @@ class ChannelAdmin(admin.ModelAdmin):
         return form
 
     class Media:
-        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
+        js = (
+            'js/filewidget.js', 
+            'feather-icons/feather.min.js',
+            'bootstrap-4/js/bootstrap.min.js')
 
 
 class ThemeAdmin(admin.ModelAdmin):
@@ -208,7 +209,10 @@ class ThemeAdmin(admin.ModelAdmin):
     ordering = ('channel', 'title')
 
     class Media:
-        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
+        js = (
+            'js/filewidget.js', 
+            'feather-icons/feather.min.js',
+            'bootstrap-4/js/bootstrap.min.js')
 
 
 class TypeAdmin(TranslationAdmin):
@@ -216,7 +220,10 @@ class TypeAdmin(TranslationAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
     class Media:
-        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
+        js = (
+            'js/filewidget.js', 
+            'feather-icons/feather.min.js',
+            'bootstrap-4/js/bootstrap.min.js')
 
 
 class DisciplineAdmin(TranslationAdmin):
@@ -224,7 +231,10 @@ class DisciplineAdmin(TranslationAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
     class Media:
-        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
+        js = (
+            'js/filewidget.js', 
+            'feather-icons/feather.min.js',
+            'bootstrap-4/js/bootstrap.min.js')
 
 
 class EncodingVideoAdmin(admin.ModelAdmin):
