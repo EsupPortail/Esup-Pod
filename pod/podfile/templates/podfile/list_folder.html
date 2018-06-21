@@ -1,0 +1,46 @@
+{% load i18n %}
+
+<div id="list_folder" class="list-group col-4">
+{% for folder in list_folder %}
+    {% if folder.name != "home" %}
+    <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center{% if folder == current_folder%} list-group-item-success{%endif%}">
+    <form class="form_folder_files" action="{% url "folder" type=type %}" method="POST" id="form_folder_{{folder.id}}">
+        {% csrf_token %}
+        <input type="hidden" name="current_folder" value="{{folder.id}}"/>
+        <button type="submit" title="A{{folder.name}}" class="btn btn-link">{{folder.name}}</button>
+    </form>
+
+    <div class="action">
+    <button type="button" class="btn btn-success btn-sm edit" data-id="{{folder.id}}" data-name="{{folder.name}}"><i data-feather="edit"></i></button>
+    <form class="delete_folder form-inline float-right" action="{% url "folder" type=type %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="delete"/>
+        <input type="hidden" name="id" value="{{folder.id}}"/>
+        <button type="submit" title="{% trans 'Delete the folder' %}" value="{% trans 'Delete' %}" class="btn btn-danger btn-sm"><i data-feather="x-square"></i></button>
+    </form>
+    </div>
+    </div>
+    {% else %}
+    <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center{% if folder == current_folder%} list-group-item-success{%endif%}">
+        <button type="button" class="btn btn-link btn-sm form_folder_files" data-id="{{folder.id}}" data-name="{{folder.name}}" data-link="{% url "folder" type=type %}"><i data-feather="home"></i></button>
+    </div>
+    {% endif %}
+{% endfor %}
+    <div class="list-group-item list-group-item-dark">
+        <form method="post" id="form_folder" action="{% url "folder" type=type %}" class="form-inline row">
+        {% csrf_token %}
+        <input type="hidden" id="id_folder" name="id_folder" value=""/>
+        <input name="name" required="" id="id_name" maxlength="255" type="text" class="form-control">
+        <button type="submit" title='save' class="btn btn-success btn-sm" ><i data-feather="save"></i></button>
+        <button type="cancel" title='cancel' class="btn btn-warning btn-sm" id="form_folder_cancel"><i data-feather="x-square"></i></button>
+        </form>
+    </div>
+</div>
+<div id="list_file" class="list-group col-8">
+    {% if type == "file" %}
+    {% include 'podfile/list_file.html' with list_file=current_folder.customfilemodel_set.all %}
+    {% endif %}
+    {% if type == "image" %}
+    {% include 'podfile/list_image.html' with list_file=current_folder.customimagemodel_set.all %}
+    {% endif %}
+</div>

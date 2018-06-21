@@ -1,0 +1,30 @@
+{% load i18n %}
+<div class="list-group-item ">{{current_folder.name}} 
+    <form class="get_form_file float-right" action="{% url 'editfile' id=current_folder.id %}" method="POST" >
+    {% csrf_token %}
+    <input type="hidden" name="action" value="new"/>
+    <input type="hidden" name="current_folder" value="{{current_folder}}"/>
+    <button type="submit" class="btn btn-info btn-sm"><i data-feather="upload"></i></button>
+    </form>
+</div>
+{% for document in list_file %}
+<div class="list-group-item list-group-item-action">
+<a href="#" class="file-name" data-id="{{document.id}}" data-name="{{folder.name}}">
+<i data-feather="file"></i>{{document.name}} ({{document.file_type}} - {{document.file.size|filesizeformat}})
+</a>
+<div class="float-right">
+<form class="get_form_file form-inline float-right" action="{% url 'editfile' id=current_folder.id %}" method="POST" >
+    {% csrf_token %}
+    <input type="hidden" name="action" value="modify"/>
+    <input type="hidden" name="id" value="{{document.id}}"/>
+    <input type="submit" title="{% trans 'Edit the file' %}" value="{% trans 'Modify' %}" class="btn btn-info btn-sm"/>
+</form>
+<form class="get_form_file form-inline float-right" action="{% url 'editfile' id=current_folder.id %}" method="POST" >
+    {% csrf_token %}
+    <input type="hidden" name="action" value="delete"/>
+    <input type="hidden" name="id" value="{{document.id}}"/>
+    <input type="submit" title="{% trans 'Delete the file' %}" value="{% trans 'Delete' %}" class="btn btn-danger btn-sm"/>
+</form>
+</div>
+</div>
+{% endfor %}

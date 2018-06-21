@@ -9,9 +9,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 from ckeditor.fields import RichTextField
 from pod.video.models import Video
-if apps.is_installed('pod.filepicker'):
+if apps.is_installed('pod.podfile'):
     FILEPICKER = True
-    from pod.filepicker.models import CustomFileModel
+    from pod.podfile.models import CustomFileModel    
 
 ROLE_CHOICES = getattr(
     settings, 'ROLE_CHOICES', (
@@ -215,7 +215,7 @@ class Track(models.Model):
             msg.append(_('Please enter a language.'))
         if not self.src:
             msg.append(_('Please specify a track file.'))
-        elif not self.src.file_type == 'VTT':
+        elif not 'vtt' in self.src.file_type :
             msg.append(_('Only ".vtt" format is allowed.'))
         if len(msg) > 0:
             return msg

@@ -55,6 +55,7 @@ def model_to_AjaxItemForm(model):
 
 
 class FilePickerBase(object):
+
     """
     The FilePicker main class.
 
@@ -613,11 +614,14 @@ class FilePickerBase(object):
                         json.dumps(data),
                         content_type='application/json')
             else:
-                directory = self.structure.objects.get(
-                    owner=request.user, id=request.GET.get('directory'))
+                directory_id = request.GET['directory'] if (
+                    request.GET.get('directory')
+                ) else self.structure.objects.get(
+                    owner=request.user, name='Home'
+                ).id
                 form = self.form(
                     initial={'created_by': request.user,
-                             'directory': directory.id})
+                             'directory': directory_id})
 
             data = {'form': form.as_table()}
             return HttpResponse(
@@ -712,6 +716,7 @@ class FilePickerBase(object):
 
 
 class ImagePickerBase(FilePickerBase):
+
     """
     The ImagePicker main class. Extend FilePickerBase.
 

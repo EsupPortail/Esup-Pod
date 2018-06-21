@@ -28,16 +28,16 @@ from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
 
-if apps.is_installed('pod.filepicker'):
-    from pod.filepicker.models import CustomImageModel
-    from pod.filepicker.models import CustomFileModel
+if apps.is_installed('pod.podfile'):
+    from pod.podfile.models import CustomImageModel
+    from pod.podfile.models import CustomFileModel
     FILEPICKER = True
 if apps.is_installed('pod.enrichment'):
     ENRICHMENT = True
 
 logger = logging.getLogger(__name__)
 
-FILEPICKER = True if apps.is_installed('pod.filepicker') else False
+FILEPICKER = True if apps.is_installed('pod.podfile') else False
 VIDEOS_DIR = getattr(
     settings, 'VIDEOS_DIR', 'videos')
 FILES_DIR = getattr(

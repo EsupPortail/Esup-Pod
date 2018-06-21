@@ -152,7 +152,10 @@ class VideoAdmin(admin.ModelAdmin):
     encode_video.short_description = _('Encode selected')
 
     class Media:
-        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
+        js = (
+            'js/filewidget.js', 
+            'feather-icons/feather.min.js',
+            'bootstrap-4/js/bootstrap.min.js')
 
 
 class ChannelSuperAdminForm(ChannelForm):
