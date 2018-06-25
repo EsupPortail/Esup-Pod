@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import SuspiciousOperation
 
+
 from .models import UserFolder
 from .models import CustomFileModel
 from .models import CustomImageModel
@@ -17,6 +18,7 @@ from .forms import CustomFileModelForm
 from .forms import CustomImageModelForm
 
 import json
+from itertools import chain
 
 FILE_ACTION = ['new', 'modify', 'delete', 'save']
 FOLDER_FILE_TYPE = ['image', 'file']
@@ -24,7 +26,7 @@ FOLDER_FILE_TYPE = ['image', 'file']
 
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
-def folder(request, type):
+def folder(request, type, id=""):
 
     if type not in FOLDER_FILE_TYPE:
         raise SuspiciousOperation('Invalid type')
@@ -35,15 +37,47 @@ def folder(request, type):
             UserFolder, id=request.POST['id'])
         folder.delete()
 
-    list_folder = UserFolder.objects.filter(owner=request.user)
-    form = UserFolderForm()
+    # list_folder = UserFolder.objects.filter(owner=request.user)
+    """
+    list_folder = UserFolder.objects.filter(
+        owner=request.user
+    ) | UserFolder.objects.filter(
+        groups__in=request.user.groups.all()
+    )
+    """
+    user_folder = UserFolder.objects.filter(
+        owner=request.user
+    )
+    group_user = UserFolder.objects.filter(
+        groups__in=request.user.groups.all()
+    ).order_by('owner', 'id')
+    list_folder = list(chain(user_folder, group_user))
 
+    form = UserFolderForm()
+    """
     current_folder = get_object_or_404(
         UserFolder, id=request.POST['current_folder']) if (
         request.POST.get("current_folder")
         and request.POST.get("current_folder") != "") else (
         UserFolder.objects.get(owner=request.user, name="home")
     )
+    """
+    current_folder = get_object_or_404(
+        UserFolder, id=id) if id != "" else (
+        UserFolder.objects.get(owner=request.user, name="home"))
+
+    if (request.user != current_folder.owner
+            and not request.user.groups.filter(
+                name__in=[
+                    name[0]
+                    for name in current_folder.groups.values_list('name')
+                ]
+            ).exists()
+            and not request.user.is_superuser):
+        messages.add_message(
+            request, messages.ERROR,
+            _(u'You cannot see this folder.'))
+        raise PermissionDenied
 
     if (request.POST.get("name")
             and request.POST.get("name") != ""):

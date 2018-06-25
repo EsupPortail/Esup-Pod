@@ -15,9 +15,11 @@ $(document).on('click', '#list_folder .edit', function(){
     $('#list_folder .delete').hide();
     $(this).parents('span.list-group-item').addClass('list-group-item-info');
 });
+
 $(document).on('click', 'button.form_folder_files', function (event) {
   send_form_data($(this).data('link'), {}, "append_folder_html_in_modal", "get");
 });
+
 $(document).on('click', '#form_folder_cancel', function(e){
     e.preventDefault();
     $('#id_name').val("");
@@ -33,11 +35,18 @@ $(document).on('submit', '#list_folder form.delete_folder', function(e){
         send_form_data($(this).attr("action"), $(this).serializeArray(), "append_folder_html_in_modal");
     }
 });
+/*
 $(document).on('submit', '#list_folder form.form_folder_files', function(e){
     e.preventDefault();
     var data_form = $(this).serializeArray();
     send_form_data($(this).attr("action"), data_form, "append_folder_html_in_modal");
 });
+*/
+$(document).on('click', 'a.form_folder_files', function(e){
+    e.preventDefault();
+    send_form_data($(this).attr('href'), {}, "append_folder_html_in_modal", "get");
+});
+
 $(document).on('submit', '#form_folder', function(e){
     e.preventDefault();
     var data_form = $(this).serializeArray();

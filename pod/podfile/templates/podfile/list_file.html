@@ -1,17 +1,20 @@
 {% load i18n %}
 <div class="list-group-item ">{{current_folder.name}} 
+    {% if request.user == current_folder.owner or request.user.is_supersuer %}
     <form class="get_form_file float-right" action="{% url 'editfile' id=current_folder.id %}" method="POST" >
     {% csrf_token %}
     <input type="hidden" name="action" value="new"/>
     <input type="hidden" name="current_folder" value="{{current_folder}}"/>
     <button type="submit" class="btn btn-info btn-sm"><i data-feather="upload"></i></button>
     </form>
+    {% endif %}
 </div>
 {% for document in list_file %}
 <div class="list-group-item list-group-item-action">
 <a href="#" class="file-name" data-id="{{document.id}}" data-name="{{folder.name}}">
 <i data-feather="file"></i>{{document.name}} ({{document.file_type}} - {{document.file.size|filesizeformat}})
 </a>
+{% if request.user == document.owner or request.user.is_supersuer %}
 <div class="float-right">
 <form class="get_form_file form-inline float-right" action="{% url 'editfile' id=current_folder.id %}" method="POST" >
     {% csrf_token %}
@@ -26,5 +29,6 @@
     <input type="submit" title="{% trans 'Delete the file' %}" value="{% trans 'Delete' %}" class="btn btn-danger btn-sm"/>
 </form>
 </div>
+{%endif%}
 </div>
 {% endfor %}

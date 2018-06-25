@@ -20,7 +20,6 @@ ACTION = ['new', 'save', 'modify', 'delete', 'cancel', 'import', 'export']
 
 @csrf_protect
 @login_required
-@staff_member_required
 def video_chapter(request, slug):
     video = get_object_or_404(Video, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:
