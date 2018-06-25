@@ -35,9 +35,9 @@ KIND_CHOICES = getattr(
     ))
 LANG_CHOICES = getattr(
     settings, 'LANG_CHOICES', (
-        (settings.PREF_LANG_CHOICES
+        settings.PREF_LANG_CHOICES
             + (('', '----------'),)
-            + settings.ALL_LANG_CHOICES),
+            + settings.ALL_LANG_CHOICES
     ))
 LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES}
 

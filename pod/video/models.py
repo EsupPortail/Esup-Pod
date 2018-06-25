@@ -45,9 +45,9 @@ FILES_DIR = getattr(
 
 MAIN_LANG_CHOICES = getattr(
     settings, 'LANG_CHOICES', (
-        (settings.PREF_LANG_CHOICES
-            + (('', '----------'),)
-            + settings.ALL_LANG_CHOICES),
+        settings.PREF_LANG_CHOICES
+        + (('', '----------'),)
+        + settings.ALL_LANG_CHOICES
     ))
 CURSUS_CODES = getattr(
     settings, 'CURSUS_CODES', (
