@@ -42,14 +42,12 @@ VIDEOS_DIR = getattr(
     settings, 'VIDEOS_DIR', 'videos')
 FILES_DIR = getattr(
     settings, 'FILES_DIR', 'files')
+
 MAIN_LANG_CHOICES = getattr(
-    settings, 'MAIN_LANG_CHOICES', (
-        ('zh', _('Chinese')),
-        ('es', _('Spanish')),
-        ('de', _('German')),
-        ('pl', _('Polish')),
-        ('en', _('English')),
-        ('fr', _('French')),
+    settings, 'LANG_CHOICES', (
+        settings.PREF_LANG_CHOICES
+        + (('', '----------'),)
+        + settings.ALL_LANG_CHOICES
     ))
 CURSUS_CODES = getattr(
     settings, 'CURSUS_CODES', (

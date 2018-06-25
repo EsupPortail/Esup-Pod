@@ -11,7 +11,7 @@ from ckeditor.fields import RichTextField
 from pod.video.models import Video
 if apps.is_installed('pod.podfile'):
     FILEPICKER = True
-    from pod.podfile.models import CustomFileModel    
+    from pod.podfile.models import CustomFileModel
 
 ROLE_CHOICES = getattr(
     settings, 'ROLE_CHOICES', (
@@ -35,9 +35,12 @@ KIND_CHOICES = getattr(
     ))
 LANG_CHOICES = getattr(
     settings, 'LANG_CHOICES', (
-        (settings.PREF_LANG_CHOICES + (('', '--------'),) +settings.ALL_LANG_CHOICES)
+        settings.PREF_LANG_CHOICES
+        + (('', '----------'),)
+        + settings.ALL_LANG_CHOICES
     ))
-LANG_CHOICES_DICT = {value[0]:value[1] for value in LANG_CHOICES}
+LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES}
+
 
 def get_nextautoincrement(model):
     cursor = connection.cursor()
@@ -195,7 +198,6 @@ class Track(models.Model):
         )
 
     def get_label_lang(self):
-        print(LANG_CHOICES_DICT)
         return "%s" % LANG_CHOICES_DICT[self.lang]
 
     class Meta:
@@ -218,7 +220,7 @@ class Track(models.Model):
             msg.append(_('Please enter a language.'))
         if not self.src:
             msg.append(_('Please specify a track file.'))
-        elif not 'vtt' in self.src.file_type :
+        elif not 'vtt' in self.src.file_type:
             msg.append(_('Only ".vtt" format is allowed.'))
         if len(msg) > 0:
             return msg
