@@ -6,6 +6,7 @@ from pod.completion.models import Overlay
 from pod.completion.models import Track
 from pod.completion.forms import DocumentAdminForm
 from pod.completion.forms import TrackAdminForm
+FILEPICKER = False
 if apps.is_installed('pod.podfile'):
     FILEPICKER = True
 
@@ -60,7 +61,6 @@ class DocumentAdmin(admin.ModelAdmin):
             'bootstrap-4/js/bootstrap.min.js')
 
 
-
 admin.site.register(Document, DocumentAdmin)
 
 
@@ -93,7 +93,6 @@ class TrackAdmin(admin.ModelAdmin):
             'js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
-
 
 
 admin.site.register(Track, TrackAdmin)

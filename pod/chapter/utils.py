@@ -1,19 +1,13 @@
 import time
 import datetime
 
-from django.apps import apps
 from webvtt import WebVTT
 from pod.chapter.models import Chapter
-if apps.is_installed('pod.podfile'):
-    FILEPICKER = True
 
 
 def vtt_to_chapter(vtt, video):
     Chapter.objects.filter(video=video).delete()
-    if FILEPICKER:
-        webvtt = WebVTT().read(vtt.file.path)
-    else:
-        webvtt = WebVTT().read(vtt.path)
+    webvtt = WebVTT().read(vtt.file.path)
     for caption in webvtt:
         time_start = time.strptime(caption.start.split('.')[0], '%H:%M:%S')
         time_start = datetime.timedelta(

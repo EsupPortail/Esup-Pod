@@ -41,7 +41,6 @@ class OwnerInline(admin.StackedInline):
             'bootstrap-4/js/bootstrap.min.js')
 
 
-
 class UserAdmin(BaseUserAdmin):
 
     def clickable_email(self, obj):

@@ -4,26 +4,27 @@ from django.conf.urls import url
 from django.conf.urls import include
 from pod.authentication import rest_views as authentication_views
 from pod.video import rest_views as video_views
+from pod.main import rest_views as main_views
 
+from pod.chapter import rest_views as chapter_views
+from pod.completion import rest_views as completion_views
 
-if apps.is_installed('pod.chapters'):
-    from pod.chapters import rest_views as chapter_views
-if apps.is_installed('pod.filepicker'):
-    from pod.filepicker import rest_views as filepicker_views
-if apps.is_installed('pod.completion'):
-    from pod.completion import rest_views as completion_views
+# if apps.is_installed('pod.podfile'):
+#     from pod.podfile import rest_views as podfile_views
+
 if apps.is_installed('pod.enrichment'):
     from pod.enrichment import rest_views as enrichment_views
 
 
 router = routers.DefaultRouter()
+
+router.register(r'mainfiles', main_views.CustomFileModelViewSet)
+router.register(r'mainimages', main_views.CustomImageModelViewSet)
+
 router.register(r'users', authentication_views.UserViewSet)
 router.register(r'groups', authentication_views.GroupViewSet)
 router.register(r'owners', authentication_views.OwnerViewSet)
-router.register(r'images_owner',
-                authentication_views.AuthenticationImageModelViewSet)
 
-router.register(r'images_video', video_views.VideoImageModelViewSet)
 router.register(r'channels', video_views.ChannelViewSet)
 router.register(r'themes', video_views.ThemeViewSet)
 router.register(r'types', video_views.TypeViewSet)
@@ -34,11 +35,10 @@ router.register(r'encodings_video', video_views.EncodingVideoViewSet)
 router.register(r'encodings_audio', video_views.EncodingAudioViewSet)
 router.register(r'playlist_videos', video_views.PlaylistVideoViewSet)
 
-if apps.is_installed('pod.completion'):
-    router.register(r'contributors', completion_views.ContributorViewSet)
-    router.register(r'documents', completion_views.DocumentViewSet)
-    router.register(r'tracks', completion_views.TrackViewSet)
-    router.register(r'overlays', completion_views.OverlayViewSet)
+router.register(r'contributors', completion_views.ContributorViewSet)
+router.register(r'documents', completion_views.DocumentViewSet)
+router.register(r'tracks', completion_views.TrackViewSet)
+router.register(r'overlays', completion_views.OverlayViewSet)
 
 if apps.is_installed('pod.enrichment'):
     router.register(r'enrichments', enrichment_views.EnrichmentViewSet)
@@ -47,10 +47,8 @@ if apps.is_installed('pod.enrichment'):
     router.register(r'enrichments-image',
                     enrichment_views.EnrichmentImageViewSet)
 
-
-if apps.is_installed('pod.chapters'):
-    router.register(r'chapters', chapter_views.ChapterViewSet)
-
+router.register(r'chapters', chapter_views.ChapterViewSet)
+"""
 if apps.is_installed('pod.filepicker'):
     router.register(r'directories',
                     filepicker_views.UserDirectorySerializerViewSet)
@@ -58,7 +56,7 @@ if apps.is_installed('pod.filepicker'):
                     filepicker_views.CustomFileModelSerializerViewSet)
     router.register(r'images',
                     filepicker_views.CustomImageModelSerializerViewSet)
-
+"""
 urlpatterns = [
     url(r'dublincore/$', video_views.DublinCoreView.as_view(),
         name='dublincore'),

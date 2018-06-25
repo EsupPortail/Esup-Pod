@@ -6,6 +6,7 @@ from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.contrib.auth.models import Group
 
 import traceback
 import os
@@ -24,6 +25,10 @@ class UserFolder(models.Model):
     #    'self', blank=True, null=True, related_name='children')
     owner = models.ForeignKey(User, verbose_name=_('Owner'))
     created_at = models.DateTimeField(auto_now_add=True)
+    groups = models.ManyToManyField(
+        Group, blank=True, verbose_name=_('Groups'),
+        help_text=_('Select one or more groups who'
+                    ' can access in read only to this folder'))
 
     class Meta:
         unique_together = (('name', 'owner'),)

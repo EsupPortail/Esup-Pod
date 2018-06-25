@@ -2,21 +2,11 @@ import time
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db import connection
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
+
 from pod.video.models import Video
-
-
-def get_nextautoincrement(model):
-    cursor = connection.cursor()
-    cursor.execute(
-        'SELECT Auto_increment FROM information_schema.tables ' +
-        'WHERE table_name="{0}";'.format(model._meta.db_table)
-    )
-    row = cursor.fetchone()
-    cursor.close()
-    return row[0]
+from pod.main.models import get_nextautoincrement
 
 
 class Chapter(models.Model):

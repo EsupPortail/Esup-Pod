@@ -2,6 +2,7 @@ from django.apps import apps
 from django.contrib import admin
 from pod.enrichment.models import Enrichment
 from pod.enrichment.forms import EnrichmentAdminForm
+FILEPICKER = False
 if apps.is_installed('pod.filepicker'):
     FILEPICKER = True
 

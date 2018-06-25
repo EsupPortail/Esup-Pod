@@ -1,6 +1,7 @@
 from django import forms
 from pod.authentication.models import Owner
 from django.apps import apps
+FILEPICKER = False
 if apps.is_installed('pod.podfile'):
     from pod.podfile.widgets import CustomFileWidget
     FILEPICKER = True

@@ -6,7 +6,6 @@ import logging
 import hashlib
 
 from django.db import models
-from django.db import connection
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import get_language
@@ -28,10 +27,17 @@ from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
 
+from pod.main.models import get_nextautoincrement
+
 if apps.is_installed('pod.podfile'):
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import CustomFileModel
     FILEPICKER = True
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomImageModel
+    from pod.main.models import CustomFileModel
+
 if apps.is_installed('pod.enrichment'):
     ENRICHMENT = True
 
@@ -40,10 +46,9 @@ logger = logging.getLogger(__name__)
 FILEPICKER = True if apps.is_installed('pod.podfile') else False
 VIDEOS_DIR = getattr(
     settings, 'VIDEOS_DIR', 'videos')
-FILES_DIR = getattr(
-    settings, 'FILES_DIR', 'files')
 
-MAIN_LANG_CHOICES = getattr(
+
+LANG_CHOICES = getattr(
     settings, 'LANG_CHOICES', (
         settings.PREF_LANG_CHOICES
         + (('', '----------'),)
@@ -58,7 +63,7 @@ CURSUS_CODES = getattr(
         ('1', _("Other"))
     ))
 
-MAIN_LANG_CHOICES_DICT = {key: value for key, value in MAIN_LANG_CHOICES}
+LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES}
 CURSUS_CODES_DICT = {key: value for key, value in CURSUS_CODES}
 
 DEFAULT_TYPE_ID = getattr(
@@ -148,38 +153,7 @@ def get_storage_path_video(instance, filename):
                             '%s.%s' % (slugify(fname), extension))
 
 
-def get_upload_path_files(instance, filename):
-    fname, dot, extension = filename.rpartition('.')
-    try:
-        fname.index("/")
-        return os.path.join(FILES_DIR,
-                            '%s/%s.%s' % (os.path.dirname(fname),
-                                          slugify(os.path.basename(fname)),
-                                          extension))
-    except ValueError:
-        return os.path.join(FILES_DIR,
-                            '%s.%s' % (slugify(fname), extension))
-
-
-def get_nextautoincrement(mymodel):
-    cursor = connection.cursor()
-    cursor.execute(
-        "SELECT Auto_increment FROM information_schema.tables "
-        + "WHERE table_name='%s';" %
-        mymodel._meta.db_table)
-    row = cursor.fetchone()
-    cursor.close()
-    return row[0]
-
-
 # MODELS
-
-
-class VideoImageModel(models.Model):
-    file = models.ImageField(
-        _('Image'), null=True, upload_to=get_upload_path_files,
-        blank=True, max_length=255)
-
 
 class Channel(models.Model):
     title = models.CharField(
@@ -201,15 +175,9 @@ class Channel(models.Model):
         help_text=_("In this field you can describe your content, "
                     "add all needed related information, and "
                     "format the result using the toolbar."))
-    # add headband
-    if FILEPICKER:
-        headband = models.ForeignKey(CustomImageModel,
-                                     blank=True, null=True,
-                                     verbose_name=_('Headband'))
-    else:
-        headband = models.ForeignKey(VideoImageModel,
-                                     blank=True, null=True,
-                                     verbose_name=_('Thumbnails'))
+    headband = models.ForeignKey(CustomImageModel,
+                                 blank=True, null=True,
+                                 verbose_name=_('Headband'))
     color = models.CharField(
         _('Background color'),
         max_length=10, blank=True, null=True,
@@ -281,14 +249,10 @@ class Theme(models.Model):
         help_text=_("In this field you can describe your content, "
                     "add all needed related information, and "
                     "format the result using the toolbar."))
-    if FILEPICKER:
-        headband = models.ForeignKey(CustomImageModel,
-                                     blank=True, null=True,
-                                     verbose_name=_('Headband'))
-    else:
-        headband = models.ForeignKey(VideoImageModel,
-                                     blank=True, null=True,
-                                     verbose_name=_('Headband'))
+
+    headband = models.ForeignKey(CustomImageModel,
+                                 blank=True, null=True,
+                                 verbose_name=_('Headband'))
 
     channel = models.ForeignKey(
         'Channel', related_name='themes', verbose_name=_('Channel'))
@@ -360,14 +324,9 @@ class Type(models.Model):
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'))
     description = models.TextField(null=True, blank=True)
-    if FILEPICKER:
-        icon = models.ForeignKey(CustomImageModel,
-                                 blank=True, null=True,
-                                 verbose_name=_('Icon'))
-    else:
-        icon = models.ForeignKey(VideoImageModel,
-                                 blank=True, null=True,
-                                 verbose_name=_('Thumbnails'))
+    icon = models.ForeignKey(CustomImageModel,
+                             blank=True, null=True,
+                             verbose_name=_('Icon'))
 
     def __str__(self):
         return "%s" % (self.title)
@@ -390,14 +349,9 @@ class Discipline(models.Model):
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'))
     description = models.TextField(null=True, blank=True)
-    if FILEPICKER:
-        icon = models.ForeignKey(CustomImageModel,
-                                 blank=True, null=True,
-                                 verbose_name=_('Icon'))
-    else:
-        icon = models.ForeignKey(VideoImageModel,
-                                 blank=True, null=True,
-                                 verbose_name=_('Thumbnails'))
+    icon = models.ForeignKey(CustomImageModel,
+                             blank=True, null=True,
+                             verbose_name=_('Icon'))
 
     def __str__(self):
         return "%s" % (self.title)
@@ -453,7 +407,7 @@ class Video(models.Model):
                     "audience target of the content."))
     main_lang = models.CharField(
         _('Main language'), max_length=2,
-        choices=MAIN_LANG_CHOICES, default=get_language(),
+        choices=LANG_CHOICES, default=get_language(),
         help_text=_("Select the main language used in the content."))
     duration = models.IntegerField(
         _('Duration'), default=0, editable=False, blank=True)
@@ -481,16 +435,11 @@ class Video(models.Model):
         'Separate tags with spaces, '
         'enclose the tags consist of several words in quotation marks.'),
         verbose_name=_('Tags'))
-    if FILEPICKER:
-        thumbnail = models.ForeignKey(CustomImageModel,
-                                      blank=True, null=True,
-                                      verbose_name=_('Thumbnails'))
-    else:
-        thumbnail = models.ForeignKey(VideoImageModel,
-                                      blank=True, null=True,
-                                      verbose_name=_('Thumbnails'))
+    thumbnail = models.ForeignKey(CustomImageModel,
+                                  blank=True, null=True,
+                                  verbose_name=_('Thumbnails'))
     overview = models.ImageField(
-        _('Overview'), null=True, upload_to=get_upload_path_files,
+        _('Overview'), null=True, upload_to=get_storage_path_video,
         blank=True, max_length=255, editable=False)
     type = models.ForeignKey(Type, verbose_name=_('Type'),
                              default=DEFAULT_TYPE_ID)
@@ -694,7 +643,7 @@ class Video(models.Model):
                 "duration_in_time": self.duration_in_time,
                 "mediatype": "video" if self.is_video else "audio",
                 "cursus": "%s" % CURSUS_CODES_DICT[self.cursus],
-                "main_lang": "%s" % MAIN_LANG_CHOICES_DICT[self.main_lang],
+                "main_lang": "%s" % LANG_CHOICES_DICT[self.main_lang],
             }
             return json.dumps(data_to_dump)
         except ObjectDoesNotExist as e:
@@ -703,7 +652,7 @@ class Video(models.Model):
             return json.dumps({})
 
     def get_main_lang(self):
-        return "%s" % MAIN_LANG_CHOICES_DICT[self.main_lang]
+        return "%s" % LANG_CHOICES_DICT[self.main_lang]
 
     def get_cursus(self):
         return "%s" % CURSUS_CODES_DICT[self.cursus]

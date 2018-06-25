@@ -38,13 +38,12 @@ INSTALLED_APPS = [
     'django_filters',
     # Pod Applications
     'pod.main',
-    'django.contrib.admin', #put it here for template override
+    'django.contrib.admin',  # put it here for template override
     'pod.authentication',
-    'pod.filepicker',
     'pod.video',
     'pod.completion',
     'pod.chapter',
-    'pod.enrichment',
+    # 'pod.enrichment',
     'pod.playlist',
     'pod.video_search',
     'pod.podfile',

@@ -6,6 +6,7 @@ from pod.completion.models import Contributor
 from pod.completion.models import Document
 from pod.completion.models import Track
 from pod.completion.models import Overlay
+FILEPICKER = False
 if apps.is_installed('pod.podfile'):
     FILEPICKER = True
     from pod.podfile.widgets import CustomFileWidget
@@ -53,8 +54,7 @@ class DocumentForm(forms.ModelForm):
             else:
                 self.fields[myField].widget.attrs['class'] = 'form-control'
         if FILEPICKER:
-            self.fields['document'].widget = CustomFileWidget(type = "file")
-
+            self.fields['document'].widget = CustomFileWidget(type="file")
 
     class Meta(object):
         model = Document
@@ -66,7 +66,7 @@ class DocumentAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DocumentAdminForm, self).__init__(*args, **kwargs)
         if FILEPICKER:
-            self.fields['document'].widget = CustomFileWidget(type = "file")
+            self.fields['document'].widget = CustomFileWidget(type="file")
 
     class Meta(object):
         model = Document
@@ -93,7 +93,7 @@ class TrackForm(forms.ModelForm):
         self.fields['kind'].widget.attrs['class'] = 'custom-select'
         self.fields['lang'].widget.attrs['class'] = 'custom-select'
         if FILEPICKER:
-            self.fields['src'].widget = CustomFileWidget(type = "file")
+            self.fields['src'].widget = CustomFileWidget(type="file")
 
     class Meta(object):
         model = Track
@@ -105,7 +105,7 @@ class TrackAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TrackAdminForm, self).__init__(*args, **kwargs)
         if FILEPICKER:
-            self.fields['src'].widget = CustomFileWidget(type = "file")
+            self.fields['src'].widget = CustomFileWidget(type="file")
 
     class Meta(object):
         model = Track

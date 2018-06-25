@@ -14,7 +14,7 @@ from pod.video.models import EncodingAudio
 from pod.video.models import EncodingLog
 from pod.video.models import PlaylistVideo
 from pod.video.models import Video
-from pod.video.models import VideoImageModel
+
 from pod.video.models import EncodingStep
 
 from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
@@ -31,13 +31,12 @@ import tempfile
 import threading
 
 if apps.is_installed('pod.podfile'):
-    try:
-        from pod.podfile.models import CustomImageModel
-        from pod.podfile.models import UserFolder
-    except ImportError:
-        pass
-
-FILEPICKER = True if apps.is_installed('pod.podfile') else False
+    FILEPICKER = True
+    from pod.podfile.models import CustomImageModel
+    from pod.podfile.models import UserFolder
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomImageModel
 
 FFMPEG = getattr(settings, 'FFMPEG', 'ffmpeg')
 FFPROBE = getattr(settings, 'FFPROBE', 'ffprobe')
@@ -948,7 +947,7 @@ def create_and_save_thumbnails(source, image_width, video_id):
                     video_to_encode.thumbnail = thumbnail
                     video_to_encode.save()
             else:
-                thumbnail = VideoImageModel()
+                thumbnail = CustomImageModel()
                 thumbnail.file.save(
                     "%d_%s.png" % (video_id, i),
                     File(open(thumbnailfilename, "rb")),

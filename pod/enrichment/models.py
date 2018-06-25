@@ -9,9 +9,10 @@ from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
 from ckeditor.fields import RichTextField
 from pod.video.models import Video
-if apps.is_installed('pod.filepicker'):
-    from pod.filepicker.models import CustomImageModel
-    from pod.filepicker.models import CustomFileModel
+FILEPICKER = False
+if apps.is_installed('pod.podfile'):
+    from pod.podfile.models import CustomImageModel
+    from pod.podfile.models import CustomFileModel
     FILEPICKER = True
 FILES_DIR = getattr(
     settings, 'FILES_DIR', 'files')

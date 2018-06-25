@@ -45,13 +45,14 @@ class FlatepageTestCase(TestCase):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
         print(
-            "   --->  test_Flatepage_null_attribut of ChannelTestCase : OK !")
+            "   --->  test_Flatepage_null_attribut"
+            " of FlatepageTestCase : OK !")
 
     """
         test attributs when a channel have many attributs
     """
 
-    def test_Channel_with_attributs(self):
+    def test_Flatepage_with_attributs(self):
         flatPage = FlatPage.objects.get(url="/home/")
         self.assertQuerysetEqual(
             flatPage.sites.all(), Site.objects.filter(id=SITE_ID),
@@ -65,7 +66,8 @@ class FlatepageTestCase(TestCase):
         response = self.client.get("/home/")
         self.assertEqual(response.status_code, 200)
         print(
-            "   --->  test_Channel_with_attributs of ChannelTestCase : OK !")
+            "   --->  test_Flatepage_with_attributs"
+            " of FlatepageTestCase : OK !")
 
     """
         test delete object

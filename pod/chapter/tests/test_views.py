@@ -11,8 +11,10 @@ from pod.chapter.models import Chapter
 if apps.is_installed('pod.podfile'):
     from pod.podfile.models import CustomFileModel
     from pod.podfile.models import UserFolder
-    from datetime import datetime
     FILEPICKER = True
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomFileModel
 
 
 class ChapterViewsTestCase(TestCase):
@@ -157,7 +159,7 @@ class ChapterViewsTestCase(TestCase):
         authenticate(username='test', password='hello')
         login = self.client.login(username='test', password='hello')
         self.assertTrue(login)
-        file = SimpleUploadedFile(
+        fileChapter = SimpleUploadedFile(
             name='testfile.vtt',
             content=open(
                 './pod/chapter/tests/testfile.vtt', 'rb').read(),
@@ -165,16 +167,20 @@ class ChapterViewsTestCase(TestCase):
         if FILEPICKER:
             home = UserFolder.objects.get(id=1)
             user = User.objects.get(id=1)
-            file = CustomFileModel.objects.create(
+            filevttchapter = CustomFileModel.objects.create(
                 name='testfile',
                 created_by=user,
                 folder=home,
-                file=file
-            ).id
+                file=fileChapter
+            )
+        else:
+            filevttchapter = CustomFileModel.objects.create(
+                file=fileChapter
+            )
         response = self.client.post(
             '/video_chapter/{0}/'.format(video.slug),
             data={'action': 'import',
-                  'file': file})
+                  'file': filevttchapter.id})
         self.assertEqual(response.status_code, 200)
         result = Chapter.objects.all()
         self.assertTrue(result)

@@ -11,6 +11,10 @@ from pod.main.models import LinkFooter
 
 
 SITE_ID = getattr(settings, 'SITE_ID', 1)
+content_widget = {}
+for key, value in settings.LANGUAGES:
+    content_widget['content_%s' % key.replace(
+        '-', '_')] = CKEditorWidget(config_name='complete')
 
 
 class PageForm(FlatpageForm):
@@ -18,14 +22,11 @@ class PageForm(FlatpageForm):
     class Meta:
         model = FlatPage
         fields = '__all__'
-        widgets = {
-            'content_fr': CKEditorWidget(config_name='complete'),
-            'content_en': CKEditorWidget(config_name='complete'),
-            'content_nl_NL': CKEditorWidget(config_name='complete'),
-        }
-
+        widgets = content_widget
 
 # CustomFlatPage admin panel
+
+
 class CustomFlatPageAdmin(TranslationAdmin):
     list_display = ('title', 'url', )
     form = PageForm
@@ -43,7 +44,6 @@ class CustomFlatPageAdmin(TranslationAdmin):
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
-        # obj.sites = Site.objects.filter(id=SITE_ID)
         obj.sites.add(Site.objects.get(id=SITE_ID))
         obj.save()
 
