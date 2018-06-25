@@ -150,8 +150,14 @@ class VideoAdmin(admin.ModelAdmin):
     encode_video.short_description = _('Encode selected')
 
     class Media:
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
         js = (
-            'js/filewidget.js', 
+            'js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
@@ -196,10 +202,17 @@ class ChannelAdmin(admin.ModelAdmin):
         return form
 
     class Media:
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
         js = (
-            'js/filewidget.js', 
+            'js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
+
 
 
 class ThemeAdmin(admin.ModelAdmin):
@@ -209,10 +222,17 @@ class ThemeAdmin(admin.ModelAdmin):
     ordering = ('channel', 'title')
 
     class Media:
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
         js = (
-            'js/filewidget.js', 
+            'js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
+
 
 
 class TypeAdmin(TranslationAdmin):
@@ -220,10 +240,17 @@ class TypeAdmin(TranslationAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
     class Media:
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
         js = (
-            'js/filewidget.js', 
+            'js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
+
 
 
 class DisciplineAdmin(TranslationAdmin):
@@ -231,10 +258,17 @@ class DisciplineAdmin(TranslationAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
     class Media:
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
         js = (
-            'js/filewidget.js', 
+            'js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
+
 
 
 class EncodingVideoAdmin(admin.ModelAdmin):

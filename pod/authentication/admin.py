@@ -29,10 +29,17 @@ class OwnerInline(admin.StackedInline):
         return [f for f in fields if f not in exclude_set]
 
     class Media:
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
         js = (
-            'js/filewidget.js', 
+            'js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
+
 
 
 class UserAdmin(BaseUserAdmin):

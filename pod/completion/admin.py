@@ -48,10 +48,17 @@ class DocumentAdmin(admin.ModelAdmin):
     search_fields = ['id', 'document__name', 'video__title']
 
     class Media:
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
         js = (
-            'js/filewidget.js', 
+            'js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
+
 
 
 admin.site.register(Document, DocumentAdmin)
@@ -76,10 +83,17 @@ class TrackAdmin(admin.ModelAdmin):
     search_fields = ['id', 'src__name', 'kind', 'video__title']
 
     class Media:
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
         js = (
-            'js/filewidget.js', 
+            'js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
+
 
 
 admin.site.register(Track, TrackAdmin)
