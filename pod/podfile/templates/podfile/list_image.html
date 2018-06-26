@@ -1,11 +1,14 @@
 {% load i18n %}
-<div class="list-group-item ">{{current_folder.name}} 
+<div class="list-group-item "><span id="current_folder_name" data-id="{{current_folder.id}}">{{current_folder.name}}</span> 
+    {% if request.user == current_folder.owner or request.user.is_superuser %}
     <form class="get_form_file float-right" action="{% url 'editimage' id=current_folder.id %}" method="POST" >
     {% csrf_token %}
     <input type="hidden" name="action" value="new"/>
     <input type="hidden" name="current_folder" value="{{current_folder}}"/>
     <button type="submit" class="btn btn-info btn-sm"><i data-feather="upload"></i></button>
     </form>
+    {% endif %}
+    <span class="float-right">{{list_file.paginator.count}} {% trans "file"%}{{ list_file.paginator.count|pluralize }}</span>
 </div>
 {% for document in list_file %}
 <div class="list-group-item list-group-item-action">

@@ -13,20 +13,20 @@ $(document).on('click', '#list_folder .edit', function(){
     $('#id_folder').val($(this).data('id'));
     $('#list_folder .edit').hide();
     $('#list_folder .delete').hide();
-    $(this).parents('span.list-group-item').addClass('list-group-item-info');
+    $(this).parents('div.list-group-item').addClass('list-group-item-info');
 });
-
+/*
 $(document).on('click', 'button.form_folder_files', function (event) {
   send_form_data($(this).data('link'), {}, "append_folder_html_in_modal", "get");
 });
-
+*/
 $(document).on('click', '#form_folder_cancel', function(e){
     e.preventDefault();
     $('#id_name').val("");
     $('#id_folder').val("");
     $('#list_folder .edit').show();
     $('#list_folder .delete').show();
-    $('span.list-group-item').removeClass('list-group-item-info');
+    $('div.list-group-item').removeClass('list-group-item-info');
 });
 $(document).on('submit', '#list_folder form.delete_folder', function(e){
     e.preventDefault();
@@ -44,7 +44,7 @@ $(document).on('submit', '#list_folder form.form_folder_files', function(e){
 */
 $(document).on('click', 'a.form_folder_files', function(e){
     e.preventDefault();
-    send_form_data($(this).attr('href'), {}, "append_folder_html_in_modal", "get");
+    send_form_data($(this).attr('href'), {}, "append_files_html_in_modal", "get");
 });
 
 $(document).on('submit', '#form_folder', function(e){
@@ -54,6 +54,12 @@ $(document).on('submit', '#form_folder', function(e){
 });
 var append_folder_html_in_modal = function(data) {
     $("#modal-folder").html(data);
+    feather.replace({ class: 'align-bottom'});
+}
+var append_files_html_in_modal = function(data) {
+    $("#list_file").html(data);
+    $('div.list-group-item').removeClass('list-group-item-success');
+    $('#'+$("#current_folder_name").data('id')).addClass('list-group-item-success');
     feather.replace({ class: 'align-bottom'});
 }
 /** FILE **/

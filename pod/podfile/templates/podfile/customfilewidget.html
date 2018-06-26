@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static %}
 
 <div >
 {{input|safe}}
@@ -44,6 +44,8 @@
   </div>
 </div>
 <!-- End Select File Modal -->
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite.min.js' %}"></script>
 <script>
 var id_input = "{{id}}";
 $('#fileModal').appendTo(document.body);

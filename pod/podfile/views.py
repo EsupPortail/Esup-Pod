@@ -8,7 +8,8 @@ from django.core.exceptions import PermissionDenied
 from django.template.loader import render_to_string
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import SuspiciousOperation
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.exceptions import ObjectDoesNotExist
 
 from .models import UserFolder
 from .models import CustomFileModel
@@ -24,6 +25,85 @@ FILE_ACTION = ['new', 'modify', 'delete', 'save']
 FOLDER_FILE_TYPE = ['image', 'file']
 
 
+def get_folders(request, page):
+    user_folder = UserFolder.objects.filter(
+        owner=request.user
+    ).exclude(owner=request.user, name="home")
+    group_user = UserFolder.objects.filter(
+        groups__in=request.user.groups.all()
+    ).exclude(owner=request.user).order_by('owner', 'id')
+    list_folder = list(chain(user_folder, group_user))
+
+    paginator = Paginator(list_folder, 12)
+    try:
+        folders = paginator.page(page)
+    except PageNotAnInteger:
+        folders = paginator.page(1)
+    except EmptyPage:
+        folders = paginator.page(paginator.num_pages)
+    return folders
+
+
+def edit_folder(request, current_folder):
+    form = UserFolderForm(request.POST)
+    if (request.POST.get("id_folder")
+            and request.POST.get("id_folder") != ""):
+        folder = get_object_or_404(
+            UserFolder, id=request.POST['id_folder'])
+        if folder.name == "home" or (
+            request.user != folder.owner
+            and not request.user.is_superuser
+        ):
+            messages.add_message(
+                request, messages.ERROR,
+                _(u'You cannot edit this folder.'))
+            raise PermissionDenied
+        form = UserFolderForm(request.POST, instance=folder)
+
+    if form.is_valid():
+        folder = form.save(commit=False)
+        if form.instance:
+            folder.owner = form.instance.owner
+        else:
+            folder.owner = request.user
+        folder.save()
+        current_folder = folder
+        request.session['current_session_folder'] = current_folder.name
+    return form, current_folder
+
+
+def get_current_session_folder(request):
+    try:
+        current_session_folder = UserFolder.objects.get(
+            owner=request.user,
+            name=request.session.get(
+                'current_session_folder',
+                "home")
+        )
+        return current_session_folder
+    except ObjectDoesNotExist:
+        current_session_folder = UserFolder.objects.get(
+            owner=request.user,
+            name="home"
+        )
+        return current_session_folder
+
+
+def get_list_file(type, folder, page):
+    files = folder.customimagemodel_set.all() if (
+        type == "image") else folder.customfilemodel_set.all()
+
+    paginator = Paginator(files, 12)
+    try:
+        list_file = paginator.page(page)
+    except PageNotAnInteger:
+        list_file = paginator.page(1)
+    except EmptyPage:
+        list_file = paginator.page(paginator.num_pages)
+
+    return list_file
+
+
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def folder(request, type, id=""):
@@ -37,34 +117,24 @@ def folder(request, type, id=""):
             UserFolder, id=request.POST['id'])
         folder.delete()
 
-    # list_folder = UserFolder.objects.filter(owner=request.user)
-    """
-    list_folder = UserFolder.objects.filter(
-        owner=request.user
-    ) | UserFolder.objects.filter(
-        groups__in=request.user.groups.all()
-    )
-    """
-    user_folder = UserFolder.objects.filter(
-        owner=request.user
-    )
-    group_user = UserFolder.objects.filter(
-        groups__in=request.user.groups.all()
-    ).order_by('owner', 'id')
-    list_folder = list(chain(user_folder, group_user))
-
+    page = request.GET.get('page', 1)
+    full_path = request.get_full_path().replace(
+        "?page=%s" % page, "").replace(
+        "&page=%s" % page, "").replace(
+        "&infinite=true", "") if page else ""
     form = UserFolderForm()
-    """
-    current_folder = get_object_or_404(
-        UserFolder, id=request.POST['current_folder']) if (
-        request.POST.get("current_folder")
-        and request.POST.get("current_folder") != "") else (
-        UserFolder.objects.get(owner=request.user, name="home")
-    )
-    """
+
+    user_home_folder = get_object_or_404(
+        UserFolder, name="home", owner=request.user)
+
+    folders = get_folders(request, page)
+    current_session_folder = get_current_session_folder(request)
+
     current_folder = get_object_or_404(
         UserFolder, id=id) if id != "" else (
-        UserFolder.objects.get(owner=request.user, name="home"))
+        current_session_folder)
+
+    request.session['current_session_folder'] = current_folder.name
 
     if (request.user != current_folder.owner
             and not request.user.groups.filter(
@@ -81,35 +151,59 @@ def folder(request, type, id=""):
 
     if (request.POST.get("name")
             and request.POST.get("name") != ""):
-        form = UserFolderForm(request.POST)
+        form, current_folder = edit_folder(request, current_folder)
+        folders = get_folders(request, page)
 
-        if (request.POST.get("id_folder")
-                and request.POST.get("id_folder") != ""):
-            folder = get_object_or_404(
-                UserFolder, id=request.POST['id_folder'])
-            if folder.name == "home" or (
-                request.user != folder.owner
-                and not request.user.is_superuser
-            ):
-                messages.add_message(
-                    request, messages.ERROR,
-                    _(u'You cannot edit this folder.'))
-                raise PermissionDenied
-            form = UserFolderForm(request.POST, instance=folder)
+    if request.GET.get('infinite', False):
+        return render(
+            request, 'podfile/infinite_folders.html',
+            {'list_folder': folders, "type": type, "full_path": full_path})
 
-        if form.is_valid():
-            folder = form.save(commit=False)
-            folder.owner = request.user
-            folder.save()
-            current_folder = folder
+    list_file = current_folder.customimagemodel_set.all() if (
+        type == "image") else current_folder.customfilemodel_set.all()
 
     return render(request,
                   'podfile/list_folder.html',
-                  {'list_folder': list_folder,
+                  {'list_folder': folders,
                    'form': form,
                    "current_folder": current_folder,
-                   "type": type
+                   "list_file":list_file,
+                   "type": type,
+                   "full_path": full_path,
+                   "user_home_folder": user_home_folder
                    })
+
+
+@csrf_protect
+@staff_member_required(redirect_field_name='referrer')
+def get_files(request, type, id):
+    folder = get_object_or_404(UserFolder, id=id)
+    if (request.user != folder.owner
+            and not request.user.groups.filter(
+                name__in=[
+                    name[0]
+                    for name in folder.groups.values_list('name')
+                ]
+            ).exists()
+            and not request.user.is_superuser):
+        messages.add_message(
+            request, messages.ERROR,
+            _(u'You cannot see this folder.'))
+        raise PermissionDenied
+
+    request.session['current_session_folder'] = folder.name
+
+    list_file = folder.customimagemodel_set.all() if (
+        type == "image") else folder.customfilemodel_set.all()
+
+    template_name = 'podfile/list_file.html'
+    return render(
+        request, template_name,
+        {'list_file': list_file,
+         "type": type,
+         "current_folder": folder,
+         })
+
 
 ##########################################################
 # IMAGE
@@ -124,7 +218,7 @@ def editimage(request, id):
             and not request.user.is_superuser):
         messages.add_message(
             request, messages.ERROR,
-            _(u'You cannot edit this folder.'))
+            _(u'You cannot edit this image.'))
         raise PermissionDenied
 
     if request.POST and request.is_ajax():
@@ -145,8 +239,9 @@ def image_edit_delete(request, folder):
         raise PermissionDenied
     customimage.delete()
     rendered = render_to_string(
-        "podfile/list_image.html",
+        "podfile/list_file.html",
         {'list_file': folder.customimagemodel_set.all(),
+         "type": "image",
          'current_folder': folder
          }, request)
     list_element = {
@@ -190,8 +285,9 @@ def image_edit_save(request, folder):
         customImage.created_by = request.user
         customImage.save()
         rendered = render_to_string(
-            "podfile/list_image.html",
-            {'list_file': customImage.folder.customimagemodel_set.all(),
+            "podfile/list_file.html",
+            {'list_file': folder.customimagemodel_set.all(),
+             "type": "image",
              'current_folder': folder
              }, request)
         list_element = {
@@ -248,6 +344,7 @@ def file_edit_delete(request, folder):
     rendered = render_to_string(
         "podfile/list_file.html",
         {'list_file': folder.customfilemodel_set.all(),
+         'type': "file",
          'current_folder': folder
          }, request)
     list_element = {
@@ -293,6 +390,7 @@ def file_edit_save(request, folder):
         rendered = render_to_string(
             "podfile/list_file.html",
             {'list_file': customfile.folder.customfilemodel_set.all(),
+             "type": "file",
              'current_folder': folder
              }, request)
         list_element = {

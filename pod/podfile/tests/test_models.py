@@ -22,7 +22,8 @@ class CustomFileModelTestCase(TestCase):
         simplefile = SimpleUploadedFile(
             name='testfile.txt',
             content=open(
-                os.path.join(currentdir, 'tests', 'testfile.txt'), 'rb').read(),
+                os.path.join(
+                    currentdir, 'tests', 'testfile.txt'), 'rb').read(),
             content_type='text/plain')
         home = UserFolder.objects.get(name='home', owner=test)
         CustomFileModel.objects.create(
@@ -92,7 +93,8 @@ class CustomImageModelTestCase(TestCase):
         simplefile = SimpleUploadedFile(
             name='testimage.jpg',
             content=open(
-                os.path.join(currentdir, 'tests', 'testimage.jpg'), 'rb').read(),
+                os.path.join(
+                    currentdir, 'tests', 'testimage.jpg'), 'rb').read(),
             content_type='image/jpeg')
         home = UserFolder.objects.get(name='home', owner=test)
         CustomImageModel.objects.create(
@@ -156,7 +158,7 @@ class UserFolderTestCase(TestCase):
 
     def setUp(self):
         test = User.objects.create(username='test')
-        home = UserFolder.objects.get(name='home', owner=test)
+        UserFolder.objects.get(name='home', owner=test)
         UserFolder.objects.create(name='Images', owner=test)
         UserFolder.objects.create(name='Documents', owner=test)
 
