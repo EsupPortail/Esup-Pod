@@ -167,7 +167,7 @@ def folder(request, type, id=""):
                   {'list_folder': folders,
                    'form': form,
                    "current_folder": current_folder,
-                   "list_file":list_file,
+                   "list_file": list_file,
                    "type": type,
                    "full_path": full_path,
                    "user_home_folder": user_home_folder

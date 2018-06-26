@@ -175,7 +175,7 @@ class Channel(models.Model):
         help_text=_("In this field you can describe your content, "
                     "add all needed related information, and "
                     "format the result using the toolbar."))
-    headband = models.ForeignKey(CustomImageModel,models.SET_NULL,
+    headband = models.ForeignKey(CustomImageModel, models.SET_NULL,
                                  blank=True, null=True,
                                  verbose_name=_('Headband'))
     color = models.CharField(
@@ -250,7 +250,7 @@ class Theme(models.Model):
                     "add all needed related information, and "
                     "format the result using the toolbar."))
 
-    headband = models.ForeignKey(CustomImageModel,models.SET_NULL,
+    headband = models.ForeignKey(CustomImageModel, models.SET_NULL,
                                  blank=True, null=True,
                                  verbose_name=_('Headband'))
 
@@ -324,7 +324,7 @@ class Type(models.Model):
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'))
     description = models.TextField(null=True, blank=True)
-    icon = models.ForeignKey(CustomImageModel,models.SET_NULL,
+    icon = models.ForeignKey(CustomImageModel, models.SET_NULL,
                              blank=True, null=True,
                              verbose_name=_('Icon'))
 
@@ -349,7 +349,7 @@ class Discipline(models.Model):
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'))
     description = models.TextField(null=True, blank=True)
-    icon = models.ForeignKey(CustomImageModel,models.SET_NULL,
+    icon = models.ForeignKey(CustomImageModel, models.SET_NULL,
                              blank=True, null=True,
                              verbose_name=_('Icon'))
 
@@ -435,7 +435,7 @@ class Video(models.Model):
         'Separate tags with spaces, '
         'enclose the tags consist of several words in quotation marks.'),
         verbose_name=_('Tags'))
-    thumbnail = models.ForeignKey(CustomImageModel,models.SET_NULL,
+    thumbnail = models.ForeignKey(CustomImageModel, models.SET_NULL,
                                   blank=True, null=True,
                                   verbose_name=_('Thumbnails'))
     overview = models.ImageField(
