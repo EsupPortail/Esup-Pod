@@ -97,7 +97,7 @@ class BaseFileModel(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ('-uploaded_at',)
+        ordering = ['name']
 
 
 class CustomFileModel(BaseFileModel):
