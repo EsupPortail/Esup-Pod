@@ -1,6 +1,5 @@
 Django==1.11.10
 django-ckeditor==5.3.1
-sorl-thumbnail==12.4a1
 Pillow==5.1.0
 django-tagging==0.4.6
 django-modeltranslation==0.12.2
