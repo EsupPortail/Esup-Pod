@@ -1,7 +1,7 @@
 """
 Unit tests for completion models
 """
-from django.apps import apps
+from django.conf import settings
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -14,7 +14,7 @@ from pod.completion.models import Overlay
 from pod.completion.models import Track
 from datetime import datetime
 
-if apps.is_installed('pod.podfile'):
+if 'podfile' in settings.THIRD_PARTY_APPS:
     FILEPICKER = True
     from pod.podfile.models import CustomFileModel
     from pod.podfile.models import UserFolder
@@ -308,7 +308,8 @@ class TrackModelTestCase(TestCase):
         self.assertEqual(track.video, video)
         self.assertEqual(track.lang, 'fr')
         self.assertEqual(track.kind, 'captions')
-        self.assertEqual(track.src.name, 'testfile')
+        self.assertTrue('testfile' in track.src.name)
+        # self.assertEqual(track.src.name, 'testfile')
 
         print(" ---> test_attributs_full : OK ! --- TrackModel")
 

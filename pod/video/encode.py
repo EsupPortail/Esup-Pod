@@ -5,8 +5,6 @@ from django.core.mail import mail_managers
 from django.utils.translation import ugettext_lazy as _
 from django.core.files.images import ImageFile
 from django.core.files import File
-from django.apps import apps
-
 
 from pod.video.models import VideoRendition
 from pod.video.models import EncodingVideo
@@ -30,7 +28,7 @@ import re
 import tempfile
 import threading
 
-if apps.is_installed('pod.podfile'):
+if 'podfile' in settings.THIRD_PARTY_APPS:
     FILEPICKER = True
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import UserFolder

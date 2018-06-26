@@ -7,18 +7,11 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.apps import apps
 
 from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
-try:
-    from pod.podfile.models import CustomImageModel
-    from pod.podfile.models import UserFolder
-except ImportError:
-    from pod.main.models import CustomImageModel
-
 from pod.video.models import Video
 from pod.video.models import ViewCount
 from pod.video.models import get_storage_path_video
@@ -36,8 +29,13 @@ from datetime import timedelta
 
 import os
 
-FILEPICKER = True if apps.is_installed('pod.podfile') else False
-
+if 'podfile' in settings.THIRD_PARTY_APPS:
+    FILEPICKER = True
+    from pod.podfile.models import CustomImageModel
+    from pod.podfile.models import UserFolder
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomImageModel
 
 # Create your tests here.
 """

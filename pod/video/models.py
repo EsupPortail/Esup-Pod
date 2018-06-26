@@ -29,7 +29,7 @@ from tagging.fields import TagField
 
 from pod.main.models import get_nextautoincrement
 
-if apps.is_installed('pod.podfile'):
+if 'podfile' in settings.THIRD_PARTY_APPS:
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import CustomFileModel
     FILEPICKER = True
@@ -38,7 +38,7 @@ else:
     from pod.main.models import CustomImageModel
     from pod.main.models import CustomFileModel
 
-if apps.is_installed('pod.enrichment'):
+if 'enrichment' in settings.THIRD_PARTY_APPS:
     ENRICHMENT = True
 
 logger = logging.getLogger(__name__)

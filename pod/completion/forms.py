@@ -1,5 +1,5 @@
 from django import forms
-from django.apps import apps
+from django.conf import settings
 from django.forms.widgets import HiddenInput
 from django.utils.safestring import mark_safe
 from pod.completion.models import Contributor
@@ -7,7 +7,7 @@ from pod.completion.models import Document
 from pod.completion.models import Track
 from pod.completion.models import Overlay
 FILEPICKER = False
-if apps.is_installed('pod.podfile'):
+if 'podfile' in settings.THIRD_PARTY_APPS:
     FILEPICKER = True
     from pod.podfile.widgets import CustomFileWidget
 

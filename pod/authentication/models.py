@@ -4,14 +4,13 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from django.apps import apps
 
 import hashlib
 import logging
 import traceback
 logger = logging.getLogger(__name__)
 
-if apps.is_installed('pod.filepicker'):
+if 'podfile' in settings.THIRD_PARTY_APPS:
     from pod.podfile.models import CustomImageModel
 else:
     from pod.main.models import CustomImageModel

@@ -1,6 +1,5 @@
 import base64
 
-from django.apps import apps
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -10,7 +9,7 @@ from ckeditor.fields import RichTextField
 from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
 
-if apps.is_installed('pod.podfile'):
+if 'podfile' in settings.THIRD_PARTY_APPS:
     FILEPICKER = True
     from pod.podfile.models import CustomFileModel
 else:

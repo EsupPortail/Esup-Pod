@@ -7,6 +7,7 @@ from django.template.defaultfilters import slugify
 from django.db import connection
 
 import os
+import mimetypes
 
 FILES_DIR = getattr(
     settings, 'FILES_DIR', 'files')
@@ -41,11 +42,49 @@ class CustomImageModel(models.Model):
         _('Image'), null=True, upload_to=get_upload_path_files,
         blank=True, max_length=255)
 
+    @property
+    def file_type(self):
+        filetype = mimetypes.guess_type(self.file.path)[0]
+        if filetype is None:
+            fname, dot, extension = self.file.path.rpartition('.')
+            filetype = extension.lower()
+        return filetype
+    file_type.fget.short_description = _('Get the file type')
+
+    @property
+    def file_size(self):
+        return os.path.getsize(self.file.path)
+    file_size.fget.short_description = _('Get the file size')
+
+    @property
+    def name(self):
+        return os.path.basename(self.file.path)
+    name.fget.short_description = _('Get the file name')
+
 
 class CustomFileModel(models.Model):
     file = models.ImageField(
         _('Image'), null=True, upload_to=get_upload_path_files,
         blank=True, max_length=255)
+
+    @property
+    def file_type(self):
+        filetype = mimetypes.guess_type(self.file.path)[0]
+        if filetype is None:
+            fname, dot, extension = self.file.path.rpartition('.')
+            filetype = extension.lower()
+        return filetype
+    file_type.fget.short_description = _('Get the file type')
+
+    @property
+    def file_size(self):
+        return os.path.getsize(self.file.path)
+    file_size.fget.short_description = _('Get the file size')
+
+    @property
+    def name(self):
+        return os.path.basename(self.file.path)
+    name.fget.short_description = _('Get the file name')
 
 
 class LinkFooter(models.Model):

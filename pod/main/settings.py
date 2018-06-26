@@ -213,3 +213,8 @@ DEFAULT_FROM_EMAIL = 'noreply@univ.fr'
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
 # ('captcha.helpers.noise_arcs','captcha.helpers.noise_dots',)
 CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
+
+##
+# THIRD PARTY APPS OPTIONNAL
+#
+THIRD_PARTY_APPS = []

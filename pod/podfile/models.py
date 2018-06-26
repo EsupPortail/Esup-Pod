@@ -35,6 +35,7 @@ class UserFolder(models.Model):
         verbose_name = _('User directory')
         verbose_name_plural = _('User directories')
         ordering = ['name']
+        app_label = 'podfile'
 
     def clean(self):
         if self.name == 'Home':
@@ -133,6 +134,7 @@ class CustomFileModel(BaseFileModel):
     class Meta:
         verbose_name = _('Document')
         verbose_name_plural = _('Documents')
+        app_label = 'podfile'
 
 
 class CustomImageModel(BaseFileModel):
@@ -164,3 +166,4 @@ class CustomImageModel(BaseFileModel):
     class Meta:
         verbose_name = _('Image')
         verbose_name_plural = _('Images')
+        app_label = 'podfile'

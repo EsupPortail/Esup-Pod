@@ -1,7 +1,7 @@
 """
 Unit tests for completion views
 """
-from django.apps import apps
+from django.conf import settings
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -13,7 +13,7 @@ from pod.completion.models import Document
 from pod.completion.models import Overlay
 from pod.completion.models import Track
 from datetime import datetime
-if apps.is_installed('pod.podfile'):
+if 'podfile' in settings.THIRD_PARTY_APPS:
     FILEPICKER = True
     from pod.podfile.models import CustomFileModel
     from pod.podfile.models import UserFolder
@@ -304,7 +304,8 @@ class CompletionTrackViewsTestCase(TestCase):
         self.assertContains(response, 'list_track')
         result = Track.objects.get(id=1)
         self.assertEqual(result.kind, 'subtitles')
-        self.assertEqual(result.src.name, 'testfile')
+        self.assertTrue('testfile' in result.src.name)
+        # self.assertEqual(result.src.name, 'testfile')
 
         print(" ---> test_video_completion_track_new : OK!")
         print(" [ END COMPLETION_TRACK VIEWS ] ")
@@ -349,7 +350,8 @@ class CompletionTrackViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_track')
         result = Track.objects.get(id=1)
-        self.assertEqual(result.src.name, 'testfile')
+        self.assertTrue('testfile' in result.src.name)
+        # self.assertEqual(result.src.name, 'testfile')
         response = self.client.post(
             '/video_completion_track/{0}/'.format(video.slug),
             data={'action': 'modify',
@@ -413,7 +415,8 @@ class CompletionTrackViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_track')
         result = Track.objects.get(id=1)
-        self.assertEqual(result.src.name, 'testfile')
+        self.assertTrue('testfile' in result.src.name)
+        # self.assertEqual(result.src.name, 'testfile')
         response = self.client.post(
             '/video_completion_track/{0}/'.format(video.slug),
             data={'action': 'delete',
@@ -500,7 +503,8 @@ class CompletionDocumentViewsTestCase(TestCase):
         self.assertTemplateUsed(response, 'video_completion.html')
         self.assertContains(response, 'list_document')
         result = Document.objects.get(id=1)
-        self.assertEqual(result.document.name, 'testfile')
+        # self.assertEqual(result.document.name, 'testfile')
+        self.assertTrue('testfile' in result.document.name)
 
         print(" ---> test_video_completion_document_new : OK!")
         print(" [ END COMPLETION_DOCUMENT VIEWS ] ")
@@ -544,7 +548,8 @@ class CompletionDocumentViewsTestCase(TestCase):
         self.assertTemplateUsed(response, 'video_completion.html')
         self.assertContains(response, 'list_document')
         result = Document.objects.get(id=1)
-        self.assertEqual(result.document.name, 'testfile')
+        # self.assertEqual(result.document.name, 'testfile')
+        self.assertTrue('testfile' in result.document.name)
         response = self.client.post(
             '/video_completion_document/{0}/'.format(video.slug),
             data={'action': 'modify',
@@ -579,8 +584,8 @@ class CompletionDocumentViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_document')
         result = Document.objects.get(id=1)
-        self.assertEqual(result.document.name, 'testfile2')
-
+        # self.assertEqual(result.document.name, 'testfile2')
+        self.assertTrue('testfile2' in result.document.name)
         print(" ---> test_video_completion_document_edit : OK!")
 
     def test_video_completion_document_delete(self):
@@ -621,7 +626,8 @@ class CompletionDocumentViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_document')
         result = Document.objects.get(id=1)
-        self.assertEqual(result.document.name, 'testfile')
+        # self.assertEqual(result.document.name, 'testfile')
+        self.assertTrue('testfile' in result.document.name)
         response = self.client.post(
             '/video_completion_document/{0}/'.format(video.slug),
             data={'action': 'delete',

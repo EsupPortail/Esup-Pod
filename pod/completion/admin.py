@@ -1,4 +1,4 @@
-from django.apps import apps
+from django.conf import settings
 from django.contrib import admin
 from pod.completion.models import Contributor
 from pod.completion.models import Document
@@ -7,7 +7,7 @@ from pod.completion.models import Track
 from pod.completion.forms import DocumentAdminForm
 from pod.completion.forms import TrackAdminForm
 FILEPICKER = False
-if apps.is_installed('pod.podfile'):
+if 'podfile' in settings.THIRD_PARTY_APPS:
     FILEPICKER = True
 
 

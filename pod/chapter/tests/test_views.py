@@ -1,14 +1,15 @@
 """
 Unit tests for chapters views
 """
-from django.apps import apps
+from django.conf import settings
 from django.test import TestCase
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from pod.video.models import Video
 from pod.chapter.models import Chapter
-if apps.is_installed('pod.podfile'):
+
+if 'podfile' in settings.THIRD_PARTY_APPS:
     from pod.podfile.models import CustomFileModel
     from pod.podfile.models import UserFolder
     FILEPICKER = True
@@ -48,7 +49,7 @@ class ChapterViewsTestCase(TestCase):
         login = self.client.login(username='test2', password='hello')
         self.assertTrue(login)
         response = self.client.get('/video_chapter/{0}/'.format(video.slug))
-        self.assertEqual(response.status_code, 403) #forbidden
+        self.assertEqual(response.status_code, 403)  # forbidden
 
         print(" ---> test_video_chapter_owner : OK!")
         print(" [ END CHAPTER VIEWS ] ")

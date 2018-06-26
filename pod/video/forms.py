@@ -6,7 +6,6 @@ from django.utils.deconstruct import deconstructible
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 from django.core.exceptions import ValidationError
-from django.apps import apps
 from django.contrib.auth.models import User
 
 from pod.video.models import Video
@@ -27,7 +26,7 @@ from collections import OrderedDict
 
 import datetime
 FILEPICKER = False
-if apps.is_installed('pod.podfile'):
+if 'podfile' in settings.THIRD_PARTY_APPS:
     FILEPICKER = True
     from pod.podfile.widgets import CustomFileWidget
 

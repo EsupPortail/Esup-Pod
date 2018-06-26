@@ -1,11 +1,11 @@
 from django import forms
-from django.apps import apps
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from pod.chapter.models import Chapter
 from pod.chapter.utils import vtt_to_chapter
 
-if apps.is_installed('pod.podfile'):
+if 'podfile' in settings.THIRD_PARTY_APPS:
     FILEPICKER = True
     from pod.podfile.models import CustomFileModel
     from pod.podfile.widgets import CustomFileWidget
