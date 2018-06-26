@@ -34,6 +34,7 @@ class UserFolder(models.Model):
         unique_together = (('name', 'owner'),)
         verbose_name = _('User directory')
         verbose_name_plural = _('User directories')
+        ordering = ['name']
 
     def clean(self):
         if self.name == 'Home':
@@ -47,7 +48,10 @@ class UserFolder(models.Model):
         return '{0}'.format(self.name)
 
     def delete(self):
-        print("delete file before deleting folder")
+        for file in self.customfilemodel_set.all():
+            file.delete()
+        for img in self.customimagemodel_set.all():
+            img.delete()
         super(UserFolder, self).delete()
 
 
