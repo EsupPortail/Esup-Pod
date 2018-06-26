@@ -6,9 +6,10 @@ from pod.completion.models import Contributor
 from pod.completion.models import Document
 from pod.completion.models import Track
 from pod.completion.models import Overlay
-if apps.is_installed('pod.filepicker'):
+FILEPICKER = False
+if apps.is_installed('pod.podfile'):
     FILEPICKER = True
-    from pod.filepicker.widgets import CustomFilePickerWidget
+    from pod.podfile.widgets import CustomFileWidget
 
 
 class ContributorForm(forms.ModelForm):
@@ -53,9 +54,7 @@ class DocumentForm(forms.ModelForm):
             else:
                 self.fields[myField].widget.attrs['class'] = 'form-control'
         if FILEPICKER:
-            pickers = {'file': "file"}
-            self.fields['document'].widget = CustomFilePickerWidget(
-                pickers=pickers)
+            self.fields['document'].widget = CustomFileWidget(type="file")
 
     class Meta(object):
         model = Document
@@ -67,9 +66,7 @@ class DocumentAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DocumentAdminForm, self).__init__(*args, **kwargs)
         if FILEPICKER:
-            pickers = {'file': "file"}
-            self.fields['document'].widget = CustomFilePickerWidget(
-                pickers=pickers)
+            self.fields['document'].widget = CustomFileWidget(type="file")
 
     class Meta(object):
         model = Document
@@ -96,9 +93,7 @@ class TrackForm(forms.ModelForm):
         self.fields['kind'].widget.attrs['class'] = 'custom-select'
         self.fields['lang'].widget.attrs['class'] = 'custom-select'
         if FILEPICKER:
-            pickers = {'file': "file"}
-            self.fields['src'].widget = CustomFilePickerWidget(
-                pickers=pickers)
+            self.fields['src'].widget = CustomFileWidget(type="file")
 
     class Meta(object):
         model = Track
@@ -110,9 +105,7 @@ class TrackAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TrackAdminForm, self).__init__(*args, **kwargs)
         if FILEPICKER:
-            pickers = {'file': "file"}
-            self.fields['src'].widget = CustomFilePickerWidget(
-                pickers=pickers)
+            self.fields['src'].widget = CustomFileWidget(type="file")
 
     class Meta(object):
         model = Track

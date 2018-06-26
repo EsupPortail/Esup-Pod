@@ -8,11 +8,13 @@ from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from pod.video.models import Video
 from pod.chapter.models import Chapter
-if apps.is_installed('pod.filepicker'):
-    from pod.filepicker.models import CustomFileModel
-    from pod.filepicker.models import UserDirectory
-    from datetime import datetime
+if apps.is_installed('pod.podfile'):
+    from pod.podfile.models import CustomFileModel
+    from pod.podfile.models import UserFolder
     FILEPICKER = True
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomFileModel
 
 
 class ChapterViewsTestCase(TestCase):
@@ -157,27 +159,28 @@ class ChapterViewsTestCase(TestCase):
         authenticate(username='test', password='hello')
         login = self.client.login(username='test', password='hello')
         self.assertTrue(login)
-        file = SimpleUploadedFile(
+        fileChapter = SimpleUploadedFile(
             name='testfile.vtt',
             content=open(
                 './pod/chapter/tests/testfile.vtt', 'rb').read(),
             content_type='text/plain')
         if FILEPICKER:
-            home = UserDirectory.objects.get(id=1)
+            home = UserFolder.objects.get(id=1)
             user = User.objects.get(id=1)
-            file = CustomFileModel.objects.create(
+            filevttchapter = CustomFileModel.objects.create(
                 name='testfile',
-                date_created=datetime.now(),
-                date_modified=datetime.now(),
                 created_by=user,
-                modified_by=user,
-                directory=home,
-                file=file
-            ).id
+                folder=home,
+                file=fileChapter
+            )
+        else:
+            filevttchapter = CustomFileModel.objects.create(
+                file=fileChapter
+            )
         response = self.client.post(
             '/video_chapter/{0}/'.format(video.slug),
             data={'action': 'import',
-                  'file': file})
+                  'file': filevttchapter.id})
         self.assertEqual(response.status_code, 200)
         result = Chapter.objects.all()
         self.assertTrue(result)

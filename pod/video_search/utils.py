@@ -14,32 +14,32 @@ ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 def index_es(video):
     translation.activate(settings.LANGUAGE_CODE)
     es = Elasticsearch(ES_URL)
-    try:
-        data = video.get_json_to_index()
-        if data != '{}':
-            res = es.index(index="pod", doc_type='pod', id=video.id,
-                           body=data, refresh=True)
-            logger.info(res)
-            return res
-    except TransportError as e:
-        logger.error("An error occured during index creation: %s-%s : %s" %
-                     (e.status_code, e.error, e.info['error']['reason']))
+    if es.ping():
+        try:
+            data = video.get_json_to_index()
+            if data != '{}':
+                res = es.index(index="pod", doc_type='pod', id=video.id,
+                               body=data, refresh=True)
+                logger.info(res)
+                return res
+        except TransportError as e:
+            logger.error("An error occured during index creation: %s-%s : %s" %
+                         (e.status_code, e.error, e.info['error']['reason']))
     translation.deactivate()
 
 
 def delete_es(video):
     es = Elasticsearch(ES_URL)
-    try:
-        delete = es.delete(
-            index="pod", doc_type='pod',
-            id=video.id, refresh=True, ignore=[400, 404])
-        logger.info(delete)
-        return delete
-    except TransportError as e:
-        logger.error("An error occured during index"
-                     " video %s deletion: %s-%s : %s" %
-                     (video.id, e.status_code,
-                      e.error, e.info['error']['reason']))
+    if es.ping():
+        try:
+            delete = es.delete(
+                index="pod", doc_type='pod',
+                id=video.id, refresh=True, ignore=[400, 404])
+            logger.info(delete)
+            return delete
+        except TransportError as e:
+            logger.error("An error occured during delete video : %s-%s : %s" %
+                         (e.status_code, e.error, e.info['error']['reason']))
 
 
 def create_index_es():

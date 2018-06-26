@@ -13,10 +13,14 @@ from pod.completion.models import Document
 from pod.completion.models import Overlay
 from pod.completion.models import Track
 from datetime import datetime
-if apps.is_installed('pod.filepicker'):
+
+if apps.is_installed('pod.podfile'):
     FILEPICKER = True
-    from pod.filepicker.models import CustomFileModel
-    from pod.filepicker.models import UserDirectory
+    from pod.podfile.models import CustomFileModel
+    from pod.podfile.models import UserFolder
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomFileModel
 
 
 class ContributorModelTestCase(TestCase):
@@ -108,28 +112,24 @@ class DocumentModelTestCase(TestCase):
             owner=owner,
             video='test.mp4'
         )
+        testfile = SimpleUploadedFile(
+            name='testfile.vtt',
+            content=open(
+                './pod/completion/tests/testfile.vtt', 'rb').read(),
+            content_type='text/plain')
         if FILEPICKER:
-            testfile = SimpleUploadedFile(
-                name='testfile.vtt',
-                content=open(
-                    './pod/completion/tests/testfile.vtt', 'rb').read(),
-                content_type='text/plain')
-            home = UserDirectory.objects.create(name='Home', owner=owner)
+            home = UserFolder.objects.create(name='Home', owner=owner)
             file = CustomFileModel.objects.create(
                 name='testfile',
-                date_created=datetime.now(),
-                date_modified=datetime.now(),
+                uploaded_at=datetime.now(),
                 created_by=owner,
-                modified_by=owner,
-                directory=home,
+                folder=home,
                 file=testfile
             )
         else:
-            file = SimpleUploadedFile(
-                name='testfile.vtt',
-                content=open(
-                    './pod/completion/tests/testfile.vtt', 'rb').read(),
-                content_type='text/plain')
+            file = CustomFileModel.objects.create(
+                file=testfile
+            )
         Document.objects.create(
             video=video,
             document=file)
@@ -273,28 +273,24 @@ class TrackModelTestCase(TestCase):
             owner=owner,
             video='test.mp4'
         )
+        testfile = SimpleUploadedFile(
+            name='testfile.vtt',
+            content=open(
+                './pod/completion/tests/testfile.vtt', 'rb').read(),
+            content_type='text/plain')
         if FILEPICKER:
-            testfile = SimpleUploadedFile(
-                name='testfile.vtt',
-                content=open(
-                    './pod/completion/tests/testfile.vtt', 'rb').read(),
-                content_type='text/plain')
-            home = UserDirectory.objects.create(name='Home', owner=owner)
+            home = UserFolder.objects.create(name='Home', owner=owner)
             file = CustomFileModel.objects.create(
                 name='testfile',
-                date_created=datetime.now(),
-                date_modified=datetime.now(),
+                uploaded_at=datetime.now(),
                 created_by=owner,
-                modified_by=owner,
-                directory=home,
+                folder=home,
                 file=testfile
             )
         else:
-            file = SimpleUploadedFile(
-                name='testfile.vtt',
-                content=open(
-                    './pod/completion/tests/testfile.vtt', 'rb').read(),
-                content_type='text/plain')
+            file = CustomFileModel.objects.create(
+                file=testfile
+            )
         Track.objects.create(
             video=video,
             lang='fr',

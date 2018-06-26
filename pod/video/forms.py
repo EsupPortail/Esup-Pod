@@ -26,11 +26,10 @@ from ckeditor.widgets import CKEditorWidget
 from collections import OrderedDict
 
 import datetime
-
-if apps.is_installed('pod.filepicker'):
-    from pod.filepicker.widgets import CustomFilePickerWidget
-
-FILEPICKER = True if apps.is_installed('pod.filepicker') else False
+FILEPICKER = False
+if apps.is_installed('pod.podfile'):
+    FILEPICKER = True
+    from pod.podfile.widgets import CustomFileWidget
 
 ENCODE_VIDEO = getattr(settings,
                        'ENCODE_VIDEO',
@@ -265,9 +264,7 @@ class VideoForm(forms.ModelForm):
 
         super(VideoForm, self).__init__(*args, **kwargs)
         if FILEPICKER:
-            pickers = {'image': "img"}
-            self.fields['thumbnail'].widget = CustomFilePickerWidget(
-                pickers=pickers)
+            self.fields['thumbnail'].widget = CustomFileWidget(type="image")
 
         # fields['video'].widget = widgets.AdminFileWidget(attrs=videoattrs)
         valid_ext = FileExtensionValidator(VIDEO_ALLOWED_EXTENSIONS)
@@ -376,9 +373,7 @@ class ChannelForm(forms.ModelForm):
 
         super(ChannelForm, self).__init__(*args, **kwargs)
         if FILEPICKER:
-            pickers = {'image': "img"}
-            self.fields['headband'].widget = CustomFilePickerWidget(
-                pickers=pickers)
+            self.fields['headband'].widget = CustomFileWidget(type="image")
 
         if not hasattr(self, 'admin_form'):
             del self.fields['visible']
@@ -409,9 +404,7 @@ class ThemeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(ThemeForm, self).__init__(*args, **kwargs)
         if FILEPICKER:
-            pickers = {'image': "img"}
-            self.fields['headband'].widget = CustomFilePickerWidget(
-                pickers=pickers)
+            self.fields['headband'].widget = CustomFileWidget(type="image")
 
         # hide default langage
         self.fields['description_%s' %
@@ -484,9 +477,7 @@ class TypeForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(TypeForm, self).__init__(*args, **kwargs)
         if FILEPICKER:
-            pickers = {'image': "img"}
-            self.fields['icon'].widget = CustomFilePickerWidget(
-                pickers=pickers)
+            self.fields['icon'].widget = CustomFileWidget(type="image")
 
     class Meta(object):
         model = Type
@@ -498,9 +489,7 @@ class DisciplineForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DisciplineForm, self).__init__(*args, **kwargs)
         if FILEPICKER:
-            pickers = {'image': "img"}
-            self.fields['icon'].widget = CustomFilePickerWidget(
-                pickers=pickers)
+            self.fields['icon'].widget = CustomFileWidget(type="image")
 
     class Meta(object):
         model = Discipline

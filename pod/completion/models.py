@@ -2,16 +2,20 @@ import base64
 
 from django.apps import apps
 from django.db import models
-from django.db import connection
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 from ckeditor.fields import RichTextField
 from pod.video.models import Video
-if apps.is_installed('pod.filepicker'):
+from pod.main.models import get_nextautoincrement
+
+if apps.is_installed('pod.podfile'):
     FILEPICKER = True
-    from pod.filepicker.models import CustomFileModel
+    from pod.podfile.models import CustomFileModel
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomFileModel
 
 ROLE_CHOICES = getattr(
     settings, 'ROLE_CHOICES', (
@@ -36,21 +40,10 @@ KIND_CHOICES = getattr(
 LANG_CHOICES = getattr(
     settings, 'LANG_CHOICES', (
         settings.PREF_LANG_CHOICES
-            + (('', '----------'),)
-            + settings.ALL_LANG_CHOICES
+        + (('', '----------'),)
+        + settings.ALL_LANG_CHOICES
     ))
 LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES}
-
-
-def get_nextautoincrement(model):
-    cursor = connection.cursor()
-    cursor.execute(
-        'SELECT Auto_increment FROM information_schema.tables ' +
-        'WHERE table_name="{0}";'.format(model._meta.db_table)
-    )
-    row = cursor.fetchone()
-    cursor.close()
-    return row[0]
 
 
 class Contributor(models.Model):
@@ -118,21 +111,13 @@ class Contributor(models.Model):
 
 
 class Document(models.Model):
-
     video = models.ForeignKey(Video, verbose_name=_('Video'))
-    if FILEPICKER:
-        document = models.ForeignKey(
-            CustomFileModel,
-            null=True,
-            blank=True,
-            verbose_name=_('Document')
-        )
-    else:
-        document = models.FileField(
-            verbose_name=_('Document'),
-            null=True,
-            blank=True
-        )
+    document = models.ForeignKey(
+        CustomFileModel,
+        null=True,
+        blank=True,
+        verbose_name=_('Document')
+    )
 
     class Meta:
         verbose_name = _('Document')
@@ -185,17 +170,13 @@ class Track(models.Model):
         default='subtitles'
     )
     lang = models.CharField(_('Language'), max_length=2, choices=LANG_CHOICES)
-    if FILEPICKER:
-        src = models.ForeignKey(CustomFileModel,
-                                blank=True,
-                                null=True,
-                                verbose_name=_('Subtitle file'))
-    else:
-        src = models.FileField(
-            _('Subtitle file'),
-            null=True,
-            blank=True,
-        )
+    src = models.ForeignKey(CustomFileModel,
+                            blank=True,
+                            null=True,
+                            verbose_name=_('Subtitle file'))
+
+    def get_label_lang(self):
+        return "%s" % LANG_CHOICES_DICT[self.lang]
 
     class Meta:
         verbose_name = _('Track')
@@ -217,7 +198,7 @@ class Track(models.Model):
             msg.append(_('Please enter a language.'))
         if not self.src:
             msg.append(_('Please specify a track file.'))
-        elif not self.src.file_type == 'VTT':
+        elif 'vtt' not in self.src.file_type:
             msg.append(_('Only ".vtt" format is allowed.'))
         if len(msg) > 0:
             return msg
