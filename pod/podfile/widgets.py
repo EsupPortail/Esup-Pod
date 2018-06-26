@@ -7,6 +7,7 @@ from .models import CustomFileModel, CustomImageModel
 
 
 class CustomFileWidget(widgets.TextInput):
+
     class Media:
         js = ('js/filewidget.js',)
 
@@ -43,13 +44,3 @@ class CustomFileWidget(widgets.TextInput):
             "input": input,
             "type": self.type
         }))
-
-
-class CustomAdminFileWidget(CustomFileWidget):
-    class Media:
-        css = {
-            'all': ('bootstrap-4/css/bootstrap.min.css',),
-        }
-        js = ('js/filewidget.js', 'feather-icons/feather.min.js',
-              'js/jquery-3.3.1.min.js', 'js/main.js',
-              'bootstrap-4/js/bootstrap.min.js')
