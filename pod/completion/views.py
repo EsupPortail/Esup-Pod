@@ -24,7 +24,7 @@ ACTION = ['new', 'save', 'modify', 'delete']
 
 
 @csrf_protect
-@login_required
+@login_required(redirect_field_name='referrer')
 def video_completion(request, slug):
     video = get_object_or_404(Video, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:
@@ -57,7 +57,7 @@ def video_completion(request, slug):
 
 
 @csrf_protect
-@login_required
+@login_required(redirect_field_name='referrer')
 def video_completion_contributor(request, slug):
     video = get_object_or_404(Video, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:
@@ -236,8 +236,7 @@ def video_completion_contributor_delete(request, video):
 
 
 @csrf_protect
-@login_required
-@staff_member_required
+@staff_member_required(redirect_field_name='referrer')
 def video_completion_document(request, slug):
     video = get_object_or_404(Video, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:
@@ -413,8 +412,7 @@ def video_completion_document_delete(request, video):
 
 
 @csrf_protect
-@login_required
-@staff_member_required
+@staff_member_required(redirect_field_name='referrer')
 def video_completion_track(request, slug):
     video = get_object_or_404(Video, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:
@@ -583,8 +581,7 @@ def video_completion_track_delete(request, video):
 
 
 @csrf_protect
-@login_required
-@staff_member_required
+@staff_member_required(redirect_field_name='referrer')
 def video_completion_overlay(request, slug):
     video = get_object_or_404(Video, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:

@@ -36,6 +36,9 @@ from pod.video_search.views import search_videos
 if apps.is_installed('pod.filepicker'):
     from pod.filepicker.sites import site as filepicker_site
 
+if apps.is_installed('pod.podfile'):
+    from pod.podfile.urls import urlpatterns as podfile_urlpatterns
+
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
 
@@ -119,6 +122,9 @@ if USE_CAS:
 # APPS
 if apps.is_installed('pod.filepicker'):
     urlpatterns += [url(r'^file-picker/', include(filepicker_site.urls)), ]
+if apps.is_installed('pod.podfile'):
+    urlpatterns += [url(r'^podfile/', include(podfile_urlpatterns)), ]
+
 if apps.is_installed('pod.completion'):
     urlpatterns += [url(r'^', include('pod.completion.urls')), ]
 if apps.is_installed('pod.chapter'):

@@ -17,7 +17,7 @@
 				<tr>
 					<td class="document_name">{{doc.document.name}} ({{doc.document.file_type}})</td>
 					<td>
-						<form class="form_modif" action="{% url 'video_completion_document' slug=video.slug %}" method="POST">
+						<form class="form_modif completion" action="{% url 'video_completion_document' slug=video.slug %}" method="POST">
 							{% csrf_token %}
 							<input type="hidden" name="action" value="modify"/>
 							<input type="hidden" name="id" value="{{doc.id}}"/>
@@ -25,7 +25,7 @@
 						</form>
 					</td>
 					<td>
-						<form class="form_delete" action="{% url 'video_completion_document' slug=video.slug %}" method="POST">
+						<form class="form_delete completion" action="{% url 'video_completion_document' slug=video.slug %}" method="POST">
 							{% csrf_token %}
 							<input type="hidden" name="action" value="delete"/>
 							<input type="hidden" name="id" value="{{doc.id}}"/>

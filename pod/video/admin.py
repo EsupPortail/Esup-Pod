@@ -1,4 +1,4 @@
-from django.apps import apps
+
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -28,20 +28,13 @@ from pod.video.forms import ChannelForm
 from pod.video.forms import ThemeForm
 from pod.video.forms import TypeForm
 from pod.video.forms import DisciplineForm
-if apps.is_installed('pod.completion'):
-    COMPLETION = True
-    from pod.completion.admin import ContributorInline
-    from pod.completion.admin import DocumentInline
-    from pod.completion.admin import OverlayInline
-    from pod.completion.admin import TrackInline
-if apps.is_installed('pod.chapter'):
-    CHAPTER = True
-    from pod.chapter.admin import ChapterInline
-if apps.is_installed('pod.enrichment'):
-    ENRICHMENT = True
-    from pod.enrichment.admin import EnrichmentInline
-if apps.is_installed('pod.filepicker'):
-    FILEPICKER = True
+
+from pod.completion.admin import ContributorInline
+from pod.completion.admin import DocumentInline
+from pod.completion.admin import OverlayInline
+from pod.completion.admin import TrackInline
+
+from pod.chapter.admin import ChapterInline
 
 # Ordering user by username !
 User._meta.ordering = ["username"]
@@ -86,21 +79,17 @@ class VideoAdmin(admin.ModelAdmin):
                        'get_encoding_step')
 
     inlines = []
-    if COMPLETION:
-        inlines += [
-            ContributorInline,
-            DocumentInline,
-            TrackInline,
-            OverlayInline
-        ]
-    if CHAPTER:
-        inlines += [
-            ChapterInline
-        ]
-    if ENRICHMENT:
-        inlines += [
-            EnrichmentInline
-        ]
+
+    inlines += [
+        ContributorInline,
+        DocumentInline,
+        TrackInline,
+        OverlayInline
+    ]
+
+    inlines += [
+        ChapterInline
+    ]
 
     def get_owner_by_name(self, obj):
         owner = obj.owner
@@ -152,7 +141,16 @@ class VideoAdmin(admin.ModelAdmin):
     encode_video.short_description = _('Encode selected')
 
     class Media:
-        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
+        js = (
+            'js/filewidget.js',
+            'feather-icons/feather.min.js',
+            'bootstrap-4/js/bootstrap.min.js')
 
 
 class ChannelSuperAdminForm(ChannelForm):
@@ -195,7 +193,16 @@ class ChannelAdmin(admin.ModelAdmin):
         return form
 
     class Media:
-        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
+        js = (
+            'js/filewidget.js',
+            'feather-icons/feather.min.js',
+            'bootstrap-4/js/bootstrap.min.js')
 
 
 class ThemeAdmin(admin.ModelAdmin):
@@ -205,7 +212,16 @@ class ThemeAdmin(admin.ModelAdmin):
     ordering = ('channel', 'title')
 
     class Media:
-        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
+        js = (
+            'js/filewidget.js',
+            'feather-icons/feather.min.js',
+            'bootstrap-4/js/bootstrap.min.js')
 
 
 class TypeAdmin(TranslationAdmin):
@@ -213,7 +229,16 @@ class TypeAdmin(TranslationAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
     class Media:
-        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
+        js = (
+            'js/filewidget.js',
+            'feather-icons/feather.min.js',
+            'bootstrap-4/js/bootstrap.min.js')
 
 
 class DisciplineAdmin(TranslationAdmin):
@@ -221,7 +246,16 @@ class DisciplineAdmin(TranslationAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
     class Media:
-        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
+        js = (
+            'js/filewidget.js',
+            'feather-icons/feather.min.js',
+            'bootstrap-4/js/bootstrap.min.js')
 
 
 class EncodingVideoAdmin(admin.ModelAdmin):

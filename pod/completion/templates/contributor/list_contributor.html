@@ -23,7 +23,7 @@
 					<td class="contributor_role">{% trans contributor.role %}</td>
 					<td class="contributor_weblink">{{contributor.weblink|default_if_none:'&nbsp;'}}</td>
 					<td>
-						<form class="form_modif" action="{% url 'video_completion_contributor' slug=video.slug %}" method="POST">
+						<form class="form_modif completion" action="{% url 'video_completion_contributor' slug=video.slug %}" method="POST">
 							{% csrf_token %}
 							<input type="hidden" name="action" value="modify"/>
 							<input type="hidden" name="id" value="{{contributor.id}}"/>
@@ -31,7 +31,7 @@
 						</form>
 					</td>
 					<td>
-						<form class="form_delete" action="{% url 'video_completion_contributor' slug=video.slug %}" method="POST">
+						<form class="form_delete completion" action="{% url 'video_completion_contributor' slug=video.slug %}" method="POST">
 							{% csrf_token %}
 							<input type="hidden" name="action" value="delete"/>
 							<input type="hidden" name="id" value="{{contributor.id}}"/>

@@ -1,7 +1,7 @@
 <!-- HTML for track form. Don't use this file alone it must be integrated into another template ! -->
 {% load i18n %}
 {% load staticfiles %}
-<form id="form_track" action="{% url 'video_completion_track' slug=video.slug %}" method="POST">
+<form id="form_track" action="{% url 'video_completion_track' slug=video.slug %}" method="POST" class="completion">
 	{% csrf_token %}
 	<div id="form_content" class="form-container">
 		{% if form_track.errors or form_track.non_field_errors %}

@@ -13,10 +13,13 @@ from pod.completion.models import Document
 from pod.completion.models import Overlay
 from pod.completion.models import Track
 from datetime import datetime
-if apps.is_installed('pod.filepicker'):
+if apps.is_installed('pod.podfile'):
     FILEPICKER = True
-    from pod.filepicker.models import CustomFileModel
-    from pod.filepicker.models import UserDirectory
+    from pod.podfile.models import CustomFileModel
+    from pod.podfile.models import UserFolder
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomFileModel
 
 
 class CompletionViewsTestCase(TestCase):
@@ -231,7 +234,7 @@ class CompletionTrackViewsTestCase(TestCase):
         staff.set_password('hello')
         staff.save()
         if FILEPICKER:
-            UserDirectory.objects.create(owner=staff, name='Home')
+            UserFolder.objects.create(owner=staff, name='Home')
         Video.objects.create(
             title='videotest2',
             owner=staff,
@@ -269,28 +272,30 @@ class CompletionTrackViewsTestCase(TestCase):
             data={'action': 'new'})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'form_track')
-        file = SimpleUploadedFile(
+        testfile = SimpleUploadedFile(
             name='testfile.vtt',
             content=open(
                 './pod/completion/tests/testfile.vtt', 'rb').read(),
             content_type='text/plain')
         if FILEPICKER:
-            home = UserDirectory.objects.get(id=1)
-            file = CustomFileModel.objects.create(
+            home = UserFolder.objects.get(id=1)
+            document = CustomFileModel.objects.create(
                 name='testvtt',
-                date_created=datetime.now(),
-                date_modified=datetime.now(),
+                uploaded_at=datetime.now(),
                 created_by=user,
-                modified_by=user,
-                directory=home,
-                file=file
-            ).id
+                folder=home,
+                file=testfile
+            )
+        else:
+            document = CustomFileModel.objects.create(
+                file=testfile
+            )
         response = self.client.post(
             '/video_completion_track/{0}/'.format(video.slug),
             data={'action': 'save',
                   'kind': 'subtitles',
                   'lang': 'fr',
-                  'src': file,
+                  'src': document.id,
                   'video': 1,
                   'track_id': None
                   })
@@ -299,7 +304,7 @@ class CompletionTrackViewsTestCase(TestCase):
         self.assertContains(response, 'list_track')
         result = Track.objects.get(id=1)
         self.assertEqual(result.kind, 'subtitles')
-        self.assertEqual(result.src.name, 'testvtt')
+        self.assertEqual(result.src.name, 'testfile')
 
         print(" ---> test_video_completion_track_new : OK!")
         print(" [ END COMPLETION_TRACK VIEWS ] ")
@@ -314,35 +319,37 @@ class CompletionTrackViewsTestCase(TestCase):
             data={'action': 'new'})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'form_track')
-        file = SimpleUploadedFile(
+        testfile = SimpleUploadedFile(
             name='testfile.vtt',
             content=open(
                 './pod/completion/tests/testfile.vtt', 'rb').read(),
             content_type='text/plain')
         if FILEPICKER:
-            home = UserDirectory.objects.get(id=1)
-            file = CustomFileModel.objects.create(
+            home = UserFolder.objects.get(id=1)
+            document = CustomFileModel.objects.create(
                 name='testvtt',
-                date_created=datetime.now(),
-                date_modified=datetime.now(),
+                uploaded_at=datetime.now(),
                 created_by=user,
-                modified_by=user,
-                directory=home,
-                file=file
-            ).id
+                folder=home,
+                file=testfile
+            )
+        else:
+            document = CustomFileModel.objects.create(
+                file=testfile
+            )
         response = self.client.post(
             '/video_completion_track/{0}/'.format(video.slug),
             data={'action': 'save',
                   'kind': 'subtitles',
                   'lang': 'fr',
-                  'src': file,
+                  'src': document.id,
                   'video': 1,
                   'track_id': None
                   })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_track')
         result = Track.objects.get(id=1)
-        self.assertEqual(result.src.name, 'testvtt')
+        self.assertEqual(result.src.name, 'testfile')
         response = self.client.post(
             '/video_completion_track/{0}/'.format(video.slug),
             data={'action': 'modify',
@@ -354,7 +361,7 @@ class CompletionTrackViewsTestCase(TestCase):
             data={'action': 'save',
                   'kind': 'captions',
                   'lang': 'de',
-                  'src': file,
+                  'src': document.id,
                   'video': 1,
                   'track_id': result.id
                   })
@@ -376,35 +383,37 @@ class CompletionTrackViewsTestCase(TestCase):
             data={'action': 'new'})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'form_track')
-        file = SimpleUploadedFile(
+        testfile = SimpleUploadedFile(
             name='testfile.vtt',
             content=open(
                 './pod/completion/tests/testfile.vtt', 'rb').read(),
             content_type='text/plain')
         if FILEPICKER:
-            home = UserDirectory.objects.get(id=1)
-            file = CustomFileModel.objects.create(
+            home = UserFolder.objects.get(id=1)
+            document = CustomFileModel.objects.create(
                 name='testvtt',
-                date_created=datetime.now(),
-                date_modified=datetime.now(),
+                uploaded_at=datetime.now(),
                 created_by=user,
-                modified_by=user,
-                directory=home,
-                file=file
-            ).id
+                folder=home,
+                file=testfile
+            )
+        else:
+            document = CustomFileModel.objects.create(
+                file=testfile
+            )
         response = self.client.post(
             '/video_completion_track/{0}/'.format(video.slug),
             data={'action': 'save',
                   'kind': 'subtitles',
                   'lang': 'fr',
-                  'src': file,
+                  'src': document.id,
                   'video': 1,
                   'track_id': None
                   })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_track')
         result = Track.objects.get(id=1)
-        self.assertEqual(result.src.name, 'testvtt')
+        self.assertEqual(result.src.name, 'testfile')
         response = self.client.post(
             '/video_completion_track/{0}/'.format(video.slug),
             data={'action': 'delete',
@@ -424,7 +433,7 @@ class CompletionDocumentViewsTestCase(TestCase):
         staff.set_password('hello')
         staff.save()
         if FILEPICKER:
-            UserDirectory.objects.create(owner=staff, name='Home')
+            UserFolder.objects.create(owner=staff, name='Home')
         Video.objects.create(
             title='videotest2',
             owner=staff,
@@ -462,26 +471,28 @@ class CompletionDocumentViewsTestCase(TestCase):
             data={'action': 'new'})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'form_document')
-        file = SimpleUploadedFile(
+        testfile = SimpleUploadedFile(
             name='testfile.vtt',
             content=open(
                 './pod/completion/tests/testfile.vtt', 'rb').read(),
             content_type='text/plain')
         if FILEPICKER:
-            home = UserDirectory.objects.get(id=1)
-            file = CustomFileModel.objects.create(
+            home = UserFolder.objects.get(id=1)
+            document = CustomFileModel.objects.create(
                 name='testfile',
-                date_created=datetime.now(),
-                date_modified=datetime.now(),
+                uploaded_at=datetime.now(),
                 created_by=user,
-                modified_by=user,
-                directory=home,
-                file=file
-            ).id
+                folder=home,
+                file=testfile
+            )
+        else:
+            document = CustomFileModel.objects.create(
+                file=testfile
+            )
         response = self.client.post(
             '/video_completion_document/{0}/'.format(video.slug),
             data={'action': 'save',
-                  'document': file,
+                  'document': document.id,
                   'video': 1,
                   'track_id': None
                   })
@@ -504,26 +515,28 @@ class CompletionDocumentViewsTestCase(TestCase):
             data={'action': 'new'})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'form_document')
-        file = SimpleUploadedFile(
+        testfile = SimpleUploadedFile(
             name='testfile.vtt',
             content=open(
                 './pod/completion/tests/testfile.vtt', 'rb').read(),
             content_type='text/plain')
         if FILEPICKER:
-            home = UserDirectory.objects.get(id=1)
-            file = CustomFileModel.objects.create(
+            home = UserFolder.objects.get(id=1)
+            document = CustomFileModel.objects.create(
                 name='testfile',
-                date_created=datetime.now(),
-                date_modified=datetime.now(),
+                uploaded_at=datetime.now(),
                 created_by=user,
-                modified_by=user,
-                directory=home,
-                file=file
-            ).id
+                folder=home,
+                file=testfile
+            )
+        else:
+            document = CustomFileModel.objects.create(
+                file=testfile
+            )
         response = self.client.post(
             '/video_completion_document/{0}/'.format(video.slug),
             data={'action': 'save',
-                  'document': file,
+                  'document': document.id,
                   'video': 1,
                   'track_id': None
                   })
@@ -538,26 +551,28 @@ class CompletionDocumentViewsTestCase(TestCase):
                   'id': result.id})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'form_document')
-        file = SimpleUploadedFile(
+        testfile = SimpleUploadedFile(
             name='testfile2.vtt',
             content=open(
                 './pod/completion/tests/testfile.vtt', 'rb').read(),
             content_type='text/plain')
         if FILEPICKER:
-            home = UserDirectory.objects.get(id=1)
-            file = CustomFileModel.objects.create(
+            home = UserFolder.objects.get(id=1)
+            document = CustomFileModel.objects.create(
                 name='testfile2',
-                date_created=datetime.now(),
-                date_modified=datetime.now(),
+                uploaded_at=datetime.now(),
                 created_by=user,
-                modified_by=user,
-                directory=home,
-                file=file
-            ).id
+                folder=home,
+                file=testfile
+            )
+        else:
+            document = CustomFileModel.objects.create(
+                file=testfile
+            )
         response = self.client.post(
             '/video_completion_document/{0}/'.format(video.slug),
             data={'action': 'save',
-                  'document': file,
+                  'document': document.id,
                   'video': 1,
                   'document_id': result.id
                   })
@@ -578,26 +593,28 @@ class CompletionDocumentViewsTestCase(TestCase):
             data={'action': 'new'})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'form_document')
-        file = SimpleUploadedFile(
+        testfile = SimpleUploadedFile(
             name='testfile.vtt',
             content=open(
                 './pod/completion/tests/testfile.vtt', 'rb').read(),
             content_type='text/plain')
         if FILEPICKER:
-            home = UserDirectory.objects.get(id=1)
-            file = CustomFileModel.objects.create(
+            home = UserFolder.objects.get(id=1)
+            document = CustomFileModel.objects.create(
                 name='testfile',
-                date_created=datetime.now(),
-                date_modified=datetime.now(),
+                uploaded_at=datetime.now(),
                 created_by=user,
-                modified_by=user,
-                directory=home,
-                file=file
-            ).id
+                folder=home,
+                file=testfile
+            )
+        else:
+            document = CustomFileModel.objects.create(
+                file=testfile
+            )
         response = self.client.post(
             '/video_completion_document/{0}/'.format(video.slug),
             data={'action': 'save',
-                  'document': file,
+                  'document': document.id,
                   'video': 1,
                   'track_id': None
                   })

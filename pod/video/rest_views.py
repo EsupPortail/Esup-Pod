@@ -1,5 +1,5 @@
 from pod.video.models import Channel, Theme
-from pod.video.models import VideoImageModel, Type, Discipline, Video
+from pod.video.models import Type, Discipline, Video
 from pod.video.models import VideoRendition, EncodingVideo, EncodingAudio
 from pod.video.models import PlaylistVideo
 from rest_framework import serializers, viewsets
@@ -29,13 +29,6 @@ class ThemeSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             'id', 'url', 'parentId', 'title',
             'headband', 'description', 'channel')
-
-
-class VideoImageModelSerializer(serializers.HyperlinkedModelSerializer):
-
-    class Meta:
-        model = VideoImageModel
-        fields = ('id', 'url', 'file',)
 
 
 class TypeSerializer(serializers.HyperlinkedModelSerializer):
@@ -114,11 +107,6 @@ class ChannelViewSet(viewsets.ModelViewSet):
 class ThemeViewSet(viewsets.ModelViewSet):
     queryset = Theme.objects.all().order_by('channel')
     serializer_class = ThemeSerializer
-
-
-class VideoImageModelViewSet(viewsets.ModelViewSet):
-    queryset = VideoImageModel.objects.all()
-    serializer_class = VideoImageModelSerializer
 
 
 class TypeViewSet(viewsets.ModelViewSet):

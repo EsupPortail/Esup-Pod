@@ -24,7 +24,7 @@ var num = 0;
 var name = '';
 
 // RESET
-$(document).on('reset', '#accordeon form', function(event) {
+$(document).on('reset', '#accordeon form.completion', function(event) {
 	var id_form = $(this).attr('id');
 	var name_form = id_form.substring(5, id_form.length);
 	var form_new = 'form_new_' + name_form;
@@ -45,7 +45,8 @@ var ajaxfail = function(data, form) {
 };
 
 //SUBMIT
-$(document).on('submit', '#accordeon form', function(e) {
+
+$(document).on('submit', '#accordeon form.completion', function(e) {
 	e.preventDefault();
 	var jqxhr = '';
 	var exp = /_([a-z]*)\s?/g;
@@ -65,6 +66,7 @@ $(document).on('submit', '#accordeon form', function(e) {
 	var action = $(this).find('input[name=action]').val();
 	sendandgetform(this, action, name_form, form, list);
 });
+
 
 var sendandgetform = function(elt, action, name, form, list) {
 	var href = $(elt).attr('action');
@@ -194,6 +196,7 @@ var sendandgetform = function(elt, action, name, form, list) {
 			$('form.form_delete').hide();
 		}
 	}
+	feather.replace({ class: 'align-bottom'});
 }
 
 // Hide others sections
