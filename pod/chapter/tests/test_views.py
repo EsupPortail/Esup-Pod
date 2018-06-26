@@ -34,17 +34,23 @@ class ChapterViewsTestCase(TestCase):
             duration=20
         )
 
-    def test_video_chapter_nostaff(self):
+    def test_video_chapter_owner(self):
         video = Video.objects.get(id=1)
         response = self.client.get('/video_chapter/{0}/'.format(video.slug))
         self.assertEqual(response.status_code, 302)
+
+        self.user = User.objects.get(username="test")
+        self.client.force_login(self.user)
+        response = self.client.get('/video_chapter/{0}/'.format(video.slug))
+        self.assertEqual(response.status_code, 200)
+
         authenticate(username='test2', password='hello')
         login = self.client.login(username='test2', password='hello')
         self.assertTrue(login)
         response = self.client.get('/video_chapter/{0}/'.format(video.slug))
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 403) #forbidden
 
-        print(" ---> test_video_chapter_nostaff : OK!")
+        print(" ---> test_video_chapter_owner : OK!")
         print(" [ END CHAPTER VIEWS ] ")
 
     def test_video_chapter(self):
