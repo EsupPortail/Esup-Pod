@@ -1,6 +1,6 @@
 {% load i18n %}
 <div class="list-group-item " id="editfile" >
-<form method="post" enctype="multipart/form-data" id="formeditfile" action="{% url 'editfile' id=folder.id%}" class="needs-validation" novalidate>
+<form method="post" enctype="multipart/form-data" id="formeditfile" action="{% url 'podfile:editfile' id=folder.id%}" class="needs-validation" novalidate>
     {% csrf_token %}
     {{ form_file }}
     {% if form_file.instance %}

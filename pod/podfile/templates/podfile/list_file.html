@@ -1,5 +1,5 @@
 {% load i18n %}
-{% with urledit='edit'|add:type %}
+{% with urledit='podfile:edit'|add:type %}
 <div class="list-group-item "><span id="current_folder_name" data-id="folder_{{current_folder.id}}">{{current_folder.name}}</span> 
     {% if request.user == current_folder.owner or request.user.is_superuser %}
     <form class="get_form_file float-right" action="{% url urledit id=current_folder.id %}" method="POST" >

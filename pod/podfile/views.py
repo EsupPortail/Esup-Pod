@@ -62,7 +62,7 @@ def edit_folder(request, current_folder):
 
     if form.is_valid():
         folder = form.save(commit=False)
-        if form.instance:
+        if hasattr(form.instance, 'owner'):
             folder.owner = form.instance.owner
         else:
             folder.owner = request.user
@@ -115,7 +115,17 @@ def folder(request, type, id=""):
             and request.POST.get("action") == "delete"):
         folder = get_object_or_404(
             UserFolder, id=request.POST['id'])
-        folder.delete()
+        if (
+                folder.name == 'home'
+                or (request.user != folder.owner
+                and not request.user.is_superuser)
+        ):
+            messages.add_message(
+                request, messages.ERROR,
+                _(u'You cannot delete home folder.'))
+            raise PermissionDenied
+        else:
+            folder.delete()
 
     page = request.GET.get('page', 1)
     full_path = request.get_full_path().replace(
@@ -227,6 +237,10 @@ def editimage(request, id):
                 'image_edit_{0}(request, folder)'.format(
                     request.POST['action'])
             )
+        else:
+            raise SuspiciousOperation('Invalid action')
+    else:
+            raise SuspiciousOperation('You must send data in post')
 
 
 def image_edit_delete(request, folder):
@@ -267,7 +281,7 @@ def image_edit_modify(request, folder):
                    }
                   )
 
-
+"""
 def image_edit_save(request, folder):
     form_image = None
 
@@ -306,6 +320,50 @@ def image_edit_save(request, folder):
         }
         data = json.dumps(some_data_to_dump)
     return HttpResponse(data, content_type='application/json')
+"""
+def image_edit_save(request, folder):
+    form_file = None
+
+    if (request.POST.get("file_id")
+            and request.POST.get("file_id") != "None"):
+        customImage = get_object_or_404(
+            CustomImageModel, id=request.POST['file_id'])
+        form_file = CustomImageModelForm(
+            request.POST, request.FILES, instance=customImage)
+    else:
+        form_file = CustomImageModelForm(request.POST, request.FILES)
+
+    if form_file.is_valid():
+        if form_file.cleaned_data["folder"] != folder:
+            raise SuspiciousOperation('Folder must be the same')
+        customImage = form_file.save(commit=False)
+        if hasattr(form_file.instance, 'created_by'):
+            customImage.created_by = form.instance.created_by
+        else:
+            customImage.created_by = request.user
+        customImage.save()
+        rendered = render_to_string(
+            "podfile/list_file.html",
+            {'list_file': customImage.folder.customimagemodel_set.all(),
+             "type": "image",
+             'current_folder': folder
+             }, request)
+        list_element = {
+            'list_element': rendered
+        }
+        data = json.dumps(list_element)
+        return HttpResponse(data, content_type='application/json')
+    else:
+        rendered = render_to_string("podfile/form_file.html",
+                                    {'form_file': form_file,
+                                     "folder": folder
+                                     }, request)
+        some_data_to_dump = {
+            'errors': "%s" % _('Please correct errors'),
+            'form': rendered
+        }
+        data = json.dumps(some_data_to_dump)
+    return HttpResponse(data, content_type='application/json')
 
 
 ##########################################################
@@ -325,11 +383,16 @@ def editfile(request, id):
         raise PermissionDenied
 
     if request.POST and request.is_ajax():
-        if request.POST['action'] in FILE_ACTION:
+        if request.POST.get('action') in FILE_ACTION:
             return eval(
                 'file_edit_{0}(request, folder)'.format(
                     request.POST['action'])
             )
+        else:
+            raise SuspiciousOperation('Invalid action')
+    else:
+            raise SuspiciousOperation('You must send data in post')
+
 
 
 def file_edit_delete(request, folder):
@@ -384,8 +447,13 @@ def file_edit_save(request, folder):
         form_file = CustomFileModelForm(request.POST, request.FILES)
 
     if form_file.is_valid():
+        if form_file.cleaned_data["folder"] != folder:
+            raise SuspiciousOperation('Folder must be the same')
         customfile = form_file.save(commit=False)
-        customfile.created_by = request.user
+        if hasattr(form_file.instance, 'created_by'):
+            customfile.created_by = form.instance.created_by
+        else:
+            customfile.created_by = request.user
         customfile.save()
         rendered = render_to_string(
             "podfile/list_file.html",

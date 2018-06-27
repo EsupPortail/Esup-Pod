@@ -32,9 +32,6 @@ from pod.main.views import contact_us, download_file
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
 
-if getattr(settings, 'USE_PODFILE', False):
-    from pod.podfile.urls import urlpatterns as podfile_urlpatterns
-
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
 
@@ -120,7 +117,7 @@ urlpatterns += [url(r'^', include('pod.chapter.urls')), ]
 urlpatterns += [url(r'^', include('pod.playlist.urls')), ]
 
 if getattr(settings, 'USE_PODFILE', False):
-    urlpatterns += [url(r'^podfile/', include(podfile_urlpatterns)), ]
+    urlpatterns += [url(r'^podfile/', include('pod.podfile.urls')), ]
 """
 if apps.is_installed('pod.enrichment'):
     urlpatterns += [url(r'^', include('pod.enrichment.urls')), ]

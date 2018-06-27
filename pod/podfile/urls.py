@@ -7,6 +7,7 @@ from django.conf.urls import url
 
 from .views import folder, editfile, editimage, get_files
 
+app_name = 'podfile'
 urlpatterns = [
     url(r'^folder/(?P<type>[\-\d\w]+)/$', folder, name='folder'),
     url(r'^folder/(?P<type>[\-\d\w]+)/(?P<id>[\d]+)/$', folder, name='folder'),

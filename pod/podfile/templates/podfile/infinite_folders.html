@@ -3,11 +3,11 @@
     <div style="" class="infinite-container" id="list_folder_items">
 {% for folder in list_folder %}
     <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center{% if folder == current_folder%} list-group-item-success{%endif%} m-0 p-1 small infinite-item-folders " id="folder_{{folder.id}}">
-    <a href="{% url "get_files" type=type id=folder.id %}" title="{{folder.name}}" class="form_folder_files" >{{folder.name}}{% if request.user.is_superuser %} ({{folder.owner.username}}){% endif %}</a>
+    <a href="{% url "podfile:get_files" type=type id=folder.id %}" title="{{folder.name}}" class="form_folder_files" >{{folder.name}}{% if request.user.is_superuser %} ({{folder.owner.username}}){% endif %}</a>
     {% if request.user == folder.owner or request.user.is_superuser %}
     <div class="action" style="display: inline-flex;">
     <button type="button" class="btn btn-success btn-sm edit m-0 p-0" data-id="{{folder.id}}" data-name="{{folder.name}}"><i data-feather="edit"></i></button>&nbsp;
-    <form class="delete_folder form-inline float-right" action="{% url "folder" type=type %}" method="POST">
+    <form class="delete_folder form-inline float-right" action="{% url "podfile:folder" type=type %}" method="POST">
         {% csrf_token %}
         <input type="hidden" name="action" value="delete"/>
         <input type="hidden" name="id" value="{{folder.id}}"/>
