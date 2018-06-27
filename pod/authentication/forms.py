@@ -3,7 +3,7 @@ from pod.authentication.models import Owner
 from django.conf import settings
 
 FILEPICKER = False
-if 'podfile' in settings.THIRD_PARTY_APPS:
+if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.widgets import CustomFileWidget
     FILEPICKER = True
 

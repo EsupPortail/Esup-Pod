@@ -28,7 +28,7 @@ import re
 import tempfile
 import threading
 
-if 'podfile' in settings.THIRD_PARTY_APPS:
+if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import UserFolder

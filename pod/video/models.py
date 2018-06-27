@@ -29,7 +29,7 @@ from tagging.fields import TagField
 
 from pod.main.models import get_nextautoincrement
 
-if 'podfile' in settings.THIRD_PARTY_APPS:
+if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import CustomFileModel
     FILEPICKER = True

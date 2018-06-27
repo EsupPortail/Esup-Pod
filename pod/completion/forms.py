@@ -7,7 +7,7 @@ from pod.completion.models import Document
 from pod.completion.models import Track
 from pod.completion.models import Overlay
 FILEPICKER = False
-if 'podfile' in settings.THIRD_PARTY_APPS:
+if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.widgets import CustomFileWidget
 

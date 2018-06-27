@@ -217,4 +217,5 @@ CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
 ##
 # THIRD PARTY APPS OPTIONNAL
 #
+USE_PODFILE = False
 THIRD_PARTY_APPS = []

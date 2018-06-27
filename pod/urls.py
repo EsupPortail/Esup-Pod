@@ -7,7 +7,6 @@ from django.conf.urls import url
 from django.conf.urls import include
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.apps import apps
 from django.contrib.auth import views as auth_views
 from django.views.i18n import JavaScriptCatalog
 from django.utils.translation import ugettext_lazy as _
@@ -33,10 +32,7 @@ from pod.main.views import contact_us, download_file
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
 
-if apps.is_installed('pod.filepicker'):
-    from pod.filepicker.sites import site as filepicker_site
-
-if apps.is_installed('pod.podfile'):
+if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.urls import urlpatterns as podfile_urlpatterns
 
 USE_CAS = getattr(
@@ -118,22 +114,17 @@ urlpatterns = [
 # CAS
 if USE_CAS:
     urlpatterns += [url(r'^sso-cas/', include('django_cas.urls')), ]
-
 # APPS
-if apps.is_installed('pod.filepicker'):
-    urlpatterns += [url(r'^file-picker/', include(filepicker_site.urls)), ]
-if apps.is_installed('pod.podfile'):
-    urlpatterns += [url(r'^podfile/', include(podfile_urlpatterns)), ]
+urlpatterns += [url(r'^', include('pod.completion.urls')), ]
+urlpatterns += [url(r'^', include('pod.chapter.urls')), ]
+urlpatterns += [url(r'^', include('pod.playlist.urls')), ]
 
-if apps.is_installed('pod.completion'):
-    urlpatterns += [url(r'^', include('pod.completion.urls')), ]
-if apps.is_installed('pod.chapter'):
-    urlpatterns += [url(r'^', include('pod.chapter.urls')), ]
+if getattr(settings, 'USE_PODFILE', False):
+    urlpatterns += [url(r'^podfile/', include(podfile_urlpatterns)), ]
+"""
 if apps.is_installed('pod.enrichment'):
     urlpatterns += [url(r'^', include('pod.enrichment.urls')), ]
-if apps.is_installed('pod.playlist'):
-    urlpatterns += [url(r'^', include('pod.playlist.urls')), ]
-
+"""
 # CHANNELS
 urlpatterns += [
     url(r'^(?P<slug_c>[\-\d\w]+)/$', channel, name='channel'),

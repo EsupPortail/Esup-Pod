@@ -14,7 +14,7 @@ from pod.completion.models import Overlay
 from pod.completion.models import Track
 from datetime import datetime
 
-if 'podfile' in settings.THIRD_PARTY_APPS:
+if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.models import CustomFileModel
     from pod.podfile.models import UserFolder

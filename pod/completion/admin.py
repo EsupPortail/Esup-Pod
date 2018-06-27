@@ -7,7 +7,7 @@ from pod.completion.models import Track
 from pod.completion.forms import DocumentAdminForm
 from pod.completion.forms import TrackAdminForm
 FILEPICKER = False
-if 'podfile' in settings.THIRD_PARTY_APPS:
+if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
 
 

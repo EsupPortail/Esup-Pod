@@ -9,7 +9,7 @@ from ckeditor.fields import RichTextField
 from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
 
-if 'podfile' in settings.THIRD_PARTY_APPS:
+if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.models import CustomFileModel
 else:

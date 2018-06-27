@@ -26,7 +26,7 @@ from collections import OrderedDict
 
 import datetime
 FILEPICKER = False
-if 'podfile' in settings.THIRD_PARTY_APPS:
+if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.widgets import CustomFileWidget
 

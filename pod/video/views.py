@@ -1,4 +1,3 @@
-from django.apps import apps
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
@@ -32,8 +31,7 @@ from pod.video.forms import NotesForm
 import json
 from datetime import datetime
 
-if apps.is_installed('pod.playlist'):
-    from pod.playlist.models import Playlist
+from pod.playlist.models import Playlist
 
 
 # VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)

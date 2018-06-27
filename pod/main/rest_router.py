@@ -9,7 +9,7 @@ from pod.chapter import rest_views as chapter_views
 from pod.completion import rest_views as completion_views
 """
 from django.conf import settings
-if 'podfile' in settings.THIRD_PARTY_APPS:
+if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile import rest_views as podfile_views
 
 if 'enrichment' in settings.THIRD_PARTY_APPS:

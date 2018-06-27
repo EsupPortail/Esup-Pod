@@ -10,7 +10,7 @@ import logging
 import traceback
 logger = logging.getLogger(__name__)
 
-if 'podfile' in settings.THIRD_PARTY_APPS:
+if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
 else:
     from pod.main.models import CustomImageModel

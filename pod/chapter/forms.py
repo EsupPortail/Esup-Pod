@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 from pod.chapter.models import Chapter
 from pod.chapter.utils import vtt_to_chapter
 
-if 'podfile' in settings.THIRD_PARTY_APPS:
+if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.models import CustomFileModel
     from pod.podfile.widgets import CustomFileWidget

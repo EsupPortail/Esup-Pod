@@ -9,7 +9,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from pod.video.models import Video
 from pod.chapter.models import Chapter
 
-if 'podfile' in settings.THIRD_PARTY_APPS:
+if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomFileModel
     from pod.podfile.models import UserFolder
     FILEPICKER = True
