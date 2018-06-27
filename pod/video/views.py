@@ -312,23 +312,7 @@ def get_note_form(request, video):
     return notesForm
 
 
-@csrf_protect
-def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
-    try:
-        id = int(slug[:slug.find("-")])
-    except ValueError:
-        raise SuspiciousOperation('Invalid video id')
-    video = get_object_or_404(Video, id=id)
-    notesForm = get_note_form(request, video)
-    channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
-    theme = get_object_or_404(Theme, slug=slug_t) if slug_t else None
-    playlist = get_object_or_404(
-        Playlist,
-        slug=request.GET['playlist']) if request.GET.get('playlist') else None
-
-    template_video = 'videos/video-iframe.html' if (
-        request.GET.get('is_iframe')) else 'videos/video.html'
-
+def get_video_access(request, video, slug_private):
     is_draft = video.is_draft
     is_restricted = video.is_restricted
     is_restricted_to_group = video.restrict_access_to_groups.all().exists()
@@ -377,43 +361,35 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
             )
         )
         if show_page:
-            return render(
-                request, template_video, {
-                    'channel': channel,
-                    'video': video,
-                    'theme': theme,
-                    'notesForm': notesForm,
-                    'playlist': playlist
-                }
-            )
+            return True
         else:
-            if is_password_protected:
-                form = VideoPasswordForm(
-                    request.POST) if request.POST else VideoPasswordForm()
-                return render(
-                    request, 'videos/video.html', {
-                        'channel': channel,
-                        'video': video,
-                        'theme': theme,
-                        'form': form,
-                        'notesForm': notesForm
-                    }
-                )
-            elif request.user.is_authenticated():
-                messages.add_message(
-                    request, messages.ERROR,
-                    _(u'You cannot watch this video.'))
-                raise PermissionDenied
-            else:
-                iframe_param = 'is_iframe=true&' if (
-                    request.GET.get('is_iframe')) else ''
-                return redirect(
-                    '%s?%sreferrer=%s' % (
-                        settings.LOGIN_URL,
-                        iframe_param,
-                        request.get_full_path())
-                )
+            return False
     else:
+        return True
+
+
+@csrf_protect
+def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
+    try:
+        id = int(slug[:slug.find("-")])
+    except ValueError:
+        raise SuspiciousOperation('Invalid video id')
+    video = get_object_or_404(Video, id=id)
+    notesForm = get_note_form(request, video)
+    channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
+    theme = get_object_or_404(Theme, slug=slug_t) if slug_t else None
+    playlist = get_object_or_404(
+        Playlist,
+        slug=request.GET['playlist']) if request.GET.get('playlist') else None
+
+    template_video = 'videos/video-iframe.html' if (
+        request.GET.get('is_iframe')) else 'videos/video.html'
+
+    is_password_protected = (video.password is not None)
+
+    show_page = get_video_access(request, video, slug_private)
+
+    if show_page:
         return render(
             request, template_video, {
                 'channel': channel,
@@ -423,6 +399,33 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                 'playlist': playlist
             }
         )
+    else:
+        if is_password_protected:
+            form = VideoPasswordForm(
+                request.POST) if request.POST else VideoPasswordForm()
+            return render(
+                request, 'videos/video.html', {
+                    'channel': channel,
+                    'video': video,
+                    'theme': theme,
+                    'form': form,
+                    'notesForm': notesForm
+                }
+            )
+        elif request.user.is_authenticated():
+            messages.add_message(
+                request, messages.ERROR,
+                _(u'You cannot watch this video.'))
+            raise PermissionDenied
+        else:
+            iframe_param = 'is_iframe=true&' if (
+                request.GET.get('is_iframe')) else ''
+            return redirect(
+                '%s?%sreferrer=%s' % (
+                    settings.LOGIN_URL,
+                    iframe_param,
+                    request.get_full_path())
+            )
 
 
 @csrf_protect

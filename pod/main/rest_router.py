@@ -38,10 +38,7 @@ router.register(r'contributors', completion_views.ContributorViewSet)
 router.register(r'documents', completion_views.DocumentViewSet)
 router.register(r'tracks', completion_views.TrackViewSet)
 router.register(r'overlays', completion_views.OverlayViewSet)
-"""
-if 'enrichment' in settings.THIRD_PARTY_APPS:
-    router.register(r'enrichments', enrichment_views.EnrichmentViewSet)
-"""
+
 router.register(r'chapters', chapter_views.ChapterViewSet)
 
 if getattr(settings, 'USE_PODFILE', False):
@@ -58,7 +55,7 @@ urlpatterns = [
 ]
 
 for apps in settings.THIRD_PARTY_APPS:
-    mod = importlib.import_module('pod.%s.rest_urls'%apps)
+    mod = importlib.import_module('pod.%s.rest_urls' % apps)
     mod.add_register(router)
 
-urlpatterns += [url(r'^', include(router.urls)),]
+urlpatterns += [url(r'^', include(router.urls)), ]
