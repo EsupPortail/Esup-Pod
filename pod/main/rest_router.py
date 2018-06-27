@@ -9,12 +9,11 @@ from pod.chapter import rest_views as chapter_views
 from pod.completion import rest_views as completion_views
 
 from django.conf import settings
+
+import importlib
+
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile import rest_views as podfile_views
-"""
-if 'enrichment' in settings.THIRD_PARTY_APPS:
-    from pod.enrichment import rest_views as enrichment_views
-"""
 
 router = routers.DefaultRouter()
 
@@ -42,10 +41,6 @@ router.register(r'overlays', completion_views.OverlayViewSet)
 """
 if 'enrichment' in settings.THIRD_PARTY_APPS:
     router.register(r'enrichments', enrichment_views.EnrichmentViewSet)
-    router.register(r'enrichments-file',
-                    enrichment_views.EnrichmentFileViewSet)
-    router.register(r'enrichments-image',
-                    enrichment_views.EnrichmentImageViewSet)
 """
 router.register(r'chapters', chapter_views.ChapterViewSet)
 
@@ -60,5 +55,10 @@ if getattr(settings, 'USE_PODFILE', False):
 urlpatterns = [
     url(r'dublincore/$', video_views.DublinCoreView.as_view(),
         name='dublincore'),
-    url(r'^', include(router.urls)),
 ]
+
+for apps in settings.THIRD_PARTY_APPS:
+    mod = importlib.import_module('pod.%s.rest_urls'%apps)
+    mod.add_register(router)
+
+urlpatterns += [url(r'^', include(router.urls)),]

@@ -111,17 +111,17 @@ urlpatterns = [
 # CAS
 if USE_CAS:
     urlpatterns += [url(r'^sso-cas/', include('django_cas.urls')), ]
-# APPS
+# APPS -> to change !
 urlpatterns += [url(r'^', include('pod.completion.urls')), ]
 urlpatterns += [url(r'^', include('pod.chapter.urls')), ]
 urlpatterns += [url(r'^', include('pod.playlist.urls')), ]
 
 if getattr(settings, 'USE_PODFILE', False):
     urlpatterns += [url(r'^podfile/', include('pod.podfile.urls')), ]
-"""
-if apps.is_installed('pod.enrichment'):
-    urlpatterns += [url(r'^', include('pod.enrichment.urls')), ]
-"""
+
+for apps in settings.THIRD_PARTY_APPS:
+    urlpatterns += [url(r'^' + apps + '/', include('pod.%s.urls' % apps)), ]
+
 # CHANNELS
 urlpatterns += [
     url(r'^(?P<slug_c>[\-\d\w]+)/$', channel, name='channel'),

@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import PermissionDenied
 from django.core.exceptions import SuspiciousOperation
@@ -11,12 +10,14 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
+
 from pod.video.models import Video
 from pod.video.views import is_in_video_groups
 from pod.video.forms import VideoPasswordForm
-from pod.enrichment.models import Enrichment
-from pod.enrichment.forms import EnrichmentForm
-from pod.enrichment.utils import enrichment_to_vtt
+
+from .models import Enrichment
+from .forms import EnrichmentForm
+from .utils import enrichment_to_vtt
 
 import json
 
@@ -24,9 +25,8 @@ ACTION = ['new', 'save', 'modify', 'delete', 'cancel']
 
 
 @csrf_protect
-@login_required
-@staff_member_required
-def video_enrichment(request, slug):
+@staff_member_required(redirect_field_name='referrer')
+def edit_enrichment(request, slug):
     video = get_object_or_404(Video, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
@@ -37,7 +37,7 @@ def video_enrichment(request, slug):
     if request.POST and request.POST.get('action'):
         if request.POST['action'] in ACTION:
             return eval(
-                'video_enrichment_{0}(request, video)'.format(
+                'edit_enrichment_{0}(request, video)'.format(
                     request.POST['action'])
             )
     else:
@@ -48,7 +48,7 @@ def video_enrichment(request, slug):
              'list_enrichment': list_enrichment})
 
 
-def video_enrichment_new(request, video):
+def edit_enrichment_new(request, video):
     list_enrichment = video.enrichment_set.all()
 
     form_enrichment = EnrichmentForm(
@@ -68,7 +68,7 @@ def video_enrichment_new(request, video):
              'form_enrichment': form_enrichment})
 
 
-def video_enrichment_save(request, video):
+def edit_enrichment_save(request, video):
     list_enrichment = video.enrichment_set.all()
 
     form_enrichment = None
@@ -118,7 +118,7 @@ def video_enrichment_save(request, video):
                  'form_enrichment': form_enrichment})
 
 
-def video_enrichment_modify(request, video):
+def edit_enrichment_modify(request, video):
     list_enrichment = video.enrichment_set.all()
 
     enrich = get_object_or_404(Enrichment, id=request.POST['id'])
@@ -138,7 +138,7 @@ def video_enrichment_modify(request, video):
              'form_enrichment': form_enrichment})
 
 
-def video_enrichment_delete(request, video):
+def edit_enrichment_delete(request, video):
     enrich = get_object_or_404(Enrichment, id=request.POST['id'])
     enrich.delete()
     list_enrichment = video.enrichment_set.all()
@@ -162,7 +162,7 @@ def video_enrichment_delete(request, video):
              'list_enrichment': list_enrichment})
 
 
-def video_enrichment_cancel(request, video):
+def edit_enrichment_cancel(request, video):
     list_enrichment = video.enrichment_set.all()
     return render(
         request,
@@ -172,7 +172,7 @@ def video_enrichment_cancel(request, video):
 
 
 @csrf_protect
-def video_enriched(request, slug, slug_private=None):
+def video_enrichment(request, slug, slug_private=None):
     try:
         id = int(slug[:slug.find("-")])
     except ValueError:

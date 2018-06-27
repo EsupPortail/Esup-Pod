@@ -1,9 +1,9 @@
-from django.apps import apps
+from django.conf import settings
 from django.contrib import admin
-from pod.enrichment.models import Enrichment
-from pod.enrichment.forms import EnrichmentAdminForm
+from .models import Enrichment
+from .forms import EnrichmentAdminForm
 FILEPICKER = False
-if apps.is_installed('pod.filepicker'):
+if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
 
 
@@ -21,7 +21,16 @@ class EnrichmentAdmin(admin.ModelAdmin):
     list_display = ('title', 'type', 'video',)
 
     class Media:
-        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
+        js = (
+            'js/filewidget.js',
+            'feather-icons/feather.min.js',
+            'bootstrap-4/js/bootstrap.min.js')
 
 
 if FILEPICKER:

@@ -1,20 +1,22 @@
 from django import forms
+from django.conf import settings
 from django.forms.widgets import HiddenInput
 from django.utils.safestring import mark_safe
-from pod.filepicker.widgets import CustomFilePickerWidget
-from pod.enrichment.models import Enrichment
+from .models import Enrichment
+
+FILEPICKER = False
+if getattr(settings, 'USE_PODFILE', False):
+    FILEPICKER = True
+    from pod.podfile.widgets import CustomFileWidget
 
 
 class EnrichmentAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(EnrichmentAdminForm, self).__init__(*args, **kwargs)
-        pickers = {'file': "file"}
-        self.fields['document'].widget = CustomFilePickerWidget(
-            pickers=pickers)
-        pickers = {'image': "img"}
-        self.fields['image'].widget = CustomFilePickerWidget(
-            pickers=pickers)
+        if FILEPICKER:
+            self.fields['image'].widget = CustomFileWidget(type="image")
+            self.fields['document'].widget = CustomFileWidget(type="file")
 
     class Meta(object):
         model = Enrichment
@@ -49,12 +51,9 @@ class EnrichmentForm(forms.ModelForm):
             else:
                 self.fields[myField].widget.attrs['class'] = 'form-control'
         self.fields['type'].widget.attrs['class'] = 'custom-select'
-        pickers = {'file': "file"}
-        self.fields['document'].widget = CustomFilePickerWidget(
-            pickers=pickers)
-        pickers = {'image': "img"}
-        self.fields['image'].widget = CustomFilePickerWidget(
-            pickers=pickers)
+        if FILEPICKER:
+            self.fields['image'].widget = CustomFileWidget(type="image")
+            self.fields['document'].widget = CustomFileWidget(type="file")
 
     class Meta(object):
         model = Enrichment

@@ -1,63 +1,24 @@
-import os
-
-from django.apps import apps
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db import connection
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
 from ckeditor.fields import RichTextField
 from pod.video.models import Video
-FILEPICKER = False
-if apps.is_installed('pod.podfile'):
+
+from pod.main.models import get_nextautoincrement
+
+if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import CustomFileModel
     FILEPICKER = True
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomImageModel
+    from pod.main.models import CustomFileModel
+
 FILES_DIR = getattr(
     settings, 'FILES_DIR', 'files')
-
-
-def get_nextautoincrement(model):
-    cursor = connection.cursor()
-    cursor.execute(
-        'SELECT Auto_increment FROM information_schema.tables ' +
-        'WHERE table_name="{0}";'.format(model._meta.db_table)
-    )
-    row = cursor.fetchone()
-    cursor.close()
-    return row[0]
-
-
-def get_upload_path_files(instance, filename):
-    fname, dot, extension = filename.rpartition('.')
-    try:
-        fname.index("/")
-        return os.path.join(FILES_DIR,
-                            '%s/%s.%s' % (os.path.dirname(fname),
-                                          slugify(os.path.basename(fname)),
-                                          extension))
-    except ValueError:
-        return os.path.join(FILES_DIR,
-                            '%s.%s' % (slugify(fname), extension))
-
-
-class EnrichmentImage(models.Model):
-    file = models.ImageField(
-        _('Image'),
-        null=True,
-        upload_to=get_upload_path_files,
-        blank=True,
-        max_length=255)
-
-
-class EnrichmentFile(models.Model):
-    file = models.FileField(
-        _('File'),
-        null=True,
-        upload_to=get_upload_path_files,
-        blank=True,
-        max_length=255)
 
 
 class Enrichment(models.Model):
@@ -98,24 +59,15 @@ class Enrichment(models.Model):
         choices=ENRICH_CHOICES,
         null=True,
         blank=True)
-    if FILEPICKER:
-        image = models.ForeignKey(
-            CustomImageModel, verbose_name=_('Image'), null=True, blank=True)
-        document = models.ForeignKey(
-            CustomFileModel,
-            verbose_name=_('Document'),
-            null=True,
-            blank=True,
-            help_text=_(u'Integrate an document (PDF, text, html)'))
-    else:
-        image = models.ForeignKey(
-            EnrichmentImage, verbose_name=('Image'), null=True, blank=True)
-        document = models.ForeignKey(
-            EnrichmentFile,
-            verbose_name=('Document'),
-            null=True,
-            blank=True,
-            help_text=_(u'Integrate an document (PDF, text, html)'))
+
+    image = models.ForeignKey(
+        CustomImageModel, verbose_name=_('Image'), null=True, blank=True)
+    document = models.ForeignKey(
+        CustomFileModel,
+        verbose_name=_('Document'),
+        null=True,
+        blank=True,
+        help_text=_(u'Integrate an document (PDF, text, html)'))
     richtext = RichTextField(_('Richtext'), config_name='complete', blank=True)
     weblink = models.URLField(
         _(u'Web link'), max_length=200, null=True, blank=True)
