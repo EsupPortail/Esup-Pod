@@ -685,25 +685,6 @@ class Video(models.Model):
                          " for video %s: %s" % (self.id, e))
             return {}
 
-    def get_enrichments_file(self):
-        list_enrichment = self.enrichment_set.all()
-        if ENRICHMENT and list_enrichment:
-            if FILEPICKER:
-                enrichments = CustomFileModel.objects.get(
-                    name='enrich_{0}'.format(self.title),
-                    created_by=self.owner,
-                    directory__name='Home').file
-                return os.path.join(
-                    settings.MEDIA_URL,
-                    enrichments.name)
-            else:
-                return os.path.join(
-                    settings.MEDIA_URL,
-                    'files',
-                    self.owner.username,
-                    'enrichment_{0}'.format(self.title))
-
-
 def remove_video_file(video):
     if video.video:
         log_file = os.path.join(

@@ -11,13 +11,13 @@ from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
 
-from pod.video.models import Video
-from pod.video.views import is_in_video_groups
+from pod.video.models import Video, Channel, Theme
+from pod.video.views import get_note_form, get_video_access
 from pod.video.forms import VideoPasswordForm
 
 from .models import Enrichment
 from .forms import EnrichmentForm
-from .utils import enrichment_to_vtt
+# from .utils import enrichment_to_vtt
 
 import json
 
@@ -43,7 +43,7 @@ def edit_enrichment(request, slug):
     else:
         return render(
             request,
-            'video_enrichment.html',
+            'edit_enrichment.html',
             {'video': video,
              'list_enrichment': list_enrichment})
 
@@ -62,7 +62,7 @@ def edit_enrichment_new(request, video):
     else:
         return render(
             request,
-            'video_enrichment.html',
+            'edit_enrichment.html',
             {'video': video,
              'list_enrichment': list_enrichment,
              'form_enrichment': form_enrichment})
@@ -81,8 +81,8 @@ def edit_enrichment_save(request, video):
 
     if form_enrichment.is_valid():
         form_enrichment.save()
-        list_enrichment = video.enrichment_set.all()
-        enrichment_to_vtt(list_enrichment, video)
+        # list_enrichment = video.enrichment_set.all()
+        # enrichment_to_vtt(list_enrichment, video)
         if request.is_ajax():
             some_data_to_dump = {
                 'list_enrichment': render_to_string(
@@ -95,7 +95,7 @@ def edit_enrichment_save(request, video):
         else:
             return render(
                 request,
-                'video_enrichment.html',
+                'edit_enrichment.html',
                 {'video': video,
                  'list_enrichment': list_enrichment})
     else:
@@ -112,7 +112,7 @@ def edit_enrichment_save(request, video):
         else:
             return render(
                 request,
-                'video_enrichment.html',
+                'edit_enrichment.html',
                 {'video': video,
                  'list_enrichment': list_enrichment,
                  'form_enrichment': form_enrichment})
@@ -132,7 +132,7 @@ def edit_enrichment_modify(request, video):
     else:
         return render(
             request,
-            'video_enrichment.html',
+            'edit_enrichment.html',
             {'video': video,
              'list_enrichment': list_enrichment,
              'form_enrichment': form_enrichment})
@@ -142,8 +142,8 @@ def edit_enrichment_delete(request, video):
     enrich = get_object_or_404(Enrichment, id=request.POST['id'])
     enrich.delete()
     list_enrichment = video.enrichment_set.all()
-    if list_enrichment:
-        enrichment_to_vtt(list_enrichment, video)
+    # if list_enrichment:
+    #    enrichment_to_vtt(list_enrichment, video)
     if request.is_ajax():
         some_data_to_dump = {
             'list_enrichment': render_to_string(
@@ -157,7 +157,7 @@ def edit_enrichment_delete(request, video):
     else:
         return render(
             request,
-            'video_enrichment.html',
+            'edit_enrichment.html',
             {'video': video,
              'list_enrichment': list_enrichment})
 
@@ -166,11 +166,71 @@ def edit_enrichment_cancel(request, video):
     list_enrichment = video.enrichment_set.all()
     return render(
         request,
-        'video_enrichment.html',
+        'edit_enrichment.html',
         {'video': video,
          'list_enrichment': list_enrichment})
 
 
+@csrf_protect
+def video_enrichment(request, slug, slug_c=None,
+                     slug_t=None, slug_private=None):
+    try:
+        id = int(slug[:slug.find("-")])
+    except ValueError:
+        raise SuspiciousOperation('Invalid video id')
+    video = get_object_or_404(Video, id=id)
+    notesForm = get_note_form(request, video)
+    channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
+    theme = get_object_or_404(Theme, slug=slug_t) if slug_t else None
+    playlist = None
+
+    template_video = 'enrichment/video_enrichment-iframe.html' if (
+        request.GET.get('is_iframe')) else 'enrichment/video_enrichment.html'
+
+    is_password_protected = (video.password is not None)
+
+    show_page = get_video_access(request, video, slug_private)
+
+    if show_page:
+        return render(
+            request, template_video, {
+                'channel': channel,
+                'video': video,
+                'theme': theme,
+                'notesForm': notesForm,
+                'playlist': playlist
+            }
+        )
+    else:
+        if is_password_protected:
+            form = VideoPasswordForm(
+                request.POST) if request.POST else VideoPasswordForm()
+            return render(
+                request, 'enrichment/video_enrichment.html', {
+                    'channel': channel,
+                    'video': video,
+                    'theme': theme,
+                    'form': form,
+                    'notesForm': notesForm
+                }
+            )
+        elif request.user.is_authenticated():
+            messages.add_message(
+                request, messages.ERROR,
+                _(u'You cannot watch this video.'))
+            raise PermissionDenied
+        else:
+            iframe_param = 'is_iframe=true&' if (
+                request.GET.get('is_iframe')) else ''
+            return redirect(
+                '%s?%sreferrer=%s' % (
+                    settings.LOGIN_URL,
+                    iframe_param,
+                    request.get_full_path())
+            )
+
+
+"""
 @csrf_protect
 def video_enrichment(request, slug, slug_private=None):
     try:
@@ -257,3 +317,4 @@ def video_enrichment(request, slug, slug_private=None):
                 'video': video,
             }
         )
+"""

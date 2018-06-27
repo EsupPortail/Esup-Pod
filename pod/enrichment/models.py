@@ -3,14 +3,23 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
+from django.dispatch import receiver
+from django.db.models.signals import post_save, post_delete
+from django.core.files import File
 from ckeditor.fields import RichTextField
-from pod.video.models import Video
+from webvtt import WebVTT, Caption
+from tempfile import NamedTemporaryFile
 
+from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
+
+import os
+import datetime
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import CustomFileModel
+    from pod.podfile.models import UserFolder
     FILEPICKER = True
 else:
     FILEPICKER = False
@@ -19,6 +28,62 @@ else:
 
 FILES_DIR = getattr(
     settings, 'FILES_DIR', 'files')
+
+
+def enrichment_to_vtt(list_enrichment, video):
+    webvtt = WebVTT()
+    for enrich in list_enrichment:
+        start = datetime.datetime.utcfromtimestamp(
+            enrich.start).strftime('%H:%M:%S.%f')[:-3]
+        end = datetime.datetime.utcfromtimestamp(
+            enrich.end).strftime('%H:%M:%S.%f')[:-3]
+        url = enrichment_to_vtt_type(enrich)
+        caption = Caption(
+            '{0}'.format(start),
+            '{0}'.format(end),
+            [
+                '{',
+                '"title": "{0}",'.format(enrich.title),
+                '"type": "{0}",'.format(enrich.type),
+                '"url": "{0}"'.format(url),
+                '}'
+            ]
+        )
+        caption.identifier = enrich.slug
+        webvtt.captions.append(caption)
+    temp_vtt_file = NamedTemporaryFile(suffix='.vtt')
+    with open(temp_vtt_file.name, 'w') as f:
+        webvtt.write(f)
+    if FILEPICKER:
+        videodir, created = UserFolder.objects.get_or_create(
+            name='%s' % video.slug,
+            owner=video.owner)
+        enrichmentFile, created = CustomFileModel.objects.get_or_create(
+            name='enrichment',
+            folder=videodir,
+            created_by=video.owner)
+        if enrichmentFile.file and os.path.isfile(enrichmentFile.file.path):
+            os.remove(enrichmentFile.file.path)
+    else:
+        enrichmentFile, created = CustomFileModel.objects.get_or_create()
+    enrichmentFile.file.save("enrichment.vtt", File(temp_vtt_file))
+    enrichmentVtt, created = EnrichmentVtt.objects.get_or_create(video=video)
+    enrichmentVtt.src = enrichmentFile
+    enrichmentVtt.save()
+    return enrichmentFile.file.path
+
+
+def enrichment_to_vtt_type(enrich):
+    if enrich.type == 'image':
+        return enrich.image.file.url
+    elif enrich.type == 'document':
+        return enrich.document.file.url
+    elif enrich.type == 'richtext':
+        return ''.join(enrich.richtext.splitlines())
+    elif enrich.type == 'weblink':
+        return enrich.weblink
+    elif enrich.type == 'embed':
+        return enrich.embed
 
 
 class Enrichment(models.Model):
@@ -108,7 +173,7 @@ class Enrichment(models.Model):
         if (not self.title or self.title == '' or len(self.title) < 2 or
                 len(self.title) > 100):
             msg.append(_('Please enter a title from 2 to 100 characters.'))
-        if (not self.start or self.start == '' or self.start < 0 or
+        if (self.start == '' or self.start < 0 or
                 self.start >= self.video.duration):
             msg.append(_('Please enter a correct start field between 0 and ' +
                          '{0}.'.format(self.video.duration - 1)))
@@ -188,3 +253,36 @@ class Enrichment(models.Model):
 
     def __str__(self):
         return u'Media : {0} - Video: {1}'.format(self.title, self.video)
+
+
+@receiver(post_save, sender=Enrichment)
+def update_vtt(sender, instance=None, created=False, **kwargs):
+    list_enrichment = instance.video.enrichment_set.all()
+    enrichment_to_vtt(list_enrichment, instance.video)
+
+
+@receiver(post_delete, sender=Enrichment)
+def delete_vtt(sender, instance=None, created=False, **kwargs):
+    list_enrichment = instance.video.enrichment_set.all()
+    enrichment_to_vtt(list_enrichment, instance.video)
+
+
+class EnrichmentVtt(models.Model):
+    video = models.OneToOneField(Video, verbose_name=_('Video'),
+                                 editable=False, on_delete=models.CASCADE)
+    src = models.ForeignKey(CustomFileModel,
+                            blank=True,
+                            null=True,
+                            verbose_name=_('Subtitle file'))
+
+    def clean(self):
+        msg = list()
+        msg = self.verify_attributs() + self.verify_not_same_track()
+        if len(msg) > 0:
+            raise ValidationError(msg)
+
+    def verify_attributs(self):
+        msg = list()
+        if 'vtt' not in self.src.file_type:
+            msg.append(_('Only ".vtt" format is allowed.'))
+        return msg

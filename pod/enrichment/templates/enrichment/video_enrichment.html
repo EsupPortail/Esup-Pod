@@ -1,0 +1,94 @@
+{% extends 'videos/video.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block page_extra_head %}
+{{ block.super }} 
+<script src="{% static 'js/videojs-slides.js' %}"></script>
+{% endblock page_extra_head %}
+
+{% block video-element %}
+
+{% if form %}
+
+{% include 'videos/video-form.html' %}
+
+{% else %}
+    <video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
+    poster="{{video.get_thumbnail_url}}" data-setup='{}'>
+      <p class="vjs-no-js">
+        To view this video please enable JavaScript, and consider upgrading to a web browser that
+        <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+      </p>
+      <track kind="metadata" src="{{video.enrichmentvtt.src.file.url}}">
+    </video>
+
+    <nav id="navbar-video" class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="#">({% trans 'Enriched' %}) {{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}</a>
+        <small class="video_back">
+            <a href="{% url 'video' slug=video.slug %}">
+                <button class="btn btn-default" title="Back to original video">{% trans 'Back to original' %}</button>
+            </a>
+        </small>
+    </nav>
+
+{%endif%}
+
+{% endblock video-element %}
+
+{% block page_aside %}
+    {{ block.super }} 
+    <div class="card card-body">
+        <h5 class="card-title">
+            {% trans 'Informations' %}
+        </h5>
+        <div class="card-text">
+            <p>{% trans 'To help you, the different types of enrichments have specific colors' %}:</p>
+            <p>
+                <ul>
+                    <li><font color="purple">{% trans 'Image' %}</font></li>
+                    <li><font color="yellow">{% trans 'Document' %}</font></li>
+                    <li><font color="blue">{% trans 'Richtext' %}</font></li>
+                    <li><font color="red">{% trans 'Weblink' %}</font></li>
+                    <li><font color="green">{% trans 'Embed' %}</font></li>
+                </ul>
+            </p>
+            <p>{% trans 'They are visible on the video playback bar.' %}</p>
+        </div>
+    </div>
+{% endblock page_aside %}
+
+{% block more_script %}
+{{block.super}}
+{% if not form %}
+<script>
+player.ready(function() {
+    var tracks = player.textTracks();
+    var metadataTrack;
+    for (let i = 0; i < tracks.length; i++) {
+        var track = tracks[i];
+        if (track.kind === 'metadata' && track.label === '') {
+            metadataTrack = track;
+        }
+    }
+    player.on('loadedmetadata', function() {
+        var slide = [];
+        for (let i = 0; i < metadataTrack.cues.length; i++) {
+            data = JSON.parse(metadataTrack.cues[i].text);
+            slide.push({
+                title: data.title,
+                url: data.url,
+                type: data.type,
+                start: metadataTrack.cues[i].startTime,
+                end: metadataTrack.cues[i].endTime
+            });
+        }
+        player.slides(slide);
+    });
+    $('.vjs-big-play-button').css('z-index', 2)
+    $('.vjs-control-bar').css('z-index', 3);
+});
+</script>
+{% endif %}
+{% endblock more_script %}
+

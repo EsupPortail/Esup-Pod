@@ -3,7 +3,7 @@
 <div >
 {{input|safe}}
 {% if value %}
-<span id="fileinput">
+<span id="fileinput_{{id}}">
     {% if type == "image" %}<img src="{{document.file.url}}" height="34" alt="{{document.name}}"/>&nbsp;
     {% else %}<i data-feather="file"></i>&nbsp;{%endif%}
 <strong>{{document.name}}</strong>&nbsp;({{document.file_type}} - {{document.file.size|filesizeformat}})
@@ -12,9 +12,9 @@
   {% trans 'Change file' %}
 </button>
 {% else %}
-<span id="fileinput">
+<span id="fileinput_{{id}}">
 </span>
-<button type="button" class="btn btn-primary btn-fileinput" data-toggle="modal" data-target="#fileModal">
+<button type="button" class="btn btn-primary btn-fileinput" data-toggle="modal" data-target="#fileModal_{{id}}">
 {% if type == "file" %}
 {% trans 'Select a file' %}
 {% else %}
@@ -24,17 +24,17 @@
 {% endif%}
 </div>
 <!-- Select File Modal -->
-<div class="modal fade" id="fileModal" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true">
+<div class="modal fade" id="fileModal_{{id}}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true" data-id="{{id}}">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="fileModalLabel">
+        <h5 class="modal-title" id="fileModalLabel_{{id}}">
             {% if type == "file" %}{% trans 'Select a file' %}{% else %}{% trans 'Select an image' %}{% endif %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body row" id="modal-folder">
+      <div class="modal-body row" id="modal-folder_{{id}}">
 
       </div>
       <div class="modal-footer">
@@ -47,12 +47,15 @@
 <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
 <script src="{% static 'js/infinite.min.js' %}"></script>
 <script>
-var id_input = "{{id}}";
-$('#fileModal').appendTo(document.body);
-$('#fileModal').on('hide.bs.modal', function (event) {
-    $("#modal-folder").html("");
+var id_input="";
+$('#fileModal_{{id}}').appendTo(document.body);
+$('#fileModal_{{id}}').on('hide.bs.modal', function (event) {
+  console.log($(this).data('id'));
+    $("#modal-folder_"+$(this).data('id')).html("");
 });
-$('#fileModal').on('show.bs.modal', function (event) {
+$('#fileModal_{{id}}').on('show.bs.modal', function (event) {
+  console.log($(this).data('id'));
+  id_input = $(this).data('id');
   send_form_data("{% url "podfile:folder" type=type %}", {}, "append_folder_html_in_modal", "get");
 });
 </script>
