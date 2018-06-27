@@ -53,6 +53,6 @@ $('#fileModal').on('hide.bs.modal', function (event) {
     $("#modal-folder").html("");
 });
 $('#fileModal').on('show.bs.modal', function (event) {
-  send_form_data("{% url "folder" type=type %}", {}, "append_folder_html_in_modal", "get");
+  send_form_data("{% url "podfile:folder" type=type %}", {}, "append_folder_html_in_modal", "get");
 });
 </script>

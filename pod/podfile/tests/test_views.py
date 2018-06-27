@@ -1,5 +1,5 @@
 """
-Unit tests for filepicker views
+Unit tests for podfile views
 """
 from django.test import TestCase
 from django.conf import settings
@@ -14,10 +14,7 @@ from ..models import CustomFileModel
 from ..models import CustomImageModel
 from ..models import UserFolder
 
-from datetime import datetime
-
 import json
-import shutil
 import os
 
 ##

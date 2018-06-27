@@ -118,7 +118,7 @@ def folder(request, type, id=""):
         if (
                 folder.name == 'home'
                 or (request.user != folder.owner
-                and not request.user.is_superuser)
+                    and not request.user.is_superuser)
         ):
             messages.add_message(
                 request, messages.ERROR,
@@ -240,7 +240,7 @@ def editimage(request, id):
         else:
             raise SuspiciousOperation('Invalid action')
     else:
-            raise SuspiciousOperation('You must send data in post')
+        raise SuspiciousOperation('You must send data in post')
 
 
 def image_edit_delete(request, folder):
@@ -281,46 +281,7 @@ def image_edit_modify(request, folder):
                    }
                   )
 
-"""
-def image_edit_save(request, folder):
-    form_image = None
 
-    if (request.POST.get("file_id")
-            and request.POST.get("file_id") != "None"):
-        customImage = get_object_or_404(
-            CustomImageModel, id=request.POST['file_id'])
-        form_image = CustomImageModelForm(
-            request.POST, request.FILES, instance=customImage)
-    else:
-        form_image = CustomImageModelForm(request.POST, request.FILES)
-
-    if form_image.is_valid():
-        customImage = form_image.save(commit=False)
-        customImage.created_by = request.user
-        customImage.save()
-        rendered = render_to_string(
-            "podfile/list_file.html",
-            {'list_file': folder.customimagemodel_set.all(),
-             "type": "image",
-             'current_folder': folder
-             }, request)
-        list_element = {
-            'list_element': rendered
-        }
-        data = json.dumps(list_element)
-        return HttpResponse(data, content_type='application/json')
-    else:
-        rendered = render_to_string("podfile/form_image.html",
-                                    {'form_image': form_image,
-                                     "folder": folder
-                                     }, request)
-        some_data_to_dump = {
-            'errors': "%s" % _('Please correct errors'),
-            'form': rendered
-        }
-        data = json.dumps(some_data_to_dump)
-    return HttpResponse(data, content_type='application/json')
-"""
 def image_edit_save(request, folder):
     form_file = None
 
@@ -338,7 +299,7 @@ def image_edit_save(request, folder):
             raise SuspiciousOperation('Folder must be the same')
         customImage = form_file.save(commit=False)
         if hasattr(form_file.instance, 'created_by'):
-            customImage.created_by = form.instance.created_by
+            customImage.created_by = form_file.instance.created_by
         else:
             customImage.created_by = request.user
         customImage.save()
@@ -391,8 +352,7 @@ def editfile(request, id):
         else:
             raise SuspiciousOperation('Invalid action')
     else:
-            raise SuspiciousOperation('You must send data in post')
-
+        raise SuspiciousOperation('You must send data in post')
 
 
 def file_edit_delete(request, folder):
@@ -451,7 +411,7 @@ def file_edit_save(request, folder):
             raise SuspiciousOperation('Folder must be the same')
         customfile = form_file.save(commit=False)
         if hasattr(form_file.instance, 'created_by'):
-            customfile.created_by = form.instance.created_by
+            customfile.created_by = form_file.instance.created_by
         else:
             customfile.created_by = request.user
         customfile.save()
