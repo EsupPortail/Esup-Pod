@@ -7,11 +7,11 @@ from pod.main import rest_views as main_views
 
 from pod.chapter import rest_views as chapter_views
 from pod.completion import rest_views as completion_views
-"""
+
 from django.conf import settings
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile import rest_views as podfile_views
-
+"""
 if 'enrichment' in settings.THIRD_PARTY_APPS:
     from pod.enrichment import rest_views as enrichment_views
 """
@@ -48,15 +48,15 @@ if 'enrichment' in settings.THIRD_PARTY_APPS:
                     enrichment_views.EnrichmentImageViewSet)
 """
 router.register(r'chapters', chapter_views.ChapterViewSet)
-"""
-if apps.is_installed('pod.filepicker'):
-    router.register(r'directories',
-                    filepicker_views.UserDirectorySerializerViewSet)
+
+if getattr(settings, 'USE_PODFILE', False):
+    router.register(r'folders',
+                    podfile_views.UserFolderSerializerViewSet)
     router.register(r'files',
-                    filepicker_views.CustomFileModelSerializerViewSet)
+                    podfile_views.CustomFileModelSerializerViewSet)
     router.register(r'images',
-                    filepicker_views.CustomImageModelSerializerViewSet)
-"""
+                    podfile_views.CustomImageModelSerializerViewSet)
+
 urlpatterns = [
     url(r'dublincore/$', video_views.DublinCoreView.as_view(),
         name='dublincore'),
