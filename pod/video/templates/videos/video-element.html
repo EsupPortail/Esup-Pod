@@ -1,5 +1,5 @@
 
-<video id="podvideoplayer" class="video-js vjs-default-skin {% if not request.GET.is_iframe %}vjs-16-9{% endif %} vjs-big-play-centered" controls preload="auto" {% if not request.GET.is_iframe %}height="360"{% endif %}
+<video id="podvideoplayer" class="video-js vjs-default-skin {% if not request.GET.is_iframe %}vjs-16-9{% endif %} vjs-big-play-centered" preload="auto" {% if not request.GET.is_iframe %}height="360"{% endif %}
 poster="{{video.get_thumbnail_url}}" data-setup='{}' {% if request.GET.nocontrol and request.GET.nocontrol == 'false' %} autoplay {%else%} controls {% if request.GET.autoplay and request.GET.autoplay == 'true' %} autoplay{%endif%}{%endif%} {% if request.GET.loop and request.GET.loop == 'true' %} loop{%endif%}>
   <p class="vjs-no-js">
     To view this video please enable JavaScript, and consider upgrading to a web browser that

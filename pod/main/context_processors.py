@@ -64,11 +64,12 @@ def context_settings(request):
         except AttributeError:
             m = "TEMPLATE_VISIBLE_SETTINGS: '{0}' does not exist".format(sett)
             raise ImproperlyConfigured(m)
+    new_settings['VERSION'] = VERSION
+    new_settings["THIRD_PARTY_APPS"] = django_settings.THIRD_PARTY_APPS
     return new_settings
 
 
 def context_navbar(request):
-    """
     channels = Channel.objects.filter(
         visible=True, video__is_draft=False
     ).distinct().annotate(
@@ -88,6 +89,7 @@ def context_navbar(request):
         ).distinct().annotate(
             video_count=Count("video", distinct=True)
         )))
+    """
     types = Type.objects.filter(
         video__is_draft=False
     ).distinct().annotate(video_count=Count("video", distinct=True))
@@ -126,8 +128,8 @@ def context_navbar(request):
 
     return {'CHANNELS': channels, 'TYPES': types, 'OWNERS': owners,
             'DISCIPLINES': disciplines, 'LISTOWNER': json.dumps(listowner),
-            'LAST_VIDEOS': LAST_VIDEOS, 'LINK_FOOTER': linkFooter,
-            'VERSION': VERSION}
+            'LAST_VIDEOS': LAST_VIDEOS, 'LINK_FOOTER': linkFooter
+            }
 
 
 def get_last_videos():

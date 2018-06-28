@@ -7,7 +7,8 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>{{ TITLE_SITE }} - {{video.title}}</title>
+
+    <title>{{ TITLE_SITE }} - {% block page_title %}{{video.title}}{% endblock page_title %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
@@ -62,6 +63,8 @@
             color: black !important;
         }
     </style>
+    {% block page_extra_head %}
+    {% endblock page_extra_head %}
 </head>
 <body>
 <meta itemprop="duration" content="{{ video.duration }}" />
@@ -70,9 +73,9 @@
 <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" />
 <div class="player_wrapper" id="div-video-wrapper">
 
-
+{% block video-element %}
     {% include 'videos/video-element.html' %}
-
+{% endblock video-element %}
 
     <div id="info-video" style="display:none">
         <button type="button" class="close" aria-label="Close">
@@ -80,6 +83,7 @@
         </button>
         {% include 'videos/video-info.html'%}
     </div>
+
 </div>
 {% block more_script %}
 {% if not form %}

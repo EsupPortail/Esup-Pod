@@ -4,6 +4,7 @@
 {% load tagging_tags %}
 {% load thumbnail %}
 {% load video_filters %}
+{% load video_tags %}
 
 {% block page_extra_head %}
 
@@ -132,13 +133,12 @@ body {
     <li class="nav-item">
       <a class="nav-link" href="#embed">{% trans 'Embed/Share' %}</a>
     </li>
-    {% comment %}
-    {% if video.enrichment_set.all %} {# todo after or video.interactive or video.accessible... #}
-    <li class="nav-item">
-      <a class="nav-link" href="#version">{% trans 'Version' %}</a>
-    </li>
+    {% for app in THIRD_PARTY_APPS %}
+    {% get_app_link video app as link %}
+    {% if link != "" %}
+    <li class="nav-item">{{link|safe}}</li>
     {% endif %}
-    {% endcomment %}
+    {% endfor %}
   </ul>
 </nav>
 {% include 'videos/video-info.html'%}
