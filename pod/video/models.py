@@ -31,12 +31,10 @@ from pod.main.models import get_nextautoincrement
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
-    from pod.podfile.models import CustomFileModel
     FILEPICKER = True
 else:
     FILEPICKER = False
     from pod.main.models import CustomImageModel
-    from pod.main.models import CustomFileModel
 
 if 'enrichment' in settings.THIRD_PARTY_APPS:
     ENRICHMENT = True
@@ -684,6 +682,7 @@ class Video(models.Model):
             logger.error("An error occured during get_json_to_index"
                          " for video %s: %s" % (self.id, e))
             return {}
+
 
 def remove_video_file(video):
     if video.video:

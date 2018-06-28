@@ -173,7 +173,7 @@ class Enrichment(models.Model):
         if (not self.title or self.title == '' or len(self.title) < 2 or
                 len(self.title) > 100):
             msg.append(_('Please enter a title from 2 to 100 characters.'))
-        if (self.start == '' or self.start < 0 or
+        if (self.start is None or self.start == '' or self.start < 0 or
                 self.start >= self.video.duration):
             msg.append(_('Please enter a correct start field between 0 and ' +
                          '{0}.'.format(self.video.duration - 1)))
@@ -264,12 +264,16 @@ def update_vtt(sender, instance=None, created=False, **kwargs):
 @receiver(post_delete, sender=Enrichment)
 def delete_vtt(sender, instance=None, created=False, **kwargs):
     list_enrichment = instance.video.enrichment_set.all()
-    enrichment_to_vtt(list_enrichment, instance.video)
+    if list_enrichment.count() > 0:
+        enrichment_to_vtt(list_enrichment, instance.video)
+    else:
+        EnrichmentVtt.objects.filter(video=instance.video).delete()
 
 
 class EnrichmentVtt(models.Model):
     video = models.OneToOneField(Video, verbose_name=_('Video'),
-                                 editable=False, on_delete=models.CASCADE)
+                                 editable=False, null=True,
+                                 on_delete=models.CASCADE)
     src = models.ForeignKey(CustomFileModel,
                             blank=True,
                             null=True,

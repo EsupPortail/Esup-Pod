@@ -132,7 +132,7 @@ def edit_enrichment_modify(request, video):
     else:
         return render(
             request,
-            'edit_enrichment.html',
+            'enrichment/edit_enrichment.html',
             {'video': video,
              'list_enrichment': list_enrichment,
              'form_enrichment': form_enrichment})
@@ -157,7 +157,7 @@ def edit_enrichment_delete(request, video):
     else:
         return render(
             request,
-            'edit_enrichment.html',
+            'enrichment/edit_enrichment.html',
             {'video': video,
              'list_enrichment': list_enrichment})
 
@@ -166,7 +166,7 @@ def edit_enrichment_cancel(request, video):
     list_enrichment = video.enrichment_set.all()
     return render(
         request,
-        'edit_enrichment.html',
+        'enrichment/edit_enrichment.html',
         {'video': video,
          'list_enrichment': list_enrichment})
 

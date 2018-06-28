@@ -61,6 +61,9 @@ class CustomImageModel(models.Model):
         return os.path.basename(self.file.path)
     name.fget.short_description = _('Get the file name')
 
+    def __str__(self):
+        return '%s (%s, %s)' % (self.name, self.file_type, self.file_size)
+
 
 class CustomFileModel(models.Model):
     file = models.ImageField(
@@ -85,6 +88,9 @@ class CustomFileModel(models.Model):
     def name(self):
         return os.path.basename(self.file.path)
     name.fget.short_description = _('Get the file name')
+
+    def __str__(self):
+        return '%s (%s, %s)' % (self.name, self.file_type, self.file_size)
 
 
 class LinkFooter(models.Model):

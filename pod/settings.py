@@ -41,12 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.admin',  # put it here for template override
     'pod.authentication',
     'pod.video',
+    'pod.podfile',
+    'pod.playlist',
     'pod.completion',
     'pod.chapter',
     'pod.enrichment',
-    'pod.playlist',
     'pod.video_search',
-    'pod.podfile',
     'pod.custom',
 ]
 

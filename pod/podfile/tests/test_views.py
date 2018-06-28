@@ -9,13 +9,19 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils.encoding import force_text
 from django.urls import reverse
 from django.test import Client
+from django.conf.urls import url
+from django.conf.urls import include
 
 from ..models import CustomFileModel
 from ..models import CustomImageModel
 from ..models import UserFolder
 
+from pod.urls import urlpatterns
+
 import json
 import os
+
+urlpatterns += [url(r'^podfile/', include('pod.podfile.urls')), ]
 
 ##
 # FOLDER VIEWS
@@ -23,6 +29,7 @@ import os
 
 
 @override_settings(
+    ROOT_URLCONF=__name__,
     MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
     DATABASES={
         'default': {

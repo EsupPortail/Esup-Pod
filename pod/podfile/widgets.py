@@ -17,7 +17,7 @@ class CustomFileWidget(widgets.TextInput):
 
     def render(self, name, value, attrs=None):
         document = None
-        
+
         if value:
             try:
                 if self.type == "file":

@@ -4,10 +4,32 @@ Unit tests for enrichment views
 from django.test import TestCase
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.urls import reverse
+from django.conf import settings
+from django.test import override_settings
+from django.conf.urls import url
+from django.conf.urls import include
 from pod.video.models import Video
-from pod.enrichment.models import Enrichment
+from ..models import Enrichment
+
+from pod.urls import urlpatterns
+
+import os
+
+urlpatterns += [url(r'^enrichment/', include('pod.enrichment.urls')), ]
 
 
+@override_settings(
+    ROOT_URLCONF=__name__,
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
 class EnrichmentViewsTestCase(TestCase):
 
     def setUp(self):
@@ -24,14 +46,16 @@ class EnrichmentViewsTestCase(TestCase):
 
     def test_video_enrichment(self):
         video = Video.objects.get(id=1)
-        response = self.client.get('/video_enrichment/{0}/'.format(video.slug))
+        url = reverse('enrichment:edit_enrichment',
+                      kwargs={'slug': video.slug})
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
         authenticate(username='test', password='hello')
         login = self.client.login(username='test', password='hello')
         self.assertTrue(login)
-        response = self.client.get('/video_enrichment/{0}/'.format(video.slug))
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'video_enrichment.html')
+        self.assertTemplateUsed(response, 'enrichment/edit_enrichment.html')
         self.assertContains(response, 'videotest')
         self.assertContains(response, 'list_enrich')
 
@@ -42,16 +66,18 @@ class EnrichmentViewsTestCase(TestCase):
         authenticate(username='test', password='hello')
         login = self.client.login(username='test', password='hello')
         self.assertTrue(login)
+        url = reverse('enrichment:edit_enrichment',
+                      kwargs={'slug': video.slug})
         response = self.client.post(
-            '/video_enrichment/{0}/'.format(video.slug),
+            url,
             data={'action': 'new'})
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'video_enrichment.html')
+        self.assertTemplateUsed(response, 'enrichment/edit_enrichment.html')
         self.assertContains(response, 'videotest')
         self.assertContains(response, 'list_enrich')
         self.assertContains(response, 'form_enrich')
         response = self.client.post(
-            '/video_enrichment/{0}/'.format(video.slug),
+            url,
             data={'action': 'save',
                   'enrich_id': None,
                   'video': 1,
@@ -63,7 +89,7 @@ class EnrichmentViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         result = Enrichment.objects.all()
         self.assertTrue(result)
-        self.assertTemplateUsed('video_enrichment.html')
+        self.assertTemplateUsed('enrichment/edit_enrichment.html')
         self.assertContains(response, 'videotest')
         self.assertContains(response, 'list_enrich')
         self.assertContains(response, 'testenrich')
@@ -76,8 +102,10 @@ class EnrichmentViewsTestCase(TestCase):
         authenticate(username='test', password='hello')
         login = self.client.login(username='test', password='hello')
         self.assertTrue(login)
+        url = reverse('enrichment:edit_enrichment',
+                      kwargs={'slug': video.slug})
         response = self.client.post(
-            '/video_enrichment/{0}/'.format(video.slug),
+            url,
             data={'action': 'save',
                   'enrich_id': None,
                   'video': 1,
@@ -91,7 +119,7 @@ class EnrichmentViewsTestCase(TestCase):
         self.assertTrue(result)
         result = Enrichment.objects.get(id=1)
         response = self.client.post(
-            '/video_enrichment/{0}/'.format(video.slug),
+            url,
             data={'action': 'save',
                   'enrich_id': result.id,
                   'video': 1,
@@ -101,20 +129,22 @@ class EnrichmentViewsTestCase(TestCase):
                   'type': 'weblink',
                   'weblink': 'http://test.com'})
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed('video_enrichment.html')
+        self.assertTemplateUsed('enrichment/edit_enrichment.html')
         self.assertContains(response, 'videotest')
         self.assertContains(response, 'list_enrich')
         self.assertContains(response, 'testenrich2')
 
         print(" ---> test_video_enrichment_edit : OK!")
 
-    def test_video_chapter_delete(self):
+    def test_video_enrichment_delete(self):
         video = Video.objects.get(id=1)
         authenticate(username='test', password='hello')
         login = self.client.login(username='test', password='hello')
         self.assertTrue(login)
+        url = reverse('enrichment:edit_enrichment',
+                      kwargs={'slug': video.slug})
         response = self.client.post(
-            '/video_enrichment/{0}/'.format(video.slug),
+            url,
             data={'action': 'save',
                   'enrich_id': None,
                   'video': 1,
@@ -128,7 +158,7 @@ class EnrichmentViewsTestCase(TestCase):
         self.assertTrue(result)
         result = Enrichment.objects.get(id=1)
         response = self.client.post(
-            '/video_enrichment/{0}/'.format(video.slug),
+            url,
             data={'action': 'delete',
                   'id': result.id})
         self.assertEqual(response.status_code, 200)

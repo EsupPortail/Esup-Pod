@@ -70,7 +70,7 @@
 	<a href="{% url 'video_edit' slug=video.slug %}" class="btn btn-info btn-sm" title="{% trans 'Back to video edit' %}">
 		{% trans 'Back to video edit' %}
 	</a>
-	<a href="{% url 'enrichment:edit_enrichment' slug=video.slug %}" class="btn btn-info btn-sm" title="{% trans 'See the enrich video' %}">
+	<a href="{% url 'enrichment:video_enrichment' slug=video.slug %}" class="btn btn-info btn-sm" title="{% trans 'See the enrich video' %}">
 		{% trans 'See the enrich video' %}
 	</a>
 	</div>
