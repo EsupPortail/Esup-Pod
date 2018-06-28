@@ -132,11 +132,13 @@ body {
     <li class="nav-item">
       <a class="nav-link" href="#embed">{% trans 'Embed/Share' %}</a>
     </li>
+    {% comment %}
     {% if video.enrichment_set.all %} {# todo after or video.interactive or video.accessible... #}
     <li class="nav-item">
       <a class="nav-link" href="#version">{% trans 'Version' %}</a>
     </li>
     {% endif %}
+    {% endcomment %}
   </ul>
 </nav>
 {% include 'videos/video-info.html'%}

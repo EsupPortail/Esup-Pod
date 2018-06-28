@@ -4,8 +4,11 @@
 
 {% block page_extra_head %}
 {{ block.super }} 
+<link rel="stylesheet" href="{% static 'css/videojs-slides.css' %}"/>
 <script src="{% static 'js/videojs-slides.js' %}"></script>
 {% endblock page_extra_head %}
+
+{% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
 
 {% block video-element %}
 
@@ -21,7 +24,15 @@
         <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
       </p>
       <track kind="metadata" src="{{video.enrichmentvtt.src.file.url}}">
+
+    {% for track in video.track_set.all%}
+      <track id= "track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.url }}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}">
+    {%endfor%}
     </video>
+
+    <form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
+    {% csrf_token %}
+    </form>
 
     <nav id="navbar-video" class="navbar navbar-light bg-light">
         <a class="navbar-brand" href="#">({% trans 'Enriched' %}) {{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}</a>
@@ -37,10 +48,9 @@
 {% endblock video-element %}
 
 {% block page_aside %}
-    {{ block.super }} 
-    <div class="card card-body">
-        <h5 class="card-title">
-            {% trans 'Informations' %}
+    <div class="card card-body p-2 mt-1">
+        <h5 class="card-title pl-2">
+            <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
         </h5>
         <div class="card-text">
             <p>{% trans 'To help you, the different types of enrichments have specific colors' %}:</p>
@@ -56,6 +66,7 @@
             <p>{% trans 'They are visible on the video playback bar.' %}</p>
         </div>
     </div>
+    {{ block.super }} 
 {% endblock page_aside %}
 
 {% block more_script %}
