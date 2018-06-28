@@ -4,8 +4,10 @@
 
 {% block page_extra_head %}
 {{ block.super }} 
+{% if video.enrichment_set.all %}
 <link rel="stylesheet" href="{% static 'css/videojs-slides.css' %}"/>
 <script src="{% static 'js/videojs-slides.js' %}"></script>
+{% endif %}
 {% endblock page_extra_head %}
 
 {% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
@@ -71,7 +73,7 @@
 
 {% block more_script %}
 {{block.super}}
-{% if not form %}
+{% if video.enrichment_set.all %}
 <script>
 player.ready(function() {
     var tracks = player.textTracks();

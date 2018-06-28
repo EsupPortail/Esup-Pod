@@ -2,6 +2,10 @@ body {
 /*min-height: 75rem;*/
 padding-top: 3.5rem;
 }
+#collapseAside {
+  max-height: 50rem;
+  overflow-y: auto; 
+}
 .pod-mt-7{
     margin-top: 3.5rem;
 }
