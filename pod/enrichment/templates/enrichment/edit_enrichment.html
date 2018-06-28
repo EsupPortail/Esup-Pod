@@ -76,7 +76,7 @@
 						{% endif %}
 					</div>
 					{% if not form_enrichment %}
-						<form id="form_new" class="get_form" action="{% url 'video_enrichment' slug=video.slug %}" method="POST">
+						<form id="form_new" class="get_form" action="{% url 'enrichment:video_enrichment' slug=video.slug %}" method="POST">
 							{% csrf_token %}
 							<input type="hidden" name="action" value="new"/>
 							<input type="submit" id="add_new_enrichment" value="{% trans 'Add a new enrichment' %}" class="btn btn-info"/>

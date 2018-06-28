@@ -115,21 +115,25 @@
       </div>
 </div>
 {% if request.user.is_staff or request.user.is_superuser %}
+    {% if THIRD_PARTY_APPS|length > 0 %}
     <div class="card card-body p-2 mt-1">
         <h5 class="card-title pl-2">Staff - {% trans "Alternative version" %}</h5>
         <div class="card-text">
-            <p>{% trans 'As a staff member you can add enrichments, interactivities or improve its accessability.' %}</p>
+            <p>{% trans 'As a staff member you can create other version of your video.' %}</p>
             <p>
                 <div class="input-group-button">
-                    <a href=" url 'video_enrichment' slug=form.instance.slug " title="{% trans 'Enrich the video' %}" class="p-0 m-0 btn btn-light btn-sm pl-1">
-                        <i data-feather="file-plus"></i>&nbsp;
+                    {% for app in THIRD_PARTY_APPS %}
+                    {% with urledit=app|add:':edit_'|add:app %}
+                    <a href="{% url urledit slug=form.instance.slug %}" title="{% trans app|add:' the video' %}" class="p-0 m-0 btn btn-light btn-sm pl-1">
+                        <i data-feather="file-plus"></i>&nbsp;{{app}}
                     </a>
-                    <!-- Interactive -->
-                    <!-- Accessible -->
+                    {% endwith %}
+                    {% endfor %}
                 </div>
             </p>
         </div>
     </div>
+    {% endif %}
     <div class="card card-body p-2 mt-1">
         <h5 class="card-title pl-2">{% trans 'Embed/Share (Private Mode)' %}</h5>
         <div class="card-text" >

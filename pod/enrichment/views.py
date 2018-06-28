@@ -43,7 +43,7 @@ def edit_enrichment(request, slug):
     else:
         return render(
             request,
-            'edit_enrichment.html',
+            'enrichment/edit_enrichment.html',
             {'video': video,
              'list_enrichment': list_enrichment})
 
@@ -62,7 +62,7 @@ def edit_enrichment_new(request, video):
     else:
         return render(
             request,
-            'edit_enrichment.html',
+            'enrichment/edit_enrichment.html',
             {'video': video,
              'list_enrichment': list_enrichment,
              'form_enrichment': form_enrichment})
@@ -95,7 +95,7 @@ def edit_enrichment_save(request, video):
         else:
             return render(
                 request,
-                'edit_enrichment.html',
+                'enrichment/edit_enrichment.html',
                 {'video': video,
                  'list_enrichment': list_enrichment})
     else:
@@ -112,7 +112,7 @@ def edit_enrichment_save(request, video):
         else:
             return render(
                 request,
-                'edit_enrichment.html',
+                'enrichment/edit_enrichment.html',
                 {'video': video,
                  'list_enrichment': list_enrichment,
                  'form_enrichment': form_enrichment})
