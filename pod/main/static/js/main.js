@@ -193,6 +193,7 @@ $(document).on("submit", "#video_notes_form", function (e) {
     var data_form = $( "#video_notes_form" ).serializeArray();
     send_form_data($( "#video_notes_form" ).attr("action"), data_form, "show_form_notes", "post");
 });
+/** PICTURE **/
 $(document).on("click", ".get_form_userpicture", function() {
 	send_form_data($(this).data('url'), {}, "append_picture_form", "get");
 });
@@ -204,6 +205,7 @@ $(document).on("submit", "#userpicture_form", function (e) {
     var data_form = $( "#userpicture_form" ).serializeArray();
 	send_form_data($( "#userpicture_form" ).attr("action"), data_form, "show_picture_form");
 });
+/** THEME **/
 $(document).on("submit", "#form_theme", function (e) {
     e.preventDefault();
     var data_form = $( "#form_theme" ).serializeArray();
@@ -230,6 +232,9 @@ $(document).on("submit", "form.get_form_theme", function (e) {
     	send_form_data(window.location.href, $(this).serializeArray(), "show_form_theme_"+action);
     }
 });
+/** FOLDER **/
+
+/** AJAX **/
 var send_form_data = function(url,data_form, fct, method="post") {
 	var jqxhr= '';
 	if(method=="post") jqxhr = $.post(url, data_form);

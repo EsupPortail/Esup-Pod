@@ -7,17 +7,11 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.apps import apps
 
 from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
-try:
-    from pod.filepicker.models import CustomImageModel
-    from pod.filepicker.models import UserDirectory
-except ImportError:
-    pass
 from pod.video.models import Video
 from pod.video.models import ViewCount
 from pod.video.models import get_storage_path_video
@@ -28,7 +22,6 @@ from pod.video.models import EncodingAudio
 from pod.video.models import PlaylistVideo
 from pod.video.models import EncodingLog
 from pod.video.models import EncodingStep
-from pod.video.models import VideoImageModel
 from pod.video.models import Notes
 
 from datetime import datetime
@@ -36,8 +29,13 @@ from datetime import timedelta
 
 import os
 
-FILEPICKER = True if apps.is_installed('pod.filepicker') else False
-
+if getattr(settings, 'USE_PODFILE', False):
+    FILEPICKER = True
+    from pod.podfile.models import CustomImageModel
+    from pod.podfile.models import UserFolder
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomImageModel
 
 # Create your tests here.
 """
@@ -358,16 +356,15 @@ class VideoTestCase(TestCase):
         fname, dot, extension = filename.rpartition('.')
 
         if FILEPICKER:
-            homedir, created = UserDirectory.objects.get_or_create(
+            homedir, created = UserFolder.objects.get_or_create(
                 name='Home',
-                owner=user,
-                parent=None)
+                owner=user)
             thumbnail = CustomImageModel.objects.create(
-                directory=homedir,
+                folder=homedir,
                 created_by=user,
                 file="blabla.jpg")
         else:
-            thumbnail = VideoImageModel.objects.create(file="blabla.jpg")
+            thumbnail = CustomImageModel.objects.create(file="blabla.jpg")
 
         video2 = Video.objects.create(
             type=type, title="Video2",

@@ -206,7 +206,7 @@ $(document).on('change','#page-video input#id_end',function() {
 $(document).on('click','#page-video span.getfromvideo a',function(e) {
     e.preventDefault();
     if(!(typeof player === 'undefined')) {
-        if($(this).context.id == "getfromvideo_start"){
+        if($(this).attr('id') == "getfromvideo_start"){
             $("input#id_start").val(parseInt(player.currentTime()));
             $("input#id_start").trigger('change');
         } else {

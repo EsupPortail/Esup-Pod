@@ -31,6 +31,7 @@
 	</div>
 </form>
 &nbsp;
+{% if request.user.is_staff %}
 <div class="panel-heading bg-primary text-white">
 	<h4 class="card-title">{% trans 'Import chapters' %}</h4>
 </div>
@@ -62,3 +63,4 @@
 	</div>
 </form>
 {{form_import.media}}
+{% endif %}

@@ -1,7 +1,10 @@
 from django.test import TestCase
+from django.test import override_settings
 from django.contrib.flatpages.models import FlatPage
 from django.conf import settings
 from django.contrib.sites.models import Site
+
+import os
 
 SITE_ID = getattr(settings, 'SITE_ID', 1)
 
@@ -9,8 +12,19 @@ SITE_ID = getattr(settings, 'SITE_ID', 1)
     test the flatepages
     Creation fo welcome page
 """
+# Add customImage, customFile, linkFooter
 
 
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
 class FlatepageTestCase(TestCase):
 
     def setUp(self):
@@ -45,19 +59,20 @@ class FlatepageTestCase(TestCase):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
         print(
-            "   --->  test_Flatepage_null_attribut of ChannelTestCase : OK !")
+            "   --->  test_Flatepage_null_attribut"
+            " of FlatepageTestCase : OK !")
 
     """
         test attributs when a channel have many attributs
     """
 
-    def test_Channel_with_attributs(self):
+    def test_Flatepage_with_attributs(self):
         flatPage = FlatPage.objects.get(url="/home/")
         self.assertQuerysetEqual(
             flatPage.sites.all(), Site.objects.filter(id=SITE_ID),
             transform=lambda x: x)
         self.assertEqual(flatPage.registration_required, False)
-        self.assertEqual(flatPage.title, "Accueil")
+        self.assertEqual(flatPage.title, "Home")  # langage code : en
         self.assertEqual(flatPage.title_fr, "Accueil")
         self.assertEqual(flatPage.title_en, "Home")
         self.assertEqual(flatPage.content_en, "<p>Welcome</p>\r\n")
@@ -65,7 +80,8 @@ class FlatepageTestCase(TestCase):
         response = self.client.get("/home/")
         self.assertEqual(response.status_code, 200)
         print(
-            "   --->  test_Channel_with_attributs of ChannelTestCase : OK !")
+            "   --->  test_Flatepage_with_attributs"
+            " of FlatepageTestCase : OK !")
 
     """
         test delete object

@@ -4,10 +4,19 @@ Django version : 1.11.10.
 """
 
 import os
+from .lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
+
 ##
 # flatpages
 ##
 SITE_ID = 1
+
+# Lang choices
+LANG_CHOICES = (
+    PREF_LANG_CHOICES
+    + (('', '----------'),)
+    + ALL_LANG_CHOICES
+)
 
 ##
 # The secret key for your particular Django installation.
@@ -204,3 +213,9 @@ DEFAULT_FROM_EMAIL = 'noreply@univ.fr'
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
 # ('captcha.helpers.noise_arcs','captcha.helpers.noise_dots',)
 CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
+
+##
+# THIRD PARTY APPS OPTIONNAL
+#
+USE_PODFILE = False
+THIRD_PARTY_APPS = []

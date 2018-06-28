@@ -1,7 +1,96 @@
 from django.db import models
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.flatpages.models import FlatPage
 from django.core.exceptions import ValidationError
+from django.template.defaultfilters import slugify
+from django.db import connection
+
+import os
+import mimetypes
+
+FILES_DIR = getattr(
+    settings, 'FILES_DIR', 'files')
+
+
+def get_nextautoincrement(model):
+    cursor = connection.cursor()
+    cursor.execute(
+        'SELECT Auto_increment FROM information_schema.tables ' +
+        'WHERE table_name="{0}";'.format(model._meta.db_table)
+    )
+    row = cursor.fetchone()
+    cursor.close()
+    return row[0]
+
+
+def get_upload_path_files(instance, filename):
+    fname, dot, extension = filename.rpartition('.')
+    try:
+        fname.index("/")
+        return os.path.join(FILES_DIR,
+                            '%s/%s.%s' % (os.path.dirname(fname),
+                                          slugify(os.path.basename(fname)),
+                                          extension))
+    except ValueError:
+        return os.path.join(FILES_DIR,
+                            '%s.%s' % (slugify(fname), extension))
+
+
+class CustomImageModel(models.Model):
+    file = models.ImageField(
+        _('Image'), null=True, upload_to=get_upload_path_files,
+        blank=True, max_length=255)
+
+    @property
+    def file_type(self):
+        filetype = mimetypes.guess_type(self.file.path)[0]
+        if filetype is None:
+            fname, dot, extension = self.file.path.rpartition('.')
+            filetype = extension.lower()
+        return filetype
+    file_type.fget.short_description = _('Get the file type')
+
+    @property
+    def file_size(self):
+        return os.path.getsize(self.file.path)
+    file_size.fget.short_description = _('Get the file size')
+
+    @property
+    def name(self):
+        return os.path.basename(self.file.path)
+    name.fget.short_description = _('Get the file name')
+
+    def __str__(self):
+        return '%s (%s, %s)' % (self.name, self.file_type, self.file_size)
+
+
+class CustomFileModel(models.Model):
+    file = models.ImageField(
+        _('Image'), null=True, upload_to=get_upload_path_files,
+        blank=True, max_length=255)
+
+    @property
+    def file_type(self):
+        filetype = mimetypes.guess_type(self.file.path)[0]
+        if filetype is None:
+            fname, dot, extension = self.file.path.rpartition('.')
+            filetype = extension.lower()
+        return filetype
+    file_type.fget.short_description = _('Get the file type')
+
+    @property
+    def file_size(self):
+        return os.path.getsize(self.file.path)
+    file_size.fget.short_description = _('Get the file size')
+
+    @property
+    def name(self):
+        return os.path.basename(self.file.path)
+    name.fget.short_description = _('Get the file name')
+
+    def __str__(self):
+        return '%s (%s, %s)' % (self.name, self.file_type, self.file_size)
 
 
 class LinkFooter(models.Model):

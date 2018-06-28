@@ -146,7 +146,7 @@
         <div class="list-group-item">
           <div class="form-group ">
             <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page' %}:</label>
-            <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="https://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+            <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
           </div>
         </div>
         <div class="list-group-item">
@@ -165,6 +165,7 @@
       </div>
     </p>
   </div>
+  {% comment %}
   {% if video.enrichment_set.all %}
   <hr/>
   <!-- Version -->
@@ -184,4 +185,5 @@
     <!-- Accessible -->
   </div>
   {% endif %}
+  {% endcomment %}
 </div>

@@ -108,4 +108,9 @@ player.on('firstplay', function(){
     });
   {% endif %}
 {% endif %}
+{% if video.chapter_set.all %}
+    player.videoJsChapters();
+    $('.vjs-big-play-button').css('z-index', 2)
+    $('.vjs-control-bar').css('z-index', 3);
+  {% endif %}
 </script>

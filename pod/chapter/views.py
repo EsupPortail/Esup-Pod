@@ -5,7 +5,6 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
 from pod.video.models import Video
@@ -19,8 +18,7 @@ ACTION = ['new', 'save', 'modify', 'delete', 'cancel', 'import', 'export']
 
 
 @csrf_protect
-@login_required
-@staff_member_required
+@login_required(redirect_field_name='referrer')
 def video_chapter(request, slug):
     video = get_object_or_404(Video, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:

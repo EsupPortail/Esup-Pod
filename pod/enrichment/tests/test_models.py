@@ -1,21 +1,37 @@
 """
 Unit tests for enrichment models
 """
-from django.apps import apps
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.exceptions import ValidationError
 from pod.video.models import Video
 from pod.video.models import Type
-from pod.enrichment.models import Enrichment
-if apps.is_installed('pod.filepicker'):
-    from pod.filepicker.models import CustomImageModel
-    from pod.filepicker.models import UserDirectory
-    from datetime import datetime
+from ..models import Enrichment, EnrichmentVtt
+from django.conf import settings
+from django.test import override_settings
+import os
+
+if getattr(settings, 'USE_PODFILE', False):
+    from pod.podfile.models import CustomImageModel
+    from pod.podfile.models import UserFolder
     FILEPICKER = True
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomImageModel
 
 
+@override_settings(
+    THIRD_PARTY_APPS=["enrichment"],
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
 class EnrichmentModelTestCase(TestCase):
 
     def setUp(self):
@@ -28,28 +44,26 @@ class EnrichmentModelTestCase(TestCase):
             video='test.mp4',
             duration=20
         )
+        currentdir = os.path.dirname(
+            os.path.dirname(os.path.abspath(__file__)))
+        simplefile = SimpleUploadedFile(
+            name='testimage.jpg',
+            content=open(
+                os.path.join(
+                    currentdir, 'tests', 'testimage.jpg'), 'rb').read(),
+            content_type='image/jpeg')
+
         if FILEPICKER:
-            testfile = SimpleUploadedFile(
-                name='testimage.jpg',
-                content=open(
-                    './pod/enrichment/tests/testimage.jpg', 'rb').read(),
-                content_type='text/plain')
-            home = UserDirectory.objects.create(name='Home', owner=owner)
-            file = CustomImageModel.objects.create(
+            home = UserFolder.objects.get(name='home', owner=owner)
+            customImage = CustomImageModel.objects.create(
                 name='testimage',
-                date_created=datetime.now(),
-                date_modified=datetime.now(),
+                description='testimage',
                 created_by=owner,
-                modified_by=owner,
-                directory=home,
-                file=testfile
-            )
+                folder=home,
+                file=simplefile)
         else:
-            file = SimpleUploadedFile(
-                name='testimage.jpg',
-                content=open(
-                    './pod/enrichment/tests/testimage.jpg', 'rb').read(),
-                content_type='text/plain')
+            customImage = CustomImageModel.objects.create(
+                file=simplefile)
         Enrichment.objects.create(
             video=video,
             title='testimg',
@@ -57,7 +71,7 @@ class EnrichmentModelTestCase(TestCase):
             end=2,
             stop_video=True,
             type='image',
-            image=file)
+            image=customImage)
         Enrichment.objects.create(
             video=video,
             title='testlink',
@@ -73,11 +87,7 @@ class EnrichmentModelTestCase(TestCase):
         self.assertEqual(enrichment.end, 2)
         self.assertTrue(enrichment.stop_video)
         self.assertEqual(enrichment.type, 'image')
-        if FILEPICKER:
-            self.assertEqual(enrichment.image.name, 'testimage')
-        else:
-            self.assertEqual(enrichment.image.name, 'testimage.jpg')
-
+        self.assertTrue('testimage' in enrichment.image.name)
         print(" ---> test_attributs_full : OK ! --- EnrichmentModel")
 
     def test_attributs(self):
@@ -133,12 +143,15 @@ class EnrichmentModelTestCase(TestCase):
         enrichment.start = 1
         enrichment.end = 3
         self.assertRaises(ValidationError, enrichment.clean)
-
         print(" ---> test_overlap : OK ! --- EnrichmentModel")
 
     def test_delete(self):
+        video = Video.objects.get(id=1)
+        list_enrichment = video.enrichment_set.all()
+        self.assertEqual(list_enrichment.count(), 2)
+        self.assertEqual(EnrichmentVtt.objects.filter(video=video).count(), 1)
         Enrichment.objects.get(id=1).delete()
         Enrichment.objects.get(id=2).delete()
         self.assertTrue(Enrichment.objects.all().count() == 0)
-
+        self.assertEqual(EnrichmentVtt.objects.filter(video=video).count(), 0)
         print(" ---> test_delete : OK ! --- EnrichmentModel")

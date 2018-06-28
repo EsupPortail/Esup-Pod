@@ -1,4 +1,4 @@
-from django.apps import apps
+from django.conf import settings
 from django.contrib import admin
 from pod.completion.models import Contributor
 from pod.completion.models import Document
@@ -6,7 +6,8 @@ from pod.completion.models import Overlay
 from pod.completion.models import Track
 from pod.completion.forms import DocumentAdminForm
 from pod.completion.forms import TrackAdminForm
-if apps.is_installed('pod.filepicker'):
+FILEPICKER = False
+if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
 
 
@@ -48,7 +49,16 @@ class DocumentAdmin(admin.ModelAdmin):
     search_fields = ['id', 'document__name', 'video__title']
 
     class Media:
-        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
+        js = (
+            'js/filewidget.js',
+            'feather-icons/feather.min.js',
+            'bootstrap-4/js/bootstrap.min.js')
 
 
 admin.site.register(Document, DocumentAdmin)
@@ -73,7 +83,16 @@ class TrackAdmin(admin.ModelAdmin):
     search_fields = ['id', 'src__name', 'kind', 'video__title']
 
     class Media:
-        js = ('js/jquery-3.3.1.min.js', 'js/jquery.overlay.js',)
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
+        js = (
+            'js/filewidget.js',
+            'feather-icons/feather.min.js',
+            'bootstrap-4/js/bootstrap.min.js')
 
 
 admin.site.register(Track, TrackAdmin)

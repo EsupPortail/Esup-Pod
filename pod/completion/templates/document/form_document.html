@@ -1,7 +1,7 @@
 <!-- HTML for document form. Don't use this file alone it must be integrated into another template ! -->
 {% load i18n %}
 {% load staticfiles %}
-<form id="form_document" action="{% url 'video_completion_document' slug=video.slug %}" method="POST">
+<form id="form_document" action="{% url 'video_completion_document' slug=video.slug %}" method="POST" class="completion">
 	{% csrf_token %}
 	<div id="form_content" class="form-container">
 		{% if form_document.errors or form_document.non_field_errors %}

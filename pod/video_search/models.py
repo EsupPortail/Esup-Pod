@@ -7,7 +7,7 @@ from django.db.models.signals import post_save, post_delete
 # do it  with contributor, overlay, chapter etc.
 @receiver(post_save, sender=Video)
 def update_video_index(sender, instance=None, created=False, **kwargs):
-    if instance.is_draft is False:
+    if instance.is_draft is False and instance.encoding_in_progress is False:
         index_es(instance)
     else:
         delete_es(instance)

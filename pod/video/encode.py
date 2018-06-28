@@ -5,8 +5,6 @@ from django.core.mail import mail_managers
 from django.utils.translation import ugettext_lazy as _
 from django.core.files.images import ImageFile
 from django.core.files import File
-from django.apps import apps
-
 
 from pod.video.models import VideoRendition
 from pod.video.models import EncodingVideo
@@ -14,7 +12,7 @@ from pod.video.models import EncodingAudio
 from pod.video.models import EncodingLog
 from pod.video.models import PlaylistVideo
 from pod.video.models import Video
-from pod.video.models import VideoImageModel
+
 from pod.video.models import EncodingStep
 
 from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
@@ -30,14 +28,13 @@ import re
 import tempfile
 import threading
 
-if apps.is_installed('pod.filepicker'):
-    try:
-        from pod.filepicker.models import CustomImageModel
-        from pod.filepicker.models import UserDirectory
-    except ImportError:
-        pass
-
-FILEPICKER = True if apps.is_installed('pod.filepicker') else False
+if getattr(settings, 'USE_PODFILE', False):
+    FILEPICKER = True
+    from pod.podfile.models import CustomImageModel
+    from pod.podfile.models import UserFolder
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomImageModel
 
 FFMPEG = getattr(settings, 'FFMPEG', 'ffmpeg')
 FFPROBE = getattr(settings, 'FFPROBE', 'ffprobe')
@@ -928,16 +925,14 @@ def create_and_save_thumbnails(source, image_width, video_id):
         if check_file(thumbnailfilename):
             if FILEPICKER:
                 video_to_encode = Video.objects.get(id=video_id)
-                homedir, created = UserDirectory.objects.get_or_create(
-                    name='Home',
-                    owner=video_to_encode.owner,
-                    parent=None)
-                videodir, created = UserDirectory.objects.get_or_create(
+                homedir, created = UserFolder.objects.get_or_create(
+                    name='home',
+                    owner=video_to_encode.owner)
+                videodir, created = UserFolder.objects.get_or_create(
                     name='%s' % video_to_encode.slug,
-                    owner=video_to_encode.owner,
-                    parent=homedir)
+                    owner=video_to_encode.owner)
                 thumbnail = CustomImageModel(
-                    directory=videodir,
+                    folder=videodir,
                     created_by=video_to_encode.owner
                 )
                 thumbnail.file.save(
@@ -950,7 +945,7 @@ def create_and_save_thumbnails(source, image_width, video_id):
                     video_to_encode.thumbnail = thumbnail
                     video_to_encode.save()
             else:
-                thumbnail = VideoImageModel()
+                thumbnail = CustomImageModel()
                 thumbnail.file.save(
                     "%d_%s.png" % (video_id, i),
                     File(open(thumbnailfilename, "rb")),

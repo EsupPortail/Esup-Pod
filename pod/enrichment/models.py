@@ -1,62 +1,89 @@
-import os
-
-from django.apps import apps
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db import connection
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
+from django.dispatch import receiver
+from django.db.models.signals import post_save, post_delete
+from django.core.files import File
 from ckeditor.fields import RichTextField
+from webvtt import WebVTT, Caption
+from tempfile import NamedTemporaryFile
+
 from pod.video.models import Video
-if apps.is_installed('pod.filepicker'):
-    from pod.filepicker.models import CustomImageModel
-    from pod.filepicker.models import CustomFileModel
+from pod.main.models import get_nextautoincrement
+
+import os
+import datetime
+
+if getattr(settings, 'USE_PODFILE', False):
+    from pod.podfile.models import CustomImageModel
+    from pod.podfile.models import CustomFileModel
+    from pod.podfile.models import UserFolder
     FILEPICKER = True
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomImageModel
+    from pod.main.models import CustomFileModel
+
 FILES_DIR = getattr(
     settings, 'FILES_DIR', 'files')
 
 
-def get_nextautoincrement(model):
-    cursor = connection.cursor()
-    cursor.execute(
-        'SELECT Auto_increment FROM information_schema.tables ' +
-        'WHERE table_name="{0}";'.format(model._meta.db_table)
-    )
-    row = cursor.fetchone()
-    cursor.close()
-    return row[0]
+def enrichment_to_vtt(list_enrichment, video):
+    webvtt = WebVTT()
+    for enrich in list_enrichment:
+        start = datetime.datetime.utcfromtimestamp(
+            enrich.start).strftime('%H:%M:%S.%f')[:-3]
+        end = datetime.datetime.utcfromtimestamp(
+            enrich.end).strftime('%H:%M:%S.%f')[:-3]
+        url = enrichment_to_vtt_type(enrich)
+        caption = Caption(
+            '{0}'.format(start),
+            '{0}'.format(end),
+            [
+                '{',
+                '"title": "{0}",'.format(enrich.title),
+                '"type": "{0}",'.format(enrich.type),
+                '"url": "{0}"'.format(url),
+                '}'
+            ]
+        )
+        caption.identifier = enrich.slug
+        webvtt.captions.append(caption)
+    temp_vtt_file = NamedTemporaryFile(suffix='.vtt')
+    with open(temp_vtt_file.name, 'w') as f:
+        webvtt.write(f)
+    if FILEPICKER:
+        videodir, created = UserFolder.objects.get_or_create(
+            name='%s' % video.slug,
+            owner=video.owner)
+        enrichmentFile, created = CustomFileModel.objects.get_or_create(
+            name='enrichment',
+            folder=videodir,
+            created_by=video.owner)
+        if enrichmentFile.file and os.path.isfile(enrichmentFile.file.path):
+            os.remove(enrichmentFile.file.path)
+    else:
+        enrichmentFile, created = CustomFileModel.objects.get_or_create()
+    enrichmentFile.file.save("enrichment.vtt", File(temp_vtt_file))
+    enrichmentVtt, created = EnrichmentVtt.objects.get_or_create(video=video)
+    enrichmentVtt.src = enrichmentFile
+    enrichmentVtt.save()
+    return enrichmentFile.file.path
 
 
-def get_upload_path_files(instance, filename):
-    fname, dot, extension = filename.rpartition('.')
-    try:
-        fname.index("/")
-        return os.path.join(FILES_DIR,
-                            '%s/%s.%s' % (os.path.dirname(fname),
-                                          slugify(os.path.basename(fname)),
-                                          extension))
-    except ValueError:
-        return os.path.join(FILES_DIR,
-                            '%s.%s' % (slugify(fname), extension))
-
-
-class EnrichmentImage(models.Model):
-    file = models.ImageField(
-        _('Image'),
-        null=True,
-        upload_to=get_upload_path_files,
-        blank=True,
-        max_length=255)
-
-
-class EnrichmentFile(models.Model):
-    file = models.FileField(
-        _('File'),
-        null=True,
-        upload_to=get_upload_path_files,
-        blank=True,
-        max_length=255)
+def enrichment_to_vtt_type(enrich):
+    if enrich.type == 'image':
+        return enrich.image.file.url
+    elif enrich.type == 'document':
+        return enrich.document.file.url
+    elif enrich.type == 'richtext':
+        return ''.join(enrich.richtext.splitlines())
+    elif enrich.type == 'weblink':
+        return enrich.weblink
+    elif enrich.type == 'embed':
+        return enrich.embed
 
 
 class Enrichment(models.Model):
@@ -97,24 +124,15 @@ class Enrichment(models.Model):
         choices=ENRICH_CHOICES,
         null=True,
         blank=True)
-    if FILEPICKER:
-        image = models.ForeignKey(
-            CustomImageModel, verbose_name=_('Image'), null=True, blank=True)
-        document = models.ForeignKey(
-            CustomFileModel,
-            verbose_name=_('Document'),
-            null=True,
-            blank=True,
-            help_text=_(u'Integrate an document (PDF, text, html)'))
-    else:
-        image = models.ForeignKey(
-            EnrichmentImage, verbose_name=('Image'), null=True, blank=True)
-        document = models.ForeignKey(
-            EnrichmentFile,
-            verbose_name=('Document'),
-            null=True,
-            blank=True,
-            help_text=_(u'Integrate an document (PDF, text, html)'))
+
+    image = models.ForeignKey(
+        CustomImageModel, verbose_name=_('Image'), null=True, blank=True)
+    document = models.ForeignKey(
+        CustomFileModel,
+        verbose_name=_('Document'),
+        null=True,
+        blank=True,
+        help_text=_(u'Integrate an document (PDF, text, html)'))
     richtext = RichTextField(_('Richtext'), config_name='complete', blank=True)
     weblink = models.URLField(
         _(u'Web link'), max_length=200, null=True, blank=True)
@@ -155,7 +173,7 @@ class Enrichment(models.Model):
         if (not self.title or self.title == '' or len(self.title) < 2 or
                 len(self.title) > 100):
             msg.append(_('Please enter a title from 2 to 100 characters.'))
-        if (not self.start or self.start == '' or self.start < 0 or
+        if (self.start is None or self.start == '' or self.start < 0 or
                 self.start >= self.video.duration):
             msg.append(_('Please enter a correct start field between 0 and ' +
                          '{0}.'.format(self.video.duration - 1)))
@@ -235,3 +253,40 @@ class Enrichment(models.Model):
 
     def __str__(self):
         return u'Media : {0} - Video: {1}'.format(self.title, self.video)
+
+
+@receiver(post_save, sender=Enrichment)
+def update_vtt(sender, instance=None, created=False, **kwargs):
+    list_enrichment = instance.video.enrichment_set.all()
+    enrichment_to_vtt(list_enrichment, instance.video)
+
+
+@receiver(post_delete, sender=Enrichment)
+def delete_vtt(sender, instance=None, created=False, **kwargs):
+    list_enrichment = instance.video.enrichment_set.all()
+    if list_enrichment.count() > 0:
+        enrichment_to_vtt(list_enrichment, instance.video)
+    else:
+        EnrichmentVtt.objects.filter(video=instance.video).delete()
+
+
+class EnrichmentVtt(models.Model):
+    video = models.OneToOneField(Video, verbose_name=_('Video'),
+                                 editable=False, null=True,
+                                 on_delete=models.CASCADE)
+    src = models.ForeignKey(CustomFileModel,
+                            blank=True,
+                            null=True,
+                            verbose_name=_('Subtitle file'))
+
+    def clean(self):
+        msg = list()
+        msg = self.verify_attributs() + self.verify_not_same_track()
+        if len(msg) > 0:
+            raise ValidationError(msg)
+
+    def verify_attributs(self):
+        msg = list()
+        if 'vtt' not in self.src.file_type:
+            msg.append(_('Only ".vtt" format is allowed.'))
+        return msg

@@ -1,9 +1,11 @@
 from django import forms
 from pod.authentication.models import Owner
-from pod.filepicker.widgets import CustomFilePickerWidget
-from django.apps import apps
+from django.conf import settings
 
-FILEPICKER = True if apps.is_installed('pod.filepicker') else False
+FILEPICKER = False
+if getattr(settings, 'USE_PODFILE', False):
+    from pod.podfile.widgets import CustomFileWidget
+    FILEPICKER = True
 
 
 class OwnerAdminForm(forms.ModelForm):
@@ -11,9 +13,8 @@ class OwnerAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(OwnerAdminForm, self).__init__(*args, **kwargs)
         if FILEPICKER:
-            pickers = {'image': "img"}
-            self.fields['userpicture'].widget = CustomFilePickerWidget(
-                pickers=pickers)
+            self.fields['userpicture'].widget = CustomFileWidget(
+                type="image")
 
     class Meta(object):
         model = Owner
