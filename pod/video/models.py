@@ -369,11 +369,6 @@ class Video(models.Model):
         _('Video'),  upload_to=get_storage_path_video, max_length=255,
         help_text=_(
             'You can send an audio or video file.'))
-    allow_downloading = models.BooleanField(
-        _('allow downloading'), default=False, help_text=_(
-            'Check this box if you to allow downloading of the encoded files'))
-    is_360 = models.BooleanField(_('video 360'), default=False, help_text=_(
-        'Check this box if you want to use the 360 player for the video'))
     title = models.CharField(
         _('Title'),
         max_length=250,
@@ -387,10 +382,8 @@ class Video(models.Model):
             'a short label containing only letters, '
             'numbers, underscore or dash top.'),
         editable=False)
+    type = models.ForeignKey(Type, verbose_name=_('Type'))
     owner = models.ForeignKey(User, verbose_name=_('Owner'))
-    date_added = models.DateTimeField(_('Date added'), default=timezone.now)
-    date_evt = models.DateField(
-        _('Date of event'), default=date.today, blank=True, null=True)
     description = RichTextField(
         _('Description'),
         config_name='complete',
@@ -398,6 +391,9 @@ class Video(models.Model):
         help_text=_("In this field you can describe your content, "
                     "add all needed related information, and "
                     "format the result using the toolbar."))
+    date_added = models.DateTimeField(_('Date added'), default=timezone.now)
+    date_evt = models.DateField(
+        _('Date of event'), default=date.today, blank=True, null=True)
     cursus = models.CharField(
         _('University course'), max_length=1,
         choices=CURSUS_CODES, default="0",
@@ -407,8 +403,37 @@ class Video(models.Model):
         _('Main language'), max_length=2,
         choices=LANG_CHOICES, default=get_language(),
         help_text=_("Select the main language used in the content."))
-    duration = models.IntegerField(
-        _('Duration'), default=0, editable=False, blank=True)
+    tags = TagField(help_text=_(
+        'Separate tags with spaces, '
+        'enclose the tags consist of several words in quotation marks.'),
+        verbose_name=_('Tags'))
+    discipline = models.ManyToManyField(
+        Discipline,
+        blank=True,
+        verbose_name=_('Disciplines'),
+        help_text=_('Hold down "Control", or "Command" '
+                    'on a Mac, to select more than one.'))
+    licence = models.CharField(
+        _('Licence'), max_length=8,
+        choices=LICENCE_CHOICES, blank=True, null=True)
+    channel = models.ManyToManyField(
+        Channel,
+        verbose_name=_('Channels'),
+        blank=True,
+        help_text=_('Hold down "Control", or "Command" '
+                    'on a Mac, to select more than one.'))
+    theme = models.ManyToManyField(
+        Theme,
+        verbose_name=_('Themes'),
+        blank=True,
+        help_text=_('Hold down "Control", or "Command" '
+                    'on a Mac, to select more than one.'))
+    allow_downloading = models.BooleanField(
+        _('allow downloading'), default=False, help_text=_(
+            'Check this box if you to allow downloading of the encoded files'))
+    is_360 = models.BooleanField(_('video 360'), default=False, help_text=_(
+        'Check this box if you want to use the 360 player for the video'))
+
     is_draft = models.BooleanField(
         verbose_name=_('Draft'),
         help_text=_(
@@ -429,39 +454,18 @@ class Video(models.Model):
         help_text=_(
             'Viewing this video will not be possible without this password.'),
         max_length=50, blank=True, null=True)
-    tags = TagField(help_text=_(
-        'Separate tags with spaces, '
-        'enclose the tags consist of several words in quotation marks.'),
-        verbose_name=_('Tags'))
+
     thumbnail = models.ForeignKey(CustomImageModel, models.SET_NULL,
                                   blank=True, null=True,
                                   verbose_name=_('Thumbnails'))
+    duration = models.IntegerField(
+        _('Duration'), default=0, editable=False, blank=True)
     overview = models.ImageField(
         _('Overview'), null=True, upload_to=get_storage_path_video,
         blank=True, max_length=255, editable=False)
-    type = models.ForeignKey(Type, verbose_name=_('Type'),
-                             default=DEFAULT_TYPE_ID)
-    discipline = models.ManyToManyField(
-        Discipline,
-        blank=True,
-        verbose_name=_('Disciplines'),
-        help_text=_('Hold down "Control", or "Command" '
-                    'on a Mac, to select more than one.'))
-    channel = models.ManyToManyField(
-        Channel,
-        verbose_name=_('Channels'),
-        blank=True,
-        help_text=_('Hold down "Control", or "Command" '
-                    'on a Mac, to select more than one.'))
-    theme = models.ManyToManyField(
-        Theme,
-        verbose_name=_('Themes'),
-        blank=True,
-        help_text=_('Hold down "Control", or "Command" '
-                    'on a Mac, to select more than one.'))
-    licence = models.CharField(
-        _('Licence'), max_length=8,
-        choices=LICENCE_CHOICES, blank=True, null=True)
+    # type = models.ForeignKey(Type, verbose_name=_('Type'),
+    #                          default=DEFAULT_TYPE_ID)
+
     encoding_in_progress = models.BooleanField(
         _('Encoding in progress'), default=False, editable=False)
     is_video = models.BooleanField(

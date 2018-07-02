@@ -138,6 +138,10 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
         ])
     ]))
 
+VIDEO_FORM_FIELDS = getattr(
+    settings,
+    'VIDEO_FORM_FIELDS', '__all__')
+
 
 CHANNEL_FORM_FIELDS_HELP_TEXT = getattr(
     settings,
@@ -317,12 +321,14 @@ class VideoForm(forms.ModelForm):
                     channel__in=user_channels).order_by('channel', 'title')
                 self.fields["theme"].queryset = list_theme
             else:
-                self.fields['channel'].widgets = forms.HiddenInput()
-                self.fields['theme'].widgets = forms.HiddenInput()
+                #self.fields['channel'].widget = forms.HiddenInput()
+                #self.fields['theme'].widget = forms.HiddenInput()
+                del self.fields['theme']
+                del self.fields['channel']
 
     class Meta(object):
         model = Video
-        fields = '__all__'
+        fields = VIDEO_FORM_FIELDS
         widgets = {
             # 'date_added': widgets.AdminSplitDateTime,
             'date_evt': widgets.AdminDateWidget,

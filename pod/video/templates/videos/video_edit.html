@@ -49,6 +49,7 @@
         <fieldset>
             {% if form.errors %}
             <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+            {{form.errors}}
             {% endif %}
             {% if form.instance.encoding_in_progress %}
             <p class="text-info">
