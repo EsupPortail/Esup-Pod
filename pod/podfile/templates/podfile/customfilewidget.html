@@ -8,7 +8,7 @@
     {% else %}<i data-feather="file"></i>&nbsp;{%endif%}
 <strong>{{document.name}}</strong>&nbsp;({{document.file_type}} - {{document.file.size|filesizeformat}})
 </span>
-<button type="button" class="btn btn-primary btn-fileinput" data-toggle="modal" data-target="#fileModal">
+<button type="button" class="btn btn-primary btn-fileinput" data-toggle="modal" data-target="#fileModal_{{id}}">
   {% trans 'Change file' %}
 </button>
 {% else %}

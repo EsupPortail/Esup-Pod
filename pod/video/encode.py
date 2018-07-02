@@ -108,10 +108,12 @@ HELP_MAIL = getattr(settings, 'HELP_MAIL', 'noreply@univ.fr')
 
 def start_encode(video_id):
     log.info("START ENCODE VIDEO ID %s" % video_id)
+    """
     t = threading.Thread(target=encode_video,
                          args=[video_id])
     t.setDaemon(True)
     t.start()
+    """
 
 
 # ##########################################################################

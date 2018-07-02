@@ -424,7 +424,11 @@ var videocheck = function(form,event) {
                 $("#video_form fieldset").hide();
                 $("#video_form button").hide();
                 $("#js-process").show();
-                window.scrollTo($("#js-process").scrollTop(), 0); 
+                window.scrollTo($("#js-process").scrollTop(), 0);
+                if(!show_progress_bar(form)) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
             }
         } else {
             window.scrollTo($("#video_form").scrollTop(), 0); 
