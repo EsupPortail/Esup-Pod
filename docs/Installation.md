@@ -186,3 +186,50 @@ Successfully create index Video
 ```
 
 ## Mise en route
+### Base de données
+Lancer le script présent à la racine afin de créer les fichier de migration, puis de les lancer afin de créer la base de données
+
+```
+(django_pod) pod@Pod:~/django_projects/podv2$ sh create_data_base.sh 
+```
+### SuperUtilisateur
+
+Il faut créer un premier utilisateur qui aura tous les pouvoirs sur votre instance.
+
+```
+(django_pod) pod@Pod:~/django_projects/podv2$ python manage.py createsuperuser
+```
+
+### Tests
+
+Enfin afin de vérifier que votre instance est opérationnelle, il faut lancer les tests unitaires :
+
+```
+(django_pod) pod@Pod:~/django_projects/podv2$ python manage.py test
+```
+
+### Serveur de développement
+
+Le serveur de développement permet de tester vos futurs modifications facilement.
+
+N'hésitez pas à lancer le serveur de développement pour vérifier vos modifications au fur et à mesure.
+
+À ce niveau, vous devriez avoir le site en français et en anglais et voir l'ensemble de la page d'accueil.
+
+```
+(django_pod) pod@Pod:~/django_projects/podv2$ python manage.py python manage.py runserver ADRESSE_IP/NOM_DNS:8080
+```
+
+### - Attention -
+
+------
+> ### Avant la mise en production, il faut vérifier le fonctionnement de la plateforme dont l'ajout d'une vidéo, son encodage et sa suppression.
+> 
+> ### Attention, pour ajouter une vidéo, il doit y avoir au moins un type de vidéo disponible. Si vous avez correctement peuplé votre base de données avec le fichier initial_data.json vous devez au moins avoir other/autres.
+> 
+> ### il faut vérifier l'authentification CAS, le moteur de recherche etc. 
+> 
+> ### ==> Voir paramétrage / customization
+      
+------
+
