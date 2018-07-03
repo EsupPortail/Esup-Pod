@@ -9,7 +9,7 @@ from django.conf import settings
 from django.test import override_settings
 from django.conf.urls import url
 from django.conf.urls import include
-from pod.video.models import Video
+from pod.video.models import Video, Type
 from ..models import Enrichment
 
 from pod.urls import urlpatterns
@@ -31,6 +31,7 @@ urlpatterns += [url(r'^enrichment/', include('pod.enrichment.urls')), ]
     LANGUAGE_CODE='en'
 )
 class EnrichmentViewsTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         owner = User.objects.create(
@@ -41,7 +42,8 @@ class EnrichmentViewsTestCase(TestCase):
             title='videotest',
             owner=owner,
             video='test.mp4',
-            duration=20
+            duration=20,
+            type=Type.objects.get(id=1)
         )
 
     def test_video_enrichment(self):

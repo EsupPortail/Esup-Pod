@@ -38,7 +38,8 @@ class ChannelTestView(TestCase):
             channel=Channel.objects.get(title="ChannelTest1"))
         user = User.objects.create(username="pod", password="pod1234pod")
         v = Video.objects.create(
-            title="Video1", owner=user, video="test.mp4", is_draft=False)
+            title="Video1", owner=user, video="test.mp4", is_draft=False,
+            type=Type.objects.get(id=1))
         v.channel.add(c)
         v.save()
 
@@ -300,13 +301,17 @@ class MyVideosTestView(TestCase):
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
         Video.objects.create(
-            title="Video1", owner=user, video="test1.mp4", is_draft=False)
+            title="Video1", owner=user, video="test1.mp4", is_draft=False,
+            type=Type.objects.get(id=1))
         Video.objects.create(
-            title="Video2", owner=user, video="test2.mp4")
+            title="Video2", owner=user, video="test2.mp4",
+            type=Type.objects.get(id=1))
         Video.objects.create(
-            title="Video3", owner=user, video="test3.mp4", is_draft=False)
+            title="Video3", owner=user, video="test3.mp4", is_draft=False,
+            type=Type.objects.get(id=1))
         Video.objects.create(
-            title="Video4", owner=user2, video="test4.mp4", is_draft=False)
+            title="Video4", owner=user2, video="test4.mp4", is_draft=False,
+            type=Type.objects.get(id=1))
         print(" --->  SetUp of MyChannelsTestView : OK !")
 
     def test_get_myvideos_view(self):
@@ -454,7 +459,7 @@ class VideoTestView(TestCase):
         Group.objects.create(name='member')
         Video.objects.create(
             title="Video1", owner=user,
-            video="test1.mp4")
+            video="test1.mp4", type=Type.objects.get(id=1))
 
     def test_video_get_request(self):
         v = Video.objects.get(title="Video1")
@@ -535,7 +540,7 @@ class VideoEditTestView(TestCase):
         User.objects.create(username="pod2", password="pod1234pod")
         Video.objects.create(
             title="Video1", owner=user,
-            video="test1.mp4")
+            video="test1.mp4", type=Type.objects.get(id=1))
         print(" --->  SetUp of VideoEditTestView : OK !")
 
     def test_video_edit_get_request(self):
@@ -628,13 +633,14 @@ class VideoEditTestView(TestCase):
     LANGUAGE_CODE='en'
 )
 class video_deleteTestView(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
         User.objects.create(username="pod2", password="pod1234pod")
         Video.objects.create(
             title="Video1", owner=user,
-            video="test1.mp4")
+            video="test1.mp4", type=Type.objects.get(id=1))
         print(" --->  SetUp of video_deleteTestView : OK !")
 
     def test_video_delete_get_request(self):
@@ -684,12 +690,13 @@ class video_deleteTestView(TestCase):
     LANGUAGE_CODE='en'
 )
 class video_notesTestView(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
         Video.objects.create(
             title="Video1", owner=user,
-            video="test1.mp4")
+            video="test1.mp4", type=Type.objects.get(id=1))
         print(" --->  SetUp of video_notesTestView : OK !")
 
     def test_video_notesTestView_get_request(self):
@@ -750,12 +757,13 @@ class video_notesTestView(TestCase):
     LANGUAGE_CODE='en'
 )
 class video_countTestView(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
         Video.objects.create(
             title="Video1", owner=user,
-            video="test1.mp4")
+            video="test1.mp4", type=Type.objects.get(id=1))
         print(" --->  SetUp of video_countTestView : OK !")
 
     def test_video_countTestView_get_request(self):

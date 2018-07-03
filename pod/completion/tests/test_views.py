@@ -1,13 +1,16 @@
 """
 Unit tests for completion views
 """
+import os
+
 from django.conf import settings
 from django.test import TestCase
+from django.test import override_settings
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
-from pod.video.models import Video
+from pod.video.models import Video, Type
 from pod.completion.models import Contributor
 from pod.completion.models import Document
 from pod.completion.models import Overlay
@@ -22,7 +25,18 @@ else:
     from pod.main.models import CustomFileModel
 
 
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
 class CompletionViewsTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         user = User.objects.create(username='test', password='azerty')
@@ -35,12 +49,14 @@ class CompletionViewsTestCase(TestCase):
         Video.objects.create(
             title='videotest',
             owner=user,
-            video='test.mp4'
+            video='test.mp4',
+            type=Type.objects.get(id=1)
         )
         Video.objects.create(
             title='videotest2',
             owner=staff,
-            video='test.mp4'
+            video='test.mp4',
+            type=Type.objects.get(id=1)
         )
 
     def test_video_completion_user(self):
@@ -77,7 +93,18 @@ class CompletionViewsTestCase(TestCase):
         print(" ---> test_video_completion_staff : OK!")
 
 
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
 class CompletionContributorViewsTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         staff = User.objects.create(
@@ -87,7 +114,8 @@ class CompletionContributorViewsTestCase(TestCase):
         Video.objects.create(
             title='videotest2',
             owner=staff,
-            video='test.mp4'
+            video='test.mp4',
+            type=Type.objects.get(id=1)
         )
 
     def test_video_completion_contributor(self):
@@ -226,7 +254,18 @@ class CompletionContributorViewsTestCase(TestCase):
         print(" ---> test_video_completion_contributor_delete : OK!")
 
 
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
 class CompletionTrackViewsTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         staff = User.objects.create(
@@ -238,7 +277,8 @@ class CompletionTrackViewsTestCase(TestCase):
         Video.objects.create(
             title='videotest2',
             owner=staff,
-            video='test.mp4'
+            video='test.mp4',
+            type=Type.objects.get(id=1)
         )
 
     def test_video_completion_track(self):
@@ -428,7 +468,18 @@ class CompletionTrackViewsTestCase(TestCase):
         print(" ---> test_video_completion_track_delete : OK!")
 
 
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
 class CompletionDocumentViewsTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         staff = User.objects.create(
@@ -440,7 +491,8 @@ class CompletionDocumentViewsTestCase(TestCase):
         Video.objects.create(
             title='videotest2',
             owner=staff,
-            video='test.mp4'
+            video='test.mp4',
+            type=Type.objects.get(id=1)
         )
 
     def test_video_completion_document(self):
@@ -639,7 +691,18 @@ class CompletionDocumentViewsTestCase(TestCase):
         print(" ---> test_video_completion_document_delete : OK!")
 
 
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
 class CompletionOverlayViewsTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         staff = User.objects.create(
@@ -650,7 +713,8 @@ class CompletionOverlayViewsTestCase(TestCase):
             title='videotest2',
             owner=staff,
             video='test.mp4',
-            duration=3
+            duration=3,
+            type=Type.objects.get(id=1)
         )
 
     def test_video_completion_overlay(self):

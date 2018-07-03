@@ -53,6 +53,7 @@ else:
     }
 )
 class ChannelTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         Channel.objects.create(title="ChannelTest1", slug="blabla")
@@ -138,6 +139,7 @@ class ChannelTestCase(TestCase):
     }
 )
 class ThemeTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         Channel.objects.create(title="ChannelTest1")
@@ -220,6 +222,7 @@ class ThemeTestCase(TestCase):
     }
 )
 class TypeTestCase(TestCase):
+    # fixtures = ['initial_data.json', ]
 
     def setUp(self):
         Type.objects.create(title="Type1")
@@ -283,6 +286,7 @@ class TypeTestCase(TestCase):
     }
 )
 class DisciplineTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         Discipline.objects.create(title="Discipline1")
@@ -346,11 +350,14 @@ class DisciplineTestCase(TestCase):
     }
 )
 class VideoTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
+
         Video.objects.create(
-            title="Video1", owner=user, video="test.mp4")
+            title="Video1", owner=user, video="test.mp4",
+            type=Type.objects.get(id=1))
         type = Type.objects.create(title="autre")
         filename = "test.mp4"
         fname, dot, extension = filename.rpartition('.')
@@ -558,11 +565,14 @@ class VideoRenditionTestCase(TestCase):
     }
 )
 class EncodingVideoTestCase(TestCase):
+    # fixtures = ['initial_data.json', ]
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
+        Type.objects.create(title="test")
         Video.objects.create(
-            title="Video1", owner=user, video="test.mp4")
+            title="Video1", owner=user, video="test.mp4",
+            type=Type.objects.get(id=1))
         VideoRendition.objects.create(
             resolution="640x360",
             video_bitrate="1000k",
@@ -639,11 +649,14 @@ class EncodingVideoTestCase(TestCase):
     }
 )
 class EncodingAudioTestCase(TestCase):
+    # fixtures = ['initial_data.json', ]
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
+        Type.objects.create(title="test")
         Video.objects.create(
-            title="Video1", owner=user, video="test.mp4")
+            title="Video1", owner=user, video="test.mp4",
+            type=Type.objects.get(id=1))
         print(" --->  SetUp of EncodingAudioTestCase : OK !")
 
     def test_EncodingVideo_null_attributs(self):
@@ -715,11 +728,13 @@ class EncodingAudioTestCase(TestCase):
     }
 )
 class PlaylistVideoTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
         Video.objects.create(
-            title="Video1", owner=user, video="test.mp4")
+            title="Video1", owner=user, video="test.mp4",
+            type=Type.objects.get(id=1))
         print(" --->  SetUp of PlaylistVideoTestCase : OK !")
 
     def test_PlaylistVideo_null_attributs(self):
@@ -791,11 +806,13 @@ class PlaylistVideoTestCase(TestCase):
     }
 )
 class EncodingLogTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
         Video.objects.create(
-            title="Video1", owner=user, video="test.mp4")
+            title="Video1", owner=user, video="test.mp4",
+            type=Type.objects.get(id=1))
         print(" --->  SetUp of EncodingLogTestCase : OK !")
 
     def test_EncodingLogTestCase_null_attributs(self):
@@ -845,11 +862,13 @@ class EncodingLogTestCase(TestCase):
     }
 )
 class EncodingStepTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
         Video.objects.create(
-            title="Video1", owner=user, video="test.mp4")
+            title="Video1", owner=user, video="test.mp4",
+            type=Type.objects.get(id=1))
         print(" --->  SetUp of EncodingLogTestCase : OK !")
 
     def test_EncodingStepTestCase_null_attributs(self):
@@ -897,11 +916,13 @@ class EncodingStepTestCase(TestCase):
     }
 )
 class NotesTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
         Video.objects.create(
-            title="Video1", owner=user, video="test.mp4")
+            title="Video1", owner=user, video="test.mp4",
+            type=Type.objects.get(id=1))
         print(" --->  SetUp of EncodingLogTestCase : OK !")
 
     def test_NotesTestCase_null_attributs(self):

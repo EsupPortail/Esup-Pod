@@ -321,8 +321,8 @@ class VideoForm(forms.ModelForm):
                     channel__in=user_channels).order_by('channel', 'title')
                 self.fields["theme"].queryset = list_theme
             else:
-                #self.fields['channel'].widget = forms.HiddenInput()
-                #self.fields['theme'].widget = forms.HiddenInput()
+                # self.fields['channel'].widget = forms.HiddenInput()
+                # self.fields['theme'].widget = forms.HiddenInput()
                 del self.fields['theme']
                 del self.fields['channel']
 

@@ -33,6 +33,7 @@ else:
     LANGUAGE_CODE='en'
 )
 class EnrichmentModelTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
 
     def setUp(self):
         owner = User.objects.create(username='test')

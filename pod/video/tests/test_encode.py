@@ -5,7 +5,7 @@ from django.core.files.temp import NamedTemporaryFile
 from django.contrib.auth.models import User
 
 
-from pod.video.models import Video
+from pod.video.models import Video, Type
 from pod.video import encode
 from pod.video.models import EncodingVideo
 from pod.video.models import EncodingAudio
@@ -38,7 +38,8 @@ class EncodeTestCase(TestCase):
         user = User.objects.create(username="pod", password="pod1234pod")
         # owner1 = Owner.objects.get(user__username="pod")
         video = Video.objects.create(
-            title="Video1", owner=user, video="test.mp4")
+            title="Video1", owner=user, video="test.mp4",
+            type=Type.objects.get(id=1))
         tempfile = NamedTemporaryFile(delete=True)
         video.video.save("test.mp4", tempfile)
         dest = os.path.join(settings.MEDIA_ROOT, video.video.name)
@@ -49,7 +50,8 @@ class EncodeTestCase(TestCase):
         print("\n ---> End Encoding video")
 
         audio = Video.objects.create(
-            title="Audio1", owner=user, video="test.mp3")
+            title="Audio1", owner=user, video="test.mp3",
+            type=Type.objects.get(id=1))
         tempfile = NamedTemporaryFile(delete=True)
         audio.video.save("test.mp3", tempfile)
         dest = os.path.join(settings.MEDIA_ROOT, audio.video.name)
