@@ -9,6 +9,7 @@ from django.core.files import File
 from ckeditor.fields import RichTextField
 from webvtt import WebVTT, Caption
 from tempfile import NamedTemporaryFile
+from django.contrib.auth.models import Group
 
 from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
@@ -290,3 +291,22 @@ class EnrichmentVtt(models.Model):
         if 'vtt' not in self.src.file_type:
             msg.append(_('Only ".vtt" format is allowed.'))
         return msg
+
+
+class EnrichmentGroup(models.Model):
+    video = models.OneToOneField(Video, verbose_name=_('Video'),
+                                 # editable=False, null=True,
+                                 on_delete=models.CASCADE)
+    groups = models.ManyToManyField(
+        Group, blank=True, verbose_name=_('Groups'),
+        help_text=_('Select one or more groups who'
+                    ' can access in read only to the'
+                    ' enrichment of the video'))
+
+    class Meta:
+        ordering = ['video']
+        verbose_name = _('Enrichment Video Group')
+        verbose_name_plural = _('Enrichment Video Groups')
+
+    def __str__(self):
+        return "Enrichment group %s" % (self.video)

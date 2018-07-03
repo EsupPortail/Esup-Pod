@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib import admin
-from .models import Enrichment
+from .models import Enrichment, EnrichmentGroup
 from .forms import EnrichmentAdminForm
 FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
@@ -37,3 +37,14 @@ if FILEPICKER:
     admin.site.register(Enrichment, EnrichmentAdmin)
 else:
     admin.site.register(Enrichment)
+
+
+class EnrichmentGroupAdmin(admin.ModelAdmin):
+    list_display = ('video', 'get_groups')
+    # readonly_fields = ('video', )
+
+    def get_groups(self, obj):
+        return "\n".join([g for g in obj.groups.all()])
+
+
+admin.site.register(EnrichmentGroup, EnrichmentGroupAdmin)

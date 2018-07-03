@@ -15,8 +15,8 @@ from pod.video.models import Video, Channel, Theme
 from pod.video.views import get_note_form, get_video_access
 from pod.video.forms import VideoPasswordForm
 
-from .models import Enrichment
-from .forms import EnrichmentForm
+from .models import Enrichment, EnrichmentGroup
+from .forms import EnrichmentForm, EnrichmentGroupForm
 # from .utils import enrichment_to_vtt
 
 import json
@@ -26,12 +26,44 @@ ACTION = ['new', 'save', 'modify', 'delete', 'cancel']
 
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
-def edit_enrichment(request, slug):
+def group_enrichment(request, slug):
     video = get_object_or_404(Video, slug=slug)
+    enrichmentGroup, created = EnrichmentGroup.objects.get_or_create(
+        video=video)
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot enrich this video.'))
         raise PermissionDenied
+
+    form = EnrichmentGroupForm(instance=enrichmentGroup)
+    if request.POST:
+        form = EnrichmentGroupForm(request.POST, instance=enrichmentGroup)
+        if form.is_valid():
+            enrichmentGroup = form.save()
+
+    return render(
+        request,
+        'enrichment/group_enrichment.html',
+        {'video': video,
+         'form': form})
+
+
+@csrf_protect
+@staff_member_required(redirect_field_name='referrer')
+def edit_enrichment(request, slug):
+    video = get_object_or_404(Video, slug=slug)
+    enrichmentGroup, created = EnrichmentGroup.objects.get_or_create(
+        video=video)
+    if request.user != video.owner and not request.user.is_superuser:
+        if not request.user.groups.filter(
+            name__in=[
+                name[0]
+                for name in enrichmentGroup.groups.values_list('name')
+            ]
+        ).exists():
+            messages.add_message(
+                request, messages.ERROR, _(u'You cannot enrich this video.'))
+            raise PermissionDenied
 
     list_enrichment = video.enrichment_set.all()
     if request.POST and request.POST.get('action'):

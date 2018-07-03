@@ -1,8 +1,11 @@
 from django import forms
 from django.conf import settings
 from django.forms.widgets import HiddenInput
+from django.contrib.admin import widgets
+from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
-from .models import Enrichment
+from .models import Enrichment, EnrichmentGroup
+from django.contrib.auth.models import Group
 
 FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
@@ -21,6 +24,19 @@ class EnrichmentAdminForm(forms.ModelForm):
     class Meta(object):
         model = Enrichment
         fields = '__all__'
+
+
+class EnrichmentGroupForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(EnrichmentGroupForm, self).__init__(*args, **kwargs)
+        self.fields['groups'].widget = widgets.FilteredSelectMultiple(
+            _("Groups"), False, attrs={})
+        self.fields["groups"].queryset = Group.objects.all()
+
+    class Meta(object):
+        model = EnrichmentGroup
+        fields = ("groups",)  # '__all__'
 
 
 class EnrichmentForm(forms.ModelForm):

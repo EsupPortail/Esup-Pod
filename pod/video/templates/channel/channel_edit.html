@@ -37,11 +37,10 @@ body {
 {% if form.instance.headband %}
 <img src="{{ form.instance.headband.file.url }}" alt="{% trans 'Headband' %} {{ form.instance.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
 {% endif %}
-{% if form.instance.slug %}
+
 <form id="channel_form" method="post"
     action="{% url 'channel_edit' slug=form.instance.slug %}"
     accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate>
-{% endif %}
     {% csrf_token %}
     <div class="list-group">
         <fieldset>
@@ -53,7 +52,7 @@ body {
         {% endfor %}
         {% for field in form.visible_fields %}
             {% spaceless %}
-            <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
+            <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}">
             <div class="list-group-item">
             <div class="{% if field.name == "owners" or field.name == "users" %}form-row {%endif%}form-group {% if field.field.required %}form-group-required {%endif%}" >
                 {{ field.errors }}

@@ -143,16 +143,16 @@ div.card a:hover>img {
 }
 
 /** channel form **/
-#channel_form .selector {
+#channel_form .selector, #enrichment_group_form .selector{
     width: 100% !important;
 }
-#channel_form .selector select {
+#channel_form .selector select, #enrichment_group_form .selector select {
     width:100% !important;
 }
-#channel_form .selector-available, #channel_form .selector-chosen {
+#channel_form .selector-available, #channel_form .selector-chosen, #enrichment_group_form .selector-available, #enrichment_group_form .selector-chosen {
     width: 47% !important;
 }
-#channel_form .selector-available h2, #channel_form .selector-chosen h2 {
+#channel_form .selector-available h2, #channel_form .selector-chosen h2, #enrichment_group_form .selector-available h2, #enrichment_group_form .selector-chosen h2 {
     margin: 0;
     padding: 8px;
     font-weight: 400;
