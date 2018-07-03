@@ -92,11 +92,12 @@ DATABASES = {
 # Internationalization and localization.
 #
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
+# https://github.com/django/django/blob/master/django/conf/global_settings.py
 LANGUAGE_CODE = 'fr'
 LANGUAGES = (
     ('fr', 'Français'),
     ('en', 'English'),
-    ('nl-NL', 'Dutch (Netherlands)')
+    ('nl', 'Dutch (Netherlands)')
 )
 
 ##
