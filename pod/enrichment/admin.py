@@ -44,7 +44,7 @@ class EnrichmentGroupAdmin(admin.ModelAdmin):
     # readonly_fields = ('video', )
 
     def get_groups(self, obj):
-        return "\n".join([g for g in obj.groups.all()])
+        return "\n".join([g.name for g in obj.groups.all()])
 
 
 admin.site.register(EnrichmentGroup, EnrichmentGroupAdmin)

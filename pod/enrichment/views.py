@@ -47,18 +47,24 @@ def group_enrichment(request, slug):
         {'video': video,
          'form': form})
 
+def check_enrichment_group(request, video):
+    if not hasattr(video,'enrichmentgroup'):
+        return False
+    if not request.user.groups.filter(
+            name__in=[
+                name[0]
+                for name in video.enrichmentgroup.groups.values_list('name')
+            ]
+        ).exists():
+        return False
+    return True
 
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def edit_enrichment(request, slug):
     video = get_object_or_404(Video, slug=slug)
     if request.user != video.owner and not request.user.is_superuser:
-        if hasattr(video,'enrichmentgroup') and not request.user.groups.filter(
-            name__in=[
-                name[0]
-                for name in video.enrichmentgroup.groups.values_list('name')
-            ]
-        ).exists():
+        if not check_enrichment_group(request, video):
             messages.add_message(
                 request, messages.ERROR, _(u'You cannot enrich this video.'))
             raise PermissionDenied
