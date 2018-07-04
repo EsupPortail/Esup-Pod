@@ -8,21 +8,21 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
-from pod.video.models import Channel
-from pod.video.models import Theme
-from pod.video.models import Type
-from pod.video.models import Discipline
-from pod.video.models import Video
-from pod.video.models import ViewCount
-from pod.video.models import get_storage_path_video
-from pod.video.models import VIDEOS_DIR
-from pod.video.models import VideoRendition
-from pod.video.models import EncodingVideo
-from pod.video.models import EncodingAudio
-from pod.video.models import PlaylistVideo
-from pod.video.models import EncodingLog
-from pod.video.models import EncodingStep
-from pod.video.models import Notes
+from ..models import Channel
+from ..models import Theme
+from ..models import Type
+from ..models import Discipline
+from ..models import Video
+from ..models import ViewCount
+from ..models import get_storage_path_video
+from ..models import VIDEOS_DIR
+from ..models import VideoRendition
+from ..models import EncodingVideo
+from ..models import EncodingAudio
+from ..models import PlaylistVideo
+from ..models import EncodingLog
+from ..models import EncodingStep
+from ..models import Notes
 
 from datetime import datetime
 from datetime import timedelta

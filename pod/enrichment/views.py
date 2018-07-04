@@ -47,17 +47,19 @@ def group_enrichment(request, slug):
         {'video': video,
          'form': form})
 
+
 def check_enrichment_group(request, video):
-    if not hasattr(video,'enrichmentgroup'):
+    if not hasattr(video, 'enrichmentgroup'):
         return False
     if not request.user.groups.filter(
-            name__in=[
-                name[0]
-                for name in video.enrichmentgroup.groups.values_list('name')
-            ]
-        ).exists():
+        name__in=[
+            name[0]
+            for name in video.enrichmentgroup.groups.values_list('name')
+        ]
+    ).exists():
         return False
     return True
+
 
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')

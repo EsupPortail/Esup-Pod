@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
+{% block breadcrumbs %}
+{{ block.super }} 
+{% if flatpage.url != "/" %}
+<li class="breadcrumb-item active" aria-current="page">{{ flatpage.title }}</li>
+{% endif %}
+{% endblock %}
+
+
 {% block page_title %}{{ flatpage.title }}{% endblock %}
+
 {% block page_content %}
 {{ flatpage.content }}
 {% endblock page_content %}
