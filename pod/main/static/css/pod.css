@@ -44,6 +44,11 @@ padding-top: 3.5rem;
 .card-header .text-muted {
     color:white !important; 
 }
+div.video-card .d-flex {
+    min-height:70%;
+    /*position:relative;*/
+    top:0;
+}
 div.card a{
  overflow:hidden;
 }

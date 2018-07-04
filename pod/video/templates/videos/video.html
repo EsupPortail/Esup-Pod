@@ -36,17 +36,17 @@ body {
 {% endif %}
 {% endfor %}
 <li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=theme.slug%}">{{theme.title}}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>
+<li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
 {% else %}
 <li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>
+<li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
 {% endif %}
 {% else %}
-<li class="breadcrumb-item"><a href="{% url "videos"%}">{% trans 'Videos' %}</a><li class="breadcrumb-item active" aria-current="page">{{video.title}}</li>
+<li class="breadcrumb-item"><a href="{% url "videos"%}">{% trans 'Videos' %}</a><li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
 {% endif %}
 {% endblock %}
 
-{% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}{{video.title}}{% endblock %}
+{% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}{{video.title|title|truncatechars:45}}{% endblock %}
 
 {% block page_content %}
 <meta itemprop="duration" content="{{ video.duration }}" />
