@@ -8,26 +8,26 @@ from copy import deepcopy
 
 from modeltranslation.admin import TranslationAdmin
 
-from pod.video.models import Video
-from pod.video.models import Channel
-from pod.video.models import Theme
-from pod.video.models import Type
-from pod.video.models import Discipline
-from pod.video.models import VideoRendition
-from pod.video.models import EncodingVideo
-from pod.video.models import EncodingAudio
-from pod.video.models import EncodingLog
-from pod.video.models import EncodingStep
-from pod.video.models import PlaylistVideo
-from pod.video.models import Notes
-from pod.video.models import ViewCount
-from pod.video.models import VideoToDelete
+from .models import Video
+from .models import Channel
+from .models import Theme
+from .models import Type
+from .models import Discipline
+from .models import VideoRendition
+from .models import EncodingVideo
+from .models import EncodingAudio
+from .models import EncodingLog
+from .models import EncodingStep
+from .models import PlaylistVideo
+from .models import Notes
+from .models import ViewCount
+from .models import VideoToDelete
 
-from pod.video.forms import VideoForm
-from pod.video.forms import ChannelForm
-from pod.video.forms import ThemeForm
-from pod.video.forms import TypeForm
-from pod.video.forms import DisciplineForm
+from .forms import VideoForm
+from .forms import ChannelForm
+from .forms import ThemeForm
+from .forms import TypeForm
+from .forms import DisciplineForm
 
 from pod.completion.admin import ContributorInline
 from pod.completion.admin import DocumentInline

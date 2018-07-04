@@ -18,11 +18,17 @@
     <li class="nav-item">
           <button type="button" class="btn btn-light btn-sm my-2 mr-sm-2" data-toggle="modal" data-target=".bd-example-modal-lg">
           <i data-feather="users"></i>&nbsp;<span>{% trans "Users"%}</span></button>
-        </li>
-        <li class="nav-item">
+    </li>
+    <li class="nav-item">
         <a class=" btn btn-light btn-sm my-2 mr-sm-2" data-toggle="collapse" href="#listeTypes" role="button" aria-expanded="false" aria-controls="listeTypes">
           <i data-feather="tv"></i>&nbsp;<span>{% trans "Types"%}</span></a>
     </li>
+    {% if "live" in THIRD_PARTY_APPS %}
+    <li class="nav-item">
+        <a class=" btn btn-light btn-sm my-2 mr-sm-2" href="{% url 'live:lives'%}" >
+          <i data-feather="radio"></i>&nbsp;<span>{% trans "Lives"%}</span></a>
+    </li>
+    {% endif %}
   </ul>
     
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

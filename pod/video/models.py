@@ -36,9 +36,6 @@ else:
     FILEPICKER = False
     from pod.main.models import CustomImageModel
 
-if 'enrichment' in settings.THIRD_PARTY_APPS:
-    ENRICHMENT = True
-
 logger = logging.getLogger(__name__)
 
 FILEPICKER = True if apps.is_installed('pod.podfile') else False

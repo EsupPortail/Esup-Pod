@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block page_extra_head %}
+<link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
+<script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
+<script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
+{% endblock %}
+
+
+{% block breadcrumbs %}
+{{ block.super }}
+<li class="breadcrumb-item" ><a href="{% url 'live:lives'%}" title="{% trans "Lives" %}">{% trans "Lives" %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{broadcaster.name}}</li>
+{% endblock %}
+
+{% block page_title %}{% trans "Lives" %}{% endblock %}
+
+{% block page_content %}
+<h3><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}}</h3>
+
+<video id="podvideoplayer" class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" poster="{{broadcaster.get_poster_url}}">
+    <source
+     src="{{broadcaster.url}}" 
+     type="application/x-mpegURL">
+     <!-- https://d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8 -->
+</video>
+
+<p>{{ broadcaster.description|safe }}</p>
+
+{% endblock page_content %}
+
+{% block page_aside %}
+<div class="card card-body p-2 mt-1">
+<h5 class="card-title pl-2">
+  <i data-feather="radio"></i>&nbsp;{{broadcaster.building.name}}
+</h5>
+<div class="card-text">
+    {% if broadcaster.building.headband %}
+    <p class="card-text">
+        <img src="{{ broadcaster.building.headband.file.url }}" alt="{% trans 'Headband' %} {{ broadcaster.building.name }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
+    </p>
+    {% endif %}
+    {% for otherbroadcaster in broadcaster.building.broadcaster_set.all%}
+    {% if otherbroadcaster != broadcaster %}
+      <p class="card-text">
+        {%if otherbroadcaster.status %}<a href="{% url "live:video_live" id=otherbroadcaster.id %}" class="live_on"><i data-feather="airplay"></i>&nbsp;{{otherbroadcaster.name}}</a>
+        {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{otherbroadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}</p>
+    {% endif %}
+    {% empty %}
+    <p class="card-text">{% trans "Sorry, no lives found" %}.</p>
+    {% endfor %}
+    {% if broadcaster.building.gmapurl %}
+    <p class="card-text"><small class="text-muted"><a href='{{broadcaster.building.gmapurl}}' title="{% trans "access map" %}" target="_blank"><i data-feather="map-pin"></i>&nbsp;{% trans "access map" %}</a></small></p>  
+    {% endif %}
+</div>
+</div>
+{% include 'aside.html'%}
+{% endblock page_aside %}
+
+{% block more_script %}
+<script>
+    //videojs.options.flash.swf = "video-js.swf"
+    var options = {
+      notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
+      language: "fr", //en or nl
+      {% if request.GET.is_iframe %}
+      fluid: false, 
+      {% else %}
+      fluid: true, 
+      {% endif %}
+      playbackRates: [0.5, 1, 1.5, 2]
+    }
+    var player = videojs('podvideoplayer', options, function(){});
+</script>
+{% endblock more_script %}

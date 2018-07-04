@@ -12,7 +12,6 @@ from django.conf import settings
 from django.test import override_settings
 
 from django.core.exceptions import ObjectDoesNotExist
-# from django.db.models.fields.related_descriptors import RelatedObjectDoesNotExist
 from django.db.utils import IntegrityError
 
 import os
@@ -43,7 +42,7 @@ class EnrichmentGroupModelTestCase(TestCase):
     def setUp(self):
         owner = User.objects.create(username='test')
         videotype = Type.objects.create(title='others')
-        video = Video.objects.create(
+        Video.objects.create(
             title='video',
             type=videotype,
             owner=owner,
@@ -55,28 +54,32 @@ class EnrichmentGroupModelTestCase(TestCase):
 
     def test_create_enrichmentGroup(self):
         video = Video.objects.get(id=1)
-        self.assertTrue(not hasattr(video,'enrichmentgroup'))
+        self.assertTrue(not hasattr(video, 'enrichmentgroup'))
         EnrichmentGroup.objects.create(video=video)
         self.assertTrue(video.enrichmentgroup)
         with self.assertRaises(IntegrityError):
             EnrichmentGroup.objects.create(video=video)
-        print(" ---> test_create_enrichmentGroup : OK ! --- EnrichmentGroupModel")
+        print(
+            " ---> test_create_enrichmentGroup : OK !"
+            " --- EnrichmentGroupModel")
 
     def test_modify_enrichmentGroup(self):
         video = Video.objects.get(id=1)
         eng = EnrichmentGroup.objects.create(video=video)
-        self.assertEqual(video.enrichmentgroup.groups.all().count(),0)
+        self.assertEqual(video.enrichmentgroup.groups.all().count(), 0)
         eng.groups.add(Group.objects.get(id=1))
-        self.assertEqual(video.enrichmentgroup.groups.all().count(),1)
+        self.assertEqual(video.enrichmentgroup.groups.all().count(), 1)
         eng.groups.add(Group.objects.get(id=2))
-        self.assertEqual(video.enrichmentgroup.groups.all().count(),2)
+        self.assertEqual(video.enrichmentgroup.groups.all().count(), 2)
         eng.groups.remove(Group.objects.get(id=2))
-        self.assertEqual(video.enrichmentgroup.groups.all().count(),1)
+        self.assertEqual(video.enrichmentgroup.groups.all().count(), 1)
         eng.groups.add(Group.objects.get(id=2))
-        self.assertEqual(video.enrichmentgroup.groups.all().count(),2)
+        self.assertEqual(video.enrichmentgroup.groups.all().count(), 2)
         Group.objects.get(id=2).delete()
-        self.assertEqual(video.enrichmentgroup.groups.all().count(),1)
-        print(" ---> test_modify_enrichmentGroup : OK ! --- EnrichmentGroupModel")
+        self.assertEqual(video.enrichmentgroup.groups.all().count(), 1)
+        print(
+            " ---> test_modify_enrichmentGroup : OK !"
+            " --- EnrichmentGroupModel")
 
     def test_delete_enrichmentGroup(self):
         video = Video.objects.get(id=1)
@@ -90,7 +93,9 @@ class EnrichmentGroupModelTestCase(TestCase):
         self.assertTrue(Video.objects.filter(id=1).exists())
         self.assertTrue(Group.objects.filter(id=1).exists())
         self.assertTrue(Group.objects.filter(id=2).exists())
-        print(" ---> test_delete_enrichmentGroup : OK ! --- EnrichmentGroupModel")
+        print(
+            " ---> test_delete_enrichmentGroup : OK !"
+            " --- EnrichmentGroupModel")
 
 
 @override_settings(
