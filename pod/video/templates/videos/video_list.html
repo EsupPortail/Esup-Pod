@@ -2,7 +2,7 @@
 {% spaceless %}
 <div class="row infinite-container">
 {% for video in videos %}
-<div class="infinite-item col-12 col-md-6 col-lg-3 mb-2">
+<div class="infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group" style="min-width: 13rem;"> <!-- min-width: 15rem; -->
 {% include "videos/card.html" %}
 </div>
 {% empty %}
