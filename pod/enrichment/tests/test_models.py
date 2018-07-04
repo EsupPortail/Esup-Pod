@@ -2,14 +2,19 @@
 Unit tests for enrichment models
 """
 from django.test import TestCase
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.exceptions import ValidationError
 from pod.video.models import Video
 from pod.video.models import Type
-from ..models import Enrichment, EnrichmentVtt
+from ..models import Enrichment, EnrichmentVtt, EnrichmentGroup
 from django.conf import settings
 from django.test import override_settings
+
+from django.core.exceptions import ObjectDoesNotExist
+# from django.db.models.fields.related_descriptors import RelatedObjectDoesNotExist
+from django.db.utils import IntegrityError
+
 import os
 
 if getattr(settings, 'USE_PODFILE', False):
@@ -19,6 +24,73 @@ if getattr(settings, 'USE_PODFILE', False):
 else:
     FILEPICKER = False
     from pod.main.models import CustomImageModel
+
+
+@override_settings(
+    THIRD_PARTY_APPS=["enrichment"],
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class EnrichmentGroupModelTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        owner = User.objects.create(username='test')
+        videotype = Type.objects.create(title='others')
+        video = Video.objects.create(
+            title='video',
+            type=videotype,
+            owner=owner,
+            video='test.mp4',
+            duration=20
+        )
+        Group.objects.create(name="group1")
+        Group.objects.create(name="group2")
+
+    def test_create_enrichmentGroup(self):
+        video = Video.objects.get(id=1)
+        self.assertTrue(not hasattr(video,'enrichmentgroup'))
+        EnrichmentGroup.objects.create(video=video)
+        self.assertTrue(video.enrichmentgroup)
+        with self.assertRaises(IntegrityError):
+            EnrichmentGroup.objects.create(video=video)
+        print(" ---> test_create_enrichmentGroup : OK ! --- EnrichmentGroupModel")
+
+    def test_modify_enrichmentGroup(self):
+        video = Video.objects.get(id=1)
+        eng = EnrichmentGroup.objects.create(video=video)
+        self.assertEqual(video.enrichmentgroup.groups.all().count(),0)
+        eng.groups.add(Group.objects.get(id=1))
+        self.assertEqual(video.enrichmentgroup.groups.all().count(),1)
+        eng.groups.add(Group.objects.get(id=2))
+        self.assertEqual(video.enrichmentgroup.groups.all().count(),2)
+        eng.groups.remove(Group.objects.get(id=2))
+        self.assertEqual(video.enrichmentgroup.groups.all().count(),1)
+        eng.groups.add(Group.objects.get(id=2))
+        self.assertEqual(video.enrichmentgroup.groups.all().count(),2)
+        Group.objects.get(id=2).delete()
+        self.assertEqual(video.enrichmentgroup.groups.all().count(),1)
+        print(" ---> test_modify_enrichmentGroup : OK ! --- EnrichmentGroupModel")
+
+    def test_delete_enrichmentGroup(self):
+        video = Video.objects.get(id=1)
+        eng = EnrichmentGroup.objects.create(video=video)
+        eng.groups.add(Group.objects.get(id=1))
+        eng.groups.add(Group.objects.get(id=2))
+        eng.delete()
+        with self.assertRaises(ObjectDoesNotExist):
+            EnrichmentGroup.objects.get(video=video)
+        self.assertEqual(video.enrichmentgroup.id, None)
+        self.assertTrue(Video.objects.filter(id=1).exists())
+        self.assertTrue(Group.objects.filter(id=1).exists())
+        self.assertTrue(Group.objects.filter(id=2).exists())
+        print(" ---> test_delete_enrichmentGroup : OK ! --- EnrichmentGroupModel")
 
 
 @override_settings(

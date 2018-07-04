@@ -52,13 +52,11 @@ def group_enrichment(request, slug):
 @staff_member_required(redirect_field_name='referrer')
 def edit_enrichment(request, slug):
     video = get_object_or_404(Video, slug=slug)
-    enrichmentGroup, created = EnrichmentGroup.objects.get_or_create(
-        video=video)
     if request.user != video.owner and not request.user.is_superuser:
-        if not request.user.groups.filter(
+        if hasattr(video,'enrichmentgroup') and not request.user.groups.filter(
             name__in=[
                 name[0]
-                for name in enrichmentGroup.groups.values_list('name')
+                for name in video.enrichmentgroup.groups.values_list('name')
             ]
         ).exists():
             messages.add_message(
