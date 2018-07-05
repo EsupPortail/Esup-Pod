@@ -5,7 +5,7 @@ from django.test import override_settings
 from django.conf import settings
 from django.contrib.auth.models import User
 
-from ..models import Recording, RecordingFile
+from ..models import Recording  # , RecordingFile
 
 
 # Create your tests here.

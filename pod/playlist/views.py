@@ -171,7 +171,7 @@ def playlist_add(request, playlist):
 
 def playlist_delete(request, playlist):
     if request.is_ajax():
-        if playlist :
+        if playlist:
             playlist.delete()
         some_data_to_dump = {
             'success': '{0}'.format(

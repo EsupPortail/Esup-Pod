@@ -1,4 +1,5 @@
 import os
+import importlib
 
 from django.db import models
 from django.conf import settings
@@ -6,6 +7,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.utils import timezone
+from django.core.exceptions import ValidationError
+
 
 RECORDER_TYPE = getattr(
     settings, 'RECORDER_TYPE',
@@ -34,9 +38,11 @@ class Recording(models.Model):
     type = models.CharField(
         max_length=50, choices=RECORDER_TYPE, default=RECORDER_TYPE[0][0])
     commentaire = models.TextField(_('Comment'), blank=True, default="")
+    date_added = models.DateTimeField(
+        'date added', default=timezone.now, editable=False)
 
     def __str__(self):
-        return "%s" % (self.name)
+        return "%s" % (self.title)
 
     class Meta:
         verbose_name = _("Recording")
@@ -44,7 +50,6 @@ class Recording(models.Model):
 
     def save(self, *args, **kwargs):
         super(Recording, self).save(*args, **kwargs)
-        print("SAVE !")
 
     def clean(self):
         msg = list()
@@ -60,19 +65,23 @@ class Recording(models.Model):
             msg.append(_('Please use the only type in type choices.'))
         if not self.source_file:
             msg.append(_('Please specify a source file.'))
-        elif os.path.exists(self.source_file):
+        elif not os.path.exists(self.source_file):
             msg.append(_("Source file doesn't exists"))
         return msg
 
 
 @receiver(post_save, sender=Recording)
 def process_recording(sender, instance, created, **kwargs):
-    if created:
-        print("Start !")
+    # if created and os.path.exists(instance.source_file):
+    if os.path.exists(instance.source_file):
+        mod = importlib.import_module(
+            '%s.plugins.type_%s' %(__package__,instance.type))
+        #mod = importlib.import_module('.plugins.type_%s' % instance.type)
+        mod.process(instance)
 
 
 class RecordingFile(models.Model):
-    file = models.FileField(upload_to='uploads/%Y/%m/%d/')
+    file = models.FileField(upload_to='uploads/')
     type = models.CharField(
         max_length=50, choices=RECORDER_TYPE, default=RECORDER_TYPE[0][0])
 
