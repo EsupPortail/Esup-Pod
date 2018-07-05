@@ -76,7 +76,6 @@ def process_recording(sender, instance, created, **kwargs):
     if os.path.exists(instance.source_file):
         mod = importlib.import_module(
             '%s.plugins.type_%s' %(__package__,instance.type))
-        #mod = importlib.import_module('.plugins.type_%s' % instance.type)
         mod.process(instance)
 
 
