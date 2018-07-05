@@ -69,9 +69,11 @@ player.on('firstplay', function(){
         end: parseInt($(this).attr('data-timeend'))
       });
     });
+    if (typeof player.overlay === "function") { 
     player.overlay({
       overlays: list_overlays
     });
+    }
   {% endif %}
 
   {% if video.overview %}

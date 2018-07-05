@@ -13,7 +13,8 @@
 
     <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
 
-    {% include 'videos/video-header.html' %}
+    {% block page_extra_head %}
+    {% endblock page_extra_head %}
 
     <script src="{% static 'js/videojs-info-controlbar.js' %}"></script>
 
@@ -67,8 +68,7 @@
             color: black !important;
         }
     </style>
-    {% block page_extra_head %}
-    {% endblock page_extra_head %}
+
 </head>
 <body>
 <meta itemprop="duration" content="{{ video.duration }}" />

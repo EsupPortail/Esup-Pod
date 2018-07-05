@@ -91,7 +91,8 @@ body {
 {% include 'videos/video-element.html' %}
 
 <nav id="navbar-video" class="navbar navbar-light bg-light">
-  <span class="navbar-brand" >{{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
+  <div class="navbar-brand "  >
+    <div style="display:inline-block; white-space: normal;">{{video.title|title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}</div>
   <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
       <i data-feather="alert-octagon"></i>
   </a>  
@@ -117,7 +118,7 @@ body {
     </div>
     {% endif %}
   </div>
-  </span>
+  </div>
   <ul class="nav nav-tabs">
     <li class="nav-item">
       <a class="nav-link" href="#summary">{% trans 'Summary' %}</a>

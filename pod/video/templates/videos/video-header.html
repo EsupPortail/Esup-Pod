@@ -22,10 +22,12 @@
 <script src="{% static 'js/videojs-hls-quality-selector.min.js' %}"></script>
 <script src="{% static 'video-js-6.8.0/lang/fr.js' %}"></script>
 <script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
-{% if video.overlay_set.all %}
+
+{% if video.overlay_set.all and not enrichment%}
   <link href="{% static 'css/videojs-overlay.css' %}" rel="stylesheet">
   <script src="{% static 'js/videojs-overlay.js' %}"></script>
 {% endif %}
+
 {% if video.chapter_set.all %}
   <link href="{% static 'css/videojs-chapters.css' %}" rel="stylesheet">
   <script src="{% static 'js/videojs-chapters.js' %}"></script>
@@ -42,4 +44,5 @@
 <link href="{% static 'videojs-vr/videojs-vr.css' %}" rel="stylesheet">
 <script src="{% static 'videojs-vr/videojs-vr.min.js' %}"></script>
 {% endif %}
+
 <script src="{% static 'js/videojs-logo-controlbar.js' %}"></script>
