@@ -59,6 +59,13 @@ def enrichment_to_vtt(list_enrichment, video):
         videodir, created = UserFolder.objects.get_or_create(
             name='%s' % video.slug,
             owner=video.owner)
+        previousEnrichmentFile = CustomFileModel.objects.filter(
+            name__startswith="enrichment",
+            folder=videodir,
+            created_by=video.owner
+        )
+        for enr in previousEnrichmentFile:
+            enr.delete()
         enrichmentFile, created = CustomFileModel.objects.get_or_create(
             name='enrichment',
             folder=videodir,

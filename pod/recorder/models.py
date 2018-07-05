@@ -37,7 +37,7 @@ class Recording(models.Model):
         path=DEFAULT_RECORDER_PATH, recursive=True)  # match="foo.*"
     type = models.CharField(
         max_length=50, choices=RECORDER_TYPE, default=RECORDER_TYPE[0][0])
-    commentaire = models.TextField(_('Comment'), blank=True, default="")
+    comment = models.TextField(_('Comment'), blank=True, default="")
     date_added = models.DateTimeField(
         'date added', default=timezone.now, editable=False)
 
@@ -72,8 +72,7 @@ class Recording(models.Model):
 
 @receiver(post_save, sender=Recording)
 def process_recording(sender, instance, created, **kwargs):
-    # if created and os.path.exists(instance.source_file):
-    if os.path.exists(instance.source_file):
+    if created and os.path.exists(instance.source_file):
         mod = importlib.import_module(
             '%s.plugins.type_%s' %(__package__,instance.type))
         mod.process(instance)
