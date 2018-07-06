@@ -223,3 +223,51 @@ CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
 #
 USE_PODFILE = False
 THIRD_PARTY_APPS = []
+
+##
+# https://docs.djangoproject.com/fr/1.11/ref/clickjacking/
+#
+X_FRAME_OPTIONS = 'EXEMPT'  # SAMEORIGIN, DENY OR EXEMPT
+
+###
+# Enable LTI Provider
+# https://github.com/ccnmtl/django-lti-provider
+#   if True
+# LTI_ENABLED=False default
+
+LTI_TOOL_CONFIGURATION = {
+    'title': 'LTI Pod',
+    'description': 'Pod description',
+    'launch_url': 'lti/',
+    'embed_url': '',
+    'embed_icon_url': '',
+    'embed_tool_id': '',
+    'landing_url': '/',
+    'course_aware': False,
+    'course_navigation': True,
+    'new_tab': True,
+    'frame_width': 640,
+    'frame_height': 360,
+    'assignments': {
+        'addvideo': '/assignment/addvideo/',
+        'getvideo': '/assignment/getvideo/'
+
+    }
+}
+
+PYLTI_CONFIG = {
+    'consumers': {
+        'azerty': {
+            'secret': 'azerty'
+        }
+    }
+}
+LTI_PROPERTY_LIST_EX = [
+    'custom_canvas_user_login_id',
+    'ext_user_username',
+    'context_title',
+    'lis_course_offering_sourcedid',
+    'custom_canvas_api_domain',
+    'custom_video'
+]
+LTI_PROPERTY_USER_USERNAME = 'ext_user_username'

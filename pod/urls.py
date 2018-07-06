@@ -32,6 +32,7 @@ from pod.main.views import contact_us, download_file
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
 from pod.recorder.views import add_recording
+from pod.lti.views import LTIAssignmentView
 
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
@@ -124,6 +125,17 @@ if getattr(settings, 'USE_PODFILE', False):
 
 for apps in settings.THIRD_PARTY_APPS:
     urlpatterns += [url(r'^' + apps + '/', include('pod.%s.urls' % apps)), ]
+
+##
+# LTI feature patterns
+#
+if getattr(settings, 'LTI_ENABLED', False):
+    # LTI href
+    urlpatterns += [
+        url(r'^lti/', include('lti_provider.urls')),
+        url(r'^assignment/(?P<activity>[\-\d\w]+)/',
+            LTIAssignmentView.as_view()),
+    ]
 
 # CHANNELS
 urlpatterns += [
