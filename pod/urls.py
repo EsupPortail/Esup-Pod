@@ -125,6 +125,16 @@ if getattr(settings, 'USE_PODFILE', False):
 for apps in settings.THIRD_PARTY_APPS:
     urlpatterns += [url(r'^' + apps + '/', include('pod.%s.urls' % apps)), ]
 
+##
+# LTI feature patterns
+#
+if getattr(settings, 'LTI_ENABLED', False):
+    # LTI href
+    urlpatterns += [
+        url(r'^lti/', include('lti_provider.urls')),
+        url(r'^assignment/(?P<activity>[\-\d\w]+)/', LTIAssignmentView.as_view()),
+]
+
 # CHANNELS
 urlpatterns += [
     url(r'^(?P<slug_c>[\-\d\w]+)/$', channel, name='channel'),

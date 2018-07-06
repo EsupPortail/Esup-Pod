@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
+    'lti_provider',
     # Pod Applications
     'pod.main',
     'django.contrib.admin',  # put it here for template override
@@ -231,3 +232,12 @@ try:
         MIDDLEWARE.append('django_cas.middleware.CASMiddleware')
 except NameError:
     pass
+
+##
+# Authentication backend : add lti backend if use
+#
+if 'LTI_ENABLED' in globals() and LTI_ENABLED:
+    AUTHENTICATION_BACKENDS = list(AUTHENTICATION_BACKENDS)
+    AUTHENTICATION_BACKENDS.append('lti_provider.auth.LTIBackend')
+    AUTHENTICATION_BACKENDS = tuple(AUTHENTICATION_BACKENDS)
+
