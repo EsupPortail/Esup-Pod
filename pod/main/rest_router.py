@@ -7,6 +7,7 @@ from pod.main import rest_views as main_views
 
 from pod.chapter import rest_views as chapter_views
 from pod.completion import rest_views as completion_views
+from pod.recorder import rest_views as recorder_views
 
 from django.conf import settings
 
@@ -40,6 +41,10 @@ router.register(r'tracks', completion_views.TrackViewSet)
 router.register(r'overlays', completion_views.OverlayViewSet)
 
 router.register(r'chapters', chapter_views.ChapterViewSet)
+
+router.register(r'recording', recorder_views.RecordingModelViewSet)
+router.register(r'recordingfile', recorder_views.RecordingFileModelViewSet)
+
 
 if getattr(settings, 'USE_PODFILE', False):
     router.register(r'folders',

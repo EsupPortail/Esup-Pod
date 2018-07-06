@@ -18,7 +18,7 @@ else:
 AUTH_TYPE = getattr(
     settings, 'AUTH_TYPE', (('local', _('local')), ('CAS', 'CAS')))
 AFFILIATION = getattr(
-    settings, 'AUTH_TYPE',
+    settings, 'AFFILIATION',
     (
         ('member', _('member')),
         ('student', _('student')),

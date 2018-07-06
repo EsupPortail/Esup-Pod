@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'pod.enrichment',
     'pod.video_search',
     'pod.live',
+    'pod.recorder',
     'pod.custom',
 ]
 
