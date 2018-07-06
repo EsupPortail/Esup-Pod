@@ -731,7 +731,7 @@ def encode_video_playlist(source, cmd, output_dir):
     msg = "ffmpegPlaylistCommand :\n%s" % ffmpegPlaylistCommand
     msg += "Encoding Playlist : %s" % time.ctime()
 
-    #ffmpegvideo = subprocess.getoutput(ffmpegPlaylistCommand)
+    # ffmpegvideo = subprocess.getoutput(ffmpegPlaylistCommand)
     ffmpegvideo = subprocess.run(
         ffmpegPlaylistCommand, shell=True, stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT)
