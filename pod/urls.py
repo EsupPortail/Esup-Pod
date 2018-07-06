@@ -32,6 +32,7 @@ from pod.main.views import contact_us, download_file
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
 from pod.recorder.views import add_recording
+from pod.lti.views import LTIAssignmentView
 
 USE_CAS = getattr(
     settings, 'USE_CAS', False)

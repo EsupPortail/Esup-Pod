@@ -1,0 +1,60 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>{{course_title}}</title>
+<style>
+* {
+    margin:0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+</style>
+</head>
+
+<body>
+{% if messages %}
+<div id="base-message-alert">
+{% for message in messages %}
+  <p>{{ message }}</p>
+{% endfor %}
+</div>
+{% else %}
+{% if iframe_url and iframe_url != "" %}
+<iframe title="{{course_title}}" src="{{iframe_url}}" width="100%" height="100%">
+<p>{% trans "Your browser does not support iframes"%}.</p>
+</iframe>
+{% else %}
+<p>{% trans "Activity not found" %}</p>
+{%endif%}
+{% endif %}
+<!--
+% extends 'base.html' %
+% block content %
+<div class="text-center well">
+    <h1>Assignment Landing Page</h1>
+    <h3>Logged In</h3>
+    <p>Username: {{request.user.username}}</p>
+    <p>{{request.user.first_name}} {{request.user.last_name}}</p>
+    <p>{{course_title}}</p>
+    <p>Assignment #{{number}}</p>
+    <p>video: {{iframe_url}}</p>
+    <hr />
+
+    {% if not is_student %}
+        <p>Instructors cannot submit an assignment</p>
+    {% else %}
+        <form action="{% url 'lti-post-grade' %}" method="post">
+            <input type="input" name="score" value=".55" />
+            <input type="hidden" name="next" value="% url 'assignment-success' %" />
+            <input type="submit" value="submit" />
+        </form>
+    {% endif %}
+</div>
+% endblock 
+-->
+</body>
+</html> 

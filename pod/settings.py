@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'pod.video_search',
     'pod.live',
     'pod.recorder',
+    'pod.lti',
     'pod.custom',
 ]
 
@@ -219,25 +220,22 @@ for application in INSTALLED_APPS:
 ##
 # AUTH CAS
 #
-try:
-    if USE_CAS is True:
-        AUTHENTICATION_BACKENDS = (
-            'django.contrib.auth.backends.ModelBackend',
-            'django_cas.backends.CASBackend',
-        )
-        CAS_RESPONSE_CALLBACKS = (
-            'pod.authentication.populatedCASbackend.populateUser',
-            # function call to add some information to user login by CAS
-        )
-        MIDDLEWARE.append('django_cas.middleware.CASMiddleware')
-except NameError:
-    pass
+if 'USE_CAS' in globals() and USE_CAS is True:
+    AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
+        'django_cas.backends.CASBackend',
+    )
+    CAS_RESPONSE_CALLBACKS = (
+        'pod.authentication.populatedCASbackend.populateUser',
+        # function call to add some information to user login by CAS
+    )
+    MIDDLEWARE.append('django_cas.middleware.CASMiddleware')
+
 
 ##
 # Authentication backend : add lti backend if use
 #
-if 'LTI_ENABLED' in globals() and LTI_ENABLED:
+if 'LTI_ENABLED' in globals() and LTI_ENABLED is True:
     AUTHENTICATION_BACKENDS = list(AUTHENTICATION_BACKENDS)
     AUTHENTICATION_BACKENDS.append('lti_provider.auth.LTIBackend')
     AUTHENTICATION_BACKENDS = tuple(AUTHENTICATION_BACKENDS)
-

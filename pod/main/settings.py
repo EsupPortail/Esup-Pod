@@ -224,6 +224,11 @@ CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
 USE_PODFILE = False
 THIRD_PARTY_APPS = []
 
+##
+# https://docs.djangoproject.com/fr/1.11/ref/clickjacking/
+#
+X_FRAME_OPTIONS = 'EXEMPT'  # SAMEORIGIN, DENY OR EXEMPT
+
 ###
 # Enable LTI Provider
 # https://github.com/ccnmtl/django-lti-provider
@@ -266,4 +271,3 @@ LTI_PROPERTY_LIST_EX = [
     'custom_video'
 ]
 LTI_PROPERTY_USER_USERNAME = 'ext_user_username'
-
