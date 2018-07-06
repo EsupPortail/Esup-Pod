@@ -65,11 +65,12 @@ def enrichment_to_vtt(list_enrichment, video):
             created_by=video.owner
         )
         for enr in previousEnrichmentFile:
-            enr.delete()
+            enr.delete()  # do it like this to delete file
         enrichmentFile, created = CustomFileModel.objects.get_or_create(
             name='enrichment',
             folder=videodir,
             created_by=video.owner)
+
         if enrichmentFile.file and os.path.isfile(enrichmentFile.file.path):
             os.remove(enrichmentFile.file.path)
     else:

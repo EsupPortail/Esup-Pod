@@ -74,7 +74,7 @@ class Recording(models.Model):
 def process_recording(sender, instance, created, **kwargs):
     if created and os.path.exists(instance.source_file):
         mod = importlib.import_module(
-            '%s.plugins.type_%s' %(__package__,instance.type))
+            '%s.plugins.type_%s' % (__package__, instance.type))
         mod.process(instance)
 
 

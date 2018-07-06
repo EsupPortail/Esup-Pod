@@ -46,9 +46,14 @@ class EnrichmentGroupAdmin(admin.ModelAdmin):
     def get_groups(self, obj):
         return "\n".join([g.name for g in obj.groups.all()])
 
+
 class EnrichmentVttAdmin(admin.ModelAdmin):
-    list_display = ('video', 'src')
+    list_display = ('video', 'src', 'get_file_name')
     readonly_fields = ('video', )
+
+    def get_file_name(self, obj):
+        return obj.src.file.name
+
 
 admin.site.register(EnrichmentGroup, EnrichmentGroupAdmin)
 admin.site.register(EnrichmentVtt, EnrichmentVttAdmin)

@@ -129,7 +129,10 @@ class CustomFileModel(BaseFileModel):
         super(CustomFileModel, self).delete()
 
     def __str__(self):
-        return '%s (%s, %s)' % (self.name, self.file_type, self.file_size)
+        if self.file and os.path.isfile(self.file.path):
+            return '%s (%s, %s)' % (self.name, self.file_type, self.file_size)
+        else:
+            return '%s' % (self.name)
 
     class Meta:
         verbose_name = _('Document')
