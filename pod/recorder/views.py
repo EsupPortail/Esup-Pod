@@ -45,7 +45,8 @@ def add_recording(request):
                 med.user = form.cleaned_data['user']
             else:
                 med.user = request.user
-            if request.POST.get('mediapath') and request.POST.get('mediapath') != "":
+            if (request.POST.get('mediapath')
+                    and request.POST.get('mediapath') != ""):
                 med.mediapath = form.cleaned_data['mediapath']
             else:
                 med.mediapath = mediapath
