@@ -213,3 +213,4 @@ def encode_recording(recording):
         return -1
     zip.close()
     add_comment(recording.id, 'End processing zip file')
+    os.rename(recording.source_file, recording.source_file+"_treated")

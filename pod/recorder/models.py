@@ -90,5 +90,21 @@ class RecordingFile(models.Model):
 
 @receiver(post_save, sender=RecordingFile)
 def process_recording_file(sender, instance, created, **kwargs):
-    if created:
-        print("move upload file and create recording")
+    if created and instance.file and os.path.isfile(instance.file.path):
+        # deplacement du fichier source vers destination
+        create_recording(instance)
+
+
+def create_recording(recordingFile):
+    new_path = os.path.join(
+        DEFAULT_RECORDER_PATH, os.path.basename(recordingFile.file.path))
+    nom, ext = os.path.splitext(os.path.basename(recordingFile.file.path))
+    ext = ext.lower()
+    os.rename(recordingFile.file.path, new_path)
+    user = User.objects.get(id=DEFAULT_RECORDER_USER_ID)
+    Recording.objects.create(
+        user=user,
+        title=nom,
+        source_file=new_path,
+        type=recordingFile.type
+    )
