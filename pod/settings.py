@@ -220,7 +220,7 @@ for application in INSTALLED_APPS:
 ##
 # AUTH CAS
 #
-if 'USE_CAS' in globals() and USE_CAS is True:
+if 'USE_CAS' in globals() and eval('USE_CAS') is True:
     AUTHENTICATION_BACKENDS = (
         'django.contrib.auth.backends.ModelBackend',
         'django_cas.backends.CASBackend',
@@ -235,7 +235,7 @@ if 'USE_CAS' in globals() and USE_CAS is True:
 ##
 # Authentication backend : add lti backend if use
 #
-if 'LTI_ENABLED' in globals() and LTI_ENABLED is True:
+if 'LTI_ENABLED' in globals() and eval('LTI_ENABLED') is True:
     AUTHENTICATION_BACKENDS = list(AUTHENTICATION_BACKENDS)
     AUTHENTICATION_BACKENDS.append('lti_provider.auth.LTIBackend')
     AUTHENTICATION_BACKENDS = tuple(AUTHENTICATION_BACKENDS)

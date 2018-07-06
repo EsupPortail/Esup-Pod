@@ -133,8 +133,9 @@ if getattr(settings, 'LTI_ENABLED', False):
     # LTI href
     urlpatterns += [
         url(r'^lti/', include('lti_provider.urls')),
-        url(r'^assignment/(?P<activity>[\-\d\w]+)/', LTIAssignmentView.as_view()),
-]
+        url(r'^assignment/(?P<activity>[\-\d\w]+)/',
+            LTIAssignmentView.as_view()),
+    ]
 
 # CHANNELS
 urlpatterns += [

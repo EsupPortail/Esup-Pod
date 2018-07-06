@@ -3,6 +3,7 @@ from lti_provider.mixins import LTIAuthMixin
 from auth_mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 
 from pod.video.models import Video
 
@@ -19,7 +20,8 @@ class LTIAssignmentView(LTIAuthMixin, LoginRequiredMixin, TemplateView):
         activity = kwargs.get("activity")
         url = ""
         if activity == 'addvideo':
-            url = reverse('video_edit')  # "http://localhost:8000/video_edit/?is_iframe=true"
+            # "http://localhost:8000/video_edit/?is_iframe=true"
+            url = reverse('video_edit')
             url += "?is_iframe=true"
             # url = "/video_edit/?is_iframe=true"
         if activity == 'getvideo':
@@ -27,12 +29,15 @@ class LTIAssignmentView(LTIAuthMixin, LoginRequiredMixin, TemplateView):
                 try:
                     video = Video.objects.get(
                         id=self.request.session.get("custom_video"))
-                    url = reverse('video', args=(video.slug,))  # "http://localhost:8000/video_edit/?is_iframe=true"
+                    # "http://localhost:8000/video_edit/?is_iframe=true"
+                    url = reverse('video', args=(video.slug,))
                     url += "?is_iframe=true"
                     # url = "http:" + video.get_full_url() + "?is_iframe=true"
                 except Exception as e:
                     messages.add_message(
-                        request, messages.ERROR, _(u'The video id is not valid.'))
+                        self.request,
+                        messages.ERROR,
+                        _('The video id is not valid.'))
         return {
             'iframe_url': url,
             'is_student': self.lti.lis_result_sourcedid(self.request),
