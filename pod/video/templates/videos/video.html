@@ -92,14 +92,15 @@ body {
 
 <nav id="navbar-video" class="navbar navbar-light bg-light">
   <div class="navbar-brand "  >
-    <div style="display:inline-block; white-space: normal;">{{video.title|title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}</div>
+    <div style="display:inline-block; white-space: normal;">
+      {% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png"></a>{% endif %} {{video.title|title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}</div>
   <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
       <i data-feather="alert-octagon"></i>
   </a>  
   <div class="btn-group">
-    {% if request.user.playlist_set.all %}
-    <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <i data-feather="star"></i>
+    {% if request.user.playlist_set.all and video.is_draft == False %}
+    <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans "Add the video to a playlist"%}" >
+      <i data-feather="play-circle"></i>
     </a>
     <div class="dropdown-menu">
       <h6 class="dropdown-header">{% trans 'My playlists' %}</h6>

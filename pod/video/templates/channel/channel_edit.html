@@ -69,8 +69,8 @@ body {
                 {% endif %}
                 {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
 
-                {% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
-                {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
+                {% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
+                {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
             </div>
             </div>
             </div>
@@ -105,7 +105,7 @@ body {
                 </button>
                 <div id="collapse-{{forloop.counter}}" class="collapse hide card-text small" aria-labelledby="heading-{{forloop.counter}}" data-parent="#formfields">
                     {% for value in values %}
-                    <p>{{value}}</p>
+                    <p>{{value|safe}}</p>
                     {%endfor%}
                 </div>
             </div>

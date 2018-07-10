@@ -249,7 +249,7 @@ var show_form_notes = function(data) {
 	$( "#video_notes_form" ).parent().html(data);
 }
 var show_form_theme_new = function(data) {
-	if(data.indexOf(id_form)==-1) {
+	if(data.indexOf("form_theme")==-1) {
         showalert(gettext('You are no longer authenticated. Please log in again.'), "alert-danger");
     } else {
         show_form_theme(data);
@@ -343,19 +343,19 @@ $('#id_theme option').remove();
 
 $('#id_channel').change(function() {
     $('#id_theme option').remove();
-    var tab = $(this).val();
+    var tab_channel_selected = $(this).val();
     var str = "";
-    for (var id in tab) {
-        var chan = $("#id_channel option[value="+tab[id]+"]").text();
-        str += get_list(listTheme["channel_"+tab[id]], 0, [], tag_type="option", li_class="", attrs='', add_link=false, current="", channel=chan+": ");
+    for (var id in tab_channel_selected) {
+        var chan = $("#id_channel option[value="+tab_channel_selected[id]+"]").text();
+        str += get_list(listTheme["channel_"+tab_channel_selected[id]], 0, [], tag_type="option", li_class="", attrs='', add_link=false, current="", channel=chan+": ");
     }
     $('#id_theme').append(str);
 });
-
 $("#id_channel option:selected").each(function () {
     var str = get_list(listTheme["channel_"+$(this).val()], 0, tab_initial, tag_type="option", li_class="", attrs='', add_link=false, current="");
     $('#id_theme').append(str);
 });
+
 /** end channel **/
 /*** Copy to clipboard ***/
 $('#btnpartageprive').click(function() {

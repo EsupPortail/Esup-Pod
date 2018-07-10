@@ -66,20 +66,24 @@ DEFAULT_TYPE_ID = getattr(
 
 LICENCE_CHOICES = getattr(
     settings, 'LICENCE_CHOICES', (
-        ('BY', _("Attribution")),
-        ('BY ND', _("Attribution + Pas d’Oeuvre dérivée (BY-ND)")),
-        ('BY NC ND', _(
-            "Attribution + Utilisation Non Commerciale + "
-            + "Pas d’Oeuvre dérivée (BY-NC-ND)"
+        ('by', _("Attribution 4.0 International (CC BY 4.0)")),
+        ('by-nd', _("Attribution-NoDerivatives 4.0 "
+                    "International (CC BY-ND 4.0)"
+                    )),
+        ('by-nc-nd', _(
+            "Attribution-NonCommercial-NoDerivatives 4.0 "
+            "International (CC BY-NC-ND 4.0)"
         )),
-        ('BY NC', _("Attribution + Utilisation Non Commerciale (BY-NC)")),
-        ('BY NC SA', _(
-            "Attribution + Utilisation Non Commerciale + "
-            + "Partage dans les mêmes conditions (BY-NC-SA)"
+        ('by-nc', _("Attribution-NonCommercial 4.0 "
+                    "International (CC BY-NC 4.0)")),
+        ('by-nc-sa', _(
+            "Attribution-NonCommercial-ShareAlike 4.0 "
+            "International (CC BY-NC-SA 4.0)"
         )),
-        ('BY SA', _(
-            "Attribution + Partage dans les mêmes conditions (BY-SA)"))
+        ('by-sa', _(
+            "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"))
     ))
+LICENCE_CHOICES_DICT = {key: value for key, value in LICENCE_CHOICES}
 FORMAT_CHOICES = getattr(
     settings, 'FORMAT_CHOICES', (
         ("video/mp4", 'video/mp4'),
@@ -655,6 +659,9 @@ class Video(models.Model):
 
     def get_cursus(self):
         return "%s" % CURSUS_CODES_DICT[self.cursus]
+
+    def get_licence(self):
+        return "%s" % LICENCE_CHOICES_DICT[self.licence]
 
     def get_dublin_core(self):
         contributors = []

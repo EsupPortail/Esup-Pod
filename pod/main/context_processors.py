@@ -80,8 +80,8 @@ def context_navbar(request):
         ).distinct().annotate(
             video_count=Count("video", distinct=True)
         )))
-    """
-    channels = Channel.objects.all(
+
+    all_channels = Channel.objects.all(
     ).distinct().annotate(
         video_count=Count("video", distinct=True)
     ).prefetch_related(
@@ -89,7 +89,7 @@ def context_navbar(request):
         ).distinct().annotate(
             video_count=Count("video", distinct=True)
         )))
-    """
+
     types = Type.objects.filter(
         video__is_draft=False
     ).distinct().annotate(video_count=Count("video", distinct=True))
@@ -126,7 +126,8 @@ def context_navbar(request):
 
     LAST_VIDEOS = get_last_videos() if request.path == "/" else None
 
-    return {'CHANNELS': channels, 'TYPES': types, 'OWNERS': owners,
+    return {'ALL_CHANNELS':all_channels, 'CHANNELS': channels, 'TYPES': types, 
+            'OWNERS': owners,
             'DISCIPLINES': disciplines, 'LISTOWNER': json.dumps(listowner),
             'LAST_VIDEOS': LAST_VIDEOS, 'LINK_FOOTER': linkFooter
             }

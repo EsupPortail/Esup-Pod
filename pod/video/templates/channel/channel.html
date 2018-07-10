@@ -89,7 +89,7 @@ body {
     <div class="card card-body p-2 mt-1">
     <h5 class="card-title pl-2">
       <i data-feather="list"></i>&nbsp;
-      {% trans 'Themes of ' %}{{ channel.title }}
+      {% trans 'Themes of ' %}&nbsp;{{ channel.title }}
     </h5>
     <div class="card-text" id="treeview">
       <ul class="list-group list-group-flush {% if channel.themes.count > 5 %}small{%endif%}" id="ultreeview" style="max-height:300px; overflow:auto;">

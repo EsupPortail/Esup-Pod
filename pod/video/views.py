@@ -470,6 +470,7 @@ def video_edit(request, slug=None):
             else:
                 video.owner = request.user
             video.save()
+            form.save_m2m()
             messages.add_message(
                 request, messages.INFO,
                 _('The changes have been saved.')
