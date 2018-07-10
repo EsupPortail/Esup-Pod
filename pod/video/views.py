@@ -34,8 +34,9 @@ from datetime import datetime
 from pod.playlist.models import Playlist
 
 
-# VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
-VIDEOS = Video.objects.filter(is_draft=False)
+VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
+RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
+    settings, 'RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY', False)
 THEME_ACTION = ['new', 'modify', 'delete', 'save']
 
 # ############################################################################
@@ -433,6 +434,13 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
 def video_edit(request, slug=None):
 
     video = get_object_or_404(Video, slug=slug) if slug else None
+
+    if (RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+            and request.user.is_staff is False):
+        return render(request,
+                      'videos/video_edit.html',
+                      {'access_not_allowed': True}
+                      )
 
     if video and request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
