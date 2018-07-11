@@ -145,6 +145,8 @@ if getattr(settings, 'LTI_ENABLED', False):
 #
 if getattr(settings, 'H5P_ENABLED', False):
     urlpatterns += [
+        url(r'^h5p/login/', authentication_login, name='h5p_login'),
+        url(r'^h5p/logout/', authentication_logout, name='h5p_logout'),
         url(r'^h5p/', include('h5pp.urls')),
     ]
 

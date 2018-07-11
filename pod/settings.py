@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'lti_provider',
+    'h5pp',
     # Pod Applications
     'pod.main',
     'django.contrib.admin',  # put it here for template override
@@ -47,12 +48,12 @@ INSTALLED_APPS = [
     'pod.completion',
     'pod.chapter',
     'pod.enrichment',
+    'pod.interactive',
     'pod.video_search',
     'pod.live',
     'pod.recorder',
     'pod.lti',
     'pod.custom',
-    'h5pp'
 ]
 
 ##
