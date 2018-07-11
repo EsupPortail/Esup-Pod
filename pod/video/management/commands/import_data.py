@@ -51,6 +51,9 @@ class Command(BaseCommand):
                             # todo image
                             owner.save()
                         else:
+                            #print(obj)
+                            #if hasattr(obj.object, "headband"):
+                            obj.object.headband = None
                             obj.save()
                 if type_to_import in ('tags'):
                     data = json.load(infile)
