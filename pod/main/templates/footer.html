@@ -17,7 +17,7 @@
   </div>
   <div class="col-md-4">
     {% for link in LINK_FOOTER %}
-    <a href="{{link.url}}" title="{{link.title}}" >
+    <a href="{{link.get_url}}" title="{{link.title}}" >
     &gt;  {{link.title}}
     </a><br>
     {% endfor %}

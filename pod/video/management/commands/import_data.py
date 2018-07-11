@@ -51,8 +51,7 @@ class Command(BaseCommand):
                             # todo image
                             owner.save()
                         else:
-                            #print(obj)
-                            #if hasattr(obj.object, "headband"):
+                            print(obj, obj.object.id)
                             obj.object.headband = None
                             obj.save()
                 if type_to_import in ('tags'):
@@ -111,6 +110,7 @@ from pods.models import User
 from pods.models import Discipline
 from pods.models import Pod
 from core.models import UserProfile
+from django.contrib.auth.models import User
 from django.contrib.flatpages.models import FlatPage
 
 from django.core import serializers
@@ -126,8 +126,13 @@ with open("Theme.json", "w") as out:
 with open("Type.json", "w") as out:
     json_serializer.serialize(Type.objects.all(), indent=2, stream=out)
 
+>>> owners = set(Channel.objects.all().values_list("owners", flat=True))
+>>> users = set(Channel.objects.all().values_list("users", flat=True))
+>>> list_user = owners.union(users)
+
 with open("User.json", "w") as out:
-    json_serializer.serialize(User.objects.all(), indent=2, stream=out)
+    json_serializer.serialize(User.objects.filter(id__in=list_user), indent=2,
+        stream=out)
 
 with open("Discipline.json", "w") as out:
     json_serializer.serialize(Discipline.objects.all(), indent=2, stream=out)
@@ -140,13 +145,19 @@ with open("UserProfile.json", "w") as out:
         stream=out, fields=(
         'user','auth_type', 'affiliation', 'commentaire', 'image'))
 
+podowner = set(Pod.objects.all().values_list("owner", flat=True))
+with open("User.json", "w") as out:
+     json_serializer.serialize(User.objects.filter(id__in=podowner), indent=2,
+      stream=out)
+
 video_fields = ('video', 'allow_donwloading', 'is_360', 'title', 'slug',
     'owner', 'date_added', 'date_evt', 'cursus', 'main_lang', 'description',
     'duration', 'type', 'discipline', 'channel', 'theme', 'is_draft',
     'is_restricted', 'password')
 with open("Pod.json", "w") as out:
     json_serializer.serialize(
-        Pod.objects.all(), stream=out, indent=2, fields=video_fields)
+        Pod.objects.all().order_by("id"), stream=out, indent=2,
+        fields=video_fields)
 
 list_tag = {}
 for p in Pod.objects.all():
