@@ -126,7 +126,7 @@ def context_navbar(request):
 
     LAST_VIDEOS = get_last_videos() if request.path == "/" else None
 
-    return {'ALL_CHANNELS':all_channels, 'CHANNELS': channels, 'TYPES': types, 
+    return {'ALL_CHANNELS': all_channels, 'CHANNELS': channels, 'TYPES': types,
             'OWNERS': owners,
             'DISCIPLINES': disciplines, 'LISTOWNER': json.dumps(listowner),
             'LAST_VIDEOS': LAST_VIDEOS, 'LINK_FOOTER': linkFooter
