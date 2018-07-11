@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'pod.recorder',
     'pod.lti',
     'pod.custom',
+    'h5pp'
 ]
 
 ##
