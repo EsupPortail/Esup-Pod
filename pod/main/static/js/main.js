@@ -394,7 +394,7 @@ restricted_access();
       form.addEventListener('submit', function(event) {
         if (form.checkValidity() === false) {
           window.scrollTo($(form).scrollTop(), 0); 
-          showalert(gettext("Errors appear in the form, please correct it"),"alert-danger");
+          showalert(gettext("Errors appear in the form, please correct them"),"alert-danger");
           event.preventDefault();
           event.stopPropagation();
         } else {

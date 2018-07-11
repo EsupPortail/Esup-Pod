@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-10 14:16+0000\n"
-"PO-Revision-Date: 2018-07-10 09:44+0100\n"
+"POT-Creation-Date: 2018-07-11 07:39+0000\n"
+"PO-Revision-Date: 2018-07-11 09:42+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -334,7 +334,8 @@ msgstr "Vous devez sauvegarder vos chapitres pour voir le résultat."
 msgid "You cannot chapter this video."
 msgstr "Vous ne pouvez chapitrer cette vidéo."
 
-#: pod/chapter/views.py:98 pod/chapter/views.py:195 pod/enrichment/views.py:142
+#: pod/chapter/views.py:98 pod/chapter/views.py:195
+#: pod/enrichment/views.py:142
 msgid "Please correct errors."
 msgstr "Veuillez corriger les erreurs."
 
@@ -1009,24 +1010,21 @@ msgid "There is an overlap with the enrichment {0}, "
 msgstr "Il y a un chevauchement avec l'enrichissement {0},"
 
 #: pod/enrichment/models.py:310
-#, fuzzy
-#| msgid "Select one or more groups who can access in read only to this folder"
-msgid ""
-"Select one or more groups who can access in read only to the enrichment of "
-"the video"
-msgstr "Sélectionner un ou plusieurs groupes qui auront accès à ce dossier."
+#| msgid ""
+#| "Select one or more groups who can access in read only to the enrichment "
+#| "of the video"
+msgid "Select one or more groups who can access to the enrichment of the video"
+msgstr ""
+"Sélectionner un ou plusieurs groupes qui auront accès à la modification de "
+"l'enrichissement de la vidéo."
 
 #: pod/enrichment/models.py:316
-#, fuzzy
-#| msgid "Enrichment of the video"
 msgid "Enrichment Video Group"
-msgstr "Enrichissement de la vidéo"
+msgstr "Groupe pour enrichir la vidéo"
 
 #: pod/enrichment/models.py:317
-#, fuzzy
-#| msgid "Enrichment of the video"
 msgid "Enrichment Video Groups"
-msgstr "Enrichissement de la vidéo"
+msgstr "Groupes pour enrichir la vidéo"
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:5
 msgid "Enrichment of the video"
@@ -1053,7 +1051,7 @@ msgstr "Informations"
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:81
 msgid "You can specify the group(s) of users who can access this page"
-msgstr ""
+msgstr "Spécifier des groupes d'utilisateur qui peuvent accéder à cette page"
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:83
 msgid "The title field is required and must contains from 2 to 100 characters."
@@ -1096,10 +1094,8 @@ msgstr "Mes vidéos"
 #: pod/enrichment/templates/enrichment/group_enrichment.html:11
 #: pod/enrichment/templates/enrichment/group_enrichment.html:14
 #: pod/enrichment/templates/enrichment/group_enrichment.html:19
-#, fuzzy
-#| msgid "Enrichment of the video"
 msgid "Editing group for the enrichment of the video"
-msgstr "Enrichissement de la vidéo"
+msgstr "Spécifier les groupes qui peuvent enrichir la vidéo"
 
 #: pod/enrichment/templates/enrichment/group_enrichment.html:34
 #: pod/video/templates/videos/video_edit.html:69
@@ -1107,10 +1103,8 @@ msgid "The video is currently being encoded."
 msgstr "La vidéo est en cours d'encodage."
 
 #: pod/enrichment/templates/enrichment/group_enrichment.html:61
-#, fuzzy
-#| msgid "Create / Edit enrichments"
 msgid "back to editing enrichment"
-msgstr "Créer / Éditer des enrichissements"
+msgstr "Retour à l'édition"
 
 #: pod/enrichment/templates/enrichment/list_enrichment.html:5
 msgid "List of the enrichments"
@@ -1147,7 +1141,6 @@ msgid "Use this link to share the video"
 msgstr "Utiliser ce lien pour partager la vidéo"
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html:64
-#, fuzzy
 #| msgid "Edit the enrichment"
 msgid "Edit enrichment"
 msgstr "Éditer l'enrichissement"
@@ -1180,7 +1173,7 @@ msgstr "Vous ne pouvez pas voir cette vidéo."
 
 #: pod/live/models.py:18 pod/live/models.py:43
 msgid "name"
-msgstr ""
+msgstr "nom"
 
 #: pod/live/models.py:21 pod/live/templates/live/live.html:43
 #: pod/video/models.py:179 pod/video/models.py:254
@@ -1194,11 +1187,11 @@ msgstr "Bannière"
 
 #: pod/live/models.py:38 pod/live/models.py:44
 msgid "Building"
-msgstr ""
+msgstr "Bâtiment"
 
 #: pod/live/models.py:39
 msgid "Buildings"
-msgstr ""
+msgstr "Bâtiments"
 
 #: pod/live/models.py:46 pod/video/templates/channel/list_theme.html:10
 msgid "description"
@@ -1206,7 +1199,7 @@ msgstr "description"
 
 #: pod/live/models.py:52
 msgid "Poster"
-msgstr ""
+msgstr "Affiche"
 
 #: pod/live/models.py:53
 msgid "URL"
@@ -1214,77 +1207,67 @@ msgstr ""
 
 #: pod/live/models.py:54
 msgid "Url of the stream"
-msgstr ""
+msgstr "Adresse du flux"
 
 #: pod/live/models.py:56
-#, fuzzy
-#| msgid "The video is currently being encoded."
 msgid "Check if the broadcaster is currently sending stream."
-msgstr "La vidéo est en cours d'encodage."
+msgstr "Cocher la cas si le diffuseur envoie un flux"
 
 #: pod/live/models.py:58 pod/video/forms.py:157 pod/video/models.py:445
 msgid "Restricted access"
 msgstr "Accès restreint"
 
 #: pod/live/models.py:60
-#, fuzzy
 #| msgid ""
 #| "If this box is checked, the video will only be accessible to "
 #| "authenticated users."
 msgid "Live is accessible only to authenticated users."
 msgstr ""
-"Si cette case est cochée, la vidéo sera accessible uniquement aux "
+"Si cette case est cochée, la page du direct sera accessible uniquement aux "
 "utilisateurs authentifiés."
 
 #: pod/live/models.py:77
 msgid "Broadcaster"
-msgstr ""
+msgstr "Diffuseur"
 
 #: pod/live/models.py:78
 msgid "Broadcasters"
-msgstr ""
+msgstr "Diffuseurs"
 
 #: pod/live/templates/live/live.html:15 pod/live/templates/live/live.html:19
 #: pod/live/templates/live/lives.html:12 pod/live/templates/live/lives.html:15
 #: pod/live/templates/live/lives.html:18 pod/main/templates/navbar.html:29
 msgid "Lives"
-msgstr ""
+msgstr "Directs"
 
 #: pod/live/templates/live/live.html:50 pod/live/templates/live/lives.html:29
-#, fuzzy
-#| msgid "Encoding in progress"
 msgid "no broadcast in progress"
-msgstr "Encodage en cours"
+msgstr "Aucune diffusion actuellement"
 
 #: pod/live/templates/live/live.html:53 pod/live/templates/live/lives.html:31
-#, fuzzy
 #| msgid "Sorry, no video found"
 msgid "Sorry, no lives found"
-msgstr "Désolé, aucune vidéo trouvée"
+msgstr "Désolé, aucun direct trouvé"
 
 #: pod/live/templates/live/live.html:56 pod/live/templates/live/lives.html:34
 msgid "access map"
-msgstr ""
+msgstr "Plan d'accès"
 
 #: pod/live/templates/live/lives.html:39
-#, fuzzy
-#| msgid "Sorry, no video found"
 msgid "Sorry, no buildings found"
-msgstr "Désolé, aucune vidéo trouvée"
+msgstr "Désolé, aucun bâtiment trouvé"
 
 #: pod/lti/templates/lti_provider/assignment.html:28
 msgid "Your browser does not support iframes"
-msgstr ""
+msgstr "Votre navigateur ne supporte pas les iframes"
 
 #: pod/lti/templates/lti_provider/assignment.html:31
 msgid "Activity not found"
-msgstr ""
+msgstr "Activité non trouvée"
 
 #: pod/lti/views.py:40
-#, fuzzy
-#| msgid "The video has been deleted."
 msgid "The video id is not valid."
-msgstr "La vidéo a été supprimée."
+msgstr "L'identifiant de la vidéo n'est pas valide"
 
 #: pod/main/admin.py:35
 msgid "Advanced options"
@@ -1961,7 +1944,7 @@ msgstr "Vous devez renseigner un lien ou une page"
 
 #: pod/main/templates/404.html:4 pod/main/templates/404.html:8
 msgid "Page not found"
-msgstr ""
+msgstr "Page non trouvée"
 
 #: pod/main/templates/404.html:10
 msgid "We're sorry, but the requested page could not be found."
@@ -1973,28 +1956,27 @@ msgstr "Home"
 
 #: pod/main/templates/500.html:7
 msgid "Server error"
-msgstr ""
+msgstr "Erreur serveur"
 
 #: pod/main/templates/500.html:11
 msgid "Server error (500)"
-msgstr ""
+msgstr "Erreur serveur (500)"
 
 #: pod/main/templates/500.html:14
 msgid "Server Error <em>(500)</em>"
-msgstr ""
+msgstr "Server Error <em>(500)</em>"
 
 #: pod/main/templates/500.html:15
 msgid ""
 "There's been an error. It's been reported to the site administrators via "
 "email and should be fixed shortly. Thanks for your patience."
-msgstr ""
+msgstr "Une erreur s'est produite, les administrateurs ont été prévenu."
 
 #: pod/main/templates/admin/base_site.html:7
 msgid "Django site admin"
-msgstr ""
+msgstr "Administration de Pod"
 
 #: pod/main/templates/admin/base_site.html:10
-#, fuzzy
 #| msgid "Pod Administration"
 msgid "Django administration"
 msgstr "Administration de Pod"
@@ -2112,9 +2094,10 @@ msgstr "Vous venez d'envoyer un message depuis"
 msgid "Channels"
 msgstr "Chaînes"
 
-#: pod/main/templates/navbar.html:20 pod/main/templates/navbar_collapse.html:36
-#: pod/video/forms.py:194 pod/video/forms.py:375 pod/video/forms.py:379
-#: pod/video/models.py:192 pod/video/templates/videos/filter_aside.html:10
+#: pod/main/templates/navbar.html:20
+#: pod/main/templates/navbar_collapse.html:36 pod/video/forms.py:194
+#: pod/video/forms.py:375 pod/video/forms.py:379 pod/video/models.py:192
+#: pod/video/templates/videos/filter_aside.html:10
 msgid "Users"
 msgstr "Utilisateurs"
 
@@ -2330,7 +2313,6 @@ msgid "Launch"
 msgstr "Lancer"
 
 #: pod/playlist/templates/playlist/playlist_list.html:22
-#, fuzzy
 #| msgid "No video found"
 msgid "no first video found"
 msgstr "Aucune vidéo trouvée"
@@ -2480,20 +2462,16 @@ msgid "You cannot edit this file."
 msgstr "Vous ne pouvez éditer ce fichier."
 
 #: pod/recorder/models.py:18
-#, fuzzy
-#| msgid "videos"
 msgid "Audiovideocast"
-msgstr "vidéos"
+msgstr "Audiovideocast"
 
 #: pod/recorder/models.py:48
 msgid "Recording"
-msgstr ""
+msgstr "Enregistrement"
 
 #: pod/recorder/models.py:49
-#, fuzzy
-#| msgid "Encoding step"
 msgid "Recordings"
-msgstr "Étape de l'encodage"
+msgstr "Enregistrements"
 
 #: pod/recorder/models.py:63
 msgid "Please specify a type."
@@ -2501,46 +2479,40 @@ msgstr "Veuillez spécifier un type."
 
 #: pod/recorder/models.py:65
 msgid "Please use the only type in type choices."
-msgstr ""
+msgstr "Merci de sélectionner un type valide"
 
 #: pod/recorder/models.py:67
-#, fuzzy
-#| msgid "Please specify a track file."
 msgid "Please specify a source file."
-msgstr "Veuillez joindre un fichier de sous-titres."
+msgstr "Veuillez joindre une source de fichier"
 
 #: pod/recorder/models.py:69
 msgid "Source file doesn't exists"
-msgstr ""
+msgstr "Le fichier source n'existe pas"
 
 #: pod/recorder/models.py:87
-#, fuzzy
-#| msgid "encoding source file"
 msgid "Recording file"
-msgstr "fichier source d'encodage"
+msgstr "Enregistrement"
 
 #: pod/recorder/models.py:88
-#, fuzzy
-#| msgid "encoding source file"
 msgid "Recording files"
-msgstr "fichier source d'encodage"
+msgstr "Enregistrements"
 
 #: pod/recorder/templates/recorder/add_recording.html:17
 #: pod/recorder/templates/recorder/add_recording.html:21
 #: pod/recorder/templates/recorder/add_recording.html:26
-#, fuzzy
-#| msgid "Add a new video"
 msgid "Adding a new record"
-msgstr "Ajouter une nouvelle vidéo"
+msgstr "Ajouter un nouvel enregistrement"
 
 #: pod/recorder/views.py:31
 msgid "Mediapath should be indicated."
-msgstr ""
+msgstr "La source du fichier doit être indiquée"
 
 #: pod/recorder/views.py:55
 msgid ""
 "Your publication is saved. Adding it to your videos will be in a few minutes."
 msgstr ""
+"Votre publication est sauvegardée, elle sera ajoutée à vos vidéos dans "
+"quelques minutes."
 
 #: pod/urls.py:156 pod/urls.py:157
 msgid "Pod Administration"
@@ -2701,29 +2673,36 @@ msgstr "Licence"
 
 #: pod/video/forms.py:118 pod/video/models.py:69
 msgid "Attribution 4.0 International (CC BY 4.0)"
-msgstr ""
+msgstr "Attribution 4.0 International (CC BY 4.0)"
 
 #: pod/video/forms.py:121 pod/video/models.py:70
 msgid "Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)"
-msgstr ""
+msgstr "Attribution - Pas de Modification 4.0 International (CC BY-ND 4.0) "
 
 #: pod/video/forms.py:125 pod/video/models.py:74
 msgid ""
 "Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)"
 msgstr ""
+"Attribution - Pas d'Utilisation Commerciale - Pas de Modification 4.0 "
+"International (CC BY-NC-ND 4.0)"
 
 #: pod/video/forms.py:129 pod/video/models.py:77
 msgid "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 msgstr ""
+"Attribution - Pas d’Utilisation Commerciale 4.0 International (CC BY-NC 4.0) "
 
 #: pod/video/forms.py:134 pod/video/models.py:80
 msgid ""
 "Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)"
 msgstr ""
+"Attribution - Pas d’Utilisation Commerciale - Partage dans les Mêmes "
+"Conditions 4.0 International (CC BY-NC-SA 4.0)"
 
 #: pod/video/forms.py:140 pod/video/models.py:84
 msgid "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"
 msgstr ""
+"Attribution - Partage dans les Mêmes Conditions 4.0 International (CC BY-SA "
+"4.0) "
 
 #: pod/video/forms.py:143 pod/video/models.py:315 pod/video/models.py:428
 msgid "Themes"
@@ -3113,10 +3092,8 @@ msgstr "Voir la chaîne"
 #: pod/video/templates/channel/channel_edit.html:73
 #: pod/video/templates/videos/video_edit.html:94
 #: pod/video/templates/videos/video_edit.html:95
-#, fuzzy
-#| msgid "Other language"
 msgid "Other(s) language(s)"
-msgstr "Autre langue"
+msgstr "Autre(s) langue(s)"
 
 #: pod/video/templates/channel/channel_edit.html:99
 #: pod/video/templates/channel/theme_edit.html:71
@@ -3341,10 +3318,9 @@ msgid "Check the box to loop the video."
 msgstr "Cocher cette case pour lire la vidéo en boucle"
 
 #: pod/video/templates/videos/video-info.html:140
-#, fuzzy
 #| msgid "Start time"
 msgid "Start video"
-msgstr "Début"
+msgstr "Début de la vidéo"
 
 #: pod/video/templates/videos/video-info.html:143
 msgid "Check the box to indicate the beginning of playing desired."
@@ -3359,10 +3335,8 @@ msgid "Report the video"
 msgstr "Signaler la vidéo"
 
 #: pod/video/templates/videos/video.html:102
-#, fuzzy
-#| msgid "Position of the video in a playlist."
 msgid "Add the video to a playlist"
-msgstr "Position de la vidéo dans la playlist."
+msgstr "Ajouter une vidéo à une playlist"
 
 #: pod/video/templates/videos/video.html:163
 #: pod/video/templates/videos/video.html:177
@@ -3401,9 +3375,9 @@ msgid ""
 "Access to adding video has been restricted. If you want to add videos on the "
 "platform, please"
 msgstr ""
+"L'accès à l'ajout de vidéo est restreint, si vous voulez ajouter des vidéos"
 
 #: pod/video/templates/videos/video_edit.html:48
-#, fuzzy
 #| msgid "Contact us"
 msgid "contact us"
 msgstr "Contactez nous"
@@ -3478,10 +3452,8 @@ msgstr ""
 "complétés."
 
 #: pod/video/templates/videos/video_edit.html:188
-#, fuzzy
-#| msgid "Form fields"
 msgid "Help for form fields"
-msgstr "Champs de formulaire"
+msgstr "Aide des champs de formulaire"
 
 #: pod/video/templates/videos/video_list.html:10
 msgid "Sorry, no video found"

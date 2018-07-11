@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-10 14:16+0000\n"
+"POT-Creation-Date: 2018-07-11 07:39+0000\n"
 "PO-Revision-Date: 2018-07-03 13:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -967,9 +967,7 @@ msgid "There is an overlap with the enrichment {0}, "
 msgstr ""
 
 #: pod/enrichment/models.py:310
-msgid ""
-"Select one or more groups who can access in read only to the enrichment of "
-"the video"
+msgid "Select one or more groups who can access to the enrichment of the video"
 msgstr ""
 
 #: pod/enrichment/models.py:316

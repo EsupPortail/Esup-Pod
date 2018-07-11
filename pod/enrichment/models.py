@@ -308,7 +308,7 @@ class EnrichmentGroup(models.Model):
     groups = models.ManyToManyField(
         Group, blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who'
-                    ' can access in read only to the'
+                    ' can access to the'
                     ' enrichment of the video'))
 
     class Meta:
