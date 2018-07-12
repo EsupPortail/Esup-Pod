@@ -106,7 +106,7 @@ def video_interactive(request, slug, slug_c=None,
 
     score = getUserScore(h5p.content_id) if (
         request.user == video.owner or request.user.is_superuser
-    ) else getUserScore(h5p.content_id, request.user).get(0)
+    ) else getUserScore(h5p.content_id, request.user)
 
     interactive = {'h5p': h5p, 'score': score}
 

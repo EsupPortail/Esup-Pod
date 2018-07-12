@@ -1,0 +1,110 @@
+{% extends 'videos/video.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block page_extra_head %}
+<style>
+#h5pcontent {
+    margin: auto;
+    text-align: center;
+    background-color: black;
+    width: 100%;
+    height: 480px;
+}
+#icontent {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+}
+</style>
+{% endblock page_extra_head %}
+
+
+{% block breadcrumbs %}{{ block.super }} 
+<li class="breadcrumb-item"><a href="{% url "videos"%}">{% trans 'Videos' %}</a><li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
+{% endblock %}
+
+{% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Interactive video' %}) {{video.title}}{% endblock %}
+
+{% block video-element %}
+
+{% if form %}
+
+{% include 'videos/video-form.html' %}
+
+{% else %}
+    
+    <div id="h5pcontent">
+            <iframe id="icontent" src="{% url 'h5pp:h5pcontent' content_id=interactive.h5p.content_id %}?is_iframe=true&interactive=true" style="display:none;" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+</div>
+
+    <form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
+    {% csrf_token %}
+    </form>
+
+    <nav id="navbar-video" class="navbar navbar-light bg-light">
+        <div class="navbar-brand" >
+            <div style="display:inline-block; white-space: normal;">({% trans 'Interactive video' %}) {{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}</div>
+        </div>
+    <div class="list-group col-12">
+        <fieldset>
+        <div class="list-group-item">
+          <div class="form-group ">
+            <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page' %}:</label>
+            <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'enrichment:video_enrichment' slug=video.slug %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+          </div>
+        </div>
+        <div class="list-group-item">
+          <div class="form-group">
+            <label for="txtpartage">{% trans 'Use this link to share the video' %} :</label>
+            <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'enrichment:video_enrichment' slug=video.slug %}" />
+          </div>
+        </div>
+        <div class="list-group-item">
+          <div class="form-group">
+            {% if request.user == video.owner or request.user.is_superuser %}
+            <a href="{% url 'enrichment:edit_enrichment' slug=video.slug %}" class="btn btn-info btn-sm float-right" title="Back to original video">
+                {% trans 'Edit enrichment' %}
+            </a>
+            {% endif %}
+            <a href="{% url 'video' slug=video.slug %}" class="btn btn-info btn-sm " title="Back to original video">
+                {% trans 'Back to original' %}
+            </a>
+          </div>
+        </div>
+        </fieldset>
+    </div>
+    </nav>
+{%endif%}
+
+{% endblock video-element %}
+
+{% block page_aside %}
+    {{ block.super }} 
+{% endblock page_aside %}
+
+{% block more_script %}
+<script>
+    var video_height = 0;
+    $('#icontent').on('load',function() {
+        $('#icontent').fadeIn('slow', function(){
+            video_height = $('#icontent').contents().find("#h5p-iframe-1").height();
+            $("#h5pcontent").height(video_height);
+        });
+    });
+    $("#collapseAside").on('shown.bs.collapse', function () {
+        setTimeout(function (){
+          video_height = $('#icontent').contents().find("#h5p-iframe-1").height();
+          $("#h5pcontent").height(video_height);
+        }, 500);
+    });
+    $("#collapseAside").on('hidden.bs.collapse', function () {
+        setTimeout(function (){
+          video_height = $('#icontent').contents().find("#h5p-iframe-1").height();
+          $("#h5pcontent").height(video_height);
+        }, 500);
+    });
+</script>
+{% endblock more_script %}
+
