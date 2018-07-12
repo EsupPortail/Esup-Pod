@@ -6,7 +6,7 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth.models import Group
 
 # Create your models here.
-class InteractiveVideo(models.Model):
+class Interactive(models.Model):
     video = models.OneToOneField(Video, verbose_name=_('Video'),
                                  editable=False, null=True,
                                  on_delete=models.CASCADE)
