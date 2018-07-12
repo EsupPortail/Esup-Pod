@@ -34,9 +34,8 @@
 {% include 'videos/video-form.html' %}
 
 {% else %}
-    
-    <div id="h5pcontent">
-            <iframe id="icontent" src="{% url 'h5pp:h5pcontent' content_id=interactive.h5p.content_id %}?is_iframe=true&interactive=true" style="display:none;" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+<div id="h5pcontent">
+    <iframe id="icontent" src="{% url 'h5pp:h5pcontent' %}?contentId={{interactive.h5p.content_id}}&is_iframe=true" style="display:none;" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
 </div>
 
     <form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
@@ -52,19 +51,19 @@
         <div class="list-group-item">
           <div class="form-group ">
             <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page' %}:</label>
-            <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'enrichment:video_enrichment' slug=video.slug %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+            <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'interactive:video_interactive' slug=video.slug %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
           </div>
         </div>
         <div class="list-group-item">
           <div class="form-group">
             <label for="txtpartage">{% trans 'Use this link to share the video' %} :</label>
-            <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'enrichment:video_enrichment' slug=video.slug %}" />
+            <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'interactive:video_interactive' slug=video.slug %}" />
           </div>
         </div>
         <div class="list-group-item">
           <div class="form-group">
             {% if request.user == video.owner or request.user.is_superuser %}
-            <a href="{% url 'enrichment:edit_enrichment' slug=video.slug %}" class="btn btn-info btn-sm float-right" title="Back to original video">
+            <a href="{% url 'interactive:edit_interactive' slug=video.slug %}" class="btn btn-info btn-sm float-right" title="Back to original video">
                 {% trans 'Edit enrichment' %}
             </a>
             {% endif %}
@@ -89,19 +88,19 @@
     var video_height = 0;
     $('#icontent').on('load',function() {
         $('#icontent').fadeIn('slow', function(){
-            video_height = $('#icontent').contents().find("#h5p-iframe-1").height();
+            video_height = $('#icontent').contents().find("#h5p-iframe-{{interactive.h5p.content_id}}").height();
             $("#h5pcontent").height(video_height);
         });
     });
     $("#collapseAside").on('shown.bs.collapse', function () {
         setTimeout(function (){
-          video_height = $('#icontent').contents().find("#h5p-iframe-1").height();
+          video_height = $('#icontent').contents().find("#h5p-iframe-{{interactive.h5p.content_id}}").height();
           $("#h5pcontent").height(video_height);
         }, 500);
     });
     $("#collapseAside").on('hidden.bs.collapse', function () {
         setTimeout(function (){
-          video_height = $('#icontent').contents().find("#h5p-iframe-1").height();
+          video_height = $('#icontent').contents().find("#h5p-iframe-{{interactive.h5p.content_id}}").height();
           $("#h5pcontent").height(video_height);
         }, 500);
     });
