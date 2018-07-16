@@ -72,6 +72,45 @@
             </a>
           </div>
         </div>
+        <div class="list-group-item">
+            <h3>{% trans 'Scoreboard' %}</h3>
+            <i>{% trans 'Click below to refresh the information.' %}</i>
+            <button type="submit" class="btn btn-info" id="refresh-score" ><i data-feather="refresh-cw"></i></button>
+            <br>
+            {% if interactive.score and request.user == video.owner or request.user.is_superuser %}
+            <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>{% trans 'User' %}</th>
+                    <th>Points</th>
+                </tr>
+            </thead>
+            <tbody id="user-score">
+            {% for user in interactive.score %}
+                {% if user.max_points %}
+                <tr>
+                    <td>{{user.user}}</td>
+                    <td>{{user.points}} / {{user.max_points}}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td>{{user.user}}</td><td>{% trans 'No score available' %}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+            </table>
+            {% elif request.user != video.owner and interactive.score.max_points %}
+            <div id="personnal-score">
+            {% trans 'You got the following score on this video' %}: {{interactive.score.points}} / {{interactive.score.max_points}}
+            </div>
+            {% else %}
+            <div id="personnal-score">
+            {% trans 'This is the first time you watch this video.' %}
+            </div>
+            {% endif %}
+        </div>
         </fieldset>
     </div>
     </nav>
@@ -104,6 +143,35 @@
           $("#h5pcontent").height(video_height);
         }, 500);
     });
+    $(document).on('click', '#refresh-score', function() {
+    $.ajax({
+        url: '{% url "h5pp:h5pajax" %}?user-scores={{interactive.h5p.content_id}}',
+        type: 'GET',
+        success: function(list) {
+            var table = $('#user-score')[0];
+            if (table == undefined) {
+                var personnal = $('#personnal-score')[0];
+                for (i = 0; i < list.length; i++) {
+                    if (list[i]['user'] == '{{ request.user.username }}' && list[i]['max_points'] != null) {
+                        personnal.innerHTML = "{% trans 'You got the following score on this video' %}: " + list[i]['points'] + ' / ' + list[i]['max_points'];
+                    }
+                }
+            } else {
+                var html = ''
+                for (i = 0; i < list.length; i++) {
+                    html = html + '<tr>';
+                    if (list[i]['max_points'] != null) {
+                        html = html + '<td>' + list[i]['user'] + '</td><td>' + list[i]['points'] + ' / ' + list[i]['max_points'] + '</td>';
+                    } else {
+                        html = html + '<td>' + list[i]['user'] + '</td><td>{% trans "No score available" %}</td>';
+                    }
+                    html = html + '</tr>';
+                    table.innerHTML = html;
+                }
+            }
+        }
+    });
+});
 </script>
 {% endblock more_script %}
 

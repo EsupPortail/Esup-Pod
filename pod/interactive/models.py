@@ -6,12 +6,18 @@ from django.template.defaultfilters import slugify
 from django.contrib.auth.models import Group
 
 # Create your models here.
+
+
 class Interactive(models.Model):
     video = models.OneToOneField(Video, verbose_name=_('Video'),
                                  editable=False, null=True,
                                  on_delete=models.CASCADE)
+
     def is_interactive(self):
-        return True if h5p_contents.objects.filter(slug=slugify(self.video.title)).count() > 0 else False
+        return True if h5p_contents.objects.filter(
+            slug=slugify(self.video.title)
+        ).count() > 0 else False
+
 
 class InteractiveGroup(models.Model):
     video = models.OneToOneField(Video, verbose_name=_('Video'),

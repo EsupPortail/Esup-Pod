@@ -3,12 +3,11 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import PermissionDenied
+from django.core.exceptions import SuspiciousOperation
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
-from django.template.defaultfilters import slugify
-
 
 from pod.video.models import Video, Channel, Theme
 from pod.video.views import get_note_form, get_video_access
@@ -16,7 +15,7 @@ from pod.video.forms import VideoPasswordForm
 from .models import Interactive, InteractiveGroup
 from .forms import InteractiveGroupForm
 from h5pp.models import h5p_contents, h5p_libraries
-from h5pp.h5p.h5pmodule import getUserScore, h5pGetContentId
+from h5pp.h5p.h5pmodule import getUserScore
 
 
 @csrf_protect
@@ -27,7 +26,9 @@ def group_interactive(request, slug):
         video=video)
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
-            request, messages.ERROR, _(u'You cannot add interactivity to this video.'))
+            request, messages.ERROR,
+            _('You cannot add interactivity to this video.')
+        )
         raise PermissionDenied
 
     form = InteractiveGroupForm(instance=interactiveGroup)
@@ -65,7 +66,9 @@ def edit_interactive(request, slug):
     if request.user != video.owner and not request.user.is_superuser:
         if not check_interactive_group(request, video):
             messages.add_message(
-                request, messages.ERROR, _(u'You cannot add interactivity to this video.'))
+                request, messages.ERROR,
+                _('You cannot add interactivity to this video.')
+            )
             raise PermissionDenied
 
     interactiveVideo, created = Interactive.objects.get_or_create(
@@ -125,7 +128,7 @@ def video_interactive(request, slug, slug_c=None,
                 'theme': theme,
                 'notesForm': notesForm,
                 'playlist': playlist,
-                'interactive':interactive
+                'interactive': interactive
             }
         )
     else:
