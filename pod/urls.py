@@ -88,6 +88,10 @@ urlpatterns = [
         authentication_login, name='authentication_login'),
     url(r'^authentication_logout/$',
         authentication_logout, name='authentication_logout'),
+    url(r'^authentication_login/$',
+        authentication_login, name='login'),
+    url(r'^authentication_logout/$',
+        authentication_logout, name='logout'),
     url(r'^authentication_login_gateway/$',
         authentication_login_gateway, name='authentication_login_gateway'),
     url(r'^accounts/login/$',
@@ -135,6 +139,15 @@ if getattr(settings, 'LTI_ENABLED', False):
         url(r'^lti/', include('lti_provider.urls')),
         url(r'^assignment/(?P<activity>[\-\d\w]+)/',
             LTIAssignmentView.as_view()),
+    ]
+##
+# H5P feature patterns
+#
+if getattr(settings, 'H5P_ENABLED', False):
+    urlpatterns += [
+        url(r'^h5p/login/', authentication_login, name='h5p_login'),
+        url(r'^h5p/logout/', authentication_logout, name='h5p_logout'),
+        url(r'^h5p/', include('h5pp.urls')),
     ]
 
 # CHANNELS

@@ -4,6 +4,7 @@ Django global settings for pod_project.
 Django version : 1.11.10.
 """
 import os
+import sys
 from pod.main.settings import BASE_DIR
 
 ##
@@ -239,3 +240,8 @@ if 'LTI_ENABLED' in globals() and eval('LTI_ENABLED') is True:
     AUTHENTICATION_BACKENDS = list(AUTHENTICATION_BACKENDS)
     AUTHENTICATION_BACKENDS.append('lti_provider.auth.LTIBackend')
     AUTHENTICATION_BACKENDS = tuple(AUTHENTICATION_BACKENDS)
+
+if 'H5P_ENABLED' in globals() and eval('H5P_ENABLED') is True:
+    sys.path.append(os.path.join(BASE_DIR, "../../H5PP"))
+    INSTALLED_APPS.append('h5pp')
+    INSTALLED_APPS.append('pod.interactive')
