@@ -10,7 +10,6 @@
 
 
 {% block breadcrumbs %}{{ block.super }} 
-<li class="breadcrumb-item"><a href="{% url "videos"%}">{% trans 'Videos' %}</a><li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
 {% endblock %}
 
 {% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
