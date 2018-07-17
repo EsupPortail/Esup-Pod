@@ -112,39 +112,48 @@ var get_list = function(tab, level=0, tab_selected=[], tag_type="option", li_cla
 }
 
 /*** CHANNELS IN NAVBAR ***/
-$("#list-channels .show-themes").mouseenter(function() {
-    var str = get_list(listTheme["channel_"+$(this).data('id')], 0, [], tag_type="li", li_class="list-group-item", attrs='', add_link=true, current="", channel="");
-    $(this).children('.list-group').html(str).show();
-    $(this).addClass('list-group-item-info');
-});
-
-$("#list-channels .show-themes").mouseleave(function() {
-    $(this).children('.list-group').html("").hide();
-    $(this).removeClass('list-group-item-info');
+$("#list-channels a.show-themes").click(function() {
+    if($("#list-themes").children().length === 0) {
+        var str = get_list(listTheme["channel_"+$(this).data('id')], 0, [], tag_type="li", li_class="list-group-item", attrs='', add_link=true, current="", channel="");
+        $("#list-channels").removeClass("col-12");
+        $("#list-channels").addClass("col-8");
+        $("#list-themes").html(str).show();
+        $(this).parents("li").addClass('list-group-item-info');
+    } else {
+        $("#list-channels").removeClass("col-8");
+        $("#list-channels").addClass("col-12");
+        $("#list-themes").html("").hide();
+        $(this).parents("li").removeClass('list-group-item-info');
+    }
+    return false;
 });
 
 $('#ownerboxnavbar').keyup(function() {
 	if($(this).val() && $(this).val().length > 2) {
 		var valThis = $(this).val().toLowerCase();
 		var letter = valThis.charAt(0);
-		var nbuser = listUser[letter].length;
-		$("#accordion").html("");
-		for(i=0; i<nbuser; i++) {
-			var lastname = listUser[letter][i]["last_name"].toLowerCase();
-			if(lastname.indexOf(valThis) != -1) 
-				$("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</a></li>');
-		}
+        if(listUser[letter] != "undefined"){
+		    var nbuser = listUser[letter].length;
+		    $("#accordion").html("");
+    		for(i=0; i<nbuser; i++) {
+    			var lastname = listUser[letter][i]["last_name"].toLowerCase();
+    			if(lastname.indexOf(valThis) != -1) 
+    				$("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</a></li>');
+    		}
+        }
 	} else {
 		$("#accordion").html("");
 	}
 });
 $(".showUser").on('click', function() {
 	var letter = $(this).attr("data-target").toLowerCase();
-	var nbuser = listUser[letter].length;
-	$("#accordion").html("");
-	for(i=0; i<nbuser; i++) {
-		$("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</a></li>');
-	}
+    if(listUser[letter] != "undefined"){
+	   var nbuser = listUser[letter].length;
+	   $("#accordion").html("");
+    	for(i=0; i<nbuser; i++) {
+    		$("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</a></li>');
+    	}
+    }
 });
 
 /** MENU ASIDE **/

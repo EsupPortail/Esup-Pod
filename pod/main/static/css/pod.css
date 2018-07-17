@@ -1,10 +1,162 @@
 body {
-/*min-height: 75rem;*/
 padding-top: 3.5rem;
 }
+.nav-link.btn-connexion{
+  background: #b03c7e;
+  color: white !important;
+}
+.btn-lang{
+  padding: 0.2rem 0.25rem;
+  background: transparent;
+}
+.btn-lang-active{
+  background: white;
+}
+.navbar-inner-pod{
+  position: relative;
+}
+.navbar-toggler{
+  padding: 0.5rem;
+  line-height: inherit;
+  font-size: 1rem;
+}
+.modal-content{
+  min-height: 100vh;
+  border:none;
+  width: 100%;
+  border-radius: 0;
+}
+.modal-pod-full{
+  /* max-width: 90%; */
+  width:100%;
+  margin: 0;
+  max-width: 100%;
+  border:none;
+}
+.modal-pod-full .close{
+font-size:3rem;
+}
+.modal-pod-full .modal-title{
+  font-size: 2.5rem;
+}
+.tab-content>.active{
+  border: 1px solid #ddd;
+  padding: 1.5rem;
+}
+/*** modif taille logo ***/
+@media (max-width: 576px ){
+    .navbar-brand img{
+    height: 35px;
+  }
+  .navbar-brand{
+    font-size: 0.9rem;
+  }
+}
+@media (max-width: 992px){
+  .langs{
+    border-top: 1px solid silver;
+  }
+  .langs .active{
+    background:#b03c7e; 
+    border: none;
+    color: white;
+  }
+  .btn-connexion{
+    font-size: 0.9rem;
+  }
+  .navbar-items-pod{
+  position: absolute;
+  top:69px;
+  left:0;
+  padding: 1rem;
+  width: 100%;
+}
+  .navbar-nav .login .dropdown-menu {
+    position: absolute;
+    float: left;
+}
+  #s::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: white;
+}
+#s::-moz-placeholder { /* Firefox 19+ */
+  color: white;
+}
+#s:-ms-input-placeholder { /* IE 10+ */
+  color: white;
+}
+#s:-moz-placeholder { /* Firefox 18- */
+  color: white;
+} 
+  #s{
+  
+  width:1px;
+  border-radius:0;
+  box-shadow:none;
+  outline: none;
+  padding:0;
+  margin:0;
+  border:0;
+  background-color: transparent;
+  opacity:0;
+    position: absolute;
+}
+#s:focus{
+  width:100%;
+  opacity:1;
+display: inline-block !important;
+  position: absolute;
+  background: #b03c7e !important;
+  padding: 0.5rem 1rem;
+  left: 0;
+  top:0;
+  z-index: 99;
+  color:white !important;
+  height: 74px;
+}
+.navbar label{
+  padding-left: 1px;
+  display:inline-block;
+  margin-top:0.3em;
+  color:rgba(218,208,190,1);
+  text-shadow:0 0 0.1em rgba(60,60,60,0.3);
+  position: relative;
+  left:0.1em;
+  cursor:pointer;
+} 
+
+}
+
+.flex-2{
+    flex: 2;
+}
+.login > .initials{
+  border-radius: 50%;
+  background: #b03c7e;
+  color: white !important;
+  font-weight: 600;
+    height: 3rem;
+    width: 3rem;
+}
+.nav-link{
+  padding: 0.25rem 0.5rem;
+}
+button.nav-link{
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.nav-link-icone{
+  color: #b03c7e !important;
+}
+
+
+nav.navbar {
+  /* max-height: 5rem; */
+}
+
 #collapseAside {
-  max-height: 50rem;
-  overflow-y: auto; 
+  /* max-height: 50rem;
+  overflow-y: auto; */ 
 }
 .pod-mt-7{
     margin-top: 3.5rem;
@@ -17,10 +169,7 @@ padding-top: 3.5rem;
 .liste-collapse{
     z-index: 900;
 }
-.flex-1{
-    flex: 1;
-    justify-content: center;
-}
+
 .jumbotron {
     padding: 1rem 2rem;
 }
