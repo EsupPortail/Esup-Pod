@@ -64,7 +64,7 @@
           <div class="form-group">
             {% if request.user == video.owner or request.user.is_superuser %}
             <a href="{% url 'interactive:edit_interactive' slug=video.slug %}" class="btn btn-info btn-sm float-right" title="Back to original video">
-                {% trans 'Edit enrichment' %}
+                {% trans 'Edit interactivity' %}
             </a>
             {% endif %}
             <a href="{% url 'video' slug=video.slug %}" class="btn btn-info btn-sm " title="Back to original video">

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-17 12:37+0000\n"
+"POT-Creation-Date: 2018-07-17 14:20+0000\n"
 "PO-Revision-Date: 2018-07-03 13:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -74,7 +74,6 @@ msgstr ""
 #: pod/authentication/templates/registration/login.html:9
 #: pod/authentication/templates/registration/login.html:12
 #: pod/authentication/templates/registration/login.html:64
-#: pod/main/templates/navbar.html:173
 msgid "Log in"
 msgstr "Log in"
 
@@ -1040,8 +1039,7 @@ msgstr ""
 
 #: pod/enrichment/templates/enrichment/group_enrichment.html:10
 #: pod/interactive/templates/interactive/group_interactive.html:10
-#: pod/main/templates/navbar.html:81 pod/main/templates/navbar.html:160
-#: pod/main/templates/navbar.html:161
+#: pod/main/templates/navbar.html:77
 #: pod/video/templates/videos/my_videos.html:6
 #: pod/video/templates/videos/video_delete.html:8
 #: pod/video/templates/videos/video_edit.html:13
@@ -1103,7 +1101,6 @@ msgid "Use this link to share the video"
 msgstr ""
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html:64
-#: pod/interactive/templates/interactive/video_interactive.html:67
 msgid "Edit enrichment"
 msgstr ""
 
@@ -1213,6 +1210,10 @@ msgstr ""
 #: pod/interactive/templates/interactive/video_interactive.html:28
 #: pod/interactive/templates/interactive/video_interactive.html:47
 msgid "Interactive video"
+msgstr ""
+
+#: pod/interactive/templates/interactive/video_interactive.html:67
+msgid "Edit interactivity"
 msgstr ""
 
 #: pod/interactive/templates/interactive/video_interactive.html:76
@@ -2180,12 +2181,12 @@ msgstr ""
 msgid "You just send a message from"
 msgstr ""
 
-#: pod/main/templates/navbar.html:19 pod/main/templates/navbar_collapse.html:8
+#: pod/main/templates/navbar.html:19 pod/main/templates/navbar_collapse.html:7
 #: pod/video/forms.py:143 pod/video/models.py:204 pod/video/models.py:422
 msgid "Channels"
 msgstr ""
 
-#: pod/main/templates/navbar.html:22 pod/main/templates/navbar_collapse.html:36
+#: pod/main/templates/navbar.html:22 pod/main/templates/navbar_collapse.html:65
 #: pod/video/forms.py:194 pod/video/forms.py:375 pod/video/forms.py:379
 #: pod/video/models.py:192 pod/video/templates/videos/filter_aside.html:10
 msgid "Users"
@@ -2197,7 +2198,6 @@ msgid "Types"
 msgstr ""
 
 #: pod/main/templates/navbar.html:48 pod/main/templates/navbar.html:50
-#: pod/main/templates/navbar.html:128
 #: pod/video/templates/videos/filter_aside.html:12 pod/video_search/forms.py:8
 #: pod/video_search/templates/search/search.html:6
 #: pod/video_search/templates/search/search.html:32
@@ -2208,16 +2208,15 @@ msgstr ""
 msgid "Add a video"
 msgstr ""
 
-#: pod/main/templates/navbar.html:75 pod/main/templates/navbar.html:153
+#: pod/main/templates/navbar.html:71
 msgid "Change your picture"
 msgstr ""
 
-#: pod/main/templates/navbar.html:78 pod/main/templates/navbar.html:156
+#: pod/main/templates/navbar.html:74
 msgid "Add your picture"
 msgstr ""
 
-#: pod/main/templates/navbar.html:83 pod/main/templates/navbar.html:163
-#: pod/main/templates/navbar.html:164
+#: pod/main/templates/navbar.html:79
 #: pod/video/templates/channel/channel_edit.html:17
 #: pod/video/templates/channel/my_channels.html:6
 #: pod/video/templates/channel/my_channels.html:9
@@ -2225,7 +2224,7 @@ msgstr ""
 msgid "My channels"
 msgstr ""
 
-#: pod/main/templates/navbar.html:85 pod/main/templates/navbar.html:166
+#: pod/main/templates/navbar.html:81
 #: pod/playlist/templates/my_playlists.html:10
 #: pod/playlist/templates/my_playlists.html:17
 #: pod/playlist/templates/playlist.html:14
@@ -2233,30 +2232,27 @@ msgstr ""
 msgid "My playlists"
 msgstr ""
 
-#: pod/main/templates/navbar.html:88 pod/main/templates/navbar.html:89
-#: pod/main/templates/navbar.html:169 pod/main/templates/navbar.html:170
+#: pod/main/templates/navbar.html:84 pod/main/templates/navbar.html:85
 msgid "Log out"
 msgstr ""
 
-#: pod/main/templates/navbar.html:131
-#: pod/video/templates/videos/video_edit.html:18
-#: pod/video/templates/videos/video_edit.html:22
-#: pod/video/templates/videos/video_edit.html:44
-msgid "Add a new video"
+#: pod/main/templates/navbar_collapse.html:21 pod/video/forms.py:143
+#: pod/video/models.py:315 pod/video/models.py:428
+msgid "Themes"
 msgstr ""
 
-#: pod/main/templates/navbar_collapse.html:25
+#: pod/main/templates/navbar_collapse.html:26
 msgid "No channels found"
 msgstr ""
 
-#: pod/main/templates/navbar_collapse.html:44
+#: pod/main/templates/navbar_collapse.html:42
+msgid "Types of videos"
+msgstr ""
+
+#: pod/main/templates/navbar_collapse.html:73
 msgid ""
 "Use the input to filter user by last name or click on button letter to show "
 "the list."
-msgstr ""
-
-#: pod/main/templates/navbar_collapse.html:142
-msgid "Types of videos"
 msgstr ""
 
 #: pod/main/views.py:60
@@ -2754,10 +2750,6 @@ msgstr ""
 
 #: pod/video/forms.py:140 pod/video/models.py:84
 msgid "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"
-msgstr ""
-
-#: pod/video/forms.py:143 pod/video/models.py:315 pod/video/models.py:428
-msgid "Themes"
 msgstr ""
 
 #: pod/video/forms.py:144
@@ -3369,6 +3361,12 @@ msgstr ""
 
 #: pod/video/templates/videos/video_delete.html:31
 msgid "Agree required"
+msgstr ""
+
+#: pod/video/templates/videos/video_edit.html:18
+#: pod/video/templates/videos/video_edit.html:22
+#: pod/video/templates/videos/video_edit.html:44
+msgid "Add a new video"
 msgstr ""
 
 #: pod/video/templates/videos/video_edit.html:22
