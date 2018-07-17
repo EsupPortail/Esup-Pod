@@ -4,6 +4,9 @@ from django.utils.translation import ugettext as _
 from h5pp.models import h5p_contents
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import Group
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
+
 
 # Create your models here.
 
@@ -18,6 +21,11 @@ class Interactive(models.Model):
             slug=slugify(self.video.title)
         ).count() > 0 else False
 
+
+@receiver(pre_delete, sender=h5p_contents,
+          dispatch_uid='pre_delete-Interactive_video_removal')
+def Interactive_video_removal(sender, instance, using, **kwargs):
+    Interactive.objects.get(video__slug__endswith=instance.slug).delete()
 
 class InteractiveGroup(models.Model):
     video = models.OneToOneField(Video, verbose_name=_('Video'),

@@ -43,18 +43,27 @@
             <small>
             {% if video.interactive.is_interactive %}        
                 {% if request.user == video.owner or request.user.is_superuser %}
-                <button type="submit" class="btn btn-info" id="button_delete_video" title="{% trans 'Delete the interactive part of this video' %}">
+                <!--
+                <button type="submit" class="btn btn-info btn-sm" id="button_delete_video" title="{% trans 'Delete the interactive part of this video' %}">
                     <i data-feather="x-circle"></i>
                     <span class="sr-only">{% trans 'Delete the interactive part of this video' %}</span>
                 </button>
-                <button type="submit" class="btn btn-info" id="button_manage" title="{% trans 'Manage scores' %}">
+                -->
+                <form action="{% url 'h5pp:h5plistContents' %}?contentId={{interactive.h5p.content_id}}" id="button_delete_video" style="display:inline-block;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-info btn-sm" title="{% trans 'Back' %}">
+                        <i data-feather="x-circle"></i>
+                        <span class="sr-only">{% trans 'Delete the interactive part of this video' %}</span>
+                    </button>
+                </form>
+                <button type="submit" class="btn btn-info btn-sm" id="button_manage" title="{% trans 'Manage scores' %}">
                     <i data-feather="list"></i>
                     <span class="sr-only">{% trans 'Manage scores' %}</span>
                 </button>
                 {% endif %}
             {% endif %}
                 <form action="{% url 'video' slug=video.slug %}" id="video_back" style="display:inline-block;">
-                    <button type="submit" class="btn btn-info" id="button_video_back" title="{% trans 'Back' %}">
+                    <button type="submit" class="btn btn-info btn-sm" id="button_video_back" title="{% trans 'Back' %}">
                         <i data-feather="arrow-left-circle"></i>
                         <span class="sr-only">{% trans 'Back' %}</span>
                     </button>
@@ -65,11 +74,11 @@
 
 {% if not request.GET.is_iframe%}
 <p class="save-button" align="center" style="display:none;">
-    <button type="submit" class="btn btn-info button_savecontinue_interactive" title="{% trans 'Save and continue' %}">
+    <button type="submit" class="btn btn-info btn-sm button_savecontinue_interactive" title="{% trans 'Save and continue' %}">
         <span id="save" class="glyphicon glyphicon-check"></span> {% trans 'Save and continue' %}
         <span class="sr-only">{trans 'Save and continue' %}</span>
     </button>
-    <button type="submit" class="btn btn-info button_savequit_interactive" title="{% trans 'Save and return to video' %}">
+    <button type="submit" class="btn btn-info btn-sm button_savequit_interactive" title="{% trans 'Save and return to video' %}">
         <span id="save" class="glyphicon glyphicon-new-window"></span> {% trans 'Save and see the interactive video' %}
         <span class="sr-only">{trans 'Save and see the interactive video' %}</span>
     </button>
@@ -203,15 +212,18 @@
             $('#ieditor').hide();
             $('#ieditor').contents().find('#submit_editor').click();
         });
-        //Delete video
-        $('#button_delete_video').on('click', function() {
+        //Delete interactive video
+        $('#button_delete_video').on('submit', function() {
+            var data_form = $( this ).serializeArray();
             $.ajax({
                 url: '{% url 'h5pp:h5plistContents' %}?contentId={{interactive.h5p.content_id}}',
+                data:data_form,
                 type: 'POST',
                 success: function() {
                     window.location.assign("{% url 'video' slug=video.slug %}");
                 }
             });
+            return false;
         });
 
         //Go to H5PP plugin management
