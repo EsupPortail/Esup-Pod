@@ -75,7 +75,7 @@
         <div class="list-group-item">
             <h3>{% trans 'Scoreboard' %}</h3>
             <i>{% trans 'Click below to refresh the information.' %}</i>
-            <button type="submit" class="btn btn-info" id="refresh-score" ><i data-feather="refresh-cw"></i></button>
+            <button type="submit" class="btn btn-info btn-sm" id="refresh-score" ><i data-feather="refresh-cw"></i></button>
             <br>
             {% if interactive.score and request.user == video.owner or request.user.is_superuser %}
             <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>
@@ -83,31 +83,50 @@
             <thead>
                 <tr>
                     <th>{% trans 'User' %}</th>
-                    <th>Points</th>
+                    <th>{% trans 'Points' %}</th>
+                    <th>{% trans 'started' %}</th>
+                    <th>{% trans 'finished' %}</th>
                 </tr>
             </thead>
             <tbody id="user-score">
             {% for user in interactive.score %}
-                {% if user.max_points %}
+                {% if user.max_points and user.max_points != ".." %}
                 <tr>
                     <td>{{user.user}}</td>
                     <td>{{user.points}} / {{user.max_points}}</td>
+                    <td>{{user.date_started}}</td>
+                    <td>{{user.date_finished}}</td>
                 </tr>
                 {% else %}
                 <tr>
                     <td>{{user.user}}</td><td>{% trans 'No score available' %}</td>
+                    <td>{{user.date_started}}</td>
+                    <td>{{user.date_finished}}</td>
                 </tr>
                 {% endif %}
             {% endfor %}
             </tbody>
             </table>
-            {% elif request.user != video.owner and interactive.score.max_points %}
+            {% elif request.user.is_authenticated %}
             <div id="personnal-score">
-            {% trans 'You got the following score on this video' %}: {{interactive.score.points}} / {{interactive.score.max_points}}
+                {% if interactive.score %}
+                {% with interactive.score|first as userscore %}
+                    {% trans 'You got the following score on this video' %}: {{userscore.points}} / {{userscore.max_points}}
+                {% endwith %}
+                {% else %}
+                    {% trans "no score found" %}
+                {% endif %}
             </div>
             {% else %}
             <div id="personnal-score">
-            {% trans 'This is the first time you watch this video.' %}
+                <p>{% trans 'You are watching this video as anonymous user'%}</p>
+                {% if interactive.score %}
+                {% with interactive.score|first as userscore %}
+                    {% trans 'You got the following score on this video' %}: {{userscore.points}} / {{userscore.max_points}}
+                {% endwith %}
+                {% else %}
+                    {% trans "no score found" %}
+                {% endif %}
             </div>
             {% endif %}
         </div>
@@ -148,26 +167,27 @@
         url: '{% url "h5pp:h5pajax" %}?user-scores={{interactive.h5p.content_id}}',
         type: 'GET',
         success: function(list) {
-            var table = $('#user-score')[0];
-            if (table == undefined) {
+            var table = $('#user-score');
+            if (!table.length) {
                 var personnal = $('#personnal-score')[0];
                 for (i = 0; i < list.length; i++) {
-                    if (list[i]['user'] == '{{ request.user.username }}' && list[i]['max_points'] != null) {
-                        personnal.innerHTML = "{% trans 'You got the following score on this video' %}: " + list[i]['points'] + ' / ' + list[i]['max_points'];
+                    if (list[i].fields.uid == '{{ request.user.username }}' && list[i].fields.max_points != "..") {
+                        personnal.innerHTML = "{% trans 'You got the following score on this video' %}: " + list[i].fields.points + ' / ' + list[i].fields.max_points;
                     }
                 }
             } else {
+                console.log("table exist");
                 var html = ''
                 for (i = 0; i < list.length; i++) {
                     html = html + '<tr>';
-                    if (list[i]['max_points'] != null) {
-                        html = html + '<td>' + list[i]['user'] + '</td><td>' + list[i]['points'] + ' / ' + list[i]['max_points'] + '</td>';
+                    if (list[i].fields.max_points != "..") {
+                        html = html + '<td>' + list[i].fields.user + '</td><td>' + list[i].fields.points + ' / ' + list[i].fields.max_points + '</td><td>'+ list[i].fields.date_started + '</td><td> '+ list[i].fields.date_finished + '</td>';
                     } else {
-                        html = html + '<td>' + list[i]['user'] + '</td><td>{% trans "No score available" %}</td>';
+                        html = html + '<td>' + list[i].fields.user + '</td><td>{% trans "No score available" %}</td><td>'+ list[i].fields.date_started + '</td><td> '+ list[i].fields.date_finished + '</td>';
                     }
                     html = html + '</tr>';
-                    table.innerHTML = html;
                 }
+                table.html(html);
             }
         }
     });
