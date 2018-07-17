@@ -294,7 +294,12 @@ class NotesAdmin(admin.ModelAdmin):
 
 
 class VideoToDeleteAdmin(admin.ModelAdmin):
-    list_display = ('date_deletion', )
+    list_display = ('date_deletion', 'get_videos' )
+    list_filter = ['date_deletion']
+
+    def get_videos(self, obj):
+        return obj.video.count()
+    get_videos.short_description = 'video'
 
 
 class ViewCountAdmin(admin.ModelAdmin):

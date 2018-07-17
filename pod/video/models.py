@@ -1013,4 +1013,4 @@ class VideoToDelete(models.Model):
         verbose_name_plural = _("Videos to delete")
 
     def __str__(self):
-        return "%s-%s" % (self.date, self.video.count())
+        return "%s-%s" % (self.date_deletion, self.video.count())
