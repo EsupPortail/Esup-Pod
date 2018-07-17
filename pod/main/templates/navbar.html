@@ -87,8 +87,8 @@
       </li>
       {% else %}
       <li class="nav-item dropdown login">
-        <button class="btn btn-connexion nav-link pl-2 pr-2 d-flex justify-content-center" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Connexion
+        <button class="btn btn-connexion nav-link pl-2 pr-2 d-flex justify-content-center" href="{% url 'authentication_login' %}?referrer={{request.build_absolute_uri|urlencode}}" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {% trans 'Log in' %}
         </button>
       </li>
       {% endif %}
