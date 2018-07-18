@@ -294,7 +294,7 @@ class NotesAdmin(admin.ModelAdmin):
 
 
 class VideoToDeleteAdmin(admin.ModelAdmin):
-    list_display = ('date_deletion', 'get_videos' )
+    list_display = ('date_deletion', 'get_videos')
     list_filter = ['date_deletion']
 
     def get_videos(self, obj):

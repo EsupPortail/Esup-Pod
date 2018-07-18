@@ -46,7 +46,8 @@ def enrichment_to_vtt(list_enrichment, video):
                 '{',
                 '"title": "{0}",'.format(enrich.title),
                 '"type": "{0}",'.format(enrich.type),
-                '"stop_video": "{0}",'.format("%s" % 1 if enrich.stop_video else 0),
+                '"stop_video": "{0}",'.format(
+                    "%s" % 1 if enrich.stop_video else 0),
                 '"url": "{0}"'.format(url),
                 '}'
             ]
@@ -93,7 +94,7 @@ def enrichment_to_vtt_type(enrich):
     elif enrich.type == 'weblink':
         return enrich.weblink
     elif enrich.type == 'embed':
-        return enrich.embed.replace('"','\\"')
+        return enrich.embed.replace('"', '\\"')
 
 
 class Enrichment(models.Model):

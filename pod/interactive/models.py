@@ -27,6 +27,7 @@ class Interactive(models.Model):
 def Interactive_video_removal(sender, instance, using, **kwargs):
     Interactive.objects.get(video__slug__endswith=instance.slug).delete()
 
+
 class InteractiveGroup(models.Model):
     video = models.OneToOneField(Video, verbose_name=_('Video'),
                                  # editable=False, null=True,

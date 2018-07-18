@@ -132,7 +132,7 @@ $('#ownerboxnavbar').keyup(function() {
 	if($(this).val() && $(this).val().length > 2) {
 		var valThis = removeDiacritics($(this).val().toLowerCase());
 		var letter = valThis.charAt(0);
-        if(listUser[letter] != "undefined"){
+        if(listUser[letter]){
 		    var nbuser = listUser[letter].length;
 		    $("#accordion").html("");
     		for(i=0; i<nbuser; i++) {
@@ -148,9 +148,9 @@ $('#ownerboxnavbar').keyup(function() {
 });
 $(".showUser").on('click', function() {
 	var letter = $(this).attr("data-target").toLowerCase();
-    if(listUser[letter] != "undefined"){
+    $("#accordion").html("");
+    if(listUser[letter]){
 	   var nbuser = listUser[letter].length;
-	   $("#accordion").html("");
     	for(i=0; i<nbuser; i++) {
     		$("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</a></li>');
     	}
