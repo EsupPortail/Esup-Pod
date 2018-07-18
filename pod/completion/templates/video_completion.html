@@ -10,12 +10,13 @@
 {% endblock page_extra_head %}
 {% block breadcrumbs %}
 	{{block.super}}
-	<li class="breadcrumb-item active" aria-current="page">
-		<a href="{% url 'video' slug=video.slug %}">
-			{{video.title}}
+	<li class="breadcrumb-item"><a href="{% url "my_videos"%}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
+	<li class="breadcrumb-item">
+		<a href="{% url 'video' slug=video.slug %}" title="{{video.title}}">
+			{{video.title|title|truncatechars:45}}
 		</a>
 	</li>
-	<li class="breadcrumb-item">
+	<li class="breadcrumb-item active"  aria-current="page">
 		{% trans 'Completion video' %}
 	</li>
 {% endblock %}
@@ -142,7 +143,14 @@
 			<p>{% trans 'You can add several subtitle or caption files to a signle video (for example, in order to subtitle or caption this video in several languages' %}</p>
 			<p>{% trans 'Subtitles and/or caption(s) files must be in ".vtt" format.' %}</p>
 			<p>{% trans 'You will need the URL of this video to make subtitles and/or captions. This URL is a direct access to this video. Please do not communicate it outside of this site to avoid any misuse.' %}</p>
-			<input type="text" value="http://futurelink/" readonly/>
+			<ul>
+			{% for vid in video.get_video_mp4 %}
+			<li>{{vid.name}} : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly/></li>
+			{% endfor %}
+			{% if video.is_video == False and video.get_video_mp3 %}
+			<li>{{video.get_video_mp3.name}} : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly/></li>
+			{% endif %}
+			</ul>
 		</div>
 	</div>
 	<div id="document-info" class="card card-body p-2 mt-1">

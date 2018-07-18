@@ -109,6 +109,11 @@ class LinkFooter(models.Model):
         verbose_name = _('bottom menu')
         verbose_name_plural = _('bottom menu')
 
+    def get_url(self):
+        if self.url:
+            return self.url
+        return self.page.url
+
     def __str__(self):
         return "%s - %s" % (self.id, self.title)
 

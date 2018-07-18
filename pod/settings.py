@@ -4,6 +4,7 @@ Django global settings for pod_project.
 Django version : 1.11.10.
 """
 import os
+import sys
 from pod.main.settings import BASE_DIR
 
 ##
@@ -36,6 +37,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
+    'lti_provider',
     # Pod Applications
     'pod.main',
     'django.contrib.admin',  # put it here for template override
@@ -48,6 +50,8 @@ INSTALLED_APPS = [
     'pod.enrichment',
     'pod.video_search',
     'pod.live',
+    'pod.recorder',
+    'pod.lti',
     'pod.custom',
 ]
 
@@ -217,16 +221,27 @@ for application in INSTALLED_APPS:
 ##
 # AUTH CAS
 #
-try:
-    if USE_CAS is True:
-        AUTHENTICATION_BACKENDS = (
-            'django.contrib.auth.backends.ModelBackend',
-            'django_cas.backends.CASBackend',
-        )
-        CAS_RESPONSE_CALLBACKS = (
-            'pod.authentication.populatedCASbackend.populateUser',
-            # function call to add some information to user login by CAS
-        )
-        MIDDLEWARE.append('django_cas.middleware.CASMiddleware')
-except NameError:
-    pass
+if 'USE_CAS' in globals() and eval('USE_CAS') is True:
+    AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
+        'django_cas.backends.CASBackend',
+    )
+    CAS_RESPONSE_CALLBACKS = (
+        'pod.authentication.populatedCASbackend.populateUser',
+        # function call to add some information to user login by CAS
+    )
+    MIDDLEWARE.append('django_cas.middleware.CASMiddleware')
+
+
+##
+# Authentication backend : add lti backend if use
+#
+if 'LTI_ENABLED' in globals() and eval('LTI_ENABLED') is True:
+    AUTHENTICATION_BACKENDS = list(AUTHENTICATION_BACKENDS)
+    AUTHENTICATION_BACKENDS.append('lti_provider.auth.LTIBackend')
+    AUTHENTICATION_BACKENDS = tuple(AUTHENTICATION_BACKENDS)
+
+if 'H5P_ENABLED' in globals() and eval('H5P_ENABLED') is True:
+    sys.path.append(os.path.join(BASE_DIR, "../../H5PP"))
+    INSTALLED_APPS.append('h5pp')
+    INSTALLED_APPS.append('pod.interactive')

@@ -6,118 +6,110 @@
 
 {% spaceless %}
 <div class="container">
-  <a class="navbar-brand" href="/">
-    <img src="{% static LOGO_SITE %}" height="48" alt="logo"/>
-    <strong>{{ TITLE_SITE }}</strong>    
-  </a>      
-  <ul class="nav">
-    <li class="nav-item">
-        <a class="btn btn-light btn-sm my-2 mr-sm-2" data-toggle="collapse" href="#listeChaines" role="button" aria-expanded="false" aria-controls="listeChaines">
-        <i data-feather="youtube"></i>&nbsp;<span>{% trans "Channels" %}</span> </a>
-    </li>
-    <li class="nav-item">
-          <button type="button" class="btn btn-light btn-sm my-2 mr-sm-2" data-toggle="modal" data-target=".bd-example-modal-lg">
-          <i data-feather="users"></i>&nbsp;<span>{% trans "Users"%}</span></button>
-    </li>
-    <li class="nav-item">
-        <a class=" btn btn-light btn-sm my-2 mr-sm-2" data-toggle="collapse" href="#listeTypes" role="button" aria-expanded="false" aria-controls="listeTypes">
-          <i data-feather="tv"></i>&nbsp;<span>{% trans "Types"%}</span></a>
-    </li>
-    {% if "live" in THIRD_PARTY_APPS %}
-    <li class="nav-item">
-        <a class=" btn btn-light btn-sm my-2 mr-sm-2" href="{% url 'live:lives'%}" >
-          <i data-feather="radio"></i>&nbsp;<span>{% trans "Lives"%}</span></a>
-    </li>
-    {% endif %}
-  </ul>
-    
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <form class="form-inline flex-1 mb-sm-2 mb-md-0 " role="search" method="get" action="{% url "search_videos" %}">
-          <input class="form-control form-control-sm mx-sm-1 d-sm-block col-sm-12 col-md-8" type="text" placeholder="Rechercher" aria-label="rechercher" autofocus="autofocus" name="q" >
-          <button class="btn btn-outline-success btn-sm sr-only" type="submit">{% trans "Search" %}</button>
-    </form>
-    <ul class="nav flex-column flex-md-row">
-        <li class="nav-item"><a class="btn btn-outline-success btn-sm my-2 mr-sm-2" href="{% url 'video_edit' %}" >{% trans "Add a new video" %}</a>
-           </li>
-           
-            
-             <li class="nav-item">
-             <div class="dropdown">
-              {% if request.user.is_authenticated %}
-              <button class="btn btn-outline-success dropdown-toggle btn-sm my-2 mr-sm-2" id="dropdown-info" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{% if user.get_full_name != '' %}
-                                    {{ user.get_full_name }}
-                                {% else %}
-                                    {{ user.username }}
-              {% endif %}</button>
-          <div class="dropdown-menu" aria-labelledby="dropdown-info">
-            {% if request.user.is_superuser  %}
-              <a class="dropdown-item" href="{% url 'admin:index' %}">
-                <i data-feather="cpu"></i>&nbsp;Administration
-              </a>
-            {% endif %}
-            {% if request.user.is_staff or request.user.is_superuser %}
-            {% if request.user.owner.userpicture  %}
-            <button class="btn btn-link dropdown-item get_form_userpicture" data-url="{% url "userpicture" %}">
+  <div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i data-feather="menu" aria-hidden="true"></i>
+    </button>
+    <a class="navbar-brand mr-0 mr-sm-1" href="/"><img src="{% static LOGO_SITE %}" height="48" alt="logo"/><strong>{{ TITLE_SITE }}</strong></a>
+  </div>
+
+  <div class="collapse navbar-collapse bg-light navbar-items-pod" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <button class="nav-link" href="#" data-toggle="modal" data-target=".chaines-modal"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Channels" %}</button>
+      </li>
+      <li class="nav-item">
+        <button class="nav-link" href="#" data-toggle="modal" data-target=".users-modal"><i data-feather="users" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Users"%}</button>
+      </li>
+       <li class="nav-item">
+        <button class="nav-link" href="#" data-toggle="modal" data-target=".types-modal"><i data-feather="tv" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Types"%}</button>
+      </li>
+      {% if "live" in THIRD_PARTY_APPS %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'live:lives'%}"><i data-feather="radio" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Lives"%}</a>
+      </li>
+      {% endif %}
+      <li class="nav-item d-flex d-block d-lg-none langs pt-2 mt-2 justify-content-between">
+        <button class="active">{{LANGUAGE_CODE}}</button>
+        {% for language in languages %}
+        {% if language.code != LANGUAGE_CODE %}
+        <form class="form form-inline p-0 m-0" action="/i18n/setlang/" method="post">
+          {% csrf_token %}
+          <input name="language" value="{{ language.code }}" type="hidden">
+          <input value="{{ language.name_local }} ({{ language.code }})" class="btn btn-lang my-2 mr-sm-2" type="submit">
+        </form>
+        {% endif %}
+        {% endfor %}
+      </li>
+    </ul>
+  </div>
+  <form class="form-inline my-2 my-lg-0 justify-content-center flex-2">
+    <label for="s" class="d-lg-none">
+      <i data-feather="search" class="nav-link-icone"></i> <span class="sr-only">{% trans "Search" %}</span> 
+    </label>
+    <input class="form-control mr-sm-2" id="s" placeholder="{% trans "Search" %}" aria-label="{% trans "Search" %}" type="search"  autofocus="autofocus" name="q" >
+  </form>
+  <ul class="navbar-nav flex-row align-items-center flex-grow-1 justify-content-between">
+     <li class="nav-item ">
+        <a class="nav-link pl-2 pr-2" href="{% url 'video_edit' %}"><i data-feather="plus-square" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i>  <span class="d-none d-md-inline-block">{% trans "Add a video" %}</span></a>
+      </li>
+      {% if user.is_authenticated %}
+      <li class="nav-item dropdown login">
+        <button class="initials nav-link pl-2 pr-2 dropdown-toggle d-flex justify-content-center align-items-center " href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {% if user.first_name != '' and user.last_name != '' %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.username|slice:":2"}}{% endif %}
+        </button>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="Profil">
+          <span class="dropdown-item" >{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</span>
+          <div class="dropdown-divider"></div>
+          {% if request.user.is_superuser  %}
+          <a class="dropdown-item" href="{% url 'admin:index' %}"><i data-feather="cpu"></i>&nbsp;Administration</a>
+          {% endif %}
+          {% if request.user.is_staff or request.user.is_superuser %}
+          {% if request.user.owner.userpicture  %}
+          <button class="btn btn-link dropdown-item get_form_userpicture" data-url="{% url "userpicture" %}">
               <img src="{{user.owner.userpicture.file.url}}" height="34" class='rounded' alt="{{user}}">
               {% trans 'Change your picture' %}</button>
-            {% else %}
-            <button class="btn btn-link dropdown-item get_form_userpicture"  data-url="{% url "userpicture" %}">
+          {% else %}
+          <button class="btn btn-link dropdown-item get_form_userpicture"  data-url="{% url "userpicture" %}">
               <i data-feather="image"></i>&nbsp;{% trans 'Add your picture' %}</button>
-            {% endif %}
-            {% endif %}
-            <hr/>
-            <a class="dropdown-item" href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">
-              <i data-feather="film"></i>&nbsp;{% trans 'My videos' %}</a>
-            {% if request.user.owners_channels.all %}
-            <a class="dropdown-item" href="{% url 'my_channels' %}" title="{% trans 'My channels' %}">
-              <i data-feather="youtube"></i>&nbsp;{% trans 'My channels' %}</a>
-            {% endif %}
-            <a class="dropdown-item" href="{% url 'my_playlists' %}" title="{% trans 'My playlists' %}">
-              <i data-feather="airplay"></i>&nbsp;Mes playlists</a>
-            <hr/>
-            <a class="dropdown-item" href="{% url 'authentication_logout' %}" title="{% trans 'Log out' %}">
+          {% endif %}
+          {% endif %}
+          <a class="dropdown-item" href="{% url 'my_videos' %}" title="{% trans 'My videos' %}"><i data-feather="film"></i>&nbsp;{% trans 'My videos' %}</a>
+          {% if request.user.owners_channels.all %}
+          <a class="dropdown-item" href="{% url 'my_channels' %}" title="{% trans 'My channels' %}"><i data-feather="youtube"></i>&nbsp;{% trans 'My channels' %}</a>
+          {% endif %}
+          <a class="dropdown-item" href="{% url 'my_playlists' %}" title="{% trans 'My playlists' %}"><i data-feather="airplay"></i>&nbsp;Mes playlists</a>
+          <!-- <a class="dropdown-item" href="#">Gestion de mon compte</a> -->
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{% url 'authentication_logout' %}" title="{% trans 'Log out' %}">
               <i data-feather="log-out"></i>&nbsp;{% trans 'Log out' %}</a>
-          </div>
-            {% else %}
-            <a class="btn btn-success btn-sm my-2 mr-sm-2" href="{% url 'authentication_login' %}?referrer={{request.build_absolute_uri|urlencode}}" id="se-connecter" aria-haspopup="true" aria-expanded="false"><i data-feather="log-in"></i>{% trans 'Log in' %}</a>
-            {%endif%}
-            <!-- bouton se connecter -->
-            <!--
-            <a class="btn btn-success btn-sm my-2 mr-sm-2" href="#" id="se-connecter" aria-haspopup="true" aria-expanded="false">Se connecter</a>
-            -->
-         </div>
-
-             </li>
-             <li class="nav-item">
-              <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-sm my-2 mr-sm-2 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        </div>
+      </li>
+      {% else %}
+      <li class="nav-item dropdown login">
+        <a class="btn btn-connexion nav-link pl-2 pr-2 d-flex justify-content-center" href="{% url 'authentication_login' %}?referrer={{request.build_absolute_uri|urlencode}}" >
+          {% trans 'Log in' %}
+        </a>
+      </li>
+      {% endif %}
+      <li class="nav-item d-none d-lg-block">
+        <div class="btn-group"><button type="button" class="btn btn-lang btn-lang-active my-2 mr-sm-2 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {{LANGUAGE_CODE}}
             </button>
-            <div class="dropdown-menu p-0 m-0">
-              {% for language in languages %}
-              {% if language.code != LANGUAGE_CODE %}
-              <form class="form form-inline dropdown-item p-0 m-0" action="{% url 'set_language' %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="language" value="{{ language.code }}" />
-                <input type="submit" value="{{ language.name_local }} ({{ language.code }})" class="btn btn-sm btn-sm my-2 mr-sm-2" />
-              </form>
-              {% endif %}
-              {% endfor %}
-            <!-- <a class="dropdown-item" href="#">En</a>
-            <a class="dropdown-item" href="#">Sp</a>
-            -->
-            </div>
+        <div class="dropdown-menu dropdown-menu-right p-0 m-0">
+        {% for language in languages %}
+        {% if language.code != LANGUAGE_CODE %}
+        <form class="form form-inline dropdown-item p-0 m-0" action="/i18n/setlang/" method="post">
+          {% csrf_token %}
+          <input name="language" value="{{ language.code }}" type="hidden">
+          <input value="{{ language.name_local }} ({{ language.code }})" class="btn btn-lang my-2 mr-sm-2" type="submit">
+        </form>
+        {% endif %}
+        {% endfor %}
         </div>
-              
-              
-            </li>
-       </ul>
-    </div>
-      
-    </div>
+        </div>
+      </li>
+   </ul>
+</div> <!-- FIN Container -->
 {% endspaceless %}    
     

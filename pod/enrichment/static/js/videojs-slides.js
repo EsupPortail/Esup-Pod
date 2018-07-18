@@ -99,6 +99,7 @@ class VideoSlides {
 			li.setAttribute('data-start', this.slidesItems[i].start);
 			li.setAttribute('data-end', this.slidesItems[i].end);
 			li.setAttribute('data-type', this.slidesItems[i].type);
+			li.setAttribute('data-stop', this.slidesItems[i].stop_video);
 			li.setAttribute('id', 'slide_'+i);
 			// Append image into li
 			li.appendChild(slide);
@@ -123,6 +124,9 @@ class VideoSlides {
 		for (let i = 0; i <= keys.length - 1; i++) {
 			if (currentTime >= this.slidesItems[i].start && currentTime < this.slidesItems[i].end) {
 				currentSlide = document.getElementById('slide_'+i);
+				if(currentSlide.style.display != 'block' && this.slidesItems[i].stop_video == "1") {
+					player.pause();
+				}
 				currentSlide.style.display = 'block';
 				active = true;
 				player.trigger('changemode', slide_mode);

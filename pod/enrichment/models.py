@@ -46,6 +46,8 @@ def enrichment_to_vtt(list_enrichment, video):
                 '{',
                 '"title": "{0}",'.format(enrich.title),
                 '"type": "{0}",'.format(enrich.type),
+                '"stop_video": "{0}",'.format(
+                    "%s" % 1 if enrich.stop_video else 0),
                 '"url": "{0}"'.format(url),
                 '}'
             ]
@@ -59,10 +61,18 @@ def enrichment_to_vtt(list_enrichment, video):
         videodir, created = UserFolder.objects.get_or_create(
             name='%s' % video.slug,
             owner=video.owner)
+        previousEnrichmentFile = CustomFileModel.objects.filter(
+            name__startswith="enrichment",
+            folder=videodir,
+            created_by=video.owner
+        )
+        for enr in previousEnrichmentFile:
+            enr.delete()  # do it like this to delete file
         enrichmentFile, created = CustomFileModel.objects.get_or_create(
             name='enrichment',
             folder=videodir,
             created_by=video.owner)
+
         if enrichmentFile.file and os.path.isfile(enrichmentFile.file.path):
             os.remove(enrichmentFile.file.path)
     else:
@@ -84,7 +94,7 @@ def enrichment_to_vtt_type(enrich):
     elif enrich.type == 'weblink':
         return enrich.weblink
     elif enrich.type == 'embed':
-        return enrich.embed
+        return enrich.embed.replace('"', '\\"')
 
 
 class Enrichment(models.Model):
@@ -300,7 +310,7 @@ class EnrichmentGroup(models.Model):
     groups = models.ManyToManyField(
         Group, blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who'
-                    ' can access in read only to the'
+                    ' can access to the'
                     ' enrichment of the video'))
 
     class Meta:

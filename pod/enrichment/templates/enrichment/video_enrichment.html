@@ -8,6 +8,10 @@
 <script src="{% static 'js/videojs-slides.js' %}"></script> 
 {% endblock page_extra_head %}
 
+
+{% block breadcrumbs %}{{ block.super }} 
+{% endblock %}
+
 {% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
 
 {% block video-element %}
@@ -114,6 +118,7 @@ player.ready(function() {
                 title: data.title,
                 url: data.url,
                 type: data.type,
+                stop_video: data.stop_video,
                 start: metadataTrack.cues[i].startTime,
                 end: metadataTrack.cues[i].endTime
             });

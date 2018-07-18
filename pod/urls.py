@@ -31,6 +31,8 @@ from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 from pod.main.views import contact_us, download_file
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
+from pod.recorder.views import add_recording
+from pod.lti.views import LTIAssignmentView
 
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
@@ -76,6 +78,8 @@ urlpatterns = [
     url(r'^theme_edit/(?P<slug>[\-\d\w]+)/$', theme_edit, name='theme_edit'),
     # my videos
     url(r'^my_videos/$', my_videos, name='my_videos'),
+    # recording
+    url(r'^add_recording/$', add_recording, name='add_recording'),
 
     url(r'^search/$', search_videos, name='search_videos'),
 
@@ -84,6 +88,10 @@ urlpatterns = [
         authentication_login, name='authentication_login'),
     url(r'^authentication_logout/$',
         authentication_logout, name='authentication_logout'),
+    url(r'^authentication_login/$',
+        authentication_login, name='login'),
+    url(r'^authentication_logout/$',
+        authentication_logout, name='logout'),
     url(r'^authentication_login_gateway/$',
         authentication_login_gateway, name='authentication_login_gateway'),
     url(r'^accounts/login/$',
@@ -121,6 +129,26 @@ if getattr(settings, 'USE_PODFILE', False):
 
 for apps in settings.THIRD_PARTY_APPS:
     urlpatterns += [url(r'^' + apps + '/', include('pod.%s.urls' % apps)), ]
+
+##
+# LTI feature patterns
+#
+if getattr(settings, 'LTI_ENABLED', False):
+    # LTI href
+    urlpatterns += [
+        url(r'^lti/', include('lti_provider.urls')),
+        url(r'^assignment/(?P<activity>[\-\d\w]+)/',
+            LTIAssignmentView.as_view()),
+    ]
+##
+# H5P feature patterns
+#
+if getattr(settings, 'H5P_ENABLED', False):
+    urlpatterns += [
+        url(r'^h5p/login/', authentication_login, name='h5p_login'),
+        url(r'^h5p/logout/', authentication_logout, name='h5p_logout'),
+        url(r'^h5p/', include('h5pp.urls')),
+    ]
 
 # CHANNELS
 urlpatterns += [

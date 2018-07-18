@@ -80,8 +80,8 @@ def context_navbar(request):
         ).distinct().annotate(
             video_count=Count("video", distinct=True)
         )))
-    """
-    channels = Channel.objects.all(
+
+    all_channels = Channel.objects.all(
     ).distinct().annotate(
         video_count=Count("video", distinct=True)
     ).prefetch_related(
@@ -89,7 +89,7 @@ def context_navbar(request):
         ).distinct().annotate(
             video_count=Count("video", distinct=True)
         )))
-    """
+
     types = Type.objects.filter(
         video__is_draft=False
     ).distinct().annotate(video_count=Count("video", distinct=True))
@@ -110,12 +110,27 @@ def context_navbar(request):
 
     VALUES_LIST.append('video_count')
     VALUES_LIST.append('fl_name')
+    VALUES_LIST.append('fl_firstname')
 
-    owners = Owner.objects.filter(**owners_filter_args).order_by(
+    owners = Owner.objects.filter(**owners_filter_args).distinct().order_by(
         ORDER_BY).annotate(video_count=Count(
             "video", distinct=True)).annotate(
-        fl_name=Lower(Substr(ORDER_BY, 1, 1))).order_by(
+        fl_name=Lower(Substr("last_name", 1, 1))).annotate(
+        fl_firstname=Lower(Substr("first_name", 1, 1))).order_by(
         'fl_name').values(*list(VALUES_LIST))
+
+    listowner = get_list_owner(owners)
+
+    LAST_VIDEOS = get_last_videos() if request.path == "/" else None
+
+    return {'ALL_CHANNELS': all_channels, 'CHANNELS': channels,
+            'TYPES': types, 'OWNERS': owners,
+            'DISCIPLINES': disciplines, 'LISTOWNER': json.dumps(listowner),
+            'LAST_VIDEOS': LAST_VIDEOS, 'LINK_FOOTER': linkFooter
+            }
+
+
+def get_list_owner(owners):
     listowner = {}
     for owner in owners:
         if owner['fl_name'] != '':
@@ -123,13 +138,13 @@ def context_navbar(request):
                 listowner[owner['fl_name']].append(owner)
             else:
                 listowner[owner['fl_name']] = [owner]
-
-    LAST_VIDEOS = get_last_videos() if request.path == "/" else None
-
-    return {'CHANNELS': channels, 'TYPES': types, 'OWNERS': owners,
-            'DISCIPLINES': disciplines, 'LISTOWNER': json.dumps(listowner),
-            'LAST_VIDEOS': LAST_VIDEOS, 'LINK_FOOTER': linkFooter
-            }
+        if (owner['fl_firstname'] != ''
+                and owner['fl_firstname'] != owner['fl_name']):
+            if listowner.get(owner['fl_firstname']):
+                listowner[owner['fl_firstname']].append(owner)
+            else:
+                listowner[owner['fl_firstname']] = [owner]
+    return listowner
 
 
 def get_last_videos():

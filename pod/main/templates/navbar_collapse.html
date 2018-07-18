@@ -1,51 +1,79 @@
 {% load i18n %}
-{% load navbar %}
-<div id="navbar_collapse">
-<!-- collapse et accordion pour les chaines, types, users -->
-<div class="collapse fixed-top pod-mt-7 bg-light liste-collapse" id="listeChaines" data-parent="#navbar_collapse">
-    <div class="container">
-      <div class="row pt-1 pl-0 pr-0">
-        <h3 class="col-12"><i data-feather="youtube"></i>&nbsp;{% trans "Channels" %}</h3>
-        <ul class="col-8 list-group list-group-flush" id="list-channels">
-            {% for channel in CHANNELS %}
-                {% if channel.visible %}
-                    <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if channel.themes.all.count > 0 %}show-themes{%endif%}" data-id="{{channel.id}}">
-                        <a class="" href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">{{channel.title}}</a>
-                        <span>
-                            <span class="badge badge-primary badge-pill">{{channel.video_count}}</span>
-                            {% if channel.themes.all.count > 0 %}<i data-feather="chevrons-right"></i>{% else %}<i data-feather="minus"></i>{%endif%}
-                        </span>
-                        {% if channel.themes.all.count > 0 %}
-                        <ul style="position: absolute; top: 0; margin-left: 100%; margin-top: 0; display:none;" class="dropdown-menu col-5 list-group list-group-flush">
-                        </ul>
-                        {%endif%}
-                    </li>
-                {% endif %}
-            {% empty %}
-            <li class="list-group-item"> {% trans "No channels found" %} </li>
-            {%endfor%}
-        </ul>
-      </div>
-    </div>
-</div>
 
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+<div class="modal fade chaines-modal" tabindex="-1" role="dialog" aria-labelledby="Chaines" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title align-bottom" id="myLargeModalLabel"><i data-feather="users"></i>&nbsp;{% trans "Users"%}</h4>
+        <h5 class="modal-title"><i data-feather="youtube"></i>&nbsp;{{CHANNELS.count}} {% trans "Channels" %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body row">
+        <ul class="col-12 list-group list-group-flush" id="list-channels">
+          {% for channel in CHANNELS %}
+          <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-id="{{channel.id}}">
+          <h3>{% if channel.headband %}<img src="{{ channel.headband.file.url }}" height="34" class='rounded' alt="{{channel.title|title}}">{% else %}<i data-feather="youtube" style="height:34px"></i>{% endif %} <a href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">
+            {{channel.title}}</a></h3>
+          <span>
+          <span class="badge badge-primary badge-pill">{{channel.video_count}} {% trans "videos" %}</span>
+          {% if channel.themes.all.count > 0 %}<a href="#" class="btn btn-outline-primary btn-sm show-themes" data-id="{{channel.id}}">{{channel.themes.all.count}} {% trans "Themes" %} <i data-feather="chevrons-right"></i></a>{%endif%}
+          </span>
+          </li>
+          {% empty %}
+          <li class="list-group-item"> {% trans "No channels found" %} </li>
+          {%endfor%}
+        </ul>
+        <ul class="col-4 list-group list-group-flush border border-info" id="list-themes" style="display:none">
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade types-modal" tabindex="-1" role="dialog" aria-labelledby="Types" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-pod-full">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i data-feather="tv"></i>&nbsp;{% trans 'Types of videos'%}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ul class="row list-unstyled" id="list-types">
+          {% for type in TYPES %}
+          <li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1 col-12 text-left text-truncate" href="{% url 'videos' %}?type={{type.slug}}" title="{{type.title}} ({{type.video_count}})">
+          {% if type.icon %}<img src="{{type.icon.file.url}}" alt="{{type.title}}" style="max-height:32px; max-width:32px;"/>{% else %}<i data-feather="type"></i>{% endif %}&nbsp;{{type.title}} ({{type.video_count}})</a> </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade users-modal" tabindex="-1" role="dialog" aria-labelledby="Users" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-pod-full">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i data-feather="users"></i>&nbsp;{% trans "Users"%}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <div class="row">
-            <div class="col-12  p-2">
+            <div class="col-12">
                 <p>{% trans 'Use the input to filter user by last name or click on button letter to show the list.'%}</p>
                 <input placeholder="Rechercher" id="ownerboxnavbar" class="form-control" type="text">
             </div>
-            <div class="row p-2">
-              <div class="col-3">
+        </div>
+        <div class="row p-2">
+          <div class="col-3">
                 <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="A">
                     A
                 </button>
@@ -124,31 +152,17 @@
                 <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="Z">
                     Z
                 </button>
-              </div>
-              <div class="col-9" >
+          </div>
+          <div class="col-9" >
                 <ul class="list-unstyled" id="accordion" style="max-height:350px; overflow:auto">
                     <li>&nbsp;</li>
                 </ul>
-              </div>
-            </div>
+          </div>
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
       </div>
     </div>
   </div>
-</div>
-<div class="collapse fixed-top pod-mt-7 bg-light liste-collapse" id="listeTypes" data-parent="#navbar_collapse">
-    <div class="container">
-      <div class="p-5">
-        <h3><i data-feather="tv"></i>&nbsp;{% trans 'Types of videos'%}</h3>
-        <ul class="row list-unstyled">
-            {% for type in TYPES %}
-                <li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1 col-12 text-left text-truncate" href="{% url 'videos' %}?type={{type.slug}}" title="{{type.title}} ({{type.video_count}})">
-                    {% if type.icon %}<img src="{{type.icon.file.url}}" alt="{{type.title}}" style="max-height:32px; max-width:32px;"/>{% else %}
-                    <i data-feather="type"></i>{% endif %}&nbsp;{{type.title}} ({{type.video_count}})</a> </li>
-            {% endfor %}
-        </ul>
-      </div>
-    </div>
-</div>
-<!-- fin modal, accordion -->
 </div>

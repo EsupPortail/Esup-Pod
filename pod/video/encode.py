@@ -373,12 +373,17 @@ def get_video_data(video_id):
     msg = ""
     source = "%s" % video_to_encode.video.path
     command = GET_INFO_VIDEO % {'ffprobe': FFPROBE, 'source': source}
-    ffproberesult = subprocess.getoutput(command)
+    # ffproberesult = subprocess.getoutput(command)
+    ffproberesult = subprocess.run(
+        command, shell=True, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
     msg += "\nffprobe command : %s" % command
+    """
     add_encoding_log(
         video_id,
         "command : %s \n ffproberesult : %s" % (command, ffproberesult))
-    info = json.loads(ffproberesult)
+    """
+    info = json.loads(ffproberesult.stdout.decode('utf-8'))
     msg += "%s" % json.dumps(
         info, sort_keys=True, indent=4, separators=(',', ': '))
     is_video = False
@@ -404,12 +409,17 @@ def get_video_data(video_id):
 
     # check audio
     command = GET_INFO_AUDIO % {'ffprobe': FFPROBE, 'source': source}
-    ffproberesult = subprocess.getoutput(command)
+    # ffproberesult = subprocess.getoutput(command)
+    ffproberesult = subprocess.run(
+        command, shell=True, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
     msg += "\nffprobe command : %s" % command
+    """
     add_encoding_log(
         video_id,
         "command : %s \n ffproberesult : %s" % (command, ffproberesult))
-    info = json.loads(ffproberesult)
+    """
+    info = json.loads(ffproberesult.stdout.decode('utf-8'))
     msg += "%s" % json.dumps(
         info, sort_keys=True, indent=4, separators=(',', ': '))
     if len(info["streams"]) > 0:
@@ -495,13 +505,16 @@ def encode_video_mp4(source, cmd, output_dir):
     msg = "ffmpegMp4Command :\n%s" % ffmpegMp4Command
     msg += "Encoding Mp4 : %s" % time.ctime()
 
-    ffmpegvideo = subprocess.getoutput(ffmpegMp4Command)
+    # ffmpegvideo = subprocess.getoutput(ffmpegMp4Command)
+    ffmpegvideo = subprocess.run(
+        ffmpegMp4Command, shell=True, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
 
     msg += "End Encoding Mp4 : %s" % time.ctime()
 
-    with open(output_dir + "/encoding.log", "a") as f:
-        f.write('\n\nffmpegvideoMP4:\n\n')
-        f.write(ffmpegvideo)
+    with open(output_dir + "/encoding.log", "ab") as f:
+        f.write(b'\n\nffmpegvideoMP4:\n\n')
+        f.write(ffmpegvideo.stdout)
 
     return msg
 
@@ -584,7 +597,11 @@ def encode_video_m4a(video_id, source, output_dir):
     }
     msg = "\nffmpegM4aCommand :\n%s" % command
     msg += "\n- Encoding M4A : %s" % time.ctime()
-    ffmpegaudio = subprocess.getoutput(command)
+    # ffmpegaudio = subprocess.getoutput(command)
+    ffmpegaudio = subprocess.run(
+        command, shell=True, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+
     msg += "\n- End Encoding Mp4 : %s" % time.ctime()
 
     audiofilename = output_dir + "/audio_%s.m4a" % AUDIO_BITRATE
@@ -604,9 +621,9 @@ def encode_video_m4a(video_id, source, output_dir):
         change_encoding_step(video_id, -1, msg)
         send_email(msg, video_id)
 
-    with open(output_dir + "/encoding.log", "a") as f:
-        f.write('\n\nffmpegaudio:\n\n')
-        f.write(ffmpegaudio)
+    with open(output_dir + "/encoding.log", "ab") as f:
+        f.write(b'\n\nffmpegaudio:\n\n')
+        f.write(ffmpegaudio.stdout)
 
     return msg
 
@@ -623,7 +640,11 @@ def encode_video_mp3(video_id, source, output_dir):
     }
     msg = "ffmpegMP3Command :\n%s" % command
     msg += "\n- Encoding MP3 : %s" % time.ctime()
-    ffmpegaudio = subprocess.getoutput(command)
+    # ffmpegaudio = subprocess.getoutput(command)
+    ffmpegaudio = subprocess.run(
+        command, shell=True, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+
     msg += "\n- End Encoding MP3 : %s" % time.ctime()
 
     audiofilename = output_dir + "/audio_%s.mp3" % AUDIO_BITRATE
@@ -643,9 +664,9 @@ def encode_video_mp3(video_id, source, output_dir):
         change_encoding_step(video_id, -1, msg)
         send_email(msg, video_id)
 
-    with open(output_dir + "/encoding.log", "a") as f:
-        f.write('\n\nffmpegaudio:\n\n')
-        f.write(ffmpegaudio)
+    with open(output_dir + "/encoding.log", "ab") as f:
+        f.write(b'\n\nffmpegaudio:\n\n')
+        f.write(ffmpegaudio.stdout)
 
     return msg
 
@@ -710,13 +731,16 @@ def encode_video_playlist(source, cmd, output_dir):
     msg = "ffmpegPlaylistCommand :\n%s" % ffmpegPlaylistCommand
     msg += "Encoding Playlist : %s" % time.ctime()
 
-    ffmpegvideo = subprocess.getoutput(ffmpegPlaylistCommand)
+    # ffmpegvideo = subprocess.getoutput(ffmpegPlaylistCommand)
+    ffmpegvideo = subprocess.run(
+        ffmpegPlaylistCommand, shell=True, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
 
     msg += "End Encoding Playlist : %s" % time.ctime()
 
-    with open(output_dir + "/encoding.log", "a") as f:
-        f.write('\n\nffmpegvideoPlaylist:\n\n')
-        f.write(ffmpegvideo)
+    with open(output_dir + "/encoding.log", "ab") as f:
+        f.write(b'\n\nffmpegvideoPlaylist:\n\n')
+        f.write(ffmpegvideo.stdout)
 
     return msg
 
@@ -814,14 +838,20 @@ def create_overview_image(
             'overviewimagefilename': overviewimagefilename,
             'image_width': image_width
         }
-        subprocess.getoutput(cmd_ffmpegthumbnailer)
+        # subprocess.getoutput(cmd_ffmpegthumbnailer)
+        subprocess.run(
+            cmd_ffmpegthumbnailer, shell=True)
+
         cmd_montage = "montage -geometry +0+0 %(overviewimagefilename)s \
         %(overviewimagefilename)s_strip%(num)s.png \
         %(overviewimagefilename)s" % {
             'overviewimagefilename': overviewimagefilename,
             'num': i
         }
-        subprocess.getoutput(cmd_montage)
+        # subprocess.getoutput(cmd_montage)
+        subprocess.run(
+            cmd_montage, shell=True)
+
         if os.path.isfile("%(overviewimagefilename)s_strip%(num)s.png" % {
             'overviewimagefilename': overviewimagefilename,
             'num': i
@@ -917,7 +947,9 @@ def create_and_save_thumbnails(source, image_width, video_id):
             'image_width': image_width,
             'tempfile': tempimgfile.name
         }
-        subprocess.getoutput(cmd_ffmpegthumbnailer)
+        # subprocess.getoutput(cmd_ffmpegthumbnailer)
+        subprocess.run(
+            cmd_ffmpegthumbnailer, shell=True)
         thumbnailfilename = "%(tempfile)s_%(num)s.png" % {
             'num': i,
             'tempfile': tempimgfile.name

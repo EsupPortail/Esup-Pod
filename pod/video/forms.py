@@ -76,6 +76,16 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
               "the content edition toolbar: they will appear in the “Info” "
               "tab at the bottom of the audio / video player.")
         ]),
+        ("{0}".format(_("Type")), [
+            _("Select the type of your content. If the type you wish does "
+                "not appear in the list, please temporary select “Other” "
+                "and contact us to explain your needs.")
+        ]),
+        ("{0}".format(_("Description")), [
+            _("In this field you can describe your content, add all needed "
+                "related information, and format the result "
+                "using the toolbar.")
+        ]),
         ("{0}".format(_("Date of the event field")), [
             _("Enter the date of the event, if applicable, in the "
                 "AAAA-MM-JJ format.")
@@ -90,15 +100,9 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
         ("{0}".format(_("Main language")), [
             _("Select the main language used in the content.")
         ]),
-        ("{0}".format(_("Description")), [
-            _("In this field you can describe your content, add all needed "
-                "related information, and format the result "
-                "using the toolbar.")
-        ]),
-        ("{0}".format(_("Type")), [
-            _("Select the type of your content. If the type you wish does "
-                "not appear in the list, please temporary select “Other” "
-                "and contact us to explain your needs.")
+        ("{0}".format(_("Tags")), [
+            _("Please try to add only relevant keywords that can be "
+                "useful to other users.")
         ]),
         ("{0}".format(_("Disciplines")), [
             _("Select the discipline to which your content belongs. "
@@ -106,6 +110,35 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 "please select nothing and contact us to explain your needs."),
             _('Hold down "Control", or "Command" on a Mac, '
               'to select more than one.')
+        ]),
+        ("{0}".format(_("Licence")), [
+            ('<a href="https://creativecommons.org/licenses/by/4.0/" '
+                'title="%(lic)s" target="_blank">%(lic)s</a>') % {
+                'lic':
+                _("Attribution 4.0 International (CC BY 4.0)")},
+            ('<a href="https://creativecommons.org/licenses/by-nd/4.0/" '
+                'title="%(lic)s" target="_blank">%(lic)s</a>') % {
+                'lic': _("Attribution-NoDerivatives 4.0 "
+                         "International (CC BY-ND 4.0)")},
+            ('<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" '
+                'title="%(lic)s" target="_blank">%(lic)s</a>') % {
+                'lic': _("Attribution-NonCommercial-NoDerivatives 4.0 "
+                         "International (CC BY-NC-ND 4.0)")},
+            ('<a href="https://creativecommons.org/licenses/by-nc/4.0/" '
+                'title="%(lic)s" target="_blank">%(lic)s</a>') % {
+                'lic': _("Attribution-NonCommercial 4.0 "
+                         "International (CC BY-NC 4.0)")},
+            ('<a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" '
+                'title="%(lic)s" target="_blank">%(lic)s</a>') % {
+                'lic': _(
+                    "Attribution-NonCommercial-ShareAlike 4.0 "
+                    "International (CC BY-NC-SA 4.0)"
+                )},
+            ('<a href="https://creativecommons.org/licenses/by-sa/4.0/" '
+                'title="%(lic)s" target="_blank">%(lic)s</a>') % {
+                'lic': _(
+                    "Attribution-ShareAlike 4.0 "
+                    "International (CC BY-SA 4.0)")},
         ]),
         ("{0} / {1}".format(_("Channels"), _("Themes")), [
             _("Select the channel in which you want your content to appear."),
@@ -131,10 +164,6 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 "your content."),
             _("If your video is in a playlist the password of your "
                 "video will be removed automatically.")
-        ]),
-        ("{0}".format(_("Tags")), [
-            _("Please try to add only relevant keywords that can be "
-                "useful to other users.")
         ])
     ]))
 

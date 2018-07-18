@@ -2,6 +2,17 @@
 {% load i18n %}
 {% load staticfiles %}
 
+{% block opengraph %}{% load video_filters %}
+  <meta name="description" content="{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
+  <!-- Open Graph data -->
+  <meta property="og:title" content="{% trans "Videos" %}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+  <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
+  <meta property="og:description" content="{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}" />
+  <meta property="og:site_name" content="{{ TITLE_SITE }}" />
+{% endblock %}
+
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Videos" %}</li>{% endblock %}
 

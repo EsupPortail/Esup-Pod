@@ -14,5 +14,8 @@ urlpatterns = [
         name='group_enrichment'),
     url(r'^video/(?P<slug>[\-\d\w]+)/$',
         video_enrichment,
-        name='video_enrichment')
+        name='video_enrichment'),
+    url(r'^video/(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$',
+        video_enrichment,
+        name='video_enrichment_private')
 ]
