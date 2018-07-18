@@ -13,12 +13,13 @@
 {% endblock page_extra_head %}
 {% block breadcrumbs %}
 	{{block.super}}
-	<li class="breadcrumb-item active" aria-current="page">
-		<a href="{% url 'video' slug=video.slug %}">
-			{{video.title}}
+	<li class="breadcrumb-item"><a href="{% url "my_videos"%}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
+	<li class="breadcrumb-item">
+		<a href="{% url 'video' slug=video.slug %}" title="{{video.title}}">
+			{{video.title|title|truncatechars:45}}
 		</a>
 	</li>
-	<li class="breadcrumb-item" aria-current="page">
+	<li class="breadcrumb-item active" aria-current="page">
 		{% trans 'Chapter video' %}
 	</li>
 {% endblock %}

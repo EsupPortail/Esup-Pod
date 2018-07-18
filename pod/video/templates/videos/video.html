@@ -42,7 +42,8 @@ body {
 <li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
 {% endif %}
 {% else %}
-<li class="breadcrumb-item"><a href="{% url "videos"%}">{% trans 'Videos' %}</a><li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
+<li class="breadcrumb-item"><a href="{% url "videos"%}" title="{% trans 'Videos' %}">{% trans 'Videos' %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
 {% endif %}
 {% endblock %}
 

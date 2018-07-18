@@ -111,7 +111,7 @@ def context_navbar(request):
     VALUES_LIST.append('video_count')
     VALUES_LIST.append('fl_name')
 
-    owners = Owner.objects.filter(**owners_filter_args).order_by(
+    owners = Owner.objects.filter(**owners_filter_args).distinct().order_by(
         ORDER_BY).annotate(video_count=Count(
             "video", distinct=True)).annotate(
         fl_name=Lower(Substr(ORDER_BY, 1, 1))).order_by(

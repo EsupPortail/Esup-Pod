@@ -47,7 +47,7 @@
       {% endfor %}
     {%endif%}
     {% if video.contributor_set.all %}
-    <p>{% trans 'Contributor' %} : <br/>
+    <p><strong><u>{% trans 'Contributor' %} : </u></strong><br/>
       {% for contrib in video.contributor_set.all %}
       - {{ contrib.name }} ({% trans contrib.role %})
       {% if contrib.email_address %}
@@ -71,7 +71,7 @@
   <h5 id="downloads"><i data-feather="download"></i>&nbsp;{% trans 'Downloads' %}</h5>
   <div class="scrollspy-content">
     {% if video.allow_downloading %}
-    <p>{% trans 'Video file(s)' %} :
+    <div><u>{% trans 'Video file(s)' %} :</u><br/>
       {% for vid in video.get_video_mp4 %}
       <form method="post" action="{% url 'download_file' %}">
         {% csrf_token %}
@@ -86,10 +86,10 @@
         <input type="submit" class="btn btn-link btn-sm" value="{{video.get_video_mp3.name}} ({{video.get_video_mp3.encoding_format}} - {{ video.get_video_mp3.source_file.size|filesizeformat }})">
       </form>
       {% endif %}
-    </p>
+    </div>
     {%endif%}
     {% if video.document_set.all %}
-    <p>{% trans 'Document' %} :
+    <div><u>{% trans 'Document' %} :</u><br/>
       {% for doc in video.document_set.all %}
       <form method="post" action="{% url 'download_file' %}">
         {% csrf_token %}
@@ -97,7 +97,7 @@
         <input type="submit" class="btn btn-link btn-sm" value="{{doc.document.name}} ({{doc.document.file_type}} - {{ doc.document.file.size|filesizeformat }})">
       </form>
       {% endfor%}
-    </p>
+    </div>
     {% endif %}
   </div>
   {% endif %}
