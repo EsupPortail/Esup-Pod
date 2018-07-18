@@ -3,15 +3,20 @@
 {% load staticfiles %}
 {% load video_filters %}
 
-{% block page_extra_head %}
+
+{% block opengraph %}
 <meta name="description" content="{{channel.description|metaformat|safe|striptags|truncatechars:150}}" />
 <!-- Open Graph data -->
 <meta property="og:title" content="{{ channel.title }}" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
+<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
 <meta property="og:description" content="{{channel.description|metaformat|safe|striptags|truncatechars:250}}" />
 <meta property="og:site_name" content="{{ TITLE_SITE }}" />
+{% endblock %}
+
+
+{% block page_extra_head %}
 <style>
 #treeview ul.list-group li{
   padding: 0;

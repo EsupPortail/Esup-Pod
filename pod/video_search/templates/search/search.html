@@ -2,6 +2,17 @@
 {% load i18n %}
 {% load staticfiles %}
 
+{% block opengraph %}
+    <meta name="description" content="{{ query }}">
+    <!-- Open Graph data -->
+    <meta property="og:title" content="{% trans 'Search' %}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+    <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
+    <meta property="og:description" content="{{ query }}" />
+    <meta property="og:site_name" content="{{ TITLE_SITE }}" />
+{% endblock opengraph %}
+
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Search" %}</li>{% endblock %}
 

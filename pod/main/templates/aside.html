@@ -1,25 +1,23 @@
 {% load i18n %}
 {% load tagging_tags %}
 {% spaceless %}
+<!-- Load Facebook SDK for JavaScript -->
 <div class="card card-body p-2 mt-1">
 <h5 class="card-title pl-2">
 <i data-feather="share-2"></i>&nbsp;{% trans 'Share' %}
 </h5>
 <p class="card-text text-center">
-<a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-facebook btn-sm" title="{% trans "Share on" %} Facebook"> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/F_icon.svg/200px-F_icon.svg" height="24" alt="facebook" /> </a>
-<a target="_blank" href="http://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-twitter btn-sm" title="{% trans "Share on" %} Twitter"> <img src="https://upload.wikimedia.org/wikipedia/fr/c/c8/Twitter_Bird.svg" height="24" alt="twitter" /> </a>
-<a target="_blank" href="https://plus.google.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-google-plus btn-sm" title="{% trans "Share on" %} Google+"> <img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Google_plus.svg" height="24" alt="google" /> </a>
+<a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Facebook"><i data-feather="facebook"></i></a>
+<a target="_blank" href="http://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Twitter"><i data-feather="twitter"></i></a>
+<a target="_blank" href="https://plus.google.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Google+" style="line-height: 24px;"> G+ </a>
 </p>
 </div>
 
 <div class="card card-body p-2 mt-1">
   <h5 class="card-title pl-2">
     <i data-feather="book"></i>&nbsp;{% trans 'Disciplines' %}
-    <!--
-    <a href="#" class="float-right" title="{% trans 'See all' %} {% trans 'Disciplines' %}" ><svg height="32" class="octicon octicon-arrow-right" viewBox="0 0 10 16" version="1.1" width="20" aria-hidden="true"><path fill-rule="evenodd" d="M10 8L4 3v3H0v4h4v3z"></path></svg></a>
-    -->
   </h5>
-  <p class="card-text">
+  <div class="card-text">
     <form class="form" method="get">
       <select class="form-control" onchange="this.options[this.selectedIndex].getAttribute('data-value') &amp;&amp; (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="discipline">
           <option value="#" class="btn btn-default btn-sm btn-block">{% trans 'Disciplines' %}...</option>
@@ -29,8 +27,7 @@
       </select>
       <input value="Valider" class="btn btn-default btn-sm sr-only" type="submit">
   </form>
-  </p>
-  
+  </div>
 </div>
 
 <div class="card card-body p-2 mt-1">
