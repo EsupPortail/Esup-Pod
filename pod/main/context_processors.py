@@ -123,8 +123,8 @@ def context_navbar(request):
 
     LAST_VIDEOS = get_last_videos() if request.path == "/" else None
 
-    return {'ALL_CHANNELS': all_channels, 'CHANNELS': channels, 'TYPES': types,
-            'OWNERS': owners,
+    return {'ALL_CHANNELS': all_channels, 'CHANNELS': channels,
+            'TYPES': types, 'OWNERS': owners,
             'DISCIPLINES': disciplines, 'LISTOWNER': json.dumps(listowner),
             'LAST_VIDEOS': LAST_VIDEOS, 'LINK_FOOTER': linkFooter
             }
@@ -138,7 +138,8 @@ def get_list_owner(owners):
                 listowner[owner['fl_name']].append(owner)
             else:
                 listowner[owner['fl_name']] = [owner]
-        if owner['fl_firstname'] != '':
+        if (owner['fl_firstname'] != ''
+                and owner['fl_firstname'] != owner['fl_name']):
             if listowner.get(owner['fl_firstname']):
                 listowner[owner['fl_firstname']].append(owner)
             else:
