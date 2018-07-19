@@ -16,6 +16,7 @@ from pod.video.models import Video
 from pod.video.models import EncodingStep
 
 from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
+task_start_encode
 
 # from fractions import Fraction # use for keyframe
 from webvtt import WebVTT, Caption
@@ -101,17 +102,22 @@ CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [
                            mail for name, mail in getattr(settings, 'ADMINS')])
 HELP_MAIL = getattr(settings, 'HELP_MAIL', 'noreply@univ.fr')
 
+CELERY_TO_ENCODE = getattr(settings, 'CELERY_TO_ENCODE', False)
+
 # ##########################################################################
 # ENCODE VIDEO : THREAD TO LAUNCH ENCODE
 # ##########################################################################
 
 
 def start_encode(video_id):
-    log.info("START ENCODE VIDEO ID %s" % video_id)
-    t = threading.Thread(target=encode_video,
-                         args=[video_id])
-    t.setDaemon(True)
-    t.start()
+    if CELERY_TO_ENCODE:
+        task_start_encode.delay(video_id)
+    else:
+        log.info("START ENCODE VIDEO ID %s" % video_id)
+        t = threading.Thread(target=encode_video,
+                             args=[video_id])
+        t.setDaemon(True)
+        t.start()
 
 
 # ##########################################################################
