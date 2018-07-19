@@ -16,7 +16,7 @@ from pod.video.models import Video
 from pod.video.models import EncodingStep
 
 from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
-task_start_encode
+from pod.main.tasks import task_start_encode
 
 # from fractions import Fraction # use for keyframe
 from webvtt import WebVTT, Caption
