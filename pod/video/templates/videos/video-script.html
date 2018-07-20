@@ -43,10 +43,10 @@ player.on('firstplay', function(){
     player.on("error", function(e){
       e.stopImmediatePropagation();
       var error = player.error();
-      if(error.code == 3) {
+      //alert(error.code+" "+error.type+" "+error.message);
+      if(error.code == 3 || error.code == 4) {
         //console.log('error!', error.code, error.type , error.message);
-        if(player.src().indexOf("m3u8")!=-1){
-          //alert("change source to mp4");
+        if(player.src()=="" || player.src().indexOf("m3u8")!=-1){
           player.src(mp4_sources);
           player.controlBar.addChild('QualitySelector');
           player.play();
