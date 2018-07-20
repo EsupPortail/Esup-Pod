@@ -31,6 +31,11 @@ class Command(BaseCommand):
                 )
                 os.makedirs(os.path.dirname(dest_file), exist_ok=True)
                 try:
+                    self.stdout.write("\n - download %s : from %s to %s\n" % (
+                        video_id,
+                        source_url,
+                        dest_file
+                    ))
                     new_file = wget.download(source_url, dest_file)
                     self.stdout.write("\n")
                     vid.video = new_file.replace(
