@@ -39,7 +39,7 @@ class Command(BaseCommand):
                     vid.save()
                     self.stdout.write(
                         self.style.SUCCESS(
-                            'Successfully download video "%s"' % poll_id
+                            'Successfully download video "%s"' % video_id
                         )
                     )
                 except ValueError as e:
