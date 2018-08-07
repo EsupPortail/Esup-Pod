@@ -55,6 +55,6 @@ class Command(BaseCommand):
                     os.path.basename(vid.video.name)
                 )
                 os.makedirs(os.path.dirname(dest_file), exist_ok=True)
-                self.download(self, vid, video_id, source_url, dest_file)
+                self.download(vid, video_id, source_url, dest_file)
             else:
                 raise CommandError('source url is empty')
