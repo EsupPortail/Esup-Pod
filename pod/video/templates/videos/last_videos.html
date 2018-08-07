@@ -1,5 +1,6 @@
 {% load i18n %}
 {% if LAST_VIDEOS %}
+<div class="jumbotron">
 <h3>{% trans "Last videos" %}</h3>
 <!-- liste vignette vidéo 4 par ligne -->
 <div class="row">
@@ -10,4 +11,5 @@
        <p><a class="btn btn-lg btn-outline-primary btn-sm" href="{% url "videos" %}" role="button">{% trans "Show all videos" %} &raquo;</a></p>
      </div>
 </div> <!-- fin hightlight -->
+</div>
 {% endif %}
