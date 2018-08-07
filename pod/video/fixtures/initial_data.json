@@ -14,7 +14,9 @@
     "pk": 1, 
     "fields": {
       "resolution": "640x360", 
-      "video_bitrate": "1000k", 
+      "minrate": "500k", 
+      "video_bitrate": "750k", 
+      "maxrate": "1000k", 
       "audio_bitrate": "96k", 
       "encode_mp4": true
     }
@@ -24,7 +26,9 @@
     "pk": 2, 
     "fields": {
       "resolution": "1280x720", 
+      "minrate": "1000k", 
       "video_bitrate": "2000k", 
+      "maxrate": "3000k",
       "audio_bitrate": "128k", 
       "encode_mp4": true
     }
@@ -34,7 +38,9 @@
     "pk": 3, 
     "fields": {
       "resolution": "1920x1080", 
+      "minrate": "2000k", 
       "video_bitrate": "3000k", 
+      "maxrate": "4500k",
       "audio_bitrate": "192k", 
       "encode_mp4": false
     }

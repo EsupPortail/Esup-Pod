@@ -14,6 +14,31 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('video_id', nargs='+', type=int)
 
+    def download(self, vid, video_id, source_url, dest_file):
+        try:
+            self.stdout.write("\n - download %s : from %s to %s\n" % (
+                video_id,
+                source_url,
+                dest_file
+            ))
+            new_file = wget.download(source_url, dest_file)
+            self.stdout.write("\n")
+            vid.video = new_file.replace(
+                settings.MEDIA_ROOT + '/', ''
+            )
+            vid.save()
+            self.stdout.write(
+                self.style.SUCCESS(
+                    'Successfully download video "%s"' % video_id
+                )
+            )
+        except ValueError as e:
+            raise CommandError('ValueError "%s"' % e)
+        except FileNotFoundError as f:
+            raise CommandError('FileNotFoundError "%s"' % f)
+        except urllib.error.HTTPError as err:
+            raise CommandError('HTTPError "%s"' % err)
+
     def handle(self, *args, **options):
         for video_id in options['video_id']:
             vid = None
@@ -30,28 +55,6 @@ class Command(BaseCommand):
                     os.path.basename(vid.video.name)
                 )
                 os.makedirs(os.path.dirname(dest_file), exist_ok=True)
-                try:
-                    self.stdout.write("\n - download %s : from %s to %s\n" % (
-                        video_id,
-                        source_url,
-                        dest_file
-                    ))
-                    new_file = wget.download(source_url, dest_file)
-                    self.stdout.write("\n")
-                    vid.video = new_file.replace(
-                        settings.MEDIA_ROOT + '/', ''
-                    )
-                    vid.save()
-                    self.stdout.write(
-                        self.style.SUCCESS(
-                            'Successfully download video "%s"' % video_id
-                        )
-                    )
-                except ValueError as e:
-                    raise CommandError('ValueError "%s"' % e)
-                except FileNotFoundError as f:
-                    raise CommandError('FileNotFoundError "%s"' % f)
-                except urllib.error.HTTPError as err:
-                    raise CommandError('HTTPError "%s"' % err)
+                self.download(self, vid, video_id, source_url, dest_file)
             else:
                 raise CommandError('source url is empty')
