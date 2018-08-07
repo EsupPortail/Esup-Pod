@@ -49,7 +49,7 @@ SEGMENT_TARGET_DURATION = getattr(settings, 'SEGMENT_TARGET_DURATION', 2)
 MAX_BITRATE_RATIO = getattr(settings, 'MAX_BITRATE_RATIO', 1.07)
 # maximum buffer size between bitrate conformance checks
 RATE_MONITOR_BUFFER_RATIO = getattr(
-    settings, 'RATE_MONITOR_BUFFER_RATIO', 1.5)
+    settings, 'RATE_MONITOR_BUFFER_RATIO', 2)
 # maximum threads use by ffmpeg
 FFMPEG_NB_THREADS = getattr(settings, 'FFMPEG_NB_THREADS', 0)
 
@@ -480,10 +480,12 @@ def get_video_command_mp4(video_id, video_data, output_dir):
         bitrate = rendition.video_bitrate
         audiorate = rendition.audio_bitrate
         height = rendition.height
+        minrate = rendition.minrate
+        maxrate = rendition.maxrate
         if in_height >= int(height) or rendition == renditions[0]:
             int_bitrate = int(
                 re.search("(\d+)k", bitrate, re.I).groups()[0])
-            maxrate = int_bitrate * MAX_BITRATE_RATIO
+            # maxrate = int_bitrate * MAX_BITRATE_RATIO
             bufsize = int_bitrate * RATE_MONITOR_BUFFER_RATIO
 
             name = "%sp" % height
@@ -491,8 +493,8 @@ def get_video_command_mp4(video_id, video_data, output_dir):
             cmd += " %s -vf " % (static_params,)
             cmd += "\"scale=-2:%s\"" % (height)
             # cmd += "force_original_aspect_ratio=decrease"
-            cmd += " -b:v %s -maxrate %sk -bufsize %sk -b:a %s" % (
-                bitrate, int(maxrate), int(bufsize), audiorate)
+            cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
+                minrate, bitrate, maxrate, int(bufsize), audiorate)
 
             cmd += " -movflags faststart -write_tmcd 0 \"%s/%s.mp4\"" % (
                 output_dir, name)
@@ -697,12 +699,14 @@ def get_video_command_playlist(video_id, video_data, output_dir):
     for rendition in renditions:
         resolution = rendition.resolution
         bitrate = rendition.video_bitrate
+        minrate = rendition.minrate
+        maxrate = rendition.maxrate
         audiorate = rendition.audio_bitrate
         height = rendition.height
         if in_height >= int(height) or rendition == renditions[0]:
             int_bitrate = int(
                 re.search("(\d+)k", bitrate, re.I).groups()[0])
-            maxrate = int_bitrate * MAX_BITRATE_RATIO
+            # maxrate = int_bitrate * MAX_BITRATE_RATIO
             bufsize = int_bitrate * RATE_MONITOR_BUFFER_RATIO
             bandwidth = int_bitrate * 1000
 
@@ -712,8 +716,8 @@ def get_video_command_playlist(video_id, video_data, output_dir):
             cmd += "\"scale=-2:%s\"" % (height)
             # cmd += "scale=w=%s:h=%s:" % (width, height)
             # cmd += "force_original_aspect_ratio=decrease"
-            cmd += " -b:v %s -maxrate %sk -bufsize %sk -b:a %s" % (
-                bitrate, int(maxrate), int(bufsize), audiorate)
+            cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
+                minrate, bitrate, maxrate, int(bufsize), audiorate)
             cmd += " -hls_playlist_type vod -hls_time %s \
                 -hls_flags single_file %s/%s.m3u8" % (
                 SEGMENT_TARGET_DURATION, output_dir, name)
