@@ -9,19 +9,31 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import PermissionDenied
 from pod.video.models import Video
-from pod.completion.models import Contributor
-from pod.completion.forms import ContributorForm
-from pod.completion.models import Document
-from pod.completion.forms import DocumentForm
-from pod.completion.models import Track
-from pod.completion.forms import TrackForm
-from pod.completion.models import Overlay
-from pod.completion.forms import OverlayForm
+from .models import Contributor
+from .forms import ContributorForm
+from .models import Document
+from .forms import DocumentForm
+from .models import Track
+from .forms import TrackForm
+from .models import Overlay
+from .forms import OverlayForm
 
 import json
 
 ACTION = ['new', 'save', 'modify', 'delete']
 
+@csrf_protect
+@staff_member_required(redirect_field_name='referrer')
+def video_caption_maker(request, slug):
+    video = get_object_or_404(Video, slug=slug)
+    if request.user != video.owner and not request.user.is_superuser:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot complement this video.'))
+        raise PermissionDenied
+    return render(
+            request,
+            'video_caption_maker.html',
+            {'video': video})
 
 @csrf_protect
 @login_required(redirect_field_name='referrer')
