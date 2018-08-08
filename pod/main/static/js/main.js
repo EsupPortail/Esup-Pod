@@ -113,20 +113,6 @@ var get_list = function(tab, level=0, tab_selected=[], tag_type="option", li_cla
 
 /*** CHANNELS IN NAVBAR ***/
 $("#list-channels a.show-themes").click(function() {
-    /*
-    if($("#list-themes").children().length === 0) {
-        var str = get_list(listTheme["channel_"+$(this).data('id')], 0, [], tag_type="li", li_class="list-group-item", attrs='', add_link=true, current="", channel="");
-        $("#list-channels").removeClass("col-12");
-        $("#list-channels").addClass("col-8");
-        $("#list-themes").html(str).show();
-        $(this).parents("li").addClass('list-group-item-info');
-    } else {
-        $("#list-channels").removeClass("col-8");
-        $("#list-channels").addClass("col-12");
-        $("#list-themes").html("").hide();
-        $(this).parents("li").removeClass('list-group-item-info');
-    }
-    */
     $("#list-channels li").removeClass('list-group-item-info');
     var str = get_list(listTheme["channel_"+$(this).data('id')], 0, [], tag_type="li", li_class="list-group-item", attrs='', add_link=true, current="", channel="");
     $("#list-channels").removeClass("col-12");
@@ -139,6 +125,7 @@ $("#list-channels a.show-themes").click(function() {
     $(this).parents("li").addClass('list-group-item-info');
     return false;
 });
+
 $(document).on('click','#close_tab_theme', function() {
     $("#list-channels li").removeClass('list-group-item-info');
     $("#list-channels").removeClass("col-8");
