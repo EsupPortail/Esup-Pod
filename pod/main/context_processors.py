@@ -1,8 +1,9 @@
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.db.models import Prefetch
 from django.db.models.functions import Substr, Lower
+from datetime import timedelta
 
 from pod.main.models import LinkFooter
 
@@ -123,10 +124,20 @@ def context_navbar(request):
 
     LAST_VIDEOS = get_last_videos() if request.path == "/" else None
 
+    list_videos = Video.objects.filter(
+        encoding_in_progress=False,
+        is_draft=False)
+    VIDEOS_COUNT = list_videos.count()
+    VIDEOS_DURATION = str(timedelta(
+        seconds=list_videos.aggregate(Sum('duration'))['duration__sum']
+    ))
+
     return {'ALL_CHANNELS': all_channels, 'CHANNELS': channels,
             'TYPES': types, 'OWNERS': owners,
             'DISCIPLINES': disciplines, 'LISTOWNER': json.dumps(listowner),
-            'LAST_VIDEOS': LAST_VIDEOS, 'LINK_FOOTER': linkFooter
+            'LAST_VIDEOS': LAST_VIDEOS, 'LINK_FOOTER': linkFooter,
+            'VIDEOS_COUNT': VIDEOS_COUNT,
+            'VIDEOS_DURATION': VIDEOS_DURATION
             }
 
 
