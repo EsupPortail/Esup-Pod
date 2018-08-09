@@ -167,7 +167,7 @@ textarea {
     <div style="padding-top: 6px;">
         <button id="blobBuilderSave" style="margin-right: 2em; display: none;">
             Save to File</button>
-        <button id="copyToClipboard" style="display: none;">
+        <button id="copyToClipboard" >
             Copy to Clipboard</button>
     </div>
                 
@@ -606,11 +606,14 @@ function ParseAndLoadWebVTT(vtt) {
             }
         }
     }
-
     appendCurrentCaption();
-
     SortAndDisplayCaptionList();
 }
-
+$("#copyToClipboard").on('click', function() {
+    var copyText = document.getElementById("captionFile");
+    copyText.select();
+    document.execCommand("copy");
+    alert("text copied, paste it in vtt file");
+});
 </script>
 {% endblock more_script %}
