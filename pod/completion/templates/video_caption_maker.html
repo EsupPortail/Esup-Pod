@@ -7,16 +7,12 @@
 #videoElm {
     display: block;
     border: solid 1px #999;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
     width: 100%;
     min-height: 297px;
 }
 .videoError {
     display: block;
     background-color: #999;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
     width: 100%;
     min-height: 297px;
     color: white;
@@ -33,8 +29,6 @@
 }
 
 #textCaptionEntry {
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
     width: 100%;
     height: auto;
     line-height: 19px;
@@ -61,8 +55,6 @@ textarea {
 #display {
     border: solid 1px #999;
     height: 374px;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
     overflow: auto;
 }
 
@@ -94,7 +86,6 @@ textarea {
 #display div span:nth-child(3) {
     font-style: italic;
 }
-
 </style>
 {% endblock page_extra_head %}
 
@@ -122,12 +113,12 @@ textarea {
 <h3>{% trans "Video Caption Maker" %}</h3>
 
 <!-- extract from https://webcache.googleusercontent.com/search?q=cache:-ebduGPpZGYJ:https://testdrive-archive.azurewebsites.net/Graphics/CaptionMaker/Default.html+&cd=1&hl=fr&ct=clnk&gl=fr -->
-<p>Load Existing Caption File [optional] : <input id="ttFile" accept="text/vtt" type="file"></p>
+<p class="text-info">{% trans "Load Existing Caption File [optional]" %} : <input id="ttFile" accept="text/vtt" type="file"></p>
 
 <div class="grayNoVideo">
     <div style="display: inline-block; float: left; margin-right: 2%; min-height: 425px;
             width: 49%;">
-        <div style="padding-bottom: 4px;">Video:</div>
+        <span>{% trans "Video" %}:</span>
         <video id="videoElm" controls="">
             <div class="videoError">HTML5 video is not supported</div>
             {% for vid in video.get_video_mp4 %}
@@ -140,41 +131,35 @@ textarea {
         <textarea id="textCaptionEntry" class=""></textarea>
         </div>
         <div >
-            <div style="display: inline-block; margin-left: auto; margin-right: auto;">
-            <button id="playButton">Play</button>
-            <button id="pauseButton" style="margin-left: 2em;">Pause</button>
-            <button id="justSaveCaption" style="margin-left: 2em;">Save</button>
-            <button id="saveCaptionAndPlay" style="margin-left: 2em;">Save &amp; Continue</button>
-            </div>
+            <button id="playButton" class="btn btn-primary btn-sm">{% trans "Play" %}</button>
+            <button id="pauseButton" class="btn btn-primary btn-sm">{% trans "Pause" %}</button>
+            <button id="justSaveCaption" class="btn btn-primary btn-sm">{% trans "Save" %}</button>
+            <button id="saveCaptionAndPlay" class="btn btn-primary btn-sm">{% trans "Save &amp; Continue" %}</button>
         </div>
     </div>
     <div style="display: inline-block; float: left; width: 49%;">
-        <div style="padding-bottom: 4px;">Caption list:</div>
+        <span>{% trans "Caption list" %}:</span>
         <div id="display">
             
         </div>
-        <div style="margin-top: 6px;">
-            <button id="clearAllCaptions">Clear All</button>
+        <div >
+            <button id="clearAllCaptions" class="btn btn-primary btn-sm mt-1">{% trans "Clear All" %}</button>
         </div>
     </div>
     <div id="captionFileAndMarkup" style="clear: both; padding-top: 24px; padding-bottom: 24px; display: block;">
     <div style="padding-bottom: 4px;">
-        Select and copy the caption file contents below and paste into a <span id="captionFileKind">.vtt</span> file:
+        {% trans "Select and copy the caption file contents below and paste into a .vtt file" %}:
     </div>
     <div>
         <textarea id="captionFile" style="width: 100%;" rows="12" readonly="readonly"></textarea>
     </div>
     <div style="padding-top: 6px;">
-        <button id="blobBuilderSave" style="margin-right: 2em; display: none;">
-            Save to File</button>
-        <button id="copyToClipboard" >
-            Copy to Clipboard</button>
+        <!-- <button id="blobBuilderSave" style="margin-right: 2em; display: none;">
+            Save to File</button> -->
+        <button id="copyToClipboard" class="btn btn-primary btn-sm">{% trans "Copy to Clipboard" %}</button>
+    </div>            
     </div>
-                
-            </div>
-        </div>
-
-
+</div>
 
 {% endblock page_content %}
 
@@ -213,12 +198,14 @@ $("#videoElm").on("error", function(event) {
 });
 
 $("#clearAllCaptions").on('click', function () {
-    captionsArray.length = 0;
-    autoPauseAtTime = -1;
-    $("#display div").remove();
-    $("#captionTitle").html("&nbsp;");
-    $("#textCaptionEntry").val("");
-    $("#captionFormatNone").click();
+    var deleteConfirm = confirm(gettext("Are you sure you want to delete all caption ?"));
+    if (deleteConfirm){
+        captionsArray.length = 0;
+        autoPauseAtTime = -1;
+        $("#display div").remove();
+        $("#captionTitle").html("&nbsp;");
+        $("#textCaptionEntry").val("");
+    }
 });
 
 //  index into captionsArray of the caption being displayed. -1 if none.
@@ -464,16 +451,13 @@ function PlayCaptionFromList(listRowId) {
 
 function DisplayVTTSource() {
     var s = "WEBVTT\r\n\r\n";
-
     for (var i = 0; i < captionsArray.length; ++i) {
         if (captionsArray[i].caption != "") {
             s += (FormatTime(captionsArray[i].start) + " --> " + FormatTime(captionsArray[i].end) + "\r\n");
             s += captionsArray[i].caption + "\r\n\r\n";
         }
     }
-
     $("#captionFile").val(s);
-    $("#captionFileKind").text(".vtt");
 }
 
 var captionFileSourceUpdateTimer = null;
@@ -521,7 +505,6 @@ function LoadCaptionFile(fileObject) {
 }
 
 $("#ttFile").get(0).addEventListener("change", function() {
-    alert('coucou');
     var filesObject = $("#ttFile").get(0).files;
     if (filesObject && filesObject.length > 0) {
         LoadCaptionFile(filesObject[0]);
@@ -591,6 +574,7 @@ function ParseAndLoadWebVTT(vtt) {
         if (timeMatch) {
             appendCurrentCaption();
             cueStart = ParseTime(timeMatch[1]);
+            if(cueStart==0) cueStart = "0.0";
             cueEnd = ParseTime(timeMatch[2]);
             continue;
         }
