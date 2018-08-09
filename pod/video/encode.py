@@ -138,12 +138,9 @@ def change_encoding_step(video_id, num_step, desc):
 
 
 def add_encoding_log(video_id, log):
-    encoding_log, created = EncodingLog.objects.get_or_create(
+    encoding_log = EncodingLog.objects.get(
         video=Video.objects.get(id=video_id))
-    if encoding_log.log:
-        encoding_log.log += "\n\n%s" % log
-    else:
-        encoding_log.log = "\n\n%s" % log
+    encoding_log.log += "\n\n%s" % (log)
     encoding_log.save()
     if DEBUG:
         print(log)
@@ -162,23 +159,36 @@ def check_file(path_file):
 def encode_video(video_id):
     start = "Start at : %s" % time.ctime()
 
-    change_encoding_step(video_id, 0, "start")
-    add_encoding_log(video_id, start)
-
     video_to_encode = Video.objects.get(id=video_id)
     video_to_encode.encoding_in_progress = True
     video_to_encode.save()
+    change_encoding_step(video_id, 0, "start")
+
+    encoding_log, created = EncodingLog.objects.get_or_create(
+        video=Video.objects.get(id=video_id))
+    encoding_log.log = "%s" % start
+    encoding_log.save()
+
 
     if check_file(video_to_encode.video.path):
-
         change_encoding_step(video_id, 1, "remove old data")
         remove_msg = remove_old_data(video_id)
         add_encoding_log(video_id, "remove old data : %s" % remove_msg)
 
-        change_encoding_step(video_id, 2, "get video data")
+        # create video dir
+        change_encoding_step(video_id, 2, "create output dir")
+        output_dir = create_outputdir(video_id, video_to_encode.video.path)
+        add_encoding_log(video_id, "output_dir : %s" % output_dir)
+
+        # clear log file
+        open(output_dir + "/encoding.log", 'w').close()
+        with open(output_dir + "/encoding.log", "a") as f:
+            f.write("%s\n" % start)
+
+        change_encoding_step(video_id, 3, "get video data")
         video_data = {}
         try:
-            video_data = get_video_data(video_id)
+            video_data = get_video_data(video_id, output_dir)
             add_encoding_log(video_id, "get video data : %s" %
                              video_data["msg"])
         except ValueError:
@@ -191,11 +201,6 @@ def encode_video(video_id):
         video_to_encode = Video.objects.get(id=video_id)
         video_to_encode.duration = video_data["duration"]
         video_to_encode.save()
-
-        # create video dir
-        change_encoding_step(video_id, 3, "create output dir")
-        output_dir = create_outputdir(video_id, video_to_encode.video.path)
-        add_encoding_log(video_id, "output_dir : %s" % output_dir)
 
         if video_data["is_video"]:
             # encodage_video
@@ -357,6 +362,11 @@ def encode_video(video_id):
         video_to_encode.encoding_in_progress = False
         video_to_encode.save()
 
+        # End
+        add_encoding_log(video_id, "End : %s" % time.ctime())
+        with open(output_dir + "/encoding.log", "a") as f:
+            f.write("\n\nEnd : %s" % time.ctime())
+
         # envois mail fin encodage
         if EMAIL_ON_ENCODING_COMPLETION:
             send_email_encoding(video_to_encode)
@@ -374,7 +384,7 @@ def encode_video(video_id):
 # ##########################################################################
 
 
-def get_video_data(video_id):
+def get_video_data(video_id, output_dir):
     video_to_encode = Video.objects.get(id=video_id)
     msg = ""
     source = "%s" % video_to_encode.video.path
@@ -383,15 +393,18 @@ def get_video_data(video_id):
     ffproberesult = subprocess.run(
         command, shell=True, stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT)
-    msg += "\nffprobe command : %s" % command
+    msg += "\nffprobe command : \n- %s\n" % command
     """
     add_encoding_log(
         video_id,
         "command : %s \n ffproberesult : %s" % (command, ffproberesult))
     """
     info = json.loads(ffproberesult.stdout.decode('utf-8'))
-    msg += "%s" % json.dumps(
-        info, sort_keys=True, indent=4, separators=(',', ': '))
+    with open(output_dir + "/encoding.log", "a") as f:
+        f.write('\n\ffprobe commande video result :\n\n')
+        f.write('%s\n' % json.dumps(
+            info, sort_keys=True, indent=4, separators=(',', ': ')))
+
     is_video = False
     contain_audio = False
     in_height = 0
@@ -426,8 +439,12 @@ def get_video_data(video_id):
         "command : %s \n ffproberesult : %s" % (command, ffproberesult))
     """
     info = json.loads(ffproberesult.stdout.decode('utf-8'))
-    msg += "%s" % json.dumps(
-        info, sort_keys=True, indent=4, separators=(',', ': '))
+    # msg += "%s" % json.dumps(
+    #     info, sort_keys=True, indent=4, separators=(',', ': '))
+    with open(output_dir + "/encoding.log", "a") as f:
+        f.write('\n\ffprobe commande audio result :\n\n')
+        f.write('%s\n' % json.dumps(
+            info, sort_keys=True, indent=4, separators=(',', ': ')))
     if len(info["streams"]) > 0:
         contain_audio = True
 
@@ -510,15 +527,15 @@ def encode_video_mp4(source, cmd, output_dir):
     ffmpegMp4Command = "%s %s -i %s %s" % (
         FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
 
-    msg = "ffmpegMp4Command :\n%s" % ffmpegMp4Command
-    msg += "Encoding Mp4 : %s" % time.ctime()
+    msg = "\nffmpegMp4Command :\n%s" % ffmpegMp4Command
+    msg += "\n- Encoding Mp4 : %s" % time.ctime()
 
     # ffmpegvideo = subprocess.getoutput(ffmpegMp4Command)
     ffmpegvideo = subprocess.run(
         ffmpegMp4Command, shell=True, stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT)
 
-    msg += "End Encoding Mp4 : %s" % time.ctime()
+    msg += "\n- End Encoding Mp4 : %s" % time.ctime()
 
     with open(output_dir + "/encoding.log", "ab") as f:
         f.write(b'\n\nffmpegvideoMP4:\n\n')
@@ -646,7 +663,7 @@ def encode_video_mp3(video_id, source, output_dir):
         'output_dir': output_dir,
         'audio_bitrate': AUDIO_BITRATE
     }
-    msg = "ffmpegMP3Command :\n%s" % command
+    msg = "\nffmpegMP3Command :\n%s" % command
     msg += "\n- Encoding MP3 : %s" % time.ctime()
     # ffmpegaudio = subprocess.getoutput(command)
     ffmpegaudio = subprocess.run(
@@ -738,15 +755,15 @@ def encode_video_playlist(source, cmd, output_dir):
     ffmpegPlaylistCommand = "%s %s -i %s %s" % (
         FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
 
-    msg = "ffmpegPlaylistCommand :\n%s" % ffmpegPlaylistCommand
-    msg += "Encoding Playlist : %s" % time.ctime()
+    msg = "\nffmpegPlaylistCommand :\n%s" % ffmpegPlaylistCommand
+    msg += "\n- Encoding Playlist : %s" % time.ctime()
 
     # ffmpegvideo = subprocess.getoutput(ffmpegPlaylistCommand)
     ffmpegvideo = subprocess.run(
         ffmpegPlaylistCommand, shell=True, stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT)
 
-    msg += "End Encoding Playlist : %s" % time.ctime()
+    msg += "\n- End Encoding Playlist : %s" % time.ctime()
 
     with open(output_dir + "/encoding.log", "ab") as f:
         f.write(b'\n\nffmpegvideoPlaylist:\n\n')
@@ -1026,11 +1043,6 @@ def remove_old_data(video_id):
     video_to_encode.overview = None
     video_to_encode.save()
 
-    encoding_log, created = EncodingLog.objects.get_or_create(
-        video=Video.objects.get(id=video_id))
-    encoding_log.log = ""
-    encoding_log.save()
-
     encoding_log_msg = ""
     encoding_log_msg += remove_previous_encoding_video(
         video_to_encode)
@@ -1115,22 +1127,25 @@ def send_email_encoding(video_to_encode):
             'content_id': video_to_encode.id
         }
     )
-    message = "%s\n\n%s\n%s\n" % (
+    message = "%s\n%s\n\n%s\n%s\n%s\n" % (
+        _("Hello"),
         _(u"The content “%(content_title)s” has been encoded to Web "
             + "formats, and is now available on %(site_title)s.") % {
             'content_title': video_to_encode.title,
             'site_title': TITLE_SITE
         },
         _(u"You will find it here:"),
-        content_url
+        content_url,
+        _("Regards")
     )
     from_email = HELP_MAIL
     to_email = []
     to_email.append(video_to_encode.owner.email)
     html_message = ""
 
-    html_message = '<p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
-                </p>' % (
+    html_message = '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
+                </p><p>%s</p>' % (
+        _("Hello"),
         _(u"The content “%(content_title)s” has been encoded to Web "
             + "formats, and is now available on %(site_title)s.") % {
             'content_title': '<b>%s</b>' % video_to_encode.title,
@@ -1138,16 +1153,18 @@ def send_email_encoding(video_to_encode):
         },
         _(u"You will find it here:"),
         content_url,
-        content_url
+        content_url,
+        _("Regards")
     )
-    send_mail(
-        subject,
-        message,
-        from_email,
-        to_email,
-        fail_silently=False,
-        html_message=html_message,
-    )
+    if not DEBUG:
+        send_mail(
+            subject,
+            message,
+            from_email,
+            to_email,
+            fail_silently=False,
+            html_message=html_message,
+        )
     mail_managers(
         subject, message, fail_silently=False,
         html_message=html_message)
