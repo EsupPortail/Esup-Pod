@@ -22,6 +22,7 @@ import json
 
 ACTION = ['new', 'save', 'modify', 'delete']
 
+
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def video_caption_maker(request, slug):
@@ -31,9 +32,10 @@ def video_caption_maker(request, slug):
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
     return render(
-            request,
-            'video_caption_maker.html',
-            {'video': video})
+        request,
+        'video_caption_maker.html',
+        {'video': video})
+
 
 @csrf_protect
 @login_required(redirect_field_name='referrer')
