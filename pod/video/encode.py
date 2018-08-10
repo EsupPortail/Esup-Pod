@@ -169,7 +169,6 @@ def encode_video(video_id):
     encoding_log.log = "%s" % start
     encoding_log.save()
 
-
     if check_file(video_to_encode.video.path):
         change_encoding_step(video_id, 1, "remove old data")
         remove_msg = remove_old_data(video_id)

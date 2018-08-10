@@ -4,6 +4,7 @@ from django.core import serializers
 from django.conf import settings
 from django.apps import apps
 from pod.video.models import Video
+from django.core.exceptions import ObjectDoesNotExist
 try:
     from pod.authentication.models import Owner
 except ImportError:
@@ -17,12 +18,15 @@ AUTHENTICATION = True if apps.is_installed('pod.authentication') else False
 BASE_DIR = getattr(
     settings, 'BASE_DIR', '/home/pod/django_projects/podv2/pod')
 
+VIDEO_ID_TO_EXCLUDE = getattr(
+    settings, 'VIDEO_ID_TO_EXCLUDE', [])
+
 
 class Command(BaseCommand):
-    args = 'Channel Theme Type User Discipline'
+    args = 'Channel Theme Type User Discipline Pod tags Chapter'
     help = 'Import from V1'
     valid_args = ['Channel', 'Theme', 'Type', 'User', 'Discipline', 'FlatPage',
-                  'UserProfile', 'Pod', 'tags']
+                  'UserProfile', 'Pod', 'tags', 'Chapter']
 
     def add_arguments(self, parser):
         parser.add_argument('import')
@@ -39,21 +43,10 @@ class Command(BaseCommand):
             with open(filepath, "r") as infile:
                 if type_to_import in ('Channel', 'Theme', 'Type', 'User',
                                       'Discipline', 'FlatPage', 'UserProfile',
-                                      'Pod'):
+                                      'Pod', 'Chapter'):
                     data = serializers.deserialize("json", infile)
                     for obj in data:
-                        if AUTHENTICATION and type_to_import == 'UserProfile':
-                            owner = Owner.objects.get(
-                                user_id=obj.object.user_id)
-                            owner.auth_type = obj.object.auth_type
-                            owner.affiliation = obj.object.affiliation
-                            owner.commentaire = obj.object.commentaire
-                            # todo image
-                            owner.save()
-                        else:
-                            print(obj, obj.object.id)
-                            obj.object.headband = None
-                            obj.save()
+                        self.save_object(type_to_import, obj)
                 if type_to_import in ('tags'):
                     data = json.load(infile)
                     for obj in data:
@@ -62,6 +55,27 @@ class Command(BaseCommand):
             print(
                 "******* Warning: you must give some arguments: %s *******"
                 % self.valid_args)
+
+    def save_object(self, type_to_import, obj):
+        if AUTHENTICATION and type_to_import == 'UserProfile':
+            owner = Owner.objects.get(
+                user_id=obj.object.user_id)
+            owner.auth_type = obj.object.auth_type
+            owner.affiliation = obj.object.affiliation
+            owner.commentaire = obj.object.commentaire
+            # todo image
+            owner.save()
+        else:
+            print(obj, obj.object.id, obj.object.video.id)
+            if (type_to_import == 'Pod'
+                    and obj.object.id in VIDEO_ID_TO_EXCLUDE):
+                print(obj.object.id, " are exclude")
+            else:
+                if obj.object.video.id not in VIDEO_ID_TO_EXCLUDE:
+                    obj.object.headband = None
+                    obj.save()
+                else:
+                    print("video ", obj.object.video.id, " are exclude")
 
     def migrate_to_v2(self, filepath, type_to_import):
         f = open(filepath, 'r')
@@ -92,12 +106,23 @@ class Command(BaseCommand):
                 "pods.pod",
                 "video.video"
             )
+        if type_to_import == 'Chapter':
+            newdata = filedata.replace(
+                "pods.chapterpods",
+                "chapter.chapter"
+            ).replace(
+                "\"time\"",
+                "\"time_start\""
+            )
         return newdata
 
     def add_tag_to_video(self, video_id, list_tag):
-        video = Video.objects.get(id=video_id)
-        video.tags = ', '.join(list_tag)
-        video.save()
+        try:
+            video = Video.objects.get(id=video_id)
+            video.tags = ', '.join(list_tag)
+            video.save()
+        except ObjectDoesNotExist:
+            print(video_id, " does not exist")
 
 
 """
@@ -112,6 +137,8 @@ from pods.models import Pod
 from core.models import UserProfile
 from django.contrib.auth.models import User
 from django.contrib.flatpages.models import FlatPage
+
+from pods.models import ChapterPods
 
 from django.core import serializers
 jsonserializer = serializers.get_serializer("json")
@@ -166,6 +193,11 @@ for p in Pod.objects.all():
      list_tag["%s" %p.id].append(t.name)
 with open("tags.json", "w") as out:
      out.write(json.dumps(list_tag, indent=2))
+
+
+with open("Chapter.json", "w") as out:
+    json_serializer.serialize(ChapterPods.objects.all().order_by('video'),
+        indent=2, stream=out)
 
 # todo
 'chapter',
