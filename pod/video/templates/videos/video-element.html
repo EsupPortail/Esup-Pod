@@ -7,7 +7,7 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}' {% if request.GET.nocontrol
   </p>
 
   {% for track in video.track_set.all%}
-  <track id= "track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.url }}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}">
+  <track id= "track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.file.url }}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}">
 {%endfor%}
 </video>
 <form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">

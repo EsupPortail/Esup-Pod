@@ -4,7 +4,7 @@ from django.core import serializers
 from django.conf import settings
 from django.apps import apps
 from pod.video.models import Video
-from pod.completion.models import Document
+from pod.completion.models import Document, Track
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files import File
 
@@ -16,6 +16,8 @@ except ImportError:
 import os
 import json
 import wget
+import webvtt
+import codecs
 
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
@@ -41,7 +43,7 @@ class Command(BaseCommand):
     help = 'Import from V1'
     valid_args = ['Channel', 'Theme', 'Type', 'User', 'Discipline', 'FlatPage',
                   'UserProfile', 'Pod', 'tags', 'Chapter', 'Contributor',
-                  'Overlay', 'docpods']
+                  'Overlay', 'docpods', 'trackpods']
 
     def add_arguments(self, parser):
         parser.add_argument('import')
@@ -63,7 +65,7 @@ class Command(BaseCommand):
                     data = serializers.deserialize("json", infile)
                     for obj in data:
                         self.save_object(type_to_import, obj)
-                if type_to_import in ('tags', 'docpods'):
+                if type_to_import in ('tags', 'docpods', 'trackpods'):
                     data = json.load(infile)
                     for obj in data:
                         self.add_data_to_video(type_to_import, obj, data[obj])
@@ -154,7 +156,7 @@ class Command(BaseCommand):
         )
 
     def get_new_data(self, type_to_import, filedata):
-        newdata = ""
+        newdata = filedata
         type_import = {
             "Channel": self.Channel,
             "Theme": self.Theme,
@@ -168,9 +170,6 @@ class Command(BaseCommand):
         if type_import.get(type_to_import):
             func = type_import.get(type_to_import)
             return func(filedata)
-
-        if type_to_import in ('User', 'FlatPage', 'tags', 'docpods'):
-            newdata = filedata
         if type_to_import == 'UserProfile':
             newdata = filedata.replace(
                 "core.userprofile", "authentication.owner"
@@ -183,6 +182,8 @@ class Command(BaseCommand):
             self.add_doc_to_video(obj, data)
         if type_to_import in ('tags',):
             self.add_tag_to_video(obj, data)
+        if type_to_import in ('trackpods',):
+            self.add_track_to_video(obj, data)
 
     def add_tag_to_video(self, video_id, list_tag):
         try:
@@ -203,6 +204,56 @@ class Command(BaseCommand):
                 Document.objects.create(video=video, document=document)
         except ObjectDoesNotExist:
             print(video_id, " does not exist")
+
+    def add_track_to_video(self, video_id, list_doc):
+        print(video_id, list_doc)
+        try:
+            video = Video.objects.get(id=video_id)
+            for doc in list_doc:
+                new_file = self.download_doc(doc["src"])
+                print("\n", new_file)
+                fname, dot, extension = new_file.rpartition('.')
+                if extension == "srt":
+                    new_file = self.convert_to_vtt(new_file)
+                else:
+                    if extension != "vtt":
+                        print("************ WARNING !!!!! ************")
+                        print(video_id, list_doc)
+                        print("************ ************")
+                        new_file = ""
+                if new_file != "":
+                    document = self.create_and_save_doc(new_file, video)
+                    Track.objects.create(video=video, src=document,
+                                         kind=doc["kind"], lang=doc["lang"])
+        except ObjectDoesNotExist:
+            print(video_id, " does not exist")
+
+    def convert_to_vtt(self, new_file):
+        try:
+            webvtt.from_srt(new_file).save(new_file[:-3] + "vtt")
+            new_file = new_file[:-3] + "vtt"
+            return new_file
+        except UnicodeDecodeError:
+            print("************ codecs ***********")
+            with codecs.open(new_file,
+                             "r",
+                             encoding="latin-1") as sourceFile:
+                with codecs.open(new_file[:-3] + "txt",
+                                 "w",
+                                 "utf-8") as targetFile:
+                    contents = sourceFile.read()
+                    targetFile.write(contents)
+            webvtt.from_srt(
+                new_file[:-3] + "txt").save(new_file[:-3] + "vtt")
+            new_file = new_file[:-3] + "vtt"
+            return new_file
+        except webvtt.errors.MalformedFileError:
+            print("************ "
+                  "The file does not have a valid format. !!!!! "
+                  "************")
+            print(new_file)
+            print("************ ************")
+        return ""
 
     def download_doc(self, doc):
         source_url = FROM_URL + doc
@@ -328,5 +379,19 @@ for p in Pod.objects.all():
         list_doc["%s" %p.id].append(d.document.file.name)
 with open("docpods.json", "w") as out:
     out.write(json.dumps(list_doc, indent=2))
+
+list_track = {}
+for p in Pod.objects.all():
+    if p.trackpods_set.all().count() > 0:
+        list_track["%s" %p.id] = []
+        for d in p.trackpods_set.all():
+            if d.src :
+                data = {}
+                data['kind'] = d.kind
+                data['lang'] = d.lang
+                data['src'] = d.src.file.name
+                list_track["%s" %p.id].append(data)
+with open("trackpods.json", "w") as out:
+    out.write(json.dumps(list_track, indent=2))
 
 """

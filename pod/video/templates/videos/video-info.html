@@ -13,7 +13,7 @@
     {% if tag_list %}
     <p>{% trans 'Tags' %}:&nbsp;
       {% for tag in tag_list %}
-       <a href="{% url 'videos' %}?tag={{ tag.slug }}" title="{{ tag }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+       <a href="{% url 'videos' %}?tag={{ tag }}" title="{{ tag }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
            <span class="label label-default">{{ tag }}</span>
        </a>
       {% endfor %}
