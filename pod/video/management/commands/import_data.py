@@ -4,7 +4,10 @@ from django.core import serializers
 from django.conf import settings
 from django.apps import apps
 from pod.video.models import Video
+from pod.completion.models import Document
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files import File
+
 try:
     from pod.authentication.models import Owner
 except ImportError:
@@ -12,6 +15,15 @@ except ImportError:
     # from django.contrib.auth.models import User as Owner
 import os
 import json
+import wget
+
+if getattr(settings, 'USE_PODFILE', False):
+    FILEPICKER = True
+    from pod.podfile.models import CustomFileModel
+    from pod.podfile.models import UserFolder
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomFileModel
 
 AUTHENTICATION = True if apps.is_installed('pod.authentication') else False
 
@@ -21,12 +33,15 @@ BASE_DIR = getattr(
 VIDEO_ID_TO_EXCLUDE = getattr(
     settings, 'VIDEO_ID_TO_EXCLUDE', [])
 
+FROM_URL = getattr(settings, 'FROM_URL', "https://pod.univ-lille1.fr/media/")
+
 
 class Command(BaseCommand):
-    args = 'Channel Theme Type User Discipline Pod tags Chapter'
+    args = 'Channel Theme Type User Discipline Pod tags Chapter Contributor...'
     help = 'Import from V1'
     valid_args = ['Channel', 'Theme', 'Type', 'User', 'Discipline', 'FlatPage',
-                  'UserProfile', 'Pod', 'tags', 'Chapter']
+                  'UserProfile', 'Pod', 'tags', 'Chapter', 'Contributor',
+                  'Overlay', 'docpods']
 
     def add_arguments(self, parser):
         parser.add_argument('import')
@@ -43,14 +58,15 @@ class Command(BaseCommand):
             with open(filepath, "r") as infile:
                 if type_to_import in ('Channel', 'Theme', 'Type', 'User',
                                       'Discipline', 'FlatPage', 'UserProfile',
-                                      'Pod', 'Chapter'):
+                                      'Pod', 'Chapter', 'Contributor',
+                                      'Overlay'):
                     data = serializers.deserialize("json", infile)
                     for obj in data:
                         self.save_object(type_to_import, obj)
-                if type_to_import in ('tags'):
+                if type_to_import in ('tags', 'docpods'):
                     data = json.load(infile)
                     for obj in data:
-                        self.add_tag_to_video(obj, data[obj])
+                        self.add_data_to_video(type_to_import, obj, data[obj])
         else:
             print(
                 "******* Warning: you must give some arguments: %s *******"
@@ -86,35 +102,87 @@ class Command(BaseCommand):
         f.write(newdata)
         f.close()
 
+    def Channel(self, filedata):
+        return filedata.replace(
+            "pods.channel",
+            "video.channel"
+        )
+
+    def Theme(self, filedata):
+        return filedata.replace(
+            "pods.theme",
+            "video.theme"
+        )
+
+    def Type(self, filedata):
+        return filedata.replace(
+            "pods.type",
+            "video.type"
+        ).replace("headband", "icon")
+
+    def Discipline(self, filedata):
+        return filedata.replace(
+            "pods.discipline",
+            "video.discipline"
+        ).replace("headband", "icon")
+
+    def Pod(self, filedata):
+        return filedata.replace(
+            "pods.pod",
+            "video.video"
+        )
+
+    def Chapter(self, filedata):
+        return filedata.replace(
+            "pods.chapterpods",
+            "chapter.chapter"
+        ).replace(
+            "\"time\"",
+            "\"time_start\""
+        )
+
+    def Contributor(self, filedata):
+        return filedata.replace(
+            "pods.contributorpods",
+            "completion.contributor"
+        )
+
+    def Overlay(self, filedata):
+        return filedata.replace(
+            "pods.overlaypods",
+            "completion.overlay"
+        )
+
     def get_new_data(self, type_to_import, filedata):
         newdata = ""
-        if type_to_import in ('Channel', 'Theme', 'Type', 'Discipline'):
-            newdata = filedata.replace(
-                "pods." + type_to_import.lower(),
-                "video." + type_to_import.lower()
-            )
-        if type_to_import in ('Type', 'Discipline'):
-            newdata = newdata.replace("headband", "icon")
-        if type_to_import in ('User', 'FlatPage', 'tags'):
+        type_import = {
+            "Channel": self.Channel,
+            "Theme": self.Theme,
+            "Type": self.Type,
+            "Discipline": self.Discipline,
+            "Pod": self.Pod,
+            "Chapter": self.Chapter,
+            "Contributor": self.Contributor,
+            "Overlay": self.Overlay,
+        }
+        if type_import.get(type_to_import):
+            func = type_import.get(type_to_import)
+            return func(filedata)
+
+        if type_to_import in ('User', 'FlatPage', 'tags', 'docpods'):
             newdata = filedata
         if type_to_import == 'UserProfile':
             newdata = filedata.replace(
                 "core.userprofile", "authentication.owner"
             ).replace("\"image\":", "\"userpicture\":")
-        if type_to_import == 'Pod':
-            newdata = filedata.replace(
-                "pods.pod",
-                "video.video"
-            )
-        if type_to_import == 'Chapter':
-            newdata = filedata.replace(
-                "pods.chapterpods",
-                "chapter.chapter"
-            ).replace(
-                "\"time\"",
-                "\"time_start\""
-            )
+
         return newdata
+
+    def add_data_to_video(self, type_to_import, obj, data):
+        if type_to_import in ('docpods',):
+            self.add_doc_to_video(obj, data)
+        if type_to_import in ('tags',):
+            self.add_tag_to_video(obj, data)
 
     def add_tag_to_video(self, video_id, list_tag):
         try:
@@ -123,6 +191,55 @@ class Command(BaseCommand):
             video.save()
         except ObjectDoesNotExist:
             print(video_id, " does not exist")
+
+    def add_doc_to_video(self, video_id, list_doc):
+        print(video_id, list_doc)
+        try:
+            video = Video.objects.get(id=video_id)
+            for doc in list_doc:
+                new_file = self.download_doc(doc)
+                print("\n", new_file)
+                document = self.create_and_save_doc(new_file, video)
+                Document.objects.create(video=video, document=document)
+        except ObjectDoesNotExist:
+            print(video_id, " does not exist")
+
+    def download_doc(self, doc):
+        source_url = FROM_URL + doc
+        dest_file = os.path.join(
+            settings.MEDIA_ROOT,
+            'tempfile',
+            os.path.basename(doc)
+        )
+        os.makedirs(os.path.dirname(dest_file), exist_ok=True)
+        new_file = wget.download(source_url, dest_file)
+        return new_file
+
+    def create_and_save_doc(self, new_file, video):
+        if FILEPICKER:
+            homedir, created = UserFolder.objects.get_or_create(
+                name='home',
+                owner=video.owner)
+            videodir, created = UserFolder.objects.get_or_create(
+                name='%s' % video.slug,
+                owner=video.owner)
+            document = CustomFileModel(
+                folder=videodir,
+                created_by=video.owner
+            )
+            document.file.save(
+                os.path.basename(new_file),
+                File(open(new_file, "rb")),
+                save=True)
+            document.save()
+        else:
+            document = CustomFileModel()
+            document.file.save(
+                os.path.basename(new_file),
+                File(open(new_file, "rb")),
+                save=True)
+            document.save()
+        return document
 
 
 """
@@ -139,6 +256,7 @@ from django.contrib.auth.models import User
 from django.contrib.flatpages.models import FlatPage
 
 from pods.models import ChapterPods
+from pods.models import ContributorPods
 
 from django.core import serializers
 jsonserializer = serializers.get_serializer("json")
@@ -199,8 +317,16 @@ with open("Chapter.json", "w") as out:
     json_serializer.serialize(ChapterPods.objects.all().order_by('video'),
         indent=2, stream=out)
 
-# todo
-'chapter',
-'completion',
+with open("Contributor.json", "w") as out:
+    json_serializer.serialize(ContributorPods.objects.all().order_by('video'),
+        indent=2, stream=out)
+
+list_doc = {}
+for p in Pod.objects.all():
+    list_doc["%s" %p.id] = []
+    for d in p.docpods_set.all():
+        list_doc["%s" %p.id].append(d.document.file.name)
+with open("docpods.json", "w") as out:
+    out.write(json.dumps(list_doc, indent=2))
 
 """
