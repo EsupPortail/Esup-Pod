@@ -5,6 +5,7 @@ from django.conf import settings
 from django.apps import apps
 from pod.video.models import Video
 from pod.completion.models import Document, Track
+from pod.enrichment.models import Enrichment
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files import File
 
@@ -21,7 +22,7 @@ import codecs
 
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
-    from pod.podfile.models import CustomFileModel
+    from pod.podfile.models import CustomFileModel, CustomImageModel
     from pod.podfile.models import UserFolder
 else:
     FILEPICKER = False
@@ -43,7 +44,7 @@ class Command(BaseCommand):
     help = 'Import from V1'
     valid_args = ['Channel', 'Theme', 'Type', 'User', 'Discipline', 'FlatPage',
                   'UserProfile', 'Pod', 'tags', 'Chapter', 'Contributor',
-                  'Overlay', 'docpods', 'trackpods']
+                  'Overlay', 'docpods', 'trackpods', 'enrichpods']
 
     def add_arguments(self, parser):
         parser.add_argument('import')
@@ -65,10 +66,15 @@ class Command(BaseCommand):
                     data = serializers.deserialize("json", infile)
                     for obj in data:
                         self.save_object(type_to_import, obj)
-                if type_to_import in ('tags', 'docpods', 'trackpods'):
+                if type_to_import in (
+                        'tags', 'docpods', 'trackpods', 'enrichpods'):
                     data = json.load(infile)
                     for obj in data:
-                        self.add_data_to_video(type_to_import, obj, data[obj])
+                        if int(obj) not in VIDEO_ID_TO_EXCLUDE:
+                            self.add_data_to_video(
+                                type_to_import,
+                                obj,
+                                data[obj])
         else:
             print(
                 "******* Warning: you must give some arguments: %s *******"
@@ -184,6 +190,8 @@ class Command(BaseCommand):
             self.add_tag_to_video(obj, data)
         if type_to_import in ('trackpods',):
             self.add_track_to_video(obj, data)
+        if type_to_import in ('enrichpods',):
+            self.add_enrich_to_video(obj, data)
 
     def add_tag_to_video(self, video_id, list_tag):
         try:
@@ -255,6 +263,33 @@ class Command(BaseCommand):
             print("************ ************")
         return ""
 
+    def add_enrich_to_video(self, video_id, list_doc):
+        print(video_id)
+        try:
+            video = Video.objects.get(id=video_id)
+            for doc in list_doc:
+                image = None
+                if doc["type"] == "image" and doc["image"] != "":
+                    new_file = self.download_doc(doc["image"])
+                    image = self.create_and_save_image(
+                        new_file, video) if new_file != "" else None
+                document = None
+                if doc["type"] == "document" and doc["document"] != "":
+                    new_file = self.download_doc(doc["document"])
+                    document = self.create_and_save_doc(
+                        new_file, video) if new_file != "" else None
+
+                Enrichment.objects.create(
+                    video=video, title=doc["title"],
+                    stop_video=doc["stop_video"], start=doc["start"],
+                    end=doc["end"], type=doc["type"], image=image,
+                    document=document, richtext=doc["richtext"],
+                    weblink=doc["weblink"], embed=doc["embed"]
+                )
+
+        except ObjectDoesNotExist:
+            print(video_id, " does not exist")
+
     def download_doc(self, doc):
         source_url = FROM_URL + doc
         dest_file = os.path.join(
@@ -291,6 +326,32 @@ class Command(BaseCommand):
                 save=True)
             document.save()
         return document
+
+    def create_and_save_image(self, new_file, video):
+        if FILEPICKER:
+            homedir, created = UserFolder.objects.get_or_create(
+                name='home',
+                owner=video.owner)
+            videodir, created = UserFolder.objects.get_or_create(
+                name='%s' % video.slug,
+                owner=video.owner)
+            image = CustomImageModel(
+                folder=videodir,
+                created_by=video.owner
+            )
+            image.file.save(
+                os.path.basename(new_file),
+                File(open(new_file, "rb")),
+                save=True)
+            image.save()
+        else:
+            image = CustomFileModel()
+            image.file.save(
+                os.path.basename(new_file),
+                File(open(new_file, "rb")),
+                save=True)
+            image.save()
+        return image
 
 
 """
@@ -393,5 +454,26 @@ for p in Pod.objects.all():
                 list_track["%s" %p.id].append(data)
 with open("trackpods.json", "w") as out:
     out.write(json.dumps(list_track, indent=2))
+
+list_enrich = {}
+for p in Pod.objects.all().order_by('id'):
+    if p.enrichpods_set.all().count() > 0:
+        list_enrich["%s" %p.id] = []
+        for d in p.enrichpods_set.all():
+            data = {}
+            data['title'] = d.title
+            data['stop_video'] = d.stop_video
+            data['start'] = d.start
+            data['end'] = d.end
+            data['type'] = d.type
+            data['image'] = d.image.file.name if d.image else ""
+            data['richtext'] = d.richtext
+            data['weblink'] = d.weblink
+            data['document'] = d.document.file.name if d.document else ""
+            data['embed'] = d.embed
+            list_enrich["%s" %p.id].append(data)
+
+with open("enrichpods.json", "w") as out:
+    out.write(json.dumps(list_enrich, indent=2))
 
 """
