@@ -22,8 +22,8 @@ import mimetypes
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
 CONTACT_US_EMAIL = getattr(
     settings, 'CONTACT_US_EMAIL', [
-        mail for name, mail in getattr(settings, 'ADMINS')])
-HELP_MAIL = getattr(settings, 'HELP_MAIL', 'noreply@univ.fr')
+        mail for name, mail in getattr(settings, 'MANAGERS')])
+DEFAULT_FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@univ.fr')
 
 
 @csrf_protect
@@ -128,7 +128,7 @@ def contact_us(request):
                     'message': message.replace("\n", "<br/>")
                 })
             msg = EmailMultiAlternatives(
-                subject, text_content, HELP_MAIL, [email])
+                subject, text_content, DEFAULT_FROM_EMAIL, [email])
             msg.attach_alternative(html_content, "text/html")
             msg.send(fail_silently=False)
 

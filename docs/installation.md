@@ -1,6 +1,6 @@
 # Installation de la plateforme
 
-*Les commandes suivantes ont été lancées sur une distribution Debian 9.4 "stretch".*
+*<span style="color:green">Les commandes suivantes ont été lancées sur une distribution Debian 9.4 "stretch".</span>*
 
 ## Environnement
 ### Creation de l'utilisateur Pod
@@ -197,6 +197,7 @@ Successfully create index Video
 
 ## Mise en route
 ### Base de données
+
 Lancer le script présent à la racine afin de créer les fichier de migration, puis de les lancer afin de créer la base de données
 
 ```console
@@ -235,14 +236,15 @@ N'hésitez pas à lancer le serveur de développement pour vérifier vos modific
 ### - Attention -
 
 ------
-> ### Avant la mise en production, il faut vérifier le fonctionnement de la plateforme dont l'ajout d'une vidéo, son encodage et sa suppression.
-> 
-> ### Attention, pour ajouter une vidéo, il doit y avoir au moins un type de vidéo disponible. Si vous avez correctement peuplé votre base de données avec le fichier initial_data.json vous devez au moins avoir other/autres.
-> 
-> ### il faut vérifier l'authentification CAS, le moteur de recherche etc. 
-> 
-> ### ==> Voir paramétrage / customization
-      
+>
+**<span style="color:red">Quand le site est lancé, il faut se rendre dans la partie administration puis dans site pour renseigner le nom de domaine de votre instance de Pod (par défaut 'example.com').</span>**
+>
+**<span style="color:green">Avant la mise en production, il faut vérifier le fonctionnement de la plateforme dont l'ajout d'une vidéo, son encodage et sa suppression.</span>**
+>
+**<span style="color:green">Attention, pour ajouter une vidéo, il doit y avoir au moins un type de vidéo disponible. Si vous avez correctement peuplé votre base de données avec le fichier initial_data.json vous devez au moins avoir other/autres.</span>**
+>
+**<span style="color:green">il faut vérifier l'authentification CAS, le moteur de recherche etc.</span>**
+
 ------
 ------
 
@@ -250,6 +252,7 @@ N'hésitez pas à lancer le serveur de développement pour vérifier vos modific
 
 >
 **<span style="color:blue">Toute la personnalisation et la configuration de votre instance de Pod peut se faire dans le répertoire pod/custom. Par exemple, pour votre configuration, il faut créer et renseigner le fichier settings_local.py :</span>** 
+
 ```console
 (django_pod) pod@pod:/usr/local/django_projects/podv2$ vim pod/custom/settings_local.py
 ```
@@ -286,6 +289,13 @@ DATABASES = {
     }
 }
 ```
+
+Il faut enseuite relancer le script présent à la racine afin de créer les fichier de migration, puis de les lancer afin de créer la base de données :
+
+```console
+(django_pod) pod@Pod:~/django_projects/podv2$ sh create_data_base.sh 
+```
+
 
 ### Frontal Web NGINX / UWSGI et fichiers statiques
 

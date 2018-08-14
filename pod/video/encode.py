@@ -98,9 +98,8 @@ FILE_UPLOAD_TEMP_DIR = getattr(
     settings, 'FILE_UPLOAD_TEMP_DIR', '/tmp')
 
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
-CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [
-                           mail for name, mail in getattr(settings, 'ADMINS')])
-HELP_MAIL = getattr(settings, 'HELP_MAIL', 'noreply@univ.fr')
+
+DEFAULT_FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@univ.fr')
 
 CELERY_TO_ENCODE = getattr(settings, 'CELERY_TO_ENCODE', False)
 
@@ -1137,7 +1136,7 @@ def send_email_encoding(video_to_encode):
         content_url,
         _("Regards")
     )
-    from_email = HELP_MAIL
+    from_email = DEFAULT_FROM_EMAIL
     to_email = []
     to_email.append(video_to_encode.owner.email)
     html_message = ""

@@ -73,9 +73,7 @@ ADMINS = (
 #   email from contact_us / end of encoding / report video
 #
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-MANAGERS
-MANAGERS = (
-    ('Name', 'adminmail@univ.fr'),
-)
+MANAGERS = ADMINS
 ##
 # A dictionary containing the settings for all databases
 # to be used with Django.
@@ -178,7 +176,7 @@ CKEDITOR_CONFIGS = {
 # Main menu settings:
 #
 # Do not show inactive users in “Owners” main menu list.
-MENUBAR_HIDE_INACTIVE_OWNERS = False
+MENUBAR_HIDE_INACTIVE_OWNERS = True
 # Show only staff users in “Owners” main menu list.
 MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
 

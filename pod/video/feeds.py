@@ -38,7 +38,7 @@ LOGO_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'LOGO_SITE', 'img/logoPod.svg')
 CONTACT_US_EMAIL = getattr(
     settings,
     'CONTACT_US_EMAIL',
-    [mail for name, mail in getattr(settings, 'ADMINS')])
+    [mail for name, mail in getattr(settings, 'MANAGERS')])
 
 DEFAULT_DC_COVERAGE = getattr(
     settings, 'DEFAULT_DC_COVERAGE', TITLE_ETB + " - Town - Country")
