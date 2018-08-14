@@ -38,3 +38,94 @@
 | **`THIRD_PARTY_APPS`**           | Liste des applications tierces accessibles. |[] |
 | **`FILE_DIR`**           | Nom du répertoire racine ou les fichiers "complémentaires" (hors videos etc.) sont téléversés. | files |
 
+## Configuration des templates / de l'affichage
+
+L'ensemble des variables ci-après doivent être contnu dans un dictionnnaire `TEMPLATE_VISIBLE_SETTINGS`.
+
+Voici sa valeur par défaut :
+
+```python
+TEMPLATE_VISIBLE_SETTINGS = {
+    'TITLE_SITE': 'Pod',
+    'TITLE_ETB': 'University name',
+    'LOGO_SITE': 'img/logoPod.svg',
+    'LOGO_ETB': 'img/logo_etb.svg',
+    'LOGO_PLAYER': 'img/logoPod.svg',
+    'LINK_PLAYER': '',
+    'FOOTER_TEXT': ('',),
+    'FAVICON': 'img/logoPod.svg',
+    'CSS_OVERRIDE' : ''
+}
+
+```
+
+| Property            | Description                                                                                                                          |   Default Value  |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------|:----------------:|
+| **`TITLE_SITE`**           | Titre du site. | 'Pod' |
+| **`TITLE_ETB`**           | Titre de l'etablissement. | 'University name' |
+| **`LOGO_SITE`**           | Logo affiché en haut à gauche sur toutes les pages. Doit se situer dans le répertoire static | 'img/logoPod.svg' |
+| **`LOGO_ETB`**           | Logo affiché dans le footer sur toutes les pages. Doit se situer dans le répertoire static | 'img/logo_etb.svg' |
+| **`LOGO_PLAYER`**           | Logo affiché sur le player video. Doit se situer dans le répertoire static | 'img/logoPod.svg' |
+| **`LINK_PLAYER`**           | Lien de destination du logo affiché sur le player | '' |
+| **`FOOTER_TEXT `**           | Texte affiché dans le footer. Une ligne par entrée, accepte du code html. Par exmple : (       '42, rue Paul Duez',       '59000 Lille - France',       ('&lt;a href="https://goo.gl/maps/AZnyBK4hHaM2"'        ' target="_blank"&gt;Google maps&lt;/a&gt;')   ) | ('',) |
+| **`FAVICON `**           | Icon affiché dans la barre d'adresse du navigateur | 'img/logoPod.svg' |
+| **`CSS_OVERRIDE `**           | Si souhaitée, à créer et sauvegarder dans le répertoire static de 'lapplciation custom et préciser le chemin d'accès. Par exemple : "custom/etab.css" | '' |
+
+
+## Configuration application recherche
+
+| Property            | Description                                                                                                                          |   Default Value  |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------|:----------------:|
+| **`ES_URL`**           | adresse du ou des instances d'Elasticsearch utilisées pour l'indexation et la recherche de vidéo. | ['http://127.0.0.1:9200/'] |
+
+
+## Configuration encodage
+| Property            | Description                                                                                                                          |   Default Value  |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------|:----------------:|
+| **`FFMPEG`**           | commande ffmpeg | ffmpeg |
+| **`FFPROBE`**           | commande ffprobe | ffprobe |
+| **`SEGMENT_TARGET_DURATION `**           | durée en seconde des segment HLS | 2 |
+| **`RATE_MONITOR_BUFFER_RATIO `**           | la taille du buffer est égale au bitrate vidéo du rendu multiplié par cette valeur | 2 |
+| **`FFMPEG_NB_THREADS `**           | nombre de thread possible pour ffmpeg (0 égale maximum possible) | 0 |
+| **`GET_INFO_VIDEO `**           | Commande utilisée pour récupérer les informations de la première piste video du fichier envoyé | "%(ffprobe)s -v quiet -show_format -show_streams -select_streams v:0 -print_format json -i %(source)s" |
+| **`GET_INFO_AUDIO `**           | Commande utilisée pour récupérer les informations de la première piste audio du fichier envoyé | "%(ffprobe)s -v quiet -show_format -show_streams -select_streams a:0 -print_format json -i %(source)s" |
+| **`FFMPEG_STATIC_PARAMS `**           | paramètres de la commande ffmpeg utilisés pour encoder toutes les vidéos, peu importe le rendu | " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf 20 -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads %(nb_threads)s " |
+| **`FFMPEG_MISC_PARAMS `**           | autres paramètres qui sont placés au début de la commande | " -hide_banner -y " |
+| **`AUDIO_BITRATE `**           | bitrate audio pour l'encodage M4A (encodage des fichiers audio envoyés sur la plateforme) | 192k |
+| **`ENCODING_M4A `**           | commande utilisée pour l'encodage des fichiers audio envoyés sur la plateforme | %(ffmpeg)s -i %(source)s %(misc_params)s -c:a aac -b:a %(audio_bitrate)s -vn -threads %(nb_threads)s \"%(output_dir)s/audio_%(audio_bitrate)s.m4a\" |
+| **`ENCODE_MP3_CMD `**           | commande utilisée pour l'encodage audio pour tous les fichiers envoyés sur la plateforme | "%(ffmpeg)s -i %(source)s %(misc_params)s -vn -b:a %(audio_bitrate)s -vn -f mp3 -threads %(nb_threads)s \"%(output_dir)s/audio_%(audio_bitrate)s.mp3\"" |
+| **`EMAIL_ON_ENCODING_COMPLETION `**           | Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à True) à la fin de l'encodage | True |
+| **`FILE_UPLOAD_TEMP_DIR `**           | Répertoire temporaire pour la création des thumbnails | '/tmp' |
+| **`CELERY_TO_ENCODE `**           | Utilisation de Celery pour la gestion des taches d'encodage | False |
+
+
+## Configuration flux RSS
+| Property            | Description                                                                                                                          |   Default Value  |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------|:----------------:|
+| **`DEFAULT_DC_COVERAGE`**           | couverture du droit pour chaque vidéo | TITLE_ETB + " - Town - Country" |
+| **`DEFAULT_DC_RIGHTS`**           | droit par défaut affichés dans le flux RSS si non renseigné | "BY-NC-SA" |
+
+
+## Configuration application vidéo
+| Property            | Description                                                                                                                          |   Default Value  |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------|:----------------:|
+| **`RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY`**           | Si True, seule les personnes "Staff" peuvent déposer des vidéos sur la plateforme | False |
+| **`DEFAULT_THUMBNAIL`**           | image par défaut affichée comme poster ou vignette, utilisée pour présenter la vidéo. Cette image doit se situer dans le répertoire static. | 'img/default.png' |
+| **`ENCODING_CHOICES`**           | Encodage possible sur la plateforme. Associé à un rendu dans le cas d'une vidéo. | (        ("audio", "audio"),        ("360p", "360p"),        ("480p", "480p"),        ("720p", "720p"),        ("1080p", "1080p"),        ("playlist", "playlist")    ) |
+| **`FORMAT_CHOICES`**           | Format d'encodage réalisé sur la plateforme. | (        ("video/mp4", 'video/mp4'),        ("video/mp2t", 'video/mp2t'),        ("video/webm", 'video/webm'),        ("audio/mp3", "audio/mp3"),        ("audio/wav", "audio/wav"),        ("application/x-mpegURL", application/x-mpegURL"),    ) |
+| **`LICENCE_CHOICES`**           | Licence proposées pour les vidéos. | (       ('by', _("Attribution 4.0 International (CC BY 4.0)")),       ('by-nd', _("Attribution-NoDerivatives 4.0 "                   "International (CC BY-ND 4.0)"                   )),       ('by-nc-nd', _(           "Attribution-NonCommercial-NoDerivatives 4.0 "           "International (CC BY-NC-ND 4.0)"       )),       ('by-nc', _("Attribution-NonCommercial 4.0 "                   "International (CC BY-NC 4.0)")),       ('by-nc-sa', _(           "Attribution-NonCommercial-ShareAlike 4.0 "           "International (CC BY-NC-SA 4.0)"       )),       ('by-sa', _(           "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"))   ) |
+| **`DEFAULT_TYPE_ID`**           | Les vidéos créées sans type (par importation par exemple) seront affectées au type par défaut (en général, le type ayant pour identifiant '1' est 'Other') | 1 |
+| **`CURSUS_CODES`**           | Liste des cursus proposés lors de l'ajout des vidéos. Affichés en dessous d'une vidéos, ils sont aussi utilisés pour affiner la recherche. | (       ('0', _("None / All")),       ('L', _("Bachelor’s Degree")),       ('M', _("Master’s Degree")),       ('D', _("Doctorate")),       ('1', _("Other"))   ) |
+| **`LANG_CHOICES`**           | Liste des langues proposées lors de l'ajout des vidéos. Affichés en dessous d'une vidéos, ils sont aussi utilisés pour affiner la recherche. | (       settings.PREF_LANG_CHOICES       + (('', '----------'),)       + settings.ALL_LANG_CHOICES   ) |
+| **`VIDEOS_DIR`**           | Répertoire par défaut pour le téléversement des vidéos. | videos |
+| **`ENCODE_VIDEO`**           | Fonction appelée pour lancer l'encodage des vidéos | start_encode |
+| **`VIDEO_ALLOWED_EXTENSIONS `**           | Extension autorisée pour le téléversement sur la plateforme | (       '3gp',       'avi',       'divx',       'flv',       'm2p',       'm4v',       'mkv',       'mov',       'mp4',       'mpeg',       'mpg',       'mts',       'wmv',       'mp3',       'ogg',       'wav',       'wma'   ) |
+| **`VIDEO_MAX_UPLOAD_SIZE `**           | Taille maximum en Go des fichiers téléversés sur la plateforme | 1 |
+| **`VIDEO_FORM_FIELDS_HELP_TEXT `**           | Ensemble des textes d'aide affichés avec le formulaire d'envoi de vidéo | voir pod/video/forms.py |
+| **`VIDEO_FORM_FIELDS `**           | Liste des champs du formulaire d'édition de vidéos affichés | `__all__` |
+| **`CHANNEL_FORM_FIELDS_HELP_TEXT `**           | Ensemble des textes d'aide affichés avec le formulaire d'édition de chaine. | voir pod/video/forms.py |
+| **`THEME_FORM_FIELDS_HELP_TEXT `**           | Ensemble des textes d'aide affichés avec le formulaire d'édition de theme. | voir pod/video/forms.py |
+
+
+
+

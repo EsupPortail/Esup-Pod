@@ -46,7 +46,7 @@ log = logging.getLogger(__name__)
 # try to create a new segment every X seconds
 SEGMENT_TARGET_DURATION = getattr(settings, 'SEGMENT_TARGET_DURATION', 2)
 # maximum accepted bitrate fluctuations
-MAX_BITRATE_RATIO = getattr(settings, 'MAX_BITRATE_RATIO', 1.07)
+# MAX_BITRATE_RATIO = getattr(settings, 'MAX_BITRATE_RATIO', 1.07)
 # maximum buffer size between bitrate conformance checks
 RATE_MONITOR_BUFFER_RATIO = getattr(
     settings, 'RATE_MONITOR_BUFFER_RATIO', 2)

@@ -45,14 +45,13 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     {
         'TITLE_SITE': 'Pod',
         'TITLE_ETB': 'University name',
-        'LOGO_SITE': 'img/logo_compact.png',
-        'LOGO_COMPACT_SITE': 'img/logo_compact_site.png',
+        'LOGO_SITE': 'img/logoPod.svg',
         'LOGO_ETB': 'img/logo_etb.svg',
-        'LOGO_PLAYER': 'img/logo_player.png',
+        'LOGO_PLAYER': 'img/logoPod.svg',
+        'LINK_PLAYER': '',
         'FOOTER_TEXT': ('',),
-        # 'FAVICON': 'img/favicon.png',
-        # 'CSS_OVERRIDE' : 'custom/etab.css'
-        # 'LINK_PLAYER':''
+        'FAVICON': 'img/logoPod.svg',
+        'CSS_OVERRIDE': ''
     }
 )
 

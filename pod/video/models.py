@@ -13,7 +13,6 @@ from django.template.defaultfilters import slugify
 from django.db.models import Sum
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
-from django.apps import apps
 from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
@@ -38,10 +37,8 @@ else:
 
 logger = logging.getLogger(__name__)
 
-FILEPICKER = True if apps.is_installed('pod.podfile') else False
 VIDEOS_DIR = getattr(
     settings, 'VIDEOS_DIR', 'videos')
-
 
 LANG_CHOICES = getattr(
     settings, 'LANG_CHOICES', (
@@ -49,6 +46,7 @@ LANG_CHOICES = getattr(
         + (('', '----------'),)
         + settings.ALL_LANG_CHOICES
     ))
+
 CURSUS_CODES = getattr(
     settings, 'CURSUS_CODES', (
         ('0', _("None / All")),
@@ -115,13 +113,13 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     {
         'TITLE_SITE': 'Pod',
         'TITLE_ETB': 'University name',
-        'LOGO_SITE': 'img/logo_compact.png',
-        'LOGO_COMPACT_SITE': 'img/logo_compact_site.png',
+        'LOGO_SITE': 'img/logoPod.svg',
         'LOGO_ETB': 'img/logo_etb.svg',
-        'LOGO_PLAYER': 'img/logo_player.png',
+        'LOGO_PLAYER': 'img/logoPod.svg',
+        'LINK_PLAYER': '',
         'FOOTER_TEXT': ('',),
-        # 'FAVICON': 'img/favicon.png',
-        # 'CSS_OVERRIDE' : 'custom/etab.css'
+        'FAVICON': 'img/logoPod.svg',
+        'CSS_OVERRIDE': ''
     }
 )
 TITLE_ETB = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_ETB', 'University')
