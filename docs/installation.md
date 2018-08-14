@@ -1,14 +1,16 @@
 # Installation de la plateforme
 
-Les commandes suivantes ont été lancées sur une distribution Debian 9.4 "stretch".
+*Les commandes suivantes ont été lancées sur une distribution Debian 9.4 "stretch".*
 
 ## Environnement
 ### Creation de l'utilisateur Pod
+
 ```
 $ sudo adduser pod
 $ adduser pod sudo
 $ su pod
 ```
+
 ### Création de l'environnement virtuel
 
 ```
@@ -245,10 +247,10 @@ N'hésitez pas à lancer le serveur de développement pour vérifier vos modific
 
 ## Mise en production
 
-<span style="color:blue">
+
 >
-**Toute la personnalisation et la configuration de votre instance de Pod peut se faire dans le répertoire pod/custom. Par exemple, pour votre configuration, il faut créer et renseigner le fichier settings_local.py : ```(django_pod) pod@pod:/usr/local/django_projects/podv2$ vim pod/custom/settings_local.py```**
-</span>
+**<span style="color:blue">Toute la personnalisation et la configuration de votre instance de Pod peut se faire dans le répertoire pod/custom. Par exemple, pour votre configuration, il faut créer et renseigner le fichier settings_local.py :</span> ```(django_pod) pod@pod:/usr/local/django_projects/podv2$ vim pod/custom/settings_local.py```**
+
 
 ### Base de données MySql/MariaDB
 
@@ -281,9 +283,11 @@ DATABASES = {
 }
 ```
 
-### Frontal Web NGINX / UWSGI
+### Frontal Web NGINX / UWSGI et fichiers statiques
 
-Insallation du serveur Web NGINX et paramétrage :
+Pour plus de renseignement, d'explication que la documentation ci-dessous, voici le tutoriel que j'ai suivi pour mettre en place cette solution : [doc](https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html#basic-uwsgi-installation-and-configuration){:target="_blank"}
+
+**Insallation du serveur Web NGINX et paramétrage :**
 
 ```shell
 pod@pod:~$ sudo aptitude install nginx
@@ -328,9 +332,9 @@ pod@pod:~/django_projects/podv2$ sudo uwsgi --stop /tmp/pod.pid
 Si vous souhaitez effectuer un changement, une personnalisation :
 
 ```
-pod@pod1:~/django_projects/podv2$ cp pod_uwsgi.ini pod/custom/.
-pod@pod1:~/django_projects/podv2$ vim pod/custom/pod_uwsgi.ini
-pod@pod1:~/django_projects/podv2$ sudo uwsgi --ini pod/custom/pod_uwsgi.ini --enable-threads --daemonize /usr/local/django_projects/podv2/pod/log/uwsgi-pod.log --uid pod --gid www-data --pidfile /tmp/pod.pid
+pod@pod:~/django_projects/podv2$ cp pod_uwsgi.ini pod/custom/.
+pod@pod:~/django_projects/podv2$ vim pod/custom/pod_uwsgi.ini
+pod@pod:~/django_projects/podv2$ sudo uwsgi --ini pod/custom/pod_uwsgi.ini --enable-threads --daemonize /usr/local/django_projects/podv2/pod/log/uwsgi-pod.log --uid pod --gid www-data --pidfile /tmp/pod.pid
 [uWSGI] getting INI configuration from pod/custom/pod_uwsgi.ini
 pod@pod:~/django_projects/podv2$ 
 ```
@@ -372,5 +376,12 @@ Et le lancer ou l'arréter :
 ```
 pod@pod:/usr/local/django_projects/podv2/pod/log$ sudo systemctl stop uwsgi-pod
 pod@pod:/usr/local/django_projects/podv2/pod/log$ sudo systemctl restart uwsgi-pod
+```
 
+**Fichiers statiques [doc](https://docs.djangoproject.com/fr/1.11/howto/static-files/){:target="_blank"}**
+
+*<span style="color:red">Attention, il faut penser à collecter les fichiers statics pour qu'ils soient servis par le serveur web :</span>*
+
+```
+(django_pod) pod@pod:~$ python manage.py collectstatic
 ```
