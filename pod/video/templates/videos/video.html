@@ -23,12 +23,6 @@
 {% include 'videos/video-header.html' %}
 
 <style>
-.scrollspy-video {
-    position: relative;
-    height: 355px;
-    margin-top: .5rem;
-    overflow: auto;
-}
 {{channel.style}}
 {% if channel.color %}
 body {
@@ -110,7 +104,8 @@ body {
   </a>
 </h4>
 
-<div class="navbar pl-0 pr-0">
+<div class="pl-0 pr-0">
+  <div class="navbar d-flex flex-row-reverse p-0" >
   <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item">
       <a class="nav-link active show" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-controls="home" aria-selected="true" title="{% trans 'Summary' %}">
@@ -134,6 +129,7 @@ body {
         <i data-feather="cast"></i><span class="sr-only">{% trans 'Embed/Share' %}</span>
       </a>
     </li>
+    
     <li class="nav-item dropdown" id="list_third_apps">
       <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
         <i data-feather="layers"></i>&nbsp;<span class="sr-only">{% trans 'Other versions' %}</span>
@@ -147,7 +143,8 @@ body {
         {% endfor %}
       </div>
     </li>
-    <li class="nav-item dropdown">
+    {% if request.user.playlist_set.all and video.is_draft == False %}
+    <li class="nav-item dropdown dropright">
       <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans "Add the video to a playlist"%}">
         <i data-feather="play-circle"></i>&nbsp;<span class="sr-only">{% trans 'My playlists' %}</span>
       </a>
@@ -166,8 +163,9 @@ body {
       </ul>
       </div>
     </li>
+    {% endif %}
   </ul>
-
+</div>
   {% include 'videos/video-info.html' %}  
 </div>
 {%endif%}

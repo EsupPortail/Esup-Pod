@@ -12,16 +12,22 @@ $ su pod
 ### Création de l'environnement virtuel
 
 ```
-pod@pod:~$ sudo pip install virtualenvwrapper
+pod@pod:~$ sudo python3 -V
+pod@pod:~$ sudo python -V
+pod@pod:~$ sudo apt-get install -y python3-pip
+pod@pod:~$ pip3 search virtualenvwrapper
+pod@pod:~$ sudo pip3 install virtualenvwrapper
 ```
 
 A la fin du bashrc, il faut ajouter ces deux lignes :
 
 ```
 pod@pod:~$ vim .bashrc
-[...]
-export WORKON_HOME=$HOME/.virtualenvs
-source /usr/local/bin/virtualenvwrapper.sh
+      [..]
+      export WORKON_HOME=$HOME/.virtualenvs
+      export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+      source /usr/local/bin/virtualenvwrapper.sh
+      [..]
 ```
 
 Puis prendre en charge ces modifications :
@@ -33,7 +39,7 @@ pod@pod:$ source .bashrc
 Et enfin créer l'environnement virtuel :
 
 ```
-pod@pod:~$ mkvirtualenv --system-site-packages --python=/usr/bin/python3 django_pod 
+pod@pod:~$ mkvirtualenv --system-site-packages --python=/usr/bin/python3 django_pod
 ```
 
 ### Récupération des sources
@@ -74,21 +80,23 @@ Attention, si vous devez utiliser un proxy, vous pouvez le spécifier avec cette
 la récupération des sources de la V2 se font via cette commande : **git clone https://github.com/esupportail/podv2.git**
 
 ```
-(django_pod) pod@pod1-test:~/django_projects$ git clone https://github.com/esupportail/podv2.git
+(django_pod) pod@pod:~/django_projects$ git clone https://github.com/esupportail/podv2.git
 Clonage dans 'podv2'...
 remote: Counting objects: 4578, done.
 remote: Compressing objects: 100% (378/378), done.
 remote: Total 4578 (delta 460), reused 564 (delta 348), pack-reused 3847
 Réception d'objets: 100% (4578/4578), 4.40 MiB | 3.88 MiB/s, fait.
 Résolution des deltas: 100% (3076/3076), fait.
-(django_pod) pod@pod1-test:~/django_projects$ cd podv2/
+(django_pod) pod@pod:~/django_projects$ cd podv2/
 ```
 
 ## Applications tierces
 ### Installation de toutes les librairies python :
 
+Il faut vérifier que l'on se trouve bien dans l'environnement virtuel (présence de "(django_pod)" au début l'invite de commande. Sinon, il faut lancer la commande ``` $> workon django_pod ```
+
 ```
-(django_pod) pod@pod:~/django_projects/podv2$ pip install -r requirements.txt
+(django_pod) pod@pod:~/django_projects/podv2$ pip3 install -r requirements.txt 
 ```
 
 De même, si vous devez utiliser un proxy :
@@ -219,6 +227,7 @@ N'hésitez pas à lancer le serveur de développement pour vérifier vos modific
 ```
 (django_pod) pod@Pod:~/django_projects/podv2$ python manage.py python manage.py runserver ADRESSE_IP/NOM_DNS:8080
 ```
+--> exemple : ```(django_pod) pod@pod:~/django_projects/podv2$ python manage.py runserver pod.univ.fr:8080```
 
 ### - Attention -
 
@@ -232,4 +241,136 @@ N'hésitez pas à lancer le serveur de développement pour vérifier vos modific
 > ### ==> Voir paramétrage / customization
       
 ------
+------
 
+## Mise en production
+
+<span style="color:blue">
+>
+**Toute la personnalisation et la configuration de votre instance de Pod peut se faire dans le répertoire pod/custom. Par exemple, pour votre configuration, il faut créer et renseigner le fichier settings_local.py : ```(django_pod) pod@pod:/usr/local/django_projects/podv2$ vim pod/custom/settings_local.py```**
+</span>
+
+### Base de données MySql/MariaDB
+
+Pour utiliser une base de données MySql ou MariaDB, il faut installer le moteur MySql/Python :
+
+```shell
+(django_pod) pod@pod:/usr/local/django_projects/podv2$ sudo apt-get install python3-dev
+(django_pod) pod@pod:/usr/local/django_projects/podv2$ sudo aptitude install default-libmysqlclient-dev
+(django_pod) pod@pod:/usr/local/django_projects/podv2$ pip3 install mysqlclient
+```
+
+Il faut ensuite spécifier la configuration de votre base de données dans votre fichier de configuration :
+
+```
+(django_pod) pod@pod:/usr/local/django_projects/podv2$ vim pod/custom/settings_local.py
+```
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'mydatabase',
+        'USER': 'mydatabaseuser',
+        'PASSWORD': 'mypassword',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET storage_engine=INNODB, sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
+        },
+    }
+}
+```
+
+### Frontal Web NGINX / UWSGI
+
+Insallation du serveur Web NGINX et paramétrage :
+
+```shell
+pod@pod:~$ sudo aptitude install nginx
+[...]
+juil. 19 08:58:15 pod1 systemd[1]: Failed to start A high performance web server and a reverse proxy server.
+[...]
+pod@pod:~$ sudo vim /etc/nginx/sites-enabled/default
+[...]
+server {
+        listen 80 default_server;
+        #listen [::]:80 default_server;
+[...]
+pod@pod:~$ sudo aptitude install nginx-extras
+pod@pod:~$ sudo vim /etc/nginx/nginx.conf
+[...]
+# Pod Progress Bar : reserve 1MB under the name 'uploads' to track uploads
+upload_progress uploadp 1m;
+[...]
+```
+
+Il faut ensuite spécifier le host pour le serveur web :
+
+```shell
+pod@pod:~$ cd django_projects/podv2/
+pod@pod:~/django_projects/podv2$ cp pod_nginx.conf pod/custom/.
+pod@pod:~/django_projects/podv2$ vim pod/custom/pod_nginx.conf
+pod@pod:~/django_projects/podv2$ sudo ln -s /usr/local/django_projects/podv2/pod/custom/pod_nginx.conf /etc/nginx/sites-enabled/pod_nginx.conf
+pod@pod:~/django_projects/podv2$ sudo /etc/init.d/nginx restart
+```
+
+
+**UWSGI**
+
+Un fichier de configuration est fourni pour faciliter l'usage d'UWSGI.
+
+```
+pod@pod:~/django_projects/podv2$ sudo pip3 install uwsgi
+pod@pod:~/django_projects/podv2$ sudo uwsgi --ini pod_uwsgi.ini --enable-threads --daemonize /usr/local/django_projects/podv2/pod/log/uwsgi-pod.log --uid pod --gid www-data --pidfile /tmp/pod.pid
+pod@pod:~/django_projects/podv2$ sudo uwsgi --stop /tmp/pod.pid
+```
+
+Si vous souhaitez effectuer un changement, une personnalisation :
+
+```
+pod@pod1:~/django_projects/podv2$ cp pod_uwsgi.ini pod/custom/.
+pod@pod1:~/django_projects/podv2$ vim pod/custom/pod_uwsgi.ini
+pod@pod1:~/django_projects/podv2$ sudo uwsgi --ini pod/custom/pod_uwsgi.ini --enable-threads --daemonize /usr/local/django_projects/podv2/pod/log/uwsgi-pod.log --uid pod --gid www-data --pidfile /tmp/pod.pid
+[uWSGI] getting INI configuration from pod/custom/pod_uwsgi.ini
+pod@pod:~/django_projects/podv2$ 
+```
+
+Pour lancer le service UWSGI au démarrage de la machine :
+
+```
+pod@pod:/usr/local/django_projects/podv2/pod/log$ sudo vim /etc/systemd/system/uwsgi-pod.service
+
+[Unit]
+Description=Pod uWSGI app
+After=syslog.target
+
+[Service]
+ExecStart=/usr/local/bin/uwsgi --ini /usr/local/django_projects/podv2/pod/custom/pod_uwsgi.ini \
+        --enable-threads \
+        --pidfile /tmp/pod.pid
+ExecStop=/usr/local/bin/uwsgi --stop /tmp/pod.pid
+User=pod
+Group=www-data
+Restart=on-failure
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
+
+```
+
+Il faut Ensuite activer le service
+```
+pod@pod:/usr/local/django_projects/podv2/pod/log$ sudo systemctl enable uwsgi-pod
+```
+
+Et le lancer ou l'arréter :
+
+```
+pod@pod:/usr/local/django_projects/podv2/pod/log$ sudo systemctl stop uwsgi-pod
+pod@pod:/usr/local/django_projects/podv2/pod/log$ sudo systemctl restart uwsgi-pod
+
+```
