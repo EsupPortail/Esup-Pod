@@ -130,7 +130,8 @@ def context_navbar(request):
     VIDEOS_COUNT = list_videos.count()
     VIDEOS_DURATION = str(timedelta(
         seconds=list_videos.aggregate(Sum('duration'))['duration__sum']
-    ))
+    )) if list_videos.aggregate(Sum('duration'))['duration__sum'] else 0
+
 
     return {'ALL_CHANNELS': all_channels, 'CHANNELS': channels,
             'TYPES': types, 'OWNERS': owners,
