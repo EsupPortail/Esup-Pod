@@ -90,16 +90,19 @@ class Command(BaseCommand):
             # todo image
             owner.save()
         else:
-            print(obj, obj.object.id, obj.object.video.id)
+            # print(obj, obj.object.id, obj.object.video.id)
             if (type_to_import == 'Pod'
                     and obj.object.id in VIDEO_ID_TO_EXCLUDE):
                 print(obj.object.id, " are exclude")
             else:
-                if obj.object.video.id not in VIDEO_ID_TO_EXCLUDE:
-                    obj.object.headband = None
-                    obj.save()
-                else:
-                    print("video ", obj.object.video.id, " are exclude")
+                try:
+                    if obj.object.video.id not in VIDEO_ID_TO_EXCLUDE:
+                        obj.object.headband = None
+                        obj.save()
+                    else:
+                        print("video ", obj.object.video.id, " are exclude")
+                except ObjectDoesNotExist as e:
+                    print("Objects related does not exist %s" % e)
 
     def migrate_to_v2(self, filepath, type_to_import):
         f = open(filepath, 'r')
