@@ -304,36 +304,11 @@ def encode_video(video_id):
                 "encoding video file : 8/11 create_overview_image")
             msg = create_overview_image(
                 video_id,
-                video_mp4.video.video.path,
-                nb_img, image_width, overviewimagefilename)
+                video_mp4.video.video.path, video_data["duration"],
+                nb_img, image_width, overviewimagefilename, overviewfilename)
             add_encoding_log(
                 video_id,
                 "create_overview_image : %s" % msg)
-            change_encoding_step(
-                video_id, 4,
-                "encoding video file : 9/11 create_overview_vtt")
-            overview = ImageFile(open(overviewimagefilename, 'rb'))
-            image_height = int(overview.height)
-            overview.close()
-            image_url = os.path.basename(overviewimagefilename)
-            image = {
-                'image_width': image_width,
-                'image_height': image_height,
-                'image_url': image_url
-            }
-            msg = create_overview_vtt(
-                video_id, nb_img, image,
-                video_data["duration"], overviewfilename)
-            add_encoding_log(
-                video_id,
-                "create_overview_vtt : %s" % msg)
-            change_encoding_step(
-                video_id, 4,
-                "encoding video file : 10/11 save_overview_vtt")
-            msg = save_overview_vtt(video_id, overviewfilename)
-            add_encoding_log(
-                video_id,
-                "save_overview_vtt : %s" % msg)
             # create thumbnail
             change_encoding_step(
                 video_id, 4,
@@ -844,7 +819,8 @@ def remove_previous_overview(overviewfilename, overviewimagefilename):
 
 
 def create_overview_image(
-    video_id, source, nb_img, image_width, overviewimagefilename
+    video_id, source, duration, nb_img, image_width, overviewimagefilename,
+    overviewfilename
 ):
     msg = "\ncreate overview image file"
 
@@ -886,12 +862,28 @@ def create_overview_image(
                        'num': i})
     if check_file(overviewimagefilename):
         msg += "\n- overviewimagefilename :\n%s" % overviewimagefilename
+        # Overview VTT
+        overview = ImageFile(open(overviewimagefilename, 'rb'))
+        image_height = int(overview.height)
+        overview.close()
+        image_url = os.path.basename(overviewimagefilename)
+        image = {
+            'image_width': image_width,
+            'image_height': image_height,
+            'image_url': image_url
+        }
+        msg += create_overview_vtt(
+            video_id, nb_img, image,
+            duration, overviewfilename)
+        msg += save_overview_vtt(video_id, overviewfilename)
+        #
     else:
         msg = "overviewimagefilename Wrong file or path : "\
             + "\n%s" % overviewimagefilename
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
         send_email(msg, video_id)
+    return msg
 
 
 def create_overview_vtt(video_id, nb_img, image, duration, overviewfilename):
