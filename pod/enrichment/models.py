@@ -90,7 +90,8 @@ def enrichment_to_vtt_type(enrich):
     elif enrich.type == 'document':
         return enrich.document.file.url
     elif enrich.type == 'richtext':
-        return ''.join(enrich.richtext.splitlines())
+        richtext = enrich.richtext.replace('"', '\\"')
+        return ''.join(richtext.splitlines())
     elif enrich.type == 'weblink':
         return enrich.weblink
     elif enrich.type == 'embed':
