@@ -156,7 +156,12 @@ textarea {
     <div style="padding-top: 6px;">
         <!-- <button id="blobBuilderSave" style="margin-right: 2em; display: none;">
             Save to File</button> -->
-        <button id="copyToClipboard" class="btn btn-primary btn-sm">{% trans "Copy to Clipboard" %}</button>
+        <button id="copyToClipboard" class="btn btn-primary btn-sm"><i data-feather="copy"></i>{% trans "Copy to Clipboard" %}</button>
+        <span class="float-right">
+            <a href="{% url 'video_completion' slug=video.slug %}" title="{% trans "View the video"%}" class="btn btn btn-outline-dark btn-sm">
+                <i data-feather="arrow-left"></i>&nbsp;{% trans "Back to the completion"%}
+            </a>
+        </span>
     </div>            
     </div>
 </div>
