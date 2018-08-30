@@ -52,6 +52,7 @@
 			</li>
 			<li class="contenuTitre">
 				<span id="list_track">
+					<p>{% trans 'You can use' %} <a href="{% url "video_caption_maker" slug=video.slug%}" title="{% trans 'Video Caption Maker' %}">{% trans 'Video Caption Maker' %}</a> {% trans 'to create your subtitles and/or caption(s) files' %}.</p>
 					{% include 'track/list_track.html' %}
 				</span>
 				&nbsp;
@@ -139,16 +140,17 @@
 		</button>
 		<div id="collapse-2" class="collapse hide card-text small">
 			<p>{% trans 'Subtitle(s) and/or captions(s) related to this video.' %}</p>
-			<p>{% trans 'Several web sites allows you to subtitle or caption videos (for example: Amara)' %}</p>
+			<!-- <p>{% trans 'Several web sites allows you to subtitle or caption videos (for example: Amara)' %}</p> -->
 			<p>{% trans 'You can add several subtitle or caption files to a signle video (for example, in order to subtitle or caption this video in several languages' %}</p>
 			<p>{% trans 'Subtitles and/or caption(s) files must be in ".vtt" format.' %}</p>
+			<p>{% trans 'You can use' %} <a href="{% url "video_caption_maker" slug=video.slug%}" title="{% trans 'Video Caption Maker' %}">{% trans 'Video Caption Maker' %}</a> {% trans 'to create your subtitles and/or caption(s) files' %}.</p>
 			<p>{% trans 'You will need the URL of this video to make subtitles and/or captions. This URL is a direct access to this video. Please do not communicate it outside of this site to avoid any misuse.' %}</p>
-			<ul>
+			<ul class="list-group">
 			{% for vid in video.get_video_mp4 %}
-			<li>{{vid.name}} : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly/></li>
+			<li  class="list-group-item">{{vid.name}} : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly/></li>
 			{% endfor %}
 			{% if video.is_video == False and video.get_video_mp3 %}
-			<li>{{video.get_video_mp3.name}} : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly/></li>
+			<li  class="list-group-item">{{video.get_video_mp3.name}} : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly/></li>
 			{% endif %}
 			</ul>
 		</div>

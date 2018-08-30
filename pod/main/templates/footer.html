@@ -7,7 +7,7 @@
 </p>
 <div class="row">
   <div class="col-md-4">
-    <img src="{% static LOGO_ETB %}" alt="" height="71" width="215">
+    <img src="{% static LOGO_ETB %}" alt="" height="70" >
     <p class="footer-contact">
       <span class="footer-contact-title">{{TITLE_ETB}}</span><br>
       {% for text in FOOTER_TEXT %}
@@ -27,6 +27,6 @@
     <a href="https://github.com/EsupPortail/podv2" target="_blank">&gt;  {% trans "Pod Project" %}</a><br>
   </div>
 </div>
-<p style="text-align:center">{{TITLE_SITE}} {% trans "video platform of" %} {{TITLE_ETB}} - <a href="https://github.com/EsupPortail/pod/releases/tag/{{VERSION}}" target="_blank" title="GitHub">Release {{VERSION}}</a></p>
+<p style="text-align:center">{{TITLE_SITE}} {% trans "video platform of" %} {{TITLE_ETB}} - <a href="https://github.com/EsupPortail/pod/releases/tag/{{VERSION}}" target="_blank" title="GitHub">Release {{VERSION}}</a>  - {{VIDEOS_COUNT}} {% trans "videos availables" %} [ {{VIDEOS_DURATION}} ]</p>
 </div>
 {% endspaceless %}

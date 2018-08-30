@@ -13,7 +13,6 @@ from django.template.defaultfilters import slugify
 from django.db.models import Sum
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
-from django.apps import apps
 from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
@@ -38,10 +37,8 @@ else:
 
 logger = logging.getLogger(__name__)
 
-FILEPICKER = True if apps.is_installed('pod.podfile') else False
 VIDEOS_DIR = getattr(
     settings, 'VIDEOS_DIR', 'videos')
-
 
 LANG_CHOICES = getattr(
     settings, 'LANG_CHOICES', (
@@ -49,6 +46,7 @@ LANG_CHOICES = getattr(
         + (('', '----------'),)
         + settings.ALL_LANG_CHOICES
     ))
+
 CURSUS_CODES = getattr(
     settings, 'CURSUS_CODES', (
         ('0', _("None / All")),
@@ -115,13 +113,13 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     {
         'TITLE_SITE': 'Pod',
         'TITLE_ETB': 'University name',
-        'LOGO_SITE': 'img/logo_compact.png',
-        'LOGO_COMPACT_SITE': 'img/logo_compact_site.png',
+        'LOGO_SITE': 'img/logoPod.svg',
         'LOGO_ETB': 'img/logo_etb.svg',
-        'LOGO_PLAYER': 'img/logo_player.png',
+        'LOGO_PLAYER': 'img/logoPod.svg',
+        'LINK_PLAYER': '',
         'FOOTER_TEXT': ('',),
-        # 'FAVICON': 'img/favicon.png',
-        # 'CSS_OVERRIDE' : 'custom/etab.css'
+        'FAVICON': 'img/logoPod.svg',
+        'CSS_OVERRIDE': ''
     }
 )
 TITLE_ETB = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_ETB', 'University')
@@ -745,18 +743,28 @@ class ViewCount(models.Model):
 class VideoRendition(models.Model):
     resolution = models.CharField(
         _('resolution'),
-        max_length=250,
+        max_length=50,
         unique=True,
         help_text="Please use the only format x. i.e.: "
         + "<em>640x360</em> or <em>1280x720</em> or <em>1920x1080</em>.")
+    minrate = models.CharField(
+        _('minrate'),
+        max_length=50,
+        help_text="Please use the only format k. i.e.: "
+        + "<em>300k</em> or <em>600k</em> or <em>1000k</em>.")
     video_bitrate = models.CharField(
         _('bitrate video'),
-        max_length=250,
+        max_length=50,
+        help_text="Please use the only format k. i.e.: "
+        + "<em>300k</em> or <em>600k</em> or <em>1000k</em>.")
+    maxrate = models.CharField(
+        _('maxrate'),
+        max_length=50,
         help_text="Please use the only format k. i.e.: "
         + "<em>300k</em> or <em>600k</em> or <em>1000k</em>.")
     audio_bitrate = models.CharField(
         _('bitrate audio'),
-        max_length=250,
+        max_length=50,
         help_text="Please use the only format k. i.e.: "
         + "<em>300k</em> or <em>600k</em> or <em>1000k</em>.")
     encode_mp4 = models.BooleanField(_('Make a MP4 version'), default=False)
@@ -778,15 +786,7 @@ class VideoRendition(models.Model):
         return "VideoRendition num %s with resolution %s" % (
             '%04d' % self.id, self.resolution)
 
-    def clean(self):
-        if self.resolution and 'x' not in self.resolution:
-            raise ValidationError(
-                VideoRendition._meta.get_field('resolution').help_text)
-        else:
-            res = self.resolution.replace('x', '')
-            if not res.isdigit():
-                raise ValidationError(
-                    VideoRendition._meta.get_field('resolution').help_text)
+    def clean_bitrate(self):
         if self.video_bitrate and 'k' not in self.video_bitrate:
             msg = "Error in %s : " % _('bitrate video')
             raise ValidationError(
@@ -799,6 +799,43 @@ class VideoRendition(models.Model):
                 raise ValidationError(
                     msg + VideoRendition._meta.get_field(
                         'video_bitrate').help_text)
+        if self.maxrate and 'k' not in self.maxrate:
+            msg = "Error in %s : " % _('maxrate')
+            raise ValidationError(
+                msg + VideoRendition._meta.get_field(
+                    'maxrate').help_text)
+        else:
+            vb = self.video_bitrate.replace('k', '')
+            if not vb.isdigit():
+                msg = "Error in %s : " % _('maxrate')
+                raise ValidationError(
+                    msg + VideoRendition._meta.get_field(
+                        'maxrate').help_text)
+        if self.minrate and 'k' not in self.minrate:
+            msg = "Error in %s : " % _('minrate')
+            raise ValidationError(
+                msg + VideoRendition._meta.get_field(
+                    'minrate').help_text)
+        else:
+            vb = self.video_bitrate.replace('k', '')
+            if not vb.isdigit():
+                msg = "Error in %s : " % _('minrate')
+                raise ValidationError(
+                    msg + VideoRendition._meta.get_field(
+                        'minrate').help_text)
+
+    def clean(self):
+        if self.resolution and 'x' not in self.resolution:
+            raise ValidationError(
+                VideoRendition._meta.get_field('resolution').help_text)
+        else:
+            res = self.resolution.replace('x', '')
+            if not res.isdigit():
+                raise ValidationError(
+                    VideoRendition._meta.get_field('resolution').help_text)
+
+        self.clean_bitrate()
+
         if self.audio_bitrate and 'k' not in self.audio_bitrate:
             msg = "Error in %s : " % _('bitrate audio')
             raise ValidationError(

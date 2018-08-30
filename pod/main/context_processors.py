@@ -1,8 +1,9 @@
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.db.models import Prefetch
 from django.db.models.functions import Substr, Lower
+from datetime import timedelta
 
 from pod.main.models import LinkFooter
 
@@ -44,14 +45,13 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     {
         'TITLE_SITE': 'Pod',
         'TITLE_ETB': 'University name',
-        'LOGO_SITE': 'img/logo_compact.png',
-        'LOGO_COMPACT_SITE': 'img/logo_compact_site.png',
+        'LOGO_SITE': 'img/logoPod.svg',
         'LOGO_ETB': 'img/logo_etb.svg',
-        'LOGO_PLAYER': 'img/logo_player.png',
+        'LOGO_PLAYER': 'img/logoPod.svg',
+        'LINK_PLAYER': '',
         'FOOTER_TEXT': ('',),
-        # 'FAVICON': 'img/favicon.png',
-        # 'CSS_OVERRIDE' : 'custom/etab.css'
-        # 'LINK_PLAYER':''
+        'FAVICON': 'img/logoPod.svg',
+        'CSS_OVERRIDE': ''
     }
 )
 
@@ -123,10 +123,20 @@ def context_navbar(request):
 
     LAST_VIDEOS = get_last_videos() if request.path == "/" else None
 
+    list_videos = Video.objects.filter(
+        encoding_in_progress=False,
+        is_draft=False)
+    VIDEOS_COUNT = list_videos.count()
+    VIDEOS_DURATION = str(timedelta(
+        seconds=list_videos.aggregate(Sum('duration'))['duration__sum']
+    )) if list_videos.aggregate(Sum('duration'))['duration__sum'] else 0
+
     return {'ALL_CHANNELS': all_channels, 'CHANNELS': channels,
             'TYPES': types, 'OWNERS': owners,
             'DISCIPLINES': disciplines, 'LISTOWNER': json.dumps(listowner),
-            'LAST_VIDEOS': LAST_VIDEOS, 'LINK_FOOTER': linkFooter
+            'LAST_VIDEOS': LAST_VIDEOS, 'LINK_FOOTER': linkFooter,
+            'VIDEOS_COUNT': VIDEOS_COUNT,
+            'VIDEOS_DURATION': VIDEOS_DURATION
             }
 
 

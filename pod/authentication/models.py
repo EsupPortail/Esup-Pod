@@ -20,12 +20,19 @@ AUTH_TYPE = getattr(
 AFFILIATION = getattr(
     settings, 'AFFILIATION',
     (
-        ('member', _('member')),
         ('student', _('student')),
+        ('faculty', _('faculty')),
         ('staff', _('staff')),
-        ('affiliate', _('affiliate')),
         ('employee', _('employee')),
-        ('faculty', _('faculty'))
+        ('member', _('member')),
+        ('affiliate', _('affiliate')),
+        ('alum', _('alum')),
+        ('library-walk-in', _('library-walk-in')),
+        ('researcher', _('researcher')),
+        ('retired', _('retired')),
+        ('emeritus', _('emeritus')),
+        ('teacher', _('teacher')),
+        ('registered-reader', _('registered-reader'))
     )
 )
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')

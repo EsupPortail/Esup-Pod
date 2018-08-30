@@ -466,12 +466,16 @@ class VideoRenditionTestCase(TestCase):
     # fixtures = ['initial_data.json', ]
 
     def create_video_rendition(self, resolution="640x360",
+                               minrate="500k",
                                video_bitrate="1000k",
+                               maxrate="2000k",
                                audio_bitrate="300k", encode_mp4=False):
         # print("create_video_rendition : %s" % resolution)
         return VideoRendition.objects.create(
             resolution=resolution,
+            minrate=minrate,
             video_bitrate=video_bitrate,
+            maxrate=maxrate,
             audio_bitrate=audio_bitrate,
             encode_mp4=encode_mp4)
 

@@ -68,7 +68,8 @@ class VideoAdmin(admin.ModelAdmin):
                     'password', 'duration_in_time', 'encoding_in_progress',
                     'get_encoding_step', 'get_thumbnail_admin')
     list_display_links = ('id', 'title')
-    list_filter = ('date_added', 'channel', 'type', 'is_draft')
+    list_filter = ('date_added', 'channel', 'type', 'is_draft',
+                   'encoding_in_progress')
     list_editable = ('is_draft', 'is_restricted')
     search_fields = ['id', 'title', 'video',
                      'owner__username', 'owner__first_name',

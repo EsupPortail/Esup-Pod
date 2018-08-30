@@ -50,18 +50,14 @@
             border-radius: 1%;
             border: 1px #ccc solid;
             box-shadow: 0 0 10px rgba(50, 50, 50, 0.95);
-            padding: 5px;
+            padding: 1.25rem;
             /*margin:5%;*/
-            background-color: rgba(50, 50, 50, 0.50) !important;
+            /*background-color: rgba(50, 50, 50, 0.50) !important;*/
             overflow: auto;
             z-index:1000;
         }
         .list-group-item {
-            background-color: rgba(50, 50, 50, 0.50) !important;
-        }
-        .scrollspy-video {
-            padding:10px;
-            background-color: rgba(220, 220, 220, 0.70);
+            /*background-color: rgba(50, 50, 50, 0.50) !important;*/
         }
         .close {
             margin:10px;
@@ -82,7 +78,7 @@
     {% include 'videos/video-element.html' %}
 {% endblock video-element %}
 
-    <div id="info-video" style="display:none">
+    <div id="info-video" style="display:none" class="jumbotron">
         <button type="button" class="close" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -142,6 +138,13 @@ $(document).on('click', '.close', function(){
     player.play();
 });
 </script>
+<script>
+$('#myTabContent .tab-pane').addClass('show').show();
+</script>
 {% endif %}
 {% endblock more_script %}
+<script src="{% static 'feather-icons/feather.min.js' %}"></script>
+<script>
+  feather.replace({ class: 'align-bottom'});
+</script>
 </html>

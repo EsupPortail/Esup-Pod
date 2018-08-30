@@ -14,7 +14,7 @@ from django.contrib import messages
 
 DEFAULT_RECORDER_PATH = getattr(
     settings, 'DEFAULT_RECORDER_PATH',
-    "/home/pod/files/"
+    "/data/ftp-pod/ftp/"
 )
 
 

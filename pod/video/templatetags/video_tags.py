@@ -19,7 +19,7 @@ def get_app_link(video, app):
             url = reverse('%(app)s:video_%(app)s' %
                           {"app": app}, kwargs={'slug': video.slug})
             return ('<a href="%(url)s" title="%(app)s" '
-                    'class="nav-link">%(link)s</a>') % {
+                    'class="dropdown-item" target="_blank">%(link)s</a>') % {
                 "app": app,
                 "url": url,
                 "link": _('%s' % app)}

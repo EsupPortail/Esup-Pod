@@ -2,10 +2,10 @@
 {% load staticfiles %}
 {% load tagging_tags %}
 {% load thumbnail %}
-{% load video_filters %}
-<div data-spy="scroll" data-target="#navbar-video" data-offset="0" class="scrollspy-video">
-  <h5 id="summary"><i data-feather="align-justify"></i>&nbsp;{% trans 'Summary' %}</h5>
-  <div class="scrollspy-content">
+
+<div class="tab-content w-100" id="myTabContent">
+  <div class="tab-pane fade active show" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+    <h5><i data-feather="align-justify"></i>&nbsp;{% trans 'Summary' %}</h5>
     {% if video.is_360 %}<p class="text-info">{% trans "This is a 360 degree video. To look around click and drag your mouse on the video."%}</p>{% endif %}
     {% tags_for_object video as tag_list %}
     {% if video.description or tag_list %}
@@ -13,39 +13,38 @@
     {% if tag_list %}
     <p>{% trans 'Tags' %}:&nbsp;
       {% for tag in tag_list %}
-       <a href="{% url 'videos' %}?tag={{ tag.slug }}" title="{{ tag }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+       <a href="{% url 'videos' %}?tag={{ tag }}" title="{{ tag }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
            <span class="label label-default">{{ tag }}</span>
        </a>
       {% endfor %}
     </p>
     {% endif %}
     {% else %}
-    <p>[...]</p>
+    <p>[... {% trans "No information available" %} ...]</p>
     {% endif %}
   </div>
-  <hr/>
-  <!-- INFO -->
-  <h5 id="infos"><i data-feather="info"></i>&nbsp;{% trans 'Infos' %}</h5>
-  <div class="scrollspy-content">
+  <div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
+    <h5><i data-feather="info"></i>&nbsp;{% trans 'Infos' %}</h5>
     <p>
-    {% trans 'Added by' %}: <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
-    {% thumbnail video.owner.owner.userpicture.file "x34" as im %}
-        <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}">
-    {% endthumbnail %}
-    {{ video.owner.get_full_name }}</a><br/>
-    {% trans 'Updated on' %}: <strong>{{ video.date_added }}</strong><br/>
-    {% trans 'Duration' %}: <strong>{{ video.duration_in_time }}</strong><br/>
-    {% trans 'Number of view(s)' %}: <strong>{{ video.get_viewcount }}</strong><br/>
-    {% trans 'Type' %}: <a href="{% url 'videos' %}?type={{ video.type.slug }}" title="{{ video.type.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ video.type.title }}</a><br/>
-    {% trans "Main language" %}: <strong>{{video.get_main_lang}}</strong>
-    {% if video.cursus and video.cursus != '0' %}<br/>{% trans 'Audience' %}:{{video.get_cursus}}{%endif%}
-    {% if video.discipline.all %}<br/>{% trans 'Disciplines' %}:&nbsp;
-      {% for disc in video.discipline.all %}
-      <a href="{% url 'videos' %}?discipline={{ disc.slug }}" title="{{ disc.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
-          {{ disc.title }}
-      </a>
-      {% endfor %}
-    {%endif%}
+      {% trans 'Added by' %}: <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+      {% thumbnail video.owner.owner.userpicture.file "x34" as im %}
+          <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}">
+      {% endthumbnail %}
+      {{ video.owner.get_full_name }}</a><br/>
+      {% trans 'Updated on' %}: <strong>{{ video.date_added }}</strong><br/>
+      {% trans 'Duration' %}: <strong>{{ video.duration_in_time }}</strong><br/>
+      {% trans 'Number of view(s)' %}: <strong>{{ video.get_viewcount }}</strong><br/>
+      {% trans 'Type' %}: <a href="{% url 'videos' %}?type={{ video.type.slug }}" title="{{ video.type.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ video.type.title }}</a><br/>
+      {% trans "Main language" %}: <strong>{{video.get_main_lang}}</strong>
+      {% if video.cursus and video.cursus != '0' %}<br/>{% trans 'Audience' %}:{{video.get_cursus}}{%endif%}
+      {% if video.discipline.all %}<br/>{% trans 'Disciplines' %}:&nbsp;
+        {% for disc in video.discipline.all %}
+        <a href="{% url 'videos' %}?discipline={{ disc.slug }}" title="{{ disc.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+            {{ disc.title }}
+        </a>
+        {% endfor %}
+      {%endif%}
+    </p>
     {% if video.contributor_set.all %}
     <p><strong><u>{% trans 'Contributor' %} : </u></strong><br/>
       {% for contrib in video.contributor_set.all %}
@@ -65,11 +64,8 @@
     </p>
     {% endif %}
   </div>
-  {% if video.allow_downloading or video.document_set.all %}
-  <hr/>
-  <!-- Download -->
-  <h5 id="downloads"><i data-feather="download"></i>&nbsp;{% trans 'Downloads' %}</h5>
-  <div class="scrollspy-content">
+  <div class="tab-pane fade" id="downloads" role="tabpanel" aria-labelledby="downloads-tab">
+    <h5 ><i data-feather="download"></i>&nbsp;{% trans 'Downloads' %}</h5>
     {% if video.allow_downloading %}
     <div><u>{% trans 'Video file(s)' %} :</u><br/>
       {% for vid in video.get_video_mp4 %}
@@ -100,90 +96,67 @@
     </div>
     {% endif %}
   </div>
-  {% endif %}
-  <hr/>
-  <!-- Embed Share -->
-  <h5 id="embed"><i data-feather="cast"></i>&nbsp;{% trans 'Embed/Share' %}</h5>
-  <div class="scrollspy-content">
-  {% if not video.is_restricted and not video.password %}
-    <p>
-        <label>{% trans 'Social Networks' %}</label>
-        <a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Facebook"><i data-feather="facebook"></i></a>
-        <a target="_blank" href="http://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Twitter"><i data-feather="twitter"></i></a>
-        <a target="_blank" href="https://plus.google.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Google+" style="line-height: 24px;"> G+ </a>
-    </p>
-    <hr />
-  {% endif %}
-    <p>
-      <div class="list-group">
-        <fieldset>
-        <div class="list-group-item">
-          <div class="form-group">
-          <div class="form-check">
-          <input type="checkbox" id="autoplay" class="form-check-input" /><label for="autoplay" class="form-check-label" >{% trans 'Autoplay' %}</label>
-          <small id="autoplayHelp" class="form-text text-muted">{% trans 'Check the box to autoplay the video.' %}</small>
-          </div>
-          </div>
-        </div>
-        <div class="list-group-item">
-          <div class="form-group">
-          <div class="form-check">
-          <input type="checkbox" id="loop" class="form-check-input" /><label for="loop" class="form-check-label" >{% trans 'Loop' %}</label>
-          <small id="loopHelp" class="form-text text-muted">{% trans 'Check the box to loop the video.' %}</small>
-          </div>
-          </div>
-        </div>
-        <div class="list-group-item">
-          <div class="form-group ">
-            <div class="form-check">
-              <input name="displaytime" class="form-check-input " id="displaytime" type="checkbox">
-              <label for="displaytime" class="form-check-label">{% trans 'Start video' %}</label>
-              <input type="text" class="start-at input-sm" name="txtposition" id="txtposition" readonly />
-            </div>
-            <small id="displaytimeHelp" class="form-text text-muted">{% trans 'Check the box to indicate the beginning of playing desired.' %}</small>
-          </div>
-        </div>
-        <div class="list-group-item">
-          <div class="form-group ">
-            <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page' %}:</label>
-            <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
-          </div>
-        </div>
-        <div class="list-group-item">
-          <div class="form-group">
-            <label for="txtpartage">{% trans 'Use this link to share the video' %} :</label>
-            <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
-          </div>
-        </div>
-        <div class="list-group-item">
-          <div class="form-group">
-            <label for="qrcode">{% trans 'QR code for this link' %} :</label>
-            <img src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" alt="qrcode" id="qrcode"/>
-          </div>
-        </div>
-        </fieldset>
-      </div>
-    </p>
-  </div>
-  {% comment %}
-  {% if video.enrichment_set.all %}
-  <hr/>
-  <!-- Version -->
-  <h5 id="version">{% trans 'Version' %}</h5>
-  <div class="scrollspy-content">
-    <p>
-      {% trans 'Here you will find alternative version of the video if they exist : Enriched, Interactive and Accessible.' %}
-    </p>
-    {% if video.enrichment_set.all %}
-    <small class="video_back">
-      <a href="{% url 'video_enriched' slug=video.slug %}">
-        <button class="btn btn-default" title="Go to enriched video">{% trans 'Enriched version' %}</button>
-      </a>
-    </small>
+
+  <div class="tab-pane fade" id="share" role="tabpanel" aria-labelledby="share-tab">
+    <h5><i data-feather="cast"></i>&nbsp;{% trans 'Embed/Share' %}</h5>
+    {% if not video.is_restricted and not video.password %}
+      <p>
+          <label>{% trans 'Social Networks' %}</label>
+          <a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Facebook"><i data-feather="facebook"></i></a>
+          <a target="_blank" href="http://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Twitter"><i data-feather="twitter"></i></a>
+          <a target="_blank" href="https://plus.google.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Google+" style="line-height: 24px;"> G+ </a>
+      </p>
+      <hr />
     {% endif %}
-    <!-- Interactive -->
-    <!-- Accessible -->
+    <p>
+    <div class="list-group">
+      <fieldset>
+      <div class="list-group-item py-0">
+        <div class="form-group">
+        <div class="form-check">
+        <input type="checkbox" id="autoplay" class="form-check-input" /><label for="autoplay" class="form-check-label" >{% trans 'Autoplay' %}</label>
+        <small id="autoplayHelp" class="form-text text-muted">{% trans 'Check the box to autoplay the video.' %}</small>
+        </div>
+        </div>
+      </div>
+      <div class="list-group-item py-0">
+        <div class="form-group">
+        <div class="form-check">
+        <input type="checkbox" id="loop" class="form-check-input" /><label for="loop" class="form-check-label" >{% trans 'Loop' %}</label>
+        <small id="loopHelp" class="form-text text-muted">{% trans 'Check the box to loop the video.' %}</small>
+        </div>
+        </div>
+      </div>
+      <div class="list-group-item py-0">
+        <div class="form-group ">
+          <div class="form-check">
+            <input name="displaytime" class="form-check-input " id="displaytime" type="checkbox">
+            <label for="displaytime" class="form-check-label">{% trans 'Start video' %}</label>
+            <input type="text" class="start-at input-sm" name="txtposition" id="txtposition" readonly />
+          </div>
+          <small id="displaytimeHelp" class="form-text text-muted">{% trans 'Check the box to indicate the beginning of playing desired.' %}</small>
+        </div>
+      </div>
+      <div class="list-group-item">
+        <div class="form-group ">
+          <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page' %}:</label>
+          <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+        </div>
+      </div>
+      <div class="list-group-item">
+        <div class="form-group">
+          <label for="txtpartage">{% trans 'Use this link to share the video' %} :</label>
+          <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
+        </div>
+      </div>
+      <div class="list-group-item">
+        <div class="form-group">
+          <label for="qrcode">{% trans 'QR code for this link' %} :</label>
+          <img src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" alt="qrcode" id="qrcode"/>
+        </div>
+      </div>
+      </fieldset>
+    </div>
+  </p>
   </div>
-  {% endif %}
-  {% endcomment %}
 </div>

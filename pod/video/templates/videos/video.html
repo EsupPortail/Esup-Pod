@@ -23,12 +23,6 @@
 {% include 'videos/video-header.html' %}
 
 <style>
-.scrollspy-video {
-    position: relative;
-    height: 355px;
-    margin-top: .5rem;
-    overflow: auto;
-}
 {{channel.style}}
 {% if channel.color %}
 body {
@@ -100,63 +94,80 @@ body {
   {% include 'playlist/playlist_player.html' with playlist=playlist %}
 {% endif %}
 
-
 {% include 'videos/video-element.html' %}
 
-<nav id="navbar-video" class="navbar navbar-light bg-light">
-  <div class="navbar-brand "  >
-    <div style="display:inline-block; white-space: normal;">
-      {% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png"></a>{% endif %} {{video.title|title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}</div>
+<h4>
+{% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png"></a>{% endif %} {{video.title|title}} 
+{% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
   <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
       <i data-feather="alert-octagon"></i>
-  </a>  
-  <div class="btn-group">
+  </a>
+</h4>
+
+<div class="pl-0 pr-0">
+  <div class="navbar d-flex flex-row-reverse p-0" >
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active show" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-controls="home" aria-selected="true" title="{% trans 'Summary' %}">
+        <i data-feather="align-justify"></i>&nbsp;<span class="sr-only">{% trans 'Summary' %}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false" title="{% trans 'Infos' %}">
+        <i data-feather="info"></i>&nbsp;<span class="sr-only">{% trans 'Infos' %}</span>
+      </a>
+    </li>
+    {% if video.allow_downloading or video.document_set.all %}
+    <li class="nav-item">
+      <a class="nav-link" id="downloads-tab" data-toggle="tab" href="#downloads" role="tab" aria-controls="downloads" aria-selected="false" title="{% trans 'Downloads' %}">
+        <i data-feather="download"></i>&nbsp;<span class="sr-only">{% trans 'Downloads' %}</span>
+      </a>
+    </li>
+    {% endif %}
+    <li class="nav-item">
+      <a class="nav-link" id="share-tab" data-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false" title="{% trans 'Embed/Share' %}">
+        <i data-feather="cast"></i><span class="sr-only">{% trans 'Embed/Share' %}</span>
+      </a>
+    </li>
+    
+    <li class="nav-item dropdown" id="list_third_apps">
+      <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
+        <i data-feather="layers"></i>&nbsp;<span class="sr-only">{% trans 'Other versions' %}</span>
+      </a>
+      <div class="dropdown-menu" >
+        {% for app in THIRD_PARTY_APPS %}
+        {% get_app_link video app as link %}
+        {% if link != "" %}
+        {{link|safe}}
+        {% endif %}
+        {% endfor %}
+      </div>
+    </li>
     {% if request.user.playlist_set.all and video.is_draft == False %}
-    <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans "Add the video to a playlist"%}" >
-      <i data-feather="play-circle"></i>
-    </a>
-    <div class="dropdown-menu">
-      <h6 class="dropdown-header">{% trans 'My playlists' %}</h6>
+    <li class="nav-item dropdown dropright">
+      <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans "Add the video to a playlist"%}">
+        <i data-feather="play-circle"></i>&nbsp;<span class="sr-only">{% trans 'My playlists' %}</span>
+      </a>
+      <div class="dropdown-menu">
       {% csrf_token %}
       <ul class="list-group">
       {% for playlist in request.user.playlist_set.all %}
         {% if video in playlist.videos %}
-          <li class="list-group-item disabled" data-slug="{{playlist.slug}}">{{playlist.title}}
+          <li class="dropdown-item disabled py-0" data-slug="{{playlist.slug}}">{{playlist.title}}
             <i data-feather="check"></i>
           </li>
         {% else %}
-          <li class="list-group-item playlist-item" data-slug="{{playlist.slug}}">{{playlist.title}}</li>
+          <li class="dropdown-item playlist-item py-0" data-slug="{{playlist.slug}}">{{playlist.title}}</li>
         {% endif %}
       {% endfor %}
       </ul>
-    </div>
-    {% endif %}
-  </div>
-  </div>
-  <ul class="nav nav-tabs">
-    <li class="nav-item">
-      <a class="nav-link" href="#summary">{% trans 'Summary' %}</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="#infos">{% trans 'Infos' %}</a>
-    </li>
-    {% if video.allow_downloading or video.document_set.all %}
-    <li class="nav-item">
-      <a class="nav-link" href="#downloads">{% trans 'Downloads' %}</a>
+      </div>
     </li>
     {% endif %}
-    <li class="nav-item">
-      <a class="nav-link" href="#embed">{% trans 'Embed/Share' %}</a>
-    </li>
-    {% for app in THIRD_PARTY_APPS %}
-    {% get_app_link video app as link %}
-    {% if link != "" %}
-    <li class="nav-item">{{link|safe}}</li>
-    {% endif %}
-    {% endfor %}
   </ul>
-</nav>
-{% include 'videos/video-info.html'%}
+</div>
+  {% include 'videos/video-info.html' %}  
+</div>
 {%endif%}
 {% endblock video-element %}
 {% endblock page_content %}
@@ -203,4 +214,8 @@ body {
 {% if not form %}
 {% include 'videos/video-script.html'%}
 {% endif %}
+<script>
+if($('#list_third_apps .dropdown-menu').children().length == 0) $('#list_third_apps').hide();
+</script>
+
 {% endblock more_script %}
