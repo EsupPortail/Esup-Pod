@@ -400,3 +400,54 @@ pod@pod:/usr/local/django_projects/podv2/pod/log$ sudo systemctl restart uwsgi-p
 ```console
 (django_pod) pod@pod:~$ python manage.py collectstatic
 ```
+
+
+### Optionnel : Serveur FTP (enregistreur)
+
+>
+**<span style="color:blue">Lors de l'installation de Pod à l'unviersité de Lille, les fichiers vidéos sont stockés sur une partition montée sur "/data". Pour cela, le répertoire "media", qui contient les fichiers "utilisateurs" est créé sur "/data/media" en paramétrant la variable MEDIA_ROOT dans le fichier de configuration.
+De ce fait, pour des raisons de cohérence, le répertoire du serveur FTP est placé dans "/data/ftp-pod".
+Au niveau du logiciel, nous proposons d'utiliser vsftpd.</span>**
+
+Voici le détail de son installation :
+
+```console
+(django_pod) pod@pod:/data$ INSTALLDIR=/data
+(django_pod) pod@pod:/data$ NOMFTPUSER="ftpuser"
+(django_pod) pod@pod:/data$ PASSFTPUSER="*******"
+(django_pod) pod@pod:/data$ sudo mkdir $INSTALLDIR/ftp-pod
+(django_pod) pod@pod:/data$ sudo useradd -m -d $INSTALLDIR/ftp-pod/ftp $NOMFTPUSER
+(django_pod) pod@pod:/data$ sudo echo "$NOMFTPUSER:$PASSFTPUSER"|sudo chpasswd
+(django_pod) pod@pod:/data$ sudo aptitude install vsftpd
+```
+Pour la configuration, il faut éditer le fichier "/etc/vsftpd.conf"
+
+```shell
+django_pod) pod@pod1:/data$ sudo vim /etc/vsftpd.conf 
+[...]
+listen=YES
+anonymous_enable=NO
+local_enable=YES
+write_enable=YES
+local_umask=022
+...
+chroot_local_user=YES
+
+```
+A la fin du fichier de configuration, nous avons ajouté ceci :
+
+```
+local_root=/data/ftp-pod/ftp
+pasv_enable=Yes
+pasv_min_port=10090
+pasv_max_port=10100
+allow_writeable_chroot=YES
+```
+
+Enfin un petit restart pour mettre tout ca en route !
+
+```
+(django_pod) pod@pod:/data$ sudo /etc/init.d/vsftpd restart
+```
+
+

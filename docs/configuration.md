@@ -32,11 +32,15 @@
 | **`DEFAULT_FROM_EMAIL`**           | courriel utilisé par défaut pour les envois de courriel (contact, encodage etc.) | noreply@univ.fr |
 | **`MENUBAR_HIDE_INACTIVE_OWNERS`**           | Les utilisateurs inactif ne sont plus affichés dans la barre de menu utilisateur | True |
 | **`MENUBAR_SHOW_STAFF_OWNERS_ONLY`**           | Les utilisateurs non staff ne sont plus affichés dans la barre de menu utilisateur | False |
+| **`HOMEPAGE_SHOWS_PASSWORDED`**           | Afficher les vidéos dont l'accès est protégé par mot de passe sur la page d'accueil | False |
+| **`HOMEPAGE_SHOWS_RESTRICTED`**           | Afficher les vidéos dont l'accès est protégé par authentification sur la page d'accueil | False |
 | **`FORCE_LOWERCASE_TAGS`**           | Les mots clés saisis lors de l'ajout de vidéo sont convertis automatiquement en minuscule | True |
 | **`MAX_TAG_LENGTH`**           | Les mots clés saisis lors de l'ajout de vidéo ne peuvent dépassé la longueur saisie | 50 |
 | **`USE_PODFILE`**           | Utiliser l'application de gestion de fichier fourni avec le projet. Si False, chaque fichier envoyé ne pourra être utilisé qu'une seule fois. | False |
 | **`THIRD_PARTY_APPS`**           | Liste des applications tierces accessibles. |[] |
-| **`FILE_DIR`**           | Nom du répertoire racine ou les fichiers "complémentaires" (hors videos etc.) sont téléversés. | files |
+| **`FILES_DIR`**           | Nom du répertoire racine ou les fichiers "complémentaires" (hors videos etc.) sont téléversés. | files |
+| **`SUBJECT_CHOICES `**           | Choix de sujet pour les courriels envoyés depuis la plateforme | (        ('', '-----'),        ('info', _('Request more information')),        ('contribute', _('Learn more about how to contribute')),        ('request_password', _('Password request for a video')),        ('inappropriate_content', _('Report inappropriate content')),        ('bug', _('Correction or bug report')),        ('other', _('Other (please specify)'))    ) |
+
 
 ## Configuration des templates / de l'affichage
 
@@ -127,5 +131,29 @@ TEMPLATE_VISIBLE_SETTINGS = {
 | **`THEME_FORM_FIELDS_HELP_TEXT `**           | Ensemble des textes d'aide affichés avec le formulaire d'édition de theme. | voir pod/video/forms.py |
 
 
+
+## Configuration application recorder (enregistreur)
+| Property            | Description                                                                                                                          |   Default Value  |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------|:----------------:|
+| **`RECORDER_TYPE`**           | Type d'enregistrement géré par la plateforme. Un enregistreur ne peut déposer que des fichier de type proposé par la plateforme. Le traitement se fait en fonction du type de fichier déposé. | (        ('video', _('Video')),        ('audiovideocast', _('Audiovideocast')),    ) |
+| **`DEFAULT_RECORDER_PATH`**           | Chemin du répertoire où sont déposés les enregistrements (chemin du serveur FTP) | "/data/ftp-pod/ftp/" |
+| **`DEFAULT_RECORDER_USER_ID`**           | Identifiant du propriétaire par défaut (si non spécifié) des enregistrements déposés | 1 |
+
+## Configuration application podfile (gestion de fichier)
+| Property            | Description                                                                                                                          |   Default Value  |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------|:----------------:|
+| **`FILE_ALLOWED_EXTENSIONS`**           | Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier | (        'doc',        'docx',        'odt',        'pdf',        'xls',        'xlsx',        'ods',        'ppt',        'pptx',        'txt',        'html',        'htm',        'vtt',        'srt',    ) |
+| **`IMAGE_ALLOWED_EXTENSIONS`**           | Extensions autorisées pour les images téléversés dans le gestionnaire de fichier | (        'jpg',        'jpeg',        'bmp',        'png',        'gif',        'tiff',    ) |
+| **`FILE_MAX_UPLOAD_SIZE`**           | Poids maximum en Mo par fichier téléversé dans le gestionnaire de fichier | 10 |
+
+## Configuration application completion (contributeur, sous-titre, document à télécharger, superposition)
+| Property            | Description                                                                                                                          |   Default Value  |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------|:----------------:|
+| **`ROLE_CHOICES`**           | Liste de rôle possible pour un contributeur | (        ('actor', _('actor')),        ('author', _('author')),        ('designer', _('designer')),        ('consultant', _('consultant')),        ('contributor', _('contributor')),        ('editor', _('editor')),        ('speaker', _('speaker')),        ('soundman', _('soundman')),        ('director', _('director')),        ('writer', _('writer')),        ('technician', _('technician')),        ('voice-over', _('voice-over')),    ) |
+| **`KIND_CHOICES`**           | Liste de type de piste possible pour une vidéo (sous-titre, légende etc.) | (        ('subtitles', _('subtitles')),        ('captions', _('captions')),    ) |
+
+## Configuration application authentification (Local, CAS et LDAP)
+| Property            | Description                                                                                                                          |   Default Value  |
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------|:----------------:|
 
 

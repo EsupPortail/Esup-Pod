@@ -20,7 +20,7 @@ RECORDER_TYPE = getattr(
 )
 DEFAULT_RECORDER_PATH = getattr(
     settings, 'DEFAULT_RECORDER_PATH',
-    "/home/pod/files/"
+    "/data/ftp-pod/ftp/"
 )
 DEFAULT_RECORDER_USER_ID = getattr(
     settings, 'DEFAULT_RECORDER_USER_ID',
