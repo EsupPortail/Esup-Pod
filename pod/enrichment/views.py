@@ -225,7 +225,8 @@ def video_enrichment(request, slug, slug_c=None,
     template_video = 'enrichment/video_enrichment-iframe.html' if (
         request.GET.get('is_iframe')) else 'enrichment/video_enrichment.html'
 
-    is_password_protected = (video.password is not None and video.password != '')
+    is_password_protected = (
+        video.password is not None and video.password != '')
 
     show_page = get_video_access(request, video, slug_private)
 

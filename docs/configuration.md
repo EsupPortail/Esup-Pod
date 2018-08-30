@@ -155,5 +155,66 @@ TEMPLATE_VISIBLE_SETTINGS = {
 ## Configuration application authentification (Local, CAS et LDAP)
 | Property            | Description                                                                                                                          |   Default Value  |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------|:----------------:|
+| **`AUTH_TYPE`**           | Type d'authentification possible sur votre instance. Pour l'instant local ou cas | (('local', _('local')), ('CAS', 'CAS')) |
+| **`USE_CAS`**           | Activation de l'authentification CAS en plus de l'authentification locale | False |
+| **`CAS_GATEWAY`**           | Si True, authentifie automatiquement l'individu si déjà authentifié sur le serveur CAS | False |
+| **`POPULATE_USER`**           | Si utilisation de la connection CAS, renseigne les champs du compte de la personne depuis une source externe. Valeur possible : **None** (pas de renseignement), **CAS** (renseigne les champs de la personne depuis les informations renvoyées par le CAS), **LDAP** (Interroge le serveur LDAP pour renseigner les champs du compte de la personne) | None |
+| **`AUTH_CAS_USER_SEARCH `**           | variable utilisée pour trouver les informations de l'individu connecté dans le fichier renvoyé par le CAS lors de l'authentification | user |
+| **`USER_CAS_MAPPING_ATTRIBUTES `**           | liste de correspondance entre les champs d'un compte de Pod et les champs renvoyés par le CAS | {       "uid": "uid",       "mail": "mail",       "last_name": "sn",       "first_name": "givenname",       "affiliation": "eduPersonAffiliation"   } |
+| **`CREATE_GROUP_FOM_AFFILIATION `**           | Si True, des groupes sont créés automatiquement à partir des affiliations des individus qui se connectent sur la plateforme et l'individu qui se connecte est ajouté automatiquement à ses groupes | False |
+| **`AFFILIATION_STAFF `**           | Les personnes ayant pour affiliation les valeurs renseignées dans cette variable sont automatiquement la valeur staff de leur compte à True | ('faculty', 'employee', 'staff') |
+| **`AFFILIATION`**           | Valeurs possibles pour l'Affiliation du compte | (        ('student', _('student')),        ('faculty', _('faculty')),        ('staff', _('staff')),        ('employee', _('employee')),        ('member', _('member')),        ('affiliate', _('affiliate')),        ('alum', _('alum')),        ('library-walk-in', _('library-walk-in')),        ('researcher', _('researcher')),        ('retired', _('retired')),        ('emeritus', _('emeritus')),        ('teacher', _('teacher')),        ('registered-reader', _('registered-reader'))    ) |
+| **`LDAP_SERVER `**           | Information de connection au serveur LDAP | {'url': '', 'port': 389, 'use_ssl': False} |
+| **`AUTH_LDAP_BIND_DN `**           | Identifiant (DN) du compte pour se connecter au serveur LDAP | '' |
+| **`AUTH_LDAP_BIND_PASSWORD `**           | Mot de passe du compte pour se connecter au serveur LDAP | '' |
+| **`AUTH_LDAP_USER_SEARCH `**           | Filtre LDAP permettant la recherche de l'individu dans le serveur LDAP | ('ou=people,dc=univ,dc=fr', "(uid=%(uid)s)") |
+| **`USER_LDAP_MAPPING_ATTRIBUTES `**           | liste de correspondance entre les champs d'un compte de Pod et les champs renvoyés par le LDAP | {       "uid": "uid",       "mail": "mail",       "last_name": "sn",       "first_name": "givenname",       "primaryAffiliation": "eduPersonPrimaryAffiliation",       "affiliation": "eduPersonAffiliation"   } |
+
+Si utilisation de l'authentification CAS, il y a une modification à faire dans l'application tierce (django-cas-sso==1.1.7) permettant cette authentification. Cette application est proposée par l'université de Strasbourg mais un problème compatibilité avec Python 3.X empèche sa parfaite utilisation (avec le gateway). Voici la modification à faire :
+
+```console
+(django_pod) pod@pod:~/django_projects/podv2$ vim /home/pod/.virtualenvs/django_pod/lib/python3.5/site-packages/django_cas/views.py
+[...]L.34
+        if gateway:
+            """ If gateway, capture params and reencode them before returning a url """
+            """
+            gateway_params = [(REDIRECT_FIELD_NAME, redirect_to), ('gatewayed','true')]
+            query_dict = request.GET.copy()
+            try:
+                del query_dict['ticket']
+            except:
+                pass
+            query_list = query_dict.items()
+            #remove duplicate params
+            for item in query_list:
+                for index, item2 in enumerate(gateway_params):
+                    if item[0] == item2[0]:
+                        gateway_params.pop(index)
+            extra_params = gateway_params + query_list
+            
+            extra_params = set(gateway_params).union(set(query_dict.items()))
+
+            #Sort params by key name so they are always in the same order.
+            sorted_params = sorted(extra_params, key=itemgetter(0))
+            service += urlencode(sorted_params)
+            """
+            gateway_params = { REDIRECT_FIELD_NAME: redirect_to, 'gatewayed':'true'}
+            query_dict = request.GET.copy()
+            try:
+                del query_dict['ticket']
+            except:
+                pass
+            if query_dict.get(REDIRECT_FIELD_NAME):
+                del gateway_params[REDIRECT_FIELD_NAME]
+            if query_dict.get('gatewayed'):
+                del gateway_params['gatewayed']
+            query_dict.update(gateway_params)
+            service += urlencode(query_dict)
+        else:
+            service += urlencode({REDIRECT_FIELD_NAME: redirect_to})
+[...]
+```
+
+
 
 

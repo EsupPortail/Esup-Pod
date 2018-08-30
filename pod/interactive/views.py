@@ -116,7 +116,8 @@ def video_interactive(request, slug, slug_c=None,
     template_video = 'interactive/video_interactive-iframe.html' if (
         request.GET.get('is_iframe')) else 'interactive/video_interactive.html'
 
-    is_password_protected = (video.password is not None and video.password != '')
+    is_password_protected = (
+        video.password is not None and video.password != '')
 
     show_page = get_video_access(request, video, slug_private)
 

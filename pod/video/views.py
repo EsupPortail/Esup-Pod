@@ -317,7 +317,8 @@ def get_video_access(request, video, slug_private):
     is_draft = video.is_draft
     is_restricted = video.is_restricted
     is_restricted_to_group = video.restrict_access_to_groups.all().exists()
-    is_password_protected = (video.password is not None and video.password != '')
+    is_password_protected = (video.password is not None
+                             and video.password != '')
 
     is_access_protected = (
         is_draft
@@ -386,7 +387,8 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     template_video = 'videos/video-iframe.html' if (
         request.GET.get('is_iframe')) else 'videos/video.html'
 
-    is_password_protected = (video.password is not None  and video.password != '')
+    is_password_protected = (
+        video.password is not None and video.password != '')
 
     show_page = get_video_access(request, video, slug_private)
 
