@@ -21,14 +21,14 @@
 
 {% block page_content %}
 
-  <h3>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
+  <h1>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
     <span class="float-right">
       <a href="{% url "rss-video"%}?{{request.GET.urlencode}}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm">
         <i data-feather="rss"></i>&nbsp;Video</a>
       <a href="{% url "rss-audio"%}?{{request.GET.urlencode}}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm">
         <i data-feather="rss"></i>&nbsp;Audio</a>
     </span>
-  </h3>
+  </h1>
 
   {% include "videos/video_list.html" %}
 

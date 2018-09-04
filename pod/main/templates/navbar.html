@@ -43,18 +43,18 @@
       </li>
     </ul>
   </div>
-  <form class="form-inline my-2 my-lg-0 justify-content-center flex-2" action="{% url "search_videos" %}">
+  <form class="form-inline my-2 my-lg-0 flex-2" action="{% url "search_videos" %}">
     <label for="s" class="d-lg-none">
       <i data-feather="search" class="nav-link-icone"></i> <span class="sr-only">{% trans "Search" %}</span> 
     </label>
     <input class="form-control mr-sm-2" id="s" placeholder="{% trans "Search" %}" aria-label="{% trans "Search" %}" type="search" name="q" >
   </form>
   <ul class="navbar-nav flex-row align-items-center flex-grow-1 justify-content-between">
-     <li class="nav-item ">
+     <li class="nav-item mr-2">
         <a class="nav-link pl-2 pr-2" href="{% url 'video_edit' %}"><i data-feather="plus-square" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i>  <span class="d-none d-md-inline-block">{% trans "Add a video" %}</span></a>
       </li>
       {% if user.is_authenticated %}
-      <li class="nav-item dropdown login">
+      <li class="nav-item dropdown login mr-2">
         <button class="initials nav-link pl-2 pr-2 dropdown-toggle d-flex justify-content-center align-items-center " href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         {% if user.first_name != '' and user.last_name != '' %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.username|slice:":2"|upper}}{% endif %}
         </button>
@@ -86,7 +86,7 @@
         </div>
       </li>
       {% else %}
-      <li class="nav-item dropdown login">
+      <li class="nav-item dropdown login mr-2">
         <a class="btn btn-connexion nav-link pl-2 pr-2 d-flex justify-content-center" href="{% url 'authentication_login' %}?referrer={{request.build_absolute_uri|urlencode}}" >
           {% trans 'Log in' %}
         </a>
