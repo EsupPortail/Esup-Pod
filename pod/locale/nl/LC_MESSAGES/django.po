@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-17 14:20+0000\n"
+"POT-Creation-Date: 2018-09-04 08:47+0000\n"
 "PO-Revision-Date: 2018-07-03 13:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,34 +27,62 @@ msgid "local"
 msgstr ""
 
 #: pod/authentication/models.py:23
-msgid "member"
-msgstr "lid"
-
-#: pod/authentication/models.py:24
 msgid "student"
 msgstr "student"
+
+#: pod/authentication/models.py:24
+msgid "faculty"
+msgstr "faculteit"
 
 #: pod/authentication/models.py:25
 msgid "staff"
 msgstr "personeel"
 
 #: pod/authentication/models.py:26
-msgid "affiliate"
-msgstr "filiaal"
-
-#: pod/authentication/models.py:27
 msgid "employee"
 msgstr "werknemer"
 
-#: pod/authentication/models.py:28
-msgid "faculty"
-msgstr "faculteit"
+#: pod/authentication/models.py:27
+msgid "member"
+msgstr "lid"
 
-#: pod/authentication/models.py:49 pod/recorder/models.py:40
+#: pod/authentication/models.py:28
+msgid "affiliate"
+msgstr "filiaal"
+
+#: pod/authentication/models.py:29
+msgid "alum"
+msgstr ""
+
+#: pod/authentication/models.py:30
+msgid "library-walk-in"
+msgstr ""
+
+#: pod/authentication/models.py:31
+msgid "researcher"
+msgstr ""
+
+#: pod/authentication/models.py:32
+msgid "retired"
+msgstr ""
+
+#: pod/authentication/models.py:33
+msgid "emeritus"
+msgstr ""
+
+#: pod/authentication/models.py:34
+msgid "teacher"
+msgstr ""
+
+#: pod/authentication/models.py:35
+msgid "registered-reader"
+msgstr ""
+
+#: pod/authentication/models.py:56 pod/recorder/models.py:40
 msgid "Comment"
 msgstr ""
 
-#: pod/authentication/models.py:54
+#: pod/authentication/models.py:61
 msgid "Picture"
 msgstr ""
 
@@ -74,6 +102,7 @@ msgstr ""
 #: pod/authentication/templates/registration/login.html:9
 #: pod/authentication/templates/registration/login.html:12
 #: pod/authentication/templates/registration/login.html:64
+#: pod/main/templates/navbar.html:91
 msgid "Log in"
 msgstr "Log in"
 
@@ -108,8 +137,8 @@ msgstr ""
 #: pod/video/templates/videos/video_delete.html:33
 #: pod/video/templates/videos/video_edit.html:64
 #: pod/video/templates/videos/video_notes.html:23 pod/video/views.py:119
-#: pod/video/views.py:489 pod/video/views.py:521 pod/video/views.py:545
-#: pod/video_search/templates/search/search.html:36
+#: pod/video/views.py:491 pod/video/views.py:523 pod/video/views.py:547
+#: pod/video_search/templates/search/search.html:47
 msgid "One or more errors have been found in the form."
 msgstr ""
 
@@ -131,26 +160,26 @@ msgid "Your picture has been saved."
 msgstr ""
 
 #: pod/chapter/models.py:13 pod/completion/models.py:50
-#: pod/enrichment/models.py:109
+#: pod/enrichment/models.py:111
 #: pod/playlist/templates/playlist/playlist_player.html:7
-#: pod/video/models.py:478
+#: pod/video/models.py:476
 msgid "video"
 msgstr ""
 
-#: pod/chapter/models.py:14 pod/enrichment/models.py:110
-#: pod/recorder/models.py:35 pod/video/models.py:344
+#: pod/chapter/models.py:14 pod/enrichment/models.py:112
+#: pod/recorder/models.py:35 pod/video/models.py:342
 msgid "title"
 msgstr "titel"
 
-#: pod/chapter/models.py:16 pod/enrichment/models.py:112
-#: pod/video/models.py:346
+#: pod/chapter/models.py:16 pod/enrichment/models.py:114
+#: pod/video/models.py:344
 msgid "slug"
 msgstr ""
 
 #: pod/chapter/models.py:19 pod/completion/models.py:247
-#: pod/enrichment/models.py:115 pod/playlist/models.py:16
-#: pod/video/models.py:168 pod/video/models.py:243 pod/video/models.py:323
-#: pod/video/models.py:348 pod/video/models.py:382
+#: pod/enrichment/models.py:117 pod/playlist/models.py:16
+#: pod/video/models.py:166 pod/video/models.py:241 pod/video/models.py:321
+#: pod/video/models.py:346 pod/video/models.py:380
 msgid ""
 "Used to access this instance, the \"slug\" is a short label containing only "
 "letters, numbers, underscore or dash top."
@@ -170,12 +199,12 @@ msgstr ""
 msgid "Chapter"
 msgstr ""
 
-#: pod/chapter/models.py:30 pod/chapter/templates/video_chapter.html:66
+#: pod/chapter/models.py:30 pod/chapter/templates/video_chapter.html:67
 msgid "Chapters"
 msgstr ""
 
 #: pod/chapter/models.py:45 pod/completion/models.py:302
-#: pod/enrichment/models.py:185
+#: pod/enrichment/models.py:187
 msgid "Please enter a title from 2 to 100 characters."
 msgstr ""
 
@@ -203,6 +232,7 @@ msgid "One or more errors have been found in the form:"
 msgstr ""
 
 #: pod/chapter/templates/chapter/form_chapter.html:29
+#: pod/completion/templates/video_caption_maker.html:136
 #: pod/enrichment/templates/enrichment/form_enrichment.html:30
 #: pod/enrichment/templates/enrichment/group_enrichment.html:60
 #: pod/interactive/templates/interactive/group_interactive.html:60
@@ -238,8 +268,8 @@ msgstr ""
 #: pod/enrichment/templates/enrichment/list_enrichment.html:10
 #: pod/main/models.py:97 pod/main/views.py:59 pod/playlist/models.py:11
 #: pod/playlist/templates/playlist/playlist_element_list.html:11
-#: pod/video/models.py:159 pod/video/models.py:236 pod/video/models.py:319
-#: pod/video/models.py:374 pod/video/templates/channel/list_theme.html:9
+#: pod/video/models.py:157 pod/video/models.py:234 pod/video/models.py:317
+#: pod/video/models.py:372 pod/video/templates/channel/list_theme.html:9
 msgid "Title"
 msgstr ""
 
@@ -268,53 +298,67 @@ msgid "Delete"
 msgstr ""
 
 #: pod/chapter/templates/video_chapter.html:5
-#: pod/chapter/templates/video_chapter.html:22
+#: pod/chapter/templates/video_chapter.html:23
 msgid "Chapter video"
 msgstr ""
 
-#: pod/chapter/templates/video_chapter.html:41
+#: pod/chapter/templates/video_chapter.html:16
+#: pod/completion/templates/video_caption_maker.html:95
+#: pod/completion/templates/video_completion.html:13
+#: pod/enrichment/templates/enrichment/group_enrichment.html:10
+#: pod/interactive/templates/interactive/group_interactive.html:10
+#: pod/main/templates/navbar.html:77
+#: pod/video/templates/videos/my_videos.html:6
+#: pod/video/templates/videos/video_delete.html:8
+#: pod/video/templates/videos/video_edit.html:13
+#: pod/video/templates/videos/video_edit.html:115
+msgid "My videos"
+msgstr ""
+
+#: pod/chapter/templates/video_chapter.html:42
+#: pod/completion/templates/video_caption_maker.html:161
 #: pod/video/templates/videos/video_delete.html:21
 #: pod/video/templates/videos/video_edit.html:38
 msgid "View the video"
 msgstr ""
 
-#: pod/chapter/templates/video_chapter.html:42
+#: pod/chapter/templates/video_chapter.html:43
 #: pod/video/templates/videos/video_delete.html:22
 #: pod/video/templates/videos/video_delete.html:62
 msgid "Back to the video"
 msgstr ""
 
-#: pod/chapter/templates/video_chapter.html:49
+#: pod/chapter/templates/video_chapter.html:50
 msgid "Add a new chapter"
 msgstr ""
 
-#: pod/chapter/templates/video_chapter.html:58
-#: pod/completion/templates/video_completion.html:120
+#: pod/chapter/templates/video_chapter.html:59
+#: pod/completion/templates/video_completion.html:122
 #: pod/enrichment/templates/enrichment/group_enrichment.html:71
 #: pod/interactive/templates/interactive/edit_interactive.html:128
 #: pod/interactive/templates/interactive/group_interactive.html:71
-#: pod/video/templates/videos/video.html:154
+#: pod/video/templates/videos/video.html:178
 #: pod/video/templates/videos/video_edit.html:127
 msgid "Manage video"
 msgstr ""
 
-#: pod/chapter/templates/video_chapter.html:69
+#: pod/chapter/templates/video_chapter.html:70
 msgid ""
 "\"Add a new chapter\" allows you to add a new chapter, \"modify\" allows you "
 "to modify it and \"delete\" allows you to remove the chapter."
 msgstr ""
 
-#: pod/chapter/templates/video_chapter.html:70
+#: pod/chapter/templates/video_chapter.html:71
 msgid ""
 "Start playback of the video, pause the video and click on \"Get time from "
 "the player\" to fill in the field untitled \"Start time\"."
 msgstr ""
 
-#: pod/chapter/templates/video_chapter.html:71
+#: pod/chapter/templates/video_chapter.html:72
 msgid "The chapters cannot start at the same time."
 msgstr ""
 
-#: pod/chapter/templates/video_chapter.html:72
+#: pod/chapter/templates/video_chapter.html:73
 msgid "You must save your chapters to view the result."
 msgstr ""
 
@@ -322,7 +366,8 @@ msgstr ""
 msgid "You cannot chapter this video."
 msgstr ""
 
-#: pod/chapter/views.py:98 pod/chapter/views.py:195 pod/enrichment/views.py:142
+#: pod/chapter/views.py:98 pod/chapter/views.py:195
+#: pod/enrichment/views.py:142
 msgid "Please correct errors."
 msgstr ""
 
@@ -396,11 +441,11 @@ msgstr ""
 
 #: pod/completion/models.py:57
 #: pod/completion/templates/contributor/list_contributor.html:13
-#: pod/enrichment/models.py:148 pod/main/models.py:101
+#: pod/enrichment/models.py:150 pod/main/models.py:101
 msgid "Web link"
 msgstr ""
 
-#: pod/completion/models.py:60 pod/video/templates/videos/video-info.html:50
+#: pod/completion/models.py:60 pod/video/templates/videos/video-info.html:49
 msgid "Contributor"
 msgstr ""
 
@@ -429,21 +474,23 @@ msgid "There is already a contributor with the same name and role in the list."
 msgstr ""
 
 #: pod/completion/models.py:113 pod/completion/models.py:164
-#: pod/completion/models.py:241 pod/enrichment/models.py:284
-#: pod/enrichment/models.py:306 pod/interactive/models.py:15
-#: pod/interactive/models.py:31 pod/playlist/models.py:78
+#: pod/completion/models.py:241
+#: pod/completion/templates/video_caption_maker.html:121
+#: pod/enrichment/models.py:286 pod/enrichment/models.py:308
+#: pod/interactive/models.py:15 pod/interactive/models.py:32
+#: pod/playlist/models.py:78
 #: pod/playlist/templates/playlist/playlist_list.html:14
-#: pod/recorder/models.py:17 pod/video/models.py:370 pod/video/models.py:737
-#: pod/video/models.py:825 pod/video/models.py:884 pod/video/models.py:929
-#: pod/video/models.py:970 pod/video/models.py:979
+#: pod/recorder/models.py:17 pod/video/models.py:368 pod/video/models.py:735
+#: pod/video/models.py:862 pod/video/models.py:921 pod/video/models.py:966
+#: pod/video/models.py:1007 pod/video/models.py:1016
 msgid "Video"
 msgstr ""
 
 #: pod/completion/models.py:118 pod/completion/models.py:122
 #: pod/completion/templates/document/list_document.html:10
-#: pod/enrichment/models.py:142
-#: pod/enrichment/templates/enrichment/video_enrichment.html:89
-#: pod/podfile/models.py:138 pod/video/templates/videos/video-info.html:92
+#: pod/enrichment/models.py:144
+#: pod/enrichment/templates/enrichment/video_enrichment.html:88
+#: pod/podfile/models.py:138 pod/video/templates/videos/video-info.html:88
 msgid "Document"
 msgstr ""
 
@@ -469,7 +516,7 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: pod/completion/models.py:175 pod/enrichment/models.py:290
+#: pod/completion/models.py:175 pod/enrichment/models.py:292
 msgid "Subtitle file"
 msgstr ""
 
@@ -497,7 +544,7 @@ msgstr ""
 msgid "Please specify a track file."
 msgstr ""
 
-#: pod/completion/models.py:201 pod/enrichment/models.py:301
+#: pod/completion/models.py:201 pod/enrichment/models.py:303
 msgid "Only \".vtt\" format is allowed."
 msgstr ""
 
@@ -539,8 +586,8 @@ msgid "left"
 msgstr ""
 
 #: pod/completion/models.py:244 pod/playlist/models.py:13
-#: pod/video/models.py:166 pod/video/models.py:241 pod/video/models.py:321
-#: pod/video/models.py:380
+#: pod/video/models.py:164 pod/video/models.py:239 pod/video/models.py:319
+#: pod/video/models.py:378
 msgid "Slug"
 msgstr ""
 
@@ -688,13 +735,13 @@ msgid "List of overlays"
 msgstr ""
 
 #: pod/completion/templates/overlay/list_overlay.html:11
-#: pod/enrichment/models.py:124
+#: pod/enrichment/models.py:126
 #: pod/enrichment/templates/enrichment/list_enrichment.html:12
 msgid "Start"
 msgstr ""
 
 #: pod/completion/templates/overlay/list_overlay.html:12
-#: pod/enrichment/models.py:128
+#: pod/enrichment/models.py:130
 #: pod/enrichment/templates/enrichment/list_enrichment.html:13
 msgid "End"
 msgstr ""
@@ -723,264 +770,319 @@ msgstr ""
 msgid "Delete the subtitle or caption files"
 msgstr ""
 
+#: pod/completion/templates/video_caption_maker.html:103
+#: pod/completion/templates/video_caption_maker.html:108
+#: pod/completion/templates/video_caption_maker.html:113
+#: pod/completion/templates/video_completion.html:55
+#: pod/completion/templates/video_completion.html:146
+msgid "Video Caption Maker"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:116
+msgid "Load Existing Caption File [optional]"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:134
+msgid "Play"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:135
+msgid "Pause"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:137
+msgid "Save &amp; Continue"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:141
+msgid "Caption list"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:146
+msgid "Clear All"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:151
+msgid ""
+"Select and copy the caption file contents below and paste into a .vtt file"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:159
+msgid "Copy to Clipboard"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:162
+msgid "Back to the completion"
+msgstr ""
+
 #: pod/completion/templates/video_completion.html:5
-#: pod/completion/templates/video_completion.html:19
+#: pod/completion/templates/video_completion.html:20
 msgid "Completion video"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:25
+#: pod/completion/templates/video_completion.html:26
 msgid "Display &quot;Contributor(s)&quot; section"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:26
-#: pod/completion/templates/video_completion.html:128
+#: pod/completion/templates/video_completion.html:27
+#: pod/completion/templates/video_completion.html:130
 msgid "Contributor(s)"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:42
+#: pod/completion/templates/video_completion.html:43
 msgid "Add a new contributor"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:48
+#: pod/completion/templates/video_completion.html:49
 msgid "Display &quot;Subtitle(s) and Caption(s) &quot; section"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:49
-#: pod/completion/templates/video_completion.html:137
+#: pod/completion/templates/video_completion.html:50
+#: pod/completion/templates/video_completion.html:139
 msgid "Subtitle(s) and Caption(s)"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:65
+#: pod/completion/templates/video_completion.html:55
+#: pod/completion/templates/video_completion.html:146
+msgid "You can use"
+msgstr ""
+
+#: pod/completion/templates/video_completion.html:55
+#: pod/completion/templates/video_completion.html:146
+msgid "to create your subtitles and/or caption(s) files"
+msgstr ""
+
+#: pod/completion/templates/video_completion.html:67
 msgid "Add a new subtitle or caption file"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:70
+#: pod/completion/templates/video_completion.html:72
 msgid "Display &quot; Additional resource(s)&quot; section"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:71
-#: pod/completion/templates/video_completion.html:150
+#: pod/completion/templates/video_completion.html:73
+#: pod/completion/templates/video_completion.html:160
 msgid "Additional resource(s)"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:87
+#: pod/completion/templates/video_completion.html:89
 msgid "Add a new additional resource"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:92
+#: pod/completion/templates/video_completion.html:94
 msgid "Display &quot; Overlay(s)&quot; section"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:93
-#: pod/completion/templates/video_completion.html:159
+#: pod/completion/templates/video_completion.html:95
+#: pod/completion/templates/video_completion.html:169
 msgid "Overlay(s)"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:109
+#: pod/completion/templates/video_completion.html:111
 msgid "Add a new overlay"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:131
+#: pod/completion/templates/video_completion.html:133
 msgid "List of people related to this video."
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:132
+#: pod/completion/templates/video_completion.html:134
 msgid ""
 "A contributor must at least have a name and a role. You can also join the "
 "email of this contributor as well as a link (professional website for "
 "example)."
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:140
+#: pod/completion/templates/video_completion.html:142
 msgid "Subtitle(s) and/or captions(s) related to this video."
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:141
+#: pod/completion/templates/video_completion.html:143
 msgid ""
 "Several web sites allows you to subtitle or caption videos (for example: "
 "Amara)"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:142
+#: pod/completion/templates/video_completion.html:144
 msgid ""
 "You can add several subtitle or caption files to a signle video (for "
 "example, in order to subtitle or caption this video in several languages"
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:143
+#: pod/completion/templates/video_completion.html:145
 msgid "Subtitles and/or caption(s) files must be in \".vtt\" format."
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:144
+#: pod/completion/templates/video_completion.html:147
 msgid ""
 "You will need the URL of this video to make subtitles and/or captions. This "
 "URL is a direct access to this video. Please do not communicate it outside "
 "of this site to avoid any misuse."
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:153
+#: pod/completion/templates/video_completion.html:163
 msgid ""
 "Document(s) related to this video. These documents will be downloadable by "
 "users."
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:154
+#: pod/completion/templates/video_completion.html:164
 msgid ""
 "Be careful, not to be confused with enrichment. These documents are attached "
 "to the video, not integrated."
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:162
+#: pod/completion/templates/video_completion.html:172
 msgid ""
 "Overlay allows you to display text (with ou without html tag) over the video "
 "at specific times and positions."
 msgstr ""
 
-#: pod/completion/templates/video_completion.html:163
+#: pod/completion/templates/video_completion.html:173
 msgid ""
 "You can add a solid background or a transparent background to the text you "
 "want to display with the option \"Show background\""
 msgstr ""
 
-#: pod/completion/views.py:32 pod/completion/views.py:65
-#: pod/completion/views.py:244 pod/completion/views.py:420
-#: pod/completion/views.py:589
+#: pod/completion/views.py:32 pod/completion/views.py:46
+#: pod/completion/views.py:79 pod/completion/views.py:258
+#: pod/completion/views.py:434 pod/completion/views.py:603
 msgid "You cannot complement this video."
 msgstr ""
 
-#: pod/completion/views.py:163 pod/completion/views.py:336
-#: pod/completion/views.py:677 pod/podfile/views.py:323
+#: pod/completion/views.py:177 pod/completion/views.py:350
+#: pod/completion/views.py:691 pod/podfile/views.py:323
 #: pod/podfile/views.py:435 pod/video/views.py:207
 msgid "Please correct errors"
 msgstr ""
 
-#: pod/enrichment/forms.py:34 pod/enrichment/models.py:310
-#: pod/interactive/forms.py:13 pod/interactive/models.py:35
-#: pod/podfile/models.py:29 pod/video/models.py:451
+#: pod/enrichment/forms.py:34 pod/enrichment/models.py:312
+#: pod/interactive/forms.py:13 pod/interactive/models.py:36
+#: pod/podfile/models.py:29 pod/video/models.py:449
 msgid "Groups"
 msgstr ""
 
-#: pod/enrichment/models.py:102
+#: pod/enrichment/models.py:104
 msgid "image"
 msgstr ""
 
-#: pod/enrichment/models.py:103
+#: pod/enrichment/models.py:105
 msgid "richtext"
 msgstr ""
 
-#: pod/enrichment/models.py:104
+#: pod/enrichment/models.py:106
 msgid "weblink"
 msgstr ""
 
-#: pod/enrichment/models.py:105
+#: pod/enrichment/models.py:107
 msgid "document"
 msgstr ""
 
-#: pod/enrichment/models.py:106
+#: pod/enrichment/models.py:108
 msgid "embed"
 msgstr ""
 
-#: pod/enrichment/models.py:120
+#: pod/enrichment/models.py:122
 msgid "Stop video"
 msgstr ""
 
-#: pod/enrichment/models.py:122
+#: pod/enrichment/models.py:124
 msgid "The video will pause when displaying the enrichment."
 msgstr ""
 
-#: pod/enrichment/models.py:126
+#: pod/enrichment/models.py:128
 msgid "Start of enrichment display in seconds."
 msgstr ""
 
-#: pod/enrichment/models.py:130
+#: pod/enrichment/models.py:132
 msgid "End of enrichment display in seconds."
 msgstr ""
 
-#: pod/enrichment/models.py:132
+#: pod/enrichment/models.py:134
 #: pod/enrichment/templates/enrichment/list_enrichment.html:11
-#: pod/video/forms.py:79 pod/video/models.py:339 pod/video/models.py:386
-#: pod/video/templates/videos/video-info.html:39
-#: pod/video_search/templates/search/search.html:71
+#: pod/video/forms.py:79 pod/video/models.py:337 pod/video/models.py:384
+#: pod/video/templates/videos/video-info.html:37
+#: pod/video_search/templates/search/search.html:82
 msgid "Type"
 msgstr ""
 
-#: pod/enrichment/models.py:139
-#: pod/enrichment/templates/enrichment/video_enrichment.html:88
+#: pod/enrichment/models.py:141
+#: pod/enrichment/templates/enrichment/video_enrichment.html:87
 #: pod/main/models.py:42 pod/main/models.py:70 pod/podfile/models.py:173
 msgid "Image"
 msgstr ""
 
-#: pod/enrichment/models.py:145
+#: pod/enrichment/models.py:147
 msgid "Integrate an document (PDF, text, html)"
 msgstr ""
 
-#: pod/enrichment/models.py:146
-#: pod/enrichment/templates/enrichment/video_enrichment.html:90
+#: pod/enrichment/models.py:148
+#: pod/enrichment/templates/enrichment/video_enrichment.html:89
 msgid "Richtext"
 msgstr ""
 
-#: pod/enrichment/models.py:150
-#: pod/enrichment/templates/enrichment/video_enrichment.html:92
+#: pod/enrichment/models.py:152
+#: pod/enrichment/templates/enrichment/video_enrichment.html:91
 msgid "Embed"
 msgstr ""
 
-#: pod/enrichment/models.py:154
+#: pod/enrichment/models.py:156
 msgid "Integrate an external source."
 msgstr ""
 
-#: pod/enrichment/models.py:157
+#: pod/enrichment/models.py:159
 msgid "Enrichment"
 msgstr ""
 
-#: pod/enrichment/models.py:158
+#: pod/enrichment/models.py:160
 msgid "Enrichments"
 msgstr ""
 
-#: pod/enrichment/models.py:179
+#: pod/enrichment/models.py:181
 #, python-brace-format
 msgid "Please enter a correct {0}."
 msgstr ""
 
-#: pod/enrichment/models.py:188
+#: pod/enrichment/models.py:190
 #, python-brace-format
 msgid "Please enter a correct start field between 0 and {0}."
 msgstr ""
 
-#: pod/enrichment/models.py:192
+#: pod/enrichment/models.py:194
 #, python-brace-format
 msgid "Please enter a correct end field between 1 and {0}."
 msgstr ""
 
-#: pod/enrichment/models.py:198
+#: pod/enrichment/models.py:200
 msgid "Please enter a type."
 msgstr ""
 
-#: pod/enrichment/models.py:210
+#: pod/enrichment/models.py:212
 msgid "The value of the start field is greater than the value of end field."
 msgstr ""
 
-#: pod/enrichment/models.py:214
+#: pod/enrichment/models.py:216
 msgid "The value of end field is greater than the video duration."
 msgstr ""
 
-#: pod/enrichment/models.py:218
+#: pod/enrichment/models.py:220
 msgid "End field and start field can't be equal."
 msgstr ""
 
-#: pod/enrichment/models.py:240
+#: pod/enrichment/models.py:242
 #, python-brace-format
 msgid "There is an overlap with the enrichment {0}, "
 msgstr ""
 
-#: pod/enrichment/models.py:311 pod/interactive/models.py:36
+#: pod/enrichment/models.py:313 pod/interactive/models.py:37
 msgid "Select one or more groups who can access to the enrichment of the video"
 msgstr ""
 
-#: pod/enrichment/models.py:317
+#: pod/enrichment/models.py:319
 msgid "Enrichment Video Group"
 msgstr ""
 
-#: pod/enrichment/models.py:318
+#: pod/enrichment/models.py:320
 msgid "Enrichment Video Groups"
 msgstr ""
 
@@ -1003,7 +1105,7 @@ msgid "See the enrich video"
 msgstr ""
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:77
-#: pod/enrichment/templates/enrichment/video_enrichment.html:82
+#: pod/enrichment/templates/enrichment/video_enrichment.html:81
 #: pod/interactive/templates/interactive/edit_interactive.html:113
 msgid "Informations"
 msgstr ""
@@ -1037,16 +1139,6 @@ msgstr ""
 msgid "Create / Edit enrichments"
 msgstr ""
 
-#: pod/enrichment/templates/enrichment/group_enrichment.html:10
-#: pod/interactive/templates/interactive/group_interactive.html:10
-#: pod/main/templates/navbar.html:77
-#: pod/video/templates/videos/my_videos.html:6
-#: pod/video/templates/videos/video_delete.html:8
-#: pod/video/templates/videos/video_edit.html:13
-#: pod/video/templates/videos/video_edit.html:115
-msgid "My videos"
-msgstr ""
-
 #: pod/enrichment/templates/enrichment/group_enrichment.html:11
 #: pod/enrichment/templates/enrichment/group_enrichment.html:14
 #: pod/enrichment/templates/enrichment/group_enrichment.html:19
@@ -1055,6 +1147,7 @@ msgstr ""
 
 #: pod/enrichment/templates/enrichment/group_enrichment.html:34
 #: pod/interactive/templates/interactive/group_interactive.html:34
+#: pod/video/templates/videos/video.html:84
 #: pod/video/templates/videos/video_edit.html:69
 msgid "The video is currently being encoded."
 msgstr ""
@@ -1076,48 +1169,41 @@ msgid "Delete the enrichment"
 msgstr ""
 
 #: pod/enrichment/templates/enrichment/video_enrichment-iframe.html:11
-#: pod/enrichment/templates/enrichment/video_enrichment.html:16
-#: pod/enrichment/templates/enrichment/video_enrichment.html:44
+#: pod/enrichment/templates/enrichment/video_enrichment.html:15
+#: pod/enrichment/templates/enrichment/video_enrichment.html:43
 msgid "Enriched"
 msgstr ""
 
-#: pod/enrichment/templates/enrichment/video_enrichment.html:13
-#: pod/interactive/templates/interactive/video_interactive.html:25
-#: pod/video/models.py:1007 pod/video/templates/videos/video.html:45
-#: pod/video/templates/videos/videos.html:6
-msgid "Videos"
-msgstr ""
-
-#: pod/enrichment/templates/enrichment/video_enrichment.html:50
-#: pod/interactive/templates/interactive/video_interactive.html:53
-#: pod/video/templates/videos/video-info.html:148
+#: pod/enrichment/templates/enrichment/video_enrichment.html:49
+#: pod/interactive/templates/interactive/video_interactive.html:52
+#: pod/video/templates/videos/video-info.html:142
 msgid "Copy the content of this text box and paste it in the page"
 msgstr ""
 
-#: pod/enrichment/templates/enrichment/video_enrichment.html:56
-#: pod/interactive/templates/interactive/video_interactive.html:59
-#: pod/video/templates/videos/video-info.html:154
+#: pod/enrichment/templates/enrichment/video_enrichment.html:55
+#: pod/interactive/templates/interactive/video_interactive.html:58
+#: pod/video/templates/videos/video-info.html:148
 msgid "Use this link to share the video"
 msgstr ""
 
-#: pod/enrichment/templates/enrichment/video_enrichment.html:64
+#: pod/enrichment/templates/enrichment/video_enrichment.html:63
 msgid "Edit enrichment"
 msgstr ""
 
-#: pod/enrichment/templates/enrichment/video_enrichment.html:68
-#: pod/interactive/templates/interactive/video_interactive.html:71
+#: pod/enrichment/templates/enrichment/video_enrichment.html:67
+#: pod/interactive/templates/interactive/video_interactive.html:70
 msgid "Back to original"
 msgstr ""
 
-#: pod/enrichment/templates/enrichment/video_enrichment.html:85
+#: pod/enrichment/templates/enrichment/video_enrichment.html:84
 msgid "To help you, the different types of enrichments have specific colors"
 msgstr ""
 
-#: pod/enrichment/templates/enrichment/video_enrichment.html:91
+#: pod/enrichment/templates/enrichment/video_enrichment.html:90
 msgid "Weblink"
 msgstr ""
 
-#: pod/enrichment/templates/enrichment/video_enrichment.html:95
+#: pod/enrichment/templates/enrichment/video_enrichment.html:94
 msgid "They are visible on the video playback bar."
 msgstr ""
 
@@ -1125,16 +1211,16 @@ msgstr ""
 msgid "You cannot enrich this video."
 msgstr ""
 
-#: pod/enrichment/views.py:258 pod/interactive/views.py:150
-#: pod/video/views.py:419
+#: pod/enrichment/views.py:259 pod/interactive/views.py:151
+#: pod/video/views.py:421
 msgid "You cannot watch this video."
 msgstr ""
 
-#: pod/interactive/models.py:42
+#: pod/interactive/models.py:43
 msgid "Interactive Video Group"
 msgstr ""
 
-#: pod/interactive/models.py:43
+#: pod/interactive/models.py:44
 msgid "Interactive Video Groups"
 msgstr ""
 
@@ -1207,62 +1293,62 @@ msgstr ""
 msgid "back to editing interactivity"
 msgstr ""
 
-#: pod/interactive/templates/interactive/video_interactive.html:28
-#: pod/interactive/templates/interactive/video_interactive.html:47
+#: pod/interactive/templates/interactive/video_interactive.html:27
+#: pod/interactive/templates/interactive/video_interactive.html:46
 msgid "Interactive video"
 msgstr ""
 
-#: pod/interactive/templates/interactive/video_interactive.html:67
+#: pod/interactive/templates/interactive/video_interactive.html:66
 msgid "Edit interactivity"
 msgstr ""
 
-#: pod/interactive/templates/interactive/video_interactive.html:76
+#: pod/interactive/templates/interactive/video_interactive.html:75
 msgid "Scoreboard"
 msgstr ""
 
-#: pod/interactive/templates/interactive/video_interactive.html:77
+#: pod/interactive/templates/interactive/video_interactive.html:76
 msgid "Click below to refresh the information."
 msgstr ""
 
-#: pod/interactive/templates/interactive/video_interactive.html:81
+#: pod/interactive/templates/interactive/video_interactive.html:80
 msgid ""
 "The scoreboard displays the users who viewed your interactive video and "
 "their results."
 msgstr ""
 
-#: pod/interactive/templates/interactive/video_interactive.html:85
+#: pod/interactive/templates/interactive/video_interactive.html:84
 msgid "User"
 msgstr ""
 
-#: pod/interactive/templates/interactive/video_interactive.html:86
+#: pod/interactive/templates/interactive/video_interactive.html:85
 msgid "Points"
 msgstr ""
 
-#: pod/interactive/templates/interactive/video_interactive.html:87
+#: pod/interactive/templates/interactive/video_interactive.html:86
 msgid "started"
 msgstr ""
 
-#: pod/interactive/templates/interactive/video_interactive.html:88
+#: pod/interactive/templates/interactive/video_interactive.html:87
 msgid "finished"
 msgstr ""
 
-#: pod/interactive/templates/interactive/video_interactive.html:102
-#: pod/interactive/templates/interactive/video_interactive.html:186
+#: pod/interactive/templates/interactive/video_interactive.html:101
+#: pod/interactive/templates/interactive/video_interactive.html:185
 msgid "No score available"
 msgstr ""
 
-#: pod/interactive/templates/interactive/video_interactive.html:114
-#: pod/interactive/templates/interactive/video_interactive.html:125
-#: pod/interactive/templates/interactive/video_interactive.html:175
+#: pod/interactive/templates/interactive/video_interactive.html:113
+#: pod/interactive/templates/interactive/video_interactive.html:124
+#: pod/interactive/templates/interactive/video_interactive.html:174
 msgid "You got the following score on this video"
 msgstr ""
 
-#: pod/interactive/templates/interactive/video_interactive.html:117
-#: pod/interactive/templates/interactive/video_interactive.html:128
+#: pod/interactive/templates/interactive/video_interactive.html:116
+#: pod/interactive/templates/interactive/video_interactive.html:127
 msgid "no score found"
 msgstr ""
 
-#: pod/interactive/templates/interactive/video_interactive.html:122
+#: pod/interactive/templates/interactive/video_interactive.html:121
 msgid "You are watching this video as anonymous user"
 msgstr ""
 
@@ -1275,12 +1361,12 @@ msgid "name"
 msgstr ""
 
 #: pod/live/models.py:21 pod/live/templates/live/live.html:43
-#: pod/video/models.py:179 pod/video/models.py:254
-#: pod/video/templates/channel/channel.html:63
-#: pod/video/templates/channel/channel.html:74
+#: pod/video/models.py:177 pod/video/models.py:252
+#: pod/video/templates/channel/channel.html:68
+#: pod/video/templates/channel/channel.html:79
 #: pod/video/templates/channel/channel_edit.html:38
-#: pod/video/templates/videos/video.html:60
-#: pod/video/templates/videos/video.html:69
+#: pod/video/templates/videos/video.html:67
+#: pod/video/templates/videos/video.html:76
 msgid "Headband"
 msgstr ""
 
@@ -1312,7 +1398,7 @@ msgstr ""
 msgid "Check if the broadcaster is currently sending stream."
 msgstr ""
 
-#: pod/live/models.py:58 pod/video/forms.py:157 pod/video/models.py:445
+#: pod/live/models.py:58 pod/video/forms.py:157 pod/video/models.py:443
 msgid "Restricted access"
 msgstr ""
 
@@ -1391,7 +1477,7 @@ msgid "Other (please specify)"
 msgstr ""
 
 #: pod/main/forms.py:49 pod/podfile/models.py:23 pod/podfile/models.py:88
-#: pod/video/models.py:818 pod/video/models.py:881 pod/video/models.py:926
+#: pod/video/models.py:855 pod/video/models.py:918 pod/video/models.py:963
 msgid "Name"
 msgstr ""
 
@@ -1404,8 +1490,8 @@ msgid "Please choose a subjects related your request"
 msgstr ""
 
 #: pod/main/forms.py:59 pod/playlist/models.py:21 pod/video/forms.py:84
-#: pod/video/forms.py:185 pod/video/forms.py:211 pod/video/models.py:172
-#: pod/video/models.py:247 pod/video/models.py:389
+#: pod/video/forms.py:185 pod/video/forms.py:211 pod/video/models.py:170
+#: pod/video/models.py:245 pod/video/models.py:387
 msgid "Description"
 msgstr ""
 
@@ -2035,23 +2121,24 @@ msgstr ""
 msgid "You must give an URL or a page to link the link"
 msgstr ""
 
-#: pod/main/templates/404.html:4 pod/main/templates/404.html:8
+#: pod/main/templates/403.html:4 pod/main/templates/404.html:4
+#: pod/main/templates/404.html:9 pod/main/templates/404.html:15
 msgid "Page not found"
 msgstr ""
 
-#: pod/main/templates/404.html:10
+#: pod/main/templates/403.html:9 pod/main/templates/403.html:15
+msgid "Permission Denied"
+msgstr ""
+
+#: pod/main/templates/403.html:17
+msgid "You are not allowed to access this web page."
+msgstr ""
+
+#: pod/main/templates/404.html:17
 msgid "We're sorry, but the requested page could not be found."
 msgstr ""
 
-#: pod/main/templates/500.html:6 pod/main/templates/base.html:49
-msgid "Home"
-msgstr ""
-
-#: pod/main/templates/500.html:7
-msgid "Server error"
-msgstr ""
-
-#: pod/main/templates/500.html:11
+#: pod/main/templates/500.html:7 pod/main/templates/500.html:11
 msgid "Server error (500)"
 msgstr ""
 
@@ -2073,35 +2160,34 @@ msgstr ""
 msgid "Django administration"
 msgstr ""
 
-#: pod/main/templates/aside.html:6
+#: pod/main/templates/aside.html:7
 msgid "Share"
 msgstr ""
 
-#: pod/main/templates/aside.html:9 pod/main/templates/aside.html:10
-#: pod/main/templates/aside.html:11
-#: pod/video/templates/videos/video-info.html:111
-#: pod/video/templates/videos/video-info.html:112
-#: pod/video/templates/videos/video-info.html:113
+#: pod/main/templates/aside.html:10 pod/main/templates/aside.html:11
+#: pod/main/templates/aside.html:12
+#: pod/video/templates/videos/video-info.html:105
+#: pod/video/templates/videos/video-info.html:106
+#: pod/video/templates/videos/video-info.html:107
 msgid "Share on"
 msgstr ""
 
-#: pod/main/templates/aside.html:17 pod/main/templates/aside.html:19
-#: pod/main/templates/aside.html:25 pod/video/forms.py:107
-#: pod/video/models.py:365 pod/video/models.py:414
+#: pod/main/templates/aside.html:18 pod/main/templates/aside.html:23
+#: pod/video/forms.py:107 pod/video/models.py:363 pod/video/models.py:412
 #: pod/video/templates/videos/filter_aside.html:51
-#: pod/video/templates/videos/video-info.html:42
+#: pod/video/templates/videos/video-info.html:40
 msgid "Disciplines"
 msgstr ""
 
-#: pod/main/templates/aside.html:19
-msgid "See all"
+#: pod/main/templates/aside.html:35 pod/video/forms.py:103
+#: pod/video/models.py:408 pod/video/templates/videos/filter_aside.html:73
+#: pod/video/templates/videos/video-info.html:14
+#: pod/video_search/templates/search/search.html:94
+msgid "Tags"
 msgstr ""
 
-#: pod/main/templates/aside.html:38 pod/video/forms.py:103
-#: pod/video/models.py:410 pod/video/templates/videos/filter_aside.html:73
-#: pod/video/templates/videos/video-info.html:14
-#: pod/video_search/templates/search/search.html:83
-msgid "Tags"
+#: pod/main/templates/base.html:56
+msgid "Home"
 msgstr ""
 
 #: pod/main/templates/contact_us.html:8 pod/main/templates/contact_us.html:12
@@ -2116,7 +2202,7 @@ msgstr ""
 #: pod/video/templates/videos/filter_aside.html:73
 #: pod/video/templates/videos/video-form.html:31
 #: pod/video/templates/videos/video_delete.html:61
-#: pod/video_search/templates/search/search.html:48
+#: pod/video_search/templates/search/search.html:59
 msgid "Send"
 msgstr ""
 
@@ -2127,14 +2213,14 @@ msgstr ""
 #: pod/main/templates/contact_us.html:70
 #: pod/video/templates/channel/channel_edit.html:93
 #: pod/video/templates/channel/theme_edit.html:65
-#: pod/video/templates/videos/video_edit.html:182
+#: pod/video/templates/videos/video_edit.html:172
 msgid "Mandatory fields"
 msgstr ""
 
 #: pod/main/templates/contact_us.html:72
 #: pod/video/templates/channel/channel_edit.html:95
 #: pod/video/templates/channel/theme_edit.html:67
-#: pod/video/templates/videos/video_edit.html:184
+#: pod/video/templates/videos/video_edit.html:174
 msgid "Fields marked with an asterisk are mandatory."
 msgstr ""
 
@@ -2146,9 +2232,14 @@ msgstr ""
 msgid "video platform of"
 msgstr ""
 
+#: pod/main/templates/footer.html:30
+msgid "videos availables"
+msgstr ""
+
 #: pod/main/templates/mail/mail.html:2 pod/main/templates/mail/mail.txt:2
 #: pod/main/templates/mail/mail_sender.html:2
-#: pod/main/templates/mail/mail_sender.txt:2
+#: pod/main/templates/mail/mail_sender.txt:2 pod/video/encode.py:1121
+#: pod/video/encode.py:1138
 msgid "Hello"
 msgstr ""
 
@@ -2172,7 +2263,8 @@ msgstr ""
 
 #: pod/main/templates/mail/mail.html:7 pod/main/templates/mail/mail.txt:7
 #: pod/main/templates/mail/mail_sender.html:6
-#: pod/main/templates/mail/mail_sender.txt:6
+#: pod/main/templates/mail/mail_sender.txt:6 pod/video/encode.py:1129
+#: pod/video/encode.py:1147
 msgid "Regards"
 msgstr ""
 
@@ -2182,25 +2274,27 @@ msgid "You just send a message from"
 msgstr ""
 
 #: pod/main/templates/navbar.html:19 pod/main/templates/navbar_collapse.html:7
-#: pod/video/forms.py:143 pod/video/models.py:204 pod/video/models.py:422
+#: pod/video/forms.py:143 pod/video/models.py:202 pod/video/models.py:420
 msgid "Channels"
 msgstr ""
 
-#: pod/main/templates/navbar.html:22 pod/main/templates/navbar_collapse.html:65
-#: pod/video/forms.py:194 pod/video/forms.py:375 pod/video/forms.py:379
-#: pod/video/models.py:192 pod/video/templates/videos/filter_aside.html:10
+#: pod/main/templates/navbar.html:22
+#: pod/main/templates/navbar_collapse.html:63 pod/video/forms.py:194
+#: pod/video/forms.py:375 pod/video/forms.py:379 pod/video/models.py:190
+#: pod/video/templates/videos/filter_aside.html:10
 msgid "Users"
 msgstr ""
 
-#: pod/main/templates/navbar.html:25 pod/video/models.py:340
+#: pod/main/templates/navbar.html:25 pod/video/models.py:338
 #: pod/video/templates/videos/filter_aside.html:29
 msgid "Types"
 msgstr ""
 
 #: pod/main/templates/navbar.html:48 pod/main/templates/navbar.html:50
 #: pod/video/templates/videos/filter_aside.html:12 pod/video_search/forms.py:8
-#: pod/video_search/templates/search/search.html:6
-#: pod/video_search/templates/search/search.html:32
+#: pod/video_search/templates/search/search.html:8
+#: pod/video_search/templates/search/search.html:17
+#: pod/video_search/templates/search/search.html:43
 msgid "Search"
 msgstr ""
 
@@ -2228,7 +2322,7 @@ msgstr ""
 #: pod/playlist/templates/my_playlists.html:10
 #: pod/playlist/templates/my_playlists.html:17
 #: pod/playlist/templates/playlist.html:14
-#: pod/video/templates/videos/video.html:106
+#: pod/video/templates/videos/video.html:149
 msgid "My playlists"
 msgstr ""
 
@@ -2236,20 +2330,24 @@ msgstr ""
 msgid "Log out"
 msgstr ""
 
-#: pod/main/templates/navbar_collapse.html:21 pod/video/forms.py:143
-#: pod/video/models.py:315 pod/video/models.py:428
+#: pod/main/templates/navbar_collapse.html:19 pod/video/models.py:477
+msgid "videos"
+msgstr ""
+
+#: pod/main/templates/navbar_collapse.html:20 pod/video/forms.py:143
+#: pod/video/models.py:313 pod/video/models.py:426
 msgid "Themes"
 msgstr ""
 
-#: pod/main/templates/navbar_collapse.html:26
+#: pod/main/templates/navbar_collapse.html:24
 msgid "No channels found"
 msgstr ""
 
-#: pod/main/templates/navbar_collapse.html:42
+#: pod/main/templates/navbar_collapse.html:40
 msgid "Types of videos"
 msgstr ""
 
-#: pod/main/templates/navbar_collapse.html:73
+#: pod/main/templates/navbar_collapse.html:71
 msgid ""
 "Use the input to filter user by last name or click on button letter to show "
 "the list."
@@ -2269,8 +2367,8 @@ msgstr ""
 
 #: pod/playlist/models.py:19
 #: pod/playlist/templates/playlist/playlist_element_list.html:12
-#: pod/podfile/models.py:26 pod/video/admin.py:100 pod/video/models.py:387
-#: pod/video_search/templates/search/search.html:59
+#: pod/podfile/models.py:26 pod/video/admin.py:101 pod/video/models.py:385
+#: pod/video_search/templates/search/search.html:70
 msgid "Owner"
 msgstr ""
 
@@ -2278,7 +2376,7 @@ msgstr ""
 msgid "Short description of the playlist."
 msgstr ""
 
-#: pod/playlist/models.py:27 pod/video/models.py:195
+#: pod/playlist/models.py:27 pod/video/models.py:193
 msgid "Visible"
 msgstr ""
 
@@ -2380,8 +2478,8 @@ msgid "Thumbnail"
 msgstr ""
 
 #: pod/playlist/templates/playlist/playlist_element_list.html:13
-#: pod/video/feeds.py:173 pod/video/models.py:463 pod/video/models.py:530
-#: pod/video/templates/videos/video-info.html:37
+#: pod/video/feeds.py:173 pod/video/models.py:461 pod/video/models.py:528
+#: pod/video/templates/videos/video-info.html:35
 msgid "Duration"
 msgstr ""
 
@@ -2598,28 +2696,28 @@ msgstr ""
 msgid "Pod Administration"
 msgstr ""
 
-#: pod/video/admin.py:141
+#: pod/video/admin.py:142
 msgid "Encode selected"
 msgstr ""
 
-#: pod/video/admin.py:179 pod/video/forms.py:194 pod/video/forms.py:382
-#: pod/video/forms.py:384 pod/video/models.py:189
+#: pod/video/admin.py:180 pod/video/forms.py:194 pod/video/forms.py:382
+#: pod/video/forms.py:384 pod/video/models.py:187
 msgid "Owners"
 msgstr ""
 
-#: pod/video/encode.py:1104
+#: pod/video/encode.py:1116
 #, python-format
 msgid "Encoding #%(content_id)s completed"
 msgstr ""
 
-#: pod/video/encode.py:1109 pod/video/encode.py:1124
+#: pod/video/encode.py:1122 pod/video/encode.py:1139
 #, python-format
 msgid ""
 "The content “%(content_title)s” has been encoded to Web formats, and is now "
 "available on %(site_title)s."
 msgstr ""
 
-#: pod/video/encode.py:1114 pod/video/encode.py:1129
+#: pod/video/encode.py:1127 pod/video/encode.py:1144
 msgid "You will find it here:"
 msgstr ""
 
@@ -2627,7 +2725,7 @@ msgstr ""
 msgid "File field"
 msgstr ""
 
-#: pod/video/forms.py:66 pod/video/models.py:372
+#: pod/video/forms.py:66 pod/video/models.py:370
 msgid "You can send an audio or video file."
 msgstr ""
 
@@ -2665,7 +2763,7 @@ msgid ""
 msgstr ""
 
 #: pod/video/forms.py:85 pod/video/forms.py:186 pod/video/forms.py:212
-#: pod/video/models.py:174 pod/video/models.py:248 pod/video/models.py:392
+#: pod/video/models.py:172 pod/video/models.py:246 pod/video/models.py:390
 msgid ""
 "In this field you can describe your content, add all needed related "
 "information, and format the result using the toolbar."
@@ -2679,12 +2777,12 @@ msgstr ""
 msgid "Enter the date of the event, if applicable, in the AAAA-MM-JJ format."
 msgstr ""
 
-#: pod/video/forms.py:93 pod/video/models.py:399
-#: pod/video_search/templates/search/search.html:134
+#: pod/video/forms.py:93 pod/video/models.py:397
+#: pod/video_search/templates/search/search.html:145
 msgid "University course"
 msgstr ""
 
-#: pod/video/forms.py:94 pod/video/models.py:401
+#: pod/video/forms.py:94 pod/video/models.py:399
 msgid "Select an university course as audience target of the content."
 msgstr ""
 
@@ -2694,13 +2792,13 @@ msgid ""
 "for an audience outside the european LMD scheme."
 msgstr ""
 
-#: pod/video/forms.py:100 pod/video/models.py:404
-#: pod/video/templates/videos/video-info.html:40
-#: pod/video_search/templates/search/search.html:121
+#: pod/video/forms.py:100 pod/video/models.py:402
+#: pod/video/templates/videos/video-info.html:38
+#: pod/video_search/templates/search/search.html:132
 msgid "Main language"
 msgstr ""
 
-#: pod/video/forms.py:101 pod/video/models.py:406
+#: pod/video/forms.py:101 pod/video/models.py:404
 msgid "Select the main language used in the content."
 msgstr ""
 
@@ -2716,39 +2814,39 @@ msgid ""
 "explain your needs."
 msgstr ""
 
-#: pod/video/forms.py:111 pod/video/forms.py:147 pod/video/models.py:415
-#: pod/video/models.py:424 pod/video/models.py:430 pod/video/models.py:1008
+#: pod/video/forms.py:111 pod/video/forms.py:147 pod/video/models.py:413
+#: pod/video/models.py:422 pod/video/models.py:428 pod/video/models.py:1045
 msgid ""
 "Hold down \"Control\", or \"Command\" on a Mac, to select more than one."
 msgstr ""
 
-#: pod/video/forms.py:114 pod/video/models.py:418
+#: pod/video/forms.py:114 pod/video/models.py:416
 msgid "Licence"
 msgstr ""
 
-#: pod/video/forms.py:118 pod/video/models.py:69
+#: pod/video/forms.py:118 pod/video/models.py:67
 msgid "Attribution 4.0 International (CC BY 4.0)"
 msgstr ""
 
-#: pod/video/forms.py:121 pod/video/models.py:70
+#: pod/video/forms.py:121 pod/video/models.py:68
 msgid "Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)"
 msgstr ""
 
-#: pod/video/forms.py:125 pod/video/models.py:74
+#: pod/video/forms.py:125 pod/video/models.py:72
 msgid ""
 "Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)"
 msgstr ""
 
-#: pod/video/forms.py:129 pod/video/models.py:77
+#: pod/video/forms.py:129 pod/video/models.py:75
 msgid "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 msgstr ""
 
-#: pod/video/forms.py:134 pod/video/models.py:80
+#: pod/video/forms.py:134 pod/video/models.py:78
 msgid ""
 "Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)"
 msgstr ""
 
-#: pod/video/forms.py:140 pod/video/models.py:84
+#: pod/video/forms.py:140 pod/video/models.py:82
 msgid "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"
 msgstr ""
 
@@ -2766,7 +2864,7 @@ msgid ""
 "nothing and contact us to explain your needs."
 msgstr ""
 
-#: pod/video/forms.py:153 pod/video/models.py:439
+#: pod/video/forms.py:153 pod/video/models.py:437
 msgid "Draft"
 msgstr ""
 
@@ -2798,11 +2896,11 @@ msgid ""
 "automatically."
 msgstr ""
 
-#: pod/video/forms.py:190 pod/video/models.py:186
+#: pod/video/forms.py:190 pod/video/models.py:184
 msgid "Extra style"
 msgstr ""
 
-#: pod/video/forms.py:190 pod/video/models.py:181
+#: pod/video/forms.py:190 pod/video/models.py:179
 msgid "Background color"
 msgstr ""
 
@@ -2832,256 +2930,268 @@ msgstr ""
 msgid "Delete video cannot be undo"
 msgstr ""
 
-#: pod/video/models.py:54
+#: pod/video/models.py:52
 msgid "None / All"
 msgstr ""
 
-#: pod/video/models.py:55
+#: pod/video/models.py:53
 msgid "Bachelor’s Degree"
 msgstr ""
 
-#: pod/video/models.py:56
+#: pod/video/models.py:54
 msgid "Master’s Degree"
 msgstr ""
 
-#: pod/video/models.py:57
+#: pod/video/models.py:55
 msgid "Doctorate"
 msgstr ""
 
-#: pod/video/models.py:58
+#: pod/video/models.py:56
 msgid "Other"
 msgstr ""
 
-#: pod/video/models.py:162 pod/video/models.py:237
+#: pod/video/models.py:160 pod/video/models.py:235
 msgid ""
 "Please choose a title as short and accurate as possible, reflecting the main "
 "subject / context of the content.(max length : 100 characters)"
 msgstr ""
 
-#: pod/video/models.py:183
+#: pod/video/models.py:181
 msgid ""
 "The background color for your channel. You can use the format #. i.e.: "
 "#ff0000 for red"
 msgstr ""
 
-#: pod/video/models.py:187
+#: pod/video/models.py:185
 msgid "The style will be added to your channel to show it"
 msgstr ""
 
-#: pod/video/models.py:197
+#: pod/video/models.py:195
 msgid ""
 "If checked, the channel appear in a list of available channels on the "
 "platform."
 msgstr ""
 
-#: pod/video/models.py:203 pod/video/models.py:257
-#: pod/video_search/templates/search/search.html:108
+#: pod/video/models.py:201 pod/video/models.py:255
+#: pod/video_search/templates/search/search.html:119
 msgid "Channel"
 msgstr ""
 
-#: pod/video/models.py:234
+#: pod/video/models.py:232
 msgid "Theme parent"
 msgstr ""
 
-#: pod/video/models.py:314
+#: pod/video/models.py:312
 msgid "Theme"
 msgstr ""
 
-#: pod/video/models.py:328 pod/video/models.py:353
+#: pod/video/models.py:326 pod/video/models.py:351
 msgid "Icon"
 msgstr ""
 
-#: pod/video/models.py:364 pod/video_search/templates/search/search.html:95
+#: pod/video/models.py:362 pod/video_search/templates/search/search.html:106
 msgid "Discipline"
 msgstr ""
 
-#: pod/video/models.py:376
+#: pod/video/models.py:374
 msgid ""
 "Please choose a title as short and accurate as possible, reflecting the main "
 "subject / context of the content.(max length : 250 characters)"
 msgstr ""
 
-#: pod/video/models.py:395
+#: pod/video/models.py:393
 msgid "Date added"
 msgstr ""
 
-#: pod/video/models.py:397
+#: pod/video/models.py:395
 msgid "Date of event"
 msgstr ""
 
-#: pod/video/models.py:408
+#: pod/video/models.py:406
 msgid ""
 "Separate tags with spaces, enclose the tags consist of several words in "
 "quotation marks."
 msgstr ""
 
-#: pod/video/models.py:433
+#: pod/video/models.py:431
 msgid "allow downloading"
 msgstr ""
 
-#: pod/video/models.py:434
+#: pod/video/models.py:432
 msgid "Check this box if you to allow downloading of the encoded files"
 msgstr ""
 
-#: pod/video/models.py:435
+#: pod/video/models.py:433
 msgid "video 360"
 msgstr ""
 
-#: pod/video/models.py:436
+#: pod/video/models.py:434
 msgid "Check this box if you want to use the 360 player for the video"
 msgstr ""
 
-#: pod/video/models.py:441
+#: pod/video/models.py:439
 msgid ""
 "If this box is checked, the video will be visible and accessible only by you."
 msgstr ""
 
-#: pod/video/models.py:447
+#: pod/video/models.py:445
 msgid ""
 "If this box is checked, the video will only be accessible to authenticated "
 "users."
 msgstr ""
 
-#: pod/video/models.py:452
+#: pod/video/models.py:450
 msgid "Select one or more groups who can access to this video"
 msgstr ""
 
-#: pod/video/models.py:454
+#: pod/video/models.py:452
 msgid "password"
 msgstr ""
 
-#: pod/video/models.py:456
+#: pod/video/models.py:454
 msgid "Viewing this video will not be possible without this password."
 msgstr ""
 
-#: pod/video/models.py:461 pod/video/models.py:521
+#: pod/video/models.py:459 pod/video/models.py:519
 msgid "Thumbnails"
 msgstr ""
 
-#: pod/video/models.py:465
+#: pod/video/models.py:463
 msgid "Overview"
 msgstr ""
 
-#: pod/video/models.py:471
+#: pod/video/models.py:469
 msgid "Encoding in progress"
 msgstr ""
 
-#: pod/video/models.py:473
+#: pod/video/models.py:471
 msgid "Is Video"
 msgstr ""
 
-#: pod/video/models.py:479
-msgid "videos"
-msgstr ""
-
-#: pod/video/models.py:505
+#: pod/video/models.py:503
 msgid "Sum of view"
 msgstr ""
 
-#: pod/video/models.py:511
+#: pod/video/models.py:509
 msgid "Encoding step"
 msgstr ""
 
-#: pod/video/models.py:740
+#: pod/video/models.py:738
 msgid "Date"
 msgstr ""
 
-#: pod/video/models.py:742
+#: pod/video/models.py:740
 msgid "Number of view"
 msgstr ""
 
-#: pod/video/models.py:747
+#: pod/video/models.py:745
 msgid "resolution"
 msgstr ""
 
-#: pod/video/models.py:753 pod/video/models.py:791 pod/video/models.py:798
+#: pod/video/models.py:751 pod/video/models.py:815 pod/video/models.py:822
+msgid "minrate"
+msgstr ""
+
+#: pod/video/models.py:756 pod/video/models.py:791 pod/video/models.py:798
 msgid "bitrate video"
 msgstr ""
 
-#: pod/video/models.py:758 pod/video/models.py:803 pod/video/models.py:810
+#: pod/video/models.py:761 pod/video/models.py:803 pod/video/models.py:810
+msgid "maxrate"
+msgstr ""
+
+#: pod/video/models.py:766 pod/video/models.py:840 pod/video/models.py:847
 msgid "bitrate audio"
 msgstr ""
 
-#: pod/video/models.py:762
+#: pod/video/models.py:770
 msgid "Make a MP4 version"
 msgstr ""
 
-#: pod/video/models.py:774 pod/video/models.py:827
+#: pod/video/models.py:782 pod/video/models.py:864
 msgid "rendition"
 msgstr ""
 
-#: pod/video/models.py:775
+#: pod/video/models.py:783
 msgid "renditions"
 msgstr ""
 
-#: pod/video/models.py:829 pod/video/models.py:886 pod/video/models.py:931
+#: pod/video/models.py:866 pod/video/models.py:923 pod/video/models.py:968
 msgid "Format"
 msgstr ""
 
-#: pod/video/models.py:836 pod/video/models.py:891 pod/video/models.py:936
+#: pod/video/models.py:873 pod/video/models.py:928 pod/video/models.py:973
 msgid "encoding source file"
 msgstr ""
 
-#: pod/video/models.py:992 pod/video/models.py:995
+#: pod/video/models.py:1029 pod/video/models.py:1032
 msgid "Note"
 msgstr ""
 
-#: pod/video/models.py:996
+#: pod/video/models.py:1033
 msgid "Notes"
 msgstr ""
 
-#: pod/video/models.py:1004
+#: pod/video/models.py:1041
 msgid "Date for deletion"
 msgstr ""
 
-#: pod/video/models.py:1012
+#: pod/video/models.py:1044 pod/video/templates/videos/video.html:51
+#: pod/video/templates/videos/videos.html:8
+#: pod/video/templates/videos/videos.html:17
+msgid "Videos"
+msgstr ""
+
+#: pod/video/models.py:1049
 msgid "Video to delete"
 msgstr ""
 
-#: pod/video/models.py:1013
+#: pod/video/models.py:1050
 msgid "Videos to delete"
 msgstr ""
 
-#: pod/video/templates/channel/channel.html:51
-#: pod/video/templates/channel/channel.html:54
-#: pod/video/templates/videos/videos.html:15
+#: pod/video/templates/channel/channel.html:56
+#: pod/video/templates/channel/channel.html:59
+#: pod/video/templates/videos/videos.html:26
 msgid "subscribe to the video feed"
 msgstr ""
 
-#: pod/video/templates/channel/channel.html:52
-#: pod/video/templates/channel/channel.html:55
-#: pod/video/templates/videos/videos.html:17
+#: pod/video/templates/channel/channel.html:57
+#: pod/video/templates/channel/channel.html:60
+#: pod/video/templates/videos/videos.html:28
 msgid "subscribe to the audio feed"
 msgstr ""
 
-#: pod/video/templates/channel/channel.html:59
+#: pod/video/templates/channel/channel.html:64
 #: pod/video/templates/channel/channel_edit.html:32
 #: pod/video/templates/channel/channel_edit.html:33
 #: pod/video/templates/channel/theme_edit.html:32
-#: pod/video/templates/videos/video.html:58
+#: pod/video/templates/videos/video.html:65
 msgid "Edit the themes"
 msgstr ""
 
-#: pod/video/templates/channel/channel.html:60
+#: pod/video/templates/channel/channel.html:65
 #: pod/video/templates/channel/my_channels.html:20
 #: pod/video/templates/channel/theme_edit.html:33
-#: pod/video/templates/videos/video.html:58
+#: pod/video/templates/videos/video.html:65
 msgid "Edit the channel"
 msgstr ""
 
-#: pod/video/templates/channel/channel.html:82
+#: pod/video/templates/channel/channel.html:87
 #: pod/video/templates/videos/my_videos.html:9
 #: pod/video/templates/videos/my_videos.html:18
-#: pod/video/templates/videos/videos.html:8
-#: pod/video/templates/videos/videos.html:13
-#: pod/video_search/templates/search/search.html:19
+#: pod/video/templates/videos/videos.html:6
+#: pod/video/templates/videos/videos.html:12
+#: pod/video/templates/videos/videos.html:19
+#: pod/video/templates/videos/videos.html:24
+#: pod/video_search/templates/search/search.html:30
 #, python-format
 msgid "%(counter)s video found"
 msgid_plural "%(counter)s videos found"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pod/video/templates/channel/channel.html:92
+#: pod/video/templates/channel/channel.html:97
 msgid "Themes of "
 msgstr ""
 
@@ -3189,11 +3299,11 @@ msgstr ""
 msgid "link"
 msgstr ""
 
-#: pod/video/templates/videos/last_videos.html:3
+#: pod/video/templates/videos/last_videos.html:4
 msgid "Last videos"
 msgstr ""
 
-#: pod/video/templates/videos/last_videos.html:10
+#: pod/video/templates/videos/last_videos.html:11
 msgid "Show all videos"
 msgstr ""
 
@@ -3246,8 +3356,9 @@ msgstr ""
 msgid "contact its owner"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:7
-#: pod/video/templates/videos/video.html:125
+#: pod/video/templates/videos/video-info.html:8
+#: pod/video/templates/videos/video.html:111
+#: pod/video/templates/videos/video.html:112
 msgid "Summary"
 msgstr ""
 
@@ -3257,96 +3368,108 @@ msgid ""
 "video."
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:28
-#: pod/video/templates/videos/video.html:128
+#: pod/video/templates/videos/video-info.html:23
+msgid "No information available"
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html:27
+#: pod/video/templates/videos/video.html:116
+#: pod/video/templates/videos/video.html:117
 msgid "Infos"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:31
+#: pod/video/templates/videos/video-info.html:29
 msgid "Added by"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:36
+#: pod/video/templates/videos/video-info.html:34
 msgid "Updated on"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:38
+#: pod/video/templates/videos/video-info.html:36
 msgid "Number of view(s)"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:41
+#: pod/video/templates/videos/video-info.html:39
 msgid "Audience"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:54
+#: pod/video/templates/videos/video-info.html:53
 msgid "send an email"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:59
+#: pod/video/templates/videos/video-info.html:58
 msgid "go to his web link"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:71
-#: pod/video/templates/videos/video.html:132
+#: pod/video/templates/videos/video-info.html:68
+#: pod/video/templates/videos/video.html:122
+#: pod/video/templates/videos/video.html:123
 msgid "Downloads"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:74
+#: pod/video/templates/videos/video-info.html:70
 msgid "Video file(s)"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:106
-#: pod/video/templates/videos/video.html:136
+#: pod/video/templates/videos/video-info.html:101
+#: pod/video/templates/videos/video.html:128
+#: pod/video/templates/videos/video.html:129
 msgid "Embed/Share"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:110
+#: pod/video/templates/videos/video-info.html:104
 msgid "Social Networks"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:123
+#: pod/video/templates/videos/video-info.html:117
 msgid "Autoplay"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:124
+#: pod/video/templates/videos/video-info.html:118
 msgid "Check the box to autoplay the video."
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:131
+#: pod/video/templates/videos/video-info.html:125
 msgid "Loop"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:132
+#: pod/video/templates/videos/video-info.html:126
 msgid "Check the box to loop the video."
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:140
+#: pod/video/templates/videos/video-info.html:134
 msgid "Start video"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:143
+#: pod/video/templates/videos/video-info.html:137
 msgid "Check the box to indicate the beginning of playing desired."
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:160
+#: pod/video/templates/videos/video-info.html:154
 msgid "QR code for this link"
 msgstr ""
 
-#: pod/video/templates/videos/video.html:97
+#: pod/video/templates/videos/video.html:102
 msgid "Report the video"
 msgstr ""
 
-#: pod/video/templates/videos/video.html:102
+#: pod/video/templates/videos/video.html:134
+#: pod/video/templates/videos/video.html:135
+msgid "Other versions"
+msgstr ""
+
+#: pod/video/templates/videos/video.html:148
 msgid "Add the video to a playlist"
 msgstr ""
 
-#: pod/video/templates/videos/video.html:163
-#: pod/video/templates/videos/video.html:177
+#: pod/video/templates/videos/video.html:187
+#: pod/video/templates/videos/video.html:201
 msgid "take Note"
 msgstr ""
 
-#: pod/video/templates/videos/video.html:169
-#: pod/video/templates/videos/video.html:180
+#: pod/video/templates/videos/video.html:193
+#: pod/video/templates/videos/video.html:204
 msgid "You must be logged in to take notes."
 msgstr ""
 
@@ -3416,40 +3539,40 @@ msgstr ""
 msgid "As a staff member you can create other version of your video."
 msgstr ""
 
-#: pod/video/templates/videos/video_edit.html:155
+#: pod/video/templates/videos/video_edit.html:145
 msgid "Embed/Share (Private Mode)"
 msgstr ""
 
-#: pod/video/templates/videos/video_edit.html:157
+#: pod/video/templates/videos/video_edit.html:147
 msgid "Use this link to share the video in private mode"
 msgstr ""
 
-#: pod/video/templates/videos/video_edit.html:173
+#: pod/video/templates/videos/video_edit.html:163
 msgid "Uploading"
 msgstr ""
 
-#: pod/video/templates/videos/video_edit.html:175
+#: pod/video/templates/videos/video_edit.html:165
 #, python-format
 msgid "The file size must be lower than %(video_max_upload_size)s Go."
 msgstr ""
 
-#: pod/video/templates/videos/video_edit.html:176
+#: pod/video/templates/videos/video_edit.html:166
 msgid ""
 "The sending time depends on the size of your file and your upload speed. "
 "This can be quite long."
 msgstr ""
 
-#: pod/video/templates/videos/video_edit.html:177
+#: pod/video/templates/videos/video_edit.html:167
 msgid ""
 "While sending your file, do not close your browser until you have received a "
 "message of success or failure."
 msgstr ""
 
-#: pod/video/templates/videos/video_edit.html:178
+#: pod/video/templates/videos/video_edit.html:168
 msgid "An email will be sent to you when all encoding tasks are completed."
 msgstr ""
 
-#: pod/video/templates/videos/video_edit.html:188
+#: pod/video/templates/videos/video_edit.html:178
 msgid "Help for form fields"
 msgstr ""
 
@@ -3471,27 +3594,27 @@ msgstr ""
 msgid "You cannot edit this channel."
 msgstr ""
 
-#: pod/video/views.py:114 pod/video/views.py:476
+#: pod/video/views.py:114 pod/video/views.py:478
 msgid "The changes have been saved."
 msgstr ""
 
-#: pod/video/views.py:447
+#: pod/video/views.py:449
 msgid "You cannot edit this video."
 msgstr ""
 
-#: pod/video/views.py:504
+#: pod/video/views.py:506
 msgid "You cannot delete this video."
 msgstr ""
 
-#: pod/video/views.py:514
+#: pod/video/views.py:516
 msgid "The video has been deleted."
 msgstr ""
 
-#: pod/video/views.py:541
+#: pod/video/views.py:543
 msgid "The note has been saved."
 msgstr ""
 
-#: pod/video/views.py:563
+#: pod/video/views.py:565
 msgid "You cannot access to this view."
 msgstr ""
 
@@ -3503,20 +3626,20 @@ msgstr ""
 msgid "End date"
 msgstr ""
 
-#: pod/video_search/templates/search/search.html:8
-#: pod/video_search/templates/search/search.html:18
+#: pod/video_search/templates/search/search.html:19
+#: pod/video_search/templates/search/search.html:29
 msgid "Search results"
 msgstr ""
 
-#: pod/video_search/templates/search/search.html:15
+#: pod/video_search/templates/search/search.html:26
 msgid "open/close menu"
 msgstr ""
 
-#: pod/video_search/templates/search/search.html:22
+#: pod/video_search/templates/search/search.html:33
 msgid "Remove filters"
 msgstr ""
 
-#: pod/video_search/templates/search/search.html:55
+#: pod/video_search/templates/search/search.html:66
 msgid "faceting"
 msgstr ""
 
