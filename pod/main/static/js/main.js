@@ -112,6 +112,7 @@ var get_list = function(tab, level=0, tab_selected=[], tag_type="option", li_cla
 }
 
 /*** CHANNELS IN NAVBAR ***/
+/*
 $("#list-channels a.show-themes").click(function() {
     $("#list-channels li").removeClass('list-group-item-info');
     var str = get_list(listTheme["channel_"+$(this).data('id')], 0, [], tag_type="li", li_class="list-group-item", attrs='', add_link=true, current="", channel="");
@@ -132,7 +133,18 @@ $(document).on('click','#close_tab_theme', function() {
     $("#list-channels").addClass("col-12");
     $("#list-themes").html("").hide();
 });
-
+*/
+$('.collapsibleThemes').on('show.bs.collapse', function () {
+  // do something…
+  
+  var str = get_list(listTheme["channel_"+$(this).data('id')], 0, [], tag_type="li", li_class="list-inline-item badge badge-primary badge-pill", attrs='', add_link=true, current="", channel="");
+  $(this).html('<ul class="list-inline">'+str+'</ul>')
+  $(this).parents("li").addClass('list-group-item-info');
+})
+$('.collapsibleThemes').on('hidden.bs.collapse', function () {
+  // do something…
+  $(this).parents("li").removeClass('list-group-item-info');
+})
 $('#ownerboxnavbar').keyup(function() {
 	if($(this).val() && $(this).val().length > 2) {
 		var valThis = removeDiacritics($(this).val().toLowerCase());

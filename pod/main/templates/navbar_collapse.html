@@ -12,20 +12,36 @@
       <div class="modal-body row">
         <ul class="col-12 list-group list-group-flush" id="list-channels">
           {% for channel in CHANNELS %}
-          <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-id="{{channel.id}}">
+          <li class="list-group-item list-group-item-action" data-id="{{channel.id}}"> 
+            <div class=" d-flex justify-content-between align-items-center">
           <span class="d-flex align-items-center title-chaine">{% if channel.headband %}<img src="{{ channel.headband.file.url }}" height="34" class='rounded mr-2' alt="{{channel.title|title}}">{% else %}<i data-feather="youtube" style="height:34px" class="mr-2"></i>{% endif %} <a href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">
             {{channel.title}}</a></span>
           <span>
+          {% if channel.themes.all.count > 0 %}
+          <!--
+          <a href="#" class="btn btn-outline-primary btn-sm p-0 pl-1 show-themes" data-id="{{channel.id}}">{{channel.themes.all.count}} {% trans "Themes" %} <i data-feather="chevrons-down" class="m-0 p-0"></i></a>
+          -->
+          <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThemes{{channel.id}}" aria-expanded="true" aria-controls="collapseThemes{{channel.id}}">
+          {{channel.themes.all.count}} {% trans "Themes" %} <i data-feather="chevrons-down" class="m-0 p-0"></i>
+          </button>
+          {% endif %}
           <span class="badge badge-primary badge-pill">{{channel.video_count}} {% trans "videos" %}</span>
-          {% if channel.themes.all.count > 0 %}<a href="#" class="btn btn-outline-primary btn-sm show-themes" data-id="{{channel.id}}">{{channel.themes.all.count}} {% trans "Themes" %} <i data-feather="chevrons-right"></i></a>{%endif%}
           </span>
+            </div>
+          <div id="collapseThemes{{channel.id}}" class="collapse collapsibleThemes" aria-labelledby="headingOne" data-parent="#list-channels" data-id="{{channel.id}}">
+              <div >
+                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+              </div>
+            </div>
           </li>
           {% empty %}
           <li class="list-group-item"> {% trans "No channels found" %} </li>
           {%endfor%}
         </ul>
+        <!--
         <ul class="col-4 list-group list-group-flush border border-info" id="list-themes" style="display:none">
         </ul>
+        -->
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
