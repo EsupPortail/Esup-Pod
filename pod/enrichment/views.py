@@ -12,7 +12,7 @@ from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
 
 from pod.video.models import Video, Channel, Theme
-from pod.video.views import get_note_form, get_video_access
+from pod.video.views import render_video
 from pod.video.forms import VideoPasswordForm
 
 from .models import Enrichment, EnrichmentGroup
@@ -212,61 +212,11 @@ def edit_enrichment_cancel(request, video):
 @csrf_protect
 def video_enrichment(request, slug, slug_c=None,
                      slug_t=None, slug_private=None):
-    try:
-        id = int(slug[:slug.find("-")])
-    except ValueError:
-        raise SuspiciousOperation('Invalid video id')
-    video = get_object_or_404(Video, id=id)
-    notesForm = get_note_form(request, video)
-    channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
-    theme = get_object_or_404(Theme, slug=slug_t) if slug_t else None
-    playlist = None
 
     template_video = 'enrichment/video_enrichment-iframe.html' if (
         request.GET.get('is_iframe')) else 'enrichment/video_enrichment.html'
 
-    is_password_protected = (
-        video.password is not None and video.password != '')
-
-    show_page = get_video_access(request, video, slug_private)
-
-    if show_page:
-        return render(
-            request, template_video, {
-                'channel': channel,
-                'video': video,
-                'theme': theme,
-                'notesForm': notesForm,
-                'playlist': playlist
-            }
-        )
-    else:
-        if is_password_protected:
-            form = VideoPasswordForm(
-                request.POST) if request.POST else VideoPasswordForm()
-            return render(
-                request, 'enrichment/video_enrichment.html', {
-                    'channel': channel,
-                    'video': video,
-                    'theme': theme,
-                    'form': form,
-                    'notesForm': notesForm
-                }
-            )
-        elif request.user.is_authenticated():
-            messages.add_message(
-                request, messages.ERROR,
-                _(u'You cannot watch this video.'))
-            raise PermissionDenied
-        else:
-            iframe_param = 'is_iframe=true&' if (
-                request.GET.get('is_iframe')) else ''
-            return redirect(
-                '%s?%sreferrer=%s' % (
-                    settings.LOGIN_URL,
-                    iframe_param,
-                    request.get_full_path())
-            )
+    return render_video(request, slug, slug_c, slug_t, slug_private, template_video, None)
 
 
 """

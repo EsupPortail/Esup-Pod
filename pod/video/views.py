@@ -373,6 +373,14 @@ def get_video_access(request, video, slug_private):
 
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
+    template_video = 'videos/video-iframe.html' if (
+        request.GET.get('is_iframe')) else 'videos/video.html'
+    return render_video(request, slug, slug_c, slug_t, slug_private,
+                        template_video, None)
+
+
+def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
+                 template_video='videos/video.html', more_data=None):
     try:
         id = int(slug[:slug.find("-")])
     except ValueError:
@@ -384,9 +392,6 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     playlist = get_object_or_404(
         Playlist,
         slug=request.GET['playlist']) if request.GET.get('playlist') else None
-
-    template_video = 'videos/video-iframe.html' if (
-        request.GET.get('is_iframe')) else 'videos/video.html'
 
     is_password_protected = (
         video.password is not None and video.password != '')
@@ -404,19 +409,23 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                 'video': video,
                 'theme': theme,
                 'notesForm': notesForm,
-                'playlist': playlist
+                'playlist': playlist,
+                'more_data': more_data
             }
         )
     else:
         is_draft = video.is_draft
         is_restricted = video.is_restricted
-        is_restricted_to_group = video.restrict_access_to_groups.all().exists()
+        is_restricted_to_group = video.restrict_access_to_groups.all(
+        ).exists()
         is_access_protected = (
             is_draft
             or is_restricted
             or is_restricted_to_group
         )
-        if is_password_protected and (not is_access_protected or (is_access_protected and show_page)) :
+        if is_password_protected and (
+            not is_access_protected or (
+                is_access_protected and show_page)):
             form = VideoPasswordForm(
                 request.POST) if request.POST else VideoPasswordForm()
             if (request.POST.get('password')
@@ -430,7 +439,9 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
                     'video': video,
                     'theme': theme,
                     'form': form,
-                    'notesForm': notesForm
+                    'notesForm': notesForm,
+                    'playlist': playlist,
+                    'more_data': more_data
                 }
             )
         elif request.user.is_authenticated():
