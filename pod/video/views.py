@@ -317,14 +317,15 @@ def get_video_access(request, video, slug_private):
     is_draft = video.is_draft
     is_restricted = video.is_restricted
     is_restricted_to_group = video.restrict_access_to_groups.all().exists()
+    """
     is_password_protected = (video.password is not None
                              and video.password != '')
-
+    """
     is_access_protected = (
         is_draft
         or is_restricted
         or is_restricted_to_group
-        or is_password_protected
+        # or is_password_protected
     )
 
     if is_access_protected:
@@ -338,7 +339,7 @@ def get_video_access(request, video, slug_private):
         access_granted_for_group = (
             request.user.is_authenticated()
             and is_in_video_groups(request.user, video)
-        )
+        ) or request.user == video.owner or request.user.is_superuser
 
         show_page = (
             access_granted_for_private
@@ -346,21 +347,21 @@ def get_video_access(request, video, slug_private):
             (is_draft and access_granted_for_draft)
             or (
                 is_restricted
-                and access_granted_for_restricted
-                and is_password_protected is False)
+                and access_granted_for_restricted)
+            # and is_password_protected is False)
             or (
                 is_restricted_to_group
-                and access_granted_for_group
-                and is_password_protected is False)
-            or (
-                is_password_protected
-                and access_granted_for_draft
-            )
-            or (
-                is_password_protected
-                and request.POST.get('password')
-                and request.POST.get('password') == video.password
-            )
+                and access_granted_for_group)
+            # and is_password_protected is False)
+            # or (
+            #     is_password_protected
+            #     and access_granted_for_draft
+            # )
+            # or (
+            #     is_password_protected
+            #     and request.POST.get('password')
+            #     and request.POST.get('password') == video.password
+            # )
         )
         if show_page:
             return True
@@ -392,7 +393,11 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
 
     show_page = get_video_access(request, video, slug_private)
 
-    if show_page:
+    if ((show_page and not is_password_protected) or (
+        is_password_protected
+        and request.POST.get('password')
+        and request.POST.get('password') == video.password
+    ) or request.user == video.owner or request.user.is_superuser):
         return render(
             request, template_video, {
                 'channel': channel,
@@ -403,9 +408,22 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
             }
         )
     else:
-        if is_password_protected:
+        is_draft = video.is_draft
+        is_restricted = video.is_restricted
+        is_restricted_to_group = video.restrict_access_to_groups.all().exists()
+        is_access_protected = (
+            is_draft
+            or is_restricted
+            or is_restricted_to_group
+        )
+        if is_password_protected and (not is_access_protected or (is_access_protected and show_page)) :
             form = VideoPasswordForm(
                 request.POST) if request.POST else VideoPasswordForm()
+            if (request.POST.get('password')
+                    and request.POST.get('password') != video.password):
+                messages.add_message(
+                    request, messages.ERROR,
+                    _('The password is incorrect.'))
             return render(
                 request, 'videos/video.html', {
                     'channel': channel,
@@ -418,7 +436,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         elif request.user.is_authenticated():
             messages.add_message(
                 request, messages.ERROR,
-                _(u'You cannot watch this video.'))
+                _('You cannot watch this video.'))
             raise PermissionDenied
         else:
             iframe_param = 'is_iframe=true&' if (

@@ -135,8 +135,6 @@ $(document).on('click','#close_tab_theme', function() {
 });
 */
 $('.collapsibleThemes').on('show.bs.collapse', function () {
-  // do something…
-  
   var str = get_list(listTheme["channel_"+$(this).data('id')], 0, [], tag_type="li", li_class="list-inline-item badge badge-primary badge-pill", attrs='', add_link=true, current="", channel="");
   $(this).html('<ul class="list-inline">'+str+'</ul>')
   $(this).parents("li").addClass('list-group-item-info');
