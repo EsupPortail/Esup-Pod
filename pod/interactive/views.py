@@ -1,17 +1,14 @@
 from django.shortcuts import render
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import PermissionDenied
 from django.core.exceptions import SuspiciousOperation
 from django.shortcuts import get_object_or_404
-from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
 
-from pod.video.models import Video, Channel, Theme
+from pod.video.models import Video
 from pod.video.views import render_video
-from pod.video.forms import VideoPasswordForm
 from .models import Interactive, InteractiveGroup
 from .forms import InteractiveGroupForm
 from h5pp.models import h5p_contents, h5p_libraries
