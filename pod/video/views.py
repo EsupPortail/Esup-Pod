@@ -399,9 +399,11 @@ def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
     show_page = get_video_access(request, video, slug_private)
 
     if ((show_page and not is_password_protected) or (
-        is_password_protected
+        show_page and is_password_protected
         and request.POST.get('password')
         and request.POST.get('password') == video.password
+    ) or (
+        slug_private and slug_private == video.get_hashkey()
     ) or request.user == video.owner or request.user.is_superuser):
         return render(
             request, template_video, {
