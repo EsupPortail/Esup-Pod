@@ -98,8 +98,8 @@
   </div>
 
   <div class="tab-pane fade" id="share" role="tabpanel" aria-labelledby="share-tab">
-    <h5><i data-feather="cast"></i>&nbsp;{% trans 'Embed/Share' %}</h5>
-    {% if not video.is_restricted and not video.password %}
+    <h5><i data-feather="share-2"></i>&nbsp;{% trans 'Embed/Share' %}</h5>
+    {% if not video.is_restricted and video.password != '' %}
       <p>
           <label>{% trans 'Social Networks' %}</label>
           <a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Facebook"><i data-feather="facebook"></i></a>
@@ -111,7 +111,7 @@
     <p>
     <div class="list-group">
       <fieldset>
-      <div class="list-group-item py-0">
+      <div class="list-group-item">
         <div class="form-group">
         <div class="form-check">
         <input type="checkbox" id="autoplay" class="form-check-input" /><label for="autoplay" class="form-check-label" >{% trans 'Autoplay' %}</label>
@@ -119,7 +119,7 @@
         </div>
         </div>
       </div>
-      <div class="list-group-item py-0">
+      <div class="list-group-item">
         <div class="form-group">
         <div class="form-check">
         <input type="checkbox" id="loop" class="form-check-input" /><label for="loop" class="form-check-label" >{% trans 'Loop' %}</label>
@@ -127,7 +127,7 @@
         </div>
         </div>
       </div>
-      <div class="list-group-item py-0">
+      <div class="list-group-item">
         <div class="form-group ">
           <div class="form-check">
             <input name="displaytime" class="form-check-input " id="displaytime" type="checkbox">

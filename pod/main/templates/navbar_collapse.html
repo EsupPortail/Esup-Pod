@@ -18,11 +18,8 @@
             {{channel.title}}</a></span>
           <span>
           {% if channel.themes.all.count > 0 %}
-          <!--
-          <a href="#" class="btn btn-outline-primary btn-sm p-0 pl-1 show-themes" data-id="{{channel.id}}">{{channel.themes.all.count}} {% trans "Themes" %} <i data-feather="chevrons-down" class="m-0 p-0"></i></a>
-          -->
           <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThemes{{channel.id}}" aria-expanded="true" aria-controls="collapseThemes{{channel.id}}">
-          {{channel.themes.all.count}} {% trans "Themes" %} <i data-feather="chevrons-down" class="m-0 p-0"></i>
+          {{channel.themes.all.count}} {% trans "Themes" %} <i data-feather="chevron-down" class="chevron-down m-0 p-0"></i>
           </button>
           {% endif %}
           <span class="badge badge-primary badge-pill">{{channel.video_count}} {% trans "videos" %}</span>
@@ -34,10 +31,6 @@
           <li class="list-group-item"> {% trans "No channels found" %} </li>
           {%endfor%}
         </ul>
-        <!--
-        <ul class="col-4 list-group list-group-flush border border-info" id="list-themes" style="display:none">
-        </ul>
-        -->
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
