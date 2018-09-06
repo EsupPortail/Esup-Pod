@@ -1,17 +1,14 @@
 from django.shortcuts import render
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import PermissionDenied
 from django.core.exceptions import SuspiciousOperation
 from django.shortcuts import get_object_or_404
-from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
 
-from pod.video.models import Video, Channel, Theme
-from pod.video.views import get_note_form, get_video_access
-from pod.video.forms import VideoPasswordForm
+from pod.video.models import Video
+from pod.video.views import render_video
 from .models import Interactive, InteractiveGroup
 from .forms import InteractiveGroupForm
 from h5pp.models import h5p_contents, h5p_libraries
@@ -96,10 +93,9 @@ def video_interactive(request, slug, slug_c=None,
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
     video = get_object_or_404(Video, id=id)
-    notesForm = get_note_form(request, video)
-    channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
-    theme = get_object_or_404(Theme, slug=slug_t) if slug_t else None
-    playlist = None
+
+    template_video = 'interactive/video_interactive-iframe.html' if (
+        request.GET.get('is_iframe')) else 'interactive/video_interactive.html'
 
     interactiveVideo, created = Interactive.objects.get_or_create(
         video=video)
@@ -111,51 +107,5 @@ def video_interactive(request, slug, slug_c=None,
         request.user == video.owner or request.user.is_superuser
     ) else getUserScore(h5p.content_id, request.user)
 
-    interactive = {'h5p': h5p, 'score': score}
-
-    template_video = 'interactive/video_interactive-iframe.html' if (
-        request.GET.get('is_iframe')) else 'interactive/video_interactive.html'
-
-    is_password_protected = (
-        video.password is not None and video.password != '')
-
-    show_page = get_video_access(request, video, slug_private)
-
-    if show_page:
-        return render(
-            request, template_video, {
-                'channel': channel,
-                'video': video,
-                'theme': theme,
-                'notesForm': notesForm,
-                'playlist': playlist,
-                'interactive': interactive
-            }
-        )
-    else:
-        if is_password_protected:
-            form = VideoPasswordForm(
-                request.POST) if request.POST else VideoPasswordForm()
-            return render(
-                request, 'interactive/video_interactive.html', {
-                    'channel': channel,
-                    'video': video,
-                    'theme': theme,
-                    'form': form,
-                    'notesForm': notesForm
-                }
-            )
-        elif request.user.is_authenticated():
-            messages.add_message(
-                request, messages.ERROR,
-                _(u'You cannot watch this video.'))
-            raise PermissionDenied
-        else:
-            iframe_param = 'is_iframe=true&' if (
-                request.GET.get('is_iframe')) else ''
-            return redirect(
-                '%s?%sreferrer=%s' % (
-                    settings.LOGIN_URL,
-                    iframe_param,
-                    request.get_full_path())
-            )
+    return render_video(request, slug, slug_c, slug_t, slug_private,
+                        template_video, {'h5p': h5p, 'score': score})

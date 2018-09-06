@@ -6,14 +6,14 @@
 {% block breadcrumbs %}
     {{super}}
     <li class="breadcrumb-item active">
-        {% trans 'Page not found' %}
+        {% trans 'Permission Denied' %}
     </li>
 {% endblock breadcrumbs %}
 
 {% block page_content %}
 
-<h2>{% trans 'Page not found' %}</h2>
+<h2>{% trans 'Permission Denied' %}</h2>
 
-<p>{% trans "We're sorry, but the requested page could not be found." %}</p>
+<p>{% trans "You are not allowed to access this web page." %}</p>
 
 {% endblock %}

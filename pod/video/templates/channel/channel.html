@@ -50,7 +50,7 @@ body {
 
 {% block page_content %}
 
-  <h3>{{channel.title}}
+  <h1>{{channel.title}}
     <span class="float-right">
       {% if theme %}
       <a href="{% url "rss-video" slug_c=channel.slug slug_t=theme.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
@@ -62,7 +62,7 @@ body {
     </span>
     {% if request.user in channel.owners.all %}
     <span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-dark btn-sm">
-      <i data-feather="edit"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{%endif%}</h3>
+      <i data-feather="edit"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{%endif%}</h1>
 
   {% if channel.headband %}
   <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
@@ -73,7 +73,7 @@ body {
   {% endif %}
 
   {% if theme %}
-  <h4>{{theme.title}}</h4>
+  <h2>{{theme.title}}</h2>
   {% if theme.headband %}
   <div align="center" class="channelheader">
       <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" />

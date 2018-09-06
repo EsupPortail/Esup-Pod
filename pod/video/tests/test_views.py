@@ -504,7 +504,7 @@ class VideoTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         # TODO test with password
         v.is_restricted = False
-        # v.restrict_access_to_groups = None
+        v.restrict_access_to_groups = []
         v.password = "password"
         v.save()
         self.client.logout()

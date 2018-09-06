@@ -34,7 +34,7 @@
 
 {% else %}
 <div id="h5pcontent">
-    <iframe id="icontent" src="{% url 'h5pp:h5pcontent' %}?contentId={{interactive.h5p.content_id}}&is_iframe=true" style="display:none;" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+    <iframe id="icontent" src="{% url 'h5pp:h5pcontent' %}?contentId={{more_data.h5p.content_id}}&is_iframe=true" style="display:none;" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
 </div>
 
     <form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
@@ -76,7 +76,7 @@
             <i>{% trans 'Click below to refresh the information.' %}</i>
             <button type="submit" class="btn btn-info btn-sm" id="refresh-score" ><i data-feather="refresh-cw"></i></button>
             <br>
-            {% if interactive.score and request.user == video.owner or request.user.is_superuser %}
+            {% if more_data.score and request.user == video.owner or request.user.is_superuser %}
             <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>
             <table class="table">
             <thead>
@@ -88,7 +88,7 @@
                 </tr>
             </thead>
             <tbody id="user-score">
-            {% for user in interactive.score %}
+            {% for user in more_data.score %}
                 {% if user.max_points and user.max_points != ".." %}
                 <tr>
                     <td>{{user.user}}</td>
@@ -108,8 +108,8 @@
             </table>
             {% elif request.user.is_authenticated %}
             <div id="personnal-score">
-                {% if interactive.score %}
-                {% with interactive.score|first as userscore %}
+                {% if more_data.score %}
+                {% with more_data.score|first as userscore %}
                     {% trans 'You got the following score on this video' %}: {{userscore.points}} / {{userscore.max_points}}
                 {% endwith %}
                 {% else %}
@@ -119,8 +119,8 @@
             {% else %}
             <div id="personnal-score">
                 <p>{% trans 'You are watching this video as anonymous user'%}</p>
-                {% if interactive.score %}
-                {% with interactive.score|first as userscore %}
+                {% if more_data.score %}
+                {% with more_data.score|first as userscore %}
                     {% trans 'You got the following score on this video' %}: {{userscore.points}} / {{userscore.max_points}}
                 {% endwith %}
                 {% else %}
@@ -145,25 +145,25 @@
     var video_height = 0;
     $('#icontent').on('load',function() {
         $('#icontent').fadeIn('slow', function(){
-            video_height = $('#icontent').contents().find("#h5p-iframe-{{interactive.h5p.content_id}}").height();
+            video_height = $('#icontent').contents().find("#h5p-iframe-{{more_data.h5p.content_id}}").height();
             $("#h5pcontent").height(video_height);
         });
     });
     $("#collapseAside").on('shown.bs.collapse', function () {
         setTimeout(function (){
-          video_height = $('#icontent').contents().find("#h5p-iframe-{{interactive.h5p.content_id}}").height();
+          video_height = $('#icontent').contents().find("#h5p-iframe-{{more_data.h5p.content_id}}").height();
           $("#h5pcontent").height(video_height);
         }, 500);
     });
     $("#collapseAside").on('hidden.bs.collapse', function () {
         setTimeout(function (){
-          video_height = $('#icontent').contents().find("#h5p-iframe-{{interactive.h5p.content_id}}").height();
+          video_height = $('#icontent').contents().find("#h5p-iframe-{{more_data.h5p.content_id}}").height();
           $("#h5pcontent").height(video_height);
         }, 500);
     });
     $(document).on('click', '#refresh-score', function() {
     $.ajax({
-        url: '{% url "h5pp:h5pajax" %}?user-scores={{interactive.h5p.content_id}}',
+        url: '{% url "h5pp:h5pajax" %}?user-scores={{more_data.h5p.content_id}}',
         type: 'GET',
         success: function(list) {
             var table = $('#user-score');
