@@ -15,6 +15,9 @@ from pod.video.models import Type
 from pod.video.models import Discipline
 from pod.video.models import Notes
 from pod.video.encode import start_encode
+from pod.video.models import get_storage_path_video
+from pod.video.models import EncodingVideo, EncodingAudio, PlaylistVideo
+
 
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -25,6 +28,7 @@ from ckeditor.widgets import CKEditorWidget
 from collections import OrderedDict
 
 import datetime
+import os
 FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
@@ -256,17 +260,89 @@ class VideoForm(forms.ModelForm):
     video = forms.FileField(label=_(u'File'))
 
     def save(self, commit=True, *args, **kwargs):
+        old_dir = ""
+        new_dir = ""
+        if hasattr(self, 'change_user') and self.change_user == True:
+            # create new video file
+            storage_path = get_storage_path_video(
+                self.instance,
+                os.path.basename(self.cleaned_data['video'].name))
+            dt = str(datetime.datetime.now()).replace(":", "-")
+            nom, ext = os.path.splitext(
+                os.path.basename(self.cleaned_data['video'].name))
+            ext = ext.lower()
+            new_path = os.path.join(
+                os.path.dirname(storage_path),
+                nom + "_" + dt.replace(" ", "_") + ext)
+            dest_file = os.path.join(
+                settings.MEDIA_ROOT,
+                new_path
+            )
+            # create user repository
+            os.makedirs(os.path.dirname(dest_file), exist_ok=True)
+            # move video
+            os.rename(os.path.join(
+                settings.MEDIA_ROOT,
+                self.cleaned_data['video'].name
+            ), dest_file)
+            # change path for video
+            self.instance.video = new_path
+            # Move Dir
+            if self.instance.overview:
+                old_dir = os.path.dirname(self.instance.overview.name)
+            else:
+                old_dir = os.path.dirname(os.path.join(
+                    self.cleaned_data['video'].name, "%04d" % self.instance.id))
+            new_dir = os.path.join(
+                os.path.dirname(new_path), "%04d" % self.instance.id)
+            os.rename(
+                os.path.join(settings.MEDIA_ROOT, old_dir),
+                os.path.join(settings.MEDIA_ROOT, new_dir),
+            )
+            # Overview
+            if self.instance.overview:
+                self.instance.overview = self.instance.overview.name.replace(
+                    old_dir, new_dir)
+
         video = super(VideoForm, self).save(commit, *args, **kwargs)
+        
+        if hasattr(self, 'change_user') and self.change_user == True:
+            encoding_video = EncodingVideo.objects.filter(
+                video=video)
+            for encoding in encoding_video:
+                encoding.source_file = encoding.source_file.name.replace(
+                    old_dir, new_dir)
+                encoding.save()
+            encoding_audio = EncodingAudio.objects.filter(
+                video=video)
+            for encoding in encoding_audio:
+                encoding.source_file = encoding.source_file.name.replace(
+                    old_dir, new_dir)
+                encoding.save()
+            playlist = PlaylistVideo.objects.filter(video=video)
+            for encoding in playlist:
+                encoding.source_file = encoding.source_file.name.replace(
+                    old_dir, new_dir)
+                encoding.save()
+        
         if hasattr(self, 'launch_encode'):
             video.launch_encode = self.launch_encode
         return video
 
     def clean(self):
         cleaned_data = super(VideoForm, self).clean()
+
         self.launch_encode = (
             'video' in cleaned_data.keys()
             and hasattr(self.instance, 'video')
             and cleaned_data['video'] != self.instance.video)
+
+        self.change_user = (
+            self.launch_encode == False
+            and hasattr(self.instance, 'encoding_in_progress')
+            and self.instance.encoding_in_progress == False
+            and hasattr(self.instance, 'owner')
+            and cleaned_data['owner'] != self.instance.owner)
 
         if 'description' in cleaned_data.keys():
             cleaned_data['description_%s' %
@@ -305,6 +381,7 @@ class VideoForm(forms.ModelForm):
         self.fields['video'].widget.attrs['accept'] = self.videoattrs["accept"]
 
         if self.instance.encoding_in_progress:
+            self.remove_field('owner')
             self.remove_field('video')  # .widget = forms.HiddenInput()
 
         # change ckeditor config for no staff user
@@ -536,7 +613,8 @@ class NotesForm(forms.ModelForm):
         super(NotesForm, self).__init__(*args, **kwargs)
         self.fields["user"].widget = forms.HiddenInput()
         self.fields["video"].widget = forms.HiddenInput()
-        self.fields["note"].widget.attrs["cols"] = 20
+        # self.fields["note"].widget.attrs["cols"] = 20
+        self.fields["note"].widget.attrs["class"] = "form-control"
         self.fields["note"].widget.attrs["rows"] = 5
 
     class Meta(object):

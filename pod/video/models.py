@@ -495,7 +495,10 @@ class Video(models.Model):
         super(Video, self).save(*args, **kwargs)
 
     def __str__(self):
-        return "%s - %s" % ('%04d' % self.id, self.title)
+        if self.id:
+            return "%s - %s" % ('%04d' % self.id, self.title)
+        else:
+            return "None"
 
     @property
     def viewcount(self):

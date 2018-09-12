@@ -36,12 +36,13 @@ def encode_recording(recording):
     # gestion de la video
     storage_path = get_storage_path_video(
         video, os.path.basename(recording.source_file))
-    dt = str(datetime.datetime.now())
+    dt = str(datetime.datetime.now()).replace(":", "-")
     nom, ext = os.path.splitext(os.path.basename(recording.source_file))
     ext = ext.lower()
     video.video = os.path.join(
         os.path.dirname(storage_path), nom + "_" + dt.replace(" ", "_") + ext)
     # deplacement du fichier source vers destination
+    os.makedirs(os.path.dirname(video.video.path), exist_ok=True)
     os.rename(recording.source_file, video.video.path)
     video.save()
     ENCODE_VIDEO(video.id)
