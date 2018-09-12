@@ -12,19 +12,24 @@
       <div class="modal-body row">
         <ul class="col-12 list-group list-group-flush" id="list-channels">
           {% for channel in CHANNELS %}
-          <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-id="{{channel.id}}">
+          <li class="list-group-item list-group-item-action" data-id="{{channel.id}}"> 
+            <div class=" d-flex justify-content-between align-items-center">
           <span class="d-flex align-items-center title-chaine">{% if channel.headband %}<img src="{{ channel.headband.file.url }}" height="34" class='rounded mr-2' alt="{{channel.title|title}}">{% else %}<i data-feather="youtube" style="height:34px" class="mr-2"></i>{% endif %} <a href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">
             {{channel.title}}</a></span>
           <span>
+          {% if channel.themes.all.count > 0 %}
+          <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThemes{{channel.id}}" aria-expanded="true" aria-controls="collapseThemes{{channel.id}}">
+          {{channel.themes.all.count}} {% trans "Themes" %} <i data-feather="chevron-down" class="chevron-down m-0 p-0"></i>
+          </button>
+          {% endif %}
           <span class="badge badge-primary badge-pill">{{channel.video_count}} {% trans "videos" %}</span>
-          {% if channel.themes.all.count > 0 %}<a href="#" class="btn btn-outline-primary btn-sm show-themes" data-id="{{channel.id}}">{{channel.themes.all.count}} {% trans "Themes" %} <i data-feather="chevrons-right"></i></a>{%endif%}
           </span>
+            </div>
+          <div id="collapseThemes{{channel.id}}" class="collapse collapsibleThemes" aria-labelledby="headingOne" data-parent="#list-channels" data-id="{{channel.id}}"></div>
           </li>
           {% empty %}
           <li class="list-group-item"> {% trans "No channels found" %} </li>
           {%endfor%}
-        </ul>
-        <ul class="col-4 list-group list-group-flush border border-info" id="list-themes" style="display:none">
         </ul>
       </div>
       <div class="modal-footer">

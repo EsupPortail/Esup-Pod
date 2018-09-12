@@ -112,27 +112,18 @@ var get_list = function(tab, level=0, tab_selected=[], tag_type="option", li_cla
 }
 
 /*** CHANNELS IN NAVBAR ***/
-$("#list-channels a.show-themes").click(function() {
-    $("#list-channels li").removeClass('list-group-item-info');
-    var str = get_list(listTheme["channel_"+$(this).data('id')], 0, [], tag_type="li", li_class="list-group-item", attrs='', add_link=true, current="", channel="");
-    $("#list-channels").removeClass("col-12");
-    $("#list-channels").addClass("col-8");
-    var closebutton = '<li class="list-group-item"><button type="button" class="close" aria-label="Close" id="close_tab_theme" style="font-size:2rem">';
-    closebutton += '<span aria-hidden="true">×</span>';
-    closebutton += '</button>';
-    closebutton += '</li>';
-    $("#list-themes").html(closebutton+str).show();
-    $(this).parents("li").addClass('list-group-item-info');
-    return false;
-});
 
-$(document).on('click','#close_tab_theme', function() {
-    $("#list-channels li").removeClass('list-group-item-info');
-    $("#list-channels").removeClass("col-8");
-    $("#list-channels").addClass("col-12");
-    $("#list-themes").html("").hide();
-});
-
+$('.collapsibleThemes').on('show.bs.collapse', function () {
+  var str = get_list(listTheme["channel_"+$(this).data('id')], 0, [], tag_type="li", li_class="list-inline-item badge badge-primary badge-pill", attrs='', add_link=true, current="", channel="");
+  $(this).html('<ul class="list-inline p-1 border">'+str+'</ul>')
+  //$(this).parents("li").addClass('list-group-item-light');
+  $(this).parents("li").find('.chevron-down').attr('style', 'transform: rotate(180deg);');
+})
+$('.collapsibleThemes').on('hidden.bs.collapse', function () {
+  // do something…
+  //$(this).parents("li").removeClass('list-group-item-light');
+  $(this).parents("li").find('.chevron-down').attr('style', '');
+})
 $('#ownerboxnavbar').keyup(function() {
 	if($(this).val() && $(this).val().length > 2) {
 		var valThis = removeDiacritics($(this).val().toLowerCase());
