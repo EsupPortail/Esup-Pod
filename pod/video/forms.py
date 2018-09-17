@@ -259,10 +259,53 @@ class VideoForm(forms.ModelForm):
     }
     video = forms.FileField(label=_(u'File'))
 
+    def move_video_source_file(self, new_path, new_dir, old_dir):
+        # create user repository
+        dest_file = os.path.join(
+            settings.MEDIA_ROOT,
+            new_path
+        )
+        os.makedirs(os.path.dirname(dest_file), exist_ok=True)
+        # move video
+        os.rename(os.path.join(
+            settings.MEDIA_ROOT,
+            self.cleaned_data['video'].name
+        ), dest_file)
+        # change path for video
+        self.instance.video = new_path
+        # Move Dir
+        os.rename(
+            os.path.join(settings.MEDIA_ROOT, old_dir),
+            os.path.join(settings.MEDIA_ROOT, new_dir),
+        )
+        # Overview
+        if self.instance.overview:
+            self.instance.overview = self.instance.overview.name.replace(
+                old_dir, new_dir)
+
+    def change_encoded_path(self, video, new_dir, old_dir):
+        encoding_video = EncodingVideo.objects.filter(
+            video=video)
+        for encoding in encoding_video:
+            encoding.source_file = encoding.source_file.name.replace(
+                old_dir, new_dir)
+            encoding.save()
+        encoding_audio = EncodingAudio.objects.filter(
+            video=video)
+        for encoding in encoding_audio:
+            encoding.source_file = encoding.source_file.name.replace(
+                old_dir, new_dir)
+            encoding.save()
+        playlist = PlaylistVideo.objects.filter(video=video)
+        for encoding in playlist:
+            encoding.source_file = encoding.source_file.name.replace(
+                old_dir, new_dir)
+            encoding.save()
+
     def save(self, commit=True, *args, **kwargs):
         old_dir = ""
         new_dir = ""
-        if hasattr(self, 'change_user') and self.change_user == True:
+        if hasattr(self, 'change_user') and self.change_user is True:
             # create new video file
             storage_path = get_storage_path_video(
                 self.instance,
@@ -274,57 +317,21 @@ class VideoForm(forms.ModelForm):
             new_path = os.path.join(
                 os.path.dirname(storage_path),
                 nom + "_" + dt.replace(" ", "_") + ext)
-            dest_file = os.path.join(
-                settings.MEDIA_ROOT,
-                new_path
-            )
-            # create user repository
-            os.makedirs(os.path.dirname(dest_file), exist_ok=True)
-            # move video
-            os.rename(os.path.join(
-                settings.MEDIA_ROOT,
-                self.cleaned_data['video'].name
-            ), dest_file)
-            # change path for video
-            self.instance.video = new_path
-            # Move Dir
             if self.instance.overview:
                 old_dir = os.path.dirname(self.instance.overview.name)
             else:
                 old_dir = os.path.dirname(os.path.join(
-                    self.cleaned_data['video'].name, "%04d" % self.instance.id))
+                    self.cleaned_data['video'].name,
+                    "%04d" % self.instance.id))
             new_dir = os.path.join(
                 os.path.dirname(new_path), "%04d" % self.instance.id)
-            os.rename(
-                os.path.join(settings.MEDIA_ROOT, old_dir),
-                os.path.join(settings.MEDIA_ROOT, new_dir),
-            )
-            # Overview
-            if self.instance.overview:
-                self.instance.overview = self.instance.overview.name.replace(
-                    old_dir, new_dir)
+            self.move_video_source_file(new_path, new_dir, old_dir)
 
         video = super(VideoForm, self).save(commit, *args, **kwargs)
-        
-        if hasattr(self, 'change_user') and self.change_user == True:
-            encoding_video = EncodingVideo.objects.filter(
-                video=video)
-            for encoding in encoding_video:
-                encoding.source_file = encoding.source_file.name.replace(
-                    old_dir, new_dir)
-                encoding.save()
-            encoding_audio = EncodingAudio.objects.filter(
-                video=video)
-            for encoding in encoding_audio:
-                encoding.source_file = encoding.source_file.name.replace(
-                    old_dir, new_dir)
-                encoding.save()
-            playlist = PlaylistVideo.objects.filter(video=video)
-            for encoding in playlist:
-                encoding.source_file = encoding.source_file.name.replace(
-                    old_dir, new_dir)
-                encoding.save()
-        
+
+        if hasattr(self, 'change_user') and self.change_user is True:
+            self.change_encoded_path(video, new_dir, old_dir)
+
         if hasattr(self, 'launch_encode'):
             video.launch_encode = self.launch_encode
         return video
@@ -338,9 +345,9 @@ class VideoForm(forms.ModelForm):
             and cleaned_data['video'] != self.instance.video)
 
         self.change_user = (
-            self.launch_encode == False
+            self.launch_encode is False
             and hasattr(self.instance, 'encoding_in_progress')
-            and self.instance.encoding_in_progress == False
+            and self.instance.encoding_in_progress is False
             and hasattr(self.instance, 'owner')
             and 'owner' in cleaned_data.keys()
             and cleaned_data['owner'] != self.instance.owner)
