@@ -342,6 +342,7 @@ class VideoForm(forms.ModelForm):
             and hasattr(self.instance, 'encoding_in_progress')
             and self.instance.encoding_in_progress == False
             and hasattr(self.instance, 'owner')
+            and 'owner' in cleaned_data.keys()
             and cleaned_data['owner'] != self.instance.owner)
 
         if 'description' in cleaned_data.keys():
