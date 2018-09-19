@@ -472,11 +472,11 @@ Enfin un petit restart pour mettre tout ca en route !
 
 ## Déporter l'encodage sur un autre serveur
 
-###Pré-requis : 
+### Pré-requis : 
 - Il faut que votre répertoire ~/django_projects/podv2/pod/media soit partagé entre vos serveurs (montage NFS par exemple)
 - Il faut utiliser une BD Mysql/MariaDB pour qu'elle soit partageable entre les serveurs Pod frontaux et encodages
 
-##Installation sur le frontal :
+## Installation sur le frontal :
 
 Il ne faut pas avoir installé ffmpeg, ffmpegthumbnailer et imagemagick.
 Si c'est le cas, les déinstaller :
@@ -510,18 +510,18 @@ CELERY_TO_ENCODE = True # Active encode
 CELERY_BROKER_URL = "amqp://pod:*mdp*@localhost/rabbitpod" # Define a broker
 ```
 
-##Installation sur le serveur d'encodage :
+## Installation sur le serveur d'encodage :
 
 Il faut installer pod sans réinitialiser la base et sans nginx/uwsgi
 
-##Création du user pod
+## Création du user pod
 ```console
 user@pod:~$  sudo adduser pod
 user@pod:~$  adduser pod sudo
 user@pod:~$  su pod
 ```
 
-###Créer le virtualenv
+### Créer le virtualenv
 ```console
 pod@pod:~$ sudo python3 -V
 pod@pod:~$ sudo python -V
@@ -551,7 +551,7 @@ Et enfin créer l'environnement virtuel :
 pod@pod:~$ mkvirtualenv --system-site-packages --python=/usr/bin/python3 django_pod
 ```
 
-###Recupérer les sources
+### Récupérer les sources
 
 ```console
 (django_pod)pod@pod:~$ sudo mkdir /usr/local/django_projects
@@ -597,7 +597,7 @@ Résolution des deltas: 100% (3076/3076), fait.
 (django_pod) pod@pod:~/django_projects$ cd podv2/
 ```
 
-###Installation des prérequis 
+### Installation des pré-requis 
 
 Il faut vérifier que l'on se trouve bien dans l'environnement virtuel (présence de "(django_pod)" au début l'invite de commande. Sinon, il faut lancer la commande ``` $> workon django_pod ```
 
@@ -611,7 +611,7 @@ De même, si vous devez utiliser un proxy :
 $> pip install --proxy="PROXY:PORT" -r requirements.txt
 ```
 
-###Installation des librairies MySQL
+### Installation des librairies MySQL
 
 ```console
 (django_pod) pod@pod:/usr/local/django_projects/podv2$ sudo apt-get install python3-dev
@@ -619,7 +619,7 @@ $> pip install --proxy="PROXY:PORT" -r requirements.txt
 (django_pod) pod@pod:/usr/local/django_projects/podv2$ pip3 install mysqlclient
 ```
 
-###Installation des librairies d'encodage
+### Installation des librairies d'encodage
 
 ```console
 (django_pod) pod@pod:~/django_projects/podv2$ sudo aptitude purge ffmpeg ffmpegthumbnailer imagemagick
@@ -659,7 +659,7 @@ ADMINS = (
             )
 ```
 
-###Activer Celery sur le serveur d'encodage
+### Activer Celery sur le serveur d'encodage
 
 Mettre le contenu de https://github.com/celery/celery/blob/4.2/extra/generic-init.d/celeryd dans /etc/init.d/celeryd 
 ```console
