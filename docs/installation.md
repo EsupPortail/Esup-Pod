@@ -470,7 +470,7 @@ Enfin un petit restart pour mettre tout ca en route !
 (django_pod) pod@pod:/data$ sudo /etc/init.d/vsftpd restart
 ```
 
-## Déporter l'encodage sur un autre serveura
+## Déporter l'encodage sur un autre serveur
 
 ###Pré-requis : 
 - Il faut que votre répertoire ~/django_projects/podv2/pod/media soit partagé entre vos serveurs (montage NFS par exemple)
@@ -512,8 +512,9 @@ CELERY_BROKER_URL = "amqp://pod:*mdp*@localhost/rabbitpod" # Define a broker
 
 ##Installation sur le serveur d'encodage :
 
-Il faut installer pod :
-###Création du user pod
+Il faut installer pod sans réinitialiser la base et sans nginx/uwsgi
+
+##Création du user pod
 ```console
 user@pod:~$  sudo adduser pod
 user@pod:~$  adduser pod sudo
@@ -616,6 +617,12 @@ $> pip install --proxy="PROXY:PORT" -r requirements.txt
 (django_pod) pod@pod:/usr/local/django_projects/podv2$ sudo apt-get install python3-dev
 (django_pod) pod@pod:/usr/local/django_projects/podv2$ sudo aptitude install default-libmysqlclient-dev
 (django_pod) pod@pod:/usr/local/django_projects/podv2$ pip3 install mysqlclient
+```
+
+###Installation des librairies d'encodage
+
+```console
+(django_pod) pod@pod:~/django_projects/podv2$ sudo aptitude purge ffmpeg ffmpegthumbnailer imagemagick
 ```
 
 ### Rajouter la configuration de tout ça dans le fichier de configuration
