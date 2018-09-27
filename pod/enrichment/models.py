@@ -238,10 +238,9 @@ class Enrichment(models.Model):
                          self.end <= element.start) or
                         (self.start >= element.end and
                          self.end > element.end)):
-                    msg.append(
-                        _('There is an overlap with ' +
-                          'the enrichment {0}, '.format(element.title) +
-                          'please change start and/or end values.'))
+                    msg.append(_("There is an overlap with the enrichment {0},"
+                                 " please change time start and/or "
+                                 "time end values.").format(element.title))
             if len(msg) > 0:
                 return msg
         return list()
