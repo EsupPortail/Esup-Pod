@@ -22,5 +22,5 @@ def get_app_link(video, app):
                     'class="dropdown-item" target="_blank">%(link)s</a>') % {
                 "app": app,
                 "url": url,
-                "link": _('%s' % app)}
+                "link": mod.__NAME__}
     return ""

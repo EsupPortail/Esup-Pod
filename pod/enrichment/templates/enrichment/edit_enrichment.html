@@ -72,21 +72,21 @@
 </div>
 {% endblock video-element %}
 {% block page_aside %}
-    <div class="card card-body p-2 mt-1">
-        <h5 class="card-title pl-2">
-            <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
-        </h5>
-        <div class="card-text small">
-            {% if video.owner == request.user or request.user.is_superuser %}
-            <p><a href="{% url 'enrichment:group_enrichment' slug=video.slug %}" title="{% trans 'You can specify the group(s) of users who can access this page' %}"><i data-feather="users"></i>&nbsp;{% trans 'You can specify the group(s) of users who can access this page' %}</a></p>
-            {% endif %}
-            <p>{% trans 'The title field is required and must contains from 2 to 100 characters.' %}</p>
-			<p>{% trans 'The fields "Start" and "End" must contain an indication value in seconds. Start playback of the video, pause the video and click on "Get time from the player" to fill in the field untitled "Start". Then do the same to fill in the field untitled "End".' %}</p>
-			<p>{% trans 'You cannot overlap enrichments.' %}</p>
-			<p>{% trans 'You must save your enrichments to view the result.' %}</p>
-        </div>
+<div class="card card-body p-2 mt-1" id="card-enrichmenteditinformations">
+    <h5 class="card-title pl-2">
+        <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
+    </h5>
+    <div class="card-text small">
+        {% if video.owner == request.user or request.user.is_superuser %}
+        <p><a href="{% url 'enrichment:group_enrichment' slug=video.slug %}" title="{% trans 'You can specify the group(s) of users who can access this page' %}"><i data-feather="users"></i>&nbsp;{% trans 'You can specify the group(s) of users who can access this page' %}</a></p>
+        {% endif %}
+        <p>{% trans 'The title field is required and must contains from 2 to 100 characters.' %}</p>
+		<p>{% trans 'The fields "Start" and "End" must contain an indication value in seconds. Start playback of the video, pause the video and click on "Get time from the player" to fill in the field untitled "Start". Then do the same to fill in the field untitled "End".' %}</p>
+		<p>{% trans 'You cannot overlap enrichments.' %}</p>
+		<p>{% trans 'You must save your enrichments to view the result.' %}</p>
     </div>
-    {{ block.super }} 
+</div>
+{{ block.super }} 
 {% endblock page_aside %}
 
 {% block more_script %}

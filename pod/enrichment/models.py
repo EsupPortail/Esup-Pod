@@ -30,6 +30,7 @@ else:
 FILES_DIR = getattr(
     settings, 'FILES_DIR', 'files')
 
+__NAME__ = _("Enrichment")
 
 def enrichment_to_vtt(list_enrichment, video):
     webvtt = WebVTT()

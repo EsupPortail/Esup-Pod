@@ -9,6 +9,7 @@ from django.dispatch import receiver
 
 
 # Create your models here.
+__NAME__ = _("Interactive")
 
 
 class Interactive(models.Model):
