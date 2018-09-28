@@ -1,7 +1,7 @@
 ## Plateforme Pod : Gérez vos vidéos
 
 ### [Installation de la plateforme](/installation/ "Installation de la plateforme Pod")
-
+### [Configuration de la plateforme](/configuration/ "Configuration de la plateforme Pod")
 
 
 
