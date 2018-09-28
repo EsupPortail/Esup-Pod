@@ -304,7 +304,7 @@ N'hésitez pas à lancer le serveur de développement pour vérifier vos modific
 **<span style="color:blue">Toute la personnalisation et la configuration de votre instance de Pod peut se faire dans le répertoire pod/custom. Par exemple, pour votre configuration, il faut créer et renseigner le fichier settings_local.py :</span>** 
 
 ```console
-(django_pod) pod@pod:/usr/local/django_projects/podv2$ vim pod/custom/settings_local.pya
+(django_pod) pod@pod:/usr/local/django_projects/podv2$ vim pod/custom/settings_local.py
 ```
 
 La liste des paramètre ses trouve dans docs/configuration.md
