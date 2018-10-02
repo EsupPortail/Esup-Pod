@@ -20,7 +20,7 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}' {% if request.GET.nocontrol
         data-timeend="{{overlay.time_end}}"
         data-content="{{overlay.content}}"
         data-position="{{overlay.position}}"
-        data-background="{{overlay.background}}">
+        data-background="{{overlay.background|lower}}">
     </li>
   {% endfor %}
 </ul>
