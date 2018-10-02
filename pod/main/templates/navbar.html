@@ -1,10 +1,7 @@
-{% load staticfiles %}
-{% load i18n %}
+{% load staticfiles i18n %}{% spaceless %}
 {% get_current_language as LANGUAGE_CODE %}
 {% get_available_languages as LANGUAGES %}
 {% get_language_info_list for LANGUAGES as languages %}
-
-{% spaceless %}
 <div class="container container-pod" id="nav-mainbar">
   <div>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

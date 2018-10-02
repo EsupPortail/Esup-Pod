@@ -1,8 +1,6 @@
-{% load staticfiles %}
-{% load i18n %}
-<!doctype html>
+{% load staticfiles i18n %}<!doctype html>
 <html lang="fr">
-	<head>
+	<head>{% spaceless %}
 	    <!-- Required meta tags -->
 	    <meta charset="utf-8">
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -40,8 +38,11 @@
         {% if request.GET.is_iframe %}
         <link rel="stylesheet" href="{% static 'css/iframe.css' %}" media="screen" title="no title">
         {% endif %}
+        
+        {% endspaceless %}
 	</head>
 	<body>
+        {% if PRE_HEADER_TEMPLATE %}{% include PRE_HEADER_TEMPLATE %}{% endif %}
 		<!-- barre nav-->
 		<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light m-0 p-0">
 		{% include 'navbar.html' %}
@@ -116,5 +117,6 @@
         <script>
           feather.replace({ class: 'align-bottom'});
         </script>
+        {% if POST_FOOTER_TEMPLATE %}{% include POST_FOOTER_TEMPLATE %}{% endif %}
 	</body>
 </html>
