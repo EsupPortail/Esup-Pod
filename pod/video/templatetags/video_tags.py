@@ -1,7 +1,6 @@
 from django import template
 from django.utils.text import capfirst
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
 
 import importlib
 

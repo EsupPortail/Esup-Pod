@@ -52,8 +52,8 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         'FOOTER_TEXT': ('',),
         'FAVICON': 'img/logoPod.svg',
         'CSS_OVERRIDE': '',
-        'PRE_HEADER_TEMPLATE' : '',
-        'POST_FOOTER_TEMPLATE' : '',
+        'PRE_HEADER_TEMPLATE': '',
+        'POST_FOOTER_TEMPLATE': '',
     }
 )
 

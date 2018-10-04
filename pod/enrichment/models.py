@@ -32,6 +32,7 @@ FILES_DIR = getattr(
 
 __NAME__ = _("Enrichment")
 
+
 def enrichment_to_vtt(list_enrichment, video):
     webvtt = WebVTT()
     for enrich in list_enrichment:
