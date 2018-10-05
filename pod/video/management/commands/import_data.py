@@ -97,6 +97,7 @@ class Command(BaseCommand):
             else:
                 try:
                     if (
+                        type_to_import == 'Pod' or
                         not hasattr(obj.object, 'video') or
                         (
                             hasattr(obj.object, 'video') and
