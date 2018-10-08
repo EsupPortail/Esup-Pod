@@ -1,11 +1,11 @@
 {% load i18n %}
 {% if LAST_VIDEOS %}
-<div class="jumbotron">
+<div class="jumbotron" id="last_videos">
 <h3>{% trans "Last videos" %}</h3>
 <!-- liste vignette vidéo 4 par ligne -->
-<div class="row">
+
 {% include "videos/video_list.html" with videos=LAST_VIDEOS %}
-</div>
+
 <div class="hightlight">
      <div class="d-flex justify-content-end">
        <p><a class="btn btn-lg btn-outline-primary btn-sm" href="{% url "videos" %}" role="button">{% trans "Show all videos" %} &raquo;</a></p>

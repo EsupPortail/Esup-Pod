@@ -13,13 +13,13 @@
   <div class="collapse navbar-collapse bg-light navbar-items-pod" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item" id="nav-channels">
-        <button class="nav-link" href="#" data-toggle="modal" data-target=".chaines-modal"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Channels" %}</button>
+        <button class="nav-link" data-toggle="modal" data-target=".chaines-modal"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Channels" %}</button>
       </li>
       <li class="nav-item" id="nav-users">
-        <button class="nav-link" href="#" data-toggle="modal" data-target=".users-modal"><i data-feather="users" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Users"%}</button>
+        <button class="nav-link" data-toggle="modal" data-target=".users-modal"><i data-feather="users" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Users"%}</button>
       </li>
        <li class="nav-item" id="nav-types">
-        <button class="nav-link" href="#" data-toggle="modal" data-target=".types-modal"><i data-feather="tv" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Types"%}</button>
+        <button class="nav-link" data-toggle="modal" data-target=".types-modal"><i data-feather="tv" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Types"%}</button>
       </li>
       {% if "live" in THIRD_PARTY_APPS %}
       <li class="nav-item" id="nav-live">
@@ -52,10 +52,10 @@
       </li>
       {% if user.is_authenticated %}
       <li class="nav-item dropdown login mr-2" id="nav-usermenu">
-        <button class="initials nav-link pl-2 pr-2 dropdown-toggle d-flex justify-content-center align-items-center " href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="initials nav-link pl-2 pr-2 dropdown-toggle d-flex justify-content-center align-items-center " id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         {% if user.first_name != '' and user.last_name != '' %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.username|slice:":2"|upper}}{% endif %}
         </button>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="Profil">
+        <div class="dropdown-menu dropdown-menu-right" >
           <span class="dropdown-item" >{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</span>
           <div class="dropdown-divider"></div>
           {% if request.user.is_superuser  %}
