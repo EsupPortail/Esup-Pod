@@ -58,7 +58,7 @@
         <div class="dropdown-menu dropdown-menu-right" >
           <span class="dropdown-item" >{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</span>
           <div class="dropdown-divider"></div>
-          {% if request.user.is_superuser  %}
+          {% if request.user.is_superuser or user.owner.is_manager %}
           <a class="dropdown-item" href="{% url 'admin:index' %}"><i data-feather="cpu"></i>&nbsp;Administration</a>
           {% endif %}
           {% if request.user.is_staff or request.user.is_superuser %}

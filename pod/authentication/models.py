@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -68,6 +68,12 @@ class Owner(models.Model):
         self.hashkey = hashlib.sha256(
             (SECRET_KEY + self.user.username).encode('utf-8')).hexdigest()
         super(Owner, self).save(*args, **kwargs)
+
+    def is_manager(self):
+        group_ids = self.user.groups.all().values_list('id', flat=True)
+        return (
+            self.user.is_staff
+            and Permission.objects.filter(group__id__in=group_ids).count() > 0)
 
     @property
     def email(self):
