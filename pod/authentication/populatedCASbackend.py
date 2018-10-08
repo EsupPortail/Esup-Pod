@@ -156,7 +156,7 @@ def populate_user_from_entry(user, owner, entry):
         entry[USER_LDAP_MAPPING_ATTRIBUTES['affiliations']].values if (
             USER_LDAP_MAPPING_ATTRIBUTES.get('affiliations')
             and entry[USER_LDAP_MAPPING_ATTRIBUTES['affiliations']]
-        ) else None
+        ) else []
     )
     for affiliation in affiliations:
         if affiliation in AFFILIATION_STAFF:
