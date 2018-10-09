@@ -64,7 +64,7 @@
     </p>
     {% endif %}
   </div>
-  <div class="tab-pane fade" id="downloads" role="tabpanel" aria-labelledby="downloads-tab">
+  <div class="tab-pane fade" id="downloads" role="tabpanel">
     <h5 ><i data-feather="download"></i>&nbsp;{% trans 'Downloads' %}</h5>
     {% if video.allow_downloading %}
     <div><u>{% trans 'Video file(s)' %} :</u><br/>
@@ -108,7 +108,6 @@
       </p>
       <hr />
     {% endif %}
-    <p>
     <div class="list-group">
       <fieldset>
       <div class="list-group-item">
@@ -151,12 +150,11 @@
       </div>
       <div class="list-group-item">
         <div class="form-group">
-          <label for="qrcode">{% trans 'QR code for this link' %} :</label>
+          <label>{% trans 'QR code for this link' %} :</label>
           <img src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" alt="qrcode" id="qrcode"/>
         </div>
       </div>
       </fieldset>
     </div>
-  </p>
   </div>
 </div>
