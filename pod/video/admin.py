@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
-from copy import deepcopy
 
 from modeltranslation.admin import TranslationAdmin
 
@@ -52,11 +51,13 @@ def url_to_edit_object(obj):
 class VideoSuperAdminForm(VideoForm):
     is_staff = True
     is_superuser = True
+    is_admin = True
 
 
 class VideoAdminForm(VideoForm):
     is_staff = True
     is_superuser = False
+    is_admin = True
 
 
 class VideoAdmin(admin.ModelAdmin):
@@ -107,31 +108,6 @@ class VideoAdmin(admin.ModelAdmin):
             kwargs['form'] = VideoAdminForm
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form
-
-    def get_fieldsets(self, request, obj=None):
-        fieldsets = super(VideoAdmin, self).get_fieldsets(request, obj)
-        if not obj:
-            return fieldsets
-
-        if obj.encoding_in_progress:
-            fieldsets = deepcopy(fieldsets)
-            fieldsets = self.remove_field_in_fieldset(fieldsets, 'video')
-
-        if not request.user.is_superuser:
-            fieldsets = deepcopy(fieldsets)
-            fieldsets = self.remove_field_in_fieldset(fieldsets, 'date_added')
-            fieldsets = self.remove_field_in_fieldset(fieldsets, 'owner')
-
-        return fieldsets
-
-    def remove_field_in_fieldset(self, fieldsets, field):
-        for fieldset in fieldsets:
-            if field in fieldset[1]['fields']:
-                if type(fieldset[1]['fields']) == tuple:
-                    fieldset[1]['fields'] = list(fieldset[1]['fields'])
-                fieldset[1]['fields'].remove(field)
-                break
-        return fieldsets
 
     actions = ['encode_video']
 

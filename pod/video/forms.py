@@ -258,6 +258,7 @@ class VideoForm(forms.ModelForm):
         ', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS)),
     }
     video = forms.FileField(label=_(u'File'))
+    is_admin = False
 
     def move_video_source_file(self, new_path, new_dir, old_dir):
         # create user repository
@@ -410,7 +411,7 @@ class VideoForm(forms.ModelForm):
         # QuerySet for channels and theme
         self.set_queryset()
 
-        if not self.is_superuser:
+        if self.is_superuser is False and self.is_admin is False:
             self.remove_field('date_added')
             self.remove_field('owner')
 
