@@ -530,7 +530,7 @@ def save_mp4_file(video_id, list_file, output_dir):
                 rendition=file['rendition'],
                 encoding_format="video/mp4")
             encoding.source_file = videofilenameMp4.replace(
-                settings.MEDIA_ROOT + '/', '')
+                os.path.join(settings.MEDIA_ROOT, ""), '')
             encoding.save()
         else:
             msg = "save_mp4_file Wrong file or path : "\
@@ -610,7 +610,7 @@ def encode_video_m4a(video_id, source, output_dir):
             video=video_to_encode,
             encoding_format="video/mp4")
         encoding.source_file = audiofilename.replace(
-            settings.MEDIA_ROOT + '/', '')
+            os.path.join(settings.MEDIA_ROOT, ""), '')
         encoding.save()
         msg += "\n- encode_video_m4a :\n%s" % audiofilename
     else:
@@ -653,7 +653,7 @@ def encode_video_mp3(video_id, source, output_dir):
             video=video_to_encode,
             encoding_format="audio/mp3")
         encoding.source_file = audiofilename.replace(
-            settings.MEDIA_ROOT + '/', '')
+            os.path.join(settings.MEDIA_ROOT, ""), '')
         encoding.save()
         msg += "\n- encode_video_mp3 :\n%s" % audiofilename
     else:
@@ -762,7 +762,7 @@ def save_playlist_file(video_id, list_file, output_dir):
                 rendition=file['rendition'],
                 encoding_format="video/mp2t")
             encoding.source_file = videofilenameTS.replace(
-                settings.MEDIA_ROOT + '/', '')
+                os.path.join(settings.MEDIA_ROOT, ""), '')
             encoding.save()
 
             playlist, created = PlaylistVideo.objects.get_or_create(
@@ -770,7 +770,7 @@ def save_playlist_file(video_id, list_file, output_dir):
                 video=video_to_encode,
                 encoding_format="application/x-mpegURL")
             playlist.source_file = videofilenameM3u8.replace(
-                settings.MEDIA_ROOT + '/', '')
+                os.path.join(settings.MEDIA_ROOT, ""), '')
             playlist.save()
         else:
             msg = "save_playlist_file Wrong file or path : "\
@@ -793,7 +793,7 @@ def save_playlist_master(video_id, output_dir, master_playlist):
             video=video_to_encode,
             encoding_format="application/x-mpegURL")
         playlist.source_file = output_dir.replace(
-            settings.MEDIA_ROOT + '/', '') + "/playlist.m3u8"
+            os.path.join(settings.MEDIA_ROOT, ""), '') + "/playlist.m3u8"
         playlist.save()
 
         msg += "\n- Playlist :\n%s" % playlist_master_file
@@ -933,7 +933,7 @@ def save_overview_vtt(video_id, overviewfilename):
         # save file in bdd
         video_to_encode = Video.objects.get(id=video_id)
         video_to_encode.overview = overviewfilename.replace(
-            settings.MEDIA_ROOT + '/', '')
+            os.path.join(settings.MEDIA_ROOT, ""), '')
         video_to_encode.save()
         msg += "\n- save_overview_vtt :\n%s" % overviewfilename
     else:
