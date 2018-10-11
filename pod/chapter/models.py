@@ -71,7 +71,7 @@ class Chapter(models.Model):
                     msg.append(
                         _('There is an overlap with the chapter ' +
                             '{0}, please change start and/or ' +
-                            'end values.'.format(element.title)))
+                            'end values.').format(element.title))
             if len(msg) > 0:
                 return msg
         return list()

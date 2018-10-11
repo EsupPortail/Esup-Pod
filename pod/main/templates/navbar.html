@@ -1,11 +1,8 @@
-{% load staticfiles %}
-{% load i18n %}
+{% load staticfiles i18n %}{% spaceless %}
 {% get_current_language as LANGUAGE_CODE %}
 {% get_available_languages as LANGUAGES %}
 {% get_language_info_list for LANGUAGES as languages %}
-
-{% spaceless %}
-<div class="container container-pod">
+<div class="container container-pod" id="nav-mainbar">
   <div>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <i data-feather="menu" aria-hidden="true"></i>
@@ -15,21 +12,21 @@
 
   <div class="collapse navbar-collapse bg-light navbar-items-pod" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <button class="nav-link" href="#" data-toggle="modal" data-target=".chaines-modal"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Channels" %}</button>
+      <li class="nav-item" id="nav-channels">
+        <button class="nav-link" data-toggle="modal" data-target=".chaines-modal"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Channels" %}</button>
       </li>
-      <li class="nav-item">
-        <button class="nav-link" href="#" data-toggle="modal" data-target=".users-modal"><i data-feather="users" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Users"%}</button>
+      <li class="nav-item" id="nav-users">
+        <button class="nav-link" data-toggle="modal" data-target=".users-modal"><i data-feather="users" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Users"%}</button>
       </li>
-       <li class="nav-item">
-        <button class="nav-link" href="#" data-toggle="modal" data-target=".types-modal"><i data-feather="tv" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Types"%}</button>
+       <li class="nav-item" id="nav-types">
+        <button class="nav-link" data-toggle="modal" data-target=".types-modal"><i data-feather="tv" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Types"%}</button>
       </li>
       {% if "live" in THIRD_PARTY_APPS %}
-      <li class="nav-item">
+      <li class="nav-item" id="nav-live">
         <a class="nav-link" href="{% url 'live:lives'%}"><i data-feather="radio" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Lives"%}</a>
       </li>
       {% endif %}
-      <li class="nav-item d-flex d-block d-lg-none langs pt-2 mt-2 justify-content-between">
+      <li class="nav-item d-flex d-block d-lg-none langs pt-2 mt-2 justify-content-between" id="nav-languagechoice">
         <button class="active">{{LANGUAGE_CODE}}</button>
         {% for language in languages %}
         {% if language.code != LANGUAGE_CODE %}
@@ -43,25 +40,25 @@
       </li>
     </ul>
   </div>
-  <form class="form-inline my-2 my-lg-0 flex-2" action="{% url "search_videos" %}">
+  <form class="form-inline my-2 my-lg-0 flex-2" action="{% url "search_videos" %}" id="nav-search">
     <label for="s" class="d-lg-none">
       <i data-feather="search" class="nav-link-icone"></i> <span class="sr-only">{% trans "Search" %}</span> 
     </label>
     <input class="form-control mr-sm-2" id="s" placeholder="{% trans "Search" %}" aria-label="{% trans "Search" %}" type="search" name="q" >
   </form>
-  <ul class="navbar-nav flex-row align-items-center flex-grow-1 justify-content-between">
-     <li class="nav-item mr-2">
+  <ul class="navbar-nav flex-row align-items-center flex-grow-1 justify-content-between" id="nav-useraction">
+     <li class="nav-item mr-2" id="nav-addvideo">
         <a class="nav-link pl-2 pr-2" href="{% url 'video_edit' %}"><i data-feather="plus-square" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i>  <span class="d-none d-md-inline-block">{% trans "Add a video" %}</span></a>
       </li>
       {% if user.is_authenticated %}
-      <li class="nav-item dropdown login mr-2">
-        <button class="initials nav-link pl-2 pr-2 dropdown-toggle d-flex justify-content-center align-items-center " href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <li class="nav-item dropdown login mr-2" id="nav-usermenu">
+        <button class="initials nav-link pl-2 pr-2 dropdown-toggle d-flex justify-content-center align-items-center " id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         {% if user.first_name != '' and user.last_name != '' %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.username|slice:":2"|upper}}{% endif %}
         </button>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="Profil">
+        <div class="dropdown-menu dropdown-menu-right" >
           <span class="dropdown-item" >{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</span>
           <div class="dropdown-divider"></div>
-          {% if request.user.is_superuser  %}
+          {% if request.user.is_superuser or user.owner.is_manager %}
           <a class="dropdown-item" href="{% url 'admin:index' %}"><i data-feather="cpu"></i>&nbsp;Administration</a>
           {% endif %}
           {% if request.user.is_staff or request.user.is_superuser %}
@@ -86,13 +83,13 @@
         </div>
       </li>
       {% else %}
-      <li class="nav-item dropdown login mr-2">
+      <li class="nav-item dropdown login mr-2" id="nav-authentication">
         <a class="btn btn-connexion nav-link pl-2 pr-2 d-flex justify-content-center" href="{% url 'authentication_login' %}?referrer={{request.build_absolute_uri|urlencode}}" >
           {% trans 'Log in' %}
         </a>
       </li>
       {% endif %}
-      <li class="nav-item d-none d-lg-block">
+      <li class="nav-item d-none d-lg-block" id="nav-languagechoicelg">
         <div class="btn-group"><button type="button" class="btn btn-lang btn-lang-active my-2 mr-sm-2 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {{LANGUAGE_CODE}}
             </button>

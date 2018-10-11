@@ -333,12 +333,12 @@ class Overlay(models.Model):
         if len(list_overlay) > 0:
             for element in list_overlay:
                 if not (self.time_start < element.time_start and
-                        self.time_end <= element.time_start and
+                        self.time_end <= element.time_start or
                         self.time_start >= element.time_end and
                         self.time_end > element.time_end):
-                    msg.append(_('There is an overlap with the overlay {0}, ' +
-                                 'please change time start and/or ' +
-                                 'time end values.'))
+                    msg.append(_("There is an overlap with the overlay {0},"
+                                 " please change time start and/or "
+                                 "time end values.").format(element.title))
             if len(msg) > 0:
                 return msg
         return list()

@@ -56,6 +56,7 @@ body {
 {% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}{{video.title|title|truncatechars:45}}{% endblock %}
 
 {% block page_content %}
+<div itemscope itemtype ="http://schema.org/Movie">
 <meta itemprop="duration" content="{{ video.duration }}" />
 <meta itemprop="thumbnailUrl" content="{{ video.get_thumbnail_url }}" />
 <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
@@ -102,13 +103,13 @@ body {
   <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
       <i data-feather="alert-octagon"></i>
   </a>
-</h4>
+</h1>
 
 <div class="pl-0 pr-0">
   <div class="navbar d-flex flex-row-reverse p-0" >
   <ul class="nav nav-tabs" id="myTab" role="tablist">
     <li class="nav-item">
-      <a class="nav-link active show" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-controls="home" aria-selected="true" title="{% trans 'Summary' %}">
+      <a class="nav-link active show" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-selected="true" title="{% trans 'Summary' %}">
         <i data-feather="align-justify"></i>&nbsp;<span class="sr-only">{% trans 'Summary' %}</span>
       </a>
     </li>
@@ -170,11 +171,12 @@ body {
 </div>
 {%endif%}
 {% endblock video-element %}
+</div>
 {% endblock page_content %}
 
 {% block page_aside %}
 {% if video.owner == request.user or request.user.is_superuser %}
-<div class="card card-body p-2 mt-1">
+<div class="card card-body p-2 mt-1" id="card-managevideo">
 <h5 class="card-title pl-2"><i data-feather="settings"></i>&nbsp;{% trans "Manage video"%}</h5>
       <div class="card-text text-center">
         {% include "videos/link_video.html" %}
@@ -182,7 +184,7 @@ body {
 </div>
 {% endif %}
 {% if request.user.is_authenticated and notesForm %}
-<div class="card card-body p-2 mt-1">
+<div class="card card-body p-2 mt-1" id="card-takenote">
 <h5 class="card-title pl-2">
   <i data-feather="edit"></i>&nbsp;{% trans "take Note"%}
 </h5>
@@ -196,7 +198,7 @@ body {
 </div>
 {% else %}
 {% if not request.user.is_authenticated %}
-<div class="card card-body p-2 mt-1">
+<div class="card card-body p-2 mt-1" id="card-takenote">
 <h5 class="card-title pl-2">
   <i data-feather="edit"></i>&nbsp;{% trans "take Note"%}
 </h5>

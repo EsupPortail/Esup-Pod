@@ -96,7 +96,14 @@ class Command(BaseCommand):
                 print(obj.object.id, " are exclude")
             else:
                 try:
-                    if obj.object.video.id not in VIDEO_ID_TO_EXCLUDE:
+                    if (
+                        type_to_import == 'Pod' or
+                        not hasattr(obj.object, 'video') or
+                        (
+                            hasattr(obj.object, 'video') and
+                            obj.object.video.id not in VIDEO_ID_TO_EXCLUDE
+                        )
+                    ):
                         obj.object.headband = None
                         obj.save()
                     else:

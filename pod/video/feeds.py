@@ -13,6 +13,9 @@ from pod.video.models import EncodingAudio
 from pod.video.models import Channel
 from pod.video.models import Theme
 
+import re
+
+
 ##
 # Settings exposed in templates
 #
@@ -169,8 +172,10 @@ class RssSiteVideosFeed(Feed):
 
     def item_description(self, item):
         description = "%s<br/>" % item.get_thumbnail_admin
-        description += item.description
-        description += " %s : %s" % (_('Duration'), item.duration_in_time)
+        sub = re.sub(r'[\x00-\x08\x0B-\x0C\x0E-\x1F]', '', item.description)
+        # use re sub to remove Control characters are not supported in XML 1.0
+        description += sub  # item.description
+        description += "<br/> %s : %s" % (_('Duration'), item.duration_in_time)
         return description
 
     def item_pubdate(self, item):

@@ -2,7 +2,7 @@
 {% load tagging_tags %}
 {% spaceless %}
 <!-- Load Facebook SDK for JavaScript -->
-<div class="card card-body p-2 mt-1">
+<div class="card card-body p-2 mt-1" id="card-share">
 <h5 class="card-title pl-2">
 <i data-feather="share-2"></i>&nbsp;{% trans 'Share' %}
 </h5>
@@ -13,7 +13,7 @@
 </p>
 </div>
 
-<div class="card card-body p-2 mt-1">
+<div class="card card-body p-2 mt-1" id="card-disciplines">
   <h5 class="card-title pl-2">
     <i data-feather="book"></i>&nbsp;{% trans 'Disciplines' %}
   </h5>
@@ -30,7 +30,7 @@
   </div>
 </div>
 
-<div class="card card-body p-2 mt-1">
+<div class="card card-body p-2 mt-1" id="card-tags">
   <h5 class="card-title pl-2">
     <i data-feather="tag"></i>&nbsp;{% trans 'Tags' %}
     <!-- <a href="#" class="float-right"><svg height="32" class="octicon octicon-arrow-right" viewBox="0 0 10 16" version="1.1" width="20" aria-hidden="true"><path fill-rule="evenodd" d="M10 8L4 3v3H0v4h4v3z"></path></svg></a>
