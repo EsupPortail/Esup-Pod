@@ -5,7 +5,7 @@ import urllib.request
 from django.conf import settings
 from pod.video.models import Video
 
-FROM_URL = getattr(settings, 'FROM_URL', "https://pod.univ-lille1.fr/media/")
+FROM_URL = getattr(settings, 'FROM_URL', "https://pod.univ.fr/media/")
 
 
 class Command(BaseCommand):
