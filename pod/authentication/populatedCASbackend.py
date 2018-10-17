@@ -29,8 +29,8 @@ USER_CAS_MAPPING_ATTRIBUTES = getattr(
         "affiliation": "eduPersonAffiliation"
     })
 
-CREATE_GROUP_FOM_AFFILIATION = getattr(
-    settings, 'CREATE_GROUP_FOM_AFFILIATION', False)
+CREATE_GROUP_FROM_AFFILIATION = getattr(
+    settings, 'CREATE_GROUP_FROM_AFFILIATION', False)
 
 AFFILIATION_STAFF = getattr(
     settings, 'USER_CAS_MAPPING_ATTRIBUTES',
@@ -161,7 +161,7 @@ def populate_user_from_entry(user, owner, entry):
     for affiliation in affiliations:
         if affiliation in AFFILIATION_STAFF:
             user.is_staff = True
-        if CREATE_GROUP_FOM_AFFILIATION:
+        if CREATE_GROUP_FROM_AFFILIATION:
             group, group_created = Group.objects.get_or_create(
                 name=affiliation)
             user.groups.add(group)
@@ -200,7 +200,7 @@ def populate_user_from_tree(user, owner, tree):
     for affiliation in affiliation_element:
         if affiliation.text in AFFILIATION_STAFF:
             user.is_staff = True
-        if CREATE_GROUP_FOM_AFFILIATION:
+        if CREATE_GROUP_FROM_AFFILIATION:
             group, group_created = Group.objects.get_or_create(
                 name=affiliation.text)
             user.groups.add(group)
