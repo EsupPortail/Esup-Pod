@@ -142,7 +142,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
 ## Configuration application podfile (gestion de fichier)
 | Property            | Description                                                                                                                          |   Default Value  |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------|:----------------:|
-| **`FILE_ALLOWED_EXTENSIONS`**           | Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier | (        'doc',        'docx',        'odt',        'pdf',        'xls',        'xlsx',        'ods',        'ppt',        'pptx',        'txt',        'html',        'htm',        'vtt',        'srt',    ) |
+| **`FILE_ALLOWED_EXTENSIONS`**           | Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier | (        'doc',        'docx',        'odt',        'pdf',        'xls',        'xlsx',        'ods',        'ppt',        'pptx',        'txt',        'html',        'htm',        'vtt',        'srt',         'webm',        'ts',   ) |
 | **`IMAGE_ALLOWED_EXTENSIONS`**           | Extensions autorisées pour les images téléversés dans le gestionnaire de fichier | (        'jpg',        'jpeg',        'bmp',        'png',        'gif',        'tiff',    ) |
 | **`FILE_MAX_UPLOAD_SIZE`**           | Poids maximum en Mo par fichier téléversé dans le gestionnaire de fichier | 10 |
 
