@@ -44,7 +44,7 @@ class Command(BaseCommand):
     help = 'Import from V1'
     valid_args = ['User', 'Channel', 'Theme', 'Type', 'Discipline', 'FlatPage',
                   'UserProfile', 'tags', 'Chapter', 'Contributor',
-                  'Overlay', 'docpods', 'trackpods', 'enrichpods','Pod']
+                  'Overlay', 'docpods', 'trackpods', 'enrichpods', 'Pod']
 
     def add_arguments(self, parser):
         parser.add_argument('import')
