@@ -30,7 +30,7 @@ USER_CAS_MAPPING_ATTRIBUTES = getattr(
     })
 
 CREATE_GROUP_FOM_AFFILIATION = getattr(
-    settings, 'CREATE_GROUP_FOM_AFFILIATION', False)
+    settings, 'CREATE_GROUP_FOM_AFFILIATION', true)
 
 AFFILIATION_STAFF = getattr(
     settings, 'USER_CAS_MAPPING_ATTRIBUTES',
