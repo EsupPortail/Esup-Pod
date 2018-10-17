@@ -42,9 +42,9 @@ FROM_URL = getattr(settings, 'FROM_URL', "https://pod.univ-lille1.fr/media/")
 class Command(BaseCommand):
     args = 'Channel Theme Type User Discipline Pod tags Chapter Contributor...'
     help = 'Import from V1'
-    valid_args = ['Channel', 'Theme', 'Type', 'User', 'Discipline', 'FlatPage',
-                  'UserProfile', 'Pod', 'tags', 'Chapter', 'Contributor',
-                  'Overlay', 'docpods', 'trackpods', 'enrichpods']
+    valid_args = ['User', 'Channel', 'Theme', 'Type', 'Discipline', 'FlatPage',
+                  'UserProfile', 'tags', 'Chapter', 'Contributor',
+                  'Overlay', 'docpods', 'trackpods', 'enrichpods', 'Pod']
 
     def add_arguments(self, parser):
         parser.add_argument('import')
@@ -59,10 +59,10 @@ class Command(BaseCommand):
             print(type_to_import, filepath)
             self.migrate_to_v2(filepath, type_to_import)
             with open(filepath, "r") as infile:
-                if type_to_import in ('Channel', 'Theme', 'Type', 'User',
+                if type_to_import in ('User', 'Channel', 'Theme', 'Type',
                                       'Discipline', 'FlatPage', 'UserProfile',
-                                      'Pod', 'Chapter', 'Contributor',
-                                      'Overlay'):
+                                      'Chapter', 'Contributor',
+                                      'Overlay', 'Pod'):
                     data = serializers.deserialize("json", infile)
                     for obj in data:
                         self.save_object(type_to_import, obj)
