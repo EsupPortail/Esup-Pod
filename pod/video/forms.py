@@ -56,7 +56,9 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
         'mp3',
         'ogg',
         'wav',
-        'wma'
+        'wma',
+        'webm',
+        'ts'
     )
 )
 VIDEO_MAX_UPLOAD_SIZE = getattr(
