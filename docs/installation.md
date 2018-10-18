@@ -278,7 +278,7 @@ N'hésitez pas à lancer le serveur de développement pour vérifier vos modific
 À ce niveau, vous devriez avoir le site en français et en anglais et voir l'ensemble de la page d'accueil.
 
 ```console
-(django_pod) pod@Pod:~/django_projects/podv2$ python manage.py python manage.py runserver ADRESSE_IP/NOM_DNS:8080
+(django_pod) pod@Pod:~/django_projects/podv2$ python manage.py runserver ADRESSE_IP/NOM_DNS:8080
 ```
 
 --> exemple : ```(django_pod) pod@pod:~/django_projects/podv2$ python manage.py runserver pod.univ.fr:8080```
