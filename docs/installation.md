@@ -104,7 +104,7 @@ Il faut vérifier que l'on se trouve bien dans l'environnement virtuel (présenc
 De même, si vous devez utiliser un proxy :
 
 ```console
-$> pip install --proxy="PROXY:PORT" -r requirements.txt
+(django_pod) pod@pod:~/django_projects/podv2$ pip3 install --proxy="PROXY:PORT" -r requirements.txt
 ```
 
 ### FFMPEG
