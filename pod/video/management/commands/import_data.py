@@ -36,7 +36,7 @@ BASE_DIR = getattr(
 VIDEO_ID_TO_EXCLUDE = getattr(
     settings, 'VIDEO_ID_TO_EXCLUDE', [])
 
-FROM_URL = getattr(settings, 'FROM_URL', "https://pod.univ-lille1.fr/media/")
+FROM_URL = getattr(settings, 'FROM_URL', "https://pod.univ.fr/media/")
 
 
 class Command(BaseCommand):
