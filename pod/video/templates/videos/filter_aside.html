@@ -15,7 +15,7 @@
         {% for owner in OWNERS %}
         {% if owner.username in owners %}
         <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="owner" value="{{owner.username}}" id="id{{owner.username}}"checked>
+        <input class="form-check-input" type="checkbox" name="owner" value="{{owner.username}}" id="id{{owner.username}}" checked>
         <label class="form-check-label" for="id{{owner.username}}">
             {{owner.first_name}} {{owner.last_name}} ({{owner.username}})
         </label>

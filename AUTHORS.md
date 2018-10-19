@@ -10,5 +10,6 @@ Original Authors
 Contributors
 ----------------
 A list of much-appreciated contributors who have submitted patches and reported bugs:
+* Frédéric COLAU, University Grenoble Alpes (patches and documentation)
 * Nicolas Lahoche, University of Lille (design and template)
 * Charlotte Benard (Logo and color)

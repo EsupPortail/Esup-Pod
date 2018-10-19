@@ -162,7 +162,7 @@ def get_list_owner(owners):
 def get_last_videos():
     filter_args = {"encoding_in_progress": False, "is_draft": False}
     if not HOMEPAGE_SHOWS_PASSWORDED:
-        filter_args['password'] = ""
+        filter_args['password'] = None
     if not HOMEPAGE_SHOWS_RESTRICTED:
         filter_args['is_restricted'] = False
     return Video.objects.filter(
