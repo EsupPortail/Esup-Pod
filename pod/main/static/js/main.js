@@ -45,25 +45,32 @@ function writeInFrame() {
     if ($('#autoplay').is(':checked')) {
         if(link.indexOf('autoplay=true') < 0){
                 if(link.indexOf('?') < 0) link = link+"?autoplay=true";
-                else link = link+"&autoplay=true";
+                else if (link.indexOf('loop=true') > 0 || link.indexOf('start=') > 0) link = link+"&autoplay=true";
+                else link = link+"autoplay=true";
             }
 
-    } else if (link.indexOf('autoplay=true') >0) {
-       link = link.replace('&autoplay=true', '').replace('?autoplay=true&', '?');
+    } else if (link.indexOf('autoplay=true') > 0) {
+       link = link.replace('&autoplay=true', '').replace('autoplay=true&', '').replace('?autoplay=true', '?');
     }
     // Loop
     if ($('#loop').is(':checked')) {
-        if(link.indexOf('loop=true') <0){
+        if(link.indexOf('loop=true') < 0){
                 if(link.indexOf('?') < 0) link = link+"?loop=true";
-                else link = link+"&loop=true";
+                else if (link.indexOf('autoplay=true') > 0 || link.indexOf('start=') > 0) link = link+"&loop=true";
+                else link = link+"loop=true"
             }
 
-    } else if (link.indexOf('loop=true') >0) {
-       link = link.replace('&loop=true', '').replace('?loop=true&', '?');
+    } else if (link.indexOf('loop=true') > 0) {
+       link = link.replace('&loop=true', '').replace('?loop=true&', '?').replace('?loop=true', '?');
+       
     }
+    
+    //Remove ? to start when he's first
+    if (link.indexOf('??') > 0) link = link.replace(/\?\?/, '?');
+    
     $('#txtpartage').val(link);
     var img = document.getElementById("qrcode");
-    img.src = "//chart.apis.google.com/chart?cht=qr&chs=200x200&chl="+link;
+    img.src = "//chart.apis.google.com/chart?cht=qr&chs=200x200&chl=" + link;
 }
 $(document).on('change', '#autoplay', function() {
     writeInFrame();
@@ -71,20 +78,29 @@ $(document).on('change', '#autoplay', function() {
 $(document).on('change', '#loop', function() {
     writeInFrame();
 });
-
+ 
 $(document).on('change', "#displaytime", function(e) {
     if($('#displaytime').is(':checked')){
         if($('#txtpartage').val().indexOf('start')<0){
              $('#txtpartage').val($('#txtpartage').val()+'?start='+parseInt(player.currentTime()));
+             if ($('#txtpartage').val().indexOf('??') > 0) $('#txtpartage').val($('#txtpartage').val().replace('??', '?'));
              var valeur = $('#txtintegration').val();
              $('#txtintegration').val(valeur.replace('/?', '/?start=' + parseInt(player.currentTime())+'&'));
+            
         }
         $('#txtposition').val(player.currentTime().toHHMMSS());
     }else{
-         $('#txtpartage').val($('#txtpartage').val().replace(/(\?start=)\d+/, ''));
+         $('#txtpartage').val($('#txtpartage').val().replace(/(\?start=)\d+/, '').replace(/(\?start=)\d+/, ''));
+
          $('#txtintegration').val($('#txtintegration').val().replace(/(start=)\d+&/, ''));
          $('#txtposition').val("");
     }
+
+    //Replace /& => /?
+    var link = $('#txtpartage').val();
+    if ($('#txtpartage').val().indexOf('/&') > 0) link = link.replace('/&', '/?');
+    $('#txtpartage').val(link);
+
     var img = document.getElementById("qrcode");
     img.src = "//chart.apis.google.com/chart?cht=qr&chs=200x200&chl="+$('#txtpartage').val();
 });
