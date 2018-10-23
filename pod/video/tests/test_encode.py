@@ -145,7 +145,6 @@ class EncodeTestCase(TestCase):
 
         self.assertEqual(EncodingLog.objects.filter(
             video__id=1).count(), 0)
-        print(os.path.dirname(log_file))
         self.assertEqual(len(os.listdir(os.path.dirname(log_file))), 0)
 
         audio = Video.objects.get(id=2)
