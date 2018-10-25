@@ -158,7 +158,6 @@ TEMPLATE_VISIBLE_SETTINGS = {
 | **`AUTH_TYPE`**           | Type d'authentification possible sur votre instance. Pour l'instant local ou cas | (('local', _('local')), ('CAS', 'CAS')) |
 | **`USE_CAS`**           | Activation de l'authentification CAS en plus de l'authentification locale | False |
 | **`CAS_SERVER_URL`**      | Url du serveur cas de l'établissement. Format http://url_cas |sso_cas|
-| **`USE_CAS`**           | Activation de l'authentification CAS en plus de l'authentification locale | False |
 | **`CAS_GATEWAY`**           | Si True, authentifie automatiquement l'individu si déjà authentifié sur le serveur CAS | False |
 | **`POPULATE_USER`**           | Si utilisation de la connection CAS, renseigne les champs du compte de la personne depuis une source externe. Valeur possible : **None** (pas de renseignement), **CAS** (renseigne les champs de la personne depuis les informations renvoyées par le CAS), **LDAP** (Interroge le serveur LDAP pour renseigner les champs du compte de la personne) | None |
 | **`AUTH_CAS_USER_SEARCH `**           | variable utilisée pour trouver les informations de l'individu connecté dans le fichier renvoyé par le CAS lors de l'authentification | user |
