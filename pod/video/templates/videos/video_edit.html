@@ -145,7 +145,7 @@
         <h5 class="card-title pl-2">{% trans 'Embed/Share (Draft Mode)' %}</h5>
         <div class="card-text" >
             <p>{% trans 'Use this link to share the video in draft mode' %}</p>
-            <p>
+            <div>
                 <div class="input-group">
                   <input class="form-control form-control-sm form-control-plaintext" type="text" name="txtpartageprive" id="txtpartageprive" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video/{{ form.instance.slug }}/{{ form.instance.get_hashkey }}/" readonly/>
                   <div class="input-group-button">
@@ -154,7 +154,7 @@
                     </clipboard-copy>
                   </div>
                 </div>
-            </p>
+            </div>
         </div>
     </div>
 {% endif %}
