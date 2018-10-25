@@ -36,7 +36,7 @@ def add_placeholder_and_asterisk(fields):
                     "%s <span class=\"required\">*</span>" %
                     fields[myField].label
                 )
-                fields[myField].widget.attrs["required"] = "true"
+                fields[myField].widget.attrs["required"] = ""
             if fields[myField].widget.attrs.get('class'):
                 fields[myField].widget.attrs[
                     'class'] += ' form-control'
