@@ -13,8 +13,8 @@ SITE_ID = 1
 
 # Lang choices
 LANG_CHOICES = (
-    PREF_LANG_CHOICES
-    + (('', '----------'),)
+    (('', '----------'),)
+    + PREF_LANG_CHOICES
     + ALL_LANG_CHOICES
 )
 
