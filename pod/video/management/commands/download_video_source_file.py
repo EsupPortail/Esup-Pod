@@ -24,7 +24,7 @@ class Command(BaseCommand):
             new_file = wget.download(source_url, dest_file)
             self.stdout.write("\n")
             vid.video = new_file.replace(
-                settings.MEDIA_ROOT + '/', ''
+                os.path.join(settings.MEDIA_ROOT, ""), ''
             )
             vid.save()
             self.stdout.write(
