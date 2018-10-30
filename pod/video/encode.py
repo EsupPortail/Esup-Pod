@@ -474,7 +474,7 @@ def get_video_command_mp4(video_id, video_data, output_dir):
         maxrate = rendition.maxrate
         if in_height >= int(height) or rendition == renditions[0]:
             int_bitrate = int(
-                re.search("(\d+)k", bitrate, re.I).groups()[0])
+                re.search(r"(\d+)k", bitrate, re.I).groups()[0])
             # maxrate = int_bitrate * MAX_BITRATE_RATIO
             bufsize = int_bitrate * RATE_MONITOR_BUFFER_RATIO
 
@@ -695,7 +695,7 @@ def get_video_command_playlist(video_id, video_data, output_dir):
         height = rendition.height
         if in_height >= int(height) or rendition == renditions[0]:
             int_bitrate = int(
-                re.search("(\d+)k", bitrate, re.I).groups()[0])
+                re.search(r"(\d+)k", bitrate, re.I).groups()[0])
             # maxrate = int_bitrate * MAX_BITRATE_RATIO
             bufsize = int_bitrate * RATE_MONITOR_BUFFER_RATIO
             bandwidth = int_bitrate * 1000

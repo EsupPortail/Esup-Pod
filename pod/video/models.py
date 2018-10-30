@@ -42,9 +42,8 @@ VIDEOS_DIR = getattr(
 
 LANG_CHOICES = getattr(
     settings, 'LANG_CHOICES', (
-        settings.PREF_LANG_CHOICES
-        + (('', '----------'),)
-        + settings.ALL_LANG_CHOICES
+        (' ', settings.PREF_LANG_CHOICES),
+        ('----------', settings.ALL_LANG_CHOICES)
     ))
 
 CURSUS_CODES = getattr(
@@ -56,7 +55,8 @@ CURSUS_CODES = getattr(
         ('1', _("Other"))
     ))
 
-LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES}
+LANG_CHOICES_DICT = {key: value for key,
+                     value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}
 CURSUS_CODES_DICT = {key: value for key, value in CURSUS_CODES}
 
 DEFAULT_TYPE_ID = getattr(

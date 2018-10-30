@@ -33,7 +33,7 @@ class LTIAssignmentView(LTIAuthMixin, LoginRequiredMixin, TemplateView):
                     url = reverse('video', args=(video.slug,))
                     url += "?is_iframe=true"
                     # url = "http:" + video.get_full_url() + "?is_iframe=true"
-                except Exception as e:
+                except Exception:
                     messages.add_message(
                         self.request,
                         messages.ERROR,

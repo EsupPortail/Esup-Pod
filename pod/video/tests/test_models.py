@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.test import override_settings
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.template.defaultfilters import slugify
 from django.db.models.fields.files import ImageFieldFile
 from django.contrib.auth.models import User
@@ -374,8 +374,8 @@ class VideoTestCase(TestCase):
             thumbnail = CustomImageModel.objects.create(file="blabla.jpg")
 
         video2 = Video.objects.create(
-            type=type, title="Video2",
-            date_added=datetime.today(),
+            type=type, title="Video2", password=None,
+            date_added=datetime.today(), encoding_in_progress=False,
             owner=user, date_evt=datetime.today(),
             video=os.path.join(VIDEOS_DIR, user.owner.hashkey,
                                '%s.%s' % (slugify(fname), extension)),
@@ -386,6 +386,17 @@ class VideoTestCase(TestCase):
         tomorrow = datetime.today() + timedelta(days=1)
         ViewCount.objects.create(video=video2, date=tomorrow, count=2)
         print(" --->  SetUp of VideoTestCase : OK !")
+
+    def test_last_Video_display(self):
+
+        filter_en = Video.objects.filter(
+            encoding_in_progress=False, is_draft=False)
+        filter_pass = filter_en.filter(
+            Q(password='') | Q(password=None), is_restricted=False)
+        self.assertEqual(bool(filter_pass.filter(password='toto')), False)
+        self.assertEqual(bool(filter_pass.filter(password='')), False)
+        self.assertEqual(bool(filter_pass.filter(password__isnull=True)), True)
+        print('--->  test_last_Video_display of VideoTestCase: OK')
 
     def test_Video_null_attributs(self):
         video = Video.objects.get(id=1)

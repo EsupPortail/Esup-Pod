@@ -5,7 +5,7 @@ import urllib.request
 from django.conf import settings
 from pod.video.models import Video
 
-FROM_URL = getattr(settings, 'FROM_URL', "https://pod.univ-lille1.fr/media/")
+FROM_URL = getattr(settings, 'FROM_URL', "https://pod.univ.fr/media/")
 
 
 class Command(BaseCommand):
@@ -24,7 +24,7 @@ class Command(BaseCommand):
             new_file = wget.download(source_url, dest_file)
             self.stdout.write("\n")
             vid.video = new_file.replace(
-                settings.MEDIA_ROOT + '/', ''
+                os.path.join(settings.MEDIA_ROOT, ""), ''
             )
             vid.save()
             self.stdout.write(
