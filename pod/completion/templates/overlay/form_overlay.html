@@ -1,0 +1,28 @@
+<!-- HTML for overlay form. Don't use this file alone it must be integrated into another template ! -->
+{% load i18n %}
+<form id="form_overlay" action="{% url 'video_completion_overlay' slug=video.slug %}" method="POST" class="completion">
+	{% csrf_token %}
+	<div id="form_content" class="container">
+		{% if form_overlay.errors or form_overlay.non_field_errors %}
+			{% trans 'Your form contains errors:' %}<br />
+			{% for error in form_overlay.non_field_errors %}
+				- {{error}}<br />
+			{% endfor %}
+		{% endif %}
+		{% for field_hidden in form_overlay.hidden_fields %}
+			{{field_hidden}}
+		{% endfor %}
+		{% for field in form_overlay.visible_fields %}
+			<div class="form-group row">
+				<label for="{{field.auto_id}}" class="col-sm-4 col-form-label">{{field.label}}</label>
+				<div class="col-sm-10">{{field}}</div>
+			</div>
+		{% endfor %}
+		{% if form_overlay.instance %}
+			<input type="hidden" id="id_overlay" name="overlay_id" value="{{form_overlay.instance.id}}">
+		{% endif %}
+		<input type="hidden" name="action" value="save"/>
+		<input type="submit" id="save_overlay" value="{% trans 'save' %}" class="btn btn-info"/>
+		<input type="reset" action="cancel" id="cancel_overlay" value="{% trans 'cancel' %}" class="btn btn-danger"/>
+	</div>
+</form>

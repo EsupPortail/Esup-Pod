@@ -1,0 +1,196 @@
+{% extends 'videos/video.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block page_extra_head %}
+<style>
+#h5pcontent {
+    margin: auto;
+    text-align: center;
+    background-color: black;
+    width: 100%;
+    height: 480px;
+}
+#icontent {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+}
+</style>
+{% endblock page_extra_head %}
+
+
+{% block breadcrumbs %}{{ block.super }} 
+{% endblock %}
+
+{% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Interactive video' %}) {{video.title}}{% endblock %}
+
+{% block video-element %}
+
+{% if form %}
+
+{% include 'videos/video-form.html' %}
+
+{% else %}
+<div id="h5pcontent">
+    <iframe id="icontent" src="{% url 'h5pp:h5pcontent' %}?contentId={{more_data.h5p.content_id}}&is_iframe=true" style="display:none;" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+</div>
+
+    <form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
+    {% csrf_token %}
+    </form>
+
+    <nav id="navbar-video" class="navbar navbar-light bg-light">
+        <div class="navbar-brand" >
+            <div style="display:inline-block; white-space: normal;">({% trans 'Interactive video' %}) {{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}</div>
+        </div>
+    <div class="list-group col-12">
+        <fieldset>
+        <div class="list-group-item">
+          <div class="form-group ">
+            <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page' %}:</label>
+            <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'interactive:video_interactive' slug=video.slug %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+          </div>
+        </div>
+        <div class="list-group-item">
+          <div class="form-group">
+            <label for="txtpartage">{% trans 'Use this link to share the video' %} :</label>
+            <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'interactive:video_interactive' slug=video.slug %}" />
+          </div>
+        </div>
+        <div class="list-group-item">
+          <div class="form-group">
+            {% if request.user == video.owner or request.user.is_superuser %}
+            <a href="{% url 'interactive:edit_interactive' slug=video.slug %}" class="btn btn-info btn-sm float-right" title="Back to original video">
+                {% trans 'Edit interactivity' %}
+            </a>
+            {% endif %}
+            <a href="{% url 'video' slug=video.slug %}" class="btn btn-info btn-sm " title="Back to original video">
+                {% trans 'Back to original' %}
+            </a>
+          </div>
+        </div>
+        <div class="list-group-item">
+            <h3>{% trans 'Scoreboard' %}</h3>
+            <i>{% trans 'Click below to refresh the information.' %}</i>
+            <button type="submit" class="btn btn-info btn-sm" id="refresh-score" ><i data-feather="refresh-cw"></i></button>
+            <br>
+            {% if more_data.score and request.user == video.owner or request.user.is_superuser %}
+            <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>
+            <table class="table">
+            <thead>
+                <tr>
+                    <th>{% trans 'User' %}</th>
+                    <th>{% trans 'Points' %}</th>
+                    <th>{% trans 'started' %}</th>
+                    <th>{% trans 'finished' %}</th>
+                </tr>
+            </thead>
+            <tbody id="user-score">
+            {% for user in more_data.score %}
+                {% if user.max_points and user.max_points != ".." %}
+                <tr>
+                    <td>{{user.user}}</td>
+                    <td>{{user.points}} / {{user.max_points}}</td>
+                    <td>{{user.date_started}}</td>
+                    <td>{{user.date_finished}}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td>{{user.user}}</td><td>{% trans 'No score available' %}</td>
+                    <td>{{user.date_started}}</td>
+                    <td>{{user.date_finished}}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+            </table>
+            {% elif request.user.is_authenticated %}
+            <div id="personnal-score">
+                {% if more_data.score %}
+                {% with more_data.score|first as userscore %}
+                    {% trans 'You got the following score on this video' %}: {{userscore.points}} / {{userscore.max_points}}
+                {% endwith %}
+                {% else %}
+                    {% trans "no score found" %}
+                {% endif %}
+            </div>
+            {% else %}
+            <div id="personnal-score">
+                <p>{% trans 'You are watching this video as anonymous user'%}</p>
+                {% if more_data.score %}
+                {% with more_data.score|first as userscore %}
+                    {% trans 'You got the following score on this video' %}: {{userscore.points}} / {{userscore.max_points}}
+                {% endwith %}
+                {% else %}
+                    {% trans "no score found" %}
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        </fieldset>
+    </div>
+    </nav>
+{%endif%}
+
+{% endblock video-element %}
+
+{% block page_aside %}
+    {{ block.super }} 
+{% endblock page_aside %}
+
+{% block more_script %}
+<script>
+    var video_height = 0;
+    $('#icontent').on('load',function() {
+        $('#icontent').fadeIn('slow', function(){
+            video_height = $('#icontent').contents().find("#h5p-iframe-{{more_data.h5p.content_id}}").height();
+            $("#h5pcontent").height(video_height);
+        });
+    });
+    $("#collapseAside").on('shown.bs.collapse', function () {
+        setTimeout(function (){
+          video_height = $('#icontent').contents().find("#h5p-iframe-{{more_data.h5p.content_id}}").height();
+          $("#h5pcontent").height(video_height);
+        }, 500);
+    });
+    $("#collapseAside").on('hidden.bs.collapse', function () {
+        setTimeout(function (){
+          video_height = $('#icontent').contents().find("#h5p-iframe-{{more_data.h5p.content_id}}").height();
+          $("#h5pcontent").height(video_height);
+        }, 500);
+    });
+    $(document).on('click', '#refresh-score', function() {
+    $.ajax({
+        url: '{% url "h5pp:h5pajax" %}?user-scores={{more_data.h5p.content_id}}',
+        type: 'GET',
+        success: function(list) {
+            var table = $('#user-score');
+            if (!table.length) {
+                var personnal = $('#personnal-score')[0];
+                for (i = 0; i < list.length; i++) {
+                    if (list[i].fields.uid == '{{ request.user.username }}' && list[i].fields.max_points != "..") {
+                        personnal.innerHTML = "{% trans 'You got the following score on this video' %}: " + list[i].fields.points + ' / ' + list[i].fields.max_points;
+                    }
+                }
+            } else {
+                console.log("table exist");
+                var html = ''
+                for (i = 0; i < list.length; i++) {
+                    html = html + '<tr>';
+                    if (list[i].fields.max_points != "..") {
+                        html = html + '<td>' + list[i].fields.user + '</td><td>' + list[i].fields.points + ' / ' + list[i].fields.max_points + '</td><td>'+ list[i].fields.date_started + '</td><td> '+ list[i].fields.date_finished + '</td>';
+                    } else {
+                        html = html + '<td>' + list[i].fields.user + '</td><td>{% trans "No score available" %}</td><td>'+ list[i].fields.date_started + '</td><td> '+ list[i].fields.date_finished + '</td>';
+                    }
+                    html = html + '</tr>';
+                }
+                table.html(html);
+            }
+        }
+    });
+});
+</script>
+{% endblock more_script %}
+

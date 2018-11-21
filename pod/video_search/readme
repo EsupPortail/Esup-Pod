@@ -1,0 +1,15 @@
+Installation of version 6 on debian:
+$>https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html
+Installation of ICU Analysis
+$>root@Pod:/usr/share/elasticsearch# bin/elasticsearch-plugin install analysis-icu
+Configuration
+$>root@Pod:/etc/elasticsearch# vim elasticsearch.yml 
+ - cluster.name: pod-application
+ - node.name: pod-1
+ - discovery.zen.ping.unicast.hosts: ["127.0.0.1"]
+?? Use Cerebro : https://github.com/lmenezes/cerebro
+
+To create pod index :
+(django_pod) pod@Pod:~/django_projects/podv2$ python manage.py create_pod_index
+To delete pod index :
+$>curl -XDELETE 127.0.0.1:9200/pod

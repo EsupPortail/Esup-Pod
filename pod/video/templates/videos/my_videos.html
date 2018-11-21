@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My videos" %}</li>{% endblock %}
+
+{% block page_title %}
+{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
+{% endblock %}
+
+
+{% block page_content %}
+  {% if videos.paginator.count == 0 %}
+  <h3>{% trans "No video found"%}</h3>
+    <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the "Add a new video" button to add one'%}</p>
+  {% else %}
+  <h3>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h3>
+  <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the video on which you want to work with." %}</p>
+  {% include "videos/video_list.html" %}
+  {% endif %}
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+{% block more_script %}
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite.min.js' %}"></script>
+<script>
+  var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+      $('.loading').show();
+    },
+    onAfterPageLoad: function ($items) {
+      $('.loading').hide();
+      feather.replace({ class: 'align-bottom'});
+      if(!$('footer').hasClass('small')) {
+        $('footer').addClass('small');
+        $('footer').addClass('fixed-bottom');
+        $('footer').attr('style','height:80px; overflow-y:auto');
+      }
+    }
+  });
+</script>
+{% endblock more_script %}

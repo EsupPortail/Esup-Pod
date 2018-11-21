@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% load video_filters %}
+
+
+{% block opengraph %}
+<meta name="description" content="{{channel.description|metaformat|safe|striptags|truncatechars:150}}" />
+<!-- Open Graph data -->
+<meta property="og:title" content="{{ channel.title }}" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
+<meta property="og:description" content="{{channel.description|metaformat|safe|striptags|truncatechars:250}}" />
+<meta property="og:site_name" content="{{ TITLE_SITE }}" />
+{% endblock %}
+
+
+{% block page_extra_head %}
+<style>
+#treeview ul.list-group li{
+  padding: 0;
+}
+{{channel.style}}
+{% if channel.color %}
+body {
+  background-color: {{channel.color}};
+}
+{%endif%}
+</style>
+{% endblock %}
+
+
+{% block breadcrumbs %}{{ block.super }} 
+{% if theme %}
+<li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+{% for t in theme.get_all_parents reversed %}
+{% if t is not theme %}
+<li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
+{% endif %}
+{% endfor %}
+<li class="breadcrumb-item active" aria-current="page">{{theme.title}}</li>
+{% else %}
+<li class="breadcrumb-item active" aria-current="page">{{channel.title}}</li>
+{% endif %}
+{% endblock %}
+
+{% block page_title %}{{channel.title}}{% endblock %}
+
+
+{% block page_content %}
+
+  <h1>{{channel.title}}
+    <span class="float-right">
+      {% if theme %}
+      <a href="{% url "rss-video" slug_c=channel.slug slug_t=theme.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
+      <a href="{% url "rss-audio" slug_c=channel.slug slug_t=theme.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
+      {% else %}
+      <a href="{% url "rss-video" slug_c=channel.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
+      <a href="{% url "rss-audio" slug_c=channel.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
+      {% endif %}
+    </span>
+    {% if request.user in channel.owners.all %}
+    <span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-dark btn-sm">
+      <i data-feather="edit"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{%endif%}</h1>
+
+  {% if channel.headband %}
+  <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
+  {% endif %}
+
+  {% if channel.description %}
+      {{ channel.description|safe }}
+  {% endif %}
+
+  {% if theme %}
+  <h2>{{theme.title}}</h2>
+  {% if theme.headband %}
+  <div align="center" class="channelheader">
+      <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" />
+  </div>
+  {% endif %}
+  {% if theme.description %}
+      {{ theme.description|safe }}
+  {% endif %}
+  {%endif%}
+
+  <p>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</p>
+  
+  {% include "videos/video_list.html" %}
+
+{% endblock page_content %}
+
+{% block page_aside %}
+    <div class="card card-body p-2 mt-1" id="card-channelthemes">
+    <h5 class="card-title pl-2">
+      <i data-feather="list"></i>&nbsp;
+      {% trans 'Themes of ' %}&nbsp;{{ channel.title }}
+    </h5>
+    <div class="card-text" id="treeview">
+      <ul class="list-group list-group-flush {% if channel.themes.count > 5 %}small{%endif%}" id="ultreeview" style="max-height:300px; overflow:auto;">
+      </ul>
+    </div>
+    </div>
+    {% include 'aside.html'%}
+    {% include 'videos/footer_link.html' %}
+{% endblock page_aside %}
+
+
+{% block more_script %}
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite.min.js' %}"></script>
+<script>
+  var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+      $('.loading').show();
+    },
+    onAfterPageLoad: function ($items) {
+      $('.loading').hide();
+      feather.replace({ class: 'align-bottom'});
+      if(!$('footer').hasClass('small')) {
+        $('footer').addClass('small');
+        $('footer').addClass('fixed-bottom');
+        $('footer').attr('style','height:80px; overflow-y:auto');
+      }
+    }
+  });
+</script>
+<script type="text/javascript">
+var str = get_list(listTheme["channel_"+{{channel.id}}], 0, [], tag_type="li", li_class="list-group-item", attrs='', add_link=true, current="{{theme.slug}}", channel="");
+$("#ultreeview").html(str);
+setTimeout(function(){ 
+var position = parseInt($("#ultreeview li.list-group-item-info").position().top) - parseInt($("#ultreeview li").first().position().top);
+console.log(position);
+$("#ultreeview").scrollTop(position); 
+}, 500);
+</script>
+{% endblock more_script %}

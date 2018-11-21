@@ -1,0 +1,37 @@
+{% load staticfiles %}
+
+<link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/quality-selector.css' %}" rel="stylesheet">
+
+<script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
+<script src="{% static 'js/silvermine-videojs-quality-selector.min.js' %}"></script>
+<script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
+<script src="{% static 'js/videojs-contrib-quality-levels.min.js' %}"></script>
+<script src="{% static 'js/videojs-hls-quality-selector.min.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/lang/fr.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
+
+{% if video.overlay_set.all and not enrichment%}
+  <link href="{% static 'css/videojs-overlay.css' %}" rel="stylesheet">
+  <script src="{% static 'js/videojs-overlay.js' %}"></script>
+{% endif %}
+
+{% if video.chapter_set.all %}
+  <link href="{% static 'css/videojs-chapters.css' %}" rel="stylesheet">
+  <script src="{% static 'js/videojs-chapters.js' %}"></script>
+{% endif %}
+{% if request.user.playlist_set.all %}
+  <link href="{% static 'css/playlist.css' %}" rel="stylesheet">
+  <script src="{% static 'js/playlist.js' %}"></script>
+{% endif %}
+{% if video.overview %}
+<link href="{% static 'css/videojs-vtt-thumbnails.css' %}" rel="stylesheet">
+<script src="{% static 'js/videojs-vtt-thumbnails.min.js' %}"></script>
+{% endif %}
+{% if video.is_360 %}
+<link href="{% static 'videojs-vr/videojs-vr.css' %}" rel="stylesheet">
+<script src="{% static 'videojs-vr/videojs-vr.min.js' %}"></script>
+{% endif %}
+
+<script src="{% static 'js/videojs-logo-controlbar.js' %}"></script>

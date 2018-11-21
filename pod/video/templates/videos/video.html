@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% load tagging_tags %}
+{% load thumbnail %}
+{% load video_filters %}
+{% load video_tags %}
+
+{% block opengraph %}
+<meta name="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }}" />
+<!-- Open Graph data -->
+<meta property="og:title" content="{{ video.title }}" />
+<meta property="og:type" content="video" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{ video.get_thumbnail_url }}" />
+<meta property="og:description" content="{{ video.description|metaformat|safe|striptags|truncatechars:250 }}" />
+<meta property="og:site_name" content="{{ TITLE_SITE }}" />
+<!-- End Open Graph data -->
+{% endblock %}
+
+{% block page_extra_head %}
+
+{% include 'videos/video-header.html' %}
+
+<style>
+{{channel.style}}
+{% if channel.color %}
+body {
+  background-color: {{channel.color}};
+}
+{%endif%}
+</style>
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}{{ block.super }} 
+{%if channel %}
+{% if theme %}
+<li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+{% for t in theme.get_all_parents reversed %}
+{% if t is not theme %}
+<li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
+{% endif %}
+{% endfor %}
+<li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=theme.slug%}">{{theme.title}}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
+{% else %}
+<li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
+{% endif %}
+{% else %}
+<li class="breadcrumb-item"><a href="{% url "videos"%}" title="{% trans 'Videos' %}">{% trans 'Videos' %}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
+{% endif %}
+{% endblock %}
+
+{% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}{{video.title|title|truncatechars:45}}{% endblock %}
+
+{% block page_content %}
+<div itemscope itemtype ="http://schema.org/Movie">
+<meta itemprop="duration" content="{{ video.duration }}" />
+<meta itemprop="thumbnailUrl" content="{{ video.get_thumbnail_url }}" />
+<meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
+<meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" />
+
+{%if channel %}
+<h1>{{channel.title}}{% if request.user in channel.owners.all %}<span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-dark btn-sm"><svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>{% trans "Edit the channel"%}</a></span>{%endif%}</h1>
+{% if channel.headband %}
+<img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
+{% endif %}
+{% if channel.description %}
+{{ channel.description|safe }}
+{% endif %}
+{% if theme %}
+<h2>{{theme.title}}</h2>
+{% if theme.headband %}
+<div align="center" class="channelheader">
+    <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" />
+</div>
+{% endif %}
+{% if theme.description %}
+{{ theme.description|safe }}
+{% endif %}
+{%endif%}
+{%endif%}
+{% if video.encoding_in_progress %}<p class="text-info">{% trans "The video is currently being encoded." %}</p>{% endif %}
+{% block video-element %}
+
+{% if form %}
+
+{% include 'videos/video-form.html' %}
+
+{% else %}
+
+{% if playlist %}
+  {% include 'playlist/playlist_player.html' with playlist=playlist %}
+{% endif %}
+
+{% include 'videos/video-element.html' %}
+
+<h1 class="pt-2">
+{% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png"></a>{% endif %} {{video.title|title}} 
+{% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
+  <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
+      <i data-feather="alert-octagon"></i>
+  </a>
+</h1>
+
+<div class="pl-0 pr-0">
+  <div class="navbar d-flex flex-row-reverse p-0" >
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active show" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-selected="true" title="{% trans 'Summary' %}">
+        <i data-feather="align-justify"></i>&nbsp;<span class="sr-only">{% trans 'Summary' %}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false" title="{% trans 'Infos' %}">
+        <i data-feather="info"></i>&nbsp;<span class="sr-only">{% trans 'Infos' %}</span>
+      </a>
+    </li>
+    {% if video.allow_downloading or video.document_set.all %}
+    <li class="nav-item">
+      <a class="nav-link" id="downloads-tab" data-toggle="tab" href="#downloads" role="tab" aria-controls="downloads" aria-selected="false" title="{% trans 'Downloads' %}">
+        <i data-feather="download"></i>&nbsp;<span class="sr-only">{% trans 'Downloads' %}</span>
+      </a>
+    </li>
+    {% endif %}
+    <li class="nav-item">
+      <a class="nav-link" id="share-tab" data-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false" title="{% trans 'Embed/Share' %}">
+        <i data-feather="share-2"></i><span class="sr-only">{% trans 'Embed/Share' %}</span>
+      </a>
+    </li>
+    
+    <li class="nav-item dropdown" id="list_third_apps">
+      <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
+        <i data-feather="layers"></i>&nbsp;<span class="sr-only">{% trans 'Other versions' %}</span>
+      </a>
+      <div class="dropdown-menu" >
+        {% for app in THIRD_PARTY_APPS %}
+        {% get_app_link video app as link %}
+        {% if link != "" %}
+        {{link|safe}}
+        {% endif %}
+        {% endfor %}
+      </div>
+    </li>
+    {% if request.user.playlist_set.all and video.is_draft == False %}
+    <li class="nav-item dropdown dropright">
+      <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans "Add the video to a playlist"%}">
+        <i data-feather="play-circle"></i>&nbsp;<span class="sr-only">{% trans 'My playlists' %}</span>
+      </a>
+      <div class="dropdown-menu">
+      {% csrf_token %}
+      <ul class="list-group">
+      {% for playlist in request.user.playlist_set.all %}
+        {% if video in playlist.videos %}
+          <li class="dropdown-item disabled py-0" data-slug="{{playlist.slug}}">{{playlist.title}}
+            <i data-feather="check"></i>
+          </li>
+        {% else %}
+          <li class="dropdown-item playlist-item py-0" data-slug="{{playlist.slug}}">{{playlist.title}}</li>
+        {% endif %}
+      {% endfor %}
+      </ul>
+      </div>
+    </li>
+    {% endif %}
+  </ul>
+</div>
+  {% include 'videos/video-info.html' %}  
+</div>
+{%endif%}
+{% endblock video-element %}
+</div>
+{% endblock page_content %}
+
+{% block page_aside %}
+{% if video.owner == request.user or request.user.is_superuser %}
+<div class="card card-body p-2 mt-1" id="card-managevideo">
+<h5 class="card-title pl-2"><i data-feather="settings"></i>&nbsp;{% trans "Manage video"%}</h5>
+      <div class="card-text text-center">
+        {% include "videos/link_video.html" %}
+      </div>
+</div>
+{% endif %}
+{% if request.user.is_authenticated and notesForm %}
+<div class="card card-body p-2 mt-1" id="card-takenote">
+<h5 class="card-title pl-2">
+  <i data-feather="edit"></i>&nbsp;{% trans "take Note"%}
+</h5>
+<div class="card-text">
+    {% if request.user.is_authenticated %}
+    {% include 'videos/video_notes.html' %}
+    {% else %}
+    <p>{% trans 'You must be logged in to take notes.' %}</p>
+    {% endif %}
+</div>
+</div>
+{% else %}
+{% if not request.user.is_authenticated %}
+<div class="card card-body p-2 mt-1" id="card-takenote">
+<h5 class="card-title pl-2">
+  <i data-feather="edit"></i>&nbsp;{% trans "take Note"%}
+</h5>
+<div class="card-text">
+    <p>{% trans 'You must be logged in to take notes.' %}</p>
+</div>
+</div>
+{% endif %}
+{% endif %}
+{% include 'aside.html' %}
+{% endblock page_aside %}
+
+
+{% block more_script %}
+{% if not form %}
+{% include 'videos/video-script.html'%}
+{% endif %}
+<script>
+if($('#list_third_apps .dropdown-menu').children().length == 0) $('#list_third_apps').hide();
+</script>
+
+{% endblock more_script %}
