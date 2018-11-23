@@ -10,6 +10,6 @@ deploy:
   script:
     - /usr/bin/sshpass -V
     - export SSHPASS=$SUNIEADM
-    - /usr/bin/sshpass -e ssh -o stricthostkeychecking=no sunieadm@pod-dev.grenet.fr "sudo su - pod ; cd django; git pull"
+    - /usr/bin/sshpass -e ssh -o stricthostkeychecking=no sunieadm@pod-dev.grenet.fr "sudo su - pod ; cd django; git pull;sudo service uwsgi-pod restart"
   except:
     - master
