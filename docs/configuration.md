@@ -168,7 +168,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
 | **`AUTH_LDAP_BIND_DN `**           | Identifiant (DN) du compte pour se connecter au serveur LDAP | '' |
 | **`AUTH_LDAP_BIND_PASSWORD `**           | Mot de passe du compte pour se connecter au serveur LDAP | '' |
 | **`AUTH_LDAP_USER_SEARCH `**           | Filtre LDAP permettant la recherche de l'individu dans le serveur LDAP | ('ou=people,dc=univ,dc=fr', "(uid=%(uid)s)") |
-| **`USER_LDAP_MAPPING_ATTRIBUTES `**           | liste de correspondance entre les champs d'un compte de Pod et les champs renvoyés par le LDAP | {       "uid": "uid",       "mail": "mail",       "last_name": "sn",       "first_name": "givenname",       "primaryAffiliation": "eduPersonPrimaryAffiliation",       "affiliation": "eduPersonAffiliation"   } |
+| **`USER_LDAP_MAPPING_ATTRIBUTES `**           | liste de correspondance entre les champs d'un compte de Pod et les champs renvoyés par le LDAP | {       "uid": "uid",       "mail": "mail",       "last_name": "sn",       "first_name": "givenname",       "primaryAffiliation": "eduPersonPrimaryAffiliation",       "affiliations": "eduPersonAffiliation"   } |
 
 Si utilisation de l'authentification CAS, il y a une modification à faire dans l'application tierce (django-cas-sso==1.1.7) permettant cette authentification. Cette application est proposée par l'université de Strasbourg mais un problème compatibilité avec Python 3.X empèche sa parfaite utilisation (avec le gateway). Voici la modification à faire :
 
