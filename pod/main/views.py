@@ -20,6 +20,7 @@ import os
 import mimetypes
 
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
+FAVICON = getattr(TEMPLATE_VISIBLE_SETTINGS, 'FAVICON', 'img/logoPod.svg')
 CONTACT_US_EMAIL = getattr(
     settings, 'CONTACT_US_EMAIL', [
         mail for name, mail in getattr(settings, 'MANAGERS')])
