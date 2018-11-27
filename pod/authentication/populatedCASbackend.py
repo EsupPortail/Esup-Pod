@@ -33,7 +33,7 @@ CREATE_GROUP_FROM_AFFILIATION = getattr(
     settings, 'CREATE_GROUP_FROM_AFFILIATION', False)
 
 AFFILIATION_STAFF = getattr(
-    settings, 'USER_CAS_MAPPING_ATTRIBUTES',
+    settings, 'AFFILIATION_STAFF',
     ('faculty', 'employee', 'staff')
 )
 
@@ -61,7 +61,7 @@ USER_LDAP_MAPPING_ATTRIBUTES = getattr(
         "last_name": "sn",
         "first_name": "givenname",
         "primaryAffiliation": "eduPersonPrimaryAffiliation",
-        "affiliation": "eduPersonAffiliation"
+        "affiliations": "eduPersonAffiliation"
     })
 
 # search scope
