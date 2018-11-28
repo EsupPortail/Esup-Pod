@@ -777,7 +777,7 @@ msgstr "Supprimer la superposition"
 
 #: pod/completion/templates/track/list_track.html:5
 msgid "List of subtitle or caption files"
-msgstr "Liste des fichiers de sous-tires ou de légendes"
+msgstr "Liste des fichiers de sous-titres ou de légendes"
 
 #: pod/completion/templates/track/list_track.html:12
 msgid "Video track file"
