@@ -26,7 +26,7 @@ LANG_CHOICES = (
 # https://docs.djangoproject.com/en/1.11/ref/settings/#secret-key
 #
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'A_CHANGER'
+SECRET_KEY = 'eyJzaW1zdSI6InN1bmllIn0:1gSN9E:o7dlFimLmdBp6RoY1TV6P6OEVyk'
 
 ##
 # Base folder
