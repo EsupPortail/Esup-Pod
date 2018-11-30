@@ -1,50 +1,127 @@
-{% extends 'base.html' %}
-{% load i18n %}
-{% load staticfiles %}
+{% load staticfiles i18n %}
+<!doctype html>
+<html lang="fr">
+	<head>{% spaceless %}
+	    <!-- Required meta tags -->
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	    {% block opengraph %}
+        <meta name="description" content="">
+        <!-- Open Graph data -->
+        <meta property="og:title" content="{{ TITLE_SITE }}" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+        <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
+        <meta property="og:description" content="" />
+        <meta property="og:site_name" content="{{ TITLE_SITE }}" />
+        {% endblock %}
+        {% if FAVICON %}
+	    <link rel="icon" href="{% static FAVICON %}">
+        {% endif %}
+	    <!-- Bootstrap CSS -->
+	    <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap.min.css' %}" crossorigin="anonymous">
 
-{% block page_extra_head %}
-<link rel="stylesheet" href="{% static 'assets/css/pod.css'%}">
-<link rel="stylesheet" href="{% static 'assets/css/social-buttons.css'%}">
-<link rel="stylesheet" href="{% static 'assets/css/admin.css'%}">
-{% endblock %}
+	    <!-- pod.css -->
+	    <link rel="stylesheet" href="{% static 'css/pod.css' %}" media="screen" title="no title">
+        {% if CSS_OVERRIDE %}
+        <link rel="stylesheet" href="{% static CSS_OVERRIDE %}" media="screen" title="no title">
+        {% endif %}
 
-{% block breadcrumbs %}
-{{ block.super }}
-{% endblock %}
+        <!-- Javascript -->
+        <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+        <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/js.cookie.js' %}"></script>
+        <script src="{% url 'javascript-catalog' %}"></script>
+	    <title>{{ TITLE_SITE }} - {% block page_title %}{% endblock %}</title>
 
-{% block page_title %}
-{% trans "home" %}
-{% endblock %}
+	    {% block page_extra_head %}{% endblock %}
+        {% if request.GET.is_iframe %}
+        <link rel="stylesheet" href="{% static 'css/iframe.css' %}" media="screen" title="no title">
+        {% endif %}
+
+        {% endspaceless %}
+	</head>
+	<body>
+        {% if PRE_HEADER_TEMPLATE %}{% include PRE_HEADER_TEMPLATE %}{% endif %}
+		<!-- barre nav-->
+		<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light m-0 p-0">
+		{% include 'navbar.html' %}
+		</nav><!-- fin barre nav-->
+		{% include 'navbar_collapse.html' %}
+		{% block content %}
+		<div class="container container-pod">
+			<main class="mt-3">
+		        <nav aria-label="breadcrumb" class="breadcrumb d-flex justify-content-between p-0" id="mainbreadcrumb">
+		          <ol class="breadcrumb p-1 pl-4 mb-0">
+		          	{% block breadcrumbs %}
+		                <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+					{% endblock breadcrumbs %}
+		          </ol>
+		          <div class="p-0">
+                    {% block collapse_page_aside %}
+		            <a class="btn btn-primary btn-sm collapseAside" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" >
+		              <i data-feather="corner-left-up"></i><i data-feather="menu"></i>
+		            </a>
+                    {% endblock collapse_page_aside %}
+		          </div>
+		        </nav>
+		        <div class="row">
+		        	<div class="col order-12 order-md-1">
+						<!-- contenu page statique -->
+						<div class="jumbotron">
+							{% block page_content %}
+								<p> Contenu block page_content </p>
+							{% endblock page_content %}
+						</div>
+						<!-- fin contenu page statique -->
+						{% include "videos/last_videos.html" %}
+		        	</div> <!-- fin col order-12 order-md-1 -->
+		        	<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
+                        {% block page_aside %}
+					       {% include 'aside.html'%}
+                        {% endblock page_aside %}
+					</aside>
+		        </div> <!-- fin row -->
+		    </main>
+		</div> <!-- fin container -->
+		{% endblock content %}
+
+    <footer>
+      {% block footer %}
+        {% include 'layouts/partials/_footer.html' %}
+      {% endblock footer %}
+    </footer>
 
 
-{% block page_content %}
-<h3>{% trans "home" %}</h3>
-
-{{block.super}}
-
-{% endblock page_content %}
-
-
-{% block collapse_page_aside %}
-
-{{block.super}}
-
-{% endblock collapse_page_aside %}
-
-
-
-{% block page_aside %}
-<div class="card card-body p-2">
-    <h5 class="card-title pl-2">{% trans "Mandatory fields" %}</h5>
-    <div class="card-text" >
-        <p>{% trans "Fields marked with an asterisk are mandatory."%}</p>
-    </div>
-</div>
-{{block.super}}
-{% endblock page_aside %}
-
-
-
-{% block more_script %}
-
-{% endblock more_script %}
+        {% if messages %}
+        <div id="base-message-alert">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        <!-- JS -->
+		<script>
+        /** ALL_CHANNELS **/
+        var listTheme = new Array();
+        {% for channel in ALL_CHANNELS %}{% if channel.themes.count > 0 %}listTheme["channel_{{channel.id}}"] = {{channel.get_all_theme_json|safe}};{% endif %}{% endfor %}
+        /** USERS **/
+        var listUser = {{LISTOWNER|safe}};
+        var urlvideos = "{% url 'videos' %}";
+		</script>
+        <script src="{% static 'js/main.js' %}"></script>
+		{% block more_script %}
+		{% endblock more_script %}
+        <script src="{% static 'feather-icons/feather.min.js' %}"></script>
+        <script>
+          feather.replace({ class: 'align-bottom'});
+        </script>
+        {% if POST_FOOTER_TEMPLATE %}{% include POST_FOOTER_TEMPLATE %}{% endif %}
+	</body>
+</html>
