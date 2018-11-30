@@ -118,15 +118,16 @@ FILE_UPLOAD_HANDLERS = (
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
 )
 PROGRESSBARUPLOAD_INCLUDE_JQUERY = False
-
+CUSTOM_PROJECT_DIR = os.path.join(BASE_DIR, 'custom')
 ##
 # Static files (assets, CSS, JavaScript, fonts...)
 #
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR, 'custom/static'),
+    ('custom',os.path.join(CUSTOM_PROJECT_DIR, 'static')),
 )
 ##
 # Dynamic files (user managed content: videos, subtitles, documents, etc...)
