@@ -34,7 +34,7 @@ from pod.video_search.views import search_videos
 from pod.recorder.views import add_recording
 from pod.lti.views import LTIAssignmentView
 
-from custom.views import homepage
+from pod.custom.views import homepage
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
 
