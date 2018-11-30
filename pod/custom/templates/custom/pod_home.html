@@ -1,38 +1,8 @@
-{% extends 'base.html' %}
-{% load i18n %}
-{% load staticfiles %}
-
-
-{% block breadcrumbs %}
-{{ block.super }}
-<li class="breadcrumb-item active" aria-current="page">{% trans "home" %}</li>
-{% endblock %}
-
-{% block page_title %}
-{% trans "home" %}
-{% endblock %}
-
+{% extends 'base_custom.html' %}
 
 {% block page_content %}
 <h3>{% trans "home" %}</h3>
-{{block.super}}
 
+{{block.super}}
+<p>Hello word test</p>
 {% endblock page_content %}
-
-{% block collapse_page_aside %}
-{{block.super}}
-{% endblock collapse_page_aside %}
-
-{% block page_aside %}
-<div class="card card-body p-2">
-    <h5 class="card-title pl-2">{% trans "Mandatory fields" %}</h5>
-    <div class="card-text" >
-        <p>{% trans "Fields marked with an asterisk are mandatory."%}</p>
-    </div>
-</div>
-{{block.super}}
-{% endblock page_aside %}
-
-{% block more_script %}
-
-{% endblock more_script %}
