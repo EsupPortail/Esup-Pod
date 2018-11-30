@@ -87,12 +87,9 @@
 		</div> <!-- fin container -->
 		{% endblock content %}
 
-    <footer>
-      {% block footer %}
-        {% include 'layouts/partials/_footer.html' %}
-      {% endblock footer %}
-    </footer>
-
+    {% block footer %}
+      {% include 'layouts/partials/_footer.html' %}
+    {% endblock footer %}
 
         {% if messages %}
         <div id="base-message-alert">
