@@ -46,7 +46,7 @@ DEBUG = True
 # that this Django site is allowed to serve.
 #
 # https://docs.djangoproject.com/en/1.11/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['localhost',"127.0.0.1"]
 
 ##
 # Session settings
@@ -64,7 +64,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-ADMINS
 #
 ADMINS = (
-    ('Name', 'adminmail@univ.fr'),
+    ('LOTONGA Eliam', 'eliam.lotonga@grenet.fr'),
 )
 ##
 # A tuple that lists people who get other notifications
