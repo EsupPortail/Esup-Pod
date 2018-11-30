@@ -126,8 +126,7 @@ PROGRESSBARUPLOAD_INCLUDE_JQUERY = False
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
-    "pod/custom/static",
-
+    os.path.join(BASE_DIR, 'custom/static'),
 )
 ##
 # Dynamic files (user managed content: videos, subtitles, documents, etc...)
