@@ -22,7 +22,7 @@ voir http://www.gnu.org/licenses/
 {% load staticfiles %}
 <footer class="container-fluid">
     <div class="row">
-        <div class="col-md-offset-2 col-sm-3 col-xs-6"><img src="{% static  SERV_LOGO %}" alt="SEMM" id="semmLOGO" /></div>
+        <div class="col-md-offset-2 col-sm-3 col-xs-6"><img src="{% static  'assets/images/uga.png' %}" alt="SEMM" id="semmLOGO" /></div>
         <div class="col-sm-3 col-xs-12">
             <a href="{% url 'contact_us' %}" title="{% trans "Contact us" %}" class="btn btn-block btn-link">
                 <span class="glyphicon glyphicon-chevron-right"></span> {% trans "Contact us" %}
@@ -30,7 +30,7 @@ voir http://www.gnu.org/licenses/
             <a href="https://github.com/esupportail/pod/wiki/Foire-Aux-Questions" title="{% trans "FAQ" %}" class="btn btn-block btn-link">
                 <span class="glyphicon glyphicon-chevron-right"></span> {% trans "FAQ" %}
             </a>
-            
+
         </div>
         <div class="col-sm-3 col-xs-12">
             {% for page in PAGES_MENU_BAS %}
