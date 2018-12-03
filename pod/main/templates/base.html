@@ -44,7 +44,12 @@
         {% endspaceless %}
 	</head>
 	<body>
-        {% if PRE_HEADER_TEMPLATE %}{% include PRE_HEADER_TEMPLATE %}{% endif %}
+		<!-- header -->
+		{% block header %}
+			{% if PRE_HEADER_TEMPLATE %}{% include PRE_HEADER_TEMPLATE %}{% endif %}
+		{% endblock head %}
+		<!-- end header  -->
+
 		<!-- barre nav-->
 		<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light m-0 p-0">
 		{% include 'navbar.html' %}
