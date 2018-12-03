@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% comment %}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure.
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{% endcomment %}
+{% load i18n list list_uga staticfiles taggit_extras  %}
+{% block bootstrap3_title %}{{ block.super }}{{ flatpage.title }}{% endblock %}
+
+{% block bootstrap3_extra_head %}{% endblock bootstrap3_extra_head %}
+
+{% block opengraph %}{% load pod_filters %}
+    <meta name="description" content="{{ flatpage.content|metaformat|safe|striptags|truncatechars:150 }}" />
+	<!-- Open Graph data -->
+	<meta property="og:title" content="{{ flatpage.title }}" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+	<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
+	<meta property="og:description" content="{{ flatpage.content|metaformat|safe|striptags|truncatechars:250 }}" />
+	<meta property="og:site_name" content="{{ TITLE_SITE }}" />
+{% endblock %}
+{% block bootstrap3_content %}
+<article class="container" role="main">
+	<div class="row">
+		{% get_carousel_playlist %}
+		<div class="col-sm-9">
+			<ol class="breadcrumb">
+				{% block breadcrumbs %}
+				{% if flatpage.url != '/' %}
+				{{ block.super }}
+				<li class="active">{{ flatpage.title }}</li>
+				{% endif %}
+				{% endblock breadcrumbs %}
+			</ol>
+
+			<h2>{% block article_title %}{{ flatpage.title }}{% endblock article_title %}</h2>
+
+			{% block mainToolbar %}	{% endblock mainToolbar %}
+
+			{% block article %}
+			{% block article_content %}
+
+			<div id="objects_list_flatpage">
+				{% get_official_channels %}
+			</div>
+			{% endblock article_content %}
+			{% block video_list %}
+			<h3>{% trans 'Here are the latest videos' %}</h3>
+			<div id="objects_list_flatpage">
+				{% get_last_videos %}
+			</div>
+			{% endblock video_list %}
+			{% block playlist_list %}
+			<h3>{% trans 'Here are the latest playlists' %}</h3>
+			<div id="objects_list_flatpage">
+				{% get_last_playlists %}
+			</div>
+			{% endblock playlist_list %}
+			{% block pagination %}{% endblock pagination %}
+			{% endblock article %}
+			<p>&nbsp;</p>
+		</div>
+		{% if not request.GET.is_iframe %}
+		{% block box %}
+		<aside class="col-sm-3">
+			{{ flatpage.content }}
+			{% block box_social %}
+			<div class="widget social" id="share">
+				<h4>
+					<span class="glyphicon glyphicon-send"></span>
+					{% trans 'Share' %}
+				</h4>
+				<div class="row text-center">
+					<a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-facebook btn-sm" title="Partager sur Facebook"><i class="fa fa-facebook fa-fw"></i></a>
+					<a target="_blank" href="http://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-twitter btn-sm" title="Partager sur Twitter"><i class="fa fa-twitter fa-fw"></i></a>
+					<a target="_blank" href="https://plus.google.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-google-plus btn-sm" title="Partager sur Google+"><i class="fa fa-google-plus fa-fw"></i></a>
+
+				</div>
+			</div>
+			{% endblock box_social %}
+			{% block box_discipline %}
+			<div class="widget">
+				<h4>
+					<span class="glyphicon glyphicon-book"></span>
+					{% trans 'Disciplines' %}
+					<a href="{% url 'disciplines' %}" title="{% trans 'See all' %}">
+						<span class="glyphicon glyphicon-list pull-right"></span>
+					</a>
+				</h4>
+				<form class="form" method="get">
+					<select class="form-control" onchange="this.options[this.selectedIndex].getAttribute('data-value') && (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="discipline">
+						<option value="#" class="btn btn-default btn-sm btn-block">{% trans "Disciplines" %}...</option>
+						{% for disc in DISCIPLINES %}
+						<option value="{{disc.slug}}" class="btn btn-default btn-sm btn-block" data-value="{% url 'videos' %}?discipline={{disc.slug}}">{{disc.title}}  ({{disc.video_count}})</option>
+						{% endfor %}
+					</select>
+					<input type="submit" value="Valider" class="btn btn-default btn-sm sr-only" />
+				</form>
+			</div>
+			{% endblock box_discipline %}
+			{% block box_tags %}
+			<div class="widget">
+				<h4>
+					<span class="glyphicon glyphicon-tag"></span>
+					{% trans 'Tags' %}
+					<a href="{% url 'tags' %}" title="{% trans 'See the cloud' %}">
+						<span class="glyphicon glyphicon-cloud pull-right"></span>
+					</a>
+				</h4>
+				{% get_tagcloud as tagscloud %}
+				{% with tagslist=tagscloud|dictsortreversed:'weight'|slice:':20' %}
+				{% for tag in tagslist %}
+				<a href="{% url 'videos' %}?tag={{ tag.slug }}">
+					<span style="font-size:1{{tag.weight|floatformat:0}}px">{{ tag }}</span>
+					<span class="badge">{{ tag.num_times }}</span>
+				</a>
+				{% endfor %}
+				{% endwith %}
+			</div>
+			{% endblock box_tags %}
+			{% block box_note %}
+			{% endblock box_note %}
+			{% block box_info %}
+			{% endblock box_info %}
+			{% block box_filtre %}
+			{% endblock box_filtre %}
+		</aside>
+		{% endblock box %}
+		{% endif %}
+	</div>
+</article>
+{% endblock bootstrap3_content %}

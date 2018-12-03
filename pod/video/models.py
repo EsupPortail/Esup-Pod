@@ -221,6 +221,14 @@ class Channel(models.Model):
     def get_all_theme_json(self):
         return json.dumps(self.get_all_theme())
 
+    @staticmethod
+    def get_official_channels(cls):
+        return {
+            'channels': cls.objects.filter(id__lt=9).exclude(
+                visible=0).order_by('id').distinct().annotate(video_count=Count("pod", distinct=True)),
+            'DEFAULT_IMG': settings.DEFAULT_IMG
+        }
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Channel, self).save(*args, **kwargs)
