@@ -50,7 +50,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         'LOGO_PLAYER': 'img/logoPod.svg',
         'LINK_PLAYER': '',
         'FOOTER_TEXT': ('',),
-        'FAVICON': 'custom/assets/images/default.png',
+        'FAVICON': 'custom/assets/images/favicon.ico',
         'CSS_OVERRIDE': '',
         'PRE_HEADER_TEMPLATE': 'custom/layouts/partials/_pre-header.html',
         'POST_FOOTER_TEMPLATE': '',
