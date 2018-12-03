@@ -28,8 +28,6 @@ from tagging.fields import TagField
 
 from pod.main.models import get_nextautoincrement
 
-from django.db.models import Count, Case, When, IntegerField, Prefetch
-
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
     FILEPICKER = True
@@ -223,20 +221,6 @@ class Channel(models.Model):
     def get_all_theme_json(self):
         return json.dumps(self.get_all_theme())
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    @classmethod
-    def get_official_channels(cls):
-        return {
-            'channels': cls.objects.filter(id__lt=9).exclude(
-                visible=0).order_by('id').distinct().annotate(video_count=Count("slug", distinct=True)),
-            'DEFAULT_IMG': settings.DEFAULT_IMG
-        }
-
-=======
->>>>>>> parent of 6c05497... test homepage playlist
-=======
->>>>>>> parent of 6c05497... test homepage playlist
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Channel, self).save(*args, **kwargs)
