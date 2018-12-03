@@ -221,7 +221,7 @@ class Channel(models.Model):
     def get_all_theme_json(self):
         return json.dumps(self.get_all_theme())
 
-    @staticmethod
+    @classmethod
     def get_official_channels(cls):
         return {
             'channels': cls.objects.filter(id__lt=9).exclude(
