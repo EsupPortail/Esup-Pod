@@ -56,7 +56,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         'POST_FOOTER_TEMPLATE': '',
     }
 )
-
+DEFAULT_IMG = 'custom/assets/images/uga_top.png'
 
 def context_settings(request):
     new_settings = {}
