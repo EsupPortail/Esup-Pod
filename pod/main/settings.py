@@ -208,7 +208,7 @@ DEFAULT_FROM_EMAIL = 'noreply@univ.fr'
 
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-SERVER_EMAIL
 SERVER_EMAIL = 'noreply@univ.fr'
-
+DEFAULT_IMG = 'custom/assets/images/uga_top.png'
 ##
 # Captcha config
 #
