@@ -45,7 +45,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     {
         'TITLE_SITE': 'Pod UI',
         'TITLE_ETB': 'Universités Intégrées',
-        'LOGO_SITE': 'custom/assets/images/logo_compact.png',
+        'LOGO_SITE': 'custom/assets/images/logo_black_compact.png',
         'LOGO_ETB': 'custom/assets/images/uga_top.png',
         'LOGO_PLAYER': 'img/logoPod.svg',
         'LINK_PLAYER': '',
