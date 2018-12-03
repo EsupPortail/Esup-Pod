@@ -5,7 +5,7 @@ import json
 import logging
 import hashlib
 
-from django.db import models
+from django.db import models, Count, Case, When, IntegerField, Prefetch
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import get_language
