@@ -24,13 +24,13 @@ voir http://www.gnu.org/licenses/
 {% block bootstrap3_title %}{{ block.super }}{{ flatpage.title }}{% endblock %}
 
 {% block bootstrap3_extra_head %}{% endblock bootstrap3_extra_head %}
-    <meta name="description" content="{{ flatpage.content|metaformat|safe|striptags|truncatechars:150 }}" />
+    <meta name="description" content="{{ flatpage.content|safe|striptags|truncatechars:150 }}" />
 	<!-- Open Graph data -->
 	<meta property="og:title" content="{{ flatpage.title }}" />
 	<meta property="og:type" content="article" />
 	<meta property="og:url" content="{{ request.build_absolute_uri }}" />
 	<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static 'images/share.png' %}" />
-	<meta property="og:description" content="{{ flatpage.content|metaformat|safe|striptags|truncatechars:250 }}" />
+	<meta property="og:description" content="{{ flatpage.content|safe|striptags|truncatechars:250 }}" />
 	<meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock %}
 {% block bootstrap3_content %}
