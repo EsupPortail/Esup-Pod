@@ -33,14 +33,13 @@ from pod.video_search.views import search_videos
 from pod.recorder.views import add_recording
 from pod.lti.views import LTIAssignmentView
 
-from pod.custom.views import homepage
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     #Homepage
-    url(r'^$', include("pod.custom.urls.py"), name="home_page"),
+    url(r'^$', include("pod.custom.urls")),
     # Translation
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
