@@ -16,7 +16,6 @@ class VideoListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs);
-        p  = Playlist()
-        context['playlists'] = p.get_carousel_playlist()
+        context['playlists'] = Playlist.get_carousel_playlist()
         context['channels'] = Channel.get_official_channels()
         return context

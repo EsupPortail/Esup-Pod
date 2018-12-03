@@ -65,9 +65,9 @@ class Playlist(models.Model):
         else:
             return 1
 
-    def get_carousel_playlist(self):
-        info = self.first()
-        videos = PlaylistVideo.objects.filter(playlist=info)
+    @classmethod
+    def get_carousel_playlist(cls):
+        videos = PlaylistVideo.objects.filter()
         playlist = {
              'info': info,
              'videos': videos
