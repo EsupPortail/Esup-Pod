@@ -24,8 +24,6 @@ voir http://www.gnu.org/licenses/
 {% block bootstrap3_title %}{{ block.super }}{{ flatpage.title }}{% endblock %}
 
 {% block bootstrap3_extra_head %}{% endblock bootstrap3_extra_head %}
-
-{% block opengraph %}{% load pod_filters %}
     <meta name="description" content="{{ flatpage.content|metaformat|safe|striptags|truncatechars:150 }}" />
 	<!-- Open Graph data -->
 	<meta property="og:title" content="{{ flatpage.title }}" />
