@@ -67,7 +67,7 @@ class Playlist(models.Model):
 
     @classmethod
     def get_carousel_playlist(cls):
-        videos = PlaylistVideo.objects.filter()
+        videos = PlaylistElement.objects.get(position=1)
         playlist = {
              'info': info,
              'videos': videos
