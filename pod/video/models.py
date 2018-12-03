@@ -227,7 +227,7 @@ class Channel(models.Model):
     def get_official_channels(cls):
         return {
             'channels': cls.objects.filter(id__lt=9).exclude(
-                visible=0).order_by('id').distinct().annotate(video_count=Count("pod", distinct=True)),
+                visible=0).order_by('id').distinct().annotate(video_count=Count("slug", distinct=True)),
             'DEFAULT_IMG': settings.DEFAULT_IMG
         }
 
