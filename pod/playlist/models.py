@@ -67,14 +67,18 @@ class Playlist(models.Model):
 
     @classmethod
     def get_carousel_playlist(cls):
-        videos = PlaylistElement.objects.get(position=1)
-        playlist = {
-             'info': info,
-             'videos': videos
-        }
-        return {
-            'playlist': playlist,
-        }
+        try:
+
+            videos = PlaylistElement.objects.get(position=1)
+            playlist = {
+                 'info': info,
+                 'videos': videos
+            }
+            return {
+                'playlist': playlist,
+            }
+        except:
+            return { "playlist": None }
 
     def videos(self):
         videos = list()
