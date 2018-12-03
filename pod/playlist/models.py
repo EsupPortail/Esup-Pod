@@ -64,27 +64,6 @@ class Playlist(models.Model):
             return last[0].position + 1
         else:
             return 1
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-    @classmethod
-    def get_carousel_playlist(cls):
-        try:
-            videos = PlaylistElement.objects.get(position=1)
-            playlist = {
-                 'info': info,
-                 'videos': videos
-            }
-            return {
-                'playlist': playlist,
-            }
-        except:
-            return { "playlist": None }
-
-=======
->>>>>>> parent of 6c05497... test homepage playlist
-=======
->>>>>>> parent of 6c05497... test homepage playlist
     def videos(self):
         videos = list()
         elements = PlaylistElement.objects.filter(playlist=self)
