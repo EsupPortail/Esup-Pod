@@ -269,20 +269,3 @@ LTI_PROPERTY_LIST_EX = [
     'custom_video'
 ]
 LTI_PROPERTY_USER_USERNAME = 'ext_user_username'
-
-##
-# Settings exposed in templates
-#
-TEMPLATE_VISIBLE_SETTINGS=    {
-        'TITLE_SITE': 'Pod UI',
-        'TITLE_ETB': 'University Grenoble alpes',
-        'LOGO_SITE': 'custom/assets/images/uga_top.png',
-        'LOGO_ETB': 'custom/assets/images/uga_top.png',
-        'LOGO_PLAYER': 'img/logoPod.svg',
-        'LINK_PLAYER': '',
-        'FOOTER_TEXT': ('',),
-        'FAVICON': 'img/logoPod.svg',
-        'CSS_OVERRIDE': '',
-        'PRE_HEADER_TEMPLATE': '',
-        'POST_FOOTER_TEMPLATE': '../custom/templates/layouts/partials/_footer.html',
-    }
