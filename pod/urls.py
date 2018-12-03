@@ -3,8 +3,7 @@ pod_project URL Configuration
 """
 
 from django.conf import settings
-from django.conf.urls import url
-from django.conf.urls import include
+from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
@@ -41,7 +40,7 @@ USE_CAS = getattr(
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     #Homepage
-    url(r'^$', homepage, name="home_page"),
+    url(r'^$', include("pod.custom.urls.py"), name="home_page"),
     # Translation
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
