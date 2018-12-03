@@ -223,6 +223,7 @@ class Channel(models.Model):
     def get_all_theme_json(self):
         return json.dumps(self.get_all_theme())
 
+<<<<<<< HEAD
     @classmethod
     def get_official_channels(cls):
         return {
@@ -231,6 +232,8 @@ class Channel(models.Model):
             'DEFAULT_IMG': settings.DEFAULT_IMG
         }
 
+=======
+>>>>>>> parent of 6c05497... test homepage playlist
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Channel, self).save(*args, **kwargs)

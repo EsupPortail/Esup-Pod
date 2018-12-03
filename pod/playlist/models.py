@@ -65,6 +65,7 @@ class Playlist(models.Model):
         else:
             return 1
 
+<<<<<<< HEAD
     @classmethod
     def get_carousel_playlist(cls):
         try:
@@ -79,6 +80,8 @@ class Playlist(models.Model):
         except:
             return { "playlist": None }
 
+=======
+>>>>>>> parent of 6c05497... test homepage playlist
     def videos(self):
         videos = list()
         elements = PlaylistElement.objects.filter(playlist=self)
