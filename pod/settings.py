@@ -247,4 +247,4 @@ if 'H5P_ENABLED' in globals() and eval('H5P_ENABLED') is True:
     INSTALLED_APPS.append('pod.interactive')
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'custom/static')
