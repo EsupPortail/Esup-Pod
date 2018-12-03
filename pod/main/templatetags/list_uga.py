@@ -33,7 +33,7 @@ import random
 import datetime
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Count, Case, When, IntegerField, Prefetch
-from pods.models import Channel, Pod, Playlist, PlaylistVideo
+from pod.models import Channel, Pod, Playlist, PlaylistVideo
 
 register = Library()
 
