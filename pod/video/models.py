@@ -28,19 +28,6 @@ from tagging.fields import TagField
 
 from pod.main.models import get_nextautoincrement
 
-from __future__ import unicode_literals
-
-from django.template import Library
-from django.template.loader import get_template
-from django.template.context import Context
-from django.utils.html import escapejs, format_html
-from django.utils.safestring import mark_safe
-from django.utils.http import urlencode
-from django.core.urlresolvers import reverse
-from django.conf import settings
-import random
-import datetime
-from django.utils.translation import ugettext_lazy as _
 from django.db.models import Count, Case, When, IntegerField, Prefetch
 
 if getattr(settings, 'USE_PODFILE', False):
