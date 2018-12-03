@@ -1,5 +1,5 @@
-
-
+{% extends 'base.html' %}
+{% load i18n %}
 {% block page_content %}
 
 <h3>{% trans "home" %}</h3>
@@ -7,21 +7,21 @@
 
   {% for video in videos %}
 
-  <div class="infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group" style="min-width: 12rem; min-height: 11rem;"> <!-- min-width: 15rem; -->
+    <div class="infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group" style="min-width: 12rem; min-height: 11rem;"> <!-- min-width: 15rem; -->
 
-    {% include "videos/card.html" %}
+      {% include "videos/card.html" %}
 
-  </div>
+    </div>
 
   {% empty %}
 
-  <div class="col-12 col-md-6 col-lg-3 mb-2">
+    <div class="col-12 col-md-6 col-lg-3 mb-2">
 
-    <p>{% trans "Sorry, no video found" %}</p>
+      <p>{% trans "Sorry, no video found" %}</p>
 
-</div>
+    </div>
 
-{% endfor %}
+  {% endfor %}
 
 </div>
 
