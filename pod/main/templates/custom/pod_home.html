@@ -38,7 +38,7 @@ voir http://www.gnu.org/licenses/
 {% block bootstrap3_content %}
 <article class="container" role="main">
 	<div class="row">
-		{{ playlists }}
+		{% playlists %}
 		<div class="col-sm-9">
 			<ol class="breadcrumb">
 				{% block breadcrumbs %}
@@ -57,7 +57,7 @@ voir http://www.gnu.org/licenses/
 			{% block article_content %}
 
 			<div id="objects_list_flatpage">
-				{{ channels }}
+				{% channels %}
 			</div>
 			{% endblock article_content %}
 			{% block video_list %}
