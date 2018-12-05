@@ -119,9 +119,9 @@
             }
           }
         },
-        "cursus": {
+        "video": {
           "properties": {
-            "name": {
+            "cursus": {
               "type":"text",
               "analyzer" : "icu_french",
               "term_vector": "with_positions_offsets",
