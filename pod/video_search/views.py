@@ -189,8 +189,8 @@ def search_videos(request):
 
     result = es.search(index="pod", body=bodysearch)
 
-    # if settings.DEBUG:
-    #    print(json.dumps(result, indent=4))
+    if settings.DEBUG:
+        print(json.dumps(result, indent=4))
 
     remove_selected_facet = get_remove_selected_facet_link(
         request, selected_facets)
@@ -204,11 +204,7 @@ def search_videos(request):
     num_result = result["hits"]["total"]
     videos.has_next = ((page + 1) * 12) < num_result
     videos.next_page_number = page + 1
-    print(videos)
-    print(list_videos_id)
-    print(num_result)
-    print(search_from)
-    print(search_word)
+
     if request.is_ajax():
         return render(
             request, 'videos/video_list.html',
