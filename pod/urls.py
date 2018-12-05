@@ -35,7 +35,7 @@ from pod.lti.views import LTIAssignmentView
 
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
-
+    
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     #Homepage
