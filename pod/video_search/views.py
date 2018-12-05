@@ -6,7 +6,7 @@ from django.conf import settings
 from pod.video.models import Video
 from django.utils.translation import ugettext_lazy as _
 
-# import json
+import json
 
 ES_URL = getattr(settings, 'ES_URL', ['http://pod-dev.grenet.fr/'])
 
