@@ -117,6 +117,7 @@ def search_videos(request):
                 "fields": [
                     "_id",
                     "title^1.1",
+                    "cursus^0.9",
                     "owner^0.9",
                     "owner_full_name^0.9",
                     "description^0.6",
@@ -126,7 +127,6 @@ def search_videos(request):
                     "type.title^0.6",
                     "disciplines.title^0.6",
                     "channels.title^0.6",
-                    "cursus"
                 ]
             }
         }
@@ -177,8 +177,7 @@ def search_videos(request):
                       "order": {"_count": "desc"}}}
 
     # add cursus and main_lang 'cursus', 'main_lang',
-    bodysearch["aggs"]['cursus'] = {
-        "terms": {"field": "cursus", "size": 5, "order": {"_count": "desc"}}}
+
     bodysearch["aggs"]['main_lang'] = {
         "terms": {"field": "main_lang",
                   "size": 5,
@@ -188,7 +187,7 @@ def search_videos(request):
     #    print(json.dumps(bodysearch, indent=4))
 
     result = es.search(index="pod", body=bodysearch)
-
+    return HttpResponse(result)
     # if settings.DEBUG:
     #    print(json.dumps(result, indent=4))
 
