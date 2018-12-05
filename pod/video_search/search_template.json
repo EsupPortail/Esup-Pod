@@ -51,8 +51,8 @@
           "type":"keyword"
         },
         "cursus": {
-          "type": "text",
-          "analyzer": "icu_french",
+          "type":"text",
+          "analyzer" : "icu_french",
           "term_vector": "with_positions_offsets",
           "search_analyzer": "icu_french"
         },
@@ -103,6 +103,18 @@
         "type": {
           "properties": {
             "title": {
+              "type":"text",
+              "analyzer" : "icu_french",
+              "term_vector": "with_positions_offsets",
+              "search_analyzer": "icu_french",
+              "fields": {
+                "raw" : {
+                  "type": "keyword",
+                  "index": false
+                }
+              }
+            },
+            "cursus": {
               "type":"text",
               "analyzer" : "icu_french",
               "term_vector": "with_positions_offsets",

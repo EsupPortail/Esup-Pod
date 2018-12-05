@@ -79,7 +79,7 @@ def get_result_aggregations(result, selected_facets):
 def search_videos(request):
     es = Elasticsearch(ES_URL)
     aggsAttrs = ['owner_full_name', 'type.title',
-                 'disciplines.title', 'tags.name', 'channels.title', 'cursus']
+                 'disciplines.title', 'tags.name', 'channels.title', 'type.cursus']
 
     # SEARCH FORM
     search_word = ""
