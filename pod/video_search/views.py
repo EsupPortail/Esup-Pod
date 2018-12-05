@@ -187,7 +187,6 @@ def search_videos(request):
     #    print(json.dumps(bodysearch, indent=4))
 
     result = es.search(index="pod", body=bodysearch)
-    return HttpResponse(result)
     # if settings.DEBUG:
     #    print(json.dumps(result, indent=4))
 
