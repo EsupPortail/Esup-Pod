@@ -41,6 +41,12 @@
         "id": {
           "type":"long"
         },
+        "cursus": {
+          "type":"text",
+          "analyzer" : "icu_french",
+          "term_vector": "with_positions_offsets",
+          "search_analyzer": "icu_french"
+        }
         "title": {
           "type":"text",
           "analyzer" : "icu_french",
@@ -49,12 +55,6 @@
         },
         "owner": {
           "type":"keyword"
-        },
-        "cursus": {
-          "type":"text",
-          "analyzer" : "icu_french",
-          "term_vector": "with_positions_offsets",
-          "search_analyzer": "icu_french"
         },
         "owner_full_name": {
           "type":"text",
@@ -103,25 +103,6 @@
         "type": {
           "properties": {
             "title": {
-              "type":"text",
-              "analyzer" : "icu_french",
-              "term_vector": "with_positions_offsets",
-              "search_analyzer": "icu_french",
-              "fields": {
-                "raw" : {
-                  "type": "keyword",
-                  "index": false
-                }
-              }
-            },
-            "slug": {
-              "type":"keyword"
-            }
-          }
-        },
-        "video": {
-          "properties": {
-            "cursus": {
               "type":"text",
               "analyzer" : "icu_french",
               "term_vector": "with_positions_offsets",
@@ -269,9 +250,6 @@
           "type":"keyword"
         },
         "main_lang": {
-          "type":"keyword"
-        },
-        "cursus": {
           "type":"keyword"
         }
       }
