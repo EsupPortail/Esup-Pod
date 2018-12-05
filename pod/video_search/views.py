@@ -90,7 +90,7 @@ def search_videos(request):
     searchForm = SearchForm(request.GET)
     if searchForm.is_valid():
         search_word = searchForm.cleaned_data['q']
-        return HttpResponse(search_word)
+
         start_date = searchForm.cleaned_data['start_date']
         end_date = searchForm.cleaned_data['end_date']
 
@@ -125,7 +125,8 @@ def search_videos(request):
                     "chapters.title^0.5",
                     "type.title^0.6",
                     "disciplines.title^0.6",
-                    "channels.title^0.6"
+                    "channels.title^0.6",
+                    "cursus"
                 ]
             }
         }
