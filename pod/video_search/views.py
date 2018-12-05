@@ -78,7 +78,7 @@ def get_result_aggregations(result, selected_facets):
 
 
 def search_videos(request):
-    return HttpResponse(request.GET.get('q'))
+
     es = Elasticsearch(ES_URL)
     aggsAttrs = ['owner_full_name', 'type.title',
                  'disciplines.title', 'tags.name', 'channels.title', "cursus"]
@@ -90,6 +90,7 @@ def search_videos(request):
     searchForm = SearchForm(request.GET)
     if searchForm.is_valid():
         search_word = searchForm.cleaned_data['q']
+        return HttpResponse(search_word)
         start_date = searchForm.cleaned_data['start_date']
         end_date = searchForm.cleaned_data['end_date']
 
