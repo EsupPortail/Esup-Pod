@@ -177,7 +177,8 @@ def search_videos(request):
                       "order": {"_count": "desc"}}}
 
     # add cursus and main_lang 'cursus', 'main_lang',
-
+    bodysearch["aggs"]['cursus'] = {
+        "terms": {"field": "cursus", "size": 5, "order": {"_count": "desc"}}}
     bodysearch["aggs"]['main_lang'] = {
         "terms": {"field": "main_lang",
                   "size": 5,
@@ -187,6 +188,7 @@ def search_videos(request):
     #    print(json.dumps(bodysearch, indent=4))
 
     result = es.search(index="pod", body=bodysearch)
+
     # if settings.DEBUG:
     #    print(json.dumps(result, indent=4))
 
@@ -202,7 +204,11 @@ def search_videos(request):
     num_result = result["hits"]["total"]
     videos.has_next = ((page + 1) * 12) < num_result
     videos.next_page_number = page + 1
-
+    print(videos)
+    print(list_videos_id)
+    print(num_result)
+    print(search_from)
+    print(search_word)
     if request.is_ajax():
         return render(
             request, 'videos/video_list.html',
