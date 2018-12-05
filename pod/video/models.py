@@ -648,6 +648,7 @@ class Video(models.Model):
                 "duration_in_time": self.duration_in_time,
                 "mediatype": "video" if self.is_video else "audio",
                 "main_lang": "%s" % LANG_CHOICES_DICT[self.main_lang],
+                "cursus": "%s" % CURSUS_CODES_DICT[self.cursus],
             }
             return json.dumps(data_to_dump)
         except ObjectDoesNotExist as e:

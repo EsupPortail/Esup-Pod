@@ -270,6 +270,9 @@
         },
         "main_lang": {
           "type":"keyword"
+        },
+        "cursus": {
+          "type":"keyword"
         }
       }
     }
