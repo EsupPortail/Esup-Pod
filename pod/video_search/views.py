@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 from elasticsearch import Elasticsearch
 from pod.video_search.forms import SearchForm
 from django.conf import settings
@@ -77,6 +78,7 @@ def get_result_aggregations(result, selected_facets):
 
 
 def search_videos(request):
+    return HttpResponse(request.GET.get('q'))
     es = Elasticsearch(ES_URL)
     aggsAttrs = ['owner_full_name', 'type.title',
                  'disciplines.title', 'tags.name', 'channels.title', "cursus"]
