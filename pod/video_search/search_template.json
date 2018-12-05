@@ -114,7 +114,14 @@
                 }
               }
             },
-            "cursus": {
+            "slug": {
+              "type":"keyword"
+            }
+          }
+        },
+        "cursus": {
+          "properties": {
+            "name": {
               "type":"text",
               "analyzer" : "icu_french",
               "term_vector": "with_positions_offsets",
