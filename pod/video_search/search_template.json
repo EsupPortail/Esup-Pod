@@ -50,6 +50,12 @@
         "owner": {
           "type":"keyword"
         },
+        "cursus": {
+          "type": "text",
+          "analyzer": "icu_french",
+          "term_vector": "with_positions_offsets",
+          "search_analyzer": "icu_french"
+        },
         "owner_full_name": {
           "type":"text",
           "analyzer" : "icu_french",
@@ -241,9 +247,6 @@
           "type":"text"
         },
         "mediatype": {
-          "type":"keyword"
-        },
-        "cursus": {
           "type":"keyword"
         },
         "main_lang": {
