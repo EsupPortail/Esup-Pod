@@ -615,7 +615,6 @@ class Video(models.Model):
             data_to_dump = {
                 'id': self.id,
                 'title': u'%s' % self.title,
-                "cursus": u"%s" % self.cursus,
                 'owner': u'%s' % self.owner.username,
                 'owner_full_name': u'%s' % self.owner.get_full_name(),
                 "date_added": u'%s' % self.date_added.strftime(
