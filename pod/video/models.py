@@ -615,6 +615,7 @@ class Video(models.Model):
             data_to_dump = {
                 'id': self.id,
                 'title': u'%s' % self.title,
+                "cursus": u"%s" % self.cursus,
                 'owner': u'%s' % self.owner.username,
                 'owner_full_name': u'%s' % self.owner.get_full_name(),
                 "date_added": u'%s' % self.date_added.strftime(
@@ -646,7 +647,6 @@ class Video(models.Model):
                 "password": True if self.password != "" else False,
                 "duration_in_time": self.duration_in_time,
                 "mediatype": "video" if self.is_video else "audio",
-                "cursus": "%s" % CURSUS_CODES_DICT[self.cursus],
                 "main_lang": "%s" % LANG_CHOICES_DICT[self.main_lang],
             }
             return json.dumps(data_to_dump)
