@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 
 # import json
 
-ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:8000/'])
+ES_URL = getattr(settings, 'ES_URL', ['http://pod-dev.grenet.fr/'])
 
 # Create your views here.
 
