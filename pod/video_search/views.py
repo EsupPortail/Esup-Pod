@@ -189,8 +189,8 @@ def search_videos(request):
 
     result = es.search(index="pod", body=bodysearch)
 
-    if settings.DEBUG:
-        print(json.dumps(result, indent=4))
+    # if settings.DEBUG:
+    #     print(json.dumps(result, indent=4))
 
     remove_selected_facet = get_remove_selected_facet_link(
         request, selected_facets)
