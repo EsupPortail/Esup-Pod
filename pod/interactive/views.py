@@ -6,6 +6,7 @@ from django.core.exceptions import SuspiciousOperation
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
+from django.http import Http404
 
 from pod.video.models import Video
 from pod.video.views import render_video
@@ -102,7 +103,8 @@ def video_interactive(request, slug, slug_c=None,
 
     h5p = h5p_contents.objects.get(title=video.title) if (
         video.interactive.is_interactive()) else None
-
+    if h5p is None:
+        raise Http404("Interactive video does not exist")
     score = getUserScore(h5p.content_id) if (
         request.user == video.owner or request.user.is_superuser
     ) else getUserScore(h5p.content_id, request.user)

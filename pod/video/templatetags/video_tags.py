@@ -14,6 +14,10 @@ def get_app_link(video, app):
         video_app = eval(
             'mod.%s.objects.filter(video__id=%s).all()' % (
                 capfirst(app), video.id))
+        if (app == "interactive"
+                and video_app.first() is not None
+                and video_app.first().is_interactive() is False):
+            video_app = False
         if video_app:
             url = reverse('%(app)s:video_%(app)s' %
                           {"app": app}, kwargs={'slug': video.slug})
