@@ -1,12 +1,13 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from django.core.exceptions import SuspiciousOperation
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.template.loader import render_to_string
@@ -29,6 +30,7 @@ from pod.video.forms import VideoDeleteForm
 from pod.video.forms import NotesForm
 
 import json
+import re
 from datetime import datetime
 
 from pod.playlist.models import Playlist
@@ -38,6 +40,25 @@ VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, 'RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY', False)
 THEME_ACTION = ['new', 'modify', 'delete', 'save']
+
+TEMPLATE_VISIBLE_SETTINGS = getattr(
+    settings,
+    'TEMPLATE_VISIBLE_SETTINGS',
+    {
+        'TITLE_SITE': 'Pod',
+        'TITLE_ETB': 'University name',
+        'LOGO_SITE': 'img/logoPod.svg',
+        'LOGO_ETB': 'img/logo_etb.svg',
+        'LOGO_PLAYER': 'img/logoPod.svg',
+        'LINK_PLAYER': '',
+        'FOOTER_TEXT': ('',),
+        'FAVICON': 'img/logoPod.svg',
+        'CSS_OVERRIDE': ''
+    }
+)
+
+TITLE_ETB = TEMPLATE_VISIBLE_SETTINGS[
+    'TITLE_ETB'] if TEMPLATE_VISIBLE_SETTINGS.get('TITLE_ETB') else 'University'
 
 # ############################################################################
 # CHANNEL
@@ -595,3 +616,69 @@ def video_count(request, id):
     messages.add_message(
         request, messages.ERROR, _(u'You cannot access to this view.'))
     raise PermissionDenied
+
+
+def video_oembed(request):
+    if not request.GET.get('url'):
+        raise SuspiciousOperation('URL must be specified')
+    format = "xml" if request.GET.get("format") == "xml" else "json"
+
+    data = {}
+    data['type'] = "video"
+    data['version'] = "1.0"
+    data['provider_name'] = TITLE_ETB
+    protocole = "https" if request.is_secure() else "http"
+    data['provider_url'] = "%s://%s" % (protocole,
+                                        get_current_site(request).domain)
+    data['width'] = 640
+    data['height'] = 360
+
+    reg = r'^https?://(.*)/video/(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)?/?(.*)'
+    url = request.GET.get('url')
+    p = re.compile(reg)
+    m = p.match(url)
+
+    if m:
+        video_slug = m.group('slug')
+        video = get_object_or_404(Video, slug=video_slug)
+        data['title'] = video.title
+        data['author_name'] = video.owner.get_full_name()
+        data['author_url'] = "%s%s?owner=%s" % (
+            data['provider_url'], reverse('videos'), video.owner.username)
+        data['html'] = "<iframe src=\"%(provider)s%(video_url)s?is_iframe=true\" width=\"640\" height=\"360\" style=\"padding: 0; margin: 0; border:0\" allowfullscreen ></iframe>" % {
+            'provider': data['provider_url'],
+            'video_url': reverse('video', kwargs={'slug': video.slug})
+        }
+    else:
+        return HttpResponseNotFound('<h1>Video not found</h1>')
+
+    if format == "xml":
+        xml = """
+            <oembed>
+                <html>
+                    %(html)s
+                </html>
+                <title>%(title)s</title>
+                <provider_name>%(provider_name)s</provider_name>
+                <author_url>%(author_url)s</author_url>
+                <height>%(height)s</height>
+                <provider_url>%(provider_url)s</provider_url>
+                <type>video</type>
+                <width>%(width)s</width>
+                <version>1.0</version>
+                <author_name>%(author_name)s</author_name>
+            </oembed>
+        """ % {
+            'html': data['html'].replace('<', '&lt;').replace('>', '&gt;'),
+            'title': data['title'],
+            'provider_name': data['provider_name'],
+            'author_url': data['author_url'],
+            'height': data['height'],
+            'provider_url': data['provider_url'],
+            'width': data['width'],
+            'author_name': data['author_name']
+        }
+        return HttpResponse(xml, content_type='application/xhtml+xml')
+        # return HttpResponseNotFound('<h1>XML not implemented</h1>')
+    else:
+        return JsonResponse(data)
