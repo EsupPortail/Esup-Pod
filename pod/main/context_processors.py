@@ -56,6 +56,8 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         'POST_FOOTER_TEMPLATE': '',
     }
 )
+OEMBED = getattr(
+    django_settings, 'OEMBED', False)
 
 
 def context_settings(request):
@@ -68,6 +70,7 @@ def context_settings(request):
             raise ImproperlyConfigured(m)
     new_settings['VERSION'] = VERSION
     new_settings["THIRD_PARTY_APPS"] = django_settings.THIRD_PARTY_APPS
+    new_settings['OEMBED'] = OEMBED
     return new_settings
 
 
