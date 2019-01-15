@@ -635,8 +635,8 @@ def video_oembed(request):
     data['width'] = 640
     data['height'] = 360
 
-    reg = r'^https?://(.*)/video/(?P<slug>[\-\d\w]+)/' + \
-        '(?P<slug_private>[\-\d\w]+)?/?(.*)'
+    reg = r'^https?://(.*)/video/(?P<slug>[\-\d\w]+)/\
+        (?P<slug_private>[\-\d\w]+)?/?(.*)'
     url = request.GET.get('url')
     p = re.compile(reg)
     m = p.match(url)
