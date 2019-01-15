@@ -58,7 +58,9 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
 )
 
 TITLE_ETB = TEMPLATE_VISIBLE_SETTINGS[
-    'TITLE_ETB'] if TEMPLATE_VISIBLE_SETTINGS.get('TITLE_ETB') else 'University'
+    'TITLE_ETB'] if (
+        TEMPLATE_VISIBLE_SETTINGS.get('TITLE_ETB')
+) else 'University'
 
 # ############################################################################
 # CHANNEL
@@ -633,7 +635,8 @@ def video_oembed(request):
     data['width'] = 640
     data['height'] = 360
 
-    reg = r'^https?://(.*)/video/(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)?/?(.*)'
+    reg = r'^https?://(.*)/video/(?P<slug>[\-\d\w]+)/' + \
+        '(?P<slug_private>[\-\d\w]+)?/?(.*)'
     url = request.GET.get('url')
     p = re.compile(reg)
     m = p.match(url)
@@ -646,10 +649,12 @@ def video_oembed(request):
         data['author_name'] = video.owner.get_full_name()
         data['author_url'] = "%s%s?owner=%s" % (
             data['provider_url'], reverse('videos'), video.owner.username)
-        data['html'] = "<iframe src=\"%(provider)s%(video_url)s%(slug_private)s?is_iframe=true\" width=\"640\" height=\"360\" style=\"padding: 0; margin: 0; border:0\" allowfullscreen ></iframe>" % {
+        data['html'] = "<iframe src=\"%(provider)s%(video_url)s%(slug_private)s\
+        ?is_iframe=true\" width=\"640\" height=\"360\" style=\"padding: 0; \
+        margin: 0; border:0\" allowfullscreen ></iframe>" % {
             'provider': data['provider_url'],
             'video_url': reverse('video', kwargs={'slug': video.slug}),
-            'slug_private': "%s/" %slug_private if slug_private else ""
+            'slug_private': "%s/" % slug_private if slug_private else ""
         }
     else:
         return HttpResponseNotFound('<h1>Video not found</h1>')
