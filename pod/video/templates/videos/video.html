@@ -16,6 +16,10 @@
 <meta property="og:description" content="{{ video.description|metaformat|safe|striptags|truncatechars:250 }}" />
 <meta property="og:site_name" content="{{ TITLE_SITE }}" />
 <!-- End Open Graph data -->
+{% if OEMBED %}
+<link rel="alternate" type="application/json+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/oembed/?url={{request.build_absolute_uri|urlencode}}&format=json" />
+<link rel="alternate" type="text/xml+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/oembed/?url={{request.build_absolute_uri|urlencode}}&format=xml" />
+{% endif %}
 {% endblock %}
 
 {% block page_extra_head %}

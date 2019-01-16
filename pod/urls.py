@@ -27,6 +27,7 @@ from pod.video.views import channel_edit
 from pod.video.views import theme_edit
 from pod.video.views import video_notes
 from pod.video.views import video_count
+from pod.video.views import video_oembed
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 from pod.main.views import contact_us, download_file
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
@@ -36,6 +37,8 @@ from pod.lti.views import LTIAssignmentView
 
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
+OEMBED = getattr(
+    settings, 'OEMBED', False)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -119,6 +122,12 @@ urlpatterns = [
 # CAS
 if USE_CAS:
     urlpatterns += [url(r'^sso-cas/', include('django_cas.urls')), ]
+##
+# OEMBED feature patterns
+#
+if OEMBED:
+    urlpatterns += [url(r'^oembed/', video_oembed, name='video_oembed'), ]
+
 # APPS -> to change !
 urlpatterns += [url(r'^', include('pod.completion.urls')), ]
 urlpatterns += [url(r'^', include('pod.chapter.urls')), ]
