@@ -15,7 +15,7 @@
 <meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}" />
 <meta property="og:image:width" content="{% if video.thumbnail %}{{video.thumbnail.file.width}}{% else %}640{%endif%}" />
 <meta property="og:image:height" content="{% if video.thumbnail %}{{video.thumbnail.file.height}}{% else %}360{%endif%}" />
-<meta property="og:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% else %}[... {% trans "No information available" %} ...]{% endif %}" />
+<meta property="og:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}" />
 <meta property="og:site_name" content="{{ TITLE_SITE }}" />
 <meta property="og:locale" content="{{video.get_main_lang}}" />
 <!-- End Open Graph data -->
