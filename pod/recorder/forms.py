@@ -30,7 +30,10 @@ class RecordingForm(forms.ModelForm):
             self.fields['source_file'].widget = forms.HiddenInput()
         else:
             self.fields['source_file'] = forms.FilePathField(
-                path=DEFAULT_RECORDER_PATH, recursive=True, label=_("source_file"))
+                path=DEFAULT_RECORDER_PATH,
+                recursive=True,
+                label=_("source_file")
+            )
             self.fields['source_file'].widget.attrs['class'] = 'form-control'
 
     class Meta:
