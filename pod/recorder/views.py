@@ -36,7 +36,7 @@ def add_recording(request):
             request, messages.ERROR, _('Mediapath should be indicated.'))
         raise PermissionDenied
 
-    if not request.user.is_superuser:
+    if mediapath != "":
         initial['source_file'] = os.path.join(DEFAULT_RECORDER_PATH, mediapath)
 
     form = RecordingForm(request, initial=initial)
