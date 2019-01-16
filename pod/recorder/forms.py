@@ -30,13 +30,13 @@ class RecordingForm(forms.ModelForm):
         #    self.fields['source_file'].widget = forms.HiddenInput()
         # else:
         if request.user.is_superuser and self.fields.get('source_file'):
-            self.fields['source_file']=forms.FilePathField(
+            self.fields['source_file'] = forms.FilePathField(
                 path=DEFAULT_RECORDER_PATH,
                 recursive=True,
                 label=_("source_file")
             )
-            self.fields['source_file'].widget.attrs['class']='form-control'
+            self.fields['source_file'].widget.attrs['class'] = 'form-control'
 
     class Meta:
-        model=Recording
-        exclude=('comment', 'date_added')
+        model = Recording
+        exclude = ('comment', 'date_added')
