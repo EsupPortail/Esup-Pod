@@ -635,8 +635,8 @@ def video_oembed(request):
     data['width'] = 640
     data['height'] = 360
 
-    reg = r'^https?://(.*)/video/(?P<slug>[\-\d\w]+)/\
-        (?P<slug_private>[\-\d\w]+)?/?(.*)'
+    reg = (r'^https?://(.*)/video/(?P<slug>[\-\d\w]+)/'
+           + r'(?P<slug_private>[\-\d\w]+)?/?(.*)')
     url = request.GET.get('url')
     p = re.compile(reg)
     m = p.match(url)
@@ -644,20 +644,27 @@ def video_oembed(request):
     if m:
         video_slug = m.group('slug')
         slug_private = m.group('slug_private')
-        video = get_object_or_404(Video, slug=video_slug)
+        try:
+            id = int(video_slug[:video_slug.find("-")])
+        except ValueError:
+            raise SuspiciousOperation('Invalid video id')
+        video = get_object_or_404(Video, id=id)
+
         data['title'] = video.title
         data['author_name'] = video.owner.get_full_name()
         data['author_url'] = "%s%s?owner=%s" % (
             data['provider_url'], reverse('videos'), video.owner.username)
-        data['html'] = "<iframe src=\"%(provider)s%(video_url)s%(slug_private)s\
-        ?is_iframe=true\" width=\"640\" height=\"360\" style=\"padding: 0; \
-        margin: 0; border:0\" allowfullscreen ></iframe>" % {
+        data['html'] = (
+            "<iframe src=\"%(provider)s%(video_url)s%(slug_private)s"
+            + "?is_iframe=true\" width=\"640\" height=\"360\" style=\""
+            + "padding: 0; margin: 0; border:0\" allowfullscreen ></iframe>"
+        ) % {
             'provider': data['provider_url'],
             'video_url': reverse('video', kwargs={'slug': video.slug}),
             'slug_private': "%s/" % slug_private if slug_private else ""
         }
     else:
-        return HttpResponseNotFound('<h1>Video not found</h1>')
+        return HttpResponseNotFound('<h1>Url not match</h1>')
 
     if format == "xml":
         xml = """
