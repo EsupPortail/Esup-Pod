@@ -37,7 +37,8 @@ def add_recording(request):
         raise PermissionDenied
 
     if mediapath != "":
-        initial['source_file'] = os.path.join(DEFAULT_RECORDER_PATH, mediapath)
+        initial['source_file'] = "%s" % os.path.join(
+            DEFAULT_RECORDER_PATH, mediapath)
 
     form = RecordingForm(request, initial=initial)
 
@@ -50,11 +51,13 @@ def add_recording(request):
                 med.user = form.cleaned_data['user']
             else:
                 med.user = request.user
+            """
             if (request.POST.get('mediapath')
                     and request.POST.get('mediapath') != ""):
-                med.mediapath = form.cleaned_data['mediapath']
+                med.source_file = form.cleaned_data['mediapath']
             else:
-                med.mediapath = mediapath
+                med.source_file = mediapath
+            """
             med.save()
             message = _(
                 'Your publication is saved.'
