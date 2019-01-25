@@ -26,3 +26,12 @@ def video_live(request, id):  # affichage des directs
     return render(request, "live/live.html", {
         'broadcaster': broadcaster
     })
+
+def change_status(request, slug):
+    broadcaster = get_object_or_404(Broadcaster, slug=slug)
+    if request.GET.get("online") == "1":
+            broadcaster.status = 1
+        else:
+            broadcaster.status = 0
+        broadcaster.save()
+    return HttpResponse("ok")
