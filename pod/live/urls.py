@@ -10,8 +10,8 @@ urlpatterns = [
         name='lives'),
     url(r'^(?P<id>[\d]+)/$',
         video_live,
-        name='video_live')
-    url(r'^(?P<slug>[\-\d\w]+)/$',
+        name='video_live'),
+    url(r'^change_status/(?P<slug>[\-\d\w]+)/$',
         change_status,
         name='change_status')
 ]

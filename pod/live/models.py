@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from ckeditor.fields import RichTextField
+from django.template.defaultfilters import slugify
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
