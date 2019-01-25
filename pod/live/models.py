@@ -41,6 +41,12 @@ class Building(models.Model):
 
 class Broadcaster(models.Model):
     name = models.CharField(_('name'), max_length=200, unique=True)
+    slug = models.SlugField(
+        _('Slug'), unique=True, max_length=100,
+        help_text=_(
+            u'Used to access this instance, the "slug" is a short label '
+            + 'containing only letters, numbers, underscore or dash top.'),
+        editable=False)
     building = models.ForeignKey('Building', verbose_name=_('Building'))
     description = RichTextField(
         _('description'), config_name='complete', blank=True)
@@ -72,6 +78,10 @@ class Broadcaster(models.Model):
                     settings.STATIC_URL,
                     DEFAULT_THUMBNAIL])
             return thumbnail_url
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Broadcaster, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = _("Broadcaster")
