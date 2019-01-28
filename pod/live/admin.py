@@ -11,7 +11,7 @@ class BuildingAdmin(admin.ModelAdmin):
 
 
 class BroadcasterAdmin(admin.ModelAdmin):
-    list_display = ('name', 'url', 'status', 'is_restricted')
+    list_display = ('name', 'slug', 'url', 'status', 'is_restricted')
 
 
 admin.site.register(Building, BuildingAdmin)

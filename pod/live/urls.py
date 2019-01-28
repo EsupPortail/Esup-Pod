@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from .views import lives
-from .views import video_live, change_status
+from .views import video_live
 
 app_name = 'live'
 
@@ -10,8 +10,5 @@ urlpatterns = [
         name='lives'),
     url(r'^(?P<id>[\d]+)/$',
         video_live,
-        name='video_live'),
-    url(r'^change_status/(?P<slug>[\-\d\w]+)/$',
-        change_status,
-        name='change_status')
+        name='video_live')
 ]

@@ -15,9 +15,11 @@ class BroadcasterSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Broadcaster
-        fields = ('id', 'url', 'name',
+        fields = ('id', 'url', 'name', 'slug',
                   'building', 'description', 'poster',
                   'url', 'status')
+        lookup_field = 'slug'
+
 
 #############################################################################
 # ViewSets define the view behavior.
@@ -32,3 +34,4 @@ class BuildingViewSet(viewsets.ModelViewSet):
 class BroadcasterViewSet(viewsets.ModelViewSet):
     queryset = Broadcaster.objects.all().order_by('building', 'name')
     serializer_class = BroadcasterSerializer
+    lookup_field = 'slug'
