@@ -14,5 +14,6 @@ class BroadcasterAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug', 'url', 'status', 'is_restricted')
     readonly_fields = ["slug"]
 
+
 admin.site.register(Building, BuildingAdmin)
 admin.site.register(Broadcaster, BroadcasterAdmin)
