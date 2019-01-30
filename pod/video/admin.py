@@ -1,10 +1,9 @@
-
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
-
 from modeltranslation.admin import TranslationAdmin
 
 from .models import Video
@@ -92,6 +91,16 @@ class VideoAdmin(admin.ModelAdmin):
     inlines += [
         ChapterInline
     ]
+
+    #Surcharge ajout de establishment
+    list_filter = list_filter + ("owner__owner__establishment",) if settings.USE_ESTABLISHMENT_FIELD else tuple(list_filter)
+    list_display = list_display + ("get_owner_establishment",) if settings.USE_ESTABLISHMENT_FIELD else tuple(list_display)
+    settings.USE_ESTABLISHMENT_FIELD and search_fields.append("owner__owner__establishment",)
+
+    def get_owner_establishment(self, obj):
+        owner = obj.owner
+        return owner.owner.establishment
+    get_owner_establishment.short_description = _('Establishment')
 
     def get_owner_by_name(self, obj):
         owner = obj.owner
