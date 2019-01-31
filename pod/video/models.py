@@ -502,6 +502,10 @@ class Video(models.Model):
             return "None"
 
     @property
+    def establishment(self):
+        return self.owner.owner.establishment
+
+    @property
     def viewcount(self):
         return self.get_viewcount()
     viewcount.fget.short_description = _('Sum of view')
