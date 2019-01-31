@@ -36,6 +36,9 @@ from pod.chapter.admin import ChapterInline
 
 # Ordering user by username !
 User._meta.ordering = ["username"]
+# SET USE_ESTABLISHMENT_FIELD
+USE_ESTABLISHMENT_FIELD = getattr(
+        settings, 'USE_ESTABLISHMENT_FIELD', False)
 
 
 def url_to_edit_object(obj):
@@ -96,8 +99,6 @@ class VideoAdmin(admin.ModelAdmin):
         owner = obj.owner
         return owner.owner.establishment
     get_owner_establishment.short_description = _('Establishment')
-    USE_ESTABLISHMENT_FIELD = getattr(
-        settings, 'USE_ESTABLISHMENT_FIELD', False)
     # Ajout de l'attribut 'establishment'
     if settings.USE_ESTABLISHMENT_FIELD:
         list_filter = list_filter + ("owner__owner__establishment",)
