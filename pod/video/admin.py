@@ -100,7 +100,7 @@ class VideoAdmin(admin.ModelAdmin):
         return owner.owner.establishment
     get_owner_establishment.short_description = _('Establishment')
     # Ajout de l'attribut 'establishment'
-    if settings.USE_ESTABLISHMENT_FIELD:
+    if USE_ESTABLISHMENT_FIELD:
         list_filter = list_filter + ("owner__owner__establishment",)
         list_display = list_display + ("get_owner_establishment",)
         search_fields.append("owner__owner__establishment",)
