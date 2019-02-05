@@ -21,7 +21,7 @@ from django.dispatch import receiver
 from django.utils.html import format_html
 from django.db.models.signals import pre_delete
 from tagging.models import Tag
-from datetime import datetime, date
+from datetime import date
 from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
@@ -746,7 +746,7 @@ class ViewCount(models.Model):
         _(u'Date'), default=date.today(), editable=False)
     count = models.IntegerField(
         _('Number of view'), default=0, editable=False)
-    
+
     class Meta:
         unique_together = ("video", "date")
 

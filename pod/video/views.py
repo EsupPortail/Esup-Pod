@@ -31,7 +31,7 @@ from pod.video.forms import NotesForm
 
 import json
 import re
-from datetime import datetime, date
+from datetime import date
 
 from pod.playlist.models import Playlist
 
@@ -610,16 +610,10 @@ def video_notes(request, id):
 def video_count(request, id):
     video = get_object_or_404(Video, id=id)
     if request.method == "POST":
-        """
-        viewCount, created = ViewCount.objects.get_or_create(
-            video=video, date=datetime.now())
-        viewCount.count += 1
-        viewCount.save()
-        """
         try:
             viewCount = ViewCount.objects.get(video=video, date=date.today())
-            viewCount.count=F('count')+1
-            viewCount.save(update_fields = ['count'])
+            viewCount.count = F('count')+1
+            viewCount.save(update_fields=['count'])
         except ViewCount.DoesNotExist:
             ViewCount.objects.create(video=video, count=1)
         return HttpResponse("ok")
