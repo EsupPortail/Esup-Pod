@@ -739,9 +739,12 @@ class ViewCount(models.Model):
     video = models.ForeignKey(Video, verbose_name=_('Video'),
                               editable=False)
     date = models.DateField(
-        _(u'Date'), default=datetime.now, editable=False)
+        _(u'Date'), default=date.today(), editable=False)
     count = models.IntegerField(
         _('Number of view'), default=0, editable=False)
+    
+    class Meta:
+        unique_together = ("video", "date")
 
 
 class VideoRendition(models.Model):
