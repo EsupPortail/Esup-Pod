@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count
+from django.db.models import Count, F
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.shortcuts import redirect
@@ -31,7 +31,7 @@ from pod.video.forms import NotesForm
 
 import json
 import re
-from datetime import datetime
+from datetime import datetime, date
 
 from pod.playlist.models import Playlist
 
@@ -610,10 +610,18 @@ def video_notes(request, id):
 def video_count(request, id):
     video = get_object_or_404(Video, id=id)
     if request.method == "POST":
+        """
         viewCount, created = ViewCount.objects.get_or_create(
             video=video, date=datetime.now())
         viewCount.count += 1
         viewCount.save()
+        """
+        try:
+            viewCount = ViewCount.objects.get(video=video, date=date.today())
+            viewCount.count=F('count')+1
+            viewCount.save(update_fields = ['count'])
+        except ViewCount.DoesNotExist:
+            ViewCount.objects.create(video=video, count=1)
         return HttpResponse("ok")
     messages.add_message(
         request, messages.ERROR, _(u'You cannot access to this view.'))
