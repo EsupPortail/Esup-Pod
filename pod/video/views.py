@@ -589,10 +589,11 @@ def video_delete(request, slug=None):
 
 @csrf_protect
 @login_required(redirect_field_name='referrer')
-def video_notes(request, id):
-
-    note = get_object_or_404(Notes, id=id)
-    notesForm = NotesForm(instance=note)
+def video_notes(request, slug):
+    video = get_object_or_404(Video, slug=slug)
+    note, created = Notes.objects.get_or_create(
+        user=request.user, video=video)
+    # notesForm = NotesForm(instance=note)
 
     if request.method == "POST":
         notesForm = NotesForm(request.POST, instance=note)
