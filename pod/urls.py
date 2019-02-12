@@ -70,7 +70,7 @@ urlpatterns = [
     url(r'^video_edit/(?P<slug>[\-\d\w]+)/$', video_edit, name='video_edit'),
     url(r'^video_delete/(?P<slug>[\-\d\w]+)/$',
         video_delete, name='video_delete'),
-    url(r'^video_notes/(?P<id>[\d]+)/$',
+    url(r'^video_notes/(?P<slug>[\-\d\w]+)/$',
         video_notes, name='video_notes'),
     url(r'^video_count/(?P<id>[\d]+)/$',
         video_count, name='video_count'),

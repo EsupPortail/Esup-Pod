@@ -329,8 +329,13 @@ def is_in_video_groups(user, video):
 
 def get_note_form(request, video):
     notesForm = None
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and Notes.objects.filter(
+            user=request.user, video=video).exists():
+        """
         note, created = Notes.objects.get_or_create(
+            user=request.user, video=video)
+        """
+        note = Notes.objects.get(
             user=request.user, video=video)
         notesForm = NotesForm(instance=note)
     return notesForm
@@ -584,15 +589,17 @@ def video_delete(request, slug=None):
 
 @csrf_protect
 @login_required(redirect_field_name='referrer')
-def video_notes(request, id):
-
-    note = get_object_or_404(Notes, id=id)
-    notesForm = NotesForm(instance=note)
+def video_notes(request, slug):
+    video = get_object_or_404(Video, slug=slug)
+    notesForm = NotesForm()
 
     if request.method == "POST":
-        notesForm = NotesForm(request.POST, instance=note)
+        notesForm = NotesForm(request.POST)
         if notesForm.is_valid():
-            notesForm.save()
+            note, created = Notes.objects.get_or_create(
+                user=request.user, video=video)
+            note.note = notesForm.cleaned_data["note"]
+            note.save()
             messages.add_message(
                 request, messages.INFO, _('The note has been saved.'))
         else:
