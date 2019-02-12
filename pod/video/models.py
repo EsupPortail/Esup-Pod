@@ -262,7 +262,20 @@ class Theme(models.Model):
         return reverse('theme', args=[str(self.channel.slug), str(self.slug)])
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        newid = -1
+        if not self.id:
+            try:
+                newid = get_nextautoincrement(Theme)
+            except Exception:
+                try:
+                    newid = Theme.objects.latest('id').id
+                    newid += 1
+                except Exception:
+                    newid = 1
+        else:
+            newid = self.id
+        newid = '%04d' % newid
+        self.slug = "%s-%s" % (newid, slugify(self.title))
         super(Theme, self).save(*args, **kwargs)
 
     def get_all_children_tree(self):
