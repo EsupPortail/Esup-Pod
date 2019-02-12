@@ -591,14 +591,15 @@ def video_delete(request, slug=None):
 @login_required(redirect_field_name='referrer')
 def video_notes(request, slug):
     video = get_object_or_404(Video, slug=slug)
-    note, created = Notes.objects.get_or_create(
-        user=request.user, video=video)
-    notesForm = NotesForm(instance=note)
+    notesForm = NotesForm()
 
     if request.method == "POST":
-        notesForm = NotesForm(request.POST, instance=note)
+        notesForm = NotesForm(request.POST)
         if notesForm.is_valid():
-            notesForm.save()
+            note, created = Notes.objects.get_or_create(
+                user=request.user, video=video)
+            note.note = notesForm.cleaned_data["note"]
+            note.save()
             messages.add_message(
                 request, messages.INFO, _('The note has been saved.'))
         else:
