@@ -593,7 +593,7 @@ def video_notes(request, slug):
     video = get_object_or_404(Video, slug=slug)
     note, created = Notes.objects.get_or_create(
         user=request.user, video=video)
-    # notesForm = NotesForm(instance=note)
+    notesForm = NotesForm(instance=note)
 
     if request.method == "POST":
         notesForm = NotesForm(request.POST, instance=note)
