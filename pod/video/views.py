@@ -329,8 +329,13 @@ def is_in_video_groups(user, video):
 
 def get_note_form(request, video):
     notesForm = None
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and Notes.objects.filter(
+            user=request.user, video=video).exists():
+        """
         note, created = Notes.objects.get_or_create(
+            user=request.user, video=video)
+        """
+        note = Notes.objects.get(
             user=request.user, video=video)
         notesForm = NotesForm(instance=note)
     return notesForm
