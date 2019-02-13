@@ -388,6 +388,18 @@ $('#btnpartageprive').click(function() {
   });
 
 /** Restrict access **/
+/** restrict access to group */
+$("#id_is_restricted").change(function () {
+    restrict_access_to_groups();
+})
+var restrict_access_to_groups = function () {
+    if ($('#id_is_restricted').prop("checked")) {
+        $("#id_restrict_access_to_groups").parents(".restricted_access").show();
+    } else {
+        $("#id_restrict_access_to_groups option:selected").prop("selected", false);
+        $("#id_restrict_access_to_groups").parents(".restricted_access").hide();
+    }
+}
 $('#id_is_draft').change(function(){
     restricted_access();
 });
@@ -405,19 +417,6 @@ var restricted_access = function() {
     restrict_access_to_groups();
 }
 restricted_access();
-
-/** restrict access to group */
-$("#id_is_restricted").change(function(){
-    restrict_access_to_groups();
-})
-var restrict_access_to_groups = function() {
-    if ($('#id_is_restricted').prop("checked")) {
-        $("#id_restrict_access_to_groups").parents(".restricted_access").show();
-    } else {
-        $("#id_restrict_access_to_groups option:selected").prop("selected", false);
-        $("#id_restrict_access_to_groups").parents(".restricted_access").hide();
-    }
-}
 //restrict_access_to_groups();
 
 /** end restrict access **/
