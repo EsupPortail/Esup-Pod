@@ -74,7 +74,7 @@ def channel(request, slug_c, slug_t=None):
 
     theme = None
     if slug_t:
-        theme = get_object_or_404(Theme, slug=slug_t)
+        theme = get_object_or_404(Theme, channel=channel, slug=slug_t)
         list_theme = theme.get_all_children_flat()
         videos_list = videos_list.filter(theme__in=list_theme)
 
@@ -416,7 +416,7 @@ def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
     video = get_object_or_404(Video, id=id)
     notesForm = get_note_form(request, video)
     channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
-    theme = get_object_or_404(Theme, slug=slug_t) if slug_t else None
+    theme = get_object_or_404(Theme, channel=channel, slug=slug_t) if slug_t else None
     playlist = get_object_or_404(
         Playlist,
         slug=request.GET['playlist']) if request.GET.get('playlist') else None

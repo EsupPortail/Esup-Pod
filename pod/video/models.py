@@ -237,7 +237,7 @@ class Theme(models.Model):
                     "possible, reflecting the main subject / context "
                     "of the content.(max length : 100 characters)"))
     slug = models.SlugField(
-        _('Slug'), unique=True, max_length=100,
+        _('Slug'), max_length=100,
         help_text=_(
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'),
@@ -262,20 +262,7 @@ class Theme(models.Model):
         return reverse('theme', args=[str(self.channel.slug), str(self.slug)])
 
     def save(self, *args, **kwargs):
-        newid = -1
-        if not self.id:
-            try:
-                newid = get_nextautoincrement(Theme)
-            except Exception:
-                try:
-                    newid = Theme.objects.latest('id').id
-                    newid += 1
-                except Exception:
-                    newid = 1
-        else:
-            newid = self.id
-        newid = '%04d' % newid
-        self.slug = "%s-%s" % (newid, slugify(self.title))
+        self.slug = slugify(self.title)
         super(Theme, self).save(*args, **kwargs)
 
     def get_all_children_tree(self):
@@ -325,6 +312,7 @@ class Theme(models.Model):
         ordering = ['channel', 'title']
         verbose_name = _('Theme')
         verbose_name_plural = _('Themes')
+        unique_together = ("channel", "slug")
 
 
 class Type(models.Model):
