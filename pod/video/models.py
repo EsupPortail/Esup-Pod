@@ -301,9 +301,13 @@ class Theme(models.Model):
         return parents
 
     def clean(self):
+        if Theme.objects.filter(
+                channel=self.channel, slug=slugify(self.title)).exists():
+            raise ValidationError(
+                "A theme with this name already exist in this channel.")
         if self.parentId in self.get_all_children_flat():
             raise ValidationError("A theme cannot have itself \
-                    or one of its' children as parent.")
+                    or one of it's children as parent.")
         if self.parentId and self.parentId not in self.channel.themes.all():
             raise ValidationError(
                 "A theme have to be in the same channel that his parent")
