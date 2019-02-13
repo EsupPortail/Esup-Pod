@@ -756,7 +756,7 @@ class ViewCount(models.Model):
     video = models.ForeignKey(Video, verbose_name=_('Video'),
                               editable=False)
     date = models.DateField(
-        _(u'Date'), default=date.today(), editable=False)
+        _(u'Date'), default=date.today, editable=False)
     count = models.IntegerField(
         _('Number of view'), default=0, editable=False)
 
@@ -1055,6 +1055,7 @@ class Notes(models.Model):
     class Meta:
         verbose_name = _("Note")
         verbose_name_plural = _("Notes")
+        unique_together = ("video", "user")
 
     def __str__(self):
         return "%s-%s" % (self.user.username, self.video)

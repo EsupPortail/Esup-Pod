@@ -43,11 +43,11 @@ class Building(models.Model):
 class Broadcaster(models.Model):
     name = models.CharField(_('name'), max_length=200, unique=True)
     slug = models.SlugField(
-        _('Slug'), unique=True, max_length=100,
+        _('Slug'), unique=True, max_length=200,
         help_text=_(
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'),
-        editable=False)
+        editable=False, default="") # default empty, fill in save
     building = models.ForeignKey('Building', verbose_name=_('Building'))
     description = RichTextField(
         _('description'), config_name='complete', blank=True)
