@@ -402,6 +402,7 @@ var restricted_access = function() {
         $('.restricted_access').addClass('show');
         $('.restricted_access').removeClass('hide');
     }
+    restrict_access_to_groups();
 }
 restricted_access();
 
@@ -417,7 +418,7 @@ var restrict_access_to_groups = function() {
         $("#id_restrict_access_to_groups").parents(".restricted_access").hide();
     }
 }
-restrict_access_to_groups();
+//restrict_access_to_groups();
 
 /** end restrict access **/
 /*** VALID FORM ***/
