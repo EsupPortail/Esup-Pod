@@ -404,6 +404,21 @@ var restricted_access = function() {
     }
 }
 restricted_access();
+
+/** restrict access to group */
+$("#id_is_restricted").change(function(){
+    restrict_access_to_groups();
+})
+var restrict_access_to_groups = function() {
+    if ($('#id_is_restricted').prop("checked")) {
+        $("#id_restrict_access_to_groups").parents(".restricted_access").show();
+    } else {
+        $("#id_restrict_access_to_groups option:selected").prop("selected", false);
+        $("#id_restrict_access_to_groups").parents(".restricted_access").hide();
+    }
+}
+restrict_access_to_groups();
+
 /** end restrict access **/
 /*** VALID FORM ***/
 (function() {
