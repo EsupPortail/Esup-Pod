@@ -416,7 +416,8 @@ def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
     video = get_object_or_404(Video, id=id)
     notesForm = get_note_form(request, video)
     channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
-    theme = get_object_or_404(Theme, channel=channel, slug=slug_t) if slug_t else None
+    theme = get_object_or_404(
+        Theme, channel=channel, slug=slug_t) if slug_t else None
     playlist = get_object_or_404(
         Playlist,
         slug=request.GET['playlist']) if request.GET.get('playlist') else None
