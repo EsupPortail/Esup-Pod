@@ -47,7 +47,7 @@ class Broadcaster(models.Model):
         help_text=_(
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'),
-        editable=False, default="") # default empty, fill in save
+        editable=False, default="")  # default empty, fill it in save
     building = models.ForeignKey('Building', verbose_name=_('Building'))
     description = RichTextField(
         _('description'), config_name='complete', blank=True)
