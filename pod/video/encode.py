@@ -74,7 +74,7 @@ FFMPEG_STATIC_PARAMS = getattr(
 # + "-deinterlace -threads %(nb_threads)s -g %(key_frames_interval)s "
 # + "-keyint_min %(key_frames_interval)s ")
 
-FFMPEG_MISC_PARAMS = getattr(settings, 'MISC_PARAMS', " -hide_banner -y ")
+FFMPEG_MISC_PARAMS = getattr(settings, 'FFMPEG_MISC_PARAMS', " -hide_banner -y ")
 
 AUDIO_BITRATE = getattr(settings, 'AUDIO_BITRATE', "192k")
 
