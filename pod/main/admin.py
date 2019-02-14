@@ -37,7 +37,7 @@ class CustomFlatPageAdmin(TranslationAdmin):
             'fields': (
                 'enable_comments',
                 'registration_required',
-                # 'sites',
+                'template_name',
             ),
         }),
     )

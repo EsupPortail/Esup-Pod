@@ -7,15 +7,40 @@
 {% load video_tags %}
 
 {% block opengraph %}
-<meta name="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }}" />
-<!-- Open Graph data -->
-<meta property="og:title" content="{{ video.title }}" />
-<meta property="og:type" content="video" />
-<meta property="og:url" content="{{ request.build_absolute_uri }}" />
-<meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{ video.get_thumbnail_url }}" />
-<meta property="og:description" content="{{ video.description|metaformat|safe|striptags|truncatechars:250 }}" />
-<meta property="og:site_name" content="{{ TITLE_SITE }}" />
-<!-- End Open Graph data -->
+
+{% if OEMBED %}
+<link rel="alternate" type="application/json+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/oembed/?url={{request.build_absolute_uri|urlencode}}&format=json" />
+<link rel="alternate" type="text/xml+oembed" href="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/oembed/?url={{request.build_absolute_uri|urlencode}}&format=xml" />
+{% endif %}
+
+<meta property="og:site_name" content="{{ TITLE_SITE }}">
+<meta property="og:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}">
+<meta property="og:title" content="{{ video.title }}">
+<meta property="og:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
+<meta property="og:image:alt" content="{{ video.title }}">
+<meta property="og:image:width" content="{% if video.thumbnail %}{{video.thumbnail.file.width}}{% else %}640{%endif%}" />
+<meta property="og:image:height" content="{% if video.thumbnail %}{{video.thumbnail.file.height}}{% else %}360{%endif%}" />
+
+<meta property="og:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}">
+
+<meta property="og:type" content="video">
+
+<meta property="og:video" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true">
+<meta property="og:video:type" content="text/html">
+<meta property="og:video:width" content="640">
+<meta property="og:video:height" content="360">
+
+<meta name="twitter:card" content="player">
+<meta name="twitter:site" content="{{ TITLE_SITE }}">
+<meta name="twitter:url" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}">
+<meta name="twitter:title" content="{{ video.title }}">
+<meta name="twitter:description" content="{% if video.description or tag_list %}{{ video.description|metaformat|safe|striptags|truncatechars:250 }} {% if tag_list %}{% for tag in tag_list %}{{tag}} {%endfor%}%{% endif %}{% endif %} {% trans 'Added by' %}: {{ video.owner.get_full_name }}">
+<meta name="twitter:image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}">
+
+<meta name="twitter:player" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true">
+<meta name="twitter:player:width" content="640">
+<meta name="twitter:player:height" content="360">
+
 {% endblock %}
 
 {% block page_extra_head %}
@@ -56,11 +81,17 @@ body {
 {% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}{{video.title|title|truncatechars:45}}{% endblock %}
 
 {% block page_content %}
-<div itemscope itemtype ="http://schema.org/Movie">
-<meta itemprop="duration" content="{{ video.duration }}" />
-<meta itemprop="thumbnailUrl" content="{{ video.get_thumbnail_url }}" />
+
+<div itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+
+<meta itemprop="duration" content="P{{ video.duration }}S" />
+<meta itemprop="uploadDate" content="{{ video.date_added|date:"SHORT_DATE_FORMAT" }}" />
+<meta itemprop="thumbnailUrl" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}" />
 <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
 <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" />
+<meta itemprop="image" content="{% if request.is_secure %}https{% else %}http{% endif %}:{{ video.get_thumbnail_url }}" />
+<meta itemprop="name" content="{{ video.title }}" />
+<meta itemprop="description" content="{{ video.description|metaformat|safe|striptags|truncatechars:150 }} - {% trans 'Added by' %}: {{ video.owner.get_full_name }}" />
 
 {%if channel %}
 <h1>{{channel.title}}{% if request.user in channel.owners.all %}<span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-dark btn-sm"><svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>{% trans "Edit the channel"%}</a></span>{%endif%}</h1>

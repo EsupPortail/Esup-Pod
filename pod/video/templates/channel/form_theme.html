@@ -8,13 +8,14 @@
 	{% csrf_token %}
 	<div id="formcontent" class="form-container">
 		{% if form_theme.errors or form_theme.non_field_errors %}
-			{% trans 'One or more errors have been found in the form:' %}<br />
+			<p style="color:red;">{% trans 'One or more errors have been found in the form:' %}<br />
 			{% for error in form_theme.non_field_errors %}
 				- {{error}}<br />
 			{% endfor %}
-			{% for error in form_theme.errors %}
-				- {{error}}<br />
+			{% for field in form %}
+				- {{ field.errors }}<br />
 			{% endfor %}
+			</p>
 		{% endif %}
 		{% for field_hidden in form_theme.hidden_fields %}
 			{{field_hidden}}

@@ -21,20 +21,26 @@ DEFAULT_RECORDER_PATH = getattr(
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def add_recording(request):
-    mediapath = request.GET.get('mediapath')
+    mediapath = request.GET.get('mediapath') if (
+        request.GET.get('mediapath')) else ""
     course_title = request.GET.get(
         'course_title') if request.GET.get('course_title') else ""
     course_type = request.GET.get('type')
+
+    initial = {
+        'title': course_title,
+        'type': course_type}
 
     if not mediapath and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _('Mediapath should be indicated.'))
         raise PermissionDenied
 
-    form = RecordingForm(request, initial={
-        'source_file': os.path.join(DEFAULT_RECORDER_PATH, mediapath),
-        'title': course_title,
-        'type': course_type})
+    if mediapath != "":
+        initial['source_file'] = "%s" % os.path.join(
+            DEFAULT_RECORDER_PATH, mediapath)
+
+    form = RecordingForm(request, initial=initial)
 
     if request.method == 'POST':  # If the form has been submitted...
         # A form bound to the POST data
@@ -45,11 +51,13 @@ def add_recording(request):
                 med.user = form.cleaned_data['user']
             else:
                 med.user = request.user
+            """
             if (request.POST.get('mediapath')
                     and request.POST.get('mediapath') != ""):
-                med.mediapath = form.cleaned_data['mediapath']
+                med.source_file = form.cleaned_data['mediapath']
             else:
-                med.mediapath = mediapath
+                med.source_file = mediapath
+            """
             med.save()
             message = _(
                 'Your publication is saved.'

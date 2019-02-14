@@ -16,7 +16,7 @@ $(document).ready(function () {
 });
 </script>
 {% endif %}
-<form method="post" action="{% url 'video_notes' id=notesForm.instance.id %}" id="video_notes_form">
+<form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
 {% csrf_token %}
 <fieldset>
     {% if notesForm.errors %}
@@ -37,9 +37,11 @@ $(document).ready(function () {
         </div>
         {% endspaceless %}
     {% endfor %}
+    <!--
     {% if notesForm.instance.id %}
         <input type="hidden" id="note_id" name="note_id" value="{{notesForm.instance.id}}"/>
     {% endif %}
+    -->
     <div class="text-center mt-1">
         <button type="submit" class="btn btn-success btn-sm">{% trans "Save" %}</button>
     </div>

@@ -35,6 +35,13 @@ AFFILIATION = getattr(
         ('registered-reader', _('registered-reader'))
     )
 )
+ESTABLISHMENTS = getattr(
+    settings, "ESTABLISHMENTS",
+    (
+        ('Etab_1', 'Etab_1'),
+        ('Etab_2', 'Etab_2'),
+    )
+)
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
 FILES_DIR = getattr(
     settings, 'FILES_DIR', 'files')
@@ -59,6 +66,9 @@ class Owner(models.Model):
     userpicture = models.ForeignKey(CustomImageModel,
                                     blank=True, null=True,
                                     verbose_name=_('Picture'))
+    establishment = models.CharField(
+        _('Establishment'), max_length=10, blank=True, choices=ESTABLISHMENTS,
+        default=ESTABLISHMENTS[0][0])
 
     def __str__(self):
         return "%s %s (%s)" % (self.user.first_name, self.user.last_name,
