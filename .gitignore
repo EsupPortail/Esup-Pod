@@ -50,6 +50,11 @@ settings_local.py
 pod/static/
 *.bak
 .coverage
+pod_nginx.conf
+pod_uwsgi.ini
+setup.cfgi
+test.py
+uwsgi_params
 
 # IDE Files #
 #############
