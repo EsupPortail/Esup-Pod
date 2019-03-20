@@ -43,19 +43,21 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     django_settings,
     'TEMPLATE_VISIBLE_SETTINGS',
     {
-        'TITLE_SITE': '',
-        'TITLE_ETB': 'Universités Intégrées',
-        'LOGO_SITE': 'custom/assets/images/logo.png',
-        'LOGO_ETB': 'custom/assets/images/uga_top.png',
+        'TITLE_SITE': 'Pod',
+        'TITLE_ETB': 'University name',
+        'LOGO_SITE': 'img/logoPod.svg',
+        'LOGO_ETB': 'img/logo_etb.svg',
         'LOGO_PLAYER': 'img/logoPod.svg',
         'LINK_PLAYER': '',
         'FOOTER_TEXT': ('',),
-        'FAVICON': 'custom/assets/images/favicon.ico',
+        'FAVICON': 'img/logoPod.svg',
         'CSS_OVERRIDE': '',
-        'PRE_HEADER_TEMPLATE': 'custom/layouts/partials/_pre-header.html',
+        'PRE_HEADER_TEMPLATE': '',
         'POST_FOOTER_TEMPLATE': '',
     }
 )
+OEMBED = getattr(
+    django_settings, 'OEMBED', False)
 
 
 def context_settings(request):
@@ -68,6 +70,7 @@ def context_settings(request):
             raise ImproperlyConfigured(m)
     new_settings['VERSION'] = VERSION
     new_settings["THIRD_PARTY_APPS"] = django_settings.THIRD_PARTY_APPS
+    new_settings['OEMBED'] = OEMBED
     return new_settings
 
 

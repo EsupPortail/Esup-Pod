@@ -10,7 +10,7 @@ from pod.main.settings import BASE_DIR
 ##
 # Version of the project
 #
-VERSION = '2.0.3'
+VERSION = '2.1.0'
 
 ##
 # Installed applications list
@@ -245,10 +245,3 @@ if 'H5P_ENABLED' in globals() and eval('H5P_ENABLED') is True:
     sys.path.append(os.path.join(BASE_DIR, "../../H5PP"))
     INSTALLED_APPS.append('h5pp')
     INSTALLED_APPS.append('pod.interactive')
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-    os.path.join(BASE_DIR, 'custom/static')
-)

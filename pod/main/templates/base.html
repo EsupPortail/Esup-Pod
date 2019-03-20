@@ -23,12 +23,10 @@
 
 	    <!-- pod.css -->
 	    <link rel="stylesheet" href="{% static 'css/pod.css' %}" media="screen" title="no title">
-			<link rel="stylesheet" href="{% static 'custom/assets/css/pod.css' %}" media="screen" title="no title">
-			<link rel="stylesheet" href="{% static 'custom/assets/css/social-buttons.css' %}" media="screen" title="no title">
         {% if CSS_OVERRIDE %}
         <link rel="stylesheet" href="{% static CSS_OVERRIDE %}" media="screen" title="no title">
         {% endif %}
-
+        
         <!-- Javascript -->
         <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
         <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
@@ -40,16 +38,11 @@
         {% if request.GET.is_iframe %}
         <link rel="stylesheet" href="{% static 'css/iframe.css' %}" media="screen" title="no title">
         {% endif %}
-
+        
         {% endspaceless %}
 	</head>
 	<body>
-		<!-- header -->
-		{% block header %}
-			{% if PRE_HEADER_TEMPLATE %}{% include PRE_HEADER_TEMPLATE %}{% endif %}
-		{% endblock header %}
-		<!-- end header  -->
-
+        {% if PRE_HEADER_TEMPLATE %}{% include PRE_HEADER_TEMPLATE %}{% endif %}
 		<!-- barre nav-->
 		<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light m-0 p-0">
 		{% include 'navbar.html' %}
@@ -92,12 +85,10 @@
 		    </main>
 		</div> <!-- fin container -->
 		{% endblock content %}
-		<!-- CUSTOM FOOTER -->
-		{% block footer %}
-			{% include "custom/layouts/partials/_footer.html" %}
-		{% endblock footer %}
-
-
+		<footer class="text-muted bg-dark pt-2">
+		{% include 'footer.html' %}
+		</footer>
+        
         {% if messages %}
         <div id="base-message-alert">
         {% for message in messages %}

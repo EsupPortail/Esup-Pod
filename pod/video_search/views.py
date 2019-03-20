@@ -1,14 +1,13 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 from elasticsearch import Elasticsearch
 from pod.video_search.forms import SearchForm
 from django.conf import settings
 from pod.video.models import Video
 from django.utils.translation import ugettext_lazy as _
 
-import json
+# import json
 
-ES_URL = getattr(settings, 'ES_URL', ['http://pod-dev.grenet.fr/'])
+ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 
 # Create your views here.
 
@@ -78,10 +77,9 @@ def get_result_aggregations(result, selected_facets):
 
 
 def search_videos(request):
-
     es = Elasticsearch(ES_URL)
     aggsAttrs = ['owner_full_name', 'type.title',
-                 'disciplines.title', 'tags.name', 'channels.title', "cursus"]
+                 'disciplines.title', 'tags.name', 'channels.title']
 
     # SEARCH FORM
     search_word = ""
@@ -90,7 +88,6 @@ def search_videos(request):
     searchForm = SearchForm(request.GET)
     if searchForm.is_valid():
         search_word = searchForm.cleaned_data['q']
-
         start_date = searchForm.cleaned_data['start_date']
         end_date = searchForm.cleaned_data['end_date']
 
@@ -117,7 +114,6 @@ def search_videos(request):
                 "fields": [
                     "_id",
                     "title^1.1",
-                    "cursus^0.9",
                     "owner^0.9",
                     "owner_full_name^0.9",
                     "description^0.6",
@@ -126,7 +122,7 @@ def search_videos(request):
                     "chapters.title^0.5",
                     "type.title^0.6",
                     "disciplines.title^0.6",
-                    "channels.title^0.6",
+                    "channels.title^0.6"
                 ]
             }
         }
@@ -190,7 +186,7 @@ def search_videos(request):
     result = es.search(index="pod", body=bodysearch)
 
     # if settings.DEBUG:
-    #     print(json.dumps(result, indent=4))
+    #    print(json.dumps(result, indent=4))
 
     remove_selected_facet = get_remove_selected_facet_link(
         request, selected_facets)

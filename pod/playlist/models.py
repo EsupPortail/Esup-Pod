@@ -64,6 +64,7 @@ class Playlist(models.Model):
             return last[0].position + 1
         else:
             return 1
+
     def videos(self):
         videos = list()
         elements = PlaylistElement.objects.filter(playlist=self)

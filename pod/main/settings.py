@@ -26,7 +26,7 @@ LANG_CHOICES = (
 # https://docs.djangoproject.com/en/1.11/ref/settings/#secret-key
 #
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'eyJzaW1zdSI6InN1bmllIn0:1gSN9E:o7dlFimLmdBp6RoY1TV6P6OEVyk'
+SECRET_KEY = 'A_CHANGER'
 
 ##
 # Base folder
@@ -46,7 +46,7 @@ DEBUG = True
 # that this Django site is allowed to serve.
 #
 # https://docs.djangoproject.com/en/1.11/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['localhost',"127.0.0.1"]
+ALLOWED_HOSTS = ['localhost']
 
 ##
 # Session settings
@@ -64,7 +64,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-ADMINS
 #
 ADMINS = (
-    ('LOTONGA Eliam', 'eliam.lotonga@grenet.fr'),
+    ('Name', 'adminmail@univ.fr'),
 )
 ##
 # A tuple that lists people who get other notifications
@@ -118,16 +118,14 @@ FILE_UPLOAD_HANDLERS = (
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
 )
 PROGRESSBARUPLOAD_INCLUDE_JQUERY = False
-CUSTOM_PROJECT_DIR = os.path.join(BASE_DIR, 'custom')
+
 ##
 # Static files (assets, CSS, JavaScript, fonts...)
 #
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+
 ##
 # Dynamic files (user managed content: videos, subtitles, documents, etc...)
 #
@@ -208,7 +206,7 @@ DEFAULT_FROM_EMAIL = 'noreply@univ.fr'
 
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-SERVER_EMAIL
 SERVER_EMAIL = 'noreply@univ.fr'
-DEFAULT_IMG = 'custom/assets/images/uga_top.png'
+
 ##
 # Captcha config
 #

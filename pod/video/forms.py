@@ -364,6 +364,9 @@ class VideoForm(forms.ModelForm):
                 'title_%s' %
                 settings.LANGUAGE_CODE
             ] = cleaned_data['title']
+        if ('restrict_access_to_groups' in cleaned_data.keys()
+                and cleaned_data['restrict_access_to_groups'].count() > 0):
+            cleaned_data['is_restricted'] = True
 
     def __init__(self, *args, **kwargs):
 
@@ -624,12 +627,12 @@ class NotesForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(NotesForm, self).__init__(*args, **kwargs)
-        self.fields["user"].widget = forms.HiddenInput()
-        self.fields["video"].widget = forms.HiddenInput()
+        # self.fields["user"].widget = forms.HiddenInput()
+        # self.fields["video"].widget = forms.HiddenInput()
         # self.fields["note"].widget.attrs["cols"] = 20
         self.fields["note"].widget.attrs["class"] = "form-control"
         self.fields["note"].widget.attrs["rows"] = 5
 
     class Meta(object):
         model = Notes
-        fields = '__all__'
+        fields = ["note"]

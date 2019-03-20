@@ -21,7 +21,7 @@ from django.dispatch import receiver
 from django.utils.html import format_html
 from django.db.models.signals import pre_delete
 from tagging.models import Tag
-from datetime import datetime, date
+from datetime import date
 from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
@@ -122,7 +122,8 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         'CSS_OVERRIDE': ''
     }
 )
-TITLE_ETB = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_ETB', 'University')
+TITLE_ETB = TEMPLATE_VISIBLE_SETTINGS['TITLE_ETB'] if (
+    TEMPLATE_VISIBLE_SETTINGS.get('TITLE_ETB')) else 'University name'
 DEFAULT_DC_COVERAGE = getattr(
     settings, 'DEFAULT_DC_COVERAGE', TITLE_ETB + " - Town - Country")
 DEFAULT_DC_RIGHTS = getattr(settings, 'DEFAULT_DC_RIGHT', "BY-NC-SA")
@@ -236,7 +237,7 @@ class Theme(models.Model):
                     "possible, reflecting the main subject / context "
                     "of the content.(max length : 100 characters)"))
     slug = models.SlugField(
-        _('Slug'), unique=True, max_length=100,
+        _('Slug'), max_length=100,
         help_text=_(
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'),
@@ -300,9 +301,13 @@ class Theme(models.Model):
         return parents
 
     def clean(self):
+        if Theme.objects.filter(
+                channel=self.channel, slug=slugify(self.title)).exists():
+            raise ValidationError(
+                "A theme with this name already exist in this channel.")
         if self.parentId in self.get_all_children_flat():
             raise ValidationError("A theme cannot have itself \
-                    or one of its' children as parent.")
+                    or one of it's children as parent.")
         if self.parentId and self.parentId not in self.channel.themes.all():
             raise ValidationError(
                 "A theme have to be in the same channel that his parent")
@@ -311,6 +316,7 @@ class Theme(models.Model):
         ordering = ['channel', 'title']
         verbose_name = _('Theme')
         verbose_name_plural = _('Themes')
+        unique_together = ("channel", "slug")
 
 
 class Type(models.Model):
@@ -501,6 +507,10 @@ class Video(models.Model):
             return "None"
 
     @property
+    def establishment(self):
+        return self.owner.owner.establishment
+
+    @property
     def viewcount(self):
         return self.get_viewcount()
     viewcount.fget.short_description = _('Sum of view')
@@ -646,8 +656,8 @@ class Video(models.Model):
                 "password": True if self.password != "" else False,
                 "duration_in_time": self.duration_in_time,
                 "mediatype": "video" if self.is_video else "audio",
-                "main_lang": "%s" % LANG_CHOICES_DICT[self.main_lang],
                 "cursus": "%s" % CURSUS_CODES_DICT[self.cursus],
+                "main_lang": "%s" % LANG_CHOICES_DICT[self.main_lang],
             }
             return json.dumps(data_to_dump)
         except ObjectDoesNotExist as e:
@@ -738,9 +748,12 @@ class ViewCount(models.Model):
     video = models.ForeignKey(Video, verbose_name=_('Video'),
                               editable=False)
     date = models.DateField(
-        _(u'Date'), default=datetime.now, editable=False)
+        _(u'Date'), default=date.today, editable=False)
     count = models.IntegerField(
         _('Number of view'), default=0, editable=False)
+
+    class Meta:
+        unique_together = ("video", "date")
 
 
 class VideoRendition(models.Model):
@@ -1034,6 +1047,7 @@ class Notes(models.Model):
     class Meta:
         verbose_name = _("Note")
         verbose_name_plural = _("Notes")
+        unique_together = ("video", "user")
 
     def __str__(self):
         return "%s-%s" % (self.user.username, self.video)
