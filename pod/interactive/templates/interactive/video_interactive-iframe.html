@@ -1,0 +1,53 @@
+{% extends 'videos/video-iframe.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block page_extra_head %}
+<style>
+#h5pcontent {
+    margin: auto;
+    text-align: center;
+    background-color: black;
+    width: 100%;
+    height: 480px;
+}
+#icontent {
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+}
+</style>
+{% endblock page_extra_head %}
+
+{% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Interactive video' %}) {{video.title}}{% endblock %}
+
+{% block video-element %}
+{% if form %}
+{% include 'videos/video-form.html' %}
+{% else %}
+<div id="h5pcontent">
+    <iframe id="icontent" src="{% url 'h5pp:h5pcontent' %}?contentId={{more_data.h5p.content_id}}&is_iframe=true" style="display:none;" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+</div>
+<form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
+{% csrf_token %}
+</form>
+{% endif %}
+{% endblock video-element %}
+
+
+{% block more_script %}
+{{block.super}}
+<script>
+    var video_height = 0;
+    $('#icontent').on('load',function() {
+        $('#icontent').fadeIn('slow', function(){
+            video_height = $('#icontent').contents().find("#h5p-iframe-{{more_data.h5p.content_id}}").height();
+            $("#h5pcontent").height(video_height);
+        });
+        $('#icontent').contents().find("body").attr("style", "background-color:black");
+    });
+
+</script>
+{% endblock more_script %}
