@@ -494,7 +494,7 @@ def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_edit(request, slug=None):
-
+    print(" ---------------------------- > inside video_edit function ! < -----------------------------------------")
     video = get_object_or_404(Video, slug=slug) if slug else None
 
     if (RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
