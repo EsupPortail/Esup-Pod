@@ -29,7 +29,6 @@ DEFAULT_FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@univ.fr')
 @csrf_protect
 def download_file(request):
     if request.POST and request.POST.get("filename"):
-        print(" ---------------------------- > inside download_file function ! < -----------------------------------------")
         filename = os.path.join(
             settings.MEDIA_ROOT, request.POST["filename"])
         wrapper = FileWrapper(open(filename, 'rb'))
@@ -46,7 +45,6 @@ def download_file(request):
 
 @csrf_protect
 def contact_us(request):
-    print(" ---------------------------- > inside contact_us function ! < -----------------------------------------")
     owner = User.objects.get(id=request.GET.get('owner')) if (
         request.GET.get('owner')
         and User.objects.filter(id=request.GET.get('owner')).first()) else None
