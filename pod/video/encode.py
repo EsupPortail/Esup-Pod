@@ -1127,8 +1127,8 @@ def send_email_encoding(video_to_encode):
         _("Regards")
     )
     from_email = DEFAULT_FROM_EMAIL
-    to_email = ["aymen.mansouri@grenet.fr"]
-    to_email.append(video_to_encode.owner.email)
+    to_email = ["aymen.mansouri@grenet.fr", "eliam38700@gmail.com"]
+    #to_email.append(video_to_encode.owner.email)
     html_message = ""
 
     html_message = '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
