@@ -494,7 +494,6 @@ def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_edit(request, slug=None):
-    print(" ---------------------------- > inside video_edit function ! < -----------------------------------------")
     video = get_object_or_404(Video, slug=slug) if slug else None
 
     if (RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
@@ -515,10 +514,8 @@ def video_edit(request, slug=None):
         is_superuser=request.user.is_superuser,
         current_user=request.user
     )
-    print("**************************** => ", form)
 
     if request.method == 'POST':
-        print(" ---------------------------- > inside video_edit function POST ! < -----------------------------------------")
         form = VideoForm(
             request.POST,
             request.FILES,
@@ -528,14 +525,11 @@ def video_edit(request, slug=None):
             current_user=request.user
         )
         if form.is_valid():
-            print(" ---------------------------- > inside video_edit function SAVE VIDEO ! < -----------------------------------------")
             video = form.save(commit=False)
             if request.POST.get('owner') and request.POST.get('owner') != "":
-                print(" ---------------------------- > inside video_edit function OWNER IN GET ! < -----------------------------------------")
                 video.owner = form.cleaned_data['owner']
             else:
                 video.owner = request.user
-                print(" ---------------------------- > inside video_edit function NOOO OWNER IN GET ! < -----------------------------------------")
             video.save()
             form.save_m2m()
             messages.add_message(
@@ -543,7 +537,6 @@ def video_edit(request, slug=None):
                 _('The changes have been saved.')
             )
             if request.POST.get('_saveandsee'):
-                print(" ---------------------------- > inside video_edit function SAVEANDSEE ! < -----------------------------------------")
                 return redirect(
                     reverse('video', args=(video.slug,))
                 )
@@ -555,8 +548,6 @@ def video_edit(request, slug=None):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'One or more errors have been found in the form.'))
-    print(" ---------------------------- > inside video_edit function FIN ******************! < -----------------------------------------")
-    print("---------------------- ============= >", form)
     return render(request, 'videos/video_edit.html', {
         'form': form}
     )
