@@ -92,7 +92,8 @@ ENCODE_MP3_CMD = getattr(
     + "-vn -f mp3 -threads %(nb_threads)s "
     + "\"%(output_dir)s/audio_%(audio_bitrate)s.mp3\"")
 
-EMAIL_ON_ENCODING_COMPLETION =  True
+EMAIL_ON_ENCODING_COMPLETION = getattr(
+    settings, 'EMAIL_ON_ENCODING_COMPLETION', True)
 
 FILE_UPLOAD_TEMP_DIR = getattr(
     settings, 'FILE_UPLOAD_TEMP_DIR', '/tmp')
@@ -1108,6 +1109,8 @@ def send_email(msg, video_id):
 
 
 def send_email_encoding(video_to_encode):
+    if DEBUG:
+        print("SEND EMAIL ON ENCODING COMPLETION")
     content_url = "http:%s" % video_to_encode.get_full_url()
     subject = "[%s] %s" % (
         TITLE_SITE,
@@ -1127,8 +1130,8 @@ def send_email_encoding(video_to_encode):
         _("Regards")
     )
     from_email = DEFAULT_FROM_EMAIL
-    to_email = ["aymen.mansouri@grenet.fr", "eliam38700@gmail.com"]
-    #to_email.append(video_to_encode.owner.email)
+    to_email = []
+    to_email.append(video_to_encode.owner.email)
     html_message = ""
 
     html_message = '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
@@ -1144,15 +1147,15 @@ def send_email_encoding(video_to_encode):
         content_url,
         _("Regards")
     )
-
-    send_mail(
-        subject,
-        message,
-        from_email,
-        to_email,
-        fail_silently=False,
-        html_message=html_message,
-    )
-    # mail_managers(
-    #     subject, message, fail_silently=False,
-    #     html_message=html_message)
+    if not DEBUG:
+        send_mail(
+            subject,
+            message,
+            from_email,
+            to_email,
+            fail_silently=False,
+            html_message=html_message,
+        )
+    mail_managers(
+        subject, message, fail_silently=False,
+        html_message=html_message)
