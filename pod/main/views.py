@@ -45,6 +45,7 @@ def download_file(request):
 
 @csrf_protect
 def contact_us(request):
+    print(" ---------------------------- >Toto va bien ! < -----------------------------------------")
     owner = User.objects.get(id=request.GET.get('owner')) if (
         request.GET.get('owner')
         and User.objects.filter(id=request.GET.get('owner')).first()) else None
