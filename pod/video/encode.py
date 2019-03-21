@@ -92,8 +92,7 @@ ENCODE_MP3_CMD = getattr(
     + "-vn -f mp3 -threads %(nb_threads)s "
     + "\"%(output_dir)s/audio_%(audio_bitrate)s.mp3\"")
 
-EMAIL_ON_ENCODING_COMPLETION = getattr(
-    settings, 'EMAIL_ON_ENCODING_COMPLETION', True)
+EMAIL_ON_ENCODING_COMPLETION =  True
 
 FILE_UPLOAD_TEMP_DIR = getattr(
     settings, 'FILE_UPLOAD_TEMP_DIR', '/tmp')
@@ -1109,8 +1108,6 @@ def send_email(msg, video_id):
 
 
 def send_email_encoding(video_to_encode):
-    if DEBUG:
-        print("SEND EMAIL ON ENCODING COMPLETION")
     content_url = "http:%s" % video_to_encode.get_full_url()
     subject = "[%s] %s" % (
         TITLE_SITE,
