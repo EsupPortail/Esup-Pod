@@ -1,0 +1,40 @@
+{% load i18n %}
+<div id="carousel-playlist" class="carousel slide" data-ride="carousel">
+      <!-- Indicators -->
+      <ol class="carousel-indicators">
+        {% for p_video in playlist.videos %}
+        <li data-target="#carousel-playlist" data-slide-to="{{ forloop.counter0 }}" class=" {% if forloop.first %} active {% endif %}"></li>
+        {% endfor %}
+      </ol>
+
+      <!-- Wrapper for slides -->
+      <div class="carousel-inner" role="listbox">
+        {% for p_video in playlist.videos %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+          <a href="{{ p_video.get_absolute_url }}">
+            <img src="{{ p_video.get_thumbnail_url }}" alt="{{ p_video.title }}" class="d-block w-100"/>
+            <div class="carousel-caption d-none d-md-block">
+
+              <h4 >{{ p_video.title }}</h4>
+              <p>
+                {% for contrib in p_video.contributor_set.all %}
+                  {{ contrib.name }} ({% trans contrib.role %})
+                {% endfor %}
+              </p>
+            </div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+ <!-- Controls -->
+     <a class="carousel-control-prev" href="#carousel-playlist" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#carousel-playlist" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+
+</div>
+
