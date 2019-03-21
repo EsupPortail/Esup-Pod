@@ -527,11 +527,14 @@ def video_edit(request, slug=None):
             current_user=request.user
         )
         if form.is_valid():
+            print(" ---------------------------- > inside video_edit function SAVE VIDEO ! < -----------------------------------------")
             video = form.save(commit=False)
             if request.POST.get('owner') and request.POST.get('owner') != "":
+                print(" ---------------------------- > inside video_edit function OWNER IN GET ! < -----------------------------------------")
                 video.owner = form.cleaned_data['owner']
             else:
                 video.owner = request.user
+                print(" ---------------------------- > inside video_edit function NOOO OWNER IN GET ! < -----------------------------------------")
             video.save()
             form.save_m2m()
             messages.add_message(
