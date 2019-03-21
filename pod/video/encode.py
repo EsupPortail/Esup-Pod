@@ -156,7 +156,201 @@ def check_file(path_file):
 # ##########################################################################
 
 
+def encode_video(video_id):
+    start = "Start at : %s" % time.ctime()
 
+    video_to_encode = Video.objects.get(id=video_id)
+    video_to_encode.encoding_in_progress = True
+    video_to_encode.save()
+    change_encoding_step(video_id, 0, "start")
+
+    encoding_log, created = EncodingLog.objects.get_or_create(
+        video=Video.objects.get(id=video_id))
+    encoding_log.log = "%s" % start
+    encoding_log.save()
+
+    if check_file(video_to_encode.video.path):
+        change_encoding_step(video_id, 1, "remove old data")
+        remove_msg = remove_old_data(video_id)
+        add_encoding_log(video_id, "remove old data : %s" % remove_msg)
+
+        # create video dir
+        change_encoding_step(video_id, 2, "create output dir")
+        output_dir = create_outputdir(video_id, video_to_encode.video.path)
+        add_encoding_log(video_id, "output_dir : %s" % output_dir)
+
+        # clear log file
+        open(output_dir + "/encoding.log", 'w').close()
+        with open(output_dir + "/encoding.log", "a") as f:
+            f.write("%s\n" % start)
+
+        change_encoding_step(video_id, 3, "get video data")
+        video_data = {}
+        try:
+            video_data = get_video_data(video_id, output_dir)
+            add_encoding_log(video_id, "get video data : %s" %
+                             video_data["msg"])
+        except ValueError:
+            msg = "Error in get video data"
+            change_encoding_step(video_id, -1, msg)
+            add_encoding_log(video_id, msg)
+            send_email(msg, video_id)
+            return False
+
+        video_to_encode = Video.objects.get(id=video_id)
+        video_to_encode.duration = video_data["duration"]
+        video_to_encode.save()
+
+        if video_data["is_video"]:
+            # encodage_video
+            # create encoding video command
+            change_encoding_step(
+                video_id, 4,
+                "encoding video file : 1/11 get video command")
+            video_command_playlist = get_video_command_playlist(
+                video_id,
+                video_data,
+                output_dir)
+            add_encoding_log(
+                video_id,
+                "video_command_playlist : %s" % video_command_playlist["cmd"])
+            video_command_mp4 = get_video_command_mp4(
+                video_id,
+                video_data,
+                output_dir)
+            add_encoding_log(
+                video_id,
+                "video_command_mp4 : %s" % video_command_mp4["cmd"])
+            # launch encode video
+            change_encoding_step(
+                video_id, 4,
+                "encoding video file : 2/11 encode_video_playlist")
+            msg = encode_video_playlist(
+                video_to_encode.video.path,
+                video_command_playlist["cmd"],
+                output_dir)
+            add_encoding_log(
+                video_id,
+                "encode_video_playlist : %s" % msg)
+            change_encoding_step(
+                video_id, 4,
+                "encoding video file : 3/11 encode_video_mp4")
+            msg = encode_video_mp4(
+                video_to_encode.video.path,
+                video_command_mp4["cmd"],
+                output_dir)
+            add_encoding_log(
+                video_id,
+                "encode_video_mp4 : %s" % msg)
+            # save playlist files
+            change_encoding_step(
+                video_id, 4,
+                "encoding video file : 4/11 save_playlist_file")
+            msg = save_playlist_file(
+                video_id,
+                video_command_playlist["list_file"],
+                output_dir)
+            add_encoding_log(
+                video_id,
+                "save_playlist_file : %s" % msg)
+            # save_playlist_master
+            change_encoding_step(
+                video_id, 4,
+                "encoding video file : 5/11 save_playlist_master")
+            msg = save_playlist_master(
+                video_id,
+                output_dir,
+                video_command_playlist["master_playlist"])
+            add_encoding_log(
+                video_id,
+                "save_playlist_master : %s" % msg)
+            # save mp4 files
+            change_encoding_step(
+                video_id, 4,
+                "encoding video file : 6/11 save_mp4_file")
+            msg = save_mp4_file(
+                video_id,
+                video_command_mp4["list_file"],
+                output_dir)
+            add_encoding_log(
+                video_id,
+                "save_mp4_file : %s" % msg)
+
+            # get the lower size of encoding mp4
+            ev = EncodingVideo.objects.filter(
+                video=video_to_encode, encoding_format="video/mp4")
+            if ev.count() == 0:
+                msg = "NO MP4 FILES FOUND !"
+                add_encoding_log(video_id, msg)
+                change_encoding_step(video_id, -1, msg)
+                send_email(msg, video_id)
+                return
+            video_mp4 = sorted(ev, key=lambda m: m.height)[0]
+
+            # create overview
+            overviewfilename = '%(output_dir)s/overview.vtt' % {
+                'output_dir': output_dir}
+            image_url = 'overview.png'
+            overviewimagefilename = '%(output_dir)s/%(image_url)s' % {
+                'output_dir': output_dir, 'image_url': image_url}
+            image_width = video_mp4.width / 4  # width of generate image file
+            change_encoding_step(
+                video_id, 4,
+                "encoding video file : 7/11 remove_previous_overview")
+            remove_previous_overview(overviewfilename, overviewimagefilename)
+            nb_img = 99 if (
+                video_data["duration"] > 99) else video_data["duration"]
+            change_encoding_step(
+                video_id, 4,
+                "encoding video file : 8/11 create_overview_image")
+            msg = create_overview_image(
+                video_id,
+                video_mp4.video.video.path, video_data["duration"],
+                nb_img, image_width, overviewimagefilename, overviewfilename)
+            add_encoding_log(
+                video_id,
+                "create_overview_image : %s" % msg)
+            # create thumbnail
+            change_encoding_step(
+                video_id, 4,
+                "encoding video file : 11/11 create_and_save_thumbnails")
+            msg = create_and_save_thumbnails(
+                video_mp4.video.video.path, video_mp4.width, video_id)
+            add_encoding_log(
+                video_id,
+                "create_and_save_thumbnails : %s" % msg)
+        else:
+            # if file is audio, encoding to m4a for player
+            video_to_encode = Video.objects.get(id=video_id)
+            video_to_encode.is_video = False
+            video_to_encode.save()
+            encode_m4a(video_id, video_data["contain_audio"],
+                       video_to_encode.video.path, output_dir)
+
+        encode_mp3(video_id, video_data["contain_audio"],
+                   video_to_encode.video.path, output_dir)
+
+        change_encoding_step(video_id, 0, "done")
+
+        video_to_encode = Video.objects.get(id=video_id)
+        video_to_encode.encoding_in_progress = False
+        video_to_encode.save()
+
+        # End
+        add_encoding_log(video_id, "End : %s" % time.ctime())
+        with open(output_dir + "/encoding.log", "a") as f:
+            f.write("\n\nEnd : %s" % time.ctime())
+
+        # envois mail fin encodage
+        if EMAIL_ON_ENCODING_COMPLETION:
+            send_email_encoding(video_to_encode)
+
+    else:
+        msg = "Wrong file or path : "\
+            + "\n%s" % video_to_encode.video.path
+        add_encoding_log(video_id, msg)
+        change_encoding_step(video_id, -1, msg)
+        send_email(msg, video_id)
 
 
 # ##########################################################################
