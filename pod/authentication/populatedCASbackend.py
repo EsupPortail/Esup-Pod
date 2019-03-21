@@ -152,10 +152,9 @@ def populate_user_from_entry(user, owner, entry):
         ) else AFFILIATION[0][0]
     )
     owner.establishment = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES['establishment']].value if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get('establishment')
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES['establishment']]
-        ) else ""
+        entry[USER_LDAP_MAPPING_ATTRIBUTES['establishment']].value if
+            USER_LDAP_MAPPING_ATTRIBUTES.get('establishment')            
+        else ""
     )
     owner.save()
     affiliations = (
