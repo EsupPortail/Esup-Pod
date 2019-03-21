@@ -515,6 +515,7 @@ def video_edit(request, slug=None):
         is_superuser=request.user.is_superuser,
         current_user=request.user
     )
+    print("**************************** => ", form)
 
     if request.method == 'POST':
         print(" ---------------------------- > inside video_edit function POST ! < -----------------------------------------")
@@ -555,6 +556,7 @@ def video_edit(request, slug=None):
                 request, messages.ERROR,
                 _(u'One or more errors have been found in the form.'))
     print(" ---------------------------- > inside video_edit function FIN ******************! < -----------------------------------------")
+    print("---------------------- ============= >", form)
     return render(request, 'videos/video_edit.html', {
         'form': form}
     )
