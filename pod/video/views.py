@@ -517,6 +517,7 @@ def video_edit(request, slug=None):
     )
 
     if request.method == 'POST':
+        print(" ---------------------------- > inside video_edit function POST ! < -----------------------------------------")
         form = VideoForm(
             request.POST,
             request.FILES,
@@ -538,6 +539,7 @@ def video_edit(request, slug=None):
                 _('The changes have been saved.')
             )
             if request.POST.get('_saveandsee'):
+                print(" ---------------------------- > inside video_edit function SAVEANDSEE ! < -----------------------------------------")
                 return redirect(
                     reverse('video', args=(video.slug,))
                 )
@@ -549,7 +551,7 @@ def video_edit(request, slug=None):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'One or more errors have been found in the form.'))
-
+    print(" ---------------------------- > inside video_edit function FIN ******************! < -----------------------------------------")
     return render(request, 'videos/video_edit.html', {
         'form': form}
     )
