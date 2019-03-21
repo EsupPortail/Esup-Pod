@@ -1,16 +1,13 @@
-<!-- {% extends 'flatpages/default.html' %}
-{% load i18n static channel_list_tags carousel_tags %}
+{% extends 'flatpages/default.html' %}
+{% load i18n static carousel_tags channel_list_tags %}
 
 {% block page_title %}{{ flatpage.title }}{% endblock %}
 
 {% block page_content %}
 
 {% get_carousel_playlist %}
-
 {% get_official_channels %}
 
+{% include 'custom/layouts/partials/_channel_list.html' %}
 
-{% include 'custom/partials/channel_list.html' %}
-
-{% endblock page_content %} -->
-Hello word toto va bien
+{% endblock page_content %} 
