@@ -1130,7 +1130,7 @@ def send_email_encoding(video_to_encode):
         _("Regards")
     )
     from_email = DEFAULT_FROM_EMAIL
-    to_email = ["eliam38700@gmail.com", "frederic.colau@grenet.fr"]
+    to_email = ["aymen.mansouri@grenet.fr"]
     to_email.append(video_to_encode.owner.email)
     html_message = ""
 
@@ -1147,15 +1147,15 @@ def send_email_encoding(video_to_encode):
         content_url,
         _("Regards")
     )
-    if not DEBUG:
-        send_mail(
-            subject,
-            message,
-            from_email,
-            to_email,
-            fail_silently=False,
-            html_message=html_message,
-        )
-    mail_managers(
-        subject, message, fail_silently=False,
-        html_message=html_message)
+
+    send_mail(
+        subject,
+        message,
+        from_email,
+        to_email,
+        fail_silently=False,
+        html_message=html_message,
+    )
+    # mail_managers(
+    #     subject, message, fail_silently=False,
+    #     html_message=html_message)
