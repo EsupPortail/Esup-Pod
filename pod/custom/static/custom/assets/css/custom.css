@@ -19,7 +19,9 @@ a:hover{
   color: #4d8197 !important;
   text-decoration: none;
 }
-
+.carousel-caption .title{
+  color: #fff !important;
+}
 .navbar{
   background-color: #102636 !important;
   color: #fff;
@@ -49,6 +51,13 @@ a:hover{
 
 /* FOOTER */
 
-.bg-dark {
+footer.bg-dark {
     background-color: #102636 !important;
+}
+footer.text-muted{
+  color: #fff !important;
+}
+
+footer a, footer p{
+  color: inherit !important;
 }

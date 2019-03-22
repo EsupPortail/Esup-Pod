@@ -15,7 +15,7 @@
             <img src="{{ p_video.get_thumbnail_url }}" alt="{{ p_video.title }}" class="d-block w-100"/>
             <div class="carousel-caption d-none d-md-block">
 
-              <h4 >{{ p_video.title }}</h4>
+              <h4 class="title">{{ p_video.title }}</h4>
               <p>
                 {% for contrib in p_video.contributor_set.all %}
                   {{ contrib.name }} ({% trans contrib.role %})
@@ -37,4 +37,3 @@
       </a>
 
 </div>
-
