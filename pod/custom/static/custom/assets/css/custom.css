@@ -85,5 +85,19 @@ footer a, footer p{
   .btn-lang{
     color: #fff;
   }
+  .btn-lang:hover{
+    color: #102636;
+  }
+
+  .navbar-light .navbar-toggler{
+    color: inherit;
+    border: none;
+  }
+  #s:focus{
+    background: #102636 !important;
+    height: 60px;
+    margin: 0 10px;
+    border-bottom: 1px solid #fff;
+  }
 
 }
