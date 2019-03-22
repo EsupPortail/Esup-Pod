@@ -61,12 +61,12 @@ a:hover{
 
 .btn-success {
     color: #fff !important;
-    background-color: #e20917;
+    background-color: #bf0000;
     border: none !important;
 }
 .btn-success:hover {
     color: #fff !important;
-    background-color: #bf0000;
+    background-color: #e20917;
     border: none !important;
 }
 .btn-success:hover{
