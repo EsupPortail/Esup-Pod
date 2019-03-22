@@ -1,7 +1,18 @@
+
+h1, h2, h3, h4, h5, h6{
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 600 !important;
+}
+
+
 html,body{
-  font-family: 'Montserrat';
-  font-weight: 400;
+  font-weight: 300 !important;
   color: #3c3c3b;
+  font-family: 'Open Sans', sans-serif !important;
+}
+
+a{
+  color: inherit !important;
 }
 
 .navbar{
@@ -29,4 +40,10 @@ html,body{
 .navbar .nav-link:hover .nav-link-icone
 {
   color: #4d8197 !important;
+}
+
+/* FOOTER */
+
+.bg-dark {
+    background-color: #102636 !important;
 }
