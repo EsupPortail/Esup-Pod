@@ -115,6 +115,9 @@ svg:not(:root) {
     border-color: #4d8197 !important;
     color: #fff !important;
 }
+.card-header .align-items-center{
+    padding: 0 .1px 0 0;
+}
 /* .video-thumb.col-xs-6.col-md-4 {
     border: 1px solid #4d8197;
     border-radius: 5px;
