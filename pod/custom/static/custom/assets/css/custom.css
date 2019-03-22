@@ -72,7 +72,14 @@ a:hover{
 .btn-success:hover{
 
 }
-
+#navbarDropdown {
+    background-color: #4d8197;
+    border-radius: 5px !important;
+}
+#navbarDropdown:hover{
+  color: #fff;
+  background-color: #102636;
+}
 .btn-outline-primary{
   border-color: #102636 !important;
   color: #4d8197 !important;
