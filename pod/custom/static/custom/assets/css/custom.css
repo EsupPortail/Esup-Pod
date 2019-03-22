@@ -20,10 +20,13 @@ html,body{
 }
 
 .navbar .nav-link-icone{
-  color:  #4d8197 !important;
+  color:  #fff !important;
   margin-right: 5px;
 }
 
-.navbar a:hover, .navbar .nav-link:hover{
+.navbar a:hover,
+.navbar .nav-link:hover,
+.navbar .nav-link:hover .nav-link-icone
+{
   color: #4d8197 !important;
 }
