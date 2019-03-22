@@ -4,6 +4,22 @@ html,body{
   color: #3c3c3b;
 }
 .navbar{
-  background-color: #102636;
+  background-color: #102636 !important;
   color: #fff;
+}
+.navbar-light .navbar-brand{
+  margin-right: 30px !important;
+}
+.navbar a, .navbar .nav-link{
+  color: inherit ! important;
+  transition: color .3s;
+}
+
+.navbar .nav-link-icone{
+  color:  #4d8197;
+  margin-right: 5px;
+}
+
+.navbar a:hover, .navbar .nav-link:hover{
+  background-color: #4d8197;
 }

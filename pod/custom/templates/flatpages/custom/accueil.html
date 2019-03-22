@@ -1,6 +1,11 @@
 {% extends 'flatpages/default.html' %}
 {% load i18n static carousel_tags channel_list_tags %}
 
+{% block opengraph %}
+  block.super
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600" rel="stylesheet"> 
+{% endblock %}
+
 {% block page_title %}{{ flatpage.title }}{% endblock %}
 
 {% block page_content %}
@@ -10,4 +15,4 @@
 
 {% include 'custom/layouts/partials/_channel_list.html' %}
 
-{% endblock page_content %} 
+{% endblock page_content %}
