@@ -60,7 +60,10 @@ a:hover{
 .btn-outline-primary .feather {
     color: #4d8197;
 }
-.btn-outline-primary:hover .feather {
+.btn-outline-primary b{
+  font-size: 20px;
+}
+.btn-outline-primary:hover .feather, .btn-outline-primary:hover b {
     color: #fff;
 }
 
