@@ -2,6 +2,7 @@
 h1, h2, h3, h4, h5, h6{
   font-family: 'Montserrat', sans-serif !important;
   font-weight: 600 !important;
+  color: #4d8197 !important;
 }
 
 
@@ -13,6 +14,10 @@ html,body{
 
 a{
   color: inherit !important;
+}
+a:hover{
+  color: #4d8197 !important;
+  text-decoration: none;
 }
 
 .navbar{
