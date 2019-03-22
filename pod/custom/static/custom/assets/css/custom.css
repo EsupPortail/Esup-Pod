@@ -73,13 +73,13 @@ a:hover{
 
 }
 #navbarDropdown {
-    background-color: #4d8197;
+    background-color: transparent !important;
     border-radius: 5px !important;
     transition: background-color .3s;
 }
 #navbarDropdown:hover{
   color: #fff;
-  background-color: #102636;
+  background-color: #4d8197;
 }
 .btn-outline-primary{
   border-color: #102636 !important;
