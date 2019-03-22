@@ -10,19 +10,3 @@ html,body{
 .navbar-light .navbar-brand{
   margin-right: 30px !important;
 }
-.navbar a, .navbar .nav-link{
-  color: inherit ! important;
-  transition: color .3s;
-}
-.nav-item {
-  margin:  0 5px;
-}
-
-.navbar .nav-link-icone{
-  color:  #4d8197;
-  margin-right: 5px;
-}
-
-.navbar a:hover, .navbar .nav-link:hover{
-  color: #4d8197;
-}
