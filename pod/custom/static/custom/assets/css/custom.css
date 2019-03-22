@@ -49,7 +49,7 @@ a:hover{
   color: #4d8197 !important;
 }
 
-.btn.btn-connexion.nav-link.pl-2.pr-2.d-flex.justify-content-center {
+.btn.btn-connexion.nav-link.pl-2.pr-2.d-flex.justify-content-center, .btn-connexion {
     color: #4d8197 !important;
     transition: background-color .3s, color .3s;
 }
@@ -86,7 +86,7 @@ footer a, footer p{
     color: #fff;
   }
   .btn-lang:hover{
-    color: #102636;
+    color: #4d8197;
   }
 
   .navbar-light .navbar-toggler{
