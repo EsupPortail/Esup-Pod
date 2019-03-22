@@ -84,9 +84,10 @@ a:hover{
 .btn-outline-primary{
   border-color: #102636 !important;
   color: #4d8197 !important;
+  background: transparent !important;
 }
 .btn-outline-primary:hover{
-  background-color: #4d8197;
+  background-color: #4d8197 !important;
   color: #fff !important;
 }
 .btn-outline-primary .feather {
