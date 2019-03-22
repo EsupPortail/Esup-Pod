@@ -85,6 +85,25 @@ svg:not(:root) {
     background-color: #4d8197 !important;
     color: #fff !important;
 }
+
+/* CONTENT */
+.border-secondary {
+    border-color: #4d8197 !important;
+}
+/* .video-thumb.col-xs-6.col-md-4 {
+    border: 1px solid #4d8197;
+    border-radius: 5px;
+    margin: 0.1em;
+    box-sizing: border-box;
+    max-width: calc( ( 100% / 3 ) - 0.3em );
+}
+.video-thumb.col-xs-6.col-md-4  img{
+  max-width: 100%;
+}
+h5, .h5{
+  font-size: 1em;
+} */
+
 /* FOOTER */
 
 footer.bg-dark {
