@@ -75,6 +75,7 @@ a:hover{
 #navbarDropdown {
     background-color: #4d8197;
     border-radius: 5px !important;
+    transition: background-color .3s;
 }
 #navbarDropdown:hover{
   color: #fff;
