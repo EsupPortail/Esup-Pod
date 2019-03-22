@@ -44,6 +44,7 @@ a:hover{
 .btn-primary{
   background-color: #102636 !important;
   border: none !important;
+  color: #fff !important;
 }
 
 .btn-primary:hover{
@@ -89,6 +90,7 @@ svg:not(:root) {
 /* CONTENT */
 .border-secondary {
     border-color: #4d8197 !important;
+    color: #fff !important;
 }
 /* .video-thumb.col-xs-6.col-md-4 {
     border: 1px solid #4d8197;
