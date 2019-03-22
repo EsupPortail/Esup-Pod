@@ -56,7 +56,12 @@ a:hover{
 }
 .btn-outline-primary:hover{
   background-color: #4d8197;
-  color: #fff;
+}
+.btn-outline-primary .feather {
+    color: #4d8197;
+}
+.btn-outline-primary:hover .feather {
+    color: #fff;
 }
 
 svg:not(:root) {
