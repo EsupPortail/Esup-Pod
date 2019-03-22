@@ -43,7 +43,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     django_settings,
     'TEMPLATE_VISIBLE_SETTINGS',
     {
-        'TITLE_SITE': '',
+        'TITLE_SITE': 'POD',
         'TITLE_ETB': 'Université intégrée',
         'LOGO_SITE': 'custom/assets/images/logoUI_white.png',
         'LOGO_ETB': 'custom/assets/images/logoUI_white.png',

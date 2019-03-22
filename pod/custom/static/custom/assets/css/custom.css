@@ -12,6 +12,13 @@ html,body{
   font-family: 'Open Sans', sans-serif !important;
 }
 
+.fixebottom{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 a{
   color: inherit !important;
 }
@@ -49,6 +56,21 @@ a:hover{
 
 .btn-primary:hover{
   background: #4d8197 !important;
+  color: #fff !important;
+}
+
+.btn-success {
+    color: #fff !important;
+    background-color: #e20917;
+    border: none !important;
+}
+.btn-success:hover {
+    color: #fff !important;
+    background-color: #bf0000;
+    border: none !important;
+}
+.btn-success:hover{
+
 }
 
 .btn-outline-primary{
@@ -57,9 +79,10 @@ a:hover{
 }
 .btn-outline-primary:hover{
   background-color: #4d8197;
+  color: #fff !important;
 }
 .btn-outline-primary .feather {
-    color: #4d8197;
+    color: #4d8197 !important;
 }
 .btn-outline-primary b{
   font-size: 20px;
