@@ -2,6 +2,6 @@ $(function()
 {
   $(".navbar-brand strong").remove();
   $( "#s" ).focus( e => {
-      console.log($(this).parent());
+      $(this).parent().css({position: fixed});
   })
 });
