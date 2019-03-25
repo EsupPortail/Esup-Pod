@@ -129,10 +129,12 @@ button.dropdown-item:hover, a.dropdown-item:hover
   color: #fff;
 
 }
-
+span.dropdown-item:hover{color: #fff !important;}
 .dropdown-item:focus, .dropdown-item:hover{
   background-color: transparent;
   color: #4d8197;
+  outline: none;
+  border: none;
 }
 
 /* CONTENT */
