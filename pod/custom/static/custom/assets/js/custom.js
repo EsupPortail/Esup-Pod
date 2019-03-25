@@ -6,33 +6,30 @@ $(function()
   let screenWidth = window.screen.width;
   let MIN_WIDTH = 767;
   let pathnameExpected = "/authentication_login_gateway/";
-  let currentPath = window.location.pathname;
+
   let fixeFooter = function(){
-    if( currentPath === pathnameExpected )
+    let currentPath = window.location.pathname;
+    if( currentPath.toLowerCase() === pathnameExpected )
     {
       if( screenWidth > MIN_WIDTH  )
       {
         if( !($( "footer" ).hasClass( "fixebottom" ))  )
         {
           $( "footer" ).addClass( "fixebottom" );
-          return;
         }
       }
+      else {
+        $( "footer" ).removeClass( "fixebottom" );
+      }
     }
-    $( "footer" ).removeClass( "fixebottom" );
-
   }
-  fixeFooter()
+  fixeFooter( )
   $( window ).resize( e =>
   {
     screenWidth = $( window ).width();
-    fixeFooter()
+    fixeFooter( )
   })
 
 
-  // VIEW VIDEOS REMOVE FOOTER HEIGHT 80px
-  if( currentPath == "/videos/")
-  {
-    $( "footer" ).removeClass("fixebottom");
-  }
+
 });
