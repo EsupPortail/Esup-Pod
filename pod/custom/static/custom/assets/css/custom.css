@@ -24,6 +24,20 @@ html,body{
   right: 10px;
   z-index: 9999999;
 } */
+.text-center{
+  text-align: justify !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  margin-top: 10px !important;
+}
+.text-center .btn{
+  max-width: calc(50% - 5px) !important;
+  white-space: unset !important;
+  padding: 1em .8em !important;
+  justify-content: center !important;
+  align-items: center !important;
+  display: flex !important;
+}
 a{
   color: inherit !important;
 }
@@ -243,22 +257,6 @@ footer a, footer p{
   .navbar-nav .login .dropdown-menu{
     margin-left: -14rem;
   }
-
-  .text-center{
-    text-align: justify !important;
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-  .text-center .btn{
-    max-width: calc(50% - 5px);
-    white-space: unset;
-    padding: 1em .8em;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-  }
-
 }
 
 @media only screen and (max-width: 700px)
