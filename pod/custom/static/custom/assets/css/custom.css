@@ -38,6 +38,11 @@ a:hover{
 .navbar-light .navbar-brand{
   margin-right: 30px !important;
 }
+.navbar-brand.mr-0.mr-sm-1 img{
+  height: auto;
+  width: 250px;
+}
+
 .navbar a, .navbar .nav-link{
   color: inherit ! important;
   transition: color .3s;
@@ -118,7 +123,13 @@ a:hover{
     color: #fff !important;
 }
 
+
+
 /* CONTENT */
+
+main.mt-3{
+  margin-top: 2rem !important;
+}
 .border-secondary {
     border-color: #4d8197 !important;
     color: #fff !important;
@@ -139,6 +150,15 @@ a:hover{
 h5, .h5{
   font-size: 1em;
 } */
+
+main.mt-3 .nav-tabs .nav-link{
+  background-color: #102636 !important;
+  border:none !important;
+}
+main.mt-3 .nav-tabs .nav-link:hover, main.mt-3 .nav-tabs .nav-link.active{
+  border:none !important;
+}
+
 
 /* FOOTER */
 
