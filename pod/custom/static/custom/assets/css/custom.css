@@ -245,22 +245,20 @@ footer a, footer p{
   /* NAVBAR MoBILE ORGANISATION */
   .navbar-brand.mr-0.mr-sm-1
   {
-    position: relative;
+    position: absolute;
+    top: 15px;
+    width: 150px;
+    margin-right: 0 !important;
+
   }
   .navbar-brand.mr-0.mr-sm-1 img{
-    position: absolute;
-    width: 150px;
-    -webkit-transform: translateY(-20px);
-        -ms-transform: translateY(-20px);
-            transform: translateY(-20px);
+    width: 100%
   }
 
-  .navbar.navbar-expand-lg .form-inline .d-lg-none{
+  .navbar.navbar-expand-lg .form-inline{
     position: absolute;
-    left: 52%;
-    -webkit-transform: translateY(-5px);
-        -ms-transform: translateY(-5px);
-            transform: translateY(-5px);
+    left: 55%;
+
   }
   .navbar.navbar-expand-lg .navbar-nav li:not(#nav-channels):first-child{
     -webkit-transform: translateX(8px);
