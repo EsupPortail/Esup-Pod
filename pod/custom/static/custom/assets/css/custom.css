@@ -208,8 +208,11 @@ footer a, footer p{
     border-bottom: 1px solid #fff;
   }
 
-  /*  TEST  MOBILE NAVbAR */
+}
 
+@media only screen and (max-width: 700px)
+{
+  /* NAVBAR MoBILE ORGANISATION */
   .navbar-brand.mr-0.mr-sm-1
   {
     position: relative;
