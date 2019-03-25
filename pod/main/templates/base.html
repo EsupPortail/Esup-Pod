@@ -113,11 +113,12 @@
         <script src="{% static 'js/main.js' %}"></script>
 		{% block more_script %}
 		{% endblock more_script %}
-			<script src="{% static 'custom/assets/js/custom.js' %}"></script>
+
         <script src="{% static 'feather-icons/feather.min.js' %}"></script>
         <script>
           feather.replace({ class: 'align-bottom'});
         </script>
+				<script src="{% static 'custom/assets/js/custom.js' %}"></script>
         {% if POST_FOOTER_TEMPLATE %}{% include POST_FOOTER_TEMPLATE %}{% endif %}
 	</body>
 </html>
