@@ -258,6 +258,9 @@ footer a, footer p{
   .navbar.navbar-expand-lg .form-inline{
     position: absolute;
     left: 55%;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100%;
 
   }
   .navbar.navbar-expand-lg .navbar-nav li:not(#nav-channels):first-child{
