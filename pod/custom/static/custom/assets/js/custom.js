@@ -8,9 +8,7 @@ $(function()
   let pathnameExpected = "/authentication_login_gateway/";
   let currentPath = window.location.pathname;
 
-  $( window ).resize( e =>
-  {
-    screenWidth = $( window ).width();
+  let fixeFooter = function(){
     if( screenWidth > MIN_WIDTH && currentPath == pathnameExpected )
     {
       if( !($( "footer" ).hasClass( "fixebottom" ))  )
@@ -22,6 +20,11 @@ $(function()
     {
       $( "footer" ).removeClass( "fixebottom" );
     }
-
+  }
+  fixeFooter()
+  $( window ).resize( e =>
+  {
+    screenWidth = $( window ).width();
+    fixeFooter()
   })
 });
