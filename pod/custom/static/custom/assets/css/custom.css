@@ -5,7 +5,6 @@ h1, h2, h3, h4, h5, h6{
   color: #4d8197 !important;
 }
 
-
 html,body{
   font-weight: 300 !important;
   color: #3c3c3b;
@@ -100,7 +99,7 @@ a:hover{
     color: #fff;
 }
 
-svg:not(:root) {
+.btn.btn-primary.btn-sm.collapseAside svg:not(:root) {
     color: #fff;
 }
 .navbar a:hover,
