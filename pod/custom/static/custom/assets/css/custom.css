@@ -221,7 +221,12 @@ footer a, footer p{
   }
 
   .navbar.navbar-expand-lg .form-inline .d-lg-none{
-
+    position: absolute;
+    left: 54%;
+    transform: translateY(-5px);
+  }
+  .navbar.navbar-expand-lg .navbar-nav li:first-child{
+    transform: translateX(8px);
   }
   .navbar.navbar-expand-lg .navbar-nav {
     transform: translateX(10px);
