@@ -24,6 +24,9 @@ html,body{
   right: 10px;
   z-index: 9999999;
 } */
+.staticposition{
+  position: static !important;
+}
 .text-center{
   text-align: justify !important;
   display: flex !important;
