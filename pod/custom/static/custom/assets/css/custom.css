@@ -208,6 +208,9 @@ footer a, footer p{
     margin: 0 10px;
     border-bottom: 1px solid #fff;
   }
+  .navbar-nav .login .dropdown-menu{
+    margin-left: -14rem;
+  }
 
 }
 
