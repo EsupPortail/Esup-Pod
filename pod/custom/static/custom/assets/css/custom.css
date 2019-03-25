@@ -200,6 +200,7 @@ footer a, footer p{
   .navbar-light .navbar-toggler{
     color: inherit;
     border: none;
+    outline: none;
   }
   #s:focus{
     background: #102636 !important;
@@ -233,7 +234,6 @@ footer a, footer p{
   }
   .navbar.navbar-expand-lg .navbar-nav {
     transform: translateX(10px);
-    z-index: -1;
   }
 
 }
