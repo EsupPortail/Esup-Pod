@@ -10,14 +10,14 @@ $(function()
 
   $( window ).resize( e =>
   {
-    screenWidth = window.screen.width;
+    screenWidth = $( window ).width();
   })
 
   if( screenWidth > MIN_WIDTH && currentPath == pathnameExpected )
   {
-    $('footer').addClass('fixebottom');
+    $( "footer" ).addClass( "fixebottom" );
   }
   else {
-    $('footer').removeClass('fixebottom');
+    $( "footer" ).removeClass( "fixebottom" );
   }
 });
