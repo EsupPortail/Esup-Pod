@@ -6,20 +6,21 @@ $(function()
   let screenWidth = window.screen.width;
   let MIN_WIDTH = 767;
   let pathnameExpected = "/authentication_login_gateway/";
-
+  let currentPath = window.location.pathname;
   let fixeFooter = function(){
-    let currentPath = window.location.pathname;
-    if( screenWidth > MIN_WIDTH && currentPath === pathnameExpected )
+    if( currentPath === pathnameExpected )
     {
-      if( !($( "footer" ).hasClass( "fixebottom" ))  )
+      if( screenWidth > MIN_WIDTH  )
       {
-        $( "footer" ).addClass( "fixebottom" );
+        if( !($( "footer" ).hasClass( "fixebottom" ))  )
+        {
+          $( "footer" ).addClass( "fixebottom" );
+          return;
+        }
       }
     }
-    else
-    {
-      $( "footer" ).removeClass( "fixebottom" );
-    }
+    $( "footer" ).removeClass( "fixebottom" );
+
   }
   fixeFooter()
   $( window ).resize( e =>
