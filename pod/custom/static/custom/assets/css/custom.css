@@ -159,6 +159,10 @@ main.mt-3 .nav-tabs .nav-link:hover, main.mt-3 .nav-tabs .nav-link.active{
   border:none !important;
 }
 
+main.mt-3 .navbar{
+  overflow: hidden;
+}
+
 
 /* FOOTER */
 
