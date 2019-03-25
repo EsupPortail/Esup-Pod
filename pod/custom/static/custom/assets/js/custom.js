@@ -31,5 +31,8 @@ $(function()
 
 
   // VIEW VIDEOS REMOVE FOOTER HEIGHT 80px
-  $( "footer" ).css("height", "auto !important");
+  if( currentPath == "/videos/")
+  {
+    $( "footer" ).removeClass("fixebottom");
+  }
 });
