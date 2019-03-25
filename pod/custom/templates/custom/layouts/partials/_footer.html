@@ -20,7 +20,7 @@ voir http://www.gnu.org/licenses/
 {% endcomment %}
 {% load i18n %}
 {% load staticfiles %}
-<footer class="container-fluid">
+<!-- <footer class="container-fluid">
     <div class="row">
         <div class="col-md-offset-2 col-sm-3 col-xs-6"><img src="{% static 'custom/assets/images/uga.png' %}" alt="SEMM" id="semmLOGO" /></div>
         <div class="col-sm-3 col-xs-12">
@@ -40,5 +40,36 @@ voir http://www.gnu.org/licenses/
             {% endfor %}
         </div>
     </div>
-</footer>
-<!-- INSERER SCRIPT ANALYTICS PIWIK -->
+</footer> -->
+{% load staticfiles %}
+{% load i18n %}
+{% spaceless %}
+<div class="container container-pod">
+<p class="float-right">
+<a href="#"><i class="fas fa-arrow-up"></i></a>
+</p>
+<div class="row">
+  <div class="col-md-4">
+    <img src="{% static LOGO_ETB %}" alt="" height="70" >
+    <p class="footer-contact mt-3">
+      <span class="footer-contact-title">{{TITLE_ETB}}</span><br>
+      {% for text in FOOTER_TEXT %}
+      {{text|safe}}<br>
+      {% endfor %}
+    </p>
+  </div>
+  <div class="col-md-4">
+    {% for link in LINK_FOOTER %}
+    <a href="{{link.get_url}}" title="{{link.title}}" >
+    &gt;  {{link.title}}
+    </a><br>
+    {% endfor %}
+  </div>
+  <div class="col-md-4">
+    <a href="https://www.esup-portail.org/" title="Esup Portail : Communauté d'établissements francais d'enseignement supérieur pour l'innovation numérique" target="_blank">&gt;  <abbr title="Esup Portail : Communauté d'établissements francais d'enseignement supérieur pour l'innovation numérique">Esup Portail</abbr></a><br>
+    <a href="https://github.com/EsupPortail/podv2" target="_blank">&gt;  {% trans "Pod Project" %}</a><br>
+  </div>
+</div>
+<p style="text-align:center">{{TITLE_SITE}} {% trans "video platform of" %} {{TITLE_ETB}} - <a href="https://github.com/EsupPortail/podv2/releases/tag/{{VERSION}}" target="_blank" title="GitHub">Release {{VERSION}}</a>  - {{VIDEOS_COUNT}} {% trans "videos availables" %} [ {{VIDEOS_DURATION}} ]</p>
+</div>
+{% endspaceless %}

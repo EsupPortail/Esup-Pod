@@ -17,7 +17,13 @@ html,body{
   right: 0;
   bottom: 0;
 }
-
+.float-right .fas{
+  color: #fff;
+  position: fixed;
+  bottom: 10%;
+  right: 10px;
+  z-index: 9999999;
+}
 a{
   color: inherit !important;
 }
