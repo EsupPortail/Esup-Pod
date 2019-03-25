@@ -124,7 +124,7 @@ button.dropdown-item:hover, a.dropdown-item:hover
     color: #fff !important;
 }
 
-.dropdown-menu.dropdown-menu-right.show{
+.dropdown-menu.dropdown-menu-right.show, .dropdown-item{
   background-color: #102636;
   color: #fff;
 
@@ -132,6 +132,7 @@ button.dropdown-item:hover, a.dropdown-item:hover
 
 .dropdown-item:focus, .dropdown-item:hover{
   background-color: transparent;
+  color: #4d8197;
 }
 
 /* CONTENT */
