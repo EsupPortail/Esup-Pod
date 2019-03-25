@@ -11,13 +11,16 @@ $(function()
   $( window ).resize( e =>
   {
     screenWidth = $( window ).width();
+    if( screenWidth > MIN_WIDTH && currentPath == pathnameExpected && !$( "footer" ).hasClass( "fixebottom" ) )
+    {
+      $( "footer" ).addClass( "fixebottom" );
+    }
+    else if( $( "footer" ).hasClass( "fixebottom" ) )
+    {
+      $( "footer" ).removeClass( "fixebottom" );
+    }
+
   })
 
-  if( screenWidth > MIN_WIDTH && currentPath == pathnameExpected )
-  {
-    $( "footer" ).addClass( "fixebottom" );
-  }
-  else {
-    $( "footer" ).removeClass( "fixebottom" );
-  }
+
 });
