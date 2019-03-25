@@ -124,7 +124,15 @@ button.dropdown-item:hover, a.dropdown-item:hover
     color: #fff !important;
 }
 
+.dropdown-menu.dropdown-menu-right.show{
+  background-color: #102636;
+  color: #fff;
 
+}
+
+.dropdown-item:focus, .dropdown-item:hover{
+  background-color: transparent;
+}
 
 /* CONTENT */
 
@@ -196,6 +204,14 @@ footer a, footer p{
   }
   .btn-lang:hover{
     color: #4d8197;
+  }
+
+  .btn-lang::after{
+    content: "";
+    display: block;
+    width: 100%;
+    border: 1px solid #fff;
+
   }
 
   .navbar-light .navbar-toggler{
