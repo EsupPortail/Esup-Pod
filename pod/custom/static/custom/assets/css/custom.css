@@ -43,7 +43,7 @@ a:hover{
   width: 250px;
 }
 
-.navbar a, .navbar .nav-link{
+.navbar a, .navbar .nav-link, button.dropdown-item, a.dropdown-item{
   color: inherit ! important;
   transition: color .3s;
 }
@@ -109,7 +109,8 @@ a:hover{
 }
 .navbar a:hover,
 .navbar .nav-link:hover,
-.navbar .nav-link:hover .nav-link-icone
+.navbar .nav-link:hover .nav-link-icone,
+button.dropdown-item:hover, a.dropdown-item:hover
 {
   color: #4d8197 !important;
 }
