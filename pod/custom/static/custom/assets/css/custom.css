@@ -208,4 +208,24 @@ footer a, footer p{
     border-bottom: 1px solid #fff;
   }
 
+  /*  TEST  MOBILE NAVbAR */
+
+  .navbar-brand.mr-0.mr-sm-1
+  {
+    position: relative;
+  }
+  .navbar-brand.mr-0.mr-sm-1 img{
+    position: absolute;
+    width: 150px;
+    transform: translateY(-20px);
+  }
+
+  .navbar.navbar-expand-lg .form-inline .d-lg-none{
+
+  }
+  .navbar.navbar-expand-lg .navbar-nav {
+    transform: translateX(10px);
+    z-index: -1;
+  }
+
 }

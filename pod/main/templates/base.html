@@ -32,7 +32,6 @@
         <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
         <script src="{% static 'js/js.cookie.js' %}"></script>
         <script src="{% url 'javascript-catalog' %}"></script>
-				<script src="{% static 'custom/assets/js/custom.js' %}"></script>
 	    <title>{{ TITLE_SITE }} - {% block page_title %}{% endblock %}</title>
 
 	    {% block page_extra_head %}{% endblock %}
@@ -112,6 +111,7 @@
         var urlvideos = "{% url 'videos' %}";
 		</script>
         <script src="{% static 'js/main.js' %}"></script>
+				<script src="{% static 'custom/assets/js/custom.js' %}"></script>
 		{% block more_script %}
 		{% endblock more_script %}
         <script src="{% static 'feather-icons/feather.min.js' %}"></script>
