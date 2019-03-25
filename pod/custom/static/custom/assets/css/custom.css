@@ -45,6 +45,8 @@ a:hover{
 
 .navbar a, .navbar .nav-link, button.dropdown-item, a.dropdown-item{
   color: inherit ! important;
+  -webkit-transition: color .3s;
+  -o-transition: color .3s;
   transition: color .3s;
 }
 
@@ -79,6 +81,8 @@ a:hover{
 #navbarDropdown {
     background-color: transparent !important;
     border-radius: 5px !important;
+    -webkit-transition: background-color .3s;
+    -o-transition: background-color .3s;
     transition: background-color .3s;
 }
 #navbarDropdown:hover{
@@ -117,6 +121,8 @@ button.dropdown-item:hover, a.dropdown-item:hover
 .nav-link.btn-connexion {
     background: #fff;
     color: #102636 !important;
+    -webkit-transition: background-color .3s, color .3s;
+    -o-transition: background-color .3s, color .3s;
     transition: background-color .3s, color .3s;
 }
 .btn.btn-connexion.nav-link.pl-2.pr-2.d-flex.justify-content-center:hover {
@@ -244,16 +250,22 @@ footer a, footer p{
   .navbar-brand.mr-0.mr-sm-1 img{
     position: absolute;
     width: 150px;
-    transform: translateY(-20px);
+    -webkit-transform: translateY(-20px);
+        -ms-transform: translateY(-20px);
+            transform: translateY(-20px);
   }
 
   .navbar.navbar-expand-lg .form-inline .d-lg-none{
     position: absolute;
     left: 52%;
-    transform: translateY(-5px);
+    -webkit-transform: translateY(-5px);
+        -ms-transform: translateY(-5px);
+            transform: translateY(-5px);
   }
   .navbar.navbar-expand-lg .navbar-nav li:not(#nav-channels):first-child{
-    transform: translateX(8px);
+    -webkit-transform: translateX(8px);
+        -ms-transform: translateX(8px);
+            transform: translateX(8px);
   }
 
 }
