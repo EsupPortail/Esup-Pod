@@ -73,6 +73,15 @@ a:hover{
   -o-transition: color .3s;
   transition: color .3s;
 }
+#nav-search label.d-lg-none, .nav-mainbar button.navbar-toggler{
+    color: #fff;
+}
+#nav-search label.d-lg-none:hover,.nav-mainbar button.navbar-toggler:hover{
+    color: #4d8197;
+}
+#nav-search label.d-lg-none svg.feather,.nav-mainbar button.navbar-toggler svg.feather-menu{
+    color: inherit;
+}
 
 .navbar .nav-link-icone{
   color:  #fff !important;
