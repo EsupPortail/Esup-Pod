@@ -1132,11 +1132,11 @@ def send_email_encoding(video_to_encode):
     from_email = DEFAULT_FROM_EMAIL
     to_email = []
     to_email.append(video_to_encode.owner.email)
-    
-    if video_to_encode.owner.establishment.lower() == "inp":
-        to_email.append("e.lotonga.sen@gmail.com")
+
+    if video_to_encode.owner.establishment.lower() == "inpg":
+        settings.MANAGERS.remove(settings.MANAGERS[1])
     else:
-        to_email.append("eliam38700@gmail.com")
+        settings.MANAGERS.remove(settings.MANAGERS[2])
 
     html_message = ""
 
