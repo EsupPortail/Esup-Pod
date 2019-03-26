@@ -1168,6 +1168,7 @@ def send_email_encoding(video_to_encode):
             html_message=html_message,
         )
     else:
+        pass
         # mail_managers(
         #     subject, message, fail_silently=False,
         #     html_message=html_message)
