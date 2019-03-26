@@ -80,7 +80,7 @@ a:hover{
     color: #4d8197;
 }
 #nav-search label.d-lg-none svg.feather,.nav-mainbar button.navbar-toggler svg.feather-menu{
-    color: inherit;
+    color: inherit !important;
 }
 
 .navbar .nav-link-icone{
