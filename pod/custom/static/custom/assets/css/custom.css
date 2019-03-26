@@ -188,7 +188,13 @@ span.dropdown-item:hover{color: #fff !important;}
   outline: none;
   border: none;
 }
-
+input.btn.btn-lang.my-2.mr-sm-2 {
+  color: #fff;
+  border: none;
+}
+btn.btn-lang:hover{
+  color: #4d8197;
+}
 /* CONTENT */
 
 main.mt-3{
