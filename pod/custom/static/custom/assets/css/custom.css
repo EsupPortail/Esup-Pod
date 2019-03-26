@@ -98,9 +98,16 @@ a:hover{
     background-color: #e20917;
     border: none !important;
 }
-.btn-success:hover{
-
+.btn-custom.logo{
+      display: inline-block;
+      background-image: url("/static/custom/assets/images/sign-in.svg");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      width: 20px;
+      height: 20px;
 }
+
 #navbarDropdown {
     background-color: transparent !important;
     border-radius: 5px !important;
@@ -128,7 +135,7 @@ a:hover{
   font-size: 20px;
 }
 .btn-outline-primary:hover .feather, .btn-outline-primary:hover b {
-    color: #fff;
+    color: #fff !important;
 }
 
 .btn.btn-primary.btn-sm.collapseAside svg:not(:root) {
@@ -290,5 +297,7 @@ footer a, footer p{
         -ms-transform: translateX(8px);
             transform: translateX(8px);
   }
+
+
 
 }
