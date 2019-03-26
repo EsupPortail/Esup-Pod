@@ -209,7 +209,7 @@ main.mt-3{
 }
 
 .card .card-body{
-  padding: .2em !important;
+  padding: 0 !important;
   position: relative;
 }
 .card .card-body footer.card-footer{
