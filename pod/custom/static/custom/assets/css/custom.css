@@ -106,8 +106,8 @@ a:hover{
       background-position: center;
       background-size: contain;
       background-color: #fff !important;
-      width: 20px;
-      height: 20px;
+      width: 25px;
+      height: 25px;
       transition: background-color .3s;
 }
 .btn-custom.logo:hover{
@@ -281,10 +281,8 @@ footer a, footer p{
   /* NAVBAR MoBILE ORGANISATION */
   .navbar-brand.mr-0.mr-sm-1
   {
-    position: absolute;
-    top: 15px;
     width: 150px;
-    margin-right: 0 !important;
+    margin-right: 10px !important;
 
   }
   .navbar-brand.mr-0.mr-sm-1 img{
@@ -292,19 +290,9 @@ footer a, footer p{
   }
 
   .navbar.navbar-expand-lg .form-inline{
-    position: absolute;
-    left: 55%;
     margin: 0 !important;
     padding: 0 !important;
-    height: 100%;
 
   }
-  .navbar.navbar-expand-lg .navbar-nav li:not(#nav-channels):first-child{
-    -webkit-transform: translateX(8px);
-        -ms-transform: translateX(8px);
-            transform: translateX(8px);
-  }
-
-
 
 }
