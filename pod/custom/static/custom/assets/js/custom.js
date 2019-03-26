@@ -8,7 +8,7 @@ $(function()
       $("form#nav-search").removeClass("staticposition");
   })
 
-  let screenWidth = window.width;
+  let screenWidth = $(window).width();
   let MIN_WIDTH = 767;
   let btnConnexion = $(".btn.btn-connexion");
   let btnConnexionlogo = $(".btn-custom.logo");

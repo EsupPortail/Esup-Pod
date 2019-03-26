@@ -101,12 +101,17 @@ a:hover{
 }
 .btn-custom.logo{
       display: inline-block;
-      background-image: url("/static/custom/assets/images/sign-in.svg");
-      background-repeat: no-repeat;
+      mask: url("/static/custom/assets/images/sign-in.svg") no-repeat;
+      -webkit-mask: url("/static/custom/assets/images/sign-in.svg") no-repeat;
       background-position: center;
       background-size: contain;
+      background-color: #fff !important;
       width: 20px;
       height: 20px;
+      transition: background-color .3s;
+}
+.btn-custom.logo{
+  background-color: #4d8197 !important;
 }
 
 #navbarDropdown {
