@@ -19,11 +19,11 @@ $(function()
       {
         if( btnConnexion.is(":visible") )
         {
-          btnConnexion.hide();
+          btnConnexion.addClass('hide-custom');
         }
         if( btnConnexionlogo.is(":hidden") )
         {
-          btnConnexionlogo.show();
+          btnConnexionlogo.removeClass('hide-custom');
         }
 
       }
@@ -31,11 +31,11 @@ $(function()
       {
         if( btnConnexionlogo.is(":visible") )
         {
-          btnConnexionlogo.hide();
+          btnConnexionlogo.addClass('hide-custom');
         }
         if( btnConnexion.is(":hidden") )
         {
-          btnConnexion.show();
+          btnConnexion.removeClass("hide-custom");
         }
       }
   }

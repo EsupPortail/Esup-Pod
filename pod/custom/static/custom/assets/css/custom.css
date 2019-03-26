@@ -10,6 +10,7 @@ html,body{
   color: #3c3c3b;
   font-family: 'Open Sans', sans-serif !important;
 }
+.hide-custom{display: none !important}
 
 .fixebottom{
   position: absolute;
