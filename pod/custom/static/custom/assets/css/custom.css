@@ -110,7 +110,7 @@ a:hover{
       height: 20px;
       transition: background-color .3s;
 }
-.btn-custom.logo{
+.btn-custom.logo:hover{
   background-color: #4d8197 !important;
 }
 
