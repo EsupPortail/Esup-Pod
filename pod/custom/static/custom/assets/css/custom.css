@@ -207,19 +207,28 @@ main.mt-3{
 .card-header .align-items-center{
     padding: 0 .1px 0 0;
 }
-/* .video-thumb.col-xs-6.col-md-4 {
-    border: 1px solid #4d8197;
-    border-radius: 5px;
-    margin: 0.1em;
-    box-sizing: border-box;
-    max-width: calc( ( 100% / 3 ) - 0.3em );
+
+.card .card-body{
+  padding: .2em !important;
+  position: relative;
 }
-.video-thumb.col-xs-6.col-md-4  img{
-  max-width: 100%;
+.card .card-body footer.card-footer{
+  height: auto;
+  overflow-y: auto;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  text-align: center;
 }
-h5, .h5{
-  font-size: 1em;
-} */
+.card .card-body h6.card-subtitle.small{
+  position: absolute;
+  top: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+
+
 
 main.mt-3 .nav-tabs .nav-link{
   background-color: #102636 !important;
