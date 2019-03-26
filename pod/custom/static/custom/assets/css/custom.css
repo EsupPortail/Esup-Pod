@@ -213,7 +213,7 @@ main.mt-3{
   position: relative;
 }
 .card .card-body footer.card-footer{
-  height: auto;
+  height: auto !important;
   overflow-y: auto;
   position: absolute;
   bottom: 0px;
