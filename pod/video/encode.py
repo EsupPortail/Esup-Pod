@@ -1134,6 +1134,10 @@ def send_email_encoding(video_to_encode):
     to_email.append(video_to_encode.owner.email)
 
     MANAGERS = getattr(settings, 'MANAGERS', [])
+    print("----------------- managers --------> ",MANAGERS)
+    print("----------------- owner --------> ", video_to_encode.owner)
+    print("----------------- owner x2 --------> ", video_to_encode.owner.owner.establishment)
+    print("----------------- owner email --------> ", video_to_encode.owner.email)
     if MANAGERS:
         if video_to_encode.owner.establishment.lower() == "inpg":
             to_email.append(MANAGERS[1][1])
