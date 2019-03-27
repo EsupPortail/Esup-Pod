@@ -1134,8 +1134,6 @@ def send_email_encoding(video_to_encode):
     to_email = []
     to_email.append(video_to_encode.owner.email)
 
-
-
     html_message = ""
 
     html_message = '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
@@ -1163,7 +1161,7 @@ def send_email_encoding(video_to_encode):
                                  message,
                                  from_email,
                                  to_email,
-                                 bcc=[bcc_email]
+                                 bcc=bcc_email
                                 )
     msg.attach_alternative(html_message, "text/html")
     msg.send()
