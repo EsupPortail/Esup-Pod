@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.core.mail import mail_admins
 from django.core.mail import mail_managers
+from django.core.mail import EmailMultiAlternatives
 from django.utils.translation import ugettext_lazy as _
 from django.core.files.images import ImageFile
 from django.core.files import File
