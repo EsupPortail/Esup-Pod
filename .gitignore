@@ -44,7 +44,6 @@ Icon?
 import_data/
 media/
 pod/*/migrations/
-pod/custom/*
 settings_local.py
 ## Others
 pod/static/
