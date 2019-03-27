@@ -1133,16 +1133,7 @@ def send_email_encoding(video_to_encode):
     to_email = []
     to_email.append(video_to_encode.owner.email)
 
-    MANAGERS = getattr(settings, 'MANAGERS', [])
-    print("----------------- managers --------> ",MANAGERS)
-    print("----------------- owner --------> ", video_to_encode.owner)
-    print("----------------- owner x2 --------> ", video_to_encode.owner.owner.establishment)
-    print("----------------- owner email --------> ", video_to_encode.owner.email)
-    if MANAGERS:
-        if video_to_encode.owner.establishment.lower() == "inpg":
-            to_email.append(MANAGERS[1][1])
-        else:
-            to_email.append(MANAGERS[2][1])
+
 
     html_message = ""
 
@@ -1159,15 +1150,34 @@ def send_email_encoding(video_to_encode):
         content_url,
         _("Regards")
     )
-    if not DEBUG:
-        send_mail(
-            subject,
-            message,
-            from_email,
-            to_email,
-            fail_silently=False,
-            html_message=html_message,
-        )
-    mail_managers(
-        subject, message, fail_silently=False,
-        html_message=html_message)
+    MANAGERS = getattr(settings, 'MANAGERS', [])
+    bcc_email = []
+
+    if MANAGERS:
+        if video_to_encode.owner.establishment.lower() == "inpg":
+            bcc_email.append(MANAGERS[1][1])
+        else:
+            bcc_email.append(MANAGERS[2][1])
+
+    msg = EmailMultiAlternatives(subject,
+                                 message,
+                                 from_email,
+                                 [to_email],
+                                 bcc=[bcc_email]
+                                )
+    msg.attach_alternative(html_message, "text/html")
+    msg.send()
+
+    # if not DEBUG:
+    #     send_mail(
+    #         subject,
+    #         message,
+    #         from_email,
+    #         to_email,
+    #         fail_silently=False,
+    #         html_message=html_message,
+    #     )
+    if DEBUG :
+        mail_managers(
+            subject, message, fail_silently=False,
+            html_message=html_message)
