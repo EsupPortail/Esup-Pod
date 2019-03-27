@@ -44,7 +44,7 @@ a{ color: inherit !important; }
 a:hover{ color: #4d8197 !important; text-decoration: none; }
 .carousel-caption .title{ color: #fff !important; }
 .navbar{ background-color: #102636 !important; color: #fff; }
-.navbar-items-pod{ background-color: inherit !important; }
+.navbar-items-pod{ background-color: inherit !important; padding: 0 !important}
 .navbar-light .navbar-brand{ margin-right: 30px !important; }
 .navbar-brand.mr-0.mr-sm-1 img{ height: auto; width: 250px; }
 
