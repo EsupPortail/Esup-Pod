@@ -211,7 +211,14 @@ main.mt-3 .navbar{
   overflow: hidden;
 }
 
-
+/*  CONTENT SIDEBARD */
+fieldset svg.feather.feather-send.align-bottom {
+    color: #102636;
+    transition: color .3s;
+}
+fieldset svg.feather.feather-send.align-bottom:hover{
+  color: #4d8197;
+}
 /* FOOTER */
 
 footer.bg-dark {
