@@ -108,9 +108,7 @@ def contact_us(request):
 
             CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [])
             dest_email = []
-            print("CURRENT OWNER ======================> ", owner)
-            print("OWNER OWNER ETAB ==================================> ", owner.owner.establishment)
-            print("OWNER ETAB ==================================> ", owner.establishment)
+            print("FORM CLEANED ======================> ", form.cleaned_data)
             pass
             if CONTACT_US_EMAIL:
                 if video_to_encode.owner.owner.establishment.lower() == "u123":
