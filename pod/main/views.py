@@ -115,6 +115,9 @@ def contact_us(request):
                 else:
                     dest_email.append(CONTACT_US_EMAIL[1][1])
 
+            print("CONTACT_US_EMAIL ======================> ", CONTACT_US_EMAIL)
+            print("dest_email ==================================> ", dest_email)
+            pass
             msg = EmailMultiAlternatives(
                 subject, text_content, email, dest_email)
             msg.attach_alternative(html_content, "text/html")
