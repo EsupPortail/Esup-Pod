@@ -107,7 +107,7 @@ def contact_us(request):
             dest_email = [owner.email] if owner else CONTACT_US_EMAIL
             print("EMAIL variable =============> ", email)
             print("dest_email variable =============> ", dest_email)
-            print("OWNER EMAIL variable =============> ", owner.email)
+            print("OWNER EMAIL variable =============> ", owner.owner.email)
             pass
 
             msg = EmailMultiAlternatives(
