@@ -54,6 +54,8 @@ pod_uwsgi.ini
 setup.cfgi
 test.py
 uwsgi_params
+log
+media
 
 # IDE Files #
 #############
