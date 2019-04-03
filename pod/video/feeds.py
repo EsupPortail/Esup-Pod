@@ -42,11 +42,10 @@ TITLE_SITE = TEMPLATE_VISIBLE_SETTINGS['TITLE_SITE'] if (
 LOGO_SITE = TEMPLATE_VISIBLE_SETTINGS['LOGO_SITE'] if (
     TEMPLATE_VISIBLE_SETTINGS.get('LOGO_SITE')) else 'img/logoPod.svg'
 
-CONTACT_US_EMAIL = ["eliam38700@gmail.com"]
-# CONTACT_US_EMAIL = getattr(
-#     settings,
-#     'CONTACT_US_EMAIL',
-#     [mail for name, mail in getattr(settings, 'MANAGERS')])
+CONTACT_US_EMAIL = getattr(
+    settings,
+    'CONTACT_US_EMAIL',
+    [mail for name, mail in getattr(settings, 'MANAGERS')])
 
 DEFAULT_DC_COVERAGE = getattr(
     settings, 'DEFAULT_DC_COVERAGE', TITLE_ETB + " - Town - Country")

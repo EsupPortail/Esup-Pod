@@ -80,6 +80,10 @@ def contact_us(request):
     if request.method == "POST":
         form = ContactUsForm(request, request.POST)
         if form.is_valid():
+
+            # get current user
+            current_user = User.objects.get(email=form.cleaned_data['email'])
+
             name = form.cleaned_data['name']
             form_subject = form.cleaned_data['subject'] if (
                 form.cleaned_data.get('subject')
@@ -104,8 +108,15 @@ def contact_us(request):
                 'message': message.replace("\n", "<br/>"),
                 'url_referrer': form.cleaned_data['url_referrer']
             })
+            #dest_email = [owner.email] if owner else CONTACT_US_EMAIL
 
-            dest_email = [owner.email] if owner else CONTACT_US_EMAIL
+            CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [])
+            dest_email = []
+            if CONTACT_US_EMAIL:
+                if current_user.owner.establishment.lower() == "u123":
+                    dest_email.append(CONTACT_US_EMAIL[0][1])
+                else:
+                    dest_email.append(CONTACT_US_EMAIL[1][1])
 
             msg = EmailMultiAlternatives(
                 subject, text_content, email, dest_email)
