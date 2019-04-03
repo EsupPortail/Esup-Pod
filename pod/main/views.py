@@ -84,10 +84,6 @@ def contact_us(request):
             # get current user
             current_user = User.objects.get(email=form.cleaned_data['email'])
 
-            print("email ===============> ", current_user.email)
-            print("email ===============> ", current_user.owner.establishment)
-            print("email ===============> ", current_user.first_name)
-            pass
             name = form.cleaned_data['name']
             form_subject = form.cleaned_data['subject'] if (
                 form.cleaned_data.get('subject')
@@ -117,7 +113,7 @@ def contact_us(request):
             CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [])
             dest_email = []
             if CONTACT_US_EMAIL:
-                if video_to_encode.owner.owner.establishment.lower() == "u123":
+                if current_user.owner.establishment.lower() == "u123":
                     dest_email.append(CONTACT_US_EMAIL[0][1])
                 else:
                     dest_email.append(CONTACT_US_EMAIL[1][1])
