@@ -104,8 +104,11 @@ def contact_us(request):
                 'message': message.replace("\n", "<br/>"),
                 'url_referrer': form.cleaned_data['url_referrer']
             })
-
             dest_email = [owner.email] if owner else CONTACT_US_EMAIL
+            print("EMAIL variable =============> ", email)
+            print("dest_email variable =============> ", dest_email)
+            print("OWNER EMAIL variable =============> ", owner.email)
+            pass
 
             msg = EmailMultiAlternatives(
                 subject, text_content, email, dest_email)
