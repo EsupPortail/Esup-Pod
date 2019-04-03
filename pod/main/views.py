@@ -108,12 +108,16 @@ def contact_us(request):
 
             CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [])
             dest_email = []
-
+            print("CURRENT OWNER ======================> ", owner)
+            print("OWNER OWNER ETAB ==================================> ", owner.owner.establishment)
+            print("OWNER ETAB ==================================> ", owner.establishment)
+            pass
             if CONTACT_US_EMAIL:
                 if video_to_encode.owner.owner.establishment.lower() == "u123":
                     dest_email.append(CONTACT_US_EMAIL[0][1])
                 else:
                     dest_email.append(CONTACT_US_EMAIL[1][1])
+
             msg = EmailMultiAlternatives(
                 subject, text_content, email, dest_email)
             msg.attach_alternative(html_content, "text/html")
