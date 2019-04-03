@@ -104,11 +104,16 @@ def contact_us(request):
                 'message': message.replace("\n", "<br/>"),
                 'url_referrer': form.cleaned_data['url_referrer']
             })
-            dest_email = [owner.email] if owner else CONTACT_US_EMAIL
-            print("EMAIL variable =============> ", email)
-            print("dest_email variable =============> ", dest_email)
-            print("OWNER EMAIL variable =============> ", owner.owner.email)
-            pass
+            #dest_email = [owner.email] if owner else CONTACT_US_EMAIL
+
+            CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [])
+            dest_email = []
+
+            if CONTACT_US_EMAIL:
+                if video_to_encode.owner.owner.establishment.lower() == "u123":
+                    dest_email.append(CONTACT_US_EMAIL[0][1])
+                else:
+                    dest_email.append(CONTACT_US_EMAIL[1][1])
 
             msg = EmailMultiAlternatives(
                 subject, text_content, email, dest_email)
