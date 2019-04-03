@@ -14,3 +14,4 @@ deploy:
   only:
     - master
     - adapting
+    - savecode
