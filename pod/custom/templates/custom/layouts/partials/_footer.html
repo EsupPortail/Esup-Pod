@@ -1,0 +1,75 @@
+{% comment %}
+Copyright (C) 2014 Nicolas Can
+Ce programme est un logiciel libre : vous pouvez
+le redistribuer et/ou le modifier sous les termes
+de la licence GNU Public Licence telle que publiée
+par la Free Software Foundation, soit dans la
+version 3 de la licence, ou (selon votre choix)
+toute version ultérieure.
+Ce programme est distribué avec l'espoir
+qu'il sera utile, mais SANS AUCUNE
+GARANTIE : sans même les garanties
+implicites de VALEUR MARCHANDE ou
+D'APPLICABILITÉ À UN BUT PRÉCIS. Voir
+la licence GNU General Public License
+pour plus de détails.
+Vous devriez avoir reçu une copie de la licence
+GNU General Public Licence
+avec ce programme. Si ce n'est pas le cas,
+voir http://www.gnu.org/licenses/
+{% endcomment %}
+{% load i18n %}
+{% load staticfiles %}
+<!-- <footer class="container-fluid">
+    <div class="row">
+        <div class="col-md-offset-2 col-sm-3 col-xs-6"><img src="{% static 'custom/assets/images/uga.png' %}" alt="SEMM" id="semmLOGO" /></div>
+        <div class="col-sm-3 col-xs-12">
+            <a href="{% url 'contact_us' %}" title="{% trans "Contact us" %}" class="btn btn-block btn-link">
+                <span class="glyphicon glyphicon-chevron-right"></span> {% trans "Contact us" %}
+            </a>
+            <a href="https://github.com/esupportail/pod/wiki/Foire-Aux-Questions" title="{% trans "FAQ" %}" class="btn btn-block btn-link">
+                <span class="glyphicon glyphicon-chevron-right"></span> {% trans "FAQ" %}
+            </a>
+
+        </div>
+        <div class="col-sm-3 col-xs-12">
+            {% for page in PAGES_MENU_BAS %}
+                <a href="{{ page.page.url }}" title="{{ page.page.title }}" class="btn btn-block btn-link">
+                    <span class="glyphicon glyphicon-chevron-right"></span> {{ page }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</footer> -->
+{% load staticfiles %}
+{% load i18n %}
+{% spaceless %}
+<div class="container container-pod">
+<p class="float-right">
+<a href="#"><i class="fas fa-arrow-up"></i></a>
+</p>
+<div class="row">
+  <div class="col-md-4">
+    <img src="{% static LOGO_ETB %}" alt="" height="70" >
+    <p class="footer-contact mt-3">
+      <span class="footer-contact-title">{{TITLE_ETB}}</span><br>
+      {% for text in FOOTER_TEXT %}
+      {{text|safe}}<br>
+      {% endfor %}
+    </p>
+  </div>
+  <div class="col-md-4">
+    {% for link in LINK_FOOTER %}
+    <a href="{{link.get_url}}" title="{{link.title}}" >
+    &gt;  {{link.title}}
+    </a><br>
+    {% endfor %}
+  </div>
+  <div class="col-md-4">
+    <a href="https://www.esup-portail.org/" title="Esup Portail : Communauté d'établissements francais d'enseignement supérieur pour l'innovation numérique" target="_blank">&gt;  <abbr title="Esup Portail : Communauté d'établissements francais d'enseignement supérieur pour l'innovation numérique">Esup Portail</abbr></a><br>
+    <a href="https://github.com/EsupPortail/podv2" target="_blank">&gt;  {% trans "Pod Project" %}</a><br>
+  </div>
+</div>
+<p style="text-align:center">{{TITLE_SITE}} {% trans "video platform of" %} {{TITLE_ETB}} - <a href="https://github.com/EsupPortail/podv2/releases/tag/{{VERSION}}" target="_blank" title="GitHub">Release {{VERSION}}</a>  - {{VIDEOS_COUNT}} {% trans "videos availables" %} [ {{VIDEOS_DURATION}} ]</p>
+</div>
+{% endspaceless %}
