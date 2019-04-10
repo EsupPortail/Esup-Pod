@@ -74,7 +74,8 @@ FFMPEG_STATIC_PARAMS = getattr(
 # + "-deinterlace -threads %(nb_threads)s -g %(key_frames_interval)s "
 # + "-keyint_min %(key_frames_interval)s ")
 
-FFMPEG_MISC_PARAMS = getattr(settings, 'MISC_PARAMS', " -hide_banner -y ")
+FFMPEG_MISC_PARAMS = getattr(
+    settings, 'FFMPEG_MISC_PARAMS', " -hide_banner -y ")
 
 AUDIO_BITRATE = getattr(settings, 'AUDIO_BITRATE', "192k")
 
@@ -474,7 +475,7 @@ def get_video_command_mp4(video_id, video_data, output_dir):
         maxrate = rendition.maxrate
         if in_height >= int(height) or rendition == renditions[0]:
             int_bitrate = int(
-                re.search("(\d+)k", bitrate, re.I).groups()[0])
+                re.search(r"(\d+)k", bitrate, re.I).groups()[0])
             # maxrate = int_bitrate * MAX_BITRATE_RATIO
             bufsize = int_bitrate * RATE_MONITOR_BUFFER_RATIO
 
@@ -530,7 +531,7 @@ def save_mp4_file(video_id, list_file, output_dir):
                 rendition=file['rendition'],
                 encoding_format="video/mp4")
             encoding.source_file = videofilenameMp4.replace(
-                settings.MEDIA_ROOT + '/', '')
+                os.path.join(settings.MEDIA_ROOT, ""), '')
             encoding.save()
         else:
             msg = "save_mp4_file Wrong file or path : "\
@@ -610,7 +611,7 @@ def encode_video_m4a(video_id, source, output_dir):
             video=video_to_encode,
             encoding_format="video/mp4")
         encoding.source_file = audiofilename.replace(
-            settings.MEDIA_ROOT + '/', '')
+            os.path.join(settings.MEDIA_ROOT, ""), '')
         encoding.save()
         msg += "\n- encode_video_m4a :\n%s" % audiofilename
     else:
@@ -653,7 +654,7 @@ def encode_video_mp3(video_id, source, output_dir):
             video=video_to_encode,
             encoding_format="audio/mp3")
         encoding.source_file = audiofilename.replace(
-            settings.MEDIA_ROOT + '/', '')
+            os.path.join(settings.MEDIA_ROOT, ""), '')
         encoding.save()
         msg += "\n- encode_video_mp3 :\n%s" % audiofilename
     else:
@@ -695,7 +696,7 @@ def get_video_command_playlist(video_id, video_data, output_dir):
         height = rendition.height
         if in_height >= int(height) or rendition == renditions[0]:
             int_bitrate = int(
-                re.search("(\d+)k", bitrate, re.I).groups()[0])
+                re.search(r"(\d+)k", bitrate, re.I).groups()[0])
             # maxrate = int_bitrate * MAX_BITRATE_RATIO
             bufsize = int_bitrate * RATE_MONITOR_BUFFER_RATIO
             bandwidth = int_bitrate * 1000
@@ -762,7 +763,7 @@ def save_playlist_file(video_id, list_file, output_dir):
                 rendition=file['rendition'],
                 encoding_format="video/mp2t")
             encoding.source_file = videofilenameTS.replace(
-                settings.MEDIA_ROOT + '/', '')
+                os.path.join(settings.MEDIA_ROOT, ""), '')
             encoding.save()
 
             playlist, created = PlaylistVideo.objects.get_or_create(
@@ -770,7 +771,7 @@ def save_playlist_file(video_id, list_file, output_dir):
                 video=video_to_encode,
                 encoding_format="application/x-mpegURL")
             playlist.source_file = videofilenameM3u8.replace(
-                settings.MEDIA_ROOT + '/', '')
+                os.path.join(settings.MEDIA_ROOT, ""), '')
             playlist.save()
         else:
             msg = "save_playlist_file Wrong file or path : "\
@@ -793,7 +794,7 @@ def save_playlist_master(video_id, output_dir, master_playlist):
             video=video_to_encode,
             encoding_format="application/x-mpegURL")
         playlist.source_file = output_dir.replace(
-            settings.MEDIA_ROOT + '/', '') + "/playlist.m3u8"
+            os.path.join(settings.MEDIA_ROOT, ""), '') + "/playlist.m3u8"
         playlist.save()
 
         msg += "\n- Playlist :\n%s" % playlist_master_file
@@ -933,7 +934,7 @@ def save_overview_vtt(video_id, overviewfilename):
         # save file in bdd
         video_to_encode = Video.objects.get(id=video_id)
         video_to_encode.overview = overviewfilename.replace(
-            settings.MEDIA_ROOT + '/', '')
+            os.path.join(settings.MEDIA_ROOT, ""), '')
         video_to_encode.save()
         msg += "\n- save_overview_vtt :\n%s" % overviewfilename
     else:

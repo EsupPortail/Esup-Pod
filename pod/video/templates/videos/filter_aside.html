@@ -4,96 +4,96 @@
 <div class="card card-body">
 <h4 class="card-title">
 <i data-feather="sliders"></i>&nbsp;{% trans "Filters"%}</h4>
-<p class="card-text">
-    <form action="{% url 'videos' %}" method="get" id="filters">
-    <fieldset>
-    <legend  class="h5"><i data-feather="users"></i> {% trans "Users" %} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
-    <div class="form-group">
-        <input placeholder="{% trans "Search" %}" id="ownerbox" type="text" class="form-control">
-    </div>
-    <div class="form-group navList owners" id="collapseFilterOwner" style="max-height:300px; overflow:auto;">
-        {% for owner in OWNERS %}
-        {% if owner.username in owners %}
-        <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="owner" value="{{owner.username}}" id="id{{owner.username}}"checked>
-        <label class="form-check-label" for="id{{owner.username}}">
-            {{owner.first_name}} {{owner.last_name}} ({{owner.username}})
-        </label>
-        </div>
-        {% endif %}
-        {% endfor %}  
-    </div>
-    </fieldset>
 
-    <fieldset class="border-right border-bottom mt-2">
-    <legend class="h5"><i data-feather="tv"></i> {% trans "Types"%} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
-    <div id="filterType">
-    <div class="form-group collapse" id="collapseFilterType">
-    {% for type in TYPES %}
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="type" 
-          value="{{type.slug}}" id="id{{type.slug}}" {% if type.slug in types %}checked{% endif %}>
-          <label class="form-check-label" for="id{{type.slug}}">
-            {{type}}
-          </label>
-        </div>
-    {%endfor%}
-    </div>
-    {% if TYPES.count > 5 %}
-    <span class="badge badge-light float-right"><a class="collapsed" data-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType"></a></span>
-    {% endif %}
-    </div><!-- type -->
-    </fieldset>
-    
-    <!-- <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button> -->
-    
-    <fieldset class="border-right border-bottom mt-2">
-    <legend class="h5"><i data-feather="book"></i> {% trans "Disciplines"%} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
-    <div id="filterDiscipline">
-    <div class="form-group collapse" id="collapseFilterDiscipline">
-    {% for discipline in DISCIPLINES %}
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="discipline" 
-          value="{{discipline.slug}}" id="id{{discipline.slug}}" {% if discipline.slug in disciplines %}checked{% endif %}>
-          <label class="form-check-label" for="id{{discipline.slug}}">
-            {{discipline}}
-          </label>
-        </div>
-    {%endfor%}
-    </div>
-    {% if DISCIPLINES.count > 5 %}
-    <span class="badge badge-light float-right"><a class="collapsed" data-toggle="collapse" href="#collapseFilterDiscipline" aria-expanded="false" aria-controls="collapseFilterDiscipline"></a></span>
-    {% endif %}
-    </div><!-- filterdiscipline -->
-    </fieldset>
-
-    <!-- <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button> -->
-
-    <fieldset class="border-right border-bottom mt-2">
-    <legend class="h5"><i data-feather="tag"></i> {% trans "Tags"%}<button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
-    <div id="filterTag">
-    <div class="form-group collapse" id="collapseFilterTag">
-    {% tags_for_model video.Video as tagscloud with counts %}
-    {% with tagslist=tagscloud|dictsortreversed:"count"|slice:":20" %}
-    {% for tag in tagslist %}
+<form action="{% url 'videos' %}" method="get" id="filters">
+<fieldset>
+<legend  class="h5"><i data-feather="users"></i> {% trans "Users" %} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
+<div class="form-group">
+    <input placeholder="{% trans "Search" %}" id="ownerbox" type="text" class="form-control">
+</div>
+<div class="form-group navList owners" id="collapseFilterOwner" style="max-height:300px; overflow:auto;">
+    {% for owner in OWNERS %}
+    {% if owner.username in owners %}
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="tag" 
-      value="{{tag.name}}" id="id{{tag.name}}" {% if tag.name in tags_slug %}checked{% endif %}>
-      <label class="form-check-label" for="id{{tag.name}}">
-        {{tag.name}}
+    <input class="form-check-input" type="checkbox" name="owner" value="{{owner.username}}" id="id{{owner.username}}" checked>
+    <label class="form-check-label" for="id{{owner.username}}">
+        {{owner.first_name}} {{owner.last_name}} ({{owner.username}})
+    </label>
+    </div>
+    {% endif %}
+    {% endfor %}  
+</div>
+</fieldset>
+
+<fieldset class="border-right border-bottom mt-2">
+<legend class="h5"><i data-feather="tv"></i> {% trans "Types"%} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
+<div id="filterType">
+<div class="form-group collapse" id="collapseFilterType">
+{% for type in TYPES %}
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="type" 
+      value="{{type.slug}}" id="id{{type.slug}}" {% if type.slug in types %}checked{% endif %}>
+      <label class="form-check-label" for="id{{type.slug}}">
+        {{type}}
       </label>
     </div>
-    {% endfor %}
+{%endfor%}
+</div>
+{% if TYPES.count > 5 %}
+<span class="badge badge-light float-right"><a class="collapsed" data-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType"></a></span>
+{% endif %}
+</div><!-- type -->
+</fieldset>
+
+<!-- <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button> -->
+
+<fieldset class="border-right border-bottom mt-2">
+<legend class="h5"><i data-feather="book"></i> {% trans "Disciplines"%} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
+<div id="filterDiscipline">
+<div class="form-group collapse" id="collapseFilterDiscipline">
+{% for discipline in DISCIPLINES %}
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="discipline" 
+      value="{{discipline.slug}}" id="id{{discipline.slug}}" {% if discipline.slug in disciplines %}checked{% endif %}>
+      <label class="form-check-label" for="id{{discipline.slug}}">
+        {{discipline}}
+      </label>
     </div>
-    {% if tagslist|length > 5 %}
-    <span class="badge badge-light float-right"><a class="collapsed" data-toggle="collapse" href="#collapseFilterTag" aria-expanded="false" aria-controls="collapseFilterTag"></a></span>
-    {% endif %}
-    {% endwith %}
-    </div>
-    </fieldset>
-    <!-- <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button> -->
-    </form>
-</p>
+{%endfor%}
+</div>
+{% if DISCIPLINES.count > 5 %}
+<span class="badge badge-light float-right"><a class="collapsed" data-toggle="collapse" href="#collapseFilterDiscipline" aria-expanded="false" aria-controls="collapseFilterDiscipline"></a></span>
+{% endif %}
+</div><!-- filterdiscipline -->
+</fieldset>
+
+<!-- <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button> -->
+
+<fieldset class="border-right border-bottom mt-2">
+<legend class="h5"><i data-feather="tag"></i> {% trans "Tags"%}<button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
+<div id="filterTag">
+<div class="form-group collapse" id="collapseFilterTag">
+{% tags_for_model video.Video as tagscloud with counts %}
+{% with tagslist=tagscloud|dictsortreversed:"count"|slice:":20" %}
+{% for tag in tagslist %}
+<div class="form-check">
+  <input class="form-check-input" type="checkbox" name="tag" 
+  value="{{tag.name}}" id="id{{tag.name}}" {% if tag.name in tags_slug %}checked{% endif %}>
+  <label class="form-check-label" for="id{{tag.name}}">
+    {{tag.name}}
+  </label>
+</div>
+{% endfor %}
+</div>
+{% if tagslist|length > 5 %}
+<span class="badge badge-light float-right"><a class="collapsed" data-toggle="collapse" href="#collapseFilterTag" aria-expanded="false" aria-controls="collapseFilterTag"></a></span>
+{% endif %}
+{% endwith %}
+</div>
+</fieldset>
+<!-- <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button> -->
+</form>
+
 </div>
 <script>
 var listUserChecked = {{owners|safe}};

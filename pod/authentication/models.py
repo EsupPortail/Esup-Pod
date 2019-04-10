@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -35,6 +35,13 @@ AFFILIATION = getattr(
         ('registered-reader', _('registered-reader'))
     )
 )
+ESTABLISHMENTS = getattr(
+    settings, "ESTABLISHMENTS",
+    (
+        ('Etab_1', 'Etab_1'),
+        ('Etab_2', 'Etab_2'),
+    )
+)
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
 FILES_DIR = getattr(
     settings, 'FILES_DIR', 'files')
@@ -59,6 +66,9 @@ class Owner(models.Model):
     userpicture = models.ForeignKey(CustomImageModel,
                                     blank=True, null=True,
                                     verbose_name=_('Picture'))
+    establishment = models.CharField(
+        _('Establishment'), max_length=10, blank=True, choices=ESTABLISHMENTS,
+        default=ESTABLISHMENTS[0][0])
 
     def __str__(self):
         return "%s %s (%s)" % (self.user.first_name, self.user.last_name,
@@ -68,6 +78,12 @@ class Owner(models.Model):
         self.hashkey = hashlib.sha256(
             (SECRET_KEY + self.user.username).encode('utf-8')).hexdigest()
         super(Owner, self).save(*args, **kwargs)
+
+    def is_manager(self):
+        group_ids = self.user.groups.all().values_list('id', flat=True)
+        return (
+            self.user.is_staff
+            and Permission.objects.filter(group__id__in=group_ids).count() > 0)
 
     @property
     def email(self):

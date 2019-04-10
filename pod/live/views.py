@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from .models import Building, Broadcaster
 from django.conf import settings
 from django.shortcuts import redirect
+# from django.http import HttpResponse --> not use
 
 
 def lives(request):  # affichage des directs
@@ -26,3 +27,15 @@ def video_live(request, id):  # affichage des directs
     return render(request, "live/live.html", {
         'broadcaster': broadcaster
     })
+
+
+""" use rest api to change status
+def change_status(request, slug):
+    broadcaster = get_object_or_404(Broadcaster, slug=slug)
+    if request.GET.get("online") == "1":
+        broadcaster.status = 1
+    else:
+        broadcaster.status = 0
+    broadcaster.save()
+    return HttpResponse("ok")
+"""

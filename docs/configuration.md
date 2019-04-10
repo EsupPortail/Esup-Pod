@@ -142,7 +142,7 @@ TEMPLATE_VISIBLE_SETTINGS = {
 ## Configuration application podfile (gestion de fichier)
 | Property            | Description                                                                                                                          |   Default Value  |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------|:----------------:|
-| **`FILE_ALLOWED_EXTENSIONS`**           | Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier | (        'doc',        'docx',        'odt',        'pdf',        'xls',        'xlsx',        'ods',        'ppt',        'pptx',        'txt',        'html',        'htm',        'vtt',        'srt',    ) |
+| **`FILE_ALLOWED_EXTENSIONS`**           | Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier | (        'doc',        'docx',        'odt',        'pdf',        'xls',        'xlsx',        'ods',        'ppt',        'pptx',        'txt',        'html',        'htm',        'vtt',        'srt',         'webm',        'ts',   ) |
 | **`IMAGE_ALLOWED_EXTENSIONS`**           | Extensions autorisées pour les images téléversés dans le gestionnaire de fichier | (        'jpg',        'jpeg',        'bmp',        'png',        'gif',        'tiff',    ) |
 | **`FILE_MAX_UPLOAD_SIZE`**           | Poids maximum en Mo par fichier téléversé dans le gestionnaire de fichier | 10 |
 
@@ -157,18 +157,19 @@ TEMPLATE_VISIBLE_SETTINGS = {
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------|:----------------:|
 | **`AUTH_TYPE`**           | Type d'authentification possible sur votre instance. Pour l'instant local ou cas | (('local', _('local')), ('CAS', 'CAS')) |
 | **`USE_CAS`**           | Activation de l'authentification CAS en plus de l'authentification locale | False |
+| **`CAS_SERVER_URL`**      | Url du serveur cas de l'établissement. Format http://url_cas |sso_cas|
 | **`CAS_GATEWAY`**           | Si True, authentifie automatiquement l'individu si déjà authentifié sur le serveur CAS | False |
 | **`POPULATE_USER`**           | Si utilisation de la connection CAS, renseigne les champs du compte de la personne depuis une source externe. Valeur possible : **None** (pas de renseignement), **CAS** (renseigne les champs de la personne depuis les informations renvoyées par le CAS), **LDAP** (Interroge le serveur LDAP pour renseigner les champs du compte de la personne) | None |
 | **`AUTH_CAS_USER_SEARCH `**           | variable utilisée pour trouver les informations de l'individu connecté dans le fichier renvoyé par le CAS lors de l'authentification | user |
 | **`USER_CAS_MAPPING_ATTRIBUTES `**           | liste de correspondance entre les champs d'un compte de Pod et les champs renvoyés par le CAS | {       "uid": "uid",       "mail": "mail",       "last_name": "sn",       "first_name": "givenname",       "affiliation": "eduPersonAffiliation"   } |
-| **`CREATE_GROUP_FOM_AFFILIATION `**           | Si True, des groupes sont créés automatiquement à partir des affiliations des individus qui se connectent sur la plateforme et l'individu qui se connecte est ajouté automatiquement à ses groupes | False |
+| **`CREATE_GROUP_FROM_AFFILIATION `**           | Si True, des groupes sont créés automatiquement à partir des affiliations des individus qui se connectent sur la plateforme et l'individu qui se connecte est ajouté automatiquement à ses groupes | False |
 | **`AFFILIATION_STAFF `**           | Les personnes ayant pour affiliation les valeurs renseignées dans cette variable sont automatiquement la valeur staff de leur compte à True | ('faculty', 'employee', 'staff') |
 | **`AFFILIATION`**           | Valeurs possibles pour l'Affiliation du compte | (        ('student', _('student')),        ('faculty', _('faculty')),        ('staff', _('staff')),        ('employee', _('employee')),        ('member', _('member')),        ('affiliate', _('affiliate')),        ('alum', _('alum')),        ('library-walk-in', _('library-walk-in')),        ('researcher', _('researcher')),        ('retired', _('retired')),        ('emeritus', _('emeritus')),        ('teacher', _('teacher')),        ('registered-reader', _('registered-reader'))    ) |
 | **`LDAP_SERVER `**           | Information de connection au serveur LDAP | {'url': '', 'port': 389, 'use_ssl': False} |
 | **`AUTH_LDAP_BIND_DN `**           | Identifiant (DN) du compte pour se connecter au serveur LDAP | '' |
 | **`AUTH_LDAP_BIND_PASSWORD `**           | Mot de passe du compte pour se connecter au serveur LDAP | '' |
 | **`AUTH_LDAP_USER_SEARCH `**           | Filtre LDAP permettant la recherche de l'individu dans le serveur LDAP | ('ou=people,dc=univ,dc=fr', "(uid=%(uid)s)") |
-| **`USER_LDAP_MAPPING_ATTRIBUTES `**           | liste de correspondance entre les champs d'un compte de Pod et les champs renvoyés par le LDAP | {       "uid": "uid",       "mail": "mail",       "last_name": "sn",       "first_name": "givenname",       "primaryAffiliation": "eduPersonPrimaryAffiliation",       "affiliation": "eduPersonAffiliation"   } |
+| **`USER_LDAP_MAPPING_ATTRIBUTES `**           | liste de correspondance entre les champs d'un compte de Pod et les champs renvoyés par le LDAP | {       "uid": "uid",       "mail": "mail",       "last_name": "sn",       "first_name": "givenname",       "primaryAffiliation": "eduPersonPrimaryAffiliation",       "affiliations": "eduPersonAffiliation"   } |
 
 Si utilisation de l'authentification CAS, il y a une modification à faire dans l'application tierce (django-cas-sso==1.1.7) permettant cette authentification. Cette application est proposée par l'université de Strasbourg mais un problème compatibilité avec Python 3.X empèche sa parfaite utilisation (avec le gateway). Voici la modification à faire :
 

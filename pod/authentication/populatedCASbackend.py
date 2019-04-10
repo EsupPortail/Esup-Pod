@@ -29,11 +29,11 @@ USER_CAS_MAPPING_ATTRIBUTES = getattr(
         "affiliation": "eduPersonAffiliation"
     })
 
-CREATE_GROUP_FOM_AFFILIATION = getattr(
-    settings, 'CREATE_GROUP_FOM_AFFILIATION', False)
+CREATE_GROUP_FROM_AFFILIATION = getattr(
+    settings, 'CREATE_GROUP_FROM_AFFILIATION', False)
 
 AFFILIATION_STAFF = getattr(
-    settings, 'USER_CAS_MAPPING_ATTRIBUTES',
+    settings, 'AFFILIATION_STAFF',
     ('faculty', 'employee', 'staff')
 )
 
@@ -61,7 +61,7 @@ USER_LDAP_MAPPING_ATTRIBUTES = getattr(
         "last_name": "sn",
         "first_name": "givenname",
         "primaryAffiliation": "eduPersonPrimaryAffiliation",
-        "affiliation": "eduPersonAffiliation"
+        "affiliations": "eduPersonAffiliation"
     })
 
 # search scope
@@ -151,17 +151,23 @@ def populate_user_from_entry(user, owner, entry):
             and entry[USER_LDAP_MAPPING_ATTRIBUTES['primaryAffiliation']]
         ) else AFFILIATION[0][0]
     )
+    owner.establishment = (
+        entry[USER_LDAP_MAPPING_ATTRIBUTES['establishment']].value if (
+            USER_LDAP_MAPPING_ATTRIBUTES.get('establishment')
+            and entry[USER_LDAP_MAPPING_ATTRIBUTES['establishment']]
+        ) else ""
+    )
     owner.save()
     affiliations = (
         entry[USER_LDAP_MAPPING_ATTRIBUTES['affiliations']].values if (
             USER_LDAP_MAPPING_ATTRIBUTES.get('affiliations')
             and entry[USER_LDAP_MAPPING_ATTRIBUTES['affiliations']]
-        ) else None
+        ) else []
     )
     for affiliation in affiliations:
         if affiliation in AFFILIATION_STAFF:
             user.is_staff = True
-        if CREATE_GROUP_FOM_AFFILIATION:
+        if CREATE_GROUP_FROM_AFFILIATION:
             group, group_created = Group.objects.get_or_create(
                 name=affiliation)
             user.groups.add(group)
@@ -200,7 +206,7 @@ def populate_user_from_tree(user, owner, tree):
     for affiliation in affiliation_element:
         if affiliation.text in AFFILIATION_STAFF:
             user.is_staff = True
-        if CREATE_GROUP_FOM_AFFILIATION:
+        if CREATE_GROUP_FROM_AFFILIATION:
             group, group_created = Group.objects.get_or_create(
                 name=affiliation.text)
             user.groups.add(group)

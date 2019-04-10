@@ -1,7 +1,7 @@
 """
 Django global settings for pod_project.
 
-Django version : 1.11.10.
+Django version : 1.11.16.
 """
 import os
 import sys
@@ -10,7 +10,7 @@ from pod.main.settings import BASE_DIR
 ##
 # Version of the project
 #
-VERSION = '2.0.1'
+VERSION = '2.1.0'
 
 ##
 # Installed applications list

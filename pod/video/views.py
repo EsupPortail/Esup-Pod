@@ -1,14 +1,15 @@
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from django.core.exceptions import SuspiciousOperation
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required
-from django.db.models import Count
+from django.db.models import Count, F
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.shortcuts import redirect
@@ -29,7 +30,8 @@ from pod.video.forms import VideoDeleteForm
 from pod.video.forms import NotesForm
 
 import json
-from datetime import datetime
+import re
+from datetime import date
 
 from pod.playlist.models import Playlist
 
@@ -38,6 +40,27 @@ VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, 'RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY', False)
 THEME_ACTION = ['new', 'modify', 'delete', 'save']
+
+TEMPLATE_VISIBLE_SETTINGS = getattr(
+    settings,
+    'TEMPLATE_VISIBLE_SETTINGS',
+    {
+        'TITLE_SITE': 'Pod',
+        'TITLE_ETB': 'University name',
+        'LOGO_SITE': 'img/logoPod.svg',
+        'LOGO_ETB': 'img/logo_etb.svg',
+        'LOGO_PLAYER': 'img/logoPod.svg',
+        'LINK_PLAYER': '',
+        'FOOTER_TEXT': ('',),
+        'FAVICON': 'img/logoPod.svg',
+        'CSS_OVERRIDE': ''
+    }
+)
+
+TITLE_ETB = TEMPLATE_VISIBLE_SETTINGS[
+    'TITLE_ETB'] if (
+        TEMPLATE_VISIBLE_SETTINGS.get('TITLE_ETB')
+) else 'University'
 
 # ############################################################################
 # CHANNEL
@@ -51,7 +74,7 @@ def channel(request, slug_c, slug_t=None):
 
     theme = None
     if slug_t:
-        theme = get_object_or_404(Theme, slug=slug_t)
+        theme = get_object_or_404(Theme, channel=channel, slug=slug_t)
         list_theme = theme.get_all_children_flat()
         videos_list = videos_list.filter(theme__in=list_theme)
 
@@ -306,8 +329,13 @@ def is_in_video_groups(user, video):
 
 def get_note_form(request, video):
     notesForm = None
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and Notes.objects.filter(
+            user=request.user, video=video).exists():
+        """
         note, created = Notes.objects.get_or_create(
+            user=request.user, video=video)
+        """
+        note = Notes.objects.get(
             user=request.user, video=video)
         notesForm = NotesForm(instance=note)
     return notesForm
@@ -388,7 +416,8 @@ def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
     video = get_object_or_404(Video, id=id)
     notesForm = get_note_form(request, video)
     channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
-    theme = get_object_or_404(Theme, slug=slug_t) if slug_t else None
+    theme = get_object_or_404(
+        Theme, channel=channel, slug=slug_t) if slug_t else None
     playlist = get_object_or_404(
         Playlist,
         slug=request.GET['playlist']) if request.GET.get('playlist') else None
@@ -561,15 +590,17 @@ def video_delete(request, slug=None):
 
 @csrf_protect
 @login_required(redirect_field_name='referrer')
-def video_notes(request, id):
-
-    note = get_object_or_404(Notes, id=id)
-    notesForm = NotesForm(instance=note)
+def video_notes(request, slug):
+    video = get_object_or_404(Video, slug=slug)
+    notesForm = NotesForm()
 
     if request.method == "POST":
-        notesForm = NotesForm(request.POST, instance=note)
+        notesForm = NotesForm(request.POST)
         if notesForm.is_valid():
-            notesForm.save()
+            note, created = Notes.objects.get_or_create(
+                user=request.user, video=video)
+            note.note = notesForm.cleaned_data["note"]
+            note.save()
             messages.add_message(
                 request, messages.INFO, _('The note has been saved.'))
         else:
@@ -587,11 +618,91 @@ def video_notes(request, id):
 def video_count(request, id):
     video = get_object_or_404(Video, id=id)
     if request.method == "POST":
-        viewCount, created = ViewCount.objects.get_or_create(
-            video=video, date=datetime.now())
-        viewCount.count += 1
-        viewCount.save()
+        try:
+            viewCount = ViewCount.objects.get(video=video, date=date.today())
+            viewCount.count = F('count')+1
+            viewCount.save(update_fields=['count'])
+        except ViewCount.DoesNotExist:
+            ViewCount.objects.create(video=video, count=1)
         return HttpResponse("ok")
     messages.add_message(
         request, messages.ERROR, _(u'You cannot access to this view.'))
     raise PermissionDenied
+
+
+def video_oembed(request):
+    if not request.GET.get('url'):
+        raise SuspiciousOperation('URL must be specified')
+    format = "xml" if request.GET.get("format") == "xml" else "json"
+
+    data = {}
+    data['type'] = "video"
+    data['version'] = "1.0"
+    data['provider_name'] = TITLE_ETB
+    protocole = "https" if request.is_secure() else "http"
+    data['provider_url'] = "%s://%s" % (protocole,
+                                        get_current_site(request).domain)
+    data['width'] = 640
+    data['height'] = 360
+
+    reg = (r'^https?://(.*)/video/(?P<slug>[\-\d\w]+)/'
+           + r'(?P<slug_private>[\-\d\w]+)?/?(.*)')
+    url = request.GET.get('url')
+    p = re.compile(reg)
+    m = p.match(url)
+
+    if m:
+        video_slug = m.group('slug')
+        slug_private = m.group('slug_private')
+        try:
+            id = int(video_slug[:video_slug.find("-")])
+        except ValueError:
+            raise SuspiciousOperation('Invalid video id')
+        video = get_object_or_404(Video, id=id)
+
+        data['title'] = video.title
+        data['author_name'] = video.owner.get_full_name()
+        data['author_url'] = "%s%s?owner=%s" % (
+            data['provider_url'], reverse('videos'), video.owner.username)
+        data['html'] = (
+            "<iframe src=\"%(provider)s%(video_url)s%(slug_private)s"
+            + "?is_iframe=true\" width=\"640\" height=\"360\" style=\""
+            + "padding: 0; margin: 0; border:0\" allowfullscreen ></iframe>"
+        ) % {
+            'provider': data['provider_url'],
+            'video_url': reverse('video', kwargs={'slug': video.slug}),
+            'slug_private': "%s/" % slug_private if slug_private else ""
+        }
+    else:
+        return HttpResponseNotFound('<h1>Url not match</h1>')
+
+    if format == "xml":
+        xml = """
+            <oembed>
+                <html>
+                    %(html)s
+                </html>
+                <title>%(title)s</title>
+                <provider_name>%(provider_name)s</provider_name>
+                <author_url>%(author_url)s</author_url>
+                <height>%(height)s</height>
+                <provider_url>%(provider_url)s</provider_url>
+                <type>video</type>
+                <width>%(width)s</width>
+                <version>1.0</version>
+                <author_name>%(author_name)s</author_name>
+            </oembed>
+        """ % {
+            'html': data['html'].replace('<', '&lt;').replace('>', '&gt;'),
+            'title': data['title'],
+            'provider_name': data['provider_name'],
+            'author_url': data['author_url'],
+            'height': data['height'],
+            'provider_url': data['provider_url'],
+            'width': data['width'],
+            'author_name': data['author_name']
+        }
+        return HttpResponse(xml, content_type='application/xhtml+xml')
+        # return HttpResponseNotFound('<h1>XML not implemented</h1>')
+    else:
+        return JsonResponse(data)

@@ -64,7 +64,7 @@ player.on('firstplay', function(){
       list_overlays.push({
         content: $(this).attr('data-content'),
         align: $(this).attr('data-position'),
-        showBackground: $(this).attr('data-background'),
+        showBackground: ($(this).attr('data-background') === 'true'),
         start: parseInt($(this).attr('data-timestart')),
         end: parseInt($(this).attr('data-timeend'))
       });

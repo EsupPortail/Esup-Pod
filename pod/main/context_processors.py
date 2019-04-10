@@ -1,6 +1,6 @@
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Q
 from django.db.models import Prefetch
 from django.db.models.functions import Substr, Lower
 from datetime import timedelta
@@ -51,9 +51,13 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         'LINK_PLAYER': '',
         'FOOTER_TEXT': ('',),
         'FAVICON': 'img/logoPod.svg',
-        'CSS_OVERRIDE': ''
+        'CSS_OVERRIDE': '',
+        'PRE_HEADER_TEMPLATE': '',
+        'POST_FOOTER_TEMPLATE': '',
     }
 )
+OEMBED = getattr(
+    django_settings, 'OEMBED', False)
 
 
 def context_settings(request):
@@ -66,6 +70,7 @@ def context_settings(request):
             raise ImproperlyConfigured(m)
     new_settings['VERSION'] = VERSION
     new_settings["THIRD_PARTY_APPS"] = django_settings.THIRD_PARTY_APPS
+    new_settings['OEMBED'] = OEMBED
     return new_settings
 
 
@@ -158,10 +163,14 @@ def get_list_owner(owners):
 
 
 def get_last_videos():
-    filter_args = {"encoding_in_progress": False, "is_draft": False}
+
+    filter_args = Video.objects.filter(
+        encoding_in_progress=False, is_draft=False)
+
     if not HOMEPAGE_SHOWS_PASSWORDED:
-        filter_args['password'] = ""
+        filter_args = filter_args.filter(
+            Q(password='') | Q(password__isnull=True))
     if not HOMEPAGE_SHOWS_RESTRICTED:
-        filter_args['is_restricted'] = False
-    return Video.objects.filter(
-        **filter_args).exclude(channel__visible=0)[:12]
+        filter_args = filter_args.filter(is_restricted=False)
+
+    return filter_args.exclude(channel__visible=0)[:12]

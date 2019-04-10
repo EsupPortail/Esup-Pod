@@ -56,7 +56,9 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
         'mp3',
         'ogg',
         'wav',
-        'wma'
+        'wma',
+        'webm',
+        'ts'
     )
 )
 VIDEO_MAX_UPLOAD_SIZE = getattr(
@@ -258,6 +260,7 @@ class VideoForm(forms.ModelForm):
         ', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS)),
     }
     video = forms.FileField(label=_(u'File'))
+    is_admin = False
 
     def move_video_source_file(self, new_path, new_dir, old_dir):
         # create user repository
@@ -361,6 +364,9 @@ class VideoForm(forms.ModelForm):
                 'title_%s' %
                 settings.LANGUAGE_CODE
             ] = cleaned_data['title']
+        if ('restrict_access_to_groups' in cleaned_data.keys()
+                and cleaned_data['restrict_access_to_groups'].count() > 0):
+            cleaned_data['is_restricted'] = True
 
     def __init__(self, *args, **kwargs):
 
@@ -410,7 +416,7 @@ class VideoForm(forms.ModelForm):
         # QuerySet for channels and theme
         self.set_queryset()
 
-        if not self.is_superuser:
+        if self.is_superuser is False and self.is_admin is False:
             self.remove_field('date_added')
             self.remove_field('owner')
 
@@ -498,7 +504,9 @@ class ChannelForm(forms.ModelForm):
             del self.fields['visible']
 
         # change ckeditor config for no staff user
-        if self.is_staff is False or self.is_superuser is False:
+        if not hasattr(self, 'admin_form') and (
+                self.is_staff is False or self.is_superuser is False
+        ):
             del self.fields['headband']
             self.fields['description'].widget = CKEditorWidget(
                 config_name='default')
@@ -619,12 +627,12 @@ class NotesForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(NotesForm, self).__init__(*args, **kwargs)
-        self.fields["user"].widget = forms.HiddenInput()
-        self.fields["video"].widget = forms.HiddenInput()
+        # self.fields["user"].widget = forms.HiddenInput()
+        # self.fields["video"].widget = forms.HiddenInput()
         # self.fields["note"].widget.attrs["cols"] = 20
         self.fields["note"].widget.attrs["class"] = "form-control"
         self.fields["note"].widget.attrs["rows"] = 5
 
     class Meta(object):
         model = Notes
-        fields = '__all__'
+        fields = ["note"]
