@@ -11,8 +11,8 @@ from pod.video.models import Video
 from pod.chapter.models import Chapter
 from pod.chapter.forms import ChapterForm
 from pod.chapter.forms import ChapterImportForm
-from django.template import RequestContext
 from django.middleware.csrf import get_token
+
 import json
 
 ACTION = ['new', 'save', 'modify', 'delete', 'cancel', 'import', 'export']
@@ -163,8 +163,7 @@ def video_chapter_delete(request, video):
             request,
             'video_chapter.html',
             {'video': video,
-             'list_chapter': list_chapter},
-            context_instance=RequestContext(request))
+             'list_chapter': list_chapter})
 
 
 def video_chapter_cancel(request, video):
