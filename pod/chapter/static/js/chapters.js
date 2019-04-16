@@ -91,7 +91,10 @@ var sendandgetform = function(elt, action) {
             if (data.indexOf('list_chapter') == -1) {
                 showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
             } else {
-                location.reload();
+                //location.reload();
+                $(list_chapter).html(JSON.parse(data)['list_chapter']);
+                show_form('');
+                $('form.get_form').show();
             }
         });
         jqxhr.fail(function($xhr) {
@@ -122,7 +125,10 @@ var sendform = function(elt, action) {
                         show_form(data.form);
                         $('form#form_chapter').show();
                     } else {
-                        location.reload();
+                        //location.reload();
+                        $(list_chapter).html(data['list_chapter']);
+                        show_form('');
+                        $('form.get_form').show();
                     }
                 }
             });
@@ -146,7 +152,10 @@ var sendform = function(elt, action) {
             if (data.indexOf('list_chapter') == -1) {
                 showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
             } else {
-                location.reload();
+                //location.reload();
+                $(list_chapter).html(data['list_chapter']);
+                show_form('');
+                $('form.get_form').show();
             }
         });
         jqxhr.fail(function($xhr) {
