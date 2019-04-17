@@ -25,6 +25,11 @@ html,body{
   right: 10px;
   z-index: 9999999;
 } */
+
+.collapse.show{z-index: 9;}
+.navbar > .container{ justify-content: space-around;}
+.fixed-bottom{ position: relative;}
+
 .staticposition{ position: static !important; }
 .text-center{
   text-align: justify !important;
