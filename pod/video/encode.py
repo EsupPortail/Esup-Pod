@@ -1153,10 +1153,12 @@ def send_email_encoding(video_to_encode):
     bcc_email = []
 
     if MANAGERS:
-        if video_to_encode.owner.owner.establishment.lower() == "u123":
+        if video_to_encode.owner.owner.establishment.lower() == "u123":#UGA
             bcc_email.append(MANAGERS[0][1])
-        else:
+        elif video_to_encode.owner.owner.establishment.lower() == "inpg":#INP
             bcc_email.append(MANAGERS[1][1])
+        elif video_to_encode.owner.owner.establishment.lower() == "uds":#SAVOIE
+            bcc_email.append(MANAGERS[2][1])
     msg = EmailMultiAlternatives(subject,
                                  message,
                                  from_email,

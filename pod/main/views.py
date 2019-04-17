@@ -113,10 +113,12 @@ def contact_us(request):
             CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [])
             dest_email = []
             if CONTACT_US_EMAIL:
-                if current_user.owner.establishment.lower() == "u123":
+                if current_user.owner.establishment.lower() == "u123":#UGA
                     dest_email.append(CONTACT_US_EMAIL[0][1])
-                else:
+                elif current_user.owner.establishment.lower() == "inpg":#INP
                     dest_email.append(CONTACT_US_EMAIL[1][1])
+                elif current_user.owner.establishment.lower() == "uds":#Savoie
+                    dest_email.append(CONTACT_US_EMAIL[2][1])
 
             msg = EmailMultiAlternatives(
                 subject, text_content, email, dest_email)
