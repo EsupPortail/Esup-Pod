@@ -9,9 +9,6 @@ from .forms import BuildingForm
 
 
 class BuildingAdmin(admin.ModelAdmin):
-    change_form_template = 'progressbarupload/change_form.html'
-    add_form_template = 'progressbarupload/change_form.html'
-
     form = BuildingForm
     list_display = ('name', 'gmapurl')
 
