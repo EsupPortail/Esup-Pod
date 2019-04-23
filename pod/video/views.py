@@ -611,20 +611,6 @@ def video_notes(request, slug):
     )
 
 
-# @csrf_protect
-# def video_count(request, id):
-#     video = get_object_or_404(Video, id=id)
-#     if request.method == "POST":
-#         try:
-#             viewCount = ViewCount.objects.get(video=video, date=date.today())
-#             viewCount.count = F('count')+1
-#             viewCount.save(update_fields=['count'])
-#         except ViewCount.DoesNotExist:
-#             ViewCount.objects.create(video=video, count=1)
-#         return HttpResponse("ok")
-#     messages.add_message(
-#         request, messages.ERROR, _(u'You cannot access to this view.'))
-#     raise PermissionDenied
 @csrf_protect
 def video_count(request, id):
     video = get_object_or_404(Video, id=id)
