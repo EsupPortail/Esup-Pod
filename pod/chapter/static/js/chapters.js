@@ -21,6 +21,7 @@ var ajaxfail = function(data) {
 $(document).on('click', '#cancel_chapter', function() {
     $('form.get_form').show();
     show_form('');
+    $('#fileModal_id_file').remove();
 });
 
 $(document).on('submit', 'form.get_form', function(e) {
