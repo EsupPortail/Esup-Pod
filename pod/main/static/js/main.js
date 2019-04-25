@@ -21,13 +21,14 @@ Number.prototype.toHHMMSS = function() {
 function writeInFrame() {
     // Iframe
     var str = $('#txtintegration').val();
+    console.log(str);
     // Autoplay
     if ($('#autoplay').is(':checked')) {
-            if(str.indexOf('autoplay=true') < 0){
-                str = str.replace('is_iframe=true', 'is_iframe=true&autoplay=true');
+            if(str.indexOf('autoplay=true&muted=true') < 0){
+                str = str.replace('is_iframe=true', 'is_iframe=true&autoplay=true&muted=true');
             }
-    } else if (str.indexOf('autoplay=true') > 0) {
-        str = str.replace('&autoplay=true', '');
+    } else if (str.indexOf('autoplay=true&muted=true') > 0) {
+        str = str.replace('&autoplay=true&muted=true', '');
     }
     // Loop
     if ($('#loop').is(':checked')) {
@@ -43,14 +44,14 @@ function writeInFrame() {
     var link = $('#txtpartage').val();
     // Autoplay
     if ($('#autoplay').is(':checked')) {
-        if(link.indexOf('autoplay=true') < 0){
-                if(link.indexOf('?') < 0) link = link+"?autoplay=true";
-                else if (link.indexOf('loop=true') > 0 || link.indexOf('start=') > 0) link = link+"&autoplay=true";
-                else link = link+"autoplay=true";
+        if(link.indexOf('autoplay=true&muted=true') < 0){
+                if(link.indexOf('?') < 0) link = link+"?autoplay=true&muted=true";
+                else if (link.indexOf('loop=true') > 0 || link.indexOf('start=') > 0) link = link+"&autoplay=true&muted=true";
+                else link = link+"autoplay=true&muted=true";
             }
 
-    } else if (link.indexOf('autoplay=true') > 0) {
-       link = link.replace('&autoplay=true', '').replace('autoplay=true&', '').replace('?autoplay=true', '?');
+    } else if (link.indexOf('autoplay=true&muted=true') > 0) {
+       link = link.replace('&autoplay=true&muted=true', '').replace('autoplay=true&muted=true&', '').replace('?autoplay=true&muted=true', '?');
     }
     // Loop
     if ($('#loop').is(':checked')) {
