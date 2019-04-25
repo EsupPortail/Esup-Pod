@@ -160,7 +160,7 @@ var sendform = function(elt, action) {
                 //location.reload();
                 data = JSON.parse(data);
                 updateDom(data);
-                manageSave();
+                manageImport();
                 $(list_chapter).html(data['list_chapter']);
                 show_form('');
                 $('form.get_form').show();
@@ -275,5 +275,26 @@ var manageDelete = function() {
     else {
         player.controlBar.chapters.dispose();
         player.videoJsChapters().dispose();
+    }
+}
+
+var manageImport = function() {
+    let player = window.videojs.players.podvideoplayer;
+    let n = document.querySelector('div.chapters-list');
+    if(n != null) {
+        if(player.usingPlugin('videoJsChapters')) {
+            player.main();
+        }
+        else {
+            player.videoJsChapters();
+        }
+    }
+    else {
+        if(typeof(player.controlBar.chapters) != 'undefined') {
+            player.controlBar.chapters.dispose();
+        }
+        if(player.usingPlugin('videoJsChapters')) {
+            player.videoJsChapters().dispose();
+        }
     }
 }

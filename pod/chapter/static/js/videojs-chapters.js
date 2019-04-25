@@ -130,6 +130,7 @@
 							menuButton.el_, player.controlBar.getChild('fullscreenToggle').el_);
 						player.controlBar.chapters.dispose = function(){
 							this.parentNode.removeChild(this);
+							player.controlBar.chapters = undefined;
 						};
 					}
 					if (data.length >= 1) {
