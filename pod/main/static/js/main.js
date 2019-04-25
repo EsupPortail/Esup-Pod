@@ -21,7 +21,6 @@ Number.prototype.toHHMMSS = function() {
 function writeInFrame() {
     // Iframe
     var str = $('#txtintegration').val();
-    console.log(str);
     // Autoplay
     if ($('#autoplay').is(':checked')) {
             if(str.indexOf('autoplay=true&muted=true') < 0){
