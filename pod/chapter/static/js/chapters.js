@@ -91,8 +91,11 @@ var sendandgetform = function(elt, action) {
             if (data.indexOf('list_chapter') == -1) {
                 showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
             } else {
+                data = JSON.parse(data);
                 //location.reload();
-                $(list_chapter).html(JSON.parse(data)['list_chapter']);
+                updateDom(data);
+                manageDelete();
+                $(list_chapter).html(data['list_chapter']);
                 show_form('');
                 $('form.get_form').show();
             }
@@ -126,6 +129,8 @@ var sendform = function(elt, action) {
                         $('form#form_chapter').show();
                     } else {
                         //location.reload();
+                        updateDom(data);
+                        manageSave();
                         $(list_chapter).html(data['list_chapter']);
                         show_form('');
                         $('form.get_form').show();
@@ -153,6 +158,9 @@ var sendform = function(elt, action) {
                 showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
             } else {
                 //location.reload();
+                data = JSON.parse(data);
+                updateDom(data);
+                manageSave();
                 $(list_chapter).html(data['list_chapter']);
                 show_form('');
                 $('form.get_form').show();
@@ -225,3 +233,47 @@ $(document).on('click','#info_video span.getfromvideo a',function(e) {
         }
     }
 });
+
+
+
+var updateDom = function(data) {
+    let player = window.videojs.players.podvideoplayer;
+    let n1 = document.querySelector('ul#chapters');
+    let n2 = document.querySelector('div.chapters-list');
+    let tmp_node = document.createElement('div');
+    $(tmp_node).html(data['video-elem']);
+    let chaplist  = tmp_node.querySelector('div.chapters-list');
+    if (n1 != null) {
+        n1.parentNode.removeChild(n1);
+    }
+    if (n2 != null) {
+        n2.parentNode.removeChild(n2);
+    }
+    if (chaplist != null && n2 != null) {
+        chaplist.className = n2.className;
+    }
+    $("#" + window.videojs.players.podvideoplayer.id_).append(chaplist);
+    $("#" + window.videojs.players.podvideoplayer.id_).append(tmp_node.querySelector('ul#chapters'));
+}
+
+var manageSave = function() {
+    let player = window.videojs.players.podvideoplayer;
+    if(player.usingPlugin('videoJsChapters')) {
+        player.main();
+    }
+    else {
+        player.videoJsChapters();
+    }
+}
+
+var manageDelete = function() {
+    let player = window.videojs.players.podvideoplayer;
+    let n = document.querySelector('div.chapters-list');
+    if(n != null) {
+        player.main();
+    }
+    else {
+        player.controlBar.chapters.dispose();
+        player.videoJsChapters().dispose();
+    }
+}

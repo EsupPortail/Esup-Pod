@@ -86,6 +86,10 @@ def video_chapter_save(request, video):
                     {'list_chapter': list_chapter,
                      'video': video,
                      "csrf_token_value": csrf_token_value},
+                    request=request),
+                'video-elem': render_to_string(
+                    'videos/video-element.html',
+                    {'video': video},
                     request=request)
             }
             data = json.dumps(some_data_to_dump)
@@ -154,6 +158,10 @@ def video_chapter_delete(request, video):
                 {'list_chapter': list_chapter,
                  'video': video,
                  "csrf_token_value": csrf_token_value},
+                request=request),
+            'video-elem': render_to_string(
+                'videos/video-element.html',
+                {'video': video},
                 request=request)
         }
         data = json.dumps(some_data_to_dump)
@@ -185,11 +193,18 @@ def video_chapter_import(request, video):
     if form_import.is_valid():
         list_chapter = video.chapter_set.all()
         if request.is_ajax():
+            csrf_token_value = get_token(request)
             some_data_to_dump = {
                 'list_chapter': render_to_string(
                     'chapter/list_chapter.html',
                     {'list_chapter': list_chapter,
-                     'video': video}),
+                     'video': video,
+                     "csrf_token_value": csrf_token_value},
+                    request=request),
+                'video-elem': render_to_string(
+                    'videos/video-element.html',
+                    {'video': video},
+                    request=request)
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
