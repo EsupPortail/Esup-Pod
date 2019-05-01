@@ -19,7 +19,7 @@ class BuildingAdminForm(forms.ModelForm):
             self.fields['headband'].widget = CustomFileWidget(type="image")
 
     def clean(self):
-        super(BuildingForm, self).clean()
+        super(BuildingAdminForm, self).clean()
 
     class Meta(object):
         model = Building
@@ -35,7 +35,7 @@ class BroadcasterAdminForm(forms.ModelForm):
             self.fields['poster'].widget = CustomFileWidget(type="image")
 
     def clean(self):
-        super(BuildingForm, self).clean()
+        super(BroadcasterAdminForm, self).clean()
 
     class Meta(object):
         model = Broadcaster
