@@ -76,7 +76,6 @@ class EnrichmentForm(forms.ModelForm):
         fields = '__all__'
 
 
-
 class EnrichmentVttAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
