@@ -4,7 +4,7 @@ from django.forms.widgets import HiddenInput
 from django.contrib.admin import widgets
 from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
-from .models import Enrichment, EnrichmentGroup
+from .models import Enrichment, EnrichmentGroup, EnrichmentVtt
 from django.contrib.auth.models import Group
 
 FILEPICKER = False
@@ -73,4 +73,17 @@ class EnrichmentForm(forms.ModelForm):
 
     class Meta(object):
         model = Enrichment
+        fields = '__all__'
+
+
+
+class EnrichmentVttAdminForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(EnrichmentVttAdminForm, self).__init__(*args, **kwargs)
+        if FILEPICKER:
+            self.fields['src'].widget = CustomFileWidget(type="file")
+
+    class Meta(object):
+        model = EnrichmentVtt
         fields = '__all__'
