@@ -34,6 +34,8 @@ $(document).on('reset', '#accordeon form.completion', function(event) {
 	$('form').show();
 	$('a.title').css('display', 'initial');
 	$('table tr').removeClass('info');
+	$('#fileModal_id_document').remove();
+	$('#fileModal_id_src').remove();
 });
 
 function show_form(data, form) {

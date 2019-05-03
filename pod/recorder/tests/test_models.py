@@ -4,11 +4,12 @@ from django.test import TestCase
 from django.test import override_settings
 from django.conf import settings
 from django.contrib.auth.models import User
-
-from ..models import Recording  # , RecordingFile
+from django.core.exceptions import ValidationError
+from ..models import Recording, RecordingFile
 
 
 # Create your tests here.
+
 @override_settings(
     MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
     DATABASES={
@@ -30,7 +31,7 @@ class RecordingTestCase(TestCase):
         recording.type = type
         recording.source_file = source_file
         recording.save()
-        print(" --->  SetUp of MediaCoursesTestCase : OK !")
+        print(" --->  SetUp of RecordingTestCase : OK !")
 
     """
         test attributs
@@ -44,6 +45,36 @@ class RecordingTestCase(TestCase):
         print(
             "   --->  test_attributs of RecordingTestCase : OK !")
 
+    # Testing the two if cases of verify_attibuts method
+    def test_verifying_attributs_fst_cases(self):
+        recording = Recording.objects.get(id=1)
+        recording.type = ""
+        recording.source_file = ""
+        recording.save()
+        self.assertEqual(2, len(recording.verify_attributs()))
+        print(
+            "   --->  test_verifying_attributs_fst_cases \
+            of RecordingTestCase : OK !")
+
+    # Testing the two elif cases of verify_attibuts method
+    def test_verifying_attributs_snd_cases(self):
+        recording = Recording.objects.get(id=1)
+        recording.type = "something"
+        recording.source_file = "/home/pod/files/somefile.mp4"
+        recording.save()
+        self.assertEqual(2, len(recording.verify_attributs()))
+        print(
+            "   --->  test_verifying_attributs_snd_cases \
+            of RecordingTestCase : OK !")
+
+    def test_clean_raise_exception(self):
+        recording = Recording.objects.get(id=1)
+        recording.type = "something"
+        recording.save()
+        self.assertRaises(ValidationError, recording.clean)
+        print(
+            "   --->  test_clean_raise_exception of RecordingTestCase : OK !")
+
     """
         test delete object
     """
@@ -54,3 +85,48 @@ class RecordingTestCase(TestCase):
 
         print(
             "   --->  test_delete_object of RecordingTestCase : OK !")
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    },
+    LANGUAGE_CODE='en'
+)
+class RecordingFileTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        type = "video"
+        recording_file = RecordingFile.objects.create()
+        recording_file.type = type
+        recording_file.file = "/home/pod/files/somefile.mp4"
+        recording_file.save()
+        print(" --->  SetUp of RecordingFileTestCase : OK !")
+
+    """
+        test attributs
+    """
+
+    def test_attributs(self):
+        recording_file = RecordingFile.objects.get(id=1)
+        self.assertEqual(recording_file.type, "video")
+        self.assertEqual(recording_file.file, "/home/pod/files/somefile.mp4")
+        print(
+            "   --->  test_attributs of RecordingFileTestCase : OK !")
+
+    """
+        test delete object
+    """
+
+    def test_delete_object(self):
+        filepath = "/home/pod/files/somefile.mp4"
+        RecordingFile.objects.filter(file=filepath).delete()
+        self.assertEquals(RecordingFile.objects.all().count(), 0)
+
+        print(
+            "   --->  test_delete_object of RecordingFileTestCase : OK !")

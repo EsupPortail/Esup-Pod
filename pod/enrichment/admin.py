@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 from .models import Enrichment, EnrichmentGroup, EnrichmentVtt
-from .forms import EnrichmentAdminForm
+from .forms import EnrichmentAdminForm, EnrichmentVttAdminForm
 FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
@@ -48,11 +48,25 @@ class EnrichmentGroupAdmin(admin.ModelAdmin):
 
 
 class EnrichmentVttAdmin(admin.ModelAdmin):
+
+    form = EnrichmentVttAdminForm
     list_display = ('video', 'src', 'get_file_name')
     readonly_fields = ('video', )
 
     def get_file_name(self, obj):
         return obj.src.file.name
+
+    class Media:
+        css = {
+            "all": (
+                'css/podfile.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+            )
+        }
+        js = (
+            'js/filewidget.js',
+            'feather-icons/feather.min.js',
+            'bootstrap-4/js/bootstrap.min.js')
 
 
 admin.site.register(EnrichmentGroup, EnrichmentGroupAdmin)

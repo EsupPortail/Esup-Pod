@@ -220,7 +220,8 @@ $(document).on("click", ".get_form_userpicture", function() {
 	send_form_data($(this).data('url'), {}, "append_picture_form", "get");
 });
 $(document).on('hidden.bs.modal', '#userpictureModal', function (e) {
-  $('#userpictureModal').remove();
+    $('#userpictureModal').remove();
+    $('#fileModal_id_userpicture').remove();
 });
 $(document).on("submit", "#userpicture_form", function (e) {
     e.preventDefault();
