@@ -396,9 +396,6 @@ class VideoForm(forms.ModelForm):
                 'class'] = self.videoattrs["class"]
             self.fields['video'].widget.attrs[
                 'accept'] = self.videoattrs["accept"]
-            # remove required=True for videofield if instance
-            if self.instance.video:
-                del self.fields["video"].widget.attrs["required"]
 
         if self.instance.encoding_in_progress:
             self.remove_field('owner')
@@ -418,6 +415,10 @@ class VideoForm(forms.ModelForm):
             self.remove_field('owner')
 
         self.fields = add_placeholder_and_asterisk(self.fields)
+
+        # remove required=True for videofield if instance
+        if self.fields.get('video') and self.instance and self.instance.video:
+            del self.fields["video"].widget.attrs["required"]
 
     def set_ckeditor_config(self):
         if self.is_staff is False:
