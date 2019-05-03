@@ -38,7 +38,7 @@ from pod.chapter.admin import ChapterInline
 User._meta.ordering = ["username"]
 # SET USE_ESTABLISHMENT_FIELD
 USE_ESTABLISHMENT_FIELD = getattr(
-        settings, 'USE_ESTABLISHMENT_FIELD', False)
+    settings, 'USE_ESTABLISHMENT_FIELD', False)
 
 
 def url_to_edit_object(obj):
@@ -99,6 +99,7 @@ class VideoAdmin(admin.ModelAdmin):
         owner = obj.owner
         return owner.owner.establishment
     get_owner_establishment.short_description = _('Establishment')
+
     # Ajout de l'attribut 'establishment'
     if USE_ESTABLISHMENT_FIELD:
         list_filter = list_filter + ("owner__owner__establishment",)
@@ -118,6 +119,10 @@ class VideoAdmin(admin.ModelAdmin):
             kwargs['form'] = VideoSuperAdminForm
         else:
             kwargs['form'] = VideoAdminForm
+        exclude = ()
+        if obj and obj.encoding_in_progress:
+            exclude += ('video', 'owner',)
+        self.exclude = exclude
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form
 
