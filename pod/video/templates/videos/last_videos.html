@@ -5,7 +5,7 @@
 <!-- liste vignette vidéo 4 par ligne -->
 
 {% include "videos/video_list.html" with videos=LAST_VIDEOS %}
-{% authenticated_request as rgpd_display %}
+{% authenticated_require as rgpd_display %}
 {% if rgpd_display %}
 <div class="hightlight">
      <div class="d-flex justify-content-end">
