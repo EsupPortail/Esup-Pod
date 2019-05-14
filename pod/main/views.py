@@ -80,10 +80,6 @@ def contact_us(request):
     if request.method == "POST":
         form = ContactUsForm(request, request.POST)
         if form.is_valid():
-
-            # get current user
-            current_user = User.objects.get(email=form.cleaned_data['email'])
-
             name = form.cleaned_data['name']
             form_subject = form.cleaned_data['subject'] if (
                 form.cleaned_data.get('subject')
@@ -108,17 +104,20 @@ def contact_us(request):
                 'message': message.replace("\n", "<br/>"),
                 'url_referrer': form.cleaned_data['url_referrer']
             })
-            #dest_email = [owner.email] if owner else CONTACT_US_EMAIL
-
-            CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [])
             dest_email = []
-            if CONTACT_US_EMAIL:
-                if current_user.owner.establishment.lower() == "u123":#UGA
-                    dest_email.append(CONTACT_US_EMAIL[0][1])
-                elif current_user.owner.establishment.lower() == "inpg":#INP
-                    dest_email.append(CONTACT_US_EMAIL[1][1])
-                elif current_user.owner.establishment.lower() == "uds":#Savoie
-                    dest_email.append(CONTACT_US_EMAIL[2][1])
+            CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [])
+            CONTACT_ESTABLISHMENT_MANAGER = getattr(settings,
+                                'CONTACT_ESTABLISHMENT_MANAGER', False)
+            USE_ESTABLISHMENT_FIELD = getattr(settings,
+                                'USE_ESTABLISHMENT_FIELD', False)
+            if CONTACT_ESTABLISHMENT_MANAGER and USE_ESTABLISHMENT_FIELD :
+                if CONTACT_US_EMAIL:
+                    for key, value in CONTACT_US_EMAIL:
+                        if video.owner.owner.establishment.lower() == key :
+                            dest_email.append(value)
+                            break
+            else:
+                dest_email = [owner.email] if owner else CONTACT_US_EMAIL
 
             msg = EmailMultiAlternatives(
                 subject, text_content, email, dest_email)
