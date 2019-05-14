@@ -23,9 +23,13 @@ html,body{
   position: fixed;
   bottom: 10%;
   right: 10px;
-  z-index: 9999999;
+ dropdown-item playlist-item z-index: 9999999;
 } */
-
+.nav-item.dropdown.show .dropdown-menu.show{ background: #102636;}
+.dropdown-menu{border: 1px solid rgba(0,0,0,.4);}
+.dropdown-item.playlist-item:not(:last-child){border-bottom: 1px solid #50a5a6 !important;}
+.dropdown-item.playlist-item{cursor: pointer; background: transparent;transition: color .3s; line-height:2; }
+.dropdown-item.playlist-item:hover{color: #4d8197 !important;}
 .collapse.show{z-index: 9;}
 .navbar > .container{ justify-content: space-around;}
 .fixed-bottom{ position: relative;}
@@ -45,10 +49,10 @@ html,body{
   align-items: center !important;
   display: flex !important;
 }
-a{ color: inherit !important; }
+a{ color: #4d8197 !important; }
 a:hover{ color: #4d8197 !important; text-decoration: none; }
 .carousel-caption .title{ color: #fff !important; }
-.navbar{ background-color: #102636 !important; color: #fff; }
+.navbar{ background-color: #102636 !important; color: #fff; min-height: 35px; }
 .navbar-items-pod{ background-color: inherit !important; padding: 0 !important; margin-top: .5em;}
 .navbar-light .navbar-brand{ margin-right: 30px !important; }
 .navbar-brand.mr-0.mr-sm-1 img{ height: auto; width: 250px; }
@@ -76,7 +80,7 @@ a:hover{ color: #4d8197 !important; text-decoration: none; }
 .btn-primary:hover{ background: #4d8197 !important; color: #fff !important; }
 .btn.btn-info, .btn.btn-info:hover{ color: #fff !important; }
 
-.btn-success { color: #fff !important; background-color: #008b10; border: none !important; }
+.btn-success { color: #fff !important; background-color: #008b10; border: none !important; order: -1; }
 .btn-success:hover { color: #fff !important; background-color: #28a745; border: none !important; }
 .btn-custom.logo{
       display: inline-block;
@@ -210,10 +214,6 @@ main.mt-3 .nav-tabs .nav-link{
 }
 main.mt-3 .nav-tabs .nav-link:hover, main.mt-3 .nav-tabs .nav-link.active{
   border:none !important;
-}
-
-main.mt-3 .navbar{
-  overflow: hidden;
 }
 
 /*  CONTENT SIDEBARD */
