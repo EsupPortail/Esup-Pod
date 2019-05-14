@@ -1149,35 +1149,36 @@ def send_email_encoding(video_to_encode):
         content_url,
         _("Regards")
     )
-    MANAGERS = getattr(settings, 'MANAGERS', [])
-    bcc_email = []
-
-    if MANAGERS:
-        if video_to_encode.owner.owner.establishment.lower() == "u123":#UGA
-            bcc_email.append(MANAGERS[0][1])
-        elif video_to_encode.owner.owner.establishment.lower() == "inpg":#INP
-            bcc_email.append(MANAGERS[1][1])
-        elif video_to_encode.owner.owner.establishment.lower() == "uds":#SAVOIE
-            bcc_email.append(MANAGERS[2][1])
-    msg = EmailMultiAlternatives(subject,
-                                 message,
-                                 from_email,
-                                 to_email,
-                                 bcc=bcc_email
-                                )
-    msg.attach_alternative(html_message, "text/html")
-    msg.send()
-
-    # if not DEBUG:
-    #     send_mail(
-    #         subject,
-    #         message,
-    #         from_email,
-    #         to_email,
-    #         fail_silently=False,
-    #         html_message=html_message,
-    #     )
-    if DEBUG :
+    USE_ESTABLISHMENT_FIELD = getattr(settings,
+            'USE_ESTABLISHMENT_FIELD', False)
+    if USE_ESTABLISHMENT_FIELD:
+        MANAGERS = getattr(settings, 'MANAGERS', {})
+        bcc_email = []
+        if MANAGERS:
+            for name, target_email in MANAGERS:
+                if video_to_encode.owner.owner.establishment.lower() == name :
+                    bcc_email.append(target_email)
+                    break
+            msg = EmailMultiAlternatives(subject,
+                  message,
+                  from_email,
+                  to_email,
+                  bcc=bcc_email
+              )
+            msg.attach_alternative(html_message, "text/html")
+            msg.send()
+    else:
         mail_managers(
             subject, message, fail_silently=False,
             html_message=html_message)
+
+
+        if not DEBUG:
+            send_mail(
+                subject,
+                message,
+                from_email,
+                to_email,
+                fail_silently=False,
+                html_message=html_message,
+            )
