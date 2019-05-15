@@ -105,17 +105,31 @@ def contact_us(request):
                 'url_referrer': form.cleaned_data['url_referrer']
             })
             dest_email = []
+            keys_list = list( dict(d).keys() )
+            value_list = list(dict(d).values())
+            current_key_subject =keys_list[value_list.index(form_subject)]
+
             CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [])
             CONTACT_ESTABLISHMENT_MANAGER = getattr(settings,
                                 'CONTACT_ESTABLISHMENT_MANAGER', False)
             USE_ESTABLISHMENT_FIELD = getattr(settings,
                                 'USE_ESTABLISHMENT_FIELD', False)
-            if CONTACT_ESTABLISHMENT_MANAGER and USE_ESTABLISHMENT_FIELD :
-                if CONTACT_US_EMAIL:
-                    for key, value in CONTACT_US_EMAIL:
-                        if video.owner.owner.establishment.lower() == key :
-                            dest_email.append(value)
-                            break
+            USER_CONTACT_EMAIL_CASE = getattr(settings,
+                                'USER_CONTACT_EMAIL_CASE', [])
+            CUSTOM_CONTACT_US = getattr(settings,
+                                'CUSTOM_CONTACT_US', False)
+            if CUSTOM_CONTACT_US :
+                if  current_key_subject in USER_CONTACT_EMAIL_CASE:
+                    dest_email.append(video.owner.email)
+                else:
+                    if CONTACT_ESTABLISHMENT_MANAGER and USE_ESTABLISHMENT_FIELD :
+                        if CONTACT_US_EMAIL:
+                            for key, value in CONTACT_US_EMAIL:
+                                if video.owner.owner.establishment.lower() == key :
+                                    dest_email.append(value)
+                                    break
+                    else:
+                        dest_email = CONTACT_US_EMAIL
             else:
                 dest_email = [owner.email] if owner else CONTACT_US_EMAIL
 
