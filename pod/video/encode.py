@@ -1152,7 +1152,7 @@ def send_email_encoding(video_to_encode):
     USE_ESTABLISHMENT_FIELD = getattr(settings,
             'USE_ESTABLISHMENT_FIELD', False)
     if USE_ESTABLISHMENT_FIELD:
-        MANAGERS = getattr(settings, 'MANAGERS', {})
+        MANAGERS = getattr(settings, 'MANAGERS', [])
         bcc_email = []
         if MANAGERS:
             for name, target_email in MANAGERS:
