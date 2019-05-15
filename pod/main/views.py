@@ -24,7 +24,7 @@ CONTACT_US_EMAIL = getattr(
     settings, 'CONTACT_US_EMAIL', [
         mail for name, mail in getattr(settings, 'MANAGERS')])
 DEFAULT_FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@univ.fr')
-
+MANAGERS = getattr(settings, "MANAGERS", [])
 
 @csrf_protect
 def download_file(request):
@@ -105,13 +105,7 @@ def contact_us(request):
                 'url_referrer': form.cleaned_data['url_referrer']
             })
             dest_email = []
-            keys_list = list( dict(d).keys() )
-            value_list = list(dict(d).values())
-            current_key_subject =keys_list[value_list.index(form_subject)]
 
-            CONTACT_US_EMAIL = getattr(settings, 'CONTACT_US_EMAIL', [])
-            CONTACT_ESTABLISHMENT_MANAGER = getattr(settings,
-                                'CONTACT_ESTABLISHMENT_MANAGER', False)
             USE_ESTABLISHMENT_FIELD = getattr(settings,
                                 'USE_ESTABLISHMENT_FIELD', False)
             USER_CONTACT_EMAIL_CASE = getattr(settings,
@@ -119,12 +113,12 @@ def contact_us(request):
             CUSTOM_CONTACT_US = getattr(settings,
                                 'CUSTOM_CONTACT_US', False)
             if CUSTOM_CONTACT_US :
-                if  current_key_subject in USER_CONTACT_EMAIL_CASE:
+                if  form_subject in USER_CONTACT_EMAIL_CASE:
                     dest_email.append(video.owner.email)
                 else:
-                    if CONTACT_ESTABLISHMENT_MANAGER and USE_ESTABLISHMENT_FIELD :
-                        if CONTACT_US_EMAIL:
-                            for key, value in CONTACT_US_EMAIL:
+                    if USE_ESTABLISHMENT_FIELD :
+                        if MANAGERS:
+                            for key, value in MANAGERS:
                                 if video.owner.owner.establishment.lower() == key :
                                     dest_email.append(value)
                                     break

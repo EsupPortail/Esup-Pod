@@ -39,9 +39,9 @@ class Command(BaseCommand):
                                 )
                         )
                 else:
-                    if video.year_elapsed() >= settings.STUDDENT_VIDEO_LIMIT_YEAR:
+                    if video.year_elapsed() >= settings.STUDENT_VIDEO_LIMIT_YEAR:
                         # send an email to the user concerned
-                        self.sendEmail(video, settings.STUDDENT_VIDEO_LIMIT_YEAR)
+                        self.sendEmail(video, settings.STUDENT_VIDEO_LIMIT_YEAR)
                         # write to excel file
                         ws.write(line, 0, video.id)
                         ws.write(line, 1, video.owner.__str__())
@@ -79,14 +79,14 @@ class Command(BaseCommand):
             _("Hello"),
             _(u"You will find attached the list of videos whose "
                 +"duration of hiring on pod is equal or exceeds "
-                +str(settings.STUDDENT_VIDEO_LIMIT_YEAR)+" years"),
+                +str(settings.STUDENT_VIDEO_LIMIT_YEAR)+" years"),
             _("Regards")
         )
         html_message = '<p>%s</p><p>%s</p><p>%s</p>' % (
             _("Hello"),
             _(u"You will find attached the list of videos whose "
             +"duration of hiring on pod is equal or exceeds "
-            +str(settings.STUDDENT_VIDEO_LIMIT_YEAR)+" years"),
+            +str(settings.STUDENT_VIDEO_LIMIT_YEAR)+" years"),
             _("Regards")
         )
         MANAGERS = getattr(settings, 'MANAGERS', [])
