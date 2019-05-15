@@ -1,6 +1,6 @@
 import os
 from django.core.management.base import BaseCommand, CommandError
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext as _
 from pod.video.models import Video
 from django.conf import settings
 from django.core.mail import send_mail
@@ -8,11 +8,11 @@ from django.core.mail import mail_managers
 from django.core.mail import EmailMultiAlternatives
 import json, xlwt
 from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
-TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
-DEFAULT_FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@univ.fr')
-SAVE_SRC = os.path.dirname(os.path.abspath(__file__))+'/outdated-videos-list.xls'
+TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, "TITLE_SITE", "Pod")
+DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
+SAVE_SRC = os.getcwd()+"/outdated-videos-list.xls"
 class Command(BaseCommand):
-    help = 'Listing outdated videos and Sending an email to warn the owner'
+    help = _("Listing outdated videos and Sending an email to warn the owner")
     def handle(self, *args, **options):
         wb = xlwt.Workbook()
         ws = wb.add_sheet("Videos outdated")
@@ -62,7 +62,7 @@ class Command(BaseCommand):
             raise CommandError('Video "%s" does not exist' % video)
 
     def sendEmail(self, video, year, is_staff=False):
-        
+
         file_exist = os.path.isfile(SAVE_SRC)
         if file_exist and is_staff:
             self.send_manager_email();
@@ -93,7 +93,7 @@ class Command(BaseCommand):
         bcc_email = []
         if MANAGERS:
             for name, target_email in MANAGERS:
-                bcc_email.append(target_email)        
+                bcc_email.append(target_email)
         msg = EmailMultiAlternatives(subject,
                 message,
                 DEFAULT_FROM_EMAIL,
@@ -102,7 +102,7 @@ class Command(BaseCommand):
         msg.attach_alternative(html_message, "text/html")
         msg.attach_file(SAVE_SRC)
         msg.send()
-    
+
     def send_user_email(self, video, year):
         content_url = "http:%s" % video.get_full_url()
         subject = "[%s] %s" % (
