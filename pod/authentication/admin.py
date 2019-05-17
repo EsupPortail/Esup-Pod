@@ -59,12 +59,14 @@ class UserAdmin(BaseUserAdmin):
         'is_active',
         'is_staff',
         'is_superuser',
+        'establishment',
         'owner_hashkey'
     )
 
     def owner_hashkey(self, obj):
         return "%s" % Owner.objects.get(user=obj).hashkey
-
+    def establishment(self, obj):
+        return "%s" % Owner.objects.get(user=obj).establishment
     ordering = ('-is_superuser', 'username', )
     inlines = (OwnerInline, )
 
