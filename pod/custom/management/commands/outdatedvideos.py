@@ -1,4 +1,5 @@
 import os
+from django.utils import translation
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import gettext as _
 from pod.video.models import Video
@@ -10,61 +11,66 @@ import json, xlwt
 from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, "TITLE_SITE", "Pod")
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
-SAVE_SRC = os.getcwd()+"/outdated-videos-list.xls"
+file_name = "outdated-videos-list.xls"
+SAVE_SRC = os.getcwd()+file_name
 class Command(BaseCommand):
     help = _("Listing outdated videos and Sending an email to warn the owner")
+    wb = xlwt.Workbook()
+    ws = wb.add_sheet(_("Videos outdated") )
     def handle(self, *args, **options):
-        wb = xlwt.Workbook()
-        ws = wb.add_sheet("Videos outdated")
+        translation.activate(os.getenv('LANG'))
         style = xlwt.easyxf("font: bold 1; pattern: pattern solid,"
         +" fore-colour light_orange")
-        ws.write(0,0, "Utilisateur", style)
-        ws.write(0,1, "Video", style)
-        ws.write(0,2, "Etablissement", style)
-        line = 1;
+        self.ws.write(0,0, _("User"), style)
+        self.ws.write(0,1, _("Video"), style)
+        self.ws.write(0,2, _("Establishment"), style)
+        self.line = 1;
         try:
             for video in Video.objects.all():
                 if "p" in video.owner.owner.affiliation.lower():
                     if video.year_elapsed() >= settings.STAFF_VIDEO_LIMIT_YEAR:
                         # send an email to the staff concerned
                         self.sendEmail(video, settings.STAFF_VIDEO_LIMIT_YEAR)
-                        # write to excel file
-                        ws.write(line, 0, video.owner.__str__())
-                        ws.write(line, 1, video.title)
-                        ws.write(line, 2, video.owner.owner.establishment)
-                        line += 1
-                        self.stdout.write(
-                            self.style.SUCCESS(
-                                'Successfully writed video [%s].' % video.id
-                                )
-                        )
+                        # write to excel file                       
+                        self.write(video)
                 else:
                     if video.year_elapsed() >= settings.STUDENT_VIDEO_LIMIT_YEAR:
                         # send an email to the user concerned
                         self.sendEmail(video, settings.STUDENT_VIDEO_LIMIT_YEAR)
                         # write to excel file
-                        ws.write(line, 0, video.id)
-                        ws.write(line, 1, video.owner.__str__())
-                        ws.write(line, 2, video.title)
-                        line += 1
-                        self.stdout.write(
-                            self.style.SUCCESS(
-                                'Successfully writed video [%s].' % video.id
-                                )
-                        )
-            wb.save(SAVE_SRC)
-            self.sendEmail(None, None, is_staff=True)
+                        self.write(video) 
+                          
+            self.wb.save(SAVE_SRC)
+            self.sendEmail(None, None, to_managers=True)
             os.remove(SAVE_SRC)
         except Video.DoesNotExist:
             self.stderr.write(
-                self.style.ERROR('Successfully writed [%s].' % video.id)
+                self.style.ERROR(
+                    _('Error when writing video %(id)s in the file "%(file)s".') %
+                    {'id':video.id, 'file': file_name}
+                )
             )
-            raise CommandError('Video "%s" does not exist' % video)
+            raise CommandError(_('Video "%(video_title)s" does not exist') %
+                    {'video_title' :video.title}
+            )
 
-    def sendEmail(self, video, year, is_staff=False):
+    def write(self, video):
+        self.ws.write(self.line, 0, video.owner.__str__())
+        self.ws.write(self.line, 1, video.title)
+        self.ws.write(self.line, 2, video.owner.owner.establishment)
+	# log
+        self.stdout.write(
+                self.style.SUCCESS(
+                    ('Successfully writed video %(id)s.') %
+                    {'id':video.id}
+                )
+        )
+        self.line += 1
+
+    def sendEmail(self, video, year, to_managers=False):
 
         file_exist = os.path.isfile(SAVE_SRC)
-        if file_exist and is_staff:
+        if file_exist and to_managers:
             self.send_manager_email();
         else:
             self.send_user_email(video, year);
@@ -77,16 +83,16 @@ class Command(BaseCommand):
         )
         message = "%s\n%s\n\n\n%s\n" % (
             _("Hello"),
-            _(u"You will find attached the list of videos whose "
-                +"duration of hiring on pod is equal or exceeds "
-                +str(settings.STUDENT_VIDEO_LIMIT_YEAR)+" years"),
+            _(u"You will find attached the list of videos whose pod "+
+            "hosting time is equal to or greater than %(year)s years")
+            % {'year':settings.STUDENT_VIDEO_LIMIT_YEAR},
             _("Regards")
         )
         html_message = '<p>%s</p><p>%s</p><p>%s</p>' % (
             _("Hello"),
-            _(u"You will find attached the list of videos whose "
-            +"duration of hiring on pod is equal or exceeds "
-            +str(settings.STUDENT_VIDEO_LIMIT_YEAR)+" years"),
+            _(u"You will find attached the list of videos whose pod "+
+            "hosting time is equal to or greater than %(year)s years")
+            % {'year':settings.STUDENT_VIDEO_LIMIT_YEAR},
             _("Regards")
         )
         MANAGERS = getattr(settings, 'MANAGERS', [])
@@ -113,9 +119,10 @@ class Command(BaseCommand):
         )
         message = "%s\n%s\n\n%s\n%s\n%s\n" % (
             _("Hello"),
-            _(u"It's been more than "+str(year)+" year since you posted this video "+
-                "“"+str(video.title)+"s”, it will soon be deleted! please return it"
-            +" again or save it if you still have it."),
+            _(u"It's been more than %(year)s year since you posted "+
+            "this video <b>“%(title)s”</b>, it will soon be deleted! "+
+            "please return it again or save it if you still have it.")
+            %{'year': year, 'title': video.title},
             _(u"You will find it here:"),
             content_url,
             _("Regards")
@@ -128,9 +135,10 @@ class Command(BaseCommand):
         html_message = '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
                     </p><p>%s</p>' % (
             _("Hello"),
-            _(u"It's been more than "+str(year)+" year since you posted this video "+
-                "“"+str(video.title)+"s”, it will soon be deleted! please return it"
-                +" again or save it if you still have it."),
+            _(u"It's been more than %(year)s year since you posted "+
+            "this video <b>“%(title)s”</b>, it will soon be deleted! "+
+            "please return it again or save it if you still have it.")
+            %{'year': year, 'title': video.title},
             _(u"You will find it here:"),
             content_url,
             content_url,
