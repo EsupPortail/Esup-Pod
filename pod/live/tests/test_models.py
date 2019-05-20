@@ -110,7 +110,7 @@ class BroadcasterTestCase(TestCase):
             is_restricted=True,
             building=building)
 
-        print(" --->  SetUp of RecoderTestCase : OK !")
+        print(" --->  SetUp of BroadcasterTestCase : OK !")
 
     """
         test attributs

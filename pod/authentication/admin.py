@@ -6,6 +6,9 @@ from pod.authentication.models import Owner
 from pod.authentication.forms import OwnerAdminForm
 from django.utils.html import format_html
 
+from django.contrib.auth.models import Group
+from pod.authentication.forms import GroupAdminForm
+
 # Define an inline admin descriptor for Owner model
 # which acts a bit like a singleton
 
@@ -71,6 +74,18 @@ class UserAdmin(BaseUserAdmin):
     inlines = (OwnerInline, )
 
 
+# Create a new Group admin.
+class GroupAdmin(admin.ModelAdmin):
+    # Use our custom form.
+    form = GroupAdminForm
+    # Filter permissions horizontal as well.
+    filter_horizontal = ['permissions']
+
+
 # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+
+# Register the new Group ModelAdmin instead of the original one.
+admin.site.unregister(Group)
+admin.site.register(Group, GroupAdmin)

@@ -259,7 +259,6 @@ class VideoForm(forms.ModelForm):
         "accept": "audio/*, video/*, .%s" %
         ', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS)),
     }
-    video = forms.FileField(label=_(u'File'))
     is_admin = False
 
     def move_video_source_file(self, new_path, new_dir, old_dir):
@@ -385,33 +384,28 @@ class VideoForm(forms.ModelForm):
         self.VIDEO_FORM_FIELDS_HELP_TEXT = VIDEO_FORM_FIELDS_HELP_TEXT
 
         super(VideoForm, self).__init__(*args, **kwargs)
-        if FILEPICKER:
+
+        if FILEPICKER and self.fields.get('thumbnail'):
             self.fields['thumbnail'].widget = CustomFileWidget(type="image")
 
-        # fields['video'].widget = widgets.AdminFileWidget(attrs=videoattrs)
-        valid_ext = FileExtensionValidator(VIDEO_ALLOWED_EXTENSIONS)
-        self.fields['video'].validators = [valid_ext, FileSizeValidator]
-        self.fields['video'].widget.attrs['class'] = self.videoattrs["class"]
-        self.fields['video'].widget.attrs['accept'] = self.videoattrs["accept"]
+        if self.fields.get('video'):
+            self.fields['video'].label = _(u'File')
+            valid_ext = FileExtensionValidator(VIDEO_ALLOWED_EXTENSIONS)
+            self.fields['video'].validators = [valid_ext, FileSizeValidator]
+            self.fields['video'].widget.attrs[
+                'class'] = self.videoattrs["class"]
+            self.fields['video'].widget.attrs[
+                'accept'] = self.videoattrs["accept"]
 
         if self.instance.encoding_in_progress:
             self.remove_field('owner')
             self.remove_field('video')  # .widget = forms.HiddenInput()
 
         # change ckeditor config for no staff user
-        if self.is_staff is False:
-            del self.fields['thumbnail']
-            self.fields['description'].widget = CKEditorWidget(
-                config_name='default')
-            for key, value in settings.LANGUAGES:
-                self.fields['description_%s' % key.replace(
-                    '-', '_')].widget = CKEditorWidget(config_name='default')
+        self.set_ckeditor_config()
 
-        # hide default langage
-        self.fields['description_%s' %
-                    settings.LANGUAGE_CODE].widget = forms.HiddenInput()
-        self.fields['title_%s' %
-                    settings.LANGUAGE_CODE].widget = forms.HiddenInput()
+        # hide default language
+        self.hide_default_language()
 
         # QuerySet for channels and theme
         self.set_queryset()
@@ -421,9 +415,27 @@ class VideoForm(forms.ModelForm):
             self.remove_field('owner')
 
         self.fields = add_placeholder_and_asterisk(self.fields)
+
         # remove required=True for videofield if instance
         if self.fields.get('video') and self.instance and self.instance.video:
             del self.fields["video"].widget.attrs["required"]
+
+    def set_ckeditor_config(self):
+        if self.is_staff is False:
+            del self.fields['thumbnail']
+            self.fields['description'].widget = CKEditorWidget(
+                config_name='default')
+            for key, value in settings.LANGUAGES:
+                self.fields['description_%s' % key.replace(
+                    '-', '_')].widget = CKEditorWidget(config_name='default')
+
+    def hide_default_language(self):
+        if self.fields.get('description_%s' % settings.LANGUAGE_CODE):
+            self.fields['description_%s' %
+                        settings.LANGUAGE_CODE].widget = forms.HiddenInput()
+        if self.fields.get('title_%s' % settings.LANGUAGE_CODE):
+            self.fields['title_%s' %
+                        settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
     def remove_field(self, field):
         if self.fields.get(field):

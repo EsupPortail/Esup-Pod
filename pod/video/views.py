@@ -34,7 +34,8 @@ import re
 from datetime import date
 
 from pod.playlist.models import Playlist
-
+from django.db import transaction
+from django.db import IntegrityError
 
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
@@ -329,14 +330,10 @@ def is_in_video_groups(user, video):
 
 def get_note_form(request, video):
     notesForm = None
-    if request.user.is_authenticated and Notes.objects.filter(
-            user=request.user, video=video).exists():
-        """
-        note, created = Notes.objects.get_or_create(
-            user=request.user, video=video)
-        """
-        note = Notes.objects.get(
-            user=request.user, video=video)
+    if request.user.is_authenticated:
+        note = None
+        if Notes.objects.filter(user=request.user, video=video).exists():
+            note = Notes.objects.get(user=request.user, video=video)
         notesForm = NotesForm(instance=note)
     return notesForm
 
@@ -618,10 +615,16 @@ def video_count(request, id):
     if request.method == "POST":
         try:
             viewCount = ViewCount.objects.get(video=video, date=date.today())
-            viewCount.count = F('count')+1
-            viewCount.save(update_fields=['count'])
         except ViewCount.DoesNotExist:
-            ViewCount.objects.create(video=video, count=1)
+            try:
+                with transaction.atomic():
+                    ViewCount.objects.create(video=video, count=1)
+                    return HttpResponse("ok")
+            except IntegrityError:
+                viewCount = ViewCount.objects.get(video=video,
+                                                  date=date.today())
+        viewCount.count = F('count')+1
+        viewCount.save(update_fields=['count'])
         return HttpResponse("ok")
     messages.add_message(
         request, messages.ERROR, _(u'You cannot access to this view.'))
