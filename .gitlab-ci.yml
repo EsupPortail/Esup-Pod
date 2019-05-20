@@ -13,4 +13,4 @@ deploy:
     - /usr/bin/sshpass -e ssh -o stricthostkeychecking=no sunieadm@pod-dev.grenet.fr "sudo service uwsgi-pod restart"
   only:
     - master
-    - savecode
+    - update-version
