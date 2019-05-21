@@ -516,7 +516,7 @@ class Video(models.Model):
         utc = pytz.UTC
         now = utc.localize(datetime.now())
         return int((now - self.date_added).days / 365)
-    
+
     @property
     def viewcount(self):
         return self.get_viewcount()

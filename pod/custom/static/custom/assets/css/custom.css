@@ -41,6 +41,7 @@ html,body{
   justify-content: space-around !important;
   margin-top: 10px !important;
 }
+.btn{text-transform: capitalize;}
 .text-center .btn{
   max-width: calc(50% - 5px) !important;
   white-space: unset !important;
@@ -80,8 +81,9 @@ a:hover{ color: #4d8197 !important; text-decoration: none; }
 .btn-primary:hover{ background: #4d8197 !important; color: #fff !important; }
 .btn.btn-info, .btn.btn-info:hover{ color: #fff !important; }
 
-.btn-success { color: #fff !important; background-color: #008b10; border: none !important; order: -1; }
-.btn-success:hover { color: #fff !important; background-color: #28a745; border: none !important; }
+.btn-success { color: #102636 !important; background-color: transparent; border:1px solid#4d8197; order: -1; }
+.text-center .btn-success{order: 1;}
+.btn-success:hover, .btn-success:focus, .btn-success:active { color: #fff !important; background-color: #4d8197 !important; border-color: inherit !important; }
 .btn-custom.logo{
       display: inline-block;
       mask: url("/static/custom/assets/images/sign-in.svg") no-repeat;

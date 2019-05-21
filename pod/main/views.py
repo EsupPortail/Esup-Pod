@@ -26,6 +26,7 @@ CONTACT_US_EMAIL = getattr(
 DEFAULT_FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@univ.fr')
 MANAGERS = getattr(settings, "MANAGERS", [])
 
+
 @csrf_protect
 def download_file(request):
     if request.POST and request.POST.get("filename"):
@@ -41,6 +42,32 @@ def download_file(request):
         return response
     else:
         raise PermissionDenied
+
+
+def set_dest_email(owner, video, form_subject):
+    dest_email = []
+    USE_ESTABLISHMENT_FIELD = getattr(
+            settings, 'USE_ESTABLISHMENT_FIELD', False)
+    USER_CONTACT_EMAIL_CASE = getattr(
+            settings, 'USER_CONTACT_EMAIL_CASE', [])
+    CUSTOM_CONTACT_US = getattr(
+            settings, 'CUSTOM_CONTACT_US', False)
+    video_establishment = video.owner.owner.establishment.lower()
+    if CUSTOM_CONTACT_US:
+        if form_subject in USER_CONTACT_EMAIL_CASE:
+            dest_email.append(video.owner.email)
+        else:
+            if USE_ESTABLISHMENT_FIELD and MANAGERS:
+                for key, value in MANAGERS:
+                    if video_establishment == key:
+                        dest_email.append(value)
+                        break
+                    else:
+                        dest_email = CONTACT_US_EMAIL
+    else:
+        dest_email = [owner.email] if owner else CONTACT_US_EMAIL
+
+    return dest_email
 
 
 @csrf_protect
@@ -105,27 +132,7 @@ def contact_us(request):
                 'url_referrer': form.cleaned_data['url_referrer']
             })
             dest_email = []
-
-            USE_ESTABLISHMENT_FIELD = getattr(settings,
-                                'USE_ESTABLISHMENT_FIELD', False)
-            USER_CONTACT_EMAIL_CASE = getattr(settings,
-                                'USER_CONTACT_EMAIL_CASE', [])
-            CUSTOM_CONTACT_US = getattr(settings,
-                                'CUSTOM_CONTACT_US', False)
-            if CUSTOM_CONTACT_US :
-                if  form_subject in USER_CONTACT_EMAIL_CASE:
-                    dest_email.append(video.owner.email)
-                else:
-                    if USE_ESTABLISHMENT_FIELD :
-                        if MANAGERS:
-                            for key, value in MANAGERS:
-                                if video.owner.owner.establishment.lower() == key :
-                                    dest_email.append(value)
-                                    break
-                    else:
-                        dest_email = CONTACT_US_EMAIL
-            else:
-                dest_email = [owner.email] if owner else CONTACT_US_EMAIL
+            dest_email = set_dest_email(owner, video, form_subject)
 
             msg = EmailMultiAlternatives(
                 subject, text_content, email, dest_email)
