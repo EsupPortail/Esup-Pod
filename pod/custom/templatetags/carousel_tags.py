@@ -1,7 +1,6 @@
 from django import template
 from django.template.loader import get_template
 from pod.playlist.models import Playlist
-import datetime
 
 register = template.Library()
 
@@ -19,5 +18,5 @@ def get_carousel_playlist():
         'playlist': playlist,
     }
 
-register.inclusion_tag(t)(get_carousel_playlist)
 
+register.inclusion_tag(t)(get_carousel_playlist)

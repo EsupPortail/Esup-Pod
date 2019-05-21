@@ -92,14 +92,14 @@ class Command(BaseCommand):
             _("Hello"),
             _(u"You will find attached the list of videos whose pod "
                 + "hosting time is equal to or greater than "
-                + "%(year)s years") % {'year': settings.STUDENT_YEAR},
+                + "%(year)s years") % {'year': STUDENT_YEAR},
             _("Regards")
         )
         html_message = '<p>%s</p><p>%s</p><p>%s</p>' % (
             _("Hello"),
             _(u"You will find attached the list of videos whose pod "
                 + "hosting time is equal to or greater than %(year)s"
-                + " years") % {'year': settings.STUDENT_YEAR},
+                + " years") % {'year': STUDENT_YEAR},
             _("Regards")
         )
         MANAGERS = getattr(settings, 'MANAGERS', [])
