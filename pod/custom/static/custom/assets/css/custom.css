@@ -208,6 +208,12 @@ main.mt-3{
 }
 
 
+#s{
+    width: 100%;
+    outline: none !important;
+    box-shadow: none !important;
+    border: none;
+}
 
 
 main.mt-3 .nav-tabs .nav-link{
@@ -281,6 +287,7 @@ footer a, footer p{
   .navbar-nav .login .dropdown-menu{
     margin-left: -14rem;
   }
+
 }
 
 @media only screen and (max-width: 700px)
