@@ -236,6 +236,7 @@ fieldset svg.feather.feather-send.align-bottom:hover{
 
 footer.bg-dark {
     background-color: #102636 !important;
+    z-index: 9;
 }
 footer.text-muted{
   color: #fff !important;
