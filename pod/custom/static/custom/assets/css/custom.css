@@ -133,9 +133,12 @@ a:hover{ color: #4d8197 !important; text-decoration: none; }
 .btn-outline-primary:hover .feather, .btn-outline-primary:hover b {
     color: #fff !important;
 }
+.btn-primary svg:not(:root){
+	color: #fff;
+}
+.btn-primary:hover svg:not(:root){
+	color: #102636;
 
-.btn.btn-primary.btn-sm.collapseAside svg:not(:root) {
-    color: #fff;
 }
 .navbar a:hover,
 .navbar .nav-link:hover,
