@@ -18,33 +18,3 @@
 </div>
 
 {% endblock %}
-{% block more_script %}
-<script charset="utf-8">
-  $(function()
-  {
-    // Footer position absolute on authentcate view
-    let screenWidth = $( window ).width();
-    let MIN_WIDTH = 767;
-
-    let fixeFooter = function(){
-        if( screenWidth > MIN_WIDTH  )
-        {
-          if( !($( "footer" ).hasClass( "fixebottom" ))  )
-          {
-            $( "footer" ).addClass( "fixebottom" );
-          }
-        }
-        else {
-          $( "footer" ).removeClass( "fixebottom" );
-        }
-    }
-    fixeFooter( )
-    $( window ).resize( e =>
-    {
-      screenWidth = $( window ).width();
-      fixeFooter( )
-    })
-  });
-</script>
-
-{% endblock more_script %}
