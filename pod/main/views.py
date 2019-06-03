@@ -57,13 +57,15 @@ def set_dest_email(owner, video, form_subject):
         if form_subject in USER_CONTACT_EMAIL_CASE:
             dest_email.append(video.owner.email)
         else:
-            if USE_ESTABLISHMENT_FIELD and MANAGERS:
+            if USE_ESTABLISHMENT_FIELD:
                 for key, value in MANAGERS:
                     if video_establishment == key:
                         dest_email.append(value)
                         break
                     else:
                         dest_email = CONTACT_US_EMAIL
+            else:
+                dest_email = CONTACT_US_EMAIL
     else:
         dest_email = [owner.email] if owner else CONTACT_US_EMAIL
 
