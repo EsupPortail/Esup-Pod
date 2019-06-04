@@ -1,4 +1,9 @@
 import os
+import re
+import xlwt
+import pytz
+import operator
+from datetime import datetime, timedelta
 from django.utils import translation
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import gettext as _
@@ -6,14 +11,12 @@ from pod.video.models import Video
 from django.conf import settings
 from django.core.mail import send_mail
 from django.core.mail import EmailMultiAlternatives
-import xlwt
 from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, "TITLE_SITE", "Pod")
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
 file_name = "outdated-videos-list.xls"
 SAVE_SRC = os.getcwd()+"/"+file_name
-STUDENT_YEAR = settings.STUDENT_VIDEO_LIMIT_YEAR
-STAFF_YEAR = settings.STAFF_VIDEO_LIMIT_YEAR
+LIMIT_YEAR_VIDEO = getattr(settings, "LIMIT_YEAR_VIDEO", {})
 
 
 class Command(BaseCommand):
@@ -29,21 +32,26 @@ class Command(BaseCommand):
         self.ws.write(0, 1, _("Video"), style)
         self.ws.write(0, 2, _("Establishment"), style)
         self.line = 1
+        utc = pytz.UTC
         try:
-            for video in Video.objects.all():
-                if "p" in video.owner.owner.affiliation.lower():
-                    if video.year_elapsed() >= STAFF_YEAR:
-                        # send an email to the staff concerned
-                        self.sendEmail(video, STAFF_YEAR)
-                        # write to excel file
-                        self.write(video)
-                else:
-                    if video.year_elapsed() >= STUDENT_YEAR:
+            # get all obsolete videos since the smallest limit year
+            videos = Video.objects.filter(
+                    date_added__lte=utc.localize(
+                        datetime.now()-timedelta(365*self.get_year(
+                            smallest=False)
+                            )
+                        )
+                    )
+            for video in videos:
+                cur_affil = self.get_affiliation(
+                        video.owner.owner.affiliation.upper()
+                        )
+                if cur_affil in LIMIT_YEAR_VIDEO:
+                    if video.year_elapsed() >= LIMIT_YEAR_VIDEO[cur_affil]:
                         # send an email to the user concerned
-                        self.sendEmail(video, STUDENT_YEAR)
+                        self.sendEmail(video, LIMIT_YEAR_VIDEO[cur_affil])
                         # write to excel file
                         self.write(video)
-
             self.wb.save(SAVE_SRC)
             self.sendEmail(None, None, to_managers=True)
         except Video.DoesNotExist:
@@ -60,6 +68,43 @@ class Command(BaseCommand):
                     % {'video_title': video.title}
             )
 
+    # return the bigger or smallest limit year video
+    def get_year(self, smallest=True):
+        if smallest:
+            return min(
+                    LIMIT_YEAR_VIDEO.items(),
+                    key=operator.itemgetter(1)
+                    )[1]
+        else:
+            return max(
+                    LIMIT_YEAR_VIDEO.items(),
+                    key=operator.itemgetter(1)
+                    )[1]
+
+    # return a user affiliation(s)
+    def get_affiliation(self, cur_affil):
+        if isinstance(cur_affil, str):
+            if len(cur_affil) > 1:
+                list_affil = " ".join(re.findall(
+                    "[a-zA-Z]+", cur_affil)).split(" ")
+                return self.bigger_affiliation(list_affil)
+            else:
+                return cur_affil
+
+        elif isinstance(cur_affil, list):
+            return self.bigger_affiliation(cur_affil)
+
+    # return the affiliation that has the biggest limit of year
+    def bigger_affiliation(self, list_affil):
+        limit = 1
+        bigger_af = ""
+        for af in list_affil:
+            if LIMIT_YEAR_VIDEO[af] > limit:
+                bigger_af = af
+                limit = LIMIT_YEAR_VIDEO[af]
+        return bigger_af
+
+    # write in excel file
     def write(self, video):
         self.ws.write(self.line, 0, video.owner.__str__())
         self.ws.write(self.line, 1, video.title)
@@ -91,14 +136,14 @@ class Command(BaseCommand):
             _("Hello"),
             _(u"You will find attached the list of videos whose pod "
                 + "hosting time is equal to or greater than "
-                + "%(year)s years") % {'year': STUDENT_YEAR},
+                + "%(year)s years") % {'year': self.get_year()},
             _("Regards")
         )
         html_message = '<p>%s</p><p>%s</p><p>%s</p>' % (
             _("Hello"),
             _(u"You will find attached the list of videos whose pod "
                 + "hosting time is equal to or greater than %(year)s"
-                + " years") % {'year': STUDENT_YEAR},
+                + " years") % {'year': self.get_year()},
             _("Regards")
         )
         MANAGERS = getattr(settings, 'MANAGERS', [])

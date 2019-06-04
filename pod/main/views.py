@@ -66,9 +66,6 @@ def set_dest_email(owner, video, form_subject):
                 dest_email = CONTACT_US_EMAIL
     else:
         dest_email = [owner.email] if owner else CONTACT_US_EMAIL
-    print("*************************************")
-    print(dest_email)
-    print("*************************************")
     return dest_email
 
 
