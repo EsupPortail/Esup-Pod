@@ -52,23 +52,23 @@ def set_dest_email(owner, video, form_subject):
             settings, 'USER_CONTACT_EMAIL_CASE', [])
     CUSTOM_CONTACT_US = getattr(
             settings, 'CUSTOM_CONTACT_US', False)
-    video_establishment = video.owner.owner.establishment.lower()
+    v_estab = video.owner.owner.establishment.lower()
     if CUSTOM_CONTACT_US:
         if form_subject in USER_CONTACT_EMAIL_CASE:
             dest_email.append(video.owner.email)
         else:
             if USE_ESTABLISHMENT_FIELD:
-                for key, value in MANAGERS:
-                    if video_establishment == key:
-                        dest_email.append(value)
-                        break
-                    else:
-                        dest_email = CONTACT_US_EMAIL
+                if v_estab in dict(MANAGERS):
+                    dest_email.append(dict(MANAGERS)[v_estab])
+                else:
+                    dest_email = CONTACT_US_EMAIL
             else:
                 dest_email = CONTACT_US_EMAIL
     else:
         dest_email = [owner.email] if owner else CONTACT_US_EMAIL
-
+    print("*************************************")
+    print(dest_email)
+    print("*************************************")
     return dest_email
 
 

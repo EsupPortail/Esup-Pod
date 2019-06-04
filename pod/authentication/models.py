@@ -42,12 +42,15 @@ ESTABLISHMENTS = getattr(
         ('Etab_2', 'Etab_2'),
     )
 )
+USE_RGPD = getattr(settings, 'USE_RGPD', False)
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
 FILES_DIR = getattr(
     settings, 'FILES_DIR', 'files')
 
 
 def get_name(self):
+    if USE_RGPD:
+        return "%s %s" % (self.first_name, self.last_name)
     return '%s %s (%s)' % (self.first_name, self.last_name, self.username)
 
 
@@ -71,8 +74,8 @@ class Owner(models.Model):
         default=ESTABLISHMENTS[0][0])
 
     def __str__(self):
-        return "%s %s (%s)" % (self.user.first_name, self.user.last_name,
-                               self.user.username)
+        return "%s %s (%s)" % (
+                self.user.first_name, self.user.last_name, self.user.username)
 
     def save(self, *args, **kwargs):
         self.hashkey = hashlib.sha256(

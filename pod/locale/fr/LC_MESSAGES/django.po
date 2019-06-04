@@ -1084,7 +1084,7 @@ msgid ""
 "<b>“%(title)s”</b>, it will soon be deleted! please return it again or save "
 "it if you still have it."
 msgstr ""
-"Cela fait plus de %(year)s depuis que vous avez posté cette vidéo "
+"Cela fait plus de %(year)s ans depuis que vous avez posté cette vidéo "
 "<b>“%(title)s”</b>, Celle-ci sera prochainement supprimée de Pod. Veuillez "
 "la remettre de nouveau sur Pod si vous l'utilisez toujours."
 

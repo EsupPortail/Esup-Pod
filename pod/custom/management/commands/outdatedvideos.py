@@ -11,7 +11,7 @@ from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, "TITLE_SITE", "Pod")
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
 file_name = "outdated-videos-list.xls"
-SAVE_SRC = os.getcwd()+file_name
+SAVE_SRC = os.getcwd()+"/"+file_name
 STUDENT_YEAR = settings.STUDENT_VIDEO_LIMIT_YEAR
 STAFF_YEAR = settings.STAFF_VIDEO_LIMIT_YEAR
 
@@ -46,7 +46,6 @@ class Command(BaseCommand):
 
             self.wb.save(SAVE_SRC)
             self.sendEmail(None, None, to_managers=True)
-            os.remove(SAVE_SRC)
         except Video.DoesNotExist:
             self.stderr.write(
                 self.style.ERROR(
@@ -75,11 +74,11 @@ class Command(BaseCommand):
         self.line += 1
 
     def sendEmail(self, video, year, to_managers=False):
-
+        file_rows = len(self.ws._Worksheet__rows)
         file_exist = os.path.isfile(SAVE_SRC)
-        if file_exist and to_managers:
+        if to_managers and file_exist and file_rows > 1:
             self.send_manager_email()
-        else:
+        elif video:
             self.send_user_email(video, year)
 
     def send_manager_email(self):
