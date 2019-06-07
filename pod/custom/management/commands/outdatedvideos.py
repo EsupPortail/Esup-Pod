@@ -34,11 +34,11 @@ class Command(BaseCommand):
         self.line = 1
         utc = pytz.UTC
         try:
-            # get all obsolete videos since the smallest limit year
+            # get all obsoletes videos less than
+            # (current year minus the smallest limit year)
             videos = Video.objects.filter(
                     date_added__lte=utc.localize(
-                        datetime.now()-timedelta(365*self.get_year(
-                            smallest=False)
+                        datetime.now()-timedelta(365*self.get_year()
                             )
                         )
                     )
@@ -54,6 +54,7 @@ class Command(BaseCommand):
                         self.write(video)
             self.wb.save(SAVE_SRC)
             self.sendEmail(None, None, to_managers=True)
+            os.remove(SAVE_SRC)
         except Video.DoesNotExist:
             self.stderr.write(
                 self.style.ERROR(
