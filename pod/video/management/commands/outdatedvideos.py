@@ -80,6 +80,11 @@ class Command(BaseCommand):
         if manager_email not in SPECIFIC_MANAGERS:
             SPECIFIC_MANAGERS.append(manager_email)
 
+    def get_manager_email(self, video):
+        if USE_ESTABLISHMENT:
+            return dict(MANAGERS)[video.owner.owner.establishment]
+        return ', '.join(list(dict(MANAGERS).values()))
+
     # return the bigger or smallest limit year video
     def get_year(self, smallest=True):
         if smallest:
@@ -186,10 +191,13 @@ class Command(BaseCommand):
         message = "%s\n%s\n\n%s\n%s\n%s\n" % (
             _("Hello"),
             _(u"It's been more than %(year)s year since you posted "
-                + "this video <b>“%(title)s”</b>, it will "
-                + "soon be deleted! please return it again "
-                + "or save it if you still have it.")
-            % {'year': year, 'title': video.title},
+                + "this video <b>“%(title)s”</b>."
+                + "Please contact your video manager at %(email)s "
+                + "if you want to keep this video.")
+            % {
+                'year': year,
+                'title': video.title,
+                'email': self.get_manager_email(video)},
             _(u"You will find it here:"),
             content_url,
             _("Regards")
@@ -204,9 +212,12 @@ class Command(BaseCommand):
             _("Hello"),
             _(u"It's been more than %(year)s year since you posted "
                 + "this video <b>“%(title)s”</b>, "
-                + "it will soon be deleted! "
-                + "please return it again or save it if you still have it.")
-            % {'year': year, 'title': video.title},
+                + "Please contact your video manager at %(email)s "
+                + "if you want to keep this video.")
+            % {
+                'year': year,
+                'title': video.title,
+                'email': self.get_manager_email(video)},
             _(u"You will find it here:"),
             content_url,
             content_url,
