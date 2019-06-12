@@ -1157,10 +1157,8 @@ def send_email_encoding(video_to_encode):
         bcc_email = []
         video_estab = video_to_encode.owner.owner.establishment.lower()
         if MANAGERS:
-            for estab_name, target_email in MANAGERS:
-                if video_estab == estab_name.lower():
-                    bcc_email.append(target_email)
-                    break
+            if video_estab in dict(MANAGERS):
+                bcc_email.append(dict(MANAGERS)[video_estab])
             msg = EmailMultiAlternatives(
                     subject,
                     message,

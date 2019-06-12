@@ -44,9 +44,9 @@ def download_file(request):
         raise PermissionDenied
 
 
-def set_dest_email(owner, video, form_subject):
+def get_dest_email(owner, video, form_subject):
     dest_email = []
-    USE_ESTABLISHMENT_FIELD = getattr(
+    USE_ESTABLISHMENT = getattr(
             settings, 'USE_ESTABLISHMENT_FIELD', False)
     USER_CONTACT_EMAIL_CASE = getattr(
             settings, 'USER_CONTACT_EMAIL_CASE', [])
@@ -57,7 +57,7 @@ def set_dest_email(owner, video, form_subject):
         if form_subject in USER_CONTACT_EMAIL_CASE:
             dest_email.append(video.owner.email)
         else:
-            if USE_ESTABLISHMENT_FIELD:
+            if USE_ESTABLISHMENT:
                 if v_estab in dict(MANAGERS):
                     dest_email.append(dict(MANAGERS)[v_estab])
                 else:
@@ -131,7 +131,7 @@ def contact_us(request):
                 'url_referrer': form.cleaned_data['url_referrer']
             })
             dest_email = []
-            dest_email = set_dest_email(owner, video, form_subject)
+            dest_email = get_dest_email(owner, video, form_subject)
 
             msg = EmailMultiAlternatives(
                 subject, text_content, email, dest_email)
