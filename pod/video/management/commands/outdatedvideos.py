@@ -56,7 +56,7 @@ class Command(BaseCommand):
                         self.sendEmail(video, LIMIT_YEAR_VIDEO[cur_affil])
                         # write to excel file
                         self.write(video)
-                        #Add manager email
+                        # Add manager email
                         self.add_manager_email(video)
             self.wb.save(SAVE_SRC)
             self.sendEmail(None, None, to_managers=True)

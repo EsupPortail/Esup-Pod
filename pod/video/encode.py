@@ -38,6 +38,9 @@ else:
     FILEPICKER = False
     from pod.main.models import CustomImageModel
 
+USE_ESTABLISHMENT = getattr(
+        settings, 'USE_ESTABLISHMENT_FIELD', False)
+
 FFMPEG = getattr(settings, 'FFMPEG', 'ffmpeg')
 FFPROBE = getattr(settings, 'FFPROBE', 'ffprobe')
 DEBUG = getattr(settings, 'DEBUG', True)
@@ -1149,14 +1152,13 @@ def send_email_encoding(video_to_encode):
         content_url,
         _("Regards")
     )
-    USE_ESTABLISHMENT_FIELD = getattr(
-            settings, 'USE_ESTABLISHMENT_FIELD', False)
-    if USE_ESTABLISHMENT_FIELD:
+    if USE_ESTABLISHMENT:
         MANAGERS = getattr(settings, 'MANAGERS', [])
         bcc_email = []
+        video_estab = video_to_encode.owner.owner.establishment.lower()
         if MANAGERS:
-            for name, target_email in MANAGERS:
-                if video_to_encode.owner.owner.establishment.lower() == name:
+            for estab_name, target_email in MANAGERS:
+                if video_estab == estab_name.lower():
                     bcc_email.append(target_email)
                     break
             msg = EmailMultiAlternatives(
