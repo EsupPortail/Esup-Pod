@@ -3,7 +3,7 @@ import re
 import xlwt
 import pytz
 import operator
-from datetime import datetime, timedelta
+from datetime import datetime
 from django.utils import translation
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import gettext as _
@@ -14,9 +14,12 @@ from django.core.mail import EmailMultiAlternatives
 from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, "TITLE_SITE", "Pod")
 DEFAULT_FROM_EMAIL = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@univ.fr")
+MANAGERS = getattr(settings, 'MANAGERS', [])
 file_name = "outdated-videos-list.xls"
 SAVE_SRC = os.getcwd()+"/"+file_name
 LIMIT_YEAR_VIDEO = getattr(settings, "LIMIT_YEAR_VIDEO", {})
+USE_ESTABLISHMENT = getattr(settings, "USE_ESTABLISHMENT_FIELD", False)
+SPECIFIC_MANAGERS = []
 
 
 class Command(BaseCommand):
@@ -30,16 +33,17 @@ class Command(BaseCommand):
                             + " fore-colour light_orange")
         self.ws.write(0, 0, _("User"), style)
         self.ws.write(0, 1, _("Video"), style)
-        self.ws.write(0, 2, _("Establishment"), style)
+        if USE_ESTABLISHMENT:
+            self.ws.write(0, 2, _("Establishment"), style)
         self.line = 1
         utc = pytz.UTC
+        now = datetime.now()
         try:
-            # get all obsoletes videos less than
-            # (current year minus the smallest limit year)
+            # get all obsoletes videos added since more than
+            # "the smallest limit year"
             videos = Video.objects.filter(
                     date_added__lte=utc.localize(
-                        datetime.now()-timedelta(365*self.get_year()
-                            )
+                        now.replace(year=now.year-self.get_year())
                         )
                     )
             for video in videos:
@@ -52,6 +56,8 @@ class Command(BaseCommand):
                         self.sendEmail(video, LIMIT_YEAR_VIDEO[cur_affil])
                         # write to excel file
                         self.write(video)
+                        #Add manager email
+                        self.add_manager_email(video)
             self.wb.save(SAVE_SRC)
             self.sendEmail(None, None, to_managers=True)
             os.remove(SAVE_SRC)
@@ -68,6 +74,11 @@ class Command(BaseCommand):
                     _('Video "%(video_title)s" does not exist')
                     % {'video_title': video.title}
             )
+
+    def add_manager_email(self, video):
+        manager_email = dict(MANAGERS)[video.owner.owner.establishment]
+        if manager_email not in SPECIFIC_MANAGERS:
+            SPECIFIC_MANAGERS.append(manager_email)
 
     # return the bigger or smallest limit year video
     def get_year(self, smallest=True):
@@ -109,7 +120,8 @@ class Command(BaseCommand):
     def write(self, video):
         self.ws.write(self.line, 0, video.owner.__str__())
         self.ws.write(self.line, 1, video.title)
-        self.ws.write(self.line, 2, video.owner.owner.establishment)
+        if USE_ESTABLISHMENT:
+            self.ws.write(self.line, 2, video.owner.owner.establishment)
         # log
         self.stdout.write(
                 self.style.SUCCESS(
@@ -147,19 +159,21 @@ class Command(BaseCommand):
                 + " years") % {'year': self.get_year()},
             _("Regards")
         )
-        MANAGERS = getattr(settings, 'MANAGERS', [])
         bcc_email = []
         if MANAGERS:
-            for name, target_email in MANAGERS:
-                bcc_email.append(target_email)
-        msg = EmailMultiAlternatives(
+            if USE_ESTABLISHMENT:
+                bcc_email = SPECIFIC_MANAGERS
+            else:
+                for name, target_email in MANAGERS:
+                    bcc_email.append(target_email)
+            msg = EmailMultiAlternatives(
                 subject,
                 message,
                 DEFAULT_FROM_EMAIL,
                 bcc=bcc_email)
-        msg.attach_alternative(html_message, "text/html")
-        msg.attach_file(SAVE_SRC)
-        msg.send()
+            msg.attach_alternative(html_message, "text/html")
+            msg.attach_file(SAVE_SRC)
+            msg.send()
 
     def send_user_email(self, video, year):
         content_url = "http:%s" % video.get_full_url()

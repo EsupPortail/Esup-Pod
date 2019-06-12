@@ -25,6 +25,8 @@ html,body{
   right: 10px;
  dropdown-item playlist-item z-index: 9999999;
 } */
+
+.video-js .vjs-overlay-background{background: rgba(0,0,0,.7)!important;font-size: 15px!important;}
 .nav-item.dropdown.show .dropdown-menu.show{ background: #102636;}
 .dropdown-menu{border: 1px solid rgba(0,0,0,.4);}
 .dropdown-item.playlist-item:not(:last-child){border-bottom: 1px solid #50a5a6 !important;}
