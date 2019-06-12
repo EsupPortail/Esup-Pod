@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-12 16:24+0200\n"
+"POT-Creation-Date: 2019-06-12 16:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3137,11 +3137,7 @@ msgid "Video #%(content_id)s will be deleted soon"
 msgstr "Vidéo #%(content_id)s sera bientôt supprimée"
 
 #: pod/video/management/commands/outdatedvideos.py:193
-#, fuzzy, python-format
-#| msgid ""
-#| "It's been more than %(year)s year since you posted this video "
-#| "<b>“%(title)s”</b>, it will soon be deleted! please return it again or "
-#| "save it if you still have it."
+#, python-format
 msgid ""
 "It's been more than %(year)s year since you posted this video "
 "<b>“%(title)s”</b>.Please contact your video manager at %(email)s if you "
@@ -3149,14 +3145,10 @@ msgid ""
 msgstr ""
 "Cela fait plus de %(year)s ans depuis que vous avez posté cette vidéo "
 "<b>“%(title)s”</b>.Veuillez contacter votre gestionnaire de vidéo à "
-"l'adresse suivante %(email)s si vous souhaitez conserver cette vidéo."
+"l'adresse suivante %(email)s si vous souhaitez la conserver."
 
 #: pod/video/management/commands/outdatedvideos.py:213
-#, fuzzy, python-format
-#| msgid ""
-#| "It's been more than %(year)s year since you posted this video "
-#| "<b>“%(title)s”</b>, it will soon be deleted! please return it again or "
-#| "save it if you still have it."
+#, python-format
 msgid ""
 "It's been more than %(year)s year since you posted this video "
 "<b>“%(title)s”</b>, Please contact your video manager at %(email)s if you "
@@ -3164,7 +3156,7 @@ msgid ""
 msgstr ""
 "Cela fait plus de %(year)s ans depuis que vous avez posté cette vidéo "
 "<b>“%(title)s”</b>.Veuillez contacter votre gestionnaire de vidéo à "
-"l'adresse suivante %(email)s si vous souhaitez conserver cette vidéo."
+"l'adresse suivante %(email)s si vous souhaitez la conserver."
 
 #: pod/video/models.py:53
 msgid "None / All"
