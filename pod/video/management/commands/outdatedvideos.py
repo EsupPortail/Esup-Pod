@@ -33,8 +33,9 @@ class Command(BaseCommand):
                             + " fore-colour light_orange")
         self.ws.write(0, 0, _("User"), style)
         self.ws.write(0, 1, _("Video"), style)
+        self.ws.write(0, 2, _("Url Video"), style)
         if USE_ESTABLISHMENT:
-            self.ws.write(0, 2, _("Establishment"), style)
+            self.ws.write(0, 3, _("Establishment"), style)
         self.line = 1
         utc = pytz.UTC
         now = datetime.now()
@@ -125,8 +126,9 @@ class Command(BaseCommand):
     def write(self, video):
         self.ws.write(self.line, 0, video.owner.__str__())
         self.ws.write(self.line, 1, video.title)
+        self.ws.write(self.line, 2, video.get_full_url())
         if USE_ESTABLISHMENT:
-            self.ws.write(self.line, 2, video.owner.owner.establishment)
+            self.ws.write(self.line, 3, video.owner.owner.establishment)
         # log
         self.stdout.write(
                 self.style.SUCCESS(
