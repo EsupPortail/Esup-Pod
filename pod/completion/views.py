@@ -623,7 +623,7 @@ def transform_url_to_link(text):
                         " <a href='//{0}' target='_blank'>{1}</a>".format(
                             url[0], url[0]),
                         text)
-    return text[1:]
+    return text.strip()
 
 
 @csrf_protect
