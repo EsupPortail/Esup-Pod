@@ -614,7 +614,7 @@ def transform_url_to_link(text):
                 if "http://" in url[0] or "https://" in url[0]:
                     text = re.sub(
                             re.compile("\s"+re.escape(url[0])).pattern,
-                            "<a href='{0}' target='_blank'>{1}</a>".format(
+                            " <a href='{0}' target='_blank'>{1}</a>".format(
                                 url[0], url[0]),
                             text)
                 else:
