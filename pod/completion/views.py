@@ -18,10 +18,12 @@ from .forms import TrackForm
 from .models import Overlay
 from .forms import OverlayForm
 
-import json
+from django.conf import settings
+
+import json, re
 
 ACTION = ['new', 'save', 'modify', 'delete']
-
+LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
@@ -594,6 +596,36 @@ def video_completion_track_delete(request, video):
              'list_overlay': list_overlay})
 
 
+def is_already_link(url, text):
+    link_http = "<a href='{0}' target='_blank'>{1}</a>".format(url, url)
+    link = "<a href='//{0}' target='_blank'>{1}</a>".format(url, url)
+    return link in text or link_http in text
+
+def transform_url_to_link(text):
+    text = " " + text
+    pattern = re.compile("((https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}"
+        "([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*))+")
+    urls = re.findall(pattern, text)
+    urls_to_link = []
+
+    if urls:
+        for url in urls :
+            if not is_already_link(url[0], text):
+                if "http://" in url[0] or "https://" in url[0]:
+                    text = re.sub(
+                            re.compile("\s"+re.escape(url[0])).pattern,
+                            "<a href='{0}' target='_blank'>{1}</a>".format(
+                                url[0], url[0]),
+                            text)
+                else:
+                    text = re.sub(re.compile(
+                        "\s"+re.escape(url[0])).pattern,
+                        " <a href='//{0}' target='_blank'>{1}</a>".format(
+                            url[0], url[0]),
+                        text)
+    return text[1:]
+
+
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def video_completion_overlay(request, slug):
@@ -607,9 +639,13 @@ def video_completion_overlay(request, slug):
     list_document = video.document_set.all()
     list_track = video.track_set.all()
     list_overlay = video.overlay_set.all()
-
+    
     if request.POST and request.POST.get('action'):
         if request.POST['action'] in ACTION:
+            if LINK_SUPERPOSITION and 'content' in request.POST.dict():
+                request.POST._mutable = True
+                request.POST['content'] = transform_url_to_link(request.POST['content'])
+                request.POST._mutable = False
             return eval(
                 'video_completion_overlay_{0}(request, video)'.format(
                     request.POST['action'])
