@@ -287,6 +287,7 @@ def get_videos_list(request):
     return videos_list.distinct()
 
 
+@login_required(redirect_field_name='referrer')
 def videos(request):
     videos_list = get_videos_list(request)
 
@@ -491,7 +492,6 @@ def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_edit(request, slug=None):
-
     video = get_object_or_404(Video, slug=slug) if slug else None
 
     if (RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
@@ -546,7 +546,6 @@ def video_edit(request, slug=None):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'One or more errors have been found in the form.'))
-
     return render(request, 'videos/video_edit.html', {
         'form': form}
     )

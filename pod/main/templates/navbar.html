@@ -1,4 +1,4 @@
-{% load staticfiles i18n %}{% spaceless %}
+{% load staticfiles i18n rgpd %}{% spaceless %}
 {% get_current_language as LANGUAGE_CODE %}
 {% get_available_languages as LANGUAGES %}
 {% get_language_info_list for LANGUAGES as languages %}
@@ -15,10 +15,16 @@
       <li class="nav-item" id="nav-channels">
         <button class="nav-link" data-toggle="modal" data-target=".chaines-modal"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Channels" %}</button>
       </li>
-      <li class="nav-item" id="nav-users">
-        <button class="nav-link" data-toggle="modal" data-target=".users-modal"><i data-feather="users" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Users"%}</button>
-      </li>
-       <li class="nav-item" id="nav-types">
+      {% authenticated_require as rgpd_display %}
+      {% if rgpd_display %}
+      	<li class='nav-item' id='nav-users'> 
+	   <button class='nav-link' data-toggle='modal' data-target='.users-modal'>
+		   <i data-feather='users' aria-hidden='true' class='nav-link-icone d-lg-none d-xl-inline'>
+		   </i> {% trans 'Users' %}
+	   </button>
+     	</li>
+	{% endif %}
+	<li class="nav-item" id="nav-types">
         <button class="nav-link" data-toggle="modal" data-target=".types-modal"><i data-feather="tv" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Types"%}</button>
       </li>
       {% if "live" in THIRD_PARTY_APPS %}
@@ -42,7 +48,7 @@
   </div>
   <form class="form-inline my-2 my-lg-0 flex-2" action="{% url "search_videos" %}" id="nav-search">
     <label for="s" class="d-lg-none">
-      <i data-feather="search" class="nav-link-icone"></i> <span class="sr-only">{% trans "Search" %}</span> 
+      <i data-feather="search" class="nav-link-icone"></i> <span class="sr-only">{% trans "Search" %}</span>
     </label>
     <input class="form-control mr-sm-2" id="s" placeholder="{% trans "Search" %}" aria-label="{% trans "Search" %}" type="search" name="q" >
   </form>
@@ -87,6 +93,7 @@
         <a class="btn btn-connexion nav-link pl-2 pr-2 d-flex justify-content-center" href="{% url 'authentication_login' %}?referrer={{request.build_absolute_uri|urlencode}}" >
           {% trans 'Log in' %}
         </a>
+        <a class="btn-custom logo nav-link pl-2 pr-2 d-flex justify-content-center" href="{% url 'authentication_login' %}?referrer={{request.build_absolute_uri|urlencode}}" ></a>
       </li>
       {% endif %}
       <li class="nav-item d-none d-lg-block" id="nav-languagechoicelg">
@@ -108,5 +115,4 @@
       </li>
    </ul>
 </div> <!-- FIN Container -->
-{% endspaceless %}    
-    
+{% endspaceless %}
