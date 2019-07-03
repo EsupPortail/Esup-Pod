@@ -108,7 +108,9 @@
         {% for channel in ALL_CHANNELS %}{% if channel.themes.count > 0 %}listTheme["channel_{{channel.id}}"] = {{channel.get_all_theme_json|safe}};{% endif %}{% endfor %}
         /** USERS **/
         var listUser = {{LISTOWNER|safe}};
-        var urlvideos = "{% url 'videos' %}";
+		var urlvideos = "{% url 'videos' %}";
+		/** RGPD **/
+		var use_rgpd = "{{USE_RGPD|safe}}".toLowerCase() == "true";
 		</script>
         <script src="{% static 'js/main.js' %}"></script>
 		{% block more_script %}

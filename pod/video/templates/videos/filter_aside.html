@@ -17,7 +17,10 @@
     <div class="form-check">
     <input class="form-check-input" type="checkbox" name="owner" value="{{owner.username}}" id="id{{owner.username}}" checked>
     <label class="form-check-label" for="id{{owner.username}}">
-        {{owner.first_name}} {{owner.last_name}} ({{owner.username}})
+	{{owner.first_name}} {{owner.last_name}} 
+	{% if not USE_RGPD %}
+	({{owner.username}})
+	{%endif %}
     </label>
     </div>
     {% endif %}
