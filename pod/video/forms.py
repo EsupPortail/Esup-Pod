@@ -13,7 +13,7 @@ from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
-from pod.video.models import Notes
+from pod.video.models import CollaborativeNotes as Notes
 from pod.video.encode import start_encode
 from pod.video.models import get_storage_path_video
 from pod.video.models import EncodingVideo, EncodingAudio, PlaylistVideo
@@ -635,16 +635,17 @@ class DisciplineForm(forms.ModelForm):
         fields = '__all__'
 
 
-class NotesForm(forms.ModelForm):
+class CollaborativeNotesForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        super(NotesForm, self).__init__(*args, **kwargs)
+        super(CollaborativeNotesForm, self).__init__(*args, **kwargs)
         # self.fields["user"].widget = forms.HiddenInput()
         # self.fields["video"].widget = forms.HiddenInput()
         # self.fields["note"].widget.attrs["cols"] = 20
         self.fields["note"].widget.attrs["class"] = "form-control"
-        self.fields["note"].widget.attrs["rows"] = 5
+        # self.fields["note"].widget.attrs["rows"] = 5
+        self.fields["timestamp"].widget.attrs["class"] = "form-control"
 
     class Meta(object):
         model = Notes
-        fields = ["note"]
+        fields = ["note", "timestamp"]

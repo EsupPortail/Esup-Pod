@@ -1053,6 +1053,38 @@ class Notes(models.Model):
         return "%s-%s" % (self.user.username, self.video)
 
 
+class CollaborativeNotes(models.Model):
+    user = models.ForeignKey(User)
+    video = models.ForeignKey(Video)
+    note = models.TextField(_('Note'))
+    timestamp = models.IntegerField(_('Time'))
+
+    class Meta:
+        verbose_name = _("Note")
+        verbose_name_plural = _("Notes")
+        unique_together = ("video", "user", "timestamp")
+
+    def __str__(self):
+        return "%s-%s-%s" % (self.user.username, self.video, self.timestamp)
+
+    def timestampstr(self):
+        seconds = int(self.timestamp)
+        hours = int(seconds / 3600)
+        seconds -= hours * 3600
+        minutes = int(seconds / 60)
+        seconds -= minutes * 60
+        hours = "0" + str(hours) if hours < 10 else str(hours)
+        minutes = "0" + str(minutes) if minutes < 10 else str(minutes)
+        seconds = "0" + str(seconds) if seconds < 10 else str(seconds)
+        return hours + ':' + minutes + ':' + seconds
+
+    def notestr(self):
+        if len(self.note) > 10:
+            return self.note[:10] + "..."
+        else:
+            return self.note
+
+
 class VideoToDelete(models.Model):
     date_deletion = models.DateField(
         _('Date for deletion'), default=date.today)

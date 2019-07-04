@@ -1,4 +1,6 @@
 {% load i18n %}
+{% load staticfiles %}
+
 {% if messages %}
 <div id="base-message-alert">
 {% for message in messages %}
@@ -16,6 +18,17 @@ $(document).ready(function () {
 });
 </script>
 {% endif %}
+<!---->
+<div id="id_notes">
+    {% for note in listNotes %}
+    <div id="note-{{ note.id }}">
+        <span class="timestamp" start="{{ note.timestamp }}">{{ note.timestampstr }}</span>
+        <span class="note">{{note.notestr}}</span>
+        <button class="remove" type="button" action="remove">X</button>
+    </div>
+    {% endfor %}
+</div>
+<!---->
 <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
 {% csrf_token %}
 <fieldset>
@@ -43,9 +56,7 @@ $(document).ready(function () {
     {% endif %}
     -->
     <div class="text-center mt-1">
-        <button type="submit" class="btn btn-success btn-sm">{% trans "Save" %}</button>
+        <textarea class="input_note" autocomplete="off" action="save_new"></textarea>
     </div>
 </fieldset>
 </form>
-
-

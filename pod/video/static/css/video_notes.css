@@ -1,0 +1,53 @@
+#id_notes {
+    border: solid 1px #999;
+    height: 200px;
+    overflow: auto;
+}
+
+#id_notes div {
+    cursor: pointer;
+    padding: 2px 0 3px 0;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#id_notes div:nth-child(odd) {
+    background-color: #5BC2EC;
+}
+
+#id_notes div:nth-child(even) {
+    background-color: #bef;
+}
+
+#id_notes div:hover {
+    background-color: #ECA809;
+}
+
+#id_notes div {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-areas: "timestamp note button"
+}
+
+#id_notes div span.timestamp {
+    grid-area: timestamp;
+    justify-self: left;
+}
+
+#id_notes div span.note {
+    grid-area: note;
+    justify-self: center;
+}
+
+#id_notes div button{
+    grid-area: button;
+    justify-self: end;
+}
+
+#id_notes div span, #id_notes div button{
+    margin: 0.3em 1em;
+}
+
+#id_notes div span:nth-child(2) {
+    font-style: italic;
+}
