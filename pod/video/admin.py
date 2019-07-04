@@ -17,7 +17,7 @@ from .models import EncodingAudio
 from .models import EncodingLog
 from .models import EncodingStep
 from .models import PlaylistVideo
-from .models import Notes
+from .models import CollaborativeNotes as Notes
 from .models import ViewCount
 from .models import VideoToDelete
 
