@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
@@ -11,6 +12,11 @@ from pod.authentication.forms import GroupAdminForm
 
 # Define an inline admin descriptor for Owner model
 # which acts a bit like a singleton
+
+USE_ESTABLISHMENT_FIELD = getattr(
+        settings,
+        'USE_ESTABLISHMENT_FIELD',
+        False)
 
 
 class OwnerInline(admin.StackedInline):
@@ -64,9 +70,15 @@ class UserAdmin(BaseUserAdmin):
         'is_superuser',
         'owner_hashkey'
     )
+    if USE_ESTABLISHMENT_FIELD:
+        list_display = list_display + ('owner_establishment',)
 
     def owner_hashkey(self, obj):
         return "%s" % Owner.objects.get(user=obj).hashkey
+
+    def owner_establishment(self, obj):
+        return "%s" % Owner.objects.get(user=obj).establishment
+    owner_establishment.short_description = _('Establishment')
 
     ordering = ('-is_superuser', 'username', )
     inlines = (OwnerInline, )
