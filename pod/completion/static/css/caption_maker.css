@@ -1,0 +1,87 @@
+#videoElm {
+    display: block;
+    border: solid 1px #999;
+    width: 100%;
+    min-height: 297px;
+}
+.videoError {
+    display: block;
+    background-color: #999;
+    width: 100%;
+    min-height: 297px;
+    color: white;
+    text-align: center;
+    padding: 12px;
+}
+
+#videoError {
+    display: none;
+}
+#captionTitle {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+#textCaptionEntry {
+    width: 100%;
+    height: auto;
+    line-height: 19px;
+    border: 1px solid #999;
+    padding: 3px 8px 5px;
+    text-align: center;
+    min-height: 50px;
+    overflow: hidden;
+}
+
+#textCaptionEntry.playing {
+    border-color: #666;
+    background-color: #666;
+    color: white;
+}
+
+textarea {
+    line-height: 16px;
+    font-size: 14px;
+}
+
+/* the list of captions */
+
+#display {
+    border: solid 1px #999;
+    height: 374px;
+    overflow: auto;
+}
+
+#display div {
+    cursor: pointer;
+    padding: 2px 0 3px 0;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#display div:nth-child(odd) {
+    background-color: #5BC2EC;
+}
+
+#display div:nth-child(even) {
+    background-color: #bef;
+}
+
+#display div:hover {
+    background-color: #ECA809;
+}
+
+#display div span {
+    margin-left: 1em;
+    display: inline-block;
+    vertical-align: top;
+}
+
+#display div span:nth-child(3) {
+    font-style: italic;
+}
+
+
+#captionmakerModal.save > .modal-dialog {
+    max-width: 1000px;
+}

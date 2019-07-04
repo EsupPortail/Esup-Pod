@@ -17,6 +17,7 @@ from .models import Track
 from .forms import TrackForm
 from .models import Overlay
 from .forms import OverlayForm
+from .forms import MakeCaptionForm
 
 import json
 
@@ -31,10 +32,59 @@ def video_caption_maker(request, slug):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
+    if request.method == "POST":
+        return eval(
+                'video_caption_maker_{0}(request, video)'.format(
+                    request.POST['action'])
+            )
+    else:
+        return render(
+            request,
+            'video_caption_maker.html',
+            {'video': video})
+
+
+def video_caption_maker_new(request, video):
+    if request.is_ajax():
+        form_caption = MakeCaptionForm(True, initial={'video': video})
+        return render(
+            request,
+            'video_caption_maker_modal.html',
+            {'form_make_caption': form_caption,
+             'req_action': request.POST['action'],
+             'video': video})
+
+
+def video_caption_maker_save(request, video):
+    list_track = video.track_set.all()
+    if request.is_ajax():
+        form_caption = MakeCaptionForm(False, initial={'video': video})
+        return render(
+            request,
+            'video_caption_maker_modal.html',
+            {'req_action': request.POST['action'],
+             'list_track': list_track,
+             'video': video})
+
+
+def video_caption_maker_save_new(request, video):
+    form_caption = MakeCaptionForm(False, initial={'video': video})
     return render(
         request,
-        'video_caption_maker.html',
-        {'video': video})
+        'track/form_track.html',
+        {'form_track': form_caption,
+         'video': video})
+
+
+def video_caption_maker_modify(request, video):
+    track = get_object_or_404(Track, id=request.POST['id'])
+    if request.is_ajax():
+        form_caption = MakeCaptionForm(False, instance=track)
+        return render(
+            request,
+            'track/form_track.html',
+            {'form_track': form_caption,
+             'video': video})
 
 
 @csrf_protect
@@ -490,9 +540,19 @@ def video_completion_track_save(request, video):
     form_track = TrackForm(request.POST)
     if request.POST.get('track_id') and request.POST['track_id'] != 'None':
         track = get_object_or_404(Track, id=request.POST['track_id'])
-        form_track = TrackForm(request.POST, instance=track)
+        if request.POST.get('captionMaker'):
+            form_track = MakeCaptionForm(False, request.POST, instance=track)
+        else:
+            form_track = TrackForm(request.POST, instance=track)
     else:
-        form_track = TrackForm(request.POST)
+        if request.POST.get('captionMaker'):
+            form_track = MakeCaptionForm(False, request.POST)
+        else:
+            form_track = TrackForm(request.POST)
+    if request.POST.get('captionMaker'):
+        dest = 'video_caption_maker'
+    else:
+        dest = 'video_completion_track'
     if form_track.is_valid():
         form_track.save()
         list_track = video.track_set.all()
@@ -500,6 +560,7 @@ def video_completion_track_save(request, video):
             some_data_to_dump = {'list_data': render_to_string(
                 'track/list_track.html',
                 {'list_track': list_track,
+                 'dest': dest,
                  'video': video},
                 request=request)
             }
@@ -573,11 +634,16 @@ def video_completion_track_delete(request, video):
     track = get_object_or_404(Track, id=request.POST['id'])
     track.delete()
     list_track = video.track_set.all()
+    if request.POST.get('captionMaker'):
+        dest = 'video_caption_maker'
+    else:
+        dest = 'video_completion_track'
     if request.is_ajax():
         some_data_to_dump = {
             'list_data': render_to_string(
                 'track/list_track.html',
                 {'list_track': list_track,
+                 'dest': dest,
                  'video': video},
                 request=request)
         }
