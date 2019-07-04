@@ -2,6 +2,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.core.mail import mail_admins
 from django.core.mail import mail_managers
+from django.core.mail import EmailMultiAlternatives
 from django.utils.translation import ugettext_lazy as _
 from django.core.files.images import ImageFile
 from django.core.files import File
@@ -36,6 +37,9 @@ if getattr(settings, 'USE_PODFILE', False):
 else:
     FILEPICKER = False
     from pod.main.models import CustomImageModel
+
+USE_ESTABLISHMENT = getattr(
+        settings, 'USE_ESTABLISHMENT_FIELD', False)
 
 FFMPEG = getattr(settings, 'FFMPEG', 'ffmpeg')
 FFPROBE = getattr(settings, 'FFPROBE', 'ffprobe')
@@ -1132,6 +1136,7 @@ def send_email_encoding(video_to_encode):
     from_email = DEFAULT_FROM_EMAIL
     to_email = []
     to_email.append(video_to_encode.owner.email)
+
     html_message = ""
 
     html_message = '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
@@ -1147,15 +1152,32 @@ def send_email_encoding(video_to_encode):
         content_url,
         _("Regards")
     )
-    if not DEBUG:
-        send_mail(
-            subject,
-            message,
-            from_email,
-            to_email,
-            fail_silently=False,
-            html_message=html_message,
-        )
-    mail_managers(
-        subject, message, fail_silently=False,
-        html_message=html_message)
+    if USE_ESTABLISHMENT:
+        MANAGERS = getattr(settings, 'MANAGERS', [])
+        bcc_email = []
+        video_estab = video_to_encode.owner.owner.establishment.lower()
+        if MANAGERS:
+            if video_estab in dict(MANAGERS):
+                bcc_email.append(dict(MANAGERS)[video_estab])
+            msg = EmailMultiAlternatives(
+                    subject,
+                    message,
+                    from_email,
+                    to_email,
+                    bcc=bcc_email)
+            msg.attach_alternative(html_message, "text/html")
+            msg.send()
+    else:
+        mail_managers(
+            subject, message, fail_silently=False,
+            html_message=html_message)
+
+        if not DEBUG:
+            send_mail(
+                subject,
+                message,
+                from_email,
+                to_email,
+                fail_silently=False,
+                html_message=html_message,
+            )
