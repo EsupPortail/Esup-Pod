@@ -93,7 +93,6 @@
         <a class="btn btn-connexion nav-link pl-2 pr-2 d-flex justify-content-center" href="{% url 'authentication_login' %}?referrer={{request.build_absolute_uri|urlencode}}" >
           {% trans 'Log in' %}
         </a>
-        <a class="btn-custom logo nav-link pl-2 pr-2 d-flex justify-content-center" href="{% url 'authentication_login' %}?referrer={{request.build_absolute_uri|urlencode}}" ></a>
       </li>
       {% endif %}
       <li class="nav-item d-none d-lg-block" id="nav-languagechoicelg">
