@@ -3026,7 +3026,7 @@ msgid ""
 "it."
 msgstr ""
 "En \"Mode brouillon\", le contenu n’apparaîtra nul part et uniquement vous "
-"pourra le voir."
+"pourrez le voir."
 
 #: pod/video/forms.py:164
 msgid ""
