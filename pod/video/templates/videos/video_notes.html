@@ -18,17 +18,17 @@ $(document).ready(function () {
 });
 </script>
 {% endif %}
-<!---->
+
 <div id="id_notes">
     {% for note in listNotes %}
     <div id="note-{{ note.id }}">
         <span class="timestamp" start="{{ note.timestamp }}">{{ note.timestampstr }}</span>
-        <span class="note">{{note.notestr}}</span>
+        <span class="note">{{ note.notestr }}</span>
         <button class="remove" type="button" action="remove">X</button>
     </div>
     {% endfor %}
 </div>
-<!---->
+
 <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
 {% csrf_token %}
 <fieldset>
@@ -50,13 +50,14 @@ $(document).ready(function () {
         </div>
         {% endspaceless %}
     {% endfor %}
-    <!--
-    {% if notesForm.instance.id %}
+    <input type="hidden" id="action" name="action" value="save_new" autocomplete="off"/>
+    
+    {% comment %} {% if notesForm.instance.id %}
         <input type="hidden" id="note_id" name="note_id" value="{{notesForm.instance.id}}"/>
     {% endif %}
-    -->
+    
     <div class="text-center mt-1">
         <textarea class="input_note" autocomplete="off" action="save_new"></textarea>
-    </div>
+    </div> {% endcomment %}
 </fieldset>
 </form>
