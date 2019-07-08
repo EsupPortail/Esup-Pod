@@ -9,6 +9,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
+ES_INDEX = getattr(settings, 'ES_INDEX', 'pod')
 
 
 def index_es(video):
@@ -18,7 +19,8 @@ def index_es(video):
         try:
             data = video.get_json_to_index()
             if data != '{}':
-                res = es.index(index="pod", doc_type='pod', id=video.id,
+                res = es.index(index=ES_INDEX,
+                               doc_type='pod', id=video.id,
                                body=data, refresh=True)
                 logger.info(res)
                 return res
@@ -33,7 +35,7 @@ def delete_es(video):
     if es.ping():
         try:
             delete = es.delete(
-                index="pod", doc_type='pod',
+                index=ES_INDEX, doc_type='pod',
                 id=video.id, refresh=True, ignore=[400, 404])
             logger.info(delete)
             return delete
@@ -48,7 +50,7 @@ def create_index_es():
     es_template = json.load(json_data)
     try:
         create = es.indices.create(
-            index='pod', body=es_template)  # ignore=[400, 404]
+            index=ES_INDEX, body=es_template)  # ignore=[400, 404]
         logger.info(create)
         return create
     except TransportError as e:
@@ -64,7 +66,7 @@ def create_index_es():
 def delete_index_es():
     es = Elasticsearch(ES_URL)
     try:
-        delete = es.indices.delete(index='pod')
+        delete = es.indices.delete(index=ES_INDEX)
         logger.info(delete)
         return delete
     except TransportError as e:
