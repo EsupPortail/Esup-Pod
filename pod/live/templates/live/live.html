@@ -71,8 +71,22 @@
       {% else %}
       fluid: true, 
       {% endif %}
-      playbackRates: [0.5, 1, 1.5, 2]
+      playbackRates: [0.5, 1, 1.5, 2],
     }
     var player = videojs('podvideoplayer', options, function(){});
+    player.on('error', function() {
+      if (typeof(errored) == 'undefined' || !errored) { // Handle successives errors to avoid multiple reload
+        var errored = true;
+        let modal = player.createModal('Player wil be refreshed in 10 seconds');
+        setTimeout(function() {
+          errored = false;
+          modal.close();
+          player.src({
+            src: player.currentSrc(),
+            type: player.currentType(),
+          });
+        }, 10000)
+      }
+    })
 </script>
 {% endblock more_script %}
