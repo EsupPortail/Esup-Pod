@@ -641,10 +641,15 @@ class CollaborativeNotesForm(forms.ModelForm):
         super(CollaborativeNotesForm, self).__init__(*args, **kwargs)
         # self.fields["user"].widget = forms.HiddenInput()
         # self.fields["video"].widget = forms.HiddenInput()
-        # self.fields["note"].widget.attrs["cols"] = 20
-        self.fields["note"].widget.attrs["class"] = "form-control"
-        # self.fields["note"].widget.attrs["rows"] = 5
+        self.fields["note"].widget.attrs["class"] = "form-control input_note"
+        self.fields["note"].widget.attrs["autocomplete"] = "off"
+        self.fields["note"].widget.attrs["rows"] = 5
+        self.fields["note"].widget.attrs["cols"] = 20
+        self.fields["note"].help_text = "A note can't be empty"
+        self.fields["timestamp"].widget = forms.HiddenInput()
         self.fields["timestamp"].widget.attrs["class"] = "form-control"
+        self.fields["timestamp"].widget.attrs["autocomplete"] = "off"
+        
 
     class Meta(object):
         model = Notes

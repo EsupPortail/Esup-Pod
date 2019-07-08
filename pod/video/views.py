@@ -18,7 +18,8 @@ from django.urls import reverse
 from pod.video.models import Video
 from pod.video.models import Channel
 from pod.video.models import Theme
-from pod.video.models import Notes
+# from pod.video.models import Notes
+from pod.video.models import CollaborativeNotes as Notes
 from pod.video.models import ViewCount
 from tagging.models import TaggedItem
 
@@ -27,7 +28,9 @@ from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
-from pod.video.forms import NotesForm
+# from pod.video.forms import NotesForm
+from pod.video.forms import CollaborativeNotesForm as NotesForm
+
 
 import json
 import re
@@ -37,10 +40,12 @@ from pod.playlist.models import Playlist
 from django.db import transaction
 from django.db import IntegrityError
 
+USE_RGPD = getattr(settings, 'USE_RGPD', False)
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, 'RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY', False)
 THEME_ACTION = ['new', 'modify', 'delete', 'save']
+NOTE_ACTION = ['get', 'save', 'remove']
 
 TEMPLATE_VISIBLE_SETTINGS = getattr(
     settings,
@@ -62,6 +67,11 @@ TITLE_ETB = TEMPLATE_VISIBLE_SETTINGS[
     'TITLE_ETB'] if (
         TEMPLATE_VISIBLE_SETTINGS.get('TITLE_ETB')
 ) else 'University'
+
+TITLE_SITE = TEMPLATE_VISIBLE_SETTINGS[
+    'TITLE_SITE'] if (
+        TEMPLATE_VISIBLE_SETTINGS.get('TITLE_SITE')
+) else 'Pod'
 
 # ############################################################################
 # CHANNEL
@@ -328,14 +338,13 @@ def is_in_video_groups(user, video):
     ).exists()
 
 
-def get_note_form(request, video):
-    notesForm = None
+def get_note_list(request, video):
     if request.user.is_authenticated:
-        note = None
-        if Notes.objects.filter(user=request.user, video=video).exists():
-            note = Notes.objects.get(user=request.user, video=video)
-        notesForm = NotesForm(instance=note)
-    return notesForm
+        listNotes = Notes.objects.all().filter(
+            user=request.user, video=video)
+    else:
+        listNotes = []
+    return listNotes
 
 
 def get_video_access(request, video, slug_private):
@@ -411,7 +420,8 @@ def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
     video = get_object_or_404(Video, id=id)
-    notesForm = get_note_form(request, video)
+    notesForm = NotesForm()
+    listNotes = get_note_list(request, video)
     channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
     theme = get_object_or_404(
         Theme, channel=channel, slug=slug_t) if slug_t else None
@@ -437,6 +447,7 @@ def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
                 'video': video,
                 'theme': theme,
                 'notesForm': notesForm,
+                'listNotes': listNotes,
                 'playlist': playlist,
                 'more_data': more_data
             }
@@ -469,7 +480,8 @@ def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
                     'form': form,
                     'notesForm': notesForm,
                     'playlist': playlist,
-                    'more_data': more_data
+                    'more_data': more_data,
+                    'listNotes': listNotes
                 }
             )
         elif request.user.is_authenticated():
@@ -589,26 +601,92 @@ def video_delete(request, slug=None):
 @login_required(redirect_field_name='referrer')
 def video_notes(request, slug):
     video = get_object_or_404(Video, slug=slug)
+    if (request.method == 'POST'):
+        action = action = request.POST.get('action').split('_')[0]
+        if action in NOTE_ACTION:
+            return eval('video_note_{0}(request, slug)'.format(action))
+    listNotes = get_note_list(request, video)
     notesForm = NotesForm()
+    return render(request, 'videos/video_notes.html', {
+        'video': video,
+        'listNotes': listNotes,
+        'notesForm': notesForm}
+    )
 
+
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+def video_note_get(request, slug):
+    video = get_object_or_404(Video, slug=slug)
+    note = get_object_or_404(Notes,
+                             user=request.user, video=video,
+                             timestamp=request.POST.get('timestamp'))
+    if (request.user != note.user
+            and not request.user.is_superuser):
+        messages.add_message(
+            request, messages.ERROR,
+            _(u'You cannot see this note.'))
+        raise PermissionDenied
+    some_data_to_dump = {
+        'status': "success",
+        'note': note.note,
+        'timestamp': note.timestamp
+    }
+    data = json.dumps(some_data_to_dump)
+    return HttpResponse(data, content_type='application/json')
+
+
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+def video_note_save(request, slug):
+    video = get_object_or_404(Video, slug=slug)
+    notesForm = NotesForm()
     if request.method == "POST":
         notesForm = NotesForm(request.POST)
         if notesForm.is_valid():
             note, created = Notes.objects.get_or_create(
-                user=request.user, video=video)
-            note.note = notesForm.cleaned_data["note"]
+                user=request.user, video=video,
+                timestamp=request.POST.get('timestamp'))
+            if created or request.POST.get('action') == 'save_edit':
+                note.note = request.POST.get('note')
+            else:
+                note.note = note.note + "\n" + request.POST.get('note')
             note.save()
+            notesForm = NotesForm()
             messages.add_message(
                 request, messages.INFO, _('The note has been saved.'))
         else:
             messages.add_message(
                 request, messages.ERROR,
                 _(u'One or more errors have been found in the form.'))
+    listNotes = get_note_list(request, video)
+    return render(request, 'videos/video_notes.html',
+                  {'video': video,
+                   'listNotes': listNotes,
+                   'notesForm': notesForm})
 
-    return render(request, 'videos/video_notes.html', {
-        'video': video,
-        'notesForm': notesForm}
-    )
+
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+def video_note_remove(request, slug):
+    video = get_object_or_404(Video, slug=slug)
+    notesForm = NotesForm()
+    note = get_object_or_404(Notes,
+                             user=request.user, video=video,
+                             timestamp=request.POST['timestamp'])
+    if request.user != note.user and not request.user.is_superuser:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot delete this note.'))
+        raise PermissionDenied
+    if request.method == "POST":
+        note.delete()
+        messages.add_message(
+            request, messages.INFO, _('The note has been deleted.'))
+    listNotes = get_note_list(request, video)
+    return render(request, 'videos/video_notes.html',
+                  {'video': video,
+                   'listNotes': listNotes,
+                   'notesForm': notesForm})
 
 
 @csrf_protect
@@ -641,7 +719,7 @@ def video_oembed(request):
     data = {}
     data['type'] = "video"
     data['version'] = "1.0"
-    data['provider_name'] = TITLE_ETB
+    data['provider_name'] = TITLE_SITE
     protocole = "https" if request.is_secure() else "http"
     data['provider_url'] = "%s://%s" % (protocole,
                                         get_current_site(request).domain)
