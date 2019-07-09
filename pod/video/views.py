@@ -58,10 +58,10 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     }
 )
 
-TITLE_ETB = TEMPLATE_VISIBLE_SETTINGS[
-    'TITLE_ETB'] if (
-        TEMPLATE_VISIBLE_SETTINGS.get('TITLE_ETB')
-) else 'University'
+TITLE_SITE = TEMPLATE_VISIBLE_SETTINGS[
+    'TITLE_SITE'] if (
+        TEMPLATE_VISIBLE_SETTINGS.get('TITLE_SITE')
+) else 'pod'
 
 # ############################################################################
 # CHANNEL
@@ -641,7 +641,7 @@ def video_oembed(request):
     data = {}
     data['type'] = "video"
     data['version'] = "1.0"
-    data['provider_name'] = TITLE_ETB
+    data['provider_name'] = TITLE_SITE
     protocole = "https" if request.is_secure() else "http"
     data['provider_url'] = "%s://%s" % (protocole,
                                         get_current_site(request).domain)
