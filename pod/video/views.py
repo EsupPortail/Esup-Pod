@@ -18,7 +18,6 @@ from django.urls import reverse
 from pod.video.models import Video
 from pod.video.models import Channel
 from pod.video.models import Theme
-# from pod.video.models import Notes
 from pod.video.models import CollaborativeNotes as Notes
 from pod.video.models import ViewCount
 from tagging.models import TaggedItem
@@ -28,7 +27,6 @@ from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
-# from pod.video.forms import NotesForm
 from pod.video.forms import CollaborativeNotesForm as NotesForm
 
 
