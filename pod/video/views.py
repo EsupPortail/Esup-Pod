@@ -717,7 +717,7 @@ def video_oembed(request):
     data = {}
     data['type'] = "video"
     data['version'] = "1.0"
-    data['provider_name'] = TITLE_SITE
+    data['provider_name'] = TITLE_ETB
     protocole = "https" if request.is_secure() else "http"
     data['provider_url'] = "%s://%s" % (protocole,
                                         get_current_site(request).domain)
