@@ -22,7 +22,7 @@ from ..models import EncodingAudio
 from ..models import PlaylistVideo
 from ..models import EncodingLog
 from ..models import EncodingStep
-from ..models import Notes
+from ..models import CollaborativeNotes as Notes
 
 from datetime import datetime
 from datetime import timedelta
@@ -946,21 +946,25 @@ class NotesTestCase(TestCase):
             video=Video.objects.get(id=1)
         )
         self.assertTrue(isinstance(note, Notes))
-        self.assertEqual(note.__str__(), "%s-%s" %
-                         (note.user.username, note.video))
+        self.assertEqual(note.__str__(), "%s-%s-%s" %
+                         (note.user.username, note.video,
+                         note.timestamp))
         self.assertEqual(note.note, None)
+        self.assertEqual(note.timestamp, None)
         print(" --->  test_NotesTestCase_null_attributs : OK !")
 
     def test_NotesTestCase_with_attributs(self):
         note = Notes.objects.create(
             user=User.objects.get(username="pod"),
             video=Video.objects.get(id=1),
-            note="coucou"
+            note="coucou", timestamp=0
         )
         self.assertTrue(isinstance(note, Notes))
-        self.assertEqual(note.__str__(), "%s-%s" %
-                         (note.user.username, note.video))
+        self.assertEqual(note.__str__(), "%s-%s-%s" %
+                         (note.user.username, note.video,
+                         note.timestamp))
         self.assertEqual(note.note, "coucou")
+        self.assertEqual(note.timestamp, 0)
         print(" --->  test_NotesTestCase_with_attributs : OK !")
 
     def test_delete_object(self):
