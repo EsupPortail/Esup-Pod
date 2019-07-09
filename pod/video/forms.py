@@ -649,7 +649,6 @@ class CollaborativeNotesForm(forms.ModelForm):
         self.fields["timestamp"].widget = forms.HiddenInput()
         self.fields["timestamp"].widget.attrs["class"] = "form-control"
         self.fields["timestamp"].widget.attrs["autocomplete"] = "off"
-        
 
     class Meta(object):
         model = Notes
