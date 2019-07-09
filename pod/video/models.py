@@ -1042,8 +1042,8 @@ class EncodingStep(models.Model):
 class CollaborativeNotes(models.Model):
     user = models.ForeignKey(User)
     video = models.ForeignKey(Video)
-    note = models.TextField(_('Note'))
-    timestamp = models.IntegerField(_('Time'))
+    note = models.TextField(_('Note'), null=True, blank=True)
+    timestamp = models.IntegerField(_('Time'), null=True, blank=True)
 
     class Meta:
         verbose_name = _("Note")
