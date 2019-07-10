@@ -14,9 +14,9 @@ from pod.authentication.forms import GroupAdminForm
 # which acts a bit like a singleton
 
 USE_ESTABLISHMENT_FIELD = getattr(
-        settings,
-        'USE_ESTABLISHMENT_FIELD',
-        False)
+    settings,
+    'USE_ESTABLISHMENT_FIELD',
+    False)
 
 
 class OwnerInline(admin.StackedInline):
@@ -75,7 +75,7 @@ class UserAdmin(BaseUserAdmin):
 
     def owner_hashkey(self, obj):
         return "%s" % Owner.objects.get(user=obj).hashkey
-    
+
     def owner_establishment(self, obj):
         return "%s" % Owner.objects.get(user=obj).establishment
     owner_establishment.short_description = _('Establishment')
