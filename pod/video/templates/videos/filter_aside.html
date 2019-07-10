@@ -6,43 +6,45 @@
 <i data-feather="sliders"></i>&nbsp;{% trans "Filters"%}</h4>
 
 <form action="{% url 'videos' %}" method="get" id="filters">
-<fieldset>
-<legend  class="h5"><i data-feather="users"></i> {% trans "Users" %} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
-<div class="form-group">
-    <input placeholder="{% trans "Search" %}" id="ownerbox" type="text" class="form-control">
-</div>
-<div class="form-group navList owners" id="collapseFilterOwner" style="max-height:300px; overflow:auto;">
-    {% for owner in OWNERS %}
-    {% if owner.username in owners %}
-    <div class="form-check">
-    <input class="form-check-input" type="checkbox" name="owner" value="{{owner.username}}" id="id{{owner.username}}" checked>
-    <label class="form-check-label" for="id{{owner.username}}">
-        {{owner.first_name}} {{owner.last_name}} ({{owner.username}})
-    </label>
-    </div>
-    {% endif %}
-    {% endfor %}  
-</div>
-</fieldset>
+{% if not USE_RGPD or user.is_authenticated %}
+  <fieldset>
+  <legend  class="h5"><i data-feather="users"></i> {% trans "Users" %} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
+  <div class="form-group">
+      <input placeholder="{% trans "Search" %}" id="ownerbox" type="text" class="form-control">
+  </div>
+  <div class="form-group navList owners" id="collapseFilterOwner" style="max-height:300px; overflow:auto;">
+      {% for owner in OWNERS %}
+      {% if owner.username in owners %}
+      <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="owner" value="{{owner.username}}" id="id{{owner.username}}" checked>
+      <label class="form-check-label" for="id{{owner.username}}">
+          {{ owner.first_name }} {{ owner.last_name }} {% if not USE_RGPD %} ({{ owner.username }}) {% endif %}
+      </label>
+      </div>
+      {% endif %}
+      {% endfor %}  
+  </div>
+  </fieldset>
+{% endif %}
 
 <fieldset class="border-right border-bottom mt-2">
-<legend class="h5"><i data-feather="tv"></i> {% trans "Types"%} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
-<div id="filterType">
-<div class="form-group collapse" id="collapseFilterType">
-{% for type in TYPES %}
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="type" 
-      value="{{type.slug}}" id="id{{type.slug}}" {% if type.slug in types %}checked{% endif %}>
-      <label class="form-check-label" for="id{{type.slug}}">
-        {{type}}
-      </label>
-    </div>
-{%endfor%}
-</div>
-{% if TYPES.count > 5 %}
-<span class="badge badge-light float-right"><a class="collapsed" data-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType"></a></span>
-{% endif %}
-</div><!-- type -->
+  <legend class="h5"><i data-feather="tv"></i> {% trans "Types"%} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
+  <div id="filterType">
+  <div class="form-group collapse" id="collapseFilterType">
+  {% for type in TYPES %}
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="type" 
+        value="{{type.slug}}" id="id{{type.slug.split|join:'-'}}_type" {% if type.slug in types %}checked{% endif %}>
+        <label class="form-check-label" for="id{{type.slug.split|join:'-'}}_type">
+          {{type}}
+        </label>
+      </div>
+  {%endfor%}
+  </div>
+  {% if TYPES.count > 5 %}
+  <span class="badge badge-light float-right"><a class="collapsed" data-toggle="collapse" href="#collapseFilterType" aria-expanded="false" aria-controls="collapseFilterType"></a></span>
+  {% endif %}
+  </div><!-- type -->
 </fieldset>
 
 <!-- <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button> -->
@@ -54,8 +56,8 @@
 {% for discipline in DISCIPLINES %}
     <div class="form-check">
       <input class="form-check-input" type="checkbox" name="discipline" 
-      value="{{discipline.slug}}" id="id{{discipline.slug}}" {% if discipline.slug in disciplines %}checked{% endif %}>
-      <label class="form-check-label" for="id{{discipline.slug}}">
+      value="{{discipline.slug}}" id="id{{discipline.slug.split|join:'-'}}_disc" {% if discipline.slug in disciplines %}checked{% endif %}>
+      <label class="form-check-label" for="id{{discipline.slug.split|join:'-'}}_disc">
         {{discipline}}
       </label>
     </div>
@@ -78,8 +80,8 @@
 {% for tag in tagslist %}
 <div class="form-check">
   <input class="form-check-input" type="checkbox" name="tag" 
-  value="{{tag.name}}" id="id{{tag.name}}" {% if tag.name in tags_slug %}checked{% endif %}>
-  <label class="form-check-label" for="id{{tag.name}}">
+  value="{{tag.name}}" id="id{{tag.name.split|join:'-'}}_tag" {% if tag.name in tags_slug %}checked{% endif %}>
+  <label class="form-check-label" for="id{{tag.name.split|join:'-'}}_tag">
     {{tag.name}}
   </label>
 </div>

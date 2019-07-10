@@ -15,9 +15,11 @@
       <li class="nav-item" id="nav-channels">
         <button class="nav-link" data-toggle="modal" data-target=".chaines-modal"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Channels" %}</button>
       </li>
+      {% if not USE_RGPD or user.is_authenticated %}
       <li class="nav-item" id="nav-users">
         <button class="nav-link" data-toggle="modal" data-target=".users-modal"><i data-feather="users" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Users"%}</button>
       </li>
+      {% endif %}
        <li class="nav-item" id="nav-types">
         <button class="nav-link" data-toggle="modal" data-target=".types-modal"><i data-feather="tv" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Types"%}</button>
       </li>
@@ -42,7 +44,7 @@
   </div>
   <form class="form-inline my-2 my-lg-0 flex-2" action="{% url "search_videos" %}" id="nav-search">
     <label for="s" class="d-lg-none">
-      <i data-feather="search" class="nav-link-icone"></i> <span class="sr-only">{% trans "Search" %}</span> 
+      <i data-feather="search" class="nav-link-icone"></i> <span class="sr-only">{% trans "Search" %}</span>
     </label>
     <input class="form-control mr-sm-2" id="s" placeholder="{% trans "Search" %}" aria-label="{% trans "Search" %}" type="search" name="q" >
   </form>

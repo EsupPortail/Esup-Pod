@@ -1,4 +1,3 @@
-
 <video id="podvideoplayer" class="video-js vjs-default-skin {% if not request.GET.is_iframe %}vjs-16-9{% endif %} vjs-big-play-centered" {% if request.GET.is_iframe %}preload="none"{% else %}preload="auto"{% endif %} {% if not request.GET.is_iframe %}height="360"{% endif %}
 poster="{{video.get_thumbnail_url}}" data-setup='{}' {% if request.GET.nocontrol and request.GET.nocontrol == 'false' %} autoplay {%else%} controls {% if request.GET.autoplay and request.GET.autoplay == 'true' %} autoplay muted{%endif%}{%endif%}{% if request.GET.loop and request.GET.loop == 'true' %} loop{%endif%}>
   <p class="vjs-no-js">
