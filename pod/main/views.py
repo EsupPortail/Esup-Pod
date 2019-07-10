@@ -52,16 +52,17 @@ def download_file(request):
 
 def get_dest_email(owner, video, form_subject):
     dest_email = []
-    v_estab = video.owner.owner.establishment.lower()
     if CUSTOM_CONTACT_US:
-        if form_subject in USER_CONTACT_EMAIL_CASE:
+        if video and form_subject in USER_CONTACT_EMAIL_CASE:
             dest_email.append(video.owner.email)
         else:
-            if USE_ESTABLISHMENT:
-                if v_estab in dict(MANAGERS):
-                    dest_email.append(dict(MANAGERS)[v_estab])
-                else:
-                    dest_email = CONTACT_US_EMAIL
+            v_estab = ""
+            if owner:
+                v_estab = owner.establishment.lower()
+            if video:
+                v_estab = video.owner.owner.establishment.lower()
+            if USE_ESTABLISHMENT and v_estab in dict(MANAGERS):
+                dest_email.append(dict(MANAGERS)[v_estab])
             else:
                 dest_email = CONTACT_US_EMAIL
     else:
