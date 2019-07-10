@@ -24,6 +24,13 @@ CONTACT_US_EMAIL = getattr(
     settings, 'CONTACT_US_EMAIL', [
         mail for name, mail in getattr(settings, 'MANAGERS')])
 DEFAULT_FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@univ.fr')
+USER_CONTACT_EMAIL_CASE = getattr(
+        settings, 'USER_CONTACT_EMAIL_CASE', [])
+CUSTOM_CONTACT_US = getattr(
+        settings, 'CUSTOM_CONTACT_US', False)
+USE_ESTABLISHMENT = getattr(
+        settings, 'USE_ESTABLISHMENT_FIELD', False)
+MANAGERS = getattr(settings, "MANAGERS", [])
 
 
 @csrf_protect
@@ -41,6 +48,25 @@ def download_file(request):
         return response
     else:
         raise PermissionDenied
+
+
+def get_dest_email(owner, video, form_subject):
+    dest_email = []
+    v_estab = video.owner.owner.establishment.lower()
+    if CUSTOM_CONTACT_US:
+        if form_subject in USER_CONTACT_EMAIL_CASE:
+            dest_email.append(video.owner.email)
+        else:
+            if USE_ESTABLISHMENT:
+                if v_estab in dict(MANAGERS):
+                    dest_email.append(dict(MANAGERS)[v_estab])
+                else:
+                    dest_email = CONTACT_US_EMAIL
+            else:
+                dest_email = CONTACT_US_EMAIL
+    else:
+        dest_email = [owner.email] if owner else CONTACT_US_EMAIL
+    return dest_email
 
 
 @csrf_protect
@@ -105,7 +131,7 @@ def contact_us(request):
                 'url_referrer': form.cleaned_data['url_referrer']
             })
 
-            dest_email = [owner.email] if owner else CONTACT_US_EMAIL
+            dest_email = get_dest_email(owner, video, form_subject)
 
             msg = EmailMultiAlternatives(
                 subject, text_content, email, dest_email)
