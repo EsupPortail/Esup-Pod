@@ -4,7 +4,9 @@ import unicodedata
 import json
 import logging
 import hashlib
+import pytz
 
+from datetime import datetime
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -509,6 +511,11 @@ class Video(models.Model):
     @property
     def establishment(self):
         return self.owner.owner.establishment
+
+    def year_elapsed(self):
+        utc = pytz.UTC
+        now = utc.localize(datetime.now())
+        return int((now - self.date_added).days / 365)
 
     @property
     def viewcount(self):
