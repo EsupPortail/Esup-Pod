@@ -3554,7 +3554,7 @@ msgstr "Afficher toutes les vidéos"
 
 #: pod/video/templates/videos/link_video.html:3
 msgid "Edit the video"
-msgstr "Éditer le chapitre"
+msgstr "Éditer la vidéo"
 
 #: pod/video/templates/videos/link_video.html:5
 msgid "Complete the video"
