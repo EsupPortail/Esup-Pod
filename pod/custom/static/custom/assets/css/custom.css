@@ -44,7 +44,7 @@ html,body{
   justify-content: space-around !important;
   margin-top: 10px !important;
 }
-.btn{text-transform: capitalize;}
+.btn::first-letter{text-transform: uppercase ;}
 .text-center .btn{
   max-width: calc(50% - 5px) !important;
   white-space: unset !important;
@@ -58,7 +58,7 @@ html,body{
 #form_chapter .panel-heading.bg-primary{ background-color: transparent !important; }
 a{ color: #4d8197 !important; }
 a:hover{ color: #4d8197 !important; text-decoration: none; }
-.carousel-caption.d-none.d-md-block {background-color: rgba(00,0,0,.2);border-radius: 5px;}
+.carousel-caption.d-none.d-md-block {background-color: rgba(0,0,0,.5);border-radius: 5px;}
 .carousel-caption .title{ color: #fff !important; }
 .navbar{ background-color: #102636 !important; color: #fff; min-height: 35px; }
 .navbar-items-pod{ background-color: inherit !important; padding: 0 !important; margin-top: .5em;}
