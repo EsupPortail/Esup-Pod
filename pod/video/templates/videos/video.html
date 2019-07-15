@@ -214,31 +214,14 @@ body {
       </div>
 </div>
 {% endif %}
-{% if request.user.is_authenticated and notesForm %}
 <div class="card card-body p-2 mt-1" id="card-takenote">
 <h5 class="card-title pl-2">
   <i data-feather="edit"></i>&nbsp;{% trans "take Note"%}
 </h5>
-<div class="card-text">
-    {% if request.user.is_authenticated %}
+<div class="card-text text-center">
     {% include 'videos/video_notes.html' %}
-    {% else %}
-    <p>{% trans 'You must be logged in to take notes.' %}</p>
-    {% endif %}
 </div>
 </div>
-{% else %}
-{% if not request.user.is_authenticated %}
-<div class="card card-body p-2 mt-1" id="card-takenote">
-<h5 class="card-title pl-2">
-  <i data-feather="edit"></i>&nbsp;{% trans "take Note"%}
-</h5>
-<div class="card-text">
-    <p>{% trans 'You must be logged in to take notes.' %}</p>
-</div>
-</div>
-{% endif %}
-{% endif %}
 {% include 'aside.html' %}
 {% endblock page_aside %}
 
