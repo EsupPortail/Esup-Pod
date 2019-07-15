@@ -55,6 +55,7 @@ html,body{
 }
 .list-group-item.list-group-item-dark.m-0.p-1.small.text-center {background-color : transparent !important;}
 #form_folder .btn{padding: 0 !important;}
+#form_chapter .panel-heading.bg-primary{ background-color: transparent !important; }
 a{ color: #4d8197 !important; }
 a:hover{ color: #4d8197 !important; text-decoration: none; }
 .carousel-caption.d-none.d-md-block {background-color: rgba(00,0,0,.2);border-radius: 5px;}
