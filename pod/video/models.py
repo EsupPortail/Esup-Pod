@@ -104,6 +104,14 @@ DEFAULT_THUMBNAIL = getattr(
     settings, 'DEFAULT_THUMBNAIL', 'img/default.png')
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
 
+NOTES_STATUS = getattr(
+    settings, 'NOTES_STATUS', (
+        ('0', _('Private -')),
+        ('1', _('Private +')),
+        ('2', _('Public'))
+    )
+)
+
 ##
 # Settings exposed in templates
 #
@@ -1039,16 +1047,35 @@ class EncodingStep(models.Model):
         return "Step for encoding video %s" % (self.video.id)
 
 
-class CollaborativeNotes(models.Model):
+class Notes(models.Model):
     user = models.ForeignKey(User)
     video = models.ForeignKey(Video)
     note = models.TextField(_('Note'), null=True, blank=True)
-    timestamp = models.IntegerField(_('Time'), null=True, blank=True)
 
     class Meta:
         verbose_name = _("Note")
         verbose_name_plural = _("Notes")
-        unique_together = ("video", "user", "timestamp")
+        unique_together = ("video", "user")
+
+    def __str__(self):
+        return "%s-%s" % (self.user.username, self.video)
+
+
+class AdvancedNotes(models.Model):
+    user = models.ForeignKey(User)
+    video = models.ForeignKey(Video)
+    status = models.CharField(
+        _('Note availibility level'), max_length=1,
+        choices=NOTES_STATUS, default="0",
+        help_text=_("Select an availability level "
+                    "for the note."))
+    note = models.TextField(_('Note'), null=True, blank=True)
+    timestamp = models.IntegerField(_('Time'), null=True, blank=True)
+
+    class Meta:
+        verbose_name = _("Advanced Note")
+        verbose_name_plural = _("Advanced Notes")
+        unique_together = ("video", "user", "timestamp", "status")
 
     def __str__(self):
         return "%s-%s-%s" % (self.user.username, self.video, self.timestamp)
@@ -1069,6 +1096,30 @@ class CollaborativeNotes(models.Model):
             return self.note[:10] + "..."
         else:
             return self.note
+
+
+class NoteComments(models.Model):
+    user = models.ForeignKey(User)
+    note = models.ForeignKey(AdvancedNotes)
+    status = models.CharField(
+        _('Comment availibility level'), max_length=1,
+        choices=NOTES_STATUS, default="0",
+        help_text=_("Select an availability level "
+                    "for the comment."))
+    comment = models.TextField(_('Comment'), null=True, blank=True)
+
+    class Meta:
+        verbose_name = _("Note comment")
+        verbose_name_plural = _("Note comments")
+
+    def __str__(self):
+        return "%s-%s-%s" % (self.user.username, self.note, self.comment)
+    
+    def comstr(self):
+        if len(self.comment) > 20:
+            return self.comment[:20] + "..."
+        else:
+            return self.comment
 
 
 class VideoToDelete(models.Model):
