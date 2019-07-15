@@ -677,7 +677,8 @@ class NoteCommentsForm(forms.ModelForm):
         super(NoteCommentsForm, self).__init__(*args, **kwargs)
         # self.fields["user"].widget = forms.HiddenInput()
         # self.fields["note"].widget = forms.HiddenInput()
-        self.fields["comment"].widget.attrs["class"] = "form-control input_comment"
+        self.fields["comment"].widget.attrs["class"] = "form-control \
+            input_comment"
         self.fields["comment"].widget.attrs["autocomplete"] = "off"
         self.fields["comment"].widget.attrs["rows"] = 5
         self.fields["comment"].widget.attrs["cols"] = 20

@@ -1114,7 +1114,7 @@ class NoteComments(models.Model):
 
     def __str__(self):
         return "%s-%s-%s" % (self.user.username, self.note, self.comment)
-    
+
     def comstr(self):
         if len(self.comment) > 20:
             return self.comment[:20] + "..."

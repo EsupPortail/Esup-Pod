@@ -18,7 +18,7 @@ from django.urls import reverse
 from pod.video.models import Video
 from pod.video.models import Channel
 from pod.video.models import Theme
-from pod.video.models import Notes, AdvancedNotes, NoteComments
+from pod.video.models import AdvancedNotes, NoteComments
 from pod.video.models import ViewCount
 from tagging.models import TaggedItem
 
@@ -27,7 +27,7 @@ from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
-from pod.video.forms import NotesForm, AdvancedNotesForm, NoteCommentsForm
+from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
 
 
 import json
@@ -339,7 +339,7 @@ def is_in_video_groups(user, video):
 def get_adv_note_list(request, video):
     if request.user.is_authenticated:
         filter = (
-            Q(user=request.user) | 
+            Q(user=request.user) |
             (Q(video__owner=request.user) & Q(status='1')) |
             Q(status='2')
         )
@@ -353,7 +353,7 @@ def get_adv_note_com_list(request, id):
     note = get_object_or_404(AdvancedNotes, id=id)
     if request.user.is_authenticated:
         filter = (
-            Q(user=request.user) | 
+            Q(user=request.user) |
             (Q(note__video__owner=request.user) & Q(status='1')) |
             Q(status='2')
         )
@@ -633,11 +633,11 @@ def video_notes(request, slug):
 def video_note_get(request, slug):
     if request.method == "POST":
         note = get_object_or_404(AdvancedNotes,
-                                id=request.POST.get('idnote'))
+                                 id=request.POST.get('idnote'))
         if (not (request.user == note.user
-                or (request.user == note.video.owner and note.status == '1')
-                or note.status == '2'
-                or request.user.is_superuser)):
+                 or (request.user == note.video.owner and note.status == '1')
+                 or note.status == '2'
+                 or request.user.is_superuser)):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'You cannot see this note.'))
@@ -670,7 +670,8 @@ def video_note_save(request, slug):
         advNotesForm = AdvancedNotesForm(request.POST)
         if advNotesForm.is_valid():
             if request.POST.get('idnote'):
-                note, created = get_object_or_404(AdvancedNotes,
+                note, created = get_object_or_404(
+                    AdvancedNotes,
                     id=request.POST.get('idnote')), False
             else:
                 note, created = AdvancedNotes.objects.get_or_create(
@@ -706,7 +707,7 @@ def video_note_remove(request, slug):
     advNotesForm = AdvancedNotesForm()
     if request.method == "POST":
         note = get_object_or_404(AdvancedNotes,
-                                id=request.POST.get('idnote'))
+                                 id=request.POST.get('idnote'))
         if request.user != note.user and not request.user.is_superuser:
             messages.add_message(
                 request, messages.ERROR, _(u'You cannot delete this note.'))
@@ -742,9 +743,10 @@ def video_note_com_get(request, slug, id):
     if request.method == "POST":
         com = get_object_or_404(NoteComments, id=request.POST.get('idcom'))
         if (not (request.user == com.user
-                or (request.user == com.note.video.owner and com.status == '1')
-                or com.status == '2'
-                or request.user.is_superuser)):
+                 or (request.user == com.note.video.owner
+                     and com.status == '1')
+                 or com.status == '2'
+                 or request.user.is_superuser)):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'You cannot see this comment.'))
@@ -775,7 +777,8 @@ def video_note_com_save(request, slug, id):
         noteCommentsForm = NoteCommentsForm(request.POST)
         if noteCommentsForm.is_valid():
             if request.POST.get('action') == 'save_edit':
-                com = get_object_or_404(NoteComments, id=request.POST.get('idcom'))
+                com = get_object_or_404(
+                    NoteComments, id=request.POST.get('idcom'))
             else:
                 com = NoteComments.objects.create(
                     user=request.user, note=note)
