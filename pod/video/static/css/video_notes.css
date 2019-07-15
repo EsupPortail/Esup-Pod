@@ -1,32 +1,69 @@
-#id_notes {
+/** FORM UPDATE NOTE OR COMMENT LIST **/
+#update_video_notes_form, #update_video_notes_com_form {
+    display: inline-block;
+    margin: 0.3em;
+}
+
+/** FORM INSERT NOTE OR COMMENT **/
+#video_notes_form, #video_notes_comments_form {
+    margin: 0.5em 0.2em 0em 0.2em;
+}
+
+/** NOTE OR COMMENT LIST **/
+#id_notes, #id_comments {
     border: solid 1px #999;
     height: 200px;
     overflow: auto;
 }
 
-#id_notes div {
+#id_notes div, #id_comments div {
     cursor: pointer;
     padding: 2px 0 3px 0;
     white-space: nowrap;
     overflow: hidden;
 }
 
-#id_notes div:nth-child(odd) {
+#id_notes div:nth-child(odd), #id_comments div:nth-child(odd) {
     background-color: #5BC2EC;
 }
 
-#id_notes div:nth-child(even) {
+#id_notes div:nth-child(even), #id_comments div:nth-child(even) {
     background-color: #bef;
 }
 
-#id_notes div:hover {
+#id_notes div:hover, #id_comments div:hover {
     background-color: #ECA809;
 }
 
+#id_notes div span, #id_comments div form.view_video_notes_com_form {
+    margin: 0.2em;
+}
+
+#id_notes div form, #id_comments div form.edit_video_notes_com_form
+#id_comments div form.remove_video_notes_com_form  {
+    margin: 0.1em;
+}
+
+#id_notes div span:nth-child(2), #id_comments div span:nth-child(1) {
+    font-style: italic;
+}
+
+/** GRID DISPLAYING **/
 #id_notes div {
     display: grid;
-    grid-template-rows: auto;
-    grid-template-areas: "timestamp note button"
+    grid-template-areas: "timestamp timestamp note note note buttonE buttonR"
+                         "timestamp timestamp note note note buttonV buttonC";
+    grid-auto-rows: auto;
+    align-items: center;
+    grid-auto-columns: 14%;
+}
+
+#id_comments div {
+    display: grid;
+    grid-template-areas: "comment comment comment buttonE buttonR";
+    grid-auto-rows: auto;
+    align-items: center;
+    grid-auto-columns: 20%;
 }
 
 #id_notes div span.timestamp {
@@ -39,15 +76,28 @@
     justify-self: center;
 }
 
-#id_notes div button{
-    grid-area: button;
+#id_comments div form.view_video_notes_com_form {
+    grid-area: comment;
+    justify-self: left;
+}
+
+/** GRID BUTTONS FOR NOTE OR COMMENT MANAGEMENT **/
+#id_notes div form.edit_video_notes_form, #id_comments div form.edit_video_notes_com_form {
+    grid-area: buttonE;
     justify-self: end;
 }
 
-#id_notes div span, #id_notes div button{
-    margin: 0.3em 1em;
+#id_notes div form.remove_video_notes_form, #id_comments div form.remove_video_notes_com_form {
+    grid-area: buttonR;
+    justify-self: end;
 }
 
-#id_notes div span:nth-child(2) {
-    font-style: italic;
+#id_notes div form.view_video_notes_form {
+    grid-area: buttonV;
+    justify-self: end;
+}
+
+#id_notes div form.comment_video_notes_form {
+    grid-area: buttonC;
+    justify-self: end;
 }
