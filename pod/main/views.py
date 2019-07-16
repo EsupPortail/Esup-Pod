@@ -24,6 +24,13 @@ CONTACT_US_EMAIL = getattr(
     settings, 'CONTACT_US_EMAIL', [
         mail for name, mail in getattr(settings, 'MANAGERS')])
 DEFAULT_FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@univ.fr')
+MANAGERS = getattr(settings, "MANAGERS", [])
+USE_ESTABLISHMENT = getattr(
+        settings, 'USE_ESTABLISHMENT_FIELD', False)
+USER_CONTACT_EMAIL_CASE = getattr(
+        settings, 'USER_CONTACT_EMAIL_CASE', [])
+CUSTOM_CONTACT_US = getattr(
+        settings, 'CUSTOM_CONTACT_US', False)
 
 
 @csrf_protect
@@ -41,6 +48,33 @@ def download_file(request):
         return response
     else:
         raise PermissionDenied
+
+
+def get_dest_email(owner, video, form_subject):
+    dest_email = []
+    v_owner = video.owner.owner
+    # Si activation de la fonctionnalité de mail custom
+    if CUSTOM_CONTACT_US:
+        # vérifier si le sujet du mail est attribué
+        # au propriétaire de la vidéo
+        if form_subject in USER_CONTACT_EMAIL_CASE:
+            return [video.owner.email]
+        else:
+            # Si la fonctionnalité des etablissements est activée
+            if USE_ESTABLISHMENT:
+                v_estab = v_owner.establishment.lower()
+                # vérifier si le mail du manager de l'etablissement
+                # est renseigné
+                if v_estab in dict(MANAGERS):
+                    return [dict(MANAGERS)[v_estab]]
+            # Sinon le destionataire = le(s) manager(s) definis
+            # Dans la variable (settings)MANAGERS
+            dest_email = CONTACT_US_EMAIL
+    else:
+        # Sinon aucune envie d'utiliser cette fonctionnalité
+        # On utilise le fonctionnement de base
+        dest_email = [owner.email] if owner else CONTACT_US_EMAIL
+    return dest_email
 
 
 @csrf_protect
@@ -104,8 +138,8 @@ def contact_us(request):
                 'message': message.replace("\n", "<br/>"),
                 'url_referrer': form.cleaned_data['url_referrer']
             })
-
-            dest_email = [owner.email] if owner else CONTACT_US_EMAIL
+            dest_email = []
+            dest_email = get_dest_email(owner, video, form_subject)
 
             msg = EmailMultiAlternatives(
                 subject, text_content, email, dest_email)
