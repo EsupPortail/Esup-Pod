@@ -101,3 +101,9 @@
     grid-area: buttonC;
     justify-self: end;
 }
+
+/** NOTE OR COMMENT FULL DISPLAY **/
+#id_notes.display_note, #id_comments.display_comment {
+    text-align: justify;
+    padding: 0.1em 0.5em;
+}

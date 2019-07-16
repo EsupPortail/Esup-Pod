@@ -121,11 +121,13 @@ var display_note_com_edit = function(data) {
 var display_note_view = function(data) {
     $('#video_notes_form').remove();
     $( "div#id_notes" ).html(data['note']);
+    $( "div#id_notes" ).addClass("display_note");
 }
 
 var display_note_com_view = function(data) {
     $('#video_notes_comments_form').remove();
     $( "div#id_comments" ).html(data['comment']);
+    $( "div#id_comments" ).addClass("display_comment");
 }
 
 
