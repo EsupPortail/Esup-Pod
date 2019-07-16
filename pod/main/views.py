@@ -63,8 +63,8 @@ def get_dest_email(owner, video, form_subject):
             # Si la fonctionnalité des etablissements est activée
             if USE_ESTABLISHMENT:
                 v_estab = v_owner.establishment.lower()
-                # vérifier si le mail du manager de l'etablissement
-                # est renseigné
+                # vérifier si le mail du manager (de l'etablissement
+                # du propriétaire de la vidéo) est renseigné
                 if v_estab in dict(MANAGERS):
                     return [dict(MANAGERS)[v_estab]]
             # Sinon le destionataire = le(s) manager(s) definis
