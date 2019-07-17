@@ -52,7 +52,11 @@ def download_file(request):
 
 def get_dest_email(owner, video, form_subject):
     dest_email = []
-    v_owner = video.owner.owner
+    # Soit le owner a été spécifié
+    # Soit on le récupere via la video
+    # v_owner = instance de User
+    v_owner = owner if (
+        owner ) else video.owner
     # Si activation de la fonctionnalité de mail custom
     if CUSTOM_CONTACT_US:
         # vérifier si le sujet du mail est attribué
@@ -62,7 +66,7 @@ def get_dest_email(owner, video, form_subject):
         else:
             # Si la fonctionnalité des etablissements est activée
             if USE_ESTABLISHMENT:
-                v_estab = v_owner.establishment.lower()
+                v_estab = v_owner.owner.establishment.lower()
                 # vérifier si le mail du manager (de l'etablissement
                 # du propriétaire de la vidéo) est renseigné
                 if v_estab in dict(MANAGERS):
