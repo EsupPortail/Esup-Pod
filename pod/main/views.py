@@ -55,7 +55,23 @@ def download_file(request):
         raise PermissionDenied
 
 
-def get_dest_email(owner, video, form_subject):
+def get_manager_email(owner):
+    """ owner instanceOf User Model
+        return email of user's manager if exist
+        else return all managers email
+    """
+    # Si la fonctionnalité des etablissements est activée
+    if USE_ESTABLISHMENT and owner:
+        v_estab = owner.owner.establishment.lower()
+        # vérifier si le mail du manager (de l'etablissement
+        # du propriétaire de la vidéo) est renseigné
+        if v_estab in dict(MANAGERS):
+            print('send to ------> ', [dict(MANAGERS)[v_estab]])
+            return [dict(MANAGERS)[v_estab]]
+    return CONTACT_US_EMAIL
+
+
+def get_dest_email(owner, video, form_subject, request):
     dest_email = []
     # Soit le owner a été spécifié
     # Soit on le récupere via la video
@@ -64,9 +80,13 @@ def get_dest_email(owner, video, form_subject):
             owner) else getattr(
                     video, 'owner', None)
     # Si ni le owner ni la video a été renseigné
-    # le destinataire du mail sera le(s) manager(s)
-    # ou le support dans le cas de Grenoble
     if not v_owner:
+        # Vérifier si l'utilisateur est authentifié
+        # le manager de son etablissement sera le dest du mail
+        if request.user.is_authenticated():
+            return get_manager_email(request.user)
+        # Autrement le destinataire du mail sera le(s) manager(s)
+        # ou le support dans le cas de Grenoble
         return SUPPORT_EMAIL if (
             USE_SUPPORT_EMAIL) else CONTACT_US_EMAIL
 
@@ -75,18 +95,9 @@ def get_dest_email(owner, video, form_subject):
         # vérifier si le sujet du mail est attribué
         # au propriétaire de la vidéo
         if form_subject in USER_CONTACT_EMAIL_CASE:
-            return [video.owner.email]
+            dest_email = [v_owner.email]
         else:
-            # Si la fonctionnalité des etablissements est activée
-            if USE_ESTABLISHMENT:
-                v_estab = v_owner.owner.establishment.lower()
-                # vérifier si le mail du manager (de l'etablissement
-                # du propriétaire de la vidéo) est renseigné
-                if v_estab in dict(MANAGERS):
-                    return [dict(MANAGERS)[v_estab]]
-            # Sinon le destionataire = le(s) manager(s) definis
-            # Dans la variable (settings)MANAGERS
-            dest_email = CONTACT_US_EMAIL
+            dest_email = get_manager_email(v_owner)
     else:
         # Sinon aucune envie d'utiliser cette fonctionnalité
         # On utilise le fonctionnement de base
@@ -156,7 +167,12 @@ def contact_us(request):
                 'url_referrer': form.cleaned_data['url_referrer']
             })
             dest_email = []
-            dest_email = get_dest_email(owner, video, form_subject)
+            dest_email = get_dest_email(
+                owner,
+                video,
+                form_subject,
+                request
+                )
 
             msg = EmailMultiAlternatives(
                 subject, text_content, email, dest_email)
