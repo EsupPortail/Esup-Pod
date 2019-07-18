@@ -31,6 +31,11 @@ USER_CONTACT_EMAIL_CASE = getattr(
         settings, 'USER_CONTACT_EMAIL_CASE', [])
 CUSTOM_CONTACT_US = getattr(
         settings, 'CUSTOM_CONTACT_US', False)
+SUPPORT_EMAIL = getattr(
+    settings, "SUPPORT_EMAIL", []
+)
+USE_SUPPORT_EMAIL = getattr(
+        settings, "USE_SUPPORT_EMAIL", False)
 
 
 @csrf_protect
@@ -56,7 +61,15 @@ def get_dest_email(owner, video, form_subject):
     # Soit on le récupere via la video
     # v_owner = instance de User
     v_owner = owner if (
-        owner ) else video.owner
+            owner) else getattr(
+                    video, 'owner', None)
+    # Si ni le owner ni la video a été renseigné
+    # le destinataire du mail sera le(s) manager(s)
+    # ou le support dans le cas de Grenoble
+    if not v_owner:
+        return SUPPORT_EMAIL if (
+            USE_SUPPORT_EMAIL) else CONTACT_US_EMAIL
+
     # Si activation de la fonctionnalité de mail custom
     if CUSTOM_CONTACT_US:
         # vérifier si le sujet du mail est attribué
