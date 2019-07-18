@@ -14,7 +14,7 @@ import time
 import billiard
 
 from timeit import default_timer as timer
-from voiceActivityDetector import VoiceActivityDetector
+from pod.video.voiceActivityDetector import VoiceActivityDetector
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomFileModel
@@ -192,7 +192,10 @@ def saveVTT(video, webvtt):
 # #################################
 # TRANSCRIPT VIDEO : MAIN FUNCTION
 # #################################
-def main_transcript(video, output_dir):
+def main_transcript(video):
+    output_dir = os.path.join(
+        os.path.dirname(video.video.path),
+        "%04d" % video.id)
     msg, ds_wav_path = av2wav16b16k(video, output_dir)
     msg += deepspeech_run(video, ds_wav_path)
     msg += "\nDELETE TEMP WAV 16BIT 16KHZ"
