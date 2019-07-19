@@ -11,6 +11,7 @@ deploy:
     - export SSHPASS=$SUNIEADM
     - /usr/bin/sshpass -e ssh -o stricthostkeychecking=no sunieadm@pod-dev.grenet.fr "sudo su - pod -c 'cd django; git checkout $CI_COMMIT_REF_NAME ; git pull'"
     - /usr/bin/sshpass -e ssh -o stricthostkeychecking=no sunieadm@pod-dev.grenet.fr "sudo service uwsgi-pod restart"
+    - /usr/bin/sshpass -e ssh -o stricthostkeychecking=no sunieadm@pod-dev.grenet.fr "sudo service nginx restart"
   only:
     - master
     - update-version
