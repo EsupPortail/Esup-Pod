@@ -25,7 +25,7 @@ from pod.video.views import my_videos
 from pod.video.views import my_channels
 from pod.video.views import channel_edit
 from pod.video.views import theme_edit
-from pod.video.views import video_notes, video_notes_com
+from pod.video.views import video_notes
 from pod.video.views import video_count
 from pod.video.views import video_oembed
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
@@ -72,8 +72,6 @@ urlpatterns = [
         video_delete, name='video_delete'),
     url(r'^video_notes/(?P<slug>[\-\d\w]+)/$',
         video_notes, name='video_notes'),
-    url(r'^video_notes_com/(?P<slug>[\-\d\w]+)/(?P<id>[\-\d\w]+)/$',
-        video_notes_com, name='video_notes_com'),
     url(r'^video_count/(?P<id>[\d]+)/$',
         video_count, name='video_count'),
     # my channels
