@@ -1,21 +1,14 @@
 /**
  * Handle enter key pressed while editing note or comment
  */
-$(document).on('keydown',  'textarea#id_note', function(e){
+$(document).on('keydown',  'textarea#id_note, textarea#id_comment', function(e){
     if (e.key == 'Enter') {
         e.preventDefault();
-        !$('#id_timestamp').val()?$('#id_timestamp').val(Math.floor($('#podvideoplayer').get(0).player.currentTime())):undefined;
+        if (this.id == "id_note")
+            !$('#id_timestamp').val()?$('#id_timestamp').val(Math.floor($('#podvideoplayer').get(0).player.currentTime())):undefined;
         $('#video_notes_form').submit();
     }
 })
-
-$(document).on('keydown',  'textarea#id_comment', function(e){
-    if (e.key == 'Enter') {
-        e.preventDefault();
-        $('#video_notes_form').submit();
-    }
-})
-
 
 $(document).on('submit', '#video_notes_form, div.mgtNote form', function(e) {
     if ($(this).attr('class') != 'download_video_notes_form') {
@@ -24,7 +17,6 @@ $(document).on('submit', '#video_notes_form, div.mgtNote form', function(e) {
         send_form_data($(this).attr("action"), data_form, "show_form_notes", "post");
     }
 })
-
 
 /**
  * Form displaying for note or comment
@@ -42,7 +34,7 @@ var show_form_notes = function(data) {
 /**
  * Display the form to add a note on click on add button
  */
-$(document).on('click', 'button#addNote', function() {
+$(document).on('submit', 'form.add_video_notes_form', function() {
     $('#podvideoplayer').get(0).player.pause();
 })
 
@@ -60,8 +52,16 @@ $(document).on('click', 'p.note.form, p.comment.form', function(){
 })
 
 $(document).on('click', function(e) {
-    if ($("#video_notes_form").length && !$("#video_notes_form")[0].contains(e.target)) {
-        let data_form = $("#video_notes_form").parent().find('.view_video_notes_form.hidden').serializeArray();
-        send_form_data($(this).find('.view_video_notes_form').attr("action"), data_form, "show_form_notes", "post");
+    if ($("#video_notes_form").length 
+            && !$("#video_notes_form")[0].contains(e.target)
+            && !$('#podvideoplayer').get(0).contains(e.target)) {
+        if ($("#video_notes_form").parent().find('.view_video_notes_form.hidden').length) {
+            let data_form = $("#video_notes_form").parent().find('.view_video_notes_form.hidden').serializeArray();
+            send_form_data($("#video_notes_form").parent().find('.view_video_notes_form.hidden').attr("action"), data_form, "show_form_notes", "post");
+        }
+        else if ($("#video_notes_form").parent().find('.view_video_note_coms_form.hidden').length) {
+            let data_form = $("#video_notes_form").parent().find('.view_video_note_coms_form.hidden').serializeArray();
+            send_form_data($("#video_notes_form").parent().find('.view_video_note_coms_form.hidden').attr("action"), data_form, "show_form_notes", "post");
+        }
     }
 })
