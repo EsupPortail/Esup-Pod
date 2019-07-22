@@ -1,289 +1,73 @@
-/** FORM UPDATE NOTE OR COMMENT LIST **/
-#update_video_notes_form, #update_video_notes_com_form {
-    display: inline-block;
-    margin: 0.3em;
+#video_notes_form {
+    padding: 0 2px;
 }
 
-/** FORM INSERT NOTE OR COMMENT **/
-#video_notes_form, #video_notes_comments_form {
-    margin: 0.5em 0.2em 0em 0.2em;
+#video_notes_form .text-danger {
+    font-size: 11px;
+    margin: 0;
 }
 
-/** NOTE OR COMMENT LIST **/
-#id_notes/*, #id_comments */{
-    border: solid 1px #999;
+#id_comments {
+    width: auto;
+    margin: 0 0 0 10px;
+}
+
+#id_notes {
     max-height: 400px;
     overflow: auto;
 }
 
-#id_comments {
+#id_notes, #id_comments, #id_comments > div {
     border: solid 1px #999;
-    height: auto;
-    overflow: auto;
 }
 
-#id_notes div, #id_comments div {
-    cursor: pointer;
-    padding: 2px 0 3px 0;
+#id_notes small {
+    font-size: 9px;
 }
 
-#id_notes > div {
-    display: flex;
-}
-
-#id_notes > div > form {
-    width: 60%;
-}
-
-#id_comments > div {
-    margin: 0em 1em;
-    display: contents;
-}
-
-/* #id_notes div:nth-child(odd), #id_comments div:nth-child(odd) {
-    background-color: rgb(145, 220, 250);
-}
-
-#id_notes div:nth-child(even), #id_comments div:nth-child(even) {
-    background-color: #bef;
-} */
-
-#id_notes div span:nth-child(2), #id_comments div span:nth-child(1) {
-    font-style: italic;
-}
-
-
-/** NOTE OR COMMENT FULL DISPLAY **/
-
-div > p.note, div > p.comment {
-    width: 60%;
-    overflow: auto;
-    /**max-height: 30px;**/ 
-    font-size: 13px;
-}
-
-form > p.note, form > p.comment {
-    width: 100%;
-    overflow: auto;
-    /**max-height: 50px;**/
-    font-size: 13px;
-}
-
-.more-menu {
-    width: 100px;
-}
-
-/* More Button / Dropdown Menu */
-
-.more-btn,
-.more-menu-btn {
-    background: none;
-    border: 0 none;
-    line-height: normal;
-    overflow: visible;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    width: 100%;
-    text-align: left;
-    outline: none;
-    cursor: pointer;
-}
-
-.more-dot {
-    background-color: #aab8c2;
-    margin: 0 auto;
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    transition: background-color 0.3s;
-}
-
-.more-menu {
-    position: absolute;
-    z-index: 900;
-    float: left;
-    padding: 10px 0;
-    margin-top: 9px;
-    background-color: #fff;
-    border: 1px solid #ccd8e0;
-    border-radius: 4px;
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.25);
-    opacity: 0;
-    -webkit-transform: translate(0, 15px) scale(.95);
-    transform: translate(0, 15px) scale(.95);
-    transition: transform 0.1s ease-out, opacity 0.1s ease-out;
-    pointer-events: none;
-}
-
-.more-menu-caret-outer {
-    border-bottom: 10px solid #c1d0da;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    height: auto;
-    left: 0;
-    top: 0;
-    width: auto;    
-}
-
-.more-menu-caret-inner {
-    top: 1px;
-    left: 1px;
-    border-left: 9px solid transparent;
-    border-right: 9px solid transparent;
-    border-bottom: 9px solid #fff;
-}
-
-.more-menu-items {
+#id_notes .form-group {
     margin: 0;
-    list-style: none;
-    padding: 0;
 }
 
-.more-menu-item {
-    display: block;
+#id_notes p.note.form, #id_notes p.comment.form {
+    margin: auto;
 }
 
-.more-menu-btn {
-    min-width: 100%;
-    color: #66757f;
-    cursor: pointer;
-    display: block;
-    font-size: 12px;
-    line-height: 15px;
-    padding: 1px;
-    position: relative;
-    white-space: nowrap;
-}
-
-.more-menu-item:hover {
-    background-color: #489fe5;
-}
-
-.more-menu-item:hover .more-menu-btn {
-    color: #fff;
-}
-
-.more-btn:hover .more-dot,
-.show-more-menu .more-dot {
-    background-color: #516471;
-}
-
-.show-more-menu .more-menu {
-    opacity: 1;
-    -webkit-transform: translate(0, 0) scale(1);
-    transform: translate(0, 0) scale(1);
-    pointer-events: auto;
-}
-
-div.more {
-    align-self: center;
-    width: 50px;
-}
-
-
-
-
-
-/** TO KEEP **/
-
-#id_notes div.header {
-    display: grid;
-    grid-template-areas: "timestamp note buttonmgt";
-    grid-template-columns: 20% 70% 10%;
-}
-
-#id_notes > div, #id_comments {
-    display: block;
+#id_notes div.dropdown-menu , div.mgtNote div.dropdown-menu {
+    min-width: auto;
+    padding: 5px;
 }
 
 span.timestamp {
+    font-size: 11px;
+    align-self: center;
+}
+
+span.timestamp, .view_video_notes_form, .view_video_note_coms_form {
+    cursor: pointer;
+    padding: 3px 0 3px 0;
+}
+
+p.note, p.comment {
     font-size: 12px;
-    grid-area: timestamp;
-    justify-self: left;
-    align-self: center;
 }
 
-div.header > p.note, div.header > form {
-    grid-area: note;
-    justify-self: center;
-    align-self: center;
-    margin: 0;
-    text-align: left;
-    width: 100%;
+div.header {
+    display: flex;
 }
 
-div.more {
-    grid-area: buttonmgt;
-    justify-self: right;
-    width: auto;
+div.header > form {
+    align-self: center;
+    width: 70%;
 }
 
-#id_comments {
-    display: block;
-    width: auto;
-    margin: 0 0 0 1em;
-    overflow: auto;
-    /**height: 30px;**/
-}
-
-#id_notes p {
-    margin: 0;
-    width: 98%;
-}
-
-ul.more-menu-items {
-    display: grid;
-    grid-template-areas: "buttonE" "buttonR" "buttonC";
-}
-li.more-menu-item.buttonE {
-    grid-area: buttonE;
-    align-self: center;
-    justify-self: center;
-}
-li.more-menu-item.buttonR {
-    grid-area: buttonR;
-    align-self: center;
-    justify-self: center;
-}
-li.more-menu-item.buttonC {
-    grid-area: buttonC;
-    align-self: center;
-    justify-self: center;
+div.header > span, div.header > form {
+    flex: auto;
 }
 
 span.user {
     font-size: 11px;
     font-style: italic;
-}
-
-#id_comments > div > p {
-    margin: 0 0 0 10px;
-    width: auto;
-}
-
-
-/** THREE DOTS BUTTON **/
-button.more-btn {
-    display: grid;
-    grid-template-areas: "dot1 dot2 dot3";
-}
-span.dot1 {
-    grid-area: dot1
-}
-span.dot2 {
-    grid-area: dot2
-}
-span.dot3 {
-    grid-area: dot3
-}
-
-
-div.header > form.remove_video_notes_form {
-    grid-area: buttonmgt;
-    justify-self: right;
-    width: auto;
 }
 
 .notdisplayed p.note, .notdisplayed p.comment {
@@ -292,13 +76,50 @@ div.header > form.remove_video_notes_form {
     white-space: nowrap;
 }
 
+textarea#id_note, textarea#id_comment, select#id_status {
+    font-size: 11px;
+    height: auto;
+    padding: 5px;
+}
 
-div.status-0 > div.header, #id_comments > div.status-0 > * {
-    background-color: rgb(160, 225, 255)
+#card-takenote {
+    padding: 3px !important;
+    flex-flow: wrap;
 }
-div.status-1 > div.header, #id_comments > div.status-1 > * {
-    background-color: rgb(180, 255, 245);
+
+#card-takenote > h5 {
+    flex: auto;
 }
-div.status-2 > div.header, #id_comments > div.status-2 > * {
-    background-color: rgb(175, 255, 175);
+
+#card-takenote > div.card-text {
+    width: 100%;
+}
+
+#card-takenote > div.mgtNote > div.dropdown-menu {
+    background-color: #fff5f5;
+}
+
+div.mgtNote {
+    align-self: center;
+}
+
+div.mgtNote.dropleft > button {
+    border: none;
+}
+
+#id_notes > div.status-0, #id_notes > div.status-0 > div.header div.dropdown-menu,
+#id_comments > div.status-0, #id_comments > div.status-0 > div.header div.dropdown-menu {
+    background-color: #f1f7ff;
+}
+#id_notes > div.status-1, #id_notes > div.status-1 div.dropdown-menu,
+#id_notes > div.status-1, #id_notes > div.status-1 > div.header div.dropdown-menu {
+    background-color: #f2fff1;
+}
+#id_notes > div.status-2, #id_notes > div.status-2 div.dropdown-menu,
+#id_comments > div.status-2, #id_comments > div.status-2 > div.header div.dropdown-menu {
+    background-color: #fffcf1;
+}
+
+form.view_video_notes_form.hidden, form.view_video_note_coms_form.hidden {
+    display: none;
 }
