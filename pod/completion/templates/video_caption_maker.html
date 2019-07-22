@@ -33,7 +33,7 @@
 <!-- extract from https://webcache.googleusercontent.com/search?q=cache:-ebduGPpZGYJ:https://testdrive-archive.azurewebsites.net/Graphics/CaptionMaker/Default.html+&cd=1&hl=fr&ct=clnk&gl=fr -->
 <form class="form_insert completion" id="form_insert_track" action="{% url 'video_caption_maker' slug=video.slug %}" method="POST">
     {% csrf_token %}
-    <input type="hidden" name="action" value="new">
+    <input type="hidden" name="action" value="modal_load">
     <p class="text-info">{% trans "Load Existing Caption File [optional]" %} : 
 	<input type="submit" value="{% trans 'Add a file' %}" class="btn btn-info"/>
 </form>
@@ -65,22 +65,10 @@
         </div>
     </div>
     <div id="captionFileAndMarkup" style="clear: both; padding-top: 24px; padding-bottom: 24px; display: block;">
-    {% comment %}
-    <div style="padding-bottom: 4px;"> 
-        {% trans "Select and copy the caption file contents below and paste into a .vtt file" %}:
-    </div>
-    <div>
-        <textarea id="captionFile" style="width: 100%;" rows="12" readonly="readonly" autocomplete="off"></textarea>
-    </div> %}
-    {% endcomment %}
     <div style="padding-top: 6px;">
-        {% comment %}
-        <button id="blobBuilderSave" style="margin-right: 2em; display: none;">Save to File</button>
-        <button id="copyToClipboard" class="btn btn-primary btn-sm"><i data-feather="copy"></i>{% trans "Copy to Clipboard" %}</button>
-        {% endcomment %}
         <form class="form_save completion" id="form_save_track" action="{% url 'video_caption_maker' slug=video.slug %}" method="POST">
             {% csrf_token %}
-            <input type="hidden" name="action" value="save">
+            <input type="hidden" name="action" value="modal_save">
             <p class="text-info">{% trans "Save" %} : 
             <input type="submit" value="{% trans 'Save Captions' %}" class="btn btn-info"/>
         </form>
