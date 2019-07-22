@@ -22,21 +22,25 @@ from .forms import MakeCaptionForm
 import json
 
 ACTION = ['new', 'save', 'modify', 'delete']
+CAPTION_MAKER_ACTION = ['modal', 'form']
 
 
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def video_caption_maker(request, slug):
     video = get_object_or_404(Video, slug=slug)
+    action = None
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
-    if request.method == "POST":
+    if request.method == "POST" and request.POST.get('action'):
+        action = request.POST.get('action').split('_')[0]
+    elif request.method == "GET" and request.GET.get('action'):
+        action = request.GET.get('action').split('_')[0]
+    if action in CAPTION_MAKER_ACTION:
         return eval(
-                'video_caption_maker_{0}(request, video)'.format(
-                    request.POST['action'])
-            )
+            'video_caption_maker_{0}(request, video)'.format(action))
     else:
         return render(
             request,
@@ -44,47 +48,48 @@ def video_caption_maker(request, slug):
             {'video': video})
 
 
-def video_caption_maker_new(request, video):
-    if request.is_ajax():
+@csrf_protect
+@staff_member_required(redirect_field_name='referrer')
+def video_caption_maker_modal(request, video):
+    if request.method == "POST" and request.POST.get('action'):
+        action = request.POST.get('action')
+    elif request.method == "GET" and request.GET.get('action'):
+        action = request.GET.get('action')
+    if action == "modal_load":
+        list_track = None
         form_caption = MakeCaptionForm(True, initial={'video': video})
-        return render(
-            request,
-            'video_caption_maker_modal.html',
-            {'form_make_caption': form_caption,
-             'req_action': request.POST['action'],
-             'video': video})
-
-
-def video_caption_maker_save(request, video):
-    list_track = video.track_set.all()
-    if request.is_ajax():
+    elif action == "modal_save":
+        list_track = video.track_set.all()
         form_caption = MakeCaptionForm(False, initial={'video': video})
-        return render(
-            request,
-            'video_caption_maker_modal.html',
-            {'req_action': request.POST['action'],
-             'list_track': list_track,
-             'video': video})
+    return render(
+        request,
+        'video_caption_maker_modal.html',
+        {'form_make_caption': form_caption,
+         'list_track': list_track,
+         'req_action': request.POST['action'],
+         'video': video})
 
 
-def video_caption_maker_save_new(request, video):
-    form_caption = MakeCaptionForm(False, initial={'video': video})
+@csrf_protect
+@staff_member_required(redirect_field_name='referrer')
+def video_caption_maker_form(request, video):
+    if request.method == "POST" and request.POST.get('action'):
+        action = request.POST.get('action')
+    elif request.method == "GET" and request.GET.get('action'):
+        action = request.GET.get('action')
+    if action == "form_save_new":
+        form_caption = MakeCaptionForm(False, initial={'video': video})
+    elif action == "form_save_modify":
+        if request.method == "POST":
+            track = get_object_or_404(Track, id=request.POST.get('id'))
+        elif request.method == "GET":
+            track = get_object_or_404(Track, id=request.GET.get('id'))
+        form_caption = MakeCaptionForm(False, instance=track)
     return render(
         request,
         'track/form_track.html',
         {'form_track': form_caption,
          'video': video})
-
-
-def video_caption_maker_modify(request, video):
-    track = get_object_or_404(Track, id=request.POST['id'])
-    if request.is_ajax():
-        form_caption = MakeCaptionForm(False, instance=track)
-        return render(
-            request,
-            'track/form_track.html',
-            {'form_track': form_caption,
-             'video': video})
 
 
 @csrf_protect
@@ -551,8 +556,7 @@ def video_completion_track_save(request, video):
             form_track = TrackForm(request.POST)
     if request.POST.get('captionMaker'):
         dest = 'video_caption_maker'
-    else:
-        dest = 'video_completion_track'
+        action_modify_name = 'form_save_modify'
     if form_track.is_valid():
         form_track.save()
         list_track = video.track_set.all()
@@ -561,6 +565,7 @@ def video_completion_track_save(request, video):
                 'track/list_track.html',
                 {'list_track': list_track,
                  'dest': dest,
+                 'action_modify_name': action_modify_name,
                  'video': video},
                 request=request)
             }
@@ -636,14 +641,14 @@ def video_completion_track_delete(request, video):
     list_track = video.track_set.all()
     if request.POST.get('captionMaker'):
         dest = 'video_caption_maker'
-    else:
-        dest = 'video_completion_track'
+        action_modify_name = 'form_save_modify'
     if request.is_ajax():
         some_data_to_dump = {
             'list_data': render_to_string(
                 'track/list_track.html',
                 {'list_track': list_track,
                  'dest': dest,
+                 'action_modify_name': action_modify_name,
                  'video': video},
                 request=request)
         }
