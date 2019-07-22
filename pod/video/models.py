@@ -1070,7 +1070,9 @@ class AdvancedNotes(models.Model):
         help_text=_("Select an availability level "
                     "for the note."))
     note = models.TextField(_('Note'), null=True, blank=True)
-    timestamp = models.IntegerField(_('Time'), null=True, blank=True)
+    timestamp = models.IntegerField(_('Timestamp'), null=True, blank=True)
+    added_on = models.DateTimeField(_('Date added'), default=timezone.now)
+    modified_on = models.DateTimeField(_('Date modified'), default=timezone.now)
 
     class Meta:
         verbose_name = _("Advanced Note")
@@ -1079,6 +1081,16 @@ class AdvancedNotes(models.Model):
 
     def __str__(self):
         return "%s-%s-%s" % (self.user.username, self.video, self.timestamp)
+
+    def clean(self):
+        if not self.note:
+            raise ValidationError(
+                AdvancedNotes._meta.get_field('note').help_text
+            )
+        if not self.status or self.status not in dict(NOTES_STATUS):
+            raise ValidationError(
+                AdvancedNotes._meta.get_field('status').help_text
+            )
 
     def timestampstr(self):
         seconds = int(self.timestamp)
@@ -1091,12 +1103,6 @@ class AdvancedNotes(models.Model):
         seconds = "0" + str(seconds) if seconds < 10 else str(seconds)
         return hours + ':' + minutes + ':' + seconds
 
-    def notestr(self):
-        if len(self.note) > 10:
-            return self.note[:10] + "..."
-        else:
-            return self.note
-
 
 class NoteComments(models.Model):
     user = models.ForeignKey(User)
@@ -1107,6 +1113,8 @@ class NoteComments(models.Model):
         help_text=_("Select an availability level "
                     "for the comment."))
     comment = models.TextField(_('Comment'), null=True, blank=True)
+    added_on = models.DateTimeField(_('Date added'), default=timezone.now)
+    modified_on = models.DateTimeField(_('Date modified'), default=timezone.now)
 
     class Meta:
         verbose_name = _("Note comment")
@@ -1114,12 +1122,16 @@ class NoteComments(models.Model):
 
     def __str__(self):
         return "%s-%s-%s" % (self.user.username, self.note, self.comment)
-
-    def comstr(self):
-        if len(self.comment) > 20:
-            return self.comment[:20] + "..."
-        else:
-            return self.comment
+    
+    def clean(self):
+        if not self.comment:
+            raise ValidationError(
+                NoteComments._meta.get_field('comment').help_text
+            )
+        if not self.status or self.status not in dict(NOTES_STATUS):
+            raise ValidationError(
+                NoteComments._meta.get_field('status').help_text
+            )
 
 
 class VideoToDelete(models.Model):
