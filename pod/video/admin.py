@@ -288,11 +288,11 @@ class NotesAdmin(admin.ModelAdmin):
 
 
 class AdvancedNotesAdmin(admin.ModelAdmin):
-    list_display = ('video', 'user', 'timestamp', 'status')
+    list_display = ('video', 'user', 'timestamp', 'status', 'added_on', 'modified_on')
 
 
 class NoteCommentsAdmin(admin.ModelAdmin):
-    list_display = ('user', 'note', 'comment')
+    list_display = ('note', 'user', 'comment', 'added_on', 'modified_on')
 
 
 class VideoToDeleteAdmin(admin.ModelAdmin):
