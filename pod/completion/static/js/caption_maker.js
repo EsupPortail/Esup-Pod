@@ -2,7 +2,7 @@
 $(document).on('submit', '#captionmaker_form', function(e) {
     e.preventDefault();
     var url = '/podfile/get_file/file/' + $('#id_src').val() + '/'; 
-    var data_form = $("#captionmaker_form.new" ).serializeArray();
+    var data_form = $("#captionmaker_form.modal_load" ).serializeArray();
     send_form_data(url, data_form, "ProcessProxyVttResponse");
     $('#captionmakerModal').modal('hide');
 })
@@ -32,7 +32,7 @@ $(document).on('hidden.bs.modal', '#fileModal_id_src', function (e) {
     $('#captionmakerModal').modal('show');
 });
 
-$(document).on('show.bs.modal', '#captionmakerModal.save', function(e) {
+$(document).on('show.bs.modal', '#captionmakerModal.modal_save', function(e) {
     var targetNode1 = $('span#form_track');
     var config = { childList: true };
     function callback1(mL, observer) {
@@ -72,7 +72,7 @@ $(document).on('show.bs.modal', '#captionmakerModal.save', function(e) {
         $(document).on('hide.bs.modal', '#fileModal_id_src', function (e) {
             if (window['obs3']) { window['obs3'].disconnect(); }
         });
-        $(document).on('hiden.bs.modal', '#captionmakerModal.save', function (e) {
+        $(document).on('hiden.bs.modal', '#captionmakerModal.modal_save', function (e) {
             if (window['obs1']) { window['obs1'].disconnect(); }
             if (window['obs2']) { window['obs2'].disconnect(); }
         });
@@ -246,7 +246,6 @@ $("#saveCaptionAndPlay").on('click',function() {
 function UpdateCaption(ci, captionText) {
     captionsArray[ci].caption = captionText;
     $("#ci" + ci.toString() + " span:last-child").html(XMLEncode(captionText).replace(/\r\n|\r|\n/g, "<br/>"));
-    //RefreshCaptionFileDisplay();
 }
 
 function AddCaptionListRow(ci) {
@@ -279,7 +278,6 @@ function SortAndDisplayCaptionList() {
     for (var ci = 0; ci < captionsArray.length; ++ci) {
         AddCaptionListRow(ci);
     }
-    //RefreshCaptionFileDisplay();
 }
 
 function Trim(s) {
@@ -356,18 +354,6 @@ function CreateVTTSource() {
 }
 
 var captionFileSourceUpdateTimer = null;
-/*
-function UpdateCaptionFileSource() {
-    captionFileSourceUpdateTimer = null;
-    DisplayVTTSource();
-}
-
-function RefreshCaptionFileDisplay() {
-    if ($("#captionFileAndMarkup").css("display") != "none") {
-        if (captionFileSourceUpdateTimer === null)
-            captionFileSourceUpdateTimer = window.setTimeout(UpdateCaptionFileSource, 16);
-    }
-}*/
 
 function XMLEncode(s) {     
     return s.replace(/\&/g, '&amp;').replace(/“/g, '&quot;').replace(/”/g,'&quot;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');   //.replace(/'/g, '&apos;').replace(/"/g, '&quot;');

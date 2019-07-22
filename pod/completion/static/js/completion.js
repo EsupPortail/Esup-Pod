@@ -72,7 +72,7 @@ $(document).on('submit', '#accordeon form.completion', function(e) {
 
 var sendandgetform = function(elt, action, name, form, list) {
 	var href = $(elt).attr('action');
-	if (action == 'new') {
+	if (action == 'new' || action == 'form_save_new') {
 		$('.info-card').hide();
 		$('#' + name + '-info').show();
 		var jqxhr = $.ajax({
@@ -102,7 +102,7 @@ var sendandgetform = function(elt, action, name, form, list) {
 		$('a.title').css('display', 'none');
 		hide_others_sections(name);
 	}
-	if (action == 'modify' || action == 'save_modify') {
+	if (action == 'modify' || action == 'form_save_modify') {
 		var id = $(elt).find('input[name=id]').val();
 		var jqxhr = $.ajax({
 			method: 'POST',
