@@ -613,6 +613,32 @@ def get_adv_note_com_list(request, id):
         return []
 
 
+def can_edit_or_remove_note_or_com(request, nc, action):
+    if request.user != nc.user and not request.user.is_superuser:
+        messages.add_message(
+            request,
+            messages.WARNING,
+            _(u'You cannot %s this note or comment.' % action)
+        )
+        raise PermissionDenied
+
+
+def can_see_note_or_com(request, nc):
+    if isinstance(nc, AdvancedNotes):
+        vid_owner = nc.video.owner
+    elif isinstance(nc, NoteComments):
+        vid_owner = nc.note.video.owner
+    if (not (request.user == nc.user
+             or (request.user == vid_owner
+                 and nc.status == '1')
+             or nc.status == '2'
+             or request.user.is_superuser)):
+        messages.add_message(
+            request, messages.WARNING,
+            _(u'You cannot see this note or comment.'))
+        raise PermissionDenied
+
+
 @csrf_protect
 def video_notes(request, slug):
     if (request.method == 'POST'):
@@ -644,46 +670,33 @@ def video_note_get(request, slug):
     if idNote is None:
         listNotes = get_adv_note_list(request, video)
         return render(request, 'videos/video_notes.html',
-                    {'video': video,
-                     'listNotes': listNotes})
+                      {'video': video,
+                       'listNotes': listNotes})
     else:
         note = get_object_or_404(AdvancedNotes, id=idNote)
-        if (not (request.user == note.user
-                or (request.user == note.video.owner and note.status == '1')
-                or note.status == '2'
-                or request.user.is_superuser)):
-            messages.add_message(
-                request, messages.WARNING,
-                _(u'You cannot see this note.'))
-            raise PermissionDenied
-        if not idCom is None:
+        can_see_note_or_com(request, note)
+        if idCom is not None:
             com = get_object_or_404(NoteComments, id=idCom)
-            if (not (request.user == com.user
-                    or (request.user == note.video.owner and com.status == '1')
-                    or com.status == '2'
-                    or request.user.is_superuser)):
-                messages.add_message(
-                    request, messages.WARNING,
-                    _(u'You cannot see this comment.'))
-                raise PermissionDenied
+            can_see_note_or_com(request, com)
         else:
             com = None
-        
+
         listNotes = get_adv_note_list(request, video)
         listComments = get_adv_note_com_list(request, idNote)
         return render(request, 'videos/video_notes.html',
-                    {'video': video,
-                     'noteToDisplay': note,
-                     'comToDisplay': com,
-                     'listNotes': listNotes,
-                     'listComments': listComments})
+                      {'video': video,
+                       'noteToDisplay': note,
+                       'comToDisplay': com,
+                       'listNotes': listNotes,
+                       'listComments': listComments})
 
 
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_note_form(request, slug):
     video = get_object_or_404(Video, slug=slug)
-    idCom, idNote = None, None
+    idNote, idCom = None, None
+    note, com = None, None
     if request.method == "POST" and request.POST.get('idCom'):
         idCom = request.POST.get('idCom')
     elif request.method == "GET" and request.GET.get('idCom'):
@@ -693,54 +706,60 @@ def video_note_form(request, slug):
     elif request.method == "GET" and request.GET.get('idNote'):
         idCom = request.GET.get('idNote')
 
-    if not idCom is None:
+    if idCom is not None:
         com = get_object_or_404(NoteComments, id=idCom)
-    if not idNote is None:
+    if idNote is not None:
         note = get_object_or_404(AdvancedNotes, id=idNote)
 
+    params = (idNote, idCom, note, com)
+    print(params)
+    res = video_note_form_case(request, params)
+    (note, com, noteToDisplay, comToDisplay,
+     noteToEdit, comToEdit, listNotesCom, form) = res
+    print(res)
+    listNotes = get_adv_note_list(request, video)
+
+    return render(request, 'videos/video_notes.html',
+                  {'video': video,
+                   'noteToDisplay': noteToDisplay,
+                   'comToDisplay': comToDisplay,
+                   'noteToEdit': noteToEdit,
+                   'comToEdit': comToEdit,
+                   'listNotes': listNotes,
+                   'listComments': listNotesCom,
+                   'form': form})
+
+
+def video_note_form_case(request, params):
+    (idNote, idCom, note, com) = params
     # Editing a note comment
-    if not idCom is None and not idNote is None:
-        if (not (request.user == com.user
-                or (request.user == com.note.video.owner
-                    and com.status == '1')
-                or com.status == '2'
-                or request.user.is_superuser)):
-            messages.add_message(
-                request, messages.WARNING,
-                _(u'You cannot edit this comment.'))
-            raise PermissionDenied
+    if idCom is not None and idNote is not None:
+        can_edit_or_remove_note_or_com(request, com, 'edit')
         form = NoteCommentsForm({
             'comment': com.comment, 'status': com.status})
-        noteToDisplay, comToDisplay = note, com
+        noteToDisplay, comToDisplay = note, None
         listNotesCom = get_adv_note_com_list(request, idNote)
         comToEdit, noteToEdit = com, None
     # Editing a note or creatting a note comment
-    elif idCom is None and not idNote is None:
+    elif idCom is None and idNote is not None:
         # Editing a note
         if ((request.method == "POST"
                 and request.POST.get('action') == 'form_note')
                 or (request.method == "GET"
-                and request.GET.get('action') == 'form_note')):
-            if (not (request.user == note.user
-                    or (request.user == note.video.owner
-                        and note.status == '1')
-                    or note.status == '2'
-                    or request.user.is_superuser)):
-                messages.add_message(
-                    request, messages.WARNING,
-                    _(u'You cannot edit this note.'))
-                raise PermissionDenied
+                    and request.GET.get('action') == 'form_note')):
+            can_edit_or_remove_note_or_com(request, note, 'delete')
             form = AdvancedNotesForm({
                 'timestamp': note.timestamp, 'note': note.note,
-                'status': note.status})
+                'status': note.status
+            })
             noteToDisplay, comToDisplay = None, None
             listNotesCom = None
             comToEdit, noteToEdit = None, note
         # Creating a note comment
         elif ((request.method == "POST"
-                and request.POST.get('action') == 'form_com')
-                or (request.method == "GET"
-                and request.GET.get('action') == 'form_com')):
+               and request.POST.get('action') == 'form_com')
+              or (request.method == "GET"
+                  and request.GET.get('action') == 'form_com')):
             form = NoteCommentsForm()
             noteToDisplay, comToDisplay = note, None
             listNotesCom = get_adv_note_com_list(request, idNote)
@@ -752,30 +771,20 @@ def video_note_form(request, slug):
         listNotesCom = None
         comToEdit, noteToEdit = None, None
 
-    listNotes = get_adv_note_list(request, video)
-
-    return render(request, 'videos/video_notes.html',
-                  {'video': video,
-                   'noteToDisplay': noteToDisplay,
-                   'noteToEdit': noteToEdit,
-                   'comToEdit': comToEdit,
-                   'listNotes': listNotes,
-                   'listComments': listNotesCom,
-                   'form': form})
+    return (note, com, noteToDisplay, comToDisplay,
+            noteToEdit, comToEdit, listNotesCom, form)
 
 
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_note_save(request, slug):
     video = get_object_or_404(Video, slug=slug)
-    idCom = idNote = noteToDisplay = comToDisplay = None
-    listNotesCom = form = None
+    idNote, idCom = None, None
+    note, com = None, None
+    noteToDisplay, comToDisplay = None, None
+    noteToEdit, comToEdit = None, None
+    listNotesCom, form = None, None
     if request.method == "POST":
-        if request.POST.get('action') == 'save_note':
-            form = AdvancedNotesForm(request.POST)
-        elif request.POST.get('action') == 'save_com':
-            form = NoteCommentsForm(request.POST)
-        
         if request.POST.get('idCom'):
             idCom = request.POST.get('idCom')
             com = get_object_or_404(NoteComments, id=idCom)
@@ -783,74 +792,102 @@ def video_note_save(request, slug):
             idNote = request.POST.get('idNote')
             note = get_object_or_404(AdvancedNotes, id=idNote)
 
+        if request.POST.get('action') == 'save_note':
+            form = AdvancedNotesForm(request.POST)
+            noteToEdit = note
+        elif request.POST.get('action') == 'save_com':
+            form = NoteCommentsForm(request.POST)
+            comToEdit = com
+
+        params = (idNote, idCom, note, com, noteToDisplay,
+                  comToDisplay, listNotesCom)
         if form.is_valid():
             form = None
-            # Saving a com after an edit
-            if not idCom is None and not idNote is None:
-                com.comment = request.POST.get('comment')
-                com.status = request.POST.get('status')
-                com.modified_on = timezone.now()
-                com.save()
-                messages.add_message(
-                    request, messages.INFO, _('The comment has been saved.'))
-                noteToDisplay = note
-                comToDisplay = com
-                listNotesCom = get_adv_note_com_list(request, idNote)
-            # Saving a new com or saving a note after an edit
-            elif idCom is None and not idNote is None:
-                # Saving a note after an edit
-                if request.POST.get('action') == 'save_note':
-                    note.note = request.POST.get('note')
-                    note.status = request.POST.get('status')
-                    note.modified_on = timezone.now()
-                    note.save()
-                    messages.add_message(
-                        request, messages.INFO, _('The note has been saved.'))
-                # Saving a new com
-                elif request.POST.get('action') == 'save_com':
-                    com = NoteComments.objects.create(
-                        user=request.user, note=note,
-                        status=request.POST.get('status'),
-                        comment=request.POST.get('comment'))
-                    messages.add_message(
-                        request, messages.INFO, _('The comment has been saved.'))
-                    noteToDisplay = note
-                    listNotesCom = get_adv_note_com_list(request, idNote)
-
-            # Saving a new note
-            elif idCom is None and idNote is None:
-                note, created = AdvancedNotes.objects.get_or_create(
-                    user=request.user, video=video,
-                    status=request.POST.get('status'),
-                    timestamp=request.POST.get('timestamp'))
-                if created:
-                    note.note = request.POST.get('note')
-                else:
-                    note.note = note.note + "\n" + request.POST.get('note')
-                note.save()
-                messages.add_message(
-                    request, messages.INFO, _('The note has been saved.'))
-
+            res = video_note_save_form_valid(request, video, params)
         else:
-            messages.add_message(
-                request, messages.WARNING,
-                _(u'One or more errors have been found in the form.'))
-            if not idCom is None and not idNote is None:
-                noteToDisplay = note
-                listNotesCom = get_adv_note_com_list(request, idNote)
-            elif (idCom is None and not idNote is None
-                    and request.POST.get('action') == 'save_com'):
-                noteToDisplay = note
-                listNotesCom = get_adv_note_com_list(request, idNote)                
+            res = video_note_form_not_valid(request, params)
+        (note, com, noteToDisplay,
+         comToDisplay, listNotesCom) = res
 
     listNotes = get_adv_note_list(request, video)
     return render(request, 'videos/video_notes.html',
                   {'video': video,
                    'noteToDisplay': noteToDisplay,
                    'comToDisplay': comToDisplay,
+                   'noteToEdit': noteToEdit,
+                   'comToEdit': comToEdit,
                    'listNotes': listNotes,
                    'listComments': listNotesCom,
                    'form': form})
+
+
+def video_note_save_form_valid(request, video, params):
+    (idNote, idCom, note, com, noteToDisplay,
+        comToDisplay, listNotesCom) = params
+    # Saving a com after an edit
+    if idCom is not None and idNote is not None:
+        com.comment = request.POST.get('comment')
+        com.status = request.POST.get('status')
+        com.modified_on = timezone.now()
+        com.save()
+        messages.add_message(
+            request, messages.INFO, _('The comment has been saved.'))
+        noteToDisplay = note
+        comToDisplay = com
+        listNotesCom = get_adv_note_com_list(request, idNote)
+    # Saving a new com or saving a note after an edit
+    elif idCom is None and idNote is not None:
+        # Saving a note after an edit
+        if request.POST.get('action') == 'save_note':
+            note.note = request.POST.get('note')
+            note.status = request.POST.get('status')
+            note.modified_on = timezone.now()
+            note.save()
+            messages.add_message(
+                request, messages.INFO, _('The note has been saved.'))
+        # Saving a new com
+        elif request.POST.get('action') == 'save_com':
+            com = NoteComments.objects.create(
+                user=request.user, note=note,
+                status=request.POST.get('status'),
+                comment=request.POST.get('comment'))
+            messages.add_message(
+                request, messages.INFO,
+                _('The comment has been saved.'))
+            noteToDisplay = note
+            listNotesCom = get_adv_note_com_list(request, idNote)
+
+    # Saving a new note
+    elif idCom is None and idNote is None:
+        note, created = AdvancedNotes.objects.get_or_create(
+            user=request.user, video=video,
+            status=request.POST.get('status'),
+            timestamp=request.POST.get('timestamp'))
+        if created:
+            note.note = request.POST.get('note')
+        else:
+            note.note = note.note + "\n" + request.POST.get('note')
+        note.save()
+        messages.add_message(
+            request, messages.INFO, _('The note has been saved.'))
+
+    return (note, com, noteToDisplay, comToDisplay, listNotesCom)
+
+
+def video_note_form_not_valid(request, params):
+    (idNote, idCom, note, com, noteToDisplay,
+        comToDisplay, listNotesCom) = params
+    messages.add_message(
+        request, messages.WARNING,
+        _(u'One or more errors have been found in the form.'))
+    if idCom is not None and idNote is not None:
+        noteToDisplay = note
+        listNotesCom = get_adv_note_com_list(request, idNote)
+    elif (idCom is None and idNote is not None
+            and request.POST.get('action') == 'save_com'):
+        noteToDisplay = note
+        listNotesCom = get_adv_note_com_list(request, idNote)
+    return (note, com, noteToDisplay, comToDisplay, listNotesCom)
 
 
 @csrf_protect
@@ -867,32 +904,26 @@ def video_note_remove(request, slug):
             note = get_object_or_404(AdvancedNotes, id=idNote)
 
         if idNote and request.POST.get('action') == 'remove_note':
-            if request.user != note.user and not request.user.is_superuser:
-                messages.add_message(
-                    request, messages.WARNING, _(u'You cannot delete this note.'))
-                raise PermissionDenied
-            else:
-                note.delete()
-                messages.add_message(
-                    request, messages.INFO, _('The note has been deleted.'))
+            can_edit_or_remove_note_or_com(request, note, 'delete')
+            note.delete()
+            messages.add_message(
+                request,
+                messages.INFO, _('The note has been deleted.')
+            )
         elif idNote and idCom and request.POST.get('action') == 'remove_com':
-            if request.user != com.user and not request.user.is_superuser:
-                messages.add_message(
-                    request, messages.WARNING, _(u'You cannot delete this comment.'))
-                raise PermissionDenied
-            else:
-                com.delete()
-                messages.add_message(
-                    request, messages.INFO, _('The comment has been deleted.'))
-                noteToDisplay = note
-                listNotesCom = get_adv_note_com_list(request, idNote)
+            can_edit_or_remove_note_or_com(request, com, 'delete')
+            com.delete()
+            messages.add_message(
+                request, messages.INFO, _('The comment has been deleted.'))
+            noteToDisplay = note
+            listNotesCom = get_adv_note_com_list(request, idNote)
 
     listNotes = get_adv_note_list(request, video)
     return render(request, 'videos/video_notes.html',
                   {'video': video,
                    'noteToDisplay': noteToDisplay,
-                    'listNotes': listNotes,
-                    'listComments': listNotesCom})
+                   'listNotes': listNotes,
+                   'listComments': listNotesCom})
 
 
 @csrf_protect
@@ -900,10 +931,12 @@ def video_note_remove(request, slug):
 def video_note_download(request, slug):
     video = get_object_or_404(Video, slug=slug)
     listNotes = get_adv_note_list(request, video)
-    dictComments = dict((str(n.id), get_adv_note_com_list(request, n.id))
-        for n in listNotes)
+    dictComments = dict(
+        (str(n.id), get_adv_note_com_list(request, n.id))
+        for n in listNotes
+    )
     contentToDownload = {
-        'type': [], 'status':[], 'relatedNote': [],
+        'type': [], 'status': [], 'relatedNote': [],
         'dateCreated': [], 'dataModified': [],
         'noteTimestamp': [], 'content': []
     }
@@ -921,18 +954,20 @@ def video_note_download(request, slug):
             contentToDownload['relatedNote'].append(str(n.id))
             contentToDownload['dateCreated'].append(str(c.added_on))
             contentToDownload['dataModified'].append(str(c.modified_on))
-            contentToDownload['noteTimestamp'].append(str(_('None')))  # n.timestampstr
+            contentToDownload['noteTimestamp'].append(str(_('None')))
             contentToDownload['content'].append(c.comment)
-    df = pandas.DataFrame(contentToDownload,
-        columns=['type', 'status', 'relatedNote', 'dateCreated', 'dataModified',
-            'noteTimestamp', 'content'])
-    df.columns= [str(_('Type')), str(_('Status')), str(_('Related note id')),
-        str(_('Created on')), str(_('Modified on')),
-        str(_('Note timestamp')), str(_('Content'))]
+    df = pandas.DataFrame(
+        contentToDownload,
+        columns=['type', 'status', 'relatedNote', 'dateCreated',
+                 'dataModified', 'noteTimestamp', 'content'])
+    df.columns = [str(_('Type')), str(_('Status')), str(_('Related note id')),
+                  str(_('Created on')), str(_('Modified on')),
+                  str(_('Note timestamp')), str(_('Content'))]
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; \
         filename=%s_notes_and_comments.csv' % slug
-    df.to_csv(path_or_buf=response, sep='|', float_format='%.2f', index=False, decimal=",")
+    df.to_csv(path_or_buf=response, sep='|',
+              float_format='%.2f', index=False, decimal=",")
     return response
 
 
