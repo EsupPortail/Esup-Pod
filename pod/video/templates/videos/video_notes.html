@@ -1,124 +1,95 @@
-{% load i18n %}
+{% load staticfiles i18n %}
 
 {% if messages %}
-<div id="base-message-alert">
-{% for message in messages %}
-<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-    {{ message }}
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-{% endfor %}
-</div>
-<script>
-$(document).ready(function () {
-    TriggerAlertClose();
-});
-</script>
+    <div id="base-message-alert">
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+    </div>
+    <script>
+        $(document).ready(function () {
+            TriggerAlertClose();
+        });
+    </script>
 {% endif %}
 
 <div id="id_notes">
     {% for note in listNotes %}
     <div id="note-{{ note.id }}" class="status-{{ note.status }}">
-        <div class="header">
-            <span class="timestamp" start="{{ note.timestamp }}">{{ note.timestampstr }}</span>
 
-            <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_notes_form notdisplayed">
-                {% csrf_token %}
-                <fieldset>
-                <input type="hidden" id="action_view_{{ note.id }}" name="action" value="get" autocomplete="off"/>
-                <input type="hidden" id="id_view" name="idnote" value="{{ note.id }}" autocomplete="off"/>
-                </fieldset>
-                <p class="note">{{ note.note }}</p>
-            </form> 
-            
-            {% if request.user.is_authenticated and request.user == note.user %}
-            <div class="more">
-                <button class="more-btn"> <span class="more-dot dot1"></span> <span class="more-dot dot2"></span> <span class="more-dot dot3"></span> </button>
-                <div class="more-menu">
-                <ul class="more-menu-items" tabindex="-1" role="menu" aria-labelledby="more-btn" aria-hidden="true">
-                    <li class="more-menu-item buttonE" role="presentation">
-                        <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="edit_video_notes_form more-menu-btn" role="menuitem">
+        {% include "videos/video_note_display.html" %}
+
+            {% if listComments and note == noteToDisplay or form and note == noteToDisplay %}
+                <div id="id_comments">
+                    {% for com in listComments %}
+                        {% include "videos/video_note_comments_display.html" %}
+                    {% endfor %}
+
+                    {% comment %} Form used to create a comment {% endcomment %}
+                    {% if form and noteToDisplay and not noteToEdit and not comToEdit %}
+                        <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_notes_com_form hidden">
+                            {% csrf_token %}
+                            <fieldset>
+                                <input type="hidden" id="action_view_{{ note.id }}" name="action" value="get" autocomplete="off"/>
+                                <input type="hidden" id="id_view" name="idNote" value="{{ note.id }}" autocomplete="off"/>
+                            </fieldset>
+                        </form> 
+                        <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
                         {% csrf_token %}
-                        <fieldset>
-                        <input type="hidden" id="action_edit_{{ note.id }}" name="action" value="get" autocomplete="off"/>
-                        <input type="hidden" id="id_edit" name="idnote" value="{{ note.id }}" autocomplete="off"/>
-                        </fieldset>
-                        <button class="edit" type="submit" action="edit" title="{% trans 'Edit the note' %}">Edit</button>
+                            <fieldset>
+                                {% if form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
+                                {% for field_hidden in form.hidden_fields %} {{field_hidden}} {% endfor %}
+                                {% for field in form.visible_fields %}
+                                    {% spaceless %}
+                                    <div class="form-group" >
+                                        {{ field.errors }}
+                                        {{ field }}
+                                        {% if field.help_text %} <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small> {% endif %}
+                                        {% if field.field.required %} <div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div> {% endif %}
+                                    </div>
+                                    {% endspaceless %}
+                                {% endfor %}
+                                <input type="hidden" id="id_save" name="idNote" value="{{ note.id }}" autocomplete="off"/>
+                                <input type="hidden" id="action" name="action" value="save_com" autocomplete="off"/>
+                            </fieldset>
                         </form>
-                    </li>
-                    <li class="more-menu-item buttonR" role="presentation">
-                        <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="remove_video_notes_form more-menu-btn" role="menuitem">
-                        {% csrf_token %}
-                        <fieldset>
-                        <input type="hidden" id="action_rm_{{ note.id }}" name="action" value="remove" autocomplete="off"/>
-                        <input type="hidden" id="id_rm" name="idnote" value="{{ note.id }}" autocomplete="off"/>
-                        </fieldset>
-                        <button class="remove" type="submit" action="remove" title="{% trans 'Remove the note' %}">Remove</button>
-                        </form>
-                    </li>
-                </ul>
+                    {% endif %}
+
                 </div>
-            </div>
             {% endif %}
 
-        </div>
     </div>
     {% endfor %}
-    {% if request.user.is_authenticated and notesForm %}
-    <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
-    {% csrf_token %}
-        <fieldset>
-            {% if notesForm.errors %}
-            <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
-            {% endif %}
-            {% for field_hidden in notesForm.hidden_fields %} {{field_hidden}} {% endfor %}
-            {% for field in notesForm.visible_fields %}
-                {% spaceless %}
-                <div class="form-group" >
-                    {{ field.errors }}
-                    {{ field }}
-                    {% if field.help_text %}
-                    <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
-                    {% endif %}
-                    {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{% endif %}
-                </div>
-                {% endspaceless %}
-            {% endfor %}
-            <input type="hidden" id="id_save" name="idnote" autocomplete="off"/>
-            <input type="hidden" id="action" name="action" value="save_new" autocomplete="off"/>
-        </fieldset>
-    </form>
-    {% endif %} 
-</div>
 
-{% comment %} {% if request.user.is_authenticated %}
-<form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
-{% csrf_token %}
-<fieldset>
-    {% if notesForm.errors %}
-    <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+    {% comment %} Form used to create a note {% endcomment %}
+    {% if request.user.is_authenticated and form and not noteToDisplay and not noteToEdit and not comToEdit %}
+        <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_notes_form hidden">
+            {% csrf_token %}
+            <fieldset> <input type="hidden" id="action_view" name="action" value="get" autocomplete="off"/> </fieldset>
+        </form> 
+        <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
+        {% csrf_token %}
+            <fieldset>
+                {% if form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
+                {% for field_hidden in form.hidden_fields %} {{field_hidden}} {% endfor %}
+                {% for field in form.visible_fields %}
+                    {% spaceless %}
+                    <div class="form-group" >
+                        {{ field.errors }}
+                        {{ field }}
+                        {% if field.help_text %} <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small> {% endif %}
+                        {% if field.field.required %} <div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div> {% endif %}
+                    </div>
+                    {% endspaceless %}
+                {% endfor %}
+                <input type="hidden" id="action" name="action" value="save_note" autocomplete="off"/>
+            </fieldset>
+        </form>
     {% endif %}
-    {% for field_hidden in notesForm.hidden_fields %}
-        {{field_hidden}}
-    {% endfor %}
-    {% for field in notesForm.visible_fields %}
-        {% spaceless %}
-        <div class="form-group" >
-            {{ field.errors }}
-            {{ field }}
-            {% if field.help_text %}
-            <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
-            {% endif %}
-            {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
-        </div>
-        {% endspaceless %}
-    {% endfor %}
-    <input type="hidden" id="id_save" name="idnote" autocomplete="off"/>
-    <input type="hidden" id="action" name="action" value="save_new" autocomplete="off"/>
-</fieldset>
-</form>
-{% else %}
-<p>{% trans 'You must be logged in to take notes.' %}</p>
-{% endif %} {% endcomment %}
+
+</div>
