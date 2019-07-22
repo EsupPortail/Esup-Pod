@@ -35,7 +35,7 @@
 
                     {% comment %} Form used to create a comment {% endcomment %}
                     {% if form and noteToDisplay and not noteToEdit and not comToEdit %}
-                        <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_notes_com_form hidden">
+                        <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_note_coms_form hidden">
                             {% csrf_token %}
                             <fieldset>
                                 <input type="hidden" id="action_view_{{ note.id }}" name="action" value="get" autocomplete="off"/>
