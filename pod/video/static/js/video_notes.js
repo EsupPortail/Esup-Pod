@@ -52,9 +52,10 @@ $(document).on('click', 'p.note.form, p.comment.form', function(){
 })
 
 $(document).on('click', function(e) {
-    if ($("#video_notes_form").length 
+    if ($("#video_notes_form").length
             && !$("#video_notes_form")[0].contains(e.target)
-            && !$('#podvideoplayer').get(0).contains(e.target)) {
+            && !$('#podvideoplayer').get(0).contains(e.target)
+            && !"timestamp" in e.target.classList) {
         if ($("#video_notes_form").parent().find('.view_video_notes_form.hidden').length) {
             let data_form = $("#video_notes_form").parent().find('.view_video_notes_form.hidden').serializeArray();
             send_form_data($("#video_notes_form").parent().find('.view_video_notes_form.hidden').attr("action"), data_form, "show_form_notes", "post");
