@@ -19,6 +19,9 @@
 {% endif %}
 
 <div id="id_notes">
+    {% if not listNotes %}
+        <p class="noNotes"> {% trans "There is no note for this video. You can create a new one with the three dots menu" %}</p>
+    {% endif %}
     {% for note in listNotes %}
     <div id="note-{{ note.id }}" class="status-{{ note.status }}">
 

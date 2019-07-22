@@ -23,6 +23,7 @@
 
 #id_notes small {
     font-size: 9px;
+    font-weight: bold;
 }
 
 #id_notes .form-group {
@@ -122,4 +123,10 @@ div.mgtNote.dropleft > button {
 
 form.view_video_notes_form.hidden, form.view_video_note_coms_form.hidden {
     display: none;
+}
+
+.noNotes {
+    font-size: 13px;
+    font-style: italic;
+    font-weight: bold;
 }
