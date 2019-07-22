@@ -1070,9 +1070,12 @@ class AdvancedNotes(models.Model):
         help_text=_("Select an availability level "
                     "for the note."))
     note = models.TextField(_('Note'), null=True, blank=True)
-    timestamp = models.IntegerField(_('Timestamp'), null=True, blank=True)
-    added_on = models.DateTimeField(_('Date added'), default=timezone.now)
-    modified_on = models.DateTimeField(_('Date modified'), default=timezone.now)
+    timestamp = models.IntegerField(
+        _('Timestamp'), null=True, blank=True)
+    added_on = models.DateTimeField(
+        _('Date added'), default=timezone.now)
+    modified_on = models.DateTimeField(
+        _('Date modified'), default=timezone.now)
 
     class Meta:
         verbose_name = _("Advanced Note")
@@ -1112,9 +1115,12 @@ class NoteComments(models.Model):
         choices=NOTES_STATUS, default="0",
         help_text=_("Select an availability level "
                     "for the comment."))
-    comment = models.TextField(_('Comment'), null=True, blank=True)
-    added_on = models.DateTimeField(_('Date added'), default=timezone.now)
-    modified_on = models.DateTimeField(_('Date modified'), default=timezone.now)
+    comment = models.TextField(
+        _('Comment'), null=True, blank=True)
+    added_on = models.DateTimeField(
+        _('Date added'), default=timezone.now)
+    modified_on = models.DateTimeField(
+        _('Date modified'), default=timezone.now)
 
     class Meta:
         verbose_name = _("Note comment")
@@ -1122,7 +1128,7 @@ class NoteComments(models.Model):
 
     def __str__(self):
         return "%s-%s-%s" % (self.user.username, self.note, self.comment)
-    
+
     def clean(self):
         if not self.comment:
             raise ValidationError(
