@@ -51,6 +51,10 @@ def video_caption_maker(request, slug):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def video_caption_maker_modal(request, video):
+    if request.user != video.owner and not request.user.is_superuser:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot complement this video.'))
+        raise PermissionDenied
     if request.method == "POST" and request.POST.get('action'):
         action = request.POST.get('action')
     elif request.method == "GET" and request.GET.get('action'):
@@ -73,6 +77,10 @@ def video_caption_maker_modal(request, video):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def video_caption_maker_form(request, video):
+    if request.user != video.owner and not request.user.is_superuser:
+        messages.add_message(
+            request, messages.ERROR, _(u'You cannot complement this video.'))
+        raise PermissionDenied
     if request.method == "POST" and request.POST.get('action'):
         action = request.POST.get('action')
     elif request.method == "GET" and request.GET.get('action'):
