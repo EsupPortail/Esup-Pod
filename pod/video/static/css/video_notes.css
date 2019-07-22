@@ -113,7 +113,7 @@ div.mgtNote.dropleft > button {
     background-color: #f1f7ff;
 }
 #id_notes > div.status-1, #id_notes > div.status-1 div.dropdown-menu,
-#id_notes > div.status-1, #id_notes > div.status-1 > div.header div.dropdown-menu {
+#id_comments > div.status-1, #id_comments > div.status-1 > div.header div.dropdown-menu {
     background-color: #f2fff1;
 }
 #id_notes > div.status-2, #id_notes > div.status-2 div.dropdown-menu,
