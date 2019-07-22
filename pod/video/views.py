@@ -14,6 +14,7 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils import timezone
 
 from pod.video.models import Video
 from pod.video.models import Channel
@@ -32,6 +33,7 @@ from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
 
 import json
 import re
+import pandas
 from datetime import date
 
 from pod.playlist.models import Playlist
@@ -43,7 +45,7 @@ VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, 'RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY', False)
 THEME_ACTION = ['new', 'modify', 'delete', 'save']
-NOTE_ACTION = ['get', 'save', 'remove', 'form']
+NOTE_ACTION = ['get', 'save', 'remove', 'form', 'download']
 
 TEMPLATE_VISIBLE_SETTINGS = getattr(
     settings,
@@ -336,31 +338,6 @@ def is_in_video_groups(user, video):
     ).exists()
 
 
-def get_adv_note_list(request, video):
-    if request.user.is_authenticated:
-        filter = (
-            Q(user=request.user) |
-            (Q(video__owner=request.user) & Q(status='1')) |
-            Q(status='2')
-        )
-    else:
-        filter = Q(status='2')
-    return AdvancedNotes.objects.all().filter(video=video).filter(filter)
-
-
-def get_adv_note_com_list(request, id):
-    note = get_object_or_404(AdvancedNotes, id=id)
-    if request.user.is_authenticated:
-        filter = (
-            Q(user=request.user) |
-            (Q(note__video__owner=request.user) & Q(status='1')) |
-            Q(status='2')
-        )
-    else:
-        filter = Q(status='2')
-    return NoteComments.objects.all().filter(note=note).filter(filter)
-
-
 def get_video_access(request, video, slug_private):
     is_draft = video.is_draft
     is_restricted = video.is_restricted
@@ -434,7 +411,6 @@ def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
     video = get_object_or_404(Video, id=id)
-    advNotesForm = AdvancedNotesForm()
     listNotes = get_adv_note_list(request, video)
     channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
     theme = get_object_or_404(
@@ -460,7 +436,6 @@ def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
                 'channel': channel,
                 'video': video,
                 'theme': theme,
-                'notesForm': advNotesForm,
                 'listNotes': listNotes,
                 'playlist': playlist,
                 'more_data': more_data
@@ -492,7 +467,6 @@ def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
                     'video': video,
                     'theme': theme,
                     'form': form,
-                    'notesForm': advNotesForm,
                     'playlist': playlist,
                     'more_data': more_data,
                     'listNotes': listNotes
@@ -611,221 +585,355 @@ def video_delete(request, slug=None):
     )
 
 
+def get_adv_note_list(request, video):
+    if request.user.is_authenticated:
+        filter = (
+            Q(user=request.user) |
+            (Q(video__owner=request.user) & Q(status='1')) |
+            Q(status='2')
+        )
+    else:
+        filter = Q(status='2')
+    return AdvancedNotes.objects.all().filter(video=video).filter(filter)
+
+
+def get_adv_note_com_list(request, id):
+    if id:
+        note = get_object_or_404(AdvancedNotes, id=id)
+        if request.user.is_authenticated:
+            filter = (
+                Q(user=request.user) |
+                (Q(note__video__owner=request.user) & Q(status='1')) |
+                Q(status='2')
+            )
+        else:
+            filter = Q(status='2')
+        return NoteComments.objects.all().filter(note=note).filter(filter)
+    else:
+        return []
+
+
 @csrf_protect
 def video_notes(request, slug):
-    video = get_object_or_404(Video, slug=slug)
     if (request.method == 'POST'):
         action = request.POST.get('action').split('_')[0]
-        if action in NOTE_ACTION:
-            return eval('video_note_{0}(request, slug)'.format(action))
+    elif (request.method == 'GET'):
+        action = request.GET.get('action').split('_')[0]
+    if action in NOTE_ACTION:
+        return eval('video_note_{0}(request, slug)'.format(action))
+    video = get_object_or_404(Video, slug=slug)
     listNotes = get_adv_note_list(request, video)
-    advNotesForm = AdvancedNotesForm()
     return render(request, 'videos/video_notes.html', {
         'video': video,
-        'listNotes': listNotes,
-        'notesForm': advNotesForm}
-    )
+        'listNotes': listNotes})
 
 
 @csrf_protect
 def video_note_get(request, slug):
     video = get_object_or_404(Video, slug=slug)
-    advNotesForm = AdvancedNotesForm()
-    id = None
+    idCom = idNote = None
+    if request.method == "POST" and request.POST.get('idCom'):
+        idCom = request.POST.get('idCom')
+    elif request.method == "GET" and request.GET.get('idCom'):
+        idCom = request.GET.get('idCom')
+    if request.method == "POST" and request.POST.get('idNote'):
+        idNote = request.POST.get('idNote')
+    elif request.method == "GET" and request.GET.get('idNote'):
+        idCom = request.GET.get('idNote')
 
-    if request.method == "POST" and request.POST.get('idnote'):
-        id = request.POST.get('idnote')
-    elif request.method == "GET" and request.GET.get('idnote'):
-        id = request.GET.get('idnote')
-    if id is None:
+    if idNote is None:
         listNotes = get_adv_note_list(request, video)
         return render(request, 'videos/video_notes.html',
                     {'video': video,
-                    'listNotes': listNotes,
-                    'notesForm': advNotesForm})
+                     'listNotes': listNotes})
     else:
-        note = get_object_or_404(AdvancedNotes, id=id)
+        note = get_object_or_404(AdvancedNotes, id=idNote)
         if (not (request.user == note.user
                 or (request.user == note.video.owner and note.status == '1')
                 or note.status == '2'
                 or request.user.is_superuser)):
             messages.add_message(
-                request, messages.ERROR,
+                request, messages.WARNING,
                 _(u'You cannot see this note.'))
             raise PermissionDenied
-
+        if not idCom is None:
+            com = get_object_or_404(NoteComments, id=idCom)
+            if (not (request.user == com.user
+                    or (request.user == note.video.owner and com.status == '1')
+                    or com.status == '2'
+                    or request.user.is_superuser)):
+                messages.add_message(
+                    request, messages.WARNING,
+                    _(u'You cannot see this comment.'))
+                raise PermissionDenied
+        else:
+            com = None
+        
         listNotes = get_adv_note_list(request, video)
-        listComments = get_adv_note_com_list(request, id)
-        return render(request, 'videos/video_notes_w_comments.html',
+        listComments = get_adv_note_com_list(request, idNote)
+        return render(request, 'videos/video_notes.html',
                     {'video': video,
-                    'noteToDisplay': note,
-                    'listNotes': listNotes,
-                    'listComments': listComments})
+                     'noteToDisplay': note,
+                     'comToDisplay': com,
+                     'listNotes': listNotes,
+                     'listComments': listComments})
+
+
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+def video_note_form(request, slug):
+    video = get_object_or_404(Video, slug=slug)
+    idCom, idNote = None, None
+    if request.method == "POST" and request.POST.get('idCom'):
+        idCom = request.POST.get('idCom')
+    elif request.method == "GET" and request.GET.get('idCom'):
+        idCom = request.GET.get('idCom')
+    if request.method == "POST" and request.POST.get('idNote'):
+        idNote = request.POST.get('idNote')
+    elif request.method == "GET" and request.GET.get('idNote'):
+        idCom = request.GET.get('idNote')
+
+    if not idCom is None:
+        com = get_object_or_404(NoteComments, id=idCom)
+    if not idNote is None:
+        note = get_object_or_404(AdvancedNotes, id=idNote)
+
+    # Editing a note comment
+    if not idCom is None and not idNote is None:
+        if (not (request.user == com.user
+                or (request.user == com.note.video.owner
+                    and com.status == '1')
+                or com.status == '2'
+                or request.user.is_superuser)):
+            messages.add_message(
+                request, messages.WARNING,
+                _(u'You cannot edit this comment.'))
+            raise PermissionDenied
+        form = NoteCommentsForm({
+            'comment': com.comment, 'status': com.status})
+        noteToDisplay, comToDisplay = note, com
+        listNotesCom = get_adv_note_com_list(request, idNote)
+        comToEdit, noteToEdit = com, None
+    # Editing a note or creatting a note comment
+    elif idCom is None and not idNote is None:
+        # Editing a note
+        if ((request.method == "POST"
+                and request.POST.get('action') == 'form_note')
+                or (request.method == "GET"
+                and request.GET.get('action') == 'form_note')):
+            if (not (request.user == note.user
+                    or (request.user == note.video.owner
+                        and note.status == '1')
+                    or note.status == '2'
+                    or request.user.is_superuser)):
+                messages.add_message(
+                    request, messages.WARNING,
+                    _(u'You cannot edit this note.'))
+                raise PermissionDenied
+            form = AdvancedNotesForm({
+                'timestamp': note.timestamp, 'note': note.note,
+                'status': note.status})
+            noteToDisplay, comToDisplay = None, None
+            listNotesCom = None
+            comToEdit, noteToEdit = None, note
+        # Creating a note comment
+        elif ((request.method == "POST"
+                and request.POST.get('action') == 'form_com')
+                or (request.method == "GET"
+                and request.GET.get('action') == 'form_com')):
+            form = NoteCommentsForm()
+            noteToDisplay, comToDisplay = note, None
+            listNotesCom = get_adv_note_com_list(request, idNote)
+            comToEdit, noteToEdit = None, None
+    # Creating a note
+    elif idCom is None and idNote is None:
+        form = AdvancedNotesForm()
+        noteToDisplay, comToDisplay = None, None
+        listNotesCom = None
+        comToEdit, noteToEdit = None, None
+
+    listNotes = get_adv_note_list(request, video)
+
+    return render(request, 'videos/video_notes.html',
+                  {'video': video,
+                   'noteToDisplay': noteToDisplay,
+                   'noteToEdit': noteToEdit,
+                   'comToEdit': comToEdit,
+                   'listNotes': listNotes,
+                   'listComments': listNotesCom,
+                   'form': form})
 
 
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_note_save(request, slug):
     video = get_object_or_404(Video, slug=slug)
-    advNotesForm = AdvancedNotesForm()
+    idCom = idNote = noteToDisplay = comToDisplay = None
+    listNotesCom = form = None
     if request.method == "POST":
-        advNotesForm = AdvancedNotesForm(request.POST)
-        if advNotesForm.is_valid():
-            if request.POST.get('idnote'):
-                note, created = get_object_or_404(
-                    AdvancedNotes,
-                    id=request.POST.get('idnote')), False
-            else:
+        if request.POST.get('action') == 'save_note':
+            form = AdvancedNotesForm(request.POST)
+        elif request.POST.get('action') == 'save_com':
+            form = NoteCommentsForm(request.POST)
+        
+        if request.POST.get('idCom'):
+            idCom = request.POST.get('idCom')
+            com = get_object_or_404(NoteComments, id=idCom)
+        if request.POST.get('idNote'):
+            idNote = request.POST.get('idNote')
+            note = get_object_or_404(AdvancedNotes, id=idNote)
+
+        if form.is_valid():
+            form = None
+            # Saving a com after an edit
+            if not idCom is None and not idNote is None:
+                com.comment = request.POST.get('comment')
+                com.status = request.POST.get('status')
+                com.modified_on = timezone.now()
+                com.save()
+                messages.add_message(
+                    request, messages.INFO, _('The comment has been saved.'))
+                noteToDisplay = note
+                comToDisplay = com
+                listNotesCom = get_adv_note_com_list(request, idNote)
+            # Saving a new com or saving a note after an edit
+            elif idCom is None and not idNote is None:
+                # Saving a note after an edit
+                if request.POST.get('action') == 'save_note':
+                    note.note = request.POST.get('note')
+                    note.status = request.POST.get('status')
+                    note.modified_on = timezone.now()
+                    note.save()
+                    messages.add_message(
+                        request, messages.INFO, _('The note has been saved.'))
+                # Saving a new com
+                elif request.POST.get('action') == 'save_com':
+                    com = NoteComments.objects.create(
+                        user=request.user, note=note,
+                        status=request.POST.get('status'),
+                        comment=request.POST.get('comment'))
+                    messages.add_message(
+                        request, messages.INFO, _('The comment has been saved.'))
+                    noteToDisplay = note
+                    listNotesCom = get_adv_note_com_list(request, idNote)
+
+            # Saving a new note
+            elif idCom is None and idNote is None:
                 note, created = AdvancedNotes.objects.get_or_create(
                     user=request.user, video=video,
                     status=request.POST.get('status'),
                     timestamp=request.POST.get('timestamp'))
-            if created or request.POST.get('action') == 'save_edit':
-                note.note = request.POST.get('note')
-            else:
-                note.note = note.note + "\n" + request.POST.get('note')
-            note.user = request.user
-            note.status = request.POST.get('status')
-            note.timestamp = request.POST.get('timestamp')
-            note.save()
-            advNotesForm = AdvancedNotesForm()
-            messages.add_message(
-                request, messages.INFO, _('The note has been saved.'))
+                if created:
+                    note.note = request.POST.get('note')
+                else:
+                    note.note = note.note + "\n" + request.POST.get('note')
+                note.save()
+                messages.add_message(
+                    request, messages.INFO, _('The note has been saved.'))
+
         else:
             messages.add_message(
-                request, messages.ERROR,
+                request, messages.WARNING,
                 _(u'One or more errors have been found in the form.'))
+            if not idCom is None and not idNote is None:
+                noteToDisplay = note
+                listNotesCom = get_adv_note_com_list(request, idNote)
+            elif (idCom is None and not idNote is None
+                    and request.POST.get('action') == 'save_com'):
+                noteToDisplay = note
+                listNotesCom = get_adv_note_com_list(request, idNote)                
+
     listNotes = get_adv_note_list(request, video)
     return render(request, 'videos/video_notes.html',
                   {'video': video,
+                   'noteToDisplay': noteToDisplay,
+                   'comToDisplay': comToDisplay,
                    'listNotes': listNotes,
-                   'notesForm': advNotesForm})
+                   'listComments': listNotesCom,
+                   'form': form})
 
 
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_note_remove(request, slug):
     video = get_object_or_404(Video, slug=slug)
-    advNotesForm = AdvancedNotesForm()
     if request.method == "POST":
-        note = get_object_or_404(AdvancedNotes,
-                                 id=request.POST.get('idnote'))
-        if request.user != note.user and not request.user.is_superuser:
-            messages.add_message(
-                request, messages.ERROR, _(u'You cannot delete this note.'))
-            raise PermissionDenied
-        else:
-            note.delete()
-            messages.add_message(
-                request, messages.INFO, _('The note has been deleted.'))
+        idCom = idNote = noteToDisplay = listNotesCom = None
+        if request.POST.get('idCom'):
+            idCom = request.POST.get('idCom')
+            com = get_object_or_404(NoteComments, id=idCom)
+        if request.POST.get('idNote'):
+            idNote = request.POST.get('idNote')
+            note = get_object_or_404(AdvancedNotes, id=idNote)
+
+        if idNote and request.POST.get('action') == 'remove_note':
+            if request.user != note.user and not request.user.is_superuser:
+                messages.add_message(
+                    request, messages.WARNING, _(u'You cannot delete this note.'))
+                raise PermissionDenied
+            else:
+                note.delete()
+                messages.add_message(
+                    request, messages.INFO, _('The note has been deleted.'))
+        elif idNote and idCom and request.POST.get('action') == 'remove_com':
+            if request.user != com.user and not request.user.is_superuser:
+                messages.add_message(
+                    request, messages.WARNING, _(u'You cannot delete this comment.'))
+                raise PermissionDenied
+            else:
+                com.delete()
+                messages.add_message(
+                    request, messages.INFO, _('The comment has been deleted.'))
+                noteToDisplay = note
+                listNotesCom = get_adv_note_com_list(request, idNote)
+
     listNotes = get_adv_note_list(request, video)
     return render(request, 'videos/video_notes.html',
                   {'video': video,
-                   'listNotes': listNotes,
-                   'notesForm': advNotesForm})
+                   'noteToDisplay': noteToDisplay,
+                    'listNotes': listNotes,
+                    'listComments': listNotesCom})
 
-
-@csrf_protect
-def video_notes_com(request, slug, id):
-    if (request.method == 'POST'):
-        action = request.POST.get('action').split('_')[0]
-    elif (request.method == 'POST'):
-        action = request.GET.get('action').split('_')[0]
-    if action in NOTE_ACTION:
-        return eval('video_note_com_{0}(request, slug, id)'.format(action))
-    listNotesCom = get_adv_note_com_list(request, id)
-    noteCommentsForm = NoteCommentsForm()
-    return render(request, 'videos/video_notes_comments.html',
-                  {'slug': slug,
-                   'id': id,
-                   'listComments': listNotesCom,
-                   'notesComForm': noteCommentsForm})
 
 @csrf_protect
 @login_required(redirect_field_name='referrer')
-def video_note_com_form(request, slug, id):
-    note = get_object_or_404(AdvancedNotes, id=id)
-    idCom = None
-    if request.method == "POST" and request.POST.get('idcom'):
-        idCom = request.POST.get('idcom')
-    elif request.method == "GET" and request.GET.get('idcom'):
-        idCom = request.GET.get('idcom')
-    if not idCom is None:
-        com = get_object_or_404(NoteComments, id=idCom)
-        if (not (request.user == com.user
-                 or (request.user == com.note.video.owner
-                     and com.status == '1')
-                 or com.status == '2'
-                 or request.user.is_superuser)):
-            messages.add_message(
-                request, messages.ERROR,
-                _(u'You cannot edit this comment.'))
-            raise PermissionDenied
-        noteCommentsForm = NoteCommentsForm({'comment': com.comment, 'status': com.status})
-    else:
-        noteCommentsForm = NoteCommentsForm()
+def video_note_download(request, slug):
+    video = get_object_or_404(Video, slug=slug)
     listNotes = get_adv_note_list(request, video)
-    listNotesCom = get_adv_note_com_list(request, id)
-    return render(request, 'videos/video_notes_w_comments.html',
-                  {'slug': slug,
-                   'noteToDisplay': note,
-                   'listNotes': listNotes,
-                   'listComments': listNotesCom,
-                   'notesForm': noteCommentsForm})
-    
-
-@csrf_protect
-@login_required(redirect_field_name='referrer')
-def video_note_com_save(request, slug, id):
-    note = AdvancedNotes.objects.get(id=id)
-    noteCommentsForm = NoteCommentsForm()
-    if request.method == "POST":
-        noteCommentsForm = NoteCommentsForm(request.POST)
-        if noteCommentsForm.is_valid():
-            if request.POST.get('action') == 'save_edit':
-                com = get_object_or_404(
-                    NoteComments, id=request.POST.get('idcom'))
-            else:
-                com = NoteComments.objects.create(
-                    user=request.user, note=note)
-            com.comment = request.POST.get('comment')
-            com.status = request.POST.get('status')
-            com.save()
-            noteCommentsForm = NoteCommentsForm()
-            messages.add_message(
-                request, messages.INFO, _('The comment has been saved.'))
-        else:
-            messages.add_message(
-                request, messages.ERROR,
-                _(u'One or more errors have been found in the form.'))
-    listNotesCom = get_adv_note_com_list(request, id)
-    return render(request, 'videos/video_notes_comments.html',
-                  {'slug': slug,
-                   'id': id,
-                   'listComments': listNotesCom,
-                   'notesComForm': noteCommentsForm})
-
-
-@csrf_protect
-@login_required(redirect_field_name='referrer')
-def video_note_com_remove(request, slug, id):
-    if request.method == "POST" and request.POST.get('idcom'):
-        noteCommentsForm = NoteCommentsForm()
-        com = get_object_or_404(NoteComments, id=request.POST.get('idcom'))
-        if request.user != com.user and not request.user.is_superuser:
-            messages.add_message(
-                request, messages.ERROR, _(u'You cannot delete this comment.'))
-            raise PermissionDenied
-        else:
-            com.delete()
-            messages.add_message(
-                request, messages.INFO, _('The comment has been deleted.'))
-    listNotesCom = get_adv_note_com_list(request, id)
-    return render(request, 'videos/video_notes_comments.html',
-                  {'slug': slug,
-                   'id': id,
-                   'listComments': listNotesCom,
-                   'notesComForm': noteCommentsForm})
+    dictComments = dict((str(n.id), get_adv_note_com_list(request, n.id))
+        for n in listNotes)
+    contentToDownload = {
+        'type': [], 'status':[], 'relatedNote': [],
+        'dateCreated': [], 'dataModified': [],
+        'noteTimestamp': [], 'content': []
+    }
+    for n in listNotes:
+        contentToDownload['type'].append(str(_('Note')))
+        contentToDownload['status'].append(n.status)
+        contentToDownload['relatedNote'].append(str(_('None')))
+        contentToDownload['dateCreated'].append(str(n.added_on))
+        contentToDownload['dataModified'].append(str(n.modified_on))
+        contentToDownload['noteTimestamp'].append(n.timestampstr())
+        contentToDownload['content'].append(n.note)
+        for c in dictComments[str(n.id)]:
+            contentToDownload['type'].append(str(_('Comment')))
+            contentToDownload['status'].append(c.status)
+            contentToDownload['relatedNote'].append(str(n.id))
+            contentToDownload['dateCreated'].append(str(c.added_on))
+            contentToDownload['dataModified'].append(str(c.modified_on))
+            contentToDownload['noteTimestamp'].append(str(_('None')))  # n.timestampstr
+            contentToDownload['content'].append(c.comment)
+    df = pandas.DataFrame(contentToDownload,
+        columns=['type', 'status', 'relatedNote', 'dateCreated', 'dataModified',
+            'noteTimestamp', 'content'])
+    df.columns= [str(_('Type')), str(_('Status')), str(_('Related note id')),
+        str(_('Created on')), str(_('Modified on')),
+        str(_('Note timestamp')), str(_('Content'))]
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; \
+        filename=%s_notes_and_comments.csv' % slug
+    df.to_csv(path_or_buf=response, sep='|', float_format='%.2f', index=False, decimal=",")
+    return response
 
 
 @csrf_protect
