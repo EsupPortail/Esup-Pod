@@ -418,7 +418,7 @@ def file_edit_delete(request, folder):
 def file_edit_new(request, folder):
     if request.POST.get('captionMaker'):
         form_file = CustomFileModelCaptionMakerForm(initial={"folder": folder})
-    else:   
+    else:
         form_file = CustomFileModelForm(initial={"folder": folder})
     return render(request, "podfile/form_file.html",
                   {'form_file': form_file, "folder": folder})
@@ -469,8 +469,8 @@ def file_edit_save(request, folder):
                 and request.POST.get("file_id") != "None"):
             del form_file['file']
         elif (request.POST.get('captionMaker') and
-                    (request.POST.get("file_id") == "None"
-                    or not request.POST.get("file_id"))):
+              (request.POST.get("file_id") == "None"
+               or not request.POST.get("file_id"))):
             form_file = CustomFileModelCaptionMakerForm(
                 request.POST, request.FILES)
         rendered = render_to_string("podfile/form_file.html",

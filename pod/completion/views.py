@@ -87,11 +87,11 @@ def video_caption_maker_form(request, video):
         action = request.GET.get('action')
     if action == "form_save_new":
         form_caption = MakeCaptionForm(False, initial={'video': video})
-    elif action == "form_save_modify":
-        if request.method == "POST":
-            track = get_object_or_404(Track, id=request.POST.get('id'))
-        elif request.method == "GET":
-            track = get_object_or_404(Track, id=request.GET.get('id'))
+    elif action == "form_save_modify" and request.method == "POST":
+        track = get_object_or_404(Track, id=request.POST.get('id'))
+        form_caption = MakeCaptionForm(False, instance=track)
+    elif action == "form_save_modify" and request.method == "GET":
+        track = get_object_or_404(Track, id=request.GET.get('id'))
         form_caption = MakeCaptionForm(False, instance=track)
     return render(
         request,
@@ -544,12 +544,7 @@ def video_completion_track_new(request, video):
              'list_overlay': list_overlay})
 
 
-def video_completion_track_save(request, video):
-    list_contributor = video.contributor_set.all()
-    list_track = video.track_set.all()
-    list_document = video.document_set.all()
-    list_overlay = video.overlay_set.all()
-
+def video_completion_get_form_track(request):
     form_track = TrackForm(request.POST)
     if request.POST.get('track_id') and request.POST['track_id'] != 'None':
         track = get_object_or_404(Track, id=request.POST['track_id'])
@@ -562,6 +557,17 @@ def video_completion_track_save(request, video):
             form_track = MakeCaptionForm(False, request.POST)
         else:
             form_track = TrackForm(request.POST)
+    return form_track
+
+
+def video_completion_track_save(request, video):
+    list_contributor = video.contributor_set.all()
+    list_track = video.track_set.all()
+    list_document = video.document_set.all()
+    list_overlay = video.overlay_set.all()
+
+    form_track = video_completion_get_form_track(request)
+
     if request.POST.get('captionMaker'):
         dest = 'video_caption_maker'
         action_modify_name = 'form_save_modify'
