@@ -1110,6 +1110,8 @@ class AdvancedNotes(models.Model):
 class NoteComments(models.Model):
     user = models.ForeignKey(User)
     note = models.ForeignKey(AdvancedNotes)
+    parentCom = models.ForeignKey(
+        "NoteComments", blank=True, null=True)
     status = models.CharField(
         _('Comment availibility level'), max_length=1,
         choices=NOTES_STATUS, default="0",
