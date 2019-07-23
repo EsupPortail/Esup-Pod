@@ -34,7 +34,7 @@
     margin: auto;
 }
 
-#id_notes div.dropdown-menu , div.mgtNote div.dropdown-menu {
+#card-takenote div.dropdown-menu {
     min-width: auto;
     padding: 5px;
 }
@@ -96,15 +96,17 @@ textarea#id_note, textarea#id_comment, select#id_status {
     width: 100%;
 }
 
-#card-takenote > div.mgtNote > div.dropdown-menu {
+#card-takenote > div.mgtNotes > div.dropdown-menu {
     background-color: #fff5f5;
 }
 
-div.mgtNote {
+div.mgtNotes, div.mgtNote, div.mgtComment {
     align-self: center;
 }
 
-div.mgtNote.dropleft > button {
+div.mgtNotes.dropleft > button,
+div.mgtNote.dropleft > button,
+div.mgtComment.dropleft > button {
     border: none;
 }
 
@@ -129,4 +131,5 @@ form.view_video_notes_form.hidden, form.view_video_note_coms_form.hidden {
     font-size: 13px;
     font-style: italic;
     font-weight: bold;
+    margin: 5px;
 }

@@ -10,19 +10,22 @@ $(document).on('keydown',  'textarea#id_note, textarea#id_comment', function(e){
     }
 })
 
-$(document).on('submit', '#video_notes_form, div.mgtNote form', function(e) {
+/**
+ * Handle click on buttons in three dots menu
+ */
+$(document).on('submit', '#video_notes_form, div.mgtNotes form, div.mgtNote form, div.mgtComment form', function(e) {
     if ($(this).attr('class') != 'download_video_notes_form') {
         e.preventDefault();
         let data_form = $(this).serializeArray();
-        send_form_data($(this).attr("action"), data_form, "show_form_notes", "post");
+        send_form_data($(this).attr("action"), data_form, "display_notes_place", "post");
     }
 })
 
 /**
- * Form displaying for note or comment
+ * Fill allocated space for notes and comments with content
  */
-var show_form_notes = function(data) {
-    $( "div#id_notes" ).parent().html(data);
+var display_notes_place = function(data) {
+    $( "div#card-takenote" ).html(data);
     feather.replace({ class: 'align-bottom'});
     if($('#video_notes_form').length)
         $('#video_notes_form')[0].scrollIntoView({
@@ -32,7 +35,7 @@ var show_form_notes = function(data) {
 }
 
 /**
- * Display the form to add a note on click on add button
+ * Put player in pause when displaying the form to create a note
  */
 $(document).on('submit', 'form.add_video_notes_form', function() {
     $('#podvideoplayer').get(0).player.pause();
@@ -46,11 +49,17 @@ $(document).on('click', 'span.timestamp', function(){
     $('#podvideoplayer').get(0).player.currentTime(timestamp);
 })
 
+/**
+ * Handle click on note or comment text for partial or full display
+ */
 $(document).on('click', 'p.note.form, p.comment.form', function(){
     let data_form = $(this).parent().serializeArray();
-    send_form_data($(this).parent().attr("action"), data_form, "show_form_notes", "post");
+    send_form_data($(this).parent().attr("action"), data_form, "display_notes_place", "post");
 })
 
+/**
+ * Manage hiding create note or comment form on click on document
+ */
 $(document).on('click', function(e) {
     if ($("#video_notes_form").length
             && !$("#video_notes_form")[0].contains(e.target)
@@ -58,11 +67,11 @@ $(document).on('click', function(e) {
             && !("timestamp" in e.target.classList)) {
         if ($("#video_notes_form").parent().find('.view_video_notes_form.hidden').length) {
             let data_form = $("#video_notes_form").parent().find('.view_video_notes_form.hidden').serializeArray();
-            send_form_data($("#video_notes_form").parent().find('.view_video_notes_form.hidden').attr("action"), data_form, "show_form_notes", "post");
+            send_form_data($("#video_notes_form").parent().find('.view_video_notes_form.hidden').attr("action"), data_form, "display_notes_place", "post");
         }
         else if ($("#video_notes_form").parent().find('.view_video_note_coms_form.hidden').length) {
             let data_form = $("#video_notes_form").parent().find('.view_video_note_coms_form.hidden').serializeArray();
-            send_form_data($("#video_notes_form").parent().find('.view_video_note_coms_form.hidden').attr("action"), data_form, "show_form_notes", "post");
+            send_form_data($("#video_notes_form").parent().find('.view_video_note_coms_form.hidden').attr("action"), data_form, "display_notes_place", "post");
         }
     }
 })

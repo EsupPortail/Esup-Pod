@@ -53,7 +53,7 @@
     
     {% if request.user.is_authenticated %}
         <div class="mgtNote dropleft">
-            <button class="p-0 m-0 btn btn-outline-info btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i data-feather="more-horizontal"></i> </button>
+            <button class="p-0 m-0 btn btn-outline-info btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage note' %}"> <i data-feather="more-horizontal"></i> </button>
             <div class="dropdown-menu">
 
                 {% if request.user == note.user %}

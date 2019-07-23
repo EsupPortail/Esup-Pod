@@ -5,8 +5,8 @@
     <div class="header">
         {% if com.user.userpicture %} <span class="user">{{ com.user.userpicture }}</span> {% else %} <span class="user">{{ com.user.username }}</span> {% endif %}
         {% if request.user.is_authenticated and request.user == note.user %}
-            <div class="mgtNote dropleft">
-                <button class="p-0 m-0 btn btn-outline-info btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i data-feather="more-horizontal"></i> </button>
+            <div class="mgtComment dropleft">
+                <button class="p-0 m-0 btn btn-outline-info btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage comment' %}"> <i data-feather="more-horizontal"></i> </button>
                 <div class="dropdown-menu">
 
                     {% comment %} Button to edit the comment in three dots menu {% endcomment %}
