@@ -712,11 +712,9 @@ def video_note_form(request, slug):
         note = get_object_or_404(AdvancedNotes, id=idNote)
 
     params = (idNote, idCom, note, com)
-    print(params)
     res = video_note_form_case(request, params)
     (note, com, noteToDisplay, comToDisplay,
      noteToEdit, comToEdit, listNotesCom, form) = res
-    print(res)
     listNotes = get_adv_note_list(request, video)
 
     return render(request, 'videos/video_notes.html',
