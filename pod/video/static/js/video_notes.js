@@ -46,7 +46,8 @@ $(document).on('submit', 'form.add_video_notes_form', function() {
  */
 $(document).on('click', 'span.timestamp', function(){
     let timestamp = $(this).parent().find('span.timestamp').attr('start');
-    $('#podvideoplayer').get(0).player.currentTime(timestamp);
+    if (!isNaN(Number(timestamp)))
+        $('#podvideoplayer').get(0).player.currentTime(timestamp);
 })
 
 /**
