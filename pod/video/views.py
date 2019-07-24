@@ -586,6 +586,10 @@ def video_delete(request, slug=None):
 
 
 def get_adv_note_list(request, video):
+    """
+    Return the list of AdvancedNotes of video
+      that can be seen by the current user
+    """
     if request.user.is_authenticated:
         filter = (
             Q(user=request.user) |
@@ -600,6 +604,10 @@ def get_adv_note_list(request, video):
 
 
 def get_adv_note_com_list(request, id):
+    """
+    Return the list of coms wich are the direct sons of the
+      AdvancedNote of id id , that can be seen by the current user
+    """
     if id:
         note = get_object_or_404(AdvancedNotes, id=id)
         if request.user.is_authenticated:
@@ -618,6 +626,18 @@ def get_adv_note_com_list(request, id):
 
 
 def get_com_coms_dict(request, listComs):
+    """
+    Return a dictionnary build recursively containing
+      the list of the direct sons of a com
+      for each encountered com
+    Starting from the coms present in listComs
+    Example, having the next tree of coms :
+    |- C1     (id: 1)
+    |- C2     (id: 2)
+       |- C3  (id: 3)
+    With listComs = [C1, C2]
+    The result will be {'1': [], '2': [C3], '3': []}
+    """
     dictComs = dict()
     if not listComs:
         return dictComs
@@ -639,6 +659,10 @@ def get_com_coms_dict(request, listComs):
 
 
 def get_com_tree(com):
+    """
+    Return the list of the successive parents of com
+      including com from bottom to top
+    """
     tree, c = [], com
     while c.parentCom is not None:
         tree.append(c)
@@ -648,6 +672,12 @@ def get_com_tree(com):
 
 
 def can_edit_or_remove_note_or_com(request, nc, action):
+    """
+    Check if the current user can apply action to
+      the note or comment nc
+    Typically action is in ['edit', 'delete']
+    If not raise PermissionDenied
+    """
     if request.user != nc.user and not request.user.is_superuser:
         messages.add_message(
             request,
@@ -658,6 +688,10 @@ def can_edit_or_remove_note_or_com(request, nc, action):
 
 
 def can_see_note_or_com(request, nc):
+    """
+    Check if the current user can view the note or comment nc
+    If not raise PermissionDenied
+    """
     if isinstance(nc, AdvancedNotes):
         vid_owner = nc.video.owner
     elif isinstance(nc, NoteComments):
