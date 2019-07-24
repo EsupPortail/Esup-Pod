@@ -861,7 +861,6 @@ def video_note_save(request, slug):
 
     params = (idNote, idCom, note, com, noteToDisplay,
               comToDisplay, listNotesCom, dictComments)
-
     if request.method == "POST" and form and form.is_valid():
         form = None
         res = video_note_save_form_valid(request, video, params)
@@ -943,7 +942,7 @@ def video_note_save_form_valid(request, video, params):
             user=request.user, video=video,
             status=request.POST.get('status'),
             timestamp=request.POST.get('timestamp'))
-        if created:
+        if created or not note.note:
             note.note = request.POST.get('note')
         else:
             note.note = note.note + "\n" + request.POST.get('note')
