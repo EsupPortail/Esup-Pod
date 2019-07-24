@@ -1096,7 +1096,7 @@ class AdvancedNotes(models.Model):
             )
 
     def timestampstr(self):
-        if not self.timestamp:
+        if self.timestamp is None:
             return "--:--:--"
         seconds = int(self.timestamp)
         hours = int(seconds / 3600)
