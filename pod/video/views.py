@@ -619,6 +619,8 @@ def get_adv_note_com_list(request, id):
 
 def get_com_coms_dict(request, listComs):
     dictComs = dict()
+    if not listComs:
+        return dictComs
     if request.user.is_authenticated:
         filter = (
             Q(user=request.user) |
@@ -989,7 +991,7 @@ def video_note_remove(request, slug):
                 request,
                 messages.INFO, _('The note has been deleted.')
             )
-            listNotesCom = []
+            listNotesCom, comToDisplay = None, None
         elif idNote and idCom and request.POST.get('action') == 'remove_com':
             can_edit_or_remove_note_or_com(request, com, 'delete')
             comToDisplay = get_com_tree(com)
