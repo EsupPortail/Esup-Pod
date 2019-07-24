@@ -673,9 +673,10 @@ def can_see_note_or_com(request, nc):
 
 @csrf_protect
 def video_notes(request, slug):
-    if (request.method == 'POST'):
+    action = None
+    if (request.method == 'POST' and request.POST.get('action')):
         action = request.POST.get('action').split('_')[0]
-    elif (request.method == 'GET'):
+    elif (request.method == 'GET' and request.GET.get('action')):
         action = request.GET.get('action').split('_')[0]
     if action in NOTE_ACTION:
         return eval('video_note_{0}(request, slug)'.format(action))
