@@ -19,7 +19,7 @@ from django.utils import timezone
 from pod.video.models import Video
 from pod.video.models import Channel
 from pod.video.models import Theme
-from pod.video.models import AdvancedNotes, NoteComments
+from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount
 from tagging.models import TaggedItem
 
@@ -900,7 +900,7 @@ def video_note_save_form_valid(request, video, params):
         noteToDisplay, comToDisplay = note, get_com_tree(com)
         listNotesCom = get_adv_note_com_list(request, idNote)
         dictComments = get_com_coms_dict(request, listNotesCom)
-    # Saving a new answer to a com
+    # Saving a new answer (com) to a com
     elif (idCom is not None and idNote is not None
             and request.POST.get('action') == 'save_com_new'):
         com2 = NoteComments.objects.create(
@@ -1015,36 +1015,54 @@ def video_note_remove(request, slug):
 def video_note_download(request, slug):
     video = get_object_or_404(Video, slug=slug)
     listNotes = get_adv_note_list(request, video)
-    dictComments = dict(
-        (str(n.id), get_adv_note_com_list(request, n.id))
-        for n in listNotes
-    )
     contentToDownload = {
-        'type': [], 'status': [], 'relatedNote': [],
+        'type': [], 'id': [], 'status': [],
+        'relatedNote': [], 'relatedComment': [],
         'dateCreated': [], 'dataModified': [],
         'noteTimestamp': [], 'content': []
     }
+
+    def write_to_dict(t, id, s, rn, rc, dc, dm, nt, c):
+        contentToDownload['type'].append(t)
+        contentToDownload['id'].append(id)
+        contentToDownload['status'].append(s)
+        contentToDownload['relatedNote'].append(rn)
+        contentToDownload['relatedComment'].append(rc)
+        contentToDownload['dateCreated'].append(dc)
+        contentToDownload['dataModified'].append(dm)
+        contentToDownload['noteTimestamp'].append(nt)
+        contentToDownload['content'].append(c)
+
+    def rec_expl_coms(idNote, lComs):
+        dictComs = get_com_coms_dict(request, lComs)
+        for c in lComs:
+            write_to_dict(str(_('Comment')), str(c.id),
+                          dict(NOTES_STATUS)[c.status],
+                          str(idNote),
+                          (str(c.parentCom.id) if c.parentCom
+                           else str(_('None'))),
+                          str(c.added_on), str(c.modified_on),
+                          str(_('None')), c.comment)
+            rec_expl_coms(idNote, dictComs[str(c.id)])
+
     for n in listNotes:
-        contentToDownload['type'].append(str(_('Note')))
-        contentToDownload['status'].append(n.status)
-        contentToDownload['relatedNote'].append(str(_('None')))
-        contentToDownload['dateCreated'].append(str(n.added_on))
-        contentToDownload['dataModified'].append(str(n.modified_on))
-        contentToDownload['noteTimestamp'].append(n.timestampstr())
-        contentToDownload['content'].append(n.note)
-        for c in dictComments[str(n.id)]:
-            contentToDownload['type'].append(str(_('Comment')))
-            contentToDownload['status'].append(c.status)
-            contentToDownload['relatedNote'].append(str(n.id))
-            contentToDownload['dateCreated'].append(str(c.added_on))
-            contentToDownload['dataModified'].append(str(c.modified_on))
-            contentToDownload['noteTimestamp'].append(str(_('None')))
-            contentToDownload['content'].append(c.comment)
+        write_to_dict(str(_('Note')), str(n.id),
+                      dict(NOTES_STATUS)[n.status],
+                      str(_('None')), str(_('None')),
+                      n.added_on.strftime('%Y-%d-%m'),
+                      n.modified_on.strftime('%Y-%d-%m'),
+                      n.timestampstr(), n.note)
+        lComs = get_adv_note_com_list(request, n.id)
+        rec_expl_coms(n.id, lComs)
+
     df = pandas.DataFrame(
         contentToDownload,
-        columns=['type', 'status', 'relatedNote', 'dateCreated',
-                 'dataModified', 'noteTimestamp', 'content'])
-    df.columns = [str(_('Type')), str(_('Status')), str(_('Related note id')),
+        columns=['type', 'id', 'status',
+                 'relatedNote', 'relatedComment',
+                 'dateCreated', 'dataModified',
+                 'noteTimestamp', 'content'])
+    df.columns = [str(_('Type')), str(_('ID')), str(_('Status')),
+                  str(_('Parent note id')), str(_('Parent comment id')),
                   str(_('Created on')), str(_('Modified on')),
                   str(_('Note timestamp')), str(_('Content'))]
     response = HttpResponse(content_type='text/csv')

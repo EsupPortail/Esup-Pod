@@ -3,7 +3,8 @@
 <div id="comment-{{ com.id }}" class="status-{{ com.status }}">
 
     <div class="header">
-        {% if com.user.userpicture %} <span class="user">{{ com.user.userpicture }}</span> {% else %} <span class="user">{{ com.user.username }}</span> {% endif %}
+        {% comment %} {% if com.user.userpicture %} <span class="user">{{ com.user.userpicture }}</span> {% else %} <span class="user">{{ com.user.username }}</span> {% endif %} {% endcomment %}
+        <span class="user"> {{ com.user.username }} </span>
         {% if request.user.is_authenticated and request.user == note.user %}
             <div class="mgtComment dropleft">
                 <button class="p-0 m-0 btn btn-outline-info btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage comment' %}"> <i data-feather="more-horizontal"></i> </button>
