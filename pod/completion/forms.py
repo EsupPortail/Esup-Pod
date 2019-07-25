@@ -2,10 +2,12 @@ from django import forms
 from django.conf import settings
 from django.forms.widgets import HiddenInput
 from django.utils.safestring import mark_safe
+# from django.utils.translation import ugettext_lazy as _
 from pod.completion.models import Contributor
 from pod.completion.models import Document
 from pod.completion.models import Track
 from pod.completion.models import Overlay
+
 FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
@@ -106,6 +108,36 @@ class TrackAdminForm(forms.ModelForm):
         super(TrackAdminForm, self).__init__(*args, **kwargs)
         if FILEPICKER:
             self.fields['src'].widget = CustomFileWidget(type="file")
+
+    class Meta(object):
+        model = Track
+        fields = '__all__'
+
+
+class MakeCaptionForm(forms.ModelForm):
+
+    def __init__(self, captionMakerInsert, *args, **kwargs):
+        super(MakeCaptionForm, self).__init__(*args, **kwargs)
+        for myField in self.fields:
+            self.fields['video'].widget = HiddenInput()
+            self.fields[myField].widget.attrs[
+                'placeholder'] = self.fields[myField].label
+            if self.fields[myField].required or myField == 'src':
+                self.fields[myField].widget.attrs[
+                    'class'] = 'form-control required'
+                label_unicode = u'{0}'.format(self.fields[myField].label)
+                self.fields[myField].label = mark_safe(
+                    '{0} <span class="special_class">*</span>'.format(
+                        label_unicode))
+            else:
+                self.fields[myField].widget.attrs['class'] = 'form-control'
+        self.fields['kind'].widget.attrs['class'] = 'custom-select'
+        self.fields['lang'].widget.attrs['class'] = 'custom-select'
+        if FILEPICKER:
+            self.fields['src'].widget = CustomFileWidget(type="file")
+        if captionMakerInsert:
+            del self.fields['lang']
+            del self.fields['kind']
 
     class Meta(object):
         model = Track

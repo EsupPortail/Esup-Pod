@@ -53,7 +53,7 @@
 			<li class="contenuTitre">
 				<span id="list_track">
 					<p>{% trans 'You can use' %} <a href="{% url "video_caption_maker" slug=video.slug%}" title="{% trans 'Video Caption Maker' %}">{% trans 'Video Caption Maker' %}</a> {% trans 'to create your subtitles and/or caption(s) files' %}.</p>
-					{% include 'track/list_track.html' %}
+					{% include 'track/list_track.html' with dest='video_completion_track' %}
 				</span>
 				&nbsp;
 				<span id="form_track">
