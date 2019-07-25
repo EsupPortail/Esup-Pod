@@ -1,7 +1,5 @@
 from django.conf import settings
 
-# from webrtc_audio_processing import AudioProcessingModule as AP
-
 import collections
 import contextlib
 import wave
@@ -52,10 +50,6 @@ class VoiceActivityDetector(object):
         voiced_frames = []
         for frame in frames:
             is_speech = vad.is_speech(frame.bytes, sample_rate)
-            # d = vad.process_stream(frame.bytes)
-            # is_speech = vad.has_voice()
-            # if vad.has_echo():
-            #     frame.bytes = d
             if not triggered:
                 ring_buffer.append((frame, is_speech))
                 num_voiced = len([f for f, speech in ring_buffer if speech])
@@ -87,13 +81,6 @@ class VoiceActivityDetector(object):
 
     def vad_segment_generator(self):
         vad = webrtcvad.Vad(int(VAD_AGRESSIVITY))
-        # vad = AP(aec_type=0, enable_vad=True, agc_type=1, enable_ns=False)
-        # vad.set_stream_format(16000, 1, 16000, 1)
-        # vad.set_reverse_stream_format(16000, 1)
-        # vad.set_ns_level(0)
-        # vad.set_vad_level(VAD_AGRESSIVITY)
-        # vad.set_aec_level(0)
-        # vad.set_agc_level(0)
         frames = self.frame_generator(
             SAMPLE_WINDOW,
             self.pcm_data,
