@@ -341,7 +341,7 @@ def encode_video(video_id):
         encode_mp3(video_id, video_data["contain_audio"],
                    video_to_encode.video.path, output_dir)
 
-        file_transcription(video_to_encode)
+        file_transcription(video_to_encode) if TRANSCRIPT else False
 
         change_encoding_step(video_id, 0, "done")
 
@@ -1210,11 +1210,10 @@ def send_email_encoding(video_to_encode):
 
 
 def file_transcription(video_to_encode):
-    if TRANSCRIPT:
-        msg = change_encoding_step(
-            video_to_encode.id, 5,
-            "transcripting audio")
-        main_transcript(video_to_encode)
-        add_encoding_log(
-            video_to_encode.id,
-            "create_and_save_subtitles : %s" % msg)
+    msg = change_encoding_step(
+        video_to_encode.id, 5,
+        "transcripting audio")
+    main_transcript(video_to_encode)
+    add_encoding_log(
+        video_to_encode.id,
+        "create_and_save_subtitles : %s" % msg)
