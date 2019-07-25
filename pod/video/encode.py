@@ -38,6 +38,10 @@ else:
     FILEPICKER = False
     from pod.main.models import CustomImageModel
 
+TRANSCRIPT = False
+if getattr(settings, 'USE_TRANSCRIPTION', False):
+    TRANSCRIPT = True
+    from pod.video.transcript import main_transcript
 
 USE_ESTABLISHMENT = getattr(
     settings, 'USE_ESTABLISHMENT_FIELD', False)
@@ -336,6 +340,8 @@ def encode_video(video_id):
 
         encode_mp3(video_id, video_data["contain_audio"],
                    video_to_encode.video.path, output_dir)
+
+        file_transcription(video_to_encode)
 
         change_encoding_step(video_id, 0, "done")
 
@@ -1196,3 +1202,19 @@ def send_email_encoding(video_to_encode):
                 fail_silently=False,
                 html_message=html_message,
             )
+
+
+###############################################################
+# TRANSCRIPTION PROCESS
+###############################################################
+
+
+def file_transcription(video_to_encode):
+    if TRANSCRIPT:
+        msg = change_encoding_step(
+            video_to_encode.id, 5,
+            "transcripting audio")
+        main_transcript(video_to_encode)
+        add_encoding_log(
+            video_to_encode.id,
+            "create_and_save_subtitles : %s" % msg)
