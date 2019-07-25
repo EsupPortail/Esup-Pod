@@ -7,8 +7,7 @@
     margin: 0;
 }
 
-#id_comments {
-    width: auto;
+.comments.offset {
     margin: 0 0 0 10px;
 }
 
@@ -17,8 +16,19 @@
     overflow: auto;
 }
 
-#id_notes, #id_comments, #id_comments > div {
-    border: solid 1px #999;
+div.note > .header {
+    border: solid 1px transparent;
+    border-radius: 10px;
+}
+
+div.comment > .header {
+    border: solid 1px transparent;
+    border-radius: 10px 10px 0 0;
+}
+
+div.comment > form {
+    border: solid 1px transparent;
+    border-radius: 0 0 10px 10px;
 }
 
 #id_notes small {
@@ -110,16 +120,19 @@ div.mgtComment.dropleft > button {
     border: none;
 }
 
-#id_notes > div.status-0, #id_notes > div.status-0 > div.header div.dropdown-menu,
-#id_comments > div.status-0, #id_comments > div.status-0 > div.header div.dropdown-menu {
+#id_notes > div.status-0 > div.header, #id_notes > div.status-0 > div.header div.dropdown-menu,
+.comments > div.status-0 > .header, .comments > div.status-0 > form,
+.comments > div.status-0 > div.header div.dropdown-menu {
     background-color: #f1f7ff;
 }
-#id_notes > div.status-1, #id_notes > div.status-1 div.dropdown-menu,
-#id_comments > div.status-1, #id_comments > div.status-1 > div.header div.dropdown-menu {
+#id_notes > div.status-1 > .header, #id_notes > div.status-1 div.dropdown-menu,
+.comments > div.status-1 > .header, .comments > div.status-1 > form,
+.comments > div.status-1 > div.header div.dropdown-menu {
     background-color: #f2fff1;
 }
-#id_notes > div.status-2, #id_notes > div.status-2 div.dropdown-menu,
-#id_comments > div.status-2, #id_comments > div.status-2 > div.header div.dropdown-menu {
+#id_notes > div.status-2 > .header, #id_notes > div.status-2 div.dropdown-menu,
+.comments > div.status-2 > .header, .comments > div.status-2 > form,
+.comments > div.status-2 > div.header div.dropdown-menu {
     background-color: #fffcf1;
 }
 
@@ -132,4 +145,8 @@ form.view_video_notes_form.hidden, form.view_video_note_coms_form.hidden {
     font-style: italic;
     font-weight: bold;
     margin: 5px;
+}
+
+div.note, div.comment {
+    margin: 3px 0 3px 0;
 }

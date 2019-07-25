@@ -1111,7 +1111,7 @@ class AdvancedNotes(models.Model):
 
 class NoteComments(models.Model):
     user = models.ForeignKey(User)
-    note = models.ForeignKey(AdvancedNotes)
+    parentNote = models.ForeignKey(AdvancedNotes)
     parentCom = models.ForeignKey(
         "NoteComments", blank=True, null=True)
     status = models.CharField(
@@ -1131,7 +1131,7 @@ class NoteComments(models.Model):
         verbose_name_plural = _("Note comments")
 
     def __str__(self):
-        return "%s-%s-%s" % (self.user.username, self.note, self.comment)
+        return "%s-%s-%s" % (self.user.username, self.parentNote, self.comment)
 
     def clean(self):
         if not self.comment:

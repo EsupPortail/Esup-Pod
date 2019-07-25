@@ -53,12 +53,12 @@
             {% endif %}
         {% endif %}
         {% for note in listNotes %}
-        <div id="note-{{ note.id }}" class="status-{{ note.status }}">
+        <div id="note-{{ note.id }}" class="note status-{{ note.status }}">
 
             {% include "videos/video_note_display.html" %}
 
                 {% if listComments and note == noteToDisplay or form and note == noteToDisplay %}
-                    <div id="id_comments">
+                    <div class="comments">
                         {% for com in listComments %}
                             {% include "videos/video_note_comments_display.html" %}
                         {% endfor %}
@@ -126,5 +126,14 @@
         {% endif %}
 
     </div>
+
+    <script>
+        $(document).ready(function () {
+            let divComments = $('#id_notes').find('div.comments');
+            for (var i=0; i < Math.min(divComments.length, 3); i++ ) {
+                $(divComments[i]).addClass('offset');
+            }
+        });
+    </script>
 
 </div>

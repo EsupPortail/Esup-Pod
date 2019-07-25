@@ -613,13 +613,13 @@ def get_adv_note_com_list(request, id):
         if request.user.is_authenticated:
             filter = (
                 Q(user=request.user) |
-                (Q(note__video__owner=request.user) & Q(status='1')) |
+                (Q(parentNote__video__owner=request.user) & Q(status='1')) |
                 Q(status='2')
             )
         else:
             filter = Q(status='2')
         return NoteComments.objects.all().filter(
-            note=note, parentCom=None).filter(
+            parentNote=note, parentCom=None).filter(
                 filter).order_by('added_on')
     else:
         return []
@@ -644,7 +644,7 @@ def get_com_coms_dict(request, listComs):
     if request.user.is_authenticated:
         filter = (
             Q(user=request.user) |
-            (Q(note__video__owner=request.user) & Q(status='1')) |
+            (Q(parentNote__video__owner=request.user) & Q(status='1')) |
             Q(status='2')
         )
     else:
@@ -695,7 +695,7 @@ def can_see_note_or_com(request, nc):
     if isinstance(nc, AdvancedNotes):
         vid_owner = nc.video.owner
     elif isinstance(nc, NoteComments):
-        vid_owner = nc.note.video.owner
+        vid_owner = nc.parentNote.video.owner
     if (not (request.user == nc.user
              or (request.user == vid_owner
                  and nc.status == '1')
@@ -940,7 +940,7 @@ def video_note_save_form_valid(request, video, params):
     elif (idCom is not None and idNote is not None
             and request.POST.get('action') == 'save_com_new'):
         com2 = NoteComments.objects.create(
-            user=request.user, note=note,
+            user=request.user, parentNote=note,
             parentCom=com,
             status=request.POST.get('status'),
             comment=request.POST.get('comment'))
@@ -964,7 +964,7 @@ def video_note_save_form_valid(request, video, params):
     elif (idCom is None and idNote is not None
             and request.POST.get('action') == 'save_com'):
         com = NoteComments.objects.create(
-            user=request.user, note=note,
+            user=request.user, parentNote=note,
             status=request.POST.get('status'),
             comment=request.POST.get('comment'))
         messages.add_message(

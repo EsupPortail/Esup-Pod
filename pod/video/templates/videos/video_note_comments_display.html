@@ -1,6 +1,6 @@
 {% load staticfiles i18n video_note_filter %}
 
-<div id="comment-{{ com.id }}" class="status-{{ com.status }}">
+<div id="comment-{{ com.id }}" class="comment status-{{ com.status }}">
 
     <div class="header">
         {% comment %} {% if com.user.userpicture %} <span class="user">{{ com.user.userpicture }}</span> {% else %} <span class="user">{{ com.user.username }}</span> {% endif %} {% endcomment %}
@@ -109,9 +109,13 @@
 {% if com and com in comToDisplay and com != comToEdit %}
     {% with comid=com.id|slugify %}
     {% with dCom=dictComments|lookup:comid %}
-        {% for com in dCom %}
-            {% include "videos/video_note_comments_display.html" %}
-        {% endfor %}
+    {% if dCom %}
+        <div class="comments">
+            {% for com in dCom %}
+                {% include "videos/video_note_comments_display.html" %}
+            {% endfor %}
+        </div>
+    {% endif %}
     {% endwith %}
     {% endwith %}
 {% endif %}

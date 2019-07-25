@@ -293,7 +293,7 @@ class AdvancedNotesAdmin(admin.ModelAdmin):
 
 
 class NoteCommentsAdmin(admin.ModelAdmin):
-    list_display = ('note', 'user', 'comment', 'added_on', 'modified_on')
+    list_display = ('parentNote', 'user', 'added_on', 'modified_on')
 
 
 class VideoToDeleteAdmin(admin.ModelAdmin):

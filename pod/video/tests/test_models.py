@@ -960,6 +960,7 @@ class NotesTestCase(TestCase):
         self.assertEqual(note.note, None)
         self.assertEqual(advnote.note, None)
         self.assertEqual(advnote.timestamp, None)
+        self.assertEqual(advnote.status, '0')
         print(" --->  test_NotesTestCase_null_attributs : OK !")
 
     def test_NotesTestCase_with_attributs(self):
@@ -971,7 +972,8 @@ class NotesTestCase(TestCase):
         advnote = AdvancedNotes.objects.create(
             user=User.objects.get(username="pod"),
             video=Video.objects.get(id=1),
-            note="coucou", timestamp=0
+            note="coucou", timestamp=0,
+            status='1'
         )
         self.assertTrue(isinstance(note, Notes))
         self.assertTrue(isinstance(advnote, AdvancedNotes))
@@ -984,6 +986,7 @@ class NotesTestCase(TestCase):
         self.assertEqual(note.note, "coucou")
         self.assertEqual(advnote.note, "coucou")
         self.assertEqual(advnote.timestamp, 0)
+        self.assertEqual(advnote.status, '1')
         print(" --->  test_NotesTestCase_with_attributs : OK !")
 
     def test_delete_object(self):
@@ -992,6 +995,82 @@ class NotesTestCase(TestCase):
             video=Video.objects.get(id=1)
         )
         AdvancedNotes.objects.create(
+            user=User.objects.get(username="pod"),
+            video=Video.objects.get(id=1)
+        )
+        Notes.objects.get(id=1).delete()
+        AdvancedNotes.objects.get(id=1).delete()
+        self.assertEqual(Notes.objects.all().count(), 0)
+        self.assertEqual(AdvancedNotes.objects.all().count(), 0)
+
+        print(
+            "   --->  test_delete_object of NotesTestCase : OK !")
+
+
+@override_settings(
+    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
+    DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'db.sqlite',
+        }
+    }
+)
+class NotesTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        user = User.objects.create(username="pod", password="pod1234pod")
+        Video.objects.create(
+            title="Video1", owner=user, video="test.mp4",
+            type=Type.objects.get(id=1))
+        note = AdvancedNotes.objects.create(
+            user=User.objects.get(username="pod"),
+            video=Video.objects.get(id=1)
+        )
+        print(" --->  SetUp of EncodingLogTestCase : OK !")
+
+    def test_NoteCommentsTestCase_null_attributs(self):
+        com = NoteComments.objects.create(
+            user=User.objects.get(username="pod"),
+            note=AdvancedNotes.objects.get(id=1)
+        )
+        self.assertTrue(isinstance(com, NoteComments))
+        self.assertEqual(com.__str__(), "%s-%s-%s" %
+                         (com.user.username,
+                          com.note,
+                          com.comment))
+        self.assertEqual(com.comment, None)
+        self.assertEqual(com.parentCom, None)
+        self.assertEqual(com.note,
+                         AdvancedNotes.objects.get(id=1))
+        self.assertEqual(com.status, '0')
+        print(" --->  test_NotesTestCase_null_attributs : OK !")
+
+    def test_NoteCommentsTestCase_with_attributs(self):
+
+        advnote = AdvancedNotes.objects.create(
+            user=User.objects.get(username="pod"),
+            video=Video.objects.get(id=1),
+            note="coucou", timestamp=0,
+            status='1'
+        )
+        self.assertTrue(isinstance(note, Notes))
+        self.assertTrue(isinstance(advnote, AdvancedNotes))
+        self.assertEqual(note.__str__(), "%s-%s" %
+                         (note.user.username, note.video))
+        self.assertEqual(advnote.__str__(), "%s-%s-%s" %
+                         (advnote.user.username,
+                         advnote.video,
+                         advnote.timestamp))
+        self.assertEqual(note.note, "coucou")
+        self.assertEqual(advnote.note, "coucou")
+        self.assertEqual(advnote.timestamp, 0)
+        self.assertEqual(advnote.status, '1')
+        print(" --->  test_NotesTestCase_with_attributs : OK !")
+
+    def test_delete_object(self):
+        NoteComments.objects.create(
             user=User.objects.get(username="pod"),
             video=Video.objects.get(id=1)
         )
