@@ -40,12 +40,18 @@ DEBUG = getattr(settings, 'DEBUG', False)
 # ######################################
 def initfunc(lang):
     global ds_model
-    ds_model = deepspeech.Model(
-        DS_PARAM[lang]['model'], DS_PARAM[lang]['n_features'],
-        DS_PARAM[lang]['n_context'], DS_PARAM[lang]['alphabet'],
-        DS_PARAM[lang]['beam_width']
-    )
-    if 'lm' in DS_PARAM[lang] and 'trie' in DS_PARAM[lang]:
+    ds_model = None
+    if all([cond in DS_PARAM[lang]
+            for cond in ['model', 'n_features', 'n_context',
+                         'alphabet', 'beam_width']]):
+        ds_model = deepspeech.Model(
+            DS_PARAM[lang]['model'], DS_PARAM[lang]['n_features'],
+            DS_PARAM[lang]['n_context'], DS_PARAM[lang]['alphabet'],
+            DS_PARAM[lang]['beam_width']
+        )
+    if all([cond in DS_PARAM[lang]
+            for cond in ['alphabet', 'lm', 'trie',
+                         'lm_alpha', 'lm_beta']]):
         ds_model.enableDecoderWithLM(
             DS_PARAM[lang]['alphabet'], DS_PARAM[lang]['lm'],
             DS_PARAM[lang]['trie'], DS_PARAM[lang]['lm_alpha'],
@@ -81,10 +87,11 @@ def deepspeech_run(video, ds_wav_path):
 
 
 def deepspeech_aux(arg):
-    start, end, data, rate = arg
-    data_window = numpy.frombuffer(data, dtype=numpy.int16)
-    res = ds_model.stt(data_window, rate)
-    return (start, end, res)
+    if ds_model:
+        start, end, data, rate = arg
+        data_window = numpy.frombuffer(data, dtype=numpy.int16)
+        res = ds_model.stt(data_window, rate)
+        return (start, end, res)
 
 
 # ###############################################
