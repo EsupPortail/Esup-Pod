@@ -16,7 +16,7 @@ urlpatterns = [
         get_files,
         name='get_files'),
     url(
-        r'^get_file/(?P<type>[\-\d\w]+)/(?P<id>[\d]+)/$',
+        r'^get_file/(?P<type>[\-\d\w]+)/$',
         get_file,
         name='get_file'),
     url(r'^editfile/(?P<id>[\d]+)/$', editfile, name='editfile'),

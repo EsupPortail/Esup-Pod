@@ -17,7 +17,6 @@ from .models import CustomImageModel
 from .forms import UserFolderForm
 from .forms import CustomFileModelForm
 from .forms import CustomImageModelForm
-from .forms import CustomFileModelCaptionMakerForm
 
 import json
 from itertools import chain
@@ -218,7 +217,12 @@ def get_files(request, type, id):
 
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
-def get_file(request, type, id):
+def get_file(request, type):
+    id = None
+    if request.method == 'POST' and request.POST.get('src'):
+        id = request.POST.get('src')
+    elif request.method == 'GET' and request.GET.get('src'):
+        id = request.GET.get('src')
     if type == "image":
         reqfile = get_object_or_404(CustomImageModel, id=id)
     else:
@@ -416,10 +420,7 @@ def file_edit_delete(request, folder):
 
 
 def file_edit_new(request, folder):
-    if request.POST.get('captionMaker'):
-        form_file = CustomFileModelCaptionMakerForm(initial={"folder": folder})
-    else:
-        form_file = CustomFileModelForm(initial={"folder": folder})
+    form_file = CustomFileModelForm(initial={"folder": folder})
     return render(request, "podfile/form_file.html",
                   {'form_file': form_file, "folder": folder})
 
@@ -427,8 +428,6 @@ def file_edit_new(request, folder):
 def file_edit_modify(request, folder):
     customfile = get_object_or_404(CustomFileModel, id=request.POST['id'])
     form_file = CustomFileModelForm(instance=customfile)
-    if request.POST.get('captionMaker'):
-        del form_file.fields['file']
     return render(request, "podfile/form_file.html",
                   {'form_file': form_file,
                    "folder": folder})
@@ -465,14 +464,6 @@ def file_edit_save(request, folder):
         data = json.dumps(list_element)
         return HttpResponse(data, content_type='application/json')
     else:
-        if (request.POST.get('captionMaker') and request.POST.get("file_id")
-                and request.POST.get("file_id") != "None"):
-            del form_file['file']
-        elif (request.POST.get('captionMaker') and
-              (request.POST.get("file_id") == "None"
-               or not request.POST.get("file_id"))):
-            form_file = CustomFileModelCaptionMakerForm(
-                request.POST, request.FILES)
         rendered = render_to_string("podfile/form_file.html",
                                     {'form_file': form_file,
                                      "folder": folder

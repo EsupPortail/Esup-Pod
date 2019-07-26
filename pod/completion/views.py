@@ -42,62 +42,30 @@ def video_caption_maker(request, slug):
         return eval(
             'video_caption_maker_{0}(request, video)'.format(action))
     else:
+        form_caption = MakeCaptionForm(True, initial={'video': video})
         return render(
             request,
             'video_caption_maker.html',
-            {'video': video})
+            {'form_make_caption': form_caption,
+             'video': video})
 
 
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
-def video_caption_maker_modal(request, video):
-    if request.user != video.owner and not request.user.is_superuser:
-        messages.add_message(
-            request, messages.ERROR, _(u'You cannot complement this video.'))
-        raise PermissionDenied
-    if request.method == "POST" and request.POST.get('action'):
-        action = request.POST.get('action')
-    elif request.method == "GET" and request.GET.get('action'):
-        action = request.GET.get('action')
-    if action == "modal_load":
-        list_track = None
+def video_caption_maker_save(request, video):
+    if (request.method == "POST"
+            and request.POST.get('action')
+            and request.POST.get('')):
+        if request.POST.get('action') == 'save_new':
+        elif request.POST.get('action') == 'save_override':
+
+    else:
         form_caption = MakeCaptionForm(True, initial={'video': video})
-    elif action == "modal_save":
-        list_track = video.track_set.all()
-        form_caption = MakeCaptionForm(False, initial={'video': video})
-    return render(
-        request,
-        'video_caption_maker_modal.html',
-        {'form_make_caption': form_caption,
-         'list_track': list_track,
-         'req_action': request.POST['action'],
-         'video': video})
-
-
-@csrf_protect
-@staff_member_required(redirect_field_name='referrer')
-def video_caption_maker_form(request, video):
-    if request.user != video.owner and not request.user.is_superuser:
-        messages.add_message(
-            request, messages.ERROR, _(u'You cannot complement this video.'))
-        raise PermissionDenied
-    if request.method == "POST" and request.POST.get('action'):
-        action = request.POST.get('action')
-    elif request.method == "GET" and request.GET.get('action'):
-        action = request.GET.get('action')
-    if action == "form_save_new":
-        form_caption = MakeCaptionForm(False, initial={'video': video})
-    elif action == "form_save_modify" and request.method == "POST":
-        track = get_object_or_404(Track, id=request.POST.get('id'))
-        form_caption = MakeCaptionForm(False, instance=track)
-    elif action == "form_save_modify" and request.method == "GET":
-        track = get_object_or_404(Track, id=request.GET.get('id'))
-        form_caption = MakeCaptionForm(False, instance=track)
-    return render(
-        request,
-        'track/form_track.html',
-        {'form_track': form_caption,
-         'video': video})
+        return render(
+            request,
+            'video_caption_maker.html',
+            {'form_make_caption': form_caption,
+             'video': video})
 
 
 @csrf_protect

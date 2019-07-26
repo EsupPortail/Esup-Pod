@@ -1,10 +1,13 @@
-// Modal
-$(document).on('submit', '#captionmaker_form', function(e) {
-    e.preventDefault();
-    var url = '/podfile/get_file/file/' + $('#id_src').val() + '/'; 
-    var data_form = $("#captionmaker_form.modal_load" ).serializeArray();
+$(document).on('click', 'a.file-name', function() {
+    let url = '/podfile/get_file/file/'; 
+    let data_form = $("#captionmaker_form" ).serializeArray();
     send_form_data(url, data_form, "ProcessProxyVttResponse");
-    $('#captionmakerModal').modal('hide');
+})
+
+$(document).on('click', '#save_captions', function() {
+    if (typeof(FILE_LOADED) != "undefined" and FILE_LOADED) {
+        $("#saveCaptionsModal").modal('show');
+    }
 })
 
 $(document).on('submit', '#form_insert_track, #form_save_track', function(e) {
@@ -18,67 +21,28 @@ var append_caption_maker_form = function(data) {
     $('#captionmakerModal').modal('show');
 }
 
-$(document).on('hidden.bs.modal', '#captionmakerModal', function (e) {
-    if (!$('#fileModal_id_src').hasClass('show')) {
-        $('#captionmakerModal').remove();
-        $('#fileModal_id_src').remove();
-    }
-});
-$(document).on('show.bs.modal', '#fileModal_id_src', function (e) {
-    $('#captionmakerModal').modal('hide');
-});
+var save_file_caption_maker = function() {
 
-$(document).on('hidden.bs.modal', '#fileModal_id_src', function (e) {
-    $('#captionmakerModal').modal('show');
-});
+    rxSignatureLine = /^WEBVTT(?:\s.*)?$/;
+    vttContent = CreateVTTSource();
+    vttLines = vttContent.split(/\r\n|\r|\n/);
+    if (!rxSignatureLine.test(vttLines[0])) {
+        alert("Not a valid time track file.");
+        return;
+    }
+    if (typeof($('#id_filename')[0]) == 'undefined') {
+        id = $('#formeditfile').children('#id_file')[0].value;
+        name = $('a.file-name[data-id='+id+']').children('strong')[0].innerHTML;
+    }
+    else {
+        name = $('#id_filename')[0].value;
+    }
+    if (typeof(name) != 'undefined' && name != "") {
+        f = new File([vttContent], name + '.vtt', {type: 'text/vtt'});
+        data_form.append('file', f);
+    }
 
-$(document).on('show.bs.modal', '#captionmakerModal.modal_save', function(e) {
-    var targetNode1 = $('span#form_track');
-    var config = { childList: true };
-    function callback1(mL, observer) {
-        if (typeof(window['empty_span_form_track']) == 'undefined' || window['empty_span_form_track']) {
-            window['empty_span_form_track'] = false;
-            $('form#form_track').append($('<input type="hidden" name="captionMaker" value="true">'));
-            var targetNode2 = $('#modal-folder_id_src')[0];
-            window['obs2'] = new MutationObserver(callback2);
-            window['obs2'].observe(targetNode2, config);
-        }
-        else {
-            window['empty_span_form_track'] = true;
-            if (window['obs2']) { window['obs2'].disconnect(); }
-        }
-    };
-    function callback2(mL) {
-        var targetNode3 = $('#list_file');
-        if (targetNode3.length) {
-            window['obs3'] = new MutationObserver(callback3);
-            callback3(mL);
-            window['obs3'].observe(targetNode3[0], config);
-        }
-    };
-    function callback3(mL) {
-        if (!$('#formeditfile').length) {
-            $('.list-group-item  > .get_form_file.float-right').append($('<input type="hidden" name="captionMaker" value="true">'));
-            $('.action  > .get_form_file.float-right').append($('<input type="hidden" name="captionMaker" value="true">'));
-        }
-        else {
-            $('#formeditfile').append($('<input type="hidden" name="captionMaker" value="true">'));
-        }
-    }
-    window['obs1'] = new MutationObserver(callback1);
-    window['obs1'].observe(targetNode1[0], config);
-    if(typeof(window['modalHideEvt']) == 'undefined') {
-        window['modalHideEvt'] = true;
-        $(document).on('hide.bs.modal', '#fileModal_id_src', function (e) {
-            if (window['obs3']) { window['obs3'].disconnect(); }
-        });
-        $(document).on('hiden.bs.modal', '#captionmakerModal.modal_save', function (e) {
-            if (window['obs1']) { window['obs1'].disconnect(); }
-            if (window['obs2']) { window['obs2'].disconnect(); }
-        });
-    }
-});
-//
+}
 
 $('#podvideoplayer').on('error', function(event) {
     var vh = $(this).height();
@@ -393,6 +357,8 @@ function ProcessProxyVttResponse(obj) {
         //  delete any captions we've got
         captionsArray.length = 0;
         if (obj.response.indexOf("WEBVTT") == 0) {
+            const FILE_LOADED = true;
+            const FILE_LOADED_ID = $('#id_src').val();
             ParseAndLoadWebVTT(obj.response);
         } else {
             alert("Unrecognized caption file format.");
