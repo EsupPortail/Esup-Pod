@@ -246,6 +246,8 @@ def get_file(request, type):
             fc = f.read()
             some_data_to_dump = {
                 'status': "success",
+                'id_file': reqfile.id,
+                'id_folder': reqfile.folder.id,
                 'response': fc
             }
     except OSError:

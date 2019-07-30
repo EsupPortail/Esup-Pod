@@ -44,22 +44,14 @@
 {% endif %}
 
 <p class="text-info">{% trans "Load Existing Caption File [optional]" %} :
-<form method="post" action="{% url 'video_caption_maker' slug=video.slug %}" id="captionmaker_form" class="{{ req_action }}">
-    {% if messages %}
-        <div id="base-message-alert">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
-            </div>
-        {% endfor %}
-        </div>
-    {% endif %}
+<form method="post" action="{% url 'video_caption_maker' slug=video.slug %}" id="captionmaker_form">
     {% csrf_token %}
     <fieldset>
         {% if form_make_caption.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
-        {% for field_hidden in form_make_caption.hidden_fields %} {{field_hidden}} {% endfor %}
+        {% comment %} {% for field_hidden in form_make_caption.hidden_fields %} {{field_hidden}} {% endfor %} {% endcomment %}
+        {% comment %} {% for field in form_make_caption.visible_fields %} {% endcomment %}
         {% for field in form_make_caption.visible_fields %}
+            {% if field.name == 'src' %}
             {% spaceless %}
             <div class="form-group" >
                 {{ field.errors }}
@@ -68,7 +60,9 @@
                 {% if field.field.required %} <div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div> {%endif%}
             </div>
             {% endspaceless %}
+            {% endif %}
         {% endfor %}
+        {% comment %} {% endfor %} {% endcomment %}
         {% if form_make_caption.instance.id %} <input type="hidden" id="user_id" name="user_id" value="{{form_make_caption.instance.id}}"/> {% endif %}
     </fieldset>
     {{form_make_caption.media}}
@@ -103,13 +97,15 @@
     </div>
     <div id="captionFileAndMarkup" style="clear: both; padding-top: 24px; padding-bottom: 24px; display: block;">
     <div style="padding-top: 6px;">
-        {% comment %} <form class="form_save completion" id="form_save_track" action="{% url 'video_caption_maker' slug=video.slug %}" method="POST">
+        <form class="form_save completion" id="form_save_captions" action="{% url 'video_caption_maker' slug=video.slug %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="hidden" name="action" value="modal_save">
-            <p class="text-info">{% trans "Save" %} :
-            <input type="submit" value="{% trans 'Save Captions' %}" class="btn btn-info"/>
-        </form> {% endcomment %}
-        <p class="text-info">{% trans "Save" %} : <input type="button" value="{% trans 'Save Captions' %}" id="save_captions" class="btn btn-info"/>
+            <input type="hidden" name="action" value="save"/>
+            <input type="hidden" name="file_id"/>
+            <p class="text-info">
+                {% trans "Save" %} : <input type="submit" value="{% trans 'Save Captions' %}" id="save_captions" class="btn btn-info"/>
+            </p>
+        </form>
+
         <span class="float-right">
             <a href="{% url 'video_completion' slug=video.slug %}" title="{% trans 'View the video' %}" class="btn btn btn-outline-dark btn-sm">
                 <i data-feather="arrow-left"></i>&nbsp;{% trans "Back to the completion"%}
@@ -120,18 +116,21 @@
 </div>
 
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmSaveLabel" aria-hidden="true" id="saveCaptionsModal">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">{% trans "You have loaded a file. Do you want to override it ?"%}</h4>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" id="modal-btn-new"> {% trans "New" %} </button>
-        <button type="button" class="btn btn-primary" id="modal-btn-erase"> {% trans "Override"%} </button>
-      </div>
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="modal-title">{% trans "Save captions file."%}</p>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "You have loaded a file. Do you want to override it ?"%}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="modal-btn-new"> {% trans "New" %} </button>
+                <button type="button" class="btn btn-primary" id="modal-btn-override"> {% trans "Override"%} </button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 {% endblock page_content %}
@@ -143,6 +142,14 @@
 {% endblock page_aside %}
 
 {% block more_script %}
+    <script>
+        var current_folder = {{ home_folder.id }};
+        var captionFileSourceUpdateTimer = null;
+        var file_loaded = false;
+        var file_loaded_id = undefined;
+        var captionsArray = [];
+        var autoPauseAtTime = -1;
+    </script> 
     <script src="{% static 'js/caption_maker.js' %}"></script>
     <script src="{% static 'js/completion.js' %}"></script>
 {% include 'videos/video-script.html'%}

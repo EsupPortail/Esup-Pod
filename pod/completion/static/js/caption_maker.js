@@ -4,25 +4,36 @@ $(document).on('click', 'a.file-name', function() {
     send_form_data(url, data_form, "ProcessProxyVttResponse");
 })
 
-$(document).on('click', '#save_captions', function() {
-    if (typeof(FILE_LOADED) != "undefined" and FILE_LOADED) {
+$(document).on('submit', '#form_save_captions', function(e) {
+    e.preventDefault();
+    if (!(captionsArray.length)) {
+        showalert(gettext("There is no captions to save"), "alert-danger");
+        return;
+    }
+    if (typeof(file_loaded) != "undefined" && file_loaded) {
         $("#saveCaptionsModal").modal('show');
+    }
+    else {
+        $(this).find('input[name="file_id"]').val("");
+        let href = window.location.href.split('/');
+        send_form_save_captions(href[href.length - 2] + '_captions_' + Date.now());
     }
 })
 
-$(document).on('submit', '#form_insert_track, #form_save_track', function(e) {
-	e.preventDefault();
-    var data_form = $(this).serializeArray();
-	send_form_data($(this).attr("action"), data_form, "append_caption_maker_form");
-});
+$(document).on('click', '#modal-btn-new, #modal-btn-override', function() {
+    $("#saveCaptionsModal").modal('hide');
+    if (this.id == 'modal-btn-override') {
+        $('#form_save_captions').find('input[name="file_id"]').val(file_loaded_id);
+        send_form_save_captions($('#fileinput_id_src').find('strong').html());
+    }
+    else if (this.id == 'modal-btn-new') {
+        $('#form_save_captions').find('input[name="file_id"]').val("");
+        let href = window.location.href.split('/');
+        send_form_save_captions(href[href.length - 2] + '_captions_' + Date.now());
+    }
+})
 
-var append_caption_maker_form = function(data) {
-	$('body').append(data);
-    $('#captionmakerModal').modal('show');
-}
-
-var save_file_caption_maker = function() {
-
+var send_form_save_captions = function(name) {
     rxSignatureLine = /^WEBVTT(?:\s.*)?$/;
     vttContent = CreateVTTSource();
     vttLines = vttContent.split(/\r\n|\r|\n/);
@@ -30,18 +41,23 @@ var save_file_caption_maker = function() {
         alert("Not a valid time track file.");
         return;
     }
-    if (typeof($('#id_filename')[0]) == 'undefined') {
-        id = $('#formeditfile').children('#id_file')[0].value;
-        name = $('a.file-name[data-id='+id+']').children('strong')[0].innerHTML;
-    }
-    else {
-        name = $('#id_filename')[0].value;
-    }
-    if (typeof(name) != 'undefined' && name != "") {
-        f = new File([vttContent], name + '.vtt', {type: 'text/vtt'});
-        data_form.append('file', f);
-    }
-
+    let n = name 
+    let f = new File([vttContent], n + '.vtt', {type: 'text/vtt'});
+    let data_form = new FormData($('#form_save_captions')[0]);
+    data_form.append('folder', current_folder);
+    data_form.append('file', f);
+    $.ajax({
+        url: $("#form_save_captions").attr("action"), 
+        type: 'POST',
+        data: data_form,
+        processData: false,
+        contentType: false                    
+    }).done(function(data){
+        $(data).find('#base-message-alert').appendTo(document.body);
+    }).fail(function($xhr){
+        var data = $xhr.status+ " : " +$xhr.statustext;
+        showalert(gettext("error during exchange") + "("+data+")<br/>"+gettext("no data could be stored."), "alert-danger");
+    });
 }
 
 $('#podvideoplayer').on('error', function(event) {
@@ -275,8 +291,11 @@ function FormatTime(seconds) {
 }
 
 //  our state
-var captionsArray = [];
-var autoPauseAtTime = -1;
+// var file_loaded = false;
+// var file_loaded_id = undefined;
+// var file_loaded_folder_id = undefined;
+// var captionsArray = [];
+// var autoPauseAtTime = -1;
 
 function FindCaptionIndex(seconds) {
     var below = -1;
@@ -317,7 +336,7 @@ function CreateVTTSource() {
     return s;
 }
 
-var captionFileSourceUpdateTimer = null;
+// var captionFileSourceUpdateTimer = null;
 
 function XMLEncode(s) {     
     return s.replace(/\&/g, '&amp;').replace(/“/g, '&quot;').replace(/”/g,'&quot;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');   //.replace(/'/g, '&apos;').replace(/"/g, '&quot;');
@@ -356,9 +375,10 @@ function ProcessProxyVttResponse(obj) {
     else if (obj.status == "success") {
         //  delete any captions we've got
         captionsArray.length = 0;
+        file_loaded = true;
+        file_loaded_id = obj.id_file;
+        current_folder = obj.id_folder;
         if (obj.response.indexOf("WEBVTT") == 0) {
-            const FILE_LOADED = true;
-            const FILE_LOADED_ID = $('#id_src').val();
             ParseAndLoadWebVTT(obj.response);
         } else {
             alert("Unrecognized caption file format.");
