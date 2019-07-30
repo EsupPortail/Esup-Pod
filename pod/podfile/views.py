@@ -17,6 +17,7 @@ from .models import CustomImageModel
 from .forms import UserFolderForm
 from .forms import CustomFileModelForm
 from .forms import CustomImageModelForm
+from .forms import CustomFileModelCaptionMakerForm
 
 import json
 from itertools import chain
@@ -215,6 +216,43 @@ def get_files(request, type, id):
          })
 
 
+@csrf_protect
+@staff_member_required(redirect_field_name='referrer')
+def get_file(request, type, id):
+    if type == "image":
+        reqfile = get_object_or_404(CustomImageModel, id=id)
+    else:
+        reqfile = get_object_or_404(CustomFileModel, id=id)
+    if (request.user != reqfile.folder.owner
+            and not request.user.groups.filter(
+                name__in=[
+                    name[0]
+                    for name in reqfile.folder.groups.values_list('name')
+                ]
+            ).exists()
+            and not request.user.is_superuser):
+        messages.add_message(
+            request, messages.ERROR,
+            _(u'You cannot see this folder.'))
+        raise PermissionDenied
+
+    request.session['current_session_folder'] = reqfile.folder.name
+    try:
+        with open(reqfile.file.path, 'r') as f:
+            fc = f.read()
+            some_data_to_dump = {
+                'status': "success",
+                'response': fc
+            }
+    except OSError:
+        some_data_to_dump = {
+                'status': "error",
+                'response': ''
+            }
+    data = json.dumps(some_data_to_dump)
+    return HttpResponse(data, content_type='application/json')
+
+
 ##########################################################
 # IMAGE
 ##########################################################
@@ -378,25 +416,26 @@ def file_edit_delete(request, folder):
 
 
 def file_edit_new(request, folder):
-    form_file = CustomFileModelForm(initial={"folder": folder})
+    if request.POST.get('captionMaker'):
+        form_file = CustomFileModelCaptionMakerForm(initial={"folder": folder})
+    else:
+        form_file = CustomFileModelForm(initial={"folder": folder})
     return render(request, "podfile/form_file.html",
-                  {'form_file': form_file, "folder": folder}
-                  )
+                  {'form_file': form_file, "folder": folder})
 
 
 def file_edit_modify(request, folder):
     customfile = get_object_or_404(CustomFileModel, id=request.POST['id'])
     form_file = CustomFileModelForm(instance=customfile)
+    if request.POST.get('captionMaker'):
+        del form_file.fields['file']
     return render(request, "podfile/form_file.html",
                   {'form_file': form_file,
-                   "folder": folder
-                   }
-                  )
+                   "folder": folder})
 
 
 def file_edit_save(request, folder):
     form_file = None
-
     if (request.POST.get("file_id")
             and request.POST.get("file_id") != "None"):
         customfile = get_object_or_404(
@@ -405,7 +444,6 @@ def file_edit_save(request, folder):
             request.POST, request.FILES, instance=customfile)
     else:
         form_file = CustomFileModelForm(request.POST, request.FILES)
-
     if form_file.is_valid():
         if form_file.cleaned_data["folder"] != folder:
             raise SuspiciousOperation('Folder must be the same')
@@ -427,6 +465,14 @@ def file_edit_save(request, folder):
         data = json.dumps(list_element)
         return HttpResponse(data, content_type='application/json')
     else:
+        if (request.POST.get('captionMaker') and request.POST.get("file_id")
+                and request.POST.get("file_id") != "None"):
+            del form_file['file']
+        elif (request.POST.get('captionMaker') and
+              (request.POST.get("file_id") == "None"
+               or not request.POST.get("file_id"))):
+            form_file = CustomFileModelCaptionMakerForm(
+                request.POST, request.FILES)
         rendered = render_to_string("podfile/form_file.html",
                                     {'form_file': form_file,
                                      "folder": folder

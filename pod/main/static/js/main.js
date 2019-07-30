@@ -150,8 +150,9 @@ $('#ownerboxnavbar').keyup(function() {
     		for(i=0; i<nbuser; i++) {
     			var lastname = removeDiacritics(listUser[letter][i]["last_name"].toLowerCase());
                 var firstname = removeDiacritics(listUser[letter][i]["first_name"].toLowerCase());
-    			if(lastname.indexOf(valThis) != -1 || firstname.indexOf(valThis) != -1) 
-    				$("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</a></li>');
+                if(lastname.indexOf(valThis) != -1 || firstname.indexOf(valThis) != -1){
+                    $("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+ USE_RGPD?' ('+listUser[letter][i]["username"]+')</a></li>': '</a></li>');
+                }
     		}
         }
 	} else {
@@ -163,9 +164,8 @@ $(".showUser").on('click', function() {
     $("#accordion").html("");
     if(listUser[letter]){
 	   var nbuser = listUser[letter].length;
-    	for(i=0; i<nbuser; i++) {
-    		$("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</a></li>');
-    	}
+    	for(i=0; i<nbuser; i++)
+            $("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+ USE_RGPD?' ('+listUser[letter][i]["username"]+')</a></li>': '</a></li>');
     }
 });
 
@@ -256,7 +256,7 @@ var send_form_data = function(url,data_form, fct, method="post") {
 	var jqxhr= '';
 	if(method=="post") jqxhr = $.post(url, data_form);
 	else jqxhr = $.get(url);
-	jqxhr.done(function(data){ window[fct](data); });
+    jqxhr.done(function(data){ window[fct](data); });
 	jqxhr.fail(function($xhr) {
         var data = $xhr.status+ " : " +$xhr.statusText;
         showalert(gettext("Error during exchange") + "("+data+")<br/>"+gettext("No data could be stored."), "alert-danger");
@@ -337,7 +337,8 @@ $('#ownerbox').keyup(function() {
     for(i=0; i<nbuser; i++) {
       var lastname = removeDiacritics(listUser[letter][i]["last_name"].toLowerCase());
       if(lastname.indexOf(valThis) != -1 && listUserChecked.indexOf(listUser[letter][i]["username"])==-1 ) {
-        var chekboxhtml = '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="'+listUser[letter][i]["username"]+'" id="id'+listUser[letter][i]["username"]+'"><label class="form-check-label" for="id'+listUser[letter][i]["username"]+'">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</label></div>';
+        let username = USE_RGPD?'':(' ('+listUser[letter][i]["username"]+')');
+        var chekboxhtml = '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="'+listUser[letter][i]["username"]+'" id="id'+listUser[letter][i]["username"]+'"><label class="form-check-label" for="id'+listUser[letter][i]["username"]+'">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+username+'</label></div>';
         $("#collapseFilterOwner").append(chekboxhtml);
       }
     }
