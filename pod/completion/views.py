@@ -61,7 +61,7 @@ def video_caption_maker_save(request, video):
         cur_folder = get_current_session_folder(request)
         response = file_edit_save(request, cur_folder)
         print(response.content)
-        if 'list_element' in response.content:
+        if b'list_element' in response.content:
             messages.add_message(
                 request, messages.INFO,
                 _(u'The file has been saved.'))
