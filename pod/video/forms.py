@@ -655,7 +655,7 @@ class AdvancedNotesForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(AdvancedNotesForm, self).__init__(*args, **kwargs)
         # self.fields["user"].widget = forms.HiddenInput()
-        # self.fields["video"].widget = forms.HiddenInput()
+        self.fields["video"].widget = forms.HiddenInput()
         self.fields["note"].widget.attrs["class"] = "form-control input_note"
         self.fields["note"].widget.attrs["autocomplete"] = "off"
         self.fields["note"].widget.attrs["rows"] = 3
@@ -668,7 +668,7 @@ class AdvancedNotesForm(forms.ModelForm):
 
     class Meta(object):
         model = AdvancedNotes
-        fields = ["note", "timestamp", "status"]
+        fields = ["video", "note", "timestamp", "status"]
 
 
 class NoteCommentsForm(forms.ModelForm):

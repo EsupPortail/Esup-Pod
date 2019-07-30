@@ -2,6 +2,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
+from django.http import QueryDict
 from django.core.exceptions import SuspiciousOperation
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_protect
@@ -885,7 +886,10 @@ def video_note_save(request, slug):
 
     if (request.method == "POST"
             and request.POST.get('action') == 'save_note'):
-        form = AdvancedNotesForm(request.POST)
+        q = QueryDict(mutable=True)
+        q.update(request.POST)
+        q.update({'video': video.id})
+        form = AdvancedNotesForm(q)
         noteToEdit = note
     elif (request.method == "POST"
             and (request.POST.get('action').startswith('save_com'))):
