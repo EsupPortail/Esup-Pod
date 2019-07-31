@@ -1081,7 +1081,8 @@ def video_note_download(request, slug):
                           str(idNote),
                           (str(c.parentCom.id) if c.parentCom
                            else str(_('None'))),
-                          str(c.added_on), str(c.modified_on),
+                          c.added_on.strftime('%Y-%d-%m'),
+                          c.modified_on.strftime('%Y-%d-%m'),
                           str(_('None')), c.comment)
             rec_expl_coms(idNote, dictComs[str(c.id)])
 
