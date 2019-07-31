@@ -59,6 +59,9 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
 OEMBED = getattr(
     django_settings, 'OEMBED', False)
 
+USE_RGPD = getattr(
+    django_settings, 'USE_RGPD', False)
+
 
 def context_settings(request):
     new_settings = {}
@@ -71,6 +74,7 @@ def context_settings(request):
     new_settings['VERSION'] = VERSION
     new_settings["THIRD_PARTY_APPS"] = django_settings.THIRD_PARTY_APPS
     new_settings['OEMBED'] = OEMBED
+    new_settings['USE_RGPD'] = USE_RGPD
     return new_settings
 
 
@@ -124,7 +128,10 @@ def context_navbar(request):
         fl_firstname=Lower(Substr("first_name", 1, 1))).order_by(
         'fl_name').values(*list(VALUES_LIST))
 
-    listowner = get_list_owner(owners)
+    if (USE_RGPD and not request.user.is_authenticated):
+        listowner = {}
+    else:
+        listowner = get_list_owner(owners)
 
     LAST_VIDEOS = get_last_videos() if request.path == "/" else None
 

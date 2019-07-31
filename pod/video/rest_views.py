@@ -50,7 +50,7 @@ class VideoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Video
         fields = (
-            'id', 'url', 'title', 'description',
+            'id', 'url', 'video', 'title', 'description',
             'allow_downloading', 'is_360', 'owner', 'date_added', 'date_evt',
             'cursus', 'main_lang', 'is_draft', 'is_restricted',
             'restrict_access_to_groups', 'password', 'tags', 'thumbnail',

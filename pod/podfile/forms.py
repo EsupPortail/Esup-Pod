@@ -96,6 +96,23 @@ class CustomFileModelForm(forms.ModelForm):
         fields = ('file', 'folder')
 
 
+class CustomFileModelCaptionMakerForm(forms.ModelForm):  # new
+    fileattrs = {
+        "class": "form-control-file"
+    }
+
+    def __init__(self, *args, **kwargs):
+        super(CustomFileModelCaptionMakerForm, self).__init__(*args, **kwargs)
+        self.fields['folder'].widget = forms.HiddenInput()
+        self.fields['file'].widget = forms.TextInput()
+        self.fields['file'].widget.attrs['class'] = self.fileattrs["class"]
+        self.fields['file'].widget.attrs['id'] = 'id_filename'
+
+    class Meta:
+        model = CustomFileModel
+        fields = ('file', 'folder')
+
+
 class CustomImageModelForm(forms.ModelForm):
     fileattrs = {
         "class": "form-control-file",
