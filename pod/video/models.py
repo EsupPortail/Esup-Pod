@@ -1095,7 +1095,8 @@ class AdvancedNotes(models.Model):
                 AdvancedNotes._meta.get_field('status').help_text
             )
         if (self.timestamp is None or self.timestamp < 0
-                or self.timestamp > self.video.duration):
+                or (self.video.duration
+                    and self.timestamp > self.video.duration)):
             raise ValidationError(
                 AdvancedNotes._meta.get_field('timestamp').help_text
             )
