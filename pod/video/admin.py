@@ -17,7 +17,7 @@ from .models import EncodingAudio
 from .models import EncodingLog
 from .models import EncodingStep
 from .models import PlaylistVideo
-from .models import Notes
+from .models import Notes, AdvancedNotes, NoteComments
 from .models import ViewCount
 from .models import VideoToDelete
 
@@ -287,6 +287,15 @@ class NotesAdmin(admin.ModelAdmin):
     list_display = ('video', 'user')
 
 
+class AdvancedNotesAdmin(admin.ModelAdmin):
+    list_display = ('video', 'user', 'timestamp',
+                    'status', 'added_on', 'modified_on')
+
+
+class NoteCommentsAdmin(admin.ModelAdmin):
+    list_display = ('parentNote', 'user', 'added_on', 'modified_on')
+
+
 class VideoToDeleteAdmin(admin.ModelAdmin):
     list_display = ('date_deletion', 'get_videos')
     list_filter = ['date_deletion']
@@ -313,5 +322,7 @@ admin.site.register(EncodingLog, EncodingLogAdmin)
 admin.site.register(EncodingStep, EncodingStepAdmin)
 admin.site.register(PlaylistVideo, PlaylistVideoAdmin)
 admin.site.register(Notes, NotesAdmin)
+admin.site.register(AdvancedNotes, AdvancedNotesAdmin)
+admin.site.register(NoteComments, NoteCommentsAdmin)
 admin.site.register(VideoToDelete, VideoToDeleteAdmin)
 admin.site.register(ViewCount, ViewCountAdmin)

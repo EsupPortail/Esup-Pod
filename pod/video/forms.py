@@ -13,7 +13,7 @@ from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
-from pod.video.models import Notes
+from pod.video.models import Notes, AdvancedNotes, NoteComments
 from pod.video.encode import start_encode
 from pod.video.models import get_storage_path_video
 from pod.video.models import EncodingVideo, EncodingAudio, PlaylistVideo
@@ -648,3 +648,43 @@ class NotesForm(forms.ModelForm):
     class Meta(object):
         model = Notes
         fields = ["note"]
+
+
+class AdvancedNotesForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(AdvancedNotesForm, self).__init__(*args, **kwargs)
+        # self.fields["user"].widget = forms.HiddenInput()
+        self.fields["video"].widget = forms.HiddenInput()
+        self.fields["note"].widget.attrs["class"] = "form-control input_note"
+        self.fields["note"].widget.attrs["autocomplete"] = "off"
+        self.fields["note"].widget.attrs["rows"] = 3
+        self.fields["note"].widget.attrs["cols"] = 20
+        self.fields["note"].help_text = "A note can't be empty"
+        self.fields["timestamp"].widget = forms.HiddenInput()
+        self.fields["timestamp"].widget.attrs["class"] = "form-control"
+        self.fields["timestamp"].widget.attrs["autocomplete"] = "off"
+        self.fields["status"].widget.attrs["class"] = "form-control"
+
+    class Meta(object):
+        model = AdvancedNotes
+        fields = ["video", "note", "timestamp", "status"]
+
+
+class NoteCommentsForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(NoteCommentsForm, self).__init__(*args, **kwargs)
+        # self.fields["user"].widget = forms.HiddenInput()
+        # self.fields["note"].widget = forms.HiddenInput()
+        self.fields["comment"].widget.attrs["class"] = "form-control \
+            input_comment"
+        self.fields["comment"].widget.attrs["autocomplete"] = "off"
+        self.fields["comment"].widget.attrs["rows"] = 3
+        self.fields["comment"].widget.attrs["cols"] = 20
+        self.fields["comment"].help_text = "A comment can't be empty"
+        self.fields["status"].widget.attrs["class"] = "form-control"
+
+    class Meta(object):
+        model = NoteComments
+        fields = ["comment", "status"]

@@ -208,13 +208,7 @@ function TriggerAlertClose() {
         });
     }, 5000);
 }
-/*** FORM THEME, NOTES AND USER PICTURE ***/
-/** NOTES **/
-$(document).on("submit", "#video_notes_form", function (e) {
-    e.preventDefault();
-    var data_form = $( "#video_notes_form" ).serializeArray();
-    send_form_data($( "#video_notes_form" ).attr("action"), data_form, "show_form_notes", "post");
-});
+/*** FORM THEME USER PICTURE ***/
 /** PICTURE **/
 $(document).on("click", ".get_form_userpicture", function() {
 	send_form_data($(this).data('url'), {}, "append_picture_form", "get");
@@ -268,9 +262,7 @@ var send_form_data = function(url,data_form, fct, method="post") {
         showalert(gettext("Error during exchange") + "("+data+")<br/>"+gettext("No data could be stored."), "alert-danger");
     });
 }
-var show_form_notes = function(data) {
-	$( "#video_notes_form" ).parent().html(data);
-}
+
 var show_form_theme_new = function(data) {
 	if(data.indexOf("form_theme")==-1) {
         showalert(gettext('You are no longer authenticated. Please log in again.'), "alert-danger");

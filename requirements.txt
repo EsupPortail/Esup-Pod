@@ -16,6 +16,7 @@ sorl-thumbnail==12.4.1
 django-lti-provider==0.3.3
 django-auth-mixins==1.0.1
 celery==4.2.1
+pandas
 deepspeech==0.4.1
 billiard
 webrtcvad
