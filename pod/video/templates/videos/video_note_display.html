@@ -36,6 +36,10 @@
                 {% endfor %}
                 <input type="hidden" id="id_note_save" name="idNote" value="{{ note.id }}" autocomplete="off"/>
                 <input type="hidden" id="action_save" name="action" value="save_note" autocomplete="off"/>
+
+                <input type="submit" name="submit" value="{% trans "save" %}" class="btn btn-sm btn-outline-info">
+                <input type="button" name="cancel" id="cancel_save" value="{% trans "cancel" %}" class="btn btn-sm btn-outline-info">
+
             </fieldset>
         </form>
 
@@ -47,11 +51,11 @@
                 <input type="hidden" id="action_view" name="action" value="get" autocomplete="off"/>
                 <input type="hidden" id="id_note_view" name="idNote" value="{{ note.id }}" autocomplete="off"/>
             </fieldset>
-            <p class="note form"> {{ note.note}} </p>
+            <p class="note form"> {{ note.note}} {% if note.notecomments_set.all.count > 0 %}<span class=""><i class="" data-feather="chevron-down" width="16" height="16" ></i></span>{% endif %}</p>
         </form> 
     {% endif %}
     
-    {% if request.user.is_authenticated %}
+    {% if request.user.is_authenticated and not form %}
         <div class="mgtNote dropleft">
             <button class="p-0 m-0 btn btn-outline-info btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage note' %}"> <i data-feather="more-horizontal"></i> </button>
             <div class="dropdown-menu">

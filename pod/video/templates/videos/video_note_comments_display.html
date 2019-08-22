@@ -88,6 +88,10 @@
                 <input type="hidden" id="id_note_save" name="idNote" value="{{ note.id }}" autocomplete="off"/>
                 <input type="hidden" id="id_com_save" name="idCom" value="{{ com.id }}" autocomplete="off"/>
                 <input type="hidden" id="action_save" name="action" value="save_com_edit" autocomplete="off"/>
+
+                <input type="submit" name="submit" value="{% trans "save" %}" class="btn btn-sm btn-outline-info">
+                <input type="button" name="cancel" id="cancel_save_com" value="{% trans "cancel" %}" class="btn btn-sm btn-outline-info">
+
             </fieldset>
         </form>
 
