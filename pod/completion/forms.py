@@ -114,36 +114,6 @@ class TrackAdminForm(forms.ModelForm):
         fields = '__all__'
 
 
-class MakeCaptionForm(forms.ModelForm):
-
-    def __init__(self, captionMakerInsert, *args, **kwargs):
-        super(MakeCaptionForm, self).__init__(*args, **kwargs)
-        for myField in self.fields:
-            self.fields['video'].widget = HiddenInput()
-            self.fields[myField].widget.attrs[
-                'placeholder'] = self.fields[myField].label
-            if self.fields[myField].required or myField == 'src':
-                self.fields[myField].widget.attrs[
-                    'class'] = 'form-control required'
-                label_unicode = u'{0}'.format(self.fields[myField].label)
-                self.fields[myField].label = mark_safe(
-                    '{0} <span class="special_class">*</span>'.format(
-                        label_unicode))
-            else:
-                self.fields[myField].widget.attrs['class'] = 'form-control'
-        self.fields['kind'].widget.attrs['class'] = 'custom-select'
-        self.fields['lang'].widget.attrs['class'] = 'custom-select'
-        if FILEPICKER:
-            self.fields['src'].widget = CustomFileWidget(type="file")
-        if captionMakerInsert:
-            del self.fields['lang']
-            del self.fields['kind']
-
-    class Meta(object):
-        model = Track
-        fields = '__all__'
-
-
 class OverlayForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):

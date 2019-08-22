@@ -1,84 +1,64 @@
-// Modal
-$(document).on('submit', '#captionmaker_form', function(e) {
-    e.preventDefault();
-    var url = '/podfile/get_file/file/' + $('#id_src').val() + '/'; 
-    var data_form = $("#captionmaker_form.modal_load" ).serializeArray();
+$(document).on('click', 'a.file-name', function() {
+    let url = '/podfile/get_file/file/'; 
+    let data_form = $("#captionmaker_form" ).serializeArray();
     send_form_data(url, data_form, "ProcessProxyVttResponse");
-    $('#captionmakerModal').modal('hide');
 })
 
-$(document).on('submit', '#form_insert_track, #form_save_track', function(e) {
-	e.preventDefault();
-    var data_form = $(this).serializeArray();
-	send_form_data($(this).attr("action"), data_form, "append_caption_maker_form");
-});
+$(document).on('submit', '#form_save_captions', function(e) {
+    e.preventDefault();
+    if (!(captionsArray.length)) {
+        showalert(gettext("There is no captions to save"), "alert-danger");
+        return;
+    }
+    if (typeof(file_loaded) != "undefined" && file_loaded) {
+        $("#saveCaptionsModal").modal('show');
+    }
+    else {
+        $(this).find('input[name="file_id"]').val("");
+        let href = window.location.href.split('/');
+        send_form_save_captions(href[href.length - 2] + '_captions_' + Date.now());
+    }
+})
 
-var append_caption_maker_form = function(data) {
-	$('body').append(data);
-    $('#captionmakerModal').modal('show');
+$(document).on('click', '#modal-btn-new, #modal-btn-override', function() {
+    $("#saveCaptionsModal").modal('hide');
+    if (this.id == 'modal-btn-override') {
+        $('#form_save_captions').find('input[name="file_id"]').val(file_loaded_id);
+        send_form_save_captions($('#fileinput_id_src').find('strong').html());
+    }
+    else if (this.id == 'modal-btn-new') {
+        $('#form_save_captions').find('input[name="file_id"]').val("");
+        let href = window.location.href.split('/');
+        send_form_save_captions(href[href.length - 2] + '_captions_' + Date.now());
+    }
+})
+
+var send_form_save_captions = function(name) {
+    rxSignatureLine = /^WEBVTT(?:\s.*)?$/;
+    vttContent = CreateVTTSource();
+    vttLines = vttContent.split(/\r\n|\r|\n/);
+    if (!rxSignatureLine.test(vttLines[0])) {
+        alert("Not a valid time track file.");
+        return;
+    }
+    let n = name 
+    let f = new File([vttContent], n + '.vtt', {type: 'text/vtt'});
+    let data_form = new FormData($('#form_save_captions')[0]);
+    data_form.append('folder', current_folder);
+    data_form.append('file', f);
+    $.ajax({
+        url: $("#form_save_captions").attr("action"), 
+        type: 'POST',
+        data: data_form,
+        processData: false,
+        contentType: false                    
+    }).done(function(data){
+        $(data).find('#base-message-alert').appendTo(document.body);
+    }).fail(function($xhr){
+        var data = $xhr.status+ " : " +$xhr.statustext;
+        showalert(gettext("error during exchange") + "("+data+")<br/>"+gettext("no data could be stored."), "alert-danger");
+    });
 }
-
-$(document).on('hidden.bs.modal', '#captionmakerModal', function (e) {
-    if (!$('#fileModal_id_src').hasClass('show')) {
-        $('#captionmakerModal').remove();
-        $('#fileModal_id_src').remove();
-    }
-});
-$(document).on('show.bs.modal', '#fileModal_id_src', function (e) {
-    $('#captionmakerModal').modal('hide');
-});
-
-$(document).on('hidden.bs.modal', '#fileModal_id_src', function (e) {
-    $('#captionmakerModal').modal('show');
-});
-
-$(document).on('show.bs.modal', '#captionmakerModal.modal_save', function(e) {
-    var targetNode1 = $('span#form_track');
-    var config = { childList: true };
-    function callback1(mL, observer) {
-        if (typeof(window['empty_span_form_track']) == 'undefined' || window['empty_span_form_track']) {
-            window['empty_span_form_track'] = false;
-            $('form#form_track').append($('<input type="hidden" name="captionMaker" value="true">'));
-            var targetNode2 = $('#modal-folder_id_src')[0];
-            window['obs2'] = new MutationObserver(callback2);
-            window['obs2'].observe(targetNode2, config);
-        }
-        else {
-            window['empty_span_form_track'] = true;
-            if (window['obs2']) { window['obs2'].disconnect(); }
-        }
-    };
-    function callback2(mL) {
-        var targetNode3 = $('#list_file');
-        if (targetNode3.length) {
-            window['obs3'] = new MutationObserver(callback3);
-            callback3(mL);
-            window['obs3'].observe(targetNode3[0], config);
-        }
-    };
-    function callback3(mL) {
-        if (!$('#formeditfile').length) {
-            $('.list-group-item  > .get_form_file.float-right').append($('<input type="hidden" name="captionMaker" value="true">'));
-            $('.action  > .get_form_file.float-right').append($('<input type="hidden" name="captionMaker" value="true">'));
-        }
-        else {
-            $('#formeditfile').append($('<input type="hidden" name="captionMaker" value="true">'));
-        }
-    }
-    window['obs1'] = new MutationObserver(callback1);
-    window['obs1'].observe(targetNode1[0], config);
-    if(typeof(window['modalHideEvt']) == 'undefined') {
-        window['modalHideEvt'] = true;
-        $(document).on('hide.bs.modal', '#fileModal_id_src', function (e) {
-            if (window['obs3']) { window['obs3'].disconnect(); }
-        });
-        $(document).on('hiden.bs.modal', '#captionmakerModal.modal_save', function (e) {
-            if (window['obs1']) { window['obs1'].disconnect(); }
-            if (window['obs2']) { window['obs2'].disconnect(); }
-        });
-    }
-});
-//
 
 $('#podvideoplayer').on('error', function(event) {
     var vh = $(this).height();
@@ -311,8 +291,11 @@ function FormatTime(seconds) {
 }
 
 //  our state
-var captionsArray = [];
-var autoPauseAtTime = -1;
+// var file_loaded = false;
+// var file_loaded_id = undefined;
+// var file_loaded_folder_id = undefined;
+// var captionsArray = [];
+// var autoPauseAtTime = -1;
 
 function FindCaptionIndex(seconds) {
     var below = -1;
@@ -353,7 +336,7 @@ function CreateVTTSource() {
     return s;
 }
 
-var captionFileSourceUpdateTimer = null;
+// var captionFileSourceUpdateTimer = null;
 
 function XMLEncode(s) {     
     return s.replace(/\&/g, '&amp;').replace(/“/g, '&quot;').replace(/”/g,'&quot;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');   //.replace(/'/g, '&apos;').replace(/"/g, '&quot;');
@@ -392,6 +375,9 @@ function ProcessProxyVttResponse(obj) {
     else if (obj.status == "success") {
         //  delete any captions we've got
         captionsArray.length = 0;
+        file_loaded = true;
+        file_loaded_id = obj.id_file;
+        current_folder = obj.id_folder;
         if (obj.response.indexOf("WEBVTT") == 0) {
             ParseAndLoadWebVTT(obj.response);
         } else {

@@ -87,27 +87,6 @@ if(typeof(window['form#formeditfileSubmitEvt']) == 'undefined') {
     $(document).on("submit", "form#formeditfile", function (e) {
         e.preventDefault();
         var data_form = new FormData($('#formeditfile')[0]);
-        if ($(this).find('input[name=captionMaker]').length) {
-            data_form.delete('file');
-            rxSignatureLine = /^WEBVTT(?:\s.*)?$/;
-            vttContent = CreateVTTSource();
-            vttLines = vttContent.split(/\r\n|\r|\n/);
-            if (!rxSignatureLine.test(vttLines[0])) {
-                alert("Not a valid time track file.");
-                return;
-            }
-            if (typeof($('#id_filename')[0]) == 'undefined') {
-                id = $('#formeditfile').children('#id_file')[0].value;
-                name = $('a.file-name[data-id='+id+']').children('strong')[0].innerHTML;
-            }
-            else {
-                name = $('#id_filename')[0].value;
-            }
-            if (typeof(name) != 'undefined' && name != "") {
-                f = new File([vttContent], name + '.vtt', {type: 'text/vtt'});
-                data_form.append('file', f);
-            }
-        }
         $.ajax({
             url: $( "#formeditfile" ).attr("action"), 
             type: 'POST',
