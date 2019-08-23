@@ -19,7 +19,7 @@
 					<td class="track_lang">{{track.lang}}</td>
 					<td class="track_src">{{track.src.name}} ({{track.src.file_type}})</td>
 					<td>
-						<form class="form_modif completion" action="{% url video_completion_track slug=video.slug %}" method="POST">
+						<form class="form_modif completion" action="{% url 'video_completion_track' slug=video.slug %}" method="POST">
 							{% csrf_token %}
 							<input type="hidden" name="action" value="modify"/>
 							<input type="hidden" name="id" value="{{track.id}}"/>
