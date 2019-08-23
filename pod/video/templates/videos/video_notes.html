@@ -1,51 +1,144 @@
-{% load i18n %}
+{% load staticfiles i18n %}
+
 {% if messages %}
-<div id="base-message-alert">
-{% for message in messages %}
-<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-  {{ message }}
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-{% endfor %}
-</div>
-<script>
-$(document).ready(function () {
-    TriggerAlertClose();
-});
-</script>
-{% endif %}
-<form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
-{% csrf_token %}
-<fieldset>
-    {% if notesForm.errors %}
-    <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
-    {% endif %}
-    {% for field_hidden in notesForm.hidden_fields %}
-        {{field_hidden}}
-    {% endfor %}
-    {% for field in notesForm.visible_fields %}
-        {% spaceless %}
-        <div class="form-group" >
-            {{ field.errors }}
-            {{ field }}
-            {% if field.help_text %}
-            <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
-            {% endif %}
-            {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+    <div id="base-message-alert">
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
         </div>
-        {% endspaceless %}
     {% endfor %}
-    <!--
-    {% if notesForm.instance.id %}
-        <input type="hidden" id="note_id" name="note_id" value="{{notesForm.instance.id}}"/>
-    {% endif %}
-    -->
-    <div class="text-center mt-1">
-        <button type="submit" class="btn btn-success btn-sm">{% trans "Save" %}</button>
     </div>
-</fieldset>
-</form>
+    <script>
+        $(document).ready(function () {
+            TriggerAlertClose();
+        });
+    </script>
+{% endif %}
 
+<h5 class="card-title{% if request.user.is_authenticated or listNotes %} d-flex justify-content-around{% endif %} pl-2"> <i data-feather="edit"></i>&nbsp;{% trans "take Note"%} 
 
+    {% if request.user.is_authenticated or listNotes %}
+    <div class="mgtNotes dropdown">
+        <button class="p-0 m-0 btn btn-outline-info btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage notes' %}"> <i data-feather="more-horizontal"></i> </button>
+        <div class="dropdown-menu p-0 m-0">
+            {% if request.user.is_authenticated %}
+                <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="add_video_notes_form  mt-1" role="menuitem">
+                    {% csrf_token %}
+                    <fieldset> <input type="hidden" id="action_add" name="action" value="form_note" autocomplete="off"/> </fieldset>
+                    <button class="p-0 m-0 btn btn-outline-primary btn-sm create" type="submit" action="create" title="{% trans 'Create a note' %}"> <i data-feather="plus"></i> </button>
+                </form>
+            {% endif %}
+            {% if listNotes %}
+                <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="download_video_notes_form  mt-1" role="menuitem">
+                    {% csrf_token %}
+                    <fieldset> <input type="hidden" id="action_dwl" name="action" value="download" autocomplete="off"/> </fieldset>
+                    <button class="p-0 m-0 btn btn-outline-secondary btn-sm download" type="submit" action="download" title="{% trans 'Download the notes' %}"> <i data-feather="download"></i> </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</h5>
+<div class="card-text">
+
+    <div id="id_notes">
+        {% if not listNotes %}
+            <p class="noNotes"> {% trans "There is no note available for you for this video." %} </p>
+            {% if request.user.is_authenticated %}
+                <p class="noNotes"> {% trans "You can create a new one with the three dots menu." %} </p>
+            {% else %}
+                <p class="noNotes"> {% trans "Log in to create a new one." %} </p>
+            {% endif %}
+        {% endif %}
+        {% for note in listNotes %}
+        <div id="note-{{ note.id }}" class="note status-{{ note.status }}">
+
+            {% include "videos/video_note_display.html" %}
+
+                {% if listComments and note == noteToDisplay or form and note == noteToDisplay %}
+                    <div class="comments">
+                        {% for com in listComments %}
+                            {% include "videos/video_note_comments_display.html" %}
+                        {% endfor %}
+
+                        {% comment %} Form used to create a comment {% endcomment %}
+                        {% if form and noteToDisplay and not comToDisplay and not noteToEdit and not comToEdit %}
+                            <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_note_coms_form hidden">
+                                {% csrf_token %}
+                                <fieldset>
+                                    <input type="hidden" id="action_view_{{ note.id }}" name="action" value="get" autocomplete="off"/>
+                                    <input type="hidden" id="id_note_view" name="idNote" value="{{ note.id }}" autocomplete="off"/>
+                                </fieldset>
+                            </form> 
+                            <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
+                            {% csrf_token %}
+                                <fieldset>
+                                    {% if form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
+                                    {% for field_hidden in form.hidden_fields %} {{field_hidden}} {% endfor %}
+                                    {% for field in form.visible_fields %}
+                                        {% spaceless %}
+                                        <div class="form-group" >
+                                            {{ field.errors }}
+                                            {{ field }}
+                                            {% if field.help_text %} <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small> {% endif %}
+                                            {% if field.field.required %} <div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div> {% endif %}
+                                        </div>
+                                        {% endspaceless %}
+                                    {% endfor %}
+                                    <input type="hidden" id="id_save" name="idNote" value="{{ note.id }}" autocomplete="off"/>
+                                    <input type="hidden" id="action" name="action" value="save_com" autocomplete="off"/>
+                                    <input type="submit" name="submit" value="{% trans "save" %}" class="btn btn-sm btn-outline-info">
+                                    <input type="button" name="cancel" id="cancel_save_com" value="{% trans "cancel" %}" class="btn btn-sm btn-outline-info">
+                                </fieldset>
+                            </form>
+                        {% endif %}
+
+                    </div>
+                {% endif %}
+
+        </div>
+        {% endfor %}
+
+        {% comment %} Form used to create a note {% endcomment %}
+        {% if request.user.is_authenticated and form and not noteToDisplay and not noteToEdit and not comToEdit %}
+            <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_notes_form hidden">
+                {% csrf_token %}
+                <fieldset> <input type="hidden" id="action_view" name="action" value="get" autocomplete="off"/> </fieldset>
+            </form> 
+            <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
+            {% csrf_token %}
+                <fieldset>
+                    {% if form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
+                    {% for field_hidden in form.hidden_fields %} {{field_hidden}} {% endfor %}
+                    {% for field in form.visible_fields %}
+                        {% spaceless %}
+                        <div class="form-group" >
+                            {{ field.errors }}
+                            {{ field }}
+                            {% if field.help_text %} <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small> {% endif %}
+                            {% if field.field.required %} <div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div> {% endif %}
+                        </div>
+                        {% endspaceless %}
+                    {% endfor %}
+                    <input type="hidden" id="action" name="action" value="save_note" autocomplete="off"/>
+                    <input type="submit" name="submit" value="{% trans "save" %}" class="btn btn-sm btn-outline-info">
+                    <input type="button" name="cancel" id="cancel_save" value="{% trans "cancel" %}" class="btn btn-sm btn-outline-info">
+                </fieldset>
+            </form>
+        {% endif %}
+
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            let divComments = $('#id_notes').find('div.comments');
+            for (var i=0; i < Math.min(divComments.length, 3); i++ ) {
+                $(divComments[i]).addClass('offset');
+            }
+        });
+    </script>
+
+</div>
