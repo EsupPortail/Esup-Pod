@@ -10,6 +10,13 @@ $(document).on('keydown',  'textarea#id_note, textarea#id_comment', function(e){
     }
 })
 
+$(document).on('click',  '#video_notes_form_save', function(e){
+    !$('#id_timestamp').val()?$('#id_timestamp').val(Math.floor($('#podvideoplayer').get(0).player.currentTime())):undefined;
+    $('#video_notes_form').submit();
+})
+
+
+
 /**
  * Handle click on buttons in three dots menu
  */
