@@ -18,7 +18,7 @@
     </script>
 {% endif %}
 
-<h5 class="card-title d-flex justify-content-around pl-2"> <i data-feather="edit"></i>&nbsp;{% trans "take Note"%} 
+<h5 class="card-title{% if request.user.is_authenticated or listNotes %} d-flex justify-content-around{% endif %} pl-2"> <i data-feather="edit"></i>&nbsp;{% trans "take Note"%} 
 
     {% if request.user.is_authenticated or listNotes %}
     <div class="mgtNotes dropdown">
