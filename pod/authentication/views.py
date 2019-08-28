@@ -20,10 +20,14 @@ CAS_GATEWAY = getattr(
 if CAS_GATEWAY:
     @gateway()
     def authentication_login_gateway(request):
+        next_cas = request.GET['next_cas'] if request.GET.get(
+            'next_cas') else '/'
         next = request.GET['next'] if request.GET.get('next') else '/'
         if request.user.is_authenticated():
-            return redirect(next)
-
+            return redirect(next_cas)
+        if("is_iframe=true" in next or "is_iframe=true" in next_cas):
+            request.GET = request.GET.copy()
+            request.GET['is_iframe'] = "true"
         return render(request, 'authentication/login.html', {
             'USE_CAS': USE_CAS, 'referrer': next
         })
@@ -41,7 +45,7 @@ def authentication_login(request):
         return redirect(referrer)
     if USE_CAS and CAS_GATEWAY:
         url = reverse('authentication_login_gateway')
-        url += '?%snext=%s' % (iframe_param, referrer)
+        url += '?%snext_cas=%s' % (iframe_param, referrer)
         return redirect(url)
     elif USE_CAS:
         return render(request, 'authentication/login.html', {
