@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
 
-from django_cas.decorators import gateway
+from cas.decorators import gateway
 
 from pod.authentication.forms import FrontOwnerForm
 
@@ -55,7 +55,7 @@ def authentication_login(request):
 
 def authentication_logout(request):
     if USE_CAS:
-        return redirect('django_cas:logout')
+        return redirect(reverse('cas-logout'))
     else:
         url = reverse('local-logout')
         url += '?next=/'

@@ -40,6 +40,9 @@ USE_CAS = getattr(
 OEMBED = getattr(
     settings, 'OEMBED', False)
 
+if USE_CAS:
+    from cas import views as cas_views
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
@@ -121,7 +124,11 @@ urlpatterns = [
 ]
 # CAS
 if USE_CAS:
-    urlpatterns += [url(r'^sso-cas/', include('django_cas.urls')), ]
+    # urlpatterns += [url(r'^sso-cas/', include('cas.urls')), ]
+    urlpatterns += [
+        url(r'^sso-cas/login/$', cas_views.login, name='cas-login'),
+        url(r'^sso-cas/logout/$', cas_views.logout, name='cas-logout'),
+    ]
 ##
 # OEMBED feature patterns
 #
