@@ -1166,7 +1166,7 @@ def send_email_encoding(video_to_encode):
         content_url,
         _("Regards")
     )
-    full_html_message = message + "<br/>%s:%s<br/>%s:%s" % (
+    full_html_message = html_message + "<br/>%s:%s<br/>%s:%s" % (
         _("Post by"),
         video_to_encode.owner,
         _("the"),
