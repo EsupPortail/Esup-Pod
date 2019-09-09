@@ -1,8 +1,14 @@
 /** SELECT FILE **/
 $(document).on("click", "a.file-name", function(e) {
     e.preventDefault();
+    
     $("#"+id_input).val($(this).data("id"));
-    $(".btn-fileinput").html(gettext('Change file'));
+
+    if($(".btn-fileinput_"+id_input).text().indexOf(gettext('Change file')) != -1 || $(".btn-fileinput_"+id_input).text().indexOf(gettext('Select a file')) != -1)
+        $(".btn-fileinput_"+id_input).html(gettext('Change file'));
+    else $(".btn-fileinput_"+id_input).html(gettext('Change image'));
+
+    $("#remove_file_"+id_input).show();
     $("#fileinput_"+id_input).html($(this).html());
     $("#modal-folder_"+id_input).html("");
     $('#fileModal_'+id_input).modal('hide');

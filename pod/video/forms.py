@@ -660,7 +660,7 @@ class AdvancedNotesForm(forms.ModelForm):
         self.fields["note"].widget.attrs["autocomplete"] = "off"
         self.fields["note"].widget.attrs["rows"] = 3
         self.fields["note"].widget.attrs["cols"] = 20
-        self.fields["note"].help_text = "A note can't be empty"
+        self.fields["note"].help_text = _("A note can't be empty")
         self.fields["timestamp"].widget = forms.HiddenInput()
         self.fields["timestamp"].widget.attrs["class"] = "form-control"
         self.fields["timestamp"].widget.attrs["autocomplete"] = "off"
@@ -682,7 +682,7 @@ class NoteCommentsForm(forms.ModelForm):
         self.fields["comment"].widget.attrs["autocomplete"] = "off"
         self.fields["comment"].widget.attrs["rows"] = 3
         self.fields["comment"].widget.attrs["cols"] = 20
-        self.fields["comment"].help_text = "A comment can't be empty"
+        self.fields["comment"].help_text = _("A comment can't be empty")
         self.fields["status"].widget.attrs["class"] = "form-control"
 
     class Meta(object):

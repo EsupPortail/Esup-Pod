@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-22 12:55+0000\n"
-"PO-Revision-Date: 2019-08-22 15:09+0200\n"
+"POT-Creation-Date: 2019-09-09 12:33+0000\n"
+"PO-Revision-Date: 2019-09-09 14:35+0200\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -30,7 +30,7 @@ msgstr "Etablissement"
 #: pod/authentication/forms.py:50 pod/authentication/forms.py:51
 #: pod/main/templates/navbar.html:20 pod/main/templates/navbar_collapse.html:68
 #: pod/video/forms.py:200 pod/video/forms.py:478 pod/video/forms.py:482
-#: pod/video/models.py:199 pod/video/templates/videos/filter_aside.html:11
+#: pod/video/models.py:199 pod/video/templates/videos/filter_aside.html:13
 msgid "Users"
 msgstr "Utilisateurs"
 
@@ -154,10 +154,10 @@ msgstr "Mot de passe ou identifiant perdu ?"
 #: pod/video/templates/videos/video_delete.html:33
 #: pod/video/templates/videos/video_edit.html:64
 #: pod/video/templates/videos/video_note_comments_display.html:82
-#: pod/video/templates/videos/video_note_comments_display.html:144
+#: pod/video/templates/videos/video_note_comments_display.html:148
 #: pod/video/templates/videos/video_note_display.html:27
-#: pod/video/templates/videos/video_notes.html:79
-#: pod/video/templates/videos/video_notes.html:113 pod/video/views.py:154
+#: pod/video/templates/videos/video_notes.html:80
+#: pod/video/templates/videos/video_notes.html:116 pod/video/views.py:154
 #: pod/video/views.py:549 pod/video/views.py:581 pod/video/views.py:1001
 #: pod/video_search/templates/search/search.html:47
 msgid "One or more errors have been found in the form."
@@ -174,10 +174,10 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 #: pod/video/templates/videos/video_delete.html:55
 #: pod/video/templates/videos/video_edit.html:93
 #: pod/video/templates/videos/video_note_comments_display.html:90
-#: pod/video/templates/videos/video_note_comments_display.html:152
+#: pod/video/templates/videos/video_note_comments_display.html:156
 #: pod/video/templates/videos/video_note_display.html:35
-#: pod/video/templates/videos/video_notes.html:87
-#: pod/video/templates/videos/video_notes.html:121
+#: pod/video/templates/videos/video_notes.html:88
+#: pod/video/templates/videos/video_notes.html:124
 msgid "Please provide a valid value for this field"
 msgstr "Veuillez renseigner une valeur valide pour ce champ"
 
@@ -715,6 +715,10 @@ msgstr "Votre formulaire contient des erreurs:"
 #: pod/completion/templates/document/form_document.html:23
 #: pod/completion/templates/overlay/form_overlay.html:25
 #: pod/completion/templates/track/form_track.html:26
+#: pod/video/templates/videos/video_note_comments_display.html:98
+#: pod/video/templates/videos/video_note_display.html:42
+#: pod/video/templates/videos/video_notes.html:94
+#: pod/video/templates/videos/video_notes.html:129
 msgid "save"
 msgstr "sauvegarder"
 
@@ -722,6 +726,10 @@ msgstr "sauvegarder"
 #: pod/completion/templates/document/form_document.html:24
 #: pod/completion/templates/overlay/form_overlay.html:26
 #: pod/completion/templates/track/form_track.html:27
+#: pod/video/templates/videos/video_note_comments_display.html:99
+#: pod/video/templates/videos/video_note_display.html:43
+#: pod/video/templates/videos/video_notes.html:95
+#: pod/video/templates/videos/video_notes.html:130
 msgid "cancel"
 msgstr "annuler"
 
@@ -2287,13 +2295,13 @@ msgstr "Partager sur"
 
 #: pod/main/templates/aside.html:18 pod/main/templates/aside.html:23
 #: pod/video/forms.py:113 pod/video/models.py:377 pod/video/models.py:426
-#: pod/video/templates/videos/filter_aside.html:53
+#: pod/video/templates/videos/filter_aside.html:58
 #: pod/video/templates/videos/video-info.html:40
 msgid "Disciplines"
 msgstr "Disciplines"
 
 #: pod/main/templates/aside.html:35 pod/video/forms.py:109
-#: pod/video/models.py:422 pod/video/templates/videos/filter_aside.html:75
+#: pod/video/models.py:422 pod/video/templates/videos/filter_aside.html:80
 #: pod/video/templates/videos/video-info.html:14
 #: pod/video_search/templates/search/search.html:94
 msgid "Tags"
@@ -2309,10 +2317,10 @@ msgid "Contact us"
 msgstr "Contactez nous"
 
 #: pod/main/templates/contact_us.html:53
-#: pod/video/templates/videos/filter_aside.html:11
-#: pod/video/templates/videos/filter_aside.html:31
-#: pod/video/templates/videos/filter_aside.html:53
-#: pod/video/templates/videos/filter_aside.html:75
+#: pod/video/templates/videos/filter_aside.html:13
+#: pod/video/templates/videos/filter_aside.html:36
+#: pod/video/templates/videos/filter_aside.html:58
+#: pod/video/templates/videos/filter_aside.html:80
 #: pod/video/templates/videos/video-form.html:31
 #: pod/video/templates/videos/video_delete.html:61
 #: pod/video_search/templates/search/search.html:59
@@ -2392,12 +2400,12 @@ msgid "Channels"
 msgstr "Chaînes"
 
 #: pod/main/templates/navbar.html:24 pod/video/models.py:352
-#: pod/video/templates/videos/filter_aside.html:31
+#: pod/video/templates/videos/filter_aside.html:36
 msgid "Types"
 msgstr "Types"
 
 #: pod/main/templates/navbar.html:47 pod/main/templates/navbar.html:49
-#: pod/video/templates/videos/filter_aside.html:13 pod/video_search/forms.py:8
+#: pod/video/templates/videos/filter_aside.html:15 pod/video_search/forms.py:8
 #: pod/video_search/templates/search/search.html:8
 #: pod/video_search/templates/search/search.html:17
 #: pod/video_search/templates/search/search.html:43
@@ -2691,17 +2699,33 @@ msgstr "La création du répertoire racine a échoué."
 msgid "Images"
 msgstr "Images"
 
-#: pod/podfile/templates/podfile/customfilewidget.html:12
+#: pod/podfile/templates/podfile/customfilewidget.html:14
 msgid "Change file"
 msgstr "Changer de fichier"
 
-#: pod/podfile/templates/podfile/customfilewidget.html:19
-#: pod/podfile/templates/podfile/customfilewidget.html:32
+#: pod/podfile/templates/podfile/customfilewidget.html:16
+msgid "Change image"
+msgstr "Changer d’image"
+
+#: pod/podfile/templates/podfile/customfilewidget.html:21
+#: pod/podfile/templates/podfile/customfilewidget.html:38
+msgid "Remove file"
+msgstr "Retirer le fichier"
+
+#: pod/podfile/templates/podfile/customfilewidget.html:23
+#: pod/podfile/templates/podfile/customfilewidget.html:40
+msgid "Remove image"
+msgstr "Retirer l’image"
+
+#: pod/podfile/templates/podfile/customfilewidget.html:31
+#: pod/podfile/templates/podfile/customfilewidget.html:52
+#: pod/podfile/templates/podfile/customfilewidget.html:85
 msgid "Select a file"
 msgstr "Sélectionner un fichier"
 
-#: pod/podfile/templates/podfile/customfilewidget.html:21
-#: pod/podfile/templates/podfile/customfilewidget.html:32
+#: pod/podfile/templates/podfile/customfilewidget.html:33
+#: pod/podfile/templates/podfile/customfilewidget.html:52
+#: pod/podfile/templates/podfile/customfilewidget.html:87
 msgid "Select an image"
 msgstr "Sélectionner une image"
 
@@ -2814,7 +2838,7 @@ msgstr ""
 "Votre publication est sauvegardée, elle sera ajoutée à vos vidéos dans "
 "quelques minutes."
 
-#: pod/urls.py:178 pod/urls.py:179
+#: pod/urls.py:185 pod/urls.py:186
 msgid "Pod Administration"
 msgstr "Administration de Pod"
 
@@ -3107,6 +3131,14 @@ msgstr "J'accepte"
 #: pod/video/forms.py:606
 msgid "Delete video cannot be undo"
 msgstr "La suppression est définitive"
+
+#: pod/video/forms.py:663
+msgid "A note can't be empty"
+msgstr "Une note ne peut pas être vide"
+
+#: pod/video/forms.py:685
+msgid "A comment can't be empty"
+msgstr "Un commentaire ne peut pas être vide"
 
 #: pod/video/models.py:51
 msgid "None / All"
@@ -3533,13 +3565,13 @@ msgstr "Contenu vidéo."
 msgid "Audio content."
 msgstr "Contenu audio."
 
-#: pod/video/templates/videos/filter_aside.html:6
+#: pod/video/templates/videos/filter_aside.html:8
 msgid "Filters"
 msgstr "Filtres"
 
-#: pod/video/templates/videos/filter_aside.html:50
-#: pod/video/templates/videos/filter_aside.html:72
-#: pod/video/templates/videos/filter_aside.html:96
+#: pod/video/templates/videos/filter_aside.html:55
+#: pod/video/templates/videos/filter_aside.html:77
+#: pod/video/templates/videos/filter_aside.html:101
 msgid "Filter"
 msgstr "Filtre"
 
@@ -3855,19 +3887,19 @@ msgid "Remove the comment"
 msgstr "Retirer le commentaire"
 
 #: pod/video/templates/videos/video_note_comments_display.html:47
-#: pod/video/templates/videos/video_note_display.html:92
+#: pod/video/templates/videos/video_note_display.html:96
 msgid "Comment the note"
 msgstr "Commenter la note"
 
-#: pod/video/templates/videos/video_note_display.html:59
+#: pod/video/templates/videos/video_note_display.html:63
 msgid "Manage note"
 msgstr "Gérer la note"
 
-#: pod/video/templates/videos/video_note_display.html:71
+#: pod/video/templates/videos/video_note_display.html:75
 msgid "Edit the note"
 msgstr "Éditer la note"
 
-#: pod/video/templates/videos/video_note_display.html:81
+#: pod/video/templates/videos/video_note_display.html:85
 msgid "Remove the note"
 msgstr "Retirer la note"
 
@@ -3887,15 +3919,15 @@ msgstr "Créer une nouvelle note"
 msgid "Download the notes"
 msgstr "Télécharger les notes"
 
-#: pod/video/templates/videos/video_notes.html:48
+#: pod/video/templates/videos/video_notes.html:49
 msgid "There is no note available for you for this video."
 msgstr "Il n’y a pas de note disponible pour vous pour cette vidéo."
 
-#: pod/video/templates/videos/video_notes.html:50
+#: pod/video/templates/videos/video_notes.html:51
 msgid "You can create a new one with the three dots menu."
 msgstr "Vous pouvez en créer un nouveau avec le menu à trois points."
 
-#: pod/video/templates/videos/video_notes.html:52
+#: pod/video/templates/videos/video_notes.html:53
 msgid "Log in to create a new one."
 msgstr "Connectez-vous pour en créer une nouvelle."
 

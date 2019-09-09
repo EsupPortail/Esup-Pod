@@ -151,7 +151,8 @@ $('#ownerboxnavbar').keyup(function() {
     			var lastname = removeDiacritics(listUser[letter][i]["last_name"].toLowerCase());
                 var firstname = removeDiacritics(listUser[letter][i]["first_name"].toLowerCase());
                 if(lastname.indexOf(valThis) != -1 || firstname.indexOf(valThis) != -1){
-                    $("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+ USE_RGPD?' ('+listUser[letter][i]["username"]+')</a></li>': '</a></li>');
+                    $("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+ (USE_RGPD?' ('+listUser[letter][i]["username"]+')</a></li>': '</a></li>'));
+                    
                 }
     		}
         }
@@ -164,8 +165,10 @@ $(".showUser").on('click', function() {
     $("#accordion").html("");
     if(listUser[letter]){
 	   var nbuser = listUser[letter].length;
-    	for(i=0; i<nbuser; i++)
-            $("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+ USE_RGPD?' ('+listUser[letter][i]["username"]+')</a></li>': '</a></li>');
+    	for(i=0; i<nbuser; i++) {
+            $("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+ (USE_RGPD?' ('+listUser[letter][i]["username"]+')</a></li>': '</a></li>'));
+            
+        }
     }
 });
 

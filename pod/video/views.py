@@ -800,7 +800,7 @@ def video_note_form(request, slug):
                    'listNotes': listNotes,
                    'listComments': listNotesCom,
                    'dictComments': dictComments,
-                   'form': form})
+                   'note_form': form})
 
 
 def video_note_form_case(request, params):
@@ -921,7 +921,7 @@ def video_note_save(request, slug):
                    'listNotes': listNotes,
                    'listComments': listNotesCom,
                    'dictComments': dictComments,
-                   'form': form})
+                   'note_form': form})
 
 
 def video_note_save_form_valid(request, video, params):

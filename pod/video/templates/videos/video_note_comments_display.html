@@ -5,7 +5,7 @@
     <div class="header">
         {% comment %} {% if com.user.userpicture %} <span class="user">{{ com.user.userpicture }}</span> {% else %} <span class="user">{{ com.user.username }}</span> {% endif %} {% endcomment %}
         <span class="user"> {{ com.user.username }} </span>
-        {% if request.user.is_authenticated and request.user == note.user %}
+        {% if request.user.is_authenticated and request.user == com.user %}
             <div class="mgtComment dropleft">
                 <button class="p-0 m-0 btn btn-outline-info btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage comment' %}"> <i data-feather="more-horizontal"></i> </button>
                 <div class="dropdown-menu">
@@ -61,7 +61,7 @@
         </form>
 
     {% comment %} Display a form to edit the comment {% endcomment %}
-    {% elif form and comToEdit and com == comToEdit %}
+    {% elif note_form and comToEdit and com == comToEdit %}
         <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_note_coms_form hidden">
             {% csrf_token %}
             <fieldset>
@@ -73,9 +73,9 @@
         <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
             {% csrf_token %}
             <fieldset>
-                {% if form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
-                {% for field_hidden in form.hidden_fields %} {{field_hidden}} {% endfor %}
-                {% for field in form.visible_fields %}
+                {% if note_form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
+                {% for field_hidden in note_form.hidden_fields %} {{field_hidden}} {% endfor %}
+                {% for field in note_form.visible_fields %}
                     {% spaceless %}
                     <div class="form-group" >
                         {{ field.errors }}
@@ -125,7 +125,7 @@
 {% endif %}
 
 {% comment %} Form used to comment a comment {% endcomment %}
-{% if form and noteToDisplay and com == comToDisplay.0 and not noteToEdit and not comToEdit %}
+{% if note_form and noteToDisplay and com == comToDisplay.0 and not noteToEdit and not comToEdit %}
     <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_note_coms_form hidden">
         {% csrf_token %}
         <fieldset>
@@ -137,9 +137,9 @@
     <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
     {% csrf_token %}
         <fieldset>
-            {% if form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
-            {% for field_hidden in form.hidden_fields %} {{field_hidden}} {% endfor %}
-            {% for field in form.visible_fields %}
+            {% if note_form.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
+            {% for field_hidden in note_form.hidden_fields %} {{field_hidden}} {% endfor %}
+            {% for field in note_form.visible_fields %}
                 {% spaceless %}
                 <div class="form-group" >
                     {{ field.errors }}

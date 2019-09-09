@@ -706,7 +706,7 @@ class Video(models.Model):
             }
             return data_to_dump
         except ObjectDoesNotExist as e:
-            logger.error("An error occured during get_json_to_index"
+            logger.error("An error occured during get_dublin_core"
                          " for video %s: %s" % (self.id, e))
             return {}
 
