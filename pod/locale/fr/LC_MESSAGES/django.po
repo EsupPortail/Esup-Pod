@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-09 12:33+0000\n"
-"PO-Revision-Date: 2019-09-09 14:35+0200\n"
+"PO-Revision-Date: 2019-09-09 15:14+0200\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -3162,11 +3162,11 @@ msgstr "Autre"
 
 #: pod/video/models.py:109
 msgid "Private -"
-msgstr "Privé -"
+msgstr "Privé (moi seulement)"
 
 #: pod/video/models.py:110
 msgid "Private +"
-msgstr "Privé +"
+msgstr "Partagé avec le propriétaire de la vidéo"
 
 #: pod/video/models.py:111
 msgid "Public"
