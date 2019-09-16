@@ -106,6 +106,14 @@ DEFAULT_THUMBNAIL = getattr(
     settings, 'DEFAULT_THUMBNAIL', 'img/default.png')
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
 
+NOTES_STATUS = getattr(
+    settings, 'NOTES_STATUS', (
+        ('0', _('Private -')),
+        ('1', _('Private +')),
+        ('2', _('Public'))
+    )
+)
+
 ##
 # Settings exposed in templates
 #
@@ -705,7 +713,7 @@ class Video(models.Model):
             }
             return data_to_dump
         except ObjectDoesNotExist as e:
-            logger.error("An error occured during get_json_to_index"
+            logger.error("An error occured during get_dublin_core"
                          " for video %s: %s" % (self.id, e))
             return {}
 
@@ -1058,6 +1066,95 @@ class Notes(models.Model):
 
     def __str__(self):
         return "%s-%s" % (self.user.username, self.video)
+
+
+class AdvancedNotes(models.Model):
+    user = models.ForeignKey(User)
+    video = models.ForeignKey(Video)
+    status = models.CharField(
+        _('Note availibility level'), max_length=1,
+        choices=NOTES_STATUS, default="0",
+        help_text=_("Select an availability level "
+                    "for the note."))
+    note = models.TextField(_('Note'), null=True, blank=True)
+    timestamp = models.IntegerField(
+        _('Timestamp'), null=True, blank=True)
+    added_on = models.DateTimeField(
+        _('Date added'), default=timezone.now)
+    modified_on = models.DateTimeField(
+        _('Date modified'), default=timezone.now)
+
+    class Meta:
+        verbose_name = _("Advanced Note")
+        verbose_name_plural = _("Advanced Notes")
+        unique_together = ("video", "user", "timestamp", "status")
+
+    def __str__(self):
+        return "%s-%s-%s" % (self.user.username, self.video, self.timestamp)
+
+    def clean(self):
+        if not self.note:
+            raise ValidationError(
+                AdvancedNotes._meta.get_field('note').help_text
+            )
+        if not self.status or self.status not in dict(NOTES_STATUS):
+            raise ValidationError(
+                AdvancedNotes._meta.get_field('status').help_text
+            )
+        if (self.timestamp is None or self.timestamp < 0
+                or (self.video.duration
+                    and self.timestamp > self.video.duration)):
+            raise ValidationError(
+                AdvancedNotes._meta.get_field('timestamp').help_text
+            )
+
+    def timestampstr(self):
+        if self.timestamp is None:
+            return "--:--:--"
+        seconds = int(self.timestamp)
+        hours = int(seconds / 3600)
+        seconds -= hours * 3600
+        minutes = int(seconds / 60)
+        seconds -= minutes * 60
+        hours = "0" + str(hours) if hours < 10 else str(hours)
+        minutes = "0" + str(minutes) if minutes < 10 else str(minutes)
+        seconds = "0" + str(seconds) if seconds < 10 else str(seconds)
+        return hours + ':' + minutes + ':' + seconds
+
+
+class NoteComments(models.Model):
+    user = models.ForeignKey(User)
+    parentNote = models.ForeignKey(AdvancedNotes)
+    parentCom = models.ForeignKey(
+        "NoteComments", blank=True, null=True)
+    status = models.CharField(
+        _('Comment availibility level'), max_length=1,
+        choices=NOTES_STATUS, default="0",
+        help_text=_("Select an availability level "
+                    "for the comment."))
+    comment = models.TextField(
+        _('Comment'), null=True, blank=True)
+    added_on = models.DateTimeField(
+        _('Date added'), default=timezone.now)
+    modified_on = models.DateTimeField(
+        _('Date modified'), default=timezone.now)
+
+    class Meta:
+        verbose_name = _("Note comment")
+        verbose_name_plural = _("Note comments")
+
+    def __str__(self):
+        return "%s-%s-%s" % (self.user.username, self.parentNote, self.comment)
+
+    def clean(self):
+        if not self.comment:
+            raise ValidationError(
+                NoteComments._meta.get_field('comment').help_text
+            )
+        if not self.status or self.status not in dict(NOTES_STATUS):
+            raise ValidationError(
+                NoteComments._meta.get_field('status').help_text
+            )
 
 
 class VideoToDelete(models.Model):

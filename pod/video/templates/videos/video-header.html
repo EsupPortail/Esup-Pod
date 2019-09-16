@@ -2,6 +2,7 @@
 
 <link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
 <link href="{% static 'css/quality-selector.css' %}" rel="stylesheet">
+<link href="{% static 'css/video_notes.css' %}" rel="stylesheet">
 
 <script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
 <script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
@@ -11,6 +12,7 @@
 <script src="{% static 'js/videojs-hls-quality-selector.min.js' %}"></script>
 <script src="{% static 'video-js-6.8.0/lang/fr.js' %}"></script>
 <script src="{% static 'video-js-6.8.0/lang/nl.js' %}"></script>
+<script src="{% static 'js/video_notes.js' %}"></script>
 
 {% if video.overlay_set.all and not enrichment%}
   <link href="{% static 'css/videojs-overlay.css' %}" rel="stylesheet">

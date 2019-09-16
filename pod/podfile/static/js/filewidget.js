@@ -1,8 +1,14 @@
 /** SELECT FILE **/
 $(document).on("click", "a.file-name", function(e) {
     e.preventDefault();
+    
     $("#"+id_input).val($(this).data("id"));
-    $(".btn-fileinput").html(gettext('Change file'));
+
+    if($(".btn-fileinput_"+id_input).text().indexOf(gettext('Change file')) != -1 || $(".btn-fileinput_"+id_input).text().indexOf(gettext('Select a file')) != -1)
+        $(".btn-fileinput_"+id_input).html(gettext('Change file'));
+    else $(".btn-fileinput_"+id_input).html(gettext('Change image'));
+
+    $("#remove_file_"+id_input).show();
     $("#fileinput_"+id_input).html($(this).html());
     $("#modal-folder_"+id_input).html("");
     $('#fileModal_'+id_input).modal('hide');
@@ -67,40 +73,50 @@ if(typeof(window['form.get_form_fileSubmitEvt']) == 'undefined') {
         $("form.get_form_file").hide();
         $("#formeditfile").remove();
         var action = $(this).find('input[name=action]').val(); // new, modify and delete
-        if(action == "delete"){
+        if(action == "delete") {
             var deleteConfirm = confirm(gettext("Are you sure you want to delete this element?"));
-            if (deleteConfirm){
-                send_form_data($(this).attr('action'), $(this).serializeArray(), "show_form_file_"+action);
+            if (deleteConfirm) {
+                send_form_data($(this).attr('action'), $(this).serializeArray(), "show_form_file_" + action);
             }
-        } else {
-            send_form_data($(this).attr('action'), $(this).serializeArray(), "show_form_file_"+action);
+            else {
+                $("form.get_form_file").show();
+            }
+        }
+        else {
+            send_form_data($(this).attr('action'), $(this).serializeArray(), "show_form_file_" + action);
         }
     });
 }
 
-$(document).on("submit", "form#formeditfile", function (e) {
-    e.preventDefault();
-    var data_form = new FormData($('#formeditfile')[0]);
-    $.ajax({
-      url: $( "#formeditfile" ).attr("action"), 
-      type: 'POST',
-      data: new FormData($('#formeditfile')[0]),
-      processData: false,
-      contentType: false                    
-    }).done(function(data){
-      show_save_file_form(data);
-    }).fail(function($xhr){
-      var data = $xhr.status+ " : " +$xhr.statusText;
-      showalert(gettext("Error during exchange") + "("+data+")<br/>"+gettext("No data could be stored."), "alert-danger");
+if(typeof(window['form#formeditfileSubmitEvt']) == 'undefined') {
+    window['form#formeditfileSubmitEvt'] = true;
+    $(document).on("submit", "form#formeditfile", function (e) {
+        e.preventDefault();
+        var data_form = new FormData($('#formeditfile')[0]);
+        $.ajax({
+            url: $( "#formeditfile" ).attr("action"), 
+            type: 'POST',
+            data: data_form,
+            processData: false,
+            contentType: false                    
+        }).done(function(data){
+            show_save_file_form(data);
+        }).fail(function($xhr){
+            var data = $xhr.status+ " : " +$xhr.statusText;
+            showalert(gettext("Error during exchange") + "("+data+")<br/>"+gettext("No data could be stored."), "alert-danger");
+        });
     });
-});
+}
 
-$(document).on("reset", "form#formeditfile", function (e) {
-    e.preventDefault();
-    $('#list_file .list-group-item-action').show();
-    $("form.get_form_file").show();
-    $("#editfile").remove();
-});
+if(typeof(window['form#formeditfileResetEvt']) == 'undefined') {
+    window['form#formeditfileResetEvt'] = true;
+    $(document).on("reset", "form#formeditfile", function (e) {
+        e.preventDefault();
+        $('#list_file .list-group-item-action').show();
+        $("form.get_form_file").show();
+        $("#editfile").remove();
+    });
+}
 
 $(document).on("change", "#id_file", function (e) {
     var fileSize = $(this).get(0).files[0].size;

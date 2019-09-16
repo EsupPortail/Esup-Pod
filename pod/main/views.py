@@ -24,6 +24,10 @@ CONTACT_US_EMAIL = getattr(
     settings, 'CONTACT_US_EMAIL', [
         mail for name, mail in getattr(settings, 'MANAGERS')])
 DEFAULT_FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@univ.fr')
+USER_CONTACT_EMAIL_CASE = getattr(
+        settings, 'USER_CONTACT_EMAIL_CASE', [])
+CUSTOM_CONTACT_US = getattr(
+        settings, 'CUSTOM_CONTACT_US', False)
 MANAGERS = getattr(settings, "MANAGERS", [])
 USE_ESTABLISHMENT = getattr(
         settings, 'USE_ESTABLISHMENT_FIELD', False)
@@ -166,6 +170,7 @@ def contact_us(request):
                 'message': message.replace("\n", "<br/>"),
                 'url_referrer': form.cleaned_data['url_referrer']
             })
+
             dest_email = []
             dest_email = get_dest_email(
                 owner,

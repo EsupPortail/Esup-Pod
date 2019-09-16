@@ -29,13 +29,21 @@
         <i data-feather="rss"></i>&nbsp;Audio</a>
     </span>
   </h1>
+  {% comment %}
+  <p>
+    "types": request.GET.getlist('type'),
+    "owners": request.GET.getlist('owner'),
+    "disciplines": request.GET.getlist('discipline'),
+    "tags_slug": request.GET.getlist('tag'),
+  </p>
+  {% endcomment %}
 
   {% include "videos/video_list.html" %}
 
 {% endblock page_content %}
 
 {% block page_aside %}
-    {% include 'videos/filter_aside.html'%}
+    {% include 'videos/filter_aside.html' %}
 {% endblock page_aside %}
 
 

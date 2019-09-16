@@ -26,10 +26,10 @@
         {% if CSS_OVERRIDE %}
         <link rel="stylesheet" href="{% static CSS_OVERRIDE %}" media="screen" title="no title">
         {% endif %}
-
+        
         <!-- Javascript -->
         <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-        <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'bootstrap-4/js/bootstrap.bundle.js' %}"></script>
         <script src="{% static 'js/js.cookie.js' %}"></script>
         <script src="{% url 'javascript-catalog' %}"></script>
 	    <title>{{ TITLE_SITE }} - {% block page_title %}{% endblock %}</title>
@@ -38,7 +38,7 @@
         {% if request.GET.is_iframe %}
         <link rel="stylesheet" href="{% static 'css/iframe.css' %}" media="screen" title="no title">
         {% endif %}
-
+        
         {% endspaceless %}
 	</head>
 	<body>
@@ -88,7 +88,7 @@
 		<footer class="text-muted bg-dark pt-2">
 		{% include 'footer.html' %}
 		</footer>
-
+        
         {% if messages %}
         <div id="base-message-alert">
         {% for message in messages %}
@@ -103,6 +103,8 @@
         {% endif %}
         <!-- JS -->
 		<script>
+		/** RGPD **/
+		const USE_RGPD = {% if USE_RGPD %} true {% else %} false {% endif %};
         /** ALL_CHANNELS **/
         var listTheme = new Array();
         {% for channel in ALL_CHANNELS %}{% if channel.themes.count > 0 %}listTheme["channel_{{channel.id}}"] = {{channel.get_all_theme_json|safe}};{% endif %}{% endfor %}
@@ -113,12 +115,10 @@
         <script src="{% static 'js/main.js' %}"></script>
 		{% block more_script %}
 		{% endblock more_script %}
-
-        <script src="{% static 'feather-icons/feather.min.js' %}"></script>
+		<script src="{% static 'feather-icons/feather.min.js' %}"></script>
         <script>
           feather.replace({ class: 'align-bottom'});
         </script>
-				<script src="{% static 'custom/assets/js/custom.js' %}"></script>
         {% if POST_FOOTER_TEMPLATE %}{% include POST_FOOTER_TEMPLATE %}{% endif %}
 	</body>
 </html>

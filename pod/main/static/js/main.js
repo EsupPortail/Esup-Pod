@@ -150,8 +150,10 @@ $('#ownerboxnavbar').keyup(function() {
     		for(i=0; i<nbuser; i++) {
     			var lastname = removeDiacritics(listUser[letter][i]["last_name"].toLowerCase());
                 var firstname = removeDiacritics(listUser[letter][i]["first_name"].toLowerCase());
-    			if(lastname.indexOf(valThis) != -1 || firstname.indexOf(valThis) != -1) 
-    				$("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</a></li>');
+                if(lastname.indexOf(valThis) != -1 || firstname.indexOf(valThis) != -1){
+                    $("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+ (USE_RGPD?' ('+listUser[letter][i]["username"]+')</a></li>': '</a></li>'));
+                    
+                }
     		}
         }
 	} else {
@@ -164,8 +166,9 @@ $(".showUser").on('click', function() {
     if(listUser[letter]){
 	   var nbuser = listUser[letter].length;
     	for(i=0; i<nbuser; i++) {
-    		$("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</a></li>');
-    	}
+            $("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+ (USE_RGPD?' ('+listUser[letter][i]["username"]+')</a></li>': '</a></li>'));
+            
+        }
     }
 });
 
@@ -208,13 +211,7 @@ function TriggerAlertClose() {
         });
     }, 5000);
 }
-/*** FORM THEME, NOTES AND USER PICTURE ***/
-/** NOTES **/
-$(document).on("submit", "#video_notes_form", function (e) {
-    e.preventDefault();
-    var data_form = $( "#video_notes_form" ).serializeArray();
-    send_form_data($( "#video_notes_form" ).attr("action"), data_form, "show_form_notes", "post");
-});
+/*** FORM THEME USER PICTURE ***/
 /** PICTURE **/
 $(document).on("click", ".get_form_userpicture", function() {
 	send_form_data($(this).data('url'), {}, "append_picture_form", "get");
@@ -262,15 +259,13 @@ var send_form_data = function(url,data_form, fct, method="post") {
 	var jqxhr= '';
 	if(method=="post") jqxhr = $.post(url, data_form);
 	else jqxhr = $.get(url);
-	jqxhr.done(function(data){ window[fct](data); });
+    jqxhr.done(function(data){ window[fct](data); });
 	jqxhr.fail(function($xhr) {
         var data = $xhr.status+ " : " +$xhr.statusText;
         showalert(gettext("Error during exchange") + "("+data+")<br/>"+gettext("No data could be stored."), "alert-danger");
     });
 }
-var show_form_notes = function(data) {
-	$( "#video_notes_form" ).parent().html(data);
-}
+
 var show_form_theme_new = function(data) {
 	if(data.indexOf("form_theme")==-1) {
         showalert(gettext('You are no longer authenticated. Please log in again.'), "alert-danger");
@@ -345,7 +340,8 @@ $('#ownerbox').keyup(function() {
     for(i=0; i<nbuser; i++) {
       var lastname = removeDiacritics(listUser[letter][i]["last_name"].toLowerCase());
       if(lastname.indexOf(valThis) != -1 && listUserChecked.indexOf(listUser[letter][i]["username"])==-1 ) {
-        var chekboxhtml = '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="'+listUser[letter][i]["username"]+'" id="id'+listUser[letter][i]["username"]+'"><label class="form-check-label" for="id'+listUser[letter][i]["username"]+'">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+' ('+listUser[letter][i]["username"]+')</label></div>';
+        let username = USE_RGPD?'':(' ('+listUser[letter][i]["username"]+')');
+        var chekboxhtml = '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="'+listUser[letter][i]["username"]+'" id="id'+listUser[letter][i]["username"]+'"><label class="form-check-label" for="id'+listUser[letter][i]["username"]+'">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+username+'</label></div>';
         $("#collapseFilterOwner").append(chekboxhtml);
       }
     }

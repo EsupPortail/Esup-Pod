@@ -60,6 +60,7 @@
     </div>
   </div>
 </div>
+{% if not USE_RGPD or user.is_authenticated %}
 <div class="modal fade users-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
@@ -169,4 +170,6 @@
       </div>
     </div>
   </div>
-</div>{% endspaceless %}
+</div>
+{% endif %}
+{% endspaceless %}

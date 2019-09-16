@@ -1,0 +1,152 @@
+#video_notes_form {
+    padding: 0 2px;
+}
+
+#video_notes_form .text-danger {
+    font-size: 11px;
+    margin: 0;
+}
+
+.comments.offset {
+    margin: 0 0 0 10px;
+}
+
+#id_notes {
+    max-height: 400px;
+    overflow: auto;
+}
+
+div.note > .header {
+    border: solid 1px transparent;
+    border-radius: 10px;
+}
+
+div.comment > .header {
+    border: solid 1px transparent;
+    border-radius: 10px 10px 0 0;
+}
+
+div.comment > form {
+    border: solid 1px transparent;
+    border-radius: 0 0 10px 10px;
+}
+
+#id_notes small {
+    font-size: 9px;
+    font-weight: bold;
+}
+
+#id_notes .form-group {
+    margin: 0;
+}
+
+#id_notes p.note.form, #id_notes p.comment.form {
+    margin: auto;
+}
+
+#card-takenote div.dropdown-menu {
+    min-width: auto;
+    padding: 5px;
+}
+
+span.timestamp {
+    font-size: 11px;
+    align-self: center;
+}
+
+span.timestamp, .view_video_notes_form, .view_video_note_coms_form {
+    cursor: pointer;
+    padding: 3px 0 3px 0;
+}
+
+p.note, p.comment {
+    font-size: 12px;
+}
+
+div.header {
+    display: flex;
+}
+
+div.header > form {
+    align-self: center;
+    width: 70%;
+}
+
+div.header > span, div.header > form {
+    flex: auto;
+}
+
+span.user {
+    font-size: 11px;
+    font-style: italic;
+}
+
+.notdisplayed p.note, .notdisplayed p.comment {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+textarea#id_note, textarea#id_comment, select#id_status {
+    font-size: 11px;
+    height: auto;
+    padding: 5px;
+}
+
+#card-takenote {
+    padding: 3px !important;
+    flex-flow: wrap;
+}
+
+#card-takenote > h5 {
+    flex: auto;
+}
+
+#card-takenote > div.card-text {
+    width: 100%;
+}
+
+#card-takenote > div.mgtNotes > div.dropdown-menu {
+    background-color: #fff5f5;
+}
+
+div.mgtNotes, div.mgtNote, div.mgtComment {
+    align-self: center;
+}
+
+div.mgtNotes.dropleft > button,
+div.mgtNote.dropleft > button,
+div.mgtComment.dropleft > button {
+    border: none;
+}
+
+#id_notes > div.status-0 > div.header, #id_notes > div.status-0 > div.header div.dropdown-menu,
+.comments > div.status-0 > .header, .comments > div.status-0 > form,
+.comments > div.status-0 > div.header div.dropdown-menu {
+    background-color: #f1f7ff;
+}
+#id_notes > div.status-1 > .header, #id_notes > div.status-1 div.dropdown-menu,
+.comments > div.status-1 > .header, .comments > div.status-1 > form,
+.comments > div.status-1 > div.header div.dropdown-menu {
+    background-color: #f2fff1;
+}
+#id_notes > div.status-2 > .header, #id_notes > div.status-2 div.dropdown-menu,
+.comments > div.status-2 > .header, .comments > div.status-2 > form,
+.comments > div.status-2 > div.header div.dropdown-menu {
+    background-color: #fffcf1;
+}
+
+form.view_video_notes_form.hidden, form.view_video_note_coms_form.hidden {
+    display: none;
+}
+
+.noNotes {
+    font-size: 13px;
+    font-style: italic;
+    font-weight: bold;
+    margin: 5px;
+}
+
+div.note, div.comment {
+    margin: 3px 0 3px 0;
+}

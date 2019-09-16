@@ -38,8 +38,13 @@ else:
     FILEPICKER = False
     from pod.main.models import CustomImageModel
 
+TRANSCRIPT = False
+if getattr(settings, 'USE_TRANSCRIPTION', False):
+    TRANSCRIPT = True
+    from pod.video.transcript import main_transcript
+
 USE_ESTABLISHMENT = getattr(
-        settings, 'USE_ESTABLISHMENT_FIELD', False)
+    settings, 'USE_ESTABLISHMENT_FIELD', False)
 
 FFMPEG = getattr(settings, 'FFMPEG', 'ffmpeg')
 FFPROBE = getattr(settings, 'FFPROBE', 'ffprobe')
@@ -107,6 +112,8 @@ TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
 DEFAULT_FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@univ.fr')
 
 CELERY_TO_ENCODE = getattr(settings, 'CELERY_TO_ENCODE', False)
+
+MANAGERS = getattr(settings, 'MANAGERS', {})
 
 # ##########################################################################
 # ENCODE VIDEO : THREAD TO LAUNCH ENCODE
@@ -333,6 +340,8 @@ def encode_video(video_id):
 
         encode_mp3(video_id, video_data["contain_audio"],
                    video_to_encode.video.path, output_dir)
+
+        file_transcription(video_to_encode) if TRANSCRIPT else False
 
         change_encoding_step(video_id, 0, "done")
 
@@ -1133,10 +1142,15 @@ def send_email_encoding(video_to_encode):
         content_url,
         _("Regards")
     )
+    full_message = message + "\n%s:%s\n%s:%s" % (
+        _("Post by"),
+        video_to_encode.owner,
+        _("the"),
+        video_to_encode.date_added
+    )
     from_email = DEFAULT_FROM_EMAIL
     to_email = []
     to_email.append(video_to_encode.owner.email)
-
     html_message = ""
 
     html_message = '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
@@ -1152,26 +1166,33 @@ def send_email_encoding(video_to_encode):
         content_url,
         _("Regards")
     )
-    if USE_ESTABLISHMENT:
-        MANAGERS = getattr(settings, 'MANAGERS', [])
+    full_html_message = html_message + "<br/>%s:%s<br/>%s:%s" % (
+        _("Post by"),
+        video_to_encode.owner,
+        _("the"),
+        video_to_encode.date_added
+    )
+
+    if (
+            USE_ESTABLISHMENT and
+            MANAGERS and
+            video_to_encode.owner.owner.establishment.lower() in dict(MANAGERS)
+    ):
         bcc_email = []
         video_estab = video_to_encode.owner.owner.establishment.lower()
-        if MANAGERS:
-            if video_estab in dict(MANAGERS):
-                bcc_email.append(dict(MANAGERS)[video_estab])
-            msg = EmailMultiAlternatives(
-                    subject,
-                    message,
-                    from_email,
-                    to_email,
-                    bcc=bcc_email)
-            msg.attach_alternative(html_message, "text/html")
-            msg.send()
+        bcc_email.append(dict(MANAGERS)[video_estab])
+        msg = EmailMultiAlternatives(
+            subject,
+            message,
+            from_email,
+            to_email,
+            bcc=bcc_email)
+        msg.attach_alternative(html_message, "text/html")
+        msg.send()
     else:
         mail_managers(
-            subject, message, fail_silently=False,
-            html_message=html_message)
-
+            subject, full_message, fail_silently=False,
+            html_message=full_html_message)
         if not DEBUG:
             send_mail(
                 subject,
@@ -1181,3 +1202,18 @@ def send_email_encoding(video_to_encode):
                 fail_silently=False,
                 html_message=html_message,
             )
+
+
+###############################################################
+# TRANSCRIPTION PROCESS
+###############################################################
+
+
+def file_transcription(video_to_encode):
+    msg = change_encoding_step(
+        video_to_encode.id, 5,
+        "transcripting audio")
+    main_transcript(video_to_encode)
+    add_encoding_log(
+        video_to_encode.id,
+        "create_and_save_subtitles : %s" % msg)

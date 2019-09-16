@@ -11,7 +11,7 @@ from pod.video.models import Theme
 from pod.video.models import Video
 from pod.video.models import Type
 from pod.video.models import Discipline
-from pod.video.models import Notes
+from pod.video.models import AdvancedNotes
 
 import os
 import re
@@ -712,7 +712,7 @@ class video_notesTestView(TestCase):
         """
         self.client.logout()
         response = self.client.get("/video_notes/%s/" % video.slug)
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         self.client.force_login(self.user)
         response = self.client.get("/video_notes/%s/" % video.slug)
         self.assertEqual(response.status_code, 200)
@@ -726,21 +726,29 @@ class video_notesTestView(TestCase):
         video = Video.objects.get(title="Video1")
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        note = Notes.objects.create(
+        note = AdvancedNotes.objects.create(
             user=User.objects.get(username="pod"),
             video=video)
         self.assertEqual(note.note, None)
+        self.assertEqual(note.timestamp, None)
+        self.assertEqual(note.status, '0')
         response = self.client.post(
             "/video_notes/%s/" % video.slug,
             {
-                'note': 'coucou'
+                'action': 'save_note',
+                'note': 'coucou',
+                'timestamp': 10,
+                'status': '0'
             })
         self.assertEqual(response.status_code, 200)
         self.assertTrue(b"The note has been saved." in response.content)
-        note = Notes.objects.get(
+        note = AdvancedNotes.objects.get(
             user=User.objects.get(id=self.user.id),
-            video=video)
+            video=video,
+            timestamp=10, status='0')
         self.assertEqual(note.note, 'coucou')
+        self.assertEqual(note.timestamp, 10)
+        self.assertEqual(note.status, '0')
         print(
             " --->  test_video_notesTestView_post_request"
             " of video_notesTestView : OK !")
