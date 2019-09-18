@@ -676,6 +676,21 @@ def transform_url_to_link(text):
     return text.strip()
 
 
+def get_simple_url(text_with_html_link):
+    pattern = re.compile(
+            r"(<a\shref=['\"][^\s]+['\"]\starget=['\"][^\s]+['\"]>"
+            r"([^\s]+)</a>)")
+    links = pattern.findall(text_with_html_link)
+    for k, v in links:
+        text_with_html_link = re.sub(k, v, text_with_html_link)
+    return text_with_html_link
+
+
+def html_link_to_url_text(overlay):
+    overlay.content = get_simple_url(overlay.content)
+    return overlay
+
+
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def video_completion_overlay(request, slug):
@@ -689,14 +704,8 @@ def video_completion_overlay(request, slug):
     list_document = video.document_set.all()
     list_track = video.track_set.all()
     list_overlay = video.overlay_set.all()
-
     if request.POST and request.POST.get('action'):
         if request.POST['action'] in ACTION:
-            if LINK_SUPERPOSITION and 'content' in request.POST.dict():
-                request.POST._mutable = True
-                request.POST['content'] = transform_url_to_link(
-                        request.POST['content'])
-                request.POST._mutable = False
             return eval(
                 'video_completion_overlay_{0}(request, video)'.format(
                     request.POST['action'])
@@ -741,6 +750,12 @@ def video_completion_overlay_save(request, video):
     list_document = video.document_set.all()
     list_track = video.track_set.all()
     list_overlay = video.overlay_set.all()
+
+    if LINK_SUPERPOSITION:
+        request.POST._mutable = True
+        request.POST['content'] = transform_url_to_link(
+                request.POST['content'])
+        request.POST._mutable = False
 
     form_overlay = OverlayForm(request.POST)
     if (request.POST.get('overlay_id') and
@@ -802,13 +817,20 @@ def video_completion_overlay_modify(request, video):
     list_overlay = video.overlay_set.all()
 
     overlay = get_object_or_404(Overlay, id=request.POST['id'])
+
+    if LINK_SUPERPOSITION:
+        overlay = html_link_to_url_text(overlay)
+
     form_overlay = OverlayForm(instance=overlay)
     if request.is_ajax():
+        print("********* AJAX ************")
         return render(
             request,
             'overlay/form_overlay.html',
             {'form_overlay': form_overlay,
              'video': video})
+    print(list_overlay)
+    print("-------------------------------------")
     return render(
         request,
         'video_completion.html',
