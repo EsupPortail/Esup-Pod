@@ -42,20 +42,17 @@ def initfunc(lang):
     global ds_model
     ds_model = None
     if all([cond in DS_PARAM[lang]
-            for cond in ['model', 'n_features', 'n_context',
-                         'alphabet', 'beam_width']]):
+            for cond in ['model', 'alphabet', 'beam_width']]):
         ds_model = deepspeech.Model(
-            DS_PARAM[lang]['model'], DS_PARAM[lang]['n_features'],
-            DS_PARAM[lang]['n_context'], DS_PARAM[lang]['alphabet'],
+            DS_PARAM[lang]['model'], DS_PARAM[lang]['alphabet'],
             DS_PARAM[lang]['beam_width']
         )
     if all([cond in DS_PARAM[lang]
             for cond in ['alphabet', 'lm', 'trie',
                          'lm_alpha', 'lm_beta']]):
         ds_model.enableDecoderWithLM(
-            DS_PARAM[lang]['alphabet'], DS_PARAM[lang]['lm'],
-            DS_PARAM[lang]['trie'], DS_PARAM[lang]['lm_alpha'],
-            DS_PARAM[lang]['lm_beta']
+            DS_PARAM[lang]['lm'], DS_PARAM[lang]['trie'],
+            DS_PARAM[lang]['lm_alpha'], DS_PARAM[lang]['lm_beta']
         )
 
 
