@@ -298,6 +298,7 @@ def get_videos_list(request):
     return videos_list.distinct()
 
 
+@login_required(redirect_field_name='referrer')
 def videos(request):
     videos_list = get_videos_list(request)
 
@@ -492,7 +493,6 @@ def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_edit(request, slug=None):
-
     video = get_object_or_404(Video, slug=slug) if slug else None
 
     if (RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
@@ -507,11 +507,15 @@ def video_edit(request, slug=None):
             request, messages.ERROR, _(u'You cannot edit this video.'))
         raise PermissionDenied
 
+    # default selected owner in select field
+    default_owner = video.owner.pk if video else request.user.pk
+
     form = VideoForm(
         instance=video,
         is_staff=request.user.is_staff,
         is_superuser=request.user.is_superuser,
-        current_user=request.user
+        current_user=request.user,
+        initial={'owner': default_owner}
     )
 
     if request.method == 'POST':
@@ -547,7 +551,6 @@ def video_edit(request, slug=None):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'One or more errors have been found in the form.'))
-
     return render(request, 'videos/video_edit.html', {
         'form': form}
     )
