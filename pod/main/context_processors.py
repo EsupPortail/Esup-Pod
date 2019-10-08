@@ -46,7 +46,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         'TITLE_SITE': 'Pod',
         'TITLE_ETB': 'University name',
         'LOGO_SITE': 'img/logoPod.svg',
-        'LOGO_ETB': 'img/logoPod.svg',
+        'LOGO_ETB': 'img/logo_etb.svg',
         'LOGO_PLAYER': 'img/logoPod.svg',
         'LINK_PLAYER': '',
         'FOOTER_TEXT': ('',),
@@ -62,6 +62,9 @@ OEMBED = getattr(
 USE_RGPD = getattr(
     django_settings, 'USE_RGPD', False)
 
+ADDITIONAL_GRENOBLE_RGPD = getattr(
+        django_settings, 'ADDITIONAL_GRENOBLE_RGPD', False)
+
 
 def context_settings(request):
     new_settings = {}
@@ -75,6 +78,7 @@ def context_settings(request):
     new_settings["THIRD_PARTY_APPS"] = django_settings.THIRD_PARTY_APPS
     new_settings['OEMBED'] = OEMBED
     new_settings['USE_RGPD'] = USE_RGPD
+    new_settings['ADDITIONAL_GRENOBLE_RGPD'] = ADDITIONAL_GRENOBLE_RGPD
     return new_settings
 
 
