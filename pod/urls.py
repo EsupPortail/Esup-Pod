@@ -121,6 +121,9 @@ urlpatterns = [
     url(r'^contact_us/$', contact_us, name='contact_us'),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^download/$', download_file, name='download_file'),
+
+    # custom
+    url(r'^custom/$', include('pod.custom.urls')),
 ]
 # CAS
 if USE_CAS:
