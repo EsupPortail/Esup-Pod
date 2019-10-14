@@ -26,8 +26,8 @@ html,body{
  dropdown-item playlist-item z-index: 9999999;
 } */
 
-.video-js .vjs-overlay-background{background: rgba(0,0,0,.8)!important;font-size: 17px!important;}
-.video-js .vjs-overlay-background a{color: #0002e1 !important;}
+.video-js .vjs-overlay-background{background: rgba(0,0,0,.5)!important;font-size: 16px!important;}
+.video-js .vjs-overlay-background a{color: rgb(255,240,44) !important;}
 .nav-item.dropdown.show .dropdown-menu.show{ background: #102636;}
 .dropdown-menu{border: 1px solid rgba(0,0,0,.4);}
 .dropdown-item.playlist-item:not(:last-child){border-bottom: 1px solid #50a5a6 !important;}
