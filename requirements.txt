@@ -17,6 +17,6 @@ django-lti-provider==0.3.3
 django-auth-mixins==1.0.1
 celery==4.3.0
 pandas
-deepspeech==0.6.0a7
+deepspeech==0.6.0a9
 billiard
 webrtcvad
