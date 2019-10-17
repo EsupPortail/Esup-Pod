@@ -151,7 +151,7 @@ def change_encoding_step(video_id, num_step, desc):
 def add_encoding_log(video_id, log):
     encoding_log = EncodingLog.objects.get(
         video=Video.objects.get(id=video_id))
-    encoding_log.log += "\n\n%s" % (log)
+    encoding_log.log += "\n\n%s" % log
     encoding_log.save()
     if DEBUG:
         print(log)
@@ -218,27 +218,27 @@ def encode_video(video_id):
             change_encoding_step(
                 video_id, 4,
                 "encoding video file : 1/11 get video command")
-            video_command_playlist = get_video_command_playlist(
+            video_command_playlist = get_video_commands_playlist(
                 video_id,
                 video_data,
                 output_dir)
             add_encoding_log(
                 video_id,
-                "video_command_playlist : %s" % video_command_playlist["cmd"])
-            video_command_mp4 = get_video_command_mp4(
+                "video_command_playlist : %s" % video_command_playlist["cmds"])
+            video_command_mp4 = get_video_commands_mp4(
                 video_id,
                 video_data,
                 output_dir)
             add_encoding_log(
                 video_id,
-                "video_command_mp4 : %s" % video_command_mp4["cmd"])
+                "video_command_mp4 : %s" % video_command_mp4["cmds"])
             # launch encode video
             change_encoding_step(
                 video_id, 4,
                 "encoding video file : 2/11 encode_video_playlist")
             msg = encode_video_playlist(
                 video_to_encode.video.path,
-                video_command_playlist["cmd"],
+                video_command_playlist["cmds"],
                 output_dir)
             add_encoding_log(
                 video_id,
@@ -248,7 +248,7 @@ def encode_video(video_id):
                 "encoding video file : 3/11 encode_video_mp4")
             msg = encode_video_mp4(
                 video_to_encode.video.path,
-                video_command_mp4["cmd"],
+                video_command_mp4["cmds"],
                 output_dir)
             add_encoding_log(
                 video_id,
@@ -469,7 +469,7 @@ def create_outputdir(video_id, video_path):
 ###############################################################
 
 
-def get_video_command_mp4(video_id, video_data, output_dir):
+def get_video_commands_mp4(video_id, video_data, output_dir):
     in_height = video_data["in_height"]
     renditions = VideoRendition.objects.filter(encode_mp4=True)
     # the lower height in first
@@ -479,8 +479,10 @@ def get_video_command_mp4(video_id, video_data, output_dir):
         'key_frames_interval': video_data["key_frames_interval"]
     }
     list_file = []
-    cmd = ""
+    cmds = []
+
     for rendition in renditions:
+        cmd = ""
         bitrate = rendition.video_bitrate
         audiorate = rendition.audio_bitrate
         height = rendition.height
@@ -504,30 +506,25 @@ def get_video_command_mp4(video_id, video_data, output_dir):
                 output_dir, name)
             list_file.append(
                 {"name": name, 'rendition': rendition})
+            cmds.append(cmd)
     return {
-        'cmd': cmd,
+        'cmds': cmds,
         'list_file': list_file
     }
 
 
-def encode_video_mp4(source, cmd, output_dir):
-    ffmpegMp4Command = "%s %s -i %s %s" % (
-        FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
-
-    msg = "\nffmpegMp4Command :\n%s" % ffmpegMp4Command
+def encode_video_mp4(source, cmds, output_dir):
+    msg = ""
+    procs = []
     msg += "\n- Encoding Mp4 : %s" % time.ctime()
-
-    # ffmpegvideo = subprocess.getoutput(ffmpegMp4Command)
-    ffmpegvideo = subprocess.run(
-        ffmpegMp4Command, shell=True, stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT)
-
+    for cmd in cmds:
+        ffmpegMp4Command = "%s %s -i %s %s" % (FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
+        msg = "\nffmpegMp4Command :\n%s" % ffmpegMp4Command
+        with open(output_dir + "/encoding.log", "ab") as f:
+            procs.append( subprocess.Popen(ffmpegMp4Command, shell=True, stdout=f,stderr=f))
+    for proc in procs:
+        proc.wait()
     msg += "\n- End Encoding Mp4 : %s" % time.ctime()
-
-    with open(output_dir + "/encoding.log", "ab") as f:
-        f.write(b'\n\nffmpegvideoMP4:\n\n')
-        f.write(ffmpegvideo.stdout)
-
     return msg
 
 
@@ -688,7 +685,7 @@ def encode_video_mp3(video_id, source, output_dir):
 ###############################################################
 
 
-def get_video_command_playlist(video_id, video_data, output_dir):
+def get_video_commands_playlist(video_id, video_data, output_dir):
     in_height = video_data["in_height"]
     master_playlist = "#EXTM3U\n#EXT-X-VERSION:3\n"
     static_params = FFMPEG_STATIC_PARAMS % {
@@ -696,11 +693,12 @@ def get_video_command_playlist(video_id, video_data, output_dir):
         'key_frames_interval': video_data["key_frames_interval"]
     }
     list_file = []
-    cmd = ""
+    cmds = []
     renditions = VideoRendition.objects.all()
     # the lower height in first
     renditions = sorted(renditions, key=lambda m: m.height)
     for rendition in renditions:
+        cmd = ""
         resolution = rendition.resolution
         bitrate = rendition.video_bitrate
         minrate = rendition.minrate
@@ -730,31 +728,31 @@ def get_video_command_playlist(video_id, video_data, output_dir):
             master_playlist += "#EXT-X-STREAM-INF:BANDWIDTH=%s,\
                 RESOLUTION=%s\n%s.m3u8\n" % (
                 bandwidth, resolution, name)
+            cmds.append(cmd)
     return {
-        'cmd': cmd,
+        'cmds': cmds,
         'list_file': list_file,
         'master_playlist': master_playlist
     }
 
 
-def encode_video_playlist(source, cmd, output_dir):
+def encode_video_playlist(source, cmds, output_dir):
 
-    ffmpegPlaylistCommand = "%s %s -i %s %s" % (
-        FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
+    procs = []
+    msg = ""
+    for cmd in cmds:
+        ffmpegPlaylistCommand = "%s %s -i %s %s" % (
+            FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
 
-    msg = "\nffmpegPlaylistCommand :\n%s" % ffmpegPlaylistCommand
-    msg += "\n- Encoding Playlist : %s" % time.ctime()
+        msg = "\nffmpegPlaylistCommand :\n%s" % ffmpegPlaylistCommand
+        msg += "\n- Encoding Playlist : %s" % time.ctime()
 
-    # ffmpegvideo = subprocess.getoutput(ffmpegPlaylistCommand)
-    ffmpegvideo = subprocess.run(
-        ffmpegPlaylistCommand, shell=True, stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT)
-
+        with open(output_dir + "/encoding.log", "ab") as f:
+            procs.append(subprocess.Popen(ffmpegPlaylistCommand, shell=True, stdout=f,stderr=f))
+    for proc in procs:
+        proc.wait()
     msg += "\n- End Encoding Playlist : %s" % time.ctime()
 
-    with open(output_dir + "/encoding.log", "ab") as f:
-        f.write(b'\n\nffmpegvideoPlaylist:\n\n')
-        f.write(ffmpegvideo.stdout)
 
     return msg
 
