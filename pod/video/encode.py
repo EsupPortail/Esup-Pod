@@ -497,7 +497,7 @@ def get_video_commands_mp4(video_id, video_data, output_dir):
             name = "%sp" % height
 
             cmd += " %s -vf " % (static_params,)
-            cmd += "\"scale=-2:%s\"" % (height)
+            cmd += "\"scale=-2:%s\"" % height
             # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
                 minrate, bitrate, maxrate, int(bufsize), audiorate)
@@ -516,11 +516,13 @@ def get_video_commands_mp4(video_id, video_data, output_dir):
 def encode_video_mp4(source, cmds, output_dir):
     msg = ""
     procs = []
+    logfile = output_dir + "/encoding.log"
+    open(logfile,"ab").write(b'\n\nffmpegvideoMP4:\n\n')
     msg += "\n- Encoding Mp4 : %s" % time.ctime()
     for cmd in cmds:
         ffmpegMp4Command = "%s %s -i %s %s" % (FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
         msg = "\nffmpegMp4Command :\n%s" % ffmpegMp4Command
-        with open(output_dir + "/encoding.log", "ab") as f:
+        with open(logfile, "ab") as f:
             procs.append( subprocess.Popen(ffmpegMp4Command, shell=True, stdout=f,stderr=f))
     for proc in procs:
         proc.wait()
@@ -740,6 +742,8 @@ def encode_video_playlist(source, cmds, output_dir):
 
     procs = []
     msg = ""
+    logfile = output_dir + "/encoding.log"
+    open(logfile, "ab").write(b'\n\nffmpegvideoPlaylist:\n\n')
     for cmd in cmds:
         ffmpegPlaylistCommand = "%s %s -i %s %s" % (
             FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
@@ -747,13 +751,11 @@ def encode_video_playlist(source, cmds, output_dir):
         msg = "\nffmpegPlaylistCommand :\n%s" % ffmpegPlaylistCommand
         msg += "\n- Encoding Playlist : %s" % time.ctime()
 
-        with open(output_dir + "/encoding.log", "ab") as f:
+        with open(logfile, "ab") as f:
             procs.append(subprocess.Popen(ffmpegPlaylistCommand, shell=True, stdout=f,stderr=f))
     for proc in procs:
         proc.wait()
     msg += "\n- End Encoding Playlist : %s" % time.ctime()
-
-
     return msg
 
 
