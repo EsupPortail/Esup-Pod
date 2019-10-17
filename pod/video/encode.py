@@ -518,12 +518,13 @@ def encode_video_mp4(source, cmds, output_dir):
     procs = []
     logfile = output_dir + "/encoding.log"
     open(logfile,"ab").write(b'\n\nffmpegvideoMP4:\n\n')
-    msg += "\n- Encoding Mp4 : %s" % time.ctime()
+    msg = "\nffmpegMp4Command :\n"
     for cmd in cmds:
         ffmpegMp4Command = "%s %s -i %s %s" % (FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
-        msg = "\nffmpegMp4Command :\n%s" % ffmpegMp4Command
+        msg += "- %s\n" % ffmpegMp4Command
         with open(logfile, "ab") as f:
             procs.append( subprocess.Popen(ffmpegMp4Command, shell=True, stdout=f,stderr=f))
+    msg += "\n- Encoding Mp4 : %s" % time.ctime()
     for proc in procs:
         proc.wait()
     msg += "\n- End Encoding Mp4 : %s" % time.ctime()
@@ -741,18 +742,15 @@ def get_video_commands_playlist(video_id, video_data, output_dir):
 def encode_video_playlist(source, cmds, output_dir):
 
     procs = []
-    msg = ""
     logfile = output_dir + "/encoding.log"
     open(logfile, "ab").write(b'\n\nffmpegvideoPlaylist:\n\n')
+    msg = "\nffmpegPlaylistCommands :\n"
     for cmd in cmds:
-        ffmpegPlaylistCommand = "%s %s -i %s %s" % (
-            FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
-
-        msg = "\nffmpegPlaylistCommand :\n%s" % ffmpegPlaylistCommand
-        msg += "\n- Encoding Playlist : %s" % time.ctime()
-
+        ffmpegPlaylistCommand = "%s %s -i %s %s" % (FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
+        msg += "- %s\n" % ffmpegPlaylistCommand
         with open(logfile, "ab") as f:
             procs.append(subprocess.Popen(ffmpegPlaylistCommand, shell=True, stdout=f,stderr=f))
+    msg += "\n- Encoding Playlist : %s" % time.ctime()
     for proc in procs:
         proc.wait()
     msg += "\n- End Encoding Playlist : %s" % time.ctime()
