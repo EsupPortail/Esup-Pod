@@ -62,7 +62,7 @@ input[type="text"]{
     margin: 0 auto;
 }
 .info{ background:rgb(81,144,195); }
-.errors{
+.error{
     background:  rgb(209, 81, 72);
 }
 .success{

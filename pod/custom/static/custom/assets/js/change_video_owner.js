@@ -362,7 +362,7 @@ let hide_videos_changed = function()
 
 }
 
-let get_videos_id_to_change = function()
+let get_videos_to_change = function()
 {
     let array = [];
     if( videos )
@@ -372,7 +372,8 @@ let get_videos_id_to_change = function()
             let curr_checkbox = v.querySelector("input[type='checkbox']");
             if( curr_checkbox.checked )
             {
-                array.push(curr_checkbox.value);
+		var tmp_label = v.querySelector("label[for='"+curr_checkbox.id+"']");
+                array.push(curr_checkbox.value +"-" +tmp_label.textContent);
             }   
         });
     }
@@ -408,7 +409,7 @@ let display_div_message = function(type="success", text="Les changements ont ét
 submit.addEventListener("click", function(e)
 {
     e.preventDefault();
-    let videos_to_change_owner = (all_video_checkbox_checked())? "*" : get_videos_id_to_change();
+    let videos_to_change_owner = (all_video_checkbox_checked())? "*" : get_videos_to_change();
     let old_owner = oldlogin.value;
     let new_owner = newlogin.value;
 
@@ -423,14 +424,9 @@ submit.addEventListener("click", function(e)
 	}
         // TODO make ajax request
         const req = new XMLHttpRequest();
-        req.onprogress = onProgress;
-        req.onerror = onError;
         req.onload = onLoad;
-        req.onloadend = onLoadEnd;
-	console.log(JSON.stringify(params));
         req.open('POST', target_url);
 	req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-	console.log("CSRF =", token.value);
 	req.setRequestHeader("X-CSRFToken", token.value);
         req.send(JSON.stringify(params));
     }
@@ -444,34 +440,12 @@ submit.addEventListener("click", function(e)
 /*********************************************************************************
  ******************************* AJAX ********************************************
  *********************************************************************************/
-function onProgress(event) {
-    if (event.lengthComputable) {
-        //var percentComplete = (event.loaded / event.total)*100;
-        //console.log("Téléchargement: %d%%", percentComplete);
-    } else {
-        // Impossible de calculer la progression puisque la taille totale est inconnue
-    }
-}
-
-function onError(event) {
-    display_div_message(type="errors", text="Impossible de faire ces changements.");
-    //console.error("Une erreur " + event.target.status + " s'est produite au cours de la réception du document.");
-}
-
 function onLoad(event) {
     // Ici, this.readyState égale XMLHttpRequest.DONE .
     if (this.status === 200 || this.status === 304) {
         display_div_message(type="success");
 	document.location.reload()
-	//console.log("Réponse reçue: %s", this.responseText);
     } else {
-	display_div_message(type="error", text="Impossible de faire la modification</br>"+this.statusText);
-        //console.log("Status de la réponse: %d (%s)", this.status, this.statusText);
+	display_div_message(type="error", text=this.responseText);
     }
 }
-
-function onLoadEnd(event) {
-    // Cet événement est exécuté, une fois la requête terminée. peut importe le résultat
-    // display_div_message(type="success", text="********** End of the Request ************");
-}
-
