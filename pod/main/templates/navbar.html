@@ -64,6 +64,9 @@
           <div class="dropdown-divider"></div>
           {% if request.user.is_superuser or user.owner.is_manager %}
           <a class="dropdown-item" href="{% url 'admin:index' %}"><i data-feather="cpu"></i>&nbsp;Administration</a>
+	  	{% if MANAGE_VIDEO_OWNER %}
+		  <a class="dropdown-item" href="{% url 'custom:update_video_owner' %}"><i data-feather="cpu"></i>&nbsp;Changer propriétaire vidéo</a>
+	  	{% endif %}
           {% endif %}
           {% if request.user.is_staff or request.user.is_superuser %}
           {% if request.user.owner.userpicture  %}

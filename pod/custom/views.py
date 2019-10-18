@@ -4,19 +4,20 @@ from pod.video.models import Video
 import json, html
 from django.db.models import Q
 from pod.authentication.models import User
-
-# Create your views here.
+from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     return HttpResponse("Hello word from custom")
 
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
 def update_owner(request):
     if request.method == "POST":
-        print("****************", "POST REQUEST", "******************")
         post_data = json.loads(request.body.decode("utf-8"))
         response_json = change_owner(
             post_data['videos'], post_data['new_owner'])
-        print("----------------->",json.dumps(response_json))
         return HttpResponse(json.dumps(response_json), content_type="application/json")
     data = get_video_essentiels_data()
     return render(request, "custom/layouts/change_video_owner/index.html", {"data": data })
@@ -30,7 +31,9 @@ def change_owner(videos, new_owner_login):
     if isinstance(videos, str):
         vs = Video.objects.all();
     else:
+        # expected :
         # data = id-username
+        # videos = [ "id-username", "id-username", ...]
         for data in videos:
             id_video,owner_username = data.split("-")
             v = Video.objects.get(
@@ -46,10 +49,7 @@ def change_owner(videos, new_owner_login):
     return {"success": True}
         
 
-
-
-
-# return all video with only id, username and title
+# return all videos with id, title thumbnail and url data
 def get_video_essentiels_data():
     videos = Video.objects.all()
     es_data = {}

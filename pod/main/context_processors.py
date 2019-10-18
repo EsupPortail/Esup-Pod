@@ -65,6 +65,9 @@ USE_RGPD = getattr(
 ADDITIONAL_GRENOBLE_RGPD = getattr(
         django_settings, 'ADDITIONAL_GRENOBLE_RGPD', False)
 
+MANAGE_VIDEO_OWNER = getattr(
+        django_settings, "MANAGE_VIDEO_OWNER", False)
+
 
 def context_settings(request):
     new_settings = {}
@@ -79,6 +82,7 @@ def context_settings(request):
     new_settings['OEMBED'] = OEMBED
     new_settings['USE_RGPD'] = USE_RGPD
     new_settings['ADDITIONAL_GRENOBLE_RGPD'] = ADDITIONAL_GRENOBLE_RGPD
+    new_settings['MANAGE_VIDEO_OWNER'] = MANAGE_VIDEO_OWNER
     return new_settings
 
 
