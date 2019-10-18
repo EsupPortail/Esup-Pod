@@ -6,11 +6,18 @@ from deepspeech import Model
 import numpy as np
 import shlex
 import subprocess
+import sys
+from timeit import default_timer as timer
+from datetime import timedelta
+
+from webvtt import WebVTT, Caption
 
 try:
     from shhlex import quote
 except ImportError:
     from pipes import quote
+
+DS_PARAM = getattr(settings, 'DS_PARAM', dict())
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomFileModel
@@ -40,29 +47,19 @@ def convert_samplerate(audio_path, desired_sample_rate):
 # TRANSCRIPT VIDEO : MAIN FUNCTION
 # #################################
 def main_transcript(video_to_encode):
+
     desired_sample_rate = 16000
+
     mp3file = video_to_encode.get_video_mp3(
     ).source_file if video_to_encode.get_video_mp3() else None
 
-    #print(mp3file)
+    lang = video_to_encode.main_lang
 
-    # print(convert_samplerate(mp3file.path, desired_sample_rate))
+    ds_model = Model(
+        DS_PARAM[lang]['model'], DS_PARAM[lang]['alphabet'],
+        DS_PARAM[lang]['beam_width']
+    )
 
-    audio = convert_samplerate(mp3file.path, desired_sample_rate)[1]
-
-    return "Main Transcript"
-
-    # ffmpeg -i audio_192k_6761.mp3 -acodec pcm_s16le -ac 1 -ar 16000 6761.wav
-
-    # video 6734
-    """
-    ds_model = None
-    if all([cond in DS_PARAM[lang]
-            for cond in ['model', 'alphabet', 'beam_width']]):
-        ds_model = deepspeech.Model(
-            DS_PARAM[lang]['model'], DS_PARAM[lang]['alphabet'],
-            DS_PARAM[lang]['beam_width']
-        )
     if all([cond in DS_PARAM[lang]
             for cond in ['alphabet', 'lm', 'trie',
                          'lm_alpha', 'lm_beta']]):
@@ -70,15 +67,52 @@ def main_transcript(video_to_encode):
             DS_PARAM[lang]['lm'], DS_PARAM[lang]['trie'],
             DS_PARAM[lang]['lm_alpha'], DS_PARAM[lang]['lm_beta']
         )
-    """
 
-    """
-    output_dir = os.path.join(
-        os.path.dirname(video.video.path),
-        "%04d" % video.id)
-    msg, ds_wav_path = av2wav16b16k(video, output_dir)
-    msg += deepspeech_run(video, ds_wav_path)
-    msg += "\nDELETE TEMP WAV 16BIT 16KHZ"
-    os.remove(ds_wav_path)
-    return msg
-    """
+    fn, audio = convert_samplerate(mp3file.path, desired_sample_rate)
+
+    print('Running inference.', file=sys.stderr)
+    inference_start = timer()
+    metadata = ds_model.sttWithMetadata(audio)
+    print('Confidence : %s' % metadata.confidence)
+
+    sentences = []
+    sentence = []
+    refItem = metadata.items[0]
+    sentencemaxlength = 3  # time in sec for phrase length
+    for item in metadata.items:
+        if((item.start_time - refItem.start_time) < sentencemaxlength):
+            sentence.append(item)
+        else:
+            if item.character == ' ':
+                sentences.append(sentence)
+                sentence = []
+                refItem = item
+            else:
+                sentence.append(item)
+
+    vtt = WebVTT()
+
+    str_sentence = ''
+    for sentence in sentences:
+        # print(sentence[0].start_time,sentence[len(sentence)-1].start_time)
+        for item in sentence:
+            str_sentence = str_sentence + item.character
+
+        caption = Caption(
+            '%s.%s' % (timedelta(seconds=int(str(sentence[0].start_time).split('.')[0])), str(
+                '%.3f' % sentence[0].start_time).split('.')[1]),
+            '%s.%s' % (timedelta(seconds=int(str(sentence[-1].start_time).split('.')[0])), str(
+                '%.3f' % sentence[-1].start_time).split('.')[1]),
+            ['%s' % str_sentence]
+        )
+
+        vtt.captions.append(caption)
+        str_sentence = ''
+
+    print(vtt) # TOD SAVE VTT FILE
+
+    inference_end = timer() - inference_start
+    print('Inference took %0.3fs.' %
+          (inference_end), file=sys.stderr)
+
+    return "Main Transcript"
