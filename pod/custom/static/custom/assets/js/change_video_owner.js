@@ -373,7 +373,7 @@ let get_videos_to_change = function()
             if( curr_checkbox.checked )
             {
 		var tmp_label = v.querySelector("label[for='"+curr_checkbox.id+"']");
-                array.push(curr_checkbox.value +"-" +tmp_label.textContent);
+                array.push(curr_checkbox.value +"|-|" +tmp_label.textContent);
             }   
         });
     }
@@ -392,17 +392,18 @@ let js_field_not_empty = function( fields )
     return true;
 }
 
-let display_div_message = function(type="success", text="Les changements ont été effectués")
+let display_div_message = function(type="success", text="Les changements ont été effectués avec succès.")
 {
     /**
      * Objectif <div class="message">Les changements ont été effectués</div>
      */
+    text = text.replace(/{([a-z0-9]+)}/gi,"<span class='login'>$&</span>").replace(/{|}/gi,"")
     let div = document.createElement('div');
     div.setAttribute('class', "message " + type);
-    div.innerText = text;
+    div.innerHTML = unescape(text);
     document.querySelector(".form-group .row").insertBefore(div, list_videos);
     setTimeout(function() {
-        div.parentNode.removeChild(div)
+       div.parentNode.removeChild(div)
     }, 2500);    
 }
 

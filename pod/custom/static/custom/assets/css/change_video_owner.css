@@ -53,14 +53,18 @@ input[type="text"]{
     color: #fff;
     height: 75px;
     border-radius: 4px;
-    width: 400px;
+    width: 440px;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 9;
     font-size: 17px;
     margin: 0 auto;
+    padding: .5em;
+    flex-wrap: wrap;
+
 }
+.message span.login{ font-weight: 700; margin-left: 5px;}
 .info{ background:rgb(81,144,195); }
 .error{
     background:  rgb(209, 81, 72);
