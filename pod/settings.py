@@ -12,6 +12,7 @@ from pod.main.settings import BASE_DIR
 #
 VERSION = '2.2.2'
 
+
 ##
 # Installed applications list
 #
@@ -52,6 +53,7 @@ INSTALLED_APPS = [
     'pod.live',
     'pod.recorder',
     'pod.lti',
+    'pod.mediacourse',
     'pod.custom',
 ]
 
@@ -244,3 +246,10 @@ if 'H5P_ENABLED' in globals() and eval('H5P_ENABLED') is True:
     sys.path.append(os.path.join(BASE_DIR, "../../H5PP"))
     INSTALLED_APPS.append('h5pp')
     INSTALLED_APPS.append('pod.interactive')
+
+
+
+THIRD_PARTY_APPS = ["enrichment"]
+USE_MEDIACOURSE = True
+DEFAULT_MEDIACOURSE_RECORDER_PATH = "/usr/local/django_projects/podv2/pod/media/data/ftp-pod/ftp"
+BASE_URL = "localhost:8080"
