@@ -42,6 +42,11 @@ BASE_URL = getattr(
     "https://pod.univ.fr"
 )
 
+# Site address
+ALLOW_MANUAL_RECORDING_CLAIMING  = getattr(
+    settings, 'ALLOW_MANUAL_RECORDING_CLAIMING',
+    False
+)
 # Mode debug (0: False, 1: True)
 DEBUG = 1
 
@@ -108,8 +113,19 @@ class Command(BaseCommand):
                                         m.update(oRecorder.ipunder().encode('utf-8') + oRecorder.salt.encode('utf-8'))
 
                                         if oRecorder.user is None:
+                                            print("DEBUG 1")
+                                            if not ALLOW_MANUAL_RECORDING_CLAIMING:
+
+                                                html_message_error += "<li><b>Error</b> : No manager for the recorder" + oRecorder.name + "<br/><i>>>> You must assign a user for this recorder or set the ALLOW_MANUAL_RECORDING_CLAIMING setting to True</i></li>"
+                                                message_error += "\n   Error : No manager for the recorder " + oRecorder.name + "\n   >>> You must assign a user for this recorder or set the ALLOW_MANUAL_RECORDING_CLAIMING setting to True."
+                                                if DEBUG:
+                                                    print(
+                                                        "\n\n*** An email Mediacourse recorder job [Error(s) encountered] was sent to Pod admins, with message : ***" + message_error)
+                                                mail_admins("Mediacourse job [Error(s) encountered]", message_error,fail_silently=False, html_message=html_message_error)
+                                            else:
                                                 Job.objects.filter(mediapath=mediapath).update(require_manual_claim=True)
-                                                print(" - There is no manager for this recording, waiting for claiming")
+                                                if DEBUG:
+                                                    print(" - There is no manager for this recording, waiting for claiming")
                                         else:
                                             # Generation of the URL to notify the mediacourse recorder's manager, of the form: https://pod.univ.fr/mediacourses_notify/?recordingPlace=192_168_1_10&mediapath=file.zip&key=77fac92a3f06d50228116898187e50e5
                                             urlNotify = '' . join([BASE_URL, "/mediacourses_notify/?recordingPlace=" + oRecorder.ipunder() + "&mediapath=" + filename + "&key=" + m.hexdigest()])
@@ -134,7 +150,8 @@ class Command(BaseCommand):
                                                 html_message_error += "<li><b>Error</b> : Security error for the file " + mediapath + " : <b>" + str(r.content)[1:] + "</b>.<br/><i>>>>Check the publish link : " + urlNotify + "</i></li>"
                                                 message_error += "\n   Error : Security error for the file " + mediapath + " : " + str(r.content)[1:] + ".\n   >>> Check the publish link : " + urlNotify
                                     else:
-                                        print(" - Recording already treated, waiting for claiming ...")
+                                        if DEBUG:
+                                            print(" - Recording already treated, waiting for claiming ...")
                             else:
                                 if DEBUG:
                                     print(" - The job is created but no email is sent.")
