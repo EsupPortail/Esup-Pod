@@ -1,4 +1,4 @@
-.main{margin-top: 2em;}
+.main{margin: 2em 0;}
 
 .list_videos
 {
@@ -115,5 +115,5 @@ label[for='all_videos']
 
 /* Override footer fixe on bottom */
 
-footer.text-muted{ position:absolute; bottom: 0; width: 100%;}
+/*footer.text-muted{ position:absolute; bottom: 0; width: 100%;}*/
 
