@@ -359,6 +359,9 @@ let hide_videos_changed = function()
 	    v.classList.add("hidden");
 	}
     });
+    if( videos.length == 0){
+	document.querySelector(".check_all_video").classList.add("hidden");
+    }
 
 }
 
@@ -392,7 +395,7 @@ let js_field_not_empty = function( fields )
     return true;
 }
 
-let display_div_message = function(type="success", text="Les changements ont été effectués avec succès.")
+let display_div_message = function(type="success", text="Les changements ont été effectués avec succès.", reload=false)
 {
     /**
      * Objectif <div class="message">Les changements ont été effectués</div>
@@ -404,6 +407,7 @@ let display_div_message = function(type="success", text="Les changements ont ét
     document.querySelector(".form-group .row").insertBefore(div, list_videos);
     setTimeout(function() {
        div.parentNode.removeChild(div)
+       if(reload) window.location.reload();
     }, 2500);    
 }
 
@@ -444,8 +448,8 @@ submit.addEventListener("click", function(e)
 function onLoad(event) {
     // Ici, this.readyState égale XMLHttpRequest.DONE .
     if (this.status === 200 || this.status === 304) {
-        display_div_message(type="success");
-	document.location.reload()
+//	hide_videos_changed();
+        display_div_message(type="success", text="Les changements ont été effectués avec succès.", reload=true);
     } else {
 	display_div_message(type="error", text=this.responseText);
     }
