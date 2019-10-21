@@ -117,7 +117,9 @@ class Job(models.Model):
     # Date d'ajout
     date_added = models.DateTimeField(_('Date added'), default=timezone.now, editable=True)
     # Booléen permettant de savoir si un email a déjà été envoyé à l'utilisateur pour traiter cette vidéo
-    email_sent = models.BooleanField(_('Email sent ?'), default=False, help_text=_('Has an email been sent to the manager of the concerned recorder ?'))
+    require_manual_claim = models.BooleanField(_('Require manual claim ?'), default=False, help_text=_('Has this job require a manual claim by a user ?'))
+    email_sent = models.BooleanField(_('Email sent ?'), default=False,
+                                     help_text=_('Has an email been sent to the manager of the concerned recorder ?'))
     # Date d'envoi du mail à l'utilisateur
     date_email_sent = models.DateTimeField(_('Date email sent'), blank=True, null=True, editable=False)
 

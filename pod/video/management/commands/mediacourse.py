@@ -76,7 +76,6 @@ class Command(BaseCommand):
                         # Absolute path of the video
 
                         mediapath = os.path.join(DEFAULT_MEDIACOURSE_RECORDER_PATH, oRecorder.directory, filename)
-                        print(mediapath)
                         # Check if this video was already processed
                         oRecording = Recording.objects.filter(mediapath=mediapath).first()
                         # Check if an email was already sent to mediacourse recorder's manager for this video
@@ -87,7 +86,6 @@ class Command(BaseCommand):
                                 print(" - This video was already processed. Nothing to do. Stopping the process for this file.")
                         else:
                             # Size of the existant file
-                            print(mediapath)
                             file_size = default_storage.size(mediapath)
                             if oJob:
                                 if oJob.email_sent :
@@ -101,7 +99,7 @@ class Command(BaseCommand):
                                         if DEBUG:
                                             print(" - This video was partially uploaded. Waiting for complete file.")
                                         oJob = Job.objects.filter(mediapath=mediapath,).update(file_size=file_size, email_sent=False)
-                                    else:
+                                    elif not oJob.require_manual_claim:
                                         # This video wasn't already processed and no mail was sent to mediacourse recorder's manager => Process the video
                                         if DEBUG:
                                             print(" - This video wasn't already processed and no mail was sent to mediacourse recorder's manager. Starting the process.")
@@ -109,10 +107,9 @@ class Command(BaseCommand):
                                         m = hashlib.md5()
                                         m.update(oRecorder.ipunder().encode('utf-8') + oRecorder.salt.encode('utf-8'))
 
-
-
                                         if oRecorder.user is None:
-                                            print("- There is no manager for this recording")
+                                                Job.objects.filter(mediapath=mediapath).update(require_manual_claim=True)
+                                                print(" - There is no manager for this recording, waiting for claiming")
                                         else:
                                             # Generation of the URL to notify the mediacourse recorder's manager, of the form: https://pod.univ.fr/mediacourses_notify/?recordingPlace=192_168_1_10&mediapath=file.zip&key=77fac92a3f06d50228116898187e50e5
                                             urlNotify = '' . join([BASE_URL, "/mediacourses_notify/?recordingPlace=" + oRecorder.ipunder() + "&mediapath=" + filename + "&key=" + m.hexdigest()])
@@ -136,6 +133,8 @@ class Command(BaseCommand):
                                                 # Catch the the error encountered
                                                 html_message_error += "<li><b>Error</b> : Security error for the file " + mediapath + " : <b>" + str(r.content)[1:] + "</b>.<br/><i>>>>Check the publish link : " + urlNotify + "</i></li>"
                                                 message_error += "\n   Error : Security error for the file " + mediapath + " : " + str(r.content)[1:] + ".\n   >>> Check the publish link : " + urlNotify
+                                    else:
+                                        print(" - Recording already treated, waiting for claiming ...")
                             else:
                                 if DEBUG:
                                     print(" - The job is created but no email is sent.")
