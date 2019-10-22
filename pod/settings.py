@@ -245,4 +245,3 @@ if 'H5P_ENABLED' in globals() and eval('H5P_ENABLED') is True:
     INSTALLED_APPS.append('h5pp')
     INSTALLED_APPS.append('pod.interactive')
 
-
