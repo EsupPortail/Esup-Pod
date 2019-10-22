@@ -19,8 +19,10 @@ from django.utils import translation
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.db import connection
+
+from pod.recorder.models import Recorder, Recording, RecordingFile
 from pod.video.models import Video
-from pod.mediacourse.models import Recorder, Recording, Job
+
 from django.core.exceptions import ObjectDoesNotExist
 import hashlib
 import requests
@@ -31,8 +33,8 @@ from django.core.files.storage import default_storage
 from django.utils import timezone
 
 # Mediacourse directory
-DEFAULT_MEDIACOURSE_RECORDER_PATH = getattr(
-    settings, 'DEFAULT_MEDIACOURSE_RECORDER_PATH',
+DEFAULT_RECORDER_PATH = getattr(
+    settings, 'DEFAULT_RECORDER_PATH',
     "/data/ftp-pod/ftp/"
 )
 
@@ -66,12 +68,12 @@ class Command(BaseCommand):
             html_message_error = ""
             message_error = ""
             # Path the tree
-            for root, dirs, files in os.walk(DEFAULT_MEDIACOURSE_RECORDER_PATH):
+            for root, dirs, files in os.walk(DEFAULT_RECORDER_PATH):
                 for filename in files:
                     # Name of the directory
                     dirname = root.split(os.path.sep)[-1]
                     if DEBUG:
-                        print("\n*** Process the file " + os.path.join(DEFAULT_MEDIACOURSE_RECORDER_PATH, dirname, filename) + " ***")
+                        print("\n*** Process the file " + os.path.join(DEFAULT_RECORDER_PATH, dirname, filename) + " ***")
                     # Search for the recorder corresponding to this directory
                     oRecorder = Recorder.objects.filter(directory=dirname).first()
                     if oRecorder:
@@ -80,11 +82,11 @@ class Command(BaseCommand):
                             print(" - This video was published by '" + oRecorder.name + "' recorder.")
                         # Absolute path of the video
 
-                        mediapath = os.path.join(DEFAULT_MEDIACOURSE_RECORDER_PATH, oRecorder.directory, filename)
+                        mediapath = os.path.join(DEFAULT_RECORDER_PATH, oRecorder.directory, filename)
                         # Check if this video was already processed
                         oRecording = Recording.objects.filter(mediapath=mediapath).first()
                         # Check if an email was already sent to mediacourse recorder's manager for this video
-                        oJob = Job.objects.filter(mediapath=mediapath).first()
+                        oFile = RecordingFile.objects.filter(mediapath=mediapath).first()
                         if oRecording:
                             # This video was already processed
                             if DEBUG:
@@ -92,10 +94,13 @@ class Command(BaseCommand):
                         else:
                             # Size of the existant file
                             file_size = default_storage.size(mediapath)
-                            if oJob:
-                                if oJob.email_sent :
+                            if oFile:
+                                if oFile.email_sent :
                                     if DEBUG:
                                         print(" - An email, with the publication link, was already sent to mediacourse recorder's manager. Nothing to do. Stopping the process for this file.")
+                                elif oFile.require_manual_claim:
+                                    if DEBUG:
+                                        print(" - Recording already treated, waiting for claiming ...")
                                 else:
                                     # File size saved in database
                                     file_size_in_db = oJob.file_size
@@ -103,8 +108,7 @@ class Command(BaseCommand):
                                     if file_size > 0 and file_size > file_size_in_db:
                                         if DEBUG:
                                             print(" - This video was partially uploaded. Waiting for complete file.")
-                                        oJob = Job.objects.filter(mediapath=mediapath,).update(file_size=file_size, email_sent=False)
-                                    elif not oJob.require_manual_claim:
+                                        oFile = RecordingFile.objects.filter(mediapath=mediapath,).update(file_size=file_size, email_sent=False)
                                         # This video wasn't already processed and no mail was sent to mediacourse recorder's manager => Process the video
                                         if DEBUG:
                                             print(" - This video wasn't already processed and no mail was sent to mediacourse recorder's manager. Starting the process.")
@@ -113,9 +117,8 @@ class Command(BaseCommand):
                                         m.update(oRecorder.ipunder().encode('utf-8') + oRecorder.salt.encode('utf-8'))
 
                                         if oRecorder.user is None:
-                                            print("DEBUG 1")
+                                            #Raise error and send mail to admin if a recorder has no manager and manual claiming is disabled
                                             if not ALLOW_MANUAL_RECORDING_CLAIMING:
-
                                                 html_message_error += "<li><b>Error</b> : No manager for the recorder" + oRecorder.name + "<br/><i>>>> You must assign a user for this recorder or set the ALLOW_MANUAL_RECORDING_CLAIMING setting to True</i></li>"
                                                 message_error += "\n   Error : No manager for the recorder " + oRecorder.name + "\n   >>> You must assign a user for this recorder or set the ALLOW_MANUAL_RECORDING_CLAIMING setting to True."
                                                 if DEBUG:
@@ -123,7 +126,7 @@ class Command(BaseCommand):
                                                         "\n\n*** An email Mediacourse recorder job [Error(s) encountered] was sent to Pod admins, with message : ***" + message_error)
                                                 mail_admins("Mediacourse job [Error(s) encountered]", message_error,fail_silently=False, html_message=html_message_error)
                                             else:
-                                                Job.objects.filter(mediapath=mediapath).update(require_manual_claim=True)
+                                                RecordingFile.objects.filter(mediapath=mediapath).update(require_manual_claim=True)
                                                 if DEBUG:
                                                     print(" - There is no manager for this recording, waiting for claiming")
                                         else:
@@ -139,7 +142,7 @@ class Command(BaseCommand):
                                                 if DEBUG:
                                                     print(" - Request was made to URL with success. An email was sent to mediacourse recorder's manager.")
                                                 # Save this information in the database, to avoid to send multiple emails
-                                                oJob = Job.objects.filter(mediapath=mediapath,).update(file_size=file_size, email_sent=True, date_email_sent=timezone.now())
+                                                oFile = RecordingFile.objects.filter(mediapath=mediapath,).update(file_size=file_size, email_sent=True, date_email_sent=timezone.now())
                                                 if DEBUG:
                                                     print(" - Information saved in the multicam_job table.")
                                             else:
@@ -149,21 +152,18 @@ class Command(BaseCommand):
                                                 # Catch the the error encountered
                                                 html_message_error += "<li><b>Error</b> : Security error for the file " + mediapath + " : <b>" + str(r.content)[1:] + "</b>.<br/><i>>>>Check the publish link : " + urlNotify + "</i></li>"
                                                 message_error += "\n   Error : Security error for the file " + mediapath + " : " + str(r.content)[1:] + ".\n   >>> Check the publish link : " + urlNotify
-                                    else:
-                                        if DEBUG:
-                                            print(" - Recording already treated, waiting for claiming ...")
                             else:
                                 if DEBUG:
                                     print(" - The job is created but no email is sent.")
                                 # The job is created but no email is sent
-                                oJob = Job.objects.create(mediapath=mediapath, file_size = file_size, email_sent=False)
+                                oFile = RecordingFile.objects.create(mediapath=mediapath, file_size = file_size, email_sent=False)
                     else:
                         # There isn't a connection between the directory and a recorder
                         if DEBUG:
                             print(" - No recorder found for this file.")
                         # Catch the the error encountered
-                        html_message_error += "<li><b>Error</b> : No recorder found for the file " + os.path.join(DEFAULT_MEDIACOURSE_RECORDER_PATH, dirname, filename) + "<br/><i>>>>You must create a recorder for '" + dirname + "' directory.</i></li>"
-                        message_error += "\n   Error : No recorder found for the file : " + os.path.join(DEFAULT_MEDIACOURSE_RECORDER_PATH, dirname, filename) + "\n   >>> You must create a recorder for '" + dirname + "' directory."
+                        html_message_error += "<li><b>Error</b> : No recorder found for the file " + os.path.join(DEFAULT_RECORDER_PATH, dirname, filename) + "<br/><i>>>>You must create a recorder for '" + dirname + "' directory.</i></li>"
+                        message_error += "\n   Error : No recorder found for the file : " + os.path.join(DEFAULT_RECORDER_PATH, dirname, filename) + "\n   >>> You must create a recorder for '" + dirname + "' directory."
             # If there was at least one erreor, send an email to Pod admins
             if message_error != "":
                 if DEBUG:
