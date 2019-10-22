@@ -134,7 +134,7 @@ class Command(BaseCommand):
                                                     print(" - There is no manager for this recording, waiting for claiming")
                                         else:
                                             # Generation of the URL to notify the mediacourse recorder's manager, of the form: https://pod.univ.fr/mediacourses_notify/?recordingPlace=192_168_1_10&mediapath=file.zip&key=77fac92a3f06d50228116898187e50e5
-                                            urlNotify = '' . join([BASE_URL, "/mediacourses_notify/?recordingPlace=" + oRecorder.ipunder() + "&mediapath=" + filename + "&key=" + m.hexdigest()])
+                                            urlNotify = '' . join([BASE_URL, "/recorder_notify/?recordingPlace=" + oRecorder.ipunder() + "&mediapath=" + filename + "&key=" + m.hexdigest()])
                                             if DEBUG:
                                                 print(" - Generate the URL , with haskey, to notify the mediacourse recorder's manager : " + urlNotify)
                                             # Make a request on this URL
@@ -172,6 +172,5 @@ class Command(BaseCommand):
                 if DEBUG:
                     print("\n\n*** An email Mediacourse recorder job [Error(s) encountered] was sent to Pod admins, with message : ***" + message_error)
                 mail_admins("Mediacourse job [Error(s) encountered]", message_error, fail_silently=False, html_message=html_message_error)
-            print("==== END =====")
         else:
             print("*** Warning: you must give some arguments: %s ***"% self.valid_args)

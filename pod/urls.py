@@ -32,7 +32,7 @@ from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 from pod.main.views import contact_us, download_file
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
-from pod.recorder.views import add_recording
+from pod.recorder.views import add_recording, recorder_notify
 from pod.lti.views import LTIAssignmentView
 
 USE_CAS = getattr(
@@ -86,6 +86,7 @@ urlpatterns = [
     url(r'^my_videos/$', my_videos, name='my_videos'),
     # recording
     url(r'^add_recording/$', add_recording, name='add_recording'),
+    url(r'^recorder_notify/$',recorder_notify,name='recorder_notify'),
 
     url(r'^search/$', search_videos, name='search_videos'),
 

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import os
 
 from django.shortcuts import render
@@ -9,14 +11,28 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import csrf_protect
 from django.utils.translation import ugettext_lazy as _
 
+from pod.recorder.models import Recorder
 from .forms import RecordingForm
 from django.contrib import messages
+import hashlib
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from datetime import datetime, date
+from django.utils import formats
+from django.core.mail import EmailMultiAlternatives
+from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+import urllib.parse
+
 
 DEFAULT_RECORDER_PATH = getattr(
     settings, 'DEFAULT_RECORDER_PATH',
     "/data/ftp-pod/ftp/"
 )
 
+USE_CAS = getattr(settings, 'USE_CAS', False)
+TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
 
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
@@ -70,3 +86,66 @@ def add_recording(request):
 
     return render(request, "recorder/add_recording.html",
                   {"form": form})
+
+
+def recorder_notify(request):
+    # Used by URL like https://pod.univ.fr/mediacourses_notify/?recordingPlace=192_168_1_10&mediapath=file.zip&key=77fac92a3f06d50228116898187e50e5
+    mediapath = request.GET.get('mediapath') or ""
+    recordingPlace = request.GET.get('recordingPlace') or ""
+    key = request.GET.get('key') or ""
+    # Check arguments
+    if recordingPlace and mediapath and key:
+        recordingIpPlace = recordingPlace.replace("_", ".")
+        try:
+            # Check recorder existence corresponding to IP address
+            recorder = Recorder.objects.get(address_ip=recordingIpPlace)
+        except ObjectDoesNotExist:
+            recorder = None
+        if recorder:
+            # Generate hashkey
+            m = hashlib.md5()
+            m.update(recordingPlace.encode('utf-8') + recorder.salt.encode('utf-8'))
+            if key != m.hexdigest():
+                return HttpResponse("nok : key is not valid")
+
+            date_notify = datetime.now()
+            formatted_date_notify = formats.date_format(date_notify, "SHORT_DATE_FORMAT")
+            link_url = ''.join(
+                [request.build_absolute_uri(reverse('add_recording')), "?mediapath=", request.GET.get(
+                    'mediapath'), "&course_title=%s" % _("Recording"), " %s" % formatted_date_notify.replace("/", "-"),
+                 "&recorder=%s" % recorder.id])
+            # Pointing to the URL of the CAS allows to reach the already authenticated form
+            # URL like https://pod.univ.fr/sso-cas/login/?next=https%3A%2F%2Fpod.univ.fr%2Fmediacourses_add%2F%3Fmediapath%3Df18a5104-5a80-47a8-954e-7a142a67a935.zip%26course_title%3DEnregistrement%252021%2520juin%25202019%26recorder%3D1
+            if USE_CAS:
+                link_url = ''.join(
+                    [request.build_absolute_uri('/'), "sso-cas/login/?next=", urllib.parse.quote_plus(link_url)])
+
+            text_msg = _(
+                "Hello, \n\na new Mediacourse recording has just be added on the video website \"%(title_site)s\" from the recorder \"%(recorder)s\"."
+                "\nTo add it, just click on link below.\n\n%(link_url)s\nif you cannot click on link, just copy-paste it in your browser."
+                "\n\nRegards") % {'title_site': TITLE_SITE, 'recorder': recorder.name, 'link_url': link_url}
+
+            html_msg = _(
+                "Hello, <p>a new Mediacourse recording has just be added on %(title_site)s from the recorder \"%(recorder)s\"."
+                "<br/>To add it, just click on link below.</p><a href=\"%(link_url)s\">%(link_url)s</a><br/><i>if you cannot click on link, just copy-paste it in your browser.</i>"
+                "<p><p>Regards</p>") % {'title_site': TITLE_SITE, 'recorder': recorder.name, 'link_url': link_url}
+            # Sending the mail to the managers defined in the administration for the concerned Mediacourse recorder
+            if recorder.user:
+                admin_emails = [recorder.user.email]
+            else:
+                admin_emails = User.objects.filter(is_superuser=True).values_list('email', flat=True)
+            subject = "[" + TITLE_SITE + \
+                      "] %s" % _('New Mediacourse recording added.')
+            # Send the mail to the managers or admins (if not found)
+            email_msg = EmailMultiAlternatives(subject, text_msg, settings.DEFAULT_FROM_EMAIL, admin_emails)
+
+
+            email_msg.attach_alternative(html_msg, "text/html")
+            print("Pre mail send")
+            email_msg.send(fail_silently=False)
+            print("Post mail send")
+            return HttpResponse("ok")
+        else:
+            return HttpResponse("nok : address_ip not valid")
+    else:
+        return HttpResponse("nok : recordingPlace or mediapath or key are missing")
