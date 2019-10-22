@@ -404,11 +404,20 @@ let display_div_message = function(type="success", text="Les changements ont ét
     let div = document.createElement('div');
     div.setAttribute('class', "message " + type);
     div.innerHTML = unescape(text);
-    document.querySelector(".form-group .row").insertBefore(div, list_videos);
+    
+    if(reload)
+    {
+//	window.location.reload();
+
+    }
     setTimeout(function() {
-       div.parentNode.removeChild(div)
-       if(reload) window.location.reload();
-    }, 2500);    
+	    
+    	document.querySelector(".form-group .row").insertBefore(div, list_videos);
+	
+    }, 1500);    
+    setTimeout(function(){
+    	div.parentNode.removeChild(div)	
+    }, 2500);
 }
 
 submit.addEventListener("click", function(e)
@@ -421,12 +430,13 @@ submit.addEventListener("click", function(e)
     let success = js_field_not_empty([old_owner, new_owner, videos_to_change_owner]);
     if( success )
     {
-    	let target_url= window.location.href;
+    	let target_url= window.location.host + "/custom/";
 	let params = {
 		"old_owner": old_owner,
 		"new_owner": new_owner,
 		"videos": videos_to_change_owner
 	}
+	alert(target_url, "*************************")
         // TODO make ajax request
         const req = new XMLHttpRequest();
         req.onload = onLoad;
@@ -449,8 +459,10 @@ function onLoad(event) {
     // Ici, this.readyState égale XMLHttpRequest.DONE .
     if (this.status === 200 || this.status === 304) {
 //	hide_videos_changed();
+	console.log("OK")
         display_div_message(type="success", text="Les changements ont été effectués avec succès.", reload=true);
     } else {
+	console.log("NOK")
 	display_div_message(type="error", text=this.responseText);
     }
 }

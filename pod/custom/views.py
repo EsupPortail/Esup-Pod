@@ -12,8 +12,8 @@ def index(request):
 
 
 @csrf_protect
-@login_required(redirect_field_name="referrer")
 def update_owner(request):
+    print("************** HERE YOU ARE ********************")
     if request.method == "POST":
         post_data = json.loads(request.body.decode("utf-8"))
         response_json = change_owner(
@@ -28,12 +28,13 @@ def update_owner(request):
     data = get_video_essentiels_data()
     return render(
             request,
-            "custom/layouts/change_video_owner/index.html",
+            "admin/custom/admin/change_video_owner.html",
             {"data": data })
 
 
 def change_owner(videos, old_owner, new_owner_login):
     new_owner = User.objects.filter(username=new_owner_login).first()
+    print(new_owner, "++++++++++++++++++++++++++++++++++++++")
     if not new_owner:
         return {
                 "error": "Impossible de trouver le nouveau propriétaire : {%s}"\
