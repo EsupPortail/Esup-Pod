@@ -246,10 +246,3 @@ if 'H5P_ENABLED' in globals() and eval('H5P_ENABLED') is True:
     INSTALLED_APPS.append('pod.interactive')
 
 
-
-THIRD_PARTY_APPS = ["enrichment"]
-USE_MEDIACOURSE = True
-DEFAULT_RECORDER_PATH = "/usr/local/django_projects/podv2/pod/media/data/ftp-pod/ftp"
-BASE_URL = "localhost:8080"
-ALLOW_MANUAL_RECORDING_CLAIMING = True
-
