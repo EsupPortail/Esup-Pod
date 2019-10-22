@@ -82,19 +82,21 @@ class Command(BaseCommand):
                             print(" - This video was published by '" + oRecorder.name + "' recorder.")
                         # Absolute path of the video
 
-                        mediapath = os.path.join(DEFAULT_RECORDER_PATH, oRecorder.directory, filename)
+                        source_file = os.path.join(DEFAULT_RECORDER_PATH, oRecorder.directory, filename)
                         # Check if this video was already processed
-                        oRecording = Recording.objects.filter(mediapath=mediapath).first()
+                        oRecording = Recording.objects.filter(source_file=source_file).first()
                         # Check if an email was already sent to mediacourse recorder's manager for this video
-                        oFile = RecordingFile.objects.filter(mediapath=mediapath).first()
+                        oFile = RecordingFile.objects.filter(file=source_file).first()
+
                         if oRecording:
                             # This video was already processed
                             if DEBUG:
                                 print(" - This video was already processed. Nothing to do. Stopping the process for this file.")
                         else:
                             # Size of the existant file
-                            file_size = default_storage.size(mediapath)
+                            file_size = default_storage.size(source_file)
                             if oFile:
+
                                 if oFile.email_sent :
                                     if DEBUG:
                                         print(" - An email, with the publication link, was already sent to mediacourse recorder's manager. Nothing to do. Stopping the process for this file.")
@@ -103,13 +105,14 @@ class Command(BaseCommand):
                                         print(" - Recording already treated, waiting for claiming ...")
                                 else:
                                     # File size saved in database
-                                    file_size_in_db = oJob.file_size
+                                    file_size_in_db = oFile.file_size
                                     # Check if file is complete
                                     if file_size > 0 and file_size > file_size_in_db:
                                         if DEBUG:
                                             print(" - This video was partially uploaded. Waiting for complete file.")
-                                        oFile = RecordingFile.objects.filter(mediapath=mediapath,).update(file_size=file_size, email_sent=False)
+                                        oFile = RecordingFile.objects.filter(file=source_file,).update(file_size=file_size, email_sent=False)
                                         # This video wasn't already processed and no mail was sent to mediacourse recorder's manager => Process the video
+                                    else:
                                         if DEBUG:
                                             print(" - This video wasn't already processed and no mail was sent to mediacourse recorder's manager. Starting the process.")
                                         # Generation of the hashkey, depending on the IP address of the recorder
@@ -126,7 +129,7 @@ class Command(BaseCommand):
                                                         "\n\n*** An email Mediacourse recorder job [Error(s) encountered] was sent to Pod admins, with message : ***" + message_error)
                                                 mail_admins("Mediacourse job [Error(s) encountered]", message_error,fail_silently=False, html_message=html_message_error)
                                             else:
-                                                RecordingFile.objects.filter(mediapath=mediapath).update(require_manual_claim=True)
+                                                RecordingFile.objects.filter(file=source_file).update(require_manual_claim=True)
                                                 if DEBUG:
                                                     print(" - There is no manager for this recording, waiting for claiming")
                                         else:
@@ -142,7 +145,7 @@ class Command(BaseCommand):
                                                 if DEBUG:
                                                     print(" - Request was made to URL with success. An email was sent to mediacourse recorder's manager.")
                                                 # Save this information in the database, to avoid to send multiple emails
-                                                oFile = RecordingFile.objects.filter(mediapath=mediapath,).update(file_size=file_size, email_sent=True, date_email_sent=timezone.now())
+                                                oFile = RecordingFile.objects.filter(file=source_file,).update(file_size=file_size, email_sent=True, date_email_sent=timezone.now())
                                                 if DEBUG:
                                                     print(" - Information saved in the multicam_job table.")
                                             else:
@@ -150,13 +153,13 @@ class Command(BaseCommand):
                                                 if DEBUG:
                                                     print(" - Request was made to URL with failure(" + str(r.content)[1:] + "). An email wasn't sent to mediacourse recorder's manager.")
                                                 # Catch the the error encountered
-                                                html_message_error += "<li><b>Error</b> : Security error for the file " + mediapath + " : <b>" + str(r.content)[1:] + "</b>.<br/><i>>>>Check the publish link : " + urlNotify + "</i></li>"
-                                                message_error += "\n   Error : Security error for the file " + mediapath + " : " + str(r.content)[1:] + ".\n   >>> Check the publish link : " + urlNotify
+                                                html_message_error += "<li><b>Error</b> : Security error for the file " + source_file + " : <b>" + str(r.content)[1:] + "</b>.<br/><i>>>>Check the publish link : " + urlNotify + "</i></li>"
+                                                message_error += "\n   Error : Security error for the file " + souce_file + " : " + str(r.content)[1:] + ".\n   >>> Check the publish link : " + urlNotify
                             else:
                                 if DEBUG:
                                     print(" - The job is created but no email is sent.")
                                 # The job is created but no email is sent
-                                oFile = RecordingFile.objects.create(mediapath=mediapath, file_size = file_size, email_sent=False)
+                                oFile = RecordingFile.objects.create(file=source_file, file_size = file_size, email_sent=False)
                     else:
                         # There isn't a connection between the directory and a recorder
                         if DEBUG:
@@ -169,5 +172,6 @@ class Command(BaseCommand):
                 if DEBUG:
                     print("\n\n*** An email Mediacourse recorder job [Error(s) encountered] was sent to Pod admins, with message : ***" + message_error)
                 mail_admins("Mediacourse job [Error(s) encountered]", message_error, fail_silently=False, html_message=html_message_error)
+            print("==== END =====")
         else:
             print("*** Warning: you must give some arguments: %s ***"% self.valid_args)
