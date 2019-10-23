@@ -11,36 +11,23 @@
             </span>
         </div>
     </div>
-{#    <div class="d-flex align-items-center">#}
+    <div class="d-flex align-items-center">
 
-{#    <a href="{{video.get_absolute_url}}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">#}
-{##}
-{#    </a>#}
 
-{#    </div>#}
+ <a href="#" title="test">
+       <img src="/static/img/default.png"/>
+    </a>
+    </div>
     <div class="card-body">
-    <video id="my-video" class="video-js card-img-top" controls preload="none" width="auto" height="auto" data-setup="{}"><source src="{{ record.file | replace(BASE_DIR,'') }}" type="video/mp4">pas de video</video>
-{#      {% if video.owner == request.user or request.user.is_superuser %}#}
-{#      <footer class="card-footer p-0 m-0">#}
-{#        {% include "videos/link_video.html" %}#}
-{#      </footer>#}
-{#      {% endif %}#}
 
-{#      <h6 class="card-subtitle small">#}
-{#        {% if channel %}#}
-{#        {% if theme %}#}
-{#        <a href="{% url 'video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">#}
-{#            {{video.title|title|truncatechars:43}}#}
-{#        </a>#}
-{#        {% else %}#}
-{#        <a href="{% url 'video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">#}
-{#            {{video.title|title|truncatechars:43}}#}
-{#        </a>#}
-{#        {% endif %}#}
-{#        {% else %}#}
-{#        <a href="{{video.get_absolute_url}}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">{{video.title|title|truncatechars:43}}</a>#}
-{#        {% endif %}#}
-{#      </h6>#}
+      <footer class="card-footer p-0 m-0">
+        {% include "recorder/link_record.html" %}
+      </footer>
+
+      <h6 class="card-subtitle small">
+
+               {{record.filename|truncatechars:43}}
+      </h6>
 
     </div>
 </div>

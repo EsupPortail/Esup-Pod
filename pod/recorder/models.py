@@ -132,6 +132,9 @@ class RecordingFile(models.Model):
     date_email_sent = models.DateTimeField(_('Date email sent'), blank=True, null=True, editable=False)
     type = models.CharField(max_length=50, choices=RECORDER_TYPE, default=RECORDER_TYPE[0][0])
 
+    def filename(self):
+        return os.path.basename(self.file)
+
     class Meta:
         verbose_name = _("Recording file")
         verbose_name_plural = _("Recording files")
