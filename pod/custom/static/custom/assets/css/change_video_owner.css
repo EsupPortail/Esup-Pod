@@ -90,6 +90,8 @@ label[for='all_videos']
 {
     font-weight: 700;
 }
+/* Override text center */
+.text-center{width: 100% !important; text-align: center ! important;}
 /* video List */
 .form-group.list_videos__data{
 	margin-bottom: 1em ;
