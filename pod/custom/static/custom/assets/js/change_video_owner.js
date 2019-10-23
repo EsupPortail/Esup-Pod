@@ -286,9 +286,9 @@ let display_all_videos_by_login = function(given_login)
         let videos_display = videos_to_display(given_login);
         if( Object.keys(videos_display).length === 0 ) remove_select_all_videos();
         // Add all her videos to the views
-        for(let [login, video] of Object.entries(videos_display))
+        for(let [login, user_videos] of Object.entries(videos_display))
         {
-            video.forEach(function(v)
+            user_videos.forEach(function(v)
             {
                 let div = document.createElement('div');
                 div.setAttribute('class', "form-group list_videos__data");
@@ -316,9 +316,7 @@ let display_all_videos_by_login = function(given_login)
 		container.appendChild(img);
 		container.appendChild(label);
 		div.appendChild(container);
-		//div.appendChild(img);
-                //div.appendChild(label);
-                if( !list_videos.querySelector("#"+login+"-"+v.id) )
+		if( !list_videos.querySelector("#"+login+"-"+v.id) )
                 {
                     list_videos.appendChild(div);
                 }
@@ -351,12 +349,13 @@ let all_video_checkbox_checked = function()
     return false;
 }
 
-let hide_videos_changed = function()
+let remove_videos_changed = function()
 {
     videos.forEach(function(v){
 	if(v.querySelector("input[type='checkbox']").checked)
 	{
-	    v.classList.add("hidden");
+	    v.parentNode.removeChild(v);
+//	    v.classList.add("hidden");
 	}
     });
     if( videos.length == 0){
@@ -395,6 +394,16 @@ let js_field_not_empty = function( fields )
     return true;
 }
 
+let end_loading = function( callable )
+{
+    document.addEventListener('readystatechange', function(e){
+	if(e.target.readyState === "interactive"){
+	    callable();
+	}
+    });
+	
+}
+
 let display_div_message = function(type="success", text="Les changements ont été effectués avec succès.", reload=false)
 {
     /**
@@ -404,25 +413,30 @@ let display_div_message = function(type="success", text="Les changements ont ét
     let div = document.createElement('div');
     div.setAttribute('class', "message " + type);
     div.innerHTML = unescape(text);
-    
-    if(reload)
-    {
-//	window.location.reload();
-
-    }
-    setTimeout(function() {
-	    
-    	document.querySelector(".form-group .row").insertBefore(div, list_videos);
 	
-    }, 1500);    
+    remove_loader();
+    document.querySelector(".form-group .row").insertBefore(div, list_videos);
     setTimeout(function(){
-    	div.parentNode.removeChild(div)	
+	if(div)	div.parentNode.removeChild(div)	
     }, 2500);
 }
+
+// display success message in sessionStorage if exists
+docReady(function(){
+
+    if(sessionStorage.hasOwnProperty("success"))
+    {
+	display_div_message(type = "success", text=sessionStorage.getItem("success"))
+	sessionStorage.removeItem("success");
+    }
+})
 
 submit.addEventListener("click", function(e)
 {
     e.preventDefault();
+    // Add loader
+    add_loader()
+
     let videos_to_change_owner = (all_video_checkbox_checked())? "*" : get_videos_to_change();
     let old_owner = oldlogin.value;
     let new_owner = newlogin.value;
@@ -430,16 +444,17 @@ submit.addEventListener("click", function(e)
     let success = js_field_not_empty([old_owner, new_owner, videos_to_change_owner]);
     if( success )
     {
-    	let target_url= window.location.host + "/custom/";
+    	let target_url= window.location.protocol+"//" + window.location.host + "/custom/update-owner/";
 	let params = {
 		"old_owner": old_owner,
 		"new_owner": new_owner,
 		"videos": videos_to_change_owner
 	}
-	alert(target_url, "*************************")
         // TODO make ajax request
         const req = new XMLHttpRequest();
         req.onload = onLoad;
+	req.onloadend = onLoadEnd;
+
         req.open('POST', target_url);
 	req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 	req.setRequestHeader("X-CSRFToken", token.value);
@@ -448,9 +463,25 @@ submit.addEventListener("click", function(e)
     else
     {
         display_div_message(type="info", text="Veuillez remplir correctement tous les champs.");
-        // TODO maybe display errors to the user
     }
 })
+
+let add_loader = function(){
+	let container = document.createElement("div");
+	container.setAttribute("class", "loader-container");
+	let loader = document.createElement("div");
+	loader.setAttribute("class", "loader-circle");
+	for(var i=0; i < 4; i++){
+		loader.appendChild(document.createElement("div"));
+	}
+	container.appendChild(loader)
+	document.querySelector("body").appendChild(container)
+}
+let remove_loader = function()
+{
+	let loader = document.querySelector(".loader-container")
+	if(loader) loader.parentNode.removeChild(loader);
+}
 
 /*********************************************************************************
  ******************************* AJAX ********************************************
@@ -458,11 +489,15 @@ submit.addEventListener("click", function(e)
 function onLoad(event) {
     // Ici, this.readyState égale XMLHttpRequest.DONE .
     if (this.status === 200 || this.status === 304) {
-//	hide_videos_changed();
-	console.log("OK")
-        display_div_message(type="success", text="Les changements ont été effectués avec succès.", reload=true);
+	document.location.reload();
+	sessionStorage.setItem("success", "Les changemnts ont été effectués avec succès.")
     } else {
 	console.log("NOK")
 	display_div_message(type="error", text=this.responseText);
     }
+}
+function onLoadEnd(event){
+	console.log("yo", "*********");
+	// Remove loader
+	remove_loader();
 }

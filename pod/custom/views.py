@@ -15,6 +15,7 @@ def index(request):
 def update_owner(request):
     print("************** HERE YOU ARE ********************")
     if request.method == "POST":
+        print("---------------- POST REQUEST ---------------")
         post_data = json.loads(request.body.decode("utf-8"))
         response_json = change_owner(
             post_data['videos'],
@@ -28,7 +29,7 @@ def update_owner(request):
     data = get_video_essentiels_data()
     return render(
             request,
-            "custom/templates/layout/change_video_owner/index.html",
+            "custom/layouts/change_video_owner/index.html",
             {"data": data })
 
 
