@@ -10,8 +10,8 @@ from django.contrib.auth.decorators import login_required
 def index(request):
     return HttpResponse("Hello word from custom")
 
-
 @csrf_protect
+@login_required(redirect_field_name="referrer")
 def update_owner(request):
     print("************** HERE YOU ARE ********************")
     if request.method == "POST":
