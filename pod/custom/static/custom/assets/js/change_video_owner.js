@@ -492,12 +492,10 @@ function onLoad(event) {
 	document.location.reload();
 	sessionStorage.setItem("success", "Les changemnts ont été effectués avec succès.")
     } else {
-	console.log("NOK")
 	display_div_message(type="error", text=this.responseText);
     }
 }
 function onLoadEnd(event){
-	console.log("yo", "*********");
 	// Remove loader
 	remove_loader();
 }
