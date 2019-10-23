@@ -30,17 +30,15 @@ else:
     FILEPICKER = False
     from pod.main.models import CustomFileModel
 
-AUDIO_SPLIT_TIME = getattr(settings, 'AUDIO_SPLIT_TIME', 600)  # MOVE TO 600
+AUDIO_SPLIT_TIME = getattr(settings, 'AUDIO_SPLIT_TIME', 300) #5min
 # time in sec for phrase length
 SENTENCE_MAX_LENGTH = getattr(settings, 'SENTENCE_MAX_LENGTH', 3)
 
-DESIRED_SAMPLE_RATE = getattr(settings, 'DESIRED_SAMPLE_RATE', 16000)
 
-
-def convert_samplerate(audio_path, trim_start, duration):
+def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
     # trim 0 1800
     sox_cmd = 'sox {} --type raw --bits 16 --channels 1 --rate {} '.format(
-        quote(audio_path), DESIRED_SAMPLE_RATE)
+        quote(audio_path), desired_sample_rate)
     sox_cmd += '--encoding signed-integer --endian little --compression 0.0 '
     sox_cmd += '--no-dither - trim {} {}'.format(trim_start, duration)
 
@@ -63,7 +61,6 @@ def convert_samplerate(audio_path, trim_start, duration):
 # #################################
 def main_transcript(video_to_encode):
     msg = ""
-    
 
     mp3file = video_to_encode.get_video_mp3(
     ).source_file if video_to_encode.get_video_mp3() else None
@@ -82,6 +79,8 @@ def main_transcript(video_to_encode):
             DS_PARAM[lang]['lm'], DS_PARAM[lang]['trie'],
             DS_PARAM[lang]['lm_alpha'], DS_PARAM[lang]['lm_beta']
         )
+
+    desired_sample_rate = ds_model.sampleRate()
 
     webvtt = WebVTT()
     inference_start = timer()
@@ -104,7 +103,7 @@ def main_transcript(video_to_encode):
             start_trim, end_trim, duration)
 
         audio = convert_samplerate(
-            mp3file.path, start_trim, duration)
+            mp3file.path, desired_sample_rate, start_trim, duration)
         msg += '\nRunning inference.'
 
         metadata = ds_model.sttWithMetadata(audio)
