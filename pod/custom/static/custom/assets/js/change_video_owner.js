@@ -181,7 +181,19 @@ let filter_videos = function()
         videos.forEach(function(v)
         {
             // si le texte tapé ne correspond pas à cette input alors on cache le input
-            if( !v.querySelector("label").textContent.toLowerCase().includes(search.value.toLowerCase()))
+	    // normalize("NFD").replace(/[\u0300-\u036f]/g, "") => remove accents
+            if( 
+		    !v
+		     .querySelector("label")
+		     .textContent.toLowerCase()
+		     .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+		     .includes(
+			    search
+			     .value
+			     .toLowerCase()
+			     .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+		    )
+	    )
             {
                 v.classList.add("hidden")
             }
