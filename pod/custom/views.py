@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from pod.video.models import Video
 import json, html
 from pod.authentication.models import User
@@ -13,9 +13,7 @@ def index(request):
 @csrf_protect
 @login_required(redirect_field_name="referrer")
 def update_owner(request):
-    print("************** HERE YOU ARE ********************")
     if request.method == "POST":
-        print("---------------- POST REQUEST ---------------")
         post_data = json.loads(request.body.decode("utf-8"))
         response_json = change_owner(
             post_data['videos'],
@@ -26,16 +24,17 @@ def update_owner(request):
                     json.dumps(response_json),
                     content_type="application/json")
         return HttpResponseForbidden(response_json['error'])
-    data = get_video_essentiels_data()
-    return render(
-            request,
-            "custom/layouts/change_video_owner/index.html",
-            {"data": data })
+    # if it's GET request
+    return HttpResponseRedirect('/')
+    # data = get_video_essentiels_data()
+    # return render(
+    #        request,
+    #        "custom/layouts/change_video_owner/index.html",
+    #        {"data": data })
 
 
 def change_owner(videos, old_owner, new_owner_login):
     new_owner = User.objects.filter(username=new_owner_login).first()
-    print(new_owner, "++++++++++++++++++++++++++++++++++++++")
     if not new_owner:
         return {
                 "error": "Impossible de trouver le nouveau propriétaire : {%s}"\
