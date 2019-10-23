@@ -28,7 +28,7 @@ def update_owner(request):
     data = get_video_essentiels_data()
     return render(
             request,
-            "admin/custom/admin/change_video_owner.html",
+            "custom/templates/layout/change_video_owner/index.html",
             {"data": data })
 
 
