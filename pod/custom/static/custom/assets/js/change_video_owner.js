@@ -197,12 +197,9 @@ let filter_videos = function()
     }
 }
 
-search.addEventListener("keyup", function(){
+search.oninput = function(){
     filter_videos();
-});
-docReady(function(){
-    filter_videos();
-});
+}
 // add select all videos 
 let add_select_all_videos = function()
 {
@@ -336,12 +333,10 @@ let display_all_videos_by_login = function(given_login)
     }
 }
 // listening to oldlogin to display all her videos
-oldlogin.addEventListener("keyup", function()
+oldlogin.oninput = function()
 {
     display_all_videos_by_login(this)
-});
-docReady(display_all_videos_by_login(oldlogin));
-
+}
 
 let all_video_checkbox_checked = function()
 {
