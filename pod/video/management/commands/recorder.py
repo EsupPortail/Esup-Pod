@@ -190,7 +190,7 @@ class Command(BaseCommand):
                                 if DEBUG:
                                     print(" - The job is created but no email is sent.")
                                 # The job is created but no email is sent
-                                oFile = RecordingFile.objects.create(file=source_file, file_size = file_size, email_sent=False)
+                                oFile = RecordingFile.objects.create(file=source_file, recorder=oRecorder,file_size = file_size, email_sent=False)
                     else:
                         # There isn't a connection between the directory and a recorder
                         if DEBUG:

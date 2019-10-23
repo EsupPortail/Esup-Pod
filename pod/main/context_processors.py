@@ -6,6 +6,7 @@ from django.db.models.functions import Substr, Lower
 from datetime import timedelta
 
 from pod.main.models import LinkFooter
+from pod.main.settings import BASE_DIR
 
 from pod.video.models import Channel
 from pod.video.models import Theme
@@ -83,6 +84,7 @@ def context_settings(request):
     new_settings['USE_RGPD'] = USE_RGPD
     new_settings['ADDITIONAL_GRENOBLE_RGPD'] = ADDITIONAL_GRENOBLE_RGPD
     new_settings['ALLOW_MANUAL_RECORDING_CLAIMING'] = ALLOW_MANUAL_RECORDING_CLAIMING
+    new_settings['BASE_DIR'] = BASE_DIR
     return new_settings
 
 

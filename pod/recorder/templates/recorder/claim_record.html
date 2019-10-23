@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load staticfiles %}
-
+{% block page_extra_head %}
+<link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
+<script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
+<script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
+{% endblock %}
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Claim a record" %}</li>{% endblock %}
 
