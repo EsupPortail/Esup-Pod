@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-22 13:53+0000\n"
+"POT-Creation-Date: 2019-10-22 14:08+0000\n"
 "PO-Revision-Date: 2018-10-30 11:39+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -3078,12 +3078,10 @@ msgid "Audiovideocast"
 msgstr "Audiovideocast"
 
 #: pod/recorder/models.py:74
-#| msgid "Recorder that made this recording."
 msgid "The user who has made the record"
 msgstr "L'utilisateur qui a réalisé l'nregistrement."
 
 #: pod/recorder/models.py:124
-#| msgid "Source file of the published video (mediapath)."
 msgid "Source file of the published video."
 msgstr "Fichier source de la vidéo publiée."
 

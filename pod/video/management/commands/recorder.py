@@ -44,6 +44,31 @@ BASE_URL = getattr(
     "https://pod.univ.fr"
 )
 
+VIDEO_ALLOWED_EXTENSIONS = getattr(
+    settings, 'VIDEO_ALLOWED_EXTENSIONS', (
+        '3gp',
+        'avi',
+        'divx',
+        'flv',
+        'm2p',
+        'm4v',
+        'mkv',
+        'mov',
+        'mp4',
+        'mpeg',
+        'mpg',
+        'mts',
+        'wmv',
+        'mp3',
+        'ogg',
+        'wav',
+        'wma',
+        'webm',
+        'ts'
+    )
+)
+
+
 # Site address
 ALLOW_MANUAL_RECORDING_CLAIMING  = getattr(
     settings, 'ALLOW_MANUAL_RECORDING_CLAIMING',
@@ -74,6 +99,13 @@ class Command(BaseCommand):
                     dirname = root.split(os.path.sep)[-1]
                     if DEBUG:
                         print("\n*** Process the file " + os.path.join(DEFAULT_RECORDER_PATH, dirname, filename) + " ***")
+                    extension = filename.split(".")[-1]
+                    print(extension in VIDEO_ALLOWED_EXTENSIONS)
+                    if not (extension in VIDEO_ALLOWED_EXTENSIONS and filename != extension):
+                        if DEBUG:
+                            print(" - " + extension + " is not a valid video extension. If it should be, add it to the setting VIDEO_ALLOWED_EXTENSIONS")
+                        continue
+
                     # Search for the recorder corresponding to this directory
                     oRecorder = Recorder.objects.filter(directory=dirname).first()
                     if oRecorder:
@@ -154,7 +186,7 @@ class Command(BaseCommand):
                                                     print(" - Request was made to URL with failure(" + str(r.content)[1:] + "). An email wasn't sent to mediacourse recorder's manager.")
                                                 # Catch the the error encountered
                                                 html_message_error += "<li><b>Error</b> : Security error for the file " + source_file + " : <b>" + str(r.content)[1:] + "</b>.<br/><i>>>>Check the publish link : " + urlNotify + "</i></li>"
-                                                message_error += "\n   Error : Security error for the file " + souce_file + " : " + str(r.content)[1:] + ".\n   >>> Check the publish link : " + urlNotify
+                                                message_error += "\n   Error : Security error for the file " + source_file + " : " + str(r.content)[1:] + ".\n   >>> Check the publish link : " + urlNotify
                             else:
                                 if DEBUG:
                                     print(" - The job is created but no email is sent.")
