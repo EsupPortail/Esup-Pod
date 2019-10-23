@@ -30,7 +30,7 @@ else:
     FILEPICKER = False
     from pod.main.models import CustomFileModel
 
-AUDIO_SPLIT_TIME = getattr(settings, 'AUDIO_SPLIT_TIME', 300) #5min
+AUDIO_SPLIT_TIME = getattr(settings, 'AUDIO_SPLIT_TIME', 300)  # 5min
 # time in sec for phrase length
 SENTENCE_MAX_LENGTH = getattr(settings, 'SENTENCE_MAX_LENGTH', 3)
 
@@ -51,7 +51,7 @@ def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
     except OSError as e:
         raise OSError(e.errno,
                       'SoX not found, use {}hz files or install it: {}'.format(
-                          DESIRED_SAMPLE_RATE, e.strerror))
+                          desired_sample_rate, e.strerror))
 
     return np.frombuffer(output, np.int16)
 
