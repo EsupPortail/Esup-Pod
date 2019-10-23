@@ -100,10 +100,9 @@ class Command(BaseCommand):
                     if DEBUG:
                         print("\n*** Process the file " + os.path.join(DEFAULT_RECORDER_PATH, dirname, filename) + " ***")
                     extension = filename.split(".")[-1]
-                    print(extension in VIDEO_ALLOWED_EXTENSIONS)
                     if not (extension in VIDEO_ALLOWED_EXTENSIONS and filename != extension):
                         if DEBUG:
-                            print(" - " + extension + " is not a valid video extension. If it should be, add it to the setting VIDEO_ALLOWED_EXTENSIONS")
+                            print(" - WARNING : " + extension + " is not a valid video extension. If it should be, add it to the setting VIDEO_ALLOWED_EXTENSIONS")
                         continue
 
                     # Search for the recorder corresponding to this directory

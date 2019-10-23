@@ -2509,7 +2509,7 @@ msgstr "Mes chaînes"
 #, fuzzy
 #| msgid "Adding a new record"
 msgid "Claim a record"
-msgstr "Ajouter un nouvel enregistrement"
+msgstr "Revendiquer un enregistrement"
 
 #: pod/main/templates/navbar.html:88 pod/main/templates/navbar.html:89
 msgid "Log out"

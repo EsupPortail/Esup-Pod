@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 import os
 
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
 from django.conf import settings
 from django.urls import reverse
@@ -11,7 +13,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import csrf_protect
 from django.utils.translation import ugettext_lazy as _
 
-from pod.recorder.models import Recorder
+from pod.recorder.models import Recorder, Recording, RecordingFile
 from .forms import RecordingForm
 from django.contrib import messages
 import hashlib
@@ -149,3 +151,35 @@ def recorder_notify(request):
             return HttpResponse("nok : address_ip not valid")
     else:
         return HttpResponse("nok : recordingPlace or mediapath or key are missing")
+
+
+
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+@staff_member_required(redirect_field_name='referrer')
+def claim_record(request):  # affichage des directs
+    records_list = RecordingFile.objects.filter(require_manual_claim=True).order_by('-date_added')
+    page = request.GET.get('page', 1)
+
+    full_path = ""
+    if page:
+        full_path = request.get_full_path().replace(
+            "?page=%s" % page, "").replace("&page=%s" % page, "")
+
+    paginator = Paginator(records_list, 12)
+    try:
+        records = paginator.page(page)
+    except PageNotAnInteger:
+        records = paginator.page(1)
+    except EmptyPage:
+        records = paginator.page(paginator.num_pages)
+
+    if request.is_ajax():
+        return render(
+            request, 'recorder/record_list.html',
+            {'records': records, "full_path": full_path})
+
+    return render(request, 'recorder/claim_record.html', {
+        'records': records, "full_path": full_path
+    })
+
