@@ -122,7 +122,7 @@ def process_recording(sender, instance, created, **kwargs):
 
 class RecordingFile(models.Model):
     file = models.FilePathField(path=DEFAULT_RECORDER_PATH,recursive=True,unique=True, match=".*\.*$", help_text=_('Source file of the published video.') )
-    file_size = models.IntegerField(_('File size'), default=0)
+    file_size = models.BigIntegerField(_('File size'), default=0)
     recorder = models.ForeignKey(Recorder, on_delete=models.CASCADE, verbose_name=_('Recorder'),help_text=_('Recorder that made this recording.'))
     date_added = models.DateTimeField(_('Date added'), default=timezone.now, editable=True)
     require_manual_claim = models.BooleanField(_('Require manual claim ?'), default=False,
