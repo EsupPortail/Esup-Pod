@@ -44,10 +44,12 @@ def add_recording(request):
     course_title = request.GET.get(
         'course_title') if request.GET.get('course_title') else ""
     course_type = request.GET.get('type')
+    recorder = request.GET.get('recorder') or None
 
     initial = {
         'title': course_title,
-        'type': course_type}
+        'type': course_type,
+        'recorder' : recorder}
 
     if not mediapath and not request.user.is_superuser:
         messages.add_message(
