@@ -5,7 +5,9 @@ from django.test import override_settings
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from ..models import Recording, RecordingFile
+
+from pod.video.models import Type
+from ..models import Recording, RecordingFile, Recorder
 
 
 # Create your tests here.
@@ -20,17 +22,19 @@ from ..models import Recording, RecordingFile
     },
     LANGUAGE_CODE='en'
 )
+
+
 class RecordingTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        videotype = Type.objects.create(title='others')
         user = User.objects.create(username="pod")
+        recorder1 = Recorder.objects.create(id=1, user=user, name="recorder1", address_ip="16.3.10.37", type=videotype,directory="dir1")
         source_file = "/home/pod/files/video.mp4"
         type = "video"
-        recording = Recording.objects.create(user=user, title="media1")
-        recording.type = type
-        recording.source_file = source_file
-        recording.save()
+        recording = Recording.objects.create(user=user, title="media1",type=type,source_file=source_file,recorder=recorder1)
+
         print(" --->  SetUp of RecordingTestCase : OK !")
 
     """
@@ -51,7 +55,7 @@ class RecordingTestCase(TestCase):
         recording.type = ""
         recording.source_file = ""
         recording.save()
-        self.assertEqual(2, len(recording.verify_attributs()))
+        self.assertEqual(1, len(recording.verify_attributs()))
         print(
             "   --->  test_verifying_attributs_fst_cases \
             of RecordingTestCase : OK !")
@@ -62,7 +66,7 @@ class RecordingTestCase(TestCase):
         recording.type = "something"
         recording.source_file = "/home/pod/files/somefile.mp4"
         recording.save()
-        self.assertEqual(2, len(recording.verify_attributs()))
+        self.assertEqual(1, len(recording.verify_attributs()))
         print(
             "   --->  test_verifying_attributs_snd_cases \
             of RecordingTestCase : OK !")
@@ -101,10 +105,10 @@ class RecordingFileTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        type = "video"
-        recording_file = RecordingFile.objects.create()
-        recording_file.type = type
-        recording_file.file = "/home/pod/files/somefile.mp4"
+        videotype = Type.objects.create(title='others')
+        user1 = User.objects.create(username="pod")
+        recorder1 = Recorder.objects.create(id=1,user=user1, name="recorder1", address_ip="16.3.10.37", type=videotype, directory="dir1")
+        recording_file = RecordingFile.objects.create(type='video',file="/home/pod/files/somefile.mp4",recorder=recorder1)
         recording_file.save()
         print(" --->  SetUp of RecordingFileTestCase : OK !")
 
@@ -114,10 +118,15 @@ class RecordingFileTestCase(TestCase):
 
     def test_attributs(self):
         recording_file = RecordingFile.objects.get(id=1)
+        recorder = Recorder.objects.get(id=1)
         self.assertEqual(recording_file.type, "video")
         self.assertEqual(recording_file.file, "/home/pod/files/somefile.mp4")
+        self.assertEqual(recording_file.filename(), "somefile.mp4")
+        self.assertEqual(recording_file.recorder, recorder)
         print(
             "   --->  test_attributs of RecordingFileTestCase : OK !")
+
+
 
     """
         test delete object
