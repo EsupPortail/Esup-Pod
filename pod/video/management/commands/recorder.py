@@ -165,7 +165,7 @@ class Command(BaseCommand):
                                                     print(" - There is no manager for this recording, waiting for claiming")
                                         else:
                                             # Generation of the URL to notify the mediacourse recorder's manager, of the form: https://pod.univ.fr/mediacourses_notify/?recordingPlace=192_168_1_10&mediapath=file.zip&key=77fac92a3f06d50228116898187e50e5
-                                            urlNotify = '' . join([BASE_URL, "/recorder_notify/?recordingPlace=" + oRecorder.ipunder() + "&mediapath=" + filename + "&key=" + m.hexdigest()])
+                                            urlNotify = '' . join([BASE_URL, "/recorder_notify/?recordingPlace=" + oRecorder.ipunder() + "&mediapath=" +  source_file + "&key=" + m.hexdigest() + "&course_title=" + filename])
                                             if DEBUG:
                                                 print(" - Generate the URL , with haskey, to notify the mediacourse recorder's manager : " + urlNotify)
                                             # Make a request on this URL
@@ -178,7 +178,7 @@ class Command(BaseCommand):
                                                 # Save this information in the database, to avoid to send multiple emails
                                                 oFile = RecordingFile.objects.filter(file=source_file,).update(file_size=file_size, email_sent=True, date_email_sent=timezone.now())
                                                 if DEBUG:
-                                                    print(" - Information saved in the multicam_job table.")
+                                                    print(" - Information saved in the recorder_recordingfile table.")
                                             else:
                                                 # Email wasn't sent, due to an error
                                                 if DEBUG:

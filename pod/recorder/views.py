@@ -96,6 +96,7 @@ def recorder_notify(request):
     # Used by URL like https://pod.univ.fr/mediacourses_notify/?recordingPlace=192_168_1_10&mediapath=file.zip&key=77fac92a3f06d50228116898187e50e5
     mediapath = request.GET.get('mediapath') or ""
     recordingPlace = request.GET.get('recordingPlace') or ""
+    course_title = request.GET.get('course_title') or ""
     key = request.GET.get('key') or ""
     # Check arguments
     if recordingPlace and mediapath and key:
@@ -114,9 +115,10 @@ def recorder_notify(request):
 
             date_notify = datetime.now()
             formatted_date_notify = formats.date_format(date_notify, "SHORT_DATE_FORMAT")
+
+
             link_url = ''.join(
-                [request.build_absolute_uri(reverse('add_recording')), "?mediapath=", request.GET.get(
-                    'mediapath'), "&course_title=%s" % _("Recording"), " %s" % formatted_date_notify.replace("/", "-"),
+                [request.build_absolute_uri(reverse('add_recording')), "?mediapath=", mediapath, "&course_title=%s" % course_title,
                  "&recorder=%s" % recorder.id])
             # Pointing to the URL of the CAS allows to reach the already authenticated form
             # URL like https://pod.univ.fr/sso-cas/login/?next=https%3A%2F%2Fpod.univ.fr%2Fmediacourses_add%2F%3Fmediapath%3Df18a5104-5a80-47a8-954e-7a142a67a935.zip%26course_title%3DEnregistrement%252021%2520juin%25202019%26recorder%3D1
