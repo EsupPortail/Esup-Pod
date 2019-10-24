@@ -93,6 +93,7 @@ def add_recording(request):
 
 
 def recorder_notify(request):
+
     # Used by URL like https://pod.univ.fr/mediacourses_notify/?recordingPlace=192_168_1_10&mediapath=file.zip&key=77fac92a3f06d50228116898187e50e5
     mediapath = request.GET.get('mediapath') or ""
     recordingPlace = request.GET.get('recordingPlace') or ""
@@ -107,6 +108,7 @@ def recorder_notify(request):
         except ObjectDoesNotExist:
             recorder = None
         if recorder:
+
             # Generate hashkey
             m = hashlib.md5()
             m.update(recordingPlace.encode('utf-8') + recorder.salt.encode('utf-8'))
@@ -147,13 +149,12 @@ def recorder_notify(request):
 
 
             email_msg.attach_alternative(html_msg, "text/html")
-            print("Pre mail send")
             email_msg.send(fail_silently=False)
-            print("Post mail send")
             return HttpResponse("ok")
         else:
             return HttpResponse("nok : address_ip not valid")
     else:
+
         return HttpResponse("nok : recordingPlace or mediapath or key are missing")
 
 
