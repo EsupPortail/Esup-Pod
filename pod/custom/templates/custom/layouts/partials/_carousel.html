@@ -11,7 +11,7 @@
       <div class="carousel-inner" role="listbox">
         {% for p_video in playlist.videos %}
         <div class="carousel-item {% if forloop.first %}active{% endif %}">
-          <a href="{{ p_video.get_absolute_url }}">
+	    <a href="{% if not forloop.first %}{{ p_video.get_absolute_url }} {% else %}/{% endif %}">
             <img src="{{ p_video.get_thumbnail_url }}" alt="{{ p_video.title }}" class="d-block w-100"/>
             <div class="carousel-caption d-none d-md-block">
 
