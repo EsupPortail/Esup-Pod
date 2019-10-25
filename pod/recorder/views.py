@@ -108,7 +108,6 @@ def recorder_notify(request):
         except ObjectDoesNotExist:
             recorder = None
         if recorder:
-
             # Generate hashkey
             m = hashlib.md5()
             m.update(recordingPlace.encode('utf-8') + recorder.salt.encode('utf-8'))
@@ -123,7 +122,7 @@ def recorder_notify(request):
                 [request.build_absolute_uri(reverse('add_recording')), "?mediapath=", mediapath, "&course_title=%s" % course_title,
                  "&recorder=%s" % recorder.id])
             # Pointing to the URL of the CAS allows to reach the already authenticated form
-            # URL like https://pod.univ.fr/sso-cas/login/?next=https%3A%2F%2Fpod.univ.fr%2Fmediacourses_add%2F%3Fmediapath%3Df18a5104-5a80-47a8-954e-7a142a67a935.zip%26course_title%3DEnregistrement%252021%2520juin%25202019%26recorder%3D1
+            # URL like https://pod.univ.fr/sso-cas/login/?next=https%3A%2F%2Fpod.univ.fr%2Fadd_recording%2F%3Fmediapath%3Df18a5104-5a80-47a8-954e-7a142a67a935.zip%26course_title%3DEnregistrement%252021%2520juin%25202019%26recorder%3D1
             if USE_CAS:
                 link_url = ''.join(
                     [request.build_absolute_uri('/'), "sso-cas/login/?next=", urllib.parse.quote_plus(link_url)])
@@ -162,7 +161,8 @@ def recorder_notify(request):
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 @staff_member_required(redirect_field_name='referrer')
-def claim_record(request):  # affichage des directs
+def claim_record(request):
+    #get records list ordered by date
     records_list = RecordingFile.objects.order_by('-date_added')
     page = request.GET.get('page', 1)
 
@@ -187,4 +187,3 @@ def claim_record(request):  # affichage des directs
     return render(request, 'recorder/claim_record.html', {
         'records': records, "full_path": full_path
     })
-

@@ -1,34 +1,27 @@
 """
-This command is useful to check the directory DEFAULT_MEDIACOURSE_RECORDER_PATH, and its subdirectories, if they contain videos that were published by the mediacourse recorders.
+This command is useful to check the directory DEFAULT_RECORDER_PATH, and its subdirectories, if they contain videos that were published by recorders.
 The idea is to have one directory for each recorder.
 Example : at the Montpellier university, there is one Multicam recorder for Polytech.
 In settings, we have :
- - DEFAULT_MEDIACOURSE_RECORDER_PATH (in settings_local.py) = /data/www/%userpod%/media/uploads/
- - in Pod database(cf. Pod administration), mediacourse_recorder table : a line for the Polytech Multicam recorder, with value 'polytech' for 'directory' property
+ - DEFAULT_RECORDER_PATH (in settings_local.py) = /data/www/%userpod%/media/uploads/
+ - in Pod database(cf. Pod administration), recorder_recorder table : a line for the Polytech Multicam recorder, with value 'polytech' for 'directory' property
  - FTP Directory (directly on the recorder settings) : /data/www/%userpod%/media/uploads/polytech or empty (depends on vsftpd config)
 So, the recorder makes a publication, via FTP, on the directory /data/www/%userpod%/media/uploads/polytech and this script checks regularly this directory.
-When video files are published, an email is  sent to mediacourse recorder's manager (cf. Pod administration), with a publication link.
+When video files are published, an email is  sent to recorder's manager (cf. Pod administration), with a publication link.
 To have more details, see online documentation.
 
 This script must be executed regurlaly (for an example, with a CRON task).
 Example : crontab -e
-*/15 * * * * /usr/bin/bash -c 'export WORKON_HOME=/data/www/%userpod%/.virtualenvs; export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.6; cd /data/www/%userpod%/django_projects/podv2; source /usr/bin/virtualenvwrapper.sh; workon django_pod; python manage.py mediacourse checkDirectory'
+*/15 * * * * /usr/bin/bash -c 'export WORKON_HOME=/data/www/%userpod%/.virtualenvs; export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.6; cd /data/www/%userpod%/django_projects/podv2; source /usr/bin/virtualenvwrapper.sh; workon django_pod; python manage.py recorder checkDirectory'
 """
 import os
 from django.utils import translation
 from django.core.management.base import BaseCommand
 from django.conf import settings
-from django.db import connection
-
 from pod.recorder.models import Recorder, Recording, RecordingFile
-from pod.video.models import Video
-
-from django.core.exceptions import ObjectDoesNotExist
 import hashlib
 import requests
-from django.core.mail import send_mail
 from django.core.mail import mail_admins
-from django.core.files import File
 from django.core.files.storage import default_storage
 from django.utils import timezone
 
@@ -68,7 +61,6 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
     )
 )
 
-
 # Site address
 ALLOW_MANUAL_RECORDING_CLAIMING  = getattr(
     settings, 'ALLOW_MANUAL_RECORDING_CLAIMING',
@@ -99,6 +91,7 @@ class Command(BaseCommand):
                     dirname = root.split(os.path.sep)[-1]
                     if DEBUG:
                         print("\n*** Process the file " + os.path.join(DEFAULT_RECORDER_PATH, dirname, filename) + " ***")
+                    #Check if extension is a good extension (videos extensions + zip)
                     extension = filename.split(".")[-1]
                     valid_ext = VIDEO_ALLOWED_EXTENSIONS
                     valid_ext.append("zip")
@@ -129,7 +122,6 @@ class Command(BaseCommand):
                             # Size of the existant file
                             file_size = default_storage.size(source_file)
                             if oFile:
-
                                 if oFile.email_sent :
                                     if DEBUG:
                                         print(" - An email, with the publication link, was already sent to mediacourse recorder's manager. Nothing to do. Stopping the process for this file.")
@@ -144,7 +136,7 @@ class Command(BaseCommand):
                                         if DEBUG:
                                             print(" - This video was partially uploaded. Waiting for complete file.")
                                         oFile = RecordingFile.objects.filter(file=source_file,).update(file_size=file_size, email_sent=False)
-                                        # This video wasn't already processed and no mail was sent to mediacourse recorder's manager => Process the video
+                                        # This video wasn't already processed and no mail was sent to recorder's manager => Process the video
                                     else:
                                         if DEBUG:
                                             print(" - This video wasn't already processed. Starting the process.")
@@ -159,7 +151,7 @@ class Command(BaseCommand):
                                                 message_error += "\n   Error : No manager for the recorder " + oRecorder.name + "\n   >>> You must assign a user for this recorder or set the ALLOW_MANUAL_RECORDING_CLAIMING setting to True."
                                                 if DEBUG:
                                                     print(
-                                                        "\n\n*** An email Mediacourse recorder job [Error(s) encountered] was sent to Pod admins, with message : ***" + message_error)
+                                                        "\n\n*** An email recorder job [Error(s) encountered] was sent to Pod admins, with message : ***" + message_error)
                                                 mail_admins("Mediacourse job [Error(s) encountered]", message_error,fail_silently=False, html_message=html_message_error)
                                             else:
                                                 RecordingFile.objects.filter(file=source_file).update(require_manual_claim=True)

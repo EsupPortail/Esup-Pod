@@ -14,7 +14,6 @@
 {% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}
 {% endblock %}
 
-
 {% block page_content %}
   {% if records.paginator.count == 0 %}
   <h3>{% trans "No record found"%}</h3>
