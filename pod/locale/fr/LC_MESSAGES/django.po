@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-25 07:33+0000\n"
+"POT-Creation-Date: 2019-10-25 07:42+0000\n"
 "PO-Revision-Date: 2019-09-09 15:14+0200\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -2494,7 +2494,6 @@ msgstr "Mes chaînes"
 
 #: pod/main/templates/navbar.html:84
 #: pod/recorder/templates/recorder/claim_record.html:11
-#| msgid "Adding a new record"
 msgid "Claim a record"
 msgstr "Revendiquer un enregistrement"
 
@@ -2977,22 +2976,20 @@ msgid "Adding a new record"
 msgstr "Ajouter un nouvel enregistrement"
 
 #: pod/recorder/templates/recorder/card.html:19
-#| msgid "Date of event"
 msgid "Date of recording."
 msgstr "Date de l'enregistrement"
 
 #: pod/recorder/templates/recorder/claim_record.html:14
 #: pod/recorder/templates/recorder/claim_record.html:23
-#, fuzzy, python-format
+#, python-format
 #| msgid "%(counter)s video found"
 #| msgid_plural "%(counter)s videos found"
 msgid "%(counter)s record found"
 msgid_plural "%(counter)s records found"
-msgstr[0] "%(counter)s vidéo trouvée"
-msgstr[1] "%(counter)s vidéos trouvées"
+msgstr[0] "%(counter)s enregistrement trouvé"
+msgstr[1] "%(counter)s enregistrements trouvés"
 
 #: pod/recorder/templates/recorder/claim_record.html:20
-#| msgid "no score found"
 msgid "No record found"
 msgstr "Aucun enregistrement trouvé"
 
@@ -3022,11 +3019,6 @@ msgstr ""
 
 #: pod/recorder/views.py:132
 #, python-format
-#| msgid ""
-#| "Hello, <p>a new recording has just be added on %(title_site)s from the "
-#| "recorder \"%(recorder)s\".<br/>To add it, just click on link below.</p><a "
-#| "href=\"%(link_url)s\">%(link_url)s</a><br/><i>if you cannot click on "
-#| "link, just copy-paste it in your browser.</i><p><p>Regards</p>"
 msgid ""
 "Hello, \n"
 "\n"
@@ -3060,7 +3052,6 @@ msgstr ""
 "dans la barre d'adresse de votre navigateur.</i><p><p>Cordialement</p>"
 
 #: pod/recorder/views.py:146
-#| msgid "Date of event"
 msgid "New recording added."
 msgstr "Nouvel enregistrement ajouté"
 

@@ -16,7 +16,7 @@
 
 
 {% block page_content %}
-  {% if videos.paginator.count == 0 %}
+  {% if records.paginator.count == 0 %}
   <h3>{% trans "No record found"%}</h3>
     <p class="alert alert-info">{% trans 'There is no unassigned records'%}</p>
   {% else %}
