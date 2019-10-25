@@ -47,7 +47,8 @@ def add_recording(request):
     initial = {
         'title': course_title,
         'type': course_type,
-        'recorder': recorder}
+        'recorder': recorder,
+        'user': request.user}
 
     if not mediapath and not request.user.is_superuser:
         messages.add_message(

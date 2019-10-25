@@ -10,11 +10,13 @@ DEFAULT_RECORDER_PATH = getattr(
     settings, 'DEFAULT_RECORDER_PATH',
     "/data/ftp-pod/ftp/"
 )
+ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = getattr(
+    settings, "ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER", True)
 
 
 def check_show_user(request):
     show_user = False
-    if request.GET.get("recorder"):
+    if request.GET.get("recorder") and ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER:
         try:
             recorder = Recorder.objects.get(id=request.GET.get("recorder"))
             if recorder and (request.user == recorder.user):
