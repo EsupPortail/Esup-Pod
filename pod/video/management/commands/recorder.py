@@ -100,7 +100,9 @@ class Command(BaseCommand):
                     if DEBUG:
                         print("\n*** Process the file " + os.path.join(DEFAULT_RECORDER_PATH, dirname, filename) + " ***")
                     extension = filename.split(".")[-1]
-                    if not (extension in VIDEO_ALLOWED_EXTENSIONS and filename != extension):
+                    valid_ext = VIDEO_ALLOWED_EXTENSIONS
+                    valid_ext.append("zip")
+                    if not (extension in valid_ext and filename != extension):
                         if DEBUG:
                             print(" - WARNING : " + extension + " is not a valid video extension. If it should be, add it to the setting VIDEO_ALLOWED_EXTENSIONS")
                         continue
@@ -145,7 +147,7 @@ class Command(BaseCommand):
                                         # This video wasn't already processed and no mail was sent to mediacourse recorder's manager => Process the video
                                     else:
                                         if DEBUG:
-                                            print(" - This video wasn't already processed and no mail was sent to mediacourse recorder's manager. Starting the process.")
+                                            print(" - This video wasn't already processed. Starting the process.")
                                         # Generation of the hashkey, depending on the IP address of the recorder
                                         m = hashlib.md5()
                                         m.update(oRecorder.ipunder().encode('utf-8') + oRecorder.salt.encode('utf-8'))
@@ -188,7 +190,7 @@ class Command(BaseCommand):
                                                 message_error += "\n   Error : Security error for the file " + source_file + " : " + str(r.content)[1:] + ".\n   >>> Check the publish link : " + urlNotify
                             else:
                                 if DEBUG:
-                                    print(" - The job is created but no email is sent.")
+                                    print(" - The job is created.")
                                 # The job is created but no email is sent
                                 oFile = RecordingFile.objects.create(file=source_file, recorder=oRecorder,file_size = file_size, email_sent=False)
                     else:
