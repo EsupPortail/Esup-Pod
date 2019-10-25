@@ -92,7 +92,7 @@ class Recording(models.Model):
                              help_text=_("User who has made the recording"))
     title = models.CharField(_('title'), max_length=200, unique=True)
     source_file = models.FilePathField(
-        path=DEFAULT_RECORDER_PATH, match=".*\.*$", unique=True,
+        path=DEFAULT_RECORDER_PATH, unique=True,
         recursive=True)
     type = models.CharField(max_length=50, choices=RECORDER_TYPE,
                             default=RECORDER_TYPE[0][0])
@@ -143,7 +143,7 @@ def process_recording(sender, instance, created, **kwargs):
 
 class RecordingFile(models.Model):
     file = models.FilePathField(path=DEFAULT_RECORDER_PATH, recursive=True,
-                                unique=True, match=".*\.*$", help_text=_(
+                                unique=True, help_text=_(
                                     'Source file of the published video.'))
     file_size = models.BigIntegerField(_('File size'), default=0)
     recorder = models.ForeignKey(Recorder, on_delete=models.CASCADE,
