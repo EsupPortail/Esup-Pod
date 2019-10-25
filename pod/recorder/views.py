@@ -13,14 +13,11 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import csrf_protect
 from django.utils.translation import ugettext_lazy as _
 
-from pod.recorder.models import Recorder, Recording, RecordingFile
+from pod.recorder.models import Recorder, RecordingFile
 from .forms import RecordingForm
 from django.contrib import messages
 import hashlib
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
-from datetime import datetime, date
-from django.utils import formats
 from django.core.mail import EmailMultiAlternatives
 from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from django.contrib.auth.models import User
@@ -36,6 +33,7 @@ DEFAULT_RECORDER_PATH = getattr(
 USE_CAS = getattr(settings, 'USE_CAS', False)
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
 
+
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def add_recording(request):
@@ -49,7 +47,7 @@ def add_recording(request):
     initial = {
         'title': course_title,
         'type': course_type,
-        'recorder' : recorder}
+        'recorder': recorder}
 
     if not mediapath and not request.user.is_superuser:
         messages.add_message(
@@ -92,60 +90,82 @@ def add_recording(request):
                   {"form": form})
 
 
+def reformat_url_if_use_cas(request, link_url):
+    # Pointing to the URL of the CAS allows to reach the already
+    # authenticated form URL like
+    # https://pod.univ.fr/sso-cas/login/?next=https%3A%2F%2Fpod.univ
+    # .fr%2Fadd_recording%2F%3Fmediapath%3Df18a5104-5a80-47a8-954e
+    # -7a142a67a935.zip%26course_title%3DEnregistrement%252021
+    # %2520juin%25202019%26recorder%3D1
+    if USE_CAS:
+        return ''.join(
+            [request.build_absolute_uri('/'), "sso-cas/login/?next=",
+             urllib.parse.quote_plus(link_url)])
+
+
 def recorder_notify(request):
 
-    # Used by URL like https://pod.univ.fr/recorder_notify/?recordingPlace=192_168_1_10&mediapath=file.zip&key=77fac92a3f06d50228116898187e50e5
+    # Used by URL like https://pod.univ.fr/recorder_notify/?recordingPlace
+    # =192_168_1_10&mediapath=file.zip&key=77fac92a3f06d50228116898187e50e5
     mediapath = request.GET.get('mediapath') or ""
-    recordingPlace = request.GET.get('recordingPlace') or ""
+    recording_place = request.GET.get('recordingPlace') or ""
     course_title = request.GET.get('course_title') or ""
     key = request.GET.get('key') or ""
     # Check arguments
-    if recordingPlace and mediapath and key:
-        recordingIpPlace = recordingPlace.replace("_", ".")
+    if recording_place and mediapath and key:
+        recording_ip_place = recording_place.replace("_", ".")
         try:
             # Check recorder existence corresponding to IP address
-            recorder = Recorder.objects.get(address_ip=recordingIpPlace)
+            recorder = Recorder.objects.get(address_ip=recording_ip_place)
         except ObjectDoesNotExist:
             recorder = None
         if recorder:
             # Generate hashkey
             m = hashlib.md5()
-            m.update(recordingPlace.encode('utf-8') + recorder.salt.encode('utf-8'))
+            m.update(recording_place.encode('utf-8') +
+                     recorder.salt.encode('utf-8'))
             if key != m.hexdigest():
                 return HttpResponse("nok : key is not valid")
 
-            date_notify = datetime.now()
-            formatted_date_notify = formats.date_format(date_notify, "SHORT_DATE_FORMAT")
-
-
             link_url = ''.join(
-                [request.build_absolute_uri(reverse('add_recording')), "?mediapath=", mediapath, "&course_title=%s" % course_title,
+                [request.build_absolute_uri(reverse('add_recording')),
+                 "?mediapath=", mediapath, "&course_title=%s" % course_title,
                  "&recorder=%s" % recorder.id])
-            # Pointing to the URL of the CAS allows to reach the already authenticated form
-            # URL like https://pod.univ.fr/sso-cas/login/?next=https%3A%2F%2Fpod.univ.fr%2Fadd_recording%2F%3Fmediapath%3Df18a5104-5a80-47a8-954e-7a142a67a935.zip%26course_title%3DEnregistrement%252021%2520juin%25202019%26recorder%3D1
-            if USE_CAS:
-                link_url = ''.join(
-                    [request.build_absolute_uri('/'), "sso-cas/login/?next=", urllib.parse.quote_plus(link_url)])
+            link_url = reformat_url_if_use_cas(request, link_url)
 
             text_msg = _(
-                "Hello, \n\na new recording has just be added on the video website \"%(title_site)s\" from the recorder \"%(recorder)s\"."
-                "\nTo add it, just click on link below.\n\n%(link_url)s\nif you cannot click on link, just copy-paste it in your browser."
-                "\n\nRegards") % {'title_site': TITLE_SITE, 'recorder': recorder.name, 'link_url': link_url}
+                "Hello, \n\na new recording has just be added on the video "
+                "website \"%(title_site)s\" from the recorder \"%("
+                "recorder)s\". "
+                "\nTo add it, just click on link below.\n\n%(link_url)s\nif "
+                "you cannot click on link, just copy-paste it in your "
+                "browser. "
+                "\n\nRegards") % {'title_site': TITLE_SITE,
+                                  'recorder': recorder.name,
+                                  'link_url': link_url}
 
             html_msg = _(
-                "Hello, <p>a new recording has just be added on %(title_site)s from the recorder \"%(recorder)s\"."
-                "<br/>To add it, just click on link below.</p><a href=\"%(link_url)s\">%(link_url)s</a><br/><i>if you cannot click on link, just copy-paste it in your browser.</i>"
-                "<p><p>Regards</p>") % {'title_site': TITLE_SITE, 'recorder': recorder.name, 'link_url': link_url}
-            # Sending the mail to the managers defined in the administration for the concerned Mediacourse recorder
+                "Hello, <p>a new recording has just be added on %("
+                "title_site)s from the recorder \"%(recorder)s\". "
+                "<br/>To add it, just click on link below.</p><a href=\"%("
+                "link_url)s\">%(link_url)s</a><br/><i>if you cannot click on "
+                "link, just copy-paste it in your browser.</i> "
+                "<p><p>Regards</p>") % {'title_site': TITLE_SITE,
+                                        'recorder': recorder.name,
+                                        'link_url': link_url}
+            # Sending the mail to the managers defined in the administration
+            # for the concerned recorder
             if recorder.user:
                 admin_emails = [recorder.user.email]
             else:
-                admin_emails = User.objects.filter(is_superuser=True).values_list('email', flat=True)
+                admin_emails = User.objects.filter(is_superuser=True)\
+                    .values_list('email', flat=True)
             subject = "[" + TITLE_SITE + \
                       "] %s" % _('New recording added.')
             # Send the mail to the managers or admins (if not found)
-            email_msg = EmailMultiAlternatives(subject, text_msg, settings.DEFAULT_FROM_EMAIL, admin_emails)
-
+            email_msg = EmailMultiAlternatives(subject, text_msg,
+                                               settings.DEFAULT_FROM_EMAIL,
+                                               admin_emails)
 
             email_msg.attach_alternative(html_msg, "text/html")
             email_msg.send(fail_silently=False)
@@ -153,16 +173,15 @@ def recorder_notify(request):
         else:
             return HttpResponse("nok : address_ip not valid")
     else:
-
-        return HttpResponse("nok : recordingPlace or mediapath or key are missing")
-
+        return HttpResponse("nok : recordingPlace or mediapath or key are "
+                            "missing")
 
 
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 @staff_member_required(redirect_field_name='referrer')
 def claim_record(request):
-    #get records list ordered by date
+    # get records list ordered by date
     records_list = RecordingFile.objects.order_by('-date_added')
     page = request.GET.get('page', 1)
 

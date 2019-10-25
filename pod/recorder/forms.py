@@ -21,12 +21,11 @@ class RecordingForm(forms.ModelForm):
         if self.initial.get("type"):
             self.fields['type'].widget = forms.HiddenInput()
 
-
         self.fields['source_file'] = forms.FilePathField(
             path=DEFAULT_RECORDER_PATH,
             recursive=True,
             label=_("source_file"),
-            match = ".*\.*$",
+            match=".*\.*$",
         )
         self.fields['source_file'].widget.attrs['class'] = 'form-control'
 

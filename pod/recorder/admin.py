@@ -1,14 +1,11 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-
 from .models import Recording, Recorder
 from .models import RecordingFile
 
+
 # Register your models here.
-
-
-
 
 class RecordingAdmin(admin.ModelAdmin):
     list_display = ('title', 'user', 'source_file', 'type', 'date_added')
@@ -26,7 +23,8 @@ class RecorderAdmin(admin.ModelAdmin):
     def Description(self, obj):
         return mark_safe('%s' % obj.description)
 
-    list_display = ('name', 'Description', 'address_ip', 'user', 'type', 'directory')
+    list_display = (
+        'name', 'Description', 'address_ip', 'user', 'type', 'directory')
     list_display_links = ('name',)
     list_filter = ('user',)
     readonly_fields = []

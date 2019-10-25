@@ -31,7 +31,9 @@ class recorderViewsTestCase(TestCase):
     def setUp(self):
         videotype = Type.objects.create(title='others')
         user = User.objects.create(username='pod', password='podv2')
-        Recorder.objects.create(id=1, user=user, name="recorder1", address_ip="16.3.10.37", type=videotype, directory="dir1")
+        Recorder.objects.create(id=1, user=user, name="recorder1",
+                                address_ip="16.3.10.37", type=videotype,
+                                directory="dir1")
         print(" --->  SetUp of recorderViewsTestCase : OK !")
 
     def test_add_recording(self):
@@ -60,7 +62,6 @@ class recorderViewsTestCase(TestCase):
         print(
             "   --->  test_add_recording of recorderViewsTestCase : OK !")
 
-
     def test_claim_recording(self):
         self.client = Client()
         self.user = User.objects.get(username="pod")
@@ -75,7 +76,7 @@ class recorderViewsTestCase(TestCase):
 
         self.user.is_staff = True
         self.user.save()
-        response = self.client.get("/claim_record/" )
+        response = self.client.get("/claim_record/")
         self.assertEqual(response.status_code, 200)
 
         self.assertTemplateUsed(response, 'recorder/claim_record.html')
@@ -83,23 +84,27 @@ class recorderViewsTestCase(TestCase):
         print(
             "   --->  test_claim_record of recorderViewsTestCase : OK !")
 
-
     def test_recorder_notify(self):
         self.client = Client()
 
         record = Recorder.objects.get(id=1)
-        response = self.client.get("/recorder_notify/" )
+        response = self.client.get("/recorder_notify/")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content,b'nok : recordingPlace or mediapath or key are missing')
+        self.assertEqual(response.content, b'nok : recordingPlace or '
+                                           b'mediapath or key are missing')
 
-
-        response = self.client.get("/recorder_notify/?key=abc&mediapath=/some/path&recordingPlace=16_3_10_37&course_title=title" )
+        response = self.client.get("/recorder_notify/?key=abc&mediapath"
+                                   "=/some/path&recordingPlace=16_3_10_37"
+                                   "&course_title=title")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content,  b'nok : key is not valid')
+        self.assertEqual(response.content, b'nok : key is not valid')
 
         m = hashlib.md5()
-        m.update(record.ipunder().encode('utf-8') + record.salt.encode('utf-8'))
-        response = self.client.get("/recorder_notify/?key="+m.hexdigest() +"&mediapath=/some/path&recordingPlace=16_3_10_37&course_title=title")
+        m.update(record.ipunder().encode('utf-8') + record.salt.encode('utf-8')
+                 )
+        response = self.client.get("/recorder_notify/?key=" + m.hexdigest() +
+                                   "&mediapath=/some/path&recordingPlace"
+                                   "=16_3_10_37&course_title=title")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, b'ok')
 

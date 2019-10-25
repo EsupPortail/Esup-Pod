@@ -29,26 +29,38 @@ DEFAULT_RECORDER_USER_ID = getattr(
     1
 )
 
+
 class Recorder(models.Model):
-    # Nom de l'enregistreur
+    # Recorder name
     name = models.CharField(_('name'), max_length=200, unique=True)
-    # Description facultative de l'enregistreur
-    description = RichTextField(_('description'), config_name='complete', blank=True)
-    # Adresse IP obligatoire de l'enregistreur
-    address_ip = models.GenericIPAddressField(_('Address IP'), unique=True, help_text=_('IP address of the recorder.'))
-    # Salt spécifique à cet enregistreur
-    salt = models.CharField(_('salt'), max_length=50, blank=True, help_text=_('Recorder salt.'))
-    # Utilisateur dans Pod qui recevra les emails de la part de l'enregistreur et qui sera le propriétaire des vidéos publiées par cet enregistreur
+    # Description of the recorder
+    description = RichTextField(_('description'), config_name='complete',
+                                blank=True)
+    # IP address of the recorder
+    address_ip = models.GenericIPAddressField(_('Address IP'), unique=True,
+                                              help_text=_(
+                                                  'IP address of the recorder.'
+                                              ))
+    # Salt for
+    salt = models.CharField(_('salt'), max_length=50, blank=True,
+                            help_text=_('Recorder salt.'))
+    # Manager of the recorder who received mails
     user = models.ForeignKey(
         User, on_delete=models.CASCADE,
-        limit_choices_to={'is_staff': True}, help_text=_('Manager of this recorder. This manager will receive recorder emails and he will be the owner of the published videos. If no user is selected, this recorder will use manual assign system.'),
-        verbose_name=_('User'), null=True,blank=True)
-    # Type par défaut des vidéos publiées par cet enregistreur
+        limit_choices_to={'is_staff': True}, help_text=_(
+            'Manager of this recorder. This manager will receive recorder '
+            'emails and he will be the owner of the published videos. If no '
+            'user is selected, this recorder will use manual assign system.'),
+        verbose_name=_('User'), null=True, blank=True)
+    # Default type of published videos by this recorder
     type = models.ForeignKey(
         Type, on_delete=models.CASCADE,
         help_text=_('Video type by default.'))
-    # Nom du répertoire contenant les vidéos uploadées par cet enregistreur
-    directory = models.CharField(_('Publication directory'), max_length=50, unique=True, help_text=_('Basic directory containing the videos published by the recorder.'))
+    # Directory name where videos of this recorder are published
+    directory = models.CharField(_('Publication directory'), max_length=50,
+                                 unique=True, help_text=_(
+            'Basic directory containing the videos published by the recorder.')
+                                 )
 
     def __unicode__(self):
         return "%s - %s" % (self.name, self.address_ip)
@@ -69,15 +81,24 @@ class Recorder(models.Model):
 
 
 class Recording(models.Model):
-    # Enregistreur ayant réalisé cet enregistrement
-    recorder = models.ForeignKey(Recorder, on_delete=models.CASCADE, verbose_name=_('Recorder'),help_text=_('Recorder that made this recording.'))
-    user = models.ForeignKey(User, on_delete=models.CASCADE,limit_choices_to={'is_staff': True}, default=DEFAULT_RECORDER_USER_ID, help_text=_("User who has made the recording"))
+    recorder = models.ForeignKey(Recorder,
+                                 on_delete=models.CASCADE,
+                                 verbose_name=_('Recorder'),
+                                 help_text=_('Recorder that made this '
+                                             'recording.'))
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             limit_choices_to={'is_staff': True},
+                             default=DEFAULT_RECORDER_USER_ID,
+                             help_text=_("User who has made the recording"))
     title = models.CharField(_('title'), max_length=200, unique=True)
     source_file = models.FilePathField(
-        path=DEFAULT_RECORDER_PATH, match=".*\.*$", unique=True,recursive=True)
-    type = models.CharField(max_length=50, choices=RECORDER_TYPE, default=RECORDER_TYPE[0][0])
+        path=DEFAULT_RECORDER_PATH, match=".*\.*$", unique=True,
+        recursive=True)
+    type = models.CharField(max_length=50, choices=RECORDER_TYPE,
+                            default=RECORDER_TYPE[0][0])
     comment = models.TextField(_('Comment'), blank=True, default="")
-    date_added = models.DateTimeField('date added', default=timezone.now, editable=False)
+    date_added = models.DateTimeField('date added', default=timezone.now,
+                                      editable=False)
 
     def __str__(self):
         return "%s" % self.title
@@ -121,16 +142,30 @@ def process_recording(sender, instance, created, **kwargs):
 
 
 class RecordingFile(models.Model):
-    file = models.FilePathField(path=DEFAULT_RECORDER_PATH,recursive=True,unique=True, match=".*\.*$", help_text=_('Source file of the published video.') )
+    file = models.FilePathField(path=DEFAULT_RECORDER_PATH, recursive=True,
+                                unique=True, match=".*\.*$", help_text=_(
+                                    'Source file of the published video.'))
     file_size = models.BigIntegerField(_('File size'), default=0)
-    recorder = models.ForeignKey(Recorder, on_delete=models.CASCADE, verbose_name=_('Recorder'),help_text=_('Recorder that made this recording.'))
-    date_added = models.DateTimeField(_('Date added'), default=timezone.now, editable=True)
-    require_manual_claim = models.BooleanField(_('Require manual claim ?'), default=False,
-                                               help_text=_('Has this recording file require a manual claim by a user ?'))
+    recorder = models.ForeignKey(Recorder, on_delete=models.CASCADE,
+                                 verbose_name=_('Recorder'), help_text=_(
+                                        'Recorder that made this recording.'))
+    date_added = models.DateTimeField(_('Date added'), default=timezone.now,
+                                      editable=True)
+    require_manual_claim = models.BooleanField(_('Require manual claim ?'),
+                                               default=False,
+                                               help_text=_(
+                                                   'Has this recording file '
+                                                   'require a manual claim '
+                                                   'by a user ?'))
     email_sent = models.BooleanField(_('Email sent ?'), default=False,
-                                     help_text=_('Has an email been sent to the manager of the concerned recorder ?'))
-    date_email_sent = models.DateTimeField(_('Date email sent'), blank=True, null=True, editable=False)
-    type = models.CharField(max_length=50, choices=RECORDER_TYPE, default=RECORDER_TYPE[0][0])
+                                     help_text=_(
+                                         'Has an email been sent to the '
+                                         'manager of the concerned recorder '
+                                         '?'))
+    date_email_sent = models.DateTimeField(_('Date email sent'), blank=True,
+                                           null=True, editable=False)
+    type = models.CharField(max_length=50, choices=RECORDER_TYPE,
+                            default=RECORDER_TYPE[0][0])
 
     def filename(self):
         return os.path.basename(self.file)

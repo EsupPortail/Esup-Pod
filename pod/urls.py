@@ -86,7 +86,7 @@ urlpatterns = [
     url(r'^my_videos/$', my_videos, name='my_videos'),
     # recording
     url(r'^add_recording/$', add_recording, name='add_recording'),
-    url(r'^recorder_notify/$',recorder_notify,name='recorder_notify'),
+    url(r'^recorder_notify/$', recorder_notify, name='recorder_notify'),
     url(r'^claim_record/$', claim_record, name='claim_record'),
 
     url(r'^search/$', search_videos, name='search_videos'),

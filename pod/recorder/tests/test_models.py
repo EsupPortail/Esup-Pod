@@ -28,7 +28,10 @@ class RecorderTestCase(TestCase):
     def setUp(self):
         videotype = Type.objects.create(title='others')
         user = User.objects.create(username="pod")
-        recorder1 = Recorder.objects.create(id=1, user=user, name="recorder1", address_ip="16.3.10.37", type=videotype,directory="dir1")
+        Recorder.objects.create(id=1, user=user, name="recorder1",
+                                address_ip="16.3.10.37",
+                                type=videotype,
+                                directory="dir1")
 
     def test_attributs(self):
         recorder1 = Recorder.objects.get(id=1)
@@ -40,10 +43,10 @@ class RecorderTestCase(TestCase):
             "   --->  test_attributs of RecorderTestCase: OK !")
 
     def test_ipunder(self):
-            recorder1 = Recorder.objects.get(id=1)
-            self.assertEqual(recorder1.ipunder(),"16_3_10_37")
-            print(
-                "   --->  test_ipunder of RecorderTestCase: OK !")
+        recorder1 = Recorder.objects.get(id=1)
+        self.assertEqual(recorder1.ipunder(), "16_3_10_37")
+        print(
+            "   --->  test_ipunder of RecorderTestCase: OK !")
 
     def test_delete_object(self):
         Recorder.objects.filter(name="recorder1").delete()
@@ -52,16 +55,23 @@ class RecorderTestCase(TestCase):
         print(
             "   --->  test_delete_object of RecorderTestCase : OK !")
 
+
 class RecordingTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
         videotype = Type.objects.create(title='others')
         user = User.objects.create(username="pod")
-        recorder1 = Recorder.objects.create(id=1, user=user, name="recorder1", address_ip="16.3.10.37", type=videotype,directory="dir1")
+        recorder1 = Recorder.objects.create(id=1, user=user, name="recorder1",
+                                            address_ip="16.3.10.37",
+                                            type=videotype,
+                                            directory="dir1")
         source_file = "/home/pod/files/video.mp4"
         type = "video"
-        recording = Recording.objects.create(user=user, title="media1",type=type,source_file=source_file,recorder=recorder1)
+        recording = Recording.objects.create(user=user, title="media1",
+                                             type=type,
+                                             source_file=source_file,
+                                             recorder=recorder1)
         recording.save()
 
         print(" --->  SetUp of RecordingTestCase : OK !")
@@ -76,7 +86,7 @@ class RecordingTestCase(TestCase):
         self.assertEqual(recording.title, "media1")
         self.assertEqual(recording.type, "video")
         self.assertEqual(recording.source_file, "/home/pod/files/video.mp4")
-        self.assertEqual(recording.recorder,recorder)
+        self.assertEqual(recording.recorder, recorder)
         date = timezone.now()
         self.assertEqual(recording.date_added.year, date.year)
         self.assertEqual(recording.date_added.month, date.month)
@@ -142,8 +152,13 @@ class RecordingFileTestCase(TestCase):
     def setUp(self):
         videotype = Type.objects.create(title='others')
         user1 = User.objects.create(username="pod")
-        recorder1 = Recorder.objects.create(id=1,user=user1, name="recorder1", address_ip="16.3.10.37", type=videotype, directory="dir1")
-        recording_file = RecordingFile.objects.create(type='video',file="/home/pod/files/somefile.mp4",recorder=recorder1)
+        recorder1 = Recorder.objects.create(id=1, user=user1, name="recorder1",
+                                            address_ip="16.3.10.37",
+                                            type=videotype, directory="dir1")
+        recording_file = RecordingFile.objects.create(type='video',
+                                                      file="/home/pod/files"
+                                                           "/somefile.mp4",
+                                                      recorder=recorder1)
         recording_file.save()
         print(" --->  SetUp of RecordingFileTestCase : OK !")
 
