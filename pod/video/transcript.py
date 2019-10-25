@@ -150,7 +150,7 @@ def main_transcript(video_to_encode):
             )
 
             webvtt.captions.append(caption)
-
+    # print(webvtt)
     msg += saveVTT(video_to_encode, webvtt)
     inference_end = timer() - inference_start
     msg += '\nInference took %0.3fs.' % inference_end
