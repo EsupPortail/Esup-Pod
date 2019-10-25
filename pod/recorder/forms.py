@@ -41,12 +41,9 @@ class RecordingForm(forms.ModelForm):
         )
         self.fields['source_file'].widget.attrs['class'] = 'form-control'
 
-        print(request.GET.get("recorder"))
-
         if not(check_show_user(request) or request.user.is_superuser):
             del self.fields['user']
         if not request.user.is_superuser:
-            # del self.fields['source_file']
             self.fields['recorder'].widget = forms.HiddenInput()
             self.fields['source_file'].widget = forms.HiddenInput()
 
