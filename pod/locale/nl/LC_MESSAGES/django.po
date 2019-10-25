@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-22 14:08+0000\n"
+"POT-Creation-Date: 2019-10-25 07:33+0000\n"
 "PO-Revision-Date: 2018-07-03 13:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -90,8 +90,8 @@ msgstr ""
 msgid "registered-reader"
 msgstr ""
 
-#: pod/authentication/models.py:67 pod/mediacourse/models.py:76
-#: pod/recorder/models.py:79 pod/video/models.py:1129 pod/video/views.py:1081
+#: pod/authentication/models.py:67 pod/recorder/models.py:79
+#: pod/video/models.py:1129 pod/video/views.py:1081
 msgid "Comment"
 msgstr ""
 
@@ -144,10 +144,9 @@ msgstr ""
 #: pod/enrichment/templates/enrichment/group_enrichment.html:29
 #: pod/interactive/templates/interactive/group_interactive.html:29
 #: pod/main/templates/contact_us.html:24 pod/main/views.py:215
-#: pod/mediacourse/templates/mediacourse/recordings_add.html:42
-#: pod/mediacourse/views.py:80 pod/playlist/views.py:140
+#: pod/playlist/views.py:140
 #: pod/recorder/templates/recorder/add_recording.html:36
-#: pod/recorder/views.py:84 pod/video/templates/channel/channel_edit.html:48
+#: pod/recorder/views.py:88 pod/video/templates/channel/channel_edit.html:48
 #: pod/video/templates/videos/video-form.html:10
 #: pod/video/templates/videos/video_delete.html:33
 #: pod/video/templates/videos/video_edit.html:64
@@ -166,7 +165,6 @@ msgstr ""
 #: pod/enrichment/templates/enrichment/group_enrichment.html:51
 #: pod/interactive/templates/interactive/group_interactive.html:51
 #: pod/main/templates/contact_us.html:47
-#: pod/mediacourse/templates/mediacourse/recordings_add.html:65
 #: pod/recorder/templates/recorder/add_recording.html:59
 #: pod/video/templates/channel/channel_edit.html:70
 #: pod/video/templates/videos/video-form.html:25
@@ -192,8 +190,7 @@ msgid "video"
 msgstr ""
 
 #: pod/chapter/models.py:14 pod/enrichment/models.py:114
-#: pod/mediacourse/models.py:69 pod/recorder/models.py:75
-#: pod/video/models.py:356
+#: pod/recorder/models.py:75 pod/video/models.py:356
 msgid "title"
 msgstr "titel"
 
@@ -263,7 +260,6 @@ msgstr ""
 #: pod/enrichment/templates/enrichment/form_enrichment.html:30
 #: pod/enrichment/templates/enrichment/group_enrichment.html:60
 #: pod/interactive/templates/interactive/group_interactive.html:60
-#: pod/mediacourse/templates/mediacourse/recordings_add.html:74
 #: pod/playlist/templates/playlist.html:67
 #: pod/playlist/templates/playlist/playlist_element_list.html:47
 #: pod/recorder/templates/recorder/add_recording.html:68
@@ -505,7 +501,7 @@ msgstr ""
 #: pod/completion/templates/video_caption_maker.html:85
 #: pod/enrichment/models.py:287 pod/enrichment/models.py:309
 #: pod/interactive/models.py:16 pod/interactive/models.py:33
-#: pod/mediacourse/models.py:19 pod/playlist/models.py:78
+#: pod/playlist/models.py:78
 #: pod/playlist/templates/playlist/playlist_list.html:14
 #: pod/recorder/models.py:19 pod/video/models.py:382 pod/video/models.py:756
 #: pod/video/models.py:886 pod/video/models.py:945 pod/video/models.py:990
@@ -1431,7 +1427,7 @@ msgid ""
 msgstr ""
 
 #: pod/interactive/templates/interactive/video_interactive.html:84
-#: pod/mediacourse/models.py:40 pod/recorder/models.py:45
+#: pod/recorder/models.py:45
 msgid "User"
 msgstr ""
 
@@ -1471,8 +1467,7 @@ msgstr ""
 msgid "You cannot add interactivity to this video."
 msgstr ""
 
-#: pod/live/models.py:19 pod/live/models.py:44 pod/mediacourse/models.py:29
-#: pod/recorder/models.py:34
+#: pod/live/models.py:19 pod/live/models.py:44 pod/recorder/models.py:34
 msgid "name"
 msgstr ""
 
@@ -1494,7 +1489,7 @@ msgstr ""
 msgid "Buildings"
 msgstr ""
 
-#: pod/live/models.py:53 pod/mediacourse/models.py:31 pod/recorder/models.py:36
+#: pod/live/models.py:53 pod/recorder/models.py:36
 #: pod/video/templates/channel/list_theme.html:10
 msgid "description"
 msgstr ""
@@ -2433,6 +2428,7 @@ msgid "My channels"
 msgstr ""
 
 #: pod/main/templates/navbar.html:84
+#: pod/recorder/templates/recorder/claim_record.html:11
 msgid "Claim a record"
 msgstr ""
 
@@ -2473,189 +2469,6 @@ msgstr ""
 
 #: pod/main/views.py:208
 msgid "Your message have been sent."
-msgstr ""
-
-#: pod/mediacourse/forms.py:25
-msgid "Source file in MP4 or ZIP format (mediapath)"
-msgstr ""
-
-#: pod/mediacourse/models.py:18
-msgid "Mediacourse"
-msgstr ""
-
-#: pod/mediacourse/models.py:33 pod/recorder/models.py:38
-msgid "Address IP"
-msgstr ""
-
-#: pod/mediacourse/models.py:33 pod/recorder/models.py:38
-msgid "IP address of the recorder."
-msgstr ""
-
-#: pod/mediacourse/models.py:35 pod/recorder/models.py:40
-msgid "salt"
-msgstr ""
-
-#: pod/mediacourse/models.py:35 pod/recorder/models.py:40
-msgid "Mediacourse recorder salt."
-msgstr ""
-
-#: pod/mediacourse/models.py:39 pod/recorder/models.py:44
-msgid ""
-"Manager of this recorder. This manager will receive mediacourse recorder "
-"emails and he will be the owner of the published videos. If no user is "
-"seleected, this recorder will use manual assign system."
-msgstr ""
-
-#: pod/mediacourse/models.py:44 pod/recorder/models.py:49
-msgid "Video type by default."
-msgstr ""
-
-#: pod/mediacourse/models.py:46 pod/recorder/models.py:51
-msgid "Publication directory"
-msgstr ""
-
-#: pod/mediacourse/models.py:46 pod/recorder/models.py:51
-msgid "Basic directory containing the videos published by the recorder."
-msgstr ""
-
-#: pod/mediacourse/models.py:61 pod/mediacourse/models.py:67
-#: pod/recorder/models.py:66 pod/recorder/models.py:73
-msgid "Recorder"
-msgstr ""
-
-#: pod/mediacourse/models.py:62 pod/recorder/models.py:67
-msgid "Recorders"
-msgstr ""
-
-#: pod/mediacourse/models.py:67 pod/recorder/models.py:73
-msgid "Recorder that made this recording."
-msgstr ""
-
-#: pod/mediacourse/models.py:71 pod/mediacourse/models.py:114
-msgid "Mediapath"
-msgstr ""
-
-#: pod/mediacourse/models.py:71 pod/mediacourse/models.py:114
-msgid "Source file of the published video (mediapath)."
-msgstr ""
-
-#: pod/mediacourse/models.py:74
-msgid "Recording type (video = MP4 file, mediacourse = ZIP file)."
-msgstr ""
-
-#: pod/mediacourse/models.py:78 pod/mediacourse/models.py:118
-#: pod/recorder/models.py:126 pod/video/models.py:407 pod/video/models.py:1076
-#: pod/video/models.py:1131
-msgid "Date added"
-msgstr ""
-
-#: pod/mediacourse/models.py:84 pod/mediacourse/views.py:109
-#: pod/recorder/models.py:86 pod/recorder/views.py:115
-msgid "Recording"
-msgstr ""
-
-#: pod/mediacourse/models.py:85 pod/recorder/models.py:87
-msgid "Recordings"
-msgstr ""
-
-#: pod/mediacourse/models.py:103 pod/recorder/models.py:105
-msgid "Please specify a type."
-msgstr ""
-
-#: pod/mediacourse/models.py:105 pod/recorder/models.py:107
-msgid "Please use the only type in type choices."
-msgstr ""
-
-#: pod/mediacourse/models.py:107 pod/mediacourse/models.py:145
-#: pod/recorder/models.py:109
-msgid "Please specify a source file."
-msgstr ""
-
-#: pod/mediacourse/models.py:109 pod/mediacourse/models.py:147
-#: pod/recorder/models.py:111
-msgid "Source file doesn't exists"
-msgstr ""
-
-#: pod/mediacourse/models.py:116 pod/recorder/models.py:125
-msgid "File size"
-msgstr ""
-
-#: pod/mediacourse/models.py:120 pod/recorder/models.py:127
-msgid "Require manual claim ?"
-msgstr ""
-
-#: pod/mediacourse/models.py:120 pod/recorder/models.py:128
-msgid "Has this job require a manual claim by a user ?"
-msgstr ""
-
-#: pod/mediacourse/models.py:121 pod/recorder/models.py:129
-msgid "Email sent ?"
-msgstr ""
-
-#: pod/mediacourse/models.py:122 pod/recorder/models.py:130
-msgid "Has an email been sent to the manager of the concerned recorder ?"
-msgstr ""
-
-#: pod/mediacourse/models.py:124 pod/recorder/models.py:131
-msgid "Date email sent"
-msgstr ""
-
-#: pod/mediacourse/models.py:130
-msgid "Job"
-msgstr ""
-
-#: pod/mediacourse/models.py:131
-msgid "Jobs"
-msgstr ""
-
-#: pod/mediacourse/templates/mediacourse/recordings_add.html:23
-#: pod/mediacourse/templates/mediacourse/recordings_add.html:27
-#: pod/mediacourse/templates/mediacourse/recordings_add.html:32
-#: pod/recorder/templates/recorder/add_recording.html:17
-#: pod/recorder/templates/recorder/add_recording.html:21
-#: pod/recorder/templates/recorder/add_recording.html:26
-msgid "Adding a new record"
-msgstr ""
-
-#: pod/mediacourse/views.py:50
-msgid "Recorder doesn't exist."
-msgstr ""
-
-#: pod/mediacourse/views.py:61 pod/recorder/views.py:52
-msgid "Mediapath should be indicated."
-msgstr ""
-
-#: pod/mediacourse/views.py:75 pod/recorder/views.py:79
-msgid ""
-"Your publication is saved. Adding it to your videos will be in a few minutes."
-msgstr ""
-
-#: pod/mediacourse/views.py:115 pod/recorder/views.py:124
-#, python-format
-msgid ""
-"Hello, \n"
-"\n"
-"a new Mediacourse recording has just be added on the video website "
-"\"%(title_site)s\" from the recorder \"%(recorder)s\".\n"
-"To add it, just click on link below.\n"
-"\n"
-"%(link_url)s\n"
-"if you cannot click on link, just copy-paste it in your browser.\n"
-"\n"
-"Regards"
-msgstr ""
-
-#: pod/mediacourse/views.py:119 pod/recorder/views.py:129
-#, python-format
-msgid ""
-"Hello, <p>a new Mediacourse recording has just be added on %(title_site)s "
-"from the recorder \"%(recorder)s\".<br/>To add it, just click on link below."
-"</p><a href=\"%(link_url)s\">%(link_url)s</a><br/><i>if you cannot click on "
-"link, just copy-paste it in your browser.</i><p><p>Regards</p>"
-msgstr ""
-
-#: pod/mediacourse/views.py:128 pod/recorder/views.py:138
-msgid "New Mediacourse recording added."
 msgstr ""
 
 #: pod/playlist/models.py:19
@@ -2950,7 +2763,7 @@ msgstr ""
 msgid "You cannot edit this file."
 msgstr ""
 
-#: pod/recorder/forms.py:29
+#: pod/recorder/forms.py:28
 msgid "source_file"
 msgstr ""
 
@@ -2958,23 +2771,196 @@ msgstr ""
 msgid "Audiovideocast"
 msgstr ""
 
+#: pod/recorder/models.py:38
+msgid "Address IP"
+msgstr ""
+
+#: pod/recorder/models.py:38
+msgid "IP address of the recorder."
+msgstr ""
+
+#: pod/recorder/models.py:40
+msgid "salt"
+msgstr ""
+
+#: pod/recorder/models.py:40
+msgid "Recorder salt."
+msgstr ""
+
+#: pod/recorder/models.py:44
+msgid ""
+"Manager of this recorder. This manager will receive recorder emails and he "
+"will be the owner of the published videos. If no user is selected, this "
+"recorder will use manual assign system."
+msgstr ""
+
+#: pod/recorder/models.py:49
+msgid "Video type by default."
+msgstr ""
+
+#: pod/recorder/models.py:51
+msgid "Publication directory"
+msgstr ""
+
+#: pod/recorder/models.py:51
+msgid "Basic directory containing the videos published by the recorder."
+msgstr ""
+
+#: pod/recorder/models.py:66 pod/recorder/models.py:73
+#: pod/recorder/models.py:126
+msgid "Recorder"
+msgstr ""
+
+#: pod/recorder/models.py:67
+msgid "Recorders"
+msgstr ""
+
+#: pod/recorder/models.py:73 pod/recorder/models.py:126
+msgid "Recorder that made this recording."
+msgstr ""
+
 #: pod/recorder/models.py:74
-msgid "The user who has made the record"
+msgid "User who has made the recording"
+msgstr ""
+
+#: pod/recorder/models.py:86
+msgid "Recording"
+msgstr ""
+
+#: pod/recorder/models.py:87
+msgid "Recordings"
+msgstr ""
+
+#: pod/recorder/models.py:105
+msgid "Please specify a type."
+msgstr ""
+
+#: pod/recorder/models.py:107
+msgid "Please use the only type in type choices."
+msgstr ""
+
+#: pod/recorder/models.py:109
+msgid "Please specify a source file."
+msgstr ""
+
+#: pod/recorder/models.py:111
+msgid "Source file doesn't exists"
 msgstr ""
 
 #: pod/recorder/models.py:124
 msgid "Source file of the published video."
 msgstr ""
 
-#: pod/recorder/models.py:135
+#: pod/recorder/models.py:125
+msgid "File size"
+msgstr ""
+
+#: pod/recorder/models.py:127 pod/video/models.py:407 pod/video/models.py:1076
+#: pod/video/models.py:1131
+msgid "Date added"
+msgstr ""
+
+#: pod/recorder/models.py:128
+msgid "Require manual claim ?"
+msgstr ""
+
+#: pod/recorder/models.py:129
+msgid "Has this recording file require a manual claim by a user ?"
+msgstr ""
+
+#: pod/recorder/models.py:130
+msgid "Email sent ?"
+msgstr ""
+
+#: pod/recorder/models.py:131
+msgid "Has an email been sent to the manager of the concerned recorder ?"
+msgstr ""
+
+#: pod/recorder/models.py:132
+msgid "Date email sent"
+msgstr ""
+
+#: pod/recorder/models.py:139
 msgid "Recording file"
 msgstr ""
 
-#: pod/recorder/models.py:136
+#: pod/recorder/models.py:140
 msgid "Recording files"
 msgstr ""
 
-#: pod/urls.py:189 pod/urls.py:190
+#: pod/recorder/templates/recorder/add_recording.html:17
+#: pod/recorder/templates/recorder/add_recording.html:21
+#: pod/recorder/templates/recorder/add_recording.html:26
+msgid "Adding a new record"
+msgstr ""
+
+#: pod/recorder/templates/recorder/card.html:19
+msgid "Date of recording."
+msgstr ""
+
+#: pod/recorder/templates/recorder/claim_record.html:14
+#: pod/recorder/templates/recorder/claim_record.html:23
+#, python-format
+msgid "%(counter)s record found"
+msgid_plural "%(counter)s records found"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/recorder/templates/recorder/claim_record.html:20
+msgid "No record found"
+msgstr ""
+
+#: pod/recorder/templates/recorder/claim_record.html:21
+msgid "There is no unassigned records"
+msgstr ""
+
+#: pod/recorder/templates/recorder/link_record.html:3
+#: pod/recorder/templates/recorder/link_record.html:4
+msgid "Claim the record"
+msgstr ""
+
+#: pod/recorder/templates/recorder/record_list.html:10
+msgid "Sorry, no record found"
+msgstr ""
+
+#: pod/recorder/views.py:56
+msgid "Mediapath should be indicated."
+msgstr ""
+
+#: pod/recorder/views.py:83
+msgid ""
+"Your publication is saved. Adding it to your videos will be in a few minutes."
+msgstr ""
+
+#: pod/recorder/views.py:132
+#, python-format
+msgid ""
+"Hello, \n"
+"\n"
+"a new recording has just be added on the video website \"%(title_site)s\" "
+"from the recorder \"%(recorder)s\".\n"
+"To add it, just click on link below.\n"
+"\n"
+"%(link_url)s\n"
+"if you cannot click on link, just copy-paste it in your browser.\n"
+"\n"
+"Regards"
+msgstr ""
+
+#: pod/recorder/views.py:137
+#, python-format
+msgid ""
+"Hello, <p>a new recording has just be added on %(title_site)s from the "
+"recorder \"%(recorder)s\".<br/>To add it, just click on link below.</p><a "
+"href=\"%(link_url)s\">%(link_url)s</a><br/><i>if you cannot click on link, "
+"just copy-paste it in your browser.</i><p><p>Regards</p>"
+msgstr ""
+
+#: pod/recorder/views.py:146
+msgid "New recording added."
+msgstr ""
+
+#: pod/urls.py:190 pod/urls.py:191
 msgid "Pod Administration"
 msgstr ""
 

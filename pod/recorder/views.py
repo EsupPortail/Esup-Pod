@@ -94,7 +94,7 @@ def add_recording(request):
 
 def recorder_notify(request):
 
-    # Used by URL like https://pod.univ.fr/mediacourses_notify/?recordingPlace=192_168_1_10&mediapath=file.zip&key=77fac92a3f06d50228116898187e50e5
+    # Used by URL like https://pod.univ.fr/recorder_notify/?recordingPlace=192_168_1_10&mediapath=file.zip&key=77fac92a3f06d50228116898187e50e5
     mediapath = request.GET.get('mediapath') or ""
     recordingPlace = request.GET.get('recordingPlace') or ""
     course_title = request.GET.get('course_title') or ""
@@ -129,12 +129,12 @@ def recorder_notify(request):
                     [request.build_absolute_uri('/'), "sso-cas/login/?next=", urllib.parse.quote_plus(link_url)])
 
             text_msg = _(
-                "Hello, \n\na new Mediacourse recording has just be added on the video website \"%(title_site)s\" from the recorder \"%(recorder)s\"."
+                "Hello, \n\na new recording has just be added on the video website \"%(title_site)s\" from the recorder \"%(recorder)s\"."
                 "\nTo add it, just click on link below.\n\n%(link_url)s\nif you cannot click on link, just copy-paste it in your browser."
                 "\n\nRegards") % {'title_site': TITLE_SITE, 'recorder': recorder.name, 'link_url': link_url}
 
             html_msg = _(
-                "Hello, <p>a new Mediacourse recording has just be added on %(title_site)s from the recorder \"%(recorder)s\"."
+                "Hello, <p>a new recording has just be added on %(title_site)s from the recorder \"%(recorder)s\"."
                 "<br/>To add it, just click on link below.</p><a href=\"%(link_url)s\">%(link_url)s</a><br/><i>if you cannot click on link, just copy-paste it in your browser.</i>"
                 "<p><p>Regards</p>") % {'title_site': TITLE_SITE, 'recorder': recorder.name, 'link_url': link_url}
             # Sending the mail to the managers defined in the administration for the concerned Mediacourse recorder
@@ -143,7 +143,7 @@ def recorder_notify(request):
             else:
                 admin_emails = User.objects.filter(is_superuser=True).values_list('email', flat=True)
             subject = "[" + TITLE_SITE + \
-                      "] %s" % _('New Mediacourse recording added.')
+                      "] %s" % _('New recording added.')
             # Send the mail to the managers or admins (if not found)
             email_msg = EmailMultiAlternatives(subject, text_msg, settings.DEFAULT_FROM_EMAIL, admin_emails)
 

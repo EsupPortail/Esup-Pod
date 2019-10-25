@@ -37,11 +37,11 @@ class Recorder(models.Model):
     # Adresse IP obligatoire de l'enregistreur
     address_ip = models.GenericIPAddressField(_('Address IP'), unique=True, help_text=_('IP address of the recorder.'))
     # Salt spécifique à cet enregistreur
-    salt = models.CharField(_('salt'), max_length=50, blank=True, help_text=_('Mediacourse recorder salt.'))
+    salt = models.CharField(_('salt'), max_length=50, blank=True, help_text=_('Recorder salt.'))
     # Utilisateur dans Pod qui recevra les emails de la part de l'enregistreur et qui sera le propriétaire des vidéos publiées par cet enregistreur
     user = models.ForeignKey(
         User, on_delete=models.CASCADE,
-        limit_choices_to={'is_staff': True}, help_text=_('Manager of this recorder. This manager will receive mediacourse recorder emails and he will be the owner of the published videos. If no user is seleected, this recorder will use manual assign system.'),
+        limit_choices_to={'is_staff': True}, help_text=_('Manager of this recorder. This manager will receive recorder emails and he will be the owner of the published videos. If no user is selected, this recorder will use manual assign system.'),
         verbose_name=_('User'), null=True,blank=True)
     # Type par défaut des vidéos publiées par cet enregistreur
     type = models.ForeignKey(
@@ -71,7 +71,7 @@ class Recorder(models.Model):
 class Recording(models.Model):
     # Enregistreur ayant réalisé cet enregistrement
     recorder = models.ForeignKey(Recorder, on_delete=models.CASCADE, verbose_name=_('Recorder'),help_text=_('Recorder that made this recording.'))
-    user = models.ForeignKey(User, on_delete=models.CASCADE,limit_choices_to={'is_staff': True}, default=DEFAULT_RECORDER_USER_ID, help_text=_("The user who has made the record"))
+    user = models.ForeignKey(User, on_delete=models.CASCADE,limit_choices_to={'is_staff': True}, default=DEFAULT_RECORDER_USER_ID, help_text=_("User who has made the recording"))
     title = models.CharField(_('title'), max_length=200, unique=True)
     source_file = models.FilePathField(
         path=DEFAULT_RECORDER_PATH, match=".*\.*$", unique=True,recursive=True)
@@ -126,7 +126,7 @@ class RecordingFile(models.Model):
     recorder = models.ForeignKey(Recorder, on_delete=models.CASCADE, verbose_name=_('Recorder'),help_text=_('Recorder that made this recording.'))
     date_added = models.DateTimeField(_('Date added'), default=timezone.now, editable=True)
     require_manual_claim = models.BooleanField(_('Require manual claim ?'), default=False,
-                                               help_text=_('Has this job require a manual claim by a user ?'))
+                                               help_text=_('Has this recording file require a manual claim by a user ?'))
     email_sent = models.BooleanField(_('Email sent ?'), default=False,
                                      help_text=_('Has an email been sent to the manager of the concerned recorder ?'))
     date_email_sent = models.DateTimeField(_('Date email sent'), blank=True, null=True, editable=False)
