@@ -146,8 +146,8 @@ def case_manager_exist(html_message_error, message_error, recorder,
             print(
                 " - Request was made to URL with failure(" + str(
                     request.content)[1:] + "). An email wasn't sent to "
-                                     "mediacourse recorder's "
-                                     "manager.")
+                "mediacourse recorder's "
+                "manager.")
             # Catch the the error encountered
         html_message_error += "<li><b>Error</b> : Security error"
         " for the file " + source_file + ": <b>" + str(request.content)[1:] + \
