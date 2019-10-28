@@ -57,6 +57,9 @@ class Recorder(models.Model):
         Type, on_delete=models.CASCADE,
         help_text=_('Video type by default.'))
     # Directory name where videos of this recorder are published
+    recording_type = models.CharField(_('Recording Type'), max_length=50,
+                                      choices=RECORDER_TYPE,
+                                      default=RECORDER_TYPE[0][0])
     directory = models.CharField(_('Publication directory'), max_length=50,
                                  unique=True, help_text=_(
             'Basic directory containing the videos published by the recorder.')
@@ -108,10 +111,6 @@ class Recording(models.Model):
         verbose_name_plural = _("Recordings")
 
     def save(self, *args, **kwargs):
-        if self.source_file.endswith("zip"):
-            self.type = 'audiovideocast'
-        else:
-            self.type = 'video'
         super(Recording, self).save(*args, **kwargs)
 
     def clean(self):
@@ -147,7 +146,8 @@ class RecordingFile(models.Model):
                                     'Source file of the published video.'))
     file_size = models.BigIntegerField(_('File size'), default=0)
     recorder = models.ForeignKey(Recorder, on_delete=models.CASCADE,
-                                 verbose_name=_('Recorder'), help_text=_(
+                                 verbose_name=_('Recorder'), null=True,
+                                 help_text=_(
                                         'Recorder that made this recording.'))
     date_added = models.DateTimeField(_('Date added'), default=timezone.now,
                                       editable=True)

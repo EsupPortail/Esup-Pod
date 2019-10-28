@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-10-25 07:42+0000\n"
+"POT-Creation-Date: 2019-10-28 10:40+0000\n"
 "PO-Revision-Date: 2019-09-09 15:14+0200\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -90,7 +90,7 @@ msgstr "enseignant"
 msgid "registered-reader"
 msgstr "lecteur enregistré"
 
-#: pod/authentication/models.py:67 pod/recorder/models.py:79
+#: pod/authentication/models.py:67 pod/recorder/models.py:101
 #: pod/video/models.py:1129 pod/video/views.py:1081
 msgid "Comment"
 msgstr "Commentaire"
@@ -149,7 +149,7 @@ msgstr "Mot de passe ou identifiant perdu ?"
 #: pod/main/templates/contact_us.html:24 pod/main/views.py:215
 #: pod/playlist/views.py:140
 #: pod/recorder/templates/recorder/add_recording.html:36
-#: pod/recorder/views.py:88 pod/video/templates/channel/channel_edit.html:48
+#: pod/recorder/views.py:87 pod/video/templates/channel/channel_edit.html:48
 #: pod/video/templates/videos/video-form.html:10
 #: pod/video/templates/videos/video_delete.html:33
 #: pod/video/templates/videos/video_edit.html:64
@@ -193,7 +193,7 @@ msgid "video"
 msgstr "vidéo"
 
 #: pod/chapter/models.py:14 pod/enrichment/models.py:114
-#: pod/recorder/models.py:75 pod/video/models.py:356
+#: pod/recorder/models.py:95 pod/video/models.py:356
 msgid "title"
 msgstr "titre"
 
@@ -1488,7 +1488,7 @@ msgstr ""
 "interactive et leurs résultats."
 
 #: pod/interactive/templates/interactive/video_interactive.html:84
-#: pod/recorder/models.py:45
+#: pod/recorder/models.py:54
 msgid "User"
 msgstr "Utilisateur"
 
@@ -1528,7 +1528,7 @@ msgstr "Vous regardez cette vidéo en tant qu'utilisateur anonyme"
 msgid "You cannot add interactivity to this video."
 msgstr "Vous ne pouvez éditer cette vidéo interactive."
 
-#: pod/live/models.py:19 pod/live/models.py:44 pod/recorder/models.py:34
+#: pod/live/models.py:19 pod/live/models.py:44 pod/recorder/models.py:35
 msgid "name"
 msgstr "nom"
 
@@ -1550,7 +1550,7 @@ msgstr "Bâtiment"
 msgid "Buildings"
 msgstr "Bâtiments"
 
-#: pod/live/models.py:53 pod/recorder/models.py:36
+#: pod/live/models.py:53 pod/recorder/models.py:37
 #: pod/video/templates/channel/list_theme.html:10
 msgid "description"
 msgstr "description"
@@ -2838,7 +2838,7 @@ msgstr "Vous ne pouvez pas éditer cette image."
 msgid "You cannot edit this file."
 msgstr "Vous ne pouvez pas éditer ce fichier."
 
-#: pod/recorder/forms.py:28
+#: pod/recorder/forms.py:42
 msgid "source_file"
 msgstr "fichier source"
 
@@ -2846,23 +2846,23 @@ msgstr "fichier source"
 msgid "Audiovideocast"
 msgstr "Audiovideocast"
 
-#: pod/recorder/models.py:38
+#: pod/recorder/models.py:40
 msgid "Address IP"
 msgstr "Adresse IP"
 
-#: pod/recorder/models.py:38
+#: pod/recorder/models.py:42
 msgid "IP address of the recorder."
 msgstr "Adresse IP de l'enregistreur"
 
-#: pod/recorder/models.py:40
+#: pod/recorder/models.py:45
 msgid "salt"
 msgstr "Sel"
 
-#: pod/recorder/models.py:40
+#: pod/recorder/models.py:46
 msgid "Recorder salt."
 msgstr "Sel de l'enregistreur"
 
-#: pod/recorder/models.py:44
+#: pod/recorder/models.py:51
 msgid ""
 "Manager of this recorder. This manager will receive recorder emails and he "
 "will be the owner of the published videos. If no user is selected, this "
@@ -2872,100 +2872,105 @@ msgstr ""
 "serale propriétaire des vidéos publiées. Si aucun utilisateur n'est "
 "sélectionné, cetenregistreur utilisera le mode manuel d'assignation"
 
-#: pod/recorder/models.py:49
+#: pod/recorder/models.py:58
 msgid "Video type by default."
 msgstr "Type par défaut des vidéos"
 
-#: pod/recorder/models.py:51
+#: pod/recorder/models.py:60
+#| msgid "Recording file"
+msgid "Recording Type"
+msgstr "Type d'enregistrement"
+
+#: pod/recorder/models.py:62
 msgid "Publication directory"
 msgstr "Répertoire des publications"
 
-#: pod/recorder/models.py:51
+#: pod/recorder/models.py:64
 msgid "Basic directory containing the videos published by the recorder."
 msgstr "Répertoire de base des vidéos publiées par l'enregistreur."
 
-#: pod/recorder/models.py:66 pod/recorder/models.py:73
-#: pod/recorder/models.py:126
+#: pod/recorder/models.py:80 pod/recorder/models.py:88
+#: pod/recorder/models.py:148
 msgid "Recorder"
 msgstr "Enregistreur"
 
-#: pod/recorder/models.py:67
+#: pod/recorder/models.py:81
 msgid "Recorders"
 msgstr "Enregistreurs"
 
-#: pod/recorder/models.py:73 pod/recorder/models.py:126
+#: pod/recorder/models.py:89 pod/recorder/models.py:149
 msgid "Recorder that made this recording."
 msgstr "Enregistreur qui a fait cet enregistrement"
 
-#: pod/recorder/models.py:74
+#: pod/recorder/models.py:94
 msgid "User who has made the recording"
 msgstr "Utilisateur qui a fait l'enregisrement"
 
-#: pod/recorder/models.py:86
+#: pod/recorder/models.py:109
 msgid "Recording"
 msgstr "Enregistrement"
 
-#: pod/recorder/models.py:87
+#: pod/recorder/models.py:110
 msgid "Recordings"
 msgstr "Enregistrements"
 
-#: pod/recorder/models.py:105
+#: pod/recorder/models.py:124
 msgid "Please specify a type."
 msgstr "Veuillez spécifier un type."
 
-#: pod/recorder/models.py:107
+#: pod/recorder/models.py:126
 msgid "Please use the only type in type choices."
 msgstr "Merci de sélectionner un type valide."
 
-#: pod/recorder/models.py:109
+#: pod/recorder/models.py:128
 msgid "Please specify a source file."
 msgstr "Veuillez spécifier un fichier source."
 
-#: pod/recorder/models.py:111
+#: pod/recorder/models.py:130
 msgid "Source file doesn't exists"
 msgstr "Le fichier source n'existe pas"
 
-#: pod/recorder/models.py:124
+#: pod/recorder/models.py:145
 msgid "Source file of the published video."
 msgstr "Fichier source de la vidéo publiée."
 
-#: pod/recorder/models.py:125
+#: pod/recorder/models.py:146
 msgid "File size"
 msgstr "Taille du fichier"
 
-#: pod/recorder/models.py:127 pod/video/models.py:407 pod/video/models.py:1076
+#: pod/recorder/models.py:150 pod/video/models.py:407 pod/video/models.py:1076
 #: pod/video/models.py:1131
 msgid "Date added"
 msgstr "Date d'ajout"
 
-#: pod/recorder/models.py:128
+#: pod/recorder/models.py:152
 msgid "Require manual claim ?"
 msgstr "Requière une revendication manuelle ?"
 
-#: pod/recorder/models.py:129
+#: pod/recorder/models.py:155
 msgid "Has this recording file require a manual claim by a user ?"
 msgstr ""
 "Est-ce que ce fichier d'enregistrement requière une revendication manuelle ?"
 
-#: pod/recorder/models.py:130
+#: pod/recorder/models.py:158
 msgid "Email sent ?"
 msgstr "Email envoyé ?"
 
-#: pod/recorder/models.py:131
+#: pod/recorder/models.py:160
 msgid "Has an email been sent to the manager of the concerned recorder ?"
 msgstr ""
 "Est-ce que le mail a été envoyé au gestionnaire de l'enregistrement "
 "concerné ?"
 
-#: pod/recorder/models.py:132
+#: pod/recorder/models.py:163
 msgid "Date email sent"
 msgstr "Date de l'envoie du mail"
 
-#: pod/recorder/models.py:139
+#: pod/recorder/models.py:172
 msgid "Recording file"
 msgstr "Fichier d’enregistrement"
 
-#: pod/recorder/models.py:140
+#: pod/recorder/models.py:173
 msgid "Recording files"
 msgstr "Fichiers d’enregistrement"
 
@@ -2980,20 +2985,18 @@ msgid "Date of recording."
 msgstr "Date de l'enregistrement"
 
 #: pod/recorder/templates/recorder/claim_record.html:14
-#: pod/recorder/templates/recorder/claim_record.html:23
+#: pod/recorder/templates/recorder/claim_record.html:22
 #, python-format
-#| msgid "%(counter)s video found"
-#| msgid_plural "%(counter)s videos found"
 msgid "%(counter)s record found"
 msgid_plural "%(counter)s records found"
 msgstr[0] "%(counter)s enregistrement trouvé"
 msgstr[1] "%(counter)s enregistrements trouvés"
 
-#: pod/recorder/templates/recorder/claim_record.html:20
+#: pod/recorder/templates/recorder/claim_record.html:19
 msgid "No record found"
 msgstr "Aucun enregistrement trouvé"
 
-#: pod/recorder/templates/recorder/claim_record.html:21
+#: pod/recorder/templates/recorder/claim_record.html:20
 msgid "There is no unassigned records"
 msgstr "Il n'y a pas d'enregistrements non assigné"
 
@@ -3006,28 +3009,39 @@ msgstr "Revendiquer l'enregistrement"
 msgid "Sorry, no record found"
 msgstr "Désolé, aucun enregistrement trouvée"
 
-#: pod/recorder/views.py:56
+#: pod/recorder/views.py:55
 msgid "Mediapath should be indicated."
 msgstr "La source du fichier doit être indiquée."
 
-#: pod/recorder/views.py:83
+#: pod/recorder/views.py:82
 msgid ""
 "Your publication is saved. Adding it to your videos will be in a few minutes."
 msgstr ""
 "Votre publication est sauvegardée, elle sera ajoutée à vos vidéos dans "
 "quelques minutes."
 
-#: pod/recorder/views.py:132
-#, python-format
+#: pod/recorder/views.py:139
+#, fuzzy, python-format
+#| msgid ""
+#| "Hello, \n"
+#| "\n"
+#| "a new recording has just be added on the video website \"%(title_site)s\" "
+#| "from the recorder \"%(recorder)s\".\n"
+#| "To add it, just click on link below.\n"
+#| "\n"
+#| "%(link_url)s\n"
+#| "if you cannot click on link, just copy-paste it in your browser.\n"
+#| "\n"
+#| "Regards"
 msgid ""
 "Hello, \n"
 "\n"
 "a new recording has just be added on the video website \"%(title_site)s\" "
-"from the recorder \"%(recorder)s\".\n"
+"from the recorder \"%(recorder)s\". \n"
 "To add it, just click on link below.\n"
 "\n"
 "%(link_url)s\n"
-"if you cannot click on link, just copy-paste it in your browser.\n"
+"if you cannot click on link, just copy-paste it in your browser. \n"
 "\n"
 "Regards"
 msgstr ""
@@ -3037,13 +3051,18 @@ msgstr ""
 "%(link_url)s</a><br/><i>Si le lien n'est pas actif, il faut le copier-coller "
 "dans la barre d'adresse de votre navigateur.</i><p><p>Cordialement</p>"
 
-#: pod/recorder/views.py:137
-#, python-format
+#: pod/recorder/views.py:150
+#, fuzzy, python-format
+#| msgid ""
+#| "Hello, <p>a new recording has just be added on %(title_site)s from the "
+#| "recorder \"%(recorder)s\".<br/>To add it, just click on link below.</p><a "
+#| "href=\"%(link_url)s\">%(link_url)s</a><br/><i>if you cannot click on "
+#| "link, just copy-paste it in your browser.</i><p><p>Regards</p>"
 msgid ""
 "Hello, <p>a new recording has just be added on %(title_site)s from the "
-"recorder \"%(recorder)s\".<br/>To add it, just click on link below.</p><a "
+"recorder \"%(recorder)s\". <br/>To add it, just click on link below.</p><a "
 "href=\"%(link_url)s\">%(link_url)s</a><br/><i>if you cannot click on link, "
-"just copy-paste it in your browser.</i><p><p>Regards</p>"
+"just copy-paste it in your browser.</i> <p><p>Regards</p>"
 msgstr ""
 "Bonjour, <p>un nouvel enregistrement a été ajouté sur la plateforme "
 "%(title_site)s à partir del'enregistreur \"%(recorder)s\".<br/>Pour "
@@ -3051,7 +3070,7 @@ msgstr ""
 "%(link_url)s</a><br/><i>Si le lien n'est pas actif, il faut le copier-coller "
 "dans la barre d'adresse de votre navigateur.</i><p><p>Cordialement</p>"
 
-#: pod/recorder/views.py:146
+#: pod/recorder/views.py:166
 msgid "New recording added."
 msgstr "Nouvel enregistrement ajouté"
 

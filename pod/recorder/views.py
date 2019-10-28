@@ -131,7 +131,8 @@ def recorder_notify(request):
             link_url = ''.join(
                 [request.build_absolute_uri(reverse('add_recording')),
                  "?mediapath=", mediapath, "&course_title=%s" % course_title,
-                 "&recorder=%s" % recorder.id])
+                 "&recorder=%s" % recorder.id,
+                 '&course_type=%s' % recorder.recording_type])
             link_url = reformat_url_if_use_cas(request, link_url)
 
             text_msg = _(

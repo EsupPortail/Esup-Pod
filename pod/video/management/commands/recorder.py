@@ -241,12 +241,12 @@ def recorder_exist(recorder, filename, message_error, html_message_error):
     source_file = os.path.join(DEFAULT_RECORDER_PATH, recorder.directory,
                                filename)
     # Check if this video was already processed
-    oRecording = Recording.objects.filter(source_file=source_file).first()
+    recording = Recording.objects.filter(source_file=source_file).first()
     # Check if an email was already sent to recorder's manager
     # for this video
     file = RecordingFile.objects.filter(file=source_file).first()
 
-    if oRecording:
+    if recording:
         # This video was already processed
         if DEBUG:
             print(
@@ -269,7 +269,8 @@ def recorder_exist(recorder, filename, message_error, html_message_error):
             RecordingFile.objects.create(file=source_file,
                                          recorder=recorder,
                                          file_size=file_size,
-                                         email_sent=False)
+                                         email_sent=False,
+                                         type=recorder.recording_type)
     return html_message_error, message_error
 
 
