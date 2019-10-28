@@ -74,7 +74,10 @@ ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
     False
 )
 # Mode debug (0: False, 1: True)
-DEBUG = 1
+DEBUG = getattr(
+    settings, 'DEBUG',
+    False
+)
 
 
 def case_full_upload(html_message_error, message_error, recorder, source_file,
@@ -339,7 +342,6 @@ class Command(BaseCommand):
             html_message_error = ""
             message_error = ""
             # Path the tree
-            print(DEFAULT_RECORDER_PATH)
             for root, dirs, files in os.walk(DEFAULT_RECORDER_PATH):
                 html_message_error, message_error = process_directory(
                     html_message_error, message_error, files, root)

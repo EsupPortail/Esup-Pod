@@ -100,7 +100,7 @@ class RecordingTestCase(TestCase):
         recording.type = ""
         recording.source_file = ""
         recording.save()
-        self.assertEqual(1, len(recording.verify_attributs()))
+        self.assertEqual(2, len(recording.verify_attributs()))
         print(
             "   --->  test_verifying_attributs_fst_cases \
             of RecordingTestCase : OK !")
@@ -111,7 +111,7 @@ class RecordingTestCase(TestCase):
         recording.type = "something"
         recording.source_file = "/home/pod/files/somefile.mp4"
         recording.save()
-        self.assertEqual(1, len(recording.verify_attributs()))
+        self.assertEqual(2, len(recording.verify_attributs()))
         print(
             "   --->  test_verifying_attributs_snd_cases \
             of RecordingTestCase : OK !")
