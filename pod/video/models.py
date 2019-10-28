@@ -28,7 +28,11 @@ from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
 
+import select2.fields
+import select2.models
+
 from pod.main.models import get_nextautoincrement
+from django.db.models import Q
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -398,7 +402,14 @@ class Video(models.Model):
             'numbers, underscore or dash top.'),
         editable=False)
     type = models.ForeignKey(Type, verbose_name=_('Type'))
-    owner = models.ForeignKey(User, verbose_name=_('Owner'))
+    owner = select2.fields.ForeignKey(
+            User,
+            ajax=True,
+            verbose_name=_('Owner'),
+            search_field=lambda q: Q(
+                first_name__icontains=q) | Q(
+                    last_name__icontains=q),
+            on_delete=models.CASCADE)
     description = RichTextField(
         _('Description'),
         config_name='complete',

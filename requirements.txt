@@ -20,3 +20,4 @@ pandas
 deepspeech==0.5.1
 billiard
 webrtcvad
+django-select2-forms

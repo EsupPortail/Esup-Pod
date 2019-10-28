@@ -125,6 +125,9 @@ urlpatterns = [
 
     # custom
     url(r'^custom/', include('pod.custom.urls')),
+
+    # django-select2-form
+    url(r'^select2/', include('select2.urls')),
 ]
 # CAS
 if USE_CAS:
