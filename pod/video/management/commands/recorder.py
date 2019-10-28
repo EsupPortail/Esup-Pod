@@ -119,10 +119,10 @@ def case_manager_exist(html_message_error, message_error, recorder,
             "- Generate the URL , with haskey, to notify the "
             "mediacourse recorder's manager : " + urlNotify)
         # Make a request on this URL
-    r = requests.get(urlNotify)
+    request = requests.get(urlNotify)
     # If all (arguments,...) are good, an email is sent to
     # mediacourse recorder's manager that a video was published
-    if str(r.content)[1:] == "'ok'":
+    if str(request.content)[1:] == "'ok'":
         # Email was sent. Job is done
         if DEBUG:
             print(
@@ -145,17 +145,17 @@ def case_manager_exist(html_message_error, message_error, recorder,
         if DEBUG:
             print(
                 " - Request was made to URL with failure(" + str(
-                    r.content)[1:] + "). An email wasn't sent to "
+                    request.content)[1:] + "). An email wasn't sent to "
                                      "mediacourse recorder's "
                                      "manager.")
             # Catch the the error encountered
         html_message_error += "<li><b>Error</b> : Security error"
-        " for the file " + source_file + ": <b>" + str(r.content)[1:] + \
+        " for the file " + source_file + ": <b>" + str(request.content)[1:] + \
             "</b>.<br/><i>>>>Check the publish link : " + urlNotify + \
             "</i></li> "
         message_error += "\n Error : Security error for the file " \
                          + source_file + " : " + \
-                         str(r.content)[1:] + \
+                         str(request.content)[1:] + \
                          ".\n   >>> Check the publish link : " + \
                          urlNotify
     return html_message_error, message_error

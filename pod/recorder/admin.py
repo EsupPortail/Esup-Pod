@@ -10,7 +10,7 @@ from .models import RecordingFile
 class RecordingAdmin(admin.ModelAdmin):
     list_display = ('title', 'user', 'source_file', 'type', 'date_added')
     list_display_links = ('title',)
-    list_filter = ('user', 'type')
+    list_filter = ('type',)
 
 
 class RecordingFileAdmin(admin.ModelAdmin):
@@ -26,7 +26,6 @@ class RecorderAdmin(admin.ModelAdmin):
     list_display = (
         'name', 'Description', 'address_ip', 'user', 'type', 'directory')
     list_display_links = ('name',)
-    list_filter = ('user',)
     readonly_fields = []
 
 
