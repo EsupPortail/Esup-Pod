@@ -35,6 +35,7 @@ from pod.video_search.views import search_videos
 from pod.recorder.views import add_recording
 from pod.lti.views import LTIAssignmentView
 
+
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
 OEMBED = getattr(
@@ -124,6 +125,9 @@ urlpatterns = [
 
     # custom
     url(r'^custom/', include('pod.custom.urls')),
+
+    # django-select2-form
+    url(r'^select2/', include('select2.urls')),
 ]
 # CAS
 if USE_CAS:
