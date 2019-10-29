@@ -1,6 +1,6 @@
 Django==1.11.23
 django-ckeditor==5.3.1
-Pillow==5.1.0
+Pillow==6.2.1
 django-tagging==0.4.6
 django-modeltranslation==0.12.2
 webvtt-py==0.4.2
@@ -20,3 +20,4 @@ pandas
 deepspeech==0.6.0a9
 billiard
 webrtcvad
+django-select2-forms==2.1.0
