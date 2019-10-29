@@ -198,9 +198,7 @@ class RecordingFileTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        type = "video"
         recording_file = RecordingFile.objects.create()
-        recording_file.type = type
         recording_file.file = "/home/pod/files/somefile.mp4"
         recording_file.save()
         print(" --->  SetUp of RecordingFileTestCase : OK !")
@@ -211,7 +209,6 @@ class RecordingFileTestCase(TestCase):
 
     def test_attributs(self):
         recording_file = RecordingFile.objects.get(id=1)
-        self.assertEqual(recording_file.type, "video")
         self.assertEqual(recording_file.file, "/home/pod/files/somefile.mp4")
         print(
             "   --->  test_attributs of RecordingFileTestCase : OK !")

@@ -33,7 +33,7 @@ class recorderViewsTestCase(TestCase):
         user = User.objects.create(username='pod', password='podv2')
         Recorder.objects.create(id=1, user=user, name="recorder1",
                                 address_ip="16.3.10.37", type=videotype,
-                                directory="dir1")
+                                directory="dir1", recording_type="video")
         print(" --->  SetUp of recorderViewsTestCase : OK !")
 
     def test_add_recording(self):
@@ -47,14 +47,21 @@ class recorderViewsTestCase(TestCase):
         self.user.save()
         response = self.client.get("/add_recording/",
                                    {'mediapath': 'video.mp4',
-                                    'type': 'something'})
+                                    'recorder': 1})
         self.assertEqual(response.status_code, 302)  # User is not staff
 
         self.user.is_staff = True
         self.user.save()
+
+        # recorder not exist
         response = self.client.get("/add_recording/",
                                    {'mediapath': 'video.mp4',
-                                    'type': 'something'})
+                                    'recorder': 100})
+        self.assertEqual(response.status_code, 403)
+
+        response = self.client.get("/add_recording/",
+                                   {'mediapath': 'video.mp4',
+                                    'recorder': 1})
         self.assertEqual(response.status_code, 200)
 
         self.assertTemplateUsed(response, 'recorder/add_recording.html')

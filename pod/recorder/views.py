@@ -34,6 +34,20 @@ USE_CAS = getattr(settings, 'USE_CAS', False)
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
 
 
+def check_recorder(recorder, request):
+    if recorder is None:
+        messages.add_message(
+            request, messages.ERROR, _('Recorder should be indicated.'))
+        raise PermissionDenied
+    try:
+        recorder = Recorder.objects.get(id=recorder)
+    except ObjectDoesNotExist:
+        messages.add_message(
+            request, messages.ERROR, _('Recorder not found.'))
+        raise PermissionDenied
+    return recorder
+
+
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def add_recording(request):
@@ -41,12 +55,13 @@ def add_recording(request):
         request.GET.get('mediapath')) else ""
     course_title = request.GET.get(
         'course_title') if request.GET.get('course_title') else ""
-    course_type = request.GET.get('type')
     recorder = request.GET.get('recorder') or None
+
+    recorder = check_recorder(recorder, request)
 
     initial = {
         'title': course_title,
-        'type': course_type,
+        'type': recorder.recording_type,
         'recorder': recorder,
         'user': request.user}
 
@@ -131,8 +146,7 @@ def recorder_notify(request):
             link_url = ''.join(
                 [request.build_absolute_uri(reverse('add_recording')),
                  "?mediapath=", mediapath, "&course_title=%s" % course_title,
-                 "&recorder=%s" % recorder.id,
-                 '&type=%s' % recorder.recording_type])
+                 "&recorder=%s" % recorder.id])
             link_url = reformat_url_if_use_cas(request, link_url)
 
             text_msg = _(

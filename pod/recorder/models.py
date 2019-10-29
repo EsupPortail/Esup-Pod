@@ -56,10 +56,11 @@ class Recorder(models.Model):
     type = models.ForeignKey(
         Type, on_delete=models.CASCADE,
         help_text=_('Video type by default.'))
-    # Directory name where videos of this recorder are published
+
     recording_type = models.CharField(_('Recording Type'), max_length=50,
                                       choices=RECORDER_TYPE,
                                       default=RECORDER_TYPE[0][0])
+    # Directory name where videos of this recorder are published
     directory = models.CharField(_('Publication directory'), max_length=50,
                                  unique=True, help_text=_(
             'Basic directory containing the videos published by the recorder.')
@@ -94,11 +95,12 @@ class Recording(models.Model):
                              default=DEFAULT_RECORDER_USER_ID,
                              help_text=_("User who has made the recording"))
     title = models.CharField(_('title'), max_length=200, unique=True)
+    type = models.CharField(_('Recording Type'), max_length=50,
+                            choices=RECORDER_TYPE,
+                            default=RECORDER_TYPE[0][0])
     source_file = models.FilePathField(
         path=DEFAULT_RECORDER_PATH, unique=True,
         recursive=True)
-    type = models.CharField(max_length=50, choices=RECORDER_TYPE,
-                            default=RECORDER_TYPE[0][0])
     comment = models.TextField(_('Comment'), blank=True, default="")
     date_added = models.DateTimeField('date added', default=timezone.now,
                                       editable=False)
