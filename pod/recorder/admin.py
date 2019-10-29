@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from .models import Recording, Recorder
-from .models import RecordingFile
+from .models import RecordingFileTreatment
 
 
 # Register your models here.
@@ -30,5 +30,5 @@ class RecorderAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Recording, RecordingAdmin)
-admin.site.register(RecordingFile, RecordingFileAdmin)
+admin.site.register(RecordingFileTreatment, RecordingFileAdmin)
 admin.site.register(Recorder, RecorderAdmin)

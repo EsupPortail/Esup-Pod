@@ -140,7 +140,7 @@ def process_recording(sender, instance, created, **kwargs):
         mod.process(instance)
 
 
-class RecordingFile(models.Model):
+class RecordingFileTreatment(models.Model):
     file = models.FilePathField(path=DEFAULT_RECORDER_PATH, recursive=True,
                                 unique=True, help_text=_(
                                     'Source file of the published video.'))
@@ -174,24 +174,34 @@ class RecordingFile(models.Model):
         verbose_name = _("Recording file")
         verbose_name_plural = _("Recording files")
 
-#
-# @receiver(post_save, sender=RecordingFile)
-# def process_recording_file(sender, instance, created, **kwargs):
-#     if created and instance.file and os.path.isfile(instance.file.path):
-#         # deplacement du fichier source vers destination
-#         create_recording(instance)
-#
-#
-# def create_recording(recordingFile):
-#     new_path = os.path.join(
-#         DEFAULT_RECORDER_PATH, os.path.basename(recordingFile.file.path))
-#     nom, ext = os.path.splitext(os.path.basename(recordingFile.file.path))
-#     ext = ext.lower()
-#     os.rename(recordingFile.file.path, new_path)
-#     user = User.objects.get(id=DEFAULT_RECORDER_USER_ID)
-#     Recording.objects.create(
-#         user=user,
-#         title=nom,
-#         source_file=new_path,
-#         type=recordingFile.type
-#     )
+
+class RecordingFile(models.Model):
+    file = models.FileField(upload_to='uploads/')
+    type = models.CharField(
+        max_length=50, choices=RECORDER_TYPE, default=RECORDER_TYPE[0][0])
+
+    class Meta:
+        verbose_name = _("Recording file")
+        verbose_name_plural = _("Recording files")
+
+
+@receiver(post_save, sender=RecordingFile)
+def process_recording_file(sender, instance, created, **kwargs):
+    if created and instance.file and os.path.isfile(instance.file.path):
+        # deplacement du fichier source vers destination
+        create_recording(instance)
+
+
+def create_recording(recordingFile):
+    new_path = os.path.join(
+        DEFAULT_RECORDER_PATH, os.path.basename(recordingFile.file.path))
+    nom, ext = os.path.splitext(os.path.basename(recordingFile.file.path))
+    ext = ext.lower()
+    os.rename(recordingFile.file.path, new_path)
+    user = User.objects.get(id=DEFAULT_RECORDER_USER_ID)
+    Recording.objects.create(
+        user=user,
+        title=nom,
+        source_file=new_path,
+        type=recordingFile.type
+    )

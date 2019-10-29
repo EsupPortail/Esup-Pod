@@ -25,7 +25,7 @@ import os
 from django.utils import translation
 from django.core.management.base import BaseCommand
 from django.conf import settings
-from pod.recorder.models import Recorder, Recording, RecordingFile
+from pod.recorder.models import Recorder, Recording, RecordingFileTreatment
 import hashlib
 import requests
 from django.core.mail import mail_admins
@@ -134,7 +134,7 @@ def case_manager_exist(html_message_error, message_error, recorder,
                 "manager.")
             # Save this information in the database, to avoid to
         # send multiple emails
-        RecordingFile.objects.filter(
+        RecordingFileTreatment.objects.filter(
             file=source_file, ).update(file_size=file_size,
                                        email_sent=True,
                                        date_email_sent=timezone
@@ -142,7 +142,7 @@ def case_manager_exist(html_message_error, message_error, recorder,
         if DEBUG:
             print(
                 "- Information saved in the "
-                "recorder_recordingfile table.")
+                "recorder_recordingfiletreatment table.")
     else:
         # Email wasn't sent, due to an error
         if DEBUG:
@@ -192,7 +192,7 @@ def case_no_manager(html_message_error, message_error, recorder, source_file):
             message_error, fail_silently=False,
             html_message=html_message_error)
     else:
-        RecordingFile.objects.filter(
+        RecordingFileTreatment.objects.filter(
             file=source_file).update(
             require_manual_claim=True)
         if DEBUG:
@@ -223,7 +223,7 @@ def file_exist(file, file_size, source_file, recorder, message_error,
                 print(
                     "- This video was partially uploaded. Waiting for "
                     "complete file.")
-            file = RecordingFile.objects.filter(
+            file = RecordingFileTreatment.objects.filter(
                 file=source_file, ).update(file_size=file_size,
                                            email_sent=False)
             # This video wasn't already processed and no mail was sent to
@@ -247,7 +247,7 @@ def recorder_exist(recorder, filename, message_error, html_message_error):
     recording = Recording.objects.filter(source_file=source_file).first()
     # Check if an email was already sent to recorder's manager
     # for this video
-    file = RecordingFile.objects.filter(file=source_file).first()
+    file = RecordingFileTreatment.objects.filter(file=source_file).first()
 
     if recording:
         # This video was already processed
@@ -269,11 +269,11 @@ def recorder_exist(recorder, filename, message_error, html_message_error):
             if DEBUG:
                 print(" - The job is created.")
             # The job is created but no email is sent
-            RecordingFile.objects.create(file=source_file,
-                                         recorder=recorder,
-                                         file_size=file_size,
-                                         email_sent=False,
-                                         type=recorder.recording_type)
+            RecordingFileTreatment.objects.create(file=source_file,
+                                                  recorder=recorder,
+                                                  file_size=file_size,
+                                                  email_sent=False,
+                                                  type=recorder.recording_type)
     return html_message_error, message_error
 
 

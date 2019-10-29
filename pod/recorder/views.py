@@ -13,7 +13,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import csrf_protect
 from django.utils.translation import ugettext_lazy as _
 
-from pod.recorder.models import Recorder, RecordingFile
+from pod.recorder.models import Recorder, RecordingFileTreatment
 from .forms import RecordingForm
 from django.contrib import messages
 import hashlib
@@ -132,7 +132,7 @@ def recorder_notify(request):
                 [request.build_absolute_uri(reverse('add_recording')),
                  "?mediapath=", mediapath, "&course_title=%s" % course_title,
                  "&recorder=%s" % recorder.id,
-                 '&course_type=%s' % recorder.recording_type])
+                 '&type=%s' % recorder.recording_type])
             link_url = reformat_url_if_use_cas(request, link_url)
 
             text_msg = _(
@@ -184,7 +184,7 @@ def recorder_notify(request):
 @staff_member_required(redirect_field_name='referrer')
 def claim_record(request):
     # get records list ordered by date
-    records_list = RecordingFile.objects.order_by('-date_added')
+    records_list = RecordingFileTreatment.objects.order_by('-date_added')
     page = request.GET.get('page', 1)
 
     full_path = ""

@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from pod.video.models import Type
-from ..models import Recording, RecordingFile, Recorder
+from ..models import Recording, RecordingFile, Recorder, RecordingFileTreatment
 
 
 # Create your tests here.
@@ -146,7 +146,7 @@ class RecordingTestCase(TestCase):
     },
     LANGUAGE_CODE='en'
 )
-class RecordingFileTestCase(TestCase):
+class RecordingFileTreatmentTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
@@ -155,10 +155,10 @@ class RecordingFileTestCase(TestCase):
         recorder1 = Recorder.objects.create(id=1, user=user1, name="recorder1",
                                             address_ip="16.3.10.37",
                                             type=videotype, directory="dir1")
-        recording_file = RecordingFile.objects.create(type='video',
-                                                      file="/home/pod/files"
-                                                           "/somefile.mp4",
-                                                      recorder=recorder1)
+        recording_file = RecordingFileTreatment.objects.create(
+            type='video',
+            file="/home/pod/files/somefile.mp4",
+            recorder=recorder1)
         recording_file.save()
         print(" --->  SetUp of RecordingFileTestCase : OK !")
 
@@ -167,7 +167,7 @@ class RecordingFileTestCase(TestCase):
     """
 
     def test_attributs(self):
-        recording_file = RecordingFile.objects.get(id=1)
+        recording_file = RecordingFileTreatment.objects.get(id=1)
         recorder = Recorder.objects.get(id=1)
         self.assertEqual(recording_file.type, "video")
         self.assertEqual(recording_file.file, "/home/pod/files/somefile.mp4")
@@ -177,6 +177,42 @@ class RecordingFileTestCase(TestCase):
         self.assertEqual(recording_file.date_added.year, date.year)
         self.assertEqual(recording_file.date_added.month, date.month)
         self.assertEqual(recording_file.date_added.day, date.day)
+        print(
+            "   --->  test_attributs of RecordingFileTreatmentTestCase : OK !")
+
+    """
+        test delete object
+    """
+
+    def test_delete_object(self):
+        filepath = "/home/pod/files/somefile.mp4"
+        RecordingFileTreatment.objects.filter(file=filepath).delete()
+        self.assertEquals(RecordingFileTreatment.objects.all().count(), 0)
+
+        print(
+            "--->  test_delete_object of RecordingFileTreatmentTestCase : OK "
+            "!")
+
+
+class RecordingFileTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        type = "video"
+        recording_file = RecordingFile.objects.create()
+        recording_file.type = type
+        recording_file.file = "/home/pod/files/somefile.mp4"
+        recording_file.save()
+        print(" --->  SetUp of RecordingFileTestCase : OK !")
+
+    """
+        test attributs
+    """
+
+    def test_attributs(self):
+        recording_file = RecordingFile.objects.get(id=1)
+        self.assertEqual(recording_file.type, "video")
+        self.assertEqual(recording_file.file, "/home/pod/files/somefile.mp4")
         print(
             "   --->  test_attributs of RecordingFileTestCase : OK !")
 
