@@ -28,8 +28,7 @@ from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
 
-import select2.fields
-import select2.models
+from select2 import fields as select2_fields
 
 from pod.main.models import get_nextautoincrement
 from django.db.models import Q
@@ -402,7 +401,7 @@ class Video(models.Model):
             'numbers, underscore or dash top.'),
         editable=False)
     type = models.ForeignKey(Type, verbose_name=_('Type'))
-    owner = select2.fields.ForeignKey(
+    owner = select2_fields.ForeignKey(
             User,
             ajax=True,
             verbose_name=_('Owner'),

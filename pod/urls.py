@@ -123,11 +123,11 @@ urlpatterns = [
     url(r'^captcha/', include('captcha.urls')),
     url(r'^download/$', download_file, name='download_file'),
 
-    # custom
-    url(r'^custom/', include('pod.custom.urls')),
-
     # django-select2-form
     url(r'^select2/', include('select2.urls')),
+
+    # custom
+    url(r'^custom/', include('pod.custom.urls')),
 ]
 # CAS
 if USE_CAS:
