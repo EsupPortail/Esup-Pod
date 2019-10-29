@@ -179,8 +179,11 @@ class RecordingFileTreatment(models.Model):
 
 class RecordingFile(models.Model):
     file = models.FileField(upload_to='uploads/')
-    type = models.CharField(
-        max_length=50, choices=RECORDER_TYPE, default=RECORDER_TYPE[0][0])
+    recorder = models.ForeignKey(Recorder,
+                                 on_delete=models.CASCADE,
+                                 verbose_name=_('Recorder'),
+                                 help_text=_('Recorder that made this '
+                                             'recording.'))
 
     class Meta:
         verbose_name = _("Recording file")
@@ -205,5 +208,6 @@ def create_recording(recordingFile):
         user=user,
         title=nom,
         source_file=new_path,
-        type=recordingFile.type
+        recorder=recordingFile.recorder,
+        type=recordingFile.recorder.recording_type
     )

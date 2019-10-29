@@ -198,7 +198,12 @@ class RecordingFileTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        recording_file = RecordingFile.objects.create()
+        videotype = Type.objects.create(title='others')
+        user1 = User.objects.create(username="pod")
+        recorder1 = Recorder.objects.create(id=1, user=user1, name="recorder1",
+                                            address_ip="16.3.10.37",
+                                            type=videotype, directory="dir1")
+        recording_file = RecordingFile.objects.create(recorder=recorder1)
         recording_file.file = "/home/pod/files/somefile.mp4"
         recording_file.save()
         print(" --->  SetUp of RecordingFileTestCase : OK !")

@@ -29,9 +29,7 @@ class RecorderAdmin(admin.ModelAdmin):
 
 
 class RecordingFileAdmin(admin.ModelAdmin):
-    list_display = ('id', 'file', 'type')
-    # list_display_links = ('title',)
-    list_filter = ('type',)
+    list_display = ('id', 'file', 'recorder')
 
 
 admin.site.register(Recording, RecordingAdmin)
