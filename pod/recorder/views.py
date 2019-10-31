@@ -198,7 +198,8 @@ def recorder_notify(request):
 @staff_member_required(redirect_field_name='referrer')
 def claim_record(request):
     # get records list ordered by date
-    records_list = RecordingFileTreatment.objects.order_by('-date_added')
+    records_list = RecordingFileTreatment.objects.\
+        filter(require_manual_claim=True).order_by('-date_added')
     page = request.GET.get('page', 1)
 
     full_path = ""
