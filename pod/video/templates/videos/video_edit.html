@@ -73,30 +73,32 @@
             {{field_hidden}}
             {% endfor %}
             {% for field in form.visible_fields %}
-            {% spaceless %}
-            <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}"{% if field.name == "restrict_access_to_groups" %}style="padding-left:2em;"{% endif %}>
-            <div class="list-group-item">
-            <div class="form-group {% if field.field.required %}form-group-required{%endif%}" {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}style="max-width:44rem; overflow-x:hidden"{%endif%}>
-                {{ field.errors }}
-                {% if "form-check-input" in field.field.widget.attrs.class %}
-                <div class="form-check">
-                {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label" >{{ field.label }}</label>
-                </div>
-                {% else %}
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label> 
-                {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br/>{%endif%}
-                {{ field }}
-                {% endif %}
-                {% if field.help_text %}
-                <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
-                {% endif %}
-                {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
-                {% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
-                {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
-            </div>
-            </div>
-            </div>
-            {% endspaceless %}
+				{% if field.name != "version" %}
+					{% spaceless %}
+					<div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}"{% if field.name == "restrict_access_to_groups" %}style="padding-left:2em;"{% endif %}>
+					<div class="list-group-item">
+					<div class="form-group {% if field.field.required %}form-group-required{%endif%}" {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}style="max-width:44rem; overflow-x:hidden"{%endif%}>
+						{{ field.errors }}
+						{% if "form-check-input" in field.field.widget.attrs.class %}
+						<div class="form-check">
+						{{ field }} <label for="{{ field.id_for_label }}" class="form-check-label" >{{ field.label }}</label>
+						</div>
+						{% else %}
+						<label for="{{ field.id_for_label }}">{{ field.label }}</label> 
+						{% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br/>{%endif%}
+						{{ field }}
+						{% endif %}
+						{% if field.help_text %}
+						<small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+						{% endif %}
+						{% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+						{% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
+						{% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
+					</div>
+					</div>
+					</div>
+					{% endspaceless %}
+				{% endif %}
             {% endfor %}
         </fieldset>
         <div class="card" id='js-process'>
@@ -114,7 +116,7 @@
         {% if form.instance.title %}<button type="submit" class="btn btn-primary btn-sm" name="_saveandsee" value="{{form.instance.get_full_url}}">{% trans 'Save and see' %}</button> {%endif%}
         <a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}" class="btn btn-success btn-sm">{% trans 'back to my videos' %}</a>
     </div>
-</form>
+<!--</form>-->
 {% endif %}
 {% endspaceless %}
 {% endblock page_content %}
@@ -136,8 +138,16 @@
         <div class="card-text">
             <p>{% trans 'As a staff member you can create other version of your video.' %}</p>
             <div class="input-group-button">
-                {% for app in THIRD_PARTY_APPS %}{% if app != "live" %}{% with urledit=app|add:':edit_'|add:app %}<a href="{% url urledit slug=form.instance.slug %}" title="{% trans app|add:' the video' %}" class="p-0 m-0 btn btn-light btn-sm pl-1"><i data-feather="file-plus"></i>&nbsp;{{app}}</a>     {% endwith %}{% endif %}{% endfor %}
+                {% for app in THIRD_PARTY_APPS %}{% if app != "live" %}{% with urledit=app|add:':edit_'|add:app test='Edit video '|add:app %}<a href="{% url urledit slug=form.instance.slug %}" title="{% trans test %}" class="p-0 m-0 btn btn-light btn-sm pl-1"><i data-feather="file-plus"></i>&nbsp;{% trans test %}</a>     {% endwith %}{% endif %}{% endfor %}
             </div>
+			<div class="input-group-button">
+				{% trans "You can choose the version that will be displayed by default :" %}
+				<select name="version" class="form-control form-control-sm" id="id_version">
+					<option value="O" {% if form.instance.version == "O" %}selected{% endif %}>{% trans "Original version" %}</option>
+					{% if form.instance.enrichment_set.all.exists %}<option value="E" {% if form.instance.version == "E" %}selected{% endif %}>{% trans "Enrichment version" %}</option>{% endif %}
+					{% if form.instance.interactive.is_interactive %}<option value="I" {% if form.instance.version == "I" %}selected{% endif %}>{% trans "Interactive version" %}</option>{% endif %}
+				</select>
+			</div>
         </div>
     </div>
     {% endif %}
@@ -159,6 +169,7 @@
     </div>
 {% endif %}
 {% endif %}
+</form>
 <div class="card card-body p-2 mt-1" id="card-sharedraftversion">
     <h5 class="card-title pl-2">{% trans "Uploading" %}</h5>
     <div class="card-text" >

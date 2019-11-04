@@ -399,6 +399,26 @@ def get_video_access(request, video, slug_private):
 
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
+    # Management of video default version
+    id = int(slug.split('-')[0])
+    v = Video.objects.get(id=id)
+    try:
+        if(v.version == 'E' and v.enrichment_set.all().exists() and(
+                'redirect' not in request.GET
+                or request.GET.get('redirect') == 'true'
+                or request.GET.get('redirect') == '1')):
+            url = request.get_full_path().replace('/video/',
+                                                  '/enrichment/video/')
+            return redirect(url)
+        if(v.version == 'I' and v.interactive.is_interactive() and(
+                'redirect' not in request.GET
+                or request.GET.get('redirect') == 'true'
+                or request.GET.get('redirect') == '1')):
+            url = request.get_full_path().replace('/video/',
+                                                  '/interactive/video/')
+            return redirect(url)
+    except Exception:
+        pass
     template_video = 'videos/video-iframe.html' if (
         request.GET.get('is_iframe')) else 'videos/video.html'
     return render_video(request, slug, slug_c, slug_t, slug_private,

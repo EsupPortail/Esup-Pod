@@ -58,9 +58,17 @@ CURSUS_CODES = getattr(
         ('1', _("Other"))
     ))
 
+VERSION_CHOICES = getattr(
+    settings, 'VERSION_CHOICES', (
+        ('O', _("Original version")),
+        ('E', _("Enrichment version")),
+        ('I', _("Interactive version")),
+    ))
+
 LANG_CHOICES_DICT = {key: value for key,
                      value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}
 CURSUS_CODES_DICT = {key: value for key, value in CURSUS_CODES}
+VERSION_CHOICES_DICT = {key: value for key, value in VERSION_CHOICES}
 
 DEFAULT_TYPE_ID = getattr(
     settings, 'DEFAULT_TYPE_ID', 1)
@@ -494,6 +502,11 @@ class Video(models.Model):
     is_video = models.BooleanField(
         _('Is Video'), default=True, editable=False)
 
+    version = models.CharField(
+        _('Video version'), max_length=1, blank=True,
+        choices=VERSION_CHOICES, default="O",
+        help_text=_("Video default version."))
+
     class Meta:
         ordering = ['-date_added', '-id']
         get_latest_by = 'date_added'
@@ -676,6 +689,7 @@ class Video(models.Model):
                 "mediatype": "video" if self.is_video else "audio",
                 "cursus": "%s" % CURSUS_CODES_DICT[self.cursus],
                 "main_lang": "%s" % LANG_CHOICES_DICT[self.main_lang],
+                "version": "%s" % VERSION_CHOICES_DICT[self.version],
             }
             return json.dumps(data_to_dump)
         except ObjectDoesNotExist as e:
@@ -688,6 +702,9 @@ class Video(models.Model):
 
     def get_cursus(self):
         return "%s" % CURSUS_CODES_DICT[self.cursus]
+
+    def get_version(self):
+        return "%s" % VERSION_CHOICES_DICT[self.version]
 
     def get_licence(self):
         return "%s" % LICENCE_CHOICES_DICT[self.licence]

@@ -139,19 +139,19 @@
       <div class="list-group-item">
         <div class="form-group ">
           <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page' %}:</label>
-          <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
+          <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}?is_iframe=true{%elif interactive%}{% url 'interactive:video_interactive' slug=video.slug %}?is_iframe=true{%else%}{% url 'video' slug=video.slug %}?redirect=0&is_iframe=true{%endif%}" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
         </div>
       </div>
       <div class="list-group-item">
         <div class="form-group">
           <label for="txtpartage">{% trans 'Use this link to share the video' %} :</label>
-          <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}" />
+          <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%elif interactive%}{% url 'interactive:video_interactive' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}?redirect=0{%endif%}" />
         </div>
       </div>
       <div class="list-group-item">
         <div class="form-group">
           <label>{% trans 'QR code for this link' %} :</label>
-          <img src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}" alt="qrcode" id="qrcode"/>
+          <img src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%elif interactive%}{% url 'interactive:video_interactive' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}?redirect=0{%endif%}" alt="qrcode" id="qrcode"/>
         </div>
       </div>
       </fieldset>

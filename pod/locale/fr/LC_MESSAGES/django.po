@@ -4054,6 +4054,40 @@ msgstr "facettage"
 msgid "Remove selection"
 msgstr "Retirer la sélection"
 
+#: pod/video/models.py:506
+msgid "Video version"
+msgstr "Version de la vidéo"
+
+#: pod/video/models.py:508
+msgid "Video default version."
+msgstr "Version de la vidéo par défaut."
+
+#:pod/video/templates/videos/video_edit.html:141
+msgid "Edit video enrichment"
+msgstr "Editer l'enrichissement de la vidéo"
+
+#:pod/video/templates/videos/video_edit.html:141
+msgid "Edit video interactive"
+msgstr "Editer l'interactivité de la vidéo"
+
+#:pod/video/templates/videos/video_edit.html:144
+msgid "You can choose the version that will be displayed by default :"
+msgstr "Vous pouvez choisir la version qui sera affichée par défaut :"
+
+#:pod/video/templates/videos/video_edit.html:146
+#:pod/enrichment/templates/enrichment/video_enrichment.html:113
+#:pod/interactive/templates/interactive/video_interactive.html:89
+msgid "Original version"
+msgstr "Version originale"
+
+#:pod/video/templates/videos/video_edit.html:147
+msgid "Enrichment version"
+msgstr "Version enrichie"
+
+#:pod/video/templates/videos/video_edit.html:148
+msgid "Interactive version"
+msgstr "Version interactive"
+
 #~ msgid ""
 #~ "Select and copy the caption file contents below and paste into a .vtt file"
 #~ msgstr ""

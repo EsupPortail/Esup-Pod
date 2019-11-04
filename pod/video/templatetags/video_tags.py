@@ -1,6 +1,7 @@
 from django import template
 from django.utils.text import capfirst
 from django.urls import reverse
+from django.utils.translation import gettext as _
 
 import importlib
 
@@ -25,5 +26,6 @@ def get_app_link(video, app):
                     'class="dropdown-item" target="_blank">%(link)s</a>') % {
                 "app": app,
                 "url": url,
-                "link": mod.__NAME__}
+                # "link": mod.__NAME__}
+                "link": _(capfirst(app) + " version")}
     return ""
