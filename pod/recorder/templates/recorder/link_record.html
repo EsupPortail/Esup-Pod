@@ -1,0 +1,5 @@
+{% load i18n %}
+{% spaceless %}
+<a href="{% url 'add_recording' %}?mediapath={{ record.file }}&recorder={{ record.recorder.id }}&course_title={{ record.filename}}" title="{% trans "Claim the record"%}" class="p-0 m-0 btn btn-primary btn-sm pl-1">
+    {% trans "Claim the record"%}<i data-feather="plus"></i></a>
+{%endspaceless%}

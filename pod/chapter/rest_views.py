@@ -9,7 +9,7 @@ class ChapterSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Chapter
         fields = ('id', 'url', 'video', 'title',
-                  'time_start', 'time_end')
+                  'time_start')
 
 
 #############################################################################

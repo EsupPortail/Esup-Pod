@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% block page_extra_head %}
+<link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
+<script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
+<script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
+{% endblock %}
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Claim a record" %}</li>{% endblock %}
+
+{% block page_title %}
+{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}
+{% endblock %}
+
+{% block page_content %}
+  {% if records.paginator.count == 0 %}
+  <h3>{% trans "No record found"%}</h3>
+    <p class="alert alert-info">{% trans 'There is no unassigned records'%}</p>
+  {% else %}
+  <h3>{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}</h3>
+  {% include "recorder/record_list.html" %}
+  {% endif %}
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+{% block more_script %}
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite.min.js' %}"></script>
+<script>
+  var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+      $('.loading').show();
+    },
+    onAfterPageLoad: function ($items) {
+      $('.loading').hide();
+      feather.replace({ class: 'align-bottom'});
+      if(!$('footer').hasClass('small')) {
+        $('footer').addClass('small');
+        $('footer').addClass('fixed-bottom');
+        $('footer').attr('style','height:80px; overflow-y:auto');
+      }
+    }
+  });
+</script>
+{% endblock more_script %}
