@@ -312,10 +312,27 @@ class Theme(models.Model):
         return parents
 
     def clean(self):
-        if Theme.objects.filter(
-                channel=self.channel, slug=slugify(self.title)).exists():
-            raise ValidationError(
-                "A theme with this name already exist in this channel.")
+        theme = Theme.objects.filter(
+                channel=self.channel, slug=slugify(self.title)).first()
+
+        # Dans le cas où on modifie un theme
+        if self.id:
+            old_theme = Theme.objects.filter(id=self.id).first()
+            # verifier si le titre ou la chaine ont été changés
+            change_title_or_channel = (
+                    not old_theme.channel == self.channel or
+                    not old_theme.title == self.title)
+            if change_title_or_channel:
+                if theme:
+                    raise ValidationError("A theme with this name\
+                            already exists in this channel.")
+        else:
+            # dans le cas où on crée un nouveau theme
+            # vérifier si il n'est pas deja dans la chaine séléctionnée
+            if theme:
+                raise ValidationError("A theme with this name\
+                        already exists in this channel.")
+
         if self.parentId in self.get_all_children_flat():
             raise ValidationError("A theme cannot have itself \
                     or one of it's children as parent.")
