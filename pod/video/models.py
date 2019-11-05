@@ -115,6 +115,19 @@ NOTES_STATUS = getattr(
     )
 )
 
+THIRD_PARTY_APPS = getattr(
+    settings, 'THIRD_PARTY_APPS', [])
+
+THIRD_PARTY_APPS_CHOICES = THIRD_PARTY_APPS.copy()
+THIRD_PARTY_APPS_CHOICES.remove("live") if (
+    "live" in THIRD_PARTY_APPS_CHOICES) else THIRD_PARTY_APPS_CHOICES
+THIRD_PARTY_APPS_CHOICES.append('Original')
+
+VERSION_CHOICES = [(app.capitalize()[0], _(app.capitalize()+" version"))
+                   for app in THIRD_PARTY_APPS_CHOICES]
+
+VERSION_CHOICES_DICT = {key: value for key, value in VERSION_CHOICES}
+
 ##
 # Settings exposed in templates
 #
@@ -562,6 +575,14 @@ class Video(models.Model):
     def duration_in_time(self):
         return time.strftime('%H:%M:%S', time.gmtime(self.duration))
     duration_in_time.fget.short_description = _('Duration')
+
+    @property
+    def get_version(self):
+        try:
+            return "%s" % VERSION_CHOICES_DICT[self.videoversion.version]
+        except VideoVersion.DoesNotExist:
+            return "%s" % VERSION_CHOICES_DICT['O']
+    
 
     def get_viewcount(self):
         count_sum = self.viewcount_set.all().aggregate(Sum('count'))
@@ -1049,6 +1070,18 @@ class EncodingLog(models.Model):
 
     def __str__(self):
         return "Log for encoding video %s" % (self.video.id)
+
+
+class VideoVersion(models.Model):
+    video = models.OneToOneField(Video, verbose_name=_('Video'),
+                                 editable=False, on_delete=models.CASCADE)
+    version = models.CharField(
+        _('Video version'), max_length=1, blank=True,
+        choices=VERSION_CHOICES, default="O",
+        help_text=_("Video default version."))
+
+    def __str__(self):
+        return "Choice for default video version : %s - %s" % (self.video.id)
 
 
 class EncodingStep(models.Model):
