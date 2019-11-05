@@ -32,8 +32,9 @@ from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 from pod.main.views import contact_us, download_file
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
-from pod.recorder.views import add_recording
+from pod.recorder.views import add_recording, recorder_notify, claim_record
 from pod.lti.views import LTIAssignmentView
+
 
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
@@ -86,6 +87,8 @@ urlpatterns = [
     url(r'^my_videos/$', my_videos, name='my_videos'),
     # recording
     url(r'^add_recording/$', add_recording, name='add_recording'),
+    url(r'^recorder_notify/$', recorder_notify, name='recorder_notify'),
+    url(r'^claim_record/$', claim_record, name='claim_record'),
 
     url(r'^search/$', search_videos, name='search_videos'),
 
@@ -121,6 +124,9 @@ urlpatterns = [
     url(r'^contact_us/$', contact_us, name='contact_us'),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^download/$', download_file, name='download_file'),
+
+    # django-select2-form
+    url(r'^select2/', include('select2.urls')),
 
     # custom
     url(r'^custom/', include('pod.custom.urls')),

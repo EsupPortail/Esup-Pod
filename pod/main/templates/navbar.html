@@ -79,7 +79,10 @@
           {% if request.user.owners_channels.all %}
           <a class="dropdown-item" href="{% url 'my_channels' %}" title="{% trans 'My channels' %}"><i data-feather="youtube"></i>&nbsp;{% trans 'My channels' %}</a>
           {% endif %}
-          <a class="dropdown-item" href="{% url 'my_playlists' %}" title="{% trans 'My playlists' %}"><i data-feather="airplay"></i>&nbsp;Mes playlists</a>
+          <a class="dropdown-item" href="{% url 'my_playlists' %}" title="{% trans 'My playlists' %}"><i data-feather="airplay"></i>&nbsp;{% trans 'My playlists' %}</a>
+          {% if request.user.is_staff and ALLOW_MANUAL_RECORDING_CLAIMING %}
+          <a class="dropdown-item" href="{% url 'claim_record' %}" title="{% trans 'Claim a record' %}"><i data-feather="share"></i>&nbsp;{% trans 'Claim a record' %}</a>
+          {% endif %}
           <!-- <a class="dropdown-item" href="#">Gestion de mon compte</a> -->
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{% url 'authentication_logout' %}" title="{% trans 'Log out' %}">
