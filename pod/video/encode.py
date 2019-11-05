@@ -1213,10 +1213,10 @@ def send_email_encoding(video_to_encode):
 
 def file_transcription(video_to_encode):
     # TODO launch another thread...
-    msg = change_encoding_step(
+    change_encoding_step(
         video_to_encode.id, 5,
         "transcripting audio")
-    main_transcript(video_to_encode)
+    msg = main_transcript(video_to_encode)
     add_encoding_log(
         video_to_encode.id,
         "create_and_save_subtitles : %s" % msg)
