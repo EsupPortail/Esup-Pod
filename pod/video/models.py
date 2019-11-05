@@ -403,13 +403,13 @@ class Video(models.Model):
         editable=False)
     type = models.ForeignKey(Type, verbose_name=_('Type'))
     owner = select2_fields.ForeignKey(
-            User,
-            ajax=True,
-            verbose_name=_('Owner'),
-            search_field=lambda q: Q(
-                first_name__icontains=q) | Q(
-                    last_name__icontains=q),
-            on_delete=models.CASCADE)
+        User,
+        ajax=True,
+        verbose_name=_('Owner'),
+        search_field=lambda q: Q(
+            first_name__icontains=q) | Q(
+            last_name__icontains=q),
+        on_delete=models.CASCADE)
     description = RichTextField(
         _('Description'),
         config_name='complete',
@@ -429,6 +429,10 @@ class Video(models.Model):
         _('Main language'), max_length=2,
         choices=LANG_CHOICES, default=get_language(),
         help_text=_("Select the main language used in the content."))
+    transcript = models.BooleanField(
+        _('Transcript'), default=False, help_text=_(
+            "Check this box if you want to transcript the audio."
+            "(beta version)"))
     tags = TagField(help_text=_(
         'Separate tags with spaces, '
         'enclose the tags consist of several words in quotation marks.'),
@@ -489,8 +493,6 @@ class Video(models.Model):
     overview = models.ImageField(
         _('Overview'), null=True, upload_to=get_storage_path_video,
         blank=True, max_length=255, editable=False)
-    # type = models.ForeignKey(Type, verbose_name=_('Type'),
-    #                          default=DEFAULT_TYPE_ID)
 
     encoding_in_progress = models.BooleanField(
         _('Encoding in progress'), default=False, editable=False)

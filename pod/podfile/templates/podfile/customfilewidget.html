@@ -7,7 +7,7 @@
 <span id="fileinput_{{id}}">
     {% if type == "image" %}<img src="{{document.file.url}}" height="34" alt="{{document.name}}"/>&nbsp;
     {% else %}<i data-feather="file"></i>&nbsp;{%endif%}
-<strong>{{document.name}}</strong>&nbsp;({{document.file_type}} - {{document.file.size|filesizeformat}})
+<strong><a href="{{document.file.url}}" target="_blank" title="{% trans 'Open file in a new tab'%}">{{document.name}}</a></strong>&nbsp;({{document.file_type}} - {{document.file.size|filesizeformat}})
 </span>
 <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">
   {% if type == "file" %}

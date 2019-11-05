@@ -34,6 +34,8 @@ if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.widgets import CustomFileWidget
 
+TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
+
 ENCODE_VIDEO = getattr(settings,
                        'ENCODE_VIDEO',
                        start_encode)
@@ -170,6 +172,15 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 "your content."),
             _("If your video is in a playlist the password of your "
                 "video will be removed automatically.")
+        ]),
+        ("{0}".format(_("Transcript")), [
+            _("Available only in French and English, transcription is a speech"
+              " recognition technology that transforms an oral speech into "
+              "text in an automated way. By checking this box, it will "
+              "generate a subtitle file automatically when encoding the video."
+              ),
+            _("You will probably have to modify this file using the "
+              "captioning tool in the completion page to improve it.")
         ])
     ]))
 
@@ -387,6 +398,9 @@ class VideoForm(forms.ModelForm):
 
         if FILEPICKER and self.fields.get('thumbnail'):
             self.fields['thumbnail'].widget = CustomFileWidget(type="image")
+
+        if not TRANSCRIPT:
+            self.remove_field('transcript')
 
         if self.fields.get('video'):
             self.fields['video'].label = _(u'File')
