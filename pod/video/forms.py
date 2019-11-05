@@ -177,7 +177,8 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
             _("Available only in French and English, transcription is a speech"
               " recognition technology that transforms an oral speech into "
               "text in an automated way. By checking this box, it will "
-              "generate a subtitle file automatically."),
+              "generate a subtitle file automatically when encoding the video."
+              ),
             _("You will probably have to modify this file using the "
               "captioning tool in the completion page to improve it.")
         ])
