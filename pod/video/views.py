@@ -429,11 +429,10 @@ def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
     app_name = request.resolver_match.namespace.capitalize()[0] \
         if request.resolver_match.namespace else 'O'
 
-    if (video.get_version != app_name
-            and request.GET.get('redirect') != "false"):
-        for version in video.get_other_version():
-            if version["link"] == VERSION_CHOICES_DICT[video.get_version]:
-                return redirect(version["url"])
+    return redirect(video.get_default_version_link()) if (
+        video.get_version != app_name and
+        request.GET.get('redirect') != "false"
+    ) else False
 
     listNotes = get_adv_note_list(request, video)
     channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None

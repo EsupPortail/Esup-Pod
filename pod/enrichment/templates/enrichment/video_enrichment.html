@@ -110,7 +110,7 @@
         <i data-feather="layers"></i>&nbsp;<span class="sr-only">{% trans 'Other versions' %}</span>
       </a>
       <div class="dropdown-menu" >
-        <a href="{% url 'video' slug=video.slug %}?redirect=0" title="no enrichment" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
+        <a href="{% url 'video' slug=video.slug %}?redirect=false" title="no enrichment" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
       </div>
     </li>
     {% if request.user.playlist_set.all and video.is_draft == False %}
