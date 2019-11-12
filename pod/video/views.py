@@ -74,6 +74,19 @@ TITLE_SITE = TEMPLATE_VISIBLE_SETTINGS[
         TEMPLATE_VISIBLE_SETTINGS.get('TITLE_SITE')
 ) else 'Pod'
 
+THIRD_PARTY_APPS = getattr(
+    settings, 'THIRD_PARTY_APPS', [])
+
+THIRD_PARTY_APPS_CHOICES = THIRD_PARTY_APPS.copy()
+THIRD_PARTY_APPS_CHOICES.remove("live") if (
+    "live" in THIRD_PARTY_APPS_CHOICES) else THIRD_PARTY_APPS_CHOICES
+THIRD_PARTY_APPS_CHOICES.insert(0, 'Original')
+
+VERSION_CHOICES = [(app.capitalize()[0], _(app.capitalize() + " version"))
+                   for app in THIRD_PARTY_APPS_CHOICES]
+
+VERSION_CHOICES_DICT = {key: value for key, value in VERSION_CHOICES}
+
 # ############################################################################
 # CHANNEL
 # ############################################################################
@@ -412,6 +425,16 @@ def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
     video = get_object_or_404(Video, id=id)
+
+    app_name = request.resolver_match.namespace.capitalize()[0] \
+        if request.resolver_match.namespace else 'O'
+
+    if (video.get_version != app_name
+            and request.GET.get('redirect') != "false"):
+        for version in video.get_other_version():
+            if version["link"] == VERSION_CHOICES_DICT[video.get_version]:
+                return redirect(version["url"])
+
     listNotes = get_adv_note_list(request, video)
     channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
     theme = get_object_or_404(
