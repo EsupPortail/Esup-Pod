@@ -25,6 +25,9 @@ from datetime import date
 from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
+from django.utils.text import capfirst
+
+import importlib
 
 from select2 import fields as select2_fields
 
@@ -121,9 +124,9 @@ THIRD_PARTY_APPS = getattr(
 THIRD_PARTY_APPS_CHOICES = THIRD_PARTY_APPS.copy()
 THIRD_PARTY_APPS_CHOICES.remove("live") if (
     "live" in THIRD_PARTY_APPS_CHOICES) else THIRD_PARTY_APPS_CHOICES
-THIRD_PARTY_APPS_CHOICES.append('Original')
+THIRD_PARTY_APPS_CHOICES.insert(0, 'Original')
 
-VERSION_CHOICES = [(app.capitalize()[0], _(app.capitalize()+" version"))
+VERSION_CHOICES = [(app.capitalize()[0], _(app.capitalize() + " version"))
                    for app in THIRD_PARTY_APPS_CHOICES]
 
 VERSION_CHOICES_DICT = {key: value for key, value in VERSION_CHOICES}
@@ -582,7 +585,25 @@ class Video(models.Model):
             return "%s" % VERSION_CHOICES_DICT[self.videoversion.version]
         except VideoVersion.DoesNotExist:
             return "%s" % VERSION_CHOICES_DICT['O']
-    
+
+    def get_other_version(self):
+        version = ()
+        for app in THIRD_PARTY_APPS:
+            mod = importlib.import_module('pod.%s.models' % app)
+            if hasattr(mod, capfirst(app)):
+                video_app = eval(
+                    'mod.%s.objects.filter(video__id=%s).all()' % (
+                        capfirst(app), self.id))
+                if (app == "interactive"
+                        and video_app.first() is not None
+                        and video_app.first().is_interactive() is False):
+                    video_app = False
+                if video_app:
+                    url = reverse('%(app)s:video_%(app)s' %
+                          {"app": app}, kwargs={'slug': video.slug})
+                    version.append({"app": app, "url": url, "link": mod.__NAME__})
+        return version
+
 
     def get_viewcount(self):
         count_sum = self.viewcount_set.all().aggregate(Sum('count'))
