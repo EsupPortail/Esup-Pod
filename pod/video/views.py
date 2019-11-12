@@ -21,10 +21,10 @@ from pod.video.models import Video
 from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
-from pod.video.models import ViewCount
+from pod.video.models import ViewCount, VideoVersion
 from tagging.models import TaggedItem
 
-from pod.video.forms import VideoForm
+from pod.video.forms import VideoForm, VideoVersionForm
 from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
@@ -1130,9 +1130,36 @@ def video_count(request, id):
             except IntegrityError:
                 viewCount = ViewCount.objects.get(video=video,
                                                   date=date.today())
-        viewCount.count = F('count')+1
+        viewCount.count = F('count') + 1
         viewCount.save(update_fields=['count'])
         return HttpResponse("ok")
+    messages.add_message(
+        request, messages.ERROR, _(u'You cannot access to this view.'))
+    raise PermissionDenied
+
+
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+def video_version(request, id):
+    video = get_object_or_404(Video, id=id)
+    if request.POST:
+        q = QueryDict(mutable=True)
+        q.update(request.POST)
+        q.update({'video': video.id})
+        form = VideoVersionForm(q)
+        if form.is_valid():
+            videoversion, created = VideoVersion.objects.update_or_create(
+                video=video,
+                defaults={'version': request.POST.get('version')}
+            )
+            return HttpResponse("ok")
+        else:
+            some_data_to_dump = {
+                'errors': "%s" % _('Please correct errors'),
+                'form': form.errors
+            }
+            data = json.dumps(some_data_to_dump)
+            return HttpResponse(data, content_type='application/json')
     messages.add_message(
         request, messages.ERROR, _(u'You cannot access to this view.'))
     raise PermissionDenied

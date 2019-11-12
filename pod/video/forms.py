@@ -648,6 +648,7 @@ class DisciplineForm(forms.ModelForm):
         model = Discipline
         fields = '__all__'
 
+
 class VideoVersionForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -656,6 +657,7 @@ class VideoVersionForm(forms.ModelForm):
     class Meta(object):
         model = VideoVersion
         fields = '__all__'
+
 
 class NotesForm(forms.ModelForm):
 

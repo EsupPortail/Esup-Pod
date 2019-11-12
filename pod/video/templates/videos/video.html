@@ -161,7 +161,7 @@ body {
         <i data-feather="share-2"></i><span class="sr-only">{% trans 'Embed/Share' %}</span>
       </a>
     </li>
-    {% with versions = video.get_other_version %}
+    {% with video.get_other_version as versions %}
     {% if versions|length > 0 %}
     <li class="nav-item dropdown" id="list_third_apps">
       <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">

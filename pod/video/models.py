@@ -582,12 +582,12 @@ class Video(models.Model):
     @property
     def get_version(self):
         try:
-            return "%s" % VERSION_CHOICES_DICT[self.videoversion.version]
+            return self.videoversion.version
         except VideoVersion.DoesNotExist:
-            return "%s" % VERSION_CHOICES_DICT['O']
+            return 'O'
 
     def get_other_version(self):
-        version = ()
+        version = []
         for app in THIRD_PARTY_APPS:
             mod = importlib.import_module('pod.%s.models' % app)
             if hasattr(mod, capfirst(app)):
@@ -600,10 +600,15 @@ class Video(models.Model):
                     video_app = False
                 if video_app:
                     url = reverse('%(app)s:video_%(app)s' %
-                          {"app": app}, kwargs={'slug': video.slug})
-                    version.append({"app": app, "url": url, "link": mod.__NAME__})
+                                  {"app": app}, kwargs={'slug': self.slug})
+                    version.append(
+                        {
+                            "app": app,
+                            "url": url,
+                            "link": VERSION_CHOICES_DICT[app.capitalize()[0]]
+                        }
+                    )
         return version
-
 
     def get_viewcount(self):
         count_sum = self.viewcount_set.all().aggregate(Sum('count'))
@@ -1102,7 +1107,8 @@ class VideoVersion(models.Model):
         help_text=_("Video default version."))
 
     def __str__(self):
-        return "Choice for default video version : %s - %s" % (self.video.id)
+        return "Choice for default video version : %s - %s" % (
+            self.video.id, self.version)
 
 
 class EncodingStep(models.Model):

@@ -260,6 +260,23 @@ $(document).on("submit", "form.get_form_theme", function (e) {
     	send_form_data(window.location.href, $(this).serializeArray(), "show_form_theme_"+action);
     }
 });
+/** VIDEO DEFAULT VERSION **/
+$(document).on("change", "#video_version_form input[type=radio][name=version]", function (e) {
+    $('#video_version_form').submit();
+});
+$(document).on("submit", "#video_version_form", function (e) {
+    e.preventDefault();
+    var data_form = $( "#video_version_form" ).serializeArray();
+    send_form_data($( "#video_version_form" ).attr("action"), data_form, "result_video_form");
+});
+var result_video_form = function(data) {
+    if(data.errors){
+        showalert(gettext('One or more errors have been found in the form.'), "alert-danger");
+    } else {
+        showalert(gettext('Changes have been saved.'), 'alert-info');
+    }
+}
+
 /** FOLDER **/
 
 /** AJAX **/
