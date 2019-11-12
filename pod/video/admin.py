@@ -22,7 +22,7 @@ from .models import ViewCount
 from .models import VideoToDelete
 from .models import VideoVersion
 
-from .forms import VideoForm
+from .forms import VideoForm, VideoVersionForm
 from .forms import ChannelForm
 from .forms import ThemeForm
 from .forms import TypeForm
@@ -65,6 +65,8 @@ class VideoAdminForm(VideoForm):
 
 class VideoVersionInline(admin.StackedInline):
     model = VideoVersion
+    form = VideoVersionForm
+    can_delete = False
 
 
 class VideoAdmin(admin.ModelAdmin):
