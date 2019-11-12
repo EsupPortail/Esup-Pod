@@ -13,10 +13,9 @@
     {% if versions|length > 0 %}
         <form action="{% url 'video_version' id=video.id %}" method="post" id="video_version_form">
             {% csrf_token %}
-            <fieldset class="form-group border">
-              <legend class="col-form-label text-left">{% trans "Video default version"%}</legend>
-              <div class="row">
-              <div class="col-sm-10 text-left">
+            <fieldset class="form-group border mt-2 p-2">
+              <legend class="col-form-label text-left p-1 col-md-auto">{% trans "Video default version"%}</legend>
+              <div class="text-left">
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="version" id="id_versionO" value="O" {% if video.get_version == "O" %}checked{% endif %}>
                   <label class="form-check-label" for="id_versionO">
@@ -31,7 +30,6 @@
                   </label>
                 </div>
                 {% endfor %}
-              </div>
               </div>
             </fieldset>
         </form>
