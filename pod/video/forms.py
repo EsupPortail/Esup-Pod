@@ -378,7 +378,7 @@ class VideoForm(forms.ModelForm):
 
         self.current_user = kwargs.pop(
             'current_user') if kwargs.get('current_user') else None
-
+        
         self.VIDEO_ALLOWED_EXTENSIONS = VIDEO_ALLOWED_EXTENSIONS
         self.VIDEO_MAX_UPLOAD_SIZE = VIDEO_MAX_UPLOAD_SIZE
         self.VIDEO_FORM_FIELDS_HELP_TEXT = VIDEO_FORM_FIELDS_HELP_TEXT
@@ -413,12 +413,16 @@ class VideoForm(forms.ModelForm):
         if self.is_superuser is False and self.is_admin is False:
             self.remove_field('date_added')
             self.remove_field('owner')
+        if not self.is_superuser and not self.is_admin and not self.is_staff:
+            self.remove_field('date_delete')
 
         self.fields = add_placeholder_and_asterisk(self.fields)
 
         # remove required=True for videofield if instance
         if self.fields.get('video') and self.instance and self.instance.video:
             del self.fields["video"].widget.attrs["required"]
+
+
 
     def set_ckeditor_config(self):
         if self.is_staff is False:
@@ -464,6 +468,7 @@ class VideoForm(forms.ModelForm):
         widgets = {
             # 'date_added': widgets.AdminSplitDateTime,
             'date_evt': widgets.AdminDateWidget,
+            'date_delete': widgets.AdminDateWidget,
         }
         initial = {
             'date_added': datetime.date.today,

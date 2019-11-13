@@ -4,9 +4,7 @@ import unicodedata
 import json
 import logging
 import hashlib
-import pytz
 
-from datetime import datetime
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -32,6 +30,7 @@ from select2 import fields as select2_fields
 
 from pod.main.models import get_nextautoincrement
 from django.db.models import Q
+from pod.authentication.models import AFFILIATION
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -140,7 +139,21 @@ TITLE_ETB = TEMPLATE_VISIBLE_SETTINGS['TITLE_ETB'] if (
 DEFAULT_DC_COVERAGE = getattr(
     settings, 'DEFAULT_DC_COVERAGE', TITLE_ETB + " - Town - Country")
 DEFAULT_DC_RIGHTS = getattr(settings, 'DEFAULT_DC_RIGHT', "BY-NC-SA")
-
+USE_OBSOLESCENCE = getattr(settings, 'USE_OBSOLESCENCE', False)
+OBSOLESCENCE_START_DATE = getattr(
+        settings,
+        'OBSOLESCENCE_START_DATE',
+        None
+)
+ACCOMMODATION_YEARS = getattr(
+        settings,
+        "ACCOMMODATION_YEARS",
+        {
+            'P': 1, # Personnel
+            'E': 1, # Etudiant
+            'I': 1, # Invité
+        }
+)
 
 # FUNCTIONS
 
@@ -422,6 +435,9 @@ class Video(models.Model):
     date_added = models.DateTimeField(_('Date added'), default=timezone.now)
     date_evt = models.DateField(
         _('Date of event'), default=date.today, blank=True, null=True)
+    date_delete = models.DateTimeField(
+            _('Date of Deletion'),
+            default=None, null=True, blank=True)
     cursus = models.CharField(
         _('University course'), max_length=1,
         choices=CURSUS_CODES, default="0",
@@ -518,9 +534,13 @@ class Video(models.Model):
                     newid = 1
         else:
             newid = self.id
+        if USE_OBSOLESCENCE and not self.date_delete:
+            self.date_delete = self.get_default_date_deletion()
+
         newid = '%04d' % newid
         self.slug = "%s-%s" % (newid, slugify(self.title))
         self.tags = remove_accents(self.tags)
+
         super(Video, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -528,15 +548,44 @@ class Video(models.Model):
             return "%s - %s" % ('%04d' % self.id, self.title)
         else:
             return "None"
+    
+    def get_accommodation_year(self):
+        year = 1
+        for  key, value in AFFILIATION:
+            tmp_year = ACCOMMODATION_YEARS[key]
+            owner_affiliation = self.owner.owner.affiliation.upper()
+            if (key.upper() in owner_affiliation and year < tmp_year):
+                year = tmp_year
+        return year
+
+    def get_default_date_deletion(self):
+        today = timezone.now()
+        accommodation_year = self.get_accommodation_year()
+        start = OBSOLESCENCE_START_DATE
+        if (start and start <= today and not (self.date_added >= start) ):
+            diff = today - OBSOLESCENCE_START_DATE
+            if not self.id:
+                # Pour toutes les nouvelles vidéos ajoutées après
+                # la mise en place de l'obsolescence
+                # On retourne la date actuelle + le nombre d'année
+                # d'hebergement autorisé selon affiliation
+                return today.replace(
+                        year = today.year+accommodation_year)
+            else: # Pour toutes les anciennes vidéos
+                # On retourne la date de mise en place de
+                # l'obsolescence + le nombre d'année
+                # d'hébergement autorisé selon affiliation
+                return start.replace(
+                        year= start.year+accommodation_year)
+        # Sinon on retourne la date d'ajout de la vidéo
+        # plus(+) le nombre d'année d'hebergement de la vidéo selon
+        # affiliation
+        return self.date_added.replace(
+                year=self.date_added.year + accommodation_year)
 
     @property
     def establishment(self):
         return self.owner.owner.establishment
-
-    def year_elapsed(self):
-        utc = pytz.UTC
-        now = utc.localize(datetime.now())
-        return int((now - self.date_added).days / 365)
 
     @property
     def viewcount(self):
