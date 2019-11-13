@@ -9,6 +9,7 @@
 <i data-feather="list"></i></a>
 <a href="{% url 'video_delete' slug=video.slug %}" class="p-0 m-0 btn btn-light btn-sm pl-1" title="{% trans "Delete the video." %}">
     <i data-feather="trash-2"></i></a>
+{% if "edit" in request.path %}
 {% with video.get_other_version as versions %}
     {% if versions|length > 0 %}
         <form action="{% url 'video_version' id=video.id %}" method="post" id="video_version_form">
@@ -35,6 +36,6 @@
         </form>
     {% endif %}
 {% endwith %}
-
+{% endif %}
 
 {%endspaceless%}
