@@ -401,16 +401,17 @@ def get_video_access(request, video, slug_private):
 def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     template_video = 'videos/video-iframe.html' if (
         request.GET.get('is_iframe')) else 'videos/video.html'
-    return render_video(request, slug, slug_c, slug_t, slug_private,
-                        template_video, None)
-
-
-def render_video(request, slug, slug_c=None, slug_t=None, slug_private=None,
-                 template_video='videos/video.html', more_data=None):
     try:
         id = int(slug[:slug.find("-")])
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
+    return render_video(request, id, slug_c, slug_t, slug_private,
+                        template_video, None)
+
+
+def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
+                 template_video='videos/video.html', more_data=None):
+
     video = get_object_or_404(Video, id=id)
 
     app_name = request.resolver_match.namespace.capitalize()[0] \
