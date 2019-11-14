@@ -126,7 +126,7 @@ THIRD_PARTY_APPS_CHOICES.remove("live") if (
     "live" in THIRD_PARTY_APPS_CHOICES) else THIRD_PARTY_APPS_CHOICES
 THIRD_PARTY_APPS_CHOICES.insert(0, 'Original')
 
-VERSION_CHOICES = [(app.capitalize()[0], _(app.capitalize() + " version"))
+VERSION_CHOICES = [(app.capitalize()[0], _("%(app)s version" %{"app":app.capitalize()}))
                    for app in THIRD_PARTY_APPS_CHOICES]
 
 VERSION_CHOICES_DICT = {key: value for key, value in VERSION_CHOICES}
