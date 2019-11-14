@@ -405,6 +405,14 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         id = int(slug[:slug.find("-")])
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
+
+    video = get_object_or_404(Video, id=id)
+    if (
+        video.get_version != "O" and
+        request.GET.get('redirect') != "false"
+    ):
+        return redirect(video.get_default_version_link())
+
     return render_video(request, id, slug_c, slug_t, slug_private,
                         template_video, None)
 
@@ -413,7 +421,8 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
                  template_video='videos/video.html', more_data=None):
 
     video = get_object_or_404(Video, id=id)
-
+    """
+    # Do it only for video
     app_name = request.resolver_match.namespace.capitalize()[0] \
         if request.resolver_match.namespace else 'O'
 
@@ -422,6 +431,7 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
         request.GET.get('redirect') != "false"
     ):
         return redirect(video.get_default_version_link())
+    """
 
     listNotes = get_adv_note_list(request, video)
     channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
