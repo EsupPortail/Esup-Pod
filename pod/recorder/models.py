@@ -178,8 +178,8 @@ class RecordingFileTreatment(models.Model):
         return os.path.basename(self.file)
 
     class Meta:
-        verbose_name = _("Recording file")
-        verbose_name_plural = _("Recording files")
+        verbose_name = _("Recording file treatment")
+        verbose_name_plural = _("Recording file treatments")
 
 
 class RecordingFile(models.Model):
