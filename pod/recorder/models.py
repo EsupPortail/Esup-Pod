@@ -28,6 +28,10 @@ DEFAULT_RECORDER_USER_ID = getattr(
     settings, 'DEFAULT_RECORDER_USER_ID',
     1
 )
+DEFAULT_RECORDER_ID = getattr(
+    settings, 'DEFAULT_RECORDER_ID',
+    1
+)
 
 
 class Recorder(models.Model):
@@ -40,7 +44,7 @@ class Recorder(models.Model):
     address_ip = models.GenericIPAddressField(_('Address IP'), unique=True,
                                               help_text=_(
                                                   'IP address of the recorder.'
-                                              ))
+    ))
     # Salt for
     salt = models.CharField(_('salt'), max_length=50, blank=True,
                             help_text=_('Recorder salt.'))
@@ -63,8 +67,8 @@ class Recorder(models.Model):
     # Directory name where videos of this recorder are published
     directory = models.CharField(_('Publication directory'), max_length=50,
                                  unique=True, help_text=_(
-            'Basic directory containing the videos published by the recorder.')
-                                 )
+        'Basic directory containing the videos published by the recorder.')
+    )
 
     def __unicode__(self):
         return "%s - %s" % (self.name, self.address_ip)
@@ -88,6 +92,7 @@ class Recording(models.Model):
     recorder = models.ForeignKey(Recorder,
                                  on_delete=models.CASCADE,
                                  verbose_name=_('Recorder'),
+                                 default=DEFAULT_RECORDER_ID,
                                  help_text=_('Recorder that made this '
                                              'recording.'))
     user = models.ForeignKey(User, on_delete=models.CASCADE,
@@ -150,7 +155,7 @@ class RecordingFileTreatment(models.Model):
     recorder = models.ForeignKey(Recorder, on_delete=models.CASCADE,
                                  verbose_name=_('Recorder'), null=True,
                                  help_text=_(
-                                        'Recorder that made this recording.'))
+                                     'Recorder that made this recording.'))
     date_added = models.DateTimeField(_('Date added'), default=timezone.now,
                                       editable=True)
     require_manual_claim = models.BooleanField(_('Require manual claim ?'),
@@ -181,6 +186,7 @@ class RecordingFile(models.Model):
     file = models.FileField(upload_to='uploads/')
     recorder = models.ForeignKey(Recorder,
                                  on_delete=models.CASCADE,
+                                 default=DEFAULT_RECORDER_ID,
                                  verbose_name=_('Recorder'),
                                  help_text=_('Recorder that made this '
                                              'recording.'))

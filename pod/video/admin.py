@@ -41,6 +41,8 @@ User._meta.ordering = ["username"]
 USE_ESTABLISHMENT_FIELD = getattr(
     settings, 'USE_ESTABLISHMENT_FIELD', False)
 
+TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
+
 
 def url_to_edit_object(obj):
     url = reverse(
@@ -130,6 +132,8 @@ class VideoAdmin(admin.ModelAdmin):
         exclude = ()
         if obj and obj.encoding_in_progress:
             exclude += ('video', 'owner',)
+        if not TRANSCRIPT:
+            exclude += ('transcript',)
         self.exclude = exclude
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form
