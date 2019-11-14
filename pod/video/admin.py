@@ -20,8 +20,9 @@ from .models import PlaylistVideo
 from .models import Notes, AdvancedNotes, NoteComments
 from .models import ViewCount
 from .models import VideoToDelete
+from .models import VideoVersion
 
-from .forms import VideoForm
+from .forms import VideoForm, VideoVersionForm
 from .forms import ChannelForm
 from .forms import ThemeForm
 from .forms import TypeForm
@@ -62,6 +63,12 @@ class VideoAdminForm(VideoForm):
     is_admin = True
 
 
+class VideoVersionInline(admin.StackedInline):
+    model = VideoVersion
+    form = VideoVersionForm
+    can_delete = False
+
+
 class VideoAdmin(admin.ModelAdmin):
     change_form_template = 'progressbarupload/change_form.html'
     add_form_template = 'progressbarupload/change_form.html'
@@ -85,6 +92,7 @@ class VideoAdmin(admin.ModelAdmin):
     inlines = []
 
     inlines += [
+        VideoVersionInline,
         ContributorInline,
         DocumentInline,
         TrackInline,

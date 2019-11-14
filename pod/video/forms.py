@@ -8,15 +8,15 @@ from django.template.defaultfilters import filesizeformat
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
-from pod.video.models import Video
-from pod.video.models import Channel
-from pod.video.models import Theme
-from pod.video.models import Type
-from pod.video.models import Discipline
-from pod.video.models import Notes, AdvancedNotes, NoteComments
-from pod.video.encode import start_encode
-from pod.video.models import get_storage_path_video
-from pod.video.models import EncodingVideo, EncodingAudio, PlaylistVideo
+from .models import Video, VideoVersion
+from .models import Channel
+from .models import Theme
+from .models import Type
+from .models import Discipline
+from .models import Notes, AdvancedNotes, NoteComments
+from .encode import start_encode
+from .models import get_storage_path_video
+from .models import EncodingVideo, EncodingAudio, PlaylistVideo
 
 
 from django.dispatch import receiver
@@ -646,6 +646,16 @@ class DisciplineForm(forms.ModelForm):
 
     class Meta(object):
         model = Discipline
+        fields = '__all__'
+
+
+class VideoVersionForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(VideoVersionForm, self).__init__(*args, **kwargs)
+
+    class Meta(object):
+        model = VideoVersion
         fields = '__all__'
 
 
