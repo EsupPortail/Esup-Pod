@@ -172,7 +172,11 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 "your content."),
             _("If your video is in a playlist the password of your "
                 "video will be removed automatically.")
-        ]),
+        ])
+    ]))
+
+if TRANSCRIPT:
+    transcript_help_text = OrderedDict([
         ("{0}".format(_("Transcript")), [
             _("Available only in French and English, transcription is a speech"
               " recognition technology that transforms an oral speech into "
@@ -181,8 +185,8 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
               ),
             _("You will probably have to modify this file using the "
               "captioning tool in the completion page to improve it.")
-        ])
-    ]))
+        ])])
+    VIDEO_FORM_FIELDS_HELP_TEXT.update(transcript_help_text)
 
 VIDEO_FORM_FIELDS = getattr(
     settings,
