@@ -67,9 +67,14 @@ def main_transcript(video_to_encode):
 
     lang = video_to_encode.main_lang
 
+    # check if DS_PARAM [lang] exist
+    if not DS_PARAM.get(lang):
+        msg += "\n no deepspeech model found for lang:%s." % lang
+        msg += "Please add it in DS_PARAM."
+        return msg
+
     ds_model = Model(
-        DS_PARAM[lang]['model'], DS_PARAM[lang]['alphabet'],
-        DS_PARAM[lang]['beam_width']
+        DS_PARAM[lang]['model'], DS_PARAM[lang]['beam_width']
     )
 
     if all([cond in DS_PARAM[lang]
@@ -120,16 +125,7 @@ def main_transcript(video_to_encode):
         # nb of character in AUDIO_SPLIT_TIME
         msg += "METADATA ITEMS : %d " % len(metadata.items)
 
-        for item in metadata.items[index:]:
-            if((item.start_time - refItem.start_time) < SENTENCE_MAX_LENGTH):
-                sentence.append(item)
-            else:
-                if item.character == ' ':
-                    sentences.append(sentence)
-                    sentence = []
-                    refItem = item
-                else:
-                    sentence.append(item)
+        sentences = get_sentences(metadata, refItem, index)
 
         last_item = (sentences[-1][-1].character, sentences[-1][-1].start_time)
 
@@ -156,6 +152,22 @@ def main_transcript(video_to_encode):
     msg += '\nInference took %0.3fs.' % inference_end
     # print(msg)
     return msg
+
+
+def get_sentences(metadata, refItem, index):
+    sentence = []
+    sentences = []
+    for item in metadata.items[index:]:
+        if((item.start_time - refItem.start_time) < SENTENCE_MAX_LENGTH):
+            sentence.append(item)
+        else:
+            if item.character == ' ':
+                sentences.append(sentence)
+                sentence = []
+                refItem = item
+            else:
+                sentence.append(item)
+    return sentences
 
 
 def get_index(metadata, last_item, start_trim):
