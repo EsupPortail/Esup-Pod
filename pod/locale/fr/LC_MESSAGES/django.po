@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-11-14 14:05+0000\n"
-"PO-Revision-Date: 2019-11-14 15:05+0100\n"
+"POT-Creation-Date: 2019-11-14 14:34+0000\n"
+"PO-Revision-Date: 2019-11-14 15:34+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -29,7 +29,7 @@ msgstr "Etablissement"
 
 #: pod/authentication/forms.py:50 pod/authentication/forms.py:51
 #: pod/main/templates/navbar.html:21 pod/main/templates/navbar_collapse.html:68
-#: pod/video/forms.py:211 pod/video/forms.py:492 pod/video/forms.py:496
+#: pod/video/forms.py:215 pod/video/forms.py:496 pod/video/forms.py:500
 #: pod/video/models.py:219 pod/video/templates/videos/filter_aside.html:13
 msgid "Users"
 msgstr "Utilisateurs"
@@ -1052,15 +1052,25 @@ msgstr "Veuillez corriger les erreurs"
 msgid "Enrichment version"
 msgstr "Version enrichie"
 
+#: pod/enrichment/apps.py:8 pod/enrichment/models.py:33
+#: pod/enrichment/models.py:161
+msgid "Enrichment"
+msgstr "Enrichissement"
+
+#: pod/enrichment/apps.py:9
+msgid "enrichment"
+msgstr "enrichissement"
+
+#: pod/enrichment/apps.py:10
+#: pod/enrichment/templates/enrichment/list_enrichment.html:30
+msgid "Edit the enrichment"
+msgstr "Éditer l'enrichissement"
+
 #: pod/enrichment/forms.py:34 pod/enrichment/models.py:313
 #: pod/interactive/forms.py:13 pod/interactive/models.py:37
 #: pod/podfile/models.py:29 pod/video/models.py:497
 msgid "Groups"
 msgstr "Groupes"
-
-#: pod/enrichment/models.py:33 pod/enrichment/models.py:161
-msgid "Enrichment"
-msgstr "Enrichissement"
 
 #: pod/enrichment/models.py:106
 msgid "image"
@@ -1267,10 +1277,6 @@ msgstr "retour à l'édition de l’enrichissement"
 msgid "List of the enrichments"
 msgstr "Liste des enrichissements"
 
-#: pod/enrichment/templates/enrichment/list_enrichment.html:30
-msgid "Edit the enrichment"
-msgstr "Éditer l'enrichissement"
-
 #: pod/enrichment/templates/enrichment/list_enrichment.html:38
 msgid "Delete the enrichment"
 msgstr "Supprimer l'enrichissement"
@@ -1398,9 +1404,19 @@ msgstr "Vous ne pouvez pas enrichir cette vidéo."
 msgid "Interactive version"
 msgstr "Version interactive"
 
-#: pod/interactive/models.py:12
+#: pod/interactive/apps.py:8 pod/interactive/models.py:12
 msgid "Interactive"
 msgstr "Interactive"
+
+#: pod/interactive/apps.py:9
+msgid "interactive"
+msgstr "interactive"
+
+#: pod/interactive/apps.py:10
+#, fuzzy
+#| msgid "Edit interactivity"
+msgid "Edit the interactive"
+msgstr "Editer l'interactivité"
 
 #: pod/interactive/models.py:44
 msgid "Interactive Video Group"
@@ -1692,7 +1708,7 @@ msgid "Please choose a subjects related your request"
 msgstr "Veuillez choisir un sujet en lien avec votre requête"
 
 #: pod/main/forms.py:60 pod/playlist/models.py:21 pod/video/forms.py:92
-#: pod/video/forms.py:202 pod/video/forms.py:228 pod/video/models.py:199
+#: pod/video/forms.py:206 pod/video/forms.py:232 pod/video/models.py:199
 #: pod/video/models.py:274 pod/video/models.py:431
 msgid "Description"
 msgstr "Description"
@@ -2748,7 +2764,7 @@ msgstr "La vidéo a été ajoutée à votre playlist."
 msgid "This playlist has been deleted."
 msgstr "Cette playlist a été supprimée."
 
-#: pod/podfile/forms.py:49 pod/video/forms.py:239
+#: pod/podfile/forms.py:49 pod/video/forms.py:243
 #, python-format
 msgid ""
 "The current file %(size)s, which is too large. The maximum file size is "
@@ -3112,8 +3128,8 @@ msgstr "Administration de Pod"
 msgid "Encode selected"
 msgstr "(Ré)encoder la sélection"
 
-#: pod/video/admin.py:185 pod/video/forms.py:211 pod/video/forms.py:499
-#: pod/video/forms.py:501 pod/video/models.py:216
+#: pod/video/admin.py:185 pod/video/forms.py:215 pod/video/forms.py:503
+#: pod/video/forms.py:505 pod/video/models.py:216
 msgid "Owners"
 msgstr "Propriétaires"
 
@@ -3156,11 +3172,11 @@ msgstr "Vous pouvez envoyer un fichier audio ou vidéo."
 msgid "The following formats are supported: %s"
 msgstr "Les formats suivants sont supportés: %s"
 
-#: pod/video/forms.py:78 pod/video/forms.py:196 pod/video/forms.py:222
+#: pod/video/forms.py:78 pod/video/forms.py:200 pod/video/forms.py:226
 msgid "Title field"
 msgstr "Champ de titre"
 
-#: pod/video/forms.py:79 pod/video/forms.py:197 pod/video/forms.py:223
+#: pod/video/forms.py:79 pod/video/forms.py:201 pod/video/forms.py:227
 msgid ""
 "Please choose a title as short and accurate as possible, reflecting the main "
 "subject / context of the content."
@@ -3168,7 +3184,7 @@ msgstr ""
 "Veuillez choisir un titre aussi court et précis que possible, symbolisant le "
 "sujet principal / contexte du contenu."
 
-#: pod/video/forms.py:81 pod/video/forms.py:199 pod/video/forms.py:225
+#: pod/video/forms.py:81 pod/video/forms.py:203 pod/video/forms.py:229
 msgid ""
 "You can use the “Description” field below for all additional information."
 msgstr ""
@@ -3194,7 +3210,7 @@ msgstr ""
 "n’apparaît pas dans la liste, veuillez temporairement choisir \"Autres\" et "
 "contactez-nous pour expliquer vos besoins."
 
-#: pod/video/forms.py:93 pod/video/forms.py:203 pod/video/forms.py:229
+#: pod/video/forms.py:93 pod/video/forms.py:207 pod/video/forms.py:233
 #: pod/video/models.py:201 pod/video/models.py:275 pod/video/models.py:434
 msgid ""
 "In this field you can describe your content, add all needed related "
@@ -3341,7 +3357,7 @@ msgstr ""
 "Si vous ne sélectionnez pas le \"Mode brouillon\", vous pouvez restreindre "
 "son accès aux personnes authentifiées"
 
-#: pod/video/forms.py:169 pod/video/forms.py:609
+#: pod/video/forms.py:169 pod/video/forms.py:613
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -3361,11 +3377,11 @@ msgstr ""
 "Si votre vidéo est dans une playlist vous ne pourrez pas lui ajouter de mot "
 "de passe."
 
-#: pod/video/forms.py:176 pod/video/models.py:450
+#: pod/video/forms.py:180 pod/video/models.py:450
 msgid "Transcript"
 msgstr "Transcrire"
 
-#: pod/video/forms.py:177
+#: pod/video/forms.py:181
 msgid ""
 "Available only in French and English, transcription is a speech recognition "
 "technology that transforms an oral speech into text in an automated way. By "
@@ -3377,7 +3393,7 @@ msgstr ""
 "automatiquement. En cochant cette case, cela va générer un fichier de sous-"
 "titre durant l’encodage de la vidéo."
 
-#: pod/video/forms.py:182
+#: pod/video/forms.py:186
 msgid ""
 "You will probably have to modify this file using the captioning tool in the "
 "completion page to improve it."
@@ -3385,20 +3401,20 @@ msgstr ""
 "Vous aurez probablement à améliorer ce fichier en utilisant l’outil de sous-"
 "titrage accessible sur la page de complétion de la video."
 
-#: pod/video/forms.py:207 pod/video/models.py:213
+#: pod/video/forms.py:211 pod/video/models.py:213
 msgid "Extra style"
 msgstr "Style supplémentaire"
 
-#: pod/video/forms.py:207 pod/video/models.py:208
+#: pod/video/forms.py:211 pod/video/models.py:208
 msgid "Background color"
 msgstr "Couleur d'arrière-plan"
 
-#: pod/video/forms.py:208
+#: pod/video/forms.py:212
 msgid "In this field you can add some style to personnalize your channel."
 msgstr ""
 "Dans ce champ vous pouvez ajouter des styles pour personnaliser votre chaîne."
 
-#: pod/video/forms.py:212
+#: pod/video/forms.py:216
 msgid ""
 "Owners can add videos to this channel and access this page to customize the "
 "channel."
@@ -3406,27 +3422,27 @@ msgstr ""
 "Les propriétaires peuvent ajouter des vidéos dans cette chaîne et accéder à "
 "cette page pour la personnaliser."
 
-#: pod/video/forms.py:214
+#: pod/video/forms.py:218
 msgid "Users can only add videos to this channel"
 msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne"
 
-#: pod/video/forms.py:406
+#: pod/video/forms.py:410
 msgid "File"
 msgstr "Fichier"
 
-#: pod/video/forms.py:619
+#: pod/video/forms.py:623
 msgid "I agree"
 msgstr "J'accepte"
 
-#: pod/video/forms.py:620
+#: pod/video/forms.py:624
 msgid "Delete video cannot be undo"
 msgstr "La suppression est définitive"
 
-#: pod/video/forms.py:687
+#: pod/video/forms.py:691
 msgid "A note can't be empty"
 msgstr "Une note ne peut pas être vide"
 
-#: pod/video/forms.py:709
+#: pod/video/forms.py:713
 msgid "A comment can't be empty"
 msgstr "Un commentaire ne peut pas être vide"
 
@@ -3897,6 +3913,7 @@ msgid "Edit the video"
 msgstr "Éditer la vidéo"
 
 #: pod/video/templates/videos/link_video.html:10
+#: pod/video/templates/videos/video_edit.html:139
 #, python-format
 msgid "Edit the %(app)s"
 msgstr "Éditer le %(app)s"
@@ -4330,9 +4347,6 @@ msgstr "facettage"
 #: pod/video_search/views.py:55
 msgid "Remove selection"
 msgstr "Retirer la sélection"
-
-#~ msgid "Edit interactivity"
-#~ msgstr "Editer l'interactivité"
 
 #~ msgid ""
 #~ "Select and copy the caption file contents below and paste into a .vtt file"
