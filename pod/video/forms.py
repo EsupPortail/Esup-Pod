@@ -327,13 +327,14 @@ class VideoForm(forms.ModelForm):
             storage_path = get_storage_path_video(
                 self.instance,
                 os.path.basename(self.cleaned_data['video'].name))
-            dt = str(datetime.datetime.now()).replace(":", "-")
+            dt = str(datetime.datetime.now()).replace(":", "-").replace(" ", "_")
             nom, ext = os.path.splitext(
                 os.path.basename(self.cleaned_data['video'].name))
             ext = ext.lower()
+            nom = nom[:-(len(dt)+1)] + "." + dt + ext if(len(nom) > 100) else nom + "." + dt + ext
             new_path = os.path.join(
-                os.path.dirname(storage_path),
-                nom + "_" + dt.replace(" ", "_") + ext)
+                os.path.dirname(storage_path),nom)
+
             if self.instance.overview:
                 old_dir = os.path.dirname(self.instance.overview.name)
             else:
