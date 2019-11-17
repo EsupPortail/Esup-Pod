@@ -25,8 +25,14 @@ from datetime import date
 from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
+from django.utils.text import capfirst
+
+import importlib
+
+from select2 import fields as select2_fields
 
 from pod.main.models import get_nextautoincrement
+from django.db.models import Q
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -103,6 +109,28 @@ ENCODING_CHOICES = getattr(
 DEFAULT_THUMBNAIL = getattr(
     settings, 'DEFAULT_THUMBNAIL', 'img/default.png')
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
+
+NOTES_STATUS = getattr(
+    settings, 'NOTES_STATUS', (
+        ('0', _('Private -')),
+        ('1', _('Private +')),
+        ('2', _('Public'))
+    )
+)
+
+THIRD_PARTY_APPS = getattr(
+    settings, 'THIRD_PARTY_APPS', [])
+
+THIRD_PARTY_APPS_CHOICES = THIRD_PARTY_APPS.copy()
+THIRD_PARTY_APPS_CHOICES.remove("live") if (
+    "live" in THIRD_PARTY_APPS_CHOICES) else THIRD_PARTY_APPS_CHOICES
+THIRD_PARTY_APPS_CHOICES.insert(0, 'Original')
+
+VERSION_CHOICES = [
+    (app.capitalize()[0], _("%(app)s version" % {"app": app.capitalize()}))
+    for app in THIRD_PARTY_APPS_CHOICES]
+
+VERSION_CHOICES_DICT = {key: value for key, value in VERSION_CHOICES}
 
 ##
 # Settings exposed in templates
@@ -301,10 +329,13 @@ class Theme(models.Model):
         return parents
 
     def clean(self):
+        # Dans le cas où on modifie un theme
         if Theme.objects.filter(
-                channel=self.channel, slug=slugify(self.title)).exists():
-            raise ValidationError(
-                "A theme with this name already exist in this channel.")
+                channel=self.channel,
+                slug=slugify(self.title)).exclude(pk=self.id).exists():
+            raise ValidationError("A theme with this name\
+                    already exists in this channel.")
+
         if self.parentId in self.get_all_children_flat():
             raise ValidationError("A theme cannot have itself \
                     or one of it's children as parent.")
@@ -388,7 +419,14 @@ class Video(models.Model):
             'numbers, underscore or dash top.'),
         editable=False)
     type = models.ForeignKey(Type, verbose_name=_('Type'))
-    owner = models.ForeignKey(User, verbose_name=_('Owner'))
+    owner = select2_fields.ForeignKey(
+        User,
+        ajax=True,
+        verbose_name=_('Owner'),
+        search_field=lambda q: Q(
+            first_name__icontains=q) | Q(
+            last_name__icontains=q),
+        on_delete=models.CASCADE)
     description = RichTextField(
         _('Description'),
         config_name='complete',
@@ -408,6 +446,10 @@ class Video(models.Model):
         _('Main language'), max_length=2,
         choices=LANG_CHOICES, default=get_language(),
         help_text=_("Select the main language used in the content."))
+    transcript = models.BooleanField(
+        _('Transcript'), default=False, help_text=_(
+            "Check this box if you want to transcript the audio."
+            "(beta version)"))
     tags = TagField(help_text=_(
         'Separate tags with spaces, '
         'enclose the tags consist of several words in quotation marks.'),
@@ -468,8 +510,6 @@ class Video(models.Model):
     overview = models.ImageField(
         _('Overview'), null=True, upload_to=get_storage_path_video,
         blank=True, max_length=255, editable=False)
-    # type = models.ForeignKey(Type, verbose_name=_('Type'),
-    #                          default=DEFAULT_TYPE_ID)
 
     encoding_in_progress = models.BooleanField(
         _('Encoding in progress'), default=False, editable=False)
@@ -539,6 +579,42 @@ class Video(models.Model):
     def duration_in_time(self):
         return time.strftime('%H:%M:%S', time.gmtime(self.duration))
     duration_in_time.fget.short_description = _('Duration')
+
+    @property
+    def get_version(self):
+        try:
+            return self.videoversion.version
+        except VideoVersion.DoesNotExist:
+            return 'O'
+
+    def get_other_version(self):
+        version = []
+        for app in THIRD_PARTY_APPS:
+            mod = importlib.import_module('pod.%s.models' % app)
+            if hasattr(mod, capfirst(app)):
+                video_app = eval(
+                    'mod.%s.objects.filter(video__id=%s).all()' % (
+                        capfirst(app), self.id))
+                if (app == "interactive"
+                        and video_app.first() is not None
+                        and video_app.first().is_interactive() is False):
+                    video_app = False
+                if video_app:
+                    url = reverse('%(app)s:video_%(app)s' %
+                                  {"app": app}, kwargs={'slug': self.slug})
+                    version.append(
+                        {
+                            "app": app,
+                            "url": url,
+                            "link": VERSION_CHOICES_DICT[app.capitalize()[0]]
+                        }
+                    )
+        return version
+
+    def get_default_version_link(self):
+        for version in self.get_other_version():
+            if version["link"] == VERSION_CHOICES_DICT[self.get_version]:
+                return version["url"]
 
     def get_viewcount(self):
         count_sum = self.viewcount_set.all().aggregate(Sum('count'))
@@ -698,7 +774,7 @@ class Video(models.Model):
             }
             return data_to_dump
         except ObjectDoesNotExist as e:
-            logger.error("An error occured during get_json_to_index"
+            logger.error("An error occured during get_dublin_core"
                          " for video %s: %s" % (self.id, e))
             return {}
 
@@ -1028,6 +1104,19 @@ class EncodingLog(models.Model):
         return "Log for encoding video %s" % (self.video.id)
 
 
+class VideoVersion(models.Model):
+    video = models.OneToOneField(Video, verbose_name=_('Video'),
+                                 editable=False, on_delete=models.CASCADE)
+    version = models.CharField(
+        _('Video version'), max_length=1, blank=True,
+        choices=VERSION_CHOICES, default="O",
+        help_text=_("Video default version."))
+
+    def __str__(self):
+        return "Choice for default video version : %s - %s" % (
+            self.video.id, self.version)
+
+
 class EncodingStep(models.Model):
     video = models.OneToOneField(Video, verbose_name=_('Video'),
                                  editable=False, on_delete=models.CASCADE)
@@ -1051,6 +1140,95 @@ class Notes(models.Model):
 
     def __str__(self):
         return "%s-%s" % (self.user.username, self.video)
+
+
+class AdvancedNotes(models.Model):
+    user = models.ForeignKey(User)
+    video = models.ForeignKey(Video)
+    status = models.CharField(
+        _('Note availibility level'), max_length=1,
+        choices=NOTES_STATUS, default="0",
+        help_text=_("Select an availability level "
+                    "for the note."))
+    note = models.TextField(_('Note'), null=True, blank=True)
+    timestamp = models.IntegerField(
+        _('Timestamp'), null=True, blank=True)
+    added_on = models.DateTimeField(
+        _('Date added'), default=timezone.now)
+    modified_on = models.DateTimeField(
+        _('Date modified'), default=timezone.now)
+
+    class Meta:
+        verbose_name = _("Advanced Note")
+        verbose_name_plural = _("Advanced Notes")
+        unique_together = ("video", "user", "timestamp", "status")
+
+    def __str__(self):
+        return "%s-%s-%s" % (self.user.username, self.video, self.timestamp)
+
+    def clean(self):
+        if not self.note:
+            raise ValidationError(
+                AdvancedNotes._meta.get_field('note').help_text
+            )
+        if not self.status or self.status not in dict(NOTES_STATUS):
+            raise ValidationError(
+                AdvancedNotes._meta.get_field('status').help_text
+            )
+        if (self.timestamp is None or self.timestamp < 0
+                or (self.video.duration
+                    and self.timestamp > self.video.duration)):
+            raise ValidationError(
+                AdvancedNotes._meta.get_field('timestamp').help_text
+            )
+
+    def timestampstr(self):
+        if self.timestamp is None:
+            return "--:--:--"
+        seconds = int(self.timestamp)
+        hours = int(seconds / 3600)
+        seconds -= hours * 3600
+        minutes = int(seconds / 60)
+        seconds -= minutes * 60
+        hours = "0" + str(hours) if hours < 10 else str(hours)
+        minutes = "0" + str(minutes) if minutes < 10 else str(minutes)
+        seconds = "0" + str(seconds) if seconds < 10 else str(seconds)
+        return hours + ':' + minutes + ':' + seconds
+
+
+class NoteComments(models.Model):
+    user = models.ForeignKey(User)
+    parentNote = models.ForeignKey(AdvancedNotes)
+    parentCom = models.ForeignKey(
+        "NoteComments", blank=True, null=True)
+    status = models.CharField(
+        _('Comment availibility level'), max_length=1,
+        choices=NOTES_STATUS, default="0",
+        help_text=_("Select an availability level "
+                    "for the comment."))
+    comment = models.TextField(
+        _('Comment'), null=True, blank=True)
+    added_on = models.DateTimeField(
+        _('Date added'), default=timezone.now)
+    modified_on = models.DateTimeField(
+        _('Date modified'), default=timezone.now)
+
+    class Meta:
+        verbose_name = _("Note comment")
+        verbose_name_plural = _("Note comments")
+
+    def __str__(self):
+        return "%s-%s-%s" % (self.user.username, self.parentNote, self.comment)
+
+    def clean(self):
+        if not self.comment:
+            raise ValidationError(
+                NoteComments._meta.get_field('comment').help_text
+            )
+        if not self.status or self.status not in dict(NOTES_STATUS):
+            raise ValidationError(
+                NoteComments._meta.get_field('status').help_text
+            )
 
 
 class VideoToDelete(models.Model):

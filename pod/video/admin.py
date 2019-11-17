@@ -17,11 +17,12 @@ from .models import EncodingAudio
 from .models import EncodingLog
 from .models import EncodingStep
 from .models import PlaylistVideo
-from .models import Notes
+from .models import Notes, AdvancedNotes, NoteComments
 from .models import ViewCount
 from .models import VideoToDelete
+from .models import VideoVersion
 
-from .forms import VideoForm
+from .forms import VideoForm, VideoVersionForm
 from .forms import ChannelForm
 from .forms import ThemeForm
 from .forms import TypeForm
@@ -39,6 +40,8 @@ User._meta.ordering = ["username"]
 # SET USE_ESTABLISHMENT_FIELD
 USE_ESTABLISHMENT_FIELD = getattr(
     settings, 'USE_ESTABLISHMENT_FIELD', False)
+
+TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 
 
 def url_to_edit_object(obj):
@@ -60,6 +63,12 @@ class VideoAdminForm(VideoForm):
     is_staff = True
     is_superuser = False
     is_admin = True
+
+
+class VideoVersionInline(admin.StackedInline):
+    model = VideoVersion
+    form = VideoVersionForm
+    can_delete = False
 
 
 class VideoAdmin(admin.ModelAdmin):
@@ -85,6 +94,7 @@ class VideoAdmin(admin.ModelAdmin):
     inlines = []
 
     inlines += [
+        VideoVersionInline,
         ContributorInline,
         DocumentInline,
         TrackInline,
@@ -122,6 +132,8 @@ class VideoAdmin(admin.ModelAdmin):
         exclude = ()
         if obj and obj.encoding_in_progress:
             exclude += ('video', 'owner',)
+        if not TRANSCRIPT:
+            exclude += ('transcript',)
         self.exclude = exclude
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form
@@ -287,6 +299,15 @@ class NotesAdmin(admin.ModelAdmin):
     list_display = ('video', 'user')
 
 
+class AdvancedNotesAdmin(admin.ModelAdmin):
+    list_display = ('video', 'user', 'timestamp',
+                    'status', 'added_on', 'modified_on')
+
+
+class NoteCommentsAdmin(admin.ModelAdmin):
+    list_display = ('parentNote', 'user', 'added_on', 'modified_on')
+
+
 class VideoToDeleteAdmin(admin.ModelAdmin):
     list_display = ('date_deletion', 'get_videos')
     list_filter = ['date_deletion']
@@ -313,5 +334,7 @@ admin.site.register(EncodingLog, EncodingLogAdmin)
 admin.site.register(EncodingStep, EncodingStepAdmin)
 admin.site.register(PlaylistVideo, PlaylistVideoAdmin)
 admin.site.register(Notes, NotesAdmin)
+admin.site.register(AdvancedNotes, AdvancedNotesAdmin)
+admin.site.register(NoteComments, NoteCommentsAdmin)
 admin.site.register(VideoToDelete, VideoToDeleteAdmin)
 admin.site.register(ViewCount, ViewCountAdmin)

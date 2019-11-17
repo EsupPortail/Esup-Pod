@@ -8,15 +8,15 @@ from django.template.defaultfilters import filesizeformat
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
-from pod.video.models import Video
-from pod.video.models import Channel
-from pod.video.models import Theme
-from pod.video.models import Type
-from pod.video.models import Discipline
-from pod.video.models import Notes
-from pod.video.encode import start_encode
-from pod.video.models import get_storage_path_video
-from pod.video.models import EncodingVideo, EncodingAudio, PlaylistVideo
+from .models import Video, VideoVersion
+from .models import Channel
+from .models import Theme
+from .models import Type
+from .models import Discipline
+from .models import Notes, AdvancedNotes, NoteComments
+from .encode import start_encode
+from .models import get_storage_path_video
+from .models import EncodingVideo, EncodingAudio, PlaylistVideo
 
 
 from django.dispatch import receiver
@@ -33,6 +33,8 @@ FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.widgets import CustomFileWidget
+
+TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 
 ENCODE_VIDEO = getattr(settings,
                        'ENCODE_VIDEO',
@@ -172,6 +174,19 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 "video will be removed automatically.")
         ])
     ]))
+
+if TRANSCRIPT:
+    transcript_help_text = OrderedDict([
+        ("{0}".format(_("Transcript")), [
+            _("Available only in French and English, transcription is a speech"
+              " recognition technology that transforms an oral speech into "
+              "text in an automated way. By checking this box, it will "
+              "generate a subtitle file automatically when encoding the video."
+              ),
+            _("You will probably have to modify this file using the "
+              "captioning tool in the completion page to improve it.")
+        ])])
+    VIDEO_FORM_FIELDS_HELP_TEXT.update(transcript_help_text)
 
 VIDEO_FORM_FIELDS = getattr(
     settings,
@@ -387,6 +402,9 @@ class VideoForm(forms.ModelForm):
 
         if FILEPICKER and self.fields.get('thumbnail'):
             self.fields['thumbnail'].widget = CustomFileWidget(type="image")
+
+        if not TRANSCRIPT:
+            self.remove_field('transcript')
 
         if self.fields.get('video'):
             self.fields['video'].label = _(u'File')
@@ -635,6 +653,16 @@ class DisciplineForm(forms.ModelForm):
         fields = '__all__'
 
 
+class VideoVersionForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(VideoVersionForm, self).__init__(*args, **kwargs)
+
+    class Meta(object):
+        model = VideoVersion
+        fields = '__all__'
+
+
 class NotesForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
@@ -648,3 +676,43 @@ class NotesForm(forms.ModelForm):
     class Meta(object):
         model = Notes
         fields = ["note"]
+
+
+class AdvancedNotesForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(AdvancedNotesForm, self).__init__(*args, **kwargs)
+        # self.fields["user"].widget = forms.HiddenInput()
+        self.fields["video"].widget = forms.HiddenInput()
+        self.fields["note"].widget.attrs["class"] = "form-control input_note"
+        self.fields["note"].widget.attrs["autocomplete"] = "off"
+        self.fields["note"].widget.attrs["rows"] = 3
+        self.fields["note"].widget.attrs["cols"] = 20
+        self.fields["note"].help_text = _("A note can't be empty")
+        self.fields["timestamp"].widget = forms.HiddenInput()
+        self.fields["timestamp"].widget.attrs["class"] = "form-control"
+        self.fields["timestamp"].widget.attrs["autocomplete"] = "off"
+        self.fields["status"].widget.attrs["class"] = "form-control"
+
+    class Meta(object):
+        model = AdvancedNotes
+        fields = ["video", "note", "timestamp", "status"]
+
+
+class NoteCommentsForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(NoteCommentsForm, self).__init__(*args, **kwargs)
+        # self.fields["user"].widget = forms.HiddenInput()
+        # self.fields["note"].widget = forms.HiddenInput()
+        self.fields["comment"].widget.attrs["class"] = "form-control \
+            input_comment"
+        self.fields["comment"].widget.attrs["autocomplete"] = "off"
+        self.fields["comment"].widget.attrs["rows"] = 3
+        self.fields["comment"].widget.attrs["cols"] = 20
+        self.fields["comment"].help_text = _("A comment can't be empty")
+        self.fields["status"].widget.attrs["class"] = "form-control"
+
+    class Meta(object):
+        model = NoteComments
+        fields = ["comment", "status"]

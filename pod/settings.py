@@ -10,7 +10,7 @@ from pod.main.settings import BASE_DIR
 ##
 # Version of the project
 #
-VERSION = '2.1.2'
+VERSION = '2.3'
 
 ##
 # Installed applications list
@@ -31,13 +31,14 @@ INSTALLED_APPS = [
     'ckeditor',
     'sorl.thumbnail',
     'tagging',
-    'django_cas',
+    'cas',
     'captcha',
     'progressbarupload',
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
     'lti_provider',
+    'select2',
     # Pod Applications
     'pod.main',
     'django.contrib.admin',  # put it here for template override
@@ -74,7 +75,6 @@ MIDDLEWARE = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    # 'django_cas.backends.CASBackend',
 )
 
 ##
@@ -224,13 +224,13 @@ for application in INSTALLED_APPS:
 if 'USE_CAS' in globals() and eval('USE_CAS') is True:
     AUTHENTICATION_BACKENDS = (
         'django.contrib.auth.backends.ModelBackend',
-        'django_cas.backends.CASBackend',
+        'cas.backends.CASBackend',
     )
     CAS_RESPONSE_CALLBACKS = (
         'pod.authentication.populatedCASbackend.populateUser',
         # function call to add some information to user login by CAS
     )
-    MIDDLEWARE.append('django_cas.middleware.CASMiddleware')
+    MIDDLEWARE.append('cas.middleware.CASMiddleware')
 
 
 ##

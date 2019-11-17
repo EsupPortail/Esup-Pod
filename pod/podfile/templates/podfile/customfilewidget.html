@@ -2,26 +2,46 @@
 
 <div >
 {{input|safe}}
+<span>
 {% if value %}
 <span id="fileinput_{{id}}">
     {% if type == "image" %}<img src="{{document.file.url}}" height="34" alt="{{document.name}}"/>&nbsp;
     {% else %}<i data-feather="file"></i>&nbsp;{%endif%}
-<strong>{{document.name}}</strong>&nbsp;({{document.file_type}} - {{document.file.size|filesizeformat}})
+<strong><a href="{{document.file.url}}" target="_blank" title="{% trans 'Open file in a new tab'%}">{{document.name}}</a></strong>&nbsp;({{document.file_type}} - {{document.file.size|filesizeformat}})
 </span>
-<button type="button" class="btn btn-primary btn-fileinput" data-toggle="modal" data-target="#fileModal_{{id}}">
+<button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">
+  {% if type == "file" %}
   {% trans 'Change file' %}
+  {% else %}
+  {% trans 'Change image' %}
+  {% endif %}
+</button>
+<button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}">
+  {% if type == "file" %}
+  {% trans 'Remove file' %}
+  {% else %}
+  {% trans 'Remove image' %}
+  {% endif %}
 </button>
 {% else %}
 <span id="fileinput_{{id}}">
 </span>
-<button type="button" class="btn btn-primary btn-fileinput" data-toggle="modal" data-target="#fileModal_{{id}}">
-{% if type == "file" %}
-{% trans 'Select a file' %}
-{% else %}
-{% trans 'Select an image' %}
-{% endif %}
+<button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">
+  {% if type == "file" %}
+  {% trans 'Select a file' %}
+  {% else %}
+  {% trans 'Select an image' %}
+  {% endif %}
+</button>
+<button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}" style="display:none">
+  {% if type == "file" %}
+  {% trans 'Remove file' %}
+  {% else %}
+  {% trans 'Remove image' %}
+  {% endif %}
 </button>
 {% endif%}
+</span>
 </div>
 <!-- Select File Modal -->
 <div class="modal fade" id="fileModal_{{id}}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true" data-id="{{id}}">
@@ -50,12 +70,25 @@
 var id_input="";
 $('#fileModal_{{id}}').appendTo(document.body);
 $('#fileModal_{{id}}').on('hide.bs.modal', function (event) {
-  console.log($(this).data('id'));
+  //console.log($(this).data('id'));
     $("#modal-folder_"+$(this).data('id')).html("");
 });
 $('#fileModal_{{id}}').on('show.bs.modal', function (event) {
-  console.log($(this).data('id'));
+  //console.log($(this).data('id'));
   id_input = $(this).data('id');
   send_form_data("{% url "podfile:folder" type=type %}", {}, "append_folder_html_in_modal", "get");
 });
+$(document).on("click", "#remove_file_{{id}}", function(event) {
+var html_div = '<span id="fileinput_{{id}}"></span>\
+<button type="button" class="btn btn-sm btn-outline-primary btn-fileinput mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">\
+{% if type == "file" %}\
+{% trans 'Select a file' %}\
+{% else %}\
+{% trans 'Select an image' %}\
+{% endif %}\
+</button>';
+$(this).parent('span').html(html_div);
+$("#{{id}}").val("");
+});
+
 </script>
