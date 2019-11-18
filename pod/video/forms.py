@@ -333,7 +333,7 @@ class VideoForm(forms.ModelForm):
             nom, ext = os.path.splitext(
                 os.path.basename(self.cleaned_data['video'].name))
             ext = ext.lower()
-            nom = re.sub(r'_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}', '', nom)
+            nom = re.sub(r'_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}$', '', nom)
             new_path = os.path.join(
                 os.path.dirname(storage_path),
                 nom + "_" + dt + ext)
