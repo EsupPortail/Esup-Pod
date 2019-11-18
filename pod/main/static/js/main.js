@@ -62,12 +62,12 @@ function writeInFrame() {
 
     } else if (link.indexOf('loop=true') > 0) {
        link = link.replace('&loop=true', '').replace('?loop=true&', '?').replace('?loop=true', '?');
-       
+
     }
-    
+
     //Remove ? to start when he's first
     if (link.indexOf('??') > 0) link = link.replace(/\?\?/, '?');
-    
+
     $('#txtpartage').val(link);
     var img = document.getElementById("qrcode");
     img.src = "//chart.apis.google.com/chart?cht=qr&chs=200x200&chl=" + link;
@@ -78,7 +78,7 @@ $(document).on('change', '#autoplay', function() {
 $(document).on('change', '#loop', function() {
     writeInFrame();
 });
- 
+
 $(document).on('change', "#displaytime", function(e) {
     if($('#displaytime').is(':checked')){
         if($('#txtpartage').val().indexOf('start')<0){
@@ -86,7 +86,7 @@ $(document).on('change', "#displaytime", function(e) {
              if ($('#txtpartage').val().indexOf('??') > 0) $('#txtpartage').val($('#txtpartage').val().replace('??', '?'));
              var valeur = $('#txtintegration').val();
              $('#txtintegration').val(valeur.replace('/?', '/?start=' + parseInt(player.currentTime())+'&'));
-            
+
         }
         $('#txtposition').val(player.currentTime().toHHMMSS());
     }else{
@@ -106,7 +106,15 @@ $(document).on('change', "#displaytime", function(e) {
 });
 
 /*** USE TO SHOW THEME FROM CHANNELS ***/
-var get_list = function(tab, level=0, tab_selected=[], tag_type="option", li_class='', attrs='', add_link=false, current="", channel="") {
+var get_list = function(tab, level, tab_selected, tag_type, li_class, attrs, add_link, current, channel) {
+    level = level || 0;
+    tab_selected = tab_selected || [];
+    tag_type = tag_type || "option";
+    li_class = li_class || '';
+    attrs = attrs || '';
+    add_link = add_link || false;
+    current = current || false;
+    channel = channel || "";
     var list = ""
     var prefix = ""
     for(i=0;i<level;i++) prefix+="&nbsp;&nbsp;";
@@ -152,7 +160,7 @@ $('#ownerboxnavbar').keyup(function() {
                 var firstname = removeDiacritics(listUser[letter][i]["first_name"].toLowerCase());
                 if(lastname.indexOf(valThis) != -1 || firstname.indexOf(valThis) != -1){
                     $("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+ (USE_RGPD?' ('+listUser[letter][i]["username"]+')</a></li>': '</a></li>'));
-                    
+
                 }
     		}
         }
@@ -167,7 +175,7 @@ $(".showUser").on('click', function() {
 	   var nbuser = listUser[letter].length;
     	for(i=0; i<nbuser; i++) {
             $("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+ (USE_RGPD?' ('+listUser[letter][i]["username"]+')</a></li>': '</a></li>'));
-            
+
         }
     }
 });
@@ -252,10 +260,28 @@ $(document).on("submit", "form.get_form_theme", function (e) {
     	send_form_data(window.location.href, $(this).serializeArray(), "show_form_theme_"+action);
     }
 });
+/** VIDEO DEFAULT VERSION **/
+$(document).on("change", "#video_version_form input[type=radio][name=version]", function (e) {
+    $('#video_version_form').submit();
+});
+$(document).on("submit", "#video_version_form", function (e) {
+    e.preventDefault();
+    var data_form = $( "#video_version_form" ).serializeArray();
+    send_form_data($( "#video_version_form" ).attr("action"), data_form, "result_video_form");
+});
+var result_video_form = function(data) {
+    if(data.errors){
+        showalert(gettext('One or more errors have been found in the form.'), "alert-danger");
+    } else {
+        showalert(gettext('Changes have been saved.'), 'alert-info');
+    }
+}
+
 /** FOLDER **/
 
 /** AJAX **/
-var send_form_data = function(url,data_form, fct, method="post") {
+var send_form_data = function(url,data_form, fct, method) {
+  method = method || "post";
 	var jqxhr= '';
 	if(method=="post") jqxhr = $.post(url, data_form);
 	else jqxhr = $.get(url);
@@ -427,7 +453,7 @@ restricted_access();
     var validation = Array.prototype.filter.call(forms, function(form) {
       form.addEventListener('submit', function(event) {
         if (form.checkValidity() === false) {
-          window.scrollTo($(form).scrollTop(), 0); 
+          window.scrollTo($(form).scrollTop(), 0);
           showalert(gettext("Errors appear in the form, please correct them"),"alert-danger");
           event.preventDefault();
           event.stopPropagation();
@@ -450,7 +476,7 @@ var videocheck = function(form,event) {
         var extension = fileName.substring(fileName.lastIndexOf('.')+1).toLowerCase();
         if(listext.indexOf(extension) !== -1) {
             if(fileSize>video_max_upload_size){
-                window.scrollTo($("#video_form").scrollTop(), 0); 
+                window.scrollTo($("#video_form").scrollTop(), 0);
                 showalert(gettext("The file size exceeds the maximum allowed value :")+" "+VIDEO_MAX_UPLOAD_SIZE+" Go.","alert-danger");
                 event.preventDefault();
                 event.stopPropagation();
@@ -465,7 +491,7 @@ var videocheck = function(form,event) {
                 }
             }
         } else {
-            window.scrollTo($("#video_form").scrollTop(), 0); 
+            window.scrollTo($("#video_form").scrollTop(), 0);
             showalert(gettext("The file extension not in the allowed extension :")+" "+listext+".","alert-danger");
             event.preventDefault();
             event.stopPropagation();

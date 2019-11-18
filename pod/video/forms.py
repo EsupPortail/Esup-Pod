@@ -8,15 +8,15 @@ from django.template.defaultfilters import filesizeformat
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
-from pod.video.models import Video
-from pod.video.models import Channel
-from pod.video.models import Theme
-from pod.video.models import Type
-from pod.video.models import Discipline
-from pod.video.models import Notes, AdvancedNotes, NoteComments
-from pod.video.encode import start_encode
-from pod.video.models import get_storage_path_video
-from pod.video.models import EncodingVideo, EncodingAudio, PlaylistVideo
+from .models import Video, VideoVersion
+from .models import Channel
+from .models import Theme
+from .models import Type
+from .models import Discipline
+from .models import Notes, AdvancedNotes, NoteComments
+from .encode import start_encode
+from .models import get_storage_path_video
+from .models import EncodingVideo, EncodingAudio, PlaylistVideo
 
 
 from django.dispatch import receiver
@@ -29,10 +29,14 @@ from collections import OrderedDict
 
 import datetime
 import os
+import re
+
 FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.widgets import CustomFileWidget
+
+TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 
 ENCODE_VIDEO = getattr(settings,
                        'ENCODE_VIDEO',
@@ -173,6 +177,19 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
         ])
     ]))
 
+if TRANSCRIPT:
+    transcript_help_text = OrderedDict([
+        ("{0}".format(_("Transcript")), [
+            _("Available only in French and English, transcription is a speech"
+              " recognition technology that transforms an oral speech into "
+              "text in an automated way. By checking this box, it will "
+              "generate a subtitle file automatically when encoding the video."
+              ),
+            _("You will probably have to modify this file using the "
+              "captioning tool in the completion page to improve it.")
+        ])])
+    VIDEO_FORM_FIELDS_HELP_TEXT.update(transcript_help_text)
+
 VIDEO_FORM_FIELDS = getattr(
     settings,
     'VIDEO_FORM_FIELDS', '__all__')
@@ -312,13 +329,14 @@ class VideoForm(forms.ModelForm):
             storage_path = get_storage_path_video(
                 self.instance,
                 os.path.basename(self.cleaned_data['video'].name))
-            dt = str(datetime.datetime.now()).replace(":", "-")
+            dt = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             nom, ext = os.path.splitext(
                 os.path.basename(self.cleaned_data['video'].name))
             ext = ext.lower()
+            nom = re.sub(r'_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}', '', nom)
             new_path = os.path.join(
                 os.path.dirname(storage_path),
-                nom + "_" + dt.replace(" ", "_") + ext)
+                nom + "_" + dt + ext)
             if self.instance.overview:
                 old_dir = os.path.dirname(self.instance.overview.name)
             else:
@@ -387,6 +405,9 @@ class VideoForm(forms.ModelForm):
 
         if FILEPICKER and self.fields.get('thumbnail'):
             self.fields['thumbnail'].widget = CustomFileWidget(type="image")
+
+        if not TRANSCRIPT:
+            self.remove_field('transcript')
 
         if self.fields.get('video'):
             self.fields['video'].label = _(u'File')
@@ -632,6 +653,16 @@ class DisciplineForm(forms.ModelForm):
 
     class Meta(object):
         model = Discipline
+        fields = '__all__'
+
+
+class VideoVersionForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(VideoVersionForm, self).__init__(*args, **kwargs)
+
+    class Meta(object):
+        model = VideoVersion
         fields = '__all__'
 
 

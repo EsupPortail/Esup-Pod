@@ -20,8 +20,9 @@ from .models import PlaylistVideo
 from .models import Notes, AdvancedNotes, NoteComments
 from .models import ViewCount
 from .models import VideoToDelete
+from .models import VideoVersion
 
-from .forms import VideoForm
+from .forms import VideoForm, VideoVersionForm
 from .forms import ChannelForm
 from .forms import ThemeForm
 from .forms import TypeForm
@@ -39,6 +40,8 @@ User._meta.ordering = ["username"]
 # SET USE_ESTABLISHMENT_FIELD
 USE_ESTABLISHMENT_FIELD = getattr(
     settings, 'USE_ESTABLISHMENT_FIELD', False)
+
+TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 
 
 def url_to_edit_object(obj):
@@ -60,6 +63,12 @@ class VideoAdminForm(VideoForm):
     is_staff = True
     is_superuser = False
     is_admin = True
+
+
+class VideoVersionInline(admin.StackedInline):
+    model = VideoVersion
+    form = VideoVersionForm
+    can_delete = False
 
 
 class VideoAdmin(admin.ModelAdmin):
@@ -85,6 +94,7 @@ class VideoAdmin(admin.ModelAdmin):
     inlines = []
 
     inlines += [
+        VideoVersionInline,
         ContributorInline,
         DocumentInline,
         TrackInline,
@@ -122,6 +132,8 @@ class VideoAdmin(admin.ModelAdmin):
         exclude = ()
         if obj and obj.encoding_in_progress:
             exclude += ('video', 'owner',)
+        if not TRANSCRIPT:
+            exclude += ('transcript',)
         self.exclude = exclude
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form

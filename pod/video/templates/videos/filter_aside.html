@@ -8,7 +8,7 @@
 <i data-feather="sliders"></i>&nbsp;{% trans "Filters"%}</h4>
 
 <form action="{% url 'videos' %}" method="get" id="filters">
-{% if not USE_RGPD or user.is_authenticated %}
+  {% if user.is_authenticated %}
   <fieldset>
   <legend  class="h5"><i data-feather="users"></i> {% trans "Users" %} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
   <div class="form-group">
@@ -23,14 +23,14 @@
           {% thumbnail video.owner.owner.userpicture.file "x34" as im %}
             <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{ owner.first_name }} {{ owner.last_name }} ">
           {% endthumbnail %}
-          {{ owner.first_name }} {{ owner.last_name }} {% if not USE_RGPD %} ({{ owner.username }}) {% endif %}
+	  {{ owner.first_name }} {{ owner.last_name }} {% if not ADDITIONAL_GRENOBLE_RGPD %}{% if not USE_RGPD %} ({{ owner.username }}) {% endif %}{% endif%}
       </label>
       </div>
       {% endif %}
       {% endfor %}  
   </div>
   </fieldset>
-{% endif %}
+  {% endif %}
 
 <fieldset class="border-right border-bottom mt-2">
   <legend class="h5"><i data-feather="tv"></i> {% trans "Types"%} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>

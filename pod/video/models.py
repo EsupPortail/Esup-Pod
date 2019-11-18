@@ -25,8 +25,14 @@ from datetime import date
 from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
+from django.utils.text import capfirst
+
+import importlib
+
+from select2 import fields as select2_fields
 
 from pod.main.models import get_nextautoincrement
+from django.db.models import Q
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -111,6 +117,20 @@ NOTES_STATUS = getattr(
         ('2', _('Public'))
     )
 )
+
+THIRD_PARTY_APPS = getattr(
+    settings, 'THIRD_PARTY_APPS', [])
+
+THIRD_PARTY_APPS_CHOICES = THIRD_PARTY_APPS.copy()
+THIRD_PARTY_APPS_CHOICES.remove("live") if (
+    "live" in THIRD_PARTY_APPS_CHOICES) else THIRD_PARTY_APPS_CHOICES
+THIRD_PARTY_APPS_CHOICES.insert(0, 'Original')
+
+VERSION_CHOICES = [
+    (app.capitalize()[0], _("%(app)s version" % {"app": app.capitalize()}))
+    for app in THIRD_PARTY_APPS_CHOICES]
+
+VERSION_CHOICES_DICT = {key: value for key, value in VERSION_CHOICES}
 
 ##
 # Settings exposed in templates
@@ -309,10 +329,13 @@ class Theme(models.Model):
         return parents
 
     def clean(self):
+        # Dans le cas où on modifie un theme
         if Theme.objects.filter(
-                channel=self.channel, slug=slugify(self.title)).exists():
-            raise ValidationError(
-                "A theme with this name already exist in this channel.")
+                channel=self.channel,
+                slug=slugify(self.title)).exclude(pk=self.id).exists():
+            raise ValidationError("A theme with this name\
+                    already exists in this channel.")
+
         if self.parentId in self.get_all_children_flat():
             raise ValidationError("A theme cannot have itself \
                     or one of it's children as parent.")
@@ -396,7 +419,14 @@ class Video(models.Model):
             'numbers, underscore or dash top.'),
         editable=False)
     type = models.ForeignKey(Type, verbose_name=_('Type'))
-    owner = models.ForeignKey(User, verbose_name=_('Owner'))
+    owner = select2_fields.ForeignKey(
+        User,
+        ajax=True,
+        verbose_name=_('Owner'),
+        search_field=lambda q: Q(
+            first_name__icontains=q) | Q(
+            last_name__icontains=q),
+        on_delete=models.CASCADE)
     description = RichTextField(
         _('Description'),
         config_name='complete',
@@ -416,6 +446,10 @@ class Video(models.Model):
         _('Main language'), max_length=2,
         choices=LANG_CHOICES, default=get_language(),
         help_text=_("Select the main language used in the content."))
+    transcript = models.BooleanField(
+        _('Transcript'), default=False, help_text=_(
+            "Check this box if you want to transcript the audio."
+            "(beta version)"))
     tags = TagField(help_text=_(
         'Separate tags with spaces, '
         'enclose the tags consist of several words in quotation marks.'),
@@ -476,8 +510,6 @@ class Video(models.Model):
     overview = models.ImageField(
         _('Overview'), null=True, upload_to=get_storage_path_video,
         blank=True, max_length=255, editable=False)
-    # type = models.ForeignKey(Type, verbose_name=_('Type'),
-    #                          default=DEFAULT_TYPE_ID)
 
     encoding_in_progress = models.BooleanField(
         _('Encoding in progress'), default=False, editable=False)
@@ -547,6 +579,42 @@ class Video(models.Model):
     def duration_in_time(self):
         return time.strftime('%H:%M:%S', time.gmtime(self.duration))
     duration_in_time.fget.short_description = _('Duration')
+
+    @property
+    def get_version(self):
+        try:
+            return self.videoversion.version
+        except VideoVersion.DoesNotExist:
+            return 'O'
+
+    def get_other_version(self):
+        version = []
+        for app in THIRD_PARTY_APPS:
+            mod = importlib.import_module('pod.%s.models' % app)
+            if hasattr(mod, capfirst(app)):
+                video_app = eval(
+                    'mod.%s.objects.filter(video__id=%s).all()' % (
+                        capfirst(app), self.id))
+                if (app == "interactive"
+                        and video_app.first() is not None
+                        and video_app.first().is_interactive() is False):
+                    video_app = False
+                if video_app:
+                    url = reverse('%(app)s:video_%(app)s' %
+                                  {"app": app}, kwargs={'slug': self.slug})
+                    version.append(
+                        {
+                            "app": app,
+                            "url": url,
+                            "link": VERSION_CHOICES_DICT[app.capitalize()[0]]
+                        }
+                    )
+        return version
+
+    def get_default_version_link(self):
+        for version in self.get_other_version():
+            if version["link"] == VERSION_CHOICES_DICT[self.get_version]:
+                return version["url"]
 
     def get_viewcount(self):
         count_sum = self.viewcount_set.all().aggregate(Sum('count'))
@@ -1034,6 +1102,19 @@ class EncodingLog(models.Model):
 
     def __str__(self):
         return "Log for encoding video %s" % (self.video.id)
+
+
+class VideoVersion(models.Model):
+    video = models.OneToOneField(Video, verbose_name=_('Video'),
+                                 editable=False, on_delete=models.CASCADE)
+    version = models.CharField(
+        _('Video version'), max_length=1, blank=True,
+        choices=VERSION_CHOICES, default="O",
+        help_text=_("Video default version."))
+
+    def __str__(self):
+        return "Choice for default video version : %s - %s" % (
+            self.video.id, self.version)
 
 
 class EncodingStep(models.Model):

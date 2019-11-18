@@ -161,20 +161,21 @@ body {
         <i data-feather="share-2"></i><span class="sr-only">{% trans 'Embed/Share' %}</span>
       </a>
     </li>
-    
+    {% with video.get_other_version as versions %}
+    {% if versions|length > 0 %}
     <li class="nav-item dropdown" id="list_third_apps">
       <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
         <i data-feather="layers"></i>&nbsp;<span class="sr-only">{% trans 'Other versions' %}</span>
       </a>
       <div class="dropdown-menu" >
-        {% for app in THIRD_PARTY_APPS %}
-        {% get_app_link video app as link %}
-        {% if link != "" %}
-        {{link|safe}}
-        {% endif %}
+        {% for version in versions %}
+          <a href="{{version.url}}?redirect=false" title="{{version.app}}" class="dropdown-item" >{{version.link}}</a>
         {% endfor %}
       </div>
     </li>
+    {% endif %}
+    {% endwith %}
+    
     {% if request.user.playlist_set.all and video.is_draft == False %}
     <li class="nav-item dropdown dropright">
       <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans "Add the video to a playlist"%}">
@@ -226,8 +227,5 @@ body {
 {% if not form %}
 {% include 'videos/video-script.html'%}
 {% endif %}
-<script>
-if($('#list_third_apps .dropdown-menu').children().length == 0) $('#list_third_apps').hide();
-</script>
 
 {% endblock more_script %}

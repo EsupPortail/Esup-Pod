@@ -1,6 +1,7 @@
 from django import template
 from django.utils.text import capfirst
 from django.urls import reverse
+from ..forms import VideoVersionForm
 
 import importlib
 
@@ -27,3 +28,9 @@ def get_app_link(video, app):
                 "url": url,
                 "link": mod.__NAME__}
     return ""
+
+
+@register.simple_tag
+def get_version_form(video):
+    form = VideoVersionForm()
+    return form

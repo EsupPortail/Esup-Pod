@@ -109,5 +109,10 @@ def video_interactive(request, slug, slug_c=None,
         request.user == video.owner or request.user.is_superuser
     ) else getUserScore(h5p.content_id, request.user)
 
-    return render_video(request, slug, slug_c, slug_t, slug_private,
+    try:
+        id = int(slug[:slug.find("-")])
+    except ValueError:
+        raise SuspiciousOperation('Invalid video id')
+
+    return render_video(request, id, slug_c, slug_t, slug_private,
                         template_video, {'h5p': h5p, 'score': score})
