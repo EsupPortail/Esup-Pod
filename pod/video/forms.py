@@ -29,6 +29,8 @@ from collections import OrderedDict
 
 import datetime
 import os
+import re
+
 FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
@@ -327,13 +329,14 @@ class VideoForm(forms.ModelForm):
             storage_path = get_storage_path_video(
                 self.instance,
                 os.path.basename(self.cleaned_data['video'].name))
-            dt = str(datetime.datetime.now()).replace(":", "-")
+            dt = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
             nom, ext = os.path.splitext(
                 os.path.basename(self.cleaned_data['video'].name))
             ext = ext.lower()
+            nom = re.sub(r'_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}', '', nom)
             new_path = os.path.join(
                 os.path.dirname(storage_path),
-                nom + "_" + dt.replace(" ", "_") + ext)
+                nom + "_" + dt + ext)
             if self.instance.overview:
                 old_dir = os.path.dirname(self.instance.overview.name)
             else:
