@@ -5,9 +5,12 @@
 {% block page_title %}{% trans 'Enrichment of the video' %} "{{video.title}}" {% endblock page_title %}
 
 {% block page_extra_head %}
+
 {{ block.super }} 
+
 <link rel="stylesheet" href="{% static 'css/enrichment.css' %}"/>
 <script src="{% static 'js/enrichment.js' %}"></script>
+
 <!-- form.media -->
 <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
 
@@ -35,9 +38,8 @@
         To view this video please enable JavaScript, and consider upgrading to a web browser that
         <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
     </p>
-    {% if video.enrichmentvtt.src %}
-    <track kind="metadata" src="{{video.enrichmentvtt.src.file.url}}">
-    {% endif %}
+    <track kind="metadata" src="{{video.enrichmentvtt.src.file.url}}" label="enrichment">
+    
     {% for track in video.track_set.all%}
     <track id= "track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.url }}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}">
     {%endfor%}
@@ -71,6 +73,7 @@
 </div>
 </div>
 {% endblock video-element %}
+
 {% block page_aside %}
 <div class="card card-body p-2 mt-1" id="card-enrichmenteditinformations">
     <h5 class="card-title pl-2">

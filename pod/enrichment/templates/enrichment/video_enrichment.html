@@ -165,7 +165,9 @@
 {% endblock page_aside %}
 
 {% block more_script %}
+
 {{block.super}}
+
 {% if video.enrichment_set.all %}
 <script>
 {% if not video.is_video %}
@@ -195,7 +197,7 @@ player.ready(function() {
         } else {
             for (i = 0; i < metadataTrack.cues.length; i++) {
                 data = JSON.parse(metadataTrack.cues[i].text);
-                console.log('Parsed '+data.title)
+                //console.log('Parsed '+data.title)
                 slide.push({
                     title: data.title,
                     url: data.url,
@@ -207,7 +209,7 @@ player.ready(function() {
             }
         }
         if (typeof player.slides === "function") {
-            console.log('Call player.slides');
+            //console.log('Call player.slides');
             player.slides(slide);
         }
 
@@ -218,4 +220,5 @@ player.ready(function() {
 });
 </script>
 {% endif %}
+
 {% endblock more_script %}
