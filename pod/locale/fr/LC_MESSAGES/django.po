@@ -4348,6 +4348,14 @@ msgstr "facettage"
 msgid "Remove selection"
 msgstr "Retirer la sélection"
 
+#: pod/video/models.py:433
+msgid "Additional owners"
+msgstr "Propriétaires additionels"
+
+#: pod/video/models.py:439
+msgid "You can add additional owners to the video. They will have the same rights as you and will be able to edit and delete this video."
+msgstr "Vous pouvez ajouter des propriétaires additionnels à la vidéo. Ils auront les mêmes droits que vous et pourront modifier et supprimer cette vidéo."
+
 #~ msgid ""
 #~ "Select and copy the caption file contents below and paste into a .vtt file"
 #~ msgstr ""
