@@ -433,7 +433,10 @@ class VideoForm(forms.ModelForm):
 
         if self.is_superuser is False and self.is_admin is False:
             self.remove_field('date_added')
-            self.remove_field('owner')
+            # Owner read only : useful when an additional_owner edit and 
+            # save the video (the real owner isn't replaced by the user)
+            #self.remove_field('owner')
+            self.fields['owner'].widget.attrs['readonly'] = True
 
         self.fields = add_placeholder_and_asterisk(self.fields)
 
