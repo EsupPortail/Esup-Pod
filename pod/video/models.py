@@ -427,6 +427,18 @@ class Video(models.Model):
             first_name__icontains=q) | Q(
             last_name__icontains=q),
         on_delete=models.CASCADE)
+    additional_owners = select2_fields.ManyToManyField(
+        User,
+        blank=True,
+        ajax=True,
+        verbose_name=_('Additional owners'),
+        search_field=lambda q: Q(
+            first_name__icontains=q) | Q(
+            last_name__icontains=q),
+        related_name='owners_videos',
+        help_text=_('You can add additional owners to the video. They will '
+                    'have the same rights as you and will be able to edit '
+                    'and delete this video.'))
     description = RichTextField(
         _('Description'),
         config_name='complete',
