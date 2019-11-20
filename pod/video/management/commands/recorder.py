@@ -29,7 +29,6 @@ from pod.recorder.models import Recorder, Recording, RecordingFileTreatment
 import hashlib
 import requests
 from django.core.mail import mail_admins
-from django.core.files.storage import default_storage
 from django.utils import timezone
 
 # Mediacourse directory
@@ -257,7 +256,7 @@ def recorder_exist(recorder, filename, message_error, html_message_error):
                 "the process for this file.")
     else:
         # Size of the existant file
-        file_size = default_storage.size(source_file)
+        file_size = os.path.getsize(source_file)
         if file:
             html_message_error, message_error = file_exist(file, file_size,
                                                            source_file,
