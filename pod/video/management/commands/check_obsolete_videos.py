@@ -59,42 +59,7 @@ class Command(BaseCommand):
                 if not v.date_delete:
                     v.save()  # going to set date_delete attribute
                 # Si on doit alerter l'utilisateur
-                if self.remaining_time_to_alert_achieved(v):
-                    #  Prevenir les manageurs seulement à la derniere notif
-                    #  de la suppression prochaine d'une/des vidéo(s)
-                    #  si on ne souhaite pas archiver les vidéos
-                    #  if is_last and not POD_ARCHIVE:
-                    #  Mémoriser le mail du manageur de l'etablissement
-                    #  du propriétaire de la vidéo
-                    self.set_concerned_manager_email(v)
-                    #  Ecriture dans le fichier excel déstiné au(x) manageur(s)
-                    self.write(v, "soon")
-                    #  envoie de mail à l'utilisateur
-                    self.send_email(v)
-                #  Si la date de suppression est atteinte ou dépassée
-                elif v.date_delete.date() <= timezone.now().date():
-                    if POD_ARCHIVE:
-                        #  Ecriture dans le fichier
-                        #  excel déstiné au(x) manageur(s)
-                        self.write(v, "archived")
-                        #  change owner, make it private
-                        #  change the slug, add it to videotodelete table
-                        v.owner = self.get_archive_owner()
-                        v.is_draft = True
-                        v.slug = self.new_slug(v)
-                        vd = VideoToDelete(date_deletion=v.date_delete)
-                        vd.save()
-                        v.videotodelete_set.add(vd)
-                        v.save()
-                        #  Garder le mail du manageur de l'établissement
-                        #  du propritétaire de la vidéo
-                        self.set_concerned_manager_email(v)
-                    else:
-                        #  Ecriture dans le fichier excel
-                        #  déstiné au(x) manageur(s)
-                        self.write(v, "deleted")
-                        #  Suppression de la vidéo
-                        v.delete()
+                self.alert_user(v)
             #  Sauvegarde des fichiers
             self.wb_archived.save(SAVE_SRC+archived_file)
             self.wb_deleted.save(SAVE_SRC+deleted_file)
@@ -114,6 +79,44 @@ class Command(BaseCommand):
             raise CommandError(
                     _('An error has occured')
             )
+
+    def alert_user(self, v):
+        if self.remaining_time_to_alert_achieved(v):
+            #  Prevenir les manageurs seulement à la derniere notif
+            #  de la suppression prochaine d'une/des vidéo(s)
+            #  si on ne souhaite pas archiver les vidéos
+            #  if is_last and not POD_ARCHIVE:
+            #  Mémoriser le mail du manageur de l'etablissement
+            #  du propriétaire de la vidéo
+            self.set_concerned_manager_email(v)
+            #  Ecriture dans le fichier excel déstiné au(x) manageur(s)
+            self.write(v, "soon")
+            #  envoie de mail à l'utilisateur
+            self.send_email(v)
+        #  Si la date de suppression est atteinte ou dépassée
+        elif v.date_delete.date() <= timezone.now().date():
+            if POD_ARCHIVE:
+                #  Ecriture dans le fichier
+                #  excel déstiné au(x) manageur(s)
+                self.write(v, "archived")
+                #  change owner, make it private
+                #  change the slug, add it to videotodelete table
+                v.owner = self.get_archive_owner()
+                v.is_draft = True
+                v.slug = self.new_slug(v)
+                vd = VideoToDelete(date_deletion=v.date_delete)
+                vd.save()
+                v.videotodelete_set.add(vd)
+                v.save()
+                #  Garder le mail du manageur de l'établissement
+                #  du propritétaire de la vidéo
+                self.set_concerned_manager_email(v)
+            else:
+                #  Ecriture dans le fichier excel
+                #  déstiné au(x) manageur(s)
+                self.write(v, "deleted")
+                #  Suppression de la vidéo
+                v.delete()
 
     def get_archive_owner(self):
         owner = User.objects.filter(username="archive").first()
@@ -262,6 +265,16 @@ class Command(BaseCommand):
                 "plain_text": plain_text % body_msg_text,
                 "html": html_msg % body_msg_html}
 
+    def get_emails_addresses(self):
+        emails_addresses = []
+        if MANAGERS:
+            if USE_ESTABLISHMENT:
+                emails_addresses = self.CONCERNED_MANAGERS_EMAILS
+            else:
+                for name, email in MANAGERS:
+                    emails_addresses.append(email)
+        return emails_addresses
+
     def send_email(self, video, to_manager=False):
         archived_rows = len(self.ws_archived._Worksheet__rows)
         deleted_rows = len(self.ws_deleted._Worksheet__rows)
@@ -270,13 +283,7 @@ class Command(BaseCommand):
         archived_file_exists = os.path.isfile(SAVE_SRC+archived_file)
         deleted_file_exists = os.path.isfile(SAVE_SRC+deleted_file)
         soon_file_exists = os.path.isfile(SAVE_SRC+soon_file)
-        emails_addresses = []
-        if MANAGERS:
-            if USE_ESTABLISHMENT:
-                emails_addresses = self.CONCERNED_MANAGERS_EMAILS
-            else:
-                for name, email in MANAGERS:
-                    emails_addresses.append(email)
+        emails_addresses = self.get_emails_addresses()
         subject = "[%s] %s" % (TITLE_SITE, _(u"The obsolete videos on Pod"))
         content = self.get_email_message(
                 video,
