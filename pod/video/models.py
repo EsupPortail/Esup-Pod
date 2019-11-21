@@ -167,9 +167,19 @@ ACCOMMODATION_YEARS = getattr(
         settings,
         "ACCOMMODATION_YEARS",
         {
-            'P': 1,  # Personnel
-            'E': 1,  # Etudiant
-            'I': 1,  # Invité
+            'student': 1,
+            'faculty': 1,
+            'staff': 2,
+            'employee': 1,
+            'member': 1,
+            'affiliate': 1,
+            'alum': 1,
+            'library-walk-in': 1,
+            'researcher': 2,
+            'retired': 1,
+            'emeritus': 1,
+            'teacher': 2,
+            'registered-reader': 1
         }
 )
 
