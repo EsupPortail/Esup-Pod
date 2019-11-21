@@ -554,8 +554,8 @@ class Video(models.Model):
                     newid = 1
         else:
             newid = self.id
-        if USE_OBSOLESCENCE and not self.date_delete:
-            self.date_delete = self.get_default_date_deletion()
+        #  set date_delete attribute
+        self.set_default_date_deletion()
         newid = '%04d' % newid
         if not self.slug:
             self.slug = "%s-%s" % (newid, slugify(self.title))
@@ -577,30 +577,32 @@ class Video(models.Model):
                 year = tmp_year
         return year
 
-    def get_default_date_deletion(self):
+    def set_default_date_deletion(self):
         today = timezone.now()
         accommodation_year = self.get_accommodation_year()
         start = OBSOLESCENCE_START_DATE
+        #  Par defaut on se base par rapport à la date d'ajout
+        #  de la vidéo + le nombre d'année d'hebergement de la vidéo
+        #  selon l'affiliation de l'utilisateur
+        default_date = self.date_added.replace(
+                year=self.date_added.year+accommodation_year)
         if (start and start <= today and not (self.date_added >= start)):
             if not self.id:
                 #  Pour toutes les nouvelles vidéos ajoutées après
                 #  la mise en place de l'obsolescence
                 #  On retourne la date actuelle + le nombre d'année
                 #  d'hebergement autorisé selon affiliation
-                return today.replace(
+                default_date = today.replace(
                         year=today.year+accommodation_year)
             else:
                 #  Pour toutes les anciennes vidéos
                 #  On retourne la date de mise en place de
                 #  l'obsolescence + le nombre d'année
                 #  d'hébergement autorisé selon affiliation
-                return start.replace(
+                default_date = start.replace(
                         year=start.year+accommodation_year)
-        #  Sinon on retourne la date d'ajout de la vidéo
-        #  plus(+) le nombre d'année d'hebergement de la vidéo selon
-        #  affiliation
-        return self.date_added.replace(
-                year=self.date_added.year+accommodation_year)
+        if USE_OBSOLESCENCE and not self.date_delete:
+            self.date_delete = default_date
 
     @property
     def establishment(self):
