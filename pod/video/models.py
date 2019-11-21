@@ -21,7 +21,7 @@ from django.dispatch import receiver
 from django.utils.html import format_html
 from django.db.models.signals import pre_delete
 from tagging.models import Tag
-from datetime import date, datetime
+from datetime import date
 from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
@@ -525,7 +525,7 @@ class Video(models.Model):
 
     date_delete = models.DateField(
         _('Date to delete'),
-        default=datetime(
+        default=date(
             date.today().year + DEFAULT_YEAR_DATE_DELETE,
             date.today().month,
             date.today().day))
@@ -550,7 +550,7 @@ class Video(models.Model):
             # fix date_delete depends of owner affiliation
             if ACCOMMODATION_YEARS.get(self.owner.owner.affiliation):
                 new_year = ACCOMMODATION_YEARS[self.owner.owner.affiliation]
-                self.date_delete = datetime(
+                self.date_delete = date(
                     date.today().year + new_year,
                     date.today().month,
                     date.today().day)
