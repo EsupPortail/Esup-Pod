@@ -23,7 +23,7 @@ def group_interactive(request, slug):
     interactiveGroup, created = InteractiveGroup.objects.get_or_create(
         video=video)
     if request.user != video.owner and not request.user.is_superuser and (
-            request.user not in video.additional_owners.all()) :
+            request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR,
             _('You cannot add interactivity to this video.')
@@ -63,7 +63,7 @@ def check_interactive_group(request, video):
 def edit_interactive(request, slug):
     video = get_object_or_404(Video, slug=slug)
     if request.user != video.owner and not request.user.is_superuser and (
-            request.user not in video.additional_owners.all()) :
+            request.user not in video.additional_owners.all()):
         if not check_interactive_group(request, video):
             messages.add_message(
                 request, messages.ERROR,
