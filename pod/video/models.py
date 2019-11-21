@@ -21,7 +21,7 @@ from django.dispatch import receiver
 from django.utils.html import format_html
 from django.db.models.signals import pre_delete
 from tagging.models import Tag
-from datetime import date
+from datetime import date, datetime
 from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
@@ -155,6 +155,8 @@ TITLE_ETB = TEMPLATE_VISIBLE_SETTINGS['TITLE_ETB'] if (
 DEFAULT_DC_COVERAGE = getattr(
     settings, 'DEFAULT_DC_COVERAGE', TITLE_ETB + " - Town - Country")
 DEFAULT_DC_RIGHTS = getattr(settings, 'DEFAULT_DC_RIGHT', "BY-NC-SA")
+
+DEFAULT_YEAR_DATE_DELETE = getattr(settings, 'DEFAULT_YEAR_DATE_DELETE', 2)
 
 
 # FUNCTIONS
@@ -516,6 +518,13 @@ class Video(models.Model):
     is_video = models.BooleanField(
         _('Is Video'), default=True, editable=False)
 
+    date_delete = models.DateField(
+        _('Date to delete'),
+        default=datetime(
+            date.today().year + DEFAULT_YEAR_DATE_DELETE,
+            date.today().month,
+            date.today().day))
+
     class Meta:
         ordering = ['-date_added', '-id']
         get_latest_by = 'date_added'
@@ -533,6 +542,8 @@ class Video(models.Model):
                     newid += 1
                 except Exception:
                     newid = 1
+            # fix date_delete depends of owner affiliation
+            
         else:
             newid = self.id
         newid = '%04d' % newid
