@@ -297,7 +297,7 @@ def get_videos_list(request):
         # Add filter on additional owners
         videos_list = videos_list.filter(
             Q(owner__username__in=request.GET.getlist('owner')) |
-			Q(additional_owners__username__in=request.GET.getlist('owner')) )
+            Q(additional_owners__username__in=request.GET.getlist('owner')))
     if request.GET.getlist('tag'):
         videos_list = TaggedItem.objects.get_union_by_model(
             videos_list,
@@ -367,7 +367,7 @@ def get_video_access(request, video, slug_private):
         )
         access_granted_for_draft = request.user.is_authenticated() and (
             request.user == video.owner or request.user.is_superuser or (
-            request.user in video.additional_owners.all()))
+                request.user in video.additional_owners.all()))
         access_granted_for_restricted = (
             request.user.is_authenticated() and not is_restricted_to_group)
         access_granted_for_group = (
@@ -462,7 +462,7 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
     ) or (
         slug_private and slug_private == video.get_hashkey()
     ) or request.user == video.owner or request.user.is_superuser or (
-        request.user in video.additional_owners.all())):
+            request.user in video.additional_owners.all())):
         return render(
             request, template_video, {
                 'channel': channel,
@@ -534,14 +534,13 @@ def video_edit(request, slug=None):
 
     if video and request.user != video.owner and (
             not request.user.is_superuser) and (
-            request.user not in video.additional_owners.all()) :
+            request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot edit this video.'))
         raise PermissionDenied
 
     # default selected owner in select field
     default_owner = video.owner.pk if video else request.user.pk
-
     form = VideoForm(
         instance=video,
         is_staff=request.user.is_staff,
