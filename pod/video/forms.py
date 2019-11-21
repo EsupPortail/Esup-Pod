@@ -42,6 +42,9 @@ ENCODE_VIDEO = getattr(settings,
                        'ENCODE_VIDEO',
                        start_encode)
 
+USE_OBSOLESCENCE = getattr(
+    settings, "USE_OBSOLESCENCE", False)
+
 VIDEO_ALLOWED_EXTENSIONS = getattr(
     settings, 'VIDEO_ALLOWED_EXTENSIONS', (
         '3gp',
@@ -422,8 +425,8 @@ class VideoForm(forms.ModelForm):
             self.remove_field('owner')
             self.remove_field('video')  # .widget = forms.HiddenInput()
 
-        # change ckeditor config for no staff user
-        self.set_ckeditor_config()
+        # change ckeditor, thumbnail and date delete config for no staff user
+        self.set_nostaff_config()
 
         # hide default language
         self.hide_default_language()
@@ -441,14 +444,20 @@ class VideoForm(forms.ModelForm):
         if self.fields.get('video') and self.instance and self.instance.video:
             del self.fields["video"].widget.attrs["required"]
 
-    def set_ckeditor_config(self):
+    def set_nostaff_config(self):
         if self.is_staff is False:
             del self.fields['thumbnail']
+
             self.fields['description'].widget = CKEditorWidget(
                 config_name='default')
             for key, value in settings.LANGUAGES:
                 self.fields['description_%s' % key.replace(
                     '-', '_')].widget = CKEditorWidget(config_name='default')
+        if self.fields.get('date_delete'):
+            if (self.is_staff is False or USE_OBSOLESCENCE is False):
+                del self.fields['date_delete']
+            else:
+                self.fields['date_delete'].widget = widgets.AdminDateWidget()
 
     def hide_default_language(self):
         if self.fields.get('description_%s' % settings.LANGUAGE_CODE):
