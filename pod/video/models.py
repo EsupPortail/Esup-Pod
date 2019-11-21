@@ -422,7 +422,7 @@ class Video(models.Model):
             'numbers, underscore or dash top.'),
         editable=False)
     type = models.ForeignKey(Type, verbose_name=_('Type'))
-    # Management RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY setting for owners 
+    # Management RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY setting for owners
     # and additional owners
     if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY:
         # We can select only staff users
@@ -439,7 +439,7 @@ class Video(models.Model):
             blank=True,
             ajax=True,
             js_options={
-                'width' : 'off'
+                'width': 'off'
             },
             verbose_name=_('Additional owners'),
             search_field=lambda q: Q(is_staff=True) & (Q(
@@ -464,16 +464,16 @@ class Video(models.Model):
             blank=True,
             ajax=True,
             js_options={
-                'width' : 'off'
+                'width': 'off'
             },
             verbose_name=_('Additional owners'),
             search_field=lambda q: Q(
                 first_name__icontains=q) | Q(
                 last_name__icontains=q),
             related_name='owners_videos',
-            help_text=_('You can add additional owners to the video. They will '
-                        'have the same rights as you and will be able to edit '
-                        'and delete this video.'))
+            help_text=_('You can add additional owners to the video. They '
+                        'will have the same rights as you and will be able to '
+                        'edit and delete this video.'))
     description = RichTextField(
         _('Description'),
         config_name='complete',
