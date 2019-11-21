@@ -419,7 +419,10 @@ class VideoForm(forms.ModelForm):
                 'accept'] = self.videoattrs["accept"]
 
         if self.instance.encoding_in_progress:
-            self.remove_field('owner')
+            # Owner read only : useful when an additional_owner edit and 
+            # save the video (the real owner isn't replaced by the user)
+            #self.remove_field('owner')
+            self.fields['owner'].widget.attrs['readonly'] = True
             self.remove_field('video')  # .widget = forms.HiddenInput()
 
         # change ckeditor config for no staff user
