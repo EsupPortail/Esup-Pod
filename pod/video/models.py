@@ -532,7 +532,8 @@ class Video(models.Model):
         verbose_name=_('Draft'),
         help_text=_(
             'If this box is checked, '
-            'the video will be visible and accessible only by you.'),
+            'the video will be visible and accessible only by you '
+            'and the additional owners.'),
         default=True)
     is_restricted = models.BooleanField(
         verbose_name=_('Restricted access'),
