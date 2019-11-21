@@ -43,6 +43,9 @@ else:
 
 logger = logging.getLogger(__name__)
 
+RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
+    settings, 'RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY', False)
+
 VIDEOS_DIR = getattr(
     settings, 'VIDEOS_DIR', 'videos')
 
@@ -419,26 +422,58 @@ class Video(models.Model):
             'numbers, underscore or dash top.'),
         editable=False)
     type = models.ForeignKey(Type, verbose_name=_('Type'))
-    owner = select2_fields.ForeignKey(
-        User,
-        ajax=True,
-        verbose_name=_('Owner'),
-        search_field=lambda q: Q(
-            first_name__icontains=q) | Q(
-            last_name__icontains=q),
-        on_delete=models.CASCADE)
-    additional_owners = select2_fields.ManyToManyField(
-        User,
-        blank=True,
-        ajax=True,
-        verbose_name=_('Additional owners'),
-        search_field=lambda q: Q(
-            first_name__icontains=q) | Q(
-            last_name__icontains=q),
-        related_name='owners_videos',
-        help_text=_('You can add additional owners to the video. They will '
-                    'have the same rights as you and will be able to edit '
-                    'and delete this video.'))
+    # Management RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY setting for owners 
+    # and additional owners
+    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY:
+        # We can select only staff users
+        owner = select2_fields.ForeignKey(
+            User,
+            ajax=True,
+            verbose_name=_('Owner'),
+            search_field=lambda q: Q(is_staff=True) & (Q(
+                first_name__icontains=q) | Q(
+                last_name__icontains=q)),
+            on_delete=models.CASCADE)
+        additional_owners = select2_fields.ManyToManyField(
+            User,
+            blank=True,
+            ajax=True,
+            js_options={
+                'width' : 'off'
+            },
+            verbose_name=_('Additional owners'),
+            search_field=lambda q: Q(is_staff=True) & (Q(
+                first_name__icontains=q) | Q(
+                last_name__icontains=q)),
+            related_name='owners_videos',
+            help_text=_('You can add additional owners to the video. They '
+                        'will have the same rights as you and will be able to '
+                        'edit and delete this video.'))
+    else:
+        # We can select all users
+        owner = select2_fields.ForeignKey(
+            User,
+            ajax=True,
+            verbose_name=_('Owner'),
+            search_field=lambda q: Q(
+                first_name__icontains=q) | Q(
+                last_name__icontains=q),
+            on_delete=models.CASCADE)
+        additional_owners = select2_fields.ManyToManyField(
+            User,
+            blank=True,
+            ajax=True,
+            js_options={
+                'width' : 'off'
+            },
+            verbose_name=_('Additional owners'),
+            search_field=lambda q: Q(
+                first_name__icontains=q) | Q(
+                last_name__icontains=q),
+            related_name='owners_videos',
+            help_text=_('You can add additional owners to the video. They will '
+                        'have the same rights as you and will be able to edit '
+                        'and delete this video.'))
     description = RichTextField(
         _('Description'),
         config_name='complete',
