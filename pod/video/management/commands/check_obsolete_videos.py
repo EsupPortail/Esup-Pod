@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 # from django.core.mail import mail_admins
 from django.core.mail import mail_managers
 
-from pod.video.models import Video  # , VideoToDelete
+from pod.video.models import Video, VideoToDelete
 from datetime import date, timedelta
 
 
@@ -60,9 +60,8 @@ class Command(BaseCommand):
                 )
             )
             raise CommandError(
-                    _('USE_OBSOLESCENCE is FALSE')
+                _('USE_OBSOLESCENCE is FALSE')
             )
-
 
     def notify_video_treatment(self):
         # check video with deadlines to send email to each owner
@@ -111,6 +110,13 @@ class Command(BaseCommand):
                 vid.is_draft = True
                 vid.title = _('Archived') + " " + vid.title
                 vid.save()
+
+                # add video to delete
+                vid_delete, created = VideoToDelete.objects.get_or_create(
+                    date_deletion=vid.date_delete)
+                vid_delete.video.add(vid)
+                vid_delete.save()
+
             else:
                 vid.delete()
 
