@@ -1254,7 +1254,7 @@ class NoteComments(models.Model):
 
 class VideoToDelete(models.Model):
     date_deletion = models.DateField(
-        _('Date for deletion'), default=date.today)
+        _('Date for deletion'), default=date.today, unique=True)
     video = models.ManyToManyField(
         Video,
         verbose_name=_('Videos'),
@@ -1266,4 +1266,4 @@ class VideoToDelete(models.Model):
         verbose_name_plural = _("Videos to delete")
 
     def __str__(self):
-        return "%s-%s" % (self.date_deletion, self.video.count())
+        return "%s - nb videos : %s" % (self.date_deletion, self.video.count())
