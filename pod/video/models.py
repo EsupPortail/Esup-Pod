@@ -25,6 +25,9 @@ from datetime import date
 from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
+from django.utils.text import capfirst
+
+import importlib
 
 from select2 import fields as select2_fields
 
@@ -116,6 +119,20 @@ NOTES_STATUS = getattr(
     )
 )
 
+THIRD_PARTY_APPS = getattr(
+    settings, 'THIRD_PARTY_APPS', [])
+
+THIRD_PARTY_APPS_CHOICES = THIRD_PARTY_APPS.copy()
+THIRD_PARTY_APPS_CHOICES.remove("live") if (
+    "live" in THIRD_PARTY_APPS_CHOICES) else THIRD_PARTY_APPS_CHOICES
+THIRD_PARTY_APPS_CHOICES.insert(0, 'Original')
+
+VERSION_CHOICES = [
+    (app.capitalize()[0], _("%(app)s version" % {"app": app.capitalize()}))
+    for app in THIRD_PARTY_APPS_CHOICES]
+
+VERSION_CHOICES_DICT = {key: value for key, value in VERSION_CHOICES}
+
 ##
 # Settings exposed in templates
 #
@@ -139,6 +156,7 @@ TITLE_ETB = TEMPLATE_VISIBLE_SETTINGS['TITLE_ETB'] if (
 DEFAULT_DC_COVERAGE = getattr(
     settings, 'DEFAULT_DC_COVERAGE', TITLE_ETB + " - Town - Country")
 DEFAULT_DC_RIGHTS = getattr(settings, 'DEFAULT_DC_RIGHT', "BY-NC-SA")
+
 USE_OBSOLESCENCE = getattr(settings, 'USE_OBSOLESCENCE', False)
 OBSOLESCENCE_START_DATE = getattr(
         settings,
@@ -149,9 +167,19 @@ ACCOMMODATION_YEARS = getattr(
         settings,
         "ACCOMMODATION_YEARS",
         {
-            'P': 1, # Personnel
-            'E': 1, # Etudiant
-            'I': 1, # Invité
+            'student': 1,
+            'faculty': 1,
+            'staff': 2,
+            'employee': 1,
+            'member': 1,
+            'affiliate': 1,
+            'alum': 1,
+            'library-walk-in': 1,
+            'researcher': 2,
+            'retired': 1,
+            'emeritus': 1,
+            'teacher': 2,
+            'registered-reader': 1
         }
 )
 
@@ -418,13 +446,13 @@ class Video(models.Model):
         editable=False)
     type = models.ForeignKey(Type, verbose_name=_('Type'))
     owner = select2_fields.ForeignKey(
-            User,
-            ajax=True,
-            verbose_name=_('Owner'),
-            search_field=lambda q: Q(
-                first_name__icontains=q) | Q(
-                    last_name__icontains=q),
-            on_delete=models.CASCADE)
+        User,
+        ajax=True,
+        verbose_name=_('Owner'),
+        search_field=lambda q: Q(
+            first_name__icontains=q) | Q(
+            last_name__icontains=q),
+        on_delete=models.CASCADE)
     description = RichTextField(
         _('Description'),
         config_name='complete',
@@ -447,6 +475,10 @@ class Video(models.Model):
         _('Main language'), max_length=2,
         choices=LANG_CHOICES, default=get_language(),
         help_text=_("Select the main language used in the content."))
+    transcript = models.BooleanField(
+        _('Transcript'), default=False, help_text=_(
+            "Check this box if you want to transcript the audio."
+            "(beta version)"))
     tags = TagField(help_text=_(
         'Separate tags with spaces, '
         'enclose the tags consist of several words in quotation marks.'),
@@ -507,8 +539,6 @@ class Video(models.Model):
     overview = models.ImageField(
         _('Overview'), null=True, upload_to=get_storage_path_video,
         blank=True, max_length=255, editable=False)
-    # type = models.ForeignKey(Type, verbose_name=_('Type'),
-    #                          default=DEFAULT_TYPE_ID)
 
     encoding_in_progress = models.BooleanField(
         _('Encoding in progress'), default=False, editable=False)
@@ -534,13 +564,12 @@ class Video(models.Model):
                     newid = 1
         else:
             newid = self.id
-        if USE_OBSOLESCENCE and not self.date_delete:
-            self.date_delete = self.get_default_date_deletion()
-
+        #  set date_delete attribute
+        self.set_default_date_deletion()
         newid = '%04d' % newid
-        self.slug = "%s-%s" % (newid, slugify(self.title))
+        if not self.slug:
+            self.slug = "%s-%s" % (newid, slugify(self.title))
         self.tags = remove_accents(self.tags)
-
         super(Video, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -548,40 +577,42 @@ class Video(models.Model):
             return "%s - %s" % ('%04d' % self.id, self.title)
         else:
             return "None"
-    
+
     def get_accommodation_year(self):
         year = 1
-        for  key, value in AFFILIATION:
+        for key, value in AFFILIATION:
             tmp_year = ACCOMMODATION_YEARS[key]
             owner_affiliation = self.owner.owner.affiliation.upper()
             if (key.upper() in owner_affiliation and year < tmp_year):
                 year = tmp_year
         return year
 
-    def get_default_date_deletion(self):
+    def set_default_date_deletion(self):
         today = timezone.now()
         accommodation_year = self.get_accommodation_year()
         start = OBSOLESCENCE_START_DATE
-        if (start and start <= today and not (self.date_added >= start) ):
-            diff = today - OBSOLESCENCE_START_DATE
+        #  Par defaut on se base par rapport à la date d'ajout
+        #  de la vidéo + le nombre d'année d'hebergement de la vidéo
+        #  selon l'affiliation de l'utilisateur
+        default_date = self.date_added.replace(
+                year=self.date_added.year+accommodation_year)
+        if (start and start <= today and not (self.date_added >= start)):
             if not self.id:
-                # Pour toutes les nouvelles vidéos ajoutées après
-                # la mise en place de l'obsolescence
-                # On retourne la date actuelle + le nombre d'année
-                # d'hebergement autorisé selon affiliation
-                return today.replace(
-                        year = today.year+accommodation_year)
-            else: # Pour toutes les anciennes vidéos
-                # On retourne la date de mise en place de
-                # l'obsolescence + le nombre d'année
-                # d'hébergement autorisé selon affiliation
-                return start.replace(
-                        year= start.year+accommodation_year)
-        # Sinon on retourne la date d'ajout de la vidéo
-        # plus(+) le nombre d'année d'hebergement de la vidéo selon
-        # affiliation
-        return self.date_added.replace(
-                year=self.date_added.year + accommodation_year)
+                #  Pour toutes les nouvelles vidéos ajoutées après
+                #  la mise en place de l'obsolescence
+                #  On retourne la date actuelle + le nombre d'année
+                #  d'hebergement autorisé selon affiliation
+                default_date = today.replace(
+                        year=today.year+accommodation_year)
+            else:
+                #  Pour toutes les anciennes vidéos
+                #  On retourne la date de mise en place de
+                #  l'obsolescence + le nombre d'année
+                #  d'hébergement autorisé selon affiliation
+                default_date = start.replace(
+                        year=start.year+accommodation_year)
+        if USE_OBSOLESCENCE and not self.date_delete:
+            self.date_delete = default_date
 
     @property
     def establishment(self):
@@ -616,6 +647,42 @@ class Video(models.Model):
     def duration_in_time(self):
         return time.strftime('%H:%M:%S', time.gmtime(self.duration))
     duration_in_time.fget.short_description = _('Duration')
+
+    @property
+    def get_version(self):
+        try:
+            return self.videoversion.version
+        except VideoVersion.DoesNotExist:
+            return 'O'
+
+    def get_other_version(self):
+        version = []
+        for app in THIRD_PARTY_APPS:
+            mod = importlib.import_module('pod.%s.models' % app)
+            if hasattr(mod, capfirst(app)):
+                video_app = eval(
+                    'mod.%s.objects.filter(video__id=%s).all()' % (
+                        capfirst(app), self.id))
+                if (app == "interactive"
+                        and video_app.first() is not None
+                        and video_app.first().is_interactive() is False):
+                    video_app = False
+                if video_app:
+                    url = reverse('%(app)s:video_%(app)s' %
+                                  {"app": app}, kwargs={'slug': self.slug})
+                    version.append(
+                        {
+                            "app": app,
+                            "url": url,
+                            "link": VERSION_CHOICES_DICT[app.capitalize()[0]]
+                        }
+                    )
+        return version
+
+    def get_default_version_link(self):
+        for version in self.get_other_version():
+            if version["link"] == VERSION_CHOICES_DICT[self.get_version]:
+                return version["url"]
 
     def get_viewcount(self):
         count_sum = self.viewcount_set.all().aggregate(Sum('count'))
@@ -1103,6 +1170,19 @@ class EncodingLog(models.Model):
 
     def __str__(self):
         return "Log for encoding video %s" % (self.video.id)
+
+
+class VideoVersion(models.Model):
+    video = models.OneToOneField(Video, verbose_name=_('Video'),
+                                 editable=False, on_delete=models.CASCADE)
+    version = models.CharField(
+        _('Video version'), max_length=1, blank=True,
+        choices=VERSION_CHOICES, default="O",
+        help_text=_("Video default version."))
+
+    def __str__(self):
+        return "Choice for default video version : %s - %s" % (
+            self.video.id, self.version)
 
 
 class EncodingStep(models.Model):
