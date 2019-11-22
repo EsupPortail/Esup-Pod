@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils import translation
 from django.core.management.base import BaseCommand, CommandError
 from django.utils.translation import gettext as _
 from django.template.defaultfilters import striptags
@@ -45,11 +46,15 @@ ARCHIVE_OWNER_USERNAME = getattr(settings, 'ARCHIVE_OWNER_USERNAME', 'archive')
 POD_ARCHIVE = getattr(settings, 'POD_ARCHIVE', True)
 # number of step in days defore deletion
 WARN_DEADLINES = getattr(settings, "WARN_DEADLINES", [])
+LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", 'fr')
 
 
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
+        # Activate a fixed locale fr
+        translation.activate(LANGUAGE_CODE)
+
         if USE_OBSOLESCENCE:
             self.notify_video_treatment()
             self.video_to_delete_treatment()
@@ -71,8 +76,7 @@ class Command(BaseCommand):
             step_date = date.today() - timedelta(days=step_day)
             videos = Video.objects.filter(date_delete=step_date)
             for video in videos:
-                # REMOVE COMMENT IN PROD
-                # self.notify_user(video, step_day)
+                self.notify_user(video, step_day)
                 if (
                     USE_ESTABLISHMENT and
                     MANAGERS and
@@ -166,16 +170,16 @@ class Command(BaseCommand):
                 "date_delete": video.date_delete
             }
             msg_html += _(
-                u"please contact the manager(s) in charge of your "
-                + "establishment at this address(es): %(email_address)s</p>.\n"
+                "please contact the manager(s) in charge of your "
+                + "establishment at this address(es): %(email_address)s</p>\n"
             ) % {"email_address": ", ".join(
                 self.get_manager_emails(video))}
-            msg_html += "<p>" + _("Regards") + "</p>.\n"
+            msg_html += "<p>" + _("Regards") + "</p>\n"
 
         to_email = []
         to_email.append(video.owner.email)
         send_mail(
-            "[%s] %s" % (TITLE_SITE, _(u"A video will be obsolete on Pod")),
+            "[%s] %s" % (TITLE_SITE, _("A video will be obsolete on Pod")),
             striptags(msg_html),
             DEFAULT_FROM_EMAIL,
             to_email,
@@ -202,15 +206,15 @@ class Command(BaseCommand):
 
             msg_html += "\n<p>"
             msg_html += self.get_list_video_html(
-                sorted(list_video[estab]), deleted)
+                list_video[estab], deleted)
             msg_html += "\n</p>"
-            msg_html += "\n<p>" + _("Regards") + "</p>.\n"
+            msg_html += "\n<p>" + _("Regards") + "</p>\n"
 
             if deleted:
                 action = "archived" if POD_ARCHIVE else "deleted"
                 subject = "[%s] %s" % (
                     TITLE_SITE,
-                    _("The %(action)s videos on Pod" % {"action": action})
+                    _("The %(action)s videos on Pod") % {"action": action}
                 )
             else:
                 subject = "[%s] %s" % (TITLE_SITE, _(
@@ -235,17 +239,18 @@ class Command(BaseCommand):
         msg_html = ""
         for deadline in list_video:
             if deleted is False:
-                msg_html += "\n<br/>" + _("In %(deadline)s days" %
-                                          {"deadline": deadline}) + ":"
+                msg_html += "\n<br/>"
+                msg_html += _("In %(deadline)s days") % {"deadline": deadline}
+                msg_html += ":"
             for vid in list_video[deadline]:
                 if deleted:
                     msg_html += "\n<br/> - " + vid
                 else:
                     msg_html += (
                         "\n<br/> - <a href='http:%(url)s' rel='noopener'"
-                        + " target='_blank'>%(title)s</a>." % {
+                        + " target='_blank'>%(title)s</a>.") % {
                             "url": vid.get_full_url(), "title": vid
-                        })
+                    }
         return msg_html
 
     def get_manager_emails(self, video):
