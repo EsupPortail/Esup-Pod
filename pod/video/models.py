@@ -447,8 +447,8 @@ class Video(models.Model):
                 last_name__icontains=q)),
             related_name='owners_videos',
             help_text=_('You can add additional owners to the video. They '
-                        'will have the same rights as you and will be able to '
-                        'edit and delete this video.'))
+                        'will have the same rights as you except that they '
+                        'can\'t delete this video.'))
     else:
         # We can select all users
         owner = select2_fields.ForeignKey(
@@ -472,8 +472,8 @@ class Video(models.Model):
                 last_name__icontains=q),
             related_name='owners_videos',
             help_text=_('You can add additional owners to the video. They '
-                        'will have the same rights as you and will be able to '
-                        'edit and delete this video.'))
+                        'will have the same rights as you except that they '
+                        'can\'t delete this video.'))
     description = RichTextField(
         _('Description'),
         config_name='complete',
