@@ -91,6 +91,11 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                 "not appear in the list, please temporary select “Other” "
                 "and contact us to explain your needs.")
         ]),
+        ("{0}".format(_("Additional owners")), [
+            _("In this field you can select and add additional owners to the "
+                "video. These additional owners will have the same rights as "
+                "you except that they can't delete this video.")
+        ]),
         ("{0}".format(_("Description")), [
             _("In this field you can describe your content, add all needed "
                 "related information, and format the result "
@@ -419,7 +424,10 @@ class VideoForm(forms.ModelForm):
                 'accept'] = self.videoattrs["accept"]
 
         if self.instance.encoding_in_progress:
-            self.remove_field('owner')
+            # Owner read only : useful when an additional_owner edit and
+            # save the video (the real owner isn't replaced by the user)
+            # self.remove_field('owner')
+            self.fields['owner'].widget.attrs['readonly'] = True
             self.remove_field('video')  # .widget = forms.HiddenInput()
 
         # change ckeditor config for no staff user
@@ -433,7 +441,10 @@ class VideoForm(forms.ModelForm):
 
         if self.is_superuser is False and self.is_admin is False:
             self.remove_field('date_added')
-            self.remove_field('owner')
+            # Owner read only : useful when an additional_owner edit and
+            # save the video (the real owner isn't replaced by the user)
+            # self.remove_field('owner')
+            self.fields['owner'].widget.attrs['readonly'] = True
 
         self.fields = add_placeholder_and_asterisk(self.fields)
 

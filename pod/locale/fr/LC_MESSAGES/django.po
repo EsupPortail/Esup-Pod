@@ -3579,10 +3579,11 @@ msgstr ""
 
 #: pod/video/models.py:487
 msgid ""
-"If this box is checked, the video will be visible and accessible only by you."
+"If this box is checked, the video will be visible and accessible only by you "
+"and the additional owners."
 msgstr ""
 "Si la case est cochée, la vidéo sera visible et accessible uniquement par "
-"vous."
+"vous et les propriétaires additionnels."
 
 #: pod/video/models.py:493
 msgid ""
@@ -4347,6 +4348,27 @@ msgstr "facettage"
 #: pod/video_search/views.py:55
 msgid "Remove selection"
 msgstr "Retirer la sélection"
+
+#: pod/video/models.py:433
+msgid "Additional owners"
+msgstr "Propriétaires additionels"
+
+#: pod/video/models.py:439
+msgid ""
+"You can add additional owners to the video. They will have the "
+"same rights as you except that they can't delete this video."
+msgstr ""
+"Vous pouvez ajouter des propriétaires additionnels à la vidéo. "
+"Ils auront les mêmes droits que vous sauf qu'ils ne peuvent pas "
+"supprimer cette vidéo."
+
+#: pod/video/forms.py:94
+msgid "In this field you can select and add additional owners to the "
+"video. These additional owners will have the same rights as "
+"you except that they can't delete this video."
+msgstr "Dans ce champ, vous pouvez sélectionner et ajouter des propriétaires "
+"supplémentaires à la vidéo. Ces autres propriétaires auront les mêmes "
+"droits que vous sauf qu'ils ne peuvent pas supprimer cette vidéo."
 
 #~ msgid ""
 #~ "Select and copy the caption file contents below and paste into a .vtt file"

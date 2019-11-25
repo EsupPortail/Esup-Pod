@@ -30,7 +30,7 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
-
+from itertools import chain
 
 import json
 import re
@@ -253,7 +253,12 @@ def theme_edit_save(request, channel):
 
 @login_required(redirect_field_name='referrer')
 def my_videos(request):
-    videos_list = request.user.video_set.all()
+    # Videos list which user is the owner
+    videos_list_owner = request.user.video_set.all()
+    # Videos list which user is an additional owner
+    videos_list_additional_owner = request.user.owners_videos.all()
+    # Aggregate the 2 lists
+    videos_list = list(chain(videos_list_owner, videos_list_additional_owner))
     page = request.GET.get('page', 1)
 
     full_path = ""
@@ -289,8 +294,10 @@ def get_videos_list(request):
         videos_list = videos_list.filter(
             discipline__slug__in=request.GET.getlist('discipline'))
     if request.GET.getlist('owner'):
+        # Add filter on additional owners
         videos_list = videos_list.filter(
-            owner__username__in=request.GET.getlist('owner'))
+            Q(owner__username__in=request.GET.getlist('owner')) |
+            Q(additional_owners__username__in=request.GET.getlist('owner')))
     if request.GET.getlist('tag'):
         videos_list = TaggedItem.objects.get_union_by_model(
             videos_list,
@@ -359,13 +366,15 @@ def get_video_access(request, video, slug_private):
             slug_private and slug_private == video.get_hashkey()
         )
         access_granted_for_draft = request.user.is_authenticated() and (
-            request.user == video.owner or request.user.is_superuser)
+            request.user == video.owner or request.user.is_superuser or (
+                request.user in video.additional_owners.all()))
         access_granted_for_restricted = (
             request.user.is_authenticated() and not is_restricted_to_group)
         access_granted_for_group = (
             request.user.is_authenticated()
             and is_in_video_groups(request.user, video)
-        ) or request.user == video.owner or request.user.is_superuser
+        ) or request.user == video.owner or request.user.is_superuser or(
+            request.user in video.additional_owners.all())
 
         show_page = (
             access_granted_for_private
@@ -452,7 +461,8 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
         and request.POST.get('password') == video.password
     ) or (
         slug_private and slug_private == video.get_hashkey()
-    ) or request.user == video.owner or request.user.is_superuser):
+    ) or request.user == video.owner or request.user.is_superuser or (
+            request.user in video.additional_owners.all())):
         return render(
             request, template_video, {
                 'channel': channel,
@@ -522,14 +532,15 @@ def video_edit(request, slug=None):
                       {'access_not_allowed': True}
                       )
 
-    if video and request.user != video.owner and not request.user.is_superuser:
+    if video and request.user != video.owner and (
+            not request.user.is_superuser) and (
+            request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot edit this video.'))
         raise PermissionDenied
 
     # default selected owner in select field
     default_owner = video.owner.pk if video else request.user.pk
-
     form = VideoForm(
         instance=video,
         is_staff=request.user.is_staff,
