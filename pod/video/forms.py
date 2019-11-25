@@ -94,7 +94,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
         ("{0}".format(_("Additional owners")), [
             _("In this field you can select and add additional owners to the "
                 "video. These additional owners will have the same rights as "
-                "you and will be able to access, edit and delete this video. ")
+                "you except that they can't delete this video.")
         ]),
         ("{0}".format(_("Description")), [
             _("In this field you can describe your content, add all needed "
