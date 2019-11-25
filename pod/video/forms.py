@@ -424,10 +424,7 @@ class VideoForm(forms.ModelForm):
                 'accept'] = self.videoattrs["accept"]
 
         if self.instance.encoding_in_progress:
-            # Owner read only : useful when an additional_owner edit and
-            # save the video (the real owner isn't replaced by the user)
-            # self.remove_field('owner')
-            self.fields['owner'].widget.attrs['readonly'] = True
+            self.remove_field('owner')
             self.remove_field('video')  # .widget = forms.HiddenInput()
 
         # change ckeditor config for no staff user
@@ -441,10 +438,7 @@ class VideoForm(forms.ModelForm):
 
         if self.is_superuser is False and self.is_admin is False:
             self.remove_field('date_added')
-            # Owner read only : useful when an additional_owner edit and
-            # save the video (the real owner isn't replaced by the user)
-            # self.remove_field('owner')
-            self.fields['owner'].widget.attrs['readonly'] = True
+            self.remove_field('owner')
 
         self.fields = add_placeholder_and_asterisk(self.fields)
 

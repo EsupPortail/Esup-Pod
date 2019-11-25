@@ -540,13 +540,13 @@ def video_edit(request, slug=None):
         raise PermissionDenied
 
     # default selected owner in select field
-    default_owner = video.owner.pk if video else request.user.pk
+    # default_owner = video.owner.pk if video else request.user.pk
     form = VideoForm(
         instance=video,
         is_staff=request.user.is_staff,
         is_superuser=request.user.is_superuser,
         current_user=request.user,
-        initial={'owner': default_owner}
+        # initial={'owner': default_owner}
     )
 
     if request.method == 'POST':
@@ -559,13 +559,7 @@ def video_edit(request, slug=None):
             current_user=request.user
         )
         if form.is_valid():
-            video = form.save(commit=False)
-            if request.POST.get('owner') and request.POST.get('owner') != "":
-                video.owner = form.cleaned_data['owner']
-            else:
-                video.owner = request.user
-            video.save()
-            form.save_m2m()
+            video = save_video_form(form)
             messages.add_message(
                 request, messages.INFO,
                 _('The changes have been saved.')
@@ -585,6 +579,21 @@ def video_edit(request, slug=None):
     return render(request, 'videos/video_edit.html', {
         'form': form}
     )
+
+
+def save_video_form(request, form):
+    video = form.save(commit=False)
+    if (
+        request.user.is_superuser
+        and request.POST.get('owner')
+        and request.POST.get('owner') != ""
+    ):
+        video.owner = form.cleaned_data['owner']
+    elif not video.owner:
+        video.owner = request.user
+    video.save()
+    form.save_m2m()
+    return video
 
 
 @csrf_protect
