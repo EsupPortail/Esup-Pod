@@ -593,8 +593,7 @@ def video_delete(request, slug=None):
 
     video = get_object_or_404(Video, slug=slug)
 
-    if request.user != video.owner and not request.user.is_superuser and (
-            request.user not in video.additional_owners.all()):
+    if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
             request, messages.ERROR, _(u'You cannot delete this video.'))
         raise PermissionDenied
