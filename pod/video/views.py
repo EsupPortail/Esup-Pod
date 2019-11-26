@@ -540,13 +540,13 @@ def video_edit(request, slug=None):
         raise PermissionDenied
 
     # default selected owner in select field
-    # default_owner = video.owner.pk if video else request.user.pk
+    #default_owner = video.owner.pk if video else request.user.pk
     form = VideoForm(
         instance=video,
         is_staff=request.user.is_staff,
         is_superuser=request.user.is_superuser,
         current_user=request.user,
-        # initial={'owner': default_owner}
+        #initial={'owner': default_owner}
     )
 
     if request.method == 'POST':
@@ -559,7 +559,7 @@ def video_edit(request, slug=None):
             current_user=request.user
         )
         if form.is_valid():
-            video = save_video_form(form)
+            video = save_video_form(request, form)
             messages.add_message(
                 request, messages.INFO,
                 _('The changes have been saved.')
@@ -589,7 +589,10 @@ def save_video_form(request, form):
         and request.POST.get('owner') != ""
     ):
         video.owner = form.cleaned_data['owner']
-    elif not video.owner:
+    try:
+        if video.owner is None:
+            video.owner = request.user
+    except:
         video.owner = request.user
     video.save()
     form.save_m2m()
