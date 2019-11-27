@@ -589,7 +589,7 @@ def save_video_form(request, form):
         and request.POST.get('owner') != ""
     ):
         video.owner = form.cleaned_data['owner']
-    elif not video.get('owner'):
+    elif not getattr(video, 'owner'):
         video.owner = request.user
     video.save()
     form.save_m2m()
