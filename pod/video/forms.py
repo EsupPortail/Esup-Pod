@@ -454,7 +454,10 @@ class VideoForm(forms.ModelForm):
                 self.fields['description_%s' % key.replace(
                     '-', '_')].widget = CKEditorWidget(config_name='default')
         if self.fields.get('date_delete'):
-            if self.is_staff is False or self.instance.id is None or USE_OBSOLESCENCE is False:
+            if (
+                    self.is_staff is False
+                    or self.instance.id is None
+                    or USE_OBSOLESCENCE is False):
                 del self.fields['date_delete']
             else:
                 self.fields[

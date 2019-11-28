@@ -122,7 +122,10 @@ class Command(BaseCommand):
                 )
                 vid.owner = archive_user
                 vid.is_draft = True
-                vid.title = "%s %s" % (_('Archived'), vid.title)
+                vid.title = "%s %s %s" % (
+                    _('Archived'),
+                    date.today(),
+                    vid.title)
                 vid.save()
 
                 # add video to delete
@@ -254,9 +257,11 @@ class Command(BaseCommand):
         for estab in list_video:
             if len(list_video[estab]) > 0:
                 msg_html = _("Hello manager(s),") + " <br/>\n"
-                msg_html += "<p>" + _(
-                    "For information, "
-                    + "you will find below the list of deleted video.") + "</p>"
+                msg_html += (
+                    "<p>" + _(
+                        "For information, "
+                        + "you will find below the list of deleted video.")
+                    + "</p>")
 
                 msg_html += "\n<p>"
                 msg_html += self.get_list_video_html(
@@ -287,9 +292,11 @@ class Command(BaseCommand):
         for estab in list_video:
             if len(list_video[estab]) > 0:
                 msg_html = _("Hello manager(s),") + " <br/>\n"
-                msg_html += "<p>" + _(
-                    "For information, "
-                    + "you will find below the list of archived video.") + "</p>"
+                msg_html += (
+                    "<p>" + _(
+                        "For information, "
+                        + "you will find below the list of archived video.")
+                    + "</p>")
 
                 msg_html += "\n<p>"
                 msg_html += self.get_list_video_html(

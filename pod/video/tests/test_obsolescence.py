@@ -75,8 +75,8 @@ class ObsolescenceTestCase(TestCase):
             video="test.mp4",
             type=Type.objects.get(id=1))
 
-        # pour les 3 vidéos suivante, la date n'est pas changée à la création car
-        # l'affiliation du prop n'est pas dans ACCOMMODATION_YEARS
+        # pour les 3 vidéos suivante, la date n'est pas changée à la création
+        # car l'affiliation du prop n'est pas dans ACCOMMODATION_YEARS
         Video.objects.create(
             title="Video1_60", owner=user1, video="test.mp4",
             type=Type.objects.get(id=1),
@@ -161,12 +161,10 @@ class ObsolescenceTestCase(TestCase):
         video_to_archive = Video.objects.get(id=6)
         self.assertEqual(video_to_archive.title, "Video_to_archive")
         title1 = "%s - %s" % (video_to_archive.id, video_to_archive.title)
-        estab1 = video_to_archive.owner.owner.establishment.lower()
 
         video_to_delete = Video.objects.get(id=7)
         self.assertEqual(video_to_delete.title, "Video_to_delete")
         title2 = "%s - %s" % (video_to_delete.id, video_to_delete.title)
-        estab2 = video_to_delete.owner.owner.establishment.lower()
 
         (
             list_video_to_delete,
