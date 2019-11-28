@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import PermissionDenied
+from django.core.exceptions import SuspiciousOperation
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.shortcuts import render
@@ -212,7 +213,12 @@ def video_enrichment(request, slug, slug_c=None,
     template_video = 'enrichment/video_enrichment-iframe.html' if (
         request.GET.get('is_iframe')) else 'enrichment/video_enrichment.html'
 
-    return render_video(request, slug, slug_c, slug_t, slug_private,
+    try:
+        id = int(slug[:slug.find("-")])
+    except ValueError:
+        raise SuspiciousOperation('Invalid video id')
+
+    return render_video(request, id, slug_c, slug_t, slug_private,
                         template_video, None)
 
 

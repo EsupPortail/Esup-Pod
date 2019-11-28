@@ -41,8 +41,6 @@ User._meta.ordering = ["username"]
 USE_ESTABLISHMENT_FIELD = getattr(
     settings, 'USE_ESTABLISHMENT_FIELD', False)
 
-USE_OBSOLESCENCE = getattr(
-        settings, "USE_OBSOLESCENCE", False)
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 
 
@@ -117,10 +115,6 @@ class VideoAdmin(admin.ModelAdmin):
         list_filter = list_filter + ("owner__owner__establishment",)
         list_display = list_display + ("get_owner_establishment",)
         search_fields.append("owner__owner__establishment",)
-
-    # Ajout de l'attribut 'date_delete'
-    if USE_OBSOLESCENCE:
-        list_filter = list_filter + ("date_delete",)
 
     def get_owner_by_name(self, obj):
         owner = obj.owner

@@ -33,7 +33,6 @@ from select2 import fields as select2_fields
 
 from pod.main.models import get_nextautoincrement
 from django.db.models import Q
-from pod.authentication.models import AFFILIATION
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -157,31 +156,6 @@ DEFAULT_DC_COVERAGE = getattr(
     settings, 'DEFAULT_DC_COVERAGE', TITLE_ETB + " - Town - Country")
 DEFAULT_DC_RIGHTS = getattr(settings, 'DEFAULT_DC_RIGHT', "BY-NC-SA")
 
-USE_OBSOLESCENCE = getattr(settings, 'USE_OBSOLESCENCE', False)
-OBSOLESCENCE_START_DATE = getattr(
-        settings,
-        'OBSOLESCENCE_START_DATE',
-        None
-)
-ACCOMMODATION_YEARS = getattr(
-        settings,
-        "ACCOMMODATION_YEARS",
-        {
-            'student': 1,
-            'faculty': 1,
-            'staff': 2,
-            'employee': 1,
-            'member': 1,
-            'affiliate': 1,
-            'alum': 1,
-            'library-walk-in': 1,
-            'researcher': 2,
-            'retired': 1,
-            'emeritus': 1,
-            'teacher': 2,
-            'registered-reader': 1
-        }
-)
 
 # FUNCTIONS
 
@@ -463,9 +437,6 @@ class Video(models.Model):
     date_added = models.DateTimeField(_('Date added'), default=timezone.now)
     date_evt = models.DateField(
         _('Date of event'), default=date.today, blank=True, null=True)
-    date_delete = models.DateTimeField(
-            _('Date of Deletion'),
-            default=None, null=True, blank=True)
     cursus = models.CharField(
         _('University course'), max_length=1,
         choices=CURSUS_CODES, default="0",
@@ -564,11 +535,8 @@ class Video(models.Model):
                     newid = 1
         else:
             newid = self.id
-        #  set date_delete attribute
-        self.set_default_date_deletion()
         newid = '%04d' % newid
-        if not self.slug:
-            self.slug = "%s-%s" % (newid, slugify(self.title))
+        self.slug = "%s-%s" % (newid, slugify(self.title))
         self.tags = remove_accents(self.tags)
         super(Video, self).save(*args, **kwargs)
 
@@ -577,42 +545,6 @@ class Video(models.Model):
             return "%s - %s" % ('%04d' % self.id, self.title)
         else:
             return "None"
-
-    def get_accommodation_year(self):
-        year = 1
-        for key, value in AFFILIATION:
-            tmp_year = ACCOMMODATION_YEARS[key]
-            owner_affiliation = self.owner.owner.affiliation.upper()
-            if (key.upper() in owner_affiliation and year < tmp_year):
-                year = tmp_year
-        return year
-
-    def set_default_date_deletion(self):
-        today = timezone.now()
-        accommodation_year = self.get_accommodation_year()
-        start = OBSOLESCENCE_START_DATE
-        #  Par defaut on se base par rapport à la date d'ajout
-        #  de la vidéo + le nombre d'année d'hebergement de la vidéo
-        #  selon l'affiliation de l'utilisateur
-        default_date = self.date_added.replace(
-                year=self.date_added.year+accommodation_year)
-        if (start and start <= today and not (self.date_added >= start)):
-            if not self.id:
-                #  Pour toutes les nouvelles vidéos ajoutées après
-                #  la mise en place de l'obsolescence
-                #  On retourne la date actuelle + le nombre d'année
-                #  d'hebergement autorisé selon affiliation
-                default_date = today.replace(
-                        year=today.year+accommodation_year)
-            else:
-                #  Pour toutes les anciennes vidéos
-                #  On retourne la date de mise en place de
-                #  l'obsolescence + le nombre d'année
-                #  d'hébergement autorisé selon affiliation
-                default_date = start.replace(
-                        year=start.year+accommodation_year)
-        if USE_OBSOLESCENCE and not self.date_delete:
-            self.date_delete = default_date
 
     @property
     def establishment(self):
