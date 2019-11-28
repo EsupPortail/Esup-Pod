@@ -106,8 +106,6 @@ class Command(BaseCommand):
             date_delete__lt=date.today()).exclude(
             owner__username=ARCHIVE_OWNER_USERNAME)
 
-        print(vids)
-
         list_video_deleted_by_establishment = {}
         list_video_deleted_by_establishment.setdefault('other', {})
 
@@ -140,10 +138,10 @@ class Command(BaseCommand):
                     list_video_archived_by_establishment.setdefault(
                         estab, {})
                     list_video_archived_by_establishment[estab].setdefault(
-                        str(0), []).append(title)
+                        str(0), []).append(vid)
                 else:
                     list_video_archived_by_establishment['other'].setdefault(
-                        str(0), []).append(title)
+                        str(0), []).append(vid)
 
             else:
                 vid.delete()
@@ -184,9 +182,9 @@ class Command(BaseCommand):
                 "you can change the removal date "
                 + "by editing your video:</p>\n"
                 + "<p><a href='http:%(url)s' rel='noopener' target='_blank'>"
-                + "http:%(url)s</a></p>.\n") % {
+                + "http:%(url)s</a></p>\n") % {
                 "url": video.get_full_url()}
-            msg_html += "<p>" + _("Regards") + "</p>.\n"
+            msg_html += "<p>" + _("Regards") + "</p>\n"
         else:
             msg_html = _("Hello %(name)s,") % {"name": name}
             msg_html += "<br/>\n"
@@ -220,106 +218,109 @@ class Command(BaseCommand):
 
     def notify_manager_of_obsolete_video(self, list_video):
         for estab in list_video:
-            msg_html = _("Hello manager(s),") + " <br/>\n"
-            msg_html += "<p>" + _(
-                "For information, "
-                + "you will find below the list of video will soon arrive "
-                + "at the deletion deadline.") + "</p>"
+            if len(list_video[estab]) > 0:
+                msg_html = _("Hello manager(s),") + " <br/>\n"
+                msg_html += "<p>" + _(
+                    "For information, "
+                    + "you will find below the list of video will soon arrive "
+                    + "at the deletion deadline.") + "</p>"
 
-            msg_html += "\n<p>"
-            msg_html += self.get_list_video_html(
-                list_video[estab], False)
-            msg_html += "\n</p>"
-            msg_html += "\n<p>" + _("Regards") + "</p>\n"
+                msg_html += "\n<p>"
+                msg_html += self.get_list_video_html(
+                    list_video[estab], False)
+                msg_html += "\n</p>"
+                msg_html += "\n<p>" + _("Regards") + "</p>\n"
 
-            subject = "[%s] %s" % (TITLE_SITE, _(
-                "The obsolete videos on Pod"))
+                subject = "[%s] %s" % (TITLE_SITE, _(
+                    "The obsolete videos on Pod"))
 
-            if estab == 'other':
-                mail_managers(
-                    subject, striptags(msg_html), fail_silently=False,
-                    html_message=msg_html)
-            else:
-                to_email = []
-                to_email.append(dict(MANAGERS)[estab])
-                send_mail(
-                    subject,
-                    striptags(msg_html),
-                    DEFAULT_FROM_EMAIL,
-                    to_email,
-                    fail_silently=False,
-                    html_message=msg_html,
-                )
+                if estab == 'other':
+                    mail_managers(
+                        subject, striptags(msg_html), fail_silently=False,
+                        html_message=msg_html)
+                else:
+                    to_email = []
+                    to_email.append(dict(MANAGERS)[estab])
+                    send_mail(
+                        subject,
+                        striptags(msg_html),
+                        DEFAULT_FROM_EMAIL,
+                        to_email,
+                        fail_silently=False,
+                        html_message=msg_html,
+                    )
 
     def notify_manager_of_deleted_video(self, list_video):
         for estab in list_video:
-            msg_html = _("Hello manager(s),") + " <br/>\n"
-            msg_html += "<p>" + _(
-                "For information, "
-                + "you will find below the list of deleted video.") + "</p>"
+            if len(list_video[estab]) > 0:
+                msg_html = _("Hello manager(s),") + " <br/>\n"
+                msg_html += "<p>" + _(
+                    "For information, "
+                    + "you will find below the list of deleted video.") + "</p>"
 
-            msg_html += "\n<p>"
-            msg_html += self.get_list_video_html(
-                list_video[estab], False)
-            msg_html += "\n</p>"
-            msg_html += "\n<p>" + _("Regards") + "</p>\n"
+                msg_html += "\n<p>"
+                msg_html += self.get_list_video_html(
+                    list_video[estab], True)
+                msg_html += "\n</p>"
+                msg_html += "\n<p>" + _("Regards") + "</p>\n"
 
-            subject = "[%s] %s" % (TITLE_SITE, _(
-                "The deleted videos on Pod"))
+                subject = "[%s] %s" % (TITLE_SITE, _(
+                    "The deleted videos on Pod"))
 
-            if estab == 'other':
-                mail_managers(
-                    subject, striptags(msg_html), fail_silently=False,
-                    html_message=msg_html)
-            else:
-                to_email = []
-                to_email.append(dict(MANAGERS)[estab])
-                send_mail(
-                    subject,
-                    striptags(msg_html),
-                    DEFAULT_FROM_EMAIL,
-                    to_email,
-                    fail_silently=False,
-                    html_message=msg_html,
-                )
+                if estab == 'other':
+                    mail_managers(
+                        subject, striptags(msg_html), fail_silently=False,
+                        html_message=msg_html)
+                else:
+                    to_email = []
+                    to_email.append(dict(MANAGERS)[estab])
+                    send_mail(
+                        subject,
+                        striptags(msg_html),
+                        DEFAULT_FROM_EMAIL,
+                        to_email,
+                        fail_silently=False,
+                        html_message=msg_html,
+                    )
 
     def notify_manager_of_archived_video(self, list_video):
         for estab in list_video:
-            msg_html = _("Hello manager(s),") + " <br/>\n"
-            msg_html += "<p>" + _(
-                "For information, "
-                + "you will find below the list of archived video.") + "</p>"
+            if len(list_video[estab]) > 0:
+                msg_html = _("Hello manager(s),") + " <br/>\n"
+                msg_html += "<p>" + _(
+                    "For information, "
+                    + "you will find below the list of archived video.") + "</p>"
 
-            msg_html += "\n<p>"
-            msg_html += self.get_list_video_html(
-                list_video[estab], False)
-            msg_html += "\n</p>"
-            msg_html += "\n<p>" + _("Regards") + "</p>\n"
+                msg_html += "\n<p>"
+                msg_html += self.get_list_video_html(
+                    list_video[estab], False)
+                msg_html += "\n</p>"
+                msg_html += "\n<p>" + _("Regards") + "</p>\n"
 
-            subject = "[%s] %s" % (TITLE_SITE, _(
-                "The archived videos on Pod"))
+                subject = "[%s] %s" % (TITLE_SITE, _(
+                    "The archived videos on Pod"))
 
-            if estab == 'other':
-                mail_managers(
-                    subject, striptags(msg_html), fail_silently=False,
-                    html_message=msg_html)
-            else:
-                to_email = []
-                to_email.append(dict(MANAGERS)[estab])
-                send_mail(
-                    subject,
-                    striptags(msg_html),
-                    DEFAULT_FROM_EMAIL,
-                    to_email,
-                    fail_silently=False,
-                    html_message=msg_html,
-                )
+                if estab == 'other':
+                    mail_managers(
+                        subject, striptags(msg_html), fail_silently=False,
+                        html_message=msg_html)
+                else:
+                    to_email = []
+                    to_email.append(dict(MANAGERS)[estab])
+                    send_mail(
+                        subject,
+                        striptags(msg_html),
+                        DEFAULT_FROM_EMAIL,
+                        to_email,
+                        fail_silently=False,
+                        html_message=msg_html,
+                    )
 
     def get_list_video_html(self, list_video, deleted):
         msg_html = ""
         for deadline in list_video:
-            if deleted is False:
-                msg_html += "\n<br/>"
+            if deleted is False and deadline != '0':
+                msg_html += "\n"
                 msg_html += _("In %(deadline)s days") % {"deadline": deadline}
                 msg_html += ":"
             for vid in list_video[deadline]:
