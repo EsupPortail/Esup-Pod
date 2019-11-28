@@ -158,12 +158,6 @@ DEFAULT_DC_RIGHTS = getattr(settings, 'DEFAULT_DC_RIGHT', "BY-NC-SA")
 
 DEFAULT_YEAR_DATE_DELETE = getattr(settings, 'DEFAULT_YEAR_DATE_DELETE', 2)
 
-ACCOMMODATION_YEARS = getattr(
-    settings,
-    "ACCOMMODATION_YEARS",
-    {}
-)
-
 # FUNCTIONS
 
 
@@ -548,6 +542,11 @@ class Video(models.Model):
                 except Exception:
                     newid = 1
             # fix date_delete depends of owner affiliation
+            ACCOMMODATION_YEARS = getattr(
+                settings,
+                "ACCOMMODATION_YEARS",
+                {}
+            )
             if ACCOMMODATION_YEARS.get(self.owner.owner.affiliation):
                 new_year = ACCOMMODATION_YEARS[self.owner.owner.affiliation]
                 self.date_delete = date(
