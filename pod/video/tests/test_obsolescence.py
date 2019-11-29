@@ -160,7 +160,6 @@ class ObsolescenceTestCase(TestCase):
         # opts = {}
         video_to_archive = Video.objects.get(id=6)
         self.assertEqual(video_to_archive.title, "Video_to_archive")
-        title1 = "%s - %s" % (video_to_archive.id, video_to_archive.title)
 
         video_to_delete = Video.objects.get(id=7)
         self.assertEqual(video_to_delete.title, "Video_to_delete")
@@ -174,7 +173,7 @@ class ObsolescenceTestCase(TestCase):
         self.assertTrue(
             title2 in list_video_to_delete['other']['0'])
         self.assertTrue(
-            title1 in list_video_to_archive['other']['0'])
+            video_to_archive in list_video_to_archive['other']['0'])
 
         # on verifie que la vidéo archivée est bien archivée
         video_to_archive = Video.objects.get(id=6)
@@ -186,7 +185,7 @@ class ObsolescenceTestCase(TestCase):
         self.assertTrue(video_to_archive.owner == archive_user)
 
         vid_delete = VideoToDelete.objects.get(
-                    date_deletion=video_to_archive.date_delete)
+            date_deletion=video_to_archive.date_delete)
         self.assertTrue(video_to_archive in vid_delete.video.all())
 
         # on vérifie que la video supprimée est bien supprimée
