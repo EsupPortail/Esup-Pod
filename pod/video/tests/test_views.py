@@ -454,7 +454,7 @@ class VideoTestView(TestCase):
         # type, discipline, owner et tag
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
-        user3 = User.objects.create(username="pod3", password="pod1234pod")
+        User.objects.create(username="pod3", password="pod1234pod")
         Group.objects.create(name='student')
         Group.objects.create(name='employee')
         Group.objects.create(name='member')
@@ -559,7 +559,7 @@ class VideoEditTestView(TestCase):
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
-        user3 = User.objects.create(username="pod3", password="pod1234pod")
+        User.objects.create(username="pod3", password="pod1234pod")
         Video.objects.create(
             title="Video1", owner=user,
             video="test1.mp4", type=Type.objects.get(id=1))
@@ -691,6 +691,7 @@ class VideoEditTestView(TestCase):
         print(
             "   --->  test_video_edit_post_request"
             " of VideoEditTestView : OK !")
+
 
 @override_settings(
     MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
