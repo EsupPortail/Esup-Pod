@@ -31,6 +31,14 @@
           <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}">
       {% endthumbnail %}
       {{ video.owner.get_full_name }}</a><br/>
+	  
+	  {% if video.additional_owners.all %}
+		{% trans 'Additional owners' %}:<br/>
+		{% for additionalOwner in video.additional_owners.all %}
+			- <a href="{% url 'videos' %}?owner={{ additionalOwner.username }}" title="{{ additionalOwner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ additionalOwner.get_full_name }}</a><br/>
+		{% endfor %}
+      {%endif%}
+	  
       {% trans 'Updated on' %}: <strong>{{ video.date_added }}</strong><br/>
       {% trans 'Duration' %}: <strong>{{ video.duration_in_time }}</strong><br/>
       {% trans 'Number of view(s)' %}: <strong>{{ video.get_viewcount }}</strong><br/>
