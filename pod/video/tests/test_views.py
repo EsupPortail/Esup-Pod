@@ -453,13 +453,19 @@ class VideoTestView(TestCase):
     def setUp(self):
         # type, discipline, owner et tag
         user = User.objects.create(username="pod", password="pod1234pod")
-        User.objects.create(username="pod2", password="pod1234pod")
+        user2 = User.objects.create(username="pod2", password="pod1234pod")
+        User.objects.create(username="pod3", password="pod1234pod")
         Group.objects.create(name='student')
         Group.objects.create(name='employee')
         Group.objects.create(name='member')
         Video.objects.create(
             title="Video1", owner=user,
             video="test1.mp4", type=Type.objects.get(id=1))
+        v = Video.objects.create(
+            title="VideoWithAdditionalOwners", owner=user,
+            video="test2.mp4", type=Type.objects.get(id=1),
+            id=2)
+        v.additional_owners.add(user2)
 
     def test_video_get_request(self):
         v = Video.objects.get(title="Video1")
@@ -520,6 +526,21 @@ class VideoTestView(TestCase):
         response = self.client.get("/video/%s/%s/" % (v.slug, v.get_hashkey()))
         self.assertEqual(response.status_code, 200)
         self.assertEqual("form" in response.context.keys(), False)
+        # Tests for additional owners
+        v = Video.objects.get(title="VideoWithAdditionalOwners")
+        self.client = Client()
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.get("/video/%s/" % v.slug)
+        self.assertEqual(response.status_code, 200)
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        response = self.client.get("/video/%s/" % v.slug)
+        self.assertEqual(response.status_code, 200)
+        self.user = User.objects.get(username="pod3")
+        self.client.force_login(self.user)
+        response = self.client.get("/video/%s/" % v.slug)
+        self.assertEqual(response.status_code, 403)
 
 
 @override_settings(
@@ -537,10 +558,16 @@ class VideoEditTestView(TestCase):
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
-        User.objects.create(username="pod2", password="pod1234pod")
+        user2 = User.objects.create(username="pod2", password="pod1234pod")
+        User.objects.create(username="pod3", password="pod1234pod")
         Video.objects.create(
             title="Video1", owner=user,
             video="test1.mp4", type=Type.objects.get(id=1))
+        video = Video.objects.create(
+            title="VideoWithAdditionalOwners", owner=user,
+            video="test2.mp4", type=Type.objects.get(id=1))
+        video.save()
+        video.additional_owners.add(user2)
         print(" --->  SetUp of VideoEditTestView : OK !")
 
     def test_video_edit_get_request(self):
@@ -558,6 +585,19 @@ class VideoEditTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['form'].instance, video)
         self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        response = self.client.get("/video_edit/%s/" % video.slug)
+        self.assertEqual(response.status_code, 403)
+        # Tests for additional owners
+        video = Video.objects.get(title="VideoWithAdditionalOwners")
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        response = self.client.get("/video_edit/")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get("/video_edit/%s/" % video.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['form'].instance, video)
+        self.user = User.objects.get(username="pod3")
         self.client.force_login(self.user)
         response = self.client.get("/video_edit/%s/" % video.slug)
         self.assertEqual(response.status_code, 403)
@@ -616,7 +656,38 @@ class VideoEditTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(b"The changes have been saved." in response.content)
         v = Video.objects.get(title="VideoTest2")
-
+        # Additional owners
+        self.client = Client()
+        video = Video.objects.get(title="VideoWithAdditionalOwners")
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        # modify one
+        response = self.client.post(
+            '/video_edit/%s/' % video.slug, {
+                'title': "VideoTest3",
+                'description': '<p>bl</p>\r\n',
+                'main_lang': 'fr',
+                'cursus': "0",
+                'type': 1,
+                'additional_owners': [self.user.pk]
+            }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(b"The changes have been saved." in response.content)
+        v = Video.objects.get(title="VideoTest3")
+        self.assertEqual(v.description, '<p>bl</p>')
+        videofile = SimpleUploadedFile(
+            "file.mp4", b"file_content", content_type="video/mp4")
+        response = self.client.post(
+            '/video_edit/%s/' % v.slug, {
+                'video': videofile,
+                'title': "VideoTest3",
+                'main_lang': 'fr',
+                'cursus': "0",
+                'type': 1,
+                'additional_owners': [self.user.pk]
+            }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(b"The changes have been saved." in response.content)
         print(
             "   --->  test_video_edit_post_request"
             " of VideoEditTestView : OK !")
@@ -637,10 +708,15 @@ class video_deleteTestView(TestCase):
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
-        User.objects.create(username="pod2", password="pod1234pod")
+        user2 = User.objects.create(username="pod2", password="pod1234pod")
         Video.objects.create(
             title="Video1", owner=user,
             video="test1.mp4", type=Type.objects.get(id=1))
+        video = Video.objects.create(
+            title="VideoWithAdditionalOwners", owner=user,
+            video="test2.mp4", type=Type.objects.get(id=1),
+            id=2)
+        video.additional_owners.add(user2)
         print(" --->  SetUp of video_deleteTestView : OK !")
 
     def test_video_delete_get_request(self):
@@ -658,6 +734,13 @@ class video_deleteTestView(TestCase):
         self.client.force_login(self.user)
         response = self.client.get("/video_delete/%s/" % video.slug)
         self.assertEqual(response.status_code, 403)
+        # An additional owner can't delete the video
+        video = Video.objects.get(title="VideoWithAdditionalOwners")
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        response = self.client.get("/video_delete/%s/" % video.slug)
+        self.assertEqual(response.status_code, 403)
+        self.user = User.objects.get(username="pod")
         print(
             " --->  test_video_edit_get_request"
             " of video_deleteTestView : OK !")
@@ -667,6 +750,14 @@ class video_deleteTestView(TestCase):
         video = Video.objects.get(title="Video1")
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
+        response = self.client.post(
+            "/video_delete/%s/" % video.slug,
+            {
+                'agree': True,
+            })
+        self.assertRedirects(response, '/my_videos/')
+        self.assertEqual(Video.objects.all().count(), 1)
+        video = Video.objects.get(title="VideoWithAdditionalOwners")
         response = self.client.post(
             "/video_delete/%s/" % video.slug,
             {

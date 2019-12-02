@@ -70,7 +70,7 @@ def get_manager_email(owner):
         # vérifier si le mail du manager (de l'etablissement
         # du propriétaire de la vidéo) est renseigné
         if v_estab in dict(MANAGERS):
-            print('send to ------> ', [dict(MANAGERS)[v_estab]])
+            # print('send to ------> ', [dict(MANAGERS)[v_estab]])
             return [dict(MANAGERS)[v_estab]]
     return CONTACT_US_EMAIL
 

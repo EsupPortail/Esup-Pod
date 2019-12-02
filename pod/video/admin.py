@@ -43,6 +43,9 @@ USE_ESTABLISHMENT_FIELD = getattr(
 
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 
+USE_OBSOLESCENCE = getattr(
+    settings, "USE_OBSOLESCENCE", False)
+
 
 def url_to_edit_object(obj):
     url = reverse(
@@ -82,6 +85,11 @@ class VideoAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'title')
     list_filter = ('date_added', 'channel', 'type', 'is_draft',
                    'encoding_in_progress')
+    # Ajout de l'attribut 'date_delete'
+    if USE_OBSOLESCENCE:
+        list_filter = list_filter + ("date_delete",)
+        list_display = list_display + ("date_delete",)
+
     list_editable = ('is_draft', 'is_restricted')
     search_fields = ['id', 'title', 'video',
                      'owner__username', 'owner__first_name',
@@ -134,6 +142,8 @@ class VideoAdmin(admin.ModelAdmin):
             exclude += ('video', 'owner',)
         if not TRANSCRIPT:
             exclude += ('transcript',)
+        if not USE_OBSOLESCENCE:
+            exclude += ('date_delete',)
         self.exclude = exclude
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form

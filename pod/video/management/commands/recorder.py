@@ -29,8 +29,9 @@ from pod.recorder.models import Recorder, Recording, RecordingFileTreatment
 import hashlib
 import requests
 from django.core.mail import mail_admins
-from django.core.files.storage import default_storage
 from django.utils import timezone
+
+LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", 'fr')
 
 # Mediacourse directory
 DEFAULT_RECORDER_PATH = getattr(
@@ -257,7 +258,7 @@ def recorder_exist(recorder, filename, message_error, html_message_error):
                 "the process for this file.")
     else:
         # Size of the existant file
-        file_size = default_storage.size(source_file)
+        file_size = os.path.getsize(source_file)
         if file:
             html_message_error, message_error = file_exist(file, file_size,
                                                            source_file,
@@ -336,7 +337,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # Activate a fixed locale fr
-        translation.activate('fr')
+        translation.activate(LANGUAGE_CODE)
         if options['task'] and options['task'] in self.valid_args:
 
             html_message_error = ""

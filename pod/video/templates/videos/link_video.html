@@ -17,8 +17,10 @@
     <i data-feather="file-text"></i></a>
 <a href="{% url 'video_chapter' slug=video.slug %}" title="{% trans "Chapter the video"%}" class="p-0 m-0 btn btn-light btn-sm pl-1">
 <i data-feather="list"></i></a>
-<a href="{% url 'video_delete' slug=video.slug %}" class="p-0 m-0 btn btn-light btn-sm pl-1" title="{% trans "Delete the video." %}">
-    <i data-feather="trash-2"></i></a>
+{% if video.owner == request.user or request.user.is_superuser %}
+    <a href="{% url 'video_delete' slug=video.slug %}" class="p-0 m-0 btn btn-light btn-sm pl-1" title="{% trans "Delete the video." %}">
+        <i data-feather="trash-2"></i></a>
+{% endif %}
 {% if "edit" in request.resolver_match.url_name %}
 {% with video.get_other_version as versions %}
     {% if versions|length > 0 %}

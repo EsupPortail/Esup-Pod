@@ -43,6 +43,9 @@ else:
 
 logger = logging.getLogger(__name__)
 
+RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
+    settings, 'RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY', False)
+
 VIDEOS_DIR = getattr(
     settings, 'VIDEOS_DIR', 'videos')
 
@@ -156,6 +159,7 @@ DEFAULT_DC_COVERAGE = getattr(
     settings, 'DEFAULT_DC_COVERAGE', TITLE_ETB + " - Town - Country")
 DEFAULT_DC_RIGHTS = getattr(settings, 'DEFAULT_DC_RIGHT', "BY-NC-SA")
 
+DEFAULT_YEAR_DATE_DELETE = getattr(settings, 'DEFAULT_YEAR_DATE_DELETE', 2)
 
 # FUNCTIONS
 
@@ -419,14 +423,58 @@ class Video(models.Model):
             'numbers, underscore or dash top.'),
         editable=False)
     type = models.ForeignKey(Type, verbose_name=_('Type'))
-    owner = select2_fields.ForeignKey(
-        User,
-        ajax=True,
-        verbose_name=_('Owner'),
-        search_field=lambda q: Q(
-            first_name__icontains=q) | Q(
-            last_name__icontains=q),
-        on_delete=models.CASCADE)
+    # Management RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY setting for owners
+    # and additional owners
+    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY:
+        # We can select only staff users
+        owner = select2_fields.ForeignKey(
+            User,
+            ajax=True,
+            verbose_name=_('Owner'),
+            search_field=lambda q: Q(is_staff=True) & (Q(
+                first_name__icontains=q) | Q(
+                last_name__icontains=q)),
+            on_delete=models.CASCADE)
+        additional_owners = select2_fields.ManyToManyField(
+            User,
+            blank=True,
+            ajax=True,
+            js_options={
+                'width': 'off'
+            },
+            verbose_name=_('Additional owners'),
+            search_field=lambda q: Q(is_staff=True) & (Q(
+                first_name__icontains=q) | Q(
+                last_name__icontains=q)),
+            related_name='owners_videos',
+            help_text=_('You can add additional owners to the video. They '
+                        'will have the same rights as you except that they '
+                        'can\'t delete this video.'))
+    else:
+        # We can select all users
+        owner = select2_fields.ForeignKey(
+            User,
+            ajax=True,
+            verbose_name=_('Owner'),
+            search_field=lambda q: Q(
+                first_name__icontains=q) | Q(
+                last_name__icontains=q),
+            on_delete=models.CASCADE)
+        additional_owners = select2_fields.ManyToManyField(
+            User,
+            blank=True,
+            ajax=True,
+            js_options={
+                'width': 'off'
+            },
+            verbose_name=_('Additional owners'),
+            search_field=lambda q: Q(
+                first_name__icontains=q) | Q(
+                last_name__icontains=q),
+            related_name='owners_videos',
+            help_text=_('You can add additional owners to the video. They '
+                        'will have the same rights as you except that they '
+                        'can\'t delete this video.'))
     description = RichTextField(
         _('Description'),
         config_name='complete',
@@ -485,7 +533,8 @@ class Video(models.Model):
         verbose_name=_('Draft'),
         help_text=_(
             'If this box is checked, '
-            'the video will be visible and accessible only by you.'),
+            'the video will be visible and accessible only by you '
+            'and the additional owners.'),
         default=True)
     is_restricted = models.BooleanField(
         verbose_name=_('Restricted access'),
@@ -516,6 +565,13 @@ class Video(models.Model):
     is_video = models.BooleanField(
         _('Is Video'), default=True, editable=False)
 
+    date_delete = models.DateField(
+        _('Date to delete'),
+        default=date(
+            date.today().year + DEFAULT_YEAR_DATE_DELETE,
+            date.today().month,
+            date.today().day))
+
     class Meta:
         ordering = ['-date_added', '-id']
         get_latest_by = 'date_added'
@@ -533,6 +589,18 @@ class Video(models.Model):
                     newid += 1
                 except Exception:
                     newid = 1
+            # fix date_delete depends of owner affiliation
+            ACCOMMODATION_YEARS = getattr(
+                settings,
+                "ACCOMMODATION_YEARS",
+                {}
+            )
+            if ACCOMMODATION_YEARS.get(self.owner.owner.affiliation):
+                new_year = ACCOMMODATION_YEARS[self.owner.owner.affiliation]
+                self.date_delete = date(
+                    date.today().year + new_year,
+                    date.today().month,
+                    date.today().day)
         else:
             newid = self.id
         newid = '%04d' % newid
@@ -1233,7 +1301,7 @@ class NoteComments(models.Model):
 
 class VideoToDelete(models.Model):
     date_deletion = models.DateField(
-        _('Date for deletion'), default=date.today)
+        _('Date for deletion'), default=date.today, unique=True)
     video = models.ManyToManyField(
         Video,
         verbose_name=_('Videos'),
@@ -1245,4 +1313,4 @@ class VideoToDelete(models.Model):
         verbose_name_plural = _("Videos to delete")
 
     def __str__(self):
-        return "%s-%s" % (self.date_deletion, self.video.count())
+        return "%s - nb videos : %s" % (self.date_deletion, self.video.count())
