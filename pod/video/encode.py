@@ -16,7 +16,7 @@ from pod.video.models import Video
 
 from pod.video.models import EncodingStep
 
-from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
+# from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from pod.main.tasks import task_start_encode
 
 # from fractions import Fraction # use for keyframe
@@ -106,6 +106,27 @@ EMAIL_ON_ENCODING_COMPLETION = getattr(
 
 FILE_UPLOAD_TEMP_DIR = getattr(
     settings, 'FILE_UPLOAD_TEMP_DIR', '/tmp')
+
+##
+# Settings exposed in templates
+#
+TEMPLATE_VISIBLE_SETTINGS = getattr(
+    settings,
+    'TEMPLATE_VISIBLE_SETTINGS',
+    {
+        'TITLE_SITE': 'Pod',
+        'TITLE_ETB': 'University name',
+        'LOGO_SITE': 'img/logoPod.svg',
+        'LOGO_ETB': 'img/logo_etb.svg',
+        'LOGO_PLAYER': 'img/logoPod.svg',
+        'LINK_PLAYER': '',
+        'FOOTER_TEXT': ('',),
+        'FAVICON': 'img/logoPod.svg',
+        'CSS_OVERRIDE': '',
+        'PRE_HEADER_TEMPLATE': '',
+        'POST_FOOTER_TEMPLATE': '',
+    }
+)
 
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
 

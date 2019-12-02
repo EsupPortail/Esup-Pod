@@ -31,6 +31,8 @@ import requests
 from django.core.mail import mail_admins
 from django.utils import timezone
 
+LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", 'fr')
+
 # Mediacourse directory
 DEFAULT_RECORDER_PATH = getattr(
     settings, 'DEFAULT_RECORDER_PATH',
@@ -335,7 +337,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # Activate a fixed locale fr
-        translation.activate('fr')
+        translation.activate(LANGUAGE_CODE)
         if options['task'] and options['task'] in self.valid_args:
 
             html_message_error = ""

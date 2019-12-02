@@ -159,6 +159,7 @@ DEFAULT_DC_COVERAGE = getattr(
     settings, 'DEFAULT_DC_COVERAGE', TITLE_ETB + " - Town - Country")
 DEFAULT_DC_RIGHTS = getattr(settings, 'DEFAULT_DC_RIGHT', "BY-NC-SA")
 
+DEFAULT_YEAR_DATE_DELETE = getattr(settings, 'DEFAULT_YEAR_DATE_DELETE', 2)
 
 # FUNCTIONS
 
@@ -564,6 +565,13 @@ class Video(models.Model):
     is_video = models.BooleanField(
         _('Is Video'), default=True, editable=False)
 
+    date_delete = models.DateField(
+        _('Date to delete'),
+        default=date(
+            date.today().year + DEFAULT_YEAR_DATE_DELETE,
+            date.today().month,
+            date.today().day))
+
     class Meta:
         ordering = ['-date_added', '-id']
         get_latest_by = 'date_added'
@@ -581,6 +589,18 @@ class Video(models.Model):
                     newid += 1
                 except Exception:
                     newid = 1
+            # fix date_delete depends of owner affiliation
+            ACCOMMODATION_YEARS = getattr(
+                settings,
+                "ACCOMMODATION_YEARS",
+                {}
+            )
+            if ACCOMMODATION_YEARS.get(self.owner.owner.affiliation):
+                new_year = ACCOMMODATION_YEARS[self.owner.owner.affiliation]
+                self.date_delete = date(
+                    date.today().year + new_year,
+                    date.today().month,
+                    date.today().day)
         else:
             newid = self.id
         newid = '%04d' % newid
@@ -1281,7 +1301,7 @@ class NoteComments(models.Model):
 
 class VideoToDelete(models.Model):
     date_deletion = models.DateField(
-        _('Date for deletion'), default=date.today)
+        _('Date for deletion'), default=date.today, unique=True)
     video = models.ManyToManyField(
         Video,
         verbose_name=_('Videos'),
@@ -1293,4 +1313,4 @@ class VideoToDelete(models.Model):
         verbose_name_plural = _("Videos to delete")
 
     def __str__(self):
-        return "%s-%s" % (self.date_deletion, self.video.count())
+        return "%s - nb videos : %s" % (self.date_deletion, self.video.count())
