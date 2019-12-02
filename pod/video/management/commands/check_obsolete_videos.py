@@ -8,7 +8,11 @@ from django.contrib.auth.models import User
 # from django.core.mail import mail_admins
 from django.core.mail import mail_managers
 
+import csv
+import os
+
 from pod.video.models import Video, VideoToDelete
+
 from datetime import date, timedelta
 
 
@@ -117,6 +121,7 @@ class Command(BaseCommand):
             estab = vid.owner.owner.establishment.lower()
 
             if vid.owner.owner.affiliation in POD_ARCHIVE_AFFILIATION:
+                self.write_in_csv(vid, 'archived')
                 archive_user, created = User.objects.get_or_create(
                     username=ARCHIVE_OWNER_USERNAME,
                 )
@@ -147,6 +152,7 @@ class Command(BaseCommand):
                         str(0), []).append(vid)
 
             else:
+                self.write_in_csv(vid, 'deleted')
                 vid.delete()
                 if (
                     USE_ESTABLISHMENT
@@ -352,6 +358,35 @@ class Command(BaseCommand):
             return dict(MANAGERS)[video_estab]
         else:
             return CONTACT_US_EMAIL
+
+    def write_in_csv(self, vid, type):
+        file = '%s/%s.csv' % (settings.LOG_DIRECTORY, type)
+        exists = os.path.isfile(file)
+        with open(file, 'a', newline='', encoding="utf-8") as csvfile:
+            fieldnames = [
+                'Date',
+                'User name',
+                'User email',
+                'User Affiliation',
+                'User Establishment',
+                'Video Id',
+                'Video title',
+                'Video URL'
+            ]
+            writer = csv.DictWriter(
+                csvfile, delimiter=';', fieldnames=fieldnames)
+            if not exists:
+                writer.writeheader()
+            writer.writerow({
+                'Date': date.today(),
+                'User name': vid.owner.owner,
+                'User email': vid.owner.email,
+                'User Affiliation': vid.owner.owner.affiliation,
+                'User Establishment': vid.owner.owner.establishment,
+                'Video Id': vid.id,
+                'Video title': vid.title,
+                'Video URL': vid.get_full_url()
+            })
 
 
 """

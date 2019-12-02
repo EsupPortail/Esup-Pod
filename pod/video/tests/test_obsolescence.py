@@ -191,4 +191,24 @@ class ObsolescenceTestCase(TestCase):
         # on vérifie que la video supprimée est bien supprimée
         self.assertEqual(Video.objects.filter(id=7).count(), 0)
 
+        # on verifie que les fichiers csvsont bien créés
+        file1 = '%s/%s.csv' % (settings.LOG_DIRECTORY, 'deleted')
+        self.assertTrue(os.path.isfile(file1))
+        file2 = '%s/%s.csv' % (settings.LOG_DIRECTORY, 'archived')
+        self.assertTrue(os.path.isfile(file2))
+
+        fd = open(file1, 'r')
+        n = 0
+        while fd.readline():
+            n += 1
+        fd.close()
+        self.assertEqual(n, 2)
+
+        fd = open(file2, 'r')
+        n = 0
+        while fd.readline():
+            n += 1
+        fd.close()
+        self.assertEqual(n, 2)
+
         print('--->  test_obsolete_video of ObsolescenceTestCase: OK')
