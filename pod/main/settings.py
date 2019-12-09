@@ -212,8 +212,10 @@ SERVER_EMAIL = 'noreply@univ.fr'
 #
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
 # ('captcha.helpers.noise_arcs','captcha.helpers.noise_dots',)
-CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
-
+CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_arcs','captcha.helpers.noise_dots',) 
+# ('captcha.helpers.noise_null',)
+CAPTCHA_FONT_SIZE = 32
+CAPTCHA_MATH_CHALLENGE_OPERATOR = 'x'
 ##
 # THIRD PARTY APPS OPTIONNAL
 #

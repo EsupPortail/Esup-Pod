@@ -63,8 +63,7 @@ class ContactUsForm(forms.Form):
         required=True)
 
     captcha = CaptchaField(
-        label=_('Please indicate the result of'
-                ' the following operation hereunder'))
+        label=_('Please indicate the result of the following operation'))
 
     url_referrer = forms.URLField(required=False, widget=forms.HiddenInput())
 
