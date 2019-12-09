@@ -127,25 +127,27 @@ def main_transcript(video_to_encode):
 
         sentences = get_sentences(metadata, refItem, index)
 
-        last_item = (sentences[-1][-1].character, sentences[-1][-1].start_time)
+        last_item = (
+            sentences[-1][-1].character, sentences[-1][-1].start_time
+        ) if len(sentences) > 0 else ()
 
         for sent in sentences:
+            if len(sent) > 0:
+                start_time = sent[0].start_time + start_trim
+                end_time = sent[-1].start_time + start_trim
+                str_sentence = ''.join(item.character for item in sent)
+                # print(start_time, end_time, str_sentence)
+                caption = Caption(
+                    '%s.%s' % (timedelta(
+                        seconds=int(str(start_time).split('.')[0])),
+                        str('%.3f' % start_time).split('.')[1]),
+                    '%s.%s' % (timedelta(
+                        seconds=int(str(end_time).split('.')[0])),
+                        str('%.3f' % end_time).split('.')[1]),
+                    ['%s' % str_sentence]
+                )
 
-            start_time = sent[0].start_time + start_trim
-            end_time = sent[-1].start_time + start_trim
-            str_sentence = ''.join(item.character for item in sent)
-            # print(start_time, end_time, str_sentence)
-            caption = Caption(
-                '%s.%s' % (timedelta(
-                    seconds=int(str(start_time).split('.')[0])),
-                    str('%.3f' % start_time).split('.')[1]),
-                '%s.%s' % (timedelta(
-                    seconds=int(str(end_time).split('.')[0])),
-                    str('%.3f' % end_time).split('.')[1]),
-                ['%s' % str_sentence]
-            )
-
-            webvtt.captions.append(caption)
+                webvtt.captions.append(caption)
     # print(webvtt)
     msg += saveVTT(video_to_encode, webvtt)
     inference_end = timer() - inference_start
