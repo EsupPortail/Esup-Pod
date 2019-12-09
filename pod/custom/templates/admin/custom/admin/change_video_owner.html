@@ -16,15 +16,15 @@
 			{% csrf_token %}
                     <div class="row">
                         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div class="form-group">
+                            <div class="form-group jslogins">
                                 <label for="oldlogin" class="label-control">Ancien propriétaire<i class="required">*</i></label>
-                                <input type="text" class="form-control" name="oldlogin" placeholder="Identifiant ancien propriétaire" required id="oldlogin">
+                                <input autocomplete="off" type="text" class="form-control" name="oldlogin" placeholder="Identifiant ancien propriétaire" required id="oldlogin">
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div class="form-group">
+                            <div class="form-group jslogins">
                                 <label for="newlogin" class="label-control">Nouveau propriétaire<i class="required">*</i></label>
-                                <input type="text" class="form-control" name="newlogin" placeholder="Identifiant nouveau propriétaire" required id="newlogin">
+                                <input autocomplete="off" type="text" class="form-control" name="newlogin" placeholder="Identifiant nouveau propriétaire" required id="newlogin">
                             </div>
                         </div>
                     </div>

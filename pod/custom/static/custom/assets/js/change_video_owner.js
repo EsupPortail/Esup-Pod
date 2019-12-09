@@ -272,67 +272,75 @@ let clean_videos = function()
     }
 }
 
-let videos_to_display = function(given_login)
+let videos_to_display = function(given_login, click=false)
 {
     let videos = {};
-    for(let [login, video] of Object.entries(data))
+    for(let [login, user_videos] of Object.entries(data))
     {
-        if( login.toLowerCase().includes(given_login.value.toLowerCase()))
+	user_full_name = Array.isArray(user_videos)? user_videos[0].full_name : user_videos.full_name;
+	user_given_login = (click)? given_login.dataset.login : given_login.value;
+        if( 
+		login.toLowerCase().includes(user_given_login.toLowerCase()) ||
+		user_full_name.toLowerCase().includes(user_given_login.toLowerCase())
+	)
         {
-            videos[login] = video;
+            videos[login] = user_videos;
         }
     }
     return videos;
 }
 
 // display all her videos by login
-let display_all_videos_by_login = function(given_login)
+let display_all_videos_by_login_or_name = function(given_login, click=false)
 {
     // Make a request to get all user videos in BD
     if( given_login.value.length >= 3 )
     {
         clean_videos();
-        let videos_display = videos_to_display(given_login);
+        let videos_display = videos_to_display(given_login, click);
         if( Object.keys(videos_display).length === 0 ) remove_select_all_videos();
         // Add all her videos to the views
         for(let [login, user_videos] of Object.entries(videos_display))
         {
-            user_videos.forEach(function(v)
-            {
-                let div = document.createElement('div');
-                div.setAttribute('class', "form-group list_videos__data");
-                div.setAttribute('id', login+"-"+v.id);
-		let container = document.createElement("div");
-		container.setAttribute('class', 'list_videos__data_container');
-		let img = document.createElement('img');
-		img.setAttribute('class', 'list_videos__img');
-		//img.setAttribute('target_url', v.url);
-		img.setAttribute('src', v.thumbnail);
-		container.addEventListener("click", function(e){
-			e.preventDefault();
-			window.open(v.url, '_blank');
-		});
-                let input = document.createElement('input');
-                input.setAttribute('type', "checkbox");
-                input.setAttribute('id', "video_"+v.id);
-                input.setAttribute('name', "videos[]");
-                input.setAttribute('value', v.id+"-"+login);
-                let label = document.createElement('label');
-                label.setAttribute('for', "video_"+v.id)
-                label.innerText = v.title;
+	    if( Array.isArray(user_videos) )
+	    {
+            	user_videos.forEach(function(v)
+            	{
+                	let div = document.createElement('div');
+                	div.setAttribute('class', "form-group list_videos__data");
+	                div.setAttribute('id', login+"-"+v.id);
+			let container = document.createElement("div");
+			container.setAttribute('class', 'list_videos__data_container');
+			let img = document.createElement('img');
+			img.setAttribute('class', 'list_videos__img');
+			//img.setAttribute('target_url', v.url);
+			img.setAttribute('src', v.thumbnail);
+			container.addEventListener("click", function(e){
+				e.preventDefault();
+				window.open(v.url, '_blank');
+			});
+                	let input = document.createElement('input');
+	                input.setAttribute('type', "checkbox");
+        	        input.setAttribute('id', "video_"+v.id);
+                	input.setAttribute('name', "videos[]");
+	                input.setAttribute('value', v.id+"-"+login);
+        	        let label = document.createElement('label');
+                	label.setAttribute('for', "video_"+v.id)
+	                label.innerText = v.title;
         	
-                div.appendChild(input);
-		container.appendChild(img);
-		container.appendChild(label);
-		div.appendChild(container);
-		if( !list_videos.querySelector("#"+login+"-"+v.id) )
-                {
-                    list_videos.appendChild(div);
-                }
-            });
-            add_select_all_videos();  
-            videos = list_videos.querySelectorAll('.form-group.list_videos__data');
-            uncheck_all_video_checkbox();
+        	        div.appendChild(input);
+			container.appendChild(img);
+			container.appendChild(label);
+			div.appendChild(container);
+			if( !list_videos.querySelector("#"+login+"-"+v.id) )
+	                {
+        	            list_videos.appendChild(div);
+                	}
+		});
+	            add_select_all_videos();  
+        	    videos = list_videos.querySelectorAll('.form-group.list_videos__data');
+	            uncheck_all_video_checkbox();
+	    }
         }
     }
     else
@@ -344,10 +352,135 @@ let display_all_videos_by_login = function(given_login)
         });
     }
 }
+// Add if not already added
+
+var not_already_added = function(parentNode, child)
+{
+	already_added = true;
+	parentNode.querySelectorAll(child.tagName).forEach(function(p)
+	{
+		if(p.dataset.login.toLowerCase() === child.dataset.login.toLowerCase())
+		{
+			already_added=false;
+		}
+	});
+	return already_added;
+}
+
 // listening to oldlogin to display all her videos
 oldlogin.oninput = function()
 {
-    display_all_videos_by_login(this)
+    if(oldlogin.dataset.login)
+    {
+	oldlogin.removeAttribute("data-login");
+    }
+
+    display_owners_suggestion(this)
+    display_all_videos_by_login_or_name(this)
+}
+newlogin.onblur = function(e)
+{
+	remove_owner_suggestion_node(this, hide=true);
+	e.stopPropagation();
+}
+oldlogin.onblur = function(e)
+{
+	remove_owner_suggestion_node(this, hide=true);
+	e.stopPropagation();
+}
+
+newlogin.onfocus = function()
+{
+	if(this.parentNode.querySelector("#jsowner-list.owner-list"))
+	{
+		this.parentNode.querySelector(
+			"#jsowner-list.owner-list").style.display = "block";
+	}
+}
+oldlogin.onfocus = function()
+{
+	if(this.parentNode.querySelector("#jsowner-list.owner-list"))
+	{
+		this.parentNode.querySelector(
+			"#jsowner-list.owner-list").style.display = "block";
+	}
+}
+
+let remove_owner_suggestion_node = function(target, hide=false)
+{
+	let suggestionNode = target.parentNode.querySelector("#jsowner-list.owner-list");
+	if(hide && suggestionNode)
+	{
+		suggestionNode.style.display = "none";
+	}
+	else if(suggestionNode)
+	{
+		target.parentNode.removeChild(suggestionNode);
+	}
+}
+let display_owners_suggestion = function(given_login) 
+{	
+	let owner_list_element = given_login.parentNode.querySelector("#jsowner-list.owner-list");
+	if( given_login.value.length >= 3 )
+	{
+		// Create div.owner-list if not already exists
+		if( !owner_list_element )
+		{
+			owner_list_element = document.createElement("div");
+			owner_list_element.setAttribute("id", "jsowner-list");
+			owner_list_element.setAttribute("class", "owner-list");
+			given_login.parentNode.appendChild(owner_list_element);
+		}
+		// remove all child to update owners suggestions
+		owner_list_element.innerHTML = "";
+
+        	for(let [username, user_videos] of Object.entries(data))
+		{
+			user_name = Array.isArray(user_videos)? user_videos[0].full_name: user_videos.full_name;
+			if(user_name.trim() === "" || user_name === undefined)
+			{
+				user_name = username;
+			}
+			if( user_name.toLowerCase().includes(given_login.value.toLowerCase()) )
+			{
+				let p = document.createElement("p");
+				p.dataset.login = username;
+				p.addEventListener("mousedown", (e)=>{
+					//given_login);
+					//this.parentNode.previousElementSibling);
+					//newlogin);
+					e.stopPropagation();
+					given_login.value = p.innerText;
+					given_login.dataset.login = p.dataset.login;
+					remove_owner_suggestion_node(given_login)
+					//given_login.parentNode.removeChild(owner_list_element);
+					// Update suggestions videos
+					display_all_videos_by_login_or_name(oldlogin, click=true)
+
+				});
+				// Display suggestion
+				if( not_already_added(owner_list_element, p) )
+				{
+					p.appendChild(document.createTextNode(user_name));
+
+					owner_list_element.appendChild(p);
+				}
+			}
+		}
+	}
+	else
+	{
+		remove_owner_suggestion_node(given_login);
+	}
+}
+// Display owners suggestions
+newlogin.oninput = ()=>
+{
+	if(newlogin.dataset.login)
+	{
+		newlogin.removeAttribute("data-login");
+	}
+	display_owners_suggestion(newlogin);
 }
 
 let all_video_checkbox_checked = function()
@@ -393,7 +526,8 @@ let js_field_not_empty = function( fields )
 {
     for(var i =0; i < fields.length; i++)
     {
-        if( 
+        if(
+	    (fields[i] === undefined) ||
             (typeof(fields[i]) === "string" && fields[i].trim().length === 0) ||
             (typeof(fields[i]) === "object" && fields[i].length === 0)
         ) return false;
@@ -445,9 +579,8 @@ submit.addEventListener("click", function(e)
     add_loader()
 
     let videos_to_change_owner = (all_video_checkbox_checked())? "*" : get_videos_to_change();
-    let old_owner = oldlogin.value;
-    let new_owner = newlogin.value;
-
+    let old_owner = oldlogin.dataset.login;
+    let new_owner = newlogin.dataset.login;
     let success = js_field_not_empty([old_owner, new_owner, videos_to_change_owner]);
     if( success )
     {
