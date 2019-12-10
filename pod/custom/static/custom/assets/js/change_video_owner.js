@@ -279,9 +279,12 @@ let videos_to_display = function(given_login, click=false)
     {
 	user_full_name = Array.isArray(user_videos)? user_videos[0].full_name : user_videos.full_name;
 	user_given_login = (click)? given_login.dataset.login : given_login.value;
-        if( 
-		login.toLowerCase().includes(user_given_login.toLowerCase()) ||
-		user_full_name.toLowerCase().includes(user_given_login.toLowerCase())
+	if( click && login.toLowerCase() === user_given_login.toLowerCase() )
+	{
+		videos[login] = user_videos;
+	}
+	else if(!click && (login.toLowerCase().includes(user_given_login.toLowerCase()) ||
+		user_full_name.toLowerCase().includes(user_given_login.toLowerCase()))
 	)
         {
             videos[login] = user_videos;
@@ -455,6 +458,7 @@ let display_owners_suggestion = function(given_login)
 					remove_owner_suggestion_node(given_login)
 					//given_login.parentNode.removeChild(owner_list_element);
 					// Update suggestions videos
+					if( given_login != newlogin )
 					display_all_videos_by_login_or_name(oldlogin, click=true)
 
 				});
