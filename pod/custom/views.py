@@ -116,8 +116,8 @@ def stats_view(request, slug):
         data = ordering_data(data)
         return render(
                 request,
-                "custom/layouts/statistique-video.html",
-                {"data" :data, "channel_slug": slug, "channel_title": channel.title})
+                "custom/layouts/stat_view.html",
+                {"data" :data, "channel_slug": slug })
 
 
 @csrf_protect
