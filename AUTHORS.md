@@ -14,6 +14,6 @@ A list of much-appreciated contributors who have submitted patches and reported 
 * Frédéric Colau, Eliam Lotonga and Jeremie Grepilloux, University Grenoble Alpes
 * Loic Bonavent, University of Montpellier
 * Guillaume Condesse, University of Bordeaux
-* Franck Charneau and Joshua Baudry, University of La Rochelle
+* Franck Charneau and Joshua Baubry, University of La Rochelle
 * Nicolas Lahoche, University of Lille (design and template)
 * Charlotte Benard (Logo and color)
