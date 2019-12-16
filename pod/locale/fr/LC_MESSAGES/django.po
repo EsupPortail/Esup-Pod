@@ -2900,7 +2900,7 @@ msgstr "Adresse IP de l'enregistreur."
 
 #: pod/recorder/models.py:49
 msgid "salt"
-msgstr "cash"
+msgstr "hash"
 
 #: pod/recorder/models.py:50
 msgid "Recorder salt."
@@ -2913,8 +2913,8 @@ msgid ""
 "recorder will use manual assign system."
 msgstr ""
 "Gestionnaire de cet enregistreur. Ce gestionnaire recevra les mails et "
-"serale propriétaire des vidéos publiées. Si aucun utilisateur n'est "
-"sélectionné, cetenregistreur utilisera le mode manuel d'assignation."
+"sera le propriétaire des vidéos publiées. Si aucun utilisateur n'est "
+"sélectionné, cet enregistreur utilisera le mode manuel d'assignation."
 
 #: pod/recorder/models.py:62
 msgid "Video type by default."
@@ -3008,7 +3008,7 @@ msgstr ""
 
 #: pod/recorder/models.py:172
 msgid "Date email sent"
-msgstr "Date de l'envoie du mail"
+msgstr "Date de l'envoi du mail"
 
 #: pod/recorder/models.py:181
 msgid "Recording file treatment"
@@ -3059,7 +3059,7 @@ msgstr "Revendiquer l'enregistrement"
 
 #: pod/recorder/templates/recorder/record_list.html:10
 msgid "Sorry, no record found"
-msgstr "Désolé, aucun enregistrement trouvée"
+msgstr "Désolé, aucun enregistrement trouvé"
 
 #: pod/recorder/views.py:40
 msgid "Recorder should be indicated."
