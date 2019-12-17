@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from ckeditor.fields import RichTextField
 from django.template.defaultfilters import slugify
+from pod.video.models import Video
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -59,6 +60,11 @@ class Broadcaster(models.Model):
         verbose_name=_('Poster'))
     url = models.URLField(_('URL'), help_text=_(
         'Url of the stream'), unique=True)
+    video_on_hold = models.ForeignKey(Video, help_text=_(
+        'This video will be displayed when there is no live stream.'),
+        blank=True,
+        null=True,
+        verbose_name=_('Video on hold'))
     status = models.BooleanField(default=0, help_text=_(
         'Check if the broadcaster is currently sending stream.'))
     is_restricted = models.BooleanField(
