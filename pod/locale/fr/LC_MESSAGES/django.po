@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-09 11:50+0000\n"
+"POT-Creation-Date: 2019-12-16 13:46+0000\n"
 "PO-Revision-Date: 2019-12-09 12:51+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -44,7 +44,7 @@ msgstr "étudiant"
 
 #: pod/authentication/models.py:26
 msgid "faculty"
-msgstr "universitée"
+msgstr "université"
 
 #: pod/authentication/models.py:27
 msgid "staff"
@@ -52,7 +52,7 @@ msgstr "personnel"
 
 #: pod/authentication/models.py:28
 msgid "employee"
-msgstr "employée"
+msgstr "employé"
 
 #: pod/authentication/models.py:29
 msgid "member"
@@ -927,7 +927,7 @@ msgstr "Afficher la section « Document(s) complémentaire(s) »"
 #: pod/completion/templates/video_completion.html:73
 #: pod/completion/templates/video_completion.html:160
 msgid "Additional resource(s)"
-msgstr "Documents complémentaires"
+msgstr "Document(s) complémentaire(s)"
 
 #: pod/completion/templates/video_completion.html:89
 msgid "Add a new additional resource"
@@ -961,7 +961,7 @@ msgstr ""
 
 #: pod/completion/templates/video_completion.html:142
 msgid "Subtitle(s) and/or captions(s) related to this video."
-msgstr "Sous-titre(s) et/ou légende(s) relatifs à cette vidéo."
+msgstr "Sous-titre(s) et/ou légende(s) relatif(s) à cette vidéo."
 
 #: pod/completion/templates/video_completion.html:143
 msgid ""
@@ -1152,12 +1152,12 @@ msgstr "Veuillez entrer un correct {0}."
 #: pod/enrichment/models.py:192
 #, python-brace-format
 msgid "Please enter a correct start field between 0 and {0}."
-msgstr "Veuillez entrer un correct temps de début compris entre 0 et {0}."
+msgstr "Veuillez entrer un temps de début correct compris entre 0 et {0}."
 
 #: pod/enrichment/models.py:196
 #, python-brace-format
 msgid "Please enter a correct end field between 1 and {0}."
-msgstr "Veuillez entrer un correct temps de fin compris entre 1 et {0}"
+msgstr "Veuillez entrer un temps de fin correct compris entre 1 et {0}"
 
 #: pod/enrichment/models.py:202
 msgid "Please enter a type."
@@ -1169,7 +1169,7 @@ msgstr "Le temps de début est supérieur au temps de fin."
 
 #: pod/enrichment/models.py:218
 msgid "The value of end field is greater than the video duration."
-msgstr "La temps de fin est supérieur à la durée de la vidéo."
+msgstr "Le temps de fin est supérieur à la durée de la vidéo."
 
 #: pod/enrichment/models.py:222
 msgid "End field and start field can't be equal."
@@ -1204,7 +1204,7 @@ msgstr "Enrichissement de la vidéo"
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:62
 msgid "Add a new enrichment"
-msgstr "Ajouter un nouveau enrichissement"
+msgstr "Ajouter un nouvel enrichissement"
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:67
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:68
@@ -1229,8 +1229,7 @@ msgstr "Spécifier des groupes d'utilisateur qui peuvent accéder à cette page"
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:87
 msgid "The title field is required and must contains from 2 to 100 characters."
-msgstr ""
-"Le champ de titre est requis et doit contenir au moins 2 à 100 caractères."
+msgstr "Le champ de titre est requis et doit contenir de 2 à 100 caractères."
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:88
 msgid ""
@@ -1489,7 +1488,7 @@ msgstr ""
 #: pod/interactive/templates/interactive/group_interactive.html:14
 #: pod/interactive/templates/interactive/group_interactive.html:19
 msgid "Editing group for the interactivity of the video"
-msgstr "Spécifier les groupes qui peuvent interactiver la vidéo"
+msgstr "Spécifier les groupes d'édition pour l'interactivité de la vidéo"
 
 #: pod/interactive/templates/interactive/group_interactive.html:61
 msgid "back to editing interactive"
@@ -1533,7 +1532,7 @@ msgstr "Points"
 
 #: pod/interactive/templates/interactive/video_interactive.html:131
 msgid "started"
-msgstr "début"
+msgstr "débuté"
 
 #: pod/interactive/templates/interactive/video_interactive.html:132
 msgid "finished"
@@ -1604,7 +1603,7 @@ msgstr "Adresse du flux"
 
 #: pod/live/models.py:63
 msgid "Check if the broadcaster is currently sending stream."
-msgstr "Cocher la cas si le diffuseur envoie un flux."
+msgstr "Cocher la case si le diffuseur envoie un flux."
 
 #: pod/live/models.py:65 pod/video/forms.py:175 pod/video/models.py:540
 msgid "Restricted access"
@@ -2360,7 +2359,7 @@ msgstr "Erreur serveur (500)"
 
 #: pod/main/templates/500.html:14
 msgid "Server Error <em>(500)</em>"
-msgstr "Server Error <em>(500)</em>"
+msgstr "Erreur serveur <em>(500)</em>"
 
 #: pod/main/templates/500.html:15
 msgid ""
@@ -2900,7 +2899,7 @@ msgstr "Adresse IP de l'enregistreur."
 
 #: pod/recorder/models.py:49
 msgid "salt"
-msgstr "cash"
+msgstr "hash"
 
 #: pod/recorder/models.py:50
 msgid "Recorder salt."
@@ -2912,9 +2911,9 @@ msgid ""
 "will be the owner of the published videos. If no user is selected, this "
 "recorder will use manual assign system."
 msgstr ""
-"Gestionnaire de cet enregistreur. Ce gestionnaire recevra les mails et "
-"serale propriétaire des vidéos publiées. Si aucun utilisateur n'est "
-"sélectionné, cetenregistreur utilisera le mode manuel d'assignation."
+"Gestionnaire de cet enregistreur. Ce gestionnaire recevra les mails et sera "
+"le propriétaire des vidéos publiées. Si aucun utilisateur n'est sélectionné, "
+"cet enregistreur utilisera le mode manuel d'assignation."
 
 #: pod/recorder/models.py:62
 msgid "Video type by default."
@@ -3008,7 +3007,7 @@ msgstr ""
 
 #: pod/recorder/models.py:172
 msgid "Date email sent"
-msgstr "Date de l'envoie du mail"
+msgstr "Date de l'envoi du mail"
 
 #: pod/recorder/models.py:181
 msgid "Recording file treatment"
@@ -3059,7 +3058,7 @@ msgstr "Revendiquer l'enregistrement"
 
 #: pod/recorder/templates/recorder/record_list.html:10
 msgid "Sorry, no record found"
-msgstr "Désolé, aucun enregistrement trouvée"
+msgstr "Désolé, aucun enregistrement trouvé"
 
 #: pod/recorder/views.py:40
 msgid "Recorder should be indicated."
@@ -3244,7 +3243,7 @@ msgstr "Date de l'évènement"
 
 #: pod/video/forms.py:108
 msgid "Enter the date of the event, if applicable, in the AAAA-MM-JJ format."
-msgstr "Entrer la date de l’avènement, si possible, au format AAAA-MM-JJ."
+msgstr "Entrer la date de l’évènement, si possible, au format AAAA-MM-JJ."
 
 #: pod/video/forms.py:111 pod/video/models.py:489
 #: pod/video_search/templates/search/search.html:145
@@ -3278,7 +3277,7 @@ msgstr "Sélectionner la langue principalement utilisée dans ce contenu."
 msgid ""
 "Please try to add only relevant keywords that can be useful to other users."
 msgstr ""
-"Veuiller essayer d'ajouter uniquement des mots clés pertinent qui pourront "
+"Veuiller essayer d'ajouter uniquement des mots clés pertinents qui pourront "
 "être utiles aux autres utilisateurs."
 
 #: pod/video/forms.py:126
@@ -3530,7 +3529,7 @@ msgstr "Une vidéo sera obsolète sur Pod"
 #: pod/video/management/commands/check_obsolete_videos.py:265
 #: pod/video/management/commands/check_obsolete_videos.py:300
 msgid "Hello manager(s),"
-msgstr "Bonjour les gestionnaires,"
+msgstr "Bonjour le(s) gestionnaire(s),"
 
 #: pod/video/management/commands/check_obsolete_videos.py:233
 msgid ""

@@ -93,27 +93,27 @@ msgstr "aucune donnée ne peut être stockée."
 
 #: pod/completion/static/js/caption_maker.js:89
 msgid "Are you sure you want to delete all caption ?"
-msgstr "Êtes-vous sûre de vouloir supprimer les sous-titre ?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer les sous-titre ?"
 
 #: pod/completion/static/js/completion.js:137
 msgid "Are you sure you want to delete this file ?"
-msgstr "Êtes-vous sûre de vouloir supprimer ce fichier ?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer ce fichier ?"
 
 #: pod/completion/static/js/completion.js:139
 msgid "Are you sure you want to delete this contributor ?"
-msgstr "Êtes-vous sûre de vouloir supprimer ce contributeur ?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer ce contributeur ?"
 
 #: pod/completion/static/js/completion.js:141
 msgid "Are you sure you want to delete this document ?"
-msgstr "Êtes-vous sûre de vouloir supprimer ce document ?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer ce document ?"
 
 #: pod/completion/static/js/completion.js:143
 msgid "Are you sure you want to delete this overlay ?"
-msgstr "Êtes-vous sûre de vouloir supprimer cette superposition ?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer cette superposition ?"
 
 #: pod/completion/static/js/completion.js:187 pod/main/static/js/main.js:276
 msgid "Changes have been saved."
-msgstr "Les modifications ont été sauvegardés."
+msgstr "Les modifications ont été sauvegardées."
 
 #: pod/completion/static/js/completion.js:216
 msgid "Display"
@@ -171,7 +171,7 @@ msgstr "Veuillez joindre un document."
 
 #: pod/completion/static/js/completion.js:318
 msgid "Iframe and Script tags are not allowed."
-msgstr "Les balises Iframe et Script ne sont pas autorisés."
+msgstr "Les balises Iframe et Script ne sont pas autorisées."
 
 #: pod/enrichment/static/js/enrichment.js:229
 msgid "Please enter a correct start from 0 to "
@@ -231,7 +231,7 @@ msgstr "veuillez changer de valeur de début et/ou de fin."
 
 #: pod/main/static/js/main.js:255 pod/podfile/static/js/filewidget.js:77
 msgid "Are you sure you want to delete this element?"
-msgstr "Êtes-vous sûre de vouloir supprimer cet élément ?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer cet élément ?"
 
 #: pod/main/static/js/main.js:291 pod/podfile/static/js/filewidget.js:106
 #: pod/podfile/static/js/filewidget.js:170
@@ -258,7 +258,7 @@ msgstr "La fichier dépasse la taille maximum autorisée :"
 #: pod/main/static/js/main.js:495
 msgid "The file extension not in the allowed extension :"
 msgstr ""
-"Cette extension de fichier n'est pas présent dans les extensions autorisées :"
+"Cette extension de fichier n'est pas présente dans les extensions autorisées :"
 
 #: pod/podfile/static/js/filewidget.js:7 pod/podfile/static/js/filewidget.js:8
 msgid "Change file"
@@ -274,7 +274,7 @@ msgstr "Changer d’image"
 
 #: pod/podfile/static/js/filewidget.js:38
 msgid "Are you sure you want to delete this folder?"
-msgstr "Êtes-vous sûre de vouloir supprimer ce dossier ?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer ce dossier ?"
 
 #~ msgid "File successfully deleted."
 #~ msgstr "Le fichier a été supprimé."
