@@ -25,7 +25,8 @@ def video_live(request, id):  # affichage des directs
                 request.get_full_path())
         )
     return render(request, "live/live.html", {
-        'broadcaster': broadcaster
+        'broadcaster': broadcaster,
+        'debug': settings.DEBUG
     })
 
 
