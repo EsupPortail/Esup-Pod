@@ -7,6 +7,7 @@
 <script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
 <script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
 <script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
+<script src="{% static 'js/videojs-logo-controlbar.js' %}"></script>
 {% endblock %}
 
 
@@ -21,12 +22,26 @@
 {% block page_content %}
 <h3><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}}</h3>
 
-<video id="podvideoplayer" class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" poster="{{broadcaster.get_poster_url}}" muted autoplay>
-    <source
-     src="{{broadcaster.url}}" 
-     type="application/x-mpegURL">
-     <!-- https://d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8 -->
-</video>
+{% if broadcaster.video_on_hold.is_video %}
+	<div id="divvideoonhold" style="display: block;">
+		<video id="podvideoonholdplayer" class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" muted autoplay>
+		</video>
+	</div>
+	<div id="divvideoplayer" style="display: none;">
+		<video id="podvideoplayer" class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" poster="{{broadcaster.get_poster_url}}" muted autoplay>
+			<source
+			 src="{{broadcaster.url}}" 
+			 type="application/x-mpegURL">
+		</video>
+	</div>
+{% else %}
+	<video id="podvideoplayer" class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" poster="{{broadcaster.get_poster_url}}" muted autoplay>
+		<source
+		 src="{{broadcaster.url}}" 
+		 type="application/x-mpegURL">
+		 <!-- https://d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8 -->
+	</video>
+{% endif %}
 
 <p>{{ broadcaster.description|safe }}</p>
 
@@ -62,32 +77,85 @@
 
 {% block more_script %}
 <script>
+	// Debug if necessary, depends on the settings_local
+	var debug = '{{ debug }}';
+	if (debug == "True") { debug = true; } else { debug = false;}
+	// Live started
+	var started = false;
+	// Number of loop until we are sure the live is stopped
+	// See video state (cf. https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/readyState)
+	var nbLoop = 0;
+	
     //videojs.options.flash.swf = "video-js.swf"
     var options = {
-      notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
+      notSupportedMessage: "Please use different browser (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
       language: "fr", //en or nl
       {% if request.GET.is_iframe %}
-      fluid: false, 
+		fluid: false,
       {% else %}
-      fluid: true, 
+		fluid: true, 
       {% endif %}
       playbackRates: [0.5, 1, 1.5, 2],
-      errorDisplay: false
+      errorDisplay: false,
+	  loop: false
     }
-    var player = videojs('podvideoplayer', options, function(){});
-    player.on('error', function() {
-      if (typeof(errored) == 'undefined' || !errored) { // Handle successives errors to avoid multiple reload
-        var errored = true;
-        let modal = player.createModal('{% trans "Live not found, retry in 10 seconds" %}');
-        setTimeout(function() {
-          errored = false;
-          modal.close();
-          player.src({
-            src: player.currentSrc(),
-            type: player.currentType(),
-          });
-        }, 10000)
-      }
+
+	// Management of the end of the stream (for Firefox, Chrome... not working for Edge, Safari)
+	videojs.Hls.xhr.beforeRequest = function(options) {
+		// Reset counter if video state is ok
+		if (started && player.readyState() > 2) { nbLoop = 0; }
+		if (started && player.readyState() <= 2) {
+			nbLoop = nbLoop + 1;
+			// We're waiting a bit to make sure it's not a network / data flow issue...
+			if (debug) { console.info("The streaming live stopped ? Video state : " + player.readyState() + ". It's been " + nbLoop + " times that there is no more video stream. After 4, we stop."); }
+			if (nbLoop > 3) {
+				// Display of a message of end of live and reload of the page in 9 seconds
+				let modal = player.createModal('{% trans "Thank you for watching this streaming live with us. The page will reload automatically within a few seconds to display the video on hold." %}');
+				setTimeout(function(){ location.reload(); }, 9000);
+			}
+		} 
+		return options;
+	}
+
+	// Management of the video on hold
+	{% if broadcaster.video_on_hold.is_video %}
+		// In this case, loop is necessary
+		options["loop"] = true;
+		var playerOnHold = videojs('podvideoonholdplayer', options, function(){});
+		playerOnHold.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
+		var mp4_sources = {{broadcaster.video_on_hold.get_video_mp4_json|safe}};
+		playerOnHold.src(mp4_sources);
+		let modalOnHold = playerOnHold.createModal('{% trans "Live not found, displaying the video on hold, retry every 10 seconds" %}');
+		setTimeout(function(){ modalOnHold.close(); }, 10000);
+	{% endif %}
+
+	// Management of the streaming live
+	var player = videojs('podvideoplayer', options, function(){});
+	player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
+	player.on('error', function() {
+	  // Handle successives errors to avoid multiple reload
+	  if (typeof(errored) == 'undefined' || !errored) {
+		var errored = true;
+		let modal = player.createModal('{% trans "Live not found, retry in 10 seconds" %}');
+		setTimeout(function() {
+		  errored = false;
+		  modal.close();
+		  player.src({
+			src: player.currentSrc(),
+			type: player.currentType(),
+			overrideNative: true
+		  });
+		}, 10000)
+	  }
+	})
+
+	// Fire this event when live started
+    player.on('loadedmetadata', function() {
+		if(debug) { console.info("Streaming live starts."); }
+		// Display the streaming live
+		started = true;
+		if ($("#divvideoonhold")) { $("#divvideoonhold").html("");}
+		if ($("#divvideoplayer")) { $("#divvideoplayer").css("display", "block"); }
     })
 </script>
 {% endblock more_script %}
