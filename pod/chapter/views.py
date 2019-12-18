@@ -22,10 +22,12 @@ ACTION = ['new', 'save', 'modify', 'delete', 'cancel', 'import', 'export']
 @login_required(redirect_field_name='referrer')
 def video_chapter(request, slug):
     video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser and (
+            request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot chapter this video.'))
-        return HttpResponseForbidden(u'Only the owner can add chapter.')
+        return HttpResponseForbidden(u'Only the owner and additional owners '
+                                     'can add chapter.')
 
     list_chapter = video.chapter_set.all()
 

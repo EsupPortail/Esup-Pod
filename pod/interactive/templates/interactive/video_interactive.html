@@ -121,7 +121,7 @@
     <i>{% trans 'Click below to refresh the information.' %}</i>
     <button type="submit" class="btn btn-info btn-sm" id="refresh-score" ><i data-feather="refresh-cw"></i></button>
     <br>
-    {% if more_data.score and request.user == video.owner or request.user.is_superuser %}
+    {% if more_data.score and request.user == video.owner or request.user.is_superuser or request.user in video.additional_owners.all %}
     <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>
     <table class="table">
     <thead>

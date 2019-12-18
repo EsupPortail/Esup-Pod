@@ -22,7 +22,8 @@ def group_interactive(request, slug):
     video = get_object_or_404(Video, slug=slug)
     interactiveGroup, created = InteractiveGroup.objects.get_or_create(
         video=video)
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser and (
+            request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR,
             _('You cannot add interactivity to this video.')
@@ -61,7 +62,8 @@ def check_interactive_group(request, video):
 @staff_member_required(redirect_field_name='referrer')
 def edit_interactive(request, slug):
     video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser and (
+            request.user not in video.additional_owners.all()):
         if not check_interactive_group(request, video):
             messages.add_message(
                 request, messages.ERROR,
@@ -106,7 +108,8 @@ def video_interactive(request, slug, slug_c=None,
     if h5p is None:
         raise Http404("Interactive video does not exist")
     score = getUserScore(h5p.content_id) if (
-        request.user == video.owner or request.user.is_superuser
+        request.user == video.owner or request.user.is_superuser or (
+            request.user in video.additional_owners.all())
     ) else getUserScore(h5p.content_id, request.user)
 
     try:
