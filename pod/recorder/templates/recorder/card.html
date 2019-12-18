@@ -1,0 +1,34 @@
+{% load i18n %}
+{% spaceless %}
+
+    {% block page_extra_head %}
+<style>
+.card-body {
+	padding-top:  4em !important;
+    padding-bottom:  4em !important;
+    text-align: center;
+}
+</style>
+{% endblock page_extra_head %}
+
+<div class="card mb-4 box-shadow border-secondary video-card"> <!-- the good one -->
+    <div class="card-header" style="">
+        <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted time">{{record.recorder.name}}</small>
+            <span class="text-muted small">
+                <span title="{% trans 'Date of recording.' %}">
+                    {{ record.date_added }}
+                </span>
+            </span>
+        </div>
+    </div>
+    <div class="card-body">
+      <footer class="card-footer p-0 m-1">
+        {% include "recorder/link_record.html" %}
+      </footer>
+      <h6 class="card-subtitle">
+               {{record.filename|truncatechars:43}}
+      </h6>
+    </div>
+</div>
+{% endspaceless %}

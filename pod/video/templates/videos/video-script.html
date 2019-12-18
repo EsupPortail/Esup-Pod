@@ -1,5 +1,26 @@
 {% load staticfiles %}
 <script>
+window.onmessage = function(event) {
+   var evt = event || window.event;
+   {# maybe use request.get_host to protect it... #}
+    if(evt.data.type == 'player:play') {
+      player.play();
+      evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
+    }
+    if(evt.data.type == 'player:pause') {
+      player.pause();
+      evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
+    }
+    if(evt.data.type == 'player:mute') {
+      player.muted(true);
+      evt.source.postMessage({paused: player.muted(), data: {}}, evt.origin);
+    }
+    if(evt.data.type == 'player:unmute') {
+      player.muted(false);
+      evt.source.postMessage({paused: player.muted(), data: {}}, evt.origin);
+    }
+};
+
 var options = {
   notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
   language: "fr", //en or nl

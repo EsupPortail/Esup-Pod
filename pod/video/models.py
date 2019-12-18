@@ -33,7 +33,6 @@ from select2 import fields as select2_fields
 
 from pod.main.models import get_nextautoincrement
 from django.db.models import Q
-from pod.authentication.models import AFFILIATION
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -43,6 +42,9 @@ else:
     from pod.main.models import CustomImageModel
 
 logger = logging.getLogger(__name__)
+
+RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
+    settings, 'RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY', False)
 
 VIDEOS_DIR = getattr(
     settings, 'VIDEOS_DIR', 'videos')
@@ -157,31 +159,7 @@ DEFAULT_DC_COVERAGE = getattr(
     settings, 'DEFAULT_DC_COVERAGE', TITLE_ETB + " - Town - Country")
 DEFAULT_DC_RIGHTS = getattr(settings, 'DEFAULT_DC_RIGHT', "BY-NC-SA")
 
-USE_OBSOLESCENCE = getattr(settings, 'USE_OBSOLESCENCE', False)
-OBSOLESCENCE_START_DATE = getattr(
-        settings,
-        'OBSOLESCENCE_START_DATE',
-        None
-)
-ACCOMMODATION_YEARS = getattr(
-        settings,
-        "ACCOMMODATION_YEARS",
-        {
-            'student': 1,
-            'faculty': 1,
-            'staff': 2,
-            'employee': 1,
-            'member': 1,
-            'affiliate': 1,
-            'alum': 1,
-            'library-walk-in': 1,
-            'researcher': 2,
-            'retired': 1,
-            'emeritus': 1,
-            'teacher': 2,
-            'registered-reader': 1
-        }
-)
+DEFAULT_YEAR_DATE_DELETE = getattr(settings, 'DEFAULT_YEAR_DATE_DELETE', 2)
 
 # FUNCTIONS
 
@@ -445,14 +423,58 @@ class Video(models.Model):
             'numbers, underscore or dash top.'),
         editable=False)
     type = models.ForeignKey(Type, verbose_name=_('Type'))
-    owner = select2_fields.ForeignKey(
-        User,
-        ajax=True,
-        verbose_name=_('Owner'),
-        search_field=lambda q: Q(
-            first_name__icontains=q) | Q(
-            last_name__icontains=q),
-        on_delete=models.CASCADE)
+    # Management RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY setting for owners
+    # and additional owners
+    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY:
+        # We can select only staff users
+        owner = select2_fields.ForeignKey(
+            User,
+            ajax=True,
+            verbose_name=_('Owner'),
+            search_field=lambda q: Q(is_staff=True) & (Q(
+                first_name__icontains=q) | Q(
+                last_name__icontains=q)),
+            on_delete=models.CASCADE)
+        additional_owners = select2_fields.ManyToManyField(
+            User,
+            blank=True,
+            ajax=True,
+            js_options={
+                'width': 'off'
+            },
+            verbose_name=_('Additional owners'),
+            search_field=lambda q: Q(is_staff=True) & (Q(
+                first_name__icontains=q) | Q(
+                last_name__icontains=q)),
+            related_name='owners_videos',
+            help_text=_('You can add additional owners to the video. They '
+                        'will have the same rights as you except that they '
+                        'can\'t delete this video.'))
+    else:
+        # We can select all users
+        owner = select2_fields.ForeignKey(
+            User,
+            ajax=True,
+            verbose_name=_('Owner'),
+            search_field=lambda q: Q(
+                first_name__icontains=q) | Q(
+                last_name__icontains=q),
+            on_delete=models.CASCADE)
+        additional_owners = select2_fields.ManyToManyField(
+            User,
+            blank=True,
+            ajax=True,
+            js_options={
+                'width': 'off'
+            },
+            verbose_name=_('Additional owners'),
+            search_field=lambda q: Q(
+                first_name__icontains=q) | Q(
+                last_name__icontains=q),
+            related_name='owners_videos',
+            help_text=_('You can add additional owners to the video. They '
+                        'will have the same rights as you except that they '
+                        'can\'t delete this video.'))
     description = RichTextField(
         _('Description'),
         config_name='complete',
@@ -463,9 +485,6 @@ class Video(models.Model):
     date_added = models.DateTimeField(_('Date added'), default=timezone.now)
     date_evt = models.DateField(
         _('Date of event'), default=date.today, blank=True, null=True)
-    date_delete = models.DateTimeField(
-            _('Date of Deletion'),
-            default=None, null=True, blank=True)
     cursus = models.CharField(
         _('University course'), max_length=1,
         choices=CURSUS_CODES, default="0",
@@ -514,7 +533,8 @@ class Video(models.Model):
         verbose_name=_('Draft'),
         help_text=_(
             'If this box is checked, '
-            'the video will be visible and accessible only by you.'),
+            'the video will be visible and accessible only by you '
+            'and the additional owners.'),
         default=True)
     is_restricted = models.BooleanField(
         verbose_name=_('Restricted access'),
@@ -545,6 +565,13 @@ class Video(models.Model):
     is_video = models.BooleanField(
         _('Is Video'), default=True, editable=False)
 
+    date_delete = models.DateField(
+        _('Date to delete'),
+        default=date(
+            date.today().year + DEFAULT_YEAR_DATE_DELETE,
+            date.today().month,
+            date.today().day))
+
     class Meta:
         ordering = ['-date_added', '-id']
         get_latest_by = 'date_added'
@@ -562,13 +589,22 @@ class Video(models.Model):
                     newid += 1
                 except Exception:
                     newid = 1
+            # fix date_delete depends of owner affiliation
+            ACCOMMODATION_YEARS = getattr(
+                settings,
+                "ACCOMMODATION_YEARS",
+                {}
+            )
+            if ACCOMMODATION_YEARS.get(self.owner.owner.affiliation):
+                new_year = ACCOMMODATION_YEARS[self.owner.owner.affiliation]
+                self.date_delete = date(
+                    date.today().year + new_year,
+                    date.today().month,
+                    date.today().day)
         else:
             newid = self.id
-        #  set date_delete attribute
-        self.set_default_date_deletion()
         newid = '%04d' % newid
-        if not self.slug:
-            self.slug = "%s-%s" % (newid, slugify(self.title))
+        self.slug = "%s-%s" % (newid, slugify(self.title))
         self.tags = remove_accents(self.tags)
         super(Video, self).save(*args, **kwargs)
 
@@ -577,42 +613,6 @@ class Video(models.Model):
             return "%s - %s" % ('%04d' % self.id, self.title)
         else:
             return "None"
-
-    def get_accommodation_year(self):
-        year = 1
-        for key, value in AFFILIATION:
-            tmp_year = ACCOMMODATION_YEARS[key]
-            owner_affiliation = self.owner.owner.affiliation.upper()
-            if (key.upper() in owner_affiliation and year < tmp_year):
-                year = tmp_year
-        return year
-
-    def set_default_date_deletion(self):
-        today = timezone.now()
-        accommodation_year = self.get_accommodation_year()
-        start = OBSOLESCENCE_START_DATE
-        #  Par defaut on se base par rapport à la date d'ajout
-        #  de la vidéo + le nombre d'année d'hebergement de la vidéo
-        #  selon l'affiliation de l'utilisateur
-        default_date = self.date_added.replace(
-                year=self.date_added.year+accommodation_year)
-        if (start and start <= today and not (self.date_added >= start)):
-            if not self.id:
-                #  Pour toutes les nouvelles vidéos ajoutées après
-                #  la mise en place de l'obsolescence
-                #  On retourne la date actuelle + le nombre d'année
-                #  d'hebergement autorisé selon affiliation
-                default_date = today.replace(
-                        year=today.year+accommodation_year)
-            else:
-                #  Pour toutes les anciennes vidéos
-                #  On retourne la date de mise en place de
-                #  l'obsolescence + le nombre d'année
-                #  d'hébergement autorisé selon affiliation
-                default_date = start.replace(
-                        year=start.year+accommodation_year)
-        if USE_OBSOLESCENCE and not self.date_delete:
-            self.date_delete = default_date
 
     @property
     def establishment(self):
@@ -1301,7 +1301,7 @@ class NoteComments(models.Model):
 
 class VideoToDelete(models.Model):
     date_deletion = models.DateField(
-        _('Date for deletion'), default=date.today)
+        _('Date for deletion'), default=date.today, unique=True)
     video = models.ManyToManyField(
         Video,
         verbose_name=_('Videos'),
@@ -1313,4 +1313,4 @@ class VideoToDelete(models.Model):
         verbose_name_plural = _("Videos to delete")
 
     def __str__(self):
-        return "%s-%s" % (self.date_deletion, self.video.count())
+        return "%s - nb videos : %s" % (self.date_deletion, self.video.count())
