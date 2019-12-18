@@ -65,6 +65,9 @@ USE_RGPD = getattr(
 ADDITIONAL_GRENOBLE_RGPD = getattr(
         django_settings, 'ADDITIONAL_GRENOBLE_RGPD', False)
 
+USE_STATS_VIEW = getattr(
+        django_settings, 'USE_STATS_VIEW', False)
+
 MANAGE_VIDEO_OWNER = getattr(
         django_settings, "MANAGE_VIDEO_OWNER", False)
 
@@ -83,6 +86,7 @@ def context_settings(request):
     new_settings['USE_RGPD'] = USE_RGPD
     new_settings['ADDITIONAL_GRENOBLE_RGPD'] = ADDITIONAL_GRENOBLE_RGPD
     new_settings['MANAGE_VIDEO_OWNER'] = MANAGE_VIDEO_OWNER
+    new_settings['USE_STATS_VIEW'] = USE_STATS_VIEW
     return new_settings
 
 

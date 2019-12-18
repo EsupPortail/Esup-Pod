@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirect, JsonResponse
-from pod.video.models import Video, Channel, ViewCount
+from pod.video.models import Video, Theme, Channel, ViewCount
 import json, html
 from pod.authentication.models import User
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
+from dateutil.parser import parse
 from django.db.models import Sum
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 
@@ -18,7 +19,9 @@ def index(request):
 #def mentions_legales(request):
 #    return render(request, "custom/layouts/mentions-legales.html", {})
 
-def total_view(v_id):
+def total_view(v_id, specific_date=None):
+    if specific_date:
+        TODAY = specific_date
     seven_days_ago = TODAY - timedelta(days=7)
     total_view = []
     # Ajout nb de vue total aujourd'hui
@@ -57,68 +60,77 @@ def total_view(v_id):
     # replace None by 0
     return [ nb if nb else 0 for nb in total_view  ]
 
-# request, data, column, ASC=True
-def ordering_data_by(data, col='title', ASC=True):
-    # ordering data
-    return sorted(data, key=lambda v: v[col], reverse=ASC)
-
-# Retourne une ou plusieurs videos
-# selon le type du slug donné (video ou channel)
-def get_videos(p_slug, target):
+# Retourne une ou plusieurs videos et le titre de
+# (theme ou video ou channel ou videos pour toutes)
+# selon le type du slug donné 
+# (video ou channel ou theme ou videos pour toutes)
+def get_videos(p_slug, target, p_slug_t=None):
     videos = []
-    print("------------ target -------------")
-    print(target)
+    title = " de la platforme Pod"
     if target.lower() == "video":
         videos.append(
                 Video.objects.filter(
-                    slug__istartwith=p_slug).first())
-    if target.lower() == "channel" and not videos:
-        channel = Channel.objects.filter(
-                slug__istartswith=slug).first()
+                    slug__istartswith=p_slug).first())
+        title = videos[0].title
+    if target.lower() == "chaine" and not videos:
+        channel= Channel.objects.filter(
+                slug__istartswith=p_slug).first()
+        title = channel.title
         if channel:
             # Recupere les vidéos associées à cette chaîne
-            videos = Video.objects.filter(channel=channel)
-    return videos
+            videos= Video.objects.filter(channel=channel)
+    if target.lower() == "theme" and not videos and p_slug_t:
+        theme = Theme.objects.filter(
+                slug__istartswith=p_slug_t, channel__slug__istartswith=p_slug
+                ).first()
+        title = theme.title
+        if theme:
+            videos= Video.objects.filter(theme=theme)
+    if not videos:
+        videos = [ v for v in Video.objects.filter(
+            encoding_in_progress=False, is_draft=False
+            ).distinct() ]                
+    return (videos, title )
 
-def order(request):
-    if request.is_ajax() and request.method == "POST":
-        (_data, _col, _dir) = (
-                request.POST.getlist('col', 'title'),
-                request.POST.getlist('asc', True),
-                request.POST.getlist('data', []))
-        print("**********************************")
-        print(_col, _dir, _data)
-        print("----------------------------------")
-        data = ordering_data_by(
-                request.getlist())
-        return JsonResponse({"data":data})
-
-def stats_view(request, slug):
+def stats_view(request, slug, slug_t=None):
     # Slug peut-etre une video ou une chaîne
     # Pour definir le on a une variable from en post
+    target = request.GET.get('from', "videos")
+    videos, title = get_videos(slug, target, slug_t)
     if request.method == "GET":
-        target = request.GET.getlist('from', None)
-        print("*************", target, "*****************")
-        videos = get_videos(slug, target)
+        
         if not videos:
             return HttpResponseForbidden(
                     "La chaine ou la video suivante n' existe pas : %s" % slug)
-        data = []
-        for v in videos:
-            v_data = {}
-            v_data['title'] = v.title
-            (v_data['day'],
-                    v_data['week'],
-                    v_data['month'],
-                    v_data['year'],
-                    v_data['since_created']) = total_view(v.id)
-            data.append(v_data)
-        data = ordering_data(data)
+        if slug_t:
+            target = " du " + target
+            slug = slug_t
+        else:
+            target = "" if target == "videos" else " de la " + target;
+
         return render(
                 request,
-                "custom/layouts/stat_view.html",
-                {"data" :data, "channel_slug": slug })
-
+                "videos/video_stats_view.html",
+                {
+                    "target": target,
+                    "title": title })
+    specific_date = request.POST.get("periode", TODAY)
+    if type(specific_date) == str:
+        specific_date = parse(specific_date)
+    data = []
+    for v in videos:
+        v_data = {}
+        v_data['title'] = v.title
+        v_data['slug'] = v.slug
+        (
+            v_data['day'],
+            v_data['week'],
+            v_data['month'],
+            v_data['year'],
+            v_data['since_created']) = total_view(v.id, specific_date)
+        data.append(v_data)
+        # data = ordering_data(data)
+    return JsonResponse(data, safe=False);
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
@@ -134,14 +146,8 @@ def update_owner(request):
                     json.dumps(response_json),
                     content_type="application/json")
         return HttpResponseForbidden(response_json['error'])
-    # if it's GET request
+    # if it's GET request redirect to the homepage
     return HttpResponseRedirect('/')
-    # data = get_video_essentiels_data()
-    # return render(
-    #        request,
-    #        "custom/layouts/change_video_owner/index.html",
-    #        {"data": data })
-
 
 def change_owner(videos, old_owner, new_owner_login):
     new_owner = User.objects.filter(username=new_owner_login).first()
@@ -154,7 +160,7 @@ def change_owner(videos, old_owner, new_owner_login):
         vs = Video.objects.filter(owner__username__startswith=old_owner);
     else:
         # expected :
-        # data = id-username
+        # data = id|-|video_title
         # videos = [ "id-username", "id-username", ...]
         for data in videos:
             id_owner,video_title = data.split("|-|")
@@ -201,37 +207,6 @@ def get_video_essentiels_data():
                     "thumbnail": v.get_thumbnail_url(),
                     "url": v.get_full_url()
                     })
-    print(html.unescape(json.dumps(es_data, ensure_ascii=False)))
-
-    ###
-    #for v in videos:
-    #    if v.owner.username in es_data:
-    #        es_data[v.owner.username].append(
-    #            {
-    #                "id": v.pk,
-    #                "full_name": "%s %s" % (
-    #                    v.owner.last_name,
-    #                    v.owner.first_name),
-    #                "title": v.title,
-    #                "thumbnail": v.get_thumbnail_url(),
-    #                "url": v.get_full_url()
-    #            }
-    #    
-    #        )
-    #    else:
-    #        es_data[v.owner.username] = []
-    #        es_data[v.owner.username].append(
-    #                {
-    #                    "id": v.pk,
-    #                    "full_name": "%s %s" % (
-    #                        v.owner.last_name,
-    #                        v.owner.first_name),
-    #                    "title": v.title,
-    #                    "thumbnail": v.get_thumbnail_url(),
-    #                    "url": v.get_full_url()
-    #                }
-    #                )
-    ###
     return html.unescape(json.dumps(es_data, ensure_ascii=False))
 
 

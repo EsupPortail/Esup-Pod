@@ -1,0 +1,14 @@
+.grid-container{
+	margin: 4em auto;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+.grid-container h1.title{
+	margin-bottom: 1em;
+}
+.ui-jqgrid tr.jqgrow td{
+	height: 30px;
+	white-space: normal;
+	padding: .5em;
+}

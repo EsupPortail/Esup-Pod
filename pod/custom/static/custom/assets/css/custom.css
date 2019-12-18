@@ -10,6 +10,7 @@ html,body{
   color: #3c3c3b;
   font-family: 'Open Sans', sans-serif !important;
 }
+.col.order-12.order-md-1{max-width: calc(100% - 350px);}
 .hide-custom{display: none !important}
 
 .fixebottom{
