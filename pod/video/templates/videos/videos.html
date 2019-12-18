@@ -24,7 +24,7 @@
   <h1>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
     <span class="float-right">
 	{% if USE_STATS_VIEW %}
-      <a href="{% url "video_stats_view" 'videos'  %}" title="{% trans 'View all stats view of all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-dark btn-sm"> {% trans "View stats view" %}</a>
+      <a href="{% url "video_stats_view" 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-dark btn-sm"> {% trans "Statistics views" %}</a>
       {% endif %}
       <a href="{% url "rss-video"%}?{{request.GET.urlencode}}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm">
         <i data-feather="rss"></i>&nbsp;Video</a>
