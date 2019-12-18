@@ -71,9 +71,6 @@ ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
 USE_STATS_VIEW = getattr(
         django_settings, 'USE_STATS_VIEW', False)
 
-MANAGE_VIDEO_OWNER = getattr(
-        django_settings, "MANAGE_VIDEO_OWNER", False)
-
 
 def context_settings(request):
     new_settings = {}
@@ -90,7 +87,6 @@ def context_settings(request):
     new_settings['ADDITIONAL_GRENOBLE_RGPD'] = ADDITIONAL_GRENOBLE_RGPD
     new_settings['ALLOW_MANUAL_RECORDING_CLAIMING'] = \
         ALLOW_MANUAL_RECORDING_CLAIMING
-    new_settings['MANAGE_VIDEO_OWNER'] = MANAGE_VIDEO_OWNER
     new_settings['USE_STATS_VIEW'] = USE_STATS_VIEW
     return new_settings
 
