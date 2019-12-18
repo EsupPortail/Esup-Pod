@@ -10,7 +10,7 @@ from pod.main.settings import BASE_DIR
 ##
 # Version of the project
 #
-VERSION = '2.2.2'
+VERSION = '2.4.1'
 
 ##
 # Installed applications list
@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'lti_provider',
-    'django_extensions',
     'select2',
     # Pod Applications
     'pod.main',

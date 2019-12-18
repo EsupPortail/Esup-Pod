@@ -26,6 +26,7 @@ USER_CAS_MAPPING_ATTRIBUTES = getattr(
         "mail": "mail",
         "last_name": "sn",
         "first_name": "givenname",
+        "primaryAffiliation": "eduPersonPrimaryAffiliation",
         "affiliation": "eduPersonAffiliation"
     })
 
@@ -198,6 +199,13 @@ def populate_user_from_tree(user, owner, tree):
         last_name_element.text if last_name_element is not None else ""
     )
     user.save()
+    # PrimaryAffiliation
+    primary_affiliation_element = tree.find(
+        './/{http://www.yale.edu/tp/cas}%s' % (
+            USER_CAS_MAPPING_ATTRIBUTES["primaryAffiliation"])
+    )
+    owner.affiliation = primary_affiliation_element.text if (
+        primary_affiliation_element is not None) else AFFILIATION[0][0]
     # affiliation
     affiliation_element = tree.findall(
         './/{http://www.yale.edu/tp/cas}%s' % (
@@ -211,5 +219,4 @@ def populate_user_from_tree(user, owner, tree):
                 name=affiliation.text)
             user.groups.add(group)
     user.save()
-    owner.affiliation = affiliation_element[0].text
     owner.save()

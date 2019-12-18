@@ -16,7 +16,7 @@ from pod.video.models import Video
 
 from pod.video.models import EncodingStep
 
-from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
+# from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from pod.main.tasks import task_start_encode
 
 # from fractions import Fraction # use for keyframe
@@ -106,6 +106,27 @@ EMAIL_ON_ENCODING_COMPLETION = getattr(
 
 FILE_UPLOAD_TEMP_DIR = getattr(
     settings, 'FILE_UPLOAD_TEMP_DIR', '/tmp')
+
+##
+# Settings exposed in templates
+#
+TEMPLATE_VISIBLE_SETTINGS = getattr(
+    settings,
+    'TEMPLATE_VISIBLE_SETTINGS',
+    {
+        'TITLE_SITE': 'Pod',
+        'TITLE_ETB': 'University name',
+        'LOGO_SITE': 'img/logoPod.svg',
+        'LOGO_ETB': 'img/logo_etb.svg',
+        'LOGO_PLAYER': 'img/logoPod.svg',
+        'LINK_PLAYER': '',
+        'FOOTER_TEXT': ('',),
+        'FAVICON': 'img/logoPod.svg',
+        'CSS_OVERRIDE': '',
+        'PRE_HEADER_TEMPLATE': '',
+        'POST_FOOTER_TEMPLATE': '',
+    }
+)
 
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
 
@@ -341,7 +362,9 @@ def encode_video(video_id):
         encode_mp3(video_id, video_data["contain_audio"],
                    video_to_encode.video.path, output_dir)
 
-        file_transcription(video_to_encode) if TRANSCRIPT else False
+        file_transcription(video_to_encode) if (
+            TRANSCRIPT and video_to_encode.transcript
+        ) else False
 
         change_encoding_step(video_id, 0, "done")
 
@@ -1210,10 +1233,11 @@ def send_email_encoding(video_to_encode):
 
 
 def file_transcription(video_to_encode):
-    msg = change_encoding_step(
+    # TODO launch another thread...
+    change_encoding_step(
         video_to_encode.id, 5,
         "transcripting audio")
-    main_transcript(video_to_encode)
+    msg = main_transcript(video_to_encode)
     add_encoding_log(
         video_to_encode.id,
         "create_and_save_subtitles : %s" % msg)

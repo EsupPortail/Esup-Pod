@@ -36,7 +36,8 @@ def video_caption_maker(request, slug):
     user_home_folder = get_object_or_404(
         UserFolder, name="home", owner=request.user)
     action = None
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser and (
+            request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
@@ -85,7 +86,8 @@ def video_caption_maker_save(request, video):
 @login_required(redirect_field_name='referrer')
 def video_completion(request, slug):
     video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser and (
+            request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
@@ -118,7 +120,8 @@ def video_completion(request, slug):
 @login_required(redirect_field_name='referrer')
 def video_completion_contributor(request, slug):
     video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser and (
+            request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
@@ -297,7 +300,8 @@ def video_completion_contributor_delete(request, video):
 @staff_member_required(redirect_field_name='referrer')
 def video_completion_document(request, slug):
     video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser and (
+            request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
@@ -473,7 +477,8 @@ def video_completion_document_delete(request, video):
 @staff_member_required(redirect_field_name='referrer')
 def video_completion_track(request, slug):
     video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser and (
+            request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
@@ -676,18 +681,13 @@ def transform_url_to_link(text):
     return text.strip()
 
 
-def get_simple_url(text_with_html_link):
+def get_simple_url(overlay):
     pattern = re.compile(
             r"(<a\shref=['\"][^\s]+['\"]\starget=['\"][^\s]+['\"]>"
             r"([^\s]+)</a>)")
-    links = pattern.findall(text_with_html_link)
+    links = pattern.findall(overlay.content)
     for k, v in links:
-        text_with_html_link = re.sub(k, v, text_with_html_link)
-    return text_with_html_link
-
-
-def html_link_to_url_text(overlay):
-    overlay.content = get_simple_url(overlay.content)
+        overlay.content = re.sub(k, v, overlay.content)
     return overlay
 
 
@@ -695,7 +695,8 @@ def html_link_to_url_text(overlay):
 @staff_member_required(redirect_field_name='referrer')
 def video_completion_overlay(request, slug):
     video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser and (
+            request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
@@ -819,18 +820,15 @@ def video_completion_overlay_modify(request, video):
     overlay = get_object_or_404(Overlay, id=request.POST['id'])
 
     if LINK_SUPERPOSITION:
-        overlay = html_link_to_url_text(overlay)
+        overlay = get_simple_url(overlay)
 
     form_overlay = OverlayForm(instance=overlay)
     if request.is_ajax():
-        print("********* AJAX ************")
         return render(
             request,
             'overlay/form_overlay.html',
             {'form_overlay': form_overlay,
              'video': video})
-    print(list_overlay)
-    print("-------------------------------------")
     return render(
         request,
         'video_completion.html',

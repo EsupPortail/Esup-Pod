@@ -5,11 +5,11 @@
 {% block page_extra_head %}
 {% include 'videos/video-header.html' with enrichment=True %}
 <link rel="stylesheet" href="{% static 'css/videojs-slides.css' %}"/>
-<script src="{% static 'js/videojs-slides.js' %}"></script> 
+<script src="{% static 'js/videojs-slides.js' %}"></script>
 {% endblock page_extra_head %}
 
 
-{% block breadcrumbs %}{{ block.super }} 
+{% block breadcrumbs %}{{ block.super }}
 {% endblock %}
 
 {% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
@@ -27,10 +27,10 @@
         To view this video please enable JavaScript, and consider upgrading to a web browser that
         <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
       </p>
-      <track kind="metadata" src="{{video.enrichmentvtt.src.file.url}}">
+      <track kind="metadata" src="{{video.enrichmentvtt.src.file.url}}?{% now "U" %}" label="enrichment">
 
     {% for track in video.track_set.all%}
-      <track id= "track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.url }}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}">
+      <track id= "track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.url }}?{% now "U" %}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}">
     {%endfor%}
     </video>
 
@@ -38,7 +38,7 @@
     {% csrf_token %}
     </form>
 
-    <nav id="navbar-video" class="navbar navbar-light bg-light">
+    <!--<nav id="navbar-video" class="navbar navbar-light bg-light">
         <div class="navbar-brand" >
             <div style="display:inline-block; white-space: normal;">({% trans 'Enriched' %}) {{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}</div>
         </div>
@@ -70,7 +70,74 @@
         </div>
         </fieldset>
     </div>
-    </nav>
+    </nav>-->
+    <h1 class="pt-2">
+{% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png"></a>{% endif %} {{video.title|title}}
+{% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
+  <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
+      <i data-feather="alert-octagon"></i>
+  </a>
+</h1>
+
+<div class="pl-0 pr-0">
+  <div class="navbar d-flex flex-row-reverse p-0" >
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active show" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-selected="true" title="{% trans 'Summary' %}">
+        <i data-feather="align-justify"></i>&nbsp;<span class="sr-only">{% trans 'Summary' %}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false" title="{% trans 'Infos' %}">
+        <i data-feather="info"></i>&nbsp;<span class="sr-only">{% trans 'Infos' %}</span>
+      </a>
+    </li>
+    {% if video.allow_downloading or video.document_set.all %}
+    <li class="nav-item">
+      <a class="nav-link" id="downloads-tab" data-toggle="tab" href="#downloads" role="tab" aria-controls="downloads" aria-selected="false" title="{% trans 'Downloads' %}">
+        <i data-feather="download"></i>&nbsp;<span class="sr-only">{% trans 'Downloads' %}</span>
+      </a>
+    </li>
+    {% endif %}
+    <li class="nav-item">
+      <a class="nav-link" id="share-tab" data-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false" title="{% trans 'Embed/Share' %}">
+        <i data-feather="share-2"></i><span class="sr-only">{% trans 'Embed/Share' %}</span>
+      </a>
+    </li>
+
+    <li class="nav-item dropdown" id="list_third_apps">
+      <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
+        <i data-feather="layers"></i>&nbsp;<span class="sr-only">{% trans 'Other versions' %}</span>
+      </a>
+      <div class="dropdown-menu" >
+        <a href="{% url 'video' slug=video.slug %}?redirect=false" title="no enrichment" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
+      </div>
+    </li>
+    {% if request.user.playlist_set.all and video.is_draft == False %}
+    <li class="nav-item dropdown dropright">
+      <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans "Add the video to a playlist"%}">
+        <i data-feather="play-circle"></i>&nbsp;<span class="sr-only">{% trans 'My playlists' %}</span>
+      </a>
+      <div class="dropdown-menu">
+      {% csrf_token %}
+      <ul class="list-group">
+      {% for playlist in request.user.playlist_set.all %}
+        {% if video in playlist.videos %}
+          <li class="dropdown-item disabled py-0" data-slug="{{playlist.slug}}">{{playlist.title}}
+            <i data-feather="check"></i>
+          </li>
+        {% else %}
+          <li class="dropdown-item playlist-item py-0" data-slug="{{playlist.slug}}">{{playlist.title}}</li>
+        {% endif %}
+      {% endfor %}
+      </ul>
+      </div>
+    </li>
+    {% endif %}
+  </ul>
+</div>
+  {% include 'videos/video-info.html'  with enrichment=True %}
+</div>
 {%endif%}
 
 {% endblock video-element %}
@@ -94,43 +161,65 @@
             <p>{% trans 'They are visible on the video playback bar.' %}</p>
         </div>
     </div>
-    {{ block.super }} 
+    {{ block.super }}
 {% endblock page_aside %}
 
 {% block more_script %}
+
 {{block.super}}
+
 {% if video.enrichment_set.all %}
 <script>
+{% if not video.is_video %}
+slide_mode = 'video off';
+{% endif %}
 player.ready(function() {
     var tracks = player.textTracks();
-    var metadataTrack;
-    for (let i = 0; i < tracks.length; i++) {
+    var metadataTrack, i;
+    for (i = 0; i < tracks.length; i++) {
         var track = tracks[i];
-        if (track.kind === 'metadata' && track.label === '') {
+        if (track.kind === 'metadata' && track.label === 'enrichment') {
             metadataTrack = track;
+            metadataTrack.index = i;
+            break;
         }
     }
+
     player.on('loadedmetadata', function() {
         var slide = [];
-        for (let i = 0; i < metadataTrack.cues.length; i++) {
-            data = JSON.parse(metadataTrack.cues[i].text);
-            slide.push({
-                title: data.title,
-                url: data.url,
-                type: data.type,
-                stop_video: data.stop_video,
-                start: metadataTrack.cues[i].startTime,
-                end: metadataTrack.cues[i].endTime
+        if(!metadataTrack.cues) { //Safari do not get cues
+            let tracksrc = player.el().getElementsByTagName('TRACK')[metadataTrack.index].src;
+            loadEnrichmentVTTfile(tracksrc, function(cues) {
+                if (typeof player.slides === "function") {
+                    player.slides(cues);
+                }
             });
+        } else {
+            //console.log(metadataTrack.cues.length);
+            for (i = 0; i < metadataTrack.cues.length; i++) {
+                data = JSON.parse(metadataTrack.cues[i].text);
+                //console.log('Parsed '+data.title)
+                slide.push({
+                    title: data.title,
+                    url: data.url,
+                    type: data.type,
+                    stop_video: data.stop_video,
+                    start: metadataTrack.cues[i].startTime,
+                    end: metadataTrack.cues[i].endTime
+                });
+            }
         }
-        if (typeof player.slides === "function") { 
-        player.slides(slide);
+        if (typeof player.slides === "function") {
+            //console.log('Call player.slides');
+            player.slides(slide);
         }
+
     });
+
     $('.vjs-big-play-button').css('z-index', 2)
     $('.vjs-control-bar').css('z-index', 3);
 });
 </script>
 {% endif %}
-{% endblock more_script %}
 
+{% endblock more_script %}

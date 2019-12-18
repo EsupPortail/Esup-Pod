@@ -26,14 +26,14 @@ from pod.video.views import my_channels
 from pod.video.views import channel_edit
 from pod.video.views import theme_edit
 from pod.video.views import video_notes
-from pod.video.views import video_count
+from pod.video.views import video_count, video_version
 from pod.video.views import video_oembed
 from pod.video.views import stats_view
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 from pod.main.views import contact_us, download_file
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
-from pod.recorder.views import add_recording
+from pod.recorder.views import add_recording, recorder_notify, claim_record
 from pod.lti.views import LTIAssignmentView
 
 
@@ -79,6 +79,9 @@ urlpatterns = [
         video_notes, name='video_notes'),
     url(r'^video_count/(?P<id>[\d]+)/$',
         video_count, name='video_count'),
+    url(r'^video_version/(?P<id>[\d]+)/$',
+        video_version, name='video_version'),
+
     # my channels
     url(r'^my_channels/$', my_channels, name='my_channels'),
     url(r'^channel_edit/(?P<slug>[\-\d\w]+)/$',
@@ -88,6 +91,8 @@ urlpatterns = [
     url(r'^my_videos/$', my_videos, name='my_videos'),
     # recording
     url(r'^add_recording/$', add_recording, name='add_recording'),
+    url(r'^recorder_notify/$', recorder_notify, name='recorder_notify'),
+    url(r'^claim_record/$', claim_record, name='claim_record'),
 
     url(r'^search/$', search_videos, name='search_videos'),
 

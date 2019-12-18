@@ -65,6 +65,9 @@ USE_RGPD = getattr(
 ADDITIONAL_GRENOBLE_RGPD = getattr(
         django_settings, 'ADDITIONAL_GRENOBLE_RGPD', False)
 
+ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
+        django_settings, 'ALLOW_MANUAL_RECORDING_CLAIMING', False)
+
 USE_STATS_VIEW = getattr(
         django_settings, 'USE_STATS_VIEW', False)
 
@@ -85,6 +88,8 @@ def context_settings(request):
     new_settings['OEMBED'] = OEMBED
     new_settings['USE_RGPD'] = USE_RGPD
     new_settings['ADDITIONAL_GRENOBLE_RGPD'] = ADDITIONAL_GRENOBLE_RGPD
+    new_settings['ALLOW_MANUAL_RECORDING_CLAIMING'] = \
+        ALLOW_MANUAL_RECORDING_CLAIMING
     new_settings['MANAGE_VIDEO_OWNER'] = MANAGE_VIDEO_OWNER
     new_settings['USE_STATS_VIEW'] = USE_STATS_VIEW
     return new_settings
