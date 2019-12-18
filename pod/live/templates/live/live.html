@@ -78,8 +78,11 @@
 {% block more_script %}
 <script>
 	// Debug if necessary, depends on the settings_local
-	var debug = '{{ debug }}';
-	if (debug == "True") { debug = true; } else { debug = false;}
+	{% if debug %}
+		var debug = true;
+	{% else %}
+		var debug = false;
+	{% endif %}
 	// Live started
 	var started = false;
 	// Number of loop until we are sure the live is stopped
