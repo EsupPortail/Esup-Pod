@@ -1337,14 +1337,20 @@ def get_videos(p_slug, target, p_slug_t=None):
                 slug__istartswith=p_slug).first()
         title = channel.title
         if channel:
-            videos = Video.objects.filter(channel=channel)
+            videos = Video.objects.filter(
+                    encoding_in_progress=False,
+                    is_draft=False,
+                    channel=channel)
     if target.lower() == "theme" and not videos and p_slug_t:
         theme = Theme.objects.filter(
                 slug__istartswith=p_slug_t, channel__slug__istartswith=p_slug
                 ).first()
         title = theme.title
         if theme:
-            videos = Video.objects.filter(theme=theme)
+            videos = Video.objects.filter(
+                    encoding_in_progress=False,
+                    is_draft=False,
+                    theme=theme)
     if not videos:
         videos = [v for v in Video.objects.filter(
             encoding_in_progress=False, is_draft=False

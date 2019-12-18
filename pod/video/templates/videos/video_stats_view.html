@@ -51,11 +51,16 @@
 		autoencode: true,
 	    	pager: '#pager',
 		sortorder: 'asc',
-		loadComplete: function(data){
+		beforeProcessing: function(data){
 			// Set min date
 			let min_date = data.filter(obj => {
 				return obj.min_date != undefined;
 			})
+			// remove date_min in data
+			//data.pop();
+			data = data.filter(obj =>{
+				return Object.keys(obj).length > 1;
+			});
 			document.querySelector("#jsperiode").min = min_date[0].min_date;
 		},
 		postData: {
