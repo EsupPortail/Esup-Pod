@@ -1601,13 +1601,21 @@ msgstr "URL"
 msgid "Url of the stream"
 msgstr "Adresse du flux"
 
-#: pod/live/models.py:63
+#: pod/live/models.py:64
+msgid "This video will be displayed when there is no live stream."
+msgstr "Cette vidéo sera affichée lorsqu'il n'y a pas de diffusion en direct."
+
+#: pod/live/models.py:69
 msgid "Check if the broadcaster is currently sending stream."
 msgstr "Cocher la case si le diffuseur envoie un flux."
 
-#: pod/live/models.py:65 pod/video/forms.py:175 pod/video/models.py:540
+#: pod/live/models.py:71 pod/video/forms.py:175 pod/video/models.py:540
 msgid "Restricted access"
 msgstr "Accès restreint"
+
+#: pod/live/models.py:67
+msgid "Video on hold"
+msgstr "Vidéo d'attente"
 
 #: pod/live/models.py:67
 msgid "Live is accessible only to authenticated users."
@@ -1641,7 +1649,22 @@ msgstr "Désolé, aucun direct trouvé"
 msgid "access map"
 msgstr "plan d'accès"
 
-#: pod/live/templates/live/live.html:81
+#: pod/live/templates/live/live.html:113
+msgid ""
+"Thank you for watching this streaming live with us. The page will reload "
+"automatically within a few seconds to display the video on hold."
+msgstr ""
+"Merci d’avoir regardé ce streaming en direct avec nous. "
+"La page se rechargera automatiquement dans quelques secondes pour afficher "
+"la vidéo d’attente."
+
+#: pod/live/templates/live/live.html:128
+msgid "Live not found, displaying the video on hold, retry every 10 seconds"
+msgstr ""
+"Le direct n’a pas encore commencé, affichage de la vidéo d’attente, "
+"nouvelle tentative de lecture toutes les 10 secondes"
+
+#: pod/live/templates/live/live.html:139
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
 "Le direct n’a pas encore commencé, nouvelle tentative de lecture dans 10 "
