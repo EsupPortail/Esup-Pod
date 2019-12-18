@@ -1326,16 +1326,16 @@ def get_all_views_count(v_id, specific_date=None):
 # (video ou channel ou theme ou videos pour toutes les videos)
 def get_videos(p_slug, target, p_slug_t=None):
     videos = []
-    title = _(" of Pod platform")
+    title = _("Pod video view statistics")
     if target.lower() == "video":
         videos.append(
                 Video.objects.filter(
                     slug__istartswith=p_slug).first())
-        title = videos[0].title
+        title = "'"+videos[0].title.capitalize()+"' video viewing statistics"
     if target.lower() == "chaine" and not videos:
         channel = Channel.objects.filter(
                 slug__istartswith=p_slug).first()
-        title = channel.title
+        title = "Video viewing statistics of '"+channel.title+"' channel"
         if channel:
             videos = Video.objects.filter(
                     encoding_in_progress=False,
@@ -1345,7 +1345,7 @@ def get_videos(p_slug, target, p_slug_t=None):
         theme = Theme.objects.filter(
                 slug__istartswith=p_slug_t, channel__slug__istartswith=p_slug
                 ).first()
-        title = theme.title
+        title = "Video viewing statics of '"+theme.title+"' theme"
         if theme:
             videos = Video.objects.filter(
                     encoding_in_progress=False,
@@ -1371,9 +1371,7 @@ def stats_view(request, slug, slug_t=None):
         return render(
                 request,
                 "videos/video_stats_view.html",
-                {
-                    "target": target,
-                    "title": title})
+                {"title": title})
     specific_date = request.POST.get("periode", TODAY)
     min_date = Video.objects.filter(
             encoding_in_progress=False, is_draft=False

@@ -26,11 +26,11 @@
 		    datatype: "json",
 		    mtype: "POST",
         	    colNames: [
-                	"Titre",
-	                "Vue dans la journée",
-        	        "Vue dans le mois",
-                	"Vue dans l'année",
-	                "Vue total depuis création",
+                	gettext("Title"),
+	                gettext("View during the day"),
+        	        gettext("View during the month"),
+                	gettext("View during the year"),
+	                gettext("Total view from creation"),
         	    ],
 		    colModel: [
 		    	{ 
@@ -57,10 +57,7 @@
 				return obj.min_date != undefined;
 			})
 			// remove date_min in data
-			//data.pop();
-			data = data.filter(obj =>{
-				return Object.keys(obj).length > 1;
-			});
+			data.pop();
 			document.querySelector("#jsperiode").min = min_date[0].min_date;
 		},
 		postData: {
@@ -89,7 +86,7 @@
 {% endblock page_extra_head %}
 {% block content %}
 <div class="grid-container">
-	<h1 class="title">{% trans "Statistique des vues"%}{{ target }} {{ title }}</h1>
+	<h1 class="title">{{ title }}</h1>
 	<div><label for="jsperiode">{% trans "Change the date" %}</label><input type="date" name="periode" id="jsperiode"></div>
 	<table id="grid"></table>
 	<div id="pager"></div>
