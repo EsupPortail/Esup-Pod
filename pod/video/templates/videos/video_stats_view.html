@@ -11,14 +11,16 @@
 	<link type="text/css" rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}">
 	<link type="text/css" rel="stylesheet" href="{% static 'css/ui.jqgrid.min.css' %}"> 
 	<script type="text/javascript" src="{% static "js/jquery.jqgrid.min.js" %}" charset="utf-8"></script>
-    	<!-- https://free-jqgrid.github.io/getting-started/index.html -->
 	<script type="text/javascript" src="{% static "js/video_stats_view.js" %}" charset="utf-8"></script>
 	<link rel="stylesheet" href="{% static 'css/video_stats_view.css' %}">
 {% endblock page_extra_head %}
 {% block content %}
 <div class="grid-container">
 	<h1 class="title">{{ title }}</h1>
-	<div><label for="jsperiode">{% trans "Change the date" %}</label><input type="date" name="periode" id="jsperiode"></div>
+	<div>
+		<label for="jsperiode">{% trans "Change the date" %}</label>
+		<input type="date" name="periode" id="jsperiode">
+	</div>
 	<table id="grid"></table>
 	<div id="pager"></div>
 </div>
