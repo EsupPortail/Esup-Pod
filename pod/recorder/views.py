@@ -10,11 +10,12 @@ from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.admin.views.decorators import user_passes_test
 from django.views.decorators.csrf import csrf_protect
 from django.utils.translation import ugettext_lazy as _
 
 from pod.recorder.models import Recorder, RecordingFileTreatment
-from .forms import RecordingForm
+from .forms import RecordingForm, RecordingFileTreatmentDeleteForm
 from django.contrib import messages
 import hashlib
 from django.http import HttpResponse
@@ -23,7 +24,7 @@ from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 import urllib.parse
-
+from django.shortcuts import get_object_or_404
 
 DEFAULT_RECORDER_PATH = getattr(
     settings, 'DEFAULT_RECORDER_PATH',
@@ -46,6 +47,20 @@ def check_recorder(recorder, request):
             request, messages.ERROR, _('Recorder not found.'))
         raise PermissionDenied
     return recorder
+
+
+def case_delete(form, request):
+    file = form.cleaned_data["source_file"]
+    try:
+        if os.path.exists(file):
+            os.remove(file)
+        rec = RecordingFileTreatment.objects.get(file=file)
+        rec.delete()
+    except ObjectDoesNotExist:
+        pass
+    message = _(
+        'The selected record has been deleted.')
+    messages.add_message(request, messages.INFO, message)
 
 
 @csrf_protect
@@ -80,18 +95,15 @@ def add_recording(request):
         # A form bound to the POST data
         form = RecordingForm(request, request.POST)
         if form.is_valid():  # All validation rules pass
+
+            if form.cleaned_data["delete"] is True:
+                case_delete(form, request)
+                return redirect("/")
             med = form.save(commit=False)
             if request.POST.get('user') and request.POST.get('user') != "":
                 med.user = form.cleaned_data['user']
             else:
                 med.user = request.user
-            """
-            if (request.POST.get('mediapath')
-                    and request.POST.get('mediapath') != ""):
-                med.source_file = form.cleaned_data['mediapath']
-            else:
-                med.source_file = mediapath
-            """
             med.save()
             message = _(
                 'Your publication is saved.'
@@ -223,3 +235,34 @@ def claim_record(request):
     return render(request, 'recorder/claim_record.html', {
         'records': records, "full_path": full_path
     })
+
+
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+@user_passes_test(lambda u: u.is_superuser, redirect_field_name='referrer')
+def delete_record(request, id=None):
+
+    record = get_object_or_404(RecordingFileTreatment, id=id)
+
+    form = RecordingFileTreatmentDeleteForm()
+
+    if request.method == "POST":
+        form = RecordingFileTreatmentDeleteForm(request.POST)
+        if form.is_valid():
+            if os.path.exists(record.file):
+                os.remove(record.file)
+            record.delete()
+            messages.add_message(
+                request, messages.INFO, _('The record has been deleted.'))
+            return redirect(
+                reverse('claim_record')
+            )
+        else:
+            messages.add_message(
+                request, messages.ERROR,
+                _(u'One or more errors have been found in the form.'))
+
+    return render(request, 'recorder/record_delete.html', {
+        'record': record,
+        'form': form}
+    )

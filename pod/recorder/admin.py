@@ -1,6 +1,8 @@
+import os
+
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-
+from django.utils.translation import ugettext_lazy as _
 from .models import Recording, Recorder, RecordingFile
 from .models import RecordingFileTreatment
 
@@ -15,6 +17,15 @@ class RecordingAdmin(admin.ModelAdmin):
 
 class RecordingFileTreatmentAdmin(admin.ModelAdmin):
     list_display = ('id', 'file')
+    actions = ['delete_source']
+
+    def delete_source(self, request, queryset):
+        for item in queryset:
+            if os.path.exists(item.file):
+                os.remove(item.file)
+            item.delete()
+    delete_source.short_description = _('Delete selected Recording file '
+                                        'treatments + source files')
 
 
 class RecorderAdmin(admin.ModelAdmin):
