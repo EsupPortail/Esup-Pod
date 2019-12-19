@@ -10,11 +10,12 @@ from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.admin.views.decorators import user_passes_test
 from django.views.decorators.csrf import csrf_protect
 from django.utils.translation import ugettext_lazy as _
 
 from pod.recorder.models import Recorder, RecordingFileTreatment
-from .forms import RecordingForm
+from .forms import RecordingForm, RecordingFileTreatmentDeleteForm
 from django.contrib import messages
 import hashlib
 from django.http import HttpResponse
@@ -23,7 +24,7 @@ from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 import urllib.parse
-
+from django.shortcuts import get_object_or_404
 
 DEFAULT_RECORDER_PATH = getattr(
     settings, 'DEFAULT_RECORDER_PATH',
@@ -223,3 +224,34 @@ def claim_record(request):
     return render(request, 'recorder/claim_record.html', {
         'records': records, "full_path": full_path
     })
+
+
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+@user_passes_test(lambda u: u.is_superuser, redirect_field_name='referrer')
+def delete_record(request, id=None):
+
+    record = get_object_or_404(RecordingFileTreatment, id=id)
+
+    form = RecordingFileTreatmentDeleteForm()
+
+    if request.method == "POST":
+        form = RecordingFileTreatmentDeleteForm(request.POST)
+        if form.is_valid():
+            if os.path.exists(record.file):
+                os.remove(record.file)
+            record.delete()
+            messages.add_message(
+                request, messages.INFO, _('The record has been deleted.'))
+            return redirect(
+                reverse('claim_record')
+            )
+        else:
+            messages.add_message(
+                request, messages.ERROR,
+                _(u'One or more errors have been found in the form.'))
+
+    return render(request, 'recorder/record_delete.html', {
+        'record': record,
+        'form': form}
+    )
