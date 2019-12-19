@@ -116,7 +116,7 @@ class recorderViewsTestCase(TestCase):
         response = self.client.get("/delete_record/2/")
         self.assertEqual(response.status_code, 404)
 
-        response = self.client.get("/delete_record/1/" )
+        response = self.client.get("/delete_record/1/")
         self.assertEqual(response.status_code, 200)
 
         self.assertTemplateUsed(response, 'recorder/record_delete.html')
