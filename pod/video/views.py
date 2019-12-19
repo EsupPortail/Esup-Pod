@@ -309,6 +309,7 @@ def get_videos_list(request):
     return videos_list.distinct()
 
 
+@login_required(redirect_field_name='referrer')
 def videos(request):
     videos_list = get_videos_list(request)
 
@@ -1331,11 +1332,13 @@ def get_videos(p_slug, target, p_slug_t=None):
         videos.append(
                 Video.objects.filter(
                     slug__istartswith=p_slug).first())
-        title = "'"+videos[0].title.capitalize()+"' video viewing statistics"
+        title = _("Video viewing statistics for '%s'") % \
+            videos[0].title.capitalize()
     if target.lower() == "chaine" and not videos:
         channel = Channel.objects.filter(
                 slug__istartswith=p_slug).first()
-        title = "Video viewing statistics of '"+channel.title+"' channel"
+        title = _("Video viewing statistics for the channel '%s'") % \
+            channel.title
         if channel:
             videos = Video.objects.filter(
                     encoding_in_progress=False,
@@ -1345,7 +1348,7 @@ def get_videos(p_slug, target, p_slug_t=None):
         theme = Theme.objects.filter(
                 slug__istartswith=p_slug_t, channel__slug__istartswith=p_slug
                 ).first()
-        title = "Video viewing statics of '"+theme.title+"' theme"
+        title = _("Video viewing statistics for the theme '%s'") % theme.title
         if theme:
             videos = Video.objects.filter(
                     encoding_in_progress=False,
@@ -1366,8 +1369,8 @@ def stats_view(request, slug, slug_t=None):
     if request.method == "GET":
         if not videos:
             return HttpResponseNotFound(
-                    "La chaine ou la vidéo suivante n'existe pas : %s" % slug)
-        target = _(" of " + target)
+                    _("The following channel or video does not exist : %s")
+                    % slug)
         return render(
                 request,
                 "videos/video_stats_view.html",
