@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-19 09:01+0000\n"
+"POT-Creation-Date: 2019-12-19 10:12+0000\n"
 "PO-Revision-Date: 2019-12-09 12:51+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -150,7 +150,7 @@ msgstr "Mot de passe ou identifiant perdu ?"
 #: pod/playlist/views.py:140
 #: pod/recorder/templates/recorder/add_recording.html:36
 #: pod/recorder/templates/recorder/record_delete.html:32
-#: pod/recorder/views.py:103 pod/recorder/views.py:252
+#: pod/recorder/views.py:114 pod/recorder/views.py:263
 #: pod/video/templates/channel/channel_edit.html:48
 #: pod/video/templates/videos/video-form.html:10
 #: pod/video/templates/videos/video_delete.html:33
@@ -2912,21 +2912,29 @@ msgid "You cannot edit this file."
 msgstr "Vous ne pouvez pas éditer ce fichier."
 
 #: pod/recorder/admin.py:27
-#| msgid "Recording file treatments"
 msgid "Delete selected Recording file treatments + source files"
-msgstr "Supprimer les Traitements de fichier d'enregistrement sélectionnés +"
-" le fichier source"
+msgstr ""
+"Supprimer les Traitements de fichier d'enregistrement sélectionnés + le "
+"fichier source"
 
 #: pod/recorder/forms.py:42
 msgid "source_file"
 msgstr "fichier source"
 
-#: pod/recorder/forms.py:59 pod/video/forms.py:644
+#: pod/recorder/forms.py:58
+#| msgid "Delete this record."
+msgid "Delete the record"
+msgstr "Supprimer cet enregistrement."
+
+#: pod/recorder/forms.py:59
+msgid "If checked, record will be deleted instead of saving it"
+msgstr "Si coché, l'enregistrement sera supprimé et non ajouté"
+
+#: pod/recorder/forms.py:65 pod/video/forms.py:644
 msgid "I agree"
 msgstr "J'accepte"
 
-#: pod/recorder/forms.py:60
-#| msgid "Delete video cannot be undo"
+#: pod/recorder/forms.py:66
 msgid "Delete this record cannot be undo"
 msgstr "La suppression d'un enregistrement est définitive"
 
@@ -3097,7 +3105,6 @@ msgid "There is no unassigned records"
 msgstr "Il n'y a pas d'enregistrements non assigné"
 
 #: pod/recorder/templates/recorder/link_record.html:4
-#| msgid "Delete the video."
 msgid "Delete this record."
 msgstr "Supprimer cet enregistrement."
 
@@ -3108,20 +3115,18 @@ msgstr "Revendiquer l'enregistrement"
 
 #: pod/recorder/templates/recorder/record_delete.html:13
 #: pod/recorder/templates/recorder/record_delete.html:18
-#| msgid "Deleting the video"
 msgid "Deleting the record"
 msgstr "Supprimer l'enregistrement"
 
 #: pod/recorder/templates/recorder/record_delete.html:21
 #: pod/recorder/templates/recorder/record_delete.html:61
-#| msgid "Back to original"
 msgid "Back to record claiming"
 msgstr "Retour à la revendication d'enregistrements"
 
 #: pod/recorder/templates/recorder/record_delete.html:25
-#| msgid "To delete the video, please checked in and click send."
 msgid "To delete the record, please checked in and click send."
-msgstr "Pour supprimer l'enregistrement, veuillez cocher et cliquer sur envoyer."
+msgstr ""
+"Pour supprimer l'enregistrement, veuillez cocher et cliquer sur envoyer."
 
 #: pod/recorder/templates/recorder/record_delete.html:30
 #: pod/video/templates/videos/video_delete.html:31
@@ -3140,18 +3145,23 @@ msgstr "L'enregistreur doit être indiqué."
 msgid "Recorder not found."
 msgstr "Enregistreur non trouvé."
 
-#: pod/recorder/views.py:71
+#: pod/recorder/views.py:62
+#| msgid "The record has been deleted."
+msgid "The selected record has been deleted."
+msgstr "L'enregistrement a été supprimé."
+
+#: pod/recorder/views.py:85
 msgid "Mediapath should be indicated."
 msgstr "La source du fichier doit être indiquée."
 
-#: pod/recorder/views.py:98
+#: pod/recorder/views.py:109
 msgid ""
 "Your publication is saved. Adding it to your videos will be in a few minutes."
 msgstr ""
 "Votre publication est sauvegardée, elle sera ajoutée à vos vidéos dans "
 "quelques minutes."
 
-#: pod/recorder/views.py:154
+#: pod/recorder/views.py:165
 #, python-format
 msgid ""
 "Hello, \n"
@@ -3176,7 +3186,7 @@ msgstr ""
 "\n"
 "Cordialement"
 
-#: pod/recorder/views.py:165
+#: pod/recorder/views.py:176
 #, python-format
 msgid ""
 "Hello, <p>a new recording has just be added on %(title_site)s from the "
@@ -3190,12 +3200,11 @@ msgstr ""
 "%(link_url)s</a><br/><i>Si le lien n'est pas actif, il faut le copier-coller "
 "dans la barre d'adresse de votre navigateur.</i><p><p>Cordialement</p>"
 
-#: pod/recorder/views.py:181
+#: pod/recorder/views.py:192
 msgid "New recording added."
 msgstr "Nouvel enregistrement ajouté."
 
-#: pod/recorder/views.py:245
-#| msgid "The video has been deleted."
+#: pod/recorder/views.py:256
 msgid "The record has been deleted."
 msgstr "L'enregistrement a été supprimé."
 

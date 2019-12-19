@@ -53,6 +53,12 @@ class RecordingForm(forms.ModelForm):
         model = Recording
         exclude = ('comment', 'date_added')
 
+    delete = forms.BooleanField(
+        required=False,
+        label=_('Delete the record'),
+        help_text=_('If checked, record will be deleted instead of saving it'),
+        widget=forms.CheckboxInput())
+
 
 class RecordingFileTreatmentDeleteForm(forms.Form):
     agree = forms.BooleanField(

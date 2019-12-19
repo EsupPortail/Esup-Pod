@@ -49,6 +49,20 @@ def check_recorder(recorder, request):
     return recorder
 
 
+def case_delete(form, request):
+    file = form.cleaned_data["source_file"]
+    try:
+        if os.path.exists(file):
+            os.remove(file)
+        rec = RecordingFileTreatment.objects.get(file=file)
+        rec.delete()
+    except ObjectDoesNotExist:
+        pass
+    message = _(
+        'The selected record has been deleted.')
+    messages.add_message(request, messages.INFO, message)
+
+
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def add_recording(request):
@@ -81,18 +95,15 @@ def add_recording(request):
         # A form bound to the POST data
         form = RecordingForm(request, request.POST)
         if form.is_valid():  # All validation rules pass
+
+            if form.cleaned_data["delete"] is True:
+                case_delete(form, request)
+                return redirect("/")
             med = form.save(commit=False)
             if request.POST.get('user') and request.POST.get('user') != "":
                 med.user = form.cleaned_data['user']
             else:
                 med.user = request.user
-            """
-            if (request.POST.get('mediapath')
-                    and request.POST.get('mediapath') != ""):
-                med.source_file = form.cleaned_data['mediapath']
-            else:
-                med.source_file = mediapath
-            """
             med.save()
             message = _(
                 'Your publication is saved.'
