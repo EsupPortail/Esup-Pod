@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-16 13:46+0000\n"
+"POT-Creation-Date: 2019-12-19 09:01+0000\n"
 "PO-Revision-Date: 2019-12-09 12:51+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -149,7 +149,9 @@ msgstr "Mot de passe ou identifiant perdu ?"
 #: pod/main/templates/contact_us.html:24 pod/main/views.py:215
 #: pod/playlist/views.py:140
 #: pod/recorder/templates/recorder/add_recording.html:36
-#: pod/recorder/views.py:102 pod/video/templates/channel/channel_edit.html:48
+#: pod/recorder/templates/recorder/record_delete.html:32
+#: pod/recorder/views.py:103 pod/recorder/views.py:252
+#: pod/video/templates/channel/channel_edit.html:48
 #: pod/video/templates/videos/video-form.html:10
 #: pod/video/templates/videos/video_delete.html:33
 #: pod/video/templates/videos/video_edit.html:64
@@ -169,6 +171,7 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 #: pod/interactive/templates/interactive/group_interactive.html:51
 #: pod/main/templates/contact_us.html:47
 #: pod/recorder/templates/recorder/add_recording.html:59
+#: pod/recorder/templates/recorder/record_delete.html:54
 #: pod/video/templates/channel/channel_edit.html:70
 #: pod/video/templates/videos/video-form.html:25
 #: pod/video/templates/videos/video_delete.html:55
@@ -203,7 +206,7 @@ msgid "slug"
 msgstr "titre court"
 
 #: pod/chapter/models.py:19 pod/completion/models.py:247
-#: pod/enrichment/models.py:119 pod/live/models.py:48 pod/playlist/models.py:16
+#: pod/enrichment/models.py:119 pod/live/models.py:49 pod/playlist/models.py:16
 #: pod/video/models.py:199 pod/video/models.py:274 pod/video/models.py:362
 #: pod/video/models.py:387 pod/video/models.py:421
 msgid ""
@@ -325,6 +328,7 @@ msgstr "Supprimer le chapitre"
 #: pod/enrichment/templates/enrichment/list_enrichment.html:38
 #: pod/podfile/templates/podfile/infinite_folders.html:14
 #: pod/podfile/templates/podfile/list_file.html:35
+#: pod/recorder/templates/recorder/record_delete.html:9
 #: pod/video/templates/channel/list_theme.html:35
 #: pod/video/templates/videos/video_delete.html:10
 msgid "Delete"
@@ -628,7 +632,7 @@ msgstr "bas à gauche"
 msgid "left"
 msgstr "gauche"
 
-#: pod/completion/models.py:244 pod/live/models.py:46 pod/playlist/models.py:13
+#: pod/completion/models.py:244 pod/live/models.py:47 pod/playlist/models.py:13
 #: pod/video/models.py:197 pod/video/models.py:272 pod/video/models.py:360
 #: pod/video/models.py:419
 msgid "Slug"
@@ -1562,11 +1566,11 @@ msgstr "Vous regardez cette vidéo en tant qu'utilisateur anonyme"
 msgid "You cannot add interactivity to this video."
 msgstr "Vous ne pouvez éditer cette vidéo interactive."
 
-#: pod/live/models.py:19 pod/live/models.py:44 pod/recorder/models.py:39
+#: pod/live/models.py:20 pod/live/models.py:45 pod/recorder/models.py:39
 msgid "name"
 msgstr "nom"
 
-#: pod/live/models.py:22 pod/live/templates/live/live.html:43
+#: pod/live/models.py:23 pod/live/templates/live/live.html:58
 #: pod/video/models.py:210 pod/video/models.py:285
 #: pod/video/templates/channel/channel.html:68
 #: pod/video/templates/channel/channel.html:79
@@ -1576,34 +1580,38 @@ msgstr "nom"
 msgid "Headband"
 msgstr "Bannière"
 
-#: pod/live/models.py:39 pod/live/models.py:51
+#: pod/live/models.py:40 pod/live/models.py:52
 msgid "Building"
 msgstr "Bâtiment"
 
-#: pod/live/models.py:40
+#: pod/live/models.py:41
 msgid "Buildings"
 msgstr "Bâtiments"
 
-#: pod/live/models.py:53 pod/recorder/models.py:41
+#: pod/live/models.py:54 pod/recorder/models.py:41
 #: pod/video/templates/channel/list_theme.html:10
 msgid "description"
 msgstr "description"
 
-#: pod/live/models.py:59
+#: pod/live/models.py:60
 msgid "Poster"
 msgstr "Affiche"
 
-#: pod/live/models.py:60
+#: pod/live/models.py:61
 msgid "URL"
 msgstr "URL"
 
-#: pod/live/models.py:61
+#: pod/live/models.py:62
 msgid "Url of the stream"
 msgstr "Adresse du flux"
 
 #: pod/live/models.py:64
 msgid "This video will be displayed when there is no live stream."
 msgstr "Cette vidéo sera affichée lorsqu'il n'y a pas de diffusion en direct."
+
+#: pod/live/models.py:67
+msgid "Video on hold"
+msgstr "Vidéo d'attente"
 
 #: pod/live/models.py:69
 msgid "Check if the broadcaster is currently sending stream."
@@ -1613,58 +1621,54 @@ msgstr "Cocher la case si le diffuseur envoie un flux."
 msgid "Restricted access"
 msgstr "Accès restreint"
 
-#: pod/live/models.py:67
-msgid "Video on hold"
-msgstr "Vidéo d'attente"
-
-#: pod/live/models.py:67
+#: pod/live/models.py:73
 msgid "Live is accessible only to authenticated users."
 msgstr ""
 "Si cette case est cochée, la page du direct sera accessible uniquement aux "
 "utilisateurs authentifiés."
 
-#: pod/live/models.py:88
+#: pod/live/models.py:94
 msgid "Broadcaster"
 msgstr "Diffuseur"
 
-#: pod/live/models.py:89
+#: pod/live/models.py:95
 msgid "Broadcasters"
 msgstr "Diffuseurs"
 
-#: pod/live/templates/live/live.html:15 pod/live/templates/live/live.html:19
+#: pod/live/templates/live/live.html:16 pod/live/templates/live/live.html:20
 #: pod/live/templates/live/lives.html:12 pod/live/templates/live/lives.html:15
 #: pod/live/templates/live/lives.html:18 pod/main/templates/navbar.html:30
 msgid "Lives"
 msgstr "Directs"
 
-#: pod/live/templates/live/live.html:50 pod/live/templates/live/lives.html:29
+#: pod/live/templates/live/live.html:65 pod/live/templates/live/lives.html:29
 msgid "no broadcast in progress"
 msgstr "aucune diffusion actuellement"
 
-#: pod/live/templates/live/live.html:53 pod/live/templates/live/lives.html:31
+#: pod/live/templates/live/live.html:68 pod/live/templates/live/lives.html:31
 msgid "Sorry, no lives found"
 msgstr "Désolé, aucun direct trouvé"
 
-#: pod/live/templates/live/live.html:56 pod/live/templates/live/lives.html:34
+#: pod/live/templates/live/live.html:71 pod/live/templates/live/lives.html:34
 msgid "access map"
 msgstr "plan d'accès"
 
-#: pod/live/templates/live/live.html:113
+#: pod/live/templates/live/live.html:116
 msgid ""
 "Thank you for watching this streaming live with us. The page will reload "
 "automatically within a few seconds to display the video on hold."
 msgstr ""
-"Merci d’avoir regardé ce streaming en direct avec nous. "
-"La page se rechargera automatiquement dans quelques secondes pour afficher "
-"la vidéo d’attente."
+"Merci d’avoir regardé ce streaming en direct avec nous. La page se "
+"rechargera automatiquement dans quelques secondes pour afficher la vidéo "
+"d’attente."
 
-#: pod/live/templates/live/live.html:128
+#: pod/live/templates/live/live.html:131
 msgid "Live not found, displaying the video on hold, retry every 10 seconds"
 msgstr ""
-"Le direct n’a pas encore commencé, affichage de la vidéo d’attente, "
-"nouvelle tentative de lecture toutes les 10 secondes"
+"Le direct n’a pas encore commencé, affichage de la vidéo d’attente, nouvelle "
+"tentative de lecture toutes les 10 secondes"
 
-#: pod/live/templates/live/live.html:139
+#: pod/live/templates/live/live.html:142
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
 "Le direct n’a pas encore commencé, nouvelle tentative de lecture dans 10 "
@@ -2434,6 +2438,7 @@ msgid "Contact us"
 msgstr "Contactez nous"
 
 #: pod/main/templates/contact_us.html:53
+#: pod/recorder/templates/recorder/record_delete.html:60
 #: pod/video/templates/videos/filter_aside.html:13
 #: pod/video/templates/videos/filter_aside.html:36
 #: pod/video/templates/videos/filter_aside.html:58
@@ -2556,6 +2561,8 @@ msgstr "Mes chaînes"
 
 #: pod/main/templates/navbar.html:84
 #: pod/recorder/templates/recorder/claim_record.html:11
+#: pod/recorder/templates/recorder/record_delete.html:8
+#: pod/recorder/templates/recorder/record_delete.html:20
 msgid "Claim a record"
 msgstr "Revendiquer un enregistrement"
 
@@ -2904,9 +2911,24 @@ msgstr "Vous ne pouvez pas éditer cette image."
 msgid "You cannot edit this file."
 msgstr "Vous ne pouvez pas éditer ce fichier."
 
+#: pod/recorder/admin.py:27
+#| msgid "Recording file treatments"
+msgid "Delete selected Recording file treatments + source files"
+msgstr "Supprimer les Traitements de fichier d'enregistrement sélectionnés +"
+" le fichier source"
+
 #: pod/recorder/forms.py:42
 msgid "source_file"
 msgstr "fichier source"
+
+#: pod/recorder/forms.py:59 pod/video/forms.py:644
+msgid "I agree"
+msgstr "J'accepte"
+
+#: pod/recorder/forms.py:60
+#| msgid "Delete video cannot be undo"
+msgid "Delete this record cannot be undo"
+msgstr "La suppression d'un enregistrement est définitive"
 
 #: pod/recorder/models.py:20
 msgid "Audiovideocast"
@@ -3074,35 +3096,62 @@ msgstr "Aucun enregistrement trouvé"
 msgid "There is no unassigned records"
 msgstr "Il n'y a pas d'enregistrements non assigné"
 
-#: pod/recorder/templates/recorder/link_record.html:3
 #: pod/recorder/templates/recorder/link_record.html:4
+#| msgid "Delete the video."
+msgid "Delete this record."
+msgstr "Supprimer cet enregistrement."
+
+#: pod/recorder/templates/recorder/link_record.html:7
+#: pod/recorder/templates/recorder/link_record.html:8
 msgid "Claim the record"
 msgstr "Revendiquer l'enregistrement"
+
+#: pod/recorder/templates/recorder/record_delete.html:13
+#: pod/recorder/templates/recorder/record_delete.html:18
+#| msgid "Deleting the video"
+msgid "Deleting the record"
+msgstr "Supprimer l'enregistrement"
+
+#: pod/recorder/templates/recorder/record_delete.html:21
+#: pod/recorder/templates/recorder/record_delete.html:61
+#| msgid "Back to original"
+msgid "Back to record claiming"
+msgstr "Retour à la revendication d'enregistrements"
+
+#: pod/recorder/templates/recorder/record_delete.html:25
+#| msgid "To delete the video, please checked in and click send."
+msgid "To delete the record, please checked in and click send."
+msgstr "Pour supprimer l'enregistrement, veuillez cocher et cliquer sur envoyer."
+
+#: pod/recorder/templates/recorder/record_delete.html:30
+#: pod/video/templates/videos/video_delete.html:31
+msgid "Agree required"
+msgstr "Accord requis"
 
 #: pod/recorder/templates/recorder/record_list.html:10
 msgid "Sorry, no record found"
 msgstr "Désolé, aucun enregistrement trouvé"
 
-#: pod/recorder/views.py:40
+#: pod/recorder/views.py:41
 msgid "Recorder should be indicated."
 msgstr "L'enregistreur doit être indiqué."
 
-#: pod/recorder/views.py:46
+#: pod/recorder/views.py:47
 msgid "Recorder not found."
 msgstr "Enregistreur non trouvé."
 
-#: pod/recorder/views.py:70
+#: pod/recorder/views.py:71
 msgid "Mediapath should be indicated."
 msgstr "La source du fichier doit être indiquée."
 
-#: pod/recorder/views.py:97
+#: pod/recorder/views.py:98
 msgid ""
 "Your publication is saved. Adding it to your videos will be in a few minutes."
 msgstr ""
 "Votre publication est sauvegardée, elle sera ajoutée à vos vidéos dans "
 "quelques minutes."
 
-#: pod/recorder/views.py:153
+#: pod/recorder/views.py:154
 #, python-format
 msgid ""
 "Hello, \n"
@@ -3127,7 +3176,7 @@ msgstr ""
 "\n"
 "Cordialement"
 
-#: pod/recorder/views.py:164
+#: pod/recorder/views.py:165
 #, python-format
 msgid ""
 "Hello, <p>a new recording has just be added on %(title_site)s from the "
@@ -3141,11 +3190,16 @@ msgstr ""
 "%(link_url)s</a><br/><i>Si le lien n'est pas actif, il faut le copier-coller "
 "dans la barre d'adresse de votre navigateur.</i><p><p>Cordialement</p>"
 
-#: pod/recorder/views.py:180
+#: pod/recorder/views.py:181
 msgid "New recording added."
 msgstr "Nouvel enregistrement ajouté."
 
-#: pod/urls.py:197 pod/urls.py:198
+#: pod/recorder/views.py:245
+#| msgid "The video has been deleted."
+msgid "The record has been deleted."
+msgstr "L'enregistrement a été supprimé."
+
+#: pod/urls.py:200 pod/urls.py:201
 msgid "Pod Administration"
 msgstr "Administration de Pod"
 
@@ -3469,10 +3523,6 @@ msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne
 #: pod/video/forms.py:421
 msgid "File"
 msgstr "Fichier"
-
-#: pod/video/forms.py:644
-msgid "I agree"
-msgstr "J'accepte"
 
 #: pod/video/forms.py:645
 msgid "Delete video cannot be undo"
@@ -4212,10 +4262,6 @@ msgstr "Supprimer la vidéo"
 #: pod/video/templates/videos/video_delete.html:26
 msgid "To delete the video, please checked in and click send."
 msgstr "Pour supprimer la vidéo, veuillez cocher et cliquer sur envoyer."
-
-#: pod/video/templates/videos/video_delete.html:31
-msgid "Agree required"
-msgstr "Accord requis"
 
 #: pod/video/templates/videos/video_edit.html:18
 #: pod/video/templates/videos/video_edit.html:22
