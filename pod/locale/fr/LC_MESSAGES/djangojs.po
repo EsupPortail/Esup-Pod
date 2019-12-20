@@ -6,11 +6,11 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: 2.X.X\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-12-19 09:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Last-Translator: Eliam LOTONGA <eliam.lotonga@grenet.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -548,101 +548,101 @@ msgstr[1] ""
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:109
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:160
 msgid "Now"
-msgstr ""
+msgstr "Maintenant"
 
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:127
 msgid "Choose a Time"
-msgstr ""
+msgstr "Choisir une heure"
 
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:157
 msgid "Choose a time"
-msgstr ""
+msgstr "Choisir une heure"
 
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:165
 msgid "Midnight"
-msgstr ""
+msgstr "Minuit"
 
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:170
 msgid "6 a.m."
-msgstr ""
+msgstr "6h"
 
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:175
 msgid "Noon"
-msgstr ""
+msgstr "Midi"
 
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:180
 msgid "6 p.m."
-msgstr ""
+msgstr "18h"
 
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:188
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:348
 msgid "Cancel"
-msgstr ""
+msgstr "Fermer"
 
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:253
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:333
 msgid "Today"
-msgstr ""
+msgstr "Aujourd'hui"
 
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:270
 msgid "Choose a Date"
-msgstr ""
+msgstr "Choisir une date"
 
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:327
 msgid "Yesterday"
-msgstr ""
+msgstr "Hier"
 
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:339
 msgid "Tomorrow"
-msgstr ""
+msgstr "Demain"
 
 #: pod/static/admin/js/calendar.js:12
 msgid "January"
-msgstr ""
+msgstr "Janvier"
 
 #: pod/static/admin/js/calendar.js:13
 msgid "February"
-msgstr ""
+msgstr "Février"
 
 #: pod/static/admin/js/calendar.js:14
 msgid "March"
-msgstr ""
+msgstr "Mars"
 
 #: pod/static/admin/js/calendar.js:15
 msgid "April"
-msgstr ""
+msgstr "Avril"
 
 #: pod/static/admin/js/calendar.js:16
 msgid "May"
-msgstr ""
+msgstr "Mai"
 
 #: pod/static/admin/js/calendar.js:17
 msgid "June"
-msgstr ""
+msgstr "Juin"
 
 #: pod/static/admin/js/calendar.js:18
 msgid "July"
-msgstr ""
+msgstr "Juillet"
 
 #: pod/static/admin/js/calendar.js:19
 msgid "August"
-msgstr ""
+msgstr "Août"
 
 #: pod/static/admin/js/calendar.js:20
 msgid "September"
-msgstr ""
+msgstr "Septembre"
 
 #: pod/static/admin/js/calendar.js:21
 msgid "October"
-msgstr ""
+msgstr "Octobre"
 
 #: pod/static/admin/js/calendar.js:22
 msgid "November"
-msgstr ""
+msgstr "Novembre"
 
 #: pod/static/admin/js/calendar.js:23
 msgid "December"
-msgstr ""
+msgstr "Decembre"
 
 #: pod/static/admin/js/calendar.js:26
 msgctxt "one letter Sunday"
@@ -682,11 +682,11 @@ msgstr ""
 #: pod/static/admin/js/collapse.js:10 pod/static/admin/js/collapse.js:21
 #: pod/static/admin/js/collapse.min.js:1
 msgid "Show"
-msgstr ""
+msgstr "Afficher"
 
 #: pod/static/admin/js/collapse.js:18 pod/static/admin/js/collapse.min.js:1
 msgid "Hide"
-msgstr ""
+msgstr "Cacher"
 
 #: pod/static/js/video_stats_view.js:14
 #: pod/video/static/js/video_stats_view.js:14
