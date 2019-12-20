@@ -38,13 +38,13 @@ from itertools import chain
 import json
 import re
 import pandas
-from datetime import date, datetime
+from datetime import date
 
 from pod.playlist.models import Playlist
 from django.db import transaction
 from django.db import IntegrityError
 
-TODAY = datetime.now()
+TODAY = date.today()
 USE_RGPD = getattr(settings, 'USE_RGPD', False)
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
@@ -1296,7 +1296,7 @@ def get_all_views_count(v_id, specific_date=None):
     # view count in day
     all_views.append(ViewCount.objects.filter(
         video_id=v_id,
-        date=TODAY.date()).aggregate(
+        date=TODAY).aggregate(
             Sum('count'))['count__sum']
         )
     # view count in month
@@ -1382,7 +1382,7 @@ def stats_view(request, slug, slug_t=None):
                     Min("date_added")
                     )["date_added__min"].date()
     if type(specific_date) == str:
-        specific_date = parse(specific_date)
+        specific_date = parse(specific_date).date()
     data = []
     for v in videos:
         v_data = {}

@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-18 16:40+0100\n"
+"POT-Creation-Date: 2019-12-20 13:56+0100\n"
 "PO-Revision-Date: 2019-12-09 12:51+0100\n"
-"Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
+"Last-Translator: Eliam <eliam.lotonga@grenet.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -4093,8 +4093,7 @@ msgstr "Vidéos à supprimer"
 
 #: pod/video/templates/channel/channel.html:57
 msgid "Show view statistics for all videos in this theme"
-msgstr ""
-"Afficher les statistiques de visualisation de toutes les vidéos de ce thème"
+msgstr "Afficher les statistiques de visualisation de toutes les vidéos de ce thème"
 
 #: pod/video/templates/channel/channel.html:57
 #: pod/video/templates/channel/channel.html:63
@@ -4118,9 +4117,7 @@ msgstr "souscrire au flux audio"
 #, fuzzy
 #| msgid "Users can only add videos to this channel"
 msgid "Show view statistics for all videos in this channel"
-msgstr ""
-"Afficher les statistiques de visualisation de toutes les vidéos de cette "
-"chaîne"
+msgstr "Afficher les statistiques de visualisation de toutes les vidéos de cette chaîne"
 
 #: pod/video/templates/channel/channel.html:70
 #: pod/video/templates/channel/channel_edit.html:32
@@ -4361,7 +4358,13 @@ msgstr "Nombre de vue(s)"
 
 #: pod/video/templates/videos/video-info.html:44
 msgid "Show details of view statistics"
-msgstr "Afficher le detail des statistiques de visualisation"
+msgstr "Afficher les détails de visualisation"
+
+#: pod/video/templates/videos/video-info.html:44
+#, fuzzy
+#| msgid "Show all videos"
+msgid "Show details views"
+msgstr "Afficher détails visualisations"
 
 #: pod/video/templates/videos/video-info.html:47
 msgid "Audience"
@@ -4592,13 +4595,13 @@ msgstr "Connectez-vous pour en créer une nouvelle."
 #, fuzzy
 #| msgid "Video track file"
 msgid "Video - Statistics views"
-msgstr "Vidéo - Statistiques de vues"
+msgstr "Vidéo - Statistiques de visualisation"
 
-#: pod/video/templates/videos/video_stats_view.html:90
+#: pod/video/templates/videos/video_stats_view.html:21
 #, fuzzy
 #| msgid "Chapter the video"
 msgid "Change the date"
-msgstr "Changer la date"
+msgstr "Chapitrer la vidéo"
 
 #: pod/video/templates/videos/videos.html:27
 #, fuzzy
@@ -4702,31 +4705,28 @@ msgstr "Vous ne pouvez pas accéder à cette vue."
 
 #: pod/video/views.py:1330
 msgid "Pod video view statistics"
-msgstr "Statistiques de visualisation des vidéos Pod"
+msgstr "Les statistiques des vidéos Pod"
 
 #: pod/video/views.py:1335
-#, fuzzy, python-format
-#| msgid "Pod video view statistics"
+#, python-format
 msgid "Video viewing statistics for '%s'"
-msgstr "Statistiques de visualisation de la vidéo '%s'"
+msgstr "Les statistiques de visualisation de la vidéo '%s'"
 
 #: pod/video/views.py:1340
-#, fuzzy, python-format
-#| msgid "Pod video view statistics"
+#, python-format
 msgid "Video viewing statistics for the channel '%s'"
-msgstr "Statistiques de visualisation des vidéos de la chaîne '%s'"
+msgstr "Les statistiques de visualisation des vidéos de la chaîne '%s'"
 
 #: pod/video/views.py:1351
-#, fuzzy, python-format
-#| msgid "Pod video view statistics"
+#, python-format
 msgid "Video viewing statistics for the theme '%s'"
-msgstr "Statistiques de visualisation des vidéos du thème '%s'"
+msgstr "Les statistiques de visualisation des vidéos du thème '%s'"
 
 #: pod/video/views.py:1372
 #, fuzzy, python-format
 #| msgid "The following formats are supported: %s"
 msgid "The following channel or video does not exist : %s"
-msgstr "La chaîne ou la vidéo suivante n'existe pas : %s"
+msgstr "Les formats suivants sont supportés: %s"
 
 #: pod/video_search/forms.py:11
 msgid "Start date"
@@ -4757,14 +4757,6 @@ msgstr "facettage"
 msgid "Remove selection"
 msgstr "Retirer la sélection"
 
-#, fuzzy
-#~| msgid "Pod video view statistics"
-#~ msgid "Video viewing statics of '"
-#~ msgstr "Statistiques de visualisation de la vidéo '"
-
-#~ msgid " of "
-#~ msgstr " de "
-
 #~ msgid "This video will be displayed when there is no live stream."
 #~ msgstr ""
 #~ "Cette vidéo sera affichée lorsqu'il n'y a pas de diffusion en direct."
@@ -4784,6 +4776,41 @@ msgstr "Retirer la sélection"
 #~ msgstr ""
 #~ "Le direct n’a pas encore commencé, affichage de la vidéo d’attente, "
 #~ "nouvelle tentative de lecture toutes les 10 secondes"
+
+#~ msgid "Delete selected Recording file treatments + source files"
+#~ msgstr ""
+#~ "Supprimer les Traitements de fichier d'enregistrement sélectionnés + le "
+#~ "fichier source"
+
+#~| msgid "Delete this record."
+#~ msgid "Delete the record"
+#~ msgstr "Supprimer cet enregistrement."
+
+#~ msgid "If checked, record will be deleted instead of saving it"
+#~ msgstr "Si coché, l'enregistrement sera supprimé et non ajouté"
+
+#~ msgid "Delete this record cannot be undo"
+#~ msgstr "La suppression d'un enregistrement est définitive"
+
+#~ msgid "Delete this record."
+#~ msgstr "Supprimer cet enregistrement."
+
+#~ msgid "Deleting the record"
+#~ msgstr "Supprimer l'enregistrement"
+
+#~ msgid "Back to record claiming"
+#~ msgstr "Retour à la revendication d'enregistrements"
+
+#~ msgid "To delete the record, please checked in and click send."
+#~ msgstr ""
+#~ "Pour supprimer l'enregistrement, veuillez cocher et cliquer sur envoyer."
+
+#~| msgid "The record has been deleted."
+#~ msgid "The selected record has been deleted."
+#~ msgstr "L'enregistrement a été supprimé."
+
+#~ msgid "The record has been deleted."
+#~ msgstr "L'enregistrement a été supprimé."
 
 #~ msgid ""
 #~ "Select and copy the caption file contents below and paste into a .vtt file"
