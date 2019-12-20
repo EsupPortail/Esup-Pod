@@ -309,7 +309,6 @@ def get_videos_list(request):
     return videos_list.distinct()
 
 
-@login_required(redirect_field_name='referrer')
 def videos(request):
     videos_list = get_videos_list(request)
 
