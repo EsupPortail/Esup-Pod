@@ -68,6 +68,9 @@ ADDITIONAL_GRENOBLE_RGPD = getattr(
 ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
         django_settings, 'ALLOW_MANUAL_RECORDING_CLAIMING', False)
 
+USE_STATS_VIEW = getattr(
+        django_settings, 'USE_STATS_VIEW', False)
+
 
 def context_settings(request):
     new_settings = {}
@@ -84,6 +87,7 @@ def context_settings(request):
     new_settings['ADDITIONAL_GRENOBLE_RGPD'] = ADDITIONAL_GRENOBLE_RGPD
     new_settings['ALLOW_MANUAL_RECORDING_CLAIMING'] = \
         ALLOW_MANUAL_RECORDING_CLAIMING
+    new_settings['USE_STATS_VIEW'] = USE_STATS_VIEW
     return new_settings
 
 
