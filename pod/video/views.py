@@ -1366,11 +1366,7 @@ def stats_view(request, slug, slug_t=None):
                 "videos/video_stats_view.html",
                 {"title": title})
     specific_date = request.POST.get("periode", TODAY)
-    min_date = Video.objects.filter(
-            encoding_in_progress=False, is_draft=False
-            ).aggregate(
-                    Min("date_added")
-                    )["date_added__min"].date()
+    min_date = VIDEOS.aggregate(Min("date_added"))["date_added__min"].date()
     if type(specific_date) == str:
         specific_date = parse(specific_date).date()
     data = []
