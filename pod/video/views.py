@@ -1329,8 +1329,7 @@ def get_videos(p_slug, target, p_slug_t=None):
     title = _("Pod video view statistics")
     if target.lower() == "video":
         videos.append(
-                Video.objects.filter(
-                    slug__istartswith=p_slug).first())
+                VIDEOS.filter(slug__istartswith=p_slug).first())
         title = _("Video viewing statistics for '%s'") % \
             videos[0].title.capitalize()
     if target.lower() == "chaine" and not videos:
@@ -1339,24 +1338,16 @@ def get_videos(p_slug, target, p_slug_t=None):
         title = _("Video viewing statistics for the channel '%s'") % \
             channel.title
         if channel:
-            videos = Video.objects.filter(
-                    encoding_in_progress=False,
-                    is_draft=False,
-                    channel=channel)
+            videos = VIDEOS.filter(channel=channel)
     if target.lower() == "theme" and not videos and p_slug_t:
         theme = Theme.objects.filter(
                 slug__istartswith=p_slug_t, channel__slug__istartswith=p_slug
                 ).first()
         title = _("Video viewing statistics for the theme '%s'") % theme.title
         if theme:
-            videos = Video.objects.filter(
-                    encoding_in_progress=False,
-                    is_draft=False,
-                    theme=theme)
+            videos = VIDEOS.filter(theme=theme)
     if not videos:
-        videos = [v for v in Video.objects.filter(
-            encoding_in_progress=False, is_draft=False
-            ).distinct()]
+        videos = [v for v in VIDEOS]
     return (videos, title)
 
 
