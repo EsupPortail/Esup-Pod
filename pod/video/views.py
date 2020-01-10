@@ -17,9 +17,6 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 
-from django.db.models import Sum, Min
-from dateutil.parser import parse
-
 from pod.video.models import Video
 from pod.video.models import Channel
 from pod.video.models import Theme
@@ -44,7 +41,6 @@ from pod.playlist.models import Playlist
 from django.db import transaction
 from django.db import IntegrityError
 
-TODAY = date.today()
 USE_RGPD = getattr(settings, 'USE_RGPD', False)
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
@@ -1286,100 +1282,3 @@ def video_oembed(request):
         # return HttpResponseNotFound('<h1>XML not implemented</h1>')
     else:
         return JsonResponse(data)
-
-
-def get_all_views_count(v_id, specific_date=None):
-    if specific_date:
-        TODAY = specific_date
-    all_views = []
-    # view count in day
-    all_views.append(ViewCount.objects.filter(
-        video_id=v_id,
-        date=TODAY).aggregate(
-            Sum('count'))['count__sum']
-        )
-    # view count in month
-    all_views.append(ViewCount.objects.filter(
-        video_id=v_id,
-        date__year=TODAY.year,
-        date__month=TODAY.month).aggregate(
-            Sum('count'))['count__sum']
-        )
-    # view count in year
-    all_views.append(ViewCount.objects.filter(
-        date__year=TODAY.year,
-        video_id=v_id).aggregate(
-            Sum('count'))['count__sum']
-        )
-    # view count since video was created
-    all_views.append(ViewCount.objects.filter(
-        video_id=v_id).aggregate(
-            Sum('count'))['count__sum']
-        )
-    # replace None by 0
-    return [nb if nb else 0 for nb in all_views]
-
-
-# Retourne une ou plusieurs videos et le titre de
-# (theme, ou video ou channel ou videos pour toutes)
-# selon la réference du slug donnée
-# (video ou channel ou theme ou videos pour toutes les videos)
-def get_videos(p_slug, target, p_slug_t=None):
-    videos = []
-    title = _("Pod video view statistics")
-    if target.lower() == "video":
-        videos.append(
-                VIDEOS.filter(slug__istartswith=p_slug).first())
-        title = _("Video viewing statistics for '%s'") % \
-            videos[0].title.capitalize()
-    if target.lower() == "chaine" and not videos:
-        channel = Channel.objects.filter(
-                slug__istartswith=p_slug).first()
-        title = _("Video viewing statistics for the channel '%s'") % \
-            channel.title
-        if channel:
-            videos = VIDEOS.filter(channel=channel)
-    if target.lower() == "theme" and not videos and p_slug_t:
-        theme = Theme.objects.filter(
-                slug__istartswith=p_slug_t, channel__slug__istartswith=p_slug
-                ).first()
-        title = _("Video viewing statistics for the theme '%s'") % theme.title
-        if theme:
-            videos = VIDEOS.filter(theme=theme)
-    if not videos:
-        videos = [v for v in VIDEOS]
-    return (videos, title)
-
-
-def stats_view(request, slug, slug_t=None):
-    # Slug peut référencer une vidéo ou une chaine
-    # from definit sa référence
-    target = request.GET.get('from', "videos")
-    videos, title = get_videos(slug, target, slug_t)
-    if request.method == "GET":
-        if not videos:
-            return HttpResponseNotFound(
-                    _("The following channel or video does not exist : %s")
-                    % slug)
-        return render(
-                request,
-                "videos/video_stats_view.html",
-                {"title": title})
-    specific_date = request.POST.get("periode", TODAY)
-    min_date = VIDEOS.aggregate(Min("date_added"))["date_added__min"].date()
-    if type(specific_date) == str:
-        specific_date = parse(specific_date).date()
-    data = []
-    for v in videos:
-        v_data = {}
-        v_data["title"] = v.title
-        v_data["slug"] = v.slug
-        (
-                v_data["day"],
-                v_data["month"],
-                v_data["year"],
-                v_data["since_created"]) = get_all_views_count(
-                        v.id, specific_date)
-        data.append(v_data)
-    data.append({"min_date": min_date})
-    return JsonResponse(data, safe=False)
