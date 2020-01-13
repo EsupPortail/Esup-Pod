@@ -62,8 +62,8 @@ OEMBED = getattr(
 USE_RGPD = getattr(
     django_settings, 'USE_RGPD', False)
 
-ADDITIONAL_GRENOBLE_RGPD = getattr(
-        django_settings, 'ADDITIONAL_GRENOBLE_RGPD', False)
+REMOVE_USER_LOGIN = getattr(
+        django_settings, 'REMOVE_USER_LOGIN', False)
 
 ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
         django_settings, 'ALLOW_MANUAL_RECORDING_CLAIMING', False)
@@ -81,7 +81,7 @@ def context_settings(request):
     new_settings["THIRD_PARTY_APPS"] = django_settings.THIRD_PARTY_APPS
     new_settings['OEMBED'] = OEMBED
     new_settings['USE_RGPD'] = USE_RGPD
-    new_settings['ADDITIONAL_GRENOBLE_RGPD'] = ADDITIONAL_GRENOBLE_RGPD
+    new_settings['REMOVE_USER_LOGIN'] = REMOVE_USER_LOGIN
     new_settings['ALLOW_MANUAL_RECORDING_CLAIMING'] = \
         ALLOW_MANUAL_RECORDING_CLAIMING
     return new_settings
