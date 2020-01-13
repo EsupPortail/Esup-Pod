@@ -45,7 +45,6 @@ from django.db import transaction
 from django.db import IntegrityError
 
 TODAY = date.today()
-USE_RGPD = getattr(settings, 'USE_RGPD', False)
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, 'RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY', False)

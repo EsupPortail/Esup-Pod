@@ -103,8 +103,8 @@
         {% endif %}
         <!-- JS -->
 		<script>
-		/** RGPD **/
-		const USE_RGPD = {% if USE_RGPD %} true {% else %} false {% endif %};
+		/** HIDE USER LOGIN **/
+		const HIDE_USER_LOGIN = {% if HIDE_USER_LOGIN %} true {% else %} false {% endif %};
         /** ALL_CHANNELS **/
         var listTheme = new Array();
         {% for channel in ALL_CHANNELS %}{% if channel.themes.count > 0 %}listTheme["channel_{{channel.id}}"] = {{channel.get_all_theme_json|safe}};{% endif %}{% endfor %}
