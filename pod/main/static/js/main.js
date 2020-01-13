@@ -159,7 +159,7 @@ $('#ownerboxnavbar').keyup(function() {
     			var lastname = removeDiacritics(listUser[letter][i]["last_name"].toLowerCase());
                 var firstname = removeDiacritics(listUser[letter][i]["first_name"].toLowerCase());
                 if(lastname.indexOf(valThis) != -1 || firstname.indexOf(valThis) != -1){
-                    $("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+ (USE_RGPD?' ('+listUser[letter][i]["username"]+')</a></li>': '</a></li>'));
+                    $("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+((!HIDE_USER_LOGIN)?' ('+listUser[letter][i]["username"]+')</a></li>': '</a></li>'));
 
                 }
     		}
@@ -174,7 +174,7 @@ $(".showUser").on('click', function() {
     if(listUser[letter]){
 	   var nbuser = listUser[letter].length;
     	for(i=0; i<nbuser; i++) {
-            $("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+ (USE_RGPD?' ('+listUser[letter][i]["username"]+')</a></li>': '</a></li>'));
+            $("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+ ((!HIDE_USER_LOGIN)?' ('+listUser[letter][i]["username"]+')</a></li>': '</a></li>'));
 
         }
     }
@@ -366,7 +366,7 @@ $('#ownerbox').keyup(function() {
     for(i=0; i<nbuser; i++) {
       var lastname = removeDiacritics(listUser[letter][i]["last_name"].toLowerCase());
       if(lastname.indexOf(valThis) != -1 && listUserChecked.indexOf(listUser[letter][i]["username"])==-1 ) {
-        let username = USE_RGPD?'':(' ('+listUser[letter][i]["username"]+')');
+        let username = HIDE_USER_LOGIN?'':(' ('+listUser[letter][i]["username"]+')');
         var chekboxhtml = '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="'+listUser[letter][i]["username"]+'" id="id'+listUser[letter][i]["username"]+'"><label class="form-check-label" for="id'+listUser[letter][i]["username"]+'">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+username+'</label></div>';
         $("#collapseFilterOwner").append(chekboxhtml);
       }
