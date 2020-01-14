@@ -12,7 +12,9 @@ html,body{
 }
 .col.order-12.order-md-1{max-width: calc(100% - 350px);}
 .hide-custom{display: none !important}
-
+.navbar-brand strong{
+	display: none;
+}
 .fixebottom{
   position: absolute;
   left: 0;
