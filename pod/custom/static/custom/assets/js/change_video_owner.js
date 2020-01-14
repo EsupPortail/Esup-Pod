@@ -582,7 +582,7 @@ submit.addEventListener("click", function(e)
     // Add loader
     add_loader()
 
-    let videos_to_change_owner = (all_video_checkbox_checked())? "*" : get_videos_to_change();
+    let videos_to_change_owner = (all_video_checkbox_checked())? get_videos_to_change() : get_videos_to_change();
     let old_owner = oldlogin.dataset.login;
     let new_owner = newlogin.dataset.login;
     let success = js_field_not_empty([old_owner, new_owner, videos_to_change_owner]);

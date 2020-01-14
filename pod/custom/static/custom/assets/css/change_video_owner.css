@@ -2,7 +2,7 @@
 
 .list_videos
 {
-    max-height: 250px;
+    max-height: 350px;
     overflow-y: scroll;
     border: 1px solid rgba(0, 0, 0, .3);
     border-radius: 4px;
