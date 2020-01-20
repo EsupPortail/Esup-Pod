@@ -103,8 +103,8 @@
         {% endif %}
         <!-- JS -->
 		<script>
-		/** HIDE USER LOGIN **/
-		const HIDE_USER_LOGIN = {% if HIDE_USER_LOGIN %} true {% else %} false {% endif %};
+		/** HIDE USERNAME **/
+		const HIDE_USERNAME = {% if HIDE_USERNAME %} true {% else %} false {% endif %};
         /** ALL_CHANNELS **/
         var listTheme = new Array();
         {% for channel in ALL_CHANNELS %}{% if channel.themes.count > 0 %}listTheme["channel_{{channel.id}}"] = {{channel.get_all_theme_json|safe}};{% endif %}{% endfor %}

@@ -15,8 +15,7 @@ if getattr(settings, 'USE_PODFILE', False):
 else:
     from pod.main.models import CustomImageModel
 
-USE_RGPD = getattr(settings, 'USE_RGPD', False)
-HIDE_USER_LOGIN = getattr(settings, 'HIDE_USER_LOGIN', False)
+HIDE_USERNAME = getattr(settings, 'HIDE_USERNAME', False)
 
 AUTH_TYPE = getattr(
     settings, 'AUTH_TYPE', (('local', _('local')), ('CAS', 'CAS')))
@@ -51,7 +50,7 @@ FILES_DIR = getattr(
 
 
 def get_name(self):
-    if HIDE_USER_LOGIN:
+    if HIDE_USERNAME:
         return '%s %s' % (self.first_name, self.last_name)
     return '%s %s (%s)' % (self.first_name, self.last_name, self.username)
 
@@ -76,7 +75,7 @@ class Owner(models.Model):
         default=ESTABLISHMENTS[0][0])
 
     def __str__(self):
-        if HIDE_USER_LOGIN:
+        if HIDE_USERNAME:
             return "%s %s" % (self.user.first_name, self.user.last_name)
         return "%s %s (%s)" % (self.user.first_name, self.user.last_name,
                                self.user.username)

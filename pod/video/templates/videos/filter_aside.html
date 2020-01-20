@@ -8,7 +8,7 @@
 <i data-feather="sliders"></i>&nbsp;{% trans "Filters"%}</h4>
 
 <form action="{% url 'videos' %}" method="get" id="filters">
-  {% if user.is_authenticated %}
+  {% if not HIDE_USER_FILTER and user.is_authenticated %}
   <fieldset>
   <legend  class="h5"><i data-feather="users"></i> {% trans "Users" %} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
   <div class="form-group">
@@ -23,7 +23,7 @@
           {% thumbnail video.owner.owner.userpicture.file "x34" as im %}
             <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{ owner.first_name }} {{ owner.last_name }} ">
           {% endthumbnail %}
-	  {{ owner.first_name }} {{ owner.last_name }} {% if not HIDE_USER_LOGIN %} ({{ owner.username }}) {% endif%}
+	  {{ owner.first_name }} {{ owner.last_name }} {% if not HIDE_USERNAME and user.is_authenticated %} ({{ owner.username }}) {% endif%}
       </label>
       </div>
       {% endif %}

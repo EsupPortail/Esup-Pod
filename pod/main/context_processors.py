@@ -59,11 +59,14 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
 OEMBED = getattr(
     django_settings, 'OEMBED', False)
 
-HIDE_USER_LOGIN = getattr(
-        django_settings, 'HIDE_USER_LOGIN', False)
+HIDE_USERNAME = getattr(
+        django_settings, 'HIDE_USERNAME', False)
 
 HIDE_USER_TAB = getattr(
         django_settings, 'HIDE_USER_TAB', False)
+
+HIDE_USER_FILTER = getattr(
+        django_settings, 'HIDE_USER_FILTER', False)
 
 ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
         django_settings, 'ALLOW_MANUAL_RECORDING_CLAIMING', False)
@@ -80,8 +83,9 @@ def context_settings(request):
     new_settings['VERSION'] = VERSION
     new_settings["THIRD_PARTY_APPS"] = django_settings.THIRD_PARTY_APPS
     new_settings['OEMBED'] = OEMBED
-    new_settings['HIDE_USER_LOGIN'] = HIDE_USER_LOGIN
+    new_settings['HIDE_USERNAME'] = HIDE_USERNAME
     new_settings['HIDE_USER_TAB'] = HIDE_USER_TAB
+    new_settings['HIDE_USER_FILTER'] = HIDE_USER_FILTER
     new_settings['ALLOW_MANUAL_RECORDING_CLAIMING'] = \
         ALLOW_MANUAL_RECORDING_CLAIMING
     return new_settings
