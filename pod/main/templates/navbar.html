@@ -15,12 +15,10 @@
       <li class="nav-item" id="nav-channels">
         <button class="nav-link" data-toggle="modal" data-target=".chaines-modal"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Channels" %}</button>
       </li>
-      {% if not ADDITIONAL_GRENOBLE_RGPD  %}
-      {% if not USE_RGPD or user.is_authenticated %}
+      {% if not HIDE_USER_TAB and user.is_authenticated %}
       <li class="nav-item" id="nav-users">
         <button class="nav-link" data-toggle="modal" data-target=".users-modal"><i data-feather="users" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Users"%}</button>
       </li>
-      {% endif %}
       {% endif %}
        <li class="nav-item" id="nav-types">
         <button class="nav-link" data-toggle="modal" data-target=".types-modal"><i data-feather="tv" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Types"%}</button>
