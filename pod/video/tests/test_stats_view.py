@@ -15,12 +15,13 @@ TODAY = date.today()
 
 
 @override_settings(
+    USE_STATS_VIEW=True,
     MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
     DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': 'db.sqlite',
-        }
+        },
     },
     LANGUAGE_CODE='en'
 )
