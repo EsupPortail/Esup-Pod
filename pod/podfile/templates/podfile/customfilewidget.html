@@ -63,14 +63,14 @@ object-fit: cover;
   {%endif%}
 </span>
 <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">
-  {% if document.class_name == "CustomFileModel" %}
+  {% if type == "file" %}
   {% trans 'Change file' %}
   {% else %}
   {% trans 'Change image' %}
   {% endif %}
 </button>
 <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}">
-  {% if document.class_name == "CustomFileModel" %}
+  {% if type == "file" %}
   {% trans 'Remove file' %}
   {% else %}
   {% trans 'Remove image' %}
@@ -80,14 +80,14 @@ object-fit: cover;
 <span id="fileinput_{{id}}">
 </span>
 <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">
-  {% if document.class_name == "CustomFileModel" %}
+  {% if type == "file" %}
   {% trans 'Select a file' %}
   {% else %}
   {% trans 'Select an image' %}
   {% endif %}
 </button>
 <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}" style="display:none">
-  {% if document.class_name == "CustomFileModel" %}
+  {% if type == "file" %}
   {% trans 'Remove file' %}
   {% else %}
   {% trans 'Remove image' %}
@@ -140,14 +140,14 @@ $(document).on('show.bs.modal', '#fileModal_{{id}}', function (event) {
 $(document).on("click", "#remove_file_{{id}}", function(event) {
   var html_div = '<span id="fileinput_{{id}}"></span>\
     <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">\
-    {% if document.class_name == "CustomFileModel" %}\
+    {% if type == "file" %}\
     {% trans 'Select a file' %}\
     {% else %}\
     {% trans 'Select an image' %}\
     {% endif %}\
     </button>\
     <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}" style="display:none">\
-      {% if document.class_name == "CustomFileModel" %}\
+      {% if type == "file" %}\
       {% trans 'Remove file' %}\
       {% else %}\
       {% trans 'Remove image' %}\

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-12-19 10:12+0000\n"
-"PO-Revision-Date: 2019-12-09 12:51+0100\n"
+"POT-Creation-Date: 2020-01-28 15:00+0000\n"
+"PO-Revision-Date: 2020-01-28 16:14+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -28,8 +28,8 @@ msgid "Establishment"
 msgstr "Etablissement"
 
 #: pod/authentication/forms.py:50 pod/authentication/forms.py:51
-#: pod/main/templates/navbar.html:21 pod/main/templates/navbar_collapse.html:68
-#: pod/video/forms.py:225 pod/video/forms.py:517 pod/video/forms.py:521
+#: pod/main/templates/navbar.html:20 pod/main/templates/navbar_collapse.html:68
+#: pod/video/forms.py:225 pod/video/forms.py:511 pod/video/forms.py:515
 #: pod/video/models.py:223 pod/video/templates/videos/filter_aside.html:13
 msgid "Users"
 msgstr "Utilisateurs"
@@ -91,7 +91,7 @@ msgid "registered-reader"
 msgstr "lecteur enregistré"
 
 #: pod/authentication/models.py:67 pod/recorder/models.py:109
-#: pod/video/models.py:1278 pod/video/views.py:1122
+#: pod/video/models.py:1278 pod/video/views.py:1121
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -115,7 +115,7 @@ msgstr "authentification locale"
 #: pod/authentication/templates/registration/login.html:9
 #: pod/authentication/templates/registration/login.html:12
 #: pod/authentication/templates/registration/login.html:64
-#: pod/main/templates/navbar.html:95
+#: pod/main/templates/navbar.html:96
 msgid "Log in"
 msgstr "Connexion"
 
@@ -159,8 +159,8 @@ msgstr "Mot de passe ou identifiant perdu ?"
 #: pod/video/templates/videos/video_note_comments_display.html:148
 #: pod/video/templates/videos/video_note_display.html:27
 #: pod/video/templates/videos/video_notes.html:80
-#: pod/video/templates/videos/video_notes.html:116 pod/video/views.py:154
-#: pod/video/views.py:578 pod/video/views.py:624 pod/video/views.py:1044
+#: pod/video/templates/videos/video_notes.html:116 pod/video/views.py:153
+#: pod/video/views.py:577 pod/video/views.py:623 pod/video/views.py:1043
 #: pod/video_search/templates/search/search.html:47
 msgid "One or more errors have been found in the form."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
@@ -283,8 +283,6 @@ msgstr "Sauvegarder"
 
 #: pod/chapter/templates/chapter/form_chapter.html:30
 #: pod/enrichment/templates/enrichment/form_enrichment.html:31
-#: pod/podfile/templates/podfile/form_file.html:11
-#: pod/podfile/templates/podfile/form_image.html:11
 #: pod/video/templates/channel/form_theme.html:47
 msgid "Cancel"
 msgstr "Annuler"
@@ -315,7 +313,7 @@ msgstr "Éditer le chapitre"
 
 #: pod/chapter/templates/chapter/list_chapter.html:26
 #: pod/enrichment/templates/enrichment/list_enrichment.html:30
-#: pod/podfile/templates/podfile/list_file.html:28
+#: pod/podfile/templates/podfile/list_folder_files.html:72
 #: pod/video/templates/channel/list_theme.html:27
 msgid "Modify"
 msgstr "Modifier"
@@ -326,8 +324,8 @@ msgstr "Supprimer le chapitre"
 
 #: pod/chapter/templates/chapter/list_chapter.html:34
 #: pod/enrichment/templates/enrichment/list_enrichment.html:38
-#: pod/podfile/templates/podfile/infinite_folders.html:14
-#: pod/podfile/templates/podfile/list_file.html:35
+#: pod/podfile/templates/podfile/list_folder_files.html:28
+#: pod/podfile/templates/podfile/list_folder_files.html:89
 #: pod/recorder/templates/recorder/record_delete.html:9
 #: pod/video/templates/channel/list_theme.html:35
 #: pod/video/templates/videos/video_delete.html:10
@@ -344,7 +342,7 @@ msgstr "Chapitre vidéo"
 #: pod/completion/templates/video_completion.html:13
 #: pod/enrichment/templates/enrichment/group_enrichment.html:10
 #: pod/interactive/templates/interactive/group_interactive.html:10
-#: pod/main/templates/navbar.html:78
+#: pod/main/templates/navbar.html:76
 #: pod/video/templates/videos/my_videos.html:6
 #: pod/video/templates/videos/video_delete.html:8
 #: pod/video/templates/videos/video_edit.html:13
@@ -535,11 +533,11 @@ msgstr "Vidéo"
 #: pod/completion/templates/document/list_document.html:10
 #: pod/enrichment/models.py:146
 #: pod/enrichment/templates/enrichment/video_enrichment.html:155
-#: pod/podfile/models.py:138 pod/video/templates/videos/video-info.html:96
+#: pod/podfile/models.py:155 pod/video/templates/videos/video-info.html:96
 msgid "Document"
 msgstr "Document"
 
-#: pod/completion/models.py:123 pod/podfile/models.py:139
+#: pod/completion/models.py:123 pod/podfile/models.py:156
 msgid "Documents"
 msgstr "Documents"
 
@@ -650,7 +648,7 @@ msgstr "Fin"
 msgid "End time of the overlay, in seconds."
 msgstr "Fin de la superposition, en secondes."
 
-#: pod/completion/models.py:264 pod/video/views.py:1151
+#: pod/completion/models.py:264 pod/video/views.py:1150
 msgid "Content"
 msgstr "Contenu"
 
@@ -1047,8 +1045,8 @@ msgid "The file has not been saved."
 msgstr "Le fichier n’a pas été enregistré."
 
 #: pod/completion/views.py:224 pod/completion/views.py:398
-#: pod/completion/views.py:794 pod/podfile/views.py:367
-#: pod/podfile/views.py:474 pod/video/views.py:242 pod/video/views.py:1199
+#: pod/completion/views.py:794 pod/podfile/views.py:396
+#: pod/podfile/views.py:450 pod/video/views.py:241 pod/video/views.py:1198
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
 
@@ -1072,7 +1070,7 @@ msgstr "Éditer l'enrichissement"
 
 #: pod/enrichment/forms.py:34 pod/enrichment/models.py:313
 #: pod/interactive/forms.py:13 pod/interactive/models.py:37
-#: pod/podfile/models.py:29 pod/video/models.py:546
+#: pod/podfile/models.py:32 pod/video/models.py:546
 msgid "Groups"
 msgstr "Groupes"
 
@@ -1115,14 +1113,14 @@ msgstr "Temps de fin de l'affichage de l'enrichissement en secondes."
 #: pod/enrichment/models.py:136
 #: pod/enrichment/templates/enrichment/list_enrichment.html:11
 #: pod/video/forms.py:92 pod/video/models.py:378 pod/video/models.py:425
-#: pod/video/templates/videos/video-info.html:45 pod/video/views.py:1148
+#: pod/video/templates/videos/video-info.html:45 pod/video/views.py:1147
 #: pod/video_search/templates/search/search.html:82
 msgid "Type"
 msgstr "Type"
 
 #: pod/enrichment/models.py:143
 #: pod/enrichment/templates/enrichment/video_enrichment.html:154
-#: pod/main/models.py:42 pod/main/models.py:70 pod/podfile/models.py:173
+#: pod/main/models.py:42 pod/main/models.py:70 pod/podfile/models.py:190
 msgid "Image"
 msgstr "Image"
 
@@ -1377,7 +1375,7 @@ msgstr "Ajouter une vidéo à une playlist"
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html:119
 #: pod/interactive/templates/interactive/video_interactive.html:95
-#: pod/main/templates/navbar.html:82
+#: pod/main/templates/navbar.html:80
 #: pod/playlist/templates/my_playlists.html:10
 #: pod/playlist/templates/my_playlists.html:17
 #: pod/playlist/templates/playlist.html:14
@@ -1637,7 +1635,7 @@ msgstr "Diffuseurs"
 
 #: pod/live/templates/live/live.html:16 pod/live/templates/live/live.html:20
 #: pod/live/templates/live/lives.html:12 pod/live/templates/live/lives.html:15
-#: pod/live/templates/live/lives.html:18 pod/main/templates/navbar.html:30
+#: pod/live/templates/live/lives.html:18 pod/main/templates/navbar.html:28
 msgid "Lives"
 msgstr "Directs"
 
@@ -1718,8 +1716,9 @@ msgstr "Correctif ou signalement de bug"
 msgid "Other (please specify)"
 msgstr "Autre (spécifiez)"
 
-#: pod/main/forms.py:50 pod/podfile/models.py:23 pod/podfile/models.py:88
-#: pod/video/models.py:1015 pod/video/models.py:1078 pod/video/models.py:1123
+#: pod/main/forms.py:50 pod/podfile/models.py:26 pod/podfile/models.py:99
+#: pod/podfile/templates/podfile/home_content.html:29 pod/video/models.py:1015
+#: pod/video/models.py:1078 pod/video/models.py:1123
 msgid "Name"
 msgstr "Nom"
 
@@ -2329,13 +2328,13 @@ msgstr ""
 msgid "Zulu"
 msgstr ""
 
-#: pod/main/models.py:52 pod/main/models.py:80 pod/podfile/models.py:118
-#: pod/podfile/models.py:153
+#: pod/main/models.py:52 pod/main/models.py:80 pod/podfile/models.py:135
+#: pod/podfile/models.py:170
 msgid "Get the file type"
 msgstr "Obtenir le type du fichier"
 
-#: pod/main/models.py:57 pod/main/models.py:85 pod/podfile/models.py:123
-#: pod/podfile/models.py:158
+#: pod/main/models.py:57 pod/main/models.py:85 pod/podfile/models.py:140
+#: pod/podfile/models.py:175
 msgid "Get the file size"
 msgstr "Obtenir la taille du fichier"
 
@@ -2526,12 +2525,12 @@ msgstr "Vous venez d'envoyer un message depuis"
 msgid "Channels"
 msgstr "Chaînes"
 
-#: pod/main/templates/navbar.html:26 pod/video/models.py:379
+#: pod/main/templates/navbar.html:24 pod/video/models.py:379
 #: pod/video/templates/videos/filter_aside.html:36
 msgid "Types"
 msgstr "Types"
 
-#: pod/main/templates/navbar.html:49 pod/main/templates/navbar.html:51
+#: pod/main/templates/navbar.html:47 pod/main/templates/navbar.html:49
 #: pod/video/templates/videos/filter_aside.html:15 pod/video_search/forms.py:8
 #: pod/video_search/templates/search/search.html:8
 #: pod/video_search/templates/search/search.html:17
@@ -2539,19 +2538,19 @@ msgstr "Types"
 msgid "Search"
 msgstr "Rechercher"
 
-#: pod/main/templates/navbar.html:55
+#: pod/main/templates/navbar.html:53
 msgid "Add a video"
 msgstr "Ajouter une vidéo"
 
-#: pod/main/templates/navbar.html:72
+#: pod/main/templates/navbar.html:70
 msgid "Change your picture"
 msgstr "Changer votre image de profil"
 
-#: pod/main/templates/navbar.html:75
+#: pod/main/templates/navbar.html:73
 msgid "Add your picture"
 msgstr "Ajouter votre image de profil"
 
-#: pod/main/templates/navbar.html:80
+#: pod/main/templates/navbar.html:78
 #: pod/video/templates/channel/channel_edit.html:17
 #: pod/video/templates/channel/my_channels.html:6
 #: pod/video/templates/channel/my_channels.html:9
@@ -2559,14 +2558,18 @@ msgstr "Ajouter votre image de profil"
 msgid "My channels"
 msgstr "Mes chaînes"
 
-#: pod/main/templates/navbar.html:84
+#: pod/main/templates/navbar.html:82
+msgid "My files"
+msgstr "Mes fichiers"
+
+#: pod/main/templates/navbar.html:85
 #: pod/recorder/templates/recorder/claim_record.html:11
 #: pod/recorder/templates/recorder/record_delete.html:8
 #: pod/recorder/templates/recorder/record_delete.html:20
 msgid "Claim a record"
 msgstr "Revendiquer un enregistrement"
 
-#: pod/main/templates/navbar.html:88 pod/main/templates/navbar.html:89
+#: pod/main/templates/navbar.html:89 pod/main/templates/navbar.html:90
 msgid "Log out"
 msgstr "Déconnexion"
 
@@ -2609,7 +2612,7 @@ msgstr "Votre message a été envoyé."
 
 #: pod/playlist/models.py:19
 #: pod/playlist/templates/playlist/playlist_element_list.html:12
-#: pod/podfile/models.py:26 pod/video/admin.py:133 pod/video/models.py:433
+#: pod/podfile/models.py:29 pod/video/admin.py:133 pod/video/models.py:433
 #: pod/video/models.py:458 pod/video_search/templates/search/search.html:70
 msgid "Owner"
 msgstr "Propriétaire"
@@ -2805,109 +2808,148 @@ msgstr ""
 "Le fichier actuel %(size)s, est trop grand. La taille maximale autorisée est "
 "%(allowed_size)s."
 
-#: pod/podfile/models.py:30
+#: pod/podfile/models.py:33
 msgid "Select one or more groups who can access in read only to this folder"
 msgstr "Sélectionner un ou plusieurs groupes qui auront accès à ce dossier"
 
-#: pod/podfile/models.py:35
+#: pod/podfile/models.py:38
 msgid "User directory"
 msgstr "Répertoire utilisateur"
 
-#: pod/podfile/models.py:36
+#: pod/podfile/models.py:39
 msgid "User directories"
 msgstr "Répertoires utilisateur"
 
-#: pod/podfile/models.py:65
+#: pod/podfile/models.py:76
 msgid "Create owner directory has failed."
 msgstr "La création du répertoire racine a échoué."
 
-#: pod/podfile/models.py:174
+#: pod/podfile/models.py:191
 msgid "Images"
 msgstr "Images"
 
-#: pod/podfile/templates/podfile/customfilewidget.html:10
+#: pod/podfile/templates/podfile/customfilewidget.html:59
 msgid "Open file in a new tab"
 msgstr "Ouvrir le fichier dans un nouvel onglet"
 
-#: pod/podfile/templates/podfile/customfilewidget.html:14
+#: pod/podfile/templates/podfile/customfilewidget.html:67
 msgid "Change file"
 msgstr "Changer de fichier"
 
-#: pod/podfile/templates/podfile/customfilewidget.html:16
+#: pod/podfile/templates/podfile/customfilewidget.html:69
 msgid "Change image"
 msgstr "Changer d’image"
 
-#: pod/podfile/templates/podfile/customfilewidget.html:21
-#: pod/podfile/templates/podfile/customfilewidget.html:38
+#: pod/podfile/templates/podfile/customfilewidget.html:74
+#: pod/podfile/templates/podfile/customfilewidget.html:91
+#: pod/podfile/templates/podfile/customfilewidget.html:151
 msgid "Remove file"
 msgstr "Retirer le fichier"
 
-#: pod/podfile/templates/podfile/customfilewidget.html:23
-#: pod/podfile/templates/podfile/customfilewidget.html:40
+#: pod/podfile/templates/podfile/customfilewidget.html:76
+#: pod/podfile/templates/podfile/customfilewidget.html:93
+#: pod/podfile/templates/podfile/customfilewidget.html:153
 msgid "Remove image"
 msgstr "Retirer l’image"
 
-#: pod/podfile/templates/podfile/customfilewidget.html:31
-#: pod/podfile/templates/podfile/customfilewidget.html:52
-#: pod/podfile/templates/podfile/customfilewidget.html:85
+#: pod/podfile/templates/podfile/customfilewidget.html:84
+#: pod/podfile/templates/podfile/customfilewidget.html:105
+#: pod/podfile/templates/podfile/customfilewidget.html:144
 msgid "Select a file"
 msgstr "Sélectionner un fichier"
 
-#: pod/podfile/templates/podfile/customfilewidget.html:33
-#: pod/podfile/templates/podfile/customfilewidget.html:52
-#: pod/podfile/templates/podfile/customfilewidget.html:87
+#: pod/podfile/templates/podfile/customfilewidget.html:86
+#: pod/podfile/templates/podfile/customfilewidget.html:105
+#: pod/podfile/templates/podfile/customfilewidget.html:146
 msgid "Select an image"
 msgstr "Sélectionner une image"
 
-#: pod/podfile/templates/podfile/form_file.html:10
-#: pod/podfile/templates/podfile/form_image.html:10
-msgid "Upload"
-msgstr "Téléverser"
+#: pod/podfile/templates/podfile/home.html:6
+#: pod/podfile/templates/podfile/home.html:10
+msgid "My Files"
+msgstr "Mes fichiers"
 
-#: pod/podfile/templates/podfile/infinite_folders.html:14
-msgid "Delete the folder"
-msgstr "Supprimer le dossier"
+#: pod/podfile/templates/podfile/home_content.html:18
+#: pod/podfile/templates/podfile/home_content.html:30
+msgid "Enter new name of folder"
+msgstr "Indiquer un nouveau nom à ce dossier"
 
-#: pod/podfile/templates/podfile/list_file.html:12
+#: pod/podfile/templates/podfile/home_content.html:50
+#: pod/podfile/templates/podfile/list_folder_files.html:50
+msgid "Loading"
+msgstr "Chargement"
+
+#: pod/podfile/templates/podfile/home_content.html:57
+msgid "Close"
+msgstr "Fermer"
+
+#: pod/podfile/templates/podfile/home_content.html:58
+msgid "Save changes"
+msgstr "Sauvegarder"
+
+#: pod/podfile/templates/podfile/list_folder_files.html:8
 msgid "file"
 msgstr "fichier"
 
-#: pod/podfile/templates/podfile/list_file.html:28
-msgid "Edit the file"
-msgstr "Éditer le fichier"
+#: pod/podfile/templates/podfile/list_folder_files.html:21
+msgid "Rename"
+msgstr "Renomer"
 
-#: pod/podfile/templates/podfile/list_file.html:35
-msgid "Delete the file"
-msgstr "Supprimer le fichier"
+#: pod/podfile/templates/podfile/list_folder_files.html:40
+msgid "Upload Files"
+msgstr "Téléverser des fichiers"
 
-#: pod/podfile/templates/podfile/list_folder.html:4
-msgid "home"
-msgstr "accueil"
+#: pod/podfile/templates/podfile/list_folder_files.html:81
+msgid "Download"
+msgstr "Télécharger"
 
-#: pod/podfile/templates/podfile/list_folder.html:5
-#, python-format
-msgid "%(counter)s folder"
-msgid_plural "%(counter)s folders"
-msgstr[0] "%(counter)s dossier"
-msgstr[1] "%(counter)s dossiers"
+#: pod/podfile/templates/podfile/userfolder.html:6
+msgid "My folders"
+msgstr "Mes dossiers"
 
-#: pod/podfile/views.py:59 pod/podfile/views.py:387
-msgid "You cannot edit this folder."
-msgstr "Vous ne pouvez pas éditer ce dossier."
+#: pod/podfile/templates/podfile/userfolder.html:11
+msgid "Add new folder"
+msgstr "Ajouter un nouveau dossier"
 
-#: pod/podfile/views.py:125
-msgid "You cannot delete home folder."
-msgstr "Vous ne pouvez pas supprimer ce dossier."
+#: pod/podfile/templates/podfile/userfolder.html:37
+msgid "Shared folders"
+msgstr "Dossiers partagés"
 
-#: pod/podfile/views.py:159 pod/podfile/views.py:201 pod/podfile/views.py:240
+#: pod/podfile/views.py:122
 msgid "You cannot see this folder."
 msgstr "Vous ne pouvez pas voir ce dossier."
 
-#: pod/podfile/views.py:275
-msgid "You cannot edit this image."
-msgstr "Vous ne pouvez pas éditer cette image."
+#: pod/podfile/views.py:180
+msgid "You cannot edit this folder."
+msgstr "Vous ne pouvez pas éditer ce dossier."
 
-#: pod/podfile/views.py:296 pod/podfile/views.py:408
+#: pod/podfile/views.py:216
+msgid "You cannot delete home folder."
+msgstr "Vous ne pouvez pas supprimer ce dossier."
+
+#: pod/podfile/views.py:242
+msgid "You cannot delete this file."
+msgstr "Vous ne pouvez pas supprimer ce fichier."
+
+#: pod/podfile/views.py:276
+msgid "You cannot edit file on this folder."
+msgstr "Vous ne pouvez pas éditer de fichier dans ce dossier."
+
+#: pod/podfile/views.py:320
+#, python-format
+msgid "The file %(fname)s has not allowed format"
+msgstr "Le format du fichier %(fname)s n’est pas autorisé"
+
+#: pod/podfile/views.py:337
+#, python-format
+msgid "The file %(fname)s is not valid (%(form_error)s)"
+msgstr "Le fichier %(fname)s n’est pas valide (%(form_error)s)"
+
+#: pod/podfile/views.py:357
+msgid "You cannot access this folder."
+msgstr "Vous ne pouvez pas voir ce dossier."
+
+#: pod/podfile/views.py:366
 msgid "You cannot edit this file."
 msgstr "Vous ne pouvez pas éditer ce fichier."
 
@@ -2922,15 +2964,14 @@ msgid "source_file"
 msgstr "fichier source"
 
 #: pod/recorder/forms.py:58
-#| msgid "Delete this record."
 msgid "Delete the record"
-msgstr "Supprimer cet enregistrement."
+msgstr "Supprimer cet enregistrement"
 
 #: pod/recorder/forms.py:59
 msgid "If checked, record will be deleted instead of saving it"
 msgstr "Si coché, l'enregistrement sera supprimé et non ajouté"
 
-#: pod/recorder/forms.py:65 pod/video/forms.py:644
+#: pod/recorder/forms.py:65 pod/video/forms.py:638
 msgid "I agree"
 msgstr "J'accepte"
 
@@ -3146,7 +3187,6 @@ msgid "Recorder not found."
 msgstr "Enregistreur non trouvé."
 
 #: pod/recorder/views.py:62
-#| msgid "The record has been deleted."
 msgid "The selected record has been deleted."
 msgstr "L'enregistrement a été supprimé."
 
@@ -3212,12 +3252,12 @@ msgstr "L'enregistrement a été supprimé."
 msgid "Pod Administration"
 msgstr "Administration de Pod"
 
-#: pod/video/admin.py:157
+#: pod/video/admin.py:159
 msgid "Encode selected"
 msgstr "(Ré)encoder la sélection"
 
-#: pod/video/admin.py:195 pod/video/forms.py:225 pod/video/forms.py:524
-#: pod/video/forms.py:526 pod/video/models.py:220
+#: pod/video/admin.py:197 pod/video/forms.py:225 pod/video/forms.py:518
+#: pod/video/forms.py:520 pod/video/models.py:220
 msgid "Owners"
 msgstr "Propriétaires"
 
@@ -3460,7 +3500,7 @@ msgstr ""
 "Si vous ne sélectionnez pas le \"Mode brouillon\", vous pouvez restreindre "
 "son accès aux personnes authentifiées"
 
-#: pod/video/forms.py:179 pod/video/forms.py:634
+#: pod/video/forms.py:179 pod/video/forms.py:628
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -3533,15 +3573,15 @@ msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne
 msgid "File"
 msgstr "Fichier"
 
-#: pod/video/forms.py:645
+#: pod/video/forms.py:639
 msgid "Delete video cannot be undo"
 msgstr "La suppression est définitive"
 
-#: pod/video/forms.py:712
+#: pod/video/forms.py:706
 msgid "A note can't be empty"
 msgstr "Une note ne peut pas être vide"
 
-#: pod/video/forms.py:734
+#: pod/video/forms.py:728
 msgid "A comment can't be empty"
 msgstr "Un commentaire ne peut pas être vide"
 
@@ -3900,7 +3940,7 @@ msgid "Video default version."
 msgstr "Version par défaut de la vidéo."
 
 #: pod/video/models.py:1202 pod/video/models.py:1205 pod/video/models.py:1221
-#: pod/video/views.py:1133
+#: pod/video/views.py:1132
 msgid "Note"
 msgstr "Note"
 
@@ -4441,92 +4481,92 @@ msgstr "Connectez-vous pour en créer une nouvelle."
 msgid "-- sorry, no translation provided --"
 msgstr "-- désolé, aucune traduction fournie --"
 
-#: pod/video/views.py:132 pod/video/views.py:170
+#: pod/video/views.py:131 pod/video/views.py:169
 msgid "You cannot edit this channel."
 msgstr "Vous ne pouvez éditer cette chaîne."
 
-#: pod/video/views.py:149 pod/video/views.py:565
+#: pod/video/views.py:148 pod/video/views.py:564
 msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardés."
 
-#: pod/video/views.py:495
+#: pod/video/views.py:494
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
-#: pod/video/views.py:510
+#: pod/video/views.py:509
 msgid "You cannot watch this video."
 msgstr "Vous ne pouvez pas voir cette vidéo."
 
-#: pod/video/views.py:539
+#: pod/video/views.py:538
 msgid "You cannot edit this video."
 msgstr "Vous ne pouvez pas éditer cette vidéo."
 
-#: pod/video/views.py:607
+#: pod/video/views.py:606
 msgid "You cannot delete this video."
 msgstr "Vous ne pouvez pas supprimer cette vidéo."
 
-#: pod/video/views.py:617
+#: pod/video/views.py:616
 msgid "The video has been deleted."
 msgstr "La vidéo a été supprimée."
 
-#: pod/video/views.py:729
+#: pod/video/views.py:728
 #, python-format
 msgid "You cannot %s this note or comment."
 msgstr "Vous ne pouvez pas %s cette note ou ce commentaire."
 
-#: pod/video/views.py:750
+#: pod/video/views.py:749
 msgid "You cannot see this note or comment."
 msgstr "Vous ne pouvez pas voir cette note ou ce commentaire."
 
-#: pod/video/views.py:982 pod/video/views.py:996 pod/video/views.py:1019
+#: pod/video/views.py:981 pod/video/views.py:995 pod/video/views.py:1018
 msgid "The comment has been saved."
 msgstr "Le commentaire a été enregistré."
 
-#: pod/video/views.py:1009 pod/video/views.py:1034
+#: pod/video/views.py:1008 pod/video/views.py:1033
 msgid "The note has been saved."
 msgstr "La note a été sauvegardée."
 
-#: pod/video/views.py:1073
+#: pod/video/views.py:1072
 msgid "The note has been deleted."
 msgstr "La note a été supprimée."
 
-#: pod/video/views.py:1081
+#: pod/video/views.py:1080
 msgid "The comment has been deleted."
 msgstr "Le commentaire a été supprimé."
 
-#: pod/video/views.py:1126 pod/video/views.py:1129 pod/video/views.py:1135
+#: pod/video/views.py:1125 pod/video/views.py:1128 pod/video/views.py:1134
 msgid "None"
 msgstr "Aucun"
 
-#: pod/video/views.py:1148
+#: pod/video/views.py:1147
 msgid "ID"
 msgstr "ID"
 
-#: pod/video/views.py:1148
+#: pod/video/views.py:1147
 msgid "Status"
 msgstr "Status"
 
-#: pod/video/views.py:1149
+#: pod/video/views.py:1148
 msgid "Parent note id"
 msgstr "Identifiant de note parent"
 
-#: pod/video/views.py:1149
+#: pod/video/views.py:1148
 msgid "Parent comment id"
 msgstr "ID du commentaire parent"
 
-#: pod/video/views.py:1150
+#: pod/video/views.py:1149
 msgid "Created on"
 msgstr "Créé le"
 
-#: pod/video/views.py:1150
+#: pod/video/views.py:1149
 msgid "Modified on"
 msgstr "Modifié le"
 
-#: pod/video/views.py:1151
+#: pod/video/views.py:1150
 msgid "Note timestamp"
 msgstr "Horodatage de la note"
 
-#: pod/video/views.py:1178 pod/video/views.py:1205
+#: pod/video/views.py:1177 pod/video/views.py:1204
 msgid "You cannot access to this view."
 msgstr "Vous ne pouvez pas accéder à cette vue."
 
@@ -4558,6 +4598,26 @@ msgstr "facettage"
 #: pod/video_search/views.py:55
 msgid "Remove selection"
 msgstr "Retirer la sélection"
+
+#~ msgid "Delete the folder"
+#~ msgstr "Supprimer le dossier"
+
+#~ msgid "Edit the file"
+#~ msgstr "Éditer le fichier"
+
+#~ msgid "Delete the file"
+#~ msgstr "Supprimer le fichier"
+
+#~ msgid "home"
+#~ msgstr "accueil"
+
+#~ msgid "%(counter)s folder"
+#~ msgid_plural "%(counter)s folders"
+#~ msgstr[0] "%(counter)s dossier"
+#~ msgstr[1] "%(counter)s dossiers"
+
+#~ msgid "You cannot edit this image."
+#~ msgstr "Vous ne pouvez pas éditer cette image."
 
 #~ msgid ""
 #~ "Select and copy the caption file contents below and paste into a .vtt file"
@@ -4598,9 +4658,6 @@ msgstr "Retirer la sélection"
 
 #~ msgid "File type not allowed : {0}"
 #~ msgstr "Type de fichier non autorisé : {0}"
-
-#~ msgid "Files"
-#~ msgstr "Fichiers"
 
 #~ msgid "File size is too large (>100MB)"
 #~ msgstr "Taille du fichier trop grand (>100MB)"

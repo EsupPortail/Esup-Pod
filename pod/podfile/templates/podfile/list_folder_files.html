@@ -103,9 +103,23 @@
           {% endif %}
           <div class="card-body">
             <p class="card-text p-0 m-0">
+              {% if type %}
+                {% if type == "image" and file.class_name == "CustomImageModel" %}
+                <a href="{{file.file.url}}" class="card-title {% if request.is_ajax %}file-name{% endif%}" title="{{file.name}}" target="_blank" data-fileid="{{file.id}}" data-filetype="{{file.class_name}}">
+                  <small class="text-muted">{{file.name}}</small>
+                </a>
+                {% elif type == "file" and file.class_name == "CustomFileModel"%}
+                <a href="{{file.file.url}}" class="card-title {% if request.is_ajax %}file-name{% endif%}" title="{{file.name}}" target="_blank" data-fileid="{{file.id}}" data-filetype="{{file.class_name}}">
+                  <small class="text-muted">{{file.name}}</small>
+                </a>
+                {% else %}
+                <small class="text-muted">{{file.name}}</small>
+                {% endif %}
+              {% else %}
               <a href="{{file.file.url}}" class="card-title {% if request.is_ajax %}file-name{% endif%}" title="{{file.name}}" target="_blank" data-fileid="{{file.id}}" data-filetype="{{file.class_name}}">
                 <small class="text-muted">{{file.name}}</small>
               </a>
+              {% endif %}
             </p>
           </div>
 
