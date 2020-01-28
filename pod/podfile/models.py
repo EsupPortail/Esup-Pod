@@ -111,6 +111,12 @@ class BaseFileModel(models.Model):
         self.name = os.path.basename(path)
         return super(BaseFileModel, self).save(**kwargs)
 
+    def class_name(self):
+        return self.__class__.__name__
+
+    def file_exist(self):
+        return (self.file and os.path.isfile(self.file.path))
+
     class Meta:
         abstract = True
         ordering = ['name']
