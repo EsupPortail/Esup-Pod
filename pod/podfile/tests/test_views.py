@@ -261,7 +261,7 @@ class FileViewTestCase(TestCase):
 
         response = self.client.post(
             reverse('podfile:uploadfiles'), {
-                'file': textfile,
+                'ufile': textfile,
                 'folderid': folder.id,
             }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
@@ -271,6 +271,7 @@ class FileViewTestCase(TestCase):
 
         self.assertTrue(result['list_element'])
         self.assertEqual(folder.customfilemodel_set.all().count(), nbfile + 1)
+        
         self.assertTrue(CustomFileModel.objects.get(
             name='textfile',
             created_by=self.user,
