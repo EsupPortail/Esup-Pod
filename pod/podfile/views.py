@@ -52,6 +52,7 @@ FILE_ALLOWED_EXTENSIONS = getattr(
 )
 FOLDER_FILE_TYPE = ['image', 'file']
 
+
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def home(request, type=None):

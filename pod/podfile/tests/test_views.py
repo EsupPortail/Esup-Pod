@@ -38,7 +38,7 @@ urlpatterns += [url(r'^podfile/', include('pod.podfile.urls')), ]
         }
     },
     LANGUAGE_CODE='en',
-    #USE_PODFILE=True
+    # USE_PODFILE=True
 )
 class PodFileViewTestCase(TestCase):
 
@@ -217,7 +217,7 @@ class FileViewTestCase(TestCase):
             reverse(
                 'podfile:get_folder_files',
                 kwargs={'id': UserFolder.objects.get(
-                            owner=self.user, name='home').id}))
+                    owner=self.user, name='home').id}))
         self.assertEqual(response.status_code, 302)  # user is not staff
         self.user.is_staff = True
         self.user.save()
@@ -226,7 +226,7 @@ class FileViewTestCase(TestCase):
             reverse(
                 'podfile:get_folder_files',
                 kwargs={'id': UserFolder.objects.get(
-                            owner=self.user, name='home').id}))
+                    owner=self.user, name='home').id}))
         self.assertEqual(response.status_code, 200)  # user is staff
 
         self.assertEqual(
@@ -237,14 +237,13 @@ class FileViewTestCase(TestCase):
             reverse(
                 'podfile:get_folder_files',
                 kwargs={'id': UserFolder.objects.get(
-                            owner=self.user, name='Child').id}))
+                    owner=self.user, name='Child').id}))
         self.assertEqual(response.status_code, 200)  # user is staff
         self.assertEqual(
             response.context["folder"],
             UserFolder.objects.get(owner=self.user, name='Child'))
-        
+
         print(" ---> test_list_files : OK!")
-    
 
     def test_edit_files(self):
         self.client = Client()
@@ -267,6 +266,7 @@ class FileViewTestCase(TestCase):
             }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         self.assertEqual(response.status_code, 200)  # ajax with post data
+
         result = json.loads(force_text(response.content))
 
         self.assertTrue(result['list_element'])
