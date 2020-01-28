@@ -142,7 +142,9 @@ class VideoAdmin(admin.ModelAdmin):
             exclude += ('video', 'owner',)
         if not TRANSCRIPT:
             exclude += ('transcript',)
-        if not USE_OBSOLESCENCE:
+        if (request.user.is_staff is False
+                or obj is None
+                or USE_OBSOLESCENCE is False):
             exclude += ('date_delete',)
         self.exclude = exclude
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
