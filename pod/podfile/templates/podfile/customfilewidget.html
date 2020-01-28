@@ -135,7 +135,6 @@ $(document).on('show.bs.modal', '#fileModal_{{id}}', function (event) {
   event.stopPropagation();
   id_input = $(this).data('id');
   send_form_data("{% url "podfile:home" type=type %}", {}, "append_folder_html_in_modal", "get");
-
 });
 
 $(document).on("click", "#remove_file_{{id}}", function(event) {

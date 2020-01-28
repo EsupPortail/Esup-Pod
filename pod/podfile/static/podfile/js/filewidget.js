@@ -170,6 +170,13 @@ $(document).on('change', "#ufile", function(e) {
         $('#folderModalCenter').find('.modal-body input#folderInputName').val("");
         $('#folderModalCenter').find('.modal-body input#formfolderid').val("");
 
+        if(data.upload_errors != "") {
+            console.log(data.upload_errors);
+            const str = data.upload_errors.split('\n').join('<br/>');
+            console.log(str);
+            showalert(gettext("Error during exchange") + "<br/>"+str, "alert-danger");
+        }
+
     } else {
         if(data.errors) {
           showalert(data.errors+"<br/>"+data.form_error, "alert-danger");

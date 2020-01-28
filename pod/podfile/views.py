@@ -276,7 +276,7 @@ def uploadfiles(request):
                 _(u'You cannot edit file on this folder.'))
             raise PermissionDenied
         else:
-            upload_errors = []
+            upload_errors = ""
             if request.FILES:
                 files = request.FILES.getlist('ufile')
                 upload_errors = save_uploaded_files(request, folder, files)
@@ -298,7 +298,7 @@ def uploadfiles(request):
 
 
 def save_uploaded_files(request, folder, files):
-    upload_errors = []
+    upload_errors = ""
     for file in files:
         # Check if file is image
         fname, dot, extension = file.name.rpartition('.')
@@ -316,11 +316,10 @@ def save_uploaded_files(request, folder, files):
             upload_errors = manage_form_file(
                 request, upload_errors, fname, form_file)
         else:
-            upload_errors.append(
-                _(u'The file %(fname)s has not allowed format' % {
+            upload_errors += "\n%s" % _(
+                'The file %(fname)s has not allowed format' % {
                     'fname': fname
                 }
-                )
             )
     return upload_errors
 
@@ -334,13 +333,13 @@ def manage_form_file(request, upload_errors, fname, form_file):
             file.created_by = request.user
         file.save()
     else:
-        upload_errors.append(
-            _(u'The file %(fname)s is not valid (%(form_error)s)' % {
+        upload_errors += "\n%s" % _(
+            'The file %(fname)s is not valid (%(form_error)s)' % {
                 'fname': fname,
                 'form_error': form_file.errors.as_json()
             }
-            )
         )
+
     return upload_errors
 
 
