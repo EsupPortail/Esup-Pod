@@ -1372,12 +1372,12 @@ def manage_access_rights_stats_video(request, video, page_title):
             _("You do not have access rights to this video: %s " % video.slug))
 
 
-def stats_view(request, slug, slug_t=None):
+def stats_view(request, slug=None, slug_t=None):
     # Slug peut référencer une vidéo ou une chaine
     # from definit sa référence
     target = request.GET.get('from', "videos")
     videos, title = get_videos(slug, target, slug_t)
-    error_message = _(
+    error_message = (
             "The following %s does not exist or contain any videos: %s")
     if request.method == "GET" and target == "video" and videos:
         return manage_access_rights_stats_video(request, videos[0], title)
@@ -1387,15 +1387,16 @@ def stats_view(request, slug, slug_t=None):
                 _("The following video does not exist : %s") % slug)
 
     if request.method == "GET" and (
-            not videos and target in ("channel", "theme")):
+            not videos and target in ("channel", "theme", "videos")):
         slug = slug if not slug_t else slug_t
-        return HttpResponseNotFound(error_message % (target, slug))
+        target = "Pod" if target == "videos" else target
+        return HttpResponseNotFound(_(error_message % (target, slug)))
 
     if (request.method == "POST" and target == "video" and (
             request.POST.get('password') and
             request.POST.get('password') == videos[0].password)) or (
                 request.method == "GET" and
-                videos and target in ("channel", "theme")):
+                videos and target in ("videos", "channel", "theme")):
         return render(
                 request,
                 "videos/video_stats_view.html",

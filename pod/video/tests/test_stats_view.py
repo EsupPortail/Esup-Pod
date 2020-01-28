@@ -1,21 +1,22 @@
-from django.test import TestCase, Client
+from unittest import skipUnless
 import os
 import json
 import logging
 from django.http import JsonResponse
 from datetime import date
-from django.conf import settings
 from django.test import override_settings
-from django.urls import reverse
-from pod.video.models import Channel, Theme, Video, Type
+from django.conf import settings
+from django.test import TestCase, Client
+from django.urls import reverse, NoReverseMatch
 from django.contrib.auth.models import Group
 from pod.authentication.models import User
+from pod.video.models import Channel, Theme, Video, Type
 from pod.video.views import get_all_views_count, stats_view
 TODAY = date.today()
+USE_STATS_VIEW = getattr(settings, "USE_STATS_VIEW", False)
 
 
 @override_settings(
-    USE_STATS_VIEW=True,
     MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
     DATABASES={
         'default': {
@@ -23,7 +24,7 @@ TODAY = date.today()
             'NAME': 'db.sqlite',
         },
     },
-    LANGUAGE_CODE='en'
+    LANGUAGE_CODE='en',
 )
 class TestStatsView(TestCase):
     fixtures = ['initial_data.json', ]
@@ -82,43 +83,62 @@ class TestStatsView(TestCase):
         self.video.theme = [self.theme]
         self.video2.channel = [self.channel]
         self.video2.theme = [self.theme]
+        self.url_stats_exists = True
+        try:
 
-        self.stat_video_url = reverse(
-                "video_stats_view",
-                kwargs={"slug": self.video.slug})
-        self.stat_channel_url = reverse(
-                "video_stats_view",
-                kwargs={"slug": self.channel.slug})
-        self.stat_theme_url = reverse(
-                "video_stats_view",
-                kwargs={
-                    "slug": self.channel.slug,
-                    "slug_t": self.theme.slug})
+            self.stat_video_url = reverse(
+                    "video_stats_view",
+                    kwargs={"slug": self.video.slug})+"?from=video"
+            self.stat_channel_url = reverse(
+                    "video_stats_view",
+                    kwargs={"slug": self.channel.slug})+"?from=channel"
+            self.stat_theme_url = reverse(
+                    "video_stats_view",
+                    kwargs={
+                        "slug": self.channel.slug,
+                        "slug_t": self.theme.slug})+"?from=theme"
+            USE_STATS_VIEW = True
+        except NoReverseMatch:
+            USE_STATS_VIEW = False
+            print("Statistics URL defined =======> : " + USE_STATS_VIEW)
 
+    @skipUnless(USE_STATS_VIEW, "Require URL video_stats_view")
     def test_stats_view_GET_request_video(self):
-        response = self.client.get(self.stat_video_url, {"from": "video"})
-        # Check that the view function is stats_view
-        self.assertEqual(response.resolver_match.func, stats_view)
-        # Check that the response is 200 OK.
-        # and content the expected title
-        self.assertContains(
-                response,
-                (b"Video viewing statistics for %s"
-                    % self.video.title.capitalize().encode("utf-8")),
-                status_code=200)
-        # Check that the response is 404 Not Found.
-        # Check the response contains the error message
-        stat_video_url = reverse(
-                "video_stats_view",
-                kwargs={"slug": "0001_videodoesnotexist"})
-        response = self.client.get(stat_video_url, {"from": "video"})
-        self.assertContains(
-                response,
-                b"The following video does not exist : 0001_videodoesnotexist",
-                status_code=404)
+        with self.settings(USE_STATS_VIEW=True):
+            response = self.client.get(self.stat_video_url)
+            # Check that the view function is stats_view
+            self.assertEqual(response.resolver_match.func, stats_view)
+            # Check that the response is 200 OK.
+            # and content the expected title
+            self.assertContains(
+                    response,
+                    (b"Video viewing statistics for %s"
+                        % self.video.title.capitalize().encode("utf-8")),
+                    status_code=200)
+            # Check that the response is 404 Not Found.
+            # Check the response contains the error message
+            stat_video_url = reverse(
+                    "video_stats_view",
+                    kwargs={"slug": "0001_videodoesnotexist"})+"?from=video"
+            response = self.client.get(stat_video_url)
+            self.assertContains(
+                    response,
+                    b"The following video does not exist : \
+                            0001_videodoesnotexist",
+                    status_code=404)
 
+    @skipUnless(USE_STATS_VIEW, "Require activate URL video_stats_view")
+    def test_stats_view_GET_request_videos(self):
+        stat_url_videos = reverse("video_stats_view")
+        response = self.client.get(stat_url_videos, {"from": "videos"})
+        self.assertContains(
+                response,
+                b"Pod video view statistics",
+                status_code=200)
+
+    @skipUnless(USE_STATS_VIEW, "Require acitvate URL video_stats_view")
     def test_stats_view_GET_request_channel(self):
-        response = self.client.get(self.stat_channel_url, {"from": "channel"})
+        response = self.client.get(self.stat_channel_url)
         # Check that the view function is stats_view
         self.assertEqual(response.resolver_match.func, stats_view)
         # Check that the response is 200 OK.
@@ -132,16 +152,17 @@ class TestStatsView(TestCase):
         # Check that the response contains the error message
         stat_channel_url = reverse(
                 "video_stats_view",
-                kwargs={"slug": "0001_channeldoesnotexist"})
-        response = self.client.get(stat_channel_url, {"from": "channel"})
+                kwargs={"slug": "0001_channeldoesnotexist"})+"?from=channel"
+        response = self.client.get(stat_channel_url)
         msg = b"The following channel does not exist or contain any videos: %b"
         self.assertContains(
                 response,
                 msg % b"0001_channeldoesnotexist",
                 status_code=404)
 
+    @skipUnless(USE_STATS_VIEW, "Require URL video_stats_view")
     def test_stats_view_GET_request_theme(self):
-        response = self.client.get(self.stat_theme_url, {"from": "theme"})
+        response = self.client.get(self.stat_theme_url)
         # Check that the view function is stats_view
         self.assertEqual(response.resolver_match.func, stats_view)
         # Check that the response is 200 OK.
@@ -157,14 +178,15 @@ class TestStatsView(TestCase):
                 "video_stats_view",
                 kwargs={
                     "slug": "0001_channeldoesnotexist",
-                    "slug_t": "0001_themedoesnotexist"})
-        response = self.client.get(stat_theme_url, {"from": "theme"})
+                    "slug_t": "0001_themedoesnotexist"})+"?from=theme"
+        response = self.client.get(stat_theme_url)
         msg = b"The following theme does not exist or contain any videos: %b"
         self.assertContains(
                 response,
                 msg % b"0001_themedoesnotexist",
                 status_code=404)
 
+    @skipUnless(USE_STATS_VIEW, "Require activate URL video_stats_view")
     def test_stats_view_POST_request_video(self):
         views = get_all_views_count(self.video.id, TODAY)
         data = [{
@@ -176,7 +198,7 @@ class TestStatsView(TestCase):
             "since_created": views[3]}]
         data.append({"min_date": TODAY})
         expected_content = JsonResponse(data, safe=False).content
-        response = self.client.post(self.stat_video_url+"?from=video")
+        response = self.client.post(self.stat_video_url)
         # Check that the view function is stats_view
         self.assertEqual(response.resolver_match.func, stats_view)
         # Check that the response is 200 OK and
@@ -184,6 +206,32 @@ class TestStatsView(TestCase):
         # the content contains the title of the video and expected data
         self.assertEqual(response.content, expected_content)
 
+    @skipUnless(USE_STATS_VIEW, "Require activate URL video_stats_view")
+    def test_stats_view_POST_request_videos(self):
+        stat_url_videos = reverse("video_stats_view")
+        response = self.client.post(stat_url_videos)
+        # Check that the view function is stats_view
+        self.assertEqual(response.resolver_match.func, stats_view)
+        # Check that the response is 200 OK and
+        self.assertEqual(response.status_code, 200)
+        videos_expected = [self.video, self.video2, self.video3]
+        for video in videos_expected:
+            views = get_all_views_count(video.id, TODAY)
+            data = {
+                "title": self.video.title,
+                "slug": self.video.slug,
+                "day": views[0],
+                "month": views[1],
+                "year": views[2],
+                "since_created": views[3]}
+            # the content contains the title of the video and expected data
+            self.assertIn(json.dumps(data), response.content.decode("utf-8"))
+        # the content contains the title of the video and expected data
+        self.assertContains(
+                response,
+                json.dumps({"min_date": TODAY.strftime("%Y-%m-%d")}))
+
+    @skipUnless(USE_STATS_VIEW, "Require URL video_stats_view")
     def test_stats_view_POST_request_channel(self):
         response = self.client.post(self.stat_channel_url)
         # Check that the view function is stats_view
@@ -207,6 +255,7 @@ class TestStatsView(TestCase):
                 response,
                 json.dumps({"min_date": TODAY.strftime("%Y-%m-%d")}))
 
+    @skipUnless(USE_STATS_VIEW, "Require URL video_stats_view")
     def test_stats_view_POST_request_theme(self):
         response = self.client.post(self.stat_theme_url)
         # Check that the view function is stats_view
@@ -229,6 +278,7 @@ class TestStatsView(TestCase):
                 response,
                 json.dumps({"min_date": TODAY.strftime("%Y-%m-%d")}))
 
+    @skipUnless(USE_STATS_VIEW, "Require URL video_stats_view")
     def test_stats_view_GET_request_video_access_rights(self):
         # **************************************************** #
         # *********** Test restricted by password ************ #

@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-24 14:14+0100\n"
+"POT-Creation-Date: 2020-01-28 13:44+0100\n"
 "PO-Revision-Date: 2019-12-09 12:51+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -1124,7 +1124,8 @@ msgid ""
 "rel='noopener' target='_blank'>click here to edit your video</a></p>."
 msgstr ""
 "vous pouvez changer la date de suppression en éditant votre vidéo:</p>\n"
-"<p><a href=‘http:%(url)s’ rel=‘noopener’ target=‘_blank’>http:%(url)s</a></p>\n"
+"<p><a href=‘http:%(url)s’ rel=‘noopener’ target=‘_blank’>http:%(url)s</a></"
+"p>\n"
 
 #: pod/custom/management/commands/check_obsolete_videos.py:221
 #, python-format
@@ -1159,8 +1160,8 @@ msgid ""
 "please contact the manager(s) in charge of your establishment at this "
 "address(es): %(email_address)s"
 msgstr ""
-"veuillez contacter les gestionnaires en charge de votre établissement à"
-" l’adresse suivante : %(email_address)s</p>\n"
+"veuillez contacter les gestionnaires en charge de votre établissement à "
+"l’adresse suivante : %(email_address)s</p>\n"
 
 #: pod/custom/management/commands/check_obsolete_videos.py:237
 #: pod/custom/management/commands/check_obsolete_videos.py:244
@@ -3282,7 +3283,7 @@ msgstr ""
 msgid "New recording added."
 msgstr "Nouvel enregistrement ajouté."
 
-#: pod/urls.py:206 pod/urls.py:207
+#: pod/urls.py:207 pod/urls.py:208
 msgid "Pod Administration"
 msgstr "Administration de Pod"
 
@@ -4098,7 +4099,7 @@ msgstr ""
 #: pod/video/templates/channel/channel.html:63
 #: pod/video/templates/videos/videos.html:27
 msgid "Statistics views"
-msgstr ""
+msgstr "Statistiques de vues"
 
 #: pod/video/templates/channel/channel.html:59
 #: pod/video/templates/channel/channel.html:65
@@ -4113,8 +4114,6 @@ msgid "subscribe to the audio feed"
 msgstr "souscrire au flux audio"
 
 #: pod/video/templates/channel/channel.html:63
-#, fuzzy
-#| msgid "Users can only add videos to this channel"
 msgid "Show view statistics for all videos in this channel"
 msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne"
 
@@ -4360,8 +4359,6 @@ msgid "Show details of view statistics"
 msgstr "Afficher les details des statistiques de visualisation"
 
 #: pod/video/templates/videos/video-info.html:44
-#, fuzzy
-#| msgid "Show all videos"
 msgid "Show details views"
 msgstr "Afficher les details de visualisation"
 
@@ -4716,6 +4713,7 @@ msgid "Video viewing statistics for the theme %s"
 msgstr "Statistiques de visualisation des vidéos du thème %s"
 
 #: pod/video/views.py:1372
+#, python-format
 msgid "You do not have access rights to this video: %s "
 msgstr "Vous n'avez pas les droits d'accès à cette vidéo: %s "
 
