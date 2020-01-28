@@ -31,7 +31,7 @@ HOMEPAGE_SHOWS_RESTRICTED = getattr(
     django_settings,
     'HOMEPAGE_SHOWS_RESTRICTED',
     True)
-
+USE_PODFILE = getattr(django_settings, 'USE_PODFILE', False)
 VERSION = getattr(
     django_settings,
     'VERSION',
@@ -81,6 +81,7 @@ def context_settings(request):
             m = "TEMPLATE_VISIBLE_SETTINGS: '{0}' does not exist".format(sett)
             raise ImproperlyConfigured(m)
     new_settings['VERSION'] = VERSION
+    new_settings['USE_PODFILE'] = USE_PODFILE
     new_settings["THIRD_PARTY_APPS"] = django_settings.THIRD_PARTY_APPS
     new_settings['OEMBED'] = OEMBED
     new_settings['HIDE_USERNAME'] = HIDE_USERNAME
