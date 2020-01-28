@@ -346,6 +346,8 @@ def manage_form_file(request, upload_errors, fname, form_file):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def changefile(request):
+    file = CustomFileModel()
+    file = CustomImageModel()
     if request.POST and request.is_ajax():
         folder = get_object_or_404(UserFolder, id=request.POST["folder"])
         if (request.user != folder.owner
