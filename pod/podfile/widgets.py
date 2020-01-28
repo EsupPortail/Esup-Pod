@@ -9,7 +9,7 @@ from .models import CustomFileModel, CustomImageModel
 class CustomFileWidget(widgets.TextInput):
 
     class Media:
-        js = ('js/filewidget.js',)
+        js = ('podfile/js/filewidget.js',)
 
     def __init__(self, type, *args, **kwargs):
         self.type = type
