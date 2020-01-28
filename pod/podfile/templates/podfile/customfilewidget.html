@@ -51,19 +51,26 @@ object-fit: cover;
 <span>
 {% if value %}
 <span id="fileinput_{{id}}">
-    {% if type == "image" %}<img src="{{document.file.url}}" height="34" alt="{{document.name}}"/>&nbsp;
-    {% else %}<i data-feather="file"></i>&nbsp;{%endif%}
-<strong><a href="{{document.file.url}}" target="_blank" title="{% trans 'Open file in a new tab'%}">{{document.name}}</a></strong>&nbsp;({{document.file_type}} - {{document.file.size|filesizeformat}})
+  {% if document.class_name == "CustomImageModel" and document.file_exist %}<img src="{{document.file.url}}" height="34" alt="{{document.name}}"/>&nbsp;
+  {% else %}
+  <img style="height: 26px;vertical-align: middle;" src="{% static "podfile/images/icons/default.png" %}" alt="">&nbsp;
+  {%endif%}
+  {% if document.file_exist %}
+  <strong><a href="{{document.file.url}}" target="_blank" title="{% trans 'Open file in a new tab'%}">{{document.name}}</a></strong>&nbsp;
+  ({{document.file_type}} - {{document.file.size|filesizeformat}})
+  {% else %}
+  {{document.name}}
+  {%endif%}
 </span>
 <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">
-  {% if type == "file" %}
+  {% if document.class_name == "CustomFileModel" %}
   {% trans 'Change file' %}
   {% else %}
   {% trans 'Change image' %}
   {% endif %}
 </button>
 <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}">
-  {% if type == "file" %}
+  {% if document.class_name == "CustomFileModel" %}
   {% trans 'Remove file' %}
   {% else %}
   {% trans 'Remove image' %}
@@ -73,14 +80,14 @@ object-fit: cover;
 <span id="fileinput_{{id}}">
 </span>
 <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">
-  {% if type == "file" %}
+  {% if document.class_name == "CustomFileModel" %}
   {% trans 'Select a file' %}
   {% else %}
   {% trans 'Select an image' %}
   {% endif %}
 </button>
 <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}" style="display:none">
-  {% if type == "file" %}
+  {% if document.class_name == "CustomFileModel" %}
   {% trans 'Remove file' %}
   {% else %}
   {% trans 'Remove image' %}
@@ -95,7 +102,7 @@ object-fit: cover;
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="fileModalLabel_{{id}}">
-            {% if type == "file" %}{% trans 'Select a file' %}{% else %}{% trans 'Select an image' %}{% endif %}</h5>
+            {% if document.class_name == "CustomFileModel" %}{% trans 'Select a file' %}{% else %}{% trans 'Select an image' %}{% endif %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -134,11 +141,18 @@ $(document).on('show.bs.modal', '#fileModal_{{id}}', function (event) {
 $(document).on("click", "#remove_file_{{id}}", function(event) {
   var html_div = '<span id="fileinput_{{id}}"></span>\
     <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">\
-    {% if type == "file" %}\
+    {% if document.class_name == "CustomFileModel" %}\
     {% trans 'Select a file' %}\
     {% else %}\
     {% trans 'Select an image' %}\
     {% endif %}\
+    </button>\
+    <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}" style="display:none">\
+      {% if document.class_name == "CustomFileModel" %}\
+      {% trans 'Remove file' %}\
+      {% else %}\
+      {% trans 'Remove image' %}\
+      {% endif %}\
     </button>';
   $(this).parent('span').html(html_div);
   $("#{{id}}").val("");

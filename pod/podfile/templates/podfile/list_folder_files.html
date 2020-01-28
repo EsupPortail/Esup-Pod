@@ -103,11 +103,10 @@
           {% endif %}
           <div class="card-body">
             <p class="card-text p-0 m-0">
-              <a href="{{file.file.url}}" class="card-title {% if request.is_ajax %}file-name{% endif%}" title="{{file.name}}" target="_blank">
+              <a href="{{file.file.url}}" class="card-title {% if request.is_ajax %}file-name{% endif%}" title="{{file.name}}" target="_blank" data-fileid="{{file.id}}" data-filetype="{{file.class_name}}">
                 <small class="text-muted">{{file.name}}</small>
               </a>
             </p>
-            
           </div>
 
         </div>

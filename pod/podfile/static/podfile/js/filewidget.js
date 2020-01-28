@@ -10,7 +10,17 @@ $(document).on("click", "a.file-name", function(e) {
     else $(".btn-fileinput_"+id_input).html(gettext('Change image'));
 
     $("#remove_file_"+id_input).show();
-    $("#fileinput_"+id_input).html($(this).html());
+
+    let html = "";
+    if($(this).data("filetype")=="CustomImageModel"){
+        html += '<img src="'+$(this).attr('href')+'" height="34" alt="'+$(this).text()+'"/>&nbsp;';
+    } else {
+        html += '<img style="height: 26px;vertical-align: middle;" src="'+static_url+'podfile/images/icons/default.png" alt="">&nbsp;';
+    } 
+    html += '<strong><a href="'+$(this).attr('href')+'" target="_blank" title="'+gettext('Open file in a new tab')+'">'+$(this).text()+'</a></strong>&nbsp;';
+  
+    $("#fileinput_"+id_input).html(html);
+
     $("#modal-folder_"+id_input).html("");
     $('#fileModal_'+id_input).modal('hide');
 });
