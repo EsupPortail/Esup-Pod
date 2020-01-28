@@ -55,6 +55,8 @@ FOLDER_FILE_TYPE = ['image', 'file']
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def home(request, type=None):
+    if type is not None and type not in FOLDER_FILE_TYPE:
+        raise SuspiciousOperation('Invalid type')
     user_home_folder = get_object_or_404(
         UserFolder, name="home", owner=request.user)
 
@@ -120,9 +122,6 @@ def get_folder_files(request, id):
         raise PermissionDenied
 
     request.session['current_session_folder'] = folder.name
-
-    if type not in FOLDER_FILE_TYPE:
-        raise SuspiciousOperation('Invalid type')
 
     rendered = render_to_string(
         "podfile/list_folder_files.html",
@@ -267,13 +266,13 @@ def uploadfiles(request):
             and request.POST.get("folderid") != ""):
         folder = get_object_or_404(
             UserFolder, id=request.POST['folderid'])
-        if folder.name == "home" or (
+        if (
             request.user != folder.owner
             and not request.user.is_superuser
         ):
             messages.add_message(
                 request, messages.ERROR,
-                _(u'You cannot edit this folder.'))
+                _(u'You cannot edit file on this folder.'))
             raise PermissionDenied
         else:
             upload_errors = []
@@ -355,7 +354,7 @@ def changefile(request):
                 and not request.user.is_superuser):
             messages.add_message(
                 request, messages.ERROR,
-                _(u'You cannot edit this file.'))
+                _(u'You cannot access this folder.'))
             raise PermissionDenied
 
         file = get_object_or_404(
