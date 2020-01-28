@@ -8,6 +8,9 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.auth.models import Group
 
+from itertools import chain
+from operator import attrgetter
+
 import traceback
 import os
 import logging
@@ -47,6 +50,14 @@ class UserFolder(models.Model):
 
     def __str__(self):
         return '{0}'.format(self.name)
+
+    def get_all_files(self):
+        file_list = self.customfilemodel_set.all()
+        image_list = self.customimagemodel_set.all()
+        result_list = sorted(
+            chain(image_list, file_list),
+            key=attrgetter('uploaded_at'))
+        return result_list
 
     def delete(self):
         for file in self.customfilemodel_set.all():
