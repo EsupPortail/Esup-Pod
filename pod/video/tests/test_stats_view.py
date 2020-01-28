@@ -104,28 +104,27 @@ class TestStatsView(TestCase):
 
     @skipUnless(USE_STATS_VIEW, "Require URL video_stats_view")
     def test_stats_view_GET_request_video(self):
-        with self.settings(USE_STATS_VIEW=True):
-            response = self.client.get(self.stat_video_url)
-            # Check that the view function is stats_view
-            self.assertEqual(response.resolver_match.func, stats_view)
-            # Check that the response is 200 OK.
-            # and content the expected title
-            self.assertContains(
-                    response,
-                    (b"Video viewing statistics for %s"
-                        % self.video.title.capitalize().encode("utf-8")),
-                    status_code=200)
-            # Check that the response is 404 Not Found.
-            # Check the response contains the error message
-            stat_video_url = reverse(
-                    "video_stats_view",
-                    kwargs={"slug": "0001_videodoesnotexist"})+"?from=video"
-            response = self.client.get(stat_video_url)
-            self.assertContains(
-                    response,
-                    b"The following video does not exist : \
-                            0001_videodoesnotexist",
-                    status_code=404)
+        response = self.client.get(self.stat_video_url)
+        # Check that the view function is stats_view
+        self.assertEqual(response.resolver_match.func, stats_view)
+        # Check that the response is 200 OK.
+        # and content the expected title
+        self.assertContains(
+                response,
+                (b"Video viewing statistics for %s"
+                    % self.video.title.capitalize().encode("utf-8")),
+                status_code=200)
+        # Check that the response is 404 Not Found.
+        # Check the response contains the error message
+        stat_video_url = reverse(
+                "video_stats_view",
+                kwargs={"slug": "0001_videodoesnotexist"})+"?from=video"
+        response = self.client.get(stat_video_url)
+        self.assertContains(
+                response,
+                b"The following video does not exist : \
+                        0001_videodoesnotexist",
+                status_code=404)
 
     @skipUnless(USE_STATS_VIEW, "Require activate URL video_stats_view")
     def test_stats_view_GET_request_videos(self):
@@ -248,9 +247,9 @@ class TestStatsView(TestCase):
                 "month": views[1],
                 "year": views[2],
                 "since_created": views[3]}
-            # the content contains the title of the video and expected data
+            # the content contains the expected data
             self.assertIn(json.dumps(data), response.content.decode("utf-8"))
-        # the content contains the title of the video and expected data
+        # the content contains the expected data
         self.assertContains(
                 response,
                 json.dumps({"min_date": TODAY.strftime("%Y-%m-%d")}))
@@ -272,8 +271,9 @@ class TestStatsView(TestCase):
                     "month": views[1],
                     "year": views[2],
                     "since_created": views[3]}
-            # the content contains the title of the video and expected data
+            # the content contains the expected data
             self.assertIn(json.dumps(data), response.content.decode("utf-8"))
+        # the content contains the expected data
         self.assertContains(
                 response,
                 json.dumps({"min_date": TODAY.strftime("%Y-%m-%d")}))
@@ -304,7 +304,7 @@ class TestStatsView(TestCase):
                 "<h1 class=\"title\">Video viewing statistics for %s</h1>"
                 ) % self.video3.title.capitalize()
         # Test that the response is 200 OK.
-        # Test that the response content contains the good page title
+        # Test that the response content contains the expected title
         self.assertContains(
                 response,
                 title_expected.encode(),
@@ -367,7 +367,7 @@ class TestStatsView(TestCase):
                 response,
                 title_expected.encode(),
                 status_code=200)
-        # Test with that superuser has access rights
+        # Test if that superuser has access rights
         self.client.logout()
         self.client.force_login(self.superuser)
         response = self.client.get(url, {"from": "video"})
