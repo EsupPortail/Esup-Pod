@@ -622,6 +622,7 @@ class VideoEditTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         # print(response.context["form"].errors)
         self.assertTrue(b"The changes have been saved." in response.content)
+
         v = Video.objects.get(title="VideoTest1")
         self.assertEqual(v.description, '<p>bl</p>')
         videofile = SimpleUploadedFile(
