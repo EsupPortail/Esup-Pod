@@ -271,7 +271,7 @@ class FileViewTestCase(TestCase):
 
         self.assertTrue(result['list_element'])
         self.assertEqual(folder.customfilemodel_set.all().count(), nbfile + 1)
-        
+
         self.assertTrue(CustomFileModel.objects.get(
             name='textfile',
             created_by=self.user,
