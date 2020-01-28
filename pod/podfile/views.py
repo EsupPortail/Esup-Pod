@@ -50,7 +50,7 @@ FILE_ALLOWED_EXTENSIONS = getattr(
         'srt',
     )
 )
-
+FOLDER_FILE_TYPE = ['image', 'file']
 
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
@@ -121,7 +121,8 @@ def get_folder_files(request, id):
 
     request.session['current_session_folder'] = folder.name
 
-    # list_files = folder.get_all_file()
+    if type not in FOLDER_FILE_TYPE:
+        raise SuspiciousOperation('Invalid type')
 
     rendered = render_to_string(
         "podfile/list_folder_files.html",

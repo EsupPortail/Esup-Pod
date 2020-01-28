@@ -26,8 +26,6 @@ urlpatterns += [url(r'^podfile/', include('pod.podfile.urls')), ]
 ##
 # FOLDER VIEWS
 #
-
-
 @override_settings(
     ROOT_URLCONF=__name__,
     MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
@@ -39,7 +37,7 @@ urlpatterns += [url(r'^podfile/', include('pod.podfile.urls')), ]
     },
     LANGUAGE_CODE='en'
 )
-class FolderViewTestCase(TestCase):
+class PodFileViewTestCase(TestCase):
 
     def setUp(self):
         user = User.objects.create(username='pod', password='azerty')
@@ -52,17 +50,20 @@ class FolderViewTestCase(TestCase):
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        response = self.client.get(reverse('podfile:folder',
+        response = self.client.get(reverse('podfile:home',
                                            kwargs={'type': 'file'}))
         self.assertEqual(response.status_code, 302)  # user is not staff
         self.user.is_staff = True
         self.user.save()
-        response = self.client.get(reverse('podfile:folder',
+        response = self.client.get(reverse('podfile:home',
                                            kwargs={'type': 'file'}))
         self.assertEqual(response.status_code, 200)  # user is staff
+        
         self.assertEqual(
-            response.context["list_folder"].paginator.count,
-            1)
+            response.context["user_folder"],
+            UserFolder.objects.filter(
+                owner=self.user
+            ).exclude(owner=self.user, name="home"))
         self.assertEqual(
             response.context["user_home_folder"],
             UserFolder.objects.get(owner=self.user, name='home'))
@@ -70,19 +71,13 @@ class FolderViewTestCase(TestCase):
             response.context["type"],
             "file")
         self.assertEqual(
-            response.context["current_folder"],
+            response.context["current_session_folder"],
             UserFolder.objects.get(owner=self.user, name='home'))
         response = self.client.get(
-            reverse('podfile:folder',  kwargs={'type': 'file', 'id': 2}))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.context["current_folder"],
-            UserFolder.objects.get(owner=self.user, name='Child'))
-        response = self.client.get(
-            reverse('podfile:folder',  kwargs={'type': 'image'}))
+            reverse('podfile:home',  kwargs={'type': 'image'}))
         self.assertEqual(response.status_code, 200)  # type image ok
         response = self.client.get(
-            reverse('podfile:folder',  kwargs={'type': 'toto'}))
+            reverse('podfile:home',  kwargs={'type': 'toto'}))
         # type nok SuspiciousOperation
         self.assertEqual(response.status_code, 400)
 
@@ -94,30 +89,28 @@ class FolderViewTestCase(TestCase):
         self.user.is_staff = True
         self.user.save()
         self.client.force_login(self.user)
+
         response = self.client.post(
-            reverse('podfile:folder', kwargs={'type': 'file'}), {
+            reverse('podfile:editfolder'), {
                 'name': "NewFolder",
             }, follow=True)
         self.assertEqual(response.status_code, 200)
-        response = self.client.get(reverse('podfile:folder',
-                                           kwargs={'type': 'file'}))
-        self.assertEqual(response.status_code, 200)  # user is staff
         self.assertTrue(
             UserFolder.objects.get(owner=self.user, name='NewFolder'))
         self.assertEqual(
-            response.context["list_folder"].paginator.count,
+            response.context["user_folder"].count(),
             2)
         response = self.client.post(
-            reverse('podfile:folder', kwargs={'type': 'file'}), {
+            reverse('podfile:editfolder'), {
                 'name': "NewFolder2",
-                'id_folder': UserFolder.objects.get(
+                'folderid': UserFolder.objects.get(
                     owner=self.user, name='NewFolder').id
             }, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(
             UserFolder.objects.get(owner=self.user, name='NewFolder2'))
         self.assertEqual(
-            response.context["list_folder"].paginator.count,
+            response.context["user_folder"].count(),
             2)
         print(" ---> test_edit_folders : OK!")
 
@@ -129,8 +122,7 @@ class FolderViewTestCase(TestCase):
         self.client.force_login(self.user)
 
         response = self.client.post(
-            reverse('podfile:folder', kwargs={'type': 'file'}), {
-                'action': "delete",
+            reverse('podfile:deletefolder'), {
                 'id': UserFolder.objects.get(owner=self.user, name='home').id
             }, follow=True)
         self.assertEqual(response.status_code, 403)  # forbidden name=home !
@@ -148,8 +140,7 @@ class FolderViewTestCase(TestCase):
         self.user.save()
         self.client.force_login(self.user)
         response = self.client.post(
-            reverse('podfile:folder', kwargs={'type': 'file'}), {
-                'action': "delete",
+            reverse('podfile:deletefolder'), {
                 'id': UserFolder.objects.get(
                     owner=self.user, name='Child').id
             }, follow=True)
@@ -157,7 +148,7 @@ class FolderViewTestCase(TestCase):
 
         print(" ---> test_delete_folders : OK!")
 
-
+"""
 ##
 # FILES VIEWS
 #
@@ -447,3 +438,4 @@ class FileViewTestCase(TestCase):
             }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 400)  # folder must be the same
         print(" ---> test_edit_files : OK!")
+"""
