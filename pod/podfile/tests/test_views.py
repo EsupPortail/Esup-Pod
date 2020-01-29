@@ -2,9 +2,7 @@
 Unit tests for podfile views
 """
 from django.test import TestCase
-from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import override_settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils.encoding import force_text
 from django.urls import reverse
@@ -26,6 +24,8 @@ urlpatterns += [url(r'^podfile/', include('pod.podfile.urls')), ]
 ##
 # FOLDER VIEWS
 #
+
+
 class PodFileViewTestCase(TestCase):
 
     def setUp(self):
@@ -137,7 +137,6 @@ class PodFileViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         print(" ---> test_delete_folders : OK!")
-
 
 
 class FileViewTestCase(TestCase):
