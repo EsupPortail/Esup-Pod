@@ -5,31 +5,10 @@ from django.test import TestCase
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.conf import settings
-from django.test import override_settings
-from django.conf.urls import url
-from django.conf.urls import include
 from pod.video.models import Video, Type
 from ..models import Enrichment
 
-from pod.urls import urlpatterns
 
-import os
-
-urlpatterns += [url(r'^enrichment/', include('pod.enrichment.urls')), ]
-
-
-@override_settings(
-    ROOT_URLCONF=__name__,
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class EnrichmentViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 

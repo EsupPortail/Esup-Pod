@@ -1,4 +1,7 @@
 # test_settings.py
+
+TEST_SETTINGS = True
+
 # from ..settings import *
 import os
 
@@ -16,7 +19,7 @@ for application in INSTALLED_APPS:
                 if variable == variable.upper():
                     locals()[variable] = getattr(_temp.settings, variable)
 
-TEST_SETTINGS = True
+
 
 DATABASES = {
     'default': {

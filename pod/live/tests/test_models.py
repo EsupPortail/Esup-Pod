@@ -1,7 +1,4 @@
-import os
-
 from django.test import TestCase
-from django.test import override_settings
 from django.conf import settings
 from django.contrib.auth.models import User
 
@@ -18,16 +15,6 @@ else:
     from pod.main.models import CustomImageModel
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class BuildingTestCase(TestCase):
 
     def setUp(self):
@@ -78,16 +65,6 @@ class BuildingTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class BroadcasterTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 

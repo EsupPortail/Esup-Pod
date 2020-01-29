@@ -1,10 +1,7 @@
 """
 Unit tests for live views
 """
-import os
-
 from django.conf import settings
-from django.test import override_settings
 from django.test import TestCase
 from django.test import Client
 from django.contrib.auth.models import User
@@ -21,17 +18,6 @@ else:
     from pod.main.models import CustomImageModel
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en',
-    THIRD_PARTY_APPS=['live']
-)
 class LiveViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -91,7 +77,7 @@ class LiveViewsTestCase(TestCase):
                 settings.LOGIN_URL,
                 '/live/%s/' % self.broadcaster.id),
             status_code=302,
-            target_status_code=200)
+            target_status_code=302)
         # Broadcaster not restricted
         self.broadcaster = Broadcaster.objects.get(name='broadcaster2')
         response = self.client.get('/live/%s/' % self.broadcaster.id)
