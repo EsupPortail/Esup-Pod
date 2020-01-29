@@ -37,8 +37,7 @@ urlpatterns += [url(r'^podfile/', include('pod.podfile.urls')), ]
             'NAME': 'db.sqlite',
         }
     },
-    LANGUAGE_CODE='en',
-    # USE_PODFILE=True
+    LANGUAGE_CODE='en'
 )
 class PodFileViewTestCase(TestCase):
 

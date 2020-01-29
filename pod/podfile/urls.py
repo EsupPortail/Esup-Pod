@@ -17,10 +17,9 @@ urlpatterns = [
         r'^get_folder_files/(?P<id>[\d]+)/$',
         get_folder_files,
         name='get_folder_files'),
-
-    url(r'^editfolder/$', editfolder, name='editfolder'),
-    url(r'^deletefolder/$', deletefolder, name='deletefolder'),
-    url(r'^deletefile/$', deletefile, name='deletefile'),
-    url(r'^changefile/$', changefile, name='changefile'),
-    url(r'^uploadfiles/$', uploadfiles, name='uploadfiles'),
+    url(r'^/editfolder/$', editfolder, name='editfolder'),
+    url(r'^/deletefolder/$', deletefolder, name='deletefolder'),
+    url(r'^/deletefile/$', deletefile, name='deletefile'),
+    url(r'^/changefile/$', changefile, name='changefile'),
+    url(r'^/uploadfiles/$', uploadfiles, name='uploadfiles'),
 ]
