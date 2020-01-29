@@ -11,6 +11,7 @@ DATABASES={
     }
 }
 LANGUAGE_CODE='en'
-
 THIRD_PARTY_APPS = ["enrichment", "interactive", "live"]
 USE_PODFILE = True
+USE_STATS_VIEW = True
+

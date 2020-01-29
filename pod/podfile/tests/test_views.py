@@ -26,19 +26,6 @@ urlpatterns += [url(r'^podfile/', include('pod.podfile.urls')), ]
 ##
 # FOLDER VIEWS
 #
-
-
-@override_settings(
-    ROOT_URLCONF=__name__,
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class PodFileViewTestCase(TestCase):
 
     def setUp(self):
@@ -152,19 +139,7 @@ class PodFileViewTestCase(TestCase):
         print(" ---> test_delete_folders : OK!")
 
 
-##
-# FILES VIEWS
-#
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
+
 class FileViewTestCase(TestCase):
 
     def setUp(self):
