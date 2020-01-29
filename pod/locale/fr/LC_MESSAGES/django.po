@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-28 13:44+0100\n"
-"PO-Revision-Date: 2019-12-09 12:51+0100\n"
+"POT-Creation-Date: 2020-01-29 14:53+0100\n"
+"PO-Revision-Date: 2020-01-28 16:14+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -2992,8 +2992,10 @@ msgstr "Sélectionner une image"
 
 #: pod/podfile/templates/podfile/form_file.html:10
 #: pod/podfile/templates/podfile/form_image.html:10
+#, fuzzy
+#| msgid "Uploading"
 msgid "Upload"
-msgstr "Téléverser"
+msgstr "Mise en ligne"
 
 #: pod/podfile/templates/podfile/infinite_folders.html:14
 msgid "Delete the folder"
@@ -4718,10 +4720,8 @@ msgid "You do not have access rights to this video: %s "
 msgstr "Vous n'avez pas les droits d'accès à cette vidéo: %s "
 
 #: pod/video/views.py:1387
-#, fuzzy, python-format
-#| msgid "The following formats are supported: %s"
 msgid "The following video does not exist : %s"
-msgstr "Les formats suivants sont supportés: %s"
+msgstr "La video suivante n'existe pas : %s"
 
 #: pod/video_search/forms.py:11
 msgid "Start date"
@@ -4752,34 +4752,59 @@ msgstr "facettage"
 msgid "Remove selection"
 msgstr "Retirer la sélection"
 
-#~ msgid "This video will be displayed when there is no live stream."
-#~ msgstr ""
-#~ "Cette vidéo sera affichée lorsqu'il n'y a pas de diffusion en direct."
+#~ msgid "My files"
+#~ msgstr "Mes fichiers"
 
-#~ msgid "Video on hold"
-#~ msgstr "Vidéo d'attente"
+#~ msgid "My Files"
+#~ msgstr "Mes fichiers"
 
-#~ msgid ""
-#~ "Thank you for watching this streaming live with us. The page will reload "
-#~ "automatically within a few seconds to display the video on hold."
-#~ msgstr ""
-#~ "Merci d’avoir regardé ce streaming en direct avec nous. La page se "
-#~ "rechargera automatiquement dans quelques secondes pour afficher la vidéo "
-#~ "d’attente."
+#~ msgid "Enter new name of folder"
+#~ msgstr "Indiquer un nouveau nom à ce dossier"
 
-#~ msgid "Live not found, displaying the video on hold, retry every 10 seconds"
-#~ msgstr ""
-#~ "Le direct n’a pas encore commencé, affichage de la vidéo d’attente, "
-#~ "nouvelle tentative de lecture toutes les 10 secondes"
+#~ msgid "Loading"
+#~ msgstr "Chargement"
 
-#~ msgid "Delete selected Recording file treatments + source files"
-#~ msgstr ""
-#~ "Supprimer les Traitements de fichier d'enregistrement sélectionnés + le "
-#~ "fichier source"
+#~ msgid "Close"
+#~ msgstr "Fermer"
 
-#~| msgid "Delete this record."
+#~ msgid "Save changes"
+#~ msgstr "Sauvegarder"
+
+#~ msgid "Rename"
+#~ msgstr "Renomer"
+
+#~ msgid "Upload Files"
+#~ msgstr "Téléverser des fichiers"
+
+#~ msgid "Download"
+#~ msgstr "Télécharger"
+
+#~ msgid "My folders"
+#~ msgstr "Mes dossiers"
+
+#~ msgid "Add new folder"
+#~ msgstr "Ajouter un nouveau dossier"
+
+#~ msgid "Shared folders"
+#~ msgstr "Dossiers partagés"
+
+#~ msgid "You cannot delete this file."
+#~ msgstr "Vous ne pouvez pas supprimer ce fichier."
+
+#~ msgid "You cannot edit file on this folder."
+#~ msgstr "Vous ne pouvez pas éditer de fichier dans ce dossier."
+
+#~ msgid "The file %(fname)s has not allowed format"
+#~ msgstr "Le format du fichier %(fname)s n’est pas autorisé"
+
+#~ msgid "The file %(fname)s is not valid (%(form_error)s)"
+#~ msgstr "Le fichier %(fname)s n’est pas valide (%(form_error)s)"
+
+#~ msgid "You cannot access this folder."
+#~ msgstr "Vous ne pouvez pas voir ce dossier."
+
 #~ msgid "Delete the record"
-#~ msgstr "Supprimer cet enregistrement."
+#~ msgstr "Supprimer cet enregistrement"
 
 #~ msgid "If checked, record will be deleted instead of saving it"
 #~ msgstr "Si coché, l'enregistrement sera supprimé et non ajouté"
@@ -4787,24 +4812,7 @@ msgstr "Retirer la sélection"
 #~ msgid "Delete this record cannot be undo"
 #~ msgstr "La suppression d'un enregistrement est définitive"
 
-#~ msgid "Delete this record."
-#~ msgstr "Supprimer cet enregistrement."
-
-#~ msgid "Deleting the record"
-#~ msgstr "Supprimer l'enregistrement"
-
-#~ msgid "Back to record claiming"
-#~ msgstr "Retour à la revendication d'enregistrements"
-
-#~ msgid "To delete the record, please checked in and click send."
-#~ msgstr ""
-#~ "Pour supprimer l'enregistrement, veuillez cocher et cliquer sur envoyer."
-
-#~| msgid "The record has been deleted."
 #~ msgid "The selected record has been deleted."
-#~ msgstr "L'enregistrement a été supprimé."
-
-#~ msgid "The record has been deleted."
 #~ msgstr "L'enregistrement a été supprimé."
 
 #~ msgid ""
@@ -4846,9 +4854,6 @@ msgstr "Retirer la sélection"
 
 #~ msgid "File type not allowed : {0}"
 #~ msgstr "Type de fichier non autorisé : {0}"
-
-#~ msgid "Files"
-#~ msgstr "Fichiers"
 
 #~ msgid "File size is too large (>100MB)"
 #~ msgstr "Taille du fichier trop grand (>100MB)"
