@@ -2,15 +2,12 @@
 Unit tests for chapters views
 """
 from django.conf import settings
-from django.test import override_settings
 from django.test import TestCase
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from pod.video.models import Video, Type
-from pod.chapter.models import Chapter
-
-import os
+from ..models import Chapter
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomFileModel
@@ -21,16 +18,6 @@ else:
     from pod.main.models import CustomFileModel
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class ChapterViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 

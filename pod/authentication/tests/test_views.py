@@ -1,12 +1,10 @@
 """
 Unit tests for authentication views
 """
-import os
-
-from django.conf import settings
 from django.test import TestCase
 from django.test import Client
 from django.contrib.auth.models import User
+
 
 class authenticationViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]

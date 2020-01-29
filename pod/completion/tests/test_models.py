@@ -1,11 +1,8 @@
 """
 Unit tests for completion models
 """
-import os
-
 from django.conf import settings
 from django.test import TestCase
-from django.test import override_settings
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.exceptions import ValidationError
@@ -26,16 +23,6 @@ else:
     from pod.main.models import CustomFileModel
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class ContributorModelTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -114,16 +101,6 @@ class ContributorModelTestCase(TestCase):
         print(" ---> test_delete : OK ! --- ContributorModel")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class DocumentModelTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -188,16 +165,6 @@ class DocumentModelTestCase(TestCase):
         print(" ---> test_delete : OK ! --- DocumentModel")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class OverlayModelTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -297,16 +264,6 @@ class OverlayModelTestCase(TestCase):
         print(" ---> test_delete : OK ! --- OverlayModel")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class TrackModelTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 

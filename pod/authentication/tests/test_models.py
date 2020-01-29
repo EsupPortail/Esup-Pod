@@ -4,9 +4,9 @@ from django.contrib.auth.models import User
 from django.conf import settings
 
 import hashlib
-import os
 
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
+
 
 class OwnerTestCase(TestCase):
 
