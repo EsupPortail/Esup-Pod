@@ -1,10 +1,6 @@
 from unittest import skipUnless
-import os
-import json
-import logging
 from django.http import JsonResponse
 from datetime import date
-from django.test import override_settings
 from django.conf import settings
 from django.test import TestCase, Client
 from django.urls import reverse, NoReverseMatch
@@ -12,20 +8,14 @@ from django.contrib.auth.models import Group
 from pod.authentication.models import User
 from pod.video.models import Channel, Theme, Video, Type
 from pod.video.views import get_all_views_count, stats_view
+
+import json
+import logging
+
 TODAY = date.today()
 USE_STATS_VIEW = getattr(settings, "USE_STATS_VIEW", False)
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        },
-    },
-    LANGUAGE_CODE='en',
-)
 class TestStatsView(TestCase):
     fixtures = ['initial_data.json', ]
 

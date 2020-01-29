@@ -2,29 +2,16 @@
 Unit tests for recorder views
 """
 import hashlib
-import os
 
-from django.conf import settings
-from django.test import override_settings
 from django.test import TestCase
 from django.test import Client
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 
-from pod.recorder.models import Recorder, RecordingFileTreatment
+from ..models import Recorder, RecordingFileTreatment
 from pod.video.models import Type
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class recorderViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 

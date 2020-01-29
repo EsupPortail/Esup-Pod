@@ -1,32 +1,19 @@
 from django.test import TestCase
-from django.test import override_settings
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.conf import settings
 from django.test import Client
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 
-from pod.video.models import Channel
-from pod.video.models import Theme
-from pod.video.models import Video
-from pod.video.models import Type
-from pod.video.models import Discipline
-from pod.video.models import AdvancedNotes
+from ..models import Channel
+from ..models import Theme
+from ..models import Video
+from ..models import Type
+from ..models import Discipline
+from ..models import AdvancedNotes
 
-import os
 import re
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class ChannelTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -83,16 +70,6 @@ class ChannelTestView(TestCase):
             " of ChannelTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class MyChannelsTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -122,16 +99,6 @@ class MyChannelsTestView(TestCase):
         print(" --->  test_get_mychannels_view of MyChannelsTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class ChannelEditTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -179,16 +146,6 @@ class ChannelEditTestView(TestCase):
             " of ChannelEditTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class ThemeEditTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -284,16 +241,6 @@ class ThemeEditTestView(TestCase):
             " --->  test_theme_edit_post_request of ThemeEditTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class MyVideosTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -331,16 +278,6 @@ class MyVideosTestView(TestCase):
         print(" --->  test_get_myvideos_view of MyVideosTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class VideosTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -437,16 +374,6 @@ class VideosTestView(TestCase):
         print(" --->  test_get_videos_view of VideosTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class VideoTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -543,16 +470,6 @@ class VideoTestView(TestCase):
         self.assertEqual(response.status_code, 403)
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class VideoEditTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -694,16 +611,6 @@ class VideoEditTestView(TestCase):
             " of VideoEditTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class video_deleteTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -771,16 +678,6 @@ class video_deleteTestView(TestCase):
             " of video_deleteTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class video_notesTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -846,16 +743,6 @@ class video_notesTestView(TestCase):
             " of video_notesTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class video_countTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
