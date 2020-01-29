@@ -4,22 +4,10 @@ Unit tests for authentication views
 import os
 
 from django.conf import settings
-from django.test import override_settings
 from django.test import TestCase
 from django.test import Client
 from django.contrib.auth.models import User
 
-
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class authenticationViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 

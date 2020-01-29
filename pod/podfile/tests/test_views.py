@@ -7,26 +7,18 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.utils.encoding import force_text
 from django.urls import reverse
 from django.test import Client
-from django.conf.urls import url
-from django.conf.urls import include
 
 from ..models import CustomFileModel
 from ..models import CustomImageModel
 from ..models import UserFolder
 
-from pod.urls import urlpatterns
-
 import json
 import os
-
-urlpatterns += [url(r'^podfile/', include('pod.podfile.urls')), ]
 
 ##
 # FOLDER VIEWS
 #
-
-
-class PodFileViewTestCase(TestCase):
+class FolderViewTestCase(TestCase):
 
     def setUp(self):
         user = User.objects.create(username='pod', password='azerty')

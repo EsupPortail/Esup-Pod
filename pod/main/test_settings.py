@@ -2,10 +2,10 @@
 # from ..settings import *
 import os
 
-_temp = __import__("pod", globals(), locals(), ['settings'])
-for variable in (dir(_temp.settings)):
-    if variable == variable.upper():
-        locals()[variable] = getattr(_temp.settings, variable)
+from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
+from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES 
+from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N, USE_L10N, LOCALE_PATHS 
+from ..settings import USE_TZ, REST_FRAMEWORK, LOG_DIRECTORY, LOGGING
 
 for application in INSTALLED_APPS:
     if application.startswith('pod'):
