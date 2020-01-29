@@ -2,6 +2,8 @@
 
 from ..settings import *
 
+TEST_SETTINGS = True
+
 MEDIA_ROOT=os.path.join(BASE_DIR, 'media'),
 
 DATABASES={
