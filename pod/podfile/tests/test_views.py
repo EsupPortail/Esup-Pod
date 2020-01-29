@@ -39,7 +39,7 @@ urlpatterns += [url(r'^podfile/', include('pod.podfile.urls')), ]
     },
     LANGUAGE_CODE='en'
 )
-class FolderViewTestCase(TestCase):
+class PodFileViewTestCase(TestCase):
 
     def setUp(self):
         user = User.objects.create(username='pod', password='azerty')
@@ -52,17 +52,21 @@ class FolderViewTestCase(TestCase):
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        response = self.client.get(reverse('podfile:folder',
+        response = self.client.get(reverse('podfile:home',
                                            kwargs={'type': 'file'}))
         self.assertEqual(response.status_code, 302)  # user is not staff
         self.user.is_staff = True
         self.user.save()
-        response = self.client.get(reverse('podfile:folder',
+        response = self.client.get(reverse('podfile:home',
                                            kwargs={'type': 'file'}))
         self.assertEqual(response.status_code, 200)  # user is staff
+
         self.assertEqual(
-            response.context["list_folder"].paginator.count,
-            1)
+            set(response.context["user_folder"]),
+            set(UserFolder.objects.filter(
+                owner=self.user
+            ).exclude(owner=self.user, name="home")))
+
         self.assertEqual(
             response.context["user_home_folder"],
             UserFolder.objects.get(owner=self.user, name='home'))
@@ -70,19 +74,14 @@ class FolderViewTestCase(TestCase):
             response.context["type"],
             "file")
         self.assertEqual(
-            response.context["current_folder"],
+            response.context["current_session_folder"],
             UserFolder.objects.get(owner=self.user, name='home'))
         response = self.client.get(
-            reverse('podfile:folder',  kwargs={'type': 'file', 'id': 2}))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.context["current_folder"],
-            UserFolder.objects.get(owner=self.user, name='Child'))
-        response = self.client.get(
-            reverse('podfile:folder',  kwargs={'type': 'image'}))
+            reverse('podfile:home',  kwargs={'type': 'image'}))
         self.assertEqual(response.status_code, 200)  # type image ok
+
         response = self.client.get(
-            reverse('podfile:folder',  kwargs={'type': 'toto'}))
+            reverse('podfile:home',  kwargs={'type': 'toto'}))
         # type nok SuspiciousOperation
         self.assertEqual(response.status_code, 400)
 
@@ -94,30 +93,28 @@ class FolderViewTestCase(TestCase):
         self.user.is_staff = True
         self.user.save()
         self.client.force_login(self.user)
+
         response = self.client.post(
-            reverse('podfile:folder', kwargs={'type': 'file'}), {
+            reverse('podfile:editfolder'), {
                 'name': "NewFolder",
             }, follow=True)
         self.assertEqual(response.status_code, 200)
-        response = self.client.get(reverse('podfile:folder',
-                                           kwargs={'type': 'file'}))
-        self.assertEqual(response.status_code, 200)  # user is staff
         self.assertTrue(
             UserFolder.objects.get(owner=self.user, name='NewFolder'))
         self.assertEqual(
-            response.context["list_folder"].paginator.count,
+            response.context["user_folder"].count(),
             2)
         response = self.client.post(
-            reverse('podfile:folder', kwargs={'type': 'file'}), {
+            reverse('podfile:editfolder'), {
                 'name': "NewFolder2",
-                'id_folder': UserFolder.objects.get(
+                'folderid': UserFolder.objects.get(
                     owner=self.user, name='NewFolder').id
             }, follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(
             UserFolder.objects.get(owner=self.user, name='NewFolder2'))
         self.assertEqual(
-            response.context["list_folder"].paginator.count,
+            response.context["user_folder"].count(),
             2)
         print(" ---> test_edit_folders : OK!")
 
@@ -129,15 +126,13 @@ class FolderViewTestCase(TestCase):
         self.client.force_login(self.user)
 
         response = self.client.post(
-            reverse('podfile:folder', kwargs={'type': 'file'}), {
-                'action': "delete",
+            reverse('podfile:deletefolder'), {
                 'id': UserFolder.objects.get(owner=self.user, name='home').id
             }, follow=True)
         self.assertEqual(response.status_code, 403)  # forbidden name=home !
 
         response = self.client.post(
-            reverse('podfile:folder', kwargs={'type': 'file'}), {
-                'action': "delete",
+            reverse('podfile:deletefolder'), {
                 'id': UserFolder.objects.get(
                     owner=User.objects.get(username="pod"), name='Child').id
             }, follow=True)
@@ -148,8 +143,7 @@ class FolderViewTestCase(TestCase):
         self.user.save()
         self.client.force_login(self.user)
         response = self.client.post(
-            reverse('podfile:folder', kwargs={'type': 'file'}), {
-                'action': "delete",
+            reverse('podfile:deletefolder'), {
                 'id': UserFolder.objects.get(
                     owner=self.user, name='Child').id
             }, follow=True)
@@ -217,63 +211,37 @@ class FileViewTestCase(TestCase):
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
+
         response = self.client.get(
             reverse(
-                'podfile:get_files',
-                kwargs={'type': 'file',
-                        'id': UserFolder.objects.get(
-                            owner=self.user, name='home').id}))
+                'podfile:get_folder_files',
+                kwargs={'id': UserFolder.objects.get(
+                    owner=self.user, name='home').id}))
         self.assertEqual(response.status_code, 302)  # user is not staff
         self.user.is_staff = True
         self.user.save()
+
         response = self.client.get(
             reverse(
-                'podfile:get_files',
-                kwargs={'type': 'file',
-                        'id': UserFolder.objects.get(
-                            owner=self.user, name='home').id}))
+                'podfile:get_folder_files',
+                kwargs={'id': UserFolder.objects.get(
+                    owner=self.user, name='home').id}))
         self.assertEqual(response.status_code, 200)  # user is staff
+
         self.assertEqual(
-            response.context["list_file"].count(),
-            1)
-        self.assertEqual(
-            response.context["current_folder"],
+            response.context["folder"],
             UserFolder.objects.get(owner=self.user, name='home'))
-        self.assertEqual(
-            response.context["type"],
-            "file")
+
         response = self.client.get(
             reverse(
-                'podfile:get_files',
-                kwargs={'type': 'file',
-                        'id': UserFolder.objects.get(
-                            owner=self.user, name='Child').id}))
+                'podfile:get_folder_files',
+                kwargs={'id': UserFolder.objects.get(
+                    owner=self.user, name='Child').id}))
         self.assertEqual(response.status_code, 200)  # user is staff
         self.assertEqual(
-            response.context["list_file"].count(),
-            1)
-        self.assertEqual(
-            response.context["current_folder"],
+            response.context["folder"],
             UserFolder.objects.get(owner=self.user, name='Child'))
-        self.assertEqual(
-            response.context["type"],
-            "file")
-        response = self.client.get(
-            reverse(
-                'podfile:get_files',
-                kwargs={'type': 'image',
-                        'id': UserFolder.objects.get(
-                            owner=self.user, name='home').id}))
-        self.assertEqual(response.status_code, 200)  # user is staff
-        self.assertEqual(
-            response.context["list_file"].count(),
-            1)
-        self.assertEqual(
-            response.context["current_folder"],
-            UserFolder.objects.get(owner=self.user, name='home'))
-        self.assertEqual(
-            response.context["type"],
-            "image")
+
         print(" ---> test_list_files : OK!")
 
     def test_edit_files(self):
@@ -284,166 +252,36 @@ class FileViewTestCase(TestCase):
         self.client.force_login(self.user)
         folder = UserFolder.objects.get(
             owner=self.user, name='home')
-        # New file
-        response = self.client.post(
-            reverse('podfile:editfile', kwargs={'id': folder.id}), {
-                'action': "new"
-            }, follow=True)
-
-        self.assertEqual(response.status_code, 400)  # not ajax
-        response = self.client.post(
-            reverse('podfile:editfile', kwargs={'id': folder.id}), {
-                'action': "new"
-            }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-
-        self.assertEqual(response.status_code, 200)  # ajax with post data
-        self.assertEqual(
-            response.context["folder"],
-            folder)
-        self.assertTrue(
-            response.context["form_file"])
-        # New image
-        response = self.client.post(
-            reverse('podfile:editimage', kwargs={'id': folder.id}), {
-                'action': "new"
-            }, follow=True)
-
-        self.assertEqual(response.status_code, 400)  # not ajax
-        response = self.client.post(
-            reverse('podfile:editimage', kwargs={'id': folder.id}), {
-                'action': "new"
-            }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-
-        self.assertEqual(response.status_code, 200)  # ajax with post data
-        self.assertEqual(
-            response.context["folder"],
-            folder)
-        self.assertTrue(
-            response.context["form_image"])
-
-        # modify
-        # modify file
-        customfile = CustomFileModel.objects.get(
-            name='testfile',
-            created_by=self.user,
-            folder=folder,
-        )
-        customimage = CustomImageModel.objects.get(
-            name='testimage',
-            created_by=self.user,
-            folder=folder)
-        response = self.client.post(
-            reverse('podfile:editfile', kwargs={'id': folder.id}), {
-                'action': "modify",
-                'id': customfile.id
-            }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-
-        self.assertEqual(response.status_code, 200)  # ajax with post data
-        self.assertEqual(
-            response.context["folder"],
-            folder)
-        self.assertTrue(
-            response.context["form_file"])
-        # modify image
-        response = self.client.post(
-            reverse('podfile:editimage', kwargs={'id': folder.id}), {
-                'action': "modify",
-                'id': customimage.id
-            }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-
-        self.assertEqual(response.status_code, 200)  # ajax with post data
-        self.assertEqual(
-            response.context["folder"],
-            folder)
-        self.assertTrue(
-            response.context["form_image"])
 
         # save file
         nbfile = folder.customfilemodel_set.all().count()
         textfile = SimpleUploadedFile(
             "textfile.txt", b"file_content", content_type='text/plain')
+
         response = self.client.post(
-            reverse('podfile:editfile', kwargs={'id': folder.id}), {
-                'action': "save",
-                'file': textfile,
-                'folder': folder.id,
+            reverse('podfile:uploadfiles'), {
+                'ufile': textfile,
+                'folderid': folder.id,
             }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
         self.assertEqual(response.status_code, 200)  # ajax with post data
+
         result = json.loads(force_text(response.content))
+
         self.assertTrue(result['list_element'])
         self.assertEqual(folder.customfilemodel_set.all().count(), nbfile + 1)
+
         self.assertTrue(CustomFileModel.objects.get(
             name='textfile',
             created_by=self.user,
             folder=folder,
         ))
-        textfile = SimpleUploadedFile(
-            "textfile.txt", b"file_content", content_type='text/plain')
-        response = self.client.post(
-            reverse('podfile:editfile', kwargs={'id': folder.id}), {
-                'action': "save",
-                'file': textfile,
-                'folder': 999,
-            }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)  # ajax with post data
-        result = json.loads(force_text(response.content))
-        self.assertTrue(result['errors'])  # folder not exist
-        self.assertEqual(folder.customfilemodel_set.all().count(), nbfile + 1)
 
         textfile = SimpleUploadedFile(
             "textfile.txt", b"file_content", content_type='text/plain')
         response = self.client.post(
-            reverse('podfile:editfile', kwargs={'id': folder.id}), {
-                'action': "save",
+            reverse('podfile:uploadfiles'), {
                 'file': textfile,
-                'folder': 2,
+                'folderid': 999,
             }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 400)   # folder must be the same
-
-        # save image
-
-        nbimage = folder.customimagemodel_set.all().count()
-        small_gif = (
-            b'\x47\x49\x46\x38\x39\x61\x01\x00\x01\x00\x00\x00\x00\x21\xf9\x04'
-            b'\x01\x0a\x00\x01\x00\x2c\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02'
-            b'\x02\x4c\x01\x00\x3b'
-        )
-        imagefile = SimpleUploadedFile(
-            "image.gif", small_gif, content_type='image/gif')
-        response = self.client.post(
-            reverse('podfile:editimage', kwargs={'id': folder.id}), {
-                'action': "save",
-                'file': imagefile,
-                'folder': folder.id,
-            }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)  # ajax with post data
-        result = json.loads(force_text(response.content))
-        self.assertTrue(result['list_element'])
-        self.assertEqual(
-            folder.customimagemodel_set.all().count(), nbimage + 1)
-        self.assertTrue(CustomImageModel.objects.get(
-            name='image',
-            created_by=self.user,
-            folder=folder,
-        ))
-        response = self.client.post(
-            reverse('podfile:editimage', kwargs={'id': folder.id}), {
-                'action': "save",
-                'file': imagefile,
-                'folder': 999,
-            }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)  # ajax with post data
-        result = json.loads(force_text(response.content))
-        self.assertTrue(result['errors'])  # folder not exist
-        self.assertEqual(folder.customfilemodel_set.all().count(), nbfile + 1)
-
-        imagefile = SimpleUploadedFile(
-            "image.gif", small_gif, content_type='image/gif')
-        response = self.client.post(
-            reverse('podfile:editimage', kwargs={'id': folder.id}), {
-                'action': "save",
-                'file': imagefile,
-                'folder': 2,
-            }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 400)  # folder must be the same
-        print(" ---> test_edit_files : OK!")
+        self.assertEqual(response.status_code, 404)  # folder not exist
