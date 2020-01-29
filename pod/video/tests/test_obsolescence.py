@@ -198,3 +198,10 @@ class ObsolescenceTestCase(TestCase):
         self.assertEqual(n, 2)
 
         print('--->  test_obsolete_video of ObsolescenceTestCase: OK')
+
+    def tearDown(self):
+        try:
+            os.remove('%s/%s.csv' % (settings.LOG_DIRECTORY, 'deleted'))
+            os.remove('%s/%s.csv' % (settings.LOG_DIRECTORY, 'archived'))
+        except FileNotFoundError:
+            pass

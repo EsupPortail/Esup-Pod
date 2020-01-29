@@ -184,6 +184,8 @@ if getattr(settings, 'H5P_ENABLED', False):
 
 if getattr(settings, "USE_STATS_VIEW", False):
     urlpatterns += [
+            url(r'^video_stats_view/$', stats_view,
+                name="video_stats_view"),
             url(r'^video_stats_view/(?P<slug>[-\w]+)/$', stats_view,
                 name="video_stats_view"),
             url(r'^video_stats_view/(?P<slug>[-\w]+)/(?P<slug_t>[-\w]+)/$',
