@@ -152,7 +152,6 @@ class Enrichment(models.Model):
         _(u'Web link'), max_length=200, null=True, blank=True)
     embed = models.TextField(
         _('Embed'),
-        max_length=300,
         null=True,
         blank=True,
         help_text=_(u'Integrate an external source.'))
