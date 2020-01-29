@@ -68,6 +68,9 @@ HIDE_USER_TAB = getattr(
 HIDE_USER_FILTER = getattr(
         django_settings, 'HIDE_USER_FILTER', False)
 
+USE_STATS_VIEW = getattr(
+        django_settings, 'USE_STATS_VIEW', False)
+
 ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
         django_settings, 'ALLOW_MANUAL_RECORDING_CLAIMING', False)
 
@@ -87,6 +90,7 @@ def context_settings(request):
     new_settings['HIDE_USERNAME'] = HIDE_USERNAME
     new_settings['HIDE_USER_TAB'] = HIDE_USER_TAB
     new_settings['HIDE_USER_FILTER'] = HIDE_USER_FILTER
+    new_settings['USE_STATS_VIEW'] = USE_STATS_VIEW
     new_settings['ALLOW_MANUAL_RECORDING_CLAIMING'] = \
         ALLOW_MANUAL_RECORDING_CLAIMING
     return new_settings

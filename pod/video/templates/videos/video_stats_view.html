@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load staticfiles i18n %}
+{% block opengraph %}
+    {{ block.super }}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+{% endblock opengraph %}
+{% block page_title %}{% trans "Video - Statistics views" %}{% endblock page_title %}
+{% block page_extra_head %}
+	<link type="text/css" rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}">
+	<link type="text/css" rel="stylesheet" href="{% static 'css/ui.jqgrid.min.css' %}"> 
+	<script type="text/javascript" src="{% static "js/jquery.jqgrid.min.js" %}" charset="utf-8"></script>
+    	<!-- https://free-jqgrid.github.io/getting-started/index.html -->
+	<script type="text/javascript" src="{% static "js/video_stats_view.js" %}" charset="utf-8"></script>
+	<link rel="stylesheet" href="{% static 'css/video_stats_view.css' %}">
+{% endblock page_extra_head %}
+{% block content %}
+<div class="grid-container">
+	{% if form %}
+	{% include "videos/video-form.html" %}
+	{% else %}
+	<h1 class="title">{{ title }}</h1>
+	<div><label for="jsperiode">{% trans "Change the date" %}</label><input type="date" name="periode" id="jsperiode"></div>
+	<table id="grid"></table>
+	<div id="pager"></div>
+	{% endif %}
+</div>
+{% endblock content %}

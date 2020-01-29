@@ -41,7 +41,7 @@
 	  
       {% trans 'Updated on' %}: <strong>{{ video.date_added }}</strong><br/>
       {% trans 'Duration' %}: <strong>{{ video.duration_in_time }}</strong><br/>
-      {% trans 'Number of view(s)' %}: <strong>{{ video.get_viewcount }}</strong><br/>
+      {% trans 'Number of view(s)' %}: <strong>{{ video.get_viewcount }}</strong>{% if USE_STATS_VIEW %} <a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video_stats_view' video.slug %}?from=video">({% trans 'Show details views' %})</a>{% endif %}<br/>
       {% trans 'Type' %}: <a href="{% url 'videos' %}?type={{ video.type.slug }}" title="{{ video.type.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ video.type.title }}</a><br/>
       {% trans "Main language" %}: <strong>{{video.get_main_lang}}</strong>
       {% if video.cursus and video.cursus != '0' %}<br/>{% trans 'Audience' %}:{{video.get_cursus}}{%endif%}

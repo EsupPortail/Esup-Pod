@@ -1,0 +1,27 @@
+.grid-container{
+	margin: 4em auto;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+.grid-container h1.title{
+	margin-bottom: 1em;
+}
+.ui-jqgrid tr.jqgrow td{
+	height: 30px;
+	white-space: normal;
+	padding: .5em;
+}
+.ui-state-default .ui-icon{
+	background-image: url("/static/img/ui-icons_6da8d5_256x240.png");
+}
+.ui-icon .ui-widget-content .ui-icon{
+	background-image: url("/static/img/ui-icons_469bdd_256x240.png");
+}
+.ui-state-default .ui-icon {
+	background-image: url("/static/img/ui-icons_6da8d5_256x240.png");
+}
+ui-icon, .ui-widget-content .ui-icon {
+	background-image: url("/static/img/ui-icons_469bdd_256x240.png");
+}
+

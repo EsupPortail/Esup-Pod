@@ -28,6 +28,7 @@ from pod.video.views import theme_edit
 from pod.video.views import video_notes
 from pod.video.views import video_count, video_version
 from pod.video.views import video_oembed
+from pod.video.views import stats_view
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 from pod.main.views import contact_us, download_file
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
@@ -179,6 +180,14 @@ if getattr(settings, 'H5P_ENABLED', False):
         url(r'^h5p/login/', authentication_login, name='h5p_login'),
         url(r'^h5p/logout/', authentication_logout, name='h5p_logout'),
         url(r'^h5p/', include('h5pp.urls')),
+    ]
+
+if getattr(settings, "USE_STATS_VIEW", False):
+    urlpatterns += [
+            url(r'^video_stats_view/(?P<slug>[-\w]+)/$', stats_view,
+                name="video_stats_view"),
+            url(r'^video_stats_view/(?P<slug>[-\w]+)/(?P<slug_t>[-\w]+)/$',
+                stats_view, name='video_stats_view'),
     ]
 
 # CHANNELS
