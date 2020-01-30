@@ -376,6 +376,6 @@ footer a, footer a:hover{
 	color: white;
 }
 /*** Useful for additional owners ***/
-input#s2id_autogen2.select2-input{
+input.select2-input{
 	width: 100% !important;
 }

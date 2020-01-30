@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.test import override_settings
 from django.db.models import Count, Q
 from django.template.defaultfilters import slugify
 from django.db.models.fields.files import ImageFieldFile
@@ -43,15 +42,6 @@ else:
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class ChannelTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -129,15 +119,6 @@ class ChannelTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class ThemeTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -212,15 +193,6 @@ class ThemeTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class TypeTestCase(TestCase):
     # fixtures = ['initial_data.json', ]
 
@@ -276,15 +248,6 @@ class TypeTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class DisciplineTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -340,15 +303,6 @@ class DisciplineTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class VideoTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -464,15 +418,6 @@ class VideoTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class VideoRenditionTestCase(TestCase):
     # fixtures = ['initial_data.json', ]
 
@@ -570,15 +515,6 @@ class VideoRenditionTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class EncodingVideoTestCase(TestCase):
     # fixtures = ['initial_data.json', ]
 
@@ -654,15 +590,6 @@ class EncodingVideoTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class EncodingAudioTestCase(TestCase):
     # fixtures = ['initial_data.json', ]
 
@@ -733,15 +660,6 @@ class EncodingAudioTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class PlaylistVideoTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -811,15 +729,6 @@ class PlaylistVideoTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class EncodingLogTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -867,15 +776,6 @@ class EncodingLogTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class EncodingStepTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -921,15 +821,6 @@ class EncodingStepTestCase(TestCase):
             "   --->  test_delete_object of EncodingStepTestCase : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class NotesTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -955,8 +846,8 @@ class NotesTestCase(TestCase):
                          (note.user.username, note.video))
         self.assertEqual(advnote.__str__(), "%s-%s-%s" %
                          (advnote.user.username,
-                         advnote.video,
-                         advnote.timestamp))
+                          advnote.video,
+                          advnote.timestamp))
         self.assertEqual(note.note, None)
         self.assertEqual(advnote.note, None)
         self.assertEqual(advnote.timestamp, None)
@@ -981,8 +872,8 @@ class NotesTestCase(TestCase):
                          (note.user.username, note.video))
         self.assertEqual(advnote.__str__(), "%s-%s-%s" %
                          (advnote.user.username,
-                         advnote.video,
-                         advnote.timestamp))
+                          advnote.video,
+                          advnote.timestamp))
         self.assertEqual(note.note, "coucou")
         self.assertEqual(advnote.note, "coucou")
         self.assertEqual(advnote.timestamp, 0)

@@ -142,7 +142,9 @@ class VideoAdmin(admin.ModelAdmin):
             exclude += ('video', 'owner',)
         if not TRANSCRIPT:
             exclude += ('transcript',)
-        if not USE_OBSOLESCENCE:
+        if (request.user.is_staff is False
+                or obj is None
+                or USE_OBSOLESCENCE is False):
             exclude += ('date_delete',)
         self.exclude = exclude
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
@@ -159,12 +161,12 @@ class VideoAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                'css/podfile.css',
+                'podfile/css/podfile.css',
                 'bootstrap-4/css/bootstrap-grid.css',
             )
         }
         js = (
-            'js/filewidget.js',
+            'podfile/js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 

@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.test import override_settings
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.utils.translation import gettext as _
@@ -19,19 +18,6 @@ ARCHIVE_OWNER_USERNAME = getattr(settings, 'ARCHIVE_OWNER_USERNAME', 'archive')
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'dbTest.sqlite',
-        }
-    },
-    ACCOMMODATION_YEARS={'faculty': 1},
-    USE_OBSOLESCENCE=True,
-    POD_ARCHIVE_AFFILIATION=['faculty'],
-    WARN_DEADLINES=[60, 30, 7]
-)
 class ObsolescenceTestCase(TestCase):
 
     fixtures = ['initial_data.json', ]
@@ -39,11 +25,11 @@ class ObsolescenceTestCase(TestCase):
     def setUp(self):
         user = User.objects.create(
             username="pod", password="pod1234pod",
-            email="nicolas.can@univ-lille.fr")
+            email="pod@univ.fr")
 
         user_faculty = User.objects.create(
             username="pod_faculty", password="pod1234pod",
-            email="nicolas.can@univ-lille.fr")
+            email="pod@univ.fr")
 
         owner, owner_created = Owner.objects.get_or_create(user=user_faculty)
         owner.auth_type = 'CAS'
@@ -54,16 +40,16 @@ class ObsolescenceTestCase(TestCase):
 
         user1 = User.objects.create(
             username="pod1", password="pod1234pod",
-            email="nicolas.can@univ-lille.fr")
+            email="pod@univ.fr")
         user2 = User.objects.create(
             username="pod2", password="pod1234pod",
-            email="nicolas.can@univ-lille.fr")
+            email="pod@univ.fr")
         user3 = User.objects.create(
             username="pod3", password="pod1234pod",
-            email="nicolas.can@univ-lille.fr")
+            email="pod@univ.fr")
         user4 = User.objects.create(
             username="pod4", password="pod1234pod",
-            email="nicolas.can@univ-lille.fr")
+            email="pod@univ.fr")
 
         Video.objects.create(
             title="Video_default", owner=user, video="test.mp4",
@@ -212,3 +198,10 @@ class ObsolescenceTestCase(TestCase):
         self.assertEqual(n, 2)
 
         print('--->  test_obsolete_video of ObsolescenceTestCase: OK')
+
+    def tearDown(self):
+        try:
+            os.remove('%s/%s.csv' % (settings.LOG_DIRECTORY, 'deleted'))
+            os.remove('%s/%s.csv' % (settings.LOG_DIRECTORY, 'archived'))
+        except FileNotFoundError:
+            pass

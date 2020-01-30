@@ -17,9 +17,13 @@
 {% endblock page_extra_head %}
 {% block content %}
 <div class="grid-container">
+	{% if form %}
+	{% include "videos/video-form.html" %}
+	{% else %}
 	<h1 class="title">{{ title }}</h1>
 	<div><label for="jsperiode">{% trans "Change the date" %}</label><input type="date" name="periode" id="jsperiode"></div>
 	<table id="grid"></table>
 	<div id="pager"></div>
+	{% endif %}
 </div>
 {% endblock content %}

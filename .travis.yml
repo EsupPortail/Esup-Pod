@@ -24,11 +24,11 @@ install:
     - pip install flake8
 before_script:
     - sleep 10
-    - "flake8 --max-complexity=7 --exclude .git,pod/*/migrations/*.py"
+    - "flake8 --max-complexity=7 --exclude .git,pod/*/migrations/*.py,test_settings.py"
 # command to run tests
 script:
     - python manage.py create_pod_index
     - python manage.py makemigrations
     - python manage.py migrate
-    - python manage.py test
+    - python manage.py test --settings=pod.main.test_settings
 #  - pytest # or py.test for Python versions 3.5 and below

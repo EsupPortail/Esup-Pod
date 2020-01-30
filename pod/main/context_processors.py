@@ -31,7 +31,7 @@ HOMEPAGE_SHOWS_RESTRICTED = getattr(
     django_settings,
     'HOMEPAGE_SHOWS_RESTRICTED',
     True)
-
+USE_PODFILE = getattr(django_settings, 'USE_PODFILE', False)
 VERSION = getattr(
     django_settings,
     'VERSION',
@@ -59,17 +59,20 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
 OEMBED = getattr(
     django_settings, 'OEMBED', False)
 
-HIDE_USER_LOGIN = getattr(
-        django_settings, 'HIDE_USER_LOGIN', False)
+HIDE_USERNAME = getattr(
+        django_settings, 'HIDE_USERNAME', False)
 
 HIDE_USER_TAB = getattr(
         django_settings, 'HIDE_USER_TAB', False)
 
-ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
-        django_settings, 'ALLOW_MANUAL_RECORDING_CLAIMING', False)
+HIDE_USER_FILTER = getattr(
+        django_settings, 'HIDE_USER_FILTER', False)
 
 USE_STATS_VIEW = getattr(
         django_settings, 'USE_STATS_VIEW', False)
+
+ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
+        django_settings, 'ALLOW_MANUAL_RECORDING_CLAIMING', False)
 
 
 def context_settings(request):
@@ -81,13 +84,15 @@ def context_settings(request):
             m = "TEMPLATE_VISIBLE_SETTINGS: '{0}' does not exist".format(sett)
             raise ImproperlyConfigured(m)
     new_settings['VERSION'] = VERSION
+    new_settings['USE_PODFILE'] = USE_PODFILE
     new_settings["THIRD_PARTY_APPS"] = django_settings.THIRD_PARTY_APPS
     new_settings['OEMBED'] = OEMBED
-    new_settings['HIDE_USER_LOGIN'] = HIDE_USER_LOGIN
+    new_settings['HIDE_USERNAME'] = HIDE_USERNAME
     new_settings['HIDE_USER_TAB'] = HIDE_USER_TAB
+    new_settings['HIDE_USER_FILTER'] = HIDE_USER_FILTER
+    new_settings['USE_STATS_VIEW'] = USE_STATS_VIEW
     new_settings['ALLOW_MANUAL_RECORDING_CLAIMING'] = \
         ALLOW_MANUAL_RECORDING_CLAIMING
-    new_settings['USE_STATS_VIEW'] = USE_STATS_VIEW
     return new_settings
 
 

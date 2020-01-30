@@ -1,15 +1,13 @@
 """
 Unit tests for live views
 """
-import os
-
 from django.conf import settings
-from django.test import override_settings
 from django.test import TestCase
 from django.test import Client
 from django.contrib.auth.models import User
 from pod.live.models import Building, Broadcaster
-
+from pod.video.models import Video
+from pod.video.models import Type
 
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
@@ -20,17 +18,6 @@ else:
     from pod.main.models import CustomImageModel
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en',
-    THIRD_PARTY_APPS=['live']
-)
 class LiveViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -54,12 +41,16 @@ class LiveViewsTestCase(TestCase):
             status=True,
             is_restricted=True,
             building=building)
+        video_on_hold = Video.objects.create(
+            title="VideoOnHold", owner=user, video="test.mp4",
+            type=Type.objects.get(id=1))
         Broadcaster.objects.create(
             name="broadcaster2",
             poster=poster,
             url="http://test2.live",
             status=True,
             is_restricted=False,
+            video_on_hold=video_on_hold,
             building=building)
 
         print(" --->  SetUp of liveViewsTestCase : OK !")
@@ -76,7 +67,7 @@ class LiveViewsTestCase(TestCase):
         self.client = Client()
         self.user = User.objects.get(username='pod')
 
-        # User not loged in
+        # User not logged in
         # Broadcaster restricted
         self.broadcaster = Broadcaster.objects.get(name='broadcaster1')
         response = self.client.get('/live/%s/' % self.broadcaster.id)
@@ -84,13 +75,15 @@ class LiveViewsTestCase(TestCase):
             response,
             '%s?referrer=%s' % (
                 settings.LOGIN_URL,
-                '/live/%s/' % self.broadcaster.id), target_status_code=302)
+                '/live/%s/' % self.broadcaster.id),
+            status_code=302,
+            target_status_code=302)
         # Broadcaster not restricted
         self.broadcaster = Broadcaster.objects.get(name='broadcaster2')
         response = self.client.get('/live/%s/' % self.broadcaster.id)
         self.assertTemplateUsed(response, "live/live.html")
 
-        # User loged in
+        # User logged in
         self.client.force_login(self.user)
         # Broadcaster restricted
         self.broadcaster = Broadcaster.objects.get(name='broadcaster1')

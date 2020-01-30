@@ -42,6 +42,7 @@ Icon?
 # Custom files  #
 #################
 import_data/
+log/
 media/
 pod/*/migrations/
 settings_local.py

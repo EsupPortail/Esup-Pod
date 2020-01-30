@@ -2,24 +2,12 @@ from django.test import TestCase
 from pod.authentication.models import Owner
 from django.contrib.auth.models import User
 from django.conf import settings
-from django.test import override_settings
 
 import hashlib
-import os
 
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class OwnerTestCase(TestCase):
 
     """OwnerTestCase"""

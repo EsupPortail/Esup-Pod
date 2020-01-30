@@ -363,7 +363,6 @@ def get_video_access(request, video, slug_private):
         or is_restricted_to_group
         # or is_password_protected
     )
-
     if is_access_protected:
         access_granted_for_private = (
             slug_private and slug_private == video.get_hashkey()
@@ -1327,58 +1326,98 @@ def get_videos(p_slug, target, p_slug_t=None):
     videos = []
     title = _("Pod video view statistics")
     if target.lower() == "video":
-        videos.append(
-                VIDEOS.filter(slug__istartswith=p_slug).first())
-        title = _("Video viewing statistics for '%s'") % \
-            videos[0].title.capitalize()
-    if target.lower() == "chaine" and not videos:
-        channel = Channel.objects.filter(
-                slug__istartswith=p_slug).first()
-        title = _("Video viewing statistics for the channel '%s'") % \
-            channel.title
-        if channel:
-            videos = VIDEOS.filter(channel=channel)
+        video_founded = Video.objects.filter(slug=p_slug).first()
+        # In case that the slug is a bad one
+        if video_founded:
+            videos.append(video_founded)
+            title = _("Video viewing statistics for %s") %\
+                video_founded.title.capitalize()
+    if target.lower() == "channel" and not videos:
+        title = _("Video viewing statistics for the channel %s") % p_slug
+        videos = VIDEOS.filter(channel__slug__istartswith=p_slug)
     if target.lower() == "theme" and not videos and p_slug_t:
-        theme = Theme.objects.filter(
-                slug__istartswith=p_slug_t, channel__slug__istartswith=p_slug
-                ).first()
-        title = _("Video viewing statistics for the theme '%s'") % theme.title
-        if theme:
-            videos = VIDEOS.filter(theme=theme)
-    if not videos:
+        title = _("Video viewing statistics for the theme %s") % p_slug_t
+        videos = VIDEOS.filter(theme__slug__istartswith=p_slug_t)
+    if not videos and target == "videos":
         videos = [v for v in VIDEOS]
     return (videos, title)
 
 
-def stats_view(request, slug, slug_t=None):
+def manage_access_rights_stats_video(request, video, page_title):
+    video_access_ok = get_video_access(
+            request, video, slug_private=None)
+    is_password_protected = (
+            video.password is not None and
+            video.password != "")
+    has_rights = (
+            request.user == video.owner or
+            request.user.is_superuser or
+            request.user in video.additional_owners.all())
+    if(not has_rights and is_password_protected):
+        form = VideoPasswordForm()
+        return render(
+                request,
+                "videos/video_stats_view.html",
+                {"form": form, "title": page_title})
+    elif(
+            (
+                not has_rights and video_access_ok and
+                not is_password_protected) or
+            (video_access_ok and not is_password_protected) or has_rights):
+        return render(
+                request,
+                "videos/video_stats_view.html",
+                {"title": page_title})
+    return HttpResponseNotFound(
+            _("You do not have access rights to this video: %s " % video.slug))
+
+
+def stats_view(request, slug=None, slug_t=None):
     # Slug peut référencer une vidéo ou une chaine
     # from definit sa référence
     target = request.GET.get('from', "videos")
     videos, title = get_videos(slug, target, slug_t)
-    if request.method == "GET":
-        if not videos:
-            return HttpResponseNotFound(
-                    _("The following channel or video does not exist : %s")
-                    % slug)
+    error_message = (
+            "The following %s does not exist or contain any videos: %s")
+    if request.method == "GET" and target == "video" and videos:
+        return manage_access_rights_stats_video(request, videos[0], title)
+
+    elif request.method == "GET" and target == "video" and not videos:
+        return HttpResponseNotFound(
+                _("The following video does not exist : %s") % slug)
+
+    if request.method == "GET" and (
+            not videos and target in ("channel", "theme", "videos")):
+        slug = slug if not slug_t else slug_t
+        target = "Pod" if target == "videos" else target
+        return HttpResponseNotFound(_(error_message % (target, slug)))
+
+    if (request.method == "POST" and target == "video" and (
+            request.POST.get('password') and
+            request.POST.get('password') == videos[0].password)) or (
+                request.method == "GET" and
+                videos and target in ("videos", "channel", "theme")):
         return render(
                 request,
                 "videos/video_stats_view.html",
                 {"title": title})
-    specific_date = request.POST.get("periode", TODAY)
-    min_date = VIDEOS.aggregate(Min("date_added"))["date_added__min"].date()
-    if type(specific_date) == str:
-        specific_date = parse(specific_date).date()
-    data = []
-    for v in videos:
-        v_data = {}
-        v_data["title"] = v.title
-        v_data["slug"] = v.slug
-        (
-                v_data["day"],
-                v_data["month"],
-                v_data["year"],
-                v_data["since_created"]) = get_all_views_count(
-                        v.id, specific_date)
-        data.append(v_data)
-    data.append({"min_date": min_date})
-    return JsonResponse(data, safe=False)
+    else:
+        specific_date = request.POST.get("periode", TODAY)
+        min_date = VIDEOS.aggregate(
+                Min("date_added"))["date_added__min"].date()
+        if type(specific_date) == str:
+            specific_date = parse(specific_date).date()
+        data = []
+        for v in videos:
+            v_data = {}
+            v_data["title"] = v.title
+            v_data["slug"] = v.slug
+            (
+                    v_data["day"],
+                    v_data["month"],
+                    v_data["year"],
+                    v_data["since_created"]) = get_all_views_count(
+                            v.id, specific_date)
+            data.append(v_data)
+        data.append({"min_date": min_date})
+        return JsonResponse(data, safe=False)
