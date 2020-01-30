@@ -42,6 +42,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         'CSS_OVERRIDE': '',
         'PRE_HEADER_TEMPLATE': '',
         'POST_FOOTER_TEMPLATE': '',
+        'TRACKING_TEMPLATE': '',
     }
 )
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
