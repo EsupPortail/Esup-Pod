@@ -5,7 +5,7 @@ from pod.video.models import PlaylistVideo
 from rest_framework import serializers, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import authentication, permissions
+# from rest_framework import authentication, permissions
 from rest_framework import renderers
 from rest_framework.decorators import api_view
 from django.template.loader import render_to_string
@@ -201,8 +201,16 @@ class DublinCoreView(APIView):
 @api_view(['GET'])
 def launch_encode_view(request):
     video = get_object_or_404(Video, slug=request.GET.get('slug'))
-    if video is not None and (not hasattr(video, 'launch_encode') or getattr(video, 'launch_encode') is True) and video.encoding_in_progress is False:
+    if (
+            video is not None
+            and (
+                not hasattr(video, 'launch_encode')
+                or getattr(video, 'launch_encode') is True
+            )
+            and video.encoding_in_progress is False
+    ):
         video.launch_encode = True
         video.save()
-    #instance.launch_encode is True
-    return Response(VideoSerializer(instance=video, context={'request': request}).data)
+    return Response(
+        VideoSerializer(instance=video, context={'request': request}).data
+    )

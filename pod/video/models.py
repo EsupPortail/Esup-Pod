@@ -716,7 +716,7 @@ class Video(models.Model):
 
     def get_thumbnail_url(self):
         request = None
-        if self.thumbnail and self.thumbnail.file_exist() :
+        if self.thumbnail and self.thumbnail.file_exist():
             thumbnail_url = ''.join(
                 ['//',
                  get_current_site(request).domain,

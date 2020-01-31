@@ -9,6 +9,8 @@ TEST_SETTINGS = getattr(
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 
 # do it  with contributor, overlay, chapter etc.
+
+
 @receiver(post_save, sender=Video)
 def update_video_index(sender, instance=None, created=False, **kwargs):
     if TEST_SETTINGS or ES_URL is None:
