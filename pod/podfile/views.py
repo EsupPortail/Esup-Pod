@@ -127,7 +127,7 @@ def get_folder_files(request, id, type=None):
     rendered = render_to_string(
         "podfile/list_folder_files.html",
         {'folder': folder,
-        'type': type,
+         'type': type,
          }, request)
 
     list_element = {
