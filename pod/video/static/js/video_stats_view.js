@@ -33,8 +33,8 @@ $(()=>{
 
 	    ],
 	loadonce: true,
-	rowNum: 55555,
-	rowList: [5,10, 15, 20, 25, 30, 50, 100],
+	rowNum: 10,
+	rowList: [10, 15, 20, 25, 30, 50, 100],
 	gridview: true,
 	autoencode: true,
     	pager: '#pager',
