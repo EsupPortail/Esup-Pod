@@ -1,7 +1,7 @@
 {% load i18n %}
 {% spaceless %}
         {% if request.user.is_superuser  %}
-         <a href="{% url 'delete_record' id=record.id %}" class="p-0 m-0 btn btn-danger btn-sm pl-1" title="{% trans "Delete this record." %}">
+         <a href="{% url 'delete_record' id=record.id %}" class="p-0 m-0 btn btn-danger btn-sm pl-0 pb-1" title="{% trans "Delete this record." %}">
         <i data-feather="trash-2"></i></a>
     {% endif %}
 <a href="{% url 'add_recording' %}?mediapath={{ record.file }}&recorder={{ record.recorder.id }}&course_title={{ record.filename}}" title="{% trans "Claim the record"%}" class="p-0 m-0 btn btn-primary btn-sm pl-1">
