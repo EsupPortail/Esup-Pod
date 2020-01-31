@@ -16,6 +16,7 @@ $(()=>{
        	        gettext("View during the month"),
                	gettext("View during the year"),
                 gettext("Total view from creation"),
+		gettext("Slug"),
        	    ],
 	    colModel: [
 	    	{ 
@@ -28,10 +29,12 @@ $(()=>{
     		{ name: "month", align:"center", sortable:true, sorttype:"int" },
   	 	{ name: "year", align:"center", sortable:true, sorttype:"int" },
 	        { name: "since_created", align:"center", sortable:true, sorttype:"int" },
+	        { name: "slug", align:"center", sortable:true, sorttype:"text", hidden: true},
+
 	    ],
 	loadonce: true,
-	rowNum: 10,
-	rowList: [10, 15, 20, 25, 30, 50, 100],
+	rowNum: 55555,
+	rowList: [5,10, 15, 20, 25, 30, 50, 100],
 	gridview: true,
 	autoencode: true,
     	pager: '#pager',
