@@ -11,7 +11,7 @@ class CustomFileWidget(widgets.TextInput):
     class Media:
         js = ('podfile/js/filewidget.js',)
 
-    def __init__(self, type, *args, **kwargs):
+    def __init__(self, type=None, *args, **kwargs):
         self.type = type
         super(CustomFileWidget, self).__init__(*args, **kwargs)
 

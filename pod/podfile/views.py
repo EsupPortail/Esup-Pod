@@ -57,7 +57,7 @@ FOLDER_FILE_TYPE = ['image', 'file']
 @staff_member_required(redirect_field_name='referrer')
 def home(request, type=None):
     if type is not None and type not in FOLDER_FILE_TYPE:
-        raise SuspiciousOperation('Invalid type')
+        raise SuspiciousOperation('--> Invalid type')
     user_home_folder = get_object_or_404(
         UserFolder, name="home", owner=request.user)
 
@@ -107,7 +107,7 @@ def get_current_session_folder(request):
 
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
-def get_folder_files(request, id):
+def get_folder_files(request, id, type=None):
     folder = get_object_or_404(UserFolder, id=id)
     if (request.user != folder.owner
             and not request.user.groups.filter(
@@ -127,6 +127,7 @@ def get_folder_files(request, id):
     rendered = render_to_string(
         "podfile/list_folder_files.html",
         {'folder': folder,
+        'type': type,
          }, request)
 
     list_element = {

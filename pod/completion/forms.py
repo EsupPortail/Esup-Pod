@@ -56,7 +56,7 @@ class DocumentForm(forms.ModelForm):
             else:
                 self.fields[myField].widget.attrs['class'] = 'form-control'
         if FILEPICKER:
-            self.fields['document'].widget = CustomFileWidget(type="file")
+            self.fields['document'].widget = CustomFileWidget()
 
     class Meta(object):
         model = Document

@@ -1,34 +1,36 @@
 // podfile:filewidjet.js
 // select file 
 $(document).on("click", "a.file-name", function(e) {
-    e.preventDefault();
-    
-    $("#"+id_input).val($(this).data("id"));
+    if (id_input!="") {
+        e.preventDefault();
+        
+        $("#"+id_input).val($(this).data("id"));
 
-    if($(this).data("filetype")=="CustomImageModel"){
-        $(".btn-fileinput_"+id_input).html(gettext('Change image'));
-    } else {
-        $(".btn-fileinput_"+id_input).html(gettext('Change file'));
+        if($(this).data("filetype")=="CustomImageModel"){
+            $(".btn-fileinput_"+id_input).html(gettext('Change image'));
+        } else {
+            $(".btn-fileinput_"+id_input).html(gettext('Change file'));
+        }
+        /*
+        if($(".btn-fileinput_"+id_input).text().indexOf(gettext('Change file')) != -1 || $(".btn-fileinput_"+id_input).text().indexOf(gettext('Select a file')) != -1)
+            $(".btn-fileinput_"+id_input).html(gettext('Change file'));
+        else $(".btn-fileinput_"+id_input).html(gettext('Change image'));
+        */
+        $("#remove_file_"+id_input).show();
+
+        let html = "";
+        if($(this).data("filetype")=="CustomImageModel"){
+            html += '<img src="'+$(this).attr('href')+'" height="34" alt="'+$(this).text()+'"/>&nbsp;';
+        } else {
+            html += '<img style="height: 26px;vertical-align: middle;" src="'+static_url+'podfile/images/icons/default.png" alt="">&nbsp;';
+        } 
+        html += '<strong><a href="'+$(this).attr('href')+'" target="_blank" title="'+gettext('Open file in a new tab')+'">'+$(this).text()+'</a></strong>&nbsp;';
+      
+        $("#fileinput_"+id_input).html(html);
+
+        $("#modal-folder_"+id_input).html("");
+        $('#fileModal_'+id_input).modal('hide');
     }
-    /*
-    if($(".btn-fileinput_"+id_input).text().indexOf(gettext('Change file')) != -1 || $(".btn-fileinput_"+id_input).text().indexOf(gettext('Select a file')) != -1)
-        $(".btn-fileinput_"+id_input).html(gettext('Change file'));
-    else $(".btn-fileinput_"+id_input).html(gettext('Change image'));
-    */
-    $("#remove_file_"+id_input).show();
-
-    let html = "";
-    if($(this).data("filetype")=="CustomImageModel"){
-        html += '<img src="'+$(this).attr('href')+'" height="34" alt="'+$(this).text()+'"/>&nbsp;';
-    } else {
-        html += '<img style="height: 26px;vertical-align: middle;" src="'+static_url+'podfile/images/icons/default.png" alt="">&nbsp;';
-    } 
-    html += '<strong><a href="'+$(this).attr('href')+'" target="_blank" title="'+gettext('Open file in a new tab')+'">'+$(this).text()+'</a></strong>&nbsp;';
-  
-    $("#fileinput_"+id_input).html(html);
-
-    $("#modal-folder_"+id_input).html("");
-    $('#fileModal_'+id_input).modal('hide');
 });
 
 $(document).on("click", "a.folder", function(e) {
@@ -176,10 +178,8 @@ $(document).on('change', "#ufile", function(e) {
         $('#folderModalCenter').find('.modal-body input#folderInputName').val("");
         $('#folderModalCenter').find('.modal-body input#formfolderid').val("");
 
-        if(data.upload_errors != "") {
-            console.log(data.upload_errors);
+        if(data.upload_errors && data.upload_errors != "") {
             const str = data.upload_errors.split('\n').join('<br/>');
-            console.log(str);
             showalert(gettext("Error during exchange") + "<br/>"+str, "alert-danger");
         }
 

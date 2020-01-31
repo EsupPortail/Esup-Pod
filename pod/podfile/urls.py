@@ -17,6 +17,10 @@ urlpatterns = [
         r'^get_folder_files/(?P<id>[\d]+)/$',
         get_folder_files,
         name='get_folder_files'),
+    url(
+        r'^get_folder_files/(?P<id>[\d]+)/(?P<type>[\-\d\w]+)/$',
+        get_folder_files,
+        name='get_folder_files'),
     url(r'^editfolder/$', editfolder, name='editfolder'),
     url(r'^deletefolder/$', deletefolder, name='deletefolder'),
     url(r'^deletefile/$', deletefile, name='deletefile'),
