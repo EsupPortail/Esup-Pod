@@ -147,10 +147,6 @@ $(document).on('change', "#ufile", function(e) {
   $(document).on('submit', 'form#folderFormName', function(e){
     e.preventDefault();
     send_form_data($(this).attr("action"), $(this).serializeArray(), "reloadFolder");
-
-    $('#folderModalCenter').modal('hide');
-    $('#folderModalCenter').find('.modal-body input#folderInputName').val("");
-    $('#folderModalCenter').find('.modal-body input#formfolderid').val("");
   });
 
   function reloadFolder(data){
