@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
@@ -188,7 +189,14 @@ def editfolder(request):
             folder.owner = form.instance.owner
         else:
             folder.owner = request.user
-        folder.save()
+        try:
+            folder.save()
+        except IntegrityError:
+            messages.add_message(
+                request, messages.ERROR,
+                _(u'Two folders cannot have the same name.'))
+            raise PermissionDenied
+
         request.session['current_session_folder'] = folder.name
 
     rendered, current_session_folder = get_rendered(request)

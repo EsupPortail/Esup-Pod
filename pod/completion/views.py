@@ -358,7 +358,6 @@ def video_completion_document_save(request, video):
     list_document = video.document_set.all()
     list_track = video.track_set.all()
     list_overlay = video.overlay_set.all()
-
     form_document = DocumentForm(request.POST)
     if (request.POST.get('document_id') and
             request.POST['document_id'] != 'None'):
