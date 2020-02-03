@@ -47,6 +47,8 @@ $(document).on('change', "#ufile", function(e) {
 });
 
 /****** CHANGE FILE ********/
+
+
   $(document).on("submit", "form#formchangeimage, form#formchangefile, form#formuploadfile", function (e) {
         e.preventDefault();
         //alert('FORM');

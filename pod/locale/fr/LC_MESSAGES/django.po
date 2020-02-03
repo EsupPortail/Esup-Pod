@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-31 09:31+0000\n"
+"POT-Creation-Date: 2020-02-03 12:13+0000\n"
 "PO-Revision-Date: 2020-01-31 10:37+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -1032,7 +1032,7 @@ msgstr ""
 
 #: pod/completion/views.py:42 pod/completion/views.py:92
 #: pod/completion/views.py:126 pod/completion/views.py:306
-#: pod/completion/views.py:483 pod/completion/views.py:701
+#: pod/completion/views.py:482 pod/completion/views.py:700
 msgid "You cannot complement this video."
 msgstr "Vous ne pouvez pas compléter cette vidéo."
 
@@ -1044,9 +1044,9 @@ msgstr "Le fichier a été sauvegardé."
 msgid "The file has not been saved."
 msgstr "Le fichier n’a pas été enregistré."
 
-#: pod/completion/views.py:224 pod/completion/views.py:398
-#: pod/completion/views.py:794 pod/podfile/views.py:396
-#: pod/podfile/views.py:450 pod/video/views.py:248 pod/video/views.py:1204
+#: pod/completion/views.py:224 pod/completion/views.py:397
+#: pod/completion/views.py:793 pod/podfile/views.py:405
+#: pod/podfile/views.py:459 pod/video/views.py:248 pod/video/views.py:1204
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
 
@@ -2833,36 +2833,36 @@ msgid "Open file in a new tab"
 msgstr "Ouvrir le fichier dans un nouvel onglet"
 
 #: pod/podfile/templates/podfile/customfilewidget.html:67
-msgid "Change file"
-msgstr "Changer de fichier"
-
-#: pod/podfile/templates/podfile/customfilewidget.html:69
 msgid "Change image"
 msgstr "Changer d’image"
+
+#: pod/podfile/templates/podfile/customfilewidget.html:69
+msgid "Change file"
+msgstr "Changer de fichier"
 
 #: pod/podfile/templates/podfile/customfilewidget.html:74
 #: pod/podfile/templates/podfile/customfilewidget.html:91
 #: pod/podfile/templates/podfile/customfilewidget.html:151
-msgid "Remove file"
-msgstr "Retirer le fichier"
+msgid "Remove image"
+msgstr "Retirer l’image"
 
 #: pod/podfile/templates/podfile/customfilewidget.html:76
 #: pod/podfile/templates/podfile/customfilewidget.html:93
 #: pod/podfile/templates/podfile/customfilewidget.html:153
-msgid "Remove image"
-msgstr "Retirer l’image"
+msgid "Remove file"
+msgstr "Retirer le fichier"
 
 #: pod/podfile/templates/podfile/customfilewidget.html:84
 #: pod/podfile/templates/podfile/customfilewidget.html:105
 #: pod/podfile/templates/podfile/customfilewidget.html:144
-msgid "Select a file"
-msgstr "Sélectionner un fichier"
+msgid "Select an image"
+msgstr "Sélectionner une image"
 
 #: pod/podfile/templates/podfile/customfilewidget.html:86
 #: pod/podfile/templates/podfile/customfilewidget.html:105
 #: pod/podfile/templates/podfile/customfilewidget.html:146
-msgid "Select an image"
-msgstr "Sélectionner une image"
+msgid "Select a file"
+msgstr "Sélectionner un fichier"
 
 #: pod/podfile/templates/podfile/home.html:6
 #: pod/podfile/templates/podfile/home.html:10
@@ -2915,41 +2915,46 @@ msgstr "Ajouter un nouveau dossier"
 msgid "Shared folders"
 msgstr "Dossiers partagés"
 
-#: pod/podfile/views.py:122
+#: pod/podfile/views.py:123
 msgid "You cannot see this folder."
 msgstr "Vous ne pouvez pas voir ce dossier."
 
-#: pod/podfile/views.py:180
+#: pod/podfile/views.py:182
 msgid "You cannot edit this folder."
 msgstr "Vous ne pouvez pas éditer ce dossier."
 
-#: pod/podfile/views.py:216
+#: pod/podfile/views.py:197
+#| msgid "The chapters cannot start at the same time."
+msgid "Two folders cannot have the same name."
+msgstr "Deux dossiers ne peuvent pas avoir le même nom."
+
+#: pod/podfile/views.py:225
 msgid "You cannot delete home folder."
 msgstr "Vous ne pouvez pas supprimer ce dossier."
 
-#: pod/podfile/views.py:242
+#: pod/podfile/views.py:251
 msgid "You cannot delete this file."
 msgstr "Vous ne pouvez pas supprimer ce fichier."
 
-#: pod/podfile/views.py:276
+#: pod/podfile/views.py:285
 msgid "You cannot edit file on this folder."
 msgstr "Vous ne pouvez pas éditer de fichier dans ce dossier."
 
-#: pod/podfile/views.py:320
+#: pod/podfile/views.py:329
 #, python-format
 msgid "The file %(fname)s has not allowed format"
 msgstr "Le format du fichier %(fname)s n’est pas autorisé"
 
-#: pod/podfile/views.py:337
+#: pod/podfile/views.py:346
 #, python-format
 msgid "The file %(fname)s is not valid (%(form_error)s)"
 msgstr "Le fichier %(fname)s n’est pas valide (%(form_error)s)"
 
-#: pod/podfile/views.py:357
+#: pod/podfile/views.py:366
 msgid "You cannot access this folder."
 msgstr "Vous ne pouvez pas voir ce dossier."
 
-#: pod/podfile/views.py:366
+#: pod/podfile/views.py:375
 msgid "You cannot edit this file."
 msgstr "Vous ne pouvez pas éditer ce fichier."
 
