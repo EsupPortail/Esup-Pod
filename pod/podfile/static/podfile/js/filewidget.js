@@ -199,7 +199,7 @@ $(document).on('change', "#ufile", function(e) {
     $("#modal-folder_"+id_input).html(data);
   }
 
-
+/*
 var send_form_data = function(url,data_form, fct, method="post") {
     var jqxhr= '';
     if(method=="post") jqxhr = $.post(url, data_form);
@@ -210,3 +210,4 @@ var send_form_data = function(url,data_form, fct, method="post") {
         showalert(gettext("Error during exchange") + "("+data+")<br/>"+gettext("No data could be stored."), "alert-danger");
     });
 }
+*/
