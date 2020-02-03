@@ -289,16 +289,23 @@ def uploadfiles(request):
             if request.FILES:
                 files = request.FILES.getlist('ufile')
                 upload_errors = save_uploaded_files(request, folder, files)
-            rendered = render_to_string(
-                "podfile/list_folder_files.html",
-                {'folder': folder,
-                 }, request)
-
+            if request.POST.get("type"):
+                rendered = render_to_string(
+                    "podfile/list_folder_files.html",
+                    {'folder': folder,
+                     'type': request.POST['type']
+                     }, request)
+            else:
+                rendered = render_to_string(
+                    "podfile/list_folder_files.html",
+                    {'folder': folder,
+                     }, request)
             list_element = {
                 'list_element': rendered,
                 'folder_id': folder.id,
                 'upload_errors': upload_errors
             }
+
             data = json.dumps(list_element)
 
             return HttpResponse(data, content_type='application/json')
@@ -355,8 +362,10 @@ def manage_form_file(request, upload_errors, fname, form_file):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def changefile(request):
+    # did it only for flake !
     file = CustomFileModel()
     file = CustomImageModel()
+
     if request.POST and request.is_ajax():
         folder = get_object_or_404(UserFolder, id=request.POST["folder"])
         if (request.user != folder.owner
@@ -451,13 +460,11 @@ def file_edit_save(request, folder):
         data = json.dumps(list_element)
         return HttpResponse(data, content_type='application/json')
     else:
-        rendered = render_to_string("podfile/form_file.html",
-                                    {'form_file': form_file,
-                                     "folder": folder
-                                     }, request)
         some_data_to_dump = {
             'errors': "%s" % _('Please correct errors'),
-            'form': rendered
+            'form_error': form_file.errors.as_json()
         }
         data = json.dumps(some_data_to_dump)
+        return HttpResponse(data, content_type='application/json')
+
     return HttpResponse(data, content_type='application/json')
