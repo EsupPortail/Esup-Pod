@@ -17,6 +17,7 @@ else:
 class ChapterForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
+
         super(ChapterForm, self).__init__(*args, **kwargs)
         self.fields['video'].widget = forms.HiddenInput()
         self.fields['time_start'].widget.attrs['min'] = 0

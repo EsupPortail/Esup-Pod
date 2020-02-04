@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-03 12:13+0000\n"
+"POT-Creation-Date: 2020-02-04 10:15+0000\n"
 "PO-Revision-Date: 2020-01-31 10:37+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -313,7 +313,7 @@ msgstr "Éditer le chapitre"
 
 #: pod/chapter/templates/chapter/list_chapter.html:26
 #: pod/enrichment/templates/enrichment/list_enrichment.html:30
-#: pod/podfile/templates/podfile/list_folder_files.html:72
+#: pod/podfile/templates/podfile/list_folder_files.html:75
 #: pod/video/templates/channel/list_theme.html:27
 msgid "Modify"
 msgstr "Modifier"
@@ -325,7 +325,7 @@ msgstr "Supprimer le chapitre"
 #: pod/chapter/templates/chapter/list_chapter.html:34
 #: pod/enrichment/templates/enrichment/list_enrichment.html:38
 #: pod/podfile/templates/podfile/list_folder_files.html:28
-#: pod/podfile/templates/podfile/list_folder_files.html:89
+#: pod/podfile/templates/podfile/list_folder_files.html:92
 #: pod/recorder/templates/recorder/record_delete.html:9
 #: pod/video/templates/channel/list_theme.html:35
 #: pod/video/templates/videos/video_delete.html:10
@@ -1045,8 +1045,8 @@ msgid "The file has not been saved."
 msgstr "Le fichier n’a pas été enregistré."
 
 #: pod/completion/views.py:224 pod/completion/views.py:397
-#: pod/completion/views.py:793 pod/podfile/views.py:405
-#: pod/podfile/views.py:459 pod/video/views.py:248 pod/video/views.py:1204
+#: pod/completion/views.py:793 pod/podfile/views.py:414
+#: pod/podfile/views.py:464 pod/video/views.py:248 pod/video/views.py:1204
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
 
@@ -1431,7 +1431,7 @@ msgstr "Interactivité de la vidéo"
 
 #: pod/interactive/templates/interactive/edit_interactive.html:37
 msgid "Loading, please wait..."
-msgstr "Chargement, veuillez patienter."
+msgstr "Chargement, veuillez patienter..."
 
 #: pod/interactive/templates/interactive/edit_interactive.html:47
 #: pod/interactive/templates/interactive/edit_interactive.html:49
@@ -2558,7 +2558,8 @@ msgstr "Ajouter votre image de profil"
 msgid "My channels"
 msgstr "Mes chaînes"
 
-#: pod/main/templates/navbar.html:82
+#: pod/main/templates/navbar.html:82 pod/podfile/templates/podfile/home.html:6
+#: pod/podfile/templates/podfile/home.html:10
 msgid "My files"
 msgstr "Mes fichiers"
 
@@ -2864,18 +2865,13 @@ msgstr "Sélectionner une image"
 msgid "Select a file"
 msgstr "Sélectionner un fichier"
 
-#: pod/podfile/templates/podfile/home.html:6
-#: pod/podfile/templates/podfile/home.html:10
-msgid "My Files"
-msgstr "Mes fichiers"
-
 #: pod/podfile/templates/podfile/home_content.html:18
 #: pod/podfile/templates/podfile/home_content.html:30
 msgid "Enter new name of folder"
 msgstr "Indiquer un nouveau nom à ce dossier"
 
 #: pod/podfile/templates/podfile/home_content.html:50
-#: pod/podfile/templates/podfile/list_folder_files.html:50
+#: pod/podfile/templates/podfile/list_folder_files.html:53
 msgid "Loading"
 msgstr "Chargement"
 
@@ -2895,11 +2891,11 @@ msgstr "fichier"
 msgid "Rename"
 msgstr "Renomer"
 
-#: pod/podfile/templates/podfile/list_folder_files.html:40
+#: pod/podfile/templates/podfile/list_folder_files.html:43
 msgid "Upload Files"
 msgstr "Téléverser des fichiers"
 
-#: pod/podfile/templates/podfile/list_folder_files.html:81
+#: pod/podfile/templates/podfile/list_folder_files.html:84
 msgid "Download"
 msgstr "Télécharger"
 
@@ -2924,13 +2920,12 @@ msgid "You cannot edit this folder."
 msgstr "Vous ne pouvez pas éditer ce dossier."
 
 #: pod/podfile/views.py:197
-#| msgid "The chapters cannot start at the same time."
 msgid "Two folders cannot have the same name."
 msgstr "Deux dossiers ne peuvent pas avoir le même nom."
 
 #: pod/podfile/views.py:225
 msgid "You cannot delete home folder."
-msgstr "Vous ne pouvez pas supprimer ce dossier."
+msgstr "Vous ne pouvez pas supprimer le fichier racine."
 
 #: pod/podfile/views.py:251
 msgid "You cannot delete this file."
@@ -2940,21 +2935,21 @@ msgstr "Vous ne pouvez pas supprimer ce fichier."
 msgid "You cannot edit file on this folder."
 msgstr "Vous ne pouvez pas éditer de fichier dans ce dossier."
 
-#: pod/podfile/views.py:329
+#: pod/podfile/views.py:336
 #, python-format
 msgid "The file %(fname)s has not allowed format"
 msgstr "Le format du fichier %(fname)s n’est pas autorisé"
 
-#: pod/podfile/views.py:346
+#: pod/podfile/views.py:353
 #, python-format
 msgid "The file %(fname)s is not valid (%(form_error)s)"
 msgstr "Le fichier %(fname)s n’est pas valide (%(form_error)s)"
 
-#: pod/podfile/views.py:366
+#: pod/podfile/views.py:375
 msgid "You cannot access this folder."
 msgstr "Vous ne pouvez pas voir ce dossier."
 
-#: pod/podfile/views.py:375
+#: pod/podfile/views.py:384
 msgid "You cannot edit this file."
 msgstr "Vous ne pouvez pas éditer ce fichier."
 
@@ -3260,7 +3255,7 @@ msgstr "Administration de Pod"
 msgid "Encode selected"
 msgstr "(Ré)encoder la sélection"
 
-#: pod/video/admin.py:197 pod/video/forms.py:225 pod/video/forms.py:524
+#: pod/video/admin.py:198 pod/video/forms.py:225 pod/video/forms.py:524
 #: pod/video/forms.py:526 pod/video/models.py:223
 msgid "Owners"
 msgstr "Propriétaires"
@@ -3662,8 +3657,8 @@ msgid ""
 "For information, you will find below the list of video will soon arrive at "
 "the deletion deadline."
 msgstr ""
-"Pour information, vous trouverez ci-dessous la liste des vidéos qui arrivera "
-"bientôt à la date limite de suppression."
+"Pour information, vous trouverez ci-dessous la liste des vidéos qui "
+"arriveront bientôt à la date limite de suppression."
 
 #: pod/video/management/commands/check_obsolete_videos.py:245
 msgid "The obsolete videos on Pod"
@@ -4525,7 +4520,7 @@ msgstr "Vous ne pouvez éditer cette chaîne."
 
 #: pod/video/views.py:155 pod/video/views.py:570
 msgid "The changes have been saved."
-msgstr "Les modifications ont été sauvegardés."
+msgstr "Les modifications ont été sauvegardées."
 
 #: pod/video/views.py:500
 msgid "The password is incorrect."
@@ -4665,6 +4660,9 @@ msgstr "facettage"
 #: pod/video_search/views.py:55
 msgid "Remove selection"
 msgstr "Retirer la sélection"
+
+#~ msgid "My Files"
+#~ msgstr "Mes fichiers"
 
 #, fuzzy
 #~| msgid "Archived"
