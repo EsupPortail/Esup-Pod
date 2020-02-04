@@ -2,38 +2,32 @@
 Unit tests for recorder views
 """
 import hashlib
-import os
 
-from django.conf import settings
-from django.test import override_settings
 from django.test import TestCase
 from django.test import Client
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 
-from pod.recorder.models import Recorder
+from ..models import Recorder, RecordingFileTreatment
 from pod.video.models import Type
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class recorderViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
         videotype = Type.objects.create(title='others')
         user = User.objects.create(username='pod', password='podv2')
-        Recorder.objects.create(id=1, user=user, name="recorder1",
-                                address_ip="16.3.10.37", type=videotype,
-                                directory="dir1", recording_type="video")
+        recorder = Recorder.objects.create(id=1, user=user, name="recorder1",
+                                           address_ip="16.3.10.37",
+                                           type=videotype,
+                                           directory="dir1",
+                                           recording_type="video")
+        recording_file = RecordingFileTreatment.objects.create(
+            type='video',
+            file="/home/pod/files/somefile.mp4",
+            recorder=recorder)
+        recording_file.save()
         print(" --->  SetUp of recorderViewsTestCase : OK !")
 
     def test_add_recording(self):
@@ -90,6 +84,32 @@ class recorderViewsTestCase(TestCase):
 
         print(
             "   --->  test_claim_record of recorderViewsTestCase : OK !")
+
+    def test_delete_record(self):
+        self.client = Client()
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.get("/delete_record/1/")
+        self.assertRaises(PermissionDenied)
+
+        self.user.is_staff = True
+        self.user.save()
+        response = self.client.get("/delete_record/1/")
+        self.assertRaises(PermissionDenied)
+
+        self.user.is_superuser = True
+        self.user.save()
+
+        response = self.client.get("/delete_record/2/")
+        self.assertEqual(response.status_code, 404)
+
+        response = self.client.get("/delete_record/1/")
+        self.assertEqual(response.status_code, 200)
+
+        self.assertTemplateUsed(response, 'recorder/record_delete.html')
+
+        print(
+            "   --->  test_delete_record recorderViewsTestCase : OK !")
 
     def test_recorder_notify(self):
         self.client = Client()

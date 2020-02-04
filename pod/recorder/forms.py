@@ -52,3 +52,20 @@ class RecordingForm(forms.ModelForm):
     class Meta:
         model = Recording
         exclude = ('comment', 'date_added')
+
+    delete = forms.BooleanField(
+        required=False,
+        label=_('Delete the record'),
+        help_text=_('If checked, record will be deleted instead of saving it'),
+        widget=forms.CheckboxInput())
+
+
+class RecordingFileTreatmentDeleteForm(forms.Form):
+    agree = forms.BooleanField(
+        label=_('I agree'),
+        help_text=_('Delete this record cannot be undo'),
+        widget=forms.CheckboxInput())
+
+    def __init__(self, *args, **kwargs):
+        super(RecordingFileTreatmentDeleteForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)

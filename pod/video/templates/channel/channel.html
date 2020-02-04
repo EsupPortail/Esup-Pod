@@ -53,9 +53,15 @@ body {
   <h1>{{channel.title}}
     <span class="float-right">
       {% if theme %}
+      {% if USE_STATS_VIEW %}
+      <a href="{% url "video_stats_view" slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-dark btn-sm">{% trans 'Statistics views' %}</a>
+      {% endif %}
       <a href="{% url "rss-video" slug_c=channel.slug slug_t=theme.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
       <a href="{% url "rss-audio" slug_c=channel.slug slug_t=theme.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
       {% else %}
+      {% if USE_STATS_VIEW %}
+      <a href="{% url "video_stats_view" slug=channel.slug %}?from=channel" title="{% trans 'Show view statistics for all videos in this channel' %}" target="_blank" class="btn btn-outline-dark btn-sm">{% trans 'Statistics views' %}</a>
+      {% endif %}
       <a href="{% url "rss-video" slug_c=channel.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
       <a href="{% url "rss-audio" slug_c=channel.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
       {% endif %}

@@ -1,8 +1,5 @@
-import os
 
 from django.test import TestCase
-from django.test import override_settings
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.utils import timezone
@@ -10,18 +7,6 @@ from pod.video.models import Type
 from ..models import Recording, RecordingFile, Recorder, RecordingFileTreatment
 
 
-# Create your tests here.
-
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class RecorderTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -136,16 +121,6 @@ class RecordingTestCase(TestCase):
             "   --->  test_delete_object of RecordingTestCase : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class RecordingFileTreatmentTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 

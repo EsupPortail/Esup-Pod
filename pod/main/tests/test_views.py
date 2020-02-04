@@ -1,10 +1,6 @@
 """
 Unit tests for main views
 """
-
-import os
-
-from django.conf import settings
 from django.test import override_settings
 from django.test import TestCase
 from django.test import Client
@@ -12,17 +8,10 @@ from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from captcha.models import CaptchaStore
 
+import tempfile
+import os
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
+
 class MainViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -30,6 +19,7 @@ class MainViewsTestCase(TestCase):
         User.objects.create(username='pod', password='podv2')
         print(" --->  SetUp of MainViewsTestCase : OK !")
 
+    @override_settings(MEDIA_ROOT=tempfile.gettempdir())
     def test_download_file(self):
         self.client = Client()
 
@@ -42,10 +32,12 @@ class MainViewsTestCase(TestCase):
         response = self.client.post('/download/')
         self.assertRaises(PermissionDenied)
         # filename is properly set
+        temp_file = tempfile.NamedTemporaryFile()
         response = self.client.post('/download/',
-                                    {'filename': 'files/testimage.jpg'})
+                                    {'filename': temp_file.name})
         self.assertEqual(response['Content-Disposition'],
-                         'attachment; filename="testimage.jpg"')
+                         'attachment; filename="%s"' % (
+            os.path.basename(temp_file.name)))
         self.assertEqual(response.status_code, 200)
 
         print(

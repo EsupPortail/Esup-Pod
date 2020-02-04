@@ -1,21 +1,19 @@
 """
 Unit tests for completion views
 """
-import os
-
-from django.conf import settings
 from django.test import TestCase
-from django.test import override_settings
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
 from pod.video.models import Video, Type
-from pod.completion.models import Contributor
-from pod.completion.models import Document
-from pod.completion.models import Overlay
-from pod.completion.models import Track
+from ..models import Contributor
+from ..models import Document
+from ..models import Overlay
+from ..models import Track
 from datetime import datetime
+
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.models import CustomFileModel
@@ -25,16 +23,6 @@ else:
     from pod.main.models import CustomFileModel
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class CompletionViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -93,16 +81,6 @@ class CompletionViewsTestCase(TestCase):
         print(" ---> test_video_completion_staff : OK!")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class CompletionContributorViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -254,16 +232,6 @@ class CompletionContributorViewsTestCase(TestCase):
         print(" ---> test_video_completion_contributor_delete : OK!")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class CompletionTrackViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -468,16 +436,6 @@ class CompletionTrackViewsTestCase(TestCase):
         print(" ---> test_video_completion_track_delete : OK!")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class CompletionDocumentViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -691,16 +649,6 @@ class CompletionDocumentViewsTestCase(TestCase):
         print(" ---> test_video_completion_document_delete : OK!")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class CompletionOverlayViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 

@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.test import TestCase
-from django.test import override_settings
 from django.core.files.temp import NamedTemporaryFile
 from django.contrib.auth.models import User
 
@@ -22,15 +21,6 @@ AUDIO_TEST = getattr(
     settings, 'VIDEO_TEST', 'pod/main/static/video_test/pod.mp3')
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class EncodeTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 

@@ -31,7 +31,7 @@ HOMEPAGE_SHOWS_RESTRICTED = getattr(
     django_settings,
     'HOMEPAGE_SHOWS_RESTRICTED',
     True)
-
+USE_PODFILE = getattr(django_settings, 'USE_PODFILE', False)
 VERSION = getattr(
     django_settings,
     'VERSION',
@@ -54,16 +54,23 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         'CSS_OVERRIDE': '',
         'PRE_HEADER_TEMPLATE': '',
         'POST_FOOTER_TEMPLATE': '',
+        'TRACKING_TEMPLATE': '',
     }
 )
 OEMBED = getattr(
     django_settings, 'OEMBED', False)
 
-USE_RGPD = getattr(
-    django_settings, 'USE_RGPD', False)
+HIDE_USERNAME = getattr(
+        django_settings, 'HIDE_USERNAME', False)
 
-ADDITIONAL_GRENOBLE_RGPD = getattr(
-        django_settings, 'ADDITIONAL_GRENOBLE_RGPD', False)
+HIDE_USER_TAB = getattr(
+        django_settings, 'HIDE_USER_TAB', False)
+
+HIDE_USER_FILTER = getattr(
+        django_settings, 'HIDE_USER_FILTER', False)
+
+USE_STATS_VIEW = getattr(
+        django_settings, 'USE_STATS_VIEW', False)
 
 ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
         django_settings, 'ALLOW_MANUAL_RECORDING_CLAIMING', False)
@@ -78,10 +85,13 @@ def context_settings(request):
             m = "TEMPLATE_VISIBLE_SETTINGS: '{0}' does not exist".format(sett)
             raise ImproperlyConfigured(m)
     new_settings['VERSION'] = VERSION
+    new_settings['USE_PODFILE'] = USE_PODFILE
     new_settings["THIRD_PARTY_APPS"] = django_settings.THIRD_PARTY_APPS
     new_settings['OEMBED'] = OEMBED
-    new_settings['USE_RGPD'] = USE_RGPD
-    new_settings['ADDITIONAL_GRENOBLE_RGPD'] = ADDITIONAL_GRENOBLE_RGPD
+    new_settings['HIDE_USERNAME'] = HIDE_USERNAME
+    new_settings['HIDE_USER_TAB'] = HIDE_USER_TAB
+    new_settings['HIDE_USER_FILTER'] = HIDE_USER_FILTER
+    new_settings['USE_STATS_VIEW'] = USE_STATS_VIEW
     new_settings['ALLOW_MANUAL_RECORDING_CLAIMING'] = \
         ALLOW_MANUAL_RECORDING_CLAIMING
     return new_settings
@@ -137,7 +147,7 @@ def context_navbar(request):
         fl_firstname=Lower(Substr("first_name", 1, 1))).order_by(
         'fl_name').values(*list(VALUES_LIST))
 
-    if (USE_RGPD and not request.user.is_authenticated):
+    if not request.user.is_authenticated:
         listowner = {}
     else:
         listowner = get_list_owner(owners)

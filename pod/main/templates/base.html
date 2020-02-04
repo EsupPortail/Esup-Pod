@@ -103,8 +103,8 @@
         {% endif %}
         <!-- JS -->
 		<script>
-		/** RGPD **/
-		const USE_RGPD = {% if USE_RGPD %} true {% else %} false {% endif %};
+		/** HIDE USERNAME **/
+		const HIDE_USERNAME = {% if HIDE_USERNAME %} true {% else %} false {% endif %};
         /** ALL_CHANNELS **/
         var listTheme = new Array();
         {% for channel in ALL_CHANNELS %}{% if channel.themes.count > 0 %}listTheme["channel_{{channel.id}}"] = {{channel.get_all_theme_json|safe}};{% endif %}{% endfor %}
@@ -120,5 +120,6 @@
           feather.replace({ class: 'align-bottom'});
         </script>
         {% if POST_FOOTER_TEMPLATE %}{% include POST_FOOTER_TEMPLATE %}{% endif %}
+        {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
 	</body>
 </html>
