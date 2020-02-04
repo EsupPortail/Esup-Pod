@@ -1,10 +1,12 @@
 // podfile:filewidjet.js
 // select file 
 
-$(document).on("click", "a.file-name", function(e) {
+if(typeof loaded == 'undefined') {
+    loaded = true;
+    $(document).on("click", "a.file-name", function(e) {
     if (id_input!="") {
         e.preventDefault();
-        
+
         $("input#"+id_input).val($(this).data("fileid"));
 
         if($(this).data("filetype")=="CustomImageModel"){
@@ -24,9 +26,9 @@ $(document).on("click", "a.file-name", function(e) {
             html += '<img src="'+$(this).attr('href')+'" height="34" alt="'+$(this).text()+'"/>&nbsp;';
         } else {
             html += '<img style="height: 26px;vertical-align: middle;" src="'+static_url+'podfile/images/icons/default.png" alt="">&nbsp;';
-        } 
+        }
         html += '<strong><a href="'+$(this).attr('href')+'" target="_blank" title="'+gettext('Open file in a new tab')+'">'+$(this).text()+'</a></strong>&nbsp;';
-      
+
         $("#fileinput_"+id_input).html(html);
 
         $("#modal-folder_"+id_input).html("");
@@ -46,6 +48,7 @@ $(document).on('change', "#ufile", function(e) {
     $("#formuploadfile").submit();
 });
 
+
 /****** CHANGE FILE ********/
 
 
@@ -57,11 +60,11 @@ $(document).on('change', "#ufile", function(e) {
         $("#listfiles").hide();
         var data_form = new FormData($(this)[0]);
         $.ajax({
-            url: $( this ).attr("action"), 
+            url: $( this ).attr("action"),
             type: 'POST',
             data: data_form,
             processData: false,
-            contentType: false                    
+            contentType: false
         }).done(function(data){
             //alert('OK');
             $(".loadingformfiles").hide();
@@ -84,7 +87,7 @@ $(document).on('change', "#ufile", function(e) {
   $(document).on('show.bs.modal', '#folderModalCenter', function (event) {
     //event.preventDefault();
     event.stopPropagation();
-    
+
     let button = $(event.relatedTarget) // Button that triggered the modal
     let modal = $(this);
     modal.find('form').hide();
@@ -116,7 +119,7 @@ $(document).on('change', "#ufile", function(e) {
         modal.find('.modal-body input#formfolderid').val(folder_id);
         break;
     }
-    
+
   });
 
   $(document).on("click", "#modalSave", function(e) {
@@ -153,7 +156,7 @@ $(document).on('change', "#ufile", function(e) {
     if(data.list_element) {
         $('#dirs').html(data.list_element);
 
-        // call 
+        // call
         var folder_id = data.folder_id;
         send_form_data($("#folder_"+folder_id).data('target'), {}, "show_folder_files", "get");
 
@@ -166,8 +169,8 @@ $(document).on('change', "#ufile", function(e) {
         showalert(gettext('You are no longer authenticated. Please log in again.'), "alert-danger");
     }
   }
-  
-  
+
+
   function show_folder_files(data){
     if(data.list_element) {
         $('#files').html(data.list_element);
@@ -211,3 +214,4 @@ var send_form_data = function(url,data_form, fct, method="post") {
     });
 }
 */
+}
