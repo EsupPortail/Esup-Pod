@@ -105,7 +105,7 @@ class PlaylistVideoSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ChannelViewSet(viewsets.ModelViewSet):
-    queryset = Channel.objects
+    queryset = Channel.objects.all()
     serializer_class = ChannelSerializer
 
 
