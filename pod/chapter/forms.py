@@ -5,6 +5,9 @@ from django.utils.safestring import mark_safe
 from pod.chapter.models import Chapter
 from pod.chapter.utils import vtt_to_chapter
 
+
+
+
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.models import CustomFileModel

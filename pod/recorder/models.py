@@ -10,6 +10,8 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.contrib.sites.models import Site
+
 
 from pod.video.models import Type
 
@@ -69,6 +71,7 @@ class Recorder(models.Model):
                                  unique=True, help_text=_(
         'Basic directory containing the videos published by the recorder.')
     )
+    sites = models.ManyToManyField(Site)
 
     def __unicode__(self):
         return "%s - %s" % (self.name, self.address_ip)

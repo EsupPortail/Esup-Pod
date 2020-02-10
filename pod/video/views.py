@@ -34,6 +34,7 @@ from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
 from itertools import chain
+from django.contrib.sites.models import Site
 
 import json
 import re
@@ -123,7 +124,8 @@ def channel(request, slug_c, slug_t=None):
 
 @login_required(redirect_field_name='referrer')
 def my_channels(request):
-    channels = request.user.owners_channels.all().annotate(
+    site = get_current_site(request)
+    channels = request.user.owners_channels.all().filter(sites=site).annotate(
         video_count=Count("video", distinct=True))
     return render(request, 'channel/my_channels.html', {'channels': channels})
 
@@ -259,10 +261,12 @@ def theme_edit_save(request, channel):
 
 @login_required(redirect_field_name='referrer')
 def my_videos(request):
+
+    site = get_current_site(request)
     # Videos list which user is the owner
-    videos_list_owner = request.user.video_set.all()
+    videos_list_owner = request.user.video_set.all().filter(sites=site)
     # Videos list which user is an additional owner
-    videos_list_additional_owner = request.user.owners_videos.all()
+    videos_list_additional_owner = request.user.owners_videos.all().filter(sites=site)
     # Aggregate the 2 lists
     videos_list = list(chain(videos_list_owner, videos_list_additional_owner))
     page = request.GET.get('page', 1)
@@ -561,7 +565,8 @@ def video_edit(request, slug=None):
             instance=video,
             is_staff=request.user.is_staff,
             is_superuser=request.user.is_superuser,
-            current_user=request.user
+            current_user=request.user,
+
         )
         if form.is_valid():
             video = save_video_form(request, form)
@@ -594,8 +599,12 @@ def save_video_form(request, form):
         and request.POST.get('owner') != ""
     ):
         video.owner = form.cleaned_data['owner']
+
     elif getattr(video, 'owner', None) is None:
         video.owner = request.user
+    video.save()
+    form.save_m2m()
+    video.sites.add(get_current_site(request))
     video.save()
     form.save_m2m()
     return video

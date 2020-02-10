@@ -430,6 +430,7 @@ class VideoForm(forms.ModelForm):
             self.remove_field('owner')
             self.remove_field('video')  # .widget = forms.HiddenInput()
 
+
         # change ckeditor, thumbnail and date delete config for no staff user
         self.set_nostaff_config()
 
@@ -442,6 +443,7 @@ class VideoForm(forms.ModelForm):
         if self.is_superuser is False and self.is_admin is False:
             self.remove_field('date_added')
             self.remove_field('owner')
+            self.remove_field('sites')
 
         self.fields = add_placeholder_and_asterisk(self.fields)
 

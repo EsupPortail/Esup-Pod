@@ -20,7 +20,7 @@ from .models import Overlay
 from .forms import OverlayForm
 from pod.podfile.models import UserFolder
 from pod.podfile.views import get_current_session_folder, file_edit_save
-
+from django.contrib.sites.shortcuts import get_current_site
 import re
 import json
 

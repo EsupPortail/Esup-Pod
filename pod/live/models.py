@@ -4,6 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 from ckeditor.fields import RichTextField
 from django.template.defaultfilters import slugify
 from pod.video.models import Video
+from django.contrib.sites.models import Site
+
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -22,6 +24,7 @@ class Building(models.Model):
                                  blank=True, null=True,
                                  verbose_name=_('Headband'))
     gmapurl = models.CharField(max_length=250, blank=True, null=True)
+    sites = models.ManyToManyField(Site)
 
     def __str__(self):
         return self.name

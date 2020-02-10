@@ -3,11 +3,14 @@ from django.shortcuts import get_object_or_404
 from .models import Building, Broadcaster
 from django.conf import settings
 from django.shortcuts import redirect
+from django.contrib.sites.shortcuts import get_current_site
 # from django.http import HttpResponse --> not use
 
 
 def lives(request):  # affichage des directs
-    buildings = Building.objects.all()
+
+    site = get_current_site(request)
+    buildings = Building.objects.all().filter(sites=site)
     return render(request, "live/lives.html", {
         'buildings': buildings
     })

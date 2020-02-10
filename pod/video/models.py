@@ -26,6 +26,7 @@ from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
 from django.utils.text import capfirst
+from django.contrib.sites.models import Site
 
 import importlib
 
@@ -70,7 +71,6 @@ CURSUS_CODES_DICT = {key: value for key, value in CURSUS_CODES}
 
 DEFAULT_TYPE_ID = getattr(
     settings, 'DEFAULT_TYPE_ID', 1)
-
 LICENCE_CHOICES = getattr(
     settings, 'LICENCE_CHOICES', (
         ('by', _("Attribution 4.0 International (CC BY 4.0)")),
@@ -231,6 +231,7 @@ class Channel(models.Model):
             u'If checked, the channel appear in a list of available '
             + 'channels on the platform.'),
         default=False)
+    sites = models.ManyToManyField(Site)
 
     class Meta:
         ordering = ['title']
@@ -368,6 +369,7 @@ class Type(models.Model):
     icon = models.ForeignKey(CustomImageModel, models.SET_NULL,
                              blank=True, null=True,
                              verbose_name=_('Icon'))
+    sites = models.ManyToManyField(Site)
 
     def __str__(self):
         return "%s" % (self.title)
@@ -393,6 +395,7 @@ class Discipline(models.Model):
     icon = models.ForeignKey(CustomImageModel, models.SET_NULL,
                              blank=True, null=True,
                              verbose_name=_('Icon'))
+    sites = models.ManyToManyField(Site)
 
     def __str__(self):
         return "%s" % (self.title)
@@ -425,6 +428,7 @@ class Video(models.Model):
             'a short label containing only letters, '
             'numbers, underscore or dash top.'),
         editable=False)
+    sites = models.ManyToManyField(Site)
     type = models.ForeignKey(Type, verbose_name=_('Type'))
     # Management RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY setting for owners
     # and additional owners
@@ -769,6 +773,7 @@ class Video(models.Model):
 
     def get_json_to_index(self):
         try:
+            current_site = Site.objects.get_current()
             data_to_dump = {
                 'id': self.id,
                 'title': u'%s' % self.title,
@@ -790,9 +795,9 @@ class Video(models.Model):
                     } for name in Tag.objects.get_for_object(
                         self).values_list('name')]),
                 "type": {"title": self.type.title, "slug": self.type.slug},
-                "disciplines": list(self.discipline.all().values(
+                "disciplines": list(self.discipline.all().filter(sites=current_site).values(
                     'title', 'slug')),
-                "channels": list(self.channel.all().values('title', 'slug')),
+                "channels": list(self.channel.all().filter(sites=current_site).values('title', 'slug')),
                 "themes": list(self.theme.all().values('title', 'slug')),
                 "contributors": list(self.contributor_set.values(
                     'name', 'role')),
@@ -823,6 +828,7 @@ class Video(models.Model):
 
     def get_dublin_core(self):
         contributors = []
+        current_site = Site.objects.get_current()
         for contrib in self.contributor_set.values_list('name', 'role'):
             contributors.append(" ".join(contrib))
         try:
@@ -831,7 +837,7 @@ class Video(models.Model):
                 'dc.creator': '%s' % self.owner.get_full_name(),
                 'dc.description': '%s' % self.description,
                 'dc.subject': '%s' % ', '.join(
-                    self.discipline.all().values_list('title', flat=True)),
+                    self.discipline.all().filter(sites=current_site).values_list('title', flat=True)),
                 'dc.publisher': TITLE_ETB,
                 'dc.contributor': ", ".join(contributors),
                 "dc.date": '%s' % self.date_added.strftime('%Y/%m/%d'),
@@ -931,6 +937,7 @@ class VideoRendition(models.Model):
         help_text="Please use the only format k. i.e.: "
         + "<em>300k</em> or <em>600k</em> or <em>1000k</em>.")
     encode_mp4 = models.BooleanField(_('Make a MP4 version'), default=False)
+    sites = models.ManyToManyField(Site)
 
     @property
     def height(self):
