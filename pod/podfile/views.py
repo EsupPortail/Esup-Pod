@@ -468,3 +468,47 @@ def file_edit_save(request, folder):
         return HttpResponse(data, content_type='application/json')
 
     return HttpResponse(data, content_type='application/json')
+
+
+@csrf_protect
+@staff_member_required(redirect_field_name='referrer')
+def get_file(request, type):
+    id = None
+    if request.method == 'POST' and request.POST.get('src'):
+        id = request.POST.get('src')
+    elif request.method == 'GET' and request.GET.get('src'):
+        id = request.GET.get('src')
+    if type == "image":
+        reqfile = get_object_or_404(CustomImageModel, id=id)
+    else:
+        reqfile = get_object_or_404(CustomFileModel, id=id)
+    if (request.user != reqfile.folder.owner
+            and not request.user.groups.filter(
+                name__in=[
+                    name[0]
+                    for name in reqfile.folder.groups.values_list('name')
+                ]
+            ).exists()
+            and not request.user.is_superuser):
+        messages.add_message(
+            request, messages.ERROR,
+            _(u'You cannot see this folder.'))
+        raise PermissionDenied
+
+    request.session['current_session_folder'] = reqfile.folder.name
+    try:
+        with open(reqfile.file.path, 'r') as f:
+            fc = f.read()
+            some_data_to_dump = {
+                'status': "success",
+                'id_file': reqfile.id,
+                'id_folder': reqfile.folder.id,
+                'response': fc
+            }
+    except OSError:
+        some_data_to_dump = {
+            'status': "error",
+            'response': ''
+        }
+    data = json.dumps(some_data_to_dump)
+    return HttpResponse(data, content_type='application/json')
