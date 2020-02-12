@@ -18,6 +18,6 @@ django-auth-mixins==1.0.1
 celery==4.3.0
 pandas
 deepspeech==0.6.1
-billiard
+billiard<4.0,>=3.6.0
 webrtcvad
 django-select2-forms==2.1.0
