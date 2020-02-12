@@ -16,7 +16,7 @@ html,body{
 	display: none;
 }
 a.navbar-brand{display: inline-block; width:5em;}
-img{ height: auto!important; width: 100%; }
+.navbar-brand img,footer img{ height: auto!important; width: 100%; }
 .fixebottom{
   position: absolute;
   left: 0;
