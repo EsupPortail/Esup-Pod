@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-12 09:43+0000\n"
+"POT-Creation-Date: 2020-02-12 10:08+0000\n"
 "PO-Revision-Date: 2020-01-31 10:37+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -3147,16 +3147,15 @@ msgid "There is no unassigned records"
 msgstr "Il n'y a pas d'enregistrements non assigné"
 
 #: pod/recorder/templates/recorder/claim_record.html:31
-#| msgid "Recording Type"
 msgid "Record preview"
-msgstr "Prévisulation d'enregistrement"
+msgstr "Prévisualisation d'enregistrement"
 
 #: pod/recorder/templates/recorder/link_record.html:5
 msgid "Delete this record."
 msgstr "Supprimer cet enregistrement."
 
-#: pod/recorder/templates/recorder/link_record.html:11
-#: pod/recorder/templates/recorder/link_record.html:12
+#: pod/recorder/templates/recorder/link_record.html:13
+#: pod/recorder/templates/recorder/link_record.html:14
 msgid "Claim the record"
 msgstr "Revendiquer l'enregistrement"
 
