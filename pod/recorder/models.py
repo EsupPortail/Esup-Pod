@@ -32,6 +32,10 @@ DEFAULT_RECORDER_ID = getattr(
     settings, 'DEFAULT_RECORDER_ID',
     1
 )
+PUBLIC_RECORD_DIR = getattr(
+    settings, 'PUBLIC_RECORD_DIR',
+    "records"
+)
 
 
 class Recorder(models.Model):
@@ -176,6 +180,11 @@ class RecordingFileTreatment(models.Model):
 
     def filename(self):
         return os.path.basename(self.file)
+
+    def publicfileurl(self):
+        return os.path.join(settings.MEDIA_URL, PUBLIC_RECORD_DIR,
+                            self.recorder.directory,
+                            os.path.basename(self.file))
 
     class Meta:
         verbose_name = _("Recording file treatment")
