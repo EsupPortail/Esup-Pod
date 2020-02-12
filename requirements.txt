@@ -1,5 +1,4 @@
-x
-Django==1.11.2
+Django==1.11.28
 django-ckeditor==5.3.1
 Pillow==6.2.1
 django-tagging==0.4.6
