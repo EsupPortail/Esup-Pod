@@ -32,8 +32,8 @@ DEFAULT_RECORDER_ID = getattr(
     settings, 'DEFAULT_RECORDER_ID',
     1
 )
-PUBLIC_RECORD_DIRS = getattr(
-    settings, 'PUBLIC_RECORD_DIRS',
+PUBLIC_RECORD_DIR = getattr(
+    settings, 'PUBLIC_RECORD_DIR',
     "records"
 )
 
@@ -182,7 +182,7 @@ class RecordingFileTreatment(models.Model):
         return os.path.basename(self.file)
 
     def publicfileurl(self):
-        return os.path.join(settings.MEDIA_URL, PUBLIC_RECORD_DIRS,
+        return os.path.join(settings.MEDIA_URL, PUBLIC_RECORD_DIR,
                             self.recorder.directory,
                             os.path.basename(self.file))
 
