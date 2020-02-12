@@ -78,14 +78,8 @@
     }
   });
 
-  $('#previewModal').on('show.bs.modal', function (e) {
-  console.log("Opening the modal")
-})
-
   $('.previewBtn').on('click', function (e) {
-  console.log("clicking the btn")
   videojs("podvideoplayer").src($(this).data("recid"))
-
 })
 </script>
 {% endblock more_script %}
