@@ -1,34 +1,39 @@
 // podfile:filewidjet.js
 // select file 
-$(document).on("click", "a.file-name", function(e) {
-    e.preventDefault();
-    
-    $("#"+id_input).val($(this).data("id"));
 
-    if($(this).data("filetype")=="CustomImageModel"){
-        $(".btn-fileinput_"+id_input).html(gettext('Change image'));
-    } else {
-        $(".btn-fileinput_"+id_input).html(gettext('Change file'));
+if(typeof loaded == 'undefined') {
+    loaded = true;
+    $(document).on("click", "a.file-name", function(e) {
+    if (id_input!="") {
+        e.preventDefault();
+
+        $("input#"+id_input).val($(this).data("fileid"));
+
+        if($(this).data("filetype")=="CustomImageModel"){
+            $(".btn-fileinput_"+id_input).html(gettext('Change image'));
+        } else {
+            $(".btn-fileinput_"+id_input).html(gettext('Change file'));
+        }
+        //
+        //if($(".btn-fileinput_"+id_input).text().indexOf(gettext('Change file')) != -1 || $(".btn-fileinput_"+id_input).text().indexOf(gettext('Select a file')) != -1)
+        //    $(".btn-fileinput_"+id_input).html(gettext('Change file'));
+        //else $(".btn-fileinput_"+id_input).html(gettext('Change image'));
+        //
+        $("#remove_file_"+id_input).show();
+
+        let html = "";
+        if($(this).data("filetype")=="CustomImageModel"){
+            html += '<img src="'+$(this).attr('href')+'" height="34" alt="'+$(this).text()+'"/>&nbsp;';
+        } else {
+            html += '<img style="height: 26px;vertical-align: middle;" src="'+static_url+'podfile/images/icons/default.png" alt="">&nbsp;';
+        }
+        html += '<strong><a href="'+$(this).attr('href')+'" target="_blank" title="'+gettext('Open file in a new tab')+'">'+$(this).text()+'</a></strong>&nbsp;';
+
+        $("#fileinput_"+id_input).html(html);
+
+        $("#modal-folder_"+id_input).html("");
+        $('#fileModal_'+id_input).modal('hide');
     }
-    /*
-    if($(".btn-fileinput_"+id_input).text().indexOf(gettext('Change file')) != -1 || $(".btn-fileinput_"+id_input).text().indexOf(gettext('Select a file')) != -1)
-        $(".btn-fileinput_"+id_input).html(gettext('Change file'));
-    else $(".btn-fileinput_"+id_input).html(gettext('Change image'));
-    */
-    $("#remove_file_"+id_input).show();
-
-    let html = "";
-    if($(this).data("filetype")=="CustomImageModel"){
-        html += '<img src="'+$(this).attr('href')+'" height="34" alt="'+$(this).text()+'"/>&nbsp;';
-    } else {
-        html += '<img style="height: 26px;vertical-align: middle;" src="'+static_url+'podfile/images/icons/default.png" alt="">&nbsp;';
-    } 
-    html += '<strong><a href="'+$(this).attr('href')+'" target="_blank" title="'+gettext('Open file in a new tab')+'">'+$(this).text()+'</a></strong>&nbsp;';
-  
-    $("#fileinput_"+id_input).html(html);
-
-    $("#modal-folder_"+id_input).html("");
-    $('#fileModal_'+id_input).modal('hide');
 });
 
 $(document).on("click", "a.folder", function(e) {
@@ -43,7 +48,10 @@ $(document).on('change', "#ufile", function(e) {
     $("#formuploadfile").submit();
 });
 
+
 /****** CHANGE FILE ********/
+
+
   $(document).on("submit", "form#formchangeimage, form#formchangefile, form#formuploadfile", function (e) {
         e.preventDefault();
         //alert('FORM');
@@ -52,11 +60,11 @@ $(document).on('change', "#ufile", function(e) {
         $("#listfiles").hide();
         var data_form = new FormData($(this)[0]);
         $.ajax({
-            url: $( this ).attr("action"), 
+            url: $( this ).attr("action"),
             type: 'POST',
             data: data_form,
             processData: false,
-            contentType: false                    
+            contentType: false
         }).done(function(data){
             //alert('OK');
             $(".loadingformfiles").hide();
@@ -79,7 +87,7 @@ $(document).on('change', "#ufile", function(e) {
   $(document).on('show.bs.modal', '#folderModalCenter', function (event) {
     //event.preventDefault();
     event.stopPropagation();
-    
+
     let button = $(event.relatedTarget) // Button that triggered the modal
     let modal = $(this);
     modal.find('form').hide();
@@ -111,7 +119,7 @@ $(document).on('change', "#ufile", function(e) {
         modal.find('.modal-body input#formfolderid').val(folder_id);
         break;
     }
-    
+
   });
 
   $(document).on("click", "#modalSave", function(e) {
@@ -148,7 +156,7 @@ $(document).on('change', "#ufile", function(e) {
     if(data.list_element) {
         $('#dirs').html(data.list_element);
 
-        // call 
+        // call
         var folder_id = data.folder_id;
         send_form_data($("#folder_"+folder_id).data('target'), {}, "show_folder_files", "get");
 
@@ -161,8 +169,8 @@ $(document).on('change', "#ufile", function(e) {
         showalert(gettext('You are no longer authenticated. Please log in again.'), "alert-danger");
     }
   }
-  
-  
+
+
   function show_folder_files(data){
     if(data.list_element) {
         $('#files').html(data.list_element);
@@ -176,10 +184,8 @@ $(document).on('change', "#ufile", function(e) {
         $('#folderModalCenter').find('.modal-body input#folderInputName').val("");
         $('#folderModalCenter').find('.modal-body input#formfolderid').val("");
 
-        if(data.upload_errors != "") {
-            console.log(data.upload_errors);
+        if(data.upload_errors && data.upload_errors != "") {
             const str = data.upload_errors.split('\n').join('<br/>');
-            console.log(str);
             showalert(gettext("Error during exchange") + "<br/>"+str, "alert-danger");
         }
 
@@ -196,7 +202,7 @@ $(document).on('change', "#ufile", function(e) {
     $("#modal-folder_"+id_input).html(data);
   }
 
-
+/*
 var send_form_data = function(url,data_form, fct, method="post") {
     var jqxhr= '';
     if(method=="post") jqxhr = $.post(url, data_form);
@@ -206,4 +212,6 @@ var send_form_data = function(url,data_form, fct, method="post") {
         var data = $xhr.status+ " : " +$xhr.statusText;
         showalert(gettext("Error during exchange") + "("+data+")<br/>"+gettext("No data could be stored."), "alert-danger");
     });
+}
+*/
 }

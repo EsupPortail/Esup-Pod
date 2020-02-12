@@ -167,6 +167,7 @@ class VideoAdmin(admin.ModelAdmin):
         }
         js = (
             'podfile/js/filewidget.js',
+            'js/main.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 

@@ -57,6 +57,8 @@ if getattr(settings, 'USE_PODFILE', False):
 urlpatterns = [
     url(r'dublincore/$', video_views.DublinCoreView.as_view(),
         name='dublincore'),
+    url(r'launch_encode_view/$', video_views.launch_encode_view,
+        name='launch_encode_view'),
 ]
 
 for apps in settings.THIRD_PARTY_APPS:

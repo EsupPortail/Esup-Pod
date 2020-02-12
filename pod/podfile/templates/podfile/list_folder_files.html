@@ -33,6 +33,9 @@
     <form class="form-inline my-2 my-lg-0" method="POST" id="formuploadfile" enctype="multipart/form-data" style="" action="{% url "podfile:uploadfiles" %}">
         {% csrf_token %}
         <input type="hidden" name="folderid" value="{{folder.id}}">
+        {% if type %}
+        <input type="hidden" name="type" value="{{type}}">
+        {% endif %}
         <div class="custom-file">
           <input type="file" class="custom-file-input" id="ufile" name="ufile" multiple style="position:fixed;top:-100px">
           <label class="" for="ufile" style="cursor:pointer;">

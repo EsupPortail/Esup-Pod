@@ -150,7 +150,10 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         'LINK_PLAYER': '',
         'FOOTER_TEXT': ('',),
         'FAVICON': 'img/logoPod.svg',
-        'CSS_OVERRIDE': ''
+        'CSS_OVERRIDE': '',
+        'PRE_HEADER_TEMPLATE': '',
+        'POST_FOOTER_TEMPLATE': '',
+        'TRACKING_TEMPLATE': '',
     }
 )
 TITLE_ETB = TEMPLATE_VISIBLE_SETTINGS['TITLE_ETB'] if (
@@ -713,7 +716,7 @@ class Video(models.Model):
 
     def get_thumbnail_url(self):
         request = None
-        if self.thumbnail:
+        if self.thumbnail and self.thumbnail.file_exist():
             thumbnail_url = ''.join(
                 ['//',
                  get_current_site(request).domain,

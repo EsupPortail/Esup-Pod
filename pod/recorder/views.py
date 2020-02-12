@@ -20,11 +20,33 @@ from django.contrib import messages
 import hashlib
 from django.http import HttpResponse
 from django.core.mail import EmailMultiAlternatives
-from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
+# from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 import urllib.parse
 from django.shortcuts import get_object_or_404
+
+##
+# Settings exposed in templates
+#
+TEMPLATE_VISIBLE_SETTINGS = getattr(
+    settings,
+    'TEMPLATE_VISIBLE_SETTINGS',
+    {
+        'TITLE_SITE': 'Pod',
+        'TITLE_ETB': 'University name',
+        'LOGO_SITE': 'img/logoPod.svg',
+        'LOGO_ETB': 'img/logo_etb.svg',
+        'LOGO_PLAYER': 'img/logoPod.svg',
+        'LINK_PLAYER': '',
+        'FOOTER_TEXT': ('',),
+        'FAVICON': 'img/logoPod.svg',
+        'CSS_OVERRIDE': '',
+        'PRE_HEADER_TEMPLATE': '',
+        'POST_FOOTER_TEMPLATE': '',
+        'TRACKING_TEMPLATE': '',
+    }
+)
 
 DEFAULT_RECORDER_PATH = getattr(
     settings, 'DEFAULT_RECORDER_PATH',

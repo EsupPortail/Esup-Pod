@@ -1,5 +1,4 @@
 from pod.main.forms import ContactUsForm, SUBJECT_CHOICES
-from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from django.shortcuts import render
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
@@ -18,6 +17,28 @@ from wsgiref.util import FileWrapper
 from pod.video.models import Video
 import os
 import mimetypes
+
+##
+# Settings exposed in templates
+#
+TEMPLATE_VISIBLE_SETTINGS = getattr(
+    settings,
+    'TEMPLATE_VISIBLE_SETTINGS',
+    {
+        'TITLE_SITE': 'Pod',
+        'TITLE_ETB': 'University name',
+        'LOGO_SITE': 'img/logoPod.svg',
+        'LOGO_ETB': 'img/logo_etb.svg',
+        'LOGO_PLAYER': 'img/logoPod.svg',
+        'LINK_PLAYER': '',
+        'FOOTER_TEXT': ('',),
+        'FAVICON': 'img/logoPod.svg',
+        'CSS_OVERRIDE': '',
+        'PRE_HEADER_TEMPLATE': '',
+        'POST_FOOTER_TEMPLATE': '',
+        'TRACKING_TEMPLATE': '',
+    }
+)
 
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
 CONTACT_US_EMAIL = getattr(
