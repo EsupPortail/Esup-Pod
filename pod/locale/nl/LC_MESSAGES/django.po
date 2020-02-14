@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-04 10:15+0000\n"
+"POT-Creation-Date: 2020-02-12 10:08+0000\n"
 "PO-Revision-Date: 2018-07-03 13:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -90,7 +90,7 @@ msgstr ""
 msgid "registered-reader"
 msgstr ""
 
-#: pod/authentication/models.py:67 pod/recorder/models.py:109
+#: pod/authentication/models.py:67 pod/recorder/models.py:113
 #: pod/video/models.py:1281 pod/video/views.py:1127
 msgid "Comment"
 msgstr ""
@@ -193,7 +193,7 @@ msgid "video"
 msgstr ""
 
 #: pod/chapter/models.py:14 pod/enrichment/models.py:114
-#: pod/recorder/models.py:102 pod/video/models.py:386
+#: pod/recorder/models.py:106 pod/video/models.py:386
 msgid "title"
 msgstr "titel"
 
@@ -1464,7 +1464,7 @@ msgid ""
 msgstr ""
 
 #: pod/interactive/templates/interactive/video_interactive.html:129
-#: pod/recorder/models.py:58
+#: pod/recorder/models.py:62
 msgid "User"
 msgstr ""
 
@@ -1504,7 +1504,7 @@ msgstr ""
 msgid "You cannot add interactivity to this video."
 msgstr ""
 
-#: pod/live/models.py:20 pod/live/models.py:45 pod/recorder/models.py:39
+#: pod/live/models.py:20 pod/live/models.py:45 pod/recorder/models.py:43
 msgid "name"
 msgstr ""
 
@@ -1526,7 +1526,7 @@ msgstr ""
 msgid "Buildings"
 msgstr ""
 
-#: pod/live/models.py:54 pod/recorder/models.py:41
+#: pod/live/models.py:54 pod/recorder/models.py:45
 #: pod/video/templates/channel/list_theme.html:10
 msgid "description"
 msgstr ""
@@ -2797,6 +2797,7 @@ msgid "Loading"
 msgstr ""
 
 #: pod/podfile/templates/podfile/home_content.html:57
+#: pod/recorder/templates/recorder/claim_record.html:48
 msgid "Close"
 msgstr ""
 
@@ -2832,7 +2833,7 @@ msgstr ""
 msgid "Shared folders"
 msgstr ""
 
-#: pod/podfile/views.py:123
+#: pod/podfile/views.py:123 pod/podfile/views.py:495
 msgid "You cannot see this folder."
 msgstr ""
 
@@ -2902,133 +2903,133 @@ msgstr ""
 msgid "Audiovideocast"
 msgstr ""
 
-#: pod/recorder/models.py:44
+#: pod/recorder/models.py:48
 msgid "Address IP"
 msgstr ""
 
-#: pod/recorder/models.py:46
+#: pod/recorder/models.py:50
 msgid "IP address of the recorder."
 msgstr ""
 
-#: pod/recorder/models.py:49
+#: pod/recorder/models.py:53
 msgid "salt"
 msgstr ""
 
-#: pod/recorder/models.py:50
+#: pod/recorder/models.py:54
 msgid "Recorder salt."
 msgstr ""
 
-#: pod/recorder/models.py:55
+#: pod/recorder/models.py:59
 msgid ""
 "Manager of this recorder. This manager will receive recorder emails and he "
 "will be the owner of the published videos. If no user is selected, this "
 "recorder will use manual assign system."
 msgstr ""
 
-#: pod/recorder/models.py:62
+#: pod/recorder/models.py:66
 msgid "Video type by default."
 msgstr ""
 
-#: pod/recorder/models.py:64 pod/recorder/models.py:103
+#: pod/recorder/models.py:68 pod/recorder/models.py:107
 msgid "Recording Type"
 msgstr ""
 
-#: pod/recorder/models.py:68
+#: pod/recorder/models.py:72
 msgid "Publication directory"
 msgstr ""
 
-#: pod/recorder/models.py:70
+#: pod/recorder/models.py:74
 msgid "Basic directory containing the videos published by the recorder."
 msgstr ""
 
-#: pod/recorder/models.py:86 pod/recorder/models.py:94
-#: pod/recorder/models.py:156 pod/recorder/models.py:190
+#: pod/recorder/models.py:90 pod/recorder/models.py:98
+#: pod/recorder/models.py:160 pod/recorder/models.py:199
 msgid "Recorder"
 msgstr ""
 
-#: pod/recorder/models.py:87
+#: pod/recorder/models.py:91
 msgid "Recorders"
 msgstr ""
 
-#: pod/recorder/models.py:96 pod/recorder/models.py:158
-#: pod/recorder/models.py:191
+#: pod/recorder/models.py:100 pod/recorder/models.py:162
+#: pod/recorder/models.py:200
 msgid "Recorder that made this recording."
 msgstr ""
 
-#: pod/recorder/models.py:101
+#: pod/recorder/models.py:105
 msgid "User who has made the recording"
 msgstr ""
 
-#: pod/recorder/models.py:117
+#: pod/recorder/models.py:121
 msgid "Recording"
 msgstr ""
 
-#: pod/recorder/models.py:118
+#: pod/recorder/models.py:122
 msgid "Recordings"
 msgstr ""
 
-#: pod/recorder/models.py:132
+#: pod/recorder/models.py:136
 msgid "Please specify a type."
 msgstr ""
 
-#: pod/recorder/models.py:134
+#: pod/recorder/models.py:138
 msgid "Please use the only type in type choices."
 msgstr ""
 
-#: pod/recorder/models.py:136
+#: pod/recorder/models.py:140
 msgid "Please specify a source file."
 msgstr ""
 
-#: pod/recorder/models.py:138
+#: pod/recorder/models.py:142
 msgid "Source file doesn't exists"
 msgstr ""
 
-#: pod/recorder/models.py:153
+#: pod/recorder/models.py:157
 msgid "Source file of the published video."
 msgstr ""
 
-#: pod/recorder/models.py:154
+#: pod/recorder/models.py:158
 msgid "File size"
 msgstr ""
 
-#: pod/recorder/models.py:159 pod/video/models.py:488 pod/video/models.py:1228
+#: pod/recorder/models.py:163 pod/video/models.py:488 pod/video/models.py:1228
 #: pod/video/models.py:1283
 msgid "Date added"
 msgstr ""
 
-#: pod/recorder/models.py:161
+#: pod/recorder/models.py:165
 msgid "Require manual claim ?"
 msgstr ""
 
-#: pod/recorder/models.py:164
+#: pod/recorder/models.py:168
 msgid "Has this recording file require a manual claim by a user ?"
 msgstr ""
 
-#: pod/recorder/models.py:167
+#: pod/recorder/models.py:171
 msgid "Email sent ?"
 msgstr ""
 
-#: pod/recorder/models.py:169
+#: pod/recorder/models.py:173
 msgid "Has an email been sent to the manager of the concerned recorder ?"
 msgstr ""
 
-#: pod/recorder/models.py:172
+#: pod/recorder/models.py:176
 msgid "Date email sent"
 msgstr ""
 
-#: pod/recorder/models.py:181
+#: pod/recorder/models.py:190
 msgid "Recording file treatment"
 msgstr ""
 
-#: pod/recorder/models.py:182
+#: pod/recorder/models.py:191
 msgid "Recording file treatments"
 msgstr ""
 
-#: pod/recorder/models.py:195
+#: pod/recorder/models.py:204
 msgid "Recording file"
 msgstr ""
 
-#: pod/recorder/models.py:196
+#: pod/recorder/models.py:205
 msgid "Recording files"
 msgstr ""
 
@@ -3058,12 +3059,16 @@ msgstr ""
 msgid "There is no unassigned records"
 msgstr ""
 
-#: pod/recorder/templates/recorder/link_record.html:4
+#: pod/recorder/templates/recorder/claim_record.html:31
+msgid "Record preview"
+msgstr ""
+
+#: pod/recorder/templates/recorder/link_record.html:5
 msgid "Delete this record."
 msgstr ""
 
-#: pod/recorder/templates/recorder/link_record.html:7
-#: pod/recorder/templates/recorder/link_record.html:8
+#: pod/recorder/templates/recorder/link_record.html:13
+#: pod/recorder/templates/recorder/link_record.html:14
 msgid "Claim the record"
 msgstr ""
 

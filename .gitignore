@@ -55,6 +55,7 @@ pod/static/
 # IDE Files #
 #############
 .idea
+.vscode
 
 # Certificates #
 ################
