@@ -5,17 +5,22 @@ from django.urls import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 
+from django.utils.decorators import method_decorator
+# from django.views.decorators.csrf import ensure_csrf_cookie
+# from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.views.decorators.csrf import csrf_exempt
+
 from pod.video.models import Video
 
 # Create your views here.
 
-
+@method_decorator([csrf_exempt], name='dispatch')
 class LTIAssignmentView(LTIAuthMixin, LoginRequiredMixin, TemplateView):
 
     template_name = 'lti_provider/assignment.html'
 
     def get_context_data(self, **kwargs):
-        print(kwargs)
+        # print(kwargs)
         # print(self.request, self.request.get_full_url())
         activity = kwargs.get("activity")
         url = ""
