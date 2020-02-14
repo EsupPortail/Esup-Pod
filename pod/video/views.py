@@ -34,6 +34,7 @@ from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
 from itertools import chain
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 import json
 import re
@@ -526,6 +527,7 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
 
 
 @csrf_protect
+@ensure_csrf_cookie
 @login_required(redirect_field_name='referrer')
 def video_edit(request, slug=None):
     video = get_object_or_404(Video, slug=slug) if slug else None
