@@ -17,7 +17,8 @@ def get_nextautoincrement(model):
     cursor = connection.cursor()
     cursor.execute(
         'SELECT Auto_increment FROM information_schema.tables ' +
-        'WHERE table_name="{0}";'.format(model._meta.db_table)
+        'WHERE table_name="{0}" AND table_schema=DATABASE();'
+        .format(model._meta.db_table)
     )
     row = cursor.fetchone()
     cursor.close()
