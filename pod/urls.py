@@ -35,7 +35,7 @@ from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
 from pod.recorder.views import add_recording, recorder_notify, claim_record,\
     delete_record
-from pod.lti.views import LTIAssignmentView
+from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
 
 
 USE_CAS = getattr(
@@ -169,8 +169,10 @@ if getattr(settings, 'LTI_ENABLED', False):
     # LTI href
     urlpatterns += [
         url(r'^lti/', include('lti_provider.urls')),
-        url(r'^assignment/(?P<activity>[\-\d\w]+)/',
-            LTIAssignmentView.as_view()),
+        url(r'^assignment/addvideo/',
+            LTIAssignmentAddVideoView.as_view()),
+        url(r'^assignment/getvideo/',
+            LTIAssignmentGetVideoView.as_view()),
     ]
 ##
 # H5P feature patterns
