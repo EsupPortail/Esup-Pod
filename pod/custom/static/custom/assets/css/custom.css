@@ -262,7 +262,7 @@ footer.text-muted{
 footer a, footer p{
   color: inherit !important;
 }
-footer.text-muted .col-md-4{max-width: 20em !important;}
+footer.text-muted .col-md-4{max-width: 11em !important;}
 
 @media only screen and ( max-width: 992px )
 {

@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django_filters',
     'lti_provider',
     'select2',
-    'django_extensions',
     # Pod Applications
     'pod.main',
     'django.contrib.admin',  # put it here for template override
