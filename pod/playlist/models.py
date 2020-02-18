@@ -75,8 +75,8 @@ class Playlist(models.Model):
 
 
 class PlaylistElement(models.Model):
-    playlist = models.ForeignKey(Playlist, verbose_name=_('Playlist'))
-    video = models.ForeignKey(Video, verbose_name=_('Video'))
+    playlist = select2_fields.ForeignKey(Playlist, verbose_name=_('Playlist'))
+    video = select2_fields.ForeignKey(Video, verbose_name=_('Video'))
     position = models.PositiveSmallIntegerField(
         _('Position'),
         default=1,

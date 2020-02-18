@@ -29,7 +29,7 @@ class UserFolder(models.Model):
     #    'self', blank=True, null=True, related_name='children')
     owner = select2_fields.ForeignKey(User, verbose_name=_('Owner'))
     created_at = models.DateTimeField(auto_now_add=True)
-    groups = models.ManyToManyField(
+    groups = select2_fields.ManyToManyField(
         Group, blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who'
                     ' can access in read only to this folder'))
@@ -99,9 +99,9 @@ def get_upload_path_files(instance, filename):
 class BaseFileModel(models.Model):
     name = models.CharField(_('Name'), max_length=255)
     description = models.CharField(max_length=255, blank=True)
-    folder = models.ForeignKey(UserFolder)
+    folder = select2_fields.ForeignKey(UserFolder)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(
+    created_by = select2_fields.ForeignKey(
         User,
         related_name='%(app_label)s_%(class)s_created',
         on_delete=models.CASCADE)
