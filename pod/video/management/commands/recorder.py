@@ -80,8 +80,8 @@ DEBUG = getattr(
     False
 )
 
-PROXIES = getattr(
-    settings, 'PROXIES',
+SELF_REQUESTS_PROXIES = getattr(
+    settings, 'SELF_REQUESTS_PROXIES',
     {
         "http": None,
         "https": None,
@@ -138,10 +138,11 @@ def case_manager_exist(html_message_error, message_error, recorder,
             "mediacourse recorder's manager : " + urlNotify)
     # Make a request on this URL
     try:
-        request = requests.get(urlNotify, proxies=PROXIES)
+        request = requests.get(urlNotify, proxies=SELF_REQUESTS_PROXIES)
     except Exception:
         if(ALLOW_INSECURE_REQUESTS):
-            request = requests.get(urlNotify, proxies=PROXIES, verify=False)
+            request = requests.get(urlNotify, proxies=SELF_REQUESTS_PROXIES,
+                                   verify=False)
         else:
             certif_err = "The request on recorder_notfy cannot be complete."\
                         "It may be a certificate issue. If you want to ignore"\
