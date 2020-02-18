@@ -227,13 +227,13 @@ def case_no_manager(html_message_error, message_error, recorder, source_file):
 def file_exist(file, file_size, source_file, recorder, message_error,
                html_message_error, filename):
     if file.email_sent:
-            print_if_debug(
-                "- An email, with the publication link, was already sent to "
-                "mediacourse recorder's manager. Nothing to do. Stopping the "
-                "process for this file.")
+        print_if_debug(
+            "- An email, with the publication link, was already sent to "
+            "mediacourse recorder's manager. Nothing to do. Stopping the "
+            "process for this file.")
     elif file.require_manual_claim:
-            print_if_debug(
-                " - Recording already treated, waiting for claiming ...")
+        print_if_debug(
+            " - Recording already treated, waiting for claiming ...")
     else:
         # File size saved in database
         file_size_in_db = file.file_size
@@ -269,9 +269,9 @@ def recorder_exist(recorder, filename, message_error, html_message_error):
 
     if recording:
         # This video was already processed
-            print_if_debug(
-                "- This video was already processed. Nothing to do. Stopping "
-                "the process for this file.")
+        print_if_debug(
+            "- This video was already processed. Nothing to do. Stopping "
+            "the process for this file.")
     else:
         # Size of the existant file
         file_size = os.path.getsize(source_file)
