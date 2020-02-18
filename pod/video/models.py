@@ -1200,7 +1200,7 @@ class EncodingStep(models.Model):
 
 
 class Notes(models.Model):
-    user = models.ForeignKey(User)
+    user = select2_fields.ForeignKey(User)
     video = models.ForeignKey(Video)
     note = models.TextField(_('Note'), null=True, blank=True)
 
@@ -1214,7 +1214,7 @@ class Notes(models.Model):
 
 
 class AdvancedNotes(models.Model):
-    user = models.ForeignKey(User)
+    user = select2_fields.ForeignKey(User)
     video = models.ForeignKey(Video)
     status = models.CharField(
         _('Note availibility level'), max_length=1,
@@ -1268,7 +1268,7 @@ class AdvancedNotes(models.Model):
 
 
 class NoteComments(models.Model):
-    user = models.ForeignKey(User)
+    user = select2_fields.ForeignKey(User)
     parentNote = models.ForeignKey(AdvancedNotes)
     parentCom = models.ForeignKey(
         "NoteComments", blank=True, null=True)

@@ -7,6 +7,7 @@ from django.template.defaultfilters import slugify
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.auth.models import Group
+from select2 import fields as select2_fields
 
 from itertools import chain
 from operator import attrgetter
@@ -26,7 +27,7 @@ class UserFolder(models.Model):
     name = models.CharField(_('Name'), max_length=255)
     # parent = models.ForeignKey(
     #    'self', blank=True, null=True, related_name='children')
-    owner = models.ForeignKey(User, verbose_name=_('Owner'))
+    owner = select2_fields.ForeignKey(User, verbose_name=_('Owner'))
     created_at = models.DateTimeField(auto_now_add=True)
     groups = models.ManyToManyField(
         Group, blank=True, verbose_name=_('Groups'),
