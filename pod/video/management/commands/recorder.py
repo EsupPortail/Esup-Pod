@@ -143,10 +143,12 @@ def case_manager_exist(html_message_error, message_error, recorder,
         if(ALLOW_INSECURE_REQUESTS):
             request = requests.get(urlNotify, proxies=PROXIES, verify=False)
         else:
-            message_error += "The request on recorder_notfy cannot be"
-            +" complete. It may be a certificate issue."
-            +"If you want to ignore the verification of the SSl"
-            +"certificate set ALLOW_INSECURE_REQUESTS to True"
+            certif_err = "The request on recorder_notfy cannot be complete."\
+                        "It may be a certificate issue. If you want to ignore"\
+                        "the verification of the SSl certificate set"\
+                        "ALLOW_INSECURE_REQUESTS to True"
+            message_error += certif_err
+            print_if_debug(certif_err)
             return html_message_error, message_error
     # If all (arguments,...) are good, an email is sent to
     # mediacourse recorder's manager that a video was published
