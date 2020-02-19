@@ -168,9 +168,9 @@ class VideoAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
+                'css/pod.css',
                 'bootstrap-4/css/bootstrap.min.css',
-                'bootstrap-4/css/bootstrap-grid.css',
-                'css/pod.css'
+                'bootstrap-4/css/bootstrap-grid.css'
             )
         }
         js = (
@@ -281,8 +281,8 @@ class DisciplineAdmin(TranslationAdmin):
     class Media:
         css = {
             "all": (
-                'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'bootstrap-4/css/bootstrap.min.css',
                 'css/pod.css'
             )
         }
