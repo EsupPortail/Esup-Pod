@@ -1303,9 +1303,7 @@ class VideoToDelete(models.Model):
         _('Date for deletion'), default=date.today, unique=True)
     video = select2_fields.ManyToManyField(
         Video,
-        verbose_name=_('Videos'),
-        help_text=_('Hold down "Control", or "Command" '
-                    'on a Mac, to select more than one.'))
+        verbose_name=_('Videos'))
 
     class Meta:
         verbose_name = _("Video to delete")
