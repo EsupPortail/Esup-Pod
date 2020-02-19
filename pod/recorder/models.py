@@ -10,6 +10,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from select2 import fields as select2_fields
 
 from pod.video.models import Type
 
@@ -32,6 +33,10 @@ DEFAULT_RECORDER_ID = getattr(
     settings, 'DEFAULT_RECORDER_ID',
     1
 )
+PUBLIC_RECORD_DIR = getattr(
+    settings, 'PUBLIC_RECORD_DIR',
+    "records"
+)
 
 
 class Recorder(models.Model):
@@ -49,7 +54,7 @@ class Recorder(models.Model):
     salt = models.CharField(_('salt'), max_length=50, blank=True,
                             help_text=_('Recorder salt.'))
     # Manager of the recorder who received mails
-    user = models.ForeignKey(
+    user = select2_fields.ForeignKey(
         User, on_delete=models.CASCADE,
         limit_choices_to={'is_staff': True}, help_text=_(
             'Manager of this recorder. This manager will receive recorder '
@@ -95,10 +100,11 @@ class Recording(models.Model):
                                  default=DEFAULT_RECORDER_ID,
                                  help_text=_('Recorder that made this '
                                              'recording.'))
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
-                             limit_choices_to={'is_staff': True},
-                             default=DEFAULT_RECORDER_USER_ID,
-                             help_text=_("User who has made the recording"))
+    user = select2_fields.ForeignKey(User, on_delete=models.CASCADE,
+                                     limit_choices_to={'is_staff': True},
+                                     default=DEFAULT_RECORDER_USER_ID,
+                                     help_text=_
+                                     ("User who has made the recording"))
     title = models.CharField(_('title'), max_length=200, unique=True)
     type = models.CharField(_('Recording Type'), max_length=50,
                             choices=RECORDER_TYPE,
@@ -176,6 +182,11 @@ class RecordingFileTreatment(models.Model):
 
     def filename(self):
         return os.path.basename(self.file)
+
+    def publicfileurl(self):
+        return os.path.join(settings.MEDIA_URL, PUBLIC_RECORD_DIR,
+                            self.recorder.directory,
+                            os.path.basename(self.file))
 
     class Meta:
         verbose_name = _("Recording file treatment")

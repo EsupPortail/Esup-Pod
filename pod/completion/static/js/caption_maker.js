@@ -24,7 +24,9 @@ $(document).on('click', '#modal-btn-new, #modal-btn-override', function() {
     $("#saveCaptionsModal").modal('hide');
     if (this.id == 'modal-btn-override') {
         $('#form_save_captions').find('input[name="file_id"]').val(file_loaded_id);
-        send_form_save_captions($('#fileinput_id_src').find('strong').html());
+        //alert($('#fileinput_id_src').find('strong').find('a').html());
+        //alert($('#fileinput_id_src').text().trim());
+        send_form_save_captions($('#fileinput_id_src').text().trim());
     }
     else if (this.id == 'modal-btn-new') {
         $('#form_save_captions').find('input[name="file_id"]').val("");

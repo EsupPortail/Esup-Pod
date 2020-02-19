@@ -56,6 +56,9 @@ ALLOWED_HOSTS = ['localhost']
 #
 SESSION_COOKIE_AGE = 14400
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
+# SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+# SESSION_COOKIE_HTTPONLY = True
 
 ##
 # A tuple that lists people who get code error notifications

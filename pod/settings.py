@@ -10,7 +10,7 @@ from pod.main.settings import BASE_DIR
 ##
 # Version of the project
 #
-VERSION = '2.5.0'
+VERSION = '2.5.1'
 
 ##
 # Installed applications list
@@ -71,7 +71,6 @@ MIDDLEWARE = [
     # Pages statiques
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
-
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
