@@ -169,7 +169,6 @@ class VideoAdmin(admin.ModelAdmin):
         css = {
             "all": (
                 'bootstrap-4/css/bootstrap.min.css',
-                'podfile/css/podfile.css',
                 'bootstrap-4/css/bootstrap-grid.css',
                 'css/pod.css'
             )
@@ -223,7 +222,7 @@ class ChannelAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                'podfile/css/podfile.css',
+                'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
             )
         }
@@ -243,7 +242,7 @@ class ThemeAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                'podfile/css/podfile.css',
+                'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
             )
         }
@@ -261,7 +260,7 @@ class TypeAdmin(TranslationAdmin):
     class Media:
         css = {
             "all": (
-                'podfile/css/podfile.css',
+                'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
             )
         }
@@ -279,7 +278,7 @@ class DisciplineAdmin(TranslationAdmin):
     class Media:
         css = {
             "all": (
-                'podfile/css/podfile.css',
+                'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
             )
         }

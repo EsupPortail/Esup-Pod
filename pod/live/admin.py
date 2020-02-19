@@ -16,7 +16,7 @@ class BuildingAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                'podfile/css/podfile.css',
+                'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
             )
         }
@@ -36,7 +36,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                'podfile/css/podfile.css',
+                'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
             )
         }
