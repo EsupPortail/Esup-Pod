@@ -42,6 +42,7 @@ class OwnerInline(admin.StackedInline):
             "all": (
                 'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
             )
         }
         js = (

@@ -224,6 +224,7 @@ class ChannelAdmin(admin.ModelAdmin):
             "all": (
                 'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
             )
         }
         js = (
@@ -244,6 +245,7 @@ class ThemeAdmin(admin.ModelAdmin):
             "all": (
                 'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
             )
         }
         js = (
@@ -262,6 +264,7 @@ class TypeAdmin(TranslationAdmin):
             "all": (
                 'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
             )
         }
         js = (
@@ -280,6 +283,7 @@ class DisciplineAdmin(TranslationAdmin):
             "all": (
                 'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
             )
         }
         js = (

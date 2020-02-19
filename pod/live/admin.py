@@ -18,6 +18,7 @@ class BuildingAdmin(admin.ModelAdmin):
             "all": (
                 'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
             )
         }
         js = (
@@ -38,6 +39,7 @@ class BroadcasterAdmin(admin.ModelAdmin):
             "all": (
                 'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
             )
         }
         js = (
