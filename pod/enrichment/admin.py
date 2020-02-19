@@ -23,8 +23,9 @@ class EnrichmentAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                'podfile/css/podfile.css',
+                'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
             )
         }
         js = (
@@ -60,8 +61,9 @@ class EnrichmentVttAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                'podfile/css/podfile.css',
+                'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
             )
         }
         js = (
