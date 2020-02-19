@@ -12,7 +12,7 @@ from pod.chapter.models import Chapter
 from pod.chapter.forms import ChapterForm
 from pod.chapter.forms import ChapterImportForm
 from django.middleware.csrf import get_token
-
+from django.contrib.sites.shortcuts import get_current_site
 
 import json
 
@@ -22,7 +22,7 @@ ACTION = ['new', 'save', 'modify', 'delete', 'cancel', 'import', 'export']
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_chapter(request, slug):
-    video = get_object_or_404(Video, slug=slug)
+    video = get_object_or_404(Video, slug=slug, sites=get_current_site(request) )
     if request.user != video.owner and not request.user.is_superuser and (
             request.user not in video.additional_owners.all()):
         messages.add_message(

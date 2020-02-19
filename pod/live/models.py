@@ -6,7 +6,6 @@ from django.template.defaultfilters import slugify
 from pod.video.models import Video
 from django.contrib.sites.models import Site
 
-
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
     FILEPICKER = True
