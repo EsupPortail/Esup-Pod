@@ -287,7 +287,7 @@ class Theme(models.Model):
                                  blank=True, null=True,
                                  verbose_name=_('Headband'))
 
-    channel = models.ForeignKey(
+    channel = select2_fields.ForeignKey(
         'Channel', related_name='themes', verbose_name=_('Channel'))
 
     def __str__(self):
@@ -505,21 +505,17 @@ class Video(models.Model):
         'Separate tags with spaces, '
         'enclose the tags consist of several words in quotation marks.'),
         verbose_name=_('Tags'))
-    discipline = models.ManyToManyField(
+    discipline = select2_fields.ManyToManyField(
         Discipline,
         blank=True,
-        verbose_name=_('Disciplines'),
-        help_text=_('Hold down "Control", or "Command" '
-                    'on a Mac, to select more than one.'))
+        verbose_name=_('Disciplines'))
     licence = models.CharField(
         _('Licence'), max_length=8,
         choices=LICENCE_CHOICES, blank=True, null=True)
-    channel = models.ManyToManyField(
+    channel = select2_fields.ManyToManyField(
         Channel,
         verbose_name=_('Channels'),
-        blank=True,
-        help_text=_('Hold down "Control", or "Command" '
-                    'on a Mac, to select more than one.'))
+        blank=True)
     theme = models.ManyToManyField(
         Theme,
         verbose_name=_('Themes'),
@@ -545,7 +541,7 @@ class Video(models.Model):
             'If this box is checked, '
             'the video will only be accessible to authenticated users.'),
         default=False)
-    restrict_access_to_groups = models.ManyToManyField(
+    restrict_access_to_groups = select2_fields.ManyToManyField(
         Group, blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who can access to this video'))
     password = models.CharField(
@@ -1126,7 +1122,7 @@ class PlaylistVideo(models.Model):
         _('Name'), max_length=10, choices=ENCODING_CHOICES, default="360p",
         help_text="Please use the only format in encoding choices :"
         + " %s" % ' '.join(str(key) for key, value in ENCODING_CHOICES))
-    video = models.ForeignKey(Video, verbose_name=_('Video'))
+    video = select2_fields.ForeignKey(Video, verbose_name=_('Video'))
     encoding_format = models.CharField(
         _('Format'), max_length=22, choices=FORMAT_CHOICES,
         default="application/x-mpegURL",
@@ -1200,8 +1196,8 @@ class EncodingStep(models.Model):
 
 
 class Notes(models.Model):
-    user = models.ForeignKey(User)
-    video = models.ForeignKey(Video)
+    user = select2_fields.ForeignKey(User)
+    video = select2_fields.ForeignKey(Video)
     note = models.TextField(_('Note'), null=True, blank=True)
 
     class Meta:
@@ -1214,8 +1210,8 @@ class Notes(models.Model):
 
 
 class AdvancedNotes(models.Model):
-    user = models.ForeignKey(User)
-    video = models.ForeignKey(Video)
+    user = select2_fields.ForeignKey(User)
+    video = select2_fields.ForeignKey(Video)
     status = models.CharField(
         _('Note availibility level'), max_length=1,
         choices=NOTES_STATUS, default="0",
@@ -1268,7 +1264,7 @@ class AdvancedNotes(models.Model):
 
 
 class NoteComments(models.Model):
-    user = models.ForeignKey(User)
+    user = select2_fields.ForeignKey(User)
     parentNote = models.ForeignKey(AdvancedNotes)
     parentCom = models.ForeignKey(
         "NoteComments", blank=True, null=True)
@@ -1305,11 +1301,9 @@ class NoteComments(models.Model):
 class VideoToDelete(models.Model):
     date_deletion = models.DateField(
         _('Date for deletion'), default=date.today, unique=True)
-    video = models.ManyToManyField(
+    video = select2_fields.ManyToManyField(
         Video,
-        verbose_name=_('Videos'),
-        help_text=_('Hold down "Control", or "Command" '
-                    'on a Mac, to select more than one.'))
+        verbose_name=_('Videos'))
 
     class Meta:
         verbose_name = _("Video to delete")

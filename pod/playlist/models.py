@@ -5,6 +5,7 @@ from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext as _
 from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
+from select2 import fields as select2_fields
 
 
 class Playlist(models.Model):
@@ -16,7 +17,7 @@ class Playlist(models.Model):
         help_text=_('Used to access this instance, the "slug" is a short' +
                     ' label containing only letters, numbers, underscore' +
                     ' or dash top.'))
-    owner = models.ForeignKey(User, verbose_name=_('Owner'))
+    owner = select2_fields.ForeignKey(User, verbose_name=_('Owner'))
     description = models.TextField(
         _('Description'),
         max_length=255,
@@ -74,8 +75,8 @@ class Playlist(models.Model):
 
 
 class PlaylistElement(models.Model):
-    playlist = models.ForeignKey(Playlist, verbose_name=_('Playlist'))
-    video = models.ForeignKey(Video, verbose_name=_('Video'))
+    playlist = select2_fields.ForeignKey(Playlist, verbose_name=_('Playlist'))
+    video = select2_fields.ForeignKey(Video, verbose_name=_('Video'))
     position = models.PositiveSmallIntegerField(
         _('Position'),
         default=1,

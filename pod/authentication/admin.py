@@ -40,12 +40,13 @@ class OwnerInline(admin.StackedInline):
     class Media:
         css = {
             "all": (
-                'css/podfile.css',
+                'podfile/css/podfile.css',
                 'bootstrap-4/css/bootstrap-grid.css',
             )
         }
         js = (
-            'js/filewidget.js',
+            'podfile/js/filewidget.js',
+            'js/main.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
