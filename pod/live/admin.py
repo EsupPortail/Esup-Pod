@@ -16,12 +16,13 @@ class BuildingAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                'css/podfile.css',
+                'podfile/css/podfile.css',
                 'bootstrap-4/css/bootstrap-grid.css',
             )
         }
         js = (
-            'js/filewidget.js',
+            'js/main.js',
+            'podfile/js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
@@ -35,12 +36,13 @@ class BroadcasterAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                'css/podfile.css',
+                'podfile/css/podfile.css',
                 'bootstrap-4/css/bootstrap-grid.css',
             )
         }
         js = (
-            'js/filewidget.js',
+            'js/main.js',
+            'podfile/js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
