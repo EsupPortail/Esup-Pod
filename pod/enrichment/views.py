@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
-
+from django.views.decorators.csrf import ensure_csrf_cookie
 from pod.video.models import Video
 from pod.video.views import render_video
 
@@ -22,6 +22,7 @@ ACTION = ['new', 'save', 'modify', 'delete', 'cancel']
 
 
 @csrf_protect
+@ensure_csrf_cookie
 @staff_member_required(redirect_field_name='referrer')
 def group_enrichment(request, slug):
     video = get_object_or_404(Video, slug=slug)
@@ -60,6 +61,7 @@ def check_enrichment_group(request, video):
 
 
 @csrf_protect
+@ensure_csrf_cookie
 @staff_member_required(redirect_field_name='referrer')
 def edit_enrichment(request, slug):
     video = get_object_or_404(Video, slug=slug)
@@ -73,6 +75,7 @@ def edit_enrichment(request, slug):
     list_enrichment = video.enrichment_set.all()
     if request.POST and request.POST.get('action'):
         if request.POST['action'] in ACTION:
+            print(request.POST['action'])
             return eval(
                 'edit_enrichment_{0}(request, video)'.format(
                     request.POST['action'])
@@ -125,7 +128,7 @@ def edit_enrichment_save(request, video):
                 'list_enrichment': render_to_string(
                     'enrichment/list_enrichment.html',
                     {'list_enrichment': list_enrichment,
-                     'video': video}),
+                     'video': video}, request=request),
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
@@ -142,7 +145,7 @@ def edit_enrichment_save(request, video):
                 'form': render_to_string(
                     'enrichment/form_enrichment.html', {
                         'video': video,
-                        'form_enrichment': form_enrichment})
+                        'form_enrichment': form_enrichment}, request=request)
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
@@ -187,7 +190,7 @@ def edit_enrichment_delete(request, video):
                 'enrichment/list_enrichment.html', {
                     'list_enrichment': list_enrichment,
                     'video': video
-                })
+                }, request=request)
         }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type='application/json')
@@ -209,6 +212,7 @@ def edit_enrichment_cancel(request, video):
 
 
 @csrf_protect
+@ensure_csrf_cookie
 def video_enrichment(request, slug, slug_c=None,
                      slug_t=None, slug_private=None):
 
