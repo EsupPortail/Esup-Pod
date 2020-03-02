@@ -624,10 +624,7 @@ class Video(models.Model):
 
     @property
     def get_encoding_step(self):
-        try:
-            es = EncodingStep.objects.get(video=self)
-        except ObjectDoesNotExist:
-            return ""
+        es = EncodingStep.objects.get(video=self)
         return "%s : %s" % (es.num_step, es.desc_step)
     get_encoding_step.fget.short_description = _('Encoding step')
 

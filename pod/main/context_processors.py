@@ -196,6 +196,7 @@ def get_last_videos():
 
     filter_args = Video.objects.filter(
         encoding_in_progress=False, is_draft=False)
+
     if not HOMEPAGE_SHOWS_PASSWORDED:
         filter_args = filter_args.filter(
             Q(password='') | Q(password__isnull=True))

@@ -47,9 +47,12 @@ from django.db import IntegrityError
 
 TODAY = date.today()
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
+<<<<<<< HEAD
 for x in VIDEOS:
     if not x.encoded:
         VIDEOS = VIDEOS.exclude(id=x.id)
+=======
+>>>>>>> 945b495340f1e8cacb6f38edc7467edc1ffbe9f7
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, 'RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY', False)
 THEME_ACTION = ['new', 'modify', 'delete', 'save']
