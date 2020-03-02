@@ -196,12 +196,11 @@ def get_last_videos():
 
     filter_args = Video.objects.filter(
         encoding_in_progress=False, is_draft=False)
+
     if not HOMEPAGE_SHOWS_PASSWORDED:
         filter_args = filter_args.filter(
             Q(password='') | Q(password__isnull=True))
     if not HOMEPAGE_SHOWS_RESTRICTED:
         filter_args = filter_args.filter(is_restricted=False)
 
-    filter_args = filter_args.exclude(channel__visible=0)[:12]
-
-    return [x for x in filter_args if x.encoded]
+    return filter_args.exclude(channel__visible=0)[:12]
