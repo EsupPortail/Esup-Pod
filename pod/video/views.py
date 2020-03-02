@@ -46,7 +46,8 @@ from django.db import transaction
 from django.db import IntegrityError
 
 TODAY = date.today()
-VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
+VIDEOS = [x for x in Video.objects.filter(
+    encoding_in_progress=False, is_draft=False) if x.encoded]
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, 'RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY', False)
 THEME_ACTION = ['new', 'modify', 'delete', 'save']
