@@ -57,6 +57,29 @@ def url_to_edit_object(obj):
 # Register your models here.
 
 
+class EncodedFilter(admin.SimpleListFilter):
+    title = _('Encoded ?')
+    parameter_name = 'encoded'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('Yes', _('Yes')),
+            ('No', _('No')),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'Yes':
+            for x in queryset:
+                if not x.encoded:
+                    queryset = queryset.exclude(id=x.id)
+        elif value == 'No':
+            for x in queryset:
+                if x.encoded:
+                    queryset = queryset.exclude(id=x.id)
+        return queryset
+
+
 class VideoSuperAdminForm(VideoForm):
     is_staff = True
     is_superuser = True
@@ -85,7 +108,7 @@ class VideoAdmin(admin.ModelAdmin):
                     'get_encoding_step', 'get_thumbnail_admin')
     list_display_links = ('id', 'title')
     list_filter = ('date_added', 'channel', 'type', 'is_draft',
-                   'encoding_in_progress')
+                   'encoding_in_progress', EncodedFilter)
     # Ajout de l'attribut 'date_delete'
     if USE_OBSOLESCENCE:
         list_filter = list_filter + ("date_delete",)

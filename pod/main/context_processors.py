@@ -202,6 +202,8 @@ def get_last_videos():
     if not HOMEPAGE_SHOWS_RESTRICTED:
         filter_args = filter_args.filter(is_restricted=False)
 
-    filter_args = filter_args.exclude(channel__visible=0)[:12]
+    for x in filter_args:
+        if not x.encoded:
+            filter_args = filter_args.exclude(id=x.id)
 
-    return [x for x in filter_args if x.encoded]
+    return filter_args.exclude(channel__visible=0)[:12]
