@@ -4,11 +4,8 @@ from django.utils.translation import ugettext_lazy as _
 from ckeditor.fields import RichTextField
 from django.template.defaultfilters import slugify
 from pod.video.models import Video
-<<<<<<< HEAD
 from django.contrib.sites.models import Site
-=======
 from select2 import fields as select2_fields
->>>>>>> db02067b9b249f0d831ad5e4e9e088b2bb13dffa
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
