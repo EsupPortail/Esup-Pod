@@ -1,4 +1,8 @@
 
+.select2-container{
+  position: static !important;
+}
+
 tr ,.rowl{
   display: table-row !important;
 }

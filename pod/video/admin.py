@@ -350,14 +350,35 @@ class EncodingStepAdmin(admin.ModelAdmin):
 class NotesAdmin(admin.ModelAdmin):
     list_display = ('video', 'user')
 
+    class Media:
+        css = {
+            "all": (
+                'css/pod.css',
+            )
+        }
+
 
 class AdvancedNotesAdmin(admin.ModelAdmin):
     list_display = ('video', 'user', 'timestamp',
                     'status', 'added_on', 'modified_on')
 
+    class Media:
+        css = {
+            "all": (
+                'css/pod.css',
+            )
+        }
+
 
 class NoteCommentsAdmin(admin.ModelAdmin):
     list_display = ('parentNote', 'user', 'added_on', 'modified_on')
+
+    class Media:
+        css = {
+            "all": (
+                'css/pod.css',
+            )
+        }
 
 
 class VideoToDeleteAdmin(admin.ModelAdmin):
