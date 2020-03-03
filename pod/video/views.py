@@ -47,6 +47,7 @@ from django.db import IntegrityError
 
 TODAY = date.today()
 VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
+# for clean install, produces errors
 try:
     VIDEOS = VIDEOS.exclude(
         pk__in=[vid.id for vid in VIDEOS if not vid.encoded])
