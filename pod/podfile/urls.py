@@ -5,7 +5,8 @@ podfile URL Configuration
 
 from django.conf.urls import url
 
-from .views import home, get_folder_files, editfolder, deletefolder
+from .views import home, get_folder_files, get_file
+from .views import editfolder, deletefolder
 from .views import uploadfiles, deletefile, changefile
 
 app_name = 'podfile'
@@ -21,6 +22,10 @@ urlpatterns = [
         r'^get_folder_files/(?P<id>[\d]+)/(?P<type>[\-\d\w]+)/$',
         get_folder_files,
         name='get_folder_files'),
+    url(
+        r'^get_file/(?P<type>[\-\d\w]+)/$',
+        get_file,
+        name='get_file'),
     url(r'^editfolder/$', editfolder, name='editfolder'),
     url(r'^deletefolder/$', deletefolder, name='deletefolder'),
     url(r'^deletefile/$', deletefile, name='deletefile'),

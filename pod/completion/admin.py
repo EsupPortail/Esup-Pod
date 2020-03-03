@@ -27,6 +27,13 @@ class ContributorAdmin(admin.ModelAdmin):
     list_filter = ('role',)
     search_fields = ['id', 'name', 'role', 'video__title']
 
+    class Media:
+        css = {
+            "all": (
+                'css/pod.css',
+            )
+        }
+
 
 admin.site.register(Contributor, ContributorAdmin)
 
@@ -51,12 +58,14 @@ class DocumentAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                'css/podfile.css',
+                'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
             )
         }
         js = (
-            'js/filewidget.js',
+            'podfile/js/filewidget.js',
+            'js/main.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
@@ -85,12 +94,14 @@ class TrackAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                'css/podfile.css',
+                'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
             )
         }
         js = (
-            'js/filewidget.js',
+            'js/main.js',
+            'podfile/js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
@@ -114,6 +125,13 @@ class OverlayAdmin(admin.ModelAdmin):
     list_display = ('title', 'video',)
     list_display_links = ('title',)
     search_fields = ['id', 'title', 'video__title']
+
+    class Media:
+        css = {
+            "all": (
+                'css/pod.css',
+            )
+        }
 
 
 admin.site.register(Overlay, OverlayAdmin)

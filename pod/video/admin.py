@@ -21,6 +21,7 @@ from .models import Notes, AdvancedNotes, NoteComments
 from .models import ViewCount
 from .models import VideoToDelete
 from .models import VideoVersion
+from .transcript import start_transcript
 
 from .forms import VideoForm, VideoVersionForm
 from .forms import ChannelForm
@@ -56,6 +57,27 @@ def url_to_edit_object(obj):
 # Register your models here.
 
 
+class EncodedFilter(admin.SimpleListFilter):
+    title = _('Encoded ?')
+    parameter_name = 'encoded'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('Yes', _('Yes')),
+            ('No', _('No')),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'Yes':
+            queryset = queryset.exclude(
+                    pk__in=[vid.id for vid in queryset if not vid.encoded])
+        elif value == 'No':
+            queryset = queryset.exclude(
+                    pk__in=[vid.id for vid in queryset if vid.encoded])
+        return queryset
+
+
 class VideoSuperAdminForm(VideoForm):
     is_staff = True
     is_superuser = True
@@ -84,7 +106,7 @@ class VideoAdmin(admin.ModelAdmin):
                     'get_encoding_step', 'get_thumbnail_admin')
     list_display_links = ('id', 'title')
     list_filter = ('date_added', 'channel', 'type', 'is_draft',
-                   'encoding_in_progress')
+                   'encoding_in_progress', EncodedFilter)
     # Ajout de l'attribut 'date_delete'
     if USE_OBSOLESCENCE:
         list_filter = list_filter + ("date_delete",)
@@ -150,7 +172,7 @@ class VideoAdmin(admin.ModelAdmin):
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form
 
-    actions = ['encode_video']
+    actions = ['encode_video', 'transcript_video']
 
     def encode_video(self, request, queryset):
         for item in queryset:
@@ -158,11 +180,18 @@ class VideoAdmin(admin.ModelAdmin):
             item.save()
     encode_video.short_description = _('Encode selected')
 
+    def transcript_video(self, request, queryset):
+        for item in queryset:
+            if item.get_video_mp3() and not item.encoding_in_progress:
+                start_transcript(item)
+    transcript_video.short_description = _('Transcript selected')
+
     class Media:
         css = {
             "all": (
-                'podfile/css/podfile.css',
-                'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css',
+                'bootstrap-4/css/bootstrap.min.css',
+                'bootstrap-4/css/bootstrap-grid.css'
             )
         }
         js = (
@@ -214,12 +243,14 @@ class ChannelAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                'css/podfile.css',
+                'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
             )
         }
         js = (
-            'js/filewidget.js',
+            'js/main.js',
+            'podfile/js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
@@ -233,12 +264,14 @@ class ThemeAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                'css/podfile.css',
+                'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
             )
         }
         js = (
-            'js/filewidget.js',
+            'js/main.js',
+            'podfile/js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
@@ -250,12 +283,14 @@ class TypeAdmin(TranslationAdmin):
     class Media:
         css = {
             "all": (
-                'css/podfile.css',
+                'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
             )
         }
         js = (
-            'js/filewidget.js',
+            'js/main.js',
+            'podfile/js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
@@ -267,12 +302,14 @@ class DisciplineAdmin(TranslationAdmin):
     class Media:
         css = {
             "all": (
-                'css/podfile.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'bootstrap-4/css/bootstrap.min.css',
+                'css/pod.css'
             )
         }
         js = (
-            'js/filewidget.js',
+            'js/main.js',
+            'podfile/js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
@@ -311,14 +348,35 @@ class EncodingStepAdmin(admin.ModelAdmin):
 class NotesAdmin(admin.ModelAdmin):
     list_display = ('video', 'user')
 
+    class Media:
+        css = {
+            "all": (
+                'css/pod.css',
+            )
+        }
+
 
 class AdvancedNotesAdmin(admin.ModelAdmin):
     list_display = ('video', 'user', 'timestamp',
                     'status', 'added_on', 'modified_on')
 
+    class Media:
+        css = {
+            "all": (
+                'css/pod.css',
+            )
+        }
+
 
 class NoteCommentsAdmin(admin.ModelAdmin):
     list_display = ('parentNote', 'user', 'added_on', 'modified_on')
+
+    class Media:
+        css = {
+            "all": (
+                'css/pod.css',
+            )
+        }
 
 
 class VideoToDeleteAdmin(admin.ModelAdmin):

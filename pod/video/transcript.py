@@ -20,7 +20,10 @@ try:
 except ImportError:
     from pipes import quote
 
-DS_PARAM = getattr(settings, 'DS_PARAM', dict())
+import threading
+import logging
+
+DEBUG = getattr(settings, 'DEBUG', False)
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomFileModel
@@ -30,9 +33,37 @@ else:
     FILEPICKER = False
     from pod.main.models import CustomFileModel
 
+DS_PARAM = getattr(settings, 'DS_PARAM', dict())
 AUDIO_SPLIT_TIME = getattr(settings, 'AUDIO_SPLIT_TIME', 300)  # 5min
 # time in sec for phrase length
 SENTENCE_MAX_LENGTH = getattr(settings, 'SENTENCE_MAX_LENGTH', 3)
+
+log = logging.getLogger(__name__)
+
+
+def start_transcript(video):
+    log.info("START TRANSCRIPT VIDEO %s" % video)
+    t = threading.Thread(target=main_threaded_transcript,
+                         args=[video])
+    t.setDaemon(True)
+    t.start()
+
+
+def main_threaded_transcript(video_to_encode):
+    remove_encoding_in_progress = False
+    if not video_to_encode.encoding_in_progress:
+        remove_encoding_in_progress = True
+        video_to_encode.encoding_in_progress = True
+        video_to_encode.save()
+
+    msg = main_transcript(video_to_encode)
+
+    if DEBUG:
+        print(msg)
+
+    if remove_encoding_in_progress:
+        video_to_encode.encoding_in_progress = False
+        video_to_encode.save()
 
 
 def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
@@ -153,6 +184,7 @@ def main_transcript(video_to_encode):
     inference_end = timer() - inference_start
     msg += '\nInference took %0.3fs.' % inference_end
     # print(msg)
+
     return msg
 
 
@@ -225,7 +257,8 @@ def saveVTT(video, webvtt):
             lang, time.strftime("%Y%m%d-%H%M%S")), File(temp_vtt_file))
         msg += "\nstore vtt file in bdd with Track model src field"
 
-        subtitleVtt, created = Track.objects.get_or_create(video=video)
+        subtitleVtt, created = Track.objects.get_or_create(
+            video=video, lang=lang)
         subtitleVtt.src = subtitleFile
         subtitleVtt.lang = lang
         subtitleVtt.save()

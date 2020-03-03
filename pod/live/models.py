@@ -4,7 +4,11 @@ from django.utils.translation import ugettext_lazy as _
 from ckeditor.fields import RichTextField
 from django.template.defaultfilters import slugify
 from pod.video.models import Video
+<<<<<<< HEAD
 from django.contrib.sites.models import Site
+=======
+from select2 import fields as select2_fields
+>>>>>>> db02067b9b249f0d831ad5e4e9e088b2bb13dffa
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -62,7 +66,7 @@ class Broadcaster(models.Model):
         verbose_name=_('Poster'))
     url = models.URLField(_('URL'), help_text=_(
         'Url of the stream'), unique=True)
-    video_on_hold = models.ForeignKey(Video, help_text=_(
+    video_on_hold = select2_fields.ForeignKey(Video, help_text=_(
         'This video will be displayed when there is no live stream.'),
         blank=True,
         null=True,

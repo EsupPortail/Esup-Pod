@@ -1,3 +1,18 @@
+.submit-row a.deletelink {
+  height: 35px;
+}
+
+.select2-container{
+  position: static !important;
+}
+
+tr ,.rowl{
+  display: table-row !important;
+}
+body[data-admin-utc-offset]
+{
+  padding-top: 0;
+}
 body {
 padding-top: 3.5rem;
 }

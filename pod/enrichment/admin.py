@@ -23,12 +23,14 @@ class EnrichmentAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                'css/podfile.css',
+                'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
             )
         }
         js = (
-            'js/filewidget.js',
+            'js/main.js',
+            'podfile/js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
@@ -41,7 +43,13 @@ else:
 
 class EnrichmentGroupAdmin(admin.ModelAdmin):
     list_display = ('video', 'get_groups')
-    # readonly_fields = ('video', )
+
+    class Media:
+        css = {
+            "all": (
+                'css/pod.css',
+            )
+        }
 
     def get_groups(self, obj):
         return "\n".join([g.name for g in obj.groups.all()])
@@ -59,12 +67,14 @@ class EnrichmentVttAdmin(admin.ModelAdmin):
     class Media:
         css = {
             "all": (
-                'css/podfile.css',
+                'bootstrap-4/css/bootstrap.min.css',
                 'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
             )
         }
         js = (
-            'js/filewidget.js',
+            'js/main.js',
+            'podfile/js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 

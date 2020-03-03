@@ -390,7 +390,7 @@ class VideoForm(forms.ModelForm):
                 settings.LANGUAGE_CODE
             ] = cleaned_data['title']
         if ('restrict_access_to_groups' in cleaned_data.keys()
-                and cleaned_data['restrict_access_to_groups'].count() > 0):
+                and len(cleaned_data['restrict_access_to_groups']) > 0):
             cleaned_data['is_restricted'] = True
 
     def __init__(self, *args, **kwargs):
