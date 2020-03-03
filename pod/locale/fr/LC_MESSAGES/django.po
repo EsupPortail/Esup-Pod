@@ -3262,7 +3262,7 @@ msgstr "Encodé ?"
 
 #: pod/video/admin.py:66
 msgid "Yes"
-msgstr ""
+msgstr "Oui"
 
 #: pod/video/admin.py:67
 #| msgid "Note"
