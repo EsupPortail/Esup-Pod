@@ -27,6 +27,13 @@ class ContributorAdmin(admin.ModelAdmin):
     list_filter = ('role',)
     search_fields = ['id', 'name', 'role', 'video__title']
 
+    class Media:
+        css = {
+            "all": (
+                'css/pod.css',
+            )
+        }
+
 
 admin.site.register(Contributor, ContributorAdmin)
 
@@ -118,6 +125,13 @@ class OverlayAdmin(admin.ModelAdmin):
     list_display = ('title', 'video',)
     list_display_links = ('title',)
     search_fields = ['id', 'title', 'video__title']
+
+    class Media:
+        css = {
+            "all": (
+                'css/pod.css',
+            )
+        }
 
 
 admin.site.register(Overlay, OverlayAdmin)
