@@ -70,13 +70,11 @@ class EncodedFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         value = self.value()
         if value == 'Yes':
-            for x in queryset:
-                if not x.encoded:
-                    queryset = queryset.exclude(id=x.id)
+            queryset = queryset.exclude(
+                    pk__in=[vid.id for vid in queryset if not vid.encoded])
         elif value == 'No':
-            for x in queryset:
-                if x.encoded:
-                    queryset = queryset.exclude(id=x.id)
+            queryset = queryset.exclude(
+                    pk__in=[vid.id for vid in queryset if vid.encoded])
         return queryset
 
 
