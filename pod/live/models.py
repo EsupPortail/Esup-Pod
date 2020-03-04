@@ -97,3 +97,7 @@ class Broadcaster(models.Model):
         verbose_name = _("Broadcaster")
         verbose_name_plural = _("Broadcasters")
         ordering = ['building', 'name']
+
+    @property
+    def sites(self):
+        return self.building.sites

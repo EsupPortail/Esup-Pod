@@ -291,6 +291,10 @@ class Theme(models.Model):
     channel = select2_fields.ForeignKey(
         'Channel', related_name='themes', verbose_name=_('Channel'))
 
+    @property
+    def sites(self):
+        return self.channel.sites
+
     def __str__(self):
         return "%s: %s" % (self.channel.title, self.title)
 
@@ -911,6 +915,10 @@ class ViewCount(models.Model):
     count = models.IntegerField(
         _('Number of view'), default=0, editable=False)
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     class Meta:
         unique_together = ("video", "date")
 
@@ -1050,6 +1058,10 @@ class EncodingVideo(models.Model):
         upload_to=get_storage_path_video,
         max_length=255)
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     def clean(self):
         if self.name:
             if self.name not in dict(ENCODING_CHOICES):
@@ -1105,6 +1117,10 @@ class EncodingAudio(models.Model):
         upload_to=get_storage_path_video,
         max_length=255)
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     def clean(self):
         if self.name:
             if self.name not in dict(ENCODING_CHOICES):
@@ -1150,6 +1166,10 @@ class PlaylistVideo(models.Model):
         upload_to=get_storage_path_video,
         max_length=255)
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     def clean(self):
         if self.name:
             if self.name not in dict(ENCODING_CHOICES):
@@ -1184,6 +1204,10 @@ class EncodingLog(models.Model):
                                  editable=False, on_delete=models.CASCADE)
     log = models.TextField(null=True, blank=True, editable=False)
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     def __str__(self):
         return "Log for encoding video %s" % (self.video.id)
 
@@ -1195,6 +1219,10 @@ class VideoVersion(models.Model):
         _('Video version'), max_length=1, blank=True,
         choices=VERSION_CHOICES, default="O",
         help_text=_("Video default version."))
+
+    @property
+    def sites(self):
+        return self.video.sites
 
     def __str__(self):
         return "Choice for default video version : %s - %s" % (
@@ -1208,6 +1236,10 @@ class EncodingStep(models.Model):
     desc_step = models.CharField(null=True,
                                  max_length=255, blank=True, editable=False)
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     def __str__(self):
         return "Step for encoding video %s" % (self.video.id)
 
@@ -1216,6 +1248,10 @@ class Notes(models.Model):
     user = select2_fields.ForeignKey(User)
     video = select2_fields.ForeignKey(Video)
     note = models.TextField(_('Note'), null=True, blank=True)
+
+    @property
+    def sites(self):
+        return self.video.sites
 
     class Meta:
         verbose_name = _("Note")
@@ -1246,6 +1282,10 @@ class AdvancedNotes(models.Model):
         verbose_name = _("Advanced Note")
         verbose_name_plural = _("Advanced Notes")
         unique_together = ("video", "user", "timestamp", "status")
+
+    @property
+    def sites(self):
+        return self.video.sites
 
     def __str__(self):
         return "%s-%s-%s" % (self.user.username, self.video, self.timestamp)
@@ -1321,6 +1361,7 @@ class VideoToDelete(models.Model):
     video = select2_fields.ManyToManyField(
         Video,
         verbose_name=_('Videos'))
+    sites = models.ManyToManyField(Site)
 
     class Meta:
         verbose_name = _("Video to delete")

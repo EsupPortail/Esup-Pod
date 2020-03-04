@@ -117,6 +117,10 @@ class Recording(models.Model):
     date_added = models.DateTimeField('date added', default=timezone.now,
                                       editable=False)
 
+    @property
+    def sites(self):
+        return self.recorder.sites
+
     def __str__(self):
         return "%s" % self.title
 
@@ -181,6 +185,10 @@ class RecordingFileTreatment(models.Model):
     type = models.CharField(max_length=50, choices=RECORDER_TYPE,
                             default=RECORDER_TYPE[0][0])
 
+    @property
+    def sites(self):
+        return self.recorder.sites
+
     def filename(self):
         return os.path.basename(self.file)
 
@@ -206,6 +214,10 @@ class RecordingFile(models.Model):
     class Meta:
         verbose_name = _("Recording file")
         verbose_name_plural = _("Recording files")
+
+    @property
+    def sites(self):
+        return self.recorder.sites
 
 
 @receiver(post_save, sender=RecordingFile)
