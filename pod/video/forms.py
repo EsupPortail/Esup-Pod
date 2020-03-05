@@ -21,7 +21,7 @@ from .models import EncodingVideo, EncodingAudio, PlaylistVideo
 
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-
+from django.contrib.sites.shortcuts import get_current_site
 from pod.main.forms import add_placeholder_and_asterisk
 
 from ckeditor.widgets import CKEditorWidget
@@ -430,7 +430,6 @@ class VideoForm(forms.ModelForm):
             self.remove_field('owner')
             self.remove_field('video')  # .widget = forms.HiddenInput()
 
-
         # change ckeditor, thumbnail and date delete config for no staff user
         self.set_nostaff_config()
 
@@ -488,6 +487,7 @@ class VideoForm(forms.ModelForm):
                 self.current_user.owners_channels.all(
                 ) | self.current_user.users_channels.all()
             ).distinct()
+            user_channels.filter(sites=get_current_site(None))
             if user_channels:
                 self.fields["channel"].queryset = user_channels
                 list_theme = Theme.objects.filter(

@@ -22,7 +22,8 @@ ACTION = ['new', 'save', 'modify', 'delete', 'cancel', 'import', 'export']
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_chapter(request, slug):
-    video = get_object_or_404(Video, slug=slug, sites=get_current_site(request) )
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
     if request.user != video.owner and not request.user.is_superuser and (
             request.user not in video.additional_owners.all()):
         messages.add_message(

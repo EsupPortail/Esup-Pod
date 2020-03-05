@@ -12,7 +12,7 @@ from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
 from pod.video.models import Video
-
+from django.contrib.sites.shortcuts import get_current_site
 import json
 
 from django.contrib.auth.models import User as Owner
@@ -103,7 +103,7 @@ def context_settings(request):
 
 def context_navbar(request):
     channels = Channel.objects.filter(
-        visible=True, video__is_draft=False
+        visible=True, video__is_draft=False, sites=get_current_site(request)
     ).distinct().annotate(
         video_count=Count("video", distinct=True)
     ).prefetch_related(
@@ -114,7 +114,7 @@ def context_navbar(request):
         )))
 
     all_channels = Channel.objects.all(
-    ).distinct().annotate(
+    ).filter(sites=get_current_site(request)).distinct().annotate(
         video_count=Count("video", distinct=True)
     ).prefetch_related(
         Prefetch("themes", queryset=Theme.objects.all(
@@ -123,14 +123,15 @@ def context_navbar(request):
         )))
 
     types = Type.objects.filter(
-        video__is_draft=False
+        video__is_draft=False, sites=get_current_site(request)
     ).distinct().annotate(video_count=Count("video", distinct=True))
 
     disciplines = Discipline.objects.filter(
-        video__is_draft=False
+        video__is_draft=False, sites=get_current_site(request)
     ).distinct().annotate(video_count=Count("video", distinct=True))
 
-    linkFooter = LinkFooter.objects.all()
+    linkFooter = LinkFooter.objects.all().filter(
+        sites=get_current_site(request))
 
     owners_filter_args = {
         'video__is_draft': False,
@@ -156,11 +157,11 @@ def context_navbar(request):
     else:
         listowner = get_list_owner(owners)
 
-    LAST_VIDEOS = get_last_videos() if request.path == "/" else None
+    LAST_VIDEOS = get_last_videos(request) if request.path == "/" else None
 
     list_videos = Video.objects.filter(
         encoding_in_progress=False,
-        is_draft=False)
+        is_draft=False, sites=get_current_site(request))
     VIDEOS_COUNT = list_videos.count()
     VIDEOS_DURATION = str(timedelta(
         seconds=list_videos.aggregate(Sum('duration'))['duration__sum']
@@ -192,10 +193,11 @@ def get_list_owner(owners):
     return listowner
 
 
-def get_last_videos():
+def get_last_videos(request):
 
     filter_args = Video.objects.filter(
-        encoding_in_progress=False, is_draft=False)
+        encoding_in_progress=False, is_draft=False,
+        sites=get_current_site(request))
 
     if not HOMEPAGE_SHOWS_PASSWORDED:
         filter_args = filter_args.filter(

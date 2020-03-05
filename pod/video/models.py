@@ -805,9 +805,11 @@ class Video(models.Model):
                     } for name in Tag.objects.get_for_object(
                         self).values_list('name')]),
                 "type": {"title": self.type.title, "slug": self.type.slug},
-                "disciplines": list(self.discipline.all().filter(sites=current_site).values(
+                "disciplines": list(self.discipline.all().filter(
+                    sites=current_site).values(
                     'title', 'slug')),
-                "channels": list(self.channel.all().filter(sites=current_site).values('title', 'slug')),
+                "channels": list(self.channel.all().filter(
+                    sites=current_site).values('title', 'slug')),
                 "themes": list(self.theme.all().values('title', 'slug')),
                 "contributors": list(self.contributor_set.values(
                     'name', 'role')),
@@ -847,7 +849,8 @@ class Video(models.Model):
                 'dc.creator': '%s' % self.owner.get_full_name(),
                 'dc.description': '%s' % self.description,
                 'dc.subject': '%s' % ', '.join(
-                    self.discipline.all().filter(sites=current_site).values_list('title', flat=True)),
+                    self.discipline.all().filter(
+                        sites=current_site).values_list('title', flat=True)),
                 'dc.publisher': TITLE_ETB,
                 'dc.contributor': ", ".join(contributors),
                 "dc.date": '%s' % self.date_added.strftime('%Y/%m/%d'),

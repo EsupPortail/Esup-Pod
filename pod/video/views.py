@@ -46,7 +46,8 @@ from django.db import transaction
 from django.db import IntegrityError
 
 TODAY = date.today()
-VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
+VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False,
+                              sites=get_current_site(None))
 # for clean install, produces errors
 try:
     VIDEOS = VIDEOS.exclude(
@@ -273,7 +274,8 @@ def my_videos(request):
     # Videos list which user is the owner
     videos_list_owner = request.user.video_set.all().filter(sites=site)
     # Videos list which user is an additional owner
-    videos_list_additional_owner = request.user.owners_videos.all().filter(sites=site)
+    videos_list_additional_owner = request.user.owners_videos.all().filter(
+        sites=site)
     # Aggregate the 2 lists
     videos_list = list(chain(videos_list_owner, videos_list_additional_owner))
     page = request.GET.get('page', 1)

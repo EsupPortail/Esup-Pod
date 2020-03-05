@@ -137,10 +137,12 @@ def contact_us(request):
         request.GET.get('owner')
         and User.objects.filter(id=request.GET.get('owner')).first()) else None
 
-    video = Video.objects.get(id=request.GET.get('video')) if (
+    video = Video.objects.get(id=request.GET.get('video'),
+                              sites=get_current_site(request)) if (
         request.GET.get('video')
         and Video.objects.filter(
-            id=request.GET.get('video')).first()
+            id=request.GET.get('video'),
+            sites=get_current_site(request)).first()
     ) else None
 
     description = "%s: %s\n%s: %s%s\n\n" % (

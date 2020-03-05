@@ -5,7 +5,7 @@ from django.contrib.flatpages.models import FlatPage
 from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 from django.db import connection
-
+from django.contrib.sites.models import Site
 import os
 import mimetypes
 
@@ -110,6 +110,7 @@ class LinkFooter(models.Model):
     page = models.ForeignKey(
         FlatPage, blank=True, null=True,
         help_text=_('Select the page of Pod you want to link with.'))
+    sites = models.ManyToManyField(Site)
 
     class Meta:
         ordering = ['order', 'title']
