@@ -286,6 +286,14 @@ class VideoForm(forms.ModelForm):
     }
     is_admin = False
 
+    def filter_fields_admin(form):
+        if form.is_superuser is False and form.is_admin is False:
+            form.remove_field('date_added')
+            form.remove_field('owner')
+
+        if not hasattr(form, 'admin_form'):
+            del form.fields['sites']
+
     def move_video_source_file(self, new_path, new_dir, old_dir):
         # create user repository
         dest_file = os.path.join(
@@ -439,12 +447,7 @@ class VideoForm(forms.ModelForm):
         # QuerySet for channels and theme
         self.set_queryset()
 
-        if self.is_superuser is False and self.is_admin is False:
-            self.remove_field('date_added')
-            self.remove_field('owner')
-
-        if not hasattr(self, 'admin_form'):
-            del self.fields['sites']
+        self.filter_fields_admin()
 
         self.fields = add_placeholder_and_asterisk(self.fields)
 
