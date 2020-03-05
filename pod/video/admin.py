@@ -36,6 +36,8 @@ from pod.completion.admin import TrackInline
 
 from pod.chapter.admin import ChapterInline
 
+from pod.main.tasks import task_start_transcript
+
 # Ordering user by username !
 User._meta.ordering = ["username"]
 # SET USE_ESTABLISHMENT_FIELD
@@ -46,6 +48,8 @@ TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 
 USE_OBSOLESCENCE = getattr(
     settings, "USE_OBSOLESCENCE", False)
+
+CELERY_TO_ENCODE = getattr(settings, 'CELERY_TO_ENCODE', False)
 
 
 def url_to_edit_object(obj):
@@ -183,7 +187,10 @@ class VideoAdmin(admin.ModelAdmin):
     def transcript_video(self, request, queryset):
         for item in queryset:
             if item.get_video_mp3() and not item.encoding_in_progress:
-                start_transcript(item)
+                if CELERY_TO_ENCODE:
+                    task_start_transcript.delay(item)
+                else:
+                    start_transcript(item)
     transcript_video.short_description = _('Transcript selected')
 
     class Media:
