@@ -151,7 +151,6 @@ def channel_edit(request, slug):
         instance=channel,
         is_staff=request.user.is_staff,
         is_superuser=request.user.is_superuser)
-    channel_form.fields.pop('sites')
     if request.POST:
         channel_form = ChannelForm(
             request.POST,

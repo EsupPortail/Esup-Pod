@@ -17,7 +17,7 @@ from .models import Notes, AdvancedNotes, NoteComments
 from .encode import start_encode
 from .models import get_storage_path_video
 from .models import EncodingVideo, EncodingAudio, PlaylistVideo
-
+from django.contrib.sites.models import Site
 
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -526,6 +526,10 @@ class ChannelForm(forms.ModelForm):
         widget=widgets.FilteredSelectMultiple(_("Owners"), False, attrs={}),
         required=False,
         label=_('Owners'))
+    sites = forms.ModelMultipleChoiceField(
+        Site.objects.all(),
+        required=False
+    )
 
     def clean(self):
         cleaned_data = super(ChannelForm, self).clean()
@@ -555,6 +559,7 @@ class ChannelForm(forms.ModelForm):
 
         if not hasattr(self, 'admin_form'):
             del self.fields['visible']
+            del self.fields['sites']
 
         # change ckeditor config for no staff user
         if not hasattr(self, 'admin_form') and (
