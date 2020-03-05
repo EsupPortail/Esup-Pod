@@ -233,9 +233,16 @@ def recorder_notify(request):
 @login_required(redirect_field_name='referrer')
 @staff_member_required(redirect_field_name='referrer')
 def claim_record(request):
+    site = get_current_site(request)
     # get records list ordered by date
     records_list = RecordingFileTreatment.objects.\
-        filter(require_manual_claim=True).order_by('-date_added')
+        filter(require_manual_claim=True)
+
+    records_list = records_list.exclude(
+        pk__in=[rec.id for rec in records_list
+                if site not in rec.recorder.sites.all()])
+
+    records_list = records_list.order_by('-date_added')
     page = request.GET.get('page', 1)
 
     full_path = ""

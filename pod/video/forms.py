@@ -442,7 +442,9 @@ class VideoForm(forms.ModelForm):
         if self.is_superuser is False and self.is_admin is False:
             self.remove_field('date_added')
             self.remove_field('owner')
-            self.remove_field('sites')
+
+        if not hasattr(self, 'admin_form'):
+            del self.fields['sites']
 
         self.fields = add_placeholder_and_asterisk(self.fields)
 
