@@ -8,6 +8,7 @@ from pod.authentication.models import Owner
 
 from datetime import date, timedelta
 import os
+from django.contrib.sites.models import Site
 
 DEFAULT_YEAR_DATE_DELETE = getattr(settings, 'DEFAULT_YEAR_DATE_DELETE', 2)
 ARCHIVE_OWNER_USERNAME = getattr(settings, 'ARCHIVE_OWNER_USERNAME', 'archive')
@@ -23,6 +24,8 @@ class ObsolescenceTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+
+        site = Site.objects.get(id=1)
         user = User.objects.create(
             username="pod", password="pod1234pod",
             email="pod@univ.fr")
@@ -89,6 +92,9 @@ class ObsolescenceTestCase(TestCase):
             type=Type.objects.get(id=1))
         vid2.date_delete = (date.today() - timedelta(days=1))
         vid2.save()
+
+        for vid in Video.objects.all():
+            vid.sites.add(site)
 
         print(" --->  SetUp of ObsolescenceTestCase : OK !")
 

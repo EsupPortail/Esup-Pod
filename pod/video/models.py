@@ -1364,7 +1364,6 @@ class VideoToDelete(models.Model):
     video = select2_fields.ManyToManyField(
         Video,
         verbose_name=_('Videos'))
-    sites = models.ManyToManyField(Site)
 
     class Meta:
         verbose_name = _("Video to delete")

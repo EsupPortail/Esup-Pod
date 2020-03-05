@@ -146,6 +146,7 @@ class EncodeTestCase(TestCase):
         audio.delete()
         self.assertTrue(not os.path.exists(audio_video_path))
         self.assertTrue(not os.path.exists(audio_log_file))
+        print("AUDIOOOOOOOOOOOOOOOO" + audio_log_file)
         self.assertEqual(len(os.listdir(os.path.dirname(audio_log_file))), 0)
 
         print(

@@ -139,8 +139,7 @@ class Command(BaseCommand):
 
                 # add video to delete
                 vid_delete, created = VideoToDelete.objects.get_or_create(
-                    date_deletion=vid.date_delete,
-                    sites=get_current_site(None))
+                    date_deletion=vid.date_delete)
                 vid_delete.video.add(vid)
                 vid_delete.save()
                 if (
