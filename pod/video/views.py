@@ -140,7 +140,8 @@ def my_channels(request):
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def channel_edit(request, slug):
-    channel = get_object_or_404(Channel, slug=slug)
+    channel = get_object_or_404(Channel,
+                                slug=slug, sites=get_current_site(request))
     if (request.user not in channel.owners.all()
             and not request.user.is_superuser):
         messages.add_message(
@@ -150,6 +151,7 @@ def channel_edit(request, slug):
         instance=channel,
         is_staff=request.user.is_staff,
         is_superuser=request.user.is_superuser)
+    channel_form.fields.pop('sites')
     if request.POST:
         channel_form = ChannelForm(
             request.POST,
