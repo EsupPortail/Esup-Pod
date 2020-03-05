@@ -10,12 +10,14 @@ from django.core.exceptions import PermissionDenied
 
 from ..models import Recorder, RecordingFileTreatment
 from pod.video.models import Type
+from django.contrib.sites.models import Site
 
 
 class recorderViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         videotype = Type.objects.create(title='others')
         user = User.objects.create(username='pod', password='podv2')
         recorder = Recorder.objects.create(id=1, user=user, name="recorder1",
@@ -28,6 +30,7 @@ class recorderViewsTestCase(TestCase):
             file="/home/pod/files/somefile.mp4",
             recorder=recorder)
         recording_file.save()
+        recorder.sites.add(site)
         print(" --->  SetUp of recorderViewsTestCase : OK !")
 
     def test_add_recording(self):

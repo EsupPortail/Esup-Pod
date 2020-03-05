@@ -7,23 +7,26 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from pod.video.models import Video, Type
 from ..models import Enrichment
+from django.contrib.sites.models import Site
 
 
 class EnrichmentViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         owner = User.objects.create(
             username='test', password='azerty', is_staff=True)
         owner.set_password('hello')
         owner.save()
-        Video.objects.create(
+        vid = Video.objects.create(
             title='videotest',
             owner=owner,
             video='test.mp4',
             duration=20,
             type=Type.objects.get(id=1)
         )
+        vid.sites.add(site)
 
     def test_video_enrichment(self):
         video = Video.objects.get(id=1)
