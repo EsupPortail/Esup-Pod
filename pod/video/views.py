@@ -94,7 +94,8 @@ TITLE_SITE = TEMPLATE_VISIBLE_SETTINGS[
 
 
 def channel(request, slug_c, slug_t=None):
-    channel = get_object_or_404(Channel, slug=slug_c)
+    channel = get_object_or_404(Channel, slug=slug_c,
+                                sites=get_current_site(request))
 
     videos_list = VIDEOS.filter(channel=channel)
 
@@ -179,7 +180,8 @@ def channel_edit(request, slug):
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def theme_edit(request, slug):
-    channel = get_object_or_404(Channel, slug=slug)
+    channel = get_object_or_404(Channel, slug=slug,
+                                sites=get_current_site(request))
     if (request.user not in channel.owners.all()
             and not request.user.is_superuser):
         messages.add_message(
@@ -271,7 +273,6 @@ def theme_edit_save(request, channel):
 def my_videos(request):
 
     site = get_current_site(request)
-    print(site)
     # Videos list which user is the owner
     videos_list_owner = request.user.video_set.all().filter(sites=site)
     # Videos list which user is an additional owner
@@ -434,7 +435,8 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
 
-    video = get_object_or_404(Video, id=id)
+    video = get_object_or_404(Video, id=id,
+                              sites=get_current_site(request))
     if (
         video.get_version != "O" and
         request.GET.get('redirect') != "false"
@@ -448,7 +450,8 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
 def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
                  template_video='videos/video.html', more_data=None):
 
-    video = get_object_or_404(Video, id=id)
+    video = get_object_or_404(Video, id=id,
+                              sites=get_current_site(request))
     """
     # Do it only for video
     app_name = request.resolver_match.namespace.capitalize()[0] \
@@ -462,9 +465,12 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
     """
 
     listNotes = get_adv_note_list(request, video)
-    channel = get_object_or_404(Channel, slug=slug_c) if slug_c else None
+    channel = get_object_or_404(Channel, slug=slug_c,
+                                sites=get_current_site(
+                                    request)) if slug_c else None
     theme = get_object_or_404(
-        Theme, channel=channel, slug=slug_t) if slug_t else None
+        Theme, channel=channel, slug=slug_t, sites=get_current_site(
+                                    request)) if slug_t else None
     playlist = get_object_or_404(
         Playlist,
         slug=request.GET['playlist']) if request.GET.get('playlist') else None
@@ -543,7 +549,8 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
 @ensure_csrf_cookie
 @login_required(redirect_field_name='referrer')
 def video_edit(request, slug=None):
-    video = get_object_or_404(Video, slug=slug) if slug else None
+    video = get_object_or_404(Video, slug=slug, sites=get_current_site(
+                                    request)) if slug else None
 
     if (RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
             and request.user.is_staff is False):
@@ -625,7 +632,8 @@ def save_video_form(request, form):
 @login_required(redirect_field_name='referrer')
 def video_delete(request, slug=None):
 
-    video = get_object_or_404(Video, slug=slug)
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
 
     if request.user != video.owner and not request.user.is_superuser:
         messages.add_message(
@@ -785,7 +793,8 @@ def video_notes(request, slug):
         action = request.GET.get('action').split('_')[0]
     if action in NOTE_ACTION:
         return eval('video_note_{0}(request, slug)'.format(action))
-    video = get_object_or_404(Video, slug=slug)
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
     listNotes = get_adv_note_list(request, video)
     return render(request, 'videos/video_notes.html', {
         'video': video,
@@ -794,7 +803,8 @@ def video_notes(request, slug):
 
 @csrf_protect
 def video_note_get(request, slug):
-    video = get_object_or_404(Video, slug=slug)
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
     idCom = idNote = None
     if request.method == "POST" and request.POST.get('idCom'):
         idCom = request.POST.get('idCom')
@@ -835,7 +845,8 @@ def video_note_get(request, slug):
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_note_form(request, slug):
-    video = get_object_or_404(Video, slug=slug)
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
     idNote, idCom = None, None
     note, com = None, None
     if request.method == "POST" and request.POST.get('idCom'):
@@ -937,7 +948,8 @@ def video_note_form_case(request, params):
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_note_save(request, slug):
-    video = get_object_or_404(Video, slug=slug)
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
     idNote, idCom = None, None
     note, com = None, None
     noteToDisplay, comToDisplay = None, None
@@ -1080,7 +1092,8 @@ def video_note_form_not_valid(request, params):
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_note_remove(request, slug):
-    video = get_object_or_404(Video, slug=slug)
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
     if request.method == "POST":
         idCom = idNote = noteToDisplay = listNotesCom = None
         if request.POST.get('idCom'):
@@ -1121,7 +1134,8 @@ def video_note_remove(request, slug):
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_note_download(request, slug):
-    video = get_object_or_404(Video, slug=slug)
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
     listNotes = get_adv_note_list(request, video)
     contentToDownload = {
         'type': [], 'id': [], 'status': [],
@@ -1207,7 +1221,8 @@ def video_count(request, id):
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_version(request, id):
-    video = get_object_or_404(Video, id=id)
+    video = get_object_or_404(Video, id=id,
+                              sites=get_current_site(request))
     if request.POST:
         q = QueryDict(mutable=True)
         q.update(request.POST)
@@ -1259,7 +1274,8 @@ def video_oembed(request):
             id = int(video_slug[:video_slug.find("-")])
         except ValueError:
             raise SuspiciousOperation('Invalid video id')
-        video = get_object_or_404(Video, id=id)
+        video = get_object_or_404(Video, id=id,
+                                  sites=get_current_site(request))
 
         data['title'] = video.title
         data['author_name'] = video.owner.get_full_name()
