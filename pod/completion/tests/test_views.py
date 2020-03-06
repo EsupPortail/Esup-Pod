@@ -13,6 +13,7 @@ from ..models import Document
 from ..models import Overlay
 from ..models import Track
 from datetime import datetime
+from django.contrib.sites.models import Site
 
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
@@ -27,6 +28,7 @@ class CompletionViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         user = User.objects.create(username='test', password='azerty')
         user.set_password('hello')
         user.save()
@@ -34,18 +36,20 @@ class CompletionViewsTestCase(TestCase):
             username='staff', password='azerty', is_staff=True)
         staff.set_password('hello')
         staff.save()
-        Video.objects.create(
+        vid1 = Video.objects.create(
             title='videotest',
             owner=user,
             video='test.mp4',
             type=Type.objects.get(id=1)
         )
-        Video.objects.create(
+        vid1.sites.add(site)
+        vid2 = Video.objects.create(
             title='videotest2',
             owner=staff,
             video='test.mp4',
             type=Type.objects.get(id=1)
         )
+        vid2.sites.add(site)
 
     def test_video_completion_user(self):
         video = Video.objects.get(id=1)
@@ -85,16 +89,18 @@ class CompletionContributorViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         staff = User.objects.create(
             username='staff', password='azerty', is_staff=True)
         staff.set_password('hello')
         staff.save()
-        Video.objects.create(
+        vid = Video.objects.create(
             title='videotest2',
             owner=staff,
             video='test.mp4',
             type=Type.objects.get(id=1)
         )
+        vid.sites.add(site)
 
     def test_video_completion_contributor(self):
         video = Video.objects.get(id=1)
@@ -236,18 +242,20 @@ class CompletionTrackViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         staff = User.objects.create(
             username='staff', password='azerty', is_staff=True)
         staff.set_password('hello')
         staff.save()
         if FILEPICKER:
             UserFolder.objects.create(owner=staff, name='Home')
-        Video.objects.create(
+        vid = Video.objects.create(
             title='videotest2',
             owner=staff,
             video='test.mp4',
             type=Type.objects.get(id=1)
         )
+        vid.sites.add(site)
 
     def test_video_completion_track(self):
         video = Video.objects.get(id=1)
@@ -440,18 +448,20 @@ class CompletionDocumentViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         staff = User.objects.create(
             username='staff', password='azerty', is_staff=True)
         staff.set_password('hello')
         staff.save()
         if FILEPICKER:
             UserFolder.objects.create(owner=staff, name='Home')
-        Video.objects.create(
+        vid = Video.objects.create(
             title='videotest2',
             owner=staff,
             video='test.mp4',
             type=Type.objects.get(id=1)
         )
+        vid.sites.add(site)
 
     def test_video_completion_document(self):
         video = Video.objects.get(id=1)
