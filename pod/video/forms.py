@@ -292,7 +292,7 @@ class VideoForm(forms.ModelForm):
             form.remove_field('owner')
 
         if not hasattr(form, 'admin_form'):
-            del form.fields['sites']
+            form.remove_field('sites')
 
     def move_video_source_file(self, new_path, new_dir, old_dir):
         # create user repository
@@ -402,7 +402,6 @@ class VideoForm(forms.ModelForm):
             cleaned_data['is_restricted'] = True
 
     def __init__(self, *args, **kwargs):
-
         self.is_staff = kwargs.pop(
             'is_staff') if 'is_staff' in kwargs.keys() else self.is_staff
         self.is_superuser = kwargs.pop(
@@ -418,7 +417,6 @@ class VideoForm(forms.ModelForm):
         self.VIDEO_FORM_FIELDS_HELP_TEXT = VIDEO_FORM_FIELDS_HELP_TEXT
 
         super(VideoForm, self).__init__(*args, **kwargs)
-
         if FILEPICKER and self.fields.get('thumbnail'):
             self.fields['thumbnail'].widget = CustomFileWidget(type="image")
 

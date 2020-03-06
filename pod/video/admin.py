@@ -82,12 +82,14 @@ class VideoSuperAdminForm(VideoForm):
     is_staff = True
     is_superuser = True
     is_admin = True
+    admin_form = True
 
 
 class VideoAdminForm(VideoForm):
     is_staff = True
     is_superuser = False
     is_admin = True
+    admin_form = True
 
 
 class VideoVersionInline(admin.StackedInline):
