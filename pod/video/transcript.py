@@ -50,6 +50,7 @@ ENCODE_WAV_CMD = getattr(
     + "-threads %(nb_threads)s "
     + "\"%(output_dir)s/audio_%(audio_bitrate)s.wav\"")
 
+MIN_SPLIT_DURATION = getattr(settings, 'MIN_SPLIT_DURATION', 25000)
 
 log = logging.getLogger(__name__)
 
@@ -157,11 +158,10 @@ def get_split_step(mp3file, video_to_encode, desired_sample_rate):
     allsilence = silence.detect_silence(
         myaudio, min_silence_len=500, silence_thresh=myaudio.dBFS - 16)
 
-    min_split_duration = 25000
     start_trim = 0
     split_step = []
     for sil in allsilence:
-        if sil[0] > start_trim + min_split_duration:
+        if sil[0] > start_trim + MIN_SPLIT_DURATION:
             split_step.append([start_trim / 1000, sil[0] / 1000])
             start_trim = sil[0]
     split_step.append([start_trim / 1000, myaudio.duration_seconds])
