@@ -38,6 +38,19 @@ AUDIO_SPLIT_TIME = getattr(settings, 'AUDIO_SPLIT_TIME', 300)  # 5min
 # time in sec for phrase length
 SENTENCE_MAX_LENGTH = getattr(settings, 'SENTENCE_MAX_LENGTH', 3)
 
+FFMPEG = getattr(settings, 'FFMPEG', 'ffmpeg')
+FFMPEG_NB_THREADS = getattr(settings, 'FFMPEG_NB_THREADS', 0)
+FFMPEG_MISC_PARAMS = getattr(
+    settings, 'FFMPEG_MISC_PARAMS', " -hide_banner -y ")
+# ffmpeg -i audio_192k.mp3 -acodec pcm_s16le -ac 1 -ar 16000 audio_192k.wav
+ENCODE_WAV_CMD = getattr(
+    settings, 'ENCODE_MP3_CMD',
+    "%(ffmpeg)s -i %(source)s %(misc_params)s "
+    + "-acodec pcm_s16le -ac 1 -ar %(audio_bitrate)s "
+    + "-threads %(nb_threads)s "
+    + "\"%(output_dir)s/audio_%(audio_bitrate)s.wav\"")
+
+
 log = logging.getLogger(__name__)
 
 
@@ -87,9 +100,79 @@ def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
     return np.frombuffer(output, np.int16)
 
 
+def check_file(path_file):
+    if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
+        return True
+    return False
+
+
+def create_outputdir(video_id, video_path):
+    dirname = os.path.dirname(video_path)
+    output_dir = os.path.join(dirname, "%04d" % video_id)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    return output_dir
+
+
+def encode_mp3_wav(source, output_dir, audio_bitrate):
+
+    command = ENCODE_WAV_CMD % {
+        'ffmpeg': FFMPEG,
+        'source': source,
+        'misc_params': FFMPEG_MISC_PARAMS,
+        'nb_threads': FFMPEG_NB_THREADS,
+        'output_dir': output_dir,
+        'audio_bitrate': audio_bitrate
+    }
+    msg = "\nffmpegWavCommand :\n%s" % command
+    msg += "\n- Encoding Wav : %s" % time.ctime()
+    # ffmpegaudio = subprocess.getoutput(command)
+    ffmpegaudio = subprocess.run(
+        command, shell=True, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+    if DEBUG:
+        print(ffmpegaudio)
+    msg += "\n- End Encoding WAV : %s" % time.ctime()
+
+    audiofilename = output_dir + "/audio_%s.wav" % audio_bitrate
+    if check_file(audiofilename):
+        msg += "\n- encode_video_mp3 :\n%s" % audiofilename
+    else:
+        msg += "\n- encode_video_mp3 Wrong file or path %s " % audiofilename
+
+    return audiofilename, msg
+
+
+def get_split_step(mp3file, video_to_encode, desired_sample_rate):
+    # create wav file
+    # ffmpeg -i audio_192k.mp3 -acodec pcm_s16le -ac 1 -ar 16000 audio_192k.wav
+    output_dir = create_outputdir(
+        video_to_encode.id, video_to_encode.video.path)
+    waveFile, msgwav = encode_mp3_wav(
+        mp3file.path, output_dir, desired_sample_rate)
+
+    print("create audio segment : %s" % waveFile)
+    from pydub import AudioSegment, silence
+    myaudio = AudioSegment.from_wav(waveFile)
+    allsilence = silence.detect_silence(
+        myaudio, min_silence_len=500, silence_thresh=myaudio.dBFS - 16)
+
+    min_split_duration = 25000
+    start_trim = 0
+    split_step = []
+    for sil in allsilence:
+        if sil[0] > start_trim + min_split_duration:
+            split_step.append([start_trim / 1000, sil[0] / 1000])
+            start_trim = sil[0]
+    split_step.append([start_trim / 1000, myaudio.duration_seconds])
+    print(split_step)
+    return split_step, msgwav
+
 # #################################
 # TRANSCRIPT VIDEO : MAIN FUNCTION
 # #################################
+
+
 def main_transcript(video_to_encode):
     msg = ""
 
@@ -120,47 +203,58 @@ def main_transcript(video_to_encode):
 
     webvtt = WebVTT()
     inference_start = timer()
-    last_item = None
+    # last_item = None
     sentences = []
     sentence = []
     metadata = None
 
-    for start_trim in range(0, video_to_encode.duration, AUDIO_SPLIT_TIME):
+    split_step, msgwav = get_split_step(video_to_encode, desired_sample_rate)
+    msg += msgwav
 
-        end_trim = video_to_encode.duration if start_trim + \
-            AUDIO_SPLIT_TIME > video_to_encode.duration else (
-                start_trim + AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH)
+    for step in split_step:
 
-        duration = (AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH) if start_trim + \
-            AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH < video_to_encode.duration \
-            else (video_to_encode.duration - start_trim)
+        start_trim = step[0]
+        end_trim = step[1]
+        duration = end_trim - start_trim
 
-        msg += "\ntake audio from %s to %s - %s" % (
+        step_msg = "\ntake audio from %s to %s - %s" % (
             start_trim, end_trim, duration)
+        print(step_msg)
+        msg += step_msg
 
         audio = convert_samplerate(
             mp3file.path, desired_sample_rate, start_trim, duration)
-        msg += '\nRunning inference.'
+
+        step_msg = '\nRunning inference.'
+        print(step_msg)
+        msg += step_msg
 
         metadata = ds_model.sttWithMetadata(audio)
 
-        msg += '\nConfidence : %s' % metadata.confidence
+        step_msg = '\nConfidence : %s' % metadata.confidence
+        print(step_msg)
+        msg += step_msg
 
         sentences[:] = []  # empty list
         sentence[:] = []  # empty list
 
-        refItem = metadata.items[0]
-
-        index = get_index(metadata, last_item, start_trim) if last_item else 0
-
         # nb of character in AUDIO_SPLIT_TIME
-        msg += "METADATA ITEMS : %d " % len(metadata.items)
+        step_msg = "\nMETADATA ITEMS : %d " % len(metadata.items)
+        print(step_msg)
+        msg += step_msg
 
-        sentences = get_sentences(metadata, refItem, index)
+        if len(metadata.items) > 0:
+            refItem = metadata.items[0]
+            index = 0
+            # index = get_index(metadata, last_item, start_trim) \
+            # if last_item else 0
+            sentences = get_sentences(metadata, refItem, index)
+        else:
+            refItem = None
 
-        last_item = (
-            sentences[-1][-1].character, sentences[-1][-1].start_time
-        ) if len(sentences) > 0 else ()
+        step_msg = "\nNB SENTENCES : %d " % len(sentences)
+        print(step_msg)
+        msg += step_msg
 
         for sent in sentences:
             if len(sent) > 0:
@@ -179,6 +273,7 @@ def main_transcript(video_to_encode):
                 )
 
                 webvtt.captions.append(caption)
+
     # print(webvtt)
     msg += saveVTT(video_to_encode, webvtt)
     inference_end = timer() - inference_start
@@ -201,6 +296,8 @@ def get_sentences(metadata, refItem, index):
                 refItem = item
             else:
                 sentence.append(item)
+    if sentence != []:
+        sentences.append(sentence)
     return sentences
 
 
