@@ -284,7 +284,8 @@ class VideoForm(forms.ModelForm):
         "accept": "audio/*, video/*, .%s" %
         ', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS)),
     }
-    is_admin = False
+    is_admin = False,
+    user = User.objects.all().filter(owner__sites=Site.objects.get_current())
 
     def filter_fields_admin(form):
         if form.is_superuser is False and form.is_admin is False:
@@ -292,6 +293,12 @@ class VideoForm(forms.ModelForm):
             form.remove_field('owner')
 
         if not hasattr(form, 'admin_form'):
+            form.fields["type"].queryset = Type.objects.all().filter(
+                sites=Site.objects.get_current())
+            form.fields["owner"].queryset = User.objects.all().filter(
+                owner__sites=Site.objects.get_current())
+            form.fields["additional_owners"].queryset = User.objects.all().filter(
+                owner__sites=Site.objects.get_current())
             form.remove_field('sites')
 
     def move_video_source_file(self, new_path, new_dir, old_dir):

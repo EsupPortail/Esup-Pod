@@ -9,7 +9,6 @@ class SiteBackend(ModelBackend):
         site = Site.objects.get_current()
         if user_or_none and (site not in user_or_none.owner.sites.all()):
             user_or_none = None
-        print(user_or_none)
         return user_or_none
 
     def get_user(self, user_id):
