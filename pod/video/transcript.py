@@ -43,12 +43,21 @@ FFMPEG_NB_THREADS = getattr(settings, 'FFMPEG_NB_THREADS', 0)
 FFMPEG_MISC_PARAMS = getattr(
     settings, 'FFMPEG_MISC_PARAMS', " -hide_banner -y ")
 # ffmpeg -i audio_192k.mp3 -acodec pcm_s16le -ac 1 -ar 16000 audio_192k.wav
+# ffmpeg-normalize input.mp3 -c:a libmp3lame -b:a 320k -o output.mp3
+ENCODE_WAV_CMD = getattr(
+    settings, 'ENCODE_MP3_CMD',
+    "%(ffmpeg_normalize)s %(source)s "
+    + "-c:a pcm_s16le -b:a %(audio_bitrate)s "
+    + "--target-level -23 -f -o "
+    + "\"%(output_dir)s/audio_%(audio_bitrate)s.wav\"")
+"""
 ENCODE_WAV_CMD = getattr(
     settings, 'ENCODE_MP3_CMD',
     "%(ffmpeg)s -i %(source)s %(misc_params)s "
     + "-acodec pcm_s16le -ac 1 -ar %(audio_bitrate)s "
     + "-threads %(nb_threads)s "
     + "\"%(output_dir)s/audio_%(audio_bitrate)s.wav\"")
+"""
 
 MIN_SPLIT_DURATION = getattr(settings, 'MIN_SPLIT_DURATION', 25000)
 
@@ -82,10 +91,11 @@ def main_threaded_transcript(video_to_encode):
 
 def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
     # trim 0 1800
+    # gain −n −3
     sox_cmd = 'sox {} --type raw --bits 16 --channels 1 --rate {} '.format(
         quote(audio_path), desired_sample_rate)
     sox_cmd += '--encoding signed-integer --endian little --compression 0.0 '
-    sox_cmd += '--no-dither - trim {} {}'.format(trim_start, duration)
+    sox_cmd += '--no-dither - trim {} {} '.format(trim_start, duration)
 
     try:
         output = subprocess.check_output(
@@ -118,13 +128,12 @@ def create_outputdir(video_id, video_path):
 def encode_mp3_wav(source, output_dir, audio_bitrate):
 
     command = ENCODE_WAV_CMD % {
-        'ffmpeg': FFMPEG,
+        'ffmpeg_normalize': 'ffmpeg-normalize',
         'source': source,
-        'misc_params': FFMPEG_MISC_PARAMS,
-        'nb_threads': FFMPEG_NB_THREADS,
         'output_dir': output_dir,
         'audio_bitrate': audio_bitrate
     }
+
     msg = "\nffmpegWavCommand :\n%s" % command
     msg += "\n- Encoding Wav : %s" % time.ctime()
     # ffmpegaudio = subprocess.getoutput(command)
@@ -140,6 +149,7 @@ def encode_mp3_wav(source, output_dir, audio_bitrate):
         msg += "\n- encode_video_mp3 :\n%s" % audiofilename
     else:
         msg += "\n- encode_video_mp3 Wrong file or path %s " % audiofilename
+        return '', msg
 
     return audiofilename, msg
 
@@ -151,22 +161,24 @@ def get_split_step(mp3file, video_to_encode, desired_sample_rate):
         video_to_encode.id, video_to_encode.video.path)
     waveFile, msgwav = encode_mp3_wav(
         mp3file.path, output_dir, desired_sample_rate)
+    if waveFile == '':
+        return [], waveFile, msgwav
 
-    print("create audio segment : %s" % waveFile)
+    print("create audio segment : %s" % waveFile) if DEBUG else ''
     from pydub import AudioSegment, silence
     myaudio = AudioSegment.from_wav(waveFile)
-    allsilence = silence.detect_silence(
+    allsilences = silence.detect_silence(
         myaudio, min_silence_len=500, silence_thresh=myaudio.dBFS - 16)
 
     start_trim = 0
     split_step = []
-    for sil in allsilence:
+    for sil in allsilences:
         if sil[0] > start_trim + MIN_SPLIT_DURATION:
             split_step.append([start_trim / 1000, sil[0] / 1000])
             start_trim = sil[0]
     split_step.append([start_trim / 1000, myaudio.duration_seconds])
-    print(split_step)
-    return split_step, msgwav
+    print(split_step) if DEBUG else ''
+    return split_step, waveFile, msgwav
 
 # #################################
 # TRANSCRIPT VIDEO : MAIN FUNCTION
@@ -208,8 +220,11 @@ def main_transcript(video_to_encode):
     sentence = []
     metadata = None
 
-    split_step, msgwav = get_split_step(video_to_encode, desired_sample_rate)
+    split_step, waveFile, msgwav = get_split_step(
+        mp3file, video_to_encode, desired_sample_rate)
     msg += msgwav
+    if waveFile == '':
+        return msg
 
     for step in split_step:
 
@@ -219,20 +234,20 @@ def main_transcript(video_to_encode):
 
         step_msg = "\ntake audio from %s to %s - %s" % (
             start_trim, end_trim, duration)
-        print(step_msg)
+        print(step_msg) if DEBUG else ''
         msg += step_msg
 
         audio = convert_samplerate(
-            mp3file.path, desired_sample_rate, start_trim, duration)
+            waveFile, desired_sample_rate, start_trim, duration)
 
         step_msg = '\nRunning inference.'
-        print(step_msg)
+        print(step_msg) if DEBUG else ''
         msg += step_msg
 
         metadata = ds_model.sttWithMetadata(audio)
 
         step_msg = '\nConfidence : %s' % metadata.confidence
-        print(step_msg)
+        print(step_msg) if DEBUG else ''
         msg += step_msg
 
         sentences[:] = []  # empty list
@@ -240,20 +255,13 @@ def main_transcript(video_to_encode):
 
         # nb of character in AUDIO_SPLIT_TIME
         step_msg = "\nMETADATA ITEMS : %d " % len(metadata.items)
-        print(step_msg)
+        print(step_msg) if DEBUG else ''
         msg += step_msg
 
-        if len(metadata.items) > 0:
-            refItem = metadata.items[0]
-            index = 0
-            # index = get_index(metadata, last_item, start_trim) \
-            # if last_item else 0
-            sentences = get_sentences(metadata, refItem, index)
-        else:
-            refItem = None
+        sentences = get_sentences(metadata)
 
         step_msg = "\nNB SENTENCES : %d " % len(sentences)
-        print(step_msg)
+        print(step_msg) if DEBUG else ''
         msg += step_msg
 
         for sent in sentences:
@@ -274,18 +282,19 @@ def main_transcript(video_to_encode):
 
                 webvtt.captions.append(caption)
 
-    # print(webvtt)
     msg += saveVTT(video_to_encode, webvtt)
     inference_end = timer() - inference_start
     msg += '\nInference took %0.3fs.' % inference_end
-    # print(msg)
+    print(msg) if DEBUG else ''
 
     return msg
 
 
-def get_sentences(metadata, refItem, index):
+def get_sentences(metadata):
     sentence = []
     sentences = []
+    refItem = metadata.items[0]
+    index = 0
     for item in metadata.items[index:]:
         if((item.start_time - refItem.start_time) < SENTENCE_MAX_LENGTH):
             sentence.append(item)
