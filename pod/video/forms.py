@@ -293,12 +293,6 @@ class VideoForm(forms.ModelForm):
             form.remove_field('owner')
 
         if not hasattr(form, 'admin_form'):
-            form.fields["type"].queryset = Type.objects.all().filter(
-                sites=Site.objects.get_current())
-            form.fields["owner"].queryset = User.objects.all().filter(
-                owner__sites=Site.objects.get_current())
-            form.fields["additional_owners"].queryset = User.objects.all().filter(
-                owner__sites=Site.objects.get_current())
             form.remove_field('sites')
 
     def move_video_source_file(self, new_path, new_dir, old_dir):
@@ -493,6 +487,11 @@ class VideoForm(forms.ModelForm):
 
     def set_queryset(self):
         if self.current_user is not None:
+            self.fields["type"].queryset = Type.objects.all().filter(
+                sites=Site.objects.get_current())
+            self.fields["discipline"].queryset = Discipline.objects.all(
+            ).filter(
+                sites=Site.objects.get_current())
             user_channels = Channel.objects.all() if self.is_superuser else (
                 self.current_user.owners_channels.all(
                 ) | self.current_user.users_channels.all()

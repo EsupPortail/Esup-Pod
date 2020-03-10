@@ -442,9 +442,10 @@ class Video(models.Model):
             User,
             ajax=True,
             verbose_name=_('Owner'),
-            search_field=lambda q: Q(is_staff=True) & (Q(
+            search_field=lambda q: (Q(is_staff=True) & (Q(
                 first_name__icontains=q) | Q(
-                last_name__icontains=q)),
+                last_name__icontains=q))) & Q(
+                    owner__sites=Site.objects.get_current()),
             on_delete=models.CASCADE)
         additional_owners = select2_fields.ManyToManyField(
             User,
@@ -454,9 +455,10 @@ class Video(models.Model):
                 'width': 'off'
             },
             verbose_name=_('Additional owners'),
-            search_field=lambda q: Q(is_staff=True) & (Q(
+            search_field=lambda q: (Q(is_staff=True) & (Q(
                 first_name__icontains=q) | Q(
-                last_name__icontains=q)),
+                last_name__icontains=q))) & Q(
+                    owner__sites=Site.objects.get_current()),
             related_name='owners_videos',
             help_text=_('You can add additional owners to the video. They '
                         'will have the same rights as you except that they '
@@ -467,9 +469,10 @@ class Video(models.Model):
             User,
             ajax=True,
             verbose_name=_('Owner'),
-            search_field=lambda q: Q(
+            search_field=lambda q: (Q(
                 first_name__icontains=q) | Q(
-                last_name__icontains=q),
+                last_name__icontains=q)) & Q(
+                    owner__sites=Site.objects.get_current()),
             on_delete=models.CASCADE)
         additional_owners = select2_fields.ManyToManyField(
             User,
@@ -479,9 +482,10 @@ class Video(models.Model):
                 'width': 'off'
             },
             verbose_name=_('Additional owners'),
-            search_field=lambda q: Q(
+            search_field=lambda q: (Q(
                 first_name__icontains=q) | Q(
-                last_name__icontains=q),
+                last_name__icontains=q)) & Q(
+                    owner__sites=Site.objects.get_current()),
             related_name='owners_videos',
             help_text=_('You can add additional owners to the video. They '
                         'will have the same rights as you except that they '
