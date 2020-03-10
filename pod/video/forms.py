@@ -284,7 +284,7 @@ class VideoForm(forms.ModelForm):
         "accept": "audio/*, video/*, .%s" %
         ', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS)),
     }
-    is_admin = False,
+    is_admin = False
     user = User.objects.all().filter(owner__sites=Site.objects.get_current())
 
     def filter_fields_admin(form):
