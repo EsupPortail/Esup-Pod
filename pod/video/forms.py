@@ -569,6 +569,10 @@ class ChannelForm(forms.ModelForm):
         if not hasattr(self, 'admin_form'):
             del self.fields['visible']
             del self.fields['sites']
+            self.fields['owners'].queryset = self.fields['owners']. \
+                queryset.filter(owner__sites=Site.objects.get_current())
+            self.fields['users'].queryset = self.fields['users']. \
+                queryset.filter(owner__sites=Site.objects.get_current())
 
         # change ckeditor config for no staff user
         if not hasattr(self, 'admin_form') and (
