@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import User, Permission, Group
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -105,6 +105,23 @@ def create_owner_profile(sender, instance, created, **kwargs):
             Owner.objects.create(user=instance)
         except Exception as e:
             msg = u'\n Create owner profile ***** Error:%r' % e
+            msg += '\n%s' % traceback.format_exc()
+            logger.error(msg)
+            print(msg)
+
+
+class GroupSite(models.Model):
+    group = models.OneToOneField(Group, on_delete=models.CASCADE)
+    sites = models.ManyToManyField(Site)
+
+
+@receiver(post_save, sender=Group)
+def create_groupsite_profile(sender, instance, created, **kwargs):
+    if created:
+        try:
+            GroupSite.objects.create(group=instance)
+        except Exception as e:
+            msg = u'\n Create groupsite profile ***** Error:%r' % e
             msg += '\n%s' % traceback.format_exc()
             logger.error(msg)
             print(msg)

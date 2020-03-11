@@ -1,5 +1,5 @@
 from django import forms
-from pod.authentication.models import Owner
+from pod.authentication.models import Owner, GroupSite
 from django.conf import settings
 
 from django.contrib.auth import get_user_model
@@ -23,6 +23,16 @@ class OwnerAdminForm(forms.ModelForm):
 
     class Meta(object):
         model = Owner
+        fields = '__all__'
+
+
+class GroupSiteAdminForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(GroupSiteAdminForm, self).__init__(*args, **kwargs)
+
+    class Meta(object):
+        model = GroupSite
         fields = '__all__'
 
 

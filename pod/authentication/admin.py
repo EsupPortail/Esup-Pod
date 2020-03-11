@@ -3,8 +3,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
-from pod.authentication.models import Owner
-from pod.authentication.forms import OwnerAdminForm
+from pod.authentication.models import Owner, GroupSite
+from pod.authentication.forms import OwnerAdminForm, GroupSiteAdminForm
 from django.utils.html import format_html
 
 from django.contrib.auth.models import Group
@@ -17,6 +17,30 @@ USE_ESTABLISHMENT_FIELD = getattr(
     settings,
     'USE_ESTABLISHMENT_FIELD',
     False)
+
+
+class GroupSiteInline(admin.StackedInline):
+    model = GroupSite
+    form = GroupSiteAdminForm
+    can_delete = False
+    verbose_name_plural = 'groupssite'
+
+    def get_fields(self, request, obj=None):
+        return list(super(GroupSiteInline, self).get_fields(request, obj))
+
+    class Media:
+        css = {
+            "all": (
+                'bootstrap-4/css/bootstrap.min.css',
+                'bootstrap-4/css/bootstrap-grid.css',
+                'css/pod.css'
+            )
+        }
+        js = (
+            'podfile/js/filewidget.js',
+            'js/main.js',
+            'feather-icons/feather.min.js',
+            'bootstrap-4/js/bootstrap.min.js')
 
 
 class OwnerInline(admin.StackedInline):
@@ -92,6 +116,7 @@ class GroupAdmin(admin.ModelAdmin):
     form = GroupAdminForm
     # Filter permissions horizontal as well.
     filter_horizontal = ['permissions']
+    inlines = (GroupSiteInline, )
 
 
 # Re-register UserAdmin
