@@ -7,6 +7,7 @@ import numpy as np
 import shlex
 import subprocess
 # import sys
+import glob
 import os
 import time
 from timeit import default_timer as timer
@@ -34,7 +35,7 @@ else:
     from pod.main.models import CustomFileModel
 
 DS_PARAM = getattr(settings, 'DS_PARAM', dict())
-AUDIO_SPLIT_TIME = getattr(settings, 'AUDIO_SPLIT_TIME', 300)  # 5min
+AUDIO_SPLIT_TIME = getattr(settings, 'AUDIO_SPLIT_TIME', 1800)  # 5min
 # time in sec for phrase length
 SENTENCE_MAX_LENGTH = getattr(settings, 'SENTENCE_MAX_LENGTH', 3)
 
@@ -50,16 +51,15 @@ ENCODE_WAV_CMD = getattr(
     + "-c:a pcm_s16le -b:a %(audio_bitrate)s "
     + "--target-level -23 -f -o "
     + "\"%(output_dir)s/audio_%(audio_bitrate)s.wav\"")
-"""
-ENCODE_WAV_CMD = getattr(
-    settings, 'ENCODE_MP3_CMD',
+# SPLIT_WAV_CMD ffmpeg -i file.wav -f segment -segment_time 30 -c copy
+SPLIT_WAV_CMD = getattr(
+    settings, 'SPLIT_WAV_CMD',
     "%(ffmpeg)s -i %(source)s %(misc_params)s "
-    + "-acodec pcm_s16le -ac 1 -ar %(audio_bitrate)s "
-    + "-threads %(nb_threads)s "
-    + "\"%(output_dir)s/audio_%(audio_bitrate)s.wav\"")
-"""
+    + "-f segment -segment_time %(segment_time)s "
+    + "-c copy -threads %(nb_threads)s "
+    + "\"%(output_dir)s/splitaudio_%(audiod)s.wav\"")
 
-MIN_SPLIT_DURATION = getattr(settings, 'MIN_SPLIT_DURATION', 25000)
+MIN_SPLIT_DURATION = getattr(settings, 'MIN_SPLIT_DURATION', 20000)
 
 log = logging.getLogger(__name__)
 
@@ -135,7 +135,7 @@ def encode_mp3_wav(source, output_dir, audio_bitrate):
     }
 
     msg = "\nffmpegWavCommand :\n%s" % command
-    msg += "\n- Encoding Wav : %s" % time.ctime()
+    msg += "\n- Start Encoding Wav : %s" % time.ctime()
     # ffmpegaudio = subprocess.getoutput(command)
     ffmpegaudio = subprocess.run(
         command, shell=True, stdout=subprocess.PIPE,
@@ -163,20 +163,66 @@ def get_split_step(mp3file, video_to_encode, desired_sample_rate):
         mp3file.path, output_dir, desired_sample_rate)
     if waveFile == '':
         return [], waveFile, msgwav
-
-    print("create audio segment : %s" % waveFile) if DEBUG else ''
-    from pydub import AudioSegment, silence
-    myaudio = AudioSegment.from_wav(waveFile)
-    allsilences = silence.detect_silence(
-        myaudio, min_silence_len=500, silence_thresh=myaudio.dBFS - 16)
-
-    start_trim = 0
+    msgwav += "\n- Start split WAV : %s" % time.ctime()
+    # split wav into multiple sub wav file
+    command = SPLIT_WAV_CMD % {
+        'ffmpeg': FFMPEG,
+        'source': waveFile,
+        'nb_threads': FFMPEG_NB_THREADS,
+        'misc_params': FFMPEG_MISC_PARAMS,
+        'segment_time': AUDIO_SPLIT_TIME,
+        'output_dir': output_dir,
+        'audiod': '%09d'
+    }
+    ffmpegaudio = subprocess.run(
+        command, shell=True, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+    print(ffmpegaudio) if DEBUG else ''
+    msgwav += "\n- End split WAV : %s" % time.ctime()
     split_step = []
-    for sil in allsilences:
-        if sil[0] > start_trim + MIN_SPLIT_DURATION:
-            split_step.append([start_trim / 1000, sil[0] / 1000])
-            start_trim = sil[0]
-    split_step.append([start_trim / 1000, myaudio.duration_seconds])
+    start_step = 0
+    from pydub import AudioSegment, silence
+    for file in sorted(glob.glob(output_dir + "/splitaudio_*.wav")):
+        print("###" * 40) if DEBUG else ''
+        print("create audio segment : %s" % file) if DEBUG else ''
+        myaudio = AudioSegment.from_wav(file)
+        print("detect_silence silence_thresh : %s" %
+              myaudio.dBFS) if DEBUG else ''
+        allsilences = silence.detect_silence(
+            myaudio, min_silence_len=500, silence_thresh=myaudio.dBFS - 16)
+        print("allsilences :\n %s \n" % allsilences) if DEBUG else ''
+        start_trim = 0
+        if len(allsilences) > 0:
+            for sil in allsilences:
+                if sil[0] > start_trim + MIN_SPLIT_DURATION:
+                    split_step.append(
+                        [
+                            start_step + (start_trim / 1000),
+                            start_step + (sil[0] / 1000)
+                        ]
+                    )
+                    start_trim = sil[0]
+            split_step.append([start_step + start_trim / 1000,
+                               start_step + myaudio.duration_seconds])
+        else:
+            for i in range(
+                    MIN_SPLIT_DURATION,
+                    int(myaudio.duration_seconds) * 1000,
+                    MIN_SPLIT_DURATION):
+                split_step.append(
+                    [
+                        start_step + (start_trim / 1000),
+                        start_step + (i / 1000)
+                    ]
+                )
+                start_trim = i
+            split_step.append([start_step + start_trim / 1000,
+                               start_step + myaudio.duration_seconds])
+        start_step += myaudio.duration_seconds
+        print(split_step) if DEBUG else ''
+        print("-_-" * 40) if DEBUG else ''
+        # remove file
+        os.remove(file)
     print(split_step) if DEBUG else ''
     return split_step, waveFile, msgwav
 
@@ -258,7 +304,7 @@ def main_transcript(video_to_encode):
         print(step_msg) if DEBUG else ''
         msg += step_msg
 
-        sentences = get_sentences(metadata)
+        sentences = get_sentences(metadata) if len(metadata.items) > 0 else []
 
         step_msg = "\nNB SENTENCES : %d " % len(sentences)
         print(step_msg) if DEBUG else ''
@@ -269,7 +315,7 @@ def main_transcript(video_to_encode):
                 start_time = sent[0].start_time + start_trim
                 end_time = sent[-1].start_time + start_trim
                 str_sentence = ''.join(item.character for item in sent)
-                # print(start_time, end_time, str_sentence)
+                print(start_time, end_time, str_sentence)
                 caption = Caption(
                     '%s.%s' % (timedelta(
                         seconds=int(str(start_time).split('.')[0])),
@@ -279,8 +325,9 @@ def main_transcript(video_to_encode):
                         str('%.3f' % end_time).split('.')[1]),
                     ['%s' % str_sentence]
                 )
-
                 webvtt.captions.append(caption)
+    # remove waveFile
+    os.remove(waveFile) if os.path.isfile(waveFile) else ''
 
     msg += saveVTT(video_to_encode, webvtt)
     inference_end = timer() - inference_start
