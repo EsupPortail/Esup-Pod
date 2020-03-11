@@ -35,7 +35,7 @@ else:
     from pod.main.models import CustomFileModel
 
 DS_PARAM = getattr(settings, 'DS_PARAM', dict())
-AUDIO_SPLIT_TIME = getattr(settings, 'AUDIO_SPLIT_TIME', 1800)  # 5min
+AUDIO_SPLIT_TIME = getattr(settings, 'AUDIO_SPLIT_TIME', 900)  # 5min
 # time in sec for phrase length
 SENTENCE_MAX_LENGTH = getattr(settings, 'SENTENCE_MAX_LENGTH', 3)
 
