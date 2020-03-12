@@ -82,8 +82,7 @@ def main_threaded_transcript(video_to_encode):
         msg = main_transcript(video_to_encode, ds_model)
 
     add_encoding_log(video_to_encode.id, msg)
-    if DEBUG:
-        print(msg)
+    
 
 
 def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
