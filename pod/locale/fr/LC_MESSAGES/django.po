@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-12 15:22+0000\n"
-"PO-Revision-Date: 2020-03-12 16:25+0100\n"
+"POT-Creation-Date: 2020-03-12 15:41+0000\n"
+"PO-Revision-Date: 2020-03-12 16:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -175,7 +175,7 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 #: pod/video/templates/channel/channel_edit.html:70
 #: pod/video/templates/videos/video-form.html:25
 #: pod/video/templates/videos/video_delete.html:55
-#: pod/video/templates/videos/video_edit.html:93
+#: pod/video/templates/videos/video_edit.html:100
 #: pod/video/templates/videos/video_note_comments_display.html:90
 #: pod/video/templates/videos/video_note_comments_display.html:156
 #: pod/video/templates/videos/video_note_display.html:35
@@ -346,7 +346,7 @@ msgstr "Chapitre vidéo"
 #: pod/video/templates/videos/my_videos.html:6
 #: pod/video/templates/videos/video_delete.html:8
 #: pod/video/templates/videos/video_edit.html:13
-#: pod/video/templates/videos/video_edit.html:115
+#: pod/video/templates/videos/video_edit.html:122
 msgid "My videos"
 msgstr "Mes vidéos"
 
@@ -373,7 +373,7 @@ msgstr "Ajouter un nouveau chapitre"
 #: pod/interactive/templates/interactive/edit_interactive.html:128
 #: pod/interactive/templates/interactive/group_interactive.html:71
 #: pod/video/templates/videos/video.html:212
-#: pod/video/templates/videos/video_edit.html:127
+#: pod/video/templates/videos/video_edit.html:134
 msgid "Manage video"
 msgstr "Gérer la vidéo"
 
@@ -2455,14 +2455,14 @@ msgstr "Retour à la page précédente"
 #: pod/main/templates/contact_us.html:70
 #: pod/video/templates/channel/channel_edit.html:93
 #: pod/video/templates/channel/theme_edit.html:65
-#: pod/video/templates/videos/video_edit.html:172
+#: pod/video/templates/videos/video_edit.html:179
 msgid "Mandatory fields"
 msgstr "Champs obligatoires"
 
 #: pod/main/templates/contact_us.html:72
 #: pod/video/templates/channel/channel_edit.html:95
 #: pod/video/templates/channel/theme_edit.html:67
-#: pod/video/templates/videos/video_edit.html:174
+#: pod/video/templates/videos/video_edit.html:181
 msgid "Fields marked with an asterisk are mandatory."
 msgstr "Les champs marqués avec un astérisque sont obligatoires."
 
@@ -4079,8 +4079,8 @@ msgstr "Voir la chaîne"
 
 #: pod/video/templates/channel/channel_edit.html:72
 #: pod/video/templates/channel/channel_edit.html:73
-#: pod/video/templates/videos/video_edit.html:94
-#: pod/video/templates/videos/video_edit.html:95
+#: pod/video/templates/videos/video_edit.html:101
+#: pod/video/templates/videos/video_edit.html:102
 msgid "Other(s) language(s)"
 msgstr "Autre(s) langue(s)"
 
@@ -4180,7 +4180,7 @@ msgid "Edit the video"
 msgstr "Éditer la vidéo"
 
 #: pod/video/templates/videos/link_video.html:10
-#: pod/video/templates/videos/video_edit.html:139
+#: pod/video/templates/videos/video_edit.html:146
 #, python-format
 msgid "Edit the %(app)s"
 msgstr "Éditer le %(app)s"
@@ -4358,58 +4358,62 @@ msgstr ""
 msgid "contact us"
 msgstr "contactez nous"
 
-#: pod/video/templates/videos/video_edit.html:104
+#: pod/video/templates/videos/video_edit.html:75
+msgid "The video is currently being transcripted."
+msgstr "La vidéo est en cours de transcription."
+
+#: pod/video/templates/videos/video_edit.html:111
 msgid "Sending, please wait."
 msgstr "Envoi, veuillez patienter."
 
-#: pod/video/templates/videos/video_edit.html:108
+#: pod/video/templates/videos/video_edit.html:115
 msgid "The page will refresh after the upload completes."
 msgstr "La page se rafraîchira après la fin de la mise en ligne."
 
-#: pod/video/templates/videos/video_edit.html:113
+#: pod/video/templates/videos/video_edit.html:120
 msgid "Save and continue editing"
 msgstr "Sauvegarder et continuer d'éditer"
 
-#: pod/video/templates/videos/video_edit.html:114
+#: pod/video/templates/videos/video_edit.html:121
 msgid "Save and see"
 msgstr "Sauvegarder et voir"
 
-#: pod/video/templates/videos/video_edit.html:115
+#: pod/video/templates/videos/video_edit.html:122
 msgid "back to my videos"
 msgstr "retour à mes vidéos"
 
-#: pod/video/templates/videos/video_edit.html:135
+#: pod/video/templates/videos/video_edit.html:142
 msgid "Staff"
 msgstr "Personnel"
 
-#: pod/video/templates/videos/video_edit.html:135
+#: pod/video/templates/videos/video_edit.html:142
 msgid "Alternative version"
 msgstr "Version alternative"
 
-#: pod/video/templates/videos/video_edit.html:137
+#: pod/video/templates/videos/video_edit.html:144
 msgid "As a staff member you can create other version of your video."
 msgstr ""
 "En tant que personnel, vous pouvez créer d'autres versions de votre vidéo."
 
-#: pod/video/templates/videos/video_edit.html:145
+#: pod/video/templates/videos/video_edit.html:152
 msgid "Embed/Share (Draft Mode)"
 msgstr "Intégrer/Partager (Mode brouillon)"
 
-#: pod/video/templates/videos/video_edit.html:147
+#: pod/video/templates/videos/video_edit.html:154
 msgid "Use this link to share the video in draft mode"
 msgstr "Utiliser ce lien pour partager la vidéo en mode brouillon"
 
-#: pod/video/templates/videos/video_edit.html:163
+#: pod/video/templates/videos/video_edit.html:170
 msgid "Uploading"
 msgstr "Mise en ligne"
 
-#: pod/video/templates/videos/video_edit.html:165
+#: pod/video/templates/videos/video_edit.html:172
 #, python-format
 msgid "The file size must be lower than %(video_max_upload_size)s Go."
 msgstr ""
 "La taille du fichier doit être inférieure à %(video_max_upload_size)s Go."
 
-#: pod/video/templates/videos/video_edit.html:166
+#: pod/video/templates/videos/video_edit.html:173
 msgid ""
 "The sending time depends on the size of your file and your upload speed. "
 "This can be quite long."
@@ -4417,7 +4421,7 @@ msgstr ""
 "Le temps d'envoi dépend de la taille de votre fichier et de votre vitesse de "
 "téléchargement. Ce temps d'envoi peut être relativement long."
 
-#: pod/video/templates/videos/video_edit.html:167
+#: pod/video/templates/videos/video_edit.html:174
 msgid ""
 "While sending your file, do not close your browser until you have received a "
 "message of success or failure."
@@ -4425,13 +4429,13 @@ msgstr ""
 "Pendant l'envoi de votre fichier, ne fermez pas votre navigateur avant "
 "d'avoir reçu un message de succès ou d'échec."
 
-#: pod/video/templates/videos/video_edit.html:168
+#: pod/video/templates/videos/video_edit.html:175
 msgid "An email will be sent to you when all encoding tasks are completed."
 msgstr ""
 "Un courriel vous sera envoyé quand toutes les tâches d'encodage seront "
 "complétées."
 
-#: pod/video/templates/videos/video_edit.html:178
+#: pod/video/templates/videos/video_edit.html:185
 msgid "Help for form fields"
 msgstr "Aide pour les champs de formulaire"
 
