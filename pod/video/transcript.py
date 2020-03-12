@@ -106,20 +106,26 @@ def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
 
 
 def normalize_mp3(mp3filepath):
+    filename, file_extension = os.path.splitext(mp3filepath)
+    mp3normfile = '{}{}{}'.format(filename, '_norm', file_extension)
     normalize_cmd = 'ffmpeg-normalize {} '.format(quote(mp3filepath))
-    normalize_cmd += '-c:a libmp3lame -b:a 192k --normalization-type peak '
-    normalize_cmd += '--target-level 0 -f -o {}'.format(quote(mp3filepath))
-
+    normalize_cmd += '-c:a libmp3lame -b:a 192k --normalization-type ebu '
+    # normalize_cmd += '--loudness-range-target 7.0 --true-peak 0.0 --offset 0.0 '
+    normalize_cmd += '--target-level -16.0 -f -o {}'.format(quote(mp3normfile))
+    if DEBUG:
+        print(normalize_cmd)
     try:
         subprocess.check_output(
             shlex.split(normalize_cmd), stderr=subprocess.PIPE)
+        return mp3normfile
     except subprocess.CalledProcessError as e:
         raise RuntimeError(
             'ffmpeg-normalize returned non-zero status: {}'.format(e.stderr))
+        return mp3filepath
     except OSError as e:
         raise OSError(e.errno,
                       'ffmpeg-normalize not found {}'.format(e.strerror))
-
+        return mp3filepath
 
 # #################################
 # TRANSCRIPT VIDEO : MAIN FUNCTION
@@ -140,7 +146,7 @@ def main_transcript(video_to_encode, ds_model):
         return msg
 
     # NORMALIZE mp3file
-    normalize_mp3(mp3file.path)
+    norm_mp3_file = normalize_mp3(mp3file.path)
 
     desired_sample_rate = ds_model.sampleRate()
 
@@ -165,7 +171,7 @@ def main_transcript(video_to_encode, ds_model):
             start_trim, end_trim, duration)
 
         audio = convert_samplerate(
-            mp3file.path, desired_sample_rate, start_trim, duration)
+            norm_mp3_file, desired_sample_rate, start_trim, duration)
         msg += '\nRunning inference.'
 
         metadata = ds_model.sttWithMetadata(audio)
