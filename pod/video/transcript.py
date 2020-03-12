@@ -2,8 +2,8 @@ from django.conf import settings
 from django.core.files import File
 from pod.completion.models import Track
 
-from .utils import change_encoding_step, add_encoding_log, check_file
-from .utils import create_outputdir, send_email, send_email_transcript
+from .utils import change_encoding_step, add_encoding_log
+from .utils import send_email, send_email_transcript
 
 from deepspeech import Model
 import numpy as np
@@ -56,13 +56,7 @@ def start_transcript(video):
 
 
 def main_threaded_transcript(video_to_encode):
-    """
-    remove_encoding_in_progress = False
-    if not video_to_encode.encoding_in_progress:
-        remove_encoding_in_progress = True
-        video_to_encode.encoding_in_progress = True
-        video_to_encode.save()
-    """
+
     change_encoding_step(
         video_to_encode.id, 5,
         "transcripting audio")
@@ -90,15 +84,9 @@ def main_threaded_transcript(video_to_encode):
     add_encoding_log(video_to_encode.id, msg)
     if DEBUG:
         print(msg)
-    """
-    if remove_encoding_in_progress:
-        video_to_encode.encoding_in_progress = False
-        video_to_encode.save()
-    """
 
 
 def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
-    # trim 0 1800
     sox_cmd = 'sox {} --type raw --bits 16 --channels 1 --rate {} '.format(
         quote(audio_path), desired_sample_rate)
     sox_cmd += '--encoding signed-integer --endian little --compression 0.0 '
@@ -118,9 +106,27 @@ def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
     return np.frombuffer(output, np.int16)
 
 
+def normalize_mp3(mp3filepath):
+    normalize_cmd = 'ffmpeg-normalize {} '.format(quote(mp3filepath))
+    normalize_cmd += '-c:a libmp3lame -b:a 192k --normalization-type peak '
+    normalize_cmd += '--target-level 0 -f -o {}'.format(quote(mp3filepath))
+
+    try:
+        subprocess.check_output(
+            shlex.split(normalize_cmd), stderr=subprocess.PIPE)
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(
+            'ffmpeg-normalize returned non-zero status: {}'.format(e.stderr))
+    except OSError as e:
+        raise OSError(e.errno,
+                      'ffmpeg-normalize not found {}'.format(e.strerror))
+
+
 # #################################
 # TRANSCRIPT VIDEO : MAIN FUNCTION
 # #################################
+
+
 def main_transcript(video_to_encode, ds_model):
     msg = ""
     inference_start = timer()
@@ -135,6 +141,7 @@ def main_transcript(video_to_encode, ds_model):
         return msg
 
     # NORMALIZE mp3file
+    normalize_mp3(mp3file.path)
 
     desired_sample_rate = ds_model.sampleRate()
 
