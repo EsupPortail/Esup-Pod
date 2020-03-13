@@ -22,5 +22,12 @@ class PlaylistElementAdmin(admin.ModelAdmin):
     list_editable = ('position',)
     ordering = ('playlist__title', 'id',)
 
+    class Media:
+        css = {
+            "all": (
+                'css/pod.css',
+            )
+        }
+
 
 admin.site.register(PlaylistElement, PlaylistElementAdmin)

@@ -624,7 +624,10 @@ class Video(models.Model):
 
     @property
     def get_encoding_step(self):
-        es = EncodingStep.objects.get(video=self)
+        try:
+            es = EncodingStep.objects.get(video=self)
+        except ObjectDoesNotExist:
+            return ""
         return "%s : %s" % (es.num_step, es.desc_step)
     get_encoding_step.fget.short_description = _('Encoding step')
 
@@ -646,6 +649,13 @@ class Video(models.Model):
     def duration_in_time(self):
         return time.strftime('%H:%M:%S', time.gmtime(self.duration))
     duration_in_time.fget.short_description = _('Duration')
+
+    @property
+    def encoded(self):
+        return ((self.get_playlist_master() is not None) and
+                (self.get_video_mp4() is not None or
+                self.get_video_mp3() is not None))
+    encoded.fget.short_description = _('Is the video encoded ?')
 
     @property
     def get_version(self):

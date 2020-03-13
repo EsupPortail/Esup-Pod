@@ -36,6 +36,8 @@ from pod.completion.admin import TrackInline
 
 from pod.chapter.admin import ChapterInline
 
+from pod.main.tasks import task_start_transcript
+
 # Ordering user by username !
 User._meta.ordering = ["username"]
 # SET USE_ESTABLISHMENT_FIELD
@@ -47,6 +49,8 @@ TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 USE_OBSOLESCENCE = getattr(
     settings, "USE_OBSOLESCENCE", False)
 
+CELERY_TO_ENCODE = getattr(settings, 'CELERY_TO_ENCODE', False)
+
 
 def url_to_edit_object(obj):
     url = reverse(
@@ -55,6 +59,27 @@ def url_to_edit_object(obj):
     return format_html('<a href="{}">{}</a>', url, obj.username)
 
 # Register your models here.
+
+
+class EncodedFilter(admin.SimpleListFilter):
+    title = _('Encoded ?')
+    parameter_name = 'encoded'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('Yes', _('Yes')),
+            ('No', _('No')),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'Yes':
+            queryset = queryset.exclude(
+                    pk__in=[vid.id for vid in queryset if not vid.encoded])
+        elif value == 'No':
+            queryset = queryset.exclude(
+                    pk__in=[vid.id for vid in queryset if vid.encoded])
+        return queryset
 
 
 class VideoSuperAdminForm(VideoForm):
@@ -85,7 +110,7 @@ class VideoAdmin(admin.ModelAdmin):
                     'get_encoding_step', 'get_thumbnail_admin')
     list_display_links = ('id', 'title')
     list_filter = ('date_added', 'channel', 'type', 'is_draft',
-                   'encoding_in_progress')
+                   'encoding_in_progress', EncodedFilter)
     # Ajout de l'attribut 'date_delete'
     if USE_OBSOLESCENCE:
         list_filter = list_filter + ("date_delete",)
@@ -162,7 +187,10 @@ class VideoAdmin(admin.ModelAdmin):
     def transcript_video(self, request, queryset):
         for item in queryset:
             if item.get_video_mp3() and not item.encoding_in_progress:
-                start_transcript(item)
+                if CELERY_TO_ENCODE:
+                    task_start_transcript.delay(item)
+                else:
+                    start_transcript(item)
     transcript_video.short_description = _('Transcript selected')
 
     class Media:
@@ -327,14 +355,35 @@ class EncodingStepAdmin(admin.ModelAdmin):
 class NotesAdmin(admin.ModelAdmin):
     list_display = ('video', 'user')
 
+    class Media:
+        css = {
+            "all": (
+                'css/pod.css',
+            )
+        }
+
 
 class AdvancedNotesAdmin(admin.ModelAdmin):
     list_display = ('video', 'user', 'timestamp',
                     'status', 'added_on', 'modified_on')
 
+    class Media:
+        css = {
+            "all": (
+                'css/pod.css',
+            )
+        }
+
 
 class NoteCommentsAdmin(admin.ModelAdmin):
     list_display = ('parentNote', 'user', 'added_on', 'modified_on')
+
+    class Media:
+        css = {
+            "all": (
+                'css/pod.css',
+            )
+        }
 
 
 class VideoToDeleteAdmin(admin.ModelAdmin):
