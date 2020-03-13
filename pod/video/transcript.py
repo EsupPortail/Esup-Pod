@@ -41,6 +41,8 @@ AUDIO_SPLIT_TIME = getattr(settings, 'AUDIO_SPLIT_TIME', 300)  # 5min
 # time in sec for phrase length
 SENTENCE_MAX_LENGTH = getattr(settings, 'SENTENCE_MAX_LENGTH', 3)
 
+NORMALIZE_TARGET_LEVEL = getattr(settings, 'NORMALIZE_TARGET_LEVEL', -16.0)
+
 EMAIL_ON_TRANSCRIPTING_COMPLETION = getattr(
     settings, 'EMAIL_ON_TRANSCRIPTING_COMPLETION', True)
 
@@ -111,7 +113,8 @@ def normalize_mp3(mp3filepath):
     normalize_cmd += '-c:a libmp3lame -b:a 192k --normalization-type ebu '
     # normalize_cmd += \
     # '--loudness-range-target 7.0 --true-peak 0.0 --offset 0.0 '
-    normalize_cmd += '--target-level -16.0 -f -o {}'.format(quote(mp3normfile))
+    normalize_cmd += '--target-level {} -f -o {}'.format(
+        NORMALIZE_TARGET_LEVEL, quote(mp3normfile))
     if DEBUG:
         print(normalize_cmd)
     try:
