@@ -4,6 +4,7 @@ from pod.completion.models import Track
 
 from .utils import change_encoding_step, add_encoding_log
 from .utils import send_email, send_email_transcript
+from .models import Video
 
 from deepspeech import Model
 import numpy as np
@@ -49,19 +50,22 @@ EMAIL_ON_TRANSCRIPTING_COMPLETION = getattr(
 log = logging.getLogger(__name__)
 
 
-def start_transcript(video):
-    log.info("START TRANSCRIPT VIDEO %s" % video)
+def start_transcript(video_id):
+    log.info("START TRANSCRIPT VIDEO %s" % video_id)
     t = threading.Thread(target=main_threaded_transcript,
-                         args=[video])
+                         args=[video_id])
     t.setDaemon(True)
     t.start()
 
 
-def main_threaded_transcript(video_to_encode):
+def main_threaded_transcript(video_to_encode_id):
 
     change_encoding_step(
-        video_to_encode.id, 5,
+        video_to_encode_id, 5,
         "transcripting audio")
+
+    video_to_encode = Video.objects.get(id=video_to_encode_id)
+
     msg = ''
     lang = video_to_encode.main_lang
     # check if DS_PARAM [lang] exist

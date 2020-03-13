@@ -328,7 +328,7 @@ def encode_video(video_id):
         encode_mp3(video_id, video_data["contain_audio"],
                    video_to_encode.video.path, output_dir)
 
-        start_transcript(video_to_encode) if (
+        start_transcript(video_id) if (
             TRANSCRIPT and video_to_encode.transcript
         ) else False
 
