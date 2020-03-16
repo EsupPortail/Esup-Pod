@@ -69,6 +69,13 @@
                 {% trans "The video is currently being encoded." %}
             </p>
             {% endif %}
+            
+            {% if form.instance.get_encoding_step == "5 : transcripting audio" %}
+            <p class="text-info">
+                {% trans "The video is currently being transcripted." %}
+            </p>
+            {% endif %}
+
             {% for field_hidden in form.hidden_fields %}
             {{field_hidden}}
             {% endfor %}

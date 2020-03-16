@@ -2,6 +2,10 @@ from django.conf import settings
 from django.core.files import File
 from pod.completion.models import Track
 
+from .utils import change_encoding_step, add_encoding_log
+from .utils import send_email, send_email_transcript
+from .models import Video
+
 from deepspeech import Model
 import numpy as np
 import shlex
@@ -38,36 +42,55 @@ AUDIO_SPLIT_TIME = getattr(settings, 'AUDIO_SPLIT_TIME', 300)  # 5min
 # time in sec for phrase length
 SENTENCE_MAX_LENGTH = getattr(settings, 'SENTENCE_MAX_LENGTH', 3)
 
+NORMALIZE_TARGET_LEVEL = getattr(settings, 'NORMALIZE_TARGET_LEVEL', -16.0)
+
+EMAIL_ON_TRANSCRIPTING_COMPLETION = getattr(
+    settings, 'EMAIL_ON_TRANSCRIPTING_COMPLETION', True)
+
 log = logging.getLogger(__name__)
 
 
-def start_transcript(video):
-    log.info("START TRANSCRIPT VIDEO %s" % video)
+def start_transcript(video_id):
+    log.info("START TRANSCRIPT VIDEO %s" % video_id)
     t = threading.Thread(target=main_threaded_transcript,
-                         args=[video])
+                         args=[video_id])
     t.setDaemon(True)
     t.start()
 
 
-def main_threaded_transcript(video_to_encode):
-    remove_encoding_in_progress = False
-    if not video_to_encode.encoding_in_progress:
-        remove_encoding_in_progress = True
-        video_to_encode.encoding_in_progress = True
-        video_to_encode.save()
+def main_threaded_transcript(video_to_encode_id):
 
-    msg = main_transcript(video_to_encode)
+    change_encoding_step(
+        video_to_encode_id, 5,
+        "transcripting audio")
 
-    if DEBUG:
-        print(msg)
+    video_to_encode = Video.objects.get(id=video_to_encode_id)
 
-    if remove_encoding_in_progress:
-        video_to_encode.encoding_in_progress = False
-        video_to_encode.save()
+    msg = ''
+    lang = video_to_encode.main_lang
+    # check if DS_PARAM [lang] exist
+    if not DS_PARAM.get(lang):
+        msg += "\n no deepspeech model found for lang:%s." % lang
+        msg += "Please add it in DS_PARAM."
+        change_encoding_step(video_to_encode.id, -1, msg)
+        send_email(msg, video_to_encode.id)
+    else:
+        ds_model = Model(
+            DS_PARAM[lang]['model'], DS_PARAM[lang]['beam_width']
+        )
+        if all([cond in DS_PARAM[lang]
+                for cond in ['alphabet', 'lm', 'trie',
+                             'lm_alpha', 'lm_beta']]):
+            ds_model.enableDecoderWithLM(
+                DS_PARAM[lang]['lm'], DS_PARAM[lang]['trie'],
+                DS_PARAM[lang]['lm_alpha'], DS_PARAM[lang]['lm_beta']
+            )
+        msg = main_transcript(video_to_encode, ds_model)
+
+    add_encoding_log(video_to_encode.id, msg)
 
 
 def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
-    # trim 0 1800
     sox_cmd = 'sox {} --type raw --bits 16 --channels 1 --rate {} '.format(
         quote(audio_path), desired_sample_rate)
     sox_cmd += '--encoding signed-integer --endian little --compression 0.0 '
@@ -87,39 +110,55 @@ def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
     return np.frombuffer(output, np.int16)
 
 
+def normalize_mp3(mp3filepath):
+    filename, file_extension = os.path.splitext(mp3filepath)
+    mp3normfile = '{}{}{}'.format(filename, '_norm', file_extension)
+    normalize_cmd = 'ffmpeg-normalize {} '.format(quote(mp3filepath))
+    normalize_cmd += '-c:a libmp3lame -b:a 192k --normalization-type ebu '
+    # normalize_cmd += \
+    # '--loudness-range-target 7.0 --true-peak 0.0 --offset 0.0 '
+    normalize_cmd += '--target-level {} -f -o {}'.format(
+        NORMALIZE_TARGET_LEVEL, quote(mp3normfile))
+    if DEBUG:
+        print(normalize_cmd)
+    try:
+        subprocess.check_output(
+            shlex.split(normalize_cmd), stderr=subprocess.PIPE)
+        return mp3normfile
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError(
+            'ffmpeg-normalize returned non-zero status: {}'.format(e.stderr))
+        return mp3filepath
+    except OSError as e:
+        raise OSError(e.errno,
+                      'ffmpeg-normalize not found {}'.format(e.strerror))
+        return mp3filepath
+
 # #################################
 # TRANSCRIPT VIDEO : MAIN FUNCTION
 # #################################
-def main_transcript(video_to_encode):
+
+
+def main_transcript(video_to_encode, ds_model):
     msg = ""
+    inference_start = timer()
+    msg += '\nInference start %0.3fs.' % inference_start
 
     mp3file = video_to_encode.get_video_mp3(
     ).source_file if video_to_encode.get_video_mp3() else None
-
-    lang = video_to_encode.main_lang
-
-    # check if DS_PARAM [lang] exist
-    if not DS_PARAM.get(lang):
-        msg += "\n no deepspeech model found for lang:%s." % lang
-        msg += "Please add it in DS_PARAM."
+    if mp3file is None:
+        msg += "\n no mp3 file found for video :%s." % video_to_encode.id
+        change_encoding_step(video_to_encode.id, -1, msg)
+        send_email(msg, video_to_encode.id)
         return msg
 
-    ds_model = Model(
-        DS_PARAM[lang]['model'], DS_PARAM[lang]['beam_width']
-    )
-
-    if all([cond in DS_PARAM[lang]
-            for cond in ['alphabet', 'lm', 'trie',
-                         'lm_alpha', 'lm_beta']]):
-        ds_model.enableDecoderWithLM(
-            DS_PARAM[lang]['lm'], DS_PARAM[lang]['trie'],
-            DS_PARAM[lang]['lm_alpha'], DS_PARAM[lang]['lm_beta']
-        )
+    # NORMALIZE mp3file
+    norm_mp3_file = normalize_mp3(mp3file.path)
 
     desired_sample_rate = ds_model.sampleRate()
 
     webvtt = WebVTT()
-    inference_start = timer()
+
     last_item = None
     sentences = []
     sentence = []
@@ -139,7 +178,7 @@ def main_transcript(video_to_encode):
             start_trim, end_trim, duration)
 
         audio = convert_samplerate(
-            mp3file.path, desired_sample_rate, start_trim, duration)
+            norm_mp3_file, desired_sample_rate, start_trim, duration)
         msg += '\nRunning inference.'
 
         metadata = ds_model.sttWithMetadata(audio)
@@ -149,42 +188,41 @@ def main_transcript(video_to_encode):
         sentences[:] = []  # empty list
         sentence[:] = []  # empty list
 
-        refItem = metadata.items[0]
-
-        index = get_index(metadata, last_item, start_trim) if last_item else 0
-
-        # nb of character in AUDIO_SPLIT_TIME
-        msg += "METADATA ITEMS : %d " % len(metadata.items)
-
-        sentences = get_sentences(metadata, refItem, index)
-
-        last_item = (
-            sentences[-1][-1].character, sentences[-1][-1].start_time
-        ) if len(sentences) > 0 else ()
-
-        for sent in sentences:
-            if len(sent) > 0:
-                start_time = sent[0].start_time + start_trim
-                end_time = sent[-1].start_time + start_trim
-                str_sentence = ''.join(item.character for item in sent)
-                # print(start_time, end_time, str_sentence)
-                caption = Caption(
-                    '%s.%s' % (timedelta(
-                        seconds=int(str(start_time).split('.')[0])),
-                        str('%.3f' % start_time).split('.')[1]),
-                    '%s.%s' % (timedelta(
-                        seconds=int(str(end_time).split('.')[0])),
-                        str('%.3f' % end_time).split('.')[1]),
-                    ['%s' % str_sentence]
-                )
-
-                webvtt.captions.append(caption)
+        if len(metadata.items) > 0:
+            refItem = metadata.items[0]
+            index = get_index(metadata, last_item,
+                              start_trim) if last_item else 0
+            # nb of character in AUDIO_SPLIT_TIME
+            msg += "METADATA ITEMS : %d " % len(metadata.items)
+            sentences = get_sentences(metadata, refItem, index)
+            last_item = (
+                sentences[-1][-1].character, sentences[-1][-1].start_time
+            ) if len(sentences) > 0 else ()
+            for sent in sentences:
+                if len(sent) > 0:
+                    start_time = sent[0].start_time + start_trim
+                    end_time = sent[-1].start_time + start_trim
+                    str_sentence = ''.join(item.character for item in sent)
+                    # print(start_time, end_time, str_sentence)
+                    caption = Caption(
+                        '%s.%s' % (timedelta(
+                            seconds=int(str(start_time).split('.')[0])),
+                            str('%.3f' % start_time).split('.')[1]),
+                        '%s.%s' % (timedelta(
+                            seconds=int(str(end_time).split('.')[0])),
+                            str('%.3f' % end_time).split('.')[1]),
+                        ['%s' % str_sentence]
+                    )
+                    webvtt.captions.append(caption)
     # print(webvtt)
     msg += saveVTT(video_to_encode, webvtt)
     inference_end = timer() - inference_start
     msg += '\nInference took %0.3fs.' % inference_end
     # print(msg)
-
+    change_encoding_step(video_to_encode.id, 0, "done")
+    # envois mail fin transcription
+    if EMAIL_ON_TRANSCRIPTING_COMPLETION:
+        send_email_transcript(video_to_encode)
     return msg
 
 
@@ -201,6 +239,8 @@ def get_sentences(metadata, refItem, index):
                 refItem = item
             else:
                 sentence.append(item)
+    if sentence != []:
+        sentences.append(sentence)
     return sentences
 
 

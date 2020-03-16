@@ -190,9 +190,9 @@ class VideoAdmin(admin.ModelAdmin):
         for item in queryset:
             if item.get_video_mp3() and not item.encoding_in_progress:
                 if CELERY_TO_ENCODE:
-                    task_start_transcript.delay(item)
+                    task_start_transcript.delay(item.id)
                 else:
-                    start_transcript(item)
+                    start_transcript(item.id)
     transcript_video.short_description = _('Transcript selected')
 
     def get_search_results(self, request, queryset, search_term):
