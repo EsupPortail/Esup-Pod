@@ -88,7 +88,9 @@ class Owner(models.Model):
         super(Owner, self).save(*args, **kwargs)
 
     def is_manager(self):
-        group_ids = self.user.groups.all().values_list('id', flat=True)
+        group_ids = self.user.groups.all().filter(
+            groupsite__sites=Site.objects.get_current()).values_list(
+                'id', flat=True)
         return (
             self.user.is_staff
             and Permission.objects.filter(group__id__in=group_ids).count() > 0)
