@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from pod.authentication.models import Owner, GroupSite
 from pod.authentication.forms import OwnerAdminForm, GroupSiteAdminForm
 from django.utils.html import format_html
-
+from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import Group
 from pod.authentication.forms import GroupAdminForm
 
@@ -109,6 +109,14 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('-is_superuser', 'username', )
     inlines = (OwnerInline, )
 
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(
+            request, queryset, search_term)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(owner__sites=get_current_site(
+                request))
+        return queryset, use_distinct
+
 
 # Create a new Group admin.
 class GroupAdmin(admin.ModelAdmin):
@@ -117,6 +125,14 @@ class GroupAdmin(admin.ModelAdmin):
     # Filter permissions horizontal as well.
     filter_horizontal = ['permissions']
     inlines = (GroupSiteInline, )
+
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(
+            request, queryset, search_term)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(groupsite__sites=get_current_site(
+                request))
+        return queryset, use_distinct
 
 
 # Re-register UserAdmin
