@@ -22,13 +22,12 @@ class EnrichmentAdmin(admin.ModelAdmin):
     form = EnrichmentAdminForm
     list_display = ('title', 'type', 'video',)
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(video__sites=get_current_site(
+            qs = qs.filter(video__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
     class Media:
         css = {
@@ -54,13 +53,12 @@ else:
 class EnrichmentGroupAdmin(admin.ModelAdmin):
     list_display = ('video', 'get_groups')
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(video__sites=get_current_site(
+            qs = qs.filter(video__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
     class Media:
         css = {
@@ -82,13 +80,12 @@ class EnrichmentVttAdmin(admin.ModelAdmin):
     def get_file_name(self, obj):
         return obj.src.file.name
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(video__sites=get_current_site(
+            qs = qs.filter(video__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
     class Media:
         css = {

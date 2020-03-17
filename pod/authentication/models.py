@@ -83,6 +83,7 @@ class Owner(models.Model):
                                self.user.username)
 
     def save(self, *args, **kwargs):
+        print("Owner has saved")
         self.hashkey = hashlib.sha256(
             (SECRET_KEY + self.user.username).encode('utf-8')).hexdigest()
         super(Owner, self).save(*args, **kwargs)
@@ -104,6 +105,7 @@ class Owner(models.Model):
 def create_owner_profile(sender, instance, created, **kwargs):
     if created:
         try:
+            print("Creating owner")
             Owner.objects.create(user=instance)
         except Exception as e:
             msg = u'\n Create owner profile ***** Error:%r' % e

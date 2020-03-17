@@ -116,13 +116,12 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('-is_superuser', 'username', )
     inlines = (OwnerInline, )
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(owner__sites=get_current_site(
+            qs = qs.filter(owner__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 # Create a new Group admin.
@@ -133,13 +132,12 @@ class GroupAdmin(admin.ModelAdmin):
     filter_horizontal = ['permissions']
     inlines = (GroupSiteInline, )
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(groupsite__sites=get_current_site(
+            qs = qs.filter(groupsite__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 # Re-register UserAdmin

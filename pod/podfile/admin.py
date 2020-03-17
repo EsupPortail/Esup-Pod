@@ -10,17 +10,16 @@ from django.contrib.sites.shortcuts import get_current_site
 class UserFolderAdmin(admin.ModelAdmin):
     list_display = ('name', 'owner',)
     list_display_links = ('name',)
-    list_filter = ('owner',)
+    list_filter = (('owner', admin.RelatedOnlyFieldListFilter),)
     ordering = ('name', 'owner',)
     search_fields = ['id', 'name', 'owner__username']
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(owner__owner__sites=get_current_site(
+            qs = qs.filter(owner__owner__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 admin.site.register(UserFolder, UserFolderAdmin)
@@ -35,14 +34,12 @@ class CustomImageModelAdmin(admin.ModelAdmin):
     readonly_fields = ('file_size', 'file_type',)
     search_fields = ['id', 'name', 'created_by__username']
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(
-                folder__owner__owner__sites=get_current_site(
-                    request))
-        return queryset, use_distinct
+            qs = qs.filter(folder__owner__owner__sites=get_current_site(
+                request))
+        return qs
 
 
 admin.site.register(CustomImageModel, CustomImageModelAdmin)
@@ -57,14 +54,12 @@ class CustomFileModelAdmin(admin.ModelAdmin):
     readonly_fields = ('file_size', 'file_type',)
     search_fields = ['id', 'name', 'created_by__username']
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(
-                folder__owner__owner__sites=get_current_site(
-                    request))
-        return queryset, use_distinct
+            qs = qs.filter(folder__owner__owner__sites=get_current_site(
+                request))
+        return qs
 
 
 admin.site.register(CustomFileModel, CustomFileModelAdmin)

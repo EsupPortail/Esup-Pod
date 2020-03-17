@@ -14,13 +14,12 @@ class BuildingAdmin(admin.ModelAdmin):
     form = BuildingAdminForm
     list_display = ('name', 'gmapurl')
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(sites=get_current_site(
+            qs = qs.filter(sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
     class Media:
         css = {
@@ -39,17 +38,16 @@ class BuildingAdmin(admin.ModelAdmin):
 
 class BroadcasterAdmin(admin.ModelAdmin):
     form = BroadcasterAdminForm
-
-    list_display = ('name', 'slug', 'url', 'status', 'is_restricted')
+    list_display = ('name', 'slug', 'building', 'url', 'status',
+                    'is_restricted')
     readonly_fields = ["slug"]
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(building__sites=get_current_site(
+            qs = qs.filter(building__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
     class Media:
         css = {

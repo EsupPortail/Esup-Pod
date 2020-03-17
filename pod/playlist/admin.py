@@ -12,13 +12,12 @@ class PlaylistAdmin(admin.ModelAdmin):
     ordering = ('title', 'id',)
     list_filter = ['visible']
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(owner__owner__sites=get_current_site(
+            qs = qs.filter(owner__owner__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 admin.site.register(Playlist, PlaylistAdmin)
@@ -31,14 +30,12 @@ class PlaylistElementAdmin(admin.ModelAdmin):
     list_editable = ('position',)
     ordering = ('playlist__title', 'id',)
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(
-                playlist__owner__owner__sites=get_current_site(
-                    request))
-        return queryset, use_distinct
+            qs = qs.filter(playlist__owner__owner__sites=get_current_site(
+                request))
+        return qs
 
     class Media:
         css = {

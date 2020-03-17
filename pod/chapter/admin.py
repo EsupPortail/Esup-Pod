@@ -16,13 +16,12 @@ class ChapterAdmin(admin.ModelAdmin):
             )
         }
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(video__sites=get_current_site(
+            qs = qs.filter(video__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 admin.site.register(Chapter, ChapterAdmin)

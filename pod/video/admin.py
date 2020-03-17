@@ -196,12 +196,12 @@ class VideoAdmin(admin.ModelAdmin):
                     start_transcript(item.id)
     transcript_video.short_description = _('Transcript selected')
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(sites=get_current_site(request))
-        return queryset, use_distinct
+            qs = qs.filter(sites=get_current_site(
+                request))
+        return qs
 
     class Media:
         css = {
@@ -271,12 +271,12 @@ class ChannelAdmin(admin.ModelAdmin):
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(sites=get_current_site(request))
-        return queryset, use_distinct
+            qs = qs.filter(sites=get_current_site(
+                request))
+        return qs
 
 
 class ThemeAdmin(admin.ModelAdmin):
@@ -299,13 +299,12 @@ class ThemeAdmin(admin.ModelAdmin):
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(channel__sites=get_current_site(
+            qs = qs.filter(channel__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 class TypeAdmin(TranslationAdmin):
@@ -326,13 +325,12 @@ class TypeAdmin(TranslationAdmin):
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(sites=get_current_site(
+            qs = qs.filter(sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 class DisciplineAdmin(TranslationAdmin):
@@ -353,13 +351,12 @@ class DisciplineAdmin(TranslationAdmin):
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(sites=get_current_site(
+            qs = qs.filter(sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 class EncodingVideoAdmin(admin.ModelAdmin):
@@ -369,76 +366,70 @@ class EncodingVideoAdmin(admin.ModelAdmin):
         return obj.rendition.resolution
     get_resolution.short_description = 'resolution'
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(video__sites=get_current_site(
+            qs = qs.filter(video__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 class EncodingAudioAdmin(admin.ModelAdmin):
     list_display = ('name', 'video', 'encoding_format')
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(video__sites=get_current_site(
+            qs = qs.filter(video__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 class PlaylistVideoAdmin(admin.ModelAdmin):
     list_display = ('name', 'video', 'encoding_format')
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(video__sites=get_current_site(
+            qs = qs.filter(video__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 class VideoRenditionAdmin(admin.ModelAdmin):
     list_display = (
         'resolution', 'video_bitrate', 'audio_bitrate', 'encode_mp4')
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(sites=get_current_site(
+            qs = qs.filter(sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 class EncodingLogAdmin(admin.ModelAdmin):
     list_display = ('video',)
     readonly_fields = ('video', 'log')
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(video__sites=get_current_site(
+            qs = qs.filter(video__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 class EncodingStepAdmin(admin.ModelAdmin):
     list_display = ('video',)
     readonly_fields = ('video', 'num_step', 'desc_step')
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(video__sites=get_current_site(
+            qs = qs.filter(video__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 class NotesAdmin(admin.ModelAdmin):
@@ -451,13 +442,12 @@ class NotesAdmin(admin.ModelAdmin):
             )
         }
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(video__sites=get_current_site(
+            qs = qs.filter(video__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 class AdvancedNotesAdmin(admin.ModelAdmin):
@@ -471,13 +461,12 @@ class AdvancedNotesAdmin(admin.ModelAdmin):
             )
         }
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(video__sites=get_current_site(
+            qs = qs.filter(video__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 class NoteCommentsAdmin(admin.ModelAdmin):
@@ -490,14 +479,12 @@ class NoteCommentsAdmin(admin.ModelAdmin):
             )
         }
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(
-                parentNote__video__sites=get_current_site(
-                    request))
-        return queryset, use_distinct
+            qs = qs.filter(parentNote__video__sites=get_current_site(
+                request))
+        return qs
 
 
 class VideoToDeleteAdmin(admin.ModelAdmin):
@@ -513,13 +500,12 @@ class ViewCountAdmin(admin.ModelAdmin):
     list_display = ('video', 'date', 'count')
     readonly_fields = ('video', 'date', 'count')
 
-    def get_search_results(self, request, queryset, search_term):
-        queryset, use_distinct = super().get_search_results(
-            request, queryset, search_term)
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            queryset = queryset.filter(video__sites=get_current_site(
+            qs = qs.filter(video__sites=get_current_site(
                 request))
-        return queryset, use_distinct
+        return qs
 
 
 admin.site.register(Channel, ChannelAdmin)
