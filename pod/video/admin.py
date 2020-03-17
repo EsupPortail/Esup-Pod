@@ -96,6 +96,7 @@ class VideoAdminForm(VideoForm):
     is_admin = True
     admin_form = True
 
+
 class VideoVersionInline(admin.StackedInline):
     model = VideoVersion
     form = VideoVersionForm

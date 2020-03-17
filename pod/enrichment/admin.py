@@ -2,6 +2,8 @@ from django.conf import settings
 from django.contrib import admin
 from .models import Enrichment, EnrichmentGroup, EnrichmentVtt
 from .forms import EnrichmentAdminForm, EnrichmentVttAdminForm
+from django.contrib.sites.shortcuts import get_current_site
+
 FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
@@ -19,6 +21,14 @@ class EnrichmentAdmin(admin.ModelAdmin):
 
     form = EnrichmentAdminForm
     list_display = ('title', 'type', 'video',)
+
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(
+            request, queryset, search_term)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(video__sites=get_current_site(
+                request))
+        return queryset, use_distinct
 
     class Media:
         css = {
@@ -44,6 +54,14 @@ else:
 class EnrichmentGroupAdmin(admin.ModelAdmin):
     list_display = ('video', 'get_groups')
 
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(
+            request, queryset, search_term)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(video__sites=get_current_site(
+                request))
+        return queryset, use_distinct
+
     class Media:
         css = {
             "all": (
@@ -63,6 +81,14 @@ class EnrichmentVttAdmin(admin.ModelAdmin):
 
     def get_file_name(self, obj):
         return obj.src.file.name
+
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(
+            request, queryset, search_term)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(video__sites=get_current_site(
+                request))
+        return queryset, use_distinct
 
     class Media:
         css = {

@@ -5,6 +5,7 @@ from .models import Broadcaster
 
 from .forms import BuildingAdminForm
 from .forms import BroadcasterAdminForm
+from django.contrib.sites.shortcuts import get_current_site
 
 # Register your models here.
 
@@ -12,6 +13,14 @@ from .forms import BroadcasterAdminForm
 class BuildingAdmin(admin.ModelAdmin):
     form = BuildingAdminForm
     list_display = ('name', 'gmapurl')
+
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(
+            request, queryset, search_term)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(sites=get_current_site(
+                request))
+        return queryset, use_distinct
 
     class Media:
         css = {
@@ -33,6 +42,14 @@ class BroadcasterAdmin(admin.ModelAdmin):
 
     list_display = ('name', 'slug', 'url', 'status', 'is_restricted')
     readonly_fields = ["slug"]
+
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(
+            request, queryset, search_term)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(building__sites=get_current_site(
+                request))
+        return queryset, use_distinct
 
     class Media:
         css = {

@@ -6,6 +6,8 @@ from pod.completion.models import Overlay
 from pod.completion.models import Track
 from pod.completion.forms import DocumentAdminForm
 from pod.completion.forms import TrackAdminForm
+from django.contrib.sites.shortcuts import get_current_site
+
 FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
@@ -34,6 +36,14 @@ class ContributorAdmin(admin.ModelAdmin):
             )
         }
 
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(
+            request, queryset, search_term)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(video__sites=get_current_site(
+                request))
+        return queryset, use_distinct
+
 
 admin.site.register(Contributor, ContributorAdmin)
 
@@ -54,6 +64,14 @@ class DocumentAdmin(admin.ModelAdmin):
     list_display = ('document', 'video',)
     list_display_links = ('document',)
     search_fields = ['id', 'document__name', 'video__title']
+
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(
+            request, queryset, search_term)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(video__sites=get_current_site(
+                request))
+        return queryset, use_distinct
 
     class Media:
         css = {
@@ -91,6 +109,14 @@ class TrackAdmin(admin.ModelAdmin):
     list_filter = ('kind',)
     search_fields = ['id', 'src__name', 'kind', 'video__title']
 
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(
+            request, queryset, search_term)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(video__sites=get_current_site(
+                request))
+        return queryset, use_distinct
+
     class Media:
         css = {
             "all": (
@@ -125,6 +151,14 @@ class OverlayAdmin(admin.ModelAdmin):
     list_display = ('title', 'video',)
     list_display_links = ('title',)
     search_fields = ['id', 'title', 'video__title']
+
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(
+            request, queryset, search_term)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(video__sites=get_current_site(
+                request))
+        return queryset, use_distinct
 
     class Media:
         css = {
