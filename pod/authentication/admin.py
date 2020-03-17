@@ -96,6 +96,13 @@ class UserAdmin(BaseUserAdmin):
         'is_superuser',
         'owner_hashkey'
     )
+
+    list_filter = (
+        'is_staff',
+        'is_superuser',
+        'is_active',
+        ('groups', admin.RelatedOnlyFieldListFilter)
+    )
     if USE_ESTABLISHMENT_FIELD:
         list_display = list_display + ('owner_establishment',)
 
