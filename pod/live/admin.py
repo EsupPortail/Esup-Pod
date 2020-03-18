@@ -3,11 +3,18 @@ from django.contrib import admin
 from .models import Building
 from .models import Broadcaster
 
-from .forms import BuildingAdminForm
+from pod.live.forms import BuildingAdminForm
 from .forms import BroadcasterAdminForm
 from django.contrib.sites.shortcuts import get_current_site
 
+
 # Register your models here.
+
+
+class BuildingSuperAdminForm(BuildingAdminForm):
+    is_staff = True
+    is_superuser = True
+    admin_form = True
 
 
 class BuildingAdmin(admin.ModelAdmin):
@@ -20,6 +27,14 @@ class BuildingAdmin(admin.ModelAdmin):
             qs = qs.filter(sites=get_current_site(
                 request))
         return qs
+
+    def get_form(self, request, obj=None, **kwargs):
+        if request.user.is_superuser:
+            kwargs['form'] = BuildingSuperAdminForm
+        else:
+            kwargs['form'] = BuildingAdminForm
+        form = super(BuildingAdmin, self).get_form(request, obj, **kwargs)
+        return form
 
     class Media:
         css = {

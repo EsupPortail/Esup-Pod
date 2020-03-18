@@ -81,7 +81,6 @@ class UserAdmin(BaseUserAdmin):
     def clickable_email(self, obj):
         email = obj.email
         return format_html('<a href="mailto:{}">{}</a>', email, email)
-
     clickable_email.allow_tags = True
     clickable_email.short_description = _('Email')
     list_display = (
