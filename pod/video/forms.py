@@ -573,6 +573,8 @@ class ChannelForm(forms.ModelForm):
                 queryset.filter(owner__sites=Site.objects.get_current())
             self.fields['users'].queryset = self.fields['users']. \
                 queryset.filter(owner__sites=Site.objects.get_current())
+        if not self.is_superuser:
+            del self.fields['sites']
 
         # change ckeditor config for no staff user
         if not hasattr(self, 'admin_form') and (

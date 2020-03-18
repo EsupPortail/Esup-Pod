@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
-
+from pod.authentication.models import Owner
 from .models import Video
 from .models import Channel
 from .models import Theme
@@ -112,7 +112,8 @@ class VideoAdmin(admin.ModelAdmin):
                     'password', 'duration_in_time', 'encoding_in_progress',
                     'get_encoding_step', 'get_thumbnail_admin')
     list_display_links = ('id', 'title')
-    list_filter = ('date_added', 'channel', 'type', 'is_draft',
+    list_filter = ('date_added', ('channel', admin.RelatedOnlyFieldListFilter),
+                   ('type', admin.RelatedOnlyFieldListFilter), 'is_draft',
                    'encoding_in_progress', EncodedFilter)
     # Ajout de l'attribut 'date_delete'
     if USE_OBSOLESCENCE:
@@ -282,7 +283,7 @@ class ChannelAdmin(admin.ModelAdmin):
 class ThemeAdmin(admin.ModelAdmin):
     form = ThemeForm
     list_display = ('title', 'channel')
-    list_filter = ['channel']
+    list_filter = (('channel', admin.RelatedOnlyFieldListFilter),)
     ordering = ('channel', 'title')
 
     class Media:
