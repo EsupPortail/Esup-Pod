@@ -175,6 +175,8 @@ class VideoAdmin(admin.ModelAdmin):
                 or obj is None
                 or USE_OBSOLESCENCE is False):
             exclude += ('date_delete',)
+        if not request.user.is_superuser:
+            exclude += ('sites',)
         self.exclude = exclude
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form

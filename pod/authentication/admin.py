@@ -26,6 +26,10 @@ class GroupSiteInline(admin.StackedInline):
     verbose_name_plural = 'groupssite'
 
     def get_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            exclude = ()
+            exclude += ('sites',)
+            self.exclude = exclude
         return list(super(GroupSiteInline, self).get_fields(request, obj))
 
     class Media:
@@ -59,6 +63,8 @@ class OwnerInline(admin.StackedInline):
             exclude_set.add('auth_type')
             exclude_set.add('affiliation')
             exclude_set.add('commentaire')
+        if not request.user.is_superuser:
+            exclude_set.add('sites')
         return [f for f in fields if f not in exclude_set]
 
     class Media:

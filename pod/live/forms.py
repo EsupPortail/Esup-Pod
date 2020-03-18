@@ -1,6 +1,5 @@
 from django import forms
 from django.conf import settings
-
 from pod.live.models import Building
 from pod.live.models import Broadcaster
 
@@ -20,8 +19,6 @@ class BuildingAdminForm(forms.ModelForm):
         super(BuildingAdminForm, self).__init__(*args, **kwargs)
         if FILEPICKER:
             self.fields['headband'].widget = CustomFileWidget(type="image")
-        #if not self.is_superuser:
-         #   del self.fields['sites']
 
     def clean(self):
         super(BuildingAdminForm, self).clean()

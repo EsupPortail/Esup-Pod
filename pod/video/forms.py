@@ -568,13 +568,12 @@ class ChannelForm(forms.ModelForm):
 
         if not hasattr(self, 'admin_form'):
             del self.fields['visible']
-            del self.fields['sites']
+            if self.fields.get('sites'):
+                del self.fields['sites']
             self.fields['owners'].queryset = self.fields['owners']. \
                 queryset.filter(owner__sites=Site.objects.get_current())
             self.fields['users'].queryset = self.fields['users']. \
                 queryset.filter(owner__sites=Site.objects.get_current())
-        if not self.is_superuser:
-            del self.fields['sites']
 
         # change ckeditor config for no staff user
         if not hasattr(self, 'admin_form') and (
@@ -593,6 +592,9 @@ class ChannelForm(forms.ModelForm):
                     settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
         self.fields = add_placeholder_and_asterisk(self.fields)
+
+        self.fields['sites'].widget.attrs['readonly'] = True
+        self.fields['sites'].widget.attrs['disabled'] = 'disabled'
 
     class Meta(object):
         model = Channel

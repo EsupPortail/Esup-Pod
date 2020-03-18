@@ -1,7 +1,6 @@
 from django import forms
 from pod.authentication.models import Owner, GroupSite
 from django.conf import settings
-from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import get_user_model
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.models import Group
