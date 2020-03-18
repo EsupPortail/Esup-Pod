@@ -19,10 +19,6 @@ for key, value in settings.LANGUAGES:
 
 
 class PageForm(FlatpageForm):
-    sites = forms.ModelMultipleChoiceField(
-        Site.objects.all(),
-        required=False
-    )
 
     class Meta:
         model = FlatPage
