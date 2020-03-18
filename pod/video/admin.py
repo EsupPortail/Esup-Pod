@@ -5,7 +5,6 @@ from django.core.urlresolvers import reverse
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
-from pod.authentication.models import Owner
 from .models import Video
 from .models import Channel
 from .models import Theme
