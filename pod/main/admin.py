@@ -8,7 +8,6 @@ from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from modeltranslation.admin import TranslationAdmin
 from pod.main.models import LinkFooter
-from django import forms
 
 
 SITE_ID = getattr(settings, 'SITE_ID', 1)
