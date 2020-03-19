@@ -9,6 +9,8 @@ from django.utils.html import format_html
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import Group
 from pod.authentication.forms import GroupAdminForm
+from django.contrib.sites.models import Site
+from django.contrib.admin import widgets
 
 # Define an inline admin descriptor for Owner model
 # which acts a bit like a singleton
@@ -113,6 +115,15 @@ class UserAdmin(BaseUserAdmin):
 
     def owner_hashkey(self, obj):
         return "%s" % Owner.objects.get(user=obj).hashkey
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if (db_field.name) == "groups":
+            kwargs["queryset"] = Group.objects.filter(
+                    groupsite__sites=Site.objects.get_current())
+        kwargs['widget'] = widgets.FilteredSelectMultiple(
+                db_field.verbose_name,
+                False)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def owner_establishment(self, obj):
         return "%s" % Owner.objects.get(user=obj).establishment

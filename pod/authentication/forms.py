@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.models import Group
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.sites.models import Site
 
 FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
@@ -67,6 +68,8 @@ class GroupAdminForm(forms.ModelForm):
         if self.instance.pk:
             # Populate the users field with the current Group users.
             self.fields['users'].initial = self.instance.user_set.all()
+        self.fields['users'].queryset = self.fields['users'].queryset.filter(
+                owner__sites=Site.objects.get_current())
 
     def save_m2m(self):
         # Add the users to the Group.
