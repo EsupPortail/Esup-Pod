@@ -1,6 +1,8 @@
 from django.contrib import admin
 from pod.chapter.models import Chapter
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.sites.models import Site
+from pod.video.models import Video
 
 
 class ChapterAdmin(admin.ModelAdmin):
@@ -21,6 +23,12 @@ class ChapterAdmin(admin.ModelAdmin):
             qs = qs.filter(video__sites=get_current_site(
                 request))
         return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 admin.site.register(Chapter, ChapterAdmin)

@@ -7,6 +7,8 @@ from pod.completion.models import Track
 from pod.completion.forms import DocumentAdminForm
 from pod.completion.forms import TrackAdminForm
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.sites.models import Site
+from pod.video.models import Video
 
 FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
@@ -28,6 +30,12 @@ class ContributorAdmin(admin.ModelAdmin):
     list_display_links = ('name',)
     list_filter = ('role',)
     search_fields = ['id', 'name', 'role', 'video__title']
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     class Media:
         css = {
@@ -70,6 +78,12 @@ class DocumentAdmin(admin.ModelAdmin):
             qs = qs.filter(video__sites=get_current_site(
                 request))
         return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     class Media:
         css = {
@@ -114,6 +128,12 @@ class TrackAdmin(admin.ModelAdmin):
                 request))
         return qs
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
     class Media:
         css = {
             "all": (
@@ -155,6 +175,12 @@ class OverlayAdmin(admin.ModelAdmin):
             qs = qs.filter(video__sites=get_current_site(
                 request))
         return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     class Media:
         css = {

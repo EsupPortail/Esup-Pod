@@ -2,11 +2,11 @@ from django.contrib import admin
 
 from .models import Building
 from .models import Broadcaster
-
+from django.contrib.sites.models import Site
 from pod.live.forms import BuildingAdminForm
 from .forms import BroadcasterAdminForm
 from django.contrib.sites.shortcuts import get_current_site
-
+from pod.video.models import Video
 
 # Register your models here.
 
@@ -57,6 +57,15 @@ class BroadcasterAdmin(admin.ModelAdmin):
             qs = qs.filter(building__sites=get_current_site(
                 request))
         return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "building":
+            kwargs["queryset"] = Building.objects.filter(
+                    sites=Site.objects.get_current())
+        if (db_field.name) == "video_on_hold":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     class Media:
         css = {
