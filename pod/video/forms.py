@@ -593,9 +593,6 @@ class ChannelForm(forms.ModelForm):
 
         self.fields = add_placeholder_and_asterisk(self.fields)
 
-        self.fields['sites'].widget.attrs['readonly'] = True
-        self.fields['sites'].widget.attrs['disabled'] = 'disabled'
-
     class Meta(object):
         model = Channel
         fields = '__all__'

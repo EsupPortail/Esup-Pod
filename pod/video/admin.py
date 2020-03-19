@@ -251,11 +251,18 @@ class ChannelAdmin(admin.ModelAdmin):
     ordering = ('title',)
     list_filter = ['visible']
 
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            return ('sites',)
+        else:
+            return ()
+
     def get_form(self, request, obj=None, **kwargs):
         if request.user.is_superuser:
             kwargs['form'] = ChannelSuperAdminForm
         else:
             kwargs['form'] = ChannelAdminForm
+
         form = super(ChannelAdmin, self).get_form(request, obj, **kwargs)
         return form
 
@@ -327,6 +334,14 @@ class TypeAdmin(TranslationAdmin):
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
+    def get_form(self, request, obj=None, **kwargs):
+        if not request.user.is_superuser:
+            exclude = ()
+            exclude += ('sites',)
+            self.exclude = exclude
+        form = super(TypeAdmin, self).get_form(request, obj, **kwargs)
+        return form
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
@@ -352,6 +367,14 @@ class DisciplineAdmin(TranslationAdmin):
             'podfile/js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
+
+    def get_form(self, request, obj=None, **kwargs):
+        if not request.user.is_superuser:
+            exclude = ()
+            exclude += ('sites',)
+            self.exclude = exclude
+        form = super(DisciplineAdmin, self).get_form(request, obj, **kwargs)
+        return form
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -401,6 +424,15 @@ class PlaylistVideoAdmin(admin.ModelAdmin):
 class VideoRenditionAdmin(admin.ModelAdmin):
     list_display = (
         'resolution', 'video_bitrate', 'audio_bitrate', 'encode_mp4')
+
+    def get_form(self, request, obj=None, **kwargs):
+        if not request.user.is_superuser:
+            exclude = ()
+            exclude += ('sites',)
+            self.exclude = exclude
+        form = super(VideoRenditionAdmin, self).get_form(
+            request, obj, **kwargs)
+        return form
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
