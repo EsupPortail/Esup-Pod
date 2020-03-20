@@ -155,6 +155,12 @@ class GroupAdmin(admin.ModelAdmin):
                 request))
         return qs
 
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if not change:
+            obj.groupsite.sites.add(get_current_site(request))
+            obj.save()
+
 
 # Re-register UserAdmin
 admin.site.unregister(User)

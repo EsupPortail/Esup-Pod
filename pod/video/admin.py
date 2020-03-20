@@ -205,6 +205,12 @@ class VideoAdmin(admin.ModelAdmin):
                 request))
         return qs
 
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if not change:
+            obj.sites.add(get_current_site(request))
+            obj.save()
+
     class Media:
         css = {
             "all": (
@@ -256,6 +262,12 @@ class ChannelAdmin(admin.ModelAdmin):
             return ('sites',)
         else:
             return ()
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if not change:
+            obj.sites.add(get_current_site(request))
+            obj.save()
 
     def get_form(self, request, obj=None, **kwargs):
         if request.user.is_superuser:
@@ -352,6 +364,12 @@ class TypeAdmin(TranslationAdmin):
         form = super(TypeAdmin, self).get_form(request, obj, **kwargs)
         return form
 
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if not change:
+            obj.sites.add(get_current_site(request))
+            obj.save()
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
@@ -385,6 +403,12 @@ class DisciplineAdmin(TranslationAdmin):
             self.exclude = exclude
         form = super(DisciplineAdmin, self).get_form(request, obj, **kwargs)
         return form
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if not change:
+            obj.sites.add(get_current_site(request))
+            obj.save()
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -465,6 +489,12 @@ class VideoRenditionAdmin(admin.ModelAdmin):
         form = super(VideoRenditionAdmin, self).get_form(
             request, obj, **kwargs)
         return form
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if not change:
+            obj.sites.add(get_current_site(request))
+            obj.save()
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

@@ -30,6 +30,12 @@ class BuildingAdmin(admin.ModelAdmin):
         form = super(BuildingAdmin, self).get_form(request, obj, **kwargs)
         return form
 
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if not change:
+            obj.sites.add(get_current_site(request))
+            obj.save()
+
     class Media:
         css = {
             "all": (
