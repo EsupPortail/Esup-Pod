@@ -31,9 +31,11 @@ from .forms import DisciplineForm
 from pod.completion.admin import ContributorInline
 from pod.completion.admin import DocumentInline
 from pod.completion.admin import OverlayInline
+from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from pod.completion.admin import TrackInline
 from django.contrib.sites.shortcuts import get_current_site
-
+from django.contrib.admin import widgets
 from pod.chapter.admin import ChapterInline
 
 from pod.main.tasks import task_start_transcript
@@ -315,6 +317,16 @@ class ThemeAdmin(admin.ModelAdmin):
                 request))
         return qs
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "parentId":
+            kwargs["queryset"] = Theme.objects.filter(
+                    channel__sites=Site.objects.get_current())
+        if (db_field.name) == "channel":
+            kwargs["queryset"] = Channel.objects.filter(
+                    sites=Site.objects.get_current())
+
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 class TypeAdmin(TranslationAdmin):
     form = TypeForm
@@ -398,6 +410,15 @@ class EncodingVideoAdmin(admin.ModelAdmin):
                 request))
         return qs
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+        if (db_field.name) == "rendition":
+            kwargs["queryset"] = VideoRendition.objects.filter(
+                    sites=Site.objects.get_current())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 class EncodingAudioAdmin(admin.ModelAdmin):
     list_display = ('name', 'video', 'encoding_format')
@@ -409,6 +430,12 @@ class EncodingAudioAdmin(admin.ModelAdmin):
                 request))
         return qs
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 class PlaylistVideoAdmin(admin.ModelAdmin):
     list_display = ('name', 'video', 'encoding_format')
@@ -419,6 +446,13 @@ class PlaylistVideoAdmin(admin.ModelAdmin):
             qs = qs.filter(video__sites=get_current_site(
                 request))
         return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class VideoRenditionAdmin(admin.ModelAdmin):
@@ -483,6 +517,16 @@ class NotesAdmin(admin.ModelAdmin):
                 request))
         return qs
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "user":
+            kwargs["queryset"] = User.objects.filter(
+                    owner__sites=Site.objects.get_current())
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 class AdvancedNotesAdmin(admin.ModelAdmin):
     list_display = ('video', 'user', 'timestamp',
@@ -502,6 +546,16 @@ class AdvancedNotesAdmin(admin.ModelAdmin):
                 request))
         return qs
 
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "user":
+            kwargs["queryset"] = User.objects.filter(
+                    owner__sites=Site.objects.get_current())
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 class NoteCommentsAdmin(admin.ModelAdmin):
     list_display = ('parentNote', 'user', 'added_on', 'modified_on')
@@ -519,6 +573,20 @@ class NoteCommentsAdmin(admin.ModelAdmin):
             qs = qs.filter(parentNote__video__sites=get_current_site(
                 request))
         return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "user":
+            kwargs["queryset"] = User.objects.filter(
+                    owner__sites=Site.objects.get_current())
+        if (db_field.name) == "parentNote":
+            kwargs["queryset"] = AdvancedNotes.objects.filter(
+                    video__owner__owner__sites=Site.objects.get_current())
+        if (db_field.name) == "parentCom":
+            kwargs["queryset"] = NoteComments. \
+                objects.filter(
+                parentNote__video__owner__owner__sites=Site.
+                    objects.get_current())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class VideoToDeleteAdmin(admin.ModelAdmin):

@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-
+from django.contrib.auth.models import Group
 from .models import Video, VideoVersion
 from .models import Channel
 from .models import Theme
@@ -486,12 +486,8 @@ class VideoForm(forms.ModelForm):
             del self.fields[field]
 
     def set_queryset(self):
+
         if self.current_user is not None:
-            self.fields["type"].queryset = Type.objects.all().filter(
-                sites=Site.objects.get_current())
-            self.fields["discipline"].queryset = Discipline.objects.all(
-            ).filter(
-                sites=Site.objects.get_current())
             user_channels = Channel.objects.all() if self.is_superuser else (
                 self.current_user.owners_channels.all(
                 ) | self.current_user.users_channels.all()
@@ -503,10 +499,24 @@ class VideoForm(forms.ModelForm):
                     channel__in=user_channels).order_by('channel', 'title')
                 self.fields["theme"].queryset = list_theme
             else:
-                # self.fields['channel'].widget = forms.HiddenInput()
-                # self.fields['theme'].widget = forms.HiddenInput()
                 del self.fields['theme']
                 del self.fields['channel']
+        self.fields["type"].queryset = Type.objects.all().filter(
+                sites=Site.objects.get_current())
+        self.fields["restrict_access_to_groups"].queryset = \
+            self.fields["restrict_access_to_groups"].queryset.filter(
+                groupsite__sites=Site.objects.get_current())
+        self.fields["discipline"].queryset = Discipline.objects.all(
+            ).filter(
+                sites=Site.objects.get_current())
+        if "channel" in self.fields:
+            self.fields["channel"].queryset = \
+                self.fields["channel"].queryset.filter(
+                    sites=Site.objects.get_current())
+        if "theme" in self.fields:
+            self.fields["theme"].queryset = \
+                self.fields["theme"].queryset.filter(
+                    video__sites=Site.objects.get_current())
 
     class Meta(object):
         model = Video
@@ -523,7 +533,7 @@ class VideoForm(forms.ModelForm):
 
 class ChannelForm(forms.ModelForm):
     users = forms.ModelMultipleChoiceField(
-        User.objects.all(),
+        User.objects.all().filter(owner__sites=get_current_site(None)),
         widget=widgets.FilteredSelectMultiple(
             _("Users"),
             False,
@@ -531,7 +541,7 @@ class ChannelForm(forms.ModelForm):
         required=False,
         label=_('Users'))
     owners = forms.ModelMultipleChoiceField(
-        User.objects.all(),
+        User.objects.all().filter(owner__sites=get_current_site(None)),
         widget=widgets.FilteredSelectMultiple(_("Owners"), False, attrs={}),
         required=False,
         label=_('Owners'))
