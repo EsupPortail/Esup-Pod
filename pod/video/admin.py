@@ -31,11 +31,9 @@ from .forms import DisciplineForm
 from pod.completion.admin import ContributorInline
 from pod.completion.admin import DocumentInline
 from pod.completion.admin import OverlayInline
-from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from pod.completion.admin import TrackInline
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.admin import widgets
 from pod.chapter.admin import ChapterInline
 
 from pod.main.tasks import task_start_transcript

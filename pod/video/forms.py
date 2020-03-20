@@ -7,7 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
 from .models import Video, VideoVersion
 from .models import Channel
 from .models import Theme
