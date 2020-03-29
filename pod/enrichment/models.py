@@ -303,6 +303,10 @@ class EnrichmentVtt(models.Model):
         if 'vtt' not in self.src.file_type:
             msg.append(_('Only ".vtt" format is allowed.'))
         return msg
+    class Meta:
+        ordering = ['video']
+        verbose_name = _('Enrichment Vtt')
+        verbose_name_plural = _('Enrichments Vtt')
 
 
 class EnrichmentGroup(models.Model):
