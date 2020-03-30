@@ -409,7 +409,7 @@ class Discipline(models.Model):
 
 class Video(models.Model):
     video = models.FileField(
-        _('Video'),  upload_to=get_storage_path_video, max_length=255,
+        _('Video'), upload_to=get_storage_path_video, max_length=255,
         help_text=_(
             'You can send an audio or video file.'))
     title = models.CharField(
@@ -847,7 +847,7 @@ class Video(models.Model):
                 'dc.coverage': DEFAULT_DC_COVERAGE,
                 'dc.rights': self.licence if (
                     self.licence) else DEFAULT_DC_RIGHTS,
-                "dc.format":  "video/mp4" if self.is_video else "audio/mp3"
+                "dc.format": "video/mp4" if self.is_video else "audio/mp3"
             }
             return data_to_dump
         except ObjectDoesNotExist as e:
@@ -909,7 +909,6 @@ class ViewCount(models.Model):
         unique_together = ("video", "date")
         verbose_name = _("View count")
         verbose_name_plural = _("View counts")
-
 
 
 class VideoRendition(models.Model):
@@ -1089,6 +1088,7 @@ class EncodingVideo(models.Model):
                 os.remove(self.source_file.path)
         super(EncodingVideo, self).delete()
 
+
 class EncodingAudio(models.Model):
     name = models.CharField(
         _('Name'), max_length=10, choices=ENCODING_CHOICES, default="audio",
@@ -1137,6 +1137,7 @@ class EncodingAudio(models.Model):
             if os.path.isfile(self.source_file.path):
                 os.remove(self.source_file.path)
         super(EncodingAudio, self).delete()
+
 
 class PlaylistVideo(models.Model):
     name = models.CharField(
