@@ -74,9 +74,15 @@ USE_STATS_VIEW = getattr(
 
 ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
         django_settings, 'ALLOW_MANUAL_RECORDING_CLAIMING', False)
+SHIB_URL = getattr(
+        django_settings, 'SHIB_URL', "/idp/shibboleth.sso/Login")
+USE_SHIB = getattr(
+        django_settings, 'USE_SHIB', False)
 
 USE_RECORD_PREVIEW = getattr(
         django_settings, 'USE_RECORD_PREVIEW', False)
+SHIB_NAME = getattr(
+        django_settings, 'SHIB_NAME', "Identify Federation")
 
 
 def context_settings(request):
@@ -96,8 +102,13 @@ def context_settings(request):
     new_settings['HIDE_USER_FILTER'] = HIDE_USER_FILTER
     new_settings['USE_STATS_VIEW'] = USE_STATS_VIEW
     new_settings['USE_RECORD_PREVIEW'] = USE_RECORD_PREVIEW
+    new_settings['SHIB_NAME'] = SHIB_NAME
     new_settings['ALLOW_MANUAL_RECORDING_CLAIMING'] = \
         ALLOW_MANUAL_RECORDING_CLAIMING
+    new_settings['SHIB_URL'] = \
+        SHIB_URL
+    new_settings['USE_SHIB'] = \
+        USE_SHIB
     return new_settings
 
 

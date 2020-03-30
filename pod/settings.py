@@ -10,7 +10,7 @@ from pod.main.settings import BASE_DIR
 ##
 # Version of the project
 #
-VERSION = '2.5.0'
+VERSION = '2.5.1'
 
 ##
 # Installed applications list
@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'pod.recorder',
     'pod.lti',
     'pod.custom',
+    'shibboleth'
 ]
 
 ##
@@ -71,6 +72,7 @@ MIDDLEWARE = [
     # Pages statiques
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
+
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -100,6 +102,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'shibboleth.context_processors.login_link',
+                'shibboleth.context_processors.logout_link',
                 # Local contexts
                 'pod.main.context_processors.context_settings',
                 'pod.main.context_processors.context_navbar'
@@ -231,6 +235,11 @@ if 'USE_CAS' in globals() and eval('USE_CAS') is True:
     )
     MIDDLEWARE.append('cas.middleware.CASMiddleware')
 
+if 'USE_SHIB' in globals() and eval('USE_SHIB') is True:
+    AUTHENTICATION_BACKENDS += (
+        'shibboleth.backends.ShibbolethRemoteUserBackend',
+    )
+    MIDDLEWARE.append('pod.authentication.middleware.ShibbolethRemoteUserMiddleware')
 
 ##
 # Authentication backend : add lti backend if use
@@ -244,3 +253,4 @@ if 'H5P_ENABLED' in globals() and eval('H5P_ENABLED') is True:
     sys.path.append(os.path.join(BASE_DIR, "../../H5PP"))
     INSTALLED_APPS.append('h5pp')
     INSTALLED_APPS.append('pod.interactive')
+

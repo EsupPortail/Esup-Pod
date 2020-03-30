@@ -7,15 +7,21 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
-
+from shibboleth.decorators import login_optional
+from urllib.parse import quote  
 from cas.decorators import gateway
+from .middleware import ShibbolethRemoteUserMiddleware
 
 from pod.authentication.forms import FrontOwnerForm
 
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
+USE_SHIB = getattr(
+    settings, 'USE_SHIB', False)
 CAS_GATEWAY = getattr(
     settings, 'CAS_GATEWAY', False)
+SHIB_URL = getattr(
+    settings, 'SHIB_URL',"" )
 
 if CAS_GATEWAY:
     @gateway()
@@ -29,9 +35,7 @@ if CAS_GATEWAY:
         })
 else:
     def authentication_login_gateway(request):
-        return HttpResponse(
-            "You must set CAS_GATEWAY to True to use this view")
-
+        return HttpResponse("You must set CAS_GATEWAY to True to use this view")
 
 def authentication_login(request):
     referrer = request.GET['referrer'] if request.GET.get('referrer') else '/'
@@ -43,7 +47,7 @@ def authentication_login(request):
         url = reverse('authentication_login_gateway')
         url += '?%snext=%s' % (iframe_param, referrer)
         return redirect(url)
-    elif USE_CAS:
+    elif USE_CAS or USE_SHIB :
         return render(request, 'authentication/login.html', {
             'USE_CAS': USE_CAS, 'referrer': referrer
         })
@@ -51,6 +55,8 @@ def authentication_login(request):
         url = reverse('local-login')
         url += '?%snext=%s' % (iframe_param, referrer)
         return redirect(url)
+
+
 
 
 def authentication_logout(request):
@@ -83,3 +89,4 @@ def userpicture(request):
     return render(request, 'userpicture/userpicture.html', {
         'frontOwnerForm': frontOwnerForm}
     )
+    

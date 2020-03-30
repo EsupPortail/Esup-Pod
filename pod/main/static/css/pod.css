@@ -1,3 +1,11 @@
+
+tr ,.rowl{
+  display: table-row !important;
+}
+body[data-admin-utc-offset]
+{
+  padding-top: 0;
+}
 body {
 padding-top: 3.5rem;
 }
