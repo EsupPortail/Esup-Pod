@@ -409,7 +409,7 @@ class Discipline(models.Model):
 
 class Video(models.Model):
     video = models.FileField(
-        _('Video'),  upload_to=get_storage_path_video, max_length=255,
+        _('Video'), upload_to=get_storage_path_video, max_length=255,
         help_text=_(
             'You can send an audio or video file.'))
     title = models.CharField(
@@ -847,7 +847,7 @@ class Video(models.Model):
                 'dc.coverage': DEFAULT_DC_COVERAGE,
                 'dc.rights': self.licence if (
                     self.licence) else DEFAULT_DC_RIGHTS,
-                "dc.format":  "video/mp4" if self.is_video else "audio/mp3"
+                "dc.format": "video/mp4" if self.is_video else "audio/mp3"
             }
             return data_to_dump
         except ObjectDoesNotExist as e:
@@ -907,6 +907,8 @@ class ViewCount(models.Model):
 
     class Meta:
         unique_together = ("video", "date")
+        verbose_name = _("View count")
+        verbose_name_plural = _("View counts")
 
 
 class VideoRendition(models.Model):
@@ -1055,6 +1057,11 @@ class EncodingVideo(models.Model):
                     EncodingVideo._meta.get_field('encoding_format').help_text
                 )
 
+    class Meta:
+        ordering = ['name']
+        verbose_name = _('Encoding video')
+        verbose_name_plural = _('Encoding videos')
+
     def __str__(self):
         return (
             "EncodingVideo num : %s with resolution %s for video %s in %s"
@@ -1097,6 +1104,11 @@ class EncodingAudio(models.Model):
         _('encoding source file'),
         upload_to=get_storage_path_video,
         max_length=255)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = _('Encoding audio')
+        verbose_name_plural = _('Encoding audios')
 
     def clean(self):
         if self.name:
@@ -1177,6 +1189,11 @@ class EncodingLog(models.Model):
                                  editable=False, on_delete=models.CASCADE)
     log = models.TextField(null=True, blank=True, editable=False)
 
+    class Meta:
+        ordering = ['video']
+        verbose_name = _('Encoding log')
+        verbose_name_plural = _('Encoding logs')
+
     def __str__(self):
         return "Log for encoding video %s" % (self.video.id)
 
@@ -1200,6 +1217,11 @@ class EncodingStep(models.Model):
     num_step = models.IntegerField(default=0, editable=False)
     desc_step = models.CharField(null=True,
                                  max_length=255, blank=True, editable=False)
+
+    class Meta:
+        ordering = ['video']
+        verbose_name = _('Encoding step')
+        verbose_name_plural = _('Encoding steps')
 
     def __str__(self):
         return "Step for encoding video %s" % (self.video.id)

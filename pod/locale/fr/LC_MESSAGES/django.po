@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-12 15:41+0000\n"
-"PO-Revision-Date: 2020-03-12 16:41+0100\n"
+"POT-Creation-Date: 2020-03-28 21:48+0000\n"
+"PO-Revision-Date: 2020-03-28 19:51+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.3\n"
 
 #: pod/authentication/admin.py:62 pod/main/forms.py:51
 msgid "Email"
@@ -91,7 +91,7 @@ msgid "registered-reader"
 msgstr "lecteur enregistré"
 
 #: pod/authentication/models.py:67 pod/recorder/models.py:115
-#: pod/video/models.py:1287 pod/video/views.py:1135
+#: pod/video/models.py:1308 pod/video/views.py:1135
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -141,6 +141,11 @@ msgstr ""
 msgid "Forgotten your password or username?"
 msgstr "Mot de passe ou identifiant perdu ?"
 
+#: pod/authentication/templates/userpicture/userpicture.html:7
+#: pod/main/templates/navbar.html:70
+msgid "Change your picture"
+msgstr "Changer votre image de profil"
+
 #: pod/authentication/templates/userpicture/userpicture.html:29
 #: pod/authentication/views.py:81
 #: pod/completion/templates/video_caption_maker.html:57
@@ -184,9 +189,24 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 msgid "Please provide a valid value for this field"
 msgstr "Veuillez renseigner une valeur valide pour ce champ"
 
+#: pod/authentication/templates/userpicture/userpicture.html:56
+#: pod/podfile/templates/podfile/home_content.html:57
+#: pod/recorder/templates/recorder/claim_record.html:49
+msgid "Close"
+msgstr "Fermer"
+
+#: pod/authentication/templates/userpicture/userpicture.html:57
+#: pod/podfile/templates/podfile/home_content.html:58
+msgid "Save changes"
+msgstr "Sauvegarder"
+
 #: pod/authentication/views.py:77
 msgid "Your picture has been saved."
 msgstr "Votre image a été sauvegardée."
+
+#: pod/chapter/apps.py:7 pod/chapter/models.py:30
+msgid "Chapter"
+msgstr "Chapitre"
 
 #: pod/chapter/models.py:14 pod/completion/models.py:51
 #: pod/enrichment/models.py:114
@@ -226,10 +246,6 @@ msgstr "Début"
 #: pod/chapter/models.py:27
 msgid "Start time of the chapter, in seconds."
 msgstr "Début du chapitre, en secondes."
-
-#: pod/chapter/models.py:30
-msgid "Chapter"
-msgstr "Chapitre"
 
 #: pod/chapter/models.py:31 pod/chapter/templates/video_chapter.html:67
 msgid "Chapters"
@@ -519,13 +535,13 @@ msgstr ""
 #: pod/completion/models.py:114 pod/completion/models.py:165
 #: pod/completion/models.py:242
 #: pod/completion/templates/video_caption_maker.html:85
-#: pod/enrichment/models.py:287 pod/enrichment/models.py:309
+#: pod/enrichment/models.py:287 pod/enrichment/models.py:313
 #: pod/interactive/models.py:16 pod/interactive/models.py:33
 #: pod/playlist/models.py:79
 #: pod/playlist/templates/playlist/playlist_list.html:14
 #: pod/recorder/models.py:20 pod/video/models.py:412 pod/video/models.py:901
-#: pod/video/models.py:1031 pod/video/models.py:1090 pod/video/models.py:1135
-#: pod/video/models.py:1176 pod/video/models.py:1185 pod/video/models.py:1198
+#: pod/video/models.py:1034 pod/video/models.py:1097 pod/video/models.py:1146
+#: pod/video/models.py:1187 pod/video/models.py:1201 pod/video/models.py:1214
 msgid "Video"
 msgstr "Vidéo"
 
@@ -1050,25 +1066,627 @@ msgstr "Le fichier n’a pas été enregistré."
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
 
-#: pod/enrichment/apps.py:7
-msgid "Enrichment version"
-msgstr "Version enrichie"
+#: pod/custom/lang_settings.py:7 pod/main/lang_settings.py:7
+msgid "Abkhazian"
+msgstr "Abkhazien"
 
-#: pod/enrichment/apps.py:8 pod/enrichment/models.py:34
-#: pod/enrichment/models.py:161
+#: pod/custom/lang_settings.py:8 pod/main/lang_settings.py:8
+msgid "Afar"
+msgstr "Afar"
+
+#: pod/custom/lang_settings.py:9 pod/main/lang_settings.py:9
+msgid "Afrikaans"
+msgstr "Africain"
+
+#: pod/custom/lang_settings.py:10 pod/main/lang_settings.py:10
+msgid "Albanian"
+msgstr "Albanais"
+
+#: pod/custom/lang_settings.py:11 pod/main/lang_settings.py:11
+msgid "Amharic"
+msgstr "Amharique"
+
+#: pod/custom/lang_settings.py:12 pod/custom/lang_settings.py:157
+#: pod/main/lang_settings.py:12 pod/main/lang_settings.py:157
+msgid "Arabic"
+msgstr "Arabe"
+
+#: pod/custom/lang_settings.py:13 pod/main/lang_settings.py:13
+msgid "Aragonese"
+msgstr "Aragonais"
+
+#: pod/custom/lang_settings.py:14 pod/main/lang_settings.py:14
+msgid "Armenian"
+msgstr "Arménien"
+
+#: pod/custom/lang_settings.py:15 pod/main/lang_settings.py:15
+msgid "Assamese"
+msgstr "Assamais"
+
+#: pod/custom/lang_settings.py:16 pod/main/lang_settings.py:16
+msgid "Aymara"
+msgstr "Aymara"
+
+#: pod/custom/lang_settings.py:17 pod/main/lang_settings.py:17
+msgid "Azerbaijani"
+msgstr "Azerbaïdjanais"
+
+#: pod/custom/lang_settings.py:18 pod/main/lang_settings.py:18
+msgid "Bashkir"
+msgstr "Bachkir"
+
+#: pod/custom/lang_settings.py:19 pod/main/lang_settings.py:19
+msgid "Basque"
+msgstr ""
+
+#: pod/custom/lang_settings.py:20 pod/main/lang_settings.py:20
+msgid "Bengali (Bangla)"
+msgstr ""
+
+#: pod/custom/lang_settings.py:21 pod/main/lang_settings.py:21
+msgid "Bhutani"
+msgstr ""
+
+#: pod/custom/lang_settings.py:22 pod/main/lang_settings.py:22
+msgid "Bihari"
+msgstr ""
+
+#: pod/custom/lang_settings.py:23 pod/main/lang_settings.py:23
+msgid "Bislama"
+msgstr ""
+
+#: pod/custom/lang_settings.py:24 pod/main/lang_settings.py:24
+msgid "Breton"
+msgstr ""
+
+#: pod/custom/lang_settings.py:25 pod/main/lang_settings.py:25
+msgid "Bulgarian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:26 pod/main/lang_settings.py:26
+msgid "Burmese"
+msgstr ""
+
+#: pod/custom/lang_settings.py:27 pod/main/lang_settings.py:27
+msgid "Byelorussian (Belarusian)"
+msgstr ""
+
+#: pod/custom/lang_settings.py:28 pod/main/lang_settings.py:28
+msgid "Cambodian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:29 pod/main/lang_settings.py:29
+msgid "Catalan"
+msgstr ""
+
+#: pod/custom/lang_settings.py:30 pod/custom/lang_settings.py:158
+#: pod/main/lang_settings.py:30 pod/main/lang_settings.py:158
+msgid "Chinese"
+msgstr "Chinois"
+
+#: pod/custom/lang_settings.py:31 pod/main/lang_settings.py:31
+msgid "Corsican"
+msgstr ""
+
+#: pod/custom/lang_settings.py:32 pod/main/lang_settings.py:32
+msgid "Croatian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:33 pod/main/lang_settings.py:33
+msgid "Czech"
+msgstr ""
+
+#: pod/custom/lang_settings.py:34 pod/main/lang_settings.py:34
+msgid "Danish"
+msgstr ""
+
+#: pod/custom/lang_settings.py:35 pod/main/lang_settings.py:35
+msgid "Dutch"
+msgstr ""
+
+#: pod/custom/lang_settings.py:36 pod/custom/lang_settings.py:156
+#: pod/main/lang_settings.py:36 pod/main/lang_settings.py:156
+msgid "English"
+msgstr ""
+
+#: pod/custom/lang_settings.py:37 pod/main/lang_settings.py:37
+msgid "Esperanto"
+msgstr ""
+
+#: pod/custom/lang_settings.py:38 pod/main/lang_settings.py:38
+msgid "Estonian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:39 pod/main/lang_settings.py:39
+msgid "Faeroese"
+msgstr ""
+
+#: pod/custom/lang_settings.py:40 pod/main/lang_settings.py:40
+msgid "Farsi"
+msgstr ""
+
+#: pod/custom/lang_settings.py:41 pod/main/lang_settings.py:41
+msgid "Fiji"
+msgstr ""
+
+#: pod/custom/lang_settings.py:42 pod/main/lang_settings.py:42
+msgid "Finnish"
+msgstr ""
+
+#: pod/custom/lang_settings.py:43 pod/custom/lang_settings.py:160
+#: pod/main/lang_settings.py:43 pod/main/lang_settings.py:160
+msgid "French"
+msgstr ""
+
+#: pod/custom/lang_settings.py:44 pod/main/lang_settings.py:44
+msgid "Frisian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:45 pod/main/lang_settings.py:45
+msgid "Galician"
+msgstr ""
+
+#: pod/custom/lang_settings.py:46 pod/main/lang_settings.py:46
+msgid "Gaelic (Scottish)"
+msgstr ""
+
+#: pod/custom/lang_settings.py:47 pod/main/lang_settings.py:47
+msgid "Gaelic (Manx)"
+msgstr ""
+
+#: pod/custom/lang_settings.py:48 pod/main/lang_settings.py:48
+msgid "Georgian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:49 pod/custom/lang_settings.py:155
+#: pod/main/lang_settings.py:49 pod/main/lang_settings.py:155
+msgid "German"
+msgstr ""
+
+#: pod/custom/lang_settings.py:50 pod/main/lang_settings.py:50
+msgid "Greek"
+msgstr ""
+
+#: pod/custom/lang_settings.py:51 pod/main/lang_settings.py:51
+msgid "Greenlandic"
+msgstr ""
+
+#: pod/custom/lang_settings.py:52 pod/main/lang_settings.py:52
+msgid "Guarani"
+msgstr ""
+
+#: pod/custom/lang_settings.py:53 pod/main/lang_settings.py:53
+msgid "Gujarati"
+msgstr ""
+
+#: pod/custom/lang_settings.py:54 pod/main/lang_settings.py:54
+msgid "Haitian Creole"
+msgstr ""
+
+#: pod/custom/lang_settings.py:55 pod/main/lang_settings.py:55
+msgid "Hausa"
+msgstr ""
+
+#: pod/custom/lang_settings.py:56 pod/main/lang_settings.py:56
+msgid "Hebrew"
+msgstr ""
+
+#: pod/custom/lang_settings.py:57 pod/main/lang_settings.py:57
+msgid "Hindi"
+msgstr ""
+
+#: pod/custom/lang_settings.py:58 pod/main/lang_settings.py:58
+msgid "Hungarian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:59 pod/main/lang_settings.py:59
+msgid "Icelandic"
+msgstr ""
+
+#: pod/custom/lang_settings.py:60 pod/main/lang_settings.py:60
+msgid "Ido"
+msgstr ""
+
+#: pod/custom/lang_settings.py:61 pod/main/lang_settings.py:61
+msgid "Indonesian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:62 pod/main/lang_settings.py:62
+msgid "Interlingua"
+msgstr ""
+
+#: pod/custom/lang_settings.py:63 pod/main/lang_settings.py:63
+msgid "Interlingue"
+msgstr ""
+
+#: pod/custom/lang_settings.py:64 pod/main/lang_settings.py:64
+msgid "Inuktitut"
+msgstr ""
+
+#: pod/custom/lang_settings.py:65 pod/main/lang_settings.py:65
+msgid "Inupiak"
+msgstr ""
+
+#: pod/custom/lang_settings.py:66 pod/main/lang_settings.py:66
+msgid "Irish"
+msgstr ""
+
+#: pod/custom/lang_settings.py:67 pod/custom/lang_settings.py:161
+#: pod/main/lang_settings.py:67 pod/main/lang_settings.py:161
+msgid "Italian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:68 pod/custom/lang_settings.py:162
+#: pod/main/lang_settings.py:68 pod/main/lang_settings.py:162
+msgid "Japanese"
+msgstr ""
+
+#: pod/custom/lang_settings.py:69 pod/main/lang_settings.py:69
+msgid "Javanese"
+msgstr ""
+
+#: pod/custom/lang_settings.py:70 pod/main/lang_settings.py:70
+msgid "Kannada"
+msgstr ""
+
+#: pod/custom/lang_settings.py:71 pod/main/lang_settings.py:71
+msgid "Kashmiri"
+msgstr ""
+
+#: pod/custom/lang_settings.py:72 pod/main/lang_settings.py:72
+msgid "Kazakh"
+msgstr ""
+
+#: pod/custom/lang_settings.py:73 pod/main/lang_settings.py:73
+msgid "Kinyarwanda (Ruanda)"
+msgstr ""
+
+#: pod/custom/lang_settings.py:74 pod/main/lang_settings.py:74
+msgid "Kirghiz"
+msgstr ""
+
+#: pod/custom/lang_settings.py:75 pod/main/lang_settings.py:75
+msgid "Kirundi (Rundi)"
+msgstr ""
+
+#: pod/custom/lang_settings.py:76 pod/main/lang_settings.py:76
+msgid "Korean"
+msgstr ""
+
+#: pod/custom/lang_settings.py:77 pod/main/lang_settings.py:77
+msgid "Kurdish"
+msgstr ""
+
+#: pod/custom/lang_settings.py:78 pod/main/lang_settings.py:78
+msgid "Laothian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:79 pod/main/lang_settings.py:79
+msgid "Latin"
+msgstr ""
+
+#: pod/custom/lang_settings.py:80 pod/main/lang_settings.py:80
+msgid "Latvian (Lettish)"
+msgstr ""
+
+#: pod/custom/lang_settings.py:81 pod/main/lang_settings.py:81
+msgid "Limburgish ( Limburger)"
+msgstr ""
+
+#: pod/custom/lang_settings.py:82 pod/main/lang_settings.py:82
+msgid "Lingala"
+msgstr ""
+
+#: pod/custom/lang_settings.py:83 pod/main/lang_settings.py:83
+msgid "Lithuanian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:84 pod/main/lang_settings.py:84
+msgid "Macedonian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:85 pod/main/lang_settings.py:85
+msgid "Malagasy"
+msgstr ""
+
+#: pod/custom/lang_settings.py:86 pod/main/lang_settings.py:86
+msgid "Malay"
+msgstr ""
+
+#: pod/custom/lang_settings.py:87 pod/main/lang_settings.py:87
+msgid "Malayalam"
+msgstr ""
+
+#: pod/custom/lang_settings.py:88 pod/main/lang_settings.py:88
+msgid "Maltese"
+msgstr ""
+
+#: pod/custom/lang_settings.py:89 pod/main/lang_settings.py:89
+msgid "Maori"
+msgstr ""
+
+#: pod/custom/lang_settings.py:90 pod/main/lang_settings.py:90
+msgid "Marathi"
+msgstr ""
+
+#: pod/custom/lang_settings.py:91 pod/main/lang_settings.py:91
+msgid "Moldavian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:92 pod/main/lang_settings.py:92
+msgid "Mongolian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:93 pod/main/lang_settings.py:93
+msgid "Nauru"
+msgstr ""
+
+#: pod/custom/lang_settings.py:94 pod/main/lang_settings.py:94
+msgid "Nepali"
+msgstr ""
+
+#: pod/custom/lang_settings.py:95 pod/main/lang_settings.py:95
+msgid "Norwegian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:96 pod/main/lang_settings.py:96
+msgid "Occitan"
+msgstr ""
+
+#: pod/custom/lang_settings.py:97 pod/main/lang_settings.py:97
+msgid "Oriya"
+msgstr ""
+
+#: pod/custom/lang_settings.py:98 pod/main/lang_settings.py:98
+msgid "Oromo (Afaan Oromo)"
+msgstr ""
+
+#: pod/custom/lang_settings.py:99 pod/main/lang_settings.py:99
+msgid "Pashto (Pushto)"
+msgstr ""
+
+#: pod/custom/lang_settings.py:100 pod/main/lang_settings.py:100
+msgid "Polish"
+msgstr ""
+
+#: pod/custom/lang_settings.py:101 pod/main/lang_settings.py:101
+msgid "Portuguese"
+msgstr ""
+
+#: pod/custom/lang_settings.py:102 pod/main/lang_settings.py:102
+msgid "Punjabi"
+msgstr ""
+
+#: pod/custom/lang_settings.py:103 pod/main/lang_settings.py:103
+msgid "Quechua"
+msgstr ""
+
+#: pod/custom/lang_settings.py:104 pod/main/lang_settings.py:104
+msgid "Rhaeto-Romance"
+msgstr ""
+
+#: pod/custom/lang_settings.py:105 pod/main/lang_settings.py:105
+msgid "Romanian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:106 pod/custom/lang_settings.py:163
+#: pod/main/lang_settings.py:106 pod/main/lang_settings.py:163
+msgid "Russian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:107 pod/main/lang_settings.py:107
+msgid "Samoan"
+msgstr ""
+
+#: pod/custom/lang_settings.py:108 pod/main/lang_settings.py:108
+msgid "Sangro"
+msgstr ""
+
+#: pod/custom/lang_settings.py:109 pod/main/lang_settings.py:109
+msgid "Sanskrit"
+msgstr ""
+
+#: pod/custom/lang_settings.py:110 pod/main/lang_settings.py:110
+msgid "Serbian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:111 pod/main/lang_settings.py:111
+msgid "Serbo-Croatian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:112 pod/main/lang_settings.py:112
+msgid "Sesotho"
+msgstr ""
+
+#: pod/custom/lang_settings.py:113 pod/main/lang_settings.py:113
+msgid "Setswana"
+msgstr ""
+
+#: pod/custom/lang_settings.py:114 pod/main/lang_settings.py:114
+msgid "Shona"
+msgstr ""
+
+#: pod/custom/lang_settings.py:115 pod/main/lang_settings.py:115
+msgid "Sichuan Yi"
+msgstr ""
+
+#: pod/custom/lang_settings.py:116 pod/main/lang_settings.py:116
+msgid "Sindhi"
+msgstr ""
+
+#: pod/custom/lang_settings.py:117 pod/main/lang_settings.py:117
+msgid "Sinhalese"
+msgstr ""
+
+#: pod/custom/lang_settings.py:118 pod/main/lang_settings.py:118
+msgid "Siswati"
+msgstr ""
+
+#: pod/custom/lang_settings.py:119 pod/main/lang_settings.py:119
+msgid "Slovak"
+msgstr ""
+
+#: pod/custom/lang_settings.py:120 pod/main/lang_settings.py:120
+msgid "Slovenian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:121 pod/main/lang_settings.py:121
+msgid "Somali"
+msgstr ""
+
+#: pod/custom/lang_settings.py:122 pod/custom/lang_settings.py:159
+#: pod/main/lang_settings.py:122 pod/main/lang_settings.py:159
+msgid "Spanish"
+msgstr ""
+
+#: pod/custom/lang_settings.py:123 pod/main/lang_settings.py:123
+msgid "Sundanese"
+msgstr ""
+
+#: pod/custom/lang_settings.py:124 pod/main/lang_settings.py:124
+msgid "Swahili (Kiswahili)"
+msgstr ""
+
+#: pod/custom/lang_settings.py:125 pod/main/lang_settings.py:125
+msgid "Swedish"
+msgstr ""
+
+#: pod/custom/lang_settings.py:126 pod/main/lang_settings.py:126
+msgid "Tagalog"
+msgstr ""
+
+#: pod/custom/lang_settings.py:127 pod/main/lang_settings.py:127
+msgid "Tajik"
+msgstr ""
+
+#: pod/custom/lang_settings.py:128 pod/main/lang_settings.py:128
+msgid "Tamil"
+msgstr ""
+
+#: pod/custom/lang_settings.py:129 pod/main/lang_settings.py:129
+msgid "Tatar"
+msgstr ""
+
+#: pod/custom/lang_settings.py:130 pod/main/lang_settings.py:130
+msgid "Telugu"
+msgstr ""
+
+#: pod/custom/lang_settings.py:131 pod/main/lang_settings.py:131
+msgid "Thai"
+msgstr ""
+
+#: pod/custom/lang_settings.py:132 pod/main/lang_settings.py:132
+msgid "Tibetan"
+msgstr ""
+
+#: pod/custom/lang_settings.py:133 pod/main/lang_settings.py:133
+msgid "Tigrinya"
+msgstr ""
+
+#: pod/custom/lang_settings.py:134 pod/main/lang_settings.py:134
+msgid "Tonga"
+msgstr ""
+
+#: pod/custom/lang_settings.py:135 pod/main/lang_settings.py:135
+msgid "Tsonga"
+msgstr ""
+
+#: pod/custom/lang_settings.py:136 pod/main/lang_settings.py:136
+msgid "Turkish"
+msgstr ""
+
+#: pod/custom/lang_settings.py:137 pod/main/lang_settings.py:137
+msgid "Turkmen"
+msgstr ""
+
+#: pod/custom/lang_settings.py:138 pod/main/lang_settings.py:138
+msgid "Twi"
+msgstr ""
+
+#: pod/custom/lang_settings.py:139 pod/main/lang_settings.py:139
+msgid "Uighur"
+msgstr ""
+
+#: pod/custom/lang_settings.py:140 pod/main/lang_settings.py:140
+msgid "Ukrainian"
+msgstr ""
+
+#: pod/custom/lang_settings.py:141 pod/main/lang_settings.py:141
+msgid "Urdu"
+msgstr ""
+
+#: pod/custom/lang_settings.py:142 pod/main/lang_settings.py:142
+msgid "Uzbek"
+msgstr ""
+
+#: pod/custom/lang_settings.py:143 pod/main/lang_settings.py:143
+msgid "Vietnamese"
+msgstr ""
+
+#: pod/custom/lang_settings.py:144 pod/main/lang_settings.py:144
+msgid "Volapük"
+msgstr ""
+
+#: pod/custom/lang_settings.py:145 pod/main/lang_settings.py:145
+msgid "Wallon"
+msgstr ""
+
+#: pod/custom/lang_settings.py:146 pod/main/lang_settings.py:146
+msgid "Welsh"
+msgstr ""
+
+#: pod/custom/lang_settings.py:147 pod/main/lang_settings.py:147
+msgid "Wolof"
+msgstr ""
+
+#: pod/custom/lang_settings.py:148 pod/main/lang_settings.py:148
+msgid "Xhosa"
+msgstr ""
+
+#: pod/custom/lang_settings.py:149 pod/main/lang_settings.py:149
+msgid "Yiddish"
+msgstr ""
+
+#: pod/custom/lang_settings.py:150 pod/main/lang_settings.py:150
+msgid "Yoruba"
+msgstr ""
+
+#: pod/custom/lang_settings.py:151 pod/main/lang_settings.py:151
+msgid "Zulu"
+msgstr ""
+
+#: pod/custom/templates/custom/footer.html:27 pod/main/templates/footer.html:27
+msgid "Pod Project"
+msgstr "Projet Pod"
+
+#: pod/custom/templates/custom/footer.html:30 pod/main/templates/footer.html:30
+#: pod/video/feeds.py:106
+msgid "video platform of"
+msgstr "plateforme vidéos de"
+
+#: pod/custom/templates/custom/footer.html:30 pod/main/templates/footer.html:30
+msgid "videos availables"
+msgstr "vidéos disponibles"
+
+#: pod/enrichment/apps.py:7 pod/enrichment/apps.py:9
+#: pod/enrichment/models.py:34 pod/enrichment/models.py:161
 msgid "Enrichment"
 msgstr "Enrichissement"
 
-#: pod/enrichment/apps.py:9
+#: pod/enrichment/apps.py:8
+msgid "Enrichment version"
+msgstr "Version enrichie"
+
+#: pod/enrichment/apps.py:10
 msgid "enrichment"
 msgstr "enrichissement"
 
-#: pod/enrichment/apps.py:10
+#: pod/enrichment/apps.py:11
 #: pod/enrichment/templates/enrichment/list_enrichment.html:30
 msgid "Edit the enrichment"
 msgstr "Éditer l'enrichissement"
 
-#: pod/enrichment/forms.py:34 pod/enrichment/models.py:313
+#: pod/enrichment/forms.py:34 pod/enrichment/models.py:317
 #: pod/interactive/forms.py:13 pod/interactive/models.py:37
 #: pod/podfile/models.py:33 pod/video/models.py:545
 msgid "Groups"
@@ -1186,19 +1804,27 @@ msgstr ""
 "Il y a un chevauchement avec l’enrichissement {0}, veuillez changer son "
 "temps de début et/ou de fin."
 
-#: pod/enrichment/models.py:314 pod/interactive/models.py:38
+#: pod/enrichment/models.py:308
+msgid "Enrichment Vtt"
+msgstr "Enrichissement VTT"
+
+#: pod/enrichment/models.py:309
+msgid "Enrichments Vtt"
+msgstr "Enrichissements VTT"
+
+#: pod/enrichment/models.py:318 pod/interactive/models.py:38
 msgid "Select one or more groups who can access to the enrichment of the video"
 msgstr ""
 "Sélectionner un ou plusieurs groupes qui auront accès à la modification de "
 "l'enrichissement de la vidéo"
 
-#: pod/enrichment/models.py:320
+#: pod/enrichment/models.py:324
 msgid "Enrichment Video Group"
-msgstr "Groupe pour enrichir la vidéo"
+msgstr "Groupe pour les enrichissements"
 
-#: pod/enrichment/models.py:321
+#: pod/enrichment/models.py:325
 msgid "Enrichment Video Groups"
-msgstr "Groupes pour enrichir la vidéo"
+msgstr "Groupes pour les enrichissements"
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:5
 msgid "Enrichment of the video"
@@ -1419,11 +2045,11 @@ msgstr "Editer l'interactivité"
 
 #: pod/interactive/models.py:44
 msgid "Interactive Video Group"
-msgstr "Groupe pour interactiver la vidéo"
+msgstr "Groupe pour vidéo interactive"
 
 #: pod/interactive/models.py:45
 msgid "Interactive Video Groups"
-msgstr "Groupes pour interactiver la vidéo"
+msgstr "Groupes pour vidéo interactive"
 
 #: pod/interactive/templates/interactive/edit_interactive.html:5
 msgid "Interactive of the video"
@@ -1717,8 +2343,8 @@ msgid "Other (please specify)"
 msgstr "Autre (spécifiez)"
 
 #: pod/main/forms.py:50 pod/podfile/models.py:27 pod/podfile/models.py:100
-#: pod/podfile/templates/podfile/home_content.html:29 pod/video/models.py:1024
-#: pod/video/models.py:1087 pod/video/models.py:1132
+#: pod/podfile/templates/podfile/home_content.html:29 pod/video/models.py:1027
+#: pod/video/models.py:1094 pod/video/models.py:1143
 msgid "Name"
 msgstr "Nom"
 
@@ -1747,586 +2373,6 @@ msgstr "Veuillez indiquer le résultat de l'opération suivante"
 #: pod/main/forms.py:86
 msgid "Please specify a subject"
 msgstr "Veuillez spécifier un sujet"
-
-#: pod/main/lang_settings.py:7
-msgid "Abkhazian"
-msgstr "Abkhazien"
-
-#: pod/main/lang_settings.py:8
-msgid "Afar"
-msgstr "Afar"
-
-#: pod/main/lang_settings.py:9
-msgid "Afrikaans"
-msgstr "Africain"
-
-#: pod/main/lang_settings.py:10
-msgid "Albanian"
-msgstr "Albanais"
-
-#: pod/main/lang_settings.py:11
-msgid "Amharic"
-msgstr "Amharique"
-
-#: pod/main/lang_settings.py:12 pod/main/lang_settings.py:157
-msgid "Arabic"
-msgstr "Arabe"
-
-#: pod/main/lang_settings.py:13
-msgid "Aragonese"
-msgstr "Aragonais"
-
-#: pod/main/lang_settings.py:14
-msgid "Armenian"
-msgstr "Arménien"
-
-#: pod/main/lang_settings.py:15
-msgid "Assamese"
-msgstr "Assamais"
-
-#: pod/main/lang_settings.py:16
-msgid "Aymara"
-msgstr "Aymara"
-
-#: pod/main/lang_settings.py:17
-msgid "Azerbaijani"
-msgstr "Azerbaïdjanais"
-
-#: pod/main/lang_settings.py:18
-msgid "Bashkir"
-msgstr "Bachkir"
-
-#: pod/main/lang_settings.py:19
-msgid "Basque"
-msgstr ""
-
-#: pod/main/lang_settings.py:20
-msgid "Bengali (Bangla)"
-msgstr ""
-
-#: pod/main/lang_settings.py:21
-msgid "Bhutani"
-msgstr ""
-
-#: pod/main/lang_settings.py:22
-msgid "Bihari"
-msgstr ""
-
-#: pod/main/lang_settings.py:23
-msgid "Bislama"
-msgstr ""
-
-#: pod/main/lang_settings.py:24
-msgid "Breton"
-msgstr ""
-
-#: pod/main/lang_settings.py:25
-msgid "Bulgarian"
-msgstr ""
-
-#: pod/main/lang_settings.py:26
-msgid "Burmese"
-msgstr ""
-
-#: pod/main/lang_settings.py:27
-msgid "Byelorussian (Belarusian)"
-msgstr ""
-
-#: pod/main/lang_settings.py:28
-msgid "Cambodian"
-msgstr ""
-
-#: pod/main/lang_settings.py:29
-msgid "Catalan"
-msgstr ""
-
-#: pod/main/lang_settings.py:30 pod/main/lang_settings.py:158
-msgid "Chinese"
-msgstr "Chinois"
-
-#: pod/main/lang_settings.py:31
-msgid "Corsican"
-msgstr ""
-
-#: pod/main/lang_settings.py:32
-msgid "Croatian"
-msgstr ""
-
-#: pod/main/lang_settings.py:33
-msgid "Czech"
-msgstr ""
-
-#: pod/main/lang_settings.py:34
-msgid "Danish"
-msgstr ""
-
-#: pod/main/lang_settings.py:35
-msgid "Dutch"
-msgstr ""
-
-#: pod/main/lang_settings.py:36 pod/main/lang_settings.py:156
-msgid "English"
-msgstr ""
-
-#: pod/main/lang_settings.py:37
-msgid "Esperanto"
-msgstr ""
-
-#: pod/main/lang_settings.py:38
-msgid "Estonian"
-msgstr ""
-
-#: pod/main/lang_settings.py:39
-msgid "Faeroese"
-msgstr ""
-
-#: pod/main/lang_settings.py:40
-msgid "Farsi"
-msgstr ""
-
-#: pod/main/lang_settings.py:41
-msgid "Fiji"
-msgstr ""
-
-#: pod/main/lang_settings.py:42
-msgid "Finnish"
-msgstr ""
-
-#: pod/main/lang_settings.py:43 pod/main/lang_settings.py:160
-msgid "French"
-msgstr ""
-
-#: pod/main/lang_settings.py:44
-msgid "Frisian"
-msgstr ""
-
-#: pod/main/lang_settings.py:45
-msgid "Galician"
-msgstr ""
-
-#: pod/main/lang_settings.py:46
-msgid "Gaelic (Scottish)"
-msgstr ""
-
-#: pod/main/lang_settings.py:47
-msgid "Gaelic (Manx)"
-msgstr ""
-
-#: pod/main/lang_settings.py:48
-msgid "Georgian"
-msgstr ""
-
-#: pod/main/lang_settings.py:49 pod/main/lang_settings.py:155
-msgid "German"
-msgstr ""
-
-#: pod/main/lang_settings.py:50
-msgid "Greek"
-msgstr ""
-
-#: pod/main/lang_settings.py:51
-msgid "Greenlandic"
-msgstr ""
-
-#: pod/main/lang_settings.py:52
-msgid "Guarani"
-msgstr ""
-
-#: pod/main/lang_settings.py:53
-msgid "Gujarati"
-msgstr ""
-
-#: pod/main/lang_settings.py:54
-msgid "Haitian Creole"
-msgstr ""
-
-#: pod/main/lang_settings.py:55
-msgid "Hausa"
-msgstr ""
-
-#: pod/main/lang_settings.py:56
-msgid "Hebrew"
-msgstr ""
-
-#: pod/main/lang_settings.py:57
-msgid "Hindi"
-msgstr ""
-
-#: pod/main/lang_settings.py:58
-msgid "Hungarian"
-msgstr ""
-
-#: pod/main/lang_settings.py:59
-msgid "Icelandic"
-msgstr ""
-
-#: pod/main/lang_settings.py:60
-msgid "Ido"
-msgstr ""
-
-#: pod/main/lang_settings.py:61
-msgid "Indonesian"
-msgstr ""
-
-#: pod/main/lang_settings.py:62
-msgid "Interlingua"
-msgstr ""
-
-#: pod/main/lang_settings.py:63
-msgid "Interlingue"
-msgstr ""
-
-#: pod/main/lang_settings.py:64
-msgid "Inuktitut"
-msgstr ""
-
-#: pod/main/lang_settings.py:65
-msgid "Inupiak"
-msgstr ""
-
-#: pod/main/lang_settings.py:66
-msgid "Irish"
-msgstr ""
-
-#: pod/main/lang_settings.py:67 pod/main/lang_settings.py:161
-msgid "Italian"
-msgstr ""
-
-#: pod/main/lang_settings.py:68 pod/main/lang_settings.py:162
-msgid "Japanese"
-msgstr ""
-
-#: pod/main/lang_settings.py:69
-msgid "Javanese"
-msgstr ""
-
-#: pod/main/lang_settings.py:70
-msgid "Kannada"
-msgstr ""
-
-#: pod/main/lang_settings.py:71
-msgid "Kashmiri"
-msgstr ""
-
-#: pod/main/lang_settings.py:72
-msgid "Kazakh"
-msgstr ""
-
-#: pod/main/lang_settings.py:73
-msgid "Kinyarwanda (Ruanda)"
-msgstr ""
-
-#: pod/main/lang_settings.py:74
-msgid "Kirghiz"
-msgstr ""
-
-#: pod/main/lang_settings.py:75
-msgid "Kirundi (Rundi)"
-msgstr ""
-
-#: pod/main/lang_settings.py:76
-msgid "Korean"
-msgstr ""
-
-#: pod/main/lang_settings.py:77
-msgid "Kurdish"
-msgstr ""
-
-#: pod/main/lang_settings.py:78
-msgid "Laothian"
-msgstr ""
-
-#: pod/main/lang_settings.py:79
-msgid "Latin"
-msgstr ""
-
-#: pod/main/lang_settings.py:80
-msgid "Latvian (Lettish)"
-msgstr ""
-
-#: pod/main/lang_settings.py:81
-msgid "Limburgish ( Limburger)"
-msgstr ""
-
-#: pod/main/lang_settings.py:82
-msgid "Lingala"
-msgstr ""
-
-#: pod/main/lang_settings.py:83
-msgid "Lithuanian"
-msgstr ""
-
-#: pod/main/lang_settings.py:84
-msgid "Macedonian"
-msgstr ""
-
-#: pod/main/lang_settings.py:85
-msgid "Malagasy"
-msgstr ""
-
-#: pod/main/lang_settings.py:86
-msgid "Malay"
-msgstr ""
-
-#: pod/main/lang_settings.py:87
-msgid "Malayalam"
-msgstr ""
-
-#: pod/main/lang_settings.py:88
-msgid "Maltese"
-msgstr ""
-
-#: pod/main/lang_settings.py:89
-msgid "Maori"
-msgstr ""
-
-#: pod/main/lang_settings.py:90
-msgid "Marathi"
-msgstr ""
-
-#: pod/main/lang_settings.py:91
-msgid "Moldavian"
-msgstr ""
-
-#: pod/main/lang_settings.py:92
-msgid "Mongolian"
-msgstr ""
-
-#: pod/main/lang_settings.py:93
-msgid "Nauru"
-msgstr ""
-
-#: pod/main/lang_settings.py:94
-msgid "Nepali"
-msgstr ""
-
-#: pod/main/lang_settings.py:95
-msgid "Norwegian"
-msgstr ""
-
-#: pod/main/lang_settings.py:96
-msgid "Occitan"
-msgstr ""
-
-#: pod/main/lang_settings.py:97
-msgid "Oriya"
-msgstr ""
-
-#: pod/main/lang_settings.py:98
-msgid "Oromo (Afaan Oromo)"
-msgstr ""
-
-#: pod/main/lang_settings.py:99
-msgid "Pashto (Pushto)"
-msgstr ""
-
-#: pod/main/lang_settings.py:100
-msgid "Polish"
-msgstr ""
-
-#: pod/main/lang_settings.py:101
-msgid "Portuguese"
-msgstr ""
-
-#: pod/main/lang_settings.py:102
-msgid "Punjabi"
-msgstr ""
-
-#: pod/main/lang_settings.py:103
-msgid "Quechua"
-msgstr ""
-
-#: pod/main/lang_settings.py:104
-msgid "Rhaeto-Romance"
-msgstr ""
-
-#: pod/main/lang_settings.py:105
-msgid "Romanian"
-msgstr ""
-
-#: pod/main/lang_settings.py:106 pod/main/lang_settings.py:163
-msgid "Russian"
-msgstr ""
-
-#: pod/main/lang_settings.py:107
-msgid "Samoan"
-msgstr ""
-
-#: pod/main/lang_settings.py:108
-msgid "Sangro"
-msgstr ""
-
-#: pod/main/lang_settings.py:109
-msgid "Sanskrit"
-msgstr ""
-
-#: pod/main/lang_settings.py:110
-msgid "Serbian"
-msgstr ""
-
-#: pod/main/lang_settings.py:111
-msgid "Serbo-Croatian"
-msgstr ""
-
-#: pod/main/lang_settings.py:112
-msgid "Sesotho"
-msgstr ""
-
-#: pod/main/lang_settings.py:113
-msgid "Setswana"
-msgstr ""
-
-#: pod/main/lang_settings.py:114
-msgid "Shona"
-msgstr ""
-
-#: pod/main/lang_settings.py:115
-msgid "Sichuan Yi"
-msgstr ""
-
-#: pod/main/lang_settings.py:116
-msgid "Sindhi"
-msgstr ""
-
-#: pod/main/lang_settings.py:117
-msgid "Sinhalese"
-msgstr ""
-
-#: pod/main/lang_settings.py:118
-msgid "Siswati"
-msgstr ""
-
-#: pod/main/lang_settings.py:119
-msgid "Slovak"
-msgstr ""
-
-#: pod/main/lang_settings.py:120
-msgid "Slovenian"
-msgstr ""
-
-#: pod/main/lang_settings.py:121
-msgid "Somali"
-msgstr ""
-
-#: pod/main/lang_settings.py:122 pod/main/lang_settings.py:159
-msgid "Spanish"
-msgstr ""
-
-#: pod/main/lang_settings.py:123
-msgid "Sundanese"
-msgstr ""
-
-#: pod/main/lang_settings.py:124
-msgid "Swahili (Kiswahili)"
-msgstr ""
-
-#: pod/main/lang_settings.py:125
-msgid "Swedish"
-msgstr ""
-
-#: pod/main/lang_settings.py:126
-msgid "Tagalog"
-msgstr ""
-
-#: pod/main/lang_settings.py:127
-msgid "Tajik"
-msgstr ""
-
-#: pod/main/lang_settings.py:128
-msgid "Tamil"
-msgstr ""
-
-#: pod/main/lang_settings.py:129
-msgid "Tatar"
-msgstr ""
-
-#: pod/main/lang_settings.py:130
-msgid "Telugu"
-msgstr ""
-
-#: pod/main/lang_settings.py:131
-msgid "Thai"
-msgstr ""
-
-#: pod/main/lang_settings.py:132
-msgid "Tibetan"
-msgstr ""
-
-#: pod/main/lang_settings.py:133
-msgid "Tigrinya"
-msgstr ""
-
-#: pod/main/lang_settings.py:134
-msgid "Tonga"
-msgstr ""
-
-#: pod/main/lang_settings.py:135
-msgid "Tsonga"
-msgstr ""
-
-#: pod/main/lang_settings.py:136
-msgid "Turkish"
-msgstr ""
-
-#: pod/main/lang_settings.py:137
-msgid "Turkmen"
-msgstr ""
-
-#: pod/main/lang_settings.py:138
-msgid "Twi"
-msgstr ""
-
-#: pod/main/lang_settings.py:139
-msgid "Uighur"
-msgstr ""
-
-#: pod/main/lang_settings.py:140
-msgid "Ukrainian"
-msgstr ""
-
-#: pod/main/lang_settings.py:141
-msgid "Urdu"
-msgstr ""
-
-#: pod/main/lang_settings.py:142
-msgid "Uzbek"
-msgstr ""
-
-#: pod/main/lang_settings.py:143
-msgid "Vietnamese"
-msgstr ""
-
-#: pod/main/lang_settings.py:144
-msgid "Volapük"
-msgstr ""
-
-#: pod/main/lang_settings.py:145
-msgid "Wallon"
-msgstr ""
-
-#: pod/main/lang_settings.py:146
-msgid "Welsh"
-msgstr ""
-
-#: pod/main/lang_settings.py:147
-msgid "Wolof"
-msgstr ""
-
-#: pod/main/lang_settings.py:148
-msgid "Xhosa"
-msgstr ""
-
-#: pod/main/lang_settings.py:149
-msgid "Yiddish"
-msgstr ""
-
-#: pod/main/lang_settings.py:150
-msgid "Yoruba"
-msgstr ""
-
-#: pod/main/lang_settings.py:151
-msgid "Zulu"
-msgstr ""
 
 #: pod/main/models.py:53 pod/main/models.py:84 pod/podfile/models.py:136
 #: pod/podfile/models.py:171
@@ -2427,7 +2473,7 @@ msgstr "Disciplines"
 msgid "Tags"
 msgstr "Mots clés"
 
-#: pod/main/templates/base.html:57
+#: pod/main/templates/base.html:60
 msgid "Home"
 msgstr "Accueil"
 
@@ -2465,18 +2511,6 @@ msgstr "Champs obligatoires"
 #: pod/video/templates/videos/video_edit.html:181
 msgid "Fields marked with an asterisk are mandatory."
 msgstr "Les champs marqués avec un astérisque sont obligatoires."
-
-#: pod/main/templates/footer.html:27
-msgid "Pod Project"
-msgstr "Projet Pod"
-
-#: pod/main/templates/footer.html:30 pod/video/feeds.py:106
-msgid "video platform of"
-msgstr "plateforme vidéos de"
-
-#: pod/main/templates/footer.html:30
-msgid "videos availables"
-msgstr "vidéos disponibles"
 
 #: pod/main/templates/mail/mail.html:2 pod/main/templates/mail/mail.txt:2
 #: pod/main/templates/mail/mail_sender.html:2
@@ -2542,10 +2576,6 @@ msgstr "Rechercher"
 #: pod/main/templates/navbar.html:53
 msgid "Add a video"
 msgstr "Ajouter une vidéo"
-
-#: pod/main/templates/navbar.html:70
-msgid "Change your picture"
-msgstr "Changer votre image de profil"
 
 #: pod/main/templates/navbar.html:73
 msgid "Add your picture"
@@ -2801,6 +2831,10 @@ msgstr "La vidéo a été ajoutée à votre playlist."
 msgid "This playlist has been deleted."
 msgstr "Cette playlist a été supprimée."
 
+#: pod/podfile/apps.py:7
+msgid "Files"
+msgstr "Fichiers"
+
 #: pod/podfile/forms.py:49 pod/video/forms.py:253
 #, python-format
 msgid ""
@@ -2875,15 +2909,6 @@ msgstr "Indiquer un nouveau nom à ce dossier"
 #: pod/podfile/templates/podfile/list_folder_files.html:53
 msgid "Loading"
 msgstr "Chargement"
-
-#: pod/podfile/templates/podfile/home_content.html:57
-#: pod/recorder/templates/recorder/claim_record.html:49
-msgid "Close"
-msgstr "Fermer"
-
-#: pod/podfile/templates/podfile/home_content.html:58
-msgid "Save changes"
-msgstr "Sauvegarder"
 
 #: pod/podfile/templates/podfile/list_folder_files.html:8
 msgid "file"
@@ -3077,8 +3102,8 @@ msgstr "Fichier source de la vidéo publiée."
 msgid "File size"
 msgstr "Taille du fichier"
 
-#: pod/recorder/models.py:165 pod/video/models.py:488 pod/video/models.py:1234
-#: pod/video/models.py:1289
+#: pod/recorder/models.py:165 pod/video/models.py:488 pod/video/models.py:1255
+#: pod/video/models.py:1310
 msgid "Date added"
 msgstr "Date d'ajout"
 
@@ -3873,7 +3898,7 @@ msgstr "Date de suppression"
 msgid "Sum of view"
 msgstr "Somme des vues"
 
-#: pod/video/models.py:632
+#: pod/video/models.py:632 pod/video/models.py:1222
 msgid "Encoding step"
 msgstr "Étape de l'encodage"
 
@@ -3889,118 +3914,154 @@ msgstr "Date"
 msgid "Number of view"
 msgstr "Nombre de vues"
 
-#: pod/video/models.py:914
+#: pod/video/models.py:910
+msgid "View count"
+msgstr ""
+
+#: pod/video/models.py:911
+msgid "View counts"
+msgstr "Statistiques"
+
+#: pod/video/models.py:917
 msgid "resolution"
 msgstr "résolution"
 
-#: pod/video/models.py:920 pod/video/models.py:984 pod/video/models.py:991
+#: pod/video/models.py:923 pod/video/models.py:987 pod/video/models.py:994
 msgid "minrate"
 msgstr "débit minimum"
 
-#: pod/video/models.py:925 pod/video/models.py:960 pod/video/models.py:967
+#: pod/video/models.py:928 pod/video/models.py:963 pod/video/models.py:970
 msgid "bitrate video"
 msgstr "débit binaire de la vidéo"
 
-#: pod/video/models.py:930 pod/video/models.py:972 pod/video/models.py:979
+#: pod/video/models.py:933 pod/video/models.py:975 pod/video/models.py:982
 msgid "maxrate"
 msgstr "débit maximum"
 
-#: pod/video/models.py:935 pod/video/models.py:1009 pod/video/models.py:1016
+#: pod/video/models.py:938 pod/video/models.py:1012 pod/video/models.py:1019
 msgid "bitrate audio"
 msgstr "débit binaire de l'audio"
 
-#: pod/video/models.py:939
+#: pod/video/models.py:942
 msgid "Make a MP4 version"
 msgstr "Faire une version MP4"
 
-#: pod/video/models.py:951 pod/video/models.py:1033
+#: pod/video/models.py:954 pod/video/models.py:1036
 msgid "rendition"
 msgstr "rendu"
 
-#: pod/video/models.py:952
+#: pod/video/models.py:955
 msgid "renditions"
 msgstr "rendus"
 
-#: pod/video/models.py:1035 pod/video/models.py:1092 pod/video/models.py:1137
+#: pod/video/models.py:1038 pod/video/models.py:1099 pod/video/models.py:1148
 msgid "Format"
 msgstr "Format"
 
-#: pod/video/models.py:1042 pod/video/models.py:1097 pod/video/models.py:1142
+#: pod/video/models.py:1045 pod/video/models.py:1104 pod/video/models.py:1153
 msgid "encoding source file"
 msgstr "fichier source d'encodage"
 
-#: pod/video/models.py:1188
+#: pod/video/models.py:1063
+msgid "Encoding video"
+msgstr "Encodage vidéo"
+
+#: pod/video/models.py:1064
+msgid "Encoding videos"
+msgstr "Encodage des vidéos"
+
+#: pod/video/models.py:1110
+msgid "Encoding audio"
+msgstr "Encodage audio"
+
+#: pod/video/models.py:1111
+msgid "Encoding audios"
+msgstr "Encodage des audios"
+
+#: pod/video/models.py:1193
+msgid "Encoding log"
+msgstr "Journal de l'encodage"
+
+#: pod/video/models.py:1194
+msgid "Encoding logs"
+msgstr "Journaux des encodages"
+
+#: pod/video/models.py:1204
 msgid "Video version"
 msgstr "Version de la video"
 
-#: pod/video/models.py:1190
+#: pod/video/models.py:1206
 msgid "Video default version."
 msgstr "Version par défaut de la vidéo."
 
-#: pod/video/models.py:1211 pod/video/models.py:1214 pod/video/models.py:1230
+#: pod/video/models.py:1223
+msgid "Encoding steps"
+msgstr "Etapes de l'encodage"
+
+#: pod/video/models.py:1232 pod/video/models.py:1235 pod/video/models.py:1251
 #: pod/video/views.py:1146
 msgid "Note"
 msgstr "Note"
 
-#: pod/video/models.py:1215
+#: pod/video/models.py:1236
 msgid "Notes"
 msgstr "Notes"
 
-#: pod/video/models.py:1226
+#: pod/video/models.py:1247
 msgid "Note availibility level"
 msgstr "Niveau de disponibilité de la note"
 
-#: pod/video/models.py:1228
+#: pod/video/models.py:1249
 msgid "Select an availability level for the note."
 msgstr "Sélectionner le niveau de disponibilité de la note."
 
-#: pod/video/models.py:1232
+#: pod/video/models.py:1253
 msgid "Timestamp"
 msgstr "Horodatage"
 
-#: pod/video/models.py:1236 pod/video/models.py:1291
+#: pod/video/models.py:1257 pod/video/models.py:1312
 msgid "Date modified"
 msgstr "Date de modification"
 
-#: pod/video/models.py:1239
+#: pod/video/models.py:1260
 msgid "Advanced Note"
 msgstr "Note avancée"
 
-#: pod/video/models.py:1240
+#: pod/video/models.py:1261
 msgid "Advanced Notes"
 msgstr "Notes avancées"
 
-#: pod/video/models.py:1282
+#: pod/video/models.py:1303
 msgid "Comment availibility level"
 msgstr "Niveau de disponibilité du commentaire"
 
-#: pod/video/models.py:1284
+#: pod/video/models.py:1305
 msgid "Select an availability level for the comment."
 msgstr "Sélectionnez un niveau de disponibilité pour le commentaire."
 
-#: pod/video/models.py:1294
+#: pod/video/models.py:1315
 msgid "Note comment"
 msgstr "Commentaire de la note"
 
-#: pod/video/models.py:1295
+#: pod/video/models.py:1316
 msgid "Note comments"
-msgstr "Commentaires de la note"
+msgstr "Commentaires de notes"
 
-#: pod/video/models.py:1313
+#: pod/video/models.py:1334
 msgid "Date for deletion"
 msgstr "Date pour la suppression"
 
-#: pod/video/models.py:1316 pod/video/templates/videos/video.html:76
+#: pod/video/models.py:1337 pod/video/templates/videos/video.html:76
 #: pod/video/templates/videos/videos.html:8
 #: pod/video/templates/videos/videos.html:17
 msgid "Videos"
 msgstr "Vidéos"
 
-#: pod/video/models.py:1319
+#: pod/video/models.py:1340
 msgid "Video to delete"
 msgstr "Vidéo à supprimer"
 
-#: pod/video/models.py:1320
+#: pod/video/models.py:1341
 msgid "Videos to delete"
 msgstr "Vidéos à supprimer"
 
@@ -4707,25 +4768,24 @@ msgstr "facettage"
 msgid "Remove selection"
 msgstr "Retirer la sélection"
 
+#~ msgid "EnrichmentVtts"
+#~ msgstr "Enrichissements VTT"
+
 #~ msgid "My Files"
 #~ msgstr "Mes fichiers"
 
-#, fuzzy
 #~| msgid "Archived"
 #~ msgid "Archived videos"
 #~ msgstr "Archivé"
 
-#, fuzzy
 #~| msgid "Delete the video"
 #~ msgid "Deleted videos"
 #~ msgstr "Supprimer la vidéo"
 
-#, fuzzy
 #~| msgid "The obsolete videos on Pod"
 #~ msgid "Soon obsolete videos"
 #~ msgstr "Les vidéos obsolètes sur Pod"
 
-#, fuzzy
 #~| msgid "video"
 #~ msgid "Url video"
 #~ msgstr "vidéo"
