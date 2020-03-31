@@ -43,7 +43,13 @@ else:
 
 class EnrichmentGroupAdmin(admin.ModelAdmin):
     list_display = ('video', 'get_groups')
-    # readonly_fields = ('video', )
+
+    class Media:
+        css = {
+            "all": (
+                'css/pod.css',
+            )
+        }
 
     def get_groups(self, obj):
         return "\n".join([g.name for g in obj.groups.all()])
