@@ -4,16 +4,11 @@ from django.contrib import auth
 from django.core.exceptions import ImproperlyConfigured
 import re
 
-from shibboleth.app_settings import SHIB_ATTRIBUTE_MAP, GROUP_ATTRIBUTES, GROUP_DELIMITERS
+from shibboleth.app_settings import SHIB_ATTRIBUTE_MAP
+from shibboleth.app_settings import GROUP_ATTRIBUTES, GROUP_DELIMITERS
 
 
 class ShibbolethRemoteUserMiddleware(RemoteUserMiddleware):
-    """
-    Authentication Middleware for use with Shibboleth.  Uses the recommended pattern
-    for remote authentication from: http://code.djangoproject.com/svn/django/tags/releases/1.3/django/contrib/auth/middleware.py
-    """
-
-    
 
     def process_request(self, request):
         # AuthenticationMiddleware is required so that request.user exists.
@@ -36,8 +31,8 @@ class ShibbolethRemoteUserMiddleware(RemoteUserMiddleware):
             # request.user set to AnonymousUser by the
             # AuthenticationMiddleware).
             return
-        #If we got an empty value for request.META[self.header], treat it like
-        #   self.header wasn't in self.META at all - it's still an anonymous user.
+        # If we got an empty value for request.META[self.header], treat it like
+        # self.header wasn't in self.META at all -it's still an anonymous user.
         if not username:
             return
         # If the user is already authenticated and that user is the user we are
@@ -58,13 +53,14 @@ class ShibbolethRemoteUserMiddleware(RemoteUserMiddleware):
 
         # We are seeing this user for the first time in this session, attempt
         # to authenticate the user.
-        user = auth.authenticate(request, remote_user=username, shib_meta=shib_meta)
+        user = auth.authenticate(request, remote_user=username,
+                                 shib_meta=shib_meta)
         if user:
             # User is valid.  Set request.user and persist user in the session
             # by logging the user in.
             request.user = user
             auth.login(request, user)
-            
+
             # Upgrade user groups if configured in the settings.py
             # If activated, the user will be associated with those groups.
             if GROUP_ATTRIBUTES:
@@ -76,7 +72,8 @@ class ShibbolethRemoteUserMiddleware(RemoteUserMiddleware):
 
     def make_profile(self, user, shib_meta):
         """
-        This is here as a stub to allow subclassing of ShibbolethRemoteUserMiddleware
+        This is here as a stub to allow subclassing of
+        ShibbolethRemoteUserMiddleware
         to include a make_profile method that will create a Django user profile
         from the Shib provided attributes.  By default it does nothing.
         """
@@ -91,7 +88,8 @@ class ShibbolethRemoteUserMiddleware(RemoteUserMiddleware):
 
     def update_user_groups(self, request, user):
         groups = self.parse_group_attributes(request)
-        # Remove the user from all groups that are not specified in the shibboleth metadata
+        # Remove the user from all groups that are not
+        # specified in the shibboleth metadata
         for group in user.groups.all():
             if group.name not in groups:
                 group.user_set.remove(user)

@@ -239,7 +239,8 @@ if 'USE_SHIB' in globals() and eval('USE_SHIB') is True:
     AUTHENTICATION_BACKENDS += (
         'shibboleth.backends.ShibbolethRemoteUserBackend',
     )
-    MIDDLEWARE.append('pod.authentication.middleware.ShibbolethRemoteUserMiddleware')
+    MIDDLEWARE.append(
+        'pod.authentication.shibmiddleware.PodShibbolethRemoteUserMiddleware')
 
 ##
 # Authentication backend : add lti backend if use
@@ -253,4 +254,3 @@ if 'H5P_ENABLED' in globals() and eval('H5P_ENABLED') is True:
     sys.path.append(os.path.join(BASE_DIR, "../../H5PP"))
     INSTALLED_APPS.append('h5pp')
     INSTALLED_APPS.append('pod.interactive')
-
