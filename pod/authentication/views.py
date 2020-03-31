@@ -8,7 +8,6 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from cas.decorators import gateway
-
 from pod.authentication.forms import FrontOwnerForm
 
 USE_CAS = getattr(
@@ -57,7 +56,7 @@ def authentication_login(request):
 
 
 def authentication_logout(request):
-    if USE_CAS:
+    if request.user.owner.auth_type == "CAS":
         return redirect(reverse('cas-logout'))
     else:
         url = reverse('local-logout')

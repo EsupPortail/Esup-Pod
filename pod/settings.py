@@ -237,7 +237,7 @@ if 'USE_CAS' in globals() and eval('USE_CAS') is True:
 
 if 'USE_SHIB' in globals() and eval('USE_SHIB') is True:
     AUTHENTICATION_BACKENDS += (
-        'shibboleth.backends.ShibbolethRemoteUserBackend',
+        'pod.authentication.backends.PodShibbolethRemoteUserBackend',
     )
     MIDDLEWARE.append(
         'pod.authentication.shibmiddleware.PodShibbolethRemoteUserMiddleware')
