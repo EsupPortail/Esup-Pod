@@ -235,10 +235,10 @@ if 'USE_CAS' in globals() and eval('USE_CAS') is True:
 
 if 'USE_SHIB' in globals() and eval('USE_SHIB') is True:
     AUTHENTICATION_BACKENDS += (
-        'pod.authentication.backends.PodShibbolethRemoteUserBackend',
+        'pod.authentication.backends.ShibbBackend',
     )
     MIDDLEWARE.append(
-        'pod.authentication.shibmiddleware.PodShibbolethRemoteUserMiddleware')
+        'pod.authentication.shibmiddleware.ShibbMiddleware')
 
 ##
 # Authentication backend : add lti backend if use

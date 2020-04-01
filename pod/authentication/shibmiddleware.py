@@ -5,5 +5,5 @@ REMOTE_USER_HEADER = getattr(
     settings, 'REMOTE_USER_HEADER', "REMOTE_USER")
 
 
-class PodShibbolethRemoteUserMiddleware(ShibbolethRemoteUserMiddleware):
+class ShibbMiddleware(ShibbolethRemoteUserMiddleware):
     header = REMOTE_USER_HEADER
