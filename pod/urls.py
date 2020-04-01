@@ -159,11 +159,6 @@ urlpatterns += [url(r'^', include('pod.completion.urls')), ]
 urlpatterns += [url(r'^', include('pod.chapter.urls')), ]
 urlpatterns += [url(r'^', include('pod.playlist.urls')), ]
 
-
-urlpatterns += [
-    url(r'^shibtest/', include('shibboleth.urls', namespace='shibboleth')),
-]
-
 if getattr(settings, 'USE_PODFILE', False):
     urlpatterns += [url(r'^podfile/', include('pod.podfile.urls')), ]
 

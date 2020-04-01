@@ -58,6 +58,8 @@ def authentication_login(request):
 def authentication_logout(request):
     if request.user.owner.auth_type == "CAS":
         return redirect(reverse('cas-logout'))
+    elif request.user.owner.auth_type == "Shibboleth":
+        return redirect(reverse('cas-logout'))
     else:
         url = reverse('local-logout')
         url += '?next=/'
