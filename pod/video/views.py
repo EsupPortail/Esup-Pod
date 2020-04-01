@@ -263,7 +263,6 @@ def theme_edit_save(request, channel):
 # VIDEOS
 # ############################################################################
 
-
 @login_required(redirect_field_name='referrer')
 def my_videos(request):
     # Videos list which user is the owner

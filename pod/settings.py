@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'pod.recorder',
     'pod.lti',
     'pod.custom',
+    'shibboleth'
 ]
 
 ##
@@ -71,6 +72,7 @@ MIDDLEWARE = [
     # Pages statiques
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
 ]
+
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
@@ -231,6 +233,12 @@ if 'USE_CAS' in globals() and eval('USE_CAS') is True:
     )
     MIDDLEWARE.append('cas.middleware.CASMiddleware')
 
+if 'USE_SHIB' in globals() and eval('USE_SHIB') is True:
+    AUTHENTICATION_BACKENDS += (
+        'pod.authentication.backends.ShibbBackend',
+    )
+    MIDDLEWARE.append(
+        'pod.authentication.shibmiddleware.ShibbMiddleware')
 
 ##
 # Authentication backend : add lti backend if use
