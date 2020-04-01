@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from cas.decorators import gateway
 from pod.authentication.forms import FrontOwnerForm
+from django.contrib import auth
 
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
@@ -18,6 +19,8 @@ CAS_GATEWAY = getattr(
     settings, 'CAS_GATEWAY', False)
 SHIB_URL = getattr(
     settings, 'SHIB_URL', "")
+SHIB_LOGOUT_URL = getattr(
+    settings, 'SHIB_LOGOUT_URL', "")
 
 if CAS_GATEWAY:
     @gateway()
@@ -59,7 +62,9 @@ def authentication_logout(request):
     if request.user.owner.auth_type == "CAS":
         return redirect(reverse('cas-logout'))
     elif request.user.owner.auth_type == "Shibboleth":
-        return redirect(reverse('cas-logout'))
+        auth.logout(request)
+        logout = SHIB_LOGOUT_URL + "?target=" + request.build_absolute_uri("/")
+        return redirect(logout)
     else:
         url = reverse('local-logout')
         url += '?next=/'
