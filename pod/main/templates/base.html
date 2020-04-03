@@ -19,8 +19,11 @@
 	    <link rel="icon" href="{% static FAVICON %}">
         {% endif %}
 	    <!-- Bootstrap CSS -->
+	    {% if BOOTSTRAP_CUSTOM %}
+	    <link rel="stylesheet" href="{% static BOOTSTRAP_CUSTOM %}" crossorigin="anonymous">
+	    {% else %}
 	    <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap.min.css' %}" crossorigin="anonymous">
-
+	    {% endif %}
 	    <!-- pod.css -->
 	    <link rel="stylesheet" href="{% static 'css/pod.css' %}" media="screen" title="no title">
         {% if CSS_OVERRIDE %}

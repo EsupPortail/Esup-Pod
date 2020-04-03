@@ -40,6 +40,8 @@ from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
 
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
+USE_SHIB = getattr(
+    settings, 'USE_SHIB', False)
 OEMBED = getattr(
     settings, 'OEMBED', False)
 
@@ -145,6 +147,7 @@ if USE_CAS:
         url(r'^sso-cas/login/$', cas_views.login, name='cas-login'),
         url(r'^sso-cas/logout/$', cas_views.logout, name='cas-logout'),
     ]
+
 ##
 # OEMBED feature patterns
 #
@@ -204,6 +207,7 @@ urlpatterns += [
     url(r'^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)'
         r'/video/(?P<slug>[\-\d\w]+)/$', video, name='video'),
 ]
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
