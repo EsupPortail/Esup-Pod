@@ -4,6 +4,7 @@
 
 .select2-container{
   position: static !important;
+  height:max-content;
 }
 
 tr ,.rowl{
@@ -21,6 +22,9 @@ padding-top: 3.5rem;
 }
 h1{
 	font-size: 2rem;
+}
+label {
+    font-variant: small-caps;
 }
 .pod-mt-7{
     margin-top: 3.5rem;
@@ -118,6 +122,9 @@ font-size:3rem;
 .open-aside{
 	margin-right: 15px;
 }
+/*#card-takenote .dropdown-menu{
+  border: none;
+}*/
 /*** modif taille logo ***/
 @media (max-width: 576px ){
     .navbar-brand img{
@@ -203,7 +210,7 @@ display: inline-block !important;
 
 .login > .initials{
   border-radius: 50%;
-  background: #b03c7e;
+  /*background: #b03c7e;*/
   color: white !important;
   font-weight: 600;
     height: 3rem;
@@ -217,10 +224,9 @@ button.nav-link{
   border: none;
   cursor: pointer;
 }
-.nav-link-icone{
+/*.nav-link-icone{
   color: #b03c7e !important;
-}
-
+}*/
 
 /*** CARD ***/
 .infinite-item .card-body {
@@ -328,11 +334,14 @@ div.card a:hover>img {
     width: 100%;
 }
 /** video form **/
-.required { color:red;}
-.form-group-required {
+.required { 
+    color:red;
+    font-size: 1.3rem;
+  }
+/*.form-group-required {
     border-left: 3px solid rgba(201, 76, 76, 0.3);
     padding-left : 5px;
-}
+}*/
 .form-group-required .errors {
     background-color: rgba(201, 76, 76, 0.3);
 }
