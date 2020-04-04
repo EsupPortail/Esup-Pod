@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-04 14:19+0200\n"
+"POT-Creation-Date: 2020-04-04 17:24+0200\n"
 "PO-Revision-Date: 2020-03-28 19:51+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -28,7 +28,7 @@ msgid "Establishment"
 msgstr "Etablissement"
 
 #: pod/authentication/forms.py:50 pod/authentication/forms.py:51
-#: pod/main/templates/navbar.html:20 pod/main/templates/navbar_collapse.html:68
+#: pod/main/templates/navbar.html:22 pod/main/templates/navbar_collapse.html:68
 #: pod/video/forms.py:225 pod/video/forms.py:517 pod/video/forms.py:521
 #: pod/video/models.py:226 pod/video/templates/videos/filter_aside.html:13
 msgid "Users"
@@ -115,7 +115,7 @@ msgstr "authentification locale"
 #: pod/authentication/templates/registration/login.html:9
 #: pod/authentication/templates/registration/login.html:12
 #: pod/authentication/templates/registration/login.html:64
-#: pod/main/templates/navbar.html:96
+#: pod/main/templates/navbar.html:100
 msgid "Log in"
 msgstr "Connexion"
 
@@ -142,7 +142,7 @@ msgid "Forgotten your password or username?"
 msgstr "Mot de passe ou identifiant perdu ?"
 
 #: pod/authentication/templates/userpicture/userpicture.html:7
-#: pod/main/templates/navbar.html:70
+#: pod/main/templates/navbar.html:74
 msgid "Change your picture"
 msgstr "Changer votre image de profil"
 
@@ -290,7 +290,6 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire:"
 #: pod/enrichment/templates/enrichment/group_enrichment.html:60
 #: pod/interactive/templates/interactive/group_interactive.html:60
 #: pod/playlist/templates/playlist.html:67
-#: pod/playlist/templates/playlist/playlist_element_list.html:47
 #: pod/recorder/templates/recorder/add_recording.html:68
 #: pod/video/templates/channel/channel_edit.html:82
 #: pod/video/templates/channel/form_theme.html:46
@@ -358,7 +357,7 @@ msgstr "Chapitre vidéo"
 #: pod/completion/templates/video_completion.html:13
 #: pod/enrichment/templates/enrichment/group_enrichment.html:10
 #: pod/interactive/templates/interactive/group_interactive.html:10
-#: pod/main/templates/navbar.html:76
+#: pod/main/templates/navbar.html:80
 #: pod/video/templates/videos/my_videos.html:6
 #: pod/video/templates/videos/video_delete.html:8
 #: pod/video/templates/videos/video_edit.html:13
@@ -1988,7 +1987,7 @@ msgstr "Ajouter une vidéo à une playlist"
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html:119
 #: pod/interactive/templates/interactive/video_interactive.html:95
-#: pod/main/templates/navbar.html:80
+#: pod/main/templates/navbar.html:84
 #: pod/playlist/templates/my_playlists.html:10
 #: pod/playlist/templates/my_playlists.html:17
 #: pod/playlist/templates/playlist.html:14
@@ -2248,7 +2247,7 @@ msgstr "Diffuseurs"
 
 #: pod/live/templates/live/live.html:16 pod/live/templates/live/live.html:20
 #: pod/live/templates/live/lives.html:12 pod/live/templates/live/lives.html:15
-#: pod/live/templates/live/lives.html:18 pod/main/templates/navbar.html:28
+#: pod/live/templates/live/lives.html:18 pod/main/templates/navbar.html:32
 msgid "Lives"
 msgstr "Directs"
 
@@ -2558,17 +2557,17 @@ msgstr "Cordialement"
 msgid "You just send a message from"
 msgstr "Vous venez d'envoyer un message depuis"
 
-#: pod/main/templates/navbar.html:16 pod/main/templates/navbar_collapse.html:6
+#: pod/main/templates/navbar.html:17 pod/main/templates/navbar_collapse.html:6
 #: pod/video/forms.py:161 pod/video/models.py:238 pod/video/models.py:517
 msgid "Channels"
 msgstr "Chaînes"
 
-#: pod/main/templates/navbar.html:24 pod/video/models.py:382
+#: pod/main/templates/navbar.html:27 pod/video/models.py:382
 #: pod/video/templates/videos/filter_aside.html:36
 msgid "Types"
 msgstr "Types"
 
-#: pod/main/templates/navbar.html:47 pod/main/templates/navbar.html:49
+#: pod/main/templates/navbar.html:51 pod/main/templates/navbar.html:53
 #: pod/video/templates/videos/filter_aside.html:15 pod/video_search/forms.py:8
 #: pod/video_search/templates/search/search.html:8
 #: pod/video_search/templates/search/search.html:17
@@ -2576,15 +2575,15 @@ msgstr "Types"
 msgid "Search"
 msgstr "Rechercher"
 
-#: pod/main/templates/navbar.html:53
+#: pod/main/templates/navbar.html:57
 msgid "Add a video"
 msgstr "Ajouter une vidéo"
 
-#: pod/main/templates/navbar.html:73
+#: pod/main/templates/navbar.html:77
 msgid "Add your picture"
 msgstr "Ajouter votre image de profil"
 
-#: pod/main/templates/navbar.html:78
+#: pod/main/templates/navbar.html:82
 #: pod/video/templates/channel/channel_edit.html:17
 #: pod/video/templates/channel/my_channels.html:6
 #: pod/video/templates/channel/my_channels.html:9
@@ -2592,19 +2591,19 @@ msgstr "Ajouter votre image de profil"
 msgid "My channels"
 msgstr "Mes chaînes"
 
-#: pod/main/templates/navbar.html:82 pod/podfile/templates/podfile/home.html:6
+#: pod/main/templates/navbar.html:86 pod/podfile/templates/podfile/home.html:6
 #: pod/podfile/templates/podfile/home.html:10
 msgid "My files"
 msgstr "Mes fichiers"
 
-#: pod/main/templates/navbar.html:85
+#: pod/main/templates/navbar.html:89
 #: pod/recorder/templates/recorder/claim_record.html:11
 #: pod/recorder/templates/recorder/record_delete.html:8
 #: pod/recorder/templates/recorder/record_delete.html:20
 msgid "Claim a record"
 msgstr "Revendiquer un enregistrement"
 
-#: pod/main/templates/navbar.html:89 pod/main/templates/navbar.html:90
+#: pod/main/templates/navbar.html:93 pod/main/templates/navbar.html:94
 msgid "Log out"
 msgstr "Déconnexion"
 
@@ -2735,7 +2734,7 @@ msgstr ""
 "utilisateurs authentifiés qui visiteront cette page."
 
 #: pod/playlist/templates/playlist.html:21
-#: pod/playlist/templates/playlist/playlist_list.html:17
+#: pod/playlist/templates/playlist/playlist_list.html:18
 #: pod/video/templates/videos/video_edit.html:16
 msgid "Edit"
 msgstr "Éditer"
@@ -2777,13 +2776,13 @@ msgstr "Vignette de la vidéo"
 msgid "Remove"
 msgstr "Retirer"
 
-#: pod/playlist/templates/playlist/playlist_list.html:20
+#: pod/playlist/templates/playlist/playlist_element_list.html:47
+msgid "Save position"
+msgstr "Enregistrer les positions"
+
+#: pod/playlist/templates/playlist/playlist_list.html:21
 msgid "Launch"
 msgstr "Lancer"
-
-#: pod/playlist/templates/playlist/playlist_list.html:22
-msgid "no first video found"
-msgstr "aucune vidéo trouvée"
 
 #: pod/playlist/templates/playlist/playlist_list.html:28
 msgid "Sorry, no playlist found"
@@ -4762,6 +4761,9 @@ msgstr "facettage"
 #: pod/video_search/views.py:55
 msgid "Remove selection"
 msgstr "Retirer la sélection"
+
+#~ msgid "no first video found"
+#~ msgstr "aucune vidéo trouvée"
 
 #~ msgid "open/close menu"
 #~ msgstr "ouvrir/fermer le menu"
