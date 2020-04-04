@@ -39,7 +39,7 @@
 				{% endif %}
 			</div>
 			<span class="float-right">
-			<a href="{% url 'video' slug=video.slug %}" title="{% trans "View the video"%}" class="btn btn btn-outline-dark btn-sm">
+			<a href="{% url 'video' slug=video.slug %}" title="{% trans "View the video"%}" class="btn btn btn-secondary btn-sm">
 			    <i data-feather="film"></i>&nbsp;{% trans "Back to the video"%}
 			</a>
 			</span>
@@ -47,7 +47,7 @@
 				<form id="form_new" class="get_form" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
 					{% csrf_token %}
 					<input type="hidden" name="action" value="new"/>
-					<input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-info btn-sm"/>
+					<input type="submit" id="add_new_chapter" value="{% trans 'Add a new chapter' %}" class="btn btn-primary btn-sm"/>
 				</form>
 			{% endif %}
 		</div>

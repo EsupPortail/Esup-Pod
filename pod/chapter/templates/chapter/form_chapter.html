@@ -1,7 +1,8 @@
 <!-- HTML for chapter form. Don't use this file alone it must be integrated into another template ! -->
 {% load i18n %}
 {% load staticfiles %}
-<div class="panel-heading bg-primary text-white">
+<div class="card card-body m-2" overflow: auto>
+<div class="panel-heading mb-3 p-1">
 	<h4 class="card-title">{% trans 'Create / Edit chapters' %}</h4>
 </div>
 <form id="form_chapter" class="form_save" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
@@ -26,13 +27,13 @@
 			<input type="hidden" id="id_chapter" name="chapter_id" value="{{form_chapter.instance.id}}"/>
 		{% endif %}
 		<input type="hidden" name="action" value="save"/>
-		<input type="submit" id="save_chapter" value="{% trans 'Save' %}" class="btn btn-info"/>
-		<input type="reset" action="cancel" id="cancel_chapter" value="{% trans 'Cancel' %}" class="btn btn-danger" />
+		<input type="submit" id="save_chapter" value="{% trans 'Save' %}" class="btn btn-primary"/>
+		<input type="reset" action="cancel" id="cancel_chapter" value="{% trans 'Cancel' %}" class="btn btn-secondary" />
 	</div>
 </form>
 &nbsp;
 {% if request.user.is_staff %}
-<div class="panel-heading bg-primary text-white">
+<div class="panel-heading mt-3 mb-3 p-1">
 	<h4 class="card-title">{% trans 'Import chapters' %}</h4>
 </div>
 <form id="form_chapter_import" class="form_save" action="{% url 'video_chapter' slug=video.slug %}" method="POST">
@@ -59,8 +60,9 @@
 			{% endfor %}
 		{% endfor %}
 		<input type="hidden" name="action" value="import"/>
-		<input type="submit" id="save_chapter_import" value="{% trans 'Import chapters' %}" class="btn btn-info"/>
+		<input type="submit" id="save_chapter_import" value="{% trans 'Import chapters' %}" class="btn btn-primary"/>
 	</div>
 </form>
 {{form_import.media}}
 {% endif %}
+</div>
