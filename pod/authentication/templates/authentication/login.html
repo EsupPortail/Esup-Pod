@@ -12,12 +12,12 @@
 
 <div class="text-center">
   {% if USE_CAS %}
-  <a class="btn btn-success" href="{% url 'cas-login' %}?next={{ referrer|urlencode }}"  title="{% trans "Single sign on" %} {{TITLE_ETB}}">{% trans "Single sign on" %} {{TITLE_ETB}}</a>
+  <p><a class="btn btn-primary" href="{% url 'cas-login' %}?next={{ referrer|urlencode }}"  title="{% trans "Single sign on" %} {{TITLE_ETB}}">{% trans "Single sign on" %} {{TITLE_ETB}}</a></p>
   {% endif %}
   {% if USE_SHIB %}
-    <a class="btn btn-info" href="{{SHIB_URL }}?target={{ referrer|urlencode }}"  title="{{ SHIB_NAME }}">{{ SHIB_NAME}}</a>
+    <p><a class="btn btn-primary" href="{{SHIB_URL }}?target={{ referrer|urlencode }}"  title="{{ SHIB_NAME }}">{{ SHIB_NAME}}</a></p>
   {% endif %}
-  <a class="btn btn-primary" href="{% url 'local-login'%}?{% if request.GET.is_iframe %}is_iframe=true&{%endif%}next={{ referrer|urlencode }}" title="">{% trans "local sign on" %}</a>
+  <p><a class="btn btn-primary" href="{% url 'local-login'%}?{% if request.GET.is_iframe %}is_iframe=true&{%endif%}next={{ referrer|urlencode }}" title="">{% trans "local sign on" %}</a></p>
 </div>
 
 {% endblock %}
