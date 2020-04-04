@@ -66,6 +66,12 @@ HIDE_USERNAME = getattr(
 HIDE_USER_TAB = getattr(
         django_settings, 'HIDE_USER_TAB', False)
 
+HIDE_CHANNEL_TAB = getattr(
+        django_settings, 'HIDE_CHANNEL_TAB', False)
+
+HIDE_TYPES_TAB = getattr(
+        django_settings, 'HIDE_TYPES_TAB', False)
+
 HIDE_USER_FILTER = getattr(
         django_settings, 'HIDE_USER_FILTER', False)
 
