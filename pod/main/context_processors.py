@@ -66,6 +66,12 @@ HIDE_USERNAME = getattr(
 HIDE_USER_TAB = getattr(
         django_settings, 'HIDE_USER_TAB', False)
 
+HIDE_CHANNEL_TAB = getattr(
+        django_settings, 'HIDE_CHANNEL_TAB', False)
+
+HIDE_TYPES_TAB = getattr(
+        django_settings, 'HIDE_TYPES_TAB', False)
+
 HIDE_USER_FILTER = getattr(
         django_settings, 'HIDE_USER_FILTER', False)
 
@@ -99,6 +105,8 @@ def context_settings(request):
     new_settings['OEMBED'] = OEMBED
     new_settings['HIDE_USERNAME'] = HIDE_USERNAME
     new_settings['HIDE_USER_TAB'] = HIDE_USER_TAB
+    new_settings['HIDE_CHANNEL_TAB'] = HIDE_CHANNEL_TAB
+    new_settings['HIDE_TYPES_TAB'] = HIDE_TYPES_TAB
     new_settings['HIDE_USER_FILTER'] = HIDE_USER_FILTER
     new_settings['USE_STATS_VIEW'] = USE_STATS_VIEW
     new_settings['USE_RECORD_PREVIEW'] = USE_RECORD_PREVIEW
