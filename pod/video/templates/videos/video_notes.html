@@ -22,7 +22,7 @@
 
     {% if request.user.is_authenticated or listNotes %}
     <div class="mgtNotes dropdown">
-        <button class="p-0 m-0 btn btn-outline-info btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage notes' %}"> <i data-feather="more-horizontal"></i> </button>
+        <button class="p-0 m-0 btn btn-outline-primary btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage notes' %}"> <i data-feather="more-horizontal"></i> </button>
         <div class="dropdown-menu p-0 m-0">
             {% if request.user.is_authenticated %}
                 <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="add_video_notes_form  mt-1" role="menuitem">
@@ -35,7 +35,7 @@
                 <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="download_video_notes_form  mt-1" role="menuitem">
                     {% csrf_token %}
                     <fieldset> <input type="hidden" id="action_dwl" name="action" value="download" autocomplete="off"/> </fieldset>
-                    <button class="p-0 m-0 btn btn-outline-secondary btn-sm download" type="submit" action="download" title="{% trans 'Download the notes' %}"> <i data-feather="download"></i> </button>
+                    <button class="p-0 m-0 btn btn-outline-primary btn-sm download" type="submit" action="download" title="{% trans 'Download the notes' %}"> <i data-feather="download"></i> </button>
                 </form>
             {% endif %}
         </div>
@@ -90,8 +90,8 @@
                                     {% endfor %}
                                     <input type="hidden" id="id_save" name="idNote" value="{{ note.id }}" autocomplete="off"/>
                                     <input type="hidden" id="action" name="action" value="save_com" autocomplete="off"/>
-                                    <input type="submit" name="submit" value="{% trans "save" %}" class="btn btn-sm btn-outline-info">
-                                    <input type="button" name="cancel" id="cancel_save_com" value="{% trans "cancel" %}" class="btn btn-sm btn-outline-info">
+                                    <input type="submit" name="submit" value="{% trans "save" %}" class="btn btn-sm btn-outline-primary">
+                                    <input type="button" name="cancel" id="cancel_save_com" value="{% trans "cancel" %}" class="btn btn-sm btn-outline-primary">
                                 </fieldset>
                             </form>
                         {% endif %}
@@ -124,8 +124,8 @@
                         {% endspaceless %}
                     {% endfor %}
                     <input type="hidden" id="action" name="action" value="save_note" autocomplete="off"/>
-                    <input type="button" name="submit" value="{% trans "save" %}" class="btn btn-sm btn-outline-info" id="video_notes_form_save">
-                    <input type="button" name="cancel" id="cancel_save" value="{% trans "cancel" %}" class="btn btn-sm btn-outline-info">
+                    <input type="button" name="submit" value="{% trans "save" %}" class="btn btn-sm btn-outline-primary" id="video_notes_form_save">
+                    <input type="button" name="cancel" id="cancel_save" value="{% trans "cancel" %}" class="btn btn-sm btn-outline-primary">
                 </fieldset>
             </form>
         {% endif %}

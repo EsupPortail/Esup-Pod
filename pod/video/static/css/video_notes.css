@@ -13,7 +13,7 @@
 
 #id_notes {
     max-height: 400px;
-    overflow: auto;
+    overflow: visible;
 }
 
 div.note > .header {

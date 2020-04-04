@@ -122,9 +122,9 @@ font-size:3rem;
 .open-aside{
 	margin-right: 15px;
 }
-/*#card-takenote .dropdown-menu{
+#card-takenote .dropdown-menu{
   border: none;
-}*/
+}
 /*** modif taille logo ***/
 @media (max-width: 576px ){
     .navbar-brand img{
