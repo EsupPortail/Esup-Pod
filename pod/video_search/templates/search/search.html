@@ -21,11 +21,6 @@
 
 {% block page_content %}
 
-<span class="float-right">
-<a class="btn btn-primary btn-sm" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" >
-  {% trans "open/close menu" %}
-</a>
-</span>
 <h3>{% trans "Search results" %}</h3>
 <p>{% blocktrans count counter=num_result %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</p>
 

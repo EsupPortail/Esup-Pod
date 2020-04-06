@@ -12,17 +12,21 @@
 
   <div class="collapse navbar-collapse bg-light navbar-items-pod" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
+      {% if HIDE_CHANNEL_TAB == False %}
       <li class="nav-item" id="nav-channels">
         <button class="nav-link" data-toggle="modal" data-target=".chaines-modal"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Channels" %}</button>
       </li>
+      {% endif %}
       {% if not HIDE_USER_TAB and user.is_authenticated %}
       <li class="nav-item" id="nav-users">
         <button class="nav-link" data-toggle="modal" data-target=".users-modal"><i data-feather="users" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Users"%}</button>
       </li>
       {% endif %}
+      {% if HIDE_TYPES_TAB == False %}
        <li class="nav-item" id="nav-types">
         <button class="nav-link" data-toggle="modal" data-target=".types-modal"><i data-feather="tv" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Types"%}</button>
       </li>
+      {% endif %}
       {% if "live" in THIRD_PARTY_APPS %}
       <li class="nav-item" id="nav-live">
         <a class="nav-link" href="{% url 'live:lives'%}"><i data-feather="radio" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Lives"%}</a>

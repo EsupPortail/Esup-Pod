@@ -34,10 +34,10 @@
 {% spaceless %}
 <h3>{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"
 <span class="float-right">
-    <a href="{% url 'video' slug=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-dark btn-sm">
+    <a href="{% url 'video' slug=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-dark btn-sm m-2">
         <i data-feather="film"></i>&nbsp;{% trans "View the video"%}
     </a>
-    <a href="{% url 'video_delete' slug=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-dark btn-sm">
+    <a href="{% url 'video_delete' slug=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-dark btn-sm m-2">
         <i data-feather="trash-2"></i>&nbsp;{% trans "Delete the video"%}
     </a>
 </span>
@@ -58,7 +58,7 @@
     accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
 {% endif %}
     {% csrf_token %}
-    <div class="list-group">
+    <!--<div class="group-video-edit">-->
         <fieldset>
             {% if form.errors %}
             <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
@@ -82,7 +82,6 @@
             {% for field in form.visible_fields %}
             {% spaceless %}
             <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}"{% if field.name == "restrict_access_to_groups" %}style="padding-left:2em;"{% endif %}>
-            <div class="list-group-item">
             <div class="form-group {% if field.field.required %}form-group-required{%endif%}" {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}style="max-width:44rem; overflow-x:hidden"{%endif%}>
                 {{ field.errors }}
                 {% if "form-check-input" in field.field.widget.attrs.class %}
@@ -102,7 +101,6 @@
                 {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
             </div>
             </div>
-            </div>
             {% endspaceless %}
             {% endfor %}
         </fieldset>
@@ -115,11 +113,11 @@
             {% trans "The page will refresh after the upload completes." %}
           </div>
         </div>
-    </div>
+    <!--</div>-->
     <div class="text-center">
-        <button type="submit" class="btn btn-primary btn-sm" name="_continue" value="">{% trans 'Save and continue editing' %}</button> 
-        {% if form.instance.title %}<button type="submit" class="btn btn-primary btn-sm" name="_saveandsee" value="{{form.instance.get_full_url}}">{% trans 'Save and see' %}</button> {%endif%}
-        <a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}" class="btn btn-success btn-sm">{% trans 'back to my videos' %}</a>
+        <button type="submit" class="btn btn-primary btn-sm m-2" name="_continue" value="">{% trans 'Save and continue editing' %}</button> 
+        {% if form.instance.title %}<button type="submit" class="btn btn-primary btn-sm m-2" name="_saveandsee" value="{{form.instance.get_full_url}}">{% trans 'Save and see' %}</button> {%endif%}
+        <a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}" class="btn btn-secondary btn-sm m-2">{% trans 'back to my videos' %}</a>
     </div>
 </form>
 {% endif %}
