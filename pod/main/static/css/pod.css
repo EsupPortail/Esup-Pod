@@ -267,7 +267,7 @@ div.card a:hover>img {
  transform:scale(1.1);
  z-index:0;
 }
-.card-footer {
+.card-footer-pod {
     position: absolute;
     bottom: 0;
     right: 0;
