@@ -1,5 +1,6 @@
 <!-- HTML for overlay form. Don't use this file alone it must be integrated into another template ! -->
 {% load i18n %}
+<div class="card card-body">
 <form id="form_overlay" action="{% url 'video_completion_overlay' slug=video.slug %}" method="POST" class="completion">
 	{% csrf_token %}
 	<div id="form_content" class="container">
@@ -22,7 +23,8 @@
 			<input type="hidden" id="id_overlay" name="overlay_id" value="{{form_overlay.instance.id}}">
 		{% endif %}
 		<input type="hidden" name="action" value="save"/>
-		<input type="submit" id="save_overlay" value="{% trans 'save' %}" class="btn btn-info"/>
-		<input type="reset" action="cancel" id="cancel_overlay" value="{% trans 'cancel' %}" class="btn btn-danger"/>
+		<input type="submit" id="save_overlay" value="{% trans 'save' %}" class="btn btn-primary"/>
+		<input type="reset" action="cancel" id="cancel_overlay" value="{% trans 'cancel' %}" class="btn btn-secondary"/>
 	</div>
 </form>
+</div>

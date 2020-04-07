@@ -27,7 +27,7 @@
 							{% csrf_token %}
 							<input type="hidden" name="action" value="modify"/>
 							<input type="hidden" name="id" value="{{contributor.id}}"/>
-							<input type="submit" title="{% trans 'Edit the contributor' %}" value="{% trans 'modify' %}" class="edt_contributor btn btn-info btn-sm"/>
+							<input type="submit" title="{% trans 'Edit the contributor' %}" value="{% trans 'modify' %}" class="edt_contributor btn btn-primary btn-sm"/>
 						</form>
 					</td>
 					<td>
@@ -35,7 +35,7 @@
 							{% csrf_token %}
 							<input type="hidden" name="action" value="delete"/>
 							<input type="hidden" name="id" value="{{contributor.id}}"/>
-							<input type="submit" title="{% trans 'Delete the contributor' %}" value="{% trans 'delete' %}" class="edt_contributor btn btn-danger btn-sm"/>
+							<input type="submit" title="{% trans 'Delete the contributor' %}" value="{% trans 'delete' %}" class="edt_contributor btn btn-primary btn-sm"/>
 						</form>
 					</td>
 				</tr>
