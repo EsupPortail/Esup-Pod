@@ -57,8 +57,8 @@
             {% endspaceless %}
             {% endfor %}
         <div class="text-center mt-1">
-            <button type="submit" class="btn btn-success">{% trans "Send" %}</button>
-            <a href="{% url 'claim_record' %}" title="{{video.title}}" class="btn btn-info">{% trans "Back to record claiming"%}</a>
+            <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
+            <a href="{% url 'claim_record' %}" title="{{video.title}}" class="btn btn-secondary">{% trans "Back to record claiming"%}</a>
         </div>
     </fieldset>
     </div>
