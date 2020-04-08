@@ -11,7 +11,7 @@
 				{% endif %}
 				<div class="card-body">
 					<h5 class="card-title">{{playlist.title}}</h5>
-					<h6 class="card-subtitle mb-2 text-muted">{% trans 'Video' %}(s): {{playlist.videos|length}}</h6>
+					<h6 class="card-subtitle mb-2 text-muted">{% blocktrans count counter=playlist.videos|length %} {{counter}} video{% plural %} {{counter}} videos {% endblocktrans %}</h6>
 					<p class="card-text">{{playlist.description}}</p>
 				</div>
 				<div class="btn-group">

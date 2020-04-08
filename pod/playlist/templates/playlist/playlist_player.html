@@ -18,7 +18,7 @@
 				<p class="text-white">{{video.title}} - {{video.playlistelement_set.first.position}} / {{playlist.videos|length}}</p>
       		</div>
       		<div class="col-6">
-      			<p class="text-white text-right">{{playlist.videos|length}} {% trans 'video' %}(s)</p>
+      			<p class="text-white text-right">{% blocktrans count counter=playlist.videos|length %} {{counter}} video{% plural %} {{counter}} videos {% endblocktrans %}</p>
       		</div>
       	</div>	
     </div>
