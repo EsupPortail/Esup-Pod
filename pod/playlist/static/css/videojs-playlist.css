@@ -34,9 +34,10 @@
 	background-color: rgba(0, 0, 0, 0.1);
 }
 .playlist-counter {
-	text-align: right;
+	/*text-align: right;
 	font-size: small;
-	display: flex;
+	display: flex;*/
+	color:white;
 }
 .playlist-options:hover {
 	color: #007bff !important;

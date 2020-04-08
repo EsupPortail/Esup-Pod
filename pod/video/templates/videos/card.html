@@ -53,7 +53,7 @@
     <div class="card-body">
       
       {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all %}
-      <footer class="card-footer p-0 m-0">
+      <footer class="card-footer card-footer-pod p-0 m-0">
         {% include "videos/link_video.html" %}
       </footer>
       {% endif %}

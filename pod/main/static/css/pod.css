@@ -239,7 +239,7 @@ button.nav-link{
     margin:0.1rem;
 }
 
-.card-header {
+#videos_list .card-header, .playlist-videos .card-header {
     position:absolute; 
     width:100%; 
     background: rgba(0, 0, 0, 0.6);
@@ -267,7 +267,7 @@ div.card a:hover>img {
  transform:scale(1.1);
  z-index:0;
 }
-.card-footer {
+.card-footer-pod {
     position: absolute;
     bottom: 0;
     right: 0;

@@ -34,10 +34,10 @@
 {% spaceless %}
 <h3>{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"
 <span class="float-right">
-    <a href="{% url 'video' slug=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-dark btn-sm m-2">
+    <a href="{% url 'video' slug=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn-primary btn-sm m-2">
         <i data-feather="film"></i>&nbsp;{% trans "View the video"%}
     </a>
-    <a href="{% url 'video_delete' slug=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-dark btn-sm m-2">
+    <a href="{% url 'video_delete' slug=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-primary btn-sm m-2">
         <i data-feather="trash-2"></i>&nbsp;{% trans "Delete the video"%}
     </a>
 </span>
@@ -107,7 +107,10 @@
         <div class="card" id='js-process'>
           <div class="card-body">
             <h5 class="card-title">{% trans "Sending, please wait." %}</h5>
-            <p class="card-text">{% progress_bar %}</p>
+            <div class="spinner-border" role="status">
+                <span class="sr-only">{% trans "Loading" %}...</span>
+            </div>
+            <!--<p class="card-text">{% progress_bar %}</p>-->
           </div>
           <div class="card-footer">
             {% trans "The page will refresh after the upload completes." %}

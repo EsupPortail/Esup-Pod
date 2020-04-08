@@ -59,15 +59,15 @@
 		<form id="form_new" class="get_form" action="{% url 'enrichment:edit_enrichment' slug=video.slug %}" method="POST">
 			{% csrf_token %}
 			<input type="hidden" name="action" value="new"/>
-			<input type="submit" id="add_new_enrichment" value="{% trans 'Add a new enrichment' %}" class="btn btn-info btn-sm"/>
+			<input type="submit" id="add_new_enrichment" value="{% trans 'Add a new enrichment' %}" class="btn btn-primary btn-sm"/>
 		</form>
 	{% endif %}
 	<hr/>
 	<div class="d-flex justify-content-between">
-	<a href="{% url 'video_edit' slug=video.slug %}" class="btn btn-info btn-sm" title="{% trans 'Back to video edit' %}">
+	<a href="{% url 'video_edit' slug=video.slug %}" class="btn btn-secondary btn-sm" title="{% trans 'Back to video edit' %}">
 		{% trans 'Back to video edit' %}
 	</a>
-	<a href="{% url 'enrichment:video_enrichment' slug=video.slug %}" class="btn btn-info btn-sm" title="{% trans 'See the enrich video' %}">
+	<a href="{% url 'enrichment:video_enrichment' slug=video.slug %}" class="btn btn-primary btn-sm" title="{% trans 'See the enrich video' %}">
 		{% trans 'See the enrich video' %}
 	</a>
 	</div>
