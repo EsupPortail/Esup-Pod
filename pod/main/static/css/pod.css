@@ -211,7 +211,7 @@ button.nav-link{
 
 /*** CARD ***/
 .infinite-item .card-body {
-    padding: 1.1rem;
+    padding: 0.9rem;
     height: 3.5rem;
     overflow: hidden;
 }
@@ -227,9 +227,15 @@ button.nav-link{
     padding: 0 0.25rem;
     
 }
-/*.card-header .text-muted {
+#videos_list .card-header .text-muted {
     color:white !important; 
-}*/
+}
+
+#videos_list .video-title{
+  line-height: 1.2;
+  display: inline-block;
+}
+
 div.video-card .d-flex {
     min-height:70%;
     /*position:relative;*/
@@ -250,8 +256,8 @@ div.card a:hover>img {
 }
 .card-footer-pod {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: 57px;
+    right: 2px;
     /*width: 100%;
     text-align: center;*/
     border:none;

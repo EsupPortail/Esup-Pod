@@ -57,16 +57,16 @@
   var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],
     onBeforePageLoad: function () {
-      $('.loading').show();
+      $('.infinite-loading').show();
     },
     onAfterPageLoad: function ($items) {
-      $('.loading').hide();
+      $('.infinite-loading').hide();
       feather.replace({ class: 'align-bottom'});
-      if(!$('footer').hasClass('small')) {
+      /*if(!$('footer').hasClass('small')) {
         $('footer').addClass('small');
-	$('footer').addClass('fixed-bottom');
+	      $('footer').addClass('fixed-bottom');
         $('footer').attr('style','height:80px; overflow-y:auto');
-      }
+      }*/
     }
   });
 </script>

@@ -58,7 +58,7 @@
       </footer>
       {% endif %}
 
-      <h6 class="card-subtitle small">
+      <span class="small video-title">
         {% if channel %}
         {% if theme %}
         <a href="{% url 'video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
@@ -72,7 +72,7 @@
         {% else %}
         <a href="{{video.get_absolute_url}}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">{{video.title|title|truncatechars:43}}</a>
         {% endif %}
-      </h6>
+      </span>
 
     </div>
 </div>
