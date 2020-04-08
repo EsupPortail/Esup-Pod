@@ -847,11 +847,11 @@ msgstr "Supprimer les fichiers de sous-titres ou de légendes"
 #: pod/completion/templates/video_completion.html:55
 #: pod/completion/templates/video_completion.html:146
 msgid "Video Caption Maker"
-msgstr "Outil de création de fichier sous-titre"
+msgstr "Outil de création de fichier de sous-titres"
 
 #: pod/completion/templates/video_caption_maker.html:53
 msgid "Load Existing Caption File [optional]"
-msgstr "Charger un fichier de sous-titre existant [facultatif]"
+msgstr "Charger un fichier de sous-titres existant [facultatif]"
 
 #: pod/completion/templates/video_caption_maker.html:93
 msgid "Play"
@@ -917,7 +917,7 @@ msgstr "Ajouter un nouveau contributeur"
 
 #: pod/completion/templates/video_completion.html:49
 msgid "Display &quot;Subtitle(s) and Caption(s) &quot; section"
-msgstr "Afficher la section « Sous-titre(s) et Légende(s) »"
+msgstr "Afficher la section « Sous-titres et Légendes »"
 
 #: pod/completion/templates/video_completion.html:50
 #: pod/completion/templates/video_completion.html:139
@@ -979,7 +979,7 @@ msgstr ""
 
 #: pod/completion/templates/video_completion.html:142
 msgid "Subtitle(s) and/or captions(s) related to this video."
-msgstr "Sous-titre(s) et/ou légende(s) relatif(s) à cette vidéo."
+msgstr "Sous-titres et/ou légendes relatifs à cette vidéo."
 
 #: pod/completion/templates/video_completion.html:143
 msgid ""
