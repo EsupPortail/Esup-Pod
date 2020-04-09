@@ -579,6 +579,7 @@ class ChannelForm(forms.ModelForm):
             del self.fields['visible']
             if self.fields.get('sites'):
                 del self.fields['sites']
+        if not self.is_superuser or not hasattr(self, 'admin_form'):
             self.fields['owners'].queryset = self.fields['owners']. \
                 queryset.filter(owner__sites=Site.objects.get_current())
             self.fields['users'].queryset = self.fields['users']. \
