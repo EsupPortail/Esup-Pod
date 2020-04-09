@@ -50,7 +50,7 @@
     </div>
 {% endif %}
 
-<p class="text-info">{% trans "Load Existing Caption File [optional]" %} :
+<p>{% trans "Load Existing Caption File [optional]" %} :
 <form method="post" action="{% url 'video_caption_maker' slug=video.slug %}" id="captionmaker_form">
     {% csrf_token %}
     <fieldset>
@@ -79,7 +79,7 @@
 <div class="grayNoVideo">
     <div style="display: inline-block; float: left; margin-right: 2%; min-height: 425px;
             width: 49%;">
-        <span>{% trans "Video" %}:</span>
+        <span>{% trans "Video" %} :</span>
         {% include 'videos/video-element.html' %}
         <div id="videoError" class="videoError" style="display: none;"></div>
         <div id="captionTitle"></div>
@@ -87,38 +87,35 @@
         <textarea id="textCaptionEntry" class="" autocomplete="off"></textarea>
         </div>
         <div >
-            <button id="playButton" class="btn btn-primary btn-sm">{% trans "Play" %}</button>
-            <button id="pauseButton" class="btn btn-primary btn-sm">{% trans "Pause" %}</button>
-            <button id="justSaveCaption" class="btn btn-primary btn-sm">{% trans "Save" %}</button>
-            <button id="saveCaptionAndPlay" class="btn btn-primary btn-sm">{% trans "Save &amp; Continue" %}</button>
+            <button id="playButton" class="btn btn-primary btn-sm mt-1">{% trans "Play" %}</button>
+            <button id="pauseButton" class="btn btn-primary btn-sm mt-1">{% trans "Pause" %}</button>
+            <button id="justSaveCaption" class="btn btn-primary btn-sm mt-1">{% trans "Save" %}</button>
+            <button id="saveCaptionAndPlay" class="btn btn-primary btn-sm mt-1">{% trans "Save &amp; Continue" %}</button>
         </div>
     </div>
     <div style="display: inline-block; float: left; width: 49%;">
-        <span>{% trans "Caption list" %}:</span>
+        <span>{% trans "Caption list" %} :</span>
         <div id="display">
 
         </div>
         <div >
-            <button id="clearAllCaptions" class="btn btn-primary btn-sm mt-1">{% trans "Clear All" %}</button>
-        </div>
-    </div>
-    <div id="captionFileAndMarkup" style="clear: both; padding-top: 24px; padding-bottom: 24px; display: block;">
-    <div style="padding-top: 6px;">
         <form class="form_save completion" id="form_save_captions" action="{% url 'video_caption_maker' slug=video.slug %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <input type="hidden" name="action" value="save"/>
             <input type="hidden" name="file_id"/>
-            <p class="text-info">
-                {% trans "Save" %} : <input type="submit" value="{% trans 'Save Captions' %}" id="save_captions" class="btn btn-primary"/>
-            </p>
+            <input type="submit" value="{% trans 'Save Captions' %}" id="save_captions" class="btn btn-primary btn-sm mt-1"/>
+            <button id="clearAllCaptions" class="btn btn-primary btn-sm mt-1">{% trans "Clear All" %}</button>
         </form>
-
-        <span class="float-right">
-            <a href="{% url 'video_completion' slug=video.slug %}" title="{% trans 'View the video' %}" class="btn btn btn-outline-dark btn-sm">
-                <i data-feather="arrow-left"></i>&nbsp;{% trans "Back to the completion"%}
-            </a>
-        </span>
+        </div>
     </div>
+    <div id="captionFileAndMarkup" style="clear: both; padding-top: 24px; padding-bottom: 24px; display: block;">
+        <div style="padding-top: 6px;">
+            <span class="float-right">
+                <a href="{% url 'video_completion' slug=video.slug %}" title="{% trans 'View the video' %}" class="btn btn btn-secondary btn-sm">
+                    <i data-feather="arrow-left"></i>&nbsp;{% trans "Back to the completion"%}
+                </a>
+            </span>
+        </div>
     </div>
 </div>
 
@@ -126,7 +123,7 @@
     <div class="modal-dialog modal-sm">
         <div class="modal-content" style="min-height: auto; width: auto;">
             <div class="modal-header">
-                <p class="modal-title">{% trans "Save captions file."%}</p>
+                <h2 class="modal-title">{% trans "Save captions file."%}</h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
