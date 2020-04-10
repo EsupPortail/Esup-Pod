@@ -154,10 +154,12 @@ def context_navbar(request):
         )))
 
     types = Type.objects.filter(
+        video__sites=get_current_site(request),
         video__is_draft=False, sites=get_current_site(request)
     ).distinct().annotate(video_count=Count("video", distinct=True))
 
     disciplines = Discipline.objects.filter(
+        video__sites=get_current_site(request),
         video__is_draft=False, sites=get_current_site(request)
     ).distinct().annotate(video_count=Count("video", distinct=True))
 
