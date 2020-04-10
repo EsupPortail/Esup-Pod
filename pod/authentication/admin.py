@@ -130,7 +130,6 @@ class UserAdmin(BaseUserAdmin):
     owner_establishment.short_description = _('Establishment')
 
     ordering = ('-is_superuser', 'username', )
-    inlines = (OwnerInline, )
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -145,11 +144,12 @@ class UserAdmin(BaseUserAdmin):
             obj.owner.sites.add(get_current_site(request))
             obj.owner.save()
 
-    def get_readonly_fields(self, request, obj=None):
-        if obj is None:
-            return ('owner',)
-        else:
-            return ()
+    def get_inline_instances(self, request, obj=None):
+        _inlines = super().get_inline_instances(request, obj=None)
+        if obj is not None:
+            custom_inline = OwnerInline(self.model, self.admin_site)
+            _inlines.append(custom_inline)
+        return _inlines
 
 
 # Create a new Group admin.
