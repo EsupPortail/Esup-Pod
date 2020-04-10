@@ -32,6 +32,7 @@
         <a class="nav-link" href="{% url 'live:lives'%}"><i data-feather="radio" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Lives"%}</a>
       </li>
       {% endif %}
+      {% if HIDE_LANGUAGE_SELECTOR == False %}
       <li class="nav-item d-flex d-block d-lg-none langs pt-2 mt-2 justify-content-between" id="nav-languagechoice">
         <button class="active">{{LANGUAGE_CODE}}</button>
         {% for language in languages %}
@@ -44,6 +45,7 @@
         {% endif %}
         {% endfor %}
       </li>
+      {% endif %}
     </ul>
   </div>
   <form class="form-inline my-2 my-lg-0 flex-2" action="{% url "search_videos" %}" id="nav-search">
@@ -101,6 +103,7 @@
         </a>
       </li>
       {% endif %}
+      {% if HIDE_LANGUAGE_SELECTOR == False %}
       <li class="nav-item d-none d-lg-block" id="nav-languagechoicelg">
         <div class="btn-group"><button type="button" class="btn btn-lang btn-lang-active my-2 mr-sm-2 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {{LANGUAGE_CODE}}
@@ -118,6 +121,7 @@
         </div>
         </div>
       </li>
+      {% endif %}
    </ul>
 </div> <!-- FIN Container -->
 {% endspaceless %}    
