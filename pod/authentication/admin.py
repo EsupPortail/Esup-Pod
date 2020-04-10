@@ -139,6 +139,12 @@ class UserAdmin(BaseUserAdmin):
                 request))
         return qs
 
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if not change:
+            obj.owner.sites.add(get_current_site(request))
+            obj.owner.save()
+
 
 # Create a new Group admin.
 class GroupAdmin(admin.ModelAdmin):
