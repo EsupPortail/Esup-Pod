@@ -99,6 +99,9 @@ USE_RECORD_PREVIEW = getattr(
 SHIB_NAME = getattr(
         django_settings, 'SHIB_NAME', "Identify Federation")
 
+USE_THEME = getattr(
+        django_settings, 'USE_THEME', "default")
+
 
 def context_settings(request):
     new_settings = {}
@@ -129,6 +132,7 @@ def context_settings(request):
         SHIB_URL
     new_settings['USE_SHIB'] = \
         USE_SHIB
+    new_settings['USE_THEME'] = USE_THEME
     return new_settings
 
 

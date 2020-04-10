@@ -279,3 +279,10 @@ LTI_PROPERTY_LIST_EX = [
     'custom_video'
 ]
 LTI_PROPERTY_USER_USERNAME = 'ext_user_username'
+
+###
+# Choose a theme for your pod website
+# 'default' is the simpliest, bootstrap $enable_rounded is true
+# 'green' is with a dark green for primary color, $enable_rounded is false
+# 'dark' is black and red, without grey background, $enable_rounded is false
+USE_THEME = 'green'
