@@ -32,7 +32,7 @@ label {
     margin-top: 3.5rem;
 }
 .breadcrumb, .jumbotron{
-	background: #f8f9fa!important;
+	background: #f8f9fa;
 }
 .list-group-item{
 padding:.25rem 1.25rem;
