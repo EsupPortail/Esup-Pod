@@ -145,6 +145,12 @@ class UserAdmin(BaseUserAdmin):
             obj.owner.sites.add(get_current_site(request))
             obj.owner.save()
 
+    def get_readonly_fields(self, request, obj=None):
+        if obj is None:
+            return ('owner',)
+        else:
+            return ()
+
 
 # Create a new Group admin.
 class GroupAdmin(admin.ModelAdmin):
