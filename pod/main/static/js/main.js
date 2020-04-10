@@ -138,7 +138,7 @@ var get_list = function(tab, level, tab_selected, tag_type, li_class, attrs, add
 /*** CHANNELS IN NAVBAR ***/
 
 $('.collapsibleThemes').on('show.bs.collapse', function () {
-  var str = get_list(listTheme["channel_"+$(this).data('id')], 0, [], tag_type="li", li_class="list-inline-item badge badge-primary badge-pill", attrs='', add_link=true, current="", channel="");
+  var str = get_list(listTheme["channel_"+$(this).data('id')], 0, [], tag_type="li", li_class="list-inline-item badge badge-primary-pod badge-pill", attrs='', add_link=true, current="", channel="");
   $(this).html('<ul class="list-inline p-1 border">'+str+'</ul>')
   //$(this).parents("li").addClass('list-group-item-light');
   $(this).parents("li").find('.chevron-down').attr('style', 'transform: rotate(180deg);');

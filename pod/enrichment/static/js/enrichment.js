@@ -2,9 +2,9 @@ var id_form = 'form_enrich';
 function show_form(data) {
     $('#'+id_form).hide().html(data).fadeIn();
     $("input#id_start")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode'></span></span>");
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-primary btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode'></span></span>");
     $("input#id_end")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-info btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode'></span></span>");
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-primary btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode'></span></span>");
     enrich_type();
 };
 
@@ -180,9 +180,9 @@ Number.prototype.toHHMMSS = function() {
 function get_form(data) {
     $("#form_enrich").hide().html(data).fadeIn();
     $("input#id_start")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode'></span></span>");
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-primary btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode'></span></span>");
     $("input#id_end")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-info btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode'></span></span>");
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-primary btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode'></span></span>");
     enrich_type();
     manageResize();
 };

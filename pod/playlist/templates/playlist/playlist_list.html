@@ -11,7 +11,7 @@
 				{% endif %}
 				<div class="card-body">
 					<h5 class="card-title">{{playlist.title}}</h5>
-					<h6 class="card-subtitle mb-2 text-muted">{% trans 'Video' %}(s): {{playlist.videos|length}}</h6>
+					<h6 class="card-subtitle mb-2 text-muted">{% blocktrans count counter=playlist.videos|length %} {{counter}} video{% plural %} {{counter}} videos {% endblocktrans %}</h6>
 					<p class="card-text">{{playlist.description}}</p>
 				</div>
 				<div class="btn-group">
@@ -29,8 +29,8 @@
 		</div>
 	{% endfor %}
 	<div class="col-1">
-			<a class="btn btn-primary text-white" href="{% url 'playlist' %}">
-				<svg height="32" class="octicon octicon-plus" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M12 9H7v5H5V9H0V7h5V2h2v5h5v2z"></path></svg>
+			<a class="btn btn-primary" href="{% url 'playlist' %}">
+				<svg height="32" class="octicon octicon-plus fill-color-pod" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M12 9H7v5H5V9H0V7h5V2h2v5h5v2z"></path></svg>
 			</a>
 	</div>
 	{% if playlists.has_next %}

@@ -26,10 +26,10 @@ body {
 {% block page_content %}
 <h3>{% trans "Editing the channel's themes" %} {{channel.title}}
 <span class="float-right">
-    <a href="{% url 'channel' slug_c=channel.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-dark btn-sm">
+    <a href="{% url 'channel' slug_c=channel.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-primary btn-sm">
         <i data-feather="youtube"></i>&nbsp;{% trans "View the channel"%}
     </a>
-    <a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-dark btn-sm">
+    <a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-primary btn-sm">
         <i data-feather="edit"></i>&nbsp;{% trans "Edit the channel"%}
     </a>
 </span>
@@ -45,14 +45,14 @@ body {
         <form id="theme_form_new" class="get_form_theme" action="{% url 'theme_edit' slug=channel.slug %}" method="POST">
             {% csrf_token %}
             <input type="hidden" name="action" value="new"/>
-            <input type="submit" value="{% trans 'Add a new theme' %}" class="btn btn-info"/>
+            <input type="submit" value="{% trans 'Add a new theme' %}" class="btn btn-primary"/>
         </form>
     {% endif %}
 </div>
 <form id="theme_form_new" class="get_form_theme" action="{% url 'theme_edit' slug=channel.slug %}" method="POST"  {% if form_theme %}style="display:none;"{%endif%}>
     {% csrf_token %}
     <input type="hidden" name="action" value="new"/>
-    <input type="submit" value="{% trans 'Add a new theme' %}" class="btn btn-info"/>
+    <input type="submit" value="{% trans 'Add a new theme' %}" class="btn btn-primary"/>
 </form>
 {% endblock page_content %}
 

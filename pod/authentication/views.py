@@ -63,7 +63,7 @@ def authentication_logout(request):
         return redirect(reverse('cas-logout'))
     elif request.user.owner.auth_type == "Shibboleth":
         auth.logout(request)
-        logout = SHIB_LOGOUT_URL + "?target=" + request.build_absolute_uri("/")
+        logout = SHIB_LOGOUT_URL + "?return=" + request.build_absolute_uri("/")
         return redirect(logout)
     else:
         url = reverse('local-logout')
