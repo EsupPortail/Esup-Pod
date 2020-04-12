@@ -19,6 +19,7 @@ from pod.authentication.views import userpicture
 from pod.video.views import video
 from pod.video.views import video_edit
 from pod.video.views import video_delete
+from pod.video.views import video_collaborate
 from pod.video.views import channel
 from pod.video.views import videos
 from pod.video.views import my_videos
@@ -84,6 +85,9 @@ urlpatterns = [
         video_count, name='video_count'),
     url(r'^video_version/(?P<id>[\d]+)/$',
         video_version, name='video_version'),
+    url(r'^video_collaborate/(?P<slug>[\-\d\w]+)/$',
+        video_collaborate,
+        name='video_collaborate'),
 
     # my channels
     url(r'^my_channels/$', my_channels, name='my_channels'),

@@ -91,4 +91,3 @@ $(document).on('click', '#cancel_save_com', function(){
     let data_form = $("#video_notes_form").parent().find('.view_video_note_coms_form.hidden').serializeArray();
     send_form_data($("#video_notes_form").parent().find('.view_video_note_coms_form.hidden').attr("action"), data_form, "display_notes_place", "post");
 })
-
