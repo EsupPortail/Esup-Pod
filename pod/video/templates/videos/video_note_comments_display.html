@@ -1,13 +1,13 @@
 {% load staticfiles i18n video_note_filter %}
 
-<div id="comment-{{ com.id }}" class="comment status-{{ com.status }}">
+<div id="comment-{{ com.id }}" class="comment status-{{ com.status }} border-left pl-2">
 
     <div class="header">
         {% comment %} {% if com.user.userpicture %} <span class="user">{{ com.user.userpicture }}</span> {% else %} <span class="user">{{ com.user.username }}</span> {% endif %} {% endcomment %}
-        <span class="user"> {{ com.user.username }} </span>
+        <span><span class="user"> {{ com.user.username }}</span>, {% trans 'the' %} {{com.modified_on}} {% if com.notecomments_set.all.count > 0 %}<span><i class="" data-feather="chevron-down" width="16" height="16" ></i></span>{% endif %}</span>      
         {% if request.user.is_authenticated and request.user == com.user %}
             <div class="mgtComment dropleft">
-                <button class="p-0 m-0 btn btn-outline-info btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage comment' %}"> <i data-feather="more-horizontal"></i> </button>
+                <button class="p-0 m-0 btn btn-outline-primary btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage comment' %}"> <i data-feather="more-horizontal"></i> </button>
                 <div class="dropdown-menu">
 
                     {% comment %} Button to edit the comment in three dots menu {% endcomment %}
@@ -29,7 +29,7 @@
                             <input type="hidden" id="id_rm" name="idCom" value="{{ com.id }}" autocomplete="off"/>
                             <input type="hidden" id="action_rm" name="action" value="remove_com" autocomplete="off"/>
                         </fieldset>
-                        <button class="p-0 m-0 btn btn-outline-danger btn-sm remove" type="submit" action="remove" title="{% trans 'Remove the comment' %}"> <i data-feather="trash-2"></i> </button>
+                        <button class="p-0 m-0 btn btn-outline-primary btn-sm remove" type="submit" action="remove" title="{% trans 'Remove the comment' %}"> <i data-feather="trash-2"></i> </button>
                     </form>
 
                     {% comment %} Button to comment the comment in three dots menu {% endcomment %}
@@ -40,7 +40,7 @@
                             <input type="hidden" id="id_com_com" name="idCom" value="{{ com.id }}" autocomplete="off"/>
                             <input type="hidden" id="action_com" name="action" value="form_com_new" autocomplete="off"/>
                         </fieldset>
-                        <button class="p-0 m-0 btn btn-outline-secondary btn-sm comment" type="submit" title="{% trans 'Comment the note' %}"> <i data-feather="message-circle"></i> </button>
+                        <button class="p-0 m-0 btn btn-outline-primary btn-sm comment" type="submit" title="{% trans 'Comment the note' %}"> <i data-feather="message-circle"></i> </button>
                     </form>
 
                 </div>
@@ -57,7 +57,7 @@
                 <input type="hidden" id="id_com_view" name="idCom" value="{{ com.parentCom.id }}" autocomplete="off"/>
                 <input type="hidden" id="action_view" name="action" value="get" autocomplete="off"/>
             </fieldset>
-            <p class="comment form">{{ com.comment }}</p>
+            <span class="comment form">{{ com.comment }}</span>
         </form>
 
     {% comment %} Display a form to edit the comment {% endcomment %}
@@ -69,7 +69,7 @@
                 <input type="hidden" id="id_com_view" name="idCom" value="{{ com.id }}" autocomplete="off"/>
                 <input type="hidden" id="action_view" name="action" value="get" autocomplete="off"/>
             </fieldset>
-        </form> 
+        </form>
         <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
             {% csrf_token %}
             <fieldset>
@@ -89,8 +89,8 @@
                 <input type="hidden" id="id_com_save" name="idCom" value="{{ com.id }}" autocomplete="off"/>
                 <input type="hidden" id="action_save" name="action" value="save_com_edit" autocomplete="off"/>
 
-                <input type="submit" name="submit" value="{% trans "save" %}" class="btn btn-sm btn-outline-info">
-                <input type="button" name="cancel" id="cancel_save_com" value="{% trans "cancel" %}" class="btn btn-sm btn-outline-info">
+                <input type="submit" name="submit" value="{% trans "save" %}" class="btn btn-sm btn-outline-primary">
+                <input type="button" name="cancel" id="cancel_save_com" value="{% trans "cancel" %}" class="btn btn-sm btn-outline-primary">
 
             </fieldset>
         </form>
@@ -104,8 +104,8 @@
                 <input type="hidden" id="id_note_view" name="idNote" value="{{ note.id }}" autocomplete="off"/>
                 <input type="hidden" id="action_view" name="action" value="get" autocomplete="off"/>
             </fieldset>
-            <p class="comment form"> {{ com.comment }} </p>
-        </form> 
+            <span class="comment form"> {{ com.comment }} </span>
+        </form>
     {% endif %}
 
 </div>
@@ -133,7 +133,7 @@
             <input type="hidden" id="id_note_view" name="idNote" value="{{ note.id }}" autocomplete="off"/>
             <input type="hidden" id="id_com_view" name="idCom" value="{{ com.id }}" autocomplete="off"/>
         </fieldset>
-    </form> 
+    </form>
     <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
     {% csrf_token %}
         <fieldset>
