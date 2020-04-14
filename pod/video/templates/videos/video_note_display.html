@@ -10,7 +10,7 @@
             <fieldset>
                 <input type="hidden" id="action_view" name="action" value="get" autocomplete="off"/>
             </fieldset>
-            <p class="note form">{{ note.note }}</p>
+            <p class="note form"><span class="user">{{ note.user.username }}</span><span>, {% trans 'the' %} {{note.modified_on}} :<br />{{ note.note }}</span></p>
         </form>
 
     {% comment %} Display a form to edit the note {% endcomment %}
@@ -51,7 +51,7 @@
                 <input type="hidden" id="action_view" name="action" value="get" autocomplete="off"/>
                 <input type="hidden" id="id_note_view" name="idNote" value="{{ note.id }}" autocomplete="off"/>
             </fieldset>
-            <p class="note form"> {{ note.note}} {% if note.notecomments_set.all.count > 0 %}<span class=""><i class="" data-feather="chevron-down" width="16" height="16" ></i></span>{% endif %}</p>
+            <p class="note form"><span class="user">{{ note.user.username }}</span> : {{ note.note}} {% if note.notecomments_set.all.count > 0 %}<span class=""><i class="" data-feather="chevron-down" width="16" height="16" ></i></span>{% endif %}</p>
         </form>
     {% endif %}
 

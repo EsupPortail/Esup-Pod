@@ -71,6 +71,10 @@ div.header {
     display: flex;
 }
 
+div.header:hover{
+  background:#f2f2f2;
+}
+
 div.header > form {
     align-self: center;
     width: 70%;
@@ -133,12 +137,12 @@ div.mgtComment.dropleft > button {
 #id_notes > div.status-0 > div.header, #id_notes > div.status-0 > div.header div.dropdown-menu,
 .comments > div.status-0 > .header, .comments > div.status-0 > form,
 .comments > div.status-0 > div.header div.dropdown-menu {
-    color: rgba(0,0,0,0.3);
+    color: rgba(0,0,0,0.5);
 }
 #id_notes > div.status-1 > .header, #id_notes > div.status-1 div.dropdown-menu,
 .comments > div.status-1 > .header, .comments > div.status-1 > form,
 .comments > div.status-1 > div.header div.dropdown-menu {
-  color:rgba(0,0,0,0.6);
+  color:rgba(0,0,0,0.7);
 }
 #id_notes > div.status-2 > .header, #id_notes > div.status-2 div.dropdown-menu,
 .comments > div.status-2 > .header, .comments > div.status-2 > form,

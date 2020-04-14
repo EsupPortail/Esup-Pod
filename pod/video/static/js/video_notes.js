@@ -15,8 +15,6 @@ $(document).on('click',  '#video_notes_form_save', function(e){
     $('#video_notes_form').submit();
 })
 
-
-
 /**
  * Handle click on buttons in three dots menu
  */
@@ -60,7 +58,7 @@ $(document).on('click', 'span.timestamp', function(){
 /**
  * Handle click on note or comment text for partial or full display
  */
-$(document).on('click', 'p.note.form, p.comment.form', function(){
+$(document).on('click', 'p.note.form, span.comment.form', function(){
     let data_form = $(this).parent().serializeArray();
     send_form_data($(this).parent().attr("action"), data_form, "display_notes_place", "post");
 })
