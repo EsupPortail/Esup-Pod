@@ -7,20 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2020-04-13 12:11+0200\n"
-"PO-Revision-Date: 2020-04-13 12:23+0200\n"
-=======
-"POT-Creation-Date: 2020-04-12 23:12+0200\n"
-"PO-Revision-Date: 2020-04-12 23:16+0200\n"
->>>>>>> apps_video_collaborate
-"Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
 "Language-Team: \n"
-"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fr\n"
 "X-Generator: Poedit 2.3\n"
 
 #: pod/authentication/admin.py:62 pod/main/forms.py:51
@@ -284,7 +279,7 @@ msgstr "Créer / Éditer les chapitres"
 #: pod/enrichment/templates/enrichment/form_enrichment.html:12
 #: pod/video/templates/channel/form_theme.html:11
 msgid "One or more errors have been found in the form:"
-msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire:"
+msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire :"
 
 #: pod/chapter/templates/chapter/form_chapter.html:30
 #: pod/completion/templates/video_caption_maker.html:95
@@ -296,13 +291,9 @@ msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire:"
 #: pod/video/templates/channel/channel_edit.html:82
 #: pod/video/templates/channel/form_theme.html:46
 #: pod/video/templates/videos/video_note_comments_display.html:100
-<<<<<<< HEAD
 #: pod/video/templates/videos/video_note_display.html:42
 #: pod/video/templates/videos/video_notes.html:91
 #: pod/video/templates/videos/video_notes.html:126
-=======
-#: pod/video/templates/videos/video_notes.html:91
->>>>>>> apps_video_collaborate
 msgid "Save"
 msgstr "Sauvegarder"
 
@@ -310,13 +301,9 @@ msgstr "Sauvegarder"
 #: pod/enrichment/templates/enrichment/form_enrichment.html:31
 #: pod/video/templates/channel/form_theme.html:47
 #: pod/video/templates/videos/video_note_comments_display.html:101
-<<<<<<< HEAD
 #: pod/video/templates/videos/video_note_display.html:43
 #: pod/video/templates/videos/video_notes.html:92
 #: pod/video/templates/videos/video_notes.html:127
-=======
-#: pod/video/templates/videos/video_notes.html:92
->>>>>>> apps_video_collaborate
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -387,22 +374,16 @@ msgstr "Mes vidéos"
 
 #: pod/chapter/templates/video_chapter.html:42
 #: pod/completion/templates/video_caption_maker.html:117
-<<<<<<< HEAD
 #: pod/video/templates/videos/video_collaborate.html:66
-=======
 #: pod/video/templates/videos/video_collaborate.html:63
->>>>>>> apps_video_collaborate
 #: pod/video/templates/videos/video_delete.html:21
 #: pod/video/templates/videos/video_edit.html:38
 msgid "View the video"
 msgstr "Voir la vidéo"
 
 #: pod/chapter/templates/video_chapter.html:43
-<<<<<<< HEAD
 #: pod/video/templates/videos/video_collaborate.html:67
-=======
 #: pod/video/templates/videos/video_collaborate.html:64
->>>>>>> apps_video_collaborate
 #: pod/video/templates/videos/video_delete.html:22
 #: pod/video/templates/videos/video_delete.html:62
 msgid "Back to the video"
@@ -755,17 +736,14 @@ msgstr ""
 #: pod/completion/templates/overlay/form_overlay.html:8
 #: pod/completion/templates/track/form_track.html:9
 msgid "Your form contains errors:"
-msgstr "Votre formulaire contient des erreurs:"
+msgstr "Votre formulaire contient des erreurs :"
 
 #: pod/completion/templates/contributor/form_contributor.html:26
 #: pod/completion/templates/document/form_document.html:24
 #: pod/completion/templates/overlay/form_overlay.html:26
 #: pod/completion/templates/track/form_track.html:27
-<<<<<<< HEAD
-=======
 #: pod/video/templates/videos/video_note_display.html:42
 #: pod/video/templates/videos/video_notes.html:126
->>>>>>> apps_video_collaborate
 msgid "save"
 msgstr "sauvegarder"
 
@@ -773,11 +751,8 @@ msgstr "sauvegarder"
 #: pod/completion/templates/document/form_document.html:25
 #: pod/completion/templates/overlay/form_overlay.html:27
 #: pod/completion/templates/track/form_track.html:28
-<<<<<<< HEAD
-=======
 #: pod/video/templates/videos/video_note_display.html:43
 #: pod/video/templates/videos/video_notes.html:127
->>>>>>> apps_video_collaborate
 msgid "cancel"
 msgstr "annuler"
 
@@ -4445,7 +4420,6 @@ msgstr "Collaborer"
 msgid "Video Collaborate"
 msgstr "Collaborer pour la vidéo"
 
-<<<<<<< HEAD
 #: pod/video/templates/videos/video_collaborate.html:60
 msgid "Tricks"
 msgstr "Astuces"
@@ -4471,8 +4445,6 @@ msgstr ""
 "Les annotations en noires sont publiques. Les plus claires sont privées. Les "
 "intermédiaires ne sont visibles que par le propriétaire de la vidéo."
 
-=======
->>>>>>> apps_video_collaborate
 #: pod/video/templates/videos/video_delete.html:14
 #: pod/video/templates/videos/video_delete.html:19
 msgid "Deleting the video"
@@ -4632,11 +4604,7 @@ msgstr "Prendre des notes"
 
 #: pod/video/templates/videos/video_notes.html:26
 msgid "Large columns interface"
-<<<<<<< HEAD
 msgstr "Agrandir l'interface d'annotations"
-=======
-msgstr ""
->>>>>>> apps_video_collaborate
 
 #: pod/video/templates/videos/video_notes.html:30
 msgid "Create a note"
@@ -4861,7 +4829,6 @@ msgstr "facettage"
 msgid "Remove selection"
 msgstr "Retirer la sélection"
 
-<<<<<<< HEAD
 #, fuzzy
 #~| msgid " %(counter)s video"
 #~| msgid_plural "%(counter)s videos"
@@ -4870,8 +4837,6 @@ msgstr "Retirer la sélection"
 #~ msgstr[0] "%(counter)s vidéo"
 #~ msgstr[1] "%(counter)s vidéos"
 
-=======
->>>>>>> apps_video_collaborate
 #~ msgid "Manage notes"
 #~ msgstr "Gérer les notes"
 
