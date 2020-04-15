@@ -38,6 +38,13 @@ class ChapterViewsTestCase(TestCase):
             duration=20,
             type=Type.objects.get(id=1)
         )
+
+        owner.owner.sites.add(Site.objects.get_current())
+        owner.owner.save()
+
+        owner2.owner.sites.add(Site.objects.get_current())
+        owner2.owner.save()
+
         vid.sites.add(site)
 
     def test_video_chapter_owner(self):

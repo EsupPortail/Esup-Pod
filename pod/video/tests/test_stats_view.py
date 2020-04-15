@@ -8,6 +8,7 @@ from django.contrib.auth.models import Group
 from pod.authentication.models import User
 from pod.video.models import Channel, Theme, Video, Type
 from pod.video.views import get_all_views_count, stats_view
+from django.contrib.sites.models import Site
 
 import json
 import logging
@@ -74,6 +75,15 @@ class TestStatsView(TestCase):
         self.video2.channel = [self.channel]
         self.video2.theme = [self.theme]
         self.url_stats_exists = True
+
+        self.user.owner.sites.add(Site.objects.get_current())
+        self.user.owner.save()
+
+        self.visitor.owner.sites.add(Site.objects.get_current())
+        self.visitor.owner.save()
+
+        self.superuser.owner.sites.add(Site.objects.get_current())
+        self.superuser.owner.save()
         try:
 
             self.stat_video_url = reverse(

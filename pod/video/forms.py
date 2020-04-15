@@ -453,8 +453,9 @@ class VideoForm(forms.ModelForm):
         if self.fields.get('video') and self.instance and self.instance.video:
             del self.fields["video"].widget.attrs["required"]
 
-        self.fields['owner'].queryset = self.fields['owner']. \
-            queryset.filter(owner__sites=Site.objects.get_current())
+        if self.fields.get('owner'):
+            self.fields['owner'].queryset = self.fields['owner']. \
+                queryset.filter(owner__sites=Site.objects.get_current())
 
     def set_nostaff_config(self):
         if self.is_staff is False:

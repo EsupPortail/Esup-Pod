@@ -31,6 +31,9 @@ class ChannelTestView(TestCase):
         v.channel.add(c)
         v.save()
 
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
         c.sites.add(site)
         c2.sites.add(site)
 
@@ -80,13 +83,19 @@ class MyChannelsTestView(TestCase):
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
-        User.objects.create(username="pod2", password="pod1234pod")
+        user2 = User.objects.create(username="pod2", password="pod1234pod")
         c1 = Channel.objects.create(title="ChannelTest1")
         c1.owners.add(user)
         c2 = Channel.objects.create(title="ChannelTest2")
         c2.owners.add(user)
         for c in Channel.objects.all():
             c.sites.add(site)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
         print(" --->  SetUp of MyChannelsTestView : OK !")
 
     def test_get_mychannels_view(self):
@@ -112,10 +121,16 @@ class ChannelEditTestView(TestCase):
     def setUp(self):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
-        User.objects.create(username="pod2", password="pod1234pod")
+        user2 = User.objects.create(username="pod2", password="pod1234pod")
         c1 = Channel.objects.create(title="ChannelTest1")
         c1.owners.add(user)
         c1.sites.add(site)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
 
         print(" --->  SetUp of ChannelEditTestView : OK !")
 
@@ -174,6 +189,9 @@ class ThemeEditTestView(TestCase):
             title="Theme3", slug="theme3",
             channel=Channel.objects.get(title="ChannelTest1"))
         c1.sites.add(site)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
         print(" --->  SetUp of ThemeEditTestView : OK !")
 
     def test_theme_edit_get_request(self):
@@ -275,6 +293,13 @@ class MyVideosTestView(TestCase):
 
         for v in Video.objects.all():
             v.sites.add(site)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
+
         print(" --->  SetUp of MyChannelsTestView : OK !")
 
     def test_get_myvideos_view(self):
@@ -398,7 +423,7 @@ class VideoTestView(TestCase):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
-        User.objects.create(username="pod3", password="pod1234pod")
+        user3 = User.objects.create(username="pod3", password="pod1234pod")
         Group.objects.create(name='student')
         Group.objects.create(name='employee')
         Group.objects.create(name='member')
@@ -412,6 +437,15 @@ class VideoTestView(TestCase):
         v0.sites.add(site)
         v.sites.add(site)
         v.additional_owners.add(user2)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
+
+        user3.owner.sites.add(Site.objects.get_current())
+        user3.owner.save()
 
     def test_video_get_request(self):
         v = Video.objects.get(title="Video1")
@@ -496,7 +530,7 @@ class VideoEditTestView(TestCase):
         site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
-        User.objects.create(username="pod3", password="pod1234pod")
+        user3 = User.objects.create(username="pod3", password="pod1234pod")
         video0 = Video.objects.create(
             title="Video1", owner=user,
             video="test1.mp4", type=Type.objects.get(id=1))
@@ -507,6 +541,16 @@ class VideoEditTestView(TestCase):
         video.sites.add(site)
         video0.sites.add(site)
         video.additional_owners.add(user2)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
+
+        user3.owner.sites.add(Site.objects.get_current())
+        user3.owner.save()
+
         print(" --->  SetUp of VideoEditTestView : OK !")
 
     def test_video_edit_get_request(self):
@@ -651,6 +695,12 @@ class video_deleteTestView(TestCase):
         video0.sites.add(site)
         video.sites.add(site)
         video.additional_owners.add(user2)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
         print(" --->  SetUp of video_deleteTestView : OK !")
 
     def test_video_delete_get_request(self):
@@ -714,6 +764,9 @@ class video_notesTestView(TestCase):
             title="Video1", owner=user,
             video="test1.mp4", type=Type.objects.get(id=1))
         v.sites.add(site)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
         print(" --->  SetUp of video_notesTestView : OK !")
 
     def test_video_notesTestView_get_request(self):

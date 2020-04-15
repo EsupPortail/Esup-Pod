@@ -11,6 +11,7 @@ from django.test import Client
 from ..models import CustomFileModel
 from ..models import CustomImageModel
 from ..models import UserFolder
+from django.contrib.sites.models import Site
 
 import json
 import os
@@ -26,7 +27,13 @@ class FolderViewTestCase(TestCase):
         user = User.objects.create(username='pod', password='azerty')
         UserFolder.objects.get(owner=user, name='home')
         UserFolder.objects.create(owner=user, name='Child')
-        User.objects.create(username='pod2', password='azerty')
+        user2 = User.objects.create(username='pod2', password='azerty')
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
 
     def test_list_folders(self):
 
@@ -140,6 +147,13 @@ class FileViewTestCase(TestCase):
         home = UserFolder.objects.get(owner=pod, name='home')
         child = UserFolder.objects.create(owner=pod, name='Child')
         pod2 = User.objects.create(username='pod2', password='azerty')
+
+        pod.owner.sites.add(Site.objects.get_current())
+        pod.owner.save()
+
+        pod2.owner.sites.add(Site.objects.get_current())
+        pod2.owner.save()
+
         currentdir = os.path.dirname(
             os.path.dirname(os.path.abspath(__file__)))
         simplefile = SimpleUploadedFile(

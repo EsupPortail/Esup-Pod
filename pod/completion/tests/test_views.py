@@ -50,6 +50,11 @@ class CompletionViewsTestCase(TestCase):
             type=Type.objects.get(id=1)
         )
         vid2.sites.add(site)
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        staff.owner.sites.add(Site.objects.get_current())
+        staff.owner.save()
 
     def test_video_completion_user(self):
         video = Video.objects.get(id=1)
@@ -101,6 +106,8 @@ class CompletionContributorViewsTestCase(TestCase):
             type=Type.objects.get(id=1)
         )
         vid.sites.add(site)
+        staff.owner.sites.add(Site.objects.get_current())
+        staff.owner.save()
 
     def test_video_completion_contributor(self):
         video = Video.objects.get(id=1)
@@ -256,6 +263,8 @@ class CompletionTrackViewsTestCase(TestCase):
             type=Type.objects.get(id=1)
         )
         vid.sites.add(site)
+        staff.owner.sites.add(Site.objects.get_current())
+        staff.owner.save()
 
     def test_video_completion_track(self):
         video = Video.objects.get(id=1)
@@ -462,6 +471,8 @@ class CompletionDocumentViewsTestCase(TestCase):
             type=Type.objects.get(id=1)
         )
         vid.sites.add(site)
+        staff.owner.sites.add(Site.objects.get_current())
+        staff.owner.save()
 
     def test_video_completion_document(self):
         video = Video.objects.get(id=1)
@@ -674,6 +685,8 @@ class CompletionOverlayViewsTestCase(TestCase):
             duration=3,
             type=Type.objects.get(id=1)
         )
+        staff.owner.sites.add(Site.objects.get_current())
+        staff.owner.save()
 
     def test_video_completion_overlay(self):
         video = Video.objects.get(id=1)

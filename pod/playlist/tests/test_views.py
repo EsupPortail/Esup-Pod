@@ -11,7 +11,7 @@ from pod.video.models import Video
 from pod.video.models import Type
 from pod.playlist.models import Playlist
 from pod.playlist.models import PlaylistElement
-
+from django.contrib.sites.models import Site
 
 class PlaylistViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
@@ -37,6 +37,9 @@ class PlaylistViewsTestCase(TestCase):
             video='video2.mp4',
             duration=30,
             is_draft=False)
+
+        owner.owner.sites.add(Site.objects.get_current())
+        owner.owner.save()
 
     def test_myplaylist(self):
         response = self.client.get('/my_playlists/')

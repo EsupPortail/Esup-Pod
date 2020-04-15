@@ -31,6 +31,9 @@ class recorderViewsTestCase(TestCase):
             recorder=recorder)
         recording_file.save()
         recorder.sites.add(site)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
         print(" --->  SetUp of recorderViewsTestCase : OK !")
 
     def test_add_recording(self):
