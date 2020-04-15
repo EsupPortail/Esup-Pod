@@ -13,17 +13,17 @@ class ShibbBackend(ShibbolethRemoteUserBackend):
 
     def setup_user(self, request, username, defaults):
         if self.create_unknown_user:
-            user, created = User.objects.get_or_create(username=username,
-                                                       defaults=defaults,
-                                                       sites=get_current_site(
-                                                           request))
+            user, created = User.objects.get_or_create(
+                username=username,
+                defaults=defaults,
+                owner__sites=get_current_site(request))
             if created:
                 user = self.handle_created_user(
-                    request, user, sites=get_current_site(request))
+                    request, user, owner__sites=get_current_site(request))
         else:
             try:
                 user = User.objects.get(
-                    username=username, sites=get_current_site(request))
+                    username=username, owner__sites=get_current_site(request))
             except User.DoesNotExist:
                 return
         return user
