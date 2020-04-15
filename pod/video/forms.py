@@ -284,7 +284,7 @@ class VideoForm(forms.ModelForm):
         ', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS)),
     }
     is_admin = False
-    user = User.objects.all().filter(owner__sites=Site.objects.get_current())
+    user = User.objects.all()
 
     def filter_fields_admin(form):
         if form.is_superuser is False and form.is_admin is False:
@@ -452,6 +452,9 @@ class VideoForm(forms.ModelForm):
         # remove required=True for videofield if instance
         if self.fields.get('video') and self.instance and self.instance.video:
             del self.fields["video"].widget.attrs["required"]
+
+        self.fields['owner'].queryset = self.fields['owner']. \
+            queryset.filter(owner__sites=Site.objects.get_current())
 
     def set_nostaff_config(self):
         if self.is_staff is False:
