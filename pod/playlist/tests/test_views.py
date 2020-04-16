@@ -13,6 +13,7 @@ from pod.playlist.models import Playlist
 from pod.playlist.models import PlaylistElement
 from django.contrib.sites.models import Site
 
+
 class PlaylistViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
