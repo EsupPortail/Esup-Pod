@@ -180,12 +180,20 @@ CKEDITOR_CONFIGS = {
 MENUBAR_HIDE_INACTIVE_OWNERS = True
 # Show only staff users in “Owners” main menu list.
 MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
+# Hide de language selector
+HIDE_LANGUAGE_SELECTOR = False
 # Hide Users tab in navbar
 HIDE_USER_TAB = False
 # Hide Channel tab in navbar
 HIDE_CHANNEL_TAB = False
 # Hide Types tab in navbar
 HIDE_TYPES_TAB = False
+# Hide Tags
+HIDE_TAGS = False
+# Hide share in social network
+HIDE_SHARE = False
+# Hide disciplines
+HIDE_DISCIPLINES = False
 
 ##
 # Video tiers apps settings

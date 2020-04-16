@@ -72,6 +72,9 @@ HIDE_CHANNEL_TAB = getattr(
 HIDE_TYPES_TAB = getattr(
         django_settings, 'HIDE_TYPES_TAB', False)
 
+HIDE_LANGUAGE_SELECTOR = getattr(
+        django_settings, 'HIDE_LANGUAGE_SELECTOR', False)
+
 HIDE_USER_FILTER = getattr(
         django_settings, 'HIDE_USER_FILTER', False)
 
@@ -119,6 +122,7 @@ def context_settings(request):
     new_settings['HIDE_USER_TAB'] = HIDE_USER_TAB
     new_settings['HIDE_CHANNEL_TAB'] = HIDE_CHANNEL_TAB
     new_settings['HIDE_TYPES_TAB'] = HIDE_TYPES_TAB
+    new_settings['HIDE_LANGUAGE_SELECTOR'] = HIDE_LANGUAGE_SELECTOR
     new_settings['HIDE_TAGS'] = HIDE_TAGS
     new_settings['HIDE_SHARE'] = HIDE_SHARE
     new_settings['HIDE_DISCIPLINES'] = HIDE_DISCIPLINES

@@ -1,4 +1,6 @@
-{% load staticfiles i18n %}<!doctype html>
+{% load staticfiles i18n %}
+{% load custom_tags %}
+<!doctype html>
 <html lang="fr">
 	<head>{% spaceless %}
 	    <!-- Required meta tags -->
@@ -23,7 +25,7 @@
 	    <link rel="stylesheet" href="{% static BOOTSTRAP_CUSTOM %}" crossorigin="anonymous">
 	    {% else %}
 	    	{% if USE_THEME %} 
-	    	<link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap-'%}{{USE_THEME}}.min.css" crossorigin="anonymous">
+	    	<link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap-'%}{% get_setting "USE_THEME" %}.min.css" crossorigin="anonymous">
 	    	{% else %}
 	    	<link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap-default.min.css' %}" crossorigin="anonymous">
 	    	{% endif %}
