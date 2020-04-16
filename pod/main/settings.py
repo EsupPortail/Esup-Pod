@@ -191,9 +191,9 @@ HIDE_TYPES_TAB = False
 # Hide Tags
 HIDE_TAGS = False
 # Hide share in social network
-HIDE_SHARE = True
+HIDE_SHARE = False
 # Hide disciplines
-HIDE_DISCIPLINES = True
+HIDE_DISCIPLINES = False
 
 ##
 # Video tiers apps settings
