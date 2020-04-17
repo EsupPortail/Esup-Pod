@@ -1459,3 +1459,22 @@ def stats_view(request, slug=None, slug_t=None):
             data.append(v_data)
         data.append({"min_date": min_date})
         return JsonResponse(data, safe=False)
+
+
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+def video_collaborate(request, slug):
+    action = None
+    if (request.method == 'POST' and request.POST.get('action')):
+        action = request.POST.get('action').split('_')[0]
+    elif (request.method == 'GET' and request.GET.get('action')):
+        action = request.GET.get('action').split('_')[0]
+    if action in NOTE_ACTION:
+        return eval('video_note_{0}(request, slug)'.format(action))
+    video = get_object_or_404(Video, slug=slug)
+    listNotes = get_adv_note_list(request, video)
+    return render(
+            request,
+            'videos/video_collaborate.html', {
+                'video': video,
+                'listNotes': listNotes})

@@ -4,11 +4,16 @@
 
 .select2-container{
   position: static !important;
-  height:max-content;
+  height:auto;
 }
 
 tr ,.rowl{
   display: table-row !important;
+}
+
+body[data-admin-utc-offset]
+{
+  padding-top: 0;
 }
 
 body {
@@ -27,7 +32,7 @@ label {
     margin-top: 3.5rem;
 }
 .breadcrumb, .jumbotron{
-	background: #f8f9fa!important;
+	background: #f8f9fa;
 }
 .list-group-item{
 padding:.25rem 1.25rem;
