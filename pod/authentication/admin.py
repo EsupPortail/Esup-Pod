@@ -158,7 +158,6 @@ class GroupAdmin(admin.ModelAdmin):
     form = GroupAdminForm
     # Filter permissions horizontal as well.
     filter_horizontal = ['permissions']
-    inlines = (GroupSiteInline, )
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -172,6 +171,13 @@ class GroupAdmin(admin.ModelAdmin):
         if not change:
             obj.groupsite.sites.add(get_current_site(request))
             obj.save()
+
+    def get_inline_instances(self, request, obj=None):
+        _inlines = super().get_inline_instances(request, obj=None)
+        if obj is not None:
+            custom_inline = GroupSiteInline(self.model, self.admin_site)
+            _inlines.append(custom_inline)
+        return _inlines
 
 
 # Re-register UserAdmin
