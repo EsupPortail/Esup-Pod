@@ -1471,7 +1471,8 @@ def video_collaborate(request, slug):
         action = request.GET.get('action').split('_')[0]
     if action in NOTE_ACTION:
         return eval('video_note_{0}(request, slug)'.format(action))
-    video = get_object_or_404(Video, slug=slug)
+    video = get_object_or_404(
+        Video, slug=slug, sites=get_current_site(request))
     listNotes = get_adv_note_list(request, video)
     return render(
             request,
