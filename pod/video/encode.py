@@ -308,6 +308,15 @@ def encode_video(video_id):
             add_encoding_log(
                 video_id,
                 "create_overview_image : %s" % msg)
+            # create small thumbnail
+            change_encoding_step(
+                video_id, 4,
+                "encoding video file : 12/12 create_and_save_small_thumbnails")
+            msg = create_and_save_thumbnails(
+                video_mp4.video.video.path, 300, video_id)
+            add_encoding_log(
+                video_id,
+                "create_and_save_small_thumbnails : %s" % msg)
             # create thumbnail
             change_encoding_step(
                 video_id, 4,
@@ -975,7 +984,7 @@ def create_and_save_thumbnails(source, image_width, video_id):
                     created_by=video_to_encode.owner
                 )
                 thumbnail.file.save(
-                    "%s_%s.png" % (video_to_encode.slug, i),
+                    "%s_%s_%s.png" % (video_to_encode.slug, i, image_width),
                     File(open(thumbnailfilename, "rb")),
                     save=True)
                 thumbnail.save()
@@ -986,7 +995,7 @@ def create_and_save_thumbnails(source, image_width, video_id):
             else:
                 thumbnail = CustomImageModel()
                 thumbnail.file.save(
-                    "%d_%s.png" % (video_id, i),
+                    "%d_%s_%s.png" % (video_id, i, image_width),
                     File(open(thumbnailfilename, "rb")),
                     save=True)
                 thumbnail.save()

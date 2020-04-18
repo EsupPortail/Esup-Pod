@@ -642,8 +642,13 @@ class Video(models.Model):
     get_thumbnail_admin.fget.short_description = _('Thumbnails')
 
     def get_thumbnail_card(self):
+        if self.get_thumbnail_url().count('_') == 2:
+            tuple = self.get_thumbnail_url().split("_")
+            filename = tuple[0]+"_"+tuple[1]+"_300.png"
+        else:
+            filename = self.get_thumbnail_url()
         return '<img class="card-img-top" src="%s" alt="%s" />' % (
-            self.get_thumbnail_url(), self.title)
+            filename, self.title)
 
     @property
     def duration_in_time(self):
