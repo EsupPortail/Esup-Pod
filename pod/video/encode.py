@@ -204,7 +204,7 @@ def encode_video(video_id):
             # create encoding video command
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 1/11 get video command")
+                "encoding video file : 1/12 get video command")
             video_command_playlist = get_video_command_playlist(
                 video_id,
                 video_data,
@@ -222,7 +222,7 @@ def encode_video(video_id):
             # launch encode video
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 2/11 encode_video_playlist")
+                "encoding video file : 2/12 encode_video_playlist")
             msg = encode_video_playlist(
                 video_to_encode.video.path,
                 video_command_playlist["cmd"],
@@ -232,7 +232,7 @@ def encode_video(video_id):
                 "encode_video_playlist : %s" % msg)
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 3/11 encode_video_mp4")
+                "encoding video file : 3/12 encode_video_mp4")
             msg = encode_video_mp4(
                 video_to_encode.video.path,
                 video_command_mp4["cmd"],
@@ -243,7 +243,7 @@ def encode_video(video_id):
             # save playlist files
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 4/11 save_playlist_file")
+                "encoding video file : 4/12 save_playlist_file")
             msg = save_playlist_file(
                 video_id,
                 video_command_playlist["list_file"],
@@ -254,7 +254,7 @@ def encode_video(video_id):
             # save_playlist_master
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 5/11 save_playlist_master")
+                "encoding video file : 5/12 save_playlist_master")
             msg = save_playlist_master(
                 video_id,
                 output_dir,
@@ -265,7 +265,7 @@ def encode_video(video_id):
             # save mp4 files
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 6/11 save_mp4_file")
+                "encoding video file : 6/12 save_mp4_file")
             msg = save_mp4_file(
                 video_id,
                 video_command_mp4["list_file"],
@@ -294,13 +294,13 @@ def encode_video(video_id):
             image_width = video_mp4.width / 4  # width of generate image file
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 7/11 remove_previous_overview")
+                "encoding video file : 7/12 remove_previous_overview")
             remove_previous_overview(overviewfilename, overviewimagefilename)
             nb_img = 99 if (
                 video_data["duration"] > 99) else video_data["duration"]
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 8/11 create_overview_image")
+                "encoding video file : 8/12 create_overview_image")
             msg = create_overview_image(
                 video_id,
                 video_mp4.video.video.path, video_data["duration"],
@@ -311,7 +311,7 @@ def encode_video(video_id):
             # create small thumbnail
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 12/12 create_and_save_small_thumbnails")
+                "encoding video file : 11/12 create_and_save_small_thumbnails")
             msg = create_and_save_thumbnails(
                 video_mp4.video.video.path, 300, video_id)
             add_encoding_log(
@@ -320,7 +320,7 @@ def encode_video(video_id):
             # create thumbnail
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 11/11 create_and_save_thumbnails")
+                "encoding video file : 12/12 create_and_save_thumbnails")
             msg = create_and_save_thumbnails(
                 video_mp4.video.video.path, video_mp4.width, video_id)
             add_encoding_log(
