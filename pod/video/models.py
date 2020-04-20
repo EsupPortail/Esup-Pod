@@ -4,6 +4,7 @@ import unicodedata
 import json
 import logging
 import hashlib
+import math
 
 from django.db import models
 from django.conf import settings
@@ -26,6 +27,7 @@ from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
 from django.utils.text import capfirst
+from PIL import Image
 
 import importlib
 
@@ -642,13 +644,27 @@ class Video(models.Model):
     get_thumbnail_admin.fget.short_description = _('Thumbnails')
 
     def get_thumbnail_card(self):
-        if self.get_thumbnail_url().count('_') == 2:
-            tuple = self.get_thumbnail_url().split("_")
-            filename = tuple[0]+"_"+tuple[1]+"_300.png"
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        url, folder = self.get_thumbnail_url().split("/media/files/")
+        namethumb = folder[:-4]
+        name_with_ext = BASE_DIR+"/media/files/"+folder
+        testfile = BASE_DIR+"/media/files/" + namethumb + "_300.png"
+        if os.path.isfile(testfile):
+            filename = url + "/media/files/" + namethumb + "_300.png"
         else:
             filename = self.get_thumbnail_url()
+            self.create_small_thumbnail(name_with_ext)
         return '<img class="card-img-top" src="%s" alt="%s" />' % (
             filename, self.title)
+
+    def create_small_thumbnail(self, thumb):
+        im = Image.open(thumb)
+        width, height = im.size
+        newHeight = math.floor(height*300/width)
+        newSize = (300, newHeight)
+        im1 = im.resize(newSize)
+        newName = thumb[:-4]+"_300.png"
+        im1.save(newName)
 
     @property
     def duration_in_time(self):

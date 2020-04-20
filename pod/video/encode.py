@@ -983,10 +983,16 @@ def create_and_save_thumbnails(source, image_width, video_id):
                     folder=videodir,
                     created_by=video_to_encode.owner
                 )
-                thumbnail.file.save(
-                    "%s_%s_%s.png" % (video_to_encode.slug, i, image_width),
-                    File(open(thumbnailfilename, "rb")),
-                    save=True)
+                if image_width == 300:
+                    thumbnail.file.save(
+                        "%s_%s_300.png" % (video_to_encode.slug, i),
+                        File(open(thumbnailfilename, "rb")),
+                        save=True)
+                else:
+                    thumbnail.file.save(
+                        "%s_%s.png" % (video_to_encode.slug, i),
+                        File(open(thumbnailfilename, "rb")),
+                        save=True)
                 thumbnail.save()
                 if i == 0:
                     video_to_encode = Video.objects.get(id=video_id)
@@ -994,10 +1000,16 @@ def create_and_save_thumbnails(source, image_width, video_id):
                     video_to_encode.save()
             else:
                 thumbnail = CustomImageModel()
-                thumbnail.file.save(
-                    "%d_%s_%s.png" % (video_id, i, image_width),
-                    File(open(thumbnailfilename, "rb")),
-                    save=True)
+                if image_width == 300:
+                    thumbnail.file.save(
+                        "%d_%s_300.png" % (video_id, i),
+                        File(open(thumbnailfilename, "rb")),
+                        save=True)
+                else:
+                    thumbnail.file.save(
+                        "%d_%s.png" % (video_id, i),
+                        File(open(thumbnailfilename, "rb")),
+                        save=True)
                 thumbnail.save()
                 if i == 0:
                     video_to_encode = Video.objects.get(id=video_id)
