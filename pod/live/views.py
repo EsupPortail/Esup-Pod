@@ -4,7 +4,6 @@ from .models import Building, Broadcaster
 from django.conf import settings
 from django.shortcuts import redirect
 from django.contrib.sites.shortcuts import get_current_site
-from django.http import HttpResponseNotFound
 
 
 def lives(request):  # affichage des directs
@@ -17,9 +16,8 @@ def lives(request):  # affichage des directs
 
 
 def video_live(request, id):  # affichage des directs
-    broadcaster = get_object_or_404(Broadcaster, id=id)
-    if(get_current_site(request) not in broadcaster.sites.all()):
-        return HttpResponseNotFound()
+    site = get_current_site(request)
+    broadcaster = get_object_or_404(Broadcaster, id=id, building__sites=site)
     if broadcaster.is_restricted and not request.user.is_authenticated():
         iframe_param = 'is_iframe=true&' if (
             request.GET.get('is_iframe')) else ''
