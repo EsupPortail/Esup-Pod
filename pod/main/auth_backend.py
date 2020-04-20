@@ -1,7 +1,6 @@
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import User
-from django.db.models import Q
 
 
 class SiteBackend(ModelBackend):
