@@ -27,7 +27,7 @@ from ckeditor.fields import RichTextField
 from tagging.fields import TagField
 from django.utils.text import capfirst
 from django.contrib.sites.models import Site
-
+from django.db.models.signals import post_save
 import importlib
 
 from select2 import fields as select2_fields
@@ -263,6 +263,12 @@ class Channel(models.Model):
         super(Channel, self).save(*args, **kwargs)
 
 
+@receiver(post_save, sender=Channel)
+def default_site_channel(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())
+
+
 class Theme(models.Model):
     parentId = models.ForeignKey(
         'self', null=True, blank=True, related_name="children",
@@ -412,6 +418,12 @@ class Discipline(models.Model):
         ordering = ['title']
         verbose_name = _('Discipline')
         verbose_name_plural = _('Disciplines')
+
+
+@receiver(post_save, sender=Discipline)
+def default_site_discipline(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())
 
 
 class Video(models.Model):
@@ -889,6 +901,12 @@ def remove_video_file(video):
         video.overview.delete()
 
 
+@receiver(post_save, sender=Video)
+def default_site(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())
+
+
 @receiver(pre_delete, sender=Video,
           dispatch_uid='pre_delete-video_files_removal')
 def video_files_removal(sender, instance, using, **kwargs):
@@ -1041,6 +1059,12 @@ class VideoRendition(models.Model):
                 raise ValidationError(
                     msg + VideoRendition._meta.get_field(
                         'audio_bitrate').help_text)
+
+
+@receiver(post_save, sender=VideoRendition)
+def default_site_videorendition(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())
 
 
 class EncodingVideo(models.Model):

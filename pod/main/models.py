@@ -8,6 +8,8 @@ from django.db import connection
 from django.contrib.sites.models import Site
 import os
 import mimetypes
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 FILES_DIR = getattr(
     settings, 'FILES_DIR', 'files')
@@ -129,3 +131,9 @@ class LinkFooter(models.Model):
         if self.url is None and self.page is None:
             raise ValidationError(
                 _('You must give an URL or a page to link the link'))
+
+
+@receiver(post_save, sender=LinkFooter)
+def default_site(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())

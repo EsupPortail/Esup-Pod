@@ -100,6 +100,12 @@ class Owner(models.Model):
         return self.user.email
 
 
+@receiver(post_save, sender=Owner)
+def default_site_owner(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())
+
+
 @receiver(post_save, sender=User)
 def create_owner_profile(sender, instance, created, **kwargs):
     if created:
@@ -115,6 +121,12 @@ def create_owner_profile(sender, instance, created, **kwargs):
 class GroupSite(models.Model):
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
     sites = models.ManyToManyField(Site)
+
+
+@receiver(post_save, sender=GroupSite)
+def default_site_groupsite(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())
 
 
 @receiver(post_save, sender=Group)

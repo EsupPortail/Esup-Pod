@@ -94,6 +94,12 @@ class Recorder(models.Model):
         ordering = ['name']
 
 
+@receiver(post_save, sender=Recorder)
+def default_site(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())
+
+
 class Recording(models.Model):
     recorder = models.ForeignKey(Recorder,
                                  on_delete=models.CASCADE,
