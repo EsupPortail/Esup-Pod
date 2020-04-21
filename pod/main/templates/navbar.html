@@ -61,7 +61,11 @@
       {% if user.is_authenticated %}
       <li class="nav-item dropdown login mr-2" id="nav-usermenu">
         <button class="initials nav-link pl-2 pr-2 dropdown-toggle d-flex justify-content-center align-items-center " id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {% if user.first_name != '' and user.last_name != '' %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.username|slice:":2"|upper}}{% endif %}
+        {% if request.user.owner.userpicture  %}
+          <img src="{{user.owner.userpicture.file.url}}" class="userpicture" alt="{{user}}">
+        {% else %}
+          {% if user.first_name != '' and user.last_name != '' %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.username|slice:":2"|upper}}{% endif %}
+        {% endif %}
         </button>
         <div class="dropdown-menu dropdown-menu-right" >
           <span class="dropdown-item" >{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</span>
@@ -72,8 +76,7 @@
           {% if request.user.is_staff or request.user.is_superuser %}
           {% if request.user.owner.userpicture  %}
           <button class="btn btn-link dropdown-item get_form_userpicture" data-url="{% url "userpicture" %}">
-              <img src="{{user.owner.userpicture.file.url}}" height="34" class='rounded' alt="{{user}}">
-              {% trans 'Change your picture' %}</button>
+              <i data-feather="image"></i>&nbsp;{% trans 'Change your picture' %}</button>
           {% else %}
           <button class="btn btn-link dropdown-item get_form_userpicture"  data-url="{% url "userpicture" %}">
               <i data-feather="image"></i>&nbsp;{% trans 'Add your picture' %}</button>
@@ -124,5 +127,4 @@
       {% endif %}
    </ul>
 </div> <!-- FIN Container -->
-{% endspaceless %}    
-    
+{% endspaceless %}
