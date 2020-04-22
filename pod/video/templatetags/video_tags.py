@@ -1,11 +1,24 @@
+from django.conf import settings as django_settings
 from django import template
 from django.utils.text import capfirst
 from django.urls import reverse
+from django.db.models import Q
+
 from ..forms import VideoVersionForm
+from ..models import Video
 
 import importlib
 
 register = template.Library()
+
+HOMEPAGE_SHOWS_PASSWORDED = getattr(
+    django_settings,
+    'HOMEPAGE_SHOWS_PASSWORDED',
+    True)
+HOMEPAGE_SHOWS_RESTRICTED = getattr(
+    django_settings,
+    'HOMEPAGE_SHOWS_RESTRICTED',
+    True)
 
 
 @register.simple_tag
@@ -34,3 +47,21 @@ def get_app_link(video, app):
 def get_version_form(video):
     form = VideoVersionForm()
     return form
+
+
+@register.simple_tag
+def get_last_videos():
+
+    videos = Video.objects.filter(
+        encoding_in_progress=False, is_draft=False)
+
+    if not HOMEPAGE_SHOWS_PASSWORDED:
+        videos = videos.filter(
+            Q(password='') | Q(password__isnull=True))
+    if not HOMEPAGE_SHOWS_RESTRICTED:
+        videos = videos.filter(is_restricted=False)
+
+    videos = videos.exclude(
+        pk__in=[vid.id for vid in videos if not vid.encoded])
+
+    return videos.exclude(channel__visible=0)[:12]
