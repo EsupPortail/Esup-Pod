@@ -1,6 +1,6 @@
 from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
-from django.db.models import Count, Sum, Q
+from django.db.models import Count, Sum
 from django.db.models import Prefetch
 from django.db.models.functions import Substr, Lower
 from datetime import timedelta
@@ -23,14 +23,7 @@ MENUBAR_HIDE_INACTIVE_OWNERS = getattr(
     django_settings, 'MENUBAR_HIDE_INACTIVE_OWNERS', False)
 MENUBAR_SHOW_STAFF_OWNERS_ONLY = getattr(
     django_settings, 'MENUBAR_SHOW_STAFF_OWNERS_ONLY', False)
-HOMEPAGE_SHOWS_PASSWORDED = getattr(
-    django_settings,
-    'HOMEPAGE_SHOWS_PASSWORDED',
-    True)
-HOMEPAGE_SHOWS_RESTRICTED = getattr(
-    django_settings,
-    'HOMEPAGE_SHOWS_RESTRICTED',
-    True)
+
 USE_PODFILE = getattr(django_settings, 'USE_PODFILE', False)
 VERSION = getattr(
     django_settings,
@@ -61,49 +54,49 @@ OEMBED = getattr(
     django_settings, 'OEMBED', False)
 
 HIDE_USERNAME = getattr(
-        django_settings, 'HIDE_USERNAME', False)
+    django_settings, 'HIDE_USERNAME', False)
 
 HIDE_USER_TAB = getattr(
-        django_settings, 'HIDE_USER_TAB', False)
+    django_settings, 'HIDE_USER_TAB', False)
 
 HIDE_CHANNEL_TAB = getattr(
-        django_settings, 'HIDE_CHANNEL_TAB', False)
+    django_settings, 'HIDE_CHANNEL_TAB', False)
 
 HIDE_TYPES_TAB = getattr(
-        django_settings, 'HIDE_TYPES_TAB', False)
+    django_settings, 'HIDE_TYPES_TAB', False)
 
 HIDE_LANGUAGE_SELECTOR = getattr(
-        django_settings, 'HIDE_LANGUAGE_SELECTOR', False)
+    django_settings, 'HIDE_LANGUAGE_SELECTOR', False)
 
 HIDE_USER_FILTER = getattr(
-        django_settings, 'HIDE_USER_FILTER', False)
+    django_settings, 'HIDE_USER_FILTER', False)
 
 USE_STATS_VIEW = getattr(
-        django_settings, 'USE_STATS_VIEW', False)
+    django_settings, 'USE_STATS_VIEW', False)
 
 HIDE_TAGS = getattr(
-        django_settings, 'HIDE_TAGS', False)
+    django_settings, 'HIDE_TAGS', False)
 
 HIDE_SHARE = getattr(
-        django_settings, 'HIDE_SHARE', False)
+    django_settings, 'HIDE_SHARE', False)
 
 HIDE_DISCIPLINES = getattr(
-        django_settings, 'HIDE_DISCIPLINES', False)
+    django_settings, 'HIDE_DISCIPLINES', False)
 
 ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
-        django_settings, 'ALLOW_MANUAL_RECORDING_CLAIMING', False)
+    django_settings, 'ALLOW_MANUAL_RECORDING_CLAIMING', False)
 SHIB_URL = getattr(
-        django_settings, 'SHIB_URL', "/idp/shibboleth.sso/Login")
+    django_settings, 'SHIB_URL', "/idp/shibboleth.sso/Login")
 USE_SHIB = getattr(
-        django_settings, 'USE_SHIB', False)
+    django_settings, 'USE_SHIB', False)
 
 USE_RECORD_PREVIEW = getattr(
-        django_settings, 'USE_RECORD_PREVIEW', False)
+    django_settings, 'USE_RECORD_PREVIEW', False)
 SHIB_NAME = getattr(
-        django_settings, 'SHIB_NAME', "Identify Federation")
+    django_settings, 'SHIB_NAME', "Identify Federation")
 
 USE_THEME = getattr(
-        django_settings, 'USE_THEME', "default")
+    django_settings, 'USE_THEME', "default")
 
 
 def context_settings(request):
@@ -204,8 +197,6 @@ def context_navbar(request):
     else:
         listowner = get_list_owner(owners)
 
-    LAST_VIDEOS = get_last_videos(request) if request.path == "/" else None
-
     list_videos = Video.objects.filter(
         encoding_in_progress=False,
         is_draft=False, sites=get_current_site(request))
@@ -217,7 +208,7 @@ def context_navbar(request):
     return {'ALL_CHANNELS': all_channels, 'CHANNELS': channels,
             'TYPES': types, 'OWNERS': owners,
             'DISCIPLINES': disciplines, 'LISTOWNER': json.dumps(listowner),
-            'LAST_VIDEOS': LAST_VIDEOS, 'LINK_FOOTER': linkFooter,
+            'LINK_FOOTER': linkFooter,
             'VIDEOS_COUNT': VIDEOS_COUNT,
             'VIDEOS_DURATION': VIDEOS_DURATION
             }
@@ -238,20 +229,3 @@ def get_list_owner(owners):
             else:
                 listowner[owner['fl_firstname']] = [owner]
     return listowner
-
-
-def get_last_videos(request):
-
-    filter_args = Video.objects.filter(
-        encoding_in_progress=False, is_draft=False,
-        sites=get_current_site(request))
-
-    if not HOMEPAGE_SHOWS_PASSWORDED:
-        filter_args = filter_args.filter(
-            Q(password='') | Q(password__isnull=True))
-    if not HOMEPAGE_SHOWS_RESTRICTED:
-        filter_args = filter_args.filter(is_restricted=False)
-    filter_args = filter_args.exclude(
-        pk__in=[vid.id for vid in filter_args if not vid.encoded])
-
-    return filter_args.exclude(channel__visible=0)[:12]

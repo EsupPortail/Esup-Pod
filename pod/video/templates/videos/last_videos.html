@@ -1,4 +1,7 @@
-{% load i18n %}
+{% load i18n video_tags %}
+
+{% get_last_videos as LAST_VIDEOS %}
+
 {% if LAST_VIDEOS %}
 <div class="jumbotron" id="last_videos">
 <h3>{% trans "Last videos" %}</h3>

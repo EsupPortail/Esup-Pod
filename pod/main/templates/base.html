@@ -82,8 +82,10 @@
 								<p> Contenu block page_content </p>
 							{% endblock page_content %}
 						</div>
-						<!-- fin contenu page statique -->
+                        <!-- fin contenu page statique -->
+						{% if request.path == "/" %}
 						{% include "videos/last_videos.html" %}
+                        {% endif %}
 		        	</div> <!-- fin col order-12 order-md-1 -->
 		        	<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
                         {% block page_aside %}
