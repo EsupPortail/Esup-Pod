@@ -77,7 +77,6 @@ def edit_enrichment(request, slug):
     list_enrichment = video.enrichment_set.all()
     if request.POST and request.POST.get('action'):
         if request.POST['action'] in ACTION:
-            print(request.POST['action'])
             return eval(
                 'edit_enrichment_{0}(request, video)'.format(
                     request.POST['action'])

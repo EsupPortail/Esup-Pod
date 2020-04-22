@@ -65,7 +65,6 @@ def video_caption_maker_save(request, video):
     if (request.method == "POST"):
         cur_folder = get_current_session_folder(request)
         response = file_edit_save(request, cur_folder)
-        # print(response.content)
         if b'list_element' in response.content:
             messages.add_message(
                 request, messages.INFO,
