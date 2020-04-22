@@ -176,7 +176,7 @@ def context_navbar(request):
     ).distinct().annotate(video_count=Count("video", distinct=True))
 
     linkFooter = LinkFooter.objects.all().filter(
-        sites=get_current_site(request))
+        page__sites=get_current_site(request))
 
     owners_filter_args = {
         'video__is_draft': False,

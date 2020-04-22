@@ -5,11 +5,8 @@ from django.contrib.flatpages.models import FlatPage
 from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 from django.db import connection
-from django.contrib.sites.models import Site
 import os
 import mimetypes
-from django.dispatch import receiver
-from django.db.models.signals import post_save
 
 FILES_DIR = getattr(
     settings, 'FILES_DIR', 'files')
@@ -112,7 +109,6 @@ class LinkFooter(models.Model):
     page = models.ForeignKey(
         FlatPage, blank=True, null=True,
         help_text=_('Select the page of Pod you want to link with.'))
-    sites = models.ManyToManyField(Site)
 
     class Meta:
         ordering = ['order', 'title']
@@ -131,9 +127,3 @@ class LinkFooter(models.Model):
         if self.url is None and self.page is None:
             raise ValidationError(
                 _('You must give an URL or a page to link the link'))
-
-
-@receiver(post_save, sender=LinkFooter)
-def default_site(sender, instance, created, **kwargs):
-    if len(instance.sites.all()) == 0:
-        instance.sites.add(Site.objects.get_current())
