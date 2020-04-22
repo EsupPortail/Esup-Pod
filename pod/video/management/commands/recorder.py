@@ -30,6 +30,7 @@ import hashlib
 import requests
 from django.core.mail import mail_admins
 from django.utils import timezone
+from django.contrib.sites.shortcuts import get_current_site
 
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", 'fr')
 
@@ -315,7 +316,7 @@ def process_directory(html_message_error, message_error, files, root):
             continue
         # Search for the recorder corresponding to this directory
         recorder = Recorder.objects.filter(
-            directory=dirname).first()
+            directory=dirname, sites=get_current_site(None)).first()
         if recorder:
             html_message_error, message_error = recorder_exist(
                 recorder, filename, message_error, html_message_error)

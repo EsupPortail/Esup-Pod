@@ -5,7 +5,6 @@ from django.core.urlresolvers import reverse
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
-
 from .models import Video
 from .models import Channel
 from .models import Theme
@@ -32,8 +31,9 @@ from .forms import DisciplineForm
 from pod.completion.admin import ContributorInline
 from pod.completion.admin import DocumentInline
 from pod.completion.admin import OverlayInline
+from django.contrib.sites.models import Site
 from pod.completion.admin import TrackInline
-
+from django.contrib.sites.shortcuts import get_current_site
 from pod.chapter.admin import ChapterInline
 
 from pod.main.tasks import task_start_transcript
@@ -86,12 +86,14 @@ class VideoSuperAdminForm(VideoForm):
     is_staff = True
     is_superuser = True
     is_admin = True
+    admin_form = True
 
 
 class VideoAdminForm(VideoForm):
     is_staff = True
     is_superuser = False
     is_admin = True
+    admin_form = True
 
 
 class VideoVersionInline(admin.StackedInline):
@@ -109,7 +111,8 @@ class VideoAdmin(admin.ModelAdmin):
                     'password', 'duration_in_time', 'encoding_in_progress',
                     'get_encoding_step', 'get_thumbnail_admin')
     list_display_links = ('id', 'title')
-    list_filter = ('date_added', 'channel', 'type', 'is_draft',
+    list_filter = ('date_added', ('channel', admin.RelatedOnlyFieldListFilter),
+                   ('type', admin.RelatedOnlyFieldListFilter), 'is_draft',
                    'encoding_in_progress', EncodedFilter)
     # Ajout de l'attribut 'date_delete'
     if USE_OBSOLESCENCE:
@@ -172,6 +175,8 @@ class VideoAdmin(admin.ModelAdmin):
                 or obj is None
                 or USE_OBSOLESCENCE is False):
             exclude += ('date_delete',)
+        if not request.user.is_superuser:
+            exclude += ('sites',)
         self.exclude = exclude
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form
@@ -192,6 +197,19 @@ class VideoAdmin(admin.ModelAdmin):
                 else:
                     start_transcript(item.id)
     transcript_video.short_description = _('Transcript selected')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(sites=get_current_site(
+                request))
+        return qs
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if not change:
+            obj.sites.add(get_current_site(request))
+            obj.save()
 
     class Media:
         css = {
@@ -239,11 +257,24 @@ class ChannelAdmin(admin.ModelAdmin):
     ordering = ('title',)
     list_filter = ['visible']
 
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.is_superuser:
+            return ('sites',)
+        else:
+            return ()
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if not change:
+            obj.sites.add(get_current_site(request))
+            obj.save()
+
     def get_form(self, request, obj=None, **kwargs):
         if request.user.is_superuser:
             kwargs['form'] = ChannelSuperAdminForm
         else:
             kwargs['form'] = ChannelAdminForm
+
         form = super(ChannelAdmin, self).get_form(request, obj, **kwargs)
         return form
 
@@ -261,11 +292,18 @@ class ChannelAdmin(admin.ModelAdmin):
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(sites=get_current_site(
+                request))
+        return qs
+
 
 class ThemeAdmin(admin.ModelAdmin):
     form = ThemeForm
     list_display = ('title', 'channel')
-    list_filter = ['channel']
+    list_filter = (('channel', admin.RelatedOnlyFieldListFilter),)
     ordering = ('channel', 'title')
 
     class Media:
@@ -281,6 +319,23 @@ class ThemeAdmin(admin.ModelAdmin):
             'podfile/js/filewidget.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(channel__sites=get_current_site(
+                request))
+        return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "parentId":
+            kwargs["queryset"] = Theme.objects.filter(
+                    channel__sites=Site.objects.get_current())
+        if (db_field.name) == "channel":
+            kwargs["queryset"] = Channel.objects.filter(
+                    sites=Site.objects.get_current())
+
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class TypeAdmin(TranslationAdmin):
@@ -301,6 +356,27 @@ class TypeAdmin(TranslationAdmin):
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
+    def get_form(self, request, obj=None, **kwargs):
+        if not request.user.is_superuser:
+            exclude = ()
+            exclude += ('sites',)
+            self.exclude = exclude
+        form = super(TypeAdmin, self).get_form(request, obj, **kwargs)
+        return form
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if not change:
+            obj.sites.add(get_current_site(request))
+            obj.save()
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(sites=get_current_site(
+                request))
+        return qs
+
 
 class DisciplineAdmin(TranslationAdmin):
     form = DisciplineForm
@@ -320,6 +396,27 @@ class DisciplineAdmin(TranslationAdmin):
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 
+    def get_form(self, request, obj=None, **kwargs):
+        if not request.user.is_superuser:
+            exclude = ()
+            exclude += ('sites',)
+            self.exclude = exclude
+        form = super(DisciplineAdmin, self).get_form(request, obj, **kwargs)
+        return form
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if not change:
+            obj.sites.add(get_current_site(request))
+            obj.save()
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(sites=get_current_site(
+                request))
+        return qs
+
 
 class EncodingVideoAdmin(admin.ModelAdmin):
     list_display = ('video', 'get_resolution', 'encoding_format')
@@ -328,28 +425,107 @@ class EncodingVideoAdmin(admin.ModelAdmin):
         return obj.rendition.resolution
     get_resolution.short_description = 'resolution'
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(video__sites=get_current_site(
+                request))
+        return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+        if (db_field.name) == "rendition":
+            kwargs["queryset"] = VideoRendition.objects.filter(
+                    sites=Site.objects.get_current())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 class EncodingAudioAdmin(admin.ModelAdmin):
     list_display = ('name', 'video', 'encoding_format')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(video__sites=get_current_site(
+                request))
+        return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 class PlaylistVideoAdmin(admin.ModelAdmin):
     list_display = ('name', 'video', 'encoding_format')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(video__sites=get_current_site(
+                request))
+        return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class VideoRenditionAdmin(admin.ModelAdmin):
     list_display = (
         'resolution', 'video_bitrate', 'audio_bitrate', 'encode_mp4')
 
+    def get_form(self, request, obj=None, **kwargs):
+        if not request.user.is_superuser:
+            exclude = ()
+            exclude += ('sites',)
+            self.exclude = exclude
+        form = super(VideoRenditionAdmin, self).get_form(
+            request, obj, **kwargs)
+        return form
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if not change:
+            obj.sites.add(get_current_site(request))
+            obj.save()
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(sites=get_current_site(
+                request))
+        return qs
+
 
 class EncodingLogAdmin(admin.ModelAdmin):
     list_display = ('video',)
     readonly_fields = ('video', 'log')
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(video__sites=get_current_site(
+                request))
+        return qs
+
 
 class EncodingStepAdmin(admin.ModelAdmin):
     list_display = ('video',)
     readonly_fields = ('video', 'num_step', 'desc_step')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(video__sites=get_current_site(
+                request))
+        return qs
 
 
 class NotesAdmin(admin.ModelAdmin):
@@ -361,6 +537,23 @@ class NotesAdmin(admin.ModelAdmin):
                 'css/pod.css',
             )
         }
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(video__sites=get_current_site(
+                request))
+        return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "user":
+            kwargs["queryset"] = User.objects.filter(
+                    owner__sites=Site.objects.get_current())
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class AdvancedNotesAdmin(admin.ModelAdmin):
@@ -374,6 +567,23 @@ class AdvancedNotesAdmin(admin.ModelAdmin):
             )
         }
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(video__sites=get_current_site(
+                request))
+        return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "user":
+            kwargs["queryset"] = User.objects.filter(
+                    owner__sites=Site.objects.get_current())
+        if (db_field.name) == "video":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 class NoteCommentsAdmin(admin.ModelAdmin):
     list_display = ('parentNote', 'user', 'added_on', 'modified_on')
@@ -384,6 +594,27 @@ class NoteCommentsAdmin(admin.ModelAdmin):
                 'css/pod.css',
             )
         }
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(parentNote__video__sites=get_current_site(
+                request))
+        return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "user":
+            kwargs["queryset"] = User.objects.filter(
+                    owner__sites=Site.objects.get_current())
+        if (db_field.name) == "parentNote":
+            kwargs["queryset"] = AdvancedNotes.objects.filter(
+                    video__owner__owner__sites=Site.objects.get_current())
+        if (db_field.name) == "parentCom":
+            kwargs["queryset"] = NoteComments. \
+                objects.filter(
+                parentNote__video__owner__owner__sites=Site.
+                    objects.get_current())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 class VideoToDeleteAdmin(admin.ModelAdmin):
@@ -398,6 +629,13 @@ class VideoToDeleteAdmin(admin.ModelAdmin):
 class ViewCountAdmin(admin.ModelAdmin):
     list_display = ('video', 'date', 'count')
     readonly_fields = ('video', 'date', 'count')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(video__sites=get_current_site(
+                request))
+        return qs
 
 
 admin.site.register(Channel, ChannelAdmin)

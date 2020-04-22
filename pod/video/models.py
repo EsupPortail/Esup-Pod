@@ -26,7 +26,8 @@ from django.utils import timezone
 from ckeditor.fields import RichTextField
 from tagging.fields import TagField
 from django.utils.text import capfirst
-
+from django.contrib.sites.models import Site
+from django.db.models.signals import post_save
 import importlib
 
 from select2 import fields as select2_fields
@@ -70,7 +71,6 @@ CURSUS_CODES_DICT = {key: value for key, value in CURSUS_CODES}
 
 DEFAULT_TYPE_ID = getattr(
     settings, 'DEFAULT_TYPE_ID', 1)
-
 LICENCE_CHOICES = getattr(
     settings, 'LICENCE_CHOICES', (
         ('by', _("Attribution 4.0 International (CC BY 4.0)")),
@@ -231,6 +231,7 @@ class Channel(models.Model):
             u'If checked, the channel appear in a list of available '
             + 'channels on the platform.'),
         default=False)
+    sites = models.ManyToManyField(Site)
 
     class Meta:
         ordering = ['title']
@@ -262,6 +263,12 @@ class Channel(models.Model):
         super(Channel, self).save(*args, **kwargs)
 
 
+@receiver(post_save, sender=Channel)
+def default_site_channel(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())
+
+
 class Theme(models.Model):
     parentId = models.ForeignKey(
         'self', null=True, blank=True, related_name="children",
@@ -289,6 +296,10 @@ class Theme(models.Model):
 
     channel = select2_fields.ForeignKey(
         'Channel', related_name='themes', verbose_name=_('Channel'))
+
+    @property
+    def sites(self):
+        return self.channel.sites
 
     def __str__(self):
         return "%s: %s" % (self.channel.title, self.title)
@@ -368,6 +379,7 @@ class Type(models.Model):
     icon = models.ForeignKey(CustomImageModel, models.SET_NULL,
                              blank=True, null=True,
                              verbose_name=_('Icon'))
+    sites = models.ManyToManyField(Site)
 
     def __str__(self):
         return "%s" % (self.title)
@@ -393,6 +405,7 @@ class Discipline(models.Model):
     icon = models.ForeignKey(CustomImageModel, models.SET_NULL,
                              blank=True, null=True,
                              verbose_name=_('Icon'))
+    sites = models.ManyToManyField(Site)
 
     def __str__(self):
         return "%s" % (self.title)
@@ -405,6 +418,12 @@ class Discipline(models.Model):
         ordering = ['title']
         verbose_name = _('Discipline')
         verbose_name_plural = _('Disciplines')
+
+
+@receiver(post_save, sender=Discipline)
+def default_site_discipline(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())
 
 
 class Video(models.Model):
@@ -425,6 +444,7 @@ class Video(models.Model):
             'a short label containing only letters, '
             'numbers, underscore or dash top.'),
         editable=False)
+    sites = models.ManyToManyField(Site)
     type = models.ForeignKey(Type, verbose_name=_('Type'))
     # Management RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY setting for owners
     # and additional owners
@@ -434,9 +454,10 @@ class Video(models.Model):
             User,
             ajax=True,
             verbose_name=_('Owner'),
-            search_field=lambda q: Q(is_staff=True) & (Q(
+            search_field=lambda q: (Q(is_staff=True) & (Q(
                 first_name__icontains=q) | Q(
-                last_name__icontains=q)),
+                last_name__icontains=q))) & Q(
+                    owner__sites=Site.objects.get_current()),
             on_delete=models.CASCADE)
         additional_owners = select2_fields.ManyToManyField(
             User,
@@ -446,9 +467,10 @@ class Video(models.Model):
                 'width': 'off'
             },
             verbose_name=_('Additional owners'),
-            search_field=lambda q: Q(is_staff=True) & (Q(
+            search_field=lambda q: (Q(is_staff=True) & (Q(
                 first_name__icontains=q) | Q(
-                last_name__icontains=q)),
+                last_name__icontains=q))) & Q(
+                    owner__sites=Site.objects.get_current()),
             related_name='owners_videos',
             help_text=_('You can add additional owners to the video. They '
                         'will have the same rights as you except that they '
@@ -459,9 +481,10 @@ class Video(models.Model):
             User,
             ajax=True,
             verbose_name=_('Owner'),
-            search_field=lambda q: Q(
+            search_field=lambda q: (Q(
                 first_name__icontains=q) | Q(
-                last_name__icontains=q),
+                last_name__icontains=q)) & Q(
+                    owner__sites=Site.objects.get_current()),
             on_delete=models.CASCADE)
         additional_owners = select2_fields.ManyToManyField(
             User,
@@ -471,9 +494,10 @@ class Video(models.Model):
                 'width': 'off'
             },
             verbose_name=_('Additional owners'),
-            search_field=lambda q: Q(
+            search_field=lambda q: (Q(
                 first_name__icontains=q) | Q(
-                last_name__icontains=q),
+                last_name__icontains=q)) & Q(
+                    owner__sites=Site.objects.get_current()),
             related_name='owners_videos',
             help_text=_('You can add additional owners to the video. They '
                         'will have the same rights as you except that they '
@@ -775,6 +799,7 @@ class Video(models.Model):
 
     def get_json_to_index(self):
         try:
+            current_site = Site.objects.get_current()
             data_to_dump = {
                 'id': self.id,
                 'title': u'%s' % self.title,
@@ -796,9 +821,11 @@ class Video(models.Model):
                     } for name in Tag.objects.get_for_object(
                         self).values_list('name')]),
                 "type": {"title": self.type.title, "slug": self.type.slug},
-                "disciplines": list(self.discipline.all().values(
+                "disciplines": list(self.discipline.all().filter(
+                    sites=current_site).values(
                     'title', 'slug')),
-                "channels": list(self.channel.all().values('title', 'slug')),
+                "channels": list(self.channel.all().filter(
+                    sites=current_site).values('title', 'slug')),
                 "themes": list(self.theme.all().values('title', 'slug')),
                 "contributors": list(self.contributor_set.values(
                     'name', 'role')),
@@ -829,6 +856,7 @@ class Video(models.Model):
 
     def get_dublin_core(self):
         contributors = []
+        current_site = Site.objects.get_current()
         for contrib in self.contributor_set.values_list('name', 'role'):
             contributors.append(" ".join(contrib))
         try:
@@ -837,7 +865,8 @@ class Video(models.Model):
                 'dc.creator': '%s' % self.owner.get_full_name(),
                 'dc.description': '%s' % self.description,
                 'dc.subject': '%s' % ', '.join(
-                    self.discipline.all().values_list('title', flat=True)),
+                    self.discipline.all().filter(
+                        sites=current_site).values_list('title', flat=True)),
                 'dc.publisher': TITLE_ETB,
                 'dc.contributor': ", ".join(contributors),
                 "dc.date": '%s' % self.date_added.strftime('%Y/%m/%d'),
@@ -870,6 +899,12 @@ def remove_video_file(video):
         if os.path.isfile(image_overview):
             os.remove(image_overview)
         video.overview.delete()
+
+
+@receiver(post_save, sender=Video)
+def default_site(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())
 
 
 @receiver(pre_delete, sender=Video,
@@ -905,6 +940,10 @@ class ViewCount(models.Model):
     count = models.IntegerField(
         _('Number of view'), default=0, editable=False)
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     class Meta:
         unique_together = ("video", "date")
         verbose_name = _("View count")
@@ -939,6 +978,7 @@ class VideoRendition(models.Model):
         help_text="Please use the only format k. i.e.: "
         + "<em>300k</em> or <em>600k</em> or <em>1000k</em>.")
     encode_mp4 = models.BooleanField(_('Make a MP4 version'), default=False)
+    sites = models.ManyToManyField(Site)
 
     @property
     def height(self):
@@ -1021,6 +1061,12 @@ class VideoRendition(models.Model):
                         'audio_bitrate').help_text)
 
 
+@receiver(post_save, sender=VideoRendition)
+def default_site_videorendition(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())
+
+
 class EncodingVideo(models.Model):
     name = models.CharField(
         _('Name'),
@@ -1044,6 +1090,10 @@ class EncodingVideo(models.Model):
         _('encoding source file'),
         upload_to=get_storage_path_video,
         max_length=255)
+
+    @property
+    def sites(self):
+        return self.video.sites
 
     def clean(self):
         if self.name:
@@ -1105,6 +1155,10 @@ class EncodingAudio(models.Model):
         upload_to=get_storage_path_video,
         max_length=255)
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     class Meta:
         ordering = ['name']
         verbose_name = _('Encoding audio')
@@ -1155,6 +1209,10 @@ class PlaylistVideo(models.Model):
         upload_to=get_storage_path_video,
         max_length=255)
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     def clean(self):
         if self.name:
             if self.name not in dict(ENCODING_CHOICES):
@@ -1189,6 +1247,10 @@ class EncodingLog(models.Model):
                                  editable=False, on_delete=models.CASCADE)
     log = models.TextField(null=True, blank=True, editable=False)
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     class Meta:
         ordering = ['video']
         verbose_name = _('Encoding log')
@@ -1206,6 +1268,10 @@ class VideoVersion(models.Model):
         choices=VERSION_CHOICES, default="O",
         help_text=_("Video default version."))
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     def __str__(self):
         return "Choice for default video version : %s - %s" % (
             self.video.id, self.version)
@@ -1217,6 +1283,10 @@ class EncodingStep(models.Model):
     num_step = models.IntegerField(default=0, editable=False)
     desc_step = models.CharField(null=True,
                                  max_length=255, blank=True, editable=False)
+
+    @property
+    def sites(self):
+        return self.video.sites
 
     class Meta:
         ordering = ['video']
@@ -1231,6 +1301,10 @@ class Notes(models.Model):
     user = select2_fields.ForeignKey(User)
     video = select2_fields.ForeignKey(Video)
     note = models.TextField(_('Note'), null=True, blank=True)
+
+    @property
+    def sites(self):
+        return self.video.sites
 
     class Meta:
         verbose_name = _("Note")
@@ -1261,6 +1335,10 @@ class AdvancedNotes(models.Model):
         verbose_name = _("Advanced Note")
         verbose_name_plural = _("Advanced Notes")
         unique_together = ("video", "user", "timestamp", "status")
+
+    @property
+    def sites(self):
+        return self.video.sites
 
     def __str__(self):
         return "%s-%s-%s" % (self.user.username, self.video, self.timestamp)

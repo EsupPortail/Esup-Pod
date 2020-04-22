@@ -61,6 +61,10 @@ class Contributor(models.Model):
         verbose_name = _('Contributor')
         verbose_name_plural = _('Contributors')
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     def clean(self):
         msg = list()
         msg = self.verify_attributs() + self.verify_not_same_contributor()
@@ -123,6 +127,10 @@ class Document(models.Model):
         verbose_name = _('Document')
         verbose_name_plural = _('Documents')
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     def clean(self):
         msg = list()
         msg = self.verify_document() + self.verify_not_same_document()
@@ -174,6 +182,10 @@ class Track(models.Model):
                             blank=True,
                             null=True,
                             verbose_name=_('Subtitle file'))
+
+    @property
+    def sites(self):
+        return self.video.sites
 
     def get_label_lang(self):
         return "%s" % LANG_CHOICES_DICT[self.lang]
@@ -281,6 +293,10 @@ class Overlay(models.Model):
         default=True,
         help_text=_(u'Show the background of the overlay.')
     )
+
+    @property
+    def sites(self):
+        return self.video.sites
 
     class Meta:
         verbose_name = _('Overlay')

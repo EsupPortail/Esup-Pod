@@ -14,12 +14,14 @@ from .models import Interactive, InteractiveGroup
 from .forms import InteractiveGroupForm
 from h5pp.models import h5p_contents, h5p_libraries
 from h5pp.h5p.h5pmodule import getUserScore
+from django.contrib.sites.shortcuts import get_current_site
 
 
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def group_interactive(request, slug):
-    video = get_object_or_404(Video, slug=slug)
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
     interactiveGroup, created = InteractiveGroup.objects.get_or_create(
         video=video)
     if request.user != video.owner and not request.user.is_superuser and (
@@ -61,7 +63,8 @@ def check_interactive_group(request, video):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def edit_interactive(request, slug):
-    video = get_object_or_404(Video, slug=slug)
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
     if request.user != video.owner and not request.user.is_superuser and (
             request.user not in video.additional_owners.all()):
         if not check_interactive_group(request, video):
@@ -95,7 +98,8 @@ def video_interactive(request, slug, slug_c=None,
         id = int(slug[:slug.find("-")])
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
-    video = get_object_or_404(Video, id=id)
+    video = get_object_or_404(Video, id=id,
+                              sites=get_current_site(request))
 
     template_video = 'interactive/video_interactive-iframe.html' if (
         request.GET.get('is_iframe')) else 'interactive/video_interactive.html'

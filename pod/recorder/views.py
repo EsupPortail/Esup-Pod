@@ -13,7 +13,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.admin.views.decorators import user_passes_test
 from django.views.decorators.csrf import csrf_protect
 from django.utils.translation import ugettext_lazy as _
-
+from django.contrib.sites.shortcuts import get_current_site
 from pod.recorder.models import Recorder, RecordingFileTreatment
 from .forms import RecordingForm, RecordingFileTreatmentDeleteForm
 from django.contrib import messages
@@ -166,7 +166,8 @@ def recorder_notify(request):
         recording_ip_place = recording_place.replace("_", ".")
         try:
             # Check recorder existence corresponding to IP address
-            recorder = Recorder.objects.get(address_ip=recording_ip_place)
+            recorder = Recorder.objects.get(address_ip=recording_ip_place,
+                                            sites=get_current_site(request))
         except ObjectDoesNotExist:
             recorder = None
         if recorder:
@@ -221,7 +222,8 @@ def recorder_notify(request):
             email_msg.send(fail_silently=False)
             return HttpResponse("ok")
         else:
-            return HttpResponse("nok : address_ip not valid")
+            return HttpResponse("nok : address_ip not valid or "
+                                "recorder not found in this site")
     else:
         return HttpResponse("nok : recordingPlace or mediapath or key are "
                             "missing")
@@ -231,9 +233,16 @@ def recorder_notify(request):
 @login_required(redirect_field_name='referrer')
 @staff_member_required(redirect_field_name='referrer')
 def claim_record(request):
+    site = get_current_site(request)
     # get records list ordered by date
     records_list = RecordingFileTreatment.objects.\
-        filter(require_manual_claim=True).order_by('-date_added')
+        filter(require_manual_claim=True)
+
+    records_list = records_list.exclude(
+        pk__in=[rec.id for rec in records_list
+                if site not in rec.recorder.sites.all()])
+
+    records_list = records_list.order_by('-date_added')
     page = request.GET.get('page', 1)
 
     full_path = ""

@@ -12,7 +12,7 @@ from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
 from pod.video.models import Video
-
+from django.contrib.sites.shortcuts import get_current_site
 import json
 
 from django.contrib.auth.models import User as Owner
@@ -142,34 +142,41 @@ def context_settings(request):
 
 def context_navbar(request):
     channels = Channel.objects.filter(
-        visible=True, video__is_draft=False
+        visible=True, video__is_draft=False,
+        video__sites=get_current_site(request),
+        sites=get_current_site(request)
     ).distinct().annotate(
         video_count=Count("video", distinct=True)
     ).prefetch_related(
         Prefetch("themes", queryset=Theme.objects.filter(
-            parentId=None
+            parentId=None,
+            video__sites=get_current_site(request)
         ).distinct().annotate(
             video_count=Count("video", distinct=True)
         )))
 
     all_channels = Channel.objects.all(
-    ).distinct().annotate(
+    ).filter(sites=get_current_site(request),
+             video__sites=get_current_site(request)).distinct().annotate(
         video_count=Count("video", distinct=True)
     ).prefetch_related(
-        Prefetch("themes", queryset=Theme.objects.all(
-        ).distinct().annotate(
+        Prefetch("themes", queryset=Theme.objects.filter(
+            video__sites=get_current_site(request)).distinct().annotate(
             video_count=Count("video", distinct=True)
         )))
 
     types = Type.objects.filter(
-        video__is_draft=False
+        video__sites=get_current_site(request),
+        video__is_draft=False, sites=get_current_site(request)
     ).distinct().annotate(video_count=Count("video", distinct=True))
 
     disciplines = Discipline.objects.filter(
-        video__is_draft=False
+        video__sites=get_current_site(request),
+        video__is_draft=False, sites=get_current_site(request)
     ).distinct().annotate(video_count=Count("video", distinct=True))
 
-    linkFooter = LinkFooter.objects.all()
+    linkFooter = LinkFooter.objects.all().filter(
+        page__sites=get_current_site(request))
 
     owners_filter_args = {
         'video__is_draft': False,
@@ -183,7 +190,9 @@ def context_navbar(request):
     VALUES_LIST.append('fl_name')
     VALUES_LIST.append('fl_firstname')
 
-    owners = Owner.objects.filter(**owners_filter_args).distinct().order_by(
+    owners = Owner.objects.filter(**owners_filter_args).filter(
+        owner__sites=get_current_site(request)
+    ).distinct().order_by(
         ORDER_BY).annotate(video_count=Count(
             "video", distinct=True)).annotate(
         fl_name=Lower(Substr("last_name", 1, 1))).annotate(
@@ -195,11 +204,11 @@ def context_navbar(request):
     else:
         listowner = get_list_owner(owners)
 
-    LAST_VIDEOS = get_last_videos() if request.path == "/" else None
+    LAST_VIDEOS = get_last_videos(request) if request.path == "/" else None
 
     list_videos = Video.objects.filter(
         encoding_in_progress=False,
-        is_draft=False)
+        is_draft=False, sites=get_current_site(request))
     VIDEOS_COUNT = list_videos.count()
     VIDEOS_DURATION = str(timedelta(
         seconds=list_videos.aggregate(Sum('duration'))['duration__sum']
@@ -231,17 +240,17 @@ def get_list_owner(owners):
     return listowner
 
 
-def get_last_videos():
+def get_last_videos(request):
 
     filter_args = Video.objects.filter(
-        encoding_in_progress=False, is_draft=False)
+        encoding_in_progress=False, is_draft=False,
+        sites=get_current_site(request))
 
     if not HOMEPAGE_SHOWS_PASSWORDED:
         filter_args = filter_args.filter(
             Q(password='') | Q(password__isnull=True))
     if not HOMEPAGE_SHOWS_RESTRICTED:
         filter_args = filter_args.filter(is_restricted=False)
-
     filter_args = filter_args.exclude(
         pk__in=[vid.id for vid in filter_args if not vid.encoded])
 

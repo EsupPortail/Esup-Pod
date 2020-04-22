@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.models import User
 # from django.core.mail import mail_admins
 from django.core.mail import mail_managers
-
+from django.contrib.sites.shortcuts import get_current_site
 import csv
 import os
 
@@ -86,7 +86,9 @@ class Command(BaseCommand):
         list_video_notified_by_establishment.setdefault('other', {})
         for step_day in sorted(WARN_DEADLINES):
             step_date = date.today() + timedelta(days=step_day)
-            videos = Video.objects.filter(date_delete=step_date)
+            videos = Video.objects.filter(date_delete=step_date,
+                                          sites=get_current_site(
+                                              settings.SITE_ID))
             for video in videos:
                 self.notify_user(video, step_day)
                 if (
@@ -108,6 +110,7 @@ class Command(BaseCommand):
     def get_video_archived_deleted_treatment(self):
         # get video with deadline out of time to deal with deletion
         vids = Video.objects.filter(
+            sites=get_current_site(None),
             date_delete__lt=date.today()).exclude(
             owner__username=ARCHIVE_OWNER_USERNAME)
 
