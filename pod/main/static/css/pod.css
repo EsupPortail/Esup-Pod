@@ -42,6 +42,11 @@ padding:.25rem 1.25rem;
 	max-width: 1400px;
 }
 
+/*** video ***/
+#myTabContent #info p {
+  margin-top: 7px;
+}
+
 /*** navbar **/
 /*.nav-link.btn-connexion{
   background: #b03c7e;

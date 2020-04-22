@@ -4,138 +4,90 @@
 {% load thumbnail %}
 
 <div class="tab-content w-100" id="myTabContent">
+{% if video.description or tag_list or video.is_360 %}
   <div class="tab-pane fade active show" id="summary" role="tabpanel" aria-labelledby="summary-tab">
     <h5><i data-feather="align-justify"></i>&nbsp;{% trans 'Summary' %}</h5>
-    {% if video.is_360 %}<p class="text-info">{% trans "This is a 360 degree video. To look around click and drag your mouse on the video."%}</p>{% endif %}
+    {% if video.is_360 %}<p>{% trans "This is a 360 degree video. To look around click and drag your mouse on the video."%}</p>{% endif %}
     {% tags_for_object video as tag_list %}
     {% if video.description or tag_list %}
-    <p>{{ video.description|safe }}</p>
-    {% if tag_list %}
-    <p>{% trans 'Tags' %}&nbsp;:&nbsp;
-      {% for tag in tag_list %}
-       <a href="{% url 'videos' %}?tag={{ tag }}" title="{{ tag }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
-           <span class="label label-default">{{ tag }}</span>
-       </a>
-      {% endfor %}
-    </p>
-    {% endif %}
-    {% else %}
+      <p>{{ video.description|safe }}</p>
+      {% if tag_list %}
+        <p>{% trans 'Tags' %}&nbsp;:&nbsp;
+          {% for tag in tag_list %}
+           <a href="{% url 'videos' %}?tag={{ tag }}" title="{{ tag }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+               <span class="label label-default">{{ tag }}</span>
+           </a>
+          {% endfor %}
+        </p>
+      {% endif %}
+    {% elif not video.is_360 %}
     <p>[... {% trans "No information available" %} ...]</p>
     {% endif %}
   </div>
-  <div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
+  {% endif %}
+  {% if not video.description and not tag_list and not video.is_360 %}
+    <div class="tab-pane fade active show" id="info" role="tabpanel" aria-labelledby="info-tab">
+  {% else %}
+    <div class="tab-pane fade" id="info" role="tabpanel" aria-labelledby="info-tab">
+  {% endif %}
     <h5><i data-feather="info"></i>&nbsp;{% trans 'Infos' %}</h5>
     <div class="row">
-      <div class="col-3">
-      {% trans 'Added by' %}&nbsp;: 
+      <div class="col-4">
+        <p><strong>{% trans 'Added by' %}&nbsp;</strong>:</p>
+        <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+        {% thumbnail video.owner.owner.userpicture.file "x70" as im %}
+            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}">
+        {% endthumbnail %}
+        {{ video.owner.get_full_name }}</a>
+        {% if video.additional_owners.all %}
+          <p><strong>{% trans 'Additional owners' %}&nbsp;</strong>:<br />
+          {% for additionalOwner in video.additional_owners.all %}
+            <a href="{% url 'videos' %}?owner={{ additionalOwner.username }}" title="{{ additionalOwner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ additionalOwner.get_full_name }} </a><br />
+          {% endfor %}
+          </p>
+        {%endif%}
+        {% if video.contributor_set.all %}
+        <p><strong>{% trans 'Contributors' %} : </strong><br />
+        {% for contrib in video.contributor_set.all %}
+        {{ contrib.name }} ({% trans contrib.role %})
+        {% if contrib.email_address %}
+        <a href="javascript:linkTo_UnCryptMailto('{{ contrib.get_base_mail }}');" title="{% trans "send an email" %}">
+          <i data-feather="mail"></i>
+        </a>
+        {% endif %}
+        {% if contrib.weblink %}
+          <a href="{{ contrib.weblink }}" target="_blank" title="{% trans "go to his web link" %} : {{ contrib.weblink }}">
+              <i data-feather="external-link"></i>
+          </a>
+        {% endif %}
+        <br />
+        {% endfor %}
+        </p>
+        {% endif %}
       </div>
-      <div class="col-9">
-      <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
-      {% thumbnail video.owner.owner.userpicture.file "x34" as im %}
-          <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}">
-      {% endthumbnail %}
-      {{ video.owner.get_full_name }}</a>
+      <div class="col-4">
+      <p><strong>{% trans 'Updated on' %}&nbsp;</strong>:<br /> {{ video.date_added }}</p>
+      <p><strong>{% trans 'Duration' %}&nbsp;</strong>:<br />{{ video.duration_in_time }}</p>
+      <p><strong>{% trans 'Number of view' %}&nbsp;</strong>:<br />{{ video.get_viewcount }}{% if USE_STATS_VIEW %} <a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video_stats_view' video.slug %}?from=video">({% trans 'Show details views' %})</a></p>{% endif %}
       </div>
-    </div>
-    {% if video.additional_owners.all %}
-	  <div class="row">
-      <div class="col-3">	     
-		    {% trans 'Additional owners' %}&nbsp;:<br/>
-      </div>
-      <div class="col-9">
-		    {% for additionalOwner in video.additional_owners.all %}
-          <a href="{% url 'videos' %}?owner={{ additionalOwner.username }}" title="{{ additionalOwner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ additionalOwner.get_full_name }} </a>
-		    {% endfor %}
-      </div>
-    </div>
-      {%endif%}
-	  <div class="row">
-      <div class="col-3">
-      {% trans 'Updated on' %}&nbsp;:
-      </div>
-      <div class="col-9">
-       <strong>{{ video.date_added }}</strong>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-3">
-      {% trans 'Duration' %}&nbsp;:
-      </div>
-      <div class="col-9">
-       <strong>{{ video.duration_in_time }}</strong>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-3">
-      {% trans 'Number of view' %}&nbsp;:
-      </div>
-      <div class="col-9">
-       <strong>{{ video.get_viewcount }}</strong>{% if USE_STATS_VIEW %} <a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video_stats_view' video.slug %}?from=video">({% trans 'Show details views' %})</a>{% endif %}
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-3">
-      {% trans 'Type' %}&nbsp;:
-      </div>
-      <div class="col-9">
-       <a href="{% url 'videos' %}?type={{ video.type.slug }}" title="{{ video.type.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ video.type.title }}</a>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-3">
-      {% trans "Main language" %}&nbsp;:
-      </div>
-      <div class="col-9">
-       <strong>{{video.get_main_lang}}</strong>
-      </div>
-    </div>
-    {% if video.cursus and video.cursus != '0' %}
-    <div class="row">
-      <div class="col-3">
-      {% trans 'Audience' %}&nbsp;:
-      </div>
-      <div class="col-9">
-       {{video.get_cursus}}
-      </div>
-    </div>
-    {%endif%}
-    {% if video.discipline.all %}
-    <div class="row">
-      <div class="col-3">
-      {% trans 'Disciplines' %}&nbsp;:
-      </div>
-      <div class="col-9">
+      <div class="col-4">
+        <p><strong>{% trans 'Type' %}&nbsp;</strong>:<br /> <a href="{% url 'videos' %}?type={{ video.type.slug }}" title="{{ video.type.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ video.type.title }}</a></p>
+        <p><strong>{% trans "Main language" %}&nbsp;</strong>:<br /> {{video.get_main_lang}}</p>
+        {% if video.cursus and video.cursus != '0' %}
+          <p><strong>{% trans 'Audience' %}&nbsp;</strong>:<br />{{video.get_cursus}}
+        {%endif%}
+        {% if video.discipline.all %}
+        <p><strong>{% trans 'Disciplines' %}&nbsp;</strong>:<br />
         {% for disc in video.discipline.all %}
         <a href="{% url 'videos' %}?discipline={{ disc.slug }}" title="{{ disc.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
             {{ disc.title }}
         </a>
         {% endfor %}
+        </p>
+        {%endif%}
       </div>
     </div>
-    {%endif%}
-    {% if video.contributor_set.all %}
-    <div class="row">
-      <div class="col-3">
-        <strong>{% trans 'Contributors' %} : </strong>
-      </div>
-      <div class="col-6">
-      {% for contrib in video.contributor_set.all %}
-      {{ contrib.name }} ({% trans contrib.role %})
-      {% if contrib.email_address %}
-      <a href="javascript:linkTo_UnCryptMailto('{{ contrib.get_base_mail }}');" title="{% trans "send an email" %}">
-        <i data-feather="mail"></i>
-      </a>
-      {% endif %}
-      {% if contrib.weblink %}
-        <a href="{{ contrib.weblink }}" target="_blank" title="{% trans "go to his web link" %} : {{ contrib.weblink }}">
-            <i data-feather="external-link"></i>
-        </a>
-      {% endif %}
-      {% endfor %}
-      </div>
-    </div>
-      {% endif %}
-    </div>
+  </div>
   <div class="tab-pane fade" id="downloads" role="tabpanel">
     <h5 ><i data-feather="download"></i>&nbsp;{% trans 'Downloads' %}</h5>
     <div class="row">
@@ -153,7 +105,7 @@
         {%endif%}
       </div>
       <div class="col-4">
-      {% if video.allow_downloading %}  
+      {% if video.allow_downloading %}
       {% if video.get_video_mp3 %}
       <div>{% trans 'Audio file' %} :<br/>
       <form method="post" action="{% url 'download_file' %}">
