@@ -8,7 +8,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.auth.models import Group
 from select2 import fields as select2_fields
-
+from sorl.thumbnail import delete
 from itertools import chain
 from operator import attrgetter
 
@@ -177,6 +177,7 @@ class CustomImageModel(BaseFileModel):
 
     def delete(self):
         if self.file:
+            delete(self.file)
             if os.path.isfile(self.file.path):
                 os.remove(self.file.path)
         super(CustomImageModel, self).delete()
