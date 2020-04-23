@@ -174,7 +174,6 @@ CKEDITOR_CONFIGS = {
 }
 
 
-
 ##
 # Video tiers apps settings
 #

@@ -681,7 +681,8 @@ class Video(models.Model):
             im = get_thumbnail(self.thumbnail.file, '100x100',
                                crop='center', quality=72)
             thumbnail_url = im.url
-            # <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+            # <img src="{{ im.url }}" width="{{ im.width }}"
+            # height="{{ im.height }}">
         else:
             thumbnail_url = ''.join(
                 ['//',
@@ -703,7 +704,8 @@ class Video(models.Model):
             im = get_thumbnail(self.thumbnail.file, 'x170',
                                crop='center', quality=72)
             thumbnail_url = im.url
-            # <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+            # <img src="{{ im.url }}" width="{{ im.width }}"
+            # height="{{ im.height }}">
         else:
             thumbnail_url = ''.join(
                 ['//',
