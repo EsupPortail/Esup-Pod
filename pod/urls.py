@@ -31,7 +31,7 @@ from pod.video.views import video_count, video_version
 from pod.video.views import video_oembed
 from pod.video.views import stats_view
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
-from pod.main.views import contact_us, download_file, autocompleteModel
+from pod.main.views import contact_us, download_file, user_autocomplete
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
 from pod.recorder.views import add_recording, recorder_notify, claim_record,\
@@ -88,7 +88,7 @@ urlpatterns = [
     url(r'^video_collaborate/(?P<slug>[\-\d\w]+)/$',
         video_collaborate,
         name='video_collaborate'),
-    url(r'^ajax_calls/search_user/', autocompleteModel),
+    url(r'^ajax_calls/search_user/', user_autocomplete),
     # my channels
     url(r'^my_channels/$', my_channels, name='my_channels'),
     url(r'^channel_edit/(?P<slug>[\-\d\w]+)/$',

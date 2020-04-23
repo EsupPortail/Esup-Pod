@@ -157,28 +157,17 @@ $('#ownerboxnavbar').keyup(function() {
                     url: "/ajax_calls/search_user?term=" + searchTerm,
                     cache: false,
                     success: function (response) {
+                        $("#accordion").html("");
                         response.forEach(elt => {
                             $("#accordion").append('<li><a href="'+urlvideos+'?owner='+elt.username+'" title="">'+elt.first_name+' '+elt.last_name+((!HIDE_USERNAME)?' ('+elt.username+')</a></li>': '</a></li>'));
                         })
                     }
                 }
             );
-		    $("#accordion").html("");
    
 	} else {
 		$("#accordion").html("");
 	}
-});
-$(".showUser").on('click', function() {
-	var letter = $(this).attr("data-target").toLowerCase();
-    $("#accordion").html("");
-    if(listUser[letter]){
-	   var nbuser = listUser[letter].length;
-    	for(i=0; i<nbuser; i++) {
-            $("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+ ((!HIDE_USERNAME)?' ('+listUser[letter][i]["username"]+')</a></li>': '</a></li>'));
-
-        }
-    }
 });
 
 /** MENU ASIDE **/
@@ -359,19 +348,24 @@ function show_list_theme(data) {
 /***** VIDEOS *****/
 $('#ownerbox').keyup(function() {
   if($(this).val() && $(this).val().length > 2) {
-    var valThis = removeDiacritics($(this).val().toLowerCase());
-    var letter = valThis.charAt(0);
-    var nbuser = listUser[letter].length;
-    /*$("#accordion").html("");*/
-    $("#collapseFilterOwner .added").prop('checked', false).remove();
-    for(i=0; i<nbuser; i++) {
-      var lastname = removeDiacritics(listUser[letter][i]["last_name"].toLowerCase());
-      if(lastname.indexOf(valThis) != -1 && listUserChecked.indexOf(listUser[letter][i]["username"])==-1 ) {
-        let username = HIDE_USERNAME?'':(' ('+listUser[letter][i]["username"]+')');
-        var chekboxhtml = '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="'+listUser[letter][i]["username"]+'" id="id'+listUser[letter][i]["username"]+'"><label class="form-check-label" for="id'+listUser[letter][i]["username"]+'">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+username+'</label></div>';
-        $("#collapseFilterOwner").append(chekboxhtml);
-      }
-    }
+    var searchTerm = $(this).val();
+            $.ajax(
+                {
+                    type: "GET",
+                    url: "/ajax_calls/search_user?term=" + searchTerm,
+                    cache: false,
+                    success: function (response) {
+                        $("#collapseFilterOwner .added").prop('checked', false).remove();
+                        response.forEach(elt => {
+                            let username = HIDE_USERNAME?'':(' ('+elt.username+')');
+                            var chekboxhtml = '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="'+elt.username+'" id="id'+elt.username+'"><label class="form-check-label" for="id'+elt.username+'">'+elt.first_name+' '+elt.last_name+ username+'</label></div>';
+                            $("#collapseFilterOwner").append(chekboxhtml);
+                        })
+                    }
+                }
+            );
+
+ 
   } else {
     $("#collapseFilterOwner .added").prop('checked', false).remove();
   }
