@@ -88,7 +88,7 @@ urlpatterns = [
     url(r'^video_collaborate/(?P<slug>[\-\d\w]+)/$',
         video_collaborate,
         name='video_collaborate'),
-    url(r'^ajax_calls/search/', autocompleteModel),
+    url(r'^ajax_calls/search_user/', autocompleteModel),
     # my channels
     url(r'^my_channels/$', my_channels, name='my_channels'),
     url(r'^channel_edit/(?P<slug>[\-\d\w]+)/$',

@@ -67,6 +67,8 @@ SUPPORT_EMAIL = getattr(
 )
 USE_SUPPORT_EMAIL = getattr(
         settings, "USE_SUPPORT_EMAIL", False)
+HIDE_USERNAME = getattr(
+        settings, 'HIDE_USERNAME', False)
 
 
 @csrf_protect
@@ -256,18 +258,18 @@ def remove_accents(input_str):
 
 
 def autocompleteModel(request):
-   #  if request.is_ajax():
-    VALUES_LIST = ['username', 'first_name', 'last_name', 'video_count']
-    q = remove_accents(request.GET.get('term', '').lower())
-    users = User.objects.filter(Q(username__istartswith=q) |
-                                Q(last_name__istartswith=q) |
-                                Q(first_name__istartswith=q)
-                                ).distinct().order_by(
-        "last_name").annotate(video_count=Count(
-            "video", distinct=True)).values(*list(VALUES_LIST))
+    if request.is_ajax():
+        VALUES_LIST = ['username', 'first_name', 'last_name', 'video_count']
+        q = remove_accents(request.GET.get('term', '').lower())
+        users = User.objects.filter(Q(username__istartswith=q) |
+                                    Q(last_name__istartswith=q) |
+                                    Q(first_name__istartswith=q)
+                                    ).distinct().order_by(
+            "last_name").annotate(video_count=Count(
+                "video", distinct=True)).values(*list(VALUES_LIST))
 
-    data = json.dumps(list(users))
-    #else:
-     #   data = 'fail'
+        data = json.dumps(list(users))
+    else:
+        data = 'fail'
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)

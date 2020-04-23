@@ -150,22 +150,21 @@ $('.collapsibleThemes').on('hidden.bs.collapse', function () {
 })
 $('#ownerboxnavbar').keyup(function() {
 	if($(this).val() && $(this).val().length > 2) {
-        console.log("Writing ...")
-		var valThis = removeDiacritics($(this).val().toLowerCase());
-        var letter = valThis.charAt(0);
-        console.log(listUser)
-        if(listUser[letter]){
-		    var nbuser = listUser[letter].length;
-		    $("#accordion").html("");
-    		for(i=0; i<nbuser; i++) {
-    			var lastname = removeDiacritics(listUser[letter][i]["last_name"].toLowerCase());
-                var firstname = removeDiacritics(listUser[letter][i]["first_name"].toLowerCase());
-                if(lastname.indexOf(valThis) != -1 || firstname.indexOf(valThis) != -1){
-                    $("#accordion").append('<li><a href="'+urlvideos+'?owner='+listUser[letter][i]["username"]+'" title="">'+listUser[letter][i]["first_name"]+' '+listUser[letter][i]["last_name"]+((!HIDE_USERNAME)?' ('+listUser[letter][i]["username"]+')</a></li>': '</a></li>'));
-
+		var searchTerm = $(this).val();
+            $.ajax(
+                {
+                    type: "GET",
+                    url: "/ajax_calls/search_user?term=" + searchTerm,
+                    cache: false,
+                    success: function (response) {
+                        response.forEach(elt => {
+                            $("#accordion").append('<li><a href="'+urlvideos+'?owner='+elt.username+'" title="">'+elt.first_name+' '+elt.last_name+((!HIDE_USERNAME)?' ('+elt.username+')</a></li>': '</a></li>'));
+                        })
+                    }
                 }
-    		}
-        }
+            );
+		    $("#accordion").html("");
+   
 	} else {
 		$("#accordion").html("");
 	}
