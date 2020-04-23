@@ -150,8 +150,10 @@ $('.collapsibleThemes').on('hidden.bs.collapse', function () {
 })
 $('#ownerboxnavbar').keyup(function() {
 	if($(this).val() && $(this).val().length > 2) {
+        console.log("Writing ...")
 		var valThis = removeDiacritics($(this).val().toLowerCase());
-		var letter = valThis.charAt(0);
+        var letter = valThis.charAt(0);
+        console.log(listUser)
         if(listUser[letter]){
 		    var nbuser = listUser[letter].length;
 		    $("#accordion").html("");

@@ -10,13 +10,19 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-
+from pod.authentication.models import Owner
+from django.db.models import Count, Sum
+from django.db.models.functions import Substr, Lower
 from django.http import HttpResponse
 from wsgiref.util import FileWrapper
-
+from django.forms.models import model_to_dict
+from django.core import serializers
+from django.db.models import Q
 from pod.video.models import Video
 import os
 import mimetypes
+import json
+import unicodedata
 
 ##
 # Settings exposed in templates
@@ -241,3 +247,27 @@ def contact_us(request):
         'form': form,
         'owner': owner}
     )
+
+
+def remove_accents(input_str):
+    nfkd_form = unicodedata.normalize('NFKD', input_str)
+    only_ascii = nfkd_form.encode('ASCII', 'ignore')
+    return only_ascii
+
+
+def autocompleteModel(request):
+   #  if request.is_ajax():
+    VALUES_LIST = ['username', 'first_name', 'last_name', 'video_count']
+    q = remove_accents(request.GET.get('term', '').lower())
+    users = User.objects.filter(Q(username__istartswith=q) |
+                                Q(last_name__istartswith=q) |
+                                Q(first_name__istartswith=q)
+                                ).distinct().order_by(
+        "last_name").annotate(video_count=Count(
+            "video", distinct=True)).values(*list(VALUES_LIST))
+
+    data = json.dumps(list(users))
+    #else:
+     #   data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
