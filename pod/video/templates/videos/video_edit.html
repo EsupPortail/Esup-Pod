@@ -107,10 +107,12 @@
         <div class="card" id='js-process'>
           <div class="card-body">
             <h5 class="card-title">{% trans "Sending, please wait." %}</h5>
+            <!--
             <div class="spinner-border" role="status">
                 <span class="sr-only">{% trans "Loading" %}...</span>
             </div>
-            <!--<p class="card-text">{% progress_bar %}</p>-->
+            -->
+            <p class="card-text">{% progress_bar %}</p>
           </div>
           <div class="card-footer">
             {% trans "The page will refresh after the upload completes." %}

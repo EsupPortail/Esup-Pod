@@ -31,7 +31,7 @@ from django.db.models.signals import post_save
 import importlib
 
 from select2 import fields as select2_fields
-
+from sorl.thumbnail import get_thumbnail
 from pod.main.models import get_nextautoincrement
 from django.db.models import Q
 
@@ -659,19 +659,61 @@ class Video(models.Model):
         return "%s : %s" % (es.num_step, es.desc_step)
     get_encoding_step.fget.short_description = _('Encoding step')
 
+    def get_thumbnail_url(self):
+        request = None
+        if self.thumbnail and self.thumbnail.file_exist():
+            thumbnail_url = ''.join(
+                ['//',
+                 get_current_site(request).domain,
+                 self.thumbnail.file.url])
+        else:
+            thumbnail_url = ''.join(
+                ['//',
+                 get_current_site(request).domain,
+                 settings.STATIC_URL,
+                 DEFAULT_THUMBNAIL])
+        return thumbnail_url
+
     @property
     def get_thumbnail_admin(self):
+        thumbnail_url = ""
+        if self.thumbnail and self.thumbnail.file_exist():
+            im = get_thumbnail(self.thumbnail.file, '100x100',
+                               crop='center', quality=72)
+            thumbnail_url = im.url
+            # <img src="{{ im.url }}" width="{{ im.width }}"
+            # height="{{ im.height }}">
+        else:
+            thumbnail_url = ''.join(
+                ['//',
+                 get_current_site(None).domain,
+                 settings.STATIC_URL,
+                 DEFAULT_THUMBNAIL])
+
         return format_html('<img style="max-width:100px" '
                            'src="%s" alt="%s" />' % (
-                               self.get_thumbnail_url(),
+                               thumbnail_url,
                                self.title
                            )
                            )
     get_thumbnail_admin.fget.short_description = _('Thumbnails')
 
     def get_thumbnail_card(self):
+        thumbnail_url = ""
+        if self.thumbnail and self.thumbnail.file_exist():
+            im = get_thumbnail(self.thumbnail.file, 'x170',
+                               crop='center', quality=72)
+            thumbnail_url = im.url
+            # <img src="{{ im.url }}" width="{{ im.width }}"
+            # height="{{ im.height }}">
+        else:
+            thumbnail_url = ''.join(
+                ['//',
+                 get_current_site(None).domain,
+                 settings.STATIC_URL,
+                 DEFAULT_THUMBNAIL])
         return '<img class="card-img-top" src="%s" alt="%s" />' % (
-            self.get_thumbnail_url(), self.title)
+            thumbnail_url, self.title)
 
     @property
     def duration_in_time(self):
@@ -747,21 +789,6 @@ class Video(models.Model):
             if os.path.isfile(self.overview.path):
                 os.remove(self.overview.path)
         super(Video, self).delete()
-
-    def get_thumbnail_url(self):
-        request = None
-        if self.thumbnail and self.thumbnail.file_exist():
-            thumbnail_url = ''.join(
-                ['//',
-                 get_current_site(request).domain,
-                 self.thumbnail.file.url])
-        else:
-            thumbnail_url = ''.join(
-                ['//',
-                 get_current_site(request).domain,
-                 settings.STATIC_URL,
-                 DEFAULT_THUMBNAIL])
-        return thumbnail_url
 
     def get_playlist_master(self):
         try:
