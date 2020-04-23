@@ -167,6 +167,13 @@ DEFAULT_YEAR_DATE_DELETE = getattr(settings, 'DEFAULT_YEAR_DATE_DELETE', 2)
 # FUNCTIONS
 
 
+def default_date_delete():
+    return date(
+        date.today().year + DEFAULT_YEAR_DATE_DELETE,
+        date.today().month,
+        date.today().day)
+
+
 def remove_accents(input_str):
     nkfd_form = unicodedata.normalize('NFKD', input_str)
     return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
@@ -590,10 +597,7 @@ class Video(models.Model):
 
     date_delete = models.DateField(
         _('Date to delete'),
-        default=date(
-            date.today().year + DEFAULT_YEAR_DATE_DELETE,
-            date.today().month,
-            date.today().day))
+        default=default_date_delete)
 
     class Meta:
         ordering = ['-date_added', '-id']
@@ -678,7 +682,7 @@ class Video(models.Model):
     def encoded(self):
         return ((self.get_playlist_master() is not None) and
                 (self.get_video_mp4() is not None or
-                self.get_video_mp3() is not None))
+                 self.get_video_mp3() is not None))
     encoded.fget.short_description = _('Is the video encoded ?')
 
     @property
