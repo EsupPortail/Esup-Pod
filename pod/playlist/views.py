@@ -106,7 +106,7 @@ def playlist_remove(request, playlist):
         if request.POST.get('video'):
             slug = request.POST['video']
             element = get_object_or_404(
-                PlaylistElement, video__slug=slug)
+                PlaylistElement, video__slug=slug, playlist=playlist)
             element.delete()
             some_data_to_dump = {
                 'success': '{0}'.format(
