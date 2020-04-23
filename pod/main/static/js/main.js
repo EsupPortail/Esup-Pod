@@ -82,15 +82,14 @@ $(document).on('change', '#loop', function() {
 $(document).on('change', "#displaytime", function(e) {
     if($('#displaytime').is(':checked')){
         if($('#txtpartage').val().indexOf('start')<0){
-             $('#txtpartage').val($('#txtpartage').val()+'?start='+parseInt(player.currentTime()));
+             $('#txtpartage').val($('#txtpartage').val()+'&start='+parseInt(player.currentTime()));
              if ($('#txtpartage').val().indexOf('??') > 0) $('#txtpartage').val($('#txtpartage').val().replace('??', '?'));
              var valeur = $('#txtintegration').val();
              $('#txtintegration').val(valeur.replace('/?', '/?start=' + parseInt(player.currentTime())+'&'));
-
         }
         $('#txtposition').val(player.currentTime().toHHMMSS());
     }else{
-         $('#txtpartage').val($('#txtpartage').val().replace(/(\?start=)\d+/, '').replace(/(\?start=)\d+/, ''));
+         $('#txtpartage').val($('#txtpartage').val().replace(/(\&start=)\d+/, '').replace(/(\start=)\d+/, '').replace(/(\?start=)\d+/, ''));
 
          $('#txtintegration').val($('#txtintegration').val().replace(/(start=)\d+&/, ''));
          $('#txtposition').val("");
