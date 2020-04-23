@@ -192,11 +192,6 @@ def context_navbar(request):
         fl_firstname=Lower(Substr("first_name", 1, 1))).order_by(
         'fl_name').values(*list(VALUES_LIST))
 
-    if not request.user.is_authenticated:
-        listowner = {}
-    else:
-        listowner = get_list_owner(owners)
-
     list_videos = Video.objects.filter(
         encoding_in_progress=False,
         is_draft=False, sites=get_current_site(request))
@@ -207,25 +202,8 @@ def context_navbar(request):
 
     return {'ALL_CHANNELS': all_channels, 'CHANNELS': channels,
             'TYPES': types, 'OWNERS': owners,
-            'DISCIPLINES': disciplines, 'LISTOWNER': json.dumps(listowner),
+            'DISCIPLINES': disciplines,
             'LINK_FOOTER': linkFooter,
             'VIDEOS_COUNT': VIDEOS_COUNT,
             'VIDEOS_DURATION': VIDEOS_DURATION
             }
-
-
-def get_list_owner(owners):
-    listowner = {}
-    for owner in owners:
-        if owner['fl_name'] != '':
-            if listowner.get(owner['fl_name']):
-                listowner[owner['fl_name']].append(owner)
-            else:
-                listowner[owner['fl_name']] = [owner]
-        if (owner['fl_firstname'] != ''
-                and owner['fl_firstname'] != owner['fl_name']):
-            if listowner.get(owner['fl_firstname']):
-                listowner[owner['fl_firstname']].append(owner)
-            else:
-                listowner[owner['fl_firstname']] = [owner]
-    return listowner
