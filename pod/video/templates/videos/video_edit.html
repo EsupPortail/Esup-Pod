@@ -9,7 +9,7 @@
 {% endblock page_extra_head %}
 
 
-{% block breadcrumbs %}{{ block.super }} 
+{% block breadcrumbs %}{{ block.super }}
 <li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
 {% if form.instance.title %}
 <li class="breadcrumb-item"><a href="{% url 'video' slug=form.instance.slug %}" title="{{form.instance.title}}">{{form.instance.title|title|truncatechars:45}}</a></li>
@@ -69,7 +69,7 @@
                 {% trans "The video is currently being encoded." %}
             </p>
             {% endif %}
-            
+
             {% if form.instance.get_encoding_step == "5 : transcripting audio" %}
             <p class="text-info">
                 {% trans "The video is currently being transcripted." %}
@@ -89,7 +89,7 @@
                 {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label" >{{ field.label }}</label>
                 </div>
                 {% else %}
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label> 
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br/>{%endif%}
                 {{ field }}
                 {% endif %}
@@ -107,11 +107,9 @@
         <div class="card" id='js-process'>
           <div class="card-body">
             <h5 class="card-title">{% trans "Sending, please wait." %}</h5>
-            <!--
-            <div class="spinner-border" role="status">
+            <div class="spinner-border hidespinner" role="status">
                 <span class="sr-only">{% trans "Loading" %}...</span>
             </div>
-            -->
             <p class="card-text">{% progress_bar %}</p>
           </div>
           <div class="card-footer">
@@ -120,7 +118,7 @@
         </div>
     <!--</div>-->
     <div class="text-center">
-        <button type="submit" class="btn btn-primary btn-sm m-2" name="_continue" value="">{% trans 'Save and continue editing' %}</button> 
+        <button type="submit" class="btn btn-primary btn-sm m-2" name="_continue" value="">{% trans 'Save and continue editing' %}</button>
         {% if form.instance.title %}<button type="submit" class="btn btn-primary btn-sm m-2" name="_saveandsee" value="{{form.instance.get_full_url}}">{% trans 'Save and see' %}</button> {%endif%}
         <a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}" class="btn btn-secondary btn-sm m-2">{% trans 'back to my videos' %}</a>
     </div>
