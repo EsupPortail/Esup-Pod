@@ -26,6 +26,7 @@ from pod.video.models import Theme
 from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount, VideoVersion
 from tagging.models import TaggedItem
+from django.contrib.auth.models import User
 
 from pod.video.forms import VideoForm, VideoVersionForm
 from pod.video.forms import ChannelForm
@@ -35,7 +36,7 @@ from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
 from itertools import chain
 from django.views.decorators.csrf import ensure_csrf_cookie
-
+from django.core.exceptions import ObjectDoesNotExist
 import json
 import re
 import pandas
@@ -325,6 +326,17 @@ def get_videos_list(request):
     return videos_list.distinct()
 
 
+def get_owners_has_instances(owners):
+    ownersInstances = []
+    for owner in owners:
+        try:
+            obj = User.objects.get(username=owner)
+            ownersInstances.append(obj)
+        except ObjectDoesNotExist:
+            pass
+    return ownersInstances
+
+
 def videos(request):
     videos_list = get_videos_list(request)
 
@@ -342,6 +354,8 @@ def videos(request):
     except EmptyPage:
         videos = paginator.page(paginator.num_pages)
 
+    ownersInstances = get_owners_has_instances(request.GET.getlist('owner'))
+
     if request.is_ajax():
         return render(
             request, 'videos/video_list.html',
@@ -353,7 +367,8 @@ def videos(request):
         "owners": request.GET.getlist('owner'),
         "disciplines": request.GET.getlist('discipline'),
         "tags_slug": request.GET.getlist('tag'),
-        "full_path": full_path
+        "full_path": full_path,
+        "ownersInstances": ownersInstances
     })
 
 
