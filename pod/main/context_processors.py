@@ -95,6 +95,9 @@ SHIB_NAME = getattr(
 USE_THEME = getattr(
     django_settings, 'USE_THEME', "default")
 
+BOOTSTRAP_CUSTOM = getattr(
+    django_settings, 'BOOTSTRAP_CUSTOM', None)
+
 
 def context_settings(request):
     new_settings = {}
@@ -127,6 +130,7 @@ def context_settings(request):
     new_settings['USE_SHIB'] = \
         USE_SHIB
     new_settings['USE_THEME'] = USE_THEME
+    new_settings['BOOTSTRAP_CUSTOM'] = BOOTSTRAP_CUSTOM
     return new_settings
 
 

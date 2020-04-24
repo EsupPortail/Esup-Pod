@@ -31,7 +31,7 @@ from django.db.models.signals import post_save
 import importlib
 
 from select2 import fields as select2_fields
-
+from sorl.thumbnail import get_thumbnail
 from pod.main.models import get_nextautoincrement
 from django.db.models import Q
 
@@ -165,6 +165,13 @@ DEFAULT_DC_RIGHTS = getattr(settings, 'DEFAULT_DC_RIGHT', "BY-NC-SA")
 DEFAULT_YEAR_DATE_DELETE = getattr(settings, 'DEFAULT_YEAR_DATE_DELETE', 2)
 
 # FUNCTIONS
+
+
+def default_date_delete():
+    return date(
+        date.today().year + DEFAULT_YEAR_DATE_DELETE,
+        date.today().month,
+        date.today().day)
 
 
 def remove_accents(input_str):
@@ -590,10 +597,7 @@ class Video(models.Model):
 
     date_delete = models.DateField(
         _('Date to delete'),
-        default=date(
-            date.today().year + DEFAULT_YEAR_DATE_DELETE,
-            date.today().month,
-            date.today().day))
+        default=default_date_delete)
 
     class Meta:
         ordering = ['-date_added', '-id']
@@ -655,19 +659,61 @@ class Video(models.Model):
         return "%s : %s" % (es.num_step, es.desc_step)
     get_encoding_step.fget.short_description = _('Encoding step')
 
+    def get_thumbnail_url(self):
+        request = None
+        if self.thumbnail and self.thumbnail.file_exist():
+            thumbnail_url = ''.join(
+                ['//',
+                 get_current_site(request).domain,
+                 self.thumbnail.file.url])
+        else:
+            thumbnail_url = ''.join(
+                ['//',
+                 get_current_site(request).domain,
+                 settings.STATIC_URL,
+                 DEFAULT_THUMBNAIL])
+        return thumbnail_url
+
     @property
     def get_thumbnail_admin(self):
+        thumbnail_url = ""
+        if self.thumbnail and self.thumbnail.file_exist():
+            im = get_thumbnail(self.thumbnail.file, '100x100',
+                               crop='center', quality=72)
+            thumbnail_url = im.url
+            # <img src="{{ im.url }}" width="{{ im.width }}"
+            # height="{{ im.height }}">
+        else:
+            thumbnail_url = ''.join(
+                ['//',
+                 get_current_site(None).domain,
+                 settings.STATIC_URL,
+                 DEFAULT_THUMBNAIL])
+
         return format_html('<img style="max-width:100px" '
                            'src="%s" alt="%s" />' % (
-                               self.get_thumbnail_url(),
+                               thumbnail_url,
                                self.title
                            )
                            )
     get_thumbnail_admin.fget.short_description = _('Thumbnails')
 
     def get_thumbnail_card(self):
+        thumbnail_url = ""
+        if self.thumbnail and self.thumbnail.file_exist():
+            im = get_thumbnail(self.thumbnail.file, 'x170',
+                               crop='center', quality=72)
+            thumbnail_url = im.url
+            # <img src="{{ im.url }}" width="{{ im.width }}"
+            # height="{{ im.height }}">
+        else:
+            thumbnail_url = ''.join(
+                ['//',
+                 get_current_site(None).domain,
+                 settings.STATIC_URL,
+                 DEFAULT_THUMBNAIL])
         return '<img class="card-img-top" src="%s" alt="%s" />' % (
-            self.get_thumbnail_url(), self.title)
+            thumbnail_url, self.title)
 
     @property
     def duration_in_time(self):
@@ -678,7 +724,7 @@ class Video(models.Model):
     def encoded(self):
         return ((self.get_playlist_master() is not None) and
                 (self.get_video_mp4() is not None or
-                self.get_video_mp3() is not None))
+                 self.get_video_mp3() is not None))
     encoded.fget.short_description = _('Is the video encoded ?')
 
     @property
@@ -743,21 +789,6 @@ class Video(models.Model):
             if os.path.isfile(self.overview.path):
                 os.remove(self.overview.path)
         super(Video, self).delete()
-
-    def get_thumbnail_url(self):
-        request = None
-        if self.thumbnail and self.thumbnail.file_exist():
-            thumbnail_url = ''.join(
-                ['//',
-                 get_current_site(request).domain,
-                 self.thumbnail.file.url])
-        else:
-            thumbnail_url = ''.join(
-                ['//',
-                 get_current_site(request).domain,
-                 settings.STATIC_URL,
-                 DEFAULT_THUMBNAIL])
-        return thumbnail_url
 
     def get_playlist_master(self):
         try:
