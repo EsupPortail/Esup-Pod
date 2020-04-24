@@ -357,9 +357,11 @@ $('#ownerbox').keyup(function() {
                     success: function (response) {
                         $("#collapseFilterOwner .added").prop('checked', false).remove();
                         response.forEach(elt => {
-                            let username = HIDE_USERNAME?'':(' ('+elt.username+')');
-                            var chekboxhtml = '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="'+elt.username+'" id="id'+elt.username+'"><label class="form-check-label" for="id'+elt.username+'">'+elt.first_name+' '+elt.last_name+ username+'</label></div>';
-                            $("#collapseFilterOwner").append(chekboxhtml);
+                            if (listUserChecked.indexOf(elt.username)==-1) {
+                                let username = HIDE_USERNAME?'':(' ('+elt.username+')');
+                                var chekboxhtml = '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="'+elt.username+'" id="id'+elt.username+'"><label class="form-check-label" for="id'+elt.username+'">'+elt.first_name+' '+elt.last_name+ username+'</label></div>';
+                                $("#collapseFilterOwner").append(chekboxhtml);
+                            }
                         })
                     }
                 }
