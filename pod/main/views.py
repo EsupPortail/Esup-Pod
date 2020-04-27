@@ -70,6 +70,8 @@ MENUBAR_HIDE_INACTIVE_OWNERS = getattr(
         settings, 'HIDE_USERNAME', True)
 MENUBAR_SHOW_STAFF_OWNERS_ONLY = getattr(
         settings, 'MENUBAR_SHOW_STAFF_OWNERS_ONLY', False)
+HIDE_USER_TAB = getattr(
+        settings, 'HIDE_USER_TAB', False)
 
 
 @csrf_protect
@@ -258,8 +260,9 @@ def remove_accents(input_str):
     return only_ascii
 
 
-@login_required(redirect_field_name='referrer')
 def user_autocomplete(request):
+    if HIDE_USER_TAB and request.user.is_anonymous():
+        return HttpResponse(status=404)
     if request.is_ajax():
         additional_filters = {
             'video__is_draft': False,
