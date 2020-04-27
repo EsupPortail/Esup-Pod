@@ -10,13 +10,16 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-
+from django.db.models import Count
 from django.http import HttpResponse
 from wsgiref.util import FileWrapper
-
+from django.db.models import Q
 from pod.video.models import Video
+from django.contrib.auth.decorators import login_required
 import os
 import mimetypes
+import json
+import unicodedata
 
 ##
 # Settings exposed in templates
@@ -61,6 +64,14 @@ SUPPORT_EMAIL = getattr(
 )
 USE_SUPPORT_EMAIL = getattr(
         settings, "USE_SUPPORT_EMAIL", False)
+HIDE_USERNAME = getattr(
+        settings, 'HIDE_USERNAME', False)
+MENUBAR_HIDE_INACTIVE_OWNERS = getattr(
+        settings, 'HIDE_USERNAME', True)
+MENUBAR_SHOW_STAFF_OWNERS_ONLY = getattr(
+        settings, 'MENUBAR_SHOW_STAFF_OWNERS_ONLY', False)
+HIDE_USER_TAB = getattr(
+        settings, 'HIDE_USER_TAB', False)
 
 
 @csrf_protect
@@ -241,3 +252,39 @@ def contact_us(request):
         'form': form,
         'owner': owner}
     )
+
+
+def remove_accents(input_str):
+    nfkd_form = unicodedata.normalize('NFKD', input_str)
+    only_ascii = nfkd_form.encode('ASCII', 'ignore')
+    return only_ascii
+
+
+def user_autocomplete(request):
+    if HIDE_USER_TAB and request.user.is_anonymous():
+        return HttpResponse(status=404)
+    if request.is_ajax():
+        additional_filters = {
+            'video__is_draft': False,
+            'owner__sites': get_current_site(request)
+        }
+        if MENUBAR_HIDE_INACTIVE_OWNERS:
+            additional_filters['is_active'] = True
+        if MENUBAR_SHOW_STAFF_OWNERS_ONLY:
+            additional_filters['is_staff'] = True
+        VALUES_LIST = ['username', 'first_name', 'last_name', 'video_count']
+        q = remove_accents(request.GET.get('term', '').lower())
+        users = User.objects.filter(
+          **additional_filters
+        ).filter(Q(username__istartswith=q) |
+                 Q(last_name__istartswith=q) |
+                 Q(first_name__istartswith=q)).distinct().order_by(
+            "last_name").annotate(video_count=Count(
+                "video", sites=get_current_site(
+                    request), distinct=True)).values(*list(VALUES_LIST))
+
+        data = json.dumps(list(users))
+    else:
+        return HttpResponse(status=404)
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)

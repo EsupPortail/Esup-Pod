@@ -2,7 +2,6 @@ from django.conf import settings as django_settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import Count, Sum
 from django.db.models import Prefetch
-from django.db.models.functions import Substr, Lower
 from datetime import timedelta
 
 from pod.main.models import LinkFooter
@@ -13,9 +12,7 @@ from pod.video.models import Type
 from pod.video.models import Discipline
 from pod.video.models import Video
 from django.contrib.sites.shortcuts import get_current_site
-import json
 
-from django.contrib.auth.models import User as Owner
 ORDER_BY = 'last_name'
 VALUES_LIST = ['username', 'first_name', 'last_name']
 
@@ -175,32 +172,6 @@ def context_navbar(request):
     linkFooter = LinkFooter.objects.all().filter(
         page__sites=get_current_site(request))
 
-    owners_filter_args = {
-        'video__is_draft': False,
-    }
-    if MENUBAR_HIDE_INACTIVE_OWNERS:
-        owners_filter_args['is_active'] = True
-    if MENUBAR_SHOW_STAFF_OWNERS_ONLY:
-        owners_filter_args['is_staff'] = True
-
-    VALUES_LIST.append('video_count')
-    VALUES_LIST.append('fl_name')
-    VALUES_LIST.append('fl_firstname')
-
-    owners = Owner.objects.filter(**owners_filter_args).filter(
-        owner__sites=get_current_site(request)
-    ).distinct().order_by(
-        ORDER_BY).annotate(video_count=Count(
-            "video", distinct=True)).annotate(
-        fl_name=Lower(Substr("last_name", 1, 1))).annotate(
-        fl_firstname=Lower(Substr("first_name", 1, 1))).order_by(
-        'fl_name').values(*list(VALUES_LIST))
-
-    if not request.user.is_authenticated:
-        listowner = {}
-    else:
-        listowner = get_list_owner(owners)
-
     list_videos = Video.objects.filter(
         encoding_in_progress=False,
         is_draft=False, sites=get_current_site(request))
@@ -210,26 +181,9 @@ def context_navbar(request):
     )) if list_videos.aggregate(Sum('duration'))['duration__sum'] else 0
 
     return {'ALL_CHANNELS': all_channels, 'CHANNELS': channels,
-            'TYPES': types, 'OWNERS': owners,
-            'DISCIPLINES': disciplines, 'LISTOWNER': json.dumps(listowner),
+            'TYPES': types,
+            'DISCIPLINES': disciplines,
             'LINK_FOOTER': linkFooter,
             'VIDEOS_COUNT': VIDEOS_COUNT,
             'VIDEOS_DURATION': VIDEOS_DURATION
             }
-
-
-def get_list_owner(owners):
-    listowner = {}
-    for owner in owners:
-        if owner['fl_name'] != '':
-            if listowner.get(owner['fl_name']):
-                listowner[owner['fl_name']].append(owner)
-            else:
-                listowner[owner['fl_name']] = [owner]
-        if (owner['fl_firstname'] != ''
-                and owner['fl_firstname'] != owner['fl_name']):
-            if listowner.get(owner['fl_firstname']):
-                listowner[owner['fl_firstname']].append(owner)
-            else:
-                listowner[owner['fl_firstname']] = [owner]
-    return listowner
