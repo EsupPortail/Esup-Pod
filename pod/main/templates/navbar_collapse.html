@@ -68,7 +68,7 @@
     </div>
   </div>
 </div>
-{% if not HIDE_USER_TAB and user.is_authenticated %}
+{% if user.is_authenticated %}
 <div class="modal fade users-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
