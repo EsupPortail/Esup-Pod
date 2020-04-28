@@ -581,13 +581,13 @@ def video_edit(request, slug=None):
         raise PermissionDenied
 
     # default selected owner in select field
-    # default_owner = video.owner.pk if video else request.user.pk
+    default_owner = video.owner.pk if video else request.user.pk
     form = VideoForm(
         instance=video,
         is_staff=request.user.is_staff,
         is_superuser=request.user.is_superuser,
         current_user=request.user,
-        # initial={'owner': default_owner}
+        initial={'owner': default_owner}
     )
 
     if request.method == 'POST':

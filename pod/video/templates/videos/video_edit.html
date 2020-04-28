@@ -11,7 +11,7 @@
 
 {% block breadcrumbs %}{{ block.super }}
 <li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
-{% if form.instance.title %}
+{% if form.instance.title and form.instance.slug != '' %}
 <li class="breadcrumb-item"><a href="{% url 'video' slug=form.instance.slug %}" title="{{form.instance.title}}">{{form.instance.title|title|truncatechars:45}}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
 {%else%}
@@ -32,7 +32,7 @@
 
 {% block page_content %}
 {% spaceless %}
-<h3>{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"
+<h3>{% if form.instance.title and form.instance.slug != '' %}{% trans "Editing the video" %} "{{form.instance.title}}"
 <span class="float-right">
     <a href="{% url 'video' slug=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn-primary btn-sm m-2">
         <i data-feather="film"></i>&nbsp;{% trans "View the video"%}
@@ -48,7 +48,7 @@
     <i data-feather="info"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}" title="{% trans 'contact its owner' %}">{% trans 'contact us' %}</a>
 </p>
 {% else %}
-{% if form.instance.slug %}
+{% if form.instance.slug and form.instance.slug != '' %}
 <form id="video_form" method="post"
     action="{% url 'video_edit' slug=form.instance.slug %}"
     accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
@@ -119,7 +119,7 @@
     <!--</div>-->
     <div class="text-center">
         <button type="submit" class="btn btn-primary btn-sm m-2" name="_continue" value="">{% trans 'Save and continue editing' %}</button>
-        {% if form.instance.title %}<button type="submit" class="btn btn-primary btn-sm m-2" name="_saveandsee" value="{{form.instance.get_full_url}}">{% trans 'Save and see' %}</button> {%endif%}
+        {% if form.instance.title and form.instance.slug != '' %}<button type="submit" class="btn btn-primary btn-sm m-2" name="_saveandsee" value="{{form.instance.get_full_url}}">{% trans 'Save and see' %}</button> {%endif%}
         <a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}" class="btn btn-secondary btn-sm m-2">{% trans 'back to my videos' %}</a>
     </div>
 </form>
@@ -130,14 +130,14 @@
 {% block page_aside %}
 {% if access_not_allowed == True %}
 {% else %}
-{% if form.instance.title %}
+{% if form.instance.title  and form.instance.slug != '' %}
 <div class="card card-body p-2 mt-1" id="card-managevideo">
 <h5 class="card-title pl-2"><i data-feather="settings"></i>&nbsp;{% trans "Manage video"%}</h5>
       <div class="card-text text-center">
         {% include "videos/link_video.html" with video=form.instance %}
       </div>
 </div>
-{% if request.user.is_staff or request.user.is_superuser %}
+{% if form.instance.slug != '' and request.user.is_staff or request.user.is_superuser %}
     {% if THIRD_PARTY_APPS|length > 0 %}
     <div class="card card-body p-2 mt-1" id="card-alternativeversion">
         <h5 class="card-title pl-2">{% trans "Staff" %} - {% trans "Alternative version" %}</h5>

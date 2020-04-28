@@ -175,6 +175,19 @@ def default_date_delete():
         date.today().day)
 
 
+def select_video_owner():
+    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY:
+        return lambda q: (Q(is_staff=True) & (Q(
+            first_name__icontains=q) | Q(
+            last_name__icontains=q))) & Q(
+            owner__sites=Site.objects.get_current())
+    else:
+        return lambda q: (Q(
+            first_name__icontains=q) | Q(
+            last_name__icontains=q)) & Q(
+            owner__sites=Site.objects.get_current())
+
+
 def remove_accents(input_str):
     nkfd_form = unicodedata.normalize('NFKD', input_str)
     return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
@@ -454,62 +467,25 @@ class Video(models.Model):
         editable=False)
     sites = models.ManyToManyField(Site)
     type = models.ForeignKey(Type, verbose_name=_('Type'))
-    # Management RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY setting for owners
-    # and additional owners
-    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY:
-        # We can select only staff users
-        owner = select2_fields.ForeignKey(
-            User,
-            ajax=True,
-            verbose_name=_('Owner'),
-            search_field=lambda q: (Q(is_staff=True) & (Q(
-                first_name__icontains=q) | Q(
-                last_name__icontains=q))) & Q(
-                    owner__sites=Site.objects.get_current()),
-            on_delete=models.CASCADE)
-        additional_owners = select2_fields.ManyToManyField(
-            User,
-            blank=True,
-            ajax=True,
-            js_options={
-                'width': 'off'
-            },
-            verbose_name=_('Additional owners'),
-            search_field=lambda q: (Q(is_staff=True) & (Q(
-                first_name__icontains=q) | Q(
-                last_name__icontains=q))) & Q(
-                    owner__sites=Site.objects.get_current()),
-            related_name='owners_videos',
-            help_text=_('You can add additional owners to the video. They '
-                        'will have the same rights as you except that they '
-                        'can\'t delete this video.'))
-    else:
-        # We can select all users
-        owner = select2_fields.ForeignKey(
-            User,
-            ajax=True,
-            verbose_name=_('Owner'),
-            search_field=lambda q: (Q(
-                first_name__icontains=q) | Q(
-                last_name__icontains=q)) & Q(
-                    owner__sites=Site.objects.get_current()),
-            on_delete=models.CASCADE)
-        additional_owners = select2_fields.ManyToManyField(
-            User,
-            blank=True,
-            ajax=True,
-            js_options={
-                'width': 'off'
-            },
-            verbose_name=_('Additional owners'),
-            search_field=lambda q: (Q(
-                first_name__icontains=q) | Q(
-                last_name__icontains=q)) & Q(
-                    owner__sites=Site.objects.get_current()),
-            related_name='owners_videos',
-            help_text=_('You can add additional owners to the video. They '
-                        'will have the same rights as you except that they '
-                        'can\'t delete this video.'))
+    owner = select2_fields.ForeignKey(
+        User,
+        ajax=True,
+        verbose_name=_('Owner'),
+        search_field=select_video_owner(),
+        on_delete=models.CASCADE)
+    additional_owners = select2_fields.ManyToManyField(
+        User,
+        blank=True,
+        ajax=True,
+        js_options={
+            'width': 'off'
+        },
+        verbose_name=_('Additional owners'),
+        search_field=select_video_owner(),
+        related_name='owners_videos',
+        help_text=_('You can add additional owners to the video. They '
+                    'will have the same rights as you except that they '
+                    'can\'t delete this video.'))
     description = RichTextField(
         _('Description'),
         config_name='complete',
