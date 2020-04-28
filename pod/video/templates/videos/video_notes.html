@@ -23,7 +23,9 @@
     {% if request.user.is_authenticated or listNotes %}
     <div class="mgtNotes mb-2">
             {% if request.user.is_authenticated %}
+                {% comment %}
                 <a class="p-0 m-0 btn btn-outline-primary btn-sm open" href="{% url 'video_collaborate' slug=video.slug %}" title="{% trans 'Large columns interface' %}"><i data-feather="maximize-2"></i></a>
+                {% endcomment %}
                 <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="add_video_notes_form  mt-1" role="menuitem">
                     {% csrf_token %}
                     <fieldset> <input type="hidden" id="action_add" name="action" value="form_note" autocomplete="off"/> </fieldset>

@@ -24,6 +24,7 @@
           {% endthumbnail %}
 	  {{ owner.first_name }} {{ owner.last_name }} {% if not HIDE_USERNAME and user.is_authenticated %} ({{ owner.username }}) {% endif%}
       </label>
+      </div>
       {% endfor %}  
   </div>
   </fieldset>

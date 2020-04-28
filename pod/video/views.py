@@ -52,7 +52,7 @@ VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
 try:
     VIDEOS = VIDEOS.exclude(
         pk__in=[vid.id for vid in VIDEOS if not vid.encoded]). \
-            filter(sites=get_current_site(None))
+        filter(sites=get_current_site(None))
 except Exception:
     pass
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
@@ -484,7 +484,7 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
                                     request)) if slug_c else None
     theme = get_object_or_404(
         Theme, channel=channel, slug=slug_t, sites=get_current_site(
-                                    request)) if slug_t else None
+            request)) if slug_t else None
     playlist = get_object_or_404(
         Playlist,
         slug=request.GET['playlist']) if request.GET.get('playlist') else None
@@ -564,7 +564,7 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
 @login_required(redirect_field_name='referrer')
 def video_edit(request, slug=None):
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(
-                                    request)) if slug else None
+        request)) if slug else None
 
     if (RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
             and request.user.is_staff is False):
@@ -581,13 +581,13 @@ def video_edit(request, slug=None):
         raise PermissionDenied
 
     # default selected owner in select field
-    # default_owner = video.owner.pk if video else request.user.pk
+    default_owner = video.owner.pk if video else request.user.pk
     form = VideoForm(
         instance=video,
         is_staff=request.user.is_staff,
         is_superuser=request.user.is_superuser,
         current_user=request.user,
-        # initial={'owner': default_owner}
+        initial={'owner': default_owner}
     )
 
     if request.method == 'POST':
@@ -1348,25 +1348,25 @@ def get_all_views_count(v_id, specific_date=None):
         video_id=v_id,
         date=TODAY).aggregate(
             Sum('count'))['count__sum']
-        )
+    )
     # view count in month
     all_views.append(ViewCount.objects.filter(
         video_id=v_id,
         date__year=TODAY.year,
         date__month=TODAY.month).aggregate(
             Sum('count'))['count__sum']
-        )
+    )
     # view count in year
     all_views.append(ViewCount.objects.filter(
         date__year=TODAY.year,
         video_id=v_id).aggregate(
             Sum('count'))['count__sum']
-        )
+    )
     # view count since video was created
     all_views.append(ViewCount.objects.filter(
         video_id=v_id).aggregate(
             Sum('count'))['count__sum']
-        )
+    )
     # replace None by 0
     return [nb if nb else 0 for nb in all_views]
 
@@ -1398,31 +1398,31 @@ def get_videos(p_slug, target, p_slug_t=None):
 
 def manage_access_rights_stats_video(request, video, page_title):
     video_access_ok = get_video_access(
-            request, video, slug_private=None)
+        request, video, slug_private=None)
     is_password_protected = (
-            video.password is not None and
-            video.password != "")
+        video.password is not None and
+        video.password != "")
     has_rights = (
-            request.user == video.owner or
-            request.user.is_superuser or
-            request.user in video.additional_owners.all())
+        request.user == video.owner or
+        request.user.is_superuser or
+        request.user in video.additional_owners.all())
     if(not has_rights and is_password_protected):
         form = VideoPasswordForm()
         return render(
-                request,
-                "videos/video_stats_view.html",
-                {"form": form, "title": page_title})
+            request,
+            "videos/video_stats_view.html",
+            {"form": form, "title": page_title})
     elif(
             (
                 not has_rights and video_access_ok and
                 not is_password_protected) or
             (video_access_ok and not is_password_protected) or has_rights):
         return render(
-                request,
-                "videos/video_stats_view.html",
-                {"title": page_title})
+            request,
+            "videos/video_stats_view.html",
+            {"title": page_title})
     return HttpResponseNotFound(
-            _("You do not have access rights to this video: %s " % video.slug))
+        _("You do not have access rights to this video: %s " % video.slug))
 
 
 def stats_view(request, slug=None, slug_t=None):
@@ -1431,13 +1431,13 @@ def stats_view(request, slug=None, slug_t=None):
     target = request.GET.get('from', "videos")
     videos, title = get_videos(slug, target, slug_t)
     error_message = (
-            "The following %s does not exist or contain any videos: %s")
+        "The following %s does not exist or contain any videos: %s")
     if request.method == "GET" and target == "video" and videos:
         return manage_access_rights_stats_video(request, videos[0], title)
 
     elif request.method == "GET" and target == "video" and not videos:
         return HttpResponseNotFound(
-                _("The following video does not exist : %s") % slug)
+            _("The following video does not exist : %s") % slug)
 
     if request.method == "GET" and (
             not videos and target in ("channel", "theme", "videos")):
@@ -1451,13 +1451,13 @@ def stats_view(request, slug=None, slug_t=None):
                 request.method == "GET" and
                 videos and target in ("videos", "channel", "theme")):
         return render(
-                request,
-                "videos/video_stats_view.html",
-                {"title": title})
+            request,
+            "videos/video_stats_view.html",
+            {"title": title})
     else:
         specific_date = request.POST.get("periode", TODAY)
         min_date = VIDEOS.aggregate(
-                Min("date_added"))["date_added__min"].date()
+            Min("date_added"))["date_added__min"].date()
         if type(specific_date) == str:
             specific_date = parse(specific_date).date()
         data = []
@@ -1466,16 +1466,19 @@ def stats_view(request, slug=None, slug_t=None):
             v_data["title"] = v.title
             v_data["slug"] = v.slug
             (
-                    v_data["day"],
-                    v_data["month"],
-                    v_data["year"],
-                    v_data["since_created"]) = get_all_views_count(
-                            v.id, specific_date)
+                v_data["day"],
+                v_data["month"],
+                v_data["year"],
+                v_data["since_created"]) = get_all_views_count(
+                v.id, specific_date)
             data.append(v_data)
         data.append({"min_date": min_date})
         return JsonResponse(data, safe=False)
 
 
+"""
+# check access to video
+# change tempalte to fix height and breadcrumbs
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_collaborate(request, slug):
@@ -1494,3 +1497,4 @@ def video_collaborate(request, slug):
             'videos/video_collaborate.html', {
                 'video': video,
                 'listNotes': listNotes})
+"""
