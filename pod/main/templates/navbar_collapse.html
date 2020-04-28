@@ -1,4 +1,6 @@
-{% load i18n %}{% spaceless %}
+{% load i18n %}
+{% load thumbnail %}
+{% spaceless %}
 <div class="modal fade chaines-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
@@ -13,7 +15,13 @@
           {% for channel in CHANNELS %}
           <li class="list-group-item list-group-item-action" data-id="{{channel.id}}">
             <div class=" d-flex justify-content-between align-items-center">
-          <span class="d-flex align-items-center title-chaine">{% if channel.headband %}<img src="{{ channel.headband.file.url }}" height="34" class='rounded mr-2' alt="{{channel.title|title}}">{% else %}<i data-feather="youtube" style="height:34px" class="mr-2"></i>{% endif %} <a href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">
+          <span class="d-flex align-items-center title-chaine">
+            {% if channel.headband %}
+            {% thumbnail channel.headband.file "x34" as im %}
+            <img src="{{ im.url }}" height="34" class='rounded mr-2' alt="{{channel.title|title}}">
+            {% endthumbnail %}
+            {% else %}<i data-feather="youtube" style="height:34px" class="mr-2"></i>{% endif %} 
+            <a href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">
             {{channel.title}}</a></span>
           <span>
           {% if channel.themes.all.count > 0 %}
@@ -60,7 +68,7 @@
     </div>
   </div>
 </div>
-{% if user.is_authenticated %}
+{% if not HIDE_USER_TAB and user.is_authenticated %}
 <div class="modal fade users-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
