@@ -2,20 +2,13 @@
 Django local settings for pod_project.
 Django version : 1.11.10.
 """
-
 import os
-from .lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 
 ##
 # flatpages
 ##
 SITE_ID = 1
 
-# Lang choices
-LANG_CHOICES = (
-    (' ', PREF_LANG_CHOICES),
-    ('----------', ALL_LANG_CHOICES)
-)
 ##
 # The secret key for your particular Django installation.
 #

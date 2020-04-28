@@ -15,7 +15,6 @@ from django.http import HttpResponse
 from wsgiref.util import FileWrapper
 from django.db.models import Q
 from pod.video.models import Video
-from django.contrib.auth.decorators import login_required
 import os
 import mimetypes
 import json

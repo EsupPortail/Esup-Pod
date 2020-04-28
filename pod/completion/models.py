@@ -8,6 +8,7 @@ from django.template.defaultfilters import slugify
 from ckeditor.fields import RichTextField
 from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
+from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from select2 import fields as select2_fields
 
 if getattr(settings, 'USE_PODFILE', False):
@@ -37,10 +38,11 @@ KIND_CHOICES = getattr(
         ('subtitles', _('subtitles')),
         ('captions', _('captions')),
     ))
+
 LANG_CHOICES = getattr(
     settings, 'LANG_CHOICES', (
-        (' ', settings.PREF_LANG_CHOICES),
-        ('----------', settings.ALL_LANG_CHOICES)
+        (' ', PREF_LANG_CHOICES),
+        ('----------', ALL_LANG_CHOICES)
     ))
 LANG_CHOICES_DICT = {key: value for key,
                      value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}

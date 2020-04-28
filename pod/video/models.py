@@ -33,6 +33,7 @@ import importlib
 from select2 import fields as select2_fields
 from sorl.thumbnail import get_thumbnail
 from pod.main.models import get_nextautoincrement
+from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from django.db.models import Q
 
 if getattr(settings, 'USE_PODFILE', False):
@@ -52,8 +53,8 @@ VIDEOS_DIR = getattr(
 
 LANG_CHOICES = getattr(
     settings, 'LANG_CHOICES', (
-        (' ', settings.PREF_LANG_CHOICES),
-        ('----------', settings.ALL_LANG_CHOICES)
+        (' ', PREF_LANG_CHOICES),
+        ('----------', ALL_LANG_CHOICES)
     ))
 
 CURSUS_CODES = getattr(
