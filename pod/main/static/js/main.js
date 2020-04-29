@@ -354,9 +354,17 @@ $('#ownerbox').keyup(function() {
                     url: "/ajax_calls/search_user?term=" + searchTerm,
                     cache: false,
                     success: function (response) {
-                        $("#collapseFilterOwner .added").prop('checked', false).remove();
+                        $("#collapseFilterOwner .added").each(function(index){
+                            var c = $(this).find("input");
+                            if(!c.prop("checked")){
+                                $(this).remove();
+                            }
+                        })
+             
+            
+                        
                         response.forEach(elt => {
-                            if (listUserChecked.indexOf(elt.username)==-1) {
+                            if (listUserChecked.indexOf(elt.username)==-1 && $("#collapseFilterOwner #id" + elt.username).length == 0) {
                                 let username = HIDE_USERNAME?'':(' ('+elt.username+')');
                                 var chekboxhtml = '<div class="form-check added"><input class="form-check-input" type="checkbox" name="owner" value="'+elt.username+'" id="id'+elt.username+'"><label class="form-check-label" for="id'+elt.username+'">'+elt.first_name+' '+elt.last_name+ username+'</label></div>';
                                 $("#collapseFilterOwner").append(chekboxhtml);
@@ -368,7 +376,12 @@ $('#ownerbox').keyup(function() {
 
  
   } else {
-    $("#collapseFilterOwner .added").prop('checked', false).remove();
+    $("#collapseFilterOwner .added").each(function(index){
+        var c = $(this).find("input");
+        if(!c.prop("checked")){
+            $(this).remove();
+        }
+    })
   }
 });
 /****** VIDEOS EDIT ******/
