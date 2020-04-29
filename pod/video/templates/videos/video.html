@@ -74,7 +74,7 @@ body {
 {% endif %}
 {% else %}
 <li class="breadcrumb-item"><a href="{% url "videos"%}" title="{% trans 'Videos' %}">{% trans 'Videos' %}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
+<li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
 {% endif %}
 {% endblock %}
 
@@ -129,7 +129,7 @@ body {
 {% include 'videos/video-element.html' %}
 
 <h1 class="pt-2">
-{% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png"></a>{% endif %} {{video.title|title}}
+{% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png"></a>{% endif %} {{video.title|capfirst}}
 {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
   <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
       <i data-feather="alert-octagon"></i>
