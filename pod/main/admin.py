@@ -86,12 +86,6 @@ class LinkFooterAdmin(TranslationAdmin):
                     sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-    def save_model(self, request, obj, form, change):
-        super().save_model(request, obj, form, change)
-        if not change:
-            obj.sites.add(get_current_site(request))
-            obj.save()
-
 
 # Unregister the default FlatPage admin and register CustomFlatPageAdmin.
 admin.site.unregister(FlatPage)
