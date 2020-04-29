@@ -19,6 +19,7 @@ import os
 import mimetypes
 import json
 import unicodedata
+from django.contrib.auth.decorators import login_required
 
 ##
 # Settings exposed in templates
@@ -259,8 +260,9 @@ def remove_accents(input_str):
     return only_ascii
 
 
+@login_required(redirect_field_name='referrer')
 def user_autocomplete(request):
-    if HIDE_USER_TAB and request.user.is_anonymous():
+    if HIDE_USER_TAB:
         return HttpResponse(status=404)
     if request.is_ajax():
         additional_filters = {
