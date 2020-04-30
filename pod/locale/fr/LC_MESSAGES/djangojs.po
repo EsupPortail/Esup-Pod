@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-01-31 09:38+0000\n"
-"PO-Revision-Date: 2020-01-31 10:39+0100\n"
+"POT-Creation-Date: 2020-04-30 10:07+0000\n"
+"PO-Revision-Date: 2020-04-30 12:12+0200\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -30,13 +30,13 @@ msgstr "Obtenir le temps du lecteur"
 #: pod/completion/static/js/completion.js:46
 #: pod/enrichment/static/js/enrichment.js:17
 msgid "Error getting form."
-msgstr ""
+msgstr "Erreur lors de la récupération du formulaire"
 
 #: pod/chapter/static/js/chapters.js:16
 #: pod/completion/static/js/completion.js:46
 #: pod/enrichment/static/js/enrichment.js:17
 msgid "The form could not be recovered."
-msgstr ""
+msgstr "Le formulaire ne peut pas être récupéré."
 
 #: pod/chapter/static/js/chapters.js:52 pod/chapter/static/js/chapters.js:72
 #: pod/chapter/static/js/chapters.js:93 pod/chapter/static/js/chapters.js:125
@@ -49,17 +49,17 @@ msgstr ""
 #: pod/enrichment/static/js/enrichment.js:72
 #: pod/enrichment/static/js/enrichment.js:93
 #: pod/enrichment/static/js/enrichment.js:120
-#: pod/enrichment/static/js/enrichment.js:149 pod/main/static/js/main.js:297
-#: pod/main/static/js/main.js:304 pod/main/static/js/main.js:315
-#: pod/main/static/js/main.js:329
-#: pod/podfile/static/podfile/js/filewidget.js:161
-#: pod/podfile/static/podfile/js/filewidget.js:190
+#: pod/enrichment/static/js/enrichment.js:149 pod/main/static/js/main.js:287
+#: pod/main/static/js/main.js:294 pod/main/static/js/main.js:305
+#: pod/main/static/js/main.js:319
+#: pod/podfile/static/podfile/js/filewidget.js:169
+#: pod/podfile/static/podfile/js/filewidget.js:196
 msgid "You are no longer authenticated. Please log in again."
 msgstr "Vous n'êtes plus authentifié. Veuillez vous reconnectez."
 
 #: pod/chapter/static/js/chapters.js:146
-#: pod/enrichment/static/js/enrichment.js:136 pod/main/static/js/main.js:274
-#: pod/main/static/js/main.js:321
+#: pod/enrichment/static/js/enrichment.js:136 pod/main/static/js/main.js:264
+#: pod/main/static/js/main.js:311
 msgid "One or more errors have been found in the form."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
 
@@ -84,15 +84,15 @@ msgstr "commencent au même moment."
 msgid "There is no captions to save"
 msgstr "Il n’y a aucun sous-titre à sauvegarder"
 
-#: pod/completion/static/js/caption_maker.js:59
+#: pod/completion/static/js/caption_maker.js:61
 msgid "error during exchange"
 msgstr "erreur durant le téléversement"
 
-#: pod/completion/static/js/caption_maker.js:59
+#: pod/completion/static/js/caption_maker.js:61
 msgid "no data could be stored."
 msgstr "aucune donnée ne peut être stockée."
 
-#: pod/completion/static/js/caption_maker.js:89
+#: pod/completion/static/js/caption_maker.js:91
 msgid "Are you sure you want to delete all caption ?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer les sous-titre ?"
 
@@ -112,7 +112,7 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer ce document ?"
 msgid "Are you sure you want to delete this overlay ?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer cette superposition ?"
 
-#: pod/completion/static/js/completion.js:187 pod/main/static/js/main.js:276
+#: pod/completion/static/js/completion.js:187 pod/main/static/js/main.js:266
 msgid "Changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
 
@@ -346,62 +346,68 @@ msgstr ""
 msgid "gridErrorText"
 msgstr ""
 
-#: pod/main/static/js/main.js:255
+#: pod/main/static/js/main.js:245
 msgid "Are you sure you want to delete this element?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer cet élément ?"
 
-#: pod/main/static/js/main.js:291
-#: pod/podfile/static/podfile/js/filewidget.js:71
-#: pod/podfile/static/podfile/js/filewidget.js:183
-#: pod/podfile/static/podfile/js/filewidget.js:207
+#: pod/main/static/js/main.js:281
+#: pod/podfile/static/podfile/js/filewidget.js:79
+#: pod/podfile/static/podfile/js/filewidget.js:189
 msgid "Error during exchange"
 msgstr "Erreur durant le téléversement"
 
-#: pod/main/static/js/main.js:291
-#: pod/podfile/static/podfile/js/filewidget.js:71
-#: pod/podfile/static/podfile/js/filewidget.js:207
+#: pod/main/static/js/main.js:281
+#: pod/podfile/static/podfile/js/filewidget.js:79
 msgid "No data could be stored."
 msgstr "Aucune donnée ne peut être stockée."
 
-#: pod/main/static/js/main.js:410
+#: pod/main/static/js/main.js:332
+msgid "Change your picture"
+msgstr "Changer votre image"
+
+#: pod/main/static/js/main.js:337
+msgid "Add your picture"
+msgstr "Ajouter votre image"
+
+#: pod/main/static/js/main.js:433
 msgid "text copied"
 msgstr "texte copié"
 
-#: pod/main/static/js/main.js:457
+#: pod/main/static/js/main.js:480
 msgid "Errors appear in the form, please correct them"
 msgstr "Des erreurs sont présentes dans le formulaire, veuillez les corriger"
 
-#: pod/main/static/js/main.js:480
+#: pod/main/static/js/main.js:503
 msgid "The file size exceeds the maximum allowed value :"
 msgstr "La fichier dépasse la taille maximum autorisée :"
 
-#: pod/main/static/js/main.js:495
+#: pod/main/static/js/main.js:518
 msgid "The file extension not in the allowed extension :"
 msgstr ""
 "Cette extension de fichier n'est pas présente dans les extensions "
 "autorisées :"
 
-#: pod/podfile/static/podfile/js/filewidget.js:9
+#: pod/podfile/static/podfile/js/filewidget.js:13
 msgid "Change image"
 msgstr "Changer d’image"
 
-#: pod/podfile/static/podfile/js/filewidget.js:11
+#: pod/podfile/static/podfile/js/filewidget.js:15
 msgid "Change file"
 msgstr "Changer de fichier"
 
-#: pod/podfile/static/podfile/js/filewidget.js:26
+#: pod/podfile/static/podfile/js/filewidget.js:30
 msgid "Open file in a new tab"
 msgstr "Ouvrir le fichier dans un nouvel onglet"
 
-#: pod/podfile/static/podfile/js/filewidget.js:106
+#: pod/podfile/static/podfile/js/filewidget.js:114
 msgid "Enter new name of folder"
 msgstr "Indiquer un nouveau nom au dossier"
 
-#: pod/podfile/static/podfile/js/filewidget.js:124
+#: pod/podfile/static/podfile/js/filewidget.js:132
 msgid "Are you sure you want to delete this folder?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer ce dossier ?"
 
-#: pod/podfile/static/podfile/js/filewidget.js:133
+#: pod/podfile/static/podfile/js/filewidget.js:141
 msgid "Are you sure you want to delete this file?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer ce fichier ?"
 
@@ -424,6 +430,10 @@ msgstr "Vue de l'année"
 #: pod/video/static/js/video_stats_view.js:18
 msgid "Total view from creation"
 msgstr "Vue totale depuis création"
+
+#: pod/video/static/js/video_stats_view.js:19
+msgid "Slug"
+msgstr "Titre court"
 
 #~ msgid "Select a file"
 #~ msgstr "Sélectionnez un fichier"
