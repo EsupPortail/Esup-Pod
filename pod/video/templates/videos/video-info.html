@@ -33,16 +33,25 @@
     <h5><i data-feather="info"></i>&nbsp;{% trans 'Infos' %}</h5>
     <div class="row">
       <div class="col-4">
-        <p><strong>{% trans 'Added by' %}&nbsp;</strong>:</p>
+        <p><strong>{% trans 'Added by' %}&nbsp;</strong>:<br />
         <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
-        {% thumbnail video.owner.owner.userpicture.file "x70" as im %}
+        {% if video.owner.owner.userpicture.file %}
+        {% thumbnail video.owner.owner.userpicture.file "x50" as im %}
             <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}">
         {% endthumbnail %}
+        {% endif %}
         {{ video.owner.get_full_name }}</a>
+        </p>
         {% if video.additional_owners.all %}
           <p><strong>{% trans 'Additional owners' %}&nbsp;</strong>:<br />
           {% for additionalOwner in video.additional_owners.all %}
-            <a href="{% url 'videos' %}?owner={{ additionalOwner.username }}" title="{{ additionalOwner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ additionalOwner.get_full_name }} </a><br />
+            <a href="{% url 'videos' %}?owner={{ additionalOwner.username }}" title="{{ additionalOwner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
+              {% if additionalOwner.owner.userpicture.file %}
+              {% thumbnail additionalOwner.owner.userpicture.file "x50" as im %}
+                  <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}">
+              {% endthumbnail %}
+              {% endif %}
+            {{ additionalOwner.get_full_name }} </a><br />
           {% endfor %}
           </p>
         {%endif%}
