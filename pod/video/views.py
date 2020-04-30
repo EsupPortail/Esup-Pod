@@ -47,7 +47,11 @@ from django.db import transaction
 from django.db import IntegrityError
 
 TODAY = date.today()
-VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
+VIDEOS = Video.objects.filter(
+    encoding_in_progress=False, is_draft=False
+).defer(
+    "video", "slug", "owner", "additional_owners", "description"
+)
 # for clean install, produces errors
 try:
     VIDEOS = VIDEOS.exclude(
@@ -145,7 +149,8 @@ def channel_edit(request, slug):
     channel = get_object_or_404(Channel,
                                 slug=slug, sites=get_current_site(request))
     if (request.user not in channel.owners.all()
-            and not request.user.is_superuser):
+            and not (request.user.is_superuser or request.user.has_perm(
+                "video.change_channel"))):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot edit this channel.'))
         raise PermissionDenied
@@ -184,7 +189,8 @@ def theme_edit(request, slug):
     channel = get_object_or_404(Channel, slug=slug,
                                 sites=get_current_site(request))
     if (request.user not in channel.owners.all()
-            and not request.user.is_superuser):
+            and not (request.user.is_superuser or request.user.has_perm(
+                "video.change_theme"))):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot edit this channel.'))
         raise PermissionDenied
@@ -400,14 +406,16 @@ def get_video_access(request, video, slug_private):
             slug_private and slug_private == video.get_hashkey()
         )
         access_granted_for_draft = request.user.is_authenticated() and (
-            request.user == video.owner or request.user.is_superuser or (
+            request.user == video.owner or request.user.is_superuser or
+            request.user.has_perm("video.change_video") or (
                 request.user in video.additional_owners.all()))
         access_granted_for_restricted = (
             request.user.is_authenticated() and not is_restricted_to_group)
         access_granted_for_group = (
             request.user.is_authenticated()
             and is_in_video_groups(request.user, video)
-        ) or request.user == video.owner or request.user.is_superuser or(
+        ) or request.user == video.owner or request.user.is_superuser or \
+            request.user.has_perm("recorder.add_recording") or(
             request.user in video.additional_owners.all())
 
         show_page = (
@@ -500,7 +508,8 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
         and request.POST.get('password') == video.password
     ) or (
         slug_private and slug_private == video.get_hashkey()
-    ) or request.user == video.owner or request.user.is_superuser or (
+    ) or request.user == video.owner or request.user.is_superuser or
+        request.user.has_perm("video.change_video") or (
             request.user in video.additional_owners.all())):
         return render(
             request, template_video, {
@@ -574,7 +583,8 @@ def video_edit(request, slug=None):
                       )
 
     if video and request.user != video.owner and (
-            not request.user.is_superuser) and (
+            not (request.user.is_superuser or
+                 request.user.has_perm('video.change_video'))) and (
             request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot edit this video.'))
@@ -626,7 +636,7 @@ def video_edit(request, slug=None):
 def save_video_form(request, form):
     video = form.save(commit=False)
     if (
-        request.user.is_superuser
+        (request.user.is_superuser or request.user.has_perm("video.add_video"))
         and request.POST.get('owner')
         and request.POST.get('owner') != ""
     ):
@@ -649,9 +659,12 @@ def video_delete(request, slug=None):
     video = get_object_or_404(Video, slug=slug,
                               sites=get_current_site(request))
 
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner and not (
+        request.user.is_superuser or request.user.has_perm(
+            "video.delete_video")):
         messages.add_message(
-            request, messages.ERROR, _(u'You cannot delete this video.'))
+            request, messages.ERROR, _(
+                u'You cannot delete this video.'))
         raise PermissionDenied
 
     form = VideoDeleteForm()
@@ -769,7 +782,11 @@ def can_edit_or_remove_note_or_com(request, nc, action):
     Typically action is in ['edit', 'delete']
     If not raise PermissionDenied
     """
-    if request.user != nc.user and not request.user.is_superuser:
+    if request.user != nc.user and not (request.user.is_superuser or (
+        request.user.has_perm("video.change_notes") and request.user.has_perm(
+            "video.delete_notes") and request.user.has_perm(
+                "video.change_advancednotes") and request.user.has_perm(
+                    "video.delete_advancednotes"))):
         messages.add_message(
             request,
             messages.WARNING,
@@ -791,7 +808,9 @@ def can_see_note_or_com(request, nc):
              or (request.user == vid_owner
                  and nc.status == '1')
              or nc.status == '2'
-             or request.user.is_superuser)):
+             or (request.user.is_superuser or (request.user.has_perm(
+                 "video.change_notes") and request.user.has_perm(
+                     "video.change_advancednotes"))))):
         messages.add_message(
             request, messages.WARNING,
             _(u'You cannot see this note or comment.'))
@@ -1404,7 +1423,8 @@ def manage_access_rights_stats_video(request, video, page_title):
         video.password != "")
     has_rights = (
         request.user == video.owner or
-        request.user.is_superuser or
+        request.user.is_superuser or request.user.has_perm(
+            "video.change_viewcount") or
         request.user in video.additional_owners.all())
     if(not has_rights and is_password_protected):
         form = VideoPasswordForm()

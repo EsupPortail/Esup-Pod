@@ -11,7 +11,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.db.models import Count
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from wsgiref.util import FileWrapper
 from django.db.models import Q
 from pod.video.models import Video
@@ -263,7 +263,7 @@ def remove_accents(input_str):
 @login_required(redirect_field_name='referrer')
 def user_autocomplete(request):
     if HIDE_USER_TAB:
-        return HttpResponse(status=404)
+        return HttpResponseBadRequest()
     if request.is_ajax():
         additional_filters = {
             'video__is_draft': False,
@@ -286,6 +286,6 @@ def user_autocomplete(request):
 
         data = json.dumps(list(users))
     else:
-        return HttpResponse(status=404)
+        return HttpResponseBadRequest()
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)

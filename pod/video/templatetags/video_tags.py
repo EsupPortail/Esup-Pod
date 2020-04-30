@@ -55,15 +55,23 @@ def get_last_videos(context):
     request = context['request']
     videos = Video.objects.filter(
         encoding_in_progress=False, is_draft=False,
-        sites=get_current_site(request))
+        sites=get_current_site(request)).exclude(
+            channel__visible=0)
 
     if not HOMEPAGE_SHOWS_PASSWORDED:
         videos = videos.filter(
             Q(password='') | Q(password__isnull=True))
     if not HOMEPAGE_SHOWS_RESTRICTED:
         videos = videos.filter(is_restricted=False)
+    videos = videos.defer(
+        "video", "slug", "owner", "additional_owners", "description")
+    count = 0
+    recent_vids = []
+    for vid in videos:
+        if(vid.encoded):
+            recent_vids.append(vid)
+            count = count + 1
+        if(count >= 12):
+            break
 
-    videos = videos.exclude(
-        pk__in=[vid.id for vid in videos if not vid.encoded])
-
-    return videos.exclude(channel__visible=0)[:12]
+    return recent_vids
