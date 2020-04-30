@@ -62,8 +62,8 @@
       <li class="nav-item dropdown login mr-2" id="nav-usermenu">
         <button class="initials nav-link pl-2 pr-2 dropdown-toggle d-flex justify-content-center align-items-center " id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         {% if request.user.owner.userpicture  %}
-          <img src="{{user.owner.userpicture.file.url}}" class="userpicture img-fluid rounded" alt="{{user}}">
-        {% endif %}  
+          <img src="{{user.owner.userpicture.file.url}}" class="userpicture rounded" alt="{{user}}">
+        {% endif %}
         <span class="userinitial" {% if request.user.owner.userpicture  %}style="display:none"{% endif %}>
           {% if user.first_name != '' and user.last_name != '' %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.username|slice:":2"|upper}}{% endif %}
         </span>

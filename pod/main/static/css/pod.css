@@ -218,8 +218,8 @@ font-size:3rem;
 
 .login > .initials{
   border-radius: 50%;
-  /*background: #b03c7e;*/
-  color: white !important;
+  /*background: #f8f9fa;*/
+  color: black !important;
   font-weight: 600;
     height: 3rem;
     width: 3rem;
