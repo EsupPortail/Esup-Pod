@@ -60,7 +60,7 @@
       </li>
       {% if user.is_authenticated %}
       <li class="nav-item dropdown login mr-2" id="nav-usermenu">
-        <button class="initials nav-link pl-2 pr-2 dropdown-toggle d-flex justify-content-center align-items-center " id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="{% if not request.user.owner.userpicture  %}initials {% endif %}nav-link pl-2 pr-2 dropdown-toggle d-flex justify-content-center align-items-center " id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         {% if request.user.owner.userpicture  %}
           <img src="{{user.owner.userpicture.file.url}}" class="userpicture rounded" alt="{{user}}">
         {% endif %}

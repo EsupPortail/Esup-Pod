@@ -163,7 +163,7 @@ $('#ownerboxnavbar').keyup(function() {
                     }
                 }
             );
-   
+
 	} else {
 		$("#accordion").html("");
 	}
@@ -325,6 +325,7 @@ var show_picture_form = function(data) {
         //$(".get_form_userpicture").html('<img src="'+$(data).find("#userpictureurl").val()+'" height="34" class="rounded" alt="">Change your picture');
         $("#navbarDropdown .userpicture").remove();
         $("#navbarDropdown .userinitial").hide();
+        $("#navbarDropdown").removeClass('initials');
         $("#navbarDropdown").append(
             '<img src="'+$(data).find("#userpictureurl").val()+'" class="userpicture img-fluid rounded" alt="avatar">'
         );
@@ -333,6 +334,7 @@ var show_picture_form = function(data) {
     } else {
         $("#navbarDropdown .userpicture").remove();
         $("#navbarDropdown .userinitial").show();
+        $("#navbarDropdown").addClass('initials');
         $('.get_form_userpicture').html($('.get_form_userpicture').children());
         $(".get_form_userpicture").html('&nbsp;'+gettext('Add your picture'));
     }
@@ -374,9 +376,9 @@ $('#ownerbox').keyup(function() {
                                 $(this).remove();
                             }
                         })
-             
-            
-                        
+
+
+
                         response.forEach(elt => {
                             if (listUserChecked.indexOf(elt.username)==-1 && $("#collapseFilterOwner #id" + elt.username).length == 0) {
                                 let username = HIDE_USERNAME?'':(' ('+elt.username+')');
@@ -388,7 +390,7 @@ $('#ownerbox').keyup(function() {
                 }
             );
 
- 
+
   } else {
     $("#collapseFilterOwner .added").each(function(index){
         var c = $(this).find("input");
