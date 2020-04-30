@@ -65,7 +65,7 @@
 			 <div class="text-center">
 			 	<input type="hidden" name="action" value="edit"/>
 		        <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary"/>
-		        <a class="playlist-delete btn btn-primary" href="#">{% trans 'Delete' %}</a>
+				<a class="playlist-delete btn btn-primary" href="#">{% csrf_token %}{% trans 'Delete' %}</a>
 		    </div>
 		</form>
 		<hr/>

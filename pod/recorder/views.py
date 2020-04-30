@@ -102,7 +102,8 @@ def add_recording(request):
         'recorder': recorder,
         'user': request.user}
 
-    if not mediapath and not request.user.is_superuser:
+    if not mediapath and not (request.user.is_superuser or
+       request.user.has_perm("recorder.add_recording")):
         messages.add_message(
             request, messages.ERROR, _('Mediapath should be indicated.'))
         raise PermissionDenied
@@ -270,7 +271,8 @@ def claim_record(request):
 
 @csrf_protect
 @login_required(redirect_field_name='referrer')
-@user_passes_test(lambda u: u.is_superuser, redirect_field_name='referrer')
+@user_passes_test(lambda u: u.is_superuser or u.has_perm(
+    "recorder.delete_recording"), redirect_field_name='referrer')
 def delete_record(request, id=None):
 
     record = get_object_or_404(RecordingFileTreatment, id=id)

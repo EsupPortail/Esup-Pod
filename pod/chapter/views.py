@@ -24,7 +24,9 @@ ACTION = ['new', 'save', 'modify', 'delete', 'cancel', 'import', 'export']
 def video_chapter(request, slug):
     video = get_object_or_404(Video, slug=slug,
                               sites=get_current_site(request))
-    if request.user != video.owner and not request.user.is_superuser and (
+    if request.user != video.owner and not (
+        request.user.is_superuser or
+        request.user.has_perm('chapter.change_chapter')) and (
             request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot chapter this video.'))

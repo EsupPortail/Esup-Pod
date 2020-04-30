@@ -117,7 +117,9 @@ def get_folder_files(request, id, type=None):
                     for name in folder.groups.values_list('name')
                 ]
             ).exists()
-            and not request.user.is_superuser):
+            and not (
+                request.user.is_superuser or request.user.has_perm(
+                    "podfile.change_userfolder"))):
         messages.add_message(
             request, messages.ERROR,
             _(u'You cannot see this folder.'))
@@ -175,7 +177,8 @@ def editfolder(request):
             UserFolder, id=request.POST['folderid'])
         if folder.name == "home" or (
             request.user != folder.owner
-            and not request.user.is_superuser
+            and not (request.user.is_superuser or request.user.has_perm(
+                    "podfile.change_userfolder"))
         ):
             messages.add_message(
                 request, messages.ERROR,
@@ -218,7 +221,9 @@ def deletefolder(request):
         if (
                 folder.name == 'home'
                 or (request.user != folder.owner
-                    and not request.user.is_superuser)
+                    and not (
+                        request.user.is_superuser or request.user.has_perm(
+                            "podfile.delete_userfolder")))
         ):
             messages.add_message(
                 request, messages.ERROR,
@@ -245,7 +250,9 @@ def deletefile(request):
             eval(request.POST['classname']), id=request.POST['id'])
         folder = file.folder
         if (request.user != file.created_by
-                and not request.user.is_superuser):
+                and not (request.user.is_superuser or request.user.has_perm(
+                    "podfile.delete_customfilemodel") or request.user.has_perm(
+                    "podfile.delete_customimagemodel"))):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'You cannot delete this file.'))
@@ -278,7 +285,9 @@ def uploadfiles(request):
             UserFolder, id=request.POST['folderid'])
         if (
             request.user != folder.owner
-            and not request.user.is_superuser
+            and not (request.user.is_superuser or request.user.has_perm(
+                    "podfile.add_customfilemodel") or request.user.has_perm(
+                    "podfile.add_customimagemodel"))
         ):
             messages.add_message(
                 request, messages.ERROR,
@@ -369,7 +378,9 @@ def changefile(request):
     if request.POST and request.is_ajax():
         folder = get_object_or_404(UserFolder, id=request.POST["folder"])
         if (request.user != folder.owner
-                and not request.user.is_superuser):
+                and not (request.user.is_superuser or request.user.has_perm(
+                    "podfile.change_customfilemodel") or request.user.has_perm(
+                    "podfile.change_customimagemodel"))):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'You cannot access this folder.'))
@@ -378,7 +389,9 @@ def changefile(request):
         file = get_object_or_404(
             eval(request.POST['file_type']), id=request.POST['file_id'])
         if (request.user != file.created_by
-                and not request.user.is_superuser):
+                and not (request.user.is_superuser or request.user.has_perm(
+                    "podfile.change_customfilemodel") or request.user.has_perm(
+                    "podfile.change_customimagemodel"))):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'You cannot edit this file.'))
@@ -489,7 +502,9 @@ def get_file(request, type):
                     for name in reqfile.folder.groups.values_list('name')
                 ]
             ).exists()
-            and not request.user.is_superuser):
+            and not (request.user.is_superuser or request.user.has_perm(
+                    "podfile.change_customfilemodel") or request.user.has_perm(
+                    "podfile.change_customimagemodel"))):
         messages.add_message(
             request, messages.ERROR,
             _(u'You cannot see this folder.'))
