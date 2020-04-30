@@ -574,7 +574,8 @@ def video_edit(request, slug=None):
                       )
 
     if video and request.user != video.owner and (
-            not request.user.is_superuser) and (
+            not (request.user.is_superuser or
+                 request.user.has_perm('video.change_video'))) and (
             request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot edit this video.'))

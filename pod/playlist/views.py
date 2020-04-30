@@ -60,9 +60,7 @@ def playlist(request, slug=None):
         messages.add_message(
             request, messages.ERROR, _('You cannot edit this playlist.'))
         raise PermissionDenied
-
     form = PlaylistForm(instance=playlist, initial={'owner': request.user})
-
     if request.POST and request.POST.get('action'):
         if request.POST['action'] in ACTION:
             return eval(
