@@ -63,13 +63,14 @@ def get_last_videos(context):
             Q(password='') | Q(password__isnull=True))
     if not HOMEPAGE_SHOWS_RESTRICTED:
         videos = videos.filter(is_restricted=False)
-
+    videos = videos.defer(
+        "video", "slug", "owner", "additional_owners", "description")
     count = 0
     recent_vids = []
     for vid in videos:
         if(vid.encoded):
             recent_vids.append(vid)
-            count = count+1
+            count = count + 1
         if(count >= 12):
             break
 

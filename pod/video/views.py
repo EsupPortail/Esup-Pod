@@ -47,7 +47,11 @@ from django.db import transaction
 from django.db import IntegrityError
 
 TODAY = date.today()
-VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False)
+VIDEOS = Video.objects.filter(
+    encoding_in_progress=False, is_draft=False
+).defer(
+    "video", "slug", "owner", "additional_owners", "description"
+)
 # for clean install, produces errors
 try:
     VIDEOS = VIDEOS.exclude(
@@ -505,7 +509,7 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
     ) or (
         slug_private and slug_private == video.get_hashkey()
     ) or request.user == video.owner or request.user.is_superuser or
-         request.user.has_perm("video.change_video") or (
+        request.user.has_perm("video.change_video") or (
             request.user in video.additional_owners.all())):
         return render(
             request, template_video, {
@@ -659,8 +663,8 @@ def video_delete(request, slug=None):
         request.user.is_superuser or request.user.has_perm(
             "video.delete_video")):
         messages.add_message(
-                    request, messages.ERROR, _(
-                        u'You cannot delete this video.'))
+            request, messages.ERROR, _(
+                u'You cannot delete this video.'))
         raise PermissionDenied
 
     form = VideoDeleteForm()
