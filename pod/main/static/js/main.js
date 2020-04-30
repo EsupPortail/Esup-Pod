@@ -214,6 +214,7 @@ $(document).on("click", ".get_form_userpicture", function() {
 	send_form_data($(this).data('url'), {}, "append_picture_form", "get");
 });
 $(document).on('hidden.bs.modal', '#userpictureModal', function (e) {
+    console.log('remove modal');
     $('#userpictureModal').remove();
     $('#fileModal_id_userpicture').remove();
 });
@@ -321,8 +322,21 @@ var show_theme_form = function(data) {
 var show_picture_form = function(data) {
 	$( "#userpicture_form" ).html($(data).find("#userpicture_form").html());
     if($(data).find("#userpictureurl").val()) {
-        $(".get_form_userpicture").html('<img src="'+$(data).find("#userpictureurl").val()+'" height="34" class="rounded" alt="">Change your picture');
+        //$(".get_form_userpicture").html('<img src="'+$(data).find("#userpictureurl").val()+'" height="34" class="rounded" alt="">Change your picture');
+        $("#navbarDropdown .userpicture").remove();
+        $("#navbarDropdown .userinitial").hide();
+        $("#navbarDropdown").append(
+            '<img src="'+$(data).find("#userpictureurl").val()+'" class="userpicture img-fluid rounded" alt="avatar">'
+        );
+        $('.get_form_userpicture').html($('.get_form_userpicture').children());
+        $(".get_form_userpicture").append('&nbsp;'+gettext('Change your picture'));
+    } else {
+        $("#navbarDropdown .userpicture").remove();
+        $("#navbarDropdown .userinitial").show();
+        $('.get_form_userpicture').html($('.get_form_userpicture').children());
+        $(".get_form_userpicture").html('&nbsp;'+gettext('Add your picture'));
     }
+    $('#userpictureModal').modal('hide');
 }
 var append_picture_form = function(data) {
 	$('body').append(data);
