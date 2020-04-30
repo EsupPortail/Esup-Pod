@@ -81,7 +81,7 @@
         <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
     </h5>
     <div class="card-text small">
-        {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all %}
+        {% if video.owner == request.user or request.user.is_superuser or perms.enrichment.change_enrichment or request.user in video.additional_owners.all %}
         <p><a href="{% url 'enrichment:group_enrichment' slug=video.slug %}" title="{% trans 'You can specify the group(s) of users who can access this page' %}"><i data-feather="users"></i>&nbsp;{% trans 'You can specify the group(s) of users who can access this page' %}</a></p>
         {% endif %}
         <p>{% trans 'The title field is required and must contains from 2 to 100 characters.' %}</p>

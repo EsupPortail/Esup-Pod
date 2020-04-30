@@ -56,7 +56,9 @@ def playlist(request, slug=None):
         playlist = None
         list_videos = None
     if (playlist and
-            request.user != playlist.owner and not request.user.is_superuser):
+            request.user != playlist.owner and not (
+                request.user.is_superuser or request.user.has_perm(
+                    "playlist.change_playlist"))):
         messages.add_message(
             request, messages.ERROR, _('You cannot edit this playlist.'))
         raise PermissionDenied
