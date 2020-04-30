@@ -30,7 +30,7 @@
         {% if CSS_OVERRIDE %}
         <link rel="stylesheet" href="{% static CSS_OVERRIDE %}" media="screen" title="no title">
         {% endif %}
-        
+
         <!-- Javascript -->
         <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
         <script src="{% static 'bootstrap-4/js/bootstrap.bundle.js' %}"></script>
@@ -42,7 +42,7 @@
         {% if request.GET.is_iframe %}
         <link rel="stylesheet" href="{% static 'css/iframe.css' %}" media="screen" title="no title">
         {% endif %}
-        
+
         {% endspaceless %}
 	</head>
 	<body>
@@ -91,10 +91,10 @@
 		    </main>
 		</div> <!-- fin container -->
 		{% endblock content %}
-		<footer class="text-muted bg-dark pt-2">
+		<footer class="text-muted bg-dark pt-2 static-pod">
 		{% include 'footer.html' %}
 		</footer>
-        
+
         {% if messages %}
         <div id="base-message-alert">
         {% for message in messages %}
