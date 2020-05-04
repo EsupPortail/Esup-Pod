@@ -14,7 +14,7 @@
 {% if records.has_next %}
 <a class="infinite-more-link" href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{%endif%}page={{ records.next_page_number }}">More</a>
 {% endif %}
-<div class="loading" style="display: none;">
+<div class="infinite-loading" style="display: none;">
 Loading...
 </div>
 {% endspaceless %}
