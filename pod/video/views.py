@@ -491,8 +491,7 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
                                 sites=get_current_site(
                                     request)) if slug_c else None
     theme = get_object_or_404(
-        Theme, channel=channel, slug=slug_t, sites=get_current_site(
-            request)) if slug_t else None
+        Theme, channel=channel, slug=slug_t) if slug_t else None
     playlist = get_object_or_404(
         Playlist,
         slug=request.GET['playlist']) if request.GET.get('playlist') else None
