@@ -18,13 +18,14 @@
     </script>
 {% endif %}
 
-<h5 class="card-title{% if request.user.is_authenticated or listNotes %} d-flex justify-content-around{% endif %} pl-2"> <i data-feather="edit"></i>&nbsp;{% trans "take Note"%} 
+<h5 class="card-title pl-2"> <i data-feather="edit"></i>&nbsp;{% trans "Take Note"%}</h5>
 
     {% if request.user.is_authenticated or listNotes %}
-    <div class="mgtNotes dropdown">
-        <button class="p-0 m-0 btn btn-outline-info btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage notes' %}"> <i data-feather="more-horizontal"></i> </button>
-        <div class="dropdown-menu p-0 m-0">
+    <div class="mgtNotes mb-2">
             {% if request.user.is_authenticated %}
+                {% comment %}
+                <a class="p-0 m-0 btn btn-outline-primary btn-sm open" href="{% url 'video_collaborate' slug=video.slug %}" title="{% trans 'Large columns interface' %}"><i data-feather="maximize-2"></i></a>
+                {% endcomment %}
                 <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="add_video_notes_form  mt-1" role="menuitem">
                     {% csrf_token %}
                     <fieldset> <input type="hidden" id="action_add" name="action" value="form_note" autocomplete="off"/> </fieldset>
@@ -35,20 +36,18 @@
                 <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="download_video_notes_form  mt-1" role="menuitem">
                     {% csrf_token %}
                     <fieldset> <input type="hidden" id="action_dwl" name="action" value="download" autocomplete="off"/> </fieldset>
-                    <button class="p-0 m-0 btn btn-outline-secondary btn-sm download" type="submit" action="download" title="{% trans 'Download the notes' %}"> <i data-feather="download"></i> </button>
+                    <button class="p-0 m-0 btn btn-outline-primary btn-sm download" type="submit" action="download" title="{% trans 'Download the notes' %}"> <i data-feather="download"></i> </button>
                 </form>
             {% endif %}
-        </div>
     </div>
     {% endif %}
-</h5>
 <div class="card-text">
 
     <div id="id_notes">
         {% if not listNotes %}
             <p class="noNotes"> {% trans "There is no note available for you for this video." %} </p>
             {% if request.user.is_authenticated %}
-                <p class="noNotes"> {% trans "You can create a new one with the three dots menu." %} </p>
+                <p class="noNotes"> {% trans "You can create a new one with the + icon." %} </p>
             {% else %}
                 <p class="noNotes"> {% trans "Log in to create a new one." %} </p>
             {% endif %}
@@ -72,7 +71,7 @@
                                     <input type="hidden" id="action_view_{{ note.id }}" name="action" value="get" autocomplete="off"/>
                                     <input type="hidden" id="id_note_view" name="idNote" value="{{ note.id }}" autocomplete="off"/>
                                 </fieldset>
-                            </form> 
+                            </form>
                             <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
                             {% csrf_token %}
                                 <fieldset>
@@ -90,8 +89,8 @@
                                     {% endfor %}
                                     <input type="hidden" id="id_save" name="idNote" value="{{ note.id }}" autocomplete="off"/>
                                     <input type="hidden" id="action" name="action" value="save_com" autocomplete="off"/>
-                                    <input type="submit" name="submit" value="{% trans "save" %}" class="btn btn-sm btn-outline-info">
-                                    <input type="button" name="cancel" id="cancel_save_com" value="{% trans "cancel" %}" class="btn btn-sm btn-outline-info">
+                                    <input type="submit" name="submit" value="{% trans "Save" %}" class="btn btn-sm btn-primary">
+                                    <input type="button" name="cancel" id="cancel_save_com" value="{% trans "Cancel" %}" class="btn btn-sm btn-secondary">
                                 </fieldset>
                             </form>
                         {% endif %}
@@ -107,7 +106,7 @@
             <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_notes_form hidden">
                 {% csrf_token %}
                 <fieldset> <input type="hidden" id="action_view" name="action" value="get" autocomplete="off"/> </fieldset>
-            </form> 
+            </form>
             <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
             {% csrf_token %}
                 <fieldset>
@@ -124,8 +123,8 @@
                         {% endspaceless %}
                     {% endfor %}
                     <input type="hidden" id="action" name="action" value="save_note" autocomplete="off"/>
-                    <input type="button" name="submit" value="{% trans "save" %}" class="btn btn-sm btn-outline-info" id="video_notes_form_save">
-                    <input type="button" name="cancel" id="cancel_save" value="{% trans "cancel" %}" class="btn btn-sm btn-outline-info">
+                    <input type="button" name="submit" value="{% trans "Save" %}" class="btn btn-sm btn-primary" id="video_notes_form_save">
+                    <input type="button" name="cancel" id="cancel_save" value="{% trans "Cancel" %}" class="btn btn-sm btn-secondary">
                 </fieldset>
             </form>
         {% endif %}

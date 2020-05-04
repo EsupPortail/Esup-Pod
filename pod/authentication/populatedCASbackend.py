@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from pod.authentication.models import Owner
 from pod.authentication.models import AFFILIATION
-
+from django.contrib.sites.models import Site
 from ldap3 import Server
 from ldap3 import ALL
 from ldap3 import Connection
@@ -171,6 +171,7 @@ def populate_user_from_entry(user, owner, entry):
         if CREATE_GROUP_FROM_AFFILIATION:
             group, group_created = Group.objects.get_or_create(
                 name=affiliation)
+            group.groupsite.sites.add(Site.objects.get_current())
             user.groups.add(group)
     user.save()
 

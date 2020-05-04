@@ -19,6 +19,7 @@ from pod.authentication.views import userpicture
 from pod.video.views import video
 from pod.video.views import video_edit
 from pod.video.views import video_delete
+# from pod.video.views import video_collaborate
 from pod.video.views import channel
 from pod.video.views import videos
 from pod.video.views import my_videos
@@ -30,7 +31,7 @@ from pod.video.views import video_count, video_version
 from pod.video.views import video_oembed
 from pod.video.views import stats_view
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
-from pod.main.views import contact_us, download_file
+from pod.main.views import contact_us, download_file, user_autocomplete
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
 from pod.recorder.views import add_recording, recorder_notify, claim_record,\
@@ -40,6 +41,8 @@ from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
 
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
+USE_SHIB = getattr(
+    settings, 'USE_SHIB', False)
 OEMBED = getattr(
     settings, 'OEMBED', False)
 
@@ -83,6 +86,11 @@ urlpatterns = [
     url(r'^video_version/(?P<id>[\d]+)/$',
         video_version, name='video_version'),
 
+    # url(r'^video_collaborate/(?P<slug>[\-\d\w]+)/$',
+    #    video_collaborate,
+    #    name='video_collaborate'),
+
+    url(r'^ajax_calls/search_user/', user_autocomplete),
     # my channels
     url(r'^my_channels/$', my_channels, name='my_channels'),
     url(r'^channel_edit/(?P<slug>[\-\d\w]+)/$',
@@ -145,6 +153,8 @@ if USE_CAS:
         url(r'^sso-cas/login/$', cas_views.login, name='cas-login'),
         url(r'^sso-cas/logout/$', cas_views.logout, name='cas-logout'),
     ]
+
+
 ##
 # OEMBED feature patterns
 #
@@ -186,12 +196,12 @@ if getattr(settings, 'H5P_ENABLED', False):
 
 if getattr(settings, "USE_STATS_VIEW", False):
     urlpatterns += [
-            url(r'^video_stats_view/$', stats_view,
-                name="video_stats_view"),
-            url(r'^video_stats_view/(?P<slug>[-\w]+)/$', stats_view,
-                name="video_stats_view"),
-            url(r'^video_stats_view/(?P<slug>[-\w]+)/(?P<slug_t>[-\w]+)/$',
-                stats_view, name='video_stats_view'),
+        url(r'^video_stats_view/$', stats_view,
+            name="video_stats_view"),
+        url(r'^video_stats_view/(?P<slug>[-\w]+)/$', stats_view,
+            name="video_stats_view"),
+        url(r'^video_stats_view/(?P<slug>[-\w]+)/(?P<slug_t>[-\w]+)/$',
+            stats_view, name='video_stats_view'),
     ]
 
 # CHANNELS
@@ -205,9 +215,11 @@ urlpatterns += [
         r'/video/(?P<slug>[\-\d\w]+)/$', video, name='video'),
 ]
 
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
+
 
 # Change admin site title
 admin.site.site_header = _("Pod Administration")

@@ -2,9 +2,11 @@ from django.contrib import admin
 
 from .models import Building
 from .models import Broadcaster
-
-from .forms import BuildingAdminForm
+from django.contrib.sites.models import Site
+from pod.live.forms import BuildingAdminForm
 from .forms import BroadcasterAdminForm
+from django.contrib.sites.shortcuts import get_current_site
+from pod.video.models import Video
 
 # Register your models here.
 
@@ -12,6 +14,27 @@ from .forms import BroadcasterAdminForm
 class BuildingAdmin(admin.ModelAdmin):
     form = BuildingAdminForm
     list_display = ('name', 'gmapurl')
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(sites=get_current_site(
+                request))
+        return qs
+
+    def get_form(self, request, obj=None, **kwargs):
+        if not request.user.is_superuser:
+            exclude = ()
+            exclude += ('sites',)
+            self.exclude = exclude
+        form = super(BuildingAdmin, self).get_form(request, obj, **kwargs)
+        return form
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if not change:
+            obj.sites.add(get_current_site(request))
+            obj.save()
 
     class Media:
         css = {
@@ -30,9 +53,25 @@ class BuildingAdmin(admin.ModelAdmin):
 
 class BroadcasterAdmin(admin.ModelAdmin):
     form = BroadcasterAdminForm
-
-    list_display = ('name', 'slug', 'url', 'status', 'is_restricted')
+    list_display = ('name', 'slug', 'building', 'url', 'status',
+                    'is_restricted')
     readonly_fields = ["slug"]
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(building__sites=get_current_site(
+                request))
+        return qs
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if (db_field.name) == "building":
+            kwargs["queryset"] = Building.objects.filter(
+                    sites=Site.objects.get_current())
+        if (db_field.name) == "video_on_hold":
+            kwargs["queryset"] = Video.objects.filter(
+                    sites=Site.objects.get_current())
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     class Media:
         css = {

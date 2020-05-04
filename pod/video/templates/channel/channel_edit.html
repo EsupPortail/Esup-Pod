@@ -26,10 +26,10 @@ body {
 {% block page_content %}
 <h3>{% if form.instance.title %}{% trans "Editing the channel" %} {{form.instance.title}}{%endif%}
 <span class="float-right">
-    <a href="{% url 'channel' slug_c=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-dark btn-sm">
+    <a href="{% url 'channel' slug_c=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-primary btn-sm">
         <i data-feather="youtube"></i>&nbsp;{% trans "View the channel"%}
     </a>
-    <a href="{% url 'theme_edit' slug=form.instance.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-dark btn-sm">
+    <a href="{% url 'theme_edit' slug=form.instance.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-primary btn-sm">
         <i data-feather="edit"></i>&nbsp;{% trans "Edit the themes"%}
     </a>
 </span>

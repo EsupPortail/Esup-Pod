@@ -8,6 +8,7 @@ from django.template.defaultfilters import slugify
 from ckeditor.fields import RichTextField
 from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
+from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from select2 import fields as select2_fields
 
 if getattr(settings, 'USE_PODFILE', False):
@@ -37,10 +38,11 @@ KIND_CHOICES = getattr(
         ('subtitles', _('subtitles')),
         ('captions', _('captions')),
     ))
+
 LANG_CHOICES = getattr(
     settings, 'LANG_CHOICES', (
-        (' ', settings.PREF_LANG_CHOICES),
-        ('----------', settings.ALL_LANG_CHOICES)
+        (' ', PREF_LANG_CHOICES),
+        ('----------', ALL_LANG_CHOICES)
     ))
 LANG_CHOICES_DICT = {key: value for key,
                      value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}
@@ -60,6 +62,10 @@ class Contributor(models.Model):
     class Meta:
         verbose_name = _('Contributor')
         verbose_name_plural = _('Contributors')
+
+    @property
+    def sites(self):
+        return self.video.sites
 
     def clean(self):
         msg = list()
@@ -123,6 +129,10 @@ class Document(models.Model):
         verbose_name = _('Document')
         verbose_name_plural = _('Documents')
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     def clean(self):
         msg = list()
         msg = self.verify_document() + self.verify_not_same_document()
@@ -174,6 +184,10 @@ class Track(models.Model):
                             blank=True,
                             null=True,
                             verbose_name=_('Subtitle file'))
+
+    @property
+    def sites(self):
+        return self.video.sites
 
     def get_label_lang(self):
         return "%s" % LANG_CHOICES_DICT[self.lang]
@@ -281,6 +295,10 @@ class Overlay(models.Model):
         default=True,
         help_text=_(u'Show the background of the overlay.')
     )
+
+    @property
+    def sites(self):
+        return self.video.sites
 
     class Meta:
         verbose_name = _('Overlay')

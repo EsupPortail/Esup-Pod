@@ -10,7 +10,7 @@ from ..models import Video
 from ..models import Type
 from ..models import Discipline
 from ..models import AdvancedNotes
-
+from django.contrib.sites.models import Site
 import re
 
 
@@ -18,8 +18,9 @@ class ChannelTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         c = Channel.objects.create(title="ChannelTest1")
-        Channel.objects.create(title="ChannelTest2")
+        c2 = Channel.objects.create(title="ChannelTest2")
         Theme.objects.create(
             title="Theme1", slug="blabla",
             channel=Channel.objects.get(title="ChannelTest1"))
@@ -29,6 +30,12 @@ class ChannelTestView(TestCase):
             type=Type.objects.get(id=1))
         v.channel.add(c)
         v.save()
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        c.sites.add(site)
+        c2.sites.add(site)
 
     def test_get_channel_view(self):
         self.client = Client()
@@ -74,12 +81,21 @@ class MyChannelsTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
-        User.objects.create(username="pod2", password="pod1234pod")
+        user2 = User.objects.create(username="pod2", password="pod1234pod")
         c1 = Channel.objects.create(title="ChannelTest1")
         c1.owners.add(user)
         c2 = Channel.objects.create(title="ChannelTest2")
         c2.owners.add(user)
+        for c in Channel.objects.all():
+            c.sites.add(site)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
         print(" --->  SetUp of MyChannelsTestView : OK !")
 
     def test_get_mychannels_view(self):
@@ -103,10 +119,19 @@ class ChannelEditTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
-        User.objects.create(username="pod2", password="pod1234pod")
+        user2 = User.objects.create(username="pod2", password="pod1234pod")
         c1 = Channel.objects.create(title="ChannelTest1")
         c1.owners.add(user)
+        c1.sites.add(site)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
+
         print(" --->  SetUp of ChannelEditTestView : OK !")
 
     def test_channel_edit_get_request(self):
@@ -150,6 +175,7 @@ class ThemeEditTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         c1 = Channel.objects.create(title="ChannelTest1")
         c1.owners.add(user)
@@ -162,6 +188,10 @@ class ThemeEditTestView(TestCase):
         Theme.objects.create(
             title="Theme3", slug="theme3",
             channel=Channel.objects.get(title="ChannelTest1"))
+        c1.sites.add(site)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
         print(" --->  SetUp of ThemeEditTestView : OK !")
 
     def test_theme_edit_get_request(self):
@@ -245,6 +275,7 @@ class MyVideosTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
         Video.objects.create(
@@ -259,6 +290,16 @@ class MyVideosTestView(TestCase):
         Video.objects.create(
             title="Video4", owner=user2, video="test4.mp4", is_draft=False,
             type=Type.objects.get(id=1))
+
+        for v in Video.objects.all():
+            v.sites.add(site)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
+
         print(" --->  SetUp of MyChannelsTestView : OK !")
 
     def test_get_myvideos_view(self):
@@ -379,20 +420,32 @@ class VideoTestView(TestCase):
 
     def setUp(self):
         # type, discipline, owner et tag
+        site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
-        User.objects.create(username="pod3", password="pod1234pod")
+        user3 = User.objects.create(username="pod3", password="pod1234pod")
         Group.objects.create(name='student')
         Group.objects.create(name='employee')
         Group.objects.create(name='member')
-        Video.objects.create(
+        v0 = Video.objects.create(
             title="Video1", owner=user,
             video="test1.mp4", type=Type.objects.get(id=1))
         v = Video.objects.create(
             title="VideoWithAdditionalOwners", owner=user,
             video="test2.mp4", type=Type.objects.get(id=1),
             id=2)
+        v0.sites.add(site)
+        v.sites.add(site)
         v.additional_owners.add(user2)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
+
+        user3.owner.sites.add(Site.objects.get_current())
+        user3.owner.save()
 
     def test_video_get_request(self):
         v = Video.objects.get(title="Video1")
@@ -474,17 +527,30 @@ class VideoEditTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
-        User.objects.create(username="pod3", password="pod1234pod")
-        Video.objects.create(
+        user3 = User.objects.create(username="pod3", password="pod1234pod")
+        video0 = Video.objects.create(
             title="Video1", owner=user,
             video="test1.mp4", type=Type.objects.get(id=1))
         video = Video.objects.create(
             title="VideoWithAdditionalOwners", owner=user,
             video="test2.mp4", type=Type.objects.get(id=1))
         video.save()
+        video.sites.add(site)
+        video0.sites.add(site)
         video.additional_owners.add(user2)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
+
+        user3.owner.sites.add(Site.objects.get_current())
+        user3.owner.save()
+
         print(" --->  SetUp of VideoEditTestView : OK !")
 
     def test_video_edit_get_request(self):
@@ -615,16 +681,26 @@ class video_deleteTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
-        Video.objects.create(
+        video0 = Video.objects.create(
             title="Video1", owner=user,
             video="test1.mp4", type=Type.objects.get(id=1))
         video = Video.objects.create(
             title="VideoWithAdditionalOwners", owner=user,
             video="test2.mp4", type=Type.objects.get(id=1),
             id=2)
+
+        video0.sites.add(site)
+        video.sites.add(site)
         video.additional_owners.add(user2)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
         print(" --->  SetUp of video_deleteTestView : OK !")
 
     def test_video_delete_get_request(self):
@@ -682,10 +758,15 @@ class video_notesTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
-        Video.objects.create(
+        v = Video.objects.create(
             title="Video1", owner=user,
             video="test1.mp4", type=Type.objects.get(id=1))
+        v.sites.add(site)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
         print(" --->  SetUp of video_notesTestView : OK !")
 
     def test_video_notesTestView_get_request(self):

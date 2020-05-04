@@ -18,7 +18,7 @@
 {% block page_content %}
 <h3>{% trans "Deleting the video" %} {{video.title}}
 <span class="float-right">
-<a href="{% url 'video' slug=video.slug %}" title="{% trans "View the video"%}" class="btn btn btn-outline-dark btn-sm">
+<a href="{% url 'video' slug=video.slug %}" title="{% trans "View the video"%}" class="btn btn btn-secondary btn-sm">
     <i data-feather="film"></i>&nbsp;{% trans "Back to the video"%}
 </a>
 </span>
@@ -58,8 +58,8 @@
             {% endspaceless %}
             {% endfor %}
         <div class="text-center mt-1">
-            <button type="submit" class="btn btn-success">{% trans "Send" %}</button>
-            <a href="{% url 'video' slug=video.slug %}" title="{{video.title}}" class="btn btn-info">{% trans "Back to the video"%}</a>
+            <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
+            <a href="{% url 'video' slug=video.slug %}" title="{{video.title}}" class="btn btn-secondary">{% trans "Back to the video"%}</a>
         </div>
     </fieldset>
     </div>

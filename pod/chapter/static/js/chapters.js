@@ -2,9 +2,9 @@ var id_form = "form_chapter";
 function show_form(data) {
     $('#'+id_form).hide().html(data).fadeIn();
     $("input#id_time_start")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-primary btn-sm text-white'>" + gettext('Get time from the player') + "</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
     $("input#id_time_end")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-info btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-primary btn-sm text-white'>" + gettext('Get time from the player') + "</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
 };
 
 var showalert = function(message, alerttype) {

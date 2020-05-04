@@ -162,6 +162,10 @@ class Enrichment(models.Model):
         verbose_name_plural = _('Enrichments')
         ordering = ['start']
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     def clean(self):
         msg = list()
         msg = self.verify_all_fields()
@@ -292,6 +296,10 @@ class EnrichmentVtt(models.Model):
                             null=True,
                             verbose_name=_('Subtitle file'))
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     def clean(self):
         msg = list()
         msg = self.verify_attributs() + self.verify_not_same_track()
@@ -303,6 +311,11 @@ class EnrichmentVtt(models.Model):
         if 'vtt' not in self.src.file_type:
             msg.append(_('Only ".vtt" format is allowed.'))
         return msg
+
+    class Meta:
+        ordering = ['video']
+        verbose_name = _('Enrichment Vtt')
+        verbose_name_plural = _('Enrichments Vtt')
 
 
 class EnrichmentGroup(models.Model):
@@ -319,6 +332,10 @@ class EnrichmentGroup(models.Model):
         ordering = ['video']
         verbose_name = _('Enrichment Video Group')
         verbose_name_plural = _('Enrichment Video Groups')
+
+    @property
+    def sites(self):
+        return self.video.sites
 
     def __str__(self):
         return "Enrichment group %s" % (self.video)

@@ -17,6 +17,10 @@ class Interactive(models.Model):
                                  editable=False, null=True,
                                  on_delete=models.CASCADE)
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     def is_interactive(self):
         return True if h5p_contents.objects.filter(
             slug=slugify(self.video.title)
@@ -43,6 +47,10 @@ class InteractiveGroup(models.Model):
         ordering = ['video']
         verbose_name = _('Interactive Video Group')
         verbose_name_plural = _('Interactive Video Groups')
+
+    @property
+    def sites(self):
+        return self.video.sites
 
     def __str__(self):
         return "Interactive group %s" % (self.video)

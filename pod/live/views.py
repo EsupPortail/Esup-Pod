@@ -3,18 +3,21 @@ from django.shortcuts import get_object_or_404
 from .models import Building, Broadcaster
 from django.conf import settings
 from django.shortcuts import redirect
-# from django.http import HttpResponse --> not use
+from django.contrib.sites.shortcuts import get_current_site
 
 
 def lives(request):  # affichage des directs
-    buildings = Building.objects.all()
+
+    site = get_current_site(request)
+    buildings = Building.objects.all().filter(sites=site)
     return render(request, "live/lives.html", {
         'buildings': buildings
     })
 
 
 def video_live(request, id):  # affichage des directs
-    broadcaster = get_object_or_404(Broadcaster, id=id)
+    site = get_current_site(request)
+    broadcaster = get_object_or_404(Broadcaster, id=id, building__sites=site)
     if broadcaster.is_restricted and not request.user.is_authenticated():
         iframe_param = 'is_iframe=true&' if (
             request.GET.get('is_iframe')) else ''

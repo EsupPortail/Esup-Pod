@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.safestring import mark_safe
 from .models import Enrichment, EnrichmentGroup, EnrichmentVtt
 from django.contrib.auth.models import Group
+from django.contrib.sites.shortcuts import get_current_site
 
 FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
@@ -32,7 +33,8 @@ class EnrichmentGroupForm(forms.ModelForm):
         super(EnrichmentGroupForm, self).__init__(*args, **kwargs)
         self.fields['groups'].widget = widgets.FilteredSelectMultiple(
             _("Groups"), False, attrs={})
-        self.fields["groups"].queryset = Group.objects.all()
+        self.fields["groups"].queryset = Group.objects.all().filter(
+            groupsite__sites=get_current_site(None))
 
     class Meta(object):
         model = EnrichmentGroup
