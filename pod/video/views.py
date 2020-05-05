@@ -41,6 +41,8 @@ import json
 import re
 import pandas
 from datetime import date
+from chunked_upload.models import ChunkedUpload
+from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 
 from pod.playlist.models import Playlist
 from django.db import transaction
@@ -1494,6 +1496,37 @@ def stats_view(request, slug=None, slug_t=None):
             data.append(v_data)
         data.append({"min_date": min_date})
         return JsonResponse(data, safe=False)
+
+
+class PodChunkedUploadView(ChunkedUploadView):
+
+    model = ChunkedUpload
+    field_name = 'the_file'
+
+    def check_permissions(self, request):
+        # Allow non authenticated users to make uploads
+        pass
+
+
+class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
+
+    model = ChunkedUpload
+
+    def check_permissions(self, request):
+        # Allow non authenticated users to make uploads
+        pass
+
+    def on_completion(self, uploaded_file, request):
+        # Do something with the uploaded file. E.g.:
+        # * Store the uploaded file on another model:
+        # SomeModel.objects.create(user=request.user, file=uploaded_file)
+        # * Pass it as an argument to a function:
+        # function_that_process_file(uploaded_file)
+        pass
+
+    def get_response_data(self, chunked_upload, request):
+        return {'message': ("You successfully uploaded '%s' (%s bytes)!" %
+                            (chunked_upload.filename, chunked_upload.offset))}
 
 
 """

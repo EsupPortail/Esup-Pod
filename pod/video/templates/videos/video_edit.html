@@ -31,6 +31,8 @@
 
 
 {% block page_content %}
+
+<input id="fileupload" type="file" name="files[]" data-url="//jquery-file-upload.appspot.com/" multiple>
 {% spaceless %}
 <h3>{% if form.instance.title and form.instance.slug != '' %}{% trans "Editing the video" %} "{{form.instance.title}}"
 <span class="float-right">
@@ -208,6 +210,9 @@
 <script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
 <script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery-fileupload.js' %}"></script>
+
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
 <!-- form . media -->
 {{form.media}}
@@ -215,6 +220,26 @@
 {% progress_bar_media %}
 -->
 <!-- fin form . media -->
+
+<style>
+    .file {
+   position: relative;
+   background: linear-gradient(to right, lightblue 50%, transparent 50%);
+   background-size: 200% 100%;
+   background-position: right bottom;
+   transition:all 1s ease;
+}
+ .file.done {
+   background: lightgreen;
+}
+ .file a {
+   display: block;
+   position: relative;
+   padding: 5px;
+   color: black;
+}
+
+</style>
 <script>
 /** progress_bar **/
 uuid = $('#progressBar').data('progress_bar_uuid');
@@ -244,5 +269,28 @@ $("#js-process").hide();
 var VIDEO_MAX_UPLOAD_SIZE = {{form.VIDEO_MAX_UPLOAD_SIZE}};
 var video_max_upload_size = VIDEO_MAX_UPLOAD_SIZE*1024*1024*1024;
 var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfor%}";
+
+$("#fileupload").fileupload({
+  dataType: "json",
+  add: function(e, data) {
+    data.context = $('<p class="file">')
+      .append($('<a target="_blank">').text(data.files[0].name))
+      .appendTo(document.body);
+    data.submit();
+  },
+  progress: function(e, data) {
+    var progress = parseInt((data.loaded / data.total) * 100, 10);
+    data.context.css("background-position-x", 100 - progress + "%");
+  },
+  done: function(e, data) {
+    data.context
+      .addClass("done")
+      .find("a")
+      .prop("href", data.result.files[0].url);
+  }
+});
+
 </script>
+
+
 {% endblock more_script %}

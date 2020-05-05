@@ -37,7 +37,7 @@ from pod.video_search.views import search_videos
 from pod.recorder.views import add_recording, recorder_notify, claim_record,\
     delete_record
 from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
-
+from pod.video.views import PodChunkedUploadView, PodChunkedUploadCompleteView
 
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
@@ -89,6 +89,11 @@ urlpatterns = [
     # url(r'^video_collaborate/(?P<slug>[\-\d\w]+)/$',
     #    video_collaborate,
     #    name='video_collaborate'),
+
+    url('api/chunked_upload_complete/', PodChunkedUploadCompleteView.as_view(),
+        name='api_chunked_upload_complete'),
+    url('api/chunked_upload/', PodChunkedUploadView.as_view(), 
+        name='api_chunked_upload'),
 
     url(r'^ajax_calls/search_user/', user_autocomplete),
     # my channels
