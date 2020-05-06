@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'pod.recorder',
     'pod.lti',
     'pod.custom',
-    'shibboleth'
+    'shibboleth',
+    'chunked_upload',
 ]
 
 ##
