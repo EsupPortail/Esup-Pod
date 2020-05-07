@@ -32,10 +32,16 @@
 <div id="uploadblock">
     <input id="chunked_upload" type="file" name="the_file">
     <progress id="progBar" value="0" max="100"></progress>
+
     
 </div>
+<div id="completebox" class="card text-white bg-success mb-3">
+    <div class="card-body">
+      <p class="card-text">{% trans 'The upload is complete, you can now click on \"Next\"' %}</p>
+    </div>
+  </div>
 
-<button type="submit" class="btn btn-primary btn-sm m-2" name="_continue" value="">{% trans "Choose a file to upload" %}</button>
+<button id="submitupload" title='{% trans "You need to wait the end of the upload to continue" %}' type="submit" class="btn btn-primary btn-sm m-2" name="_continue" value="" disabled>{% trans "Next" %}</button>
 
 
 
@@ -63,6 +69,8 @@
 <script>
 
 /** formulaire **/
+
+$("#completebox").hide()
  var md5 = "",
         csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
         form_data = [{"name": "csrfmiddlewaretoken", "value": csrf}];
@@ -124,6 +132,9 @@
           dataType: "json",
           success: function(data) {
            console.log(JSON.stringify(data));
+           $("#uploadblock").hide()
+           $("#submitupload").prop('disabled', false);
+           $("#completebox").show()
           }
         });
       },
@@ -156,10 +167,11 @@
 #progBar{
     width: 100%;
 }
-#uploadblock{
+#uploadblock, #completebox{
     margin-left:10px; 
     margin-top: 20px;
 }
+
 
 </style>
 
