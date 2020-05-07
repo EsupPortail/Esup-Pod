@@ -1498,6 +1498,10 @@ def stats_view(request, slug=None, slug_t=None):
         return JsonResponse(data, safe=False)
 
 
+def video_add(request):
+    return render(request, "videos/add_video.html", {})
+
+
 class PodChunkedUploadView(ChunkedUploadView):
 
     model = ChunkedUpload
@@ -1513,7 +1517,8 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
     model = ChunkedUpload
 
     def check_permissions(self, request):
-        # Allow non authenticated users to make uploads
+        if not request.user.is_authenticated():
+            return False
         pass
 
     def on_completion(self, uploaded_file, request):

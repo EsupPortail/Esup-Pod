@@ -18,6 +18,7 @@ from pod.authentication.views import userpicture
 
 from pod.video.views import video
 from pod.video.views import video_edit
+from pod.video.views import video_add
 from pod.video.views import video_delete
 # from pod.video.views import video_collaborate
 from pod.video.views import channel
@@ -75,6 +76,7 @@ urlpatterns = [
     url(r'^video/(?P<slug>[\-\d\w]+)/$', video, name='video'),
     url(r'^video/(?P<slug>[\-\d\w]+)/(?P<slug_private>[\-\d\w]+)/$', video,
         name='video_private'),
+    url(r'^video_add/$', video_add, name='video_add'),
     url(r'^video_edit/$', video_edit, name='video_edit'),
     url(r'^video_edit/(?P<slug>[\-\d\w]+)/$', video_edit, name='video_edit'),
     url(r'^video_delete/(?P<slug>[\-\d\w]+)/$',

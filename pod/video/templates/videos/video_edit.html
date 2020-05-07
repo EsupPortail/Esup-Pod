@@ -32,8 +32,6 @@
 
 {% block page_content %}
 
-<input id="chunked_upload" type="file" name="the_file">
-
 <p id="progress"></p>
 <div id="messages"></div>
 {% spaceless %}
@@ -275,7 +273,7 @@ var VIDEO_MAX_UPLOAD_SIZE = {{form.VIDEO_MAX_UPLOAD_SIZE}};
 var video_max_upload_size = VIDEO_MAX_UPLOAD_SIZE*1024*1024*1024;
 var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfor%}";
 
-var md5 = "",
+ var md5 = "",
         csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
         form_data = [{"name": "csrfmiddlewaretoken", "value": csrf}];
     function calculate_md5(file, chunk_size) {
