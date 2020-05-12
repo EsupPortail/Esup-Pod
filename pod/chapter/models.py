@@ -100,4 +100,4 @@ class Chapter(models.Model):
     chapter_in_time.fget.short_description = _('Start time')
 
     def __str__(self):
-        return u'Chapter: {0} - video: {0}'.format(self.title, self.video)
+        return u'Chapter: {0} - video: {1}'.format(self.title, self.video)

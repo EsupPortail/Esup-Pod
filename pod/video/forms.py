@@ -28,6 +28,7 @@ from ckeditor.widgets import CKEditorWidget
 from collections import OrderedDict
 
 import datetime
+from dateutil.relativedelta import relativedelta
 import os
 import re
 
@@ -35,6 +36,8 @@ FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.widgets import CustomFileWidget
+
+MAX_DURATION_DATE_DELETE = getattr(settings, 'MAX_DURATION_DATE_DELETE', 1)
 
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 
@@ -364,9 +367,20 @@ class VideoForm(forms.ModelForm):
             video.launch_encode = self.launch_encode
         return video
 
+    def clean_date_delete(self):
+        today = datetime.date.today()
+        limite_duration = today.replace(
+                year=today.year + MAX_DURATION_DATE_DELETE)
+        duration_given_date = abs(
+                relativedelta(self.cleaned_data['date_delete'], today).years)
+        if duration_given_date > MAX_DURATION_DATE_DELETE:
+            raise ValidationError(
+                    _('The date must be less than ' + limite_duration.strftime(
+                        '%d-%m-%Y')))
+        return self
+
     def clean(self):
         cleaned_data = super(VideoForm, self).clean()
-
         self.launch_encode = (
             'video' in cleaned_data.keys()
             and hasattr(self.instance, 'video')

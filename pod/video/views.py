@@ -384,7 +384,7 @@ def get_video_access(request, video, slug_private):
         access_granted_for_group = (
             request.user.is_authenticated()
             and is_in_video_groups(request.user, video)
-        ) or request.user == video.owner or request.user.is_superuser or(
+        ) or request.user == video.owner or request.user.is_superuser or (
             request.user in video.additional_owners.all())
 
         show_page = (
