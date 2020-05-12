@@ -132,6 +132,7 @@ $("#completebox").hide()
           dataType: "json",
           success: function(data) {
            console.log(JSON.stringify(data));
+           location.href= data.redirlink
            $("#uploadblock").hide()
            $("#submitupload").prop('disabled', false);
            $("#completebox").show()

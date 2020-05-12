@@ -2,7 +2,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
-from django.http import HttpResponseRedirect
 from django.http import QueryDict
 from django.core.exceptions import SuspiciousOperation
 from django.core.exceptions import PermissionDenied
@@ -1522,6 +1521,7 @@ class PodChunkedUploadView(ChunkedUploadView):
 class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 
     model = ChunkedUpload
+    slug = ""
 
     def check_permissions(self, request):
         if not request.user.is_authenticated():
@@ -1529,18 +1529,18 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
         pass
 
     def on_completion(self, uploaded_file, request):
-        print("upload")
         video = Video.objects.create(video=uploaded_file,
                                      owner=request.user,
                                      type=Type.objects.get(id=1),
                                      title=uploaded_file.name)
         video.launch_encode = True
         video.save()
-        ENCODE_VIDEO(video.id)
-        return HttpResponseRedirect(reverse('video_edit', args=(video.slug,)))
+        self.slug = video.slug
+        pass
 
     def get_response_data(self, chunked_upload, request):
-        return {'message': ("You successfully uploaded '%s' (%s bytes)!" %
+        return {'redirlink': reverse('video_edit', args=(self.slug,)),
+                'message': ("You successfully uploaded '%s' (%s bytes)!" %
                             (chunked_upload.filename, chunked_upload.offset))}
 
 

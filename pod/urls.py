@@ -94,7 +94,7 @@ urlpatterns = [
 
     url('api/chunked_upload_complete/', PodChunkedUploadCompleteView.as_view(),
         name='api_chunked_upload_complete'),
-    url('api/chunked_upload/', PodChunkedUploadView.as_view(), 
+    url('api/chunked_upload/', PodChunkedUploadView.as_view(),
         name='api_chunked_upload'),
 
     url(r'^ajax_calls/search_user/', user_autocomplete),
