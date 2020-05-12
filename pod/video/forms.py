@@ -271,7 +271,9 @@ class FileSizeValidator(object):
 
 @receiver(post_save, sender=Video)
 def launch_encode(sender, instance, created, **kwargs):
+    print("START ENCODE")
     if hasattr(instance, 'launch_encode') and instance.launch_encode is True:
+        print("START ENCODE2")
         instance.launch_encode = False
         ENCODE_VIDEO(instance.id)
 

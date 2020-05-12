@@ -2,6 +2,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
+from django.http import HttpResponseRedirect
 from django.http import QueryDict
 from django.core.exceptions import SuspiciousOperation
 from django.core.exceptions import PermissionDenied
@@ -21,6 +22,7 @@ from django.db.models import Sum, Min
 from dateutil.parser import parse
 
 from pod.video.models import Video
+from pod.video.models import Type
 from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
@@ -1522,12 +1524,14 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
         pass
 
     def on_completion(self, uploaded_file, request):
-        # Do something with the uploaded file. E.g.:
-        # * Store the uploaded file on another model:
-        # SomeModel.objects.create(user=request.user, file=uploaded_file)
-        # * Pass it as an argument to a function:
-        # function_that_process_file(uploaded_file)
-        pass
+        print("upload")
+        video = Video.objects.create(video=uploaded_file,
+                                     owner=request.user,
+                                     type=Type.objects.get(id=1),
+                                     title=uploaded_file.name)
+        form = VideoForm(instance=video)
+        form.save()
+        return HttpResponseRedirect(reverse('video_edit', args=(video.slug,)))
 
     def get_response_data(self, chunked_upload, request):
         return {'message': ("You successfully uploaded '%s' (%s bytes)!" %
