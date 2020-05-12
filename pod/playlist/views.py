@@ -149,15 +149,28 @@ def playlist_add(request, playlist):
     if request.is_ajax():
         if request.POST.get('video'):
             video = get_object_or_404(Video, slug=request.POST['video'])
-            new = PlaylistElement()
-            new.playlist = playlist
-            new.video = video
-            new.position = playlist.last()
-            new.save()
-            some_data_to_dump = {
-                'success': '{0}'.format(
-                    _('The video has been added to your playlist.'))
-            }
+            msg = None
+            if video.is_draft:
+                msg = _(
+                    'A video in draft mode cannot be added to a playlist.')
+            if video.password:
+                msg = _(
+                    'A video with a password cannot be added to a playlist.')
+
+            if msg:
+                some_data_to_dump = {
+                    'fail': '{0}'.format(msg)
+                }
+            else:
+                new = PlaylistElement()
+                new.playlist = playlist
+                new.video = video
+                new.position = playlist.last()
+                new.save()
+                some_data_to_dump = {
+                    'success': '{0}'.format(
+                        _('The video has been added to your playlist.'))
+                }
         else:
             some_data_to_dump = {
                 'fail': '{0}'.format(
