@@ -36,6 +36,7 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
+from .encode import start_encode
 from itertools import chain
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import ObjectDoesNotExist
@@ -96,6 +97,10 @@ TITLE_SITE = TEMPLATE_VISIBLE_SETTINGS[
     'TITLE_SITE'] if (
         TEMPLATE_VISIBLE_SETTINGS.get('TITLE_SITE')
 ) else 'Pod'
+
+ENCODE_VIDEO = getattr(settings,
+                       'ENCODE_VIDEO',
+                       start_encode)
 
 # ############################################################################
 # CHANNEL
@@ -1529,8 +1534,9 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
                                      owner=request.user,
                                      type=Type.objects.get(id=1),
                                      title=uploaded_file.name)
-        form = VideoForm(instance=video)
-        form.save()
+        video.launch_encode = True
+        video.save()
+        ENCODE_VIDEO(video.id)
         return HttpResponseRedirect(reverse('video_edit', args=(video.slug,)))
 
     def get_response_data(self, chunked_upload, request):
