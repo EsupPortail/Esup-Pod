@@ -5,7 +5,6 @@ from django.contrib.flatpages.models import FlatPage
 from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 from django.db import connection
-
 import os
 import mimetypes
 

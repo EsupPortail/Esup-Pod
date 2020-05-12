@@ -1,6 +1,5 @@
 from django import forms
 from django.conf import settings
-
 from pod.live.models import Building
 from pod.live.models import Broadcaster
 
@@ -12,6 +11,9 @@ if getattr(settings, 'USE_PODFILE', False):
 
 class BuildingAdminForm(forms.ModelForm):
     required_css_class = 'required'
+    is_staff = True
+    is_superuser = False
+    admin_form = True
 
     def __init__(self, *args, **kwargs):
         super(BuildingAdminForm, self).__init__(*args, **kwargs)

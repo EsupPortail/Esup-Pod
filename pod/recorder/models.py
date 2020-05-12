@@ -10,8 +10,8 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.contrib.sites.models import Site
 from select2 import fields as select2_fields
-
 from pod.video.models import Type
 
 RECORDER_TYPE = getattr(
@@ -74,6 +74,7 @@ class Recorder(models.Model):
                                  unique=True, help_text=_(
         'Basic directory containing the videos published by the recorder.')
     )
+    sites = models.ManyToManyField(Site)
 
     def __unicode__(self):
         return "%s - %s" % (self.name, self.address_ip)
@@ -91,6 +92,12 @@ class Recorder(models.Model):
         verbose_name = _("Recorder")
         verbose_name_plural = _("Recorders")
         ordering = ['name']
+
+
+@receiver(post_save, sender=Recorder)
+def default_site(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())
 
 
 class Recording(models.Model):
@@ -115,6 +122,10 @@ class Recording(models.Model):
     comment = models.TextField(_('Comment'), blank=True, default="")
     date_added = models.DateTimeField('date added', default=timezone.now,
                                       editable=False)
+
+    @property
+    def sites(self):
+        return self.recorder.sites
 
     def __str__(self):
         return "%s" % self.title
@@ -180,6 +191,10 @@ class RecordingFileTreatment(models.Model):
     type = models.CharField(max_length=50, choices=RECORDER_TYPE,
                             default=RECORDER_TYPE[0][0])
 
+    @property
+    def sites(self):
+        return self.recorder.sites
+
     def filename(self):
         return os.path.basename(self.file)
 
@@ -205,6 +220,10 @@ class RecordingFile(models.Model):
     class Meta:
         verbose_name = _("Recording file")
         verbose_name_plural = _("Recording files")
+
+    @property
+    def sites(self):
+        return self.recorder.sites
 
 
 @receiver(post_save, sender=RecordingFile)

@@ -82,8 +82,8 @@ def userpicture(request):
             request.POST, instance=request.user.owner)
         if frontOwnerForm.is_valid():
             frontOwnerForm.save()
-            messages.add_message(
-                request, messages.INFO, _('Your picture has been saved.'))
+            # messages.add_message(
+            #    request, messages.INFO, _('Your picture has been saved.'))
         else:
             messages.add_message(
                 request, messages.ERROR,

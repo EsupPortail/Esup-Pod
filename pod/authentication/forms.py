@@ -1,11 +1,11 @@
 from django import forms
-from pod.authentication.models import Owner
+from pod.authentication.models import Owner, GroupSite
 from django.conf import settings
-
 from django.contrib.auth import get_user_model
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.models import Group
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.sites.models import Site
 
 FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
@@ -23,6 +23,16 @@ class OwnerAdminForm(forms.ModelForm):
 
     class Meta(object):
         model = Owner
+        fields = '__all__'
+
+
+class GroupSiteAdminForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(GroupSiteAdminForm, self).__init__(*args, **kwargs)
+
+    class Meta(object):
+        model = GroupSite
         fields = '__all__'
 
 
@@ -58,6 +68,8 @@ class GroupAdminForm(forms.ModelForm):
         if self.instance.pk:
             # Populate the users field with the current Group users.
             self.fields['users'].initial = self.instance.user_set.all()
+        self.fields['users'].queryset = self.fields['users'].queryset.filter(
+                owner__sites=Site.objects.get_current())
 
     def save_m2m(self):
         # Add the users to the Group.

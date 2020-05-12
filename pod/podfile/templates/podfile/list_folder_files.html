@@ -13,7 +13,7 @@
   </button>
   
   <div class="collapse navbar-collapse" id="currentfolder">
-    {% if request.user == folder.owner or request.user.is_superuser %}
+    {% if request.user == folder.owner or request.user.is_superuser or perms.podfile.change_userfolder  %}
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
         <button id="currentfolderrename" type="button" class="btn btn-link btn-sm nav-link" data-toggle="modal" data-target="#folderModalCenter" data-oldname="{{folder.name}}" data-folderid="{{folder.id}}">
@@ -60,7 +60,7 @@
       <div class="col-sm-2 p-0">
         <div class="card bg-light mb-3 m-1 p-1 text-truncate" style="border: 1px solid grey;">
           <div class="card-header p-0  m-0" style="background: none">
-            {% if request.user == file.created_by or request.user.is_superuser %}
+            {% if request.user == file.created_by or request.user.is_superuser or perms.podfile.change_customfilemodel or perms.podfile.change_customimagemodel %}
             <nav class="navbar navbar-expand-lg navbar-light p-0 m-0">
               
               <button class="btn btn-light btn-sm p-0 m-0" type="button" data-toggle="collapse" data-target="#currentfile{{file.id}}" aria-expanded="false" aria-controls="currentfile{{file.id}}" style="opacity:0.8;">

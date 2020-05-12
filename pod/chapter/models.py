@@ -99,5 +99,9 @@ class Chapter(models.Model):
         return time.strftime('%H:%M:%S', time.gmtime(self.time_start))
     chapter_in_time.fget.short_description = _('Start time')
 
+    @property
+    def sites(self):
+        return self.video.sites
+
     def __str__(self):
         return u'Chapter: {0} - video: {1}'.format(self.title, self.video)

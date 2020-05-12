@@ -17,7 +17,7 @@
         <button class="nav-link" data-toggle="modal" data-target=".chaines-modal"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Channels" %}</button>
       </li>
       {% endif %}
-      {% if not HIDE_USER_TAB and user.is_authenticated %}
+      {% if HIDE_USER_TAB == False and user.is_authenticated %}
       <li class="nav-item" id="nav-users">
         <button class="nav-link" data-toggle="modal" data-target=".users-modal"><i data-feather="users" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Users"%}</button>
       </li>
@@ -32,6 +32,7 @@
         <a class="nav-link" href="{% url 'live:lives'%}"><i data-feather="radio" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Lives"%}</a>
       </li>
       {% endif %}
+      {% if HIDE_LANGUAGE_SELECTOR == False %}
       <li class="nav-item d-flex d-block d-lg-none langs pt-2 mt-2 justify-content-between" id="nav-languagechoice">
         <button class="active">{{LANGUAGE_CODE}}</button>
         {% for language in languages %}
@@ -44,6 +45,7 @@
         {% endif %}
         {% endfor %}
       </li>
+      {% endif %}
     </ul>
   </div>
   <form class="form-inline my-2 my-lg-0 flex-2" action="{% url "search_videos" %}" id="nav-search">
@@ -58,8 +60,13 @@
       </li>
       {% if user.is_authenticated %}
       <li class="nav-item dropdown login mr-2" id="nav-usermenu">
-        <button class="initials nav-link pl-2 pr-2 dropdown-toggle d-flex justify-content-center align-items-center " id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {% if user.first_name != '' and user.last_name != '' %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.username|slice:":2"|upper}}{% endif %}
+        <button class="{% if not request.user.owner.userpicture  %}initials {% endif %}nav-link pl-2 pr-2 dropdown-toggle d-flex justify-content-center align-items-center " id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {% if request.user.owner.userpicture  %}
+          <img src="{{user.owner.userpicture.file.url}}" class="userpicture rounded" alt="{{user}}">
+        {% endif %}
+        <span class="userinitial" {% if request.user.owner.userpicture  %}style="display:none"{% endif %}>
+          {% if user.first_name != '' and user.last_name != '' %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.username|slice:":2"|upper}}{% endif %}
+        </span>
         </button>
         <div class="dropdown-menu dropdown-menu-right" >
           <span class="dropdown-item" >{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</span>
@@ -70,8 +77,7 @@
           {% if request.user.is_staff or request.user.is_superuser %}
           {% if request.user.owner.userpicture  %}
           <button class="btn btn-link dropdown-item get_form_userpicture" data-url="{% url "userpicture" %}">
-              <img src="{{user.owner.userpicture.file.url}}" height="34" class='rounded' alt="{{user}}">
-              {% trans 'Change your picture' %}</button>
+              <i data-feather="image"></i>&nbsp;{% trans 'Change your picture' %}</button>
           {% else %}
           <button class="btn btn-link dropdown-item get_form_userpicture"  data-url="{% url "userpicture" %}">
               <i data-feather="image"></i>&nbsp;{% trans 'Add your picture' %}</button>
@@ -101,6 +107,7 @@
         </a>
       </li>
       {% endif %}
+      {% if HIDE_LANGUAGE_SELECTOR == False %}
       <li class="nav-item d-none d-lg-block" id="nav-languagechoicelg">
         <div class="btn-group"><button type="button" class="btn btn-lang btn-lang-active my-2 mr-sm-2 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {{LANGUAGE_CODE}}
@@ -118,7 +125,7 @@
         </div>
         </div>
       </li>
+      {% endif %}
    </ul>
 </div> <!-- FIN Container -->
-{% endspaceless %}    
-    
+{% endspaceless %}

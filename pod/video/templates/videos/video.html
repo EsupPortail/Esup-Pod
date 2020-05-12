@@ -57,7 +57,7 @@ body {
 </style>
 {% endblock page_extra_head %}
 
-{% block breadcrumbs %}{{ block.super }} 
+{% block breadcrumbs %}{{ block.super }}
 {%if channel %}
 {% if theme %}
 <li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
@@ -74,7 +74,7 @@ body {
 {% endif %}
 {% else %}
 <li class="breadcrumb-item"><a href="{% url "videos"%}" title="{% trans 'Videos' %}">{% trans 'Videos' %}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
+<li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
 {% endif %}
 {% endblock %}
 
@@ -129,7 +129,7 @@ body {
 {% include 'videos/video-element.html' %}
 
 <h1 class="pt-2">
-{% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png"></a>{% endif %} {{video.title|title}} 
+{% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png"></a>{% endif %} {{video.title|capfirst}}
 {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
   <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
       <i data-feather="alert-octagon"></i>
@@ -139,14 +139,21 @@ body {
 <div class="pl-0 pr-0">
   <div class="navbar d-flex flex-row-reverse p-0" >
   <ul class="nav nav-tabs" id="myTab" role="tablist">
+    {% tags_for_object video as tag_list %}
+    {% if video.description or tag_list or video.is_360 %}
     <li class="nav-item">
       <a class="nav-link active show" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-selected="true" title="{% trans 'Summary' %}">
         <i data-feather="align-justify"></i>&nbsp;<span class="sr-only">{% trans 'Summary' %}</span>
       </a>
     </li>
+    {% endif %}
     <li class="nav-item">
-      <a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false" title="{% trans 'Infos' %}">
-        <i data-feather="info"></i>&nbsp;<span class="sr-only">{% trans 'Infos' %}</span>
+      {% if not video.description and not tag_list and not video.is_360 %}
+      <a class="nav-link active show" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true" title="{% trans 'Infos' %}">
+        {% else %}
+        <a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false" title="{% trans 'Infos' %}">
+        {% endif %}
+      <i data-feather="info"></i>&nbsp;<span class="sr-only">{% trans 'Infos' %}</span>
       </a>
     </li>
     {% if video.allow_downloading or video.document_set.all %}
@@ -175,7 +182,7 @@ body {
     </li>
     {% endif %}
     {% endwith %}
-    
+
     {% if request.user.playlist_set.all and video.is_draft == False %}
     <li class="nav-item dropdown dropright">
       <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans "Add the video to a playlist"%}">
@@ -199,7 +206,7 @@ body {
     {% endif %}
   </ul>
 </div>
-  {% include 'videos/video-info.html' %}  
+  {% include 'videos/video-info.html' %}
 </div>
 {%endif%}
 {% endblock video-element %}

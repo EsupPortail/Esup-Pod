@@ -6,7 +6,10 @@
           "description": "",
           "title": "Other",
           "icon": null,
-          "slug": "other"
+          "slug": "other",
+          "sites": [
+            1
+          ]
       }
   },
   {
@@ -18,7 +21,10 @@
       "video_bitrate": "750k", 
       "maxrate": "1000k", 
       "audio_bitrate": "96k", 
-      "encode_mp4": true
+      "encode_mp4": true,
+      "sites": [
+        1
+      ]
     }
   }, 
   {
@@ -30,7 +36,10 @@
       "video_bitrate": "2000k", 
       "maxrate": "3000k",
       "audio_bitrate": "128k", 
-      "encode_mp4": true
+      "encode_mp4": true,
+      "sites": [
+        1
+      ]
     }
   }, 
   {
@@ -42,7 +51,10 @@
       "video_bitrate": "3000k", 
       "maxrate": "4500k",
       "audio_bitrate": "192k", 
-      "encode_mp4": false
+      "encode_mp4": false,
+      "sites": [
+        1
+      ]
     }
   }
 ]

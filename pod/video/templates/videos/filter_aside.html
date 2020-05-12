@@ -15,8 +15,7 @@
       <input placeholder="{% trans "Search" %}" id="ownerbox" type="text" class="form-control">
   </div>
   <div class="form-group navList owners" id="collapseFilterOwner" style="max-height:300px; overflow:auto;">
-      {% for owner in OWNERS %}
-      {% if owner.username in owners %}
+      {% for owner in ownersInstances %}
       <div class="form-check">
       <input class="form-check-input" type="checkbox" name="owner" value="{{owner.username}}" id="id{{owner.username}}" checked>
       <label class="form-check-label" for="id{{owner.username}}">
@@ -26,7 +25,6 @@
 	  {{ owner.first_name }} {{ owner.last_name }} {% if not HIDE_USERNAME and user.is_authenticated %} ({{ owner.username }}) {% endif%}
       </label>
       </div>
-      {% endif %}
       {% endfor %}  
   </div>
   </fieldset>
@@ -104,5 +102,6 @@
 </div>
 <script>
 var listUserChecked = {{owners|safe}};
+
 </script>
 {% endspaceless %}

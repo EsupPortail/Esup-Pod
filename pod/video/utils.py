@@ -41,6 +41,8 @@ USE_ESTABLISHMENT = getattr(
 
 MANAGERS = getattr(settings, 'MANAGERS', {})
 
+SECURE_SSL_REDIRECT = getattr(settings, 'SECURE_SSL_REDIRECT', False)
+
 
 # ##########################################################################
 # ENCODE VIDEO : GENERIC FUNCTION
@@ -108,7 +110,8 @@ def send_email(msg, video_id):
 def send_email_transcript(video_to_encode):
     if DEBUG:
         print("SEND EMAIL ON TRANSCRIPTING COMPLETION")
-    content_url = "http:%s" % video_to_encode.get_full_url()
+    url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
+    content_url = "%s:%s" % (url_scheme, video_to_encode.get_full_url())
     subject = "[%s] %s" % (
         TITLE_SITE,
         _(u"Transcripting #%(content_id)s completed") % {
@@ -195,7 +198,8 @@ def send_email_transcript(video_to_encode):
 def send_email_encoding(video_to_encode):
     if DEBUG:
         print("SEND EMAIL ON ENCODING COMPLETION")
-    content_url = "http:%s" % video_to_encode.get_full_url()
+    url_scheme = "https" if SECURE_SSL_REDIRECT else "http"
+    content_url = "%s:%s" % (url_scheme, video_to_encode.get_full_url())
     subject = "[%s] %s" % (
         TITLE_SITE,
         _(u"Encoding #%(content_id)s completed") % {

@@ -4,7 +4,10 @@ from django.utils.translation import ugettext_lazy as _
 from ckeditor.fields import RichTextField
 from django.template.defaultfilters import slugify
 from pod.video.models import Video
+from django.contrib.sites.models import Site
 from select2 import fields as select2_fields
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -23,6 +26,7 @@ class Building(models.Model):
                                  blank=True, null=True,
                                  verbose_name=_('Headband'))
     gmapurl = models.CharField(max_length=250, blank=True, null=True)
+    sites = models.ManyToManyField(Site)
 
     def __str__(self):
         return self.name
@@ -40,6 +44,12 @@ class Building(models.Model):
     class Meta:
         verbose_name = _("Building")
         verbose_name_plural = _("Buildings")
+
+
+@receiver(post_save, sender=Building)
+def default_site_building(sender, instance, created, **kwargs):
+    if len(instance.sites.all()) == 0:
+        instance.sites.add(Site.objects.get_current())
 
 
 class Broadcaster(models.Model):
@@ -95,3 +105,7 @@ class Broadcaster(models.Model):
         verbose_name = _("Broadcaster")
         verbose_name_plural = _("Broadcasters")
         ordering = ['building', 'name']
+
+    @property
+    def sites(self):
+        return self.building.sites

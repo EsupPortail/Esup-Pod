@@ -2,20 +2,13 @@
 Django local settings for pod_project.
 Django version : 1.11.10.
 """
-
 import os
-from .lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 
 ##
 # flatpages
 ##
 SITE_ID = 1
 
-# Lang choices
-LANG_CHOICES = (
-    (' ', PREF_LANG_CHOICES),
-    ('----------', ALL_LANG_CHOICES)
-)
 ##
 # The secret key for your particular Django installation.
 #
@@ -173,19 +166,6 @@ CKEDITOR_CONFIGS = {
     }
 }
 
-##
-# Main menu settings:
-#
-# Do not show inactive users in “Owners” main menu list.
-MENUBAR_HIDE_INACTIVE_OWNERS = True
-# Show only staff users in “Owners” main menu list.
-MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
-# Hide Users tab in navbar
-HIDE_USER_TAB = False
-# Hide Channel tab in navbar
-HIDE_CHANNEL_TAB = False
-# Hide Types tab in navbar
-HIDE_TYPES_TAB = False
 
 ##
 # Video tiers apps settings
@@ -285,9 +265,34 @@ LTI_PROPERTY_USER_USERNAME = 'ext_user_username'
 # 'default' is the simpliest, bootstrap $enable_rounded is true
 # 'green' is with a dark green for primary color, $enable_rounded is false
 # 'dark' is black and red, without grey background, $enable_rounded is false
-USE_THEME = 'green'
+
+# ie : USE_THEME = 'green'
 
 ###
 # Max duration that user can set to delete a video
 # default value 10, that can be override in pod.custom.settings_local.py
 MAX_DURATION_DATE_DELETE = 10
+
+"""
+##
+# Main menu settings:
+#
+# Do not show inactive users in “Owners” main menu list.
+MENUBAR_HIDE_INACTIVE_OWNERS = True
+# Show only staff users in “Owners” main menu list.
+MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
+# Hide de language selector
+HIDE_LANGUAGE_SELECTOR = False
+# Hide Users tab in navbar
+HIDE_USER_TAB = False
+# Hide Channel tab in navbar
+HIDE_CHANNEL_TAB = False
+# Hide Types tab in navbar
+HIDE_TYPES_TAB = False
+# Hide Tags
+HIDE_TAGS = False
+# Hide share in social network
+HIDE_SHARE = False
+# Hide disciplines
+HIDE_DISCIPLINES = False
+"""

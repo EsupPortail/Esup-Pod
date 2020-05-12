@@ -119,16 +119,23 @@ body {
   var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],
     onBeforePageLoad: function () {
-      $('.loading').show();
+      $('.infinite-loading').show();
     },
     onAfterPageLoad: function ($items) {
-      $('.loading').hide();
+      $('.infinite-loading').hide();
       feather.replace({ class: 'align-bottom'});
-      /*if(!$('footer').hasClass('small')) {
-        $('footer').addClass('small');
-        $('footer').addClass('fixed-bottom');
-        $('footer').attr('style','height:80px; overflow-y:auto');
-      }*/
+      $('footer.static-pod').addClass('small');
+      $('footer.static-pod').addClass('fixed-bottom');
+      $('footer.static-pod').attr('style','height:80px; overflow-y:auto');
+      $('footer.static-pod .hidden-pod').css('display','none');
+      $(window).scroll(function () {
+        if ($(window).height() + $(window).scrollTop() == $(document).height())
+        {
+           $('footer.static-pod .hidden-pod').css('display','block');
+           $('footer.static-pod').attr('style','height:auto;');
+           $('footer.static-pod').removeClass('fixed-bottom');
+        }
+      });
     }
   });
 </script>
@@ -136,9 +143,9 @@ body {
 var str = get_list(listTheme["channel_"+{{channel.id}}], 0, [], tag_type="li", li_class="list-group-item", attrs='', add_link=true, current="{{theme.slug}}", channel="");
 $("#ultreeview").html(str);
 setTimeout(function(){ 
-var position = parseInt($("#ultreeview li.list-group-item-info").position().top) - parseInt($("#ultreeview li").first().position().top);
-console.log(position);
-$("#ultreeview").scrollTop(position); 
+  var position = parseInt($("#ultreeview li.list-group-item-info").position().top) - parseInt($("#ultreeview li").first().position().top);
+  //console.log(position);
+  $("#ultreeview").scrollTop(position); 
 }, 500);
 </script>
 {% endblock more_script %}
