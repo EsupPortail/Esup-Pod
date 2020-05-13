@@ -36,7 +36,7 @@ if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.widgets import CustomFileWidget
 
-MAX_DURATION_DATE_DELETE = getattr(settings, 'MAX_DURATION_DATE_DELETE', 1)
+MAX_DURATION_DATE_DELETE = getattr(settings, 'MAX_DURATION_DATE_DELETE', 10)
 
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 

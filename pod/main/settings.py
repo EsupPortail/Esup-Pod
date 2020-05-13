@@ -268,11 +268,6 @@ LTI_PROPERTY_USER_USERNAME = 'ext_user_username'
 
 # ie : USE_THEME = 'green'
 
-###
-# Max duration that user can set to delete a video
-# default value 10, that can be override in pod.custom.settings_local.py
-MAX_DURATION_DATE_DELETE = 10
-
 """
 ##
 # Main menu settings:
