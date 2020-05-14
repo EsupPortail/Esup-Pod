@@ -60,6 +60,7 @@
 <script>
 
 /** formulaire **/
+var max_chunk_size = {{CHUNK_SIZE}}
 var slug = "{{ slug }}"
  var md5 = "",
         csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
@@ -90,14 +91,14 @@ var slug = "{{ slug }}"
     $("#chunked_upload").fileupload({
       url: "{% url 'api_chunked_upload' %}",
       dataType: "json",
-      maxChunkSize: 100000, // Chunks of 100 kB
+      maxChunkSize: max_chunk_size, // Chunks of 100 kB
       formData: form_data,
       add: function(e, data) { // Called before starting upload
         $("#messages").empty();
         // If this is the second file you're uploading we need to remove the
         // old upload_id and just keep the csrftoken (which is always first).
         form_data.splice(1);
-        calculate_md5(data.files[0], 1000000);  // Again, chunks of 100 kB
+        calculate_md5(data.files[0], max_chunk_size);  // Again, chunks of 100 kB
         data.submit();
       },
       chunkdone: function (e, data) { // Called after uploading each chunk
