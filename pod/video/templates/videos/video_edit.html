@@ -339,6 +339,15 @@ var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfo
       },
     });
 
+
+
+var slug = "{{ form.instance.slug }}";
+
+$("#id_video").click(function(event){
+  location.href= "/video_add?slug=" + slug
+  event.preventDefault();
+});
+
 </script>
 
 

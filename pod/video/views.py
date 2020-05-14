@@ -1339,7 +1339,6 @@ def video_oembed(request):
         }
     else:
         return HttpResponseNotFound('<h1>Url not match</h1>')
-
     if format == "xml":
         xml = """
             <oembed>
@@ -1510,8 +1509,25 @@ def stats_view(request, slug=None, slug_t=None):
         return JsonResponse(data, safe=False)
 
 
+@login_required(redirect_field_name='referrer')
 def video_add(request):
-    return render(request, "videos/add_video.html", {})
+    slug = request.GET.get('slug', "")
+    if slug != "":
+        try:
+            video = Video.objects.get(slug=slug,
+                                      sites=get_current_site(request))
+            if (RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+                    and request.user.is_staff is False):
+                return HttpResponseNotFound('<h1>Permission Denied</h1>')
+
+            if video and request.user != video.owner and (
+                not (request.user.is_superuser or
+                     request.user.has_perm('video.change_video'))) and (
+                     request.user not in video.additional_owners.all()):
+                return HttpResponseNotFound('<h1>Permission Denied</h1>')
+        except Video.DoesNotExist:
+            pass
+    return render(request, "videos/add_video.html", {'slug': slug})
 
 
 class PodChunkedUploadView(ChunkedUploadView):
@@ -1520,7 +1536,8 @@ class PodChunkedUploadView(ChunkedUploadView):
     field_name = 'the_file'
 
     def check_permissions(self, request):
-        # Allow non authenticated users to make uploads
+        if not request.user.is_authenticated():
+            return False
         pass
 
 
@@ -1529,21 +1546,29 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
     model = ChunkedUpload
     slug = ""
 
+    @login_required(redirect_field_name='referrer')
     def check_permissions(self, request):
         if not request.user.is_authenticated():
             return False
         pass
 
+    @login_required(redirect_field_name='referrer')
     def on_completion(self, uploaded_file, request):
-        video = Video.objects.create(video=uploaded_file,
-                                     owner=request.user,
-                                     type=Type.objects.get(id=1),
-                                     title=uploaded_file.name)
+        edit_slug = request.POST.get("slug")
+        if edit_slug == "":
+            video = Video.objects.create(video=uploaded_file,
+                                         owner=request.user,
+                                         type=Type.objects.get(id=1),
+                                         title=uploaded_file.name)
+        else:
+            video = Video.objects.get(slug=edit_slug)
+            video.video = uploaded_file
         video.launch_encode = True
         video.save()
         self.slug = video.slug
         pass
 
+    @login_required(redirect_field_name='referrer')
     def get_response_data(self, chunked_upload, request):
         return {'redirlink': reverse('video_edit', args=(self.slug,)),
                 'message': ("You successfully uploaded '%s' (%s bytes)!" %

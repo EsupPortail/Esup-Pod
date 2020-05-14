@@ -417,6 +417,7 @@ class VideoForm(forms.ModelForm):
         self.VIDEO_FORM_FIELDS_HELP_TEXT = VIDEO_FORM_FIELDS_HELP_TEXT
 
         super(VideoForm, self).__init__(*args, **kwargs)
+
         if FILEPICKER and self.fields.get('thumbnail'):
             self.fields['thumbnail'].widget = CustomFileWidget(type="image")
 

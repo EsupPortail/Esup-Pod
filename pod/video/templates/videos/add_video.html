@@ -35,15 +35,6 @@
 
     
 </div>
-<div id="completebox" class="card text-white bg-success mb-3">
-    <div class="card-body">
-      <p class="card-text">{% trans 'The upload is complete, you can now click on \"Next\"' %}</p>
-    </div>
-  </div>
-
-<button id="submitupload" title='{% trans "You need to wait the end of the upload to continue" %}' type="submit" class="btn btn-primary btn-sm m-2" name="_continue" value="" disabled>{% trans "Next" %}</button>
-
-
 
 
 {% endblock page_content %}
@@ -69,8 +60,7 @@
 <script>
 
 /** formulaire **/
-
-$("#completebox").hide()
+var slug = "{{ slug }}"
  var md5 = "",
         csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
         form_data = [{"name": "csrfmiddlewaretoken", "value": csrf}];
@@ -107,7 +97,7 @@ $("#completebox").hide()
         // If this is the second file you're uploading we need to remove the
         // old upload_id and just keep the csrftoken (which is always first).
         form_data.splice(1);
-        calculate_md5(data.files[0], 100000);  // Again, chunks of 100 kB
+        calculate_md5(data.files[0], 1000000);  // Again, chunks of 100 kB
         data.submit();
       },
       chunkdone: function (e, data) { // Called after uploading each chunk
@@ -127,15 +117,13 @@ $("#completebox").hide()
           data: {
             csrfmiddlewaretoken: csrf,
             upload_id: data.result.upload_id,
-            md5: md5
+            md5: md5,
+            slug : slug
           },
           dataType: "json",
           success: function(data) {
            console.log(JSON.stringify(data));
            location.href= data.redirlink
-           $("#uploadblock").hide()
-           $("#submitupload").prop('disabled', false);
-           $("#completebox").show()
           }
         });
       },
