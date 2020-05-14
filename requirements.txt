@@ -22,4 +22,4 @@ billiard<4.0,>=3.6.0
 webrtcvad
 django-select2-forms==2.1.0
 django-shibboleth-remoteuser
-django-chunked-upload
+django-chunked-upload==2.0.0
