@@ -1546,13 +1546,11 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
     model = ChunkedUpload
     slug = ""
 
-    @login_required(redirect_field_name='referrer')
     def check_permissions(self, request):
         if not request.user.is_authenticated():
             return False
         pass
 
-    @login_required(redirect_field_name='referrer')
     def on_completion(self, uploaded_file, request):
         edit_slug = request.POST.get("slug")
         if edit_slug == "":
@@ -1568,7 +1566,6 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
         self.slug = video.slug
         pass
 
-    @login_required(redirect_field_name='referrer')
     def get_response_data(self, chunked_upload, request):
         return {'redirlink': reverse('video_edit', args=(self.slug,)),
                 'message': ("You successfully uploaded '%s' (%s bytes)!" %
