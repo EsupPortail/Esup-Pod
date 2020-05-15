@@ -104,4 +104,4 @@ class Chapter(models.Model):
         return self.video.sites
 
     def __str__(self):
-        return u'Chapter: {0} - video: {0}'.format(self.title, self.video)
+        return u'Chapter: {0} - video: {1}'.format(self.title, self.video)
