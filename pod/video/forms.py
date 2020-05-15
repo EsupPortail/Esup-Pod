@@ -27,6 +27,7 @@ from ckeditor.widgets import CKEditorWidget
 from collections import OrderedDict
 
 import datetime
+from dateutil.relativedelta import relativedelta
 import os
 import re
 
@@ -34,6 +35,8 @@ FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.widgets import CustomFileWidget
+
+MAX_DURATION_DATE_DELETE = getattr(settings, 'MAX_DURATION_DATE_DELETE', 10)
 
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 
@@ -372,9 +375,20 @@ class VideoForm(forms.ModelForm):
             video.launch_encode = self.launch_encode
         return video
 
+    def clean_date_delete(self):
+        today = datetime.date.today()
+        mddd = MAX_DURATION_DATE_DELETE
+        max_d = today.replace(year=today.year + mddd)
+        in_dt = relativedelta(self.cleaned_data['date_delete'], max_d)
+        if ((in_dt.years > mddd) or (in_dt.years == 0 and in_dt.months > 0) or
+                (in_dt.years == 0 and in_dt.months == 0 and in_dt.days > 0)):
+            raise ValidationError(
+                    _('The date must be before or equal to ' + max_d.strftime(
+                        '%d-%m-%Y')))
+        return self.cleaned_data['date_delete']
+
     def clean(self):
         cleaned_data = super(VideoForm, self).clean()
-
         self.launch_encode = (
             'video' in cleaned_data.keys()
             and hasattr(self.instance, 'video')
@@ -415,6 +429,7 @@ class VideoForm(forms.ModelForm):
         self.VIDEO_ALLOWED_EXTENSIONS = VIDEO_ALLOWED_EXTENSIONS
         self.VIDEO_MAX_UPLOAD_SIZE = VIDEO_MAX_UPLOAD_SIZE
         self.VIDEO_FORM_FIELDS_HELP_TEXT = VIDEO_FORM_FIELDS_HELP_TEXT
+        self.max_duration_date_delete = MAX_DURATION_DATE_DELETE
 
         super(VideoForm, self).__init__(*args, **kwargs)
 
