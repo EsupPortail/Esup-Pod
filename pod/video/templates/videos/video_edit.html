@@ -261,8 +261,8 @@ $("#id_video").click(function(event){
 {%endif%}
 
 <script>
-    /** formulaire **/
-    $("#js-process").hide();
+        /** formulaire **/
+        $("#js-process").hide();
     var VIDEO_MAX_UPLOAD_SIZE = {{form.VIDEO_MAX_UPLOAD_SIZE}};
     var video_max_upload_size = VIDEO_MAX_UPLOAD_SIZE*1024*1024*1024;
     var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfor%}";

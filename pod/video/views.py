@@ -1540,7 +1540,6 @@ def stats_view(request, slug=None, slug_t=None):
 @login_required(redirect_field_name='referrer')
 def video_add(request):
     allow_extension = ".%s" % ', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS))
-    print(allow_extension)
     slug = request.GET.get('slug', "")
     if slug != "":
         try:

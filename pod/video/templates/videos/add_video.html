@@ -32,8 +32,7 @@
 <div id="uploadblock">
     <input id="chunked_upload" accept="{{allow_extension}}" type="file" name="the_file">
     <progress id="progBar" value="0" max="100"></progress>
-
-    
+  
 </div>
 
 
@@ -96,16 +95,16 @@ var max_size = {{ max_size }}
       url: "{% url 'api_chunked_upload' %}",
       dataType: "json",
       maxChunkSize: max_chunk_size, // Chunks of 100 kB
-      acceptFileTypes : /(\.|\/)(gif|jpe?g|png)$/i,
       maxFileSize:  1,
       formData: form_data,
       add: function(e, data) { // Called before starting upload
-        $("#messages").empty();
-        // If this is the second file you're uploading we need to remove the
-        // old upload_id and just keep the csrftoken (which is always first).
-        form_data.splice(1);
-        calculate_md5(data.files[0], max_chunk_size);  // Again, chunks of 100 kB
-        data.submit();
+          // If this is the second file you're uploading we need to remove the
+          // old upload_id and just keep the csrftoken (which is always first).
+          form_data.splice(1);
+          calculate_md5(data.files[0], max_chunk_size);  // Again, chunks of 100 kB
+          data.submit();
+       
+
       },
       chunkdone: function (e, data) { // Called after uploading each chunk
         if (form_data.length < 2) {
