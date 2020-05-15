@@ -219,35 +219,7 @@
 <!-- fin form . media -->
 
 </style>
-<script>
-/** progress_bar **/
-uuid = $('#progressBar').data('progress_bar_uuid');
-function show_progress_bar(form) {
-    if ($.data(form, 'submitted')) return false;
-    form.action += (form.action.indexOf('?') == -1 ? '?' : '&') + 'X-Progress-ID=' + uuid;
-    window.setTimeout(update_progress_info, 200);
-    $.data(form, 'submitted', true); // mark form as submitted.
-    return true;
-}
-function update_progress_info() {
-  $.getJSON(upload_progress_url, {'X-Progress-ID': uuid}, function(data, status){
-    console.log(data);
-    if(data){
-      $('#progressBar').removeAttr('hidden');  // show progress bar if there are datas
-      var progress = parseInt(data.received, 10)/parseInt(data.size, 10)*100;
-      $('#progressBar').attr('value', progress);
-    }
-    else {
-      $('#progressBar').attr('hidden', '');  // hide progress bar if no datas
-    }
-    window.setTimeout(update_progress_info, 200);
-  });
-}
-/** formulaire **/
-var VIDEO_MAX_UPLOAD_SIZE = {{form.VIDEO_MAX_UPLOAD_SIZE}};
-var video_max_upload_size = VIDEO_MAX_UPLOAD_SIZE*1024*1024*1024;
-var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfor%}";
-</script>
+
 
 {% if USE_CHUNKED_UPLOAD %}
 <script>
@@ -257,6 +229,38 @@ $("#id_video").click(function(event){
   event.preventDefault();
 });
 </script>
+
+{% else %}
+
+<script>
+    /** progress_bar **/
+    uuid = $('#progressBar').data('progress_bar_uuid');
+    function show_progress_bar(form) {
+        if ($.data(form, 'submitted')) return false;
+        form.action += (form.action.indexOf('?') == -1 ? '?' : '&') + 'X-Progress-ID=' + uuid;
+        window.setTimeout(update_progress_info, 200);
+        $.data(form, 'submitted', true); // mark form as submitted.
+        return true;
+    }
+    function update_progress_info() {
+      $.getJSON(upload_progress_url, {'X-Progress-ID': uuid}, function(data, status){
+        console.log(data);
+        if(data){
+          $('#progressBar').removeAttr('hidden');  // show progress bar if there are datas
+          var progress = parseInt(data.received, 10)/parseInt(data.size, 10)*100;
+          $('#progressBar').attr('value', progress);
+        }
+        else {
+          $('#progressBar').attr('hidden', '');  // hide progress bar if no datas
+        }
+        window.setTimeout(update_progress_info, 200);
+      });
+    }
+    /** formulaire **/
+    var VIDEO_MAX_UPLOAD_SIZE = {{form.VIDEO_MAX_UPLOAD_SIZE}};
+    var video_max_upload_size = VIDEO_MAX_UPLOAD_SIZE*1024*1024*1024;
+    var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfor%}";
+    </script>
 {%endif%}
 
 

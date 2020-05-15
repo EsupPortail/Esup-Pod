@@ -101,6 +101,9 @@ ENCODE_VIDEO = getattr(settings,
                        'ENCODE_VIDEO',
                        start_encode)
 
+VIDEO_MAX_UPLOAD_SIZE = getattr(
+    settings, 'VIDEO_MAX_UPLOAD_SIZE', 1)
+
 # ############################################################################
 # CHANNEL
 # ############################################################################
@@ -1527,7 +1530,9 @@ def video_add(request):
                 return HttpResponseNotFound('<h1>Permission Denied</h1>')
         except Video.DoesNotExist:
             pass
-    return render(request, "videos/add_video.html", {'slug': slug})
+    return render(request, "videos/add_video.html", {
+        'slug': slug,
+        'max_size': VIDEO_MAX_UPLOAD_SIZE}) 
 
 
 class PodChunkedUploadView(ChunkedUploadView):

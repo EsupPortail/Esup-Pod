@@ -62,6 +62,7 @@
 /** formulaire **/
 var max_chunk_size = {{CHUNK_SIZE}}
 var slug = "{{ slug }}"
+var max_size = {{ max_size }}
  var md5 = "",
         csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
         form_data = [{"name": "csrfmiddlewaretoken", "value": csrf}];
@@ -92,6 +93,8 @@ var slug = "{{ slug }}"
       url: "{% url 'api_chunked_upload' %}",
       dataType: "json",
       maxChunkSize: max_chunk_size, // Chunks of 100 kB
+      acceptFileTypes : /(\.|\/)(gif|jpe?g|png)$/i,
+      maxFileSize:  max_size,
       formData: form_data,
       add: function(e, data) { // Called before starting upload
         $("#messages").empty();
