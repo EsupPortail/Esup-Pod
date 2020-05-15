@@ -429,6 +429,7 @@ class VideoForm(forms.ModelForm):
         self.VIDEO_ALLOWED_EXTENSIONS = VIDEO_ALLOWED_EXTENSIONS
         self.VIDEO_MAX_UPLOAD_SIZE = VIDEO_MAX_UPLOAD_SIZE
         self.VIDEO_FORM_FIELDS_HELP_TEXT = VIDEO_FORM_FIELDS_HELP_TEXT
+        self.max_duration_date_delete = MAX_DURATION_DATE_DELETE
 
         super(VideoForm, self).__init__(*args, **kwargs)
         if FILEPICKER and self.fields.get('thumbnail'):

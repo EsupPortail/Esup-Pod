@@ -1,6 +1,7 @@
 // Validate input type date (video date_delete)
 window.onload = function()
 {
+//console.log(max_duration_date_delete)
     // get selected lang and save it in localStorage
     let lang_btn = document.querySelector(".btn-lang.btn-lang-active");
     let lang = lang_btn?lang_btn.textContent.trim() : "fr";
@@ -8,8 +9,9 @@ window.onload = function()
         localStorage.setItem('lang', lang)
     
     let dtf = new Intl.DateTimeFormat(lang,{day:"2-digit", month:"2-digit", year:"numeric"});
-    let input = document.querySelector("input#id_date_delete") || document.querySelector('input[name="date_delete"');
+    let input = document.querySelector("input#id_date_delete") || document.querySelector('input[name="date_delete"]');
     input.setAttribute("type", "date");
+    input.style.boxShadow = "none";
     let given = new Date(input.value)
     let limite = new Date();
     limite.setYear((new Date()).getFullYear() + max_duration_date_delete)
@@ -19,8 +21,9 @@ window.onload = function()
         let error_message = document.createElement("span");
         if(given > limite)
         {
-            let msg = localStorage.getItem('lang') == 'en' ? 'The date must be before or equal to' : 'La date doit être antérieur au'
-            // Create message span element with error_message class and
+            //let msg = localStorage.getItem('lang') == 'en' ? 'The date must be before or equal to' : 'La date doit être antérieur au'
+            let msg = gettext('The date must be before or equal to');
+            // Create message span element with error_message class
             // Add error_value class to the input field
             input.classList.add("error_value")
             input.style.borderColor = "red";
@@ -30,7 +33,6 @@ window.onload = function()
             error_message.style.display= "inline-block";
             error_message.style.marginLeft= "5px";
             error_message.textContent = `${msg} ${dtf.format(limite)}`;
-            //error_message.textContent = `The date must be before or equal to ${limite.toLocaleDateString()}`;
             
             // Insert the message span at the last position in parentElement
             if(!input.parentElement.querySelector('span.error_message'))
@@ -38,6 +40,7 @@ window.onload = function()
         }
         else if(input.parentElement.querySelector('span.error_message'))
         {
+	    // if no error is detected then reset the DOM modifications
             input.parentElement.removeChild(input.parentElement.querySelector('span.error_message'));
             input.classList.remove('error_value')
             input.style.borderColor= "#ccc";
@@ -45,5 +48,8 @@ window.onload = function()
     }
     // Set listener on the field and check even after reloading the page
     input.onchange = function(){ listener_inputchange(); }
-    listener_inputchange()
+    listener_inputchange();
+
+    // Hide backend validate
+    
 };

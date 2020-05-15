@@ -244,7 +244,7 @@ $("#js-process").hide();
 var VIDEO_MAX_UPLOAD_SIZE = {{form.VIDEO_MAX_UPLOAD_SIZE}};
 var video_max_upload_size = VIDEO_MAX_UPLOAD_SIZE*1024*1024*1024;
 var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfor%}";
-const max_duration_date_delete = {{MAX_DURATION_DATE_DELETE}}
+const max_duration_date_delete = {{form.max_duration_date_delete}};
 </script>
-<script type="text/javascript" src="{% static 'js/videojs-validate_fields.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/validate-date_delete-field.js' %}"></script>
 {% endblock more_script %}

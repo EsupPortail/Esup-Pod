@@ -205,6 +205,13 @@ class VideoAdmin(admin.ModelAdmin):
                 request))
         return qs
 
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['max_duration_date_delete'] = getattr(
+                settings, 'MAX_DURATION_DATE_DELETE', 10)
+        return super(VideoAdmin, self).change_view(
+                request, object_id, form_url, extra_context)
+
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
         if not change:
@@ -222,6 +229,7 @@ class VideoAdmin(admin.ModelAdmin):
         js = (
             'podfile/js/filewidget.js',
             'js/main.js',
+            'js/validate-date_delete-field.js',
             'feather-icons/feather.min.js',
             'bootstrap-4/js/bootstrap.min.js')
 

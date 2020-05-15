@@ -98,9 +98,6 @@ USE_THEME = getattr(
 BOOTSTRAP_CUSTOM = getattr(
     django_settings, 'BOOTSTRAP_CUSTOM', None)
 
-MAX_DURATION_DATE_DELETE = getattr(
-        django_settings, 'MAX_DURATION_DATE_DELETE', 10)
-
 
 def context_settings(request):
     new_settings = {}
@@ -134,7 +131,6 @@ def context_settings(request):
         USE_SHIB
     new_settings['USE_THEME'] = USE_THEME
     new_settings['BOOTSTRAP_CUSTOM'] = BOOTSTRAP_CUSTOM
-    new_settings['MAX_DURATION_DATE_DELETE'] = MAX_DURATION_DATE_DELETE
     return new_settings
 
 
