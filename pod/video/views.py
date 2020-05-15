@@ -104,6 +104,30 @@ ENCODE_VIDEO = getattr(settings,
 VIDEO_MAX_UPLOAD_SIZE = getattr(
     settings, 'VIDEO_MAX_UPLOAD_SIZE', 1)
 
+VIDEO_ALLOWED_EXTENSIONS = getattr(
+    settings, 'VIDEO_ALLOWED_EXTENSIONS', (
+        '3gp',
+        'avi',
+        'divx',
+        'flv',
+        'm2p',
+        'm4v',
+        'mkv',
+        'mov',
+        'mp4',
+        'mpeg',
+        'mpg',
+        'mts',
+        'wmv',
+        'mp3',
+        'ogg',
+        'wav',
+        'wma',
+        'webm',
+        'ts'
+    )
+)
+
 # ############################################################################
 # CHANNEL
 # ############################################################################
@@ -1514,6 +1538,8 @@ def stats_view(request, slug=None, slug_t=None):
 
 @login_required(redirect_field_name='referrer')
 def video_add(request):
+    allow_extension = ".%s" % ', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS))
+    print(allow_extension)
     slug = request.GET.get('slug', "")
     if slug != "":
         try:
@@ -1532,7 +1558,8 @@ def video_add(request):
             pass
     return render(request, "videos/add_video.html", {
         'slug': slug,
-        'max_size': VIDEO_MAX_UPLOAD_SIZE}) 
+        'max_size': VIDEO_MAX_UPLOAD_SIZE,
+        'allow_extension': allow_extension}) 
 
 
 class PodChunkedUploadView(ChunkedUploadView):

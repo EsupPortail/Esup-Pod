@@ -30,7 +30,7 @@
 <h3>{% trans "Choose a file to upload" %}</h3>
 
 <div id="uploadblock">
-    <input id="chunked_upload" type="file" name="the_file">
+    <input id="chunked_upload" accept="{{allow_extension}}" type="file" name="the_file">
     <progress id="progBar" value="0" max="100"></progress>
 
     
@@ -52,6 +52,9 @@
 <script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery-iframe-transport.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery-fileupload.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.fileupload-process.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.fileupload-validate.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.fileupload-ui.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/spark-md5.js' %}"></script>
 
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
@@ -62,7 +65,7 @@
 /** formulaire **/
 var max_chunk_size = {{CHUNK_SIZE}}
 var slug = "{{ slug }}"
-var max_size = {{ max_size }}
+var max_size = {{ max_size }} 
  var md5 = "",
         csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
         form_data = [{"name": "csrfmiddlewaretoken", "value": csrf}];
@@ -94,7 +97,7 @@ var max_size = {{ max_size }}
       dataType: "json",
       maxChunkSize: max_chunk_size, // Chunks of 100 kB
       acceptFileTypes : /(\.|\/)(gif|jpe?g|png)$/i,
-      maxFileSize:  max_size,
+      maxFileSize:  1,
       formData: form_data,
       add: function(e, data) { // Called before starting upload
         $("#messages").empty();
