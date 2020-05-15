@@ -1,7 +1,6 @@
 // Validate input type date (video date_delete)
 window.onload = function()
 {
-//console.log(max_duration_date_delete)
     // get selected lang and save it in localStorage
     let lang_btn = document.querySelector(".btn-lang.btn-lang-active");
     let lang = lang_btn?lang_btn.textContent.trim() : "fr";
@@ -51,5 +50,6 @@ window.onload = function()
     listener_inputchange();
 
     // Hide backend validate
-    
+    let back_errors_msg = input.parentNode.parentNode.querySelector("ul.errorlist");
+    if(back_errors_msg) back_errors_msg.parentNode.removeChild(back_errors_msg);
 };
