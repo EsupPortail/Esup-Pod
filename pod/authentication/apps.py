@@ -1,11 +1,18 @@
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def set_default_site(sender, **kwargs):
     from pod.authentication.models import GroupSite
     from pod.authentication.models import Owner
     from django.contrib.sites.models import Site
+    from django.contrib.auth.models import Group
+    for g in Group.objects.all():
+        try:
+            GroupSite.objects.get(group=g)
+        except ObjectDoesNotExist:
+            GroupSite.objects.create(group=g)
     for gs in GroupSite.objects.all():
         if len(gs.sites.all()) == 0:
             gs.sites.add(Site.objects.get_current())
