@@ -98,6 +98,12 @@ USE_THEME = getattr(
 BOOTSTRAP_CUSTOM = getattr(
     django_settings, 'BOOTSTRAP_CUSTOM', None)
 
+USE_CHUNKED_UPLOAD = getattr(
+    django_settings, 'USE_CHUNKED_UPLOAD', None)
+
+CHUNK_SIZE = getattr(
+    django_settings, 'CHUNK_SIZE', 100000)
+
 
 def context_settings(request):
     new_settings = {}
@@ -131,6 +137,8 @@ def context_settings(request):
         USE_SHIB
     new_settings['USE_THEME'] = USE_THEME
     new_settings['BOOTSTRAP_CUSTOM'] = BOOTSTRAP_CUSTOM
+    new_settings['USE_CHUNKED_UPLOAD'] = USE_CHUNKED_UPLOAD
+    new_settings['CHUNK_SIZE'] = CHUNK_SIZE
     return new_settings
 
 

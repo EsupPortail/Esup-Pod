@@ -21,6 +21,7 @@ from django.db.models import Sum, Min
 from dateutil.parser import parse
 
 from pod.video.models import Video
+from pod.video.models import Type
 from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
@@ -34,6 +35,7 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
+from .encode import start_encode
 from itertools import chain
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import ObjectDoesNotExist
@@ -41,6 +43,8 @@ import json
 import re
 import pandas
 from datetime import date
+from chunked_upload.models import ChunkedUpload
+from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
 
 from pod.playlist.models import Playlist
 from django.db import transaction
@@ -92,6 +96,37 @@ TITLE_SITE = TEMPLATE_VISIBLE_SETTINGS[
     'TITLE_SITE'] if (
         TEMPLATE_VISIBLE_SETTINGS.get('TITLE_SITE')
 ) else 'Pod'
+
+ENCODE_VIDEO = getattr(settings,
+                       'ENCODE_VIDEO',
+                       start_encode)
+
+VIDEO_MAX_UPLOAD_SIZE = getattr(
+    settings, 'VIDEO_MAX_UPLOAD_SIZE', 1)
+
+VIDEO_ALLOWED_EXTENSIONS = getattr(
+    settings, 'VIDEO_ALLOWED_EXTENSIONS', (
+        '3gp',
+        'avi',
+        'divx',
+        'flv',
+        'm2p',
+        'm4v',
+        'mkv',
+        'mov',
+        'mp4',
+        'mpeg',
+        'mpg',
+        'mts',
+        'wmv',
+        'mp3',
+        'ogg',
+        'wav',
+        'wma',
+        'webm',
+        'ts'
+    )
+)
 
 # ############################################################################
 # CHANNEL
@@ -1332,7 +1367,6 @@ def video_oembed(request):
         }
     else:
         return HttpResponseNotFound('<h1>Url not match</h1>')
-
     if format == "xml":
         xml = """
             <oembed>
@@ -1501,6 +1535,79 @@ def stats_view(request, slug=None, slug_t=None):
             data.append(v_data)
         data.append({"min_date": min_date})
         return JsonResponse(data, safe=False)
+
+
+@login_required(redirect_field_name='referrer')
+def video_add(request):
+    allow_extension = ".%s" % ', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS))
+    slug = request.GET.get('slug', "")
+    if slug != "":
+        try:
+            video = Video.objects.get(slug=slug,
+                                      sites=get_current_site(request))
+            if (RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+                    and request.user.is_staff is False):
+                return HttpResponseNotFound('<h1>Permission Denied</h1>')
+
+            if video and request.user != video.owner and (
+                not (request.user.is_superuser or
+                     request.user.has_perm('video.change_video'))) and (
+                     request.user not in video.additional_owners.all()):
+                return HttpResponseNotFound('<h1>Permission Denied</h1>')
+        except Video.DoesNotExist:
+            pass
+    return render(request, "videos/add_video.html", {
+        'slug': slug,
+        'max_size': VIDEO_MAX_UPLOAD_SIZE,
+        'allow_extension': allow_extension}) 
+
+
+class PodChunkedUploadView(ChunkedUploadView):
+
+    model = ChunkedUpload
+    field_name = 'the_file'
+
+    def check_permissions(self, request):
+        if not request.user.is_authenticated():
+            return False
+        elif (RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+              and request.user.is_staff is False):
+            return False
+        pass
+
+
+class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
+
+    model = ChunkedUpload
+    slug = ""
+
+    def check_permissions(self, request):
+        if not request.user.is_authenticated():
+            return False
+        elif (RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+              and request.user.is_staff is False):
+            return False
+        pass
+
+    def on_completion(self, uploaded_file, request):
+        edit_slug = request.POST.get("slug")
+        if edit_slug == "":
+            video = Video.objects.create(video=uploaded_file,
+                                         owner=request.user,
+                                         type=Type.objects.get(id=1),
+                                         title=uploaded_file.name)
+        else:
+            video = Video.objects.get(slug=edit_slug)
+            video.video = uploaded_file
+        video.launch_encode = True
+        video.save()
+        self.slug = video.slug
+        pass
+
+    def get_response_data(self, chunked_upload, request):
+        return {'redirlink': reverse('video_edit', args=(self.slug,)),
+                'message': ("You successfully uploaded '%s' (%s bytes)!" %
+                            (chunked_upload.filename, chunked_upload.offset))}
 
 
 """

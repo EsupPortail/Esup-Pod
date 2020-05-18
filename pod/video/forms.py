@@ -432,6 +432,7 @@ class VideoForm(forms.ModelForm):
         self.max_duration_date_delete = MAX_DURATION_DATE_DELETE
 
         super(VideoForm, self).__init__(*args, **kwargs)
+
         if FILEPICKER and self.fields.get('thumbnail'):
             self.fields['thumbnail'].widget = CustomFileWidget(type="image")
 
