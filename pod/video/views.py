@@ -1559,7 +1559,7 @@ def video_add(request):
     return render(request, "videos/add_video.html", {
         'slug': slug,
         'max_size': VIDEO_MAX_UPLOAD_SIZE,
-        'allow_extension': allow_extension}) 
+        'allow_extension': allow_extension})
 
 
 class PodChunkedUploadView(ChunkedUploadView):
