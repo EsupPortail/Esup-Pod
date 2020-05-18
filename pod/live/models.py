@@ -89,7 +89,12 @@ class Broadcaster(models.Model):
         help_text=_(
             'Live is accessible only to authenticated users.'),
         default=False)
-
+    public = models.BooleanField(
+        verbose_name=_(u'Show in live tab'),
+        help_text=_(
+            'Live is accessible from the Live tab'),
+        default=True)
+    
     def get_absolute_url(self):
         return reverse('live:video_live', args=[str(self.slug)])
 
