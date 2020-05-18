@@ -8,6 +8,7 @@ from django.contrib.sites.models import Site
 from select2 import fields as select2_fields
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.urls import reverse
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -88,6 +89,9 @@ class Broadcaster(models.Model):
         help_text=_(
             'Live is accessible only to authenticated users.'),
         default=False)
+
+    def get_absolute_url(self):
+        return reverse('live:video_live', args=[str(self.slug)])
 
     def __str__(self):
         return "%s - %s" % (self.name, self.url)

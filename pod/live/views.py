@@ -15,9 +15,10 @@ def lives(request):  # affichage des directs
     })
 
 
-def video_live(request, id):  # affichage des directs
+def video_live(request, slug):  # affichage des directs
     site = get_current_site(request)
-    broadcaster = get_object_or_404(Broadcaster, id=id, building__sites=site)
+    broadcaster = get_object_or_404(Broadcaster, slug=slug,
+                                    building__sites=site)
     if broadcaster.is_restricted and not request.user.is_authenticated():
         iframe_param = 'is_iframe=true&' if (
             request.GET.get('is_iframe')) else ''
