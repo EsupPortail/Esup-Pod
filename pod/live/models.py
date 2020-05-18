@@ -76,6 +76,11 @@ class Broadcaster(models.Model):
         blank=True,
         null=True,
         verbose_name=_('Video on hold'))
+    iframe_url = models.URLField(_('Embedded Site URL'), help_text=_(
+        'Url of the embedded site to display'), null=True)
+    iframe_height = models.IntegerField(
+        _('Embedded Site Height'), null=True, blank=True, help_text=_(
+         'Height of the embedded site (in pixels)'))
     status = models.BooleanField(default=0, help_text=_(
         'Check if the broadcaster is currently sending stream.'))
     is_restricted = models.BooleanField(

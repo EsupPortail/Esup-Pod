@@ -45,6 +45,16 @@
 
 <p>{{ broadcaster.description|safe }}</p>
 
+{% if broadcaster.iframe_url != "" and broadcaster.iframe_url != None  %}
+<iframe id="inlineFrameExample" style="border:none;"
+    title="Inline Frame Example"
+	width="955"
+	height="{{broadcaster.iframe_height}}"
+    src="{{broadcaster.iframe_url}}">
+</iframe>
+{% endif %}
+
+
 {% endblock page_content %}
 
 {% block page_aside %}
