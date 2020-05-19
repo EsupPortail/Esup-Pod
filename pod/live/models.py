@@ -78,7 +78,7 @@ class Broadcaster(models.Model):
         null=True,
         verbose_name=_('Video on hold'))
     iframe_url = models.URLField(_('Embedded Site URL'), help_text=_(
-        'Url of the embedded site to display'), null=True)
+        'Url of the embedded site to display'), null=True, blank=True)
     iframe_height = models.IntegerField(
         _('Embedded Site Height'), null=True, blank=True, help_text=_(
          'Height of the embedded site (in pixels)'))
@@ -94,7 +94,7 @@ class Broadcaster(models.Model):
         help_text=_(
             'Live is accessible from the Live tab'),
         default=True)
-    
+   
     def get_absolute_url(self):
         return reverse('live:video_live', args=[str(self.slug)])
 
