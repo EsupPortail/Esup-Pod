@@ -1,9 +1,12 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from .models import Building, Broadcaster
+from .forms import LivePasswordForm
 from django.conf import settings
 from django.shortcuts import redirect
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
 
 
 def lives(request):  # affichage des directs
@@ -27,6 +30,24 @@ def video_live(request, slug):  # affichage des directs
                 settings.LOGIN_URL,
                 iframe_param,
                 request.get_full_path())
+        )
+    is_password_protected = (
+        broadcaster.password is not None and broadcaster.password != '')
+    if is_password_protected and not (request.POST.get('password')
+                                      and request.POST.get(
+                                          'password') == broadcaster.password):
+        form = LivePasswordForm(
+            request.POST) if request.POST else LivePasswordForm()
+        if (request.POST.get('password')
+                and request.POST.get('password') != broadcaster.password):
+            messages.add_message(
+                request, messages.ERROR,
+                _('The password is incorrect.'))
+        return render(
+            request, 'live/live.html', {
+                'broadcaster': broadcaster,
+                'form': form,
+            }
         )
     return render(request, "live/live.html", {
         'broadcaster': broadcaster

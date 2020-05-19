@@ -94,7 +94,12 @@ class Broadcaster(models.Model):
         help_text=_(
             'Live is accessible from the Live tab'),
         default=True)
-   
+    password = models.CharField(
+        _('password'),
+        help_text=_(
+            'Viewing this live will not be possible without this password.'),
+        max_length=50, blank=True, null=True)
+
     def get_absolute_url(self):
         return reverse('live:video_live', args=[str(self.slug)])
 
