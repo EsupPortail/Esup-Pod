@@ -1681,20 +1681,20 @@ msgid ""
 "automatically within a few seconds to display the video on hold."
 msgstr ""
 "Merci d’avoir regardé ce streaming en direct avec nous. La page se "
-"rechargera automatiquement en quelques secondes pour afficher la vidéo en "
-"attente."
+"rechargera automatiquement dans quelques secondes pour afficher la vidéo "
+"d’attente."
 
 #: pod/live/templates/live/live.html:131
 msgid "Live not found, displaying the video on hold, retry every 10 seconds"
 msgstr ""
-"Live introuvable, affichage de la vidéo en attente, réessayez toutes les 10 "
-"secondes"
+"Le direct n’a pas encore commencé, affichage de la vidéo d’attente, "
+"nouvelle tentative de lecture dans 10 secondes"
 
 #: pod/live/templates/live/live.html:142
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
 "Le direct n’a pas encore commencé, nouvelle tentative de lecture dans 10 "
-"secondes"
+"secondes."
 
 #: pod/live/templates/live/lives.html:39
 msgid "Sorry, no buildings found"
