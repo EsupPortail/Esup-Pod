@@ -245,7 +245,7 @@ def video_enrichment(request, slug, slug_private=None):
     is_draft = video.is_draft
     is_restricted = video.is_restricted
     is_restricted_to_group = video.restrict_access_to_groups.all().exists()
-    is_password_protected = (video. is not None)
+    is_password_protected = (video.password is not None)
 
     is_access_protected = (
         is_draft

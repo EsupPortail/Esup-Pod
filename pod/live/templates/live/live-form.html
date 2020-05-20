@@ -33,6 +33,3 @@
     </fieldset>
     </div>
 </form>
-<p>
-  {% trans 'If you do not have the password for this content, please' %} <a href="{% url 'contact_us' %}?owner={{video.owner.id}}&video={{video.id}}&subject=request_password" title="{% trans 'contact its owner' %}" {% if request.GET.is_iframe %}target="_blank"{%endif%}>{% trans 'contact its owner' %}</a>.
-</p>
