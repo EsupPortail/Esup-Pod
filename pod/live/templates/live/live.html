@@ -88,6 +88,8 @@
 	// Number of loop until we are sure the live is stopped
 	// See video state (cf. https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/readyState)
 	var nbLoop = 0;
+	// Live seems stopped
+	var stopped = false;
 	
     //videojs.options.flash.swf = "video-js.swf"
     var options = {
@@ -108,13 +110,29 @@
 		// Reset counter if video state is ok
 		if (started && player.readyState() > 2) { nbLoop = 0; }
 		if (started && player.readyState() <= 2) {
-			nbLoop = nbLoop + 1;
-			// We're waiting a bit to make sure it's not a network / data flow issue...
-			if (debug) { console.info("The streaming live stopped ? Video state : " + player.readyState() + ". It's been " + nbLoop + " times that there is no more video stream. After 4, we stop."); }
-			if (nbLoop > 3) {
-				// Display of a message of end of live and reload of the page in 9 seconds
-				let modal = player.createModal('{% trans "Thank you for watching this streaming live with us. The page will reload automatically within a few seconds to display the video on hold." %}');
-				setTimeout(function(){ location.reload(); }, 9000);
+			// Check if .m3u8 exists, to be sure that live is stopped
+			$.ajax({ url: '{{broadcaster.url}}',
+				type : 'GET',
+				crossDomain: true,
+				dataType : 'html',
+				success: function(html, status){
+					stopped = false;
+				},
+				error : function(result, status, error){
+					stopped = true;
+				},
+				complete : function(result, status){
+				}
+			});
+			if (stopped) {
+				nbLoop = nbLoop + 1;
+				// We're waiting a bit to make sure it's not a network / data flow issue...
+				if (debug) { console.info("The streaming live stopped ? Video state : " + player.readyState() + ". It's been " + nbLoop + " times that there is no more video stream. After 4 times, we stop."); }
+				if (nbLoop > 3) {
+					// Display of a message of end of live and reload of the page in 9 seconds
+					let modal = player.createModal('{% trans "Thank you for watching this streaming live with us. The page will reload automatically within a few seconds to display the video on hold." %}');
+					setTimeout(function(){ location.reload(); }, 9000);
+				}
 			}
 		} 
 		return options;
