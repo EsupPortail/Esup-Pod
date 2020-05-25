@@ -20,7 +20,17 @@
 {% block page_title %}{% trans "Lives" %}{% endblock %}
 
 {% block page_content %}
+
+
+{% if form %}
+{% include 'live/live-form.html' %}
+{% else %}
+
+
 <h3><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}}</h3>
+
+
+
 
 {% if broadcaster.video_on_hold.is_video %}
 	<div id="divvideoonhold" style="display: block;">
@@ -45,6 +55,18 @@
 
 <p>{{ broadcaster.description|safe }}</p>
 
+{% if broadcaster.iframe_url != "" and broadcaster.iframe_url != None  %}
+<iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
+    title="Inline Frame Example"
+	height="{{broadcaster.iframe_height}}"
+    src="{{broadcaster.iframe_url}}">
+</iframe>
+{% endif %}
+
+
+{%endif%}
+
+
 {% endblock page_content %}
 
 {% block page_aside %}
@@ -61,7 +83,7 @@
     {% for otherbroadcaster in broadcaster.building.broadcaster_set.all%}
     {% if otherbroadcaster != broadcaster %}
       <p class="card-text">
-        {%if otherbroadcaster.status %}<a href="{% url "live:video_live" id=otherbroadcaster.id %}" class="live_on"><i data-feather="airplay"></i>&nbsp;{{otherbroadcaster.name}}</a>
+        {%if otherbroadcaster.status %}<a href="{% url "live:video_live" slug=otherbroadcaster.slug %}" class="live_on"><i data-feather="airplay"></i>&nbsp;{{otherbroadcaster.name}}</a>
         {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{otherbroadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}</p>
     {% endif %}
     {% empty %}

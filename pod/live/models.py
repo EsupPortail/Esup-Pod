@@ -8,6 +8,7 @@ from django.contrib.sites.models import Site
 from select2 import fields as select2_fields
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.urls import reverse
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -76,6 +77,11 @@ class Broadcaster(models.Model):
         blank=True,
         null=True,
         verbose_name=_('Video on hold'))
+    iframe_url = models.URLField(_('Embedded Site URL'), help_text=_(
+        'Url of the embedded site to display'), null=True, blank=True)
+    iframe_height = models.IntegerField(
+        _('Embedded Site Height'), null=True, blank=True, help_text=_(
+         'Height of the embedded site (in pixels)'))
     status = models.BooleanField(default=0, help_text=_(
         'Check if the broadcaster is currently sending stream.'))
     is_restricted = models.BooleanField(
@@ -83,6 +89,19 @@ class Broadcaster(models.Model):
         help_text=_(
             'Live is accessible only to authenticated users.'),
         default=False)
+    public = models.BooleanField(
+        verbose_name=_(u'Show in live tab'),
+        help_text=_(
+            'Live is accessible from the Live tab'),
+        default=True)
+    password = models.CharField(
+        _('password'),
+        help_text=_(
+            'Viewing this live will not be possible without this password.'),
+        max_length=50, blank=True, null=True)
+
+    def get_absolute_url(self):
+        return reverse('live:video_live', args=[str(self.slug)])
 
     def __str__(self):
         return "%s - %s" % (self.name, self.url)

@@ -507,7 +507,6 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
 
 def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
                  template_video='videos/video.html', more_data=None):
-
     video = get_object_or_404(Video, id=id,
                               sites=get_current_site(request))
     """
@@ -1559,7 +1558,7 @@ def video_add(request):
     return render(request, "videos/add_video.html", {
         'slug': slug,
         'max_size': VIDEO_MAX_UPLOAD_SIZE,
-        'allow_extension': allow_extension}) 
+        'allow_extension': allow_extension})
 
 
 class PodChunkedUploadView(ChunkedUploadView):
