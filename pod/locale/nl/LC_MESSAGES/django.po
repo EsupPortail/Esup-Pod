@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-19 12:03+0000\n"
+"POT-Creation-Date: 2020-05-26 07:53+0000\n"
 "PO-Revision-Date: 2018-07-03 13:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -200,6 +200,10 @@ msgstr ""
 #: pod/authentication/templates/userpicture/userpicture.html:57
 #: pod/podfile/templates/podfile/home_content.html:58
 msgid "Save changes"
+msgstr ""
+
+#: pod/chapter/forms.py:61
+msgid "File to import"
 msgstr ""
 
 #: pod/chapter/models.py:14 pod/completion/models.py:53
@@ -1538,7 +1542,7 @@ msgstr ""
 msgid "name"
 msgstr ""
 
-#: pod/live/models.py:28 pod/live/templates/live/live.html:81
+#: pod/live/models.py:28 pod/live/templates/live/live.html:80
 #: pod/video/models.py:234 pod/video/models.py:316
 #: pod/video/templates/channel/channel.html:74
 #: pod/video/templates/channel/channel.html:85
@@ -1655,46 +1659,35 @@ msgstr ""
 msgid "Send"
 msgstr ""
 
-#: pod/live/templates/live/live-form.html:37
-#: pod/video/templates/videos/video-form.html:37
-msgid "If you do not have the password for this content, please"
-msgstr ""
-
-#: pod/live/templates/live/live-form.html:37
-#: pod/video/templates/videos/video-form.html:37
-#: pod/video/templates/videos/video_edit.html:49
-msgid "contact its owner"
-msgstr ""
-
 #: pod/live/templates/live/live.html:16 pod/live/templates/live/live.html:20
 #: pod/live/templates/live/lives.html:12 pod/live/templates/live/lives.html:15
 #: pod/live/templates/live/lives.html:18 pod/main/templates/navbar.html:32
 msgid "Lives"
 msgstr ""
 
-#: pod/live/templates/live/live.html:88 pod/live/templates/live/lives.html:30
+#: pod/live/templates/live/live.html:87 pod/live/templates/live/lives.html:30
 msgid "no broadcast in progress"
 msgstr ""
 
-#: pod/live/templates/live/live.html:91 pod/live/templates/live/lives.html:33
+#: pod/live/templates/live/live.html:90 pod/live/templates/live/lives.html:33
 msgid "Sorry, no lives found"
 msgstr ""
 
-#: pod/live/templates/live/live.html:94 pod/live/templates/live/lives.html:36
+#: pod/live/templates/live/live.html:93 pod/live/templates/live/lives.html:36
 msgid "access map"
 msgstr ""
 
-#: pod/live/templates/live/live.html:139
+#: pod/live/templates/live/live.html:155
 msgid ""
 "Thank you for watching this streaming live with us. The page will reload "
 "automatically within a few seconds to display the video on hold."
 msgstr ""
 
-#: pod/live/templates/live/live.html:154
+#: pod/live/templates/live/live.html:171
 msgid "Live not found, displaying the video on hold, retry every 10 seconds"
 msgstr ""
 
-#: pod/live/templates/live/live.html:165
+#: pod/live/templates/live/live.html:182
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
 
@@ -4171,6 +4164,15 @@ msgstr ""
 
 #: pod/video/templates/videos/video-form.html:3
 msgid "This video is protected by password, please fill in and click send."
+msgstr ""
+
+#: pod/video/templates/videos/video-form.html:37
+msgid "If you do not have the password for this content, please"
+msgstr ""
+
+#: pod/video/templates/videos/video-form.html:37
+#: pod/video/templates/videos/video_edit.html:49
+msgid "contact its owner"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html:10

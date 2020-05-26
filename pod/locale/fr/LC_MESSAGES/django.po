@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-19 12:03+0000\n"
+"POT-Creation-Date: 2020-05-26 07:53+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -204,6 +204,10 @@ msgstr "Fermer"
 #: pod/podfile/templates/podfile/home_content.html:58
 msgid "Save changes"
 msgstr "Sauvegarder"
+
+#: pod/chapter/forms.py:61
+msgid "File to import"
+msgstr "Fichier à importer"
 
 #: pod/chapter/models.py:14 pod/completion/models.py:53
 #: pod/enrichment/models.py:114 pod/video/models.py:582
@@ -1598,7 +1602,7 @@ msgstr "Mot de passe"
 msgid "name"
 msgstr "nom"
 
-#: pod/live/models.py:28 pod/live/templates/live/live.html:81
+#: pod/live/models.py:28 pod/live/templates/live/live.html:80
 #: pod/video/models.py:234 pod/video/models.py:316
 #: pod/video/templates/channel/channel.html:74
 #: pod/video/templates/channel/channel.html:85
@@ -1676,7 +1680,6 @@ msgid "Show in live tab"
 msgstr "Montrer dans l'onglet live"
 
 #: pod/live/models.py:95
-#, fuzzy
 #| msgid "Live is accessible only to authenticated users."
 msgid "Live is accessible from the Live tab"
 msgstr ""
@@ -1688,7 +1691,6 @@ msgid "password"
 msgstr "mot de passe"
 
 #: pod/live/models.py:100
-#, fuzzy
 #| msgid "Viewing this video will not be possible without this password."
 msgid "Viewing this live will not be possible without this password."
 msgstr "Voir ce direct n'est pas possible sans mot de passe."
@@ -1725,36 +1727,25 @@ msgstr "Mot de passe requis"
 msgid "Send"
 msgstr "Envoyer"
 
-#: pod/live/templates/live/live-form.html:37
-#: pod/video/templates/videos/video-form.html:37
-msgid "If you do not have the password for this content, please"
-msgstr "Si vous n'avez pas le mot de passe pour ce contenu, veuillez"
-
-#: pod/live/templates/live/live-form.html:37
-#: pod/video/templates/videos/video-form.html:37
-#: pod/video/templates/videos/video_edit.html:49
-msgid "contact its owner"
-msgstr "contacter son propriétaire"
-
 #: pod/live/templates/live/live.html:16 pod/live/templates/live/live.html:20
 #: pod/live/templates/live/lives.html:12 pod/live/templates/live/lives.html:15
 #: pod/live/templates/live/lives.html:18 pod/main/templates/navbar.html:32
 msgid "Lives"
 msgstr "Directs"
 
-#: pod/live/templates/live/live.html:88 pod/live/templates/live/lives.html:30
+#: pod/live/templates/live/live.html:87 pod/live/templates/live/lives.html:30
 msgid "no broadcast in progress"
 msgstr "aucune diffusion actuellement"
 
-#: pod/live/templates/live/live.html:91 pod/live/templates/live/lives.html:33
+#: pod/live/templates/live/live.html:90 pod/live/templates/live/lives.html:33
 msgid "Sorry, no lives found"
 msgstr "Désolé, aucun direct trouvé"
 
-#: pod/live/templates/live/live.html:94 pod/live/templates/live/lives.html:36
+#: pod/live/templates/live/live.html:93 pod/live/templates/live/lives.html:36
 msgid "access map"
 msgstr "plan d'accès"
 
-#: pod/live/templates/live/live.html:139
+#: pod/live/templates/live/live.html:155
 msgid ""
 "Thank you for watching this streaming live with us. The page will reload "
 "automatically within a few seconds to display the video on hold."
@@ -1763,13 +1754,13 @@ msgstr ""
 "rechargera automatiquement dans quelques secondes pour afficher la vidéo "
 "d’attente."
 
-#: pod/live/templates/live/live.html:154
+#: pod/live/templates/live/live.html:171
 msgid "Live not found, displaying the video on hold, retry every 10 seconds"
 msgstr ""
-"Le direct n’a pas encore commencé, affichage de la vidéo d’attente, "
-"nouvelle tentative de lecture dans 10 secondes"
+"Le direct n’a pas encore commencé, affichage de la vidéo d’attente, nouvelle "
+"tentative de lecture dans 10 secondes"
 
-#: pod/live/templates/live/live.html:165
+#: pod/live/templates/live/live.html:182
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
 "Le direct n’a pas encore commencé, nouvelle tentative de lecture dans 10 "
@@ -4384,6 +4375,15 @@ msgstr ""
 "Cette vidéo est protégée par un mot de passe, veuillez remplir le formulaire "
 "et cliquez sur envoyer."
 
+#: pod/video/templates/videos/video-form.html:37
+msgid "If you do not have the password for this content, please"
+msgstr "Si vous n'avez pas le mot de passe pour ce contenu, veuillez"
+
+#: pod/video/templates/videos/video-form.html:37
+#: pod/video/templates/videos/video_edit.html:49
+msgid "contact its owner"
+msgstr "contacter son propriétaire"
+
 #: pod/video/templates/videos/video-info.html:10
 msgid ""
 "This is a 360 degree video. To look around click and drag your mouse on the "
@@ -4739,7 +4739,6 @@ msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
 
 #: pod/video/views.py:538
-#, fuzzy
 #| msgid "You do not have access rights to this video: %s "
 msgid "You don't have access to this playlist."
 msgstr "Vous n'avez pas les droits d'accès à cette vidéo: %s "
