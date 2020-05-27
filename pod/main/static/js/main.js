@@ -409,7 +409,7 @@ $('#id_theme option:selected').each(function () {
     tab_initial.push($(this).val());
 });
 
-//$('#id_theme option').remove();
+$('#id_theme option').remove();
 
 $('#id_channel').change(function() {
     $('#id_theme option').remove();
