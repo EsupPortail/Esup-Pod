@@ -145,21 +145,19 @@ def context_settings(request):
 def context_navbar(request):
     channels = Channel.objects.filter(
         visible=True, video__is_draft=False,
-        video__sites=get_current_site(request),
         sites=get_current_site(request)
     ).distinct().annotate(
         video_count=Count("video", distinct=True)
     ).prefetch_related(
         Prefetch("themes", queryset=Theme.objects.filter(
             parentId=None,
-            video__sites=get_current_site(request)
+            channel__sites=get_current_site(request)
         ).distinct().annotate(
             video_count=Count("video", distinct=True)
         )))
 
     all_channels = Channel.objects.all(
-    ).filter(sites=get_current_site(request),
-             video__sites=get_current_site(request)).distinct().annotate(
+    ).filter(sites=get_current_site(request)).distinct().annotate(
         video_count=Count("video", distinct=True)
     ).prefetch_related(
         Prefetch("themes", queryset=Theme.objects.filter(
@@ -168,12 +166,11 @@ def context_navbar(request):
         )))
 
     types = Type.objects.filter(
-        video__sites=get_current_site(request),
-        video__is_draft=False, sites=get_current_site(request)
+        sites=get_current_site(request),
+        video__is_draft=False,
     ).distinct().annotate(video_count=Count("video", distinct=True))
 
     disciplines = Discipline.objects.filter(
-        video__sites=get_current_site(request),
         video__is_draft=False, sites=get_current_site(request)
     ).distinct().annotate(video_count=Count("video", distinct=True))
 
