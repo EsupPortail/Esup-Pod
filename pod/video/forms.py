@@ -532,10 +532,11 @@ class VideoForm(forms.ModelForm):
             self.fields["channel"].queryset = \
                 self.fields["channel"].queryset.filter(
                     sites=Site.objects.get_current())
+
         if "theme" in self.fields:
             self.fields["theme"].queryset = \
                 self.fields["theme"].queryset.filter(
-                    video__sites=Site.objects.get_current())
+                    channel__sites=Site.objects.get_current())
 
     class Meta(object):
         model = Video
