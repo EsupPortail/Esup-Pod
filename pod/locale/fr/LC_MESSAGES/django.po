@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-26 07:53+0000\n"
+"POT-Creation-Date: 2020-05-28 12:32+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -29,7 +29,7 @@ msgstr "Etablissement"
 
 #: pod/authentication/forms.py:60 pod/authentication/forms.py:61
 #: pod/main/templates/navbar.html:22 pod/main/templates/navbar_collapse.html:76
-#: pod/video/forms.py:227 pod/video/forms.py:557 pod/video/forms.py:561
+#: pod/video/forms.py:227 pod/video/forms.py:558 pod/video/forms.py:562
 #: pod/video/models.py:247 pod/video/templates/videos/filter_aside.html:13
 msgid "Users"
 msgstr "Utilisateurs"
@@ -1594,7 +1594,7 @@ msgstr "Vous regardez cette vidéo en tant qu'utilisateur anonyme"
 msgid "You cannot add interactivity to this video."
 msgstr "Vous ne pouvez éditer cette vidéo interactive."
 
-#: pod/live/forms.py:51 pod/video/forms.py:181 pod/video/forms.py:685
+#: pod/live/forms.py:51 pod/video/forms.py:181 pod/video/forms.py:686
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -1680,7 +1680,6 @@ msgid "Show in live tab"
 msgstr "Montrer dans l'onglet live"
 
 #: pod/live/models.py:95
-#| msgid "Live is accessible only to authenticated users."
 msgid "Live is accessible from the Live tab"
 msgstr ""
 "Si cette case est cochée, la page du direct sera accessible publiquement "
@@ -1691,7 +1690,6 @@ msgid "password"
 msgstr "mot de passe"
 
 #: pod/live/models.py:100
-#| msgid "Viewing this video will not be possible without this password."
 msgid "Viewing this live will not be possible without this password."
 msgstr "Voir ce direct n'est pas possible sans mot de passe."
 
@@ -3065,7 +3063,7 @@ msgstr "Supprimer cet enregistrement"
 msgid "If checked, record will be deleted instead of saving it"
 msgstr "Si coché, l'enregistrement sera supprimé et non ajouté"
 
-#: pod/recorder/forms.py:74 pod/video/forms.py:695
+#: pod/recorder/forms.py:74 pod/video/forms.py:696
 msgid "I agree"
 msgstr "J'accepte"
 
@@ -3369,8 +3367,8 @@ msgstr "(Ré)encoder la sélection"
 msgid "Transcript selected"
 msgstr "Transcription selectionnée"
 
-#: pod/video/admin.py:260 pod/video/forms.py:227 pod/video/forms.py:564
-#: pod/video/forms.py:566 pod/video/models.py:244
+#: pod/video/admin.py:260 pod/video/forms.py:227 pod/video/forms.py:565
+#: pod/video/forms.py:567 pod/video/models.py:244
 msgid "Owners"
 msgstr "Propriétaires"
 
@@ -3379,10 +3377,11 @@ msgid "File field"
 msgstr "Fichier"
 
 #: pod/video/forms.py:81 pod/video/models.py:454
+#: pod/video/templates/videos/add_video.html:62
 msgid "You can send an audio or video file."
 msgstr "Vous pouvez envoyer un fichier audio ou vidéo."
 
-#: pod/video/forms.py:82
+#: pod/video/forms.py:82 pod/video/views.py:1558
 #, python-format
 msgid "The following formats are supported: %s"
 msgstr "Les formats suivants sont supportés: %s"
@@ -3659,19 +3658,19 @@ msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne
 msgid "The date must be before or equal to "
 msgstr ""
 
-#: pod/video/forms.py:443
+#: pod/video/forms.py:443 pod/video/templates/videos/add_video.html:59
 msgid "File"
 msgstr "Fichier"
 
-#: pod/video/forms.py:696
+#: pod/video/forms.py:697
 msgid "Delete video cannot be undo"
 msgstr "La suppression est définitive"
 
-#: pod/video/forms.py:763
+#: pod/video/forms.py:764
 msgid "A note can't be empty"
 msgstr "Une note ne peut pas être vide"
 
-#: pod/video/forms.py:785
+#: pod/video/forms.py:786
 msgid "A comment can't be empty"
 msgstr "Un commentaire ne peut pas être vide"
 
@@ -4270,16 +4269,67 @@ msgid "Editing the channel's themes"
 msgstr "Édition des thèmes de la chaîne"
 
 #: pod/video/templates/videos/add_video.html:14
-#: pod/video/templates/videos/add_video.html:18
-#: pod/video/templates/videos/add_video.html:30
+#, fuzzy
+#| msgid "Choose an audio or video file to upload"
 msgid "Choose a file to upload"
-msgstr "Choisir un fichier à mettre en ligne"
+msgstr "Choisir un fichier audio ou vidéo à mettre en ligne"
 
 #: pod/video/templates/videos/add_video.html:18
 #: pod/video/templates/videos/video_edit.html:22
 #: pod/video/templates/videos/video_edit.html:36
 msgid "Editing the video"
 msgstr "Éditer la vidéo"
+
+#: pod/video/templates/videos/add_video.html:18
+#: pod/video/templates/videos/add_video.html:30
+msgid "Choose an audio or video file to upload"
+msgstr "Choisir un fichier audio ou vidéo à mettre en ligne"
+
+#: pod/video/templates/videos/add_video.html:36
+msgid "Your upload can be resumed if you have connection problems"
+msgstr "Votre mise en ligne peut être reprise si vous avez des soucis de connexion"
+
+#: pod/video/templates/videos/add_video.html:45
+#: pod/video/templates/videos/video_edit.html:172
+msgid "Uploading"
+msgstr "Mise en ligne"
+
+#: pod/video/templates/videos/add_video.html:47
+#: pod/video/templates/videos/video_edit.html:174
+#, python-format
+msgid "The file size must be lower than %(video_max_upload_size)s Go."
+msgstr ""
+"La taille du fichier doit être inférieure à %(video_max_upload_size)s Go."
+
+#: pod/video/templates/videos/add_video.html:48
+#: pod/video/templates/videos/video_edit.html:175
+msgid ""
+"The sending time depends on the size of your file and your upload speed. "
+"This can be quite long."
+msgstr ""
+"Le temps d'envoi dépend de la taille de votre fichier et de votre vitesse de "
+"téléchargement. Ce temps d'envoi peut être relativement long."
+
+#: pod/video/templates/videos/add_video.html:49
+#: pod/video/templates/videos/video_edit.html:176
+msgid ""
+"While sending your file, do not close your browser until you have received a "
+"message of success or failure."
+msgstr ""
+"Pendant l'envoi de votre fichier, ne fermez pas votre navigateur avant "
+"d'avoir reçu un message de succès ou d'échec."
+
+#: pod/video/templates/videos/add_video.html:50
+#: pod/video/templates/videos/video_edit.html:177
+msgid "An email will be sent to you when all encoding tasks are completed."
+msgstr ""
+"Un courriel vous sera envoyé quand toutes les tâches d'encodage seront "
+"complétées."
+
+#: pod/video/templates/videos/add_video.html:55
+#: pod/video/templates/videos/video_edit.html:187
+msgid "Help for form fields"
+msgstr "Aide pour les champs de formulaire"
 
 #: pod/video/templates/videos/card.html:9
 msgid "This content is password protected."
@@ -4576,42 +4626,6 @@ msgstr "Intégrer/Partager (Mode brouillon)"
 msgid "Use this link to share the video in draft mode"
 msgstr "Utiliser ce lien pour partager la vidéo en mode brouillon"
 
-#: pod/video/templates/videos/video_edit.html:172
-msgid "Uploading"
-msgstr "Mise en ligne"
-
-#: pod/video/templates/videos/video_edit.html:174
-#, python-format
-msgid "The file size must be lower than %(video_max_upload_size)s Go."
-msgstr ""
-"La taille du fichier doit être inférieure à %(video_max_upload_size)s Go."
-
-#: pod/video/templates/videos/video_edit.html:175
-msgid ""
-"The sending time depends on the size of your file and your upload speed. "
-"This can be quite long."
-msgstr ""
-"Le temps d'envoi dépend de la taille de votre fichier et de votre vitesse de "
-"téléchargement. Ce temps d'envoi peut être relativement long."
-
-#: pod/video/templates/videos/video_edit.html:176
-msgid ""
-"While sending your file, do not close your browser until you have received a "
-"message of success or failure."
-msgstr ""
-"Pendant l'envoi de votre fichier, ne fermez pas votre navigateur avant "
-"d'avoir reçu un message de succès ou d'échec."
-
-#: pod/video/templates/videos/video_edit.html:177
-msgid "An email will be sent to you when all encoding tasks are completed."
-msgstr ""
-"Un courriel vous sera envoyé quand toutes les tâches d'encodage seront "
-"complétées."
-
-#: pod/video/templates/videos/video_edit.html:187
-msgid "Help for form fields"
-msgstr "Aide pour les champs de formulaire"
-
 #: pod/video/templates/videos/video_list.html:10
 msgid "Sorry, no video found"
 msgstr "Désolé, aucune vidéo trouvée"
@@ -4739,7 +4753,6 @@ msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
 
 #: pod/video/views.py:538
-#| msgid "You do not have access rights to this video: %s "
 msgid "You don't have access to this playlist."
 msgstr "Vous n'avez pas les droits d'accès à cette vidéo: %s "
 

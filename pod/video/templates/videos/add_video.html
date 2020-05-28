@@ -15,7 +15,7 @@
 
 {% endblock %}
 
-{% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Choose a file to upload" %}{%endif%}{% endblock %}
+{% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Choose an audio or video file to upload" %}{%endif%}{% endblock %}
 
 {% block collapse_page_aside %}
 {% if access_not_allowed == True %}
@@ -27,11 +27,13 @@
 
 
 {% block page_content %}
-<h3>{% trans "Choose a file to upload" %}</h3>
+<h3>{% trans "Choose an audio or video file to upload" %}</h3>
 
 <div id="uploadblock">
     <input id="chunked_upload" accept="{{allow_extension}}" type="file" name="the_file">
     <progress id="progBar" value="0" max="100"></progress>
+
+    <p>{% trans "Your upload can be resumed if you have connection problems" %}</p>
   
 </div>
 
@@ -39,7 +41,30 @@
 {% endblock page_content %}
 
 {% block page_aside %}
+<div class="card card-body p-2 mt-1" id="card-sharedraftversion">
+  <h5 class="card-title pl-2">{% trans "Uploading" %}</h5>
+  <div class="card-text" >
+      <p>{% blocktrans with max_size as video_max_upload_size %}The file size must be lower than {{video_max_upload_size}} Go.{% endblocktrans %}</p>
+      <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
+      <p>{% trans "While sending your file, do not close your browser until you have received a message of success or failure." %}</p>
+      <p>{% trans "An email will be sent to you when all encoding tasks are completed." %}<p>
+  </div>
+</div>
 
+<div class="card card-body p-2 mt-1" id="card-helpfields">
+  <h5 class="card-title pl-2">{% trans "Help for form fields"%}</h5>
+  <div class="card-text" id="formfields">
+          <div class="card card-body p-1">
+              <button class="btn btn-sm-light" id="heading-1" data-toggle="collapse" data-target="#collapse-1" aria-expanded="true" aria-controls="collapse-1" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
+                   {% trans "File" %}
+              </button>
+              <div id="collapse-1" class="collapse hide card-text small" aria-labelledby="heading-1" data-parent="#formfields">
+                  <p> {% trans "You can send an audio or video file." %}</p>
+                  <p> {{allowed_text}} </p>
+              </div>
+          </div>
+  </div>
+</div>
 {% endblock page_aside %}
 
 
@@ -100,6 +125,7 @@ var max_size = {{ max_size }}
       add: function(e, data) { // Called before starting upload
           // If this is the second file you're uploading we need to remove the
           // old upload_id and just keep the csrftoken (which is always first).
+          $("#chunked_upload").hide()
           form_data.splice(1);
           calculate_md5(data.files[0], max_chunk_size);  // Again, chunks of 100 kB
           data.submit();

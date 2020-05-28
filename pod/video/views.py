@@ -1555,10 +1555,13 @@ def video_add(request):
                 return HttpResponseNotFound('<h1>Permission Denied</h1>')
         except Video.DoesNotExist:
             pass
+    allowed_text = _("The following formats are supported: %s") % ', '.join(
+        map(str, VIDEO_ALLOWED_EXTENSIONS))
     return render(request, "videos/add_video.html", {
         'slug': slug,
         'max_size': VIDEO_MAX_UPLOAD_SIZE,
-        'allow_extension': allow_extension})
+        'allow_extension': allow_extension,
+        'allowed_text': allowed_text})
 
 
 class PodChunkedUploadView(ChunkedUploadView):
