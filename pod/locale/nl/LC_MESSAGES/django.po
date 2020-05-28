@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-26 07:53+0000\n"
+"POT-Creation-Date: 2020-05-28 12:32+0000\n"
 "PO-Revision-Date: 2018-07-03 13:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgstr ""
 
 #: pod/authentication/forms.py:60 pod/authentication/forms.py:61
 #: pod/main/templates/navbar.html:22 pod/main/templates/navbar_collapse.html:76
-#: pod/video/forms.py:227 pod/video/forms.py:557 pod/video/forms.py:561
+#: pod/video/forms.py:227 pod/video/forms.py:558 pod/video/forms.py:562
 #: pod/video/models.py:247 pod/video/templates/videos/filter_aside.html:13
 msgid "Users"
 msgstr ""
@@ -1534,7 +1534,7 @@ msgstr ""
 msgid "You cannot add interactivity to this video."
 msgstr ""
 
-#: pod/live/forms.py:51 pod/video/forms.py:181 pod/video/forms.py:685
+#: pod/live/forms.py:51 pod/video/forms.py:181 pod/video/forms.py:686
 msgid "Password"
 msgstr ""
 
@@ -2978,7 +2978,7 @@ msgstr ""
 msgid "If checked, record will be deleted instead of saving it"
 msgstr ""
 
-#: pod/recorder/forms.py:74 pod/video/forms.py:695
+#: pod/recorder/forms.py:74 pod/video/forms.py:696
 msgid "I agree"
 msgstr ""
 
@@ -3259,8 +3259,8 @@ msgstr ""
 msgid "Transcript selected"
 msgstr ""
 
-#: pod/video/admin.py:260 pod/video/forms.py:227 pod/video/forms.py:564
-#: pod/video/forms.py:566 pod/video/models.py:244
+#: pod/video/admin.py:260 pod/video/forms.py:227 pod/video/forms.py:565
+#: pod/video/forms.py:567 pod/video/models.py:244
 msgid "Owners"
 msgstr ""
 
@@ -3269,10 +3269,11 @@ msgid "File field"
 msgstr ""
 
 #: pod/video/forms.py:81 pod/video/models.py:454
+#: pod/video/templates/videos/add_video.html:62
 msgid "You can send an audio or video file."
 msgstr ""
 
-#: pod/video/forms.py:82
+#: pod/video/forms.py:82 pod/video/views.py:1558
 #, python-format
 msgid "The following formats are supported: %s"
 msgstr ""
@@ -3494,19 +3495,19 @@ msgstr ""
 msgid "The date must be before or equal to "
 msgstr ""
 
-#: pod/video/forms.py:443
+#: pod/video/forms.py:443 pod/video/templates/videos/add_video.html:59
 msgid "File"
 msgstr ""
 
-#: pod/video/forms.py:696
+#: pod/video/forms.py:697
 msgid "Delete video cannot be undo"
 msgstr ""
 
-#: pod/video/forms.py:763
+#: pod/video/forms.py:764
 msgid "A note can't be empty"
 msgstr ""
 
-#: pod/video/forms.py:785
+#: pod/video/forms.py:786
 msgid "A comment can't be empty"
 msgstr ""
 
@@ -4067,8 +4068,6 @@ msgid "Editing the channel's themes"
 msgstr ""
 
 #: pod/video/templates/videos/add_video.html:14
-#: pod/video/templates/videos/add_video.html:18
-#: pod/video/templates/videos/add_video.html:30
 msgid "Choose a file to upload"
 msgstr ""
 
@@ -4076,6 +4075,50 @@ msgstr ""
 #: pod/video/templates/videos/video_edit.html:22
 #: pod/video/templates/videos/video_edit.html:36
 msgid "Editing the video"
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html:18
+#: pod/video/templates/videos/add_video.html:30
+msgid "Choose an audio or video file to upload"
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html:36
+msgid "Your upload can be resumed if you have connection problems"
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html:45
+#: pod/video/templates/videos/video_edit.html:172
+msgid "Uploading"
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html:47
+#: pod/video/templates/videos/video_edit.html:174
+#, python-format
+msgid "The file size must be lower than %(video_max_upload_size)s Go."
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html:48
+#: pod/video/templates/videos/video_edit.html:175
+msgid ""
+"The sending time depends on the size of your file and your upload speed. "
+"This can be quite long."
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html:49
+#: pod/video/templates/videos/video_edit.html:176
+msgid ""
+"While sending your file, do not close your browser until you have received a "
+"message of success or failure."
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html:50
+#: pod/video/templates/videos/video_edit.html:177
+msgid "An email will be sent to you when all encoding tasks are completed."
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html:55
+#: pod/video/templates/videos/video_edit.html:187
+msgid "Help for form fields"
 msgstr ""
 
 #: pod/video/templates/videos/card.html:9
@@ -4358,35 +4401,6 @@ msgstr ""
 
 #: pod/video/templates/videos/video_edit.html:156
 msgid "Use this link to share the video in draft mode"
-msgstr ""
-
-#: pod/video/templates/videos/video_edit.html:172
-msgid "Uploading"
-msgstr ""
-
-#: pod/video/templates/videos/video_edit.html:174
-#, python-format
-msgid "The file size must be lower than %(video_max_upload_size)s Go."
-msgstr ""
-
-#: pod/video/templates/videos/video_edit.html:175
-msgid ""
-"The sending time depends on the size of your file and your upload speed. "
-"This can be quite long."
-msgstr ""
-
-#: pod/video/templates/videos/video_edit.html:176
-msgid ""
-"While sending your file, do not close your browser until you have received a "
-"message of success or failure."
-msgstr ""
-
-#: pod/video/templates/videos/video_edit.html:177
-msgid "An email will be sent to you when all encoding tasks are completed."
-msgstr ""
-
-#: pod/video/templates/videos/video_edit.html:187
-msgid "Help for form fields"
 msgstr ""
 
 #: pod/video/templates/videos/video_list.html:10
