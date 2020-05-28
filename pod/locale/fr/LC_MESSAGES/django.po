@@ -4272,8 +4272,8 @@ msgstr "Édition des thèmes de la chaîne"
 #: pod/video/templates/videos/add_video.html:14
 #: pod/video/templates/videos/add_video.html:18
 #: pod/video/templates/videos/add_video.html:30
-msgid "Choose a file to upload"
-msgstr "Choisir un fichier à mettre en ligne"
+msgid "Choose an audio or video file to upload"
+msgstr "Choisir un fichier audio ou vidéo à mettre en ligne"
 
 #: pod/video/templates/videos/add_video.html:18
 #: pod/video/templates/videos/video_edit.html:22
