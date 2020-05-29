@@ -5,5 +5,5 @@ register = template.Library()
 
 
 @register.simple_tag
-def get_setting(name):
-    return getattr(settings, name, "")
+def get_setting(name, default=""):
+    return getattr(settings, name, default)
