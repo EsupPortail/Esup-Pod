@@ -10,6 +10,7 @@ from .models import Channel
 from .models import Theme
 from .models import Type
 from .models import Discipline
+from .models import VideoCategory
 from .models import VideoRendition
 from .models import EncodingVideo
 from .models import EncodingAudio
@@ -425,6 +426,10 @@ class DisciplineAdmin(TranslationAdmin):
                 request))
         return qs
 
+class VideoCategoryAdmin(admin.ModelAdmin):
+    list_display = ('title', 'owner') 
+    prepopulated_fields = {'slug': ('title',)}
+
 
 class EncodingVideoAdmin(admin.ModelAdmin):
     list_display = ('video', 'get_resolution', 'encoding_format')
@@ -649,6 +654,7 @@ class ViewCountAdmin(admin.ModelAdmin):
 admin.site.register(Channel, ChannelAdmin)
 admin.site.register(Type, TypeAdmin)
 admin.site.register(Discipline, DisciplineAdmin)
+admin.site.register(VideoCategory, VideoCategoryAdmin)
 admin.site.register(Theme, ThemeAdmin)
 admin.site.register(Video, VideoAdmin)
 admin.site.register(EncodingVideo, EncodingVideoAdmin)
