@@ -440,6 +440,20 @@ class Discipline(models.Model):
         verbose_name = _('Discipline')
         verbose_name_plural = _('Disciplines')
 
+class VideoCategory(models.Model):
+    title = models.CharField(_('title'), max_length=100)
+    slug = models.SlugField(
+            _('slug'), unique=True, max_length=100,
+            help_text=_(
+                u'Used to access this instance, the "slug" is a short label '
+                + 'containing only letters, numbers, underscore or dash top.'))
+    description = models.TextField(null=True, blank=True)
+    icon = models.ForeignKey(CustomImageModel, models.SET_NULL,
+            blank=True, null=True, verbose_name=_('Icon'))
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+
 
 @receiver(post_save, sender=Discipline)
 def default_site_discipline(sender, instance, created, **kwargs):
@@ -517,6 +531,11 @@ class Video(models.Model):
         Discipline,
         blank=True,
         verbose_name=_('Disciplines'))
+    category = select2_fields.ForeignKey(
+            VideoCategory,
+            blank=True,
+            null=True,
+            verbose_name=_('Category'))
     licence = models.CharField(
         _('Licence'), max_length=8,
         choices=LICENCE_CHOICES, blank=True, null=True)
