@@ -451,8 +451,18 @@ class VideoCategory(models.Model):
     icon = models.ForeignKey(CustomImageModel, models.SET_NULL,
             blank=True, null=True, verbose_name=_('Icon'))
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return '%s' % self.title
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(VideoCategory, self).save(*args, **kwargs)
 
+    class Meta:
+        ordering = ['title']
+        verbose_name = _('Category')
+        verbose_name_plural = _('Categories')
 
 
 @receiver(post_save, sender=Discipline)
