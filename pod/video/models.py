@@ -456,7 +456,12 @@ class VideoCategory(models.Model):
         return '%s' % self.title
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        # make slug unique in the user context
+        self.slug = "%s-%s" % (self.owner.id, slugify(self.title))
+        print("-----------------")
+        print("Category slug ===> " , (self.slug))
+        print("------------------")
+        pass
         super(VideoCategory, self).save(*args, **kwargs)
 
     class Meta:

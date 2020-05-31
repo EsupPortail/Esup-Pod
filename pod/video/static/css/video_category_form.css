@@ -1,0 +1,33 @@
+.content-wrapper{
+   max-width: 900px;
+   margin: 2em auto;
+}
+.content-wrapper form > div{
+	margin-bottom: 10px;
+}
+.content-wrapper .title:after{
+    content: "";
+    display: block;
+    border: 1px var(--primary) solid;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+.wrapper-inputs{
+    display: flex;
+    justify-content: space-between;
+}
+.wrapper-inputs > div{
+    flex: 1;
+}
+.wrapper-inputs .field-group:nth-child(2)
+{
+    margin-left: 10px;
+}
+.field-group label{
+    display: block;
+}
+.field-control{
+	width: 100%;
+	display: block;
+}
+

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load staticfiles i18n %}
+{% block page_title %}{% trans "Video - Statistics views" %}{% endblock page_title %}
+{% block page_extra_head %}
+	<script type="text/javascript" src="{% static "js/video_category_form.js" %}" charset="utf-8"></script>
+	<link rel="stylesheet" href="{% static 'css/video_category_form.css' %}">
+{% endblock page_extra_head %}
+{% block content %}
+<div class="grid-container">
+    <div class="content-wrapper">
+    	<h1 class="title">{{ title }}</h1>
+        <form method="post">
+	    {{ form.non_field_errors }}
+	    {% csrf_token %}
+	    <div class="wrapper-inputs">
+		    
+	        <div class="field-group">
+		    <label for='{{ form.title.id_for_label }}'>{% trans 'Title' %}</label>
+		    {{ form.title}}
+		    {{ form.title.errors }}
+	        </div>
+	        {% if request.user.is_superuser %}
+	        <div class="field-group">
+		    <label for='{{ form.owner.id_for_label }}'>{% trans 'Owner' %}</label>
+		    {{ form.owner}}
+		    {{ form.owner.errors }}
+	        </div>
+	        {% endif %}
+	    </div>
+	    <div class="field-group">
+		    <label for='{{ form.icon.id_for_label }}'>{% trans 'Icon' %}</label>
+		    {{ form.icon}}
+		    {{ form.icon.errors }}
+	    </div>
+	    <div class="field-group">
+		    <label for='{{ form.description.id_for_label }}'>{% trans 'Description' %}</label>
+		    {{ form.description}}
+		    {{ form.description.errors }}
+	    </div>
+
+	    <button class="btn btn-primary" type='submit'>Créer</button>
+	</form>
+    </div>
+</div>
+{% endblock content %}

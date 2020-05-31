@@ -26,6 +26,7 @@ from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount, VideoVersion
+from pod.video.models import VideoCategory 
 from tagging.models import TaggedItem
 from django.contrib.auth.models import User
 
@@ -34,6 +35,7 @@ from pod.video.forms import ChannelForm
 from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
+from pod.video.forms import VideoCategoryForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
 from .encode import start_encode
 from itertools import chain
@@ -1610,6 +1612,55 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
         return {'redirlink': reverse('video_edit', args=(self.slug,)),
                 'message': ("You successfully uploaded '%s' (%s bytes)!" %
                             (chunked_upload.filename, chunked_upload.offset))}
+
+
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+def video_category(request, slug=None):
+    category = get_object_or_404(VideoCategory, slug=slug) if slug else None
+    title = _(
+            'Editing the category "%s"' % category.title
+            ) if category else _('Add new category')
+    default_owner = category.owner.pk if category else request.user.pk 
+    form = VideoCategoryForm(
+            instance=category,
+            is_superuser=request.user.is_superuser,
+            initial={'owner': default_owner})
+    # Post data
+    if request.method == "POST":
+        form = VideoCategoryForm(
+                request.POST,
+                instance=category,
+                is_superuser=request.user.is_superuser)
+        if form.is_valid():
+            category = form.save(commit=False)
+            if form.cleaned_data['owner']:
+                print(form.cleaned_data['owner'])
+                print(type(form.cleaned_data['owner']))
+                category.owner = form.cleaned_data['owner']
+            elif not category.owner:
+                category.owner = default_owner
+            category.save()
+
+        else:
+            messages.add_message(
+                    request, messages.ERROR,
+                    -('One or more errors have been found in the form.'))
+
+
+    print("-----------------------")
+    print(request)
+    print(slug)
+    print(form)
+    print("-----------------------")
+    return render(request, "videos/video-category_edit.html", {
+        'form': form,
+        'title': title})
+
+
+def video_category_delete(request, id):
+    pass
+    return HttpResponse("Ok")
 
 
 """

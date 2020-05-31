@@ -12,6 +12,7 @@ from .models import Channel
 from .models import Theme
 from .models import Type
 from .models import Discipline
+from .models import VideoCategory
 from .models import Notes, AdvancedNotes, NoteComments
 from .encode import start_encode
 from .models import get_storage_path_video
@@ -724,6 +725,33 @@ class DisciplineForm(forms.ModelForm):
     class Meta(object):
         model = Discipline
         fields = '__all__'
+
+class VideoCategoryForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        self.is_superuser = kwargs.pop(
+                'is_superuser') if ('is_superuser' in kwargs.keys()
+                        )else self.is_superuser
+        self.current_user = kwargs.pop(
+                'current_user') if kwargs.get('current_user') else None
+        super(VideoCategoryForm, self).__init__(*args, **kwargs)
+
+        self.fields['title'].widget.attrs.update({'class': 'field-control'})
+        self.fields['owner'].widget.attrs.update({'class': 'field-control'})
+        self.fields['description'].widget.attrs.update({'class': 'field-control'})
+
+        if FILEPICKER:
+            self.fields['icon'].widget = CustomFileWidget(type="image")
+    
+    def visible_fields(self):
+        v_fields =super(VideoCategoryForm, self).visible_fields()
+        if self.is_superuser is False:
+            return [v for v in v_fields if v.field != self.fields['owner']]
+        return v_fields
+    
+    class Meta:
+        model = VideoCategory
+        fields = ['title', 'owner', 'description', 'icon']
 
 
 class VideoVersionForm(forms.ModelForm):

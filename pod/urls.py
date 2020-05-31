@@ -30,6 +30,8 @@ from pod.video.views import theme_edit
 from pod.video.views import video_notes
 from pod.video.views import video_count, video_version
 from pod.video.views import video_oembed
+from pod.video.views import video_category
+from pod.video.views import video_category_delete
 from pod.video.views import stats_view
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 from pod.main.views import contact_us, download_file, user_autocomplete
@@ -87,7 +89,11 @@ urlpatterns = [
         video_count, name='video_count'),
     url(r'^video_version/(?P<id>[\d]+)/$',
         video_version, name='video_version'),
-
+    url(r'video_category/$', video_category, name='category_add'),
+    url(r'video_category/edit/(?P<slug>[\-\d\w]+)/$',
+        video_category, name='category_edit'),
+    url(r'video_category/delete/(?P<id>[\d]+)/$',
+        video_category_delete, name='category_delete'),
     # url(r'^video_collaborate/(?P<slug>[\-\d\w]+)/$',
     #    video_collaborate,
     #    name='video_collaborate'),
