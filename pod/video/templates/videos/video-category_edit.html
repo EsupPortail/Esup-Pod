@@ -7,7 +7,7 @@
 {% endblock page_extra_head %}
 {% block content %}
 <div class="grid-container">
-    <div class="content-wrapper">
+    <div class="jumbotron content-wrapper">
     	<h1 class="title">{{ title }}</h1>
         <form method="post">
 	    {{ form.non_field_errors }}
@@ -38,7 +38,7 @@
 		    {{ form.description.errors }}
 	    </div>
 
-	    <button class="btn btn-primary" type='submit'>Créer</button>
+	    <button class="btn btn-primary" type='submit'>{% trans 'Save' %}</button>
 	</form>
     </div>
 </div>
