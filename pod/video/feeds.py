@@ -197,6 +197,8 @@ class RssSiteVideosFeed(Feed):
             item.date_added.strftime('%Y-%m-%d'), '%Y-%m-%d')
 
     def item_enclosure_url(self, item):
+        if item.password is not None:
+            return ""
         if item.get_video_mp4().count() > 0:
             mp4 = sorted(item.get_video_mp4(), key=lambda m: m.height)[0]
             return ''.join([self.author_link, mp4.source_file.url])
