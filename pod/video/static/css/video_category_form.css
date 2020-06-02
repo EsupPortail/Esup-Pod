@@ -28,6 +28,13 @@
     font-variant: none;
     letter-spacing: .6px;
 }
+.field-group.required-field label:after
+{
+    content: "*";
+    font-weight: 700;
+    color: red;
+    margin-left: 2px;
+}
 .field-control{
     width: 100%;
     display: block;

@@ -14,13 +14,13 @@
 	    {% csrf_token %}
 	    <div class="wrapper-inputs">
 		    
-	        <div class="field-group">
+	        <div class="field-group required-field">
 		    <label for='{{ form.title.id_for_label }}'>{% trans 'Title' %}</label>
 		    {{ form.title}}
 		    {{ form.title.errors }}
 	        </div>
 	        {% if request.user.is_superuser %}
-	        <div class="field-group">
+	        <div class="field-group required-field">
 		    <label for='{{ form.owner.id_for_label }}'>{% trans 'Owner' %}</label>
 		    {{ form.owner}}
 		    {{ form.owner.errors }}
