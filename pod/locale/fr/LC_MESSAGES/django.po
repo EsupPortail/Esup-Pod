@@ -4286,8 +4286,8 @@ msgid "Choose an audio or video file to upload"
 msgstr "Choisir un fichier audio ou vidéo à mettre en ligne"
 
 #: pod/video/templates/videos/add_video.html:36
-msgid "Your upload can be resumed if you have connection problems"
-msgstr "Votre mise en ligne peut être reprise si vous avez des soucis de connexion"
+msgid "Do not leave the page if you encounter a connection problem during the upload, it will resume automatically when your connection is available again."
+msgstr "Ne quittez pas la page si vous rencontrez un problème de connexion pendant la mise en ligne, elle reprendra automatiquement quand votre connexion sera de nouveau disponible."
 
 #: pod/video/templates/videos/add_video.html:45
 #: pod/video/templates/videos/video_edit.html:172
