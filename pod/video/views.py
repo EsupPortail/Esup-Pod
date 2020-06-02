@@ -1645,7 +1645,7 @@ def video_category(request, slug=None):
         else:
             messages.add_message(
                     request, messages.ERROR,
-                    -('One or more errors have been found in the form.'))
+                    _('One or more errors have been found in the form.'))
 
 
     print("-----------------------")

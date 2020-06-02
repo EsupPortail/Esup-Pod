@@ -1,5 +1,26 @@
+/********************
+ * Override Css
+ ********************/
+.field-group .errorlist
+{
+    color: #c81728;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.alert-error{
+    background-color:#f8d7da;
+    border-color: #f5c6cb; 
+    color: #721c24;
+}
+/********************
+ * End override Css
+ ********************/
 .content-wrapper{
-    max-width: 900px;
+    max-width: 1050px;
     margin: 2em auto;
 }
 .content-wrapper form > div{
