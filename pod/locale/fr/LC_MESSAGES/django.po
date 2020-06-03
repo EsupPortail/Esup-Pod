@@ -2692,11 +2692,9 @@ msgstr "Types de vidéos"
 
 #: pod/main/templates/navbar_collapse.html:84
 msgid ""
-"Use the input to filter user by last name or click on button letter to show "
-"the list."
+"Use the input to filter user by last name."
 msgstr ""
-"Utiliser le champ pour filtrer les utilisateurs par nom de famille ou "
-"cliquer sur les boutons alphabétiques pour afficher la liste."
+"Utiliser le champ pour filtrer les utilisateurs par nom de famille."
 
 #: pod/main/views.py:160
 msgid "Link"
