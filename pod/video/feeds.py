@@ -236,6 +236,8 @@ class RssSiteAudiosFeed(RssSiteVideosFeed):
         try:
             mp3 = EncodingAudio.objects.get(
                 name="audio", video=item, encoding_format="audio/mp3")
+            if (item.password is not None) or item.is_restricted:
+                return ""
             return ''.join([self.author_link, mp3.source_file.url])
         except EncodingAudio.DoesNotExist:
             return ""
