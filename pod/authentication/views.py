@@ -58,7 +58,15 @@ def authentication_login(request):
         return redirect(url)
 
 
+def local_logout(request):
+    url = reverse('local-logout')
+    url += '?next=/'
+    return redirect(url)
+
+
 def authentication_logout(request):
+    if request.user.is_anonymous():
+        return local_logout(request)
     if request.user.owner.auth_type == "CAS":
         return redirect(reverse('cas-logout'))
     elif request.user.owner.auth_type == "Shibboleth":
@@ -66,9 +74,7 @@ def authentication_logout(request):
         logout = SHIB_LOGOUT_URL + "?return=" + request.build_absolute_uri("/")
         return redirect(logout)
     else:
-        url = reverse('local-logout')
-        url += '?next=/'
-        return redirect(url)
+        return local_logout(request)
 
 
 @csrf_protect
