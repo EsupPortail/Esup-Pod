@@ -9,9 +9,12 @@ window.onload = function()
     
     let dtf = new Intl.DateTimeFormat(lang,{day:"2-digit", month:"2-digit", year:"numeric"});
     let input = document.querySelector("input#id_date_delete") || document.querySelector('input[name="date_delete"]');
-    input.setAttribute("type", "date");
-    input.style.boxShadow = "none";
-    let given = new Date(input.value)
+    if(input!=null){
+        input.setAttribute("type", "date");
+        input.style.boxShadow = "none";
+        let given = new Date(input.value)
+    }
+    
     let limite = new Date();
     limite.setYear((new Date()).getFullYear() + max_duration_date_delete)
     let listener_inputchange = function()
@@ -45,11 +48,19 @@ window.onload = function()
             input.style.borderColor= "#ccc";
         }
     }
-    // Set listener on the field and check even after reloading the page
-    input.onchange = function(){ listener_inputchange(); }
-    listener_inputchange();
 
-    // Hide backend validate
-    let back_errors_msg = input.parentNode.parentNode.querySelector("ul.errorlist");
-    if(back_errors_msg) back_errors_msg.parentNode.removeChild(back_errors_msg);
+
+    
+    if(input!=null){
+        // Set listener on the field and check even after reloading the page
+        input.onchange = function(){ listener_inputchange(); }
+        listener_inputchange();
+
+        // Hide backend validate
+        let back_errors_msg = input.parentNode.parentNode.querySelector("ul.errorlist");
+        if(back_errors_msg) back_errors_msg.parentNode.removeChild(back_errors_msg);
+    }
+   
+
+
 };
