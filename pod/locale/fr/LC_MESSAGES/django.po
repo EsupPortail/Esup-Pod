@@ -1655,7 +1655,7 @@ msgstr "Lien du site à intégrer sous forme d'iframe en bas du live"
 
 #: pod/live/models.py:83
 msgid "Embedded Site Height"
-msgstr "Huateur du site intégré"
+msgstr "Hauteur du site intégré"
 
 #: pod/live/models.py:84
 msgid "Height of the embedded site (in pixels)"
@@ -2473,7 +2473,7 @@ msgstr "Vous n’avez pas accès à cette page."
 
 #: pod/main/templates/404.html:17
 msgid "We're sorry, but the requested page could not be found."
-msgstr "Nous sommes désolés mais la page demandée est inaccessible."
+msgstr "Nous sommes désolés, mais la page demandée est inaccessible."
 
 #: pod/main/templates/500.html:7 pod/main/templates/500.html:11
 msgid "Server error (500)"
@@ -2883,7 +2883,7 @@ msgstr "Cette vidéo a été retirée de votre playlist."
 
 #: pod/playlist/views.py:118 pod/playlist/views.py:177
 msgid "The request are erroned. No video given."
-msgstr "La requête est erronée. Aucune vidéo envoyé."
+msgstr "La requête est erronée. Aucune vidéo envoyée."
 
 #: pod/playlist/views.py:135
 msgid "The playlist have been saved."
@@ -3172,7 +3172,7 @@ msgstr "Date d'ajout"
 
 #: pod/recorder/models.py:178
 msgid "Require manual claim ?"
-msgstr "Requière une revendication manuelle ?"
+msgstr "Requiers une revendication manuelle ?"
 
 #: pod/recorder/models.py:181
 msgid "Has this recording file require a manual claim by a user ?"
@@ -3654,7 +3654,7 @@ msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne
 
 #: pod/video/forms.py:386
 msgid "The date must be before or equal to "
-msgstr ""
+msgstr "La date doit être antérieure ou égale à "
 
 #: pod/video/forms.py:443 pod/video/templates/videos/add_video.html:59
 msgid "File"
@@ -3871,7 +3871,7 @@ msgid ""
 "subject / context of the content.(max length : 250 characters)"
 msgstr ""
 "Veuillez choisir un titre aussi court et précis que possible, reflétant le "
-"sujet principal / le contexte de ce contenu.(taille maximale: 250 caractères)"
+"sujet principal / le contexte de ce contenu (taille maximale: 250 caractères)."
 
 #: pod/video/models.py:486
 msgid ""
