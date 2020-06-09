@@ -36,7 +36,11 @@
     <p>{% trans "Do not leave the page if you encounter a connection problem during the upload, it will resume automatically when your connection is available again." %}</p>
   
 </div>
-
+{%if slug %}
+<a href="{% url 'video_edit' slug=slug %}" title="{% trans "Back to video editing"%}" class="btn btn-primary btn-sm m-2">
+  <i data-feather="edit"></i>&nbsp;{% trans "Back to video edit"%}
+</a>
+{% endif %}
 
 {% endblock page_content %}
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-28 12:32+0000\n"
+"POT-Creation-Date: 2020-06-09 08:24+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -99,16 +99,16 @@ msgstr "Commentaire"
 msgid "Picture"
 msgstr "Image"
 
-#: pod/authentication/templates/authentication/login.html:8
-#: pod/authentication/templates/authentication/login.html:11
+#: pod/authentication/templates/authentication/login.html:7
+#: pod/authentication/templates/authentication/login.html:12
 msgid "Authentication"
 msgstr "Authentification"
 
-#: pod/authentication/templates/authentication/login.html:15
+#: pod/authentication/templates/authentication/login.html:16
 msgid "Single sign on"
 msgstr "Authentification CAS"
 
-#: pod/authentication/templates/authentication/login.html:20
+#: pod/authentication/templates/authentication/login.html:22
 msgid "local sign on"
 msgstr "authentification locale"
 
@@ -147,7 +147,7 @@ msgid "Change your picture"
 msgstr "Changer votre image de profil"
 
 #: pod/authentication/templates/userpicture/userpicture.html:29
-#: pod/authentication/views.py:90
+#: pod/authentication/views.py:96
 #: pod/completion/templates/video_caption_maker.html:57
 #: pod/enrichment/templates/enrichment/group_enrichment.html:29
 #: pod/interactive/templates/interactive/group_interactive.html:29
@@ -1239,6 +1239,7 @@ msgstr "Ajouter un nouvel enrichissement"
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:67
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:68
+#: pod/video/templates/videos/add_video.html:41
 msgid "Back to video edit"
 msgstr "Retour à l'édition de la vidéo"
 
@@ -2691,10 +2692,8 @@ msgid "Types of videos"
 msgstr "Types de vidéos"
 
 #: pod/main/templates/navbar_collapse.html:84
-msgid ""
-"Use the input to filter user by last name."
-msgstr ""
-"Utiliser le champ pour filtrer les utilisateurs par nom de famille."
+msgid "Use the input to filter user by last name."
+msgstr "Utiliser le champ pour filtrer les utilisateurs par nom de famille."
 
 #: pod/main/views.py:160
 msgid "Link"
@@ -3375,7 +3374,7 @@ msgid "File field"
 msgstr "Fichier"
 
 #: pod/video/forms.py:81 pod/video/models.py:454
-#: pod/video/templates/videos/add_video.html:62
+#: pod/video/templates/videos/add_video.html:66
 msgid "You can send an audio or video file."
 msgstr "Vous pouvez envoyer un fichier audio ou vidéo."
 
@@ -3656,7 +3655,7 @@ msgstr "Les utilisateurs peuvent uniquement ajouter des vidéos à cette chaîne
 msgid "The date must be before or equal to "
 msgstr "La date doit être antérieure ou égale à "
 
-#: pod/video/forms.py:443 pod/video/templates/videos/add_video.html:59
+#: pod/video/forms.py:443 pod/video/templates/videos/add_video.html:63
 msgid "File"
 msgstr "Fichier"
 
@@ -3871,7 +3870,8 @@ msgid ""
 "subject / context of the content.(max length : 250 characters)"
 msgstr ""
 "Veuillez choisir un titre aussi court et précis que possible, reflétant le "
-"sujet principal / le contexte de ce contenu (taille maximale: 250 caractères)."
+"sujet principal / le contexte de ce contenu (taille maximale: 250 "
+"caractères)."
 
 #: pod/video/models.py:486
 msgid ""
@@ -4284,22 +4284,33 @@ msgid "Choose an audio or video file to upload"
 msgstr "Choisir un fichier audio ou vidéo à mettre en ligne"
 
 #: pod/video/templates/videos/add_video.html:36
-msgid "Do not leave the page if you encounter a connection problem during the upload, it will resume automatically when your connection is available again."
-msgstr "Ne quittez pas la page si vous rencontrez un problème de connexion pendant la mise en ligne, elle reprendra automatiquement quand votre connexion sera de nouveau disponible."
+msgid ""
+"Do not leave the page if you encounter a connection problem during the "
+"upload, it will resume automatically when your connection is available again."
+msgstr ""
+"Ne quittez pas la page si vous rencontrez un problème de connexion pendant "
+"la mise en ligne, elle reprendra automatiquement quand votre connexion sera "
+"de nouveau disponible."
 
-#: pod/video/templates/videos/add_video.html:45
+#: pod/video/templates/videos/add_video.html:40
+#, fuzzy
+#| msgid "Back to video edit"
+msgid "Back to video editing"
+msgstr "Retour à l'édition de la vidéo"
+
+#: pod/video/templates/videos/add_video.html:49
 #: pod/video/templates/videos/video_edit.html:172
 msgid "Uploading"
 msgstr "Mise en ligne"
 
-#: pod/video/templates/videos/add_video.html:47
+#: pod/video/templates/videos/add_video.html:51
 #: pod/video/templates/videos/video_edit.html:174
 #, python-format
 msgid "The file size must be lower than %(video_max_upload_size)s Go."
 msgstr ""
 "La taille du fichier doit être inférieure à %(video_max_upload_size)s Go."
 
-#: pod/video/templates/videos/add_video.html:48
+#: pod/video/templates/videos/add_video.html:52
 #: pod/video/templates/videos/video_edit.html:175
 msgid ""
 "The sending time depends on the size of your file and your upload speed. "
@@ -4308,7 +4319,7 @@ msgstr ""
 "Le temps d'envoi dépend de la taille de votre fichier et de votre vitesse de "
 "téléchargement. Ce temps d'envoi peut être relativement long."
 
-#: pod/video/templates/videos/add_video.html:49
+#: pod/video/templates/videos/add_video.html:53
 #: pod/video/templates/videos/video_edit.html:176
 msgid ""
 "While sending your file, do not close your browser until you have received a "
@@ -4317,14 +4328,14 @@ msgstr ""
 "Pendant l'envoi de votre fichier, ne fermez pas votre navigateur avant "
 "d'avoir reçu un message de succès ou d'échec."
 
-#: pod/video/templates/videos/add_video.html:50
+#: pod/video/templates/videos/add_video.html:54
 #: pod/video/templates/videos/video_edit.html:177
 msgid "An email will be sent to you when all encoding tasks are completed."
 msgstr ""
 "Un courriel vous sera envoyé quand toutes les tâches d'encodage seront "
 "complétées."
 
-#: pod/video/templates/videos/add_video.html:55
+#: pod/video/templates/videos/add_video.html:59
 #: pod/video/templates/videos/video_edit.html:187
 msgid "Help for form fields"
 msgstr "Aide pour les champs de formulaire"

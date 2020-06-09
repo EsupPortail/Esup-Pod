@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-28 12:32+0000\n"
+"POT-Creation-Date: 2020-06-09 08:24+0000\n"
 "PO-Revision-Date: 2018-07-03 13:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,16 +99,16 @@ msgstr ""
 msgid "Picture"
 msgstr ""
 
-#: pod/authentication/templates/authentication/login.html:8
-#: pod/authentication/templates/authentication/login.html:11
+#: pod/authentication/templates/authentication/login.html:7
+#: pod/authentication/templates/authentication/login.html:12
 msgid "Authentication"
 msgstr ""
 
-#: pod/authentication/templates/authentication/login.html:15
+#: pod/authentication/templates/authentication/login.html:16
 msgid "Single sign on"
 msgstr ""
 
-#: pod/authentication/templates/authentication/login.html:20
+#: pod/authentication/templates/authentication/login.html:22
 msgid "local sign on"
 msgstr ""
 
@@ -144,7 +144,7 @@ msgid "Change your picture"
 msgstr ""
 
 #: pod/authentication/templates/userpicture/userpicture.html:29
-#: pod/authentication/views.py:90
+#: pod/authentication/views.py:96
 #: pod/completion/templates/video_caption_maker.html:57
 #: pod/enrichment/templates/enrichment/group_enrichment.html:29
 #: pod/interactive/templates/interactive/group_interactive.html:29
@@ -1193,6 +1193,7 @@ msgstr ""
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:67
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:68
+#: pod/video/templates/videos/add_video.html:41
 msgid "Back to video edit"
 msgstr ""
 
@@ -2618,9 +2619,7 @@ msgid "Types of videos"
 msgstr ""
 
 #: pod/main/templates/navbar_collapse.html:84
-msgid ""
-"Use the input to filter user by last name or click on button letter to show "
-"the list."
+msgid "Use the input to filter user by last name."
 msgstr ""
 
 #: pod/main/views.py:160
@@ -3269,7 +3268,7 @@ msgid "File field"
 msgstr ""
 
 #: pod/video/forms.py:81 pod/video/models.py:454
-#: pod/video/templates/videos/add_video.html:62
+#: pod/video/templates/videos/add_video.html:66
 msgid "You can send an audio or video file."
 msgstr ""
 
@@ -3495,7 +3494,7 @@ msgstr ""
 msgid "The date must be before or equal to "
 msgstr ""
 
-#: pod/video/forms.py:443 pod/video/templates/videos/add_video.html:59
+#: pod/video/forms.py:443 pod/video/templates/videos/add_video.html:63
 msgid "File"
 msgstr ""
 
@@ -4083,40 +4082,46 @@ msgid "Choose an audio or video file to upload"
 msgstr ""
 
 #: pod/video/templates/videos/add_video.html:36
-msgid "Your upload can be resumed if you have connection problems"
+msgid ""
+"Do not leave the page if you encounter a connection problem during the "
+"upload, it will resume automatically when your connection is available again."
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:45
+#: pod/video/templates/videos/add_video.html:40
+msgid "Back to video editing"
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html:49
 #: pod/video/templates/videos/video_edit.html:172
 msgid "Uploading"
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:47
+#: pod/video/templates/videos/add_video.html:51
 #: pod/video/templates/videos/video_edit.html:174
 #, python-format
 msgid "The file size must be lower than %(video_max_upload_size)s Go."
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:48
+#: pod/video/templates/videos/add_video.html:52
 #: pod/video/templates/videos/video_edit.html:175
 msgid ""
 "The sending time depends on the size of your file and your upload speed. "
 "This can be quite long."
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:49
+#: pod/video/templates/videos/add_video.html:53
 #: pod/video/templates/videos/video_edit.html:176
 msgid ""
 "While sending your file, do not close your browser until you have received a "
 "message of success or failure."
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:50
+#: pod/video/templates/videos/add_video.html:54
 #: pod/video/templates/videos/video_edit.html:177
 msgid "An email will be sent to you when all encoding tasks are completed."
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:55
+#: pod/video/templates/videos/add_video.html:59
 #: pod/video/templates/videos/video_edit.html:187
 msgid "Help for form fields"
 msgstr ""
