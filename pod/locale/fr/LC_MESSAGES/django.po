@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-09 08:24+0000\n"
+"POT-Creation-Date: 2020-06-09 08:26+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -1239,6 +1239,7 @@ msgstr "Ajouter un nouvel enrichissement"
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:67
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:68
+#: pod/video/templates/videos/add_video.html:40
 #: pod/video/templates/videos/add_video.html:41
 msgid "Back to video edit"
 msgstr "Retour à l'édition de la vidéo"
@@ -4291,12 +4292,6 @@ msgstr ""
 "Ne quittez pas la page si vous rencontrez un problème de connexion pendant "
 "la mise en ligne, elle reprendra automatiquement quand votre connexion sera "
 "de nouveau disponible."
-
-#: pod/video/templates/videos/add_video.html:40
-#, fuzzy
-#| msgid "Back to video edit"
-msgid "Back to video editing"
-msgstr "Retour à l'édition de la vidéo"
 
 #: pod/video/templates/videos/add_video.html:49
 #: pod/video/templates/videos/video_edit.html:172

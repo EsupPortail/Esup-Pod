@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-09 08:24+0000\n"
+"POT-Creation-Date: 2020-06-09 08:26+0000\n"
 "PO-Revision-Date: 2018-07-03 13:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1193,6 +1193,7 @@ msgstr ""
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:67
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:68
+#: pod/video/templates/videos/add_video.html:40
 #: pod/video/templates/videos/add_video.html:41
 msgid "Back to video edit"
 msgstr ""
@@ -4085,10 +4086,6 @@ msgstr ""
 msgid ""
 "Do not leave the page if you encounter a connection problem during the "
 "upload, it will resume automatically when your connection is available again."
-msgstr ""
-
-#: pod/video/templates/videos/add_video.html:40
-msgid "Back to video editing"
 msgstr ""
 
 #: pod/video/templates/videos/add_video.html:49
