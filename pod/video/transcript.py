@@ -6,7 +6,6 @@ from .utils import change_encoding_step, add_encoding_log
 from .utils import send_email, send_email_transcript
 from .models import Video
 
-from deepspeech import Model
 import numpy as np
 import shlex
 import subprocess
@@ -26,6 +25,10 @@ except ImportError:
 
 import threading
 import logging
+
+TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
+if TRANSCRIPT:
+    from deepspeech import Model
 
 DEBUG = getattr(settings, 'DEBUG', False)
 
