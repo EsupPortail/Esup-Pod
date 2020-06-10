@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-09 08:26+0000\n"
+"POT-Creation-Date: 2020-06-10 08:42+0000\n"
 "PO-Revision-Date: 2018-07-03 13:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -144,7 +144,7 @@ msgid "Change your picture"
 msgstr ""
 
 #: pod/authentication/templates/userpicture/userpicture.html:29
-#: pod/authentication/views.py:96
+#: pod/authentication/views.py:98
 #: pod/completion/templates/video_caption_maker.html:57
 #: pod/enrichment/templates/enrichment/group_enrichment.html:29
 #: pod/interactive/templates/interactive/group_interactive.html:29
@@ -1671,11 +1671,11 @@ msgstr ""
 msgid "no broadcast in progress"
 msgstr ""
 
-#: pod/live/templates/live/live.html:90 pod/live/templates/live/lives.html:33
+#: pod/live/templates/live/live.html:90 pod/live/templates/live/lives.html:34
 msgid "Sorry, no lives found"
 msgstr ""
 
-#: pod/live/templates/live/live.html:93 pod/live/templates/live/lives.html:36
+#: pod/live/templates/live/live.html:93 pod/live/templates/live/lives.html:37
 msgid "access map"
 msgstr ""
 
@@ -1693,7 +1693,7 @@ msgstr ""
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
 
-#: pod/live/templates/live/lives.html:41
+#: pod/live/templates/live/lives.html:42
 msgid "Sorry, no buildings found"
 msgstr ""
 
@@ -4068,18 +4068,15 @@ msgid "Editing the channel's themes"
 msgstr ""
 
 #: pod/video/templates/videos/add_video.html:14
-msgid "Choose a file to upload"
+#: pod/video/templates/videos/add_video.html:18
+#: pod/video/templates/videos/add_video.html:30
+msgid "Choose an audio or video file to upload"
 msgstr ""
 
 #: pod/video/templates/videos/add_video.html:18
 #: pod/video/templates/videos/video_edit.html:22
 #: pod/video/templates/videos/video_edit.html:36
 msgid "Editing the video"
-msgstr ""
-
-#: pod/video/templates/videos/add_video.html:18
-#: pod/video/templates/videos/add_video.html:30
-msgid "Choose an audio or video file to upload"
 msgstr ""
 
 #: pod/video/templates/videos/add_video.html:36

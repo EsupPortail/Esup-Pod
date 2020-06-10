@@ -18,7 +18,7 @@ USE_SHIB = getattr(
 CAS_GATEWAY = getattr(
     settings, 'CAS_GATEWAY', False)
 SHIB_URL = getattr(
-    settings, 'SHIB_URL', "")
+    settings, 'SHIB_URL', "/idp/shibboleth.sso/Login")
 SHIB_LOGOUT_URL = getattr(
     settings, 'SHIB_LOGOUT_URL', "")
 
@@ -30,7 +30,8 @@ if CAS_GATEWAY:
             return redirect(next)
 
         return render(request, 'authentication/login.html', {
-            'USE_CAS': USE_CAS, 'referrer': next
+            'USE_CAS': USE_CAS, 'USE_SHIB': USE_SHIB, "SHIB_URL": SHIB_URL,
+            'referrer': next
         })
 else:
     def authentication_login_gateway(request):
@@ -50,7 +51,8 @@ def authentication_login(request):
         return redirect(url)
     elif USE_CAS or USE_SHIB:
         return render(request, 'authentication/login.html', {
-            'USE_CAS': USE_CAS, 'referrer': referrer
+            'USE_CAS': USE_CAS, 'USE_SHIB': USE_SHIB, "SHIB_URL": SHIB_URL,
+            'referrer': referrer
         })
     else:
         url = reverse('local-login')
