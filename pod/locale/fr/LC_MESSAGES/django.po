@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-09 08:26+0000\n"
+"POT-Creation-Date: 2020-06-10 08:42+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -147,7 +147,7 @@ msgid "Change your picture"
 msgstr "Changer votre image de profil"
 
 #: pod/authentication/templates/userpicture/userpicture.html:29
-#: pod/authentication/views.py:96
+#: pod/authentication/views.py:98
 #: pod/completion/templates/video_caption_maker.html:57
 #: pod/enrichment/templates/enrichment/group_enrichment.html:29
 #: pod/interactive/templates/interactive/group_interactive.html:29
@@ -1737,11 +1737,11 @@ msgstr "Directs"
 msgid "no broadcast in progress"
 msgstr "aucune diffusion actuellement"
 
-#: pod/live/templates/live/live.html:90 pod/live/templates/live/lives.html:33
+#: pod/live/templates/live/live.html:90 pod/live/templates/live/lives.html:34
 msgid "Sorry, no lives found"
 msgstr "Désolé, aucun direct trouvé"
 
-#: pod/live/templates/live/live.html:93 pod/live/templates/live/lives.html:36
+#: pod/live/templates/live/live.html:93 pod/live/templates/live/lives.html:37
 msgid "access map"
 msgstr "plan d'accès"
 
@@ -1766,7 +1766,7 @@ msgstr ""
 "Le direct n’a pas encore commencé, nouvelle tentative de lecture dans 10 "
 "secondes."
 
-#: pod/live/templates/live/lives.html:41
+#: pod/live/templates/live/lives.html:42
 msgid "Sorry, no buildings found"
 msgstr "Désolé, aucun bâtiment trouvé"
 
@@ -4268,9 +4268,9 @@ msgid "Editing the channel's themes"
 msgstr "Édition des thèmes de la chaîne"
 
 #: pod/video/templates/videos/add_video.html:14
-#, fuzzy
-#| msgid "Choose an audio or video file to upload"
-msgid "Choose a file to upload"
+#: pod/video/templates/videos/add_video.html:18
+#: pod/video/templates/videos/add_video.html:30
+msgid "Choose an audio or video file to upload"
 msgstr "Choisir un fichier audio ou vidéo à mettre en ligne"
 
 #: pod/video/templates/videos/add_video.html:18
@@ -4278,11 +4278,6 @@ msgstr "Choisir un fichier audio ou vidéo à mettre en ligne"
 #: pod/video/templates/videos/video_edit.html:36
 msgid "Editing the video"
 msgstr "Éditer la vidéo"
-
-#: pod/video/templates/videos/add_video.html:18
-#: pod/video/templates/videos/add_video.html:30
-msgid "Choose an audio or video file to upload"
-msgstr "Choisir un fichier audio ou vidéo à mettre en ligne"
 
 #: pod/video/templates/videos/add_video.html:36
 msgid ""
@@ -4890,6 +4885,11 @@ msgstr "facettage"
 #: pod/video_search/views.py:55
 msgid "Remove selection"
 msgstr "Retirer la sélection"
+
+#, fuzzy
+#~| msgid "Choose an audio or video file to upload"
+#~ msgid "Choose a file to upload"
+#~ msgstr "Choisir un fichier audio ou vidéo à mettre en ligne"
 
 #~ msgid "The upload is complete, you can now click on \\\"Next\\\""
 #~ msgstr ""
