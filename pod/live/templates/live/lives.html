@@ -26,8 +26,9 @@
       {% for broadcaster in building.broadcaster_set.all %}
       {% if broadcaster.public %}
       <p class="card-text">
-        {%if broadcaster.status %}<a href="{% url "live:video_live" slug=broadcaster.slug %}" class="live_on"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}}</a>
-        {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}</p>
+        {%if broadcaster.status %}<a href="{% url "live:video_live" slug=broadcaster.slug %}" class="live_on">{%if broadcaster.password%}<i data-feather="lock"></i>{%else%}<i data-feather="airplay"></i>{%endif%}&nbsp;{{broadcaster.name}} </a>
+        {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}</p>      
+        
       {% endif %}
       {% empty %}
       <p class="card-text">{% trans "Sorry, no lives found" %}.</p>
@@ -41,5 +42,12 @@
     <p>{% trans "Sorry, no buildings found" %}.</p>
 {% endfor %}
 </div>
+
+<style>
+  .feather-16{
+    width: 16px;
+    height: 16px;
+}
+</style>
 
 {% endblock page_content %}
