@@ -1679,7 +1679,7 @@ msgstr ""
 
 #: pod/live/models.py:93
 msgid "Show in live tab"
-msgstr "Montrer dans l'onglet live"
+msgstr "Montrer dans l'onglet Directs"
 
 #: pod/live/models.py:95
 msgid "Live is accessible from the Live tab"
