@@ -129,11 +129,11 @@ def normalize_mp3(mp3filepath):
             shlex.split(normalize_cmd), stderr=subprocess.PIPE)
         return mp3normfile
     except subprocess.CalledProcessError as e:
-        raise RuntimeError(
-            'ffmpeg-normalize returned non-zero status: {}'.format(e.stderr))
+        log.error('ffmpeg-normalize returned non-zero status: {}'.format(
+            e.stderr))
         return mp3filepath
     except OSError as e:
-        print('ffmpeg-normalize not found {}'.format(e.strerror))
+        log.error('ffmpeg-normalize not found {}'.format(e.strerror))
         return mp3filepath
 
 # #################################
