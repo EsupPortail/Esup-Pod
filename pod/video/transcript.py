@@ -133,8 +133,7 @@ def normalize_mp3(mp3filepath):
             'ffmpeg-normalize returned non-zero status: {}'.format(e.stderr))
         return mp3filepath
     except OSError as e:
-        raise OSError(e.errno,
-                      'ffmpeg-normalize not found {}'.format(e.strerror))
+        print('ffmpeg-normalize not found {}'.format(e.strerror))
         return mp3filepath
 
 # #################################
