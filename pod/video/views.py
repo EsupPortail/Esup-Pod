@@ -152,7 +152,7 @@ def regroup_videos_by_theme(videos, channel, theme=None):
     " @return [ (theme, set()), (theme, set()) ]
     """
     if not theme:
-        children_themes =  channel.themes.filter(parentId_id=None)
+        children_themes = channel.themes.filter(parentId_id=None)
     else:
         children_themes = theme.children.all()
     videos_regrouped = [(t, set()) for t in children_themes]
@@ -162,7 +162,8 @@ def regroup_videos_by_theme(videos, channel, theme=None):
             for t in children_themes:
                 theme_tree = set(t.get_all_children_flat())
                 theme_tree.add(t)
-                common_themes = list(theme_tree.intersection(video.theme.all()))
+                common_themes = list(
+                        theme_tree.intersection(video.theme.all()))
                 if common_themes:
                     videos_regrouped = add_in_list_of_tuple(
                             videos_regrouped, t, video)
@@ -172,9 +173,19 @@ def regroup_videos_by_theme(videos, channel, theme=None):
                     videos_regrouped, _("Other"), video)
         else:
             videos_regrouped = add_in_list_of_tuple(
-                    videos_regrouped," ", video)
-    
+                    videos_regrouped, " ", video)
     return videos_regrouped
+
+
+def paginator(videos_list, page):
+    paginator = Paginator(videos_list, 12)
+    try:
+        videos = paginator.page(page)
+    except PageNotAnInteger:
+        videos = paginator.page(1)
+    except EmptyPage:
+        videos = paginator.page(paginator.num_pages)
+    return videos
 
 
 def channel(request, slug_c, slug_t=None):
@@ -194,13 +205,8 @@ def channel(request, slug_c, slug_t=None):
     if page:
         full_path = request.get_full_path().replace(
             "?page=%s" % page, "").replace("&page=%s" % page, "")
-    paginator = Paginator(videos_list, 12)
-    try:
-        videos = paginator.page(page)
-    except PageNotAnInteger:
-        videos = paginator.page(1)
-    except EmptyPage:
-        videos = paginator.page(paginator.num_pages)
+
+    videos = paginator(videos_list, page)
 
     if request.is_ajax():
         return render(
