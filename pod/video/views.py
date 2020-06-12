@@ -1593,11 +1593,16 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 
     def on_completion(self, uploaded_file, request):
         edit_slug = request.POST.get("slug")
+        transcript = request.POST.get("transcript")
         if edit_slug == "":
             video = Video.objects.create(video=uploaded_file,
                                          owner=request.user,
                                          type=Type.objects.get(id=1),
-                                         title=uploaded_file.name)
+                                         title=uploaded_file.name,
+                                         transcript=(
+                                             True if (
+                                                 transcript == "true"
+                                                 ) else False))
         else:
             video = Video.objects.get(slug=edit_slug)
             video.video = uploaded_file
