@@ -265,7 +265,9 @@ LTI_PROPERTY_USER_USERNAME = 'ext_user_username'
 # 'default' is the simpliest, bootstrap $enable_rounded is true
 # 'green' is with a dark green for primary color, $enable_rounded is false
 # 'dark' is black and red, without grey background, $enable_rounded is false
+
 # ie : USE_THEME = 'green'
+
 """
 ##
 # Main menu settings:

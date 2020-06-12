@@ -87,7 +87,10 @@ class BroadcasterTestCase(TestCase):
             url="http://test.live",
             status=True,
             is_restricted=True,
-            building=building)
+            building=building,
+            iframe_url="http://iframe.live",
+            iframe_height=120,
+            public=False)
         # Test with a video on hold
         video_on_hold = Video.objects.create(
             title="VideoOnHold", owner=user, video="test.mp4",
@@ -99,7 +102,10 @@ class BroadcasterTestCase(TestCase):
             status=True,
             is_restricted=False,
             video_on_hold=video_on_hold,
-            building=building)
+            building=building,
+            iframe_url="http://iframe2.live",
+            iframe_height=140,
+            password="mot2passe")
         print(" --->  SetUp of BroadcasterTestCase : OK !")
 
     """
@@ -111,13 +117,17 @@ class BroadcasterTestCase(TestCase):
         self.assertEqual(broadcaster.name, "broadcaster1")
         self.assertTrue("blabla" in broadcaster.poster.name)
         self.assertEqual(broadcaster.url, "http://test.live")
+        self.assertEqual(broadcaster.iframe_url, "http://iframe.live")
+        self.assertEqual(broadcaster.iframe_height, 120)
         self.assertEqual(broadcaster.status, True)
+        self.assertEqual(broadcaster.public, False)
         self.assertEqual(broadcaster.is_restricted, True)
         self.assertEqual(broadcaster.building.id, 1)
         self.assertEqual(broadcaster.__str__(), "%s - %s" %
                          (broadcaster.name, broadcaster.url))
         broadcaster2 = Broadcaster.objects.get(id=2)
         self.assertEqual(broadcaster2.video_on_hold.id, 1)
+        self.assertEqual(broadcaster2.password, "mot2passe")
         print(
             "   --->  test_attributs of BroadcasterTestCase : OK !")
 

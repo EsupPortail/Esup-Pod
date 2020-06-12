@@ -38,7 +38,7 @@ else:
 TRANSCRIPT = False
 if getattr(settings, 'USE_TRANSCRIPTION', False):
     TRANSCRIPT = True
-    from .transcript import start_transcript
+    from .transcript import main_threaded_transcript
 
 USE_ESTABLISHMENT = getattr(
     settings, 'USE_ESTABLISHMENT_FIELD', False)
@@ -328,10 +328,6 @@ def encode_video(video_id):
         encode_mp3(video_id, video_data["contain_audio"],
                    video_to_encode.video.path, output_dir)
 
-        start_transcript(video_id) if (
-            TRANSCRIPT and video_to_encode.transcript
-        ) else False
-
         change_encoding_step(video_id, 0, "done")
 
         video_to_encode = Video.objects.get(id=video_id)
@@ -346,6 +342,10 @@ def encode_video(video_id):
         # envois mail fin encodage
         if EMAIL_ON_ENCODING_COMPLETION:
             send_email_encoding(video_to_encode)
+
+        main_threaded_transcript(video_id) if (
+            TRANSCRIPT and video_to_encode.transcript
+        ) else False
 
     else:
         msg = "Wrong file or path : "\

@@ -411,7 +411,9 @@ $('#id_theme option:selected').each(function () {
 
 $('#id_theme option').remove();
 
-$('#id_channel').change(function() {
+//$('#id_channel').change(function() {
+// use click instead of change due to select2 usage : https://github.com/theatlantic/django-select2-forms/blob/master/select2/static/select2/js/select2.js#L1502
+$('#id_channel').on('click', function (e) {
     $('#id_theme option').remove();
     var tab_channel_selected = $(this).val();
     var str = "";

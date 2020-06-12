@@ -82,10 +82,6 @@ HIDE_DISCIPLINES = getattr(
 
 ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
     django_settings, 'ALLOW_MANUAL_RECORDING_CLAIMING', False)
-SHIB_URL = getattr(
-    django_settings, 'SHIB_URL', "/idp/shibboleth.sso/Login")
-USE_SHIB = getattr(
-    django_settings, 'USE_SHIB', False)
 
 USE_RECORD_PREVIEW = getattr(
     django_settings, 'USE_RECORD_PREVIEW', False)
@@ -97,6 +93,12 @@ USE_THEME = getattr(
 
 BOOTSTRAP_CUSTOM = getattr(
     django_settings, 'BOOTSTRAP_CUSTOM', None)
+
+USE_CHUNKED_UPLOAD = getattr(
+    django_settings, 'USE_CHUNKED_UPLOAD', None)
+
+CHUNK_SIZE = getattr(
+    django_settings, 'CHUNK_SIZE', 100000)
 
 
 def context_settings(request):
@@ -125,47 +127,42 @@ def context_settings(request):
     new_settings['SHIB_NAME'] = SHIB_NAME
     new_settings['ALLOW_MANUAL_RECORDING_CLAIMING'] = \
         ALLOW_MANUAL_RECORDING_CLAIMING
-    new_settings['SHIB_URL'] = \
-        SHIB_URL
-    new_settings['USE_SHIB'] = \
-        USE_SHIB
     new_settings['USE_THEME'] = USE_THEME
     new_settings['BOOTSTRAP_CUSTOM'] = BOOTSTRAP_CUSTOM
+    new_settings['USE_CHUNKED_UPLOAD'] = USE_CHUNKED_UPLOAD
+    new_settings['CHUNK_SIZE'] = CHUNK_SIZE
     return new_settings
 
 
 def context_navbar(request):
     channels = Channel.objects.filter(
         visible=True, video__is_draft=False,
-        video__sites=get_current_site(request),
         sites=get_current_site(request)
     ).distinct().annotate(
         video_count=Count("video", distinct=True)
     ).prefetch_related(
         Prefetch("themes", queryset=Theme.objects.filter(
             parentId=None,
-            video__sites=get_current_site(request)
+            channel__sites=get_current_site(request)
         ).distinct().annotate(
             video_count=Count("video", distinct=True)
         )))
 
     all_channels = Channel.objects.all(
-    ).filter(sites=get_current_site(request),
-             video__sites=get_current_site(request)).distinct().annotate(
+    ).filter(sites=get_current_site(request)).distinct().annotate(
         video_count=Count("video", distinct=True)
     ).prefetch_related(
         Prefetch("themes", queryset=Theme.objects.filter(
-            video__sites=get_current_site(request)).distinct().annotate(
+            channel__sites=get_current_site(request)).distinct().annotate(
             video_count=Count("video", distinct=True)
         )))
 
     types = Type.objects.filter(
-        video__sites=get_current_site(request),
-        video__is_draft=False, sites=get_current_site(request)
+        sites=get_current_site(request),
+        video__is_draft=False,
     ).distinct().annotate(video_count=Count("video", distinct=True))
 
     disciplines = Discipline.objects.filter(
-        video__sites=get_current_site(request),
         video__is_draft=False, sites=get_current_site(request)
     ).distinct().annotate(video_count=Count("video", distinct=True))
 

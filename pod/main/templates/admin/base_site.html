@@ -2,6 +2,7 @@
 {% load i18n static %}
 {% block extrastyle %}
 <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<script> var max_duration_date_delete = {{max_duration_date_delete}};</script>
 {% endblock %}
 
 {% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
