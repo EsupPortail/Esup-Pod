@@ -32,8 +32,12 @@
 <div id="uploadblock">
     <input id="chunked_upload" class="hide-on-processing" accept="{{allow_extension}}" type="file" name="the_file">
     <progress id="progBar" value="0" max="100"></progress>
+
+    {%if TRANSCRIPT %}
     <input type="checkbox" class="hide-on-processing" id="transcript-box" name="transbox">
 <label class="hide-on-processing" for="transbox">{% trans "Transcript" %} ({% trans "Check this box if you want to transcript the audio.(beta version)"%})</label>
+    {%endif%}
+
     <p>{% trans "Do not leave the page if you encounter a connection problem during the upload, it will resume automatically when your connection is available again." %}</p>
   
 </div>
@@ -69,6 +73,8 @@
               </div>
           </div>
   </div>
+  
+  {%if TRANSCRIPT %}
   <div class="card-text" id="formfields">
     <div class="card card-body p-1">
         <button class="btn btn-sm-light" id="heading-2" data-toggle="collapse" data-target="#collapse-2" aria-expanded="true" aria-controls="collapse-2" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
@@ -79,7 +85,8 @@
             <p> {% trans "You will probably have to modify this file using the captioning tool in the completion page to improve it." %} </p>
         </div>
     </div>
-</div>
+  </div>
+  {%endif%}
 </div>
 {% endblock page_aside %}
 

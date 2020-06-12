@@ -128,6 +128,8 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
     )
 )
 
+TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
+
 # ############################################################################
 # CHANNEL
 # ############################################################################
@@ -1561,7 +1563,8 @@ def video_add(request):
         'slug': slug,
         'max_size': VIDEO_MAX_UPLOAD_SIZE,
         'allow_extension': allow_extension,
-        'allowed_text': allowed_text})
+        'allowed_text': allowed_text,
+        'TRANSCRIPT': TRANSCRIPT})
 
 
 class PodChunkedUploadView(ChunkedUploadView):
