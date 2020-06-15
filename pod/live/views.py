@@ -8,6 +8,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Prefetch
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def lives(request):  # affichage des directs
@@ -22,8 +23,16 @@ def lives(request):  # affichage des directs
 
 def video_live(request, slug):  # affichage des directs
     site = get_current_site(request)
-    broadcaster = get_object_or_404(Broadcaster, slug=slug,
-                                    building__sites=site)
+    broadcaster = None
+    if slug.isnumeric():
+        try:
+            broadcaster = Broadcaster.objects.get(
+                id=slug, building__sites=site)
+        except ObjectDoesNotExist:
+            pass
+    if broadcaster is None:
+        broadcaster = get_object_or_404(Broadcaster, slug=slug,
+                                        building__sites=site)
     if broadcaster.is_restricted and not request.user.is_authenticated():
         iframe_param = 'is_iframe=true&' if (
             request.GET.get('is_iframe')) else ''
