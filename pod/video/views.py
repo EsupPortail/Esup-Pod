@@ -129,10 +129,64 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
 )
 
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
+ORGANIZE_BY_THEME = getattr(settings, 'ORGANIZE_BY_THEME', False)
 
 # ############################################################################
 # CHANNEL
 # ############################################################################
+
+
+def add_in_list_of_tuple(list_of_tuple, p_theme, p_video):
+    added = False
+    for theme, videos in list_of_tuple:
+        if theme == p_theme:
+            videos.add(p_video)
+            added = True
+    if not added:
+        list_of_tuple.append((p_theme, {p_video, }))
+    return list_of_tuple
+
+
+def regroup_videos_by_theme(videos, channel, theme=None):
+    """
+    " Regroup videos by theme
+    " @return [ (theme, set()), (theme, set()) ]
+    """
+    if not theme:
+        children_themes = channel.themes.filter(parentId_id=None)
+    else:
+        children_themes = theme.children.all()
+    videos_regrouped = [(t, set()) for t in children_themes]
+    for video in videos:
+        has_theme = False
+        if children_themes:
+            for t in children_themes:
+                theme_tree = set(t.get_all_children_flat())
+                theme_tree.add(t)
+                common_themes = list(
+                        theme_tree.intersection(video.theme.all()))
+                if common_themes:
+                    videos_regrouped = add_in_list_of_tuple(
+                            videos_regrouped, t, video)
+                    has_theme = True
+            if not has_theme:
+                videos_regrouped = add_in_list_of_tuple(
+                    videos_regrouped, _("Other"), video)
+        else:
+            videos_regrouped = add_in_list_of_tuple(
+                    videos_regrouped, " ", video)
+    return videos_regrouped
+
+
+def paginator(videos_list, page):
+    paginator = Paginator(videos_list, 12)
+    try:
+        videos = paginator.page(page)
+    except PageNotAnInteger:
+        videos = paginator.page(1)
+    except EmptyPage:
+        videos = paginator.page(paginator.num_pages)
+    return videos
 
 
 def channel(request, slug_c, slug_t=None):
@@ -152,24 +206,23 @@ def channel(request, slug_c, slug_t=None):
     if page:
         full_path = request.get_full_path().replace(
             "?page=%s" % page, "").replace("&page=%s" % page, "")
-    paginator = Paginator(videos_list, 12)
-    try:
-        videos = paginator.page(page)
-    except PageNotAnInteger:
-        videos = paginator.page(1)
-    except EmptyPage:
-        videos = paginator.page(paginator.num_pages)
+
+    videos = paginator(videos_list, page)
 
     if request.is_ajax():
         return render(
             request, 'videos/video_list.html',
             {'videos': videos, "full_path": full_path})
-
+    videos_theme = None
+    if ORGANIZE_BY_THEME:
+        videos_theme = regroup_videos_by_theme(videos_list, channel, theme)
     return render(request, 'channel/channel.html',
                   {'channel': channel,
                    'videos': videos,
                    'theme': theme,
-                   'full_path': full_path})
+                   'full_path': full_path,
+                   'videos_theme': videos_theme,
+                   'organize_theme': ORGANIZE_BY_THEME})
 
 
 @login_required(redirect_field_name='referrer')
