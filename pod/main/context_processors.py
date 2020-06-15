@@ -82,10 +82,6 @@ HIDE_DISCIPLINES = getattr(
 
 ALLOW_MANUAL_RECORDING_CLAIMING = getattr(
     django_settings, 'ALLOW_MANUAL_RECORDING_CLAIMING', False)
-SHIB_URL = getattr(
-    django_settings, 'SHIB_URL', "/idp/shibboleth.sso/Login")
-USE_SHIB = getattr(
-    django_settings, 'USE_SHIB', False)
 
 USE_RECORD_PREVIEW = getattr(
     django_settings, 'USE_RECORD_PREVIEW', False)
@@ -131,10 +127,6 @@ def context_settings(request):
     new_settings['SHIB_NAME'] = SHIB_NAME
     new_settings['ALLOW_MANUAL_RECORDING_CLAIMING'] = \
         ALLOW_MANUAL_RECORDING_CLAIMING
-    new_settings['SHIB_URL'] = \
-        SHIB_URL
-    new_settings['USE_SHIB'] = \
-        USE_SHIB
     new_settings['USE_THEME'] = USE_THEME
     new_settings['BOOTSTRAP_CUSTOM'] = BOOTSTRAP_CUSTOM
     new_settings['USE_CHUNKED_UPLOAD'] = USE_CHUNKED_UPLOAD

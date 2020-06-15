@@ -128,6 +128,8 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
     )
 )
 
+TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
+
 # ############################################################################
 # CHANNEL
 # ############################################################################
@@ -1561,7 +1563,8 @@ def video_add(request):
         'slug': slug,
         'max_size': VIDEO_MAX_UPLOAD_SIZE,
         'allow_extension': allow_extension,
-        'allowed_text': allowed_text})
+        'allowed_text': allowed_text,
+        'TRANSCRIPT': TRANSCRIPT})
 
 
 class PodChunkedUploadView(ChunkedUploadView):
@@ -1593,11 +1596,16 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 
     def on_completion(self, uploaded_file, request):
         edit_slug = request.POST.get("slug")
+        transcript = request.POST.get("transcript")
         if edit_slug == "":
             video = Video.objects.create(video=uploaded_file,
                                          owner=request.user,
                                          type=Type.objects.get(id=1),
-                                         title=uploaded_file.name)
+                                         title=uploaded_file.name,
+                                         transcript=(
+                                             True if (
+                                                 transcript == "true"
+                                                 ) else False))
         else:
             video = Video.objects.get(slug=edit_slug)
             video.video = uploaded_file

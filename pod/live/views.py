@@ -7,12 +7,14 @@ from django.shortcuts import redirect
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import Prefetch
 
 
 def lives(request):  # affichage des directs
-
     site = get_current_site(request)
-    buildings = Building.objects.all().filter(sites=site)
+    buildings = Building.objects.all().filter(sites=site).prefetch_related(
+        Prefetch("broadcaster_set", queryset=Broadcaster.objects.filter(
+            public=True)))
     return render(request, "live/lives.html", {
         'buildings': buildings
     })

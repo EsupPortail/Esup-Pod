@@ -81,9 +81,9 @@
     </p>
     {% endif %}
     {% for otherbroadcaster in broadcaster.building.broadcaster_set.all%}
-    {% if otherbroadcaster != broadcaster %}
+    {% if otherbroadcaster != broadcaster and otherbroadcaster.public %}
       <p class="card-text">
-        {%if otherbroadcaster.status %}<a href="{% url "live:video_live" slug=otherbroadcaster.slug %}" class="live_on"><i data-feather="airplay"></i>&nbsp;{{otherbroadcaster.name}}</a>
+        {%if otherbroadcaster.status %}<a href="{% url "live:video_live" slug=otherbroadcaster.slug %}" class="live_on">{%if otherbroadcaster.password%}<i data-feather="lock"></i>{%else%}<i data-feather="airplay"></i>{%endif%}</i>&nbsp;{{otherbroadcaster.name}}</a>
         {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{otherbroadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}</p>
     {% endif %}
     {% empty %}
