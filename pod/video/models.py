@@ -165,8 +165,6 @@ DEFAULT_DC_RIGHTS = getattr(settings, 'DEFAULT_DC_RIGHT', "BY-NC-SA")
 
 DEFAULT_YEAR_DATE_DELETE = getattr(settings, 'DEFAULT_YEAR_DATE_DELETE', 2)
 
-SHOW_ONLY_PARENT_THEMES = getattr(settings, 'SHOW_ONLY_PARENT_THEMES', False)
-
 # FUNCTIONS
 
 
@@ -273,11 +271,9 @@ class Channel(models.Model):
             list_theme["%s" % theme.id] = {
                 "title": "%s" % theme.title,
                 "slug": "%s" % theme.slug,
-                "url": "%s" % theme.get_absolute_url()
+                "url": "%s" % theme.get_absolute_url(),
+                "child": theme.get_all_children_tree()
             }
-            if not SHOW_ONLY_PARENT_THEMES:
-                list_theme["%s" % theme.id]["child"
-                        ] = theme.get_all_children_tree()
         return list_theme
 
     def get_all_theme_json(self):
