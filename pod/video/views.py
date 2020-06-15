@@ -221,7 +221,8 @@ def channel(request, slug_c, slug_t=None):
                    'videos': videos,
                    'theme': theme,
                    'full_path': full_path,
-                   'videos_theme': videos_theme})
+                   'videos_theme': videos_theme,
+                   'organize_theme': ORGANIZE_BY_THEME})
 
 
 @login_required(redirect_field_name='referrer')

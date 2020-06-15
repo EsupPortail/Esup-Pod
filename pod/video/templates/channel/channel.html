@@ -2,7 +2,6 @@
 {% load i18n %}
 {% load staticfiles %}
 {% load video_filters %}
-{% load custom_tags %}
 {% load filters %}
 
 
@@ -31,7 +30,6 @@ body {
 {%endif%}
 </style>
 
-  {% get_setting 'ORGANIZE_BY_THEME' False as organize_theme %}
   {% if organize_theme %}
   <link rel='stylesheet' href='{% static "css/video_foldable_theme.css" %}'>
   {% endif %}
@@ -98,7 +96,6 @@ body {
   {%endif%}
 
   <p>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</p>
-  {% get_setting 'ORGANIZE_BY_THEME' False as organize_theme %}
   {% if organize_theme %} 
       {% for t_obj, videos in videos_theme %}
 	<div class="inline-flex">
@@ -184,7 +181,6 @@ setTimeout(function(){
 }, 500);
 </script>
 
-{% get_setting 'ORGANIZE_BY_THEME' False as organize_theme %}
 {% if organize_theme %}
 <script>
     (function()
