@@ -126,9 +126,9 @@ var get_list = function(tab, level, tab_selected, tag_type, li_class, attrs, add
         else list_class+='"';
         list += '<'+tag_type+' '+selected+' '+list_class+' '+attrs+' value="'+i+'" id="theme_'+i+'">'+prefix+" "+title+'</'+tag_type+'>';
         var child = val.child;
-        var count = Object.keys(child).length;
+        var count = child? Object.keys(child).length : 0;
         if(count>0) {
-            list += get_list(val.child, level+=1, tab_selected, tag_type, li_class, attrs, add_link, current, channel);
+            list += get_list(child, level+=1, tab_selected, tag_type, li_class, attrs, add_link, current, channel);
         }
     });
     return list;
