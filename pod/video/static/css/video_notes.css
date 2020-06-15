@@ -11,40 +11,29 @@
     margin: 0 0 0 10px;
 }
 
-#id_notes {
-    max-height: 400px;
-    overflow: auto;
-}
-
-div.note > .header {
-    border: solid 1px transparent;
-    border-radius: 10px;
-}
-
-div.comment > .header {
-    border: solid 1px transparent;
-    border-radius: 10px 10px 0 0;
-}
-
-div.comment > form {
-    border: solid 1px transparent;
-    border-radius: 0 0 10px 10px;
-}
-
 #id_notes small {
     font-size: 9px;
     font-weight: bold;
+}
+
+.bigtakenote #id_notes small {
+    font-size: 11px;
 }
 
 #id_notes .form-group {
     margin: 0;
 }
 
-#id_notes p.note.form, #id_notes p.comment.form {
+#id_notes p.note.form, #id_notes div.comment.form {
     margin: auto;
 }
 
-#card-takenote div.dropdown-menu {
+.bigtakenote #id_notes {
+  overflow: scroll;
+  height: 600px;
+}
+
+.mgtNote div.dropdown-menu, .mgtComment div.dropdown-menu {
     min-width: auto;
     padding: 5px;
 }
@@ -53,18 +42,37 @@ span.timestamp {
     font-size: 11px;
     align-self: center;
 }
+.bigtakenote span.timestamp {
+    font-size: 14px;
+}
+
+.bigtakenote div.mgtNotes a.open{
+  display: none;
+}
 
 span.timestamp, .view_video_notes_form, .view_video_note_coms_form {
     cursor: pointer;
     padding: 3px 0 3px 0;
 }
 
-p.note, p.comment {
+p.note, div.comment {
     font-size: 12px;
+}
+
+.bigtakenote p.note, .bigtakenote div.comment {
+    font-size: 14px;
+}
+
+div.comment {
+  flex: auto;
 }
 
 div.header {
     display: flex;
+}
+
+div.header:hover{
+  background:#f2f2f2;
 }
 
 div.header > form {
@@ -78,7 +86,11 @@ div.header > span, div.header > form {
 
 span.user {
     font-size: 11px;
-    font-style: italic;
+    font-weight: bold;
+}
+
+.bigtakenote span.user {
+    font-size: 14px;
 }
 
 .notdisplayed p.note, .notdisplayed p.comment {
@@ -93,14 +105,9 @@ textarea#id_note, textarea#id_comment, select#id_status {
     padding: 5px;
 }
 
-#card-takenote {
-    padding: 3px !important;
-    flex-flow: wrap;
-}
-
-#card-takenote > h5 {
-    flex: auto;
-}
+.bigtakenote textarea#id_note, .bigtakenote textarea#id_comment, .bigtakenote select#id_status {
+    font-size: 14px;
+  }
 
 #card-takenote > div.card-text {
     width: 100%;
@@ -113,6 +120,13 @@ textarea#id_note, textarea#id_comment, select#id_status {
 div.mgtNotes, div.mgtNote, div.mgtComment {
     align-self: center;
 }
+div.mgtNotes {
+  display:block;
+}
+div.mgtNotes form{
+  display: inline-block;
+  text-align: center;
+}
 
 div.mgtNotes.dropleft > button,
 div.mgtNote.dropleft > button,
@@ -123,17 +137,17 @@ div.mgtComment.dropleft > button {
 #id_notes > div.status-0 > div.header, #id_notes > div.status-0 > div.header div.dropdown-menu,
 .comments > div.status-0 > .header, .comments > div.status-0 > form,
 .comments > div.status-0 > div.header div.dropdown-menu {
-    background-color: #f1f7ff;
+    color: rgba(0,0,0,0.5);
 }
 #id_notes > div.status-1 > .header, #id_notes > div.status-1 div.dropdown-menu,
 .comments > div.status-1 > .header, .comments > div.status-1 > form,
 .comments > div.status-1 > div.header div.dropdown-menu {
-    background-color: #f2fff1;
+  color:rgba(0,0,0,0.7);
 }
 #id_notes > div.status-2 > .header, #id_notes > div.status-2 div.dropdown-menu,
 .comments > div.status-2 > .header, .comments > div.status-2 > form,
 .comments > div.status-2 > div.header div.dropdown-menu {
-    background-color: #fffcf1;
+  color:rgba(0,0,0,1);
 }
 
 form.view_video_notes_form.hidden, form.view_video_note_coms_form.hidden {
@@ -149,4 +163,8 @@ form.view_video_notes_form.hidden, form.view_video_note_coms_form.hidden {
 
 div.note, div.comment {
     margin: 3px 0 3px 0;
+}
+
+.user-comment {
+  display: flex;
 }

@@ -1,8 +1,9 @@
 from django import forms
 from django.conf import settings
-
 from pod.live.models import Building
 from pod.live.models import Broadcaster
+from pod.main.forms import add_placeholder_and_asterisk
+from django.utils.translation import ugettext_lazy as _
 
 FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
@@ -12,6 +13,9 @@ if getattr(settings, 'USE_PODFILE', False):
 
 class BuildingAdminForm(forms.ModelForm):
     required_css_class = 'required'
+    is_staff = True
+    is_superuser = False
+    admin_form = True
 
     def __init__(self, *args, **kwargs):
         super(BuildingAdminForm, self).__init__(*args, **kwargs)
@@ -40,3 +44,13 @@ class BroadcasterAdminForm(forms.ModelForm):
     class Meta(object):
         model = Broadcaster
         fields = '__all__'
+
+
+class LivePasswordForm(forms.Form):
+    password = forms.CharField(
+        label=_('Password'),
+        widget=forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        super(LivePasswordForm, self).__init__(*args, **kwargs)
+        self.fields = add_placeholder_and_asterisk(self.fields)

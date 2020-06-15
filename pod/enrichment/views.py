@@ -1,16 +1,17 @@
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import PermissionDenied
+from django.core.exceptions import SuspiciousOperation
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
-
+from django.views.decorators.csrf import ensure_csrf_cookie
 from pod.video.models import Video
 from pod.video.views import render_video
-
+from django.contrib.sites.shortcuts import get_current_site
 from .models import Enrichment, EnrichmentGroup
 from .forms import EnrichmentForm, EnrichmentGroupForm
 # from .utils import enrichment_to_vtt
@@ -21,12 +22,17 @@ ACTION = ['new', 'save', 'modify', 'delete', 'cancel']
 
 
 @csrf_protect
+@ensure_csrf_cookie
 @staff_member_required(redirect_field_name='referrer')
 def group_enrichment(request, slug):
-    video = get_object_or_404(Video, slug=slug)
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
     enrichmentGroup, created = EnrichmentGroup.objects.get_or_create(
         video=video)
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner and not (
+        request.user.is_superuser or request.user.has_perm(
+            "enrichment.add_enrichment")) and (
+            request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot enrich this video.'))
         raise PermissionDenied
@@ -58,10 +64,15 @@ def check_enrichment_group(request, video):
 
 
 @csrf_protect
+@ensure_csrf_cookie
 @staff_member_required(redirect_field_name='referrer')
 def edit_enrichment(request, slug):
-    video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
+    if request.user != video.owner and not (
+        request.user.is_superuser or request.user.has_perm(
+            "enrichment.edit_enrichment")) and (
+            request.user not in video.additional_owners.all()):
         if not check_enrichment_group(request, video):
             messages.add_message(
                 request, messages.ERROR, _(u'You cannot enrich this video.'))
@@ -122,7 +133,7 @@ def edit_enrichment_save(request, video):
                 'list_enrichment': render_to_string(
                     'enrichment/list_enrichment.html',
                     {'list_enrichment': list_enrichment,
-                     'video': video}),
+                     'video': video}, request=request),
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
@@ -139,7 +150,7 @@ def edit_enrichment_save(request, video):
                 'form': render_to_string(
                     'enrichment/form_enrichment.html', {
                         'video': video,
-                        'form_enrichment': form_enrichment})
+                        'form_enrichment': form_enrichment}, request=request)
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
@@ -184,7 +195,7 @@ def edit_enrichment_delete(request, video):
                 'enrichment/list_enrichment.html', {
                     'list_enrichment': list_enrichment,
                     'video': video
-                })
+                }, request=request)
         }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type='application/json')
@@ -206,13 +217,19 @@ def edit_enrichment_cancel(request, video):
 
 
 @csrf_protect
+@ensure_csrf_cookie
 def video_enrichment(request, slug, slug_c=None,
                      slug_t=None, slug_private=None):
 
     template_video = 'enrichment/video_enrichment-iframe.html' if (
         request.GET.get('is_iframe')) else 'enrichment/video_enrichment.html'
 
-    return render_video(request, slug, slug_c, slug_t, slug_private,
+    try:
+        id = int(slug[:slug.find("-")])
+    except ValueError:
+        raise SuspiciousOperation('Invalid video id')
+
+    return render_video(request, id, slug_c, slug_t, slug_private,
                         template_video, None)
 
 

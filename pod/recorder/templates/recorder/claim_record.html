@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% block page_extra_head %}
+<link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
+<script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
+<script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
+<script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
+{% endblock %}
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Claim a record" %}</li>{% endblock %}
+
+{% block page_title %}
+{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}
+{% endblock %}
+
+{% block page_content %}
+  {% if records.paginator.count == 0 %}
+  <h3>{% trans "No record found"%}</h3>
+    <p class="alert alert-info">{% trans 'There is no unassigned records'%}</p>
+  {% else %}
+  <h3>{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}</h3>
+  {% include "recorder/record_list.html" %}
+  {% endif %}
+
+{% if USE_RECORD_PREVIEW%}
+<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" style="max-width:1440px"role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="exampleModalLabel">{% trans "Record preview" %}</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+ <video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
+ data-setup='{}'>
+    <p class="vjs-no-js">
+        To view this video please enable JavaScript, and consider upgrading to a web browser that
+        <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+    </p>
+
+
+</video>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+{% block more_script %}
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite.min.js' %}"></script>
+<script>
+  var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+      $('.loading').show();
+    },
+    onAfterPageLoad: function ($items) {
+      $('.loading').hide();
+      feather.replace({ class: 'align-bottom'});
+      $('footer.static-pod').addClass('small');
+      $('footer.static-pod').addClass('fixed-bottom');
+      $('footer.static-pod').attr('style','height:80px; overflow-y:auto');
+      $('footer.static-pod .hidden-pod').css('display','none');
+      $(window).scroll(function () {
+        if ($(window).height() + $(window).scrollTop() == $(document).height())
+        {
+           $('footer.static-pod .hidden-pod').css('display','block');
+           $('footer.static-pod').attr('style','height:auto;');
+           $('footer.static-pod').removeClass('fixed-bottom');
+        }
+      });
+    }
+  });
+
+  $('.previewBtn').on('click', function (e) {
+  videojs("podvideoplayer").src($(this).data("recid"))
+})
+</script>
+{% endblock more_script %}

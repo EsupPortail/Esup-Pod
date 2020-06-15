@@ -1,20 +1,36 @@
 from django.conf import settings
-
 from django.core.files import File
 from pod.completion.models import Track
+
+from .utils import change_encoding_step, add_encoding_log
+from .utils import send_email, send_email_transcript
+from .models import Video
+
+import numpy as np
+import shlex
+import subprocess
+# import sys
+import os
+import time
+from timeit import default_timer as timer
+from datetime import timedelta
 
 from webvtt import WebVTT, Caption
 from tempfile import NamedTemporaryFile
 
-import os
-import subprocess
-import deepspeech
-import numpy
-import time
-import billiard
+try:
+    from shhlex import quote
+except ImportError:
+    from pipes import quote
 
-from timeit import default_timer as timer
-from pod.video.voiceActivityDetector import VoiceActivityDetector
+import threading
+import logging
+
+TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
+if TRANSCRIPT:
+    from deepspeech import Model
+
+DEBUG = getattr(settings, 'DEBUG', False)
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomFileModel
@@ -24,136 +40,230 @@ else:
     FILEPICKER = False
     from pod.main.models import CustomFileModel
 
-FFMPEG = getattr(settings, 'FFMPEG', 'ffmpeg')
-FFMPEG_NB_THREADS = getattr(settings, 'FFMPEG_NB_THREADS', 0)
-
 DS_PARAM = getattr(settings, 'DS_PARAM', dict())
+AUDIO_SPLIT_TIME = getattr(settings, 'AUDIO_SPLIT_TIME', 300)  # 5min
+# time in sec for phrase length
+SENTENCE_MAX_LENGTH = getattr(settings, 'SENTENCE_MAX_LENGTH', 3)
 
-NB_WORKERS_POOL = max(
-    getattr(settings, 'NB_WORKERS_POOL', 4), 1)
+NORMALIZE_TARGET_LEVEL = getattr(settings, 'NORMALIZE_TARGET_LEVEL', -16.0)
 
-DEBUG = getattr(settings, 'DEBUG', False)
+EMAIL_ON_TRANSCRIPTING_COMPLETION = getattr(
+    settings, 'EMAIL_ON_TRANSCRIPTING_COMPLETION', True)
+
+log = logging.getLogger(__name__)
 
 
-# ######################################
-# TRANSCRIPT VIDEO : DEEPSPEECH PROCESS
-# ######################################
-def initfunc(lang):
-    global ds_model
-    ds_model = None
-    if all([cond in DS_PARAM[lang]
-            for cond in ['model', 'alphabet', 'beam_width']]):
-        ds_model = deepspeech.Model(
-            DS_PARAM[lang]['model'], DS_PARAM[lang]['alphabet'],
-            DS_PARAM[lang]['beam_width']
+def start_transcript(video_id):
+    log.info("START TRANSCRIPT VIDEO %s" % video_id)
+    t = threading.Thread(target=main_threaded_transcript,
+                         args=[video_id])
+    t.setDaemon(True)
+    t.start()
+
+
+def main_threaded_transcript(video_to_encode_id):
+
+    change_encoding_step(
+        video_to_encode_id, 5,
+        "transcripting audio")
+
+    video_to_encode = Video.objects.get(id=video_to_encode_id)
+
+    msg = ''
+    lang = video_to_encode.main_lang
+    # check if DS_PARAM [lang] exist
+    if not DS_PARAM.get(lang):
+        msg += "\n no deepspeech model found for lang:%s." % lang
+        msg += "Please add it in DS_PARAM."
+        change_encoding_step(video_to_encode.id, -1, msg)
+        send_email(msg, video_to_encode.id)
+    else:
+        ds_model = Model(
+            DS_PARAM[lang]['model'], DS_PARAM[lang]['beam_width']
         )
-    if all([cond in DS_PARAM[lang]
-            for cond in ['alphabet', 'lm', 'trie',
-                         'lm_alpha', 'lm_beta']]):
-        ds_model.enableDecoderWithLM(
-            DS_PARAM[lang]['lm'], DS_PARAM[lang]['trie'],
-            DS_PARAM[lang]['lm_alpha'], DS_PARAM[lang]['lm_beta']
-        )
+        if all([cond in DS_PARAM[lang]
+                for cond in ['alphabet', 'lm', 'trie',
+                             'lm_alpha', 'lm_beta']]):
+            ds_model.enableDecoderWithLM(
+                DS_PARAM[lang]['lm'], DS_PARAM[lang]['trie'],
+                DS_PARAM[lang]['lm_alpha'], DS_PARAM[lang]['lm_beta']
+            )
+        msg = main_transcript(video_to_encode, ds_model)
+
+    add_encoding_log(video_to_encode.id, msg)
 
 
-def deepspeech_run(video, ds_wav_path):
-    msg = msg = "\nTRANSCRIPTING FILE : %s" % time.ctime()
+def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
+    sox_cmd = 'sox {} --type raw --bits 16 --channels 1 --rate {} '.format(
+        quote(audio_path), desired_sample_rate)
+    sox_cmd += '--encoding signed-integer --endian little --compression 0.0 '
+    sox_cmd += '--no-dither - trim {} {}'.format(trim_start, duration)
+
+    try:
+        output = subprocess.check_output(
+            shlex.split(sox_cmd), stderr=subprocess.PIPE)
+
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError('SoX returned non-zero status: {}'.format(e.stderr))
+    except OSError as e:
+        raise OSError(e.errno,
+                      'SoX not found, use {}hz files or install it: {}'.format(
+                          desired_sample_rate, e.strerror))
+
+    return np.frombuffer(output, np.int16)
+
+
+def normalize_mp3(mp3filepath):
+    filename, file_extension = os.path.splitext(mp3filepath)
+    mp3normfile = '{}{}{}'.format(filename, '_norm', file_extension)
+    normalize_cmd = 'ffmpeg-normalize {} '.format(quote(mp3filepath))
+    normalize_cmd += '-c:a libmp3lame -b:a 192k --normalization-type ebu '
+    # normalize_cmd += \
+    # '--loudness-range-target 7.0 --true-peak 0.0 --offset 0.0 '
+    normalize_cmd += '--target-level {} -f -o {}'.format(
+        NORMALIZE_TARGET_LEVEL, quote(mp3normfile))
     if DEBUG:
-        start_timer = timer()
-    lang = video.main_lang
-    vad = VoiceActivityDetector(ds_wav_path)
-    seg_list, sample_rate = vad.vad_segment_generator()
-    if seg_list:
-        msg += "\n- Start Transcript Process : %s" % time.ctime()
-        p = billiard.Pool(processes=NB_WORKERS_POOL,
-                          initializer=initfunc,
-                          initargs=(lang,),
-                          threads=True)
-        res = p.map_async(deepspeech_aux, seg_list).get()
-        p.close()
-        p.join()
-        msg += "\n- End Transcript Process : %s" % time.ctime()
-    if DEBUG:
-        end_timer = timer()
-        print('Transcription duration : %f s' %
-              (end_timer - start_timer))
-    msg2, webvtt = createVTT(res, vad.sample_rate)
-    msg += msg2
-    msg += saveVTT(video, webvtt)
+        print(normalize_cmd)
+    try:
+        subprocess.check_output(
+            shlex.split(normalize_cmd), stderr=subprocess.PIPE)
+        return mp3normfile
+    except subprocess.CalledProcessError as e:
+        log.error('ffmpeg-normalize returned non-zero status: {}'.format(
+            e.stderr))
+        return mp3filepath
+    except OSError as e:
+        log.error('ffmpeg-normalize not found {}'.format(e.strerror))
+        return mp3filepath
+
+# #################################
+# TRANSCRIPT VIDEO : MAIN FUNCTION
+# #################################
+
+
+def main_transcript(video_to_encode, ds_model):
+    msg = ""
+    inference_start = timer()
+    msg += '\nInference start %0.3fs.' % inference_start
+
+    mp3file = video_to_encode.get_video_mp3(
+    ).source_file if video_to_encode.get_video_mp3() else None
+    if mp3file is None:
+        msg += "\n no mp3 file found for video :%s." % video_to_encode.id
+        change_encoding_step(video_to_encode.id, -1, msg)
+        send_email(msg, video_to_encode.id)
+        return msg
+
+    # NORMALIZE mp3file
+    norm_mp3_file = normalize_mp3(mp3file.path)
+
+    desired_sample_rate = ds_model.sampleRate()
+
+    webvtt = WebVTT()
+
+    last_item = None
+    sentences = []
+    sentence = []
+    metadata = None
+
+    for start_trim in range(0, video_to_encode.duration, AUDIO_SPLIT_TIME):
+
+        end_trim = video_to_encode.duration if start_trim + \
+            AUDIO_SPLIT_TIME > video_to_encode.duration else (
+                start_trim + AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH)
+
+        duration = (AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH) if start_trim + \
+            AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH < video_to_encode.duration \
+            else (video_to_encode.duration - start_trim)
+
+        msg += "\ntake audio from %s to %s - %s" % (
+            start_trim, end_trim, duration)
+
+        audio = convert_samplerate(
+            norm_mp3_file, desired_sample_rate, start_trim, duration)
+        msg += '\nRunning inference.'
+
+        metadata = ds_model.sttWithMetadata(audio)
+
+        msg += '\nConfidence : %s' % metadata.confidence
+
+        sentences[:] = []  # empty list
+        sentence[:] = []  # empty list
+
+        if len(metadata.items) > 0:
+            refItem = metadata.items[0]
+            index = get_index(metadata, last_item,
+                              start_trim) if last_item else 0
+            # nb of character in AUDIO_SPLIT_TIME
+            msg += "METADATA ITEMS : %d " % len(metadata.items)
+            sentences = get_sentences(metadata, refItem, index)
+            last_item = (
+                sentences[-1][-1].character, sentences[-1][-1].start_time
+            ) if len(sentences) > 0 else ()
+            for sent in sentences:
+                if len(sent) > 0:
+                    start_time = sent[0].start_time + start_trim
+                    end_time = sent[-1].start_time + start_trim
+                    str_sentence = ''.join(item.character for item in sent)
+                    # print(start_time, end_time, str_sentence)
+                    caption = Caption(
+                        '%s.%s' % (timedelta(
+                            seconds=int(str(start_time).split('.')[0])),
+                            str('%.3f' % start_time).split('.')[1]),
+                        '%s.%s' % (timedelta(
+                            seconds=int(str(end_time).split('.')[0])),
+                            str('%.3f' % end_time).split('.')[1]),
+                        ['%s' % str_sentence]
+                    )
+                    webvtt.captions.append(caption)
+    # print(webvtt)
+    msg += saveVTT(video_to_encode, webvtt)
+    inference_end = timer() - inference_start
+    msg += '\nInference took %0.3fs.' % inference_end
+    # print(msg)
+    change_encoding_step(video_to_encode.id, 0, "done")
+    # envois mail fin transcription
+    if EMAIL_ON_TRANSCRIPTING_COMPLETION:
+        send_email_transcript(video_to_encode)
     return msg
 
 
-def deepspeech_aux(arg):
-    if ds_model:
-        start, end, data, rate = arg
-        data_window = numpy.frombuffer(data, dtype=numpy.int16)
-        res = ds_model.stt(data_window, rate)
-        return (start, end, res)
+def get_sentences(metadata, refItem, index):
+    sentence = []
+    sentences = []
+    for item in metadata.items[index:]:
+        if((item.start_time - refItem.start_time) < SENTENCE_MAX_LENGTH):
+            sentence.append(item)
+        else:
+            if item.character == ' ':
+                sentences.append(sentence)
+                sentence = []
+                refItem = item
+            else:
+                sentence.append(item)
+    if sentence != []:
+        sentences.append(sentence)
+    return sentences
 
 
-# ###############################################
-# TRANSCRIPT VIDEO : FILE CONVERSION 16KHZ 16BIT
-# ###############################################
-def av2wav16b16k(video, output_dir):
+def get_index(metadata, last_item, start_trim):
     """
-    Convert video or audio file into Wave format 16bit 16kHz mono
+    try:
+        index = metadata.items.index(last_item) if last_item else 0
+        refItem = metadata.items[index]
+    except ValueError:
+        print("Last item not found")
     """
-    path_in = video.video.path
-    name = os.path.splitext(os.path.basename(path_in))[0]
-    path_out = os.path.join(output_dir, name + "_ds.wav")
-    options = "-format wav -acodec pcm_s16le -ar 16000 \
-               -threads %(nb_threads)s" % {
-                   'nb_threads': FFMPEG_NB_THREADS
-                }
-    cmd = "%(ffmpeg)s -i %(input)s %(options)s %(output)s" % {
-        'ffmpeg': FFMPEG,
-        'input': path_in,
-        'options': options,
-        'output': path_out
-    }
-    msg = "\nffmpegWav16bit16kHzCommand :\n%s" % cmd
-    msg += "\n- Encoding Wav 16bit 16kHz : %s" % time.ctime()
-    ffmpeg = subprocess.run(
-        cmd, shell=True, stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT)
-    msg += "\n- End Encoding Wav 16bit 16kHz : %s" % time.ctime()
-
-    with open(output_dir + "/encoding.log", "ab") as f:
-        f.write(b'\n\nffmpegwav16bit16kHz:\n\n')
-        f.write(ffmpeg.stdout)
-
-    return msg, path_out
-
-
-# ###########################################
-# TRANSCRIPT VIDEO : WEBVTT FILES MANAGEMENT
-# ###########################################
-def createCaption(arg, rate):
-    start, end, text = arg
-    start = format(start/rate, '.3f')
-    end = format(end/rate, '.3f')
-    start_time = time.strftime(
-        '%H:%M:%S',
-        time.gmtime(int(str(start).split('.')[0]))
-    )
-    start_time += ".%s" % (str(start).split('.')[1])
-    end_time = time.strftime(
-        '%H:%M:%S',
-        time.gmtime(int(str(end).split('.')[0])))
-    end_time += ".%s" % (str(end).split('.')[1])
-    caption = Caption(
-        '%s' % start_time,
-        '%s' % end_time,
-        '%s' % text
-    )
-    return caption
-
-
-def createVTT(content_l, rate):
-    msg = "\nCREATE TRANSCRIPT WEBVTT : %s" % time.ctime()
-    webvtt = WebVTT()
-    webvtt.captions.extend([createCaption(e, rate) for e in content_l if e[2]])
-    return msg, webvtt
+    index = 0
+    for item in metadata.items:
+        if (
+                (item.character == last_item[0]) and
+                (item.start_time > (last_item[1] - start_trim))
+        ):
+            return index + 1  # take the next one
+        else:
+            index += 1
+    return 0
 
 
 def saveVTT(video, webvtt):
@@ -167,41 +277,33 @@ def saveVTT(video, webvtt):
             videodir, created = UserFolder.objects.get_or_create(
                 name='%s' % video.slug,
                 owner=video.owner)
+            """
             previousSubtitleFile = CustomFileModel.objects.filter(
                 name__startswith="subtitle_%s" % lang,
                 folder=videodir,
                 created_by=video.owner
             )
-            for subt in previousSubtitleFile:
-                subt.delete()
+            """
+            # for subt in previousSubtitleFile:
+            #     subt.delete()
             subtitleFile, created = CustomFileModel.objects.get_or_create(
-                name="subtitle_%s" % lang,
+                name="subtitle_%s_%s" % (lang, time.strftime("%Y%m%d-%H%M%S")),
                 folder=videodir,
                 created_by=video.owner)
             if subtitleFile.file and os.path.isfile(subtitleFile.file.path):
                 os.remove(subtitleFile.file.path)
         else:
             subtitleFile, created = CustomFileModel.objects.get_or_create()
-        subtitleFile.file.save("subtitle_%s.vtt" % lang, File(temp_vtt_file))
+
+        subtitleFile.file.save("subtitle_%s_%s.vtt" % (
+            lang, time.strftime("%Y%m%d-%H%M%S")), File(temp_vtt_file))
         msg += "\nstore vtt file in bdd with Track model src field"
-        subtitleVtt, created = Track.objects.get_or_create(video=video)
+
+        subtitleVtt, created = Track.objects.get_or_create(
+            video=video, lang=lang)
         subtitleVtt.src = subtitleFile
         subtitleVtt.lang = lang
         subtitleVtt.save()
     else:
         msg += "\nERROR SUBTITLES Output size is 0"
-    return msg
-
-
-# #################################
-# TRANSCRIPT VIDEO : MAIN FUNCTION
-# #################################
-def main_transcript(video):
-    output_dir = os.path.join(
-        os.path.dirname(video.video.path),
-        "%04d" % video.id)
-    msg, ds_wav_path = av2wav16b16k(video, output_dir)
-    msg += deepspeech_run(video, ds_wav_path)
-    msg += "\nDELETE TEMP WAV 16BIT 16KHZ"
-    os.remove(ds_wav_path)
     return msg

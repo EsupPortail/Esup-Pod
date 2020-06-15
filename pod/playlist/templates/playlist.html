@@ -65,10 +65,8 @@
 			 <div class="text-center">
 			 	<input type="hidden" name="action" value="edit"/>
 		        <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary"/>
+				<a class="playlist-delete btn btn-primary" href="#">{% csrf_token %}{% trans 'Delete' %}</a>
 		    </div>
-		    <a class="playlist-delete" href="#">
-				<svg height="32" class="octicon octicon-x" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48L7.48 8z"></path></svg>
-			</a>
 		</form>
 		<hr/>
 		{% if form.instance.playlistelement_set.all %}
@@ -77,5 +75,5 @@
 			<p>{% trans 'This playlist has no videos yet.' %}</p>
 		{% endif %}
 		<hr/>
-		<a href="{% url 'my_playlists' %}" class="btn btn-primary">{% trans 'Back to my playlists' %}</a>
+		<a href="{% url 'my_playlists' %}" class="btn btn-secondary">{% trans 'Back to my playlists' %}</a>
 {% endblock page_content %}

@@ -7,6 +7,10 @@ from django.template.defaultfilters import slugify
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.auth.models import Group
+from select2 import fields as select2_fields
+from sorl.thumbnail import delete
+from itertools import chain
+from operator import attrgetter
 
 import traceback
 import os
@@ -23,9 +27,9 @@ class UserFolder(models.Model):
     name = models.CharField(_('Name'), max_length=255)
     # parent = models.ForeignKey(
     #    'self', blank=True, null=True, related_name='children')
-    owner = models.ForeignKey(User, verbose_name=_('Owner'))
+    owner = select2_fields.ForeignKey(User, verbose_name=_('Owner'))
     created_at = models.DateTimeField(auto_now_add=True)
-    groups = models.ManyToManyField(
+    groups = select2_fields.ManyToManyField(
         Group, blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who'
                     ' can access in read only to this folder'))
@@ -47,6 +51,14 @@ class UserFolder(models.Model):
 
     def __str__(self):
         return '{0}'.format(self.name)
+
+    def get_all_files(self):
+        file_list = self.customfilemodel_set.all()
+        image_list = self.customimagemodel_set.all()
+        result_list = sorted(
+            chain(image_list, file_list),
+            key=attrgetter('uploaded_at'))
+        return result_list
 
     def delete(self):
         for file in self.customfilemodel_set.all():
@@ -87,9 +99,9 @@ def get_upload_path_files(instance, filename):
 class BaseFileModel(models.Model):
     name = models.CharField(_('Name'), max_length=255)
     description = models.CharField(max_length=255, blank=True)
-    folder = models.ForeignKey(UserFolder)
+    folder = select2_fields.ForeignKey(UserFolder)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    created_by = models.ForeignKey(
+    created_by = select2_fields.ForeignKey(
         User,
         related_name='%(app_label)s_%(class)s_created',
         on_delete=models.CASCADE)
@@ -99,6 +111,12 @@ class BaseFileModel(models.Model):
         # if not self.name or self.name == "":
         self.name = os.path.basename(path)
         return super(BaseFileModel, self).save(**kwargs)
+
+    def class_name(self):
+        return self.__class__.__name__
+
+    def file_exist(self):
+        return (self.file and os.path.isfile(self.file.path))
 
     class Meta:
         abstract = True
@@ -159,6 +177,7 @@ class CustomImageModel(BaseFileModel):
 
     def delete(self):
         if self.file:
+            delete(self.file)
             if os.path.isfile(self.file.path):
                 os.remove(self.file.path)
         super(CustomImageModel, self).delete()

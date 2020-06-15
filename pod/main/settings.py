@@ -2,20 +2,13 @@
 Django local settings for pod_project.
 Django version : 1.11.10.
 """
-
 import os
-from .lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 
 ##
 # flatpages
 ##
 SITE_ID = 1
 
-# Lang choices
-LANG_CHOICES = (
-    (' ', PREF_LANG_CHOICES),
-    ('----------', ALL_LANG_CHOICES)
-)
 ##
 # The secret key for your particular Django installation.
 #
@@ -56,6 +49,9 @@ ALLOWED_HOSTS = ['localhost']
 #
 SESSION_COOKIE_AGE = 14400
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
+# SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+# SESSION_COOKIE_HTTPONLY = True
 
 ##
 # A tuple that lists people who get code error notifications
@@ -170,13 +166,6 @@ CKEDITOR_CONFIGS = {
     }
 }
 
-##
-# Main menu settings:
-#
-# Do not show inactive users in “Owners” main menu list.
-MENUBAR_HIDE_INACTIVE_OWNERS = True
-# Show only staff users in “Owners” main menu list.
-MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
 
 ##
 # Video tiers apps settings
@@ -212,8 +201,11 @@ SERVER_EMAIL = 'noreply@univ.fr'
 #
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
 # ('captcha.helpers.noise_arcs','captcha.helpers.noise_dots',)
-CAPTCHA_NOISE_FUNCTIONS = ('captcha.helpers.noise_null',)
-
+CAPTCHA_NOISE_FUNCTIONS = (
+    'captcha.helpers.noise_arcs', 'captcha.helpers.noise_dots',)
+# ('captcha.helpers.noise_null',)
+CAPTCHA_FONT_SIZE = 32
+CAPTCHA_MATH_CHALLENGE_OPERATOR = 'x'
 ##
 # THIRD PARTY APPS OPTIONNAL
 #
@@ -267,3 +259,35 @@ LTI_PROPERTY_LIST_EX = [
     'custom_video'
 ]
 LTI_PROPERTY_USER_USERNAME = 'ext_user_username'
+
+###
+# Choose a theme for your pod website
+# 'default' is the simpliest, bootstrap $enable_rounded is true
+# 'green' is with a dark green for primary color, $enable_rounded is false
+# 'dark' is black and red, without grey background, $enable_rounded is false
+
+# ie : USE_THEME = 'green'
+
+"""
+##
+# Main menu settings:
+#
+# Do not show inactive users in “Owners” main menu list.
+MENUBAR_HIDE_INACTIVE_OWNERS = True
+# Show only staff users in “Owners” main menu list.
+MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
+# Hide de language selector
+HIDE_LANGUAGE_SELECTOR = False
+# Hide Users tab in navbar
+HIDE_USER_TAB = False
+# Hide Channel tab in navbar
+HIDE_CHANNEL_TAB = False
+# Hide Types tab in navbar
+HIDE_TYPES_TAB = False
+# Hide Tags
+HIDE_TAGS = False
+# Hide share in social network
+HIDE_SHARE = False
+# Hide disciplines
+HIDE_DISCIPLINES = False
+"""

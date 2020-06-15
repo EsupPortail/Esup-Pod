@@ -1,12 +1,53 @@
 {% load i18n %}
+
 {% spaceless %}
 <a href="{% url 'video_edit' slug=video.slug %}" title="{% trans "Edit the video"%}" class="p-0 m-0 btn btn-light btn-sm pl-1">
     <i data-feather="edit"></i></a>
+
+{% if request.resolver_match.namespace %}
+  {% with request.resolver_match.namespace as app %}
+  {% with ""|add:app|add:":edit_"|add:app as urleditapp %}
+<a href="{% url urleditapp slug=video.slug %}" title="{% blocktrans %}Edit the {{app}}{% endblocktrans %}" class="p-0 m-0 btn btn-light btn-sm pl-1">
+    <i data-feather="edit-3"></i></a>
+  {% endwith %}
+  {% endwith %}
+{%endif%}
+
 <a href="{% url 'video_completion' slug=video.slug %}" title="{% trans "Complete the video"%}" class="p-0 m-0 btn btn-light btn-sm pl-1">
     <i data-feather="file-text"></i></a>
 <a href="{% url 'video_chapter' slug=video.slug %}" title="{% trans "Chapter the video"%}" class="p-0 m-0 btn btn-light btn-sm pl-1">
 <i data-feather="list"></i></a>
-<a href="{% url 'video_delete' slug=video.slug %}" class="p-0 m-0 btn btn-light btn-sm pl-1" title="{% trans "Delete the video." %}">
-    <i data-feather="trash-2"></i>
-</a>
+{% if video.owner == request.user or request.user.is_superuser or perms.video.delete_video %}
+    <a href="{% url 'video_delete' slug=video.slug %}" class="p-0 m-0 btn btn-light btn-sm pl-1" title="{% trans "Delete the video." %}">
+        <i data-feather="trash-2"></i></a>
+{% endif %}
+{% if "edit" in request.resolver_match.url_name %}
+{% with video.get_other_version as versions %}
+    {% if versions|length > 0 %}
+        <form action="{% url 'video_version' id=video.id %}" method="post" id="video_version_form">
+            {% csrf_token %}
+            <fieldset class="form-group border mt-2 p-2">
+              <legend class="col-form-label text-left p-1 col-md-auto">{% trans "Video default version"%}</legend>
+              <div class="text-left">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="version" id="id_versionO" value="O" {% if video.get_version == "O" %}checked{% endif %}>
+                  <label class="form-check-label" for="id_versionO">
+                    {% trans "Original version" %}
+                  </label>
+                </div>
+                {% for version in versions %}
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="version" id="id_version{{version.app|capfirst|first}}" value="{{version.app|capfirst|first}}" {% if video.get_version == version.app|capfirst|first %}checked{% endif %}>
+                  <label class="form-check-label" for="id_version{{version.app|capfirst|first}}">
+                    {{version.link}}
+                  </label>
+                </div>
+                {% endfor %}
+              </div>
+            </fieldset>
+        </form>
+    {% endif %}
+{% endwith %}
+{% endif %}
+
 {%endspaceless%}

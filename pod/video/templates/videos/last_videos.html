@@ -1,4 +1,7 @@
-{% load i18n %}
+{% load i18n video_tags %}
+
+{% get_last_videos as LAST_VIDEOS %}
+
 {% if LAST_VIDEOS %}
 <div class="jumbotron" id="last_videos">
 <h3>{% trans "Last videos" %}</h3>
@@ -8,7 +11,7 @@
 
 <div class="hightlight">
      <div class="d-flex justify-content-end">
-       <p><a class="btn btn-lg btn-outline-primary btn-sm" href="{% url "videos" %}" role="button">{% trans "Show all videos" %} &raquo;</a></p>
+       <p><a class="btn btn-lg btn-primary btn-sm" href="{% url "videos" %}" role="button">{% trans "Show all videos" %} &raquo;</a></p>
      </div>
 </div> <!-- fin hightlight -->
 </div>

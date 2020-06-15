@@ -1,4 +1,4 @@
-# Compiled source #
+#                       Compiled source #
 ###################
 *.com
 *.class
@@ -42,6 +42,7 @@ Icon?
 # Custom files  #
 #################
 import_data/
+log/
 media/
 pod/*/migrations/
 pod/custom/*
@@ -54,6 +55,7 @@ pod/static/
 # IDE Files #
 #############
 .idea
+.vscode
 
 # Certificates #
 ################

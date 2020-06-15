@@ -53,16 +53,22 @@ body {
   <h1>{{channel.title}}
     <span class="float-right">
       {% if theme %}
-      <a href="{% url "rss-video" slug_c=channel.slug slug_t=theme.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
-      <a href="{% url "rss-audio" slug_c=channel.slug slug_t=theme.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
+      {% if USE_STATS_VIEW %}
+      <a href="{% url "video_stats_view" slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+      {% endif %}
+      <a href="{% url "rss-video" slug_c=channel.slug slug_t=theme.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
+      <a href="{% url "rss-audio" slug_c=channel.slug slug_t=theme.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
       {% else %}
-      <a href="{% url "rss-video" slug_c=channel.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
-      <a href="{% url "rss-audio" slug_c=channel.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
+      {% if USE_STATS_VIEW %}
+      <a href="{% url "video_stats_view" slug=channel.slug %}?from=channel" title="{% trans 'Show view statistics for all videos in this channel' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+      {% endif %}
+      <a href="{% url "rss-video" slug_c=channel.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
+      <a href="{% url "rss-audio" slug_c=channel.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
       {% endif %}
     </span>
     {% if request.user in channel.owners.all %}
-    <span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-dark btn-sm">
-      <i data-feather="edit"></i>&nbsp;{% trans "Edit the channel"%}</a></span>{%endif%}</h1>
+    <span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-primary btn-sm">
+      <i data-feather="edit"></i>&nbsp;{% trans "Edit the channel"%}</a>&nbsp;</span>{%endif%}</h1>
 
   {% if channel.headband %}
   <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
@@ -113,16 +119,23 @@ body {
   var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],
     onBeforePageLoad: function () {
-      $('.loading').show();
+      $('.infinite-loading').show();
     },
     onAfterPageLoad: function ($items) {
-      $('.loading').hide();
+      $('.infinite-loading').hide();
       feather.replace({ class: 'align-bottom'});
-      if(!$('footer').hasClass('small')) {
-        $('footer').addClass('small');
-        $('footer').addClass('fixed-bottom');
-        $('footer').attr('style','height:80px; overflow-y:auto');
-      }
+      $('footer.static-pod').addClass('small');
+      $('footer.static-pod').addClass('fixed-bottom');
+      $('footer.static-pod').attr('style','height:80px; overflow-y:auto');
+      $('footer.static-pod .hidden-pod').css('display','none');
+      $(window).scroll(function () {
+        if ($(window).height() + $(window).scrollTop() == $(document).height())
+        {
+           $('footer.static-pod .hidden-pod').css('display','block');
+           $('footer.static-pod').attr('style','height:auto;');
+           $('footer.static-pod').removeClass('fixed-bottom');
+        }
+      });
     }
   });
 </script>
@@ -130,9 +143,9 @@ body {
 var str = get_list(listTheme["channel_"+{{channel.id}}], 0, [], tag_type="li", li_class="list-group-item", attrs='', add_link=true, current="{{theme.slug}}", channel="");
 $("#ultreeview").html(str);
 setTimeout(function(){ 
-var position = parseInt($("#ultreeview li.list-group-item-info").position().top) - parseInt($("#ultreeview li").first().position().top);
-console.log(position);
-$("#ultreeview").scrollTop(position); 
+  var position = parseInt($("#ultreeview li.list-group-item-info").position().top) - parseInt($("#ultreeview li").first().position().top);
+  //console.log(position);
+  $("#ultreeview").scrollTop(position); 
 }, 500);
 </script>
 {% endblock more_script %}

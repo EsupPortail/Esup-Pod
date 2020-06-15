@@ -3,24 +3,24 @@
 {% spaceless %}
 <div class="row infinite-container">
 	{% for playlist in playlists %}
-		<div class="col-sm-3">
+		<div class="col-sm-3 mb-3">
 			<div class="card h-100" data-id="{{playlist.id}}">
-				<img class="card-img" src="{{playlist.first.video.get_thumbnail_url}}" alt='' width="100" height="100">
+				<img class="card-img" src="{{playlist.first.video.get_thumbnail_url}}" alt='' width="100" height="auto">
 				{% if playlist.visible %}
 					<svg height="32" class="octicon octicon-eye" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M8.06 2C3 2 0 8 0 8s3 6 8.06 6C13 14 16 8 16 8s-3-6-7.94-6zM8 12c-2.2 0-4-1.78-4-4 0-2.2 1.8-4 4-4 2.22 0 4 1.8 4 4 0 2.22-1.78 4-4 4zm2-4c0 1.11-.89 2-2 2-1.11 0-2-.89-2-2 0-1.11.89-2 2-2 1.11 0 2 .89 2 2z"></path></svg>
 				{% endif %}
 				<div class="card-body">
 					<h5 class="card-title">{{playlist.title}}</h5>
-					<h6 class="card-subtitle mb-2 text-muted">{% trans 'Video' %}(s): {{playlist.videos|length}}</h6>
+					<h6 class="card-subtitle mb-2 text-muted">{% blocktrans count counter=playlist.videos|length %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</h6>
 					<p class="card-text">{{playlist.description}}</p>
 				</div>
+				<div class="btn-group">
 				<a href="{% url 'playlist' slug=playlist.slug %}" class="btn btn-sm btn-primary">{% trans 'Edit' %}</a>
 				&nbsp;
 				{% if playlist.first.video.slug %}
-				<a href="{% url 'video' slug=playlist.first.video.slug %}?playlist={{playlist.slug}}" class="btn btn-sm btn-dark">{% trans 'Launch' %}</a>
-				{% else %}
-				{% trans "no first video found" %}
+				<a href="{% url 'video' slug=playlist.first.video.slug %}?playlist={{playlist.slug}}" class="btn btn-sm btn-primary">{% trans 'Launch' %}</a>
 				{% endif %}
+			</div>
 			</div>
 		</div>
 		{% empty %}
@@ -28,12 +28,10 @@
 			<p>{% trans "Sorry, no playlist found" %}</p>
 		</div>
 	{% endfor %}
-	<div class="card h-100">
-		<div class="card-body">
-			<a class="btn btn-success" href="{% url 'playlist' %}">
-				<svg height="32" class="octicon octicon-plus" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M12 9H7v5H5V9H0V7h5V2h2v5h5v2z"></path></svg>
+	<div class="col-1">
+			<a class="btn btn-primary" href="{% url 'playlist' %}">
+				<svg height="32" class="octicon octicon-plus fill-color-pod" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M12 9H7v5H5V9H0V7h5V2h2v5h5v2z"></path></svg>
 			</a>
-		</div>
 	</div>
 	{% if playlists.has_next %}
 		<a class="infinite-more-link" href="{{ full_path }}{% if '?' in full_path %}&{% else %}?{%endif%}page={{ playlists.next_page_number }}">More</a>

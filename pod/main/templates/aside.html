@@ -2,6 +2,7 @@
 {% load tagging_tags %}
 {% spaceless %}
 <!-- Load Facebook SDK for JavaScript -->
+{% if HIDE_SHARE == False %}
 <div class="card card-body p-2 mt-1" id="card-share">
 <h5 class="card-title pl-2">
 <i data-feather="share-2"></i>&nbsp;{% trans 'Share' %}
@@ -9,10 +10,11 @@
 <p class="card-text text-center">
 <a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Facebook"><i data-feather="facebook"></i></a>
 <a target="_blank" href="http://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Twitter"><i data-feather="twitter"></i></a>
-<a target="_blank" href="https://plus.google.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Google+" style="line-height: 24px;"> <b>G+</b> </a>
+<a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} LinkedIn"><i data-feather="linkedin"></i></a>
 </p>
 </div>
-
+{% endif %}
+{% if HIDE_DISCIPLINES == False %}
 <div class="card card-body p-2 mt-1" id="card-disciplines">
   <h5 class="card-title pl-2">
     <i data-feather="book"></i>&nbsp;{% trans 'Disciplines' %}
@@ -29,7 +31,8 @@
   </form>
   </div>
 </div>
-
+{% endif %}
+{% if HIDE_TAGS == False %}
 <div class="card card-body p-2 mt-1" id="card-tags">
   <h5 class="card-title pl-2">
     <i data-feather="tag"></i>&nbsp;{% trans 'Tags' %}
@@ -48,4 +51,5 @@
     {% endwith %}
   </p>
 </div>
+{% endif %}
 {% endspaceless %}

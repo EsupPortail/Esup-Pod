@@ -8,7 +8,7 @@
 <div class="row">
   <div class="col-md-4">
     <img src="{% static LOGO_ETB %}" alt="" height="70" >
-    <p class="footer-contact mt-3">
+    <p class="footer-contact mt-3 hidden-pod">
       <span class="footer-contact-title">{{TITLE_ETB}}</span><br>
       {% for text in FOOTER_TEXT %}
       {{text|safe}}<br>
@@ -24,9 +24,9 @@
   </div>
   <div class="col-md-4">
     <a href="https://www.esup-portail.org/" title="Esup Portail : Communauté d'établissements francais d'enseignement supérieur pour l'innovation numérique" target="_blank">&gt;  <abbr title="Esup Portail : Communauté d'établissements francais d'enseignement supérieur pour l'innovation numérique">Esup Portail</abbr></a><br>
-    <a href="https://github.com/EsupPortail/podv2" target="_blank">&gt;  {% trans "Pod Project" %}</a><br>
+    <a href="https://github.com/EsupPortail/Esup-Pod" target="_blank">&gt;  {% trans "Pod Project" %}</a><br>
   </div>
 </div>
-<p style="text-align:center">{{TITLE_SITE}} {% trans "video platform of" %} {{TITLE_ETB}} - <a href="https://github.com/EsupPortail/podv2/releases/tag/{{VERSION}}" target="_blank" title="GitHub">Release {{VERSION}}</a>  - {{VIDEOS_COUNT}} {% trans "videos availables" %} [ {{VIDEOS_DURATION}} ]</p>
+<p class="hidden-pod" style="text-align:center">{{TITLE_SITE}} {% trans "video platform of" %} {{TITLE_ETB}} - <a href="https://github.com/EsupPortail/Esup-Pod/releases/tag/{{VERSION}}" target="_blank" title="GitHub">{% trans "Release" %} {{VERSION}}</a>  - {{VIDEOS_COUNT}} {% trans "videos availables" %} [ {{VIDEOS_DURATION}} ]</p>
 </div>
 {% endspaceless %}

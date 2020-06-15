@@ -14,15 +14,18 @@ from .models import Interactive, InteractiveGroup
 from .forms import InteractiveGroupForm
 from h5pp.models import h5p_contents, h5p_libraries
 from h5pp.h5p.h5pmodule import getUserScore
+from django.contrib.sites.shortcuts import get_current_site
 
 
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def group_interactive(request, slug):
-    video = get_object_or_404(Video, slug=slug)
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
     interactiveGroup, created = InteractiveGroup.objects.get_or_create(
         video=video)
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner and not request.user.is_superuser and (
+            request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR,
             _('You cannot add interactivity to this video.')
@@ -60,8 +63,10 @@ def check_interactive_group(request, video):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def edit_interactive(request, slug):
-    video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
+    if request.user != video.owner and not request.user.is_superuser and (
+            request.user not in video.additional_owners.all()):
         if not check_interactive_group(request, video):
             messages.add_message(
                 request, messages.ERROR,
@@ -93,7 +98,8 @@ def video_interactive(request, slug, slug_c=None,
         id = int(slug[:slug.find("-")])
     except ValueError:
         raise SuspiciousOperation('Invalid video id')
-    video = get_object_or_404(Video, id=id)
+    video = get_object_or_404(Video, id=id,
+                              sites=get_current_site(request))
 
     template_video = 'interactive/video_interactive-iframe.html' if (
         request.GET.get('is_iframe')) else 'interactive/video_interactive.html'
@@ -106,8 +112,14 @@ def video_interactive(request, slug, slug_c=None,
     if h5p is None:
         raise Http404("Interactive video does not exist")
     score = getUserScore(h5p.content_id) if (
-        request.user == video.owner or request.user.is_superuser
+        request.user == video.owner or request.user.is_superuser or (
+            request.user in video.additional_owners.all())
     ) else getUserScore(h5p.content_id, request.user)
 
-    return render_video(request, slug, slug_c, slug_t, slug_private,
+    try:
+        id = int(slug[:slug.find("-")])
+    except ValueError:
+        raise SuspiciousOperation('Invalid video id')
+
+    return render_video(request, id, slug_c, slug_t, slug_private,
                         template_video, {'h5p': h5p, 'score': score})

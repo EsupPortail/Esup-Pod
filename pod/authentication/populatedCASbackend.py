@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from pod.authentication.models import Owner
 from pod.authentication.models import AFFILIATION
-
+from django.contrib.sites.models import Site
 from ldap3 import Server
 from ldap3 import ALL
 from ldap3 import Connection
@@ -26,6 +26,7 @@ USER_CAS_MAPPING_ATTRIBUTES = getattr(
         "mail": "mail",
         "last_name": "sn",
         "first_name": "givenname",
+        "primaryAffiliation": "eduPersonPrimaryAffiliation",
         "affiliation": "eduPersonAffiliation"
     })
 
@@ -170,6 +171,7 @@ def populate_user_from_entry(user, owner, entry):
         if CREATE_GROUP_FROM_AFFILIATION:
             group, group_created = Group.objects.get_or_create(
                 name=affiliation)
+            group.groupsite.sites.add(Site.objects.get_current())
             user.groups.add(group)
     user.save()
 
@@ -198,6 +200,13 @@ def populate_user_from_tree(user, owner, tree):
         last_name_element.text if last_name_element is not None else ""
     )
     user.save()
+    # PrimaryAffiliation
+    primary_affiliation_element = tree.find(
+        './/{http://www.yale.edu/tp/cas}%s' % (
+            USER_CAS_MAPPING_ATTRIBUTES["primaryAffiliation"])
+    )
+    owner.affiliation = primary_affiliation_element.text if (
+        primary_affiliation_element is not None) else AFFILIATION[0][0]
     # affiliation
     affiliation_element = tree.findall(
         './/{http://www.yale.edu/tp/cas}%s' % (
@@ -211,5 +220,4 @@ def populate_user_from_tree(user, owner, tree):
                 name=affiliation.text)
             user.groups.add(group)
     user.save()
-    owner.affiliation = affiliation_element[0].text
     owner.save()

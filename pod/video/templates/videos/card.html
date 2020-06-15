@@ -36,43 +36,43 @@
     <div class="d-flex align-items-center">
     {% if channel %}
     {% if theme %}
-    <a href="{% url 'video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
+    <a class="link-center-pod" href="{% url 'video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
         {{video.get_thumbnail_card|safe}}
     </a>
     {% else %}
-    <a href="{% url 'video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
+    <a class="link-center-pod" href="{% url 'video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
         {{video.get_thumbnail_card|safe}}
     </a>
     {% endif %}
     {% else %}
-    <a href="{{video.get_absolute_url}}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
+    <a class="link-center-pod" href="{{video.get_absolute_url}}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
         {{video.get_thumbnail_card|safe}}
     </a>
     {% endif %}
     </div>
     <div class="card-body">
-      
-      {% if video.owner == request.user or request.user.is_superuser %}
-      <footer class="card-footer p-0 m-0">
+
+      {% if video.owner == request.user or request.user.is_superuser or perms.video.change_video or request.user in video.additional_owners.all %}
+      <footer class="card-footer card-footer-pod p-0 m-0">
         {% include "videos/link_video.html" %}
       </footer>
       {% endif %}
 
-      <h6 class="card-subtitle small">
+      <span class="small video-title">
         {% if channel %}
         {% if theme %}
         <a href="{% url 'video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
-            {{video.title|title|truncatechars:43}}
+            {{video.title|capfirst|truncatechars:43}}
         </a>
         {% else %}
         <a href="{% url 'video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
-            {{video.title|title|truncatechars:43}}
+            {{video.title|capfirst|truncatechars:43}}
         </a>
         {% endif %}
         {% else %}
-        <a href="{{video.get_absolute_url}}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">{{video.title|title|truncatechars:43}}</a>
+        <a href="{{video.get_absolute_url}}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">{{video.title|capfirst|truncatechars:43}}</a>
         {% endif %}
-      </h6>
+      </span>
 
     </div>
 </div>

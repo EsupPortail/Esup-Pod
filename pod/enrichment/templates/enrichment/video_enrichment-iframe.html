@@ -20,10 +20,10 @@
         To view this video please enable JavaScript, and consider upgrading to a web browser that
         <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
       </p>
-      <track kind="metadata" src="{{video.enrichmentvtt.src.file.url}}">
+      <track kind="metadata" src="{{video.enrichmentvtt.src.file.url}}?{% now "U" %}" label="enrichment">
 
     {% for track in video.track_set.all%}
-      <track id= "track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.url }}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}">
+      <track id= "track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.url }}?{% now "U" %}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}">
     {%endfor%}
     </video>
 
@@ -37,32 +37,53 @@
 {% block more_script %}
 {{block.super}}
 <script>
+{% if not video.is_video %}
+slide_mode = 'video off';
+{% endif %}
 player.ready(function() {
     var tracks = player.textTracks();
-    var metadataTrack;
-    for (let i = 0; i < tracks.length; i++) {
+    var metadataTrack, i;
+    for (i = 0; i < tracks.length; i++) {
         var track = tracks[i];
-        if (track.kind === 'metadata' && track.label === '') {
+        if (track.kind === 'metadata' && track.label === 'enrichment') {
             metadataTrack = track;
+            metadataTrack.index = i;
+            break;
         }
     }
+
     player.on('loadedmetadata', function() {
         var slide = [];
-        for (let i = 0; i < metadataTrack.cues.length; i++) {
-            data = JSON.parse(metadataTrack.cues[i].text);
-            slide.push({
-                title: data.title,
-                url: data.url,
-                type: data.type,
-                start: metadataTrack.cues[i].startTime,
-                end: metadataTrack.cues[i].endTime
+        if(!metadataTrack.cues) { //Safari do not get cues
+            let tracksrc = player.el().getElementsByTagName('TRACK')[metadataTrack.index].src;
+            loadEnrichmentVTTfile(tracksrc, function(cues) {
+                if (typeof player.slides === "function") {
+                    player.slides(cues);
+                }
             });
+        } else {
+            for (i = 0; i < metadataTrack.cues.length; i++) {
+                data = JSON.parse(metadataTrack.cues[i].text);
+                console.log('Parsed '+data.title)
+                slide.push({
+                    title: data.title,
+                    url: data.url,
+                    type: data.type,
+                    stop_video: data.stop_video,
+                    start: metadataTrack.cues[i].startTime,
+                    end: metadataTrack.cues[i].endTime
+                });
+            }
         }
-        player.slides(slide);
+        if (typeof player.slides === "function") {
+            console.log('Call player.slides');
+            player.slides(slide);
+        }
+
     });
+
     $('.vjs-big-play-button').css('z-index', 2)
     $('.vjs-control-bar').css('z-index', 3);
 });
 </script>
 {% endblock more_script %}
-

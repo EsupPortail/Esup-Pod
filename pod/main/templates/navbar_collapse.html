@@ -1,9 +1,11 @@
-{% load i18n %}{% spaceless %}
+{% load i18n %}
+{% load thumbnail %}
+{% spaceless %}
 <div class="modal fade chaines-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title"><i data-feather="youtube"></i>&nbsp;{{CHANNELS.count}} {% trans "Channels" %}</h5>
+        <h2 class="modal-title"><i data-feather="youtube"></i>&nbsp;{% blocktrans count counter=CHANNELS.count %}{{ counter }} Channel{% plural %}{{ counter }} Channels{% endblocktrans %}</h2>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -11,17 +13,23 @@
       <div class="modal-body row">
         <ul class="col-12 list-group list-group-flush" id="list-channels">
           {% for channel in CHANNELS %}
-          <li class="list-group-item list-group-item-action" data-id="{{channel.id}}"> 
+          <li class="list-group-item list-group-item-action" data-id="{{channel.id}}">
             <div class=" d-flex justify-content-between align-items-center">
-          <span class="d-flex align-items-center title-chaine">{% if channel.headband %}<img src="{{ channel.headband.file.url }}" height="34" class='rounded mr-2' alt="{{channel.title|title}}">{% else %}<i data-feather="youtube" style="height:34px" class="mr-2"></i>{% endif %} <a href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">
+          <span class="d-flex align-items-center title-chaine">
+            {% if channel.headband %}
+            {% thumbnail channel.headband.file "x34" as im %}
+            <img src="{{ im.url }}" height="34" class='rounded mr-2' alt="{{channel.title|title}}">
+            {% endthumbnail %}
+            {% else %}<i data-feather="youtube" style="height:34px" class="mr-2"></i>{% endif %} 
+            <a href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">
             {{channel.title}}</a></span>
           <span>
           {% if channel.themes.all.count > 0 %}
           <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThemes{{channel.id}}" aria-expanded="true" aria-controls="collapseThemes{{channel.id}}">
-          {{channel.themes.all.count}} {% trans "Themes" %} <i data-feather="chevron-down" class="chevron-down m-0 p-0"></i>
+          {% blocktrans count counter=channel.themes.all.count %}{{counter}} Theme{% plural %}{{counter}} Themes{% endblocktrans %} <i data-feather="chevron-down" class="chevron-down m-0 p-0"></i>
           </button>
           {% endif %}
-          <span class="badge badge-primary badge-pill">{{channel.video_count}} {% trans "videos" %}</span>
+          <span class="badge badge-primary badge-pill">{% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</span>
           </span>
             </div>
           <div id="collapseThemes{{channel.id}}" class="collapse collapsibleThemes" aria-labelledby="headingOne" data-parent="#list-channels" data-id="{{channel.id}}"></div>
@@ -32,7 +40,7 @@
         </ul>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close'%}</button>
       </div>
     </div>
   </div>
@@ -41,7 +49,7 @@
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title"><i data-feather="tv"></i>&nbsp;{% trans 'Types of videos'%}</h5>
+        <h2 class="modal-title"><i data-feather="tv"></i>&nbsp;{% trans 'Types of videos'%}</h2>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -55,17 +63,17 @@
         </ul>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close'%}</button>
       </div>
     </div>
   </div>
 </div>
-{% if not USE_RGPD or user.is_authenticated %}
+{% if user.is_authenticated %}
 <div class="modal fade users-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title"><i data-feather="users"></i>&nbsp;{% trans "Users"%}</h5>
+        <h2 class="modal-title"><i data-feather="users"></i>&nbsp;{% trans "Users"%}</h2>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -73,103 +81,25 @@
       <div class="modal-body">
         <div class="row">
             <div class="col-12">
-                <p>{% trans 'Use the input to filter user by last name or click on button letter to show the list.'%}</p>
+                <p>{% trans 'Use the input to filter user by last name.'%}</p>
                 <input placeholder="Rechercher" id="ownerboxnavbar" class="form-control" type="text">
             </div>
         </div>
         <div class="row p-2">{% spaceless %}
-          <div class="col-3">
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="A">
-                    A
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="B">
-                    B
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="C">
-                    C
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="D">
-                    D
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="E">
-                    E
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="F">
-                    F
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="G">
-                    G
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="H">
-                    H
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="I">
-                    I
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="J">
-                    J
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="K">
-                    K
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="L">
-                    L
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="M">
-                    M
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="N">
-                    N
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="O">
-                    O
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="P">
-                    P
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="Q">
-                    Q
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="R">
-                    R
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="S">
-                    S
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="T">
-                    T
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="U">
-                    U
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="V">
-                    V
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="W">
-                    W
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="X">
-                    X
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="Y">
-                    Y
-                </button>
-                <button class="btn btn-outline-primary btn-sm active mb-1 showUser w-25" data-target="Z">
-                    Z
-                </button>
-          </div>{% endspaceless %}
-          <div class="col-9" >
+          {% endspaceless %}</div>
+          <div class="row">
+          <div class="col-12" >
                 <ul class="list-unstyled" id="accordion" style="max-height:350px; overflow:auto">
                     <li>&nbsp;</li>
                 </ul>
           </div>
-        </div>
+          </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close'%}</button>
       </div>
     </div>
-  </div>
+</div>
 </div>
 {% endif %}
 {% endspaceless %}

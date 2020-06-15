@@ -5,14 +5,13 @@ from django.test import TestCase
 from django.contrib.auth.models import User, Group
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.exceptions import ValidationError
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.utils import IntegrityError
+
 from pod.video.models import Video
 from pod.video.models import Type
 from ..models import Enrichment, EnrichmentVtt, EnrichmentGroup
-from django.conf import settings
-from django.test import override_settings
-
-from django.core.exceptions import ObjectDoesNotExist
-from django.db.utils import IntegrityError
 
 import os
 
@@ -25,17 +24,6 @@ else:
     from pod.main.models import CustomImageModel
 
 
-@override_settings(
-    THIRD_PARTY_APPS=["enrichment"],
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class EnrichmentGroupModelTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -98,17 +86,6 @@ class EnrichmentGroupModelTestCase(TestCase):
             " --- EnrichmentGroupModel")
 
 
-@override_settings(
-    THIRD_PARTY_APPS=["enrichment"],
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class EnrichmentModelTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 

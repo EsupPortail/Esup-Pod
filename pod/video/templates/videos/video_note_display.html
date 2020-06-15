@@ -1,7 +1,7 @@
 {% load staticfiles i18n %}
 
 <div class="header">
-    <span class="timestamp" start="{{ note.timestamp }}">{{ note.timestampstr }} |</span>
+    <span class="timestamp" start="{{ note.timestamp }}">{{ note.timestampstr }}</span>
 
     {% comment %} Display the full note {% endcomment %}
     {% if noteToDisplay and note == noteToDisplay and note != noteToEdit %}
@@ -10,7 +10,7 @@
             <fieldset>
                 <input type="hidden" id="action_view" name="action" value="get" autocomplete="off"/>
             </fieldset>
-            <p class="note form">{{ note.note }}</p>
+            <p class="note form"><span class="user">{{ note.user.username }}</span><span>, {% trans 'the' %} {{note.modified_on}} :<br />{{ note.note }}</span></p>
         </form>
 
     {% comment %} Display a form to edit the note {% endcomment %}
@@ -18,7 +18,7 @@
         <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="view_video_notes_form hidden">
             {% csrf_token %}
             <fieldset> <input type="hidden" id="action_view" name="action" value="get" autocomplete="off"/> </fieldset>
-        </form> 
+        </form>
         <form method="post" action="{% url 'video_notes' slug=video.slug %}" id="video_notes_form">
         {% csrf_token %}
             <fieldset>
@@ -37,8 +37,8 @@
                 <input type="hidden" id="id_note_save" name="idNote" value="{{ note.id }}" autocomplete="off"/>
                 <input type="hidden" id="action_save" name="action" value="save_note" autocomplete="off"/>
 
-                <input type="submit" name="submit" value="{% trans "save" %}" class="btn btn-sm btn-outline-info">
-                <input type="button" name="cancel" id="cancel_save" value="{% trans "cancel" %}" class="btn btn-sm btn-outline-info">
+                <input type="submit" name="submit" value="{% trans "Save" %}" class="btn btn-sm btn-outline-primary">
+                <input type="button" name="cancel" id="cancel_save" value="{% trans "Cancel" %}" class="btn btn-sm btn-outline-primary">
 
             </fieldset>
         </form>
@@ -51,13 +51,13 @@
                 <input type="hidden" id="action_view" name="action" value="get" autocomplete="off"/>
                 <input type="hidden" id="id_note_view" name="idNote" value="{{ note.id }}" autocomplete="off"/>
             </fieldset>
-            <p class="note form"> {{ note.note}} {% if note.notecomments_set.all.count > 0 %}<span class=""><i class="" data-feather="chevron-down" width="16" height="16" ></i></span>{% endif %}</p>
-        </form> 
+            <p class="note form"><span class="user">{{ note.user.username }}</span> : {{ note.note}} {% if note.notecomments_set.all.count > 0 %}<span class=""><i class="" data-feather="chevron-down" width="16" height="16" ></i></span>{% endif %}</p>
+        </form>
     {% endif %}
-    
+
     {% if request.user.is_authenticated and not note_form %}
         <div class="mgtNote dropleft">
-            <button class="p-0 m-0 btn btn-outline-info btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage note' %}"> <i data-feather="more-horizontal"></i> </button>
+            <button class="p-0 m-0 btn btn-outline-primary btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage note' %}"> <i data-feather="more-horizontal"></i> </button>
             <div class="dropdown-menu">
 
                 {% if request.user == note.user %}
@@ -77,8 +77,8 @@
                         <input type="hidden" id="action_rm" name="action" value="remove_note" autocomplete="off"/>
                         <input type="hidden" id="id_note_rm" name="idNote" value="{{ note.id }}" autocomplete="off"/>
                     </fieldset>
-                    <button class="p-0 m-0 btn btn-outline-danger btn-sm remove" type="submit" action="remove" title="{% trans 'Remove the note' %}"> <i data-feather="trash-2"></i> </button>
-                </form>   
+                    <button class="p-0 m-0 btn btn-outline-primary btn-sm remove" type="submit" action="remove" title="{% trans 'Remove the note' %}"> <i data-feather="trash-2"></i> </button>
+                </form>
                 {% endif %}
                 {% comment %} Button to comment the note in three dots menu {% endcomment %}
                 <form method="post" action="{% url 'video_notes' slug=video.slug %}" class="comment_video_notes_form" role="menuitem">
@@ -87,7 +87,7 @@
                         <input type="hidden" id="action_com" name="action" value="form_com" autocomplete="off"/>
                         <input type="hidden" id="id_note_com" name="idNote" value="{{ note.id }}" autocomplete="off"/>
                     </fieldset>
-                    <button class="p-0 m-0 btn btn-outline-secondary btn-sm comment" type="submit" title="{% trans 'Comment the note' %}"> <i data-feather="message-circle"></i> </button>
+                    <button class="p-0 m-0 btn btn-outline-primary btn-sm comment" type="submit" title="{% trans 'Comment the note' %}"> <i data-feather="message-circle"></i> </button>
                 </form>
 
             </div>

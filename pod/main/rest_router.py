@@ -44,7 +44,7 @@ router.register(r'chapters', chapter_views.ChapterViewSet)
 
 router.register(r'recording', recorder_views.RecordingModelViewSet)
 router.register(r'recordingfile', recorder_views.RecordingFileModelViewSet)
-
+router.register(r'recorder', recorder_views.RecorderModelViewSet)
 
 if getattr(settings, 'USE_PODFILE', False):
     router.register(r'folders',
@@ -57,6 +57,8 @@ if getattr(settings, 'USE_PODFILE', False):
 urlpatterns = [
     url(r'dublincore/$', video_views.DublinCoreView.as_view(),
         name='dublincore'),
+    url(r'launch_encode_view/$', video_views.launch_encode_view,
+        name='launch_encode_view'),
 ]
 
 for apps in settings.THIRD_PARTY_APPS:

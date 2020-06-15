@@ -8,7 +8,5 @@ urlpatterns = [
     url(r'^$',
         lives,
         name='lives'),
-    url(r'^(?P<id>[\d]+)/$',
-        video_live,
-        name='video_live')
+    url(r'^(?P<slug>[\-\d\w]+)/$', video_live, name='video_live'),
 ]

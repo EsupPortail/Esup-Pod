@@ -1,7 +1,7 @@
 .select-position {
 	display: none;
 }
-.playlist-delete {
+/*.playlist-delete {
 	position: absolute;
 	left: 95%;
 	bottom: 95%;
@@ -9,9 +9,13 @@
 }
 .playlist-delete:hover {
 	color: #ff0000;
-}
+}*/
 .octicon-eye {
 	position: absolute;
 	left: 5px;
 	color: black;
+}
+
+.fill-color-pod{
+	fill:white;
 }

@@ -27,7 +27,7 @@
 							{% csrf_token %}
 							<input type="hidden" name="action" value="modify"/>
 							<input type="hidden" name="id" value="{{overlay.id}}"/>
-							<input type="submit" title="{% trans 'Edit the overlay' %}" value="{% trans 'modify' %}" class="edt_overlay btn btn-info btn-sm"/>
+							<input type="submit" title="{% trans 'Edit the overlay' %}" value="{% trans 'modify' %}" class="edt_overlay btn btn-primary btn-sm"/>
 						</form>
 					</td>
 					<td>
@@ -35,7 +35,7 @@
 							{% csrf_token %}
 							<input type="hidden" name="action" value="delete"/>
 							<input type="hidden" name="id" value="{{overlay.id}}"/>
-							<input type="submit" title="{% trans 'Delete the overlay' %}" value="{% trans 'delete' %}" class="edt_overlay btn btn-danger btn-sm"/>
+							<input type="submit" title="{% trans 'Delete the overlay' %}" value="{% trans 'delete' %}" class="edt_overlay btn btn-primary btn-sm"/>
 						</form>
 					</td>
 				</tr>

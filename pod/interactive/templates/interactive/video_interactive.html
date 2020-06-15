@@ -37,101 +37,146 @@
     <iframe id="icontent" src="{% url 'h5pp:h5pcontent' %}?contentId={{more_data.h5p.content_id}}&is_iframe=true" style="display:none;" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
 </div>
 
-    <form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
-    {% csrf_token %}
-    </form>
+<form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
+{% csrf_token %}
+</form>
+    
+<h1 class="pt-2">
+{% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png"></a>{% endif %} {{video.title|title}}
+{% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
+  <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
+      <i data-feather="alert-octagon"></i>
+  </a>
+</h1>
 
-    <nav id="navbar-video" class="navbar navbar-light bg-light">
-        <div class="navbar-brand" >
-            <div style="display:inline-block; white-space: normal;">({% trans 'Interactive video' %}) {{video.title}} {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}</div>
-        </div>
-    <div class="list-group col-12">
-        <fieldset>
-        <div class="list-group-item">
-          <div class="form-group ">
-            <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page' %}:</label>
-            <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'interactive:video_interactive' slug=video.slug %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
-          </div>
-        </div>
-        <div class="list-group-item">
-          <div class="form-group">
-            <label for="txtpartage">{% trans 'Use this link to share the video' %} :</label>
-            <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'interactive:video_interactive' slug=video.slug %}" />
-          </div>
-        </div>
-        <div class="list-group-item">
-          <div class="form-group">
-            {% if request.user == video.owner or request.user.is_superuser %}
-            <a href="{% url 'interactive:edit_interactive' slug=video.slug %}" class="btn btn-info btn-sm float-right" title="Back to original video">
-                {% trans 'Edit interactivity' %}
-            </a>
-            {% endif %}
-            <a href="{% url 'video' slug=video.slug %}" class="btn btn-info btn-sm " title="Back to original video">
-                {% trans 'Back to original' %}
-            </a>
-          </div>
-        </div>
-        <div class="list-group-item">
-            <h3>{% trans 'Scoreboard' %}</h3>
-            <i>{% trans 'Click below to refresh the information.' %}</i>
-            <button type="submit" class="btn btn-info btn-sm" id="refresh-score" ><i data-feather="refresh-cw"></i></button>
-            <br>
-            {% if more_data.score and request.user == video.owner or request.user.is_superuser %}
-            <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>
-            <table class="table">
-            <thead>
-                <tr>
-                    <th>{% trans 'User' %}</th>
-                    <th>{% trans 'Points' %}</th>
-                    <th>{% trans 'started' %}</th>
-                    <th>{% trans 'finished' %}</th>
-                </tr>
-            </thead>
-            <tbody id="user-score">
-            {% for user in more_data.score %}
-                {% if user.max_points and user.max_points != ".." %}
-                <tr>
-                    <td>{{user.user}}</td>
-                    <td>{{user.points}} / {{user.max_points}}</td>
-                    <td>{{user.date_started}}</td>
-                    <td>{{user.date_finished}}</td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td>{{user.user}}</td><td>{% trans 'No score available' %}</td>
-                    <td>{{user.date_started}}</td>
-                    <td>{{user.date_finished}}</td>
-                </tr>
-                {% endif %}
-            {% endfor %}
-            </tbody>
-            </table>
-            {% elif request.user.is_authenticated %}
-            <div id="personnal-score">
-                {% if more_data.score %}
-                {% with more_data.score|first as userscore %}
-                    {% trans 'You got the following score on this video' %}: {{userscore.points}} / {{userscore.max_points}}
-                {% endwith %}
-                {% else %}
-                    {% trans "no score found" %}
-                {% endif %}
-            </div>
-            {% else %}
-            <div id="personnal-score">
-                <p>{% trans 'You are watching this video as anonymous user'%}</p>
-                {% if more_data.score %}
-                {% with more_data.score|first as userscore %}
-                    {% trans 'You got the following score on this video' %}: {{userscore.points}} / {{userscore.max_points}}
-                {% endwith %}
-                {% else %}
-                    {% trans "no score found" %}
-                {% endif %}
-            </div>
-            {% endif %}
-        </div>
-        </fieldset>
+<div class="pl-0 pr-0">
+  <div class="navbar d-flex flex-row-reverse p-0" >
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active show" id="summary-tab" data-toggle="tab" href="#summary" role="tab" aria-selected="true" title="{% trans 'Summary' %}">
+        <i data-feather="align-justify"></i>&nbsp;<span class="sr-only">{% trans 'Summary' %}</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false" title="{% trans 'Infos' %}">
+        <i data-feather="info"></i>&nbsp;<span class="sr-only">{% trans 'Infos' %}</span>
+      </a>
+    </li>
+    {% if video.allow_downloading or video.document_set.all %}
+    <li class="nav-item">
+      <a class="nav-link" id="downloads-tab" data-toggle="tab" href="#downloads" role="tab" aria-controls="downloads" aria-selected="false" title="{% trans 'Downloads' %}">
+        <i data-feather="download"></i>&nbsp;<span class="sr-only">{% trans 'Downloads' %}</span>
+      </a>
+    </li>
+    {% endif %}
+    <li class="nav-item">
+      <a class="nav-link" id="share-tab" data-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false" title="{% trans 'Embed/Share' %}">
+        <i data-feather="share-2"></i><span class="sr-only">{% trans 'Embed/Share' %}</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" id="score-tab" data-toggle="tab" href="#score" role="tab" aria-controls="score" aria-selected="false" title="{% trans 'Scoreboard' %}">
+        <i data-feather="star"></i><span class="sr-only">{% trans 'Scoreboard' %}</span>
+      </a>
+    </li>
+
+    <li class="nav-item dropdown" id="list_third_apps">
+      <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
+        <i data-feather="layers"></i>&nbsp;<span class="sr-only">{% trans 'Other versions' %}</span>
+      </a>
+      <div class="dropdown-menu" >
+        <a href="{% url 'video' slug=video.slug %}?redirect=false" title="no enrichment" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
+      </div>
+    </li>
+    {% if request.user.playlist_set.all and video.is_draft == False %}
+    <li class="nav-item dropdown dropright">
+      <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans "Add the video to a playlist"%}">
+        <i data-feather="play-circle"></i>&nbsp;<span class="sr-only">{% trans 'My playlists' %}</span>
+      </a>
+      <div class="dropdown-menu">
+      {% csrf_token %}
+      <ul class="list-group">
+      {% for playlist in request.user.playlist_set.all %}
+        {% if video in playlist.videos %}
+          <li class="dropdown-item disabled py-0" data-slug="{{playlist.slug}}">{{playlist.title}}
+            <i data-feather="check"></i>
+          </li>
+        {% else %}
+          <li class="dropdown-item playlist-item py-0" data-slug="{{playlist.slug}}">{{playlist.title}}</li>
+        {% endif %}
+      {% endfor %}
+      </ul>
+      </div>
+    </li>
+    {% endif %}
+
+  </ul>
+  </div>
+ 
+  {% include 'videos/video-info.html' with interactive=True %}
+  
+  <div class="tab-pane fade" id="score" role="tabpanel" aria-labelledby="score-tab">
+    <h5><i data-feather="star"></i>&nbsp;{% trans 'Scoreboard' %}</h5>
+    <i>{% trans 'Click below to refresh the information.' %}</i>
+    <button type="submit" class="btn btn-primary btn-sm" id="refresh-score" ><i data-feather="refresh-cw"></i></button>
+    <br>
+    {% if more_data.score and request.user == video.owner or request.user.is_superuser or request.user in video.additional_owners.all %}
+    <i>{% trans 'The scoreboard displays the users who viewed your interactive video and their results.' %}</i>
+    <table class="table">
+    <thead>
+        <tr>
+            <th>{% trans 'User' %}</th>
+            <th>{% trans 'Points' %}</th>
+            <th>{% trans 'started' %}</th>
+            <th>{% trans 'finished' %}</th>
+        </tr>
+    </thead>
+    <tbody id="user-score">
+    {% for user in more_data.score %}
+        {% if user.max_points and user.max_points != ".." %}
+        <tr>
+            <td>{{user.user}}</td>
+            <td>{{user.points}} / {{user.max_points}}</td>
+            <td>{{user.date_started}}</td>
+            <td>{{user.date_finished}}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td>{{user.user}}</td><td>{% trans 'No score available' %}</td>
+            <td>{{user.date_started}}</td>
+            <td>{{user.date_finished}}</td>
+        </tr>
+        {% endif %}
+    {% endfor %}
+    </tbody>
+    </table>
+    {% elif request.user.is_authenticated %}
+    <div id="personnal-score">
+        {% if more_data.score %}
+        {% with more_data.score|first as userscore %}
+            {% trans 'You got the following score on this video' %}: {{userscore.points}} / {{userscore.max_points}}
+        {% endwith %}
+        {% else %}
+            {% trans "no score found" %}
+        {% endif %}
     </div>
-    </nav>
+    {% else %}
+    <div id="personnal-score">
+        <p>{% trans 'You are watching this video as anonymous user'%}</p>
+        {% if more_data.score %}
+        {% with more_data.score|first as userscore %}
+            {% trans 'You got the following score on this video' %}: {{userscore.points}} / {{userscore.max_points}}
+        {% endwith %}
+        {% else %}
+            {% trans "no score found" %}
+        {% endif %}
+    </div>
+    {% endif %}
+  </div>
+  
+</div>
+<!-- -->
 {%endif%}
 
 {% endblock video-element %}
@@ -189,8 +234,13 @@
                 table.html(html);
             }
         }
+      });
     });
-});
+    
+    // Add dynamically the scoreboard to the panel
+    var $myTabContent = $("#myTabContent");
+    var divScore = document.getElementById("score");
+    $myTabContent.append(divScore);
 </script>
 {% endblock more_script %}
 

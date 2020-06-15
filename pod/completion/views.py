@@ -20,9 +20,9 @@ from .models import Overlay
 from .forms import OverlayForm
 from pod.podfile.models import UserFolder
 from pod.podfile.views import get_current_session_folder, file_edit_save
-
 import re
 import json
+from django.contrib.sites.shortcuts import get_current_site
 
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTION = ['new', 'save', 'modify', 'delete']
@@ -32,11 +32,15 @@ CAPTION_MAKER_ACTION = ['save']
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def video_caption_maker(request, slug):
-    video = get_object_or_404(Video, slug=slug)
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
     user_home_folder = get_object_or_404(
         UserFolder, name="home", owner=request.user)
     action = None
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner and not (
+        request.user.is_superuser or request.user.has_perm(
+            "completion.add_track")) and (
+            request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
@@ -63,7 +67,6 @@ def video_caption_maker_save(request, video):
     if (request.method == "POST"):
         cur_folder = get_current_session_folder(request)
         response = file_edit_save(request, cur_folder)
-        # print(response.content)
         if b'list_element' in response.content:
             messages.add_message(
                 request, messages.INFO,
@@ -84,8 +87,15 @@ def video_caption_maker_save(request, video):
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_completion(request, slug):
-    video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
+    if request.user != video.owner and \
+        not (request.user.is_superuser or (request.user.has_perm(
+            "completion.add_contributor") and request.user.has_perm(
+                "completion.add_track") and request.user.has_perm(
+                    "completion.add_document") and request.user.has_perm(
+                        "completion.add_overlay"))) and (
+                            request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
@@ -117,8 +127,12 @@ def video_completion(request, slug):
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_completion_contributor(request, slug):
-    video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
+    if request.user != video.owner and not (
+        request.user.is_superuser or request.user.has_perm(
+            "completion.add_contributor") and (
+            request.user not in video.additional_owners.all())):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
@@ -296,8 +310,12 @@ def video_completion_contributor_delete(request, video):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def video_completion_document(request, slug):
-    video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
+    if request.user != video.owner and not (
+        request.user.is_superuser or request.user.has_perm(
+            "completion.add_document") and (
+            request.user not in video.additional_owners.all())):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
@@ -354,7 +372,6 @@ def video_completion_document_save(request, video):
     list_document = video.document_set.all()
     list_track = video.track_set.all()
     list_overlay = video.overlay_set.all()
-
     form_document = DocumentForm(request.POST)
     if (request.POST.get('document_id') and
             request.POST['document_id'] != 'None'):
@@ -472,8 +489,12 @@ def video_completion_document_delete(request, video):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def video_completion_track(request, slug):
-    video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
+    if request.user != video.owner and not (
+        request.user.is_superuser or request.user.has_perm(
+            "completion.add_track") and (
+            request.user not in video.additional_owners.all())):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
@@ -690,7 +711,10 @@ def get_simple_url(overlay):
 @staff_member_required(redirect_field_name='referrer')
 def video_completion_overlay(request, slug):
     video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    if request.user != video.owner and not (
+        request.user.is_superuser or request.user.has_perm(
+            "completion.add_overlay") and (
+            request.user not in video.additional_owners.all())):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied

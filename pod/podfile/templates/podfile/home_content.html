@@ -1,0 +1,62 @@
+{% load i18n %}
+
+<div class="container-fluid h-100" id="podfile">
+  <div class="row">
+    <div class="col col-4" id="dirs">
+        {% include 'podfile/userfolder.html' %}
+    </div>
+    <div class="col col-8 col-md-offset-1" id="files">
+        {% include 'podfile/list_folder_files.html' with folder=current_session_folder %}
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="folderModalCenter" tabindex="-1" role="dialog" aria-labelledby="folderModalCenter" aria-hidden="true" style="z-index:1060;">
+  <div class="modal-dialog modal-dialog-centered" role="document" >
+    <div class="modal-content" style="min-height:initial !important;border:2px solid black;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="folderModalCenterTitle">{% trans "Enter new name of folder"%}</h2>
+        <button type="button" class="close" data-toggle="modal" data-target="#folderModalCenter" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <form id="folderFormName" action="{% url 'podfile:editfolder' %}">
+          {% csrf_token %}
+          <input type="hidden" name="folderid" id="formfolderid" value=""/>
+          <div class="form-group">
+            <label for="folderInputName">{% trans "Name"%}</label>
+            <input type="text" class="form-control" name="name" id="folderInputName" placeholder="{% trans "Enter new name of folder"%}">
+          </div>
+        </form>
+
+        <form method="post" enctype="multipart/form-data" id="formchangefile" action="{% url 'podfile:changefile'%}" class="needs-validation" novalidate>
+            {% csrf_token %}
+            {{ form_file }}
+            <input type="hidden" id="file_id" name="file_id" value=""/>
+            <input type="hidden" id="file_type" name="file_type" value=""/>
+        </form>
+
+        <form method="post" enctype="multipart/form-data" id="formchangeimage" action="{% url 'podfile:changefile'%}" class="needs-validation" novalidate>
+            {% csrf_token %}
+            {{ form_image }}
+            <input type="hidden" id="id_image" name="file_id" value=""/>
+            <input type="hidden" id="file_type" name="file_type" value=""/>
+        </form>
+
+        <div class="row loadingformfiles" style="display: none">
+        <div class="d-flex align-items-center col" >
+          <strong>{% trans "Loading"%}...</strong>
+          <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+        </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#folderModalCenter">{% trans "Close"%}</button>
+        <button type="button" class="btn btn-primary" id="modalSave">{% trans "Save changes"%}</button>
+      </div>
+    </div>
+  </div>
+</div>

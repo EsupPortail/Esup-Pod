@@ -1,0 +1,144 @@
+{% load i18n static podfile_filters %}
+
+<!-- Image and text -->
+<nav class="navbar navbar-expand-lg navbar-link">
+
+  <span class="navbar-brand text-truncate">
+    <img src="{% static "podfile/images/opened_folder.png"%}" width="30" height="30" class="d-inline-block align-top" alt="">
+    <span data-toggle="tooltip" data-placement="top" title="{{folder.name}} - {{folder.get_all_file.count}} {% trans "file"%}{{ folder.get_all_file.count|pluralize }}">{{folder.name}}</span>
+  </span>
+  
+  <button class="navbar-toggler btn btn-outline-primary active" type="button" data-toggle="collapse" data-target="#currentfolder" aria-controls="currentfolder" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  
+  <div class="collapse navbar-collapse" id="currentfolder">
+    {% if request.user == folder.owner or request.user.is_superuser or perms.podfile.change_userfolder  %}
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <button id="currentfolderrename" type="button" class="btn btn-link btn-sm nav-link" data-toggle="modal" data-target="#folderModalCenter" data-oldname="{{folder.name}}" data-folderid="{{folder.id}}">
+        <img src="{% static "podfile/images/rename.png" %}" >
+        <span class="sr-only">{% trans "Rename"%}</span>
+        </button>
+      </li>
+      <li class="nav-item">
+        <button id="currentfolderdelete" type="button" class="btn btn-link btn-sm nav-link" data-folderid="{{folder.id}}">
+        {% csrf_token %}
+        <img src="{% static "podfile/images/delete.png" %}" >
+        <span class="sr-only">{% trans "Delete"%}</span>
+        </button>
+      </li>
+    </ul>
+    {% endif %}
+    <form class="form-inline my-2 my-lg-0" method="POST" id="formuploadfile" enctype="multipart/form-data" style="" action="{% url "podfile:uploadfiles" %}">
+        {% csrf_token %}
+        <input type="hidden" name="folderid" value="{{folder.id}}">
+        {% if type %}
+        <input type="hidden" name="type" value="{{type}}">
+        {% endif %}
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" id="ufile" name="ufile" multiple style="position:fixed;top:-100px">
+          <label class="" for="ufile" style="cursor:pointer;">
+            <img src="{% static "podfile/images/upload.png"%}" width="30" height="30" class="d-inline-block align-top" alt="">
+            <span class="sr-only">{% trans "Upload Files"%}</span>
+          </label>
+        </div>
+      </form>
+  </div>
+
+</nav>
+
+  <div class="row loadingformfiles" style="display: none">
+  <div class="d-flex align-items-center col" >
+    <strong>{% trans "Loading"%}...</strong>
+    <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+  </div>
+  </div>
+  
+  <div class="row" id="listfiles">
+      {% for file in folder.get_all_files %}
+      <div class="col-sm-2 p-0">
+        <div class="card bg-light mb-3 m-1 p-1 text-truncate" style="border: 1px solid grey;">
+          <div class="card-header p-0  m-0" style="background: none">
+            {% if request.user == file.created_by or request.user.is_superuser or perms.podfile.change_customfilemodel or perms.podfile.change_customimagemodel %}
+            <nav class="navbar navbar-expand-lg navbar-light p-0 m-0">
+              
+              <button class="btn btn-light btn-sm p-0 m-0" type="button" data-toggle="collapse" data-target="#currentfile{{file.id}}" aria-expanded="false" aria-controls="currentfile{{file.id}}" style="opacity:0.8;">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              
+              <div class="collapse" id="currentfile{{file.id}}">
+              <ul class="navbar-nav mr-auto p-0 m-0">
+                <li class="nav-item p-0 m-0">
+                  <button type="button" class="btn btn-link btn-sm nav-link p-0 m-0" data-toggle="modal" data-target="#folderModalCenter" data-filename="{{file.name}}" data-fileid="{{file.id}}" data-folderid="{{file.folder.id}}" data-filetype="{{file.class_name}}">
+                  <img src="{% static "podfile/images/paste.png" %}" >
+                  <span class="sr-only">{% trans "Modify"%}</span>
+                  </button>
+                </li>
+                <li class="nav-item p-0 m-0">
+                  <form method="post" action="{% url 'download_file' %}" class="form-inline my-2 my-lg-0 nav-link p-0 m-0">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{file.file.name}}" name="filename" />
+                    <button type="submit" class="btn btn-link btn-sm nav-link p-0 m-0">
+                    <img src="{% static "podfile/images/download.png" %}" >
+                    <span class="sr-only">{% trans "Download"%}</span>
+                    </button>
+                  </form>
+                </li>
+                <li class="nav-item p-0 m-0">
+                  <button type="button" class="btn btn-link btn-sm nav-link p-0 m-0 btn-delete-file" data-fileid="{{file.id}}" data-filetype="{{file.class_name}}">
+                  {% csrf_token %}
+                  <img src="{% static "podfile/images/delete.png" %}" >
+                  <span class="sr-only">{% trans "Delete"%}</span>
+                  </button>
+                </li>
+              </ul>
+              </div>
+            </nav>
+            {% endif %}
+          </div>
+          {% if file.class_name == "CustomImageModel" and file.file_exist %}
+            <img class="card-img-top p-1" src="{{file.file.url}}" alt="Card image">
+          {% else %}
+            {% with file.file.name|icon_exists as icon %}
+            <img class="card-img-top p-1" src="{% static "podfile/images/icons/"|add:icon|add:".png" %}" alt="Card image">
+            {%endwith%}
+          {% endif %}
+          <div class="card-body">
+            <p class="card-text p-0 m-0">
+              {% if type %}
+                {% if type == "image" and file.class_name == "CustomImageModel" %}
+                <a href="{{file.file.url}}" class="card-title {% if request.is_ajax %}file-name{% endif%}" title="{{file.name}}" target="_blank" data-fileid="{{file.id}}" data-filetype="{{file.class_name}}">
+                  <small class="text-muted">{{file.name}}</small>
+                </a>
+                {% elif type == "file" and file.class_name == "CustomFileModel"%}
+                <a href="{{file.file.url}}" class="card-title {% if request.is_ajax %}file-name{% endif%}" title="{{file.name}}" target="_blank" data-fileid="{{file.id}}" data-filetype="{{file.class_name}}">
+                  <small class="text-muted">{{file.name}}</small>
+                </a>
+                {% else %}
+                <small class="text-muted">{{file.name}}</small>
+                {% endif %}
+              {% else %}
+              <a href="{{file.file.url}}" class="card-title {% if request.is_ajax %}file-name{% endif%}" title="{{file.name}}" target="_blank" data-fileid="{{file.id}}" data-filetype="{{file.class_name}}">
+                <small class="text-muted">{{file.name}}</small>
+              </a>
+              {% endif %}
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+      {% endfor %}
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+

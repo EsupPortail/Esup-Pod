@@ -5,7 +5,6 @@ from django.contrib.flatpages.models import FlatPage
 from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 from django.db import connection
-
 import os
 import mimetypes
 
@@ -17,7 +16,8 @@ def get_nextautoincrement(model):
     cursor = connection.cursor()
     cursor.execute(
         'SELECT Auto_increment FROM information_schema.tables ' +
-        'WHERE table_name="{0}";'.format(model._meta.db_table)
+        'WHERE table_name="{0}" AND table_schema=DATABASE();'
+        .format(model._meta.db_table)
     )
     row = cursor.fetchone()
     cursor.close()
@@ -61,6 +61,9 @@ class CustomImageModel(models.Model):
         return os.path.basename(self.file.path)
     name.fget.short_description = _('Get the file name')
 
+    def file_exist(self):
+        return (self.file and os.path.isfile(self.file.path))
+
     def __str__(self):
         return '%s (%s, %s)' % (self.name, self.file_type, self.file_size)
 
@@ -88,6 +91,9 @@ class CustomFileModel(models.Model):
     def name(self):
         return os.path.basename(self.file.path)
     name.fget.short_description = _('Get the file name')
+
+    def file_exist(self):
+        return (self.file and os.path.isfile(self.file.path))
 
     def __str__(self):
         return '%s (%s, %s)' % (self.name, self.file_type, self.file_size)

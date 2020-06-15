@@ -8,25 +8,23 @@
 <i data-feather="sliders"></i>&nbsp;{% trans "Filters"%}</h4>
 
 <form action="{% url 'videos' %}" method="get" id="filters">
-  {% if user.is_authenticated %}
+  {% if not HIDE_USER_FILTER and user.is_authenticated %}
   <fieldset>
   <legend  class="h5"><i data-feather="users"></i> {% trans "Users" %} <button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
   <div class="form-group">
       <input placeholder="{% trans "Search" %}" id="ownerbox" type="text" class="form-control">
   </div>
   <div class="form-group navList owners" id="collapseFilterOwner" style="max-height:300px; overflow:auto;">
-      {% for owner in OWNERS %}
-      {% if owner.username in owners %}
+      {% for owner in ownersInstances %}
       <div class="form-check">
       <input class="form-check-input" type="checkbox" name="owner" value="{{owner.username}}" id="id{{owner.username}}" checked>
       <label class="form-check-label" for="id{{owner.username}}">
           {% thumbnail video.owner.owner.userpicture.file "x34" as im %}
             <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{ owner.first_name }} {{ owner.last_name }} ">
           {% endthumbnail %}
-	  {{ owner.first_name }} {{ owner.last_name }} {% if not ADDITIONAL_GRENOBLE_RGPD %}{% if not USE_RGPD %} ({{ owner.username }}) {% endif %}{% endif%}
+	  {{ owner.first_name }} {{ owner.last_name }} {% if not HIDE_USERNAME and user.is_authenticated %} ({{ owner.username }}) {% endif%}
       </label>
       </div>
-      {% endif %}
       {% endfor %}  
   </div>
   </fieldset>
@@ -104,5 +102,6 @@
 </div>
 <script>
 var listUserChecked = {{owners|safe}};
+
 </script>
 {% endspaceless %}

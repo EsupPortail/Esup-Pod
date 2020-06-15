@@ -2,27 +2,39 @@
 {% load i18n %}
 {% load staticfiles %}
 <link href="{% static 'css/videojs-playlist.css' %}" rel="stylesheet">
-<div class="playlist-elements">
-	<div class="playlist-control p-2">
-		<h5>{{playlist.title}} - {{playlist.videos|length}} {% trans 'video' %}(s)
-			<p class="playlist-counter">#{{video.title}} - {{video.playlistelement_set.first.position}} / {{playlist.videos|length}}</p>
-		</h5>
-		<a id="loop" class="playlist-options" active="off" title="{% trans 'Repeat the playlist' %}">
-      		<svg height="32" class="octicon octicon-sync" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M10.24 7.4a4.15 4.15 0 0 1-1.2 3.6 4.346 4.346 0 0 1-5.41.54L4.8 10.4.5 9.8l.6 4.2 1.31-1.26c2.36 1.74 5.7 1.57 7.84-.54a5.876 5.876 0 0 0 1.74-4.46l-1.75-.34zM2.96 5a4.346 4.346 0 0 1 5.41-.54L7.2 5.6l4.3.6-.6-4.2-1.31 1.26c-2.36-1.74-5.7-1.57-7.85.54C.5 5.03-.06 6.65.01 8.26l1.75.35A4.17 4.17 0 0 1 2.96 5z"></path></svg>
-      	</a>
-      	<a id="auto" class="playlist-options" active="off" title="{% trans 'Switch to next video automatically' %}">
-      		<svg height="32" class="octicon octicon-diff-renamed" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M6 9H3V7h3V4l5 4-5 4V9zm8-7v12c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V2c0-.55.45-1 1-1h12c.55 0 1 .45 1 1zm-1 0H1v12h12V2z"></path></svg>
-      	</a>
+<div class="card">
+	<div class="card-header bg-dark">
+		<h2 class="card-title text-white text-center">{{playlist.title}}</h2>
+		<h3 class="playlist-counter text-center">
+			<a id="loop" class="playlist-options" active="off" title="{% trans 'Repeat the playlist' %}">
+      			<svg height="32" class="octicon octicon-sync fill-color-pod m-1" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M10.24 7.4a4.15 4.15 0 0 1-1.2 3.6 4.346 4.346 0 0 1-5.41.54L4.8 10.4.5 9.8l.6 4.2 1.31-1.26c2.36 1.74 5.7 1.57 7.84-.54a5.876 5.876 0 0 0 1.74-4.46l-1.75-.34zM2.96 5a4.346 4.346 0 0 1 5.41-.54L7.2 5.6l4.3.6-.6-4.2-1.31 1.26c-2.36-1.74-5.7-1.57-7.85.54C.5 5.03-.06 6.65.01 8.26l1.75.35A4.17 4.17 0 0 1 2.96 5z"></path></svg>
+      		</a>
+      		<a id="auto" class="playlist-options" active="off" title="{% trans 'Switch to next video automatically' %}">
+      			<svg height="32" class="octicon octicon-diff-renamed fill-color-pod m-1" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M6 9H3V7h3V4l5 4-5 4V9zm8-7v12c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V2c0-.55.45-1 1-1h12c.55 0 1 .45 1 1zm-1 0H1v12h12V2z"></path></svg>
+      		</a>
+		</h3>
+		<div class="row">
+			<div class="col-6">
+				<p class="text-white">{{video.title}} - {{video.playlistelement_set.first.position}} / {{playlist.videos|length}}</p>
+      		</div>
+      		<div class="col-6">
+      			<p class="text-white text-right">{% blocktrans count counter=playlist.videos|length %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</p>
+      		</div>
+      	</div>
     </div>
-    <div class="playlist-videos">
-    {% for pvideo in playlist.videos %}
-    	{% include 'videos/card.html' with video=pvideo playlist=playlist %}
-    	{% if video.playlistelement_set.first.position == pvideo.playlistelement_set.first.position %}
-    		<p><i data-feather="chevron-up"></i></p>
-    	{% else %}
-    		<p>{{pvideo.playlistelement_set.first.position}}</p>
-    	{% endif %}
-    {% endfor %}
+    <div class="card-body playlist-videos">
+    	<div class="row">
+		    {% for pvideo in playlist.videos %}
+		    <div class="col-12 col-md-6 col-lg-3 mb-2 card-group">
+		    	{% include 'videos/card.html' with video=pvideo playlist=playlist %}
+		    	{% if video.playlistelement_set.first.position == pvideo.playlistelement_set.first.position %}
+		    		<p><i data-feather="chevron-up"></i></p>
+		    	{% else %}
+		    		<p>{{pvideo.playlistelement_set.first.position}}</p>
+		    	{% endif %}
+		    </div>
+		    {% endfor %}
+		</div>
 	</div>
 </div>
 <script>
@@ -41,37 +53,40 @@
 
 		if (window.location.href.match(parameter[1])) {
 			$('#auto').attr('active', 'on');
-			$('#auto').css('color', '#007bff');
+			$('#auto svg').css('fill', 'green');
 			auto_on = true;
 		}
 		if (window.location.href.match(parameter[2])) {
 			$('#loop').attr('active', 'on');
-			$('#loop').css('color', '#007bff');
+			$('#loop svg').css('fill', 'green');
 			loop_on = true;
 		}
-		
+
 		player.on('ended', function() {
 			var auto = $('#auto').attr('active');
 			var loop = $('#loop').attr('active');
+			var parameters ='';
 			if (auto == 'on') {
-				playlist = playlist + '&auto=on';
-				if (current_position != length) {
-					window.location = next_element.children[1].href + '?playlist=' + playlist;
-				} else if (loop == 'on' && current_position == length) {
-					playlist = playlist + '&loop=on';
-					window.location = $('.playlist-videos .card')[0].children[1].href + '?playlist=' + playlist;
-				}
+				parameters = parameters + '&auto=on';
 			}
+			if (loop == 'on'){
+				parameters = parameters + '&loop=on';
+			}
+			if (current_position != length) {
+					window.location = next_element.children[1].children[0].href+parameters;
+				} else {
+					window.location = $('.playlist-videos .card')[0].children[1].children[0].href+parameters;
+				}
 		});
 
 		$('#auto').on('click', function() {
 			$(this).attr('active', $(this).attr('active') == 'off' ? 'on' : 'off');
-			$(this).css('color', $(this).attr('active') == 'on' ? '#007bff' : 'black');
+			$("#auto svg").css('fill', $(this).attr('active') == 'on' ? 'green' : 'white');
 		});
 
 		$('#loop').on('click', function() {
 			$(this).attr('active', $(this).attr('active') == 'off' ? 'on' : 'off');
-			$(this).css('color', $(this).attr('active') == 'on' ? '#007bff' : 'black');
+			$("#loop svg").css('fill', $(this).attr('active') == 'on' ? 'green' : 'white');
 		});
 	});
 </script>
