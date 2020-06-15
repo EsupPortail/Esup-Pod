@@ -2,6 +2,7 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter(name='isinstance')
 def isinstance(value, expected_instance):
     return value.__class__.__name__ in expected_instance
@@ -11,5 +12,4 @@ def isinstance(value, expected_instance):
 def isempty(value):
     if isinstance(value, "str"):
         return value.strip() == ""
-    return value == None
-
+    return value is None
