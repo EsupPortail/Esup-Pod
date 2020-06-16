@@ -21,8 +21,7 @@ def lives(request):  # affichage des directs
     })
 
 
-def video_live(request, slug):  # affichage des directs
-    site = get_current_site(request)
+def get_broadcaster_by_slug(slug, site):
     broadcaster = None
     if slug.isnumeric():
         try:
@@ -33,6 +32,12 @@ def video_live(request, slug):  # affichage des directs
     if broadcaster is None:
         broadcaster = get_object_or_404(Broadcaster, slug=slug,
                                         building__sites=site)
+    return broadcaster
+
+
+def video_live(request, slug):  # affichage des directs
+    site = get_current_site(request)
+    broadcaster = get_broadcaster_by_slug(slug, site)
     if broadcaster.is_restricted and not request.user.is_authenticated():
         iframe_param = 'is_iframe=true&' if (
             request.GET.get('is_iframe')) else ''
