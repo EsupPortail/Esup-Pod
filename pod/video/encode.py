@@ -512,6 +512,7 @@ def encode_video_mp4(source, cmd, output_dir):
     msg += "\n- Encoding Mp4 : %s" % time.ctime()
     for proc in procs:
         proc.wait()
+    return msg
 
 
 def save_mp4_file(video_id, list_file, output_dir):
@@ -721,7 +722,7 @@ def get_video_command_playlist(video_id, video_data, output_dir):
     if not SPLIT_ENCODE_CMD:
         cmds.append(cmd)
     return {
-        'cmd': cmd,
+        'cmd': cmds,
         'list_file': list_file,
         'master_playlist': master_playlist
     }
@@ -742,6 +743,7 @@ def encode_video_playlist(source, cmd, output_dir):
     msg += "\n- Encoding Playlist : %s" % time.ctime()
     for proc in procs:
         proc.wait()
+    return msg
 
 
 def save_playlist_file(video_id, list_file, output_dir):
