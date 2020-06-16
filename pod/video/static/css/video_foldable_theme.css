@@ -1,0 +1,39 @@
+.foldable_event{
+	color: var(--secondary);
+        cursor: pointer;
+}
+.closed{
+        height: 0;
+        overflow: hidden;
+}
+
+.inline-flex{
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+	justify-content: space-between;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+        -webkit-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
+}
+.arrow_right{
+        content: "";
+        display: inline-block;
+        margin-left: 10px;
+
+        border: solid var(--secondary);
+        border-width: 0 4px 4px 0;
+        display: inline-block;
+        padding: 4px;
+        -ms-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+        -webkit-transform: rotate(-45deg);
+}
+.arrow_bottom{
+        -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        -webkit-transform: rotate(45deg);
+}
+
