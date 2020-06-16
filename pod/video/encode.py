@@ -43,6 +43,9 @@ if getattr(settings, 'USE_TRANSCRIPTION', False):
 USE_ESTABLISHMENT = getattr(
     settings, 'USE_ESTABLISHMENT_FIELD', False)
 
+SPLIT_ENCODE_CMD = getattr(
+    settings, 'SPLIT_ENCODE_CMD', False)
+
 FFMPEG = getattr(settings, 'FFMPEG', 'ffmpeg')
 FFPROBE = getattr(settings, 'FFPROBE', 'ffprobe')
 DEBUG = getattr(settings, 'DEBUG', True)
@@ -205,27 +208,27 @@ def encode_video(video_id):
             change_encoding_step(
                 video_id, 4,
                 "encoding video file : 1/11 get video command")
-            video_command_playlist = get_video_commands_playlist(
+            video_command_playlist = get_video_command_playlist(
                 video_id,
                 video_data,
                 output_dir)
             add_encoding_log(
                 video_id,
-                "video_command_playlist : %s" % video_command_playlist["cmds"])
-            video_command_mp4 = get_video_commands_mp4(
+                "video_command_playlist : %s" % video_command_playlist["cmd"])
+            video_command_mp4 = get_video_command_mp4(
                 video_id,
                 video_data,
                 output_dir)
             add_encoding_log(
                 video_id,
-                "video_command_mp4 : %s" % video_command_mp4["cmds"])
+                "video_command_mp4 : %s" % video_command_mp4["cmd"])
             # launch encode video
             change_encoding_step(
                 video_id, 4,
                 "encoding video file : 2/11 encode_video_playlist")
             msg = encode_video_playlist(
                 video_to_encode.video.path,
-                video_command_playlist["cmds"],
+                video_command_playlist["cmd"],
                 output_dir)
             add_encoding_log(
                 video_id,
@@ -235,7 +238,7 @@ def encode_video(video_id):
                 "encoding video file : 3/11 encode_video_mp4")
             msg = encode_video_mp4(
                 video_to_encode.video.path,
-                video_command_mp4["cmds"],
+                video_command_mp4["cmd"],
                 output_dir)
             add_encoding_log(
                 video_id,
@@ -445,7 +448,7 @@ def get_video_data(video_id, output_dir):
 ###############################################################
 
 
-def get_video_commands_mp4(video_id, video_data, output_dir):
+def get_video_command_mp4(video_id, video_data, output_dir):
     in_height = video_data["in_height"]
     renditions = VideoRendition.objects.filter(encode_mp4=True)
     # the lower height in first
@@ -456,9 +459,10 @@ def get_video_commands_mp4(video_id, video_data, output_dir):
     }
     list_file = []
     cmds = []
-
+    cmd = ""
     for rendition in renditions:
-        cmd = ""
+        if SPLIT_ENCODE_CMD:
+            cmd = ""
         bitrate = rendition.video_bitrate
         audiorate = rendition.audio_bitrate
         height = rendition.height
@@ -473,7 +477,7 @@ def get_video_commands_mp4(video_id, video_data, output_dir):
             name = "%sp" % height
 
             cmd += " %s -vf " % (static_params,)
-            cmd += "\"scale=-2:%s\"" % height
+            cmd += "\"scale=-2:%s\"" % (height)
             # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
                 minrate, bitrate, maxrate, int(bufsize), audiorate)
@@ -482,29 +486,32 @@ def get_video_commands_mp4(video_id, video_data, output_dir):
                 output_dir, name)
             list_file.append(
                 {"name": name, 'rendition': rendition})
-            cmds.append(cmd)
+            if SPLIT_ENCODE_CMD:
+                cmds.append(cmd)
+    if not SPLIT_ENCODE_CMD:
+        cmds.append(cmd)
     return {
-        'cmds': cmds,
+        'cmd': cmds,
         'list_file': list_file
     }
 
 
-def encode_video_mp4(source, cmds, output_dir):
+def encode_video_mp4(source, cmd, output_dir):
     msg = ""
     procs = []
     logfile = output_dir + "/encoding.log"
-    open(logfile,"ab").write(b'\n\nffmpegvideoMP4:\n\n')
+    open(logfile, "ab").write(b'\n\nffmpegvideoMP4:\n\n')
     msg = "\nffmpegMp4Command :\n"
-    for cmd in cmds:
-        ffmpegMp4Command = "%s %s -i %s %s" % (FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
+    for subcmd in cmd:
+        ffmpegMp4Command = "%s %s -i %s %s" % (
+            FFMPEG, FFMPEG_MISC_PARAMS, source, subcmd)
         msg += "- %s\n" % ffmpegMp4Command
         with open(logfile, "ab") as f:
-            procs.append( subprocess.Popen(ffmpegMp4Command, shell=True, stdout=f,stderr=f))
+            procs.append(subprocess.Popen(
+                ffmpegMp4Command, shell=True, stdout=f, stderr=f))
     msg += "\n- Encoding Mp4 : %s" % time.ctime()
     for proc in procs:
         proc.wait()
-    msg += "\n- End Encoding Mp4 : %s" % time.ctime()
-    return msg
 
 
 def save_mp4_file(video_id, list_file, output_dir):
@@ -664,7 +671,7 @@ def encode_video_mp3(video_id, source, output_dir):
 ###############################################################
 
 
-def get_video_commands_playlist(video_id, video_data, output_dir):
+def get_video_command_playlist(video_id, video_data, output_dir):
     in_height = video_data["in_height"]
     master_playlist = "#EXTM3U\n#EXT-X-VERSION:3\n"
     static_params = FFMPEG_STATIC_PARAMS % {
@@ -672,12 +679,14 @@ def get_video_commands_playlist(video_id, video_data, output_dir):
         'key_frames_interval': video_data["key_frames_interval"]
     }
     list_file = []
+    cmd = ""
     cmds = []
     renditions = VideoRendition.objects.all()
     # the lower height in first
     renditions = sorted(renditions, key=lambda m: m.height)
     for rendition in renditions:
-        cmd = ""
+        if SPLIT_ENCODE_CMD:
+            cmd = ""
         resolution = rendition.resolution
         bitrate = rendition.video_bitrate
         minrate = rendition.minrate
@@ -707,30 +716,32 @@ def get_video_commands_playlist(video_id, video_data, output_dir):
             master_playlist += "#EXT-X-STREAM-INF:BANDWIDTH=%s,\
                 RESOLUTION=%s\n%s.m3u8\n" % (
                 bandwidth, resolution, name)
-            cmds.append(cmd)
+            if SPLIT_ENCODE_CMD:
+                cmds.append(cmd)
+    if not SPLIT_ENCODE_CMD:
+        cmds.append(cmd)
     return {
-        'cmds': cmds,
+        'cmd': cmd,
         'list_file': list_file,
         'master_playlist': master_playlist
     }
 
 
-def encode_video_playlist(source, cmds, output_dir):
-
+def encode_video_playlist(source, cmd, output_dir):
     procs = []
     logfile = output_dir + "/encoding.log"
     open(logfile, "ab").write(b'\n\nffmpegvideoPlaylist:\n\n')
     msg = "\nffmpegPlaylistCommands :\n"
-    for cmd in cmds:
-        ffmpegPlaylistCommand = "%s %s -i %s %s" % (FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
+    for subcmd in cmd:
+        ffmpegPlaylistCommand = "%s %s -i %s %s" % (
+            FFMPEG, FFMPEG_MISC_PARAMS, source, subcmd)
         msg += "- %s\n" % ffmpegPlaylistCommand
         with open(logfile, "ab") as f:
-            procs.append(subprocess.Popen(ffmpegPlaylistCommand, shell=True, stdout=f,stderr=f))
+            procs.append(subprocess.Popen(
+                ffmpegPlaylistCommand, shell=True, stdout=f, stderr=f))
     msg += "\n- Encoding Playlist : %s" % time.ctime()
     for proc in procs:
         proc.wait()
-    msg += "\n- End Encoding Playlist : %s" % time.ctime()
-    return msg
 
 
 def save_playlist_file(video_id, list_file, output_dir):
