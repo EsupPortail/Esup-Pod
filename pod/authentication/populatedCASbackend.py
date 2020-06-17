@@ -95,8 +95,19 @@ def populateUser(tree):
 
 def get_ldap_conn():
     try:
-        server = Server(LDAP_SERVER['url'], port=LDAP_SERVER[
-                        'port'], use_ssl=LDAP_SERVER['use_ssl'], get_info=ALL)
+        if isinstance(LDAP_SERVER['url'], str):
+            server = Server(LDAP_SERVER['url'], port=LDAP_SERVER[
+                            'port'], use_ssl=LDAP_SERVER[
+                                'use_ssl'], get_info=ALL)
+        elif isinstance(LDAP_SERVER['url'], tuple):
+            hosts = []
+            for server in LDAP_SERVER['url']:
+                if not (server == LDAP_SERVER['url'][0]):
+                    hosts.append(server)
+            server = Server(LDAP_SERVER['url'][0], port=LDAP_SERVER[
+                'port'], use_ssl=[
+                    'use_ssl'], get_info=ALL,
+                            allowed_referral_hosts=hosts)
         conn = Connection(
             server, AUTH_LDAP_BIND_DN, AUTH_LDAP_BIND_PASSWORD, auto_bind=True)
         return conn
