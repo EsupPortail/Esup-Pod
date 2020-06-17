@@ -93,21 +93,26 @@ def populateUser(tree):
                 populate_user_from_entry(user, owner, entry)
 
 
+def get_server():
+    if isinstance(LDAP_SERVER['url'], str):
+        server = Server(LDAP_SERVER['url'], port=LDAP_SERVER[
+                        'port'], use_ssl=LDAP_SERVER[
+                            'use_ssl'], get_info=ALL)
+    elif isinstance(LDAP_SERVER['url'], tuple):
+        hosts = []
+        for server in LDAP_SERVER['url']:
+            if not (server == LDAP_SERVER['url'][0]):
+                hosts.append(server)
+        server = Server(LDAP_SERVER['url'][0], port=LDAP_SERVER[
+            'port'], use_ssl=LDAP_SERVER[
+                'use_ssl'], get_info=ALL,
+                        allowed_referral_hosts=hosts)
+    return server
+
+
 def get_ldap_conn():
     try:
-        if isinstance(LDAP_SERVER['url'], str):
-            server = Server(LDAP_SERVER['url'], port=LDAP_SERVER[
-                            'port'], use_ssl=LDAP_SERVER[
-                                'use_ssl'], get_info=ALL)
-        elif isinstance(LDAP_SERVER['url'], tuple):
-            hosts = []
-            for server in LDAP_SERVER['url']:
-                if not (server == LDAP_SERVER['url'][0]):
-                    hosts.append(server)
-            server = Server(LDAP_SERVER['url'][0], port=LDAP_SERVER[
-                'port'], use_ssl=LDAP_SERVER[
-                    'use_ssl'], get_info=ALL,
-                            allowed_referral_hosts=hosts)
+        server = get_server()
         conn = Connection(
             server, AUTH_LDAP_BIND_DN, AUTH_LDAP_BIND_PASSWORD, auto_bind=True)
         return conn
