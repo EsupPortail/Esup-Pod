@@ -105,7 +105,7 @@ def get_ldap_conn():
                 if not (server == LDAP_SERVER['url'][0]):
                     hosts.append(server)
             server = Server(LDAP_SERVER['url'][0], port=LDAP_SERVER[
-                'port'], use_ssl=[
+                'port'], use_ssl=LDAP_SERVER[
                     'use_ssl'], get_info=ALL,
                             allowed_referral_hosts=hosts)
         conn = Connection(
