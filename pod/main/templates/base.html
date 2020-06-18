@@ -1,6 +1,7 @@
 {% load staticfiles i18n custom_tags %}
+{% get_current_language as LANGUAGE_CODE %}
 <!doctype html>
-<html lang="fr">
+<html lang="{{ LANGUAGE_CODE }}">
 	<head>{% spaceless %}
 	    <!-- Required meta tags -->
 	    <meta charset="utf-8">
