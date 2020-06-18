@@ -46,6 +46,7 @@ log/
 media/
 pod/*/migrations/
 pod/custom/*
+!pod/custom/settings_local.py.example
 settings_local.py
 ## Others
 pod/static/
