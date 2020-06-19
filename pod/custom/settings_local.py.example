@@ -1,3 +1,16 @@
+"""
+# ********************************************************** ATTENTION **********************************************************
+#
+# Attention ! Veuillez ne pas renommer ce fichier en settings_local.py mais vous en inspirer pour configurer votre instance Pod.
+#
+# ********************************************************** WARNING ************************************************************
+#
+# Warning ! Please do not rename this file to settings_local.py but be inspired by it to configure your Pod instance.
+#
+#********************************************************************************************************************************
+"""
+
+
 # configuration principale
 """
 # La clé secrète d’une installation Django.
