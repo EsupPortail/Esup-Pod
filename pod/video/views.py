@@ -371,12 +371,11 @@ def my_videos(request):
 
     site = get_current_site(request)
     # Videos list which user is the owner
-    videos_list_owner = request.user.video_set.all().filter(sites=site)
+    videos_list = request.user.video_set.all().filter(sites=site)
     # Videos list which user is an additional owner
-    videos_list_additional_owner = request.user.owners_videos.all().filter(
-        sites=site).exclude(id__in=videos_list_owner)
-    # Aggregate the 2 lists
-    videos_list = list(chain(videos_list_owner, videos_list_additional_owner))
+    videos_list.union(request.user.owners_videos.all().filter(
+        sites=site))
+
     page = request.GET.get('page', 1)
 
     full_path = ""
