@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count, F, Q
 from django.template.loader import render_to_string
 from django.conf import settings
@@ -130,6 +130,7 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
 
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 ORGANIZE_BY_THEME = getattr(settings, 'ORGANIZE_BY_THEME', False)
+VIEW_STATS_AUTH = getattr(settings, 'VIEW_STATS_AUTH', False)
 
 # ############################################################################
 # CHANNEL
@@ -1510,6 +1511,12 @@ def get_videos(p_slug, target, p_slug_t=None):
     return (videos, title)
 
 
+def view_stats_if_authenticated(user):
+    if VIEW_STATS_AUTH and user.__str__() == "AnonymousUser":
+        return False
+    return True
+
+
 def manage_access_rights_stats_video(request, video, page_title):
     video_access_ok = get_video_access(
         request, video, slug_private=None)
@@ -1540,6 +1547,7 @@ def manage_access_rights_stats_video(request, video, page_title):
         _("You do not have access rights to this video: %s " % video.slug))
 
 
+@user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
 def stats_view(request, slug=None, slug_t=None):
     # Slug peut référencer une vidéo ou une chaine
     # from definit sa référence
