@@ -244,6 +244,11 @@ USE_ESTABLISHMENT_FIELD	= False
 USE_STATS_VIEW = False
 
 """
+# affichage de la statistique de vue des videos si utilisateur authentifié
+"""
+VIEW_STATS_AUTH = False
+
+"""
 # Fixe une année maximale que la date de suppression d'une vidéo ne peut dépasser. Par défaut MAX_DURATION_DATE_DELETE = 10. (Année courante + 10 ans).
 """
 MAX_DURATION_DATE_DELETE = 10
