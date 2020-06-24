@@ -105,7 +105,7 @@ $(document).on('change', "#displaytime", function(e) {
 });
 
 /*** USE TO SHOW THEME FROM CHANNELS ***/
-var get_list = function(tab, level, tab_selected, tag_type, li_class, attrs, add_link, current, channel) {
+var get_list = function(tab, level, tab_selected, tag_type, li_class, attrs, add_link, current, channel, show_only_parent_themes=false) {
     level = level || 0;
     tab_selected = tab_selected || [];
     tag_type = tag_type || "option";
@@ -126,9 +126,9 @@ var get_list = function(tab, level, tab_selected, tag_type, li_class, attrs, add
         else list_class+='"';
         list += '<'+tag_type+' '+selected+' '+list_class+' '+attrs+' value="'+i+'" id="theme_'+i+'">'+prefix+" "+title+'</'+tag_type+'>';
         var child = val.child;
-        var count = Object.keys(child).length;
-        if(count>0) {
-            list += get_list(val.child, level+=1, tab_selected, tag_type, li_class, attrs, add_link, current, channel);
+        var count =  Object.keys(child).length;
+        if(count>0 && !show_only_parent_themes) {
+            list += get_list(child, level+=1, tab_selected, tag_type, li_class, attrs, add_link, current, channel);
         }
     });
     return list;
@@ -137,7 +137,7 @@ var get_list = function(tab, level, tab_selected, tag_type, li_class, attrs, add
 /*** CHANNELS IN NAVBAR ***/
 
 $('.collapsibleThemes').on('show.bs.collapse', function () {
-  var str = get_list(listTheme["channel_"+$(this).data('id')], 0, [], tag_type="li", li_class="list-inline-item badge badge-primary-pod badge-pill", attrs='', add_link=true, current="", channel="");
+  var str = get_list(listTheme["channel_"+$(this).data('id')], 0, [], tag_type="li", li_class="list-inline-item badge badge-primary-pod badge-pill", attrs='', add_link=true, current="", channel="", show_only_parent_themes=show_only_parent_themes);
   $(this).html('<ul class="list-inline p-1 border">'+str+'</ul>')
   //$(this).parents("li").addClass('list-group-item-light');
   $(this).parents("li").find('.chevron-down').attr('style', 'transform: rotate(180deg);');

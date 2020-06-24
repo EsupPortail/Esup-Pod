@@ -387,8 +387,15 @@ class VideoForm(forms.ModelForm):
                         '%d-%m-%Y')))
         return self.cleaned_data['date_delete']
 
+    def clean_additional_owners(self):
+        if self.cleaned_data['owner'] in self.cleaned_data[
+                'additional_owners'].all():
+            raise ValidationError(
+                _("Owner of the video cannot be an additional owner too"))
+
     def clean(self):
         cleaned_data = super(VideoForm, self).clean()
+
         self.launch_encode = (
             'video' in cleaned_data.keys()
             and hasattr(self.instance, 'video')

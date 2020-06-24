@@ -6,7 +6,6 @@ from .utils import change_encoding_step, add_encoding_log
 from .utils import send_email, send_email_transcript
 from .models import Video
 
-from deepspeech import Model
 import numpy as np
 import shlex
 import subprocess
@@ -26,6 +25,10 @@ except ImportError:
 
 import threading
 import logging
+
+TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
+if TRANSCRIPT:
+    from deepspeech import Model
 
 DEBUG = getattr(settings, 'DEBUG', False)
 
@@ -126,12 +129,11 @@ def normalize_mp3(mp3filepath):
             shlex.split(normalize_cmd), stderr=subprocess.PIPE)
         return mp3normfile
     except subprocess.CalledProcessError as e:
-        raise RuntimeError(
-            'ffmpeg-normalize returned non-zero status: {}'.format(e.stderr))
+        log.error('ffmpeg-normalize returned non-zero status: {}'.format(
+            e.stderr))
         return mp3filepath
     except OSError as e:
-        raise OSError(e.errno,
-                      'ffmpeg-normalize not found {}'.format(e.strerror))
+        log.error('ffmpeg-normalize not found {}'.format(e.strerror))
         return mp3filepath
 
 # #################################

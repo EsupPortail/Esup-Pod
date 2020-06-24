@@ -11,7 +11,7 @@
 {% block breadcrumbs %}{{ block.super }}
 <li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
 
-<li class="breadcrumb-item active" aria-current="page">{% trans "Choose a file to upload" %}</li>
+<li class="breadcrumb-item active" aria-current="page">{% trans "Choose an audio or video file to upload" %}</li>
 
 {% endblock %}
 
@@ -30,13 +30,22 @@
 <h3>{% trans "Choose an audio or video file to upload" %}</h3>
 
 <div id="uploadblock">
-    <input id="chunked_upload" accept="{{allow_extension}}" type="file" name="the_file">
+    <input id="chunked_upload" class="hide-on-processing" accept="{{allow_extension}}" type="file" name="the_file">
     <progress id="progBar" value="0" max="100"></progress>
 
-    <p>{% trans "Your upload can be resumed if you have connection problems" %}</p>
+    {%if TRANSCRIPT %}
+    <input type="checkbox" class="hide-on-processing" id="transcript-box" name="transbox">
+<label class="hide-on-processing" for="transbox">{% trans "Transcript" %} ({% trans "Check this box if you want to transcript the audio.(beta version)"%})</label>
+    {%endif%}
+
+    <p>{% trans "Do not leave the page if you encounter a connection problem during the upload, it will resume automatically when your connection is available again." %}</p>
   
 </div>
-
+{%if slug %}
+<a href="{% url 'video_edit' slug=slug %}" title="{% trans "Back to video edit"%}" class="btn btn-primary btn-sm m-2">
+  <i data-feather="edit"></i>&nbsp;{% trans "Back to video edit"%}
+</a>
+{% endif %}
 
 {% endblock page_content %}
 
@@ -64,6 +73,20 @@
               </div>
           </div>
   </div>
+  
+  {%if TRANSCRIPT %}
+  <div class="card-text" id="formfields">
+    <div class="card card-body p-1">
+        <button class="btn btn-sm-light" id="heading-2" data-toggle="collapse" data-target="#collapse-2" aria-expanded="true" aria-controls="collapse-2" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
+             {% trans "Transcript" %}
+        </button>
+        <div id="collapse-2" class="collapse hide card-text small" aria-labelledby="heading-2" data-parent="#formfields">
+            <p> {% trans "Available only in French and English, transcription is a speech recognition technology that transforms an oral speech into text in an automated way. By checking this box, it will generate a subtitle file automatically when encoding the video." %}</p>
+            <p> {% trans "You will probably have to modify this file using the captioning tool in the completion page to improve it." %} </p>
+        </div>
+    </div>
+  </div>
+  {%endif%}
 </div>
 {% endblock page_aside %}
 
@@ -125,7 +148,7 @@ var max_size = {{ max_size }}
       add: function(e, data) { // Called before starting upload
           // If this is the second file you're uploading we need to remove the
           // old upload_id and just keep the csrftoken (which is always first).
-          $("#chunked_upload").hide()
+          $(".hide-on-processing").hide()
           form_data.splice(1);
           calculate_md5(data.files[0], max_chunk_size);  // Again, chunks of 100 kB
           data.submit();
@@ -133,6 +156,7 @@ var max_size = {{ max_size }}
 
       },
       chunkdone: function (e, data) { // Called after uploading each chunk
+      $(this).is(':checked')
         if (form_data.length < 2) {
           form_data.push(
             {"name": "upload_id", "value": data.result.upload_id}
@@ -150,7 +174,8 @@ var max_size = {{ max_size }}
             csrfmiddlewaretoken: csrf,
             upload_id: data.result.upload_id,
             md5: md5,
-            slug : slug
+            slug : slug,
+            transcript : $("#transcript-box").is(':checked')
           },
           dataType: "json",
           success: function(data) {

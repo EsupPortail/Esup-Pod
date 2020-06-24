@@ -142,16 +142,23 @@
   </div>
 </div>
 
-  <div class="tab-pane fade" id="share" role="tabpanel" aria-labelledby="share-tab">
-    <h5><i data-feather="share-2"></i>&nbsp;{% trans 'Embed/Share' %}</h5>
-    {% if not video.is_restricted and video.password != '' %}
+  <div class="tab-pane fade" id="share" role="tabpanel" aria-labelledby="share-tab" {% if video.is_draft %}style="border:1px solid red"{% endif %}>
+    <h5><i data-feather="share-2"></i>&nbsp;{% if video.is_draft %}{% trans 'Embed/Share (Draft Mode)' %} {% else %}{% trans 'Embed/Share' %} {%endif%}</h5>
+    {% if not video.is_draft and not video.is_restricted and video.password != '' %}
       <p>
-          <label>{% trans 'Social Networks' %}</label>
-          <a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Facebook"><i data-feather="facebook"></i></a>
-          <a target="_blank" href="http://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Twitter"><i data-feather="twitter"></i></a>
-	  <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} LinkedIn"><i data-feather="linkedin"></i></a>
+        <label>{% trans 'Social Networks' %}</label>
+        <a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Facebook"><i data-feather="facebook"></i></a>
+        <a target="_blank" href="http://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Twitter"><i data-feather="twitter"></i></a>
+	      <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} LinkedIn"><i data-feather="linkedin"></i></a>
       </p>
       <hr />
+    {% endif %}
+    {% if video.is_draft %}
+    <div class="card text-white bg-danger mb-3">
+      <div class="card-body">
+      {% blocktrans %}Please note that your video is in draft mode.<br/>The following links contain a key allowing access. Anyone with this links can access it.{% endblocktrans %}
+      </div>
+    </div>
     {% endif %}
       <fieldset>
         <div class="form-group">
@@ -187,5 +194,6 @@
           <img src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" alt="qrcode" id="qrcode"/>
         </div>
       </fieldset>
+    
   </div>
 </div>

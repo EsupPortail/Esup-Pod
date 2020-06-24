@@ -197,6 +197,8 @@ class RssSiteVideosFeed(Feed):
             item.date_added.strftime('%Y-%m-%d'), '%Y-%m-%d')
 
     def item_enclosure_url(self, item):
+        if (item.password is not None) or item.is_restricted:
+            return ""
         if item.get_video_mp4().count() > 0:
             mp4 = sorted(item.get_video_mp4(), key=lambda m: m.height)[0]
             return ''.join([self.author_link, mp4.source_file.url])
@@ -234,6 +236,8 @@ class RssSiteAudiosFeed(RssSiteVideosFeed):
         try:
             mp3 = EncodingAudio.objects.get(
                 name="audio", video=item, encoding_format="audio/mp3")
+            if (item.password is not None) or item.is_restricted:
+                return ""
             return ''.join([self.author_link, mp3.source_file.url])
         except EncodingAudio.DoesNotExist:
             return ""
