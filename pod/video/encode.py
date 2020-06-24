@@ -46,6 +46,7 @@ USE_ESTABLISHMENT = getattr(
 FFMPEG = getattr(settings, 'FFMPEG', 'ffmpeg')
 FFPROBE = getattr(settings, 'FFPROBE', 'ffprobe')
 DEBUG = getattr(settings, 'DEBUG', True)
+WATERMARK = getattr(settings, 'WATERMARK', '/usr/local/django_projects/podv2/pod/custom/LogoULRTV.png')
 
 log = logging.getLogger(__name__)
 
@@ -470,8 +471,14 @@ def get_video_command_mp4(video_id, video_data, output_dir):
 
             name = "%sp" % height
 
-            cmd += " %s -vf " % (static_params,)
-            cmd += "\"scale=-2:%s\"" % (height)
+            # cmd += " %s -vf " % (static_params,)
+            # cmd += "\"scale=-2:%s\"" % (height)
+            cmd += " %s -filter_complex " % (static_params,)
+            cmd += "\"[1:v]scale=-2:%s[scalemark%s]; [0:v]scale=-2:%s[scalevid%s]; " % (height,height,height,height)
+            cmd += "[scalevid%s][scalemark%s]overlay=0:0[out%s]\" " % (height,height,height)
+            # cmd += "[scalevid%s][scalemark%s]overlay=0:0\" " % (height,height)
+            cmd += "-map [out%s] " % (height)
+            
             # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
                 minrate, bitrate, maxrate, int(bufsize), audiorate)
@@ -487,8 +494,8 @@ def get_video_command_mp4(video_id, video_data, output_dir):
 
 
 def encode_video_mp4(source, cmd, output_dir):
-    ffmpegMp4Command = "%s %s -i %s %s" % (
-        FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
+    ffmpegMp4Command = "%s %s -i %s -i %s %s" % (
+        FFMPEG, FFMPEG_MISC_PARAMS, source, WATERMARK, cmd)
 
     msg = "\nffmpegMp4Command :\n%s" % ffmpegMp4Command
     msg += "\n- Encoding Mp4 : %s" % time.ctime()
@@ -692,8 +699,12 @@ def get_video_command_playlist(video_id, video_data, output_dir):
 
             name = "%sp" % height
 
-            cmd += " %s -vf " % (static_params,)
-            cmd += "\"scale=-2:%s\"" % (height)
+            # cmd += " %s -vf " % (static_params,)
+            # cmd += "\"scale=-2:%s\"" % (height)
+            cmd += " %s -filter_complex " % (static_params,)
+            cmd += "\"[1:v]scale=-2:%s[scalemark%s]; [0:v]scale=-2:%s[scalevid%s]; " % (height,height,height,height)
+            cmd += "[scalevid%s][scalemark%s]overlay=0:0[out%s]\" " % (height,height,height)
+            cmd += "-map [out%s] " % (height)
             # cmd += "scale=w=%s:h=%s:" % (width, height)
             # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
@@ -715,8 +726,8 @@ def get_video_command_playlist(video_id, video_data, output_dir):
 
 def encode_video_playlist(source, cmd, output_dir):
 
-    ffmpegPlaylistCommand = "%s %s -i %s %s" % (
-        FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
+    ffmpegPlaylistCommand = "%s %s -i %s -i %s %s" % (
+        FFMPEG, FFMPEG_MISC_PARAMS, source, WATERMARK, cmd)
 
     msg = "\nffmpegPlaylistCommand :\n%s" % ffmpegPlaylistCommand
     msg += "\n- Encoding Playlist : %s" % time.ctime()
