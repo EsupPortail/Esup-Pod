@@ -49,7 +49,8 @@ SPLIT_ENCODE_CMD = getattr(
 FFMPEG = getattr(settings, 'FFMPEG', 'ffmpeg')
 FFPROBE = getattr(settings, 'FFPROBE', 'ffprobe')
 DEBUG = getattr(settings, 'DEBUG', True)
-WATERMARK = getattr(settings, 'WATERMARK', '/usr/local/django_projects/podv2/pod/custom/LogoULRTV.png')
+WATERMARK = getattr(settings, 'WATERMARK', False)
+WATERMARK_PATH = getattr(settings, 'WATERMARK_PATH', None)
 
 log = logging.getLogger(__name__)
 
@@ -477,13 +478,15 @@ def get_video_command_mp4(video_id, video_data, output_dir):
 
             name = "%sp" % height
 
-            # cmd += " %s -vf " % (static_params,)
-            # cmd += "\"scale=-2:%s\"" % (height)
-            cmd += " %s -filter_complex " % (static_params,)
-            cmd += "\"[1:v]scale=-2:%s[scalemark%s]; [0:v]scale=-2:%s[scalevid%s]; " % (height,height,height,height)
-            cmd += "[scalevid%s][scalemark%s]overlay=0:0[out%s]\" " % (height,height,height)
-            # cmd += "[scalevid%s][scalemark%s]overlay=0:0\" " % (height,height)
-            cmd += "-map [out%s] " % (height)
+            if not WATERMARK:
+                cmd += " %s -vf " % (static_params,)
+                cmd += "\"scale=-2:%s\"" % (height)
+
+            if WATERMARK:
+                cmd += " %s -filter_complex " % (static_params,)
+                cmd += "\"[1:v]scale=-2:%s[scalemark%s]; [0:v]scale=-2:%s[scalevid%s]; " % (height,height,height,height)
+                cmd += "[scalevid%s][scalemark%s]overlay=0:0[out%s]\" " % (height,height,height)
+                cmd += "-map [out%s] " % (height)
             
             # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
@@ -510,8 +513,11 @@ def encode_video_mp4(source, cmd, output_dir):
     open(logfile, "ab").write(b'\n\nffmpegvideoMP4:\n\n')
     msg = "\nffmpegMp4Command :\n"
     for subcmd in cmd:
-        ffmpegMp4Command = "%s %s -i %s -i %s %s" % (
-            FFMPEG, FFMPEG_MISC_PARAMS, source, WATERMARK,  subcmd)
+        ffmpegMp4Command = "%s %s -i %s %s" % (
+            FFMPEG, FFMPEG_MISC_PARAMS, source, subcmd)
+        if WATERMARK:
+            ffmpegMp4Command = "%s %s -i %s -i %s %s" % (
+                FFMPEG, FFMPEG_MISC_PARAMS, source, WATERMARK_PATH, subcmd)        
         msg += "- %s\n" % ffmpegMp4Command
         with open(logfile, "ab") as f:
             procs.append(subprocess.Popen(
@@ -710,12 +716,16 @@ def get_video_command_playlist(video_id, video_data, output_dir):
 
             name = "%sp" % height
 
-            # cmd += " %s -vf " % (static_params,)
-            # cmd += "\"scale=-2:%s\"" % (height)
-            cmd += " %s -filter_complex " % (static_params,)
-            cmd += "\"[1:v]scale=-2:%s[scalemark%s]; [0:v]scale=-2:%s[scalevid%s]; " % (height,height,height,height)
-            cmd += "[scalevid%s][scalemark%s]overlay=0:0[out%s]\" " % (height,height,height)
-            cmd += "-map [out%s] " % (height)
+            if not WATERMARK:
+                cmd += " %s -vf " % (static_params,)
+                cmd += "\"scale=-2:%s\"" % (height)
+
+            if WATERMARK:
+                cmd += " %s -filter_complex " % (static_params,)
+                cmd += "\"[1:v]scale=-2:%s[scalemark%s]; [0:v]scale=-2:%s[scalevid%s]; " % (height,height,height,height)
+                cmd += "[scalevid%s][scalemark%s]overlay=0:0[out%s]\" " % (height,height,height)
+                cmd += "-map [out%s] " % (height)
+
             # cmd += "scale=w=%s:h=%s:" % (width, height)
             # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
@@ -746,8 +756,11 @@ def encode_video_playlist(source, cmd, output_dir):
     open(logfile, "ab").write(b'\n\nffmpegvideoPlaylist:\n\n')
     msg = "\nffmpegPlaylistCommands :\n"
     for subcmd in cmd:
-        ffmpegPlaylistCommand = "%s %s -i %s -i %s %s" % (
-            FFMPEG, FFMPEG_MISC_PARAMS, source, WATERMARK, subcmd)
+        ffmpegPlaylistCommand = "%s %s -i %s %s" % (
+            FFMPEG, FFMPEG_MISC_PARAMS, source, subcmd)
+        if WATERMARK:
+            ffmpegPlaylistCommand = "%s %s -i %s -i %s  %s" % (
+                FFMPEG, FFMPEG_MISC_PARAMS, source, WATERMARK_PATH, subcmd)
         msg += "- %s\n" % ffmpegPlaylistCommand
         with open(logfile, "ab") as f:
             procs.append(subprocess.Popen(
