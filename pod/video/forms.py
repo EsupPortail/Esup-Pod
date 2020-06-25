@@ -17,6 +17,7 @@ from .encode import start_encode
 from .models import get_storage_path_video
 from .models import EncodingVideo, EncodingAudio, PlaylistVideo
 from django.contrib.sites.models import Site
+from django.db.models.query import QuerySet
 
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -387,15 +388,14 @@ class VideoForm(forms.ModelForm):
                         '%d-%m-%Y')))
         return self.cleaned_data['date_delete']
 
-    def clean_additional_owners(self):
-        if self.cleaned_data['owner'] in self.cleaned_data[
-                'additional_owners'].all():
-            raise ValidationError(
-                _("Owner of the video cannot be an additional owner too"))
-
     def clean(self):
         cleaned_data = super(VideoForm, self).clean()
 
+        if isinstance(self.cleaned_data['additional_owners'], QuerySet):
+            if self.cleaned_data['owner'] in self.cleaned_data[
+                    'additional_owners'].all():
+                raise ValidationError(
+                    _("Owner of the video cannot be an additional owner too"))
         self.launch_encode = (
             'video' in cleaned_data.keys()
             and hasattr(self.instance, 'video')
