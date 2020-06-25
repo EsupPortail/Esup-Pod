@@ -70,29 +70,35 @@ class LiveViewsTestCase(TestCase):
         # User not logged in
         # Broadcaster restricted
         self.broadcaster = Broadcaster.objects.get(name='broadcaster1')
-        response = self.client.get('/live/%s/' % self.broadcaster.id)
+        response = self.client.get('/live/%s/' % self.broadcaster.slug)
         self.assertRedirects(
             response,
             '%s?referrer=%s' % (
                 settings.LOGIN_URL,
-                '/live/%s/' % self.broadcaster.id),
+                '/live/%s/' % self.broadcaster.slug),
             status_code=302,
             target_status_code=302)
         # Broadcaster not restricted
         self.broadcaster = Broadcaster.objects.get(name='broadcaster2')
-        response = self.client.get('/live/%s/' % self.broadcaster.id)
+        response = self.client.get('/live/%s/' % self.broadcaster.slug)
         self.assertTemplateUsed(response, "live/live.html")
 
         # User logged in
         self.client.force_login(self.user)
         # Broadcaster restricted
         self.broadcaster = Broadcaster.objects.get(name='broadcaster1')
-        response = self.client.get('/live/%s/' % self.broadcaster.id)
+        response = self.client.get('/live/%s/' % self.broadcaster.slug)
         self.assertTemplateUsed(response, "live/live.html")
         # Broadcaster not restricted
         self.broadcaster = Broadcaster.objects.get(name='broadcaster2')
-        response = self.client.get('/live/%s/' % self.broadcaster.id)
+        response = self.client.get('/live/%s/' % self.broadcaster.slug)
         self.assertTemplateUsed(response, "live/live.html")
+
+        self.broadcaster.password = "password"
+        self.broadcaster.save()
+        response = self.client.get("/live/%s/" % self.broadcaster.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context["form"])
 
         print(
             "   --->  test_video_live of liveViewsTestCase : OK !")

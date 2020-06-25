@@ -23,7 +23,7 @@
 							{% csrf_token %}
 							<input type="hidden" name="action" value="modify"/>
 							<input type="hidden" name="id" value="{{track.id}}"/>
-							<input type="submit" title="{% trans 'Edit the subtitle or caption files' %}" value="{% trans 'modify' %}" class="edt_track btn btn-info btn-sm"/>
+							<input type="submit" title="{% trans 'Edit the subtitle or caption files' %}" value="{% trans 'modify' %}" class="edt_track btn btn-primary btn-sm"/>
 						</form>
 					</td>
 					<td>
@@ -31,7 +31,7 @@
 							{% csrf_token %}
 							<input type="hidden" name="action" value="delete"/>
 							<input type="hidden" name="id" value="{{track.id}}"/>
-							<input type="submit" title="{% trans 'Delete the subtitle or caption files' %}" value="{% trans 'delete' %}" class="edt_track btn btn-danger btn-sm"/>
+							<input type="submit" title="{% trans 'Delete the subtitle or caption files' %}" value="{% trans 'delete' %}" class="edt_track btn btn-primary btn-sm"/>
 						</form>
 					</td>
 				</tr>

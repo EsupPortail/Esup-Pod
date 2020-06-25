@@ -1,0 +1,35 @@
+{% load i18n %}
+
+<p>{% trans 'This live is protected by password, please fill in and click send.' %}</p>
+<form method="post" action="{{ request.get_full_path }}" id="live_password_form" class='needs-validation' novalidate>
+    {% csrf_token %}
+    <div class="list-group">
+    <fieldset>
+        <legend>{% trans 'Password required' %}</legend>
+        {% if form.errors %}
+        <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+        {% endif %}
+        {% for field_hidden in form.hidden_fields %}
+            {{field_hidden}}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+            {% spaceless %}
+            <div class="list-group-item">
+            <div class="form-group {% if field.field.required %}form-group-required {%endif%}" >
+                {{ field.errors }}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label> 
+                {{ field }}
+                {% if field.help_text %}
+                <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                {% endif %}
+                {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+            </div>
+            </div>
+            {% endspaceless %}
+            {% endfor %}
+        <div class="text-center mt-1">
+            <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
+        </div>
+    </fieldset>
+    </div>
+</form>

@@ -13,18 +13,40 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.admin.views.decorators import user_passes_test
 from django.views.decorators.csrf import csrf_protect
 from django.utils.translation import ugettext_lazy as _
-
+from django.contrib.sites.shortcuts import get_current_site
 from pod.recorder.models import Recorder, RecordingFileTreatment
 from .forms import RecordingForm, RecordingFileTreatmentDeleteForm
 from django.contrib import messages
 import hashlib
 from django.http import HttpResponse
 from django.core.mail import EmailMultiAlternatives
-from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
+# from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 import urllib.parse
 from django.shortcuts import get_object_or_404
+
+##
+# Settings exposed in templates
+#
+TEMPLATE_VISIBLE_SETTINGS = getattr(
+    settings,
+    'TEMPLATE_VISIBLE_SETTINGS',
+    {
+        'TITLE_SITE': 'Pod',
+        'TITLE_ETB': 'University name',
+        'LOGO_SITE': 'img/logoPod.svg',
+        'LOGO_ETB': 'img/logo_etb.svg',
+        'LOGO_PLAYER': 'img/logoPod.svg',
+        'LINK_PLAYER': '',
+        'FOOTER_TEXT': ('',),
+        'FAVICON': 'img/logoPod.svg',
+        'CSS_OVERRIDE': '',
+        'PRE_HEADER_TEMPLATE': '',
+        'POST_FOOTER_TEMPLATE': '',
+        'TRACKING_TEMPLATE': '',
+    }
+)
 
 DEFAULT_RECORDER_PATH = getattr(
     settings, 'DEFAULT_RECORDER_PATH',
@@ -80,7 +102,8 @@ def add_recording(request):
         'recorder': recorder,
         'user': request.user}
 
-    if not mediapath and not request.user.is_superuser:
+    if not mediapath and not (request.user.is_superuser or
+       request.user.has_perm("recorder.add_recording")):
         messages.add_message(
             request, messages.ERROR, _('Mediapath should be indicated.'))
         raise PermissionDenied
@@ -144,7 +167,8 @@ def recorder_notify(request):
         recording_ip_place = recording_place.replace("_", ".")
         try:
             # Check recorder existence corresponding to IP address
-            recorder = Recorder.objects.get(address_ip=recording_ip_place)
+            recorder = Recorder.objects.get(address_ip=recording_ip_place,
+                                            sites=get_current_site(request))
         except ObjectDoesNotExist:
             recorder = None
         if recorder:
@@ -199,7 +223,8 @@ def recorder_notify(request):
             email_msg.send(fail_silently=False)
             return HttpResponse("ok")
         else:
-            return HttpResponse("nok : address_ip not valid")
+            return HttpResponse("nok : address_ip not valid or "
+                                "recorder not found in this site")
     else:
         return HttpResponse("nok : recordingPlace or mediapath or key are "
                             "missing")
@@ -209,9 +234,16 @@ def recorder_notify(request):
 @login_required(redirect_field_name='referrer')
 @staff_member_required(redirect_field_name='referrer')
 def claim_record(request):
+    site = get_current_site(request)
     # get records list ordered by date
     records_list = RecordingFileTreatment.objects.\
-        filter(require_manual_claim=True).order_by('-date_added')
+        filter(require_manual_claim=True)
+
+    records_list = records_list.exclude(
+        pk__in=[rec.id for rec in records_list
+                if site not in rec.recorder.sites.all()])
+
+    records_list = records_list.order_by('-date_added')
     page = request.GET.get('page', 1)
 
     full_path = ""
@@ -239,7 +271,8 @@ def claim_record(request):
 
 @csrf_protect
 @login_required(redirect_field_name='referrer')
-@user_passes_test(lambda u: u.is_superuser, redirect_field_name='referrer')
+@user_passes_test(lambda u: u.is_superuser or u.has_perm(
+    "recorder.delete_recording"), redirect_field_name='referrer')
 def delete_record(request, id=None):
 
     record = get_object_or_404(RecordingFileTreatment, id=id)

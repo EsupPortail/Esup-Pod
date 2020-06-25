@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.models import User
 # from django.core.mail import mail_admins
 from django.core.mail import mail_managers
-
+from django.contrib.sites.shortcuts import get_current_site
 import csv
 import os
 
@@ -24,6 +24,10 @@ MANAGERS = getattr(settings, 'MANAGERS', {})
 CONTACT_US_EMAIL = getattr(
     settings, 'CONTACT_US_EMAIL', [
         mail for name, mail in getattr(settings, 'MANAGERS')])
+
+SECURE_SSL_REDIRECT = getattr(settings, 'SECURE_SSL_REDIRECT', False)
+URL_SCHEME = "https" if SECURE_SSL_REDIRECT else "http"
+
 ##
 # Settings exposed in templates
 #
@@ -42,6 +46,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         'CSS_OVERRIDE': '',
         'PRE_HEADER_TEMPLATE': '',
         'POST_FOOTER_TEMPLATE': '',
+        'TRACKING_TEMPLATE': '',
     }
 )
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
@@ -85,9 +90,11 @@ class Command(BaseCommand):
         list_video_notified_by_establishment.setdefault('other', {})
         for step_day in sorted(WARN_DEADLINES):
             step_date = date.today() + timedelta(days=step_day)
-            videos = Video.objects.filter(date_delete=step_date)
+            videos = Video.objects.filter(date_delete=step_date,
+                                          sites=get_current_site(
+                                              settings.SITE_ID))
             for video in videos:
-                self.notify_user(video, step_day)
+                # self.notify_user(video, step_day)
                 if (
                     USE_ESTABLISHMENT and
                     MANAGERS and
@@ -107,6 +114,7 @@ class Command(BaseCommand):
     def get_video_archived_deleted_treatment(self):
         # get video with deadline out of time to deal with deletion
         vids = Video.objects.filter(
+            sites=get_current_site(None),
             date_delete__lt=date.today()).exclude(
             owner__username=ARCHIVE_OWNER_USERNAME)
 
@@ -190,8 +198,10 @@ class Command(BaseCommand):
             msg_html += _(
                 "you can change the removal date "
                 + "by editing your video:</p>\n"
-                + "<p><a href='http:%(url)s' rel='noopener' target='_blank'>"
-                + "http:%(url)s</a></p>\n") % {
+                + "<p><a href='%(scheme)s:%(url)s' "
+                + "rel='noopener' target='_blank'>"
+                + "%(scheme)s:%(url)s</a></p>\n") % {
+                "scheme": URL_SCHEME,
                 "url": video.get_full_url()}
             msg_html += "<p>" + _("Regards") + "</p>\n"
         else:
@@ -331,20 +341,23 @@ class Command(BaseCommand):
 
     def get_list_video_html(self, list_video, deleted):
         msg_html = ""
-        for deadline in list_video:
+        for i, deadline in enumerate(list_video):
             if deleted is False and deadline != '0':
-                msg_html += "\n"
+                if i != 0:
+                    msg_html += "<br><br>"
+                msg_html += "\n<strong>"
                 msg_html += _("In %(deadline)s days") % {"deadline": deadline}
-                msg_html += ":"
+                msg_html += ":</strong>"
             for vid in list_video[deadline]:
                 if deleted:
                     msg_html += "\n<br/> - " + vid
                 else:
                     msg_html += (
                         "\n<br/> - %(title)s : "
-                        + "<a href='http:%(url)s' rel='noopener'"
-                        + " target='_blank'>%(url)s</a>.") % {
-                            "url": vid.get_full_url(), "title": vid
+                        + "<a href='%(scheme)s:%(url)s' rel='noopener'"
+                        + " target='_blank'>%(scheme)s:%(url)s</a>.") % {
+                        "scheme": URL_SCHEME,
+                        "url": vid.get_full_url(), "title": vid
                     }
         return msg_html
 

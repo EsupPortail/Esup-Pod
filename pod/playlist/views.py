@@ -56,13 +56,13 @@ def playlist(request, slug=None):
         playlist = None
         list_videos = None
     if (playlist and
-            request.user != playlist.owner and not request.user.is_superuser):
+            request.user != playlist.owner and not (
+                request.user.is_superuser or request.user.has_perm(
+                    "playlist.change_playlist"))):
         messages.add_message(
             request, messages.ERROR, _('You cannot edit this playlist.'))
         raise PermissionDenied
-
     form = PlaylistForm(instance=playlist, initial={'owner': request.user})
-
     if request.POST and request.POST.get('action'):
         if request.POST['action'] in ACTION:
             return eval(
@@ -106,7 +106,7 @@ def playlist_remove(request, playlist):
         if request.POST.get('video'):
             slug = request.POST['video']
             element = get_object_or_404(
-                PlaylistElement, video__slug=slug)
+                PlaylistElement, video__slug=slug, playlist=playlist)
             element.delete()
             some_data_to_dump = {
                 'success': '{0}'.format(
@@ -149,15 +149,28 @@ def playlist_add(request, playlist):
     if request.is_ajax():
         if request.POST.get('video'):
             video = get_object_or_404(Video, slug=request.POST['video'])
-            new = PlaylistElement()
-            new.playlist = playlist
-            new.video = video
-            new.position = playlist.last()
-            new.save()
-            some_data_to_dump = {
-                'success': '{0}'.format(
-                    _('The video has been added to your playlist.'))
-            }
+            msg = None
+            if video.is_draft:
+                msg = _(
+                    'A video in draft mode cannot be added to a playlist.')
+            if video.password:
+                msg = _(
+                    'A video with a password cannot be added to a playlist.')
+
+            if msg:
+                some_data_to_dump = {
+                    'fail': '{0}'.format(msg)
+                }
+            else:
+                new = PlaylistElement()
+                new.playlist = playlist
+                new.video = video
+                new.position = playlist.last()
+                new.save()
+                some_data_to_dump = {
+                    'success': '{0}'.format(
+                        _('The video has been added to your playlist.'))
+                }
         else:
             some_data_to_dump = {
                 'fail': '{0}'.format(

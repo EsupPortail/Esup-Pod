@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from pod.chapter.models import Chapter
 from pod.chapter.utils import vtt_to_chapter
+from django.utils.translation import ugettext as _
 
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
@@ -17,6 +18,7 @@ else:
 class ChapterForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
+
         super(ChapterForm, self).__init__(*args, **kwargs)
         self.fields['video'].widget = forms.HiddenInput()
         self.fields['time_start'].widget.attrs['min'] = 0
@@ -56,7 +58,7 @@ class ChapterImportForm(forms.Form):
                 created_by=self.user)
         else:
             self.fields['file'].queryset = CustomFileModel.objects.all()
-        self.fields['file'].label = 'File to import'
+        self.fields['file'].label = _('File to import')
 
     def clean_file(self):
         msg = vtt_to_chapter(self.cleaned_data['file'], self.video)

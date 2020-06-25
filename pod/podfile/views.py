@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
@@ -57,7 +58,7 @@ FOLDER_FILE_TYPE = ['image', 'file']
 @staff_member_required(redirect_field_name='referrer')
 def home(request, type=None):
     if type is not None and type not in FOLDER_FILE_TYPE:
-        raise SuspiciousOperation('Invalid type')
+        raise SuspiciousOperation('--> Invalid type')
     user_home_folder = get_object_or_404(
         UserFolder, name="home", owner=request.user)
 
@@ -107,7 +108,7 @@ def get_current_session_folder(request):
 
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
-def get_folder_files(request, id):
+def get_folder_files(request, id, type=None):
     folder = get_object_or_404(UserFolder, id=id)
     if (request.user != folder.owner
             and not request.user.groups.filter(
@@ -116,7 +117,9 @@ def get_folder_files(request, id):
                     for name in folder.groups.values_list('name')
                 ]
             ).exists()
-            and not request.user.is_superuser):
+            and not (
+                request.user.is_superuser or request.user.has_perm(
+                    "podfile.change_userfolder"))):
         messages.add_message(
             request, messages.ERROR,
             _(u'You cannot see this folder.'))
@@ -127,6 +130,7 @@ def get_folder_files(request, id):
     rendered = render_to_string(
         "podfile/list_folder_files.html",
         {'folder': folder,
+         'type': type,
          }, request)
 
     list_element = {
@@ -173,7 +177,8 @@ def editfolder(request):
             UserFolder, id=request.POST['folderid'])
         if folder.name == "home" or (
             request.user != folder.owner
-            and not request.user.is_superuser
+            and not (request.user.is_superuser or request.user.has_perm(
+                    "podfile.change_userfolder"))
         ):
             messages.add_message(
                 request, messages.ERROR,
@@ -187,7 +192,14 @@ def editfolder(request):
             folder.owner = form.instance.owner
         else:
             folder.owner = request.user
-        folder.save()
+        try:
+            folder.save()
+        except IntegrityError:
+            messages.add_message(
+                request, messages.ERROR,
+                _(u'Two folders cannot have the same name.'))
+            raise PermissionDenied
+
         request.session['current_session_folder'] = folder.name
 
     rendered, current_session_folder = get_rendered(request)
@@ -209,7 +221,9 @@ def deletefolder(request):
         if (
                 folder.name == 'home'
                 or (request.user != folder.owner
-                    and not request.user.is_superuser)
+                    and not (
+                        request.user.is_superuser or request.user.has_perm(
+                            "podfile.delete_userfolder")))
         ):
             messages.add_message(
                 request, messages.ERROR,
@@ -236,7 +250,9 @@ def deletefile(request):
             eval(request.POST['classname']), id=request.POST['id'])
         folder = file.folder
         if (request.user != file.created_by
-                and not request.user.is_superuser):
+                and not (request.user.is_superuser or request.user.has_perm(
+                    "podfile.delete_customfilemodel") or request.user.has_perm(
+                    "podfile.delete_customimagemodel"))):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'You cannot delete this file.'))
@@ -269,7 +285,9 @@ def uploadfiles(request):
             UserFolder, id=request.POST['folderid'])
         if (
             request.user != folder.owner
-            and not request.user.is_superuser
+            and not (request.user.is_superuser or request.user.has_perm(
+                    "podfile.add_customfilemodel") or request.user.has_perm(
+                    "podfile.add_customimagemodel"))
         ):
             messages.add_message(
                 request, messages.ERROR,
@@ -280,16 +298,23 @@ def uploadfiles(request):
             if request.FILES:
                 files = request.FILES.getlist('ufile')
                 upload_errors = save_uploaded_files(request, folder, files)
-            rendered = render_to_string(
-                "podfile/list_folder_files.html",
-                {'folder': folder,
-                 }, request)
-
+            if request.POST.get("type"):
+                rendered = render_to_string(
+                    "podfile/list_folder_files.html",
+                    {'folder': folder,
+                     'type': request.POST['type']
+                     }, request)
+            else:
+                rendered = render_to_string(
+                    "podfile/list_folder_files.html",
+                    {'folder': folder,
+                     }, request)
             list_element = {
                 'list_element': rendered,
                 'folder_id': folder.id,
                 'upload_errors': upload_errors
             }
+
             data = json.dumps(list_element)
 
             return HttpResponse(data, content_type='application/json')
@@ -346,12 +371,16 @@ def manage_form_file(request, upload_errors, fname, form_file):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def changefile(request):
+    # did it only for flake !
     file = CustomFileModel()
     file = CustomImageModel()
+
     if request.POST and request.is_ajax():
         folder = get_object_or_404(UserFolder, id=request.POST["folder"])
         if (request.user != folder.owner
-                and not request.user.is_superuser):
+                and not (request.user.is_superuser or request.user.has_perm(
+                    "podfile.change_customfilemodel") or request.user.has_perm(
+                    "podfile.change_customimagemodel"))):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'You cannot access this folder.'))
@@ -360,7 +389,9 @@ def changefile(request):
         file = get_object_or_404(
             eval(request.POST['file_type']), id=request.POST['file_id'])
         if (request.user != file.created_by
-                and not request.user.is_superuser):
+                and not (request.user.is_superuser or request.user.has_perm(
+                    "podfile.change_customfilemodel") or request.user.has_perm(
+                    "podfile.change_customimagemodel"))):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'You cannot edit this file.'))
@@ -442,13 +473,57 @@ def file_edit_save(request, folder):
         data = json.dumps(list_element)
         return HttpResponse(data, content_type='application/json')
     else:
-        rendered = render_to_string("podfile/form_file.html",
-                                    {'form_file': form_file,
-                                     "folder": folder
-                                     }, request)
         some_data_to_dump = {
             'errors': "%s" % _('Please correct errors'),
-            'form': rendered
+            'form_error': form_file.errors.as_json()
         }
         data = json.dumps(some_data_to_dump)
+        return HttpResponse(data, content_type='application/json')
+
+    return HttpResponse(data, content_type='application/json')
+
+
+@csrf_protect
+@staff_member_required(redirect_field_name='referrer')
+def get_file(request, type):
+    id = None
+    if request.method == 'POST' and request.POST.get('src'):
+        id = request.POST.get('src')
+    elif request.method == 'GET' and request.GET.get('src'):
+        id = request.GET.get('src')
+    if type == "image":
+        reqfile = get_object_or_404(CustomImageModel, id=id)
+    else:
+        reqfile = get_object_or_404(CustomFileModel, id=id)
+    if (request.user != reqfile.folder.owner
+            and not request.user.groups.filter(
+                name__in=[
+                    name[0]
+                    for name in reqfile.folder.groups.values_list('name')
+                ]
+            ).exists()
+            and not (request.user.is_superuser or request.user.has_perm(
+                    "podfile.change_customfilemodel") or request.user.has_perm(
+                    "podfile.change_customimagemodel"))):
+        messages.add_message(
+            request, messages.ERROR,
+            _(u'You cannot see this folder.'))
+        raise PermissionDenied
+
+    request.session['current_session_folder'] = reqfile.folder.name
+    try:
+        with open(reqfile.file.path, 'r') as f:
+            fc = f.read()
+            some_data_to_dump = {
+                'status': "success",
+                'id_file': reqfile.id,
+                'id_folder': reqfile.folder.id,
+                'response': fc
+            }
+    except OSError:
+        some_data_to_dump = {
+            'status': "error",
+            'response': ''
+        }
+    data = json.dumps(some_data_to_dump)
     return HttpResponse(data, content_type='application/json')

@@ -8,10 +8,10 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views.decorators.csrf import csrf_protect
-
+from django.views.decorators.csrf import ensure_csrf_cookie
 from pod.video.models import Video
 from pod.video.views import render_video
-
+from django.contrib.sites.shortcuts import get_current_site
 from .models import Enrichment, EnrichmentGroup
 from .forms import EnrichmentForm, EnrichmentGroupForm
 # from .utils import enrichment_to_vtt
@@ -22,12 +22,16 @@ ACTION = ['new', 'save', 'modify', 'delete', 'cancel']
 
 
 @csrf_protect
+@ensure_csrf_cookie
 @staff_member_required(redirect_field_name='referrer')
 def group_enrichment(request, slug):
-    video = get_object_or_404(Video, slug=slug)
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
     enrichmentGroup, created = EnrichmentGroup.objects.get_or_create(
         video=video)
-    if request.user != video.owner and not request.user.is_superuser and (
+    if request.user != video.owner and not (
+        request.user.is_superuser or request.user.has_perm(
+            "enrichment.add_enrichment")) and (
             request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot enrich this video.'))
@@ -60,10 +64,14 @@ def check_enrichment_group(request, video):
 
 
 @csrf_protect
+@ensure_csrf_cookie
 @staff_member_required(redirect_field_name='referrer')
 def edit_enrichment(request, slug):
-    video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser and (
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
+    if request.user != video.owner and not (
+        request.user.is_superuser or request.user.has_perm(
+            "enrichment.edit_enrichment")) and (
             request.user not in video.additional_owners.all()):
         if not check_enrichment_group(request, video):
             messages.add_message(
@@ -125,7 +133,7 @@ def edit_enrichment_save(request, video):
                 'list_enrichment': render_to_string(
                     'enrichment/list_enrichment.html',
                     {'list_enrichment': list_enrichment,
-                     'video': video}),
+                     'video': video}, request=request),
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
@@ -142,7 +150,7 @@ def edit_enrichment_save(request, video):
                 'form': render_to_string(
                     'enrichment/form_enrichment.html', {
                         'video': video,
-                        'form_enrichment': form_enrichment})
+                        'form_enrichment': form_enrichment}, request=request)
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
@@ -187,7 +195,7 @@ def edit_enrichment_delete(request, video):
                 'enrichment/list_enrichment.html', {
                     'list_enrichment': list_enrichment,
                     'video': video
-                })
+                }, request=request)
         }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type='application/json')
@@ -209,6 +217,7 @@ def edit_enrichment_cancel(request, video):
 
 
 @csrf_protect
+@ensure_csrf_cookie
 def video_enrichment(request, slug, slug_c=None,
                      slug_t=None, slug_private=None):
 

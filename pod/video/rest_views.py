@@ -5,9 +5,11 @@ from pod.video.models import PlaylistVideo
 from rest_framework import serializers, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
+# from rest_framework import authentication, permissions
 from rest_framework import renderers
+from rest_framework.decorators import api_view
 from django.template.loader import render_to_string
-
+from django.shortcuts import get_object_or_404
 
 from pod.video.views import VIDEOS
 
@@ -50,12 +52,15 @@ class VideoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Video
         fields = (
-            'id', 'url', 'video', 'title', 'description',
-            'allow_downloading', 'is_360', 'owner', 'date_added', 'date_evt',
-            'cursus', 'main_lang', 'is_draft', 'is_restricted',
-            'restrict_access_to_groups', 'password', 'tags', 'thumbnail',
+            'id', 'url', 'video', 'title', 'slug', 'description',
+            'allow_downloading', 'is_360', 'owner', 'additional_owners',
+            'date_added', 'date_evt', 'cursus', 'main_lang',
+            'is_draft', 'is_restricted', 'restrict_access_to_groups',
+            'password', 'tags', 'thumbnail',
             'type', 'discipline', 'channel', 'theme', 'licence'
         )
+        filter_fields = ('owner', 'type', 'date_added')
+        read_only_fields = ('encoding_in_progress', 'duration')
 
 
 class VideoRenditionSerializer(serializers.HyperlinkedModelSerializer):
@@ -153,8 +158,10 @@ class XmlTextRenderer(renderers.BaseRenderer):
     def render(self, data, media_type=None, renderer_context=None):
         if type(data) is dict:
             data_str = ""
-            for k, v in data.iteritems():
-                data_str += str(k + ': ' + v).encode(self.charset)
+            for k, v in data.items():
+                k = str(k).encode(self.charset).decode()
+                v = str(v).encode(self.charset).decode()
+                data_str += "%s: %s" % (k, v)
             return data_str
         else:
             return data.encode(self.charset)
@@ -162,9 +169,12 @@ class XmlTextRenderer(renderers.BaseRenderer):
 
 class DublinCoreView(APIView):
 
+    # authentication_classes = [authentication.TokenAuthentication]
     renderer_classes = (XmlTextRenderer, )
     pagination_class = 'rest_framework.pagination.PageNumberPagination'
     page_size = 12
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
 
     def get(self, request, format=None):
         list_videos = VIDEOS
@@ -186,3 +196,21 @@ class DublinCoreView(APIView):
             xmlcontent += rendered
         xmlcontent += "</rdf:RDF>"
         return Response(xmlcontent)
+
+
+@api_view(['GET'])
+def launch_encode_view(request):
+    video = get_object_or_404(Video, slug=request.GET.get('slug'))
+    if (
+            video is not None
+            and (
+                not hasattr(video, 'launch_encode')
+                or getattr(video, 'launch_encode') is True
+            )
+            and video.encoding_in_progress is False
+    ):
+        video.launch_encode = True
+        video.save()
+    return Response(
+        VideoSerializer(instance=video, context={'request': request}).data
+    )

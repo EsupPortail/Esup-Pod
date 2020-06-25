@@ -10,7 +10,7 @@ from pod.main.settings import BASE_DIR
 ##
 # Version of the project
 #
-VERSION = '2.5.0'
+VERSION = '2.6.1'
 
 ##
 # Installed applications list
@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     'pod.recorder',
     'pod.lti',
     'pod.custom',
+    'shibboleth',
+    'chunked_upload',
 ]
 
 ##
@@ -75,7 +77,7 @@ MIDDLEWARE = [
 
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
+    'pod.main.auth_backend.SiteBackend',
 )
 
 ##
@@ -224,7 +226,7 @@ for application in INSTALLED_APPS:
 #
 if 'USE_CAS' in globals() and eval('USE_CAS') is True:
     AUTHENTICATION_BACKENDS = (
-        'django.contrib.auth.backends.ModelBackend',
+        'pod.main.auth_backend.SiteBackend',
         'cas.backends.CASBackend',
     )
     CAS_RESPONSE_CALLBACKS = (
@@ -233,6 +235,12 @@ if 'USE_CAS' in globals() and eval('USE_CAS') is True:
     )
     MIDDLEWARE.append('cas.middleware.CASMiddleware')
 
+if 'USE_SHIB' in globals() and eval('USE_SHIB') is True:
+    AUTHENTICATION_BACKENDS += (
+        'pod.authentication.backends.ShibbBackend',
+    )
+    MIDDLEWARE.append(
+        'pod.authentication.shibmiddleware.ShibbMiddleware')
 
 ##
 # Authentication backend : add lti backend if use

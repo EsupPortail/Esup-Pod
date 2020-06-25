@@ -23,10 +23,10 @@
     <img class="card-img-top" src="{{building.get_headband_url}}" alt="{{building.name}}">
     <div class="card-body">
       <h5 class="card-title">{{building.name}}</h5>
-      {% for broadcaster in building.broadcaster_set.all%}
+      {% for broadcaster in building.broadcaster_set.all %}
       <p class="card-text">
-        {%if broadcaster.status %}<a href="{% url "live:video_live" id=broadcaster.id %}" class="live_on"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}}</a>
-        {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}</p>
+        {%if broadcaster.status %}<a href="{% url "live:video_live" slug=broadcaster.slug %}" class="live_on">{%if broadcaster.password%}<i data-feather="lock"></i>{%else%}<i data-feather="airplay"></i>{%endif%}&nbsp;{{broadcaster.name}} </a>
+        {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}</p>      
       {% empty %}
       <p class="card-text">{% trans "Sorry, no lives found" %}.</p>
       {% endfor %}

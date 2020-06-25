@@ -20,6 +20,7 @@
 #captionTitle {
     padding-top: 4px;
     padding-bottom: 4px;
+    min-height: 32px;
 }
 
 #textCaptionEntry {
@@ -48,7 +49,7 @@ textarea {
 
 #display {
     border: solid 1px #999;
-    height: 374px;
+    height: 442px;
     overflow: auto;
 }
 

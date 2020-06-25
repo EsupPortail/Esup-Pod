@@ -1,21 +1,18 @@
 from django.conf import settings
-from django.core.mail import send_mail
-from django.core.mail import mail_admins
-from django.core.mail import mail_managers
-from django.core.mail import EmailMultiAlternatives
-from django.utils.translation import ugettext_lazy as _
+
 from django.core.files.images import ImageFile
 from django.core.files import File
 
-from pod.video.models import VideoRendition
-from pod.video.models import EncodingVideo
-from pod.video.models import EncodingAudio
-from pod.video.models import EncodingLog
-from pod.video.models import PlaylistVideo
-from pod.video.models import Video
+from .models import VideoRendition
+from .models import EncodingVideo
+from .models import EncodingAudio
+from .models import EncodingLog
+from .models import PlaylistVideo
+from .models import Video
 
-from pod.video.models import EncodingStep
 
+from .utils import change_encoding_step, add_encoding_log, check_file
+from .utils import create_outputdir, send_email, send_email_encoding
 # from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from pod.main.tasks import task_start_encode
 
@@ -41,10 +38,13 @@ else:
 TRANSCRIPT = False
 if getattr(settings, 'USE_TRANSCRIPTION', False):
     TRANSCRIPT = True
-    from pod.video.transcript import main_transcript
+    from .transcript import main_threaded_transcript
 
 USE_ESTABLISHMENT = getattr(
     settings, 'USE_ESTABLISHMENT_FIELD', False)
+
+SPLIT_ENCODE_CMD = getattr(
+    settings, 'SPLIT_ENCODE_CMD', False)
 
 FFMPEG = getattr(settings, 'FFMPEG', 'ffmpeg')
 FFPROBE = getattr(settings, 'FFPROBE', 'ffprobe')
@@ -125,6 +125,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         'CSS_OVERRIDE': '',
         'PRE_HEADER_TEMPLATE': '',
         'POST_FOOTER_TEMPLATE': '',
+        'TRACKING_TEMPLATE': '',
     }
 )
 
@@ -150,38 +151,6 @@ def start_encode(video_id):
                              args=[video_id])
         t.setDaemon(True)
         t.start()
-
-
-# ##########################################################################
-# ENCODE VIDEO : GENERIC FUNCTION
-# ##########################################################################
-
-
-def change_encoding_step(video_id, num_step, desc):
-    encoding_step, created = EncodingStep.objects.get_or_create(
-        video=Video.objects.get(id=video_id))
-    encoding_step.num_step = num_step
-    encoding_step.desc_step = desc
-    encoding_step.save()
-    if DEBUG:
-        print("step: %d - desc: %s" % (
-            num_step, desc
-        ))
-
-
-def add_encoding_log(video_id, log):
-    encoding_log = EncodingLog.objects.get(
-        video=Video.objects.get(id=video_id))
-    encoding_log.log += "\n\n%s" % (log)
-    encoding_log.save()
-    if DEBUG:
-        print(log)
-
-
-def check_file(path_file):
-    if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
-        return True
-    return False
 
 # ##########################################################################
 # ENCODE VIDEO : MAIN FUNCTION
@@ -362,10 +331,6 @@ def encode_video(video_id):
         encode_mp3(video_id, video_data["contain_audio"],
                    video_to_encode.video.path, output_dir)
 
-        file_transcription(video_to_encode) if (
-            TRANSCRIPT and video_to_encode.transcript
-        ) else False
-
         change_encoding_step(video_id, 0, "done")
 
         video_to_encode = Video.objects.get(id=video_id)
@@ -380,6 +345,10 @@ def encode_video(video_id):
         # envois mail fin encodage
         if EMAIL_ON_ENCODING_COMPLETION:
             send_email_encoding(video_to_encode)
+
+        main_threaded_transcript(video_id) if (
+            TRANSCRIPT and video_to_encode.transcript
+        ) else False
 
     else:
         msg = "Wrong file or path : "\
@@ -474,19 +443,6 @@ def get_video_data(video_id, output_dir):
     }
 
 
-# ##########################################################################
-# ENCODE VIDEO : CREATE OUTPUT DIR
-# ##########################################################################
-
-
-def create_outputdir(video_id, video_path):
-    dirname = os.path.dirname(video_path)
-    output_dir = os.path.join(dirname, "%04d" % video_id)
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-    return output_dir
-
-
 ###############################################################
 # MP4
 ###############################################################
@@ -502,8 +458,11 @@ def get_video_command_mp4(video_id, video_data, output_dir):
         'key_frames_interval': video_data["key_frames_interval"]
     }
     list_file = []
+    cmds = []
     cmd = ""
     for rendition in renditions:
+        if SPLIT_ENCODE_CMD:
+            cmd = ""
         bitrate = rendition.video_bitrate
         audiorate = rendition.audio_bitrate
         height = rendition.height
@@ -527,30 +486,32 @@ def get_video_command_mp4(video_id, video_data, output_dir):
                 output_dir, name)
             list_file.append(
                 {"name": name, 'rendition': rendition})
+            if SPLIT_ENCODE_CMD:
+                cmds.append(cmd)
+    if not SPLIT_ENCODE_CMD:
+        cmds.append(cmd)
     return {
-        'cmd': cmd,
+        'cmd': cmds,
         'list_file': list_file
     }
 
 
 def encode_video_mp4(source, cmd, output_dir):
-    ffmpegMp4Command = "%s %s -i %s %s" % (
-        FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
-
-    msg = "\nffmpegMp4Command :\n%s" % ffmpegMp4Command
+    msg = ""
+    procs = []
+    logfile = output_dir + "/encoding.log"
+    open(logfile, "ab").write(b'\n\nffmpegvideoMP4:\n\n')
+    msg = "\nffmpegMp4Command :\n"
+    for subcmd in cmd:
+        ffmpegMp4Command = "%s %s -i %s %s" % (
+            FFMPEG, FFMPEG_MISC_PARAMS, source, subcmd)
+        msg += "- %s\n" % ffmpegMp4Command
+        with open(logfile, "ab") as f:
+            procs.append(subprocess.Popen(
+                ffmpegMp4Command, shell=True, stdout=f, stderr=f))
     msg += "\n- Encoding Mp4 : %s" % time.ctime()
-
-    # ffmpegvideo = subprocess.getoutput(ffmpegMp4Command)
-    ffmpegvideo = subprocess.run(
-        ffmpegMp4Command, shell=True, stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT)
-
-    msg += "\n- End Encoding Mp4 : %s" % time.ctime()
-
-    with open(output_dir + "/encoding.log", "ab") as f:
-        f.write(b'\n\nffmpegvideoMP4:\n\n')
-        f.write(ffmpegvideo.stdout)
-
+    for proc in procs:
+        proc.wait()
     return msg
 
 
@@ -720,10 +681,13 @@ def get_video_command_playlist(video_id, video_data, output_dir):
     }
     list_file = []
     cmd = ""
+    cmds = []
     renditions = VideoRendition.objects.all()
     # the lower height in first
     renditions = sorted(renditions, key=lambda m: m.height)
     for rendition in renditions:
+        if SPLIT_ENCODE_CMD:
+            cmd = ""
         resolution = rendition.resolution
         bitrate = rendition.video_bitrate
         minrate = rendition.minrate
@@ -753,32 +717,32 @@ def get_video_command_playlist(video_id, video_data, output_dir):
             master_playlist += "#EXT-X-STREAM-INF:BANDWIDTH=%s,\
                 RESOLUTION=%s\n%s.m3u8\n" % (
                 bandwidth, resolution, name)
+            if SPLIT_ENCODE_CMD:
+                cmds.append(cmd)
+    if not SPLIT_ENCODE_CMD:
+        cmds.append(cmd)
     return {
-        'cmd': cmd,
+        'cmd': cmds,
         'list_file': list_file,
         'master_playlist': master_playlist
     }
 
 
 def encode_video_playlist(source, cmd, output_dir):
-
-    ffmpegPlaylistCommand = "%s %s -i %s %s" % (
-        FFMPEG, FFMPEG_MISC_PARAMS, source, cmd)
-
-    msg = "\nffmpegPlaylistCommand :\n%s" % ffmpegPlaylistCommand
+    procs = []
+    logfile = output_dir + "/encoding.log"
+    open(logfile, "ab").write(b'\n\nffmpegvideoPlaylist:\n\n')
+    msg = "\nffmpegPlaylistCommands :\n"
+    for subcmd in cmd:
+        ffmpegPlaylistCommand = "%s %s -i %s %s" % (
+            FFMPEG, FFMPEG_MISC_PARAMS, source, subcmd)
+        msg += "- %s\n" % ffmpegPlaylistCommand
+        with open(logfile, "ab") as f:
+            procs.append(subprocess.Popen(
+                ffmpegPlaylistCommand, shell=True, stdout=f, stderr=f))
     msg += "\n- Encoding Playlist : %s" % time.ctime()
-
-    # ffmpegvideo = subprocess.getoutput(ffmpegPlaylistCommand)
-    ffmpegvideo = subprocess.run(
-        ffmpegPlaylistCommand, shell=True, stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT)
-
-    msg += "\n- End Encoding Playlist : %s" % time.ctime()
-
-    with open(output_dir + "/encoding.log", "ab") as f:
-        f.write(b'\n\nffmpegvideoPlaylist:\n\n')
-        f.write(ffmpegvideo.stdout)
-
+    for proc in procs:
+        proc.wait()
     return msg
 
 
@@ -1122,126 +1086,3 @@ def remove_previous_encoding_playlist(video_to_encode):
     else:
         msg += "Playlist : Nothing to delete"
     return msg
-
-
-###############################################################
-# EMAIL
-###############################################################
-
-
-def send_email(msg, video_id):
-    subject = "[" + TITLE_SITE + \
-        "] Error Encoding Video id:%s" % video_id
-    message = "Error Encoding  video id : %s\n%s" % (
-        video_id, msg)
-    html_message = "<p>Error Encoding video id : %s</p><p>%s</p>" % (
-        video_id,
-        msg.replace('\n', "<br/>"))
-    mail_admins(
-        subject,
-        message,
-        fail_silently=False,
-        html_message=html_message)
-
-
-def send_email_encoding(video_to_encode):
-    if DEBUG:
-        print("SEND EMAIL ON ENCODING COMPLETION")
-    content_url = "http:%s" % video_to_encode.get_full_url()
-    subject = "[%s] %s" % (
-        TITLE_SITE,
-        _(u"Encoding #%(content_id)s completed") % {
-            'content_id': video_to_encode.id
-        }
-    )
-    message = "%s\n%s\n\n%s\n%s\n%s\n" % (
-        _("Hello"),
-        _(u"The content “%(content_title)s” has been encoded to Web "
-            + "formats, and is now available on %(site_title)s.") % {
-            'content_title': video_to_encode.title,
-            'site_title': TITLE_SITE
-        },
-        _(u"You will find it here:"),
-        content_url,
-        _("Regards")
-    )
-    full_message = message + "\n%s:%s\n%s:%s" % (
-        _("Post by"),
-        video_to_encode.owner,
-        _("the"),
-        video_to_encode.date_added
-    )
-    from_email = DEFAULT_FROM_EMAIL
-    to_email = []
-    to_email.append(video_to_encode.owner.email)
-    html_message = ""
-
-    html_message = '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
-                </p><p>%s</p>' % (
-        _("Hello"),
-        _(u"The content “%(content_title)s” has been encoded to Web "
-            + "formats, and is now available on %(site_title)s.") % {
-            'content_title': '<b>%s</b>' % video_to_encode.title,
-            'site_title': TITLE_SITE
-        },
-        _(u"You will find it here:"),
-        content_url,
-        content_url,
-        _("Regards")
-    )
-    full_html_message = html_message + "<br/>%s:%s<br/>%s:%s" % (
-        _("Post by"),
-        video_to_encode.owner,
-        _("the"),
-        video_to_encode.date_added
-    )
-
-    if (
-            USE_ESTABLISHMENT and
-            MANAGERS and
-            video_to_encode.owner.owner.establishment.lower() in dict(MANAGERS)
-    ):
-        bcc_email = []
-        video_estab = video_to_encode.owner.owner.establishment.lower()
-        manager = dict(MANAGERS)[video_estab]
-        if type(manager) in (list, tuple):
-            bcc_email = manager
-        elif type(manager) == str:
-            bcc_email.append(manager)
-        msg = EmailMultiAlternatives(
-            subject,
-            message,
-            from_email,
-            to_email,
-            bcc=bcc_email)
-        msg.attach_alternative(html_message, "text/html")
-        msg.send()
-    else:
-        mail_managers(
-            subject, full_message, fail_silently=False,
-            html_message=full_html_message)
-        if not DEBUG:
-            send_mail(
-                subject,
-                message,
-                from_email,
-                to_email,
-                fail_silently=False,
-                html_message=html_message,
-            )
-
-
-###############################################################
-# TRANSCRIPTION PROCESS
-###############################################################
-
-
-def file_transcription(video_to_encode):
-    # TODO launch another thread...
-    change_encoding_step(
-        video_to_encode.id, 5,
-        "transcripting audio")
-    msg = main_transcript(video_to_encode)
-    add_encoding_log(
-        video_to_encode.id,
-        "create_and_save_subtitles : %s" % msg)

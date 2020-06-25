@@ -7,7 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import filesizeformat
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-
 from .models import Video, VideoVersion
 from .models import Channel
 from .models import Theme
@@ -17,17 +16,18 @@ from .models import Notes, AdvancedNotes, NoteComments
 from .encode import start_encode
 from .models import get_storage_path_video
 from .models import EncodingVideo, EncodingAudio, PlaylistVideo
-
+from django.contrib.sites.models import Site
 
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-
+from django.contrib.sites.shortcuts import get_current_site
 from pod.main.forms import add_placeholder_and_asterisk
 
 from ckeditor.widgets import CKEditorWidget
 from collections import OrderedDict
 
 import datetime
+from dateutil.relativedelta import relativedelta
 import os
 import re
 
@@ -35,6 +35,8 @@ FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.widgets import CustomFileWidget
+
+MAX_DURATION_DATE_DELETE = getattr(settings, 'MAX_DURATION_DATE_DELETE', 10)
 
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 
@@ -285,6 +287,15 @@ class VideoForm(forms.ModelForm):
         ', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS)),
     }
     is_admin = False
+    user = User.objects.all()
+
+    def filter_fields_admin(form):
+        if form.is_superuser is False and form.is_admin is False:
+            form.remove_field('date_added')
+            form.remove_field('owner')
+
+        if not hasattr(form, 'admin_form'):
+            form.remove_field('sites')
 
     def move_video_source_file(self, new_path, new_dir, old_dir):
         # create user repository
@@ -364,6 +375,24 @@ class VideoForm(forms.ModelForm):
             video.launch_encode = self.launch_encode
         return video
 
+    def clean_date_delete(self):
+        today = datetime.date.today()
+        mddd = MAX_DURATION_DATE_DELETE
+        max_d = today.replace(year=today.year + mddd)
+        in_dt = relativedelta(self.cleaned_data['date_delete'], max_d)
+        if ((in_dt.years > mddd) or (in_dt.years == 0 and in_dt.months > 0) or
+                (in_dt.years == 0 and in_dt.months == 0 and in_dt.days > 0)):
+            raise ValidationError(
+                    _('The date must be before or equal to ' + max_d.strftime(
+                        '%d-%m-%Y')))
+        return self.cleaned_data['date_delete']
+
+    def clean_additional_owners(self):
+        if self.cleaned_data['owner'] in self.cleaned_data[
+                'additional_owners'].all():
+            raise ValidationError(
+                _("Owner of the video cannot be an additional owner too"))
+
     def clean(self):
         cleaned_data = super(VideoForm, self).clean()
 
@@ -390,11 +419,10 @@ class VideoForm(forms.ModelForm):
                 settings.LANGUAGE_CODE
             ] = cleaned_data['title']
         if ('restrict_access_to_groups' in cleaned_data.keys()
-                and cleaned_data['restrict_access_to_groups'].count() > 0):
+                and len(cleaned_data['restrict_access_to_groups']) > 0):
             cleaned_data['is_restricted'] = True
 
     def __init__(self, *args, **kwargs):
-
         self.is_staff = kwargs.pop(
             'is_staff') if 'is_staff' in kwargs.keys() else self.is_staff
         self.is_superuser = kwargs.pop(
@@ -408,6 +436,7 @@ class VideoForm(forms.ModelForm):
         self.VIDEO_ALLOWED_EXTENSIONS = VIDEO_ALLOWED_EXTENSIONS
         self.VIDEO_MAX_UPLOAD_SIZE = VIDEO_MAX_UPLOAD_SIZE
         self.VIDEO_FORM_FIELDS_HELP_TEXT = VIDEO_FORM_FIELDS_HELP_TEXT
+        self.max_duration_date_delete = MAX_DURATION_DATE_DELETE
 
         super(VideoForm, self).__init__(*args, **kwargs)
 
@@ -439,15 +468,17 @@ class VideoForm(forms.ModelForm):
         # QuerySet for channels and theme
         self.set_queryset()
 
-        if self.is_superuser is False and self.is_admin is False:
-            self.remove_field('date_added')
-            self.remove_field('owner')
+        self.filter_fields_admin()
 
         self.fields = add_placeholder_and_asterisk(self.fields)
 
         # remove required=True for videofield if instance
         if self.fields.get('video') and self.instance and self.instance.video:
             del self.fields["video"].widget.attrs["required"]
+
+        if self.fields.get('owner'):
+            self.fields['owner'].queryset = self.fields['owner']. \
+                queryset.filter(owner__sites=Site.objects.get_current())
 
     def set_nostaff_config(self):
         if self.is_staff is False:
@@ -481,21 +512,38 @@ class VideoForm(forms.ModelForm):
             del self.fields[field]
 
     def set_queryset(self):
+
         if self.current_user is not None:
             user_channels = Channel.objects.all() if self.is_superuser else (
                 self.current_user.owners_channels.all(
                 ) | self.current_user.users_channels.all()
             ).distinct()
+            user_channels.filter(sites=get_current_site(None))
             if user_channels:
                 self.fields["channel"].queryset = user_channels
                 list_theme = Theme.objects.filter(
                     channel__in=user_channels).order_by('channel', 'title')
                 self.fields["theme"].queryset = list_theme
             else:
-                # self.fields['channel'].widget = forms.HiddenInput()
-                # self.fields['theme'].widget = forms.HiddenInput()
                 del self.fields['theme']
                 del self.fields['channel']
+        self.fields["type"].queryset = Type.objects.all().filter(
+                sites=Site.objects.get_current())
+        self.fields["restrict_access_to_groups"].queryset = \
+            self.fields["restrict_access_to_groups"].queryset.filter(
+                groupsite__sites=Site.objects.get_current())
+        self.fields["discipline"].queryset = Discipline.objects.all(
+            ).filter(
+                sites=Site.objects.get_current())
+        if "channel" in self.fields:
+            self.fields["channel"].queryset = \
+                self.fields["channel"].queryset.filter(
+                    sites=Site.objects.get_current())
+
+        if "theme" in self.fields:
+            self.fields["theme"].queryset = \
+                self.fields["theme"].queryset.filter(
+                    channel__sites=Site.objects.get_current())
 
     class Meta(object):
         model = Video
@@ -524,6 +572,10 @@ class ChannelForm(forms.ModelForm):
         widget=widgets.FilteredSelectMultiple(_("Owners"), False, attrs={}),
         required=False,
         label=_('Owners'))
+    sites = forms.ModelMultipleChoiceField(
+        Site.objects.all(),
+        required=False
+    )
 
     def clean(self):
         cleaned_data = super(ChannelForm, self).clean()
@@ -553,6 +605,13 @@ class ChannelForm(forms.ModelForm):
 
         if not hasattr(self, 'admin_form'):
             del self.fields['visible']
+            if self.fields.get('sites'):
+                del self.fields['sites']
+        if not self.is_superuser or not hasattr(self, 'admin_form'):
+            self.fields['owners'].queryset = self.fields['owners']. \
+                queryset.filter(owner__sites=Site.objects.get_current())
+            self.fields['users'].queryset = self.fields['users']. \
+                queryset.filter(owner__sites=Site.objects.get_current())
 
         # change ckeditor config for no staff user
         if not hasattr(self, 'admin_form') and (

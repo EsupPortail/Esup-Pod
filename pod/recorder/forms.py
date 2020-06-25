@@ -2,9 +2,10 @@ from django import forms
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
-
+from django.contrib.sites.models import Site
 from .models import Recording, Recorder
 from pod.main.forms import add_placeholder_and_asterisk
+
 
 DEFAULT_RECORDER_PATH = getattr(
     settings, 'DEFAULT_RECORDER_PATH',
@@ -42,11 +43,19 @@ class RecordingForm(forms.ModelForm):
             label=_("source_file")
         )
         self.fields['source_file'].widget.attrs['class'] = 'form-control'
+        self.fields["recorder"].queryset = self.fields["recorder"].queryset.\
+            filter(
+                sites=Site.objects.get_current())
+        self.fields["user"].queryset = self.fields["user"].queryset.filter(
+                owner__sites=Site.objects.get_current())
 
-        if not(check_show_user(request) or request.user.is_superuser):
+        if not(check_show_user(request) or request.user.is_superuser or
+           request.user.has_perm("recorder.add_recording")):
             del self.fields['user']
-        if not request.user.is_superuser:
+        if not (request.user.is_superuser or
+           request.user.has_perm("recorder.add_recording")):
             self.fields['recorder'].widget = forms.HiddenInput()
+            self.fields['delete'].widget = forms.HiddenInput()
             self.fields['source_file'].widget = forms.HiddenInput()
 
     class Meta:

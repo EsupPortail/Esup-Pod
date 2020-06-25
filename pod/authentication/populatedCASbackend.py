@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from pod.authentication.models import Owner
 from pod.authentication.models import AFFILIATION
-
+from django.contrib.sites.models import Site
 from ldap3 import Server
 from ldap3 import ALL
 from ldap3 import Connection
@@ -93,10 +93,26 @@ def populateUser(tree):
                 populate_user_from_entry(user, owner, entry)
 
 
+def get_server():
+    if isinstance(LDAP_SERVER['url'], str):
+        server = Server(LDAP_SERVER['url'], port=LDAP_SERVER[
+                        'port'], use_ssl=LDAP_SERVER[
+                            'use_ssl'], get_info=ALL)
+    elif isinstance(LDAP_SERVER['url'], tuple):
+        hosts = []
+        for server in LDAP_SERVER['url']:
+            if not (server == LDAP_SERVER['url'][0]):
+                hosts.append(server)
+        server = Server(LDAP_SERVER['url'][0], port=LDAP_SERVER[
+            'port'], use_ssl=LDAP_SERVER[
+                'use_ssl'], get_info=ALL,
+                        allowed_referral_hosts=hosts)
+    return server
+
+
 def get_ldap_conn():
     try:
-        server = Server(LDAP_SERVER['url'], port=LDAP_SERVER[
-                        'port'], use_ssl=LDAP_SERVER['use_ssl'], get_info=ALL)
+        server = get_server()
         conn = Connection(
             server, AUTH_LDAP_BIND_DN, AUTH_LDAP_BIND_PASSWORD, auto_bind=True)
         return conn
@@ -171,6 +187,7 @@ def populate_user_from_entry(user, owner, entry):
         if CREATE_GROUP_FROM_AFFILIATION:
             group, group_created = Group.objects.get_or_create(
                 name=affiliation)
+            group.groupsite.sites.add(Site.objects.get_current())
             user.groups.add(group)
     user.save()
 
