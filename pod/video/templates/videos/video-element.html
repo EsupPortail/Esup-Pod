@@ -1,3 +1,4 @@
+{% load i18n %}
 <video id="podvideoplayer" class="video-js vjs-default-skin {% if not request.GET.is_iframe %}vjs-16-9{% endif %} vjs-big-play-centered" {% if request.GET.is_iframe %}preload="none"{% else %}preload="auto"{% endif %} {% if not request.GET.is_iframe %}height="360"{% endif %}
 poster="{{video.get_thumbnail_url}}" data-setup='{}' {% spaceless %}
 {% if request.GET.nocontrol and request.GET.nocontrol == 'true' %} 
@@ -34,7 +35,7 @@ poster="{{video.get_thumbnail_url}}" data-setup='{}' {% spaceless %}
 {% endif %}
 {% if video.chapter_set.all %}
   <div class="chapters-list inactive" role="menu">
-    <h6>Chapters</h6>
+    <h6>{% trans "Chapters" %}</h6>
     <ol id="chapters-list"></ol>
   </div>
   <ul id="chapters">
