@@ -373,7 +373,7 @@ def my_videos(request):
     # Videos list which user is the owner
     videos_list = request.user.video_set.all().filter(sites=site)
     # Videos list which user is an additional owner
-    videos_list.union(request.user.owners_videos.all().filter(
+    videos_list = videos_list.union(request.user.owners_videos.all().filter(
         sites=site))
 
     page = request.GET.get('page', 1)
