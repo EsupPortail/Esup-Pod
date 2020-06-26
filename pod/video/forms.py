@@ -383,7 +383,9 @@ class VideoForm(forms.ModelForm):
     def clean_date_delete(self):
         mddd = MAX_DURATION_DATE_DELETE
         in_dt = relativedelta(self.cleaned_data['date_delete'], TODAY)
-        if ((in_dt.years > mddd) or (in_dt.months > 0) or (in_dt.days > 0)):
+        if ((in_dt.years > mddd) or (
+            in_dt.years == mddd and in_dt.months > 0) or (
+                in_dt.years == mddd and in_dt.months == 0 and in_dt.days > 0)):
             raise ValidationError(
                     _('The date must be before or equal to ' + MAX_D.strftime(
                         '%d-%m-%Y')))
