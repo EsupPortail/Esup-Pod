@@ -19,11 +19,11 @@
 		var MenuButton = videojs.getComponent('MenuButton');
 		var ChapterMenuButton = videojs.extend(MenuButton, {
 			constructor: function(player, options){
-				options.label = 'Chapters';
+				options.label = gettext('Chapters');
 				MenuButton.call(this, player, options);
-				this.el().setAttribute('aria-label', 'Chapters');
+				this.el().setAttribute('aria-label', gettext('Chapters'));
 				videojs.dom.addClass(this.el(), 'vjs-chapters-button');
-				this.controlText('Chapters');
+				this.controlText(gettext('Chapters'));
 
 				var span = document.createElement('span');
 				videojs.dom.addClass(span, 'vjs-chapters-icon');
