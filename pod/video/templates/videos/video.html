@@ -136,6 +136,10 @@ body {
   </a>
 </h1>
 
+{% if video.chapter_set.all %}
+<div class="alert alert-info" role="alert">{% blocktrans %} This video is chaptered. Click the chapter button <span class = "vjs-icon-chapters"> </span> on the video player to view them.{% endblocktrans %}</div>
+{%endif%}
+
 <div class="pl-0 pr-0">
   <div class="navbar d-flex flex-row-reverse p-0" >
   <ul class="nav nav-tabs" id="myTab" role="tablist">
