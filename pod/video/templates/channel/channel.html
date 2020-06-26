@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load staticfiles %}
 {% load video_filters %}
+{% load filters %}
 
 
 {% block opengraph %}
@@ -28,6 +29,10 @@ body {
 }
 {%endif%}
 </style>
+
+  {% if organize_theme %}
+  <link rel='stylesheet' href='{% static "css/video_foldable_theme.css" %}'>
+  {% endif %}
 {% endblock %}
 
 
@@ -91,8 +96,35 @@ body {
   {%endif%}
 
   <p>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</p>
-  
-  {% include "videos/video_list.html" %}
+  {% if organize_theme %} 
+      {% for t_obj, videos in videos_theme %}
+	<div class="inline-flex">
+      	    {% if t_obj|isinstance:"Theme" %}
+	    <h5 class="title_foldable" title="{{t_obj.title}}" ><a href="{% url 'theme' slug_c=channel.slug slug_t=t_obj.slug %}">{{t_obj.title|truncatechars:29}}</a></h5>
+	    {% else %}
+	    <h5 class="title_foldable" title="{{t_obj.title}}">{{t_obj}}</h5>
+	    {% endif %}
+	    {% if not t_obj|isempty %}
+	    <div class="foldable_event">
+		<span>({{videos|length}} {% trans "videos" %})</span>
+		<span class="arrow_right"></span>
+	    </div>
+	    {% endif %}
+	</div>
+	{% if not t_obj|isempty %}
+	<div class="closed">
+	{% else %}
+	<div>
+	{% endif %}
+      	{% include "videos/video_list.html" %}
+	</div>
+	{% if not forloop.last %}
+	<hr>
+	{% endif %}
+      {% endfor %}
+  {% else %}
+      {% include "videos/video_list.html" %}
+  {% endif %}
 
 {% endblock page_content %}
 
@@ -148,4 +180,23 @@ setTimeout(function(){
   $("#ultreeview").scrollTop(position); 
 }, 500);
 </script>
+
+{% if organize_theme %}
+<script>
+    (function()
+    {
+        let els = document.querySelectorAll('.foldable_event');
+        els.forEach(function(el)
+        {
+            el.addEventListener('click', function(event)
+            {
+                event.preventDefault();
+                let target_content = this.parentNode.nextElementSibling;
+		this.querySelector(".arrow_right").classList.toggle('arrow_bottom')
+                target_content.classList.toggle('closed');
+            })
+        })
+    })();
+</script>
+{% endif %}
 {% endblock more_script %}
