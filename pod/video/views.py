@@ -369,10 +369,9 @@ def theme_edit_save(request, channel):
 def my_videos(request):
 
     site = get_current_site(request)
-    # Videos list which user is the owner
+    # Videos list which user is the owner + which user is an additional owner
     videos_list = request.user.video_set.all().filter(
         sites=site) | request.user.owners_videos.all().filter(sites=site)
-    # Videos list which user is an additional owner
 
     page = request.GET.get('page', 1)
 
