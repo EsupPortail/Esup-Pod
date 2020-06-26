@@ -39,6 +39,10 @@ if getattr(settings, 'USE_PODFILE', False):
 
 MAX_DURATION_DATE_DELETE = getattr(settings, 'MAX_DURATION_DATE_DELETE', 10)
 
+TODAY = datetime.date.today()
+
+MAX_D = TODAY.replace(year=TODAY.year + MAX_DURATION_DATE_DELETE)
+
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 
 ENCODE_VIDEO = getattr(settings,
@@ -377,14 +381,11 @@ class VideoForm(forms.ModelForm):
         return video
 
     def clean_date_delete(self):
-        today = datetime.date.today()
         mddd = MAX_DURATION_DATE_DELETE
-        max_d = today.replace(year=today.year + mddd)
-        in_dt = relativedelta(self.cleaned_data['date_delete'], max_d)
-        if ((in_dt.years > mddd) or (in_dt.years == 0 and in_dt.months > 0) or
-                (in_dt.years == 0 and in_dt.months == 0 and in_dt.days > 0)):
+        in_dt = relativedelta(self.cleaned_data['date_delete'], TODAY)
+        if ((in_dt.years > mddd) or (in_dt.months > 0) or (in_dt.days > 0)):
             raise ValidationError(
-                    _('The date must be before or equal to ' + max_d.strftime(
+                    _('The date must be before or equal to ' + MAX_D.strftime(
                         '%d-%m-%Y')))
         return self.cleaned_data['date_delete']
 
@@ -497,7 +498,9 @@ class VideoForm(forms.ModelForm):
                 del self.fields['date_delete']
             else:
                 self.fields[
-                    'date_delete'].widget = widgets.AdminDateWidget()
+                    "date_delete"].widget = forms.DateInput(
+                            format=('%Y-%m-%d'),
+                            attrs={"placeholder": "Select a date"})
 
     def hide_default_language(self):
         if self.fields.get('description_%s' % settings.LANGUAGE_CODE):
@@ -553,8 +556,8 @@ class VideoForm(forms.ModelForm):
             'date_evt': widgets.AdminDateWidget,
         }
         initial = {
-            'date_added': datetime.date.today,
-            'date_evt': datetime.date.today,
+            'date_added': TODAY,
+            'date_evt': TODAY,
         }
 
 

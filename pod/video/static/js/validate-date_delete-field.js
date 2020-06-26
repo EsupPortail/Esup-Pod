@@ -10,7 +10,6 @@ window.onload = function()
     let dtf = new Intl.DateTimeFormat(lang,{day:"2-digit", month:"2-digit", year:"numeric"});
     let input = document.querySelector("input#id_date_delete") || document.querySelector('input[name="date_delete"]');
     if(input!=null){
-        input.setAttribute("type", "date");
         input.style.boxShadow = "none";
         let given = new Date(input.value)
     }
