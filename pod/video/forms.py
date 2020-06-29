@@ -394,8 +394,8 @@ class VideoForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(VideoForm, self).clean()
 
-        if isinstance(self.cleaned_data['additional_owners'], QuerySet):
-            if self.cleaned_data['owner'] in self.cleaned_data[
+        if isinstance(cleaned_data['additional_owners'], QuerySet):
+            if cleaned_data['owner'] in cleaned_data[
                     'additional_owners'].all():
                 raise ValidationError(
                     _("Owner of the video cannot be an additional owner too"))
