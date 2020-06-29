@@ -387,27 +387,18 @@ class VideoForm(forms.ModelForm):
             in_dt.years == mddd and in_dt.months > 0) or (
                 in_dt.years == mddd and in_dt.months == 0 and in_dt.days > 0)):
             raise ValidationError(
-                _('The date must be before or equal to ' + MAX_D.strftime(
-                    '%d-%m-%Y')))
+                    _('The date must be before or equal to ' + MAX_D.strftime(
+                        '%d-%m-%Y')))
         return self.cleaned_data['date_delete']
 
     def clean(self):
         cleaned_data = super(VideoForm, self).clean()
 
-        if ('additional_owners' in cleaned_data.keys()
-            and isinstance(
-            self.cleaned_data['additional_owners'],
-            QuerySet
-        )):
-            vidowner = (self.instance.owner if hasattr(self.instance, 'owner')
-                        else cleaned_data['owner']
-                        if 'owner' in cleaned_data.keys()
-                        else self.current_user)
-            if vidowner and vidowner in self.cleaned_data[
+        if isinstance(self.cleaned_data['additional_owners'], QuerySet):
+            if self.cleaned_data['owner'] in self.cleaned_data[
                     'additional_owners'].all():
                 raise ValidationError(
                     _("Owner of the video cannot be an additional owner too"))
-
         self.launch_encode = (
             'video' in cleaned_data.keys()
             and hasattr(self.instance, 'video')
@@ -510,8 +501,8 @@ class VideoForm(forms.ModelForm):
             else:
                 self.fields[
                     "date_delete"].widget = forms.DateInput(
-                    format=('%Y-%m-%d'),
-                    attrs={"placeholder": "Select a date"})
+                            format=('%Y-%m-%d'),
+                            attrs={"placeholder": "Select a date"})
 
     def hide_default_language(self):
         if self.fields.get('description_%s' % settings.LANGUAGE_CODE):
@@ -542,13 +533,13 @@ class VideoForm(forms.ModelForm):
                 del self.fields['theme']
                 del self.fields['channel']
         self.fields["type"].queryset = Type.objects.all().filter(
-            sites=Site.objects.get_current())
+                sites=Site.objects.get_current())
         self.fields["restrict_access_to_groups"].queryset = \
             self.fields["restrict_access_to_groups"].queryset.filter(
                 groupsite__sites=Site.objects.get_current())
         self.fields["discipline"].queryset = Discipline.objects.all(
-        ).filter(
-            sites=Site.objects.get_current())
+            ).filter(
+                sites=Site.objects.get_current())
         if "channel" in self.fields:
             self.fields["channel"].queryset = \
                 self.fields["channel"].queryset.filter(
