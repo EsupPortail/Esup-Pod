@@ -36,7 +36,6 @@ from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
 from .encode import start_encode
-from itertools import chain
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import ObjectDoesNotExist
 import json
@@ -370,11 +369,9 @@ def theme_edit_save(request, channel):
 def my_videos(request):
 
     site = get_current_site(request)
-    # Videos list which user is the owner
-    videos_list = request.user.video_set.all().filter(sites=site)
-    # Videos list which user is an additional owner
-    videos_list.union(request.user.owners_videos.all().filter(
-        sites=site))
+    # Videos list which user is the owner + which user is an additional owner
+    videos_list = request.user.video_set.all().filter(
+        sites=site) | request.user.owners_videos.all().filter(sites=site)
 
     page = request.GET.get('page', 1)
 

@@ -4,10 +4,10 @@
 	right: 0;
 	top: 0;
 	height: 100%;
-	width: 10%;
+	width: 20%;
 	background-color: rgba(43,51,63,0.7);
 	overflow-y: auto;
-	border: 2px solid black;
+	/*border: 2px solid black;*/
 	cursor: default;
 }
 .chapters-list.inactive {
@@ -31,13 +31,15 @@
 	position: relative;
 	margin: 0;
 	padding: 0;
+	padding-bottom: 30px;
 }
 .chapters-list ol li {
 	display: list-item;
 	list-style-type: none;
 	text-align: -webkit-match-parent;
-	background-color: rgba(0, 0, 0, 0.8);
-	margin: 3px;
+	/*background-color: rgba(0, 0, 0, 0.8);*/
+	margin: 0 3px;
+	border-top:1px solid rgba(0, 0, 0, 0.8);
 }
 .chapters-list ol li a:hover,
 .chapters-list ol li a.current {
@@ -51,6 +53,7 @@
 	transition: .3s;
 	color: #fff;
 	text-align: left;
+	font-size:1.3em;
 }
 
 #chapters {
