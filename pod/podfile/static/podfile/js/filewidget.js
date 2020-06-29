@@ -202,6 +202,9 @@ $(document).on('change', "#ufile", function(e) {
     $("#modal-folder_"+id_input).html(data);
   }
 
+
+  
+
 /*
 var send_form_data = function(url,data_form, fct, method="post") {
     var jqxhr= '';

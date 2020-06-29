@@ -13,11 +13,15 @@
 
       </div>
 
+
+      <input type="search" id="folder-search" name="q"
+             aria-label="Search through site content">
+
       {% if user_folder.count > 0 %}
       <div class="list_folders">
       {% for folder in user_folder %}
           <div style="padding:0; margin:0;">
-            <a href="#" id="folder_{{folder.id}}" class="{% if folder == current_session_folder%}font-weight-bold{%endif%} folder" data-id="{{folder.id}}" data-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}">
+            <a href="#" id="folder_{{folder.id}}" class="{% if folder == current_session_folder%}font-weight-bold{%endif%} folder" data-foldname="{{ folder.name }}" data-id="{{folder.id}}" data-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}">
               {% if folder == current_session_folder%}
               <img class="directory-image" src="{% static "podfile/images/opened_folder.png"%}">
               {%else%}
@@ -40,7 +44,7 @@
       <div class="list_folders">
       {% for folder in share_folder %}
           <div>
-            <a href="#" id="folder_{{folder.id}}" class="{% if folder == current_session_folder%}font-weight-bold{%endif%} folder" data-id="{{folder.id}}" data-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}">
+            <a href="#" id="folder_{{folder.id}}" class="{% if folder == current_session_folder%}font-weight-bold{%endif%} folder" data-foldname="{{ folder.name }}" data-id="{{folder.id}}" data-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}">
               {% if folder == current_session_folder%}
               <img class="directory-image" src="{% static "podfile/images/opened_folder.png"%}">
               {%else%}
@@ -58,3 +62,17 @@
         z-index: 1090;
     }
 </style>
+
+<script>
+    $("#folder-search").on('input',function(e) {
+      var text = $(this).val().toLowerCase()
+      $(".list_folders").find("div").each(function( index ) {
+        if ($(this).find("a").data("foldname").toLowerCase().includes(text)){
+          $(this).show()
+        }
+        else{
+          $(this).hide()
+        }
+      });
+    });
+</script>
