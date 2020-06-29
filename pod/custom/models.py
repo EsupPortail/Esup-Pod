@@ -1,3 +1,7 @@
-# from django.db import models
+from django.db import models
 
-# Create your models here.
+class ManageVideoOwner(models.Model):
+
+    class Meta:
+        verbose_name = "Gérer le propriétaire de la vidéo"
+        verbose_name_plural = "Gérer les propriétaires des vidéos"
