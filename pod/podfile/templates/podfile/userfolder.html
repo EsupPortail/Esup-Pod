@@ -62,17 +62,3 @@
         z-index: 1090;
     }
 </style>
-
-<script>
-    $("#folder-search").on('input',function(e) {
-      var text = $(this).val().toLowerCase()
-      $(".list_folders").find("div").each(function( index ) {
-        if ($(this).find("a").data("foldname").toLowerCase().includes(text)){
-          $(this).show()
-        }
-        else{
-          $(this).hide()
-        }
-      });
-    });
-</script>

@@ -49,6 +49,7 @@ $(document).on('change', "#ufile", function(e) {
 });
 
 
+
 /****** CHANGE FILE ********/
 
 
@@ -152,6 +153,20 @@ $(document).on('change', "#ufile", function(e) {
     send_form_data($(this).attr("action"), $(this).serializeArray(), "reloadFolder");
   });
 
+
+  $(document).on('input',"#folder-search",function(e) {
+    var text = $(this).val().toLowerCase()
+    $(".list_folders").find("div").each(function( index ) {
+      if ($(this).find("a").data("foldname").toLowerCase().includes(text)){
+        $(this).show()
+      }
+      else{
+        $(this).hide()
+      }
+    });
+  });
+  
+
   function reloadFolder(data){
     if(data.list_element) {
         $('#dirs').html(data.list_element);
@@ -203,7 +218,8 @@ $(document).on('change', "#ufile", function(e) {
   }
 
 
-  
+
+
 
 /*
 var send_form_data = function(url,data_form, fct, method="post") {
