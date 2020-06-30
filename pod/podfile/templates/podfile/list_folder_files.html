@@ -28,15 +28,12 @@
         <span class="sr-only">{% trans "Delete"%}</span>
         </button>
       </li>
-      
-      <li>
-        <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#folderModalCenter" data-oldname="" data-folderid="">
-          <i data-feather="share"></i>
+      <li class="nav-item">
+        <button id="currentdfoldershare" type="button" class="btn btn-link btn-sm nav-link" data-toggle="modal" data-target="#shareModalCenter" data-folderid="{{folder.id}}">
+          <img src="{% static "podfile/images/share.png" %}" >
           <span class="sr-only">{% trans "Share this folder"%}</span>
           </button>
-  
       </li>
-
     </ul>
     {% endif %}
     <form class="form-inline my-2 my-lg-0" method="POST" id="formuploadfile" enctype="multipart/form-data" style="" action="{% url "podfile:uploadfiles" %}">
