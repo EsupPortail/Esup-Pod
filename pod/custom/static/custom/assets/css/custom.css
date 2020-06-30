@@ -1,4 +1,16 @@
 
+.btn-secondary
+{
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+    color: #fff !important;
+}
+.btn-secondary.focus, .btn-secondary:focus, .btn-secondary:hover
+{
+    background-color: transparent;
+    border-color: var(--secondary);
+}
+
 h1, h2, h3, h4, h5, h6{
   font-family: 'Montserrat', sans-serif !important;
   font-weight: 600 !important;
@@ -29,6 +41,22 @@ html,body{
  dropdown-item playlist-item z-index: 9999999;
 } */
 
+.arrow_right{
+    border-color: #102636;
+    border-color: var(--primary) !important;
+}
+.arrow_bottom{
+    border-color: #fff !important;
+}
+.foldable_event{
+    cursor: pointer;
+    background: var(--secondary);
+    padding: 2px 8px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    color: #fff !important;
+}
+
 .video-js .vjs-overlay-background{background: rgba(0,0,0,.5)!important;font-size: 16px!important;}
 .video-js .vjs-overlay-background a{color: rgb(255,240,44) !important;}
 .nav-item.dropdown.show .dropdown-menu.show{ background: #102636;}
@@ -49,7 +77,6 @@ html,body{
 }
 .btn::first-letter{text-transform: uppercase ;}
 .text-center .btn{
-  max-width: calc(50% - 5px) !important;
   white-space: unset !important;
   padding: 1.5em .8em !important;
   justify-content: center !important;
@@ -66,7 +93,7 @@ a:hover{ color: #4d8197 !important; text-decoration: none; }
 .navbar{ background-color: #102636 !important; color: #fff; min-height: 35px; }
 .navbar-items-pod{ background-color: inherit !important; padding: 0 !important; margin-top: .5em;}
 .navbar-light .navbar-brand{ margin-right: 30px !important; }
-.navbar-brand.mr-0.mr-sm-1 img{ height: auto; width: 250px; }
+.navbar-brand.mr-0.mr-sm-1 img{ height: auto; width: 200px; }
 
 .navbar a, .navbar .nav-link, button.dropdown-item, a.dropdown-item{
   color: inherit ! important;
@@ -126,8 +153,8 @@ a:hover{ color: #4d8197 !important; text-decoration: none; }
   background-color: #4d8197;
 }
 .btn-outline-primary{
-  border-color: #102636 !important;
-  color: #4d8197 !important;
+  border-color: var(--primary) !important;
+  color: var(secondary) !important;
   background: transparent !important;
 }
 .btn-outline-primary:hover{
@@ -144,11 +171,15 @@ a:hover{ color: #4d8197 !important; text-decoration: none; }
     color: #fff !important;
 }
 .btn-primary svg:not(:root){
-	color: #fff;
+    color: #fff;
 }
 .btn-primary:hover svg:not(:root){
-	color: #102636;
+    color: #102636;
 
+}
+a.btn-outline-primary svg
+{
+     fill: transparent;
 }
 .navbar a:hover,
 .navbar .nav-link:hover,
