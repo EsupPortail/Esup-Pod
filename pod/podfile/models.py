@@ -33,6 +33,11 @@ class UserFolder(models.Model):
         Group, blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who'
                     ' can access in read only to this folder'))
+    users = select2_fields.ManyToManyField(
+        User, blank=True, verbose_name=_('Users'),
+        related_name="shared_files",
+        help_text=_('Select one or more users who'
+                    ' can access in read only to this folder'))
 
     class Meta:
         unique_together = (('name', 'owner'),)

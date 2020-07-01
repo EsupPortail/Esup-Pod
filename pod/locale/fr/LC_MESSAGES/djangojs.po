@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-30 10:07+0000\n"
+"POT-Creation-Date: 2020-07-01 11:16+0000\n"
 "PO-Revision-Date: 2020-04-30 12:12+0200\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -52,8 +52,8 @@ msgstr "Le formulaire ne peut pas être récupéré."
 #: pod/enrichment/static/js/enrichment.js:149 pod/main/static/js/main.js:287
 #: pod/main/static/js/main.js:294 pod/main/static/js/main.js:305
 #: pod/main/static/js/main.js:319
-#: pod/podfile/static/podfile/js/filewidget.js:169
-#: pod/podfile/static/podfile/js/filewidget.js:196
+#: pod/podfile/static/podfile/js/filewidget.js:235
+#: pod/podfile/static/podfile/js/filewidget.js:262
 msgid "You are no longer authenticated. Please log in again."
 msgstr "Vous n'êtes plus authentifié. Veuillez vous reconnectez."
 
@@ -79,6 +79,14 @@ msgstr "Le chapitre"
 #: pod/chapter/static/js/chapters.js:200
 msgid "starts at the same time."
 msgstr "commencent au même moment."
+
+#: pod/chapter/static/js/videojs-chapters.js:22
+#: pod/chapter/static/js/videojs-chapters.js:24
+#: pod/chapter/static/js/videojs-chapters.js:26
+#, fuzzy
+#| msgid "The chapter"
+msgid "Chapters"
+msgstr "Le chapitre"
 
 #: pod/completion/static/js/caption_maker.js:10
 msgid "There is no captions to save"
@@ -351,37 +359,37 @@ msgid "Are you sure you want to delete this element?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer cet élément ?"
 
 #: pod/main/static/js/main.js:281
-#: pod/podfile/static/podfile/js/filewidget.js:79
-#: pod/podfile/static/podfile/js/filewidget.js:189
+#: pod/podfile/static/podfile/js/filewidget.js:80
+#: pod/podfile/static/podfile/js/filewidget.js:255
 msgid "Error during exchange"
 msgstr "Erreur durant le téléversement"
 
 #: pod/main/static/js/main.js:281
-#: pod/podfile/static/podfile/js/filewidget.js:79
+#: pod/podfile/static/podfile/js/filewidget.js:80
 msgid "No data could be stored."
 msgstr "Aucune donnée ne peut être stockée."
 
-#: pod/main/static/js/main.js:332
+#: pod/main/static/js/main.js:333
 msgid "Change your picture"
 msgstr "Changer votre image"
 
-#: pod/main/static/js/main.js:337
+#: pod/main/static/js/main.js:339
 msgid "Add your picture"
 msgstr "Ajouter votre image"
 
-#: pod/main/static/js/main.js:433
+#: pod/main/static/js/main.js:437
 msgid "text copied"
 msgstr "texte copié"
 
-#: pod/main/static/js/main.js:480
+#: pod/main/static/js/main.js:484
 msgid "Errors appear in the form, please correct them"
 msgstr "Des erreurs sont présentes dans le formulaire, veuillez les corriger"
 
-#: pod/main/static/js/main.js:503
+#: pod/main/static/js/main.js:507
 msgid "The file size exceeds the maximum allowed value :"
 msgstr "La fichier dépasse la taille maximum autorisée :"
 
-#: pod/main/static/js/main.js:518
+#: pod/main/static/js/main.js:522
 msgid "The file extension not in the allowed extension :"
 msgstr ""
 "Cette extension de fichier n'est pas présente dans les extensions "
@@ -399,17 +407,29 @@ msgstr "Changer de fichier"
 msgid "Open file in a new tab"
 msgstr "Ouvrir le fichier dans un nouvel onglet"
 
-#: pod/podfile/static/podfile/js/filewidget.js:114
+#: pod/podfile/static/podfile/js/filewidget.js:115
 msgid "Enter new name of folder"
 msgstr "Indiquer un nouveau nom au dossier"
 
-#: pod/podfile/static/podfile/js/filewidget.js:132
+#: pod/podfile/static/podfile/js/filewidget.js:133
+msgid "Remove"
+msgstr "Retirer"
+
+#: pod/podfile/static/podfile/js/filewidget.js:156
 msgid "Are you sure you want to delete this folder?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer ce dossier ?"
 
-#: pod/podfile/static/podfile/js/filewidget.js:141
+#: pod/podfile/static/podfile/js/filewidget.js:165
 msgid "Are you sure you want to delete this file?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer ce fichier ?"
+
+#: pod/podfile/static/podfile/js/filewidget.js:195
+msgid "Add"
+msgstr "Ajouter"
+
+#: pod/video/static/js/validate-date_delete-field.js:26
+msgid "The date must be before or equal to"
+msgstr "La date date doit être avant ou égale à "
 
 #: pod/video/static/js/video_stats_view.js:14
 msgid "Title"
