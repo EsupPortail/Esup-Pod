@@ -46,6 +46,8 @@ log/
 media/
 pod/*/migrations/
 pod/custom/*
+!pod/custom/templates
+!pod/custom/templatetags
 !pod/custom/settings_local.py.example
 !pod/custom/static/custom/assets/css/bootstrap-default.min.css
 settings_local.py
