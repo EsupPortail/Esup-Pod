@@ -7,8 +7,10 @@
 }
 .btn-secondary.focus, .btn-secondary:focus, .btn-secondary:hover
 {
-    background-color: transparent;
-    border-color: var(--secondary);
+    background-color: transparent !important;
+    border-color: var(--secondary) !important;
+    color: var(--secondary) !important;
+    
 }
 
 h1, h2, h3, h4, h5, h6{
