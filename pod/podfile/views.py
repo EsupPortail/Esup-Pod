@@ -73,6 +73,10 @@ def home(request, type=None):
         groups__in=request.user.groups.all()
     ).exclude(owner=request.user).order_by('owner', 'id')
 
+    share_folder_user = UserFolder.objects.filter(
+        users=request.user).exclude(
+            owner=request.user).order_by('owner', 'id')
+
     current_session_folder = get_current_session_folder(request)
 
     template = 'podfile/home_content.html' if (
@@ -84,6 +88,7 @@ def home(request, type=None):
                       'user_home_folder': user_home_folder,
                       'user_folder': user_folder,
                       'share_folder': share_folder,
+                      'share_folder_user': share_folder_user,
                       'current_session_folder': current_session_folder,
                       'form_file': CustomFileModelForm(),
                       'form_image': CustomImageModelForm(),
@@ -122,7 +127,8 @@ def get_folder_files(request, id, type=None):
             ).exists()
             and not (
                 request.user.is_superuser or request.user.has_perm(
-                    "podfile.change_userfolder"))):
+                    "podfile.change_userfolder")) and not (
+                        request.user in folder.users.all())):
         messages.add_message(
             request, messages.ERROR,
             _(u'You cannot see this folder.'))
@@ -156,6 +162,10 @@ def get_rendered(request):
         groups__in=request.user.groups.all()
     ).exclude(owner=request.user).order_by('owner', 'id')
 
+    share_folder_user = UserFolder.objects.filter(
+        users=request.user).exclude(
+            owner=request.user).order_by('owner', 'id')
+
     current_session_folder = get_current_session_folder(request)
 
     rendered = render_to_string(
@@ -164,6 +174,7 @@ def get_rendered(request):
             'user_home_folder': user_home_folder,
             'user_folder': user_folder,
             'share_folder': share_folder,
+            'share_folder_user': share_folder_user,
             'current_session_folder': current_session_folder,
         }, request)
     return rendered, current_session_folder
@@ -181,7 +192,8 @@ def editfolder(request):
         if folder.name == "home" or (
             request.user != folder.owner
             and not (request.user.is_superuser or request.user.has_perm(
-                    "podfile.change_userfolder"))
+                    "podfile.change_userfolder") or (
+                        request.user in folder.users.all()))
         ):
             messages.add_message(
                 request, messages.ERROR,
@@ -255,7 +267,8 @@ def deletefile(request):
         if (request.user != file.created_by
                 and not (request.user.is_superuser or request.user.has_perm(
                     "podfile.delete_customfilemodel") or request.user.has_perm(
-                    "podfile.delete_customimagemodel"))):
+                    "podfile.delete_customimagemodel") or (
+                        request.user in folder.users.all()))):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'You cannot delete this file.'))
@@ -290,8 +303,10 @@ def uploadfiles(request):
             request.user != folder.owner
             and not (request.user.is_superuser or request.user.has_perm(
                     "podfile.add_customfilemodel") or request.user.has_perm(
-                    "podfile.add_customimagemodel"))
+                    "podfile.add_customimagemodel") or (
+                        request.user in folder.users.all()))
         ):
+            print("abc")
             messages.add_message(
                 request, messages.ERROR,
                 _(u'You cannot edit file on this folder.'))
@@ -383,7 +398,8 @@ def changefile(request):
         if (request.user != folder.owner
                 and not (request.user.is_superuser or request.user.has_perm(
                     "podfile.change_customfilemodel") or request.user.has_perm(
-                    "podfile.change_customimagemodel"))):
+                    "podfile.change_customimagemodel") or (
+                        request.user in folder.users.all()))):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'You cannot access this folder.'))
@@ -394,7 +410,8 @@ def changefile(request):
         if (request.user != file.created_by
                 and not (request.user.is_superuser or request.user.has_perm(
                     "podfile.change_customfilemodel") or request.user.has_perm(
-                    "podfile.change_customimagemodel"))):
+                    "podfile.change_customimagemodel") or (
+                        request.user in folder.users.all()))):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'You cannot edit this file.'))
@@ -507,7 +524,8 @@ def get_file(request, type):
             ).exists()
             and not (request.user.is_superuser or request.user.has_perm(
                     "podfile.change_customfilemodel") or request.user.has_perm(
-                    "podfile.change_customimagemodel"))):
+                    "podfile.change_customimagemodel") or (
+                        request.user in reqfile.folder.users.all()))):
         messages.add_message(
             request, messages.ERROR,
             _(u'You cannot see this folder.'))
