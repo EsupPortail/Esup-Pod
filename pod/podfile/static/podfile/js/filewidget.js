@@ -193,12 +193,12 @@ $(document).on('change', "#ufile", function(e) {
   $(document).on('input',"#userInputName",function(e) {
     if($(this).val() && $(this).val().length > 2) {
       let add = gettext('Add')
-      console.log(add)
       var searchTerm = $(this).val();
+      var foldid = $("#formuserid").val();
               $.ajax(
                   {
                       type: "GET",
-                      url: "/ajax_calls/search_share_user?term=" + searchTerm,
+                      url: "/ajax_calls/search_share_user?term=" + searchTerm + "&foldid=" + foldid,
                       cache: false,
                       success: function (response) {
                           $("#user-search").html("");

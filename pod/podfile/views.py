@@ -540,25 +540,35 @@ def folder_shared_with(request):
             return HttpResponseBadRequest()
         folder = UserFolder.objects.get(id=foldid)
         if(folder.owner == request.user):
-            data = json.dumps(list(folder.users.values('id','first_name','last_name','username')))
+            data = json.dumps(list(folder.users.values(
+                'id', 'first_name', 'last_name', 'username')))
             mimetype = 'application/json'
             return HttpResponse(data, mimetype)
         else:
             return HttpResponseBadRequest()
-                
-        data = json.dumps(list(users))
     else:
         return HttpResponseBadRequest()
+
 
 @login_required(redirect_field_name='referrer')
 def user_share_autocomplete(request):
     if request.is_ajax():
+        foldid = request.GET.get('foldid', 0)
+        if foldid == 0:
+            return HttpResponseBadRequest()
+        folder = UserFolder.objects.get(id=foldid)
+        shared_users = folder.users.all()
+        owner = folder.owner
+
         VALUES_LIST = ['username', 'first_name', 'last_name']
         q = remove_accents(request.GET.get('term', '').lower())
-        users = User.objects.filter(Q(username__istartswith=q) |
-                 Q(last_name__istartswith=q) |
-                 Q(first_name__istartswith=q)).distinct().order_by(
-            "last_name").values(*list(VALUES_LIST))
+        users = User.objects.filter(
+            Q(username__istartswith=q) | Q(
+                last_name__istartswith=q) | Q(
+                    first_name__istartswith=q)).exclude(
+                        pk__in=shared_users).exclude(
+                            id=owner.id).distinct().order_by(
+                                "last_name").values(*list(VALUES_LIST))
 
         data = json.dumps(list(users))
     else:
