@@ -201,7 +201,7 @@ setTimeout(function(){
         let els = document.querySelectorAll('.foldable_event');
         els.forEach(function(el)
         {
-            el.addEventListener('click', function(event)
+            el.addEventListener('click', function()
             {
                 let target_content = this.parentNode.nextElementSibling;
 		this.querySelector(".arrow_right").classList.toggle('arrow_bottom')
