@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-01 11:10+0000\n"
+"POT-Creation-Date: 2020-07-02 12:10+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -204,7 +204,6 @@ msgstr "Fermer"
 
 #: pod/authentication/templates/userpicture/userpicture.html:57
 #: pod/podfile/templates/podfile/home_content.html:58
-#: pod/podfile/templates/podfile/home_content.html:97
 msgid "Save changes"
 msgstr "Sauvegarder"
 
@@ -340,7 +339,7 @@ msgstr "Éditer le chapitre"
 
 #: pod/chapter/templates/chapter/list_chapter.html:26
 #: pod/enrichment/templates/enrichment/list_enrichment.html:30
-#: pod/podfile/templates/podfile/list_folder_files.html:83
+#: pod/podfile/templates/podfile/list_folder_files.html:85
 #: pod/video/templates/channel/list_theme.html:27
 msgid "Modify"
 msgstr "Modifier"
@@ -352,8 +351,8 @@ msgstr "Supprimer le chapitre"
 #: pod/chapter/templates/chapter/list_chapter.html:32
 #: pod/enrichment/templates/enrichment/list_enrichment.html:38
 #: pod/playlist/templates/playlist.html:68
-#: pod/podfile/templates/podfile/list_folder_files.html:28
-#: pod/podfile/templates/podfile/list_folder_files.html:100
+#: pod/podfile/templates/podfile/list_folder_files.html:29
+#: pod/podfile/templates/podfile/list_folder_files.html:102
 #: pod/recorder/templates/recorder/record_delete.html:9
 #: pod/video/templates/channel/list_theme.html:35
 #: pod/video/templates/videos/video_delete.html:10
@@ -1070,8 +1069,8 @@ msgid "The file has not been saved."
 msgstr "Le fichier n’a pas été enregistré."
 
 #: pod/completion/views.py:235 pod/completion/views.py:411
-#: pod/completion/views.py:812 pod/podfile/views.py:430
-#: pod/podfile/views.py:480 pod/video/views.py:357 pod/video/views.py:1365
+#: pod/completion/views.py:812 pod/podfile/views.py:447
+#: pod/podfile/views.py:497 pod/video/views.py:357 pod/video/views.py:1365
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
 
@@ -2978,7 +2977,7 @@ msgid "Enter new name of folder"
 msgstr "Indiquer un nouveau nom à ce dossier"
 
 #: pod/podfile/templates/podfile/home_content.html:50
-#: pod/podfile/templates/podfile/list_folder_files.html:61
+#: pod/podfile/templates/podfile/list_folder_files.html:63
 #: pod/video/templates/videos/video_edit.html:112
 msgid "Loading"
 msgstr "Chargement"
@@ -2987,11 +2986,11 @@ msgstr "Chargement"
 #, fuzzy
 #| msgid "Share on"
 msgid "Share with someone"
-msgstr "Partager sur"
+msgstr "Partager avec quelqu'un"
 
 #: pod/podfile/templates/podfile/home_content.html:76
 msgid "Already shared with :"
-msgstr ""
+msgstr "Partagé avec :"
 
 #: pod/podfile/templates/podfile/home_content.html:86
 #, fuzzy
@@ -3013,17 +3012,17 @@ msgstr "fichier"
 msgid "Rename"
 msgstr "Renomer"
 
-#: pod/podfile/templates/podfile/list_folder_files.html:35
+#: pod/podfile/templates/podfile/list_folder_files.html:37
 #, fuzzy
 #| msgid "Shared folders"
 msgid "Share this folder"
 msgstr "Dossiers partagés"
 
-#: pod/podfile/templates/podfile/list_folder_files.html:51
+#: pod/podfile/templates/podfile/list_folder_files.html:53
 msgid "Upload Files"
 msgstr "Téléverser des fichiers"
 
-#: pod/podfile/templates/podfile/list_folder_files.html:92
+#: pod/podfile/templates/podfile/list_folder_files.html:94
 msgid "Download"
 msgstr "Télécharger"
 
@@ -3039,45 +3038,45 @@ msgstr "Ajouter un nouveau dossier"
 msgid "Shared folders"
 msgstr "Dossiers partagés"
 
-#: pod/podfile/views.py:128 pod/podfile/views.py:513
+#: pod/podfile/views.py:134 pod/podfile/views.py:531
 msgid "You cannot see this folder."
 msgstr "Vous ne pouvez pas voir ce dossier."
 
-#: pod/podfile/views.py:188
+#: pod/podfile/views.py:200
 msgid "You cannot edit this folder."
 msgstr "Vous ne pouvez pas éditer ce dossier."
 
-#: pod/podfile/views.py:203
+#: pod/podfile/views.py:215
 msgid "Two folders cannot have the same name."
 msgstr "Deux dossiers ne peuvent pas avoir le même nom."
 
-#: pod/podfile/views.py:233
+#: pod/podfile/views.py:245
 msgid "You cannot delete home folder."
 msgstr "Vous ne pouvez pas supprimer le fichier racine."
 
-#: pod/podfile/views.py:261
+#: pod/podfile/views.py:274
 msgid "You cannot delete this file."
 msgstr "Vous ne pouvez pas supprimer ce fichier."
 
-#: pod/podfile/views.py:297
+#: pod/podfile/views.py:312
 msgid "You cannot edit file on this folder."
 msgstr "Vous ne pouvez pas éditer de fichier dans ce dossier."
 
-#: pod/podfile/views.py:348
+#: pod/podfile/views.py:363
 #, python-format
 msgid "The file %(fname)s has not allowed format"
 msgstr "Le format du fichier %(fname)s n’est pas autorisé"
 
-#: pod/podfile/views.py:365
+#: pod/podfile/views.py:380
 #, python-format
 msgid "The file %(fname)s is not valid (%(form_error)s)"
 msgstr "Le fichier %(fname)s n’est pas valide (%(form_error)s)"
 
-#: pod/podfile/views.py:389
+#: pod/podfile/views.py:405
 msgid "You cannot access this folder."
 msgstr "Vous ne pouvez pas voir ce dossier."
 
-#: pod/podfile/views.py:400
+#: pod/podfile/views.py:417
 msgid "You cannot edit this file."
 msgstr "Vous ne pouvez pas éditer ce fichier."
 
@@ -3379,7 +3378,7 @@ msgstr "Nouvel enregistrement ajouté."
 msgid "The record has been deleted."
 msgstr "L’enregistrement a été supprimé."
 
-#: pod/urls.py:235 pod/urls.py:236
+#: pod/urls.py:238 pod/urls.py:239
 msgid "Pod Administration"
 msgstr "Administration de Pod"
 
