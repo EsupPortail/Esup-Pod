@@ -136,18 +136,7 @@ VIEW_STATS_AUTH = getattr(settings, 'VIEW_STATS_AUTH', False)
 # ############################################################################
 
 
-def add_in_list_of_tuple(list_of_tuple, p_theme, p_video):
-    added = False
-    for theme, videos in list_of_tuple:
-        if theme == p_theme:
-            videos.add(p_video)
-            added = True
-    if not added:
-        list_of_tuple.append((p_theme, {p_video, }))
-    return list_of_tuple
-
-
-def regroup_videos_by_theme(videos, channel, theme=None):
+def regroup_videos_by_theme(videos, page, channel, theme=None):
     """
     " Regroup videos by theme
     " @return [ (theme, set()), (theme, set()) ]
@@ -156,25 +145,21 @@ def regroup_videos_by_theme(videos, channel, theme=None):
         children_themes = channel.themes.filter(parentId_id=None)
     else:
         children_themes = theme.children.all()
-    videos_regrouped = [(t, set()) for t in children_themes]
-    for video in videos:
-        has_theme = False
-        if children_themes:
-            for t in children_themes:
-                theme_tree = set(t.get_all_children_flat())
-                theme_tree.add(t)
-                common_themes = list(
-                        theme_tree.intersection(video.theme.all()))
-                if common_themes:
-                    videos_regrouped = add_in_list_of_tuple(
-                            videos_regrouped, t, video)
-                    has_theme = True
-            if not has_theme:
-                videos_regrouped = add_in_list_of_tuple(
-                    videos_regrouped, _("Other"), video)
-        else:
-            videos_regrouped = add_in_list_of_tuple(
-                    videos_regrouped, " ", video)
+    videos_regrouped = []
+    no_theme_videos = videos
+    # Loop on theme  and filter by theme 
+    for t in children_themes:
+        videos_founded = videos.filter(theme__in=t.get_all_children_flat())
+        no_theme_videos = no_theme_videos.exclude(
+                theme__in=t.get_all_children_flat())
+        if videos_founded:
+            videos_regrouped.append( 
+                    (t, paginator(list(set(videos_founded)), page)))
+    if children_themes and no_theme_videos:
+        videos_regrouped.append((_("Other"), paginator(no_theme_videos, page)))
+    if not children_themes:
+        videos_regrouped.append((' ', paginator(videos, page)))
+        
     return videos_regrouped
 
 
@@ -215,7 +200,8 @@ def channel(request, slug_c, slug_t=None):
             {'videos': videos, "full_path": full_path})
     videos_theme = None
     if ORGANIZE_BY_THEME:
-        videos_theme = regroup_videos_by_theme(videos_list, channel, theme)
+        videos_theme = paginator(regroup_videos_by_theme(
+                videos_list, page, channel, theme), page)
     return render(request, 'channel/channel.html',
                   {'channel': channel,
                    'videos': videos,
