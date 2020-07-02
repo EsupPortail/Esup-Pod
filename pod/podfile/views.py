@@ -560,7 +560,7 @@ def user_share_autocomplete(request):
         shared_users = folder.users.all()
         owner = folder.owner
 
-        VALUES_LIST = ['username', 'first_name', 'last_name']
+        VALUES_LIST = ['id', 'username', 'first_name', 'last_name']
         q = remove_accents(request.GET.get('term', '').lower())
         users = User.objects.filter(
             Q(username__istartswith=q) | Q(
@@ -575,3 +575,41 @@ def user_share_autocomplete(request):
         return HttpResponseBadRequest()
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
+
+
+@login_required(redirect_field_name='referrer')
+def remove_shared_user(request):
+    if request.is_ajax():
+        foldid = request.GET.get('foldid', 0)
+        userid = request.GET.get('userid', 0)
+        if foldid == 0 or userid == 0:
+            return HttpResponseBadRequest()
+        folder = UserFolder.objects.get(id=foldid)
+        user = User.objects.get(id=userid)
+        if(folder.owner == request.user):
+            folder.users.remove(user)
+            folder.save()
+            return HttpResponse(status=201)
+        else:
+            return HttpResponseBadRequest()
+    else:
+        return HttpResponseBadRequest()
+
+
+@login_required(redirect_field_name='referrer')
+def add_shared_user(request):
+    if request.is_ajax():
+        foldid = request.GET.get('foldid', 0)
+        userid = request.GET.get('userid', 0)
+        if foldid == 0 or userid == 0:
+            return HttpResponseBadRequest()
+        folder = UserFolder.objects.get(id=foldid)
+        user = User.objects.get(id=userid)
+        if(folder.owner == request.user):
+            folder.users.add(user)
+            folder.save()
+            return HttpResponse(status=201)
+        else:
+            return HttpResponseBadRequest()
+    else:
+        return HttpResponseBadRequest()

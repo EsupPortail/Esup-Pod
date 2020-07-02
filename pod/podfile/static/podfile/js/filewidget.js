@@ -123,28 +123,84 @@ $(document).on('change', "#ufile", function(e) {
 
   });
 
+  function reloadRemoveBtn(){
+    let remove = gettext('Remove')
+    $("#shared-people").html("")
+    $.ajax(
+      {
+          type: "GET",
+          url: "/ajax_calls/folder_shared_with?foldid=" + $('#formuserid').val(),
+          cache: false,
+          success: function (response) {
+              response.forEach(elt => {
+                  $("#shared-people").append('<li class="list-group-item">' + elt.first_name+' '+elt.last_name+(((!HIDE_USERNAME)?' ('+elt.username+')': '')  + ' <button type="button" data-userid=' +elt.id + ' class="btn btn-danger btn-share btn-remove">'+remove+'</button></li>'));
+              })
+          }
+      }
+  );
+  }
+
+  function reloadAddBtn(searchTerm){
+    var foldid = $("#formuserid").val();
+    let add = gettext('Add')
+    $.ajax(
+        {
+            type: "GET",
+            url: "/ajax_calls/search_share_user?term=" + searchTerm + "&foldid=" + foldid,
+            cache: false,
+            success: function (response) {
+                $("#user-search").html("");
+                response.forEach(elt => {
+                  $("#user-search").append('<li class="list-group-item">' +  (elt.first_name+' '+elt.last_name+(((!HIDE_USERNAME)?' ('+elt.username+')': '')))   + '<button type="button" data-userid=' + elt.id  +' class="btn btn-success btn-share btn-add">' +add+ '</button></li>')
+                  
+                })
+            }
+        }
+    );
+  }
+
   $(document).on('show.bs.modal', '#shareModalCenter', function (event) {
     $("#shared-people").text("")
     let button = $(event.relatedTarget)
     let folder_id = button.data('folderid');
     let modal = $(this);
     modal.find('#formuserid').val(folder_id);
+    reloadRemoveBtn();
+  
 
-    let remove = gettext('Remove')
+
+  });
+
+
+
+  $(document).on("click", ".btn-remove", function(e) {
     $.ajax(
       {
           type: "GET",
-          url: "/ajax_calls/folder_shared_with?foldid=" + folder_id,
+          url: "/ajax_calls/remove_shared_user?foldid=" + $('#formuserid').val() + "&userid=" + $(this).data("userid"),
           cache: false,
           success: function (response) {
-              response.forEach(elt => {
-                  $("#shared-people").append('<li class="list-group-item">' + elt.first_name+' '+elt.last_name+(((!HIDE_USERNAME)?' ('+elt.username+')': '')  + ' <button type="button" class="btn btn-danger btn-share">'+remove+'</button></li>'));
-              })
+            reloadRemoveBtn()
           }
       }
   );
-
   });
+
+
+  $(document).on("click", ".btn-add", function(e) {
+    $.ajax(
+      {
+          type: "GET",
+          url: "/ajax_calls/add_shared_user?foldid=" + $('#formuserid').val() + "&userid=" + $(this).data("userid"),
+          cache: false,
+          success: function (response) {
+            reloadAddBtn($("#userInputName").val())
+            reloadRemoveBtn()
+          }
+      }
+  );
+  });
+
 
   $(document).on("click", "#modalSave", function(e) {
     $( "#folderModalCenter form:visible" ).submit();
@@ -192,25 +248,8 @@ $(document).on('change', "#ufile", function(e) {
 
   $(document).on('input',"#userInputName",function(e) {
     if($(this).val() && $(this).val().length > 2) {
-      let add = gettext('Add')
       var searchTerm = $(this).val();
-      var foldid = $("#formuserid").val();
-              $.ajax(
-                  {
-                      type: "GET",
-                      url: "/ajax_calls/search_share_user?term=" + searchTerm + "&foldid=" + foldid,
-                      cache: false,
-                      success: function (response) {
-                          $("#user-search").html("");
-                          response.forEach(elt => {
-                            $("#user-search").append('<li class="list-group-item">jjj <button type="button" class="btn btn-success btn-share">' +add+ '</button></li>')
-                            
-                            //  $("#accordion").append('<li><a href="'+urlvideos+'?owner='+elt.username+'" title="">'+elt.first_name+' '+elt.last_name+((!HIDE_USERNAME)?' ('+elt.username+')</a></li>': '</a></li>'));
-                          })
-                      }
-                  }
-              );
-  
+      reloadAddBtn(searchTerm)
     } else {
       $("#user-search").html("");
     }
