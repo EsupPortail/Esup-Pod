@@ -200,8 +200,8 @@ def channel(request, slug_c, slug_t=None):
             {'videos': videos, "full_path": full_path})
     videos_theme = None
     if ORGANIZE_BY_THEME:
-        videos_theme = paginator(regroup_videos_by_theme(
-                videos_list, page, channel, theme), page)
+        videos_theme = regroup_videos_by_theme(
+                videos_list, page, channel, theme)
     return render(request, 'channel/channel.html',
                   {'channel': channel,
                    'videos': videos,
