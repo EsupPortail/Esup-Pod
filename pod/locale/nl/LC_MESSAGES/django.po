@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-02 12:10+0000\n"
+"POT-Creation-Date: 2020-07-02 12:18+0000\n"
 "PO-Revision-Date: 2018-07-03 13:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -194,7 +194,7 @@ msgstr ""
 #: pod/main/templates/navbar_collapse.html:66
 #: pod/main/templates/navbar_collapse.html:99
 #: pod/podfile/templates/podfile/home_content.html:57
-#: pod/podfile/templates/podfile/home_content.html:96
+#: pod/podfile/templates/podfile/home_content.html:95
 #: pod/recorder/templates/recorder/claim_record.html:49
 msgid "Close"
 msgstr ""
@@ -2907,11 +2907,11 @@ msgstr ""
 msgid "Already shared with :"
 msgstr ""
 
-#: pod/podfile/templates/podfile/home_content.html:86
+#: pod/podfile/templates/podfile/home_content.html:85
 msgid "Username"
 msgstr ""
 
-#: pod/podfile/templates/podfile/home_content.html:87
+#: pod/podfile/templates/podfile/home_content.html:86
 msgid "Enter new username"
 msgstr ""
 

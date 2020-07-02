@@ -66,7 +66,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document" >
     <div class="modal-content" style="min-height:initial !important;border:2px solid black;">
       <div class="modal-header">
-        <h2 class="modal-title" id="shareModalCenterTitle">{% trans "Share with someone"%}</h2>
+        <h2 class="modal-title" id="shareModalCenterTitle">{% trans "Share with someone" %}</h2>
 
         <button type="button" class="close" data-toggle="modal" data-target="#shareModalCenter" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -76,7 +76,6 @@
         <h5>{% trans "Already shared with :" %}</h5>
 
         <ul id="shared-people" class="list-group">
-          <li>Not found</li>
         </ul>
         <hr>
         <form id="shareFormName" action="{% url 'podfile:editfolder' %}">

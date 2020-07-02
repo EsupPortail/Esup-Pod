@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-02 12:10+0000\n"
+"POT-Creation-Date: 2020-07-02 12:18+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -197,7 +197,7 @@ msgstr "Veuillez renseigner une valeur valide pour ce champ"
 #: pod/main/templates/navbar_collapse.html:66
 #: pod/main/templates/navbar_collapse.html:99
 #: pod/podfile/templates/podfile/home_content.html:57
-#: pod/podfile/templates/podfile/home_content.html:96
+#: pod/podfile/templates/podfile/home_content.html:95
 #: pod/recorder/templates/recorder/claim_record.html:49
 msgid "Close"
 msgstr "Fermer"
@@ -2983,8 +2983,6 @@ msgid "Loading"
 msgstr "Chargement"
 
 #: pod/podfile/templates/podfile/home_content.html:69
-#, fuzzy
-#| msgid "Share on"
 msgid "Share with someone"
 msgstr "Partager avec quelqu'un"
 
@@ -2992,17 +2990,15 @@ msgstr "Partager avec quelqu'un"
 msgid "Already shared with :"
 msgstr "Partagé avec :"
 
-#: pod/podfile/templates/podfile/home_content.html:86
+#: pod/podfile/templates/podfile/home_content.html:85
 #, fuzzy
 #| msgid "Rename"
 msgid "Username"
 msgstr "Renomer"
 
-#: pod/podfile/templates/podfile/home_content.html:87
-#, fuzzy
-#| msgid "Enter new name of folder"
+#: pod/podfile/templates/podfile/home_content.html:86
 msgid "Enter new username"
-msgstr "Indiquer un nouveau nom à ce dossier"
+msgstr "Entrer un nouveau nom d'utilisateur"
 
 #: pod/podfile/templates/podfile/list_folder_files.html:8
 msgid "file"
