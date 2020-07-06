@@ -1,4 +1,3 @@
-
 (function() {
 	'use strict';
 	var videojs = null;
@@ -20,17 +19,11 @@
 		var MenuButton = videojs.getComponent('MenuButton');
 		var ChapterMenuButton = videojs.extend(MenuButton, {
 			constructor: function(player, options){
-				if (typeof gettext !== "undefined") { 
-					options.label = gettext('Chapters');
-				}	
+				options.label = gettext('Chapters');
 				MenuButton.call(this, player, options);
-				if (typeof gettext !== "undefined") { 
-					this.el().setAttribute('aria-label', gettext('Chapters'));
-				}	
+				this.el().setAttribute('aria-label', gettext('Chapters'));
 				videojs.dom.addClass(this.el(), 'vjs-chapters-button');
-				if (typeof gettext !== "undefined") { 
-					this.controlText(gettext('Chapters'));
-				}
+				this.controlText(gettext('Chapters'));
 
 				var span = document.createElement('span');
 				videojs.dom.addClass(span, 'vjs-chapters-icon');
