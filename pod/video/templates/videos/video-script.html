@@ -1,5 +1,7 @@
 {% load staticfiles %}
 <script>
+
+  console.log("stage1")
 window.onmessage = function(event) {
    var evt = event || window.event;
    {# maybe use request.get_host to protect it... #}
@@ -41,7 +43,9 @@ player.on('firstplay', function(){
     );
 });
 
+console.log("stage2")
 {% if video.is_video %}
+console.log("stage3")
   /** get all mp4 format **/
   var mp4_sources = {{video.get_video_mp4_json|safe}};
   
@@ -75,6 +79,7 @@ player.on('firstplay', function(){
       }
     });
   {% else %}
+  console.log("stage4")
     player.src(mp4_sources);
     player.controlBar.addChild('QualitySelector');
   {% endif %}
@@ -132,7 +137,9 @@ player.on('firstplay', function(){
   {% endif %}
 {% endif %}
 {% if video.chapter_set.all %}
+    console.log("stage5")
     player.videoJsChapters();
+    console.log("stage6")
     $('.vjs-big-play-button').css('z-index', 2)
     $('.vjs-control-bar').css('z-index', 3);
   {% endif %}
