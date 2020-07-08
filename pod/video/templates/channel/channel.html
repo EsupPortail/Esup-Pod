@@ -185,13 +185,13 @@ setTimeout(function(){
 <script>
     let setText = function()
     {
-	let texts = document.querySelectorAll(".foldable_event .hideShowText")
+	let texts = document.querySelectorAll(".foldable_event .hideShowText");
 	texts.forEach( text =>
 	{
 	    if( text.nextElementSibling.classList.contains("arrow_bottom") )
 	        text.innerHTML = gettext("Hide");
 	    else
-	        text.innerHTML = gettext("Show")
+	        text.innerHTML = gettext("Show");
 	});
     }
     // manage text
@@ -204,7 +204,8 @@ setTimeout(function(){
             el.addEventListener('click', function()
             {
                 let target_content = this.parentNode.nextElementSibling;
-		this.querySelector(".arrow_right").classList.toggle('arrow_bottom')
+		this.classList.toggle("opened");
+		this.querySelector(".arrow_right").classList.toggle('arrow_bottom');
                 target_content.classList.toggle('closed');
 		// manage text
 		setText();
