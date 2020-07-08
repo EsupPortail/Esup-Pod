@@ -204,6 +204,7 @@ setTimeout(function(){
             el.addEventListener('click', function(event)
             {
                 let target_content = this.parentNode.nextElementSibling;
+		this.classList.toggle("opened")
 		this.querySelector(".arrow_right").classList.toggle('arrow_bottom')
                 target_content.classList.toggle('closed');
 		// manage text

@@ -42,20 +42,30 @@ html,body{
  dropdown-item playlist-item z-index: 9999999;
 } */
 
-.arrow_right{
-    border-color: #102636;
+.foldable_event .arrow_right,
+.foldable_event .arrow_bottom{
     border-color: var(--primary) !important;
+    transition: .3s border-color;
 }
-.arrow_bottom{
+.foldable_event:hover .arrow_right,
+.foldable_event:hover .arrow_bottom
+{
     border-color: #fff !important;
 }
 .foldable_event{
     cursor: pointer;
-    background: var(--secondary);
+    background: transparent;
     padding: 2px 8px;
     margin-bottom: 8px;
     border-radius: 8px;
+    border: 1px solid var(--primary);
+    color: var(--primary) !important;
+    transition: .3s background-color;
+}
+.foldable_event:hover
+{
     color: #fff !important;
+    background: var(--primary);
 }
 
 .video-js .vjs-overlay-background{background: rgba(0,0,0,.5)!important;font-size: 16px!important;}
