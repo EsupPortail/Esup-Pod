@@ -106,7 +106,7 @@ body {
 	    {% endif %}
 	    {% if not t_obj|isempty %}
 	    <div class="foldable_event">
-		<span>({{videos|length}} {% trans "videos" %})</span>
+		<span class="hideShowText"></span>
 		<span class="arrow_right"></span>
 	    </div>
 	    {% endif %}
@@ -183,17 +183,32 @@ setTimeout(function(){
 
 {% if organize_theme %}
 <script>
+    let setText = function()
+    {
+	let texts = document.querySelectorAll(".foldable_event .hideShowText");
+	texts.forEach( text =>
+	{
+	    if( text.nextElementSibling.classList.contains("arrow_bottom") )
+	        text.innerHTML = gettext("Hide");
+	    else
+	        text.innerHTML = gettext("Show");
+	});
+    }
+    // manage text
+    setText();
     (function()
     {
         let els = document.querySelectorAll('.foldable_event');
         els.forEach(function(el)
         {
-            el.addEventListener('click', function(event)
+            el.addEventListener('click', function()
             {
-                event.preventDefault();
                 let target_content = this.parentNode.nextElementSibling;
-		this.querySelector(".arrow_right").classList.toggle('arrow_bottom')
+		this.classList.toggle("opened");
+		this.querySelector(".arrow_right").classList.toggle('arrow_bottom');
                 target_content.classList.toggle('closed');
+		// manage text
+		setText();
             })
         })
     })();
