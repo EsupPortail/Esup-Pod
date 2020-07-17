@@ -473,7 +473,7 @@ DEFAULT_DC_RIGHTS = "BY-NC-SA"
 """
 # Utilisation de la transcription automatique
 """
-USE_TRANSCRIPTION = TITLE_ETB + " - Town - Country"
+USE_TRANSCRIPTION = False
 
 """
 # Paramétrage de l'autotranscription (voir cette page pour configurer)
