@@ -30,7 +30,7 @@
         </button>
       </li>
       {% endif %}
-       {% if folder.owner == request.user %}
+       {% if folder.owner == request.user or request.user.is_superuser %}
       <li class="nav-item">
         <button id="currentdfoldershare" type="button" class="btn btn-link btn-sm nav-link" data-toggle="modal" data-name="{{folder.name}}"  data-target="#shareModalCenter" data-folderid="{{folder.id}}">
           <img src="{% static "podfile/images/share.png" %}" >

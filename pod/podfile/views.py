@@ -557,7 +557,7 @@ def folder_shared_with(request):
         if foldid == 0:
             return HttpResponseBadRequest()
         folder = UserFolder.objects.get(id=foldid)
-        if(folder.owner == request.user):
+        if(folder.owner == request.user or request.user.is_superuser):
             data = json.dumps(list(folder.users.values(
                 'id', 'first_name', 'last_name', 'username')))
             mimetype = 'application/json'
@@ -604,7 +604,7 @@ def remove_shared_user(request):
             return HttpResponseBadRequest()
         folder = UserFolder.objects.get(id=foldid)
         user = User.objects.get(id=userid)
-        if(folder.owner == request.user):
+        if(folder.owner == request.user or request.user.is_superuser):
             folder.users.remove(user)
             folder.save()
             return HttpResponse(status=201)
@@ -623,7 +623,7 @@ def add_shared_user(request):
             return HttpResponseBadRequest()
         folder = UserFolder.objects.get(id=foldid)
         user = User.objects.get(id=userid)
-        if(folder.owner == request.user):
+        if(folder.owner == request.user or request.user.is_superuser):
             folder.users.add(user)
             folder.save()
             return HttpResponse(status=201)
