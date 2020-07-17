@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-02 12:18+0000\n"
+"POT-Creation-Date: 2020-07-17 08:16+0000\n"
 "PO-Revision-Date: 2020-04-30 12:12+0200\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -52,8 +52,8 @@ msgstr "Le formulaire ne peut pas être récupéré."
 #: pod/enrichment/static/js/enrichment.js:149 pod/main/static/js/main.js:287
 #: pod/main/static/js/main.js:294 pod/main/static/js/main.js:305
 #: pod/main/static/js/main.js:319
-#: pod/podfile/static/podfile/js/filewidget.js:274
-#: pod/podfile/static/podfile/js/filewidget.js:301
+#: pod/podfile/static/podfile/js/filewidget.js:287
+#: pod/podfile/static/podfile/js/filewidget.js:314
 msgid "You are no longer authenticated. Please log in again."
 msgstr "Vous n'êtes plus authentifié. Veuillez vous reconnectez."
 
@@ -360,7 +360,7 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer cet élément ?"
 
 #: pod/main/static/js/main.js:281
 #: pod/podfile/static/podfile/js/filewidget.js:80
-#: pod/podfile/static/podfile/js/filewidget.js:294
+#: pod/podfile/static/podfile/js/filewidget.js:307
 msgid "Error during exchange"
 msgstr "Erreur durant le téléversement"
 
@@ -415,15 +415,22 @@ msgstr "Indiquer un nouveau nom au dossier"
 msgid "Remove"
 msgstr "Retirer"
 
-#: pod/podfile/static/podfile/js/filewidget.js:145
+#: pod/podfile/static/podfile/js/filewidget.js:140
+#: pod/podfile/static/podfile/js/filewidget.js:162
+#: pod/podfile/static/podfile/js/filewidget.js:192
+#: pod/podfile/static/podfile/js/filewidget.js:211
+msgid "Server error"
+msgstr "Erreur serveur"
+
+#: pod/podfile/static/podfile/js/filewidget.js:148
 msgid "Add"
 msgstr "Ajouter"
 
-#: pod/podfile/static/podfile/js/filewidget.js:212
+#: pod/podfile/static/podfile/js/filewidget.js:225
 msgid "Are you sure you want to delete this folder?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer ce dossier ?"
 
-#: pod/podfile/static/podfile/js/filewidget.js:221
+#: pod/podfile/static/podfile/js/filewidget.js:234
 msgid "Are you sure you want to delete this file?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer ce fichier ?"
 

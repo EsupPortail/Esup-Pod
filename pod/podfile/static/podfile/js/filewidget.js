@@ -135,6 +135,9 @@ $(document).on('change', "#ufile", function(e) {
               response.forEach(elt => {
                   $("#shared-people").append('<li class="list-group-item">' + elt.first_name+' '+elt.last_name+(((!HIDE_USERNAME)?' ('+elt.username+')': '')  + ' <button type="button" data-userid=' +elt.id + ' class="btn btn-danger btn-share btn-remove">'+remove+'</button></li>'));
               })
+          },
+          error : function(result, status, error){
+            showalert(gettext("Server error") + "<br/>"+error, "alert-danger");
           }
       }
   );
@@ -154,6 +157,9 @@ $(document).on('change', "#ufile", function(e) {
                   $("#user-search").append('<li class="list-group-item">' +  (elt.first_name+' '+elt.last_name+(((!HIDE_USERNAME)?' ('+elt.username+')': '')))   + '<button type="button" data-userid=' + elt.id  +' class="btn btn-success btn-share btn-add">' +add+ '</button></li>')
                   
                 })
+            },
+            error : function(result, status, error){
+              showalert(gettext("Server error") + "<br/>"+error, "alert-danger");
             }
         }
     );
@@ -181,8 +187,12 @@ $(document).on('change', "#ufile", function(e) {
           cache: false,
           success: function (response) {
             reloadRemoveBtn()
+          },
+          error : function(result, status, error){
+            showalert(gettext("Server error") + "<br/>"+error, "alert-danger");
           }
-      }
+      },
+      
   );
   });
 
@@ -196,6 +206,9 @@ $(document).on('change', "#ufile", function(e) {
           success: function (response) {
             reloadAddBtn($("#userInputName").val())
             reloadRemoveBtn()
+          },
+          error : function(result, status, error){
+            showalert(gettext("Server error") + "<br/>"+error, "alert-danger");
           }
       }
   );

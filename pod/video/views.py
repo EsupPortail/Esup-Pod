@@ -147,19 +147,18 @@ def regroup_videos_by_theme(videos, page, channel, theme=None):
         children_themes = theme.children.all()
     videos_regrouped = []
     no_theme_videos = videos
-    # Loop on theme  and filter by theme 
+    # Loop on theme  and filter by theme
     for t in children_themes:
         videos_founded = videos.filter(theme__in=t.get_all_children_flat())
         no_theme_videos = no_theme_videos.exclude(
                 theme__in=t.get_all_children_flat())
         if videos_founded:
-            videos_regrouped.append( 
+            videos_regrouped.append(
                     (t, paginator(list(set(videos_founded)), page)))
     if children_themes and no_theme_videos:
         videos_regrouped.append((_("Other"), paginator(no_theme_videos, page)))
     if not children_themes:
         videos_regrouped.append((' ', paginator(videos, page)))
-        
     return videos_regrouped
 
 
