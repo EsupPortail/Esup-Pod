@@ -3,9 +3,6 @@ let base_vote_url = base_url.replace('comment', 'comment/vote');
 let base_delete_url = base_url.replace('comment', 'comment/delete');
 let all_comment = null;
 let lang_btn = document.querySelector(".btn-lang.btn-lang-active");
-const HEADERS = new Headers({
-	'X-CSRF-TOKEN': Cookies.get('csrftoken')
-});
 let  VOTED_USERS = [];
 const LANG = lang_btn?lang_btn.textContent.trim() : "fr";
 const ACTION_COMMENT = {
