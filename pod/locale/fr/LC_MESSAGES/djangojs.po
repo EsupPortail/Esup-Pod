@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-23 11:02+0200\n"
+"POT-Creation-Date: 2020-07-23 11:38+0200\n"
 "PO-Revision-Date: 2020-04-30 12:12+0200\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -613,7 +613,7 @@ msgstr ""
 
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:188
 #: pod/static/admin/js/admin/DateTimeShortcuts.js:348
-#: pod/static/js/comment-script.js:83 pod/video/static/js/comment-script.js:83
+#: pod/static/js/comment-script.js:80 pod/video/static/js/comment-script.js:80
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -726,55 +726,55 @@ msgstr ""
 msgid "Hide"
 msgstr ""
 
-#: pod/static/js/comment-script.js:64 pod/static/js/comment-script.js:165
-#: pod/video/static/js/comment-script.js:64
-#: pod/video/static/js/comment-script.js:164
+#: pod/static/js/comment-script.js:61 pod/static/js/comment-script.js:161
+#: pod/video/static/js/comment-script.js:61
+#: pod/video/static/js/comment-script.js:161
 msgid "Delete"
 msgstr "Supprimer"
 
-#: pod/static/js/comment-script.js:130
-#: pod/video/static/js/comment-script.js:130
+#: pod/static/js/comment-script.js:127
+#: pod/video/static/js/comment-script.js:127
 msgid "Answer comment icon"
 msgstr "Icon réponse commentaire"
 
-#: pod/static/js/comment-script.js:133
-#: pod/video/static/js/comment-script.js:133
+#: pod/static/js/comment-script.js:130
+#: pod/video/static/js/comment-script.js:130
 msgid "Answer"
 msgstr "Répondre"
 
-#: pod/static/js/comment-script.js:146
-#: pod/video/static/js/comment-script.js:145
+#: pod/static/js/comment-script.js:142
+#: pod/video/static/js/comment-script.js:142
 msgid "Comment vote icon"
 msgstr "Icon vote commentaire"
 
-#: pod/static/js/comment-script.js:162
-#: pod/video/static/js/comment-script.js:161
+#: pod/static/js/comment-script.js:158
+#: pod/video/static/js/comment-script.js:158
 msgid "Comment delete icon"
 msgstr "Icon suppression commentaire"
 
-#: pod/static/js/comment-script.js:179
-#: pod/video/static/js/comment-script.js:178
+#: pod/static/js/comment-script.js:175
+#: pod/video/static/js/comment-script.js:175
 msgid "Add a public comment"
 msgstr "Ajouter un commentaire public"
 
-#: pod/static/js/comment-script.js:260
-#: pod/video/static/js/comment-script.js:259
+#: pod/static/js/comment-script.js:256
+#: pod/video/static/js/comment-script.js:256
 msgid "Comment show children icon"
 msgstr "Icon affichage commentaire enfant"
 
-#: pod/static/js/comment-script.js:263 pod/static/js/comment-script.js:543
-#: pod/video/static/js/comment-script.js:262
-#: pod/video/static/js/comment-script.js:542
+#: pod/static/js/comment-script.js:259 pod/static/js/comment-script.js:538
+#: pod/video/static/js/comment-script.js:259
+#: pod/video/static/js/comment-script.js:539
 msgid "Show responses"
 msgstr "Afficher les réponses"
 
-#: pod/static/js/comment-script.js:428
-#: pod/video/static/js/comment-script.js:427
+#: pod/static/js/comment-script.js:423
+#: pod/video/static/js/comment-script.js:424
 msgid "Comment has been deleted successfully."
 msgstr "Commentaire a été supprimé avec succès."
 
-#: pod/static/js/comment-script.js:541
-#: pod/video/static/js/comment-script.js:540
+#: pod/static/js/comment-script.js:536
+#: pod/video/static/js/comment-script.js:537
 msgid "Hide responses"
 msgstr "Cacher les réponses"
 
