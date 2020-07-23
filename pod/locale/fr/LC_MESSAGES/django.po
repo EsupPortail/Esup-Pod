@@ -4569,7 +4569,7 @@ msgstr "commentaire"
 
 #: pod/video/templates/videos/video-comment.html:20
 msgid "Delete comment"
-msgstr "Supprimer le ommentaire"
+msgstr "Supprimer le commentaire"
 
 #: pod/video/templates/videos/video-comment.html:20
 msgid "Permanently delete your comment ?"
