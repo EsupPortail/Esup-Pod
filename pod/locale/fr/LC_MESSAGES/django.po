@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-23 10:50+0200\n"
+"POT-Creation-Date: 2020-07-23 15:32+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -92,7 +92,7 @@ msgid "registered-reader"
 msgstr "lecteur enregistré"
 
 #: pod/authentication/models.py:68 pod/recorder/models.py:122
-#: pod/video/models.py:1395 pod/video/views.py:1275
+#: pod/video/models.py:1398 pod/video/views.py:1275
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -211,7 +211,7 @@ msgid "File to import"
 msgstr "Fichier à importer"
 
 #: pod/chapter/models.py:14 pod/completion/models.py:53
-#: pod/enrichment/models.py:114 pod/video/models.py:582
+#: pod/enrichment/models.py:114 pod/video/models.py:585
 msgid "video"
 msgstr "vidéo"
 
@@ -553,9 +553,9 @@ msgstr ""
 #: pod/enrichment/models.py:291 pod/enrichment/models.py:322
 #: pod/interactive/models.py:16 pod/interactive/models.py:37
 #: pod/playlist/models.py:79 pod/recorder/models.py:20 pod/video/models.py:452
-#: pod/video/models.py:944 pod/video/models.py:1087 pod/video/models.py:1155
-#: pod/video/models.py:1209 pod/video/models.py:1254 pod/video/models.py:1272
-#: pod/video/models.py:1289
+#: pod/video/models.py:947 pod/video/models.py:1090 pod/video/models.py:1158
+#: pod/video/models.py:1212 pod/video/models.py:1257 pod/video/models.py:1275
+#: pod/video/models.py:1292
 msgid "Video"
 msgstr "Vidéo"
 
@@ -2005,8 +2005,8 @@ msgid "Other (please specify)"
 msgstr "Autre (spécifiez)"
 
 #: pod/main/forms.py:50 pod/podfile/models.py:27 pod/podfile/models.py:100
-#: pod/podfile/templates/podfile/home_content.html:29 pod/video/models.py:1080
-#: pod/video/models.py:1152 pod/video/models.py:1206
+#: pod/podfile/templates/podfile/home_content.html:29 pod/video/models.py:1083
+#: pod/video/models.py:1155 pod/video/models.py:1209
 msgid "Name"
 msgstr "Nom"
 
@@ -2971,7 +2971,7 @@ msgid "Thumbnail"
 msgstr "Vignette"
 
 #: pod/playlist/templates/playlist/playlist_element_list.html:13
-#: pod/video/feeds.py:188 pod/video/models.py:565 pod/video/models.py:698
+#: pod/video/feeds.py:188 pod/video/models.py:565 pod/video/models.py:701
 #: pod/video/templates/videos/video-info.html:79
 msgid "Duration"
 msgstr "Durée"
@@ -3309,8 +3309,8 @@ msgstr "Fichier source de la vidéo publiée."
 msgid "File size"
 msgstr "Taille du fichier"
 
-#: pod/recorder/models.py:176 pod/video/models.py:496 pod/video/models.py:1338
-#: pod/video/models.py:1397
+#: pod/recorder/models.py:176 pod/video/models.py:496 pod/video/models.py:1341
+#: pod/video/models.py:1400
 msgid "Date added"
 msgstr "Date d'ajout"
 
@@ -4084,7 +4084,7 @@ msgstr "Sélectionner un ou plusieurs groupes qui auront accès à cette vidéo"
 msgid "Viewing this video will not be possible without this password."
 msgstr "Voir cette vidéo n'est pas possible sans mot de passe."
 
-#: pod/video/models.py:563 pod/video/models.py:676
+#: pod/video/models.py:563 pod/video/models.py:679
 msgid "Thumbnails"
 msgstr "Vignettes"
 
@@ -4104,178 +4104,182 @@ msgstr "Est une vidéo"
 msgid "Date to delete"
 msgstr "Date de suppression"
 
-#: pod/video/models.py:583
+#: pod/video/models.py:580
+msgid "Disable comment"
+msgstr "Désactiver les commentaires"
+
+#: pod/video/models.py:586
 msgid "videos"
 msgstr "vidéos"
 
-#: pod/video/models.py:628
+#: pod/video/models.py:631
 msgid "Sum of view"
 msgstr "Somme des vues"
 
-#: pod/video/models.py:637 pod/video/models.py:1301
+#: pod/video/models.py:640 pod/video/models.py:1304
 msgid "Encoding step"
 msgstr "Étape de l'encodage"
 
-#: pod/video/models.py:705
+#: pod/video/models.py:708
 msgid "Is the video encoded ?"
 msgstr "Est-ce que la vidéo est encodée ?"
 
-#: pod/video/models.py:947
+#: pod/video/models.py:950
 msgid "Date"
 msgstr "Date"
 
-#: pod/video/models.py:949 pod/video/templates/videos/video-info.html:80
+#: pod/video/models.py:952 pod/video/templates/videos/video-info.html:80
 msgid "Number of view"
 msgstr "Nombre de vues"
 
-#: pod/video/models.py:957
+#: pod/video/models.py:960
 msgid "View count"
 msgstr "Nombre de vues"
 
-#: pod/video/models.py:958
+#: pod/video/models.py:961
 msgid "View counts"
 msgstr "Statistiques"
 
-#: pod/video/models.py:963
+#: pod/video/models.py:966
 msgid "resolution"
 msgstr "résolution"
 
-#: pod/video/models.py:969 pod/video/models.py:1034 pod/video/models.py:1041
+#: pod/video/models.py:972 pod/video/models.py:1037 pod/video/models.py:1044
 msgid "minrate"
 msgstr "débit minimum"
 
-#: pod/video/models.py:974 pod/video/models.py:1010 pod/video/models.py:1017
+#: pod/video/models.py:977 pod/video/models.py:1013 pod/video/models.py:1020
 msgid "bitrate video"
 msgstr "débit binaire de la vidéo"
 
-#: pod/video/models.py:979 pod/video/models.py:1022 pod/video/models.py:1029
+#: pod/video/models.py:982 pod/video/models.py:1025 pod/video/models.py:1032
 msgid "maxrate"
 msgstr "débit maximum"
 
-#: pod/video/models.py:984 pod/video/models.py:1059 pod/video/models.py:1066
+#: pod/video/models.py:987 pod/video/models.py:1062 pod/video/models.py:1069
 msgid "bitrate audio"
 msgstr "débit binaire de l'audio"
 
-#: pod/video/models.py:988
+#: pod/video/models.py:991
 msgid "Make a MP4 version"
 msgstr "Faire une version MP4"
 
-#: pod/video/models.py:1001 pod/video/models.py:1089
+#: pod/video/models.py:1004 pod/video/models.py:1092
 msgid "rendition"
 msgstr "rendu"
 
-#: pod/video/models.py:1002
+#: pod/video/models.py:1005
 msgid "renditions"
 msgstr "rendus"
 
-#: pod/video/models.py:1091 pod/video/models.py:1157 pod/video/models.py:1211
+#: pod/video/models.py:1094 pod/video/models.py:1160 pod/video/models.py:1214
 msgid "Format"
 msgstr "Format"
 
-#: pod/video/models.py:1098 pod/video/models.py:1162 pod/video/models.py:1216
+#: pod/video/models.py:1101 pod/video/models.py:1165 pod/video/models.py:1219
 msgid "encoding source file"
 msgstr "fichier source d'encodage"
 
-#: pod/video/models.py:1120
+#: pod/video/models.py:1123
 msgid "Encoding video"
 msgstr "Encodage vidéo"
 
-#: pod/video/models.py:1121
+#: pod/video/models.py:1124
 msgid "Encoding videos"
 msgstr "Encodage des vidéos"
 
-#: pod/video/models.py:1172
+#: pod/video/models.py:1175
 msgid "Encoding audio"
 msgstr "Encodage audio"
 
-#: pod/video/models.py:1173
+#: pod/video/models.py:1176
 msgid "Encoding audios"
 msgstr "Encodage des audios"
 
-#: pod/video/models.py:1264
+#: pod/video/models.py:1267
 msgid "Encoding log"
 msgstr "Journal de l'encodage"
 
-#: pod/video/models.py:1265
+#: pod/video/models.py:1268
 msgid "Encoding logs"
 msgstr "Journaux des encodages"
 
-#: pod/video/models.py:1275
+#: pod/video/models.py:1278
 msgid "Video version"
 msgstr "Version de la video"
 
-#: pod/video/models.py:1277
+#: pod/video/models.py:1280
 msgid "Video default version."
 msgstr "Version par défaut de la vidéo."
 
-#: pod/video/models.py:1302
+#: pod/video/models.py:1305
 msgid "Encoding steps"
 msgstr "Etapes de l'encodage"
 
-#: pod/video/models.py:1311 pod/video/models.py:1318 pod/video/models.py:1334
+#: pod/video/models.py:1314 pod/video/models.py:1321 pod/video/models.py:1337
 #: pod/video/views.py:1286
 msgid "Note"
 msgstr "Note"
 
-#: pod/video/models.py:1319
+#: pod/video/models.py:1322
 msgid "Notes"
 msgstr "Notes"
 
-#: pod/video/models.py:1330
+#: pod/video/models.py:1333
 msgid "Note availibility level"
 msgstr "Niveau de disponibilité de la note"
 
-#: pod/video/models.py:1332
+#: pod/video/models.py:1335
 msgid "Select an availability level for the note."
 msgstr "Sélectionner le niveau de disponibilité de la note."
 
-#: pod/video/models.py:1336
+#: pod/video/models.py:1339
 msgid "Timestamp"
 msgstr "Horodatage"
 
-#: pod/video/models.py:1340 pod/video/models.py:1399
+#: pod/video/models.py:1343 pod/video/models.py:1402
 msgid "Date modified"
 msgstr "Date de modification"
 
-#: pod/video/models.py:1343
+#: pod/video/models.py:1346
 msgid "Advanced Note"
 msgstr "Note avancée"
 
-#: pod/video/models.py:1344
+#: pod/video/models.py:1347
 msgid "Advanced Notes"
 msgstr "Notes avancées"
 
-#: pod/video/models.py:1390
+#: pod/video/models.py:1393
 msgid "Comment availibility level"
 msgstr "Niveau de disponibilité du commentaire"
 
-#: pod/video/models.py:1392
+#: pod/video/models.py:1395
 msgid "Select an availability level for the comment."
 msgstr "Sélectionnez un niveau de disponibilité pour le commentaire."
 
-#: pod/video/models.py:1402
+#: pod/video/models.py:1405
 msgid "Note comment"
 msgstr "Commentaire de la note"
 
-#: pod/video/models.py:1403
+#: pod/video/models.py:1406
 msgid "Note comments"
 msgstr "Commentaires de notes"
 
-#: pod/video/models.py:1421
+#: pod/video/models.py:1424
 msgid "Date for deletion"
 msgstr "Date pour la suppression"
 
-#: pod/video/models.py:1424 pod/video/templates/videos/video.html:76
+#: pod/video/models.py:1427 pod/video/templates/videos/video.html:76
 #: pod/video/templates/videos/videos.html:8
 #: pod/video/templates/videos/videos.html:17
 msgid "Videos"
 msgstr "Vidéos"
 
-#: pod/video/models.py:1427
+#: pod/video/models.py:1430
 msgid "Video to delete"
 msgstr "Vidéo à supprimer"
 
-#: pod/video/models.py:1428
+#: pod/video/models.py:1431
 msgid "Videos to delete"
 msgstr "Vidéos à supprimer"
 
@@ -4559,19 +4563,23 @@ msgstr ""
 "Veuillez utiliser la barre d'outils située au bas de la vignette de la vidéo "
 "sur laquelle vous voulez travailler."
 
-#: pod/video/templates/videos/video-comment.html:9
+#: pod/video/templates/videos/video-comment.html:3
+msgid "Comments have been disabled for this video."
+msgstr "Les commentaires ont été désactivés pour cette vidéo."
+
+#: pod/video/templates/videos/video-comment.html:12
 msgid "Comments"
 msgstr "Commentaires"
 
-#: pod/video/templates/videos/video-comment.html:15
+#: pod/video/templates/videos/video-comment.html:18
 msgid "comment"
 msgstr "commentaire"
 
-#: pod/video/templates/videos/video-comment.html:20
+#: pod/video/templates/videos/video-comment.html:23
 msgid "Delete comment"
 msgstr "Supprimer le commentaire"
 
-#: pod/video/templates/videos/video-comment.html:20
+#: pod/video/templates/videos/video-comment.html:23
 msgid "Permanently delete your comment ?"
 msgstr "Supprimer définitivement votre commentaire ?"
 
