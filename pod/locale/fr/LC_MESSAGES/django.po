@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-23 15:32+0200\n"
+"POT-Creation-Date: 2020-07-24 08:21+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -4570,6 +4570,10 @@ msgstr "Les commentaires ont été désactivés pour cette vidéo."
 #: pod/video/templates/videos/video-comment.html:12
 msgid "Comments"
 msgstr "Commentaires"
+
+#: pod/video/templates/videos/video-comment.html:15
+msgid "Add a public comment"
+msgstr "Ajouter un commentaire public"
 
 #: pod/video/templates/videos/video-comment.html:18
 msgid "comment"
