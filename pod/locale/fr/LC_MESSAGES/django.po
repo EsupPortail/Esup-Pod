@@ -4573,7 +4573,7 @@ msgstr "Commentaires"
 
 #: pod/video/templates/videos/video-comment.html:18
 msgid "comment"
-msgstr "commentaire"
+msgstr "commenter"
 
 #: pod/video/templates/videos/video-comment.html:23
 msgid "Delete comment"
