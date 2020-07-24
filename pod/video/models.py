@@ -576,6 +576,9 @@ class Video(models.Model):
         _('Date to delete'),
         default=default_date_delete)
 
+    disable_comment = models.BooleanField(
+            _("Disable comment"), default=False)
+
     class Meta:
         ordering = ['-date_added', '-id']
         get_latest_by = 'date_added'

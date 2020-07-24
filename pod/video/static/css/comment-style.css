@@ -46,6 +46,22 @@ h1, h2, h3, h4, h5, h6
     transform: translateX( calc(-50% - var(--padding-comment-content) ) );
 }
 .inline_flex_space{display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;}
+.comment_disable::before{
+    content: "";
+    display: block;
+    height: 1px;
+    background-color: var(--background-color);
+    width: 100%;
+    margin-bottom: 2em;
+}
+.comment_disable{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-weight: 400;
+    color: var(--primary);
+    padding-top: 2em;
+}
 .comment_main
 {
     /*padding: 0 calc(var(--padding-comment-content) * 2);*/
