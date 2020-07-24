@@ -5,6 +5,6 @@ from . import views
 app_name = "custom"
 
 urlpatterns = [
-    url(r'^$', views.update_owner, name="home"),
-    url(r'^update-owner/$', views.index, name="update_video_owner"),
+    url(r'^$', views.index, name="home"),
+    url(r'^update-owner/$', views.update_owner, name="update_video_owner"),
 ]
