@@ -213,17 +213,17 @@ if getattr(settings, "USE_STATS_VIEW", False):
     ]
 # COMMENT and VOTE
 urlpatterns += [
-    url(r'^comment/(?P<video_slug>[\-\d\w]+)/$', get_comment, name='comment'),
+    url(r'^comment/(?P<video_slug>[\-\d\w]+)/$', get_comment, name='get_comment'),
     url(r'^comment/add/(?P<video_slug>[\-\d\w]+)/$',
-        add_comment, name='get_comment'),
-    url(r'^comment/add/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
         add_comment, name='add_comment'),
+    url(r'^comment/add/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
+        add_comment, name='add_child_comment'),
+    url(r'^comment/delete/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
+        delete_comment, name='delete_comment'),
     url(r'^comment/vote/(?P<video_slug>[\-\d\w]+)/$',
         vote, name='get_vote'),
     url(r'^comment/vote/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
         vote, name='add_vote'),
-    url(r'^comment/delete/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
-        delete_comment, name='delete_comment'),
 ]
 
 # CHANNELS
