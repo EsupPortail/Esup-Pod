@@ -1612,13 +1612,6 @@ def video_add(request):
         'TRANSCRIPT': TRANSCRIPT})
 
 
-def notEmpty(list_fields):
-    for field in list_fields:
-        if not field:
-            return False
-    return True
-
-
 @csrf_protect
 def vote(request, video_slug, comment_id=None):
     if request.method == "POST":
@@ -1660,13 +1653,13 @@ def add_comment(request, video_slug, comment_id=None):
         c_parent = get_object_or_404(
                 Comment, id=comment_id)if comment_id else None
         c_content = request.POST.get('content', '')
-        c_date = parse(request.POST.get('date_added', None))
-        # TODO Validate data before save
-        if notEmpty([c_content, c_date]):
+        c_date = request.POST.get('date_added', None)
+        if c_content:
             c = Comment()
             if c_parent:
                 c.parent = c_parent
-            c.added = c_date
+            if c_date:
+                c.added = parse(c_date)
             c.video = c_video
             c.content = c_content
             c.author = c_user
@@ -1684,7 +1677,6 @@ def add_comment(request, video_slug, comment_id=None):
 
 
 def get_comment(request, video_slug):
-    # Organize comment
     v = get_object_or_404(Video, slug=video_slug)
     comment = Comment.objects.filter(video=v).order_by('added').annotate(
             nbr_vote=Count('vote'))
@@ -1721,20 +1713,19 @@ def delete_comment(request, video_slug, comment_id):
     c_user = get_object_or_404(User, id=request.POST.get('id', None))
     c = get_object_or_404(Comment, video=v, id=comment_id)
     response = {
-        'delete': True,
-        'comment_deleted': comment_id
+        'deleted': True,
     }
     if c.author == c_user or v.owner == c_user or c_user.is_superuser:
         c.delete()
-        response['message'] = 'success'
+        response['comment_deleted'] = comment_id
         return HttpResponse(
                 json.dumps(response),
                 content_type="application/json")
     else:
-        response['delete'] = False
-        response['message'] = ('You do not have right to delete this comment')
+        response['deleted'] = False
+        response['message'] = _('You do not have right to delete this comment')
         return HttpResponse(
-                json.dumps(response),
+                json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
 
 
