@@ -9,7 +9,7 @@ from pod.video.views import get_comment, add_comment, delete_comment
 import logging
 
 
-class TestStatsView(TestCase):
+class TestComment(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
@@ -37,11 +37,11 @@ class TestStatsView(TestCase):
                 password="SuperPassword1234",
                 is_superuser=True)
         self.video = Video.objects.create(
-                title="Test stats view",
+                title="Test video comment",
                 is_draft=False,
                 encoding_in_progress=False,
                 owner=self.owner_user,
-                video="teststatsviews.mp4",
+                video="testvideocomment.mp4",
                 type=self.t1)
         self.admin_comment = Comment.objects.create(
                 author=self.admin_user,
@@ -76,7 +76,7 @@ class TestStatsView(TestCase):
                 "get_comment",
                 kwargs={"video_slug": self.video.slug})
         response = self.client.get(url)
-        # Check that the view function is stats_view
+        # Check that the view function is get_comment
         self.assertEqual(response.resolver_match.func, get_comment)
         # Check response is 200 OK and contents the expected comment
         self.assertContains(
@@ -231,5 +231,9 @@ class TestStatsView(TestCase):
         del self.owner_user
         del self.admin_user
         del self.simple_user
+        del self.admin_comment
+        del self.simple_user_comment
+        del self.owner_responds_admin_comment
+        del self.owner_responds_simple_user_comment
         del self.client
         del self.t1
