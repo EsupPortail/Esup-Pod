@@ -91,6 +91,25 @@ class ConfirmModal extends HTMLElement
 }
 customElements.define("confirm-modal", ConfirmModal);
 
+class CommentSince extends HTMLElement
+{
+    constructor(since)
+    {
+	super();
+	since = this.getAttribute("since")? this.getAttribute("since"): since;
+	since = typeof(since) === "string"? new Date(since): since;
+	let date_since = moment(since).locale(LANG).fromNow();
+	let div = document.createElement("DIV");
+	div.setAttribute("class", "comment_since");
+	div.innerText = date_since;
+	this.appendChild(div);
+	window.setInterval(()=>{
+	    date_since = moment(since).locale(LANG).fromNow();
+	    div.innerText = date_since;
+	}, 60000);
+    }
+}
+customElements.define("comment-since", CommentSince);
 class Comment extends HTMLElement
 {
     constructor( owner, content, likes, added_since, id, is_parent=null, is_comment_owner=false)
@@ -106,7 +125,7 @@ class Comment extends HTMLElement
             <div class="comment_content">
                 <div class="comment_content_header inline_flex_space">
                     <h1 class="user_name">${owner}</h1>
-                    <div class="comment_since">${added_since}</div>
+		    <comment-since since=${added_since.toISOString()}></comment-since>
                 </div>
                 <div class="comment_content_body">
                     <p>${content}</p>
@@ -407,7 +426,10 @@ function delete_comment(target_comment_html)
     }
     ).then(response=>{
 	response.json().then( data=>{
-	    document.body.appendChild(new AlertMessage(gettext("Comment has been deleted successfully.")));
+	    if(data.deleted)
+	        document.body.appendChild(new AlertMessage(gettext("Comment has been deleted successfully.")));
+	    else
+	        document.body.appendChild(new AlertMessage(data.message));
 	});
     }).catch(error=>{
 	console.log(error);
@@ -423,7 +445,6 @@ if(is_authenticated){
     {
         e.preventDefault();
         let date_added = new Date();
-        let added_since =moment(date_added).locale(LANG).fromNow();
         let el = add_parent_comment.querySelector(".new_parent_comment") 
         if(el.value.trim() != "")
         {
@@ -432,7 +453,7 @@ if(is_authenticated){
                 owner=user_fullName,
                 content=comment_content,
                 likes=0,
-                added_since=added_since,
+                added_since=date_added,
                 id=`comment_${date_added.getTime()}`,
                 is_parent=true,
 	        is_comment_owner=true);
@@ -448,7 +469,6 @@ if(is_authenticated){
 function add_child_comment(el)
 {
     let date_added = new Date();
-    let added_since =moment(date_added).locale(LANG).fromNow();
     if(el.value.trim() !== "")
     {
         let parent_el = get_node(el, "comments_children_container");
@@ -457,7 +477,7 @@ function add_child_comment(el)
             owner=user_fullName,
             content=comment_content,
             likes=0,
-            added_since=added_since,
+            added_since=date_added,
             id = `comment_${date_added.getTime()}`,
 	    is_parent=false,
 	    is_comment_owner=true);
@@ -554,8 +574,8 @@ fetch(base_vote_url).then(response=>{
                 let parent_container = document.querySelector('.comment_container .comment_content');
                 let children_data = comment_data.children;
                 let parent_data   = comment_data.parent_comment;
-                let date_added = moment((new Date(parent_data.added))).locale(LANG).fromNow();
-	        let html_id =`comment_${(new Date(parent_data.added)).getTime().toString()}`;
+                let date_added = new Date(parent_data.added);
+	        let html_id =`comment_${date_added.getTime().toString()}`;
                 let parent_c = new Comment(
 	            owner=`${parent_data.author__first_name} ${parent_data.author__last_name.toUpperCase()}`,
 	            content=parent_data.content,
@@ -569,8 +589,8 @@ fetch(base_vote_url).then(response=>{
                 if(children_data.length>0)
                 {
 	            children_data.forEach(child_data=>{
-	                date_added = moment((new Date(child_data.added))).locale(LANG).fromNow();
-	    	        html_id =`comment_${(new Date(child_data.added)).getTime().toString()}`;
+	                date_added = new Date(child_data.added);
+	    	        html_id =`comment_${date_added.getTime().toString()}`;
 	                let child_c = new Comment(
 		            owner=`${child_data.author__first_name} ${child_data.author__last_name.toUpperCase()}`,
 		            content=child_data.content,
