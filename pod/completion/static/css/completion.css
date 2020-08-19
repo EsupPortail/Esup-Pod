@@ -80,12 +80,23 @@ table#table_list_contributors thead th.contributor_name {
 /***** Override track list *****/
 
 .grid-list-track .division{ grid-column: 1 / span 4; border-bottom: 1px solid #ccc;}
+.grid-list-track .track_kind.options .btn{ font-size: 14px;}
+.grid-list-track .track_kind.options a.btn{ overflow: unset; align-self: self-start;}
+.grid-list-track .track_kind.options .dropdown #dropdownMenuButton{
+    background-color: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+    border-radius: 4px;
+}
+.grid-list-track .track_kind.options .dropdown .dropdown-item{ background-color: #fff; }
+.grid-list-track .track_kind.options .dropdown .btn{ width: 100%; }
+.grid-list-track .track_kind.options .dropdown{ display: none; background-color: #fff;}
 .grid-list-track .thead_title{
-   margin: 0;
-   padding-right: 20px;
-   color: var(--primary);
-   word-wrap: break-word;
-   font-weight: 600;
+    margin: 0;
+    padding-right: 20px;
+    color: var(--primary);
+    word-wrap: break-word;
+    font-weight: 600;
 }
 .grid-list-track p{margin: 0;}
 .grid-list-track{
@@ -95,6 +106,7 @@ table#table_list_contributors thead th.contributor_name {
     margin-bottom: 1em;
     margin-top: 1em;
 }
+.grid-list-track .track_kind.file{word-break: break-word;}
 .track_kind.options{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -106,8 +118,11 @@ table#table_list_contributors thead th.contributor_name {
     font-size: 1rem;
     box-sizing: border-box;
 }
-@media only screen and (max-width: 920px)
-{}
+@media only screen and (max-width: 840px)
+{
+.grid-list-track .track_kind.options .dropdown{ display: inline-block;}
+.grid-list-track .track_kind.options > form{ display: none;}
+}
 /** Forms **/
 
 

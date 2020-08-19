@@ -335,15 +335,3 @@ function verify_fields(form) {
 	}
 	return !error;
 }
-// Modif track, redirect to video caption maker
-modCapSubFileBtn = document.querySelectorAll('#modifCapSubFile');
-modCapSubFileBtn.forEach(btn =>{
-    btn.addEventListener('click', function(e)
-    {
-        e.preventDefault();
-        let url = window.location.href.replace('video_completion', 'video_caption_maker');
-        console.log(this, this.dataset, this.dataset.src);
-        sessionStorage.setItem('src', this.dataset.src);
-        window.location = url;
-    });
-});
