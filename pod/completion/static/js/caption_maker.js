@@ -1,8 +1,20 @@
 $(document).on('click', 'a.file-name', function() {
     let url = '/podfile/get_file/file/'; 
     let data_form = $("#captionmaker_form" ).serializeArray();
+    console.log("-----------------------",data_form)
     send_form_data(url, data_form, "ProcessProxyVttResponse");
 })
+
+// Charge caption/subtitle file if exists
+$(document).ready(function(){
+    let src_file = sessionStorage.getItem('src');
+    if(src_file)
+    {
+        let url = '/podfile/get_file/file/';
+        let data = {'src': src_file, 'csrfmiddlewaretoken': Cookies.get('csrftoken')};
+        send_form_data(url, data, "ProcessProxyVttResponse");
+    }
+});
 
 $(document).on('submit', '#form_save_captions', function(e) {
     e.preventDefault();
