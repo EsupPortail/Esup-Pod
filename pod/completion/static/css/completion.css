@@ -121,7 +121,8 @@ table#table_list_contributors thead th.contributor_name {
 @media only screen and (max-width: 840px)
 {
 .grid-list-track .track_kind.options .dropdown{ display: inline-block;}
-.grid-list-track .track_kind.options > form{ display: none;}
+.grid-list-track .track_kind.options > form,
+.grid-list-track .track_kind.options > #modifCapSubFile{ display: none;}
 }
 /** Forms **/
 
