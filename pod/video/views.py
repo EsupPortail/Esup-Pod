@@ -147,19 +147,19 @@ def regroup_videos_by_theme(videos, page, channel, theme=None):
         children_themes = theme.children.all()
     videos_regrouped = []
     no_theme_videos = videos
-    # Loop on theme  and filter by theme 
+    # Loop on theme  and filter by theme
     for t in children_themes:
         videos_founded = videos.filter(theme__in=t.get_all_children_flat())
         no_theme_videos = no_theme_videos.exclude(
-                theme__in=t.get_all_children_flat())
+            theme__in=t.get_all_children_flat())
         if videos_founded:
-            videos_regrouped.append( 
-                    (t, paginator(list(set(videos_founded)), page)))
+            videos_regrouped.append(
+                (t, paginator(list(set(videos_founded)), page)))
     if children_themes and no_theme_videos:
         videos_regrouped.append((_("Other"), paginator(no_theme_videos, page)))
     if not children_themes:
         videos_regrouped.append((' ', paginator(videos, page)))
-        
+
     return videos_regrouped
 
 
@@ -201,7 +201,7 @@ def channel(request, slug_c, slug_t=None):
     videos_theme = None
     if ORGANIZE_BY_THEME:
         videos_theme = regroup_videos_by_theme(
-                videos_list, page, channel, theme)
+            videos_list, page, channel, theme)
     return render(request, 'channel/channel.html',
                   {'channel': channel,
                    'videos': videos,
@@ -1594,9 +1594,9 @@ def video_add(request):
                 return HttpResponseNotFound('<h1>Permission Denied</h1>')
 
             if video and request.user != video.owner and (
-                not (request.user.is_superuser or
-                     request.user.has_perm('video.change_video'))) and (
-                     request.user not in video.additional_owners.all()):
+                    not (request.user.is_superuser or
+                         request.user.has_perm('video.change_video'))) and (
+                    request.user not in video.additional_owners.all()):
                 return HttpResponseNotFound('<h1>Permission Denied</h1>')
         except Video.DoesNotExist:
             pass
@@ -1648,7 +1648,7 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
                                          transcript=(
                                              True if (
                                                  transcript == "true"
-                                                 ) else False))
+                                             ) else False))
         else:
             video = Video.objects.get(slug=edit_slug)
             video.video = uploaded_file
