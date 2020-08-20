@@ -9,7 +9,8 @@ from .models import Video
 import numpy as np
 import shlex
 import subprocess
-# import sys
+
+import sys
 import os
 import time
 from timeit import default_timer as timer
@@ -52,6 +53,17 @@ EMAIL_ON_TRANSCRIPTING_COMPLETION = getattr(
 
 log = logging.getLogger(__name__)
 
+"""
+TO TEST -->
+from pod.video.transcript import *
+ds_model = get_model("fr")
+main_transcript(
+    "/usr/local/django_projects/test/audio_192k_pod.mp3",
+    177,
+    ds_model
+)
+"""
+
 
 def start_transcript(video_id):
     log.info("START TRANSCRIPT VIDEO %s" % video_id)
@@ -59,6 +71,26 @@ def start_transcript(video_id):
                          args=[video_id])
     t.setDaemon(True)
     t.start()
+
+
+def get_model(lang):
+    ds_model = Model(
+        DS_PARAM[lang]['model']
+    )
+    if DS_PARAM[lang].get('beam_width'):
+        ds_model.setBeamWidth(DS_PARAM[lang]['beam_width'])
+    if DS_PARAM[lang].get('scorer'):
+        print('Loading scorer from files {}'.format(
+            DS_PARAM[lang]['scorer']), file=sys.stderr)
+        scorer_load_start = timer()
+        ds_model.enableExternalScorer(DS_PARAM[lang]['scorer'])
+        scorer_load_end = timer() - scorer_load_start
+        print('Loaded scorer in {:.3}s.'.format(
+            scorer_load_end), file=sys.stderr)
+        if DS_PARAM[lang].get('lm_alpha') and DS_PARAM[lang].get('lm_beta'):
+            ds_model.setScorerAlphaBeta(
+                DS_PARAM[lang]['lm_alpha'], DS_PARAM[lang]['lm_beta'])
+    return ds_model
 
 
 def main_threaded_transcript(video_to_encode_id):
@@ -78,17 +110,24 @@ def main_threaded_transcript(video_to_encode_id):
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
     else:
-        ds_model = Model(
-            DS_PARAM[lang]['model'], DS_PARAM[lang]['beam_width']
-        )
-        if all([cond in DS_PARAM[lang]
-                for cond in ['alphabet', 'lm', 'trie',
-                             'lm_alpha', 'lm_beta']]):
-            ds_model.enableDecoderWithLM(
-                DS_PARAM[lang]['lm'], DS_PARAM[lang]['trie'],
-                DS_PARAM[lang]['lm_alpha'], DS_PARAM[lang]['lm_beta']
-            )
-        msg = main_transcript(video_to_encode, ds_model)
+        ds_model = get_model(lang)
+        mp3file = video_to_encode.get_video_mp3(
+        ).source_file if video_to_encode.get_video_mp3() else None
+        if mp3file is None:
+            msg += "\n no mp3 file found for video :%s." % video_to_encode.id
+            change_encoding_step(video_to_encode.id, -1, msg)
+            send_email(msg, video_to_encode.id)
+            return msg
+        msg, webvtt = main_transcript(
+            mp3file, video_to_encode.duration, ds_model)
+        if DEBUG:
+            print(msg)
+            print(webvtt)
+        msg += saveVTT(video_to_encode, webvtt)
+        change_encoding_step(video_to_encode.id, 0, "done")
+        # envois mail fin transcription
+        if EMAIL_ON_TRANSCRIPTING_COMPLETION:
+            send_email_transcript(video_to_encode)
 
     add_encoding_log(video_to_encode.id, msg)
 
@@ -141,129 +180,142 @@ def normalize_mp3(mp3filepath):
 # #################################
 
 
-def main_transcript(video_to_encode, ds_model):
+def main_transcript(norm_mp3_file, duration, ds_model):
     msg = ""
     inference_start = timer()
     msg += '\nInference start %0.3fs.' % inference_start
 
-    mp3file = video_to_encode.get_video_mp3(
-    ).source_file if video_to_encode.get_video_mp3() else None
-    if mp3file is None:
-        msg += "\n no mp3 file found for video :%s." % video_to_encode.id
-        change_encoding_step(video_to_encode.id, -1, msg)
-        send_email(msg, video_to_encode.id)
-        return msg
-
     # NORMALIZE mp3file
-    norm_mp3_file = normalize_mp3(mp3file.path)
+    # norm_mp3_file = normalize_mp3(mp3file.path)
 
     desired_sample_rate = ds_model.sampleRate()
 
     webvtt = WebVTT()
 
-    last_item = None
-    sentences = []
-    sentence = []
+    last_word_added = ""
     metadata = None
 
-    for start_trim in range(0, video_to_encode.duration, AUDIO_SPLIT_TIME):
+    all_text = ""
 
-        end_trim = video_to_encode.duration if start_trim + \
-            AUDIO_SPLIT_TIME > video_to_encode.duration else (
+    for start_trim in range(0, duration, AUDIO_SPLIT_TIME):
+
+        end_trim = duration if start_trim + \
+            AUDIO_SPLIT_TIME > duration else (
                 start_trim + AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH)
 
-        duration = (AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH) if start_trim + \
-            AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH < video_to_encode.duration \
-            else (video_to_encode.duration - start_trim)
+        dur = (AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH) if start_trim + \
+            AUDIO_SPLIT_TIME + SENTENCE_MAX_LENGTH < duration \
+            else (duration - start_trim)
 
         msg += "\ntake audio from %s to %s - %s" % (
-            start_trim, end_trim, duration)
+            start_trim, end_trim, dur)
 
         audio = convert_samplerate(
-            norm_mp3_file, desired_sample_rate, start_trim, duration)
+            norm_mp3_file, desired_sample_rate, start_trim, dur)
         msg += '\nRunning inference.'
 
         metadata = ds_model.sttWithMetadata(audio)
 
-        msg += '\nConfidence : %s' % metadata.confidence
+        for transcript in metadata.transcripts:
+            msg += '\nConfidence : %s' % transcript.confidence
+            words = words_from_candidate_transcript(transcript)
+            start_caption = start_trim + words[0]['start_time']
+            text_caption = []
+            is_first_caption = True
+            for word in words:
+                all_text += word['word'] + " "
+                # word : <class 'dict'> {'word': 'bonjour', 'start_time ':
+                # 0.58, 'duration': 7.34}
+                if(
+                    ((word['start_time'] + start_trim) -
+                     start_caption) < SENTENCE_MAX_LENGTH
+                ):
+                    text_caption.append(word['word'])
+                else:
+                    # on créé le caption
+                    text_caption.append(word['word'])
+                    if is_first_caption:
+                        # A revoir, fusion de la nouvelle ligne avec
+                        # l'ancienne...
+                        is_first_caption = False
+                        text_caption = get_text_caption(
+                            text_caption, last_word_added)
 
-        sentences[:] = []  # empty list
-        sentence[:] = []  # empty list
-
-        if len(metadata.items) > 0:
-            refItem = metadata.items[0]
-            index = get_index(metadata, last_item,
-                              start_trim) if last_item else 0
-            # nb of character in AUDIO_SPLIT_TIME
-            msg += "METADATA ITEMS : %d " % len(metadata.items)
-            sentences = get_sentences(metadata, refItem, index)
-            last_item = (
-                sentences[-1][-1].character, sentences[-1][-1].start_time
-            ) if len(sentences) > 0 else ()
-            for sent in sentences:
-                if len(sent) > 0:
-                    start_time = sent[0].start_time + start_trim
-                    end_time = sent[-1].start_time + start_trim
-                    str_sentence = ''.join(item.character for item in sent)
-                    # print(start_time, end_time, str_sentence)
+                    stop_caption = start_trim + \
+                        word['start_time'] + word['duration']
                     caption = Caption(
                         '%s.%s' % (timedelta(
-                            seconds=int(str(start_time).split('.')[0])),
-                            str('%.3f' % start_time).split('.')[1]),
+                            seconds=int(str(start_caption).split('.')[0])),
+                            str('%.3f' % start_caption).split('.')[1]),
                         '%s.%s' % (timedelta(
-                            seconds=int(str(end_time).split('.')[0])),
-                            str('%.3f' % end_time).split('.')[1]),
-                        ['%s' % str_sentence]
+                            seconds=int(str(stop_caption).split('.')[0])),
+                            str('%.3f' % stop_caption).split('.')[1]),
+                        " ".join(text_caption)
                     )
                     webvtt.captions.append(caption)
-    # print(webvtt)
-    msg += saveVTT(video_to_encode, webvtt)
+                    # on remet tout à zero pour la prochaine phrase
+                    start_caption = start_trim + word['start_time']
+                    text_caption = []
+                    last_word_added = word['word']
+            if start_trim + AUDIO_SPLIT_TIME > duration:
+                # on ajoute ici la dernière phrase de la vidéo
+                stop_caption = start_trim + \
+                    words[-1]['start_time'] + words[-1]['duration']
+                caption = Caption(
+                    '%s.%s' % (timedelta(
+                        seconds=int(str(start_caption).split('.')[0])),
+                        str('%.3f' % start_caption).split('.')[1]),
+                    '%s.%s' % (timedelta(
+                        seconds=int(str(stop_caption).split('.')[0])),
+                        str('%.3f' % stop_caption).split('.')[1]),
+                    " ".join(text_caption)
+                )
+                webvtt.captions.append(caption)
     inference_end = timer() - inference_start
     msg += '\nInference took %0.3fs.' % inference_end
     # print(msg)
-    change_encoding_step(video_to_encode.id, 0, "done")
-    # envois mail fin transcription
-    if EMAIL_ON_TRANSCRIPTING_COMPLETION:
-        send_email_transcript(video_to_encode)
-    return msg
+    return msg, webvtt
 
 
-def get_sentences(metadata, refItem, index):
-    sentence = []
-    sentences = []
-    for item in metadata.items[index:]:
-        if((item.start_time - refItem.start_time) < SENTENCE_MAX_LENGTH):
-            sentence.append(item)
-        else:
-            if item.character == ' ':
-                sentences.append(sentence)
-                sentence = []
-                refItem = item
-            else:
-                sentence.append(item)
-    if sentence != []:
-        sentences.append(sentence)
-    return sentences
-
-
-def get_index(metadata, last_item, start_trim):
-    """
+def get_text_caption(text_caption, last_word_added):
     try:
-        index = metadata.items.index(last_item) if last_item else 0
-        refItem = metadata.items[index]
+        first_index = text_caption.index(last_word_added)
+        return text_caption[first_index + 1:]
     except ValueError:
-        print("Last item not found")
-    """
-    index = 0
-    for item in metadata.items:
-        if (
-                (item.character == last_item[0]) and
-                (item.start_time > (last_item[1] - start_trim))
-        ):
-            return index + 1  # take the next one
-        else:
-            index += 1
-    return 0
+        return text_caption
+
+
+def words_from_candidate_transcript(metadata):
+    word = ""
+    word_list = []
+    word_start_time = 0
+    # Loop through each character
+    for i, token in enumerate(metadata.tokens):
+        # Append character to word if it's not a space
+        if token.text != " ":
+            if len(word) == 0:
+                # Log the start time of the new word
+                word_start_time = token.start_time
+
+            word = word + token.text
+        # Word boundary is either a space or the last character in the array
+        if token.text == " " or i == len(metadata.tokens) - 1:
+            word_duration = token.start_time - word_start_time
+
+            if word_duration < 0:
+                word_duration = 0
+
+            each_word = dict()
+            each_word["word"] = word
+            each_word["start_time"] = round(word_start_time, 4)
+            each_word["duration"] = round(word_duration, 4)
+
+            word_list.append(each_word)
+            # Reset
+            word = ""
+            word_start_time = 0
+
+    return word_list
 
 
 def saveVTT(video, webvtt):
