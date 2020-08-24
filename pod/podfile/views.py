@@ -654,9 +654,7 @@ def user_folders(request):
         folders = paginator.page(1)
     except EmptyPage:
         folders = paginator.page(paginator.num_pages)
-    
     final_folders = list(user_home_folder) + list(folders)
     data = json.dumps(final_folders)
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
-
