@@ -278,9 +278,27 @@ function Trim(s) {
     return s.replace(/^\s+|\s+$/g, "");
 }
 
+function hmsToSecondsOnly(str) {
+    var p = str.split(':'),
+        s = 0, m = 1;
+
+    while (p.length > 0) {
+        s += m * parseInt(p.pop(), 10);
+        m *= 60;
+    }
+
+    return s;
+}
+
 //  parses webvtt time string format into floating point seconds
 function ParseTime(sTime) {
+
+    let seconds = hmsToSecondsOnly(sTime);
+    //add end of time
+    return seconds+"."+sTime.split(".")[1]
+
     //  parse time formatted as hours:mm:ss.sss where hours are optional
+    /*
     if (sTime) {
         var m = sTime.match( /^\s*(\d+)?:?(\d+):([\d\.]+)\s*$/ );
         if (m != null) {
@@ -292,7 +310,7 @@ function ParseTime(sTime) {
                 return seconds;
             }
         }
-    }
+    }*/
     return 0;
 }
 
@@ -393,7 +411,7 @@ function ProcessProxyVttResponse(obj) {
         file_loaded_name = obj.file_name;
         file_loaded_id = obj.id_file;
         current_folder = obj.id_folder;
-        if (obj.response.indexOf("WEBVTT") == 0) {
+        if (obj.response.indexOf("WEBVTT") == 0 || obj.response.indexOf("WEBVTT") == 1) {
             ParseAndLoadWebVTT(obj.response);
         } else {
             alert("Unrecognized caption file format.");
@@ -408,10 +426,10 @@ function ProcessProxyVttResponse(obj) {
 function ParseAndLoadWebVTT(vtt) {
 
     var rxSignatureLine = /^WEBVTT(?:\s.*)?$/;
-
     var vttLines = vtt.split(/\r\n|\r|\n/); // create an array of lines from our file
 
-    if (!rxSignatureLine.test(vttLines[0])) { // must start with a signature line
+    //if (!rxSignatureLine.test(vttLines[0])) { // must start with a signature line
+    if (vttLines[0].indexOf("WEBVTT") == -1) {
         alert("Not a valid time track file.");
         return;
     }
