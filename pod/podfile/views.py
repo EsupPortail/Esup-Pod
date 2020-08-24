@@ -23,6 +23,7 @@ from pod.main.views import remove_accents
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
 import json
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 IMAGE_ALLOWED_EXTENSIONS = getattr(
@@ -631,3 +632,31 @@ def add_shared_user(request):
             return HttpResponseBadRequest()
     else:
         return HttpResponseBadRequest()
+
+
+@login_required(redirect_field_name='referrer')
+def user_folders(request):
+    VALUES_LIST = ['name']
+    user_home_folder = UserFolder.objects.filter(
+        name="home", owner=request.user).values(*list(VALUES_LIST))
+
+    user_folder = UserFolder.objects.filter(
+        owner=request.user
+    ).exclude(owner=request.user, name="home").values(*list(VALUES_LIST))
+    folders_list = user_folder
+
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(folders_list, 10)
+    try:
+        folders = paginator.page(page)
+    except PageNotAnInteger:
+        folders = paginator.page(1)
+    except EmptyPage:
+        folders = paginator.page(paginator.num_pages)
+    
+    final_folders = list(user_home_folder) + list(folders)
+    data = json.dumps(final_folders)
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
