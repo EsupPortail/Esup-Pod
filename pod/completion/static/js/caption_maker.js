@@ -6,6 +6,7 @@ $(document).on('click', 'a.file-name', function() {
 
 // Charge caption/subtitle file if exists
 $(document).ready(function(){
+    
     let url_search = new URLSearchParams(window.location.search);
     if(url_search.has('src') && !isNaN(url_search.get('src')))
     {
@@ -27,7 +28,7 @@ $(document).on('submit', '#form_save_captions', function(e) {
     else {
         $(this).find('input[name="file_id"]').val("");
         let href = window.location.href.split('/');
-        send_form_save_captions(href[href.length - 2] + '_captions_' + Date.now());
+	send_form_save_captions(href[href.length - 2] + '_captions_' + Date.now());
     }
 })
 
@@ -37,7 +38,7 @@ $(document).on('click', '#modal-btn-new, #modal-btn-override', function() {
         $('#form_save_captions').find('input[name="file_id"]').val(file_loaded_id);
         //alert($('#fileinput_id_src').find('strong').find('a').html());
         //alert($('#fileinput_id_src').text().trim());
-        send_form_save_captions($('#fileinput_id_src').text().trim());
+        send_form_save_captions(file_loaded_name);
     }
     else if (this.id == 'modal-btn-new') {
         $('#form_save_captions').find('input[name="file_id"]').val("");
@@ -389,6 +390,7 @@ function ProcessProxyVttResponse(obj) {
         //  delete any captions we've got
         captionsArray.length = 0;
         file_loaded = true;
+        file_loaded_name = obj.file_name;
         file_loaded_id = obj.id_file;
         current_folder = obj.id_folder;
         if (obj.response.indexOf("WEBVTT") == 0) {

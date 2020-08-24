@@ -20,6 +20,7 @@ from .forms import UserFolderForm
 from .forms import CustomFileModelForm
 from .forms import CustomImageModelForm
 
+import re
 import json
 
 IMAGE_ALLOWED_EXTENSIONS = getattr(
@@ -511,11 +512,14 @@ def get_file(request, type):
         raise PermissionDenied
 
     request.session['current_session_folder'] = reqfile.folder.name
+    file_p = reqfile.file.__str__()
+    file_name = re.search("[\w\d_\-]+(\.[a-z]{1,4})$", file_p).group()
     try:
         with open(reqfile.file.path, 'r') as f:
             fc = f.read()
             some_data_to_dump = {
                 'status': "success",
+                'file_name': file_name,
                 'id_file': reqfile.id,
                 'id_folder': reqfile.folder.id,
                 'response': fc
