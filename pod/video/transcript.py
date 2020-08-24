@@ -54,14 +54,15 @@ EMAIL_ON_TRANSCRIPTING_COMPLETION = getattr(
 log = logging.getLogger(__name__)
 
 """
-TO TEST -->
+TO TEST IN THE SHELL -->
 from pod.video.transcript import *
 ds_model = get_model("fr")
-main_transcript(
+msg, webvtt = main_transcript(
     "/usr/local/django_projects/test/audio_192k_pod.mp3",
     177,
     ds_model
 )
+print(webvtt)
 """
 
 
