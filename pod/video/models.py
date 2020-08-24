@@ -577,7 +577,9 @@ class Video(models.Model):
         default=default_date_delete)
 
     disable_comment = models.BooleanField(
-            _("Disable comment"), default=False)
+            _("Disable comment"),
+            help_text=_("Allows you to turn off all comments on this video."),
+            default=False)
 
     class Meta:
         ordering = ['-date_added', '-id']

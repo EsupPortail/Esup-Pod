@@ -1676,12 +1676,12 @@ def add_comment(request, video_slug, comment_id=None):
     return HttpResponseNotFound('<h1>Method Not Allowed</h1>', status=405)
 
 
-def get_comment(request, video_slug):
+def get_comments(request, video_slug):
     v = get_object_or_404(Video, slug=video_slug)
-    comment = Comment.objects.filter(video=v).order_by('added').annotate(
+    comments = Comment.objects.filter(video=v).order_by('added').annotate(
             nbr_vote=Count('vote'))
     # extract parent comments
-    p_c = comment.filter(parent=None).values(
+    p_c = comments.filter(parent=None).values(
             'id',
             'author__first_name',
             'author__last_name',
@@ -1692,7 +1692,7 @@ def get_comment(request, video_slug):
     # organize comments => parent with children
     comment_org = []
     for c in p_c:
-        filter_data = comment.filter(
+        filter_data = comments.filter(
                 parent__id=c['id']).values(
                         'id',
                         'author__first_name',

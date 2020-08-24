@@ -4,12 +4,12 @@ from django.urls import reverse
 from pod.authentication.models import User
 from pod.video.models import Comment, Video, Type
 from django.contrib.sites.models import Site
-from pod.video.views import get_comment, add_comment, delete_comment
+from pod.video.views import get_comments, add_comment, delete_comment
 
 import logging
 
 
-class TestStatsView(TestCase):
+class TestComment(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
@@ -73,11 +73,11 @@ class TestStatsView(TestCase):
 
     def test_get_all_comment(self):
         url = reverse(
-                "get_comment",
+                "get_comments",
                 kwargs={"video_slug": self.video.slug})
         response = self.client.get(url)
-        # Check that the view function is get_comment 
-        self.assertEqual(response.resolver_match.func, get_comment)
+        # Check that the view function is get_comments 
+        self.assertEqual(response.resolver_match.func, get_comments)
         # Check response is 200 OK and contents the expected comment
         self.assertContains(
                 response,
@@ -129,15 +129,17 @@ class TestStatsView(TestCase):
         self.assertEqual(comment.parent, p_comment)
 
         # test bad request
-        response = self.client.post(url, {
-            "id": self.owner_user.id})
+        response = self.client.post(
+                url,
+                {"id": self.owner_user.id},
+                HTTP_ACCEPT_LANGUAGE="en")
         self.assertContains(
                 response,
                 b"<h1>Bad Request</h1>",
                 status_code=400)
 
         # test method not allowed
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_ACCEPT_LANGUAGE="en")
         self.assertContains(
                 response,
                 b"<h1>Method Not Allowed</h1>",
@@ -150,7 +152,10 @@ class TestStatsView(TestCase):
                 kwargs={
                     "video_slug": self.video.slug,
                     "comment_id": self.owner_responds_admin_comment.id})
-        response = self.client.post(url, {"id": self.simple_user.id})
+        response = self.client.post(
+                url,
+                {"id": self.simple_user.id},
+                HTTP_ACCEPT_LANGUAGE="en")
         data = {
                 "deleted": False,
                 "message": "You do not have right to delete this comment"}
@@ -194,7 +199,7 @@ class TestStatsView(TestCase):
     """
     def test_get_votes(self):
         url = reverse(
-                "get_vote",
+                "get_votes",
                 kwargs={"video_slug": self.video.slug})
         response = self.client.get(url)
         data = {"votes": []}
@@ -220,7 +225,7 @@ class TestStatsView(TestCase):
         self.assertEqual(response.content, expected_response)
 
         # test method not allowed
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_ACCEPT_LANGUAGE="en")
         self.assertContains(
                 response,
                 b"<h1>Method Not Allowed</h1>",
