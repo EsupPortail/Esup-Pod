@@ -76,7 +76,7 @@ class TestComment(TestCase):
                 "get_comments",
                 kwargs={"video_slug": self.video.slug})
         response = self.client.get(url)
-        # Check that the view function is get_comments 
+        # Check that the view function is get_comments
         self.assertEqual(response.resolver_match.func, get_comments)
         # Check response is 200 OK and contents the expected comment
         self.assertContains(

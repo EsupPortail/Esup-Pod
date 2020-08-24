@@ -1,6 +1,6 @@
 let base_url = window.location.href.replace("video", "comment");
 let base_vote_url = base_url.replace('comment', 'comment/vote');
-let base_delete_url = base_url.replace('comment', 'comment/delete');
+let base_delete_url = base_url.replace('comment', 'comment/del');
 let all_comment = null;
 let lang_btn = document.querySelector(".btn-lang.btn-lang-active");
 let  VOTED_USERS = [];

@@ -528,9 +528,9 @@ def get_video_access(request, video, slug_private):
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     template_video = 'videos/video.html'
-    params = { 'active_video_comment': ACTIVE_VIDEO_COMMENT }
+    params = {'active_video_comment': ACTIVE_VIDEO_COMMENT}
     if request.GET.get('is_iframe'):
-        params = {} 
+        params = {}
         template_video = 'videos/video-iframe.html'
     try:
         id = int(slug[:slug.find("-")])
