@@ -39,7 +39,7 @@ if(typeof loaded == 'undefined') {
 $(document).on("click", "a.folder", function(e) {
     e.preventDefault();
     var id = $(this).data("id");
-    //alert('id '+id);
+    console.log("Target is " + $(this).data('target'))
     send_form_data($(this).data('target'), {}, "show_folder_files", "get");
 });
 
@@ -319,6 +319,55 @@ $(document).on('change', "#ufile", function(e) {
   function append_folder_html_in_modal(data){
     $("#modal-folder_"+id_input).html(data);
   }
+
+
+  function getCurrentSessionFolder(){
+    let folder = "home"
+    $.ajax(
+      {
+          type: "GET",
+          url: "/ajax_calls/current_session_folder/",
+          cache: false,
+          async: false,
+          success: function (response) {
+             folder = response.folder
+          }
+      }
+  );
+  return folder
+  }
+
+  $(document).ready(function(e) {
+    let type = $("#list_folders_sub").data("type")
+    let currentFolder = getCurrentSessionFolder();
+
+    $.ajax(
+      {
+          type: "GET",
+          url: "/ajax_calls/user_folders",
+          cache: false,
+          success: function (response) {
+  
+              response.forEach(elt => {
+      
+                let construct = ""
+                construct+= ('<a href="#" class="folder ' +( (currentFolder == elt.name)? 'font-weight-bold' : '') + ' " id="folder_' + elt.id + '" data-foldname="' + elt.name + '" data-id="' + elt.id + '" data-target="');
+                let isType = (type != "None" && type != undefined)
+                construct+= ('/podfile/get_folder_files/' + elt.id + (isType ? ('?type=' +type) : "") + '"')
+                construct+= ('><img class="directory-image" src="' + ((currentFolder == elt.name) ? '/static/podfile/images/opened_folder.png' : '/static/podfile/images/folder.png' )+'"/>'+ elt.name+'('+elt.id+')'+'</a>')
+
+          
+                
+                $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + construct + '</div>')
+
+      
+              })
+          }
+      }
+  );
+  });
+
+
 
 
 

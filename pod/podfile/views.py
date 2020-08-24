@@ -66,9 +66,9 @@ def home(request, type=None):
     user_home_folder = get_object_or_404(
         UserFolder, name="home", owner=request.user)
 
-    user_folder = UserFolder.objects.filter(
-        owner=request.user
-    ).exclude(owner=request.user, name="home")
+    #user_folder = UserFolder.objects.filter(
+     #   owner=request.user
+    #).exclude(owner=request.user, name="home")
 
     share_folder = UserFolder.objects.filter(
         groups__in=request.user.groups.all()
@@ -87,7 +87,7 @@ def home(request, type=None):
                   template,
                   {
                       'user_home_folder': user_home_folder,
-                      'user_folder': user_folder,
+                      'user_folder': [],
                       'share_folder': share_folder,
                       'share_folder_user': share_folder_user,
                       'current_session_folder': current_session_folder,
@@ -118,6 +118,9 @@ def get_current_session_folder(request):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def get_folder_files(request, id, type=None):
+  
+    if type is None:
+        type = request.GET.get('type', None) 
     folder = get_object_or_404(UserFolder, id=id)
     if (request.user != folder.owner
             and not request.user.groups.filter(
@@ -636,13 +639,17 @@ def add_shared_user(request):
 
 @login_required(redirect_field_name='referrer')
 def user_folders(request):
-    VALUES_LIST = ['name']
-    user_home_folder = UserFolder.objects.filter(
-        name="home", owner=request.user).values(*list(VALUES_LIST))
+    VALUES_LIST = ['id','name']
+    #user_home_folder = UserFolder.objects.filter(
+    #   name="home", owner=request.user).values(*list(VALUES_LIST))
 
     user_folder = UserFolder.objects.filter(
-        owner=request.user
+        owner=request.user,
     ).exclude(owner=request.user, name="home").values(*list(VALUES_LIST))
+
+    search = request.GET.get('search', "")
+    if search != "":
+        user_folder = user_folder.filter(name__icontains=search)
     folders_list = user_folder
 
     page = request.GET.get('page', 1)
@@ -654,7 +661,15 @@ def user_folders(request):
         folders = paginator.page(1)
     except EmptyPage:
         folders = paginator.page(paginator.num_pages)
-    final_folders = list(user_home_folder) + list(folders)
+    final_folders = list(folders) #list(user_home_folder) + list(folders)
     data = json.dumps(final_folders)
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
+
+
+@login_required(redirect_field_name='referrer')
+def get_current_session_folder_ajax(request):
+    fold = request.session.get(
+        'current_session_folder', "home")
+    mimetype = 'application/json'
+    return HttpResponse(json.dumps({"folder": fold}), mimetype)

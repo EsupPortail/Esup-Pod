@@ -32,7 +32,7 @@ from pod.video.views import video_count, video_version
 from pod.video.views import video_oembed
 from pod.video.views import stats_view
 from pod.podfile.views import folder_shared_with, user_share_autocomplete, \
-    user_folders
+    user_folders, get_current_session_folder_ajax
 from pod.podfile.views import remove_shared_user, add_shared_user
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 from pod.main.views import contact_us, download_file, user_autocomplete
@@ -106,6 +106,8 @@ urlpatterns = [
     url(r'^ajax_calls/remove_shared_user/', remove_shared_user),
     url(r'^ajax_calls/add_shared_user/', add_shared_user),
     url(r'^ajax_calls/user_folders/', user_folders),
+    url(r'^ajax_calls/current_session_folder/', 
+        get_current_session_folder_ajax),
     # my channels
     url(r'^my_channels/$', my_channels, name='my_channels'),
     url(r'^channel_edit/(?P<slug>[\-\d\w]+)/$',
