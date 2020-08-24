@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-17 08:16+0000\n"
+"POT-Creation-Date: 2020-08-24 14:13+0000\n"
 "PO-Revision-Date: 2020-04-30 12:12+0200\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -406,6 +406,12 @@ msgstr "Changer de fichier"
 #: pod/podfile/static/podfile/js/filewidget.js:30
 msgid "Open file in a new tab"
 msgstr "Ouvrir le fichier dans un nouvel onglet"
+
+#: pod/podfile/static/podfile/js/filewidget.js:100
+#: pod/podfile/static/podfile/js/filewidget.js:107
+#| msgid "Change file"
+msgid "Change"
+msgstr "Modifier"
 
 #: pod/podfile/static/podfile/js/filewidget.js:115
 msgid "Enter new name of folder"

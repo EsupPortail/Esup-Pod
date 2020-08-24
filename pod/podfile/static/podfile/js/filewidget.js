@@ -97,14 +97,14 @@ $(document).on('change', "#ufile", function(e) {
     let filetype = button.data('filetype');
     switch (filetype) {
       case 'CustomImageModel':
-        $('#folderModalCenterTitle').html("Change "+button.data('filename'));
+        $('#folderModalCenterTitle').html(gettext("Change")+ " "+button.data('filename'));
         modal.find('.modal-body input#id_folder').val(folder_id);
         modal.find('.modal-body input#id_image').val(button.data('fileid'));
         modal.find('.modal-body input#file_type').val(button.data('filetype'));
         $("#formchangeimage").show();
         break;
       case 'CustomFileModel':
-        $('#folderModalCenterTitle').html("Change "+button.data('filename'));
+        $('#folderModalCenterTitle').html(gettext("Change")+ " "+button.data('filename'));
         modal.find('.modal-body input#id_folder').val(folder_id);
         modal.find('.modal-body input#file_id').val(button.data('fileid'));
         modal.find('.modal-body input#file_type').val(button.data('filetype'));
@@ -354,7 +354,7 @@ $(document).on('change', "#ufile", function(e) {
                 construct+= ('<a href="#" class="folder ' +( (currentFolder == elt.name)? 'font-weight-bold' : '') + ' " id="folder_' + elt.id + '" data-foldname="' + elt.name + '" data-id="' + elt.id + '" data-target="');
                 let isType = (type != "None" && type != undefined)
                 construct+= ('/podfile/get_folder_files/' + elt.id + (isType ? ('?type=' +type) : "") + '"')
-                construct+= ('><img class="directory-image" src="' + ((currentFolder == elt.name) ? '/static/podfile/images/opened_folder.png' : '/static/podfile/images/folder.png' )+'"/>'+ elt.name+'('+elt.id+')'+'</a>')
+                construct+= ('><img class="directory-image" src="' + ((currentFolder == elt.name) ? '/static/podfile/images/opened_folder.png' : '/static/podfile/images/folder.png' )+'"/>  '+elt.name+'('+elt.id+')'+'</a>')
 
           
                 

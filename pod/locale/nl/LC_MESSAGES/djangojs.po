@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-17 08:16+0000\n"
+"POT-Creation-Date: 2020-08-24 14:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -397,6 +397,11 @@ msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js:30
 msgid "Open file in a new tab"
+msgstr ""
+
+#: pod/podfile/static/podfile/js/filewidget.js:100
+#: pod/podfile/static/podfile/js/filewidget.js:107
+msgid "Change"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js:115

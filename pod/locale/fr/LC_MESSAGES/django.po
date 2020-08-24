@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-02 12:18+0000\n"
+"POT-Creation-Date: 2020-08-24 14:13+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -92,7 +92,7 @@ msgid "registered-reader"
 msgstr "lecteur enregistré"
 
 #: pod/authentication/models.py:68 pod/recorder/models.py:122
-#: pod/video/models.py:1395 pod/video/views.py:1287
+#: pod/video/models.py:1395 pod/video/views.py:1272
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -166,8 +166,8 @@ msgstr "Changer votre image de profil"
 #: pod/video/templates/videos/video_note_comments_display.html:148
 #: pod/video/templates/videos/video_note_display.html:27
 #: pod/video/templates/videos/video_notes.html:80
-#: pod/video/templates/videos/video_notes.html:116 pod/video/views.py:267
-#: pod/video/views.py:723 pod/video/views.py:777 pod/video/views.py:1207
+#: pod/video/templates/videos/video_notes.html:116 pod/video/views.py:252
+#: pod/video/views.py:708 pod/video/views.py:762 pod/video/views.py:1192
 #: pod/video_search/templates/search/search.html:42
 msgid "One or more errors have been found in the form."
 msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire."
@@ -678,7 +678,7 @@ msgstr "Fin"
 msgid "End time of the overlay, in seconds."
 msgstr "Fin de la superposition, en secondes."
 
-#: pod/completion/models.py:279 pod/video/views.py:1316
+#: pod/completion/models.py:279 pod/video/views.py:1301
 msgid "Content"
 msgstr "Contenu"
 
@@ -1069,8 +1069,8 @@ msgid "The file has not been saved."
 msgstr "Le fichier n’a pas été enregistré."
 
 #: pod/completion/views.py:235 pod/completion/views.py:411
-#: pod/completion/views.py:812 pod/podfile/views.py:447
-#: pod/podfile/views.py:497 pod/video/views.py:357 pod/video/views.py:1365
+#: pod/completion/views.py:812 pod/podfile/views.py:451
+#: pod/podfile/views.py:501 pod/video/views.py:342 pod/video/views.py:1350
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
 
@@ -1137,7 +1137,7 @@ msgstr "Temps de fin de l'affichage de l'enrichissement en secondes."
 #: pod/enrichment/models.py:137
 #: pod/enrichment/templates/enrichment/list_enrichment.html:11
 #: pod/video/forms.py:99 pod/video/models.py:414 pod/video/models.py:469
-#: pod/video/templates/videos/video-info.html:83 pod/video/views.py:1313
+#: pod/video/templates/videos/video-info.html:83 pod/video/views.py:1298
 #: pod/video_search/templates/search/search.html:77
 msgid "Type"
 msgstr "Type"
@@ -1773,7 +1773,7 @@ msgstr ""
 msgid "Sorry, no buildings found"
 msgstr "Désolé, aucun bâtiment trouvé"
 
-#: pod/live/views.py:61 pod/video/views.py:636
+#: pod/live/views.py:61 pod/video/views.py:621
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
@@ -3012,7 +3012,7 @@ msgstr "Renomer"
 #, fuzzy
 #| msgid "Shared folders"
 msgid "Share this folder"
-msgstr "Dossiers partagés"
+msgstr "Partager ce dossier"
 
 #: pod/podfile/templates/podfile/list_folder_files.html:53
 msgid "Upload Files"
@@ -3030,49 +3030,49 @@ msgstr "Mes dossiers"
 msgid "Add new folder"
 msgstr "Ajouter un nouveau dossier"
 
-#: pod/podfile/templates/podfile/userfolder.html:42
+#: pod/podfile/templates/podfile/userfolder.html:28
 msgid "Shared folders"
 msgstr "Dossiers partagés"
 
-#: pod/podfile/views.py:134 pod/podfile/views.py:531
+#: pod/podfile/views.py:138 pod/podfile/views.py:535
 msgid "You cannot see this folder."
 msgstr "Vous ne pouvez pas voir ce dossier."
 
-#: pod/podfile/views.py:200
+#: pod/podfile/views.py:204
 msgid "You cannot edit this folder."
 msgstr "Vous ne pouvez pas éditer ce dossier."
 
-#: pod/podfile/views.py:215
+#: pod/podfile/views.py:219
 msgid "Two folders cannot have the same name."
 msgstr "Deux dossiers ne peuvent pas avoir le même nom."
 
-#: pod/podfile/views.py:245
+#: pod/podfile/views.py:249
 msgid "You cannot delete home folder."
 msgstr "Vous ne pouvez pas supprimer le fichier racine."
 
-#: pod/podfile/views.py:274
+#: pod/podfile/views.py:278
 msgid "You cannot delete this file."
 msgstr "Vous ne pouvez pas supprimer ce fichier."
 
-#: pod/podfile/views.py:312
+#: pod/podfile/views.py:316
 msgid "You cannot edit file on this folder."
 msgstr "Vous ne pouvez pas éditer de fichier dans ce dossier."
 
-#: pod/podfile/views.py:363
+#: pod/podfile/views.py:367
 #, python-format
 msgid "The file %(fname)s has not allowed format"
 msgstr "Le format du fichier %(fname)s n’est pas autorisé"
 
-#: pod/podfile/views.py:380
+#: pod/podfile/views.py:384
 #, python-format
 msgid "The file %(fname)s is not valid (%(form_error)s)"
 msgstr "Le fichier %(fname)s n’est pas valide (%(form_error)s)"
 
-#: pod/podfile/views.py:405
+#: pod/podfile/views.py:409
 msgid "You cannot access this folder."
 msgstr "Vous ne pouvez pas voir ce dossier."
 
-#: pod/podfile/views.py:417
+#: pod/podfile/views.py:421
 msgid "You cannot edit this file."
 msgstr "Vous ne pouvez pas éditer ce fichier."
 
@@ -3374,7 +3374,7 @@ msgstr "Nouvel enregistrement ajouté."
 msgid "The record has been deleted."
 msgstr "L’enregistrement a été supprimé."
 
-#: pod/urls.py:238 pod/urls.py:239
+#: pod/urls.py:242 pod/urls.py:243
 msgid "Pod Administration"
 msgstr "Administration de Pod"
 
@@ -3412,7 +3412,7 @@ msgstr "Fichier"
 msgid "You can send an audio or video file."
 msgstr "Vous pouvez envoyer un fichier audio ou vidéo."
 
-#: pod/video/forms.py:87 pod/video/views.py:1617
+#: pod/video/forms.py:87 pod/video/views.py:1602
 #, python-format
 msgid "The following formats are supported: %s"
 msgstr "Les formats suivants sont supportés: %s"
@@ -3833,7 +3833,7 @@ msgstr "Master"
 msgid "Doctorate"
 msgstr "Doctorat"
 
-#: pod/video/models.py:66 pod/video/views.py:174
+#: pod/video/models.py:66 pod/video/views.py:159
 msgid "Other"
 msgstr "Autre"
 
@@ -4001,7 +4001,7 @@ msgstr "Est une vidéo"
 msgid "Date to delete"
 msgstr "Date de suppression"
 
-#: pod/video/models.py:583 pod/video/templates/channel/channel.html:109
+#: pod/video/models.py:583
 msgid "videos"
 msgstr "vidéos"
 
@@ -4110,7 +4110,7 @@ msgid "Encoding steps"
 msgstr "Etapes de l'encodage"
 
 #: pod/video/models.py:1311 pod/video/models.py:1318 pod/video/models.py:1334
-#: pod/video/views.py:1298
+#: pod/video/views.py:1283
 msgid "Note"
 msgstr "Note"
 
@@ -4799,120 +4799,120 @@ msgstr ""
 "Le contenu \"%(content_title)s\" a été encodé au format web, et est "
 "maintenant disponible sur %(site_title)s."
 
-#: pod/video/views.py:245 pod/video/views.py:285
+#: pod/video/views.py:230 pod/video/views.py:270
 msgid "You cannot edit this channel."
 msgstr "Vous ne pouvez éditer cette chaîne."
 
-#: pod/video/views.py:262 pod/video/views.py:710
+#: pod/video/views.py:247 pod/video/views.py:695
 msgid "The changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
 
-#: pod/video/views.py:590
+#: pod/video/views.py:575
 msgid "You don't have access to this playlist."
 msgstr "Vous n'avez pas les droits d'accès à cette liste de lecture."
 
-#: pod/video/views.py:651
+#: pod/video/views.py:636
 msgid "You cannot watch this video."
 msgstr "Vous ne pouvez pas voir cette vidéo."
 
-#: pod/video/views.py:683
+#: pod/video/views.py:668
 msgid "You cannot edit this video."
 msgstr "Vous ne pouvez pas éditer cette vidéo."
 
-#: pod/video/views.py:760
+#: pod/video/views.py:745
 msgid "You cannot delete this video."
 msgstr "Vous ne pouvez pas supprimer cette vidéo."
 
-#: pod/video/views.py:770
+#: pod/video/views.py:755
 msgid "The video has been deleted."
 msgstr "La vidéo a été supprimée."
 
-#: pod/video/views.py:886
+#: pod/video/views.py:871
 #, python-format
 msgid "You cannot %s this note or comment."
 msgstr "Vous ne pouvez pas %s cette note ou ce commentaire."
 
-#: pod/video/views.py:909
+#: pod/video/views.py:894
 msgid "You cannot see this note or comment."
 msgstr "Vous ne pouvez pas voir cette note ou ce commentaire."
 
-#: pod/video/views.py:1145 pod/video/views.py:1159 pod/video/views.py:1182
+#: pod/video/views.py:1130 pod/video/views.py:1144 pod/video/views.py:1167
 msgid "The comment has been saved."
 msgstr "Le commentaire a été enregistré."
 
-#: pod/video/views.py:1172 pod/video/views.py:1197
+#: pod/video/views.py:1157 pod/video/views.py:1182
 msgid "The note has been saved."
 msgstr "La note a été sauvegardée."
 
-#: pod/video/views.py:1237
+#: pod/video/views.py:1222
 msgid "The note has been deleted."
 msgstr "La note a été supprimée."
 
-#: pod/video/views.py:1245
+#: pod/video/views.py:1230
 msgid "The comment has been deleted."
 msgstr "Le commentaire a été supprimé."
 
-#: pod/video/views.py:1291 pod/video/views.py:1294 pod/video/views.py:1300
+#: pod/video/views.py:1276 pod/video/views.py:1279 pod/video/views.py:1285
 msgid "None"
 msgstr "Aucun"
 
-#: pod/video/views.py:1313
+#: pod/video/views.py:1298
 msgid "ID"
 msgstr "ID"
 
-#: pod/video/views.py:1313
+#: pod/video/views.py:1298
 msgid "Status"
 msgstr "Status"
 
-#: pod/video/views.py:1314
+#: pod/video/views.py:1299
 msgid "Parent note id"
 msgstr "Identifiant de note parent"
 
-#: pod/video/views.py:1314
+#: pod/video/views.py:1299
 msgid "Parent comment id"
 msgstr "ID du commentaire parent"
 
-#: pod/video/views.py:1315
+#: pod/video/views.py:1300
 msgid "Created on"
 msgstr "Créé le"
 
-#: pod/video/views.py:1315
+#: pod/video/views.py:1300
 msgid "Modified on"
 msgstr "Modifié le"
 
-#: pod/video/views.py:1316
+#: pod/video/views.py:1301
 msgid "Note timestamp"
 msgstr "Horodatage de la note"
 
-#: pod/video/views.py:1343 pod/video/views.py:1371
+#: pod/video/views.py:1328 pod/video/views.py:1356
 msgid "You cannot access to this view."
 msgstr "Vous ne pouvez pas accéder à cette vue."
 
-#: pod/video/views.py:1491
+#: pod/video/views.py:1476
 msgid "Pod video view statistics"
 msgstr "Statistiques de visualisation des vidéos Pod"
 
-#: pod/video/views.py:1497
+#: pod/video/views.py:1482
 #, python-format
 msgid "Video viewing statistics for %s"
 msgstr "Statistiques de visualisation de la vidéo %s"
 
-#: pod/video/views.py:1500
+#: pod/video/views.py:1485
 #, python-format
 msgid "Video viewing statistics for the channel %s"
 msgstr "Statistiques de visualisation des vidéos de la chaîne %s"
 
-#: pod/video/views.py:1503
+#: pod/video/views.py:1488
 #, python-format
 msgid "Video viewing statistics for the theme %s"
 msgstr "Statistiques de visualisation des vidéos du thème %s"
 
-#: pod/video/views.py:1543
+#: pod/video/views.py:1528
 #, python-format
 msgid "You do not have access rights to this video: %s "
 msgstr "Vous n'avez pas les droits d'accès à cette vidéo: %s "
 
-#: pod/video/views.py:1559
+#: pod/video/views.py:1544
 #, python-format
 msgid "The following video does not exist : %s"
 msgstr "La video suivante n'existe pas : %s"
