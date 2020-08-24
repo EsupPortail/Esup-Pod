@@ -1612,13 +1612,14 @@ def video_add(request):
         'TRANSCRIPT': TRANSCRIPT})
 
 
+@login_required(redirect_field_name='referrer')
 @csrf_protect
 def vote(request, video_slug, comment_id=None):
+    c_video = get_object_or_404(Video, slug=video_slug)
     if request.method == "POST":
-        c_video = get_object_or_404(Video, slug=video_slug)
         c = get_object_or_404(
                 Comment, video=c_video, id=comment_id)if comment_id else None
-        c_user = get_object_or_404(User, id=request.POST.get('id', None))
+        c_user = request.user
         if not c_user:
             return HttpResponse('<h1>Bad Request</h1>', status=400)
         response = {}
@@ -1640,16 +1641,18 @@ def vote(request, video_slug, comment_id=None):
     if comment_id:
         return HttpResponseNotFound('<h1>Method Not Allowed</h1>', status=405)
     else:
-        votes = Vote.objects.all().values('user__id', 'comment__id')
+        votes = Vote.objects.filter(
+                comment__video=c_video).values('user__id', 'comment__id')
         data = {'votes': list(votes)}
         return HttpResponse(json.dumps(data), content_type='application/json')
 
 
+@login_required(redirect_field_name='referrer')
 @csrf_protect
 def add_comment(request, video_slug, comment_id=None):
     if request.method == "POST":
         c_video = get_object_or_404(Video, slug=video_slug)
-        c_user = get_object_or_404(User, id=request.POST.get('id', None))
+        c_user = request.user
         c_parent = get_object_or_404(
                 Comment, id=comment_id)if comment_id else None
         c_content = request.POST.get('content', '')
@@ -1708,9 +1711,10 @@ def get_comments(request, video_slug):
             content_type="application/json")
 
 
+@login_required(redirect_field_name='referrer')
 def delete_comment(request, video_slug, comment_id):
     v = get_object_or_404(Video, slug=video_slug)
-    c_user = get_object_or_404(User, id=request.POST.get('id', None))
+    c_user = request.user
     c = get_object_or_404(Comment, video=v, id=comment_id)
     response = {
         'deleted': True,
