@@ -212,7 +212,9 @@ body {
 </div>
   {% include 'videos/video-info.html' %}
 </div>
+{% if active_video_comment %}
 {% include 'videos/video-comment.html' with is_auth=request.user.is_authenticated disable=video.disable_comment %}
+{% endif %}
 {%endif%}
 {% endblock video-element %}
 </div>
@@ -239,7 +241,7 @@ body {
 {% if not form %}
 {% include 'videos/video-script.html'%}
 {% endif %}
-{% if not video.disable_comment %}
+{% if active_video_comment and not video.disable_comment %}
 {% if request.user == video.owner %}
 <script>
     var is_video_owner = true;
