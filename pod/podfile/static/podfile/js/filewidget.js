@@ -71,6 +71,7 @@ $(document).on('change', "#ufile", function(e) {
             $(".loadingformfiles").hide();
             $("#listfiles").show();
             $(this).show();
+            console.log("passing here")
             show_folder_files(data);
         }).fail(function($xhr){
             $(this).show();
@@ -248,14 +249,21 @@ $(document).on('change', "#ufile", function(e) {
 
   $(document).on('input',"#folder-search",function(e) {
     var text = $(this).val().toLowerCase()
-    $(".list_folders").find("div").each(function( index ) {
-      if ($(this).find("a").data("foldname").toLowerCase().includes(text)){
-        $(this).show()
+    $("#list_folders_sub").html("")
+    let type = $("#list_folders_sub").data("type")
+    let currentFolder = getCurrentSessionFolder();
+    $.ajax(
+      {
+          type: "GET",
+          url: "/ajax_calls/user_folders?search=" + text,
+          cache: false,
+          success: function (response) {
+              response.forEach(elt => {
+                $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type) + '</div>')
+              })
+          }
       }
-      else{
-        $(this).hide()
-      }
-    });
+  );
   });
 
 
@@ -276,6 +284,8 @@ $(document).on('change', "#ufile", function(e) {
 
         // call
         var folder_id = data.folder_id;
+        console.log("reload folder " + data.folder_id)
+        console.log($("#folder_"+folder_id))
         send_form_data($("#folder_"+folder_id).data('target'), {}, "show_folder_files", "get");
 
         //dismiss modal
@@ -284,12 +294,14 @@ $(document).on('change', "#ufile", function(e) {
         $('#folderModalCenter').find('.modal-body input#formfolderid').val("");
 
     } else {
+      alert("ERROR2")
         showalert(gettext('You are no longer authenticated. Please log in again.'), "alert-danger");
     }
   }
 
 
   function show_folder_files(data){
+    console.log("show_folder_file " + data.list_element)
     if(data.list_element) {
         $('#files').html(data.list_element);
         $(".list_folders a").removeClass('font-weight-bold');
