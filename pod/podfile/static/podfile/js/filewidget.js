@@ -294,8 +294,10 @@ $(document).on('change', "#ufile", function(e) {
         $('#files').html(data.list_element);
         $(".list_folders a").removeClass('font-weight-bold');
         $("img.directory-image").attr("src", static_url + "podfile/images/folder.png");
+        $("img.home-image").attr("src", static_url + "podfile/images/home_folder.png");
         $('#folder_'+data.folder_id).addClass('font-weight-bold');
         $('#folder_'+data.folder_id+" img").attr('src', static_url + "podfile/images/opened_folder.png");
+
 
         //dismiss modal
         $('#folderModalCenter').modal('hide');
@@ -337,6 +339,14 @@ $(document).on('change', "#ufile", function(e) {
   return folder
   }
 
+  function createFolder(foldid, foldname, isCurrent,type){
+    let construct = ""
+    construct+= ('<a href="#" class="folder ' +( isCurrent ? 'font-weight-bold' : '') + ' " id="folder_' + foldid + '" data-foldname="' + foldname + '" data-id="' + foldid+ '" data-target="');
+    let isType = (type != "None" && type != undefined)
+    construct+= ('/podfile/get_folder_files/' + foldid + (isType ? ('?type=' +type) : "") + '"')
+    construct+= ('><img class="directory-image" src="' + (isCurrent ? (static_url +'podfile/images/opened_folder.png') : (static_url + 'podfile/images/folder.png') )+'"/>  '+foldname+'('+foldid+')'+'</a>')
+    return construct
+  }
   $(document).ready(function(e) {
     let type = $("#list_folders_sub").data("type")
     let currentFolder = getCurrentSessionFolder();
@@ -349,18 +359,7 @@ $(document).on('change', "#ufile", function(e) {
           success: function (response) {
   
               response.forEach(elt => {
-      
-                let construct = ""
-                construct+= ('<a href="#" class="folder ' +( (currentFolder == elt.name)? 'font-weight-bold' : '') + ' " id="folder_' + elt.id + '" data-foldname="' + elt.name + '" data-id="' + elt.id + '" data-target="');
-                let isType = (type != "None" && type != undefined)
-                construct+= ('/podfile/get_folder_files/' + elt.id + (isType ? ('?type=' +type) : "") + '"')
-                construct+= ('><img class="directory-image" src="' + ((currentFolder == elt.name) ? '/static/podfile/images/opened_folder.png' : '/static/podfile/images/folder.png' )+'"/>  '+elt.name+'('+elt.id+')'+'</a>')
-
-          
-                
-                $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + construct + '</div>')
-
-      
+                $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type) + '</div>')
               })
           }
       }
