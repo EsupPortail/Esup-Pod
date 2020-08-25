@@ -123,10 +123,11 @@ def main_threaded_transcript(video_to_encode_id):
             send_email(msg, video_to_encode.id)
         else:
             # NORMALIZE MP3
+            mp3filepath = mp3file.path
             if NORMALIZE:
-                mp3file = normalize_mp3(mp3file.path)
+                mp3filepath = normalize_mp3(mp3filepath)
             msg, webvtt = main_transcript(
-                mp3file, video_to_encode.duration, ds_model)
+                mp3filepath, video_to_encode.duration, ds_model)
             if DEBUG:
                 print(msg)
                 print(webvtt)
