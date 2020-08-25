@@ -640,17 +640,31 @@ def add_shared_user(request):
 @login_required(redirect_field_name='referrer')
 def user_folders(request):
     VALUES_LIST = ['id','name']
+    if request.user.is_superuser:
+        VALUES_LIST.append('owner')
     #user_home_folder = UserFolder.objects.filter(
     #   name="home", owner=request.user).values(*list(VALUES_LIST))
 
-    user_folder = UserFolder.objects.filter(
-        owner=request.user,
-    ).exclude(owner=request.user, name="home").values(*list(VALUES_LIST))
+    user_folder = UserFolder.objects.exclude(owner=request.user, name="home")
+
+    if not request.user.is_superuser:
+        user_folder = user_folder.filter(owner=request.user)
+    
+    user_folder = user_folder.values(*list(VALUES_LIST))
 
     search = request.GET.get('search', "")
     if search != "":
         user_folder = user_folder.filter(name__icontains=search)
     folders_list = user_folder
+
+    if request.user.is_superuser:
+        for fold in folders_list:
+            print("foldddd")
+            if fold["owner"] != request.user.id:
+                print("not same " +  User.objects.get(id=fold['owner']).username)
+                fold['owner'] = User.objects.get(id=fold['owner']).username
+            else:
+                del fold['owner']
 
     page = request.GET.get('page', 1)
 
