@@ -279,6 +279,7 @@ function Trim(s) {
 }
 
 function hmsToSecondsOnly(str) {
+    
     var p = str.split(':'),
         s = 0, m = 1;
 
@@ -286,7 +287,7 @@ function hmsToSecondsOnly(str) {
         s += m * parseInt(p.pop(), 10);
         m *= 60;
     }
-
+    
     return s;
 }
 
