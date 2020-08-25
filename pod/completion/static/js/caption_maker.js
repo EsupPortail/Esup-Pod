@@ -429,7 +429,7 @@ function ParseAndLoadWebVTT(vtt) {
     var vttLines = vtt.split(/\r\n|\r|\n/); // create an array of lines from our file
 
     //if (!rxSignatureLine.test(vttLines[0])) { // must start with a signature line
-    if (vttLines[0].indexOf("WEBVTT") == -1) {
+    if (vtt.trim().split(/\r\n|\r|\n/)[0].toLowerCase() !== "webvtt") {
         alert("Not a valid time track file.");
         return;
     }
