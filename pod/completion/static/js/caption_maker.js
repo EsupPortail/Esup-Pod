@@ -411,6 +411,12 @@ function ProcessProxyVttResponse(obj) {
         file_loaded_name = obj.file_name;
         file_loaded_id = obj.id_file;
         current_folder = obj.id_folder;
+        /*
+        console.log("Index : " + obj.response.indexOf("WEBVTT"));
+        console.log("Includes : " + obj.response.includes("WEBVTT"));
+        console.log("charAt : " + obj.response.charAt(0));
+        console.log("charCodeAt : " + obj.response.charCodeAt(0));
+        */
         if (obj.response.indexOf("WEBVTT") == 0 || obj.response.indexOf("WEBVTT") == 1) {
             ParseAndLoadWebVTT(obj.response);
         } else {
