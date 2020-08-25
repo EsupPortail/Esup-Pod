@@ -249,21 +249,28 @@ $(document).on('change', "#ufile", function(e) {
 
   $(document).on('input',"#folder-search",function(e) {
     var text = $(this).val().toLowerCase()
-    $("#list_folders_sub").html("")
-    let type = $("#list_folders_sub").data("type")
-    let currentFolder = getCurrentSessionFolder();
-    $.ajax(
-      {
-          type: "GET",
-          url: "/ajax_calls/user_folders?search=" + text,
-          cache: false,
-          success: function (response) {
-              response.folders.forEach(elt => {
-                $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type) + '</div>')
-              })
-          }
-      }
-  );
+    if(text.length > 1 || text.length == 0){
+      $("#list_folders_sub").html("")
+      let type = $("#list_folders_sub").data("type")
+      let currentFolder = getCurrentSessionFolder();
+      $.ajax(
+        {
+            type: "GET",
+            url: "/ajax_calls/user_folders?search=" + text,
+            cache: false,
+            success: function (response) {
+              let nextPage = response.next_page;
+                response.folders.forEach(elt => {
+                  $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type) + '</div>')
+                })
+                if(nextPage != -1){
+                  $("#list_folders_sub").append('<a id="more" href="#" data-search="'+text +'" data-next="/ajax_calls/user_folders?page='+ nextPage +'&search='+ text+'"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
+                }
+            }
+        }
+    );
+    }
+
   });
 
 
@@ -393,6 +400,7 @@ $(document).on('change', "#ufile", function(e) {
 
   $(document).on("click","#more", function(e) {
     let next = $(this).data("next")
+    let search = $(this).data("search")
     let currentFolder = getCurrentSessionFolder();
     let type = $("#list_folders_sub").data("type")
     $(this).remove()
@@ -407,7 +415,7 @@ $(document).on('change', "#ufile", function(e) {
                 $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type) + '</div>')
               })
               if(nextPage != -1){
-                $("#list_folders_sub").append('<a id="more" href="#" data-next="/ajax_calls/user_folders?page='+nextPage +'"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
+                $("#list_folders_sub").append('<a id="more" href="#" data-next="/ajax_calls/user_folders?page='+nextPage + ((search!=undefined) ? ('&search='+search) : '' ) + '"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
               }
               
           }
