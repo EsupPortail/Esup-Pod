@@ -46,6 +46,7 @@ AUDIO_SPLIT_TIME = getattr(settings, 'AUDIO_SPLIT_TIME', 300)  # 5min
 # time in sec for phrase length
 SENTENCE_MAX_LENGTH = getattr(settings, 'SENTENCE_MAX_LENGTH', 3)
 
+NORMALIZE = getattr(settings, 'NORMALIZE', False)
 NORMALIZE_TARGET_LEVEL = getattr(settings, 'NORMALIZE_TARGET_LEVEL', -16.0)
 
 EMAIL_ON_TRANSCRIPTING_COMPLETION = getattr(
@@ -111,24 +112,29 @@ def main_threaded_transcript(video_to_encode_id):
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
     else:
+
         ds_model = get_model(lang)
+
         mp3file = video_to_encode.get_video_mp3(
         ).source_file if video_to_encode.get_video_mp3() else None
         if mp3file is None:
             msg += "\n no mp3 file found for video :%s." % video_to_encode.id
             change_encoding_step(video_to_encode.id, -1, msg)
             send_email(msg, video_to_encode.id)
-            return msg
-        msg, webvtt = main_transcript(
-            mp3file, video_to_encode.duration, ds_model)
-        if DEBUG:
-            print(msg)
-            print(webvtt)
-        msg += saveVTT(video_to_encode, webvtt)
-        change_encoding_step(video_to_encode.id, 0, "done")
-        # envois mail fin transcription
-        if EMAIL_ON_TRANSCRIPTING_COMPLETION:
-            send_email_transcript(video_to_encode)
+        else:
+            # NORMALIZE MP3
+            if NORMALIZE:
+                mp3file = normalize_mp3(mp3file.path)
+            msg, webvtt = main_transcript(
+                mp3file, video_to_encode.duration, ds_model)
+            if DEBUG:
+                print(msg)
+                print(webvtt)
+            msg += saveVTT(video_to_encode, webvtt)
+            change_encoding_step(video_to_encode.id, 0, "done")
+            # envois mail fin transcription
+            if EMAIL_ON_TRANSCRIPTING_COMPLETION:
+                send_email_transcript(video_to_encode)
 
     add_encoding_log(video_to_encode.id, msg)
 
@@ -185,9 +191,6 @@ def main_transcript(norm_mp3_file, duration, ds_model):
     msg = ""
     inference_start = timer()
     msg += '\nInference start %0.3fs.' % inference_start
-
-    # NORMALIZE mp3file
-    # norm_mp3_file = normalize_mp3(mp3file.path)
 
     desired_sample_rate = ds_model.sampleRate()
 
