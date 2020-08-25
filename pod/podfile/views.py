@@ -661,8 +661,11 @@ def user_folders(request):
         folders = paginator.page(1)
     except EmptyPage:
         folders = paginator.page(paginator.num_pages)
-    final_folders = list(folders) #list(user_home_folder) + list(folders)
-    data = json.dumps(final_folders)
+    final_folders = list(folders)
+    json_resp = {"folders": final_folders, 
+    "current_page": int(page),
+    "next_page": (-1 if ((int(page)+1) > paginator.num_pages) else(int(page)+1)), "total_pages": paginator.num_pages}
+    data = json.dumps(json_resp)
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
 

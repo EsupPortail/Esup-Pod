@@ -258,7 +258,7 @@ $(document).on('change', "#ufile", function(e) {
           url: "/ajax_calls/user_folders?search=" + text,
           cache: false,
           success: function (response) {
-              response.forEach(elt => {
+              response.folders.forEach(elt => {
                 $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type) + '</div>')
               })
           }
@@ -356,12 +356,13 @@ $(document).on('change', "#ufile", function(e) {
     construct+= ('<a href="#" class="folder ' +( isCurrent ? 'font-weight-bold' : '') + ' " id="folder_' + foldid + '" data-foldname="' + foldname + '" data-id="' + foldid+ '" data-target="');
     let isType = (type != "None" && type != undefined)
     construct+= ('/podfile/get_folder_files/' + foldid + (isType ? ('?type=' +type) : "") + '"')
-    construct+= ('><img class="directory-image" src="' + (isCurrent ? (static_url +'podfile/images/opened_folder.png') : (static_url + 'podfile/images/folder.png') )+'"/>  '+foldname+'('+foldid+')'+'</a>')
+    construct+= ('><img class="directory-image" src="' + (isCurrent ? (static_url +'podfile/images/opened_folder.png') : (static_url + 'podfile/images/folder.png') )+'"/>  '+foldname+' ('+foldid+')'+'</a>')
     return construct
   }
   $(document).ready(function(e) {
     let type = $("#list_folders_sub").data("type")
     let currentFolder = getCurrentSessionFolder();
+
 
     $.ajax(
       {
@@ -369,16 +370,44 @@ $(document).on('change', "#ufile", function(e) {
           url: "/ajax_calls/user_folders",
           cache: false,
           success: function (response) {
-  
-              response.forEach(elt => {
+              let nextPage = response.next_page;
+              response.folders.forEach(elt => {
                 $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type) + '</div>')
               })
+              if(nextPage != -1){
+                $("#list_folders_sub").append('<a id="more" href="#" data-next="/ajax_calls/user_folders?page='+ nextPage +'"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
+              }
+         
           }
       }
   );
   });
 
 
+
+  $(document).on("click","#more", function(e) {
+    let next = $(this).data("next")
+    let currentFolder = getCurrentSessionFolder();
+    let type = $("#list_folders_sub").data("type")
+    $(this).remove()
+    $.ajax(
+      {
+          type: "GET",
+          url: next,
+          cache: false,
+          success: function (response) {
+            let nextPage = response.next_page
+               response.folders.forEach(elt => {
+                $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type) + '</div>')
+              })
+              if(nextPage != -1){
+                $("#list_folders_sub").append('<a id="more" href="#" data-next="/ajax_calls/user_folders?page='+nextPage +'"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
+              }
+              
+          }
+      }
+  );
+  })
 
 
 
