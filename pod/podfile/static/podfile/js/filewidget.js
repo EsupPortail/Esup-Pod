@@ -359,11 +359,10 @@ $(document).on('change', "#ufile", function(e) {
     construct+= ('><img class="directory-image" src="' + (isCurrent ? (static_url +'podfile/images/opened_folder.png') : (static_url + 'podfile/images/folder.png') )+'"/>  '+foldname+' ('+foldid+')'+'</a>')
     return construct
   }
-  $(document).ready(function(e) {
+
+  function initFolders(){
     let type = $("#list_folders_sub").data("type")
     let currentFolder = getCurrentSessionFolder();
-
-
     $.ajax(
       {
           type: "GET",
@@ -381,6 +380,13 @@ $(document).on('change', "#ufile", function(e) {
           }
       }
   );
+  }
+  $(document).ready(function(e) {
+    console.log("Ready")
+    if(typeof myFilesView !== 'undefined'){
+      initFolders();
+    }
+  
   });
 
 
