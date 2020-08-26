@@ -132,6 +132,7 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 ORGANIZE_BY_THEME = getattr(settings, 'ORGANIZE_BY_THEME', False)
 VIEW_STATS_AUTH = getattr(settings, 'VIEW_STATS_AUTH', False)
+ACTIVE_VIDEO_COMMENT = getattr(settings, 'ACTIVE_VIDEO_COMMENT', False)
 
 # ############################################################################
 # CHANNEL
@@ -526,8 +527,11 @@ def get_video_access(request, video, slug_private):
 
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
-    template_video = 'videos/video-iframe.html' if (
-        request.GET.get('is_iframe')) else 'videos/video.html'
+    template_video = 'videos/video.html'
+    params = {'active_video_comment': ACTIVE_VIDEO_COMMENT}
+    if request.GET.get('is_iframe'):
+        params = {}
+        template_video = 'videos/video-iframe.html'
     try:
         id = int(slug[:slug.find("-")])
     except ValueError:
@@ -540,13 +544,12 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         request.GET.get('redirect') != "false"
     ):
         return redirect(video.get_default_version_link())
-
     return render_video(request, id, slug_c, slug_t, slug_private,
-                        template_video, None)
+                        template_video, params)
 
 
 def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
-                 template_video='videos/video.html', more_data=None):
+                 template_video='videos/video.html', more_data={}):
     video = get_object_or_404(Video, id=id,
                               sites=get_current_site(request))
     """
@@ -599,7 +602,7 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
                 'theme': theme,
                 'listNotes': listNotes,
                 'playlist': playlist,
-                'more_data': more_data
+                **more_data
             }
         )
     else:
@@ -629,8 +632,8 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
                     'theme': theme,
                     'form': form,
                     'playlist': playlist,
-                    'more_data': more_data,
-                    'listNotes': listNotes
+                    'listNotes': listNotes,
+                    **more_data
                 }
             )
         elif request.user.is_authenticated():
@@ -1612,13 +1615,14 @@ def video_add(request):
         'TRANSCRIPT': TRANSCRIPT})
 
 
+@login_required(redirect_field_name='referrer')
 @csrf_protect
 def vote(request, video_slug, comment_id=None):
+    c_video = get_object_or_404(Video, slug=video_slug)
     if request.method == "POST":
-        c_video = get_object_or_404(Video, slug=video_slug)
         c = get_object_or_404(
                 Comment, video=c_video, id=comment_id)if comment_id else None
-        c_user = get_object_or_404(User, id=request.POST.get('id', None))
+        c_user = request.user
         if not c_user:
             return HttpResponse('<h1>Bad Request</h1>', status=400)
         response = {}
@@ -1640,16 +1644,18 @@ def vote(request, video_slug, comment_id=None):
     if comment_id:
         return HttpResponseNotFound('<h1>Method Not Allowed</h1>', status=405)
     else:
-        votes = Vote.objects.all().values('user__id', 'comment__id')
+        votes = Vote.objects.filter(
+                comment__video=c_video).values('user__id', 'comment__id')
         data = {'votes': list(votes)}
         return HttpResponse(json.dumps(data), content_type='application/json')
 
 
+@login_required(redirect_field_name='referrer')
 @csrf_protect
 def add_comment(request, video_slug, comment_id=None):
     if request.method == "POST":
         c_video = get_object_or_404(Video, slug=video_slug)
-        c_user = get_object_or_404(User, id=request.POST.get('id', None))
+        c_user = request.user
         c_parent = get_object_or_404(
                 Comment, id=comment_id)if comment_id else None
         c_content = request.POST.get('content', '')
@@ -1708,9 +1714,10 @@ def get_comments(request, video_slug):
             content_type="application/json")
 
 
+@login_required(redirect_field_name='referrer')
 def delete_comment(request, video_slug, comment_id):
     v = get_object_or_404(Video, slug=video_slug)
-    c_user = get_object_or_404(User, id=request.POST.get('id', None))
+    c_user = request.user
     c = get_object_or_404(Comment, video=v, id=comment_id)
     response = {
         'deleted': True,

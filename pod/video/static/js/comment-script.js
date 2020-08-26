@@ -1,6 +1,6 @@
 let base_url = window.location.href.replace("video", "comment");
 let base_vote_url = base_url.replace('comment', 'comment/vote');
-let base_delete_url = base_url.replace('comment', 'comment/delete');
+let base_delete_url = base_url.replace('comment', 'comment/del');
 let all_comment = null;
 let lang_btn = document.querySelector(".btn-lang.btn-lang-active");
 let  VOTED_USERS = [];
@@ -327,7 +327,6 @@ function vote(comment_id, target_html_el)
     let vote_url = base_vote_url + comment_id +"/";
     let btn = target_html_el.querySelector('.comment_vote_btn')
     let data = new FormData();
-    data.append('id', user_id);
     data.append('csrfmiddlewaretoken', Cookies.get('csrftoken'));
     fetch(vote_url, {
 	method: "POST",
@@ -366,7 +365,6 @@ function save_comment(content, date, parent_id=null)
     let post_url = base_url.replace("comment", "comment/add");
     post_url = parent_id?post_url+parent_id+'/':post_url	
     let data = new FormData();
-    data.append('id', user_id);
     data.append('content', content);
     data.append('date_added', date);
     data.append('csrfmiddlewaretoken', Cookies.get('csrftoken'));
@@ -419,7 +417,6 @@ function delete_comment(target_comment_html)
     let url = base_delete_url + comment_id + '/';
     let data = new FormData();
     data.append('csrfmiddlewaretoken', Cookies.get('csrftoken'));
-    data.append('id', user_id);
     fetch(url, {
 	method: "POST",
 	body: data

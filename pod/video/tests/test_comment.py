@@ -76,7 +76,7 @@ class TestComment(TestCase):
                 "get_comments",
                 kwargs={"video_slug": self.video.slug})
         response = self.client.get(url)
-        # Check that the view function is get_comments 
+        # Check that the view function is get_comments
         self.assertEqual(response.resolver_match.func, get_comments)
         # Check response is 200 OK and contents the expected comment
         self.assertContains(
@@ -93,8 +93,9 @@ class TestComment(TestCase):
         url = reverse(
                 "add_comment",
                 kwargs={"video_slug": self.video.slug})
+        self.client.logout()
+        self.client.force_login(self.simple_user)
         response = self.client.post(url, {
-            "id": self.simple_user.id,
             "content": "Third parent comment"})
         data = {
             "author__last_name": self.simple_user.last_name,
@@ -115,8 +116,9 @@ class TestComment(TestCase):
                 kwargs={
                     "video_slug": self.video.slug,
                     "comment_id": p_comment.id})
+        self.client.logout()
+        self.client.force_login(self.owner_user)
         response = self.client.post(url, {
-            "id": self.owner_user.id,
             "content": "Response to third comment"})
         data['author__last_name'] = self.owner_user.last_name
         data['author__first_name'] = self.owner_user.first_name
@@ -129,9 +131,10 @@ class TestComment(TestCase):
         self.assertEqual(comment.parent, p_comment)
 
         # test bad request
+        self.client.logout()
+        self.client.force_login(self.owner_user)
         response = self.client.post(
                 url,
-                {"id": self.owner_user.id},
                 HTTP_ACCEPT_LANGUAGE="en")
         self.assertContains(
                 response,
@@ -152,9 +155,10 @@ class TestComment(TestCase):
                 kwargs={
                     "video_slug": self.video.slug,
                     "comment_id": self.owner_responds_admin_comment.id})
+        self.client.logout()
+        self.client.force_login(self.simple_user)
         response = self.client.post(
                 url,
-                {"id": self.simple_user.id},
                 HTTP_ACCEPT_LANGUAGE="en")
         data = {
                 "deleted": False,
@@ -172,7 +176,9 @@ class TestComment(TestCase):
                 "deleted": True,
                 "comment_deleted": str(self.admin_comment.id)}
         expected_content = JsonResponse(data, safe=False).content
-        response = self.client.post(url, {"id": self.owner_user.id})
+        self.client.logout()
+        self.client.force_login(self.owner_user)
+        response = self.client.post(url)
         self.assertEqual(response.content, expected_content)
         # should also remove child comment
         comment = Comment.objects.filter(
@@ -188,7 +194,9 @@ class TestComment(TestCase):
                 "deleted": True,
                 "comment_deleted": str(self.simple_user_comment.id)}
         expected_content = JsonResponse(data, safe=False).content
-        response = self.client.post(url, {"id": self.admin_user.id})
+        self.client.logout()
+        self.client.force_login(self.admin_user)
+        response = self.client.post(url)
         self.assertEqual(response.content, expected_content)
         comment = Comment.objects.filter(
                 id=self.owner_responds_simple_user_comment.id).first()
@@ -201,6 +209,8 @@ class TestComment(TestCase):
         url = reverse(
                 "get_votes",
                 kwargs={"video_slug": self.video.slug})
+        self.client.logout()
+        self.client.force_login(self.owner_user)
         response = self.client.get(url)
         data = {"votes": []}
         expected_response = JsonResponse(data, safe=False).content
@@ -212,14 +222,13 @@ class TestComment(TestCase):
                 kwargs={
                     "video_slug": self.video.slug,
                     "comment_id": self.admin_comment.id})
-
-        response = self.client.post(url, {"id": self.owner_user.id})
+        response = self.client.post(url)
         data = {"voted": True}
         expected_response = JsonResponse(data, safe=False).content
         self.assertEqual(response.content, expected_response)
 
         # test vote -1
-        response = self.client.post(url, {"id": self.owner_user.id})
+        response = self.client.post(url)
         data['voted'] = False
         expected_response = JsonResponse(data, safe=False).content
         self.assertEqual(response.content, expected_response)
