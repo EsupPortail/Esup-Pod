@@ -243,6 +243,8 @@ $(document).on('change', "#ufile", function(e) {
 
   $(document).on('submit', 'form#folderFormName', function(e){
     e.preventDefault();
+    console.log("rename js : action: " + $(this).attr("action") + ", array :" )
+    console.log($(this).serializeArray())
     send_form_data($(this).attr("action"), $(this).serializeArray(), "reloadFolder");
   });
 
@@ -286,14 +288,18 @@ $(document).on('change', "#ufile", function(e) {
   
 
   function reloadFolder(data){
+    console.log("do reload")
     if(data.list_element) {
-        $('#dirs').html(data.list_element);
 
+   //  initFolders()
+      //  $('#dirs').html(data.list_element);
         // call
-        var folder_id = data.folder_id;
-        console.log("reload folder " + data.folder_id)
-        console.log($("#folder_"+folder_id))
+       var folder_id = data.folder_id;
+        console.log(data)
+      //  $("#folder_"+folder_id).text(data.)
         send_form_data($("#folder_"+folder_id).data('target'), {}, "show_folder_files", "get");
+    
+
 
         //dismiss modal
         $('#folderModalCenter').modal('hide');
@@ -308,7 +314,7 @@ $(document).on('change', "#ufile", function(e) {
 
 
   function show_folder_files(data){
-    console.log("show_folder_file " + data.list_element)
+    console.log("show_folder_file " + ((typeof data.list_element == "undefined") ? "UNDEFINED" : "SOME DATA"))
     if(data.list_element) {
         $('#files').html(data.list_element);
         $(".list_folders a").removeClass('font-weight-bold');
@@ -332,6 +338,7 @@ $(document).on('change', "#ufile", function(e) {
         if(data.errors) {
           showalert(data.errors+"<br/>"+data.form_error, "alert-danger");
         } else {
+          console.log("this error")
           showalert(gettext('You are no longer authenticated. Please log in again.'), "alert-danger");
         }
     }
