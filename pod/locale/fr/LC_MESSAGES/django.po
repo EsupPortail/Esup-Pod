@@ -1228,12 +1228,6 @@ msgstr "Les vidéos obsolètes sur Pod"
 msgid "Home"
 msgstr "Accueil"
 
-#: pod/custom/templates/custom/layouts/partials/_channel_list.html:25
-#: pod/main/templates/navbar.html:17 pod/video/forms.py:168
-#: pod/video/models.py:260 pod/video/models.py:525
-msgid "Channels"
-msgstr "Chaînes"
-
 #: pod/custom/templates/custom/layouts/partials/_channel_list.html:43
 #: pod/custom/templates/custom/layouts/partials/_channel_list.html:45
 #, fuzzy

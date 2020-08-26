@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
@@ -9,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-24 14:13+0000\n"
+"POT-Creation-Date: 2020-08-26 07:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,8 +52,8 @@ msgstr ""
 #: pod/enrichment/static/js/enrichment.js:149 pod/main/static/js/main.js:287
 #: pod/main/static/js/main.js:294 pod/main/static/js/main.js:305
 #: pod/main/static/js/main.js:319
-#: pod/podfile/static/podfile/js/filewidget.js:287
-#: pod/podfile/static/podfile/js/filewidget.js:314
+#: pod/podfile/static/podfile/js/filewidget.js:305
+#: pod/podfile/static/podfile/js/filewidget.js:335
 msgid "You are no longer authenticated. Please log in again."
 msgstr ""
 
@@ -354,13 +353,13 @@ msgid "Are you sure you want to delete this element?"
 msgstr ""
 
 #: pod/main/static/js/main.js:281
-#: pod/podfile/static/podfile/js/filewidget.js:80
-#: pod/podfile/static/podfile/js/filewidget.js:307
+#: pod/podfile/static/podfile/js/filewidget.js:81
+#: pod/podfile/static/podfile/js/filewidget.js:328
 msgid "Error during exchange"
 msgstr ""
 
 #: pod/main/static/js/main.js:281
-#: pod/podfile/static/podfile/js/filewidget.js:80
+#: pod/podfile/static/podfile/js/filewidget.js:81
 msgid "No data could be stored."
 msgstr ""
 
@@ -400,36 +399,82 @@ msgstr ""
 msgid "Open file in a new tab"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:100
-#: pod/podfile/static/podfile/js/filewidget.js:107
+#: pod/podfile/static/podfile/js/filewidget.js:101
+#: pod/podfile/static/podfile/js/filewidget.js:108
 msgid "Change"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:115
+#: pod/podfile/static/podfile/js/filewidget.js:116
 msgid "Enter new name of folder"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:127
+#: pod/podfile/static/podfile/js/filewidget.js:128
 msgid "Remove"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:140
-#: pod/podfile/static/podfile/js/filewidget.js:162
-#: pod/podfile/static/podfile/js/filewidget.js:192
-#: pod/podfile/static/podfile/js/filewidget.js:211
+#: pod/podfile/static/podfile/js/filewidget.js:141
+#: pod/podfile/static/podfile/js/filewidget.js:163
+#: pod/podfile/static/podfile/js/filewidget.js:193
+#: pod/podfile/static/podfile/js/filewidget.js:212
 msgid "Server error"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:148
+#: pod/podfile/static/podfile/js/filewidget.js:149
 msgid "Add"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:225
+#: pod/podfile/static/podfile/js/filewidget.js:226
 msgid "Are you sure you want to delete this folder?"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:234
+#: pod/podfile/static/podfile/js/filewidget.js:235
 msgid "Are you sure you want to delete this file?"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:61
+#: pod/video/static/js/comment-script.js:166
+msgid "Delete"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:80
+msgid "Cancel"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:143
+msgid "Answer comment icon"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:143
+msgid "Answer"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:152
+msgid "Comment vote icon"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:163
+msgid "Comment delete icon"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:180
+msgid "Add a public comment"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:261
+msgid "Comment show children icon"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:264
+#: pod/video/static/js/comment-script.js:542
+msgid "Show responses"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:427
+msgid "Comment has been deleted successfully."
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:540
+msgid "Hide responses"
 msgstr ""
 
 #: pod/video/static/js/validate-date_delete-field.js:26
@@ -459,253 +504,3 @@ msgstr ""
 #: pod/video/static/js/video_stats_view.js:19
 msgid "Slug"
 msgstr ""
-=======
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
-msgid ""
-msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 07:39+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
-#: pod/chapter/static/js/chapters.js:5 pod/chapter/static/js/chapters.js:7
-#: pod/enrichment/static/js/enrichment.js:5
-#: pod/enrichment/static/js/enrichment.js:7
-#: pod/enrichment/static/js/enrichment.js:183
-#: pod/enrichment/static/js/enrichment.js:185
-msgid "Get time from the player"
-msgstr ""
-
-#: pod/chapter/static/js/chapters.js:16
-#: pod/completion/static/js/completion.js:44
-#: pod/enrichment/static/js/enrichment.js:17
-msgid "Error getting form."
-msgstr ""
-
-#: pod/chapter/static/js/chapters.js:16
-#: pod/completion/static/js/completion.js:44
-#: pod/enrichment/static/js/enrichment.js:17
-msgid "The form could not be recovered."
-msgstr ""
-
-#: pod/chapter/static/js/chapters.js:51 pod/chapter/static/js/chapters.js:71
-#: pod/chapter/static/js/chapters.js:92 pod/chapter/static/js/chapters.js:118
-#: pod/chapter/static/js/chapters.js:147
-#: pod/completion/static/js/completion.js:84
-#: pod/completion/static/js/completion.js:113
-#: pod/completion/static/js/completion.js:156
-#: pod/completion/static/js/completion.js:187
-#: pod/enrichment/static/js/enrichment.js:52
-#: pod/enrichment/static/js/enrichment.js:72
-#: pod/enrichment/static/js/enrichment.js:93
-#: pod/enrichment/static/js/enrichment.js:120
-#: pod/enrichment/static/js/enrichment.js:149 pod/main/static/js/main.js:253
-#: pod/main/static/js/main.js:260 pod/main/static/js/main.js:271
-#: pod/main/static/js/main.js:285 pod/podfile/static/js/filewidget.js:112
-#: pod/podfile/static/js/filewidget.js:126
-msgid "You are no longer authenticated. Please log in again."
-msgstr ""
-
-#: pod/chapter/static/js/chapters.js:134
-#: pod/enrichment/static/js/enrichment.js:136 pod/main/static/js/main.js:277
-#: pod/podfile/static/js/filewidget.js:118
-msgid "One or more errors have been found in the form."
-msgstr ""
-
-#: pod/chapter/static/js/chapters.js:163
-#: pod/enrichment/static/js/enrichment.js:223
-msgid "Please enter a title from 2 to 100 characters."
-msgstr ""
-
-#: pod/chapter/static/js/chapters.js:169
-msgid "Please enter a correct start field between 0 and"
-msgstr ""
-
-#: pod/chapter/static/js/chapters.js:182
-msgid "The chapter"
-msgstr ""
-
-#: pod/chapter/static/js/chapters.js:182
-msgid "starts at the same time."
-msgstr ""
-
-#: pod/completion/static/js/completion.js:135
-msgid "Are you sure you want to delete this file ?"
-msgstr ""
-
-#: pod/completion/static/js/completion.js:137
-msgid "Are you sure you want to delete this contributor ?"
-msgstr ""
-
-#: pod/completion/static/js/completion.js:139
-msgid "Are you sure you want to delete this document ?"
-msgstr ""
-
-#: pod/completion/static/js/completion.js:141
-msgid "Are you sure you want to delete this overlay ?"
-msgstr ""
-
-#: pod/completion/static/js/completion.js:184
-msgid "Changes have been saved."
-msgstr ""
-
-#: pod/completion/static/js/completion.js:213
-msgid "Display"
-msgstr ""
-
-#: pod/completion/static/js/completion.js:213
-msgid "section"
-msgstr ""
-
-#: pod/completion/static/js/completion.js:235
-msgid "Please enter a name from 2 to 100 caracteres."
-msgstr ""
-
-#: pod/completion/static/js/completion.js:241
-msgid "You cannot enter a weblink with more than 200 caracteres."
-msgstr ""
-
-#: pod/completion/static/js/completion.js:247
-msgid "Please enter a role."
-msgstr ""
-
-#: pod/completion/static/js/completion.js:256
-msgid ""
-"There is already a contributor with this same name and role in the list."
-msgstr ""
-
-#: pod/completion/static/js/completion.js:267
-msgid "Please enter a correct kind."
-msgstr ""
-
-#: pod/completion/static/js/completion.js:275
-msgid "Please select a language."
-msgstr ""
-
-#: pod/completion/static/js/completion.js:281
-msgid "Please specify a track file."
-msgstr ""
-
-#: pod/completion/static/js/completion.js:287
-msgid "Only .vtt format is allowed."
-msgstr ""
-
-#: pod/completion/static/js/completion.js:300
-msgid "There is already a track with the same kind and language in the list."
-msgstr ""
-
-#: pod/completion/static/js/completion.js:307
-#: pod/enrichment/static/js/enrichment.js:274
-msgid "Please select a document."
-msgstr ""
-
-#: pod/completion/static/js/completion.js:315
-msgid "Iframe and Script tags are not allowed."
-msgstr ""
-
-#: pod/enrichment/static/js/enrichment.js:229
-msgid "Please enter a correct start from 0 to "
-msgstr ""
-
-#: pod/enrichment/static/js/enrichment.js:235
-msgid "Please enter a correct end from 1 to "
-msgstr ""
-
-#: pod/enrichment/static/js/enrichment.js:243
-msgid "Please enter a correct image."
-msgstr ""
-
-#: pod/enrichment/static/js/enrichment.js:251
-msgid "Please enter a correct richtext."
-msgstr ""
-
-#: pod/enrichment/static/js/enrichment.js:259
-msgid "Please enter a correct weblink."
-msgstr ""
-
-#: pod/enrichment/static/js/enrichment.js:265
-msgid "Weblink must be less than 200 characters."
-msgstr ""
-
-#: pod/enrichment/static/js/enrichment.js:282
-msgid "Please enter a correct embed."
-msgstr ""
-
-#: pod/enrichment/static/js/enrichment.js:288
-msgid "Embed field must be less than 300 characters."
-msgstr ""
-
-#: pod/enrichment/static/js/enrichment.js:296
-msgid "Please enter a type in index field."
-msgstr ""
-
-#: pod/enrichment/static/js/enrichment.js:308
-msgid "The start field value is greater than the end field one."
-msgstr ""
-
-#: pod/enrichment/static/js/enrichment.js:310
-msgid "The end field value is greater than the video duration."
-msgstr ""
-
-#: pod/enrichment/static/js/enrichment.js:312
-msgid "End field and start field cannot be equal."
-msgstr ""
-
-#: pod/enrichment/static/js/enrichment.js:330
-msgid "There is an overlap with the enrichment "
-msgstr ""
-
-#: pod/enrichment/static/js/enrichment.js:331
-msgid "please change start and/or end values."
-msgstr ""
-
-#: pod/main/static/js/main.js:227 pod/podfile/static/js/filewidget.js:62
-msgid "Are you sure you want to delete this element?"
-msgstr ""
-
-#: pod/main/static/js/main.js:245 pod/podfile/static/js/filewidget.js:83
-#: pod/podfile/static/js/filewidget.js:136
-msgid "Error during exchange"
-msgstr ""
-
-#: pod/main/static/js/main.js:245 pod/podfile/static/js/filewidget.js:83
-#: pod/podfile/static/js/filewidget.js:136
-msgid "No data could be stored."
-msgstr ""
-
-#: pod/main/static/js/main.js:365
-msgid "text copied"
-msgstr ""
-
-#: pod/main/static/js/main.js:397
-msgid "Errors appear in the form, please correct them"
-msgstr ""
-
-#: pod/main/static/js/main.js:420 pod/podfile/static/js/filewidget.js:96
-msgid "The file size exceeds the maximum allowed value :"
-msgstr ""
-
-#: pod/main/static/js/main.js:435
-msgid "The file extension not in the allowed extension :"
-msgstr ""
-
-#: pod/podfile/static/js/filewidget.js:5
-msgid "Change file"
-msgstr ""
-
-#: pod/podfile/static/js/filewidget.js:29
-msgid "Are you sure you want to delete this folder?"
-msgstr ""
->>>>>>> 24f0de812f31a4216c980a3d819c96af2a350b9b
