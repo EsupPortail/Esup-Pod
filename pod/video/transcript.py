@@ -14,6 +14,7 @@ import sys
 import os
 import time
 from timeit import default_timer as timer
+import datetime as dt
 from datetime import timedelta
 
 from webvtt import WebVTT, Caption
@@ -248,15 +249,16 @@ def main_transcript(norm_mp3_file, duration, ds_model):
 
                     stop_caption = start_trim + \
                         word['start_time'] + word['duration']
+
+                    # on evite le chevauchement
+                    change_previous_end_caption(webvtt, start_caption)
+
                     caption = Caption(
-                        '%s.%s' % (timedelta(
-                            seconds=int(str(start_caption).split('.')[0])),
-                            str('%.3f' % start_caption).split('.')[1]),
-                        '%s.%s' % (timedelta(
-                            seconds=int(str(stop_caption).split('.')[0])),
-                            str('%.3f' % stop_caption).split('.')[1]),
+                        format_time_caption(start_caption),
+                        format_time_caption(stop_caption),
                         " ".join(text_caption)
                     )
+
                     webvtt.captions.append(caption)
                     # on remet tout à zero pour la prochaine phrase
                     start_caption = start_trim + word['start_time']
@@ -267,12 +269,8 @@ def main_transcript(norm_mp3_file, duration, ds_model):
                 stop_caption = start_trim + \
                     words[-1]['start_time'] + words[-1]['duration']
                 caption = Caption(
-                    '%s.%s' % (timedelta(
-                        seconds=int(str(start_caption).split('.')[0])),
-                        str('%.3f' % start_caption).split('.')[1]),
-                    '%s.%s' % (timedelta(
-                        seconds=int(str(stop_caption).split('.')[0])),
-                        str('%.3f' % stop_caption).split('.')[1]),
+                    format_time_caption(start_caption),
+                    format_time_caption(stop_caption),
                     " ".join(text_caption)
                 )
                 webvtt.captions.append(caption)
@@ -280,6 +278,25 @@ def main_transcript(norm_mp3_file, duration, ds_model):
     msg += '\nInference took %0.3fs.' % inference_end
     # print(msg)
     return msg, webvtt
+
+
+def change_previous_end_caption(webvtt, start_caption):
+    if len(webvtt.captions) > 0:
+        prev_end = dt.datetime.strptime(
+            webvtt.captions[-1].end, '%H:%M:%S.%f')
+        td_prev_end = timedelta(hours=prev_end.hour,
+                                minutes=prev_end.minute,
+                                seconds=prev_end.second,
+                                microseconds=prev_end.microsecond
+                                ).total_seconds()
+        if td_prev_end > start_caption:
+            webvtt.captions[-1].end = format_time_caption(start_caption)
+
+
+def format_time_caption(time_caption):
+    return (dt.datetime.utcfromtimestamp(0) +
+            timedelta(seconds=float(time_caption))
+            ).strftime('%H:%M:%S.%f')[:-3]
 
 
 def get_text_caption(text_caption, last_word_added):
