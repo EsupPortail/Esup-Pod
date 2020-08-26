@@ -225,10 +225,10 @@ def editfolder(request):
 
     list_element = {
         'list_element': rendered,
-        'folder_id': current_session_folder.id
+        'folder_id': current_session_folder.id,
+        'folder_name': current_session_folder.name
     }
     data = json.dumps(list_element)
-    print("All is good :)")
     return HttpResponse(data, content_type='application/json')
 
 

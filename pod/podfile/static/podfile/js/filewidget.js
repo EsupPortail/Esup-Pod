@@ -245,6 +245,7 @@ $(document).on('change', "#ufile", function(e) {
     e.preventDefault();
     console.log("rename js : action: " + $(this).attr("action") + ", array :" )
     console.log($(this).serializeArray())
+    console.log("targetting " + $(this).attr("action"))
     send_form_data($(this).attr("action"), $(this).serializeArray(), "reloadFolder");
   });
 
@@ -288,19 +289,14 @@ $(document).on('change', "#ufile", function(e) {
   
 
   function reloadFolder(data){
-    console.log("do reload")
     if(data.list_element) {
-
-   //  initFolders()
-      //  $('#dirs').html(data.list_element);
-        // call
-       var folder_id = data.folder_id;
+        var folder_id = data.folder_id;
         console.log(data)
-      //  $("#folder_"+folder_id).text(data.)
+        $("#folder_"+folder_id).contents().filter(function(){ 
+          return this.nodeType == 3; 
+        })[0].nodeValue = "  "+data.folder_name
         send_form_data($("#folder_"+folder_id).data('target'), {}, "show_folder_files", "get");
     
-
-
         //dismiss modal
         $('#folderModalCenter').modal('hide');
         $('#folderModalCenter').find('.modal-body input#folderInputName').val("");
