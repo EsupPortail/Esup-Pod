@@ -392,11 +392,9 @@ $(document).on('change', "#ufile", function(e) {
   );
   }
   $(document).ready(function(e) {
-    console.log("Ready")
     if(typeof myFilesView !== 'undefined'){
       initFolders();
     }
-  
   });
 
 
@@ -427,7 +425,10 @@ $(document).on('change', "#ufile", function(e) {
   })
 
 
-
+  $(document).on('show.bs.modal', '.podfilemodal', function (event) {
+    event.stopPropagation();
+    initFolders()
+  });
 
 
 /*
