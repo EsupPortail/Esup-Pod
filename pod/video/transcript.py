@@ -127,11 +127,12 @@ def main_threaded_transcript(video_to_encode_id):
             mp3filepath = mp3file.path
             if NORMALIZE:
                 mp3filepath = normalize_mp3(mp3filepath)
-            msg, webvtt = main_transcript(
+            msg, webvtt, all_text = main_transcript(
                 mp3filepath, video_to_encode.duration, ds_model)
             if DEBUG:
                 print(msg)
                 print(webvtt)
+                print("\n%s\n" % all_text)
             msg += saveVTT(video_to_encode, webvtt)
             change_encoding_step(video_to_encode.id, 0, "done")
             # envois mail fin transcription
@@ -232,14 +233,12 @@ def main_transcript(norm_mp3_file, duration, ds_model):
                 all_text += word['word'] + " "
                 # word : <class 'dict'> {'word': 'bonjour', 'start_time ':
                 # 0.58, 'duration': 7.34}
-                if(
+                text_caption.append(word['word'])
+                if not (
                     ((word['start_time'] + start_trim) -
                      start_caption) < SENTENCE_MAX_LENGTH
                 ):
-                    text_caption.append(word['word'])
-                else:
                     # on créé le caption
-                    text_caption.append(word['word'])
                     if is_first_caption:
                         # A revoir, fusion de la nouvelle ligne avec
                         # l'ancienne...
@@ -275,9 +274,9 @@ def main_transcript(norm_mp3_file, duration, ds_model):
                 )
                 webvtt.captions.append(caption)
     inference_end = timer() - inference_start
+
     msg += '\nInference took %0.3fs.' % inference_end
-    # print(msg)
-    return msg, webvtt
+    return msg, webvtt, all_text
 
 
 def change_previous_end_caption(webvtt, start_caption):
