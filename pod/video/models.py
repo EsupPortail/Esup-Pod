@@ -576,11 +576,6 @@ class Video(models.Model):
         _('Date to delete'),
         default=default_date_delete)
 
-    disable_comment = models.BooleanField(
-            _("Disable comment"),
-            help_text=_("Allows you to turn off all comments on this video."),
-            default=False)
-
     class Meta:
         ordering = ['-date_added', '-id']
         get_latest_by = 'date_added'
@@ -1434,28 +1429,3 @@ class VideoToDelete(models.Model):
 
     def __str__(self):
         return "%s - nb videos : %s" % (self.date_deletion, self.video.count())
-
-
-class Comment(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
-    parent = models.ForeignKey(
-            'self', related_name="children", null=True, blank=True,
-            on_delete=models.CASCADE)
-    video = models.ForeignKey(Video, on_delete=models.CASCADE)
-    added = models.DateTimeField(auto_now_add=True)
-
-    @property
-    def numberVote(self):
-        self.vote_set.all().count()
-
-    def __str__(self):
-        return self.content
-
-
-class Vote(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.user)

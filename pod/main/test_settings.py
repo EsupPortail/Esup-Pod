@@ -1,13 +1,14 @@
 # test_settings.py
-# from ..settings import *
-import os
-from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
-from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES
-from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N, USE_L10N
-from ..settings import LOCALE_PATHS
-from ..settings import USE_TZ, REST_FRAMEWORK, LOG_DIRECTORY, LOGGING
 
 TEST_SETTINGS = True
+
+# from ..settings import *
+import os
+
+from ..settings import INSTALLED_APPS, MIDDLEWARE, AUTHENTICATION_BACKENDS
+from ..settings import ROOT_URLCONF, WSGI_APPLICATION, TEMPLATES
+from ..settings import AUTH_PASSWORD_VALIDATORS, USE_I18N, USE_L10N, LOCALE_PATHS
+from ..settings import USE_TZ, REST_FRAMEWORK, LOG_DIRECTORY, LOGGING
 
 for application in INSTALLED_APPS:
     if application.startswith('pod'):
@@ -31,6 +32,5 @@ USE_PODFILE = True
 USE_STATS_VIEW = True
 ACCOMMODATION_YEARS = {'faculty': 1}
 USE_OBSOLESCENCE = True
-ACTIVE_VIDEO_COMMENT = True
 POD_ARCHIVE_AFFILIATION = ['faculty']
 WARN_DEADLINES = [60, 30, 7]
