@@ -154,10 +154,10 @@ def regroup_videos_by_theme(videos, page, channel, theme=None):
     for t in children_themes:
         videos_founded = videos.filter(theme__in=t.get_all_children_flat())
         no_theme_videos = no_theme_videos.exclude(
-                theme__in=t.get_all_children_flat())
+            theme__in=t.get_all_children_flat())
         if videos_founded:
             videos_regrouped.append(
-                    (t, paginator(list(set(videos_founded)), page)))
+                (t, paginator(list(set(videos_founded)), page)))
     if children_themes and no_theme_videos:
         videos_regrouped.append((_("Other"), paginator(no_theme_videos, page)))
     if not children_themes:
@@ -204,7 +204,7 @@ def channel(request, slug_c, slug_t=None):
     videos_theme = None
     if ORGANIZE_BY_THEME:
         videos_theme = regroup_videos_by_theme(
-                videos_list, page, channel, theme)
+            videos_list, page, channel, theme)
     return render(request, 'channel/channel.html',
                   {'channel': channel,
                    'videos': videos,
@@ -1599,9 +1599,9 @@ def video_add(request):
                 return HttpResponseNotFound('<h1>Permission Denied</h1>')
 
             if video and request.user != video.owner and (
-                not (request.user.is_superuser or
-                     request.user.has_perm('video.change_video'))) and (
-                     request.user not in video.additional_owners.all()):
+                    not (request.user.is_superuser or
+                         request.user.has_perm('video.change_video'))) and (
+                    request.user not in video.additional_owners.all()):
                 return HttpResponseNotFound('<h1>Permission Denied</h1>')
         except Video.DoesNotExist:
             pass
@@ -1621,13 +1621,13 @@ def vote(request, video_slug, comment_id=None):
     c_video = get_object_or_404(Video, slug=video_slug)
     if request.method == "POST":
         c = get_object_or_404(
-                Comment, video=c_video, id=comment_id)if comment_id else None
+            Comment, video=c_video, id=comment_id)if comment_id else None
         c_user = request.user
         if not c_user:
             return HttpResponse('<h1>Bad Request</h1>', status=400)
         response = {}
         c_vote = Vote.objects.filter(
-                user=c_user, comment=c, comment__video=c_video).first()
+            user=c_user, comment=c, comment__video=c_video).first()
         if c_vote:
             c_vote.delete()
             response['voted'] = False
@@ -1639,13 +1639,13 @@ def vote(request, video_slug, comment_id=None):
             response['voted'] = True
 
         return HttpResponse(
-                json.dumps(response),
-                content_type="application/json")
+            json.dumps(response),
+            content_type="application/json")
     if comment_id:
         return HttpResponseNotFound('<h1>Method Not Allowed</h1>', status=405)
     else:
         votes = Vote.objects.filter(
-                comment__video=c_video).values('user__id', 'comment__id')
+            comment__video=c_video).values('user__id', 'comment__id')
         data = {'votes': list(votes)}
         return HttpResponse(json.dumps(data), content_type='application/json')
 
@@ -1657,7 +1657,7 @@ def add_comment(request, video_slug, comment_id=None):
         c_video = get_object_or_404(Video, slug=video_slug)
         c_user = request.user
         c_parent = get_object_or_404(
-                Comment, id=comment_id)if comment_id else None
+            Comment, id=comment_id)if comment_id else None
         c_content = request.POST.get('content', '')
         c_date = request.POST.get('date_added', None)
         if c_content:
@@ -1676,8 +1676,8 @@ def add_comment(request, video_slug, comment_id=None):
                 'author__last_name': c_user.last_name,
             }
             return HttpResponse(
-                    json.dumps(data),
-                    content_type="application/json")
+                json.dumps(data),
+                content_type="application/json")
         return HttpResponse('<h1>Bad Request</h1>', status=400)
     return HttpResponseNotFound('<h1>Method Not Allowed</h1>', status=405)
 
@@ -1685,9 +1685,21 @@ def add_comment(request, video_slug, comment_id=None):
 def get_comments(request, video_slug):
     v = get_object_or_404(Video, slug=video_slug)
     comments = Comment.objects.filter(video=v).order_by('added').annotate(
-            nbr_vote=Count('vote'))
+        nbr_vote=Count('vote'))
     # extract parent comments
     p_c = comments.filter(parent=None).values(
+        'id',
+        'author__first_name',
+        'author__last_name',
+        'author__id',
+        'content',
+        'added',
+        'nbr_vote')
+    # organize comments => parent with children
+    comment_org = []
+    for c in p_c:
+        filter_data = comments.filter(
+            parent__id=c['id']).values(
             'id',
             'author__first_name',
             'author__last_name',
@@ -1695,23 +1707,11 @@ def get_comments(request, video_slug):
             'content',
             'added',
             'nbr_vote')
-    # organize comments => parent with children
-    comment_org = []
-    for c in p_c:
-        filter_data = comments.filter(
-                parent__id=c['id']).values(
-                        'id',
-                        'author__first_name',
-                        'author__last_name',
-                        'author__id',
-                        'content',
-                        'added',
-                        'nbr_vote')
         comment_org.append({
-                    'parent_comment': c, 'children': list(filter_data)})
+            'parent_comment': c, 'children': list(filter_data)})
     return HttpResponse(
-            json.dumps(comment_org, cls=DjangoJSONEncoder),
-            content_type="application/json")
+        json.dumps(comment_org, cls=DjangoJSONEncoder),
+        content_type="application/json")
 
 
 @login_required(redirect_field_name='referrer')
@@ -1726,14 +1726,14 @@ def delete_comment(request, video_slug, comment_id):
         c.delete()
         response['comment_deleted'] = comment_id
         return HttpResponse(
-                json.dumps(response),
-                content_type="application/json")
+            json.dumps(response),
+            content_type="application/json")
     else:
         response['deleted'] = False
         response['message'] = _('You do not have right to delete this comment')
         return HttpResponse(
-                json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json")
+            json.dumps(response, cls=DjangoJSONEncoder),
+            content_type="application/json")
 
 
 class PodChunkedUploadView(ChunkedUploadView):
@@ -1774,7 +1774,7 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
                                          transcript=(
                                              True if (
                                                  transcript == "true"
-                                                 ) else False))
+                                             ) else False))
         else:
             video = Video.objects.get(slug=edit_slug)
             video.video = uploaded_file
