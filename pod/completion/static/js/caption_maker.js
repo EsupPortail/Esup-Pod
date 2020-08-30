@@ -1,8 +1,3 @@
-const caption_memories = {
-	start_time: '00:00.000'
-}
-const file_prefix = window.location.pathname.replace(/^\//, "").match(/\w+/)[0];
-
 $(document).on('click', 'a.file-name', function() {
     let url = '/podfile/get_file/file/'; 
     let data_form = $("#captionmaker_form" ).serializeArray();
@@ -23,7 +18,7 @@ $(document).ready(function(){
 
 $(document).on('submit', '#form_save_captions', function(e) {
     e.preventDefault();
-    if($('#captionContent').val().trim() === ""){
+    if (!(captionsArray.length)) {
         showalert(gettext("There is no captions to save"), "alert-danger");
         return;
     }
@@ -32,7 +27,8 @@ $(document).on('submit', '#form_save_captions', function(e) {
     }
     else {
         $(this).find('input[name="file_id"]').val("");
-	send_form_save_captions(`${file_prefix}_captions_${Date.now()}`);
+        let href = window.location.href.split('/');
+	send_form_save_captions(href[href.length - 2] + '_captions_' + Date.now());
     }
 })
 
@@ -40,18 +36,20 @@ $(document).on('click', '#modal-btn-new, #modal-btn-override', function() {
     $("#saveCaptionsModal").modal('hide');
     if (this.id == 'modal-btn-override') {
         $('#form_save_captions').find('input[name="file_id"]').val(file_loaded_id);
-	updateCaptionsArray($('#captionContent').val());
-	send_form_save_captions(file_loaded_name);
+        //alert($('#fileinput_id_src').find('strong').find('a').html());
+        //alert($('#fileinput_id_src').text().trim());
+        send_form_save_captions(file_loaded_name);
     }
     else if (this.id == 'modal-btn-new') {
         $('#form_save_captions').find('input[name="file_id"]').val("");
-	send_form_save_captions(`${file_prefix}_captions_${Date.now()}`);
+        let href = window.location.href.split('/');
+        send_form_save_captions(href[href.length - 2] + '_captions_' + Date.now());
     }
 })
 
 var send_form_save_captions = function(name) {
     rxSignatureLine = /^WEBVTT(?:\s.*)?$/;
-    vttContent = $('#captionContent').val().trim();
+    vttContent = CreateVTTSource();
     vttLines = vttContent.split(/\r\n|\r|\n/);
     if (!rxSignatureLine.test(vttLines[0])) {
         alert("Not a valid time track file.");
@@ -117,36 +115,21 @@ var captionBeingDisplayed = -1;
 
 function DisplayExistingCaption(seconds) {
     var ci = FindCaptionIndex(seconds);
-    captionBeingDisplayed = ci;
-    if (ci != -1) {
+    if (ci != captionBeingDisplayed) {
+        captionBeingDisplayed = ci;
+        if (ci != -1) {
             var theCaption = captionsArray[ci];
-        $("#captionTitle").text("Caption for segment from " + FormatTime(theCaption.start) + " to " + FormatTime(theCaption.end) + ":");
-        $("#textCaptionEntry").val(theCaption.caption);
-    } else {
-        $("#captionTitle").html("&nbsp;");
-        $("#textCaptionEntry").val("");
+            $("#captionTitle").text("Caption for segment from " + FormatTime(theCaption.start) + " to " + FormatTime(theCaption.end) + ":");
+            $("#textCaptionEntry").val(theCaption.caption);
+        } else {
+            $("#captionTitle").html("&nbsp;");
+            $("#textCaptionEntry").val("");
+        }
     }
 }
 
 function existingCaptionsEndTime() {
     return captionsArray.length > 0 ? captionsArray[captionsArray.length - 1].end : 0;
-}
-
-let updateCaptionsArray = (vtt)=>{
-    let arr = vtt.split("\n\n");
-    captionsArray = [];
-    arr.forEach(text =>{
-	if(text.trim().toLowerCase() !== "webvtt")
-	{
-	    let data = text.split("\n");
-	    let times = data[0].split("-->");
-	    captionsArray.push({
-	        start: ParseTime(times[0]),
-		end: ParseTime(times[1]),
-		caption: XMLEncode(data[1])
-	    });
-	}
-    })
 }
 
 function videoPlayEventHandler() {
@@ -235,14 +218,13 @@ $("#pauseButton").on('click',function() {
 function SaveCurrentCaption() {
     var playTime = $('#podvideoplayer').get(0).player.currentTime();
     var captionsEndTime = existingCaptionsEndTime();
-    let new_entry = $('#textCaptionEntry').val();
     if (playTime - 1 < captionsEndTime) {
         var ci = FindCaptionIndex(playTime - 1);
         if (ci != -1) {
-            UpdateCaption(ci, new_entry);
-        } 
+            UpdateCaption(ci, $("#textCaptionEntry").val());
+        }
     } else {
-        AddCaption(captionsEndTime, playTime, new_entry);
+        AddCaption(captionsEndTime, playTime, $("#textCaptionEntry").val());
     }
 }
 
@@ -255,51 +237,69 @@ $("#saveCaptionAndPlay").on('click',function() {
     $('#podvideoplayer').get(0).player.play();
 });
 
-/**
- * Updat caption html content
- */
-let updateCaptionHtmlContent = ()=>{
-    let vtt = "WEBVTT\n\n";
-    captionsArray.forEach( (cap, i) =>{
-    	vtt += `${FormatTime(cap.start)} --> ${FormatTime(cap.end)}\n${cap.caption}`;
-	if(i !== captionsArray.length - 1) vtt += '\n\n'
-    });
-    $('#captionContent').val(vtt);
-}
-
 function UpdateCaption(ci, captionText) {
     captionsArray[ci].caption = captionText;
-    updateCaptionHtmlContent()
+    $("#ci" + ci.toString() + " span:last-child").html(XMLEncode(captionText).replace(/\r\n|\r|\n/g, "<br/>"));
 }
 
 function AddCaptionListRow(ci) {
-    let vtt = $('#captionContent');
-    let vtt_entry =XMLEncode($('#textCaptionEntry').val().trim());
-    let start = caption_memories.start_time;
-    var end = FormatTime($('#podvideoplayer').get(0).player.currentTime());
-    var captionsEndTime = existingCaptionsEndTime();
-    let caption_text = `${start} --> ${end}\n${vtt_entry}`;
-    if(vtt_entry !== "")
-    {
-        if(vtt.val().trim() === "")
-        {
-	    vtt.val(`WEBVTT\n\n${caption_text}`);
-        }
-        else{
-            vtt.val(`${vtt.val()}\n\n${caption_text}`);
-        }
-    	caption_memories.start_time = end;
-    }
+    var theId = "ci" + ci.toString();
+    $("#display").append("<div id=\"" + theId + "\"><span>" + FormatTime(captionsArray[ci].start) + "</span><span>" + FormatTime(captionsArray[ci].end) + "</span><span>" + XMLEncode(captionsArray[ci].caption).replace(/\r\n|\r|\n/g, "<br/>") + "</span></div>");
+    $("#" + theId).click(function () {
+        PlayCaptionFromList($(this).attr("id"));
+    });
+}
+
+function AddCaptionListRow(ci) {
+    var theId = "ci" + ci.toString();
+    $("#display").append("<div id=\"" + theId + "\"><span>" + FormatTime(captionsArray[ci].start) + "</span><span>" + FormatTime(captionsArray[ci].end) + "</span><span>" + XMLEncode(captionsArray[ci].caption).replace(/\r\n|\r|\n/g, "<br/>") + "</span></div>");
+    $("#" + theId).click(function () {
+        PlayCaptionFromList($(this).attr("id"));
+    });
 }
 
 function AddCaption(captionStart, captionEnd, captionText) {
-    captionsArray.push({ start: captionStart, end: captionEnd, caption: captionText.trim() });
+    captionsArray.push({ start: captionStart, end: captionEnd, caption: Trim(captionText) });
     AddCaptionListRow(captionsArray.length - 1);
+    //RefreshCaptionFileDisplay();
 }
 
-// parses webvtt time string format into floating point seconds
+function SortAndDisplayCaptionList() {
+    captionsArray.sort(function(a, b) {
+        return a.start - b.start;
+    });
+    $("#display div").remove();
+    for (var ci = 0; ci < captionsArray.length; ++ci) {
+        AddCaptionListRow(ci);
+    }
+}
+
+function Trim(s) {
+    return s.replace(/^\s+|\s+$/g, "");
+}
+
+function hmsToSecondsOnly(str) {
+    
+    var p = str.split(':'),
+        s = 0, m = 1;
+
+    while (p.length > 0) {
+        s += m * parseInt(p.pop(), 10);
+        m *= 60;
+    }
+    
+    return s;
+}
+
+//  parses webvtt time string format into floating point seconds
 function ParseTime(sTime) {
+
+    let seconds = hmsToSecondsOnly(sTime);
+    //add end of time
+    return seconds+"."+sTime.split(".")[1]
+
     //  parse time formatted as hours:mm:ss.sss where hours are optional
+    /*
     if (sTime) {
         var m = sTime.match( /^\s*(\d+)?:?(\d+):([\d\.]+)\s*$/ );
         if (m != null) {
@@ -311,17 +311,24 @@ function ParseTime(sTime) {
                 return seconds;
             }
         }
-    }
+    }*/
     return 0;
 }
 
-// formats floating point seconds into the webvtt time string format
+//  formats floating point seconds into the webvtt time string format
 function FormatTime(seconds) {
     var hh = Math.floor(seconds / (60 * 60));
     var mm = Math.floor(seconds / 60) % 60;
     var ss = seconds % 60;
     return (hh == 0 ? "" : (hh < 10 ? "0" : "") + hh.toString() + ":") + (mm < 10 ? "0" : "") + mm.toString() + ":" + (ss < 10 ? "0" : "") + ss.toFixed(3);
 }
+
+//  our state
+// var file_loaded = false;
+// var file_loaded_id = undefined;
+// var file_loaded_folder_id = undefined;
+// var captionsArray = [];
+// var autoPauseAtTime = -1;
 
 function FindCaptionIndex(seconds) {
     var below = -1;
@@ -343,17 +350,29 @@ function FindCaptionIndex(seconds) {
 
 function PlayCaptionFromList(listRowId) {
     var captionsArrayIndex = parseInt(listRowId.match(/ci(\d+)/)[1]);
+
     var vid = $('#podvideoplayer').get(0).player;
+    // vid.pause();
     vid.currentTime(captionsArray[captionsArrayIndex].start);
     autoPauseAtTime = captionsArray[captionsArrayIndex].end;
     vid.play();
 }
 
-/**
- * Escape Html entities
- */
+function CreateVTTSource() {
+    var s = "WEBVTT\r\n\r\n";
+    for (var i = 0; i < captionsArray.length; ++i) {
+        if (captionsArray[i].caption != "") {
+            s += (FormatTime(captionsArray[i].start) + " --> " + FormatTime(captionsArray[i].end) + "\r\n");
+            s += captionsArray[i].caption + "\r\n\r\n";
+        }
+    }
+    return s;
+}
+
+// var captionFileSourceUpdateTimer = null;
+
 function XMLEncode(s) {     
-    return s.replace(/\&/g, '&amp;').replace(/“/g, '&quot;').replace(/”/g,'&quot;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); 
+    return s.replace(/\&/g, '&amp;').replace(/“/g, '&quot;').replace(/”/g,'&quot;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');   //.replace(/'/g, '&apos;').replace(/"/g, '&quot;');
 }
 
 function XMLDecode(s) {
@@ -382,7 +401,7 @@ function LoadCaptionFile(fileObject) {
     }
 }
 
-// invoked by script insertion of proxyvtt.ashx
+//  invoked by script insertion of proxyvtt.ashx
 function ProcessProxyVttResponse(obj) {
     if (obj.status == "error")
         alert("Error loading caption file: " + obj.message);
@@ -393,7 +412,13 @@ function ProcessProxyVttResponse(obj) {
         file_loaded_name = obj.file_name;
         file_loaded_id = obj.id_file;
         current_folder = obj.id_folder;
-        if (obj.response.indexOf("WEBVTT") == 0) {
+        /*
+        console.log("Index : " + obj.response.indexOf("WEBVTT"));
+        console.log("Includes : " + obj.response.includes("WEBVTT"));
+        console.log("charAt : " + obj.response.charAt(0));
+        console.log("charCodeAt : " + obj.response.charCodeAt(0));
+        */
+        if (obj.response.indexOf("WEBVTT") == 0 || obj.response.indexOf("WEBVTT") == 1) {
             ParseAndLoadWebVTT(obj.response);
         } else {
             alert("Unrecognized caption file format.");
@@ -408,10 +433,10 @@ function ProcessProxyVttResponse(obj) {
 function ParseAndLoadWebVTT(vtt) {
 
     var rxSignatureLine = /^WEBVTT(?:\s.*)?$/;
-
     var vttLines = vtt.split(/\r\n|\r|\n/); // create an array of lines from our file
 
-    if (!rxSignatureLine.test(vttLines[0])) { // must start with a signature line
+    //if (!rxSignatureLine.test(vttLines[0])) { // must start with a signature line
+    if (vtt.trim().split(/\r\n|\r|\n/)[0].toLowerCase() !== "webvtt") {
         alert("Not a valid time track file.");
         return;
     }
@@ -425,8 +450,9 @@ function ParseAndLoadWebVTT(vtt) {
 
     function appendCurrentCaption() {
         if (cueStart && cueEnd && cueText) {
-            captionsArray.push({ start: cueStart, end: cueEnd, caption: cueText.trim() });
+            captionsArray.push({ start: cueStart, end: cueEnd, caption: Trim(cueText) });
         }
+
         cueStart = cueEnd = cueText = null;
     }
 
@@ -463,5 +489,5 @@ function ParseAndLoadWebVTT(vtt) {
         }
     }
     appendCurrentCaption();
-    $('#captionContent').val(vtt);
+    SortAndDisplayCaptionList();
 }
