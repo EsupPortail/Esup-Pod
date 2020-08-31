@@ -19,6 +19,8 @@ $(document).ready(function(){
         let data = {'src': url_search.get('src'), 'csrfmiddlewaretoken': Cookies.get('csrftoken')};
         send_form_data(url, data, "ProcessProxyVttResponse");
     }
+    let placeholder = gettext("WEBVTT\n\nstart time(00:00.000) --> end time(00:00.000)\ncaption text");
+    $('#captionContent').attr('placeholder', placeholder);
 });
 
 $(document).on('submit', '#form_save_captions', function(e) {

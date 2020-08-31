@@ -46,7 +46,31 @@ textarea {
 }
 
 /* the list of captions */
-
+.caption_content .caption_title{
+   display: flex;
+   position: relative;
+}
+.caption_content svg{
+    width: 20px;
+    color: var(--secondary);
+    margin-left: 4px;
+}
+.caption_content .caption_title:hover .help_text{
+    display: block;
+}
+.caption_content .help_text{
+    display: none;
+    position: absolute;
+    background: var(--primary);
+    color: #fff;
+    width: calc(100% - 110px);
+    right: 0;
+    padding: .4em .8em;
+    border-radius: 4px;
+    box-shadow: 4px 4px 10px #ccc;
+    font-size: 15px;
+    line-height: 1.4;
+}
 #display {
     border: solid 1px #999;
     height: 442px;
