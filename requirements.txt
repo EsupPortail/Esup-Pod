@@ -3,7 +3,7 @@ django-ckeditor==5.3.1
 Pillow==7.1.0
 django-tagging==0.4.6
 django-modeltranslation==0.12.2
-webvtt-py==0.4.2
+webvtt-py==0.4.5
 django-cas-client==1.5.2
 ldap3==2.5
 django-progressbarupload==0.1.7
@@ -17,7 +17,7 @@ django-lti-provider==0.4.0
 django-auth-mixins==1.0.1
 celery==4.3.0
 pandas
-deepspeech==0.6.1
+deepspeech==0.8.2
 billiard<4.0,>=3.6.0
 webrtcvad
 django-select2-forms==2.1.0
