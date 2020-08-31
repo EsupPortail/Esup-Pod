@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-31 14:26+0200\n"
+"POT-Creation-Date: 2020-08-31 15:36+0200\n"
 "PO-Revision-Date: 2020-04-30 12:12+0200\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -109,6 +109,7 @@ msgid "Chapters"
 msgstr "Le chapitre"
 
 #: pod/completion/static/js/caption_maker.js:22
+#: pod/static/js/caption_maker.js:22
 msgid ""
 "WEBVTT\n"
 "\n"

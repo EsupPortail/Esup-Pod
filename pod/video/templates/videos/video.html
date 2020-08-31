@@ -46,7 +46,7 @@
 {% block page_extra_head %}
 
 {% include 'videos/video-header.html' %}
-
+<link rel="stylesheet" href="{% static 'css/comment-style.css' %}">
 <style>
 {{channel.style}}
 {% if channel.color %}
@@ -212,6 +212,9 @@ body {
 </div>
   {% include 'videos/video-info.html' %}
 </div>
+{% if active_video_comment %}
+{% include 'videos/video-comment.html' with is_auth=request.user.is_authenticated disable=video.disable_comment %}
+{% endif %}
 {%endif%}
 {% endblock video-element %}
 </div>
@@ -238,5 +241,23 @@ body {
 {% if not form %}
 {% include 'videos/video-script.html'%}
 {% endif %}
-
+{% if active_video_comment and not video.disable_comment %}
+{% if request.user == video.owner %}
+<script>
+    var is_video_owner = true;
+</script>
+{% else %}
+<script>
+    var is_video_owner = false;
+</script>
+{% endif %}
+<script>
+    var user_fullName = `{{request.user.first_name}} {{request.user.last_name|upper}}`;
+    var user_id = "{{ request.user.id }}" === "None"? false: {{ request.user.id }};
+    var is_authenticated = JSON.parse("{{request.user.is_authenticated|yesno:"true,false"}}");
+    var is_superuser = JSON.parse("{{request.user.is_superuser|yesno:"true,false"}}");
+</script>
+<script src="{% static 'js/moment_with_locales.min.js' %}"></script>
+<script defer src="{% static 'js/comment-script.js' %}"></script>
+{% endif %}
 {% endblock more_script %}
