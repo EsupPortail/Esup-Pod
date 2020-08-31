@@ -292,9 +292,13 @@ $(document).on('change', "#ufile", function(e) {
     if(data.list_element) {
         var folder_id = data.folder_id;
         console.log(data)
-        $("#folder_"+folder_id).contents().filter(function(){ 
+        let textElt = $("#folder_"+folder_id).contents().filter(function(){ 
           return this.nodeType == 3; 
-        })[0].nodeValue = "  "+data.folder_name
+        })
+        if(textElt.length > 0){
+          textElt[0].nodeValue = "  "+data.folder_name
+        }
+        
         send_form_data($("#folder_"+folder_id).data('target'), {}, "show_folder_files", "get");
     
         //dismiss modal

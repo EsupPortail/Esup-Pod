@@ -684,6 +684,7 @@ def user_folders(request):
     except EmptyPage:
         folders = paginator.page(paginator.num_pages)
     final_folders = list(folders)
+    print(final_folders)
     json_resp = {"folders": final_folders, 
     "current_page": int(page),
     "next_page": (-1 if ((int(page)+1) > paginator.num_pages) else(int(page)+1)), "total_pages": paginator.num_pages}
