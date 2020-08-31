@@ -289,17 +289,24 @@ $(document).on('change', "#ufile", function(e) {
   
 
   function reloadFolder(data){
+    console.log("=== RELOAD FOLDER ===")
     if(data.list_element) {
         var folder_id = data.folder_id;
-        console.log(data)
+
         let textElt = $("#folder_"+folder_id).contents().filter(function(){ 
           return this.nodeType == 3; 
         })
         if(textElt.length > 0){
           textElt[0].nodeValue = "  "+data.folder_name
         }
-        
-        send_form_data($("#folder_"+folder_id).data('target'), {}, "show_folder_files", "get");
+
+        if(data.new_folder == true){
+          let type = $("#list_folders_sub").data("type")
+          $("#list_folders_sub").prepend('<div style="padding:0; margin:0;">' + createFolder(data.folder_id,data.folder_name,true,type,undefined) + '</div>')
+        }
+        console.log(data.new_folder)
+        console.log("=== CALL show_folder_files ===")
+        send_form_data("/podfile/get_folder_files/"+ folder_id, {}, "show_folder_files", "get");
     
         //dismiss modal
         $('#folderModalCenter').modal('hide');
@@ -307,7 +314,6 @@ $(document).on('change', "#ufile", function(e) {
         $('#folderModalCenter').find('.modal-body input#formfolderid').val("");
 
     } else {
-      alert("ERROR2")
         showalert(gettext('You are no longer authenticated. Please log in again.'), "alert-danger");
     }
   }

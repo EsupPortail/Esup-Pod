@@ -187,6 +187,7 @@ def get_rendered(request):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def editfolder(request):
+    new_folder = False
 
     form = UserFolderForm(request.POST)
     if (request.POST.get("folderid")
@@ -212,6 +213,8 @@ def editfolder(request):
         else:
             folder.owner = request.user
         try:
+            if not request.POST.get("folderid"):
+                new_folder = True
             folder.save()
         except IntegrityError:
             messages.add_message(
@@ -226,9 +229,11 @@ def editfolder(request):
     list_element = {
         'list_element': rendered,
         'folder_id': current_session_folder.id,
-        'folder_name': current_session_folder.name
+        'folder_name': current_session_folder.name,
+        'new_folder': new_folder
     }
     data = json.dumps(list_element)
+    print("return of editfolder : " + data)
     return HttpResponse(data, content_type='application/json')
 
 
@@ -311,7 +316,6 @@ def uploadfiles(request):
                     "podfile.add_customimagemodel") or (
                         request.user in folder.users.all()))
         ):
-            print("abc")
             messages.add_message(
                 request, messages.ERROR,
                 _(u'You cannot edit file on this folder.'))
