@@ -30,6 +30,8 @@ $(document).on('reset', '#accordeon form.completion', function(event) {
 	var form_new = 'form_new_' + name_form;
 	var list = 'list_' + name_form
 	$('span#' + id_form).html('');
+	if(id_form == "form_track")
+	    $('span#form_track').css('width', 'auto');
 	$('form#' + form_new).show();
 	$('form').show();
 	$('a.title').css('display', 'initial');
@@ -40,6 +42,8 @@ $(document).on('reset', '#accordeon form.completion', function(event) {
 
 function show_form(data, form) {
 	$('#'+form).hide().html(data).fadeIn();
+	if(form === "form_track")
+	    $('#form_track').css('width', '100%');	
 };
 
 var ajaxfail = function(data, form) {
@@ -73,6 +77,8 @@ $(document).on('submit', '#accordeon form.completion', function(e) {
 var sendandgetform = function(elt, action, name, form, list) {
 	var href = $(elt).attr('action');
 	if (action == 'new' || action == 'form_save_new') {
+		$('#'+form).html(
+			'<div style="width:100%; margin: 2rem;"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>');
 		$('.info-card').hide();
 		$('#' + name + '-info').show();
 		var jqxhr = $.ajax({
@@ -91,12 +97,14 @@ var sendandgetform = function(elt, action, name, form, list) {
 		jqxhr.fail(function($xhr) {
 			var data = $xhr.status + ' : ' + $xhr.statusText;
 			ajaxfail(data);
+			$('form.form_change').show();
 			$('form.form_modif').show();
 			$('form.form_delete').show();
 			$('form.form_new').show();
 			$('#' + form).html('');
 		});
 		$('form.form_new').hide();
+		$('form.form_change').hide();
 		$('form.form_modif').hide();
 		$('form.form_delete').hide();
 		$('a.title').css('display', 'none');
@@ -167,7 +175,7 @@ var sendandgetform = function(elt, action, name, form, list) {
 	if (action == 'save') {
 		$('.form-help-inline').parents('div.form-group').removeClass('has-error');
 		$('.form-help-inline').remove();
-		if (verify_fields()) {
+		if (verify_fields(form)) {
 			var data_form = $('form#' + form).serialize();
 			var jqxhr = $.ajax({
 				method: 'POST',
@@ -263,37 +271,42 @@ function verify_fields(form) {
 		});
 	} else if (form == 'form_track') {
 		var element = document.getElementById('id_kind');
-		var value = element.options[element.selectedIndex].value;
-		var kind = element.options[element.selectedIndex].text;
-		if (value != 'subtitles' && value != 'captions') {
+		var value = element.options[element.selectedIndex].value.trim().toLowerCase();
+		var kind = element.options[element.selectedIndex].text.trim().toLowerCase();
+		if (value !== 'subtitles' && value !== 'captions') {
 			$('select#id_kind')
 				.after("<span class='form-help-inline'>" + gettext('Please enter a correct kind.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
 			error = true;
 		}
 		var element = document.getElementById('id_lang');
-		var lang = element.options[element.selectedIndex].text;
-		if (element.options[element.selectedIndex].value == '') {
+		var lang = element.options[element.selectedIndex].value.trim().toLowerCase();
+		if (element.options[element.selectedIndex].value.trim() === '') {
 			$('select#id_lang')
 				.after("<span class='form-help-inline'>" + gettext('Please select a language.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
 			error = true;
 		}
-		if (document.getElementById('id_src').value == '') {
+		var file_abs_path = document.getElementById('fileinput_id_src').getElementsByTagName('a')[0].getAttribute('href');
+		if (document.getElementById('id_src').value.trim() === '') {
 			$('input#id_src')
 				.after("<span class='form-help-inline'>" + gettext('Please specify a track file.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
 			error = true;
 		}
-		if (document.getElementById('file-picker-path').innerHTML.split(' ')[1] != '(VTT)') {
+		else if (!file_abs_path.match(/\.vtt$/)) {
 			$('input#id_src')
 				.after("<span class='form-help-inline'>" + gettext('Only .vtt format is allowed.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
 			error = true;
 		}
 		var is_duplicate = false;
-		$('#table_list_tracks > tbody > tr').each(function() {
-			if (kind == $(this).find('td.subtitle_kind').text() && lang == $(this).find('td.subtitle_lang').text()) {
+		var file_name = file_abs_path.match(/([\w\d_\-]+)(\.vtt)/)[1].toLowerCase();
+		$('.grid-list-track .track_kind.kind').each(function() {
+			if (
+			    kind === $(this).text().trim().toLowerCase() &&
+			    lang === $(this).siblings("#"+$(this).attr('id')+".track_kind.lang").text().trim().toLowerCase() &&
+			    file_name === $(this).siblings("#"+$(this).attr('id')+".track_kind.file").text().trim().split(' ')[0].toLowerCase()) {
 				is_duplicate = true;
 				return false;
 			}
@@ -322,5 +335,3 @@ function verify_fields(form) {
 	}
 	return !error;
 }
-
-$('.new-contributor').on('click')

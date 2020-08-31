@@ -52,20 +52,22 @@
 			</li>
 			<li class="contenuTitre">
 				<span id="list_track">
-					<p>{% trans 'You can use' %} <a href="{% url "video_caption_maker" slug=video.slug%}" title="{% trans 'Video Caption Maker' %}">{% trans 'Video Caption Maker' %}</a> {% trans 'to create your subtitles and/or caption(s) files' %}.</p>
 					{% include 'track/list_track.html' with dest='video_completion_track' %}
 				</span>
 				&nbsp;
-				<span id="form_track">
-					{% if form_track %}
-						{% include 'track/form_track.html' with form_track=form_track %}
-					{% endif %}
-				</span>
-				<form class="form_new completion" id="form_new_track" action="{% url 'video_completion_track' slug=video.slug %}" method="POST">
+				<div class="breadcrumb">
+				    <p><a class="btn btn-secondary" href="{% url "video_caption_maker" slug=video.slug%}" title="{% trans 'to create your subtitles and/or caption(s) files' %}">{% trans 'Video Caption Maker' %}</a></p>
+				    <span id="form_track">
+				    {% if form_track %}
+					{% include 'track/form_track.html' with form_track=form_track %}
+				    {% endif %}
+				    </span>
+				    <form class="form_new completion" id="form_new_track" action="{% url 'video_completion_track' slug=video.slug %}" method="POST">
 					{% csrf_token %}
 					<input type="hidden" name="action" value="new"/>
 					<input type="submit" value="{% trans 'Add a new subtitle or caption file' %}" class="new_track btn btn-primary"/>
-				</form>
+				    </form>
+				</div>
 			</li>
 			&nbsp;
 			<li>

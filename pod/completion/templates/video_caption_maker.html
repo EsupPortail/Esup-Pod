@@ -95,9 +95,7 @@
     </div>
     <div style="display: inline-block; float: left; width: 49%;">
         <span>{% trans "Caption list" %} :</span>
-        <div id="display">
-
-        </div>
+	<textarea style="border: 1px solid #999; height: 442px; overflow:auto; resize:none; width:100%;" id="captionContent"></textarea>
         <div >
         <form class="form_save completion" id="form_save_captions" action="{% url 'video_caption_maker' slug=video.slug %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
