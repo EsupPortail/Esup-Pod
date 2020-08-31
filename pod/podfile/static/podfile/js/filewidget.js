@@ -301,11 +301,16 @@ $(document).on('change', "#ufile", function(e) {
         }
 
         if(data.new_folder == true){
+          console.log("creating ....")
           let type = $("#list_folders_sub").data("type")
           $("#list_folders_sub").prepend('<div style="padding:0; margin:0;">' + createFolder(data.folder_id,data.folder_name,true,type,undefined) + '</div>')
         }
         console.log(data.new_folder)
         console.log("=== CALL show_folder_files ===")
+
+        if(data.deleted){
+         $("#folder_" + data.deleted_id).remove()
+        }
         send_form_data("/podfile/get_folder_files/"+ folder_id, {}, "show_folder_files", "get");
     
         //dismiss modal
@@ -372,6 +377,7 @@ $(document).on('change', "#ufile", function(e) {
   }
 
   function createFolder(foldid, foldname, isCurrent,type,owner=undefined){
+    console.log("Call folder create")
     let construct = ""
     construct+= ('<a href="#" class="folder ' +( isCurrent ? 'font-weight-bold' : '') + ' " id="folder_' + foldid + '" data-foldname="' + foldname + '" data-id="' + foldid+ '" data-target="');
     let isType = (type != "None" && type != undefined)

@@ -261,7 +261,9 @@ def deletefolder(request):
 
     list_element = {
         'list_element': rendered,
-        'folder_id': current_session_folder.id
+        'folder_id': current_session_folder.id,
+        "deleted": True,
+        "deleted_id": request.POST['id']
     }
     data = json.dumps(list_element)
     return HttpResponse(data, content_type='application/json')
