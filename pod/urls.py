@@ -102,12 +102,12 @@ urlpatterns = [
         name='api_chunked_upload'),
 
     url(r'^ajax_calls/search_user/', user_autocomplete),
-    url(r'^ajax_calls/search_share_user/', user_share_autocomplete),	
-    url(r'^ajax_calls/folder_shared_with/', folder_shared_with),	
-    url(r'^ajax_calls/remove_shared_user/', remove_shared_user),	
-    url(r'^ajax_calls/add_shared_user/', add_shared_user),	
-    url(r'^ajax_calls/user_folders/', user_folders),	
-    url(r'^ajax_calls/current_session_folder/', 	
+    url(r'^ajax_calls/search_share_user/', user_share_autocomplete),
+    url(r'^ajax_calls/folder_shared_with/', folder_shared_with),
+    url(r'^ajax_calls/remove_shared_user/', remove_shared_user),
+    url(r'^ajax_calls/add_shared_user/', add_shared_user),
+    url(r'^ajax_calls/user_folders/', user_folders),
+    url(r'^ajax_calls/current_session_folder/',
         get_current_session_folder_ajax),
     # my channels
     url(r'^my_channels/$', my_channels, name='my_channels'),
@@ -259,4 +259,3 @@ if settings.DEBUG:
 # Change admin site title
 admin.site.site_header = _("Pod Administration")
 admin.site.site_title = _("Pod Administration")
-

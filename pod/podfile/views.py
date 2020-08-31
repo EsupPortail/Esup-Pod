@@ -66,10 +66,6 @@ def home(request, type=None):
     user_home_folder = get_object_or_404(
         UserFolder, name="home", owner=request.user)
 
-    #user_folder = UserFolder.objects.filter(
-     #   owner=request.user
-    #).exclude(owner=request.user, name="home")
-
     share_folder = UserFolder.objects.filter(
         groups__in=request.user.groups.all()
     ).exclude(owner=request.user).order_by('owner', 'id')
@@ -118,9 +114,9 @@ def get_current_session_folder(request):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def get_folder_files(request, id, type=None):
-  
+
     if type is None:
-        type = request.GET.get('type', None) 
+        type = request.GET.get('type', None)
     folder = get_object_or_404(UserFolder, id=id)
     if (request.user != folder.owner
             and not request.user.groups.filter(
@@ -184,6 +180,13 @@ def get_rendered(request):
     return rendered, current_session_folder
 
 
+def decide_owner(request, form, folder):
+    if hasattr(form.instance, 'owner'):
+        return form.instance.owner
+    else:
+        return request.user
+
+
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def editfolder(request):
@@ -208,10 +211,8 @@ def editfolder(request):
 
     if form.is_valid():
         folder = form.save(commit=False)
-        if hasattr(form.instance, 'owner'):
-            folder.owner = form.instance.owner
-        else:
-            folder.owner = request.user
+        folder.owner = decide_owner(request, form, folder)
+
         try:
             if not request.POST.get("folderid"):
                 new_folder = True
@@ -642,7 +643,8 @@ def add_shared_user(request):
             return HttpResponseBadRequest()
     else:
         return HttpResponseBadRequest()
-    
+
+
 @login_required(redirect_field_name='referrer')
 def get_current_session_folder_ajax(request):
     fold = request.session.get(
@@ -650,9 +652,20 @@ def get_current_session_folder_ajax(request):
     mimetype = 'application/json'
     return HttpResponse(json.dumps({"folder": fold}), mimetype)
 
+
+def fetch_owners(request, folders_list):
+    if request.user.is_superuser:
+        for fold in folders_list:
+            if fold["owner"] != request.user.id:
+                fold['owner'] = User.objects.get(id=fold['owner']).username
+            else:
+                del fold['owner']
+    return folders_list
+
+
 @login_required(redirect_field_name='referrer')
 def user_folders(request):
-    VALUES_LIST = ['id','name']
+    VALUES_LIST = ['id', 'name']
     if request.user.is_superuser:
         VALUES_LIST.append('owner')
 
@@ -660,7 +673,7 @@ def user_folders(request):
 
     if not request.user.is_superuser:
         user_folder = user_folder.filter(owner=request.user)
-    
+
     user_folder = user_folder.values(*list(VALUES_LIST))
 
     search = request.GET.get('search', "")
@@ -670,15 +683,8 @@ def user_folders(request):
     if search != "":
         user_folder = user_folder.filter(Q(name__icontains=search) | Q(
             name=current_fold))
-    
-    folders_list = user_folder
 
-    if request.user.is_superuser:
-        for fold in folders_list:
-            if fold["owner"] != request.user.id:
-                fold['owner'] = User.objects.get(id=fold['owner']).username
-            else:
-                del fold['owner']
+    folders_list = fetch_owners(request, user_folder)
 
     page = request.GET.get('page', 1)
 
@@ -689,14 +695,12 @@ def user_folders(request):
         folders = paginator.page(1)
     except EmptyPage:
         folders = paginator.page(paginator.num_pages)
-    final_folders = list(folders)
-    print(final_folders)
-    json_resp = {"folders": final_folders, 
-    "current_page": int(page),
-    "next_page": (-1 if ((int(page)+1) > paginator.num_pages) else(int(page)+1)), "total_pages": paginator.num_pages}
+    folders = list(folders)
+    json_resp = {"folders": folders,
+                 "current_page": int(page),
+                 "next_page": (-1 if ((int(
+                     page)+1) > paginator.num_pages) else(
+                         int(page)+1)), "total_pages": paginator.num_pages}
     data = json.dumps(json_resp)
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
-
-
-
