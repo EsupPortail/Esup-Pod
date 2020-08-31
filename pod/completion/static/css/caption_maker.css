@@ -46,6 +46,10 @@ textarea {
 }
 
 /* the list of captions */
+.grayNoVideo{
+    display: flex;
+    flex-wrap: wrap;
+}
 .caption_content .caption_title{
    display: flex;
    position: relative;
@@ -71,6 +75,7 @@ textarea {
     font-size: 15px;
     line-height: 1.4;
 }
+
 #display {
     border: solid 1px #999;
     height: 442px;
@@ -106,7 +111,21 @@ textarea {
     font-style: italic;
 }
 
-
 #captionmakerModal.save > .modal-dialog {
     max-width: 1000px;
+}
+@media only screen and (max-width: 800px){
+    .grayNoVideo{
+        display: flex;
+	flex-direction: column;
+    }
+    .grayNoVideo > div{
+	width: 100% !important;
+    }
+    .grayNoVideo div:first-child{
+	overflow: hidden;
+	margin: 0;
+	margin-bottom: 1em;
+	min-height: unset !important;
+    }
 }
