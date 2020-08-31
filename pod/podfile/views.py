@@ -636,15 +636,19 @@ def add_shared_user(request):
             return HttpResponseBadRequest()
     else:
         return HttpResponseBadRequest()
-
+    
+@login_required(redirect_field_name='referrer')
+def get_current_session_folder_ajax(request):
+    fold = request.session.get(
+        'current_session_folder', "home")
+    mimetype = 'application/json'
+    return HttpResponse(json.dumps({"folder": fold}), mimetype)
 
 @login_required(redirect_field_name='referrer')
 def user_folders(request):
     VALUES_LIST = ['id','name']
     if request.user.is_superuser:
         VALUES_LIST.append('owner')
-    #user_home_folder = UserFolder.objects.filter(
-    #   name="home", owner=request.user).values(*list(VALUES_LIST))
 
     user_folder = UserFolder.objects.exclude(owner=request.user, name="home")
 
@@ -654,15 +658,18 @@ def user_folders(request):
     user_folder = user_folder.values(*list(VALUES_LIST))
 
     search = request.GET.get('search', "")
+    current_fold = json.loads(
+        get_current_session_folder_ajax(
+            request).content.decode("utf-8"))["folder"]
     if search != "":
-        user_folder = user_folder.filter(name__icontains=search)
+        user_folder = user_folder.filter(Q(name__icontains=search) | Q(
+            name=current_fold))
+    
     folders_list = user_folder
 
     if request.user.is_superuser:
         for fold in folders_list:
-            print("foldddd")
             if fold["owner"] != request.user.id:
-                print("not same " +  User.objects.get(id=fold['owner']).username)
                 fold['owner'] = User.objects.get(id=fold['owner']).username
             else:
                 del fold['owner']
@@ -685,9 +692,4 @@ def user_folders(request):
     return HttpResponse(data, mimetype)
 
 
-@login_required(redirect_field_name='referrer')
-def get_current_session_folder_ajax(request):
-    fold = request.session.get(
-        'current_session_folder', "home")
-    mimetype = 'application/json'
-    return HttpResponse(json.dumps({"folder": fold}), mimetype)
+

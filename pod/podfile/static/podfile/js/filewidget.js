@@ -369,7 +369,7 @@ $(document).on('change', "#ufile", function(e) {
     if(owner != undefined){
       foldname = '<i>' + foldname + '</i> <b>(' + owner+')</b>' 
     }
-    construct+= ('><img class="directory-image" src="' + (isCurrent ? (static_url +'podfile/images/opened_folder.png') : (static_url + 'podfile/images/folder.png') )+'"/>  '+foldname+' ('+foldid+')'+'</a>')
+    construct+= ('><img class="directory-image" src="' + (isCurrent ? (static_url +'podfile/images/opened_folder.png') : (static_url + 'podfile/images/folder.png') )+'"/>  '+foldname+'</a>')
     return construct
   }
 
