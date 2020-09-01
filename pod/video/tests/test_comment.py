@@ -132,9 +132,16 @@ class TestComment(TestCase):
         data['author__first_name'] = self.owner_user.first_name
         data['id'] = pk
         expected_content = JsonResponse(data, safe=False).content
+
+        resp_content = response.content.decode("UTF-8")
+        resp_content = ast.literal_eval(resp_content)
+
+        exp_content = expected_content.decode("UTF-8")
+        exp_content = ast.literal_eval(exp_content)
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func, add_comment)
-        self.assertEqual(response.content, expected_content)
+        self.assertEqual(resp_content, exp_content)
         comment = Comment.objects.get(id=pk)
         self.assertEqual(comment.parent, p_comment)
 
