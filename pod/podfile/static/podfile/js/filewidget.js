@@ -293,20 +293,20 @@ $(document).on('change', "#ufile", function(e) {
     if(data.list_element) {
         var folder_id = data.folder_id;
 
-        let textElt = $("#folder_"+folder_id).contents().filter(function(){ 
-          return this.nodeType == 3; 
-        })
-        if(textElt.length > 0){
-          textElt[0].nodeValue = "  "+data.folder_name
+        if(data.folder){
+          let textElt = $("#folder_"+folder_id).contents().filter(function(){ 
+            return this.nodeType == 3; 
+          })
+          if(textElt.length > 0){
+            textElt[0].nodeValue = "  "+data.folder_name
+          }
         }
+   
 
         if(data.new_folder == true){
-          console.log("creating ....")
           let type = $("#list_folders_sub").data("type")
           $("#list_folders_sub").prepend('<div style="padding:0; margin:0;">' + createFolder(data.folder_id,data.folder_name,true,type,undefined) + '</div>')
         }
-        console.log(data.new_folder)
-        console.log("=== CALL show_folder_files ===")
 
         if(data.deleted){
          $("#folder_" + data.deleted_id).remove()
