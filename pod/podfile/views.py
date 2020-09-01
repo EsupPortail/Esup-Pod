@@ -73,6 +73,7 @@ def home(request, type=None):
     share_folder_user = UserFolder.objects.filter(
         users=request.user).exclude(
             owner=request.user).order_by('owner', 'id')
+    print(share_folder_user)
 
     current_session_folder = get_current_session_folder(request)
 

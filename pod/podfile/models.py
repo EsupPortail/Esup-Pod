@@ -87,6 +87,8 @@ def create_owner_directory(sender, instance, created, **kwargs):
 
 
 def get_upload_path_files(instance, filename):
+    print("USER IS")
+    print(instance.created_by.owner)
     user_rep = instance.created_by.owner.hashkey if (
         instance.created_by.owner) else instance.created_by.username
     fname, dot, extension = filename.rpartition('.')
