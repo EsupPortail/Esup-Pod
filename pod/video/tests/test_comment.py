@@ -5,6 +5,7 @@ from pod.authentication.models import User
 from pod.video.models import Comment, Video, Type
 from django.contrib.sites.models import Site
 from pod.video.views import get_comments, add_comment, delete_comment
+import ast
 
 import logging
 
@@ -105,7 +106,14 @@ class TestComment(TestCase):
         expected_content = JsonResponse(data, safe=False).content
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func, add_comment)
-        self.assertEqual(response.content, expected_content)
+
+        resp_content = response.content.decode("UTF-8")
+        resp_content = ast.literal_eval(resp_content)
+
+        exp_content = expected_content.decode("UTF-8")
+        exp_content = ast.literal_eval(exp_content)
+
+        self.assertEqual(resp_content, exp_content)
         p_comment = Comment.objects.get(id=pk)
         self.assertIsNone(p_comment.parent)
 
