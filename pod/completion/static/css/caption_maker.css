@@ -49,7 +49,7 @@ textarea {
 }
 
 /* the list of captions */
-.grayNoVideo{
+.gray_no_video{
     display: flex;
     flex-wrap: wrap;
 }
@@ -83,14 +83,14 @@ textarea {
     max-width: 1000px;
 }
 @media only screen and (max-width: 800px){
-    .grayNoVideo{
+    .gray_no_video{
         display: flex;
 	flex-direction: column;
     }
-    .grayNoVideo > div{
+    .gray_no_video > div{
 	width: 100% !important;
     }
-    .grayNoVideo div:first-child{
+    .gray_no_video div:first-child{
 	overflow: hidden;
 	margin: 0;
 	margin-bottom: 1em;
