@@ -1,12 +1,36 @@
+const caption_memories = {
+	start_time: '00:00.000'
+}
+const file_prefix = window.location.pathname.replace(/^\//, "").match(/\w+/)[0];
+
 $(document).on('click', 'a.file-name', function() {
     let url = '/podfile/get_file/file/'; 
     let data_form = $("#captionmaker_form" ).serializeArray();
     send_form_data(url, data_form, "ProcessProxyVttResponse");
 })
 
+// Charge caption/subtitle file if exists
+$(document).ready(function(){
+    
+    let url_search = new URLSearchParams(window.location.search);
+    if(url_search.has('src') && !isNaN(url_search.get('src')))
+    {
+        let url = '/podfile/get_file/file/';
+        let data = {'src': url_search.get('src'), 'csrfmiddlewaretoken': Cookies.get('csrftoken')};
+        send_form_data(url, data, "ProcessProxyVttResponse");
+    }
+    let placeholder = gettext("WEBVTT\n\nstart time(00:00.000) --> end time(00:00.000)\ncaption text");
+    let captionContent = $('#captionContent')
+    captionContent.attr('placeholder', placeholder);
+    captionContent.on("mouseup", function(e){
+	let selectedText = $(this).val().substring(this.selectionStart, this.selectionEnd);
+	playSelectedCaption(selectedText.trim());
+    });
+});
+
 $(document).on('submit', '#form_save_captions', function(e) {
     e.preventDefault();
-    if (!(captionsArray.length)) {
+    if($('#captionContent').val().trim() === ""){
         showalert(gettext("There is no captions to save"), "alert-danger");
         return;
     }
@@ -15,8 +39,7 @@ $(document).on('submit', '#form_save_captions', function(e) {
     }
     else {
         $(this).find('input[name="file_id"]').val("");
-        let href = window.location.href.split('/');
-        send_form_save_captions(href[href.length - 2] + '_captions_' + Date.now());
+	send_form_save_captions(`${file_prefix}_captions_${Date.now()}`);
     }
 })
 
@@ -24,20 +47,18 @@ $(document).on('click', '#modal-btn-new, #modal-btn-override', function() {
     $("#saveCaptionsModal").modal('hide');
     if (this.id == 'modal-btn-override') {
         $('#form_save_captions').find('input[name="file_id"]').val(file_loaded_id);
-        //alert($('#fileinput_id_src').find('strong').find('a').html());
-        //alert($('#fileinput_id_src').text().trim());
-        send_form_save_captions($('#fileinput_id_src').text().trim());
+	updateCaptionsArray($('#captionContent').val());
+	send_form_save_captions(file_loaded_name);
     }
     else if (this.id == 'modal-btn-new') {
         $('#form_save_captions').find('input[name="file_id"]').val("");
-        let href = window.location.href.split('/');
-        send_form_save_captions(href[href.length - 2] + '_captions_' + Date.now());
+	send_form_save_captions(`${file_prefix}_captions_${Date.now()}`);
     }
 })
 
 var send_form_save_captions = function(name) {
     rxSignatureLine = /^WEBVTT(?:\s.*)?$/;
-    vttContent = CreateVTTSource();
+    vttContent = $('#captionContent').val().trim();
     vttLines = vttContent.split(/\r\n|\r|\n/);
     if (!rxSignatureLine.test(vttLines[0])) {
         alert("Not a valid time track file.");
@@ -103,21 +124,40 @@ var captionBeingDisplayed = -1;
 
 function DisplayExistingCaption(seconds) {
     var ci = FindCaptionIndex(seconds);
-    if (ci != captionBeingDisplayed) {
-        captionBeingDisplayed = ci;
-        if (ci != -1) {
-            var theCaption = captionsArray[ci];
-            $("#captionTitle").text("Caption for segment from " + FormatTime(theCaption.start) + " to " + FormatTime(theCaption.end) + ":");
-            $("#textCaptionEntry").val(theCaption.caption);
-        } else {
-            $("#captionTitle").html("&nbsp;");
-            $("#textCaptionEntry").val("");
-        }
+    captionBeingDisplayed = ci;
+    if (ci != -1) {
+        var theCaption = captionsArray[ci];
+	let divs = document.querySelectorAll(".vjs-text-track-display div")
+	divs[divs.length - 1].innerText = theCaption.caption;
+        $("#captionTitle").text("Caption for segment from " + FormatTime(theCaption.start) + " to " + FormatTime(theCaption.end) + ":");
+        $("#textCaptionEntry").val(theCaption.caption);
+	$("#previewTrack").val(theCaption.caption);
+    } else {
+        $("#captionTitle").html("&nbsp;");
+        $("#textCaptionEntry").val("");
+	$("#previewTrack").val("");
     }
 }
 
 function existingCaptionsEndTime() {
     return captionsArray.length > 0 ? captionsArray[captionsArray.length - 1].end : 0;
+}
+
+let updateCaptionsArray = (vtt)=>{
+    let arr = vtt.split("\n\n");
+    captionsArray = [];
+    arr.forEach(text =>{
+	if(text.trim().toLowerCase() !== "webvtt")
+	{
+	    let data = text.split("\n");
+	    let times = data[0].split("-->");
+	    captionsArray.push({
+	        start: ParseTime(times[0]),
+		end: ParseTime(times[1]),
+		caption: data[1]
+	    });
+	}
+    })
 }
 
 function videoPlayEventHandler() {
@@ -206,13 +246,14 @@ $("#pauseButton").on('click',function() {
 function SaveCurrentCaption() {
     var playTime = $('#podvideoplayer').get(0).player.currentTime();
     var captionsEndTime = existingCaptionsEndTime();
+    let new_entry = $('#textCaptionEntry').val();
     if (playTime - 1 < captionsEndTime) {
         var ci = FindCaptionIndex(playTime - 1);
         if (ci != -1) {
-            UpdateCaption(ci, $("#textCaptionEntry").val());
-        }
+            UpdateCaption(ci, new_entry);
+        } 
     } else {
-        AddCaption(captionsEndTime, playTime, $("#textCaptionEntry").val());
+        AddCaption(captionsEndTime, playTime, new_entry);
     }
 }
 
@@ -225,52 +266,65 @@ $("#saveCaptionAndPlay").on('click',function() {
     $('#podvideoplayer').get(0).player.play();
 });
 
+/**
+ * Updat caption html content
+ */
+let updateCaptionHtmlContent = ()=>{
+    let vtt = "WEBVTT\n\n";
+    captionsArray.forEach( (cap, i) =>{
+    	vtt += `${FormatTime(cap.start)} --> ${FormatTime(cap.end)}\n${cap.caption}`;
+	if(i !== captionsArray.length - 1) vtt += '\n\n'
+    });
+    $('#captionContent').val(vtt);
+}
+
 function UpdateCaption(ci, captionText) {
     captionsArray[ci].caption = captionText;
-    $("#ci" + ci.toString() + " span:last-child").html(XMLEncode(captionText).replace(/\r\n|\r|\n/g, "<br/>"));
+    updateCaptionHtmlContent()
 }
 
 function AddCaptionListRow(ci) {
-    var theId = "ci" + ci.toString();
-    $("#display").append("<div id=\"" + theId + "\"><span>" + FormatTime(captionsArray[ci].start) + "</span><span>" + FormatTime(captionsArray[ci].end) + "</span><span>" + XMLEncode(captionsArray[ci].caption).replace(/\r\n|\r|\n/g, "<br/>") + "</span></div>");
-    $("#" + theId).click(function () {
-        PlayCaptionFromList($(this).attr("id"));
-    });
-}
-
-function AddCaptionListRow(ci) {
-    var theId = "ci" + ci.toString();
-    $("#display").append("<div id=\"" + theId + "\"><span>" + FormatTime(captionsArray[ci].start) + "</span><span>" + FormatTime(captionsArray[ci].end) + "</span><span>" + XMLEncode(captionsArray[ci].caption).replace(/\r\n|\r|\n/g, "<br/>") + "</span></div>");
-    $("#" + theId).click(function () {
-        PlayCaptionFromList($(this).attr("id"));
-    });
-}
-
-function AddCaption(captionStart, captionEnd, captionText) {
-    captionsArray.push({ start: captionStart, end: captionEnd, caption: Trim(captionText) });
-    AddCaptionListRow(captionsArray.length - 1);
-    //RefreshCaptionFileDisplay();
-}
-
-function SortAndDisplayCaptionList() {
-    captionsArray.sort(function(a, b) {
-        return a.start - b.start;
-    });
-    $("#display div").remove();
-    for (var ci = 0; ci < captionsArray.length; ++ci) {
-        AddCaptionListRow(ci);
+    let vtt = $('#captionContent');
+    let vtt_entry = $('#textCaptionEntry').val().trim();
+    let start = caption_memories.start_time;
+    var end = FormatTime($('#podvideoplayer').get(0).player.currentTime());
+    var captionsEndTime = existingCaptionsEndTime();
+    let caption_text = `${start} --> ${end}\n${vtt_entry}`;
+    if(vtt_entry !== "")
+    {
+        if(vtt.val().trim() === "")
+        {
+	    vtt.val(`WEBVTT\n\n${caption_text}`);
+        }
+        else{
+            vtt.val(`${vtt.val()}\n\n${caption_text}`);
+        }
+    	caption_memories.start_time = end;
     }
 }
 
-function Trim(s) {
-    return s.replace(/^\s+|\s+$/g, "");
+function AddCaption(captionStart, captionEnd, captionText) {
+    captionsArray.push({ start: captionStart, end: captionEnd, caption: captionText.trim() });
+    AddCaptionListRow(captionsArray.length - 1);
 }
 
-//  parses webvtt time string format into floating point seconds
+function hmsToSecondsOnly(str){
+    let p = str.split(":"),
+	s = 0, m = 1;
+    while( p.length > 0)
+    {
+        s += m * parseInt(p.pop(), 10);
+	m *= 60;
+    }
+    return s;
+}	
+
+// parses webvtt time string format into floating point seconds
 function ParseTime(sTime) {
-    //  parse time formatted as hours:mm:ss.sss where hours are optional
+    let seconds = hmsToSecondsOnly(sTime);
+    return seconds+"."+sTime.split(".")[1];
+    /*//  parse time formatted as hours:mm:ss.sss where hours are optional
     if (sTime) {
-        var m = sTime.match( /^\s*(\d+)?:?(\d+):([\d\.]+)\s*$/ );
         if (m != null) {
             return (m[1] ? parseFloat(m[1]) : 0) * 3600 + parseFloat(m[2]) * 60 + parseFloat(m[3]);
         } else {
@@ -281,23 +335,16 @@ function ParseTime(sTime) {
             }
         }
     }
-    return 0;
+    return 0;*/
 }
 
-//  formats floating point seconds into the webvtt time string format
+// formats floating point seconds into the webvtt time string format
 function FormatTime(seconds) {
     var hh = Math.floor(seconds / (60 * 60));
     var mm = Math.floor(seconds / 60) % 60;
     var ss = seconds % 60;
     return (hh == 0 ? "" : (hh < 10 ? "0" : "") + hh.toString() + ":") + (mm < 10 ? "0" : "") + mm.toString() + ":" + (ss < 10 ? "0" : "") + ss.toFixed(3);
 }
-
-//  our state
-// var file_loaded = false;
-// var file_loaded_id = undefined;
-// var file_loaded_folder_id = undefined;
-// var captionsArray = [];
-// var autoPauseAtTime = -1;
 
 function FindCaptionIndex(seconds) {
     var below = -1;
@@ -317,31 +364,26 @@ function FindCaptionIndex(seconds) {
     return -1;
 }
 
-function PlayCaptionFromList(listRowId) {
-    var captionsArrayIndex = parseInt(listRowId.match(/ci(\d+)/)[1]);
-
-    var vid = $('#podvideoplayer').get(0).player;
-    // vid.pause();
-    vid.currentTime(captionsArray[captionsArrayIndex].start);
-    autoPauseAtTime = captionsArray[captionsArrayIndex].end;
-    vid.play();
-}
-
-function CreateVTTSource() {
-    var s = "WEBVTT\r\n\r\n";
-    for (var i = 0; i < captionsArray.length; ++i) {
-        if (captionsArray[i].caption != "") {
-            s += (FormatTime(captionsArray[i].start) + " --> " + FormatTime(captionsArray[i].end) + "\r\n");
-            s += captionsArray[i].caption + "\r\n\r\n";
+function playSelectedCaption(timeline) {
+    if(timeline.includes("-->")){
+        let times = timeline.trim().split(/\s?\-\->\s?/);
+        let start = times[0].match(/[\d:\.]/)?ParseTime(times[0]): null;
+        let end = times[1].match(/[\d:\.]/)?ParseTime(times[1]): null;
+        if(!isNaN(start) && !isNaN(end))
+        {
+            var vid = $('#podvideoplayer').get(0).player;
+            vid.currentTime(start);
+            autoPauseAtTime = end;
+            vid.play();
         }
     }
-    return s;
 }
 
-// var captionFileSourceUpdateTimer = null;
-
+/**
+ * Escape Html entities
+ */
 function XMLEncode(s) {     
-    return s.replace(/\&/g, '&amp;').replace(/“/g, '&quot;').replace(/”/g,'&quot;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');   //.replace(/'/g, '&apos;').replace(/"/g, '&quot;');
+    return s.replace(/\&/g, '&amp;').replace(/“/g, '&quot;').replace(/”/g,'&quot;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); 
 }
 
 function XMLDecode(s) {
@@ -370,7 +412,7 @@ function LoadCaptionFile(fileObject) {
     }
 }
 
-//  invoked by script insertion of proxyvtt.ashx
+// invoked by script insertion of proxyvtt.ashx
 function ProcessProxyVttResponse(obj) {
     if (obj.status == "error")
         alert("Error loading caption file: " + obj.message);
@@ -378,9 +420,10 @@ function ProcessProxyVttResponse(obj) {
         //  delete any captions we've got
         captionsArray.length = 0;
         file_loaded = true;
+        file_loaded_name = obj.file_name;
         file_loaded_id = obj.id_file;
         current_folder = obj.id_folder;
-        if (obj.response.indexOf("WEBVTT") == 0) {
+        if (obj.response.match(/^WEBVTT/)) {
             ParseAndLoadWebVTT(obj.response);
         } else {
             alert("Unrecognized caption file format.");
@@ -394,11 +437,9 @@ function ProcessProxyVttResponse(obj) {
 
 function ParseAndLoadWebVTT(vtt) {
 
-    var rxSignatureLine = /^WEBVTT(?:\s.*)?$/;
-
     var vttLines = vtt.split(/\r\n|\r|\n/); // create an array of lines from our file
 
-    if (!rxSignatureLine.test(vttLines[0])) { // must start with a signature line
+    if (vttLines[0].trim().toLowerCase() != "webvtt") { // must start with a signature line
         alert("Not a valid time track file.");
         return;
     }
@@ -412,9 +453,8 @@ function ParseAndLoadWebVTT(vtt) {
 
     function appendCurrentCaption() {
         if (cueStart && cueEnd && cueText) {
-            captionsArray.push({ start: cueStart, end: cueEnd, caption: Trim(cueText) });
+            captionsArray.push({ start: cueStart, end: cueEnd, caption: cueText.trim() });
         }
-
         cueStart = cueEnd = cueText = null;
     }
 
@@ -451,5 +491,6 @@ function ParseAndLoadWebVTT(vtt) {
         }
     }
     appendCurrentCaption();
-    SortAndDisplayCaptionList();
+    $('#captionContent').val("");
+    $('#captionContent').val(vtt);
 }

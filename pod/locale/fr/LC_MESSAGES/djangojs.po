@@ -2,12 +2,12 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-23 11:38+0200\n"
+"POT-Creation-Date: 2020-08-31 15:36+0200\n"
 "PO-Revision-Date: 2020-04-30 12:12+0200\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -30,26 +30,26 @@ msgid "Get time from the player"
 msgstr "Obtenir le temps du lecteur"
 
 #: pod/chapter/static/js/chapters.js:16
-#: pod/completion/static/js/completion.js:46
+#: pod/completion/static/js/completion.js:50
 #: pod/enrichment/static/js/enrichment.js:17 pod/static/js/chapters.js:16
-#: pod/static/js/completion.js:46 pod/static/js/enrichment.js:17
+#: pod/static/js/completion.js:50 pod/static/js/enrichment.js:17
 msgid "Error getting form."
 msgstr "Erreur lors de la récupération du formulaire"
 
 #: pod/chapter/static/js/chapters.js:16
-#: pod/completion/static/js/completion.js:46
+#: pod/completion/static/js/completion.js:50
 #: pod/enrichment/static/js/enrichment.js:17 pod/static/js/chapters.js:16
-#: pod/static/js/completion.js:46 pod/static/js/enrichment.js:17
+#: pod/static/js/completion.js:50 pod/static/js/enrichment.js:17
 msgid "The form could not be recovered."
 msgstr "Le formulaire ne peut pas être récupéré."
 
 #: pod/chapter/static/js/chapters.js:52 pod/chapter/static/js/chapters.js:72
 #: pod/chapter/static/js/chapters.js:93 pod/chapter/static/js/chapters.js:125
 #: pod/chapter/static/js/chapters.js:159
-#: pod/completion/static/js/completion.js:86
-#: pod/completion/static/js/completion.js:115
-#: pod/completion/static/js/completion.js:158
-#: pod/completion/static/js/completion.js:190
+#: pod/completion/static/js/completion.js:92
+#: pod/completion/static/js/completion.js:123
+#: pod/completion/static/js/completion.js:166
+#: pod/completion/static/js/completion.js:198
 #: pod/enrichment/static/js/enrichment.js:52
 #: pod/enrichment/static/js/enrichment.js:72
 #: pod/enrichment/static/js/enrichment.js:93
@@ -61,8 +61,8 @@ msgstr "Le formulaire ne peut pas être récupéré."
 #: pod/podfile/static/podfile/js/filewidget.js:196 pod/static/js/chapters.js:52
 #: pod/static/js/chapters.js:72 pod/static/js/chapters.js:93
 #: pod/static/js/chapters.js:125 pod/static/js/chapters.js:159
-#: pod/static/js/completion.js:86 pod/static/js/completion.js:115
-#: pod/static/js/completion.js:158 pod/static/js/completion.js:190
+#: pod/static/js/completion.js:92 pod/static/js/completion.js:123
+#: pod/static/js/completion.js:166 pod/static/js/completion.js:198
 #: pod/static/js/enrichment.js:52 pod/static/js/enrichment.js:72
 #: pod/static/js/enrichment.js:93 pod/static/js/enrichment.js:120
 #: pod/static/js/enrichment.js:149 pod/static/js/main.js:287
@@ -108,103 +108,116 @@ msgstr "commencent au même moment."
 msgid "Chapters"
 msgstr "Le chapitre"
 
-#: pod/completion/static/js/caption_maker.js:10
-#: pod/static/js/caption_maker.js:10
+#: pod/completion/static/js/caption_maker.js:22
+#: pod/static/js/caption_maker.js:22
+msgid ""
+"WEBVTT\n"
+"\n"
+"start time(00:00.000) --> end time(00:00.000)\n"
+"caption text"
+msgstr ""
+"WEBVTT\n"
+"\n"
+"temps début(00:00.000) --> temps fin(00:00.000)\n"
+"texte de sous-titre"
+
+#: pod/completion/static/js/caption_maker.js:29
+#: pod/static/js/caption_maker.js:29
 msgid "There is no captions to save"
 msgstr "Il n’y a aucun sous-titre à sauvegarder"
 
-#: pod/completion/static/js/caption_maker.js:61
-#: pod/static/js/caption_maker.js:61
+#: pod/completion/static/js/caption_maker.js:77
+#: pod/static/js/caption_maker.js:77
 msgid "error during exchange"
 msgstr "erreur durant le téléversement"
 
-#: pod/completion/static/js/caption_maker.js:61
-#: pod/static/js/caption_maker.js:61
+#: pod/completion/static/js/caption_maker.js:77
+#: pod/static/js/caption_maker.js:77
 msgid "no data could be stored."
 msgstr "aucune donnée ne peut être stockée."
 
-#: pod/completion/static/js/caption_maker.js:91
-#: pod/static/js/caption_maker.js:91
+#: pod/completion/static/js/caption_maker.js:107
+#: pod/static/js/caption_maker.js:107
 msgid "Are you sure you want to delete all caption ?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer les sous-titre ?"
 
-#: pod/completion/static/js/completion.js:137 pod/static/js/completion.js:137
+#: pod/completion/static/js/completion.js:145 pod/static/js/completion.js:145
 msgid "Are you sure you want to delete this file ?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer ce fichier ?"
 
-#: pod/completion/static/js/completion.js:139 pod/static/js/completion.js:139
+#: pod/completion/static/js/completion.js:147 pod/static/js/completion.js:147
 msgid "Are you sure you want to delete this contributor ?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer ce contributeur ?"
 
-#: pod/completion/static/js/completion.js:141 pod/static/js/completion.js:141
+#: pod/completion/static/js/completion.js:149 pod/static/js/completion.js:149
 msgid "Are you sure you want to delete this document ?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer ce document ?"
 
-#: pod/completion/static/js/completion.js:143 pod/static/js/completion.js:143
+#: pod/completion/static/js/completion.js:151 pod/static/js/completion.js:151
 msgid "Are you sure you want to delete this overlay ?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer cette superposition ?"
 
-#: pod/completion/static/js/completion.js:187 pod/main/static/js/main.js:266
-#: pod/static/js/completion.js:187 pod/static/js/main.js:266
+#: pod/completion/static/js/completion.js:195 pod/main/static/js/main.js:266
+#: pod/static/js/completion.js:195 pod/static/js/main.js:266
 msgid "Changes have been saved."
 msgstr "Les modifications ont été sauvegardées."
 
-#: pod/completion/static/js/completion.js:216 pod/static/js/completion.js:216
+#: pod/completion/static/js/completion.js:224 pod/static/js/completion.js:224
 msgid "Display"
 msgstr "Afficher"
 
-#: pod/completion/static/js/completion.js:216 pod/static/js/completion.js:216
+#: pod/completion/static/js/completion.js:224 pod/static/js/completion.js:224
 msgid "section"
 msgstr "section"
 
-#: pod/completion/static/js/completion.js:238 pod/static/js/completion.js:238
+#: pod/completion/static/js/completion.js:246 pod/static/js/completion.js:246
 msgid "Please enter a name from 2 to 100 caracteres."
 msgstr "Veuillez entrer un nom entre 2 et 200 caractères."
 
-#: pod/completion/static/js/completion.js:244 pod/static/js/completion.js:244
+#: pod/completion/static/js/completion.js:252 pod/static/js/completion.js:252
 msgid "You cannot enter a weblink with more than 200 caracteres."
 msgstr "Vous ne pouvez pas entrer un lien web avec plus de 200 caractères."
 
-#: pod/completion/static/js/completion.js:250 pod/static/js/completion.js:250
+#: pod/completion/static/js/completion.js:258 pod/static/js/completion.js:258
 msgid "Please enter a role."
 msgstr "Veuillez entrer un rôle."
 
-#: pod/completion/static/js/completion.js:259 pod/static/js/completion.js:259
+#: pod/completion/static/js/completion.js:267 pod/static/js/completion.js:267
 msgid ""
 "There is already a contributor with this same name and role in the list."
 msgstr ""
 "Il existe déjà un contributeur avec le même nom et le même rôle dans cette "
 "liste."
 
-#: pod/completion/static/js/completion.js:270 pod/static/js/completion.js:270
+#: pod/completion/static/js/completion.js:278 pod/static/js/completion.js:278
 msgid "Please enter a correct kind."
 msgstr "Veuillez entrer un genre correct."
 
-#: pod/completion/static/js/completion.js:278 pod/static/js/completion.js:278
+#: pod/completion/static/js/completion.js:286 pod/static/js/completion.js:286
 msgid "Please select a language."
 msgstr "Veuillez renseigner une langue."
 
-#: pod/completion/static/js/completion.js:284 pod/static/js/completion.js:284
+#: pod/completion/static/js/completion.js:293 pod/static/js/completion.js:293
 msgid "Please specify a track file."
 msgstr "Veuillez joindre un fichier de piste vidéo."
 
-#: pod/completion/static/js/completion.js:290 pod/static/js/completion.js:290
+#: pod/completion/static/js/completion.js:299 pod/static/js/completion.js:299
 msgid "Only .vtt format is allowed."
 msgstr "Seulement le format \".vtt\" est autorisé."
 
-#: pod/completion/static/js/completion.js:303 pod/static/js/completion.js:303
+#: pod/completion/static/js/completion.js:316 pod/static/js/completion.js:316
 msgid "There is already a track with the same kind and language in the list."
 msgstr ""
 "Il existe déjà une piste vidéo avec le même genre et la même langue dans la "
 "liste."
 
-#: pod/completion/static/js/completion.js:310
-#: pod/enrichment/static/js/enrichment.js:274 pod/static/js/completion.js:310
+#: pod/completion/static/js/completion.js:323
+#: pod/enrichment/static/js/enrichment.js:274 pod/static/js/completion.js:323
 #: pod/static/js/enrichment.js:274
 msgid "Please select a document."
 msgstr "Veuillez joindre un document."
 
-#: pod/completion/static/js/completion.js:318 pod/static/js/completion.js:318
+#: pod/completion/static/js/completion.js:331 pod/static/js/completion.js:331
 msgid "Iframe and Script tags are not allowed."
 msgstr "Les balises Iframe et Script ne sont pas autorisées."
 
@@ -726,55 +739,55 @@ msgstr ""
 msgid "Hide"
 msgstr ""
 
-#: pod/static/js/comment-script.js:61 pod/static/js/comment-script.js:161
+#: pod/static/js/comment-script.js:61 pod/static/js/comment-script.js:166
 #: pod/video/static/js/comment-script.js:61
-#: pod/video/static/js/comment-script.js:161
+#: pod/video/static/js/comment-script.js:166
 msgid "Delete"
 msgstr "Supprimer"
 
-#: pod/static/js/comment-script.js:127
-#: pod/video/static/js/comment-script.js:127
+#: pod/static/js/comment-script.js:143
+#: pod/video/static/js/comment-script.js:143
 msgid "Answer comment icon"
 msgstr "Icon réponse commentaire"
 
-#: pod/static/js/comment-script.js:130
-#: pod/video/static/js/comment-script.js:130
+#: pod/static/js/comment-script.js:143
+#: pod/video/static/js/comment-script.js:143
 msgid "Answer"
 msgstr "Répondre"
 
-#: pod/static/js/comment-script.js:142
-#: pod/video/static/js/comment-script.js:142
+#: pod/static/js/comment-script.js:152
+#: pod/video/static/js/comment-script.js:152
 msgid "Comment vote icon"
 msgstr "Icon vote commentaire"
 
-#: pod/static/js/comment-script.js:158
-#: pod/video/static/js/comment-script.js:158
+#: pod/static/js/comment-script.js:163
+#: pod/video/static/js/comment-script.js:163
 msgid "Comment delete icon"
 msgstr "Icon suppression commentaire"
 
-#: pod/static/js/comment-script.js:175
-#: pod/video/static/js/comment-script.js:175
+#: pod/static/js/comment-script.js:180
+#: pod/video/static/js/comment-script.js:180
 msgid "Add a public comment"
 msgstr "Ajouter un commentaire public"
 
-#: pod/static/js/comment-script.js:256
-#: pod/video/static/js/comment-script.js:256
+#: pod/static/js/comment-script.js:261
+#: pod/video/static/js/comment-script.js:261
 msgid "Comment show children icon"
 msgstr "Icon affichage commentaire enfant"
 
-#: pod/static/js/comment-script.js:259 pod/static/js/comment-script.js:538
-#: pod/video/static/js/comment-script.js:259
-#: pod/video/static/js/comment-script.js:539
+#: pod/static/js/comment-script.js:264 pod/static/js/comment-script.js:542
+#: pod/video/static/js/comment-script.js:264
+#: pod/video/static/js/comment-script.js:542
 msgid "Show responses"
 msgstr "Afficher les réponses"
 
-#: pod/static/js/comment-script.js:423
-#: pod/video/static/js/comment-script.js:424
+#: pod/static/js/comment-script.js:427
+#: pod/video/static/js/comment-script.js:427
 msgid "Comment has been deleted successfully."
 msgstr "Commentaire a été supprimé avec succès."
 
-#: pod/static/js/comment-script.js:536
-#: pod/video/static/js/comment-script.js:537
+#: pod/static/js/comment-script.js:540
+#: pod/video/static/js/comment-script.js:540
 msgid "Hide responses"
 msgstr "Cacher les réponses"
 
