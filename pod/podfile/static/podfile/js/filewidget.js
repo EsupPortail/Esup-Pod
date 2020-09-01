@@ -39,7 +39,6 @@ if(typeof loaded == 'undefined') {
 $(document).on("click", "a.folder", function(e) {
     e.preventDefault();
     var id = $(this).data("id");
-    console.log("Target is " + $(this).data('target'))
     send_form_data($(this).data('target'), {}, "show_folder_files", "get");
 });
 
@@ -71,7 +70,6 @@ $(document).on('change', "#ufile", function(e) {
             $(".loadingformfiles").hide();
             $("#listfiles").show();
             $(this).show();
-            console.log("passing here")
             show_folder_files(data);
         }).fail(function($xhr){
             $(this).show();
@@ -243,9 +241,6 @@ $(document).on('change', "#ufile", function(e) {
 
   $(document).on('submit', 'form#folderFormName', function(e){
     e.preventDefault();
-    console.log("rename js : action: " + $(this).attr("action") + ", array :" )
-    console.log($(this).serializeArray())
-    console.log("targetting " + $(this).attr("action"))
     send_form_data($(this).attr("action"), $(this).serializeArray(), "reloadFolder");
   });
 
@@ -289,7 +284,6 @@ $(document).on('change', "#ufile", function(e) {
   
 
   function reloadFolder(data){
-    console.log("=== RELOAD FOLDER ===")
     if(data.list_element) {
         var folder_id = data.folder_id;
 
@@ -325,7 +319,6 @@ $(document).on('change', "#ufile", function(e) {
 
 
   function show_folder_files(data){
-    console.log("show_folder_file " + ((typeof data.list_element == "undefined") ? "UNDEFINED" : "SOME DATA"))
     if(data.list_element) {
         $('#files').html(data.list_element);
         $(".list_folders a").removeClass('font-weight-bold');
@@ -349,7 +342,6 @@ $(document).on('change', "#ufile", function(e) {
         if(data.errors) {
           showalert(data.errors+"<br/>"+data.form_error, "alert-danger");
         } else {
-          console.log("this error")
           showalert(gettext('You are no longer authenticated. Please log in again.'), "alert-danger");
         }
     }
@@ -377,7 +369,6 @@ $(document).on('change', "#ufile", function(e) {
   }
 
   function createFolder(foldid, foldname, isCurrent,type,owner=undefined){
-    console.log("Call folder create")
     let construct = ""
     construct+= ('<a href="#" class="folder ' +( isCurrent ? 'font-weight-bold' : '') + ' " id="folder_' + foldid + '" data-foldname="' + foldname + '" data-id="' + foldid+ '" data-target="');
     let isType = (type != "None" && type != undefined)
