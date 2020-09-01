@@ -43,6 +43,9 @@
 textarea {
     line-height: 16px;
     font-size: 14px;
+    resize: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 /* the list of captions */
@@ -59,7 +62,7 @@ textarea {
     color: var(--secondary);
     margin-left: 4px;
 }
-.caption_content .caption_title:hover .help_text{
+.caption_content .caption_title svg:hover + .help_text{
     display: block;
 }
 .caption_content .help_text{
@@ -74,41 +77,6 @@ textarea {
     box-shadow: 4px 4px 10px #ccc;
     font-size: 15px;
     line-height: 1.4;
-}
-
-#display {
-    border: solid 1px #999;
-    height: 442px;
-    overflow: auto;
-}
-
-#display div {
-    cursor: pointer;
-    padding: 2px 0 3px 0;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-#display div:nth-child(odd) {
-    background-color: #5BC2EC;
-}
-
-#display div:nth-child(even) {
-    background-color: #bef;
-}
-
-#display div:hover {
-    background-color: #ECA809;
-}
-
-#display div span {
-    margin-left: 1em;
-    display: inline-block;
-    vertical-align: top;
-}
-
-#display div span:nth-child(3) {
-    font-style: italic;
 }
 
 #captionmakerModal.save > .modal-dialog {

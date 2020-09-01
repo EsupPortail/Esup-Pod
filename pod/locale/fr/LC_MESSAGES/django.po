@@ -849,15 +849,13 @@ msgstr "légendes"
 
 #: pod/completion/templates/track/list_track.html:21
 #: pod/completion/templates/track/list_track.html:39
-#, fuzzy
-#| msgid "Delete the subtitle or caption files"
 msgid "Replace the subtitle or caption files"
-msgstr "Supprimer les fichiers de sous-titres ou de légendes"
+msgstr "Remplacer les fichiers de sous-titres ou de légendes"
 
 #: pod/completion/templates/track/list_track.html:21
 #: pod/completion/templates/track/list_track.html:39
 msgid "Replace"
-msgstr ""
+msgstr "Remplacer"
 
 #: pod/completion/templates/track/list_track.html:23
 #: pod/completion/templates/track/list_track.html:42
@@ -866,8 +864,6 @@ msgstr "Éditer les fichiers de sous-titres ou de légendes"
 
 #: pod/completion/templates/track/list_track.html:28
 #: pod/completion/templates/track/list_track.html:48
-#, fuzzy
-#| msgid "Delete the subtitle or caption files"
 msgid "Remove the subtitle or caption files"
 msgstr "Supprimer les fichiers de sous-titres ou de légendes"
 
