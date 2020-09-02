@@ -97,12 +97,13 @@ def home(request, type=None):
 
 def get_current_session_folder(request):
     try:
-        current_session_folder = UserFolder.objects.get(
-            owner=request.user,
-            name=request.session.get(
-                'current_session_folder',
-                "home")
-        )
+        #current_session_folder = UserFolder.objects.get(
+         #   Q(owner=request.user, name=request.session.get(
+          #      'current_session_folder', "home")) | Q(
+           #         users=request.user, name=request.session.get(
+            #            'current_session_folder', "home"))
+        current_session_folder = UserFolder.objects.get(name=request.session.get('current_session_folder', "home"))
+        print("current")
         return current_session_folder
     except ObjectDoesNotExist:
         current_session_folder = UserFolder.objects.get(
@@ -191,6 +192,7 @@ def decide_owner(request, form, folder):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def editfolder(request):
+    print(request.POST.get("folderid"))
     new_folder = False
 
     form = UserFolderForm(request.POST)
@@ -224,10 +226,12 @@ def editfolder(request):
                 _(u'Two folders cannot have the same name.'))
             raise PermissionDenied
 
+        print(folder.name)
         request.session['current_session_folder'] = folder.name
 
     rendered, current_session_folder = get_rendered(request)
 
+    print(current_session_folder)
     list_element = {
         'list_element': rendered,
         'folder_id': current_session_folder.id,
@@ -235,7 +239,7 @@ def editfolder(request):
         'new_folder': new_folder
     }
     data = json.dumps(list_element)
-    print("return of editfolder : " + data)
+
     return HttpResponse(data, content_type='application/json')
 
 

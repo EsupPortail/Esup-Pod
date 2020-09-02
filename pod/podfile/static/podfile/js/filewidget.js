@@ -241,6 +241,9 @@ $(document).on('change', "#ufile", function(e) {
 
   $(document).on('submit', 'form#folderFormName', function(e){
     e.preventDefault();
+    console.log($(this).attr("action"))
+    console.log($(this).serializeArray())
+
     send_form_data($(this).attr("action"), $(this).serializeArray(), "reloadFolder");
   });
 
@@ -284,17 +287,14 @@ $(document).on('change', "#ufile", function(e) {
   
 
   function reloadFolder(data){
+    console.log("Reload folder " + data.folder_id)
     if(data.list_element) {
         var folder_id = data.folder_id;
 
-        if(data.folder){
-          let textElt = $("#folder_"+folder_id).contents().filter(function(){ 
-            return this.nodeType == 3; 
-          })
-          if(textElt.length > 0){
-            textElt[0].nodeValue = "  "+data.folder_name
-          }
+        if(data.folder_name){
+          $("#folder-name-"+ folder_id).text("  "+data.folder_name)
         }
+        console.log("pass 3")
    
 
         if(data.new_folder == true){
@@ -374,9 +374,12 @@ $(document).on('change', "#ufile", function(e) {
     let isType = (type != "None" && type != undefined)
     construct+= ('/podfile/get_folder_files/' + foldid + (isType ? ('?type=' +type) : "") + '"')
     if(owner != undefined){
-      foldname = '<i>' + foldname + '</i> <b>(' + owner+')</b>' 
+      foldname = '<i><span id="folder-name-'+ foldid + '">  ' + foldname + '</span></i> <b>(' + owner+')</b>' 
     }
-    construct+= ('><img class="directory-image" src="' + (isCurrent ? (static_url +'podfile/images/opened_folder.png') : (static_url + 'podfile/images/folder.png') )+'"/>  '+foldname+'</a>')
+    else{
+      foldname = '<span id="folder-name-' +foldid +  '">  ' +foldname+ '</span>'
+    }
+    construct+= ('><img class="directory-image" src="' + (isCurrent ? (static_url +'podfile/images/opened_folder.png') : (static_url + 'podfile/images/folder.png') )+'"/>'+foldname+'</a>')
     return construct
   }
 
