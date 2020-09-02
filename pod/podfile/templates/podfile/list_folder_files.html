@@ -103,7 +103,7 @@
                 <li class="nav-item p-0 m-0">
                   <button type="button" class="btn btn-link btn-sm nav-link p-0 m-0 btn-delete-file" data-fileid="{{file.id}}" data-filetype="{{file.class_name}}">
                   {% csrf_token %}
-                  <img src="{% static "podfile/images/delete.png" %}" >
+                  <img height=16 width=16 src="{% static "podfile/images/delete.png" %}" >
                   <span class="sr-only">{% trans "Delete"%}</span>
                   </button>
                 </li>
