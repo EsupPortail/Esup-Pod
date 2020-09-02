@@ -19,6 +19,13 @@ $(document).ready(function(){
         let data = {'src': url_search.get('src'), 'csrfmiddlewaretoken': Cookies.get('csrftoken')};
         send_form_data(url, data, "ProcessProxyVttResponse");
     }
+    let placeholder = gettext("WEBVTT\n\nstart time(00:00.000) --> end time(00:00.000)\ncaption text");
+    let captionContent = $('#captionContent')
+    captionContent.attr('placeholder', placeholder);
+    captionContent.on("mouseup", function(e){
+	let selectedText = $(this).val().substring(this.selectionStart, this.selectionEnd);
+	playSelectedCaption(selectedText.trim());
+    });
 });
 
 $(document).on('submit', '#form_save_captions', function(e) {
@@ -119,12 +126,16 @@ function DisplayExistingCaption(seconds) {
     var ci = FindCaptionIndex(seconds);
     captionBeingDisplayed = ci;
     if (ci != -1) {
-            var theCaption = captionsArray[ci];
+        var theCaption = captionsArray[ci];
+	let divs = document.querySelectorAll(".vjs-text-track-display div")
+	divs[divs.length - 1].innerText = theCaption.caption;
         $("#captionTitle").text("Caption for segment from " + FormatTime(theCaption.start) + " to " + FormatTime(theCaption.end) + ":");
         $("#textCaptionEntry").val(theCaption.caption);
+	$("#previewTrack").val(theCaption.caption);
     } else {
         $("#captionTitle").html("&nbsp;");
         $("#textCaptionEntry").val("");
+	$("#previewTrack").val("");
     }
 }
 
@@ -143,7 +154,7 @@ let updateCaptionsArray = (vtt)=>{
 	    captionsArray.push({
 	        start: ParseTime(times[0]),
 		end: ParseTime(times[1]),
-		caption: XMLEncode(data[1])
+		caption: data[1]
 	    });
 	}
     })
@@ -274,7 +285,7 @@ function UpdateCaption(ci, captionText) {
 
 function AddCaptionListRow(ci) {
     let vtt = $('#captionContent');
-    let vtt_entry =XMLEncode($('#textCaptionEntry').val().trim());
+    let vtt_entry = $('#textCaptionEntry').val().trim();
     let start = caption_memories.start_time;
     var end = FormatTime($('#podvideoplayer').get(0).player.currentTime());
     var captionsEndTime = existingCaptionsEndTime();
@@ -311,11 +322,9 @@ function hmsToSecondsOnly(str){
 // parses webvtt time string format into floating point seconds
 function ParseTime(sTime) {
     let seconds = hmsToSecondsOnly(sTime);
-    console.log("Parse Time =>", seconds+"."+sTime.split(".")[1]);
     return seconds+"."+sTime.split(".")[1];
     /*//  parse time formatted as hours:mm:ss.sss where hours are optional
     if (sTime) {
-        var m = sTime.match( /^\s*(\d+)?:?(\d+):([\d\.]+)\s*$/ );
         if (m != null) {
             return (m[1] ? parseFloat(m[1]) : 0) * 3600 + parseFloat(m[2]) * 60 + parseFloat(m[3]);
         } else {
@@ -355,12 +364,19 @@ function FindCaptionIndex(seconds) {
     return -1;
 }
 
-function PlayCaptionFromList(listRowId) {
-    var captionsArrayIndex = parseInt(listRowId.match(/ci(\d+)/)[1]);
-    var vid = $('#podvideoplayer').get(0).player;
-    vid.currentTime(captionsArray[captionsArrayIndex].start);
-    autoPauseAtTime = captionsArray[captionsArrayIndex].end;
-    vid.play();
+function playSelectedCaption(timeline) {
+    if(timeline.includes("-->")){
+        let times = timeline.trim().split(/\s?\-\->\s?/);
+        let start = times[0].match(/[\d:\.]/)?ParseTime(times[0]): null;
+        let end = times[1].match(/[\d:\.]/)?ParseTime(times[1]): null;
+        if(!isNaN(start) && !isNaN(end))
+        {
+            var vid = $('#podvideoplayer').get(0).player;
+            vid.currentTime(start);
+            autoPauseAtTime = end;
+            vid.play();
+        }
+    }
 }
 
 /**
