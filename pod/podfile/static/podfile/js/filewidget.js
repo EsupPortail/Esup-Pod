@@ -241,8 +241,6 @@ $(document).on('change', "#ufile", function(e) {
 
   $(document).on('submit', 'form#folderFormName', function(e){
     e.preventDefault();
-    console.log($(this).attr("action"))
-    console.log($(this).serializeArray())
 
     send_form_data($(this).attr("action"), $(this).serializeArray(), "reloadFolder");
   });
@@ -287,14 +285,12 @@ $(document).on('change', "#ufile", function(e) {
   
 
   function reloadFolder(data){
-    console.log("Reload folder " + data.folder_id)
     if(data.list_element) {
         var folder_id = data.folder_id;
 
         if(data.folder_name){
           $("#folder-name-"+ folder_id).text("  "+data.folder_name)
         }
-        console.log("pass 3")
    
 
         if(data.new_folder == true){

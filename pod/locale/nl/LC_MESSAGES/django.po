@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-02 07:31+0000\n"
+"POT-Creation-Date: 2020-09-02 07:48+0000\n"
 "PO-Revision-Date: 2018-07-03 13:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1060,8 +1060,8 @@ msgid "The file has not been saved."
 msgstr ""
 
 #: pod/completion/views.py:235 pod/completion/views.py:411
-#: pod/completion/views.py:812 pod/podfile/views.py:465
-#: pod/podfile/views.py:515 pod/video/views.py:346 pod/video/views.py:1356
+#: pod/completion/views.py:812 pod/podfile/views.py:466
+#: pod/podfile/views.py:516 pod/video/views.py:346 pod/video/views.py:1356
 msgid "Please correct errors"
 msgstr ""
 
@@ -2976,45 +2976,51 @@ msgstr ""
 msgid "Shared folders"
 msgstr ""
 
-#: pod/podfile/views.py:137 pod/podfile/views.py:549
+#: pod/podfile/templates/podfile/userfolder.html:60
+msgid ""
+"SuperUser mode : the folders of all users are listed (the owner is noted in "
+"brackets)"
+msgstr ""
+
+#: pod/podfile/views.py:138 pod/podfile/views.py:550
 msgid "You cannot see this folder."
 msgstr ""
 
-#: pod/podfile/views.py:212
+#: pod/podfile/views.py:213
 msgid "You cannot edit this folder."
 msgstr ""
 
-#: pod/podfile/views.py:227
+#: pod/podfile/views.py:228
 msgid "Two folders cannot have the same name."
 msgstr ""
 
-#: pod/podfile/views.py:262
+#: pod/podfile/views.py:263
 msgid "You cannot delete home folder."
 msgstr ""
 
-#: pod/podfile/views.py:293
+#: pod/podfile/views.py:294
 msgid "You cannot delete this file."
 msgstr ""
 
-#: pod/podfile/views.py:330
+#: pod/podfile/views.py:331
 msgid "You cannot edit file on this folder."
 msgstr ""
 
-#: pod/podfile/views.py:381
+#: pod/podfile/views.py:382
 #, python-format
 msgid "The file %(fname)s has not allowed format"
 msgstr ""
 
-#: pod/podfile/views.py:398
+#: pod/podfile/views.py:399
 #, python-format
 msgid "The file %(fname)s is not valid (%(form_error)s)"
 msgstr ""
 
-#: pod/podfile/views.py:423
+#: pod/podfile/views.py:424
 msgid "You cannot access this folder."
 msgstr ""
 
-#: pod/podfile/views.py:435
+#: pod/podfile/views.py:436
 msgid "You cannot edit this file."
 msgstr ""
 

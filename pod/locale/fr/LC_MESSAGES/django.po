@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-02 07:31+0000\n"
+"POT-Creation-Date: 2020-09-02 07:48+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -1109,8 +1109,8 @@ msgid "The file has not been saved."
 msgstr "Le fichier n’a pas été enregistré."
 
 #: pod/completion/views.py:235 pod/completion/views.py:411
-#: pod/completion/views.py:812 pod/podfile/views.py:465
-#: pod/podfile/views.py:515 pod/video/views.py:346 pod/video/views.py:1356
+#: pod/completion/views.py:812 pod/podfile/views.py:466
+#: pod/podfile/views.py:516 pod/video/views.py:346 pod/video/views.py:1356
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
 
@@ -3064,45 +3064,51 @@ msgstr "Ajouter un nouveau dossier"
 msgid "Shared folders"
 msgstr "Dossiers partagés"
 
-#: pod/podfile/views.py:137 pod/podfile/views.py:549
+#: pod/podfile/templates/podfile/userfolder.html:60
+msgid ""
+"SuperUser mode : the folders of all users are listed (the owner is noted in "
+"brackets)"
+msgstr "Mode SuperUtilisateur : les dossiers de tout les utilisateurs vous sont listés (le propriétaire est noté entre parenthèse)"
+
+#: pod/podfile/views.py:138 pod/podfile/views.py:550
 msgid "You cannot see this folder."
 msgstr "Vous ne pouvez pas voir ce dossier."
 
-#: pod/podfile/views.py:212
+#: pod/podfile/views.py:213
 msgid "You cannot edit this folder."
 msgstr "Vous ne pouvez pas éditer ce dossier."
 
-#: pod/podfile/views.py:227
+#: pod/podfile/views.py:228
 msgid "Two folders cannot have the same name."
 msgstr "Deux dossiers ne peuvent pas avoir le même nom."
 
-#: pod/podfile/views.py:262
+#: pod/podfile/views.py:263
 msgid "You cannot delete home folder."
 msgstr "Vous ne pouvez pas supprimer le fichier racine."
 
-#: pod/podfile/views.py:293
+#: pod/podfile/views.py:294
 msgid "You cannot delete this file."
 msgstr "Vous ne pouvez pas supprimer ce fichier."
 
-#: pod/podfile/views.py:330
+#: pod/podfile/views.py:331
 msgid "You cannot edit file on this folder."
 msgstr "Vous ne pouvez pas éditer de fichier dans ce dossier."
 
-#: pod/podfile/views.py:381
+#: pod/podfile/views.py:382
 #, python-format
 msgid "The file %(fname)s has not allowed format"
 msgstr "Le format du fichier %(fname)s n’est pas autorisé"
 
-#: pod/podfile/views.py:398
+#: pod/podfile/views.py:399
 #, python-format
 msgid "The file %(fname)s is not valid (%(form_error)s)"
 msgstr "Le fichier %(fname)s n’est pas valide (%(form_error)s)"
 
-#: pod/podfile/views.py:423
+#: pod/podfile/views.py:424
 msgid "You cannot access this folder."
 msgstr "Vous ne pouvez pas voir ce dossier."
 
-#: pod/podfile/views.py:435
+#: pod/podfile/views.py:436
 msgid "You cannot edit this file."
 msgstr "Vous ne pouvez pas éditer ce fichier."
 
