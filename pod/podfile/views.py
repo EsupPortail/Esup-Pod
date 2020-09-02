@@ -676,7 +676,7 @@ def fetch_owners(request, folders_list):
     return folders_list
 
 
-@login_required(redirect_field_name='referrer')
+@staff_member_required(redirect_field_name='referrer')
 def user_folders(request):
     VALUES_LIST = ['id', 'name']
     if request.user.is_superuser:
