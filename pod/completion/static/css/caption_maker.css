@@ -43,46 +43,57 @@
 textarea {
     line-height: 16px;
     font-size: 14px;
+    resize: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 /* the list of captions */
-
-#display {
-    border: solid 1px #999;
-    height: 442px;
-    overflow: auto;
+.gray_no_video{
+    display: flex;
+    flex-wrap: wrap;
 }
-
-#display div {
-    cursor: pointer;
-    padding: 2px 0 3px 0;
-    white-space: nowrap;
-    overflow: hidden;
+.caption_content .caption_title{
+   display: flex;
+   position: relative;
 }
-
-#display div:nth-child(odd) {
-    background-color: #5BC2EC;
+.caption_content svg{
+    width: 20px;
+    color: var(--secondary);
+    margin-left: 4px;
 }
-
-#display div:nth-child(even) {
-    background-color: #bef;
+.caption_content .caption_title svg:hover + .help_text{
+    display: block;
 }
-
-#display div:hover {
-    background-color: #ECA809;
+.caption_content .help_text{
+    display: none;
+    position: absolute;
+    background: var(--primary);
+    color: #fff;
+    width: calc(100% - 110px);
+    right: 0;
+    padding: .4em .8em;
+    border-radius: 4px;
+    box-shadow: 4px 4px 10px #ccc;
+    font-size: 15px;
+    line-height: 1.4;
 }
-
-#display div span {
-    margin-left: 1em;
-    display: inline-block;
-    vertical-align: top;
-}
-
-#display div span:nth-child(3) {
-    font-style: italic;
-}
-
 
 #captionmakerModal.save > .modal-dialog {
     max-width: 1000px;
+}
+@media only screen and (max-width: 800px){
+    .gray_no_video{
+        display: flex;
+	flex-direction: column;
+    }
+    .gray_no_video > div{
+	width: 100% !important;
+    }
+    .gray_no_video div:first-child{
+	overflow: hidden;
+	margin: 0;
+	margin-bottom: 1em;
+	min-height: unset !important;
+    }
 }

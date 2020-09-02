@@ -19,9 +19,14 @@ from .models import CustomImageModel
 from .forms import UserFolderForm
 from .forms import CustomFileModelForm
 from .forms import CustomImageModelForm
+<<<<<<< HEAD
 from pod.main.views import remove_accents
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
+=======
+
+import re
+>>>>>>> 4c9a727257ce00ddc04e8a0f448cca4d031362b7
 import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -549,11 +554,14 @@ def get_file(request, type):
         raise PermissionDenied
 
     request.session['current_session_folder'] = reqfile.folder.name
+    file_p = reqfile.file.__str__()
+    file_name = re.search("[\w\d_\-]+(\.[a-z]{1,4})$", file_p).group()
     try:
         with open(reqfile.file.path, 'r') as f:
             fc = f.read()
             some_data_to_dump = {
                 'status': "success",
+                'file_name': file_name,
                 'id_file': reqfile.id,
                 'id_folder': reqfile.folder.id,
                 'response': fc

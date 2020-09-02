@@ -57,10 +57,15 @@ class VideoSerializer(serializers.HyperlinkedModelSerializer):
             'date_added', 'date_evt', 'cursus', 'main_lang',
             'is_draft', 'is_restricted', 'restrict_access_to_groups',
             'password', 'tags', 'thumbnail',
-            'type', 'discipline', 'channel', 'theme', 'licence'
+            'type', 'discipline', 'channel', 'theme', 'licence',
+            'encoding_in_progress', 'duration', 'sites', 'disable_comment',
+            'get_encoding_step', 'get_version', 'encoded', 'duration_in_time'
         )
         filter_fields = ('owner', 'type', 'date_added')
-        read_only_fields = ('encoding_in_progress', 'duration')
+        read_only_fields = ('encoding_in_progress', 'duration',
+                            'get_encoding_step',
+                            'get_version', 'encoded', 'duration_in_time'
+                            )
 
 
 class VideoRenditionSerializer(serializers.HyperlinkedModelSerializer):
