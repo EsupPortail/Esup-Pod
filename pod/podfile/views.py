@@ -513,7 +513,8 @@ def get_file(request, type):
 
     request.session['current_session_folder'] = reqfile.folder.name
     file_p = reqfile.file.__str__()
-    file_name = re.search("[\w\d_\-]+(\.[a-z]{1,4})$", file_p).group()
+    reg = re.compile(r"[\w\d_\-]+(\.[a-z]{1,4})$")
+    file_name = re.search(reg, file_p).group()
     try:
         with open(reqfile.file.path, 'r') as f:
             fc = f.read()
