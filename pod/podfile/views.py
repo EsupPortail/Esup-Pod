@@ -106,7 +106,6 @@ def get_current_session_folder(request):
                     'current_session_folder', "home")))
         return current_session_folder
     except ObjectDoesNotExist:
-        print("doestexist")
         if(request.user.is_superuser):
             try:
                 current_session_folder = UserFolder.objects.get(

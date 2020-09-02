@@ -436,7 +436,8 @@ $(document).on('change', "#ufile", function(e) {
 
   $(document).on('show.bs.modal', '.podfilemodal', function (event) {
     event.stopPropagation();
-    initFolders()
+    setTimeout(function(){initFolders()}, 500);
+    
   });
 
 
