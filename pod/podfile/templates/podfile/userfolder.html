@@ -37,7 +37,7 @@
               {%else%}
               <img class="directory-image" src="{% static "podfile/images/folder.png"%}">
               {%endif%}
-              {{folder.name}} ({{folder.owner.username}})
+              <span id="folder-name-{{folder.id}}">{{folder.name}}</span> ({{folder.owner.username}})
             </a>
           </div>
       {% endfor %}
@@ -49,7 +49,7 @@
           {%else%}
           <img class="directory-image" src="{% static "podfile/images/folder.png"%}">
           {%endif%}
-          {{folder.name}} ({{folder.owner.username}})
+          <span id="folder-name-{{folder.id}}">{{folder.name}}</span> ({{folder.owner.username}})
         </a>
       </div>
   {% endfor %}
