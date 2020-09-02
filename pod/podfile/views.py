@@ -97,15 +97,23 @@ def home(request, type=None):
 
 def get_current_session_folder(request):
     try:
-        # current_session_folder = UserFolder.objects.get(
-        #   Q(owner=request.user, name=request.session.get(
-        #      'current_session_folder', "home")) | Q(
-        #         users=request.user, name=request.session.get(
-        #            'current_session_folder', "home"))
         current_session_folder = UserFolder.objects.get(
-            name=request.session.get('current_session_folder', "home"))
+           Q(owner=request.user, name=request.session.get(
+              'current_session_folder', "home")) | Q(
+                 users=request.user, name=request.session.get(
+                    'current_session_folder', "home")) | Q(
+                 groups=request.user.groups.all(), name=request.session.get(
+                    'current_session_folder', "home")))
         return current_session_folder
     except ObjectDoesNotExist:
+        print("doestexist")
+        if(request.user.is_superuser):
+            try:
+                current_session_folder = UserFolder.objects.get(
+                    name=request.session.get('current_session_folder', "home"))
+                return current_session_folder
+            except ObjectDoesNotExist:
+                pass
         current_session_folder = UserFolder.objects.get(
             owner=request.user,
             name="home"
