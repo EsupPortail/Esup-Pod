@@ -19,14 +19,10 @@ from .models import CustomImageModel
 from .forms import UserFolderForm
 from .forms import CustomFileModelForm
 from .forms import CustomImageModelForm
-<<<<<<< HEAD
 from pod.main.views import remove_accents
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
-=======
-
 import re
->>>>>>> 4c9a727257ce00ddc04e8a0f448cca4d031362b7
 import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
