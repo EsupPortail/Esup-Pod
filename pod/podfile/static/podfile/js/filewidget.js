@@ -128,7 +128,7 @@ $(document).on('change', "#ufile", function(e) {
     $.ajax(
       {
           type: "GET",
-          url: "/ajax_calls/folder_shared_with?foldid=" + $('#formuserid').val(),
+          url: "/podfile/ajax_calls/folder_shared_with?foldid=" + $('#formuserid').val(),
           cache: false,
           success: function (response) {
               response.forEach(elt => {
@@ -148,7 +148,7 @@ $(document).on('change', "#ufile", function(e) {
     $.ajax(
         {
             type: "GET",
-            url: "/ajax_calls/search_share_user?term=" + searchTerm + "&foldid=" + foldid,
+            url: "/podfile/ajax_calls/search_share_user?term=" + searchTerm + "&foldid=" + foldid,
             cache: false,
             success: function (response) {
                 $("#user-search").html("");
@@ -182,7 +182,7 @@ $(document).on('change', "#ufile", function(e) {
     $.ajax(
       {
           type: "GET",
-          url: "/ajax_calls/remove_shared_user?foldid=" + $('#formuserid').val() + "&userid=" + $(this).data("userid"),
+          url: "/podfile/ajax_calls/remove_shared_user?foldid=" + $('#formuserid').val() + "&userid=" + $(this).data("userid"),
           cache: false,
           success: function (response) {
             reloadRemoveBtn()
@@ -200,7 +200,7 @@ $(document).on('change', "#ufile", function(e) {
     $.ajax(
       {
           type: "GET",
-          url: "/ajax_calls/add_shared_user?foldid=" + $('#formuserid').val() + "&userid=" + $(this).data("userid"),
+          url: "/podfile/ajax_calls/add_shared_user?foldid=" + $('#formuserid').val() + "&userid=" + $(this).data("userid"),
           cache: false,
           success: function (response) {
             reloadAddBtn($("#userInputName").val())
@@ -255,7 +255,7 @@ $(document).on('change', "#ufile", function(e) {
       $.ajax(
         {
             type: "GET",
-            url: "/ajax_calls/user_folders?search=" + text,
+            url: "/podfile/ajax_calls/user_folders?search=" + text,
             cache: false,
             success: function (response) {
               let nextPage = response.next_page;
@@ -263,7 +263,7 @@ $(document).on('change', "#ufile", function(e) {
                   $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
                 })
                 if(nextPage != -1){
-                  $("#list_folders_sub").append('<a id="more" href="#" data-search="'+text +'" data-next="/ajax_calls/user_folders?page='+ nextPage +'&search='+ text+'"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
+                  $("#list_folders_sub").append('<a id="more" href="#" data-search="'+text +'" data-next="/podfile/ajax_calls/user_folders?page='+ nextPage +'&search='+ text+'"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
                 }
             }
         }
@@ -353,7 +353,7 @@ $(document).on('change', "#ufile", function(e) {
     $.ajax(
       {
           type: "GET",
-          url: "/ajax_calls/current_session_folder/",
+          url: "/podfile/ajax_calls/current_session_folder/",
           cache: false,
           async: false,
           success: function (response) {
@@ -385,7 +385,7 @@ $(document).on('change', "#ufile", function(e) {
     $.ajax(
       {
           type: "GET",
-          url: "/ajax_calls/user_folders",
+          url: "/podfile/ajax_calls/user_folders",
           cache: false,
           success: function (response) {
               let nextPage = response.next_page;
@@ -393,7 +393,7 @@ $(document).on('change', "#ufile", function(e) {
                 $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
               })
               if(nextPage != -1){
-                $("#list_folders_sub").append('<a id="more" href="#" data-next="/ajax_calls/user_folders?page='+ nextPage +'"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
+                $("#list_folders_sub").append('<a id="more" href="#" data-next="/podfile/ajax_calls/user_folders?page='+ nextPage +'"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
               }
          
           }
@@ -425,7 +425,7 @@ $(document).on('change', "#ufile", function(e) {
                 $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
               })
               if(nextPage != -1){
-                $("#list_folders_sub").append('<a id="more" href="#" data-next="/ajax_calls/user_folders?page='+nextPage + ((search!=undefined) ? ('&search='+search) : '' ) + '"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
+                $("#list_folders_sub").append('<a id="more" href="#" data-next="/podfile/ajax_calls/user_folders?page='+nextPage + ((search!=undefined) ? ('&search='+search) : '' ) + '"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
               }
               
           }

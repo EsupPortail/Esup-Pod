@@ -40,9 +40,7 @@ from pod.recorder.views import add_recording, recorder_notify, claim_record,\
     delete_record
 from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
 from pod.video.views import PodChunkedUploadView, PodChunkedUploadCompleteView
-from pod.podfile.views import folder_shared_with, user_share_autocomplete,\
-    user_folders, get_current_session_folder_ajax
-from pod.podfile.views import remove_shared_user, add_shared_user
+
 
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
@@ -102,13 +100,6 @@ urlpatterns = [
         name='api_chunked_upload'),
 
     url(r'^ajax_calls/search_user/', user_autocomplete),
-    url(r'^ajax_calls/search_share_user/', user_share_autocomplete),
-    url(r'^ajax_calls/folder_shared_with/', folder_shared_with),
-    url(r'^ajax_calls/remove_shared_user/', remove_shared_user),
-    url(r'^ajax_calls/add_shared_user/', add_shared_user),
-    url(r'^ajax_calls/user_folders/', user_folders),
-    url(r'^ajax_calls/current_session_folder/',
-        get_current_session_folder_ajax),
     # my channels
     url(r'^my_channels/$', my_channels, name='my_channels'),
     url(r'^channel_edit/(?P<slug>[\-\d\w]+)/$',

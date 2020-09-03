@@ -40,11 +40,11 @@ class FolderViewTestCase(TestCase):
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        response = self.client.get('/ajax_calls/user_folders/')
+        response = self.client.get('/podfile/ajax_calls/user_folders/')
         self.assertEqual(response.status_code, 302)  # user is not staff
         self.user.is_staff = True
         self.user.save()
-        response = self.client.get('/ajax_calls/user_folders/')
+        response = self.client.get('/podfile/ajax_calls/user_folders/')
         self.assertEqual(response.status_code, 200)  # user is staff
 
         response_content = response.content.decode("UTF-8")
