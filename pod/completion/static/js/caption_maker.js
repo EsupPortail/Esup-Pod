@@ -1,7 +1,7 @@
 const caption_memories = {
 	start_time: '00:00.000'
 }
-const file_prefix = window.location.pathname.replace(/^\//, "").match(/\w+/)[0];
+const file_prefix = window.location.pathname.match(/[\d\w\-]+\/$/)[0].replace("/", "");
 
 $(document).on('click', 'a.file-name', function() {
     let url = '/podfile/get_file/file/'; 
