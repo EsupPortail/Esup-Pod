@@ -1,9 +1,9 @@
 {% load i18n static %}
 <style>
-#podfile {
+/*#podfile {
   border: 1px solid #888;
   background: #E0DFDE;
-}
+}*/
 #podfile .row{
   margin: 10px 10px 5px 10px;
 }
@@ -11,8 +11,8 @@
   /*margin-right: 10px;*/
   padding: 5px;
   background: white;
-  border: 1px solid #ADABA9;
-  border-radius: 6px;
+   border:1px solid rgba(0,0,0,.125)
+  /*border-radius: 6px;*/
   /*overflow: auto;*/
 }
 
@@ -38,7 +38,7 @@ object-fit: cover;
 }
 #podfile .list_folders{
   padding-left: 15px; 
-  max-height:300px; 
+  max-height:350px; 
   overflow: auto;
 }
 #podfile #listfiles{
@@ -97,7 +97,7 @@ object-fit: cover;
 </span>
 </div>
 <!-- Select File Modal -->
-<div class="modal fade" id="fileModal_{{id}}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true" data-id="{{id}}"  style="z-index:1050">
+<div class="modal fade podfilemodal" id="fileModal_{{id}}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true" data-id="{{id}}"  style="z-index:1050">
   <div class="modal-dialog modal-lg modal-pod-full" role="document">
     <div class="modal-content">
       <div class="modal-header">

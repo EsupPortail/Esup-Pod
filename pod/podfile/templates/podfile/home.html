@@ -12,10 +12,10 @@
 
 {% block page_extra_head %}
 <style>
-#podfile {
+/*#podfile {
   border: 1px solid #888;
   background: #E0DFDE;
-}
+}*/
 #podfile .row{
   margin: 10px 10px 5px 10px;
 }
@@ -23,8 +23,8 @@
   /*margin-right: 10px;*/
   padding: 5px;
   background: white;
-  border: 1px solid #ADABA9;
-  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,.125)
+  /*border-radius: 6px;*/
   /*overflow: auto;*/
 }
 
@@ -50,7 +50,7 @@ object-fit: cover;
 }
 #podfile .list_folders{
   padding-left: 15px; 
-  max-height:300px; 
+  max-height:350px; 
   overflow: auto;
 }
 #podfile #listfiles{
@@ -64,6 +64,7 @@ var id_input="";
 var static_url = "{% get_static_prefix %}";
 var deletefolder_url = "{% url 'podfile:deletefolder' %}";
 var deletefile_url = "{% url 'podfile:deletefile' %}";
+var myFilesView = true;
 </script>
 <script src="{% static 'podfile/js/filewidget.js' %}"></script>
 
@@ -71,4 +72,6 @@ var deletefile_url = "{% url 'podfile:deletefile' %}";
 
 {% block page_content %}
 {% include 'podfile/home_content.html' %}
+
+
 {% endblock %}

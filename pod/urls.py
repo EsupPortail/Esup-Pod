@@ -41,6 +41,7 @@ from pod.recorder.views import add_recording, recorder_notify, claim_record,\
 from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
 from pod.video.views import PodChunkedUploadView, PodChunkedUploadCompleteView
 
+
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
 USE_SHIB = getattr(
