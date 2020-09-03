@@ -243,19 +243,19 @@ function verify_fields(form) {
 	if (form == 'form_contributor') {
 		if ((document.getElementById('id_name').value == '') || (document.getElementById('id_name').value.length < 2) || (document.getElementById('id_name').length > 200)) {
 			$('input#id_name')
-				.before("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('Please enter a name from 2 to 100 caracteres.') + "</span>")
+				.after("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('Please enter a name from 2 to 100 caracteres.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
 			error = true;
 		}
 		if (document.getElementById('id_weblink').value.length >= 200) {
 			$('input#id_weblink')
-				.before("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('You cannot enter a weblink with more than 200 caracteres.') + "</span>")
+				.after("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('You cannot enter a weblink with more than 200 caracteres.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
 			error = true;
 		}
 		if (document.getElementById('id_role').value == '') {
 			$('select#id_role')
-				.before("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('Please enter a role.') + "</span>")
+				.after("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('Please enter a role.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
 			error = true;
 		}
@@ -320,7 +320,7 @@ function verify_fields(form) {
 	} else if (form == 'form_document') {
 		if ($('img#id_document_thumbnail_img').attr('src') == '/static/icons/nofile_48x48.png') {
 			$('img#id_document_thubmanil_img')
-				.before("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('Please select a document.') + "</span>")
+				.after("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('Please select a document.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
 			error = true;
 		}
@@ -328,7 +328,7 @@ function verify_fields(form) {
 		var tags = /<script.+?>|<iframe.+?>/;
 		if (tags.exec(document.getElementById('id_content').value) != null) {
 			$('textarea#id_content')
-				.before("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('Iframe and Script tags are not allowed.') + "</span>")
+				.after("<span class='form-help-inline'>&nbsp;&nbsp;" + gettext('Iframe and Script tags are not allowed.') + "</span>")
 				.parents('div.form-group').addClass('has-error');
 			error = true;
 		}
