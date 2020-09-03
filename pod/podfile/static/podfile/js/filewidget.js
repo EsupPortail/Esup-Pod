@@ -39,7 +39,6 @@ if(typeof loaded == 'undefined') {
 $(document).on("click", "a.folder", function(e) {
     e.preventDefault();
     var id = $(this).data("id");
-    //alert('id '+id);
     send_form_data($(this).data('target'), {}, "show_folder_files", "get");
 });
 
@@ -47,6 +46,7 @@ $(document).on('change', "#ufile", function(e) {
     e.preventDefault();
     $("#formuploadfile").submit();
 });
+
 
 
 /****** CHANGE FILE ********/
@@ -96,14 +96,14 @@ $(document).on('change', "#ufile", function(e) {
     let filetype = button.data('filetype');
     switch (filetype) {
       case 'CustomImageModel':
-        $('#folderModalCenterTitle').html("Change "+button.data('filename'));
+        $('#folderModalCenterTitle').html(gettext("Change")+ " "+button.data('filename'));
         modal.find('.modal-body input#id_folder').val(folder_id);
         modal.find('.modal-body input#id_image').val(button.data('fileid'));
         modal.find('.modal-body input#file_type').val(button.data('filetype'));
         $("#formchangeimage").show();
         break;
       case 'CustomFileModel':
-        $('#folderModalCenterTitle').html("Change "+button.data('filename'));
+        $('#folderModalCenterTitle').html(gettext("Change")+ " "+button.data('filename'));
         modal.find('.modal-body input#id_folder').val(folder_id);
         modal.find('.modal-body input#file_id').val(button.data('fileid'));
         modal.find('.modal-body input#file_type').val(button.data('filetype'));
@@ -121,6 +121,98 @@ $(document).on('change', "#ufile", function(e) {
     }
 
   });
+
+  function reloadRemoveBtn(){
+    let remove = gettext('Remove')
+    $("#shared-people").html("")
+    $.ajax(
+      {
+          type: "GET",
+          url: "/podfile/ajax_calls/folder_shared_with?foldid=" + $('#formuserid').val(),
+          cache: false,
+          success: function (response) {
+              response.forEach(elt => {
+                  $("#shared-people").append('<li class="list-group-item">' + elt.first_name+' '+elt.last_name+(((!HIDE_USERNAME)?' ('+elt.username+')': '')  + ' <button type="button" data-userid=' +elt.id + ' class="btn btn-danger btn-share btn-remove">'+remove+'</button></li>'));
+              })
+          },
+          error : function(result, status, error){
+            showalert(gettext("Server error") + "<br/>"+error, "alert-danger");
+          }
+      }
+  );
+  }
+
+  function reloadAddBtn(searchTerm){
+    var foldid = $("#formuserid").val();
+    let add = gettext('Add')
+    $.ajax(
+        {
+            type: "GET",
+            url: "/podfile/ajax_calls/search_share_user?term=" + searchTerm + "&foldid=" + foldid,
+            cache: false,
+            success: function (response) {
+                $("#user-search").html("");
+                response.forEach(elt => {
+                  $("#user-search").append('<li class="list-group-item">' +  (elt.first_name+' '+elt.last_name+(((!HIDE_USERNAME)?' ('+elt.username+')': '')))   + '<button type="button" data-userid=' + elt.id  +' class="btn btn-success btn-share btn-add">' +add+ '</button></li>')
+                  
+                })
+            },
+            error : function(result, status, error){
+              showalert(gettext("Server error") + "<br/>"+error, "alert-danger");
+            }
+        }
+    );
+  }
+
+  $(document).on('show.bs.modal', '#shareModalCenter', function (event) {
+    $("#shared-people").text("")
+    let button = $(event.relatedTarget)
+    let folder_id = button.data('folderid');
+    let modal = $(this);
+    modal.find('#formuserid').val(folder_id);
+    reloadRemoveBtn();
+  
+
+
+  });
+
+
+
+  $(document).on("click", ".btn-remove", function(e) {
+    $.ajax(
+      {
+          type: "GET",
+          url: "/podfile/ajax_calls/remove_shared_user?foldid=" + $('#formuserid').val() + "&userid=" + $(this).data("userid"),
+          cache: false,
+          success: function (response) {
+            reloadRemoveBtn()
+          },
+          error : function(result, status, error){
+            showalert(gettext("Server error") + "<br/>"+error, "alert-danger");
+          }
+      },
+      
+  );
+  });
+
+
+  $(document).on("click", ".btn-add", function(e) {
+    $.ajax(
+      {
+          type: "GET",
+          url: "/podfile/ajax_calls/add_shared_user?foldid=" + $('#formuserid').val() + "&userid=" + $(this).data("userid"),
+          cache: false,
+          success: function (response) {
+            reloadAddBtn($("#userInputName").val())
+            reloadRemoveBtn()
+          },
+          error : function(result, status, error){
+            showalert(gettext("Server error") + "<br/>"+error, "alert-danger");
+          }
+      }
+  );
+  });
+
 
   $(document).on("click", "#modalSave", function(e) {
     $( "#folderModalCenter form:visible" ).submit();
@@ -149,17 +241,68 @@ $(document).on('change', "#ufile", function(e) {
 
   $(document).on('submit', 'form#folderFormName', function(e){
     e.preventDefault();
+
     send_form_data($(this).attr("action"), $(this).serializeArray(), "reloadFolder");
   });
 
+
+  $(document).on('input',"#folder-search",function(e) {
+    var text = $(this).val().toLowerCase()
+    if(text.length > 1 || text.length == 0){
+      $("#list_folders_sub").html("")
+      let type = $("#list_folders_sub").data("type")
+      let currentFolder = getCurrentSessionFolder();
+      $.ajax(
+        {
+            type: "GET",
+            url: "/podfile/ajax_calls/user_folders?search=" + text,
+            cache: false,
+            success: function (response) {
+              let nextPage = response.next_page;
+                response.folders.forEach(elt => {
+                  $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
+                })
+                if(nextPage != -1){
+                  $("#list_folders_sub").append('<a id="more" href="#" data-search="'+text +'" data-next="/podfile/ajax_calls/user_folders?page='+ nextPage +'&search='+ text+'"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
+                }
+            }
+        }
+    );
+    }
+
+  });
+
+
+  $(document).on('input',"#userInputName",function(e) {
+    if($(this).val() && $(this).val().length > 2) {
+      var searchTerm = $(this).val();
+      reloadAddBtn(searchTerm)
+    } else {
+      $("#user-search").html("");
+    }
+  });
+  
+  
+
   function reloadFolder(data){
     if(data.list_element) {
-        $('#dirs').html(data.list_element);
-
-        // call
         var folder_id = data.folder_id;
-        send_form_data($("#folder_"+folder_id).data('target'), {}, "show_folder_files", "get");
 
+        if(data.folder_name){
+          $("#folder-name-"+ folder_id).text("  "+data.folder_name)
+        }
+   
+
+        if(data.new_folder == true){
+          let type = $("#list_folders_sub").data("type")
+          $("#list_folders_sub").prepend('<div style="padding:0; margin:0;">' + createFolder(data.folder_id,data.folder_name,true,type,undefined) + '</div>')
+        }
+
+        if(data.deleted){
+         $("#folder_" + data.deleted_id).remove()
+        }
+        send_form_data("/podfile/get_folder_files/"+ folder_id, {}, "show_folder_files", "get");
+    
         //dismiss modal
         $('#folderModalCenter').modal('hide');
         $('#folderModalCenter').find('.modal-body input#folderInputName').val("");
@@ -176,8 +319,10 @@ $(document).on('change', "#ufile", function(e) {
         $('#files').html(data.list_element);
         $(".list_folders a").removeClass('font-weight-bold');
         $("img.directory-image").attr("src", static_url + "podfile/images/folder.png");
+        $("img.home-image").attr("src", static_url + "podfile/images/home_folder.png");
         $('#folder_'+data.folder_id).addClass('font-weight-bold');
         $('#folder_'+data.folder_id+" img").attr('src', static_url + "podfile/images/opened_folder.png");
+
 
         //dismiss modal
         $('#folderModalCenter').modal('hide');
@@ -201,6 +346,100 @@ $(document).on('change', "#ufile", function(e) {
   function append_folder_html_in_modal(data){
     $("#modal-folder_"+id_input).html(data);
   }
+
+
+  function getCurrentSessionFolder(){
+    let folder = "home"
+    $.ajax(
+      {
+          type: "GET",
+          url: "/podfile/ajax_calls/current_session_folder/",
+          cache: false,
+          async: false,
+          success: function (response) {
+             folder = response.folder
+          }
+      }
+  );
+  return folder
+  }
+
+  function createFolder(foldid, foldname, isCurrent,type,owner=undefined){
+    let construct = ""
+    construct+= ('<a href="#" class="folder ' +( isCurrent ? 'font-weight-bold' : '') + ' " id="folder_' + foldid + '" data-foldname="' + foldname + '" data-id="' + foldid+ '" data-target="');
+    let isType = (type != "None" && type != undefined)
+    construct+= ('/podfile/get_folder_files/' + foldid + (isType ? ('?type=' +type) : "") + '"')
+    if(owner != undefined){
+      foldname = '<i><span id="folder-name-'+ foldid + '">  ' + foldname + '</span></i> <b>(' + owner+')</b>' 
+    }
+    else{
+      foldname = '<span id="folder-name-' +foldid +  '">  ' +foldname+ '</span>'
+    }
+    construct+= ('><img class="directory-image" src="' + (isCurrent ? (static_url +'podfile/images/opened_folder.png') : (static_url + 'podfile/images/folder.png') )+'"/>'+foldname+'</a>')
+    return construct
+  }
+
+  function initFolders(){
+    let type = $("#list_folders_sub").data("type")
+    let currentFolder = getCurrentSessionFolder();
+    $.ajax(
+      {
+          type: "GET",
+          url: "/podfile/ajax_calls/user_folders",
+          cache: false,
+          success: function (response) {
+              let nextPage = response.next_page;
+              response.folders.forEach(elt => {
+                $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
+              })
+              if(nextPage != -1){
+                $("#list_folders_sub").append('<a id="more" href="#" data-next="/podfile/ajax_calls/user_folders?page='+ nextPage +'"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
+              }
+         
+          }
+      }
+  );
+  }
+  $(document).ready(function(e) {
+    if(typeof myFilesView !== 'undefined'){
+      initFolders();
+    }
+  });
+
+
+
+  $(document).on("click","#more", function(e) {
+    let next = $(this).data("next")
+    let search = $(this).data("search")
+    let currentFolder = getCurrentSessionFolder();
+    let type = $("#list_folders_sub").data("type")
+    $(this).remove()
+    $.ajax(
+      {
+          type: "GET",
+          url: next,
+          cache: false,
+          success: function (response) {
+            let nextPage = response.next_page
+               response.folders.forEach(elt => {
+                $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
+              })
+              if(nextPage != -1){
+                $("#list_folders_sub").append('<a id="more" href="#" data-next="/podfile/ajax_calls/user_folders?page='+nextPage + ((search!=undefined) ? ('&search='+search) : '' ) + '"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
+              }
+              
+          }
+      }
+  );
+  })
+
+
+  $(document).on('show.bs.modal', '.podfilemodal', function (event) {
+    event.stopPropagation();
+    setTimeout(function(){initFolders()}, 500);
+    
+  });
+
 
 /*
 var send_form_data = function(url,data_form, fct, method="post") {
