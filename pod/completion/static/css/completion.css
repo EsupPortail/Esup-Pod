@@ -11,10 +11,10 @@ table.scroll {
 }
 table.scroll .btn-sm,
 table.scroll .btn-group-sm > .btn {
-	border-radius: 3px;
-	font-size: 12px;
-	line-height: 0.5;
-	padding: 5px 10px;
+	border-radius: 4px;
+	font-size: 14px;
+	line-height: 1.4;
+	padding: .4em .8em;
 }
 table.scroll tbody {
 	max-height: 100px;
