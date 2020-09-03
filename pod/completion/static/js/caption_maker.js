@@ -108,12 +108,13 @@ $('#podvideoplayer').on('error', function(event) {
     $(this).css("display", "none");
 });
 
-$('#clearAllCaptions').on('click', function () {
+$('#clearAllCaptions').on('click', function (e) {
+    e.preventDefault();
     var deleteConfirm = confirm(gettext("Are you sure you want to delete all caption ?"));
     if (deleteConfirm){
         captionsArray.length = 0;
         autoPauseAtTime = -1;
-        $("#display div").remove();
+        $("#captionContent").val("");
         $("#captionTitle").html("&nbsp;");
         $("#textCaptionEntry").val("");
     }
