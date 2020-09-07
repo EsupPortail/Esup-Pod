@@ -697,17 +697,17 @@ def user_folders(request):
         user_folder = user_folder.filter(Q(name__icontains=search) | Q(
             name=current_fold))
 
-    folders_list = fetch_owners(request, user_folder)
-
     page = request.GET.get('page', 1)
 
-    paginator = Paginator(folders_list, 10)
+    paginator = Paginator(user_folder, 10)
     try:
         folders = paginator.page(page)
     except PageNotAnInteger:
         folders = paginator.page(1)
     except EmptyPage:
         folders = paginator.page(paginator.num_pages)
+
+    folders = fetch_owners(request, folders)
     folders = list(folders)
     json_resp = {"folders": folders,
                  "current_page": int(page),
