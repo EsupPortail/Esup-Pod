@@ -24,6 +24,7 @@ router.register(r'mainimages', main_views.CustomImageModelViewSet)
 router.register(r'users', authentication_views.UserViewSet)
 router.register(r'groups', authentication_views.GroupViewSet)
 router.register(r'owners', authentication_views.OwnerViewSet)
+router.register(r'sites', authentication_views.SiteViewSet)
 
 router.register(r'channels', video_views.ChannelViewSet)
 router.register(r'themes', video_views.ThemeViewSet)

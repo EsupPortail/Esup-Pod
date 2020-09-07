@@ -1,9 +1,9 @@
 {% load i18n static %}
-
+  
       <div style="padding-left: 0px">
         <!-- <a href="#" class="directory-sign" >[-]</a> -->
         <a href="#" id="folder_{{user_home_folder.id}}" class="{% if user_home_folder == current_session_folder%}font-weight-bold{%endif%} folder" data-id="{{user_home_folder.id}}" data-target="{% if type %}{% url 'podfile:get_folder_files' id=user_home_folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=user_home_folder.id %}{%endif%}">
-          <img class="directory-image" src="{% static "podfile/images/home_folder.png"%}">{% trans "My folders"%}
+          <img class="directory-image home-image" src="{% static "podfile/images/home_folder.png"%}">  {% trans "My folders"%}
         </a>
 
         <button type="button" class="btn btn-link btn-sm" data-toggle="modal" data-target="#folderModalCenter" data-oldname="" data-folderid="">
@@ -13,45 +13,52 @@
 
       </div>
 
-      {% if user_folder.count > 0 %}
-      <div class="list_folders">
-      {% for folder in user_folder %}
-          <div style="padding:0; margin:0;">
-            <a href="#" id="folder_{{folder.id}}" class="{% if folder == current_session_folder%}font-weight-bold{%endif%} folder" data-id="{{folder.id}}" data-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}">
-              {% if folder == current_session_folder%}
-              <img class="directory-image" src="{% static "podfile/images/opened_folder.png"%}">
-              {%else%}
-              <img class="directory-image" src="{% static "podfile/images/folder.png"%}">
-              {%endif%}
-              {{folder.name}} ({{folder.id}})
-            </a>
-          </div>
-      {% endfor %}
-      </div>
-      {% endif %}
+  
+      <input type="search" id="folder-search" name="q">
 
-      {% if share_folder.count > 0 %}
+        
+  <div class="list_folders" id="list_folders_sub" data-type="{{type}}">
+  </div>
+
+      {% if share_folder.count > 0 or share_folder_user.count > 0%}
       <hr/>
       <div style="padding-left: 0px">
+    
         <!-- <a href="#" class="directory-sign" >[-]</a> -->
-        <span class="folder_title"><img class="directory-image" src="{% static "podfile/images/home_folder.png"%}">{% trans "Shared folders"%}</span>
+        <span class="folder_title"><img class="directory-image home-image" src="{% static "podfile/images/home_folder.png"%}">  {% trans "Shared folders"%}</span>
       </div>
 
       <div class="list_folders">
       {% for folder in share_folder %}
           <div>
-            <a href="#" id="folder_{{folder.id}}" class="{% if folder == current_session_folder%}font-weight-bold{%endif%} folder" data-id="{{folder.id}}" data-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}">
+            <a href="#" id="folder_{{folder.id}}" class="{% if folder == current_session_folder%}font-weight-bold{%endif%} folder" data-foldname="{{ folder.name }}" data-id="{{folder.id}}" data-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}">
               {% if folder == current_session_folder%}
               <img class="directory-image" src="{% static "podfile/images/opened_folder.png"%}">
               {%else%}
               <img class="directory-image" src="{% static "podfile/images/folder.png"%}">
               {%endif%}
-              {{folder.name}} ({{folder.owner.username}})
+              <span id="folder-name-{{folder.id}}">{{folder.name}}</span> ({{folder.owner.username}})
             </a>
           </div>
       {% endfor %}
+      {% for folder in share_folder_user %}
+      <div>
+        <a href="#" id="folder_{{folder.id}}" class="{% if folder == current_session_folder%}font-weight-bold{%endif%} folder" data-foldname="{{ folder.name }}" data-id="{{folder.id}}" data-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}">
+          {% if folder == current_session_folder%}
+          <img class="directory-image" src="{% static "podfile/images/opened_folder.png"%}">
+          {%else%}
+          <img class="directory-image" src="{% static "podfile/images/folder.png"%}">
+          {%endif%}
+          <span id="folder-name-{{folder.id}}">{{folder.name}}</span> ({{folder.owner.username}})
+        </a>
+      </div>
+  {% endfor %}
       </div>
       {% endif %}
+      {% if user.is_superuser %}
+<hr/>
+            <a style="color:red"><i data-feather="alert-triangle"></i>  <b>{%trans "SuperUser mode : the folders of all users are listed (the owner is noted in brackets)" %}</b></a>
+  {%endif%}
 
 <style>
     #formalertdiv{
