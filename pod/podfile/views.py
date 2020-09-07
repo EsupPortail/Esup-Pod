@@ -694,8 +694,8 @@ def user_folders(request):
         get_current_session_folder_ajax(
             request).content.decode("utf-8"))["folder"]
     if search != "":
-        user_folder = user_folder.filter(Q(name__icontains=search) | Q(
-            name=current_fold))
+        user_folder = user_folder.filter(Q(name__icontains=search) | (Q(
+            name=current_fold) & ~Q(owner=request.user, name="home")))
 
     page = request.GET.get('page', 1)
 
