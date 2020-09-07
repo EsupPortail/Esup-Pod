@@ -393,7 +393,7 @@ $(document).on('change', "#ufile", function(e) {
                 $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
               })
               if(nextPage != -1){
-                $("#list_folders_sub").append('<a id="more" href="#" data-next="/podfile/ajax_calls/user_folders?page='+ nextPage +'"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
+                $("#list_folders_sub").append('<a id="more" href="#" data-next="/podfile/ajax_calls/user_folders?page='+ nextPage +'"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  '+ gettext('See more')+' ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
               }
          
           }
