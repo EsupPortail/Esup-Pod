@@ -246,9 +246,14 @@ $(document).on('change', "#ufile", function(e) {
   });
 
 
+  var lock = false
   $(document).on('input',"#folder-search",function(e) {
     var text = $(this).val().toLowerCase()
-    if(text.length > 1 || text.length == 0){
+    if(lock && text.length > 0){
+      return
+    }
+    if(text.length > 2 || text.length == 0){
+      lock = true
       $("#list_folders_sub").html("")
       let type = $("#list_folders_sub").data("type")
       let currentFolder = getCurrentSessionFolder();
@@ -265,6 +270,7 @@ $(document).on('change', "#ufile", function(e) {
                 if(nextPage != -1){
                   $("#list_folders_sub").append('<a id="more" href="#" data-search="'+text +'" data-next="/podfile/ajax_calls/user_folders?page='+ nextPage +'&search='+ text+'"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
                 }
+                lock = false
             }
         }
     );
