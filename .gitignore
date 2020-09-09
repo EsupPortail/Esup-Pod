@@ -24,7 +24,7 @@
 *.log
 *.sql
 *.sqlite*
-
+pod/log
 # OS generated files #
 ######################
 .DS_Store
