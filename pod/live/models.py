@@ -45,6 +45,7 @@ class Building(models.Model):
     class Meta:
         verbose_name = _("Building")
         verbose_name_plural = _("Buildings")
+        ordering = ['name']
 
 
 @receiver(post_save, sender=Building)

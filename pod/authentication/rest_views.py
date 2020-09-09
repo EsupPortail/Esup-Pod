@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User, Group
+from django.contrib.sites.models import Site
 from .models import Owner
 from rest_framework import serializers, viewsets
 
@@ -27,6 +28,13 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         model = Group
         fields = ('url', 'name')
 
+
+class SiteSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Site
+        fields = ('url', 'name', 'domain')
+
 # ViewSets define the view behavior.
 
 
@@ -43,3 +51,8 @@ class UserViewSet(viewsets.ModelViewSet):
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+
+
+class SiteViewSet(viewsets.ModelViewSet):
+    queryset = Site.objects.all()
+    serializer_class = SiteSerializer

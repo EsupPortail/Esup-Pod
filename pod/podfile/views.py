@@ -10,17 +10,22 @@ from django.core.exceptions import PermissionDenied
 from django.template.loader import render_to_string
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import SuspiciousOperation
-
+from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.contrib.auth.models import User
 from .models import UserFolder
 from .models import CustomFileModel
 from .models import CustomImageModel
 from .forms import UserFolderForm
 from .forms import CustomFileModelForm
 from .forms import CustomImageModelForm
-
+from pod.main.views import remove_accents
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseBadRequest
+import re
 import json
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 IMAGE_ALLOWED_EXTENSIONS = getattr(
     settings, 'IMAGE_ALLOWED_EXTENSIONS', (
@@ -62,13 +67,13 @@ def home(request, type=None):
     user_home_folder = get_object_or_404(
         UserFolder, name="home", owner=request.user)
 
-    user_folder = UserFolder.objects.filter(
-        owner=request.user
-    ).exclude(owner=request.user, name="home")
-
     share_folder = UserFolder.objects.filter(
         groups__in=request.user.groups.all()
     ).exclude(owner=request.user).order_by('owner', 'id')
+
+    share_folder_user = UserFolder.objects.filter(
+        users=request.user).exclude(
+            owner=request.user).order_by('owner', 'id')
 
     current_session_folder = get_current_session_folder(request)
 
@@ -79,8 +84,9 @@ def home(request, type=None):
                   template,
                   {
                       'user_home_folder': user_home_folder,
-                      'user_folder': user_folder,
+                      'user_folder': [],
                       'share_folder': share_folder,
+                      'share_folder_user': share_folder_user,
                       'current_session_folder': current_session_folder,
                       'form_file': CustomFileModelForm(),
                       'form_image': CustomImageModelForm(),
@@ -92,13 +98,21 @@ def home(request, type=None):
 def get_current_session_folder(request):
     try:
         current_session_folder = UserFolder.objects.get(
-            owner=request.user,
-            name=request.session.get(
-                'current_session_folder',
-                "home")
-        )
+           Q(owner=request.user, name=request.session.get(
+              'current_session_folder', "home")) | Q(
+                 users=request.user, name=request.session.get(
+                    'current_session_folder', "home")) | Q(
+                 groups=request.user.groups.all(), name=request.session.get(
+                    'current_session_folder', "home")))
         return current_session_folder
     except ObjectDoesNotExist:
+        if(request.user.is_superuser):
+            try:
+                current_session_folder = UserFolder.objects.get(
+                    name=request.session.get('current_session_folder', "home"))
+                return current_session_folder
+            except ObjectDoesNotExist:
+                pass
         current_session_folder = UserFolder.objects.get(
             owner=request.user,
             name="home"
@@ -109,6 +123,9 @@ def get_current_session_folder(request):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def get_folder_files(request, id, type=None):
+
+    if type is None:
+        type = request.GET.get('type', None)
     folder = get_object_or_404(UserFolder, id=id)
     if (request.user != folder.owner
             and not request.user.groups.filter(
@@ -119,7 +136,8 @@ def get_folder_files(request, id, type=None):
             ).exists()
             and not (
                 request.user.is_superuser or request.user.has_perm(
-                    "podfile.change_userfolder"))):
+                    "podfile.change_userfolder")) and not (
+                        request.user in folder.users.all())):
         messages.add_message(
             request, messages.ERROR,
             _(u'You cannot see this folder.'))
@@ -153,6 +171,10 @@ def get_rendered(request):
         groups__in=request.user.groups.all()
     ).exclude(owner=request.user).order_by('owner', 'id')
 
+    share_folder_user = UserFolder.objects.filter(
+        users=request.user).exclude(
+            owner=request.user).order_by('owner', 'id')
+
     current_session_folder = get_current_session_folder(request)
 
     rendered = render_to_string(
@@ -161,14 +183,23 @@ def get_rendered(request):
             'user_home_folder': user_home_folder,
             'user_folder': user_folder,
             'share_folder': share_folder,
+            'share_folder_user': share_folder_user,
             'current_session_folder': current_session_folder,
         }, request)
     return rendered, current_session_folder
 
 
+def decide_owner(request, form, folder):
+    if hasattr(form.instance, 'owner'):
+        return form.instance.owner
+    else:
+        return request.user
+
+
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def editfolder(request):
+    new_folder = False
 
     form = UserFolderForm(request.POST)
     if (request.POST.get("folderid")
@@ -178,7 +209,8 @@ def editfolder(request):
         if folder.name == "home" or (
             request.user != folder.owner
             and not (request.user.is_superuser or request.user.has_perm(
-                    "podfile.change_userfolder"))
+                    "podfile.change_userfolder") or (
+                        request.user in folder.users.all()))
         ):
             messages.add_message(
                 request, messages.ERROR,
@@ -188,11 +220,11 @@ def editfolder(request):
 
     if form.is_valid():
         folder = form.save(commit=False)
-        if hasattr(form.instance, 'owner'):
-            folder.owner = form.instance.owner
-        else:
-            folder.owner = request.user
+        folder.owner = decide_owner(request, form, folder)
+
         try:
+            if not request.POST.get("folderid"):
+                new_folder = True
             folder.save()
         except IntegrityError:
             messages.add_message(
@@ -206,9 +238,12 @@ def editfolder(request):
 
     list_element = {
         'list_element': rendered,
-        'folder_id': current_session_folder.id
+        'folder_id': current_session_folder.id,
+        'folder_name': current_session_folder.name,
+        'new_folder': new_folder
     }
     data = json.dumps(list_element)
+
     return HttpResponse(data, content_type='application/json')
 
 
@@ -236,7 +271,9 @@ def deletefolder(request):
 
     list_element = {
         'list_element': rendered,
-        'folder_id': current_session_folder.id
+        'folder_id': current_session_folder.id,
+        "deleted": True,
+        "deleted_id": request.POST['id']
     }
     data = json.dumps(list_element)
     return HttpResponse(data, content_type='application/json')
@@ -252,7 +289,8 @@ def deletefile(request):
         if (request.user != file.created_by
                 and not (request.user.is_superuser or request.user.has_perm(
                     "podfile.delete_customfilemodel") or request.user.has_perm(
-                    "podfile.delete_customimagemodel"))):
+                    "podfile.delete_customimagemodel") or (
+                        request.user in folder.users.all()))):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'You cannot delete this file.'))
@@ -287,7 +325,8 @@ def uploadfiles(request):
             request.user != folder.owner
             and not (request.user.is_superuser or request.user.has_perm(
                     "podfile.add_customfilemodel") or request.user.has_perm(
-                    "podfile.add_customimagemodel"))
+                    "podfile.add_customimagemodel") or (
+                        request.user in folder.users.all()))
         ):
             messages.add_message(
                 request, messages.ERROR,
@@ -380,7 +419,8 @@ def changefile(request):
         if (request.user != folder.owner
                 and not (request.user.is_superuser or request.user.has_perm(
                     "podfile.change_customfilemodel") or request.user.has_perm(
-                    "podfile.change_customimagemodel"))):
+                    "podfile.change_customimagemodel") or (
+                        request.user in folder.users.all()))):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'You cannot access this folder.'))
@@ -391,7 +431,8 @@ def changefile(request):
         if (request.user != file.created_by
                 and not (request.user.is_superuser or request.user.has_perm(
                     "podfile.change_customfilemodel") or request.user.has_perm(
-                    "podfile.change_customimagemodel"))):
+                    "podfile.change_customimagemodel") or (
+                        request.user in folder.users.all()))):
             messages.add_message(
                 request, messages.ERROR,
                 _(u'You cannot edit this file.'))
@@ -504,18 +545,26 @@ def get_file(request, type):
             ).exists()
             and not (request.user.is_superuser or request.user.has_perm(
                     "podfile.change_customfilemodel") or request.user.has_perm(
-                    "podfile.change_customimagemodel"))):
+                    "podfile.change_customimagemodel") or (
+                        request.user in reqfile.folder.users.all()))):
         messages.add_message(
             request, messages.ERROR,
             _(u'You cannot see this folder.'))
         raise PermissionDenied
 
     request.session['current_session_folder'] = reqfile.folder.name
+    file_p = reqfile.file.__str__()
+    reg = re.compile(r"[\w\d_\-]+(\.[a-z]{1,4})$")
+    file_name = re.search(reg, file_p).group()
     try:
         with open(reqfile.file.path, 'r') as f:
             fc = f.read()
+            print("-------------------------")
+            print(fc)
+            print("-------------------------")
             some_data_to_dump = {
                 'status': "success",
+                'file_name': file_name,
                 'id_file': reqfile.id,
                 'id_folder': reqfile.folder.id,
                 'response': fc
@@ -527,3 +576,147 @@ def get_file(request, type):
         }
     data = json.dumps(some_data_to_dump)
     return HttpResponse(data, content_type='application/json')
+
+
+@login_required(redirect_field_name='referrer')
+def folder_shared_with(request):
+    if request.is_ajax():
+        foldid = request.GET.get('foldid', 0)
+        if foldid == 0:
+            return HttpResponseBadRequest()
+        folder = UserFolder.objects.get(id=foldid)
+        if(folder.owner == request.user or request.user.is_superuser):
+            data = json.dumps(list(folder.users.values(
+                'id', 'first_name', 'last_name', 'username')))
+            mimetype = 'application/json'
+            return HttpResponse(data, mimetype)
+        else:
+            return HttpResponseBadRequest()
+    else:
+        return HttpResponseBadRequest()
+
+
+@login_required(redirect_field_name='referrer')
+def user_share_autocomplete(request):
+    if request.is_ajax():
+        foldid = request.GET.get('foldid', 0)
+        if foldid == 0:
+            return HttpResponseBadRequest()
+        folder = UserFolder.objects.get(id=foldid)
+        shared_users = folder.users.all()
+        owner = folder.owner
+
+        VALUES_LIST = ['id', 'username', 'first_name', 'last_name']
+        q = remove_accents(request.GET.get('term', '').lower())
+        users = User.objects.filter(
+            Q(username__istartswith=q) | Q(
+                last_name__istartswith=q) | Q(
+                    first_name__istartswith=q)).exclude(
+                        pk__in=shared_users).exclude(
+                            id=owner.id).distinct().order_by(
+                                "last_name").values(*list(VALUES_LIST))
+
+        data = json.dumps(list(users))
+    else:
+        return HttpResponseBadRequest()
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
+@login_required(redirect_field_name='referrer')
+def remove_shared_user(request):
+    if request.is_ajax():
+        foldid = request.GET.get('foldid', 0)
+        userid = request.GET.get('userid', 0)
+        if foldid == 0 or userid == 0:
+            return HttpResponseBadRequest()
+        folder = UserFolder.objects.get(id=foldid)
+        user = User.objects.get(id=userid)
+        if(folder.owner == request.user or request.user.is_superuser):
+            folder.users.remove(user)
+            folder.save()
+            return HttpResponse(status=201)
+        else:
+            return HttpResponseBadRequest()
+    else:
+        return HttpResponseBadRequest()
+
+
+@login_required(redirect_field_name='referrer')
+def add_shared_user(request):
+    if request.is_ajax():
+        foldid = request.GET.get('foldid', 0)
+        userid = request.GET.get('userid', 0)
+        if foldid == 0 or userid == 0:
+            return HttpResponseBadRequest()
+        folder = UserFolder.objects.get(id=foldid)
+        user = User.objects.get(id=userid)
+        if(folder.owner == request.user or request.user.is_superuser):
+            folder.users.add(user)
+            folder.save()
+            return HttpResponse(status=201)
+        else:
+            return HttpResponseBadRequest()
+    else:
+        return HttpResponseBadRequest()
+
+
+@login_required(redirect_field_name='referrer')
+def get_current_session_folder_ajax(request):
+    fold = request.session.get(
+        'current_session_folder', "home")
+    mimetype = 'application/json'
+    return HttpResponse(json.dumps({"folder": fold}), mimetype)
+
+
+def fetch_owners(request, folders_list):
+    if request.user.is_superuser:
+        for fold in folders_list:
+            if fold["owner"] != request.user.id:
+                fold['owner'] = User.objects.get(id=fold['owner']).username
+            else:
+                del fold['owner']
+    return folders_list
+
+
+@staff_member_required(redirect_field_name='referrer')
+def user_folders(request):
+    VALUES_LIST = ['id', 'name']
+    if request.user.is_superuser:
+        VALUES_LIST.append('owner')
+
+    user_folder = UserFolder.objects.exclude(owner=request.user, name="home")
+
+    if not request.user.is_superuser:
+        user_folder = user_folder.filter(owner=request.user)
+
+    user_folder = user_folder.values(*list(VALUES_LIST))
+
+    search = request.GET.get('search', "")
+    current_fold = json.loads(
+        get_current_session_folder_ajax(
+            request).content.decode("utf-8"))["folder"]
+    if search != "":
+        user_folder = user_folder.filter(Q(name__icontains=search) | (Q(
+            name=current_fold) & ~Q(owner=request.user, name="home")))
+
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(user_folder, 10)
+    try:
+        folders = paginator.page(page)
+    except PageNotAnInteger:
+        folders = paginator.page(1)
+    except EmptyPage:
+        folders = paginator.page(paginator.num_pages)
+
+    folders = fetch_owners(request, folders)
+    folders = list(folders)
+    json_resp = {"folders": folders,
+                 "current_page": int(page),
+                 "next_page": (-1 if ((int(
+                     page)+1) > paginator.num_pages) else(
+                         int(page)+1)), "total_pages": paginator.num_pages}
+    data = json.dumps(json_resp)
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)

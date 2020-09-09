@@ -31,7 +31,7 @@ from pod.video.views import video_notes
 from pod.video.views import video_count, video_version
 from pod.video.views import video_oembed
 from pod.video.views import stats_view
-from pod.video.views import get_comment, add_comment, delete_comment, vote
+from pod.video.views import get_comments, add_comment, delete_comment, vote
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 from pod.main.views import contact_us, download_file, user_autocomplete
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
@@ -40,6 +40,7 @@ from pod.recorder.views import add_recording, recorder_notify, claim_record,\
     delete_record
 from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
 from pod.video.views import PodChunkedUploadView, PodChunkedUploadCompleteView
+
 
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
@@ -212,19 +213,22 @@ if getattr(settings, "USE_STATS_VIEW", False):
             stats_view, name='video_stats_view'),
     ]
 # COMMENT and VOTE
-urlpatterns += [
-    url(r'^comment/(?P<video_slug>[\-\d\w]+)/$', get_comment, name='comment'),
-    url(r'^comment/add/(?P<video_slug>[\-\d\w]+)/$',
-        add_comment, name='get_comment'),
-    url(r'^comment/add/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
-        add_comment, name='add_comment'),
-    url(r'^comment/vote/(?P<video_slug>[\-\d\w]+)/$',
-        vote, name='get_vote'),
-    url(r'^comment/vote/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
-        vote, name='add_vote'),
-    url(r'^comment/delete/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
-        delete_comment, name='delete_comment'),
-]
+if getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
+    urlpatterns += [
+        url(r'^comment/(?P<video_slug>[\-\d\w]+)/$',
+            get_comments,
+            name='get_comments'),
+        url(r'^comment/add/(?P<video_slug>[\-\d\w]+)/$',
+            add_comment, name='add_comment'),
+        url(r'^comment/add/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
+            add_comment, name='add_child_comment'),
+        url(r'^comment/del/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
+            delete_comment, name='delete_comment'),
+        url(r'^comment/vote/(?P<video_slug>[\-\d\w]+)/$',
+            vote, name='get_votes'),
+        url(r'^comment/vote/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
+            vote, name='add_vote'),
+    ]
 
 # CHANNELS
 urlpatterns += [

@@ -18,7 +18,7 @@
 		 */
 		var MenuButton = videojs.getComponent('MenuButton');
 		var ChapterMenuButton = videojs.extend(MenuButton, {
-			constructor: function(player, options){
+			constructor: function(player, options){ 
 				options.label = gettext('Chapters');
 				MenuButton.call(this, player, options);
 				this.el().setAttribute('aria-label', gettext('Chapters'));

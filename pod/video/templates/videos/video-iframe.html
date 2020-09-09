@@ -3,6 +3,7 @@
 {% load tagging_tags %}
 {% load thumbnail %}
 {% load video_filters %}
+
 <!doctype html>
 <html>
 <head>
@@ -21,6 +22,7 @@
 
     <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap.min.css' %}" crossorigin="anonymous">
     <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
+    <script src="{% url 'javascript-catalog' %}"></script>
 
     <style>
         body{

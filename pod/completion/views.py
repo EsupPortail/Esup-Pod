@@ -131,8 +131,8 @@ def video_completion_contributor(request, slug):
                               sites=get_current_site(request))
     if request.user != video.owner and not (
         request.user.is_superuser or request.user.has_perm(
-            "completion.add_contributor") and (
-            request.user not in video.additional_owners.all())):
+            "completion.add_contributor") or (
+            request.user in video.additional_owners.all())):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
@@ -314,8 +314,8 @@ def video_completion_document(request, slug):
                               sites=get_current_site(request))
     if request.user != video.owner and not (
         request.user.is_superuser or request.user.has_perm(
-            "completion.add_document") and (
-            request.user not in video.additional_owners.all())):
+            "completion.add_document") or (
+            request.user in video.additional_owners.all())):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
@@ -493,8 +493,8 @@ def video_completion_track(request, slug):
                               sites=get_current_site(request))
     if request.user != video.owner and not (
         request.user.is_superuser or request.user.has_perm(
-            "completion.add_track") and (
-            request.user not in video.additional_owners.all())):
+            "completion.add_track") or (
+            request.user in video.additional_owners.all())):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
@@ -713,8 +713,8 @@ def video_completion_overlay(request, slug):
     video = get_object_or_404(Video, slug=slug)
     if request.user != video.owner and not (
         request.user.is_superuser or request.user.has_perm(
-            "completion.add_overlay") and (
-            request.user not in video.additional_owners.all())):
+            "completion.add_overlay") or (
+            request.user in video.additional_owners.all())):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot complement this video.'))
         raise PermissionDenied
