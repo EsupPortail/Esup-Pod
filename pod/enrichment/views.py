@@ -230,7 +230,7 @@ def video_enrichment(request, slug, slug_c=None,
         raise SuspiciousOperation('Invalid video id')
 
     return render_video(request, id, slug_c, slug_t, slug_private,
-                        template_video, None)
+                        template_video)
 
 
 """

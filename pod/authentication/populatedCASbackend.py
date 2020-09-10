@@ -65,6 +65,9 @@ USER_LDAP_MAPPING_ATTRIBUTES = getattr(
         "affiliations": "eduPersonAffiliation"
     })
 
+CAS_FORCE_LOWERCASE_USERNAME = getattr(
+    settings, 'CAS_FORCE_LOWERCASE_USERNAME', False)
+
 # search scope
 BASE = 'BASE'
 LEVEL = 'LEVEL'
@@ -75,6 +78,8 @@ def populateUser(tree):
     username_element = tree.find(
         './/{http://www.yale.edu/tp/cas}%s' % AUTH_CAS_USER_SEARCH)
     username = username_element.text
+    if CAS_FORCE_LOWERCASE_USERNAME:
+        username = username.lower()
     user, user_created = User.objects.get_or_create(username=username)
     owner, owner_created = Owner.objects.get_or_create(user=user)
     owner.auth_type = 'CAS'
