@@ -23,10 +23,15 @@
 }
 
 .comment_label,
-.comment_main h1, .comment_main h2, .comment_main h3, .comment_main h4, .comment_main h5, .comment_main h6
+.comment_main h1,
+.comment_main h2,
+.comment_main h3,
+.comment_main h4,
+.comment_main h5,
+.comment_main h6
 {
     font-weight: 600;
-    color: var(--content-primary-color);
+    color: var(--secondary) !important;
     font-size: 16px;
 }
 .comment_main .icon
@@ -79,7 +84,7 @@
     overflow-y: auto;
     font-size: 14px;
     font-weight: 300;
-    color: var(--content-primary-color);
+    color: var(--primary);
     line-height: 1.4;
     background-color: var(--primary-background-color);
 }
@@ -343,8 +348,8 @@
 }
 .comment_main .add_comment .add_comment_btn
 {
-    background-color: var(--content-primary-color);
-    border: 1px solid var(--content-primary-color);
+    background-color: var(--primary);
+    border: 1px solid var(--primary);
     border-radius: 4px;
     -webkit-box-shadow: 0 4px 8px var(--content-third-color);
             box-shadow: 0 4px 8px var(--content-third-color);
@@ -399,7 +404,7 @@
     -webkit-box-pack: justify;
         -ms-flex-pack: justify;
             justify-content: space-between;
-    border-left: 4px solid var(--content-primary-color);
+    border-left: 4px solid var(--primary);
     padding: .6em;
     background-color: var(--third-background-color);
     -webkit-box-shadow: 1px 1px 4px var(--background-color);
@@ -492,7 +497,7 @@
 }
 .comment_main .comment .comment_content_footer .comment_actions:hover
 {
-    color: var(--content-primary-color);
+    color: var(--primary);
 }
 .comment_main .comment_vote_action.voted svg.unvoted,
 .comment_main .comment_vote_action svg.voted,
