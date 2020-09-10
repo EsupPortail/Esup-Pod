@@ -113,7 +113,25 @@ body {
 {% endif %}
 {%endif%}
 {%endif%}
-{% if video.encoding_in_progress %}<p class="text-info">{% trans "The video is currently being encoded." %}</p>{% endif %}
+{% if video.get_encoding_step == "" %}
+<p class="text-info">
+    {% trans "The video is currently waiting for encoding." %}
+</p>
+{% endif %}
+
+{% if video.encoding_in_progress %}
+<p class="text-info">
+    {% trans "The video is currently being encoded." %}
+</p>
+{% endif %}
+
+{% if video.get_encoding_step == "5 : transcripting audio" %}
+<p class="text-info">
+    {% trans "The video is currently being transcripted." %}
+</p>
+{% endif %}
+
+
 {% block video-element %}
 
 {% if form %}
