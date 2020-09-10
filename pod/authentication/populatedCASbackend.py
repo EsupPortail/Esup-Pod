@@ -74,7 +74,7 @@ SUBTREE = 'SUBTREE'
 def populateUser(tree):
     username_element = tree.find(
         './/{http://www.yale.edu/tp/cas}%s' % AUTH_CAS_USER_SEARCH)
-    username = username_element.text
+    username = username_element.text.lower()
     user, user_created = User.objects.get_or_create(username=username)
     owner, owner_created = Owner.objects.get_or_create(user=user)
     owner.auth_type = 'CAS'
