@@ -563,7 +563,6 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
     ):
         return redirect(video.get_default_version_link())
     """
-
     listNotes = get_adv_note_list(request, video)
     channel = get_object_or_404(Channel, slug=slug_c,
                                 sites=get_current_site(
