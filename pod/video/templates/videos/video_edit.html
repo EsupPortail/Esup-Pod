@@ -65,6 +65,13 @@
             <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
             {{form.errors}}
             {% endif %}
+
+            {% if form.instance.get_encoding_step == "" %}
+            <p class="text-info">
+                {% trans "The video is currently waiting for encoding." %}
+            </p>
+            {% endif %}
+
             {% if form.instance.encoding_in_progress %}
             <p class="text-info">
                 {% trans "The video is currently being encoded." %}
