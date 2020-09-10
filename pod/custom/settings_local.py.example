@@ -28,6 +28,13 @@ SECRET_KEY = 'A_CHANGER'
 DEBUG = True
 
 """
+Pour forcer le https
+"""
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+"""
 # Une liste de chaînes représentant des noms de domaine/d’hôte que ce site Django peut servir.
 # C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP,
 # qui sont possibles même avec bien des configurations de serveur Web apparemment sécurisées.
@@ -842,3 +849,40 @@ SHIB_URL = ""
 # URL de déconnexion à votre instance Shibboleth
 """
 SHIB_LOGOUT_URL = ""
+
+"""
+# Forcer le passage en minuscule du nom d'utilisateur CAS (permet de prévenir des doubles créations de comptes dans certain cas).
+"""
+CAS_FORCE_LOWERCASE_USERNAME = False
+
+"""
+# permettre l'usage du oembed, partage dans moodle, facebook, twitter etc.
+"""
+OEMBED = True
+
+"""
+# Activer les commentaires au niveau de la plateforme
+"""
+ACTIVE_VIDEO_COMMENT = True
+
+"""
+# Transcription
+"""
+USE_TRANSCRIPTION = True
+
+"""
+# decoupage de l'audio pour la transcription
+"""
+AUDIO_SPLIT_TIME = 300
+
+"""
+# paramétrage de deepspeech pour le modele
+"""
+DS_PARAM = {
+    'fr': {
+        # le modèle deepspeech
+        'model': "/usr/local/django_projects/transcription/model_tensorflow_fr/output_graph.pbmm",
+        'scorer': "/usr/local/django_projects/transcription/model_tensorflow_fr/kenlm.scorer",
+        
+    }
+}
