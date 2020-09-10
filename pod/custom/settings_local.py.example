@@ -842,3 +842,8 @@ SHIB_URL = ""
 # URL de déconnexion à votre instance Shibboleth
 """
 SHIB_LOGOUT_URL = ""
+
+"""
+# Forcer le passage en minuscule du nom d'utilisateur CAS (permet de prévenir des doubles créations de comptes dans certain cas).
+"""
+CAS_FORCE_LOWERCASE_USERNAME = False
