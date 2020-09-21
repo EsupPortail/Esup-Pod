@@ -142,6 +142,7 @@
   </div>
 </div>
 
+   {% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all%}
   <div class="tab-pane fade" id="share" role="tabpanel" aria-labelledby="share-tab" {% if video.is_draft %}style="border:1px solid red"{% endif %}>
     <h5><i data-feather="share-2"></i>&nbsp;{% if video.is_draft %}{% trans 'Embed/Share (Draft Mode)' %} {% else %}{% trans 'Embed/Share' %} {%endif%}</h5>
     {% if not video.is_draft and not video.is_restricted and video.password != '' %}
@@ -196,4 +197,5 @@
       </fieldset>
     
   </div>
+  {%endif%}
 </div>
