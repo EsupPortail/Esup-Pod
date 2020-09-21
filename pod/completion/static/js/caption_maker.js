@@ -3,7 +3,7 @@ const caption_memories = {
 }
 const file_prefix = window.location.pathname.match(/[\d\w\-]+\/$/)[0].replace("/", "");
 
-$(document).on('click', 'a.file-name', function() {
+$(document).on('click', 'a.file-name, a.file-image', function() {
     let url = '/podfile/get_file/file/'; 
     let data_form = $("#captionmaker_form" ).serializeArray();
     send_form_data(url, data_form, "ProcessProxyVttResponse");
