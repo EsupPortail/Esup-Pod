@@ -364,6 +364,7 @@ def my_videos(request):
     # Videos list which user is the owner + which user is an additional owner
     videos_list = request.user.video_set.all().filter(
         sites=site) | request.user.owners_videos.all().filter(sites=site)
+    videos_list = videos_list.distinct()
 
     page = request.GET.get('page', 1)
 
