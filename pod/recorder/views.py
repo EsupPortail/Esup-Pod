@@ -56,6 +56,9 @@ DEFAULT_RECORDER_PATH = getattr(
 USE_CAS = getattr(settings, 'USE_CAS', False)
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
 
+MAINTENANCE_MODE = getattr(
+    settings, 'MAINTENANCE_MODE', False)
+
 
 def check_recorder(recorder, request):
     if recorder is None:
@@ -88,6 +91,8 @@ def case_delete(form, request):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def add_recording(request):
+    if MAINTENANCE_MODE:
+        return redirect(reverse('maintenance'))
     mediapath = request.GET.get('mediapath') if (
         request.GET.get('mediapath')) else ""
     course_title = request.GET.get(
@@ -234,6 +239,8 @@ def recorder_notify(request):
 @login_required(redirect_field_name='referrer')
 @staff_member_required(redirect_field_name='referrer')
 def claim_record(request):
+    if MAINTENANCE_MODE:
+        return redirect(reverse('maintenance'))
     site = get_current_site(request)
     # get records list ordered by date
     records_list = RecordingFileTreatment.objects.\

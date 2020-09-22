@@ -1,0 +1,16 @@
+	{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% load tagging_tags %}
+{% load thumbnail %}
+{% load video_filters %}
+{% load video_tags %}
+
+
+{% block page_content %}
+
+	
+	<div class="p-3 mb-2 bg-danger text-white">{% trans 'Pod is under maintenance for "'%}{{MAINTENANCE_REASON}}{%trans '", so this features is unavailable at the moment'%}</div>
+<a href="/" type="button" class="btn btn-primary" data-dismiss="modal">{%trans "Return to homepage"%}</a>
+<a href="{% url 'contact_us' %}" type="button" class="btn btn-secondary" data-dismiss="modal">{%trans "Contact us"%}</a>
+{%endblock page_content%}

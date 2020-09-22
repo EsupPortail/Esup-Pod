@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-10 09:55+0000\n"
+"POT-Creation-Date: 2020-09-21 12:01+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -116,7 +116,7 @@ msgstr "authentification locale"
 #: pod/authentication/templates/registration/login.html:9
 #: pod/authentication/templates/registration/login.html:12
 #: pod/authentication/templates/registration/login.html:64
-#: pod/main/templates/navbar.html:111
+#: pod/main/templates/navbar.html:117
 msgid "Log in"
 msgstr "Connexion"
 
@@ -143,7 +143,7 @@ msgid "Forgotten your password or username?"
 msgstr "Mot de passe ou identifiant perdu ?"
 
 #: pod/authentication/templates/userpicture/userpicture.html:7
-#: pod/main/templates/navbar.html:85
+#: pod/main/templates/navbar.html:91
 msgid "Change your picture"
 msgstr "Changer votre image de profil"
 
@@ -371,7 +371,7 @@ msgstr "Chapitre vidéo"
 #: pod/completion/templates/video_completion.html:13
 #: pod/enrichment/templates/enrichment/group_enrichment.html:10
 #: pod/interactive/templates/interactive/group_interactive.html:10
-#: pod/main/templates/navbar.html:91
+#: pod/main/templates/navbar.html:97
 #: pod/video/templates/videos/add_video.html:12
 #: pod/video/templates/videos/my_videos.html:6
 #: pod/video/templates/videos/video_collaborate.html:12
@@ -1448,7 +1448,7 @@ msgstr "Ajouter une vidéo à une playlist"
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html:119
 #: pod/interactive/templates/interactive/video_interactive.html:95
-#: pod/main/templates/navbar.html:95
+#: pod/main/templates/navbar.html:101
 #: pod/playlist/templates/my_playlists.html:10
 #: pod/playlist/templates/my_playlists.html:17
 #: pod/playlist/templates/playlist.html:14
@@ -2566,12 +2566,12 @@ msgstr "Disciplines"
 msgid "Tags"
 msgstr "Mots clés"
 
-#: pod/main/templates/base.html:62
+#: pod/main/templates/base.html:66
 msgid "Home"
 msgstr "Accueil"
 
 #: pod/main/templates/contact_us.html:8 pod/main/templates/contact_us.html:12
-#: pod/main/templates/contact_us.html:17
+#: pod/main/templates/contact_us.html:17 pod/main/templates/maintenance.html:15
 msgid "Contact us"
 msgstr "Contactez nous"
 
@@ -2652,6 +2652,18 @@ msgstr "Cordialement"
 msgid "You just send a message from"
 msgstr "Vous venez d'envoyer un message depuis"
 
+#: pod/main/templates/maintenance.html:13
+msgid "Pod is under maintenance for \""
+msgstr "Pod est en maintenance pour \""
+
+#: pod/main/templates/maintenance.html:13
+msgid "\", so this features is unavailable at the moment"
+msgstr "\", cette fonctionnalité est donc désactivée pour le moment"
+
+#: pod/main/templates/maintenance.html:14
+msgid "Return to homepage"
+msgstr "Revenir à la page d'accueil"
+
 #: pod/main/templates/navbar.html:17 pod/video/forms.py:168
 #: pod/video/models.py:260 pod/video/models.py:525
 msgid "Channels"
@@ -2670,15 +2682,23 @@ msgstr "Types"
 msgid "Search"
 msgstr "Rechercher"
 
-#: pod/main/templates/navbar.html:60 pod/main/templates/navbar.html:62
+#: pod/main/templates/navbar.html:60
+msgid "MAINTENANCE"
+msgstr "MAINTENANCE"
+
+#: pod/main/templates/navbar.html:60
+msgid "Some features are unavailable"
+msgstr "Certaines fonctionnalités sont indisponibles"
+
+#: pod/main/templates/navbar.html:63 pod/main/templates/navbar.html:65
 msgid "Add a video"
 msgstr "Ajouter une vidéo"
 
-#: pod/main/templates/navbar.html:88
+#: pod/main/templates/navbar.html:94
 msgid "Add your picture"
 msgstr "Ajouter votre image de profil"
 
-#: pod/main/templates/navbar.html:93
+#: pod/main/templates/navbar.html:99
 #: pod/video/templates/channel/channel_edit.html:17
 #: pod/video/templates/channel/my_channels.html:6
 #: pod/video/templates/channel/my_channels.html:9
@@ -2686,19 +2706,19 @@ msgstr "Ajouter votre image de profil"
 msgid "My channels"
 msgstr "Mes chaînes"
 
-#: pod/main/templates/navbar.html:97 pod/podfile/templates/podfile/home.html:6
+#: pod/main/templates/navbar.html:103 pod/podfile/templates/podfile/home.html:6
 #: pod/podfile/templates/podfile/home.html:10
 msgid "My files"
 msgstr "Mes fichiers"
 
-#: pod/main/templates/navbar.html:100
+#: pod/main/templates/navbar.html:106
 #: pod/recorder/templates/recorder/claim_record.html:11
 #: pod/recorder/templates/recorder/record_delete.html:8
 #: pod/recorder/templates/recorder/record_delete.html:20
 msgid "Claim a record"
 msgstr "Revendiquer un enregistrement"
 
-#: pod/main/templates/navbar.html:104 pod/main/templates/navbar.html:105
+#: pod/main/templates/navbar.html:110 pod/main/templates/navbar.html:111
 msgid "Log out"
 msgstr "Déconnexion"
 
@@ -3410,7 +3430,7 @@ msgstr "Nouvel enregistrement ajouté."
 msgid "The record has been deleted."
 msgstr "L’enregistrement a été supprimé."
 
-#: pod/urls.py:251 pod/urls.py:252
+#: pod/urls.py:253 pod/urls.py:254
 msgid "Pod Administration"
 msgstr "Administration de Pod"
 

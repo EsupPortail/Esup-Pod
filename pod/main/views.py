@@ -289,3 +289,7 @@ def user_autocomplete(request):
         return HttpResponseBadRequest()
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
+
+
+def maintenance(request):
+    return render(request, 'maintenance.html', {})

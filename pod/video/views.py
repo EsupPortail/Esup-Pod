@@ -129,6 +129,9 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
     )
 )
 
+MAINTENANCE_MODE = getattr(
+    settings, 'MAINTENANCE_MODE', False)
+
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 ORGANIZE_BY_THEME = getattr(settings, 'ORGANIZE_BY_THEME', False)
 VIEW_STATS_AUTH = getattr(settings, 'VIEW_STATS_AUTH', False)
@@ -655,6 +658,8 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
 @ensure_csrf_cookie
 @login_required(redirect_field_name='referrer')
 def video_edit(request, slug=None):
+    if MAINTENANCE_MODE:
+        return redirect(reverse('maintenance'))
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(
         request)) if slug else None
 

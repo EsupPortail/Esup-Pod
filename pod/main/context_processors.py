@@ -100,6 +100,15 @@ USE_CHUNKED_UPLOAD = getattr(
 CHUNK_SIZE = getattr(
     django_settings, 'CHUNK_SIZE', 100000)
 
+MAINTENANCE_REASON = getattr(
+    django_settings, 'MAINTENANCE_REASON', "No reason")
+
+MAINTENANCE_SHOW_HEADBAND = getattr(
+    django_settings, 'MAINTENANCE_SHOW_HEADBAND', True)
+
+MAINTENANCE_MODE = getattr(
+    django_settings, 'MAINTENANCE_MODE', False)
+
 
 def context_settings(request):
     new_settings = {}
@@ -131,6 +140,9 @@ def context_settings(request):
     new_settings['BOOTSTRAP_CUSTOM'] = BOOTSTRAP_CUSTOM
     new_settings['USE_CHUNKED_UPLOAD'] = USE_CHUNKED_UPLOAD
     new_settings['CHUNK_SIZE'] = CHUNK_SIZE
+    new_settings['MAINTENANCE_REASON'] = MAINTENANCE_REASON
+    new_settings['MAINTENANCE_SHOW_HEADBAND'] = MAINTENANCE_SHOW_HEADBAND
+    new_settings['MAINTENANCE_MODE'] = MAINTENANCE_MODE
     return new_settings
 
 
