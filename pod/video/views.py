@@ -362,7 +362,6 @@ def my_videos(request):
     videos_list = request.user.video_set.all().filter(
         sites=site) | request.user.owners_videos.all().filter(sites=site)
     videos_list = videos_list.distinct()
-
     page = request.GET.get('page', 1)
 
     full_path = ""
@@ -681,7 +680,7 @@ def video_edit(request, slug=None):
         is_staff=request.user.is_staff,
         is_superuser=request.user.is_superuser,
         current_user=request.user,
-        initial={'owner': default_owner}
+        initial={'owner': default_owner},
     )
 
     if request.method == 'POST':
@@ -692,6 +691,7 @@ def video_edit(request, slug=None):
             is_staff=request.user.is_staff,
             is_superuser=request.user.is_superuser,
             current_user=request.user,
+            current_lang=request.LANGUAGE_CODE,
 
         )
         if form.is_valid():

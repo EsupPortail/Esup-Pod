@@ -420,15 +420,14 @@ class VideoForm(forms.ModelForm):
             and hasattr(self.instance, 'owner')
             and 'owner' in cleaned_data.keys()
             and cleaned_data['owner'] != self.instance.owner)
-
         if 'description' in cleaned_data.keys():
             cleaned_data['description_%s' %
-                         settings.LANGUAGE_CODE
+                         self.current_lang
                          ] = cleaned_data['description']
         if 'title' in cleaned_data.keys():
             cleaned_data[
                 'title_%s' %
-                settings.LANGUAGE_CODE
+                self.current_lang
             ] = cleaned_data['title']
         if ('restrict_access_to_groups' in cleaned_data.keys()
                 and len(cleaned_data['restrict_access_to_groups']) > 0):
@@ -441,9 +440,8 @@ class VideoForm(forms.ModelForm):
             'is_superuser') if (
             'is_superuser' in kwargs.keys()
         ) else self.is_superuser
-
-        self.current_user = kwargs.pop(
-            'current_user') if kwargs.get('current_user') else None
+        self.current_lang = kwargs.pop('current_lang', settings.LANGUAGE_CODE)
+        self.current_user = kwargs.pop('current_user', None)
 
         self.VIDEO_ALLOWED_EXTENSIONS = VIDEO_ALLOWED_EXTENSIONS
         self.VIDEO_MAX_UPLOAD_SIZE = VIDEO_MAX_UPLOAD_SIZE
