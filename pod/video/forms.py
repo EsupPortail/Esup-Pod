@@ -293,7 +293,7 @@ class VideoForm(forms.ModelForm):
     }
     is_admin = False
     user = User.objects.all()
-
+    
     def filter_fields_admin(form):
         if form.is_superuser is False and form.is_admin is False:
             form.remove_field('date_added')
@@ -420,15 +420,14 @@ class VideoForm(forms.ModelForm):
             and hasattr(self.instance, 'owner')
             and 'owner' in cleaned_data.keys()
             and cleaned_data['owner'] != self.instance.owner)
-
         if 'description' in cleaned_data.keys():
             cleaned_data['description_%s' %
-                         settings.LANGUAGE_CODE
+                         self.current_lang
                          ] = cleaned_data['description']
         if 'title' in cleaned_data.keys():
             cleaned_data[
                 'title_%s' %
-                settings.LANGUAGE_CODE
+                self.current_lang
             ] = cleaned_data['title']
         if ('restrict_access_to_groups' in cleaned_data.keys()
                 and len(cleaned_data['restrict_access_to_groups']) > 0):
@@ -441,7 +440,8 @@ class VideoForm(forms.ModelForm):
             'is_superuser') if (
             'is_superuser' in kwargs.keys()
         ) else self.is_superuser
-
+        self.current_lang = kwargs.pop(
+            'current_lang') if kwargs.get('current_lang') else 'fr'
         self.current_user = kwargs.pop(
             'current_user') if kwargs.get('current_user') else None
 
