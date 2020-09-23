@@ -440,8 +440,8 @@ class VideoForm(forms.ModelForm):
             'is_superuser') if (
             'is_superuser' in kwargs.keys()
         ) else self.is_superuser
-        self.current_lang = kwargs.get('current_lang', settings.LANGUAGE_CODE)
-        self.current_user = kwargs.get('current_user', None)
+        self.current_lang = kwargs.pop('current_lang', settings.LANGUAGE_CODE)
+        self.current_user = kwargs.pop('current_user', None)
 
         self.VIDEO_ALLOWED_EXTENSIONS = VIDEO_ALLOWED_EXTENSIONS
         self.VIDEO_MAX_UPLOAD_SIZE = VIDEO_MAX_UPLOAD_SIZE
