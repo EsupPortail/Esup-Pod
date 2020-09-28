@@ -147,7 +147,7 @@ body {
 {% include 'videos/video-element.html' %}
 
 <h1 class="pt-2">
-{% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png"></a>{% endif %} {{video.title|capfirst}}
+{% if video.licence %} {% include "videos/video_licencebox.html" %}{% endif %} {{video.title|capfirst}}
 {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
   <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
       <i data-feather="alert-octagon"></i>
@@ -185,11 +185,13 @@ body {
       </a>
     </li>
     {% endif %}
+    {% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all %}
     <li class="nav-item">
       <a class="nav-link" id="share-tab" data-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false" title="{% trans 'Embed/Share' %}">
         <i data-feather="share-2"></i><span class="sr-only">{% trans 'Embed/Share' %}</span>
       </a>
     </li>
+    {%endif%}
     {% with video.get_other_version as versions %}
     {% if versions|length > 0 %}
     <li class="nav-item dropdown" id="list_third_apps">
