@@ -16,5 +16,13 @@
         "enable_comments": false,
         "title_fr": "Accueil"
     }
+  },
+  {
+    "pk": 1,
+    "model": "main.configuration",
+    "fields": {
+        "key" : "maintenance_mode",
+        "value": "0"
+    }
   }
 ]

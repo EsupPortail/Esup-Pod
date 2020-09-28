@@ -133,9 +133,13 @@ def add_recording(request):
             else:
                 med.user = request.user
             med.save()
+            file = form.cleaned_data["source_file"]
+            rec = RecordingFileTreatment.objects.get(file=file)
+            rec.delete()
             message = _(
                 'Your publication is saved.'
                 ' Adding it to your videos will be in a few minutes.')
+
             messages.add_message(request, messages.INFO, message)
             return redirect(reverse('my_videos'))
         else:
