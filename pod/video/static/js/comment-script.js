@@ -121,22 +121,22 @@ class Comment extends HTMLElement
         comment.setAttribute("class", "comment");
         let comment_container = document.createElement("DIV");
         comment_container.setAttribute("class", "comment_container");
-        let comment_content = `
-            <div class="comment_content">
-                <div class="comment_content_header inline_flex_space">
-                    <h1 class="user_name">${owner}</h1>
-		    <comment-since since=${added_since.toISOString()}></comment-since>
-                </div>
-                <div class="comment_content_body">
-                    <p>${content}</p>
-                </div>
-                <div class="comment_content_footer">
-                    <div class="actions inline_flex_space"></div>
-                    <div class="form"></div>
-                </div>
+	let comment_content = document.createElement('div');
+	comment_content.setAttribute('class', 'comment_content');
+        comment_content.innerHTML = `
+            <div class="comment_content_header inline_flex_space">
+                <h1 class="user_name">${owner}</h1>
+		<comment-since since=${added_since.toISOString()}></comment-since>
+            </div>
+            <div class="comment_content_body">
+            </div>
+            <div class="comment_content_footer">
+                <div class="actions inline_flex_space"></div>
+                <div class="form"></div>
             </div>
         `;
-        comment_container.innerHTML = comment_content;
+	comment_container.appendChild(comment_content);
+	comment_container.querySelector('.comment_content_body').innerHTML = content;
 	if(user_id)
 	{
             let svg_icon = `<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="comment" class="svg-inline--fa fa-comment fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 32C114.6 32 0 125.1 0 240c0 47.6 19.9 91.2 52.9 126.3C38 405.7 7 439.1 6.5 439.5c-6.6 7-8.4 17.2-4.6 26S14.4 480 24 480c61.5 0 110-25.7 139.1-46.3C192 442.8 223.2 448 256 448c141.4 0 256-93.1 256-208S397.4 32 256 32zm0 368c-26.7 0-53.1-4.1-78.4-12.1l-22.7-7.2-19.5 13.8c-14.3 10.1-33.9 21.4-57.5 29 7.3-12.1 14.4-25.7 19.9-40.2l10.6-28.1-20.6-21.8C69.7 314.1 48 282.2 48 240c0-88.2 93.3-160 208-160s208 71.8 208 160-93.3 160-208 160z"></path></svg>`;
@@ -434,6 +434,20 @@ function delete_comment(target_comment_html)
     })
 }
 
+
+/****** Add the owner of parent comment as a tag ******
+ ******************************************************/
+function add_user_tag(comment_text, parent_comment_id, owner_name)
+{
+    let p = `
+	<p>
+	    <span class="reply_to" data-target="${parent_comment_id}">
+	    @${owner_name}
+            </span>${comment_text}
+	</p>`;
+    return p;
+}
+
 /****************  Add parent Comment  ****************
  ******************************************************/
 if(is_authenticated){
@@ -468,43 +482,58 @@ function add_child_comment(el)
     let date_added = new Date();
     if(el.value.trim() !== "")
     {
-        let parent_el = get_node(el, "comments_children_container");
-	let comment_content = encodeHTML(el.value)
+        let container_el = get_node(el, "comments_children_container");
+	let parent_comment = get_node(el, "comment_element");
+	let parent_name = get_comment_attribute(
+		parent_comment,
+		attr="author__first_name"
+	);
+	console.log('****************')
+        console.log(get_node(el, "comment_element"));
+        console.log(parent_name);
+	console.log('****************')
+	let comment_HTMLElement = add_user_tag(
+		encodeHTML(el.value),
+		parent_comment.getAttribute('id'),
+		parent_name
+	);
         let c = new Comment(
             owner=user_fullName,
-            content=comment_content,
+            content=comment_HTMLElement,
             likes=0,
             added_since=date_added,
             id = `comment_${date_added.getTime()}`,
 	    is_parent=false,
 	    is_comment_owner=true);
-        parent_el.prepend(c);
-        hide_or_add_show_children_btn(parent_el.parentElement);
+        container_el.prepend(c);
+        hide_or_add_show_children_btn(container_el.parentElement);
         // INSERT INTO DATABASE THE CURRENT COMMENT CHILD
-	let parent_com = get_node(parent_el, 'comment_element', 'comment_child');
+	let parent_com = get_node(container_el, 'comment_element', 'comment_child');
 	let p_id = get_comment_attribute(parent_com);
-	save_comment(comment_content, date_added.toISOString(), p_id);
+	console.log("parent id ====>", p_id);
+	save_comment(encodeHTML(el.value), date_added.toISOString(), p_id);
     }
 }
 
 /*********  Return backend comment attribute  *********
  ******************************************************/
-function get_comment_attribute(comment_html, attr='id')
+function get_comment_attribute(comment_html, attr="id")
 {
     let curr_html_id = comment_html.getAttribute('id');
-    let comment_attr = null;
+    let comment_attr = null
     all_comment.forEach(comment=>
     {
 	let comment_htmlid = `comment_${new Date(comment.parent_comment.added).getTime()}`;
 	if(comment_htmlid == curr_html_id)
+	{
 	    comment_attr = comment.parent_comment[attr];
+	}
 	comment.children.forEach(c_comment=>
 	{
 	    let c_comment_htmlid = `comment_${new Date(c_comment.added).getTime()}`;
 	    if(c_comment_htmlid == curr_html_id)
 	        comment_attr = c_comment[attr];
 	});
-	if(comment_attr) return comment_attr;
     });
     return comment_attr;
 }
@@ -516,7 +545,7 @@ function encodeHTML(s)
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '$quot;');
 }
 
-/****************  Get parentNode or sibling node  ****************
+/**********  Get parentNode or sibling node  **********
  ******************************************************/
 function get_node(el, class_name=null, not=null)
 {
@@ -530,7 +559,7 @@ function get_node(el, class_name=null, not=null)
     return get_node(el.parentElement, class_name, not);
 }
 
-/****************  Manage hide/show child comment text  ****************
+/*******  Manage hide/show child comment text  ********
  ******************************************************/
 function hide_show_child_comment_text(el)
 {

@@ -1,13 +1,5 @@
 // podfile:filewidjet.js
 // select file 
-/*********** OPEN FOLDER MENU ************/
-$(function(){
-    $('#open-folder-icon').on('click', function(e){
-	e.preventDefault();
-	alert("Hello");
-    });
-});
-
 if(typeof loaded == 'undefined') {
     loaded = true;
     $(document).on("click", "a.file-name, a.file-image", function(e) {
@@ -45,9 +37,41 @@ $(document).on("click", "a.folder", function(e) {
     e.preventDefault();
     $('#podfile #list_folders_sub a.folder-opened').removeClass('folder-opened');
     $(this).addClass('folder-opened');
-    var id = $(this).data("id") ;
-    send_form_data($(this).data('target'), {}, "show_folder_files", "get");
+    $('#files').addClass('loading');
+    var id = $(this).data("id");
+    let loader = `
+	<div class="container-loader">
+	    <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+	</div>
+	`;
+    $('#files').html(loader);
+    let success_func = function($data){
+	let html = document.createElement('div');
+	html.innerHTML = $data.list_element
+	let listfiles = html.querySelector('#listfiles');
+	if( listfiles.children.length === 0 ){
+	    let emptyFolderMsg = `
+		<div class="empty-folder-warning">
+		    ${gettext('This folder is empty')}
+		</div>
+		`;
+	    $data['emptyfoldermsg'] = emptyFolderMsg;
+	}
+	return $data;
+    }
+    let error_func = function($xhr){
+	console.log("error", $xhr);
+    }
+    send_form_data(
+	    $(this).data('target'),
+	    {},
+	    "show_folder_files",
+	    "get",
+	    success_func,
+	    error_func
+    );
 });
+/*********** OPEN/CLOSE FOLDER MENU ************/
 $(document).on("click", "a.folder, #close-folder-icon", function(e) {
     $('#podfile #dirs').removeClass('open');
 });
@@ -56,18 +80,14 @@ $(document).on("click", "#open-folder-icon", function(e) {
     $('#podfile #dirs').addClass('open');
 });
 
-
 $(document).on('change', "#ufile", function(e) {
     e.preventDefault();
     $("#formuploadfile").submit();
 });
 
 
-
 /****** CHANGE FILE ********/
-
-
-  $(document).on("submit", "form#formchangeimage, form#formchangefile, form#formuploadfile", function (e) {
+$(document).on("submit", "form#formchangeimage, form#formchangefile, form#formuploadfile", function (e) {
         e.preventDefault();
         //alert('FORM');
         $(this).hide();
@@ -336,8 +356,12 @@ $(document).on('change', "#ufile", function(e) {
 
 
   function show_folder_files(data){
+    $('#files').removeClass('loading');
     if(data.list_element) {
         $('#files').html(data.list_element);
+	if('emptyfoldermsg' in data){
+	    $('#files #listfiles').html(data.emptyfoldermsg);
+	}
         $(".list_folders a").removeClass('font-weight-bold');
         $("img.directory-image").attr("src", static_url + "podfile/images/folder.png");
         $("img.home-image").attr("src", static_url + "podfile/images/home_folder.png");
@@ -450,18 +474,19 @@ var seeMoreElement = function (nextPage, curr_page, tot_page, search=null){
     `;
 }
   $(document).on("click","#list_folders_sub .view-more-container a#more", function(e) {
-    $(this).parent().addClass('loading');
+    let parent_el = $(this).parent()
+    parent_el.addClass('loading');
     let next = $(this).data("next")
     let search = $(this).data("search")
     let currentFolder = getCurrentSessionFolder();
     let type = $("#list_folders_sub").data("type")
-    $(this).parent().remove()
     $.ajax(
       {
           type: "GET",
           url: next,
           cache: false,
           success: function (response) {
+    	    parent_el.remove();
             let nextPage = response.next_page
                response.folders.forEach(elt => {
                 $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')

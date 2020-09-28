@@ -680,7 +680,7 @@ def video_edit(request, slug=None):
         is_staff=request.user.is_staff,
         is_superuser=request.user.is_superuser,
         current_user=request.user,
-        initial={'owner': default_owner}
+        initial={'owner': default_owner},
     )
 
     if request.method == 'POST':
@@ -691,6 +691,7 @@ def video_edit(request, slug=None):
             is_staff=request.user.is_staff,
             is_superuser=request.user.is_superuser,
             current_user=request.user,
+            current_lang=request.LANGUAGE_CODE,
 
         )
         if form.is_valid():

@@ -450,6 +450,26 @@ button.close {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     grid-gap: 5px;
 }
+#podfile #files.loading .container-loader{
+    position: relative;
+    margin: 0 auto;
+    margin-top: 4em;
+    width: 75px;
+
+}
+#podfile #files.loading .lds-ellipsis{
+    display: block;
+    transform: translateX(-50%);
+    width: 75px;
+}
+#podfile #listfiles .empty-folder-warning{
+    grid-column: 1/-1;
+    grid-row: 10;
+    text-align: center;
+    background: #fff3cd;
+    color: #856404;
+    font-weight: 600;
+}
 #podfile #listfiles .navbar-toggler-icon{
     background: none;
 }

@@ -184,9 +184,13 @@ class VideoAdmin(admin.ModelAdmin):
     actions = ['encode_video', 'transcript_video']
 
     def encode_video(self, request, queryset):
+        print('-----------------------------')
+        
         for item in queryset:
+            print(item)
             item.launch_encode = True
             item.save()
+        print('-----------------------------')
     encode_video.short_description = _('Encode selected')
 
     def transcript_video(self, request, queryset):
