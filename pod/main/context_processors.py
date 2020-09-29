@@ -11,6 +11,7 @@ from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
 from pod.video.models import Video
+from pod.main.models import Configuration
 from django.contrib.sites.shortcuts import get_current_site
 
 ORDER_BY = 'last_name'
@@ -100,17 +101,11 @@ USE_CHUNKED_UPLOAD = getattr(
 CHUNK_SIZE = getattr(
     django_settings, 'CHUNK_SIZE', 100000)
 
-MAINTENANCE_REASON = getattr(
-    django_settings, 'MAINTENANCE_REASON', "No reason")
-
-MAINTENANCE_SHOW_HEADBAND = getattr(
-    django_settings, 'MAINTENANCE_SHOW_HEADBAND', True)
-
-MAINTENANCE_MODE = getattr(
-    django_settings, 'MAINTENANCE_MODE', False)
-
 
 def context_settings(request):
+    maintenance_mode = Configuration.objects.get(key="maintenance_mode")
+    maintenance_text_short = \
+        Configuration.objects.get(key="maintenance_text_short")
     new_settings = {}
     for sett in TEMPLATE_VISIBLE_SETTINGS:
         try:
@@ -140,9 +135,9 @@ def context_settings(request):
     new_settings['BOOTSTRAP_CUSTOM'] = BOOTSTRAP_CUSTOM
     new_settings['USE_CHUNKED_UPLOAD'] = USE_CHUNKED_UPLOAD
     new_settings['CHUNK_SIZE'] = CHUNK_SIZE
-    new_settings['MAINTENANCE_REASON'] = MAINTENANCE_REASON
-    new_settings['MAINTENANCE_SHOW_HEADBAND'] = MAINTENANCE_SHOW_HEADBAND
-    new_settings['MAINTENANCE_MODE'] = MAINTENANCE_MODE
+    new_settings['MAINTENANCE_REASON'] = maintenance_text_short.value
+    new_settings['MAINTENANCE_MODE'] = \
+        True if maintenance_mode.value == "1" else False
     return new_settings
 
 

@@ -25,6 +25,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 import urllib.parse
 from django.shortcuts import get_object_or_404
+from pod.main.views import in_maintenance
 
 ##
 # Settings exposed in templates
@@ -55,9 +56,6 @@ DEFAULT_RECORDER_PATH = getattr(
 
 USE_CAS = getattr(settings, 'USE_CAS', False)
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
-
-MAINTENANCE_MODE = getattr(
-    settings, 'MAINTENANCE_MODE', False)
 
 
 def check_recorder(recorder, request):
@@ -91,7 +89,7 @@ def case_delete(form, request):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def add_recording(request):
-    if MAINTENANCE_MODE:
+    if in_maintenance():
         return redirect(reverse('maintenance'))
     mediapath = request.GET.get('mediapath') if (
         request.GET.get('mediapath')) else ""
@@ -243,7 +241,7 @@ def recorder_notify(request):
 @login_required(redirect_field_name='referrer')
 @staff_member_required(redirect_field_name='referrer')
 def claim_record(request):
-    if MAINTENANCE_MODE:
+    if in_maintenance():
         return redirect(reverse('maintenance'))
     site = get_current_site(request)
     # get records list ordered by date

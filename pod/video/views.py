@@ -21,6 +21,7 @@ from django.utils import timezone
 from django.db.models import Sum, Min
 from dateutil.parser import parse
 
+from pod.main.views import in_maintenance
 from pod.video.models import Video
 from pod.video.models import Type
 from pod.video.models import Channel
@@ -128,9 +129,6 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
         'ts'
     )
 )
-
-MAINTENANCE_MODE = getattr(
-    settings, 'MAINTENANCE_MODE', False)
 
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 ORGANIZE_BY_THEME = getattr(settings, 'ORGANIZE_BY_THEME', False)
@@ -658,7 +656,7 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
 @ensure_csrf_cookie
 @login_required(redirect_field_name='referrer')
 def video_edit(request, slug=None):
-    if MAINTENANCE_MODE:
+    if in_maintenance():
         return redirect(reverse('maintenance'))
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(
         request)) if slug else None

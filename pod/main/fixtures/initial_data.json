@@ -22,7 +22,35 @@
     "model": "main.configuration",
     "fields": {
         "key" : "maintenance_mode",
-        "value": "0"
+        "value": "0",
+        "description" : "Activation du mode maintenance ou non"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "main.configuration",
+    "fields": {
+        "key" : "maintenance_text_short",
+        "value": "Maintenance en cours",
+        "description" : "Texte qui sera affiché sur la barre de navigation pendant la maintenance"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "main.configuration",
+    "fields": {
+        "key" : "maintenance_text_welcome",
+        "value": "La plateforme Pod est actuellement en maintenance",
+        "description" : "Texte qui sera affiché sur la page d'accueil pendant une maintenance"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "main.configuration",
+    "fields": {
+        "key" : "maintenance_text_disabled",
+        "value": "Pod est en maintenance, cette fonctionnalité est donc désactivée pour le moment",
+        "description" : "Texte qui sera affiché sur les pages qui sont désactivées pendant la maintenance"
     }
   }
 ]

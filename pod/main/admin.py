@@ -28,6 +28,8 @@ class PageForm(FlatpageForm):
 
 
 class ConfigurationAdmin(admin.ModelAdmin):
+    list_display = ('key', 'value', 'description')
+    
     def has_delete_permission(self, request, obj=None):
         return False
 

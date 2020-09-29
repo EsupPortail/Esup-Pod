@@ -136,5 +136,10 @@ class Configuration(models.Model):
         editable=False)
     value = models.CharField(
         _('Value'),
-        max_length=20,
+        max_length=255,
         help_text=_("Value of the configuration"))
+    description = models.CharField(
+        _('Description'),
+        max_length=255,
+        help_text=_("Description of the configuration"),
+        editable=False)

@@ -58,6 +58,10 @@
 		</nav><!-- fin barre nav-->
 		{% include 'navbar_collapse.html' %}
 		{% block content %}
+		{% if request.path == "/" %}
+			{% get_maintenance_welcome as maintenance_text %}
+			<div class="p-3 mb-2 bg-danger text-white">{{maintenance_text}}</div>
+        {%endif%}
 		<div class="container container-pod">
 			<main class="mt-3">
 		        <nav aria-label="breadcrumb" class="breadcrumb d-flex justify-content-between p-0" id="mainbreadcrumb">
@@ -65,6 +69,7 @@
 		          	{% block breadcrumbs %}
 		                <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
 					{% endblock breadcrumbs %}
+					
 		          </ol>
 		          <div class="p-0">
                     {% block collapse_page_aside %}
@@ -74,6 +79,7 @@
                     {% endblock collapse_page_aside %}
 		          </div>
 		        </nav>
+				
 		        <div class="row">
 		        	<div class="col order-12 order-md-1">
 						<!-- contenu page statique -->

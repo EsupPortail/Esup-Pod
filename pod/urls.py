@@ -49,8 +49,6 @@ USE_SHIB = getattr(
     settings, 'USE_SHIB', False)
 OEMBED = getattr(
     settings, 'OEMBED', False)
-MAINTENANCE_MODE = getattr(
-    settings, 'MAINTENANCE_MODE', False)
 
 if USE_CAS:
     from cas import views as cas_views
@@ -159,9 +157,7 @@ urlpatterns = [
     # custom
     url(r'^custom/', include('pod.custom.urls')),
 ]
-
-if MAINTENANCE_MODE:
-    urlpatterns += url(r'^maintenance/$', maintenance, name='maintenance'),
+urlpatterns += url(r'^maintenance/$', maintenance, name='maintenance'),
 
 # CAS
 if USE_CAS:
