@@ -79,6 +79,7 @@ def in_maintenance():
     return (True if Configuration.objects.get(
         key="maintenance_mode").value == "1" else False)
 
+
 @csrf_protect
 def download_file(request):
     if request.POST and request.POST.get("filename"):

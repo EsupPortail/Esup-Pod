@@ -86,6 +86,13 @@ def case_delete(form, request):
     messages.add_message(request, messages.INFO, message)
 
 
+def fetch_user(request, form):
+    if request.POST.get('user') and request.POST.get('user') != "":
+        return form.cleaned_data['user']
+    else:
+        return request.user
+
+
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def add_recording(request):
@@ -126,10 +133,7 @@ def add_recording(request):
                 case_delete(form, request)
                 return redirect("/")
             med = form.save(commit=False)
-            if request.POST.get('user') and request.POST.get('user') != "":
-                med.user = form.cleaned_data['user']
-            else:
-                med.user = request.user
+            med.user = fetch_user(request, form)
             med.save()
             file = form.cleaned_data["source_file"]
             rec = RecordingFileTreatment.objects.get(file=file)
