@@ -58,7 +58,7 @@
 		</nav><!-- fin barre nav-->
 		{% include 'navbar_collapse.html' %}
 		{% block content %}
-		{% if request.path == "/" %}
+		{% if request.path == "/" and MAINTENANCE_MODE %}
 			{% get_maintenance_welcome as maintenance_text %}
 			<div class="p-3 mb-2 bg-danger text-white">{{maintenance_text}}</div>
         {%endif%}
