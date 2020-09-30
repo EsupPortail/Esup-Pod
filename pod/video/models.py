@@ -270,11 +270,11 @@ class Channel(models.Model):
         themes = self.themes.filter(parentId=None).order_by('title')
         for theme in themes:
             list_theme.append({
-                "id"    : theme.id,
-                "title" : "%s" % theme.title,
-                "slug"  : "%s" % theme.slug,
-                "url"   : "%s" % theme.get_absolute_url(),
-                "child" : theme.get_all_children_tree()
+                "id": theme.id,
+                "title": "%s" % theme.title,
+                "slug": "%s" % theme.slug,
+                "url": "%s" % theme.get_absolute_url(),
+                "child": theme.get_all_children_tree()
             })
         return list_theme
 
@@ -342,11 +342,11 @@ class Theme(models.Model):
             return children
         for child in child_list:
             children.append({
-                "id"    : child.id,
-                "title" : "%s" % child.title,
-                "slug"  : "%s" % child.slug,
-                "url"   : "%s" % child.get_absolute_url(),
-                "child" : child.get_all_children_tree()
+                "id": child.id,
+                "title": "%s" % child.title,
+                "slug": "%s" % child.slug,
+                "url": "%s" % child.get_absolute_url(),
+                "child": child.get_all_children_tree()
             })
         return children
 
