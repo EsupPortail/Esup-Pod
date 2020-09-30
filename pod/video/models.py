@@ -661,7 +661,7 @@ class Video(models.Model):
         thumbnail_url = ""
         if self.thumbnail and self.thumbnail.file_exist():
             im = get_thumbnail(self.thumbnail.file, '100x100',
-                               crop='center', quality=72)
+                               crop='center', quality=72, format='PNG')
             thumbnail_url = im.url
             # <img src="{{ im.url }}" width="{{ im.width }}"
             # height="{{ im.height }}">
@@ -684,7 +684,7 @@ class Video(models.Model):
         thumbnail_url = ""
         if self.thumbnail and self.thumbnail.file_exist():
             im = get_thumbnail(self.thumbnail.file, 'x170',
-                               crop='center', quality=72)
+                               crop='center', quality=72, format='PNG')
             thumbnail_url = im.url
             # <img src="{{ im.url }}" width="{{ im.width }}"
             # height="{{ im.height }}">
