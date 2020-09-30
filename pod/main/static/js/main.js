@@ -118,13 +118,13 @@ var get_list = function(tab, level, tab_selected, tag_type, li_class, attrs, add
     var prefix = ""
     for(i=0;i<level;i++) prefix+="&nbsp;&nbsp;";
     if(level!=0) prefix+="|-";
-    $.each(tab, function(i, val) {
+    $.each(tab, function(_, val) {
         var title = add_link ? '<a href="'+val.url+'">'+channel+' '+val.title+'</a>' : channel+' '+val.title;
-        var selected = $.inArray(i, tab_selected) > -1 ? "selected" : "";
+        var selected = $.inArray(val.id, tab_selected) > -1 ? "selected" : "";
         var list_class = 'class="'+li_class;
         if(val.slug==current) list_class+=' list-group-item-info"';
         else list_class+='"';
-        list += '<'+tag_type+' '+selected+' '+list_class+' '+attrs+' value="'+i+'" id="theme_'+i+'">'+prefix+" "+title+'</'+tag_type+'>';
+        list += '<'+tag_type+' '+selected+' '+list_class+' '+attrs+' value="'+val.id+'" id="theme_'+val.id+'">'+prefix+" "+title+'</'+tag_type+'>';
         var child = val.child;
         var count =  Object.keys(child).length;
         if(count>0 && !show_only_parent_themes) {
@@ -214,7 +214,6 @@ $(document).on("click", ".get_form_userpicture", function() {
 	send_form_data($(this).data('url'), {}, "append_picture_form", "get");
 });
 $(document).on('hidden.bs.modal', '#userpictureModal', function (e) {
-    console.log('remove modal');
     $('#userpictureModal').remove();
     $('#fileModal_id_userpicture').remove();
 });
