@@ -176,7 +176,6 @@ var str = get_list(listTheme["channel_"+{{channel.id}}], 0, [], tag_type="li", l
 $("#ultreeview").html(str);
 setTimeout(function(){ 
   var position = parseInt($("#ultreeview li.list-group-item-info").position().top) - parseInt($("#ultreeview li").first().position().top);
-  //console.log(position);
   $("#ultreeview").scrollTop(position); 
 }, 500);
 </script>
