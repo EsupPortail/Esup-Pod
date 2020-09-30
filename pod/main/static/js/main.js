@@ -269,15 +269,22 @@ var result_video_form = function(data) {
 /** FOLDER **/
 
 /** AJAX **/
-var send_form_data = function(url,data_form, fct, method) {
+var send_form_data = function(url,data_form, fct, method, callbackSuccess=undefined, callbackFail=undefined) {
+  callbackSuccess = typeof(callbackSuccess) === 'function'? callbackSuccess : function($data){ return $data;};
+  callbackFail = typeof(callbackFail) === 'function'? callbackFail : function($xhr){};
+
   method = method || "post";
 	var jqxhr= '';
 	if(method=="post") jqxhr = $.post(url, data_form);
 	else jqxhr = $.get(url);
-    jqxhr.done(function(data){ window[fct](data); });
-	jqxhr.fail(function($xhr) {
+    jqxhr.done(function($data){
+	$data = callbackSuccess($data);
+        window[fct]($data);
+    });
+    jqxhr.fail(function($xhr) {
         var data = $xhr.status+ " : " +$xhr.statusText;
         showalert(gettext("Error during exchange") + "("+data+")<br/>"+gettext("No data could be stored."), "alert-danger");
+	callbackFail($xhr);
     });
 }
 

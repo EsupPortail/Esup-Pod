@@ -1,6 +1,5 @@
 // podfile:filewidjet.js
 // select file 
-
 if(typeof loaded == 'undefined') {
     loaded = true;
     $(document).on("click", "a.file-name, a.file-image", function(e) {
@@ -36,8 +35,49 @@ if(typeof loaded == 'undefined') {
 
 $(document).on("click", "a.folder", function(e) {
     e.preventDefault();
+    $('#podfile #list_folders_sub a.folder-opened').removeClass('folder-opened');
+    $(this).addClass('folder-opened');
+    $('#files').addClass('loading');
     var id = $(this).data("id");
-    send_form_data($(this).data('target'), {}, "show_folder_files", "get");
+    let loader = `
+	<div class="container-loader">
+	    <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+	</div>
+	`;
+    $('#files').html(loader);
+    let success_func = function($data){
+	let html = document.createElement('div');
+	html.innerHTML = $data.list_element
+	let listfiles = html.querySelector('#listfiles');
+	if( listfiles.children.length === 0 ){
+	    let emptyFolderMsg = `
+		<div class="empty-folder-warning">
+		    ${gettext('This folder is empty')}
+		</div>
+		`;
+	    $data['emptyfoldermsg'] = emptyFolderMsg;
+	}
+	return $data;
+    }
+    let error_func = function($xhr){
+	console.log("error", $xhr);
+    }
+    send_form_data(
+	    $(this).data('target'),
+	    {},
+	    "show_folder_files",
+	    "get",
+	    success_func,
+	    error_func
+    );
+});
+/*********** OPEN/CLOSE FOLDER MENU ************/
+$(document).on("click", "a.folder, #close-folder-icon", function(e) {
+    $('#podfile #dirs').removeClass('open');
+});
+$(document).on("click", "#open-folder-icon", function(e) {
+    e.preventDefault();
+    $('#podfile #dirs').addClass('open');
 });
 
 $(document).on('change', "#ufile", function(e) {
@@ -46,11 +86,8 @@ $(document).on('change', "#ufile", function(e) {
 });
 
 
-
 /****** CHANGE FILE ********/
-
-
-  $(document).on("submit", "form#formchangeimage, form#formchangefile, form#formuploadfile", function (e) {
+$(document).on("submit", "form#formchangeimage, form#formchangefile, form#formuploadfile", function (e) {
         e.preventDefault();
         //alert('FORM');
         $(this).hide();
@@ -266,7 +303,7 @@ $(document).on('change', "#ufile", function(e) {
                   $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
                 })
                 if(nextPage != -1){
-                  $("#list_folders_sub").append('<a id="more" href="#" data-search="'+text +'" data-next="/podfile/ajax_calls/user_folders?page='+ nextPage +'&search='+ text+'"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
+		    $("#list_folders_sub").append(seeMoreElement(nextPage, response.current_page+1, response.total_pages, text));
                 }
                 lock = false
             }
@@ -319,8 +356,12 @@ $(document).on('change', "#ufile", function(e) {
 
 
   function show_folder_files(data){
+    $('#files').removeClass('loading');
     if(data.list_element) {
         $('#files').html(data.list_element);
+	if('emptyfoldermsg' in data){
+	    $('#files #listfiles').html(data.emptyfoldermsg);
+	}
         $(".list_folders a").removeClass('font-weight-bold');
         $("img.directory-image").attr("src", static_url + "podfile/images/folder.png");
         $("img.home-image").attr("src", static_url + "podfile/images/home_folder.png");
@@ -368,22 +409,31 @@ $(document).on('change', "#ufile", function(e) {
   return folder
   }
 
-  function createFolder(foldid, foldname, isCurrent,type,owner=undefined){
+var folder_open_icon = `
+	<span class="folder-open" id="folder-open-icon">
+	    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder-open" class="svg-inline--fa fa-folder-open fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M572.694 292.093L500.27 416.248A63.997 63.997 0 0 1 444.989 448H45.025c-18.523 0-30.064-20.093-20.731-36.093l72.424-124.155A64 64 0 0 1 152 256h399.964c18.523 0 30.064 20.093 20.73 36.093zM152 224h328v-48c0-26.51-21.49-48-48-48H272l-64-64H48C21.49 64 0 85.49 0 112v278.046l69.077-118.418C86.214 242.25 117.989 224 152 224z"></path></svg>
+	</span>`;
+var folder_icon = `
+	<span class="folder" id="folder-icon">
+	    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder" class="svg-inline--fa fa-folder fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M464 128H272l-64-64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V176c0-26.51-21.49-48-48-48z"></path></svg>
+	</span>`;
+
+function createFolder(foldid, foldname, isCurrent,type,owner=undefined){
     let construct = ""
-    construct+= ('<a href="#" class="folder ' +( isCurrent ? 'font-weight-bold' : '') + ' " id="folder_' + foldid + '" data-foldname="' + foldname + '" data-id="' + foldid+ '" data-target="');
+    construct+= ('<a href="#" class="folder ' +( isCurrent ? 'font-weight-bold folder-opened' : '') + ' " id="folder_' + foldid + '" data-foldname="' + foldname + '" data-id="' + foldid+ '" data-target="');
     let isType = (type != "None" && type != undefined)
-    construct+= ('/podfile/get_folder_files/' + foldid + (isType ? ('?type=' +type) : "") + '"')
+    construct+= ('/podfile/get_folder_files/' + foldid + (isType ? ('?type=' +type) : "") + '">')
     if(owner != undefined){
       foldname = '<i><span id="folder-name-'+ foldid + '">  ' + foldname + '</span></i> <b>(' + owner+')</b>' 
     }
     else{
       foldname = '<span id="folder-name-' +foldid +  '">  ' +foldname+ '</span>'
     }
-    construct+= ('><img class="directory-image" src="' + (isCurrent ? (static_url +'podfile/images/opened_folder.png') : (static_url + 'podfile/images/folder.png') )+'"/>'+foldname+'</a>')
+    construct += `${folder_open_icon} ${folder_icon} ${foldname}</a>`;
     return construct
-  }
+}
 
-  function initFolders(){
+function initFolders(){
     let type = $("#list_folders_sub").data("type")
     let currentFolder = getCurrentSessionFolder();
     $.ajax(
@@ -397,13 +447,12 @@ $(document).on('change', "#ufile", function(e) {
                 $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
               })
               if(nextPage != -1){
-                $("#list_folders_sub").append('<a id="more" href="#" data-next="/podfile/ajax_calls/user_folders?page='+ nextPage +'"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  '+ gettext('See more')+' ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
+		$("#list_folders_sub").append(seeMoreElement(nextPage, response.current_page+1, response.total_pages));
               }
-         
           }
       }
   );
-  }
+}
   $(document).ready(function(e) {
     if(typeof myFilesView !== 'undefined'){
       initFolders();
@@ -411,25 +460,40 @@ $(document).on('change', "#ufile", function(e) {
   });
 
 
-
-  $(document).on("click","#more", function(e) {
+var seeMoreElement = function (nextPage, curr_page, tot_page, search=null){
+    search = search? `&page=${search}`: '';
+    let seeMore = gettext('See more');
+    return `
+	<div class="view-more-container">
+	    <a id="more" href="#" data-next="/podfile/ajax_calls/user_folders?page=${nextPage}${search}">
+		<span class="see-more" id="see-more-icon">
+		    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-right" class="svg-inline--fa fa-arrow-right fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"></path></svg>
+		</span><span class="text">${seeMore} (${curr_page}/${tot_page})</span>
+		<div class="loader lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+	    </a>
+	</div>
+    `;
+}
+  $(document).on("click","#list_folders_sub .view-more-container a#more", function(e) {
+    let parent_el = $(this).parent()
+    parent_el.addClass('loading');
     let next = $(this).data("next")
     let search = $(this).data("search")
     let currentFolder = getCurrentSessionFolder();
     let type = $("#list_folders_sub").data("type")
-    $(this).remove()
     $.ajax(
       {
           type: "GET",
           url: next,
           cache: false,
           success: function (response) {
+    	    parent_el.remove();
             let nextPage = response.next_page
                response.folders.forEach(elt => {
                 $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
               })
               if(nextPage != -1){
-                $("#list_folders_sub").append('<a id="more" href="#" data-next="/podfile/ajax_calls/user_folders?page='+nextPage + ((search!=undefined) ? ('&search='+search) : '' ) + '"><div style="padding:0; margin:0;"><img src="' +static_url+ "podfile/images/more.png" + '"/>  Voir plus ('+ (response.current_page+1)+ '/'+ response.total_pages +')</a>' + '</div>')
+		$("#list_folders_sub").append(seeMoreElement(nextPage, response.current_page+1, response.total_pages, search));
               }
               
           }
