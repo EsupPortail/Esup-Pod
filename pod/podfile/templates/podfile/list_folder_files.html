@@ -134,10 +134,18 @@
             {% endif %}
           </div>
           {% if file.class_name == "CustomImageModel" and file.file_exist %}
-            <img class="card-img-top p-1" src="{{file.file.url}}" alt="Card image">
+                {% if type == "image" and file.class_name == "CustomImageModel" %}
+	            <a href="{{file.file.url}}" class="card-image {% if request.is_ajax %} file-image {% endif %}" title="{{file.name}}" target="_blank" data-fileid="{{file.id}}" data-filetype="{{file.class_name}}" ><img class="card-img-top p-1" src="{{file.file.url}}" alt="Card image"></a>
+		{% else %}
+		    <img class="card-img-top p-1" src="{{file.file.url}}" alt="Card image">
+		{% endif %}
           {% else %}
             {% with file.file.name|icon_exists as icon %}
-	    <a href="{{file.file.url}}" class="card-image {% if request.is_ajax %} file-image {% endif %}" title="{{file.name}}" target="_blank" data-fileid="{{file.id}}" data-filetype="{{file.class_name}}" ><img class="card-img-top p-1" src="{% static "podfile/images/icons/"|add:icon|add:".png" %}" alt="Card image"></a>
+              {% if type == "file" and file.class_name == "CustomFileModel"%}
+	          <a href="{{file.file.url}}" class="card-image {% if request.is_ajax %} file-image {% endif %}" title="{{file.name}}" target="_blank" data-fileid="{{file.id}}" data-filetype="{{file.class_name}}" ><img class="card-img-top p-1" src="{% static "podfile/images/icons/"|add:icon|add:".png" %}" alt="Card image"></a>
+	      {% else %}
+		  <img class="card-img-top p-1" src="{% static "podfile/images/icons/"|add:icon|add:".png" %}" alt="Card image">
+	      {% endif%}
             {%endwith%}
           {% endif %}
           <div class="card-body">
