@@ -1591,6 +1591,8 @@ def stats_view(request, slug=None, slug_t=None):
 
 @login_required(redirect_field_name='referrer')
 def video_add(request):
+    if in_maintenance():
+        return redirect(reverse('maintenance'))
     allow_extension = ".%s" % ', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS))
     slug = request.GET.get('slug', "")
     if slug != "":
