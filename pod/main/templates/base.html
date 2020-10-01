@@ -33,6 +33,10 @@
         <link rel="stylesheet" href="{% static CSS_OVERRIDE %}" media="screen" title="no title">
         {% endif %}
 
+        <!-- more styles for each App -->
+	{% block more_style %}
+	{% endblock more_style %}
+
         <!-- Javascript -->
         <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
         <script src="{% static 'bootstrap-4/js/bootstrap.bundle.js' %}"></script>

@@ -33,6 +33,9 @@ class ConfigurationAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
+    def has_add_permission(self, request, obj=None):
+        return False
+
 
 class CustomFlatPageAdmin(TranslationAdmin):
     list_display = ('title', 'url')

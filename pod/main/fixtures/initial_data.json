@@ -23,7 +23,8 @@
     "fields": {
         "key" : "maintenance_mode",
         "value": "0",
-        "description" : "Activation du mode maintenance ou non"
+        "description_fr" : "Activation du mode maintenance ou non",
+        "description_en" : "Activation of maintenance mode or not"
     }
   },
   {
@@ -32,7 +33,8 @@
     "fields": {
         "key" : "maintenance_text_short",
         "value": "Maintenance en cours",
-        "description" : "Texte qui sera affiché sur la barre de navigation pendant la maintenance"
+        "description_fr" : "Texte qui sera affiché sur la barre de navigation pendant la maintenance",
+        "description_en" : "Text that will be displayed on the navigation bar during maintenance"
     }
   },
   {
@@ -41,7 +43,8 @@
     "fields": {
         "key" : "maintenance_text_welcome",
         "value": "La plateforme Pod est actuellement en maintenance",
-        "description" : "Texte qui sera affiché sur la page d'accueil pendant une maintenance"
+        "description_fr" : "Texte qui sera affiché sur la page d'accueil pendant une maintenance",
+        "description_en" : "Text that will be displayed on the home page during maintenance"
     }
   },
   {
@@ -50,7 +53,8 @@
     "fields": {
         "key" : "maintenance_text_disabled",
         "value": "Pod est en maintenance, cette fonctionnalité est donc désactivée pour le moment",
-        "description" : "Texte qui sera affiché sur les pages qui sont désactivées pendant la maintenance"
+        "description_fr" : "Texte qui sera affiché sur les pages qui sont désactivées pendant la maintenance",
+        "description_en" : "Text that will be displayed on pages that are disabled during maintenance"
     }
   }
 ]
