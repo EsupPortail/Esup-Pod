@@ -45,4 +45,9 @@ def encode_recording(recording):
     os.makedirs(os.path.dirname(video.video.path), exist_ok=True)
     os.rename(recording.source_file, video.video.path)
     video.save()
+    # on ajoute d'eventuels propriétaires additionnels
+    if recording.recorder.additional_users.count() > 0:
+        for usr in recording.recorder.additional_users.all():
+            video.additional_owners.add(usr)
+        video.save()
     ENCODE_VIDEO(video.id)

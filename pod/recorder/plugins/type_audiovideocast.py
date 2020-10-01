@@ -66,6 +66,11 @@ def save_video(recording, video_data, video_src):
     # on recupere le nom du fichier sur le serveur
     video.title = recording.title
     video.save()
+    # on ajoute d'eventuels propriétaires additionnels
+    if recording.recorder.additional_users.count() > 0:
+        for usr in recording.recorder.additional_users.all():
+            video.additional_owners.add(usr)
+        video.save()
     ENCODE_VIDEO(video.id)
     return video
 

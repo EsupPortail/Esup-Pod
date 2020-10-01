@@ -13,6 +13,10 @@ from django.core.exceptions import ValidationError
 from django.contrib.sites.models import Site
 from select2 import fields as select2_fields
 from pod.video.models import Type
+from django.db.models import Q
+
+RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
+    settings, 'RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY', False)
 
 RECORDER_TYPE = getattr(
     settings, 'RECORDER_TYPE',
@@ -38,6 +42,17 @@ PUBLIC_RECORD_DIR = getattr(
     "records"
 )
 
+def select_recorder_user():
+    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY:
+        return lambda q: (Q(is_staff=True) & (Q(
+            first_name__icontains=q) | Q(
+            last_name__icontains=q))) & Q(
+            owner__sites=Site.objects.get_current())
+    else:
+        return lambda q: (Q(
+            first_name__icontains=q) | Q(
+            last_name__icontains=q)) & Q(
+            owner__sites=Site.objects.get_current())
 
 class Recorder(models.Model):
     # Recorder name
@@ -61,6 +76,21 @@ class Recorder(models.Model):
             'emails and he will be the owner of the published videos. If no '
             'user is selected, this recorder will use manual assign system.'),
         verbose_name=_('User'), null=True, blank=True)
+    # Additionnal additional_users
+    additional_users = select2_fields.ManyToManyField(
+    User,
+    blank=True,
+    ajax=True,
+    js_options={
+        'width': 'off'
+    },
+    verbose_name=_('Additional users'),
+    search_field=select_recorder_user(),
+    related_name='users_recorders',
+    help_text=_('You can add additionals users to the recorder. They '
+                'will become the additionnals owners of the published videos and will '
+                'have the same rights as the owner except that they '
+                'can\'t delete the published videos.'))
     # Default type of published videos by this recorder
     type = models.ForeignKey(
         Type, on_delete=models.CASCADE,
@@ -69,6 +99,7 @@ class Recorder(models.Model):
     recording_type = models.CharField(_('Recording Type'), max_length=50,
                                       choices=RECORDER_TYPE,
                                       default=RECORDER_TYPE[0][0])
+
     # Directory name where videos of this recorder are published
     directory = models.CharField(_('Publication directory'), max_length=50,
                                  unique=True, help_text=_(
