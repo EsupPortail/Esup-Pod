@@ -105,7 +105,7 @@ class ConfigurationTestCase(TestCase):
         self.assertEqual(conf.key, "maintenance_mode")
         self.assertEqual(conf.value, "0")
         self.assertEqual(
-            conf.description, "Activation du mode maintenance ou non")
+            conf.description, "Activation of maintenance mode or not")
 
         print(
             "   --->  test_attributs of ConfigurationTestCase : OK !")
