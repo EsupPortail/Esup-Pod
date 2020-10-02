@@ -15,6 +15,8 @@ from pod.video.encode import start_encode
 from pod.enrichment.models import Enrichment
 from ..models import Recording
 
+USE_ADVANCED_RECORDER = getattr(settings, 'USE_ADVANCED_RECORDER', False)
+
 DEFAULT_RECORDER_TYPE_ID = getattr(
     settings, 'DEFAULT_RECORDER_TYPE_ID',
     1
@@ -70,7 +72,48 @@ def save_video(recording, video_data, video_src):
     if recording.recorder.additional_users.count() > 0:
         for usr in recording.recorder.additional_users.all():
             video.additional_owners.add(usr)
-        video.save()
+    # acces privé (mode brouillon)
+    video.is_draft=recording.recorder.is_draft
+    # Accès restreint (eventuellement à des groupe ou par mot de passe)
+    video.is_restricted=recording.recorder.is_restricted
+    if recording.recorder.restrict_access_to_groups.count() > 0:
+        for g in recording.recorder.restrict_access_to_groups.all():
+            video.restrict_access_to_groups.add(g)
+    video.password = recording.recorder.password
+
+    if USE_ADVANCED_RECORDER:
+        TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
+        # on ajoute les eventuelles chaines
+        if recording.recorder.channel.count() > 0:
+            for c in recording.recorder.channel.all():
+                video.channel.add(c)
+        # on ajoute les eventuels theme
+        if recording.recorder.theme.count() > 0:
+            for t in recording.recorder.theme.all():
+                video.theme.add(t)
+        # on ajoute les eventuelles disciplines
+        if recording.recorder.discipline.count() > 0:
+            for d in recording.recorder.discipline.all():
+                video.discipline.add(d)
+        # Choix de la langue
+        if recording.recorder.main_lang:
+            video.main_lang = recording.recorder.main_lang
+        # Choix des cursus
+        video.cursus = recording.recorder.cursus
+        # mot clefs
+        video.tags = recording.recorder.tags
+        # transcript
+        if TRANSCRIPT:
+            video.transcript = recording.recorder.transcript
+        # Licence
+        video.licence = recording.recorder.licence
+        # Allow allow_downloading
+        video.allow_downloading = recording.recorder.allow_downloading
+        # Is_360
+        video.is_360 = recording.recorder.is_360
+        # Désactiver les commentaires
+        video.disable_comment = recording.recorder.disable_comment
+    video.save()
     ENCODE_VIDEO(video.id)
     return video
 

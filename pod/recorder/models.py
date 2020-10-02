@@ -4,16 +4,72 @@ import importlib
 from ckeditor.fields import RichTextField
 from django.db import models
 from django.conf import settings
+USE_ADVANCED_RECORDER = getattr(settings, 'USE_ADVANCED_RECORDER', False)
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.db.models import Q
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.contrib.sites.models import Site
 from select2 import fields as select2_fields
 from pod.video.models import Type
-from django.db.models import Q
+if USE_ADVANCED_RECORDER:
+    from pod.video.models import Discipline, Channel, Theme
+    from tagging.fields import TagField
+    from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
+    from django.utils.translation import get_language
+    TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
+    LANG_CHOICES = getattr(
+        settings, 'LANG_CHOICES', (
+            (' ', PREF_LANG_CHOICES),
+            ('----------', ALL_LANG_CHOICES)
+        )
+    )
+    CURSUS_CODES = getattr(
+        settings, 'CURSUS_CODES', (
+            ('0', _("None / All")),
+            ('L', _("Bachelor’s Degree")),
+            ('M', _("Master’s Degree")),
+            ('D', _("Doctorate")),
+            ('1', _("Other"))
+        )
+    )
+    LICENCE_CHOICES = getattr(
+        settings, 'LICENCE_CHOICES', (
+            ('by', _("Attribution 4.0 International (CC BY 4.0)")),
+            ('by-nd', _("Attribution-NoDerivatives 4.0 "
+                        "International (CC BY-ND 4.0)"
+                        )),
+            ('by-nc-nd', _(
+                "Attribution-NonCommercial-NoDerivatives 4.0 "
+                "International (CC BY-NC-ND 4.0)"
+            )),
+            ('by-nc', _("Attribution-NonCommercial 4.0 "
+                        "International (CC BY-NC 4.0)")),
+            ('by-nc-sa', _(
+                "Attribution-NonCommercial-ShareAlike 4.0 "
+                "International (CC BY-NC-SA 4.0)"
+            )),
+            ('by-sa', _(
+                "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"))
+        )
+    )
+
+def select_recorder_user():
+    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY:
+        return lambda q: (Q(is_staff=True) & (Q(
+            first_name__icontains=q) | Q(
+            last_name__icontains=q))) & Q(
+            owner__sites=Site.objects.get_current())
+    else:
+        return lambda q: (Q(
+            first_name__icontains=q) | Q(
+            last_name__icontains=q)) & Q(
+            owner__sites=Site.objects.get_current())
+
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, 'RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY', False)
@@ -42,17 +98,6 @@ PUBLIC_RECORD_DIR = getattr(
     "records"
 )
 
-def select_recorder_user():
-    if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY:
-        return lambda q: (Q(is_staff=True) & (Q(
-            first_name__icontains=q) | Q(
-            last_name__icontains=q))) & Q(
-            owner__sites=Site.objects.get_current())
-    else:
-        return lambda q: (Q(
-            first_name__icontains=q) | Q(
-            last_name__icontains=q)) & Q(
-            owner__sites=Site.objects.get_current())
 
 class Recorder(models.Model):
     # Recorder name
@@ -99,6 +144,72 @@ class Recorder(models.Model):
     recording_type = models.CharField(_('Recording Type'), max_length=50,
                                       choices=RECORDER_TYPE,
                                       default=RECORDER_TYPE[0][0])
+    is_draft = models.BooleanField(
+        verbose_name=_('Draft'),
+        help_text=_(
+            'If this box is checked, '
+            'the video will be visible and accessible only by you '
+            'and the additional owners.'),
+        default=True)
+    is_restricted = models.BooleanField(
+        verbose_name=_('Restricted access'),
+        help_text=_(
+            'If this box is checked, '
+            'the video will only be accessible to authenticated users.'),
+        default=False)
+    restrict_access_to_groups = select2_fields.ManyToManyField(
+        Group, blank=True, verbose_name=_('Groups'),
+        help_text=_('Select one or more groups who can access to this video'))
+    password = models.CharField(
+        _('password'),
+        help_text=_(
+            'Viewing this video will not be possible without this password.'),
+        max_length=50, blank=True, null=True)
+    if USE_ADVANCED_RECORDER:
+        cursus = models.CharField(
+            _('University course'), max_length=1,
+            choices=CURSUS_CODES, default="0",
+            help_text=_("Select an university course as "
+                        "audience target of the content."))
+        main_lang = models.CharField(
+            _('Main language'), max_length=2,
+            choices=LANG_CHOICES, default=get_language(),
+            help_text=_("Select the main language used in the content."))
+        if TRANSCRIPT:
+            transcript = models.BooleanField(
+                _('Transcript'), default=False, help_text=_(
+                    "Check this box if you want to transcript the audio."
+                    "(beta version)"))
+        tags = TagField(help_text=_(
+            'Separate tags with spaces, '
+            'enclose the tags consist of several words in quotation marks.'),
+            verbose_name=_('Tags'))
+        discipline = select2_fields.ManyToManyField(
+            Discipline,
+            blank=True,
+            verbose_name=_('Disciplines'))
+        licence = models.CharField(
+            _('Licence'), max_length=8,
+            choices=LICENCE_CHOICES, blank=True, null=True)
+        channel = select2_fields.ManyToManyField(
+            Channel,
+            verbose_name=_('Channels'),
+            blank=True)
+        theme = models.ManyToManyField(
+            Theme,
+            verbose_name=_('Themes'),
+            blank=True,
+            help_text=_('Hold down "Control", or "Command" '
+                        'on a Mac, to select more than one.'))
+        allow_downloading = models.BooleanField(
+            _('allow downloading'), default=False, help_text=_(
+                'Check this box if you to allow downloading of the encoded files'))
+        is_360 = models.BooleanField(_('video 360'), default=False, help_text=_(
+            'Check this box if you want to use the 360 player for the video'))
+        disable_comment = models.BooleanField(
+                _("Disable comment"),
+                help_text=_("Allows you to turn off all comments on this video."),
+                default=False)
 
     # Directory name where videos of this recorder are published
     directory = models.CharField(_('Publication directory'), max_length=50,
