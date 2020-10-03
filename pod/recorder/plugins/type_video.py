@@ -52,7 +52,7 @@ def encode_recording(recording):
             video.additional_owners.add(usr)
     # acces privé (mode brouillon)
     video.is_draft=recording.recorder.is_draft
-    # Accès restreint (eventuellement à des groupe ou par mot de passe)
+    # Accès restreint (eventuellement à des groupes ou par mot de passe)
     video.is_restricted=recording.recorder.is_restricted
     if recording.recorder.restrict_access_to_groups.count() > 0:
         for g in recording.recorder.restrict_access_to_groups.all():
@@ -85,7 +85,7 @@ def encode_recording(recording):
             video.transcript = recording.recorder.transcript
         # Licence
         video.licence = recording.recorder.licence
-        # Allow allow_downloading
+        # Allow downloading
         video.allow_downloading = recording.recorder.allow_downloading
         # Is_360
         video.is_360 = recording.recorder.is_360
