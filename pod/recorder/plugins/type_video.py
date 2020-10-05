@@ -60,14 +60,14 @@ def encode_recording(recording):
     if USE_ADVANCED_RECORDER:
         TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
         # on ajoute les eventuelles chaines
-        for c in recording.recorder.channel.all():
-            video.channel.add(c)
-        # on ajoute les eventuels theme
-        for t in recording.recorder.theme.all():
-            video.theme.add(t)
-        # on ajoute les eventuelles disciplines
-        for d in recording.recorder.discipline.all():
-            video.discipline.add(d)
+        # for c in recording.recorder.channel.all():
+        #     video.channel.add(c)
+        # # on ajoute les eventuels theme
+        # for t in recording.recorder.theme.all():
+        #     video.theme.add(t)
+        # # on ajoute les eventuelles disciplines
+        # for d in recording.recorder.discipline.all():
+        #     video.discipline.add(d)
         # Choix de la langue
         video.main_lang = recording.recorder.main_lang
         # Choix des cursus

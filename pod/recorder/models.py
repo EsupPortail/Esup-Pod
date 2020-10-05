@@ -134,7 +134,8 @@ class Recorder(models.Model):
         verbose_name=_('Additional users'),
         search_field=select_recorder_user(),
         related_name='users_recorders',
-        help_text=_('You can add additionals users to the recorder. They '
+        help_text=_(
+            'You can add additionals users to the recorder. They '
             'will become the additionnals owners of the published videos '
             'and will have the same rights as the owner except that they '
             'can\'t delete the published videos.'))
@@ -205,13 +206,15 @@ class Recorder(models.Model):
                         'on a Mac, to select more than one.'))
         allow_downloading = models.BooleanField(
             _('allow downloading'), default=False, help_text=_(
-                'Check this box if you to allow downloading of the encoded files'))
-        is_360 = models.BooleanField(_('video 360'), default=False, help_text=_(
+                'Check this box if you to allow downloading '
+                ' of the encoded files'))
+        is_360 = models.BooleanField(
+            _('video 360'), default=False, help_text=_(
             'Check this box if you want to use the 360 player for the video'))
         disable_comment = models.BooleanField(
-                _("Disable comment"),
-                help_text=_("Allows you to turn off all comments on this video."),
-                default=False)
+            _("Disable comment"),
+            help_text=_("Allows you to turn off all comments on this video."),
+            default=False)
 
     # Directory name where videos of this recorder are published
     directory = models.CharField(_('Publication directory'), max_length=50,

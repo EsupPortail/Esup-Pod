@@ -17,12 +17,12 @@ class RecorderTestCase(TestCase):
         user2 = User.objects.create(username="pod2")
         group = Group.objects.create(name="Test group")
         recorder1 = Recorder.objects.create(id=1, user=user, name="recorder1",
-                                address_ip="16.3.10.37",
-                                type=videotype,
-                                is_draft=False,
-                                is_restricted=True,
-                                password="secret",
-                                directory="dir1")
+                                            address_ip="16.3.10.37",
+                                            type=videotype,
+                                            is_draft=False,
+                                            is_restricted=True,
+                                            password="secret",
+                                            directory="dir1")
         recorder1.additional_users.add(user1)
         recorder1.additional_users.add(user2)
         recorder1.restrict_access_to_groups.add(group)
@@ -37,8 +37,6 @@ class RecorderTestCase(TestCase):
         self.assertEqual(recorder1.password, "secret")
         self.assertEqual(recorder1.additional_users.count(), 2)
         self.assertEqual(recorder1.restrict_access_to_groups.count(), 1)
-
-
         print(
             "   --->  test_attributs of RecorderTestCase: OK !")
 
