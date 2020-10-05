@@ -47,35 +47,29 @@ def encode_recording(recording):
     os.rename(recording.source_file, video.video.path)
     video.save()
     # on ajoute d'eventuels propriétaires additionnels
-    if recording.recorder.additional_users.count() > 0:
-        for usr in recording.recorder.additional_users.all():
-            video.additional_owners.add(usr)
+    for usr in recording.recorder.additional_users.all():
+        video.additional_owners.add(usr)
     # acces privé (mode brouillon)
-    video.is_draft=recording.recorder.is_draft
+    video.is_draft = recording.recorder.is_draft
     # Accès restreint (eventuellement à des groupes ou par mot de passe)
-    video.is_restricted=recording.recorder.is_restricted
-    if recording.recorder.restrict_access_to_groups.count() > 0:
-        for g in recording.recorder.restrict_access_to_groups.all():
-            video.restrict_access_to_groups.add(g)
+    video.is_restricted = recording.recorder.is_restricted
+    for g in recording.recorder.restrict_access_to_groups.all():
+        video.restrict_access_to_groups.add(g)
     video.password = recording.recorder.password
 
     if USE_ADVANCED_RECORDER:
         TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
         # on ajoute les eventuelles chaines
-        if recording.recorder.channel.count() > 0:
-            for c in recording.recorder.channel.all():
-                video.channel.add(c)
+        for c in recording.recorder.channel.all():
+            video.channel.add(c)
         # on ajoute les eventuels theme
-        if recording.recorder.theme.count() > 0:
-            for t in recording.recorder.theme.all():
-                video.theme.add(t)
+        for t in recording.recorder.theme.all():
+            video.theme.add(t)
         # on ajoute les eventuelles disciplines
-        if recording.recorder.discipline.count() > 0:
-            for d in recording.recorder.discipline.all():
-                video.discipline.add(d)
+        for d in recording.recorder.discipline.all():
+            video.discipline.add(d)
         # Choix de la langue
-        if recording.recorder.main_lang:
-            video.main_lang = recording.recorder.main_lang
+        video.main_lang = recording.recorder.main_lang
         # Choix des cursus
         video.cursus = recording.recorder.cursus
         # mot clefs

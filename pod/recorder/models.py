@@ -4,7 +4,6 @@ import importlib
 from ckeditor.fields import RichTextField
 from django.db import models
 from django.conf import settings
-USE_ADVANCED_RECORDER = getattr(settings, 'USE_ADVANCED_RECORDER', False)
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
@@ -16,6 +15,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.sites.models import Site
 from select2 import fields as select2_fields
 from pod.video.models import Type
+
+USE_ADVANCED_RECORDER = getattr(settings, 'USE_ADVANCED_RECORDER', False)
 if USE_ADVANCED_RECORDER:
     from pod.video.models import Discipline, Channel, Theme
     from tagging.fields import TagField
@@ -57,6 +58,7 @@ if USE_ADVANCED_RECORDER:
                 "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"))
         )
     )
+
 
 def select_recorder_user():
     if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY:
@@ -123,19 +125,19 @@ class Recorder(models.Model):
         verbose_name=_('User'), null=True, blank=True)
     # Additionnal additional_users
     additional_users = select2_fields.ManyToManyField(
-    User,
-    blank=True,
-    ajax=True,
-    js_options={
-        'width': 'off'
-    },
-    verbose_name=_('Additional users'),
-    search_field=select_recorder_user(),
-    related_name='users_recorders',
-    help_text=_('You can add additionals users to the recorder. They '
-                'will become the additionnals owners of the published videos and will '
-                'have the same rights as the owner except that they '
-                'can\'t delete the published videos.'))
+        User,
+        blank=True,
+        ajax=True,
+        js_options={
+            'width': 'off'
+        },
+        verbose_name=_('Additional users'),
+        search_field=select_recorder_user(),
+        related_name='users_recorders',
+        help_text=_('You can add additionals users to the recorder. They '
+            'will become the additionnals owners of the published videos '
+            'and will have the same rights as the owner except that they '
+            'can\'t delete the published videos.'))
     # Default type of published videos by this recorder
     type = models.ForeignKey(
         Type, on_delete=models.CASCADE,
