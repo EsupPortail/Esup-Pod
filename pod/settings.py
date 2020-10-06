@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'pod.custom',
     'shibboleth',
     'chunked_upload',
+    'pod.bbb',
 ]
 
 ##
