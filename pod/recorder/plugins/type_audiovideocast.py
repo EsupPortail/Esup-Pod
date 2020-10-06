@@ -56,6 +56,7 @@ def add_comment(recording_id, comment):
 
 
 def save_video(recording, video_data, video_src):
+    recorder = recording.recorder
     video = Video()
     video.owner = recording.user
     video.type = Type.objects.get(id=DEFAULT_RECORDER_TYPE_ID)
@@ -68,31 +69,40 @@ def save_video(recording, video_data, video_src):
     # on recupere le nom du fichier sur le serveur
     video.title = recording.title
     video.save()
-    for usr in recording.recorder.additional_users.all():
-        video.additional_owners.add(usr)
-    video.is_draft = recording.recorder.is_draft
-    video.is_restricted = recording.recorder.is_restricted
-    for g in recording.recorder.restrict_access_to_groups.all():
-        video.restrict_access_to_groups.add(g)
-    video.password = recording.recorder.password
-
+    # on ajoute d'eventuels propriétaires additionnels
+    video.additional_owners.add(*recorder.additional_users.all())
+    # acces privé (mode brouillon)
+    video.is_draft = recorder.is_draft
+    # Accès restreint (eventuellement à des groupes ou par mot de passe)
+    video.is_restricted = recorder.is_restricted
+    video.restrict_access_to_groups.add(
+        *recorder.restrict_access_to_groups.all())
+    video.password = recorder.password
     if USE_ADVANCED_RECORDER:
         TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
-        for c in recording.recorder.channel.all():
-            video.channel.add(c)
-        for t in recording.recorder.theme.all():
-            video.theme.add(t)
-        for d in recording.recorder.discipline.all():
-            video.discipline.add(d)
-        video.main_lang = recording.recorder.main_lang
-        video.cursus = recording.recorder.cursus
-        video.tags = recording.recorder.tags
+        # on ajoute les eventuelles chaines
+        video.channel.add(*recorder.channel.all())
+        # on ajoute les eventuels theme
+        video.theme.add(*recorder.theme.all())
+        # on ajoute les eventuelles disciplines
+        video.discipline.add(*recorder.discipline.all())
+        # Choix de la langue
+        video.main_lang = recorder.main_lang
+        # Choix des cursus
+        video.cursus = recorder.cursus
+        # mot clefs
+        video.tags = recorder.tags
+        # transcript
         if TRANSCRIPT:
-            video.transcript = recording.recorder.transcript
-        video.licence = recording.recorder.licence
-        video.allow_downloading = recording.recorder.allow_downloading
-        video.is_360 = recording.recorder.is_360
-        video.disable_comment = recording.recorder.disable_comment
+            video.transcript = recorder.transcript
+        # Licence
+        video.licence = recorder.licence
+        # Allow downloading
+        video.allow_downloading = recorder.allow_downloading
+        # Is_360
+        video.is_360 = recorder.is_360
+        # Désactiver les commentaires
+        video.disable_comment = recorder.disable_comment
     video.save()
     ENCODE_VIDEO(video.id)
     return video
