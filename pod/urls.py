@@ -40,7 +40,7 @@ from pod.recorder.views import add_recording, recorder_notify, claim_record,\
     delete_record
 from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
 from pod.video.views import PodChunkedUploadView, PodChunkedUploadCompleteView
-
+from pod.bbb.views import bbb_list_meeting, bbb_publish_meeting
 
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
@@ -113,6 +113,11 @@ urlpatterns = [
     url(r'^claim_record/$', claim_record, name='claim_record'),
     url(r'^delete_record/(?P<id>[\d]+)/$', delete_record,
         name='delete_record'),
+
+    # bbb
+    url(r'^bbb_list_meeting/$', bbb_list_meeting, name='bbb_list_meeting'),
+    url(r'^bbb_publish_meeting/(?P<id>[\d]+)/$', bbb_publish_meeting,
+        name='bbb_publish_meeting'),
 
     url(r'^search/$', search_videos, name='search_videos'),
 
