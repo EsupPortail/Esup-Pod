@@ -29,7 +29,7 @@ class meetingViewsTestCase(TestCase):
 
     def test_list_meeting(self):
         self.client = Client()
-        response = self.client.get("/bbb_list_meeting/")
+        response = self.client.get("/bbb/list_meeting/")
         self.assertRaises(PermissionDenied)
 
         self.user = User.objects.get(username="pod")
@@ -37,7 +37,7 @@ class meetingViewsTestCase(TestCase):
         self.user.save()
 
         self.client.force_login(self.user)
-        response = self.client.get("/bbb_list_meeting/")
+        response = self.client.get("/bbb/list_meeting/")
         self.assertTrue(b"Session BBB1" in response.content)
         self.assertEqual(response.status_code, 200)
 
@@ -46,14 +46,14 @@ class meetingViewsTestCase(TestCase):
 
     def test_publish_meeting(self):
         self.client = Client()
-        response = self.client.get("/bbb_publish_meeting/1")
+        response = self.client.get("/bbb/publish_meeting/1")
         self.assertRaises(PermissionDenied)
 
         self.user = User.objects.get(username="pod")
         self.user.is_staff = True
         self.user.save()
 
-        response = self.client.post("/bbb_publish_meeting/1")
+        response = self.client.post("/bbb/publish_meeting/1")
         # Possible status : 200 or 301
         if response.status_code == 200:
             self.assertEqual(response.status_code, 200)
