@@ -29,7 +29,7 @@
 		</div>
 		<footer class="card-footer p-0 m-1">
 			{% if record.encoding_step == 0 %}
-					<a href="{% url 'bbb_publish_meeting' id=record.id %}" title="{% trans "Publish the BigBlueButton presentation on this platform"%}" class="p-0 m-0 btn btn-primary btn-sm pl-1">
+					<a href="{% url 'bbb:publish_meeting' id=record.id %}" title="{% trans "Publish the BigBlueButton presentation on this platform"%}" class="p-0 m-0 btn btn-primary btn-sm pl-1">
 						{% trans "Publish this presentation"%}
 					</a>
 			{% endif %}

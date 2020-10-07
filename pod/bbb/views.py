@@ -22,7 +22,7 @@ USE_BBB = getattr(settings, 'USE_BBB', False)
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 @staff_member_required(redirect_field_name='referrer')
-def bbb_list_meeting(request):
+def list_meeting(request):
     # Get meetings list, which recordings are available, ordered by date
     meetings_list = Meeting.objects.\
         filter(user__user_id=request.user.id, recording_available=True)
@@ -56,7 +56,7 @@ def bbb_list_meeting(request):
 
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
-def bbb_publish_meeting(request, id=None):
+def publish_meeting(request, id=None):
     # Allows you to create a video from a BigBlueButton presentation
 
     record = get_object_or_404(Meeting, id=id)
@@ -102,14 +102,14 @@ def bbb_publish_meeting(request, id=None):
                 request, messages.INFO,
                 _(u'The BigBlueButton session has been published.'))
             return redirect(
-                reverse('bbb_list_meeting')
+                reverse('bbb:list_meeting')
             )
         else:
             messages.add_message(
                 request, messages.ERROR,
                 _(u'One or more errors have been found in the form.'))
 
-    return render(request, 'bbb/bbb_publish_meeting.html', {
+    return render(request, 'bbb/publish_meeting.html', {
         'record': record,
         'form': form}
     )
