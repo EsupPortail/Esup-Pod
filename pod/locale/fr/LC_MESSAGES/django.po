@@ -3240,19 +3240,14 @@ msgid "Additional users"
 msgstr "Propriétaires additionels"
 
 #: pod/recorder/models.py:138
-#, fuzzy
-#| msgid ""
-#| "In this field you can select and add additional owners to the video. "
-#| "These additional owners will have the same rights as you except that they "
-#| "can't delete this video."
 msgid ""
 "You can add additionals users to the recorder. They will become the "
 "additionnals owners of the published videos and will have the same rights as "
 "the owner except that they can't delete the published videos."
 msgstr ""
-"Dans ce champ, vous pouvez sélectionner et ajouter des propriétaires "
-"supplémentaires à la vidéo. Ces autres propriétaires auront les mêmes droits "
-"que vous sauf qu'ils ne peuvent pas supprimer cette vidéo."
+"Vous pouvez ajouter des utilisateurs supplémentaires à l'enregistreur. "
+"Ils deviendront les propriétaires additionnels de la vidéo publiée et auront les mêmes droits "
+"que le propriétaire sauf qu'ils ne pourront pas supprimer la vidéo publiée."
 
 #: pod/recorder/models.py:145
 msgid "Video type by default."
