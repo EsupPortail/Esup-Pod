@@ -34,14 +34,19 @@ html,body{
   right: 0;
   bottom: 0;
 }
-/* .float-right .fas{
-  color: #fff;
-  position: fixed;
-  bottom: 10%;
-  right: 10px;
- dropdown-item playlist-item z-index: 9999999;
-} */
-
+.chapters-list ol li{
+    color: #fff;
+}
+.chapters-list ol li a.current{font-weight: 700;}
+.chapters-list ol li a.current,
+.chapters-list ol li a:hover{
+    background-color: var(--secondary) !important;
+}
+.chapters-list ol li a:hover,
+.chapters-list ol li a{
+    color: inherit !important;
+    word-wrap: anywhere;
+}
 .foldable_event.opened:hover .arrow_bottom,
 .foldable_event .arrow_right{
     border-color: #fff !important;
