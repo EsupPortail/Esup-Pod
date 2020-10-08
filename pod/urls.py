@@ -47,6 +47,8 @@ USE_SHIB = getattr(
     settings, 'USE_SHIB', False)
 OEMBED = getattr(
     settings, 'OEMBED', False)
+USE_BBB = getattr(
+    settings, 'USE_BBB', False)
 
 if USE_CAS:
     from cas import views as cas_views
@@ -113,9 +115,6 @@ urlpatterns = [
     url(r'^delete_record/(?P<id>[\d]+)/$', delete_record,
         name='delete_record'),
 
-    # bbb
-    url(r'^bbb/', include('pod.bbb.urls')),
-
     url(r'^search/$', search_videos, name='search_videos'),
 
     # auth cas
@@ -165,6 +164,11 @@ if USE_CAS:
         url(r'^sso-cas/logout/$', cas_views.logout, name='cas-logout'),
     ]
 
+# BBB
+if USE_BBB:
+    urlpatterns += [
+        url(r'^bbb/', include('pod.bbb.urls')),
+    ]
 
 ##
 # OEMBED feature patterns
