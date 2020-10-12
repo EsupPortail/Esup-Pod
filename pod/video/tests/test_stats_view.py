@@ -70,10 +70,10 @@ class TestStatsView(TestCase):
                 encoding_in_progress=False,
                 video="teststatsviewthird.mp4",
                 type=self.t1)
-        self.video.channel = [self.channel]
-        self.video.theme = [self.theme]
-        self.video2.channel = [self.channel]
-        self.video2.theme = [self.theme]
+        self.video.channel.set([self.channel])
+        self.video.theme.set([self.theme])
+        self.video2.channel.set([self.channel])
+        self.video2.theme.set([self.theme])
         self.url_stats_exists = True
 
         self.user.owner.sites.add(Site.objects.get_current())

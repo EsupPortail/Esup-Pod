@@ -481,14 +481,14 @@ def get_video_access(request, video, slug_private):
         access_granted_for_private = (
             slug_private and slug_private == video.get_hashkey()
         )
-        access_granted_for_draft = request.user.is_authenticated() and (
+        access_granted_for_draft = request.user.is_authenticated and (
             request.user == video.owner or request.user.is_superuser or
             request.user.has_perm("video.change_video") or (
                 request.user in video.additional_owners.all()))
         access_granted_for_restricted = (
-            request.user.is_authenticated() and not is_restricted_to_group)
+            request.user.is_authenticated and not is_restricted_to_group)
         access_granted_for_group = (
-            request.user.is_authenticated()
+            request.user.is_authenticated
             and is_in_video_groups(request.user, video)
 
         ) or request.user == video.owner or request.user.is_superuser or \
@@ -635,7 +635,7 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
                     **more_data
                 }
             )
-        elif request.user.is_authenticated():
+        elif request.user.is_authenticated:
             messages.add_message(
                 request, messages.ERROR,
                 _('You cannot watch this video.'))

@@ -238,7 +238,7 @@ class TypeTestCase(TestCase):
 
     def test_delete_object(self):
         Type.objects.get(id=1).delete()
-        self.assertEquals(Type.objects.all().count(), 0)
+        self.assertEqual(Type.objects.all().count(), 0)
         print(
             "   --->  test_delete_object of TypeTestCase : OK !")
 
