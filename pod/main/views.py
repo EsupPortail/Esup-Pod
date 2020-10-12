@@ -268,8 +268,6 @@ def remove_accents(input_str):
 
 @login_required(redirect_field_name='referrer')
 def user_autocomplete(request):
-    if HIDE_USER_TAB:
-        return HttpResponseBadRequest()
     if request.is_ajax():
         additional_filters = {
             'video__is_draft': False,
