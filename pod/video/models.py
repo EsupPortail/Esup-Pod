@@ -293,6 +293,7 @@ def default_site_channel(sender, instance, created, **kwargs):
 class Theme(models.Model):
     parentId = models.ForeignKey(
         'self', null=True, blank=True, related_name="children",
+        on_delete=models.CASCADE,
         verbose_name=_('Theme parent'))
     title = models.CharField(
         _('Title'), max_length=100,
@@ -466,7 +467,7 @@ class Video(models.Model):
             'numbers, underscore or dash top.'),
         editable=False)
     sites = models.ManyToManyField(Site)
-    type = models.ForeignKey(Type, verbose_name=_('Type'))
+    type = models.ForeignKey(Type, verbose_name=_('Type'), on_delete=models.CASCADE)
     owner = select2_fields.ForeignKey(
         User,
         ajax=True,
@@ -947,6 +948,7 @@ def video_files_removal(sender, instance, using, **kwargs):
 
 class ViewCount(models.Model):
     video = models.ForeignKey(Video, verbose_name=_('Video'),
+                              on_delete=models.CASCADE,
                               editable=False)
     date = models.DateField(
         _(u'Date'), default=date.today, editable=False)
@@ -1089,9 +1091,9 @@ class EncodingVideo(models.Model):
         help_text="Please use the only format in encoding choices :"
         + " %s" % ' '.join(str(key) for key, value in ENCODING_CHOICES)
     )
-    video = models.ForeignKey(Video, verbose_name=_('Video'))
+    video = models.ForeignKey(Video, verbose_name=_('Video'), on_delete=models.CASCADE)
     rendition = models.ForeignKey(
-        VideoRendition, verbose_name=_('rendition'))
+        VideoRendition, verbose_name=_('rendition'), on_delete=models.CASCADE)
     encoding_format = models.CharField(
         _('Format'),
         max_length=22,
@@ -1157,7 +1159,7 @@ class EncodingAudio(models.Model):
         _('Name'), max_length=10, choices=ENCODING_CHOICES, default="audio",
         help_text="Please use the only format in encoding choices :"
         + " %s" % ' '.join(str(key) for key, value in ENCODING_CHOICES))
-    video = models.ForeignKey(Video, verbose_name=_('Video'))
+    video = models.ForeignKey(Video, verbose_name=_('Video'), on_delete=models.CASCADE)
     encoding_format = models.CharField(
         _('Format'), max_length=22, choices=FORMAT_CHOICES,
         default="audio/mp3",
@@ -1388,9 +1390,9 @@ class AdvancedNotes(models.Model):
 
 class NoteComments(models.Model):
     user = select2_fields.ForeignKey(User)
-    parentNote = models.ForeignKey(AdvancedNotes)
+    parentNote = models.ForeignKey(AdvancedNotes, on_delete=models.CASCADE)
     parentCom = models.ForeignKey(
-        "NoteComments", blank=True, null=True)
+        "NoteComments", blank=True, null=True, on_delete=models.CASCADE)
     status = models.CharField(
         _('Comment availibility level'), max_length=1,
         choices=NOTES_STATUS, default="0",

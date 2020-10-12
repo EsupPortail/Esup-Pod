@@ -108,6 +108,7 @@ class LinkFooter(models.Model):
         help_text=_('This field allows you to add an url.'))
     page = models.ForeignKey(
         FlatPage, blank=True, null=True,
+        on_delete=models.CASCADE,
         help_text=_('Select the page of Pod you want to link with.'))
 
     class Meta:

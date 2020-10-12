@@ -70,6 +70,7 @@ class Owner(models.Model):
         max_length=64, unique=True, blank=True, default="")
     userpicture = models.ForeignKey(CustomImageModel,
                                     blank=True, null=True,
+                                    on_delete=models.CASCADE,
                                     verbose_name=_('Picture'))
     establishment = models.CharField(
         _('Establishment'), max_length=10, blank=True, choices=ESTABLISHMENTS,

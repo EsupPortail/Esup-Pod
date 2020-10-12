@@ -122,7 +122,8 @@ class Document(models.Model):
         CustomFileModel,
         null=True,
         blank=True,
-        verbose_name=_('Document')
+        verbose_name=_('Document'),
+        on_delete=models.CASCADE
     )
 
     class Meta:
@@ -183,7 +184,8 @@ class Track(models.Model):
     src = models.ForeignKey(CustomFileModel,
                             blank=True,
                             null=True,
-                            verbose_name=_('Subtitle file'))
+                            verbose_name=_('Subtitle file'),
+                            on_delete=models.CASCADE)
 
     @property
     def sites(self):

@@ -62,7 +62,8 @@ class Broadcaster(models.Model):
             u'Used to access this instance, the "slug" is a short label '
             + 'containing only letters, numbers, underscore or dash top.'),
         editable=False, default="")  # default empty, fill it in save
-    building = models.ForeignKey('Building', verbose_name=_('Building'))
+    building = models.ForeignKey('Building', verbose_name=_(
+        'Building'), on_delete=models.CASCADE)
     description = RichTextField(
         _('description'), config_name='complete', blank=True)
     poster = models.ForeignKey(

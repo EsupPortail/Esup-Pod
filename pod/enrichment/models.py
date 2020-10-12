@@ -141,12 +141,14 @@ class Enrichment(models.Model):
         blank=True)
 
     image = models.ForeignKey(
-        CustomImageModel, verbose_name=_('Image'), null=True, blank=True)
+        CustomImageModel, verbose_name=_(
+            'Image'), null=True, on_delete=models.CASCADE, blank=True)
     document = models.ForeignKey(
         CustomFileModel,
         verbose_name=_('Document'),
         null=True,
         blank=True,
+        on_delete=models.CASCADE,
         help_text=_(u'Integrate an document (PDF, text, html)'))
     richtext = RichTextField(_('Richtext'), config_name='complete', blank=True)
     weblink = models.URLField(
@@ -294,6 +296,7 @@ class EnrichmentVtt(models.Model):
     src = models.ForeignKey(CustomFileModel,
                             blank=True,
                             null=True,
+                            on_delete=models.CASCADE,
                             verbose_name=_('Subtitle file'))
 
     @property
