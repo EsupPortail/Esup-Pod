@@ -20,6 +20,7 @@ import mimetypes
 import json
 import unicodedata
 from django.contrib.auth.decorators import login_required
+from .models import Configuration
 
 ##
 # Settings exposed in templates
@@ -72,6 +73,11 @@ MENUBAR_SHOW_STAFF_OWNERS_ONLY = getattr(
         settings, 'MENUBAR_SHOW_STAFF_OWNERS_ONLY', False)
 HIDE_USER_TAB = getattr(
         settings, 'HIDE_USER_TAB', False)
+
+
+def in_maintenance():
+    return (True if Configuration.objects.get(
+        key="maintenance_mode").value == "1" else False)
 
 
 @csrf_protect
@@ -289,3 +295,8 @@ def user_autocomplete(request):
         return HttpResponseBadRequest()
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
+
+
+def maintenance(request):
+    text = Configuration.objects.get(key="maintenance_text_disabled").value
+    return render(request, 'maintenance.html', {'text': text})

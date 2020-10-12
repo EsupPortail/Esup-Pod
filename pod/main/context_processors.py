@@ -5,12 +5,13 @@ from django.db.models import Prefetch
 from datetime import timedelta
 
 from pod.main.models import LinkFooter
-
+from django.core.exceptions import ObjectDoesNotExist
 from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import Type
 from pod.video.models import Discipline
 from pod.video.models import Video
+from pod.main.models import Configuration
 from django.contrib.sites.shortcuts import get_current_site
 
 ORDER_BY = 'last_name'
@@ -105,6 +106,16 @@ USE_BBB = getattr(
 
 
 def context_settings(request):
+    maintenance_mode = False
+    maintenance_text_short = ""
+    try:
+        maintenance_mode = Configuration.objects.get(key="maintenance_mode")
+        maintenance_mode = True if maintenance_mode.value == "1" else False
+        maintenance_text_short = \
+            Configuration.objects.get(key="maintenance_text_short").value
+    except ObjectDoesNotExist:
+        pass
+
     new_settings = {}
     for sett in TEMPLATE_VISIBLE_SETTINGS:
         try:
@@ -134,6 +145,8 @@ def context_settings(request):
     new_settings['BOOTSTRAP_CUSTOM'] = BOOTSTRAP_CUSTOM
     new_settings['USE_CHUNKED_UPLOAD'] = USE_CHUNKED_UPLOAD
     new_settings['CHUNK_SIZE'] = CHUNK_SIZE
+    new_settings['MAINTENANCE_REASON'] = maintenance_text_short
+    new_settings['MAINTENANCE_MODE'] = maintenance_mode
     new_settings['USE_BBB'] = USE_BBB
     return new_settings
 
