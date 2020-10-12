@@ -101,6 +101,9 @@ USE_CHUNKED_UPLOAD = getattr(
 CHUNK_SIZE = getattr(
     django_settings, 'CHUNK_SIZE', 100000)
 
+USE_BBB = getattr(
+    django_settings, 'USE_BBB', False)
+
 
 def context_settings(request):
     maintenance_mode = False
@@ -144,6 +147,7 @@ def context_settings(request):
     new_settings['CHUNK_SIZE'] = CHUNK_SIZE
     new_settings['MAINTENANCE_REASON'] = maintenance_text_short
     new_settings['MAINTENANCE_MODE'] = maintenance_mode
+    new_settings['USE_BBB'] = USE_BBB
     return new_settings
 
 
