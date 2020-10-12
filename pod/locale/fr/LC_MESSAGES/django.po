@@ -5026,6 +5026,201 @@ msgstr "facettage"
 msgid "Remove selection"
 msgstr "Retirer la sélection"
 
+#: pod/bbb/models.py:18
+msgid "Meeting id"
+msgstr "Identifiant de la session"
+
+#: pod/bbb/models.py:19
+msgid "Id of the BBB meeting."
+msgstr "Identifiant de la session BBB"
+
+#: pod/bbb/models.py:23
+msgid "Internal meeting id"
+msgstr "Identifiant interne de la session"
+
+#: pod/bbb/models.py:24
+msgid "Internal id of the BBB meeting."
+msgstr "Identifiant interne de la session BBB"
+
+#: pod/bbb/models.py:28
+msgid "Meeting name"
+msgstr "Nom de la session"
+
+#: pod/bbb/models.py:29
+msgid "Name of the BBB meeting."
+msgstr "Nom de la session BBB"
+
+#: pod/bbb/models.py:40
+msgid "Encoding step for conversion of the "
+"BBB presentation to video file."
+msgstr "Étape d'encodage pour la conversion de la "
+"présentation BBB en fichier vidéo."
+
+#: pod/bbb/models.py:45
+msgid "Recorded"
+msgstr "Enregistrée"
+
+#: pod/bbb/models.py:46
+msgid "BBB presentation recorded ?"
+msgstr "La présentation BBB a t'elle été enregistrée ?"
+
+#: pod/bbb/models.py:45
+msgid "Recording available"
+msgstr "Enregistrement disponible"
+
+#: pod/bbb/models.py:51
+msgid "BBB presentation recording is available ?"
+msgstr "Un enregistrement de la présentation BBB est-il disponible ?"
+
+#: pod/bbb/models.py:55
+msgid "Recording url"
+msgstr "URL de l'enregistrement"
+
+#: pod/bbb/models.py:56
+msgid "URL of the recording of the BBB presentation."
+msgstr "URL de l'enregistrement de la présentation BBB."
+
+#: pod/bbb/models.py:61
+msgid "Thumbnail url"
+msgstr "URL de la vignette"
+
+#: pod/bbb/models.py:62
+msgid "URL of the recording thumbnail of the BBB presentation."
+msgstr "URL de la vignette correspondant à l'enregistrement de la présentation BBB."
+
+#: pod/bbb/models.py:70
+msgid "User who converted the BBB presentation to video file."
+msgstr "Utilisateur ayant converti la présentation BBB en fichier vidéo."
+
+#: pod/bbb/models.py:83
+msgid "Meeting"
+msgstr "Session"
+
+#: pod/bbb/models.py:84
+msgid "Meetings"
+msgstr "Sessions"
+
+#: pod/bbb/models.py:107
+msgid "Full name"
+msgstr "Nom complet"
+
+#: pod/bbb/models.py:108
+msgid "Full name of the user from BBB."
+msgstr "Nom complet de l'utilisateur dans BBB."
+
+#: pod/bbb/models.py:111
+msgid "User role"
+msgstr "Rôle de l'utilisateur"
+
+#: pod/bbb/models.py:112
+msgid "Role of the user from BBB."
+msgstr "Rôle de l'utilisateur dans BBB."
+
+#: pod/bbb/models.py:116
+msgid "Username / User id"
+msgstr "Username / Identifiant utilisateur"
+
+#: pod/bbb/models.py:117
+msgid "Username / User id, if the BBB user was matching a Pod user."
+msgstr "Nom d'utilisateur / ID utilisateur, si l'utilisateur BBB correspond "
+"à un utilisateur existant de Pod."
+
+#: pod/bbb/models.py:126
+msgid "User from the Pod database, if user found."
+msgstr "Utilisateur dans la base de données de Pod, si l'utilisateur est trouvé."
+
+#: pod/main/templates/navbar.html:103
+#: pod/bbb/templates/list_meeting.html:5
+#: pod/bbb/templates/bbb_publish_meeting.html:17
+msgid "My BigBlueButton records"
+msgstr "Mes sessions BigBlueButton"
+
+#: pod/bbb/templates/list_meeting.html:14
+msgid "There are no BigBlueButton records."
+msgstr "Il n'y a pas de sessions BigBlueButton."
+
+#: pod/bbb/templates/list_meeting.html:17
+msgid "This is the list of the recorded BigBlueButton sessions for which you "
+"were moderator. This module allows you to create a video from a "
+"BigBlueButton presentation."
+msgstr "Voici la liste des sessions BigBlueButton enregistrées pour lesquelles "
+"vous étiez modérateur. Ce module vous permet de créer une vidéo à partir d'une "
+"présentation BigBlueButton."
+
+#: pod/bbb/templates/list_meeting.html:18
+msgid "Shortly after the presentation is published, the corresponding video "
+"will appear in your videos."
+msgstr "Peu de temps après la publication de la présentation, la vidéo "
+"correspondante apparaîtra dans vos vidéos."
+
+#: pod/bbb/templates/list_meeting.html:21
+msgid "Please note: a BigBlueButton presentation can be encoded by "
+"another moderator."
+msgstr "Remarque: une présentation BigBlueButton peut être encodée "
+"par un autre modérateur."
+
+#: pod/bbb/templates/list_meeting.html:22
+msgid "If such a case occurs, this information will be displayed directly "
+"in the list. You can then contact this user directly to ask him/her to "
+"share the video with you, or even to put you as "
+"additional owner of the video."
+msgstr "Si un tel cas se produit, ces informations seront affichées "
+"directement dans la liste. Vous pouvez alors contacter directement "
+"cet utilisateur pour lui demander de partager la vidéo avec vous, "
+"voire de vous mettre en tant que propriétaire supplémentaire de la vidéo."
+
+#: pod/bbb/templates/list_meeting.html:33
+#: pod/bbb/templates/card.html:26
+#: pod/bbb/templates/card.html:27
+msgid "BigBlueButton presentation preview"
+msgstr "Aperçu de la présentation BigBlueButton"
+
+#: pod/bbb/templates/card.html:32
+msgid "Publish the BigBlueButton presentation on this platform"
+msgstr "Publier la présentation BigBlueButton sur cette plateforme"
+
+#: pod/bbb/templates/card.html:33
+#: pod/bbb/templates/bbb_publish_meeting.html:77
+msgid "Publish this presentation"
+msgstr "Publier cette présentation"
+
+#: pod/bbb/templates/card.html:37
+msgid "Waiting for encoding"
+msgstr "En attente d'encodage"
+
+#: pod/bbb/templates/card.html:44
+msgid "Already published"
+msgstr "Déjà publié"
+
+#: pod/bbb/templates/card.html:46
+msgid "by"
+msgstr "par"
+
+#: pod/bbb/templates/bbb_publish_meeting.html:18
+#: pod/bbb/templates/bbb_publish_meeting.html:22
+msgid "Publish the BigBlueButton presentation"
+msgstr "Publier la présentation BigBlueButton"
+
+#: pod/bbb/templates/bbb_publish_meeting.html:27
+msgid "Are you sure you want to publish this BigBlueButton presentation ?"
+msgstr "Voulez-vous vraiment publier cette présentation BigBlueButton ?"
+
+#: pod/bbb/templates/bbb_publish_meeting.html:73
+msgid "A video will be created from the BigBlueButton presentation "
+"and will be available on this platform."
+msgstr "Une vidéo sera créée à partir de la présentation BigBlueButton "
+"et sera disponible sur cette plateforme."
+
+#: pod/bbb/templates/bbb_publish_meeting.html:74
+msgid "Please note: this treatment can take a long time. You will receive "
+"an email when this treatment is completed."
+msgstr "Attention: ce traitement peut durer longtemps. Vous recevrez "
+"un e-mail lorsque ce traitement sera terminé."
+
+#: pod/bbb/views.py:103
+msgid "The BigBlueButton session has been published."
+msgstr "La session BigBlueButton a été publiée."
+
 #~ msgid "Archived videos"
 #~ msgstr "Archivé"
 

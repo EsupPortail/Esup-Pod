@@ -100,6 +100,9 @@ USE_CHUNKED_UPLOAD = getattr(
 CHUNK_SIZE = getattr(
     django_settings, 'CHUNK_SIZE', 100000)
 
+USE_BBB = getattr(
+    django_settings, 'USE_BBB', False)
+
 
 def context_settings(request):
     new_settings = {}
@@ -131,6 +134,7 @@ def context_settings(request):
     new_settings['BOOTSTRAP_CUSTOM'] = BOOTSTRAP_CUSTOM
     new_settings['USE_CHUNKED_UPLOAD'] = USE_CHUNKED_UPLOAD
     new_settings['CHUNK_SIZE'] = CHUNK_SIZE
+    new_settings['USE_BBB'] = USE_BBB
     return new_settings
 
 

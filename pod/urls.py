@@ -41,13 +41,14 @@ from pod.recorder.views import add_recording, recorder_notify, claim_record,\
 from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
 from pod.video.views import PodChunkedUploadView, PodChunkedUploadCompleteView
 
-
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
 USE_SHIB = getattr(
     settings, 'USE_SHIB', False)
 OEMBED = getattr(
     settings, 'OEMBED', False)
+USE_BBB = getattr(
+    settings, 'USE_BBB', False)
 
 if USE_CAS:
     from cas import views as cas_views
@@ -163,6 +164,11 @@ if USE_CAS:
         url(r'^sso-cas/logout/$', cas_views.logout, name='cas-logout'),
     ]
 
+# BBB
+if USE_BBB:
+    urlpatterns += [
+        url(r'^bbb/', include('pod.bbb.urls')),
+    ]
 
 ##
 # OEMBED feature patterns
