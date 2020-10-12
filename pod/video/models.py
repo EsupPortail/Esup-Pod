@@ -266,14 +266,16 @@ class Channel(models.Model):
         return reverse('channel', args=[str(self.slug)])
 
     def get_all_theme(self):
-        list_theme = {}
-        for theme in self.themes.filter(parentId=None):
-            list_theme["%s" % theme.id] = {
+        list_theme = []
+        themes = self.themes.filter(parentId=None).order_by('title')
+        for theme in themes:
+            list_theme.append({
+                "id": theme.id,
                 "title": "%s" % theme.title,
                 "slug": "%s" % theme.slug,
                 "url": "%s" % theme.get_absolute_url(),
                 "child": theme.get_all_children_tree()
-            }
+            })
         return list_theme
 
     def get_all_theme_json(self):
@@ -334,18 +336,19 @@ class Theme(models.Model):
         super(Theme, self).save(*args, **kwargs)
 
     def get_all_children_tree(self):
-        children = {}  # [self]
+        children = []
         try:
-            child_list = self.children.all()
+            child_list = self.children.all().order_by('title')
         except AttributeError:
             return children
         for child in child_list:
-            children["%s" % child.id] = {
+            children.append({
+                "id": child.id,
                 "title": "%s" % child.title,
                 "slug": "%s" % child.slug,
                 "url": "%s" % child.get_absolute_url(),
                 "child": child.get_all_children_tree()
-            }
+            })
         return children
 
     def get_all_children_flat(self):
@@ -662,7 +665,7 @@ class Video(models.Model):
         thumbnail_url = ""
         if self.thumbnail and self.thumbnail.file_exist():
             im = get_thumbnail(self.thumbnail.file, '100x100',
-                               crop='center', quality=72)
+                               crop='center', quality=72, format='PNG')
             thumbnail_url = im.url
             # <img src="{{ im.url }}" width="{{ im.width }}"
             # height="{{ im.height }}">
@@ -685,7 +688,7 @@ class Video(models.Model):
         thumbnail_url = ""
         if self.thumbnail and self.thumbnail.file_exist():
             im = get_thumbnail(self.thumbnail.file, 'x170',
-                               crop='center', quality=72)
+                               crop='center', quality=72, format='PNG')
             thumbnail_url = im.url
             # <img src="{{ im.url }}" width="{{ im.width }}"
             # height="{{ im.height }}">
