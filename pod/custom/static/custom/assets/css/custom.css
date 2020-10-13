@@ -35,7 +35,16 @@ html,body{
   bottom: 0;
 }
 .video-js{overflow: hidden}
-.chapters-list{display: block!important; transform: translateX(100%); transition: .5s transform;}
+.video-js .chapters-list{
+    display: block!important;
+    transform: translateX(100%);
+    transition: transform .5s, .8s bottom;
+    height: unset !important;
+    bottom: 30px;
+    width: 250px !important;
+    max-width: 50% !important;
+}
+.video-js.vjs-user-inactive .chapters-list{bottom: 0}
 .chapters-list.active{ transform: translateX(0);}
 .chapters-list h6{ color: #fff !important; display: flex; align-items: center; justify-content: space-between; padding: .5rem; margin: 0; background-color: var(--primary);}
 .chapters-list h6 .vjs-icon-chapters{font-size: 24px;}
@@ -47,10 +56,12 @@ html,body{
     margin: 0 !important;
     border-top: none !important;
 }
-.chapters-list ol li a.current{font-weight: 700;}
-.chapters-list ol li a.current,
-.chapters-list ol li a:hover{
-    background-color: var(--secondary) !important;
+.video-js .chapters-list ol li a:hover{
+    font-weight: 700;
+    background-color: #464242;
+}
+.video-js .chapters-list ol li a.current{
+    background-color: var(--secondary);
 }
 .chapters-list ol li a:hover,
 .chapters-list ol li a{
