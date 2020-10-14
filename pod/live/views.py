@@ -15,7 +15,6 @@ from django.utils import timezone
 
 
 def lives(request):  # affichage des directs
-    print(request.session.session_key)
     site = get_current_site(request)
     buildings = Building.objects.all().filter(sites=site).prefetch_related(
         Prefetch("broadcaster_set", queryset=Broadcaster.objects.filter(
@@ -90,20 +89,15 @@ def heartbeat(request):
         key = request.GET.get('key', '')
         broadcaster_id = int(request.GET.get('liveid', 0))
         heartbeat = HeartBeat.objects.filter(viewkey=key)
-        print(heartbeat.all())
         if heartbeat.count() == 0:
-            print("Create heartbeat")
             if request.user.is_anonymous:
                 HeartBeat.objects.create(viewkey=key,broadcaster_id=broadcaster_id)
             else:
                 HeartBeat.objects.create(viewkey=key,broadcaster_id=1,user=request.user)
         else:
-            print("Already exist")
             heartbeat = heartbeat.first()
-            print(heartbeat.last_heartbeat)
             heartbeat.last_heartbeat = timezone.now()
             heartbeat.save()
-            print(heartbeat.last_heartbeat)
     else:
         return HttpResponseBadRequest()
     mimetype = 'application/json'
