@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from .models import Building, Broadcaster
+from .models import Building, Broadcaster, HeartBeat
 from .forms import LivePasswordForm
 from django.conf import settings
 from django.shortcuts import redirect
@@ -9,9 +9,13 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Prefetch
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse, HttpResponseBadRequest
+import json
+from django.utils import timezone
 
 
 def lives(request):  # affichage des directs
+    print(request.session.session_key)
     site = get_current_site(request)
     buildings = Building.objects.all().filter(sites=site).prefetch_related(
         Prefetch("broadcaster_set", queryset=Broadcaster.objects.filter(
@@ -80,3 +84,28 @@ def change_status(request, slug):
     broadcaster.save()
     return HttpResponse("ok")
 """
+
+def heartbeat(request):
+    if request.is_ajax():
+        key = request.GET.get('key', '')
+        broadcaster_id = int(request.GET.get('liveid', 0))
+        heartbeat = HeartBeat.objects.filter(viewkey=key)
+        print(heartbeat.all())
+        if heartbeat.count() == 0:
+            print("Create heartbeat")
+            if request.user.is_anonymous:
+                HeartBeat.objects.create(viewkey=key,broadcaster_id=broadcaster_id)
+            else:
+                HeartBeat.objects.create(viewkey=key,broadcaster_id=1,user=request.user)
+        else:
+            print("Already exist")
+            heartbeat = heartbeat.first()
+            print(heartbeat.last_heartbeat)
+            heartbeat.last_heartbeat = timezone.now()
+            heartbeat.save()
+            print(heartbeat.last_heartbeat)
+    else:
+        return HttpResponseBadRequest()
+    mimetype = 'application/json'
+    broadcast = Broadcaster.objects.get(id=broadcaster_id)
+    return HttpResponse(json.dumps({"viewers":broadcast.viewcount}), mimetype)

@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models import Building
 from .models import Broadcaster
+from .models import HeartBeat
 from django.contrib.sites.models import Site
 from pod.live.forms import BuildingAdminForm
 from .forms import BroadcasterAdminForm
@@ -10,7 +11,8 @@ from pod.video.models import Video
 
 # Register your models here.
 
-
+class HeartBeatAdmin(admin.ModelAdmin):
+    list_display = ('viewkey', 'user','broadcaster','last_heartbeat')
 class BuildingAdmin(admin.ModelAdmin):
     form = BuildingAdminForm
     list_display = ('name', 'gmapurl')
@@ -90,3 +92,4 @@ class BroadcasterAdmin(admin.ModelAdmin):
 
 admin.site.register(Building, BuildingAdmin)
 admin.site.register(Broadcaster, BroadcasterAdmin)
+admin.site.register(HeartBeat,HeartBeatAdmin)

@@ -8,6 +8,7 @@
 <script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
 <script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
 <script src="{% static 'js/videojs-logo-controlbar.js' %}"></script>
+<script src="{% static 'js/viewcounter.js' %}"></script>
 {% endblock %}
 
 
@@ -22,12 +23,13 @@
 {% block page_content %}
 
 
+
 {% if form %}
 {% include 'live/live-form.html' %}
 {% else %}
 
 
-<h3><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}}</h3>
+<h3 id="livename" data-liveid="{{broadcaster.id}}"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}}</h3>
 
 
 
@@ -52,6 +54,7 @@
 		 <!-- https://d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8 -->
 	</video>
 {% endif %}
+
 
 <p>{{ broadcaster.description|safe }}</p>
 
@@ -165,6 +168,7 @@
 		// In this case, loop is necessary
 		options["loop"] = true;
 		var playerOnHold = videojs('podvideoonholdplayer', options, function(){});
+
 		playerOnHold.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
 		var mp4_sources = {{broadcaster.video_on_hold.get_video_mp4_json|safe}};
 		playerOnHold.src(mp4_sources);
@@ -174,6 +178,9 @@
 
 	// Management of the streaming live
 	var player = videojs('podvideoplayer', options, function(){});
+		
+
+	player.videoJsViewerCount();
 	player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
 	player.on('error', function() {
 	  // Handle successives errors to avoid multiple reload
