@@ -260,6 +260,10 @@ LTI_PROPERTY_LIST_EX = [
 ]
 LTI_PROPERTY_USER_USERNAME = 'ext_user_username'
 
+## SOLR Thumbnail use in video model to create thumbnail for video
+# https://sorl-thumbnail.readthedocs.io/en/latest/reference/settings.html
+THUMBNAIL_PRESERVE_FORMAT = True
+
 ###
 # Choose a theme for your pod website
 # 'default' is the simpliest, bootstrap $enable_rounded is true
