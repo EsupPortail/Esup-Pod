@@ -335,7 +335,8 @@ footer a, footer p{
 {
   .navbar-nav{
     background-color: #102636;
-    padding: 1em
+    padding: 1em;
+    z-index: 1;
   }
   .langs .active{
     background-color: #fff;
@@ -365,7 +366,7 @@ footer a, footer p{
   }
   #s:focus{
     background: #102636 !important;
-    height: 60px;
+    height: 100%;
     margin: 0 10px;
     border-bottom: 1px solid #fff;
   }
