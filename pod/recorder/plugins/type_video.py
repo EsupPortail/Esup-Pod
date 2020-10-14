@@ -5,7 +5,7 @@ import datetime
 import os
 
 from django.conf import settings
-from pod.video.models import Video, Type, get_storage_path_video
+from pod.video.models import Video, get_storage_path_video
 from pod.video.encode import start_encode
 
 USE_ADVANCED_RECORDER = getattr(settings, 'USE_ADVANCED_RECORDER', False)
@@ -34,7 +34,7 @@ def encode_recording(recording):
     video = Video()
     video.title = recording.title
     video.owner = recording.user
-    video.type = Type.objects.get(id=DEFAULT_RECORDER_TYPE_ID)
+    video.type = recorder.type
     # gestion de la video
     storage_path = get_storage_path_video(
         video, os.path.basename(recording.source_file))

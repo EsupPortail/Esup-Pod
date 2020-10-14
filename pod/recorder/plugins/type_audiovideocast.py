@@ -10,7 +10,7 @@ from xml.dom import minidom
 from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.core.files.base import ContentFile
-from pod.video.models import Video, Type
+from pod.video.models import Video
 from pod.video.encode import start_encode
 from pod.enrichment.models import Enrichment
 from ..models import Recording
@@ -59,7 +59,7 @@ def save_video(recording, video_data, video_src):
     recorder = recording.recorder
     video = Video()
     video.owner = recording.user
-    video.type = Type.objects.get(id=DEFAULT_RECORDER_TYPE_ID)
+    video.type = recorder.type
     nom, ext = os.path.splitext(video_src)
     ext = ext.lower()
     video.video.save(

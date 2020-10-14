@@ -25,6 +25,12 @@ DATABASES = {
         'NAME': 'db.sqlite',
     }
 }
+
+LANGUAGES = (
+    ('fr', 'Français'),
+    ('en', 'English'),
+    ('nl', 'Netherlands')
+)
 LANGUAGE_CODE = 'en'
 THIRD_PARTY_APPS = ["enrichment", "live"]
 USE_PODFILE = True
@@ -32,5 +38,6 @@ USE_STATS_VIEW = True
 ACCOMMODATION_YEARS = {'faculty': 1}
 USE_OBSOLESCENCE = True
 ACTIVE_VIDEO_COMMENT = True
+USE_ADVANCED_RECORDER = True
 POD_ARCHIVE_AFFILIATION = ['faculty']
 WARN_DEADLINES = [60, 30, 7]

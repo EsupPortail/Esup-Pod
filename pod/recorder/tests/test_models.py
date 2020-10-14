@@ -19,6 +19,7 @@ class RecorderTestCase(TestCase):
         recorder1 = Recorder.objects.create(id=1, user=user, name="recorder1",
                                             address_ip="16.3.10.37",
                                             type=videotype,
+                                            cursus="0",
                                             is_draft=False,
                                             is_restricted=True,
                                             password="secret",
@@ -63,6 +64,7 @@ class RecordingTestCase(TestCase):
         recorder1 = Recorder.objects.create(id=1, user=user, name="recorder1",
                                             address_ip="16.3.10.37",
                                             type=videotype,
+                                            cursus="0",
                                             directory="dir1")
         source_file = "/home/pod/files/video.mp4"
         type = "video"
@@ -142,6 +144,7 @@ class RecordingFileTreatmentTestCase(TestCase):
         user1 = User.objects.create(username="pod")
         recorder1 = Recorder.objects.create(id=1, user=user1, name="recorder1",
                                             address_ip="16.3.10.37",
+                                            cursus="0",
                                             type=videotype, directory="dir1")
         recording_file = RecordingFileTreatment.objects.create(
             type='video',
@@ -190,6 +193,7 @@ class RecordingFileTestCase(TestCase):
         user1 = User.objects.create(username="pod")
         recorder1 = Recorder.objects.create(id=1, user=user1, name="recorder1",
                                             address_ip="16.3.10.37",
+                                            cursus="0",
                                             type=videotype, directory="dir1")
         recording_file = RecordingFile.objects.create(recorder=recorder1)
         recording_file.file = "/home/pod/files/somefile.mp4"
