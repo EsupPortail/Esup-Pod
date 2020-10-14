@@ -8,24 +8,32 @@ function makeid(length) {
     return result;
  }
  
+
+
+ 
  $( document ).ready(function() {
 
-     let secret = makeid(24);
-    (function(){
-        $.ajax(
-            {
-                type: "GET",
-                url: "/live/ajax_calls/heartbeat?key=" + secret+ "&liveid="+ $("#livename").data("liveid"),
-                cache: false,
-                success: function (response) {
-                    $('#viewcount').text(response.viewers)    
+    let podplayer = videojs("podvideoplayer");
+    podplayer.ready(function(){
+        let secret = makeid(24);
+        (function(){
+            $.ajax(
+                {
+                    type: "GET",
+                    url: "/live/ajax_calls/heartbeat?key=" + secret+ "&liveid="+ $("#livename").data("liveid"),
+                    cache: false,
+                    success: function (response) {
+                        $('#viewcount').text(response.viewers)    
+                    }
+    
                 }
+            );
+    
+            setTimeout(arguments.callee, 45000);
+        })();
+    })
 
-            }
-        );
-
-        setTimeout(arguments.callee, 60000);
-    })();
+  
 });
 
 
@@ -60,7 +68,7 @@ function makeid(length) {
                 this.controlText('Viewers');
                 //because sometimes doesn't 
                 let eyeSVG = '<svg id="viewcountericon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye align-bottom" color="red"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>'
-                this.el().innerHTML =  '<span style="line-height:1.7">'+ eyeSVG+  '<span style="padding-left:4px" id="viewcount"></span></span>'
+                this.el().innerHTML =  '<span style="line-height:1.7">'+ eyeSVG+  '<span style="padding-left:4px" id="viewcount">?</div></span></span>'
             }
         });
         InfoMenuButton.prototype.handleClick = function(event){
