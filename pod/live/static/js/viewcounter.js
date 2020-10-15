@@ -25,7 +25,6 @@ function makeid(length) {
                     url: "/live/ajax_calls/heartbeat?key=" + secret+ "&liveid="+ $("#livename").data("liveid"),
                     cache: false,
                     success: function (response) {
-                        console.log(response)
                         $("#viewers-ul").html("")
                         $('#viewcount').text(response.viewers)    
                         response.viewers_list.forEach(view => {
@@ -41,7 +40,7 @@ function makeid(length) {
                 }
             );
     
-            setTimeout(arguments.callee, 45000);
+            setTimeout(arguments.callee,heartbeat_delay *1000);
         })();
     })
 

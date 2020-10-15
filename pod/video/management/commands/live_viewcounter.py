@@ -1,6 +1,10 @@
 from django.core.management.base import BaseCommand
 from pod.live.models import HeartBeat, Broadcaster
 from django.utils import timezone
+from django.conf import settings
+
+VIEW_EXPIRATION_DELAY = getattr(
+        settings, 'VIEW_EXPIRATION_DELAY', 60)
 
 
 class Command(BaseCommand):
@@ -8,7 +12,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         for hb in HeartBeat.objects.all():
-            accepted_time = (timezone.now() - timezone.timedelta(minutes=1))
+            accepted_time = (timezone.now() - timezone.timedelta(
+                seconds=VIEW_EXPIRATION_DELAY))
             if hb.last_heartbeat < accepted_time:
                 hb.delete()
             else:

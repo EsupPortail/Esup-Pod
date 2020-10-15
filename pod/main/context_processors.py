@@ -104,6 +104,9 @@ CHUNK_SIZE = getattr(
 USE_BBB = getattr(
     django_settings, 'USE_BBB', False)
 
+HEARTBEAT_DELAY = getattr(
+    django_settings, 'HEARTBEAT_DELAY', 45)
+
 
 def context_settings(request):
     maintenance_mode = False
@@ -148,6 +151,7 @@ def context_settings(request):
     new_settings['MAINTENANCE_REASON'] = maintenance_text_short
     new_settings['MAINTENANCE_MODE'] = maintenance_mode
     new_settings['USE_BBB'] = USE_BBB
+    new_settings['HEARTBEAT_DELAY'] = HEARTBEAT_DELAY
     return new_settings
 
 

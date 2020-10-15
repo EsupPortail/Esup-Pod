@@ -892,3 +892,13 @@ DS_PARAM = {
 """
 VIEWERS_ONLY_FOR_STAFF = False
 
+"""
+# Temps entre deux envois de signal au serveur signaler la présence sur un live
+# Peut être augmenté en cas de perte de performance mais au détriment de la qualité du comptage des valeurs
+"""
+HEARTBEAT_DELAY = 45
+
+"""
+# Délai (en seconde) selon lequel une vue est considérée comme expirée si elle n'as pas renvoyée de signal depuis
+"""
+VIEW_EXPIRATION_DELAY = 60
