@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 
 from pod.video.models import Type
 from pod.video.models import Video
-from ..models import Building, Broadcaster
+from ..models import Building, Broadcaster, HeartBeat
+from django.utils import timezone
 
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
@@ -142,3 +143,34 @@ class BroadcasterTestCase(TestCase):
 
         print(
             "   --->  test_delete_object of BroadcasterTestCase : OK !")
+
+
+class HeartbeatTestCase(TestCase):
+
+    def setUp(self):
+        building = Building.objects.create(name="building1")
+        broad = Broadcaster.objects.create(
+            name="broadcaster1",
+            url="http://test.live",
+            status=True,
+            is_restricted=True,
+            building=building,
+            iframe_url="http://iframe.live",
+            iframe_height=120,
+            public=False)
+        user = User.objects.create(username="pod")
+        HeartBeat.objects.create(user=user,viewkey="testkey", 
+                                 broadcaster=broad, last_heartbeat= timezone.now())
+        print(" --->  SetUp of HeartbeatTestCase : OK !")
+
+    """
+        test attributs
+    """
+
+    def test_attributs(self):
+        hb = HeartBeat.objects.get(id=1)
+        self.assertEqual(hb.user.username, "pod")
+        self.assertEqual(hb.viewkey, "testkey")
+        self.assertEqual(hb.broadcaster.name, "broadcaster1")
+        print(
+            "   --->  test_attributs of HeartbeatTestCase : OK !")
