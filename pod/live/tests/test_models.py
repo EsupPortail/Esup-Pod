@@ -159,8 +159,9 @@ class HeartbeatTestCase(TestCase):
             iframe_height=120,
             public=False)
         user = User.objects.create(username="pod")
-        HeartBeat.objects.create(user=user,viewkey="testkey", 
-                                 broadcaster=broad, last_heartbeat= timezone.now())
+        HeartBeat.objects.create(user=user, viewkey="testkey",
+                                 broadcaster=broad,
+                                 last_heartbeat=timezone.now())
         print(" --->  SetUp of HeartbeatTestCase : OK !")
 
     """
