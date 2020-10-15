@@ -47,12 +47,16 @@
 		</video>
 	</div>
 {% else %}
-	<video id="podvideoplayer" class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" poster="{{broadcaster.get_poster_url}}" muted autoplay>
+	<video id="podvideoplayer" class="live-video video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" poster="{{broadcaster.get_poster_url}}" muted autoplay>
 		<source
 		 src="{{broadcaster.url}}" 
 		 type="application/x-mpegURL">
 		 <!-- https://d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8 -->
 	</video>
+	  <div id="viewers-list"> <ul id="viewers-ul">
+              
+
+            </ul> </div>
 {% endif %}
 
 
@@ -68,6 +72,13 @@
 
 
 {%endif%}
+
+<div id="info-video" style="display:none" class="jumbotron">
+        <button type="button" class="close" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        
+    </div>
 
 
 {% endblock page_content %}
@@ -207,5 +218,7 @@
 		if ($("#divvideoonhold")) { $("#divvideoonhold").html("");}
 		if ($("#divvideoplayer")) { $("#divvideoplayer").css("display", "block"); }
     })
+
+	
 </script>
 {% endblock more_script %}

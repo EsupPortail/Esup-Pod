@@ -11,8 +11,11 @@ from pod.video.models import Video
 
 # Register your models here.
 
+
 class HeartBeatAdmin(admin.ModelAdmin):
-    list_display = ('viewkey', 'user','broadcaster','last_heartbeat')
+    list_display = ('viewkey', 'user', 'broadcaster', 'last_heartbeat')
+
+
 class BuildingAdmin(admin.ModelAdmin):
     form = BuildingAdminForm
     list_display = ('name', 'gmapurl')
@@ -92,4 +95,4 @@ class BroadcasterAdmin(admin.ModelAdmin):
 
 admin.site.register(Building, BuildingAdmin)
 admin.site.register(Broadcaster, BroadcasterAdmin)
-admin.site.register(HeartBeat,HeartBeatAdmin)
+admin.site.register(HeartBeat, HeartBeatAdmin)

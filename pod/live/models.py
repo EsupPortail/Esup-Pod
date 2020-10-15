@@ -105,7 +105,7 @@ class Broadcaster(models.Model):
         max_length=50, blank=True, null=True)
     viewcount = models.IntegerField(
         _('Number of viewers'), default=0, editable=False)
-
+    viewers = models.ManyToManyField(User)
 
     def get_absolute_url(self):
         return reverse('live:video_live', args=[str(self.slug)])
@@ -135,6 +135,7 @@ class Broadcaster(models.Model):
     @property
     def sites(self):
         return self.building.sites
+
 
 class HeartBeat(models.Model):
     user = models.ForeignKey(

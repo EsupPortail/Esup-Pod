@@ -84,6 +84,7 @@ def change_status(request, slug):
     return HttpResponse("ok")
 """
 
+
 def heartbeat(request):
     if request.is_ajax():
         key = request.GET.get('key', '')
@@ -91,9 +92,11 @@ def heartbeat(request):
         heartbeat = HeartBeat.objects.filter(viewkey=key)
         if heartbeat.count() == 0:
             if request.user.is_anonymous:
-                HeartBeat.objects.create(viewkey=key,broadcaster_id=broadcaster_id)
+                HeartBeat.objects.create(
+                    viewkey=key, broadcaster_id=broadcaster_id)
             else:
-                HeartBeat.objects.create(viewkey=key,broadcaster_id=1,user=request.user)
+                HeartBeat.objects.create(
+                    viewkey=key, broadcaster_id=1, user=request.user)
         else:
             heartbeat = heartbeat.first()
             heartbeat.last_heartbeat = timezone.now()
@@ -102,4 +105,8 @@ def heartbeat(request):
         return HttpResponseBadRequest()
     mimetype = 'application/json'
     broadcast = Broadcaster.objects.get(id=broadcaster_id)
-    return HttpResponse(json.dumps({"viewers":broadcast.viewcount}), mimetype)
+    viewers = broadcast.viewers.all().values(*list(
+        ['first_name', 'last_name', 'is_superuser']))
+    return HttpResponse(json.dumps(
+        {"viewers": broadcast.viewcount, "viewers_list": list(
+            viewers)}), mimetype)

@@ -1,3 +1,5 @@
+
+
 function makeid(length) {
     var result           = '';
     var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -23,9 +25,18 @@ function makeid(length) {
                     url: "/live/ajax_calls/heartbeat?key=" + secret+ "&liveid="+ $("#livename").data("liveid"),
                     cache: false,
                     success: function (response) {
+                        $("#viewers-ul").html("")
                         $('#viewcount').text(response.viewers)    
+                        response.viewers_list.forEach(view => {
+                            let name = view.first_name + " " + view.last_name
+                            if(name == " "){
+                                name = "???"
+                            }
+                            $("#viewers-ul").append('<li>' + name+ "</li>")
+                            
+                        })
                     }
-    
+
                 }
             );
     
@@ -33,6 +44,12 @@ function makeid(length) {
         })();
     })
 
+
+    function resizeViewerList(){
+        $("#viewers-list").css("width",0.3*$("#podvideoplayer").width())
+    }
+    window.onresize = resizeViewerList;
+    resizeViewerList();
   
 });
 
@@ -73,7 +90,12 @@ function makeid(length) {
         });
         InfoMenuButton.prototype.handleClick = function(event){
             MenuButton.prototype.handleClick.call(this, event);
-           console.log('hello')
+            if ($("#viewers-list").css("display") == "none"){
+                $("#viewers-list").css("display","block")
+            }
+            else{
+                $("#viewers-list").css("display","none")
+            }
         };
         MenuButton.registerComponent('InfoMenuButton', InfoMenuButton);
 
