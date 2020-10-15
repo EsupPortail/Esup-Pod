@@ -887,3 +887,8 @@ DS_PARAM = {
     }
 }
 
+"""
+# La liste des utilisateurs regardant le direct sera réservé au staff
+"""
+VIEWERS_ONLY_FOR_STAFF = False
+

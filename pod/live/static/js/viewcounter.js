@@ -25,6 +25,7 @@ function makeid(length) {
                     url: "/live/ajax_calls/heartbeat?key=" + secret+ "&liveid="+ $("#livename").data("liveid"),
                     cache: false,
                     success: function (response) {
+                        console.log(response)
                         $("#viewers-ul").html("")
                         $('#viewcount').text(response.viewers)    
                         response.viewers_list.forEach(view => {
@@ -90,7 +91,7 @@ function makeid(length) {
         });
         InfoMenuButton.prototype.handleClick = function(event){
             MenuButton.prototype.handleClick.call(this, event);
-            if ($("#viewers-list").css("display") == "none"){
+            if ($("#viewers-list").css("display") == "none" && $("#viewers-ul").children().length > 0 ){
                 $("#viewers-list").css("display","block")
             }
             else{

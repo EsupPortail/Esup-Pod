@@ -13,6 +13,9 @@ from django.http import HttpResponse, HttpResponseBadRequest
 import json
 from django.utils import timezone
 
+VIEWERS_ONLY_FOR_STAFF = getattr(
+        settings, 'VIEWERS_ONLY_FOR_STAFF', False)
+
 
 def lives(request):  # affichage des directs
     site = get_current_site(request)
@@ -107,6 +110,8 @@ def heartbeat(request):
     broadcast = Broadcaster.objects.get(id=broadcaster_id)
     viewers = broadcast.viewers.all().values(*list(
         ['first_name', 'last_name', 'is_superuser']))
+    can_see = (VIEWERS_ONLY_FOR_STAFF and
+               request.user.is_staff) or not VIEWERS_ONLY_FOR_STAFF
     return HttpResponse(json.dumps(
         {"viewers": broadcast.viewcount, "viewers_list": list(
-            viewers)}), mimetype)
+            viewers) if can_see else []}), mimetype)
