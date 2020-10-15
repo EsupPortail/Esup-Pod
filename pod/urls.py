@@ -33,7 +33,8 @@ from pod.video.views import video_oembed
 from pod.video.views import stats_view
 from pod.video.views import get_comments, add_comment, delete_comment, vote
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
-from pod.main.views import contact_us, download_file, user_autocomplete
+from pod.main.views import contact_us, download_file, user_autocomplete,\
+    maintenance
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
 from pod.recorder.views import add_recording, recorder_notify, claim_record,\
@@ -41,16 +42,18 @@ from pod.recorder.views import add_recording, recorder_notify, claim_record,\
 from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
 from pod.video.views import PodChunkedUploadView, PodChunkedUploadCompleteView
 
-
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
 USE_SHIB = getattr(
     settings, 'USE_SHIB', False)
 OEMBED = getattr(
     settings, 'OEMBED', False)
+USE_BBB = getattr(
+    settings, 'USE_BBB', False)
 
 if USE_CAS:
     from cas import views as cas_views
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -155,6 +158,8 @@ urlpatterns = [
     # custom
     url(r'^custom/', include('pod.custom.urls')),
 ]
+urlpatterns += url(r'^maintenance/$', maintenance, name='maintenance'),
+
 # CAS
 if USE_CAS:
     # urlpatterns += [url(r'^sso-cas/', include('cas.urls')), ]
@@ -163,6 +168,11 @@ if USE_CAS:
         url(r'^sso-cas/logout/$', cas_views.logout, name='cas-logout'),
     ]
 
+# BBB
+if USE_BBB:
+    urlpatterns += [
+        url(r'^bbb/', include('pod.bbb.urls')),
+    ]
 
 ##
 # OEMBED feature patterns

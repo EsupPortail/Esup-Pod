@@ -25,6 +25,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 import urllib.parse
 from django.shortcuts import get_object_or_404
+from pod.main.views import in_maintenance
 
 ##
 # Settings exposed in templates
@@ -85,9 +86,18 @@ def case_delete(form, request):
     messages.add_message(request, messages.INFO, message)
 
 
+def fetch_user(request, form):
+    if request.POST.get('user') and request.POST.get('user') != "":
+        return form.cleaned_data['user']
+    else:
+        return request.user
+
+
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def add_recording(request):
+    if in_maintenance():
+        return redirect(reverse('maintenance'))
     mediapath = request.GET.get('mediapath') if (
         request.GET.get('mediapath')) else ""
     course_title = request.GET.get(
@@ -123,10 +133,7 @@ def add_recording(request):
                 case_delete(form, request)
                 return redirect("/")
             med = form.save(commit=False)
-            if request.POST.get('user') and request.POST.get('user') != "":
-                med.user = form.cleaned_data['user']
-            else:
-                med.user = request.user
+            med.user = fetch_user(request, form)
             med.save()
             file = form.cleaned_data["source_file"]
             rec = RecordingFileTreatment.objects.get(file=file)
@@ -134,6 +141,7 @@ def add_recording(request):
             message = _(
                 'Your publication is saved.'
                 ' Adding it to your videos will be in a few minutes.')
+
             messages.add_message(request, messages.INFO, message)
             return redirect(reverse('my_videos'))
         else:
@@ -237,6 +245,8 @@ def recorder_notify(request):
 @login_required(redirect_field_name='referrer')
 @staff_member_required(redirect_field_name='referrer')
 def claim_record(request):
+    if in_maintenance():
+        return redirect(reverse('maintenance'))
     site = get_current_site(request)
     # get records list ordered by date
     records_list = RecordingFileTreatment.objects.\
