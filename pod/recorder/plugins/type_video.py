@@ -8,8 +8,6 @@ from django.conf import settings
 from pod.video.models import Video, get_storage_path_video
 from pod.video.encode import start_encode
 
-USE_ADVANCED_RECORDER = getattr(settings, 'USE_ADVANCED_RECORDER', False)
-
 DEFAULT_RECORDER_TYPE_ID = getattr(
     settings, 'DEFAULT_RECORDER_TYPE_ID',
     1
@@ -17,7 +15,6 @@ DEFAULT_RECORDER_TYPE_ID = getattr(
 ENCODE_VIDEO = getattr(settings,
                        'ENCODE_VIDEO',
                        start_encode)
-
 log = logging.getLogger(__name__)
 
 
@@ -56,30 +53,28 @@ def encode_recording(recording):
     video.restrict_access_to_groups.add(
         *recorder.restrict_access_to_groups.all())
     video.password = recorder.password
-    if USE_ADVANCED_RECORDER:
-        TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
-        # on ajoute les eventuelles chaines
-        video.channel.add(*recorder.channel.all())
-        # on ajoute les eventuels theme
-        video.theme.add(*recorder.theme.all())
-        # on ajoute les eventuelles disciplines
-        video.discipline.add(*recorder.discipline.all())
-        # Choix de la langue
-        video.main_lang = recorder.main_lang
-        # Choix des cursus
-        video.cursus = recorder.cursus
-        # mot clefs
-        video.tags = recorder.tags
-        # transcript
-        if TRANSCRIPT:
-            video.transcript = recorder.transcript
-        # Licence
-        video.licence = recorder.licence
-        # Allow downloading
-        video.allow_downloading = recorder.allow_downloading
-        # Is_360
-        video.is_360 = recorder.is_360
-        # Désactiver les commentaires
-        video.disable_comment = recorder.disable_comment
+    # on ajoute les eventuelles chaines
+    video.channel.add(*recorder.channel.all())
+    # on ajoute les eventuels theme
+    video.theme.add(*recorder.theme.all())
+    # on ajoute les eventuelles disciplines
+    video.discipline.add(*recorder.discipline.all())
+    # Choix de la langue
+    video.main_lang = recorder.main_lang
+    # Choix des cursus
+    video.cursus = recorder.cursus
+    # mot clefs
+    video.tags = recorder.tags
+    # transcript
+    if getattr(settings, 'USE_TRANSCRIPTION', False):
+        video.transcript = recorder.transcript
+    # Licence
+    video.licence = recorder.licence
+    # Allow downloading
+    video.allow_downloading = recorder.allow_downloading
+    # Is_360
+    video.is_360 = recorder.is_360
+    # Désactiver les commentaires
+    video.disable_comment = recorder.disable_comment
     video.save()
     ENCODE_VIDEO(video.id)
