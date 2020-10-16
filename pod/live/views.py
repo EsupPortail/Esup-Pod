@@ -95,20 +95,23 @@ def change_status(request, slug):
 
 def heartbeat(request):
     if request.is_ajax():
-        key = request.GET.get('key', '')
-        broadcaster_id = int(request.GET.get('liveid', 0))
-        heartbeat = HeartBeat.objects.filter(viewkey=key)
-        if heartbeat.count() == 0:
-            if request.user.is_anonymous:
-                HeartBeat.objects.create(
-                    viewkey=key, broadcaster_id=broadcaster_id)
+        try:
+            key = request.GET.get('key', '')
+            broadcaster_id = int(request.GET.get('liveid', 0))
+            heartbeat = HeartBeat.objects.filter(viewkey=key)
+            if heartbeat.count() == 0:
+                if request.user.is_anonymous:
+                    HeartBeat.objects.create(
+                        viewkey=key, broadcaster_id=broadcaster_id)
+                else:
+                    HeartBeat.objects.create(
+                        viewkey=key, broadcaster_id=1, user=request.user)
             else:
-                HeartBeat.objects.create(
-                    viewkey=key, broadcaster_id=1, user=request.user)
-        else:
-            heartbeat = heartbeat.first()
-            heartbeat.last_heartbeat = timezone.now()
-            heartbeat.save()
+                heartbeat = heartbeat.first()
+                heartbeat.last_heartbeat = timezone.now()
+                heartbeat.save()
+        except ObjectDoesNotExist:
+            return HttpResponseBadRequest()
     else:
         return HttpResponseBadRequest()
     mimetype = 'application/json'
