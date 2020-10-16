@@ -419,7 +419,7 @@ msgstr ""
 "Si un tel cas se produit, ces informations seront affichées directement dans "
 "la liste. Vous pouvez alors contacter directement cet utilisateur pour lui "
 "demander de partager la vidéo avec vous, voire de vous mettre en tant que "
-"propriétaire supplémentaire de la vidéo."
+"propriétaire additionnel de la vidéo."
 
 #: pod/bbb/templates/bbb/publish_meeting.html:18
 #: pod/bbb/templates/bbb/publish_meeting.html:22
@@ -5293,6 +5293,15 @@ msgstr "facettage"
 #: pod/video_search/views.py:55
 msgid "Remove selection"
 msgstr "Retirer la sélection"
+
+msgid "Help"
+msgstr "Aide"
+
+msgid "Legal notice"
+msgstr "Mentions légales"
+
+msgid "Top of page"
+msgstr "Haut de page"
 
 #~ msgid "Archived videos"
 #~ msgstr "Archivé"
