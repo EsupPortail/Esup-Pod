@@ -108,8 +108,7 @@ def heartbeat(request):
         return HttpResponseBadRequest()
     mimetype = 'application/json'
     broadcast = Broadcaster.objects.get(id=broadcaster_id)
-    viewers = broadcast.viewers.all().values(*list(
-        ['first_name', 'last_name', 'is_superuser']))
+    viewers = broadcast.viewers.values('first_name', 'last_name', 'is_superuser')
     can_see = (VIEWERS_ONLY_FOR_STAFF and
                request.user.is_staff) or not VIEWERS_ONLY_FOR_STAFF
     return HttpResponse(json.dumps(
