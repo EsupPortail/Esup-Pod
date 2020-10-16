@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
-from .models import Building, Broadcaster
+from .models import Building, Broadcaster, HeartBeat
 from .forms import LivePasswordForm
 from django.conf import settings
 from django.shortcuts import redirect
@@ -9,6 +9,15 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Prefetch
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse, HttpResponseBadRequest
+import json
+from django.utils import timezone
+
+VIEWERS_ONLY_FOR_STAFF = getattr(
+        settings, 'VIEWERS_ONLY_FOR_STAFF', False)
+
+HEARTBEAT_DELAY = getattr(
+        settings, 'HEARTBEAT_DELAY', 45)
 
 
 def lives(request):  # affichage des directs
@@ -63,10 +72,12 @@ def video_live(request, slug):  # affichage des directs
             request, 'live/live.html', {
                 'broadcaster': broadcaster,
                 'form': form,
+                'heartbeat_delay': HEARTBEAT_DELAY
             }
         )
     return render(request, "live/live.html", {
-        'broadcaster': broadcaster
+        'broadcaster': broadcaster,
+        'heartbeat_delay': HEARTBEAT_DELAY
     })
 
 
@@ -80,3 +91,35 @@ def change_status(request, slug):
     broadcaster.save()
     return HttpResponse("ok")
 """
+
+
+def heartbeat(request):
+    if request.is_ajax():
+        try:
+            key = request.GET.get('key', '')
+            broadcaster_id = int(request.GET.get('liveid', 0))
+            heartbeat = HeartBeat.objects.filter(viewkey=key)
+            if heartbeat.count() == 0:
+                if request.user.is_anonymous:
+                    HeartBeat.objects.create(
+                        viewkey=key, broadcaster_id=broadcaster_id)
+                else:
+                    HeartBeat.objects.create(
+                        viewkey=key, broadcaster_id=1, user=request.user)
+            else:
+                heartbeat = heartbeat.first()
+                heartbeat.last_heartbeat = timezone.now()
+                heartbeat.save()
+        except ObjectDoesNotExist:
+            return HttpResponseBadRequest()
+    else:
+        return HttpResponseBadRequest()
+    mimetype = 'application/json'
+    broadcast = Broadcaster.objects.get(id=broadcaster_id)
+    viewers = broadcast.viewers.values(
+        'first_name', 'last_name', 'is_superuser')
+    can_see = (VIEWERS_ONLY_FOR_STAFF and
+               request.user.is_staff) or not VIEWERS_ONLY_FOR_STAFF
+    return HttpResponse(json.dumps(
+        {"viewers": broadcast.viewcount, "viewers_list": list(
+            viewers) if can_see else []}), mimetype)

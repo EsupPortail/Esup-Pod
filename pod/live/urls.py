@@ -1,10 +1,11 @@
 from django.conf.urls import url
-from .views import lives
+from .views import lives, heartbeat
 from .views import video_live
 
 app_name = 'live'
 
 urlpatterns = [
+    url(r'^ajax_calls/heartbeat/', heartbeat),
     url(r'^$',
         lives,
         name='lives'),

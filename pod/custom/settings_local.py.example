@@ -887,3 +887,18 @@ DS_PARAM = {
     }
 }
 
+"""
+# La liste des utilisateurs regardant le direct sera réservée au staff
+"""
+VIEWERS_ONLY_FOR_STAFF = False
+
+"""
+# Temps (en seconde) entre deux envois d'un signal au serveur, pour signaler la présence sur un live
+# Peut être augmenté en cas de perte de performance mais au détriment de la qualité du comptage des valeurs
+"""
+HEARTBEAT_DELAY = 45
+
+"""
+# Délai (en seconde) selon lequel une vue est considérée comme expirée si elle n'as pas renvoyé de signal depuis
+"""
+VIEW_EXPIRATION_DELAY = 60
