@@ -14,7 +14,7 @@ class Command(BaseCommand):
         for hb in HeartBeat.objects.all():
             accepted_time = (timezone.now() - timezone.timedelta(
                 seconds=VIEW_EXPIRATION_DELAY))
-            if hb.last_heartbeat < accepted_time:
+            if hb.last_heartbeat <= accepted_time:
                 hb.delete()
             else:
                 hb.broadcaster.viewcount = hb.broadcaster.viewcount+1

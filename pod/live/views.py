@@ -91,7 +91,7 @@ def change_status(request, slug):
     broadcaster.save()
     return HttpResponse("ok")
 """
-HEARTBEAT_DELAY
+
 
 def heartbeat(request):
     if request.is_ajax():
