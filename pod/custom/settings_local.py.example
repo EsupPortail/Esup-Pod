@@ -639,10 +639,16 @@ ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = True
 ALLOW_MANUAL_RECORDING_CLAIMING = False
 
 """
-# Si true , le formulaire des enregistreurs comportera des champs suplémentaires correspondants à des paramètres d'édition d'une vidéo (Discipline, Chaine, Theme, mots clés...)
-# Chaque vidéo sera alors générée avec les valeurs définies dans son enregistreur.
+# Liste des champs supplémentaires pour le formulaire des enregistreurs
+# Cette liste reprend le nom des champs correspondants aux paramètres d'édition d'une vidéo (Discipline, Chaine, Theme, mots clés...)
+# L'exemple suivant comporte l'ensemble des champs possibles mais peut être allégée en fonction des besoins.
+# Les vidéos seront alors générées avec les valeurs des champs supplémentaires telles que définies dans leur enregistreur.
 """
-USE_ADVANCED_RECORDER = False
+RECORDER_ADDITIONAL_FIELDS = ('additional_users', 'is_draft', 'password',
+                'is_restricted', 'restrict_access_to_groups',
+                'cursus','main_lang', 'tags','discipline',
+                'licence', 'channel', 'theme', 'transcript'
+                'allow_downloading', 'is_360', 'disable_comment',)
 
 """
 # Si True, permet de ne pas prendre en compte la 1° image lors du traitement d'une fichier d'enregistrement de type AudioVideoCast.
