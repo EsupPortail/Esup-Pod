@@ -914,3 +914,4 @@ HEARTBEAT_DELAY = 45
 # Délai (en seconde) selon lequel une vue est considérée comme expirée si elle n'as pas renvoyé de signal depuis
 """
 VIEW_EXPIRATION_DELAY = 60
+
