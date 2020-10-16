@@ -16,6 +16,9 @@ from django.utils import timezone
 VIEWERS_ONLY_FOR_STAFF = getattr(
         settings, 'VIEWERS_ONLY_FOR_STAFF', False)
 
+HEARTBEAT_DELAY = getattr(
+        settings, 'HEARTBEAT_DELAY', 45)
+
 
 def lives(request):  # affichage des directs
     site = get_current_site(request)
@@ -69,10 +72,12 @@ def video_live(request, slug):  # affichage des directs
             request, 'live/live.html', {
                 'broadcaster': broadcaster,
                 'form': form,
+                'heartbeat_delay': HEARTBEAT_DELAY
             }
         )
     return render(request, "live/live.html", {
-        'broadcaster': broadcaster
+        'broadcaster': broadcaster,
+        'heartbeat_delay': HEARTBEAT_DELAY
     })
 
 
@@ -86,7 +91,7 @@ def change_status(request, slug):
     broadcaster.save()
     return HttpResponse("ok")
 """
-
+HEARTBEAT_DELAY
 
 def heartbeat(request):
     if request.is_ajax():
@@ -108,7 +113,8 @@ def heartbeat(request):
         return HttpResponseBadRequest()
     mimetype = 'application/json'
     broadcast = Broadcaster.objects.get(id=broadcaster_id)
-    viewers = broadcast.viewers.values('first_name', 'last_name', 'is_superuser')
+    viewers = broadcast.viewers.values(
+        'first_name', 'last_name', 'is_superuser')
     can_see = (VIEWERS_ONLY_FOR_STAFF and
                request.user.is_staff) or not VIEWERS_ONLY_FOR_STAFF
     return HttpResponse(json.dumps(
