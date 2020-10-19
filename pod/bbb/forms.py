@@ -16,7 +16,7 @@ class MeetingForm(forms.ModelForm):
         self.fields['meeting_id'].widget = forms.HiddenInput()
         self.fields['internal_meeting_id'].widget = forms.HiddenInput()
         self.fields['meeting_name'].widget = forms.HiddenInput()
-        self.fields['date'].widget = forms.HiddenInput()
+        self.fields['session_date'].widget = forms.HiddenInput()
         self.fields['encoding_step'].widget = forms.HiddenInput()
         self.fields['recorded'].widget = forms.HiddenInput()
         self.fields['recording_available'].widget = forms.HiddenInput()

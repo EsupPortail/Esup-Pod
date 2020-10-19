@@ -26,7 +26,7 @@ def list_meeting(request):
     # Get meetings list, which recordings are available, ordered by date
     meetings_list = Meeting.objects.\
         filter(user__user_id=request.user.id, recording_available=True)
-    meetings_list = meetings_list.order_by('-date')
+    meetings_list = meetings_list.order_by('-session_date')
     # print(str(meetings_list.query))
 
     page = request.GET.get('page', 1)
@@ -70,7 +70,7 @@ def publish_meeting(request, id=None):
         'recording_available': record.recording_available,
         'recording_url': record.recording_url,
         'thumbnail_url': record.thumbnail_url,
-        'date': record.date}
+        'session_date': record.date}
 
     form = MeetingForm(request, initial=initial)
 

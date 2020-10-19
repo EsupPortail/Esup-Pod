@@ -142,7 +142,7 @@ def encode_file_exist(filename, extension, message_error, html_message_error):
         if oMeeting.encoded_by_id:
             video.owner = User.objects.get(id=oMeeting.encoded_by_id)
         video.type = Type.objects.get(id=DEFAULT_BBB_TYPE_ID)
-        video.date_evt = oMeeting.date
+        video.date_evt = oMeeting.session_date
         # Video management
         storage_path = get_storage_path_video(
             video, os.path.basename(source_file))
@@ -267,7 +267,7 @@ def get_meeting(meeting, html_message_error, message_error):
             meetingToCreate.meeting_name = meetingName
             # Convert the date in the database format
             dateForSql = dateutil.parser.parse(date, ignoretz=False)
-            meetingToCreate.date = dateForSql
+            meetingToCreate.session_date = dateForSql
             # Initially encoding_step = 0 (very important)
             meetingToCreate.encoding_step = 0
             # Recording tag seems ~always true, so seems useless
@@ -387,7 +387,7 @@ def get_bbb_meetings_recorded(html_message_error, message_error):
         dateSince4d = timezone.now() - timezone.timedelta(days=4)
         meetings = Meeting.objects.filter(recorded=True,
                                           recording_available=False,
-                                          date__gte=dateSince4d).order_by('id')
+                                          session_date__gte=dateSince4d).order_by('id')
         for meeting in meetings:
             # Search recording on BBB/Scalelite server
             html_message_error, message_error = get_bbb_recording_by_xml(
