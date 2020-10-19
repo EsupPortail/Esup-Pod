@@ -70,7 +70,7 @@ def publish_meeting(request, id=None):
         'recording_available': record.recording_available,
         'recording_url': record.recording_url,
         'thumbnail_url': record.thumbnail_url,
-        'session_date': record.date}
+        'session_date': record.session_date}
 
     form = MeetingForm(request, initial=initial)
 
