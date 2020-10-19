@@ -31,9 +31,9 @@ class MeetingTestCase(TestCase):
         self.assertEqual(meeting.meeting_name, "Session BBB1")
         self.assertEqual(meeting.encoding_step, 0)
         date = timezone.now()
-        self.assertEqual(meeting.date.year, date.year)
-        self.assertEqual(meeting.date.month, date.month)
-        self.assertEqual(meeting.date.day, date.day)
+        self.assertEqual(meeting.session_date.year, date.year)
+        self.assertEqual(meeting.session_date.month, date.month)
+        self.assertEqual(meeting.session_date.day, date.day)
 
         user = User.objects.get(username="pod")
         meeting2 = Meeting.objects.get(id=2)
