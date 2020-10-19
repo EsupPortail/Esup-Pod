@@ -29,7 +29,7 @@ class Meeting(models.Model):
         max_length=200, help_text=_('Name of the BBB meeting.')
     )
     # Date of the BBB session
-    date = models.DateTimeField(_('date'), default=timezone.now)
+    session_date = models.DateTimeField(_('Session date'), default=timezone.now)
     # Encoding step / status of the process. Possible values are :
     #  - 0 : default (Publish is possible)
     #  - 1 : Waiting for encoding

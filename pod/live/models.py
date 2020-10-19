@@ -142,7 +142,7 @@ class HeartBeat(models.Model):
         User,
         null=True,
         verbose_name=_('Viewer'))
-    viewkey = models.CharField(_('viewkey'), max_length=200, unique=True)
+    viewkey = models.CharField(_('Viewkey'), max_length=200, unique=True)
     broadcaster = models.ForeignKey(
         Broadcaster,
         null=False,

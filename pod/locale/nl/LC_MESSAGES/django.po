@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-15 14:09+0000\n"
+"POT-Creation-Date: 2020-10-19 08:53+0000\n"
 "PO-Revision-Date: 2018-07-03 13:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -231,7 +231,7 @@ msgid "Name of the BBB meeting."
 msgstr ""
 
 #: pod/bbb/models.py:32
-msgid "date"
+msgid "Session date"
 msgstr ""
 
 #: pod/bbb/models.py:39 pod/video/models.py:645 pod/video/models.py:1309
@@ -1910,7 +1910,7 @@ msgid "Viewer"
 msgstr ""
 
 #: pod/live/models.py:145
-msgid "viewkey"
+msgid "Viewkey"
 msgstr ""
 
 #: pod/live/models.py:151
@@ -1975,7 +1975,7 @@ msgstr ""
 msgid "Sorry, no buildings found"
 msgstr ""
 
-#: pod/live/views.py:67 pod/video/views.py:627
+#: pod/live/views.py:70 pod/video/views.py:627
 msgid "The password is incorrect."
 msgstr ""
 
@@ -3244,7 +3244,7 @@ msgid "Add new folder"
 msgstr ""
 
 #: pod/podfile/templates/podfile/userfolder.html:22
-msgid "filter files"
+msgid "Filter files"
 msgstr ""
 
 #: pod/podfile/templates/podfile/userfolder.html:36
