@@ -82,7 +82,7 @@ class Meeting(models.Model):
     class Meta:
         verbose_name = _("Meeting")
         verbose_name_plural = _("Meetings")
-        ordering = ['date']
+        ordering = ['session_date']
 
 
 @receiver(post_save, sender=Meeting)
