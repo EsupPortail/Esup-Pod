@@ -29,7 +29,8 @@ class Meeting(models.Model):
         max_length=200, help_text=_('Name of the BBB meeting.')
     )
     # Date of the BBB session
-    session_date = models.DateTimeField(_('Session date'), default=timezone.now)
+    session_date = models.DateTimeField(
+        _('Session date'), default=timezone.now)
     # Encoding step / status of the process. Possible values are :
     #  - 0 : default (Publish is possible)
     #  - 1 : Waiting for encoding
@@ -82,7 +83,7 @@ class Meeting(models.Model):
     class Meta:
         verbose_name = _("Meeting")
         verbose_name_plural = _("Meetings")
-        ordering = ['date']
+        ordering = ['session_date']
 
 
 @receiver(post_save, sender=Meeting)
@@ -115,7 +116,7 @@ class User(models.Model):
     # Redundant information with user, but can be useful.
     username = models.CharField(_('Username / User id'),
                                 max_length=150, help_text=_(
-                'Username / User id, if the BBB user was matching a Pod user.')
+        'Username / User id, if the BBB user was matching a Pod user.')
     )
 
     # Pod user, if the BBB user was translated with a Pod user
