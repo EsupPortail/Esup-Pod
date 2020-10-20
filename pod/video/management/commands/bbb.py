@@ -52,6 +52,7 @@ import dateutil.parser
 from django.core.mail import mail_admins
 from django.utils import timezone
 from xml.dom import minidom
+import urllib.parse
 
 from pod.video.models import Video, Type, get_storage_path_video
 from pod.video.encode import start_encode
@@ -210,6 +211,14 @@ def get_bbb_meetings_by_xml(html_message_error, message_error):
                        ", status : " + str(addr.status_code))
         # XML result to parse
         xmldoc = minidom.parseString(addr.text)
+        returncode = xmldoc.getElementsByTagName(
+            "returncode")[0].firstChild.data
+        # Management of FAILED error (basically error in checksum)
+        if (returncode == "FAILED"):
+            err = "Return code = FAILED for : " + urlToRequest
+            err += " => : " + xmldoc.toxml() + ""
+            message_error += err + "\n"
+            html_message_error += "<li>" + err + "</li>"
         # Actual meetings
         meetings = xmldoc.getElementsByTagName("meeting")
         for meeting in meetings:
@@ -413,20 +422,29 @@ def get_bbb_recording_by_xml(meeting_id, internal_meeting_id,
     try:
         # See https://docs.bigbluebutton.org/dev/api.html#usage
         # for checksum and security
-        checksum = hashlib.sha1(str("getRecordingsmeetingID=" + meeting_id + ""
-                                    "" + BBB_SECRET_KEY)
-                                .encode('utf-8')).hexdigest()
+        uri = "getRecordingsmeetingID="
+        uri += urllib.parse.quote_plus(meeting_id) + BBB_SECRET_KEY
+        checksum = hashlib.sha1(str(uri).encode('utf-8')).hexdigest()
         # Request on BBB/Scalelite server (API)
         # URL example : https://bbb.univ.fr/bigbluebutton/api/getRecordings?
         # meetingID=xxxxxxxxxxxxxx&checksum=yyyyyyyyyyyyyyy
         urlToRequest = BBB_SERVER_URL
         urlToRequest += "bigbluebutton/api/getRecordings?meetingID="
-        urlToRequest += "" + meeting_id + "&checksum=" + checksum
+        urlToRequest += urllib.parse.quote_plus(meeting_id)
+        urlToRequest += "&checksum=" + checksum
         addr = requests.get(urlToRequest)
         print_if_debug("   + Request on URL : " + urlToRequest + ""
                        ", status : " + str(addr.status_code))
         # XML result to parse
         xmldoc = minidom.parseString(addr.text)
+        returncode = xmldoc.getElementsByTagName(
+            "returncode")[0].firstChild.data
+        # Management of FAILED error (basically error in checksum)
+        if (returncode == "FAILED"):
+            err = "Return code = FAILED for : " + urlToRequest
+            err += " => : " + xmldoc.toxml() + ""
+            message_error += err + "\n"
+            html_message_error += "<li>" + err + "</li>"
         # Actual recordings
         recordings = xmldoc.getElementsByTagName("recording")
         for recording in recordings:
