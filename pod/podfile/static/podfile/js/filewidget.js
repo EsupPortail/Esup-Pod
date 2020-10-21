@@ -159,10 +159,8 @@ $(document).on("submit", "form#formchangeimage, form#formchangefile, form#formup
 
 function user_li(text, elt, type)
 {
-    if(type.toLowerCase() === "remove")
-	return `<li class="list-group-item"><span class="username">${elt.first_name} ${elt.last_name} ${!HIDE_USERNAME?'('+elt.username+')': ''}</span><a href="#" type="button" data-userid="${elt.id}" class="btn btn-danger btn-share btn-remove">${text}</a></li>`
-    else
-	return `<li class="list-group-item"><span class="username">${elt.first_name} ${elt.last_name} ${!HIDE_USERNAME?'('+elt.username+')': ''}</span><a href="#" type="button" data-userid="${elt.id}" class="btn btn-success btn-share btn-add">${text}</a></li>`
+    let cls = type.toLowerCase()==="add"?"btn-success btn-add": "btn-danger btn-remove";
+	return `<li class="list-group-item"><span class="username">${elt.first_name} ${elt.last_name} ${!HIDE_USERNAME?'('+elt.username+')': ''}</span><a href="#" type="button" data-userid="${elt.id}" class="btn btn-share ${cls}">${text}</a></li>`
 }
 
   function reloadRemoveBtn(){
