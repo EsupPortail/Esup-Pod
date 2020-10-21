@@ -559,9 +559,6 @@ def get_file(request, type):
     try:
         with open(reqfile.file.path, 'r') as f:
             fc = f.read()
-            print("-------------------------")
-            print(fc)
-            print("-------------------------")
             some_data_to_dump = {
                 'status': "success",
                 'file_name': file_name,
