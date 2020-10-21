@@ -133,10 +133,10 @@ class CustomFileModel(BaseFileModel):
 
     @property
     def file_type(self):
-        filetype = mimetypes.guess_type(self.file.path)[0]
+        extension = self.file.path.rpartition('.')[-1]
+        filetype = extension.lower()
         if filetype is None:
-            fname, dot, extension = self.file.path.rpartition('.')
-            filetype = extension.lower()
+            filetype = mimetypes.guess_type(self.file.path)[0]
         return filetype
     file_type.fget.short_description = _('Get the file type')
 
