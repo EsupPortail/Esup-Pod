@@ -52,6 +52,8 @@ ENCODE_VIDEO = getattr(settings,
 USE_OBSOLESCENCE = getattr(
     settings, "USE_OBSOLESCENCE", False)
 
+ACTIVE_VIDEO_COMMENT = getattr(settings, 'ACTIVE_VIDEO_COMMENT', False)
+
 VIDEO_ALLOWED_EXTENSIONS = getattr(
     settings, 'VIDEO_ALLOWED_EXTENSIONS', (
         '3gp',
@@ -450,12 +452,15 @@ class VideoForm(forms.ModelForm):
 
         super(VideoForm, self).__init__(*args, **kwargs)
 
-        if FILEPICKER and self.fields.get('thumbnail'):
-            self.fields['thumbnail'].widget = CustomFileWidget(type="image")
-
-        if not TRANSCRIPT:
-            self.remove_field('transcript')
-
+        self.custom_video_form()
+        # change ckeditor, thumbnail and date delete config for no staff user
+        self.set_nostaff_config()
+        # hide default language
+        self.hide_default_language()
+        # QuerySet for channels and theme
+        self.set_queryset()
+        self.filter_fields_admin()
+        self.fields = add_placeholder_and_asterisk(self.fields)
         if self.fields.get('video'):
             self.fields['video'].label = _(u'File')
             valid_ext = FileExtensionValidator(VIDEO_ALLOWED_EXTENSIONS)
@@ -464,31 +469,26 @@ class VideoForm(forms.ModelForm):
                 'class'] = self.videoattrs["class"]
             self.fields['video'].widget.attrs[
                 'accept'] = self.videoattrs["accept"]
-
         if self.instance.encoding_in_progress:
             self.remove_field('owner')
             self.remove_field('video')  # .widget = forms.HiddenInput()
-
-        # change ckeditor, thumbnail and date delete config for no staff user
-        self.set_nostaff_config()
-
-        # hide default language
-        self.hide_default_language()
-
-        # QuerySet for channels and theme
-        self.set_queryset()
-
-        self.filter_fields_admin()
-
-        self.fields = add_placeholder_and_asterisk(self.fields)
-
         # remove required=True for videofield if instance
         if self.fields.get('video') and self.instance and self.instance.video:
             del self.fields["video"].widget.attrs["required"]
-
         if self.fields.get('owner'):
             self.fields['owner'].queryset = self.fields['owner']. \
                 queryset.filter(owner__sites=Site.objects.get_current())
+
+    def custom_video_form(self):
+
+        if not ACTIVE_VIDEO_COMMENT:
+            self.fields.pop('disable_comment')
+
+        if FILEPICKER and self.fields.get('thumbnail'):
+            self.fields['thumbnail'].widget = CustomFileWidget(type="image")
+
+        if not TRANSCRIPT:
+            self.remove_field('transcript')
 
     def set_nostaff_config(self):
         if self.is_staff is False:
