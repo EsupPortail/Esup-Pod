@@ -215,6 +215,59 @@ button.close {
 /**********************************
  ********** Overrid css ***********
  **********************************/
+
+#shareModalCenter #shared-people.list-group .list-group-item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid rgba(0,0,0,.08);
+    padding: .8em;
+}
+#shareModalCenter #shared-people.list-group .list-group-item:not(:last-child){
+    border-bottom: none;
+}
+#shareModalCenter #shared-people.list-group .list-group-item .username{
+    color: var(--gray-dark);
+    font-weight: 700;
+    order: 2;
+}
+#shareModalCenter #shared-people.list-group .list-group-item .btn-share.btn-remove{
+    order: 1;
+    padding: .4em .8em;
+    color: #fff !important;
+    background-color: var(--danger);
+    line-height: 1;
+    flex: none;
+}
+#shareModalCenter #shareFormName .form-group{position: relative;}
+#shareModalCenter #shareFormName .form-group .form-control{ outline: none !important; box-shadow: none !important;}
+#shareModalCenter #user-search.list-group{
+    padding: .8em 0;
+    width: 400px;
+    max-width: 100%;
+    border: 1px solid rgba(0,0,0,.1);
+    box-shadow: 0px 8px 10px 4px rgba(0,0,0,.08);
+    position: absolute;
+    top: 100%;
+}
+#shareModalCenter #user-search.list-group .list-group-item{
+    border: none !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .8em;
+    line-height: 1;
+}
+#shareModalCenter #user-search.list-group .list-group-item .btn-share.btn-add{
+    padding: .4em .8em;
+    line-height: 1;
+    flex: none;
+}
+#shareModalCenter #user-search.list-group .list-group-item .username{
+    font-weight: 700;
+    color: var(--gray);
+}
+
 .modal-header {
     display: flex;
     align-items: flex-start;
