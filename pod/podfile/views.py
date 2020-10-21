@@ -97,27 +97,27 @@ def home(request, type=None):
 
 def get_current_session_folder(request):
     try:
-        current_session_folder = UserFolder.objects.get(
+        current_session_folder = UserFolder.objects.filter(
            Q(owner=request.user, name=request.session.get(
               'current_session_folder', "home")) | Q(
                  users=request.user, name=request.session.get(
                     'current_session_folder', "home")) | Q(
                  groups=request.user.groups.all(), name=request.session.get(
                     'current_session_folder', "home")))
-        return current_session_folder
     except ObjectDoesNotExist:
         if(request.user.is_superuser):
             try:
-                current_session_folder = UserFolder.objects.get(
+                current_session_folder = UserFolder.objects.filter(
                     name=request.session.get('current_session_folder', "home"))
                 return current_session_folder
             except ObjectDoesNotExist:
                 pass
-        current_session_folder = UserFolder.objects.get(
+        current_session_folder = UserFolder.objects.filter(
             owner=request.user,
             name="home"
         )
-        return current_session_folder
+
+    return current_session_folder.first()
 
 
 @csrf_protect
@@ -559,6 +559,9 @@ def get_file(request, type):
     try:
         with open(reqfile.file.path, 'r') as f:
             fc = f.read()
+            print("-------------------------")
+            print(fc)
+            print("-------------------------")
             some_data_to_dump = {
                 'status': "success",
                 'file_name': file_name,
