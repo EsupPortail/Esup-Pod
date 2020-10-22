@@ -9,7 +9,7 @@ from pod.main.settings import BASE_DIR
 ##
 # Version of the project
 #
-VERSION = '2.6.4'
+VERSION = '2.7.0'
 
 ##
 # Installed applications list
