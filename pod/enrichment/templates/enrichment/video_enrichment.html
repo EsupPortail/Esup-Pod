@@ -111,9 +111,9 @@
       </a>
       <div class="dropdown-menu" >
         {% if video.get_hashkey in request.get_full_path %}
-        <a href="{% url 'video' slug=video.slug %}{{ video.get_hashkey }}/?redirect=false" title="no enrichment" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
+        <a href="{% url 'video' slug=video.slug %}{{ video.get_hashkey }}/?redirect=false" title="{% trans 'Original version' %}" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
         {% else %}
-        <a href="{% url 'video' slug=video.slug %}?redirect=false" title="no enrichment" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
+        <a href="{% url 'video' slug=video.slug %}?redirect=false" title="{% trans 'Original version' %}" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
         {% endif %}
       </div>
     </li>
