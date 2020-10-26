@@ -627,7 +627,7 @@ class ChannelForm(forms.ModelForm):
 
         # change ckeditor config for no staff user
         if not hasattr(self, 'admin_form') and (
-                self.is_staff is False or self.is_superuser is False
+                self.is_staff is False and self.is_superuser is False
         ):
             del self.fields['headband']
             self.fields['description'].widget = CKEditorWidget(
