@@ -127,3 +127,19 @@ class LinkFooter(models.Model):
         if self.url is None and self.page is None:
             raise ValidationError(
                 _('You must give an URL or a page to link the link'))
+
+
+class Configuration(models.Model):
+    key = models.SlugField(
+        _('Key'), unique=True, max_length=100,
+        help_text=_('Key of the configuration'),
+        editable=False)
+    value = models.CharField(
+        _('Value'),
+        max_length=255,
+        help_text=_("Value of the configuration"))
+    description = models.CharField(
+        _('Description'),
+        max_length=255,
+        help_text=_("Description of the configuration"),
+        editable=False)
