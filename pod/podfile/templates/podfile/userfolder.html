@@ -1,5 +1,4 @@
 {% load i18n static %}
-  
       <div class="dirs-nav">
 	<div class="dirs-nav-container">
             <a href="#" id="folder_{{user_home_folder.id}}" class="{% if user_home_folder == current_session_folder%}font-weight-bold{%endif%} folder" data-id="{{user_home_folder.id}}" data-target="{% if type %}{% url 'podfile:get_folder_files' id=user_home_folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=user_home_folder.id %}{%endif%}">
@@ -16,70 +15,68 @@
 	</div>
 	<div class="close-folder" id="close-folder-icon">
 	    <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="times-circle" class="svg-inline--fa fa-times-circle fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm101.8-262.2L295.6 256l62.2 62.2c4.7 4.7 4.7 12.3 0 17l-22.6 22.6c-4.7 4.7-12.3 4.7-17 0L256 295.6l-62.2 62.2c-4.7 4.7-12.3 4.7-17 0l-22.6-22.6c-4.7-4.7-4.7-12.3 0-17l62.2-62.2-62.2-62.2c-4.7-4.7-4.7-12.3 0-17l22.6-22.6c4.7-4.7 12.3-4.7 17 0l62.2 62.2 62.2-62.2c4.7-4.7 12.3-4.7 17 0l22.6 22.6c4.7 4.7 4.7 12.3 0 17z"></path></svg>
-	</div>
-      </div>
-  
-      <input class="folder-search" placeholder="{% trans 'Filter files' %}" type="search" id="folder-search" name="q">
-        
-  <div class="list_folders" id="list_folders_sub" data-type="{{type}}">
-  </div>
-
-      {% if share_folder.count > 0 or share_folder_user.count > 0%}
-      <hr/>
-      <div style="padding-left: 0px">
-    
-        <!-- <a href="#" class="directory-sign" >[-]</a> -->
-        <span class="folder_title">
-	    <span class="home-directory" id="home-directory-icon">
-		        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="home" class="svg-inline--fa fa-home fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M280.37 148.26L96 300.11V464a16 16 0 0 0 16 16l112.06-.29a16 16 0 0 0 15.92-16V368a16 16 0 0 1 16-16h64a16 16 0 0 1 16 16v95.64a16 16 0 0 0 16 16.05L464 480a16 16 0 0 0 16-16V300L295.67 148.26a12.19 12.19 0 0 0-15.3 0zM571.6 251.47L488 182.56V44.05a12 12 0 0 0-12-12h-56a12 12 0 0 0-12 12v72.61L318.47 43a48 48 0 0 0-61 0L4.34 251.47a12 12 0 0 0-1.6 16.9l25.5 31A12 12 0 0 0 45.15 301l235.22-193.74a12.19 12.19 0 0 1 15.3 0L530.9 301a12 12 0 0 0 16.9-1.6l25.5-31a12 12 0 0 0-1.7-16.93z"></path></svg>
+        </div>
+    </div>
+    <input class="folder-search" placeholder="{% trans 'Filter files' %}" type="search" id="folder-search" name="q">
+    {% if user.is_superuser %}<span class="alert-warning"><span class="warning-icon"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="exclamation-triangle" class="svg-inline--fa fa-exclamation-triangle fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"></path></svg></span><b>{%trans "SuperUser mode : the folders of all users are listed (the owner is noted in brackets)" %}</b><strong onClick="closeWarning(event)" class="close">X</strong></span>{%endif%}
+    <div class="flex">
+        <div class="list_folders" id="list_folders_sub" data-type="{{type}}"></div>
+        {% if share_folder.count > 0 or share_folder_user.count > 0 %}
+        <div class="share-folders" style="padding-left: 0px">
+            <!-- <a href="#" class="directory-sign" >[-]</a> -->
+            <span class="folder_title">
+	        <span class="home-directory" id="home-directory-icon">
+		    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="home" class="svg-inline--fa fa-home fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M280.37 148.26L96 300.11V464a16 16 0 0 0 16 16l112.06-.29a16 16 0 0 0 15.92-16V368a16 16 0 0 1 16-16h64a16 16 0 0 1 16 16v95.64a16 16 0 0 0 16 16.05L464 480a16 16 0 0 0 16-16V300L295.67 148.26a12.19 12.19 0 0 0-15.3 0zM571.6 251.47L488 182.56V44.05a12 12 0 0 0-12-12h-56a12 12 0 0 0-12 12v72.61L318.47 43a48 48 0 0 0-61 0L4.34 251.47a12 12 0 0 0-1.6 16.9l25.5 31A12 12 0 0 0 45.15 301l235.22-193.74a12.19 12.19 0 0 1 15.3 0L530.9 301a12 12 0 0 0 16.9-1.6l25.5-31a12 12 0 0 0-1.7-16.93z"></path></svg>
+	        </span>
+		<span class="folder_title">{% trans "Shared folders" %}</span>
 	    </span>
-	    {% trans "Shared folders"%}
-	</span>
-      </div>
-
-      <div class="list_folders">
-      {% for folder in share_folder %}
-          <div>
-            <a href="#" id="folder_{{folder.id}}" class="{% if folder == current_session_folder%}font-weight-bold{%endif%} home-folder" data-foldname="{{ folder.name }}" data-id="{{folder.id}}" data-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}">
-              {% if folder == current_session_folder%}
-	      <span class="folder-open" id="folder-open-icon">
-	          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder-open" class="svg-inline--fa fa-folder-open fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M572.694 292.093L500.27 416.248A63.997 63.997 0 0 1 444.989 448H45.025c-18.523 0-30.064-20.093-20.731-36.093l72.424-124.155A64 64 0 0 1 152 256h399.964c18.523 0 30.064 20.093 20.73 36.093zM152 224h328v-48c0-26.51-21.49-48-48-48H272l-64-64H48C21.49 64 0 85.49 0 112v278.046l69.077-118.418C86.214 242.25 117.989 224 152 224z"></path></svg>
-	      </span>
-              <img class="directory-image" src="{% static "podfile/images/opened_folder.png"%}">
-              {%else%}
-              <span class="folder" id="folder-icon">
-	          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder" class="svg-inline--fa fa-folder fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M464 128H272l-64-64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V176c0-26.51-21.49-48-48-48z"></path></svg>
-	      </span>
-              {%endif%}
-              <span id="folder-name-{{folder.id}}">{{folder.name}}</span> ({{folder.owner.username}})
-            </a>
-          </div>
-      {% endfor %}
-      {% for folder in share_folder_user %}
-      <div>
-        <a href="#" id="folder_{{folder.id}}" class="{% if folder == current_session_folder%}font-weight-bold{%endif%} folder" data-foldname="{{ folder.name }}" data-id="{{folder.id}}" data-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}">
-          {% if folder == current_session_folder%}
-	  <span class="folder-open" id="folder-open-icon">
-	      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder-open" class="svg-inline--fa fa-folder-open fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M572.694 292.093L500.27 416.248A63.997 63.997 0 0 1 444.989 448H45.025c-18.523 0-30.064-20.093-20.731-36.093l72.424-124.155A64 64 0 0 1 152 256h399.964c18.523 0 30.064 20.093 20.73 36.093zM152 224h328v-48c0-26.51-21.49-48-48-48H272l-64-64H48C21.49 64 0 85.49 0 112v278.046l69.077-118.418C86.214 242.25 117.989 224 152 224z"></path></svg>
-	  </span>
-          {%else%}
-	  <span class="folder" id="folder-icon">
-	      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder" class="svg-inline--fa fa-folder fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M464 128H272l-64-64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V176c0-26.51-21.49-48-48-48z"></path></svg>
-	  </span>
-          {%endif%}
-          <span id="folder-name-{{folder.id}}">{{folder.name}}</span> ({{folder.owner.username}})
-        </a>
-      </div>
-  {% endfor %}
-      </div>
-      {% endif %}
-      {% if user.is_superuser %}
-<hr/>
-            <a class="alert-warning"><i data-feather="alert-triangle"></i>  <b>{%trans "SuperUser mode : the folders of all users are listed (the owner is noted in brackets)" %}</b></a>
-  {%endif%}
+            <div class="list_folders">
+            {% for folder in share_folder %}
+                <div>
+                    <a href="#" id="folder_{{folder.id}}" class="{% if folder == current_session_folder%}font-weight-bold{%endif%} home-folder" data-foldname="{{ folder.name }}" data-id="{{folder.id}}" data-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}">
+                        {% if folder == current_session_folder%}
+	                    <span class="folder-open" id="folder-open-icon">
+	                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder-open" class="svg-inline--fa fa-folder-open fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M572.694 292.093L500.27 416.248A63.997 63.997 0 0 1 444.989 448H45.025c-18.523 0-30.064-20.093-20.731-36.093l72.424-124.155A64 64 0 0 1 152 256h399.964c18.523 0 30.064 20.093 20.73 36.093zM152 224h328v-48c0-26.51-21.49-48-48-48H272l-64-64H48C21.49 64 0 85.49 0 112v278.046l69.077-118.418C86.214 242.25 117.989 224 152 224z"></path></svg>
+	                    </span>
+                            <img class="directory-image" src="{% static "podfile/images/opened_folder.png"%}">
+                        {% else %}
+                            <span class="folder" id="folder-icon">
+	                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder" class="svg-inline--fa fa-folder fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M464 128H272l-64-64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V176c0-26.51-21.49-48-48-48z"></path></svg>
+	                    </span>
+                        {% endif %}
+                        <span id="folder-name-{{folder.id}}">{{folder.name}}</span> ({{folder.owner.username}})
+                    </a>
+                </div>
+            {% endfor %}
+            {% for folder in share_folder_user %}
+                <div>
+                    <a href="#" id="folder_{{folder.id}}" class="{% if folder == current_session_folder%}font-weight-bold{%endif%} folder" data-foldname="{{ folder.name }}" data-id="{{folder.id}}" data-target="{% if type %}{% url 'podfile:get_folder_files' id=folder.id type=type %}{% else %}{% url 'podfile:get_folder_files' id=folder.id %}{%endif%}">
+                        {% if folder == current_session_folder%}
+	                    <span class="folder-open" id="folder-open-icon">
+	                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder-open" class="svg-inline--fa fa-folder-open fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M572.694 292.093L500.27 416.248A63.997 63.997 0 0 1 444.989 448H45.025c-18.523 0-30.064-20.093-20.731-36.093l72.424-124.155A64 64 0 0 1 152 256h399.964c18.523 0 30.064 20.093 20.73 36.093zM152 224h328v-48c0-26.51-21.49-48-48-48H272l-64-64H48C21.49 64 0 85.49 0 112v278.046l69.077-118.418C86.214 242.25 117.989 224 152 224z"></path></svg>
+	                    </span>
+                        {%else%}
+	                    <span class="folder" id="folder-icon">
+	                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder" class="svg-inline--fa fa-folder fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M464 128H272l-64-64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V176c0-26.51-21.49-48-48-48z"></path></svg>
+	                    </span>
+                        {% endif %}
+                        <span id="folder-name-{{folder.id}}">{{folder.name}}</span> ({{folder.owner.username}})
+                    </a>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
 
 <style>
     #formalertdiv{
         z-index: 1090;
     }
 </style>
+<script>
+function closeWarning(e){
+    e.stopPropagation();
+    e.target.parentNode.parentNode.removeChild(e.target.parentNode);
+}
+</script>
