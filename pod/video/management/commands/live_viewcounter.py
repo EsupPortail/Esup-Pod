@@ -16,9 +16,7 @@ class Command(BaseCommand):
                 seconds=VIEW_EXPIRATION_DELAY))
             if hb.last_heartbeat <= accepted_time:
                 hb.delete()
-            else:
-                hb.broadcaster.viewcount = hb.broadcaster.viewcount+1
-        for broad in Broadcaster.objects.all():
+        for broad in Broadcaster.objects.filter(enable_viewer_count=True):
             hbs = HeartBeat.objects.filter(broadcaster=broad)
             users = []
             for hb in hbs.all():
