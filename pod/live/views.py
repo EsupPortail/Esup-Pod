@@ -105,7 +105,8 @@ def heartbeat(request):
                         viewkey=key, broadcaster_id=broadcaster_id)
                 else:
                     HeartBeat.objects.create(
-                        viewkey=key, broadcaster_id=1, user=request.user)
+                        viewkey=key, broadcaster_id=broadcaster_id,
+                        user=request.user)
             else:
                 heartbeat = heartbeat.first()
                 heartbeat.last_heartbeat = timezone.now()
