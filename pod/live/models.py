@@ -88,6 +88,10 @@ class Broadcaster(models.Model):
          'Height of the embedded site (in pixels)'))
     status = models.BooleanField(default=0, help_text=_(
         'Check if the broadcaster is currently sending stream.'))
+    enable_viewer_count = models.BooleanField(
+        default=1,
+        verbose_name=_(u'Enable viewers count'),
+        help_text=_('Enable viewers count on live.'))
     is_restricted = models.BooleanField(
         verbose_name=_(u'Restricted access'),
         help_text=_(
