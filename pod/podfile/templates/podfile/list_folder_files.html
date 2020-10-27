@@ -4,22 +4,26 @@
 <nav class="navbar navbar-expand-lg navbar-link">
 
   <span class="navbar-brand text-truncate">
-    <img src="{% static "podfile/images/opened_folder.png"%}" width="30" height="30" class="d-inline-block align-top" alt="">
-    <span data-toggle="tooltip" data-placement="top" title="{{folder.name}} - {{folder.get_all_file.count}} {% trans "file"%}{{ folder.get_all_file.count|pluralize }}">{{folder.name}}</span>
+    <span class="current-folder-icon">
+        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder-open" class="svg-inline--fa fa-folder-open fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M572.694 292.093L500.27 416.248A63.997 63.997 0 0 1 444.989 448H45.025c-18.523 0-30.064-20.093-20.731-36.093l72.424-124.155A64 64 0 0 1 152 256h399.964c18.523 0 30.064 20.093 20.73 36.093zM152 224h328v-48c0-26.51-21.49-48-48-48H272l-64-64H48C21.49 64 0 85.49 0 112v278.046l69.077-118.418C86.214 242.25 117.989 224 152 224z"></path></svg>
+    </span>
+    <span class="current-folder-name" data-toggle="tooltip" data-placement="top" title="{{folder.name}} - {{folder.get_all_file.count}} {% trans "file"%}{{ folder.get_all_file.count|pluralize }}">{{folder.name}}</span>
   </span>
   
   <button class="navbar-toggler btn btn-outline-primary active" type="button" data-toggle="collapse" data-target="#currentfolder" aria-controls="currentfolder" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="ellipsis-v" class="svg-inline--fa fa-ellipsis-v fa-w-6" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path fill="currentColor" d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"></path></svg>
   </button>
   
   <div class="collapse navbar-collapse" id="currentfolder">
-    {% if request.user == folder.owner or request.user.is_superuser or perms.podfile.change_userfolder or request.user in folder.users.all %}
     <ul class="navbar-nav mr-auto">
 
+      {% if request.user == folder.owner or request.user.is_superuser or perms.podfile.change_userfolder or request.user in folder.users.all %}
       {% if folder.name != "home" %}
          <li class="nav-item">
         <button id="currentfolderrename" type="button" class="btn btn-link btn-sm nav-link" data-toggle="modal" data-target="#folderModalCenter" data-oldname="{{folder.name}}" data-folderid="{{folder.id}}">
-        <img src="{% static "podfile/images/rename.png" %}" >
+	    <span class="edit-folder" id="edit-folder-icon">
+		        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="pen-square" class="svg-inline--fa fa-pen-square fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M400 480H48c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h352c26.5 0 48 21.5 48 48v352c0 26.5-21.5 48-48 48zM238.1 177.9L102.4 313.6l-6.3 57.1c-.8 7.6 5.6 14.1 13.3 13.3l57.1-6.3L302.2 242c2.3-2.3 2.3-6.1 0-8.5L246.7 178c-2.5-2.4-6.3-2.4-8.6-.1zM345 165.1L314.9 135c-9.4-9.4-24.6-9.4-33.9 0l-23.1 23.1c-2.3 2.3-2.3 6.1 0 8.5l55.5 55.5c2.3 2.3 6.1 2.3 8.5 0L345 199c9.3-9.3 9.3-24.5 0-33.9z"></path></svg>
+	    </span>
         <span class="sr-only">{% trans "Rename"%}</span>
         </button>
       </li>
@@ -29,7 +33,9 @@
       <li class="nav-item">
         <button id="currentfolderdelete" type="button" class="btn btn-link btn-sm nav-link" data-folderid="{{folder.id}}">
         {% csrf_token %}
-        <img src="{% static "podfile/images/delete.png" %}" >
+	    <span class="delete-folder" id="delete-folder-icon">
+		        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash-alt" class="svg-inline--fa fa-trash-alt fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path></svg>
+	    </span>
         <span class="sr-only">{% trans "Delete"%}</span>
         </button>
       </li>
@@ -37,14 +43,16 @@
         {%endif%}
        {% if folder.owner == request.user or request.user.is_superuser %}
       <li class="nav-item">
-        <button id="currentdfoldershare" type="button" class="btn btn-link btn-sm nav-link" data-toggle="modal" data-name="{{folder.name}}"  data-target="#shareModalCenter" data-folderid="{{folder.id}}">
-          <img src="{% static "podfile/images/share.png" %}" >
+        <button id="currentfoldershare" type="button" class="btn btn-link btn-sm nav-link" data-toggle="modal" data-name="{{folder.name}}"  data-target="#shareModalCenter" data-folderid="{{folder.id}}">
+	    <span class="share-folder" id="share-folder-icon">
+			    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="share-alt" class="svg-inline--fa fa-share-alt fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M352 320c-22.608 0-43.387 7.819-59.79 20.895l-102.486-64.054a96.551 96.551 0 0 0 0-41.683l102.486-64.054C308.613 184.181 329.392 192 352 192c53.019 0 96-42.981 96-96S405.019 0 352 0s-96 42.981-96 96c0 7.158.79 14.13 2.276 20.841L155.79 180.895C139.387 167.819 118.608 160 96 160c-53.019 0-96 42.981-96 96s42.981 96 96 96c22.608 0 43.387-7.819 59.79-20.895l102.486 64.054A96.301 96.301 0 0 0 256 416c0 53.019 42.981 96 96 96s96-42.981 96-96-42.981-96-96-96z"></path></svg>
+	    </span>
           <span class="sr-only">{% trans "Share this folder"%}</span>
           </button>
       </li>
         {% endif %}
-    </ul>
-    {% endif %}
+      {% endif %}
+      <li class="nav-item">
     <form class="form-inline my-2 my-lg-0" method="POST" id="formuploadfile" enctype="multipart/form-data" style="" action="{% url "podfile:uploadfiles" %}">
         {% csrf_token %}
         <input type="hidden" name="folderid" value="{{folder.id}}">
@@ -54,11 +62,15 @@
         <div class="custom-file">
           <input type="file" class="custom-file-input" id="ufile" name="ufile" multiple style="position:fixed;top:-100px">
           <label class="" for="ufile" style="cursor:pointer;">
-            <img src="{% static "podfile/images/upload.png"%}" width="30" height="30" class="d-inline-block align-top" alt="">
+	      <span class="upload-file" id="upload-file-icon">
+	          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="file-upload" class="svg-inline--fa fa-file-upload fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm65.18 216.01H224v80c0 8.84-7.16 16-16 16h-32c-8.84 0-16-7.16-16-16v-80H94.82c-14.28 0-21.41-17.29-11.27-27.36l96.42-95.7c6.65-6.61 17.39-6.61 24.04 0l96.42 95.7c10.15 10.07 3.03 27.36-11.25 27.36zM377 105L279.1 7c-4.5-4.5-10.6-7-17-7H256v128h128v-6.1c0-6.3-2.5-12.4-7-16.9z"></path></svg>
+	      </span>
             <span class="sr-only">{% trans "Upload Files"%}</span>
           </label>
         </div>
-      </form>
+          </form>
+      </li>
+    </ul>
   </div>
 
 </nav>
@@ -79,14 +91,18 @@
             <nav class="navbar navbar-expand-lg navbar-light p-0 m-0">
               
               <button class="btn btn-light btn-sm p-0 m-0" type="button" data-toggle="collapse" data-target="#currentfile{{file.id}}" aria-expanded="false" aria-controls="currentfile{{file.id}}" style="opacity:0.8;">
-                <span class="navbar-toggler-icon"></span>
+                <span class="navbar-toggler-icon file-options-icon">
+			<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="ellipsis-v" class="svg-inline--fa fa-ellipsis-v fa-w-6" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path fill="currentColor" d="M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z"></path></svg>
+		</span>
               </button>
               
-              <div class="collapse" id="currentfile{{file.id}}">
-              <ul class="navbar-nav mr-auto p-0 m-0">
+              <div class="file collapse" id="currentfile{{file.id}}">
+              <ul class="file-navbar navbar-nav mr-auto p-0 m-0">
                 <li class="nav-item p-0 m-0">
                   <button type="button" class="btn btn-link btn-sm nav-link p-0 m-0" data-toggle="modal" data-target="#folderModalCenter" data-filename="{{file.name}}" data-fileid="{{file.id}}" data-folderid="{{file.folder.id}}" data-filetype="{{file.class_name}}">
-                  <img src="{% static "podfile/images/paste.png" %}" >
+		      <span class="edit-file" id="edit-file-icon">
+			          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="pen-square" class="svg-inline--fa fa-pen-square fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M400 480H48c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h352c26.5 0 48 21.5 48 48v352c0 26.5-21.5 48-48 48zM238.1 177.9L102.4 313.6l-6.3 57.1c-.8 7.6 5.6 14.1 13.3 13.3l57.1-6.3L302.2 242c2.3-2.3 2.3-6.1 0-8.5L246.7 178c-2.5-2.4-6.3-2.4-8.6-.1zM345 165.1L314.9 135c-9.4-9.4-24.6-9.4-33.9 0l-23.1 23.1c-2.3 2.3-2.3 6.1 0 8.5l55.5 55.5c2.3 2.3 6.1 2.3 8.5 0L345 199c9.3-9.3 9.3-24.5 0-33.9z"></path></svg>
+		      </span>
                   <span class="sr-only">{% trans "Modify"%}</span>
                   </button>
                 </li>
@@ -95,7 +111,9 @@
                     {% csrf_token %}
                     <input type="hidden" value="{{file.file.name}}" name="filename" />
                     <button type="submit" class="btn btn-link btn-sm nav-link p-0 m-0">
-                    <img src="{% static "podfile/images/download.png" %}" >
+		        <span class="download-file" id="download-file-icon">
+				        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="file-download" class="svg-inline--fa fa-file-download fa-w-12" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm76.45 211.36l-96.42 95.7c-6.65 6.61-17.39 6.61-24.04 0l-96.42-95.7C73.42 337.29 80.54 320 94.82 320H160v-80c0-8.84 7.16-16 16-16h32c8.84 0 16 7.16 16 16v80h65.18c14.28 0 21.4 17.29 11.27 27.36zM377 105L279.1 7c-4.5-4.5-10.6-7-17-7H256v128h128v-6.1c0-6.3-2.5-12.4-7-16.9z"></path></svg>
+			</span>
                     <span class="sr-only">{% trans "Download"%}</span>
                     </button>
                   </form>
@@ -103,7 +121,9 @@
                 <li class="nav-item p-0 m-0">
                   <button type="button" class="btn btn-link btn-sm nav-link p-0 m-0 btn-delete-file" data-fileid="{{file.id}}" data-filetype="{{file.class_name}}">
                   {% csrf_token %}
-                  <img height=16 width=16 src="{% static "podfile/images/delete.png" %}" >
+		      <span class="delete-file" id="delete-file-icon">
+			          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash-alt" class="svg-inline--fa fa-trash-alt fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path></svg>
+		      </span>
                   <span class="sr-only">{% trans "Delete"%}</span>
                   </button>
                 </li>
@@ -114,10 +134,18 @@
             {% endif %}
           </div>
           {% if file.class_name == "CustomImageModel" and file.file_exist %}
-            <img class="card-img-top p-1" src="{{file.file.url}}" alt="Card image">
+                {% if type == "image" and file.class_name == "CustomImageModel" %}
+	            <a href="{{file.file.url}}" class="card-image {% if request.is_ajax %} file-image {% endif %}" title="{{file.name}}" target="_blank" data-fileid="{{file.id}}" data-filetype="{{file.class_name}}" ><img class="card-img-top p-1" src="{{file.file.url}}" alt="Card image"></a>
+		{% else %}
+		    <img class="card-img-top p-1" src="{{file.file.url}}" alt="Card image">
+		{% endif %}
           {% else %}
             {% with file.file.name|icon_exists as icon %}
-            <img class="card-img-top p-1" src="{% static "podfile/images/icons/"|add:icon|add:".png" %}" alt="Card image">
+              {% if type == "file" and file.class_name == "CustomFileModel"%}
+	          <a href="{{file.file.url}}" class="card-image {% if request.is_ajax %} file-image {% endif %}" title="{{file.name}}" target="_blank" data-fileid="{{file.id}}" data-filetype="{{file.class_name}}" ><img class="card-img-top p-1" src="{% static "podfile/images/icons/"|add:icon|add:".png" %}" alt="Card image"></a>
+	      {% else %}
+		  <img class="card-img-top p-1" src="{% static "podfile/images/icons/"|add:icon|add:".png" %}" alt="Card image">
+	      {% endif%}
             {%endwith%}
           {% endif %}
           <div class="card-body">

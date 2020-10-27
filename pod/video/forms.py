@@ -52,6 +52,8 @@ ENCODE_VIDEO = getattr(settings,
 USE_OBSOLESCENCE = getattr(
     settings, "USE_OBSOLESCENCE", False)
 
+ACTIVE_VIDEO_COMMENT = getattr(settings, 'ACTIVE_VIDEO_COMMENT', False)
+
 VIDEO_ALLOWED_EXTENSIONS = getattr(
     settings, 'VIDEO_ALLOWED_EXTENSIONS', (
         '3gp',
@@ -420,15 +422,14 @@ class VideoForm(forms.ModelForm):
             and hasattr(self.instance, 'owner')
             and 'owner' in cleaned_data.keys()
             and cleaned_data['owner'] != self.instance.owner)
-
         if 'description' in cleaned_data.keys():
             cleaned_data['description_%s' %
-                         settings.LANGUAGE_CODE
+                         self.current_lang
                          ] = cleaned_data['description']
         if 'title' in cleaned_data.keys():
             cleaned_data[
                 'title_%s' %
-                settings.LANGUAGE_CODE
+                self.current_lang
             ] = cleaned_data['title']
         if ('restrict_access_to_groups' in cleaned_data.keys()
                 and len(cleaned_data['restrict_access_to_groups']) > 0):
@@ -441,9 +442,8 @@ class VideoForm(forms.ModelForm):
             'is_superuser') if (
             'is_superuser' in kwargs.keys()
         ) else self.is_superuser
-
-        self.current_user = kwargs.pop(
-            'current_user') if kwargs.get('current_user') else None
+        self.current_lang = kwargs.pop('current_lang', settings.LANGUAGE_CODE)
+        self.current_user = kwargs.pop('current_user', None)
 
         self.VIDEO_ALLOWED_EXTENSIONS = VIDEO_ALLOWED_EXTENSIONS
         self.VIDEO_MAX_UPLOAD_SIZE = VIDEO_MAX_UPLOAD_SIZE
@@ -452,12 +452,15 @@ class VideoForm(forms.ModelForm):
 
         super(VideoForm, self).__init__(*args, **kwargs)
 
-        if FILEPICKER and self.fields.get('thumbnail'):
-            self.fields['thumbnail'].widget = CustomFileWidget(type="image")
-
-        if not TRANSCRIPT:
-            self.remove_field('transcript')
-
+        self.custom_video_form()
+        # change ckeditor, thumbnail and date delete config for no staff user
+        self.set_nostaff_config()
+        # hide default language
+        self.hide_default_language()
+        # QuerySet for channels and theme
+        self.set_queryset()
+        self.filter_fields_admin()
+        self.fields = add_placeholder_and_asterisk(self.fields)
         if self.fields.get('video'):
             self.fields['video'].label = _(u'File')
             valid_ext = FileExtensionValidator(VIDEO_ALLOWED_EXTENSIONS)
@@ -466,31 +469,26 @@ class VideoForm(forms.ModelForm):
                 'class'] = self.videoattrs["class"]
             self.fields['video'].widget.attrs[
                 'accept'] = self.videoattrs["accept"]
-
         if self.instance.encoding_in_progress:
             self.remove_field('owner')
             self.remove_field('video')  # .widget = forms.HiddenInput()
-
-        # change ckeditor, thumbnail and date delete config for no staff user
-        self.set_nostaff_config()
-
-        # hide default language
-        self.hide_default_language()
-
-        # QuerySet for channels and theme
-        self.set_queryset()
-
-        self.filter_fields_admin()
-
-        self.fields = add_placeholder_and_asterisk(self.fields)
-
         # remove required=True for videofield if instance
         if self.fields.get('video') and self.instance and self.instance.video:
             del self.fields["video"].widget.attrs["required"]
-
         if self.fields.get('owner'):
             self.fields['owner'].queryset = self.fields['owner']. \
                 queryset.filter(owner__sites=Site.objects.get_current())
+
+    def custom_video_form(self):
+
+        if not ACTIVE_VIDEO_COMMENT:
+            self.fields.pop('disable_comment')
+
+        if FILEPICKER and self.fields.get('thumbnail'):
+            self.fields['thumbnail'].widget = CustomFileWidget(type="image")
+
+        if not TRANSCRIPT:
+            self.remove_field('transcript')
 
     def set_nostaff_config(self):
         if self.is_staff is False:
@@ -629,7 +627,7 @@ class ChannelForm(forms.ModelForm):
 
         # change ckeditor config for no staff user
         if not hasattr(self, 'admin_form') and (
-                self.is_staff is False or self.is_superuser is False
+                self.is_staff is False and self.is_superuser is False
         ):
             del self.fields['headband']
             self.fields['description'].widget = CKEditorWidget(

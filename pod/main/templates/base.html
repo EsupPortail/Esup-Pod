@@ -3,6 +3,7 @@
 <!doctype html>
 <html lang="{{ LANGUAGE_CODE }}">
 	<head>{% spaceless %}
+
 	    <!-- Required meta tags -->
 	    <meta charset="utf-8">
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -32,6 +33,10 @@
         <link rel="stylesheet" href="{% static CSS_OVERRIDE %}" media="screen" title="no title">
         {% endif %}
 
+        <!-- more styles for each App -->
+	{% block more_style %}
+	{% endblock more_style %}
+
         <!-- Javascript -->
         <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
         <script src="{% static 'bootstrap-4/js/bootstrap.bundle.js' %}"></script>
@@ -54,6 +59,10 @@
 		</nav><!-- fin barre nav-->
 		{% include 'navbar_collapse.html' %}
 		{% block content %}
+		{% if request.path == "/" and MAINTENANCE_MODE %}
+			{% get_maintenance_welcome as maintenance_text %}
+			<div class="p-3 mb-2 bg-danger text-white">{{maintenance_text}}</div>
+        {%endif%}
 		<div class="container container-pod">
 			<main class="mt-3">
 		        <nav aria-label="breadcrumb" class="breadcrumb d-flex justify-content-between p-0" id="mainbreadcrumb">
@@ -61,6 +70,7 @@
 		          	{% block breadcrumbs %}
 		                <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
 					{% endblock breadcrumbs %}
+					
 		          </ol>
 		          <div class="p-0">
                     {% block collapse_page_aside %}
@@ -70,6 +80,7 @@
                     {% endblock collapse_page_aside %}
 		          </div>
 		        </nav>
+				
 		        <div class="row">
 		        	<div class="col order-12 order-md-1">
 						<!-- contenu page statique -->

@@ -16,5 +16,45 @@
         "enable_comments": false,
         "title_fr": "Accueil"
     }
+  },
+  {
+    "pk": 1,
+    "model": "main.configuration",
+    "fields": {
+        "key" : "maintenance_mode",
+        "value": "0",
+        "description_fr" : "Activation du mode maintenance ou non",
+        "description_en" : "Activation of maintenance mode or not"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "main.configuration",
+    "fields": {
+        "key" : "maintenance_text_short",
+        "value": "Maintenance en cours",
+        "description_fr" : "Texte qui sera affiché sur la barre de navigation pendant la maintenance",
+        "description_en" : "Text that will be displayed on the navigation bar during maintenance"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "main.configuration",
+    "fields": {
+        "key" : "maintenance_text_welcome",
+        "value": "La plateforme Pod est actuellement en maintenance",
+        "description_fr" : "Texte qui sera affiché sur la page d'accueil pendant une maintenance",
+        "description_en" : "Text that will be displayed on the home page during maintenance"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "main.configuration",
+    "fields": {
+        "key" : "maintenance_text_disabled",
+        "value": "Pod est en maintenance, cette fonctionnalité est donc désactivée pour le moment",
+        "description_fr" : "Texte qui sera affiché sur les pages qui sont désactivées pendant la maintenance",
+        "description_en" : "Text that will be displayed on pages that are disabled during maintenance"
+    }
   }
 ]

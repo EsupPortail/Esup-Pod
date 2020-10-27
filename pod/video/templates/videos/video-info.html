@@ -78,6 +78,7 @@
       <p><strong>{% trans 'Updated on' %}&nbsp;</strong>:<br /> {{ video.date_added }}</p>
       <p><strong>{% trans 'Duration' %}&nbsp;</strong>:<br />{{ video.duration_in_time }}</p>
       <p><strong>{% trans 'Number of view' %}&nbsp;</strong>:<br />{{ video.get_viewcount }}{% if USE_STATS_VIEW %} <a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video_stats_view' video.slug %}?from=video">({% trans 'Show details views' %})</a></p>{% endif %}
+
       </div>
       <div class="col-4">
         <p><strong>{% trans 'Type' %}&nbsp;</strong>:<br /> <a href="{% url 'videos' %}?type={{ video.type.slug }}" title="{{ video.type.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ video.type.title }}</a></p>
@@ -94,6 +95,12 @@
         {% endfor %}
         </p>
         {%endif%}
+      {% if request.GET.is_iframe and video.licence %}
+       <p><strong>{% trans 'Licence' %}&nbsp;</strong>:<br />
+          {% include "videos/video_licencebox.html" %}
+       </p>
+       {% endif %}
+
       </div>
     </div>
   </div>
@@ -142,6 +149,7 @@
   </div>
 </div>
 
+   {% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all%}
   <div class="tab-pane fade" id="share" role="tabpanel" aria-labelledby="share-tab" {% if video.is_draft %}style="border:1px solid red"{% endif %}>
     <h5><i data-feather="share-2"></i>&nbsp;{% if video.is_draft %}{% trans 'Embed/Share (Draft Mode)' %} {% else %}{% trans 'Embed/Share' %} {%endif%}</h5>
     {% if not video.is_draft and not video.is_restricted and video.password != '' %}
@@ -196,4 +204,5 @@
       </fieldset>
     
   </div>
+  {%endif%}
 </div>

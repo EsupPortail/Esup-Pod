@@ -414,3 +414,29 @@ footer a, footer a:hover{
 input.select2-input{
 	width: 100% !important;
 }
+
+#view-counter-icon{
+  color: var(--primary2);
+}
+
+
+#viewers-list {
+  position: absolute; 
+  right: 0;
+  margin-right: 80px;
+  color: #FFF; 
+  text-align: center;
+  font-size: 20px;
+  background-color: rgba(40,48,56, 0.5);
+  padding: 10px 0;
+  z-index: 2147483647;
+  bottom: 100px;
+  display: none;
+}
+
+.live-video {
+  z-index: 1;
+}
+
+#viewers-ul{height:200px;list-style-type: none;padding-left: 0; }
+#viewers-ul{overflow:hidden; overflow-y:scroll;}

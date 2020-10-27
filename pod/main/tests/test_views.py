@@ -7,7 +7,7 @@ from django.test import Client
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from captcha.models import CaptchaStore
-
+from pod.main.models import Configuration
 import tempfile
 import os
 
@@ -85,3 +85,28 @@ class MainViewsTestCase(TestCase):
 
         print(
             "   --->  test_contact_us of mainViewsTestCase : OK !")
+
+
+class MaintenanceViewsTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        User.objects.create(username='pod', password='podv2')
+
+    def test_maintenance(self):
+        self.client = Client()
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        # GET method is used
+        response = self.client.get('/video_edit/')
+        self.assertEqual(response.status_code, 200)
+
+        conf = Configuration.objects.get(key="maintenance_mode")
+        conf.value = "1"
+        conf.save()
+
+        response = self.client.get('/video_edit/')
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, "/maintenance/")
+        print(
+            "   --->  test_maintenance of MaintenanceViewsTestCase : OK !")

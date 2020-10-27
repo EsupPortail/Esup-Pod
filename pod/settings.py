@@ -6,11 +6,10 @@ Django version : 1.11.16.
 import os
 import sys
 from pod.main.settings import BASE_DIR
-
 ##
 # Version of the project
 #
-VERSION = '2.6.3'
+VERSION = '2.7.0'
 
 ##
 # Installed applications list
@@ -56,6 +55,7 @@ INSTALLED_APPS = [
     'pod.custom',
     'shibboleth',
     'chunked_upload',
+    'pod.bbb',
 ]
 
 ##

@@ -21,6 +21,7 @@ from django.utils import timezone
 from django.db.models import Sum, Min
 from dateutil.parser import parse
 
+from pod.main.views import in_maintenance
 from pod.video.models import Video
 from pod.video.models import Type
 from pod.video.models import Channel
@@ -361,7 +362,7 @@ def my_videos(request):
     # Videos list which user is the owner + which user is an additional owner
     videos_list = request.user.video_set.all().filter(
         sites=site) | request.user.owners_videos.all().filter(sites=site)
-
+    videos_list = videos_list.distinct()
     page = request.GET.get('page', 1)
 
     full_path = ""
@@ -543,7 +544,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         video.get_version != "O" and
         request.GET.get('redirect') != "false"
     ):
-        return redirect(video.get_default_version_link())
+        return redirect(video.get_default_version_link(slug_private))
     return render_video(request, id, slug_c, slug_t, slug_private,
                         template_video, params)
 
@@ -655,6 +656,8 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
 @ensure_csrf_cookie
 @login_required(redirect_field_name='referrer')
 def video_edit(request, slug=None):
+    if in_maintenance():
+        return redirect(reverse('maintenance'))
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(
         request)) if slug else None
 
@@ -680,7 +683,7 @@ def video_edit(request, slug=None):
         is_staff=request.user.is_staff,
         is_superuser=request.user.is_superuser,
         current_user=request.user,
-        initial={'owner': default_owner}
+        initial={'owner': default_owner},
     )
 
     if request.method == 'POST':
@@ -691,6 +694,7 @@ def video_edit(request, slug=None):
             is_staff=request.user.is_staff,
             is_superuser=request.user.is_superuser,
             current_user=request.user,
+            current_lang=request.LANGUAGE_CODE,
 
         )
         if form.is_valid():
@@ -1587,6 +1591,8 @@ def stats_view(request, slug=None, slug_t=None):
 
 @login_required(redirect_field_name='referrer')
 def video_add(request):
+    if in_maintenance():
+        return redirect(reverse('maintenance'))
     allow_extension = ".%s" % ', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS))
     slug = request.GET.get('slug', "")
     if slug != "":
