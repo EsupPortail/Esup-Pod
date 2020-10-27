@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-27 13:24+0000\n"
+"POT-Creation-Date: 2020-10-27 15:26+0000\n"
 "PO-Revision-Date: 2018-07-03 13:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1789,7 +1789,7 @@ msgstr ""
 msgid "name"
 msgstr ""
 
-#: pod/live/models.py:31 pod/live/templates/live/live.html:95
+#: pod/live/models.py:31 pod/live/templates/live/live.html:97
 #: pod/video/models.py:234 pod/video/models.py:318
 #: pod/video/templates/channel/channel.html:79
 #: pod/video/templates/channel/channel.html:90
@@ -1908,6 +1908,14 @@ msgstr ""
 msgid "Last heartbeat"
 msgstr ""
 
+#: pod/live/models.py:158
+msgid "Heartbeat"
+msgstr ""
+
+#: pod/live/models.py:159
+msgid "Heartbeats"
+msgstr ""
+
 #: pod/live/templates/live/live-form.html:3
 msgid "This live is protected by password, please fill in and click send."
 msgstr ""
@@ -1930,35 +1938,35 @@ msgstr ""
 msgid "Send"
 msgstr ""
 
-#: pod/live/templates/live/live.html:18 pod/live/templates/live/live.html:22
+#: pod/live/templates/live/live.html:20 pod/live/templates/live/live.html:24
 #: pod/live/templates/live/lives.html:15 pod/live/templates/live/lives.html:18
 #: pod/live/templates/live/lives.html:21 pod/main/templates/navbar.html:32
 msgid "Lives"
 msgstr ""
 
-#: pod/live/templates/live/live.html:102 pod/live/templates/live/lives.html:33
+#: pod/live/templates/live/live.html:104 pod/live/templates/live/lives.html:33
 msgid "no broadcast in progress"
 msgstr ""
 
-#: pod/live/templates/live/live.html:105 pod/live/templates/live/lives.html:35
+#: pod/live/templates/live/live.html:107 pod/live/templates/live/lives.html:35
 msgid "Sorry, no lives found"
 msgstr ""
 
-#: pod/live/templates/live/live.html:108 pod/live/templates/live/lives.html:38
+#: pod/live/templates/live/live.html:110 pod/live/templates/live/lives.html:38
 msgid "access map"
 msgstr ""
 
-#: pod/live/templates/live/live.html:170
+#: pod/live/templates/live/live.html:172
 msgid ""
 "Thank you for watching this streaming live with us. The page will reload "
 "automatically within a few seconds to display the video on hold."
 msgstr ""
 
-#: pod/live/templates/live/live.html:187
+#: pod/live/templates/live/live.html:189
 msgid "Live not found, displaying the video on hold, retry every 10 seconds"
 msgstr ""
 
-#: pod/live/templates/live/live.html:201
+#: pod/live/templates/live/live.html:204
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
 

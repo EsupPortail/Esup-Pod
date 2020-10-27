@@ -153,3 +153,8 @@ class HeartBeat(models.Model):
         verbose_name=_('Broadcaster'))
     last_heartbeat = models.DateTimeField(
         _('Last heartbeat'), default=timezone.now)
+
+    class Meta:
+        verbose_name = _("Heartbeat")
+        verbose_name_plural = _("Heartbeats")
+        ordering = ['broadcaster']

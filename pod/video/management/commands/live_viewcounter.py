@@ -11,15 +11,16 @@ class Command(BaseCommand):
     help = 'Update viewcounter for lives'
 
     def handle(self, *args, **options):
-        for hb in HeartBeat.objects.all():
-            accepted_time = (timezone.now() - timezone.timedelta(
+        accepted_time = (
+            timezone.now() - timezone.timedelta(
                 seconds=VIEW_EXPIRATION_DELAY))
+        for hb in HeartBeat.objects.all():
             if hb.last_heartbeat <= accepted_time:
                 hb.delete()
         for broad in Broadcaster.objects.filter(enable_viewer_count=True):
             hbs = HeartBeat.objects.filter(broadcaster=broad)
             users = []
-            for hb in hbs.all():
+            for hb in hbs:
                 if hb.user is not None and hb.user not in users:
                     users.append(hb.user)
             broad.viewers.set(users)
