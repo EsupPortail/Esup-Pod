@@ -8,8 +8,10 @@
 <script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
 <script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
 <script src="{% static 'js/videojs-logo-controlbar.js' %}"></script>
+{% if broadcaster.enable_viewer_count%}
 <script>let heartbeat_delay = {{heartbeat_delay}}</script>
 <script src="{% static 'js/viewcounter.js' %}"></script>
+{%endif%}
 {% endblock %}
 
 
@@ -191,8 +193,9 @@
 	// Management of the streaming live
 	var player = videojs('podvideoplayer', options, function(){});
 		
-
+    {% if broadcaster.enable_viewer_count%}
 	player.videoJsViewerCount();
+	{% endif %}
 	player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
 	player.on('error', function() {
 	  // Handle successives errors to avoid multiple reload
