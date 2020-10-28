@@ -5,10 +5,10 @@ from .models import User as BBBUser
 
 class MeetingAdmin(admin.ModelAdmin):
     list_display = (
-        'id', 'date', 'meeting_name', 'encoding_step',
+        'id', 'session_date', 'meeting_name', 'encoding_step',
         'recorded', 'recording_available', 'encoded_by')
     list_display_links = ('id', 'meeting_name')
-    ordering = ('-id', '-date')
+    ordering = ('-id', '-session_date')
     readonly_fields = []
 
 

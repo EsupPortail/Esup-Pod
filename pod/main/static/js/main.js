@@ -120,7 +120,7 @@ var get_list = function(tab, level, tab_selected, tag_type, li_class, attrs, add
     if(level!=0) prefix+="|-";
     $.each(tab, function(_, val) {
         var title = add_link ? '<a href="'+val.url+'">'+channel+' '+val.title+'</a>' : channel+' '+val.title;
-        var selected = $.inArray(val.id, tab_selected) > -1 ? "selected" : "";
+        var selected = $.inArray(val.id.toString(), tab_selected) > -1 ? "selected" : "";
         var list_class = 'class="'+li_class;
         if(val.slug==current) list_class+=' list-group-item-info"';
         else list_class+='"';

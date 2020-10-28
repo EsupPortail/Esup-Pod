@@ -132,11 +132,14 @@ class CustomFileModel(BaseFileModel):
     file = models.FileField(upload_to=get_upload_path_files, max_length=255)
 
     @property
+    def file_ext(self):
+        return self.file.path.rpartition('.')[-1].lower()
+
+    @property
     def file_type(self):
         filetype = mimetypes.guess_type(self.file.path)[0]
         if filetype is None:
-            fname, dot, extension = self.file.path.rpartition('.')
-            filetype = extension.lower()
+            filetype = self.file_ext
         return filetype
     file_type.fget.short_description = _('Get the file type')
 

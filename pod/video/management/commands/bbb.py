@@ -52,6 +52,7 @@ import dateutil.parser
 from django.core.mail import mail_admins
 from django.utils import timezone
 from xml.dom import minidom
+import urllib.parse
 
 from pod.video.models import Video, Type, get_storage_path_video
 from pod.video.encode import start_encode
@@ -142,7 +143,7 @@ def encode_file_exist(filename, extension, message_error, html_message_error):
         if oMeeting.encoded_by_id:
             video.owner = User.objects.get(id=oMeeting.encoded_by_id)
         video.type = Type.objects.get(id=DEFAULT_BBB_TYPE_ID)
-        video.date_evt = oMeeting.date
+        video.date_evt = oMeeting.session_date
         # Video management
         storage_path = get_storage_path_video(
             video, os.path.basename(source_file))
@@ -182,10 +183,10 @@ def process_directory(files, root, html_message_error, message_error):
         valid_ext = VIDEO_ALLOWED_EXTENSIONS
         if not (extension in valid_ext and filename != extension):
             print_if_debug(
-                    " - WARNING : " + extension + "is not a valid video "
-                                                  "extension. If it should "
-                                                  "be, add it to the setting "
-                                                  "VIDEO_ALLOWED_EXTENSIONS")
+                " - WARNING : " + extension + "is not a valid video "
+                "extension. If it should "
+                "be, add it to the setting "
+                "VIDEO_ALLOWED_EXTENSIONS")
             continue
         html_message_error, message_error = encode_file_exist(
             filename, extension, message_error, html_message_error)
@@ -210,6 +211,14 @@ def get_bbb_meetings_by_xml(html_message_error, message_error):
                        ", status : " + str(addr.status_code))
         # XML result to parse
         xmldoc = minidom.parseString(addr.text)
+        returncode = xmldoc.getElementsByTagName(
+            "returncode")[0].firstChild.data
+        # Management of FAILED error (basically error in checksum)
+        if (returncode == "FAILED"):
+            err = "Return code = FAILED for : " + urlToRequest
+            err += " => : " + xmldoc.toxml() + ""
+            message_error += err + "\n"
+            html_message_error += "<li>" + err + "</li>"
         # Actual meetings
         meetings = xmldoc.getElementsByTagName("meeting")
         for meeting in meetings:
@@ -267,7 +276,7 @@ def get_meeting(meeting, html_message_error, message_error):
             meetingToCreate.meeting_name = meetingName
             # Convert the date in the database format
             dateForSql = dateutil.parser.parse(date, ignoretz=False)
-            meetingToCreate.date = dateForSql
+            meetingToCreate.session_date = dateForSql
             # Initially encoding_step = 0 (very important)
             meetingToCreate.encoding_step = 0
             # Recording tag seems ~always true, so seems useless
@@ -387,7 +396,8 @@ def get_bbb_meetings_recorded(html_message_error, message_error):
         dateSince4d = timezone.now() - timezone.timedelta(days=4)
         meetings = Meeting.objects.filter(recorded=True,
                                           recording_available=False,
-                                          date__gte=dateSince4d).order_by('id')
+                                          session_date__gte=dateSince4d
+                                          ).order_by('id')
         for meeting in meetings:
             # Search recording on BBB/Scalelite server
             html_message_error, message_error = get_bbb_recording_by_xml(
@@ -412,20 +422,29 @@ def get_bbb_recording_by_xml(meeting_id, internal_meeting_id,
     try:
         # See https://docs.bigbluebutton.org/dev/api.html#usage
         # for checksum and security
-        checksum = hashlib.sha1(str("getRecordingsmeetingID=" + meeting_id + ""
-                                "" + BBB_SECRET_KEY)
-                                .encode('utf-8')).hexdigest()
+        uri = "getRecordingsmeetingID="
+        uri += urllib.parse.quote_plus(meeting_id) + BBB_SECRET_KEY
+        checksum = hashlib.sha1(str(uri).encode('utf-8')).hexdigest()
         # Request on BBB/Scalelite server (API)
         # URL example : https://bbb.univ.fr/bigbluebutton/api/getRecordings?
         # meetingID=xxxxxxxxxxxxxx&checksum=yyyyyyyyyyyyyyy
         urlToRequest = BBB_SERVER_URL
         urlToRequest += "bigbluebutton/api/getRecordings?meetingID="
-        urlToRequest += "" + meeting_id + "&checksum=" + checksum
+        urlToRequest += urllib.parse.quote_plus(meeting_id)
+        urlToRequest += "&checksum=" + checksum
         addr = requests.get(urlToRequest)
         print_if_debug("   + Request on URL : " + urlToRequest + ""
                        ", status : " + str(addr.status_code))
         # XML result to parse
         xmldoc = minidom.parseString(addr.text)
+        returncode = xmldoc.getElementsByTagName(
+            "returncode")[0].firstChild.data
+        # Management of FAILED error (basically error in checksum)
+        if (returncode == "FAILED"):
+            err = "Return code = FAILED for : " + urlToRequest
+            err += " => : " + xmldoc.toxml() + ""
+            message_error += err + "\n"
+            html_message_error += "<li>" + err + "</li>"
         # Actual recordings
         recordings = xmldoc.getElementsByTagName("recording")
         for recording in recordings:
@@ -535,9 +554,9 @@ class Command(BaseCommand):
             # If there was at least one error,send an email to Pod admins
             if message_error != "":
                 print_if_debug(
-                        "\n\n*** An email BBB job [Error(s) "
-                        "encountered] was sent to Pod admins, with message : "
-                        "***\n\n" + message_error)
+                    "\n\n*** An email BBB job [Error(s) "
+                    "encountered] was sent to Pod admins, with message : "
+                    "***\n\n" + message_error)
                 mail_admins("BBB job [Error(s) encountered]",
                             message_error, fail_silently=False,
                             html_message=html_message_error)

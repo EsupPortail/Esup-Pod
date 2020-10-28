@@ -915,3 +915,35 @@ HEARTBEAT_DELAY = 45
 """
 VIEW_EXPIRATION_DELAY = 60
 
+"""
+# Utilisation de BigBlueButton
+"""
+USE_BBB = True
+
+"""
+# Répertoire du plugin bbb-recorder (voir documentation https://github.com/jibon57/bbb-recorder)
+# bbb-recorder doit être installé dans ce répertoire, sur tous les serveurs d'encodage
+# bbb-recorder crée un répertoire 'homedir' / Downloads qui a besoin d'espace disque
+"""
+DEFAULT_BBB_PLUGIN = '/home/podtest/bbb-recorder/'
+
+"""
+# Répertoire qui contiendra les fichiers vidéo générés par bbb-recorder
+"""
+DEFAULT_BBB_PATH = '/data/www/podtest/bbb-recorder/'
+
+"""
+# URL du serveur BigBlueButton ou Scalelite, où se trouvent les présentations Web BBB et l'API
+"""
+BBB_SERVER_URL = 'https://bbb.univ.fr/'
+
+"""
+# Clé BigBlueButton ou Scalelite LOADBALANCER_SECRET
+"""
+BBB_SECRET_KEY = 'abcdef'
+
+"""
+# Type de vidéo générée par défaut
+"""
+DEFAULT_BBB_TYPE_ID = 1
+

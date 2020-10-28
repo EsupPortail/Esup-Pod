@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-15 14:09+0000\n"
+"POT-Creation-Date: 2020-10-19 08:53+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -215,7 +215,7 @@ msgstr "Identifiant de la session"
 
 #: pod/bbb/models.py:19
 msgid "Id of the BBB meeting."
-msgstr "Identifiant de la session BBB"
+msgstr "Identifiant de la session BBB."
 
 #: pod/bbb/models.py:23
 msgid "Internal meeting id"
@@ -223,7 +223,7 @@ msgstr "Identifiant interne de la session"
 
 #: pod/bbb/models.py:24
 msgid "Internal id of the BBB meeting."
-msgstr "Identifiant interne de la session BBB"
+msgstr "Identifiant interne de la session BBB."
 
 #: pod/bbb/models.py:28
 msgid "Meeting name"
@@ -231,12 +231,11 @@ msgstr "Nom de la session"
 
 #: pod/bbb/models.py:29
 msgid "Name of the BBB meeting."
-msgstr "Nom de la session BBB"
+msgstr "Nom de la session BBB."
 
 #: pod/bbb/models.py:32
-#| msgid "End date"
-msgid "date"
-msgstr "Date de fin"
+msgid "Session date"
+msgstr "Date de session"
 
 #: pod/bbb/models.py:39 pod/video/models.py:645 pod/video/models.py:1309
 msgid "Encoding step"
@@ -419,7 +418,7 @@ msgstr ""
 "Si un tel cas se produit, ces informations seront affichées directement dans "
 "la liste. Vous pouvez alors contacter directement cet utilisateur pour lui "
 "demander de partager la vidéo avec vous, voire de vous mettre en tant que "
-"propriétaire supplémentaire de la vidéo."
+"propriétaire additionnel de la vidéo."
 
 #: pod/bbb/templates/bbb/publish_meeting.html:18
 #: pod/bbb/templates/bbb/publish_meeting.html:22
@@ -453,7 +452,7 @@ msgstr "Désolé, aucun enregistrement trouvé"
 
 #: pod/bbb/views.py:84
 msgid "You aren't the moderator of this BigBlueButton session."
-msgstr ""
+msgstr "Vous n’êtes pas le modérateur de cette session BigBlueButton."
 
 #: pod/bbb/views.py:103
 msgid "The BigBlueButton session has been published."
@@ -1984,7 +1983,6 @@ msgid "Viewing this live will not be possible without this password."
 msgstr "Voir ce direct n'est pas possible sans mot de passe."
 
 #: pod/live/models.py:107
-#| msgid "Number of view"
 msgid "Number of viewers"
 msgstr "Nombre de spectateurs"
 
@@ -2001,7 +1999,7 @@ msgid "Viewer"
 msgstr "Spectateur"
 
 #: pod/live/models.py:145
-msgid "viewkey"
+msgid "Viewkey"
 msgstr "Clé de visionnage"
 
 #: pod/live/models.py:151
@@ -2075,7 +2073,7 @@ msgstr ""
 msgid "Sorry, no buildings found"
 msgstr "Désolé, aucun bâtiment trouvé"
 
-#: pod/live/views.py:67 pod/video/views.py:627
+#: pod/live/views.py:70 pod/video/views.py:627
 msgid "The password is incorrect."
 msgstr "Le mot de passe est incorrect."
 
@@ -2767,23 +2765,23 @@ msgstr "Vous devez renseigner un lien ou une page"
 
 #: pod/main/models.py:134
 msgid "Key"
-msgstr ""
+msgstr "Clé"
 
 #: pod/main/models.py:135
 msgid "Key of the configuration"
-msgstr ""
+msgstr "Clé de configuration"
 
 #: pod/main/models.py:138
 msgid "Value"
-msgstr ""
+msgstr "Valeur"
 
 #: pod/main/models.py:140
 msgid "Value of the configuration"
-msgstr ""
+msgstr "Valeur de la configuration"
 
 #: pod/main/models.py:144
 msgid "Description of the configuration"
-msgstr "Position de la superposition."
+msgstr "Description de la configuration"
 
 #: pod/main/templates/403.html:4 pod/main/templates/404.html:4
 #: pod/main/templates/404.html:9 pod/main/templates/404.html:15
@@ -3352,7 +3350,7 @@ msgid "Add new folder"
 msgstr "Ajouter un nouveau dossier"
 
 #: pod/podfile/templates/podfile/userfolder.html:22
-msgid "filter files"
+msgid "Filter files"
 msgstr "Filtrer les fichiers"
 
 #: pod/podfile/templates/podfile/userfolder.html:36
@@ -5293,6 +5291,18 @@ msgstr "facettage"
 #: pod/video_search/views.py:55
 msgid "Remove selection"
 msgstr "Retirer la sélection"
+
+#~ msgid "date"
+#~ msgstr "Date de la session"
+
+#~ msgid "Help"
+#~ msgstr "Aide"
+
+#~ msgid "Legal notice"
+#~ msgstr "Mentions légales"
+
+#~ msgid "Top of page"
+#~ msgstr "Haut de page"
 
 #~ msgid "Archived videos"
 #~ msgstr "Archivé"
