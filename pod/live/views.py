@@ -115,5 +115,4 @@ def heartbeat(request):
         return HttpResponse(json.dumps(
             {"viewers": broadcast.viewcount, "viewers_list": list(
                 viewers) if can_see else []}), mimetype)
-    else:
-        return HttpResponseBadRequest()
+    return HttpResponseBadRequest()
