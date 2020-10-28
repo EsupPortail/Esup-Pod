@@ -18,11 +18,12 @@ class Command(BaseCommand):
 
         for broad in Broadcaster.objects.filter(enable_viewer_count=True):
             hbs = HeartBeat.objects.filter(
-                broadcaster=broad).exclude(user=None)
+                broadcaster=broad)
+            broad.viewcount = hbs.count()
+            hbs = hbs.exclude(user=None)
             users = []
             for hb in hbs:
                 if hb.user not in users:
                     users.append(hb.user)
             broad.viewers.set(users)
-            broad.viewcount = hbs.count()
             broad.save()
