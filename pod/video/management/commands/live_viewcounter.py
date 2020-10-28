@@ -14,14 +14,14 @@ class Command(BaseCommand):
         accepted_time = (
             timezone.now() - timezone.timedelta(
                 seconds=VIEW_EXPIRATION_DELAY))
-        for hb in HeartBeat.objects.all():
-            if hb.last_heartbeat <= accepted_time:
-                hb.delete()
+        HeartBeat.objects.filter(last_heartbeat__lt=accepted_time).delete()
+
         for broad in Broadcaster.objects.filter(enable_viewer_count=True):
-            hbs = HeartBeat.objects.filter(broadcaster=broad)
+            hbs = HeartBeat.objects.filter(
+                broadcaster=broad).exclude(user=None)
             users = []
             for hb in hbs:
-                if hb.user is not None and hb.user not in users:
+                if hb.user not in users:
                     users.append(hb.user)
             broad.viewers.set(users)
             broad.viewcount = hbs.count()

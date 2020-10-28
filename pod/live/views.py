@@ -106,13 +106,14 @@ def heartbeat(request):
                 heartbeat.user = request.user
         heartbeat.last_heartbeat = timezone.now()
         heartbeat.save()
+
+        mimetype = 'application/json'
+        viewers = broadcast.viewers.values(
+            'first_name', 'last_name', 'is_superuser')
+        can_see = (VIEWERS_ONLY_FOR_STAFF and
+                   request.user.is_staff) or not VIEWERS_ONLY_FOR_STAFF
+        return HttpResponse(json.dumps(
+            {"viewers": broadcast.viewcount, "viewers_list": list(
+                viewers) if can_see else []}), mimetype)
     else:
         return HttpResponseBadRequest()
-    mimetype = 'application/json'
-    viewers = broadcast.viewers.values(
-        'first_name', 'last_name', 'is_superuser')
-    can_see = (VIEWERS_ONLY_FOR_STAFF and
-               request.user.is_staff) or not VIEWERS_ONLY_FOR_STAFF
-    return HttpResponse(json.dumps(
-        {"viewers": broadcast.viewcount, "viewers_list": list(
-            viewers) if can_see else []}), mimetype)
