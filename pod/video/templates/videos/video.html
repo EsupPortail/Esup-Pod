@@ -192,7 +192,7 @@ body {
       </a>
     </li>
     {%endif%}
-    {% with video.get_other_version as versions %}
+    {% with video.get_other_version as versions %} 
     {% if versions|length > 0 %}
     <li class="nav-item dropdown" id="list_third_apps">
       <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
@@ -200,7 +200,11 @@ body {
       </a>
       <div class="dropdown-menu" >
         {% for version in versions %}
+          {% if video.get_hashkey in request.get_full_path %}
+          <a href="{{version.url}}{{ video.get_hashkey }}/?redirect=false" title="{{version.app}}" class="dropdown-item" >{{version.link}}</a>
+          {% else %}
           <a href="{{version.url}}?redirect=false" title="{{version.app}}" class="dropdown-item" >{{version.link}}</a>
+          {% endif %}
         {% endfor %}
       </div>
     </li>

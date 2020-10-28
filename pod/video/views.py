@@ -544,7 +544,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         video.get_version != "O" and
         request.GET.get('redirect') != "false"
     ):
-        return redirect(video.get_default_version_link())
+        return redirect(video.get_default_version_link(slug_private))
     return render_video(request, id, slug_c, slug_t, slug_private,
                         template_video, params)
 

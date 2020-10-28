@@ -195,20 +195,24 @@ var VideoSlides = function(items) {
 		var keys = Object.keys(this.slidesItems);
 		var active = false;
 		for (let i = 0; i <= keys.length - 1; i++) {
+                  
                     //if (currentTime >= this.slidesItems[i].start && currentTime < this.slidesItems[i].end) {
                     if ( currentTime >= this.slidesItems[i].start
                        && ( currentTime < this.slidesItems[i].end
-                          || ((i+1) < keys.length && (this.slidesItems[(i+1)].start - 2) < currentTime && this.slidesItems[(i+1)].end > currentTime))) {
+                          || ((i+1) < keys.length && ((this.slidesItems[(i+1)].start) < (this.slidesItems[i].end +2)) && (this.slidesItems[i].end +2 > currentTime)))) {
                         //* Uncomment (and comment next) to not hide slide if next if at less than 2sec
                         if(currentTime <= this.slidesItems[i].end) currentSlide = document.getElementById('slide_'+i);
                         else if((i+1) < keys.length && currentTime >= this.slidesItems[(i+1)].start) {
                             document.getElementById('slide_'+i).style.display = 'none';
                             currentSlide = document.getElementById('slide_'+(i+1));
+                            if(currentSlide.style.display != 'block' && this.slidesItems[(i+1)].stop_video == "1") {
+                              player.pause();
+                            }
                         }
                         //*/
                         /* Uncomment (and comment previous) to hide all slide at end
                         currentSlide = document.getElementById('slide_'+i);
-                        //*/
+                        //*/                     
                         if(currentSlide.style.display != 'block' && this.slidesItems[i].stop_video == "1") {
                                 player.pause();
                         }
