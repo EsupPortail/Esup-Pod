@@ -105,7 +105,7 @@ html,body{
 .dropdown-item.playlist-item{cursor: pointer; background: transparent;transition: color .3s; line-height:2; }
 .dropdown-item.playlist-item:hover{color: #4d8197 !important;}
 .collapse.show{z-index: 9;}
-.navbar > .container{ justify-content: space-around;}
+.navbar > .container{ justify-content: space-between;}
 .fixed-bottom{ position: relative;}
 
 .staticposition{ position: static !important; }
@@ -133,7 +133,7 @@ a:hover{ color: #4d8197 !important; text-decoration: none; }
 .navbar{ background-color: #102636 !important; color: #fff; min-height: 35px; }
 .navbar-items-pod{ background-color: inherit !important; padding: 0 !important; margin-top: .5em;}
 .navbar-light .navbar-brand{ margin-right: 30px !important; }
-.navbar-brand.mr-0.mr-sm-1 img{ height: auto; width: 200px; }
+.navbar-brand.mr-0.mr-sm-1 img{ height: auto; width: 65px; }
 
 .navbar a, .navbar .nav-link, button.dropdown-item, a.dropdown-item{
   color: inherit ! important;
@@ -330,9 +330,14 @@ footer.text-muted{
 footer a, footer p{
   color: inherit !important;
 }
-
 @media only screen and ( max-width: 992px )
 {
+  .navbar #nav-mainbar div:first-child{
+    flex-grow: 1;
+    display: flex;
+    justify-content: inherit;
+    margin-right: .8em;
+  }
   .navbar-nav{
     background-color: #102636;
     padding: 1em;
@@ -375,24 +380,22 @@ footer a, footer p{
   }
 
 }
-
 @media only screen and (max-width: 700px)
 {
   /* NAVBAR MoBILE ORGANISATION */
   .navbar-brand.mr-0.mr-sm-1
   {
-    width: 150px;
     margin-right: 10px !important;
-
   }
-  .navbar-brand.mr-0.mr-sm-1 img{
-    width: 100%
-  }
-
   .navbar.navbar-expand-lg .form-inline{
     margin: 0 !important;
     padding: 0 !important;
-
   }
-
 }
+@media only screen and (max-width: 600px){
+    .text-center{
+        flex-direction: column;
+    }
+    .navbar-light .navbar-toggler{ margin-right: .8em; }
+}
+
