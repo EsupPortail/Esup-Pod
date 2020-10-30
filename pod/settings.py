@@ -9,7 +9,7 @@ from pod.main.settings import BASE_DIR
 ##
 # Version of the project
 #
-VERSION = '2.6.3'
+VERSION = '2.7.1'
 
 ##
 # Installed applications list
@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'pod.custom',
     'shibboleth',
     'chunked_upload',
+    'pod.bbb',
 ]
 
 ##

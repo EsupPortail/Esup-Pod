@@ -21,6 +21,7 @@ from django.utils import timezone
 from django.db.models import Sum, Min
 from dateutil.parser import parse
 
+from pod.main.views import in_maintenance
 from pod.video.models import Video
 from pod.video.models import Type
 from pod.video.models import Channel
@@ -543,7 +544,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         video.get_version != "O" and
         request.GET.get('redirect') != "false"
     ):
-        return redirect(video.get_default_version_link())
+        return redirect(video.get_default_version_link(slug_private))
     return render_video(request, id, slug_c, slug_t, slug_private,
                         template_video, params)
 
@@ -655,6 +656,8 @@ def render_video(request, id, slug_c=None, slug_t=None, slug_private=None,
 @ensure_csrf_cookie
 @login_required(redirect_field_name='referrer')
 def video_edit(request, slug=None):
+    if in_maintenance():
+        return redirect(reverse('maintenance'))
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(
         request)) if slug else None
 
@@ -1588,6 +1591,8 @@ def stats_view(request, slug=None, slug_t=None):
 
 @login_required(redirect_field_name='referrer')
 def video_add(request):
+    if in_maintenance():
+        return redirect(reverse('maintenance'))
     allow_extension = ".%s" % ', .'.join(map(str, VIDEO_ALLOWED_EXTENSIONS))
     slug = request.GET.get('slug', "")
     if slug != "":

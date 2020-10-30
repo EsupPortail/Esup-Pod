@@ -665,7 +665,7 @@ class Video(models.Model):
         thumbnail_url = ""
         if self.thumbnail and self.thumbnail.file_exist():
             im = get_thumbnail(self.thumbnail.file, '100x100',
-                               crop='center', quality=72, format='PNG')
+                               crop='center', quality=72)
             thumbnail_url = im.url
             # <img src="{{ im.url }}" width="{{ im.width }}"
             # height="{{ im.height }}">
@@ -688,7 +688,7 @@ class Video(models.Model):
         thumbnail_url = ""
         if self.thumbnail and self.thumbnail.file_exist():
             im = get_thumbnail(self.thumbnail.file, 'x170',
-                               crop='center', quality=72, format='PNG')
+                               crop='center', quality=72)
             thumbnail_url = im.url
             # <img src="{{ im.url }}" width="{{ im.width }}"
             # height="{{ im.height }}">
@@ -744,10 +744,13 @@ class Video(models.Model):
                     )
         return version
 
-    def get_default_version_link(self):
+    def get_default_version_link(self, slug_private):
         for version in self.get_other_version():
             if version["link"] == VERSION_CHOICES_DICT[self.get_version]:
-                return version["url"]
+                if slug_private:
+                    return version["url"]+slug_private+"/"
+                else:
+                    return version["url"]
 
     def get_viewcount(self):
         count_sum = self.viewcount_set.all().aggregate(Sum('count'))

@@ -9,6 +9,9 @@ from select2 import fields as select2_fields
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.urls import reverse
+from django.contrib.auth.models import User
+from django.utils import timezone
+
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -86,6 +89,10 @@ class Broadcaster(models.Model):
          'Height of the embedded site (in pixels)'))
     status = models.BooleanField(default=0, help_text=_(
         'Check if the broadcaster is currently sending stream.'))
+    enable_viewer_count = models.BooleanField(
+        default=1,
+        verbose_name=_(u'Enable viewers count'),
+        help_text=_('Enable viewers count on live.'))
     is_restricted = models.BooleanField(
         verbose_name=_(u'Restricted access'),
         help_text=_(
@@ -101,6 +108,9 @@ class Broadcaster(models.Model):
         help_text=_(
             'Viewing this live will not be possible without this password.'),
         max_length=50, blank=True, null=True)
+    viewcount = models.IntegerField(
+        _('Number of viewers'), default=0, editable=False)
+    viewers = models.ManyToManyField(User, editable=False)
 
     def get_absolute_url(self):
         return reverse('live:video_live', args=[str(self.slug)])
@@ -130,3 +140,22 @@ class Broadcaster(models.Model):
     @property
     def sites(self):
         return self.building.sites
+
+
+class HeartBeat(models.Model):
+    user = models.ForeignKey(
+        User,
+        null=True,
+        verbose_name=_('Viewer'))
+    viewkey = models.CharField(_('Viewkey'), max_length=200, unique=True)
+    broadcaster = models.ForeignKey(
+        Broadcaster,
+        null=False,
+        verbose_name=_('Broadcaster'))
+    last_heartbeat = models.DateTimeField(
+        _('Last heartbeat'), default=timezone.now)
+
+    class Meta:
+        verbose_name = _("Heartbeat")
+        verbose_name_plural = _("Heartbeats")
+        ordering = ['broadcaster']

@@ -15,8 +15,8 @@
 """
 # La clé secrète d’une installation Django.
 # Elle est utilisée dans le contexte de la signature cryptographique,
-# et doit être définie à une valeur unique et non prédictible. 
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#secret-key	
+# et doit être définie à une valeur unique et non prédictible.
+# https://docs.djangoproject.com/fr/1.11/ref/settings/#secret-key
 """
 SECRET_KEY = 'A_CHANGER'
 
@@ -67,15 +67,15 @@ ADMINS = ( ('Name', 'adminmail@univ.fr'),)
 
 """
 # Dans Pod, les "managers" sont destinataires des courriels de fin d'encodage (et ainsi des vidéos déposées sur la plateforme).
-# Le premier managers renseigné est également contact des flus rss. 
+# Le premier managers renseigné est également contact des flus rss.
 # Ils sont aussi destinataires des courriels de contact si la variable CONTACT_US_EMAIL n'est pas renseignée.
 """
 MANAGERS = ADMINS
 
 """
 # Un dictionnaire contenant les réglages de toutes les bases de données à utiliser avec Django.
-# C’est un dictionnaire imbriqué dont les contenus font correspondre l’alias de base de données avec un dictionnaire contenant les options de chacune des bases de données. 
-# https://docs.djangoproject.com/fr/1.11/ref/settings/#databases	
+# C’est un dictionnaire imbriqué dont les contenus font correspondre l’alias de base de données avec un dictionnaire contenant les options de chacune des bases de données.
+# https://docs.djangoproject.com/fr/1.11/ref/settings/#databases
 """
 DATABASES = {
     'default': {
@@ -90,7 +90,7 @@ DATABASES = {
 LANGUAGE_CODE = "fr"
 
 """
-# Langue disponible et traduite	
+# Langue disponible et traduite
 """
 LANGUAGES = (
     ('fr', 'Français'), ('en', 'English'), ('nl', 'Dutch (Netherlands)')
@@ -286,7 +286,7 @@ SHOW_ONLY_PARENT_THEMES = False
 ORGANIZE_BY_THEME = False
 
 """
-# Configuration des templates / de l'affichage 
+# Configuration des templates / de l'affichage
 # L'ensemble des variables ci-après doivent être contnu dans un dictionnnaire TEMPLATE_VISIBLE_SETTINGS.
 # Voici sa valeur par défaut :
 """
@@ -353,7 +353,7 @@ FAVICON = "img/logoPod.svg"
 CSS_OVERRIDE = ""
 
 """
-# vous pouvez créer un template dans votre application custom et indiquer son chemin dans cette variable pour que ce code html, 
+# vous pouvez créer un template dans votre application custom et indiquer son chemin dans cette variable pour que ce code html,
 # ce template soit affiché en haut de votre page, le code est ajouté juste après la balise body.(Or iframe)
 # Si le fichié créé est '/usr/local/django_projects/podv2/pod/custom/templates/custom/preheader.html' alors la varaible doit prendre la valeur 'custom/preheader.html'
 """
@@ -500,15 +500,15 @@ RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = False
 DEFAULT_THUMBNAIL = "img/default.png"
 
 """
-# Encodage possible sur la plateforme. Associé à un rendu dans le cas d'une vidéo.	
+# Encodage possible sur la plateforme. Associé à un rendu dans le cas d'une vidéo.
 """
-ENCODING_CHOICES = ( 
+ENCODING_CHOICES = (
     ("audio", "audio"),*
     ("360p", "360p"),
     ("480p", "480p"),
     ("720p", "720p"),
     ("1080p", "1080p"),
-    ("playlist", "playlist") 
+    ("playlist", "playlist")
 )
 
 """
@@ -543,7 +543,7 @@ DEFAULT_TYPE_ID = 1
 """
 # Liste des cursus proposés lors de l'ajout des vidéos. Affichés en dessous d'une vidéos, ils sont aussi utilisés pour affiner la recherche.
 """
-CURSUS_CODES = ( 
+CURSUS_CODES = (
     ('0', ("None / All")),
     ('L', ("Bachelor’s Degree")),
     ('M', ("Master’s Degree")),
@@ -639,6 +639,18 @@ ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = True
 ALLOW_MANUAL_RECORDING_CLAIMING = False
 
 """
+# Liste des champs supplémentaires pour le formulaire des enregistreurs
+# Cette liste reprend le nom des champs correspondants aux paramètres d'édition d'une vidéo (Discipline, Chaine, Theme, mots clés...)
+# L'exemple suivant comporte l'ensemble des champs possibles mais peut être allégée en fonction des besoins.
+# Les vidéos seront alors générées avec les valeurs des champs supplémentaires telles que définies dans leur enregistreur.
+"""
+RECORDER_ADDITIONAL_FIELDS = ('additional_users', 'is_draft', 'password',
+                'is_restricted', 'restrict_access_to_groups',
+                'cursus','main_lang', 'tags','discipline',
+                'licence', 'channel', 'theme', 'transcript'
+                'allow_downloading', 'is_360', 'disable_comment',)
+
+"""
 # Si True, permet de ne pas prendre en compte la 1° image lors du traitement d'une fichier d'enregistrement de type AudioVideoCast.
 """
 RECORDER_SKIP_FIRST_IMAGE = False
@@ -685,7 +697,7 @@ FILE_MAX_UPLOAD_SIZE = 10
 """
 # Liste de rôle possible pour un contributeur
 """
-ROLE_CHOICES = ( 
+ROLE_CHOICES = (
     ('actor', ('actor')),
     ('author', ('author')),
     ('designer', ('designer')),
@@ -742,7 +754,7 @@ AUTH_CAS_USER_SEARCH = "user"
 """
 # liste de correspondance entre les champs d'un compte de Pod et les champs renvoyés par le CAS
 """
-USER_CAS_MAPPING_ATTRIBUTES = { 
+USER_CAS_MAPPING_ATTRIBUTES = {
     "uid": "uid",
     "mail": "mail",
     "last_name": "sn",
@@ -764,7 +776,7 @@ AFFILIATION_STAFF = ('faculty', 'employee', 'staff')
 """
 # Valeurs possibles pour l'Affiliation du compte
 """
-AFFILIATION = ( 
+AFFILIATION = (
     ('student', ('student')),
     ('faculty', ('faculty')),
     ('staff', ('staff')),
@@ -805,13 +817,13 @@ AUTH_LDAP_USER_SEARCH = ('ou=people,dc=univ,dc=fr', "(uid=%(uid)s)")
 """
 # liste de correspondance entre les champs d'un compte de Pod et les champs renvoyés par le LDAP
 """
-USER_LDAP_MAPPING_ATTRIBUTES = { 
-    "uid": "uid", 
-    "mail": "mail", 
+USER_LDAP_MAPPING_ATTRIBUTES = {
+    "uid": "uid",
+    "mail": "mail",
     "last_name": "sn",
     "first_name": "givenname",
     "primaryAffiliation": "eduPersonPrimaryAffiliation",
-    "affiliations": "eduPersonAffiliation" 
+    "affiliations": "eduPersonAffiliation"
 }
 
 """
@@ -883,7 +895,55 @@ DS_PARAM = {
         # le modèle deepspeech
         'model': "/usr/local/django_projects/transcription/model_tensorflow_fr/output_graph.pbmm",
         'scorer': "/usr/local/django_projects/transcription/model_tensorflow_fr/kenlm.scorer",
-        
+
     }
 }
+
+"""
+# La liste des utilisateurs regardant le direct sera réservée au staff
+"""
+VIEWERS_ONLY_FOR_STAFF = False
+
+"""
+# Temps (en seconde) entre deux envois d'un signal au serveur, pour signaler la présence sur un live
+# Peut être augmenté en cas de perte de performance mais au détriment de la qualité du comptage des valeurs
+"""
+HEARTBEAT_DELAY = 45
+
+"""
+# Délai (en seconde) selon lequel une vue est considérée comme expirée si elle n'as pas renvoyé de signal depuis
+"""
+VIEW_EXPIRATION_DELAY = 60
+
+"""
+# Utilisation de BigBlueButton
+"""
+USE_BBB = True
+
+"""
+# Répertoire du plugin bbb-recorder (voir documentation https://github.com/jibon57/bbb-recorder)
+# bbb-recorder doit être installé dans ce répertoire, sur tous les serveurs d'encodage
+# bbb-recorder crée un répertoire 'homedir' / Downloads qui a besoin d'espace disque
+"""
+DEFAULT_BBB_PLUGIN = '/home/podtest/bbb-recorder/'
+
+"""
+# Répertoire qui contiendra les fichiers vidéo générés par bbb-recorder
+"""
+DEFAULT_BBB_PATH = '/data/www/podtest/bbb-recorder/'
+
+"""
+# URL du serveur BigBlueButton ou Scalelite, où se trouvent les présentations Web BBB et l'API
+"""
+BBB_SERVER_URL = 'https://bbb.univ.fr/'
+
+"""
+# Clé BigBlueButton ou Scalelite LOADBALANCER_SECRET
+"""
+BBB_SECRET_KEY = 'abcdef'
+
+"""
+# Type de vidéo générée par défaut
+"""
+DEFAULT_BBB_TYPE_ID = 1
 

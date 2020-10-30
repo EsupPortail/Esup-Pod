@@ -157,6 +157,12 @@ $(document).on("submit", "form#formchangeimage, form#formchangefile, form#formup
 
   });
 
+function user_li(text, elt, type)
+{
+    let cls = type.toLowerCase()==="add"?"btn-success btn-add": "btn-danger btn-remove";
+	return `<li class="list-group-item"><span class="username">${elt.first_name} ${elt.last_name} ${!HIDE_USERNAME?'('+elt.username+')': ''}</span><a href="#" type="button" data-userid="${elt.id}" class="btn btn-share ${cls}">${text}</a></li>`
+}
+
   function reloadRemoveBtn(){
     let remove = gettext('Remove')
     $("#shared-people").html("")
@@ -167,8 +173,8 @@ $(document).on("submit", "form#formchangeimage, form#formchangefile, form#formup
           cache: false,
           success: function (response) {
               response.forEach(elt => {
-                  $("#shared-people").append('<li class="list-group-item">' + elt.first_name+' '+elt.last_name+(((!HIDE_USERNAME)?' ('+elt.username+')': '')  + ' <button type="button" data-userid=' +elt.id + ' class="btn btn-danger btn-share btn-remove">'+remove+'</button></li>'));
-              })
+                  $("#shared-people").append( user_li(remove, elt, 'remove') );
+              });
           },
           error : function(result, status, error){
             showalert(gettext("Server error") + "<br/>"+error, "alert-danger");
@@ -178,19 +184,19 @@ $(document).on("submit", "form#formchangeimage, form#formchangefile, form#formup
   }
 
   function reloadAddBtn(searchTerm){
-    var foldid = $("#formuserid").val();
+    let folderid  = Number.parseInt(document.querySelector('#formuserid').value)
     let add = gettext('Add')
     $.ajax(
         {
             type: "GET",
-            url: "/podfile/ajax_calls/search_share_user?term=" + searchTerm + "&foldid=" + foldid,
+            url: "/podfile/ajax_calls/search_share_user?term=" + searchTerm + "&foldid=" + folderid,
             cache: false,
             success: function (response) {
                 $("#user-search").html("");
                 response.forEach(elt => {
-                  $("#user-search").append('<li class="list-group-item">' +  (elt.first_name+' '+elt.last_name+(((!HIDE_USERNAME)?' ('+elt.username+')': '')))   + '<button type="button" data-userid=' + elt.id  +' class="btn btn-success btn-share btn-add">' +add+ '</button></li>')
-                  
-                })
+                  $("#user-search").append( user_li(add, elt, 'add') )
+                });
+      		$("#user-search").fadeIn('slow');
             },
             error : function(result, status, error){
               showalert(gettext("Server error") + "<br/>"+error, "alert-danger");
@@ -199,21 +205,24 @@ $(document).on("submit", "form#formchangeimage, form#formchangefile, form#formup
     );
   }
 
-  $(document).on('show.bs.modal', '#shareModalCenter', function (event) {
+//$(document).on('click', '#currentfoldershare', function(e){
+$(document).on('hide.bs.modal', '#shareModalCenter', function (event) {
+	event.stopPropagation()
+})
+$(document).on('show.bs.modal', '#shareModalCenter', function (event) {
+    event.stopPropagation();
+    $("#user-search").hide();
     $("#shared-people").text("")
     let button = $(event.relatedTarget)
-    let folder_id = button.data('folderid');
-    let modal = $(this);
+    var folder_id = button.data('folderid');
+    let modal = $(button.data('target'));
     modal.find('#formuserid').val(folder_id);
     reloadRemoveBtn();
-  
-
-
-  });
+});
 
 
 
-  $(document).on("click", ".btn-remove", function(e) {
+$(document).on("click", ".btn-remove", function(e) {
     $.ajax(
       {
           type: "GET",
@@ -320,6 +329,9 @@ $(document).on("submit", "form#formchangeimage, form#formchangefile, form#formup
       reloadAddBtn(searchTerm)
     } else {
       $("#user-search").html("");
+      $("#user-search").fadeOut('slow',function(){
+      	$("#user-search").hide();
+      });
     }
   });
   
