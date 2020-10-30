@@ -856,7 +856,7 @@ SHIB_LOGOUT_URL = ""
 CAS_FORCE_LOWERCASE_USERNAME = False
 
 """
-# permettre l'usage du oembed, partage dans moodle, facebook, twitter etc.
+# Permettre l'usage du oembed, partage dans moodle, facebook, twitter etc.
 """
 OEMBED = True
 
