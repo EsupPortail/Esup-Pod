@@ -146,12 +146,14 @@ class HeartBeat(models.Model):
     user = models.ForeignKey(
         User,
         null=True,
-        verbose_name=_('Viewer'))
+        verbose_name=_('Viewer'),
+        on_delete=models.CASCADE)
     viewkey = models.CharField(_('Viewkey'), max_length=200, unique=True)
     broadcaster = models.ForeignKey(
         Broadcaster,
         null=False,
-        verbose_name=_('Broadcaster'))
+        verbose_name=_('Broadcaster'),
+        on_delete=models.CASCADE)
     last_heartbeat = models.DateTimeField(
         _('Last heartbeat'), default=timezone.now)
 
