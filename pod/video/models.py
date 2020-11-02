@@ -27,7 +27,7 @@ from ckeditor.fields import RichTextField
 from tagging.fields import TagField
 from django.utils.text import capfirst
 from django.contrib.sites.models import Site
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save
 import importlib
 
 from select2 import fields as select2_fields
@@ -915,12 +915,6 @@ def remove_video_file(video):
         if os.path.isfile(image_overview):
             os.remove(image_overview)
         video.overview.delete()
-
-
-@receiver(pre_save, sender=Video)
-def title_fr_fix(sender, instance, *args, **kwargs):
-    if instance.title_fr is None:
-        instance.title_fr = instance.title
 
 
 @receiver(post_save, sender=Video)
