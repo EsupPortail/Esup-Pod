@@ -25,6 +25,11 @@ DATABASES = {
         'NAME': 'db.sqlite',
     }
 }
+LANGUAGES = (
+    ('fr', 'Français'),
+    ('en', 'English'),
+    ('nl', 'Netherlands')
+)
 LANGUAGE_CODE = 'en'
 THIRD_PARTY_APPS = ["enrichment", "live"]
 USE_PODFILE = True
