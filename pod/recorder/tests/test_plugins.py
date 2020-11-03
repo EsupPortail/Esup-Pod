@@ -63,11 +63,11 @@ class PluginVideoTestCase(TestCase):
         video = Video.objects.last()
         self.assertEqual(video.is_draft, recorder.is_draft)
         self.assertEqual(video.channel.all().count(),
-                          recorder.channel.all().count())
+                         recorder.channel.all().count())
         self.assertEqual(video.theme.all().count(),
-                          recorder.theme.all().count())
+                         recorder.theme.all().count())
         self.assertEqual(video.discipline.all().count(),
-                          recorder.discipline.all().count())
+                         recorder.discipline.all().count())
         self.assertEqual(video.main_lang, recorder.main_lang)
         self.assertEqual(video.cursus, recorder.cursus)
         self.assertEqual(video.tags, recorder.tags)
@@ -92,11 +92,11 @@ class PluginVideoTestCase(TestCase):
         self.assertEqual((video.enrichment_set.all().count() > 0), True)
         self.assertEqual(video.is_draft, recorder.is_draft)
         self.assertEqual(video.channel.all().count(),
-                          recorder.channel.all().count())
+                         recorder.channel.all().count())
         self.assertEqual(video.theme.all().count(),
-                          recorder.theme.all().count())
+                         recorder.theme.all().count())
         self.assertEqual(video.discipline.all().count(),
-                          recorder.discipline.all().count())
+                         recorder.discipline.all().count())
         self.assertEqual(video.main_lang, recorder.main_lang)
         self.assertEqual(video.cursus, recorder.cursus)
         self.assertEqual(video.tags, recorder.tags)
