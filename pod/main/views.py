@@ -113,6 +113,14 @@ def get_manager_email(owner):
     return CONTACT_US_EMAIL
 
 
+
+
+
+
+
+
+
+
 def get_dest_email(owner, video, form_subject, request):
     dest_email = []
     # Soit le owner a été spécifié
