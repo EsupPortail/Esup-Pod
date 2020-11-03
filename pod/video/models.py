@@ -470,7 +470,8 @@ class Video(models.Model):
             'numbers, underscore or dash top.'),
         editable=False)
     sites = models.ManyToManyField(Site)
-    type = models.ForeignKey(Type, verbose_name=_('Type'), on_delete=models.CASCADE)
+    type = models.ForeignKey(
+        Type, verbose_name=_('Type'), on_delete=models.CASCADE)
     owner = select2_fields.ForeignKey(
         User,
         ajax=True,
@@ -1097,7 +1098,8 @@ class EncodingVideo(models.Model):
         help_text="Please use the only format in encoding choices :"
         + " %s" % ' '.join(str(key) for key, value in ENCODING_CHOICES)
     )
-    video = models.ForeignKey(Video, verbose_name=_('Video'), on_delete=models.CASCADE)
+    video = models.ForeignKey(
+        Video, verbose_name=_('Video'), on_delete=models.CASCADE)
     rendition = models.ForeignKey(
         VideoRendition, verbose_name=_('rendition'), on_delete=models.CASCADE)
     encoding_format = models.CharField(
@@ -1165,7 +1167,8 @@ class EncodingAudio(models.Model):
         _('Name'), max_length=10, choices=ENCODING_CHOICES, default="audio",
         help_text="Please use the only format in encoding choices :"
         + " %s" % ' '.join(str(key) for key, value in ENCODING_CHOICES))
-    video = models.ForeignKey(Video, verbose_name=_('Video'), on_delete=models.CASCADE)
+    video = models.ForeignKey(
+        Video, verbose_name=_('Video'), on_delete=models.CASCADE)
     encoding_format = models.CharField(
         _('Format'), max_length=22, choices=FORMAT_CHOICES,
         default="audio/mp3",

@@ -1,6 +1,6 @@
 from django import template
 from html.parser import HTMLParser
-
+import html
 import re
 
 register = template.Library()
@@ -20,7 +20,7 @@ def metaformat(content):
     Returns:
         content (str):  the cleaned string
     """
-    content = re.sub(r'\s\s+', " ", parser.unescape(content))
+    content = re.sub(r'\s\s+', " ", html.unescape(content))
     toReplace = {
         '&#39;': "'",
         '"': "'",

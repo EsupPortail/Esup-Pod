@@ -124,9 +124,9 @@ class BBBUserTestCase(TestCase):
     # Test delete object
     def test_delete_object(self):
         BBBUser.objects.filter(id=1).delete()
-        self.assertEquals(BBBUser.objects.all().count(), 1)
+        self.assertEqual(BBBUser.objects.all().count(), 1)
         BBBUser.objects.filter(id=2).delete()
-        self.assertEquals(BBBUser.objects.all().count(), 0)
+        self.assertEqual(BBBUser.objects.all().count(), 0)
 
         print(
             "   --->  test_delete_object of BBBUserTestCase : OK !")

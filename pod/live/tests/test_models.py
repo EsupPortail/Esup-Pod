@@ -55,7 +55,7 @@ class BuildingTestCase(TestCase):
 
     def test_delete_object(self):
         Building.objects.get(id=1).delete()
-        self.assertEquals(Building.objects.all().count(), 0)
+        self.assertEqual(Building.objects.all().count(), 0)
 
         print(
             "   --->  test_delete_object of BuildingTestCase : OK !")
@@ -139,7 +139,7 @@ class BroadcasterTestCase(TestCase):
     def test_delete_object(self):
         Broadcaster.objects.get(id=1).delete()
         Broadcaster.objects.get(id=2).delete()
-        self.assertEquals(Broadcaster.objects.all().count(), 0)
+        self.assertEqual(Broadcaster.objects.all().count(), 0)
 
         print(
             "   --->  test_delete_object of BroadcasterTestCase : OK !")
