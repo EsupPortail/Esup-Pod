@@ -23,10 +23,6 @@ jobs:
         sudo sysctl -w vm.swappiness=1
         sudo sysctl -w fs.file-max=262144
         sudo sysctl -w vm.max_map_count=262144
-    - name: Runs Elasticsearch
-      uses: elastic/elastic-github-actions/elasticsearch@master
-      with:
-        stack-version: 7.6.0
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -41,6 +37,10 @@ jobs:
     - name: Flake8 compliance
       run: |
         flake8 --max-complexity=7 --exclude .git,pod/*/migrations/*.py,test_settings.py
+    - name: Runs Elasticsearch
+      uses: elastic/elastic-github-actions/elasticsearch@master
+      with:
+        stack-version: 7.6.0
     - name: Setup Pod
       run: |
         python manage.py create_pod_index
