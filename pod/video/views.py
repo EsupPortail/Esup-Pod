@@ -1765,22 +1765,21 @@ def category(request, c_slug=None):
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
 
-   # GET method
-   if c_slug: # get category with slug
+    # GET method
+    if c_slug: # get category with slug
 
-       cat = get_object_or_404(Category, slug=c_slug)
+        cat = get_object_or_404(Category, slug=c_slug)
+        response['success'] = True
+        response['category_id'] = cat.id
+        response['category_title'] = cat.title
+        response['category_owner'] = cat.owner.id
+        response['category_videos'] = list(cat.videos.all())
 
-       response['success'] = True
-       response['category_id'] = cat.id
-       response['category_title'] = cat.title
-       response['category_owner'] = cat.owner.id
-       response['category_videos'] = list(cat.videos.all())
+        return HttpResponse(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json")
 
-       return HttpResponse(
-               json.dumps(response, cls=DjangoJSONEncoder),
-               content_type="application/json")
-
-   else: # get all categories of connected user
+    else: # get all categories of connected user
 
        cat = Category.objects.filter(owner=c_user).value('id', 'title')
 
@@ -1790,9 +1789,6 @@ def category(request, c_slug=None):
        return HttpResponse(
                json.dumps(response, cls=DjangoJSONEncoder),
                content_type="application/json")
-
-
-    
 
 
 class PodChunkedUploadView(ChunkedUploadView):
