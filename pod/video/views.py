@@ -1742,17 +1742,17 @@ def delete_comment(request, video_slug, comment_id):
 
 
 @login_required(redirect_field_name='referrer')
-def category(request):
+def category(request, c_slug=None):
+
+    response = {
+        'success': False,
+    }
     c_user = request.user # connected user
+
     if request.method == "POST": # create new category
 
         cat_title = request.POST.get('title', None)
-        response = {
-            'success': False,
-        }
-
         if cat_title:
-
             cat = Category.objects.create(title=cat_title, owner=c_user)
             response['category_title'] = cat.title
             response['success'] = True
@@ -1764,6 +1764,35 @@ def category(request):
         return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
+
+   # GET method
+   if c_slug: # get category with slug
+
+       cat = get_object_or_404(Category, slug=c_slug)
+
+       response['success'] = True
+       response['category_id'] = cat.id
+       response['category_title'] = cat.title
+       response['category_owner'] = cat.owner.id
+       response['category_videos'] = list(cat.videos.all())
+
+       return HttpResponse(
+               json.dumps(response, cls=DjangoJSONEncoder),
+               content_type="application/json")
+
+   else: # get all categories of connected user
+
+       cat = Category.objects.filter(owner=c_user).value('id', 'title')
+
+       response['success'] = True
+       response['categories'] = cat
+
+       return HttpResponse(
+               json.dumps(response, cls=DjangoJSONEncoder),
+               content_type="application/json")
+
+
+    
 
 
 class PodChunkedUploadView(ChunkedUploadView):
