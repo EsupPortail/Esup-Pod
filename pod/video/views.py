@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.http import HttpResponseNotAllowed, HttpResponseNotFound
+from django.http import HttpResponseForbidden
 from django.http import QueryDict
 from django.core.exceptions import SuspiciousOperation
 from django.core.exceptions import PermissionDenied
@@ -1795,6 +1796,31 @@ def create_category(request):
                 content_type="application/json")
 
         return HttpResponse(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json")
+
+    return HttpResponseNotAllowed(_("Method Not Allowed"))
+
+
+@login_required(redirect_field_name='referrer')
+@ajax_required
+def delete_category(request, cat_id):
+
+    response = {'success': False,}
+    c_user = request.user # connected user
+
+    if request.method == "POST": # create new category
+        cat = get_object_or_404(Category, id=cat_id)
+        if cat.owner == c_user or c_user.is_superuser:
+            response['category_id'] = cat.id
+            cat.delete()
+            response['success'] = True
+            return HttpResponse(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json")
+
+        response['message'] = _('You do not have right to delete this comment')
+        return HttpResponseForbidden(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
 
