@@ -94,7 +94,8 @@ class LiveViewsTestCase(TestCase):
         self.client.force_login(self.user)
         # Broadcaster restricted
         response = self.client.get('/live/building/%s/' % self.building.id)
-        self.assertRaises(PermissionDenied, response)
+        # self.assertRaises(PermissionDenied, response)
+        self.assertEqual(response.status_code, 403)
 
         # User logged in
         self.client.force_login(self.superuser)
