@@ -1,4 +1,4 @@
-from fonctools import wraps
+from functools import wraps
 from django.core.exceptions import PermissionDenied
 
 
