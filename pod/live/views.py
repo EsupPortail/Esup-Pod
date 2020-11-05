@@ -10,14 +10,16 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models import Prefetch
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseBadRequest
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 import json
 from django.utils import timezone
 
 VIEWERS_ONLY_FOR_STAFF = getattr(
-        settings, 'VIEWERS_ONLY_FOR_STAFF', False)
+    settings, 'VIEWERS_ONLY_FOR_STAFF', False)
 
 HEARTBEAT_DELAY = getattr(
-        settings, 'HEARTBEAT_DELAY', 45)
+    settings, 'HEARTBEAT_DELAY', 45)
 
 
 def lives(request):  # affichage des directs
@@ -26,7 +28,23 @@ def lives(request):  # affichage des directs
         Prefetch("broadcaster_set", queryset=Broadcaster.objects.filter(
             public=True)))
     return render(request, "live/lives.html", {
-        'buildings': buildings
+        'buildings': buildings,
+        'is_supervisor': (request.user.is_superuser or
+                          request.user.has_perm("live.view_building"))
+    })
+
+
+@login_required(redirect_field_name='referrer')
+def building(request, building_id):  # affichage des directs
+    if not (request.user.is_superuser or
+            request.user.has_perm("live.view_building")):
+        messages.add_message(
+            request, messages.ERROR, _('You cannot view this page.'))
+        raise PermissionDenied
+    building = get_object_or_404(
+        Building, id=building_id)
+    return render(request, "live/building.html", {
+        'building': building
     })
 
 
