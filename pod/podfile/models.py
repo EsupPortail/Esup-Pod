@@ -26,7 +26,8 @@ class UserFolder(models.Model):
     name = models.CharField(_('Name'), max_length=255)
     # parent = models.ForeignKey(
     #    'self', blank=True, null=True, related_name='children')
-    owner = models.ForeignKey(User, verbose_name=_('Owner'))
+    owner = models.ForeignKey(User, verbose_name=_('Owner'),
+                              on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     groups = models.ManyToManyField(
         Group, blank=True, verbose_name=_('Groups'),
@@ -103,7 +104,7 @@ def get_upload_path_files(instance, filename):
 class BaseFileModel(models.Model):
     name = models.CharField(_('Name'), max_length=255)
     description = models.CharField(max_length=255, blank=True)
-    folder = models.ForeignKey(UserFolder)
+    folder = models.ForeignKey(UserFolder, on_delete=models.CASCADE)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         User,

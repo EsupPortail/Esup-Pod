@@ -49,7 +49,8 @@ LANG_CHOICES_DICT = {key: value for key,
 
 class Contributor(models.Model):
 
-    video = models.ForeignKey(Video, verbose_name=_('video'))
+    video = models.ForeignKey(Video, verbose_name=_('video'),
+                              on_delete=models.CASCADE)
     name = models.CharField(_('lastname / firstname'), max_length=200)
     email_address = models.EmailField(
         _('mail'), null=True, blank=True, default='')
@@ -116,7 +117,8 @@ class Contributor(models.Model):
 
 
 class Document(models.Model):
-    video = models.ForeignKey(Video, verbose_name=_('Video'))
+    video = models.ForeignKey(Video, verbose_name=_('Video'),
+                              on_delete=models.CASCADE)
     document = models.ForeignKey(
         CustomFileModel,
         null=True,
@@ -172,7 +174,8 @@ class Document(models.Model):
 
 class Track(models.Model):
 
-    video = models.ForeignKey(Video, verbose_name=_('Video'))
+    video = models.ForeignKey(Video, verbose_name=_('Video'),
+                              on_delete=models.CASCADE)
     kind = models.CharField(
         _('Kind'),
         max_length=10,
@@ -254,7 +257,8 @@ class Overlay(models.Model):
         ('left', _(u'left')),
     )
 
-    video = models.ForeignKey(Video, verbose_name=_('Video'))
+    video = models.ForeignKey(Video, verbose_name=_('Video'),
+                              on_delete=models.CASCADE)
     title = models.CharField(_('Title'), max_length=100)
     slug = models.SlugField(
         _('Slug'),

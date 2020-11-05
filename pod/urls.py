@@ -61,8 +61,6 @@ urlpatterns = [
     # Translation
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-    # progressbar
-    url(r'^progressbarupload/', include('progressbarupload.urls')),
 
     # App video
     url(r'^videos/$', videos, name='videos'),

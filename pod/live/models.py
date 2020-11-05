@@ -80,7 +80,8 @@ class Broadcaster(models.Model):
         'This video will be displayed when there is no live stream.'),
         blank=True,
         null=True,
-        verbose_name=_('Video on hold'))
+        verbose_name=_('Video on hold'),
+        on_delete=models.CASCADE)
     iframe_url = models.URLField(_('Embedded Site URL'), help_text=_(
         'Url of the embedded site to display'), null=True, blank=True)
     iframe_height = models.IntegerField(

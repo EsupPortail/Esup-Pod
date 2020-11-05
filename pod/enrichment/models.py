@@ -110,7 +110,8 @@ class Enrichment(models.Model):
         ('embed', _("embed")),
     )
 
-    video = models.ForeignKey(Video, verbose_name=_('video'))
+    video = models.ForeignKey(Video, verbose_name=_('video'),
+                              on_delete=models.CASCADE)
     title = models.CharField(_('title'), max_length=100)
     slug = models.SlugField(
         _('slug'),

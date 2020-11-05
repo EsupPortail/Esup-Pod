@@ -318,7 +318,8 @@ class Theme(models.Model):
                                  verbose_name=_('Headband'))
 
     channel = models.ForeignKey(
-        'Channel', related_name='themes', verbose_name=_('Channel'))
+        'Channel', related_name='themes', verbose_name=_('Channel'),
+        on_delete=models.CASCADE)
 
     @property
     def sites(self):
@@ -473,19 +474,12 @@ class Video(models.Model):
         Type, verbose_name=_('Type'), on_delete=models.CASCADE)
     owner = models.ForeignKey(
         User,
-        ajax=True,
         verbose_name=_('Owner'),
-        search_field=select_video_owner(),
         on_delete=models.CASCADE)
     additional_owners = models.ManyToManyField(
         User,
         blank=True,
-        ajax=True,
-        js_options={
-            'width': 'off'
-        },
         verbose_name=_('Additional owners'),
-        search_field=select_video_owner(),
         related_name='owners_videos',
         help_text=_('You can add additional owners to the video. They '
                     'will have the same rights as you except that they '
@@ -1221,7 +1215,8 @@ class PlaylistVideo(models.Model):
         _('Name'), max_length=10, choices=ENCODING_CHOICES, default="360p",
         help_text="Please use the only format in encoding choices :"
         + " %s" % ' '.join(str(key) for key, value in ENCODING_CHOICES))
-    video = models.ForeignKey(Video, verbose_name=_('Video'))
+    video = models.ForeignKey(Video, verbose_name=_('Video'), 
+                              on_delete=models.CASCADE)
     encoding_format = models.CharField(
         _('Format'), max_length=22, choices=FORMAT_CHOICES,
         default="application/x-mpegURL",
@@ -1321,8 +1316,8 @@ class EncodingStep(models.Model):
 
 
 class Notes(models.Model):
-    user = models.ForeignKey(User)
-    video = models.ForeignKey(Video)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    video = models.ForeignKey(Video, on_delete=models.CASCADE)
     note = models.TextField(_('Note'), null=True, blank=True)
 
     @property
@@ -1339,8 +1334,8 @@ class Notes(models.Model):
 
 
 class AdvancedNotes(models.Model):
-    user = models.ForeignKey(User)
-    video = models.ForeignKey(Video)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    video = models.ForeignKey(Video, on_delete=models.CASCADE)
     status = models.CharField(
         _('Note availibility level'), max_length=1,
         choices=NOTES_STATUS, default="0",
@@ -1397,7 +1392,7 @@ class AdvancedNotes(models.Model):
 
 
 class NoteComments(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     parentNote = models.ForeignKey(AdvancedNotes, on_delete=models.CASCADE)
     parentCom = models.ForeignKey(
         "NoteComments", blank=True, null=True, on_delete=models.CASCADE)

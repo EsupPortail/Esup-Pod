@@ -127,12 +127,7 @@ class Recorder(models.Model):
     additional_users = models.ManyToManyField(
         User,
         blank=True,
-        ajax=True,
-        js_options={
-            'width': 'off'
-        },
         verbose_name=_('Additional users'),
-        search_field=select_recorder_user(),
         related_name='users_recorders',
         help_text=_(
             'You can add additionals users to the recorder. They '

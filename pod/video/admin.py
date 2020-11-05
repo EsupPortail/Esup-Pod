@@ -103,8 +103,6 @@ class VideoVersionInline(admin.StackedInline):
 
 
 class VideoAdmin(admin.ModelAdmin):
-    change_form_template = 'progressbarupload/change_form.html'
-    add_form_template = 'progressbarupload/change_form.html'
 
     list_display = ('id', 'title', 'get_owner_by_name', 'type', 'date_added',
                     'viewcount', 'is_draft', 'is_restricted',
