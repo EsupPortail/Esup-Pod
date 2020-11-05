@@ -28,7 +28,7 @@ from pod.video.models import Channel
 from pod.video.models import Theme
 from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount, VideoVersion
-from pod.video.models import Comment, Vote
+from pod.video.models import Comment, Vote, Category
 from tagging.models import TaggedItem
 from django.contrib.auth.models import User
 
@@ -1739,6 +1739,31 @@ def delete_comment(request, video_slug, comment_id):
         return HttpResponse(
             json.dumps(response, cls=DjangoJSONEncoder),
             content_type="application/json")
+
+
+@login_required(redirect_field_name='referrer')
+def category(request):
+    c_user = request.user # connected user
+    if request.method == "POST": # create new category
+
+        cat_title = request.POST.get('title', None)
+        response = {
+            'success': False,
+        }
+
+        if cat_title:
+
+            cat = Category.objects.create(title=cat_title, owner=c_user)
+            response['category_title'] = cat.title
+            response['success'] = True
+
+            return HttpResponse(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json")
+
+        return HttpResponse(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json")
 
 
 class PodChunkedUploadView(ChunkedUploadView):
