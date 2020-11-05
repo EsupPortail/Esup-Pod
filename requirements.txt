@@ -1,4 +1,4 @@
-Django==1.11.29
+Django==2.2
 django-ckeditor==5.3.1
 Pillow==7.1.0
 django-tagging==0.4.6
@@ -11,7 +11,7 @@ django-simple-captcha==0.5.12
 urllib3==1.25.9
 elasticsearch==6.3.1
 djangorestframework==3.9.1
-django-filter==1.1.0
+django-filter==2.4.0
 sorl-thumbnail==12.6.3
 django-lti-provider==0.4.0
 django-auth-mixins==1.0.1
@@ -21,6 +21,5 @@ pandas
 deepspeech==0.8.2
 billiard<4.0,>=3.6.0
 webrtcvad
-django-select2-forms==2.1.0
 django-shibboleth-remoteuser
 django-chunked-upload==2.0.0
