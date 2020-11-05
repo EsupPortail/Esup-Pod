@@ -2,7 +2,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
+from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponseNotAllowed, HttpResponseNotFound
 from django.http import QueryDict
 from django.core.exceptions import SuspiciousOperation
 from django.core.exceptions import PermissionDenied
@@ -22,6 +23,7 @@ from django.db.models import Sum, Min
 from dateutil.parser import parse
 
 from pod.main.views import in_maintenance
+from pod.main.decorators import ajax_required
 from pod.video.models import Video
 from pod.video.models import Type
 from pod.video.models import Channel
@@ -1742,29 +1744,12 @@ def delete_comment(request, video_slug, comment_id):
 
 
 @login_required(redirect_field_name='referrer')
+@ajax_required
 def category(request, c_slug=None):
 
-    response = {
-        'success': False,
-    }
+    response = {'success': False,}
     c_user = request.user # connected user
-
-    if request.method == "POST": # create new category
-
-        cat_title = request.POST.get('title', None)
-        if cat_title:
-            cat = Category.objects.create(title=cat_title, owner=c_user)
-            response['category_title'] = cat.title
-            response['success'] = True
-
-            return HttpResponse(
-                json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json")
-
-        return HttpResponse(
-                json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json")
-
+    
     # GET method
     if c_slug: # get category with slug
 
@@ -1789,6 +1774,31 @@ def category(request, c_slug=None):
        return HttpResponse(
                json.dumps(response, cls=DjangoJSONEncoder),
                content_type="application/json")
+
+
+@login_required(redirect_field_name='referrer')
+@ajax_required
+def create_category(request):
+
+    response = {'success': False,}
+    c_user = request.user # connected user
+
+    if request.method == "POST": # create new category
+        cat_title = request.POST.get('title', None)
+        if cat_title:
+            cat = Category.objects.create(title=cat_title, owner=c_user)
+            response['category_title'] = cat.title
+            response['success'] = True
+
+            return HttpResponse(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json")
+
+        return HttpResponse(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json")
+
+    return HttpResponseNotAllowed(_("Method Not Allowed"))
 
 
 class PodChunkedUploadView(ChunkedUploadView):
