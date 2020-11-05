@@ -50,7 +50,10 @@ class Building(models.Model):
         verbose_name_plural = _("Buildings")
         ordering = ['name']
         permissions = (
-            ("view_building_supervisor", "Can see the supervisor page for building"),
+            (
+                "view_building_supervisor",
+                "Can see the supervisor page for building"
+            ),
         )
 
 

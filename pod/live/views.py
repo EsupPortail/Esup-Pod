@@ -29,8 +29,11 @@ def lives(request):  # affichage des directs
             public=True)))
     return render(request, "live/lives.html", {
         'buildings': buildings,
-        'is_supervisor': (request.user.is_superuser or
-                          request.user.has_perm("live.view_building_supervisor"))
+        'is_supervisor':
+            (
+                request.user.is_superuser or
+                request.user.has_perm("live.view_building_supervisor")
+            )
     })
 
 
