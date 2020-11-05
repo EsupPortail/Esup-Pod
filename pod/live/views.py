@@ -30,14 +30,14 @@ def lives(request):  # affichage des directs
     return render(request, "live/lives.html", {
         'buildings': buildings,
         'is_supervisor': (request.user.is_superuser or
-                          request.user.has_perm("live.view_building"))
+                          request.user.has_perm("live.view_building_supervisor"))
     })
 
 
 @login_required(redirect_field_name='referrer')
 def building(request, building_id):  # affichage des directs
     if not (request.user.is_superuser or
-            request.user.has_perm("live.view_building")):
+            request.user.has_perm("live.view_building_supervisor")):
         messages.add_message(
             request, messages.ERROR, _('You cannot view this page.'))
         raise PermissionDenied
