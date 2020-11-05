@@ -9,7 +9,7 @@ from pod.live.models import Building, Broadcaster, HeartBeat
 from pod.video.models import Video
 from pod.video.models import Type
 from django.core.management import call_command
-from django.core.exceptions import PermissionDenied
+# from django.core.exceptions import PermissionDenied
 import ast
 from django.http import JsonResponse
 import datetime
