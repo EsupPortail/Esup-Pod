@@ -9,7 +9,6 @@ from ckeditor.fields import RichTextField
 from pod.video.models import Video
 from pod.main.models import get_nextautoincrement
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
-from select2 import fields as select2_fields
 
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
@@ -50,7 +49,7 @@ LANG_CHOICES_DICT = {key: value for key,
 
 class Contributor(models.Model):
 
-    video = select2_fields.ForeignKey(Video, verbose_name=_('video'))
+    video = models.ForeignKey(Video, verbose_name=_('video'))
     name = models.CharField(_('lastname / firstname'), max_length=200)
     email_address = models.EmailField(
         _('mail'), null=True, blank=True, default='')
@@ -117,7 +116,7 @@ class Contributor(models.Model):
 
 
 class Document(models.Model):
-    video = select2_fields.ForeignKey(Video, verbose_name=_('Video'))
+    video = models.ForeignKey(Video, verbose_name=_('Video'))
     document = models.ForeignKey(
         CustomFileModel,
         null=True,
@@ -173,7 +172,7 @@ class Document(models.Model):
 
 class Track(models.Model):
 
-    video = select2_fields.ForeignKey(Video, verbose_name=_('Video'))
+    video = models.ForeignKey(Video, verbose_name=_('Video'))
     kind = models.CharField(
         _('Kind'),
         max_length=10,
@@ -255,7 +254,7 @@ class Overlay(models.Model):
         ('left', _(u'left')),
     )
 
-    video = select2_fields.ForeignKey(Video, verbose_name=_('Video'))
+    video = models.ForeignKey(Video, verbose_name=_('Video'))
     title = models.CharField(_('Title'), max_length=100)
     slug = models.SlugField(
         _('Slug'),

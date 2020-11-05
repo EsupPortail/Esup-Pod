@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'lti_provider',
-    'select2',
     # Pod Applications
     'pod.main',
     'django.contrib.admin',  # put it here for template override
