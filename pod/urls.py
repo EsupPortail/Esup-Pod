@@ -32,7 +32,7 @@ from pod.video.views import video_count, video_version
 from pod.video.views import video_oembed
 from pod.video.views import stats_view
 from pod.video.views import get_comments, add_comment, delete_comment, vote
-from pod.video.views import get_categories
+from pod.video.views import get_categories, add_category
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 from pod.main.views import contact_us, download_file, user_autocomplete,\
     maintenance
@@ -249,7 +249,10 @@ if getattr(settings, "USER_VIDEO_CATEGORY", False):
             name='get_categories'),
     url(r'^category/(?P<c_slug>[\-\d\w]+)/$',
             get_categories,
-            name='get_categories'),
+            name='get_category'),
+    url(r'^category/add/$',
+            add_category,
+            name='add_category'),
 
 
 # CHANNELS
