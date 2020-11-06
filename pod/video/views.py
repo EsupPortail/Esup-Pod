@@ -1747,7 +1747,7 @@ def delete_comment(request, video_slug, comment_id):
 @login_required(redirect_field_name='referrer')
 @ajax_required
 def get_categories(request, c_slug=None):
-
+    print("-------- ENTER GET METHOD ----------------")
     response = {'success': False,}
     c_user = request.user # connected user
     
@@ -1766,15 +1766,15 @@ def get_categories(request, c_slug=None):
                 content_type="application/json")
 
     else: # get all categories of connected user
+        print("-------- ENTER GET METHOD ELSE ----------------")
 
-       cat = Category.objects.filter(owner=c_user).value('id', 'title')
+        cat = Category.objects.filter(owner=c_user).value('id', 'title')
+        response['success'] = True
+        response['categories'] = cat
 
-       response['success'] = True
-       response['categories'] = cat
-
-       return HttpResponse(
-               json.dumps(response, cls=DjangoJSONEncoder),
-               content_type="application/json")
+        return HttpResponse(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json")
 
 
 @login_required(redirect_field_name='referrer')
