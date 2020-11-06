@@ -18,7 +18,8 @@ seems always true even if not recorded).
 
 - Search to matching BBB users as Pod users.
 This allows to try if BBB user (known with firstname and lastname) is matching
-a Pod user.
+a Pod user. You can parameter the BBB username format via the use
+of BBB_USERNAME_FORMAT setting.
 At each use of this script, we search to matching BBB users
 - not already known - as Pod users.
 Be careful : tested with the Moodle plugin, mod_bigbluebuttonbn,
@@ -68,11 +69,20 @@ DEFAULT_BBB_PATH = getattr(
     settings, 'DEFAULT_BBB_PATH',
     "/data/bbb-recorder/media/"
 )
+# The last caracter of DEFAULT_BBB_PATH must be an OS separator
+last_caracter_path = DEFAULT_BBB_PATH[len(DEFAULT_BBB_PATH) - 1]
+if last_caracter_path != os.path.sep:
+    DEFAULT_BBB_PATH += os.path.sep
+
 # BigBlueButton or Scalelite server URL, where BBB Web presentation and API are
 BBB_SERVER_URL = getattr(
     settings, 'BBB_SERVER_URL',
     "https://bbb.univ.fr/"
 )
+# The last caracter of BBB_SERVER_URL must be /
+last_caracter_url = BBB_SERVER_URL[len(BBB_SERVER_URL) - 1]
+if last_caracter_url != "/":
+    BBB_SERVER_URL += "/"
 
 # BigBlueButton key or Scalelite LOADBALANCER_SECRET
 BBB_SECRET_KEY = getattr(
@@ -84,6 +94,12 @@ DEFAULT_BBB_TYPE_ID = getattr(
     settings, 'DEFAULT_BBB_TYPE_ID',
     1
 )
+# Username format of the user in BBB
+BBB_USERNAME_FORMAT = getattr(
+    settings, 'BBB_USERNAME_FORMAT',
+    "first_name last_name"
+)
+
 # Allowed extensions
 VIDEO_ALLOWED_EXTENSIONS = getattr(
     settings, 'VIDEO_ALLOWED_EXTENSIONS', (
@@ -352,11 +368,18 @@ def matching_bbb_pod_user(html_message_error, message_error):
         bbbUsers = BBBUser.objects.filter(
             user_id__isnull=True
         ).order_by('-id')[:500]
+
+        # Use the BBB_USERNAME_FORMAT setting to make the matching.
+        if BBB_USERNAME_FORMAT == "last_name first_name":
+            bbbUsernameFormat = Concat('last_name', Value(' '), 'first_name')
+        else:
+            bbbUsernameFormat = Concat('first_name', Value(' '), 'last_name')
+
         for bbbUser in bbbUsers:
-            # Search if this BBB user matching to a Pod user
+            # Search if this BBB user matching to a Pod user.
             # Take the first one (This can cause an error in case of namesake!)
             podUser = User.objects.annotate(
-                name=Concat('first_name', Value(' '), 'last_name'),
+                name=bbbUsernameFormat,
             ).filter(name__icontains=bbbUser.full_name).first()
             if podUser:
                 # Update the id and the username of this user
