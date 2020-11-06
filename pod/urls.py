@@ -247,9 +247,10 @@ if getattr(settings, "USER_VIDEO_CATEGORY", False):
     url(r'^category/$',
             get_categories,
             name='get_categories'),
-    url(r'^category/(?P<video_slug>[\-\d\w]+)/$',
+    url(r'^category/(?P<c_slug>[\-\d\w]+)/$',
             get_categories,
             name='get_categories'),
+
 
 # CHANNELS
 urlpatterns += [
