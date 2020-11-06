@@ -1746,7 +1746,7 @@ def delete_comment(request, video_slug, comment_id):
 
 @login_required(redirect_field_name='referrer')
 @ajax_required
-def category(request, c_slug=None):
+def get_categories(request, c_slug=None):
 
     response = {'success': False,}
     c_user = request.user # connected user
@@ -1779,7 +1779,7 @@ def category(request, c_slug=None):
 
 @login_required(redirect_field_name='referrer')
 @ajax_required
-def create_category(request):
+def add_category(request):
 
     response = {'success': False,}
     c_user = request.user # connected user
