@@ -1724,19 +1724,23 @@ def get_comments(request, video_slug):
 
 @login_required(redirect_field_name='referrer')
 def delete_comment(request, video_slug, comment_id):
+
     v = get_object_or_404(Video, slug=video_slug)
     c_user = request.user
     c = get_object_or_404(Comment, video=v, id=comment_id)
     response = {
         'deleted': True,
     }
+
     if c.author == c_user or v.owner == c_user or c_user.is_superuser:
+
         c.delete()
         response['comment_deleted'] = comment_id
         return HttpResponse(
             json.dumps(response),
             content_type="application/json")
     else:
+
         response['deleted'] = False
         response['message'] = _('You do not have right to delete this comment')
         return HttpResponse(
@@ -1747,7 +1751,7 @@ def delete_comment(request, video_slug, comment_id):
 @login_required(redirect_field_name='referrer')
 @ajax_required
 def get_categories(request, c_slug=None):
-    print("-------- ENTER GET METHOD ----------------")
+
     response = {'success': False,}
     c_user = request.user # connected user
     
@@ -1760,18 +1764,15 @@ def get_categories(request, c_slug=None):
         response['category_title'] = cat.title
         response['category_owner'] = cat.owner.id
         response['category_videos'] = list(cat.videos.all())
-
         return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
 
     else: # get all categories of connected user
-        print("-------- ENTER GET METHOD ELSE ----------------")
 
         cat = Category.objects.filter(owner=c_user).value('id', 'title')
         response['success'] = True
         response['categories'] = cat
-
         return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
@@ -1785,12 +1786,14 @@ def add_category(request):
     c_user = request.user # connected user
 
     if request.method == "POST": # create new category
+
         cat_title = request.POST.get('title', None)
+
         if cat_title:
+
             cat = Category.objects.create(title=cat_title, owner=c_user)
             response['category_title'] = cat.title
             response['success'] = True
-
             return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
@@ -1800,6 +1803,52 @@ def add_category(request):
                 content_type="application/json")
 
     return HttpResponseNotAllowed(_("Method Not Allowed"))
+
+
+@login_required(redirect_field_name='referrer')
+@ajax_required
+def edit_category(request, c_slug):
+
+    response = {'success': False,}
+    c_user = request.user # connected user
+
+    if request.method == "POST": # edit current category
+
+        cat = get_object_or_404(Category, slug=c_slug)
+        new_title = request.POST.get('title', None)
+
+        if new_title:
+            if c_user == cat.owner || c_user.is_superuser:
+
+                cat.title = new_title
+                cat.save()
+                response['category_id'] = cat.id
+                response['category_title'] = cat.title
+                response['success'] = True
+                response['message'] = _('Category updated successfully.')
+                return HttpResponse(
+                    json.dumps(response, cls=DjangoJSONEncoder),
+                    content_type="application/json")
+
+            else:
+
+                response['message'] = _(
+                        'You do not have right to delete this comment')
+                return HttpResponseForbidden(
+                    json.dumps(response, cls=DjangoJSONEncoder),
+                    content_type="application/json")
+
+        else:
+
+            response['message'] = _('Title field is required')
+            return HttpResponseBadRequest(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json")
+
+    response['message'] = _("Method Not Allowed")
+    return HttpResponseNotAllowed(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json")
 
 
 @login_required(redirect_field_name='referrer')
