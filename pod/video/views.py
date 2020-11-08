@@ -1763,16 +1763,17 @@ def get_categories(request, c_slug=None):
         response['category_id'] = cat.id
         response['category_title'] = cat.title
         response['category_owner'] = cat.owner.id
-        response['category_videos'] = list(cat.videos.all())
+        response['category_videos'] = list(cat.video.all())
         return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
 
     else: # get all categories of connected user
 
-        cat = Category.objects.filter(owner=c_user).value('id', 'title')
+        cat = Category.objects.filter(owner=c_user).values(
+                'id', 'title', 'video')
         response['success'] = True
-        response['categories'] = cat
+        response['categories'] = list(cat)
         return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
