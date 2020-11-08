@@ -84,6 +84,27 @@ class TestComment(TestCase):
         self.assertTrue(expected_data['success'])
         self.assertCountEqual(actual_data['categories'], expected_data['categories'])
 
+        # Ajax request, should return HttpResponse:200 with one category
+        response = self.client.get(
+                reverse('get_category', kwargs={"c_slug": self.cat_1.slug}),
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        actual_data = json.loads(response.content.decode('utf-8'))
+        expected_data =json.loads(JsonResponse({
+                "success": True,
+                "category_id": self.cat_1.id,
+                "category_title": self.cat_1.title,
+                "category_owner": self.cat_1.owner.id,
+                "category_videos": None
+                }, safe=False).content.decode('utf-8'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(actual_data, expected_data)
+
+
+
+
+
 
     def tearDown(self):
         del self.video
