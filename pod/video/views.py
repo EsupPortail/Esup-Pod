@@ -1754,7 +1754,12 @@ def get_categories(request, c_slug=None):
 
     response = {'success': False,}
     c_user = request.user # connected user
-    
+    if not c_user:
+        response['message'] = _('Authentication required')
+        return HttpResponseForbidden(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json")
+
     # GET method
     if c_slug: # get category with slug
 
@@ -1833,7 +1838,7 @@ def edit_category(request, c_slug):
             else:
 
                 response['message'] = _(
-                        'You do not have right to delete this comment')
+                        'You do not have right to edit this category')
                 return HttpResponseForbidden(
                     json.dumps(response, cls=DjangoJSONEncoder),
                     content_type="application/json")
@@ -1868,7 +1873,8 @@ def delete_category(request, cat_id):
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
 
-        response['message'] = _('You do not have right to delete this comment')
+        response['message'] = _(
+                'You do not have right to delete this category')
         return HttpResponseForbidden(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
