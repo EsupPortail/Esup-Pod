@@ -66,6 +66,24 @@ class TestComment(TestCase):
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
 
+        # Ajax request, should return HttpResponse:200 with all categories
+        response = self.client.get(
+                reverse('get_categories'),
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        actual_data = json.loads(response.content.decode('utf-8'))
+        expected_data =json.loads(JsonResponse({
+                "success": True,
+                "categories": [
+                    {"title": 'testCategory', "id": 1, "video": None},
+                    {"title": 'test2Category', "id": 2, "video": None}
+                ]}, safe=False).content.decode('utf-8'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(actual_data.keys(), expected_data.keys())
+        self.assertTrue(expected_data['success'])
+        self.assertCountEqual(actual_data['categories'], expected_data['categories'])
+
 
     def tearDown(self):
         del self.video
