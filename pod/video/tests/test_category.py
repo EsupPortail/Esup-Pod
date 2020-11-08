@@ -60,6 +60,12 @@ class TestComment(TestCase):
         self.assertIsInstance(response, HttpResponseRedirect)
         self.assertEqual(response.status_code, 302)
 
+        # not Ajax request, should return HttpResponseForbidden:403
+        self.client.force_login(self.owner_user)
+        response = self.client.get(reverse('get_categories'))
+        self.assertIsInstance(response, HttpResponseForbidden)
+        self.assertEqual(response.status_code, 403)
+
 
     def tearDown(self):
         del self.video
