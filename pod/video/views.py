@@ -1754,11 +1754,6 @@ def get_categories(request, c_slug=None):
 
     response = {'success': False,}
     c_user = request.user # connected user
-    if not c_user:
-        response['message'] = _('Authentication required')
-        return HttpResponseForbidden(
-                json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json")
 
     # GET method
     if c_slug: # get category with slug
@@ -1823,7 +1818,7 @@ def edit_category(request, c_slug):
         new_title = request.POST.get('title', None)
 
         if new_title:
-            if c_user == cat.owner || c_user.is_superuser:
+            if c_user == cat.owner or c_user.is_superuser:
 
                 cat.title = new_title
                 cat.save()
