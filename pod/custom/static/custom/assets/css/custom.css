@@ -12,7 +12,23 @@
     color: var(--secondary) !important;
     
 }
-
+.not-displayed{
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden;
+    margin: 0 !important;
+    padding: 0 !important;
+    visibility: hidden;
+    min-width: 0 !important;
+    max-width: 0 !important;
+}
+.comment_disable {
+    text-align: center;
+    padding: .4em .8em;
+    color: var(--warning);
+    background-color: var(--dark);
+    text-transform: uppercase;
+}
 h1, h2, h3, h4, h5, h6{
   font-family: 'Montserrat', sans-serif !important;
   font-weight: 600 !important;
