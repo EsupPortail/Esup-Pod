@@ -1,6 +1,6 @@
 
 from django.test import TestCase
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from pod.video.models import Type
@@ -13,17 +13,31 @@ class RecorderTestCase(TestCase):
     def setUp(self):
         videotype = Type.objects.create(title='others')
         user = User.objects.create(username="pod")
-        Recorder.objects.create(id=1, user=user, name="recorder1",
-                                address_ip="16.3.10.37",
-                                type=videotype,
-                                directory="dir1")
+        user1 = User.objects.create(username="pod1")
+        user2 = User.objects.create(username="pod2")
+        group = Group.objects.create(name="Test group")
+        recorder1 = Recorder.objects.create(id=1, user=user, name="recorder1",
+                                            address_ip="16.3.10.37",
+                                            type=videotype,
+                                            cursus="0",
+                                            is_draft=False,
+                                            is_restricted=True,
+                                            password="secret",
+                                            directory="dir1")
+        recorder1.additional_users.add(user1)
+        recorder1.additional_users.add(user2)
+        recorder1.restrict_access_to_groups.add(group)
 
     def test_attributs(self):
         recorder1 = Recorder.objects.get(id=1)
         self.assertEqual(recorder1.name, "recorder1")
         self.assertEqual(recorder1.address_ip, "16.3.10.37")
         self.assertEqual(recorder1.directory, "dir1")
-
+        self.assertEqual(recorder1.is_draft, False)
+        self.assertEqual(recorder1.is_restricted, True)
+        self.assertEqual(recorder1.password, "secret")
+        self.assertEqual(recorder1.additional_users.count(), 2)
+        self.assertEqual(recorder1.restrict_access_to_groups.count(), 1)
         print(
             "   --->  test_attributs of RecorderTestCase: OK !")
 
@@ -50,6 +64,7 @@ class RecordingTestCase(TestCase):
         recorder1 = Recorder.objects.create(id=1, user=user, name="recorder1",
                                             address_ip="16.3.10.37",
                                             type=videotype,
+                                            cursus="0",
                                             directory="dir1")
         source_file = "/home/pod/files/video.mp4"
         type = "video"
@@ -129,6 +144,7 @@ class RecordingFileTreatmentTestCase(TestCase):
         user1 = User.objects.create(username="pod")
         recorder1 = Recorder.objects.create(id=1, user=user1, name="recorder1",
                                             address_ip="16.3.10.37",
+                                            cursus="0",
                                             type=videotype, directory="dir1")
         recording_file = RecordingFileTreatment.objects.create(
             type='video',
@@ -177,6 +193,7 @@ class RecordingFileTestCase(TestCase):
         user1 = User.objects.create(username="pod")
         recorder1 = Recorder.objects.create(id=1, user=user1, name="recorder1",
                                             address_ip="16.3.10.37",
+                                            cursus="0",
                                             type=videotype, directory="dir1")
         recording_file = RecordingFile.objects.create(recorder=recorder1)
         recording_file.file = "/home/pod/files/somefile.mp4"

@@ -10,7 +10,7 @@ from xml.dom import minidom
 from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.core.files.base import ContentFile
-from pod.video.models import Video, Type
+from pod.video.models import Video
 from pod.video.encode import start_encode
 from pod.enrichment.models import Enrichment
 from ..models import Recording
@@ -54,9 +54,10 @@ def add_comment(recording_id, comment):
 
 
 def save_video(recording, video_data, video_src):
+    recorder = recording.recorder
     video = Video()
     video.owner = recording.user
-    video.type = Type.objects.get(id=DEFAULT_RECORDER_TYPE_ID)
+    video.type = recorder.type
     nom, ext = os.path.splitext(video_src)
     ext = ext.lower()
     video.video.save(
@@ -65,6 +66,39 @@ def save_video(recording, video_data, video_src):
         save=False)
     # on recupere le nom du fichier sur le serveur
     video.title = recording.title
+    video.save()
+    # on ajoute d'eventuels propriétaires additionnels
+    video.additional_owners.add(*recorder.additional_users.all())
+    # acces privé (mode brouillon)
+    video.is_draft = recorder.is_draft
+    # Accès restreint (eventuellement à des groupes ou par mot de passe)
+    video.is_restricted = recorder.is_restricted
+    video.restrict_access_to_groups.add(
+        *recorder.restrict_access_to_groups.all())
+    video.password = recorder.password
+    # on ajoute les eventuelles chaines
+    video.channel.add(*recorder.channel.all())
+    # on ajoute les eventuels theme
+    video.theme.add(*recorder.theme.all())
+    # on ajoute les eventuelles disciplines
+    video.discipline.add(*recorder.discipline.all())
+    # Choix de la langue
+    video.main_lang = recorder.main_lang
+    # Choix des cursus
+    video.cursus = recorder.cursus
+    # mot clefs
+    video.tags = recorder.tags
+    # transcript
+    if getattr(settings, 'USE_TRANSCRIPTION', False):
+        video.transcript = recorder.transcript
+    # Licence
+    video.licence = recorder.licence
+    # Allow downloading
+    video.allow_downloading = recorder.allow_downloading
+    # Is_360
+    video.is_360 = recorder.is_360
+    # Désactiver les commentaires
+    video.disable_comment = recorder.disable_comment
     video.save()
     ENCODE_VIDEO(video.id)
     return video

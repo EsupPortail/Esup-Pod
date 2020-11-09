@@ -1,5 +1,5 @@
 import os
-
+from django.conf import settings
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -11,6 +11,10 @@ from django.contrib.auth.models import User
 from pod.video.models import Type
 
 # Register your models here.
+
+RECORDER_ADDITIONAL_FIELDS = getattr(settings,
+                                     'RECORDER_ADDITIONAL_FIELDS', ())
+TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 
 
 class RecordingAdmin(admin.ModelAdmin):
@@ -82,10 +86,21 @@ class RecorderAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_form(self, request, obj=None, **kwargs):
+        exclude = ()
+        available_fields = ('additional_users', 'is_draft', 'password',
+                            'is_restricted', 'restrict_access_to_groups',
+                            'cursus', 'main_lang', 'tags', 'discipline',
+                            'licence', 'channel', 'theme', 'transcript',
+                            'allow_downloading', 'is_360', 'disable_comment',)
+        for f in available_fields:
+            if f not in RECORDER_ADDITIONAL_FIELDS:
+                exclude += (f,)
+        if not TRANSCRIPT and 'transcript' not in exclude:
+            exclude += ('transcript',)
         if not request.user.is_superuser:
-            exclude = ()
             exclude += ('sites',)
-            self.exclude = exclude
+
+        self.exclude = exclude
         form = super(RecorderAdmin, self).get_form(request, obj, **kwargs)
         return form
 
