@@ -25,9 +25,12 @@
 .comment_disable {
     text-align: center;
     padding: .4em .8em;
-    color: var(--warning);
-    background-color: var(--primary);
+    color: #886704;
+    background-color: #fbebbc;
     margin-top: .8em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 h1, h2, h3, h4, h5, h6{
   font-family: 'Montserrat', sans-serif !important;
