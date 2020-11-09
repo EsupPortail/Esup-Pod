@@ -26,8 +26,8 @@
     text-align: center;
     padding: .4em .8em;
     color: var(--warning);
-    background-color: var(--dark);
-    text-transform: uppercase;
+    background-color: var(--primary);
+    margin-top: .8em;
 }
 h1, h2, h3, h4, h5, h6{
   font-family: 'Montserrat', sans-serif !important;
