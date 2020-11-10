@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 class SiteBackend(ModelBackend):
     def authenticate(self, **credentials):
+        print("THIS WAY")
         user_or_none = super(SiteBackend, self).authenticate(**credentials)
         site = Site.objects.get_current()
         if user_or_none and not user_or_none.is_superuser and \
@@ -13,6 +14,7 @@ class SiteBackend(ModelBackend):
         return user_or_none
 
     def get_user(self, user_id):
+        print("THIS WAY 2")
         try:
             site = Site.objects.get_current()
             user = User.objects.get(pk=user_id)

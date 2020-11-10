@@ -15,7 +15,7 @@ class CustomFileWidget(widgets.TextInput):
         self.type = type
         super(CustomFileWidget, self).__init__(*args, **kwargs)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         document = None
 
         if value:
