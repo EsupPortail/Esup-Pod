@@ -1752,11 +1752,11 @@ def delete_comment(request, video_slug, comment_id):
 @ajax_required
 def get_categories(request, c_slug=None):
 
-    response = {'success': False,}
-    c_user = request.user # connected user
+    response = {'success': False}
+    c_user = request.user  # connected user
 
     # GET method
-    if c_slug: # get category with slug
+    if c_slug:  # get category with slug
 
         cat = get_object_or_404(Category, slug=c_slug)
         response['success'] = True
@@ -1768,7 +1768,7 @@ def get_categories(request, c_slug=None):
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
 
-    else: # get all categories of connected user
+    else:  # get all categories of connected user
 
         cat = Category.objects.filter(owner=c_user).values(
                 'id', 'title', 'video')
@@ -1783,10 +1783,10 @@ def get_categories(request, c_slug=None):
 @ajax_required
 def add_category(request):
 
-    response = {'success': False,}
-    c_user = request.user # connected user
+    response = {'success': False}
+    c_user = request.user  # connected user
 
-    if request.method == "POST": # create new category
+    if request.method == "POST":  # create new category
 
         cat_title = request.POST.get('title', None)
 
@@ -1810,10 +1810,10 @@ def add_category(request):
 @ajax_required
 def edit_category(request, c_slug):
 
-    response = {'success': False,}
-    c_user = request.user # connected user
+    response = {'success': False}
+    c_user = request.user  # connected user
 
-    if request.method == "POST": # edit current category
+    if request.method == "POST":  # edit current category
 
         cat = get_object_or_404(Category, slug=c_slug)
         new_title = request.POST.get('title', None)
@@ -1856,10 +1856,10 @@ def edit_category(request, c_slug):
 @ajax_required
 def delete_category(request, cat_id):
 
-    response = {'success': False,}
-    c_user = request.user # connected user
+    response = {'success': False}
+    c_user = request.user  # connected user
 
-    if request.method == "POST": # create new category
+    if request.method == "POST":  # create new category
         cat = get_object_or_404(Category, id=cat_id)
         if cat.owner == c_user or c_user.is_superuser:
             response['category_id'] = cat.id
