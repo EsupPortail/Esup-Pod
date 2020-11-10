@@ -114,7 +114,7 @@ TEMPLATES = [
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': "django.contrib.auth.password_validation.{0}".format(validator)}
+    {'NAME': "django.contrib..password_validation.{0}".format(validator)}
     for validator in [
         'UserAttributeSimilarityValidator',
         'MinimumLengthValidator',

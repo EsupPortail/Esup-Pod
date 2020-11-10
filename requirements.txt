@@ -13,7 +13,6 @@ djangorestframework==3.9.1
 django-filter==2.4.0
 sorl-thumbnail==12.6.3
 django-lti-provider==0.4.0
-django-auth-mixins==1.0.1
 celery==4.3.0
 vine==1.3.0
 pandas
