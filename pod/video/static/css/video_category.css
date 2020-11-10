@@ -1,8 +1,114 @@
+
+/************************************
+ * Override modal category css
+ * **********************************/
+#manageCategoryModal{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+#manageCategoryModal .modal-dialog{
+    width: 900px;
+    max-width: calc(100% - 2em);
+}
+#manageCategoryModal .modal-dialog .modal-body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#manageCategoryModal .category_label{
+    font-variant: none;
+    font-size: 15px;
+    display: block;
+    margin: 0;
+    width: 100%;
+    padding-bottom: .2em;
+}
+#manageCategoryModal .catTitle_input{
+    width: 100%;
+    font-size: 15px;
+    padding: .4em .8em;
+    margin-bottom: 2em;
+    border-radius: none;
+    border: 1px solid #ccc;
+}
+
+#manageCategoryModal .category_modal_video_list{
+    width: 100%;
+    max-height: 450px;
+    height: 400px;
+    border: 1px solid #ccc;
+    overflow-y: auto;
+    padding: .4em .8em;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+#manageCategoryModal .category_modal_video_list .infinite-item{
+    width: calc( (100% / 6) - .4em);
+    max-width: calc( (100% / 6) - .4em);
+    padding: .2em .4em;
+    margin: 0 .2em !important;
+}
+#manageCategoryModal .category_modal_video_list .infinite-item.selected{
+    border: 2px solid var(--success);
+    border-radius: 4px;
+}
+#manageCategoryModal .category_modal_video_list .modal_category_card{
+    margin-bottom: .4em !important;
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+#manageCategoryModal .category_modal_video_list .card-header{
+    background-color: var(--primary);
+    color: white;
+    font-size: 14px;
+    padding: .4em;
+    height: 35px;
+}
+#manageCategoryModal .category_modal_video_list .card-header *{
+    color: inherit !important;
+}
+#manageCategoryModal .category_modal_video_list .card-body{
+    height: 100%;
+}
+#manageCategoryModal .category_modal_video_list .card-footer{
+    padding: .4em;
+    color: var(--primary);
+    height: 40px;
+    overflow: hidden;
+}
+#manageCategoryModal .category_modal_video_list .card-footer .video_title{
+    display: inline-block;
+    line-height: 1;
+    height: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+    font-size: 14px;
+    color: var(--primary);
+}
+
+
 /************************************
  * Override filter aside category css
  * **********************************/
 
 #my_videos_filter{ padding: 1em .8em; }	
+#my_videos_filter .h5{
+    display: flex;
+    align-items: flex-start;
+    font-weight: 600;
+}
+#my_videos_filter .category_icon{
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    margin-right: .4em;
+    color: var(--secondary);
+}
 #my_videos_filter .card-title{
     position: relative;
     padding-bottom: .8em;
@@ -16,17 +122,39 @@
     right: 0;
     bottom: 0;
 }
-#my_videos_filter .h5{ font-weight: 600;}
 #my_videos_filter .categories_list{
     padding: 0;
-    padding-left: .8em;
+    padding-left: .4em;
 }
 #my_videos_filter .categories_list_item{
     list-style: square;
-    padding: .4em 0;
+    padding: .4em;
     line-height: 1;
     color: var(--secondary);
     font-size: 14px;
-    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    transition: .3s all;
+}
+#my_videos_filter .categories_list_item:hover{
+    color: #fff;
+    background-color: var(--primary);
 }
 
+#my_videos_filter .categories_list_item:last-child{ border: none;}
+#my_videos_filter .categories_list_item .cat_title{
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: calc(100% - 30px);
+    word-wrap: normal;
+    cursor: pointer;
+}
+#my_videos_filter .categories_list_item .edit_category{
+    display: block;
+    width: 22px;
+    color: inherit;
+    cursor: pointer;
+}
