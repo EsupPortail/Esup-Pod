@@ -1,3 +1,4 @@
+import os
 from django.conf import settings
 from pod.main.tasks import task_start_bbb_encode
 from pod.bbb.models import Meeting
@@ -20,11 +21,19 @@ DEFAULT_BBB_PATH = getattr(
     settings, 'DEFAULT_BBB_PATH',
     "/data/bbb-recorder/media/"
 )
+# The last caracter of DEFAULT_BBB_PATH must be an OS separator
+if not DEFAULT_BBB_PATH.endswith(os.path.sep):
+    DEFAULT_BBB_PATH += os.path.sep
+
 # BigBlueButton or Scalelite server URL, where BBB Web presentation and API are
 BBB_SERVER_URL = getattr(
     settings, 'BBB_SERVER_URL',
     "https://bbb.univ-test.fr/"
 )
+# The last caracter of BBB_SERVER_URL must be /
+if not BBB_SERVER_URL.endswith("/"):
+    BBB_SERVER_URL += "/"
+
 # Debug mode
 DEBUG = getattr(settings, 'DEBUG', False)
 # Use of Celery to encode
