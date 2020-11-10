@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.test import TestCase, Client
 from django.urls import reverse
@@ -74,6 +74,7 @@ class TestCategory(TestCase):
                     {"title": 'test2Category', "id": 2, "video": None}
                 ]}, safe=False).content.decode('utf-8'))
 
+        self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(actual_data.keys(), expected_data.keys())
         self.assertTrue(expected_data['success'])
@@ -95,6 +96,7 @@ class TestCategory(TestCase):
                 "category_videos": None
                 }, safe=False).content.decode('utf-8'))
 
+        self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 200)
         self.assertCountEqual(actual_data, expected_data)
 
