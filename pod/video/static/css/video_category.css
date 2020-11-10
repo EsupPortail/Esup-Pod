@@ -1,0 +1,32 @@
+/************************************
+ * Override filter aside category css
+ * **********************************/
+
+#my_videos_filter{ padding: 1em .8em; }	
+#my_videos_filter .card-title{
+    position: relative;
+    padding-bottom: .8em;
+}
+#my_videos_filter .card-title::after{
+    content: "";
+    border-top: 1px solid #ccc !important;
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+#my_videos_filter .h5{ font-weight: 600;}
+#my_videos_filter .categories_list{
+    padding: 0;
+    padding-left: .8em;
+}
+#my_videos_filter .categories_list_item{
+    list-style: square;
+    padding: .4em 0;
+    line-height: 1;
+    color: var(--secondary);
+    font-size: 14px;
+    cursor: pointer;
+}
+
