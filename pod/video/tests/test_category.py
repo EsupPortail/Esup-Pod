@@ -4,11 +4,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from pod.authentication.models import User
 from pod.video.models import Category, Video, Type
-from django.contrib.sites.models import Site
-from pod.video.views import get_categories, add_category
-from pod.video.views import edit_category, delete_category
-import ast, json
-
+import json
 import logging
 
 
@@ -53,7 +49,6 @@ class TestCategory(TestCase):
                 title='test2Category',
                 owner=self.owner_user)
 
-
     def test_getCategories(self):
         # not Authenticated, should return HttpResponseRedirect:302
         response = self.client.get(reverse('get_categories'))
@@ -72,7 +67,7 @@ class TestCategory(TestCase):
                 HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         actual_data = json.loads(response.content.decode('utf-8'))
-        expected_data =json.loads(JsonResponse({
+        expected_data = json.loads(JsonResponse({
                 "success": True,
                 "categories": [
                     {"title": 'testCategory', "id": 1, "video": None},
@@ -82,7 +77,9 @@ class TestCategory(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(actual_data.keys(), expected_data.keys())
         self.assertTrue(expected_data['success'])
-        self.assertCountEqual(actual_data['categories'], expected_data['categories'])
+        self.assertCountEqual(
+                actual_data['categories'],
+                expected_data['categories'])
 
         # Ajax request, should return HttpResponse:200 with one category
         response = self.client.get(
@@ -90,7 +87,7 @@ class TestCategory(TestCase):
                 HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         actual_data = json.loads(response.content.decode('utf-8'))
-        expected_data =json.loads(JsonResponse({
+        expected_data = json.loads(JsonResponse({
                 "success": True,
                 "category_id": self.cat_1.id,
                 "category_title": self.cat_1.title,
@@ -100,11 +97,6 @@ class TestCategory(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertCountEqual(actual_data, expected_data)
-
-
-
-
-
 
     def tearDown(self):
         del self.video
