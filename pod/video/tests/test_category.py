@@ -12,7 +12,7 @@ import ast, json
 import logging
 
 
-class TestComment(TestCase):
+class TestCategory(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
