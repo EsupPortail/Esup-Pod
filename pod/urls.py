@@ -261,7 +261,7 @@ if getattr(settings, "USER_VIDEO_CATEGORY", False):
         url(r'^my_videos/category/delete/(?P<c_id>[\d]+)/$',
             delete_category,
             name='delete_category'),
-   ]
+    ]
 
 
 # CHANNELS
