@@ -1215,7 +1215,7 @@ class PlaylistVideo(models.Model):
         _('Name'), max_length=10, choices=ENCODING_CHOICES, default="360p",
         help_text="Please use the only format in encoding choices :"
         + " %s" % ' '.join(str(key) for key, value in ENCODING_CHOICES))
-    video = models.ForeignKey(Video, verbose_name=_('Video'), 
+    video = models.ForeignKey(Video, verbose_name=_('Video'),
                               on_delete=models.CASCADE)
     encoding_format = models.CharField(
         _('Format'), max_length=22, choices=FORMAT_CHOICES,
