@@ -373,6 +373,10 @@ def my_videos(request):
         full_path = request.get_full_path().replace(
             "?page=%s" % page, "").replace("&page=%s" % page, "")
 
+    # user's videos categories
+    categories = Category.objects.filter(
+            owner=request.user).values('title', 'slug')
+
     paginator = Paginator(videos_list, 12)
     try:
         videos = paginator.page(page)
@@ -387,7 +391,7 @@ def my_videos(request):
             {'videos': videos, "full_path": full_path})
 
     return render(request, 'videos/my_videos.html', {
-        'videos': videos, "full_path": full_path
+        'videos': videos, "full_path": full_path, "categories": categories
     })
 
 
