@@ -52,6 +52,7 @@
 #manageCategoryModal .category_modal_video_list .infinite-item.selected{
     border: 2px solid var(--success);
     border-radius: 4px;
+    background-color: #e4eee4;
 }
 #manageCategoryModal .category_modal_video_list .modal_category_card{
     margin-bottom: .4em !important;
