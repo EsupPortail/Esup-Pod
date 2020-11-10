@@ -249,7 +249,7 @@ button.nav-link{
     width:100%;
     background: rgba(0, 0, 0, 0.6);
     padding: 0 0.25rem;
-
+    z-index: 9;
 }
 #videos_list .card-header .text-muted {
     color:white !important;
