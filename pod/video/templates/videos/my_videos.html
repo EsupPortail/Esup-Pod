@@ -2,6 +2,9 @@
 {% load i18n %}
 {% load staticfiles %}
 
+{% block more_style %}
+<link rel="stylesheet" href="{% static 'css/video_category.css' %}"> 
+{% endblock more_style %}
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My videos" %}</li>{% endblock %}
 
@@ -22,9 +25,11 @@
 {% endblock page_content %}
 
 {% block collapse_page_aside %}
+    {{ block.super }}
 {% endblock collapse_page_aside %}
 
 {% block page_aside %}
+ {% include 'videos/filter_aside_category.html' %}
 {% endblock page_aside %}
 
 {% block more_script %}
