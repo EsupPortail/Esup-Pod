@@ -1,6 +1,7 @@
 from functools import wraps
 from django.core.exceptions import PermissionDenied
 
+
 def ajax_required(_view):
 
     @wraps(_view)
