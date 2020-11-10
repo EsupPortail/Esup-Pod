@@ -1,0 +1,30 @@
+{% load i18n %}
+
+<div id="manageCategoryModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="manageCategoryModal" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+	    <div class="modal-header">
+		<h5 class="modal-title" id="manageCategoryModal">{% trans "Category" %}</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		    <span aria-hidden="true">×</span>
+		</button>
+	    </div>
+	    <div class="modal-body">
+    		<label class="category_label">{% trans "Category title" %}</label>
+    		<input type="text" placeholder="{% trans 'category title' %}" id="catTitle" name="catTitle" class="catTitle_input" required>
+    		<label class="category_label">{% trans "Check the videos to add in the category" %}</label>
+    		<div class="row infinite-container category_modal_video_list" id="cat_mod_vid_list videos_list">
+		    {% for video in videos %}
+		    <div data-slug="{{ video.slug }}" class="infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group">
+		        {% include "videos/category_modal_card.html" %}
+		    </div>
+	    	    {% endfor %}	    
+		</div>
+	    </div>
+	    <div class="modal-footer">
+		<button type="button" class="btn btn-primary">{% trans "Save category" %} </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">{% trans "Cancel" %}</button>
+	    </div>
+	</div>
+    </div>
+</div>
