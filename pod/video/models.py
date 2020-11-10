@@ -1489,8 +1489,7 @@ class Category(models.Model):
         editable=False)
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = "%s-%s" % (self.owner.id, slugify(self.title))
+        self.slug = "%s-%s" % (self.owner.id, slugify(self.title))
         super(Category, self).save(*args, **kwargs)
 
     def __str__(self):
