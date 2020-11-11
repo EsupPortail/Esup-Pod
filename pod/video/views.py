@@ -374,7 +374,7 @@ def my_videos(request):
             "?page=%s" % page, "").replace("&page=%s" % page, "")
 
     """
-    " user's videos categories format => 
+    " user's videos categories format =>
     " [{'title': cat_title, 'slug': cat_slug, 'videos': [v_slug, v_slug...] },]
     """
     cats = Category.objects.prefetch_related('video').filter(
@@ -1789,11 +1789,8 @@ def get_categories(request, c_slug=None):
         cats = map(lambda c: {"title": c.title, "slug": c.slug, "videos": list(
             c.video.values_list('slug', flat=True))}, cats)
         cats = list(cats)
-        print("---->", cats)
-        for i in cats:
-            print(i)
-        #print(cat.video)
-        #print(Category.objects.filter(owner=c_user).values('id', 'video'))
+        # print(cat.video)
+        # print(Category.objects.filter(owner=c_user).values('id', 'video'))
         print("-------------------------------------------")
         pass
         response['success'] = True

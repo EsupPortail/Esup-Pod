@@ -87,8 +87,13 @@ class TestCategory(TestCase):
                     {
                         "title": 'testCategory',
                         "slug": self.cat_1.slug,
-                        "videos": list(self.cat_1.video.values_list('slug', flat=True))},
-                    {"title": 'test2Category', "slug": self.cat_2.slug, "videos": []}
+                        "videos": list(
+                            self.cat_1.video.values_list('slug', flat=True))},
+                    {
+                        "title": 'test2Category',
+                        "slug": self.cat_2.slug,
+                        "videos": []
+                    }
                 ]}, safe=False).content.decode('utf-8'))
 
         self.assertIsInstance(response, HttpResponse)
