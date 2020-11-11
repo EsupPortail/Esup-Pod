@@ -42,9 +42,20 @@ class TestCategory(TestCase):
                 owner=self.owner_user,
                 video="testvideocategory.mp4",
                 type=self.t1)
+        self.video_2 = Video.objects.create(
+                title="Test category video 2",
+                is_draft=False,
+                encoding_in_progress=False,
+                owner=self.owner_user,
+                video="testvideo2category.mp4",
+                type=self.t1)
+
         self.cat_1 = Category.objects.create(
                 title='testCategory',
                 owner=self.owner_user)
+        self.cat_1.video.add(self.video)
+        self.cat_1.video.add(self.video_2)
+        self.cat_1.save()
         self.cat_2 = Category.objects.create(
                 title='test2Category',
                 owner=self.owner_user)
@@ -60,6 +71,9 @@ class TestCategory(TestCase):
         response = self.client.get(reverse('get_categories'))
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
+        print("**********************************************")
+        print(self.cat_1.video.values_list('slug', flat=True))
+        print("**********************************************")
 
         # Ajax request, should return HttpResponse:200 with all categories
         response = self.client.get(
@@ -70,14 +84,21 @@ class TestCategory(TestCase):
         expected_data = json.loads(JsonResponse({
                 "success": True,
                 "categories": [
-                    {"title": 'testCategory', "id": 1, "video": None},
-                    {"title": 'test2Category', "id": 2, "video": None}
+                    {
+                        "title": 'testCategory',
+                        "slug": self.cat_1.slug,
+                        "videos": list(self.cat_1.video.values_list('slug', flat=True))},
+                    {"title": 'test2Category', "slug": self.cat_2.slug, "videos": []}
                 ]}, safe=False).content.decode('utf-8'))
 
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(actual_data.keys(), expected_data.keys())
         self.assertTrue(expected_data['success'])
+        print("-------------------------------------------")
+        print(actual_data['categories'])
+        print(expected_data['categories'])
+        print("-------------------------------------------")
         self.assertCountEqual(
                 actual_data['categories'],
                 expected_data['categories'])
@@ -93,8 +114,12 @@ class TestCategory(TestCase):
                 "category_id": self.cat_1.id,
                 "category_title": self.cat_1.title,
                 "category_owner": self.cat_1.owner.id,
-                "category_videos": None
+                "videos": list(self.cat_1.video.values_list('slug', flat=True))
                 }, safe=False).content.decode('utf-8'))
+        print("-------------------------------------------")
+        print(actual_data)
+        print(expected_data)
+        print("-------------------------------------------")
 
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 200)
