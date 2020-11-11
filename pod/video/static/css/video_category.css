@@ -1,5 +1,15 @@
 
 /************************************
+ * Override my_videos css
+ * **********************************/
+#video_list .infinite-item{
+    transition: .3s all;
+}
+#video_list .infinite-item.hidden{
+    visibility: collapse;
+    padding: 0;
+}
+/************************************
  * Override modal category css
  * **********************************/
 #manageCategoryModal{
