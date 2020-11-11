@@ -354,13 +354,14 @@ footer a, footer p{
   .navbar #nav-mainbar div:first-child{
     flex-grow: 1;
     display: flex;
-    justify-content: inherit;
+    justify-content: space-around;
     margin-right: .8em;
   }
   .navbar-nav{
     background-color: #102636;
     padding: 1em;
     z-index: 1;
+    justify-content: space-around !important;
   }
   .langs .active{
     background-color: #fff;
