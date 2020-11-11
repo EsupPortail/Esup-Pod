@@ -373,9 +373,15 @@ def my_videos(request):
         full_path = request.get_full_path().replace(
             "?page=%s" % page, "").replace("&page=%s" % page, "")
 
-    # user's videos categories
-    categories = Category.objects.filter(
-            owner=request.user).values('title', 'slug')
+    """
+    " user's videos categories format => 
+    " [{'title': cat_title, 'slug': cat_slug, 'videos': [v_slug, v_slug...] },]
+    """
+    cats = Category.objects.prefetch_related('video').filter(
+            owner=request.user)
+    cats = map(lambda c: {"title": c.title, "slug": c.slug, "videos": list(
+        c.video.values_list('slug', flat=True))}, cats)
+    cats = list(cats)
 
     paginator = Paginator(videos_list, 12)
     try:
@@ -391,7 +397,7 @@ def my_videos(request):
             {'videos': videos, "full_path": full_path})
 
     return render(request, 'videos/my_videos.html', {
-        'videos': videos, "full_path": full_path, "categories": categories
+        'videos': videos, "full_path": full_path, "categories": cats
     })
 
 
@@ -1767,17 +1773,31 @@ def get_categories(request, c_slug=None):
         response['category_id'] = cat.id
         response['category_title'] = cat.title
         response['category_owner'] = cat.owner.id
-        response['category_videos'] = list(cat.video.all())
+        response['videos'] = list(cat.video.values_list('slug', flat=True))
+        print("******************************************")
+        print(cat.video.values_list('slug', flat=True))
+        print("******************************************")
         return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
 
     else:  # get all categories of connected user
 
-        cat = Category.objects.filter(owner=c_user).values(
-                'id', 'title', 'video')
+        cats = Category.objects.prefetch_related('video').filter(owner=c_user)
+        print("-------------------------------------------")
+
+        cats = map(lambda c: {"title": c.title, "slug": c.slug, "videos": list(
+            c.video.values_list('slug', flat=True))}, cats)
+        cats = list(cats)
+        print("---->", cats)
+        for i in cats:
+            print(i)
+        #print(cat.video)
+        #print(Category.objects.filter(owner=c_user).values('id', 'video'))
+        print("-------------------------------------------")
+        pass
         response['success'] = True
-        response['categories'] = list(cat)
+        response['categories'] = cats
         return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
