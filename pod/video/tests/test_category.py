@@ -71,9 +71,6 @@ class TestCategory(TestCase):
         response = self.client.get(reverse('get_categories'))
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
-        print("**********************************************")
-        print(self.cat_1.video.values_list('slug', flat=True))
-        print("**********************************************")
 
         # Ajax request, should return HttpResponse:200 with all categories
         response = self.client.get(
@@ -100,10 +97,6 @@ class TestCategory(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(actual_data.keys(), expected_data.keys())
         self.assertTrue(expected_data['success'])
-        print("-------------------------------------------")
-        print(actual_data['categories'])
-        print(expected_data['categories'])
-        print("-------------------------------------------")
         self.assertCountEqual(
                 actual_data['categories'],
                 expected_data['categories'])
@@ -121,14 +114,16 @@ class TestCategory(TestCase):
                 "category_owner": self.cat_1.owner.id,
                 "videos": list(self.cat_1.video.values_list('slug', flat=True))
                 }, safe=False).content.decode('utf-8'))
-        print("-------------------------------------------")
-        print(actual_data)
-        print(expected_data)
-        print("-------------------------------------------")
 
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 200)
         self.assertCountEqual(actual_data, expected_data)
+
+    def test_addCategory(self):
+        # not Authenticated, should return HttpResponseRedirect:302
+        response = self.client.get(reverse('add_category'))
+        self.assertIsInstance(response, HttpResponseRedirect)
+        self.assertEqual(response.status_code, 302)
 
     def tearDown(self):
         del self.video
