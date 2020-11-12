@@ -382,7 +382,7 @@ def my_videos(request):
     cats = map(lambda c: {"title": c.title, "slug": c.slug, "videos": list(
         c.video.values_list('slug', flat=True))}, cats)
     cats = list(cats)
-
+    
     paginator = Paginator(videos_list, 12)
     try:
         videos = paginator.page(page)
@@ -397,7 +397,8 @@ def my_videos(request):
             {'videos': videos, "full_path": full_path})
 
     return render(request, 'videos/my_videos.html', {
-        'videos': videos, "full_path": full_path, "categories": cats
+        'videos': videos, "full_path": full_path, "categories": cats,
+        'flat_videos': videos_list
     })
 
 
