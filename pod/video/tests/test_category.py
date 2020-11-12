@@ -1,5 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.template.defaultfilters import slugify
 from django.test import TestCase, Client
 from django.urls import reverse
 from pod.authentication.models import User
@@ -120,16 +121,41 @@ class TestCategory(TestCase):
         self.assertCountEqual(actual_data, expected_data)
 
     def test_addCategory(self):
+        data = {
+            "title": "Test new catgeory",
+            "videos": [self.video.slug, self.video_2.slug]
+        }
+
         # not Authenticated, should return HttpResponseRedirect:302
-        response = self.client.get(reverse('add_category'))
+        response = self.client.post(reverse('add_category'), data)
         self.assertIsInstance(response, HttpResponseRedirect)
         self.assertEqual(response.status_code, 302)
 
         # not Ajax request, should return HttpResponseForbidden:403
         self.client.force_login(self.owner_user)
-        response = self.client.get(reverse('add_category'))
+        response = self.client.post(reverse('add_category'), data)
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
+
+        # Ajax POST request, should return HttpResponse:200 with category data
+        response = self.client.post(
+                reverse('add_category'),
+                data,
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        print("---------------------------------------------")
+        print(response.content.decode('utf-8'))
+        print("---------------------------------------------")
+        actual_data = json.loads(response.content.decode('utf-8'))
+        expected_data = json.loads(JsonResponse({
+            "success": True,
+            "title": data["title"],
+            "slug": "%s-%s" % (self.owner.id, slugify(data["title"])),
+            "videos": data["videos"]
+            }, safe=False).content.decode('utf-8'))
+
+        self.assertIsInstance(response, HttpResponse)
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(actual_data, expected_data)
 
 
     def tearDown(self):
