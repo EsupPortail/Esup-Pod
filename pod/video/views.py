@@ -1774,9 +1774,6 @@ def get_categories(request, c_slug=None):
         response['category_title'] = cat.title
         response['category_owner'] = cat.owner.id
         response['videos'] = list(cat.video.values_list('slug', flat=True))
-        print("******************************************")
-        print(cat.video.values_list('slug', flat=True))
-        print("******************************************")
         return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
@@ -1784,17 +1781,13 @@ def get_categories(request, c_slug=None):
     else:  # get all categories of connected user
 
         cats = Category.objects.prefetch_related('video').filter(owner=c_user)
-        print("-------------------------------------------")
-
         cats = map(lambda c: {"title": c.title, "slug": c.slug, "videos": list(
             c.video.values_list('slug', flat=True))}, cats)
         cats = list(cats)
-        # print(cat.video)
-        # print(Category.objects.filter(owner=c_user).values('id', 'video'))
-        print("-------------------------------------------")
-        pass
+
         response['success'] = True
         response['categories'] = cats
+
         return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
@@ -1817,7 +1810,9 @@ def add_category(request):
             cat = Category.objects.create(title=cat_title, owner=c_user)
             cat.video.add(*videos)
             cat.save()
-            response['category_title'] = cat.title
+            response['title'] = cat.title
+            response['slug'] = cat.slug
+            response['videos'] = list(cat.video.values_list('slug', flat=True))
             response['success'] = True
             return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
