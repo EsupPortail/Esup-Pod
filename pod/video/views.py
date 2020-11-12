@@ -1810,10 +1810,13 @@ def add_category(request):
     if request.method == "POST":  # create new category
 
         cat_title = request.POST.get('title', None)
+        videos = request.POST.get('videos', [])
 
         if cat_title:
 
             cat = Category.objects.create(title=cat_title, owner=c_user)
+            cat.video.add(*videos)
+            cat.save()
             response['category_title'] = cat.title
             response['success'] = True
             return HttpResponse(
@@ -1838,11 +1841,13 @@ def edit_category(request, c_slug):
 
         cat = get_object_or_404(Category, slug=c_slug)
         new_title = request.POST.get('title', None)
+        new_videos = request.POST.get('videos', [])
 
         if new_title:
             if c_user == cat.owner or c_user.is_superuser:
 
                 cat.title = new_title
+                cat.video.related_set.set(new_videos)
                 cat.save()
                 response['category_id'] = cat.id
                 response['category_title'] = cat.title
