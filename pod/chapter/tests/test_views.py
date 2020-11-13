@@ -102,7 +102,8 @@ class ChapterViewsTestCase(TestCase):
                   'video': 1,
                   'title': 'testchapter',
                   'time_start': 1,
-                  'time_end': 3})
+                  'time_end': 3},
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         result = Chapter.objects.all()
         self.assertTrue(result)
@@ -120,6 +121,7 @@ class ChapterViewsTestCase(TestCase):
         self.assertTrue(login)
         response = self.client.post(
             '/video_chapter/{0}/'.format(video.slug),
+            content_type="application/json",
             data={'action': 'save',
                   'chapter_id': None,
                   'video': 1,
@@ -158,7 +160,8 @@ class ChapterViewsTestCase(TestCase):
                   'video': 1,
                   'title': 'testchapter',
                   'time_start': 1,
-                  'time_end': 3})
+                  'time_end': 3},
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         result = Chapter.objects.all()
         self.assertTrue(result)

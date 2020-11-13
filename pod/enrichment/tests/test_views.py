@@ -71,7 +71,8 @@ class EnrichmentViewsTestCase(TestCase):
                   'start': 1,
                   'end': 2,
                   'type': 'weblink',
-                  'weblink': 'http://test.com'})
+                  'weblink': 'http://test.com'},
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         result = Enrichment.objects.all()
         self.assertTrue(result)
@@ -99,7 +100,8 @@ class EnrichmentViewsTestCase(TestCase):
                   'start': 1,
                   'end': 2,
                   'type': 'weblink',
-                  'weblink': 'http://test.com'})
+                  'weblink': 'http://test.com'},
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         result = Enrichment.objects.all()
         self.assertTrue(result)
@@ -138,7 +140,8 @@ class EnrichmentViewsTestCase(TestCase):
                   'start': 1,
                   'end': 2,
                   'type': 'weblink',
-                  'weblink': 'http://test.com'})
+                  'weblink': 'http://test.com'},
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         result = Enrichment.objects.all()
         self.assertTrue(result)

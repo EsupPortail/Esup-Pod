@@ -149,7 +149,8 @@ class CompletionContributorViewsTestCase(TestCase):
                   'email_address': 'test@test.com',
                   'weblink': '',
                   'contributor_id': None
-                  })
+                  },
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
         self.assertContains(response, 'list_contributor')
@@ -180,7 +181,8 @@ class CompletionContributorViewsTestCase(TestCase):
                   'email_address': 'test@test.com',
                   'weblink': '',
                   'contributor_id': None
-                  })
+                  },
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_contributor')
         result = Contributor.objects.get(id=1)
@@ -228,10 +230,13 @@ class CompletionContributorViewsTestCase(TestCase):
                   'video': 1,
                   'email_address': 'test@test.com',
                   'weblink': '',
-                  'contributor_id': None
-                  })
+                  'contributor_id': 1
+                  },
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_contributor')
+        print(" ================== THIS IS HERE ======================")
+        print(Contributor.objects.all().count())
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, 'testcontributor')
         response = self.client.post(
@@ -323,7 +328,8 @@ class CompletionTrackViewsTestCase(TestCase):
                   'src': document.id,
                   'video': 1,
                   'track_id': None
-                  })
+                  },
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
         self.assertContains(response, 'list_track')
@@ -371,7 +377,8 @@ class CompletionTrackViewsTestCase(TestCase):
                   'src': document.id,
                   'video': 1,
                   'track_id': None
-                  })
+                  },
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_track')
         result = Track.objects.get(id=1)
@@ -436,7 +443,8 @@ class CompletionTrackViewsTestCase(TestCase):
                   'src': document.id,
                   'video': 1,
                   'track_id': None
-                  })
+                  },
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_track')
         result = Track.objects.get(id=1)
@@ -529,7 +537,8 @@ class CompletionDocumentViewsTestCase(TestCase):
                   'document': document.id,
                   'video': 1,
                   'track_id': None
-                  })
+                  },
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
         self.assertContains(response, 'list_document')
@@ -574,7 +583,8 @@ class CompletionDocumentViewsTestCase(TestCase):
                   'document': document.id,
                   'video': 1,
                   'track_id': None
-                  })
+                  },
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
         self.assertContains(response, 'list_document')
@@ -653,7 +663,8 @@ class CompletionDocumentViewsTestCase(TestCase):
                   'document': document.id,
                   'video': 1,
                   'track_id': None
-                  })
+                  },
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_document')
         result = Document.objects.get(id=1)
@@ -730,7 +741,8 @@ class CompletionOverlayViewsTestCase(TestCase):
                   'background': 'on',
                   'video': 1,
                   'overlay_id': None
-                  })
+                  },
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
         self.assertContains(response, 'list_overlay')
@@ -762,7 +774,8 @@ class CompletionOverlayViewsTestCase(TestCase):
                   'background': 'on',
                   'video': 1,
                   'overlay_id': None
-                  })
+                  },
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
         self.assertContains(response, 'list_overlay')
@@ -816,7 +829,8 @@ class CompletionOverlayViewsTestCase(TestCase):
                   'background': 'on',
                   'video': 1,
                   'overlay_id': None
-                  })
+                  },
+            content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_overlay')
         result = Overlay.objects.get(id=1)
