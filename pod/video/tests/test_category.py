@@ -1,4 +1,4 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.template.defaultfilters import slugify
 from django.test import TestCase, Client
@@ -13,6 +13,7 @@ class TestCategory(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        self.maxDiff = None
         self.logger = logging.getLogger("django.request")
         # self.previous_level = self.logger.getEffectiveLevel()
         # Remove warning log
@@ -79,28 +80,35 @@ class TestCategory(TestCase):
                 HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         actual_data = json.loads(response.content.decode('utf-8'))
-        expected_data = json.loads(JsonResponse({
-                "success": True,
-                "categories": [
-                    {
-                        "title": 'testCategory',
-                        "slug": self.cat_1.slug,
-                        "videos": list(
-                            self.cat_1.video.values_list('slug', flat=True))},
-                    {
-                        "title": 'test2Category',
-                        "slug": self.cat_2.slug,
-                        "videos": []
-                    }
-                ]}, safe=False).content.decode('utf-8'))
-
+        expected_data = {
+            "success": True,
+            "categories": [
+                {
+                    "title": 'test2Category',
+                    "slug": self.cat_2.slug,
+                    "videos": []
+                },
+                {
+                    "title": 'testCategory',
+                    "slug": self.cat_1.slug,
+                    "videos": list(
+                        self.cat_1.video.values_list('slug', flat=True))
+                }
+            ]
+        }
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(actual_data.keys(), expected_data.keys())
         self.assertTrue(expected_data['success'])
-        self.assertCountEqual(
-                actual_data['categories'],
-                expected_data['categories'])
+        for i in range(2):
+            self.assertEqual(
+                    actual_data['categories'][i]['title'],
+                    expected_data['categories'][i]['title'])
+            self.assertEqual(
+                    actual_data['categories'][i]['slug'],
+                    expected_data['categories'][i]['slug'])
+            self.assertCountEqual(
+                    actual_data['categories'][i]['videos'],
+                    expected_data['categories'][i]['videos'])
 
         # Ajax request, should return HttpResponse:200 with one category
         response = self.client.get(
@@ -108,22 +116,27 @@ class TestCategory(TestCase):
                 HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         actual_data = json.loads(response.content.decode('utf-8'))
-        expected_data = json.loads(JsonResponse({
-                "success": True,
-                "category_id": self.cat_1.id,
-                "category_title": self.cat_1.title,
-                "category_owner": self.cat_1.owner.id,
-                "videos": list(self.cat_1.video.values_list('slug', flat=True))
-                }, safe=False).content.decode('utf-8'))
+        expected_data = {
+            "success": True,
+            "category_id": self.cat_1.id,
+            "category_title": self.cat_1.title,
+            "category_owner": self.cat_1.owner.id,
+            "videos": list(self.cat_1.video.values_list('slug', flat=True))
+        }
 
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 200)
-        self.assertCountEqual(actual_data, expected_data)
+        self.assertCountEqual(
+                list(actual_data.keys()),
+                list(expected_data.keys()))
+        self.assertCountEqual(
+                list(actual_data.values()),
+                list(expected_data.values()))
 
     def test_addCategory(self):
         data = {
             "title": "Test new catgeory",
-            "videos": [self.video.slug, self.video_2.slug]
+            "videos": self.video.slug + "," + self.video_2.slug
         }
 
         # not Authenticated, should return HttpResponseRedirect:302
@@ -142,21 +155,21 @@ class TestCategory(TestCase):
                 reverse('add_category'),
                 data,
                 HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        print("---------------------------------------------")
-        print(response.content.decode('utf-8'))
-        print("---------------------------------------------")
+
         actual_data = json.loads(response.content.decode('utf-8'))
-        expected_data = json.loads(JsonResponse({
+        expected_data = {
             "success": True,
             "title": data["title"],
-            "slug": "%s-%s" % (self.owner.id, slugify(data["title"])),
-            "videos": data["videos"]
-            }, safe=False).content.decode('utf-8'))
+            "slug": "%s-%s" % (self.owner_user.id, slugify(data["title"])),
+            "videos": data["videos"].split(',')
+        }
 
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 200)
-        self.assertCountEqual(actual_data, expected_data)
-
+        self.assertTrue(actual_data['success'])
+        self.assertEqual(actual_data['title'], expected_data['title'])
+        self.assertEqual(actual_data['slug'], expected_data['slug'])
+        self.assertCountEqual(actual_data['videos'], expected_data['videos'])
 
     def tearDown(self):
         del self.video
