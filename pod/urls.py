@@ -246,15 +246,15 @@ if getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
 # VIDEO CATEGORY
 if getattr(settings, "USER_VIDEO_CATEGORY", False):
     urlpatterns += [
+        url(r'^my_videos/category/add/$',
+            add_category,
+            name='add_category'),
         url(r'^my_videos/category/$',
             get_categories,
             name='get_categories'),
         url(r'^my_videos/category/(?P<c_slug>[\-\d\w]+)/$',
             get_categories,
             name='get_category'),
-        url(r'^my_videos/category/add/$',
-            add_category,
-            name='add_category'),
         url(r'^my_videos/category/edit/(?P<c_slug>[\-\d\w]+)/$',
             edit_category,
             name='edit_category'),
