@@ -228,7 +228,7 @@ class CompletionContributorViewsTestCase(TestCase):
                   'video': 1,
                   'email_address': 'test@test.com',
                   'weblink': '',
-                  'contributor_id': 1
+                  'contributor_id': None
                   })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_contributor')
