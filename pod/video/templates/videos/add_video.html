@@ -30,6 +30,7 @@
 <h3>{% trans "Choose an audio or video file to upload" %}</h3>
 
 <div id="uploadblock">
+    {% csrf_token %}
     <input id="chunked_upload" class="hide-on-processing" accept="{{allow_extension}}" type="file" name="the_file">
     <progress id="progBar" value="0" max="100"></progress>
 
