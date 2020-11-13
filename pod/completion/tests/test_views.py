@@ -232,8 +232,6 @@ class CompletionContributorViewsTestCase(TestCase):
                   })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_contributor')
-        print(" ================== THIS IS HERE ======================")
-        print(Contributor.objects.all().count())
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, 'testcontributor')
         response = self.client.post(
