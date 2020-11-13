@@ -63,31 +63,40 @@
     min-width: 133px;
     max-width: 100%;
     position: relative;
+    transition: .3s transform;
 }
 #manageCategoryModal .category_modal_video_list .infinite-item.selected{
-    border: 2px solid rgba(219, 203, 203, 0.5);
+    border: 2px solid rgba(249, 249, 249, 0.8);
     border-radius: 4px;
-    background-color: rgba(219, 203, 203, 0.5);
+    background-color: rgba(249, 249, 249, 0.8);
 }
 #manageCategoryModal .category_modal_video_list .infinite-item .checked_overlay{
-    display: none;
-}
-#manageCategoryModal .category_modal_video_list .infinite-item .card_selected{
-    display: block;
-    width: 50%;
-    color: var(--primary);
-}
-#manageCategoryModal .category_modal_video_list .infinite-item.selected .checked_overlay{
+    display: flex;
     position: absolute;
-    background-color: rgba(234,226,226, .65);
+    background-color: rgba(249, 249, 249, 0.8);
     left: 0;
     right: 0;
     bottom: 0;
     top: 0;
-    display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .3s;
+}
+#manageCategoryModal .category_modal_video_list .infinite-item .card_selected{
+    display: block;
+    width: 25%;
+    color: var(--primary);
+    transition: all .3s;
+}
+#manageCategoryModal .category_modal_video_list .infinite-item:not(.selected):hover,
+#manageCategoryModal .category_modal_video_list .infinite-item .checked_overlay:hover .card_selected{
+    transform: scale(1.1);
+}
+#manageCategoryModal .category_modal_video_list .infinite-item.selected .checked_overlay{
+    opacity: 1;
 }
 
 #manageCategoryModal .category_modal_video_list .modal_category_card{
@@ -130,10 +139,39 @@
  * **********************************/
 
 #my_videos_filter{ padding: 1em .8em; }	
+#my_videos_filter h5.h5{ margin: 0; }
 #my_videos_filter .h5{
     display: flex;
-    align-items: flex-start;
     font-weight: 600;
+    flex-direction: column;
+}
+#my_videos_filter .h5 .align_flex{
+    display: flex;
+    align-items: flex-start;
+    font-size: 14px;
+    margin-bottomm: .8em;
+}
+#my_videos_filter .h5 .align_flex:last-child{
+    align-self: flex-end;
+    align-items: center;
+    cursor: pointer;
+    color: var(--secondary);
+    transition: .3s all;
+    margin-top: .8em;
+    border: 1px solid var(--secondary);
+    padding: .2em .4em;
+    border-radius: 4px;
+}
+#my_videos_filter .h5 .align_flex:last-child:hover{
+    background-color: var(--secondary);
+    color: #fff;
+}
+#my_videos_filter .h5 .align_flex .add_category{
+    width: 15px;
+    display: block;
+    color: inherit;
+    margin: 0 .4em;
+    flex:none;
 }
 #my_videos_filter .category_icon{
     display: inline-block;
@@ -141,6 +179,7 @@
     height: 22px;
     margin-right: .4em;
     color: var(--secondary);
+    flex: none;
 }
 #my_videos_filter .card-title{
     position: relative;
