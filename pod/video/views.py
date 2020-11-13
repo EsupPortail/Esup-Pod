@@ -382,7 +382,7 @@ def my_videos(request):
     cats = map(lambda c: {"title": c.title, "slug": c.slug, "videos": list(
         c.video.values_list('slug', flat=True))}, cats)
     cats = list(cats)
-    
+
     paginator = Paginator(videos_list, 12)
     try:
         videos = paginator.page(page)
@@ -1804,7 +1804,8 @@ def add_category(request):
     if request.method == "POST":  # create new category
 
         cat_title = request.POST.get('title', None)
-        videos = request.POST.get('videos', [])
+        v_slugs = request.POST.get('videos', '')
+        videos = Video.objects.filter(slug__in=v_slugs.split(','))
 
         if cat_title:
 
@@ -1837,7 +1838,8 @@ def edit_category(request, c_slug):
 
         cat = get_object_or_404(Category, slug=c_slug)
         new_title = request.POST.get('title', None)
-        new_videos = request.POST.get('videos', [])
+        v_slugs = request.POST.get('videos', '')
+        new_videos = Video.objects.filter(slug__in=v_slugs.split(','))
 
         if new_title:
             if c_user == cat.owner or c_user.is_superuser:
