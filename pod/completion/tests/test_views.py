@@ -655,7 +655,7 @@ class CompletionDocumentViewsTestCase(TestCase):
                   'document': document.id,
                   'video': 1,
                   'track_id': None
-                  }
+                  })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_document')
         result = Document.objects.get(id=1)
