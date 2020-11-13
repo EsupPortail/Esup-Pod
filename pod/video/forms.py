@@ -482,7 +482,7 @@ class VideoForm(forms.ModelForm):
     def custom_video_form(self):
 
         if not ACTIVE_VIDEO_COMMENT:
-            self.fields.pop('disable_comment')
+            self.remove_field('disable_comment')
 
         if FILEPICKER and self.fields.get('thumbnail'):
             self.fields['thumbnail'].widget = CustomFileWidget(type="image")

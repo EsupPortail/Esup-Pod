@@ -2855,9 +2855,17 @@ msgstr "Disciplines"
 msgid "Tags"
 msgstr "Mots clés"
 
+#: pod/main/templates/base.html:68
+msgid "breadcrumb"
+msgstr "Fil d’Ariane"
+
 #: pod/main/templates/base.html:71
 msgid "Home"
 msgstr "Accueil"
+
+#: pod/main/templates/base.html:77
+msgid "Toggle side Menu"
+msgstr "Afficher/masquer le menu latéral"
 
 #: pod/main/templates/contact_us.html:8 pod/main/templates/contact_us.html:12
 #: pod/main/templates/contact_us.html:17 pod/main/templates/maintenance.html:15
