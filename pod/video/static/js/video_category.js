@@ -1,13 +1,23 @@
-// Add onclick event to each category
-let cats_edit = document.querySelectorAll("#my_videos_filter .categories_list_item .edit_category");
+let modal_title = document.querySelector("#manageCategoryModal #modal_title")
 let cat_input = document.querySelector("#manageCategoryModal #catTitle");
 
+// Add onclick event to each category
+let cats_edit = document.querySelectorAll("#my_videos_filter .categories_list_item .edit_category");
 cats_edit.forEach(c_e =>{
     c_e.addEventListener('click', (e) =>{
 	let c = c_e.parentNode.querySelector('.cat_title');
 	cat_input.value = c.textContent.trim();
+    	modal_title.innerText = c_e.getAttribute('title').trim(); 
 	window.setInterval(function(){ cat_input.focus();}, 10)
     });
+});
+
+// Add onclick event to add new category
+let add_cat = document.querySelector('#my_videos_filter #add_category_btn');
+add_cat.addEventListener('click', e=>{
+    modal_title.innerText = add_cat.getAttribute('title').trim(); 
+    cat_input.value = "";
+    window.setInterval(function(){ cat_input.focus();}, 10)
 });
 
 // Add onclick event to each video in category modal
