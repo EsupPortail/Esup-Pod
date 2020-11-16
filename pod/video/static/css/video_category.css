@@ -220,13 +220,24 @@
     flex-grow: 1;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: calc(100% - 30px);
+    max-width: calc(100% - 60px);
     word-wrap: normal;
     cursor: pointer;
+    line-height: 1.8;
 }
+#my_videos_filter .categories_list_item .category_actions{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 50px;
+    line-height: 1.8;
+}
+#my_videos_filter .categories_list_item .remove_category,
 #my_videos_filter .categories_list_item .edit_category{
     display: block;
     width: 22px;
     color: inherit;
     cursor: pointer;
+    flex: none;
 }
+#my_videos_filter .categories_list_item .remove_category{width: 18px}
