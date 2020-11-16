@@ -18,4 +18,4 @@ def get_maintenance_welcome():
 
 @register.simple_tag
 def str_to_dict(value):
-    return json.loads(value);
+    return json.loads(value)

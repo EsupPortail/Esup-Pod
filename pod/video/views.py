@@ -380,9 +380,9 @@ def my_videos(request):
     cats = Category.objects.prefetch_related('video').filter(
             owner=request.user)
     cats = map(lambda c: {
-        "id": c.id, "title": c.title, "slug": c.slug, "videos": list(
+        'id': c.id, 'title': c.title, 'slug': c.slug, 'videos': list(
             c.video.values_list('slug', flat=True))}, cats)
-    cats = json.dumps(list(cats), ensure_ascii=False).encode('utf8')
+    cats = json.dumps(list(cats), ensure_ascii=False)
     paginator = Paginator(videos_list, 12)
     try:
         videos = paginator.page(page)
@@ -395,9 +395,13 @@ def my_videos(request):
         return render(
             request, 'videos/video_list.html',
             {'videos': videos, "full_path": full_path})
+    print("------------------------------------------")
+    print(cats)
+    print("------------------------------------------")
 
     return render(request, 'videos/my_videos.html', {
-        'videos': videos, "full_path": full_path, "categories": cats,
+        'videos': videos, "full_path": full_path,
+        "categories": cats,
         'flat_videos': videos_list
     })
 
