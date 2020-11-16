@@ -8,7 +8,7 @@ cats_edit.forEach(c_e =>{
 	let c = c_e.parentNode.querySelector('.cat_title');
 	cat_input.value = c.textContent.trim();
     	modal_title.innerText = c_e.getAttribute('title').trim(); 
-	window.setInterval(function(){ cat_input.focus();}, 10)
+    	window.setTimeout(function(){ console.log("OKKKKKKK"); cat_input.focus()}, 500)
     });
 });
 
@@ -17,7 +17,7 @@ let add_cat = document.querySelector('#my_videos_filter #add_category_btn');
 add_cat.addEventListener('click', e=>{
     modal_title.innerText = add_cat.getAttribute('title').trim(); 
     cat_input.value = "";
-    window.setInterval(function(){ cat_input.focus();}, 10)
+    window.setTimeout(function(){ console.log("OKKKKKKK"); cat_input.focus()}, 500)
 });
 
 // Add onclick event to each video in category modal
