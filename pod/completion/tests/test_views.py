@@ -142,6 +142,7 @@ class CompletionContributorViewsTestCase(TestCase):
         self.assertContains(response, 'form_contributor')
         response = self.client.post(
             '/video_completion_contributor/{0}/'.format(video.slug),
+            content_type="application/json",
             data={'action': 'save',
                   'name': 'testcontributor',
                   'role': 'author',
@@ -156,6 +157,8 @@ class CompletionContributorViewsTestCase(TestCase):
         self.assertContains(response, 'testcontributor')
         self.assertContains(response, 'test@test.com')
         result = Contributor.objects.get(id=1)
+        print("COUCOU")
+        print(result)
         self.assertEqual(result.name, 'testcontributor')
 
         print(" ---> test_video_completion_contributor_new : OK!")
@@ -173,6 +176,7 @@ class CompletionContributorViewsTestCase(TestCase):
         self.assertContains(response, 'form_contributor')
         response = self.client.post(
             '/video_completion_contributor/{0}/'.format(video.slug),
+            content_type="application/json",
             data={'action': 'save',
                   'name': 'testcontributor',
                   'role': 'author',
@@ -222,6 +226,7 @@ class CompletionContributorViewsTestCase(TestCase):
         self.assertContains(response, 'form_contributor')
         response = self.client.post(
             '/video_completion_contributor/{0}/'.format(video.slug),
+            content_type="application/json",
             data={'action': 'save',
                   'name': 'testcontributor',
                   'role': 'author',
@@ -232,6 +237,8 @@ class CompletionContributorViewsTestCase(TestCase):
                   })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_contributor')
+        print("THE RESPONSE")
+
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, 'testcontributor')
         response = self.client.post(
@@ -317,12 +324,12 @@ class CompletionTrackViewsTestCase(TestCase):
             )
         response = self.client.post(
             '/video_completion_track/{0}/'.format(video.slug),
+            content_type="application/json",
             data={'action': 'save',
                   'kind': 'subtitles',
                   'lang': 'fr',
                   'src': document.id,
-                  'video': 1,
-                  'track_id': None
+                  'video': 1
                   })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
@@ -365,12 +372,12 @@ class CompletionTrackViewsTestCase(TestCase):
             )
         response = self.client.post(
             '/video_completion_track/{0}/'.format(video.slug),
+            content_type="application/json",
             data={'action': 'save',
                   'kind': 'subtitles',
                   'lang': 'fr',
                   'src': document.id,
-                  'video': 1,
-                  'track_id': None
+                  'video': 1
                   })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_track')
@@ -430,12 +437,12 @@ class CompletionTrackViewsTestCase(TestCase):
             )
         response = self.client.post(
             '/video_completion_track/{0}/'.format(video.slug),
+            content_type="application/json",
             data={'action': 'save',
                   'kind': 'subtitles',
                   'lang': 'fr',
                   'src': document.id,
-                  'video': 1,
-                  'track_id': None
+                  'video': 1
                   })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_track')
@@ -525,10 +532,10 @@ class CompletionDocumentViewsTestCase(TestCase):
             )
         response = self.client.post(
             '/video_completion_document/{0}/'.format(video.slug),
+            content_type="application/json",
             data={'action': 'save',
                   'document': document.id,
-                  'video': 1,
-                  'track_id': None
+                  'video': 1
                   })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
@@ -570,10 +577,10 @@ class CompletionDocumentViewsTestCase(TestCase):
             )
         response = self.client.post(
             '/video_completion_document/{0}/'.format(video.slug),
+            content_type="application/json",
             data={'action': 'save',
                   'document': document.id,
                   'video': 1,
-                  'track_id': None
                   })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
@@ -649,6 +656,7 @@ class CompletionDocumentViewsTestCase(TestCase):
             )
         response = self.client.post(
             '/video_completion_document/{0}/'.format(video.slug),
+            content_type="application/json",
             data={'action': 'save',
                   'document': document.id,
                   'video': 1,
@@ -721,6 +729,7 @@ class CompletionOverlayViewsTestCase(TestCase):
         self.assertContains(response, 'form_overlay')
         response = self.client.post(
             '/video_completion_overlay/{0}/'.format(video.slug),
+            content_type="application/json",
             data={'action': 'save',
                   'title': 'testoverlay',
                   'time_start': 1,
@@ -728,8 +737,7 @@ class CompletionOverlayViewsTestCase(TestCase):
                   'content': 'testoverlay',
                   'position': 'bottom-right',
                   'background': 'on',
-                  'video': 1,
-                  'overlay_id': None
+                  'video': 1
                   })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
@@ -753,6 +761,7 @@ class CompletionOverlayViewsTestCase(TestCase):
         self.assertContains(response, 'form_overlay')
         response = self.client.post(
             '/video_completion_overlay/{0}/'.format(video.slug),
+            content_type="application/json",
             data={'action': 'save',
                   'title': 'testoverlay',
                   'time_start': 1,
@@ -760,8 +769,7 @@ class CompletionOverlayViewsTestCase(TestCase):
                   'content': 'testoverlay',
                   'position': 'bottom-right',
                   'background': 'on',
-                  'video': 1,
-                  'overlay_id': None
+                  'video': 1
                   })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
@@ -807,6 +815,7 @@ class CompletionOverlayViewsTestCase(TestCase):
         self.assertContains(response, 'form_overlay')
         response = self.client.post(
             '/video_completion_overlay/{0}/'.format(video.slug),
+            content_type="application/json",
             data={'action': 'save',
                   'title': 'testoverlay',
                   'time_start': 1,
@@ -814,8 +823,7 @@ class CompletionOverlayViewsTestCase(TestCase):
                   'content': 'testoverlay',
                   'position': 'bottom-right',
                   'background': 'on',
-                  'video': 1,
-                  'overlay_id': None
+                  'video': 1
                   })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_overlay')

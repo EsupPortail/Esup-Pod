@@ -97,6 +97,7 @@ class ChapterViewsTestCase(TestCase):
         self.assertContains(response, 'form_chapter')
         response = self.client.post(
             '/video_chapter/{0}/'.format(video.slug),
+            content_type="application/json",
             data={'action': 'save',
                   'chapter_id': None,
                   'video': 1,
@@ -120,6 +121,7 @@ class ChapterViewsTestCase(TestCase):
         self.assertTrue(login)
         response = self.client.post(
             '/video_chapter/{0}/'.format(video.slug),
+            content_type="application/json",
             data={'action': 'save',
                   'chapter_id': None,
                   'video': 1,
@@ -153,8 +155,8 @@ class ChapterViewsTestCase(TestCase):
         self.assertTrue(login)
         response = self.client.post(
             '/video_chapter/{0}/'.format(video.slug),
+            content_type="application/json",
             data={'action': 'save',
-                  'chapter_id': None,
                   'video': 1,
                   'title': 'testchapter',
                   'time_start': 1,

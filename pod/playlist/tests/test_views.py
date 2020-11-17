@@ -70,7 +70,6 @@ class PlaylistViewsTestCase(TestCase):
         response = self.client.post(
             '/playlist/',
             data={'action': 'edit',
-                  'playlist_id': None,
                   'title': 'playlist1',
                   'owner': owner.id,
                   'description': 'test',

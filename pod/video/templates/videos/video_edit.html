@@ -2,7 +2,6 @@
 {% load i18n %}
 {% load staticfiles %}
 {% load tagging_tags %}
-{% load progress_bar %}
 
 {% block page_extra_head %}
 
@@ -118,7 +117,6 @@
             <div class="spinner-border hidespinner" role="status">
                 <span class="sr-only">{% trans "Loading" %}...</span>
             </div>
-            <p class="card-text">{% progress_bar %}</p>
           </div>
           <div class="card-footer">
             {% trans "The page will refresh after the upload completes." %}
@@ -220,11 +218,6 @@
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
 <!-- form . media -->
 {{form.media}}
-<!--
-{% progress_bar_media %}
--->
-<!-- fin form . media -->
-
 </style>
 
 

@@ -1747,7 +1747,7 @@ class PodChunkedUploadView(ChunkedUploadView):
     field_name = 'the_file'
 
     def check_permissions(self, request):
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             return False
         elif (RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
               and request.user.is_staff is False):
@@ -1761,7 +1761,7 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
     slug = ""
 
     def check_permissions(self, request):
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated:
             return False
         elif (RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
               and request.user.is_staff is False):
