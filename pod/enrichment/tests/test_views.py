@@ -132,7 +132,7 @@ class EnrichmentViewsTestCase(TestCase):
         response = self.client.post(
             url,
             content_type="application/json",
-            data={'action': 'save'
+            data={'action': 'save',
                   'video': 1,
                   'title': 'testenrich',
                   'start': 1,
