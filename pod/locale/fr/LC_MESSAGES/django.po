@@ -111,7 +111,7 @@ msgstr "Authentification CAS"
 
 #: pod/authentication/templates/authentication/login.html:22
 msgid "local sign on"
-msgstr "authentification locale"
+msgstr "Authentification locale"
 
 #: pod/authentication/templates/registration/login.html:9
 #: pod/authentication/templates/registration/login.html:12
@@ -4664,6 +4664,10 @@ msgstr "Choisir un fichier audio ou vidéo à mettre en ligne"
 #: pod/video/templates/videos/video_edit.html:36
 msgid "Editing the video"
 msgstr "Éditer la vidéo"
+
+#: pod/video/templates/videos/add_video.html:35
+msgid "Upload progress:"
+msgstr "Progression du téléversement :"
 
 #: pod/video/templates/videos/add_video.html:41
 msgid ""
