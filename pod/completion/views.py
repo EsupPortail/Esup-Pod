@@ -143,7 +143,6 @@ def video_completion_contributor(request, slug):
         list_overlay = video.overlay_set.all()
     else:
         list_contributor = video.contributor_set.all()
-
     if request.POST and request.POST.get('action'):
         if request.POST['action'] in ACTION:
             return eval(
