@@ -27,13 +27,18 @@
 
 
 {% block page_content %}
-<h3><label for="chunked_upload">{% trans "Choose an audio or video file to upload" %}</label></h3>
+<h3>{% trans "Media upload" %}</h3>
 
 <div id="uploadblock">
     {% csrf_token %}
-    <input id="chunked_upload" class="hide-on-processing" accept="{{allow_extension}}" type="file" name="the_file">
-    <label class="show-on-processing" for="progBar">{% trans "Upload progress:" %}</label>
-    <progress class="show-on-processing" id="progBar" value="0" max="100"></progress>
+    <div class="hide-on-processing">
+        <label for="chunked_upload">{% trans "Choose an audio or video file to upload" %}</label><br/>
+        <input id="chunked_upload" accept="{{allow_extension}}" type="file" name="the_file">
+    </div>
+    <div class="show-on-processing">
+        <label for="progBar">{% trans "Upload progress:" %}</label>
+        <progress id="progBar" value="0" max="100"></progress>
+    </div>
 
     {%if TRANSCRIPT %}
     <input type="checkbox" class="hide-on-processing" id="transcript-box" name="transbox">

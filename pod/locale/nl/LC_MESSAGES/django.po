@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-18 08:45+0000\n"
+"POT-Creation-Date: 2020-11-18 10:17+0000\n"
 "PO-Revision-Date: 2018-07-03 13:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1461,8 +1461,8 @@ msgstr ""
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:67
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:68
-#: pod/video/templates/videos/add_video.html:47
-#: pod/video/templates/videos/add_video.html:48
+#: pod/video/templates/videos/add_video.html:52
+#: pod/video/templates/videos/add_video.html:53
 msgid "Back to video edit"
 msgstr ""
 
@@ -3477,13 +3477,13 @@ msgid "Select the main language used in the content."
 msgstr ""
 
 #: pod/recorder/models.py:178 pod/video/forms.py:199 pod/video/models.py:512
-#: pod/video/templates/videos/add_video.html:40
-#: pod/video/templates/videos/add_video.html:83
+#: pod/video/templates/videos/add_video.html:45
+#: pod/video/templates/videos/add_video.html:88
 msgid "Transcript"
 msgstr ""
 
 #: pod/recorder/models.py:179 pod/video/models.py:513
-#: pod/video/templates/videos/add_video.html:40
+#: pod/video/templates/videos/add_video.html:45
 msgid "Check this box if you want to transcript the audio.(beta version)"
 msgstr ""
 
@@ -3765,7 +3765,7 @@ msgid "File field"
 msgstr ""
 
 #: pod/video/forms.py:88 pod/video/models.py:457
-#: pod/video/templates/videos/add_video.html:73
+#: pod/video/templates/videos/add_video.html:78
 msgid "You can send an audio or video file."
 msgstr ""
 
@@ -3885,7 +3885,7 @@ msgid ""
 "automatically."
 msgstr ""
 
-#: pod/video/forms.py:200 pod/video/templates/videos/add_video.html:86
+#: pod/video/forms.py:200 pod/video/templates/videos/add_video.html:91
 msgid ""
 "Available only in French and English, transcription is a speech recognition "
 "technology that transforms an oral speech into text in an automated way. By "
@@ -3893,7 +3893,7 @@ msgid ""
 "encoding the video."
 msgstr ""
 
-#: pod/video/forms.py:205 pod/video/templates/videos/add_video.html:87
+#: pod/video/forms.py:205 pod/video/templates/videos/add_video.html:92
 msgid ""
 "You will probably have to modify this file using the captioning tool in the "
 "completion page to improve it."
@@ -3929,7 +3929,7 @@ msgstr ""
 msgid "Owner of the video cannot be an additional owner too"
 msgstr ""
 
-#: pod/video/forms.py:465 pod/video/templates/videos/add_video.html:70
+#: pod/video/forms.py:465 pod/video/templates/videos/add_video.html:75
 msgid "File"
 msgstr ""
 
@@ -4427,7 +4427,7 @@ msgstr ""
 
 #: pod/video/templates/videos/add_video.html:14
 #: pod/video/templates/videos/add_video.html:18
-#: pod/video/templates/videos/add_video.html:30
+#: pod/video/templates/videos/add_video.html:35
 msgid "Choose an audio or video file to upload"
 msgstr ""
 
@@ -4437,47 +4437,51 @@ msgstr ""
 msgid "Editing the video"
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:35
+#: pod/video/templates/videos/add_video.html:30
+msgid "Media upload"
+msgstr ""
+
+#: pod/video/templates/videos/add_video.html:39
 msgid "Upload progress:"
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:43
+#: pod/video/templates/videos/add_video.html:48
 msgid ""
 "Do not leave the page if you encounter a connection problem during the "
 "upload, it will resume automatically when your connection is available again."
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:56
+#: pod/video/templates/videos/add_video.html:61
 #: pod/video/templates/videos/video_edit.html:179
 msgid "Uploading"
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:58
+#: pod/video/templates/videos/add_video.html:63
 #: pod/video/templates/videos/video_edit.html:181
 #, python-format
 msgid "The file size must be lower than %(video_max_upload_size)s Go."
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:59
+#: pod/video/templates/videos/add_video.html:64
 #: pod/video/templates/videos/video_edit.html:182
 msgid ""
 "The sending time depends on the size of your file and your upload speed. "
 "This can be quite long."
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:60
+#: pod/video/templates/videos/add_video.html:65
 #: pod/video/templates/videos/video_edit.html:183
 msgid ""
 "While sending your file, do not close your browser until you have received a "
 "message of success or failure."
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:61
+#: pod/video/templates/videos/add_video.html:66
 #: pod/video/templates/videos/video_edit.html:184
 msgid "An email will be sent to you when all encoding tasks are completed."
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:66
+#: pod/video/templates/videos/add_video.html:71
 #: pod/video/templates/videos/video_edit.html:194
 msgid "Help for form fields"
 msgstr ""
