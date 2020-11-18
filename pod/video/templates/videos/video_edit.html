@@ -67,15 +67,15 @@
             {% endif %}
 
             {% if form.instance.id and form.instance.get_encoding_step == "" %}
-            <p class="text-info">
+            <div class="alert alert-warning" role="alert">
                 {% trans "The video is currently waiting for encoding." %}
-            </p>
+            </div>
             {% endif %}
 
             {% if form.instance.encoding_in_progress %}
-            <p class="text-info">
+            <div class="alert alert-warning" role="alert">
                 {% trans "The video is currently being encoded." %}
-            </p>
+            </div>
             {% endif %}
 
             {% if form.instance.get_encoding_step == "5 : transcripting audio" %}
