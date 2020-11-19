@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-05 14:25+0000\n"
+"POT-Creation-Date: 2020-11-18 10:17+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -92,7 +92,7 @@ msgid "registered-reader"
 msgstr "lecteur enregistré"
 
 #: pod/authentication/models.py:68 pod/recorder/models.py:266
-#: pod/video/models.py:1406 pod/video/views.py:1281
+#: pod/video/models.py:1405 pod/video/views.py:1281
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -110,8 +110,8 @@ msgid "Single sign on"
 msgstr "Authentification CAS"
 
 #: pod/authentication/templates/authentication/login.html:22
-msgid "local sign on"
-msgstr "authentification locale"
+msgid "Local sign on"
+msgstr "Authentification locale"
 
 #: pod/authentication/templates/registration/login.html:9
 #: pod/authentication/templates/registration/login.html:12
@@ -194,10 +194,10 @@ msgid "Please provide a valid value for this field"
 msgstr "Veuillez renseigner une valeur valide pour ce champ"
 
 #: pod/authentication/templates/userpicture/userpicture.html:56
-#: pod/bbb/templates/bbb/list_meeting.html:44
+#: pod/bbb/templates/bbb/list_meeting.html:44 pod/main/templates/base.html:114
 #: pod/main/templates/navbar_collapse.html:43
 #: pod/main/templates/navbar_collapse.html:66
-#: pod/main/templates/navbar_collapse.html:99
+#: pod/main/templates/navbar_collapse.html:100
 #: pod/podfile/templates/podfile/home_content.html:60
 #: pod/podfile/templates/podfile/home_content.html:98
 #: pod/recorder/templates/recorder/claim_record.html:49
@@ -237,7 +237,7 @@ msgstr "Nom de la session BBB."
 msgid "Session date"
 msgstr "Date de session"
 
-#: pod/bbb/models.py:40 pod/video/models.py:645 pod/video/models.py:1312
+#: pod/bbb/models.py:40 pod/video/models.py:645 pod/video/models.py:1311
 msgid "Encoding step"
 msgstr "Étape de l'encodage"
 
@@ -636,6 +636,7 @@ msgstr "Mes vidéos"
 #: pod/completion/templates/video_caption_maker.html:115
 #: pod/video/templates/videos/video_collaborate.html:66
 #: pod/video/templates/videos/video_delete.html:21
+#: pod/video/templates/videos/video_edit.html:38
 #: pod/video/templates/videos/video_edit.html:39
 msgid "View the video"
 msgstr "Voir la vidéo"
@@ -806,9 +807,9 @@ msgstr ""
 #: pod/enrichment/models.py:291 pod/enrichment/models.py:322
 #: pod/interactive/models.py:16 pod/interactive/models.py:37
 #: pod/playlist/models.py:79 pod/recorder/models.py:78 pod/video/models.py:455
-#: pod/video/models.py:955 pod/video/models.py:1098 pod/video/models.py:1166
-#: pod/video/models.py:1220 pod/video/models.py:1265 pod/video/models.py:1283
-#: pod/video/models.py:1300
+#: pod/video/models.py:954 pod/video/models.py:1097 pod/video/models.py:1165
+#: pod/video/models.py:1219 pod/video/models.py:1264 pod/video/models.py:1282
+#: pod/video/models.py:1299
 msgid "Video"
 msgstr "Vidéo"
 
@@ -1531,8 +1532,8 @@ msgstr "Ajouter un nouvel enrichissement"
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:67
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:68
-#: pod/video/templates/videos/add_video.html:45
-#: pod/video/templates/videos/add_video.html:46
+#: pod/video/templates/videos/add_video.html:52
+#: pod/video/templates/videos/add_video.html:53
 msgid "Back to video edit"
 msgstr "Retour à l'édition de la vidéo"
 
@@ -2124,8 +2125,8 @@ msgid "Other (please specify)"
 msgstr "Autre (spécifiez)"
 
 #: pod/main/forms.py:50 pod/podfile/models.py:27 pod/podfile/models.py:105
-#: pod/podfile/templates/podfile/home_content.html:32 pod/video/models.py:1091
-#: pod/video/models.py:1163 pod/video/models.py:1217
+#: pod/podfile/templates/podfile/home_content.html:32 pod/video/models.py:1090
+#: pod/video/models.py:1162 pod/video/models.py:1216
 msgid "Name"
 msgstr "Nom"
 
@@ -2840,14 +2841,14 @@ msgstr "Partager"
 msgid "Share on"
 msgstr "Partager sur"
 
-#: pod/main/templates/aside.html:20 pod/main/templates/aside.html:25
+#: pod/main/templates/aside.html:21 pod/main/templates/aside.html:27
 #: pod/recorder/models.py:188 pod/video/forms.py:134 pod/video/models.py:444
 #: pod/video/models.py:522 pod/video/templates/videos/filter_aside.html:56
 #: pod/video/templates/videos/video-info.html:90
 msgid "Disciplines"
 msgstr "Disciplines"
 
-#: pod/main/templates/aside.html:38 pod/recorder/models.py:184
+#: pod/main/templates/aside.html:40 pod/recorder/models.py:184
 #: pod/video/forms.py:130 pod/video/models.py:518
 #: pod/video/templates/videos/filter_aside.html:78
 #: pod/video/templates/videos/video-info.html:15
@@ -2863,7 +2864,7 @@ msgstr "Fil d’Ariane"
 msgid "Home"
 msgstr "Accueil"
 
-#: pod/main/templates/base.html:77
+#: pod/main/templates/base.html:76
 msgid "Toggle side Menu"
 msgstr "Afficher/masquer le menu latéral"
 
@@ -2964,6 +2965,8 @@ msgid "Types"
 msgstr "Types"
 
 #: pod/main/templates/navbar.html:53 pod/main/templates/navbar.html:55
+#: pod/main/templates/navbar_collapse.html:85
+#: pod/main/templates/navbar_collapse.html:86
 #: pod/video/templates/videos/filter_aside.html:15 pod/video_search/forms.py:8
 #: pod/video_search/templates/search/search.html:8
 #: pod/video_search/templates/search/search.html:17
@@ -3173,7 +3176,7 @@ msgid "Thumbnail"
 msgstr "Vignette"
 
 #: pod/playlist/templates/playlist/playlist_element_list.html:13
-#: pod/video/feeds.py:188 pod/video/models.py:568 pod/video/models.py:706
+#: pod/video/feeds.py:188 pod/video/models.py:568 pod/video/models.py:705
 #: pod/video/templates/videos/video-info.html:79
 msgid "Duration"
 msgstr "Durée"
@@ -3602,13 +3605,13 @@ msgid "Select the main language used in the content."
 msgstr "Sélectionner la langue principalement utilisée dans ce contenu."
 
 #: pod/recorder/models.py:178 pod/video/forms.py:199 pod/video/models.py:512
-#: pod/video/templates/videos/add_video.html:38
-#: pod/video/templates/videos/add_video.html:81
+#: pod/video/templates/videos/add_video.html:45
+#: pod/video/templates/videos/add_video.html:88
 msgid "Transcript"
 msgstr "Transcrire"
 
 #: pod/recorder/models.py:179 pod/video/models.py:513
-#: pod/video/templates/videos/add_video.html:38
+#: pod/video/templates/videos/add_video.html:45
 msgid "Check this box if you want to transcript the audio.(beta version)"
 msgstr ""
 "Cocher cette case si vous voulez transcrire l’audio (version bêta, voir aide "
@@ -3725,8 +3728,8 @@ msgstr "Fichier source de la vidéo publiée."
 msgid "File size"
 msgstr "Taille du fichier"
 
-#: pod/recorder/models.py:320 pod/video/models.py:499 pod/video/models.py:1349
-#: pod/video/models.py:1408
+#: pod/recorder/models.py:320 pod/video/models.py:499 pod/video/models.py:1348
+#: pod/video/models.py:1407
 msgid "Date added"
 msgstr "Date d'ajout"
 
@@ -3901,15 +3904,15 @@ msgstr "Oui"
 msgid "No"
 msgstr "Non"
 
-#: pod/video/admin.py:190
+#: pod/video/admin.py:194
 msgid "Encode selected"
 msgstr "(Ré)encoder la sélection"
 
-#: pod/video/admin.py:199
+#: pod/video/admin.py:203
 msgid "Transcript selected"
 msgstr "Transcription selectionnée"
 
-#: pod/video/admin.py:260 pod/video/forms.py:234 pod/video/forms.py:584
+#: pod/video/admin.py:264 pod/video/forms.py:234 pod/video/forms.py:584
 #: pod/video/forms.py:586 pod/video/models.py:244
 msgid "Owners"
 msgstr "Propriétaires"
@@ -3919,7 +3922,7 @@ msgid "File field"
 msgstr "Fichier"
 
 #: pod/video/forms.py:88 pod/video/models.py:457
-#: pod/video/templates/videos/add_video.html:71
+#: pod/video/templates/videos/add_video.html:78
 msgid "You can send an audio or video file."
 msgstr "Vous pouvez envoyer un fichier audio ou vidéo."
 
@@ -4075,7 +4078,7 @@ msgstr ""
 "Si votre vidéo est dans une playlist vous ne pourrez pas lui ajouter de mot "
 "de passe."
 
-#: pod/video/forms.py:200 pod/video/templates/videos/add_video.html:84
+#: pod/video/forms.py:200 pod/video/templates/videos/add_video.html:91
 msgid ""
 "Available only in French and English, transcription is a speech recognition "
 "technology that transforms an oral speech into text in an automated way. By "
@@ -4087,7 +4090,7 @@ msgstr ""
 "automatiquement. En cochant cette case, cela va générer un fichier de sous-"
 "titre durant l’encodage de la vidéo."
 
-#: pod/video/forms.py:205 pod/video/templates/videos/add_video.html:85
+#: pod/video/forms.py:205 pod/video/templates/videos/add_video.html:92
 msgid ""
 "You will probably have to modify this file using the captioning tool in the "
 "completion page to improve it."
@@ -4130,7 +4133,7 @@ msgstr ""
 "Le propriétaire de la video ne peut pas être propriétaire additionnel en "
 "même temps"
 
-#: pod/video/forms.py:465 pod/video/templates/videos/add_video.html:68
+#: pod/video/forms.py:465 pod/video/templates/videos/add_video.html:75
 msgid "File"
 msgstr "Fichier"
 
@@ -4337,7 +4340,7 @@ msgstr ""
 msgid "Date of event"
 msgstr "Date de l'évènement"
 
-#: pod/video/models.py:566 pod/video/models.py:684
+#: pod/video/models.py:566 pod/video/models.py:683
 msgid "Thumbnails"
 msgstr "Vignettes"
 
@@ -4361,166 +4364,166 @@ msgstr "vidéos"
 msgid "Sum of view"
 msgstr "Somme des vues"
 
-#: pod/video/models.py:713
+#: pod/video/models.py:712
 msgid "Is the video encoded ?"
 msgstr "Est-ce que la vidéo est encodée ?"
 
-#: pod/video/models.py:958
+#: pod/video/models.py:957
 msgid "Date"
 msgstr "Date"
 
-#: pod/video/models.py:960 pod/video/templates/videos/video-info.html:80
+#: pod/video/models.py:959 pod/video/templates/videos/video-info.html:80
 msgid "Number of view"
 msgstr "Nombre de vues"
 
-#: pod/video/models.py:968
+#: pod/video/models.py:967
 msgid "View count"
 msgstr "Nombre de vues"
 
-#: pod/video/models.py:969
+#: pod/video/models.py:968
 msgid "View counts"
 msgstr "Statistiques"
 
-#: pod/video/models.py:974
+#: pod/video/models.py:973
 msgid "resolution"
 msgstr "résolution"
 
-#: pod/video/models.py:980 pod/video/models.py:1045 pod/video/models.py:1052
+#: pod/video/models.py:979 pod/video/models.py:1044 pod/video/models.py:1051
 msgid "minrate"
 msgstr "débit minimum"
 
-#: pod/video/models.py:985 pod/video/models.py:1021 pod/video/models.py:1028
+#: pod/video/models.py:984 pod/video/models.py:1020 pod/video/models.py:1027
 msgid "bitrate video"
 msgstr "débit binaire de la vidéo"
 
-#: pod/video/models.py:990 pod/video/models.py:1033 pod/video/models.py:1040
+#: pod/video/models.py:989 pod/video/models.py:1032 pod/video/models.py:1039
 msgid "maxrate"
 msgstr "débit maximum"
 
-#: pod/video/models.py:995 pod/video/models.py:1070 pod/video/models.py:1077
+#: pod/video/models.py:994 pod/video/models.py:1069 pod/video/models.py:1076
 msgid "bitrate audio"
 msgstr "débit binaire de l'audio"
 
-#: pod/video/models.py:999
+#: pod/video/models.py:998
 msgid "Make a MP4 version"
 msgstr "Faire une version MP4"
 
-#: pod/video/models.py:1012 pod/video/models.py:1100
+#: pod/video/models.py:1011 pod/video/models.py:1099
 msgid "rendition"
 msgstr "rendu"
 
-#: pod/video/models.py:1013
+#: pod/video/models.py:1012
 msgid "renditions"
 msgstr "rendus"
 
-#: pod/video/models.py:1102 pod/video/models.py:1168 pod/video/models.py:1222
+#: pod/video/models.py:1101 pod/video/models.py:1167 pod/video/models.py:1221
 msgid "Format"
 msgstr "Format"
 
-#: pod/video/models.py:1109 pod/video/models.py:1173 pod/video/models.py:1227
+#: pod/video/models.py:1108 pod/video/models.py:1172 pod/video/models.py:1226
 msgid "encoding source file"
 msgstr "fichier source d'encodage"
 
-#: pod/video/models.py:1131
+#: pod/video/models.py:1130
 msgid "Encoding video"
 msgstr "Encodage vidéo"
 
-#: pod/video/models.py:1132
+#: pod/video/models.py:1131
 msgid "Encoding videos"
 msgstr "Encodage des vidéos"
 
-#: pod/video/models.py:1183
+#: pod/video/models.py:1182
 msgid "Encoding audio"
 msgstr "Encodage audio"
 
-#: pod/video/models.py:1184
+#: pod/video/models.py:1183
 msgid "Encoding audios"
 msgstr "Encodage des audios"
 
-#: pod/video/models.py:1275
+#: pod/video/models.py:1274
 msgid "Encoding log"
 msgstr "Journal de l'encodage"
 
-#: pod/video/models.py:1276
+#: pod/video/models.py:1275
 msgid "Encoding logs"
 msgstr "Journaux des encodages"
 
-#: pod/video/models.py:1286
+#: pod/video/models.py:1285
 msgid "Video version"
 msgstr "Version de la video"
 
-#: pod/video/models.py:1288
+#: pod/video/models.py:1287
 msgid "Video default version."
 msgstr "Version par défaut de la vidéo."
 
-#: pod/video/models.py:1313
+#: pod/video/models.py:1312
 msgid "Encoding steps"
 msgstr "Etapes de l'encodage"
 
-#: pod/video/models.py:1322 pod/video/models.py:1329 pod/video/models.py:1345
+#: pod/video/models.py:1321 pod/video/models.py:1328 pod/video/models.py:1344
 #: pod/video/views.py:1292
 msgid "Note"
 msgstr "Note"
 
-#: pod/video/models.py:1330
+#: pod/video/models.py:1329
 msgid "Notes"
 msgstr "Notes"
 
-#: pod/video/models.py:1341
+#: pod/video/models.py:1340
 msgid "Note availibility level"
 msgstr "Niveau de disponibilité de la note"
 
-#: pod/video/models.py:1343
+#: pod/video/models.py:1342
 msgid "Select an availability level for the note."
 msgstr "Sélectionner le niveau de disponibilité de la note."
 
-#: pod/video/models.py:1347
+#: pod/video/models.py:1346
 msgid "Timestamp"
 msgstr "Horodatage"
 
-#: pod/video/models.py:1351 pod/video/models.py:1410
+#: pod/video/models.py:1350 pod/video/models.py:1409
 msgid "Date modified"
 msgstr "Date de modification"
 
-#: pod/video/models.py:1354
+#: pod/video/models.py:1353
 msgid "Advanced Note"
 msgstr "Note avancée"
 
-#: pod/video/models.py:1355
+#: pod/video/models.py:1354
 msgid "Advanced Notes"
 msgstr "Notes avancées"
 
-#: pod/video/models.py:1401
+#: pod/video/models.py:1400
 msgid "Comment availibility level"
 msgstr "Niveau de disponibilité du commentaire"
 
-#: pod/video/models.py:1403
+#: pod/video/models.py:1402
 msgid "Select an availability level for the comment."
 msgstr "Sélectionnez un niveau de disponibilité pour le commentaire."
 
-#: pod/video/models.py:1413
+#: pod/video/models.py:1412
 msgid "Note comment"
 msgstr "Commentaire de la note"
 
-#: pod/video/models.py:1414
+#: pod/video/models.py:1413
 msgid "Note comments"
 msgstr "Commentaires de notes"
 
-#: pod/video/models.py:1432
+#: pod/video/models.py:1431
 msgid "Date for deletion"
 msgstr "Date pour la suppression"
 
-#: pod/video/models.py:1435 pod/video/templates/videos/video.html:76
+#: pod/video/models.py:1434 pod/video/templates/videos/video.html:76
 #: pod/video/templates/videos/videos.html:8
 #: pod/video/templates/videos/videos.html:17
 msgid "Videos"
 msgstr "Vidéos"
 
-#: pod/video/models.py:1438
+#: pod/video/models.py:1437
 msgid "Video to delete"
 msgstr "Vidéo à supprimer"
 
-#: pod/video/models.py:1439
+#: pod/video/models.py:1438
 msgid "Videos to delete"
 msgstr "Vidéos à supprimer"
 
@@ -4592,8 +4595,6 @@ msgstr "Éditer la chaîne"
 #: pod/video/templates/channel/channel_edit.html:30
 #: pod/video/templates/channel/theme_edit.html:29
 #: pod/video/templates/channel/theme_edit.html:30
-#: pod/video/templates/videos/video_edit.html:38
-#: pod/video/templates/videos/video_edit.html:41
 msgid "View the channel"
 msgstr "Voir la chaîne"
 
@@ -4655,7 +4656,7 @@ msgstr "Édition des thèmes de la chaîne"
 
 #: pod/video/templates/videos/add_video.html:14
 #: pod/video/templates/videos/add_video.html:18
-#: pod/video/templates/videos/add_video.html:30
+#: pod/video/templates/videos/add_video.html:35
 msgid "Choose an audio or video file to upload"
 msgstr "Choisir un fichier audio ou vidéo à mettre en ligne"
 
@@ -4665,7 +4666,15 @@ msgstr "Choisir un fichier audio ou vidéo à mettre en ligne"
 msgid "Editing the video"
 msgstr "Éditer la vidéo"
 
-#: pod/video/templates/videos/add_video.html:41
+#: pod/video/templates/videos/add_video.html:30
+msgid "Media upload"
+msgstr "Téléverser un média"
+
+#: pod/video/templates/videos/add_video.html:39
+msgid "Upload progress:"
+msgstr "Progression du téléversement :"
+
+#: pod/video/templates/videos/add_video.html:48
 msgid ""
 "Do not leave the page if you encounter a connection problem during the "
 "upload, it will resume automatically when your connection is available again."
@@ -4674,19 +4683,19 @@ msgstr ""
 "la mise en ligne, elle reprendra automatiquement quand votre connexion sera "
 "de nouveau disponible."
 
-#: pod/video/templates/videos/add_video.html:54
+#: pod/video/templates/videos/add_video.html:61
 #: pod/video/templates/videos/video_edit.html:179
 msgid "Uploading"
 msgstr "Mise en ligne"
 
-#: pod/video/templates/videos/add_video.html:56
+#: pod/video/templates/videos/add_video.html:63
 #: pod/video/templates/videos/video_edit.html:181
 #, python-format
 msgid "The file size must be lower than %(video_max_upload_size)s Go."
 msgstr ""
 "La taille du fichier doit être inférieure à %(video_max_upload_size)s Go."
 
-#: pod/video/templates/videos/add_video.html:57
+#: pod/video/templates/videos/add_video.html:64
 #: pod/video/templates/videos/video_edit.html:182
 msgid ""
 "The sending time depends on the size of your file and your upload speed. "
@@ -4695,7 +4704,7 @@ msgstr ""
 "Le temps d'envoi dépend de la taille de votre fichier et de votre vitesse de "
 "téléchargement. Ce temps d'envoi peut être relativement long."
 
-#: pod/video/templates/videos/add_video.html:58
+#: pod/video/templates/videos/add_video.html:65
 #: pod/video/templates/videos/video_edit.html:183
 msgid ""
 "While sending your file, do not close your browser until you have received a "
@@ -4704,14 +4713,14 @@ msgstr ""
 "Pendant l'envoi de votre fichier, ne fermez pas votre navigateur avant "
 "d'avoir reçu un message de succès ou d'échec."
 
-#: pod/video/templates/videos/add_video.html:59
+#: pod/video/templates/videos/add_video.html:66
 #: pod/video/templates/videos/video_edit.html:184
 msgid "An email will be sent to you when all encoding tasks are completed."
 msgstr ""
 "Un courriel vous sera envoyé quand toutes les tâches d'encodage seront "
 "complétées."
 
-#: pod/video/templates/videos/add_video.html:64
+#: pod/video/templates/videos/add_video.html:71
 #: pod/video/templates/videos/video_edit.html:194
 msgid "Help for form fields"
 msgstr "Aide pour les champs de formulaire"
@@ -4839,7 +4848,6 @@ msgid "If you do not have the password for this content, please"
 msgstr "Si vous n'avez pas le mot de passe pour ce contenu, veuillez"
 
 #: pod/video/templates/videos/video-form.html:37
-#: pod/video/templates/videos/video_edit.html:49
 msgid "contact its owner"
 msgstr "contacter son propriétaire"
 
@@ -5015,6 +5023,7 @@ msgstr "Pour supprimer la vidéo, veuillez cocher et cliquer sur envoyer."
 msgid "Add a new video"
 msgstr "Ajouter une nouvelle vidéo"
 
+#: pod/video/templates/videos/video_edit.html:41
 #: pod/video/templates/videos/video_edit.html:42
 msgid "Delete the video"
 msgstr "Supprimer la vidéo"

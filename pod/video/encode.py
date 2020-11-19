@@ -138,7 +138,7 @@ CELERY_TO_ENCODE = getattr(settings, 'CELERY_TO_ENCODE', False)
 MANAGERS = getattr(settings, 'MANAGERS', {})
 
 # ##########################################################################
-# ENCODE VIDEO : THREAD TO LAUNCH ENCODE
+# ENCODE VIDEO: THREAD TO LAUNCH ENCODE
 # ##########################################################################
 
 
@@ -153,12 +153,12 @@ def start_encode(video_id):
         t.start()
 
 # ##########################################################################
-# ENCODE VIDEO : MAIN FUNCTION
+# ENCODE VIDEO: MAIN FUNCTION
 # ##########################################################################
 
 
 def encode_video(video_id):
-    start = "Start at : %s" % time.ctime()
+    start = "Start at: %s" % time.ctime()
 
     video_to_encode = Video.objects.get(id=video_id)
     video_to_encode.encoding_in_progress = True
@@ -173,12 +173,12 @@ def encode_video(video_id):
     if check_file(video_to_encode.video.path):
         change_encoding_step(video_id, 1, "remove old data")
         remove_msg = remove_old_data(video_id)
-        add_encoding_log(video_id, "remove old data : %s" % remove_msg)
+        add_encoding_log(video_id, "remove old data: %s" % remove_msg)
 
         # create video dir
         change_encoding_step(video_id, 2, "create output dir")
         output_dir = create_outputdir(video_id, video_to_encode.video.path)
-        add_encoding_log(video_id, "output_dir : %s" % output_dir)
+        add_encoding_log(video_id, "output_dir: %s" % output_dir)
 
         # clear log file
         open(output_dir + "/encoding.log", 'w').close()
@@ -189,7 +189,7 @@ def encode_video(video_id):
         video_data = {}
         try:
             video_data = get_video_data(video_id, output_dir)
-            add_encoding_log(video_id, "get video data : %s" %
+            add_encoding_log(video_id, "get video data: %s" %
                              video_data["msg"])
         except ValueError:
             msg = "Error in get video data"
@@ -207,81 +207,81 @@ def encode_video(video_id):
             # create encoding video command
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 1/11 get video command")
+                "encoding video file: 1/11 get video command")
             video_command_playlist = get_video_command_playlist(
                 video_id,
                 video_data,
                 output_dir)
             add_encoding_log(
                 video_id,
-                "video_command_playlist : %s" % video_command_playlist["cmd"])
+                "video_command_playlist: %s" % video_command_playlist["cmd"])
             video_command_mp4 = get_video_command_mp4(
                 video_id,
                 video_data,
                 output_dir)
             add_encoding_log(
                 video_id,
-                "video_command_mp4 : %s" % video_command_mp4["cmd"])
+                "video_command_mp4: %s" % video_command_mp4["cmd"])
             # launch encode video
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 2/11 encode_video_playlist")
+                "encoding video file: 2/11 encode_video_playlist")
             msg = encode_video_playlist(
                 video_to_encode.video.path,
                 video_command_playlist["cmd"],
                 output_dir)
             add_encoding_log(
                 video_id,
-                "encode_video_playlist : %s" % msg)
+                "encode_video_playlist: %s" % msg)
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 3/11 encode_video_mp4")
+                "encoding video file: 3/11 encode_video_mp4")
             msg = encode_video_mp4(
                 video_to_encode.video.path,
                 video_command_mp4["cmd"],
                 output_dir)
             add_encoding_log(
                 video_id,
-                "encode_video_mp4 : %s" % msg)
+                "encode_video_mp4: %s" % msg)
             # save playlist files
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 4/11 save_playlist_file")
+                "encoding video file: 4/11 save_playlist_file")
             msg = save_playlist_file(
                 video_id,
                 video_command_playlist["list_file"],
                 output_dir)
             add_encoding_log(
                 video_id,
-                "save_playlist_file : %s" % msg)
+                "save_playlist_file: %s" % msg)
             # save_playlist_master
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 5/11 save_playlist_master")
+                "encoding video file: 5/11 save_playlist_master")
             msg = save_playlist_master(
                 video_id,
                 output_dir,
                 video_command_playlist["master_playlist"])
             add_encoding_log(
                 video_id,
-                "save_playlist_master : %s" % msg)
+                "save_playlist_master: %s" % msg)
             # save mp4 files
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 6/11 save_mp4_file")
+                "encoding video file: 6/11 save_mp4_file")
             msg = save_mp4_file(
                 video_id,
                 video_command_mp4["list_file"],
                 output_dir)
             add_encoding_log(
                 video_id,
-                "save_mp4_file : %s" % msg)
+                "save_mp4_file: %s" % msg)
 
             # get the lower size of encoding mp4
             ev = EncodingVideo.objects.filter(
                 video=video_to_encode, encoding_format="video/mp4")
             if ev.count() == 0:
-                msg = "NO MP4 FILES FOUND !"
+                msg = "NO MP4 FILES FOUND!"
                 add_encoding_log(video_id, msg)
                 change_encoding_step(video_id, -1, msg)
                 send_email(msg, video_id)
@@ -297,29 +297,29 @@ def encode_video(video_id):
             image_width = video_mp4.width / 4  # width of generate image file
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 7/11 remove_previous_overview")
+                "encoding video file: 7/11 remove_previous_overview")
             remove_previous_overview(overviewfilename, overviewimagefilename)
             nb_img = 99 if (
                 video_data["duration"] > 99) else video_data["duration"]
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 8/11 create_overview_image")
+                "encoding video file: 8/11 create_overview_image")
             msg = create_overview_image(
                 video_id,
                 video_mp4.video.video.path, video_data["duration"],
                 nb_img, image_width, overviewimagefilename, overviewfilename)
             add_encoding_log(
                 video_id,
-                "create_overview_image : %s" % msg)
+                "create_overview_image: %s" % msg)
             # create thumbnail
             change_encoding_step(
                 video_id, 4,
-                "encoding video file : 11/11 create_and_save_thumbnails")
+                "encoding video file: 11/11 create_and_save_thumbnails")
             msg = create_and_save_thumbnails(
                 video_mp4.video.video.path, video_mp4.width, video_id)
             add_encoding_log(
                 video_id,
-                "create_and_save_thumbnails : %s" % msg)
+                "create_and_save_thumbnails: %s" % msg)
         else:
             # if file is audio, encoding to m4a for player
             video_to_encode = Video.objects.get(id=video_id)
@@ -338,9 +338,9 @@ def encode_video(video_id):
         video_to_encode.save()
 
         # End
-        add_encoding_log(video_id, "End : %s" % time.ctime())
+        add_encoding_log(video_id, "End: %s" % time.ctime())
         with open(output_dir + "/encoding.log", "a") as f:
-            f.write("\n\nEnd : %s" % time.ctime())
+            f.write("\n\nEnd: %s" % time.ctime())
 
         # envois mail fin encodage
         if EMAIL_ON_ENCODING_COMPLETION:
@@ -351,7 +351,7 @@ def encode_video(video_id):
         ) else False
 
     else:
-        msg = "Wrong file or path : "\
+        msg = "Wrong file or path:"\
             + "\n%s" % video_to_encode.video.path
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
@@ -359,7 +359,7 @@ def encode_video(video_id):
 
 
 # ##########################################################################
-# ENCODE VIDEO : GET VIDEO DATA
+# ENCODE VIDEO: GET VIDEO DATA
 # ##########################################################################
 
 
@@ -372,15 +372,15 @@ def get_video_data(video_id, output_dir):
     ffproberesult = subprocess.run(
         command, shell=True, stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT)
-    msg += "\nffprobe command : \n- %s\n" % command
+    msg += "\nffprobe command: \n- %s\n" % command
     """
     add_encoding_log(
         video_id,
-        "command : %s \n ffproberesult : %s" % (command, ffproberesult))
+        "command: %s \n ffproberesult: %s" % (command, ffproberesult))
     """
     info = json.loads(ffproberesult.stdout.decode('utf-8'))
     with open(output_dir + "/encoding.log", "a") as f:
-        f.write('\n\ffprobe commande video result :\n\n')
+        f.write('\nffprobe command video result:\n\n')
         f.write('%s\n' % json.dumps(
             info, sort_keys=True, indent=4, separators=(',', ': ')))
 
@@ -411,17 +411,17 @@ def get_video_data(video_id, output_dir):
     ffproberesult = subprocess.run(
         command, shell=True, stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT)
-    msg += "\nffprobe command : %s" % command
+    msg += "\nffprobe command: %s" % command
     """
     add_encoding_log(
         video_id,
-        "command : %s \n ffproberesult : %s" % (command, ffproberesult))
+        "command: %s \n ffproberesult: %s" % (command, ffproberesult))
     """
     info = json.loads(ffproberesult.stdout.decode('utf-8'))
     # msg += "%s" % json.dumps(
     #     info, sort_keys=True, indent=4, separators=(',', ': '))
     with open(output_dir + "/encoding.log", "a") as f:
-        f.write('\n\ffprobe commande audio result :\n\n')
+        f.write('\nffprobe command audio result:\n\n')
         f.write('%s\n' % json.dumps(
             info, sort_keys=True, indent=4, separators=(',', ': ')))
     if len(info["streams"]) > 0:
@@ -430,9 +430,9 @@ def get_video_data(video_id, output_dir):
     if info["format"].get('duration'):
         duration = int(float("%s" % info["format"]['duration']))
 
-    msg += "\nIN_HEIGHT : %s" % in_height
-    msg += "\nKEY FRAMES INTERVAL : %s" % key_frames_interval
-    msg += "\nDURATION : %s" % duration
+    msg += "\nIN_HEIGHT: %s" % in_height
+    msg += "\nKEY FRAMES INTERVAL: %s" % key_frames_interval
+    msg += "\nDURATION: %s" % duration
     return {
         'msg': msg,
         'is_video': is_video,
@@ -501,7 +501,7 @@ def encode_video_mp4(source, cmd, output_dir):
     procs = []
     logfile = output_dir + "/encoding.log"
     open(logfile, "ab").write(b'\n\nffmpegvideoMP4:\n\n')
-    msg = "\nffmpegMp4Command :\n"
+    msg = "\nffmpegMp4Command:\n"
     for subcmd in cmd:
         ffmpegMp4Command = "%s %s -i %s %s" % (
             FFMPEG, FFMPEG_MISC_PARAMS, source, subcmd)
@@ -509,7 +509,7 @@ def encode_video_mp4(source, cmd, output_dir):
         with open(logfile, "ab") as f:
             procs.append(subprocess.Popen(
                 ffmpegMp4Command, shell=True, stdout=f, stderr=f))
-    msg += "\n- Encoding Mp4 : %s" % time.ctime()
+    msg += "\n- Encoding Mp4: %s" % time.ctime()
     for proc in procs:
         proc.wait()
     return msg
@@ -520,7 +520,7 @@ def save_mp4_file(video_id, list_file, output_dir):
     video_to_encode = Video.objects.get(id=video_id)
     for file in list_file:
         videofilenameMp4 = os.path.join(output_dir, "%s.mp4" % file['name'])
-        msg += "\n- videofilenameMp4 :\n%s" % videofilenameMp4
+        msg += "\n- videofilenameMp4:\n%s" % videofilenameMp4
         if check_file(videofilenameMp4):
             encoding, created = EncodingVideo.objects.get_or_create(
                 name=file['name'],
@@ -531,7 +531,7 @@ def save_mp4_file(video_id, list_file, output_dir):
                 os.path.join(settings.MEDIA_ROOT, ""), '')
             encoding.save()
         else:
-            msg = "save_mp4_file Wrong file or path : "\
+            msg = "save_mp4_file Wrong file or path:"\
                 + "\n%s " % (videofilenameMp4)
             add_encoding_log(video_id, msg)
             change_encoding_step(video_id, -1, msg)
@@ -554,9 +554,9 @@ def encode_m4a(video_id, contain_audio, source, output_dir):
             video_id, source, output_dir)
         add_encoding_log(
             video_id,
-            "encode_video_m4a : %s" % msg)
+            "encode_video_m4a: %s" % msg)
     else:
-        msg = "\n%s\nNO VIDEO AND AUDIO FOUND !!!!\n%s\n" % (
+        msg = "\n%s\nNO VIDEO AND AUDIO FOUND!!!!\n%s\n" % (
             20 * "-", 20 * "-")
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
@@ -574,12 +574,12 @@ def encode_mp3(video_id, contain_audio, source, output_dir):
             video_id, source, output_dir)
         add_encoding_log(
             video_id,
-            "encode_video_mp3 : %s" % msg)
+            "encode_video_mp3: %s" % msg)
     else:
         msg = "No stream audio found"
         add_encoding_log(
             video_id,
-            "encode_video_mp3 : %s" % msg)
+            "encode_video_mp3: %s" % msg)
 
 
 def encode_video_m4a(video_id, source, output_dir):
@@ -591,14 +591,14 @@ def encode_video_m4a(video_id, source, output_dir):
         'output_dir': output_dir,
         'audio_bitrate': AUDIO_BITRATE
     }
-    msg = "\nffmpegM4aCommand :\n%s" % command
-    msg += "\n- Encoding M4A : %s" % time.ctime()
+    msg = "\nffmpegM4aCommand:\n%s" % command
+    msg += "\n- Encoding M4A: %s" % time.ctime()
     # ffmpegaudio = subprocess.getoutput(command)
     ffmpegaudio = subprocess.run(
         command, shell=True, stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT)
 
-    msg += "\n- End Encoding Mp4 : %s" % time.ctime()
+    msg += "\n- End Encoding Mp4: %s" % time.ctime()
 
     audiofilename = output_dir + "/audio_%s.m4a" % AUDIO_BITRATE
     video_to_encode = Video.objects.get(id=video_id)
@@ -610,9 +610,9 @@ def encode_video_m4a(video_id, source, output_dir):
         encoding.source_file = audiofilename.replace(
             os.path.join(settings.MEDIA_ROOT, ""), '')
         encoding.save()
-        msg += "\n- encode_video_m4a :\n%s" % audiofilename
+        msg += "\n- encode_video_m4a:\n%s" % audiofilename
     else:
-        msg += "\n- encode_video_m4a Wrong file or path %s " % audiofilename
+        msg += "\n- encode_video_m4a: Wrong file or path %s " % audiofilename
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
         send_email(msg, video_id)
@@ -625,7 +625,7 @@ def encode_video_m4a(video_id, source, output_dir):
 
 
 def encode_video_mp3(video_id, source, output_dir):
-    msg = "\nEncoding MP3 : %s" % time.ctime()
+    msg = "\nEncoding MP3: %s" % time.ctime()
     command = ENCODE_MP3_CMD % {
         'ffmpeg': FFMPEG,
         'source': source,
@@ -634,14 +634,14 @@ def encode_video_mp3(video_id, source, output_dir):
         'output_dir': output_dir,
         'audio_bitrate': AUDIO_BITRATE
     }
-    msg = "\nffmpegMP3Command :\n%s" % command
-    msg += "\n- Encoding MP3 : %s" % time.ctime()
+    msg = "\nffmpegMP3Command:\n%s" % command
+    msg += "\n- Encoding MP3: %s" % time.ctime()
     # ffmpegaudio = subprocess.getoutput(command)
     ffmpegaudio = subprocess.run(
         command, shell=True, stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT)
 
-    msg += "\n- End Encoding MP3 : %s" % time.ctime()
+    msg += "\n- End Encoding MP3: %s" % time.ctime()
 
     audiofilename = output_dir + "/audio_%s.mp3" % AUDIO_BITRATE
     video_to_encode = Video.objects.get(id=video_id)
@@ -653,9 +653,9 @@ def encode_video_mp3(video_id, source, output_dir):
         encoding.source_file = audiofilename.replace(
             os.path.join(settings.MEDIA_ROOT, ""), '')
         encoding.save()
-        msg += "\n- encode_video_mp3 :\n%s" % audiofilename
+        msg += "\n- encode_video_mp3:\n%s" % audiofilename
     else:
-        msg += "\n- encode_video_mp3 Wrong file or path %s " % audiofilename
+        msg += "\n- encode_video_mp3: Wrong file or path %s " % audiofilename
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
         send_email(msg, video_id)
@@ -732,7 +732,7 @@ def encode_video_playlist(source, cmd, output_dir):
     procs = []
     logfile = output_dir + "/encoding.log"
     open(logfile, "ab").write(b'\n\nffmpegvideoPlaylist:\n\n')
-    msg = "\nffmpegPlaylistCommands :\n"
+    msg = "\nffmpegPlaylistCommands:\n"
     for subcmd in cmd:
         ffmpegPlaylistCommand = "%s %s -i %s %s" % (
             FFMPEG, FFMPEG_MISC_PARAMS, source, subcmd)
@@ -740,7 +740,7 @@ def encode_video_playlist(source, cmd, output_dir):
         with open(logfile, "ab") as f:
             procs.append(subprocess.Popen(
                 ffmpegPlaylistCommand, shell=True, stdout=f, stderr=f))
-    msg += "\n- Encoding Playlist : %s" % time.ctime()
+    msg += "\n- Encoding Playlist: %s" % time.ctime()
     for proc in procs:
         proc.wait()
     return msg
@@ -752,8 +752,8 @@ def save_playlist_file(video_id, list_file, output_dir):
     for file in list_file:
         videofilenameM3u8 = os.path.join(output_dir, "%s.m3u8" % file['name'])
         videofilenameTS = os.path.join(output_dir, "%s.ts" % file['name'])
-        msg += "\n- videofilenameM3u8 :\n%s" % videofilenameM3u8
-        msg += "\n- videofilenameTS :\n%s" % videofilenameTS
+        msg += "\n- videofilenameM3u8:\n%s" % videofilenameM3u8
+        msg += "\n- videofilenameTS:\n%s" % videofilenameTS
 
         if check_file(videofilenameM3u8) and check_file(videofilenameTS):
 
@@ -774,7 +774,7 @@ def save_playlist_file(video_id, list_file, output_dir):
                 os.path.join(settings.MEDIA_ROOT, ""), '')
             playlist.save()
         else:
-            msg = "save_playlist_file Wrong file or path : "\
+            msg = "save_playlist_file Wrong file or path:"\
                 + "\n%s and %s" % (videofilenameM3u8, videofilenameTS)
             add_encoding_log(video_id, msg)
             change_encoding_step(video_id, -1, msg)
@@ -797,9 +797,9 @@ def save_playlist_master(video_id, output_dir, master_playlist):
             os.path.join(settings.MEDIA_ROOT, ""), '') + "/playlist.m3u8"
         playlist.save()
 
-        msg += "\n- Playlist :\n%s" % playlist_master_file
+        msg += "\n- Playlist:\n%s" % playlist_master_file
     else:
-        msg = "save_playlist_master Wrong file or path : "\
+        msg = "save_playlist_master Wrong file or path:"\
             + "\n%s" % playlist_master_file
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
@@ -862,7 +862,7 @@ def create_overview_image(
                       {'overviewimagefilename': overviewimagefilename,
                        'num': i})
     if check_file(overviewimagefilename):
-        msg += "\n- overviewimagefilename :\n%s" % overviewimagefilename
+        msg += "\n- overviewimagefilename:\n%s" % overviewimagefilename
         # Overview VTT
         overview = ImageFile(open(overviewimagefilename, 'rb'))
         image_height = int(overview.height)
@@ -879,7 +879,7 @@ def create_overview_image(
         msg += save_overview_vtt(video_id, overviewfilename)
         #
     else:
-        msg = "overviewimagefilename Wrong file or path : "\
+        msg = "overviewimagefilename Wrong file or path:"\
             + "\n%s" % overviewimagefilename
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
@@ -918,9 +918,9 @@ def create_overview_vtt(video_id, nb_img, image, duration, overviewfilename):
         webvtt.captions.append(caption)
     webvtt.save(overviewfilename)
     if check_file(overviewfilename):
-        msg += "\n- overviewfilename :\n%s" % overviewfilename
+        msg += "\n- overviewfilename:\n%s" % overviewfilename
     else:
-        msg = "overviewfilename Wrong file or path : "\
+        msg = "overviewfilename Wrong file or path:"\
             + "\n%s" % overviewfilename
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
@@ -936,7 +936,7 @@ def save_overview_vtt(video_id, overviewfilename):
         video_to_encode.overview = overviewfilename.replace(
             os.path.join(settings.MEDIA_ROOT, ""), '')
         video_to_encode.save()
-        msg += "\n- save_overview_vtt :\n%s" % overviewfilename
+        msg += "\n- save_overview_vtt:\n%s" % overviewfilename
     else:
         msg += "\nERROR OVERVIEW %s Output size is 0" % overviewfilename
         add_encoding_log(video_id, msg)
@@ -951,7 +951,7 @@ def save_overview_vtt(video_id, overviewfilename):
 
 
 def create_and_save_thumbnails(source, image_width, video_id):
-    msg = "\nCREATE AND SAVE THUMBNAILS : %s" % time.ctime()
+    msg = "\nCREATE AND SAVE THUMBNAILS: %s" % time.ctime()
     tempimgfile = tempfile.NamedTemporaryFile(
         dir=FILE_UPLOAD_TEMP_DIR, suffix='')
     for i in range(0, 3):
@@ -1006,7 +1006,7 @@ def create_and_save_thumbnails(source, image_width, video_id):
                     video_to_encode.thumbnail = thumbnail
                     video_to_encode.save()
             # remove tempfile
-            msg += "\n- thumbnailfilename %s :\n%s" % (i, thumbnail.file.path)
+            msg += "\n- thumbnailfilename %s:\n%s" % (i, thumbnail.file.path)
             os.remove(thumbnailfilename)
         else:
             msg += "\nERROR THUMBNAILS %s " % thumbnailfilename
@@ -1055,7 +1055,7 @@ def remove_previous_encoding_video(video_to_encode):
         for encoding in previous_encoding_video:
             encoding.delete()
     else:
-        msg += "Video : Nothing to delete"
+        msg += "Video: Nothing to delete"
     return msg
 
 
@@ -1070,7 +1070,7 @@ def remove_previous_encoding_audio(video_to_encode):
         for encoding in previous_encoding_audio:
             encoding.delete()
     else:
-        msg += "Audio : Nothing to delete"
+        msg += "Audio: Nothing to delete"
     return msg
 
 
@@ -1084,5 +1084,5 @@ def remove_previous_encoding_playlist(video_to_encode):
         for encoding in previous_playlist:
             encoding.delete()
     else:
-        msg += "Playlist : Nothing to delete"
+        msg += "Playlist: Nothing to delete"
     return msg

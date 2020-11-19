@@ -30,9 +30,9 @@
             {{form.errors}}
             {% endif %}
             {% if form.instance.encoding_in_progress %}
-            <p class="text-info">
+            <div class="alert alert-warning" role="alert">
                 {% trans "The video is currently being encoded." %}
-            </p>
+            </div>
             {% endif %}
             {% for field_hidden in form.hidden_fields %}
             {{field_hidden}}
