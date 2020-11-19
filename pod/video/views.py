@@ -380,9 +380,11 @@ def my_videos(request):
     cats = Category.objects.prefetch_related('video').filter(
             owner=request.user)
     cats = map(lambda c: {
-        'id': c.id, 'title': c.title, 'slug': c.slug, 'videos': list(
+        'id': c.id, 'title': c.title, 'slug': c.slug, 'videos':list(
             c.video.values_list('slug', flat=True))}, cats)
     cats = json.dumps(list(cats), ensure_ascii=False)
+    videos_without_cat = list(filter(
+            lambda v: not v.category_set.all().count(), videos_list))
     paginator = Paginator(videos_list, 12)
     try:
         videos = paginator.page(page)
@@ -395,14 +397,11 @@ def my_videos(request):
         return render(
             request, 'videos/video_list.html',
             {'videos': videos, "full_path": full_path})
-    print("------------------------------------------")
-    print(cats)
-    print("------------------------------------------")
 
     return render(request, 'videos/my_videos.html', {
         'videos': videos, "full_path": full_path,
         "categories": cats,
-        'flat_videos': videos_list
+        'videos_without_cat': videos_without_cat
     })
 
 
@@ -1778,7 +1777,15 @@ def get_categories(request, c_slug=None):
         response['category_id'] = cat.id
         response['category_title'] = cat.title
         response['category_owner'] = cat.owner.id
-        response['videos'] = list(cat.video.values_list('slug', flat=True))
+        videos = cat.video.all()
+        response['videos'] = list(
+            map(lambda v: {
+                'slug': v.slug,
+                'title': v.title,
+                'duration': v.duration_in_time,
+                'thumbnail': v.get_thumbnail_card(),
+                'is_video': v.is_video}, cat.video.all()))
+
         return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
@@ -1787,7 +1794,7 @@ def get_categories(request, c_slug=None):
 
         cats = Category.objects.prefetch_related('video').filter(owner=c_user)
         cats = map(lambda c: {"title": c.title, "slug": c.slug, "videos": list(
-            c.video.values_list('slug', flat=True))}, cats)
+            c.video.values_list('id', flat=True))}, cats)
         cats = list(cats)
 
         response['success'] = True
