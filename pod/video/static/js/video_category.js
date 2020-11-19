@@ -5,7 +5,7 @@ const cat_to_delete = {
 }
 const BASE_URL = `${window.location.href}categories/`;
 // edit and filter make the same request, prev_data save the first results
-let PREV_DATA = null;
+const SAVED_DATA = {};
 let modal_title = document.querySelector("#manageCategoryModal #modal_title")
 let cat_input = document.querySelector("#manageCategoryModal #catTitle");
 const formData = new FormData();
@@ -14,6 +14,18 @@ const HEADERS = {
     "X-Requested-With": "XMLHttpRequest"
 }
 
+// Save category data locally
+let saveRequestData = (data)=>{
+    if(!Object.keys(data).includes(data.slug)
+        SAVED_DATA[`${data.slug}`] = data;
+}
+// Get saved category data
+let  getSavedData = (c_slug) =>{
+    if(Object.keys(SAVED_DATA).includes(c_slug)
+	return SAVED_DATA[c_slug];
+
+    return null;
+}
 // Add event toggle selected class on el
 let toggleSelectedClass = (el)=>{
     el.addEventListener('click', e=>{
@@ -22,7 +34,8 @@ let toggleSelectedClass = (el)=>{
         el.classList.toggle("selected");
     });
 }
-let getCategoryData = async (cat_slug) =>{
+// Make requets => get category data
+let fetchCategoryData = async (cat_slug) =>{
     try
     {
         let resp = await fetch(`${BASE_URL}${cat_slug}/`,{headers: HEADERS});
@@ -67,6 +80,17 @@ let getModalVideoCard = (v)=>{
 	    </div>
 	</div>`
 }
+// Append video card in category modal
+let appendVideoCard = (v)=>{
+    let videoCard = getModalVideoCard(v);
+    let v_wrapper = document.createElement("Div");
+    v_wrapper.setAttribute("data-slug", v.slug);
+    v_wrapper.setAttribute("class", "infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group selected")
+    v_wrapper.innerHTML = videoCard;
+    modalListVideo.appendChild(v_wrapper);
+    // set click event listener
+    toggleSelectedClass(v_wrapper);
+}
 
 // Add onclick event to edit a category
 let cats_edit = document.querySelectorAll("#my_videos_filter .categories_list_item #edit_category");
@@ -78,33 +102,24 @@ cats_edit.forEach(c_e =>{
     	modal_title.innerText = c_e.getAttribute('title').trim(); 
     	window.setTimeout(function(){ cat_input.focus()}, 500)
 	// add videos of the current category into the dialog
-	
-	let jsonData = getCategoryData(cat_edit_slug);
 	let modalListVideo = document.querySelector("#manageCategoryModal .category_modal_video_list");
-	jsonData.then( data =>{
+
+	let JsonData = getSavedData(cat_edit_slug);
+	if( data )
+	{
 	    data.videos.forEach(v=>{
-		let videoCard = getModalVideoCard(v);
-		let v_wrapper = document.createElement("Div");
-		v_wrapper.setAttribute("data-slug", v.slug);
-		v_wrapper.setAttribute("class", "infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group selected")
-		v_wrapper.innerHTML = videoCard;
-		modalListVideo.appendChild(v_wrapper);
-    		toggleSelectedClass(v_wrapper);
+		appendVideoCard(v);
 	    });
-	    console.log(data);
-	});
-	/*
-	fetch(`${BASE_URL}${cat_edit_slug}/`,{headers: HEADERS}).then(response =>{
-	    response.json().then(data =>{
-		
-		console.log(data);
+	}
+	else
+	{
+	    jsonData = fetchCategoryData(cat_edit_slug);
+	    jsonData.then( data =>{
+	        data.videos.forEach(v=>{
+		    appendVideoCard(v);
+	        });
 	    });
-	});*/
-	    /*
-	const videos2 = CATEGORIES_DATA.find( c =>{
-		return c.title === cat_edit_title && c.slug === cat_edit_slug
-	});*/
-	
+	}
     });
 });
 
