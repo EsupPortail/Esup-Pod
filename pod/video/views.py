@@ -1756,7 +1756,8 @@ def delete_comment(request, video_slug, comment_id):
     else:
 
         response['deleted'] = False
-        response['message'] = _('You do not have right to delete this comment')
+        response['message'] = _(
+                'You do not have rights to delete this comment')
         return HttpResponse(
             json.dumps(response, cls=DjangoJSONEncoder),
             content_type="application/json")
@@ -1770,7 +1771,7 @@ def get_categories(request, c_slug=None):
 
     # GET method
     if c_slug:  # get category with slug
-        print("GET")
+
         cat = get_object_or_404(Category, slug=c_slug)
         response['success'] = True
         response['id'] = cat.id
@@ -1794,7 +1795,7 @@ def get_categories(request, c_slug=None):
                 content_type="application/json")
 
     else:  # get all categories of connected user
-        print("GET ALL")
+
         cats = Category.objects.prefetch_related('video').filter(owner=c_user)
         cats = map(lambda c: {"title": c.title, "slug": c.slug, "videos": list(
             c.video.values_list('id', flat=True))}, cats)
@@ -1819,7 +1820,7 @@ def add_category(request):
         data = json.loads(request.POST.get('data', "{}"))
         videos = Video.objects.filter(slug__in=data['videos'])
 
-        if data['title']:
+        if 'title' in data and data['title'].strip() != "":
 
             cat = Category.objects.create(title=data['title'], owner=c_user)
             cat.video.add(*videos)
@@ -1833,7 +1834,8 @@ def add_category(request):
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
 
-        return HttpResponse(
+        response['message'] = _('Title field is required')
+        return HttpResponseBadRequest(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
 
@@ -1853,7 +1855,8 @@ def edit_category(request, c_slug):
         data = json.loads(request.POST.get('data', '{}'))
         new_videos = Video.objects.filter(slug__in=data['videos'])
 
-        if data['title']:
+        if 'title' in data and data['title'].strip() != "":
+
             if c_user == cat.owner or c_user.is_superuser:
 
                 cat.title = data['title']
@@ -1866,24 +1869,21 @@ def edit_category(request, c_slug):
                         new_videos.values_list('slug', flat=True))
                 response['success'] = True
                 response['message'] = _('Category updated successfully.')
+
                 return HttpResponse(
                     json.dumps(response, cls=DjangoJSONEncoder),
                     content_type="application/json")
 
-            else:
-
-                response['message'] = _(
-                        'You do not have right to edit this category')
-                return HttpResponseForbidden(
-                    json.dumps(response, cls=DjangoJSONEncoder),
-                    content_type="application/json")
-
-        else:
-
-            response['message'] = _('Title field is required')
-            return HttpResponseBadRequest(
+            response['message'] = _(
+                        'You do not have rights to edit this category')
+            return HttpResponseForbidden(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
+
+        response['message'] = _('Title field is required')
+        return HttpResponseBadRequest(
+            json.dumps(response, cls=DjangoJSONEncoder),
+            content_type="application/json")
 
     response['message'] = _("Method Not Allowed")
     return HttpResponseNotAllowed(
@@ -1909,7 +1909,7 @@ def delete_category(request, cat_id):
                 content_type="application/json")
 
         response['message'] = _(
-                'You do not have right to delete this category')
+                'You do not have rights to delete this category')
         return HttpResponseForbidden(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
