@@ -1773,9 +1773,10 @@ def get_categories(request, c_slug=None):
         print("GET")
         cat = get_object_or_404(Category, slug=c_slug)
         response['success'] = True
-        response['category_id'] = cat.id
-        response['category_title'] = cat.title
-        response['category_owner'] = cat.owner.id
+        response['id'] = cat.id
+        response['title'] = cat.title
+        response['owner'] = cat.owner.id
+        response['slug'] = cat.slug
         response['videos'] = list(
             map(lambda v: {
                 'slug': v.slug,
