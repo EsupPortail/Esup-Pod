@@ -126,7 +126,12 @@ class TestCategory(TestCase):
                     "title": v.title,
                     "duration": v.duration_in_time,
                     "thumbnail": v.get_thumbnail_card(),
-                    "is_video": v.is_video}, self.cat_1.video.all()))
+                    "is_video": v.is_video,
+                    "is_draft": v.is_draft,
+                    "is_restricted": v.is_restricted,
+                    "has_chapter": v.chapter_set.all().count()>0,
+                    "has_password": bool(v.password),
+                    }, self.cat_1.video.all()))
         }
 
         self.assertIsInstance(response, HttpResponse)
