@@ -1816,19 +1816,19 @@ def add_category(request):
 
     if request.method == "POST":  # create new category
 
-        cat_title = request.POST.get('title', None)
-        v_slugs = request.POST.get('videos', '')
-        videos = Video.objects.filter(slug__in=v_slugs.split(','))
+        data = json.loads(request.POST.get('data', "{}"))
+        videos = Video.objects.filter(slug__in=data['videos'])
 
-        if cat_title:
+        if data['title']:
 
-            cat = Category.objects.create(title=cat_title, owner=c_user)
+            cat = Category.objects.create(title=data['title'], owner=c_user)
             cat.video.add(*videos)
             cat.save()
             response['title'] = cat.title
             response['slug'] = cat.slug
             response['videos'] = list(cat.video.values_list('slug', flat=True))
             response['success'] = True
+
             return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
@@ -1850,14 +1850,13 @@ def edit_category(request, c_slug):
     if request.method == "POST":  # edit current category
 
         cat = get_object_or_404(Category, slug=c_slug)
-        new_title = request.POST.get('title', None)
-        v_slugs = request.POST.get('videos', '')
-        new_videos = Video.objects.filter(slug__in=v_slugs.split(','))
+        data = json.loads(request.POST.get('data', '{}'))
+        new_videos = Video.objects.filter(slug__in=data['videos'])
 
-        if new_title:
+        if data['title']:
             if c_user == cat.owner or c_user.is_superuser:
 
-                cat.title = new_title
+                cat.title = data['title']
                 cat.video.related_set.set(new_videos)
                 cat.save()
                 response['category_id'] = cat.id
