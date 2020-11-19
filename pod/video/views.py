@@ -380,7 +380,7 @@ def my_videos(request):
     cats = Category.objects.prefetch_related('video').filter(
             owner=request.user)
     cats = map(lambda c: {
-        'id': c.id, 'title': c.title, 'slug': c.slug, 'videos':list(
+        'id': c.id, 'title': c.title, 'slug': c.slug, 'videos': list(
             c.video.values_list('slug', flat=True))}, cats)
     cats = json.dumps(list(cats), ensure_ascii=False)
     videos_without_cat = list(filter(
@@ -1777,7 +1777,6 @@ def get_categories(request, c_slug=None):
         response['category_id'] = cat.id
         response['category_title'] = cat.title
         response['category_owner'] = cat.owner.id
-        videos = cat.video.all()
         response['videos'] = list(
             map(lambda v: {
                 'slug': v.slug,
