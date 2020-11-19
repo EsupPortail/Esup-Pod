@@ -118,9 +118,10 @@ class TestCategory(TestCase):
         actual_data = json.loads(response.content.decode('utf-8'))
         expected_data = {
             "success": True,
-            "category_id": self.cat_1.id,
-            "category_title": self.cat_1.title,
-            "category_owner": self.cat_1.owner.id,
+            "id": self.cat_1.id,
+            "slug": self.cat_1.slug,
+            "title": self.cat_1.title,
+            "owner": self.cat_1.owner.id,
             "videos": list(map(lambda v: {
                     "slug": v.slug,
                     "title": v.title,
