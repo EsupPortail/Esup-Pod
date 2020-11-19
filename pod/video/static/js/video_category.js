@@ -104,10 +104,10 @@ cats_edit.forEach(c_e =>{
 	// add videos of the current category into the dialog
 	let modalListVideo = document.querySelector("#manageCategoryModal .category_modal_video_list");
 
-	let JsonData = getSavedData(cat_edit_slug);
-	if( data )
+	let jsonData = getSavedData(cat_edit_slug);
+	if( jsonData )
 	{
-	    data.videos.forEach(v=>{
+	    jsonData.videos.forEach(v=>{
 		appendVideoCard(v);
 	    });
 	}
