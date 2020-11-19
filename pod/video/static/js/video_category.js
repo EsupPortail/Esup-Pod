@@ -98,6 +98,10 @@ videos_in_modal.forEach(v => {
 let cats = document.querySelectorAll("#my_videos_filter .categories_list_item .cat_title");
 cats.forEach(c =>{
     c.addEventListener('click', e =>{
+	c.parentNode.parentNode.querySelectorAll(".categories_list_item").forEach(c_p =>{
+	    c_p.classList.remove("active");
+	});
+	c.parentNode.classList.toggle("active");
 	e.stopPropagation();
 	// TODO	
     });
