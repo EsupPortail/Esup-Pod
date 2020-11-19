@@ -1,3 +1,4 @@
+from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.template.defaultfilters import slugify
@@ -19,7 +20,7 @@ class TestCategory(TestCase):
         # Remove warning log
         self.logger.setLevel(logging.ERROR)
 
-        self.client = Client()
+        self.client = Client(json_encoder=DjangoJSONEncoder)
         self.t1 = Type.objects.get(id=1)
         self.owner_user = User.objects.create(
                 username="doejohn",
@@ -146,33 +147,38 @@ class TestCategory(TestCase):
 
     def test_addCategory(self):
         data = {
-            "title": "Test new catgeory",
-            "videos": self.video.slug + "," + self.video_2.slug
+            'title': 'Test new category',
+            'videos': [self.video.slug, self.video_2.slug]
         }
 
         # not Authenticated, should return HttpResponseRedirect:302
-        response = self.client.post(reverse('add_category'), data)
+        response = self.client.post(
+                reverse('add_category'),
+                data)
         self.assertIsInstance(response, HttpResponseRedirect)
         self.assertEqual(response.status_code, 302)
 
         # not Ajax request, should return HttpResponseForbidden:403
         self.client.force_login(self.owner_user)
-        response = self.client.post(reverse('add_category'), data)
+        response = self.client.post(
+                reverse('add_category'),
+                {"data": json.dumps(data)})
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
 
         # Ajax POST request, should return HttpResponse:200 with category data
         response = self.client.post(
                 reverse('add_category'),
-                data,
+                {"data": json.dumps(data)},
                 HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
+        # content_type="application/x-www-form-urlencoded",
         actual_data = json.loads(response.content.decode('utf-8'))
         expected_data = {
             "success": True,
             "title": data["title"],
             "slug": "%s-%s" % (self.owner_user.id, slugify(data["title"])),
-            "videos": data["videos"].split(',')
+            "videos": data["videos"]
         }
 
         self.assertIsInstance(response, HttpResponse)
