@@ -1,5 +1,5 @@
 from django.core.serializers.json import DjangoJSONEncoder
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotAllowed
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.template.defaultfilters import slugify
 from django.test import TestCase, Client
@@ -165,6 +165,14 @@ class TestCategory(TestCase):
                 {"data": json.dumps(data)})
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
+        
+        # Ajax GET request, should return HttpResponseNotAllowed:405
+        response = self.client.get(
+                reverse('add_category'),
+                {"data": json.dumps(data)},
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertIsInstance(response, HttpResponseNotAllowed)
+        self.assertEqual(response.status_code, 405)
 
         # Ajax POST request, should return HttpResponse:200 with category data
         response = self.client.post(
@@ -187,6 +195,59 @@ class TestCategory(TestCase):
         self.assertEqual(actual_data['title'], expected_data['title'])
         self.assertEqual(actual_data['slug'], expected_data['slug'])
         self.assertCountEqual(actual_data['videos'], expected_data['videos'])
+
+    def test_EditCategory(self):
+        data = {
+            'title': 'New Category title',
+            'videos': []
+        }
+
+        # not Authenticated, should return HttpResponseRedirect:302
+        response = self.client.post(
+                reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
+                {"data": json.dumps(data)})
+ 
+        self.assertIsInstance(response, HttpResponseRedirect)
+        self.assertEqual(response.status_code, 302)
+
+        # not Ajax request, should return HttpResponseForbidden:403
+        self.client.force_login(self.owner_user)
+        response = self.client.post(
+                reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
+                {"data": json.dumps(data)})
+
+        self.assertIsInstance(response, HttpResponseForbidden)
+        self.assertEqual(response.status_code, 403)
+
+         # Ajax GET request, should return HttpResponseNotAllowed:405
+        response = self.client.get(
+                reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
+                {"data": json.dumps(data)},
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertIsInstance(response, HttpResponseNotAllowed)
+        self.assertEqual(response.status_code, 405)
+
+        # Ajax POST request, should return HttpResponse:200 with category data
+        response = self.client.post(
+                reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
+                {"data": json.dumps(data)},
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        actual_data = json.loads(response.content.decode('utf-8'))
+        expected_data = {
+            "success": True,
+            "title": data["title"],
+            "slug": "%s-%s" % (self.owner_user.id, slugify(data["title"])),
+            "videos": data["videos"]
+        }
+
+        self.assertIsInstance(response, HttpResponse)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(actual_data['success'])
+        self.assertEqual(actual_data['title'], expected_data['title'])
+        self.assertEqual(actual_data['slug'], expected_data['slug'])
+        self.assertCountEqual(actual_data['videos'], expected_data['videos'])
+
 
     def tearDown(self):
         del self.video
