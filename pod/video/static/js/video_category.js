@@ -3,18 +3,40 @@ const cat_to_delete = {
     title: undefined,
     slug: undefined
 }
-const BASE_URL = `${window.location.href}category/`;
+const BASE_URL = `${window.location.href}categories/`;
 
 let modal_title = document.querySelector("#manageCategoryModal #modal_title")
 let cat_input = document.querySelector("#manageCategoryModal #catTitle");
+const formData = new FormData();
+const HEADERS = {
+    "Content-Type": "application/json",
+    "X-Requested-With": "XMLHttpRequest"
+}
 
 // Add onclick event to edit a category
 let cats_edit = document.querySelectorAll("#my_videos_filter .categories_list_item #edit_category");
 cats_edit.forEach(c_e =>{
     c_e.addEventListener('click', (e) =>{
-	cat_input.value = c_e.dataset.title.trim();
+	cat_edit_title = c_e.dataset.title.trim();
+	cat_edit_slug = c_e.dataset.slug.trim();
+	cat_input.value = cat_edit_title;;
     	modal_title.innerText = c_e.getAttribute('title').trim(); 
     	window.setTimeout(function(){ cat_input.focus()}, 500)
+	// add videos of the current category into the dialog
+	formData.append("csrfmiddlewaretoken", Cookies.get('csrftoken'));
+	const videos = fetch(
+		`${BASE_URL}${cat_edit_slug}/`,
+		{headers: HEADERS})
+		    .then( response =>{
+			    response.json().then(data =>{
+				    console.log(data);
+	    });
+	});
+	    /*
+	const videos2 = CATEGORIES_DATA.find( c =>{
+		return c.title === cat_edit_title && c.slug === cat_edit_slug
+	});*/
+	
     });
 });
 
