@@ -16,12 +16,12 @@ const HEADERS = {
 
 // Save category data locally
 let saveRequestData = (data)=>{
-    if(!Object.keys(data).includes(data.slug)
+    if(!Object.keys(data).includes(data.slug))
         SAVED_DATA[`${data.slug}`] = data;
 }
 // Get saved category data
 let  getSavedData = (c_slug) =>{
-    if(Object.keys(SAVED_DATA).includes(c_slug)
+    if(Object.keys(SAVED_DATA).includes(c_slug))
 	return SAVED_DATA[c_slug];
 
     return null;
@@ -82,6 +82,7 @@ let getModalVideoCard = (v)=>{
 }
 // Append video card in category modal
 let appendVideoCard = (v)=>{
+    let modalListVideo = document.querySelector("#manageCategoryModal .category_modal_video_list");
     let videoCard = getModalVideoCard(v);
     let v_wrapper = document.createElement("Div");
     v_wrapper.setAttribute("data-slug", v.slug);
@@ -102,7 +103,6 @@ cats_edit.forEach(c_e =>{
     	modal_title.innerText = c_e.getAttribute('title').trim(); 
     	window.setTimeout(function(){ cat_input.focus()}, 500)
 	// add videos of the current category into the dialog
-	let modalListVideo = document.querySelector("#manageCategoryModal .category_modal_video_list");
 
 	let jsonData = getSavedData(cat_edit_slug);
 	if( jsonData )
@@ -118,6 +118,8 @@ cats_edit.forEach(c_e =>{
 	        data.videos.forEach(v=>{
 		    appendVideoCard(v);
 	        });
+		// save data
+		saveRequestData(data);
 	    });
 	}
     });
