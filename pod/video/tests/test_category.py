@@ -165,7 +165,7 @@ class TestCategory(TestCase):
                 {"data": json.dumps(data)})
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
-        
+
         # Ajax GET request, should return HttpResponseNotAllowed:405
         response = self.client.get(
                 reverse('add_category'),
@@ -206,7 +206,7 @@ class TestCategory(TestCase):
         response = self.client.post(
                 reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
                 {"data": json.dumps(data)})
- 
+
         self.assertIsInstance(response, HttpResponseRedirect)
         self.assertEqual(response.status_code, 302)
 
@@ -219,7 +219,7 @@ class TestCategory(TestCase):
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
 
-         # Ajax GET request, should return HttpResponseNotAllowed:405
+        # Ajax GET request, should return HttpResponseNotAllowed:405
         response = self.client.get(
                 reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
                 {"data": json.dumps(data)},
@@ -247,7 +247,6 @@ class TestCategory(TestCase):
         self.assertEqual(actual_data['title'], expected_data['title'])
         self.assertEqual(actual_data['slug'], expected_data['slug'])
         self.assertCountEqual(actual_data['videos'], expected_data['videos'])
-
 
     def tearDown(self):
         del self.video
