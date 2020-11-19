@@ -92,7 +92,7 @@ class TestCategory(TestCase):
                     "title": 'testCategory',
                     "slug": self.cat_1.slug,
                     "videos": list(
-                        self.cat_1.video.values_list('slug', flat=True))
+                        self.cat_1.video.values_list('id', flat=True))
                 }
             ]
         }
@@ -121,7 +121,12 @@ class TestCategory(TestCase):
             "category_id": self.cat_1.id,
             "category_title": self.cat_1.title,
             "category_owner": self.cat_1.owner.id,
-            "videos": list(self.cat_1.video.values_list('slug', flat=True))
+            "videos": list(map(lambda v: {
+                    "slug": v.slug,
+                    "title": v.title,
+                    "duration": v.duration_in_time,
+                    "thumbnail": v.get_thumbnail_card(),
+                    "is_video": v.is_video}, self.cat_1.video.all()))
         }
 
         self.assertIsInstance(response, HttpResponse)
