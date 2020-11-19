@@ -1857,10 +1857,13 @@ def edit_category(request, c_slug):
             if c_user == cat.owner or c_user.is_superuser:
 
                 cat.title = data['title']
-                cat.video.related_set.set(new_videos)
+                cat.video.set(list(new_videos))
                 cat.save()
-                response['category_id'] = cat.id
-                response['category_title'] = cat.title
+                response['id'] = cat.id
+                response['title'] = cat.title
+                response['slug'] = cat.slug
+                response['videos'] = list(
+                        new_videos.values_list('slug', flat=True))
                 response['success'] = True
                 response['message'] = _('Category updated successfully.')
                 return HttpResponse(
