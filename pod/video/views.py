@@ -1785,7 +1785,7 @@ def get_categories(request, c_slug=None):
                 'is_video': v.is_video,
                 'has_password': bool(v.password),
                 'is_restricted': v.is_restricted,
-                'has_chapter': v.chapter_set.all().count()>0,
+                'has_chapter': v.chapter_set.all().count() > 0,
                 'is_draft': v.is_draft}, cat.video.all()))
 
         return HttpResponse(
