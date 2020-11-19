@@ -1765,13 +1765,12 @@ def delete_comment(request, video_slug, comment_id):
 @login_required(redirect_field_name='referrer')
 @ajax_required
 def get_categories(request, c_slug=None):
-
     response = {'success': False}
     c_user = request.user  # connected user
 
     # GET method
     if c_slug:  # get category with slug
-
+        print("GET")
         cat = get_object_or_404(Category, slug=c_slug)
         response['success'] = True
         response['category_id'] = cat.id
@@ -1783,14 +1782,18 @@ def get_categories(request, c_slug=None):
                 'title': v.title,
                 'duration': v.duration_in_time,
                 'thumbnail': v.get_thumbnail_card(),
-                'is_video': v.is_video}, cat.video.all()))
+                'is_video': v.is_video,
+                'has_password': bool(v.password),
+                'is_restricted': v.is_restricted,
+                'has_chapter': v.chapter_set.all().count()>0,
+                'is_draft': v.is_draft}, cat.video.all()))
 
         return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
 
     else:  # get all categories of connected user
-
+        print("GET ALL")
         cats = Category.objects.prefetch_related('video').filter(owner=c_user)
         cats = map(lambda c: {"title": c.title, "slug": c.slug, "videos": list(
             c.video.values_list('id', flat=True))}, cats)
@@ -1807,7 +1810,6 @@ def get_categories(request, c_slug=None):
 @login_required(redirect_field_name='referrer')
 @ajax_required
 def add_category(request):
-
     response = {'success': False}
     c_user = request.user  # connected user
 
