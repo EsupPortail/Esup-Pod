@@ -1,5 +1,6 @@
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse, HttpResponseNotAllowed
+from django.http import HttpResponseBadRequest
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.template.defaultfilters import slugify
 from django.test import TestCase, Client
@@ -196,12 +197,21 @@ class TestCategory(TestCase):
         self.assertEqual(actual_data['slug'], expected_data['slug'])
         self.assertCountEqual(actual_data['videos'], expected_data['videos'])
 
-    def test_EditCategory(self):
+        # Ajax POST request whitout required field(s),
+        # should return HttpResponseBadRequest:400
+        del data['title']
+        response = self.client.post(
+                reverse('add_category'),
+                {"data": json.dumps(data)},
+                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertIsInstance(response, HttpResponseBadRequest)
+        self.assertEqual(response.status_code, 400)
+
+    def test_editCategory(self):
         data = {
             'title': 'New Category title',
             'videos': []
         }
-
         # not Authenticated, should return HttpResponseRedirect:302
         response = self.client.post(
                 reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
@@ -247,6 +257,19 @@ class TestCategory(TestCase):
         self.assertEqual(actual_data['title'], expected_data['title'])
         self.assertEqual(actual_data['slug'], expected_data['slug'])
         self.assertCountEqual(actual_data['videos'], expected_data['videos'])
+
+        # Ajax POST request whitout required field(s),
+        # should return HttpResponseBadRequest:400
+        del data['title']
+        response = self.client.post(
+            reverse(
+                'edit_category',
+                kwargs={"c_slug": expected_data['slug']}
+            ),
+            {"data": json.dumps(data)},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertIsInstance(response, HttpResponseBadRequest)
+        self.assertEqual(response.status_code, 400)
 
     def tearDown(self):
         del self.video
