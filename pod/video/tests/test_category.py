@@ -11,6 +11,16 @@ import json
 import logging
 
 
+class CLIColors:
+    BOLD = "\033[1m"
+    FAIL = "\033[91m"
+    UNDERLINE = "\033[4m"
+    OK = "\033[92m"
+    END = "\033[0m"
+    HEADER = "\033[95m"
+    WARNING = "\033[93m"
+
+
 class TestCategory(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -269,7 +279,35 @@ class TestCategory(TestCase):
             {"data": json.dumps(data)},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertIsInstance(response, HttpResponseBadRequest)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400, msg="Edit category:HttResponseBadRequest")
+
+    def getLine(self):
+        length = 20
+        m_length = len(self._testMethodName)
+
+        if m_length > length:
+            length -= (m_length - length)
+
+        elif m_length < length:
+            length += (length - m_length)
+
+        return ''.join(["." for i in range(length)])
+
+
+    def run(self, result):
+        success = "[OK]" if result.descriptions else "[ERROR]"
+        color = CLIColors.OK if result.descriptions else CLIColors.FAIL
+        print(
+                CLIColors.HEADER,
+                "[TEST - category] -",
+                CLIColors.END,
+                CLIColors.WARNING,
+                self._testMethodName,
+                self.getLine(),
+                CLIColors.END,
+                color,
+                success,
+                CLIColors.END)
 
     def tearDown(self):
         del self.video
