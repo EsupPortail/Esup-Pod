@@ -194,8 +194,6 @@ saveCatBtn.addEventListener("click", e=>{
 	    videos: videos
 	 }
 	// make fetch request to save new data
-	formData.append("csrfmiddlewaretoken", Cookies.get('csrftoken'));
-	formData.append("data", formData)
 	fetch(`${BASE_URL}edit/${CURR_CATEGORY.slug}/` , {
 	    method: "POST",
 	    body: JSON.stringify(postData),
