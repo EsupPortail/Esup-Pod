@@ -155,31 +155,36 @@ class TestCategory(TestCase):
 
         # not Authenticated, should return HttpResponseRedirect:302
         response = self.client.post(
-                reverse('add_category'),
-                data)
+            reverse('add_category'),
+            json.dumps(data),
+            content_type="application/json")
+
         self.assertIsInstance(response, HttpResponseRedirect)
         self.assertEqual(response.status_code, 302)
 
         # not Ajax request, should return HttpResponseForbidden:403
         self.client.force_login(self.owner_user)
         response = self.client.post(
-                reverse('add_category'),
-                {"data": json.dumps(data)})
+            reverse('add_category'),
+            json.dumps(data),
+            content_type="application/json")
+
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
 
         # Ajax GET request, should return HttpResponseNotAllowed:405
         response = self.client.get(
-                reverse('add_category'),
-                {"data": json.dumps(data)},
-                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+            reverse('add_category'),
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
         self.assertIsInstance(response, HttpResponseNotAllowed)
         self.assertEqual(response.status_code, 405)
 
         # Ajax POST request, should return HttpResponse:200 with category data
         response = self.client.post(
                 reverse('add_category'),
-                {"data": json.dumps(data)},
+                json.dumps(data),
+                content_type="application/json",
                 HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         # content_type="application/x-www-form-urlencoded",
@@ -203,8 +208,10 @@ class TestCategory(TestCase):
         del data['title']
         response = self.client.post(
             reverse('add_category'),
-            {"data": json.dumps(data)},
+            json.dumps(data),
+            content_type="application/json",
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
         self.assertIsInstance(response, HttpResponseBadRequest)
         self.assertEqual(response.status_code, 400)
 
@@ -215,8 +222,11 @@ class TestCategory(TestCase):
         }
         # not Authenticated, should return HttpResponseRedirect:302
         response = self.client.post(
-            reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
-            {"data": json.dumps(data)})
+            reverse(
+                'edit_category',
+                kwargs={"c_slug": self.cat_1.slug}),
+            json.dumps(data),
+            content_type="application/json")
 
         self.assertIsInstance(response, HttpResponseRedirect)
         self.assertEqual(response.status_code, 302)
@@ -224,8 +234,11 @@ class TestCategory(TestCase):
         # not Ajax request, should return HttpResponseForbidden:403
         self.client.force_login(self.owner_user)
         response = self.client.post(
-            reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
-            {"data": json.dumps(data)})
+            reverse(
+                'edit_category',
+                kwargs={"c_slug": self.cat_1.slug}),
+            json.dumps(data),
+            content_type="application/json")
 
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
@@ -233,7 +246,6 @@ class TestCategory(TestCase):
         # Ajax GET request, should return HttpResponseNotAllowed:405
         response = self.client.get(
             reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
-            {"data": json.dumps(data)},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         self.assertIsInstance(response, HttpResponseNotAllowed)
@@ -242,7 +254,8 @@ class TestCategory(TestCase):
         # Ajax POST request, should return HttpResponse:200 with category data
         response = self.client.post(
             reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
-            {"data": json.dumps(data)},
+            json.dumps(data),
+            content_type="application/json",
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         actual_data = json.loads(response.content.decode('utf-8'))
@@ -268,7 +281,8 @@ class TestCategory(TestCase):
                 'edit_category',
                 kwargs={"c_slug": expected_data['slug']}
             ),
-            {"data": json.dumps(data)},
+            json.dumps(data),
+            content_type="application/json",
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertIsInstance(response, HttpResponseBadRequest)
         self.assertEqual(response.status_code, 400)
