@@ -11,17 +11,8 @@ import json
 import logging
 
 
-class CLIColors:
-    BOLD = "\033[1m"
-    FAIL = "\033[91m"
-    UNDERLINE = "\033[4m"
-    OK = "\033[92m"
-    END = "\033[0m"
-    HEADER = "\033[95m"
-    WARNING = "\033[93m"
-
-
 class TestCategory(TestCase):
+
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
@@ -211,9 +202,9 @@ class TestCategory(TestCase):
         # should return HttpResponseBadRequest:400
         del data['title']
         response = self.client.post(
-                reverse('add_category'),
-                {"data": json.dumps(data)},
-                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+            reverse('add_category'),
+            {"data": json.dumps(data)},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertIsInstance(response, HttpResponseBadRequest)
         self.assertEqual(response.status_code, 400)
 
@@ -224,8 +215,8 @@ class TestCategory(TestCase):
         }
         # not Authenticated, should return HttpResponseRedirect:302
         response = self.client.post(
-                reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
-                {"data": json.dumps(data)})
+            reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
+            {"data": json.dumps(data)})
 
         self.assertIsInstance(response, HttpResponseRedirect)
         self.assertEqual(response.status_code, 302)
@@ -233,25 +224,26 @@ class TestCategory(TestCase):
         # not Ajax request, should return HttpResponseForbidden:403
         self.client.force_login(self.owner_user)
         response = self.client.post(
-                reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
-                {"data": json.dumps(data)})
+            reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
+            {"data": json.dumps(data)})
 
         self.assertIsInstance(response, HttpResponseForbidden)
         self.assertEqual(response.status_code, 403)
 
         # Ajax GET request, should return HttpResponseNotAllowed:405
         response = self.client.get(
-                reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
-                {"data": json.dumps(data)},
-                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+            reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
+            {"data": json.dumps(data)},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
         self.assertIsInstance(response, HttpResponseNotAllowed)
         self.assertEqual(response.status_code, 405)
 
         # Ajax POST request, should return HttpResponse:200 with category data
         response = self.client.post(
-                reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
-                {"data": json.dumps(data)},
-                HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+            reverse('edit_category', kwargs={"c_slug": self.cat_1.slug}),
+            {"data": json.dumps(data)},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
 
         actual_data = json.loads(response.content.decode('utf-8'))
         expected_data = {
@@ -279,35 +271,7 @@ class TestCategory(TestCase):
             {"data": json.dumps(data)},
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertIsInstance(response, HttpResponseBadRequest)
-        self.assertEqual(response.status_code, 400, msg="Edit category:HttResponseBadRequest")
-
-    def getLine(self):
-        length = 20
-        m_length = len(self._testMethodName)
-
-        if m_length > length:
-            length -= (m_length - length)
-
-        elif m_length < length:
-            length += (length - m_length)
-
-        return ''.join(["." for i in range(length)])
-
-
-    def run(self, result):
-        success = "[OK]" if result.descriptions else "[ERROR]"
-        color = CLIColors.OK if result.descriptions else CLIColors.FAIL
-        print(
-                CLIColors.HEADER,
-                "[TEST - category] -",
-                CLIColors.END,
-                CLIColors.WARNING,
-                self._testMethodName,
-                self.getLine(),
-                CLIColors.END,
-                color,
-                success,
-                CLIColors.END)
+        self.assertEqual(response.status_code, 400)
 
     def tearDown(self):
         del self.video
