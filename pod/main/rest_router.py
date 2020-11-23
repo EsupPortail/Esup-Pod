@@ -60,6 +60,8 @@ urlpatterns = [
         name='dublincore'),
     url(r'launch_encode_view/$', video_views.launch_encode_view,
         name='launch_encode_view'),
+    url(r'store_encoded_video/$', video_views.store_encoded_video,
+        name='store_encoded_video'),
 ]
 
 for apps in settings.THIRD_PARTY_APPS:
