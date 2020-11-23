@@ -1,5 +1,5 @@
 {% load i18n %}
-
+{% load video_filters %}
 <div id="manageCategoryModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="manageCategoryModal" style="display: none;" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -27,8 +27,8 @@
 		</div>
 	    </div>
 	    <div class="modal-footer">
-		<button type="button" class="btn btn-primary">{% trans "Save category" %} </button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">{% trans "Cancel" %}</button>
+		<button type="button" id="saveCategory" class="btn btn-primary">{% trans "Save category" %} </button>
+                <button type="button" id="cancelDialog" class="btn btn-danger" data-dismiss="modal">{% trans "Cancel" %}</button>
 	    </div>
 	</div>
     </div>
