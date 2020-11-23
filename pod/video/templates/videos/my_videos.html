@@ -30,11 +30,11 @@
 {% block collapse_page_aside %}
     {{ block.super }}
 {% endblock collapse_page_aside %}
-
+{% if USE_CATEGORY %}
 {% block page_aside %}
  {% include 'videos/filter_aside_category.html' %}
 {% endblock page_aside %}
-
+{% endif %}
 {% block more_script %}
 <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
 <script src="{% static 'js/infinite.min.js' %}"></script>
