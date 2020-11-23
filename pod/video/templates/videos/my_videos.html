@@ -3,7 +3,9 @@
 {% load staticfiles %}
 
 {% block more_style %}
+{% if USE_CATEGORY %}
 <link rel="stylesheet" href="{% static 'css/video_category.css' %}"> 
+{% endif %}
 {% endblock more_style %}
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My videos" %}</li>{% endblock %}
@@ -59,7 +61,12 @@
       });
     }
   });
+{% if USE_CATEGORY %}
 let CATEGORIES_DATA = {{ categories | safe }};
 </script>
 <script tyep="text/javascript" defer src="{% static 'js/video_category.js' %}"></script>
+{% else %}
+</script>
+{% endif %}
+
 {% endblock more_script %}
