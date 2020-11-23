@@ -137,6 +137,7 @@ TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 ORGANIZE_BY_THEME = getattr(settings, 'ORGANIZE_BY_THEME', False)
 VIEW_STATS_AUTH = getattr(settings, 'VIEW_STATS_AUTH', False)
 ACTIVE_VIDEO_COMMENT = getattr(settings, 'ACTIVE_VIDEO_COMMENT', False)
+USE_CATEGORY = getattr(settings, 'USER_VIDEO_CATEGORY', False)
 
 # ############################################################################
 # CHANNEL
@@ -373,18 +374,22 @@ def my_videos(request):
         full_path = request.get_full_path().replace(
             "?page=%s" % page, "").replace("&page=%s" % page, "")
 
-    """
-    " user's videos categories format =>
-    " [{'title': cat_title, 'slug': cat_slug, 'videos': [v_slug, v_slug...] },]
-    """
-    cats = Category.objects.prefetch_related('video').filter(
+    cats  = []
+    videos_without_cat = []
+    if USE_CATGEORY:
+        """
+        " user's videos categories format =>
+        " [{'title': cat_title, 'slug': cat_slug, 'videos': [v_slug, v_slug...] },]
+        """
+        cats = Category.objects.prefetch_related('video').filter(
             owner=request.user)
-    cats = map(lambda c: {
-        'id': c.id, 'title': c.title, 'slug': c.slug, 'videos': list(
-            c.video.values_list('slug', flat=True))}, cats)
-    cats = json.dumps(list(cats), ensure_ascii=False)
-    videos_without_cat = list(filter(
+        cats = map(lambda c: {
+            'id': c.id, 'title': c.title, 'slug': c.slug, 'videos': list(
+                c.video.values_list('slug', flat=True))}, cats)
+        cats = json.dumps(list(cats), ensure_ascii=False)
+        videos_without_cat = list(filter(
             lambda v: not v.category_set.all().count(), videos_list))
+
     paginator = Paginator(videos_list, 12)
     try:
         videos = paginator.page(page)
@@ -401,7 +406,8 @@ def my_videos(request):
     return render(request, 'videos/my_videos.html', {
         'videos': videos, "full_path": full_path,
         "categories": cats,
-        'videos_without_cat': videos_without_cat
+        'videos_without_cat': videos_without_cat,
+        'USE_CATEGORY': USE_CATEGORY
     })
 
 
