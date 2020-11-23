@@ -6,25 +6,40 @@ const cat_to_delete = {
 const BASE_URL = `${window.location.href}categories/`;
 // edit and filter make the same request, prev_data save the first results
 const SAVED_DATA = {};
+let saveCatBtn = document.querySelector("#manageCategoryModal #saveCategory" ) // btn in dialog
 let modal_title = document.querySelector("#manageCategoryModal #modal_title")
 let cat_input = document.querySelector("#manageCategoryModal #catTitle");
+let CURR_CATEGORY = {};
 const formData = new FormData();
 const HEADERS = {
-    "Content-Type": "application/json",
-    "X-Requested-With": "XMLHttpRequest"
+    //"Content-Type": "application/json",
+    "X-Requested-With": "XMLHttpRequest",
+    "X-CSRFToken": Cookies.get("csrftoken"),
+    //"Accept": "application/json"
 }
 
-// Save category data locally
-let saveRequestData = (data)=>{
-    if(!Object.keys(data).includes(data.slug))
-        SAVED_DATA[`${data.slug}`] = data;
+// Check in CATEGORIES_DATA if the cat exists
+let catExists = (c_slug) =>{
+    return Object.keys(CATEGORIES_DATA.find(c=> c.slug==="1-second")).length > 0;
 }
+
+// Save/update category data locally
+let saveCategoryData = (data)=>{
+    SAVED_DATA[`${data.slug}`] = data;
+}
+
+// Delete category data locally
+let deleteFromSaveData = (c_slug)=>{
+    if(Object.keys(SAVED_DATA).includes(c_slug))
+	delete SAVED_DATA[c_slug];
+}
+
 // Get saved category data
 let  getSavedData = (c_slug) =>{
     if(Object.keys(SAVED_DATA).includes(c_slug))
 	return SAVED_DATA[c_slug];
 
-    return null;
+    return {};
 }
 // Add event toggle selected class on el
 let toggleSelectedClass = (el)=>{
@@ -104,8 +119,10 @@ cats_edit.forEach(c_e =>{
     	window.setTimeout(function(){ cat_input.focus()}, 500)
 	// add videos of the current category into the dialog
 
+    	saveCatBtn.setAttribute("data-action", "edit")
 	let jsonData = getSavedData(cat_edit_slug);
-	if( jsonData )
+    	CURR_CATEGORY_SLUG = jsonData;
+	if( Object.keys(jsonData).length )
 	{
 	    jsonData.videos.forEach(v=>{
 		appendVideoCard(v);
@@ -118,8 +135,9 @@ cats_edit.forEach(c_e =>{
 	        data.videos.forEach(v=>{
 		    appendVideoCard(v);
 	        });
+    		CURR_CATEGORY = data;
 		// save data
-		saveRequestData(data);
+		saveCategoryData(data);
 	    });
 	}
     });
@@ -161,13 +179,59 @@ del_cat.addEventListener('click', (e) =>{
 });
 
 
+// Add onclick event to save category (create or edit) data
+saveCatBtn.addEventListener("click", e=>{
+    e.preventDefault()
+    e.stopPropagation()
+    let videos = Array.from(document.querySelectorAll(".category_modal_video_list .selected")).map(v_el => v_el.dataset.slug.trim());
+    console.log("Videos to save ")
+    console.table(videos)
+    console.table(CURR_CATEGORY)
+    if(Object.keys(CURR_CATEGORY).length > 0) // Editing mode
+    {
+	 postData = {
+	    title: cat_input.value.trim(),
+	    videos: videos
+	 }
+	// make fetch request to save new data
+	formData.append("csrfmiddlewaretoken", Cookies.get('csrftoken'));
+	formData.append("data", formData)
+	fetch(`${BASE_URL}edit/${CURR_CATEGORY.slug}/` , {
+	    method: "POST",
+	    body: JSON.stringify(postData),
+	    headers: HEADERS
+	}).then(response =>{
+	    response.json().then(data=>{
+		deleteFromSaveData(CURR_CATEGORY.slug);
+		saveCategoryData(data);
+		CURR_CATEGORY = {};
+	    })
+	}).catch(err =>{
+	    console.log(err);
+	});
+    }
+    else // Adding mode
+    { 
+	console.log("ADDING MODE")
+    }
+
+    // UPDATE SAVED DATA
+    console.log("Saving");
+    document.querySelector("#manageCategoryModal #cancelDialog").click()
+});
+
 // Add onclick event to add a new category
 let add_cat = document.querySelector('#my_videos_filter #add_category_btn');
 add_cat.addEventListener('click', e=>{
     modal_title.innerText = add_cat.getAttribute('title').trim(); 
     cat_input.value = "";
+    // set Save button text to 'create category'
+    saveCatBtn.textContent = gettext("Create category");
+    saveCatBtn.setAttribute("data-action", "create");
+    CURR_CATEGORY = null;
     window.setTimeout(function(){ cat_input.focus()}, 500)
 });
+
 
 // Add onclick event to each video in category modal
 let videos_in_modal = document.querySelectorAll("#manageCategoryModal .infinite-item");
@@ -185,8 +249,6 @@ cats.forEach(c =>{
 	c.parentNode.classList.toggle("active");
 	e.stopPropagation();
 	let cat_filter_slug = c.dataset.slug;
-	console.log(cat_filter_slug);
-	formData.append("csrfmiddlewaretoken", Cookies.get('csrftoken'));
 	fetch(`${BASE_URL}${cat_filter_slug}/`, {headers: HEADERS}).then(response =>{
 	    response.json().then(data=>{
 		console.log(data);
