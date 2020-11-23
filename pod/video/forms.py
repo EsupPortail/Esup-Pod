@@ -297,6 +297,7 @@ class VideoForm(forms.ModelForm):
     user = User.objects.all()
 
     def filter_fields_admin(form):
+        print("hello")
         if form.is_superuser is False and form.is_admin is False:
             form.remove_field('date_added')
             form.remove_field('owner')
