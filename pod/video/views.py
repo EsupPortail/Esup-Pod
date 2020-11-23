@@ -374,12 +374,17 @@ def my_videos(request):
         full_path = request.get_full_path().replace(
             "?page=%s" % page, "").replace("&page=%s" % page, "")
 
-    cats  = []
+    cats = []
     videos_without_cat = []
-    if USE_CATGEORY:
+    if USE_CATEGORY:
         """
         " user's videos categories format =>
-        " [{'title': cat_title, 'slug': cat_slug, 'videos': [v_slug, v_slug...] },]
+        " [
+        "   {
+        "   'title': cat_title, 
+        "   'slug': cat_slug, 
+        "   'videos': [v_slug, v_slug...] },
+        " ]
         """
         cats = Category.objects.prefetch_related('video').filter(
             owner=request.user)
