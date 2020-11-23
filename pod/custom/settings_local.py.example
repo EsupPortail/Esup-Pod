@@ -948,8 +948,15 @@ BBB_SECRET_KEY = 'abcdef'
 DEFAULT_BBB_TYPE_ID = 1
 
 """
-# Permet d'activer le fonctionnement de categorie au niveau de ses vidéos
-# Vous pouvez créer des catégories et pouvoir ranger vos propre vidéos
-# Les catégories sont liées à l'utilisateur
+# Format du nom d'utilisateur dans BBB.
+# Valeurs possibles : 'first_name last_name', 'last_name first_name'
+# Exemple1 : si dans le serveur BBB, vous avez un utilisateur au format 'John Doe', mettez 'first_name last_name'
+# Exemple2 : si dans le serveur BBB, vous avez un utilisateur au format 'Doe John', mettez 'last_name first_name'
 """
-USER_VIDEO_CATEGORY = False
+BBB_USERNAME_FORMAT = 'first_name last_name'
+
+"""
+# Nombre de jours avant la suppression des sessions et des utilisateurs associés, non déjà publiés
+# Pour ne pas supprimer les anciennes sessions, utiliser la valeur 0
+"""
+BBB_NUMBER_DAYS_BEFORE_DELETE = 0
