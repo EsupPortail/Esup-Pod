@@ -1827,8 +1827,9 @@ def add_category(request):
 
     if request.method == "POST":  # create new category
 
-        data = json.loads(request.POST.get('data', "{}"))
-        videos = Video.objects.filter(slug__in=data['videos'])
+        data = json.loads(request.body.decode("utf-8"))
+        videos = Video.objects.filter(
+            slug__in=data.get('videos', []))
 
         if 'title' in data and data['title'].strip() != "":
 
@@ -1862,8 +1863,9 @@ def edit_category(request, c_slug):
     if request.method == "POST":  # edit current category
 
         cat = get_object_or_404(Category, slug=c_slug)
-        data = json.loads(request.POST.get('data', '{}'))
-        new_videos = Video.objects.filter(slug__in=data['videos'])
+        data = json.loads(request.body.decode("utf-8"))
+        new_videos = Video.objects.filter(
+            slug__in=data.get('videos', []))
 
         if 'title' in data and data['title'].strip() != "":
 
