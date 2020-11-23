@@ -98,7 +98,8 @@ def get_current_session_folder(request):
               'current_session_folder', "home")) | Q(
                  users=request.user, name=request.session.get(
                     'current_session_folder', "home")) | Q(
-                 groups__in=request.user.groups.all(), name=request.session.get(
+                 groups__in=request.user.groups.all(
+                 ), name=request.session.get(
                     'current_session_folder', "home")))
     except ObjectDoesNotExist:
         if(request.user.is_superuser):
