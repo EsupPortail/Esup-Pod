@@ -27,6 +27,12 @@
 
 
 {% block page_content %}
+
+{% if restricted_to_staff %}
+<p class="text-info">
+  <i data-feather="info"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}" title="{% trans 'contact us' %}">{% trans 'contact us' %}</a>
+</p>
+{% else %}
 <h3>{% trans "Media upload" %}</h3>
 
 <div id="uploadblock">
@@ -54,6 +60,7 @@
 </a>
 {% endif %}
 
+{%endif%}
 {% endblock page_content %}
 
 {% block page_aside %}
