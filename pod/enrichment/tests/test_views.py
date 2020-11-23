@@ -64,7 +64,6 @@ class EnrichmentViewsTestCase(TestCase):
         self.assertContains(response, 'form_enrich')
         response = self.client.post(
             url,
-            content_type="application/json",
             data={'action': 'save',
                   'video': 1,
                   'title': 'testenrich',
@@ -92,7 +91,6 @@ class EnrichmentViewsTestCase(TestCase):
                       kwargs={'slug': video.slug})
         response = self.client.post(
             url,
-            content_type="application/json",
             data={'action': 'save',
                   'video': 1,
                   'title': 'testenrich',
@@ -131,7 +129,6 @@ class EnrichmentViewsTestCase(TestCase):
                       kwargs={'slug': video.slug})
         response = self.client.post(
             url,
-            content_type="application/json",
             data={'action': 'save',
                   'video': 1,
                   'title': 'testenrich',

@@ -117,7 +117,8 @@ def edit_enrichment_save(request, video):
     list_enrichment = video.enrichment_set.all()
 
     form_enrichment = None
-    if request.POST.get('enrich_id') != 'None':
+    if request.POST.get(
+        'enrich_id') != 'None' and request.POST.get('enrich_id') is not None:
         enrich = get_object_or_404(
             Enrichment, id=request.POST['enrich_id'])
         form_enrichment = EnrichmentForm(request.POST, instance=enrich)

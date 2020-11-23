@@ -75,7 +75,8 @@ def video_chapter_save(request, video):
     list_chapter = video.chapter_set.all()
 
     form_chapter = None
-    if request.POST.get('chapter_id') != 'None':
+    chapter_id = request.POST.get('chapter_id')
+    if chapter_id != 'None' and chapter_id is not None:
         chapter = get_object_or_404(
             Chapter, id=request.POST['chapter_id'])
         form_chapter = ChapterForm(request.POST, instance=chapter)

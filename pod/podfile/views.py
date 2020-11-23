@@ -66,7 +66,6 @@ def home(request, type=None):
         raise SuspiciousOperation('--> Invalid type')
     user_home_folder = get_object_or_404(
         UserFolder, name="home", owner=request.user)
-
     share_folder = UserFolder.objects.filter(
         groups__in=request.user.groups.all()
     ).exclude(owner=request.user).order_by('owner', 'id')
@@ -74,12 +73,9 @@ def home(request, type=None):
     share_folder_user = UserFolder.objects.filter(
         users=request.user).exclude(
             owner=request.user).order_by('owner', 'id')
-
     current_session_folder = get_current_session_folder(request)
-
     template = 'podfile/home_content.html' if (
         request.is_ajax()) else 'podfile/home.html'
-
     return render(request,
                   template,
                   {
@@ -102,7 +98,7 @@ def get_current_session_folder(request):
               'current_session_folder', "home")) | Q(
                  users=request.user, name=request.session.get(
                     'current_session_folder', "home")) | Q(
-                 groups=request.user.groups.all(), name=request.session.get(
+                 groups__in=request.user.groups.all(), name=request.session.get(
                     'current_session_folder', "home")))
     except ObjectDoesNotExist:
         if(request.user.is_superuser):
@@ -116,7 +112,6 @@ def get_current_session_folder(request):
             owner=request.user,
             name="home"
         )
-
     return current_session_folder.first()
 
 
@@ -486,6 +481,7 @@ def changefile(request):
 def file_edit_save(request, folder):
     form_file = None
     if (request.POST.get("file_id")
+            and request.POST.get("file_id") is not None
             and request.POST.get("file_id") != "None"):
         customfile = get_object_or_404(
             CustomFileModel, id=request.POST['file_id'])
