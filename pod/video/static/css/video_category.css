@@ -228,6 +228,7 @@
     word-wrap: normal;
     cursor: pointer;
     line-height: 1.8;
+    border-right: 1px solid #eee8e8;
 }
 #my_videos_filter .categories_list_item .category_actions{
     display: flex;
