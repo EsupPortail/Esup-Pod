@@ -17,7 +17,7 @@ import time
 
 from timeit import default_timer as timer
 
-DEBUG = False # True
+DEBUG = False  # True
 
 VIDEOS_DIR = "videos"
 VIDEOS_OUTPUT_DIR = "encoding_videos"
@@ -464,8 +464,8 @@ if __name__ == "__main__":
     msg += 'Using job {} \n'.format(args.job)
     msg += 'Using name {} \n'.format(args.name)
 
-    #  --dir /workdir/nicolas.can//encoding/encoding-12689 
-    # --input fa131629fb906539f440ce16d7de8d62280fe087e90e546e4a6b49259b9a2424/clip-pod.mp4
+    #  --dir /workdir/nicolas.can//encoding/encoding-12689
+    # --input fa13162[...]259b9a2424/clip-pod.mp4
 
     VIDEOS_DIR = args.dir if args.dir else "videos"
 
