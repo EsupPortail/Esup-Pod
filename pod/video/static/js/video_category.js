@@ -10,7 +10,8 @@
     let saveCatBtn = document.querySelector("#manageCategoryModal #saveCategory" ) // btn in dialog
     let modal_title = document.querySelector("#manageCategoryModal #modal_title")
     let cat_input = document.querySelector("#manageCategoryModal #catTitle");
-    let CURR_CATEGORY = {};
+    let CURR_CATEGORY = {}; // current editing category (js object)
+    let DOMCurrentEditCat = null; // current editing category (html DOM)
     const formData = new FormData();
     const HEADERS = {
         "Content-Type": "application/json",
@@ -132,6 +133,7 @@ let getModalVideoCard = (v)=>{
 	    saveCatBtn.setAttribute("data-action", "edit")
 	    let jsonData = getSavedData(cat_edit_slug);
 	    CURR_CATEGORY = jsonData;
+	    DOMCurrentEditCat = c_e.parentNode.parentNode;
 	    if( Object.keys(jsonData).length )
 	    {
 	        jsonData.videos.forEach(v=>{
@@ -212,7 +214,7 @@ let getModalVideoCard = (v)=>{
         console.log("Videos to save ")
         console.table(videos)
         console.table(CURR_CATEGORY)
-        if(Object.keys(CURR_CATEGORY).length > 0) // Editing mode
+        if(Object.keys(CURR_CATEGORY).length > 0 && DOMCurrentEditCat) // Editing mode
         {
             postData = {
 	        title: cat_input.value.trim(),
@@ -225,8 +227,12 @@ let getModalVideoCard = (v)=>{
 	        headers: HEADERS
 	    }).then(response =>{
 	        response.json().then(data=>{
+		    // Update local data 
 	            deleteFromSaveData(CURR_CATEGORY.slug);
 		    saveCategoryData(data);
+		    DOMCurrentEditCat.querySelector('.cat_title').textContent = data.title
+		    DOMCurrentEditCat.querySelectorAll('span').forEach(sp => sp.setAttribute('data-slug', data.slug));
+		    DOMCurrentEditCat = null
 		    CURR_CATEGORY = {};
 		    // close modal
 	    	    document.querySelector("#manageCategoryModal #cancelDialog").click()
