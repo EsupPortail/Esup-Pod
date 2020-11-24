@@ -1873,7 +1873,6 @@ def add_category(request):
                     'has_chapter': v.chapter_set.all().count() > 0,
                     'is_draft': v.is_draft}, cat.video.all()))
 
-
             return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
@@ -1936,7 +1935,6 @@ def edit_category(request, c_slug):
                         'is_restricted': v.is_restricted,
                         'has_chapter': v.chapter_set.all().count() > 0,
                         'is_draft': v.is_draft}, cat.video.all()))
-
 
                 return HttpResponse(
                     json.dumps(response, cls=DjangoJSONEncoder),
