@@ -1807,9 +1807,21 @@ def get_categories(request, c_slug=None):
     else:  # get all categories of connected user
 
         cats = Category.objects.prefetch_related('video').filter(owner=c_user)
-        cats = map(lambda c: {"title": c.title, "slug": c.slug, "videos": list(
-            c.video.values_list('id', flat=True))}, cats)
-        cats = list(cats)
+        cats = list(map(lambda c: {
+            "title": c.title,
+            "slug": c.slug,
+            "videos": list(
+                map(lambda v: {
+                    'slug': v.slug,
+                    'title': v.title,
+                    'duration': v.duration_in_time,
+                    'thumbnail': v.get_thumbnail_card(),
+                    'is_video': v.is_video,
+                    'has_password': bool(v.password),
+                    'is_restricted': v.is_restricted,
+                    'has_chapter': v.chapter_set.all().count() > 0,
+                    'is_draft': v.is_draft}, c.video.all()))
+        }, cats))
 
         response['success'] = True
         response['categories'] = cats
@@ -1848,8 +1860,19 @@ def add_category(request):
             cat.save()
             response['title'] = cat.title
             response['slug'] = cat.slug
-            response['videos'] = list(cat.video.values_list('slug', flat=True))
             response['success'] = True
+            response['videos'] = list(
+                map(lambda v: {
+                    'slug': v.slug,
+                    'title': v.title,
+                    'duration': v.duration_in_time,
+                    'thumbnail': v.get_thumbnail_card(),
+                    'is_video': v.is_video,
+                    'has_password': bool(v.password),
+                    'is_restricted': v.is_restricted,
+                    'has_chapter': v.chapter_set.all().count() > 0,
+                    'is_draft': v.is_draft}, cat.video.all()))
+
 
             return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
@@ -1900,10 +1923,20 @@ def edit_category(request, c_slug):
                 response['id'] = cat.id
                 response['title'] = cat.title
                 response['slug'] = cat.slug
-                response['videos'] = list(
-                        new_videos.values_list('slug', flat=True))
                 response['success'] = True
                 response['message'] = _('Category updated successfully.')
+                response['videos'] = list(
+                    map(lambda v: {
+                        'slug': v.slug,
+                        'title': v.title,
+                        'duration': v.duration_in_time,
+                        'thumbnail': v.get_thumbnail_card(),
+                        'is_video': v.is_video,
+                        'has_password': bool(v.password),
+                        'is_restricted': v.is_restricted,
+                        'has_chapter': v.chapter_set.all().count() > 0,
+                        'is_draft': v.is_draft}, cat.video.all()))
+
 
                 return HttpResponse(
                     json.dumps(response, cls=DjangoJSONEncoder),
