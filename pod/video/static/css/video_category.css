@@ -210,6 +210,9 @@
     border-bottom: 1px solid #ccc;
     transition: .3s all;
 }
+#my_videos_filter .categories_list_item.hidden{
+    display: none;
+}
 #my_videos_filter .categories_list_item.active{
     color: #fff;
     background-color: var(--primary);
