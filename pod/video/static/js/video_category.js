@@ -1,6 +1,6 @@
 (function(CATEGORIES_DATA){
     // Category to delete
-    const cat_to_delete = {
+    const CAT_TO_DELETE = {
         title: undefined,
 	slug: undefined
     }
@@ -68,6 +68,16 @@
 	catch(e) {console.error(e.message);}
     }
 
+    // Make post request. for edit or add category, postData(object)
+    let postCategoryData = async (url, postData) =>{
+	try
+	{
+            let resp = await fetch(url, {method: "POST", body: JSON.stringify(postData), headers: HEADERS});
+	    return await resp.json();
+        }
+	catch(e){console.error(e.message);}
+    }
+
     let get_type_icon = (is_video=true)=>{
         let videoContent_Text = gettext("Video content.");
 	let audioContent_Text = gettext("Audio content.");
@@ -79,57 +89,96 @@
 		    <i data-feather="radio"></i>
 		</span>`;
     }
+    
+    // Create category html element <li></li>
+    let getCategoryLi = (title, slug) =>{
+        let spanEdit = document.createElement('span');
+	spanEdit.setAttribute('title', gettext("Edit the category"));
+	spanEdit.setAttribute('data-toggle', 'modal');
+	spanEdit.setAttribute('data-target', '#manageCategoryModal');
+	spanEdit.setAttribute('data-slug', slug);
+	spanEdit.setAttribute('data-title', title);
+	spanEdit.setAttribute('class', 'edit_category');
+	spanEdit.setAttribute('id', 'edit_category');
+	spanEdit.innerHTML = `
+	    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="edit" class="svg-inline--fa fa-edit fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z"></path></svg>
+	`;
+	editHandler(spanEdit);
 
-let getModalVideoCard = (v)=>{
-    return `
-	<div class="checked_overlay">
-	    <span class="card_selected" id="card_selected">
-		<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check-circle" class="svg-inline--fa fa-check-circle fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path></svg>
+        let spanDelete = document.createElement('span');
+	spanDelete.setAttribute('title', gettext("Delete the category"));
+	spanDelete.setAttribute('data-toggle', 'modal');
+	spanDelete.setAttribute('data-target', '#deleteCategoryModal');
+	spanDelete.setAttribute('data-slug', slug);
+	spanDelete.setAttribute('data-title', title);
+	spanDelete.setAttribute('class', 'remove_category');
+	spanDelete.setAttribute('id', 'edit_category');
+	spanDelete.innerHTML = `
+	    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash-alt" class="svg-inline--fa fa-trash-alt fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M32 464a48 48 0 0 0 48 48h288a48 48 0 0 0 48-48V128H32zm272-256a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zm-96 0a16 16 0 0 1 32 0v224a16 16 0 0 1-32 0zM432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16z"></path></svg>
+	`;
+	deleteHandler(spanDelete);
+
+	let li = document.createElement('li');
+	li.setAttribute("class", "categories_list_item");
+	li.innerHTML = `
+	    <span class="cat_title" title="First Category" data-slug="1-first-category">
+		${title}
 	    </span>
-	</div>
-	<div class="card modal_category_card mb-4 box-shadow border-secondary video-card">
-	    <div class="card-header" style="">
-		<div class="d-flex justify-content-between align-items-center">
-		    <small class="text-muted time">${v.duration}</small>
-		    <span class="text-muted small">
-			${get_type_icon(v.is_video)}
-		    </span>
-		</div>
-	    </div>
-	    <div class="card-body">
-		<a class="link-center-pod" href="#" title="${v.title}">
-		    ${v.thumbnail}
-		</a>
-	    </div>
-	    <div class="card-footer">
-		<span class="video_title">${v.title}</span>
-	    </div>
-	</div>`
-    }
-    // Append video card in category modal
-    let appendVideoCard = (v)=>{
-        let modalListVideo = document.querySelector("#manageCategoryModal .category_modal_video_list");
-	let videoCard = getModalVideoCard(v);
-	let v_wrapper = document.createElement("Div");
-	v_wrapper.setAttribute("data-slug", v.slug);
-	v_wrapper.setAttribute("class", "infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group selected")
-        v_wrapper.innerHTML = videoCard;
-	modalListVideo.appendChild(v_wrapper);
-	// set click event listener
-	toggleSelectedClass(v_wrapper);
+	    <div class="category_actions">
+            </div>`;
+	li.querySelector(".category_actions").appendChild(spanEdit);
+	li.querySelector(".category_actions").appendChild(spanDelete);
+	return li;
     }
 
-    // Add onclick event to edit a category
-    let cats_edit = document.querySelectorAll("#my_videos_filter .categories_list_item #edit_category");
-    cats_edit.forEach(c_e =>{
-        c_e.addEventListener('click', (e) =>{
+    // Create video card for Category Dialog
+    let getModalVideoCard = (v)=>{
+        return `
+	    <div class="checked_overlay">
+	        <span class="card_selected" id="card_selected">
+		    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check-circle" class="svg-inline--fa fa-check-circle fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path></svg>
+	        </span>
+	    </div>
+	    <div class="card modal_category_card mb-4 box-shadow border-secondary video-card">
+	        <div class="card-header" style="">
+		    <div class="d-flex justify-content-between align-items-center">
+		        <small class="text-muted time">${v.duration}</small>
+		        <span class="text-muted small">
+			    ${get_type_icon(v.is_video)}
+		        </span>
+		    </div>
+	        </div>
+	        <div class="card-body">
+		    <a class="link-center-pod" href="#" title="${v.title}">
+		        ${v.thumbnail}
+		    </a>
+	        </div>
+	        <div class="card-footer">
+		    <span class="video_title">${v.title}</span>
+	        </div>
+            </div>`
+    }
+
+    // Handler to delete category, c_d=current category to delete
+    let deleteHandler = (c_d) =>{
+	c_d.addEventListener('click', (e) =>{
+ 	    // Show confirm modal => manage by boostrap
+	    CAT_TO_DELETE.title = c_d.dataset.title;
+	    CAT_TO_DELETE.slug = c_d.dataset.slug;
+	});
+
+    }
+
+    // Handler to edit category, c_e=current category to edit
+    let editHandler = (c_e) =>{
+	c_e.addEventListener('click', (e) =>{
 	    cat_edit_title = c_e.dataset.title.trim();
 	    cat_edit_slug = c_e.dataset.slug.trim();
 	    cat_input.value = cat_edit_title;;
 	    modal_title.innerText = c_e.getAttribute('title').trim(); 
-	    window.setTimeout(function(){ cat_input.focus()}, 500)
-	    // add videos of the current category into the dialog
+	    window.setTimeout(function(){ cat_input.focus()}, 500) // focus in input (category title)
 
+	    // add videos of the current category into the dialog
 	    saveCatBtn.setAttribute("data-action", "edit")
 	    let jsonData = getSavedData(cat_edit_slug);
 	    CURR_CATEGORY = jsonData;
@@ -152,7 +201,26 @@ let getModalVideoCard = (v)=>{
 		    saveCategoryData(data);
 		});
 	    }
-	});
+	})
+    }
+
+    // Append video card in category modal
+    let appendVideoCard = (v)=>{
+        let modalListVideo = document.querySelector("#manageCategoryModal .category_modal_video_list");
+	let videoCard = getModalVideoCard(v);
+	let v_wrapper = document.createElement("Div");
+	v_wrapper.setAttribute("data-slug", v.slug);
+	v_wrapper.setAttribute("class", "infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group selected")
+        v_wrapper.innerHTML = videoCard;
+	modalListVideo.appendChild(v_wrapper);
+	// set click event listener
+	toggleSelectedClass(v_wrapper);
+    }
+
+    // Add onclick event to edit a category
+    let cats_edit = document.querySelectorAll("#my_videos_filter .categories_list_item #edit_category");
+    cats_edit.forEach(c_e =>{
+        editHandler(c_e);
     });
 
     // listener on close modal btn
@@ -173,22 +241,18 @@ let getModalVideoCard = (v)=>{
     // Add onclick event to delete a category
     let cats_del = document.querySelectorAll("#my_videos_filter .categories_list_item #remove_category_icon");
     cats_del.forEach(c_d => {
-        c_d.addEventListener('click', (e) =>{
- 	    // Show confirm modal => manage by boostrap
-	    cat_to_delete.title = c_d.dataset.title;
-	    cat_to_delete.slug = c_d.dataset.slug;
-	});
+	deleteHandler(c_d);
     });
 
     // Add onclick event to delete a category
     let del_cat = document.querySelector("#confirm_remove_category_btn");
     del_cat.addEventListener('click', (e) =>{
-	console.log(cat_to_delete)
-        if(cat_to_delete.title && cat_to_delete.slug)
+	console.log(CAT_TO_DELETE)
+        if(CAT_TO_DELETE.title && CAT_TO_DELETE.slug)
 	{
 	    // Delete category
 	    let cat = CATEGORIES_DATA.find(c =>{
-	        return c.title === cat_to_delete.title && c.slug === cat_to_delete.slug;
+	        return c.title === CAT_TO_DELETE.title && c.slug === CAT_TO_DELETE.slug;
 	    });
 	    if(cat)
 	    {
@@ -214,36 +278,42 @@ let getModalVideoCard = (v)=>{
         console.log("Videos to save ")
         console.table(videos)
         console.table(CURR_CATEGORY)
+	let postData = {
+	    title:  cat_input.value.trim(),
+	    videos: videos
+	};
+	if(cat_input.value.trim() === "")
+        {
+	    // TODO display errors msg
+            return;	    
+	}
         if(Object.keys(CURR_CATEGORY).length > 0 && DOMCurrentEditCat) // Editing mode
         {
-            postData = {
-	        title: cat_input.value.trim(),
-		videos: videos
-	    }
-	    // make fetch request to save new data
-	    fetch(`${BASE_URL}edit/${CURR_CATEGORY.slug}/` , {
-	        method: "POST",
-	        body: JSON.stringify(postData),
-	        headers: HEADERS
-	    }).then(response =>{
-	        response.json().then(data=>{
-		    // Update local data 
-	            deleteFromSaveData(CURR_CATEGORY.slug);
-		    saveCategoryData(data);
-		    DOMCurrentEditCat.querySelector('.cat_title').textContent = data.title
-		    DOMCurrentEditCat.querySelectorAll('span').forEach(sp => sp.setAttribute('data-slug', data.slug));
-		    DOMCurrentEditCat = null
-		    CURR_CATEGORY = {};
-		    // close modal
-	    	    document.querySelector("#manageCategoryModal #cancelDialog").click()
-		    refreshDialog();
-		});
+	    // Update new data, server side
+    	    postCategoryData(`${BASE_URL}edit/${CURR_CATEGORY.slug}/`, postData).then(data =>{
+		// Update new data, client side
+	        deleteFromSaveData(CURR_CATEGORY.slug);
+		saveCategoryData(data);
+		DOMCurrentEditCat.querySelector('.cat_title').textContent = data.title
+		DOMCurrentEditCat.querySelectorAll('span').forEach(sp => sp.setAttribute('data-slug', data.slug));
+		DOMCurrentEditCat = null
+		CURR_CATEGORY = {};
+		// close modal
+	    	document.querySelector("#manageCategoryModal #cancelDialog").click()
+		refreshDialog();
 	    }).catch(err =>{
 	        console.log(err);
 	    });
 	}
 	else // Adding mode
-	{ 
+	{
+    	    postCategoryData(`${BASE_URL}add/`, postData).then(data =>{
+
+    		let li =  getCategoryLi(data.title, data.slug);
+		document.querySelector("#my_videos_filter .categories_list").appendChild(li);
+	    });
+	    document.querySelector("#manageCategoryModal #cancelDialog").click()
+	    refreshDialog();
 	    console.log("ADDING MODE")
 	}
 
