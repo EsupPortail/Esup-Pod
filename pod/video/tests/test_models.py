@@ -381,6 +381,7 @@ class VideoTestCase(TestCase):
             self.assertEqual(video.thumbnail.name, '')
             print("DEBUG DEV 5")
         print("DEBUG DEV 6")
+        print(video)
         self.assertEqual(video.duration, 0)
         # self.assertEqual(pod.get_absolute_url(), "/video/" + pod.slug + "/")
         self.assertEqual(video.__str__(), "%s - %s" %
