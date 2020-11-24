@@ -1,8 +1,8 @@
 (function(CATEGORIES_DATA){
     // Category to delete
     const CAT_TO_DELETE = {
-        title: undefined,
-	slug: undefined
+	slug: undefined,
+	html: undefined
     }
     const BASE_URL = `${window.location.href}categories/`;
     // To prevent too many requests to the server
@@ -36,9 +36,17 @@
     }
 
     // Delete category data locally
-    let deleteFromSaveData = (c_slug)=>{
+    let deleteFromSavedData = (c_slug)=>{
         if(Object.keys(SAVED_DATA).includes(c_slug))
             delete SAVED_DATA[c_slug];
+    }
+    
+    // Search cat by slug
+    let findCategory = (slug) =>{
+	let cat = CATEGORIES_DATA.find(c=> c.slug===slug)
+	if(Object.keys(cat).length)
+	    return cat;
+	return getSavedData(slug);
     }
 
     // Get saved category data
@@ -163,8 +171,8 @@
     let deleteHandler = (c_d) =>{
 	c_d.addEventListener('click', (e) =>{
  	    // Show confirm modal => manage by boostrap
-	    CAT_TO_DELETE.title = c_d.dataset.title;
 	    CAT_TO_DELETE.slug = c_d.dataset.slug;
+	    CAT_TO_DELETE.html = c_d.parentNode.parentNode;
 	});
 
     }
@@ -247,20 +255,32 @@
     // Add onclick event to delete a category
     let del_cat = document.querySelector("#confirm_remove_category_btn");
     del_cat.addEventListener('click', (e) =>{
-	console.log(CAT_TO_DELETE)
-        if(CAT_TO_DELETE.title && CAT_TO_DELETE.slug)
+        if(CAT_TO_DELETE.slug && CAT_TO_DELETE.html)
 	{
 	    // Delete category
-	    let cat = CATEGORIES_DATA.find(c =>{
-	        return c.title === CAT_TO_DELETE.title && c.slug === CAT_TO_DELETE.slug;
-	    });
-	    if(cat)
+	    let cat = findCategory(CAT_TO_DELETE.slug);
+	    
+	    if(Object.keys(cat).length)
 	    {
-	        let url = `${BASE_URL}delete/${cat.id}`;
-	        console.log("----------------------------------------")
-	        console.log(url)
-	        console.log("----------------------------------------")
+		fetch(`${BASE_URL}delete/${cat.id}/`, {
+		    method: "POST",
+		    headers: HEADERS
+	    	}).then(response =>{
+		    response.json().then(data =>{
+			console.log(data);
+			deleteFromSavedData(CAT_TO_DELETE.slug);
+			document.querySelector("#my_videos_filter .categories_list").removeChild(CAT_TO_DELETE.html);
+			delete CAT_TO_DELETE.slug;
+			delete CAT_TO_DELETE.html;
+			// close modal
+			document.querySelector("#deleteCategoryModal .modal-footer .close_modal").click();
+		    });
+		});
 	        // Ajax request to delete category
+	    }
+	    else
+	    {
+		//TODO display msg error cat 
 	    }
 	}
 	else
@@ -292,7 +312,7 @@
 	    // Update new data, server side
     	    postCategoryData(`${BASE_URL}edit/${CURR_CATEGORY.slug}/`, postData).then(data =>{
 		// Update new data, client side
-	        deleteFromSaveData(CURR_CATEGORY.slug);
+	        deleteFromSavedData(CURR_CATEGORY.slug);
 		saveCategoryData(data);
 		DOMCurrentEditCat.querySelector('.cat_title').textContent = data.title
 		DOMCurrentEditCat.querySelectorAll('span').forEach(sp => sp.setAttribute('data-slug', data.slug));
