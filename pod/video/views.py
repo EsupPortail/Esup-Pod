@@ -1815,8 +1815,8 @@ def get_categories(request, c_slug=None):
         response['categories'] = cats
 
         return HttpResponse(
-                json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json")
+            json.dumps(response, cls=DjangoJSONEncoder),
+            content_type="application/json")
 
 
 @login_required(redirect_field_name='referrer')
@@ -1830,6 +1830,16 @@ def add_category(request):
         data = json.loads(request.body.decode("utf-8"))
         videos = Video.objects.filter(
             slug__in=data.get('videos', []))
+
+        # constraint, video can be only in one category
+        v_in_another_cat = videos.filter(category__isnull=False).count()
+        if v_in_another_cat:
+            response['message'] = _(
+                    "One or many videos already have a category.")
+
+            return HttpResponseBadRequest(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json")
 
         if 'title' in data and data['title'].strip() != "":
 
@@ -1847,8 +1857,8 @@ def add_category(request):
 
         response['message'] = _('Title field is required')
         return HttpResponseBadRequest(
-                json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json")
+            json.dumps(response, cls=DjangoJSONEncoder),
+            content_type="application/json")
 
     return HttpResponseNotAllowed(_("Method Not Allowed"))
 
@@ -1866,6 +1876,16 @@ def edit_category(request, c_slug):
         data = json.loads(request.body.decode("utf-8"))
         new_videos = Video.objects.filter(
             slug__in=data.get('videos', []))
+
+        # constraint, video can be only in one category
+        v_in_another_cat = new_videos.filter(category__isnull=False).count()
+        if v_in_another_cat:
+            response['message'] = _(
+                    "One or many videos already have a category.")
+
+            return HttpResponseBadRequest(
+                json.dumps(response, cls=DjangoJSONEncoder),
+                content_type="application/json")
 
         if 'title' in data and data['title'].strip() != "":
 
