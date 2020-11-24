@@ -19,6 +19,31 @@
         "X-CSRFToken": Cookies.get("csrftoken"),
         "Accept": "application/json"
     }
+
+    // Search categery
+    let searchCatInput = document.querySelector("#my_videos_filter #searchcategories");
+    let filterCatHandler = (s) =>{
+	let cats = document.querySelectorAll(".categories_list .cat_title:not(.hidden)");
+	if(s.length >= 3)
+	{
+	    cats.forEach( cat =>{
+	        if( !cat.getAttribute('title').trim().toLowerCase().includes(s) )
+		    cat.parentNode.classList.add('hidden');
+	    });
+	}
+	else
+	{
+	    cats = document.querySelectorAll(".categories_list .hidden");
+	    cats.forEach( cat =>{
+		cat.classList.remove('hidden');
+	    });
+	}
+    }
+    searchCatInput.addEventListener('input', e =>{
+	console.log("INPUT HANDLER");
+	filterCatHandler(searchCatInput.value.trim());
+    });
+
     // remove all current selected videos in dialog
     let refreshDialog = () =>{
 	    console.log("REFRESH");
