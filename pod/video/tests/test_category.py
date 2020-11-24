@@ -93,8 +93,19 @@ class TestCategory(TestCase):
                 {
                     "title": 'testCategory',
                     "slug": self.cat_1.slug,
-                    "videos": list(
-                        self.cat_1.video.values_list('id', flat=True))
+                    "videos": [
+                        {
+                            "slug": self.video.slug,
+                            "title": self.video.title,
+                            "duration": self.video.duration_in_time,
+                            "thumbnail": self.video.get_thumbnail_card(),
+                            "is_video": self.video.is_video,
+                            "is_draft": self.video.is_draft,
+                            "is_restricted": self.video.is_restricted,
+                            "has_chapter": self.video.chapter_set.all().count() > 0,
+                            "has_password": bool(self.video.password)
+                        }
+                    ]
                 }
             ]
         }
@@ -191,7 +202,19 @@ class TestCategory(TestCase):
             "success": True,
             "title": data["title"],
             "slug": "%s-%s" % (self.owner_user.id, slugify(data["title"])),
-            "videos": data["videos"]
+            "videos": [
+                {
+                    "slug": self.video_2.slug,
+                    "title": self.video_2.title,
+                    "duration": self.video_2.duration_in_time,
+                    "thumbnail": self.video_2.get_thumbnail_card(),
+                    "is_video": self.video_2.is_video,
+                    "is_draft": self.video_2.is_draft,
+                    "is_restricted": self.video_2.is_restricted,
+                    "has_chapter": self.video_2.chapter_set.all().count() > 0,
+                    "has_password": bool(self.video_2.password)
+                }
+            ]
         }
 
         self.assertIsInstance(response, HttpResponse)
@@ -277,7 +300,19 @@ class TestCategory(TestCase):
             "success": True,
             "title": data["title"],
             "slug": "%s-%s" % (self.owner_user.id, slugify(data["title"])),
-            "videos": data["videos"]
+            "videos": [
+                {
+                    "slug": self.video_2.slug,
+                    "title": self.video_2.title,
+                    "duration": self.video_2.duration_in_time,
+                    "thumbnail": self.video_2.get_thumbnail_card(),
+                    "is_video": self.video_2.is_video,
+                    "is_draft": self.video_2.is_draft,
+                    "is_restricted": self.video_2.is_restricted,
+                    "has_chapter": self.video_2.chapter_set.all().count() > 0,
+                    "has_password": bool(self.video_2.password)
+                }
+            ]
         }
 
         self.assertIsInstance(response, HttpResponse)
