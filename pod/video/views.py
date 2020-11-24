@@ -1878,7 +1878,10 @@ def edit_category(request, c_slug):
             slug__in=data.get('videos', []))
 
         # constraint, video can be only in one category
-        v_in_another_cat = new_videos.filter(category__isnull=False).count()
+        v_in_another_cat = new_videos.exclude(
+            category__id=cat.id).filter(
+                category__isnull=False
+            )
         if v_in_another_cat:
             response['message'] = _(
                     "One or many videos already have a category.")
