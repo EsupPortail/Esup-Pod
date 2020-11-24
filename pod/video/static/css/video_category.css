@@ -240,9 +240,9 @@
 #my_videos_filter .categories_list_item .remove_category,
 #my_videos_filter .categories_list_item .edit_category{
     display: block;
-    width: 22px;
+    width: 20px;
     color: inherit;
     cursor: pointer;
     flex: none;
 }
-#my_videos_filter .categories_list_item .remove_category{width: 18px}
+#my_videos_filter .categories_list_item .remove_category{width: 15px; color: var(--danger);}

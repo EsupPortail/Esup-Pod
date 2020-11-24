@@ -187,7 +187,8 @@
 	    window.setTimeout(function(){ cat_input.focus()}, 500) // focus in input (category title)
 
 	    // add videos of the current category into the dialog
-	    saveCatBtn.setAttribute("data-action", "edit")
+	    saveCatBtn.setAttribute("data-action", "edit");
+	    saveCatBtn.innerText = gettext("Save category");
 	    let jsonData = getSavedData(cat_edit_slug);
 	    CURR_CATEGORY = jsonData;
 	    DOMCurrentEditCat = c_e.parentNode.parentNode;
