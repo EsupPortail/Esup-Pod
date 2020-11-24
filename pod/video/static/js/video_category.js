@@ -1,11 +1,11 @@
-(function(){
+(function(CATEGORIES_DATA){
     // Category to delete
     const cat_to_delete = {
         title: undefined,
 	slug: undefined
     }
     const BASE_URL = `${window.location.href}categories/`;
-    // edit and filter make the same request, prev_data save the first results
+    // To prevent too many requests to the server
     const SAVED_DATA = {};
     let saveCatBtn = document.querySelector("#manageCategoryModal #saveCategory" ) // btn in dialog
     let modal_title = document.querySelector("#manageCategoryModal #modal_title")
@@ -15,8 +15,8 @@
     const HEADERS = {
         "Content-Type": "application/json",
         "X-Requested-With": "XMLHttpRequest",
-	"X-CSRFToken": Cookies.get("csrftoken"),
-	"Accept": "application/json"
+        "X-CSRFToken": Cookies.get("csrftoken"),
+        "Accept": "application/json"
     }
     // remove all current selected videos in dialog
     let refreshDialog = () =>{
@@ -155,11 +155,19 @@ let getModalVideoCard = (v)=>{
 
     // listener on close modal btn
     let closeBtn = document.querySelector(".modal-footer #cancelDialog");
-    closeBtn.addEventListener('click', (e) =>{ window.setTimeout(function(){refreshDialog();}, 400) });
-    let closeCrossBtn = document.querySelector(".modal-header .close");
-    closeCrossBtn.addEventListener('click', (e) =>{ window.setTimeout(function(){refreshDialog();}, 400) });
+    closeBtn.addEventListener('click', (e) =>{ window.setTimeout(function(){refreshDialog();}, 50) });
+    let closeCrossBtn = document.querySelector("#manageCategoryModal .modal-header .close") || document.querySelector("#manageCategoryModal .modal-header button");
+    console.log(closeCrossBtn)
+    closeCrossBtn.addEventListener('click', (e) =>{
+	if(e.target.getAttribute("class") === "close" || e.target.parentNode.classList.contains('close'))
+	    window.setTimeout(function(){refreshDialog();}, 50)
+    });
     let modalContainer = document.querySelector("#manageCategoryModal");
-    modalContainer.addEventListener('click', (e) =>{ window.setTimeout(function(){refreshDialog();}, 400) });
+    modalContainer.addEventListener('click', (e) =>{
+	if(e.target.getAttribute('id') === "manageCategoryModal")
+	    window.setTimeout(function(){refreshDialog();}, 50)
+    });
+    
     // Add onclick event to delete a category
     let cats_del = document.querySelectorAll("#my_videos_filter .categories_list_item #remove_category_icon");
     cats_del.forEach(c_d => {
@@ -271,4 +279,4 @@ let getModalVideoCard = (v)=>{
 	    });
 	});
     });
-})();
+})( JSON.parse(JSON.stringify(CATEGORIES_DATA)) );
