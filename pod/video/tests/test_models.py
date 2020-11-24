@@ -353,6 +353,7 @@ class VideoTestCase(TestCase):
         print('--->  test_last_Video_display of VideoTestCase: OK')
 
     def test_Video_null_attributs(self):
+        print("DEBUG DEV 1")
         video = Video.objects.get(id=1)
         self.assertEqual(video.video.name, "test.mp4")
         self.assertEqual(video.allow_downloading, False)
@@ -363,19 +364,22 @@ class VideoTestCase(TestCase):
         self.assertEqual(video.slug,
                          "%04d-%s" % (video.id, slugify(video.title)))
         date = datetime.today()
-
+        print("DEBUG DEV 2")
         self.assertEqual(video.owner, User.objects.get(username="pod"))
         self.assertEqual(video.date_added.year, date.year)
         self.assertEqual(video.date_added.month, date.month)
         self.assertEqual(video.date_added.day, date.day)
         # self.assertEqual(video.date_evt, video.date_added)
-
+        print("DEBUG DEV 3")
         self.assertEqual(video.get_viewcount(), 0)
 
         self.assertEqual(video.is_draft, True)
 
         if isinstance(video.thumbnail, ImageFieldFile):
+            print("DEBUG DEV 4")
+            print(video)
             self.assertEqual(video.thumbnail.name, '')
+            print("DEBUG DEV 5")
 
         self.assertEqual(video.duration, 0)
         # self.assertEqual(pod.get_absolute_url(), "/video/" + pod.slug + "/")
