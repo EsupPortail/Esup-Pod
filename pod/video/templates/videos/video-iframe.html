@@ -3,6 +3,7 @@
 {% load tagging_tags %}
 {% load thumbnail %}
 {% load video_filters %}
+
 <!doctype html>
 <html>
 <head>
@@ -21,6 +22,7 @@
 
     <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap.min.css' %}" crossorigin="anonymous">
     <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
+    <script src="{% url 'javascript-catalog' %}"></script>
 
     <style>
         body{
@@ -65,6 +67,19 @@
             border: 1px solid black !important;
             color: black !important;
         }
+
+        /* Info button with current color */
+        .video-js .vjs-info-button{
+            background-color:#FFF;
+            mask: url("{% static 'feather-icons/icons/info.svg' %}") no-repeat 50% 50%;
+            -webkit-mask: url("{% static 'feather-icons/icons/info.svg' %}") no-repeat 50% 50%;
+        }
+        .video-js .vjs-info-button:hover,
+        .video-js .vjs-info-button:active,
+        .video-js .vjs-info-button:focus{
+            background-color:#FFF9;
+        }
+
     </style>
 
 </head>

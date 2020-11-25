@@ -5,6 +5,9 @@
     <div class="col col-4" id="dirs">
         {% include 'podfile/userfolder.html' %}
     </div>
+    <div class="open-folder" id="open-folder-icon">
+	        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="bars" class="svg-inline--fa fa-bars fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path></svg>
+    </div>
     <div class="col col-8 col-md-offset-1" id="files">
         {% include 'podfile/list_folder_files.html' with folder=current_session_folder %}
   </div>
@@ -56,6 +59,43 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#folderModalCenter">{% trans "Close"%}</button>
         <button type="button" class="btn btn-primary" id="modalSave">{% trans "Save changes"%}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="shareModalCenter" tabindex="-1" role="dialog" aria-labelledby="shareModalCenter" aria-hidden="true" style="z-index:1060;">
+  <div class="modal-dialog modal-dialog-centered" role="document" >
+    <div class="modal-content" style="min-height:initial !important;border:2px solid black;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="shareModalCenterTitle">{% trans "Share with someone" %}</h2>
+
+        <button type="button" class="close" data-toggle="modal" data-target="#shareModalCenter" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h5>{% trans "Already shared with :" %}</h5>
+
+        <ul id="shared-people" class="list-group">
+        </ul>
+        <hr>
+        <form id="shareFormName">
+          {% csrf_token %}
+          <input type="hidden" name="userid" id="formuserid" value=""/>
+          <div class="form-group">
+            <label for="userInputName">{% trans "Username"%}</label>
+            <input type="text" class="form-control" name="name" id="userInputName" placeholder="{% trans "Enter new username"%}">
+            <ul id="user-search" class="list-group">
+             
+            </ul>
+            
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#shareModalCenter">{% trans "Close"%}</button>
       </div>
     </div>
   </div>

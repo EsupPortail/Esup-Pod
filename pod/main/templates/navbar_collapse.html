@@ -20,7 +20,7 @@
             {% thumbnail channel.headband.file "x34" as im %}
             <img src="{{ im.url }}" height="34" class='rounded mr-2' alt="{{channel.title|title}}">
             {% endthumbnail %}
-            {% else %}<i data-feather="youtube" style="height:34px" class="mr-2"></i>{% endif %} 
+            {% else %}<i data-feather="youtube" style="height:34px" class="mr-2"></i>{% endif %}
             <a href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">
             {{channel.title}}</a></span>
           <span>
@@ -82,7 +82,8 @@
         <div class="row">
             <div class="col-12">
                 <p>{% trans 'Use the input to filter user by last name.'%}</p>
-                <input placeholder="Rechercher" id="ownerboxnavbar" class="form-control" type="text">
+                <label for="ownerboxnavbar">{% trans 'Search' %}</label>
+                <input placeholder="{% trans 'Search' %}" id="ownerboxnavbar" class="form-control" type="text">
             </div>
         </div>
         <div class="row p-2">{% spaceless %}

@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.contrib.flatpages.models import FlatPage
 from django.conf import settings
 from django.contrib.sites.models import Site
+from pod.main.models import Configuration
 
 SITE_ID = getattr(settings, 'SITE_ID', 1)
 
@@ -81,3 +82,43 @@ class FlatepageTestCase(TestCase):
 
         print(
             "   --->  test_delete_object of ChannelTestCase : OK !")
+
+
+class ConfigurationTestCase(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        print(" --->  SetUp of ConfigurationTestCase : OK !")
+
+    """
+        test attributs
+    """
+
+    def test_exist(self):
+        maintenance_conf = Configuration.objects.filter(key="maintenance_mode")
+        self.assertTrue(maintenance_conf.exists())
+        print(
+            "   --->  test_exist of ConfigurationTestCase : OK !")
+
+    def test_attributs(self):
+        conf = Configuration.objects.get(key="maintenance_mode")
+        self.assertEqual(conf.key, "maintenance_mode")
+        self.assertEqual(conf.value, "0")
+        self.assertEqual(
+            conf.description, "Activation of maintenance mode or not")
+
+        print(
+            "   --->  test_attributs of ConfigurationTestCase : OK !")
+
+    """
+        test delete object
+    """
+
+    def test_delete_object(self):
+        Configuration.objects.filter(key="maintenance_mode").delete()
+        self.assertEquals(Configuration.objects.filter(
+            key="maintenance_mode").count(), 0)
+
+        print(
+            "--->  test_delete_object of ConfigurationTestCase : OK "
+            "!")

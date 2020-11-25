@@ -266,14 +266,16 @@ class Channel(models.Model):
         return reverse('channel', args=[str(self.slug)])
 
     def get_all_theme(self):
-        list_theme = {}
-        for theme in self.themes.filter(parentId=None):
-            list_theme["%s" % theme.id] = {
+        list_theme = []
+        themes = self.themes.filter(parentId=None).order_by('title')
+        for theme in themes:
+            list_theme.append({
+                "id": theme.id,
                 "title": "%s" % theme.title,
                 "slug": "%s" % theme.slug,
                 "url": "%s" % theme.get_absolute_url(),
                 "child": theme.get_all_children_tree()
-            }
+            })
         return list_theme
 
     def get_all_theme_json(self):
@@ -333,18 +335,19 @@ class Theme(models.Model):
         super(Theme, self).save(*args, **kwargs)
 
     def get_all_children_tree(self):
-        children = {}  # [self]
+        children = []
         try:
-            child_list = self.children.all()
+            child_list = self.children.all().order_by('title')
         except AttributeError:
             return children
         for child in child_list:
-            children["%s" % child.id] = {
+            children.append({
+                "id": child.id,
                 "title": "%s" % child.title,
                 "slug": "%s" % child.slug,
                 "url": "%s" % child.get_absolute_url(),
                 "child": child.get_all_children_tree()
-            }
+            })
         return children
 
     def get_all_children_flat(self):
@@ -576,6 +579,11 @@ class Video(models.Model):
         _('Date to delete'),
         default=default_date_delete)
 
+    disable_comment = models.BooleanField(
+        _("Disable comment"),
+        help_text=_("Allows you to turn off all comments on this video."),
+        default=False)
+
     class Meta:
         ordering = ['-date_added', '-id']
         get_latest_by = 'date_added'
@@ -666,11 +674,10 @@ class Video(models.Model):
                  get_current_site(None).domain,
                  settings.STATIC_URL,
                  DEFAULT_THUMBNAIL])
-
         return format_html('<img style="max-width:100px" '
                            'src="%s" alt="%s" />' % (
                                thumbnail_url,
-                               self.title
+                               self.title.replace("{", "").replace("}", "")
                            )
                            )
     get_thumbnail_admin.fget.short_description = _('Thumbnails')
@@ -735,10 +742,13 @@ class Video(models.Model):
                     )
         return version
 
-    def get_default_version_link(self):
+    def get_default_version_link(self, slug_private):
         for version in self.get_other_version():
             if version["link"] == VERSION_CHOICES_DICT[self.get_version]:
-                return version["url"]
+                if slug_private:
+                    return version["url"]+slug_private+"/"
+                else:
+                    return version["url"]
 
     def get_viewcount(self):
         count_sum = self.viewcount_set.all().aggregate(Sum('count'))
@@ -1429,3 +1439,28 @@ class VideoToDelete(models.Model):
 
     def __str__(self):
         return "%s - nb videos : %s" % (self.date_deletion, self.video.count())
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    parent = models.ForeignKey(
+            'self', related_name="children", null=True, blank=True,
+            on_delete=models.CASCADE)
+    video = models.ForeignKey(Video, on_delete=models.CASCADE)
+    added = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def numberVote(self):
+        self.vote_set.all().count()
+
+    def __str__(self):
+        return self.content
+
+
+class Vote(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.user)

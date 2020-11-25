@@ -31,8 +31,10 @@ from pod.video.views import video_notes
 from pod.video.views import video_count, video_version
 from pod.video.views import video_oembed
 from pod.video.views import stats_view
+from pod.video.views import get_comments, add_comment, delete_comment, vote
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
-from pod.main.views import contact_us, download_file, user_autocomplete
+from pod.main.views import contact_us, download_file, user_autocomplete,\
+    maintenance
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
 from pod.recorder.views import add_recording, recorder_notify, claim_record,\
@@ -46,9 +48,12 @@ USE_SHIB = getattr(
     settings, 'USE_SHIB', False)
 OEMBED = getattr(
     settings, 'OEMBED', False)
+USE_BBB = getattr(
+    settings, 'USE_BBB', False)
 
 if USE_CAS:
     from cas import views as cas_views
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -153,6 +158,8 @@ urlpatterns = [
     # custom
     url(r'^custom/', include('pod.custom.urls')),
 ]
+urlpatterns += url(r'^maintenance/$', maintenance, name='maintenance'),
+
 # CAS
 if USE_CAS:
     # urlpatterns += [url(r'^sso-cas/', include('cas.urls')), ]
@@ -161,6 +168,11 @@ if USE_CAS:
         url(r'^sso-cas/logout/$', cas_views.logout, name='cas-logout'),
     ]
 
+# BBB
+if USE_BBB:
+    urlpatterns += [
+        url(r'^bbb/', include('pod.bbb.urls')),
+    ]
 
 ##
 # OEMBED feature patterns
@@ -209,6 +221,23 @@ if getattr(settings, "USE_STATS_VIEW", False):
             name="video_stats_view"),
         url(r'^video_stats_view/(?P<slug>[-\w]+)/(?P<slug_t>[-\w]+)/$',
             stats_view, name='video_stats_view'),
+    ]
+# COMMENT and VOTE
+if getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
+    urlpatterns += [
+        url(r'^comment/(?P<video_slug>[\-\d\w]+)/$',
+            get_comments,
+            name='get_comments'),
+        url(r'^comment/add/(?P<video_slug>[\-\d\w]+)/$',
+            add_comment, name='add_comment'),
+        url(r'^comment/add/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
+            add_comment, name='add_child_comment'),
+        url(r'^comment/del/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
+            delete_comment, name='delete_comment'),
+        url(r'^comment/vote/(?P<video_slug>[\-\d\w]+)/$',
+            vote, name='get_votes'),
+        url(r'^comment/vote/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
+            vote, name='add_vote'),
     ]
 
 # CHANNELS

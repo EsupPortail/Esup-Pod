@@ -6,11 +6,10 @@ Django version : 1.11.16.
 import os
 import sys
 from pod.main.settings import BASE_DIR
-
 ##
 # Version of the project
 #
-VERSION = '2.6.2'
+VERSION = '2.7.2'
 
 ##
 # Installed applications list
@@ -56,6 +55,7 @@ INSTALLED_APPS = [
     'pod.custom',
     'shibboleth',
     'chunked_upload',
+    'pod.bbb',
 ]
 
 ##
@@ -253,3 +253,5 @@ if 'H5P_ENABLED' in globals() and eval('H5P_ENABLED') is True:
     sys.path.append(os.path.join(BASE_DIR, "../../H5PP"))
     INSTALLED_APPS.append('h5pp')
     INSTALLED_APPS.append('pod.interactive')
+
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('fr', 'en', 'nl')

@@ -15,7 +15,7 @@ from django.contrib.sites.models import Site
 
 import json
 import os
-
+import ast
 ##
 # FOLDER VIEWS
 #
@@ -40,36 +40,37 @@ class FolderViewTestCase(TestCase):
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        response = self.client.get(reverse('podfile:home',
-                                           kwargs={'type': 'file'}))
+        response = self.client.get('/podfile/ajax_calls/user_folders/')
         self.assertEqual(response.status_code, 302)  # user is not staff
         self.user.is_staff = True
         self.user.save()
-        response = self.client.get(reverse('podfile:home',
-                                           kwargs={'type': 'file'}))
+        response = self.client.get('/podfile/ajax_calls/user_folders/')
         self.assertEqual(response.status_code, 200)  # user is staff
 
+        response_content = response.content.decode("UTF-8")
+        response_content = ast.literal_eval(response_content)
         self.assertEqual(
-            set(response.context["user_folder"]),
-            set(UserFolder.objects.filter(
-                owner=self.user
-            ).exclude(owner=self.user, name="home")))
+            response_content, {"current_page": 1, "next_page": -1,
+                               "total_pages": 1, "folders": [
+                                   {"name": "Child", "id": 2}]})
 
-        self.assertEqual(
-            response.context["user_home_folder"],
-            UserFolder.objects.get(owner=self.user, name='home'))
-        self.assertEqual(
-            response.context["type"],
-            "file")
-        self.assertEqual(
-            response.context["current_session_folder"],
-            UserFolder.objects.get(owner=self.user, name='home'))
         response = self.client.get(
-            reverse('podfile:home',  kwargs={'type': 'image'}))
+           reverse('podfile:home',  kwargs={'type': 'file'}))
+        self.assertEqual(
+          response.context["user_home_folder"],
+          UserFolder.objects.get(owner=self.user, name='home'))
+        self.assertEqual(
+          response.context["type"],
+          "file")
+        self.assertEqual(
+           response.context["current_session_folder"],
+           UserFolder.objects.get(owner=self.user, name='home'))
+        response = self.client.get(
+           reverse('podfile:home',  kwargs={'type': 'image'}))
         self.assertEqual(response.status_code, 200)  # type image ok
 
         response = self.client.get(
-            reverse('podfile:home',  kwargs={'type': 'toto'}))
+           reverse('podfile:home',  kwargs={'type': 'toto'}))
         # type nok SuspiciousOperation
         self.assertEqual(response.status_code, 400)
 

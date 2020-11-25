@@ -15,7 +15,7 @@
 		<tbody>
 			{% for doc in list_document %}
 				<tr>
-					<td class="document_name">{{doc.document.name}} ({{doc.document.file_type}})</td>
+					<td class="document_name">{{doc.document.name}} ({{ doc.document.file_ext }})</td>
 					<td>
 						<form class="form_modif completion" action="{% url 'video_completion_document' slug=video.slug %}" method="POST">
 							{% csrf_token %}

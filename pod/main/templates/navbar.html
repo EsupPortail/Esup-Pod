@@ -7,7 +7,7 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <i data-feather="menu" aria-hidden="true"></i>
     </button>
-    <a class="navbar-brand mr-0 mr-sm-1" href="/"><img src="{% static LOGO_SITE %}" height="48" alt="logo"/><strong>{{ TITLE_SITE }}</strong></a>
+    <a class="navbar-brand mr-0 mr-sm-1" href="/"><img src="{% static LOGO_SITE %}" height="48" alt="" role="presentation"/><strong>{{ TITLE_SITE }}</strong></a>
   </div>
 
   <div class="collapse navbar-collapse bg-light navbar-items-pod" id="navbarSupportedContent">
@@ -56,11 +56,17 @@
   </form>
   <ul class="navbar-nav flex-row align-items-center flex-grow-1 justify-content-between" id="nav-useraction">
      <li class="nav-item mr-2" id="nav-addvideo">
-        {% if USE_CHUNKED_UPLOAD %}
+        {%if MAINTENANCE_MODE%}
+        <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br/><i width=16 height=16 data-feather="alert-triangle"></i> {%trans "Some features are unavailable" %}</span>
+        {%else%}
+           {% if USE_CHUNKED_UPLOAD %}
         <a class="nav-link pl-2 pr-2" href="{% url 'video_add' %}"><i data-feather="plus-square" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i>  <span class="d-none d-md-inline-block">{% trans "Add a video" %}</span></a>
         {% else %}
         <a class="nav-link pl-2 pr-2" href="{% url 'video_edit' %}"><i data-feather="plus-square" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i>  <span class="d-none d-md-inline-block">{% trans "Add a video" %}</span></a>
         {% endif %}
+        {%endif%}
+
+     
        
       </li>
       {% if user.is_authenticated %}
@@ -98,6 +104,9 @@
           {% endif %}
           {% if request.user.is_staff and ALLOW_MANUAL_RECORDING_CLAIMING %}
           <a class="dropdown-item" href="{% url 'claim_record' %}" title="{% trans 'Claim a record' %}"><i data-feather="share"></i>&nbsp;{% trans 'Claim a record' %}</a>
+          {% endif %}
+          {% if request.user.is_staff and USE_BBB %}
+          <a class="dropdown-item" href="{% url 'bbb:list_meeting' %}" title="{% trans 'My BigBlueButton records' %}"><i data-feather="square"></i>&nbsp;{% trans 'My BigBlueButton records' %}</a>
           {% endif %}
           <!-- <a class="dropdown-item" href="#">Gestion de mon compte</a> -->
           <div class="dropdown-divider"></div>

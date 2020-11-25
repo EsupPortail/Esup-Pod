@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from modeltranslation.admin import TranslationAdmin
-from pod.main.models import LinkFooter
+from pod.main.models import LinkFooter, Configuration
 
 
 SITE_ID = getattr(settings, 'SITE_ID', 1)
@@ -25,6 +25,16 @@ class PageForm(FlatpageForm):
         widgets = content_widget
 
 # CustomFlatPage admin panel
+
+
+class ConfigurationAdmin(admin.ModelAdmin):
+    list_display = ('key', 'value', 'description')
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_add_permission(self, request, obj=None):
+        return False
 
 
 class CustomFlatPageAdmin(TranslationAdmin):
@@ -91,3 +101,4 @@ class LinkFooterAdmin(TranslationAdmin):
 admin.site.unregister(FlatPage)
 admin.site.register(FlatPage, CustomFlatPageAdmin)
 admin.site.register(LinkFooter, LinkFooterAdmin)
+admin.site.register(Configuration, ConfigurationAdmin)

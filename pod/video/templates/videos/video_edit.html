@@ -35,10 +35,10 @@
 {% spaceless %}
 <h3>{% if form.instance.title and form.instance.slug != '' %}{% trans "Editing the video" %} "{{form.instance.title}}"
 <span class="float-right">
-    <a href="{% url 'video' slug=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn-primary btn-sm m-2">
+    <a href="{% url 'video' slug=form.instance.slug %}" title="{% trans 'View the video'%}" class="btn btn-primary btn-sm m-2">
         <i data-feather="film"></i>&nbsp;{% trans "View the video"%}
     </a>
-    <a href="{% url 'video_delete' slug=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-primary btn-sm m-2">
+    <a href="{% url 'video_delete' slug=form.instance.slug %}" title="{% trans 'Delete the video'%}" class="btn btn btn-primary btn-sm m-2">
         <i data-feather="trash-2"></i>&nbsp;{% trans "Delete the video"%}
     </a>
 </span>
@@ -46,7 +46,7 @@
 </h3>
 {% if access_not_allowed == True %}
 <p class="text-info">
-    <i data-feather="info"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}" title="{% trans 'contact its owner' %}">{% trans 'contact us' %}</a>
+    <i data-feather="info"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}" title="{% trans 'contact us' %}">{% trans 'contact us' %}</a>
 </p>
 {% else %}
 {% if form.instance.slug and form.instance.slug != '' %}
@@ -65,10 +65,17 @@
             <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
             {{form.errors}}
             {% endif %}
+
+            {% if form.instance.id and form.instance.get_encoding_step == "" %}
+            <div class="alert alert-warning" role="alert">
+                {% trans "The video is currently waiting for encoding." %}
+            </div>
+            {% endif %}
+
             {% if form.instance.encoding_in_progress %}
-            <p class="text-info">
+            <div class="alert alert-warning" role="alert">
                 {% trans "The video is currently being encoded." %}
-            </p>
+            </div>
             {% endif %}
 
             {% if form.instance.get_encoding_step == "5 : transcripting audio" %}
@@ -205,10 +212,10 @@
 
 
 {% block more_script %}
-<script type="text/javascript" src="/admin/jsi18n/"></script>
-<script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
-<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-<script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
+<script src="/admin/jsi18n/"></script>
+<script src="{% static 'admin/js/core.js' %}"></script>
+<script src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script src="{% static 'admin/js/jquery.init.js' %}"></script>
 
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
 <!-- form . media -->
@@ -224,10 +231,10 @@
 {% if USE_CHUNKED_UPLOAD %}
 <script>
   var slug = "{{ form.instance.slug }}";
-$("#id_video").click(function(event){
-  location.href= "/video_add?slug=" + slug
-  event.preventDefault();
-});
+  $("#id_video").click(function(event){
+    location.href= "/video_add?slug=" + slug
+    event.preventDefault();
+  });
 </script>
 
 {% else %}
@@ -261,13 +268,13 @@ $("#id_video").click(function(event){
 {%endif%}
 
 <script>
-        /** formulaire **/
-        $("#js-process").hide();
+    /** formulaire **/
+    $("#js-process").hide();
     var VIDEO_MAX_UPLOAD_SIZE = {{form.VIDEO_MAX_UPLOAD_SIZE}};
     var video_max_upload_size = VIDEO_MAX_UPLOAD_SIZE*1024*1024*1024;
     var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfor%}";
     const max_duration_date_delete = {{form.max_duration_date_delete}};
 </script>
-<script type="text/javascript" src="{% static 'js/validate-date_delete-field.js' %}"></script>
+<script defer src="{% static 'js/validate-date_delete-field.js' %}"></script>
 
 {% endblock more_script %}

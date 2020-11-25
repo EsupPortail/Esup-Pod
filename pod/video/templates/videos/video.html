@@ -46,7 +46,7 @@
 {% block page_extra_head %}
 
 {% include 'videos/video-header.html' %}
-
+<link rel="stylesheet" href="{% static 'css/comment-style.css' %}">
 <style>
 {{channel.style}}
 {% if channel.color %}
@@ -113,7 +113,25 @@ body {
 {% endif %}
 {%endif%}
 {%endif%}
-{% if video.encoding_in_progress %}<p class="text-info">{% trans "The video is currently being encoded." %}</p>{% endif %}
+{% if video.get_encoding_step == "" %}
+<div class="alert alert-warning" role="alert">
+    {% trans "The video is currently waiting for encoding." %}
+</div>
+{% endif %}
+
+{% if video.encoding_in_progress %}
+<div class="alert alert-warning" role="alert">
+    {% trans "The video is currently being encoded." %}
+</div>
+{% endif %}
+
+{% if video.get_encoding_step == "5 : transcripting audio" %}
+<p class="text-info">
+    {% trans "The video is currently being transcripted." %}
+</p>
+{% endif %}
+
+
 {% block video-element %}
 
 {% if form %}
@@ -129,12 +147,16 @@ body {
 {% include 'videos/video-element.html' %}
 
 <h1 class="pt-2">
-{% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png"></a>{% endif %} {{video.title|capfirst}}
+{% if video.licence %} {% include "videos/video_licencebox.html" %}{% endif %} {{video.title|capfirst}}
 {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
-  <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
+  <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans 'Report the video'%}" >
       <i data-feather="alert-octagon"></i>
   </a>
 </h1>
+
+{% if video.chapter_set.all %}
+<div class="alert alert-info" role="alert">{% blocktrans %}This video is chaptered. Click the chapter button <span class="vjs-icon-chapters"></span> on the video player to view them.{% endblocktrans %}</div>
+{%endif%}
 
 <div class="pl-0 pr-0">
   <div class="navbar d-flex flex-row-reverse p-0" >
@@ -163,12 +185,14 @@ body {
       </a>
     </li>
     {% endif %}
+    {% if video.is_draft == False or video.owner == request.user or request.user in video.additional_owners.all %}
     <li class="nav-item">
       <a class="nav-link" id="share-tab" data-toggle="tab" href="#share" role="tab" aria-controls="share" aria-selected="false" title="{% trans 'Embed/Share' %}">
         <i data-feather="share-2"></i><span class="sr-only">{% trans 'Embed/Share' %}</span>
       </a>
     </li>
-    {% with video.get_other_version as versions %}
+    {%endif%}
+    {% with video.get_other_version as versions %} 
     {% if versions|length > 0 %}
     <li class="nav-item dropdown" id="list_third_apps">
       <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
@@ -176,7 +200,11 @@ body {
       </a>
       <div class="dropdown-menu" >
         {% for version in versions %}
+          {% if video.get_hashkey in request.get_full_path %}
+          <a href="{{version.url}}{{ video.get_hashkey }}/?redirect=false" title="{{version.app}}" class="dropdown-item" >{{version.link}}</a>
+          {% else %}
           <a href="{{version.url}}?redirect=false" title="{{version.app}}" class="dropdown-item" >{{version.link}}</a>
+          {% endif %}
         {% endfor %}
       </div>
     </li>
@@ -208,6 +236,9 @@ body {
 </div>
   {% include 'videos/video-info.html' %}
 </div>
+{% if active_video_comment %}
+{% include 'videos/video-comment.html' with is_auth=request.user.is_authenticated disable=video.disable_comment %}
+{% endif %}
 {%endif%}
 {% endblock video-element %}
 </div>
@@ -234,5 +265,23 @@ body {
 {% if not form %}
 {% include 'videos/video-script.html'%}
 {% endif %}
-
+{% if active_video_comment and not video.disable_comment %}
+{% if request.user == video.owner %}
+<script>
+    var is_video_owner = true;
+</script>
+{% else %}
+<script>
+    var is_video_owner = false;
+</script>
+{% endif %}
+<script>
+    var user_fullName = `{{request.user.first_name}} {{request.user.last_name|upper}}`;
+    var user_id = "{{ request.user.id }}" === "None"? false: {{ request.user.id }};
+    var is_authenticated = JSON.parse("{{request.user.is_authenticated|yesno:"true,false"}}");
+    var is_superuser = JSON.parse("{{request.user.is_superuser|yesno:"true,false"}}");
+</script>
+<script src="{% static 'js/moment_with_locales.min.js' %}"></script>
+<script defer src="{% static 'js/comment-script.js' %}"></script>
+{% endif %}
 {% endblock more_script %}
