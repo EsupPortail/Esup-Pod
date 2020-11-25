@@ -373,11 +373,12 @@ class Theme(models.Model):
 
     def clean(self):
         # Dans le cas où on modifie un theme
-        if Theme.objects.filter(
-                channel=self.channel,
-                slug=slugify(self.title)).exclude(pk=self.id).exists():
-            raise ValidationError("A theme with this name\
-                    already exists in this channel.")
+        if hasattr(self, "channel"):
+            if Theme.objects.filter(
+                    channel=self.channel,
+                    slug=slugify(self.title)).exclude(pk=self.id).exists():
+                raise ValidationError("A theme with this name\
+                        already exists in this channel.")
 
         if self.parentId in self.get_all_children_flat():
             raise ValidationError("A theme cannot have itself \

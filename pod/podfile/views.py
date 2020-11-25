@@ -480,6 +480,7 @@ def changefile(request):
 
 # keep it for completion part....
 def file_edit_save(request, folder):
+    print(request.FILES)
     form_file = None
     if (request.POST.get("file_id")
             and request.POST.get("file_id") is not None
@@ -491,8 +492,10 @@ def file_edit_save(request, folder):
     else:
         form_file = CustomFileModelForm(request.POST, request.FILES)
     if form_file.is_valid():
-        if form_file.cleaned_data["folder"] != folder:
-            raise SuspiciousOperation('Folder must be the same')
+        print(form_file.cleaned_data["folder"])
+        print(folder)
+        #if form_file.cleaned_data["folder"] != folder:
+        #    raise SuspiciousOperation('Folder must be the same')
         customfile = form_file.save(commit=False)
         if hasattr(form_file.instance, 'created_by'):
             customfile.created_by = form_file.instance.created_by
