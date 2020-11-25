@@ -463,7 +463,7 @@ msgstr ""
 #: pod/podfile/static/podfile/js/filewidget.js:11
 #: pod/static/podfile/js/filewidget.js:11
 msgid "Change image"
-msgstr "Changer de l'image"
+msgstr "Changer d'image"
 
 #: pod/podfile/static/podfile/js/filewidget.js:13
 #: pod/static/podfile/js/filewidget.js:13
