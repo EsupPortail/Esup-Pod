@@ -37,9 +37,9 @@
 
 <div id="uploadblock">
     {% csrf_token %}
-    <div class="hide-on-processing">
+    <div class="form-group hide-on-processing">
         <label for="chunked_upload">{% trans "Choose an audio or video file to upload" %}</label><br/>
-        <input id="chunked_upload" accept="{{allow_extension}}" type="file" name="the_file">
+        <input id="chunked_upload" accept="{{allow_extension}}" type="file" name="the_file" class="form-control-file">
     </div>
     <div class="show-on-processing">
         <label for="progBar">{% trans "Upload progress:" %}</label>
@@ -47,12 +47,15 @@
     </div>
 
     {%if TRANSCRIPT %}
-    <input type="checkbox" class="hide-on-processing" id="transcript-box" name="transbox">
-    <label class="hide-on-processing" for="transbox">{% trans "Transcript" %} ({% trans "Check this box if you want to transcript the audio.(beta version)"%})</label>
+      <div class="form-check hide-on-processing">
+        <input class="form-check-input" type="checkbox" id="transcript-box" name="transbox">
+        <label class="form-check-label" for="transcript-box">{% trans "Transcript" %}</label>
+        <small class="form-text text-muted">{% trans "Check this box if you want to transcript the audio.(beta version)"%}</small>
+      </div>
     {%endif%}
 
-    <p>{% trans "Do not leave the page if you encounter a connection problem during the upload, it will resume automatically when your connection is available again." %}</p>
-  
+    <p class="mt-3">{% trans "Do not leave the page if you encounter a connection problem during the upload, it will resume automatically when your connection is available again." %}</p>
+
 </div>
 {%if slug %}
 <a href="{% url 'video_edit' slug=slug %}" title="{% trans "Back to video edit"%}" class="btn btn-primary btn-sm m-2">
