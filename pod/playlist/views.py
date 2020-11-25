@@ -88,12 +88,12 @@ def playlist_move(request, playlist):
                 element.save()
             some_data_to_dump = {
                 'success': '{0}'.format(
-                    _('The playlist has been saved !'))
+                    _('The playlist has been saved!'))
             }
         else:
             some_data_to_dump = {
                 'fail': '{0}'.format(
-                    _('The request are erroned. No videos given.'))
+                    _('The request is wrong. No video given.'))
             }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type='application/json')
@@ -115,7 +115,7 @@ def playlist_remove(request, playlist):
         else:
             some_data_to_dump = {
                 'fail': '{0}'.format(
-                    _('The request are erroned. No video given.'))
+                    _('The request is wrong. No video given.'))
             }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type='application/json')
@@ -174,7 +174,7 @@ def playlist_add(request, playlist):
         else:
             some_data_to_dump = {
                 'fail': '{0}'.format(
-                    _('The request are erroned. No video given.'))
+                    _('The request is wrong. No video given.'))
             }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type='application/json')
