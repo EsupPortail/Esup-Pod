@@ -216,7 +216,7 @@ def send_email_encoding(video_to_encode):
         },
         _(u"You will find it here:"),
         content_url,
-        _("Regards")
+        _("Regards.")
     )
     full_message = message + "\n%s%s\n%s%s" % (
         _("Post by:"),
