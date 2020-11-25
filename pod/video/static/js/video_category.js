@@ -12,6 +12,7 @@
     let cat_input = document.querySelector("#manageCategoryModal #catTitle");
     let CURR_CATEGORY = {}; // current editing category (js object)
     let DOMCurrentEditCat = null; // current editing category (html DOM)
+    const CURR_FILTER = {cat: {}} // the category currently filtering 
     const formData = new FormData();
     const HEADERS = {
         "Content-Type": "application/json",
@@ -43,6 +44,26 @@
 	console.log("INPUT HANDLER");
 	filterCatHandler(searchCatInput.value.trim());
     });
+    
+    // Add/Remove active class on category, html_el = <li></li>
+    let manageCssActiveClass = (html_el)=>{
+	html_el.parentNode.querySelectorAll(".categories_list_item").forEach(c_p =>{
+	        c_p.classList.remove("active");
+	});
+	let curr_slug = html_el.querySelector(".cat_title").dataset.slug;
+	console.log('current slug', curr_slug);
+	html_el.classList.toggle('active');
+	if(Object.keys(CURR_FILTER.cat).length && CURR_FILTER.cat.slug === curr_slug)
+	{
+            html_el.classList.remove('active');// unfilter
+	    CURR_FILTER.cat = {};
+	}
+	else // filter
+	{
+            html_el.classList.add('active');
+            CURR_FILTER.cat = findCategory(curr_slug);
+	}
+    }
 
     // remove all current selected videos in dialog
     let refreshDialog = () =>{
@@ -389,10 +410,7 @@
     cats.forEach(c =>{
         c.addEventListener('click', e =>{
 	    e.stopPropagation();
-            c.parentNode.parentNode.querySelectorAll(".categories_list_item").forEach(c_p =>{
-	        c_p.classList.remove("active");
-	    });
-	    c.parentNode.classList.toggle("active");
+	    manageCssActiveClass(c.parentNode); // manage active css class
 	    let cat_filter_slug = c.dataset.slug;
 	    fetch(`${BASE_URL}${cat_filter_slug}/`, {headers: HEADERS}).then(response =>{
 	        response.json().then(data=>{
