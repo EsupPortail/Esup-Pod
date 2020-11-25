@@ -45,6 +45,8 @@ MAX_D = TODAY.replace(year=TODAY.year + MAX_DURATION_DATE_DELETE)
 
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 
+WATERMARK = getattr(settings, 'WATERMARK', 'none')
+
 ENCODE_VIDEO = getattr(settings,
                        'ENCODE_VIDEO',
                        start_encode)
@@ -489,6 +491,9 @@ class VideoForm(forms.ModelForm):
 
         if not TRANSCRIPT:
             self.remove_field('transcript')
+
+        if WATERMARK!='owner':
+            self.remove_field('add_watermark')
 
     def set_nostaff_config(self):
         if self.is_staff is False:

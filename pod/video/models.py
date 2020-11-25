@@ -538,7 +538,9 @@ class Video(models.Model):
             'Check this box if you to allow downloading of the encoded files'))
     is_360 = models.BooleanField(_('video 360'), default=False, help_text=_(
         'Check this box if you want to use the 360 player for the video'))
-
+    add_watermark = models.BooleanField(
+        _('add watermark'), default=True, help_text=_(
+            'Check this box if you want add watermak'))
     is_draft = models.BooleanField(
         verbose_name=_('Draft'),
         help_text=_(

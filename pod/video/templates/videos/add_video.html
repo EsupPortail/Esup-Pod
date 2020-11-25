@@ -51,6 +51,12 @@
     <label class="hide-on-processing" for="transbox">{% trans "Transcript" %} ({% trans "Check this box if you want to transcript the audio.(beta version)"%})</label>
     {%endif%}
 
+    {%if WATERMARK == "owner" %}
+    <br>
+    <input type="checkbox" class="hide-on-processing" id="addwatermark-box" name="addwatermarkbox">
+    <label class="hide-on-processing" for="addwatermarkbox">{% trans "Watermark" %} ({% trans "Check if you want to add a watermark"%})</label>
+    {%endif%}
+
     <p>{% trans "Do not leave the page if you encounter a connection problem during the upload, it will resume automatically when your connection is available again." %}</p>
   
 </div>
@@ -188,7 +194,8 @@ var max_size = {{ max_size }}
             upload_id: data.result.upload_id,
             md5: md5,
             slug : slug,
-            transcript : $("#transcript-box").is(':checked')
+            transcript : $("#transcript-box").is(':checked'),
+            add_watermark : $("#addwatermark-box").is(':checked')
           },
           dataType: "json",
           success: function(data) {

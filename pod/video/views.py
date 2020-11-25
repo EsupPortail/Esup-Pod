@@ -131,6 +131,7 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
 )
 
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
+WATERMARK = getattr(settings, 'WATERMARK', 'none')
 ORGANIZE_BY_THEME = getattr(settings, 'ORGANIZE_BY_THEME', False)
 VIEW_STATS_AUTH = getattr(settings, 'VIEW_STATS_AUTH', False)
 ACTIVE_VIDEO_COMMENT = getattr(settings, 'ACTIVE_VIDEO_COMMENT', False)
@@ -1618,7 +1619,8 @@ def video_add(request):
         'allow_extension': allow_extension,
         'allowed_text': allowed_text,
         'restricted_to_staff': RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY,
-        'TRANSCRIPT': TRANSCRIPT})
+        'TRANSCRIPT': TRANSCRIPT,
+        'WATERMARK': WATERMARK})
 
 
 @login_required(redirect_field_name='referrer')
@@ -1772,6 +1774,7 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
     def on_completion(self, uploaded_file, request):
         edit_slug = request.POST.get("slug")
         transcript = request.POST.get("transcript")
+        add_watermark = request.POST.get("add_watermark")
         if edit_slug == "":
             video = Video.objects.create(video=uploaded_file,
                                          owner=request.user,
@@ -1780,6 +1783,10 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
                                          transcript=(
                                              True if (
                                                  transcript == "true"
+                                             ) else False),
+                                         add_watermark=(
+                                            True if (
+                                                add_watermark == "true"
                                              ) else False))
         else:
             video = Video.objects.get(slug=edit_slug)
