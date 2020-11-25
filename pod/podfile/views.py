@@ -494,7 +494,7 @@ def file_edit_save(request, folder):
     if form_file.is_valid():
         print(form_file.cleaned_data["folder"])
         print(folder)
-        #if form_file.cleaned_data["folder"] != folder:
+        # if form_file.cleaned_data["folder"] != folder:
         #    raise SuspiciousOperation('Folder must be the same')
         customfile = form_file.save(commit=False)
         if hasattr(form_file.instance, 'created_by'):

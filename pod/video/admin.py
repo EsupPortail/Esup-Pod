@@ -51,6 +51,8 @@ USE_OBSOLESCENCE = getattr(
 
 CELERY_TO_ENCODE = getattr(settings, 'CELERY_TO_ENCODE', False)
 
+ACTIVE_VIDEO_COMMENT = getattr(settings, 'ACTIVE_VIDEO_COMMENT', False)
+
 
 def url_to_edit_object(obj):
     url = reverse(
@@ -175,6 +177,8 @@ class VideoAdmin(admin.ModelAdmin):
             exclude += ('date_delete',)
         if not request.user.is_superuser:
             exclude += ('sites',)
+        if not ACTIVE_VIDEO_COMMENT:
+            exclude += ('disable_comment',)
         self.exclude = exclude
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form

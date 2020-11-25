@@ -52,8 +52,6 @@ ENCODE_VIDEO = getattr(settings,
 USE_OBSOLESCENCE = getattr(
     settings, "USE_OBSOLESCENCE", False)
 
-ACTIVE_VIDEO_COMMENT = getattr(settings, 'ACTIVE_VIDEO_COMMENT', False)
-
 VIDEO_ALLOWED_EXTENSIONS = getattr(
     settings, 'VIDEO_ALLOWED_EXTENSIONS', (
         '3gp',
@@ -480,10 +478,6 @@ class VideoForm(forms.ModelForm):
                 queryset.filter(owner__sites=Site.objects.get_current())
 
     def custom_video_form(self):
-
-        if not ACTIVE_VIDEO_COMMENT:
-            self.fields.pop('disable_comment')
-
         if FILEPICKER and self.fields.get('thumbnail'):
             self.fields['thumbnail'].widget = CustomFileWidget(type="image")
 
