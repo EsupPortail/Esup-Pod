@@ -974,27 +974,27 @@ class VideoRendition(models.Model):
         max_length=50,
         unique=True,
         help_text=_("Please use the only format x. i.e.: "
-        + "<em>640x360</em> or <em>1280x720</em> or <em>1920x1080</em>."))
+            + "<em>640x360</em> or <em>1280x720</em> or <em>1920x1080</em>."))
     minrate = models.CharField(
         _('minrate'),
         max_length=50,
         help_text=_("Please use the only format k. i.e.: "
-        + "<em>300k</em> or <em>600k</em> or <em>1000k</em>."))
+            + "<em>300k</em> or <em>600k</em> or <em>1000k</em>."))
     video_bitrate = models.CharField(
         _('bitrate video'),
         max_length=50,
         help_text=_("Please use the only format k. i.e.: "
-        + "<em>300k</em> or <em>600k</em> or <em>1000k</em>."))
+            + "<em>300k</em> or <em>600k</em> or <em>1000k</em>."))
     maxrate = models.CharField(
         _('maxrate'),
         max_length=50,
         help_text=_("Please use the only format k. i.e.: "
-        + "<em>300k</em> or <em>600k</em> or <em>1000k</em>."))
+            + "<em>300k</em> or <em>600k</em> or <em>1000k</em>."))
     audio_bitrate = models.CharField(
         _('bitrate audio'),
         max_length=50,
         help_text=_("Please use the only format k. i.e.: "
-        + "<em>300k</em> or <em>600k</em> or <em>1000k</em>."))
+            + "<em>300k</em> or <em>600k</em> or <em>1000k</em>."))
     encode_mp4 = models.BooleanField(_('Make a MP4 version'), default=False)
     sites = models.ManyToManyField(Site)
 
