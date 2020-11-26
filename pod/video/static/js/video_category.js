@@ -60,8 +60,15 @@
 	if(!v_len)
         {
 	    text = gettext("Sorry, no video found");
-	    h3.parentNode.querySelector('#videos_list.filtered').innerHTML = `<p class="alert-warning">${text}</p>`;
+	    document.querySelector('#videos_list.filtered').innerHTML = `<p class="alert-warning">${text}</p>`;
 	}
+	else
+        {
+            // delete warning text videos found
+            let warning = document.querySelector('#videos_list.filtered .alert-warning');
+            if(warning) warning.parentNode.removeChild(warning);
+	}
+
     }
 
     // Add/Remove active class on category, html_el = <li></li>
@@ -139,6 +146,7 @@
 		    );
 		}
             }
+            manageNumberVideoFoundText(actual_videos.length);
 	}
 	
 
