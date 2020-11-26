@@ -157,6 +157,7 @@
     let manageFilterVideos = (c)=>{
         c.addEventListener('click', e =>{
 	    e.stopPropagation();
+	    loader.classList.add('show');
 	    let cat_filter_slug = c.dataset.slug;
 	    videos_list_filtered = getVideosFilteredContainer(); 
 	    manageCssActiveClass(c.parentNode); // manage active css class
@@ -165,6 +166,7 @@
 	    {
 		let videos_nb = (!CURR_FILTER.slug && !CURR_FILTER.id)?CATEGORIES_DATA[0]:jsonData.videos.length; 
 	        manageNumberVideoFoundText(videos_nb); // update text 'video found'
+	        loader.classList.remove('show');
                 jsonData.videos.forEach(v=>{
                     videos_list_filtered.appendChild(
 		        getVideoElement(v)
@@ -183,6 +185,7 @@
 		    });
 		    // save data
 		    saveCategoryData(data);
+	            loader.classList.remove('show');
 		});
 	    }
 	});
