@@ -1858,10 +1858,12 @@ def add_category(request):
             cat = Category.objects.create(title=data['title'], owner=c_user)
             cat.video.add(*videos)
             cat.save()
-            response['title'] = cat.title
-            response['slug'] = cat.slug
+            response['category'] = {}
+            response['category']['id'] = cat.id
+            response['category']['title'] = cat.title
+            response['category']['slug'] = cat.slug
             response['success'] = True
-            response['videos'] = list(
+            response['category']['videos'] = list(
                 map(lambda v: {
                     'slug': v.slug,
                     'title': v.title,
