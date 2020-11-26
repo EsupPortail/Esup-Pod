@@ -49,6 +49,8 @@ SPLIT_ENCODE_CMD = getattr(
 FFMPEG = getattr(settings, 'FFMPEG', 'ffmpeg')
 FFPROBE = getattr(settings, 'FFPROBE', 'ffprobe')
 DEBUG = getattr(settings, 'DEBUG', True)
+WATERMARK = getattr(settings, 'WATERMARK', 'none')
+WATERMARK_PATH = getattr(settings, 'WATERMARK_PATH', 'none')
 
 log = logging.getLogger(__name__)
 
@@ -227,6 +229,7 @@ def encode_video(video_id):
                 video_id, 4,
                 "encoding video file: 2/11 encode_video_playlist")
             msg = encode_video_playlist(
+                video_id,
                 video_to_encode.video.path,
                 video_command_playlist["cmd"],
                 output_dir)
@@ -237,6 +240,7 @@ def encode_video(video_id):
                 video_id, 4,
                 "encoding video file: 3/11 encode_video_mp4")
             msg = encode_video_mp4(
+                video_id,
                 video_to_encode.video.path,
                 video_command_mp4["cmd"],
                 output_dir)
@@ -476,8 +480,8 @@ def get_video_command_mp4(video_id, video_data, output_dir):
 
             name = "%sp" % height
 
-            cmd += " %s -vf " % (static_params,)
-            cmd += "\"scale=-2:%s\"" % (height)
+            cmd += get_command_by_watermark(video_id, static_params, height)
+
             # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
                 minrate, bitrate, maxrate, int(bufsize), audiorate)
@@ -496,15 +500,20 @@ def get_video_command_mp4(video_id, video_data, output_dir):
     }
 
 
-def encode_video_mp4(source, cmd, output_dir):
+def encode_video_mp4(video_id, source, cmd, output_dir):
     msg = ""
     procs = []
+    video_to_encode = Video.objects.get(id=video_id)
+    wat_owner = video_to_encode.add_watermark
     logfile = output_dir + "/encoding.log"
     open(logfile, "ab").write(b'\n\nffmpegvideoMP4:\n\n')
     msg = "\nffmpegMp4Command:\n"
     for subcmd in cmd:
         ffmpegMp4Command = "%s %s -i %s %s" % (
             FFMPEG, FFMPEG_MISC_PARAMS, source, subcmd)
+        if WATERMARK == 'site' or (WATERMARK == 'owner' and wat_owner):
+            ffmpegMp4Command = "%s %s -i %s -i %s %s" % (
+                FFMPEG, FFMPEG_MISC_PARAMS, source, WATERMARK_PATH, subcmd)
         msg += "- %s\n" % ffmpegMp4Command
         with open(logfile, "ab") as f:
             procs.append(subprocess.Popen(
@@ -703,8 +712,8 @@ def get_video_command_playlist(video_id, video_data, output_dir):
 
             name = "%sp" % height
 
-            cmd += " %s -vf " % (static_params,)
-            cmd += "\"scale=-2:%s\"" % (height)
+            cmd += get_command_by_watermark(video_id, static_params, height)
+
             # cmd += "scale=w=%s:h=%s:" % (width, height)
             # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
@@ -728,14 +737,20 @@ def get_video_command_playlist(video_id, video_data, output_dir):
     }
 
 
-def encode_video_playlist(source, cmd, output_dir):
+def encode_video_playlist(video_id, source, cmd, output_dir):
+    msg = ""
     procs = []
+    video_to_encode = Video.objects.get(id=video_id)
+    wat_owner = video_to_encode.add_watermark
     logfile = output_dir + "/encoding.log"
     open(logfile, "ab").write(b'\n\nffmpegvideoPlaylist:\n\n')
     msg = "\nffmpegPlaylistCommands:\n"
     for subcmd in cmd:
         ffmpegPlaylistCommand = "%s %s -i %s %s" % (
             FFMPEG, FFMPEG_MISC_PARAMS, source, subcmd)
+        if WATERMARK == 'site' or (WATERMARK == 'owner' and wat_owner):
+            ffmpegPlaylistCommand = "%s %s -i %s -i %s  %s" % (
+                FFMPEG, FFMPEG_MISC_PARAMS, source, WATERMARK_PATH, subcmd)
         msg += "- %s\n" % ffmpegPlaylistCommand
         with open(logfile, "ab") as f:
             procs.append(subprocess.Popen(
@@ -1086,3 +1101,26 @@ def remove_previous_encoding_playlist(video_to_encode):
     else:
         msg += "Playlist: Nothing to delete"
     return msg
+
+###############################################################
+# Get Command ffmpeg by watermark
+###############################################################
+
+
+def get_command_by_watermark(video_id, static_params, height):
+    video_to_encode = Video.objects.get(id=video_id)
+    wat_owner = video_to_encode.add_watermark
+    cmd = ""
+    if WATERMARK == 'none' or (WATERMARK == 'owner' and not wat_owner):
+        cmd += " %s -vf " % (static_params,)
+        cmd += "\"scale=-2:%s\"" % (height)
+
+    if WATERMARK == 'site' or (WATERMARK == 'owner' and wat_owner):
+        cmd += " %s -filter_complex " % (static_params,)
+        cmd += "\"[1:v]scale=-2:%s[scalemark%s]; " % (height, height)
+        cmd += "[0:v]scale=-2:%s[scalevid%s]; " % (height, height)
+        cmd += "[scalevid%s][scalemark%s]" % (height, height)
+        cmd += "overlay=0:0[out%s]\" " % (height)
+        cmd += "-map [out%s] " % (height)
+
+    return cmd
