@@ -31,7 +31,7 @@
 
     // Search categery
     let searchCatInput = document.querySelector("#my_videos_filter #searchcategories");
-    let filterCatHandler = (s) =>{
+    let searchCatHandler = (s) =>{
 	let cats = document.querySelectorAll(".categories_list .cat_title:not(.hidden)");
 	if(s.length >= 3)
 	{
@@ -49,7 +49,7 @@
 	}
     }
     searchCatInput.addEventListener('input', e =>{
-	filterCatHandler(searchCatInput.value.trim());
+	searchCatHandler(searchCatInput.value.trim());
     });
    
     // Update text 'Number video found' on filtering
@@ -98,22 +98,27 @@
 	        more_btn.setAttribute('class', 'infinite-more-link hidden');
 	}
     }
+	
+    // Create filtered videos container (HtmlELement)
+    let getVideosFilteredContainer = () =>{
+	let videos_list_filtered = videos_list.parentNode.querySelector('#videos_list.filtered');
+	if(videos_list_filtered)
+	    videos_list_filtered.innerHTML = '';
+	else
+	{
+	    videos_list_filtered = videos_list.cloneNode();
+            videos_list_filtered.classList.add('filtered');
+            videos_list.parentNode.insertBefore(videos_list_filtered, videos_list.nextSibling);
+	}
+	return videos_list_filtered;
+    }
     
     // Add click event to manage filter video on click category
     let manageFilterVideos = (c)=>{
         c.addEventListener('click', e =>{
 	    e.stopPropagation();
 	    let cat_filter_slug = c.dataset.slug;
-	    let videos_list_filtered = videos_list.parentNode.querySelector('#videos_list.filtered');
-	    if(videos_list_filtered)
-		videos_list_filtered.innerHTML = '';
-	    else
-	    {
-	        videos_list_filtered = videos_list.cloneNode();
-                videos_list_filtered.classList.add('filtered');
-                videos_list.parentNode.insertBefore(videos_list_filtered, videos_list.nextSibling);
-	    }
-
+	    videos_list_filtered = getVideosFilteredContainer(); 
 	    manageCssActiveClass(c.parentNode); // manage active css class
 	    let jsonData = getSavedData(cat_filter_slug);
 	    if( Object.keys(jsonData).length )
@@ -162,11 +167,7 @@
     
     // Search cat by slug
     let findCategory = (slug, id=0) =>{
-	let cat = SERVER_DATA.find(c => {
-	    if(c.slug === slug)
-	        return  c.id == id
-	    return false
-	});
+	let cat = SERVER_DATA.find(c => (c.slug === slug && c.id == id))
 	if(!cat)
 	    cat = getSavedData(slug=slug);
 	return cat;
