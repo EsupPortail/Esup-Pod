@@ -120,7 +120,7 @@
     }
     // Update videos Filtered in filtered container after editing category
     let updateFilteredVideosContainer = (category_data) =>{
-	if(CURR_FILTER.slug && CURR_FILTER.id)
+	if(CURR_FILTER.slug && CURR_FILTER.id && CURR_CATEGORY.slug === CURR_FILTER.slug && CURR_CATEGORY.id === CURR_FILTER.id)
         {
 	    let actual_videos = Array.from(document.querySelectorAll(".category_modal_video_list .selected")).map(v_el => v_el.dataset.slug.trim());
 	    let old_videos = getSavedData(CURR_FILTER.slug).videos.map(v => v.slug);
