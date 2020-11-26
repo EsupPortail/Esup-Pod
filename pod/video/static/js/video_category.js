@@ -19,6 +19,8 @@
     let cat_input = document.querySelector("#manageCategoryModal #catTitle");
     let CURR_CATEGORY = {}; // current editing category (js object)
     let DOMCurrentEditCat = null; // current editing category (html DOM)
+    // show loader 
+    let loader = document.querySelector(".loader_wrapper");
 
     const SAVED_DATA = {}; // To prevent too many requests to the server
     const CURR_FILTER = {slug: null, id: null} // the category currently filtering 
@@ -445,6 +447,7 @@
     // Handler to edit category, c_e=current category to edit
     let editHandler = (c_e) =>{
 	c_e.addEventListener('click', (e) =>{
+	    loader.classList.add('show');
 	    cat_edit_title = c_e.dataset.title.trim();
 	    cat_edit_slug = c_e.dataset.slug.trim();
 	    cat_input.value = cat_edit_title;;
@@ -462,6 +465,7 @@
 	        jsonData.videos.forEach(v=>{
 	            appendVideoCard(v);
 		});
+		loader.classList.remove('show');
 	    }
 	    else
 	    {
@@ -473,6 +477,7 @@
 		    CURR_CATEGORY = data;
 		    // save data
 		    saveCategoryData(data);
+		    loader.classList.remove('show');
 		}).catch(e =>{console.error(e)});
 	    }
 	});
@@ -521,6 +526,7 @@
     // Add onclick event to delete a category
     let del_cat = document.querySelector("#confirm_remove_category_btn");
     del_cat.addEventListener('click', (e) =>{
+	loader.classList.add('show');
         if(CAT_TO_DELETE.slug && CAT_TO_DELETE.id && CAT_TO_DELETE.html)
 	{
 	    // Delete category
@@ -540,6 +546,7 @@
 			delete CAT_TO_DELETE.html;
 			delete CAT_TO_DELETE.id;
 			delete CAT_TO_DELETE.slug;
+			loader.classList.remove('show');
 			// close modal
 			document.querySelector("#deleteCategoryModal .modal-footer .close_modal").click();
 		    });
@@ -549,11 +556,13 @@
 	    else
 	    {
 		//TODO display msg error cat 
+		loader.classList.remove('show');
 	    }
 	}
 	else
 	{ 
 	    // display msg error like 'no category to delete'
+	    loader.classList.remove('show');
 	}
     });
 
@@ -562,8 +571,7 @@
     saveCatBtn.addEventListener("click", e=>{
         e.preventDefault()
         e.stopPropagation()
-	// show loader 
-	let loader = document.querySelector(".loader_wrapper");
+
 	loader.classList.add("show");
 
         let videos = Array.from(document.querySelectorAll(".category_modal_video_list .selected")).map(v_el => v_el.dataset.slug.trim());
