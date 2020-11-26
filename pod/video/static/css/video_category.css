@@ -259,6 +259,33 @@
 #my_videos_filter .categories_list_item.active .remove_category{color: #ff4759;}
 
 /************************************
+ * Override Paginator css
+ * **********************************/
+
+.paginator.show,
+.loader_wrapper.show{ display: flex; }
+
+.paginator{
+    display:none;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    grid-column: 1 / -1;
+}
+.paginator .previous_content,
+.paginator .next_content{
+    display: inline-block;
+    width: 30px;
+    cursor: pointer;
+    margin: .4em .8em;
+    color: var(--primary);
+}
+.paginator .previous_content.disable,
+.paginator .next_content.disable{
+    color: #76757D;
+    cursor: default;
+}
+/************************************
  * Override loader css
  * **********************************/
 .loader_wrapper{
@@ -273,7 +300,6 @@
     background: rgba(0,0,0,.3);
     z-index: 9999;
 }
-.loader_wrapper.show{ display: flex; }
 #my_videos.lds-roller{
     display: inline-block;
     position: relative;
