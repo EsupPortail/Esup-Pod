@@ -262,7 +262,7 @@
  * Override loader css
  * **********************************/
 .loader_wrapper{
-    position: absolute;
+    position: fixed;
     top: 0;
     bottom: 0;
     right: 0;
@@ -271,7 +271,7 @@
     align-items: center;
     justify-content: center;
     background: rgba(0,0,0,.3);
-    z-index: 9;
+    z-index: 9999;
 }
 .loader_wrapper.show{ display: flex; }
 #my_videos.lds-roller{
