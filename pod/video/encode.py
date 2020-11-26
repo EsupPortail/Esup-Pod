@@ -457,8 +457,6 @@ def get_video_command_mp4(video_id, video_data, output_dir):
     renditions = VideoRendition.objects.filter(encode_mp4=True)
     # the lower height in first
     renditions = sorted(renditions, key=lambda m: m.height)
-    video_to_encode = Video.objects.get(id=video_id)
-    wat_owner = video_to_encode.add_watermark
     static_params = FFMPEG_STATIC_PARAMS % {
         'nb_threads': FFMPEG_NB_THREADS,
         'key_frames_interval': video_data["key_frames_interval"]
@@ -482,17 +480,7 @@ def get_video_command_mp4(video_id, video_data, output_dir):
 
             name = "%sp" % height
 
-            if WATERMARK == 'none' or (WATERMARK == 'owner' and not wat_owner):
-                cmd += " %s -vf " % (static_params,)
-                cmd += "\"scale=-2:%s\"" % (height)
-
-            if WATERMARK == 'site' or (WATERMARK == 'owner' and wat_owner):
-                cmd += " %s -filter_complex " % (static_params,)
-                cmd += "\"[1:v]scale=-2:%s[scalemark%s]; " % (height, height)
-                cmd += "[0:v]scale=-2:%s[scalevid%s]; " % (height, height)
-                cmd += "[scalevid%s][scalemark%s]" % (height, height)
-                cmd += "overlay=0:0[out%s]\" " % (height)
-                cmd += "-map [out%s] " % (height)
+            cmd += get_command_by_watermark(video_id, static_params, height)
 
             # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
@@ -696,8 +684,6 @@ def encode_video_mp3(video_id, source, output_dir):
 def get_video_command_playlist(video_id, video_data, output_dir):
     in_height = video_data["in_height"]
     master_playlist = "#EXTM3U\n#EXT-X-VERSION:3\n"
-    video_to_encode = Video.objects.get(id=video_id)
-    wat_owner = video_to_encode.add_watermark
     static_params = FFMPEG_STATIC_PARAMS % {
         'nb_threads': FFMPEG_NB_THREADS,
         'key_frames_interval': video_data["key_frames_interval"]
@@ -726,17 +712,7 @@ def get_video_command_playlist(video_id, video_data, output_dir):
 
             name = "%sp" % height
 
-            if WATERMARK == 'none' or (WATERMARK == 'owner' and not wat_owner):
-                cmd += " %s -vf " % (static_params,)
-                cmd += "\"scale=-2:%s\"" % (height)
-
-            if WATERMARK == 'site' or (WATERMARK == 'owner' and wat_owner):
-                cmd += " %s -filter_complex " % (static_params,)
-                cmd += "\"[1:v]scale=-2:%s[scalemark%s]; " % (height, height)
-                cmd += "[0:v]scale=-2:%s[scalevid%s]; " % (height, height)
-                cmd += "[scalevid%s][scalemark%s]" % (height, height)
-                cmd += "overlay=0:0[out%s]\" " % (height)
-                cmd += "-map [out%s] " % (height)
+            cmd += get_command_by_watermark(video_id, static_params, height)
 
             # cmd += "scale=w=%s:h=%s:" % (width, height)
             # cmd += "force_original_aspect_ratio=decrease"
@@ -1125,3 +1101,26 @@ def remove_previous_encoding_playlist(video_to_encode):
     else:
         msg += "Playlist: Nothing to delete"
     return msg
+
+###############################################################
+# Get Command ffmpeg by watermark
+###############################################################
+
+
+def get_command_by_watermark(video_id, static_params, height):
+    video_to_encode = Video.objects.get(id=video_id)
+    wat_owner = video_to_encode.add_watermark
+    cmd = ""
+    if WATERMARK == 'none' or (WATERMARK == 'owner' and not wat_owner):
+        cmd += " %s -vf " % (static_params,)
+        cmd += "\"scale=-2:%s\"" % (height)
+
+    if WATERMARK == 'site' or (WATERMARK == 'owner' and wat_owner):
+        cmd += " %s -filter_complex " % (static_params,)
+        cmd += "\"[1:v]scale=-2:%s[scalemark%s]; " % (height, height)
+        cmd += "[0:v]scale=-2:%s[scalevid%s]; " % (height, height)
+        cmd += "[scalevid%s][scalemark%s]" % (height, height)
+        cmd += "overlay=0:0[out%s]\" " % (height)
+        cmd += "-map [out%s] " % (height)
+
+    return cmd
