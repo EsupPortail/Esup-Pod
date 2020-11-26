@@ -56,7 +56,7 @@
 #manageCategoryModal .category_modal_video_list{
     width: 100%;
     max-height: 450px;
-    height: 400px;
+    height: 315px;
     border: 1px solid #ccc;
     overflow-y: auto;
     padding: .4em .8em;
@@ -261,8 +261,8 @@
 /************************************
  * Override Paginator css
  * **********************************/
-
-.paginator.show,
+.category_modal_video_list.show{ height: 375px !important; }
+.category_modal_video_list.show .paginator,
 .loader_wrapper.show{ display: flex; }
 
 .paginator{
