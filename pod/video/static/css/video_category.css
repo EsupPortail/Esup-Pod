@@ -2,12 +2,19 @@
 /************************************
  * Override my_videos css
  * **********************************/
+#videos_list .alert-warning{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border-radius: 4px;
+    padding: .4em 0;
+}
+.hidden{
+    display: none !important;
+}
 #video_list .infinite-item{
     transition: .3s all;
-}
-#video_list .infinite-item.hidden{
-    visibility: collapse;
-    padding: 0;
 }
 /************************************
  * Override modal category css
@@ -209,9 +216,6 @@
     align-items: center;
     border-bottom: 1px solid #ccc;
     transition: .3s all;
-}
-#my_videos_filter .categories_list_item.hidden{
-    display: none;
 }
 #my_videos_filter .categories_list_item.active{
     color: #fff;
