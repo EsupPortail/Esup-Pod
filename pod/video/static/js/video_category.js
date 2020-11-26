@@ -562,6 +562,10 @@
     saveCatBtn.addEventListener("click", e=>{
         e.preventDefault()
         e.stopPropagation()
+	// show loader 
+	let loader = document.querySelector(".loader_wrapper");
+	loader.classList.add("show");
+
         let videos = Array.from(document.querySelectorAll(".category_modal_video_list .selected")).map(v_el => v_el.dataset.slug.trim());
 	
 	let postData = {
@@ -588,6 +592,7 @@
 		// close modal
 	    	document.querySelector("#manageCategoryModal #cancelDialog").click()
 		refreshDialog();
+		loader.classList.remove("show"); // hide loader
 	    }).catch(err =>{
 	        console.log(err);
 	    });
@@ -599,6 +604,7 @@
     		let li =  getCategoryLi(data.category.title, data.category.slug, data.category.id);
 		document.querySelector("#my_videos_filter .categories_list").appendChild(li);
 		saveCategoryData(data.category); // saving cat localy to prevent more request to the server
+		loader.classList.remove("show"); // hide loader
 	    });
 	    document.querySelector("#manageCategoryModal #cancelDialog").click()
 	    refreshDialog();
