@@ -16,6 +16,15 @@
 
 
 {% block page_content %}
+    {% if USE_CATEGORY %}
+    <!-- Loader -->
+    <div class="loader_wrapper">
+        <div id="my_videos" class="lds-roller">
+	    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+	</div>
+    </div>
+    <!-- End Loader -->
+    {% endif %}
   {% if videos.paginator.count == 0 %}
   <h3>{% trans "No video found"%}</h3>
     <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the "Add a new video" button to add one'%}</p>
