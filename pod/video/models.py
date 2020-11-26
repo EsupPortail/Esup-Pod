@@ -1073,15 +1073,15 @@ class VideoRendition(models.Model):
         if self.audio_bitrate and 'k' not in self.audio_bitrate:
             msg = "Error in %s: " % _('bitrate audio')
             raise ValidationError(
-                msg + VideoRendition._meta.get_field(
-                    'audio_bitrate').help_text)
+                "%s %s" % (msg, VideoRendition._meta.get_field(
+                    'audio_bitrate').help_text))
         else:
             vb = self.audio_bitrate.replace('k', '')
             if not vb.isdigit():
                 msg = "Error in %s: " % _('bitrate audio')
                 raise ValidationError(
-                    msg + VideoRendition._meta.get_field(
-                        'audio_bitrate').help_text)
+                    "%s %s" % (msg, VideoRendition._meta.get_field(
+                        'audio_bitrate').help_text))
 
 
 @receiver(post_save, sender=VideoRendition)
