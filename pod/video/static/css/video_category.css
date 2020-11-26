@@ -222,8 +222,8 @@
     background-color: var(--primary);
 }
 #my_videos_filter .categories_list_item:not(.active):hover{
-    background-color: rgba(96,192,221, .09);
-    border-color: rgba(96,192,221, .09);
+    background-color: rgba(148, 149, 149, 0.09);
+    border-color: rgba(148, 149, 149, 0.09);
 }
 
 #my_videos_filter .categories_list_item:last-child{ border: none;}
@@ -236,6 +236,10 @@
     cursor: pointer;
     line-height: 1.8;
     border-right: 1px solid #eee8e8;
+    color: var(--gray-dark)
+}
+#my_videos_filter .categories_list_item:hover .cat_title{
+    color: var(--secondary);
 }
 #my_videos_filter .categories_list_item .category_actions{
     display: flex;
@@ -253,3 +257,104 @@
     flex: none;
 }
 #my_videos_filter .categories_list_item .remove_category{width: 15px; color: var(--danger);}
+
+/************************************
+ * Override loader css
+ * **********************************/
+.loader_wrapper{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,.3);
+    z-index: 9;
+}
+.loader_wrapper.show{ display: flex; }
+#my_videos.lds-roller{
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+#my_videos.lds-roller div {
+    animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    transform-origin: 40px 40px;
+}
+#my_videos.lds-roller div:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #fff;
+    margin: -4px 0 0 -4px;
+}
+#my_videos.lds-roller div:nth-child(1) {
+    animation-delay: -0.036s;
+}
+#my_videos.lds-roller div:nth-child(1):after {
+    top: 63px;
+    left: 63px;
+}
+#my_videos.lds-roller div:nth-child(2) {
+    animation-delay: -0.072s;
+}
+#my_videos.lds-roller div:nth-child(2):after {
+    top: 68px;
+    left: 56px;
+}
+#my_videos.lds-roller div:nth-child(3) {
+    animation-delay: -0.108s;
+}
+#my_videos.lds-roller div:nth-child(3):after {
+    top: 71px;
+    left: 48px;
+}
+#my_videos.lds-roller div:nth-child(4) {
+    animation-delay: -0.144s;
+}
+#my_videos.lds-roller div:nth-child(4):after {
+    top: 72px;
+    left: 40px;
+}
+#my_videos.lds-roller div:nth-child(5) {
+    animation-delay: -0.18s;
+}
+#my_videos.lds-roller div:nth-child(5):after {
+    top: 71px;
+    left: 32px;
+}
+#my_videos.lds-roller div:nth-child(6) {
+    animation-delay: -0.216s;
+}
+#my_videos.lds-roller div:nth-child(6):after {
+    top: 68px;
+    left: 24px;
+}
+#my_videos.lds-roller div:nth-child(7) {
+    animation-delay: -0.252s;
+}
+#my_videos.lds-roller div:nth-child(7):after {
+    top: 63px;
+    left: 17px;
+}
+#my_videos.lds-roller div:nth-child(8) {
+    animation-delay: -0.288s;
+}
+#my_videos.lds-roller div:nth-child(8):after {
+    top: 56px;
+    left: 12px;
+}
+@keyframes lds-roller {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
