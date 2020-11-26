@@ -225,6 +225,8 @@
     background-color: rgba(148, 149, 149, 0.09);
     border-color: rgba(148, 149, 149, 0.09);
 }
+#my_videos_filter .categories_list_item:not(.active):hover .cat_title{ color: var(--secondary);}
+#my_videos_filter .categories_list_item.active .cat_title{color: inherit;}
 
 #my_videos_filter .categories_list_item:last-child{ border: none;}
 #my_videos_filter .categories_list_item .cat_title{
@@ -237,9 +239,6 @@
     line-height: 1.8;
     border-right: 1px solid #eee8e8;
     color: var(--gray-dark)
-}
-#my_videos_filter .categories_list_item:hover .cat_title{
-    color: var(--secondary);
 }
 #my_videos_filter .categories_list_item .category_actions{
     display: flex;
@@ -256,7 +255,8 @@
     cursor: pointer;
     flex: none;
 }
-#my_videos_filter .categories_list_item .remove_category{width: 15px; color: var(--danger);}
+#my_videos_filter .categories_list_item .remove_category{width: 14px; color: var(--danger);}
+#my_videos_filter .categories_list_item.active .remove_category{color: #ff4759;}
 
 /************************************
  * Override loader css
