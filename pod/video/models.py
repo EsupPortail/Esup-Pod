@@ -1024,39 +1024,39 @@ class VideoRendition(models.Model):
         if self.video_bitrate and 'k' not in self.video_bitrate:
             msg = "Error in %s: " % _('bitrate video')
             raise ValidationError(
-                msg + VideoRendition._meta.get_field(
-                    'video_bitrate').help_text)
+                "%s %s" % (msg, VideoRendition._meta.get_field(
+                    'video_bitrate').help_text))
         else:
             vb = self.video_bitrate.replace('k', '')
             if not vb.isdigit():
                 msg = "Error in %s: " % _('bitrate video')
                 raise ValidationError(
-                    msg + VideoRendition._meta.get_field(
-                        'video_bitrate').help_text)
+                    "%s %s" % (msg, VideoRendition._meta.get_field(
+                        'video_bitrate').help_text))
         if self.maxrate and 'k' not in self.maxrate:
             msg = "Error in %s: " % _('maxrate')
             raise ValidationError(
-                msg + VideoRendition._meta.get_field(
-                    'maxrate').help_text)
+                "%s %s" % (msg, VideoRendition._meta.get_field(
+                    'maxrate').help_text))
         else:
             vb = self.video_bitrate.replace('k', '')
             if not vb.isdigit():
                 msg = "Error in %s: " % _('maxrate')
                 raise ValidationError(
-                    msg + VideoRendition._meta.get_field(
-                        'maxrate').help_text)
+                    "%s %s" % (msg, VideoRendition._meta.get_field(
+                        'maxrate').help_text))
         if self.minrate and 'k' not in self.minrate:
             msg = "Error in %s: " % _('minrate')
             raise ValidationError(
-                msg + VideoRendition._meta.get_field(
-                    'minrate').help_text)
+                "%s %s" % (msg, VideoRendition._meta.get_field(
+                    'minrate').help_text))
         else:
             vb = self.video_bitrate.replace('k', '')
             if not vb.isdigit():
                 msg = "Error in %s: " % _('minrate')
                 raise ValidationError(
-                    msg + VideoRendition._meta.get_field(
-                        'minrate').help_text)
+                    "%s %s" % (msg, VideoRendition._meta.get_field(
+                        'minrate').help_text))
 
     def clean(self):
         if self.resolution and 'x' not in self.resolution:
