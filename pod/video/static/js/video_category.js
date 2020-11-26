@@ -72,13 +72,11 @@
 	let curr_slug = html_el.querySelector(".cat_title").dataset.slug;
 	let curr_id = html_el.querySelector("#remove_category_icon").dataset.del;
 	html_el.classList.toggle('active');
-	    console.log("CURR_FILTER IN MANAGE", CURR_FILTER);
 	if(CURR_FILTER.slug === curr_slug && CURR_FILTER.id == curr_id)
 	{
             html_el.classList.remove('active');// unfilter
 	    CURR_FILTER.slug = null;
 	    CURR_FILTER.id = null;
-	    console.log("CURR_FILTER UNSET", CURR_FILTER);
 	    videos_list.setAttribute('class', 'row infinite-container');
 	    videos_list.parentNode.querySelector("#videos_list.filtered").innerHTML = '';
 	    let more_btn = videos_list.parentNode.querySelector(".infinite-more-link");
@@ -91,7 +89,6 @@
             let {id, slug} = findCategory(curr_slug, curr_id);
             CURR_FILTER.id = id;
 	    CURR_FILTER.slug = slug;
-	    console.log("CURR FILTER SET TO ", CURR_FILTER);
 	    videos_list.setAttribute('class', 'row infinite-container hidden');
 	    let more_btn = videos_list.parentNode.querySelector(".infinite-more-link");
 	    if(more_btn)
@@ -112,7 +109,40 @@
 	}
 	return videos_list_filtered;
     }
-    
+    // Update videos Filtered in filtered container after editing category
+    let updateFilteredVideosContainer = (category_data) =>{
+	if(CURR_FILTER.slug && CURR_FILTER.id)
+        {
+	    let actual_videos = Array.from(document.querySelectorAll(".category_modal_video_list .selected")).map(v_el => v_el.dataset.slug.trim());
+	    let old_videos = getSavedData(CURR_FILTER.slug).videos.map(v => v.slug);
+	    let rm = old_videos.filter( v => !actual_videos.includes(v) );
+	    let added = actual_videos.filter( v=> !old_videos.includes(v));
+	    let container_filtered = document.querySelector("#videos_list.filtered");
+
+	    let maxLen = rm.length > added.length? rm.length: added.length;
+	    for(let i=0; i < maxLen; i++)
+            {
+                // remove video that was deselected when editing category
+		if(rm[i])
+	        {
+		    container_filtered.removeChild(
+		        container_filtered.querySelector(`.infinite-item[data-slug="${rm[i]}"`));
+		}
+
+		// Add video that was selected when editing category
+		if(added[i])
+		{
+		    container_filtered.appendChild(
+		        getVideoElement(
+			    category_data.videos.find( v=> v.slug === added[i])
+			)
+		    );
+		}
+            }
+	}
+	
+
+    }
     // Add click event to manage filter video on click category
     let manageFilterVideos = (c)=>{
         c.addEventListener('click', e =>{
@@ -525,6 +555,7 @@
         e.preventDefault()
         e.stopPropagation()
         let videos = Array.from(document.querySelectorAll(".category_modal_video_list .selected")).map(v_el => v_el.dataset.slug.trim());
+	
 	let postData = {
 	    title:  cat_input.value.trim(),
 	    videos: videos
@@ -539,6 +570,7 @@
 	    // Update new data, server side
     	    postCategoryData(`${BASE_URL}edit/${CURR_CATEGORY.slug}/`, postData).then(data =>{
 		// Update new data, client side
+    		updateFilteredVideosContainer(data); // update filered videos in filtered container
 	        deleteFromSavedData(CURR_CATEGORY.slug);
 		saveCategoryData(data);
 		DOMCurrentEditCat.querySelector('.cat_title').textContent = data.title
