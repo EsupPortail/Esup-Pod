@@ -495,7 +495,7 @@
 	let selectClass = selected? 'selected':'';
 	v_wrapper.setAttribute("class", "infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group "+selectClass)
         v_wrapper.innerHTML = videoCard;
-	modalListVideo.appendChild(v_wrapper);
+	modalListVideo.insertBefore(v_wrapper, modalListVideo.querySelector(".paginator"));
 	// set click event listener
 	toggleSelectedClass(v_wrapper);
     }
