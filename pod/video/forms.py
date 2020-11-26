@@ -492,7 +492,7 @@ class VideoForm(forms.ModelForm):
         if not TRANSCRIPT:
             self.remove_field('transcript')
 
-        if WATERMARK!='owner':
+        if WATERMARK != 'owner':
             self.remove_field('add_watermark')
 
     def set_nostaff_config(self):

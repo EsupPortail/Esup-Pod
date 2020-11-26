@@ -458,6 +458,7 @@ def get_video_command_mp4(video_id, video_data, output_dir):
     # the lower height in first
     renditions = sorted(renditions, key=lambda m: m.height)
     video_to_encode = Video.objects.get(id=video_id)
+    wat_owner = video_to_encode.add_watermark
     static_params = FFMPEG_STATIC_PARAMS % {
         'nb_threads': FFMPEG_NB_THREADS,
         'key_frames_interval': video_data["key_frames_interval"]
@@ -481,16 +482,18 @@ def get_video_command_mp4(video_id, video_data, output_dir):
 
             name = "%sp" % height
 
-            if WATERMARK == 'none' or (WATERMARK == 'owner' and not video_to_encode.add_watermark):
+            if WATERMARK == 'none' or (WATERMARK == 'owner' and not wat_owner):
                 cmd += " %s -vf " % (static_params,)
                 cmd += "\"scale=-2:%s\"" % (height)
 
-            if WATERMARK == 'site' or (WATERMARK == 'owner' and video_to_encode.add_watermark):
+            if WATERMARK == 'site' or (WATERMARK == 'owner' and wat_owner):
                 cmd += " %s -filter_complex " % (static_params,)
-                cmd += "\"[1:v]scale=-2:%s[scalemark%s]; [0:v]scale=-2:%s[scalevid%s]; " % (height,height,height,height)
-                cmd += "[scalevid%s][scalemark%s]overlay=0:0[out%s]\" " % (height,height,height)
+                cmd += "\"[1:v]scale=-2:%s[scalemark%s]; " % (height, height)
+                cmd += "[0:v]scale=-2:%s[scalevid%s]; " % (height, height)
+                cmd += "[scalevid%s][scalemark%s]" % (height, height)
+                cmd += "overlay=0:0[out%s]\" " % (height)
                 cmd += "-map [out%s] " % (height)
-            
+
             # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
                 minrate, bitrate, maxrate, int(bufsize), audiorate)
@@ -513,15 +516,16 @@ def encode_video_mp4(video_id, source, cmd, output_dir):
     msg = ""
     procs = []
     video_to_encode = Video.objects.get(id=video_id)
+    wat_owner = video_to_encode.add_watermark
     logfile = output_dir + "/encoding.log"
     open(logfile, "ab").write(b'\n\nffmpegvideoMP4:\n\n')
     msg = "\nffmpegMp4Command:\n"
     for subcmd in cmd:
         ffmpegMp4Command = "%s %s -i %s %s" % (
             FFMPEG, FFMPEG_MISC_PARAMS, source, subcmd)
-        if WATERMARK == 'site' or (WATERMARK == 'owner' and video_to_encode.add_watermark):
+        if WATERMARK == 'site' or (WATERMARK == 'owner' and wat_owner):
             ffmpegMp4Command = "%s %s -i %s -i %s %s" % (
-                FFMPEG, FFMPEG_MISC_PARAMS, source, WATERMARK_PATH, subcmd)        
+                FFMPEG, FFMPEG_MISC_PARAMS, source, WATERMARK_PATH, subcmd)
         msg += "- %s\n" % ffmpegMp4Command
         with open(logfile, "ab") as f:
             procs.append(subprocess.Popen(
@@ -693,6 +697,7 @@ def get_video_command_playlist(video_id, video_data, output_dir):
     in_height = video_data["in_height"]
     master_playlist = "#EXTM3U\n#EXT-X-VERSION:3\n"
     video_to_encode = Video.objects.get(id=video_id)
+    wat_owner = video_to_encode.add_watermark
     static_params = FFMPEG_STATIC_PARAMS % {
         'nb_threads': FFMPEG_NB_THREADS,
         'key_frames_interval': video_data["key_frames_interval"]
@@ -721,14 +726,16 @@ def get_video_command_playlist(video_id, video_data, output_dir):
 
             name = "%sp" % height
 
-            if WATERMARK == 'none' or (WATERMARK == 'owner' and not video_to_encode.add_watermark):
+            if WATERMARK == 'none' or (WATERMARK == 'owner' and not wat_owner):
                 cmd += " %s -vf " % (static_params,)
                 cmd += "\"scale=-2:%s\"" % (height)
 
-            if WATERMARK == 'site' or (WATERMARK == 'owner' and video_to_encode.add_watermark):
+            if WATERMARK == 'site' or (WATERMARK == 'owner' and wat_owner):
                 cmd += " %s -filter_complex " % (static_params,)
-                cmd += "\"[1:v]scale=-2:%s[scalemark%s]; [0:v]scale=-2:%s[scalevid%s]; " % (height,height,height,height)
-                cmd += "[scalevid%s][scalemark%s]overlay=0:0[out%s]\" " % (height,height,height)
+                cmd += "\"[1:v]scale=-2:%s[scalemark%s]; " % (height, height)
+                cmd += "[0:v]scale=-2:%s[scalevid%s]; " % (height, height)
+                cmd += "[scalevid%s][scalemark%s]" % (height, height)
+                cmd += "overlay=0:0[out%s]\" " % (height)
                 cmd += "-map [out%s] " % (height)
 
             # cmd += "scale=w=%s:h=%s:" % (width, height)
@@ -758,13 +765,14 @@ def encode_video_playlist(video_id, source, cmd, output_dir):
     msg = ""
     procs = []
     video_to_encode = Video.objects.get(id=video_id)
+    wat_owner = video_to_encode.add_watermark
     logfile = output_dir + "/encoding.log"
     open(logfile, "ab").write(b'\n\nffmpegvideoPlaylist:\n\n')
     msg = "\nffmpegPlaylistCommands:\n"
     for subcmd in cmd:
         ffmpegPlaylistCommand = "%s %s -i %s %s" % (
             FFMPEG, FFMPEG_MISC_PARAMS, source, subcmd)
-        if WATERMARK == 'site' or (WATERMARK == 'owner' and video_to_encode.add_watermark):
+        if WATERMARK == 'site' or (WATERMARK == 'owner' and wat_owner):
             ffmpegPlaylistCommand = "%s %s -i %s -i %s  %s" % (
                 FFMPEG, FFMPEG_MISC_PARAMS, source, WATERMARK_PATH, subcmd)
         msg += "- %s\n" % ffmpegPlaylistCommand
