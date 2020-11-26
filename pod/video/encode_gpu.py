@@ -15,9 +15,13 @@ import shlex
 import json
 import time
 
-from timeit import default_timer as timer
+from json.decoder import JSONDecodeError
 
-DEBUG = False  # True
+from timeit import default_timer as timer
+# from unidecode import unidecode # third partu package to remove accent
+import unicodedata
+
+DEBUG = False
 
 VIDEOS_DIR = "videos"
 VIDEOS_OUTPUT_DIR = "encoding_videos"
@@ -48,7 +52,7 @@ CPU = 'time ffmpeg -hide_banner -y -i {input} '
 GPU = 'time ffmpeg -y -vsync 0 -hwaccel_device {hwaccel_device} \
     -hwaccel cuvid -c:v {codec}_cuvid -i {input} '
 
-SUBTIME = '-ss 00:00:00 -to 00:01:00 ' if DEBUG else ' '
+SUBTIME = ' '
 
 COMMON = ' -c:a aac -ar 48000 '\
     '-strict experimental -profile:v high -pixel_format yuv420p '\
@@ -65,27 +69,22 @@ rate_360 = '-b:a 96k -minrate 500k -b:v 750k -maxrate 1000k -bufsize 1500k '
 rate_720 = '-b:a 128k -minrate 1000k -b:v 2000k -maxrate 3000k -bufsize 4000k '
 rate_1080 = '-b:a 192k -minrate 2M -b:v 3M -maxrate 4500k -bufsize 6M '
 
-end_360_m3u8 = SUBTIME +\
-    rate_360 +\
+end_360_m3u8 = rate_360 +\
     '-hls_playlist_type vod -hls_time 2 \
     -hls_flags single_file {output_dir}/360p_{output}.m3u8 '
 
-end_360_mp4 = SUBTIME +\
-    rate_360 +\
+end_360_mp4 = rate_360 +\
     '-movflags faststart -write_tmcd 0 \
     "{output_dir}/360p_{output}.mp4" '
 
-end_720_m3u8 = SUBTIME +\
-    rate_720 +\
+end_720_m3u8 = rate_720 +\
     '-hls_playlist_type vod -hls_time 2 \
     -hls_flags single_file {output_dir}/720p_{output}.m3u8 '
 
-end_720_mp4 = SUBTIME +\
-    rate_720 +\
+end_720_mp4 = rate_720 +\
     '-movflags faststart -write_tmcd 0 "{output_dir}/720p_{output}.mp4" '
 
-end_1080_m3u8 = SUBTIME +\
-    rate_720 +\
+end_1080_m3u8 = rate_720 +\
     '-hls_playlist_type vod -hls_time 2 \
     -hls_flags single_file {output_dir}/1080p_{output}.m3u8 '
 
@@ -142,35 +141,91 @@ def get_cmd_gpu(format, codec, height, file):
         input=os.path.join(VIDEOS_DIR, file))
     ffmpeg_cmd = ffmpeg_cmd
     ffmpeg_cmd = ffmpeg_cmd + COMMON + scale_gpu.format(height=360)
+    filename = os.path.splitext(os.path.basename(file))[0]
+    filename = ''.join(
+        (
+            c for c in unicodedata.normalize(
+                'NFD', filename
+            ) if unicodedata.category(c) != 'Mn'
+        )
+    )
     if format == "m3u8":
-        ffmpeg_cmd = ffmpeg_cmd + \
+        ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
             end_360_m3u8.format(
                 output_dir=VIDEOS_OUTPUT_DIR,
-                output=os.path.splitext(os.path.basename(file))[0])
+                output=filename
+            )
+        add_info_video(
+            "encode_video",
+            {
+                "encoding_format": "video/mp2t",
+                "rendition": "640x360",
+                "filename": "360p_{output}.m3u8".format(output=filename),
+            },
+            True
+        )
     else:
-        ffmpeg_cmd = ffmpeg_cmd + \
+        ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
             end_360_mp4.format(
                 output_dir=VIDEOS_OUTPUT_DIR,
-                output=os.path.splitext(os.path.basename(file))[0])
+                output=filename
+            )
+        add_info_video(
+            "encode_video",
+            {
+                "encoding_format": "video/mp4",
+                "rendition": "640x360",
+                "filename": "360p_{output}.mp4".format(output=filename),
+            },
+            True
+        )
     if height >= 720:
         ffmpeg_cmd = ffmpeg_cmd + COMMON + scale_gpu.format(height=720)
         if format == "m3u8":
-            ffmpeg_cmd = ffmpeg_cmd + \
+            ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
                 end_720_m3u8.format(
                     output_dir=VIDEOS_OUTPUT_DIR,
-                    output=os.path.splitext(os.path.basename(file))[0])
+                    output=filename
+                )
+            add_info_video(
+                "encode_video",
+                {
+                    "encoding_format": "video/mp2t",
+                    "rendition": "1280x720",
+                    "filename": "720p_{output}.m3u8".format(output=filename),
+                },
+                True
+            )
         else:
-            ffmpeg_cmd = ffmpeg_cmd + \
+            ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
                 end_720_mp4.format(
                     output_dir=VIDEOS_OUTPUT_DIR,
-                    output=os.path.splitext(os.path.basename(file))[0])
+                    output=filename)
+            add_info_video(
+                "encode_video",
+                {
+                    "encoding_format": "video/mp4",
+                    "rendition": "1280x720",
+                    "filename": "720p_{output}.mp4".format(output=filename),
+                },
+                True
+            )
     if height >= 1080:
         ffmpeg_cmd = ffmpeg_cmd + COMMON + scale_gpu.format(height=1080)
         if format == "m3u8":
-            ffmpeg_cmd = ffmpeg_cmd + \
-                end_720_m3u8.format(
+            ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
+                end_1080_m3u8.format(
                     output_dir=VIDEOS_OUTPUT_DIR,
-                    output=os.path.splitext(os.path.basename(file))[0])
+                    output=filename)
+            add_info_video(
+                "encode_video",
+                {
+                    "encoding_format": "video/mp2t",
+                    "rendition": "1920x1080",
+                    "filename": "1080p_{output}.m3u8".format(output=filename),
+                },
+                True
+            )
     return ffmpeg_cmd
 
 
@@ -180,35 +235,90 @@ def get_cmd_mixed(format, codec, height, file):
         codec=codec, input=os.path.join(VIDEOS_DIR, file))
     ffmpeg_cmd = ffmpeg_cmd + COMMON
     ffmpeg_cmd = ffmpeg_cmd + scale_mixed.format(height=360)
+    filename = os.path.splitext(os.path.basename(file))[0]
+    filename = ''.join(
+        (
+            c for c in unicodedata.normalize(
+                'NFD', filename
+            ) if unicodedata.category(c) != 'Mn'
+        )
+    )
     if format == "m3u8":
-        ffmpeg_cmd = ffmpeg_cmd + \
+        ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
             end_360_m3u8.format(
                 output_dir=VIDEOS_OUTPUT_DIR,
-                output=os.path.splitext(os.path.basename(file))[0])
+                output=filename
+            )
+        add_info_video(
+            "encode_video",
+            {
+                "encoding_format": "video/mp2t",
+                "rendition": "640x360",
+                "filename": "360p_{output}.m3u8".format(output=filename),
+            },
+            True
+        )
     else:
-        ffmpeg_cmd = ffmpeg_cmd + \
+        ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
             end_360_mp4.format(
                 output_dir=VIDEOS_OUTPUT_DIR,
-                output=os.path.splitext(os.path.basename(file))[0])
+                output=filename
+            )
+        add_info_video(
+            "encode_video",
+            {
+                "encoding_format": "video/mp4",
+                "rendition": "640x360",
+                "filename": "360p_{output}.mp4".format(output=filename),
+            },
+            True
+        )
     if height >= 720:
         ffmpeg_cmd = ffmpeg_cmd + scale_mixed.format(height=720)
         if format == "m3u8":
-            ffmpeg_cmd = ffmpeg_cmd + \
+            ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
                 end_720_m3u8.format(
                     output_dir=VIDEOS_OUTPUT_DIR,
-                    output=os.path.splitext(os.path.basename(file))[0])
+                    output=filename)
+            add_info_video(
+                "encode_video",
+                {
+                    "encoding_format": "video/mp2t",
+                    "rendition": "1280x720",
+                    "filename": "720p_{output}.m3u8".format(output=filename),
+                },
+                True
+            )
         else:
-            ffmpeg_cmd = ffmpeg_cmd + \
+            ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
                 end_720_mp4.format(
                     output_dir=VIDEOS_OUTPUT_DIR,
-                    output=os.path.splitext(os.path.basename(file))[0])
+                    output=filename)
+            add_info_video(
+                "encode_video",
+                {
+                    "encoding_format": "video/mp4",
+                    "rendition": "1280x720",
+                    "filename": "720p_{output}.mp4".format(output=filename),
+                },
+                True
+            )
     if height >= 1080:
         ffmpeg_cmd = ffmpeg_cmd + scale_mixed.format(height=1080)
         if format == "m3u8":
-            ffmpeg_cmd = ffmpeg_cmd + \
-                end_720_m3u8.format(
+            ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
+                end_1080_m3u8.format(
                     output_dir=VIDEOS_OUTPUT_DIR,
-                    output=os.path.splitext(os.path.basename(file))[0])
+                    output=filename)
+            add_info_video(
+                "encode_video",
+                {
+                    "encoding_format": "video/mp2t",
+                    "rendition": "1920x1080",
+                    "filename": "1080p_{output}.m3u8".format(output=filename),
+                },
+                True
+            )
     return ffmpeg_cmd
 
 
@@ -218,35 +328,93 @@ def get_cmd_cpu(format, codec, height, file):
         codec=codec, input=os.path.join(VIDEOS_DIR, file))
     ffmpeg_cmd = ffmpeg_cmd + COMMON
     ffmpeg_cmd = ffmpeg_cmd + scale_cpu.format(height=360)
+    filename = os.path.splitext(os.path.basename(file))[0]
+    filename = ''.join(
+        (
+            c for c in unicodedata.normalize(
+                'NFD', filename
+            ) if unicodedata.category(c) != 'Mn'
+        )
+    )
     if format == "m3u8":
-        ffmpeg_cmd = ffmpeg_cmd + \
+        ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
             end_360_m3u8.format(
                 output_dir=VIDEOS_OUTPUT_DIR,
-                output=os.path.splitext(os.path.basename(file))[0])
+                output=filename
+            )
+        add_info_video(
+            "encode_video",
+            {
+                "encoding_format": "video/mp2t",
+                "rendition": "640x360",
+                "filename": "360p_{output}.m3u8".format(output=filename),
+            },
+            True
+        )
     else:
-        ffmpeg_cmd = ffmpeg_cmd + \
+        ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
             end_360_mp4.format(
                 output_dir=VIDEOS_OUTPUT_DIR,
-                output=os.path.splitext(os.path.basename(file))[0])
+                output=filename
+            )
+        add_info_video(
+            "encode_video",
+            {
+                "encoding_format": "video/mp4",
+                "rendition": "640x360",
+                "filename": "360p_{output}.mp4".format(output=filename),
+            },
+            True
+        )
     if height >= 720:
         ffmpeg_cmd = ffmpeg_cmd + scale_cpu.format(height=720)
         if format == "m3u8":
-            ffmpeg_cmd = ffmpeg_cmd + \
+            ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
                 end_720_m3u8.format(
                     output_dir=VIDEOS_OUTPUT_DIR,
-                    output=os.path.splitext(os.path.basename(file))[0])
+                    output=filename
+                )
+            add_info_video(
+                "encode_video",
+                {
+                    "encoding_format": "video/mp2t",
+                    "rendition": "1280x720",
+                    "filename": "720p_{output}.m3u8".format(output=filename),
+                },
+                True
+            )
         else:
-            ffmpeg_cmd = ffmpeg_cmd + \
+            ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
                 end_720_mp4.format(
                     output_dir=VIDEOS_OUTPUT_DIR,
-                    output=os.path.splitext(os.path.basename(file))[0])
+                    output=filename
+                )
+            add_info_video(
+                "encode_video",
+                {
+                    "encoding_format": "video/mp4",
+                    "rendition": "1280x720",
+                    "filename": "720p_{output}.mp4".format(output=filename),
+                },
+                True
+            )
     if height >= 1080:
         ffmpeg_cmd = ffmpeg_cmd + scale_cpu.format(height=1080)
         if format == "m3u8":
-            ffmpeg_cmd = ffmpeg_cmd + \
-                end_720_m3u8.format(
+            ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
+                end_1080_m3u8.format(
                     output_dir=VIDEOS_OUTPUT_DIR,
-                    output=os.path.splitext(os.path.basename(file))[0])
+                    output=filename
+                )
+            add_info_video(
+                "encode_video",
+                {
+                    "encoding_format": "video/mp2t",
+                    "rendition": "1920x1080",
+                    "filename": "1080p_{output}.m3u8".format(output=filename),
+                },
+                True
+            )
     return ffmpeg_cmd
 
 
@@ -285,6 +453,14 @@ def encode(type, format, codec, height, file):
     msg = "--> encode" + "\n"
 
     ffmpeg_cmd = ""
+    filename = os.path.splitext(os.path.basename(file))[0]
+    filename = ''.join(
+        (
+            c for c in unicodedata.normalize(
+                'NFD', filename
+            ) if unicodedata.category(c) != 'Mn'
+        )
+    )
 
     if type == "gpu":
         ffmpeg_cmd = get_cmd_gpu(format, codec, height, file)
@@ -299,17 +475,38 @@ def encode(type, format, codec, height, file):
         ffmpeg_cmd = MP3.format(
             input=os.path.join(VIDEOS_DIR, file),
             output_dir=VIDEOS_OUTPUT_DIR,
-            output=os.path.splitext(
-                os.path.basename(file))[0])
+            output=filename)
+        add_info_video(
+            "encode_audio",
+            {
+                "encoding_format": "audio/mp3",
+                "filename": "audio_192k_{output}.mp3".format(output=filename),
+            },
+            True
+        )
     if type == "m4a":
         ffmpeg_cmd = M4A.format(
             input=os.path.join(VIDEOS_DIR, file),
             output_dir=VIDEOS_OUTPUT_DIR,
-            output=os.path.splitext(
-                os.path.basename(file))[0])
+            output=filename)
+        add_info_video(
+            "encode_audio",
+            {
+                "encoding_format": "video/mp4",
+                "filename": "audio_192k_{output}.m4a".format(output=filename),
+            },
+            True
+        )
     if type == "thumbnail":
         ffmpeg_cmd = EXTRACT_THUMBNAIL.format(
             output_dir=VIDEOS_OUTPUT_DIR, input=os.path.join(VIDEOS_DIR, file))
+        add_info_video(
+            "encode_thumbnail",
+            {
+                "filename": "thumbnail.jpg",
+            },
+            True
+        )
 
     return_value, return_msg = launch_cmd(ffmpeg_cmd, type, format)
 
@@ -432,10 +629,37 @@ def launch_encode(info_video, file):
 
 
 def encode_log(msg):
+    if DEBUG:
+        print(msg)
     with open(VIDEOS_OUTPUT_DIR + "/encoding.log", "a") as f:
         f.write('\n')
         f.write(msg)
         f.write('\n')
+
+
+def add_info_video(key, value, append=False):
+    data = {}
+    try:
+        with open(VIDEOS_OUTPUT_DIR + "/info_video.json") as json_file:
+            data = json.load(json_file)
+    except FileNotFoundError:
+        pass
+    except JSONDecodeError:
+        pass
+    if DEBUG:
+        print(data, data.get(key), key, value, append)
+    if data.get(key) and append is True:
+        val = data[key]
+        print(type(val), type(data[key]))
+        if type(val) is list:
+            val.append(value)
+            data[key] = val
+        else:
+            data[key] = [val, value]
+    else:
+        data[key] = value
+    with open(VIDEOS_OUTPUT_DIR + "/info_video.json", "w") as outfile:
+        json.dump(data, outfile, indent=2)
 
 
 if __name__ == "__main__":
@@ -459,13 +683,19 @@ if __name__ == "__main__":
                         help='the ID of job')
     parser.add_argument('--name', required=False,
                         help='the name of job')
+    parser.add_argument('--debug', required=False,
+                        help='run job in debug mode')
     args = parser.parse_args()
     msg += 'Using device {} \n'.format(args.device)
     msg += 'Using job {} \n'.format(args.job)
     msg += 'Using name {} \n'.format(args.name)
 
-    #  --dir /workdir/nicolas.can//encoding/encoding-12689
-    # --input fa13162[...]259b9a2424/clip-pod.mp4
+    # --dir /workdir/nicolas.can//encoding/encoding-12689
+    # --input videos/fa131629[...]b9a2424/clip-pod.mp4
+
+    DEBUG = True if args.debug and args.debug == "True" else False
+
+    SUBTIME = '-ss 00:00:00 -to 00:01:00 ' if DEBUG else ' '
 
     VIDEOS_DIR = args.dir if args.dir else "videos"
 
@@ -475,8 +705,9 @@ if __name__ == "__main__":
     if not os.path.exists(VIDEOS_OUTPUT_DIR):
         os.makedirs(VIDEOS_OUTPUT_DIR)
     HWACCEL_DEVICE = format(args.device)
-
+    # clear log file and video info file
     open(VIDEOS_OUTPUT_DIR + "/encoding.log", "w").close()
+    open(VIDEOS_OUTPUT_DIR + "/info_video.json", "w").close()
 
     input_file = os.path.basename(format(args.input)) if args.input else ""
     msg += 'Encoding file {} \n'.format(input_file)
@@ -487,23 +718,24 @@ if __name__ == "__main__":
     msg += " \n"
     msg += json.dumps(info_video, indent=2)
     msg += " \n"
+    for val in info_video:
+        add_info_video(val, info_video[val])
+
     encode_result = launch_encode(info_video, input_file)
-    info_video["encode_result"] = encode_result
+    add_info_video("encode_result", encode_result)
     msg += "- fin de l'encodage : %s \n" % time.ctime()
     encode_log(msg)
 
-    with open(VIDEOS_OUTPUT_DIR + "/info_video.json", "w") as outfile:
-        json.dump(info_video, outfile, indent=2)
 
 """
-ffmpeg -decoders |grep cuvid
- V..... h264_cuvid           Nvidia CUVID H264 decoder (codec h264)
- V..... hevc_cuvid           Nvidia CUVID HEVC decoder (codec hevc)
- V..... mjpeg_cuvid          Nvidia CUVID MJPEG decoder (codec mjpeg)
- V..... mpeg1_cuvid          Nvidia CUVID MPEG1VIDEO decoder (codec mpeg1video)
- V..... mpeg2_cuvid          Nvidia CUVID MPEG2VIDEO decoder (codec mpeg2video)
- V..... mpeg4_cuvid          Nvidia CUVID MPEG4 decoder (codec mpeg4)
- V..... vc1_cuvid            Nvidia CUVID VC1 decoder (codec vc1)
- V..... vp8_cuvid            Nvidia CUVID VP8 decoder (codec vp8)
- V..... vp9_cuvid            Nvidia CUVID VP9 decoder (codec vp9)
+ffmpeg - decoders | grep cuvid
+ V..... h264_cuvid           Nvidia CUVID H264 decoder(codec h264)
+ V..... hevc_cuvid           Nvidia CUVID HEVC decoder(codec hevc)
+ V..... mjpeg_cuvid          Nvidia CUVID MJPEG decoder(codec mjpeg)
+ V..... mpeg1_cuvid          Nvidia CUVID MPEG1VIDEO decoder(codec mpeg1video)
+ V..... mpeg2_cuvid          Nvidia CUVID MPEG2VIDEO decoder(codec mpeg2video)
+ V..... mpeg4_cuvid          Nvidia CUVID MPEG4 decoder(codec mpeg4)
+ V..... vc1_cuvid            Nvidia CUVID VC1 decoder(codec vc1)
+ V..... vp8_cuvid            Nvidia CUVID VP8 decoder(codec vp8)
+ V..... vp9_cuvid            Nvidia CUVID VP9 decoder(codec vp9)
 """
