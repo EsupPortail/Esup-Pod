@@ -129,7 +129,7 @@
 
     //videojs.options.flash.swf = "video-js.swf"
     var options = {
-      notSupportedMessage: "Please use different browser (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
+      notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
       language: "fr", //en or nl
       {% if request.GET.is_iframe %}
 		fluid: false,

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-25 10:34+0000\n"
+"POT-Creation-Date: 2020-11-26 08:54+0000\n"
 "PO-Revision-Date: 2018-07-03 13:41+0100\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -92,8 +92,7 @@ msgid "registered-reader"
 msgstr ""
 
 #: pod/authentication/models.py:68 pod/recorder/models.py:266
-#: pod/video/models.py:1413 pod/video/models.py:1454 pod/video/models.py:1462
-#: pod/video/views.py:1281
+#: pod/video/models.py:1413 pod/video/models.py:1462 pod/video/views.py:1281
 msgid "Comment"
 msgstr ""
 
@@ -1462,8 +1461,8 @@ msgstr ""
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:67
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:68
-#: pod/video/templates/videos/add_video.html:58
-#: pod/video/templates/videos/add_video.html:59
+#: pod/video/templates/videos/add_video.html:61
+#: pod/video/templates/videos/add_video.html:62
 msgid "Back to video edit"
 msgstr ""
 
@@ -1791,7 +1790,7 @@ msgstr ""
 msgid "name"
 msgstr ""
 
-#: pod/live/models.py:31 pod/live/templates/live/live.html:95
+#: pod/live/models.py:31 pod/live/templates/live/live.html:94
 #: pod/video/models.py:234 pod/video/models.py:318
 #: pod/video/templates/channel/channel.html:79
 #: pod/video/templates/channel/channel.html:90
@@ -1920,14 +1919,14 @@ msgid "Heartbeats"
 msgstr ""
 
 #: pod/live/templates/live/building.html:11
-#: pod/live/templates/live/live.html:21 pod/live/templates/live/live.html:25
+#: pod/live/templates/live/live.html:20 pod/live/templates/live/live.html:24
 #: pod/live/templates/live/lives.html:15 pod/live/templates/live/lives.html:18
 #: pod/live/templates/live/lives.html:21 pod/main/templates/navbar.html:32
 msgid "Lives"
 msgstr ""
 
 #: pod/live/templates/live/building.html:39
-#: pod/live/templates/live/live.html:105 pod/live/templates/live/lives.html:37
+#: pod/live/templates/live/live.html:104 pod/live/templates/live/lives.html:37
 msgid "Sorry, no lives found"
 msgstr ""
 
@@ -1953,25 +1952,30 @@ msgstr ""
 msgid "Send"
 msgstr ""
 
-#: pod/live/templates/live/live.html:102 pod/live/templates/live/lives.html:35
+#: pod/live/templates/live/live.html:101 pod/live/templates/live/lives.html:35
 msgid "no broadcast in progress"
 msgstr ""
 
-#: pod/live/templates/live/live.html:108 pod/live/templates/live/lives.html:40
+#: pod/live/templates/live/live.html:107 pod/live/templates/live/lives.html:40
 msgid "access map"
 msgstr ""
 
-#: pod/live/templates/live/live.html:170
+#: pod/live/templates/live/live.html:132
+#: pod/video/templates/videos/video-script.html:26
+msgid "Please use different browser"
+msgstr ""
+
+#: pod/live/templates/live/live.html:169
 msgid ""
 "Thank you for watching this streaming live with us. The page will reload "
 "automatically within a few seconds to display the video on hold."
 msgstr ""
 
-#: pod/live/templates/live/live.html:187
+#: pod/live/templates/live/live.html:186
 msgid "Live not found, displaying the video on hold, retry every 10 seconds"
 msgstr ""
 
-#: pod/live/templates/live/live.html:202
+#: pod/live/templates/live/live.html:201
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
 
@@ -2842,7 +2846,6 @@ msgstr ""
 #: pod/video/management/commands/check_obsolete_videos.py:251
 #: pod/video/management/commands/check_obsolete_videos.py:286
 #: pod/video/management/commands/check_obsolete_videos.py:321
-#: pod/video/utils.py:219
 msgid "Regards"
 msgstr ""
 
@@ -3472,13 +3475,13 @@ msgid "Select the main language used in the content."
 msgstr ""
 
 #: pod/recorder/models.py:178 pod/video/forms.py:199 pod/video/models.py:512
-#: pod/video/templates/videos/add_video.html:51
-#: pod/video/templates/videos/add_video.html:95
+#: pod/video/templates/videos/add_video.html:52
+#: pod/video/templates/videos/add_video.html:98
 msgid "Transcript"
 msgstr ""
 
 #: pod/recorder/models.py:179 pod/video/models.py:513
-#: pod/video/templates/videos/add_video.html:51
+#: pod/video/templates/videos/add_video.html:53
 msgid "Check this box if you want to transcript the audio.(beta version)"
 msgstr ""
 
@@ -3760,7 +3763,7 @@ msgid "File field"
 msgstr ""
 
 #: pod/video/forms.py:88 pod/video/models.py:457
-#: pod/video/templates/videos/add_video.html:85
+#: pod/video/templates/videos/add_video.html:88
 msgid "You can send an audio or video file."
 msgstr ""
 
@@ -3880,7 +3883,7 @@ msgid ""
 "automatically."
 msgstr ""
 
-#: pod/video/forms.py:200 pod/video/templates/videos/add_video.html:98
+#: pod/video/forms.py:200 pod/video/templates/videos/add_video.html:101
 msgid ""
 "Available only in French and English, transcription is a speech recognition "
 "technology that transforms an oral speech into text in an automated way. By "
@@ -3888,7 +3891,7 @@ msgid ""
 "encoding the video."
 msgstr ""
 
-#: pod/video/forms.py:205 pod/video/templates/videos/add_video.html:99
+#: pod/video/forms.py:205 pod/video/templates/videos/add_video.html:102
 msgid ""
 "You will probably have to modify this file using the captioning tool in the "
 "completion page to improve it."
@@ -3924,7 +3927,7 @@ msgstr ""
 msgid "Owner of the video cannot be an additional owner too"
 msgstr ""
 
-#: pod/video/forms.py:465 pod/video/templates/videos/add_video.html:82
+#: pod/video/forms.py:465 pod/video/templates/videos/add_video.html:85
 msgid "File"
 msgstr ""
 
@@ -4497,43 +4500,43 @@ msgstr ""
 msgid "Upload progress:"
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:54
+#: pod/video/templates/videos/add_video.html:57
 msgid ""
 "Do not leave the page if you encounter a connection problem during the "
 "upload, it will resume automatically when your connection is available again."
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:68
+#: pod/video/templates/videos/add_video.html:71
 #: pod/video/templates/videos/video_edit.html:179
 msgid "Uploading"
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:70
+#: pod/video/templates/videos/add_video.html:73
 #: pod/video/templates/videos/video_edit.html:181
 #, python-format
 msgid "The file size must be lower than %(video_max_upload_size)s Go."
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:71
+#: pod/video/templates/videos/add_video.html:74
 #: pod/video/templates/videos/video_edit.html:182
 msgid ""
 "The sending time depends on the size of your file and your upload speed. "
 "This can be quite long."
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:72
+#: pod/video/templates/videos/add_video.html:75
 #: pod/video/templates/videos/video_edit.html:183
 msgid ""
 "While sending your file, do not close your browser until you have received a "
 "message of success or failure."
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:73
+#: pod/video/templates/videos/add_video.html:76
 #: pod/video/templates/videos/video_edit.html:184
 msgid "An email will be sent to you when all encoding tasks are completed."
 msgstr ""
 
-#: pod/video/templates/videos/add_video.html:78
+#: pod/video/templates/videos/add_video.html:81
 #: pod/video/templates/videos/video_edit.html:194
 msgid "Help for form fields"
 msgstr ""
@@ -4958,7 +4961,8 @@ msgstr ""
 msgid "You will find it here:"
 msgstr ""
 
-#: pod/video/utils.py:131 pod/video/utils.py:155 pod/video/utils.py:243
+#: pod/video/utils.py:131 pod/video/utils.py:155 pod/video/utils.py:219
+#: pod/video/utils.py:243
 msgid "Regards."
 msgstr ""
 
