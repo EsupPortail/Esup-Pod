@@ -221,9 +221,12 @@ class TestCategory(TestCase):
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(actual_data['success'])
-        self.assertEqual(actual_data['title'], expected_data['title'])
-        self.assertEqual(actual_data['slug'], expected_data['slug'])
-        self.assertCountEqual(actual_data['videos'], expected_data['videos'])
+        self.assertEqual(
+                actual_data['category']['title'], expected_data['title'])
+        self.assertEqual(
+                actual_data['category']['slug'], expected_data['slug'])
+        self.assertCountEqual(
+                actual_data['category']['videos'], expected_data['videos'])
 
         # Add video in anthoer category
         # should return HttpResponseBadRequest:400
