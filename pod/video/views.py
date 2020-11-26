@@ -386,10 +386,11 @@ def my_videos(request):
         """
         cats = Category.objects.prefetch_related('video').filter(
             owner=request.user)
-        cats = map(lambda c: {
+        cats = list(map(lambda c: {
             'id': c.id, 'title': c.title, 'slug': c.slug, 'videos': list(
-                c.video.values_list('slug', flat=True))}, cats)
-        cats = json.dumps(list(cats), ensure_ascii=False)
+                c.video.values_list('slug', flat=True))}, cats))
+        cats.insert(0, len(videos_list))
+        cats = json.dumps(cats, ensure_ascii=False)
         videos_without_cat = list(filter(
             lambda v: not v.category_set.all().count(), videos_list))
 
@@ -1799,7 +1800,6 @@ def get_categories(request, c_slug=None):
                 'is_restricted': v.is_restricted,
                 'has_chapter': v.chapter_set.all().count() > 0,
                 'is_draft': v.is_draft}, cat.video.all()))
-
         return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
@@ -1970,7 +1970,15 @@ def delete_category(request, c_id):
 
         if cat.owner == c_user or c_user.is_superuser:
 
-            response['category_id'] = cat.id
+            response['id'] = cat.id
+            response['videos'] = list(
+                map(lambda v: {
+                    'slug': v.slug,
+                    'title': v.title,
+                    'duration': v.duration_in_time,
+                    'thumbnail': v.get_thumbnail_card(),
+                    'is_video': v.is_video}, cat.video.all()))
+
             cat.delete()
             response['success'] = True
 
