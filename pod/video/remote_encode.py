@@ -5,8 +5,16 @@ import logging
 import threading
 import subprocess
 import shlex
+import os
+import json
+import re
 
-from .models import Video, EncodingLog
+from .models import VideoRendition
+from .models import EncodingVideo
+from .models import EncodingLog
+from .models import PlaylistVideo
+from .models import Video
+
 from .encode import remove_old_data
 
 from .utils import change_encoding_step, add_encoding_log, check_file
@@ -121,8 +129,104 @@ def remote_encode_video(video_id):
 
 
 def store_remote_encoding_video(video_id):
+    msg = ""
     video_to_encode = Video.objects.get(id=video_id)
     output_dir = create_outputdir(video_id, video_to_encode.video.path)
+
+    # /usr/local/django_projects/podv2/pod/media/videos/fa131629fb906539f440ce16d7de8d62280fe087e90e546e4a6b49259b9a2424/12690
+    print(output_dir)
+
+    info_video = {}
+
+    with open(output_dir + "/info_video.json") as json_file:
+        info_video = json.load(json_file)
+
+    print(json.dumps(info_video, indent=2))
+
+    print(info_video["duration"])
+
+    master_playlist = ""
+
+    video_has_playlist = False
+
+    if info_video["has_stream_video"] == "true":
+        for encod_video in info_video["encode_video"]:
+            # PLAYLIST HLS FILE
+            if encod_video["encoding_format"] == "video/mp2t":
+                video_has_playlist = True
+                filename = os.path.splitext(encod_video["filename"])[0]
+                videofilenameM3u8 = os.path.join(
+                    output_dir, "%s.m3u8" % filename)
+                videofilenameTS = os.path.join(output_dir, "%s.ts" % filename)
+                msg += "\n- videofilenameM3u8 :\n%s" % videofilenameM3u8
+                msg += "\n- videofilenameTS :\n%s" % videofilenameTS
+
+                rendition = VideoRendition.objects.get(
+                    resolution=encod_video["rendition"])
+
+                int_bitrate = int(
+                    re.search(r"(\d+)k", rendition.video_bitrate, re.I
+                              ).groups()[0])
+                bandwidth = int_bitrate * 1000
+
+                if (
+                    check_file(videofilenameM3u8) and
+                    check_file(videofilenameTS)
+                ):
+
+                    encoding, created = EncodingVideo.objects.get_or_create(
+                        name=filename,
+                        video=video_to_encode,
+                        rendition=rendition,
+                        encoding_format="video/mp2t")
+                    encoding.source_file = videofilenameTS.replace(
+                        os.path.join(settings.MEDIA_ROOT, ""), '')
+                    encoding.save()
+
+                    playlist, created = PlaylistVideo.objects.get_or_create(
+                        name=filename,
+                        video=video_to_encode,
+                        encoding_format="application/x-mpegURL")
+                    playlist.source_file = videofilenameM3u8.replace(
+                        os.path.join(settings.MEDIA_ROOT, ""), '')
+                    playlist.save()
+
+                    master_playlist += "#EXT-X-STREAM-INF:BANDWIDTH=%s,\
+                            RESOLUTION=%s\n%s.m3u8\n" % (
+                        bandwidth,
+                        rendition.resolution,
+                        encod_video["filename"]
+                    )
+                else:
+                    msg = "save_playlist_file Wrong file or path : "\
+                        + "\n%s and %s" % (videofilenameM3u8, videofilenameTS)
+                    add_encoding_log(video_id, msg)
+                    change_encoding_step(video_id, -1, msg)
+                    send_email(msg, video_id)
+
+        if video_has_playlist:
+            playlist_master_file = output_dir + "/playlist.m3u8"
+            with open(playlist_master_file, "w") as f:
+                f.write("#EXTM3U\n#EXT-X-VERSION:3\n"+master_playlist)
+
+            if check_file(playlist_master_file):
+                playlist, created = PlaylistVideo.objects.get_or_create(
+                    name="playlist",
+                    video=video_to_encode,
+                    encoding_format="application/x-mpegURL")
+                playlist.source_file = output_dir.replace(
+                    os.path.join(settings.MEDIA_ROOT, ""), '')
+                playlist.source_file += "/playlist.m3u8"
+                playlist.save()
+
+                msg += "\n- Playlist :\n%s" % playlist_master_file
+            else:
+                msg = "save_playlist_master Wrong file or path : "\
+                    + "\n%s" % playlist_master_file
+                add_encoding_log(video_id, msg)
+                change_encoding_step(video_id, -1, msg)
+                send_email(msg, video_id)
+
     # get info_video_json
     # check output_dir files
     # if video -> create thumbnails if not exist and create overview
