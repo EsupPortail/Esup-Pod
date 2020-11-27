@@ -505,7 +505,7 @@ def encode(type, format, codec, height, file):
             {
                 "filename": "thumbnail.jpg",
             },
-            True
+            False
         )
 
     return_value, return_msg = launch_cmd(ffmpeg_cmd, type, format)
@@ -553,9 +553,9 @@ def get_info_video(file):
     duration = int(float("%s" % info["format"]['duration']))
     streams = info.get("streams", [])
     for stream in streams:
-        msg += stream.get("codec_type", "unknown")
+        msg += f'{stream.get("codec_type", "unknown")}'
         msg += ": "
-        msg += stream.get("codec_name", "unknown")
+        msg += f'{stream.get("codec_name", "unknown")}'
         if stream.get("codec_type", "unknown") == "video":
             codec = stream.get("codec_name", "unknown")
             has_stream_thumbnail = any(ext in codec.lower()
@@ -654,13 +654,9 @@ def add_info_video(key, value, append=False):
     if data.get(key) and append:
         val = data[key]
         print(type(val), type(data[key]))
-        if type(val) is list:
-            val.append(value)
-            data[key] = val
-        else:
-            data[key] = [val, value]
+        data[key] = val.append(value) if (type(val) is list) else [val, value]
     else:
-        data[key] = value
+        data[key] = [value] if append else value
     with open(VIDEOS_OUTPUT_DIR + "/info_video.json", "w") as outfile:
         json.dump(data, outfile, indent=2)
 

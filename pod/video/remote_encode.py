@@ -42,6 +42,8 @@ SSH_REMOTE_USER = getattr(
     settings, 'SSH_REMOTE_USER', "")
 SSH_REMOTE_HOST = getattr(
     settings, 'SSH_REMOTE_HOST', "")
+SSH_REMOTE_KEY = getattr(
+    settings, 'SSH_REMOTE_KEY', "")
 
 
 # ##########################################################################
@@ -92,14 +94,17 @@ def remote_encode_video(video_id):
         # launch remote encoding
         cmd = "./pod-encoding/submit.sh \
             -n encoding-{video_id} -i {video_input} \
-            -v {video_id} -u {user_hashkey}".format(
+            -v {video_id} -u {user_hashkey} -d {debug}".format(
             video_id=video_id,
             video_input=video_to_encode.video,
-            user_hashkey=video_to_encode.owner.owner.hashkey
+            user_hashkey=video_to_encode.owner.owner.hashkey,
+            debug=DEBUG
         )
 
-        remote_cmd = "ssh {user}@{host} \"{cmd}\"".format(
-            user=SSH_REMOTE_USER, host=SSH_REMOTE_HOST, cmd=cmd)
+        key = " -i %s " % SSH_REMOTE_KEY if SSH_REMOTE_KEY != "" else ""
+
+        remote_cmd = "ssh {key} {user}@{host} \"{cmd}\"".format(
+            key=key, user=SSH_REMOTE_USER, host=SSH_REMOTE_HOST, cmd=cmd)
 
         if DEBUG:
             print(remote_cmd)
@@ -143,29 +148,87 @@ def store_remote_encoding_video(video_id):
     msg = ""
     video_to_encode = Video.objects.get(id=video_id)
     output_dir = create_outputdir(video_id, video_to_encode.video.path)
-
-    # /usr/local/django_projects/podv2/pod/media/videos/fa131629fb906539f440ce16d7de8d62280fe087e90e546e4a6b49259b9a2424/12690
-    print(output_dir)
-
     info_video = {}
 
     with open(output_dir + "/info_video.json") as json_file:
         info_video = json.load(json_file)
 
-    print(json.dumps(info_video, indent=2))
+    if DEBUG:
+        print(output_dir)
+        print(json.dumps(info_video, indent=2))
 
     video_to_encode.duration = info_video["duration"]
     video_to_encode.encoding_in_progress = True
     video_to_encode.save()
 
+    msg += remote_video_part(video_to_encode, info_video, output_dir)
+
+    msg += remote_audio_part(video_to_encode, info_video, output_dir)
+
+    add_encoding_log(video_id, msg)
+    change_encoding_step(video_id, 0, "done")
+
+    video_to_encode = Video.objects.get(id=video_id)
+    video_to_encode.encoding_in_progress = False
+    video_to_encode.save()
+
+    # End
+    add_encoding_log(video_id, "End : %s" % time.ctime())
+    with open(output_dir + "/encoding.log", "a") as f:
+        f.write("\n\nEnd : %s" % time.ctime())
+
+    # envois mail fin encodage
+    if EMAIL_ON_ENCODING_COMPLETION:
+        send_email_encoding(video_to_encode)
+
+    # Transcript
+    """
+    main_threaded_transcript(video_id) if (
+            TRANSCRIPT and video_to_encode.transcript
+        ) else False
+    """
+    print('ALL is DONE')
+
+
+def remote_audio_part(video_to_encode, info_video, output_dir):
+    msg = ""
     if (
-            info_video["has_stream_video"] == "true"
+            info_video["has_stream_audio"]
+            and info_video.get("encode_audio")):
+        msg += import_remote_audio(
+            info_video["encode_audio"],
+            output_dir,
+            video_to_encode
+        )
+        if (
+                info_video["has_stream_thumbnail"]
+                and info_video.get("encode_thumbnail")):
+            msg += import_remote_thumbnail(
+                info_video["encode_thumbnail"],
+                output_dir,
+                video_to_encode
+            )
+    elif (
+            info_video["has_stream_audio"]
+            or info_video.get("encode_audio")):
+        msg += "\n- has stream audio but not info audio in json "
+        add_encoding_log(video_to_encode.id, msg)
+        change_encoding_step(video_to_encode.id, -1, msg)
+        send_email(msg, video_to_encode.id)
+    return msg
+
+
+def remote_video_part(video_to_encode, info_video, output_dir):
+    msg = ""
+    if (
+            info_video["has_stream_video"]
             and info_video.get("encode_video")):
         msg += import_remote_video(
             info_video["encode_video"],
             output_dir,
             video_to_encode
         )
+        video_id = video_to_encode.id
         # get the lower size of encoding mp4
         ev = EncodingVideo.objects.filter(
             video=video_to_encode, encoding_format="video/mp4")
@@ -174,7 +237,7 @@ def store_remote_encoding_video(video_id):
             add_encoding_log(video_id, msg)
             change_encoding_step(video_id, -1, msg)
             send_email(msg, video_id)
-            return
+            # return
         video_mp4 = sorted(ev, key=lambda m: m.height)[0]
 
         # create overview
@@ -202,7 +265,7 @@ def store_remote_encoding_video(video_id):
             "create_overview_image : %s" % msg_overview)
         # create thumbnail
         if (
-                info_video["has_stream_thumbnail"] == "true"
+                info_video["has_stream_thumbnail"]
                 and info_video.get("encode_thumbnail")):
             msg += import_remote_thumbnail(
                 info_video["encode_thumbnail"],
@@ -218,58 +281,14 @@ def store_remote_encoding_video(video_id):
             add_encoding_log(
                 video_id,
                 "create_and_save_thumbnails : %s" % msg_thumbnail)
-
-    else:
+    elif (
+            info_video["has_stream_video"]
+            or info_video.get("encode_video")):
         msg += "\n- has stream video but not info video "
         add_encoding_log(video_to_encode.id, msg)
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
-
-    if (
-            info_video["has_stream_audio"] == "true"
-            and info_video.get("encode_audio")):
-        msg += import_remote_audio(
-            info_video["encode_audio"],
-            output_dir,
-            video_to_encode
-        )
-        if (
-                info_video["has_stream_thumbnail"] == "true"
-                and info_video.get("encode_thumbnail")):
-            msg += import_remote_thumbnail(
-                info_video["encode_thumbnail"],
-                output_dir,
-                video_to_encode
-            )
-    else:
-        msg += "\n- has stream audio but not info audio in json "
-        add_encoding_log(video_to_encode.id, msg)
-        change_encoding_step(video_to_encode.id, -1, msg)
-        send_email(msg, video_to_encode.id)
-
-    add_encoding_log(video_id, msg)
-    change_encoding_step(video_id, 0, "done")
-
-    video_to_encode = Video.objects.get(id=video_id)
-    video_to_encode.encoding_in_progress = False
-    video_to_encode.save()
-
-    # End
-    add_encoding_log(video_id, "End : %s" % time.ctime())
-    with open(output_dir + "/encoding.log", "a") as f:
-        f.write("\n\nEnd : %s" % time.ctime())
-
-    # envois mail fin encodage
-    if EMAIL_ON_ENCODING_COMPLETION:
-        send_email_encoding(video_to_encode)
-
-    # Transcript
-    """
-    main_threaded_transcript(video_id) if (
-            TRANSCRIPT and video_to_encode.transcript
-        ) else False
-    """
-    print('ALL is DONE')
+    return msg
 
 
 def import_remote_thumbnail(
@@ -278,6 +297,9 @@ def import_remote_thumbnail(
     video_to_encode
 ):
     msg = ""
+    if type(info_encode_thumbnail) is list:
+        info_encode_thumbnail = info_encode_thumbnail[0]
+
     thumbnailfilename = os.path.join(
         output_dir, info_encode_thumbnail["filename"])
     if check_file(thumbnailfilename):
@@ -322,6 +344,8 @@ def import_remote_thumbnail(
 
 def import_remote_audio(info_encode_audio, output_dir, video_to_encode):
     msg = ""
+    if type(info_encode_audio) is dict:
+        info_encode_audio = [info_encode_audio]
     for encode_audio in info_encode_audio:
         if encode_audio["encoding_format"] == "audio/mp3":
             filename = os.path.splitext(encode_audio["filename"])[0]
@@ -379,7 +403,9 @@ def import_remote_video(info_encode_video, output_dir, video_to_encode):
             master_playlist += import_master_playlist
 
         if encod_video["encoding_format"] == "video/mp4":
-            import_msg = import_mp4(encod_video)
+            import_msg = import_mp4(encod_video,
+                                    output_dir,
+                                    video_to_encode)
             msg += import_msg
 
     if video_has_playlist:
@@ -392,9 +418,11 @@ def import_remote_video(info_encode_video, output_dir, video_to_encode):
                 name="playlist",
                 video=video_to_encode,
                 encoding_format="application/x-mpegURL")
-            playlist.source_file = output_dir.replace(
-                os.path.join(settings.MEDIA_ROOT, ""), '')
-            playlist.source_file += "/playlist.m3u8"
+            source_file = os.path.join(output_dir.replace(
+                os.path.join(settings.MEDIA_ROOT, ""), ''),
+                "/playlist.m3u8")
+            print(source_file)
+            playlist.source_file = source_file
             playlist.save()
 
             msg += "\n- Playlist :\n%s" % playlist_master_file
