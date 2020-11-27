@@ -1841,14 +1841,14 @@ def add_category(request):
     if request.method == "POST":  # create new category
 
         data = json.loads(request.body.decode("utf-8"))
+
         videos = Video.objects.filter(
             slug__in=data.get('videos', []))
 
         # constraint, video can be only in one of user's categories
-        user_cats = list(Category.objects.filter(owner=c_user))
-        v_already_in_user_cat = Video.objects.exclude(
-                category__in=user_cats
-                ).filter(slug__in=data.get('videos', [])).count()
+        user_cats = Category.objects.filter(owner=c_user)
+        v_already_in_user_cat = videos.filter(category__in=user_cats)
+
         if v_already_in_user_cat:
             response['message'] = _(
                     "One or many videos already have a category.")
@@ -1905,10 +1905,13 @@ def edit_category(request, c_slug):
         new_videos = Video.objects.filter(
             slug__in=data.get('videos', []))
 
+        new_videos = Video.objects.filter(
+            slug__in=data.get('videos', []))
+
         # constraint, video can be only in one of user's categories
-        user_cats = list(Category.objects.filter(owner=c_user))
-        v_already_in_user_cat = Video.objects.filter(
-            slug__in=data.get('videos', []), category__in=user_cats).count()
+        user_cats = Category.objects.filter(owner=c_user)
+        v_already_in_user_cat = new_videos.filter(category__in=user_cats)
+
         if v_already_in_user_cat:
             response['message'] = _(
                     "One or many videos already have a category.")
