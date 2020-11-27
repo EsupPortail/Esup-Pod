@@ -109,36 +109,44 @@ def remote_encode_video(video_id):
         if DEBUG:
             print(remote_cmd)
 
-        try:
-            output = subprocess.run(
-                shlex.split(remote_cmd), stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT)
-            if output.returncode != 0:
-                msg += 20*"////" + "\n"
-                msg += "ERROR RETURN CODE: {0}\n".format(output.returncode)
-                msg += output
-                add_encoding_log(video_id, msg)
-                change_encoding_step(video_id, -1, msg)
-                send_email(msg, video_id)
-        except subprocess.CalledProcessError as e:
-            # raise RuntimeError('ffprobe returned non-zero status: {}'.format(
-            # e.stderr))
-            msg += 20*"////" + "\n"
-            msg += "Runtime Error: {0}\n".format(e)
-            add_encoding_log(video_id, msg)
-            change_encoding_step(video_id, -1, msg)
-            send_email(msg, video_id)
-        except OSError as err:
-            # raise OSError(e.errno, 'ffprobe not found: {}'.format(e.strerror)
-            msg += 20*"////" + "\n"
-            msg += "OS error: {0}\n".format(err)
-            add_encoding_log(video_id, msg)
-            change_encoding_step(video_id, -1, msg)
-            send_email(msg, video_id)
+        process_cmd(remote_cmd, video_id)
 
     else:
         msg += "Wrong file or path : "\
             + "\n%s" % video_to_encode.video.path
+        add_encoding_log(video_id, msg)
+        change_encoding_step(video_id, -1, msg)
+        send_email(msg, video_id)
+
+
+def process_cmd(remote_cmd, video_id):
+    msg = ""
+    try:
+        output = subprocess.run(
+            shlex.split(remote_cmd), stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT)
+        add_encoding_log(video_id, "slurm output : %s" % output.stdout)
+        if DEBUG:
+            print(output.stdout)
+        if output.returncode != 0:
+            msg += 20*"////" + "\n"
+            msg += "ERROR RETURN CODE: {0}\n".format(output.returncode)
+            msg += output
+            add_encoding_log(video_id, msg)
+            change_encoding_step(video_id, -1, msg)
+            send_email(msg, video_id)
+    except subprocess.CalledProcessError as e:
+        # raise RuntimeError('ffprobe returned non-zero status: {}'.format(
+        # e.stderr))
+        msg += 20*"////" + "\n"
+        msg += "Runtime Error: {0}\n".format(e)
+        add_encoding_log(video_id, msg)
+        change_encoding_step(video_id, -1, msg)
+        send_email(msg, video_id)
+    except OSError as err:
+        # raise OSError(e.errno, 'ffprobe not found: {}'.format(e.strerror)
+        msg += 20*"////" + "\n"
+        msg += "OS error: {0}\n".format(err)
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
         send_email(msg, video_id)
@@ -164,6 +172,11 @@ def store_remote_encoding_video(video_id):
     msg += remote_video_part(video_to_encode, info_video, output_dir)
 
     msg += remote_audio_part(video_to_encode, info_video, output_dir)
+
+    if not info_video["has_stream_video"]:
+        video_to_encode = Video.objects.get(id=video_id)
+        video_to_encode.is_video = False
+        video_to_encode.save()
 
     add_encoding_log(video_id, msg)
     change_encoding_step(video_id, 0, "done")
@@ -288,6 +301,7 @@ def remote_video_part(video_to_encode, info_video, output_dir):
         add_encoding_log(video_to_encode.id, msg)
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
+
     return msg
 
 
@@ -418,11 +432,8 @@ def import_remote_video(info_encode_video, output_dir, video_to_encode):
                 name="playlist",
                 video=video_to_encode,
                 encoding_format="application/x-mpegURL")
-            source_file = os.path.join(output_dir.replace(
-                os.path.join(settings.MEDIA_ROOT, ""), ''),
-                "/playlist.m3u8")
-            print(source_file)
-            playlist.source_file = source_file
+            playlist.source_file = output_dir.replace(
+                os.path.join(settings.MEDIA_ROOT, ""), '') + "/playlist.m3u8"
             playlist.save()
 
             msg += "\n- Playlist :\n%s" % playlist_master_file
@@ -499,9 +510,8 @@ def import_m3u8(encod_video, output_dir, video_to_encode):
             os.path.join(settings.MEDIA_ROOT, ""), '')
         playlist.save()
 
-        master_playlist += "#EXT-X-STREAM-INF:BANDWIDTH=%s,\
-                RESOLUTION=%s\n%s.m3u8\n" % (
-            bandwidth,
+        master_playlist += "#EXT-X-STREAM-INF:BANDWIDTH=%s," % bandwidth
+        master_playlist += "RESOLUTION=%s\n%s\n" % (
             rendition.resolution,
             encod_video["filename"]
         )
