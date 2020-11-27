@@ -145,87 +145,8 @@ def store_remote_encoding_video(video_id):
 
     print(info_video["duration"])
 
-    master_playlist = ""
-
-    video_has_playlist = False
-
     if info_video["has_stream_video"] == "true":
-        for encod_video in info_video["encode_video"]:
-            # PLAYLIST HLS FILE
-            if encod_video["encoding_format"] == "video/mp2t":
-                video_has_playlist = True
-                filename = os.path.splitext(encod_video["filename"])[0]
-                videofilenameM3u8 = os.path.join(
-                    output_dir, "%s.m3u8" % filename)
-                videofilenameTS = os.path.join(output_dir, "%s.ts" % filename)
-                msg += "\n- videofilenameM3u8 :\n%s" % videofilenameM3u8
-                msg += "\n- videofilenameTS :\n%s" % videofilenameTS
-
-                rendition = VideoRendition.objects.get(
-                    resolution=encod_video["rendition"])
-
-                int_bitrate = int(
-                    re.search(r"(\d+)k", rendition.video_bitrate, re.I
-                              ).groups()[0])
-                bandwidth = int_bitrate * 1000
-
-                if (
-                    check_file(videofilenameM3u8) and
-                    check_file(videofilenameTS)
-                ):
-
-                    encoding, created = EncodingVideo.objects.get_or_create(
-                        name=filename,
-                        video=video_to_encode,
-                        rendition=rendition,
-                        encoding_format="video/mp2t")
-                    encoding.source_file = videofilenameTS.replace(
-                        os.path.join(settings.MEDIA_ROOT, ""), '')
-                    encoding.save()
-
-                    playlist, created = PlaylistVideo.objects.get_or_create(
-                        name=filename,
-                        video=video_to_encode,
-                        encoding_format="application/x-mpegURL")
-                    playlist.source_file = videofilenameM3u8.replace(
-                        os.path.join(settings.MEDIA_ROOT, ""), '')
-                    playlist.save()
-
-                    master_playlist += "#EXT-X-STREAM-INF:BANDWIDTH=%s,\
-                            RESOLUTION=%s\n%s.m3u8\n" % (
-                        bandwidth,
-                        rendition.resolution,
-                        encod_video["filename"]
-                    )
-                else:
-                    msg = "save_playlist_file Wrong file or path : "\
-                        + "\n%s and %s" % (videofilenameM3u8, videofilenameTS)
-                    add_encoding_log(video_id, msg)
-                    change_encoding_step(video_id, -1, msg)
-                    send_email(msg, video_id)
-
-        if video_has_playlist:
-            playlist_master_file = output_dir + "/playlist.m3u8"
-            with open(playlist_master_file, "w") as f:
-                f.write("#EXTM3U\n#EXT-X-VERSION:3\n"+master_playlist)
-
-            if check_file(playlist_master_file):
-                playlist, created = PlaylistVideo.objects.get_or_create(
-                    name="playlist",
-                    video=video_to_encode,
-                    encoding_format="application/x-mpegURL")
-                playlist.source_file = output_dir.replace(
-                    os.path.join(settings.MEDIA_ROOT, ""), '')
-                playlist.source_file += "/playlist.m3u8"
-                playlist.save()
-
-                msg += "\n- Playlist :\n%s" % playlist_master_file
-            else:
-                msg = "save_playlist_master Wrong file or path : "\
-                    + "\n%s" % playlist_master_file
-                add_encoding_log(video_id, msg)
-                change_encoding_step(video_id, -1, msg)
-                send_email(msg, video_id)
+        msg += import_remote_video(info_video, output_dir, video_to_encode)
 
     # get info_video_json
     # check output_dir files
@@ -253,3 +174,108 @@ def store_remote_encoding_video(video_id):
         ) else False
     """
     print('ALL is DONE')
+
+
+def import_remote_video(info_video, output_dir, video_to_encode):
+    msg = ""
+    master_playlist = ""
+    video_has_playlist = False
+    for encod_video in info_video["encode_video"]:
+        # PLAYLIST HLS FILE
+        if encod_video["encoding_format"] == "video/mp2t":
+            video_has_playlist = True
+            import_msg, import_master_playlist = import_m3u8(
+                encod_video,
+                output_dir,
+                video_to_encode
+            )
+            msg += import_msg
+            master_playlist += import_master_playlist
+
+        if encod_video["encoding_format"] == "video/mp4":
+            import_msg = import_mp4(encod_video)
+            msg += import_msg
+
+    if video_has_playlist:
+        playlist_master_file = output_dir + "/playlist.m3u8"
+        with open(playlist_master_file, "w") as f:
+            f.write("#EXTM3U\n#EXT-X-VERSION:3\n"+master_playlist)
+
+        if check_file(playlist_master_file):
+            playlist, created = PlaylistVideo.objects.get_or_create(
+                name="playlist",
+                video=video_to_encode,
+                encoding_format="application/x-mpegURL")
+            playlist.source_file = output_dir.replace(
+                os.path.join(settings.MEDIA_ROOT, ""), '')
+            playlist.source_file += "/playlist.m3u8"
+            playlist.save()
+
+            msg += "\n- Playlist :\n%s" % playlist_master_file
+        else:
+            msg = "save_playlist_master Wrong file or path : "\
+                + "\n%s" % playlist_master_file
+            add_encoding_log(video_to_encode.id, msg)
+            change_encoding_step(video_to_encode.id, -1, msg)
+            send_email(msg, video_to_encode.id)
+    return msg
+
+
+def import_mp4(encod_video):
+    return "coucou"
+
+
+def import_m3u8(encod_video, output_dir, video_to_encode):
+    msg = ""
+    master_playlist = ""
+    filename = os.path.splitext(encod_video["filename"])[0]
+    videofilenameM3u8 = os.path.join(
+        output_dir, "%s.m3u8" % filename)
+    videofilenameTS = os.path.join(output_dir, "%s.ts" % filename)
+    msg += "\n- videofilenameM3u8 :\n%s" % videofilenameM3u8
+    msg += "\n- videofilenameTS :\n%s" % videofilenameTS
+
+    rendition = VideoRendition.objects.get(
+        resolution=encod_video["rendition"])
+
+    int_bitrate = int(
+        re.search(r"(\d+)k", rendition.video_bitrate, re.I
+                  ).groups()[0])
+    bandwidth = int_bitrate * 1000
+
+    if (
+        check_file(videofilenameM3u8) and
+        check_file(videofilenameTS)
+    ):
+
+        encoding, created = EncodingVideo.objects.get_or_create(
+            name=filename,
+            video=video_to_encode,
+            rendition=rendition,
+            encoding_format="video/mp2t")
+        encoding.source_file = videofilenameTS.replace(
+            os.path.join(settings.MEDIA_ROOT, ""), '')
+        encoding.save()
+
+        playlist, created = PlaylistVideo.objects.get_or_create(
+            name=filename,
+            video=video_to_encode,
+            encoding_format="application/x-mpegURL")
+        playlist.source_file = videofilenameM3u8.replace(
+            os.path.join(settings.MEDIA_ROOT, ""), '')
+        playlist.save()
+
+        master_playlist += "#EXT-X-STREAM-INF:BANDWIDTH=%s,\
+                RESOLUTION=%s\n%s.m3u8\n" % (
+            bandwidth,
+            rendition.resolution,
+            encod_video["filename"]
+        )
+    else:
+        msg = "save_playlist_file Wrong file or path : "\
+            + "\n%s and %s" % (videofilenameM3u8, videofilenameTS)
+        add_encoding_log(video_to_encode.id, msg)
+        change_encoding_step(video_to_encode.id, -1, msg)
+        send_email(msg, video_to_encode.id)
+
+    return msg, master_playlist
