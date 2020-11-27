@@ -5,6 +5,7 @@ from django.conf import settings
 from pod.video.views import VIDEOS
 from pod.video_search.utils import index_es, delete_es
 from pod.video_search.utils import delete_index_es, create_index_es
+import time
 
 
 class Command(BaseCommand):
@@ -25,8 +26,14 @@ class Command(BaseCommand):
         translation.activate(settings.LANGUAGE_CODE)
         if options['all']:
             delete_index_es()
+            time.sleep(10)
             create_index_es()
+            time.sleep(10)
+            iteration = 0
             for video in VIDEOS:
+                if iteration % 1000 == 0:
+                    time.sleep(10)
+                iteration += 1
                 index_es(video)
         elif options['video_id']:
             for video_id in options['video_id']:
