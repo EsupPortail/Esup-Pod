@@ -52,7 +52,8 @@
 	let prev = modal_video_list.querySelector('.previous_content');
         nextHandler(prev, next);
         previousHandler(prev, next);
-        VIDEOS_LIST_CHUNK.videos.chunk[VIDEOS_LIST_CHUNK.curr_i].forEach(v => appendVideoCard(
+	let videos_to_display = VIDEOS_LIST_CHUNK.videos.chunk.length?VIDEOS_LIST_CHUNK.videos.chunk[VIDEOS_LIST_CHUNK.curr_i]:[];
+        videos_to_display.forEach(v => appendVideoCard(
 	    toggleSelectedClass(v)
 	));
     }
@@ -72,6 +73,7 @@
 	if(VIDEOS_LIST_CHUNK.videos.chunk.length > 1)
         {
             modal_video_list.classList.add("show");
+	    modal_video_list.querySelector('.next_content').classList.remove('disable');
 	    show_paginate_videos();
 	}
 	else
@@ -539,7 +541,8 @@
 
     // Handler to edit category, c_e=current category to edit
     let editHandler = (c_e) =>{
-	c_e.addEventListener('click', (e) =>{
+	c_e.addEventListener('click', (e) =>
+	{
 	    loader.classList.add('show');
 	    cat_edit_title = c_e.dataset.title.trim();
 	    cat_edit_slug = c_e.dataset.slug.trim();
