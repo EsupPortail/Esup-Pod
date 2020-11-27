@@ -24,6 +24,7 @@
 	</div>
     </div>
     <!-- End Loader -->
+    {% include "videos/category_modal.html" %}
     {% endif %}
   {% if videos.paginator.count == 0 %}
   <h3>{% trans "No video found"%}</h3>
@@ -33,16 +34,18 @@
   <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the video on which you want to work with." %}</p>
   {% include "videos/video_list.html" %}
   {% endif %}
-  {% include "videos/category_modal.html" %}
 {% endblock page_content %}
 
-{% block collapse_page_aside %}
-    {{ block.super }}
-{% endblock collapse_page_aside %}
 {% if USE_CATEGORY %}
-{% block page_aside %}
- {% include 'videos/filter_aside_category.html' %}
-{% endblock page_aside %}
+
+    {% block collapse_page_aside %}
+    {{ block.super }}
+    {% endblock collapse_page_aside %}
+
+    {% block page_aside %}
+    {% include 'videos/filter_aside_category.html' %}
+    {% endblock page_aside %}
+
 {% endif %}
 {% block more_script %}
 <script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
@@ -71,7 +74,8 @@
     }
   });
 {% if USE_CATEGORY %}
-let CATEGORIES_DATA = {{ categories | safe }};
+const CATEGORIES_DATA = {{ categories | safe }};
+const VIDEOS_WITHOUT_CAT = {{ videos_without_cat | safe }};
 </script>
 <script tyep="text/javascript" defer src="{% static 'js/video_category.js' %}"></script>
 {% else %}
