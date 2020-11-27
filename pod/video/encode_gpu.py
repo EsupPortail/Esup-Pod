@@ -551,8 +551,9 @@ def get_info_video(file):
     duration = int(float("%s" % info["format"]['duration']))
     streams = info.get("streams", [])
     for stream in streams:
-        msg += f'{stream.get("codec_type", "unknown")}: \
-                {stream.get("codec_name", "unknown")}'
+        msg += f'{stream.get("codec_type", "unknown")}'
+        msg += ": "
+        msg += f'{stream.get("codec_name", "unknown")}'
         if stream.get("codec_type", "unknown") == "video":
             codec = stream.get("codec_name", "unknown")
             has_stream_thumbnail = any(ext in codec.lower()

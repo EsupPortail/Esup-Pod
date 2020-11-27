@@ -145,12 +145,14 @@ def store_remote_encoding_video(video_id):
 
     print(info_video["duration"])
 
-    if info_video["has_stream_video"] == "true":
-        msg += import_remote_video(info_video, output_dir, video_to_encode)
-
-    # get info_video_json
-    # check output_dir files
-    # if video -> create thumbnails if not exist and create overview
+    if (
+            info_video["has_stream_video"] == "true"
+            and info_video.get("encode_video")):
+        msg += import_remote_video(
+            info_video["encode_video"],
+            output_dir,
+            video_to_encode
+        )
 
     change_encoding_step(video_id, 0, "done")
 
@@ -176,11 +178,11 @@ def store_remote_encoding_video(video_id):
     print('ALL is DONE')
 
 
-def import_remote_video(info_video, output_dir, video_to_encode):
+def import_remote_video(info_encode_video, output_dir, video_to_encode):
     msg = ""
     master_playlist = ""
     video_has_playlist = False
-    for encod_video in info_video["encode_video"]:
+    for encod_video in info_encode_video:
         # PLAYLIST HLS FILE
         if encod_video["encoding_format"] == "video/mp2t":
             video_has_playlist = True
@@ -221,8 +223,28 @@ def import_remote_video(info_video, output_dir, video_to_encode):
     return msg
 
 
-def import_mp4(encod_video):
-    return "coucou"
+def import_mp4(encod_video, output_dir, video_to_encode):
+    filename = os.path.splitext(encod_video["filename"])[0]
+    videofilenameMp4 = os.path.join(output_dir, "%s.mp4" % filename)
+    msg = "\n- videofilenameMp4 :\n%s" % videofilenameMp4
+    if check_file(videofilenameMp4):
+        rendition = VideoRendition.objects.get(
+            resolution=encod_video["rendition"])
+        encoding, created = EncodingVideo.objects.get_or_create(
+            name=filename,
+            video=video_to_encode,
+            rendition=rendition,
+            encoding_format="video/mp4")
+        encoding.source_file = videofilenameMp4.replace(
+            os.path.join(settings.MEDIA_ROOT, ""), '')
+        encoding.save()
+    else:
+        msg = "save_mp4_file Wrong file or path : "\
+            + "\n%s " % (videofilenameMp4)
+        add_encoding_log(video_to_encode.id, msg)
+        change_encoding_step(video_to_encode.id, -1, msg)
+        send_email(msg, video_to_encode.id)
+    return msg
 
 
 def import_m3u8(encod_video, output_dir, video_to_encode):
