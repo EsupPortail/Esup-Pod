@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand
 from django.core.exceptions import ObjectDoesNotExist
 
 from pod.video.models import Video
-from pod.video.remote_encode import start_store_remote_encoding_video
+from pod.video.remote_encode import store_remote_encoding_video
 
 
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", 'fr')
@@ -28,7 +28,7 @@ class Command(BaseCommand):
         video_id = options['video_id']
         try:
             video = Video.objects.get(id=video_id)
-            start_store_remote_encoding_video(video_id)
+            store_remote_encoding_video(video_id)
             self.stdout.write(self.style.SUCCESS(
                 'Successfully import encoded video "%s"' % (video)))
         except ObjectDoesNotExist:
