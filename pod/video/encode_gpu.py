@@ -537,6 +537,8 @@ def get_info_video(file):
     msg = "--> get_info_video" + "\n"
     probe_cmd = 'ffprobe -v quiet -show_format -show_streams \
                 -print_format json -i {}/{}'.format(VIDEOS_DIR, file)
+    if DEBUG:
+        print(probe_cmd)
     msg += probe_cmd + "\n"
     has_stream_video = False
     has_stream_thumbnail = False
@@ -649,7 +651,7 @@ def add_info_video(key, value, append=False):
         pass
     if DEBUG:
         print(data, data.get(key), key, value, append)
-    if data.get(key) and append is True:
+    if data.get(key) and append:
         val = data[key]
         print(type(val), type(data[key]))
         if type(val) is list:
@@ -711,22 +713,37 @@ if __name__ == "__main__":
     open(VIDEOS_OUTPUT_DIR + "/info_video.json", "w").close()
 
     input_file = os.path.basename(format(args.input)) if args.input else ""
-    msg += 'Encoding file {} \n'.format(input_file)
+    path_file = '{}/{}'.format(VIDEOS_DIR, input_file)
+    if os.access(path_file, os.F_OK) and os.stat(path_file).st_size > 0:
+        # remove accent and space
+        filename = ''.join(
+            (
+                c for c in unicodedata.normalize(
+                    'NFD', input_file
+                ) if unicodedata.category(c) != 'Mn'
+            )
+        )
+        filename = filename.replace(' ', '_')
+        os.rename('{}/{}'.format(VIDEOS_DIR, input_file),
+                  '{}/{}'.format(VIDEOS_DIR, filename))
+        msg += 'Encoding file {} \n'.format(filename)
 
-    info_video = {}
+        info_video = {}
 
-    info_video = get_info_video(input_file)
-    msg += " \n"
-    msg += json.dumps(info_video, indent=2)
-    msg += " \n"
-    for val in info_video:
-        add_info_video(val, info_video[val])
+        info_video = get_info_video(filename)
+        msg += " \n"
+        msg += json.dumps(info_video, indent=2)
+        msg += " \n"
+        for val in info_video:
+            add_info_video(val, info_video[val])
 
-    encode_result = launch_encode(info_video, input_file)
-    add_info_video("encode_result", encode_result)
-    msg += "- fin de l'encodage : %s \n" % time.ctime()
-    encode_log(msg)
-
+        encode_result = launch_encode(info_video, filename)
+        add_info_video("encode_result", encode_result)
+        msg += "- fin de l'encodage : %s \n" % time.ctime()
+        encode_log(msg)
+    else:
+        msg += "\n Wrong file or path %s " % path_file
+        encode_log(msg)
 
 """
 ffmpeg - decoders | grep cuvid

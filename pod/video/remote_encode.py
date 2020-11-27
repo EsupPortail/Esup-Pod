@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.files import File
 
 import time
 import logging
@@ -16,10 +17,19 @@ from .models import EncodingLog
 from .models import PlaylistVideo
 from .models import Video
 
-from .encode import remove_old_data
+from .encode import remove_old_data, remove_previous_overview
+from .encode import create_overview_image, create_and_save_thumbnails
 
 from .utils import change_encoding_step, add_encoding_log, check_file
 from .utils import create_outputdir, send_email, send_email_encoding
+
+if getattr(settings, 'USE_PODFILE', False):
+    FILEPICKER = True
+    from pod.podfile.models import CustomImageModel
+    from pod.podfile.models import UserFolder
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomImageModel
 
 log = logging.getLogger(__name__)
 
@@ -144,7 +154,9 @@ def store_remote_encoding_video(video_id):
 
     print(json.dumps(info_video, indent=2))
 
-    print(info_video["duration"])
+    video_to_encode.duration = info_video["duration"]
+    video_to_encode.encoding_in_progress = True
+    video_to_encode.save()
 
     if (
             info_video["has_stream_video"] == "true"
@@ -154,6 +166,64 @@ def store_remote_encoding_video(video_id):
             output_dir,
             video_to_encode
         )
+        # get the lower size of encoding mp4
+        ev = EncodingVideo.objects.filter(
+            video=video_to_encode, encoding_format="video/mp4")
+        if ev.count() == 0:
+            msg = "NO MP4 FILES FOUND !"
+            add_encoding_log(video_id, msg)
+            change_encoding_step(video_id, -1, msg)
+            send_email(msg, video_id)
+            return
+        video_mp4 = sorted(ev, key=lambda m: m.height)[0]
+
+        # create overview
+        overviewfilename = '%(output_dir)s/overview.vtt' % {
+            'output_dir': output_dir}
+        image_url = 'overview.png'
+        overviewimagefilename = '%(output_dir)s/%(image_url)s' % {
+            'output_dir': output_dir, 'image_url': image_url}
+        image_width = video_mp4.width / 4  # width of generate image file
+        change_encoding_step(
+            video_id, 4,
+            "encoding video file : 7/11 remove_previous_overview")
+        remove_previous_overview(overviewfilename, overviewimagefilename)
+        nb_img = 99 if (
+            info_video["duration"] > 99) else info_video["duration"]
+        change_encoding_step(
+            video_id, 4,
+            "encoding video file : 8/11 create_overview_image")
+        msg_overview = create_overview_image(
+            video_id,
+            video_mp4.video.video.path, info_video["duration"],
+            nb_img, image_width, overviewimagefilename, overviewfilename)
+        add_encoding_log(
+            video_id,
+            "create_overview_image : %s" % msg_overview)
+        # create thumbnail
+        if (
+                info_video["has_stream_thumbnail"] == "true"
+                and info_video.get("encode_thumbnail")):
+            msg += import_remote_thumbnail(
+                info_video["encode_thumbnail"],
+                output_dir,
+                video_to_encode
+            )
+        else:
+            change_encoding_step(
+                video_id, 4,
+                "encoding video file : 11/11 create_and_save_thumbnails")
+            msg_thumbnail = create_and_save_thumbnails(
+                video_mp4.video.video.path, video_mp4.width, video_id)
+            add_encoding_log(
+                video_id,
+                "create_and_save_thumbnails : %s" % msg_thumbnail)
+
+    else:
+        msg += "\n- has stream video but not info video "
+        add_encoding_log(video_to_encode.id, msg)
+        change_encoding_step(video_to_encode.id, -1, msg)
+        send_email(msg, video_to_encode.id)
 
     if (
             info_video["has_stream_audio"] == "true"
@@ -163,7 +233,21 @@ def store_remote_encoding_video(video_id):
             output_dir,
             video_to_encode
         )
+        if (
+                info_video["has_stream_thumbnail"] == "true"
+                and info_video.get("encode_thumbnail")):
+            msg += import_remote_thumbnail(
+                info_video["encode_thumbnail"],
+                output_dir,
+                video_to_encode
+            )
+    else:
+        msg += "\n- has stream audio but not info audio in json "
+        add_encoding_log(video_to_encode.id, msg)
+        change_encoding_step(video_to_encode.id, -1, msg)
+        send_email(msg, video_to_encode.id)
 
+    add_encoding_log(video_id, msg)
     change_encoding_step(video_id, 0, "done")
 
     video_to_encode = Video.objects.get(id=video_id)
@@ -186,6 +270,54 @@ def store_remote_encoding_video(video_id):
         ) else False
     """
     print('ALL is DONE')
+
+
+def import_remote_thumbnail(
+    info_encode_thumbnail,
+    output_dir,
+    video_to_encode
+):
+    msg = ""
+    thumbnailfilename = os.path.join(
+        output_dir, info_encode_thumbnail["filename"])
+    if check_file(thumbnailfilename):
+        if FILEPICKER:
+            homedir, created = UserFolder.objects.get_or_create(
+                name='home',
+                owner=video_to_encode.owner)
+            videodir, created = UserFolder.objects.get_or_create(
+                name='%s' % video_to_encode.slug,
+                owner=video_to_encode.owner)
+            thumbnail = CustomImageModel(
+                folder=videodir,
+                created_by=video_to_encode.owner
+            )
+            thumbnail.file.save(
+                info_encode_thumbnail["filename"],
+                File(open(thumbnailfilename, "rb")),
+                save=True)
+            thumbnail.save()
+            video_to_encode.thumbnail = thumbnail
+            video_to_encode.save()
+        else:
+            thumbnail = CustomImageModel()
+            thumbnail.file.save(
+                info_encode_thumbnail["filename"],
+                File(open(thumbnailfilename, "rb")),
+                save=True)
+            thumbnail.save()
+            video_to_encode.thumbnail = thumbnail
+            video_to_encode.save()
+        # remove tempfile
+        msg += "\n- thumbnailfilename :\n%s" % (thumbnail.file.path)
+        os.remove(thumbnailfilename)
+    else:
+        msg += "\nERROR THUMBNAILS %s " % thumbnailfilename
+        msg += "Wrong file or path"
+        add_encoding_log(video_to_encode.id, msg)
+        change_encoding_step(video_to_encode.id, -1, msg)
+        send_email(msg, video_to_encode.id)
+    return msg
 
 
 def import_remote_audio(info_encode_audio, output_dir, video_to_encode):
