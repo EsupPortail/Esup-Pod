@@ -11,6 +11,7 @@ import re
 
 from .models import VideoRendition
 from .models import EncodingVideo
+from .models import EncodingAudio
 from .models import EncodingLog
 from .models import PlaylistVideo
 from .models import Video
@@ -154,6 +155,15 @@ def store_remote_encoding_video(video_id):
             video_to_encode
         )
 
+    if (
+            info_video["has_stream_audio"] == "true"
+            and info_video.get("encode_audio")):
+        msg += import_remote_audio(
+            info_video["encode_audio"],
+            output_dir,
+            video_to_encode
+        )
+
     change_encoding_step(video_id, 0, "done")
 
     video_to_encode = Video.objects.get(id=video_id)
@@ -176,6 +186,48 @@ def store_remote_encoding_video(video_id):
         ) else False
     """
     print('ALL is DONE')
+
+
+def import_remote_audio(info_encode_audio, output_dir, video_to_encode):
+    msg = ""
+    for encode_audio in info_encode_audio:
+        if encode_audio["encoding_format"] == "audio/mp3":
+            filename = os.path.splitext(encode_audio["filename"])[0]
+            audiofilename = os.path.join(output_dir, "%s.mp3" % filename)
+            if check_file(audiofilename):
+                encoding, created = EncodingAudio.objects.get_or_create(
+                    name="audio",
+                    video=video_to_encode,
+                    encoding_format="audio/mp3")
+                encoding.source_file = audiofilename.replace(
+                    os.path.join(settings.MEDIA_ROOT, ""), '')
+                encoding.save()
+                msg += "\n- encode_video_mp3 :\n%s" % audiofilename
+            else:
+                msg += "\n- encode_video_mp3 Wrong file or path "
+                msg += audiofilename + " "
+                add_encoding_log(video_to_encode.id, msg)
+                change_encoding_step(video_to_encode.id, -1, msg)
+                send_email(msg, video_to_encode.id)
+        if encode_audio["encoding_format"] == "video/mp4":
+            filename = os.path.splitext(encode_audio["filename"])[0]
+            audiofilename = os.path.join(output_dir, "%s.m4a" % filename)
+            if check_file(audiofilename):
+                encoding, created = EncodingAudio.objects.get_or_create(
+                    name="audio",
+                    video=video_to_encode,
+                    encoding_format="video/mp4")
+                encoding.source_file = audiofilename.replace(
+                    os.path.join(settings.MEDIA_ROOT, ""), '')
+                encoding.save()
+                msg += "\n- encode_video_m4a :\n%s" % audiofilename
+            else:
+                msg += "\n- encode_video_m4a Wrong file or path "
+                msg += audiofilename + " "
+                add_encoding_log(video_to_encode.id, msg)
+                change_encoding_step(video_to_encode.id, -1, msg)
+                send_email(msg, video_to_encode.id)
+    return msg
 
 
 def import_remote_video(info_encode_video, output_dir, video_to_encode):
