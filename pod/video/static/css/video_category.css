@@ -53,7 +53,7 @@
     border: 1px solid #ccc;
 }
 
-#manageCategoryModal .category_modal_video_list{
+#manageCategoryModal .category_modal_videos_list{
     width: 100%;
     max-height: 450px;
     height: 320px;
@@ -65,19 +65,19 @@
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     grid-gap: .4em;
 }
-#manageCategoryModal .category_modal_video_list .infinite-item{
+#manageCategoryModal .category_modal_videos_list .infinite-item{
     padding: .2em .4em;
     min-width: 133px;
     max-width: 100%;
     position: relative;
     transition: .3s transform;
 }
-#manageCategoryModal .category_modal_video_list .infinite-item.selected{
+#manageCategoryModal .category_modal_videos_list .infinite-item.selected{
     border: 2px solid rgba(249, 249, 249, 0.8);
     border-radius: 4px;
     background-color: rgba(249, 249, 249, 0.8);
 }
-#manageCategoryModal .category_modal_video_list .infinite-item .checked_overlay{
+#manageCategoryModal .category_modal_videos_list .infinite-item .checked_overlay{
     display: flex;
     position: absolute;
     background-color: rgba(249, 249, 249, 0.8);
@@ -92,44 +92,44 @@
     opacity: 0;
     transition: opacity .3s;
 }
-#manageCategoryModal .category_modal_video_list .infinite-item .card_selected{
+#manageCategoryModal .category_modal_videos_list .infinite-item .card_selected{
     display: block;
     width: 25%;
     color: var(--primary);
     transition: all .3s;
 }
-#manageCategoryModal .category_modal_video_list .infinite-item:not(.selected):hover,
-#manageCategoryModal .category_modal_video_list .infinite-item .checked_overlay:hover .card_selected{
+#manageCategoryModal .category_modal_videos_list .infinite-item:not(.selected):hover,
+#manageCategoryModal .category_modal_videos_list .infinite-item .checked_overlay:hover .card_selected{
     transform: scale(1.04);
 }
-#manageCategoryModal .category_modal_video_list .infinite-item.selected .checked_overlay{
+#manageCategoryModal .category_modal_videos_list .infinite-item.selected .checked_overlay{
     opacity: 1;
 }
 
-#manageCategoryModal .category_modal_video_list .modal_category_card{
+#manageCategoryModal .category_modal_videos_list .modal_category_card{
     margin-bottom: .4em !important;
     position: relative;
     width: 100%;
     height: 100%;
     border-radius: 4px;
 }
-#manageCategoryModal .category_modal_video_list .card-header{
+#manageCategoryModal .category_modal_videos_list .card-header{
     background-color: var(--primary);
     color: white;
     font-size: 14px;
     padding: .4em;
     height: 35px;
 }
-#manageCategoryModal .category_modal_video_list .card-header *{
+#manageCategoryModal .category_modal_videos_list .card-header *{
     color: inherit !important;
 }
-#manageCategoryModal .category_modal_video_list .card-footer{
+#manageCategoryModal .category_modal_videos_list .card-footer{
     padding: .4em;
     color: var(--primary);
     height: 40px;
     overflow: hidden;
 }
-#manageCategoryModal .category_modal_video_list .card-footer .video_title{
+#manageCategoryModal .category_modal_videos_list .card-footer .video_title{
     display: inline-block;
     line-height: 1;
     height: 100%;
@@ -261,8 +261,8 @@
 /************************************
  * Override Paginator css
  * **********************************/
-.category_modal_video_list.show{ height: 375px !important; }
-.category_modal_video_list.show .paginator,
+.category_modal_videos_list.show{ height: 375px !important; }
+.category_modal_videos_list.show .paginator,
 .loader_wrapper.show{ display: flex; }
 
 .paginator{
