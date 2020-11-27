@@ -9,6 +9,7 @@ from pod.live.models import Building, Broadcaster, HeartBeat
 from pod.video.models import Video
 from pod.video.models import Type
 from django.core.management import call_command
+# from django.core.exceptions import PermissionDenied
 import ast
 from django.http import JsonResponse
 import datetime
@@ -68,6 +69,42 @@ class LiveViewsTestCase(TestCase):
 
         print(
             "   --->  test_lives of liveViewsTestCase : OK !")
+
+    def test_building(self):
+        self.client = Client()
+        self.user = User.objects.create(
+            username='randomviewer', first_name="Jean", last_name="Viewer")
+
+        password = 'password'
+        self.superuser = User.objects.create_superuser(
+            'myuser', 'myemail@test.com', password)
+
+        self.building = Building.objects.get(name='bulding1')
+        response = self.client.get('/live/building/%s/' % self.building.id)
+
+        self.assertRedirects(
+            response,
+            '%s?referrer=%s' % (
+                settings.LOGIN_URL,
+                '/live/building/%s/' % self.building.id),
+            status_code=302,
+            target_status_code=302)
+
+        # User logged in
+        self.client.force_login(self.user)
+        # Broadcaster restricted
+        response = self.client.get('/live/building/%s/' % self.building.id)
+        # self.assertRaises(PermissionDenied, response)
+        self.assertEqual(response.status_code, 403)
+
+        # User logged in
+        self.client.force_login(self.superuser)
+        # Broadcaster restricted
+        response = self.client.get('/live/building/%s/' % self.building.id)
+        self.assertTemplateUsed(response, "live/building.html")
+
+        print(
+            "   --->  test_building of liveViewsTestCase : OK !")
 
     def test_heartbeat(self):
         self.client = Client()

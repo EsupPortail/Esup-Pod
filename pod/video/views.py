@@ -1617,6 +1617,7 @@ def video_add(request):
         'max_size': VIDEO_MAX_UPLOAD_SIZE,
         'allow_extension': allow_extension,
         'allowed_text': allowed_text,
+        'restricted_to_staff': RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY,
         'TRANSCRIPT': TRANSCRIPT})
 
 

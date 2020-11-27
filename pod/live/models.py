@@ -48,6 +48,12 @@ class Building(models.Model):
         verbose_name = _("Building")
         verbose_name_plural = _("Buildings")
         ordering = ['name']
+        permissions = (
+            (
+                "view_building_supervisor",
+                "Can see the supervisor page for building"
+            ),
+        )
 
 
 @receiver(post_save, sender=Building)
@@ -86,7 +92,7 @@ class Broadcaster(models.Model):
         'Url of the embedded site to display'), null=True, blank=True)
     iframe_height = models.IntegerField(
         _('Embedded Site Height'), null=True, blank=True, help_text=_(
-         'Height of the embedded site (in pixels)'))
+            'Height of the embedded site (in pixels)'))
     status = models.BooleanField(default=0, help_text=_(
         'Check if the broadcaster is currently sending stream.'))
     enable_viewer_count = models.BooleanField(

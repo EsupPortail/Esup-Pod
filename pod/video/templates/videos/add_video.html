@@ -27,15 +27,28 @@
 
 
 {% block page_content %}
-<h3>{% trans "Choose an audio or video file to upload" %}</h3>
+
+{% if restricted_to_staff and not user.is_staff %}
+<p class="text-info">
+  <i data-feather="info"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}" title="{% trans 'contact us' %}">{% trans 'contact us' %}</a>
+</p>
+{% else %}
+<h3>{% trans "Media upload" %}</h3>
 
 <div id="uploadblock">
-    <input id="chunked_upload" class="hide-on-processing" accept="{{allow_extension}}" type="file" name="the_file">
-    <progress id="progBar" value="0" max="100"></progress>
+    {% csrf_token %}
+    <div class="hide-on-processing">
+        <label for="chunked_upload">{% trans "Choose an audio or video file to upload" %}</label><br/>
+        <input id="chunked_upload" accept="{{allow_extension}}" type="file" name="the_file">
+    </div>
+    <div class="show-on-processing">
+        <label for="progBar">{% trans "Upload progress:" %}</label>
+        <progress id="progBar" value="0" max="100"></progress>
+    </div>
 
     {%if TRANSCRIPT %}
     <input type="checkbox" class="hide-on-processing" id="transcript-box" name="transbox">
-<label class="hide-on-processing" for="transbox">{% trans "Transcript" %} ({% trans "Check this box if you want to transcript the audio.(beta version)"%})</label>
+    <label class="hide-on-processing" for="transbox">{% trans "Transcript" %} ({% trans "Check this box if you want to transcript the audio.(beta version)"%})</label>
     {%endif%}
 
     <p>{% trans "Do not leave the page if you encounter a connection problem during the upload, it will resume automatically when your connection is available again." %}</p>
@@ -47,6 +60,7 @@
 </a>
 {% endif %}
 
+{%endif%}
 {% endblock page_content %}
 
 {% block page_aside %}
@@ -148,12 +162,11 @@ var max_size = {{ max_size }}
       add: function(e, data) { // Called before starting upload
           // If this is the second file you're uploading we need to remove the
           // old upload_id and just keep the csrftoken (which is always first).
-          $(".hide-on-processing").hide()
+          $(".hide-on-processing").hide();
+          $(".show-on-processing").show();
           form_data.splice(1);
           calculate_md5(data.files[0], max_chunk_size);  // Again, chunks of 100 kB
           data.submit();
-       
-
       },
       chunkdone: function (e, data) { // Called after uploading each chunk
       $(this).is(':checked')
@@ -194,31 +207,32 @@ var max_size = {{ max_size }}
 
 
 <style>
-    .file {
-   position: relative;
-   background: linear-gradient(to right, lightblue 50%, transparent 50%);
-   background-size: 200% 100%;
-   background-position: right bottom;
-   transition:all 1s ease;
-}
- .file.done {
-   background: lightgreen;
-}
- .file a {
-   display: block;
-   position: relative;
-   padding: 5px;
-   color: black;
-}
-#progBar{
+  .file {
+    position: relative;
+    background: linear-gradient(to right, lightblue 50%, transparent 50%);
+    background-size: 200% 100%;
+    background-position: right bottom;
+    transition:all 1s ease;
+  }
+  .file.done {
+    background: lightgreen;
+  }
+  .file a {
+    display: block;
+    position: relative;
+    padding: 5px;
+    color: black;
+  }
+  #progBar{
     width: 100%;
-}
-#uploadblock, #completebox{
-    margin-left:10px; 
+  }
+  #uploadblock, #completebox{
+    margin-left:10px;
     margin-top: 20px;
-}
-
-
+  }
+  .show-on-processing{
+    display:none;
+  }
 </style>
 
 

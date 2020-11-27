@@ -17,11 +17,13 @@
 {% if HIDE_DISCIPLINES == False %}
 <div class="card card-body p-2 mt-1" id="card-disciplines">
   <h5 class="card-title pl-2">
-    <i data-feather="book"></i>&nbsp;{% trans 'Disciplines' %}
+    <label for="discipline">
+      <i data-feather="book"></i>&nbsp;{% trans 'Disciplines' %}
+    </label>
   </h5>
   <div class="card-text">
     <form class="form" method="get">
-      <select class="form-control" onchange="this.options[this.selectedIndex].getAttribute('data-value') &amp;&amp; (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="discipline">
+      <select class="form-control" onchange="this.options[this.selectedIndex].getAttribute('data-value') &amp;&amp; (window.location = this.options[this.selectedIndex].getAttribute('data-value'));" name="discipline" id="discipline">
           <option value="#" class="btn btn-default btn-sm btn-block">{% trans 'Disciplines' %}...</option>
           {% for disc in DISCIPLINES %}
           <option value="{{disc.slug}}" class="btn btn-default btn-sm btn-block" data-value="{% url 'videos' %}?discipline={{disc.slug}}">{{disc.title}}  ({{disc.video_count}})</option>

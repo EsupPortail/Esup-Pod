@@ -576,9 +576,9 @@ class Video(models.Model):
         default=default_date_delete)
 
     disable_comment = models.BooleanField(
-            _("Disable comment"),
-            help_text=_("Allows you to turn off all comments on this video."),
-            default=False)
+        _("Disable comment"),
+        help_text=_("Allows you to turn off all comments on this video."),
+        default=False)
 
     class Meta:
         ordering = ['-date_added', '-id']
@@ -670,11 +670,10 @@ class Video(models.Model):
                  get_current_site(None).domain,
                  settings.STATIC_URL,
                  DEFAULT_THUMBNAIL])
-
         return format_html('<img style="max-width:100px" '
                            'src="%s" alt="%s" />' % (
                                thumbnail_url,
-                               self.title
+                               self.title.replace("{", "").replace("}", "")
                            )
                            )
     get_thumbnail_admin.fget.short_description = _('Thumbnails')
