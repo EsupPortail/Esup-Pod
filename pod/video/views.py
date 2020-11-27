@@ -1902,8 +1902,6 @@ def edit_category(request, c_slug):
 
         cat = get_object_or_404(Category, slug=c_slug)
         data = json.loads(request.body.decode("utf-8"))
-        new_videos = Video.objects.filter(
-            slug__in=data.get('videos', []))
 
         new_videos = Video.objects.filter(
             slug__in=data.get('videos', []))
