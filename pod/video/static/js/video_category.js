@@ -12,10 +12,20 @@
     const CHAPTER_URL = `${window.location.origin}/video_chapter/`;
     const DELETE_URL = `${window.location.origin}/video_delete/`;
     const VIDEO_URL = `${window.location.origin}/video/`;
-
+    const VIDEOS_LIST_CHUNK = {
+        videos: {
+	    selected: [],
+	    unselected: []
+	}, // all videos
+	curr_i: 0, // current index
+	total_videos: 0, // number of videos
+	total_pages: 1, // number pages
+	size: 12 // number videos per view
+    };
+    const modal_video_list = document.querySelector('.category_modal_videos_list');
     let videos_list = document.querySelector("#videos_list.infinite-container:not(.filtered)");
-    let saveCatBtn = document.querySelector("#manageCategoryModal #saveCategory" ) // btn in dialog
-    let modal_title = document.querySelector("#manageCategoryModal #modal_title")
+    let saveCatBtn = document.querySelector("#manageCategoryModal #saveCategory" ); // btn in dialog
+    let modal_title = document.querySelector("#manageCategoryModal #modal_title");
     let cat_input = document.querySelector("#manageCategoryModal #catTitle");
     let CURR_CATEGORY = {}; // current editing category (js object)
     let DOMCurrentEditCat = null; // current editing category (html DOM)
@@ -30,6 +40,84 @@
         "X-CSRFToken": Cookies.get("csrftoken"),
         "Accept": "application/json"
     }
+   
+    // show paginate video
+    /*const show_paginate_videos = (paginator=true)=>
+    {
+        if(paginator) modal_video_list.classList.add("show");
+	const html_paginator = modal_video_list.querySelector('.paginator');
+	html_paginator.querySelector('.previous_content').classList.add('disable');
+	modal_video_list.innerHTML = '';
+        VIDEOS_LIST_CHUNK.videos[VIDEOS_LIST_CHUNK.curr_i].forEach(v => modal_video_list.appendChild(v) );
+	modal_video_list.appendChild(html_paginator);
+
+    }*/
+    // Chunk array
+    const chunk = (arr, size) => Array.from({length: Math.ceil(arr.length/size)}, (v,i) => arr.slice(i*size, i*size+size));
+    const paginate = (cat_videos) => {
+	const video_elements = Array.from(modal_video_list.querySelectorAll(".category_modal_videos_list .infinite-item"));
+	VIDEOS_LIST_CHUNK.videos.selected = cat_videos.map(getVideoElement);
+
+	// Saving unselected videos
+	if(video_elements.length && !VIDEOS_LIST_CHUNK.videos.unselected.length)
+	{
+	    VIDEOS_LIST_CHUNK.videos.unselected = video_elements.filter(html_v => !html_v.classList.contains('selected'));
+	}
+	console.log("****************************************************************")
+	console.table(VIDEOS_LIST_CHUNK)
+	console.log("****************************************************************")
+        /*
+	VIDEOS_LIST_CHUNK.videos = chunk(video_elements, VIDEOS_LIST_CHUNK.size);
+	VIDEOS_LIST_CHUNK.total_videos = video_elements.length;
+	VIDEOS_LIST_CHUNK.total_pages = VIDEOS_LIST_CHUNK.videos.length;
+	console.log(VIDEOS_LIST_CHUNK)
+	if(VIDEOS_LIST_CHUNK.total_pages > 1)
+        {
+	    show_paginate_videos();
+	}
+	else
+	{
+            modal_video_list.classList.remove("show");
+	}*/
+    }
+
+    // Add event to paginate
+    
+    let next = document.querySelector('.category_modal_videos_list .next_content');
+    let previous = document.querySelector('.category_modal_videos_list .previous_content');
+    previous.addEventListener('click', e => {
+	e.preventDefault();
+	e.stopPropagation();
+        if(VIDEOS_LIST_CHUNK.curr_i > 0)
+	{
+            let modal_video_list = document.querySelector('.category_modal_videos_list');
+            VIDEOS_LIST_CHUNK.curr_i -= 1;
+	    show_paginate_videos();
+	}
+	if(VIDEOS_LIST_CHUNK.curr_i === 0)
+	{
+            previous.setAttribute('class', 'previous_content disable');
+            next.setAttribute('class', 'next_content');
+	}
+    });
+    next.addEventListener('click', e => {
+	e.preventDefault();
+	e.stopPropagation();
+	console.log("total - 1", VIDEOS_LIST_CHUNK.total_pages-1)
+	console.log("current index", VIDEOS_LIST_CHUNK.curr_i)
+        if(VIDEOS_LIST_CHUNK.curr_i < (VIDEOS_LIST_CHUNK.total_pages-1))
+	{
+            VIDEOS_LIST_CHUNK.curr_i += 1;
+	    show_paginate_videos();
+	}
+	if(VIDEOS_LIST_CHUNK.curr_i === (VIDEOS_LIST_CHUNK.total_pages-1))
+	{
+            previous.setAttribute('class', 'previous_content');
+            next.setAttribute('class', 'next_content disable');
+	}
+
+    });
+
 
     // Search categery
     let searchCatInput = document.querySelector("#my_videos_filter #searchcategories");
@@ -122,7 +210,7 @@
     let updateFilteredVideosContainer = (category_data) =>{
 	if(CURR_FILTER.slug && CURR_FILTER.id && CURR_CATEGORY.slug === CURR_FILTER.slug && CURR_CATEGORY.id === CURR_FILTER.id)
         {
-	    let actual_videos = Array.from(document.querySelectorAll(".category_modal_video_list .selected")).map(v_el => v_el.dataset.slug.trim());
+	    let actual_videos = Array.from(document.querySelectorAll(".category_modal_videos_list .selected")).map(v_el => v_el.dataset.slug.trim());
 	    let old_videos = getSavedData(CURR_FILTER.slug).videos.map(v => v.slug);
 	    let rm = old_videos.filter( v => !actual_videos.includes(v) );
 	    let added = actual_videos.filter( v=> !old_videos.includes(v));
@@ -193,7 +281,8 @@
 
     // remove all current selected videos in dialog
     let refreshDialog = () =>{
-	let videos = document.querySelectorAll(".category_modal_video_list .selected");
+	
+	let videos = document.querySelectorAll(".category_modal_videos_list .selected");
 	videos.forEach(v =>{ v.parentNode.removeChild(v) });
     }
 
@@ -435,18 +524,6 @@
 	return infinite_item;
     }
 
-    // Handler to delete category, c_d=current category to delete
-    // Temporarily save the category to delete
-    let deleteHandler = (c_d) =>{
-	c_d.addEventListener('click', (e) =>{
- 	    // Show confirm modal => manage by boostrap
-	    CAT_TO_DELETE.html = c_d.parentNode.parentNode;
-	    CAT_TO_DELETE.id = c_d.dataset.del;
-	    CAT_TO_DELETE.slug = c_d.dataset.slug;
-	});
-
-    }
-
     // Handler to edit category, c_e=current category to edit
     let editHandler = (c_e) =>{
 	c_e.addEventListener('click', (e) =>{
@@ -468,6 +545,8 @@
 	        jsonData.videos.forEach(v=>{
 	            appendVideoCard(v);
 		});
+	        console.log(jsonData)
+		paginate(jsonData.videos);
 		loader.classList.remove('show');
 	    }
 	    else
@@ -478,8 +557,10 @@
 		        appendVideoCard(v);
 		    });
 		    CURR_CATEGORY = data;
+		    console.log(data)
 		    // save data
 		    saveCategoryData(data);
+		    paginate(data.videos);
 		    loader.classList.remove('show');
 		}).catch(e =>{console.error(e)});
 	    }
@@ -488,7 +569,7 @@
 
     // Append video card in category modal
     let appendVideoCard = (v, selected=true)=>{
-        let modalListVideo = document.querySelector("#manageCategoryModal .category_modal_video_list");
+        let modalListVideo = document.querySelector("#manageCategoryModal .category_modal_videos_list");
 	let videoCard = getModalVideoCard(v);
 	let v_wrapper = document.createElement("Div");
 	v_wrapper.setAttribute("data-slug", v.slug);
@@ -519,7 +600,19 @@
 	if(e.target.getAttribute('id') === "manageCategoryModal")
 	    window.setTimeout(function(){refreshDialog();}, 50)
     });
-    
+
+    // Handler to delete category, c_d=current category to delete
+    // Temporarily save the category to delete
+    let deleteHandler = (c_d) =>{
+	c_d.addEventListener('click', (e) =>{
+ 	    // Show confirm modal => manage by boostrap
+	    CAT_TO_DELETE.html = c_d.parentNode.parentNode;
+	    CAT_TO_DELETE.id = c_d.dataset.del;
+	    CAT_TO_DELETE.slug = c_d.dataset.slug;
+	});
+
+    }
+
     // Add onclick event to delete a category
     let cats_del = document.querySelectorAll("#my_videos_filter .categories_list_item #remove_category_icon");
     cats_del.forEach(c_d => {
@@ -546,6 +639,9 @@
 		            appendVideoCard(v, false); // withou selected class
 			});
 			document.querySelector("#my_videos_filter .categories_list").removeChild(CAT_TO_DELETE.html);
+			document.querySelector(".infinite-container.filtered").innerHTML = '';
+			document.querySelector(".infinite-container.hidden").classList.remove('hidden');
+                        manageNumberVideoFoundText(CATEGORIES_DATA[0]);
 			delete CAT_TO_DELETE.html;
 			delete CAT_TO_DELETE.id;
 			delete CAT_TO_DELETE.slug;
@@ -577,7 +673,7 @@
 
 	loader.classList.add("show");
 
-        let videos = Array.from(document.querySelectorAll(".category_modal_video_list .selected")).map(v_el => v_el.dataset.slug.trim());
+        let videos = Array.from(document.querySelectorAll(".category_modal_videos_list .selected")).map(v_el => v_el.dataset.slug.trim());
 	
 	let postData = {
 	    title:  cat_input.value.trim(),
