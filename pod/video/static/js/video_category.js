@@ -555,15 +555,7 @@
 	    DOMCurrentEditCat = c_e.parentNode.parentNode;
 	    if( Object.keys(jsonData).length )
 	    {
-		console.log("---------------------- SAVED SELECTED VIDEOS --------------------------")
-		console.log(jsonData )
-		console.log("----------------------------- CHUNK DATA ------------------------------")
-		console.log(VIDEOS_LIST_CHUNK.videos )
-		console.log("---------------------- SAVED SELECTED VIDEOS --------------------------")
 		paginate(jsonData.videos);
-	        /*jsonData.videos.forEach(v=>{
-	            appendVideoCard(v);
-		});*/
 		loader.classList.remove('show');
 	    }
 	    else
@@ -571,9 +563,6 @@
 	        jsonData = fetchCategoryData(cat_edit_slug);
 	        jsonData.then( data =>{
 		    paginate(data.videos);
-		    /*data.videos.forEach(v=>{
-		        appendVideoCard(v);
-		    });*/
 		    CURR_CATEGORY = data;
 		    // save data
 		    saveCategoryData(data);
@@ -595,13 +584,6 @@
     }
     // Append video card in category modal
     let appendVideoCard = (v)=>{
-        /*
-	let videoCard = getModalVideoCard(v);
-	let v_wrapper = document.createElement("Div");
-	v_wrapper.setAttribute("data-slug", v.slug);
-	let selectClass = selected? 'selected':'';
-	v_wrapper.setAttribute("class", "infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group "+selectClass)
-        v_wrapper.innerHTML = videoCard;*/
 	let modalListVideo = document.querySelector("#manageCategoryModal .category_modal_videos_list");
 	modalListVideo.insertBefore(v, modalListVideo.querySelector(".paginator"));
     }
@@ -661,13 +643,14 @@
 		    response.json().then(data =>{
 			deleteFromSavedData(cat.slug); // delete from local save
 			data.videos.forEach(v =>{ // append all the videos into category dialog
-		            appendVideoCard(v, false); // withou selected class
+			    VIDEOS_LIST_CHUNK.videos.unselected = [
+				...VIDEOS_LIST_CHUNK.videos.unselected, getModalVideoCard(v, false)]
 			});
 			document.querySelector("#my_videos_filter .categories_list").removeChild(CAT_TO_DELETE.html);
 			let filtered_container = document.querySelector(".infinite-container.filtered");
 			if(filtered_container)
 			{
-		            filtered.innerHTML = '';
+		            filtered_container.innerHTML = '';
 			    document.querySelector(".infinite-container.hidden").classList.remove('hidden');
                             manageNumberVideoFoundText(CATEGORIES_DATA[0]);
 			}
