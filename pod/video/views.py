@@ -386,6 +386,7 @@ def my_videos(request):
         """
         cats = Category.objects.prefetch_related('video').filter(
             owner=request.user)
+        videos_without_cat = videos_list.exclude(category__in=cats)
         cats = list(map(lambda c: {
             'id': c.id, 'title': c.title, 'slug': c.slug, 'videos': list(
                 c.video.values_list('slug', flat=True))}, cats))
@@ -1843,9 +1844,13 @@ def add_category(request):
         videos = Video.objects.filter(
             slug__in=data.get('videos', []))
 
-        # constraint, video can be only in one category
-        v_in_another_cat = videos.filter(category__isnull=False).count()
-        if v_in_another_cat:
+        # constraint, video can be only in one of user's categories
+        user_cats = list(Category.objects.filter(owner=c_user))
+        v_already_has_user_cat = Video.objects.filter(
+            slug__in=data.get('videos', []), category__in=user_cats).count()
+
+        v_already_in_user_cat = Video.objects.exclude(category__in=user_cats).filter(slug__in=data.get('videos', [])).count()
+        if v_already_in_user_cat:
             response['message'] = _(
                     "One or many videos already have a category.")
 
@@ -1901,12 +1906,11 @@ def edit_category(request, c_slug):
         new_videos = Video.objects.filter(
             slug__in=data.get('videos', []))
 
-        # constraint, video can be only in one category
-        v_in_another_cat = new_videos.exclude(
-            category__id=cat.id).filter(
-                category__isnull=False
-            )
-        if v_in_another_cat:
+        # constraint, video can be only in one of user's categories
+         user_cats = list(Category.objects.filter(owner=c_user))
+        v_already_in_user_cat = Video.objects.filter(
+            slug__in=data.get('videos', []), category__in=user_cats).count()
+        if v_already_in_user_cat:
             response['message'] = _(
                     "One or many videos already have a category.")
 
