@@ -1906,8 +1906,9 @@ def edit_category(request, c_slug):
         new_videos = Video.objects.filter(
             slug__in=data.get('videos', []))
 
-        # constraint, video can be only in one of user's categories
-        user_cats = Category.objects.filter(owner=c_user)
+        # constraint, video can be only in one of user's categories,
+        # excepte current category
+        user_cats = Category.objects.filter(owner=c_user).exclude(id=cat.id)
         v_already_in_user_cat = new_videos.filter(category__in=user_cats)
 
         if v_already_in_user_cat:
