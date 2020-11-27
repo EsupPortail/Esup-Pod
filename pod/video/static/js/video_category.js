@@ -14,12 +14,11 @@
     const VIDEO_URL = `${window.location.origin}/video/`;
     const VIDEOS_LIST_CHUNK = {
         videos: {
-	    selected: [],
-	    unselected: []
+	    chunk: [], // all videos chunked
+	    selected: [], // current selected videos
+	    unselected: [] // current unselected videos
 	}, // all videos
 	curr_i: 0, // current index
-	total_videos: 0, // number of videos
-	total_pages: 1, // number pages
 	size: 12 // number videos per view
     };
     const modal_video_list = document.querySelector('.category_modal_videos_list');
@@ -42,81 +41,79 @@
     }
    
     // show paginate video
-    /*const show_paginate_videos = (paginator=true)=>
+    const show_paginate_videos = (paginator=true)=>
     {
         if(paginator) modal_video_list.classList.add("show");
 	const html_paginator = modal_video_list.querySelector('.paginator');
 	html_paginator.querySelector('.previous_content').classList.add('disable');
 	modal_video_list.innerHTML = '';
-        VIDEOS_LIST_CHUNK.videos[VIDEOS_LIST_CHUNK.curr_i].forEach(v => modal_video_list.appendChild(v) );
 	modal_video_list.appendChild(html_paginator);
-
-    }*/
+	let next = modal_video_list.querySelector('.next_content');
+	let prev = modal_video_list.querySelector('.previous_content');
+        nextHandler(prev, next);
+        previousHandler(prev, next);
+        VIDEOS_LIST_CHUNK.videos.chunk[VIDEOS_LIST_CHUNK.curr_i].forEach(v => appendVideoCard(
+	    toggleSelectedClass(v)
+	));
+    }
     // Chunk array
     const chunk = (arr, size) => Array.from({length: Math.ceil(arr.length/size)}, (v,i) => arr.slice(i*size, i*size+size));
     const paginate = (cat_videos) => {
+	VIDEOS_LIST_CHUNK.curr_i = 0;
 	const video_elements = Array.from(modal_video_list.querySelectorAll(".category_modal_videos_list .infinite-item"));
-	VIDEOS_LIST_CHUNK.videos.selected = cat_videos.map(getVideoElement);
+	VIDEOS_LIST_CHUNK.videos.selected = cat_videos.map( v => getModalVideoCard(v));
 
 	// Saving unselected videos
 	if(video_elements.length && !VIDEOS_LIST_CHUNK.videos.unselected.length)
 	{
 	    VIDEOS_LIST_CHUNK.videos.unselected = video_elements.filter(html_v => !html_v.classList.contains('selected'));
 	}
-	console.log("****************************************************************")
-	console.table(VIDEOS_LIST_CHUNK)
-	console.log("****************************************************************")
-        /*
-	VIDEOS_LIST_CHUNK.videos = chunk(video_elements, VIDEOS_LIST_CHUNK.size);
-	VIDEOS_LIST_CHUNK.total_videos = video_elements.length;
-	VIDEOS_LIST_CHUNK.total_pages = VIDEOS_LIST_CHUNK.videos.length;
-	console.log(VIDEOS_LIST_CHUNK)
-	if(VIDEOS_LIST_CHUNK.total_pages > 1)
+	VIDEOS_LIST_CHUNK.videos.chunk = chunk([...VIDEOS_LIST_CHUNK.videos.unselected, ...VIDEOS_LIST_CHUNK.videos.selected], VIDEOS_LIST_CHUNK.size);
+	if(VIDEOS_LIST_CHUNK.videos.chunk.length > 1)
         {
+            modal_video_list.classList.add("show");
 	    show_paginate_videos();
 	}
 	else
 	{
+	    show_paginate_videos(false);
             modal_video_list.classList.remove("show");
-	}*/
+	}
     }
 
     // Add event to paginate
-    
-    let next = document.querySelector('.category_modal_videos_list .next_content');
-    let previous = document.querySelector('.category_modal_videos_list .previous_content');
-    previous.addEventListener('click', e => {
-	e.preventDefault();
-	e.stopPropagation();
-        if(VIDEOS_LIST_CHUNK.curr_i > 0)
-	{
-            let modal_video_list = document.querySelector('.category_modal_videos_list');
-            VIDEOS_LIST_CHUNK.curr_i -= 1;
-	    show_paginate_videos();
-	}
-	if(VIDEOS_LIST_CHUNK.curr_i === 0)
-	{
-            previous.setAttribute('class', 'previous_content disable');
-            next.setAttribute('class', 'next_content');
-	}
-    });
-    next.addEventListener('click', e => {
-	e.preventDefault();
-	e.stopPropagation();
-	console.log("total - 1", VIDEOS_LIST_CHUNK.total_pages-1)
-	console.log("current index", VIDEOS_LIST_CHUNK.curr_i)
-        if(VIDEOS_LIST_CHUNK.curr_i < (VIDEOS_LIST_CHUNK.total_pages-1))
-	{
-            VIDEOS_LIST_CHUNK.curr_i += 1;
-	    show_paginate_videos();
-	}
-	if(VIDEOS_LIST_CHUNK.curr_i === (VIDEOS_LIST_CHUNK.total_pages-1))
-	{
-            previous.setAttribute('class', 'previous_content');
-            next.setAttribute('class', 'next_content disable');
-	}
-
-    });
+    let previousHandler = (prev, next) => {
+        prev.addEventListener('click', e => {
+	    e.preventDefault();
+	    e.stopPropagation();
+            if(VIDEOS_LIST_CHUNK.curr_i > 0)
+	    {
+                VIDEOS_LIST_CHUNK.curr_i -= 1;
+	        show_paginate_videos();
+            }
+	    if(VIDEOS_LIST_CHUNK.curr_i === 0)
+            {
+                prev.setAttribute('class', 'previous_content disable');
+                next.setAttribute('class', 'next_content');
+	    }
+        });
+    }
+    let nextHandler = (prev, next) => {
+        next.addEventListener('click', e => {
+	    e.preventDefault();
+	    e.stopPropagation();
+            if(VIDEOS_LIST_CHUNK.curr_i < (VIDEOS_LIST_CHUNK.videos.chunk.length-1))
+	    {
+                VIDEOS_LIST_CHUNK.curr_i += 1;
+	        show_paginate_videos();
+            }
+	    if(VIDEOS_LIST_CHUNK.curr_i === (VIDEOS_LIST_CHUNK.videos.chunk.length-1))
+	    {
+                prev.setAttribute('class', 'previous_content');
+                next.setAttribute('class', 'next_content disable');
+	    }
+        });
+    }
 
 
     // Search categery
@@ -210,7 +207,7 @@
     let updateFilteredVideosContainer = (category_data) =>{
 	if(CURR_FILTER.slug && CURR_FILTER.id && CURR_CATEGORY.slug === CURR_FILTER.slug && CURR_CATEGORY.id === CURR_FILTER.id)
         {
-	    let actual_videos = Array.from(document.querySelectorAll(".category_modal_videos_list .selected")).map(v_el => v_el.dataset.slug.trim());
+	    let actual_videos = VIDEOS_LIST_CHUNK.videos.selected.map(v_html => v_html.dataset.slug);
 	    let old_videos = getSavedData(CURR_FILTER.slug).videos.map(v => v.slug);
 	    let rm = old_videos.filter( v => !actual_videos.includes(v) );
 	    let added = actual_videos.filter( v=> !old_videos.includes(v));
@@ -315,11 +312,27 @@
 
     // Add event toggle selected class on el
     let toggleSelectedClass = (el)=>{
-        el.addEventListener('click', e=>{
-	    e.preventDefault();
-	    e.stopPropagation();
-	    el.classList.toggle("selected");
-	});
+	if(el.dataset.hasevent != "true")
+        {
+            el.addEventListener('click', e=>{
+	        e.preventDefault();
+	        e.stopPropagation();
+	        el.classList.toggle("selected");
+	        let selected = el.classList.contains('selected');
+	        if(selected)
+	        {
+	            VIDEOS_LIST_CHUNK.videos.unselected = VIDEOS_LIST_CHUNK.videos.unselected.filter(v => !v.classList.contains('selected'));
+	            VIDEOS_LIST_CHUNK.videos.selected = [...VIDEOS_LIST_CHUNK.videos.selected, el];
+	        }
+	        else
+	        {
+	            VIDEOS_LIST_CHUNK.videos.selected = VIDEOS_LIST_CHUNK.videos.selected.filter(v => v.classList.contains('selected'));
+	            VIDEOS_LIST_CHUNK.videos.unselected = [...VIDEOS_LIST_CHUNK.videos.unselected, el];
+	        }
+	    });
+	    el.setAttribute('data-hasevent', true);
+	}
+        return el;	
     }
 
     // Make requets => get category data
@@ -401,7 +414,7 @@
     }
 
     // Create video html element card for Category Dialog
-    let getModalVideoCard = (v)=>{
+    let createHtmlVideoCard = (v)=>{
         return `
 	    <div class="checked_overlay">
 	        <span class="card_selected" id="card_selected">
@@ -542,43 +555,55 @@
 	    DOMCurrentEditCat = c_e.parentNode.parentNode;
 	    if( Object.keys(jsonData).length )
 	    {
-	        jsonData.videos.forEach(v=>{
-	            appendVideoCard(v);
-		});
-	        console.log(jsonData)
+		console.log("---------------------- SAVED SELECTED VIDEOS --------------------------")
+		console.log(jsonData )
+		console.log("----------------------------- CHUNK DATA ------------------------------")
+		console.log(VIDEOS_LIST_CHUNK.videos )
+		console.log("---------------------- SAVED SELECTED VIDEOS --------------------------")
 		paginate(jsonData.videos);
+	        /*jsonData.videos.forEach(v=>{
+	            appendVideoCard(v);
+		});*/
 		loader.classList.remove('show');
 	    }
 	    else
 	    {
 	        jsonData = fetchCategoryData(cat_edit_slug);
 	        jsonData.then( data =>{
-		    data.videos.forEach(v=>{
+		    paginate(data.videos);
+		    /*data.videos.forEach(v=>{
 		        appendVideoCard(v);
-		    });
+		    });*/
 		    CURR_CATEGORY = data;
-		    console.log(data)
 		    // save data
 		    saveCategoryData(data);
-		    paginate(data.videos);
 		    loader.classList.remove('show');
 		}).catch(e =>{console.error(e)});
 	    }
 	});
     }
 
-    // Append video card in category modal
-    let appendVideoCard = (v, selected=true)=>{
-        let modalListVideo = document.querySelector("#manageCategoryModal .category_modal_videos_list");
-	let videoCard = getModalVideoCard(v);
+    // get modal video card
+    let getModalVideoCard = (v, selected=true) => {
+	let videoCard = createHtmlVideoCard(v);
 	let v_wrapper = document.createElement("Div");
 	v_wrapper.setAttribute("data-slug", v.slug);
 	let selectClass = selected? 'selected':'';
 	v_wrapper.setAttribute("class", "infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group "+selectClass)
         v_wrapper.innerHTML = videoCard;
-	modalListVideo.insertBefore(v_wrapper, modalListVideo.querySelector(".paginator"));
-	// set click event listener
-	toggleSelectedClass(v_wrapper);
+	return v_wrapper;
+    }
+    // Append video card in category modal
+    let appendVideoCard = (v)=>{
+        /*
+	let videoCard = getModalVideoCard(v);
+	let v_wrapper = document.createElement("Div");
+	v_wrapper.setAttribute("data-slug", v.slug);
+	let selectClass = selected? 'selected':'';
+	v_wrapper.setAttribute("class", "infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group "+selectClass)
+        v_wrapper.innerHTML = videoCard;*/
+	let modalListVideo = document.querySelector("#manageCategoryModal .category_modal_videos_list");
+	modalListVideo.insertBefore(v, modalListVideo.querySelector(".paginator"));
     }
 
     // Add onclick event to edit a category
@@ -639,9 +664,13 @@
 		            appendVideoCard(v, false); // withou selected class
 			});
 			document.querySelector("#my_videos_filter .categories_list").removeChild(CAT_TO_DELETE.html);
-			document.querySelector(".infinite-container.filtered").innerHTML = '';
-			document.querySelector(".infinite-container.hidden").classList.remove('hidden');
-                        manageNumberVideoFoundText(CATEGORIES_DATA[0]);
+			let filtered_container = document.querySelector(".infinite-container.filtered");
+			if(filtered_container)
+			{
+		            filtered.innerHTML = '';
+			    document.querySelector(".infinite-container.hidden").classList.remove('hidden');
+                            manageNumberVideoFoundText(CATEGORIES_DATA[0]);
+			}
 			delete CAT_TO_DELETE.html;
 			delete CAT_TO_DELETE.id;
 			delete CAT_TO_DELETE.slug;
@@ -673,8 +702,8 @@
 
 	loader.classList.add("show");
 
-        let videos = Array.from(document.querySelectorAll(".category_modal_videos_list .selected")).map(v_el => v_el.dataset.slug.trim());
-	
+        //let videos = Array.from(document.querySelectorAll(".category_modal_videos_list .selected")).map(v_el => v_el.dataset.slug.trim());
+	const videos = VIDEOS_LIST_CHUNK.videos.selected.map(html_v => html_v.dataset.slug);
 	let postData = {
 	    title:  cat_input.value.trim(),
 	    videos: videos
@@ -707,7 +736,6 @@
 	else // Adding mode
 	{
     	    postCategoryData(`${BASE_URL}add/`, postData).then(data =>{
-
     		let li =  getCategoryLi(data.category.title, data.category.slug, data.category.id);
 		document.querySelector("#my_videos_filter .categories_list").appendChild(li);
 		saveCategoryData(data.category); // saving cat localy to prevent more request to the server
@@ -722,6 +750,7 @@
     // Add onclick event to add a new category
     let add_cat = document.querySelector('#my_videos_filter #add_category_btn');
     add_cat.addEventListener('click', e=>{
+	paginate([]);
         modal_title.innerText = add_cat.getAttribute('title').trim(); 
         cat_input.value = "";
         // Change the Save button text to 'create category'
@@ -733,10 +762,10 @@
 
 
     // Add onclick event to each video in category modal
-    let videos_in_modal = document.querySelectorAll("#manageCategoryModal .infinite-item");
+    /*let videos_in_modal = document.querySelectorAll("#manageCategoryModal .infinite-item");
     videos_in_modal.forEach(v => {
         toggleSelectedClass(v)
-    });
+    });*/
 
     // Add click event on category in filter bar to filter videos in my_videos vue
     let cats = document.querySelectorAll("#my_videos_filter .categories_list_item .cat_title");
