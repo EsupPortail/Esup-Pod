@@ -168,8 +168,6 @@ class VideoAdmin(admin.ModelAdmin):
             kwargs['form'] = VideoAdminForm
 
         exclude = ()
-        if not getattr(settings, 'ACTIVE_VIDEO_COMMENT', False):
-            exclude += ("disable_comment",)
 
         if obj and obj.encoding_in_progress:
             exclude += ('video', 'owner',)
