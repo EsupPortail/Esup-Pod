@@ -50,7 +50,6 @@ SSH_REMOTE_KEY = getattr(
 # REMOTE ENCODE VIDEO : THREAD TO LAUNCH ENCODE
 # ##########################################################################
 
-
 def start_store_remote_encoding_video(video_id):
     log.info("START STORE ENCODED FILES FOR VIDEO ID %s" % video_id)
     t = threading.Thread(target=store_remote_encoding_video,

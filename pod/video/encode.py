@@ -10,7 +10,6 @@ from .models import EncodingLog
 from .models import PlaylistVideo
 from .models import Video
 
-
 from .utils import change_encoding_step, add_encoding_log, check_file
 from .utils import create_outputdir, send_email, send_email_encoding
 # from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
@@ -151,6 +150,7 @@ def start_encode(video_id):
                              args=[video_id])
         t.setDaemon(True)
         t.start()
+
 
 # ##########################################################################
 # ENCODE VIDEO : MAIN FUNCTION

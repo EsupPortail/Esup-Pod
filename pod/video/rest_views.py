@@ -1,7 +1,4 @@
-from pod.video.models import Channel, Theme
-from pod.video.models import Type, Discipline, Video
-from pod.video.models import VideoRendition, EncodingVideo, EncodingAudio
-from pod.video.models import PlaylistVideo
+
 from rest_framework import serializers, viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,8 +8,12 @@ from rest_framework.decorators import api_view
 from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
 
-from pod.video.views import VIDEOS
-from pod.video.remote_encode import start_store_remote_encoding_video
+from .models import Channel, Theme
+from .models import Type, Discipline, Video
+from .models import VideoRendition, EncodingVideo, EncodingAudio
+from .models import PlaylistVideo
+from .views import VIDEOS
+from .remote_encode import start_store_remote_encoding_video
 
 # Serializers define the API representation.
 
