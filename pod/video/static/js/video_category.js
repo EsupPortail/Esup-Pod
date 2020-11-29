@@ -18,7 +18,7 @@
 	    selected: [], // current selected videos
 	    unselected: [] // current unselected videos
 	}, // all videos
-	curr_i: 0, // current index
+	page_index: 0, // current index
 	size: 12 // number videos per view
     };
     const modal_video_list = document.querySelector('.category_modal_videos_list');
@@ -48,11 +48,12 @@
 	html_paginator.querySelector('.previous_content').classList.add('disable');
 	modal_video_list.innerHTML = '';
 	modal_video_list.appendChild(html_paginator);
-	let next = modal_video_list.querySelector('.next_content');
-	let prev = modal_video_list.querySelector('.previous_content');
-        nextHandler(prev, next);
-        previousHandler(prev, next);
-	let videos_to_display = VIDEOS_LIST_CHUNK.videos.chunk.length?VIDEOS_LIST_CHUNK.videos.chunk[VIDEOS_LIST_CHUNK.curr_i]:[];
+	if(!Object.keys(SAVED_DATA).length)
+	{
+            nextHandler();
+            previousHandler();
+	}
+	let videos_to_display = VIDEOS_LIST_CHUNK.videos.chunk.length?VIDEOS_LIST_CHUNK.videos.chunk[VIDEOS_LIST_CHUNK.page_index]:[];
         videos_to_display.forEach(v => appendVideoCard(
 	    toggleSelectedClass(v)
 	));
@@ -60,7 +61,7 @@
     // Chunk array
     const chunk = (arr, size) => Array.from({length: Math.ceil(arr.length/size)}, (v,i) => arr.slice(i*size, i*size+size));
     const paginate = (cat_videos) => {
-	VIDEOS_LIST_CHUNK.curr_i = 0;
+	VIDEOS_LIST_CHUNK.page_index = 0;
 	const video_elements = Array.from(modal_video_list.querySelectorAll(".category_modal_videos_list .infinite-item"));
 	VIDEOS_LIST_CHUNK.videos.selected = cat_videos.map( v => getModalVideoCard(v));
 
@@ -84,36 +85,37 @@
     }
 
     // Add event to paginate
-    let previousHandler = (prev, next) => {
+    let previousHandler = () => {
+	let prev = document.getElementById('previous_content');
         prev.addEventListener('click', e => {
 	    e.preventDefault();
 	    e.stopPropagation();
-            if(VIDEOS_LIST_CHUNK.curr_i > 0)
-	    {
-                VIDEOS_LIST_CHUNK.curr_i -= 1;
-	        show_paginate_videos();
-            }
-	    if(VIDEOS_LIST_CHUNK.curr_i === 0)
-            {
-                prev.setAttribute('class', 'previous_content disable');
-                next.setAttribute('class', 'next_content');
+	    let next = document.getElementById('next_content');
+            VIDEOS_LIST_CHUNK.page_index -= VIDEOS_LIST_CHUNK.page_index>0? 1 : 0;
+	    console.log("PREV BTN current page", VIDEOS_LIST_CHUNK.page_index)
+	    if(VIDEOS_LIST_CHUNK.page_index === 0) {
+	        prev.setAttribute('class', 'previous_content disable');
 	    }
+
+            next.classList.remove('disable');
+	    show_paginate_videos();
         });
     }
-    let nextHandler = (prev, next) => {
+    let nextHandler = () => {
+	let next = document.getElementById('next_content');
         next.addEventListener('click', e => {
 	    e.preventDefault();
 	    e.stopPropagation();
-            if(VIDEOS_LIST_CHUNK.curr_i < (VIDEOS_LIST_CHUNK.videos.chunk.length-1))
+	    let prev = document.getElementById('previous_content');
+	    let nbr_pages = VIDEOS_LIST_CHUNK.videos.chunk.length-1;
+            VIDEOS_LIST_CHUNK.page_index += VIDEOS_LIST_CHUNK.page_index< nbr_pages? 1 : 0;
+	    console.log("NEXT BTN current page", VIDEOS_LIST_CHUNK.page_index)
+	    if(VIDEOS_LIST_CHUNK.page_index === nbr_pages)
 	    {
-                VIDEOS_LIST_CHUNK.curr_i += 1;
-	        show_paginate_videos();
-            }
-	    if(VIDEOS_LIST_CHUNK.curr_i === (VIDEOS_LIST_CHUNK.videos.chunk.length-1))
-	    {
-                prev.setAttribute('class', 'previous_content');
                 next.setAttribute('class', 'next_content disable');
 	    }
+	    prev.classList.remove('disable');
+	    show_paginate_videos();
         });
     }
 
@@ -565,11 +567,16 @@
 	    {
 	        jsonData = fetchCategoryData(cat_edit_slug);
 	        jsonData.then( data =>{
+
 		    paginate(data.videos);
-		    CURR_CATEGORY = data;
+
 		    // save data
 		    saveCategoryData(data);
+
+		    CURR_CATEGORY = data;
+
 		    loader.classList.remove('show');
+
 		}).catch(e =>{console.error(e)});
 	    }
 	});
@@ -656,8 +663,8 @@
 		            filtered_container.parentNode.removeChild(filtered_container);
 			    document.querySelector(".infinite-container.hidden").classList.remove('hidden');
                             manageNumberVideoFoundText(CATEGORIES_DATA[0]);
-                            CURR_FILTER.slug = null;
-                            CURR_FILTER.id = null;
+			    CURR_FILTER.slug = null;
+			    CURR_FILTER.id = null;
 			    document.querySelectorAll(".categories_list .categories_list_item").forEach(c => c.classList.remove('active'));
 			}
 			delete CAT_TO_DELETE.html;
@@ -668,7 +675,6 @@
 			document.querySelector("#deleteCategoryModal .modal-footer .close_modal").click();
 		    });
 		});
-	        // Ajax request to delete category
 	    }
 	    else
 	    {
