@@ -54,7 +54,6 @@ class TestCategory(TestCase):
             owner=self.owner_user,
             video="testvideo2category.mp4",
             type=self.t1)
-
         self.cat_1 = Category.objects.create(
             title='testCategory',
             owner=self.owner_user)
@@ -217,7 +216,6 @@ class TestCategory(TestCase):
                 }
             ]
         }
-
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(actual_data['success'])
@@ -355,6 +353,71 @@ class TestCategory(TestCase):
             HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertIsInstance(response, HttpResponseBadRequest)
         self.assertEqual(response.status_code, 400)
+
+    def test_deleteCategory(self):
+        # not Authenticated, should return HttpResponseRedirect:302
+        response = self.client.post(
+            reverse(
+                'delete_category',
+                kwargs={"c_id": self.cat_1.id}),
+            content_type="application/json")
+
+        self.assertIsInstance(response, HttpResponseRedirect)
+        self.assertEqual(response.status_code, 302)
+
+        # not Ajax request, should return HttpResponseForbidden:403
+        self.client.force_login(self.owner_user)
+        response = self.client.post(
+            reverse(
+                'delete_category',
+                kwargs={"c_id": self.cat_1.id}),
+            content_type="application/json")
+
+        self.assertIsInstance(response, HttpResponseForbidden)
+        self.assertEqual(response.status_code, 403)
+
+        # Ajax GET request, should return HttpResponseNotAllowed:405
+        response = self.client.get(
+            reverse('delete_category', kwargs={"c_id": self.cat_1.id}),
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        self.assertIsInstance(response, HttpResponseNotAllowed)
+        self.assertEqual(response.status_code, 405)
+
+        # Ajax POST request but not category's owner,
+        # should return HttpResponseForbidden:403
+        self.client.force_login(self.simple_user)
+        response = self.client.post(
+            reverse('delete_category', kwargs={"c_id": self.cat_1.id}),
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        response = self.client.get(reverse('get_categories'))
+        self.assertIsInstance(response, HttpResponseForbidden)
+        self.assertEqual(response.status_code, 403)
+
+        self.client.force_login(self.owner_user)
+        # Ajax POST request, should return HttpResponse:200 with category data
+        response = self.client.post(
+            reverse('delete_category', kwargs={"c_id": self.cat_1.id}),
+            content_type="application/json",
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        actual_data = json.loads(response.content.decode('utf-8'))
+
+        self.assertTrue(actual_data['success'])
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(actual_data['id'], self.cat_1.id)
+        self.assertCountEqual(
+            actual_data['videos'],
+            [
+                {
+                    "slug": self.video.slug,
+                    "title": self.video.title,
+                    "duration": self.video.duration_in_time,
+                    "thumbnail": self.video.get_thumbnail_card(),
+                    "is_video": self.video.is_video,
+                }
+            ]
+        )
 
     def tearDown(self):
         del self.video
