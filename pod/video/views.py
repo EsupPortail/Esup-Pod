@@ -1778,6 +1778,7 @@ def delete_comment(request, video_slug, comment_id):
 @login_required(redirect_field_name='referrer')
 @ajax_required
 def get_categories(request, c_slug=None):
+
     response = {'success': False}
     c_user = request.user  # connected user
 
@@ -1835,6 +1836,7 @@ def get_categories(request, c_slug=None):
 @login_required(redirect_field_name='referrer')
 @ajax_required
 def add_category(request):
+
     response = {'success': False}
     c_user = request.user  # connected user
 
@@ -1975,7 +1977,7 @@ def delete_category(request, c_id):
 
         cat = get_object_or_404(Category, id=c_id)
 
-        if cat.owner == c_user or c_user.is_superuser:
+        if cat.owner == c_user:
 
             response['id'] = cat.id
             response['videos'] = list(
