@@ -45,14 +45,8 @@
     {
         if(paginator) modal_video_list.classList.add("show");
 	const html_paginator = modal_video_list.querySelector('.paginator');
-	html_paginator.querySelector('.previous_content').classList.add('disable');
 	modal_video_list.innerHTML = '';
 	modal_video_list.appendChild(html_paginator);
-	if(!Object.keys(SAVED_DATA).length)
-	{
-            nextHandler();
-            previousHandler();
-	}
 	let videos_to_display = VIDEOS_LIST_CHUNK.videos.chunk.length?VIDEOS_LIST_CHUNK.videos.chunk[VIDEOS_LIST_CHUNK.page_index]:[];
         videos_to_display.forEach(v => appendVideoCard(
 	    toggleSelectedClass(v)
@@ -62,6 +56,7 @@
     const chunk = (arr, size) => Array.from({length: Math.ceil(arr.length/size)}, (v,i) => arr.slice(i*size, i*size+size));
     const paginate = (cat_videos) => {
 	VIDEOS_LIST_CHUNK.page_index = 0;
+	prev.classList.add("disable");
 	const video_elements = Array.from(modal_video_list.querySelectorAll(".category_modal_videos_list .infinite-item"));
 	VIDEOS_LIST_CHUNK.videos.selected = cat_videos.map( v => getModalVideoCard(v));
 
@@ -71,6 +66,8 @@
 	    VIDEOS_LIST_CHUNK.videos.unselected = video_elements.filter(html_v => !html_v.classList.contains('selected'));
 	}
 	VIDEOS_LIST_CHUNK.videos.chunk = chunk([...VIDEOS_LIST_CHUNK.videos.unselected, ...VIDEOS_LIST_CHUNK.videos.selected], VIDEOS_LIST_CHUNK.size);
+	pages_info.innerText = `${VIDEOS_LIST_CHUNK.page_index+1}/${VIDEOS_LIST_CHUNK.videos.chunk.length}`;
+	pages_info.setAttribute('title', `${VIDEOS_LIST_CHUNK.page_index+1}/${VIDEOS_LIST_CHUNK.videos.chunk.length}`);
 	if(VIDEOS_LIST_CHUNK.videos.chunk.length > 1)
         {
             modal_video_list.classList.add("show");
@@ -85,40 +82,34 @@
     }
 
     // Add event to paginate
-    let previousHandler = () => {
-	let prev = document.getElementById('previous_content');
-        prev.addEventListener('click', e => {
-	    e.preventDefault();
-	    e.stopPropagation();
-	    let next = document.getElementById('next_content');
-            VIDEOS_LIST_CHUNK.page_index -= VIDEOS_LIST_CHUNK.page_index>0? 1 : 0;
-	    console.log("PREV BTN current page", VIDEOS_LIST_CHUNK.page_index)
-	    if(VIDEOS_LIST_CHUNK.page_index === 0) {
-	        prev.setAttribute('class', 'previous_content disable');
-	    }
+    let pages_info = document.querySelector('.paginator .pages_infos');
+    let next = document.querySelector('.paginator .next_content');
+    let prev = document.querySelector('.paginator .previous_content');
+    prev.addEventListener('click', e => {
+        e.preventDefault();
+	e.stopPropagation();
+        VIDEOS_LIST_CHUNK.page_index -= VIDEOS_LIST_CHUNK.page_index>0? 1 : 0;
+	let nbr_pages = VIDEOS_LIST_CHUNK.videos.chunk.length-1;
+	if(VIDEOS_LIST_CHUNK.page_index === 0)
+	    prev.setAttribute('class', 'previous_content disable');
+        next.classList.remove('disable');
+	pages_info.innerText = `${VIDEOS_LIST_CHUNK.page_index+1}/${nbr_pages+1}`;
+	pages_info.setAttribute('title', `${VIDEOS_LIST_CHUNK.page_index+1}/${nbr_pages+1}`);
+        show_paginate_videos();
+    });
+    next.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+	let nbr_pages = VIDEOS_LIST_CHUNK.videos.chunk.length-1;
+        VIDEOS_LIST_CHUNK.page_index += VIDEOS_LIST_CHUNK.page_index< nbr_pages? 1 : 0;
+	if(VIDEOS_LIST_CHUNK.page_index === nbr_pages)
+            next.setAttribute('class', 'next_content disable');
 
-            next.classList.remove('disable');
-	    show_paginate_videos();
-        });
-    }
-    let nextHandler = () => {
-	let next = document.getElementById('next_content');
-        next.addEventListener('click', e => {
-	    e.preventDefault();
-	    e.stopPropagation();
-	    let prev = document.getElementById('previous_content');
-	    let nbr_pages = VIDEOS_LIST_CHUNK.videos.chunk.length-1;
-            VIDEOS_LIST_CHUNK.page_index += VIDEOS_LIST_CHUNK.page_index< nbr_pages? 1 : 0;
-	    console.log("NEXT BTN current page", VIDEOS_LIST_CHUNK.page_index)
-	    if(VIDEOS_LIST_CHUNK.page_index === nbr_pages)
-	    {
-                next.setAttribute('class', 'next_content disable');
-	    }
-	    prev.classList.remove('disable');
-	    show_paginate_videos();
-        });
-    }
-
+	prev.classList.remove('disable');
+	pages_info.innerText = `${VIDEOS_LIST_CHUNK.page_index+1}/${nbr_pages+1}`;
+	pages_info.setAttribute('title', `${VIDEOS_LIST_CHUNK.page_index+1}/${nbr_pages+1}`);
+	show_paginate_videos();
+    });
 
     // Search categery
     let searchCatInput = document.querySelector("#my_videos_filter #searchcategories");
@@ -754,13 +745,6 @@
         CURR_CATEGORY = {};
         window.setTimeout(function(){ cat_input.focus()}, 500)
     });
-
-
-    // Add onclick event to each video in category modal
-    /*let videos_in_modal = document.querySelectorAll("#manageCategoryModal .infinite-item");
-    videos_in_modal.forEach(v => {
-        toggleSelectedClass(v)
-    });*/
 
     // Add click event on category in filter bar to filter videos in my_videos vue
     let cats = document.querySelectorAll("#my_videos_filter .categories_list_item .cat_title");
