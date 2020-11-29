@@ -645,17 +645,20 @@
 	    	}).then(response =>{
 		    response.json().then(data =>{
 			deleteFromSavedData(cat.slug); // delete from local save
-			data.videos.forEach(v =>{ // append all the videos into category dialog
+			data.videos.forEach(v =>{ // append all the videos into chunk videos unselected
 			    VIDEOS_LIST_CHUNK.videos.unselected = [
 				...VIDEOS_LIST_CHUNK.videos.unselected, getModalVideoCard(v, false)]
 			});
 			document.querySelector("#my_videos_filter .categories_list").removeChild(CAT_TO_DELETE.html);
 			let filtered_container = document.querySelector(".infinite-container.filtered");
-			if(filtered_container)
+			if(filtered_container && CAT_TO_DELETE.id == CURR_FILTER.id && CAT_TO_DELETE.slug === CURR_FILTER.slug)
 			{
-		            filtered_container.innerHTML = '';
+		            filtered_container.parentNode.removeChild(filtered_container);
 			    document.querySelector(".infinite-container.hidden").classList.remove('hidden');
                             manageNumberVideoFoundText(CATEGORIES_DATA[0]);
+                            CURR_FILTER.slug = null;
+                            CURR_FILTER.id = null;
+			    document.querySelectorAll(".categories_list .categories_list_item").forEach(c => c.classList.remove('active'));
 			}
 			delete CAT_TO_DELETE.html;
 			delete CAT_TO_DELETE.id;
