@@ -155,7 +155,7 @@
     display: flex;
     align-items: flex-start;
     font-size: 14px;
-    margin-bottomm: .8em;
+    margin-bottom: .8em;
 }
 #my_videos_filter .h5 .align_flex:last-child{
     align-self: flex-end;
@@ -166,7 +166,7 @@
     margin-top: .8em;
     padding: .2em .4em;
     border-radius: 4px;
-    transition .1s transform;
+    transition: .1s transform;
 }
 #my_videos_filter .h5 .align_flex:last-child:hover{
     transform: scale(1.04);
