@@ -362,6 +362,7 @@ def theme_edit_save(request, channel):
 @login_required(redirect_field_name='referrer')
 def my_videos(request):
 
+    data_context = {}
     site = get_current_site(request)
     # Videos list which user is the owner + which user is an additional owner
     videos_list = request.user.video_set.all().filter(
@@ -392,6 +393,10 @@ def my_videos(request):
                 c.video.values_list('slug', flat=True))}, cats))
         cats.insert(0, len(videos_list))
         cats = json.dumps(cats, ensure_ascii=False)
+        data_context['categories'] = cats
+        data_context['videos_without_cat'] = videos_without_cat
+
+    data_context['USE_CATEGORY'] = USE_CATEGORY
 
     paginator = Paginator(videos_list, 12)
     try:
@@ -405,13 +410,9 @@ def my_videos(request):
         return render(
             request, 'videos/video_list.html',
             {'videos': videos, "full_path": full_path})
-
-    return render(request, 'videos/my_videos.html', {
-        'videos': videos, "full_path": full_path,
-        "categories": cats,
-        'videos_without_cat': videos_without_cat,
-        'USE_CATEGORY': USE_CATEGORY
-    })
+    data_context['videos'] = videos
+    data_context['full_path'] = full_path
+    return render(request, 'videos/my_videos.html', data_context)
 
 
 def get_videos_list(request):
