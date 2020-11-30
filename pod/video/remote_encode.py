@@ -172,17 +172,17 @@ def store_remote_encoding_video(video_id):
 
     msg += remote_audio_part(video_to_encode, info_video, output_dir)
 
+    video_encoding = Video.objects.get(id=video_id)  # refresh it
+
     if not info_video["has_stream_video"]:
-        video_to_encode = Video.objects.get(id=video_id)
-        video_to_encode.is_video = False
-        video_to_encode.save()
+        video_encoding.is_video = False
+        video_encoding.save()
 
     add_encoding_log(video_id, msg)
     change_encoding_step(video_id, 0, "done")
 
-    video_to_encode = Video.objects.get(id=video_id)
-    video_to_encode.encoding_in_progress = False
-    video_to_encode.save()
+    video_encoding.encoding_in_progress = False
+    video_encoding.save()
 
     # End
     add_encoding_log(video_id, "End : %s" % time.ctime())
@@ -191,7 +191,7 @@ def store_remote_encoding_video(video_id):
 
     # envois mail fin encodage
     if EMAIL_ON_ENCODING_COMPLETION:
-        send_email_encoding(video_to_encode)
+        send_email_encoding(video_encoding)
 
     # Transcript
     """
