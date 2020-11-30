@@ -71,7 +71,7 @@ def remote_encode_video(video_id):
     change_encoding_step(video_id, 0, "start")
 
     encoding_log, created = EncodingLog.objects.get_or_create(
-        video=Video.objects.get(id=video_id))
+        video=video_to_encode)
     encoding_log.log = "%s" % start
     encoding_log.save()
 
