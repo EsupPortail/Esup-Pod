@@ -690,7 +690,8 @@
 			if(filtered_container && CAT_TO_DELETE.id == CURR_FILTER.id && CAT_TO_DELETE.slug === CURR_FILTER.slug)
 			{
 		            filtered_container.parentNode.removeChild(filtered_container);
-			    document.querySelector(".infinite-container.hidden").classList.remove('hidden');
+			    let my_videos_container = document.querySelector(".infinite-container.hidden")
+			    if(my_videos_container) my_videos_container.classList.remove('hidden');
                             manageNumberVideoFoundText(CATEGORIES_DATA[0]);
 			    CURR_FILTER.slug = null;
 			    CURR_FILTER.id = null;
