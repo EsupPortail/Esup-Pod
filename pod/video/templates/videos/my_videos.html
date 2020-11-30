@@ -75,7 +75,6 @@
   });
 {% if USE_CATEGORY %}
 const CATEGORIES_DATA = {{ categories | safe }};
-const VIDEOS_WITHOUT_CAT = {{ videos_without_cat | safe }};
 </script>
 <script tyep="text/javascript" defer src="{% static 'js/video_category.js' %}"></script>
 {% else %}
