@@ -392,8 +392,6 @@ def my_videos(request):
                 c.video.values_list('slug', flat=True))}, cats))
         cats.insert(0, len(videos_list))
         cats = json.dumps(cats, ensure_ascii=False)
-        videos_without_cat = list(filter(
-            lambda v: not v.category_set.all().count(), videos_list))
 
     paginator = Paginator(videos_list, 12)
     try:
