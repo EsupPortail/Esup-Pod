@@ -396,8 +396,6 @@ def my_videos(request):
         data_context['categories'] = cats
         data_context['videos_without_cat'] = videos_without_cat
 
-    data_context['USE_CATEGORY'] = USE_CATEGORY
-
     paginator = Paginator(videos_list, 12)
     try:
         videos = paginator.page(page)
@@ -410,8 +408,10 @@ def my_videos(request):
         return render(
             request, 'videos/video_list.html',
             {'videos': videos, "full_path": full_path})
+    data_context['use_category'] = USE_CATEGORY
     data_context['videos'] = videos
     data_context['full_path'] = full_path
+
     return render(request, 'videos/my_videos.html', data_context)
 
 
