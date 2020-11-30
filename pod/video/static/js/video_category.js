@@ -339,7 +339,11 @@
 	    let resp = await fetch(`${BASE_URL}${cat_slug}/`,{headers: HEADERS});
 	    return await resp.json();
 	} 
-	catch(e) {console.error(e.message);}
+	catch(e) {
+	    loader.classList.remove('show');
+	    showAlertMessage(gettext('An error occured, please refresh the page and try again.'), "error", delay=10000);
+	    console.error(e.message);
+	}
     }
 
     // Make post request. for edit or add category, postData(object)
@@ -349,7 +353,11 @@
             let resp = await fetch(url, {method: "POST", body: JSON.stringify(postData), headers: HEADERS});
 	    return await resp.json();
         }
-	catch(e){console.error(e.message);}
+	catch(e){
+	    loader.classList.remove('show');
+	    showAlertMessage(gettext('An error occured, please refresh the page and try again.</br>You cannot add two categories with the same title.'), "error", delay=10000);
+	    console.error(e.message);
+	}
     }
 
     let get_type_icon = (is_video=true)=>{
@@ -537,7 +545,7 @@
     }
 
     // Create alert message
-    let showAlertMessage = (message, type="success") => {
+    let showAlertMessage = (message, type="success", delay=4000) => {
 	let title = type.charAt(0).toUpperCase() + type.slice(1);
 	let icon = type==="success"?`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`: type==="error"? `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
         let alert_message = document.createElement("div");
@@ -548,7 +556,7 @@
 	window.setTimeout( () =>{
 	    alert_message.classList.add('hide');
 	    window.setTimeout(()=> document.body.removeChild(alert_message), 1000);
-	}, 4000);
+	}, delay);
     }
 
     // Handler to edit category, c_e=current category to edit
@@ -588,7 +596,11 @@
 
 		    loader.classList.remove('show');
 
-		}).catch(e =>{console.error(e)});
+		}).catch(e =>{
+		    loader.classList.remove('show');
+		    showAlertMessage(gettext('An error occured, please refresh the page and try again.'), "error", delay=10000);
+		    console.error(e)
+		});
 	    }
 	});
     }
@@ -739,6 +751,8 @@
                 showAlertMessage(gettext('Category changes saved successfully'));
 		loader.classList.remove("show"); // hide loader
 	    }).catch(err =>{
+		loader.classList.remove('show');
+		showAlertMessage(gettext('An error occured, please refresh the page and try again.'), "error", delay=10000);
 	        console.log(err);
 	    });
 	}
