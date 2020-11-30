@@ -17,14 +17,13 @@
 
 {% block breadcrumbs %}
 {{ block.super }}
-<li class="breadcrumb-item" ><a href="{% url 'live:lives'%}" title="{% trans "Lives" %}">{% trans "Lives" %}</a></li>
+<li class="breadcrumb-item" ><a href="{% url 'live:lives'%}" title="{% trans 'Lives' %}">{% trans "Lives" %}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{{broadcaster.name}}</li>
 {% endblock %}
 
 {% block page_title %}{% trans "Lives" %}{% endblock %}
 
 {% block page_content %}
-
 
 
 {% if form %}
@@ -36,7 +35,6 @@
 
 
 
-
 {% if broadcaster.video_on_hold.is_video %}
 	<div id="divvideoonhold" style="display: block;">
 		<video id="podvideoonholdplayer" class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" muted autoplay>
@@ -45,19 +43,18 @@
 	<div id="divvideoplayer" style="display: none;">
 		<video id="podvideoplayer" class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" poster="{{broadcaster.get_poster_url}}" muted autoplay>
 			<source
-			 src="{{broadcaster.url}}" 
+			 src="{{broadcaster.url}}"
 			 type="application/x-mpegURL">
 		</video>
 	</div>
 {% else %}
 	<video id="podvideoplayer" class="live-video video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" poster="{{broadcaster.get_poster_url}}" muted autoplay>
 		<source
-		 src="{{broadcaster.url}}" 
+		 src="{{broadcaster.url}}"
 		 type="application/x-mpegURL">
 		 <!-- https://d2zihajmogu5jn.cloudfront.net/bipbop-advanced/bipbop_16x9_variant.m3u8 -->
 	</video>
 	  <div id="viewers-list"> <ul id="viewers-ul">
-              
 
             </ul> </div>
 {% endif %}
@@ -80,7 +77,7 @@
         <button type="button" class="close" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
-        
+
     </div>
 
 
@@ -100,14 +97,14 @@
     {% for otherbroadcaster in broadcaster.building.broadcaster_set.all%}
     {% if otherbroadcaster != broadcaster and otherbroadcaster.public %}
       <p class="card-text">
-        {%if otherbroadcaster.status %}<a href="{% url "live:video_live" slug=otherbroadcaster.slug %}" class="live_on">{%if otherbroadcaster.password%}<i data-feather="lock"></i>{%else%}<i data-feather="airplay"></i>{%endif%}</i>&nbsp;{{otherbroadcaster.name}}</a>
+        {%if otherbroadcaster.status %}<a href="{% url 'live:video_live' slug=otherbroadcaster.slug %}" class="live_on">{%if otherbroadcaster.password%}<i data-feather="lock"></i>{%else%}<i data-feather="airplay"></i>{%endif%}</i>&nbsp;{{otherbroadcaster.name}}</a>
         {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{otherbroadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}</p>
     {% endif %}
     {% empty %}
     <p class="card-text">{% trans "Sorry, no lives found" %}.</p>
     {% endfor %}
     {% if broadcaster.building.gmapurl %}
-    <p class="card-text"><small class="text-muted"><a href='{{broadcaster.building.gmapurl}}' title="{% trans "access map" %}" target="_blank"><i data-feather="map-pin"></i>&nbsp;{% trans "access map" %}</a></small></p>  
+    <p class="card-text"><small class="text-muted"><a href='{{broadcaster.building.gmapurl}}' title="{% trans 'access map' %}" target="_blank"><i data-feather="map-pin"></i>&nbsp;{% trans "access map" %}</a></small></p>
     {% endif %}
 </div>
 </div>
@@ -129,15 +126,15 @@
 	var nbLoop = 0;
 	// Live seems stopped
 	var stopped = false;
-	
+
     //videojs.options.flash.swf = "video-js.swf"
     var options = {
-      notSupportedMessage: "Please use different browser (Mozilla Firefox, Google Chrome, Safari, Microsoft Edge)",
+      notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
       language: "fr", //en or nl
       {% if request.GET.is_iframe %}
 		fluid: false,
       {% else %}
-		fluid: true, 
+		fluid: true,
       {% endif %}
       playbackRates: [0.5, 1, 1.5, 2],
       errorDisplay: false,
@@ -166,14 +163,14 @@
 			if (stopped) {
 				nbLoop = nbLoop + 1;
 				// We're waiting a bit to make sure it's not a network / data flow issue...
-				if (debug) { console.info("The streaming live stopped ? Video state : " + player.readyState() + ". It's been " + nbLoop + " times that there is no more video stream. After 4 times, we stop."); }
+				if (debug) { console.info("The streaming live stopped? Video state: " + player.readyState() + ". It's been " + nbLoop + " times that there is no more video stream. After 4 times, we stop."); }
 				if (nbLoop > 3) {
 					// Display of a message of end of live and reload of the page in 9 seconds
 					let modal = player.createModal('{% trans "Thank you for watching this streaming live with us. The page will reload automatically within a few seconds to display the video on hold." %}');
 					setTimeout(function(){ location.reload(); }, 9000);
 				}
 			}
-		} 
+		}
 		return options;
 	}
 
@@ -192,7 +189,7 @@
 
 	// Management of the streaming live
 	var player = videojs('podvideoplayer', options, function(){});
-		
+
     {% if broadcaster.enable_viewer_count%}
 	player.videoJsViewerCount();
 	{% endif %}
@@ -223,6 +220,5 @@
 		if ($("#divvideoplayer")) { $("#divvideoplayer").css("display", "block"); }
     })
 
-	
 </script>
 {% endblock more_script %}
