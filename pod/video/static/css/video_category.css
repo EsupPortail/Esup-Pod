@@ -38,6 +38,9 @@
     margin-right: .8em;
     font-size: 25px;
     display: inline-block;
+    -webkit-box-flex: 0;
+        -ms-flex: none;
+            flex: none;
 }
 
 .category_alert .alert_title{
@@ -47,7 +50,7 @@
 
 .category_alert.alert_success{ background-color: #96df73; color: #08641a; }
 .category_alert.alert_success .alert_icon{ -webkit-transform: translateY(-2px); -ms-transform: translateY(-2px); transform: translateY(-2px); }
-.category_alert.alert_error{ background-color: #ef403d; color: #640808; }
+.category_alert.alert_error{ background-color: #ff6f6c; color: #4d0303; }
 .category_alert.alert_info{ background-color: #acdae2; color: #0b6373; }
 
 /************************************
