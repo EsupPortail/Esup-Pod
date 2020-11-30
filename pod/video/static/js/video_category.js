@@ -534,6 +534,21 @@
 	return infinite_item;
     }
 
+    // Create alert message
+    let showAlertMessage = (message, type="success") => {
+	let title = type.charAt(0).toUpperCase() + type.slice(1);
+	let icon = type==="success"?`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`: type==="error"? `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+        let alert_message = document.createElement("div");
+	alert_message.setAttribute('class', `category_alert alert_${type}`);
+	alert_message.innerHTML = `<div class="alert_content"><span class="alert_icon">${icon}</span><span class="alert_title">${title}</span><span class="alert_text">${message}</span>`;
+	document.body.appendChild(alert_message);
+	window.setTimeout(() => alert_message.classList.add('show'), 1000)
+	window.setTimeout( () =>{
+	    alert_message.classList.add('hide');
+	    window.setTimeout(()=> document.body.removeChild(alert_message), 1000);
+	}, 4000);
+    }
+
     // Handler to edit category, c_e=current category to edit
     let editHandler = (c_e) =>{
 	c_e.addEventListener('click', (e) =>
@@ -644,6 +659,7 @@
 		    headers: HEADERS
 	    	}).then(response =>{
 		    response.json().then(data =>{
+			showAlertMessage(gettext('Category deleted successfully'));
 			deleteFromSavedData(cat.slug); // delete from local save
 			data.videos.forEach(v =>{ // append all the videos into chunk videos unselected
 			    VIDEOS_LIST_CHUNK.videos.unselected = [
@@ -716,6 +732,7 @@
 		// close modal
 	    	document.querySelector("#manageCategoryModal #cancelDialog").click()
 		refreshDialog();
+                showAlertMessage(gettext('Category changes saved successfully'));
 		loader.classList.remove("show"); // hide loader
 	    }).catch(err =>{
 	        console.log(err);
@@ -726,6 +743,7 @@
     	    postCategoryData(`${BASE_URL}add/`, postData).then(data =>{
     		let li =  getCategoryLi(data.category.title, data.category.slug, data.category.id);
 		document.querySelector("#my_videos_filter .categories_list").appendChild(li);
+                showAlertMessage(gettext('Category created successfully'));
 		saveCategoryData(data.category); // saving cat localy to prevent more request to the server
 		loader.classList.remove("show"); // hide loader
 	    });
