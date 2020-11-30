@@ -203,7 +203,7 @@
 	if(CURR_FILTER.slug && CURR_FILTER.id && CURR_CATEGORY.slug === CURR_FILTER.slug && CURR_CATEGORY.id === CURR_FILTER.id)
         {
 	    let actual_videos = VIDEOS_LIST_CHUNK.videos.selected.map(v_html => v_html.dataset.slug);
-	    let old_videos = getSavedData(CURR_FILTER.slug).videos.map(v => v.slug);
+	    let old_videos = getSavedData(CURR_FILTER.id).videos.map(v => v.slug);
 	    let rm = old_videos.filter( v => !actual_videos.includes(v) );
 	    let added = actual_videos.filter( v=> !old_videos.includes(v));
 	    let container_filtered = document.querySelector("#videos_list.filtered");
@@ -238,10 +238,11 @@
         c.addEventListener('click', e =>{
 	    e.stopPropagation();
 	    loader.classList.add('show');
-	    let cat_filter_slug = c.dataset.slug;
+	    let cat_filter_slug = c.dataset.slug.trim();
+	    let cat_filter_id = c.parentNode.querySelector('.category_actions #remove_category_icon').dataset.del.trim();
 	    videos_list_filtered = getVideosFilteredContainer(); 
 	    manageCssActiveClass(c.parentNode); // manage active css class
-	    let jsonData = getSavedData(cat_filter_slug);
+	    let jsonData = getSavedData(cat_filter_id);
 	    if( Object.keys(jsonData).length )
 	    {
 		let videos_nb = (!CURR_FILTER.slug && !CURR_FILTER.id)?CATEGORIES_DATA[0]:jsonData.videos.length; 
@@ -280,29 +281,30 @@
 
     // Save/update category data locally
     let saveCategoryData = (data)=>{
-        SAVED_DATA[`${data.slug}`] = data;
+        SAVED_DATA[`${data.id}`] = data;
     }
 
     // Delete category data locally
     let deleteFromSavedData = (c_slug)=>{
         if(Object.keys(SAVED_DATA).includes(c_slug))
-            delete SAVED_DATA[c_slug];
+            delete SAVED_DATA[id];
     }
     
     // Search cat by slug
     let findCategory = (slug, id=0) =>{
 	let cat = SERVER_DATA.find(c => (c.slug === slug && c.id == id))
 	if(!cat)
-	    cat = getSavedData(slug=slug);
+	    cat = getSavedData(id=id);
 	return cat;
     }
 
     // Get saved category data
-    let  getSavedData = (c_slug) =>{
-        if(Object.keys(SAVED_DATA).includes(c_slug))
-            return SAVED_DATA[c_slug];
+    let getSavedData = (id) =>{
+	let cat = {}
+	if(Object.keys(SAVED_DATA).includes(id.toString(10)))
+            cat = SAVED_DATA[id.toString(10)];
 
-	return {};
+	return cat;
     }
 
     // Add event toggle selected class on el
@@ -556,6 +558,7 @@
 	    loader.classList.add('show');
 	    cat_edit_title = c_e.dataset.title.trim();
 	    cat_edit_slug = c_e.dataset.slug.trim();
+	    cat_edit_id = c_e.parentNode.querySelector("#remove_category_icon").dataset.del.trim();
 	    cat_input.value = cat_edit_title;;
 	    modal_title.innerText = c_e.getAttribute('title').trim(); 
 	    window.setTimeout(function(){ cat_input.focus()}, 500) // focus in input (category title)
@@ -563,7 +566,7 @@
 	    // add videos of the current category into the dialog
 	    saveCatBtn.setAttribute("data-action", "edit");
 	    saveCatBtn.innerText = gettext("Save category");
-	    let jsonData = getSavedData(cat_edit_slug);
+	    let jsonData = getSavedData(cat_edit_id);
 	    CURR_CATEGORY = jsonData;
 	    DOMCurrentEditCat = c_e.parentNode.parentNode;
 	    if( Object.keys(jsonData).length )
@@ -725,8 +728,9 @@
     		updateFilteredVideosContainer(data); // update filered videos in filtered container
 	        deleteFromSavedData(CURR_CATEGORY.slug);
 		saveCategoryData(data);
-		DOMCurrentEditCat.querySelector('.cat_title').textContent = data.title
-		DOMCurrentEditCat.querySelectorAll('span').forEach(sp => sp.setAttribute('data-slug', data.slug));
+		DOMCurrentEditCat.querySelector('.cat_title').textContent = data.title;
+		DOMCurrentEditCat.querySelector('.cat_title').setAttribute('title', data.title);
+		DOMCurrentEditCat.querySelectorAll('span').forEach(sp => {sp.setAttribute('data-slug', data.slug); sp.setAttribute('data-title', data.title)});
 		DOMCurrentEditCat = null
 		CURR_CATEGORY = {};
 		// close modal
