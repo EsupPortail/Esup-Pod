@@ -536,7 +536,7 @@ class EncodingVideoTestCase(TestCase):
             video=Video.objects.get(id=1),
             rendition=VideoRendition.objects.get(resolution="640x360"))
         self.assertTrue(isinstance(ev, EncodingVideo))
-        evslug = "EncodingVideo num : %s with resolution %s " % (
+        evslug = "EncodingVideo num: %s with resolution %s " % (
             '%04d' % ev.id, ev.name)
         evslug += "for video %s in %s" % (ev.video.id, ev.encoding_format)
         self.assertEqual(ev.__str__(), evslug)
@@ -553,7 +553,7 @@ class EncodingVideoTestCase(TestCase):
             name="480p",
             encoding_format="audio/mp3")
         self.assertTrue(isinstance(ev, EncodingVideo))
-        evslug = "EncodingVideo num : %s with resolution %s " % (
+        evslug = "EncodingVideo num: %s with resolution %s " % (
             '%04d' % ev.id, ev.name)
         evslug += "for video %s in %s" % (ev.video.id, ev.encoding_format)
         self.assertEqual(ev.__str__(), evslug)
@@ -606,7 +606,7 @@ class EncodingAudioTestCase(TestCase):
             video=Video.objects.get(id=1)
         )
         self.assertTrue(isinstance(ea, EncodingAudio))
-        easlug = "EncodingAudio num : %s for video %s in %s"\
+        easlug = "EncodingAudio num: %s for video %s in %s"\
             % ('%04d' % ea.id,
                ea.video.id,
                ea.encoding_format)
@@ -623,7 +623,7 @@ class EncodingAudioTestCase(TestCase):
             name="audio",
             encoding_format="video/mp4")
         self.assertTrue(isinstance(ea, EncodingAudio))
-        easlug = "EncodingAudio num : %s for video %s in %s"\
+        easlug = "EncodingAudio num: %s for video %s in %s"\
             % ('%04d' % ea.id,
                ea.video.id,
                ea.encoding_format)
@@ -675,7 +675,7 @@ class PlaylistVideoTestCase(TestCase):
             video=Video.objects.get(id=1)
         )
         self.assertTrue(isinstance(pv, PlaylistVideo))
-        pvslug = "Playlist num : %s for video %s in %s"\
+        pvslug = "Playlist num: %s for video %s in %s"\
             % ('%04d' % pv.id,
                pv.video.id,
                pv.encoding_format)
@@ -692,7 +692,7 @@ class PlaylistVideoTestCase(TestCase):
             name="audio",
             encoding_format="video/mp4")
         self.assertTrue(isinstance(pv, PlaylistVideo))
-        pvslug = "Playlist num : %s for video %s in %s"\
+        pvslug = "Playlist num: %s for video %s in %s"\
             % ('%04d' % pv.id,
                pv.video.id,
                pv.encoding_format)
