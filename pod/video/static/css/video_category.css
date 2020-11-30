@@ -1,4 +1,56 @@
 /************************************
+ * Override alert message css
+ * **********************************/
+.category_alert{
+    position: fixed;
+    z-index: 99999;
+    -webkit-transform: translateX(105%);
+        -ms-transform: translateX(105%);
+            transform: translateX(105%);
+    bottom: 4px;
+    right: 4px;
+    padding: .4em .8em;
+    font-size: 16px;
+    color: #242323;
+    background-color: #ffd557;
+    -webkit-transition: .5s transform;
+    -o-transition: .5s transform;
+    transition: .5s transform;
+    border-radius: 4px;
+}
+
+.category_alert.show{ -webkit-transform: translateX(0); -ms-transform: translateX(0); transform: translateX(0); }
+.category_alert.hide{ -webkit-transform: translateY(105%); -ms-transform: translateY(105%); transform: translateY(105%); }
+
+.category_alert .alert_content{
+    padding: .4em;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+}
+.category_alert .alert_icon{
+    margin-right: .8em;
+    font-size: 25px;
+    display: inline-block;
+}
+
+.category_alert .alert_title{
+    font-weight: 700;
+    margin-right: .8em;
+}
+
+.category_alert.alert_success{ background-color: #96df73; color: #08641a; }
+.category_alert.alert_success .alert_icon{ -webkit-transform: translateY(-2px); -ms-transform: translateY(-2px); transform: translateY(-2px); }
+.category_alert.alert_error{ background-color: #ef403d; color: #640808; }
+.category_alert.alert_info{ background-color: #acdae2; color: #0b6373; }
+
+/************************************
  * Override my_videos css
  * **********************************/
 #videos_list .alert-warning{
