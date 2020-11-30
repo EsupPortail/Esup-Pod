@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load i18n %}
 <script>
 window.onmessage = function(event) {
    var evt = event || window.event;
@@ -22,12 +23,12 @@ window.onmessage = function(event) {
 };
 
 var options = {
-  notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
+  notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
   language: "fr", //en or nl
   {% if request.GET.is_iframe %}
-  fluid: false, 
+    fluid: false,
   {% else %}
-  fluid: true, 
+    fluid: true,
   {% endif %}
   playbackRates: [0.5, 1, 1.5, 2]
 }
@@ -44,7 +45,7 @@ player.on('firstplay', function(){
 {% if video.is_video %}
   /** get all mp4 format **/
   var mp4_sources = {{video.get_video_mp4_json|safe}};
-  
+
   {% if video.get_playlist_master %}
     var srcOptions = {
       src: '{{video.get_playlist_master.source_file.url}}',
@@ -90,7 +91,7 @@ player.on('firstplay', function(){
         end: parseInt($(this).attr('data-timeend'))
       });
     });
-    if (typeof player.overlay === "function") { 
+    if (typeof player.overlay === "function") {
     player.overlay({
       overlays: list_overlays
     });

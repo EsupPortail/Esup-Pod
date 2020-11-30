@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-18 10:17+0000\n"
+"POT-Creation-Date: 2020-11-26 10:01+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.3.1\n"
 
 #: pod/authentication/admin.py:93 pod/main/forms.py:51
 msgid "Email"
@@ -92,7 +92,7 @@ msgid "registered-reader"
 msgstr "lecteur enregistré"
 
 #: pod/authentication/models.py:68 pod/recorder/models.py:266
-#: pod/video/models.py:1405 pod/video/views.py:1281
+#: pod/video/models.py:1418 pod/video/models.py:1467 pod/video/views.py:1281
 msgid "Comment"
 msgstr "Commentaire"
 
@@ -116,7 +116,7 @@ msgstr "Authentification locale"
 #: pod/authentication/templates/registration/login.html:9
 #: pod/authentication/templates/registration/login.html:12
 #: pod/authentication/templates/registration/login.html:64
-#: pod/main/templates/navbar.html:120
+#: pod/main/templates/navbar.html:117
 msgid "Log in"
 msgstr "Connexion"
 
@@ -143,7 +143,7 @@ msgid "Forgotten your password or username?"
 msgstr "Mot de passe ou identifiant perdu ?"
 
 #: pod/authentication/templates/userpicture/userpicture.html:7
-#: pod/main/templates/navbar.html:91
+#: pod/main/templates/navbar.html:88
 msgid "Change your picture"
 msgstr "Changer votre image de profil"
 
@@ -199,7 +199,7 @@ msgstr "Veuillez renseigner une valeur valide pour ce champ"
 #: pod/main/templates/navbar_collapse.html:66
 #: pod/main/templates/navbar_collapse.html:100
 #: pod/podfile/templates/podfile/home_content.html:60
-#: pod/podfile/templates/podfile/home_content.html:98
+#: pod/podfile/templates/podfile/home_content.html:97
 #: pod/recorder/templates/recorder/claim_record.html:49
 msgid "Close"
 msgstr "Fermer"
@@ -237,7 +237,7 @@ msgstr "Nom de la session BBB."
 msgid "Session date"
 msgstr "Date de session"
 
-#: pod/bbb/models.py:40 pod/video/models.py:645 pod/video/models.py:1311
+#: pod/bbb/models.py:40 pod/video/models.py:645 pod/video/models.py:1324
 msgid "Encoding step"
 msgstr "Étape de l'encodage"
 
@@ -360,7 +360,7 @@ msgstr "par"
 
 #: pod/bbb/templates/bbb/list_meeting.html:5
 #: pod/bbb/templates/bbb/publish_meeting.html:17
-#: pod/main/templates/navbar.html:109
+#: pod/main/templates/navbar.html:106
 msgid "My BigBlueButton records"
 msgstr "Mes sessions BigBlueButton"
 
@@ -538,7 +538,7 @@ msgstr "Créer / Éditer les chapitres"
 #: pod/enrichment/templates/enrichment/form_enrichment.html:12
 #: pod/video/templates/channel/form_theme.html:11
 msgid "One or more errors have been found in the form:"
-msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire :"
+msgstr "Une ou plusieurs erreurs ont été trouvées dans le formulaire :"
 
 #: pod/chapter/templates/chapter/form_chapter.html:30
 #: pod/completion/templates/video_caption_maker.html:95
@@ -622,7 +622,7 @@ msgstr "Chapitre vidéo"
 #: pod/completion/templates/video_completion.html:13
 #: pod/enrichment/templates/enrichment/group_enrichment.html:10
 #: pod/interactive/templates/interactive/group_interactive.html:10
-#: pod/main/templates/navbar.html:97
+#: pod/main/templates/navbar.html:94
 #: pod/video/templates/videos/add_video.html:12
 #: pod/video/templates/videos/my_videos.html:6
 #: pod/video/templates/videos/video_collaborate.html:12
@@ -807,9 +807,9 @@ msgstr ""
 #: pod/enrichment/models.py:291 pod/enrichment/models.py:322
 #: pod/interactive/models.py:16 pod/interactive/models.py:37
 #: pod/playlist/models.py:79 pod/recorder/models.py:78 pod/video/models.py:455
-#: pod/video/models.py:954 pod/video/models.py:1097 pod/video/models.py:1165
-#: pod/video/models.py:1219 pod/video/models.py:1264 pod/video/models.py:1282
-#: pod/video/models.py:1299
+#: pod/video/models.py:954 pod/video/models.py:1102 pod/video/models.py:1170
+#: pod/video/models.py:1224 pod/video/models.py:1273 pod/video/models.py:1291
+#: pod/video/models.py:1312
 msgid "Video"
 msgstr "Vidéo"
 
@@ -995,7 +995,7 @@ msgstr ""
 #: pod/completion/templates/overlay/form_overlay.html:8
 #: pod/completion/templates/track/form_track.html:9
 msgid "Your form contains errors:"
-msgstr "Votre formulaire contient des erreurs :"
+msgstr "Votre formulaire contient des erreurs :"
 
 #: pod/completion/templates/contributor/form_contributor.html:26
 #: pod/completion/templates/document/form_document.html:24
@@ -1532,8 +1532,8 @@ msgstr "Ajouter un nouvel enrichissement"
 
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:67
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:68
-#: pod/video/templates/videos/add_video.html:52
-#: pod/video/templates/videos/add_video.html:53
+#: pod/video/templates/videos/add_video.html:61
+#: pod/video/templates/videos/add_video.html:62
 msgid "Back to video edit"
 msgstr "Retour à l'édition de la vidéo"
 
@@ -1679,17 +1679,17 @@ msgstr "Version originale"
 #: pod/interactive/templates/interactive/video_interactive.html:100
 #: pod/video/templates/videos/video.html:216
 msgid "Add the video to a playlist"
-msgstr "Ajouter une vidéo à une playlist"
+msgstr "Ajouter une vidéo à une liste de lecture"
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html:90
 #: pod/interactive/templates/interactive/video_interactive.html:101
-#: pod/main/templates/navbar.html:101
+#: pod/main/templates/navbar.html:98
 #: pod/playlist/templates/my_playlists.html:10
 #: pod/playlist/templates/my_playlists.html:17
 #: pod/playlist/templates/playlist.html:14
 #: pod/video/templates/videos/video.html:217
 msgid "My playlists"
-msgstr "Mes playlists"
+msgstr "Mes listes de lecture"
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html:122
 msgid "To help you, the different types of enrichments have specific colors"
@@ -1875,7 +1875,7 @@ msgstr "Mot de passe"
 msgid "name"
 msgstr "nom"
 
-#: pod/live/models.py:31 pod/live/templates/live/live.html:97
+#: pod/live/models.py:31 pod/live/templates/live/live.html:94
 #: pod/video/models.py:234 pod/video/models.py:318
 #: pod/video/templates/channel/channel.html:79
 #: pod/video/templates/channel/channel.html:90
@@ -2015,7 +2015,7 @@ msgid "Lives"
 msgstr "Directs"
 
 #: pod/live/templates/live/building.html:39
-#: pod/live/templates/live/live.html:107 pod/live/templates/live/lives.html:37
+#: pod/live/templates/live/live.html:104 pod/live/templates/live/lives.html:37
 msgid "Sorry, no lives found"
 msgstr "Désolé, aucun direct trouvé"
 
@@ -2043,15 +2043,20 @@ msgstr "Mot de passe requis"
 msgid "Send"
 msgstr "Envoyer"
 
-#: pod/live/templates/live/live.html:104 pod/live/templates/live/lives.html:35
+#: pod/live/templates/live/live.html:101 pod/live/templates/live/lives.html:35
 msgid "no broadcast in progress"
 msgstr "aucune diffusion actuellement"
 
-#: pod/live/templates/live/live.html:110 pod/live/templates/live/lives.html:40
+#: pod/live/templates/live/live.html:107 pod/live/templates/live/lives.html:40
 msgid "access map"
 msgstr "plan d'accès"
 
-#: pod/live/templates/live/live.html:172
+#: pod/live/templates/live/live.html:132
+#: pod/video/templates/videos/video-script.html:26
+msgid "Please use different browser"
+msgstr "Utilisez un navigateur compatible"
+
+#: pod/live/templates/live/live.html:169
 msgid ""
 "Thank you for watching this streaming live with us. The page will reload "
 "automatically within a few seconds to display the video on hold."
@@ -2060,13 +2065,13 @@ msgstr ""
 "rechargera automatiquement dans quelques secondes pour afficher la vidéo "
 "d’attente."
 
-#: pod/live/templates/live/live.html:189
+#: pod/live/templates/live/live.html:186
 msgid "Live not found, displaying the video on hold, retry every 10 seconds"
 msgstr ""
 "Le direct n’a pas encore commencé, affichage de la vidéo d’attente, nouvelle "
 "tentative de lecture dans 10 secondes"
 
-#: pod/live/templates/live/live.html:204
+#: pod/live/templates/live/live.html:201
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
 "Le direct n’a pas encore commencé, nouvelle tentative de lecture dans 10 "
@@ -2125,8 +2130,8 @@ msgid "Other (please specify)"
 msgstr "Autre (spécifiez)"
 
 #: pod/main/forms.py:50 pod/podfile/models.py:27 pod/podfile/models.py:105
-#: pod/podfile/templates/podfile/home_content.html:32 pod/video/models.py:1090
-#: pod/video/models.py:1162 pod/video/models.py:1216
+#: pod/podfile/templates/podfile/home_content.html:32 pod/video/models.py:1095
+#: pod/video/models.py:1167 pod/video/models.py:1221
 msgid "Name"
 msgstr "Nom"
 
@@ -2206,47 +2211,47 @@ msgstr "Bachkir"
 
 #: pod/main/lang_settings.py:19
 msgid "Basque"
-msgstr ""
+msgstr "Basque"
 
 #: pod/main/lang_settings.py:20
 msgid "Bengali (Bangla)"
-msgstr ""
+msgstr "Bengali (Bangla)"
 
 #: pod/main/lang_settings.py:21
 msgid "Bhutani"
-msgstr ""
+msgstr "Bhoutani"
 
 #: pod/main/lang_settings.py:22
 msgid "Bihari"
-msgstr ""
+msgstr "Bihari"
 
 #: pod/main/lang_settings.py:23
 msgid "Bislama"
-msgstr ""
+msgstr "Bislama"
 
 #: pod/main/lang_settings.py:24
 msgid "Breton"
-msgstr ""
+msgstr "Breton"
 
 #: pod/main/lang_settings.py:25
 msgid "Bulgarian"
-msgstr ""
+msgstr "Bulgare"
 
 #: pod/main/lang_settings.py:26
 msgid "Burmese"
-msgstr ""
+msgstr "Birman"
 
 #: pod/main/lang_settings.py:27
 msgid "Byelorussian (Belarusian)"
-msgstr ""
+msgstr "Biélorusse"
 
 #: pod/main/lang_settings.py:28
 msgid "Cambodian"
-msgstr ""
+msgstr "Cambodgien"
 
 #: pod/main/lang_settings.py:29
 msgid "Catalan"
-msgstr ""
+msgstr "Catalan"
 
 #: pod/main/lang_settings.py:30 pod/main/lang_settings.py:158
 msgid "Chinese"
@@ -2254,23 +2259,23 @@ msgstr "Chinois"
 
 #: pod/main/lang_settings.py:31
 msgid "Corsican"
-msgstr ""
+msgstr "Corse"
 
 #: pod/main/lang_settings.py:32
 msgid "Croatian"
-msgstr ""
+msgstr "Croate"
 
 #: pod/main/lang_settings.py:33
 msgid "Czech"
-msgstr ""
+msgstr "Tchèque"
 
 #: pod/main/lang_settings.py:34
 msgid "Danish"
-msgstr ""
+msgstr "Danois"
 
 #: pod/main/lang_settings.py:35
 msgid "Dutch"
-msgstr ""
+msgstr "Hollandais"
 
 #: pod/main/lang_settings.py:36 pod/main/lang_settings.py:156
 msgid "English"
@@ -2278,27 +2283,27 @@ msgstr "Anglais"
 
 #: pod/main/lang_settings.py:37
 msgid "Esperanto"
-msgstr ""
+msgstr "Esperanto"
 
 #: pod/main/lang_settings.py:38
 msgid "Estonian"
-msgstr ""
+msgstr "Estonien"
 
 #: pod/main/lang_settings.py:39
 msgid "Faeroese"
-msgstr ""
+msgstr "Féroïen"
 
 #: pod/main/lang_settings.py:40
 msgid "Farsi"
-msgstr ""
+msgstr "Farsi"
 
 #: pod/main/lang_settings.py:41
 msgid "Fiji"
-msgstr ""
+msgstr "Fidji"
 
 #: pod/main/lang_settings.py:42
 msgid "Finnish"
-msgstr ""
+msgstr "Finnois"
 
 #: pod/main/lang_settings.py:43 pod/main/lang_settings.py:160
 msgid "French"
@@ -2306,23 +2311,23 @@ msgstr "Français"
 
 #: pod/main/lang_settings.py:44
 msgid "Frisian"
-msgstr ""
+msgstr "Frison"
 
 #: pod/main/lang_settings.py:45
 msgid "Galician"
-msgstr ""
+msgstr "Galicien"
 
 #: pod/main/lang_settings.py:46
 msgid "Gaelic (Scottish)"
-msgstr ""
+msgstr "Gaélique (écossais)"
 
 #: pod/main/lang_settings.py:47
 msgid "Gaelic (Manx)"
-msgstr ""
+msgstr "Gaélique (Manx)"
 
 #: pod/main/lang_settings.py:48
 msgid "Georgian"
-msgstr ""
+msgstr "Géorgien"
 
 #: pod/main/lang_settings.py:49 pod/main/lang_settings.py:155
 msgid "German"
@@ -2330,291 +2335,291 @@ msgstr "Allemand"
 
 #: pod/main/lang_settings.py:50
 msgid "Greek"
-msgstr ""
+msgstr "Grec"
 
 #: pod/main/lang_settings.py:51
 msgid "Greenlandic"
-msgstr ""
+msgstr "Groenlandais"
 
 #: pod/main/lang_settings.py:52
 msgid "Guarani"
-msgstr ""
+msgstr "Guarani"
 
 #: pod/main/lang_settings.py:53
 msgid "Gujarati"
-msgstr ""
+msgstr "Gujarati"
 
 #: pod/main/lang_settings.py:54
 msgid "Haitian Creole"
-msgstr ""
+msgstr "Créole haïtien"
 
 #: pod/main/lang_settings.py:55
 msgid "Hausa"
-msgstr ""
+msgstr "Hausa"
 
 #: pod/main/lang_settings.py:56
 msgid "Hebrew"
-msgstr ""
+msgstr "Hébreu"
 
 #: pod/main/lang_settings.py:57
 msgid "Hindi"
-msgstr ""
+msgstr "Hindi"
 
 #: pod/main/lang_settings.py:58
 msgid "Hungarian"
-msgstr ""
+msgstr "Hongrois"
 
 #: pod/main/lang_settings.py:59
 msgid "Icelandic"
-msgstr ""
+msgstr "Islandais"
 
 #: pod/main/lang_settings.py:60
 msgid "Ido"
-msgstr ""
+msgstr "Ido"
 
 #: pod/main/lang_settings.py:61
 msgid "Indonesian"
-msgstr ""
+msgstr "Indonésien"
 
 #: pod/main/lang_settings.py:62
 msgid "Interlingua"
-msgstr ""
+msgstr "Interlingua"
 
 #: pod/main/lang_settings.py:63
 msgid "Interlingue"
-msgstr ""
+msgstr "Interlingue"
 
 #: pod/main/lang_settings.py:64
 msgid "Inuktitut"
-msgstr ""
+msgstr "Inuktitut"
 
 #: pod/main/lang_settings.py:65
 msgid "Inupiak"
-msgstr ""
+msgstr "Inupiak"
 
 #: pod/main/lang_settings.py:66
 msgid "Irish"
-msgstr ""
+msgstr "Irlandais"
 
 #: pod/main/lang_settings.py:67 pod/main/lang_settings.py:161
 msgid "Italian"
-msgstr ""
+msgstr "Italien"
 
 #: pod/main/lang_settings.py:68 pod/main/lang_settings.py:162
 msgid "Japanese"
-msgstr ""
+msgstr "Japonais"
 
 #: pod/main/lang_settings.py:69
 msgid "Javanese"
-msgstr ""
+msgstr "Javanais"
 
 #: pod/main/lang_settings.py:70
 msgid "Kannada"
-msgstr ""
+msgstr "Kannada"
 
 #: pod/main/lang_settings.py:71
 msgid "Kashmiri"
-msgstr ""
+msgstr "Cachemire"
 
 #: pod/main/lang_settings.py:72
 msgid "Kazakh"
-msgstr ""
+msgstr "Kazakh"
 
 #: pod/main/lang_settings.py:73
 msgid "Kinyarwanda (Ruanda)"
-msgstr ""
+msgstr "Kinyarwanda (Ruanda)"
 
 #: pod/main/lang_settings.py:74
 msgid "Kirghiz"
-msgstr ""
+msgstr "Kirghiz"
 
 #: pod/main/lang_settings.py:75
 msgid "Kirundi (Rundi)"
-msgstr ""
+msgstr "Kirundi (Rundi)"
 
 #: pod/main/lang_settings.py:76
 msgid "Korean"
-msgstr ""
+msgstr "Coréen"
 
 #: pod/main/lang_settings.py:77
 msgid "Kurdish"
-msgstr ""
+msgstr "Kurde"
 
 #: pod/main/lang_settings.py:78
 msgid "Laothian"
-msgstr ""
+msgstr "Laothian"
 
 #: pod/main/lang_settings.py:79
 msgid "Latin"
-msgstr ""
+msgstr "Latin"
 
 #: pod/main/lang_settings.py:80
 msgid "Latvian (Lettish)"
-msgstr ""
+msgstr "Letton (Lettish)"
 
 #: pod/main/lang_settings.py:81
 msgid "Limburgish ( Limburger)"
-msgstr ""
+msgstr "Limbourgeois ( Limburger )"
 
 #: pod/main/lang_settings.py:82
 msgid "Lingala"
-msgstr ""
+msgstr "Lingala"
 
 #: pod/main/lang_settings.py:83
 msgid "Lithuanian"
-msgstr ""
+msgstr "Lituanien"
 
 #: pod/main/lang_settings.py:84
 msgid "Macedonian"
-msgstr ""
+msgstr "Macédonien"
 
 #: pod/main/lang_settings.py:85
 msgid "Malagasy"
-msgstr ""
+msgstr "Malgache"
 
 #: pod/main/lang_settings.py:86
 msgid "Malay"
-msgstr ""
+msgstr "Malais"
 
 #: pod/main/lang_settings.py:87
 msgid "Malayalam"
-msgstr ""
+msgstr "Malayalam"
 
 #: pod/main/lang_settings.py:88
 msgid "Maltese"
-msgstr ""
+msgstr "Maltais"
 
 #: pod/main/lang_settings.py:89
 msgid "Maori"
-msgstr ""
+msgstr "Maori"
 
 #: pod/main/lang_settings.py:90
 msgid "Marathi"
-msgstr ""
+msgstr "Marathi"
 
 #: pod/main/lang_settings.py:91
 msgid "Moldavian"
-msgstr ""
+msgstr "Moldave"
 
 #: pod/main/lang_settings.py:92
 msgid "Mongolian"
-msgstr ""
+msgstr "Mongol"
 
 #: pod/main/lang_settings.py:93
 msgid "Nauru"
-msgstr ""
+msgstr "Nauru"
 
 #: pod/main/lang_settings.py:94
 msgid "Nepali"
-msgstr ""
+msgstr "Népalais"
 
 #: pod/main/lang_settings.py:95
 msgid "Norwegian"
-msgstr ""
+msgstr "Norvégien"
 
 #: pod/main/lang_settings.py:96
 msgid "Occitan"
-msgstr ""
+msgstr "Occitan"
 
 #: pod/main/lang_settings.py:97
 msgid "Oriya"
-msgstr ""
+msgstr "Oriya"
 
 #: pod/main/lang_settings.py:98
 msgid "Oromo (Afaan Oromo)"
-msgstr ""
+msgstr "Oromo (Afaan Oromo)"
 
 #: pod/main/lang_settings.py:99
 msgid "Pashto (Pushto)"
-msgstr ""
+msgstr "Pachtoune (Pushto)"
 
 #: pod/main/lang_settings.py:100
 msgid "Polish"
-msgstr ""
+msgstr "Polonais"
 
 #: pod/main/lang_settings.py:101
 msgid "Portuguese"
-msgstr ""
+msgstr "Portugais"
 
 #: pod/main/lang_settings.py:102
 msgid "Punjabi"
-msgstr ""
+msgstr "Punjabi"
 
 #: pod/main/lang_settings.py:103
 msgid "Quechua"
-msgstr ""
+msgstr "Quechua"
 
 #: pod/main/lang_settings.py:104
 msgid "Rhaeto-Romance"
-msgstr ""
+msgstr "Rhéto-roman"
 
 #: pod/main/lang_settings.py:105
 msgid "Romanian"
-msgstr ""
+msgstr "Roumain"
 
 #: pod/main/lang_settings.py:106 pod/main/lang_settings.py:163
 msgid "Russian"
-msgstr ""
+msgstr "Russe"
 
 #: pod/main/lang_settings.py:107
 msgid "Samoan"
-msgstr ""
+msgstr "Samoan"
 
 #: pod/main/lang_settings.py:108
 msgid "Sangro"
-msgstr ""
+msgstr "Sangro"
 
 #: pod/main/lang_settings.py:109
 msgid "Sanskrit"
-msgstr ""
+msgstr "Sanskrit"
 
 #: pod/main/lang_settings.py:110
 msgid "Serbian"
-msgstr ""
+msgstr "Serbe"
 
 #: pod/main/lang_settings.py:111
 msgid "Serbo-Croatian"
-msgstr ""
+msgstr "Serbo-croate"
 
 #: pod/main/lang_settings.py:112
 msgid "Sesotho"
-msgstr ""
+msgstr "Sesotho"
 
 #: pod/main/lang_settings.py:113
 msgid "Setswana"
-msgstr ""
+msgstr "Setswana"
 
 #: pod/main/lang_settings.py:114
 msgid "Shona"
-msgstr ""
+msgstr "Shona"
 
 #: pod/main/lang_settings.py:115
 msgid "Sichuan Yi"
-msgstr ""
+msgstr "Sichuan Yi"
 
 #: pod/main/lang_settings.py:116
 msgid "Sindhi"
-msgstr ""
+msgstr "Sindhi"
 
 #: pod/main/lang_settings.py:117
 msgid "Sinhalese"
-msgstr ""
+msgstr "Cingalais"
 
 #: pod/main/lang_settings.py:118
 msgid "Siswati"
-msgstr ""
+msgstr "Siswati"
 
 #: pod/main/lang_settings.py:119
 msgid "Slovak"
-msgstr ""
+msgstr "Slovaque"
 
 #: pod/main/lang_settings.py:120
 msgid "Slovenian"
-msgstr ""
+msgstr "Slovène"
 
 #: pod/main/lang_settings.py:121
 msgid "Somali"
-msgstr ""
+msgstr "Somalien"
 
 #: pod/main/lang_settings.py:122 pod/main/lang_settings.py:159
 msgid "Spanish"
@@ -2622,119 +2627,119 @@ msgstr "Espagnol"
 
 #: pod/main/lang_settings.py:123
 msgid "Sundanese"
-msgstr ""
+msgstr "Sundanais"
 
 #: pod/main/lang_settings.py:124
 msgid "Swahili (Kiswahili)"
-msgstr ""
+msgstr "Swahili (Kiswahili)"
 
 #: pod/main/lang_settings.py:125
 msgid "Swedish"
-msgstr ""
+msgstr "Suédois"
 
 #: pod/main/lang_settings.py:126
 msgid "Tagalog"
-msgstr ""
+msgstr "Tagalog"
 
 #: pod/main/lang_settings.py:127
 msgid "Tajik"
-msgstr ""
+msgstr "Tadjik"
 
 #: pod/main/lang_settings.py:128
 msgid "Tamil"
-msgstr ""
+msgstr "Tamil"
 
 #: pod/main/lang_settings.py:129
 msgid "Tatar"
-msgstr ""
+msgstr "Tatar"
 
 #: pod/main/lang_settings.py:130
 msgid "Telugu"
-msgstr ""
+msgstr "Telugu"
 
 #: pod/main/lang_settings.py:131
 msgid "Thai"
-msgstr ""
+msgstr "Thai"
 
 #: pod/main/lang_settings.py:132
 msgid "Tibetan"
-msgstr ""
+msgstr "Tibétain"
 
 #: pod/main/lang_settings.py:133
 msgid "Tigrinya"
-msgstr ""
+msgstr "Tigrinya"
 
 #: pod/main/lang_settings.py:134
 msgid "Tonga"
-msgstr ""
+msgstr "Tonga"
 
 #: pod/main/lang_settings.py:135
 msgid "Tsonga"
-msgstr ""
+msgstr "Tsonga"
 
 #: pod/main/lang_settings.py:136
 msgid "Turkish"
-msgstr ""
+msgstr "Turc"
 
 #: pod/main/lang_settings.py:137
 msgid "Turkmen"
-msgstr ""
+msgstr "Turkmène"
 
 #: pod/main/lang_settings.py:138
 msgid "Twi"
-msgstr ""
+msgstr "Twi"
 
 #: pod/main/lang_settings.py:139
 msgid "Uighur"
-msgstr ""
+msgstr "Uighur"
 
 #: pod/main/lang_settings.py:140
 msgid "Ukrainian"
-msgstr ""
+msgstr "Ukrainien"
 
 #: pod/main/lang_settings.py:141
 msgid "Urdu"
-msgstr ""
+msgstr "Urdu"
 
 #: pod/main/lang_settings.py:142
 msgid "Uzbek"
-msgstr ""
+msgstr "Ouzbek"
 
 #: pod/main/lang_settings.py:143
 msgid "Vietnamese"
-msgstr ""
+msgstr "Vietnamien"
 
 #: pod/main/lang_settings.py:144
 msgid "Volapük"
-msgstr ""
+msgstr "Volapük"
 
 #: pod/main/lang_settings.py:145
 msgid "Wallon"
-msgstr ""
+msgstr "Wallon"
 
 #: pod/main/lang_settings.py:146
 msgid "Welsh"
-msgstr ""
+msgstr "Gallois"
 
 #: pod/main/lang_settings.py:147
 msgid "Wolof"
-msgstr ""
+msgstr "Wolof"
 
 #: pod/main/lang_settings.py:148
 msgid "Xhosa"
-msgstr ""
+msgstr "Xhosa"
 
 #: pod/main/lang_settings.py:149
 msgid "Yiddish"
-msgstr ""
+msgstr "Yiddish"
 
 #: pod/main/lang_settings.py:150
 msgid "Yoruba"
-msgstr ""
+msgstr "Yoruba"
 
 #: pod/main/lang_settings.py:151
 msgid "Zulu"
-msgstr ""
+msgstr "Zulu"
 
 #: pod/main/models.py:52 pod/main/models.py:83 pod/podfile/models.py:144
 #: pod/podfile/models.py:179
@@ -2857,7 +2862,7 @@ msgid "Tags"
 msgstr "Mots clés"
 
 #: pod/main/templates/base.html:68
-msgid "breadcrumb"
+msgid "Breadcrumb"
 msgstr "Fil d’Ariane"
 
 #: pod/main/templates/base.html:71
@@ -2909,8 +2914,7 @@ msgstr "vidéos disponibles"
 
 #: pod/main/templates/mail/mail.html:2 pod/main/templates/mail/mail.txt:2
 #: pod/main/templates/mail/mail_sender.html:2
-#: pod/main/templates/mail/mail_sender.txt:2 pod/video/utils.py:122
-#: pod/video/utils.py:145 pod/video/utils.py:210 pod/video/utils.py:233
+#: pod/main/templates/mail/mail_sender.txt:2
 msgid "Hello"
 msgstr "Bonjour"
 
@@ -2919,18 +2923,24 @@ msgid "The user"
 msgstr "L'utilisateur"
 
 #: pod/main/templates/mail/mail.html:3 pod/main/templates/mail/mail.txt:3
-msgid "send a message from"
-msgstr "envoyer un message depuis"
+#, fuzzy
+#| msgid "send a message from"
+msgid "sends a message from"
+msgstr "envoie un message depuis"
 
 #: pod/main/templates/mail/mail.html:4 pod/main/templates/mail/mail.txt:4
 #: pod/main/templates/mail/mail_sender.html:4
 #: pod/main/templates/mail/mail_sender.txt:4
-msgid "Here is the message sent"
-msgstr "Voici le message envoyé"
+#, fuzzy
+#| msgid "Here is the message sent"
+msgid "Here is the message sent:"
+msgstr "Voici le message envoyé :"
 
 #: pod/main/templates/mail/mail.html:6 pod/main/templates/mail/mail.txt:6
-msgid "Referrer page"
-msgstr "Page de référence"
+#, fuzzy
+#| msgid "Referrer page"
+msgid "Referrer page:"
+msgstr "Page de référence :"
 
 #: pod/main/templates/mail/mail.html:7 pod/main/templates/mail/mail.txt:7
 #: pod/main/templates/mail/mail_sender.html:6
@@ -2940,14 +2950,14 @@ msgstr "Page de référence"
 #: pod/video/management/commands/check_obsolete_videos.py:251
 #: pod/video/management/commands/check_obsolete_videos.py:286
 #: pod/video/management/commands/check_obsolete_videos.py:321
-#: pod/video/utils.py:130 pod/video/utils.py:154 pod/video/utils.py:218
-#: pod/video/utils.py:242
 msgid "Regards"
 msgstr "Cordialement"
 
 #: pod/main/templates/mail/mail_sender.html:3
 #: pod/main/templates/mail/mail_sender.txt:3
-msgid "You just send a message from"
+#, fuzzy
+#| msgid "You just send a message from"
+msgid "You just sent a message from"
 msgstr "Vous venez d'envoyer un message depuis"
 
 #: pod/main/templates/maintenance.html:14
@@ -2982,11 +2992,11 @@ msgstr "Certaines fonctionnalités sont indisponibles"
 msgid "Add a video"
 msgstr "Ajouter une vidéo"
 
-#: pod/main/templates/navbar.html:94
+#: pod/main/templates/navbar.html:91
 msgid "Add your picture"
 msgstr "Ajouter votre image de profil"
 
-#: pod/main/templates/navbar.html:99
+#: pod/main/templates/navbar.html:96
 #: pod/video/templates/channel/channel_edit.html:17
 #: pod/video/templates/channel/my_channels.html:6
 #: pod/video/templates/channel/my_channels.html:9
@@ -2994,19 +3004,19 @@ msgstr "Ajouter votre image de profil"
 msgid "My channels"
 msgstr "Mes chaînes"
 
-#: pod/main/templates/navbar.html:103 pod/podfile/templates/podfile/home.html:6
+#: pod/main/templates/navbar.html:100 pod/podfile/templates/podfile/home.html:6
 #: pod/podfile/templates/podfile/home.html:10
 msgid "My files"
 msgstr "Mes fichiers"
 
-#: pod/main/templates/navbar.html:106
+#: pod/main/templates/navbar.html:103
 #: pod/recorder/templates/recorder/claim_record.html:11
 #: pod/recorder/templates/recorder/record_delete.html:8
 #: pod/recorder/templates/recorder/record_delete.html:20
 msgid "Claim a record"
 msgstr "Revendiquer un enregistrement"
 
-#: pod/main/templates/navbar.html:113 pod/main/templates/navbar.html:114
+#: pod/main/templates/navbar.html:110 pod/main/templates/navbar.html:111
 msgid "Log out"
 msgstr "Déconnexion"
 
@@ -3066,7 +3076,7 @@ msgstr "Propriétaire"
 
 #: pod/playlist/models.py:26
 msgid "Short description of the playlist."
-msgstr "Courte description de la playlist."
+msgstr "Courte description de la liste de lecture."
 
 #: pod/playlist/models.py:28 pod/video/models.py:250
 msgid "Visible"
@@ -3074,35 +3084,37 @@ msgstr "Visible"
 
 #: pod/playlist/models.py:30
 msgid "If checked, the playlist can be visible to users other than the owner."
-msgstr "Si coché, cette playlist sera visible aux autres utilisateurs."
+msgstr "Si coché, cette liste de lecture sera visible aux autres utilisateurs."
 
 #: pod/playlist/models.py:35 pod/playlist/models.py:78
 msgid "Playlist"
-msgstr "Playlist"
+msgstr "Liste de lecture"
 
 #: pod/playlist/models.py:36
 msgid "Playlists"
-msgstr "Playlists"
+msgstr "Listes de lecture"
 
 #: pod/playlist/models.py:83
 msgid "Position of the video in a playlist."
-msgstr "Position de la vidéo dans la playlist."
+msgstr "Position de la vidéo dans la liste de lecture."
 
 #: pod/playlist/models.py:88
 msgid "Playlist element"
-msgstr "Élément de playlist"
+msgstr "Élément de liste de lecture"
 
 #: pod/playlist/models.py:89
 msgid "Playlist elements"
-msgstr "Éléments de playlist"
+msgstr "Éléments de liste de lecture"
 
 #: pod/playlist/models.py:94 pod/playlist/views.py:155
 msgid "A video in draft mode cannot be added to a playlist."
-msgstr "Une vidéo en mode brouillon ne peut être ajoutée à une playlist."
+msgstr ""
+"Une vidéo en mode brouillon ne peut être ajoutée à une liste de lecture."
 
 #: pod/playlist/models.py:97 pod/playlist/views.py:158
 msgid "A video with a password cannot be added to a playlist."
-msgstr "Une vidéo avec mot de passe ne peut être ajoutée à une playlist."
+msgstr ""
+"Une vidéo avec mot de passe ne peut être ajoutée à une liste de lecture."
 
 #: pod/playlist/templates/my_playlists.html:13
 #: pod/playlist/templates/my_playlists.html:23
@@ -3110,41 +3122,41 @@ msgstr "Une vidéo avec mot de passe ne peut être ajoutée à une playlist."
 msgid "%(counter)s playlist found"
 msgid_plural "%(counter)s playlists found"
 msgstr[0] "%(counter)s playlist trouvée"
-msgstr[1] "%(counter)s playlists trouvées"
+msgstr[1] "%(counter)s listes de lecture trouvées"
 
 #: pod/playlist/templates/my_playlists.html:19
 msgid "No playlist found"
-msgstr "Aucune playlist trouvée"
+msgstr "Aucune liste de lecture trouvée"
 
 #: pod/playlist/templates/my_playlists.html:20
 msgid ""
 "You have not created any playlists yet, please use the \"Add a new playlist"
 "\" button to add one."
 msgstr ""
-"Vous n'avez pas encore créé de playlist, veuillez cliquer sur le bouton "
-"\"Ajouter une nouvelle playlist\" pour en ajouter une."
+"Vous n'avez pas encore créé de liste de lecture, veuillez cliquer sur le "
+"bouton \"Ajouter une nouvelle liste de lecture\" pour en ajouter une."
 
 #: pod/playlist/templates/my_playlists.html:21
 #: pod/playlist/templates/playlist.html:25
 #: pod/playlist/templates/playlist.html:31
 #: pod/playlist/templates/playlist.html:39 pod/playlist/tests/test_views.py:69
 msgid "Add a new playlist"
-msgstr "Ajouter une nouvelle playlist"
+msgstr "Ajouter une nouvelle liste de lecture"
 
 #: pod/playlist/templates/my_playlists.html:27
 msgid ""
 "This is the page of your playlists. Here you can create, edit or delete them."
 msgstr ""
-"C'est la page de vos playlists. Ici vous pouvez les créer, les éditer ou les "
-"supprimer."
+"C'est la page de vos listes de lecture. Ici vous pouvez les créer, les "
+"éditer ou les supprimer."
 
 #: pod/playlist/templates/my_playlists.html:28
 msgid ""
 "A playlist with the eye symbol means that this playlist is visible to "
 "authenticated users when they view this page."
 msgstr ""
-"Une playlist avec un symbole œil signifie que cette playlist est visible aux "
-"utilisateurs authentifiés qui visiteront cette page."
+"Une liste de lecture avec un symbole œil signifie que cette liste est "
+"visible aux utilisateurs authentifiés qui visiteront cette page."
 
 #: pod/playlist/templates/playlist.html:21
 #: pod/playlist/templates/playlist/playlist_list.html:18
@@ -3157,15 +3169,15 @@ msgstr "Éditer"
 #: pod/playlist/tests/test_views.py:106 pod/playlist/tests/test_views.py:165
 #: pod/playlist/tests/test_views.py:217 pod/playlist/tests/test_views.py:272
 msgid "Editing the playlist"
-msgstr "Éditer la playlist"
+msgstr "Éditer la liste de lecture"
 
 #: pod/playlist/templates/playlist.html:75
 msgid "This playlist has no videos yet."
-msgstr "Cette playlist ne dispose pas encore de vidéos."
+msgstr "Cette liste de lecture ne dispose pas encore de vidéos."
 
 #: pod/playlist/templates/playlist.html:78
 msgid "Back to my playlists"
-msgstr "Retour à mes playlists"
+msgstr "Retour à mes listes de lecture"
 
 #: pod/playlist/templates/playlist/playlist_element_list.html:5
 msgid "List of videos"
@@ -3195,11 +3207,11 @@ msgstr "Lancer"
 
 #: pod/playlist/templates/playlist/playlist_list.html:28
 msgid "Sorry, no playlist found"
-msgstr "Désolé, aucune playlist trouvée"
+msgstr "Désolé, aucune liste de lecture trouvée"
 
 #: pod/playlist/templates/playlist/playlist_player.html:9
 msgid "Repeat the playlist"
-msgstr "Répéter la playlist"
+msgstr "Répéter la liste de lecture"
 
 #: pod/playlist/templates/playlist/playlist_player.html:12
 msgid "Switch to next video automatically"
@@ -3207,40 +3219,36 @@ msgstr "Passer automatiquement à la prochaine vidéo"
 
 #: pod/playlist/views.py:63
 msgid "You cannot edit this playlist."
-msgstr "Vous ne pouvez éditer cette playlist."
+msgstr "Vous ne pouvez éditer cette liste de lecture."
 
 #: pod/playlist/views.py:91
-msgid "The playlist has been saved !"
-msgstr "La playlist a été sauvegardée !"
+msgid "The playlist has been saved!"
+msgstr "La liste de lecture a été sauvegardée !"
 
-#: pod/playlist/views.py:96
-msgid "The request are erroned. No videos given."
-msgstr "La requête est erronée. Aucune vidéo envoyé.."
+#: pod/playlist/views.py:96 pod/playlist/views.py:118 pod/playlist/views.py:177
+msgid "The request is wrong. No video given."
+msgstr "La requête est erronée. Aucune vidéo envoyée."
 
 #: pod/playlist/views.py:101 pod/playlist/views.py:123
 #: pod/playlist/views.py:182 pod/playlist/views.py:196
 msgid "Only ajax request are accepted for this action."
-msgstr "Uniquement les requêtes ajax sont autorisés pour cette action."
+msgstr "Uniquement les requêtes ajax sont autorisées pour cette action."
 
 #: pod/playlist/views.py:113
 msgid "This video has been removed from your playlist."
-msgstr "Cette vidéo a été retirée de votre playlist."
-
-#: pod/playlist/views.py:118 pod/playlist/views.py:177
-msgid "The request are erroned. No video given."
-msgstr "La requête est erronée. Aucune vidéo envoyée."
+msgstr "Cette vidéo a été retirée de votre liste de lecture."
 
 #: pod/playlist/views.py:135
 msgid "The playlist have been saved."
-msgstr "La playlist a été sauvegardée."
+msgstr "La liste de lecture a été sauvegardée."
 
 #: pod/playlist/views.py:172
 msgid "The video has been added to your playlist."
-msgstr "La vidéo a été ajoutée à votre playlist."
+msgstr "La vidéo a été ajoutée à votre liste de lecture."
 
 #: pod/playlist/views.py:191
 msgid "This playlist has been deleted."
-msgstr "Cette playlist a été supprimée."
+msgstr "Cette liste de lecture a été supprimée."
 
 #: pod/podfile/forms.py:49 pod/video/forms.py:262
 #, python-format
@@ -3327,8 +3335,8 @@ msgid "Share with someone"
 msgstr "Partager avec quelqu'un"
 
 #: pod/podfile/templates/podfile/home_content.html:79
-msgid "Already shared with :"
-msgstr "Déjà partagé avec :"
+msgid "Already shared with:"
+msgstr "Déjà partagé avec :"
 
 #: pod/podfile/templates/podfile/home_content.html:88
 msgid "Username"
@@ -3605,13 +3613,13 @@ msgid "Select the main language used in the content."
 msgstr "Sélectionner la langue principalement utilisée dans ce contenu."
 
 #: pod/recorder/models.py:178 pod/video/forms.py:199 pod/video/models.py:512
-#: pod/video/templates/videos/add_video.html:45
-#: pod/video/templates/videos/add_video.html:88
+#: pod/video/templates/videos/add_video.html:52
+#: pod/video/templates/videos/add_video.html:98
 msgid "Transcript"
 msgstr "Transcrire"
 
 #: pod/recorder/models.py:179 pod/video/models.py:513
-#: pod/video/templates/videos/add_video.html:45
+#: pod/video/templates/videos/add_video.html:53
 msgid "Check this box if you want to transcript the audio.(beta version)"
 msgstr ""
 "Cocher cette case si vous voulez transcrire l’audio (version bêta, voir aide "
@@ -3728,8 +3736,8 @@ msgstr "Fichier source de la vidéo publiée."
 msgid "File size"
 msgstr "Taille du fichier"
 
-#: pod/recorder/models.py:320 pod/video/models.py:499 pod/video/models.py:1348
-#: pod/video/models.py:1407
+#: pod/recorder/models.py:320 pod/video/models.py:499 pod/video/models.py:1361
+#: pod/video/models.py:1420
 msgid "Date added"
 msgstr "Date d'ajout"
 
@@ -3922,7 +3930,7 @@ msgid "File field"
 msgstr "Fichier"
 
 #: pod/video/forms.py:88 pod/video/models.py:457
-#: pod/video/templates/videos/add_video.html:78
+#: pod/video/templates/videos/add_video.html:88
 msgid "You can send an audio or video file."
 msgstr "Vous pouvez envoyer un fichier audio ou vidéo."
 
@@ -4075,10 +4083,10 @@ msgid ""
 "If your video is in a playlist the password of your video will be removed "
 "automatically."
 msgstr ""
-"Si votre vidéo est dans une playlist vous ne pourrez pas lui ajouter de mot "
-"de passe."
+"Si votre vidéo est dans une liste de lecture vous ne pourrez pas lui ajouter "
+"de mot de passe."
 
-#: pod/video/forms.py:200 pod/video/templates/videos/add_video.html:91
+#: pod/video/forms.py:200 pod/video/templates/videos/add_video.html:101
 msgid ""
 "Available only in French and English, transcription is a speech recognition "
 "technology that transforms an oral speech into text in an automated way. By "
@@ -4090,7 +4098,7 @@ msgstr ""
 "automatiquement. En cochant cette case, cela va générer un fichier de sous-"
 "titre durant l’encodage de la vidéo."
 
-#: pod/video/forms.py:205 pod/video/templates/videos/add_video.html:92
+#: pod/video/forms.py:205 pod/video/templates/videos/add_video.html:102
 msgid ""
 "You will probably have to modify this file using the captioning tool in the "
 "completion page to improve it."
@@ -4133,7 +4141,7 @@ msgstr ""
 "Le propriétaire de la video ne peut pas être propriétaire additionnel en "
 "même temps"
 
-#: pod/video/forms.py:465 pod/video/templates/videos/add_video.html:75
+#: pod/video/forms.py:465 pod/video/templates/videos/add_video.html:85
 msgid "File"
 msgstr "Fichier"
 
@@ -4273,10 +4281,10 @@ msgstr "Version %(app)s"
 #: pod/video/models.py:217 pod/video/models.py:301
 msgid ""
 "Please choose a title as short and accurate as possible, reflecting the main "
-"subject / context of the content.(max length : 100 characters)"
+"subject / context of the content.(max length: 100 characters)"
 msgstr ""
 "Veuillez choisir un titre aussi court et précis que possible, qui reflète le "
-"sujet principal / le contexte de votre contenu.(taille maximale: 100 "
+"sujet principal / le contexte de votre contenu. (taille maximale : 100 "
 "caractères)"
 
 #: pod/video/models.py:238
@@ -4322,10 +4330,10 @@ msgstr "Discipline"
 #: pod/video/models.py:461
 msgid ""
 "Please choose a title as short and accurate as possible, reflecting the main "
-"subject / context of the content.(max length : 250 characters)"
+"subject / context of the content.(max length: 250 characters)"
 msgstr ""
 "Veuillez choisir un titre aussi court et précis que possible, reflétant le "
-"sujet principal / le contexte de ce contenu (taille maximale: 250 "
+"sujet principal / le contexte de ce contenu (taille maximale : 250 "
 "caractères)."
 
 #: pod/video/models.py:489
@@ -4388,144 +4396,195 @@ msgstr "Statistiques"
 msgid "resolution"
 msgstr "résolution"
 
-#: pod/video/models.py:979 pod/video/models.py:1044 pod/video/models.py:1051
+#: pod/video/models.py:976
+msgid ""
+"Please use the only format x. i.e.: <em>640x360</em> or <em>1280x720</em> or "
+"<em>1920x1080</em>."
+msgstr ""
+"Merci d'utiliser uniquement le format x. Exemple : <em>640x360</em> ou "
+"<em>1280x720</em> ou <em>1920x1080</em>."
+
+#: pod/video/models.py:980 pod/video/models.py:1049 pod/video/models.py:1056
 msgid "minrate"
 msgstr "débit minimum"
 
-#: pod/video/models.py:984 pod/video/models.py:1020 pod/video/models.py:1027
+#: pod/video/models.py:982 pod/video/models.py:988 pod/video/models.py:994
+#: pod/video/models.py:1000
+msgid ""
+"Please use the only format k. i.e.: <em>300k</em> or <em>600k</em> or "
+"<em>1000k</em>."
+msgstr ""
+"Merci d'utiliser uniquement le format k. Exemple : <em>300k</em> ou "
+"<em>600k</em> ou <em>1000k</em>."
+
+#: pod/video/models.py:986 pod/video/models.py:1025 pod/video/models.py:1032
 msgid "bitrate video"
 msgstr "débit binaire de la vidéo"
 
-#: pod/video/models.py:989 pod/video/models.py:1032 pod/video/models.py:1039
+#: pod/video/models.py:992 pod/video/models.py:1037 pod/video/models.py:1044
 msgid "maxrate"
 msgstr "débit maximum"
 
-#: pod/video/models.py:994 pod/video/models.py:1069 pod/video/models.py:1076
+#: pod/video/models.py:998 pod/video/models.py:1074 pod/video/models.py:1081
 msgid "bitrate audio"
 msgstr "débit binaire de l'audio"
 
-#: pod/video/models.py:998
+#: pod/video/models.py:1003
 msgid "Make a MP4 version"
 msgstr "Faire une version MP4"
 
-#: pod/video/models.py:1011 pod/video/models.py:1099
+#: pod/video/models.py:1016 pod/video/models.py:1104
 msgid "rendition"
 msgstr "rendu"
 
-#: pod/video/models.py:1012
+#: pod/video/models.py:1017
 msgid "renditions"
 msgstr "rendus"
 
-#: pod/video/models.py:1101 pod/video/models.py:1167 pod/video/models.py:1221
+#: pod/video/models.py:1099 pod/video/models.py:1168 pod/video/models.py:1222
+msgid "Please use the only format in encoding choices:"
+msgstr "Merci de sélectionner un type valide :"
+
+#: pod/video/models.py:1106 pod/video/models.py:1172 pod/video/models.py:1226
 msgid "Format"
 msgstr "Format"
 
-#: pod/video/models.py:1108 pod/video/models.py:1172 pod/video/models.py:1226
+#: pod/video/models.py:1110 pod/video/models.py:1174 pod/video/models.py:1228
+msgid "Please use the only format in format choices:"
+msgstr "Merci de sélectionner un format valide :"
+
+#: pod/video/models.py:1113 pod/video/models.py:1177 pod/video/models.py:1231
 msgid "encoding source file"
 msgstr "fichier source d'encodage"
 
-#: pod/video/models.py:1130
+#: pod/video/models.py:1135
 msgid "Encoding video"
 msgstr "Encodage vidéo"
 
-#: pod/video/models.py:1131
+#: pod/video/models.py:1136
 msgid "Encoding videos"
 msgstr "Encodage des vidéos"
 
-#: pod/video/models.py:1182
+#: pod/video/models.py:1187
 msgid "Encoding audio"
 msgstr "Encodage audio"
 
-#: pod/video/models.py:1183
+#: pod/video/models.py:1188
 msgid "Encoding audios"
 msgstr "Encodage des audios"
 
-#: pod/video/models.py:1274
+#: pod/video/models.py:1236
+msgid "Video Playlist"
+msgstr "Liste de lecture"
+
+#: pod/video/models.py:1237
+msgid "Video Playlists"
+msgstr "Listes de lecture"
+
+#: pod/video/models.py:1283
 msgid "Encoding log"
 msgstr "Journal de l'encodage"
 
-#: pod/video/models.py:1275
+#: pod/video/models.py:1284
 msgid "Encoding logs"
 msgstr "Journaux des encodages"
 
-#: pod/video/models.py:1285
+#: pod/video/models.py:1294 pod/video/models.py:1299
 msgid "Video version"
 msgstr "Version de la video"
 
-#: pod/video/models.py:1287
+#: pod/video/models.py:1296
 msgid "Video default version."
 msgstr "Version par défaut de la vidéo."
 
-#: pod/video/models.py:1312
+#: pod/video/models.py:1300
+msgid "Video versions"
+msgstr "Versions de la video"
+
+#: pod/video/models.py:1325
 msgid "Encoding steps"
 msgstr "Etapes de l'encodage"
 
-#: pod/video/models.py:1321 pod/video/models.py:1328 pod/video/models.py:1344
+#: pod/video/models.py:1334 pod/video/models.py:1341 pod/video/models.py:1357
 #: pod/video/views.py:1292
 msgid "Note"
 msgstr "Note"
 
-#: pod/video/models.py:1329
+#: pod/video/models.py:1342
 msgid "Notes"
 msgstr "Notes"
 
-#: pod/video/models.py:1340
+#: pod/video/models.py:1353
 msgid "Note availibility level"
 msgstr "Niveau de disponibilité de la note"
 
-#: pod/video/models.py:1342
+#: pod/video/models.py:1355
 msgid "Select an availability level for the note."
 msgstr "Sélectionner le niveau de disponibilité de la note."
 
-#: pod/video/models.py:1346
+#: pod/video/models.py:1359
 msgid "Timestamp"
 msgstr "Horodatage"
 
-#: pod/video/models.py:1350 pod/video/models.py:1409
+#: pod/video/models.py:1363 pod/video/models.py:1422
 msgid "Date modified"
 msgstr "Date de modification"
 
-#: pod/video/models.py:1353
+#: pod/video/models.py:1366
 msgid "Advanced Note"
 msgstr "Note avancée"
 
-#: pod/video/models.py:1354
+#: pod/video/models.py:1367
 msgid "Advanced Notes"
 msgstr "Notes avancées"
 
-#: pod/video/models.py:1400
+#: pod/video/models.py:1413
 msgid "Comment availibility level"
 msgstr "Niveau de disponibilité du commentaire"
 
-#: pod/video/models.py:1402
+#: pod/video/models.py:1415
 msgid "Select an availability level for the comment."
 msgstr "Sélectionnez un niveau de disponibilité pour le commentaire."
 
-#: pod/video/models.py:1412
+#: pod/video/models.py:1425
 msgid "Note comment"
 msgstr "Commentaire de la note"
 
-#: pod/video/models.py:1413
+#: pod/video/models.py:1426
 msgid "Note comments"
 msgstr "Commentaires de notes"
 
-#: pod/video/models.py:1431
+#: pod/video/models.py:1444
 msgid "Date for deletion"
 msgstr "Date pour la suppression"
 
-#: pod/video/models.py:1434 pod/video/templates/videos/video.html:76
+#: pod/video/models.py:1447 pod/video/templates/videos/video.html:76
 #: pod/video/templates/videos/videos.html:8
 #: pod/video/templates/videos/videos.html:17
 msgid "Videos"
 msgstr "Vidéos"
 
-#: pod/video/models.py:1437
+#: pod/video/models.py:1450
 msgid "Video to delete"
 msgstr "Vidéo à supprimer"
 
-#: pod/video/models.py:1438
+#: pod/video/models.py:1451
 msgid "Videos to delete"
 msgstr "Vidéos à supprimer"
+
+#: pod/video/models.py:1468 pod/video/templates/videos/video-comment.html:12
+msgid "Comments"
+msgstr "Commentaires"
+
+#: pod/video/models.py:1483
+msgid "Vote"
+msgstr "Vote"
+
+#: pod/video/models.py:1484
+#, fuzzy
+#| msgid "Notes"
+msgid "Votes"
+msgstr "Notes"
 
 #: pod/video/templates/channel/channel.html:62
 msgid "Show view statistics for all videos in this theme"
@@ -4656,7 +4715,7 @@ msgstr "Édition des thèmes de la chaîne"
 
 #: pod/video/templates/videos/add_video.html:14
 #: pod/video/templates/videos/add_video.html:18
-#: pod/video/templates/videos/add_video.html:35
+#: pod/video/templates/videos/add_video.html:41
 msgid "Choose an audio or video file to upload"
 msgstr "Choisir un fichier audio ou vidéo à mettre en ligne"
 
@@ -4666,15 +4725,28 @@ msgstr "Choisir un fichier audio ou vidéo à mettre en ligne"
 msgid "Editing the video"
 msgstr "Éditer la vidéo"
 
-#: pod/video/templates/videos/add_video.html:30
+#: pod/video/templates/videos/add_video.html:33
+#: pod/video/templates/videos/video_edit.html:49
+msgid ""
+"Access to adding video has been restricted. If you want to add videos on the "
+"platform, please"
+msgstr ""
+"L'accès à l'ajout de vidéo est restreint, si vous voulez ajouter des vidéos"
+
+#: pod/video/templates/videos/add_video.html:33
+#: pod/video/templates/videos/video_edit.html:49
+msgid "contact us"
+msgstr "contactez nous"
+
+#: pod/video/templates/videos/add_video.html:36
 msgid "Media upload"
 msgstr "Téléverser un média"
 
-#: pod/video/templates/videos/add_video.html:39
+#: pod/video/templates/videos/add_video.html:45
 msgid "Upload progress:"
 msgstr "Progression du téléversement :"
 
-#: pod/video/templates/videos/add_video.html:48
+#: pod/video/templates/videos/add_video.html:57
 msgid ""
 "Do not leave the page if you encounter a connection problem during the "
 "upload, it will resume automatically when your connection is available again."
@@ -4683,19 +4755,19 @@ msgstr ""
 "la mise en ligne, elle reprendra automatiquement quand votre connexion sera "
 "de nouveau disponible."
 
-#: pod/video/templates/videos/add_video.html:61
+#: pod/video/templates/videos/add_video.html:71
 #: pod/video/templates/videos/video_edit.html:179
 msgid "Uploading"
 msgstr "Mise en ligne"
 
-#: pod/video/templates/videos/add_video.html:63
+#: pod/video/templates/videos/add_video.html:73
 #: pod/video/templates/videos/video_edit.html:181
 #, python-format
 msgid "The file size must be lower than %(video_max_upload_size)s Go."
 msgstr ""
 "La taille du fichier doit être inférieure à %(video_max_upload_size)s Go."
 
-#: pod/video/templates/videos/add_video.html:64
+#: pod/video/templates/videos/add_video.html:74
 #: pod/video/templates/videos/video_edit.html:182
 msgid ""
 "The sending time depends on the size of your file and your upload speed. "
@@ -4704,7 +4776,7 @@ msgstr ""
 "Le temps d'envoi dépend de la taille de votre fichier et de votre vitesse de "
 "téléchargement. Ce temps d'envoi peut être relativement long."
 
-#: pod/video/templates/videos/add_video.html:65
+#: pod/video/templates/videos/add_video.html:75
 #: pod/video/templates/videos/video_edit.html:183
 msgid ""
 "While sending your file, do not close your browser until you have received a "
@@ -4713,14 +4785,14 @@ msgstr ""
 "Pendant l'envoi de votre fichier, ne fermez pas votre navigateur avant "
 "d'avoir reçu un message de succès ou d'échec."
 
-#: pod/video/templates/videos/add_video.html:66
+#: pod/video/templates/videos/add_video.html:76
 #: pod/video/templates/videos/video_edit.html:184
 msgid "An email will be sent to you when all encoding tasks are completed."
 msgstr ""
 "Un courriel vous sera envoyé quand toutes les tâches d'encodage seront "
 "complétées."
 
-#: pod/video/templates/videos/add_video.html:71
+#: pod/video/templates/videos/add_video.html:81
 #: pod/video/templates/videos/video_edit.html:194
 msgid "Help for form fields"
 msgstr "Aide pour les champs de formulaire"
@@ -4816,10 +4888,6 @@ msgstr ""
 #: pod/video/templates/videos/video-comment.html:3
 msgid "Comments have been disabled for this video."
 msgstr "Les commentaires ont été désactivés pour cette vidéo."
-
-#: pod/video/templates/videos/video-comment.html:12
-msgid "Comments"
-msgstr "Commentaires"
 
 #: pod/video/templates/videos/video-comment.html:15
 msgid "Add a public comment"
@@ -5028,17 +5096,6 @@ msgstr "Ajouter une nouvelle vidéo"
 msgid "Delete the video"
 msgstr "Supprimer la vidéo"
 
-#: pod/video/templates/videos/video_edit.html:49
-msgid ""
-"Access to adding video has been restricted. If you want to add videos on the "
-"platform, please"
-msgstr ""
-"L'accès à l'ajout de vidéo est restreint, si vous voulez ajouter des vidéos"
-
-#: pod/video/templates/videos/video_edit.html:49
-msgid "contact us"
-msgstr "contactez nous"
-
 #: pod/video/templates/videos/video_edit.html:117
 msgid "Sending, please wait."
 msgstr "Envoi, veuillez patienter."
@@ -5081,8 +5138,7 @@ msgid "Sorry, no video found"
 msgstr "Désolé, aucune vidéo trouvée"
 
 #: pod/video/templates/videos/video_note_comments_display.html:8
-#: pod/video/templates/videos/video_note_display.html:14 pod/video/utils.py:135
-#: pod/video/utils.py:159 pod/video/utils.py:223 pod/video/utils.py:247
+#: pod/video/templates/videos/video_note_display.html:14
 msgid "the"
 msgstr "le"
 
@@ -5156,12 +5212,17 @@ msgstr "Afficher les statistiques de visualisation de toutes les vidéos"
 msgid "-- sorry, no translation provided --"
 msgstr "-- désolé, aucune traduction fournie --"
 
-#: pod/video/utils.py:117
+#: pod/video/utils.py:118
 #, python-format
 msgid "Transcripting #%(content_id)s completed"
 msgstr "La transcription #%(content_id)s est terminée"
 
-#: pod/video/utils.py:123 pod/video/utils.py:146
+#: pod/video/utils.py:123 pod/video/utils.py:146 pod/video/utils.py:211
+#: pod/video/utils.py:234
+msgid "Hello,"
+msgstr "Bonjour,"
+
+#: pod/video/utils.py:124 pod/video/utils.py:147
 #, python-format
 msgid ""
 "The content “%(content_title)s” has been automatically transcript, and is "
@@ -5170,28 +5231,38 @@ msgstr ""
 "Le contenu \"%(content_title)s\" a été automatiquement transcrit, et est "
 "maintenant disponible sur %(site_title)s."
 
-#: pod/video/utils.py:128 pod/video/utils.py:151 pod/video/utils.py:216
-#: pod/video/utils.py:239
+#: pod/video/utils.py:129 pod/video/utils.py:152 pod/video/utils.py:217
+#: pod/video/utils.py:240
 msgid "You will find it here:"
-msgstr "Vous la retrouverez ici:"
+msgstr "Vous la retrouverez ici :"
 
-#: pod/video/utils.py:133 pod/video/utils.py:157 pod/video/utils.py:221
-#: pod/video/utils.py:245
-msgid "Post by"
-msgstr "Posté par"
+#: pod/video/utils.py:131 pod/video/utils.py:155 pod/video/utils.py:219
+#: pod/video/utils.py:243
+msgid "Regards."
+msgstr "Cordialement."
 
-#: pod/video/utils.py:205
+#: pod/video/utils.py:134 pod/video/utils.py:158 pod/video/utils.py:222
+#: pod/video/utils.py:246
+msgid "Post by:"
+msgstr "Posté par :"
+
+#: pod/video/utils.py:136 pod/video/utils.py:160 pod/video/utils.py:224
+#: pod/video/utils.py:248
+msgid "the:"
+msgstr "le :"
+
+#: pod/video/utils.py:206
 #, python-format
 msgid "Encoding #%(content_id)s completed"
 msgstr "L'encodage #%(content_id)s est terminé"
 
-#: pod/video/utils.py:211 pod/video/utils.py:234
+#: pod/video/utils.py:212 pod/video/utils.py:235
 #, python-format
 msgid ""
-"The content “%(content_title)s” has been encoded to Web formats, and is now "
+"The video “%(content_title)s” has been encoded to Web formats, and is now "
 "available on %(site_title)s."
 msgstr ""
-"Le contenu \"%(content_title)s\" a été encodé au format web, et est "
+"La vidéo \"%(content_title)s\" a été encodée au format web, et est "
 "maintenant disponible sur %(site_title)s."
 
 #: pod/video/views.py:235 pod/video/views.py:275
@@ -5312,7 +5383,7 @@ msgstr "Vous n'avez pas les droits d'accès à cette vidéo: %s "
 msgid "The following video does not exist : %s"
 msgstr "La video suivante n'existe pas : %s"
 
-#: pod/video/views.py:1738
+#: pod/video/views.py:1739
 msgid "You do not have right to delete this comment"
 msgstr "Vous n'avez pas le droit de supprimer ce commentaire"
 
@@ -5347,9 +5418,6 @@ msgstr "Retirer la sélection"
 #~ msgid "Back to original"
 #~ msgstr "Retour à l'original"
 
-#~ msgid "date"
-#~ msgstr "Date de la session"
-
 #~ msgid "Help"
 #~ msgstr "Aide"
 
@@ -5361,24 +5429,6 @@ msgstr "Retirer la sélection"
 
 #~ msgid "Archived videos"
 #~ msgstr "Archivé"
-
-#~ msgid "Deleted videos"
-#~ msgstr "Supprimer la vidéo"
-
-#~ msgid "Soon obsolete videos"
-#~ msgstr "Les vidéos obsolètes sur Pod"
-
-#~ msgid "Url video"
-#~ msgstr "vidéo"
-
-#~ msgid "Email addresse"
-#~ msgstr "Email envoyé ?"
-
-#~ msgid "Archive date"
-#~ msgstr "Archivé"
-
-#~ msgid "Delete date"
-#~ msgstr "Supprimer"
 
 #, fuzzy
 #~| msgid ""
