@@ -137,7 +137,7 @@
     // Update text 'Number video found' on filtering
     let manageNumberVideoFoundText = (v_len) =>{
         let text = (v_len>1)?gettext('videos found'):gettext('video found');
-	let h3 =  document.querySelector("#videos_list").parentNode.querySelector("h3");
+	let h3 =  document.querySelector(".jumbotron h3");
         h3.textContent = `${v_len} ${text}`;
 	if(!v_len)
         {
@@ -178,16 +178,21 @@
             let {id, slug} = findCategory(curr_slug, curr_id);
             CURR_FILTER.id = id;
 	    CURR_FILTER.slug = slug;
-	    videos_list.setAttribute('class', 'row infinite-container hidden');
-	    let more_btn = videos_list.parentNode.querySelector(".infinite-more-link");
-	    if(more_btn)
-	        more_btn.setAttribute('class', 'infinite-more-link hidden');
+	    if(videos_list){
+	        videos_list.setAttribute('class', 'row infinite-container hidden');
+	        let more_btn = videos_list.parentNode.querySelector(".infinite-more-link");
+	        if(more_btn)
+	            more_btn.setAttribute('class', 'infinite-more-link hidden');
+	    }
 	}
     }
 	
     // Create filtered videos container (HtmlELement)
     let getVideosFilteredContainer = () =>{
-	let videos_list_filtered = videos_list.parentNode.querySelector('#videos_list.filtered');
+	let videos_list_filtered = document.createElement('div');
+	videos_list_filtered.setAttribute('class', 'filtered infinite-container');
+	videos_list_filtered.setAttribute('id', 'videos_list');
+	document.querySelector(".jumbotron").appendChild(videos_list_filtered);
 	if(videos_list_filtered)
 	    videos_list_filtered.innerHTML = '';
 	else
