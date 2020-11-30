@@ -118,6 +118,8 @@
     margin: 0;
     width: 100%;
     padding-bottom: .2em;
+    color: var(--secondary);
+    font-weight: 600;
 }
 #manageCategoryModal .catTitle_input{
     width: 100%;
