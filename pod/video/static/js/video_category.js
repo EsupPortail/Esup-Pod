@@ -120,6 +120,8 @@
 	    cats.forEach( cat =>{
 	        if( !cat.getAttribute('title').trim().toLowerCase().includes(s) )
 		    cat.parentNode.classList.add('hidden');
+		else
+		    cat.parentNode.classList.remove('hidden');
 	    });
 	}
 	else
@@ -348,7 +350,7 @@
 	} 
 	catch(e) {
 	    loader.classList.remove('show');
-	    showAlertMessage(gettext('An error occured, please refresh the page and try again.'), "error", delay=10000);
+	    showAlertMessage(gettext('An error occured, please refresh the page and try again.'), "error", delay=30000);
 	    console.error(e);
 	}
     }
@@ -362,7 +364,7 @@
         }
 	catch(e){
 	    loader.classList.remove('show');
-	    showAlertMessage(gettext('An error occured, please refresh the page and try again.</br>You cannot add two categories with the same title.'), "error", delay=10000);
+	    showAlertMessage(gettext('You cannot add two categories with the same title.'), "error", delay=30000);
 	    console.error(e);
 	}
     }
@@ -510,7 +512,7 @@
 	infinite_item.setAttribute('class', 'infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group');
 	infinite_item.setAttribute('data-slug', video.slug);
 	let card = document.createElement('div');
-	card.setAttribute('class', 'card mb-4 box-shadow border-secondary video-car');
+	card.setAttribute('class', 'card mb-4 box-shadow border-secondary video-card');
 	card.innerHTML = `
             <div class="card-header">
 	        <div class="d-flex justify-content-between align-items-center">
@@ -557,7 +559,7 @@
 	let icon = type==="success"?`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`: type==="error"? `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
         let alert_message = document.createElement("div");
 	alert_message.setAttribute('class', `category_alert alert_${type}`);
-	alert_message.innerHTML = `<div class="alert_content"><span class="alert_icon">${icon}</span><span class="alert_title">${title}</span><span class="alert_text">${message}</span>`;
+	alert_message.innerHTML = `<div class="alert_content"><span class="alert_icon">${icon}</span><span class="alert_title">${title}..</span><span class="alert_text">${message}</span>`;
 	document.body.appendChild(alert_message);
 	window.setTimeout(() => alert_message.classList.add('show'), 1000)
 	window.setTimeout( () =>{
@@ -605,7 +607,7 @@
 
 		}).catch(e =>{
 		    loader.classList.remove('show');
-		    showAlertMessage(gettext('An error occured, please refresh the page and try again.'), "error", delay=10000);
+		    showAlertMessage(gettext('An error occured, please refresh the page and try again.'), "error", delay=30000);
 		    console.error(e)
 		});
 	    }
@@ -656,6 +658,7 @@
 	    CAT_TO_DELETE.html = c_d.parentNode.parentNode;
 	    CAT_TO_DELETE.id = c_d.dataset.del;
 	    CAT_TO_DELETE.slug = c_d.dataset.slug;
+            document.querySelector("#deleteCategoryModal .modal-body .category_title").textContent = c_d.dataset.title;
 	});
 
     }
@@ -760,7 +763,7 @@
 		loader.classList.remove("show"); // hide loader
 	    }).catch(err =>{
 		loader.classList.remove('show');
-		showAlertMessage(gettext('An error occured, please refresh the page and try again.'), "error", delay=10000);
+		showAlertMessage(gettext('An error occured, please refresh the page and try again.'), "error", delay=30000);
 	        console.log(err);
 	    });
 	}
