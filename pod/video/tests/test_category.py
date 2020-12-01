@@ -47,6 +47,8 @@ class TestCategory(TestCase):
             owner=self.owner_user,
             video="testvideocategory.mp4",
             type=self.t1)
+        self.video.additional_owners.add(self.simple_user)
+        self.video.save()
         self.video_2 = Video.objects.create(
             title="Test category video 2",
             is_draft=False,
@@ -62,6 +64,10 @@ class TestCategory(TestCase):
         self.cat_2 = Category.objects.create(
             title='test2Category',
             owner=self.owner_user)
+        self.cat_3 = Category.objects.create(
+            title='test3Category',
+            owner=self.simple_user)
+        self.cat_3.video.add(self.video)
 
     def test_getCategories(self):
         # not Authenticated, should return HttpResponseRedirect:302
@@ -157,6 +163,57 @@ class TestCategory(TestCase):
             list(actual_data.values()),
             list(expected_data.values()))
 
+        # GET category as additional owner
+        # Ajax request, should return HttpResponse:200 with one category
+        self.client.force_login(self.simple_user)
+        response = self.client.get(
+            reverse('get_category', kwargs={"c_slug": self.cat_3.slug}),
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        actual_data = json.loads(response.content.decode('utf-8'))
+        expected_data = {
+            "success": True,
+            "id": self.cat_3.id,
+            "slug": self.cat_3.slug,
+            "title": self.cat_3.title,
+            "owner": self.cat_3.owner.id,
+            "videos": [{
+                "slug": self.video.slug,
+                "title": self.video.title,
+                "duration": self.video.duration_in_time,
+                "thumbnail": self.video.get_thumbnail_card(),
+                "is_video": self.video.is_video,
+                "is_draft": self.video.is_draft,
+                "is_restricted": self.video.is_restricted,
+                "has_chapter": self.video.chapter_set.all().count() > 0,
+                "has_password": bool(self.video.password),
+            }]
+        }
+
+        self.assertIsInstance(response, HttpResponse)
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(actual_data, expected_data)
+
+        # GET category as no longer additional owner
+        # Ajax request, should return HttpResponse:200 with one category
+        self.video.additional_owners.remove(self.simple_user)
+        response = self.client.get(
+            reverse('get_category', kwargs={"c_slug": self.cat_3.slug}),
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        actual_data = json.loads(response.content.decode('utf-8'))
+        expected_data = {
+            "success": True,
+            "id": self.cat_3.id,
+            "slug": self.cat_3.slug,
+            "title": self.cat_3.title,
+            "owner": self.cat_3.owner.id,
+            "videos": []
+        }
+        self.assertIsInstance(response, HttpResponse)
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(actual_data, expected_data)
+
     def test_addCategory(self):
         data = {
             'title': 'Test new category',
@@ -226,7 +283,7 @@ class TestCategory(TestCase):
         self.assertCountEqual(
                 actual_data['category']['videos'], expected_data['videos'])
 
-        # Add video in anthoer category
+        # Add video in another category
         # should return HttpResponseBadRequest:400
         response = self.client.post(
             reverse('add_category'),
@@ -253,6 +310,21 @@ class TestCategory(TestCase):
 
         self.assertIsInstance(response, HttpResponseBadRequest)
         self.assertEqual(response.status_code, 400)
+
+        # Ajax POST request, should return HttpResponse:409
+        # category already exists
+        data = {
+            'title': 'Test new category',
+            'videos': []
+        }
+        response = self.client.post(
+            reverse('add_category'),
+            json.dumps(data),
+            content_type="application/json",
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+
+        self.assertIsInstance(response, HttpResponse)
+        self.assertEqual(response.status_code, 409)
 
     def test_editCategory(self):
         data = {
