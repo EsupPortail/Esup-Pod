@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-30 12:29+0100\n"
+"POT-Creation-Date: 2020-12-01 11:35+0100\n"
 "PO-Revision-Date: 2020-04-30 12:12+0200\n"
 "Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
 "Language-Team: \n"
@@ -840,59 +840,53 @@ msgstr "Cacher les réponses"
 msgid "The date must be before or equal to"
 msgstr "La date doit être anterieure ou égale à"
 
-#: pod/static/js/video_category.js:139
-#: pod/video/static/js/video_category.js:139
+#: pod/static/js/video_category.js:141
+#: pod/video/static/js/video_category.js:141
 msgid "videos found"
 msgstr "videos trouvées"
 
-#: pod/static/js/video_category.js:139
-#: pod/video/static/js/video_category.js:139
+#: pod/static/js/video_category.js:141
+#: pod/video/static/js/video_category.js:141
 msgid "video found"
 msgstr "video trouvée"
 
-#: pod/static/js/video_category.js:144
-#: pod/video/static/js/video_category.js:144
+#: pod/static/js/video_category.js:146
+#: pod/video/static/js/video_category.js:146
 msgid "Sorry, no video found"
 msgstr "Désolé, aucune vidéo trouvée"
 
-#: pod/static/js/video_category.js:364
-#: pod/video/static/js/video_category.js:364
-msgid "Video content."
-msgstr "Contenu vidéo"
-
-#: pod/static/js/video_category.js:365 pod/static/js/video_category.js:493
-#: pod/video/static/js/video_category.js:365
-#: pod/video/static/js/video_category.js:493
-msgid "Audio content."
-msgstr "Contenu audio"
-
-#: pod/static/js/video_category.js:378
-#: pod/video/static/js/video_category.js:378
+#: pod/static/js/video_category.js:390
+#: pod/video/static/js/video_category.js:390
 msgid "Edit the category"
 msgstr "Editer la catégorie"
 
-#: pod/static/js/video_category.js:391
-#: pod/video/static/js/video_category.js:391
+#: pod/static/js/video_category.js:403
+#: pod/video/static/js/video_category.js:403
 msgid "Delete the category"
 msgstr "Supprimer la catégorie"
 
-#: pod/static/js/video_category.js:466
-#: pod/video/static/js/video_category.js:466
+#: pod/static/js/video_category.js:478
+#: pod/video/static/js/video_category.js:478
 msgid "This content is chaptered."
 msgstr "Ce contenu est chapitré."
 
-#: pod/static/js/video_category.js:475
-#: pod/video/static/js/video_category.js:475
+#: pod/static/js/video_category.js:487
+#: pod/video/static/js/video_category.js:487
 msgid "This content is in draft."
 msgstr "Ce contenu est en privé."
 
-#: pod/static/js/video_category.js:764
-#: pod/video/static/js/video_category.js:764
+#: pod/static/js/video_category.js:505
+#: pod/video/static/js/video_category.js:505
+msgid "Audio content."
+msgstr "Contenu audio"
+
+#: pod/static/js/video_category.js:778
+#: pod/video/static/js/video_category.js:778
 msgid "Category created successfully"
 msgstr "Catégorie créée avec succès."
 
-#: pod/static/js/video_category.js:781
-#: pod/video/static/js/video_category.js:781
+#: pod/static/js/video_category.js:795
+#: pod/video/static/js/video_category.js:795
 msgid "Create category"
 msgstr "Créer catégorie"
 
@@ -925,6 +919,9 @@ msgstr "Vue totale depuis création"
 #: pod/video/static/js/video_stats_view.js:19
 msgid "Slug"
 msgstr "Titre court"
+
+#~ msgid "Video content."
+#~ msgstr "Contenu vidéo"
 
 #~ msgid "Select a file"
 #~ msgstr "Sélectionnez un fichier"
