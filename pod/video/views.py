@@ -1790,17 +1790,24 @@ def get_categories(request, c_slug=None):
         response['title'] = cat.title
         response['owner'] = cat.owner.id
         response['slug'] = cat.slug
-        response['videos'] = list(
-            map(lambda v: {
-                'slug': v.slug,
-                'title': v.title,
-                'duration': v.duration_in_time,
-                'thumbnail': v.get_thumbnail_card(),
-                'is_video': v.is_video,
-                'has_password': bool(v.password),
-                'is_restricted': v.is_restricted,
-                'has_chapter': v.chapter_set.all().count() > 0,
-                'is_draft': v.is_draft}, cat.video.all()))
+        response['videos'] = []
+        for v in cat.video.all():
+            if v.owner == cat.owner or cat.owner in v.additional_owners.all():
+                response['videos'].append({
+                    'slug': v.slug,
+                    'title': v.title,
+                    'duration': v.duration_in_time,
+                    'thumbnail': v.get_thumbnail_card(),
+                    'is_video': v.is_video,
+                    'has_password': bool(v.password),
+                    'is_restricted': v.is_restricted,
+                    'has_chapter': v.chapter_set.all().count() > 0,
+                    'is_draft': v.is_draft})
+            else:
+                # delete if user is no longer owner
+                # or additional owner of the video
+                cat.video.remove(v)
+
         return HttpResponse(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
