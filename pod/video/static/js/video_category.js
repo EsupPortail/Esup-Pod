@@ -349,7 +349,7 @@
 	catch(e) {
 	    loader.classList.remove('show');
 	    showAlertMessage(gettext('An error occured, please refresh the page and try again.'), "error", delay=10000);
-	    console.error(e.message);
+	    console.error(e);
 	}
     }
 
@@ -363,7 +363,7 @@
 	catch(e){
 	    loader.classList.remove('show');
 	    showAlertMessage(gettext('An error occured, please refresh the page and try again.</br>You cannot add two categories with the same title.'), "error", delay=10000);
-	    console.error(e.message);
+	    console.error(e);
 	}
     }
 
@@ -742,7 +742,6 @@
 	}
         if(Object.keys(CURR_CATEGORY).length > 0 && DOMCurrentEditCat) // Editing mode
         {
-		console.log("Editing", CURR_CATEGORY, DOMCurrentEditCat);
 	    // Update new data, server side
     	    postCategoryData(`${BASE_URL}edit/${CURR_CATEGORY.slug}/`, postData).then(data =>{
 		// Update new data, client side
