@@ -1866,10 +1866,14 @@ def add_category(request):
                 content_type="application/json")
 
         if 'title' in data and data['title'].strip() != "":
+            try:
+                cat = Category.objects.create(
+                    title=data['title'], owner=c_user)
+                cat.video.add(*videos)
+                cat.save()
+            except IntegrityError:  # cannot duplicate category
+                return HttpResponse(status=409)
 
-            cat = Category.objects.create(title=data['title'], owner=c_user)
-            cat.video.add(*videos)
-            cat.save()
             response['category'] = {}
             response['category']['id'] = cat.id
             response['category']['title'] = cat.title
