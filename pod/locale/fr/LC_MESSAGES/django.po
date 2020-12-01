@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-01 11:38+0100\n"
+"POT-Creation-Date: 2020-12-01 18:25+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -39,10 +39,6 @@ msgstr "Utilisateurs"
 msgid "local"
 msgstr "locale"
 
-#: pod/authentication/models.py:26
-msgid "student"
-msgstr "étudiant"
-
 #: pod/authentication/models.py:27
 msgid "faculty"
 msgstr "université"
@@ -51,17 +47,9 @@ msgstr "université"
 msgid "staff"
 msgstr "personnel"
 
-#: pod/authentication/models.py:29
-msgid "employee"
-msgstr "employé"
-
 #: pod/authentication/models.py:30
 msgid "member"
 msgstr "membre"
-
-#: pod/authentication/models.py:31
-msgid "affiliate"
-msgstr "affiliation"
 
 #: pod/authentication/models.py:32
 msgid "alum"
@@ -2926,16 +2914,22 @@ msgid "The user"
 msgstr "L'utilisateur"
 
 #: pod/main/templates/mail/mail.html:3 pod/main/templates/mail/mail.txt:3
+#, fuzzy
+#| msgid "send a message from"
 msgid "sends a message from"
 msgstr "envoie un message depuis"
 
 #: pod/main/templates/mail/mail.html:4 pod/main/templates/mail/mail.txt:4
 #: pod/main/templates/mail/mail_sender.html:4
 #: pod/main/templates/mail/mail_sender.txt:4
+#, fuzzy
+#| msgid "Here is the message sent"
 msgid "Here is the message sent:"
 msgstr "Voici le message envoyé :"
 
 #: pod/main/templates/mail/mail.html:6 pod/main/templates/mail/mail.txt:6
+#, fuzzy
+#| msgid "Referrer page"
 msgid "Referrer page:"
 msgstr "Page de référence :"
 
@@ -2952,6 +2946,8 @@ msgstr "Cordialement"
 
 #: pod/main/templates/mail/mail_sender.html:3
 #: pod/main/templates/mail/mail_sender.txt:3
+#, fuzzy
+#| msgid "You just send a message from"
 msgid "You just sent a message from"
 msgstr "Vous venez d'envoyer un message depuis"
 
@@ -4275,6 +4271,10 @@ msgid "%(app)s version"
 msgstr "Version %(app)s"
 
 #: pod/video/models.py:217 pod/video/models.py:301 pod/video/models.py:1473
+#, fuzzy
+#| msgid ""
+#| "Please choose a title as short and accurate as possible, reflecting the "
+#| "main subject / context of the content.(max length: 100 characters)"
 msgid ""
 "Please choose a title as short and accurate as possible, reflecting the main "
 "subject / context of the content.(max length : 100 characters)"
@@ -4324,6 +4324,10 @@ msgid "Discipline"
 msgstr "Discipline"
 
 #: pod/video/models.py:461
+#, fuzzy
+#| msgid ""
+#| "Please choose a title as short and accurate as possible, reflecting the "
+#| "main subject / context of the content.(max length: 250 characters)"
 msgid ""
 "Please choose a title as short and accurate as possible, reflecting the main "
 "subject / context of the content.(max length : 250 characters)"
@@ -4784,7 +4788,7 @@ msgstr "titre catégorie"
 
 #: pod/video/templates/videos/category_modal.html:15
 msgid "Check the videos to add in the category"
-msgstr "Cocher les vidéos à ajouter dans la catégorie."
+msgstr "Cocher les vidéos à ajouter dans la catégorie"
 
 #: pod/video/templates/videos/category_modal.html:30
 msgid "Previous page"
@@ -5394,27 +5398,27 @@ msgstr "La video suivante n'existe pas : %s"
 msgid "You do not have rights to delete this comment"
 msgstr "Vous n'avez pas les droits pour supprimer ce commentaire"
 
-#: pod/video/views.py:1862 pod/video/views.py:1924
+#: pod/video/views.py:1862 pod/video/views.py:1928
 msgid "One or many videos already have a category."
-msgstr "Une ou plusieurs vidéos possèdent déjà une catégorie"
+msgstr "Une ou plusieurs vidéos possèdent déjà une catégorie."
 
-#: pod/video/views.py:1894 pod/video/views.py:1964
+#: pod/video/views.py:1898 pod/video/views.py:1968
 msgid "Title field is required"
 msgstr "Champ de titre est requis"
 
-#: pod/video/views.py:1899 pod/video/views.py:1969 pod/video/views.py:2011
+#: pod/video/views.py:1903 pod/video/views.py:1973 pod/video/views.py:2015
 msgid "Method Not Allowed"
-msgstr "Methode non autorisée"
+msgstr "Méthode non autorisée"
 
-#: pod/video/views.py:1941
+#: pod/video/views.py:1945
 msgid "Category updated successfully."
-msgstr "Categorie mise à jour avec succès."
+msgstr "Catégorie mise à jour avec succès."
 
-#: pod/video/views.py:1959
+#: pod/video/views.py:1963
 msgid "You do not have rights to edit this category"
-msgstr "Vous n'avez pas les droits pour supprimer cette catégorie"
+msgstr "Vous n'avez pas les droits pour éditer cette catégorie"
 
-#: pod/video/views.py:2005
+#: pod/video/views.py:2009
 msgid "You do not have rights to delete this category"
 msgstr "Vous n'avez pas les droits pour supprimer cette catégorie"
 
@@ -5442,3 +5446,91 @@ msgstr "facettage"
 #: pod/video_search/views.py:55
 msgid "Remove selection"
 msgstr "Retirer la sélection"
+
+#~ msgid "Archived videos"
+#~ msgstr "Archivé"
+
+#, fuzzy
+#~| msgid "Delete the video"
+#~ msgid "Deleted videos"
+#~ msgstr "Supprimer la vidéo"
+
+#, fuzzy
+#~| msgid "The obsolete videos on Pod"
+#~ msgid "Soon obsolete videos"
+#~ msgstr "Les vidéos obsolètes sur Pod"
+
+#, fuzzy
+#~| msgid "Video"
+#~ msgid "Url video"
+#~ msgstr "Vidéo"
+
+#, fuzzy
+#~| msgid "Email sent ?"
+#~ msgid "Email addresse"
+#~ msgstr "Email envoyé ?"
+
+#, fuzzy
+#~| msgid "Archived"
+#~ msgid "Archive date"
+#~ msgstr "Archivé"
+
+#, fuzzy
+#~| msgid "Delete"
+#~ msgid "Delete date"
+#~ msgstr "Supprimer"
+
+#, fuzzy
+#~| msgid ""
+#~| "you can change the removal date by editing your video:</p>\n"
+#~| "<p><a href='http:%(url)s' rel='noopener' target='_blank'>http:%(url)s</"
+#~| "a></p>\n"
+#~ msgid ""
+#~ "you can change the removal date by editing your video:<p><a "
+#~ "href='%(url)s' rel='noopener' target='_blank'>click here to edit your "
+#~ "video</a></p>."
+#~ msgstr ""
+#~ "vous pouvez changer la date de suppression en éditant votre vidéo:</p>\n"
+#~ "<p><a href=‘http:%(url)s’ rel=‘noopener’ target=‘_blank’>http:%(url)s</"
+#~ "a></p>\n"
+
+#, fuzzy
+#~| msgid ""
+#~| "Your video intitled \"%(title)s\" will soon arrive at the deletion "
+#~| "deadline."
+#~ msgid ""
+#~ "Your video will soon arrive at the deletion deadline.If you want to keep "
+#~ "it, "
+#~ msgstr ""
+#~ "Votre vidéo intitulée \"%(title)s\" arrive bientôt à la date limite de "
+#~ "suppression."
+
+#, fuzzy
+#~| msgid ""
+#~| "please contact the manager(s) in charge of your establishment at this "
+#~| "address(es): %(email_address)s</p>\n"
+#~ msgid ""
+#~ "please contact the manager(s) in charge of your establishment at this "
+#~ "address(es): %(email_address)s"
+#~ msgstr ""
+#~ "veuillez contacter les gestionnaires en charge de votre établissement à "
+#~ "l’adresse suivante : %(email_address)s</p>\n"
+
+#, fuzzy
+#~| msgid "Hello %(name)s,"
+#~ msgid "Hello %(name)s"
+#~ msgstr "Bonjour %(name)s,"
+
+#, fuzzy
+#~| msgid "For information, you will find below the list of deleted video."
+#~ msgid ""
+#~ "For information, you will find attached the list of videos that will be "
+#~ "soon "
+#~ msgstr ""
+#~ "Pour information, vous trouverez ci-dessous la liste des vidéos "
+#~ "supprimées."
+
+#, fuzzy
+#~| msgid "editor"
+#~ msgid "edit"
+#~ msgstr "éditeur"
