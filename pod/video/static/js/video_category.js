@@ -142,7 +142,7 @@
 	if(!v_len)
         {
 	    text = gettext("Sorry, no video found");
-	    document.querySelector('#videos_list.filtered').innerHTML = `<p class="alert-warning">${text}</p>`;
+            getVideosFilteredContainer().innerHTML = `<p class="alert-warning">${text}</p>`;
 	}
 	else
         {
@@ -161,14 +161,14 @@
 	let curr_slug = html_el.querySelector(".cat_title").dataset.slug;
 	let curr_id = html_el.querySelector("#remove_category_icon").dataset.del;
 	html_el.classList.toggle('active');
-	document.querySelector("#videos_list.filtered").innerHTML = '';
+        getVideosFilteredContainer().innerHTML = '';
 	if(CURR_FILTER.slug === curr_slug && CURR_FILTER.id == curr_id)
 	{
             html_el.classList.remove('active');// unfilter
 	    CURR_FILTER.slug = null;
 	    CURR_FILTER.id = null;
 	    videos_list.setAttribute('class', 'row infinite-container');
-	    videos_list.parentNode.querySelector("#videos_list.filtered").classList.add('hidden');
+            getVideosFilteredContainer().classList.add('hidden');
 	    let more_btn = videos_list.parentNode.querySelector(".infinite-more-link");
 	    if(more_btn)
 	        more_btn.setAttribute('class', 'infinite-more-link');
@@ -179,7 +179,9 @@
             let {id, slug} = findCategory(curr_slug, curr_id);
             CURR_FILTER.id = id;
 	    CURR_FILTER.slug = slug;
-	    videos_list.parentNode.querySelector("#videos_list.filtered").classList.remove('hidden');
+	    
+            getVideosFilteredContainer().classList.remove('hidden');
+
 	    if(videos_list){
 	        videos_list.setAttribute('class', 'row infinite-container hidden');
 	        let more_btn = videos_list.parentNode.querySelector(".infinite-more-link");
@@ -209,7 +211,7 @@
 	    let old_videos = getSavedData(CURR_FILTER.id).videos.map(v => v.slug);
 	    let rm = old_videos.filter( v => !actual_videos.includes(v) );
 	    let added = actual_videos.filter( v=> !old_videos.includes(v));
-	    let container_filtered = document.querySelector("#videos_list.filtered");
+	    let container_filtered = getVideosFilteredContainer();
 
 	    let maxLen = rm.length > added.length? rm.length: added.length;
 	    for(let i=0; i < maxLen; i++)
@@ -686,7 +688,7 @@
 				...VIDEOS_LIST_CHUNK.videos.unselected, getModalVideoCard(v, false)]
 			});
 			document.querySelector("#my_videos_filter .categories_list").removeChild(CAT_TO_DELETE.html);
-			let filtered_container = document.querySelector(".infinite-container.filtered");
+			let filtered_container = getVideosFilteredContainer();
 			if(filtered_container && CAT_TO_DELETE.id == CURR_FILTER.id && CAT_TO_DELETE.slug === CURR_FILTER.slug)
 			{
 		            filtered_container.parentNode.removeChild(filtered_container);
@@ -740,6 +742,7 @@
 	}
         if(Object.keys(CURR_CATEGORY).length > 0 && DOMCurrentEditCat) // Editing mode
         {
+		console.log("Editing", CURR_CATEGORY, DOMCurrentEditCat);
 	    // Update new data, server side
     	    postCategoryData(`${BASE_URL}edit/${CURR_CATEGORY.slug}/`, postData).then(data =>{
 		// Update new data, client side
