@@ -169,11 +169,14 @@
             html_el.classList.remove('active');// unfilter
 	    CURR_FILTER.slug = null;
 	    CURR_FILTER.id = null;
-	    videos_list.setAttribute('class', 'row infinite-container');
             getVideosFilteredContainer().classList.add('hidden');
-	    let more_btn = videos_list.parentNode.querySelector(".infinite-more-link");
-	    if(more_btn)
-	        more_btn.setAttribute('class', 'infinite-more-link');
+	    if(videos_list)
+	    {
+		videos_list.setAttribute('class', 'row infinite-container');
+	        let more_btn = videos_list.parentNode.querySelector(".infinite-more-link");
+	        if(more_btn)
+	            more_btn.setAttribute('class', 'infinite-more-link');
+	    }
 	}
 	else // filter
 	{
