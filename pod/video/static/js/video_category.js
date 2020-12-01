@@ -22,6 +22,10 @@
 	size: 12 // number videos per view
     };
     const modal_video_list = document.querySelector('.category_modal_videos_list');
+    const msg_saved = gettext("Category changes saved successfully");
+    const msg_error_duplicate = gettext("You cannot add two categories with the same title.");
+    const msg_deleted = gettext("Category deleted successfully");
+    const msg_error = gettext("An error occured, please refresh the page and try again.");
     let videos_list = document.querySelector("#videos_list.infinite-container:not(.filtered)");
     let saveCatBtn = document.querySelector("#manageCategoryModal #saveCategory" ); // btn in dialog
     let modal_title = document.querySelector("#manageCategoryModal #modal_title");
@@ -353,7 +357,7 @@
 	} 
 	catch(e) {
 	    loader.classList.remove('show');
-	    showAlertMessage(gettext('An error occured, please refresh the page and try again.'), "error", delay=30000);
+	    showAlertMessage(msg_error, false, delay=30000);
 	    console.error(e);
 	}
     }
@@ -367,7 +371,7 @@
         }
 	catch(e){
 	    loader.classList.remove('show');
-	    showAlertMessage(gettext('You cannot add two categories with the same title.'), "error", delay=30000);
+	    showAlertMessage(msg_error_duplicate, false, delay=30000);
 	    console.error(e);
 	}
     }
@@ -375,13 +379,10 @@
     let get_type_icon = (is_video=true)=>{
         let videoContent_Text = gettext("Video content.");
 	let audioContent_Text = gettext("Audio content.");
-	if(is_video)
-	    return `<span title="${videoContent_Text}">
-		        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-film align-bottom"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
-		    </span>`;
-	return `<span title="${audioContent_Text}">
-		    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-radio"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>
-		</span>`;
+	if(is_video){
+	    return '<span title="'+ videoContent_Text +'"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-film align-bottom"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg></span>';
+	}
+	return '<span title="'+ audioContent_Text +'"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-radio"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg></span>'
     }
     
     // Create category html element <li></li>
@@ -435,21 +436,7 @@
         return `
 	    <div class="checked_overlay">
 	        <span class="card_selected" id="card_selected">
-		    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check-circle" class="svg-inline--fa fa-check-circle fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path></svg>
-	        </span>
-	    </div>
-	    <div class="card modal_category_card mb-4 box-shadow border-secondary video-card">
-	        <div class="card-header" style="">
-		    <div class="d-flex justify-content-between align-items-center">
-		        <small class="text-muted time">${v.duration}</small>
-		        <span class="text-muted small">
-			    ${get_type_icon(v.is_video)}
-		        </span>
-		    </div>
-	        </div>
-	        <div class="card-body">
-		    <a class="link-center-pod" href="#" title="${v.title}">
-		        ${v.thumbnail}
+		    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check-circle" class="svg-inline--fa fa-check-circle fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path></svg></span></div><div class="card modal_category_card mb-4 box-shadow border-secondary video-card"><div class="card-header" style=""><div class="d-flex justify-content-between align-items-center"><small class="text-muted time">${v.duration}</small><span class="text-muted small">${get_type_icon(v.is_video)}</span></div></div><div class="card-body"><a class="link-center-pod" href="#" title="${v.title}">${v.thumbnail}
 		    </a>
 	        </div>
 	        <div class="card-footer">
@@ -466,7 +453,7 @@
 	`;
 	let has_password = () =>{
 	    let span = ``;
-	    let title = gettext('This content is password protected.');
+	    let title = gettext("This content is password protected.");
 	    if(video.has_password)
 	    {
 		span = `<span title="${title}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock align-bottom"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>`;
@@ -475,7 +462,7 @@
 	}
 	let has_chapter = () =>{
 	    let span = ``;
-	    let title = gettext('This content is chaptered.');
+	    let title = gettext("This content is chaptered.");
 	    if(video.has_chapter)
 	    {
 		span = `<span title="${title}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list align-bottom"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></span>`;
@@ -484,7 +471,7 @@
 	}
 	let is_draft = () =>{
 	    let span = ``;
-	    let title = gettext('This content is in draft.');
+	    let title = gettext("This content is in draft.");
 	    if(video.is_draft)
 	    {
 		span = `<span title="${title}">
@@ -494,7 +481,7 @@
 	}
 	let is_video = () =>{
 	    let span = ``;
-	    let title = gettext('Video content.');
+	    let title = gettext("Video content.");
 	    if(video.is_video)
 	    {
 		span = `<span title="${title}">
@@ -502,17 +489,18 @@
 	    }
 	    else
 	    {
-	    	title = gettext('Audio content.');
+	    	title = gettext("Audio content.");
 		span = `<span title="${title}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-radio"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg></i></span>`;
 	    }
 	    return span;
 	}
-	let edit_text = gettext('Edit the video');
-	let completion_text = gettext('Complete the video');
-	let chapter_text = gettext('Chapter the video');
-	let delete_text = gettext('Delete the video');
+	let edit_text = gettext("Edit the video");
+	let completion_text = gettext("Complete the video");
+	let chapter_text = gettext("Chapter the video");
+	let delete_text = gettext("Delete the video");
 	let infinite_item = document.createElement('div');
 	infinite_item.setAttribute('class', 'infinite-item col-12 col-md-6 col-lg-3 mb-2 card-group');
+	infinite_item.setAttribute('style', "min-width: 12rem; min-height: 11rem;");
 	infinite_item.setAttribute('data-slug', video.slug);
 	let card = document.createElement('div');
 	card.setAttribute('class', 'card mb-4 box-shadow border-secondary video-card');
@@ -529,7 +517,7 @@
 	        </div>
 	    </div>
             <div class="d-flex align_items-center">
-                <a class="link-center-pod" href="${VIDEO_URL}${video.slug}" title="${video.title}">
+                <a class="link-center-pod" href="${VIDEO_URL}${video.slug}" title="${video.title.charAt(0).toUpperCase()}${video.title.slice(1)}">
 		    ${video.thumbnail}
 	        </a>
             </div>
@@ -548,7 +536,7 @@
 		    </a>
                 </footer>
 		<span class="small video-title">
-                    <a href="${VIDEO_URL}${video.slug}" title="${video.title}">${video.title}</a>
+                    <a href="${VIDEO_URL}${video.slug}" title="${video.title}">${video.title.charAt(0).toUpperCase()}${video.title.slice(1)}</a>
 		</span>
 	    </div>
 	`;
@@ -557,8 +545,10 @@
     }
 
     // Create alert message
-    let showAlertMessage = (message, type="success", delay=4000) => {
-	let title = type.charAt(0).toUpperCase() + type.slice(1);
+    let showAlertMessage = (message, type=true, delay=4000) => {
+	let success = gettext("Success..");
+	let error = gettext("Error..");
+	let title = type? success : error;
 	let icon = type==="success"?`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`: type==="error"? `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
         let alert_message = document.createElement("div");
 	alert_message.setAttribute('class', `category_alert alert_${type}`);
@@ -610,7 +600,7 @@
 
 		}).catch(e =>{
 		    loader.classList.remove('show');
-		    showAlertMessage(gettext('An error occured, please refresh the page and try again.'), "error", delay=30000);
+		    showAlertMessage(msg_error, false, delay=30000);
 		    console.error(e)
 		});
 	    }
@@ -643,12 +633,13 @@
     let closeBtn = document.querySelector(".modal-footer #cancelDialog");
     closeBtn.addEventListener('click', (e) =>{ window.setTimeout(function(){refreshDialog();}, 50) });
     let closeCrossBtn = document.querySelector("#manageCategoryModal .modal-header .close") || document.querySelector("#manageCategoryModal .modal-header button");
-    closeCrossBtn.addEventListener('click', (e) =>{
+    closeCrossBtn.addEventListener('mousedown', (e) =>{
 	if(e.target.getAttribute("class") === "close" || e.target.parentNode.classList.contains('close'))
 	    window.setTimeout(function(){refreshDialog();}, 50)
     });
     let modalContainer = document.querySelector("#manageCategoryModal");
     modalContainer.addEventListener('click', (e) =>{
+	console.
 	if(e.target.getAttribute('id') === "manageCategoryModal")
 	    window.setTimeout(function(){refreshDialog();}, 50)
     });
@@ -687,7 +678,7 @@
 		    headers: HEADERS
 	    	}).then(response =>{
 		    response.json().then(data =>{
-			showAlertMessage(gettext('Category deleted successfully'));
+			showAlertMessage(msg_deleted);
 			deleteFromSavedData(cat.slug); // delete from local save
 			data.videos.forEach(v =>{ // append all the videos into chunk videos unselected
 			    VIDEOS_LIST_CHUNK.videos.unselected = [
@@ -762,11 +753,11 @@
 		// close modal
 	    	document.querySelector("#manageCategoryModal #cancelDialog").click()
 		refreshDialog();
-                showAlertMessage(gettext('Category changes saved successfully'));
+                showAlertMessage(msg_saved);
 		loader.classList.remove("show"); // hide loader
 	    }).catch(err =>{
 		loader.classList.remove('show');
-		showAlertMessage(gettext('An error occured, please refresh the page and try again.'), "error", delay=30000);
+		showAlertMessage(msg_error, false, delay=30000);
 	        console.log(err);
 	    });
 	}
@@ -775,7 +766,8 @@
     	    postCategoryData(`${BASE_URL}add/`, postData).then(data =>{
     		let li =  getCategoryLi(data.category.title, data.category.slug, data.category.id);
 		document.querySelector("#my_videos_filter .categories_list").appendChild(li);
-                showAlertMessage(gettext('Category created successfully'));
+                let msg_create = gettext("Category created successfully");
+                showAlertMessage(msg_create);
 		saveCategoryData(data.category); // saving cat localy to prevent more request to the server
 		loader.classList.remove("show"); // hide loader
 	    });
