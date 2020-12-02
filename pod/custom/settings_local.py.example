@@ -960,3 +960,11 @@ BBB_USERNAME_FORMAT = 'first_name last_name'
 # Pour ne pas supprimer les anciennes sessions, utiliser la valeur 0
 """
 BBB_NUMBER_DAYS_BEFORE_DELETE = 0
+
+"""
+#
+# Permet d'activer le fonctionnement de categorie au niveau de ses vidéos
+# Vous pouvez créer des catégories pour pouvoir ranger vos propres vidéos
+# Les catégories sont liées à l'utilisateur
+"""
+USER_VIDEO_CATEGORY = False

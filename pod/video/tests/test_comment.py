@@ -177,7 +177,7 @@ class TestComment(TestCase):
                 HTTP_ACCEPT_LANGUAGE="en")
         data = {
                 "deleted": False,
-                "message": "You do not have right to delete this comment"}
+                "message": "You do not have rights to delete this comment"}
         expected_content = JsonResponse(data, safe=False).content
         self.assertEqual(response.resolver_match.func, delete_comment)
         self.assertEqual(response.content, expected_content)
