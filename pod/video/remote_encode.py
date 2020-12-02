@@ -105,9 +105,9 @@ def remote_encode_video(video_id):
         remote_cmd = "ssh {key} {user}@{host} \"{cmd}\"".format(
             key=key, user=SSH_REMOTE_USER, host=SSH_REMOTE_HOST, cmd=cmd)
 
-        if DEBUG:
-            print(remote_cmd)
-
+        # launch remote encode
+        change_encoding_step(video_id, 3, "process remote encode")
+        add_encoding_log(video_id, "process remote encode : %s" % remote_cmd)
         process_cmd(remote_cmd, video_id)
 
     else:
