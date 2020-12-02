@@ -57,13 +57,15 @@ SUBTIME = ' '
 COMMON = ' -c:a aac -ar 48000 '\
     '-strict experimental -profile:v high -pixel_format yuv420p '\
     '-force_key_frames "expr:gte(t,n_forced*1)" '\
-    '-preset slow -qmin 20 -qmax 50 '\
-
+    '-preset slow -qmin 20 -qmax 50 '
+"""
 scale_mixed = \
     '-vf "fade,hwupload_cuda,scale_npp=-2:{height}:interp_algo=super" \
     -c:v h264_nvenc '
-scale_gpu = '-vf "scale_npp=-2:{height}:interp_algo=super" -c:v h264_nvenc '
-scale_cpu = '-vf "scale=-2:{height}" -c:v h264 '
+"""
+scale_gpu = COMMON + \
+    '-vf "scale_npp=-2:{height}:interp_algo=super" -c:v h264_nvenc '
+scale_cpu = COMMON + '-vf "scale=-2:{height}" -c:v h264 '
 
 rate_360 = '-b:a 96k -minrate 500k -b:v 750k -maxrate 1000k -bufsize 1500k '
 rate_720 = '-b:a 128k -minrate 1000k -b:v 2000k -maxrate 3000k -bufsize 4000k '
@@ -104,13 +106,15 @@ def encode_with_gpu(format, codec, height, file):
         msg += "Encode GPU %s ok \n" % format
         return_value = True
     else:
+        """
         if encode("mixed", format, codec, height, file):
             msg += "Encode Mixed %s ok \n" % format
             return_value = True
         else:
-            if encode("cpu", format, codec, height, file):
-                msg += "Encode CPU %s ok \n" % format
-                return_value = True
+        """
+        if encode("cpu", format, codec, height, file):
+            msg += "Encode CPU %s ok \n" % format
+            return_value = True
     if return_value is False:
         msg += 20*"////" + "\n"
         msg += 'ERROR ENCODING %s FOR FILE %s \n' % (format, file)
@@ -121,14 +125,16 @@ def encode_with_gpu(format, codec, height, file):
 def encode_without_gpu(format, codec, height, file):
     msg = "--> encode_with_gpu \n"
     return_value = False
+    """
     if encode("mixed", format, codec, height, file):
         msg += "Encode MIXED %s ok \n" % format
         return_value = True
     else:
-        if encode("cpu", format, codec, height, file):
-            msg += "Encode CPU %s ok \n" % format
-            return_value = True
-    if return_value is False:
+    """
+    if encode("cpu", format, codec, height, file):
+        msg += "Encode CPU %s ok \n" % format
+        return_value = True
+    else:
         msg += 20*"////" + "\n"
         msg += 'ERROR ENCODING %s FOR FILE %s \n' % (format, file)
     return return_value
@@ -139,8 +145,8 @@ def get_cmd_gpu(format, codec, height, file):
     ffmpeg_cmd = GPU.format(
         hwaccel_device=HWACCEL_DEVICE, codec=codec,
         input=os.path.join(VIDEOS_DIR, file))
-    ffmpeg_cmd = ffmpeg_cmd
-    ffmpeg_cmd = ffmpeg_cmd + COMMON + scale_gpu.format(height=360)
+
+    ffmpeg_cmd += scale_gpu.format(height=360)
     filename = os.path.splitext(os.path.basename(file))[0]
     filename = ''.join(
         (
@@ -180,7 +186,7 @@ def get_cmd_gpu(format, codec, height, file):
             True
         )
     if height >= 720:
-        ffmpeg_cmd = ffmpeg_cmd + COMMON + scale_gpu.format(height=720)
+        ffmpeg_cmd = ffmpeg_cmd + scale_gpu.format(height=720)
         if format == "m3u8":
             ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
                 end_720_m3u8.format(
@@ -229,6 +235,7 @@ def get_cmd_gpu(format, codec, height, file):
     return ffmpeg_cmd
 
 
+"""
 def get_cmd_mixed(format, codec, height, file):
     ffmpeg_cmd = ""
     ffmpeg_cmd = CPU.format(
@@ -320,6 +327,7 @@ def get_cmd_mixed(format, codec, height, file):
                 True
             )
     return ffmpeg_cmd
+"""
 
 
 def get_cmd_cpu(format, codec, height, file):
@@ -429,7 +437,10 @@ def launch_cmd(ffmpeg_cmd, type, format):
         msg += ffmpeg_cmd + "\n"
         msg += 'Encode file in {:.3}s.\n'.format(encode_end)
         # msg += "\n".join(output.stdout.decode().split('\n'))
-        msg += output.stdout.decode()
+        try:
+            msg += output.stdout.decode('utf-8')
+        except UnicodeDecodeError:
+            pass
         msg += "\n"
         if output.returncode != 0:
             msg += "ERROR RETURN CODE for type=%s and format=%s : %s" % (
@@ -464,10 +475,10 @@ def encode(type, format, codec, height, file):
 
     if type == "gpu":
         ffmpeg_cmd = get_cmd_gpu(format, codec, height, file)
-
+    """
     if type == "mixed":
         ffmpeg_cmd = get_cmd_mixed(format, codec, height, file)
-
+    """
     if type == "cpu":
         ffmpeg_cmd = get_cmd_cpu(format, codec, height, file)
 
@@ -553,9 +564,9 @@ def get_info_video(file):
     duration = int(float("%s" % info["format"]['duration']))
     streams = info.get("streams", [])
     for stream in streams:
-        msg += stream.get("codec_type", "unknown")
+        msg += f'{stream.get("codec_type", "unknown")}'
         msg += ": "
-        msg += stream.get("codec_name", "unknown")
+        msg += f'{stream.get("codec_name", "unknown")}'
         if stream.get("codec_type", "unknown") == "video":
             codec = stream.get("codec_name", "unknown")
             has_stream_thumbnail = any(ext in codec.lower()
@@ -653,7 +664,6 @@ def add_info_video(key, value, append=False):
         print(data, data.get(key), key, value, append)
     if data.get(key) and append:
         val = data[key]
-        print(type(val), type(data[key]))
         data[key] = val.append(value) if (type(val) is list) else [val, value]
     else:
         data[key] = [value] if append else value
@@ -662,7 +672,6 @@ def add_info_video(key, value, append=False):
 
 
 if __name__ == "__main__":
-
     msg = "--> Main \n"
     msg += "- lancement cycle encodage : %s \n" % time.ctime()
     # python3 encode.py
