@@ -10,7 +10,6 @@ from .models import EncodingLog
 from .models import PlaylistVideo
 from .models import Video
 
-
 from .utils import change_encoding_step, add_encoding_log, check_file
 from .utils import create_outputdir, send_email, send_email_encoding
 # from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
@@ -142,6 +141,16 @@ MANAGERS = getattr(settings, 'MANAGERS', {})
 # ##########################################################################
 
 
+def start_remote_encode(video_id):
+    # load module here to prevent circular import
+    from .remote_encode import remote_encode_video
+    log.info("START ENCODE VIDEO ID %s" % video_id)
+    t = threading.Thread(target=remote_encode_video,
+                         args=[video_id])
+    t.setDaemon(True)
+    t.start()
+
+
 def start_encode(video_id):
     if CELERY_TO_ENCODE:
         task_start_encode.delay(video_id)
@@ -151,6 +160,7 @@ def start_encode(video_id):
                              args=[video_id])
         t.setDaemon(True)
         t.start()
+
 
 # ##########################################################################
 # ENCODE VIDEO: MAIN FUNCTION
