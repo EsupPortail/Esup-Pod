@@ -1485,3 +1485,37 @@ class Vote(models.Model):
 
     def __str__(self):
         return str(self.user)
+
+
+class Category(models.Model):
+    title = models.CharField(
+        _('Category title'),
+        max_length=100,
+        help_text=_("Please choose a title as short and accurate as "
+                    "possible, reflecting the main subject / context "
+                    "of the content.(max length : 100 characters)"))
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    video = models.ManyToManyField(
+        Video,
+        verbose_name=_('Videos'),
+        blank=True,
+        help_text=_('Hold down "Control", or "Command" '
+                    'on a Mac, to select more than one.'))
+    slug = models.SlugField(
+        _('Slug'), unique=True, max_length=100,
+        help_text=_(
+            u'Used to access this instance, the "slug" is a short label '
+            + 'containing only letters, numbers, underscore or dash top.'),
+        editable=False)
+
+    def save(self, *args, **kwargs):
+        self.slug = "%s-%s" % (self.owner.id, slugify(self.title))
+        super(Category, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['title', 'id']
+        verbose_name = _('Category')
+        verbose_name_plural = _('Categories')
