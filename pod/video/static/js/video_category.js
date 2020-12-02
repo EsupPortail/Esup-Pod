@@ -26,6 +26,8 @@
     const msg_error_duplicate = gettext("You cannot add two categories with the same title.");
     const msg_deleted = gettext("Category deleted successfully");
     const msg_error = gettext("An error occured, please refresh the page and try again.");
+    const msg_title_empty = gettext("Category title field is required.");
+    const msg_save_cat = gettext("Save category");
     let videos_list = document.querySelector("#videos_list.infinite-container:not(.filtered)");
     let saveCatBtn = document.querySelector("#manageCategoryModal #saveCategory" ); // btn in dialog
     let modal_title = document.querySelector("#manageCategoryModal #modal_title");
@@ -358,7 +360,6 @@
 	catch(e) {
 	    loader.classList.remove('show');
 	    showAlertMessage(msg_error, false, delay=30000);
-	    console.error(e);
 	}
     }
 
@@ -372,7 +373,6 @@
 	catch(e){
 	    loader.classList.remove('show');
 	    showAlertMessage(msg_error_duplicate, false, delay=30000);
-	    console.error(e);
 	}
     }
 
@@ -549,10 +549,11 @@
 	let success = gettext("Success..");
 	let error = gettext("Error..");
 	let title = type? success : error;
+	let class_suffix = type?"success": "error";
 	let icon = type==="success"?`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`: type==="error"? `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
         let alert_message = document.createElement("div");
-	alert_message.setAttribute('class', `category_alert alert_${type}`);
-	alert_message.innerHTML = `<div class="alert_content"><span class="alert_icon">${icon}</span><span class="alert_title">${title}..</span><span class="alert_text">${message}</span>`;
+	alert_message.setAttribute('class', `category_alert alert_${class_suffix}`);
+	alert_message.innerHTML = `<div class="alert_content"><span class="alert_icon">${icon}</span><span class="alert_title">${title}</span><span class="alert_text">${message}</span>`;
 	document.body.appendChild(alert_message);
 	window.setTimeout(() => alert_message.classList.add('show'), 1000)
 	window.setTimeout( () =>{
@@ -575,7 +576,7 @@
 
 	    // add videos of the current category into the dialog
 	    saveCatBtn.setAttribute("data-action", "edit");
-	    saveCatBtn.innerText = gettext("Save category");
+	    saveCatBtn.innerText = msg_save_cat
 	    let jsonData = getSavedData(cat_edit_id);
 	    CURR_CATEGORY = jsonData;
 	    DOMCurrentEditCat = c_e.parentNode.parentNode;
@@ -601,7 +602,6 @@
 		}).catch(e =>{
 		    loader.classList.remove('show');
 		    showAlertMessage(msg_error, false, delay=30000);
-		    console.error(e)
 		});
 	    }
 	});
@@ -633,13 +633,12 @@
     let closeBtn = document.querySelector(".modal-footer #cancelDialog");
     closeBtn.addEventListener('click', (e) =>{ window.setTimeout(function(){refreshDialog();}, 50) });
     let closeCrossBtn = document.querySelector("#manageCategoryModal .modal-header .close") || document.querySelector("#manageCategoryModal .modal-header button");
-    closeCrossBtn.addEventListener('mousedown', (e) =>{
+    closeCrossBtn.addEventListener('click', (e) =>{
 	if(e.target.getAttribute("class") === "close" || e.target.parentNode.classList.contains('close'))
 	    window.setTimeout(function(){refreshDialog();}, 50)
     });
     let modalContainer = document.querySelector("#manageCategoryModal");
-    modalContainer.addEventListener('click', (e) =>{
-	console.
+    modalContainer.addEventListener('mousedown', (e) =>{
 	if(e.target.getAttribute('id') === "manageCategoryModal")
 	    window.setTimeout(function(){refreshDialog();}, 50)
     });
@@ -735,6 +734,7 @@
 	if(cat_input.value.trim() === "")
         {
 	    // TODO display errors msg
+	    showAlertMessage(msg_title_empty, false, delay=30000);
             return;	    
 	}
         if(Object.keys(CURR_CATEGORY).length > 0 && DOMCurrentEditCat) // Editing mode
@@ -758,7 +758,6 @@
 	    }).catch(err =>{
 		loader.classList.remove('show');
 		showAlertMessage(msg_error, false, delay=30000);
-	        console.log(err);
 	    });
 	}
 	else // Adding mode
@@ -770,7 +769,9 @@
                 showAlertMessage(msg_create);
 		saveCategoryData(data.category); // saving cat localy to prevent more request to the server
 		loader.classList.remove("show"); // hide loader
-	    });
+	    }).catch( (err) => {
+	    	showAlertMessage(msg_error_duplicate, false, delay=30000);
+	    })
 	    document.querySelector("#manageCategoryModal #cancelDialog").click()
 	    refreshDialog();
 	}
