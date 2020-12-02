@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-01 18:25+0100\n"
+"POT-Creation-Date: 2020-12-02 07:54+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -39,6 +39,10 @@ msgstr "Utilisateurs"
 msgid "local"
 msgstr "locale"
 
+#: pod/authentication/models.py:26
+msgid "student"
+msgstr "étudiant"
+
 #: pod/authentication/models.py:27
 msgid "faculty"
 msgstr "université"
@@ -47,9 +51,17 @@ msgstr "université"
 msgid "staff"
 msgstr "personnel"
 
+#: pod/authentication/models.py:29
+msgid "employee"
+msgstr "employé"
+
 #: pod/authentication/models.py:30
 msgid "member"
 msgstr "membre"
+
+#: pod/authentication/models.py:31
+msgid "affiliate"
+msgstr "affiliation"
 
 #: pod/authentication/models.py:32
 msgid "alum"
@@ -1354,6 +1366,57 @@ msgstr "Le fichier n’a pas été enregistré."
 #: pod/podfile/views.py:518 pod/video/views.py:351 pod/video/views.py:1386
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
+
+#: pod/video/management/commands/check_obsolete_videos.py:80
+msgid "An Error occurred while processing "
+msgstr "Une erreur est survenue durant l’exécution du processus "
+
+#: pod/main/templates/mail/mail.html:7 pod/main/templates/mail/mail.txt:7
+#: pod/main/templates/mail/mail_sender.html:6
+#: pod/main/templates/mail/mail_sender.txt:6
+#: pod/video/management/commands/check_obsolete_videos.py:206
+#: pod/video/management/commands/check_obsolete_videos.py:225
+#: pod/video/management/commands/check_obsolete_videos.py:251
+#: pod/video/management/commands/check_obsolete_videos.py:286
+#: pod/video/management/commands/check_obsolete_videos.py:321
+msgid "Regards"
+msgstr "Cordialement"
+
+#: pod/main/templates/mail/mail.html:2 pod/main/templates/mail/mail.txt:2
+#: pod/main/templates/mail/mail_sender.html:2
+#: pod/main/templates/mail/mail_sender.txt:2
+msgid "Hello"
+msgstr "Bonjour"
+
+#: pod/video/management/commands/check_obsolete_videos.py:254
+msgid "The obsolete videos on Pod"
+msgstr "Les vidéos obsolètes sur Pod"
+
+#: pod/main/templates/base.html:71
+msgid "Home"
+msgstr "Accueil"
+
+#: pod/main/templates/navbar.html:17 pod/recorder/models.py:194
+#: pod/video/forms.py:170 pod/video/models.py:260 pod/video/models.py:528
+msgid "Channels"
+msgstr "Chaînes"
+
+#: pod/main/templates/contact_us.html:8 pod/main/templates/contact_us.html:12
+#: pod/main/templates/contact_us.html:17 pod/main/templates/maintenance.html:15
+msgid "Contact us"
+msgstr "Contactez nous"
+
+#: pod/main/templates/footer.html:27
+msgid "Pod Project"
+msgstr "Projet Pod"
+
+#: pod/main/templates/footer.html:30 pod/video/feeds.py:107
+msgid "video platform of"
+msgstr "plateforme vidéos de"
+
+#: pod/main/templates/footer.html:30
+msgid "videos availables"
+msgstr "vidéos disponibles"
 
 #: pod/enrichment/apps.py:7
 msgid "Enrichment version"
@@ -2856,18 +2919,9 @@ msgstr "Mots clés"
 msgid "Breadcrumb"
 msgstr "Fil d’Ariane"
 
-#: pod/main/templates/base.html:71
-msgid "Home"
-msgstr "Accueil"
-
 #: pod/main/templates/base.html:76
 msgid "Toggle side Menu"
 msgstr "Afficher/masquer le menu latéral"
-
-#: pod/main/templates/contact_us.html:8 pod/main/templates/contact_us.html:12
-#: pod/main/templates/contact_us.html:17 pod/main/templates/maintenance.html:15
-msgid "Contact us"
-msgstr "Contactez nous"
 
 #: pod/main/templates/contact_us.html:56
 msgid "Back to the previous page"
@@ -2887,78 +2941,36 @@ msgstr "Champs obligatoires"
 msgid "Fields marked with an asterisk are mandatory."
 msgstr "Les champs marqués avec un astérisque sont obligatoires."
 
-#: pod/main/templates/footer.html:27
-msgid "Pod Project"
-msgstr "Projet Pod"
-
-#: pod/main/templates/footer.html:30 pod/video/feeds.py:107
-msgid "video platform of"
-msgstr "plateforme vidéos de"
-
 #: pod/main/templates/footer.html:30
 msgid "Release"
 msgstr "Version"
-
-#: pod/main/templates/footer.html:30
-msgid "videos availables"
-msgstr "vidéos disponibles"
-
-#: pod/main/templates/mail/mail.html:2 pod/main/templates/mail/mail.txt:2
-#: pod/main/templates/mail/mail_sender.html:2
-#: pod/main/templates/mail/mail_sender.txt:2
-msgid "Hello"
-msgstr "Bonjour"
 
 #: pod/main/templates/mail/mail.html:3 pod/main/templates/mail/mail.txt:3
 msgid "The user"
 msgstr "L'utilisateur"
 
 #: pod/main/templates/mail/mail.html:3 pod/main/templates/mail/mail.txt:3
-#, fuzzy
-#| msgid "send a message from"
 msgid "sends a message from"
 msgstr "envoie un message depuis"
 
 #: pod/main/templates/mail/mail.html:4 pod/main/templates/mail/mail.txt:4
 #: pod/main/templates/mail/mail_sender.html:4
 #: pod/main/templates/mail/mail_sender.txt:4
-#, fuzzy
-#| msgid "Here is the message sent"
 msgid "Here is the message sent:"
 msgstr "Voici le message envoyé :"
 
 #: pod/main/templates/mail/mail.html:6 pod/main/templates/mail/mail.txt:6
-#, fuzzy
-#| msgid "Referrer page"
 msgid "Referrer page:"
 msgstr "Page de référence :"
 
-#: pod/main/templates/mail/mail.html:7 pod/main/templates/mail/mail.txt:7
-#: pod/main/templates/mail/mail_sender.html:6
-#: pod/main/templates/mail/mail_sender.txt:6
-#: pod/video/management/commands/check_obsolete_videos.py:206
-#: pod/video/management/commands/check_obsolete_videos.py:225
-#: pod/video/management/commands/check_obsolete_videos.py:251
-#: pod/video/management/commands/check_obsolete_videos.py:286
-#: pod/video/management/commands/check_obsolete_videos.py:321
-msgid "Regards"
-msgstr "Cordialement"
-
 #: pod/main/templates/mail/mail_sender.html:3
 #: pod/main/templates/mail/mail_sender.txt:3
-#, fuzzy
-#| msgid "You just send a message from"
 msgid "You just sent a message from"
 msgstr "Vous venez d'envoyer un message depuis"
 
 #: pod/main/templates/maintenance.html:14
 msgid "Return to homepage"
 msgstr "Revenir à la page d'accueil"
-
-#: pod/main/templates/navbar.html:17 pod/recorder/models.py:194
-#: pod/video/forms.py:170 pod/video/models.py:260 pod/video/models.py:528
-msgid "Channels"
-msgstr "Chaînes"
 
 #: pod/main/templates/navbar.html:27 pod/video/models.py:418
 #: pod/video/templates/videos/filter_aside.html:34
@@ -4149,10 +4161,6 @@ msgstr "Une note ne peut pas être vide"
 msgid "A comment can't be empty"
 msgstr "Un commentaire ne peut pas être vide"
 
-#: pod/video/management/commands/check_obsolete_videos.py:80
-msgid "An Error occurred while processing "
-msgstr "Une erreur est survenue durant l’exécution du processus "
-
 #: pod/video/management/commands/check_obsolete_videos.py:84
 msgid "USE_OBSOLESCENCE is FALSE"
 msgstr "USE_OBSOLESCENCE est à FALSE"
@@ -4226,10 +4234,6 @@ msgstr ""
 "Pour information, vous trouverez ci-dessous la liste des vidéos qui "
 "arriveront bientôt à la date limite de suppression."
 
-#: pod/video/management/commands/check_obsolete_videos.py:254
-msgid "The obsolete videos on Pod"
-msgstr "Les vidéos obsolètes sur Pod"
-
 #: pod/video/management/commands/check_obsolete_videos.py:278
 msgid "For information, you will find below the list of deleted video."
 msgstr ""
@@ -4271,10 +4275,6 @@ msgid "%(app)s version"
 msgstr "Version %(app)s"
 
 #: pod/video/models.py:217 pod/video/models.py:301 pod/video/models.py:1473
-#, fuzzy
-#| msgid ""
-#| "Please choose a title as short and accurate as possible, reflecting the "
-#| "main subject / context of the content.(max length: 100 characters)"
 msgid ""
 "Please choose a title as short and accurate as possible, reflecting the main "
 "subject / context of the content.(max length : 100 characters)"
@@ -4324,10 +4324,6 @@ msgid "Discipline"
 msgstr "Discipline"
 
 #: pod/video/models.py:461
-#, fuzzy
-#| msgid ""
-#| "Please choose a title as short and accurate as possible, reflecting the "
-#| "main subject / context of the content.(max length: 250 characters)"
 msgid ""
 "Please choose a title as short and accurate as possible, reflecting the main "
 "subject / context of the content.(max length : 250 characters)"
@@ -5446,91 +5442,3 @@ msgstr "facettage"
 #: pod/video_search/views.py:55
 msgid "Remove selection"
 msgstr "Retirer la sélection"
-
-#~ msgid "Archived videos"
-#~ msgstr "Archivé"
-
-#, fuzzy
-#~| msgid "Delete the video"
-#~ msgid "Deleted videos"
-#~ msgstr "Supprimer la vidéo"
-
-#, fuzzy
-#~| msgid "The obsolete videos on Pod"
-#~ msgid "Soon obsolete videos"
-#~ msgstr "Les vidéos obsolètes sur Pod"
-
-#, fuzzy
-#~| msgid "Video"
-#~ msgid "Url video"
-#~ msgstr "Vidéo"
-
-#, fuzzy
-#~| msgid "Email sent ?"
-#~ msgid "Email addresse"
-#~ msgstr "Email envoyé ?"
-
-#, fuzzy
-#~| msgid "Archived"
-#~ msgid "Archive date"
-#~ msgstr "Archivé"
-
-#, fuzzy
-#~| msgid "Delete"
-#~ msgid "Delete date"
-#~ msgstr "Supprimer"
-
-#, fuzzy
-#~| msgid ""
-#~| "you can change the removal date by editing your video:</p>\n"
-#~| "<p><a href='http:%(url)s' rel='noopener' target='_blank'>http:%(url)s</"
-#~| "a></p>\n"
-#~ msgid ""
-#~ "you can change the removal date by editing your video:<p><a "
-#~ "href='%(url)s' rel='noopener' target='_blank'>click here to edit your "
-#~ "video</a></p>."
-#~ msgstr ""
-#~ "vous pouvez changer la date de suppression en éditant votre vidéo:</p>\n"
-#~ "<p><a href=‘http:%(url)s’ rel=‘noopener’ target=‘_blank’>http:%(url)s</"
-#~ "a></p>\n"
-
-#, fuzzy
-#~| msgid ""
-#~| "Your video intitled \"%(title)s\" will soon arrive at the deletion "
-#~| "deadline."
-#~ msgid ""
-#~ "Your video will soon arrive at the deletion deadline.If you want to keep "
-#~ "it, "
-#~ msgstr ""
-#~ "Votre vidéo intitulée \"%(title)s\" arrive bientôt à la date limite de "
-#~ "suppression."
-
-#, fuzzy
-#~| msgid ""
-#~| "please contact the manager(s) in charge of your establishment at this "
-#~| "address(es): %(email_address)s</p>\n"
-#~ msgid ""
-#~ "please contact the manager(s) in charge of your establishment at this "
-#~ "address(es): %(email_address)s"
-#~ msgstr ""
-#~ "veuillez contacter les gestionnaires en charge de votre établissement à "
-#~ "l’adresse suivante : %(email_address)s</p>\n"
-
-#, fuzzy
-#~| msgid "Hello %(name)s,"
-#~ msgid "Hello %(name)s"
-#~ msgstr "Bonjour %(name)s,"
-
-#, fuzzy
-#~| msgid "For information, you will find below the list of deleted video."
-#~ msgid ""
-#~ "For information, you will find attached the list of videos that will be "
-#~ "soon "
-#~ msgstr ""
-#~ "Pour information, vous trouverez ci-dessous la liste des vidéos "
-#~ "supprimées."
-
-#, fuzzy
-#~| msgid "editor"
-#~ msgid "edit"
-#~ msgstr "éditeur"
