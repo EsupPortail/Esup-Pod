@@ -1474,33 +1474,32 @@ def video_oembed(request):
 def get_all_views_count(v_id, specific_date=None):
     if specific_date:
         TODAY = specific_date
-    all_views = []
+    all_views = {}
     # view count in day
-    all_views.append(ViewCount.objects.filter(
+    count = ViewCount.objects.filter(
         video_id=v_id,
-        date=TODAY).aggregate(
-            Sum('count'))['count__sum']
-    )
+        date=TODAY).aggregate(Sum('count'))['count__sum']
+    all_views['day'] = count if count else 0
+
     # view count in month
-    all_views.append(ViewCount.objects.filter(
+    count = ViewCount.objects.filter(
         video_id=v_id,
-        date__year=TODAY.year,
-        date__month=TODAY.month).aggregate(
+        date__year=TODAY.year, date__month=TODAY.month).aggregate(
             Sum('count'))['count__sum']
-    )
+    all_views['month'] = count if count else 0
+
     # view count in year
-    all_views.append(ViewCount.objects.filter(
-        date__year=TODAY.year,
-        video_id=v_id).aggregate(
+    count = ViewCount.objects.filter(
+        date__year=TODAY.year, video_id=v_id).aggregate(
             Sum('count'))['count__sum']
-    )
+    all_views['year'] = count if count else 0
+
     # view count since video was created
-    all_views.append(ViewCount.objects.filter(
-        video_id=v_id).aggregate(
-            Sum('count'))['count__sum']
-    )
-    # replace None by 0
-    return [nb if nb else 0 for nb in all_views]
+    count = ViewCount.objects.filter(video_id=v_id).aggregate(
+        Sum('count'))['count__sum']
+    all_views['since_created'] = count if count else 0
+
+    return all_views
 
 
 # Retourne une ou plusieurs videos et le titre de
@@ -1517,13 +1516,13 @@ def get_videos(p_slug, target, p_slug_t=None):
             videos.append(video_founded)
             title = _("Video viewing statistics for %s") %\
                 video_founded.title.capitalize()
-    if target.lower() == "channel" and not videos:
+    elif target.lower() == "channel" and not videos:
         title = _("Video viewing statistics for the channel %s") % p_slug
         videos = VIDEOS.filter(channel__slug__istartswith=p_slug)
-    if target.lower() == "theme" and not videos and p_slug_t:
+    elif target.lower() == "theme" and not videos and p_slug_t:
         title = _("Video viewing statistics for the theme %s") % p_slug_t
         videos = VIDEOS.filter(theme__slug__istartswith=p_slug_t)
-    if not videos and target == "videos":
+    elif not videos and target == "videos":
         videos = [v for v in VIDEOS]
     return (videos, title)
 
@@ -1566,8 +1565,12 @@ def manage_access_rights_stats_video(request, video, page_title):
 
 @user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
 def stats_view(request, slug=None, slug_t=None):
-    # Slug peut référencer une vidéo ou une chaine
-    # from definit sa référence
+    """
+    " slug reference video's slug or channel's slug
+    " t_slug reference theme's slug
+    " from defined the source of the request such as
+    " (videos, video, channel or theme)
+    """
     target = request.GET.get('from', "videos")
     videos, title = get_videos(slug, target, slug_t)
     error_message = (
@@ -1600,19 +1603,14 @@ def stats_view(request, slug=None, slug_t=None):
             Min("date_added"))["date_added__min"].date()
         if type(specific_date) == str:
             specific_date = parse(specific_date).date()
-        data = []
-        for v in videos:
-            v_data = {}
-            v_data["title"] = v.title
-            v_data["slug"] = v.slug
-            (
-                v_data["day"],
-                v_data["month"],
-                v_data["year"],
-                v_data["since_created"]) = get_all_views_count(
-                v.id, specific_date)
-            data.append(v_data)
+
+        data = list(map(lambda v: {
+            "title": v.title,
+            "slug": v.slug,
+            **get_all_views_count(v.id, specific_date)
+        }, videos))
         data.append({"min_date": min_date})
+
         return JsonResponse(data, safe=False)
 
 
