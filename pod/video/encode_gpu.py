@@ -660,13 +660,21 @@ def add_info_video(key, value, append=False):
         pass
     except JSONDecodeError:
         pass
-    if DEBUG:
-        print(data, data.get(key), key, value, append)
+    # if DEBUG:
+    #    print(data, data.get(key), key, value, append)
+
     if data.get(key) and append:
         val = data[key]
-        data[key] = val.append(value) if (type(val) is list) else [val, value]
+        # data[key] = val.append(value) if (type(val) is list) \
+        # else [val, value]
+        if (type(val) is list):
+            val.append(value)
+        else:
+            val = [val, value]
+        data[key] = val
     else:
         data[key] = [value] if append else value
+
     with open(VIDEOS_OUTPUT_DIR + "/info_video.json", "w") as outfile:
         json.dump(data, outfile, indent=2)
 
