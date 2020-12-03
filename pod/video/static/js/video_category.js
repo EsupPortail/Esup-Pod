@@ -733,8 +733,8 @@
 	};
 	if(cat_input.value.trim() === "")
         {
-	    // TODO display errors msg
 	    showAlertMessage(msg_title_empty, false, delay=30000);
+	    loader.classList.remove("show");
             return;	    
 	}
         if(Object.keys(CURR_CATEGORY).length > 0 && DOMCurrentEditCat) // Editing mode
