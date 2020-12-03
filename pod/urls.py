@@ -41,6 +41,8 @@ from pod.recorder.views import add_recording, recorder_notify, claim_record,\
     delete_record
 from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
 from pod.video.views import PodChunkedUploadView, PodChunkedUploadCompleteView
+from django.urls import path
+
 
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
@@ -56,6 +58,7 @@ if USE_CAS:
 
 
 urlpatterns = [
+    path("select2/", include("django_select2.urls")),
     url(r'^admin/', admin.site.urls),
 
     # Translation

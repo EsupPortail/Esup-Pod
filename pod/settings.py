@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_filters',
     'lti_provider',
+    'django_select2',
     # Pod Applications
     'pod.main',
     'django.contrib.admin',  # put it here for template override
@@ -197,6 +198,23 @@ LOGGING = {
     },
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    # … default cache config and others
+    "select2": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
+
+# Tell select2 which cache configuration to use:
+SELECT2_CACHE_BACKEND = "select2"
+
 ##
 # Applications settings (and settings locale if any)
 #
@@ -254,4 +272,4 @@ if 'H5P_ENABLED' in globals() and eval('H5P_ENABLED') is True:
     INSTALLED_APPS.append('h5pp')
     INSTALLED_APPS.append('pod.interactive')
 
-MODELTRANSLATION_FALLBACK_LANGUAGES = ('fr', 'en', 'nl')
+

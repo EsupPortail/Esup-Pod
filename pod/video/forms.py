@@ -26,6 +26,7 @@ from pod.main.forms import add_placeholder_and_asterisk
 
 from ckeditor.widgets import CKEditorWidget
 from collections import OrderedDict
+from django_select2 import forms as s2forms
 
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -252,6 +253,20 @@ THEME_FORM_FIELDS_HELP_TEXT = getattr(
                 "using the toolbar.")
         ])
     ]))
+
+
+class OwnerWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+    ]
+
+
+class ChannelWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "name__icontains",
+    ]
+
 
 
 @deconstructible
@@ -557,6 +572,8 @@ class VideoForm(forms.ModelForm):
         widgets = {
             # 'date_added': widgets.AdminSplitDateTime,
             'date_evt': widgets.AdminDateWidget,
+            'owner': OwnerWidget,
+            'channel': ChannelWidget
         }
         initial = {
             'date_added': TODAY,

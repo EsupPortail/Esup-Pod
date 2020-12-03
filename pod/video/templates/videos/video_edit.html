@@ -131,6 +131,7 @@
 </form>
 {% endif %}
 {% endspaceless %}
+
 {% endblock page_content %}
 
 {% block page_aside %}
@@ -269,5 +270,5 @@
     const max_duration_date_delete = {{form.max_duration_date_delete}};
 </script>
 <script defer src="{% static 'js/validate-date_delete-field.js' %}"></script>
-
+{{ form.media.js }}
 {% endblock more_script %}
