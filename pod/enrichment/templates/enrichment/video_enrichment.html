@@ -168,7 +168,8 @@ player.ready(function() {
         } else {
             //console.log(metadataTrack.cues.length);
             for (i = 0; i < metadataTrack.cues.length; i++) {
-                data = JSON.parse(metadataTrack.cues[i].text);
+                // Replace tabs by spaces to prevent a "JSON.parse: bad control character in string literal" error.
+                data = JSON.parse(metadataTrack.cues[i].text.replace(/\t/g, ' '));
                 //console.log('Parsed '+data.title)
                 slide.push({
                     title: data.title,
