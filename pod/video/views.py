@@ -61,6 +61,7 @@ VIDEOS = Video.objects.filter(
 ).defer(
     "video", "slug", "owner", "additional_owners", "description"
 )
+
 # for clean install, produces errors
 try:
     VIDEOS = VIDEOS.exclude(
@@ -68,6 +69,7 @@ try:
         filter(sites=get_current_site(None))
 except Exception:
     pass
+
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, 'RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY', False)
 THEME_ACTION = ['new', 'modify', 'delete', 'save']
@@ -210,6 +212,7 @@ def channel(request, slug_c, slug_t=None):
     if ORGANIZE_BY_THEME:
         videos_theme = regroup_videos_by_theme(
             videos_list, page, channel, theme)
+
     return render(request, 'channel/channel.html',
                   {'channel': channel,
                    'videos': videos,
@@ -1475,6 +1478,7 @@ def get_all_views_count(v_id, specific_date=None):
     if specific_date:
         TODAY = specific_date
     all_views = {}
+
     # view count in day
     count = ViewCount.objects.filter(
         video_id=v_id,
@@ -1507,8 +1511,10 @@ def get_all_views_count(v_id, specific_date=None):
 # selon la réference du slug donnée
 # (video ou channel ou theme ou videos pour toutes les videos)
 def get_videos(p_slug, target, p_slug_t=None):
+
     videos = []
     title = _("Pod video view statistics")
+
     if target.lower() == "video":
         video_founded = Video.objects.filter(slug=p_slug).first()
         # In case that the slug is a bad one
@@ -1516,14 +1522,18 @@ def get_videos(p_slug, target, p_slug_t=None):
             videos.append(video_founded)
             title = _("Video viewing statistics for %s") %\
                 video_founded.title.capitalize()
+
     elif target.lower() == "channel" and not videos:
         title = _("Video viewing statistics for the channel %s") % p_slug
         videos = VIDEOS.filter(channel__slug__istartswith=p_slug)
+
     elif target.lower() == "theme" and not videos and p_slug_t:
         title = _("Video viewing statistics for the theme %s") % p_slug_t
         videos = VIDEOS.filter(theme__slug__istartswith=p_slug_t)
+
     elif not videos and target == "videos":
-        videos = [v for v in VIDEOS]
+        return (VIDEOS, title)
+
     return (videos, title)
 
 
