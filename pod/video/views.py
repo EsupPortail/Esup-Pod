@@ -61,6 +61,7 @@ VIDEOS = Video.objects.filter(
 ).defer(
     "video", "slug", "owner", "additional_owners", "description"
 )
+
 # for clean install, produces errors
 try:
     VIDEOS = VIDEOS.exclude(
@@ -68,6 +69,7 @@ try:
         filter(sites=get_current_site(None))
 except Exception:
     pass
+
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, 'RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY', False)
 THEME_ACTION = ['new', 'modify', 'delete', 'save']
@@ -187,13 +189,16 @@ def channel(request, slug_c, slug_t=None):
                                 sites=get_current_site(request))
 
     videos_list = VIDEOS.filter(channel=channel)
-
+    print('*****************************************')
+    print('FIRST ', Video.objects.filter(channel=channel))
+    print(videos_list)
     theme = None
     if slug_t:
         theme = get_object_or_404(Theme, channel=channel, slug=slug_t)
         list_theme = theme.get_all_children_flat()
         videos_list = videos_list.filter(theme__in=list_theme)
 
+    print('SECOND  ', Video.objects.filter(channel=channel))
     page = request.GET.get('page', 1)
     full_path = ""
     if page:
@@ -210,6 +215,11 @@ def channel(request, slug_c, slug_t=None):
     if ORGANIZE_BY_THEME:
         videos_theme = regroup_videos_by_theme(
             videos_list, page, channel, theme)
+    print("------------------- VIDEOS SEND-----------------------")
+    print(videos)
+    print("******************************************************")
+    print(videos_list)
+    print("_______________________________________________________")
     return render(request, 'channel/channel.html',
                   {'channel': channel,
                    'videos': videos,
@@ -1475,6 +1485,9 @@ def get_all_views_count(v_id, specific_date=None):
     if specific_date:
         TODAY = specific_date
     all_views = {}
+    print("------------- STATS VIEW TODAY IS------------------")
+    print(TODAY)
+    print("------------- STATS VIEW TODAY IS------------------")
     # view count in day
     count = ViewCount.objects.filter(
         video_id=v_id,
