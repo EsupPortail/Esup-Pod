@@ -193,7 +193,7 @@ class TestStatsView(TestCase):
         data = [{
             "title": self.video.title,
             "slug": self.video.slug,
-            **get_all_views_count(self.video.id, TODAY)
+            **get_all_views_count(self.video.id)
             },
             {"min_date": TODAY}
         ]
@@ -219,7 +219,7 @@ class TestStatsView(TestCase):
             data = {
                 "title": self.video.title,
                 "slug": self.video.slug,
-                **get_all_views_count(video.id, TODAY)
+                **get_all_views_count(video.id)
             }
             # the content contains the title of the video and expected data
             self.assertIn(json.dumps(data), response.content.decode("utf-8"))
@@ -240,7 +240,7 @@ class TestStatsView(TestCase):
             data = {
                 "title": video.title,
                 "slug": video.slug,
-                **get_all_views_count(video.id, TODAY)
+                **get_all_views_count(video.id)
             }
             # the content contains the expected data
             self.assertIn(json.dumps(data), response.content.decode("utf-8"))
@@ -261,7 +261,7 @@ class TestStatsView(TestCase):
             data = {
                 "title": video.title,
                 "slug": video.slug,
-                **get_all_views_count(video.id, TODAY)
+                **get_all_views_count(video.id)
             }
             # the content contains the expected data
             self.assertIn(json.dumps(data), response.content.decode("utf-8"))
