@@ -1,3 +1,5 @@
+"""POD V1 DATA IMPORTER."""
+
 from django.utils import translation
 from django.core.management.base import BaseCommand
 from django.core import serializers
@@ -40,6 +42,8 @@ FROM_URL = getattr(settings, 'FROM_URL', "https://pod.univ.fr/media/")
 
 
 class Command(BaseCommand):
+    """Main command class. To be called by a 'python manage.py import_data $type'."""
+
     args = 'Channel Theme Type User Discipline Pod tags Chapter Contributor...'
     help = 'Import from V1'
     valid_args = ['User', 'Channel', 'Theme', 'Type', 'Discipline', 'FlatPage',
@@ -47,9 +51,11 @@ class Command(BaseCommand):
                   'Overlay', 'docpods', 'trackpods', 'enrichpods', 'Pod']
 
     def add_arguments(self, parser):
+        """Add 'import' argument."""
         parser.add_argument('import')
 
     def handle(self, *args, **options):
+        """Handle the command call."""
         # Activate a fixed locale fr
         translation.activate('fr')
         if options['import'] and options['import'] in self.valid_args:
@@ -81,6 +87,7 @@ class Command(BaseCommand):
                 % self.valid_args)
 
     def save_object(self, type_to_import, obj):
+        """Save object obj of type 'type_to_import'."""
         if AUTHENTICATION and type_to_import == 'UserProfile':
             owner = Owner.objects.get(
                 user_id=obj.object.user_id)
@@ -97,11 +104,11 @@ class Command(BaseCommand):
             else:
                 try:
                     if (
-                        type_to_import == 'Pod' or
-                        not hasattr(obj.object, 'video') or
-                        (
-                            hasattr(obj.object, 'video') and
-                            obj.object.video.id not in VIDEO_ID_TO_EXCLUDE
+                        type_to_import == 'Pod'
+                        or not hasattr(obj.object, 'video')
+                        or (
+                            hasattr(obj.object, 'video')
+                            and obj.object.video.id not in VIDEO_ID_TO_EXCLUDE
                         )
                     ):
                         obj.object.headband = None
@@ -112,6 +119,7 @@ class Command(BaseCommand):
                     print("Objects related does not exist %s" % e)
 
     def migrate_to_v2(self, filepath, type_to_import):
+        """Convert data type in specified filepath."""
         f = open(filepath, 'r')
         filedata = f.read()
         f.close()
@@ -121,36 +129,42 @@ class Command(BaseCommand):
         f.close()
 
     def Channel(self, filedata):
+        """Rename channel model in specified filedata."""
         return filedata.replace(
             "pods.channel",
             "video.channel"
         )
 
     def Theme(self, filedata):
+        """Rename theme model in specified filedata."""
         return filedata.replace(
             "pods.theme",
             "video.theme"
         )
 
     def Type(self, filedata):
+        """Rename type model in specified filedata."""
         return filedata.replace(
             "pods.type",
             "video.type"
         ).replace("headband", "icon")
 
     def Discipline(self, filedata):
+        """Rename discipline model in specified filedata."""
         return filedata.replace(
             "pods.discipline",
             "video.discipline"
         ).replace("headband", "icon")
 
     def Pod(self, filedata):
+        """Rename pod model in specified filedata."""
         return filedata.replace(
             "pods.pod",
             "video.video"
         )
 
     def Chapter(self, filedata):
+        """Rename chapter model in specified filedata."""
         return filedata.replace(
             "pods.chapterpods",
             "chapter.chapter"
@@ -160,18 +174,21 @@ class Command(BaseCommand):
         )
 
     def Contributor(self, filedata):
+        """Rename contributor model in specified filedata."""
         return filedata.replace(
             "pods.contributorpods",
             "completion.contributor"
         )
 
     def Overlay(self, filedata):
+        """Rename overlay model in specified filedata."""
         return filedata.replace(
             "pods.overlaypods",
             "completion.overlay"
         )
 
     def get_new_data(self, type_to_import, filedata):
+        """Get new data."""
         newdata = filedata
         type_import = {
             "Channel": self.Channel,
@@ -194,6 +211,7 @@ class Command(BaseCommand):
         return newdata
 
     def add_data_to_video(self, type_to_import, obj, data):
+        """Add related data (docs, tags, track, enrich) to video."""
         if type_to_import in ('docpods',):
             self.add_doc_to_video(obj, data)
         if type_to_import in ('tags',):
@@ -204,6 +222,7 @@ class Command(BaseCommand):
             self.add_enrich_to_video(obj, data)
 
     def add_tag_to_video(self, video_id, list_tag):
+        """Add tags to video."""
         try:
             video = Video.objects.get(id=video_id)
             video.tags = ', '.join(list_tag)
@@ -212,6 +231,7 @@ class Command(BaseCommand):
             print(video_id, " does not exist")
 
     def add_doc_to_video(self, video_id, list_doc):
+        """Add docs to video."""
         print(video_id, list_doc)
         try:
             video = Video.objects.get(id=video_id)
@@ -224,6 +244,7 @@ class Command(BaseCommand):
             print(video_id, " does not exist")
 
     def add_track_to_video(self, video_id, list_doc):
+        """Add tracks to video."""
         print(video_id, list_doc)
         try:
             video = Video.objects.get(id=video_id)
@@ -247,6 +268,7 @@ class Command(BaseCommand):
             print(video_id, " does not exist")
 
     def convert_to_vtt(self, new_file):
+        """Convert subtitles to VTT."""
         try:
             webvtt.from_srt(new_file).save(new_file[:-3] + "vtt")
             new_file = new_file[:-3] + "vtt"
@@ -274,6 +296,7 @@ class Command(BaseCommand):
         return ""
 
     def add_enrich_to_video(self, video_id, list_doc):
+        """Add enrichments to video."""
         print(video_id)
         try:
             video = Video.objects.get(id=video_id)
@@ -301,6 +324,7 @@ class Command(BaseCommand):
             print(video_id, " does not exist")
 
     def download_doc(self, doc):
+        """Download doc from pod v1."""
         source_url = FROM_URL + doc
         dest_file = os.path.join(
             settings.MEDIA_ROOT,
@@ -312,6 +336,7 @@ class Command(BaseCommand):
         return new_file
 
     def create_and_save_doc(self, new_file, video):
+        """Create and save doc."""
         if FILEPICKER:
             homedir, created = UserFolder.objects.get_or_create(
                 name='home',
@@ -338,6 +363,7 @@ class Command(BaseCommand):
         return document
 
     def create_and_save_image(self, new_file, video):
+        """Create and save image."""
         if FILEPICKER:
             homedir, created = UserFolder.objects.get_or_create(
                 name='home',
@@ -365,7 +391,8 @@ class Command(BaseCommand):
 
 
 """
-SAVE FROM PODV1
+# POD V1 DATA EXPORTER.
+# To be executed inside 'python manage.py shell' on a pod server v1.x
 
 from pods.models import Channel
 from pods.models import Theme
@@ -393,9 +420,9 @@ with open("Theme.json", "w") as out:
 with open("Type.json", "w") as out:
     json_serializer.serialize(Type.objects.all(), indent=2, stream=out)
 
->>> owners = set(Channel.objects.all().values_list("owners", flat=True))
->>> users = set(Channel.objects.all().values_list("users", flat=True))
->>> list_user = owners.union(users)
+owners = set(Channel.objects.all().values_list("owners", flat=True))
+users = set(Channel.objects.all().values_list("users", flat=True))
+list_user = owners.union(users)
 
 with open("User.json", "w") as out:
     json_serializer.serialize(User.objects.filter(id__in=list_user), indent=2,
@@ -417,7 +444,7 @@ with open("User.json", "w") as out:
      json_serializer.serialize(User.objects.filter(id__in=podowner), indent=2,
       stream=out)
 
-video_fields = ('video', 'allow_donwloading', 'is_360', 'title', 'slug',
+video_fields = ('video', 'allow_downloading', 'is_360', 'title', 'slug',
     'owner', 'date_added', 'date_evt', 'cursus', 'main_lang', 'description',
     'duration', 'type', 'discipline', 'channel', 'theme', 'is_draft',
     'is_restricted', 'password')
@@ -428,11 +455,11 @@ with open("Pod.json", "w") as out:
 
 list_tag = {}
 for p in Pod.objects.all():
-   list_tag["%s" %p.id] = []
-   for t in p.tags.all():
-     list_tag["%s" %p.id].append(t.name)
+    list_tag["%s" %p.id] = []
+    for t in p.tags.all():
+        list_tag["%s" %p.id].append(t.name)
 with open("tags.json", "w") as out:
-     out.write(json.dumps(list_tag, indent=2))
+    out.write(json.dumps(list_tag, indent=2))
 
 
 with open("Chapter.json", "w") as out:
@@ -448,6 +475,8 @@ for p in Pod.objects.all():
     list_doc["%s" %p.id] = []
     for d in p.docpods_set.all():
         list_doc["%s" %p.id].append(d.document.file.name)
+# -- PRESS enter AND WAIT FOR THE END OF PROCESSING
+#    BEFORE STARTING THE FOLLOWING 2 LINES --
 with open("docpods.json", "w") as out:
     out.write(json.dumps(list_doc, indent=2))
 
@@ -462,6 +491,8 @@ for p in Pod.objects.all():
                 data['lang'] = d.lang
                 data['src'] = d.src.file.name
                 list_track["%s" %p.id].append(data)
+# -- PRESS enter AND WAIT FOR THE END OF PROCESSING
+#    BEFORE STARTING THE FOLLOWING 2 LINES --
 with open("trackpods.json", "w") as out:
     out.write(json.dumps(list_track, indent=2))
 
@@ -482,7 +513,8 @@ for p in Pod.objects.all().order_by('id'):
             data['document'] = d.document.file.name if d.document else ""
             data['embed'] = d.embed
             list_enrich["%s" %p.id].append(data)
-
+# -- PRESS enter AND WAIT FOR THE END OF PROCESSING
+#    BEFORE STARTING THE FOLLOWING 2 LINES --
 with open("enrichpods.json", "w") as out:
     out.write(json.dumps(list_enrich, indent=2))
 
