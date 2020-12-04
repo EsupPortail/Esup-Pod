@@ -1473,7 +1473,7 @@ def video_oembed(request):
         return JsonResponse(data)
 
 
-def get_all_views_count(v_id, date_filter):
+def get_all_views_count(v_id, date_filter=date.today()):
     all_views = {}
 
     # view count in day
@@ -1520,15 +1520,15 @@ def get_videos(p_slug, target, p_slug_t=None):
             title = _("Video viewing statistics for %s") %\
                 video_founded.title.capitalize()
 
-    elif target.lower() == "channel" and not videos:
+    elif target.lower() == "channel":
         title = _("Video viewing statistics for the channel %s") % p_slug
         videos = VIDEOS.filter(channel__slug__istartswith=p_slug)
 
-    elif target.lower() == "theme" and not videos and p_slug_t:
+    elif target.lower() == "theme" and p_slug_t:
         title = _("Video viewing statistics for the theme %s") % p_slug_t
         videos = VIDEOS.filter(theme__slug__istartswith=p_slug_t)
 
-    elif not videos and target == "videos":
+    elif target == "videos":
         return (VIDEOS, title)
 
     return (videos, title)
@@ -1606,8 +1606,6 @@ def stats_view(request, slug=None, slug_t=None):
             {"title": title})
     else:
         date_filter = request.POST.get("periode", date.today())
-        min_date = VIDEOS.aggregate(
-            Min("date_added"))["date_added__min"].date()
         if type(date_filter) == str:
             date_filter = parse(date_filter).date()
 
@@ -1616,6 +1614,9 @@ def stats_view(request, slug=None, slug_t=None):
             "slug": v.slug,
             **get_all_views_count(v.id, date_filter)
         }, videos))
+
+        min_date = VIDEOS.aggregate(
+            Min("date_added"))["date_added__min"].date()
         data.append({"min_date": min_date})
 
         return JsonResponse(data, safe=False)
