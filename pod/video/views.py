@@ -55,7 +55,6 @@ from pod.playlist.models import Playlist
 from django.db import transaction
 from django.db import IntegrityError
 
-TODAY = date.today()
 VIDEOS = Video.objects.filter(
     encoding_in_progress=False, is_draft=False
 ).defer(
@@ -1474,27 +1473,25 @@ def video_oembed(request):
         return JsonResponse(data)
 
 
-def get_all_views_count(v_id, specific_date=None):
-    if specific_date:
-        TODAY = specific_date
+def get_all_views_count(v_id, date_filter):
     all_views = {}
 
     # view count in day
     count = ViewCount.objects.filter(
         video_id=v_id,
-        date=TODAY).aggregate(Sum('count'))['count__sum']
+        date=date_filter).aggregate(Sum('count'))['count__sum']
     all_views['day'] = count if count else 0
 
     # view count in month
     count = ViewCount.objects.filter(
         video_id=v_id,
-        date__year=TODAY.year, date__month=TODAY.month).aggregate(
+        date__year=date_filter.year, date__month=date_filter.month).aggregate(
             Sum('count'))['count__sum']
     all_views['month'] = count if count else 0
 
     # view count in year
     count = ViewCount.objects.filter(
-        date__year=TODAY.year, video_id=v_id).aggregate(
+        date__year=date_filter.year, video_id=v_id).aggregate(
             Sum('count'))['count__sum']
     all_views['year'] = count if count else 0
 
@@ -1608,16 +1605,16 @@ def stats_view(request, slug=None, slug_t=None):
             "videos/video_stats_view.html",
             {"title": title})
     else:
-        specific_date = request.POST.get("periode", TODAY)
+        date_filter = request.POST.get("periode", date.today())
         min_date = VIDEOS.aggregate(
             Min("date_added"))["date_added__min"].date()
-        if type(specific_date) == str:
-            specific_date = parse(specific_date).date()
+        if type(date_filter) == str:
+            date_filter = parse(date_filter).date()
 
         data = list(map(lambda v: {
             "title": v.title,
             "slug": v.slug,
-            **get_all_views_count(v.id, specific_date)
+            **get_all_views_count(v.id, date_filter)
         }, videos))
         data.append({"min_date": min_date})
 
