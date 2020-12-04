@@ -3,7 +3,7 @@
 {% spaceless %}
 <div class="container container-pod">
 <p class="float-right">
-<a href="#">Haut de page</a>
+  <a class="top_link" href="#">Haut de page</a>
 </p>
 <div class="row">
   <div class="col-md-4">
@@ -16,15 +16,19 @@
     </p>
   </div>
   <div class="col-md-4">
-    {% for link in LINK_FOOTER %}
-    <a href="{{link.get_url}}" title="{{link.title}}" >
-    &gt;  {{link.title}}
-    </a><br>
-    {% endfor %}
+    {% if LINK_FOOTER %}
+      <ul class="footer_links">
+      {% for link in LINK_FOOTER %}
+        <li><a href="{{link.get_url}}" title="{{link.title}}">{{link.title}}</a></li>
+      {% endfor %}
+      </ul>
+    {% endif %}
   </div>
   <div class="col-md-4">
-    <a href="https://www.esup-portail.org/" title="Esup Portail : Communauté d'établissements francais d'enseignement supérieur pour l'innovation numérique" target="_blank">&gt;  <abbr title="Esup Portail : Communauté d'établissements francais d'enseignement supérieur pour l'innovation numérique">Esup Portail</abbr></a><br>
-    <a href="https://github.com/EsupPortail/Esup-Pod" target="_blank">&gt;  {% trans "Pod Project" %}</a><br>
+    <ul class="footer_links">
+      <li><a href="https://www.esup-portail.org/" title="{% trans 'Esup Portal: Community of French higher education establishments for digital innovation' %}" target="_blank">{% trans "Esup Portal" %}</a></li>
+      <li><a href="https://github.com/EsupPortail/Esup-Pod" target="_blank">{% trans "Pod Project" %}</a></li>
+    </ul>
   </div>
 </div>
 <p class="hidden-pod" style="text-align:center">{{TITLE_SITE}} {% trans "video platform of" %} {{TITLE_ETB}} - <a href="https://github.com/EsupPortail/Esup-Pod/releases/tag/{{VERSION}}" target="_blank" title="GitHub">{% trans "Release" %} {{VERSION}}</a>  - {{VIDEOS_COUNT}} {% trans "videos availables" %} [ {{VIDEOS_DURATION}} ]</p>

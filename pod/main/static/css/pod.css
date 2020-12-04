@@ -410,6 +410,24 @@ footer{
 footer a, footer a:hover{
   color: white;
 }
+
+.footer_links{
+  list-style:none;
+}
+.footer_links>li:before{
+  margin-right:.5em;
+  content: ">";
+  font-weight: bold;
+}
+
+.top_link:before{
+  content: "\21E7";
+  padding-right: 4px;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1.2em;
+}
+
 /*** Useful for additional owners ***/
 input.select2-input{
   width: 100% !important;
