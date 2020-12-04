@@ -53,7 +53,7 @@ $(()=>{
 	}
         });
 	let today = new Date().toISOString().split("T")[0];
-	$("#jsperiode").val(today);
+	$("#jsperiode").val(today); // set date input value to today
 	document.querySelector("#jsperiode").max = today;
 	
 	$("#jsperiode").on("change paste keyup", function(e)

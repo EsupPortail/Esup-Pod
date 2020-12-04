@@ -55,12 +55,12 @@ from pod.playlist.models import Playlist
 from django.db import transaction
 from django.db import IntegrityError
 
-TODAY = date.today()
 VIDEOS = Video.objects.filter(
     encoding_in_progress=False, is_draft=False
 ).defer(
     "video", "slug", "owner", "additional_owners", "description"
 )
+
 # for clean install, produces errors
 try:
     VIDEOS = VIDEOS.exclude(
@@ -68,6 +68,7 @@ try:
         filter(sites=get_current_site(None))
 except Exception:
     pass
+
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
     settings, 'RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY', False)
 THEME_ACTION = ['new', 'modify', 'delete', 'save']
@@ -210,6 +211,7 @@ def channel(request, slug_c, slug_t=None):
     if ORGANIZE_BY_THEME:
         videos_theme = regroup_videos_by_theme(
             videos_list, page, channel, theme)
+
     return render(request, 'channel/channel.html',
                   {'channel': channel,
                    'videos': videos,
@@ -1471,36 +1473,34 @@ def video_oembed(request):
         return JsonResponse(data)
 
 
-def get_all_views_count(v_id, specific_date=None):
-    if specific_date:
-        TODAY = specific_date
-    all_views = []
+def get_all_views_count(v_id, date_filter=date.today()):
+    all_views = {}
+
     # view count in day
-    all_views.append(ViewCount.objects.filter(
+    count = ViewCount.objects.filter(
         video_id=v_id,
-        date=TODAY).aggregate(
-            Sum('count'))['count__sum']
-    )
+        date=date_filter).aggregate(Sum('count'))['count__sum']
+    all_views['day'] = count if count else 0
+
     # view count in month
-    all_views.append(ViewCount.objects.filter(
+    count = ViewCount.objects.filter(
         video_id=v_id,
-        date__year=TODAY.year,
-        date__month=TODAY.month).aggregate(
+        date__year=date_filter.year, date__month=date_filter.month).aggregate(
             Sum('count'))['count__sum']
-    )
+    all_views['month'] = count if count else 0
+
     # view count in year
-    all_views.append(ViewCount.objects.filter(
-        date__year=TODAY.year,
-        video_id=v_id).aggregate(
+    count = ViewCount.objects.filter(
+        date__year=date_filter.year, video_id=v_id).aggregate(
             Sum('count'))['count__sum']
-    )
+    all_views['year'] = count if count else 0
+
     # view count since video was created
-    all_views.append(ViewCount.objects.filter(
-        video_id=v_id).aggregate(
-            Sum('count'))['count__sum']
-    )
-    # replace None by 0
-    return [nb if nb else 0 for nb in all_views]
+    count = ViewCount.objects.filter(video_id=v_id).aggregate(
+        Sum('count'))['count__sum']
+    all_views['since_created'] = count if count else 0
+
+    return all_views
 
 
 # Retourne une ou plusieurs videos et le titre de
@@ -1508,8 +1508,10 @@ def get_all_views_count(v_id, specific_date=None):
 # selon la réference du slug donnée
 # (video ou channel ou theme ou videos pour toutes les videos)
 def get_videos(p_slug, target, p_slug_t=None):
+
     videos = []
     title = _("Pod video view statistics")
+
     if target.lower() == "video":
         video_founded = Video.objects.filter(slug=p_slug).first()
         # In case that the slug is a bad one
@@ -1517,14 +1519,18 @@ def get_videos(p_slug, target, p_slug_t=None):
             videos.append(video_founded)
             title = _("Video viewing statistics for %s") %\
                 video_founded.title.capitalize()
-    if target.lower() == "channel" and not videos:
+
+    elif target.lower() == "channel":
         title = _("Video viewing statistics for the channel %s") % p_slug
         videos = VIDEOS.filter(channel__slug__istartswith=p_slug)
-    if target.lower() == "theme" and not videos and p_slug_t:
+
+    elif target.lower() == "theme" and p_slug_t:
         title = _("Video viewing statistics for the theme %s") % p_slug_t
         videos = VIDEOS.filter(theme__slug__istartswith=p_slug_t)
-    if not videos and target == "videos":
-        videos = [v for v in VIDEOS]
+
+    elif target == "videos":
+        return (VIDEOS, title)
+
     return (videos, title)
 
 
@@ -1566,8 +1572,12 @@ def manage_access_rights_stats_video(request, video, page_title):
 
 @user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
 def stats_view(request, slug=None, slug_t=None):
-    # Slug peut référencer une vidéo ou une chaine
-    # from definit sa référence
+    """
+    " slug reference video's slug or channel's slug
+    " t_slug reference theme's slug
+    " from defined the source of the request such as
+    " (videos, video, channel or theme)
+    """
     target = request.GET.get('from', "videos")
     videos, title = get_videos(slug, target, slug_t)
     error_message = (
@@ -1595,24 +1605,20 @@ def stats_view(request, slug=None, slug_t=None):
             "videos/video_stats_view.html",
             {"title": title})
     else:
-        specific_date = request.POST.get("periode", TODAY)
+        date_filter = request.POST.get("periode", date.today())
+        if type(date_filter) == str:
+            date_filter = parse(date_filter).date()
+
+        data = list(map(lambda v: {
+            "title": v.title,
+            "slug": v.slug,
+            **get_all_views_count(v.id, date_filter)
+        }, videos))
+
         min_date = VIDEOS.aggregate(
             Min("date_added"))["date_added__min"].date()
-        if type(specific_date) == str:
-            specific_date = parse(specific_date).date()
-        data = []
-        for v in videos:
-            v_data = {}
-            v_data["title"] = v.title
-            v_data["slug"] = v.slug
-            (
-                v_data["day"],
-                v_data["month"],
-                v_data["year"],
-                v_data["since_created"]) = get_all_views_count(
-                v.id, specific_date)
-            data.append(v_data)
         data.append({"min_date": min_date})
+
         return JsonResponse(data, safe=False)
 
 
