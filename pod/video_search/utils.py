@@ -8,6 +8,9 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+DEBUG = getattr(
+    settings, 'DEBUG', False)
+
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 ES_INDEX = getattr(settings, 'ES_INDEX', 'pod')
 ES_TIMEOUT = getattr(settings, 'ES_TIMEOUT', 30)
@@ -25,11 +28,12 @@ def index_es(video):
                 res = es.index(index=ES_INDEX,
                                doc_type='pod', id=video.id,
                                body=data, refresh=True)
-                logger.info(res)
+                if DEBUG:
+                    logger.info(res)
                 return res
         except TransportError as e:
             logger.error("An error occured during index creation: %s-%s : %s" %
-                         (e.status_code, e.error, e.info['error']['reason']))
+                         (e.status_code, e.error, e.info))
     translation.deactivate()
 
 
@@ -41,11 +45,12 @@ def delete_es(video):
             delete = es.delete(
                 index=ES_INDEX, doc_type='pod',
                 id=video.id, refresh=True, ignore=[400, 404])
-            logger.info(delete)
+            if DEBUG:
+                logger.info(delete)
             return delete
         except TransportError as e:
             logger.error("An error occured during delete video : %s-%s : %s" %
-                         (e.status_code, e.error, e.info['error']['reason']))
+                         (e.status_code, e.error, e.info))
 
 
 def create_index_es():
