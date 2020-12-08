@@ -60,7 +60,7 @@ from xml.dom import minidom
 import urllib.parse
 
 from pod.video.models import Video, Type, get_storage_path_video
-from pod.video.encode import start_encode
+from pod.video import encode
 from django.contrib.auth.models import User
 
 from django.db.models import Value
@@ -141,7 +141,7 @@ DEBUG = getattr(
 # Encode video
 ENCODE_VIDEO = getattr(settings,
                        'ENCODE_VIDEO',
-                       start_encode)
+                       "start_encode")
 
 
 def print_if_debug(str):
@@ -183,7 +183,8 @@ def encode_file_exist(filename, extension, message_error, html_message_error):
         os.rename(source_file, video.video.path)
         video.save()
         # Encode
-        ENCODE_VIDEO(video.id)
+        encode_video = getattr(encode, ENCODE_VIDEO)
+        encode_video(video.id)
     else:
         # Meeting was certainly deleted in Pod database
         print_if_debug(" - WARNING : It seems that this meeting was deleted "

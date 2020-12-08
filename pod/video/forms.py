@@ -283,8 +283,8 @@ class FileSizeValidator(object):
 def launch_encode(sender, instance, created, **kwargs):
     if hasattr(instance, 'launch_encode') and instance.launch_encode is True:
         instance.launch_encode = False
-        method_to_call = getattr(encode, ENCODE_VIDEO)
-        method_to_call(instance.id)
+        encode_video = getattr(encode, ENCODE_VIDEO)
+        encode_video(instance.id)
 
 
 class VideoForm(forms.ModelForm):
