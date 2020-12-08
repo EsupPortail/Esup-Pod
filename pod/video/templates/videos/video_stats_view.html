@@ -21,7 +21,12 @@
 	{% include "videos/video-form.html" %}
 	{% else %}
 	<h1 class="title">{{ title }}</h1>
-	<div><label for="jsperiode">{% trans "Change the date" %}</label><input type="date" name="periode" id="jsperiode"></div>
+	<div class="form-group row stat-form-group">
+            <label for="jsperiode" class="col-2 col-form-label">{% trans "Change the date" %}</label>
+	    <div class="col-10 col-date">
+	        <input class="form-control" type="date" name="periode" id="jsperiode">
+	    </div>
+	</div>
 	<table id="grid"></table>
 	<div id="pager"></div>
 	{% endif %}

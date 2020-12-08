@@ -190,15 +190,13 @@ class TestStatsView(TestCase):
 
     @skipUnless(USE_STATS_VIEW, "Require activate URL video_stats_view")
     def test_stats_view_POST_request_video(self):
-        views = get_all_views_count(self.video.id, TODAY)
         data = [{
             "title": self.video.title,
             "slug": self.video.slug,
-            "day": views[0],
-            "month": views[1],
-            "year": views[2],
-            "since_created": views[3]}]
-        data.append({"min_date": TODAY})
+            **get_all_views_count(self.video.id)
+            },
+            {"min_date": TODAY}
+        ]
         expected_content = JsonResponse(data, safe=False).content
         response = self.client.post(self.stat_video_url)
         # Check that the view function is stats_view
@@ -218,14 +216,11 @@ class TestStatsView(TestCase):
         self.assertEqual(response.status_code, 200)
         videos_expected = [self.video, self.video2, self.video3]
         for video in videos_expected:
-            views = get_all_views_count(video.id, TODAY)
             data = {
                 "title": self.video.title,
                 "slug": self.video.slug,
-                "day": views[0],
-                "month": views[1],
-                "year": views[2],
-                "since_created": views[3]}
+                **get_all_views_count(video.id)
+            }
             # the content contains the title of the video and expected data
             self.assertIn(json.dumps(data), response.content.decode("utf-8"))
         # the content contains the title of the video and expected data
@@ -242,14 +237,11 @@ class TestStatsView(TestCase):
         self.assertEqual(response.status_code, 200)
         videos_expected = [self.video, self.video2]
         for video in videos_expected:
-            views = get_all_views_count(video.id, TODAY)
             data = {
                 "title": video.title,
                 "slug": video.slug,
-                "day": views[0],
-                "month": views[1],
-                "year": views[2],
-                "since_created": views[3]}
+                **get_all_views_count(video.id)
+            }
             # the content contains the expected data
             self.assertIn(json.dumps(data), response.content.decode("utf-8"))
         # the content contains the expected data
@@ -266,14 +258,11 @@ class TestStatsView(TestCase):
         self.assertEqual(response.status_code, 200)
         videos_expected = [self.video, self.video2]
         for video in videos_expected:
-            views = get_all_views_count(video.id, TODAY)
             data = {
-                    "title": video.title,
-                    "slug": video.slug,
-                    "day": views[0],
-                    "month": views[1],
-                    "year": views[2],
-                    "since_created": views[3]}
+                "title": video.title,
+                "slug": video.slug,
+                **get_all_views_count(video.id)
+            }
             # the content contains the expected data
             self.assertIn(json.dumps(data), response.content.decode("utf-8"))
         # the content contains the expected data

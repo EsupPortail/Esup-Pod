@@ -32,6 +32,8 @@ from pod.video.views import video_count, video_version
 from pod.video.views import video_oembed
 from pod.video.views import stats_view
 from pod.video.views import get_comments, add_comment, delete_comment, vote
+from pod.video.views import get_categories, add_category
+from pod.video.views import edit_category, delete_category
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 from pod.main.views import contact_us, download_file, user_autocomplete,\
     maintenance
@@ -221,6 +223,7 @@ if getattr(settings, "USE_STATS_VIEW", False):
         url(r'^video_stats_view/(?P<slug>[-\w]+)/(?P<slug_t>[-\w]+)/$',
             stats_view, name='video_stats_view'),
     ]
+
 # COMMENT and VOTE
 if getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
     urlpatterns += [
@@ -238,6 +241,27 @@ if getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
         url(r'^comment/vote/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
             vote, name='add_vote'),
     ]
+
+# VIDEO CATEGORY
+if getattr(settings, "USER_VIDEO_CATEGORY", False):
+    urlpatterns += [
+        url(r'^my_videos/categories/add/$',
+            add_category,
+            name='add_category'),
+        url(r'^my_videos/categories/edit/(?P<c_slug>[\-\d\w]+)/$',
+            edit_category,
+            name='edit_category'),
+        url(r'^my_videos/categories/delete/(?P<c_id>[\d]+)/$',
+            delete_category,
+            name='delete_category'),
+        url(r'^my_videos/categories/(?P<c_slug>[\-\d\w]+)/$',
+            get_categories,
+            name='get_category'),
+        url(r'^my_videos/categories/$',
+            get_categories,
+            name='get_categories'),
+    ]
+
 
 # CHANNELS
 urlpatterns += [

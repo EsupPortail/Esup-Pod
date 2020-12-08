@@ -4,6 +4,8 @@ from pod.video.models import Video
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
 
+import threading
+
 TEST_SETTINGS = getattr(
     settings, 'TEST_SETTINGS', False)
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
@@ -15,10 +17,17 @@ ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 def update_video_index(sender, instance=None, created=False, **kwargs):
     if TEST_SETTINGS or ES_URL is None:
         return
-    if instance.is_draft is False and instance.encoding_in_progress is False:
-        index_es(instance)
+    t = threading.Thread(target=index_video,
+                         args=[instance])
+    t.setDaemon(True)
+    t.start()
+
+
+def index_video(video):
+    if video.is_draft is False and video.encoding_in_progress is False:
+        index_es(video)
     else:
-        delete_es(instance)
+        delete_es(video)
 
 
 @receiver(post_delete, sender=Video)

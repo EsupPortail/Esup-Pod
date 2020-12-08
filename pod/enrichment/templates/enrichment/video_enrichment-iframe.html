@@ -63,8 +63,9 @@ player.ready(function() {
             });
         } else {
             for (i = 0; i < metadataTrack.cues.length; i++) {
-                data = JSON.parse(metadataTrack.cues[i].text);
-                console.log('Parsed '+data.title)
+                // Replace tabs by spaces to prevent a "JSON.parse: bad control character in string literal" error.
+                data = JSON.parse(metadataTrack.cues[i].text.replace(/\t/g, ' '));
+                //console.log('Parsed '+data.title)
                 slide.push({
                     title: data.title,
                     url: data.url,
@@ -76,7 +77,7 @@ player.ready(function() {
             }
         }
         if (typeof player.slides === "function") {
-            console.log('Call player.slides');
+            //console.log('Call player.slides');
             player.slides(slide);
         }
 

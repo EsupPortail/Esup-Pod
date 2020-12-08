@@ -13,7 +13,7 @@ from .models import Theme
 from .models import Type
 from .models import Discipline
 from .models import Notes, AdvancedNotes, NoteComments
-from .encode import start_encode
+from . import encode
 from .models import get_storage_path_video
 from .models import EncodingVideo, EncodingAudio, PlaylistVideo
 from django.contrib.sites.models import Site
@@ -48,7 +48,7 @@ TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 
 ENCODE_VIDEO = getattr(settings,
                        'ENCODE_VIDEO',
-                       start_encode)
+                       'start_encode')
 
 USE_OBSOLESCENCE = getattr(
     settings, "USE_OBSOLESCENCE", False)
@@ -296,7 +296,8 @@ class FileSizeValidator(object):
 def launch_encode(sender, instance, created, **kwargs):
     if hasattr(instance, 'launch_encode') and instance.launch_encode is True:
         instance.launch_encode = False
-        ENCODE_VIDEO(instance.id)
+        method_to_call = getattr(encode, ENCODE_VIDEO)
+        method_to_call(instance.id)
 
 
 class VideoForm(forms.ModelForm):

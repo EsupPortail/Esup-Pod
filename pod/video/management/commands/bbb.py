@@ -505,29 +505,15 @@ def get_recording(recording, internal_meeting_id,
 
         # We only process the correct recording,
         # set by the internal_meeting_id
+        print_if_debug(internalMeetingID + " -- " + internal_meeting_id)
         if internalMeetingID == internal_meeting_id:
             # Check if the meeting already exists in Pod database
             oMeeting = Meeting.objects.filter(
                 internal_meeting_id=internal_meeting_id).first()
             if oMeeting:
-                recording_url = ""
-                for playback in recording.getElementsByTagName("playback"):
-                    # Recording URL corresponds to the BBB presentation URL
-                    recording_url = playback.getElementsByTagName(
-                        "url")[0].firstChild.data
-                    # We take the first thumbnail found
-                    thumbnail_url = playback.getElementsByTagName(
-                        "image")[0].firstChild.data
-
-                if recording_url != "":
-                    print_if_debug("   + The recording was found. "
-                                   "internal_meeting_id : "
-                                   + internal_meeting_id + ". "
-                                   "recording_url : " + recording_url)
-                    oMeeting.recording_available = True
-                    oMeeting.recording_url = recording_url
-                    oMeeting.thumbnail_url = thumbnail_url
-                    oMeeting.save()
+                get_and_save_recording_url(recording, internal_meeting_id,
+                                           oMeeting, html_message_error,
+                                           message_error)
             else:
                 # Meeting was certainly deleted in Pod database
                 print_if_debug("   + WARNING : It seems that this "
@@ -536,6 +522,51 @@ def get_recording(recording, internal_meeting_id,
 
     except Exception as e:
         err = "Problem to get BBB recording "\
+            " : " + str(e) + ". "\
+            "" + traceback.format_exc()
+        message_error += err + "\n"
+        html_message_error += "<li>" + err + "</li>"
+        print_if_debug(err)
+        return html_message_error, message_error
+
+    return html_message_error, message_error
+
+
+def get_and_save_recording_url(recording, internal_meeting_id,
+                               oMeeting, html_message_error, message_error):
+    try:
+        # Get recording URL that corresponds to the presentation URL
+        # Save this information, if found, in database
+        # Take only the "presentation" format
+        # Not other format like "screenshare" or "podcast"
+        recording_url = ""
+        # Check playback data
+        for playback in recording.getElementsByTagName("playback"):
+            # Depends on BBB parameters, we can have multiple format
+            for format in playback.getElementsByTagName("format"):
+                type = format.getElementsByTagName(
+                    "type")[0].firstChild.data
+                # For bbb-recorder, we need URL of presentation format
+                if type == "presentation":
+                    # Recording URL is the BBB presentation URL
+                    recording_url = format.getElementsByTagName(
+                        "url")[0].firstChild.data
+                    # We take the first thumbnail found
+                    thumbnail_url = playback.getElementsByTagName(
+                        "image")[0].firstChild.data
+
+        if recording_url != "":
+            print_if_debug("   + The recording was found. "
+                           "internal_meeting_id : "
+                           + internal_meeting_id + ". "
+                           "recording_url : " + recording_url)
+            oMeeting.recording_available = True
+            oMeeting.recording_url = recording_url
+            oMeeting.thumbnail_url = thumbnail_url
+            oMeeting.save()
+
+    except Exception as e:
+        err = "Problem to get BBB recording url "\
             "and save in Pod database : " + str(e) + ". "\
             "" + traceback.format_exc()
         message_error += err + "\n"
