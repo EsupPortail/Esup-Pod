@@ -2,8 +2,6 @@ from django.conf import settings
 from django.test import TestCase
 from django.core.files.temp import NamedTemporaryFile
 from django.contrib.auth.models import User
-
-
 from pod.video.models import Video, Type
 from pod.video import encode
 from pod.video.models import EncodingVideo
@@ -19,6 +17,9 @@ VIDEO_TEST = getattr(
 
 AUDIO_TEST = getattr(
     settings, 'VIDEO_TEST', 'pod/main/static/video_test/pod.mp3')
+
+# Encode video
+ENCODE_VIDEO = getattr(settings, 'ENCODE_VIDEO', "start_encode")
 
 
 class EncodeTestCase(TestCase):
@@ -36,9 +37,9 @@ class EncodeTestCase(TestCase):
         shutil.copyfile(
             VIDEO_TEST, dest)
         print("\n ---> Start Encoding video")
-        encode.encode_video(video.id)
+        encode_video = getattr(encode, ENCODE_VIDEO)
+        encode_video(video.id)
         print("\n ---> End Encoding video")
-
         audio = Video.objects.create(
             title="Audio1", owner=user, video="test.mp3",
             type=Type.objects.get(id=1))
@@ -48,9 +49,8 @@ class EncodeTestCase(TestCase):
         shutil.copyfile(
             AUDIO_TEST, dest)
         print("\n ---> Start Encoding audio")
-        encode.encode_video(audio.id)
+        encode_video(audio.id)
         print("\n ---> End Encoding audio")
-
         print(" --->  SetUp of EncodeTestCase : OK !")
 
     def test_result_encoding_video(self):
