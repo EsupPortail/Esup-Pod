@@ -65,22 +65,21 @@
         {%endif%}
 		<div class="container container-pod">
 			<main class="mt-3">
-		        <nav aria-label="breadcrumb" class="breadcrumb d-flex justify-content-between p-0" id="mainbreadcrumb">
+		        <nav aria-label="{% trans 'Breadcrumb' %}" class="breadcrumb d-flex justify-content-between p-0" id="mainbreadcrumb">
 		          <ol class="breadcrumb p-1 pl-4 mb-0">
 		          	{% block breadcrumbs %}
 		                <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
 					{% endblock breadcrumbs %}
-					
 		          </ol>
 		          <div class="p-0">
                     {% block collapse_page_aside %}
-		            <a class="btn btn-primary btn-sm collapseAside" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" >
+		            <a class="btn btn-primary btn-sm collapseAside" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" aria-label="{% trans 'Toggle side Menu' %}">
 		              <i data-feather="corner-left-up"></i><i data-feather="menu"></i>
 		            </a>
                     {% endblock collapse_page_aside %}
 		          </div>
 		        </nav>
-				
+
 		        <div class="row">
 		        	<div class="col order-12 order-md-1">
 						<!-- contenu page statique -->
@@ -103,7 +102,7 @@
 		    </main>
 		</div> <!-- fin container -->
 		{% endblock content %}
-		<footer class="text-muted bg-dark pt-2 static-pod">
+		<footer class="bg-dark pt-2 static-pod">
 		{% include 'footer.html' %}
 		</footer>
 
@@ -112,7 +111,7 @@
         {% for message in messages %}
         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
           {{ message }}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <button type="button" class="close" data-dismiss="alert" aria-label="{% trans 'Close' %}">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>

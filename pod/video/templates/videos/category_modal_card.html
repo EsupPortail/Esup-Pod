@@ -1,0 +1,31 @@
+{% load i18n %}
+{% spaceless %}
+<div class="card modal_category_card mb-4 box-shadow border-secondary video-card"> <!-- the good one -->
+    <div class="card-header" style="">
+        <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted time">{{video.duration_in_time}}</small>
+            <span class="text-muted small">
+                {% if video.is_video %}
+                <span title="{% trans 'Video content.' %}" >
+                    <i data-feather="film"></i>
+                </span>
+                {% else %}
+                <span title="{% trans 'Audio content.' %}" >
+                    <i data-feather="radio"></i>
+                </span>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+    <div class="card-body">
+        <a class="link-center-pod" href="#" title="{{video.title}}">
+        {{video.get_thumbnail_card|safe}}
+        </a>
+    </div>
+    <div class="card-footer">
+	    <span class="video_title">
+	    {{ video.title }}
+	    </span>
+    </div>
+</div>
+{% endspaceless %}

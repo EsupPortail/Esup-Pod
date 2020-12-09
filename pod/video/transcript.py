@@ -59,10 +59,10 @@ log = logging.getLogger(__name__)
 TO TEST IN THE SHELL -->
 from pod.video.transcript import *
 ds_model = get_model("fr")
-msg, webvtt = main_transcript(
-    "/usr/local/django_projects/test/audio_192k_pod.mp3",
-    177,
-    ds_model
+msg, webvtt, all_text = main_transcript(
+    "/test/audio_192k_pod.mp3", # file
+    177, # file duration
+    ds_model # model deepspeech loaded
 )
 print(webvtt)
 """

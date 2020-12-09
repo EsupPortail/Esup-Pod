@@ -27,12 +27,14 @@
   <script src="{% static 'js/playlist.js' %}"></script>
 {% endif %}
 {% if video.overview %}
-<link href="{% static 'css/videojs-vtt-thumbnails.css' %}" rel="stylesheet">
-<script src="{% static 'js/videojs-vtt-thumbnails.min.js' %}"></script>
+  <link href="{% static 'css/videojs-vtt-thumbnails.css' %}" rel="stylesheet">
+  <script src="{% static 'js/videojs-vtt-thumbnails.min.js' %}"></script>
 {% endif %}
 {% if video.is_360 %}
-<link href="{% static 'videojs-vr/videojs-vr.css' %}" rel="stylesheet">
-<script src="{% static 'videojs-vr/videojs-vr.min.js' %}"></script>
+  <link href="{% static 'videojs-vr/videojs-vr.css' %}" rel="stylesheet">
+  <script src="{% static 'videojs-vr/videojs-vr.min.js' %}"></script>
 {% endif %}
+
+<link href="{% static 'css/videojs-controlbar.css' %}" rel="stylesheet">
 
 <script src="{% static 'js/videojs-logo-controlbar.js' %}"></script>

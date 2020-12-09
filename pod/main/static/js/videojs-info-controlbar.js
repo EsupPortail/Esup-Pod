@@ -14,7 +14,7 @@
             };
 
         /*
-         * Chapter menu button
+         * Info menu button
          */
         var MenuButton = videojs.getComponent('Button');
 
@@ -25,11 +25,6 @@
                 this.el().setAttribute('aria-label', 'Info');
                 videojs.dom.addClass(this.el(), 'vjs-info-button');
                 this.controlText('Information');
-                //this.el().parent.style.color="white";
-                this.el().setAttribute(
-                    "style", 
-                    "color:white; stroke:white; background-image: url(/static/feather-icons/icons/info.svg); background-repeat: no-repeat; background-position: center; "
-                    ); 
             }
         });
         InfoMenuButton.prototype.handleClick = function(event){

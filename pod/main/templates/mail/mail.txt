@@ -1,7 +1,7 @@
 {% load i18n %}
 {% trans "Hello" %},\n\n
-{% trans "The user" %} {{ name }} ({{email}}) {% trans "send a message from" %} **{{TITLE_SITE}}**\n\n
-{% trans "Here is the message sent" %} :\n\n
+{% trans "The user" %} {{ name }} ({{email}}) {% trans "sends a message from" %} **{{TITLE_SITE}}**\n\n
+{% trans "Here is the message sent:" %}\n\n
 {{message}}\n\n
-{% trans "Referrer page" %} : {{url_referrer}}\n\n
+{% trans "Referrer page:" %} {{url_referrer}}\n\n
 {% trans "Regards" %}.\n\n

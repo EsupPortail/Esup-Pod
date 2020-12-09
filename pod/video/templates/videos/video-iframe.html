@@ -67,6 +67,19 @@
             border: 1px solid black !important;
             color: black !important;
         }
+
+        /* Info button with current color */
+        .video-js .vjs-info-button{
+            background-color:#FFF;
+            mask: url("{% static 'feather-icons/icons/info.svg' %}") no-repeat 50% 50%;
+            -webkit-mask: url("{% static 'feather-icons/icons/info.svg' %}") no-repeat 50% 50%;
+        }
+        .video-js .vjs-info-button:hover,
+        .video-js .vjs-info-button:active,
+        .video-js .vjs-info-button:focus{
+            background-color:#FFF9;
+        }
+
     </style>
 
 </head>

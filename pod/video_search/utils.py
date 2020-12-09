@@ -8,13 +8,19 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+DEBUG = getattr(
+    settings, 'DEBUG', False)
+
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
 ES_INDEX = getattr(settings, 'ES_INDEX', 'pod')
+ES_TIMEOUT = getattr(settings, 'ES_TIMEOUT', 30)
+ES_MAX_RETRIES = getattr(settings, 'ES_MAX_RETRIES', 10)
 
 
 def index_es(video):
     translation.activate(settings.LANGUAGE_CODE)
-    es = Elasticsearch(ES_URL)
+    es = Elasticsearch(ES_URL, timeout=ES_TIMEOUT, max_retries=ES_MAX_RETRIES,
+                       retry_on_timeout=True)
     if es.ping():
         try:
             data = video.get_json_to_index()
@@ -22,30 +28,34 @@ def index_es(video):
                 res = es.index(index=ES_INDEX,
                                doc_type='pod', id=video.id,
                                body=data, refresh=True)
-                logger.info(res)
+                if DEBUG:
+                    logger.info(res)
                 return res
         except TransportError as e:
             logger.error("An error occured during index creation: %s-%s : %s" %
-                         (e.status_code, e.error, e.info['error']['reason']))
+                         (e.status_code, e.error, e.info))
     translation.deactivate()
 
 
 def delete_es(video):
-    es = Elasticsearch(ES_URL)
+    es = Elasticsearch(ES_URL, timeout=ES_TIMEOUT, max_retries=ES_MAX_RETRIES,
+                       retry_on_timeout=True)
     if es.ping():
         try:
             delete = es.delete(
                 index=ES_INDEX, doc_type='pod',
                 id=video.id, refresh=True, ignore=[400, 404])
-            logger.info(delete)
+            if DEBUG:
+                logger.info(delete)
             return delete
         except TransportError as e:
             logger.error("An error occured during delete video : %s-%s : %s" %
-                         (e.status_code, e.error, e.info['error']['reason']))
+                         (e.status_code, e.error, e.info))
 
 
 def create_index_es():
-    es = Elasticsearch(ES_URL)
+    es = Elasticsearch(ES_URL, timeout=ES_TIMEOUT, max_retries=ES_MAX_RETRIES,
+                       retry_on_timeout=True)
     json_data = open('pod/video_search/search_template.json')
     es_template = json.load(json_data)
     try:
@@ -64,7 +74,8 @@ def create_index_es():
 
 
 def delete_index_es():
-    es = Elasticsearch(ES_URL)
+    es = Elasticsearch(ES_URL, timeout=ES_TIMEOUT, max_retries=ES_MAX_RETRIES,
+                       retry_on_timeout=True)
     try:
         delete = es.indices.delete(index=ES_INDEX)
         logger.info(delete)
