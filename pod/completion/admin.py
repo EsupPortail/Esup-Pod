@@ -30,6 +30,7 @@ class ContributorAdmin(admin.ModelAdmin):
     list_display_links = ('name',)
     list_filter = ('role',)
     search_fields = ['id', 'name', 'role', 'video__title']
+    autocomplete_fields = ['video']
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "video":
@@ -71,6 +72,7 @@ class DocumentAdmin(admin.ModelAdmin):
     list_display = ('document', 'video',)
     list_display_links = ('document',)
     search_fields = ['id', 'document__name', 'video__title']
+    autocomplete_fields = ['video']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -120,6 +122,7 @@ class TrackAdmin(admin.ModelAdmin):
     list_display_links = ('src',)
     list_filter = ('kind',)
     search_fields = ['id', 'src__name', 'kind', 'video__title']
+    autocomplete_fields = ['video']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -168,6 +171,7 @@ class OverlayAdmin(admin.ModelAdmin):
     list_display = ('title', 'video',)
     list_display_links = ('title',)
     search_fields = ['id', 'title', 'video__title']
+    autocomplete_fields = ['video']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

@@ -2,9 +2,14 @@
   height: 35px;
 }
 
-.select2-container{
+/*.select2-container{
   position: static !important;
   height:auto;
+}*/
+
+.select2-dropdown{
+  z-index: 0 !important;
+
 }
 
 tr ,.rowl{

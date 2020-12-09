@@ -15,6 +15,7 @@ class UserFolderAdmin(admin.ModelAdmin):
     list_filter = (('owner', admin.RelatedOnlyFieldListFilter),)
     ordering = ('name', 'owner',)
     search_fields = ['id', 'name', 'owner__username']
+    autocomplete_fields = ['owner', 'users']
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "owner":
@@ -47,6 +48,7 @@ class CustomImageModelAdmin(admin.ModelAdmin):
     ordering = ('created_by', 'name', )
     readonly_fields = ('file_size', 'file_type',)
     search_fields = ['id', 'name', 'created_by__username']
+    autocomplete_fields = ['folder', 'created_by']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -76,6 +78,7 @@ class CustomFileModelAdmin(admin.ModelAdmin):
     ordering = ('created_by', 'name', )
     readonly_fields = ('file_size', 'file_type',)
     search_fields = ['id', 'name', 'created_by__username']
+    autocomplete_fields = ['folder', 'created_by']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

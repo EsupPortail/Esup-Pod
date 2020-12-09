@@ -9,6 +9,7 @@ class ChapterAdmin(admin.ModelAdmin):
     list_display = ('title', 'video',)
     list_display_links = ('title',)
     search_fields = ['id', 'title', 'video__title']
+    autocomplete_fields = ["video"]
 
     class Media:
         css = {

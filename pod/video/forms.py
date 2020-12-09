@@ -268,6 +268,13 @@ class ChannelWidget(s2forms.ModelSelect2Widget):
     ]
 
 
+class DisciplineWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "title__icontains",
+    ]
+
+
+
 
 @deconstructible
 class FileSizeValidator(object):
@@ -574,7 +581,9 @@ class VideoForm(forms.ModelForm):
             # 'date_added': widgets.AdminSplitDateTime,
             'date_evt': widgets.AdminDateWidget,
             'owner': OwnerWidget,
-            'channel': ChannelWidget
+            'additional_owners': OwnerWidget,
+            'channel': ChannelWidget,
+            'discipline': DisciplineWidget
         }
         initial = {
             'date_added': TODAY,
