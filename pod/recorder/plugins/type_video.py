@@ -6,7 +6,7 @@ import os
 
 from django.conf import settings
 from pod.video.models import Video, get_storage_path_video
-from pod.video.encode import start_encode
+from pod.video import encode
 
 DEFAULT_RECORDER_TYPE_ID = getattr(
     settings, 'DEFAULT_RECORDER_TYPE_ID',
@@ -14,7 +14,7 @@ DEFAULT_RECORDER_TYPE_ID = getattr(
 )
 ENCODE_VIDEO = getattr(settings,
                        'ENCODE_VIDEO',
-                       start_encode)
+                       "start_encode")
 log = logging.getLogger(__name__)
 
 
@@ -77,4 +77,6 @@ def encode_recording(recording):
     # Désactiver les commentaires
     video.disable_comment = recorder.disable_comment
     video.save()
-    ENCODE_VIDEO(video.id)
+
+    encode_video = getattr(encode, ENCODE_VIDEO)
+    encode_video(video.id)

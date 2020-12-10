@@ -706,9 +706,11 @@ class Video(models.Model):
 
     @property
     def encoded(self):
-        return ((self.get_playlist_master() is not None) and
-                (self.get_video_mp4() is not None or
-                 self.get_video_mp3() is not None))
+        return (
+            self.get_playlist_master() is not None or
+            self.get_video_mp4() is not None or
+            self.get_video_m4a() is not None)
+
     encoded.fget.short_description = _('Is the video encoded ?')
 
     @property
