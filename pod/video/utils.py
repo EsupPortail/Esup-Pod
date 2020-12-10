@@ -32,7 +32,8 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     }
 )
 
-TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
+TITLE_SITE = TEMPLATE_VISIBLE_SETTINGS['TITLE_SITE'] if (
+    TEMPLATE_VISIBLE_SETTINGS.get('TITLE_SITE')) else 'Pod'
 
 DEFAULT_FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@univ.fr')
 
@@ -119,7 +120,7 @@ def send_email_transcript(video_to_encode):
         }
     )
     message = "%s\n%s\n\n%s\n%s\n%s\n" % (
-        _("Hello"),
+        _("Hello,"),
         _(u"The content “%(content_title)s” has been automatically transcript"
             + ", and is now available on %(site_title)s.") % {
             'content_title': video_to_encode.title,
@@ -127,12 +128,12 @@ def send_email_transcript(video_to_encode):
         },
         _(u"You will find it here:"),
         content_url,
-        _("Regards")
+        _("Regards.")
     )
-    full_message = message + "\n%s:%s\n%s:%s" % (
-        _("Post by"),
+    full_message = message + "\n%s%s\n%s%s" % (
+        _("Post by:"),
         video_to_encode.owner,
-        _("the"),
+        _("the:"),
         video_to_encode.date_added
     )
     from_email = DEFAULT_FROM_EMAIL
@@ -142,7 +143,7 @@ def send_email_transcript(video_to_encode):
 
     html_message = '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
                 </p><p>%s</p>' % (
-        _("Hello"),
+        _("Hello,"),
         _(u"The content “%(content_title)s” has been automatically transcript"
             + ", and is now available on %(site_title)s.") % {
             'content_title': '<b>%s</b>' % video_to_encode.title,
@@ -151,12 +152,12 @@ def send_email_transcript(video_to_encode):
         _(u"You will find it here:"),
         content_url,
         content_url,
-        _("Regards")
+        _("Regards.")
     )
-    full_html_message = html_message + "<br/>%s:%s<br/>%s:%s" % (
-        _("Post by"),
+    full_html_message = html_message + "<br/>%s%s<br/>%s%s" % (
+        _("Post by:"),
         video_to_encode.owner,
-        _("the"),
+        _("the:"),
         video_to_encode.date_added
     )
 
@@ -207,20 +208,20 @@ def send_email_encoding(video_to_encode):
         }
     )
     message = "%s\n%s\n\n%s\n%s\n%s\n" % (
-        _("Hello"),
-        _(u"The content “%(content_title)s” has been encoded to Web "
+        _("Hello,"),
+        _(u"The video “%(content_title)s” has been encoded to Web "
             + "formats, and is now available on %(site_title)s.") % {
             'content_title': video_to_encode.title,
             'site_title': TITLE_SITE
         },
         _(u"You will find it here:"),
         content_url,
-        _("Regards")
+        _("Regards.")
     )
-    full_message = message + "\n%s:%s\n%s:%s" % (
-        _("Post by"),
+    full_message = message + "\n%s%s\n%s%s" % (
+        _("Post by:"),
         video_to_encode.owner,
-        _("the"),
+        _("the:"),
         video_to_encode.date_added
     )
     from_email = DEFAULT_FROM_EMAIL
@@ -230,8 +231,8 @@ def send_email_encoding(video_to_encode):
 
     html_message = '<p>%s</p><p>%s</p><p>%s<br><a href="%s"><i>%s</i></a>\
                 </p><p>%s</p>' % (
-        _("Hello"),
-        _(u"The content “%(content_title)s” has been encoded to Web "
+        _("Hello,"),
+        _(u"The video “%(content_title)s” has been encoded to Web "
             + "formats, and is now available on %(site_title)s.") % {
             'content_title': '<b>%s</b>' % video_to_encode.title,
             'site_title': TITLE_SITE
@@ -239,12 +240,12 @@ def send_email_encoding(video_to_encode):
         _(u"You will find it here:"),
         content_url,
         content_url,
-        _("Regards")
+        _("Regards.")
     )
-    full_html_message = html_message + "<br/>%s:%s<br/>%s:%s" % (
-        _("Post by"),
+    full_html_message = html_message + "<br/>%s%s<br/>%s%s" % (
+        _("Post by:"),
         video_to_encode.owner,
-        _("the"),
+        _("the:"),
         video_to_encode.date_added
     )
 

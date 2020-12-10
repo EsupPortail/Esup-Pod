@@ -37,7 +37,7 @@
         <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
         {% if video.owner.owner.userpicture.file %}
         {% thumbnail video.owner.owner.userpicture.file "x50" as im %}
-            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}">
+            <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{ video.owner.get_full_name }}">
         {% endthumbnail %}
         {% endif %}
         {{ video.owner.get_full_name }}</a>

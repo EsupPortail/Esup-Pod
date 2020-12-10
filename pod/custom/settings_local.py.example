@@ -449,19 +449,20 @@ ENCODING_M4A = "%(ffmpeg)s -i %(source)s %(misc_params)s -c:a aac -b:a %(audio_b
 ENCODE_MP3_CMD = "%(ffmpeg)s -i %(source)s %(misc_params)s -vn -b:a %(audio_bitrate)s -vn -f mp3 -threads %(nb_threads)s \"%(output_dir)s/audio_%(audio_bitrate)s.mp3\""
 
 """
-# Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à True) à la fin de l'encodage
+# Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à False) à la fin de l'encodage
 """
 EMAIL_ON_ENCODING_COMPLETION = True
 
 """
 # Répertoire temporaire pour la création des thumbnails
 """
-FILE_UPLOAD_TEMP_DIR = "/tmp"
+FILE_UPLOAD_TEMP_DIR = "/tmp" # déjà défini au dessus
 
 """
 # Utilisation de Celery pour la gestion des taches d'encodage
 """
 CELERY_TO_ENCODE = False
+CELERY_BROKER_URL = "amqp://pod:xxx@localhost/rabbitpod"
 
 # Configuration flux RSS
 
@@ -474,18 +475,6 @@ DEFAULT_DC_COVERAGE = TITLE_ETB + " - Town - Country"
 # droit par défaut affichés dans le flux RSS si non renseigné
 """
 DEFAULT_DC_RIGHTS = "BY-NC-SA"
-
-# Configuration autotranscription
-
-"""
-# Utilisation de la transcription automatique
-"""
-USE_TRANSCRIPTION = False
-
-"""
-# Paramétrage de l'autotranscription (voir cette page pour configurer)
-"""
-DS_PARAM = {}
 
 # Configuration application vidéo
 
@@ -563,8 +552,18 @@ VIDEOS_DIR = "videos"
 
 """
 # Fonction appelée pour lancer l'encodage des vidéos
+# Pour l'encodage distant, il faut préciser "start_remote_encode"
 """
 ENCODE_VIDEO = "start_encode"
+
+"""
+# pourl'encodage distant, il faut préciser le login, l'host et la clé pour appeler cet encodage
+# REMOTE ENCODING SETTINGS
+# SSH_REMOTE_USER = ""
+# SSH_REMOTE_HOST = "xxx.univ.fr"
+# SSH_REMOTE_KEY = "/home/pod/.ssh/id_rsa"
+"""
+
 
 """
 # Extension autorisée pour le téléversement sur la plateforme
@@ -946,4 +945,69 @@ BBB_SECRET_KEY = 'abcdef'
 # Type de vidéo générée par défaut
 """
 DEFAULT_BBB_TYPE_ID = 1
+
+"""
+# Format du nom d'utilisateur dans BBB.
+# Valeurs possibles : 'first_name last_name', 'last_name first_name'
+# Exemple1 : si dans le serveur BBB, vous avez un utilisateur au format 'John Doe', mettez 'first_name last_name'
+# Exemple2 : si dans le serveur BBB, vous avez un utilisateur au format 'Doe John', mettez 'last_name first_name'
+"""
+BBB_USERNAME_FORMAT = 'first_name last_name'
+
+"""
+# Nombre de jours avant la suppression des sessions et des utilisateurs associés, non déjà publiés
+# Pour ne pas supprimer les anciennes sessions, utiliser la valeur 0
+"""
+BBB_NUMBER_DAYS_BEFORE_DELETE = 0
+
+"""
+#
+# Permet d'activer le fonctionnement de categorie au niveau de ses vidéos
+# Vous pouvez créer des catégories pour pouvoir ranger vos propres vidéos
+# Les catégories sont liées à l'utilisateur
+"""
+USER_VIDEO_CATEGORY = False
+
+"""
+# gestion de l'oboslesence des vidéos
+"""
+USE_OBSOLESCENCE = True
+
+WARN_DEADLINES = [60, 30, 7]
+
+POD_ARCHIVE_AFFILIATION = ['faculty',
+                           'staff',
+                           'employee',
+                           'affiliate',
+                           'alum',
+                           'library-walk-in',
+                           'researcher',
+                           'retired',
+                           'emeritus',
+                           'teacher',
+                           'registered-reader',
+                           'member']
+
+ACCOMMODATION_YEARS = {
+    'affiliate': 1
+}
+DEFAULT_YEAR_DATE_DELETE = 2
+
+"""
+# Configuration / Activtion du LTI
+# voir pod/main/settings.py L.224
+"""
+LTI_ENABLED = True # False par défaut
+
+"""
+# Configuration H5P
+# les videos interactive ne sont plus maintenu dans Pod
+"""
+H5P_ENABLED = True  # False
+H5P_DEV_MODE = 0
+H5P_URL = '/h5p/'
+H5P_SAVE = 30
+H5P_EXPORT = '/exports/'
+H5P_LANGUAGE = 'fr'
+BASE_URL = 'https://pod.univ.fr/'
 

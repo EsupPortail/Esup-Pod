@@ -114,15 +114,15 @@ body {
 {%endif%}
 {%endif%}
 {% if video.get_encoding_step == "" %}
-<p class="text-info">
+<div class="alert alert-warning" role="alert">
     {% trans "The video is currently waiting for encoding." %}
-</p>
+</div>
 {% endif %}
 
 {% if video.encoding_in_progress %}
-<p class="text-info">
+<div class="alert alert-warning" role="alert">
     {% trans "The video is currently being encoded." %}
-</p>
+</div>
 {% endif %}
 
 {% if video.get_encoding_step == "5 : transcripting audio" %}
@@ -149,7 +149,7 @@ body {
 <h1 class="pt-2">
 {% if video.licence %} {% include "videos/video_licencebox.html" %}{% endif %} {{video.title|capfirst}}
 {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
-  <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
+  <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans 'Report the video'%}" >
       <i data-feather="alert-octagon"></i>
   </a>
 </h1>
