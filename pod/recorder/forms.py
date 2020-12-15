@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.models import Site
 from .models import Recording, Recorder
 from pod.main.forms import add_placeholder_and_asterisk
+from django_select2 import forms as s2forms
 
 
 DEFAULT_RECORDER_PATH = getattr(
@@ -13,6 +14,21 @@ DEFAULT_RECORDER_PATH = getattr(
 )
 ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = getattr(
     settings, "ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER", True)
+
+
+class RecorderWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "name__icontains",
+    ]
+
+
+class UserWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+        "first_name___icontains",
+        "last_name__icontains"
+    ]
 
 
 def check_show_user(request):
@@ -61,6 +77,10 @@ class RecordingForm(forms.ModelForm):
     class Meta:
         model = Recording
         exclude = ('comment', 'date_added')
+        widgets = {
+            'recorder': RecorderWidget,
+            'user': UserWidget
+        }
 
     delete = forms.BooleanField(
         required=False,
