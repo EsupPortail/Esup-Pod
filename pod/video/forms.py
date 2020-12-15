@@ -274,8 +274,6 @@ class DisciplineWidget(s2forms.ModelSelect2Widget):
     ]
 
 
-
-
 @deconstructible
 class FileSizeValidator(object):
     message = _(

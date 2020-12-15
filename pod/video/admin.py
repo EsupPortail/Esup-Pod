@@ -114,7 +114,8 @@ class VideoAdmin(admin.ModelAdmin):
     list_filter = ('date_added', ('channel', admin.RelatedOnlyFieldListFilter),
                    ('type', admin.RelatedOnlyFieldListFilter), 'is_draft',
                    'encoding_in_progress', EncodedFilter)
-    autocomplete_fields = ['type', 'owner', 'additional_owners', 'discipline', 'channel', 'theme', 'restrict_access_to_groups']
+    autocomplete_fields = ['type', 'owner', 'additional_owners', 'discipline',
+                           'channel', 'theme', 'restrict_access_to_groups']
     # Ajout de l'attribut 'date_delete'
     if USE_OBSOLESCENCE:
         list_filter = list_filter + ("date_delete",)
@@ -550,7 +551,7 @@ class EncodingStepAdmin(admin.ModelAdmin):
 
 class NotesAdmin(admin.ModelAdmin):
     list_display = ('video', 'user')
-    autocomplete_fields = ['video','user']
+    autocomplete_fields = ['video', 'user']
 
     class Media:
         css = {
