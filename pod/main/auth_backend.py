@@ -4,9 +4,11 @@ from django.contrib.auth.models import User
 
 
 class SiteBackend(ModelBackend):
-    def authenticate(self, **credentials):
-        print("THIS WAY")
-        user_or_none = super(SiteBackend, self).authenticate(**credentials)
+
+    def authenticate(self, request, username=None, password=None):
+        user_or_none = super(SiteBackend, self).authenticate(
+            request, username, password)
+        print(user_or_none)
         site = Site.objects.get_current()
         if user_or_none and not user_or_none.is_superuser and \
                 (site not in user_or_none.owner.sites.all()):
@@ -14,7 +16,6 @@ class SiteBackend(ModelBackend):
         return user_or_none
 
     def get_user(self, user_id):
-        print("THIS WAY 2")
         try:
             site = Site.objects.get_current()
             user = User.objects.get(pk=user_id)

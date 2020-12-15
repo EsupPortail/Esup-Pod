@@ -76,8 +76,8 @@ MIDDLEWARE = [
 
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'pod.main.auth_backend.SiteBackend'
+    'pod.main.auth_backend.SiteBackend',
+
 )
 
 ##
@@ -244,7 +244,6 @@ for application in INSTALLED_APPS:
 #
 if 'USE_CAS' in globals() and eval('USE_CAS') is True:
     AUTHENTICATION_BACKENDS = (
-        'pod.main.auth_backend.SiteBackend',
         'cas.backends.CASBackend',
     )
     CAS_RESPONSE_CALLBACKS = (
