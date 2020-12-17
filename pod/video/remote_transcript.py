@@ -1,27 +1,15 @@
 from django.conf import settings
-from django.core.files import File
 
 import time
 import logging
-import threading
 import subprocess
 import shlex
 import os
-import json
-import re
 
-from .models import Video
+from .models import Video, EncodingLog
 
 from .utils import change_encoding_step, add_encoding_log, check_file
-from .utils import create_outputdir, send_email, send_email_encoding
-
-if getattr(settings, 'USE_PODFILE', False):
-    FILEPICKER = True
-    from pod.podfile.models import CustomImageModel
-    from pod.podfile.models import UserFolder
-else:
-    FILEPICKER = False
-    from pod.main.models import CustomImageModel
+from .utils import send_email
 
 log = logging.getLogger(__name__)
 
@@ -35,7 +23,6 @@ SSH_TRANSCRIPT_REMOTE_KEY = getattr(
     settings, 'SSH_TRANSCRIPT_REMOTE_KEY', "")
 SSH_TRANSCRIPT_REMOTE_CMD = getattr(
     settings, 'SSH_TRANSCRIPT_REMOTE_CMD', "")
-
 
 # ##########################################################################
 # REMOTE TRANSCRIPT VIDEO : MAIN FUNCTION
@@ -57,13 +44,13 @@ def remote_transcript_video(video_id):
     encoding_log.save()
 
     mp3file = video_to_encode.get_video_mp3(
-        ).source_file if video_to_encode.get_video_mp3() else None
+    ).source_file if video_to_encode.get_video_mp3() else None
 
     if mp3file and check_file(mp3file.path):
 
-        # launch remote encoding
+        # launch remote transcoding
         cmd = "{remote_cmd} \
-            -n encoding-{video_id} -i {video_input} \
+            -n transcoding-{video_id} -i {video_input} \
             -v {video_id} -u {user_hashkey} -d {debug}".format(
             remote_cmd=SSH_TRANSCRIPT_REMOTE_CMD,
             video_id=video_id,
@@ -72,14 +59,19 @@ def remote_transcript_video(video_id):
             debug=DEBUG
         )
 
-        key = " -i %s " % SSH_TRANSCRIPT_REMOTE_KEY if SSH_TRANSCRIPT_REMOTE_KEY != "" else ""
+        key = " -i %s " % SSH_TRANSCRIPT_REMOTE_KEY if (
+            SSH_TRANSCRIPT_REMOTE_KEY != "") else ""
 
         remote_cmd = "ssh {key} {user}@{host} \"{cmd}\"".format(
-            key=key, user=SSH_TRANSCRIPT_REMOTE_USER, host=SSH_TRANSCRIPT_REMOTE_HOST, cmd=cmd)
+            key=key,
+            user=SSH_TRANSCRIPT_REMOTE_USER,
+            host=SSH_TRANSCRIPT_REMOTE_HOST,
+            cmd=cmd)
 
         # launch remote encode
         change_encoding_step(video_id, 5, "process remote transcipt")
-        add_encoding_log(video_id, "process remote transcipt : %s" % remote_cmd)
+        add_encoding_log(
+            video_id, "process remote transcipt : %s" % remote_cmd)
         process_cmd(remote_cmd, video_id)
 
     else:
