@@ -1,6 +1,7 @@
 from django.conf import settings
 
 import time
+import json
 import logging
 import subprocess
 import shlex
@@ -9,7 +10,7 @@ import os
 from .models import Video, EncodingLog
 
 from .utils import change_encoding_step, add_encoding_log, check_file
-from .utils import send_email
+from .utils import send_email, create_outputdir
 
 log = logging.getLogger(__name__)
 
@@ -110,6 +111,29 @@ def process_cmd(remote_cmd, video_id):
         # raise OSError(e.errno, 'ffprobe not found: {}'.format(e.strerror)
         msg += 20*"////" + "\n"
         msg += "OS error: {0}\n".format(err)
+        add_encoding_log(video_id, msg)
+        change_encoding_step(video_id, -1, msg)
+        send_email(msg, video_id)
+
+
+def store_remote_transcripting_video(video_id):
+    #
+    msg = ""
+    video_to_encode = Video.objects.get(id=video_id)
+    output_dir = create_outputdir(video_id, video_to_encode.video.path)
+    info_video = {}
+
+    if check_file(output_dir + "/transcript.json"):
+        with open(output_dir + "/transcript.json") as json_file:
+            info_video = json.load(json_file)
+
+        if DEBUG:
+            print(output_dir)
+            print(json.dumps(info_video, indent=2))
+
+    else:
+        msg += "Wrong file or path : "\
+            + "\n%s" % video_to_encode.video.path
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
         send_email(msg, video_id)
