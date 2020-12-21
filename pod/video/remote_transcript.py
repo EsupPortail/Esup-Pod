@@ -6,11 +6,15 @@ import logging
 import subprocess
 import shlex
 import os
+import datetime as dt
+from datetime import timedelta
 
 from .models import Video, EncodingLog
 
 from .utils import change_encoding_step, add_encoding_log, check_file
 from .utils import send_email, create_outputdir
+
+from webvtt import WebVTT, Caption
 
 log = logging.getLogger(__name__)
 
@@ -24,6 +28,8 @@ SSH_TRANSCRIPT_REMOTE_KEY = getattr(
     settings, 'SSH_TRANSCRIPT_REMOTE_KEY', "")
 SSH_TRANSCRIPT_REMOTE_CMD = getattr(
     settings, 'SSH_TRANSCRIPT_REMOTE_CMD', "")
+
+SENTENCE_MAX_LENGTH = getattr(settings, 'SENTENCE_MAX_LENGTH', 3)
 
 # ##########################################################################
 # REMOTE TRANSCRIPT VIDEO : MAIN FUNCTION
@@ -55,7 +61,7 @@ def remote_transcript_video(video_id):
             -v {video_id} -u {user_hashkey} -d {debug}".format(
             remote_cmd=SSH_TRANSCRIPT_REMOTE_CMD,
             video_id=video_id,
-            video_input=os.path.basename(video_to_encode.video.name),
+            video_input=os.path.basename(mp3file.name),
             user_hashkey=video_to_encode.owner.owner.hashkey,
             debug=DEBUG
         )
@@ -131,9 +137,45 @@ def store_remote_transcripting_video(video_id):
             print(output_dir)
             print(json.dumps(info_video, indent=2))
 
+        webvtt = WebVTT()
+
+        words = info_video["transcripts"][0]["words"]
+        """
+        for transcript in info_video["transcripts"]:
+            for word in transcript["words"]:
+                words.append(word)
+        """
+        text_caption = []
+        start_caption = None
+        duration = 0
+        for word in words:
+            text_caption.append(word['word'])
+            if start_caption is None:
+                start_caption = word['start_time']
+            if duration + word['duration'] > SENTENCE_MAX_LENGTH:
+                caption = Caption(
+                    format_time_caption(start_caption),
+                    format_time_caption(
+                        start_caption + duration + word['duration']),
+                    " ".join(text_caption)
+                )
+                webvtt.captions.append(caption)
+                text_caption = []
+                start_caption = None
+                duration = 0
+            else:
+                duration += word['duration']
+        print(webvtt)
+
     else:
         msg += "Wrong file or path : "\
             + "\n%s" % video_to_encode.video.path
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
         send_email(msg, video_id)
+
+
+def format_time_caption(time_caption):
+    return (dt.datetime.utcfromtimestamp(0) +
+            timedelta(seconds=float(time_caption))
+            ).strftime('%H:%M:%S.%f')[:-3]

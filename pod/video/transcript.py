@@ -67,6 +67,20 @@ msg, webvtt, all_text = main_transcript(
 print(webvtt)
 """
 
+# ##########################################################################
+# ENCODE VIDEO: THREAD TO LAUNCH ENCODE
+# ##########################################################################
+
+
+def start_remote_transcript(video_id):
+    # load module here to prevent circular import
+    from .remote_transcript import remote_transcript_video
+    log.info("START ENCODE VIDEO ID %s" % video_id)
+    t = threading.Thread(target=remote_transcript_video,
+                         args=[video_id])
+    t.setDaemon(True)
+    t.start()
+
 
 def start_transcript(video_id):
     log.info("START TRANSCRIPT VIDEO %s" % video_id)
