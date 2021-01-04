@@ -44,6 +44,8 @@ SSH_REMOTE_HOST = getattr(
     settings, 'SSH_REMOTE_HOST', "")
 SSH_REMOTE_KEY = getattr(
     settings, 'SSH_REMOTE_KEY', "")
+SSH_REMOTE_CMD = getattr(
+    settings, 'SSH_REMOTE_CMD', "")
 
 
 # ##########################################################################
@@ -91,11 +93,12 @@ def remote_encode_video(video_id):
             f.write("%s\n" % start)
 
         # launch remote encoding
-        cmd = "./pod-encoding/submit.sh \
+        cmd = "{remote_cmd} \
             -n encoding-{video_id} -i {video_input} \
             -v {video_id} -u {user_hashkey} -d {debug}".format(
+            remote_cmd=SSH_REMOTE_CMD,
             video_id=video_id,
-            video_input=video_to_encode.video,
+            video_input=os.path.basename(video_to_encode.video.name),
             user_hashkey=video_to_encode.owner.owner.hashkey,
             debug=DEBUG
         )

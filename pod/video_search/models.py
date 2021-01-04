@@ -34,4 +34,8 @@ def index_video(video):
 def delete_video_index(sender, instance=None, created=False, **kwargs):
     if TEST_SETTINGS or ES_URL is None:
         return
-    delete_es(instance)
+    # delete_es(instance)
+    t = threading.Thread(target=delete_es,
+                         args=[instance])
+    t.setDaemon(True)
+    t.start()

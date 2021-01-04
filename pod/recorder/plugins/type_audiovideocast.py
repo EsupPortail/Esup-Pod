@@ -11,7 +11,7 @@ from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.core.files.base import ContentFile
 from pod.video.models import Video
-from pod.video.encode import start_encode
+from pod.video import encode
 from pod.enrichment.models import Enrichment
 from ..models import Recording
 
@@ -22,7 +22,7 @@ DEFAULT_RECORDER_TYPE_ID = getattr(
 
 ENCODE_VIDEO = getattr(settings,
                        'ENCODE_VIDEO',
-                       start_encode)
+                       "start_encode")
 
 RECORDER_SKIP_FIRST_IMAGE = getattr(settings,
                                     'RECORDER_SKIP_FIRST_IMAGE',
@@ -100,7 +100,8 @@ def save_video(recording, video_data, video_src):
     # Désactiver les commentaires
     video.disable_comment = recorder.disable_comment
     video.save()
-    ENCODE_VIDEO(video.id)
+    encode_video = getattr(encode, ENCODE_VIDEO)
+    encode_video(video.id)
     return video
 
 
