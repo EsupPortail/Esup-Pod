@@ -255,7 +255,14 @@ THEME_FORM_FIELDS_HELP_TEXT = getattr(
     ]))
 
 
-class OwnerWidget(s2forms.ModelSelect2MultipleWidget):
+class OwnerWidget(s2forms.ModelSelect2Widget):
+    search_fields = [
+        "username__icontains",
+        "email__icontains",
+    ]
+
+
+class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
     search_fields = [
         "username__icontains",
         "email__icontains",
@@ -579,7 +586,7 @@ class VideoForm(forms.ModelForm):
             # 'date_added': widgets.AdminSplitDateTime,
             'date_evt': widgets.AdminDateWidget,
             'owner': OwnerWidget,
-            'additional_owners': OwnerWidget,
+            'additional_owners': AddOwnerWidget,
             'channel': ChannelWidget,
             'discipline': DisciplineWidget
         }
