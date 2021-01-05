@@ -255,7 +255,7 @@ THEME_FORM_FIELDS_HELP_TEXT = getattr(
     ]))
 
 
-class OwnerWidget(s2forms.ModelSelect2Widget):
+class OwnerWidget(s2forms.ModelSelect2MultipleWidget):
     search_fields = [
         "username__icontains",
         "email__icontains",
@@ -268,7 +268,7 @@ class ChannelWidget(s2forms.ModelSelect2Widget):
     ]
 
 
-class DisciplineWidget(s2forms.ModelSelect2Widget):
+class DisciplineWidget(s2forms.ModelSelect2MultipleWidget):
     search_fields = [
         "title__icontains",
     ]
