@@ -345,6 +345,10 @@ class VideoTestCase(TestCase):
 
         filter_en = Video.objects.filter(
             encoding_in_progress=False, is_draft=False)
+        print("===== VIDEOSS =====")
+        for vid in filter_en:
+            print(vid)
+            print(vid.thumbnail)
         filter_pass = filter_en.filter(
             Q(password='') | Q(password=None), is_restricted=False)
         self.assertEqual(bool(filter_pass.filter(password='toto')), False)
@@ -353,7 +357,6 @@ class VideoTestCase(TestCase):
         print('--->  test_last_Video_display of VideoTestCase: OK')
 
     def test_Video_null_attributs(self):
-        print("DEBUG DEV 1")
         video = Video.objects.get(id=1)
         self.assertEqual(video.video.name, "test.mp4")
         self.assertEqual(video.allow_downloading, False)
