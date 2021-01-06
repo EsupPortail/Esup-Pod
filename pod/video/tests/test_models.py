@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.contrib.contenttypes.models import ContentType
 
 from ..models import Channel
 from ..models import Theme
@@ -342,7 +343,7 @@ class VideoTestCase(TestCase):
         print(" --->  SetUp of VideoTestCase : OK !")
 
     def test_last_Video_display(self):
-
+        ContentType.objects.clear_cache()
         filter_en = Video.objects.filter(
             encoding_in_progress=False, is_draft=False)
         print("===== VIDEOSS =====")
