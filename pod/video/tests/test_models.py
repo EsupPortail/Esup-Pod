@@ -347,8 +347,8 @@ class VideoTestCase(TestCase):
             encoding_in_progress=False, is_draft=False)
         print("===== VIDEOSS =====")
         for vid in filter_en:
-            print(vid)
-            print(vid.thumbnail)
+            print(vid.id)
+            print(vid.thumbnail.id)
         filter_pass = filter_en.filter(
             Q(password='') | Q(password=None), is_restricted=False)
         self.assertEqual(bool(filter_pass.filter(password='toto')), False)
