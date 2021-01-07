@@ -1015,7 +1015,7 @@ H5P_LANGUAGE = 'fr'
 BASE_URL = 'https://pod.univ.fr/'
 
 """
-#Vous pouvez définir le drapeau SameSite sur tous les cookies
-#(même sur ceux provenant d'applications Django tierces)
+# Vous pouvez définir le drapeau SameSite sur tous les cookies
+# (même sur ceux provenant d'applications Django tierces)
 """
 SESSION_COOKIE_SAMESITE_FORCE_ALL = True
