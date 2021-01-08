@@ -34,7 +34,7 @@ from select2 import fields as select2_fields
 from sorl.thumbnail import get_thumbnail
 from pod.main.models import get_nextautoincrement
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
-from django.db.models import Q
+from django.db.models import Count, Q
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -1470,8 +1470,46 @@ class Comment(models.Model):
         verbose_name_plural = _("Comments")
 
     @property
-    def numberVote(self):
+    def number_vote(self):
         self.vote_set.all().count()
+
+    @property
+    def get_children(self):
+        all_c = Comment.objects.filter(
+            video=self.video
+        ).order_by('added').annotate(
+            nbr_vote=Count('vote')
+        )
+        return list(
+            map(
+                lambda c: {
+                    'id': c.id,
+                    'parent__id': c.parent.id if c.parent else None,
+                    'top_parent__id': c.top_parent_comment.id,
+                    'author__id': c.author.id,
+                    'author__first_name': c.author.first_name,
+                    'author__last_name': c.author.last_name,
+                    'content': c.content,
+                    'added': c.added,
+                    'nbr_vote': c.nbr_vote},
+                filter(
+                    lambda c: (
+                        c.id != self.id and
+                        c.top_parent_comment.id == self.id),
+                    all_c
+                )
+            )
+        )
+
+    @property
+    def top_parent_comment(self):
+        parent_c = self
+        while parent_c:
+            if not parent_c.parent:
+                break
+            parent_c = parent_c.parent
+
+        return parent_c
 
     def __str__(self):
         return self.content
