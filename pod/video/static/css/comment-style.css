@@ -31,13 +31,30 @@
 .comment_main h6
 {
     font-weight: 600;
-    color: var(--secondary) !important;
+    color: var(--padding-comment-content) !important;
     font-size: 16px;
 }
 .comment_main .icon
 {
-    width: 15px;
+    width: 18px;
 }
+.reply_to{
+    color: var(--secondary);
+    letter-spacing: 1.1px;
+    width: 200px;
+    max-width: 100%;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--content-third-color) !important;
+    margin-bottom: .8em;
+    margin-left: .8em;
+}
+.reply_author{
+    font-weight: 600;
+}
+.reply_content:{font-weight: 500;}
 .comment_main .icon.comment_vote_icon svg
 {
     -webkit-transform: translateY(-1px);
@@ -576,3 +593,17 @@
         padding-left: .8em;
     }
 }
+/* ***** scroll to comment background */
+.scroll_to{
+    animation-name: scrolltocomment;
+    animation-duration: 8s;
+    animation-fill-mode: forwards;
+}
+@keyframes scrolltocomment{
+    0% {
+        background-color: rgba(255, 234, 59);
+    }
+    100% {
+	 background-color: var(--third-background-color);
+    }
+ }
