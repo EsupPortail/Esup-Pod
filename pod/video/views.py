@@ -1690,12 +1690,17 @@ def add_comment(request, video_slug, comment_id=None):
     if request.method == "POST":
         c_video = get_object_or_404(Video, slug=video_slug)
         c_user = request.user
+        c_top_parent = get_object_or_404(
+            Comment, id=request.POST.get('top_parent'))if(
+                request.POST.get('top_parent')) else None
         c_parent = get_object_or_404(
             Comment, id=comment_id)if comment_id else None
         c_content = request.POST.get('content', '')
         c_date = request.POST.get('date_added', None)
         if c_content:
             c = Comment()
+            if c_top_parent:
+                c.top_parent = c_top_parent
             if c_parent:
                 c.parent = c_parent
             if c_date:
@@ -1718,31 +1723,30 @@ def add_comment(request, video_slug, comment_id=None):
 
 def get_comments(request, video_slug):
     v = get_object_or_404(Video, slug=video_slug)
-    comments = Comment.objects.filter(video=v).order_by('added').annotate(
-        nbr_vote=Count('vote'))
+
     # extract parent comments
-    p_c = comments.filter(parent=None).values(
-        'id',
-        'author__first_name',
-        'author__last_name',
-        'author__id',
-        'content',
-        'added',
-        'nbr_vote')
+    p_c = Comment.objects.filter(
+        video=v, parent=None).order_by('added').annotate(
+            nbr_vote=Count('vote'))
+
     # organize comments => parent with children
     comment_org = []
     for c in p_c:
-        filter_data = comments.filter(
-            parent__id=c['id']).values(
-            'id',
-            'author__first_name',
-            'author__last_name',
-            'author__id',
-            'content',
-            'added',
-            'nbr_vote')
+        children_comments = c.get_children
+        c = {
+            'id': c.id,
+            'parent__id': None,
+            'top_parent__id': None,
+            'author__first_name': c.author.first_name,
+            'author__last_name': c.author.last_name,
+            'author__id': c.author.id,
+            'content': c.content,
+            'added': c.added,
+            'nbr_vote': c.nbr_vote
+        }
         comment_org.append({
-            'parent_comment': c, 'children': list(filter_data)})
+            'parent_comment': c, 'children': children_comments})
+
     return HttpResponse(
         json.dumps(comment_org, cls=DjangoJSONEncoder),
         content_type="application/json")
