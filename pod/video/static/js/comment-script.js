@@ -1,4 +1,4 @@
-let base_url = window.location.href.replace("video", "comment");
+let base_url = window.location.href.replace("/video/", "/comment/");
 let base_vote_url = base_url.replace('comment', 'comment/vote');
 let base_delete_url = base_url.replace('comment', 'comment/del');
 let all_comment = null;
@@ -83,7 +83,7 @@ class ConfirmModal extends HTMLElement
             e.preventDefault();
             document.querySelector("#custom_element_confirm_modal .confirm_delete").classList.remove("show");
             ACTION_COMMENT.comment_to_delete = null;
-        })
+        });
         this.innerHTML = modal;
         this.querySelector(".actions").appendChild(delete_btn);
         this.querySelector(".actions").appendChild(cancel_btn);
@@ -121,22 +121,25 @@ class Comment extends HTMLElement
         comment.setAttribute("class", "comment");
         let comment_container = document.createElement("DIV");
         comment_container.setAttribute("class", "comment_container");
-        let comment_content = `
-            <div class="comment_content">
-                <div class="comment_content_header inline_flex_space">
-                    <h1 class="user_name">${owner}</h1>
-		    <comment-since since=${added_since.toISOString()}></comment-since>
-                </div>
-                <div class="comment_content_body">
-                    <p>${content}</p>
-                </div>
-                <div class="comment_content_footer">
-                    <div class="actions inline_flex_space"></div>
-                    <div class="form"></div>
-                </div>
+	let comment_content = document.createElement('div');
+	comment_content.setAttribute('class', 'comment_content');
+        comment_content.innerHTML = `
+            <div class="comment_content_header inline_flex_space">
+                <h1 class="user_name">${owner}</h1>
+		<comment-since since=${added_since.toISOString()}></comment-since>
+            </div>
+            <div class="comment_content_body">
+            </div>
+            <div class="comment_content_footer">
+                <div class="actions inline_flex_space"></div>
+                <div class="form" data-comment="${id}"></div>
             </div>
         `;
-        comment_container.innerHTML = comment_content;
+	comment_container.appendChild(comment_content);
+	if(is_parent)
+	    comment_container.querySelector('.comment_content_body').innerHTML = content;
+	else
+	    comment_container.querySelector('.comment_content_body').appendChild(content);
 	if(user_id)
 	{
             let svg_icon = `<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="comment" class="svg-inline--fa fa-comment fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 32C114.6 32 0 125.1 0 240c0 47.6 19.9 91.2 52.9 126.3C38 405.7 7 439.1 6.5 439.5c-6.6 7-8.4 17.2-4.6 26S14.4 480 24 480c61.5 0 110-25.7 139.1-46.3C192 442.8 223.2 448 256 448c141.4 0 256-93.1 256-208S397.4 32 256 32zm0 368c-26.7 0-53.1-4.1-78.4-12.1l-22.7-7.2-19.5 13.8c-14.3 10.1-33.9 21.4-57.5 29 7.3-12.1 14.4-25.7 19.9-40.2l10.6-28.1-20.6-21.8C69.7 314.1 48 282.2 48 240c0-88.2 93.3-160 208-160s208 71.8 208 160-93.3 160-208 160z"></path></svg>`;
@@ -166,7 +169,7 @@ class Comment extends HTMLElement
                     gettext("Delete"),
                     id
                 );
-                delete_action.addEventListener("click", ()=>
+                delete_action.addEventListener("click", () =>
                 {
                     // display confirm modal
                     document.querySelector("#custom_element_confirm_modal .confirm_delete").classList.add("show");
@@ -195,19 +198,19 @@ class Comment extends HTMLElement
                         child_container.classList.add("show");
                     if(this.value.trim() !== "")
                     {
-                        add_comment.parentElement.classList.toggle("show");
-                        add_child_comment( this );
                         let comment_parent = get_node(this, "comment_element", "comment_child" );
+                        add_comment.parentElement.classList.toggle("show");
                         if(!comment_parent.classList.contains("show"))
                             comment_parent.classList.add("show")
                         hide_show_child_comment_text(this)
+                        add_child_comment( this, child_container, comment_parent );
                         this.value = "";
                     }
                 }
             });
             comment_container.querySelector(".comment_content_footer .form").appendChild(add_comment);
 	}
-        if(is_parent)// child comment doesn't have an id
+        if(is_parent)
         {
             let comment_icon_svg = `<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="comments" class="svg-inline--fa fa-comments fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M532 386.2c27.5-27.1 44-61.1 44-98.2 0-80-76.5-146.1-176.2-157.9C368.3 72.5 294.3 32 208 32 93.1 32 0 103.6 0 192c0 37 16.5 71 44 98.2-15.3 30.7-37.3 54.5-37.7 54.9-6.3 6.7-8.1 16.5-4.4 25 3.6 8.5 12 14 21.2 14 53.5 0 96.7-20.2 125.2-38.8 9.2 2.1 18.7 3.7 28.4 4.9C208.1 407.6 281.8 448 368 448c20.8 0 40.8-2.4 59.8-6.8C456.3 459.7 499.4 480 553 480c9.2 0 17.5-5.5 21.2-14 3.6-8.5 1.9-18.3-4.4-25-.4-.3-22.5-24.1-37.8-54.8zm-392.8-92.3L122.1 305c-14.1 9.1-28.5 16.3-43.1 21.4 2.7-4.7 5.4-9.7 8-14.8l15.5-31.1L77.7 256C64.2 242.6 48 220.7 48 192c0-60.7 73.3-112 160-112s160 51.3 160 112-73.3 112-160 112c-16.5 0-33-1.9-49-5.6l-19.8-4.5zM498.3 352l-24.7 24.4 15.5 31.1c2.6 5.1 5.3 10.1 8 14.8-14.6-5.1-29-12.3-43.1-21.4l-17.1-11.1-19.9 4.6c-16 3.7-32.5 5.6-49 5.6-54 0-102.2-20.1-131.3-49.7C338 339.5 416 272.9 416 192c0-3.4-.4-6.7-.7-10C479.7 196.5 528 238.8 528 288c0 28.7-16.2 50.6-29.7 64z"></path></svg>`;
             let comment_icon = document.createElement("DIV");
@@ -274,11 +277,12 @@ function hide_or_add_show_children_btn(parent_comment=null)
         let children_container = parent_comment.querySelector(".comments_children_container");
         if(!parent_comment.querySelector(".actions .comment_show_children_action") && children_container.childElementCount >0)
         {
-	   if(!is_comment_owner || is_video_owner || is_superuser){
+	   if(is_comment_owner || is_video_owner || is_superuser){
                parent_comment.querySelector(".comment_content_footer .actions").insertBefore(
 		       children_action, parent_comment.querySelector(".comment_content_footer .actions .comment_delete_action") );
 	   }
 	   else{
+		   console.log("NOt owner , Not video owner, Not super user")
 	       parent_comment.querySelector(".comment_content_footer .actions").appendChild(children_action );
 	   }
         }
@@ -360,7 +364,7 @@ function vote(comment_id, target_html_el)
 
 /****************  Save comment into the server  ****************
  ***************************************************************/
-function save_comment(content, date, parent_id=null)
+function save_comment(content, date, parent_id=null, top_parent_id=null)
 {
     let post_url = base_url.replace("comment", "comment/add");
     post_url = parent_id?post_url+parent_id+'/':post_url	
@@ -393,7 +397,7 @@ function save_comment(content, date, parent_id=null)
 	        else
 	        {
 	            all_comment = all_comment.map((comment)=>{
-	   	        if(comment.parent_comment.id === parent_id)
+	   	        if(comment.parent_comment.id === top_parent_id)
 		            comment.children.push(c);
 		        return comment; 
 		    });
@@ -434,6 +438,59 @@ function delete_comment(target_comment_html)
     })
 }
 
+/*********** Scroll to a specific comment *************
+ * ****************************************************/
+function scrollToComment(targetComment)
+{
+    targetComment.scrollIntoView({
+	behavior: "smooth",
+	block: "center",
+	inline: "nearest"
+    });
+    let htmlTarget = targetComment.querySelector(".comment_content");
+    if(htmlTarget.classList.contains("scroll_to"))
+        htmlTarget.classList.remove("scroll_to");
+
+    window.setTimeout(() => {
+        htmlTarget.classList.remove('scroll_to');
+    }, 8000);
+
+    htmlTarget.classList.add('scroll_to');
+}
+
+
+/****** Add the owner of parent comment as a tag ******
+ ******************************************************/
+function add_user_tag(comment_value, parent_comment)
+{
+    let reply_to = get_comment_attribute(
+	parent_comment,
+	attr="author__first_name"
+    );
+    reply_content = get_comment_attribute( parent_comment, attr="content" );
+    let htmlTarget = parent_comment.querySelector(".comment_content");
+    let tag = document.createElement("a");
+    tag.setAttribute("href", "#");
+    tag.addEventListener("click", (e) => {
+	e.preventDefault();
+	e.stopPropagation();
+	scrollToComment(parent_comment)
+    });
+    tag.innerHTML =`
+	<span class="reply_to">
+	    <span class="reply_author">@${reply_to}</span>
+	    <span class="reply_content">${reply_content}</span>
+        </span>`;
+    let comment_text = document.createElement("span");
+    comment_text.setAttribute('class', 'comment_text');
+    comment_text.innerText = comment_value;
+
+    let comment_content = document.createElement("p");
+    comment_content.appendChild(tag);
+    comment_content.appendChild(comment_text);
+    return comment_content;
+}
+
 /****************  Add parent Comment  ****************
  ******************************************************/
 if(is_authenticated){
@@ -445,7 +502,7 @@ if(is_authenticated){
         let el = add_parent_comment.querySelector(".new_parent_comment") 
         if(el.value.trim() != "")
         {
-	    let comment_content = encodeHTML(el.value);
+	    let comment_content = el.value;
             let c = new Comment(
                 owner=user_fullName,
                 content=comment_content,
@@ -463,74 +520,96 @@ if(is_authenticated){
 }
 /****************  Add child Comment  *****************
  ******************************************************/
-function add_child_comment(el)
+function add_child_comment(el, container_el, parent_comment)
 {
     let date_added = new Date();
     if(el.value.trim() !== "")
     {
-        let parent_el = get_node(el, "comments_children_container");
-	let comment_content = encodeHTML(el.value)
+	let child_direct_parent = document.querySelector(
+		`#${el.parentElement.parentElement.dataset.comment}`)
+
+	let comment_child_content = add_user_tag(
+		el.value,
+		child_direct_parent,
+	);
         let c = new Comment(
             owner=user_fullName,
-            content=comment_content,
+            content=comment_child_content,
             likes=0,
             added_since=date_added,
             id = `comment_${date_added.getTime()}`,
 	    is_parent=false,
 	    is_comment_owner=true);
-        parent_el.prepend(c);
-        hide_or_add_show_children_btn(parent_el.parentElement);
+        container_el.prepend(c);
+        hide_or_add_show_children_btn(container_el.parentElement);
+
         // INSERT INTO DATABASE THE CURRENT COMMENT CHILD
-	let parent_com = get_node(parent_el, 'comment_element', 'comment_child');
-	let p_id = get_comment_attribute(parent_com);
-	save_comment(comment_content, date_added.toISOString(), p_id);
+	let p_id = get_comment_attribute( child_direct_parent );
+	let t_p_id = get_comment_attribute(
+		get_node(el, 'comment_element', 'comment_child') // get the top parent element
+	)
+
+	// Scroll to the comment child
+	if(window.scrollY > 1180)
+	    scrollToComment( c );
+
+	save_comment(el.value, date_added.toISOString(), p_id, t_p_id);
     }
 }
 
 /*********  Return backend comment attribute  *********
  ******************************************************/
-function get_comment_attribute(comment_html, attr='id')
+function get_comment_attribute(comment_html, attr="id")
 {
     let curr_html_id = comment_html.getAttribute('id');
-    let comment_attr = null;
+    let comment_attr = null
     all_comment.forEach(comment=>
     {
 	let comment_htmlid = `comment_${new Date(comment.parent_comment.added).getTime()}`;
 	if(comment_htmlid == curr_html_id)
+	{
 	    comment_attr = comment.parent_comment[attr];
+	}
 	comment.children.forEach(c_comment=>
 	{
 	    let c_comment_htmlid = `comment_${new Date(c_comment.added).getTime()}`;
 	    if(c_comment_htmlid == curr_html_id)
 	        comment_attr = c_comment[attr];
 	});
-	if(comment_attr) return comment_attr;
     });
     return comment_attr;
 }
 
-/******************  HTML encoder  ********************
- ******************************************************/
-function encodeHTML(s)
+function htmlContainsClass(html_el, classes)
 {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '$quot;');
+    let ctn = true;
+    classes.split('.').forEach(cls =>{
+	if( !html_el.classList.contains(cls))
+	    ctn = false;
+    });
+    return ctn;
 }
 
-/****************  Get parentNode or sibling node  ****************
+/**********  Get parentNode or sibling node  **********
  ******************************************************/
-function get_node(el, class_name=null, not=null)
+function get_node(el, class_name, not)
 {
-    class_name = class_name?class_name :"comment_container";
-    let selector = not !== null?`.${class_name}:not(.${not})`: `.${class_name}`;
-    let childElement = el.querySelector(selector);
-    if(el.classList.contains(class_name) && !el.classList.contains(not))
+    class_name = class_name || "comment_container";
+    not = not || "";
+    let selector = !!not?`.${class_name}:not(.${not})`: `.${class_name}`;
+    let foundedElement = el.querySelector(selector);
+    if(htmlContainsClass(el, class_name) && !htmlContainsClass(el, not)) {
         return el;
-    else if(childElement)
-        return childElement;
-    return get_node(el.parentElement, class_name, not);
+    }
+    if(foundedElement){
+        return foundedElement;
+    }
+    else{
+        return get_node(el.parentElement, class_name, not);
+    }
 }
 
-/****************  Manage hide/show child comment text  ****************
+/*******  Manage hide/show child comment text  ********
  ******************************************************/
 function hide_show_child_comment_text(el)
 {
@@ -588,9 +667,21 @@ fetch(base_vote_url).then(response=>{
 	            children_data.forEach(child_data=>{
 	                date_added = new Date(child_data.added);
 	    	        html_id =`comment_${date_added.getTime().toString()}`;
+			let parent_to_scroll = parent_c;
+			if(child_data.parent__id !== child_data.top_parent__id)
+			{
+			    let direct_parent_comment = children_data.filter((c_obj) => c_obj.id === child_data.parent__id )[0];
+			    let direct_parent_html_id = `comment_${new Date(direct_parent_comment.added).getTime().toString()}`;
+			    parent_to_scroll = parent_c.querySelector(`#${direct_parent_html_id}`);
+			}
+			let comment_child_content = add_user_tag(
+			    child_data.content,
+			    parent_to_scroll,
+			    comment_data.parent_comment.author__first_name
+			);
 	                let child_c = new Comment(
 		            owner=`${child_data.author__first_name} ${child_data.author__last_name.toUpperCase()}`,
-		            content=child_data.content,
+		            content=comment_child_content,
 		            likes=child_data.nbr_vote,
 		            added_since=date_added,
 		            id=html_id,
