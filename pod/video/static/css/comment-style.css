@@ -599,7 +599,7 @@
 /* ***** scroll to comment background */
 .scroll_to{
     animation-name: scrolltocomment;
-    animation-duration: 8s;
+    animation-duration: 5s;
     animation-fill-mode: forwards;
 }
 @keyframes scrolltocomment{
