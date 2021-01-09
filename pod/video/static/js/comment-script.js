@@ -4,6 +4,17 @@ let base_delete_url = base_url.replace('comment', 'comment/del');
 let all_comment = null;
 let lang_btn = document.querySelector(".btn-lang.btn-lang-active");
 let  VOTED_USERS = [];
+const COLORS = [
+    "#212529",
+    "#343A40",
+    "#495057",
+    "#6C757D",
+    "#ADB5BD",
+    "#CED4DA",
+    "#DEE2E6",
+    "#E9ECEF",
+    "#F8F9FA",
+]
 const LANG = lang_btn?lang_btn.textContent.trim() : "fr";
 const ACTION_COMMENT = {
     comment_to_delete: null
@@ -453,7 +464,7 @@ function scrollToComment(targetComment)
 
     window.setTimeout(() => {
         htmlTarget.classList.remove('scroll_to');
-    }, 8000);
+    }, 3000);
 
     htmlTarget.classList.add('scroll_to');
 }
@@ -492,6 +503,28 @@ function add_user_tag(comment_value, parent_comment)
     return comment_content;
 }
 
+/****************  return color index  ****************
+ ******************************************************/
+function setBorderLeftColor(comment, parent_element, is_parent=false){
+    if(is_parent) return 0;
+    try{
+        let index = Number.parseInt(parent_element.dataset.level) + 1;
+	if(index >= COLORS.length){
+	    comment.dataset.level = COLORS.length - 1;
+	    comment.querySelector(".comment_content")
+	        .style.borderLeft = `4px solid ${COLORS[COLORS.length - 1]}`; 
+	}
+	else{
+	    comment.dataset.level = index;
+	    comment.querySelector(".comment_content")
+	        .style.borderLeft = `4px solid ${COLORS[index]}`; 
+	}
+    }catch(e){
+	comment.dataset.level = COLORS.length - 1;
+	comment.querySelector(".comment_content")
+	    .style.borderLeft = `4px solid ${COLORS[COLORS.length - 1]}`; 
+    }
+}
 /****************  Add parent Comment  ****************
  ******************************************************/
 if(is_authenticated){
@@ -512,6 +545,7 @@ if(is_authenticated){
                 id=`comment_${date_added.getTime()}`,
                 is_parent=true,
 	        is_comment_owner=true);
+	    c.dataset.level = '-1';
             document.querySelector(".comment_container .comment_content form.add_parent_comment").after(c);
             el.value = "";
             // INSERT INTO DATABASE THE CURRENT COMMENT CHILD
@@ -528,7 +562,7 @@ function add_child_comment(el, container_el, parent_comment)
     {
 	let child_direct_parent = document.querySelector(
 		`#${el.parentElement.parentElement.dataset.comment}`)
-
+	    
 	let comment_child_content = add_user_tag(
 		el.value,
 		child_direct_parent,
@@ -541,7 +575,9 @@ function add_child_comment(el, container_el, parent_comment)
             id = `comment_${date_added.getTime()}`,
 	    is_parent=false,
 	    is_comment_owner=true);
-        container_el.prepend(c);
+	setBorderLeftColor(c, child_direct_parent, is_parent=false)
+	//container_el.prepend(c);
+	container_el.appendChild(c);
         hide_or_add_show_children_btn(container_el.parentElement);
 
         // INSERT INTO DATABASE THE CURRENT COMMENT CHILD
@@ -551,8 +587,8 @@ function add_child_comment(el, container_el, parent_comment)
 	)
 
 	// Scroll to the comment child
-	if(window.scrollY > 1180)
-	    scrollToComment( c );
+	//if(window.scrollY > 10)
+	scrollToComment( c );
 
 	save_comment(el.value, date_added.toISOString(), p_id, t_p_id);
     }
@@ -662,6 +698,7 @@ fetch(base_vote_url).then(response=>{
 	            is_parent=true,
 		    is_comment_owner= user_id===parent_data.author__id
                 );
+		parent_c.dataset.level = '-1';
 	        manage_vote_frontend(parent_data.id, parent_c);
                 if(children_data.length>0)
                 {
@@ -689,7 +726,9 @@ fetch(base_vote_url).then(response=>{
 			    is_parent=false,
 		            is_comment_owner= user_id===child_data.author__id
 	                );
-	                parent_c.querySelector(".comments_children_container").prepend(child_c);
+			setBorderLeftColor(child_c, parent_to_scroll, is_parent=false)
+	                //parent_c.querySelector(".comments_children_container").prepend(child_c);
+	                parent_c.querySelector(".comments_children_container").appendChild(child_c);
 	    	        manage_vote_frontend(child_data.id, child_c);
 	            });
                 }
