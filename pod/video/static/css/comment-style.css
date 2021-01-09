@@ -41,7 +41,7 @@
 .reply_to{
     color: var(--secondary);
     letter-spacing: 1.1px;
-    width: 200px;
+    width: 230px;
     max-width: 100%;
     display: block;
     overflow: hidden;
@@ -50,6 +50,9 @@
     color: var(--content-third-color) !important;
     margin-bottom: .8em;
     margin-left: .8em;
+}
+.reply_to svg {
+    width: 16px;
 }
 .reply_author{
     font-weight: 600;
