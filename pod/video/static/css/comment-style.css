@@ -76,6 +76,7 @@
             transform: translateX( calc(-50% - var(--padding-comment-content) ) );*/
     width: var(--padding-comment-content);
     margin:0 6px;
+    flex: none;
 }
 .comment_main .inline_flex_space{display: -webkit-box;display: -ms-flexbox;display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; -ms-flex-wrap: wrap; flex-wrap: wrap;}
 .comment_main .comment_disable::before{
@@ -98,6 +99,12 @@
     font-weight: 400;
     color: var(--primary);
     padding-top: 2em;
+}
+@media only screen and (max-width: 512px)
+{
+    .jumbotron{
+        padding: 0 !important;
+    }
 }
 .comment_main
 {
@@ -425,7 +432,7 @@
         -ms-flex-pack: justify;
             justify-content: space-between;
     border-left: 4px solid var(--primary);
-    padding: .6em;
+    padding: .4em;
     background-color: var(--third-background-color);
     -webkit-box-shadow: 1px 1px 4px var(--background-color);
             box-shadow: 1px 1px 4px var(--background-color);
@@ -434,26 +441,27 @@
 }
 .comment_main .comment_element .comment_container >  .comments_children_container
 {
-    padding-left: 1em;
     height: 0;
     overflow: hidden;
     -webkit-transition: .5s height;
     -o-transition: .5s height;
     transition: .5s height;
 }
-.comment_main .comment_element.show .comment_container >  .comments_children_container
-{
-    height: auto;
+.comment_main .comment_element.show .comment_container >  .comments_children_container{ height: auto; }
+.comment_main .comment_element .comment_container .comment_element > .comment_child_container{ 
+    display: flex;
+    margin-top: calc(var(--margin-between-comment) - .2em);
 }
+.comment_main .comment_element .comment_container .comment_element > .comment_child_container .comments_icon{margin-left: 0; flex: none;}
 .comment_main .comment .comment_content_child
 {
 
     border-left: 4px solid var(--content-secondary-color);
     border-radius: 5px;
-    margin-top: calc(var(--margin-between-comment) - .2em);
     border-top: 1px solid var(--primary-background-color);
     border-bottom: 1px solid var(--primary-background-color);
     border-right: 1px solid var(--primary-background-color);
+    flex-grow: 1;
 }
 
 .comment_main .comment .comment_content_header .comment_since
@@ -583,17 +591,6 @@
     }
     .comment_main{
         padding: 0;
-    }
-}
-@media only screen and (max-width: 550px)
-{
-    .comment_main .comment_container
-    {
-        padding: 0 .8em;
-    }
-    .comment_main .comment .comment_container > .comments_children_container
-    {
-        padding-left: .8em;
     }
 }
 /* ***** scroll to comment background */
