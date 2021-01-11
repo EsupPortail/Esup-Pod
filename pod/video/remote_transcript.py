@@ -149,9 +149,8 @@ def store_remote_transcripting_video(video_id):
         with open(output_dir + "/transcript.json") as json_file:
             info_video = json.load(json_file)
 
-        if DEBUG:
-            print(output_dir)
-            print(json.dumps(info_video, indent=2))
+        print_if_debug(output_dir)
+        print_if_debug(json.dumps(info_video, indent=2))
 
         webvtt = WebVTT()
         # They're sorted by confidence. First one is highest confidence result.
@@ -181,8 +180,7 @@ def store_remote_transcripting_video(video_id):
                 duration = 0
             else:
                 duration += word['duration']
-        if DEBUG:
-            print(webvtt)
+        print_if_debug(webvtt)
         msg += saveVTT(video_to_encode, webvtt)
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, 0, "done")
@@ -196,6 +194,11 @@ def store_remote_transcripting_video(video_id):
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
         send_email(msg, video_id)
+
+
+def print_if_debug(msg):
+    if DEBUG:
+        print(msg)
 
 
 def format_time_caption(time_caption):
