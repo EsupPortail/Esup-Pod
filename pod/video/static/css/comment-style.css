@@ -476,7 +476,7 @@
     margin: 1em 0 2em 0;
     font-weight: 400;
     word-break: break-all;
-
+    font-size: 14px;
 }
 .comment_main .comment .comment_content_footer
 {
@@ -500,6 +500,7 @@
         -ms-flex-align: center;
             align-items: center;
     cursor: pointer;
+    font-size: 13px;
 }
 .comment_main .comment .comment_content_footer >* .icon
 {
