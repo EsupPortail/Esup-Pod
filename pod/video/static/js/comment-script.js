@@ -82,7 +82,7 @@ class ConfirmModal extends HTMLElement
             if(parent_el.classList.contains("comments_children_container") && parent_el.childElementCount===0)
             {
 		parent_e = get_node(parent_el, "comment_element", "comment_child");
-                hide_or_add_show_children_btn(parent_e);
+                hide_or_add_show_children_btn(parent_e, parent_el.childElementCount);
             }
 	    delete_comment();
             delete_comment_child_DOM();
@@ -156,7 +156,7 @@ class Comment extends HTMLElement
 	if(user_id)
 	{
             let svg_icon = `<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="comment" class="svg-inline--fa fa-comment fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 32C114.6 32 0 125.1 0 240c0 47.6 19.9 91.2 52.9 126.3C38 405.7 7 439.1 6.5 439.5c-6.6 7-8.4 17.2-4.6 26S14.4 480 24 480c61.5 0 110-25.7 139.1-46.3C192 442.8 223.2 448 256 448c141.4 0 256-93.1 256-208S397.4 32 256 32zm0 368c-26.7 0-53.1-4.1-78.4-12.1l-22.7-7.2-19.5 13.8c-14.3 10.1-33.9 21.4-57.5 29 7.3-12.1 14.4-25.7 19.9-40.2l10.6-28.1-20.6-21.8C69.7 314.1 48 282.2 48 240c0-88.2 93.3-160 208-160s208 71.8 208 160-93.3 160-208 160z"></path></svg>`;
-            let response_action = createFooterBtnAction( "comment_actions comment_response_action", "icon comment_response_icon", gettext("Answer comment icon"), svg_icon, "comment_response_btn", gettext("Answer"));
+            let response_action = createFooterBtnAction( "comment_actions comment_response_action", "icon comment_response_icon", gettext("Reply to comment"), svg_icon, "comment_response_btn", gettext("Reply"));
             response_action.addEventListener("click", function()
             {
                 let target_node = get_node(this, "form");
@@ -165,7 +165,7 @@ class Comment extends HTMLElement
             });
             comment_container.querySelector(".comment_content_footer .actions").appendChild(response_action);
             svg_icon = [`<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="star" class="unvoted svg-inline--fa fa-star fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"></path></svg>`, `<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" class="voted svg-inline--fa fa-star fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>`];
-            let vote_action = createFooterBtnAction( "comment_actions comment_vote_action", "icon comment_vote_icon", gettext("Comment vote icon"), svg_icon, "comment_vote_btn", likes, id );
+            let vote_action = createFooterBtnAction( "comment_actions comment_vote_action", "icon comment_vote_icon", gettext("Agree with the comment"), svg_icon, "comment_vote_btn", likes, id );
 	    vote_action.addEventListener("click", ()=>{
 	        let comment_id = get_comment_attribute(document.getElementById(id));
 	        vote(comment_id, vote_action);
@@ -176,7 +176,7 @@ class Comment extends HTMLElement
                 let delete_action = createFooterBtnAction(
                     "comment_actions comment_delete_action",
                     "icon comment_delete_icon",
-                    gettext("Comment delete icon"),
+                    gettext("Remove this comment"),
                     svg_icon,
                     "comment_delete_btn",
                     gettext("Delete"),
@@ -215,7 +215,7 @@ class Comment extends HTMLElement
                         add_comment.parentElement.classList.toggle("show");
                         if(!comment_parent.classList.contains("show"))
                             comment_parent.classList.add("show")
-                        hide_show_child_comment_text(this)
+                        hide_show_child_comment_text(this, comment_parent.querySelector("comments_children_container").childElementCount)
                         add_child_comment( this, child_container, comment_parent );
                         this.value = "";
                     }
@@ -273,22 +273,24 @@ function createFooterBtnAction( classes, icon_classes, title, svg, span_classes,
     el.appendChild(el_span);
     return el;
 }
-function hide_or_add_show_children_btn(parent_comment=null)
+function hide_or_add_show_children_btn(parent_comment=null, nb_child=null)
 {
     let svg_icon_show = `<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="eye" class="show svg-inline--fa fa-eye fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M288 144a110.94 110.94 0 0 0-31.24 5 55.4 55.4 0 0 1 7.24 27 56 56 0 0 1-56 56 55.4 55.4 0 0 1-27-7.24A111.71 111.71 0 1 0 288 144zm284.52 97.4C518.29 135.59 410.93 64 288 64S57.68 135.64 3.48 241.41a32.35 32.35 0 0 0 0 29.19C57.71 376.41 165.07 448 288 448s230.32-71.64 284.52-177.41a32.35 32.35 0 0 0 0-29.19zM288 400c-98.65 0-189.09-55-237.93-144C98.91 167 189.34 112 288 112s189.09 55 237.93 144C477.1 345 386.66 400 288 400z"></path></svg>`
     let svg_icon_hide = `<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="eye-slash" class="hide svg-inline--fa fa-eye-slash fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M634 471L36 3.51A16 16 0 0 0 13.51 6l-10 12.49A16 16 0 0 0 6 41l598 467.49a16 16 0 0 0 22.49-2.49l10-12.49A16 16 0 0 0 634 471zM296.79 146.47l134.79 105.38C429.36 191.91 380.48 144 320 144a112.26 112.26 0 0 0-23.21 2.47zm46.42 219.07L208.42 260.16C210.65 320.09 259.53 368 320 368a113 113 0 0 0 23.21-2.46zM320 112c98.65 0 189.09 55 237.93 144a285.53 285.53 0 0 1-44 60.2l37.74 29.5a333.7 333.7 0 0 0 52.9-75.11 32.35 32.35 0 0 0 0-29.19C550.29 135.59 442.93 64 320 64c-36.7 0-71.71 7-104.63 18.81l46.41 36.29c18.94-4.3 38.34-7.1 58.22-7.1zm0 288c-98.65 0-189.08-55-237.93-144a285.47 285.47 0 0 1 44.05-60.19l-37.74-29.5a333.6 333.6 0 0 0-52.89 75.1 32.35 32.35 0 0 0 0 29.19C89.72 376.41 197.08 448 320 448c36.7 0 71.71-7.05 104.63-18.81l-46.41-36.28C359.28 397.2 339.89 400 320 400z"></path></svg>`
+    let txt = gettext("Answers");
+    txt = nb_child?`${nb_child} ${txt}`: txt;
     let children_action = createFooterBtnAction(
         "comment_actions comment_show_children_action",
         "icon comment_show_children_icon",
-        gettext("Comment show children icon"),
+        gettext("Show answers"),
         [svg_icon_show, svg_icon_hide],
         "comment_show_children_btn",
-        gettext("Show responses")
+	txt
     );
     children_action.addEventListener("click", function()
     {
         get_node(this.parentElement, "comment_element", "comment_child").classList.toggle("show");
-        hide_show_child_comment_text(this);
+        hide_show_child_comment_text(this, nb_child);
     });
     
     if(parent_comment)
@@ -337,7 +339,7 @@ function hide_or_add_show_children_btn(parent_comment=null)
                     comment_children_container.querySelector(".actions .comment_show_children_action")
                 )
             }
-            hide_show_child_comment_text(comments_children_container);
+            hide_show_child_comment_text(comments_children_container, nb_child);
         })
     }
 }
@@ -611,16 +613,17 @@ function add_child_comment(el, container_el, parent_comment)
 	setBorderLeftColor(c, child_direct_parent)
 	//container_el.prepend(c);
 	container_el.appendChild(c);
-        hide_or_add_show_children_btn(get_node(container_el, "comment_element", "comment_child"));
+	
+        hide_or_add_show_children_btn(
+	    get_node(container_el, "comment_element", "comment_child"),
+	    parent_comment.querySelector('.comments_children_container').childElementCount
+	);
 
         // INSERT INTO DATABASE THE CURRENT COMMENT CHILD
 	let p_id = get_comment_attribute( child_direct_parent );
-	let t_p_id = get_comment_attribute(
-		get_node(el, 'comment_element', 'comment_child') // get the top parent element
-	)
+	let t_p_id = get_comment_attribute(parent_comment);
 
 	// Scroll to the comment child
-	//if(window.scrollY > 10)
 	scrollToComment( c );
 
 	save_comment(el.value, date_added.toISOString(), p_id, t_p_id);
@@ -686,14 +689,18 @@ function get_node(el, class_name, not)
 
 /*******  Manage hide/show child comment text  ********
  ******************************************************/
-function hide_show_child_comment_text(el)
+function hide_show_child_comment_text(el, nb_child=null)
 {
+    nb_child = nb_child?nb_child:'';
     let node = get_node(el, "comment_element", "comment_child");
     let target_node = get_node(el, "comment_show_children_btn");
     if(node.classList.contains("show"))
         target_node.innerText = gettext("Hide responses");
-    else
-        target_node.innerText = gettext("Show responses");
+    else{
+	let txt = gettext("Answers");
+	txt = `${nb_child} ${txt}`;
+        target_node.innerText = txt;
+    }
 }
 
 /*****************  Manage vote svg  ******************
@@ -774,7 +781,7 @@ fetch(base_vote_url).then(response=>{
                     parent_container.querySelector('form.add_parent_comment').after(parent_c);
 		else
                     parent_container.prepend(parent_c);
-                hide_or_add_show_children_btn(parent_c);
+                hide_or_add_show_children_btn(parent_c, children_data.length);
             });
         });
     });
