@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.core.files import File
+
 
 import time
 import json
@@ -12,13 +14,24 @@ from datetime import timedelta
 from .models import Video, EncodingLog
 
 from .utils import change_encoding_step, add_encoding_log, check_file
-from .utils import send_email, create_outputdir
+from .utils import send_email, create_outputdir, send_email_transcript
+
+from pod.completion.models import Track
 
 from webvtt import WebVTT, Caption
+from tempfile import NamedTemporaryFile
 
 log = logging.getLogger(__name__)
 
 DEBUG = getattr(settings, 'DEBUG', True)
+
+if getattr(settings, 'USE_PODFILE', False):
+    from pod.podfile.models import CustomFileModel
+    from pod.podfile.models import UserFolder
+    FILEPICKER = True
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomFileModel
 
 SSH_TRANSCRIPT_REMOTE_USER = getattr(
     settings, 'SSH_TRANSCRIPT_REMOTE_USER', "")
@@ -30,6 +43,9 @@ SSH_TRANSCRIPT_REMOTE_CMD = getattr(
     settings, 'SSH_TRANSCRIPT_REMOTE_CMD', "")
 
 SENTENCE_MAX_LENGTH = getattr(settings, 'SENTENCE_MAX_LENGTH', 3)
+
+EMAIL_ON_TRANSCRIPTING_COMPLETION = getattr(
+    settings, 'EMAIL_ON_TRANSCRIPTING_COMPLETION', True)
 
 # ##########################################################################
 # REMOTE TRANSCRIPT VIDEO : MAIN FUNCTION
@@ -138,7 +154,7 @@ def store_remote_transcripting_video(video_id):
             print(json.dumps(info_video, indent=2))
 
         webvtt = WebVTT()
-
+        # They're sorted by confidence. First one is highest confidence result.
         words = info_video["transcripts"][0]["words"]
         """
         for transcript in info_video["transcripts"]:
@@ -165,7 +181,14 @@ def store_remote_transcripting_video(video_id):
                 duration = 0
             else:
                 duration += word['duration']
-        print(webvtt)
+        if DEBUG:
+            print(webvtt)
+        msg += saveVTT(video_to_encode, webvtt)
+        add_encoding_log(video_id, msg)
+        change_encoding_step(video_id, 0, "done")
+        # envois mail fin transcription
+        if EMAIL_ON_TRANSCRIPTING_COMPLETION:
+            send_email_transcript(video_to_encode)
 
     else:
         msg += "Wrong file or path : "\
@@ -179,3 +202,46 @@ def format_time_caption(time_caption):
     return (dt.datetime.utcfromtimestamp(0) +
             timedelta(seconds=float(time_caption))
             ).strftime('%H:%M:%S.%f')[:-3]
+
+
+def saveVTT(video, webvtt):
+    msg = "\nSAVE TRANSCRIPT WEBVTT : %s" % time.ctime()
+    lang = video.main_lang
+    temp_vtt_file = NamedTemporaryFile(suffix='.vtt')
+    webvtt.save(temp_vtt_file.name)
+    if webvtt.captions:
+        msg += "\nstore vtt file in bdd with CustomFileModel model file field"
+        if FILEPICKER:
+            videodir, created = UserFolder.objects.get_or_create(
+                name='%s' % video.slug,
+                owner=video.owner)
+            """
+            previousSubtitleFile = CustomFileModel.objects.filter(
+                name__startswith="subtitle_%s" % lang,
+                folder=videodir,
+                created_by=video.owner
+            )
+            """
+            # for subt in previousSubtitleFile:
+            #     subt.delete()
+            subtitleFile, created = CustomFileModel.objects.get_or_create(
+                name="subtitle_%s_%s" % (lang, time.strftime("%Y%m%d-%H%M%S")),
+                folder=videodir,
+                created_by=video.owner)
+            if subtitleFile.file and os.path.isfile(subtitleFile.file.path):
+                os.remove(subtitleFile.file.path)
+        else:
+            subtitleFile, created = CustomFileModel.objects.get_or_create()
+
+        subtitleFile.file.save("subtitle_%s_%s.vtt" % (
+            lang, time.strftime("%Y%m%d-%H%M%S")), File(temp_vtt_file))
+        msg += "\nstore vtt file in bdd with Track model src field"
+
+        subtitleVtt, created = Track.objects.get_or_create(
+            video=video, lang=lang)
+        subtitleVtt.src = subtitleFile
+        subtitleVtt.lang = lang
+        subtitleVtt.save()
+    else:
+        msg += "\nERROR SUBTITLES Output size is 0"
+    return msg
