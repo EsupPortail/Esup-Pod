@@ -295,17 +295,10 @@ function hide_or_add_show_children_btn(parent_comment=null, nb_child=null)
     
     if(parent_comment)
     {
-    	let is_parent_comment_owner = user_id === get_comment_attribute(parent_comment, "author__id");
         let children_container = parent_comment.querySelector(".comments_children_container");
         if(!parent_comment.querySelector(".actions .comment_show_children_action") && children_container.childElementCount >0)
         {
-	   if(is_parent_comment_owner || is_video_owner || is_superuser){
-               parent_comment.querySelector(".comment_content_footer .actions").insertBefore(
-		       children_action, parent_comment.querySelector(".comment_content_footer .actions .comment_delete_action") );
-	   }
-	   else{
-	       parent_comment.querySelector(".comment_content_footer .actions").appendChild(children_action );
-	   }
+            parent_comment.querySelector(".comment_content_footer .actions .comment_vote_action").after( children_action );
         }
         else if(parent_comment.querySelector(".actions .comment_show_children_action") && children_container.childElementCount===0)
         {
@@ -323,14 +316,7 @@ function hide_or_add_show_children_btn(parent_comment=null, nb_child=null)
             let comments_children_container= comment.querySelector(".comment .comment_container .comments_children_container");
             if(!comment.querySelector(".comment_content_footer .actions .comment_show_children_action") && comments_children_container.childElementCount > 0)
             {
-    		let is_parent_comment_owner = user_id === get_comment_attribute(comment, "author__id");
-	   	if(is_parent_comment_owner || is_video_owner || is_superuser){
-                    comment.querySelector(".comment_content_footer .actions").insertBefore(
-			    children_action, comment.querySelector(".comment_content_footer .actions .comment_delete_action") );
-		}
-	   	else{
-	       	    comment.querySelector(".comment_content_footer .actions").appendChild(children_action );
-		}
+                comment.querySelector(".comment_content_footer .actions .comment_vote_action").after( children_action );
             }
             else if(comment.querySelector(".comment_content_footer .actions .comment_show_children_action") && comments_children_container.childElementCount===0)
             {
@@ -716,13 +702,9 @@ function hide_show_child_comment_text(el, nb_child=null)
     nb_child = nb_child?nb_child:'';
     let node = get_node(el, "comment_element", "comment_child");
     let target_node = get_node(el, "comment_show_children_btn");
-    if(node.classList.contains("show"))
-        target_node.innerText = gettext("Hide responses");
-    else{
-	let txt = gettext("Answers");
-	txt = `${nb_child} ${txt}`;
-        target_node.innerText = txt;
-    }
+    let txt = gettext("Answers");
+    txt = `${nb_child} ${txt}`;
+    target_node.innerText = txt;
 }
 
 /*****************  Manage vote svg  ******************
