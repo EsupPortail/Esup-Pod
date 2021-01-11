@@ -2,7 +2,8 @@ let base_url = window.location.href.replace("/video/", "/comment/");
 let base_vote_url = base_url.replace('comment', 'comment/vote');
 let base_delete_url = base_url.replace('comment', 'comment/del');
 let all_comment = null;
-let lang_btn = document.querySelector(".btn-lang.btn-lang-active");
+const lang_btn = document.querySelector(".btn-lang.btn-lang-active");
+const comment_label = document.querySelector('.comment_label');
 let  VOTED_USERS = [];
 const COLORS = [
     "#5F616D",
@@ -84,8 +85,7 @@ class ConfirmModal extends HTMLElement
 		parent_e = get_node(parent_el, "comment_element", "comment_child");
                 hide_or_add_show_children_btn(parent_e, parent_el.childElementCount);
             }
-	    delete_comment();
-            delete_comment_child_DOM();
+	    delete_comment(ACTION_COMMENT.comment_to_delete);
             ACTION_COMMENT.comment_to_delete = null;
         });
         let cancel_btn = document.createElement("BUTTON");
@@ -215,7 +215,7 @@ class Comment extends HTMLElement
                         add_comment.parentElement.classList.toggle("show");
                         if(!comment_parent.classList.contains("show"))
                             comment_parent.classList.add("show")
-                        hide_show_child_comment_text(this, comment_parent.querySelector("comments_children_container").childElementCount)
+                        hide_show_child_comment_text(this, comment_parent.querySelector(".comments_children_container").childElementCount)
                         add_child_comment( this, child_container, comment_parent );
                         this.value = "";
                     }
@@ -417,7 +417,7 @@ function save_comment(content, date, parent_id=null, top_parent_id=null)
 			parent_comment: c,
 		        children: []
 		    }
-	            all_comment.push(p_c);
+	            all_comment = [...all_comment, p_c];
 		}
 	        else
 	        {
@@ -428,6 +428,7 @@ function save_comment(content, date, parent_id=null, top_parent_id=null)
 		        return comment;
 		    });
 	        }
+	    	set_comments_number()
 	    });
 	}
 	else{ console.log("Mauvaise réponse du réseau", response); }
@@ -440,9 +441,10 @@ function save_comment(content, date, parent_id=null, top_parent_id=null)
 
 /****************  Delete Comment  ****************
  ******************************************************/
-function delete_comment()
+function delete_comment(comment)
 {
-    let comment_id = get_comment_attribute(ACTION_COMMENT.comment_to_delete);
+    let comment_id = get_comment_attribute(comment);
+    let is_child = !!get_comment_attribute(comment, 'parent__id');
     let url = base_delete_url + comment_id + '/';
     let data = new FormData();
     data.append('csrfmiddlewaretoken', Cookies.get('csrftoken'));
@@ -452,8 +454,15 @@ function delete_comment()
     }
     ).then(response=>{
 	response.json().then( data=>{
-	    if(data.deleted)
+	    if(data.deleted){
 	        document.body.appendChild(new AlertMessage(gettext("Comment has been deleted successfully.")));
+
+		if(is_child) delete_comment_child_DOM(comment, is_child);
+
+		else all_comment = all_comment.filter(c => c.parent_comment.id != data.comment_deleted );
+
+	    	set_comments_number();
+	    }
 	    else
 	        document.body.appendChild(new AlertMessage(data.message));
 	});
@@ -463,20 +472,33 @@ function delete_comment()
     })
 }
 
-function delete_comment_child_DOM()
+function delete_comment_child_DOM(comment, is_child)
 {
-    let comment_id = get_comment_attribute(ACTION_COMMENT.comment_to_delete);
-    let comment_top_parent_id = get_comment_attribute(ACTION_COMMENT.comment_to_delete, attr='top_parent__id');
-    all_comment
-	.filter(p_comment => p_comment.parent_comment.id === comment_top_parent_id)[0]
-	.children
-	.forEach( c_comment => {
-	    if(c_comment.parent__id === comment_id){
-                let html_id = `#comment_${new Date(c_comment.added).getTime()}`;
-		let c = document.querySelector(html_id)
-		c.parentElement.removeChild(c);
+    if(is_child){
+        let comment_id = get_comment_attribute(comment);
+        let comment_top_parent_id = get_comment_attribute(comment, attr='top_parent__id');
+	
+        all_comment = all_comment.map(p_comment => {
+	    if(p_comment.parent_comment.id === comment_top_parent_id){
+		    console.log(p_comment);
+		p_comment.children = p_comment.children
+		    .filter(c_comment => c_comment.id !== comment_id)
+	            .filter( c_comment => {
+			    console.log(c_comment.parent__id, comment_id)
+			    console.log(p_comment.children)
+			if(c_comment.parent__id === comment_id){
+			    // Remove comment html element from DOM
+                            let html_id = `#comment_${new Date(c_comment.added).getTime()}`;
+		            let c = document.querySelector(html_id)
+		            c.parentElement.removeChild(c);
+	                }
+			return c_comment.parent__id !== comment_id; // Remove comment data from all_comment
+	            });
+		return p_comment;
 	    }
+	    return p_comment;
 	});
+    }
 }
 
 /*********** Scroll to a specific comment *************
@@ -715,6 +737,16 @@ function manage_vote_frontend(id, el)
     });
 }
 
+/******* Set number comments in comment label *********
+ * ****************************************************/
+function set_comments_number()
+{
+    let label_text = comment_label.innerText.replace(/\d+\s+/, '');
+    let nb_comments = all_comment.reduce( (acc, curr) => acc += curr.children.length, 0) + all_comment.length;
+	console.log("number comments", nb_comments);
+    comment_label.innerText = `${nb_comments} ${label_text}`;
+}
+
 /************  Get vote from the server  **************
  ******************************************************/
 fetch(base_vote_url).then(response=>{
@@ -727,6 +759,7 @@ fetch(base_vote_url).then(response=>{
     fetch(base_url).then(response=>{
         response.json().then(data=>{
 	    all_comment = data;
+	    set_comments_number()
             data.forEach(comment_data=>
             {
                 let parent_container = document.querySelector('.comment_container .comment_content');
