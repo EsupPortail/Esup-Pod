@@ -343,7 +343,6 @@ class VideoTestCase(TestCase):
         print(" --->  SetUp of VideoTestCase : OK !")
 
     def test_last_Video_display(self):
-        ContentType.objects.clear_cache()
         filter_en = Video.objects.filter(
             encoding_in_progress=False, is_draft=False)
         print("===== VIDEOSS =====")

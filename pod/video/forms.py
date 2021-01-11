@@ -504,6 +504,10 @@ class VideoForm(forms.ModelForm):
         if self.fields.get('owner'):
             self.fields['owner'].queryset = self.fields['owner']. \
                 queryset.filter(owner__sites=Site.objects.get_current())
+        if self.fields.get('additional_owners'):
+            self.fields['additional_owners'].queryset = self.fields[
+                'additional_owners'].queryset.filter(
+                    owner__sites=Site.objects.get_current())
 
     def custom_video_form(self):
         if FILEPICKER and self.fields.get('thumbnail'):
