@@ -81,9 +81,11 @@ class ConfirmModal extends HTMLElement
             // remove show children btn if no child in the node
             if(parent_el.classList.contains("comments_children_container") && parent_el.childElementCount===0)
             {
-                hide_or_add_show_children_btn(parent_el.parentElement);
+		parent_e = get_node(parent_el, "comment_element", "comment_child");
+                hide_or_add_show_children_btn(parent_e);
             }
-	    delete_comment(ACTION_COMMENT.comment_to_delete);
+	    delete_comment();
+            delete_comment_child_DOM();
             ACTION_COMMENT.comment_to_delete = null;
         });
         let cancel_btn = document.createElement("BUTTON");
@@ -288,18 +290,18 @@ function hide_or_add_show_children_btn(parent_comment=null)
         get_node(this.parentElement, "comment_element", "comment_child").classList.toggle("show");
         hide_show_child_comment_text(this);
     });
-
+    
     if(parent_comment)
     {
+    	let is_parent_comment_owner = user_id === get_comment_attribute(parent_comment, "author__id");
         let children_container = parent_comment.querySelector(".comments_children_container");
         if(!parent_comment.querySelector(".actions .comment_show_children_action") && children_container.childElementCount >0)
         {
-	   if(is_comment_owner || is_video_owner || is_superuser){
+	   if(is_parent_comment_owner || is_video_owner || is_superuser){
                parent_comment.querySelector(".comment_content_footer .actions").insertBefore(
 		       children_action, parent_comment.querySelector(".comment_content_footer .actions .comment_delete_action") );
 	   }
 	   else{
-		   console.log("NOt owner , Not video owner, Not super user")
 	       parent_comment.querySelector(".comment_content_footer .actions").appendChild(children_action );
 	   }
         }
@@ -319,7 +321,8 @@ function hide_or_add_show_children_btn(parent_comment=null)
             let comments_children_container= comment.querySelector(".comment .comment_container .comments_children_container");
             if(!comment.querySelector(".comment_content_footer .actions .comment_show_children_action") && comments_children_container.childElementCount > 0)
             {
-	   	if(!is_comment_owner || is_video_owner || is_superuser){
+    		let is_parent_comment_owner = user_id === get_comment_attribute(comment, "author__id");
+	   	if(is_parent_comment_owner || is_video_owner || is_superuser){
                     comment.querySelector(".comment_content_footer .actions").insertBefore(
 			    children_action, comment.querySelector(".comment_content_footer .actions .comment_delete_action") );
 		}
@@ -401,10 +404,13 @@ function save_comment(content, date, parent_id=null, top_parent_id=null)
 	            author__last_name: data.author__last_name,
 	            content: content,
 	            id: data.id,
-	            added: date
+	            added: date,
+		    parent__id: parent_id,
+		    top_parent__id: top_parent_id
 	        }
 	        if(!parent_id)
 		{
+		    // update all_comment data
 		    let p_c = {
 			parent_comment: c,
 		        children: []
@@ -413,10 +419,11 @@ function save_comment(content, date, parent_id=null, top_parent_id=null)
 		}
 	        else
 	        {
+		    // update all_comment data
 	            all_comment = all_comment.map((comment)=>{
 	   	        if(comment.parent_comment.id === top_parent_id)
-		            comment.children.push(c);
-		        return comment; 
+		            comment.children = [...comment.children, c];
+		        return comment;
 		    });
 	        }
 	    });
@@ -427,14 +434,13 @@ function save_comment(content, date, parent_id=null, top_parent_id=null)
 	    console.log(error)
 	    console.log(error.message)
     });
-
 }
 
 /****************  Delete Comment  ****************
  ******************************************************/
-function delete_comment(target_comment_html)
+function delete_comment()
 {
-    let comment_id = get_comment_attribute(target_comment_html);
+    let comment_id = get_comment_attribute(ACTION_COMMENT.comment_to_delete);
     let url = base_delete_url + comment_id + '/';
     let data = new FormData();
     data.append('csrfmiddlewaretoken', Cookies.get('csrftoken'));
@@ -453,6 +459,22 @@ function delete_comment(target_comment_html)
 	console.log(error);
 	console.log(error.message);
     })
+}
+
+function delete_comment_child_DOM()
+{
+    let comment_id = get_comment_attribute(ACTION_COMMENT.comment_to_delete);
+    let comment_top_parent_id = get_comment_attribute(ACTION_COMMENT.comment_to_delete, attr='top_parent__id');
+    all_comment
+	.filter(p_comment => p_comment.parent_comment.id === comment_top_parent_id)[0]
+	.children
+	.forEach( c_comment => {
+	    if(c_comment.parent__id === comment_id){
+                let html_id = `#comment_${new Date(c_comment.added).getTime()}`;
+		let c = document.querySelector(html_id)
+		c.parentElement.removeChild(c);
+	    }
+	});
 }
 
 /*********** Scroll to a specific comment *************
@@ -589,7 +611,7 @@ function add_child_comment(el, container_el, parent_comment)
 	setBorderLeftColor(c, child_direct_parent)
 	//container_el.prepend(c);
 	container_el.appendChild(c);
-        hide_or_add_show_children_btn(container_el.parentElement);
+        hide_or_add_show_children_btn(get_node(container_el, "comment_element", "comment_child"));
 
         // INSERT INTO DATABASE THE CURRENT COMMENT CHILD
 	let p_id = get_comment_attribute( child_direct_parent );
@@ -611,20 +633,25 @@ function get_comment_attribute(comment_html, attr="id")
 {
     let curr_html_id = comment_html.getAttribute('id');
     let comment_attr = null
-    all_comment.forEach(comment=>
-    {
-	let comment_htmlid = `comment_${new Date(comment.parent_comment.added).getTime()}`;
+    for(const comment of all_comment){
+        let comment_htmlid = `comment_${new Date(comment.parent_comment.added).getTime()}`;
+
 	if(comment_htmlid == curr_html_id)
 	{
 	    comment_attr = comment.parent_comment[attr];
+	    break;
 	}
-	comment.children.forEach(c_comment=>
+	for(const c_comment of comment.children)
 	{
+
 	    let c_comment_htmlid = `comment_${new Date(c_comment.added).getTime()}`;
-	    if(c_comment_htmlid == curr_html_id)
+	    if(c_comment_htmlid == curr_html_id){
 	        comment_attr = c_comment[attr];
-	});
-    });
+	        break;
+	    }
+	}
+	if(comment_attr) break;
+    }
     return comment_attr;
 }
 
