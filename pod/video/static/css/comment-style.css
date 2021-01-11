@@ -601,7 +601,7 @@
 }
 @keyframes scrolltocomment{
     0% {
-        background-color: rgba(255, 234, 59);
+        background-color: #f9f99b; /* rgba(255, 234, 59)*/
     }
     100% {
 	 background-color: var(--third-background-color);
