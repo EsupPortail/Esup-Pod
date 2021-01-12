@@ -687,9 +687,13 @@ function set_comments_number() {
     comment_label.innerText = `${nb_comments} ${label_text}`;
 }
 
+// Loader Element
+const loader = document.querySelector(".comment_content > .lds-ring");
+
 /************  Get vote from the server  **************
  ******************************************************/
 fetch(base_vote_url).then(response => {
+    loader.classList.remove('hide'); // show loader
     response.json().then(data => {
         VOTED_USERS = data.votes;
     });
@@ -698,6 +702,7 @@ fetch(base_vote_url).then(response => {
      ******************************************************/
     fetch(base_url).then(response => {
         response.json().then(data => {
+            loader.classList.add('hide'); // hide loader
             all_comment = data;
             set_comments_number()
             data.forEach(comment_data => {
