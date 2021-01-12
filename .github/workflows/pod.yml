@@ -44,9 +44,9 @@ jobs:
         stack-version: 7.6.0
     - name: Setup Pod
       run: |
-        python manage.py create_pod_index
-        python manage.py makemigrations
-        python manage.py migrate
+        python manage.py create_pod_index --settings=pod.main.test_settings
+        python manage.py makemigrations --settings=pod.main.test_settings
+        python manage.py migrate --settings=pod.main.test_settings
     - name: Run Tests
       run: |
         python manage.py test --settings=pod.main.test_settings
