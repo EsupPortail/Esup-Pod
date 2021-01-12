@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.utils.html import format_html
 from django.utils.translation import ugettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
+
 from .models import Video
 from .models import Channel
 from .models import Theme
@@ -20,7 +21,6 @@ from .models import Notes, AdvancedNotes, NoteComments
 from .models import ViewCount
 from .models import VideoToDelete
 from .models import VideoVersion
-from .transcript import start_transcript
 
 from .forms import VideoForm, VideoVersionForm
 from .forms import ChannelForm
@@ -45,6 +45,14 @@ USE_ESTABLISHMENT_FIELD = getattr(
     settings, 'USE_ESTABLISHMENT_FIELD', False)
 
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
+
+if TRANSCRIPT:
+    from . import transcript
+    TRANSCRIPT_VIDEO = getattr(
+        settings,
+        'TRANSCRIPT_VIDEO',
+        'start_transcript'
+    )
 
 USE_OBSOLESCENCE = getattr(
     settings, "USE_OBSOLESCENCE", False)
@@ -75,10 +83,10 @@ class EncodedFilter(admin.SimpleListFilter):
         value = self.value()
         if value == 'Yes':
             queryset = queryset.exclude(
-                    pk__in=[vid.id for vid in queryset if not vid.encoded])
+                pk__in=[vid.id for vid in queryset if not vid.encoded])
         elif value == 'No':
             queryset = queryset.exclude(
-                    pk__in=[vid.id for vid in queryset if vid.encoded])
+                pk__in=[vid.id for vid in queryset if vid.encoded])
         return queryset
 
 
@@ -199,7 +207,8 @@ class VideoAdmin(admin.ModelAdmin):
                 if CELERY_TO_ENCODE:
                     task_start_transcript.delay(item.id)
                 else:
-                    start_transcript(item.id)
+                    transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
+                    transcript_video(item.id)
     transcript_video.short_description = _('Transcript selected')
 
     def get_queryset(self, request):
@@ -212,9 +221,9 @@ class VideoAdmin(admin.ModelAdmin):
     def change_view(self, request, object_id, form_url='', extra_context=None):
         extra_context = extra_context or {}
         extra_context['max_duration_date_delete'] = getattr(
-                settings, 'MAX_DURATION_DATE_DELETE', 10)
+            settings, 'MAX_DURATION_DATE_DELETE', 10)
         return super(VideoAdmin, self).change_view(
-                request, object_id, form_url, extra_context)
+            request, object_id, form_url, extra_context)
 
     def save_model(self, request, obj, form, change):
         super().save_model(request, obj, form, change)
@@ -342,10 +351,10 @@ class ThemeAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "parentId":
             kwargs["queryset"] = Theme.objects.filter(
-                    channel__sites=Site.objects.get_current())
+                channel__sites=Site.objects.get_current())
         if (db_field.name) == "channel":
             kwargs["queryset"] = Channel.objects.filter(
-                    sites=Site.objects.get_current())
+                sites=Site.objects.get_current())
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
@@ -447,10 +456,10 @@ class EncodingVideoAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "video":
             kwargs["queryset"] = Video.objects.filter(
-                    sites=Site.objects.get_current())
+                sites=Site.objects.get_current())
         if (db_field.name) == "rendition":
             kwargs["queryset"] = VideoRendition.objects.filter(
-                    sites=Site.objects.get_current())
+                sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
@@ -467,7 +476,7 @@ class EncodingAudioAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "video":
             kwargs["queryset"] = Video.objects.filter(
-                    sites=Site.objects.get_current())
+                sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
@@ -484,7 +493,7 @@ class PlaylistVideoAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "video":
             kwargs["queryset"] = Video.objects.filter(
-                    sites=Site.objects.get_current())
+                sites=Site.objects.get_current())
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
@@ -560,10 +569,10 @@ class NotesAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "user":
             kwargs["queryset"] = User.objects.filter(
-                    owner__sites=Site.objects.get_current())
+                owner__sites=Site.objects.get_current())
         if (db_field.name) == "video":
             kwargs["queryset"] = Video.objects.filter(
-                    sites=Site.objects.get_current())
+                sites=Site.objects.get_current())
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
@@ -589,10 +598,10 @@ class AdvancedNotesAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "user":
             kwargs["queryset"] = User.objects.filter(
-                    owner__sites=Site.objects.get_current())
+                owner__sites=Site.objects.get_current())
         if (db_field.name) == "video":
             kwargs["queryset"] = Video.objects.filter(
-                    sites=Site.objects.get_current())
+                sites=Site.objects.get_current())
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
@@ -617,10 +626,10 @@ class NoteCommentsAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "user":
             kwargs["queryset"] = User.objects.filter(
-                    owner__sites=Site.objects.get_current())
+                owner__sites=Site.objects.get_current())
         if (db_field.name) == "parentNote":
             kwargs["queryset"] = AdvancedNotes.objects.filter(
-                    video__owner__owner__sites=Site.objects.get_current())
+                video__owner__owner__sites=Site.objects.get_current())
         if (db_field.name) == "parentCom":
             kwargs["queryset"] = NoteComments. \
                 objects.filter(
