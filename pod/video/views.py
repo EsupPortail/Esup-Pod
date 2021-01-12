@@ -1649,7 +1649,6 @@ def video_add(request):
         'TRANSCRIPT': TRANSCRIPT})
 
 
-@login_required(redirect_field_name='referrer')
 @csrf_protect
 def vote(request, video_slug, comment_id=None):
     c_video = get_object_or_404(Video, slug=video_slug)
