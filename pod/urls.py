@@ -31,7 +31,8 @@ from pod.video.views import video_notes
 from pod.video.views import video_count, video_version
 from pod.video.views import video_oembed
 from pod.video.views import stats_view
-from pod.video.views import get_comments, add_comment, delete_comment, vote
+from pod.video.views import get_comments, add_comment, delete_comment
+from pod.video.views import vote_get, vote_post
 from pod.video.views import get_categories, add_category
 from pod.video.views import edit_category, delete_category
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
@@ -238,9 +239,9 @@ if getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
         url(r'^comment/del/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
             delete_comment, name='delete_comment'),
         url(r'^comment/vote/(?P<video_slug>[\-\d\w]+)/$',
-            vote, name='get_votes'),
+            vote_get, name='get_votes'),
         url(r'^comment/vote/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
-            vote, name='add_vote'),
+            vote_post, name='add_vote'),
     ]
 
 # VIDEO CATEGORY
