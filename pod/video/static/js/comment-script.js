@@ -205,7 +205,15 @@ class Comment extends HTMLElement
             });
             new_comment.addEventListener("keydown", function(e)
             {
-                if (!((e.ctrlKey  &&  e.keyCode === 13) || (e.shiftKey  &&  e.keyCode === 13)) && e.keyCode === 13) {
+                if ( 
+		    (e.ctrlKey  &&  e.keyCode === 13) ||
+		    (e.shiftKey  &&  e.keyCode === 13)
+		){
+		    e.preventDefault();
+		    this.value = this.value + '\r\n'; 
+		    this.scrollTop = this.scrollHeight;
+		}
+		else if (e.keyCode === 13) {
                     let child_container = get_node(this, "comments_children_container");
                     if(!child_container.classList.contains("show"))
                         child_container.classList.add("show");
@@ -466,12 +474,9 @@ function delete_comment_child_DOM(comment, is_child)
 	
         all_comment = all_comment.map(p_comment => {
 	    if(p_comment.parent_comment.id === comment_top_parent_id){
-		    console.log(p_comment);
 		p_comment.children = p_comment.children
 		    .filter(c_comment => c_comment.id !== comment_id)
 	            .filter( c_comment => {
-			    console.log(c_comment.parent__id, comment_id)
-			    console.log(p_comment.children)
 			if(c_comment.parent__id === comment_id){
 			    // Remove comment html element from DOM
                             let html_id = `#comment_${new Date(c_comment.added).getTime()}`;
@@ -725,7 +730,6 @@ function set_comments_number()
 {
     let label_text = comment_label.innerText.replace(/\d+\s+/, '');
     let nb_comments = all_comment.reduce( (acc, curr) => acc += curr.children.length, 0) + all_comment.length;
-	console.log("number comments", nb_comments);
     comment_label.innerText = `${nb_comments} ${label_text}`;
 }
 
