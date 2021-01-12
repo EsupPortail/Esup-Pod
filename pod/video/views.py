@@ -1650,37 +1650,43 @@ def video_add(request):
 
 
 @csrf_protect
-def vote(request, video_slug, comment_id=None):
+def vote_get(request, video_slug):
     c_video = get_object_or_404(Video, slug=video_slug)
     if request.method == "POST":
-        c = get_object_or_404(
-            Comment, video=c_video, id=comment_id)if comment_id else None
-        c_user = request.user
-        if not c_user:
-            return HttpResponse('<h1>Bad Request</h1>', status=400)
-        response = {}
-        c_vote = Vote.objects.filter(
-            user=c_user, comment=c, comment__video=c_video).first()
-        if c_vote:
-            c_vote.delete()
-            response['voted'] = False
-        else:
-            c_vote = Vote()
-            c_vote.comment = c
-            c_vote.user = c_user
-            c_vote.save()
-            response['voted'] = True
-
-        return HttpResponse(
-            json.dumps(response),
-            content_type="application/json")
-    if comment_id:
         return HttpResponseNotFound('<h1>Method Not Allowed</h1>', status=405)
     else:
         votes = Vote.objects.filter(
             comment__video=c_video).values('user__id', 'comment__id')
         data = {'votes': list(votes)}
         return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+@login_required(redirect_field_name='referrer')
+def vote_post(request, video_slug, comment_id):
+    if request.method == "GET":
+        return HttpResponseNotFound('<h1>Method Not Allowed</h1>', status=405)
+
+    c_video = get_object_or_404(Video, slug=video_slug)
+    c = get_object_or_404(
+        Comment, video=c_video, id=comment_id)if comment_id else None
+    c_user = request.user
+    if not c_user:
+        return HttpResponse('<h1>Bad Request</h1>', status=400)
+    response = {}
+    c_vote = Vote.objects.filter(
+        user=c_user, comment=c, comment__video=c_video).first()
+    if c_vote:
+        c_vote.delete()
+        response['voted'] = False
+    else:
+        c_vote = Vote()
+        c_vote.comment = c
+        c_vote.user = c_user
+        c_vote.save()
+        response['voted'] = True
+
+    return HttpResponse(
+        json.dumps(response), content_type="application/json")
 
 
 @login_required(redirect_field_name='referrer')
