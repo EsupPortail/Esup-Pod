@@ -21,6 +21,8 @@ from .models import ViewCount
 from .models import VideoToDelete
 from .models import VideoVersion
 from .transcript import start_transcript
+from django.utils.html import mark_safe
+
 
 from .forms import VideoForm, VideoVersionForm
 from .forms import ChannelForm
@@ -113,7 +115,7 @@ class VideoAdmin(admin.ModelAdmin):
     list_display_links = ('id', 'title')
     list_filter = ('date_added', ('channel', admin.RelatedOnlyFieldListFilter),
                    ('type', admin.RelatedOnlyFieldListFilter), 'is_draft',
-                   'encoding_in_progress', EncodedFilter)
+                   'encoding_in_progress', EncodedFilter, 'owner')
     autocomplete_fields = ['type', 'owner', 'additional_owners', 'discipline',
                            'channel', 'theme', 'restrict_access_to_groups']
     # Ajout de l'attribut 'date_delete'
@@ -158,7 +160,7 @@ class VideoAdmin(admin.ModelAdmin):
     def get_owner_by_name(self, obj):
         owner = obj.owner
         url = url_to_edit_object(owner)
-        return u'%s %s (%s)' % (owner.first_name, owner.last_name, url)
+        return mark_safe(u'%s %s (%s)' % (owner.first_name, owner.last_name, url))
 
     get_owner_by_name.allow_tags = True
     get_owner_by_name.short_description = _('Owner')
