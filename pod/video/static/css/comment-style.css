@@ -319,6 +319,7 @@
     width: 100%;
     border-bottom: 1px solid var(--background-color);
     padding: 1em 0;
+    margin-bottom: 2em;
 }
 .comment_main .form-wrapper
 {
