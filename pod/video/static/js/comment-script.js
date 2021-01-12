@@ -6,15 +6,15 @@ const lang_btn = document.querySelector(".btn-lang.btn-lang-active");
 const comment_label = document.querySelector('.comment_label');
 let VOTED_USERS = [];
 const COLORS = [
-    "#5F616D",
-    "#6B6D79",
-    "#767984",
-    "#828590",
-    "#8D929B",
-    "#999EA7",
-    "#A4AAB2",
-    "#B0B6BE",
-    "#BBC2C9",
+    "#050710",
+    "#0E112A",
+    "#1D1543",
+    "#302163",
+    "#432B82",
+    "#53358F",
+    "#643FBD",
+    "#755CC9",
+    "#877CD3",
 ]
 const LANG = lang_btn ? lang_btn.textContent.trim() : "fr";
 const ACTION_COMMENT = {
@@ -587,7 +587,6 @@ function add_child_comment(el, container_el, parent_comment) {
             is_parent = false,
             is_comment_owner = true);
         setBorderLeftColor(c, child_direct_parent)
-        //container_el.prepend(c);
         container_el.appendChild(c);
 
         hide_or_add_show_children_btn(
