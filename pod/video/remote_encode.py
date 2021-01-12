@@ -207,7 +207,7 @@ def store_remote_encoding_video(video_id):
     # Transcript
     if (TRANSCRIPT and video_encoding.transcript):
         transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
-        transcript_video(video_id)
+        transcript_video(video_id, False)
 
     print('ALL is DONE')
 

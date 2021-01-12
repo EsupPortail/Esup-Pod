@@ -36,8 +36,6 @@ from pod.completion.admin import TrackInline
 from django.contrib.sites.shortcuts import get_current_site
 from pod.chapter.admin import ChapterInline
 
-from pod.main.tasks import task_start_transcript
-
 # Ordering user by username !
 User._meta.ordering = ["username"]
 # SET USE_ESTABLISHMENT_FIELD
@@ -204,11 +202,8 @@ class VideoAdmin(admin.ModelAdmin):
     def transcript_video(self, request, queryset):
         for item in queryset:
             if item.get_video_mp3() and not item.encoding_in_progress:
-                if CELERY_TO_ENCODE:
-                    task_start_transcript.delay(item.id)
-                else:
-                    transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
-                    transcript_video(item.id)
+                transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
+                transcript_video(item.id)
     transcript_video.short_description = _('Transcript selected')
 
     def get_queryset(self, request):
