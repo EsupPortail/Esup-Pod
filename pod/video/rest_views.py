@@ -82,6 +82,8 @@ class VideoUserSerializer(serializers.ModelSerializer):
         video_data.update(
             {"encoding_in_progress": instance.encoding_in_progress})
         video_data.update(
+            {"get_encoding_step": instance.get_encoding_step})
+        video_data.update(
             {"get_thumbnail_admin": instance.get_thumbnail_admin})
         video_data.update({"mp4_file": instance.get_video_mp4_json()})
         video_data.update({"mp3_file": instance.get_video_mp3(
@@ -176,6 +178,9 @@ class VideoViewSet(viewsets.ModelViewSet):
         #    owner__username=request.GET.get('username'))
         user_videos = self.filter_queryset(self.get_queryset()).filter(
             owner__username=request.GET.get('username'))
+        if request.GET.get('encoded') and request.GET.get('encoded') == "true":
+            user_videos = user_videos.exclude(
+                pk__in=[vid.id for vid in VIDEOS if not vid.encoded])
         page = self.paginate_queryset(user_videos)
         if page is not None:
             serializer = VideoUserSerializer(
