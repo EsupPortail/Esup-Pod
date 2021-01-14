@@ -1024,3 +1024,13 @@ H5P_EXPORT = '/exports/'
 H5P_LANGUAGE = 'fr'
 BASE_URL = 'https://pod.univ.fr/'
 
+"""
+# Vous pouvez définir le drapeau Http cookie SameSite sur tous les cookies
+# (même sur ceux provenant d'applications Django tierces)
+"""
+SESSION_COOKIE_SAMESITE_FORCE_ALL = True
+"""
+# Vous pouvez définir le drapeau Http cookie SameSite à:
+# 'Strict', 'Lax' ou 'None'
+"""
+SESSION_COOKIE_SAMESITE = 'Lax'

@@ -5,6 +5,8 @@ from rest_framework.response import Response
 # from rest_framework import authentication, permissions
 from rest_framework import renderers
 from rest_framework.decorators import api_view
+from rest_framework.decorators import action
+
 from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
 
@@ -14,6 +16,8 @@ from .models import VideoRendition, EncodingVideo, EncodingAudio
 from .models import PlaylistVideo
 from .views import VIDEOS
 from .remote_encode import start_store_remote_encoding_video
+
+import json
 
 # Serializers define the API representation.
 
@@ -63,7 +67,38 @@ class VideoSerializer(serializers.HyperlinkedModelSerializer):
             'encoding_in_progress', 'duration', 'sites', 'disable_comment',
             'get_encoding_step', 'get_version', 'encoded', 'duration_in_time'
         )
-        filter_fields = ('owner', 'type', 'date_added')
+        read_only_fields = ('encoding_in_progress', 'duration',
+                            'get_encoding_step',
+                            'get_version', 'encoded', 'duration_in_time'
+                            )
+
+
+class VideoUserSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        data = super(VideoUserSerializer, self).to_representation(instance)
+        video_data = json.loads(instance.get_json_to_index())
+        video_data.update({"encoded": instance.encoded})
+        video_data.update(
+            {"encoding_in_progress": instance.encoding_in_progress})
+        video_data.update(
+            {"get_encoding_step": instance.get_encoding_step})
+        video_data.update(
+            {"get_thumbnail_admin": instance.get_thumbnail_admin})
+        video_data.update({"mp4_file": instance.get_video_mp4_json()})
+        video_data.update({"mp3_file": instance.get_video_mp3(
+        ).source_file.url if instance.get_video_mp3() else ""})
+        video_data.update({"m4a_file": instance.get_video_m4a(
+        ).source_file.url if instance.get_video_m4a() else ""})
+        data["video_data"] = video_data
+        return data
+
+    class Meta:
+        model = Video
+        fields = (
+            'id', 'url', 'get_version', 'type', 'date_added', 'is_draft',
+            'is_restricted', 'encoding_in_progress', 'encoded',
+        )
         read_only_fields = ('encoding_in_progress', 'duration',
                             'get_encoding_step',
                             'get_version', 'encoded', 'duration_in_time'
@@ -134,7 +169,27 @@ class DisciplineViewSet(viewsets.ModelViewSet):
 class VideoViewSet(viewsets.ModelViewSet):
     queryset = Video.objects.all()
     serializer_class = VideoSerializer
-    filter_fields = ('owner', 'type', 'date_added', 'channel', 'discipline')
+    filter_fields = ('owner', 'type', 'date_added', 'is_draft',
+                     'is_restricted', 'encoding_in_progress')
+
+    @action(detail=False, methods=['get'])
+    def user_videos(self, request):
+        # user_videos = Video.objects.filter(
+        #    owner__username=request.GET.get('username'))
+        user_videos = self.filter_queryset(self.get_queryset()).filter(
+            owner__username=request.GET.get('username'))
+        if request.GET.get('encoded') and request.GET.get('encoded') == "true":
+            user_videos = user_videos.exclude(
+                pk__in=[vid.id for vid in VIDEOS if not vid.encoded])
+        page = self.paginate_queryset(user_videos)
+        if page is not None:
+            serializer = VideoUserSerializer(
+                page, many=True, context={'request': request})
+            return self.get_paginated_response(serializer.data)
+
+        serializer = VideoUserSerializer(
+            user_videos, many=True, context={'request': request})
+        return Response(serializer.data)
 
 
 class VideoRenditionViewSet(viewsets.ModelViewSet):
