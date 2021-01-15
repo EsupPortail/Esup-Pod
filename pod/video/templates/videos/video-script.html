@@ -21,8 +21,8 @@ window.onmessage = function(event) {
       evt.source.postMessage({paused: player.muted(), data: {}}, evt.origin);
     }
 };
-
-var options = {
+const seektime = 10;
+const options = {
   notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
   //language: "fr", //en or nl
   {% if request.GET.is_iframe %}
@@ -48,20 +48,20 @@ var options = {
       if (event.code === 'ArrowLeft') {
         event.preventDefault();
         const now = this.currentTime();
-        this.currentTime(now - 10);
+        this.currentTime(now - seektime);
       }
       // `arrow right`
       if (event.code === 'ArrowRight') {
         event.preventDefault();
         const now = this.currentTime();
-        this.currentTime(now + 10);
+        this.currentTime(now + seektime);
       }
     }
   },
   plugins: {
    seekButtons: {
-    forward: 10,
-    back: 10
+    forward: seektime,
+    back: seektime
    }
   }
 }
@@ -85,8 +85,7 @@ player.on('firstplay', function(){
       type: '{{video.get_playlist_master.encoding_format}}',
     };
     player.on('loadedmetadata', function() {
-      //console.log('LOADEDMETADATA');
-      // var qualityLevels = this.qualityLevels();
+      //var qualityLevels = this.qualityLevels();
       {% if request.GET.start and request.GET.start != '0' %}
       player.currentTime({{request.GET.start}});
       {%endif%}
@@ -105,7 +104,7 @@ player.on('firstplay', function(){
         //console.log('error!', error.code, error.type , error.message);
         if(player.src()=="" || player.src().indexOf("m3u8")!=-1){
           player.src(mp4_sources);
-          //player.controlBar.addChild('QualitySelector');
+          player.controlBar.addChild('QualitySelector');
           player.play();
         }
       }
