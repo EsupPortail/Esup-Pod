@@ -24,13 +24,43 @@ window.onmessage = function(event) {
 
 var options = {
   notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
-  language: "fr", //en or nl
+  //language: "fr", //en or nl
   {% if request.GET.is_iframe %}
     fluid: false,
   {% else %}
     fluid: true,
   {% endif %}
-  playbackRates: [0.5, 1, 1.5, 2]
+  playbackRates: [0.5, 1, 1.5, 2],
+  userActions: {
+    hotkeys: function(event) {
+      // `this` is the player in this context
+      if (event.code === 'Space') {
+        event.preventDefault();
+        var isPlaying = !this.paused();
+        if(isPlaying) this.pause();
+        else this.play();
+      }
+      // `arrow left`
+      if (event.code === 'ArrowLeft') {
+        event.preventDefault();
+        const now = this.currentTime();
+        this.currentTime(now - 10);
+      }
+      // `arrow right`
+      if (event.code === 'ArrowRight') {
+        event.preventDefault();
+        const now = this.currentTime();
+        this.currentTime(now + 10);
+      }
+    }
+  },
+
+  plugins: {
+   seekButtons: {
+    forward: 10,
+    back: 10
+   }
+  }
 }
 var player = videojs('podvideoplayer', options, function(){});
 
@@ -53,7 +83,7 @@ player.on('firstplay', function(){
     };
     player.on('loadedmetadata', function() {
       //console.log('LOADEDMETADATA');
-      var qualityLevels = this.qualityLevels();
+      // var qualityLevels = this.qualityLevels();
       {% if request.GET.start and request.GET.start != '0' %}
       player.currentTime({{request.GET.start}});
       {%endif%}
@@ -61,7 +91,9 @@ player.on('firstplay', function(){
     //Add source to player
     player.src(srcOptions);
     //add quality selector to player
-    player.hlsQualitySelector();
+    player.hlsQualitySelector({
+        displayCurrentQuality: true,
+    });
     player.on("error", function(e){
       e.stopImmediatePropagation();
       var error = player.error();
@@ -70,7 +102,7 @@ player.on('firstplay', function(){
         //console.log('error!', error.code, error.type , error.message);
         if(player.src()=="" || player.src().indexOf("m3u8")!=-1){
           player.src(mp4_sources);
-          player.controlBar.addChild('QualitySelector');
+          //player.controlBar.addChild('QualitySelector');
           player.play();
         }
       }
@@ -79,7 +111,13 @@ player.on('firstplay', function(){
     player.src(mp4_sources);
     player.controlBar.addChild('QualitySelector');
   {% endif %}
-
+  {% if video.overview %}
+    //add overview
+    player.vttThumbnails({
+      src: '{% if request.is_secure %}https://{%else%}http://{% endif %}{{request.get_host}}{{video.overview.url}}'
+    });
+  {%endif%}
+  /*
   {% if video.overlay_set.all %}
     var list_overlays = [];
     $('ul#overlays li').each(function() {
@@ -98,12 +136,6 @@ player.on('firstplay', function(){
     }
   {% endif %}
 
-  {% if video.overview %}
-    //add overview
-    player.vttThumbnails({
-      src: '{% if request.is_secure %}https://{%else%}http://{% endif %}{{request.get_host}}{{video.overview.url}}'
-    });
-  {%endif%}
   {% if video.is_360 %}
     player.vr({projection: '360'});
   {% endif %}
@@ -111,6 +143,7 @@ player.on('firstplay', function(){
   {% if request.GET.is_iframe %}
   player.videoJsInfo();
   {%endif%}
+  */
   player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
 {% else %}
   {% if video.get_video_m4a %}
@@ -136,5 +169,6 @@ player.on('firstplay', function(){
     player.videoJsChapters();
     $('.vjs-big-play-button').css('z-index', 2)
     $('.vjs-control-bar').css('z-index', 3);
-  {% endif %}
+{% endif %}
+
 </script>
