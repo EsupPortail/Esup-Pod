@@ -1460,8 +1460,11 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     parent = models.ForeignKey(
-            'self', related_name="children", null=True, blank=True,
-            on_delete=models.CASCADE)
+        'self', related_name="children", null=True, blank=True,
+        on_delete=models.CASCADE)
+    direct_parent = models.ForeignKey(
+        'self', related_name="direct_children", null=True, blank=True,
+        on_delete=models.CASCADE)
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
     added = models.DateTimeField(auto_now_add=True)
 
@@ -1475,41 +1478,17 @@ class Comment(models.Model):
 
     @property
     def get_children(self):
-        all_c = Comment.objects.filter(
-            video=self.video
-        ).order_by('added').annotate(
-            nbr_vote=Count('vote')
-        )
-        return list(
-            map(
-                lambda c: {
-                    'id': c.id,
-                    'parent__id': c.parent.id if c.parent else None,
-                    'top_parent__id': c.top_parent_comment.id,
-                    'author__id': c.author.id,
-                    'author__first_name': c.author.first_name,
-                    'author__last_name': c.author.last_name,
-                    'content': c.content,
-                    'added': c.added,
-                    'nbr_vote': c.nbr_vote},
-                filter(
-                    lambda c: (
-                        c.id != self.id and
-                        c.top_parent_comment.id == self.id),
-                    all_c
-                )
-            )
-        )
+        return Comment.objects.filter(parent_id=self.id)
 
     @property
-    def top_parent_comment(self):
-        parent_c = self
-        while parent_c:
-            if not parent_c.parent:
-                break
-            parent_c = parent_c.parent
-
-        return parent_c
+    def get_json_children(self):
+        return self.get_children.annotate(
+            nbr_vote=Count('vote')).values(
+            'id', 'parent__id', 'direct_parent__id',
+            'author__id', 'author__first_name',
+            'author__last_name', 'added', 'content',
+            'nbr_vote'
+        )
 
     def __str__(self):
         return self.content
