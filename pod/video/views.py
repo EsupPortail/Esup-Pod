@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.http import HttpResponseNotAllowed, HttpResponseNotFound
 from django.http import HttpResponseForbidden, HttpResponseBadRequest
-from django.http import QueryDict
+from django.http import QueryDict, Http404
 from django.core.exceptions import SuspiciousOperation
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_protect
@@ -1651,6 +1651,7 @@ def video_add(request):
 
 @csrf_protect
 def vote_get(request, video_slug):
+    # current video
     c_video = get_object_or_404(Video, slug=video_slug)
     if request.method == "POST":
         return HttpResponseNotFound('<h1>Method Not Allowed</h1>', status=405)
@@ -1665,14 +1666,17 @@ def vote_get(request, video_slug):
 def vote_post(request, video_slug, comment_id):
     if request.method == "GET":
         return HttpResponseNotFound('<h1>Method Not Allowed</h1>', status=405)
-
+    # current video
     c_video = get_object_or_404(Video, slug=video_slug)
+    # current comment
     c = get_object_or_404(
         Comment, video=c_video, id=comment_id)if comment_id else None
+    # current user
     c_user = request.user
     if not c_user:
         return HttpResponse('<h1>Bad Request</h1>', status=400)
     response = {}
+    # get vote on current comment
     c_vote = Vote.objects.filter(
         user=c_user, comment=c, comment__video=c_video).first()
     if c_vote:
@@ -1693,19 +1697,25 @@ def vote_post(request, video_slug, comment_id):
 @csrf_protect
 def add_comment(request, video_slug, comment_id=None):
     if request.method == "POST":
+        # current video
         c_video = get_object_or_404(Video, slug=video_slug)
+        # current user
         c_user = request.user
-        c_top_parent = get_object_or_404(
-            Comment, id=request.POST.get('top_parent'))if(
-                request.POST.get('top_parent')) else None
+        # current comment first parent(direct on video)
+        c_direct_parent = get_object_or_404(
+            Comment, id=request.POST.get('direct_parent'))if(
+                request.POST.get('direct_parent')) else None
+        # comment's direct parent
         c_parent = get_object_or_404(
             Comment, id=comment_id)if comment_id else None
+        # comment text
         c_content = request.POST.get('content', '')
+        # comment date added
         c_date = request.POST.get('date_added', None)
         if c_content:
             c = Comment()
-            if c_top_parent:
-                c.top_parent = c_top_parent
+            if c_direct_parent:
+                c.direct_parent = c_direct_parent
             if c_parent:
                 c.parent = c_parent
             if c_date:
@@ -1726,35 +1736,113 @@ def add_comment(request, video_slug, comment_id=None):
     return HttpResponseNotFound('<h1>Method Not Allowed</h1>', status=405)
 
 
-def get_comments(request, video_slug):
-    v = get_object_or_404(Video, slug=video_slug)
+def get_parent_comments(request, video):
+    """
+    return only comments without parent
+    (direct comments to video) which contains
+    number of votes and children
+    """
+    parent_comment = Comment.objects.filter(
+        video=video, parent=None).order_by('added').annotate(
+            nbr_vote=Count('vote', distinct=True)).annotate(
+                nbr_child=Count('children', distinct=True)).values(
+                    'id',
+                    'author__id',
+                    'author__first_name',
+                    'author__last_name',
+                    'content',
+                    'added',
+                    'nbr_vote',
+                    'nbr_child')
+    return HttpResponse(
+        json.dumps(list(parent_comment), cls=DjangoJSONEncoder),
+        content_type="application/json")
 
-    # extract parent comments
-    p_c = Comment.objects.filter(
-        video=v, parent=None).order_by('added').annotate(
-            nbr_vote=Count('vote'))
 
-    # organize comments => parent with children
-    comment_org = []
-    for c in p_c:
-        children_comments = c.get_children
-        c = {
-            'id': c.id,
-            'parent__id': None,
-            'top_parent__id': None,
-            'author__first_name': c.author.first_name,
-            'author__last_name': c.author.last_name,
-            'author__id': c.author.id,
-            'content': c.content,
-            'added': c.added,
-            'nbr_vote': c.nbr_vote
+def get_children_comment(request, comment_id, video_slug):
+    """
+    return one comment with all children
+    """
+    try:
+        v = get_object_or_404(Video, slug=video_slug)
+        parent_comment = Comment.objects.filter(
+                video=v, id=comment_id).annotate(
+                    nbr_vote=Count('vote')).first()
+        if parent_comment is None:
+            raise Exception("Error: comment doesn't exist : " + comment_id)
+
+        def is_owner(child):
+            """
+            add is_owner property
+            remove author_id from json data
+            """
+            child['is_owner'] = child['author__id'] == request.user.id
+            del child['author__id']
+            return child
+
+        children = list(map(is_owner, parent_comment.get_json_children))
+        parent_comment_data = {
+            'id': parent_comment.id,
+            'author__first_name': parent_comment.author.first_name,
+            'author__last_name': parent_comment.author.last_name,
+            'is_owner': parent_comment.author.id == request.user.id,
+            'content': parent_comment.content,
+            'added': parent_comment.added,
+            'nbr_vote': parent_comment.nbr_vote,
+            'children': children
         }
-        comment_org.append({
-            'parent_comment': c, 'children': children_comments})
+    except Http404:
+        return HttpResponse(
+            json.dumps({"error": "Comment doesn't exist"}),
+            content_type="application/json")
 
     return HttpResponse(
-        json.dumps(comment_org, cls=DjangoJSONEncoder),
+        json.dumps(parent_comment_data, cls=DjangoJSONEncoder),
         content_type="application/json")
+
+
+def get_comments(request, video_slug):
+    v = get_object_or_404(Video, slug=video_slug)
+    filter_type = request.GET.get('only', None)
+
+    # get all direct(parent) comments to a video
+    if filter_type and filter_type.lower() == "parents":
+        return get_parent_comments(request, v)
+
+    else:  # get all comments with all children
+        # extract parent comments
+        p_c = Comment.objects.filter(
+            video=v, parent=None).order_by('added').annotate(
+                nbr_vote=Count('vote'))
+
+        def is_owner(child):
+            """
+            add is_owner property
+            remove author_id from json data
+            """
+            child['is_owner'] = child['author__id'] == request.user.id
+            del child['author__id']
+            return child
+
+        # organize comments => parent with children
+        comment_org = []
+        for c in p_c:
+            children = list(map(is_owner, c.get_json_children))
+            parent_comment_data = {
+                'id': c.id,
+                'author__first_name': c.author.first_name,
+                'author__last_name': c.author.last_name,
+                'is_owner': c.author.id == request.user.id,
+                'content': c.content,
+                'added': c.added,
+                'nbr_vote': c.nbr_vote,
+                'nbr_child': len(children),
+                'children': children
+            }
+            comment_org.append(parent_comment_data)
+        return HttpResponse(
+            json.dumps(comment_org, cls=DjangoJSONEncoder),
+            content_type="application/json")
 
 
 @login_required(redirect_field_name='referrer')
