@@ -566,6 +566,16 @@ ENCODE_VIDEO = "start_encode"
 # -n encoding-<video_id> -i <video_src_file>  -v <video_id> -u <video_user_hash> -d <settings_debug>
 # SSH_REMOTE_CMD = "" 
 """
+"""
+# pourl'encodage distant, il faut préciser le login, l'host et la clé pour appeler cet encodage
+# REMOTE ENCODING SETTINGS
+# SSH_TRANSCRIPT_REMOTE_USER = "pod"
+# SSH_TRANSCRIPT_REMOTE_HOST = "xxx.univ.fr"
+# SSH_TRANSCRIPT_REMOTE_KEY = "/home/pod/.ssh/id_rsa"
+# Remote command to launch, it will be call with this arguments : 
+# -n transcoding-<video_id> -i <video_src_file>  -v <video_id> -u <video_user_hash> -d <settings_debug>
+# SSH_TRANSCRIPT_REMOTE_CMD = ""
+"""
 
 
 """

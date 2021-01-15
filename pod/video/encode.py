@@ -34,10 +34,15 @@ else:
     FILEPICKER = False
     from pod.main.models import CustomImageModel
 
-TRANSCRIPT = False
-if getattr(settings, 'USE_TRANSCRIPTION', False):
-    TRANSCRIPT = True
-    from .transcript import main_threaded_transcript
+TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
+
+if TRANSCRIPT:
+    from . import transcript
+    TRANSCRIPT_VIDEO = getattr(
+        settings,
+        'TRANSCRIPT_VIDEO',
+        'start_transcript'
+    )
 
 USE_ESTABLISHMENT = getattr(
     settings, 'USE_ESTABLISHMENT_FIELD', False)
@@ -356,9 +361,7 @@ def encode_video(video_id):
         if EMAIL_ON_ENCODING_COMPLETION:
             send_email_encoding(video_to_encode)
 
-        main_threaded_transcript(video_id) if (
-            TRANSCRIPT and video_to_encode.transcript
-        ) else False
+        transcript_video(video_id)
 
     else:
         msg = "Wrong file or path:"\
@@ -367,6 +370,12 @@ def encode_video(video_id):
         change_encoding_step(video_id, -1, msg)
         send_email(msg, video_id)
 
+
+def transcript_video(video_id):
+    video = Video.objects.get(id=video_id)
+    if (TRANSCRIPT and video.transcript):
+        start_transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
+        start_transcript_video(video_id, False)
 
 # ##########################################################################
 # ENCODE VIDEO: GET VIDEO DATA
