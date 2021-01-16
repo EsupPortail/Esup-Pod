@@ -4,10 +4,12 @@ let base_delete_url = base_url.replace('comment', 'comment/del');
 let all_comment = null;
 const lang_btn = document.querySelector(".btn-lang.btn-lang-active");
 const comment_label = document.querySelector('.comment_label');
+// Loader Element
+const loader = document.querySelector(".comment_content > .lds-ring");
 let VOTED_USERS = [];
 const COLORS = [
     "rgb(15,166,2)",
-    "mediumvioletred",
+    "sienna",
     "#f44040",
     "teal",
     "darkorchid",
@@ -567,11 +569,12 @@ if (is_authenticated) {
 function fetch_comment_children(parent_comment_html, parent_comment_id) {
     // fetch children only once
     if (all_comment.find(c => c.id === parent_comment_id).children.length === 0) {
+        const children_loader = loader.cloneNode(true)
+        children_loader.classList.remove('hide'); // waiting for charging children
+        parent_comment_html.querySelector(".comments_children_container").appendChild(children_loader)
+
         let url = base_url.replace('/comment/', `/comment/${parent_comment_id}/`);
         fetch(url).then(response => {
-            let children_loader = loader.cloneNode(true)
-            children_loader.classList.remove('hide'); // waiting for charging children
-            parent_comment_html.querySelector(".comments_children_container").appendChild(children_loader)
             response.json().then(data => {
                 // Saving children in all_comment
                 all_comment = all_comment.map(parent_comment => {
@@ -581,9 +584,9 @@ function fetch_comment_children(parent_comment_html, parent_comment_id) {
                         // Update DOM with children comments
                         parent_comment.children.forEach(comment_child => {
                             let parent_to_scroll = parent_comment_html;
-                            if (comment_child.direct_parent_id != null) {
+                            if (comment_child.direct_parent__id != null && comment_child.direct_parent__id !== comment_child.parent__id) {
                                 let direct_parent_comment = parent_comment.children.find(
-                                    (c_obj) => c_obj.id === comment_child.direct_parent_id);
+                                    (c_obj) => c_obj.id === comment_child.direct_parent__id);
                                 let direct_parent_html_id = `comment_${new Date(
                                     direct_parent_comment.added).getTime().toString()}`;
                                 parent_to_scroll = parent_comment_html.querySelector(`#${direct_parent_html_id}`);
@@ -655,7 +658,6 @@ function add_child_comment(el, container_el, top_parent_comment_html) {
 
         // Scroll to the comment child
         scrollToComment(c);
-
         save_comment(el.value, date_added.toISOString(), p_id, top_parent_comment_html);
     }
 }
@@ -741,8 +743,6 @@ function set_comments_number() {
     comment_label.innerText = `${nb_comments} ${label_text}`;
 }
 
-// Loader Element
-const loader = document.querySelector(".comment_content > .lds-ring");
 
 /************  Get vote from the server  **************
  ******************************************************/
