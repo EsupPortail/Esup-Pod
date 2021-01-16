@@ -57,7 +57,7 @@
 .reply_author{
     font-weight: 600;
 }
-.reply_content:{font-weight: 500;}
+.reply_content{font-weight: 500;}
 .comment_main .icon.comment_vote_icon svg
 {
     -webkit-transform: translateY(-1px);
@@ -416,6 +416,7 @@
         -ms-flex-positive: 1;
             flex-grow: 1;
     position: relative;
+    overflow: hidden;
 }
 .comment_main .comment .comment_content
 {
@@ -449,6 +450,12 @@
 .comment_main .comment_element .comment_container .comment_element > .comment_child_container{ 
     display: flex;
     margin-top: calc(var(--margin-between-comment) - .2em);
+}
+.comment_main .comment_element > .comment.onDelete,
+.comment_main .comment_element .comment_container .comment_element > .comment_child_container.onDelete{ 
+    animation-name: deletecomment;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
 }
 .comment_main .comment_element .comment_container .comment_element > .comment_child_container .comments_icon{margin-left: 0; flex: none; align-self: center}
 .comment_main .comment .comment_content_child
@@ -593,7 +600,7 @@
         padding: 0;
     }
 }
-/* ***** scroll to comment background */
+/* ***** on scroll to comment background */
 .scroll_to{
     animation-name: scrolltocomment;
     animation-duration: 5s;
@@ -607,6 +614,18 @@
 	 background-color: var(--third-background-color);
     }
  }
+/* ******* on delete comment ******* */
+@keyframes deletecomment{
+    0%{
+	position: relative;
+	box-shadow: 0 0 8px 8px rgba(255, 0, 0, .3) !important;
+	z-index: 9999;
+	transform: translateX(0);
+    }
+    100%{
+	transform: translateX(110%);
+    }
+}
 /* ************ Loader ************* */
 .lds-ring.hide{display: none; opacity: 0; visibility: none;}
 .lds-ring {
