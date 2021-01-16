@@ -359,25 +359,29 @@ function save_comment(content, date, direct_parent_id = null, top_parent_comment
                     added: date,
                     parent__id: top_parent_id,
                     direct_parent__id: direct_parent_id,
+                    nbr_vote: 0,
                 }
                 if (!top_parent_id) {
                     c.children = [];
+                    c.nbr_child = 0;
                     // update all_comment data
                     all_comment = [...all_comment, c];
                 }
                 else {
                     // update all_comment data
                     all_comment = all_comment.map((comment) => {
-                        if (comment.id === top_parent_id)
+                        if (comment.id === top_parent_id) {
                             comment.children = [...comment.children, c];
+                            comment.nbr_child = comment.children.length;
+                        }
                         return comment;
                     });
+                    hide_or_add_show_children_btn(
+                        top_parent_comment_html,
+                        top_parent_id,
+                        get_comment_attribute(top_parent_comment_html, 'children').length
+                    );
                 }
-                hide_or_add_show_children_btn(
-                    top_parent_comment_html,
-                    top_parent_id,
-                    get_comment_attribute(top_parent_comment_html, 'children').length
-                );
                 set_comments_number()
             });
         }
@@ -391,6 +395,13 @@ function save_comment(content, date, direct_parent_id = null, top_parent_comment
 
 /****************  Delete Comment  ****************
  ******************************************************/
+function deleteWithAnimation(comment, is_child = false) {
+    let selector = is_child ? ".comment_child_container" : ".comment";
+    comment.querySelector(selector).classList.add('onDelete');
+    window.setTimeout(() => {
+        comment.parentElement.removeChild(comment);
+    }, 999);
+}
 function delete_comment(comment) {
     let comment_id = get_comment_attribute(comment);
     let is_child = !!get_comment_attribute(comment, 'parent__id');
@@ -407,17 +418,18 @@ function delete_comment(comment) {
                 document.body.appendChild(new AlertMessage(gettext("Comment has been deleted successfully.")));
                 let parent_el = null
                 if (is_child) {
-                    let remaining_children = delete_comment_child_DOM(comment, is_child);
                     parent_el = get_node(comment, "comment_element", "comment_child");
                     let parent_id = get_comment_attribute(parent_el);
-                    comment.parentElement.removeChild(comment);
+                    delete_comment_child_DOM(comment, parent_id, is_child);
+                    let remaining_children = get_comment_attribute(parent_el, 'nbr_child');
+                    deleteWithAnimation(comment, is_child = true);
                     hide_or_add_show_children_btn(parent_el, parent_id, remaining_children);
                     update_answer_text(parent_el);
                     set_comments_number();
                     return;
                 }
-                all_comment = all_comment.filter(c => c.parent_comment.id != data.comment_deleted);
-                comment.parentElement.removeChild(comment);
+                all_comment = all_comment.filter(c => c.id != data.comment_deleted);
+                deleteWithAnimation(comment, is_child = false);
                 set_comments_number();
             }
             else
@@ -429,34 +441,30 @@ function delete_comment(comment) {
     })
 }
 
-function delete_comment_child_DOM(comment, is_child) {
-    let remaining_children = 0;
+function delete_comment_child_DOM(comment, comment_top_parent_id, is_child) {
     if (is_child) {
         let comment_id = get_comment_attribute(comment);
-        let comment_top_parent_id = get_comment_attribute(comment, attr = 'top_parent__id');
         let list_parent_id = [comment_id];
 
-        all_comment = all_comment.map(p_comment => {
-            if (p_comment.parent_comment.id === comment_top_parent_id) {
-                p_comment.children = p_comment.children
-                    .filter(c_comment => c_comment.id !== comment_id)
-                    .filter(c_comment => {
-                        if (list_parent_id.includes(c_comment.parent__id)) {
-                            list_parent_id = [...list_parent_id, c_comment.id];
+        all_comment = all_comment.map(parent_comment => {
+            if (parent_comment.id === comment_top_parent_id) {
+                parent_comment.children = parent_comment.children
+                    .filter(child_comment => child_comment.id !== comment_id)
+                    .filter(child_comment => {
+                        if (list_parent_id.includes(child_comment.direct_parent__id)) {
+                            list_parent_id = [...list_parent_id, child_comment.id];
                             // Remove comment html element from DOM
-                            let html_id = `#comment_${new Date(c_comment.added).getTime()}`;
-                            let c = document.querySelector(html_id)
-                            c.parentElement.removeChild(c);
+                            let html_id = `#comment_${new Date(child_comment.added).getTime()}`;
+                            let child_comment_html = document.querySelector(html_id);
+                            deleteWithAnimation(child_comment_html, is_child = true);
                         }
-                        return !list_parent_id.includes(c_comment.parent__id); // Remove comment data from all_comment
+                        return !list_parent_id.includes(child_comment.direct_parent__id); // Remove comment data from all_comment
                     });
-                remaining_children = p_comment.children.length;
-                return p_comment;
+                parent_comment.nbr_child = parent_comment.children.length;
             }
-            return p_comment;
+            return parent_comment;
         });
     }
-    return remaining_children;
 }
 
 /*********** Scroll to a specific comment *************
