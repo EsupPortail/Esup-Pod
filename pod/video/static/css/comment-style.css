@@ -57,7 +57,7 @@
 .reply_author{
     font-weight: 600;
 }
-.reply_content{font-weight: 500;}
+.reply_content:{font-weight: 500;}
 .comment_main .icon.comment_vote_icon svg
 {
     -webkit-transform: translateY(-1px);

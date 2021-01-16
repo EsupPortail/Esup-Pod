@@ -1478,7 +1478,7 @@ class Comment(models.Model):
 
     @property
     def get_children(self):
-        return Comment.objects.filter(parent_id=self.id)
+        return Comment.objects.filter(parent_id=self.id).order_by('id')
 
     @property
     def get_json_children(self):
