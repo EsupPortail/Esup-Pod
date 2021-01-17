@@ -39,15 +39,7 @@
     width: 18px;
 }
 .reply_to{
-    color: var(--secondary);
     letter-spacing: 1.1px;
-    width: 230px;
-    max-width: 100%;
-    display: block;
-    overflow: hidden;
-    -o-text-overflow: ellipsis;
-       text-overflow: ellipsis;
-    white-space: nowrap;
     color: var(--content-third-color) !important;
     margin-bottom: .8em;
     margin-left: .8em;
@@ -77,9 +69,7 @@
             transform: translateX( calc(-50% - var(--padding-comment-content) ) );*/
     width: var(--padding-comment-content);
     margin:0 6px;
-    -webkit-box-flex: 0;
-        -ms-flex: none;
-            flex: none;
+    flex: none;
 }
 .comment_main .inline_flex_space{display: -webkit-box;display: -ms-flexbox;display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; -webkit-box-pack: justify; -ms-flex-pack: justify; justify-content: space-between; -ms-flex-wrap: wrap; flex-wrap: wrap;}
 .comment_main .comment_disable::before{
@@ -419,7 +409,7 @@
         -ms-flex-positive: 1;
             flex-grow: 1;
     position: relative;
-    overflow: hidden;
+    width: calc(100% - 37px);
 }
 .comment_main .comment .comment_content
 {
@@ -451,21 +441,16 @@
 }
 .comment_main .comment_element.show .comment_container >  .comments_children_container{ height: auto; }
 .comment_main .comment_element .comment_container .comment_element > .comment_child_container{ 
-    display: -webkit-box; 
-    display: -ms-flexbox; 
     display: flex;
     margin-top: calc(var(--margin-between-comment) - .2em);
 }
 .comment_main .comment_element > .comment.onDelete,
 .comment_main .comment_element .comment_container .comment_element > .comment_child_container.onDelete{ 
-    -webkit-animation-name: deletecomment; 
-            animation-name: deletecomment;
-    -webkit-animation-duration: 1s;
-            animation-duration: 1s;
-    -webkit-animation-fill-mode: forwards;
-            animation-fill-mode: forwards;
+    animation-name: deletecomment;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
 }
-.comment_main .comment_element .comment_container .comment_element > .comment_child_container .comments_icon{margin-left: 0; -webkit-box-flex: 0; -ms-flex: none; flex: none; -ms-flex-item-align: center; -ms-grid-row-align: center; align-self: center}
+.comment_main .comment_element .comment_container .comment_element > .comment_child_container .comments_icon{margin-left: 0; flex: none; align-self: center}
 .comment_main .comment .comment_content_child
 {
 
@@ -474,9 +459,7 @@
     border-top: 1px solid var(--primary-background-color);
     border-bottom: 1px solid var(--primary-background-color);
     border-right: 1px solid var(--primary-background-color);
-    -webkit-box-flex: 1;
-        -ms-flex-positive: 1;
-            flex-grow: 1;
+    width: calc(100% - 42px);
 }
 
 .comment_main .comment .comment_content_header .comment_since
@@ -493,6 +476,14 @@
     font-weight: 400;
     word-break: break-all;
     font-size: 14px;
+}
+.comment_main .comment .comment_content_body a{
+    display: block;
+    width: 350px;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .comment_main .comment .comment_content_footer
 {
@@ -612,21 +603,10 @@
 }
 /* ***** on scroll to comment background */
 .scroll_to{
-    -webkit-animation-name: scrolltocomment;
-            animation-name: scrolltocomment;
-    -webkit-animation-duration: 5s;
-            animation-duration: 5s;
-    -webkit-animation-fill-mode: forwards;
-            animation-fill-mode: forwards;
+    animation-name: scrolltocomment;
+    animation-duration: 5s;
+    animation-fill-mode: forwards;
 }
-@-webkit-keyframes scrolltocomment{
-    0% {
-        background-color: #f9f99b; /* rgba(255, 234, 59)*/
-    }
-    100% {
-	 background-color: var(--third-background-color);
-    }
- }
 @keyframes scrolltocomment{
     0% {
         background-color: #f9f99b; /* rgba(255, 234, 59)*/
@@ -636,32 +616,15 @@
     }
  }
 /* ******* on delete comment ******* */
-@-webkit-keyframes deletecomment{
-    0%{
-	position: relative;
-	-webkit-box-shadow: 0 0 8px 8px rgba(255, 0, 0, .3) !important;
-	        box-shadow: 0 0 8px 8px rgba(255, 0, 0, .3) !important;
-	z-index: 9999;
-	-webkit-transform: translateX(0);
-	        transform: translateX(0);
-    }
-    100%{
-	-webkit-transform: translateX(110%);
-	        transform: translateX(110%);
-    }
-}
 @keyframes deletecomment{
     0%{
 	position: relative;
-	-webkit-box-shadow: 0 0 8px 8px rgba(255, 0, 0, .3) !important;
-	        box-shadow: 0 0 8px 8px rgba(255, 0, 0, .3) !important;
+	box-shadow: 0 0 8px 8px rgba(255, 0, 0, .3) !important;
 	z-index: 9999;
-	-webkit-transform: translateX(0);
-	        transform: translateX(0);
+	transform: translateX(0);
     }
     100%{
-	-webkit-transform: translateX(110%);
-	        transform: translateX(110%);
+	transform: translateX(110%);
     }
 }
 /* ************ Loader ************* */
@@ -671,16 +634,11 @@
   width: 50px;
   height: 50px;
   margin: 1em auto;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  justify-content: center;
 }
 .lds-ring div {
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   display: block;
   position: absolute;
   width: 34px;
@@ -688,40 +646,24 @@
   margin: 8px;
   border: 4px solid #fff;
   border-radius: 50%;
-  -webkit-animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-          animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   border-color: var(--background-color) transparent transparent transparent;
 }
 .lds-ring div:nth-child(1) {
-  -webkit-animation-delay: -0.45s;
-          animation-delay: -0.45s;
+  animation-delay: -0.45s;
 }
 .lds-ring div:nth-child(2) {
-  -webkit-animation-delay: -0.3s;
-          animation-delay: -0.3s;
+  animation-delay: -0.3s;
 }
 .lds-ring div:nth-child(3) {
-  -webkit-animation-delay: -0.15s;
-          animation-delay: -0.15s;
-}
-@-webkit-keyframes lds-ring {
-  0% {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-  }
-  100% {
-    -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
-  }
+  animation-delay: -0.15s;
 }
 @keyframes lds-ring {
   0% {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
+    transform: rotate(0deg);
   }
   100% {
-    -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
+    transform: rotate(360deg);
   }
 }
 
