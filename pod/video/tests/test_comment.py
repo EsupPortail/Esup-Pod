@@ -1,12 +1,14 @@
-from django.http import JsonResponse
+from django.core.serializers.json import DjangoJSONEncoder
+from django.http import JsonResponse, HttpResponse
 from django.test import TestCase, Client
 from django.urls import reverse
 from pod.authentication.models import User
 from pod.video.models import Comment, Video, Type
 from django.contrib.sites.models import Site
-from pod.video.views import get_comments, add_comment, delete_comment
+from pod.video.views import get_comments, get_children_comment
+from pod.video.views import add_comment, delete_comment
 import ast
-
+import json
 import logging
 
 
@@ -52,16 +54,18 @@ class TestComment(TestCase):
                 author=self.simple_user,
                 content="Simple user parent comment",
                 video=self.video)
-        self.owner_responds_admin_comment = Comment.objects.create(
+        self.owner_to_admin_comment = Comment.objects.create(
                 author=self.owner_user,
                 content="Video owner responds to admin parent comment",
                 video=self.video,
-                parent=self.admin_comment)
-        self.owner_responds_simple_user_comment = Comment.objects.create(
+                parent=self.admin_comment,
+                direct_parent=self.admin_comment)
+        self.owner_to_simple_user_comment = Comment.objects.create(
                 author=self.owner_user,
                 content="Video owner responds to simple user parent comment",
                 video=self.video,
-                parent=self.simple_user_comment)
+                parent=self.simple_user_comment,
+                direct_parent=self.simple_user_comment)
 
         self.owner_user.owner.sites.add(Site.objects.get_current())
         self.owner_user.owner.save()
@@ -82,11 +86,93 @@ class TestComment(TestCase):
         # Check response is 200 OK and contents the expected comment
         self.assertContains(
                 response,
-                self.owner_responds_admin_comment.content.encode("utf-8"),
+                self.owner_to_admin_comment.content.encode("utf-8"),
                 status_code=200)
         self.assertContains(
                 response,
                 self.simple_user_comment.content.encode("utf-8"))
+
+    def test_get_only_parent_comment(self):
+        url = reverse(
+            "get_comments",
+            kwargs={"video_slug": self.video.slug})
+        response = self.client.get(
+            url,
+            {"only": "parents"},
+            HTTP_ACCEPT='application/json')
+        self.assertEqual(response.resolver_match.func, get_comments)
+        # Check response is 200 OK and contents the expected comment
+        expected_response = HttpResponse(json.dumps([
+            {
+                "author_name": "Super User",
+                "content": "Admin parent comment",
+                "is_owner": False,
+                "nbr_vote": 0,
+                "id": 1,
+                "added": self.admin_comment.added,
+                "nbr_child": 1
+            },
+            {
+                "author_name": "Visitor Pod",
+                "content": "Simple user parent comment",
+                "is_owner": False,
+                "nbr_vote": 0,
+                "id": 2,
+                "added": self.simple_user_comment.added,
+                "nbr_child": 1
+            }
+        ], cls=DjangoJSONEncoder), content_type="application/json")
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(
+            response.content.decode('UTF-8'),
+            expected_response.content.decode('UTF-8'))
+
+    def test_get_comment_with_children(self):
+        url = reverse(
+            "get_comment",
+            kwargs={
+                "comment_id": self.admin_comment.id,
+                "video_slug": self.video.slug
+            }
+
+        )
+        response = self.client.get(
+            url,
+            HTTP_ACCEPT='application/json')
+        self.assertEqual(response.resolver_match.func, get_children_comment)
+        # Check response is 200 OK and contents the expected comment
+        owner_user_full_name = "{0}{1}{2}".format(
+            self.owner_user.first_name,
+            " ",
+            self.owner_user.last_name
+        )
+        direct_parent_id = self.owner_to_admin_comment.direct_parent.id
+        expected_response = HttpResponse(json.dumps({
+            "author_name": "Super User",
+            "content": "Admin parent comment",
+            "is_owner": False,
+            "nbr_vote": 0,
+            "id": self.admin_comment.id,
+            "added": self.admin_comment.added,
+            "nbr_child": 1,
+            "children": [
+                {
+                    "id": self.owner_to_admin_comment.id,
+                    "parent__id": self.owner_to_admin_comment.parent.id,
+                    "direct_parent__id": direct_parent_id,
+                    "author_name": owner_user_full_name,
+                    "content": self.owner_to_admin_comment.content,
+                    "is_owner": False,
+                    "nbr_vote": 0,
+                    "added": self.owner_to_admin_comment.added,
+                }
+            ]
+        }, cls=DjangoJSONEncoder), content_type="application/json")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(
+                response.content.decode('UTF-8'),
+                expected_response.content.decode('UTF-8'))
 
     def test_add_comment(self):
         # test add parent comment
@@ -169,7 +255,7 @@ class TestComment(TestCase):
                 "delete_comment",
                 kwargs={
                     "video_slug": self.video.slug,
-                    "comment_id": self.owner_responds_admin_comment.id})
+                    "comment_id": self.owner_to_admin_comment.id})
         self.client.logout()
         self.client.force_login(self.simple_user)
         response = self.client.post(
@@ -197,7 +283,7 @@ class TestComment(TestCase):
         self.assertEqual(response.content, expected_content)
         # should also remove child comment
         comment = Comment.objects.filter(
-                id=self.owner_responds_admin_comment.id).first()
+                id=self.owner_to_admin_comment.id).first()
         self.assertIsNone(comment)
         # Admin user can delete any comment
         url = reverse(
@@ -214,7 +300,7 @@ class TestComment(TestCase):
         response = self.client.post(url)
         self.assertEqual(response.content, expected_content)
         comment = Comment.objects.filter(
-                id=self.owner_responds_simple_user_comment.id).first()
+                id=self.owner_to_simple_user_comment.id).first()
         self.assertIsNone(comment)
 
     """
@@ -262,7 +348,7 @@ class TestComment(TestCase):
         del self.simple_user
         del self.admin_comment
         del self.simple_user_comment
-        del self.owner_responds_admin_comment
-        del self.owner_responds_simple_user_comment
+        del self.owner_to_admin_comment
+        del self.owner_to_simple_user_comment
         del self.client
         del self.t1
