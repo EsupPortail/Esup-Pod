@@ -31,7 +31,8 @@ from pod.video.views import video_notes
 from pod.video.views import video_count, video_version
 from pod.video.views import video_oembed
 from pod.video.views import stats_view
-from pod.video.views import get_comments, add_comment, delete_comment
+from pod.video.views import get_comments, get_children_comment
+from pod.video.views import add_comment, delete_comment
 from pod.video.views import vote_get, vote_post
 from pod.video.views import get_categories, add_category
 from pod.video.views import edit_category, delete_category
@@ -232,6 +233,9 @@ if getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
         url(r'^comment/(?P<video_slug>[\-\d\w]+)/$',
             get_comments,
             name='get_comments'),
+        url(r'^comment/(?P<comment_id>[\d]+)/(?P<video_slug>[\-\d\w]+)/$',
+            get_children_comment,
+            name='get_comment'),
         url(r'^comment/add/(?P<video_slug>[\-\d\w]+)/$',
             add_comment, name='add_comment'),
         url(r'^comment/add/(?P<video_slug>[\-\d\w]+)/(?P<comment_id>[\d]+)/$',
