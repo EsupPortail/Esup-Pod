@@ -13,7 +13,8 @@ from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.db.models import Count, F, Q
+from django.db.models import Count, F, Q, Case, When, Value, BooleanField
+from django.db.models.functions import Concat
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.shortcuts import redirect
@@ -1743,17 +1744,36 @@ def get_parent_comments(request, video):
     number of votes and children
     """
     parent_comment = Comment.objects.filter(
-        video=video, parent=None).order_by('added').annotate(
-            nbr_vote=Count('vote', distinct=True)).annotate(
-                nbr_child=Count('children', distinct=True)).values(
-                    'id',
-                    'author__id',
-                    'author__first_name',
-                    'author__last_name',
-                    'content',
-                    'added',
-                    'nbr_vote',
-                    'nbr_child')
+        video=video, parent=None
+    ).order_by('added').annotate(
+        nbr_vote=Count('vote', distinct=True)
+    ).annotate(
+        author_name=Concat(
+            'author__first_name',
+            Value(' '),
+            'author__last_name'
+        )
+    ).annotate(
+        nbr_child=Count('children', distinct=True)
+    ).annotate(
+        is_owner=Case(
+            When(
+                author__id=request.user.id,
+                then=Value(True)
+            ),
+            default=Value(False),
+            output_field=BooleanField()
+        )
+    ).values(
+        'id',
+        'author_name',
+        'is_owner',
+        'content',
+        'added',
+        'nbr_vote',
+        'nbr_child'
+    )
+
     return HttpResponse(
         json.dumps(list(parent_comment), cls=DjangoJSONEncoder),
         content_type="application/json")
@@ -1766,26 +1786,34 @@ def get_children_comment(request, comment_id, video_slug):
     try:
         v = get_object_or_404(Video, slug=video_slug)
         parent_comment = Comment.objects.filter(
-                video=v, id=comment_id).annotate(
-                    nbr_vote=Count('vote')).first()
+            video=v, id=comment_id
+        ).annotate(
+            author_name=Concat(
+                'author__first_name',
+                Value(' '),
+                'author__last_name'
+            )
+        ).annotate(
+            nbr_child=Count('children', distinct=True)
+        ).annotate(
+            is_owner=Case(
+                When(
+                    author__id=request.user.id, then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField()
+            )
+        ).annotate(
+            nbr_vote=Count('vote')
+        ).first()
         if parent_comment is None:
             raise Exception("Error: comment doesn't exist : " + comment_id)
 
-        def is_owner(child):
-            """
-            add is_owner property
-            remove author_id from json data
-            """
-            child['is_owner'] = child['author__id'] == request.user.id
-            del child['author__id']
-            return child
-
-        children = list(map(is_owner, parent_comment.get_json_children))
+        children = parent_comment.get_json_children(request.user.id)
         parent_comment_data = {
             'id': parent_comment.id,
-            'author__first_name': parent_comment.author.first_name,
-            'author__last_name': parent_comment.author.last_name,
-            'is_owner': parent_comment.author.id == request.user.id,
+            'author_name': parent_comment.author_name,
+            'is_owner': parent_comment.is_owner,
             'content': parent_comment.content,
             'added': parent_comment.added,
             'nbr_vote': parent_comment.nbr_vote,
@@ -1812,31 +1840,39 @@ def get_comments(request, video_slug):
     else:  # get all comments with all children
         # extract parent comments
         p_c = Comment.objects.filter(
-            video=v, parent=None).order_by('added').annotate(
-                nbr_vote=Count('vote'))
-
-        def is_owner(child):
-            """
-            add is_owner property
-            remove author_id from json data
-            """
-            child['is_owner'] = child['author__id'] == request.user.id
-            del child['author__id']
-            return child
+            video=v, parent=None
+        ).order_by('added').annotate(
+            nbr_vote=Count('vote', distinct=True)
+        ).annotate(
+            author_name=Concat(
+                'author__first_name',
+                Value(' '),
+                'author__last_name'
+            )
+        ).annotate(
+            nbr_child=Count('children', distinct=True)
+        ).annotate(
+            is_owner=Case(
+                When(
+                    author__id=request.user.id, then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField()
+            )
+        )
 
         # organize comments => parent with children
         comment_org = []
         for c in p_c:
-            children = list(map(is_owner, c.get_json_children))
+            children = c.get_json_children(request.user.id)
             parent_comment_data = {
                 'id': c.id,
-                'author__first_name': c.author.first_name,
-                'author__last_name': c.author.last_name,
-                'is_owner': c.author.id == request.user.id,
+                'author_name': c.author_name,
+                'is_owner': c.is_owner,
                 'content': c.content,
                 'added': c.added,
                 'nbr_vote': c.nbr_vote,
-                'nbr_child': len(children),
+                'nbr_child': c.nbr_child,
                 'children': children
             }
             comment_org.append(parent_comment_data)
