@@ -397,7 +397,6 @@ function save_comment(content, date, direct_parent_id = null, top_parent_comment
 function deleteWithAnimation(comment, is_child = false) {
     let selector = is_child ? ".comment_child_container" : ".comment";
     comment.querySelector(selector).classList.add('onDelete');
-    return;
     window.setTimeout(() => {
         comment.parentElement.removeChild(comment);
     }, 999);
