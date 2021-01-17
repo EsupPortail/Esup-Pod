@@ -351,8 +351,7 @@ function save_comment(content, date, direct_parent_id = null, top_parent_comment
         if (response.ok) {
             response.json().then(data => {
                 let c = {
-                    author__first_name: data.author__first_name,
-                    author__last_name: data.author__last_name,
+                    author_name: data.author_name,
                     is_owner: true,
                     content: content,
                     id: data.id,
@@ -398,6 +397,7 @@ function save_comment(content, date, direct_parent_id = null, top_parent_comment
 function deleteWithAnimation(comment, is_child = false) {
     let selector = is_child ? ".comment_child_container" : ".comment";
     comment.querySelector(selector).classList.add('onDelete');
+    return;
     window.setTimeout(() => {
         comment.parentElement.removeChild(comment);
     }, 999);
@@ -492,7 +492,7 @@ function scrollToComment(targetComment) {
 function add_user_tag(comment_value, parent_comment) {
     let reply_to = get_comment_attribute(
         parent_comment,
-        attr = "author__first_name"
+        attr = "author_name"
     );
     reply_content = get_comment_attribute(parent_comment, attr = "content");
     let htmlTarget = parent_comment.querySelector(".comment_content");
@@ -605,11 +605,11 @@ function fetch_comment_children(parent_comment_html, parent_comment_id) {
                             let comment_child_content = add_user_tag(
                                 comment_child.content,
                                 parent_to_scroll,
-                                parent_comment.author__first_name
+                                parent_comment.author_name
                             );
 
                             let comment_child_html = new Comment(
-                                owner = `${comment_child.author__first_name} ${comment_child.author__last_name}`,
+                                owner = `${comment_child.author_name}`,
                                 content = comment_child_content,
                                 likes = comment_child.nbr_vote,
                                 added_since = date_added,
@@ -774,7 +774,7 @@ fetch(base_vote_url).then(response => {
                 let date_added = new Date(comment_data.added);
                 let html_id = `comment_${date_added.getTime().toString()}`;
                 let parent_c = new Comment(
-                    owner = `${comment_data.author__first_name} ${comment_data.author__last_name.toUpperCase()}`,
+                    owner = `${comment_data.author_name}`,
                     content = comment_data.content,
                     likes = comment_data.nbr_vote,
                     added_since = date_added,
