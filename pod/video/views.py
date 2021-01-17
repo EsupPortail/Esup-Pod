@@ -1817,6 +1817,7 @@ def get_children_comment(request, comment_id, video_slug):
             'content': parent_comment.content,
             'added': parent_comment.added,
             'nbr_vote': parent_comment.nbr_vote,
+            'nbr_child': parent_comment.nbr_child,
             'children': children
         }
     except Http404:
