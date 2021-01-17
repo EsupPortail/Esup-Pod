@@ -34,7 +34,8 @@ from select2 import fields as select2_fields
 from sorl.thumbnail import get_thumbnail
 from pod.main.models import get_nextautoincrement
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
-from django.db.models import Count, Q
+from django.db.models import Count, Case, When, Value, BooleanField, Q
+from django.db.models.functions import Concat
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -1480,15 +1481,27 @@ class Comment(models.Model):
     def get_children(self):
         return Comment.objects.filter(parent_id=self.id).order_by('id')
 
-    @property
-    def get_json_children(self):
-        return self.get_children.annotate(
-            nbr_vote=Count('vote')).values(
+    def get_json_children(self, user_id):
+        return list(self.get_children.annotate(
+            nbr_vote=Count('vote', distinct=True)
+        ).annotate(
+            author_name=Concat(
+                'author__first_name',
+                Value(' '),
+                'author__last_name'
+            )
+        ).annotate(
+            is_owner=Case(
+                When(author__id=user_id, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField()
+            )
+        ).values(
             'id', 'parent__id', 'direct_parent__id',
-            'author__id', 'author__first_name',
-            'author__last_name', 'added', 'content',
+            'is_owner', 'author_name',
+            'added', 'content',
             'nbr_vote'
-        )
+        ))
 
     def __str__(self):
         return self.content
