@@ -1727,8 +1727,8 @@ def add_comment(request, video_slug, comment_id=None):
             c.save()
             data = {
                 'id': c.id,
-                'author__first_name': c_user.first_name,
-                'author__last_name': c_user.last_name,
+                'author_name': "{0} {1}".format(
+                    c_user.first_name, c_user.last_name)
             }
             return HttpResponse(
                 json.dumps(data),
