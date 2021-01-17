@@ -141,11 +141,9 @@ class TestComment(TestCase):
             HTTP_ACCEPT='application/json')
         self.assertEqual(response.resolver_match.func, get_children_comment)
         # Check response is 200 OK and contents the expected comment
-        owner_user_full_name = "{0}{1}{2}".format(
+        owner_user_full_name = "{0} {1}".format(
             self.owner_user.first_name,
-            " ",
-            self.owner_user.last_name
-        )
+            self.owner_user.last_name)
         direct_parent_id = self.owner_to_admin_comment.direct_parent.id
         expected_response = HttpResponse(json.dumps({
             "author_name": "Super User",
@@ -185,8 +183,9 @@ class TestComment(TestCase):
         response = self.client.post(url, {
             "content": "Third parent comment"})
         data = {
-            "author__last_name": self.simple_user.last_name,
-            "author__first_name": self.simple_user.first_name,
+            "author_name": "{0} {1}".format(
+                self.simple_user.first_name,
+                self.simple_user.last_name),
             "id": pk
         }
         expected_content = JsonResponse(data, safe=False).content
@@ -214,8 +213,9 @@ class TestComment(TestCase):
         self.client.force_login(self.owner_user)
         response = self.client.post(url, {
             "content": "Response to third comment"})
-        data['author__last_name'] = self.owner_user.last_name
-        data['author__first_name'] = self.owner_user.first_name
+        data['author_name'] = "{0} {1}".format(
+            self.owner_user.first_name,
+            self.owner_user.last_name)
         data['id'] = pk
         expected_content = JsonResponse(data, safe=False).content
 
