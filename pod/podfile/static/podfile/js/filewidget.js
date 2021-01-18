@@ -473,7 +473,7 @@ function initFolders(){
 
 
 var seeMoreElement = function (nextPage, curr_page, tot_page, search=null){
-    search = search? `&page=${search}`: '';
+    search = search? `&search=${search}`: '';
     let seeMore = gettext('See more');
     return `
 	<div class="view-more-container">
