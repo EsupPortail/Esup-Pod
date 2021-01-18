@@ -160,7 +160,8 @@ class VideoAdmin(admin.ModelAdmin):
     def get_owner_by_name(self, obj):
         owner = obj.owner
         url = url_to_edit_object(owner)
-        return mark_safe(u'%s %s (%s)' % (owner.first_name, owner.last_name, url))
+        return mark_safe(
+            u'%s %s (%s)' % (owner.first_name, owner.last_name, url))
 
     get_owner_by_name.allow_tags = True
     get_owner_by_name.short_description = _('Owner')
