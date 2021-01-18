@@ -313,7 +313,7 @@ class TestComment(TestCase):
         self.client.logout()
         self.client.force_login(self.owner_user)
         response = self.client.get(url)
-        data = {"votes": []}
+        data = {"comments_votes": []}
         expected_response = JsonResponse(data, safe=False).content
         self.assertEqual(response.content, expected_response)
 
