@@ -1650,23 +1650,34 @@ def video_add(request):
         'TRANSCRIPT': TRANSCRIPT})
 
 
-@csrf_protect
 def vote_get(request, video_slug):
-    # current video
-    c_video = get_object_or_404(Video, slug=video_slug)
     if request.method == "POST":
-        return HttpResponseNotFound('<h1>Method Not Allowed</h1>', status=405)
+        return HttpResponseNotFound(
+            '<h1>Method Not Allowed</h1>',
+            status=405)
     else:
+        c_video = get_object_or_404(Video, slug=video_slug)
+        if request.user.id is None:  # Anonymous user
+            return HttpResponse(
+                json.dumps({"comments_votes": []}),
+                content_type='application/json'
+            )
         votes = Vote.objects.filter(
-            comment__video=c_video).values('user__id', 'comment__id')
-        data = {'votes': list(votes)}
-        return HttpResponse(json.dumps(data), content_type='application/json')
+            comment__video=c_video,
+            user=request.user
+        ).values(
+            'comment__id')
+        return HttpResponse(
+            json.dumps({'comments_votes': list(votes)}),
+            content_type='application/json')
 
 
 @login_required(redirect_field_name='referrer')
 def vote_post(request, video_slug, comment_id):
     if request.method == "GET":
-        return HttpResponseNotFound('<h1>Method Not Allowed</h1>', status=405)
+        return HttpResponseNotFound(
+            '<h1>Method Not Allowed</h1>',
+            status=405)
     # current video
     c_video = get_object_or_404(Video, slug=video_slug)
     # current comment
