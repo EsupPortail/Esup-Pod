@@ -21,7 +21,6 @@ from .models import Notes, AdvancedNotes, NoteComments
 from .models import ViewCount
 from .models import VideoToDelete
 from .models import VideoVersion
-from .transcript import start_transcript
 from django.utils.html import mark_safe
 
 
