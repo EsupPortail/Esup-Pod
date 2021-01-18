@@ -6,7 +6,7 @@ const lang_btn = document.querySelector(".btn-lang.btn-lang-active");
 const comment_label = document.querySelector('.comment_label');
 // Loader Element
 const loader = document.querySelector(".comment_content > .lds-ring");
-let VOTED_USERS = [];
+let VOTED_COMMENTS = [];
 const COLORS = [
     "rgb(15,166,2)",
     "sienna",
@@ -308,8 +308,7 @@ function vote(comment_id, target_html_el) {
     }).then(response => {
         response.json().then(data => {
             if (data.voted === true) {
-                VOTED_USERS.push({
-                    'user__id': user_id,
+                VOTED_COMMENTS.push({
                     'comment__id': comment_id,
                 });
                 btn.innerHTML = parseInt(btn.textContent) + 1 + " votes";
@@ -317,7 +316,7 @@ function vote(comment_id, target_html_el) {
                     target_html_el.classList.add('voted');
             }
             else {
-                VOTED_USERS = VOTED_USERS.filter(obj => {
+                VOTED_COMMENTS = VOTED_COMMENTS.filter(obj => {
                     obj.comment__id !== comment_id
                 })
                 btn.innerHTML = parseInt(btn.textContent) - 1 + " votes";
@@ -735,8 +734,8 @@ function update_answer_text(el) {
 /*****************  Manage vote svg  ******************
  ******************************************************/
 function manage_vote_frontend(id, el) {
-    VOTED_USERS.forEach(obj => {
-        if (obj.comment__id === id && obj.user__id === user_id) {
+    VOTED_COMMENTS.forEach(obj => {
+        if (obj.comment__id === id) {
             el.querySelector(".comment_vote_action").classList.add('voted');
         }
     });
@@ -756,7 +755,7 @@ function set_comments_number() {
 fetch(base_vote_url).then(response => {
     loader.classList.remove('hide'); // show loader
     response.json().then(data => {
-        VOTED_USERS = data.votes;
+        VOTED_COMMENTS = data.comments_votes;
     });
 }).finally(function () {
     /************  Get data from the server  **************
