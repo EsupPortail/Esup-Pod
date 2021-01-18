@@ -567,6 +567,23 @@ ENCODE_VIDEO = "start_encode"
 # SSH_REMOTE_CMD = "" 
 """
 
+"""
+# Fonction appelée pour lancer la transcription des vidéos
+# Pour la transcription distant, il faut préciser "start_remote_transcript"
+"""
+TRANSCRIPT_VIDEO = "start_transcript"
+
+"""
+# pour la transcription distant, il faut préciser le login, l'host et la clé pour appeler la fonction
+# REMOTE ENCODING SETTINGS
+# SSH_TRANSCRIPT_REMOTE_USER = "pod"
+# SSH_TRANSCRIPT_REMOTE_HOST = "xxx.univ.fr"
+# SSH_TRANSCRIPT_REMOTE_KEY = "/home/pod/.ssh/id_rsa"
+# Remote command to launch, it will be call with this arguments : 
+# -n transcoding-<video_id> -i <video_src_file>  -v <video_id> -u <video_user_hash> -d <settings_debug>
+# SSH_TRANSCRIPT_REMOTE_CMD = ""
+"""
+
 
 """
 # Extension autorisée pour le téléversement sur la plateforme
@@ -791,7 +808,7 @@ AFFILIATION = (
     ('retired', ('retired')),
     ('emeritus', ('emeritus')),
     ('teacher', ('teacher')),
-    ('registered-reader', _('registered-reader'))
+    ('registered-reader', ('registered-reader'))
 )
 
 """
