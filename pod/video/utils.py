@@ -51,6 +51,7 @@ SECURE_SSL_REDIRECT = getattr(settings, 'SECURE_SSL_REDIRECT', False)
 
 
 def change_encoding_step(video_id, num_step, desc):
+    """Change encoding step."""
     encoding_step, created = EncodingStep.objects.get_or_create(
         video=Video.objects.get(id=video_id))
     encoding_step.num_step = num_step
