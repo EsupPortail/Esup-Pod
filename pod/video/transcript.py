@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.files import File
 from pod.completion.models import Track
+from pod.main.tasks import task_start_transcript
 
 from .utils import change_encoding_step, add_encoding_log
 from .utils import send_email, send_email_transcript
@@ -53,6 +54,8 @@ NORMALIZE_TARGET_LEVEL = getattr(settings, 'NORMALIZE_TARGET_LEVEL', -16.0)
 EMAIL_ON_TRANSCRIPTING_COMPLETION = getattr(
     settings, 'EMAIL_ON_TRANSCRIPTING_COMPLETION', True)
 
+CELERY_TO_ENCODE = getattr(settings, 'CELERY_TO_ENCODE', False)
+
 log = logging.getLogger(__name__)
 
 """
@@ -67,13 +70,36 @@ msg, webvtt, all_text = main_transcript(
 print(webvtt)
 """
 
+# ##########################################################################
+# TRANSCRIPT VIDEO: THREAD TO LAUNCH TRANSCRIPT
+# ##########################################################################
 
-def start_transcript(video_id):
-    log.info("START TRANSCRIPT VIDEO %s" % video_id)
-    t = threading.Thread(target=main_threaded_transcript,
-                         args=[video_id])
-    t.setDaemon(True)
-    t.start()
+
+def start_remote_transcript(video_id, threaded=True):
+    # load module here to prevent circular import
+    from .remote_transcript import remote_transcript_video
+    if threaded:
+        log.info("START ENCODE VIDEO ID %s" % video_id)
+        t = threading.Thread(target=remote_transcript_video,
+                             args=[video_id])
+        t.setDaemon(True)
+        t.start()
+    else:
+        remote_transcript_video(video_id)
+
+
+def start_transcript(video_id, threaded=True):
+    if threaded:
+        if CELERY_TO_ENCODE:
+            task_start_transcript.delay(video_id)
+        else:
+            log.info("START TRANSCRIPT VIDEO %s" % video_id)
+            t = threading.Thread(target=main_threaded_transcript,
+                                 args=[video_id])
+            t.setDaemon(True)
+            t.start()
+    else:
+        main_threaded_transcript(video_id)
 
 
 def get_model(lang):
