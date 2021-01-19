@@ -168,6 +168,8 @@ def start_encode(video_id):
 
 
 def encode_video(video_id):
+    """Encode video."""
+
     start = "Start at: %s" % time.ctime()
 
     video_to_encode = Video.objects.get(id=video_id)
@@ -390,6 +392,7 @@ def get_video_data(video_id, output_dir):
     """
     info = json.loads(ffproberesult.stdout.decode('utf-8'))
     with open(output_dir + "/encoding.log", "a") as f:
+        f.write(msg)
         f.write('\nffprobe command video result:\n\n')
         f.write('%s\n' % json.dumps(
             info, sort_keys=True, indent=4, separators=(',', ': ')))
@@ -520,6 +523,8 @@ def encode_video_mp4(source, cmd, output_dir):
             procs.append(subprocess.Popen(
                 ffmpegMp4Command, shell=True, stdout=f, stderr=f))
     msg += "\n- Encoding Mp4: %s" % time.ctime()
+    with open(logfile, "a") as f:
+        f.write(msg)
     for proc in procs:
         proc.wait()
     return msg
@@ -751,6 +756,8 @@ def encode_video_playlist(source, cmd, output_dir):
             procs.append(subprocess.Popen(
                 ffmpegPlaylistCommand, shell=True, stdout=f, stderr=f))
     msg += "\n- Encoding Playlist: %s" % time.ctime()
+    with open(logfile, "a") as f:
+        f.write(msg)
     for proc in procs:
         proc.wait()
     return msg
@@ -891,6 +898,9 @@ def create_overview_image(
     else:
         msg = "overviewimagefilename Wrong file or path:"\
             + "\n%s" % overviewimagefilename
+        msg += "\nthumbnailer command: \n- %s\n" % cmd_ffmpegthumbnailer
+        msg += "\nmontage command: \n- %s\n" % cmd_montage
+
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
         send_email(msg, video_id)

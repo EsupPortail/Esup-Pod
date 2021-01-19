@@ -54,7 +54,7 @@ def change_encoding_step(video_id, num_step, desc):
     encoding_step, created = EncodingStep.objects.get_or_create(
         video=Video.objects.get(id=video_id))
     encoding_step.num_step = num_step
-    encoding_step.desc_step = desc
+    encoding_step.desc_step = desc[:255]
     encoding_step.save()
     if DEBUG:
         print("step: %d - desc: %s" % (
@@ -197,6 +197,7 @@ def send_email_transcript(video_to_encode):
 
 
 def send_email_encoding(video_to_encode):
+    """Send an email on encoding completion."""
     if DEBUG:
         print("SEND EMAIL ON ENCODING COMPLETION")
     url_scheme = "https" if SECURE_SSL_REDIRECT else "http"

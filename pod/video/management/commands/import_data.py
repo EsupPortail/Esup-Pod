@@ -42,7 +42,8 @@ FROM_URL = getattr(settings, 'FROM_URL', "https://pod.univ.fr/media/")
 
 
 class Command(BaseCommand):
-    """Main command class. To be called by a 'python manage.py import_data $type'."""
+    """Main command class.
+     To be called by a 'python manage.py import_data $type'."""
 
     args = 'Channel Theme Type User Discipline Pod tags Chapter Contributor...'
     help = 'Import from V1'
@@ -89,7 +90,7 @@ class Command(BaseCommand):
     def save_object(self, type_to_import, obj):
         """Save object obj of type 'type_to_import'."""
         if AUTHENTICATION and type_to_import == 'UserProfile':
-            owner = Owner.objects.get(
+            owner, owner_created = Owner.objects.get_or_create(
                 user_id=obj.object.user_id)
             owner.auth_type = obj.object.auth_type
             owner.affiliation = obj.object.affiliation
