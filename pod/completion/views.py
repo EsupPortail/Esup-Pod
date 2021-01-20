@@ -37,7 +37,6 @@ def video_caption_maker(request, slug):
 
     video_folder, created = UserFolder.objects.get_or_create(
         name=video.slug, owner=request.user)
-    print(video_folder)
     request.session['current_session_folder'] = video.slug
     action = None
     if request.user != video.owner and not (
