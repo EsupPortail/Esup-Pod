@@ -26,10 +26,16 @@ def index_es(video):
         try:
             data = video.get_json_to_index()
             if data != '{}':
-                res = es.index(index=ES_INDEX,
-                               doc_type='pod', id=video.id,
-                               body=data, refresh=True)
+                if ES_VERSION == 7:
+                    res = es.index(index=ES_INDEX,
+                                   id=video.id,
+                                   body=data, refresh=True)
+                else:
+                    res = es.index(index=ES_INDEX,
+                                   id=video.id, doc_type='pod',
+                                   body=data, refresh=True)
                 if DEBUG:
+                    print(res)
                     logger.info(res)
                 return res
         except TransportError as e:
@@ -43,9 +49,14 @@ def delete_es(video):
                        retry_on_timeout=True)
     if es.ping():
         try:
-            delete = es.delete(
-                index=ES_INDEX, doc_type='pod',
-                id=video.id, refresh=True, ignore=[400, 404])
+            if ES_VERSION == 7:
+                delete = es.delete(
+                    index=ES_INDEX, id=video.id,
+                    refresh=True, ignore=[400, 404])
+            else:
+                delete = es.delete(
+                    index=ES_INDEX, doc_type='pod',
+                    id=video.id, refresh=True, ignore=[400, 404])
             if DEBUG:
                 logger.info(delete)
             return delete
@@ -57,9 +68,9 @@ def delete_es(video):
 def create_index_es():
     es = Elasticsearch(ES_URL, timeout=ES_TIMEOUT, max_retries=ES_MAX_RETRIES,
                        retry_on_timeout=True)
-    if ES_VERSION == 7 :
+    if ES_VERSION == 7:
         template_file = "pod/video_search/search_template7.json"
-    else :
+    else:
         template_file = "pod/video_search/search_template.json"
     json_data = open(template_file)
     es_template = json.load(json_data)
