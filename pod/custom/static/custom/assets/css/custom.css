@@ -345,7 +345,15 @@ footer.text-muted{
   color: #fff !important;
   height: auto !important;
 }
-
+#videos_list .card-body .video-title,
+#videos_list .card-body a
+{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 100%;
+    padding: 0 .4em;
+}
 footer a, footer p{
   color: inherit !important;
 }
