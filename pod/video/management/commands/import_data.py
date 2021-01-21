@@ -43,7 +43,9 @@ FROM_URL = getattr(settings, 'FROM_URL', "https://pod.univ.fr/media/")
 
 class Command(BaseCommand):
     """Main command class.
-     To be called by a 'python manage.py import_data $type'."""
+
+    To be called by a 'python manage.py import_data $type'.
+    """
 
     args = 'Channel Theme Type User Discipline Pod tags Chapter Contributor...'
     help = 'Import from V1'
@@ -59,6 +61,7 @@ class Command(BaseCommand):
         """Handle the command call."""
         # Activate a fixed locale fr
         translation.activate('fr')
+
         if options['import'] and options['import'] in self.valid_args:
             type_to_import = options['import']
             filepath = os.path.join(BASE_DIR, '../../import/',
