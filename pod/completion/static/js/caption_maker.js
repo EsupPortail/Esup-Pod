@@ -4,14 +4,14 @@ const caption_memories = {
 const file_prefix = window.location.pathname.match(/[\d\w\-]+\/$/)[0].replace("/", "");
 
 $(document).on('click', 'a.file-name, a.file-image', function() {
-    let url = '/podfile/get_file/file/'; 
+    let url = '/podfile/get_file/file/';
     let data_form = $("#captionmaker_form" ).serializeArray();
     send_form_data(url, data_form, "ProcessProxyVttResponse");
 })
 
 // Charge caption/subtitle file if exists
 $(document).ready(function(){
-    
+
     let url_search = new URLSearchParams(window.location.search);
     if(url_search.has('src') && !isNaN(url_search.get('src')))
     {
@@ -64,17 +64,17 @@ var send_form_save_captions = function(name) {
         alert("Not a valid time track file.");
         return;
     }
-    let n = name 
+    let n = name
     let f = new File([vttContent], n + '.vtt', {type: 'text/vtt'});
     let data_form = new FormData($('#form_save_captions')[0]);
     data_form.append('folder', current_folder);
     data_form.append('file', f);
     $.ajax({
-        url: $("#form_save_captions").attr("action"), 
+        url: $("#form_save_captions").attr("action"),
         type: 'POST',
         data: data_form,
         processData: false,
-        contentType: false                    
+        contentType: false
     }).done(function(data){
         $(data).find('#base-message-alert').appendTo(document.body);
     }).fail(function($xhr){
@@ -110,7 +110,7 @@ $('#podvideoplayer').on('error', function(event) {
 
 $('#clearAllCaptions').on('click', function (e) {
     e.preventDefault();
-    var deleteConfirm = confirm(gettext("Are you sure you want to delete all caption ?"));
+    var deleteConfirm = confirm(gettext("Are you sure you want to delete all caption?"));
     if (deleteConfirm){
         captionsArray.length = 0;
         autoPauseAtTime = -1;
@@ -252,7 +252,7 @@ function SaveCurrentCaption() {
         var ci = FindCaptionIndex(playTime - 1);
         if (ci != -1) {
             UpdateCaption(ci, new_entry);
-        } 
+        }
     } else {
         AddCaption(captionsEndTime, playTime, new_entry);
     }
@@ -318,7 +318,7 @@ function hmsToSecondsOnly(str){
 	m *= 60;
     }
     return s;
-}	
+}
 
 // parses webvtt time string format into floating point seconds
 function ParseTime(sTime) {
@@ -354,7 +354,7 @@ function FindCaptionIndex(seconds) {
     while (below < i && i < above) {
         if (captionsArray[i].start <= seconds && seconds < captionsArray[i].end)
             return i;
-        
+
         if (seconds < captionsArray[i].start) {
             above = i;
         } else {
@@ -383,8 +383,8 @@ function playSelectedCaption(timeline) {
 /**
  * Escape Html entities
  */
-function XMLEncode(s) {     
-    return s.replace(/\&/g, '&amp;').replace(/“/g, '&quot;').replace(/”/g,'&quot;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); 
+function XMLEncode(s) {
+    return s.replace(/\&/g, '&amp;').replace(/“/g, '&quot;').replace(/”/g,'&quot;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 function XMLDecode(s) {

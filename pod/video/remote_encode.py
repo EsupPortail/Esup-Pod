@@ -35,6 +35,14 @@ log = logging.getLogger(__name__)
 
 DEBUG = getattr(settings, 'DEBUG', True)
 
+TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
+
+if TRANSCRIPT:
+    from . import transcript
+    TRANSCRIPT_VIDEO = getattr(settings,
+                               'TRANSCRIPT_VIDEO',
+                               'start_transcript')
+
 EMAIL_ON_ENCODING_COMPLETION = getattr(
     settings, 'EMAIL_ON_ENCODING_COMPLETION', True)
 
@@ -163,9 +171,9 @@ def store_remote_encoding_video(video_id):
     with open(output_dir + "/info_video.json") as json_file:
         info_video = json.load(json_file)
 
-    if DEBUG:
-        print(output_dir)
-        print(json.dumps(info_video, indent=2))
+    # if DEBUG:
+    #    print(output_dir)
+    #    print(json.dumps(info_video, indent=2))
 
     video_to_encode.duration = info_video["duration"]
     video_to_encode.encoding_in_progress = True
@@ -197,11 +205,10 @@ def store_remote_encoding_video(video_id):
         send_email_encoding(video_encoding)
 
     # Transcript
-    """
-    main_threaded_transcript(video_id) if (
-            TRANSCRIPT and video_to_encode.transcript
-        ) else False
-    """
+    if (TRANSCRIPT and video_encoding.transcript):
+        transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
+        transcript_video(video_id, False)
+
     print('ALL is DONE')
 
 

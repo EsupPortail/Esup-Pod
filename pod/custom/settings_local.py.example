@@ -241,7 +241,7 @@ USER_CONTACT_EMAIL_CASE = []
 # Egalement les emails de fin d'encodage seront envoyés au(x) manageur(s) de l'établissement du propriétaire de la vidéo encodée,
 # en plus d'un email au propriétaire, en confirmation de la fin d'encodage de sa vidéo.
 """
-USE_ESTABLISHMENT_FIELD	= False
+USE_ESTABLISHMENT_FIELD = False
 
 """
 # Permet d'activer la possibilité de voir en details le nombre de visualisation d'une vidéo durant un jour donné ou mois,
@@ -334,7 +334,7 @@ LOGO_PLAYER = "img/logoPod.svg"
 """
 # Lien de destination du logo affiché sur le player
 """
-LINK_PLAYER	= ""
+LINK_PLAYER = ""
 
 """
 # Texte affiché dans le footer. Une ligne par entrée, accepte du code html.
@@ -557,14 +557,31 @@ VIDEOS_DIR = "videos"
 ENCODE_VIDEO = "start_encode"
 
 """
-# pourl'encodage distant, il faut préciser le login, l'host et la clé pour appeler cet encodage
+# pour l'encodage distant, il faut préciser le login, l'host et la clé pour appeler cet encodage
 # REMOTE ENCODING SETTINGS
 # SSH_REMOTE_USER = ""
 # SSH_REMOTE_HOST = "xxx.univ.fr"
 # SSH_REMOTE_KEY = "/home/pod/.ssh/id_rsa"
-# Remote command to launch, it will be call with this arguments : 
+# Remote command to launch, it will be call with this arguments :
 # -n encoding-<video_id> -i <video_src_file>  -v <video_id> -u <video_user_hash> -d <settings_debug>
-# SSH_REMOTE_CMD = "" 
+# SSH_REMOTE_CMD = ""
+"""
+
+"""
+# Fonction appelée pour lancer la transcription des vidéos
+# Pour la transcription distant, il faut préciser "start_remote_transcript"
+"""
+TRANSCRIPT_VIDEO = "start_transcript"
+
+"""
+# pour la transcription distant, il faut préciser le login, l'host et la clé pour appeler la fonction
+# REMOTE ENCODING SETTINGS
+# SSH_TRANSCRIPT_REMOTE_USER = "pod"
+# SSH_TRANSCRIPT_REMOTE_HOST = "xxx.univ.fr"
+# SSH_TRANSCRIPT_REMOTE_KEY = "/home/pod/.ssh/id_rsa"
+# Remote command to launch, it will be call with this arguments :
+# -n transcoding-<video_id> -i <video_src_file>  -v <video_id> -u <video_user_hash> -d <settings_debug>
+# SSH_TRANSCRIPT_REMOTE_CMD = ""
 """
 
 
@@ -791,7 +808,7 @@ AFFILIATION = (
     ('retired', ('retired')),
     ('emeritus', ('emeritus')),
     ('teacher', ('teacher')),
-    ('registered-reader', _('registered-reader'))
+    ('registered-reader', ('registered-reader'))
 )
 
 """
@@ -799,7 +816,7 @@ AFFILIATION = (
 # Si un seul host : {'url': "ldap.univ.fr'', 'port': 389, 'use_ssl': False}
 # Si plusieurs : {'url': ("ldap.univ.fr'',"ldap2.univ.fr"), 'port': 389, 'use_ssl': False}
 """
-LDAP_SERVER	= {'url': '', 'port': 389, 'use_ssl': False}
+LDAP_SERVER = {'url': '', 'port': 389, 'use_ssl': False}
 
 """
 # Identifiant (DN) du compte pour se connecter au serveur LDAP

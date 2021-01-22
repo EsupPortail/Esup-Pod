@@ -525,7 +525,7 @@ var videocheck = function(form,event) {
             }
         } else {
             window.scrollTo($("#video_form").scrollTop(), 0);
-            showalert(gettext("The file extension not in the allowed extension :")+" "+listext+".","alert-danger");
+            showalert(gettext("The file extension not in the allowed extension:")+" "+listext+".","alert-danger");
             event.preventDefault();
             event.stopPropagation();
         }
