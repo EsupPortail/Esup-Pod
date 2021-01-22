@@ -5,13 +5,12 @@
 <div class="comment_main">
     <div class="comment_container">
         <div class="comment_content">
+	    <div class="inline_flex_space comment_counter_container">
+	        <label class="comment_label" for="comment">{% trans "Comments" %}</label>
+            </div>
 	    {% if is_auth %}
             <form class="add_comment add_parent_comment">
                 <div class="form-wrapper">
-                    <div class="inline_flex_space">
-			    <label class="comment_label" for="comment">{% trans "Comments" %}</label>
-                        <span class="show_comments"></span>
-                    </div>
 		    <textarea class="new_comment new_parent_comment" name="new_parent_comment" id="comment" placeholder='{% trans "Add a public comment" %}'></textarea>
                 </div>
                 <div class="add_comment_footer">
@@ -19,6 +18,7 @@
                 </div>
             </form>
 	    {% endif %}
+	    <div class="lds-ring hide"><div></div><div></div><div></div><div></div></div>
         </div>
 	<confirm-modal id="custom_element_confirm_modal" confirm_title='{% trans "Delete comment" %}' message='{% trans "Permanently delete your comment ?" %}'></confirm-modal>
     </div>

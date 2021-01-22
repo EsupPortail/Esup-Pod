@@ -1,22 +1,20 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Esup Pod JS French strings.
+# This file is distributed under the same license as the POD package.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-01 18:18+0100\n"
-"PO-Revision-Date: 2020-04-30 12:12+0200\n"
-"Last-Translator: Nicolas <nicolas.can@univ-lille1.fr>\n"
+"POT-Creation-Date: 2021-01-22 12:24+0100\n"
+"PO-Revision-Date: 2021-01-22 12:10+0100\n"
+"Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: pod/chapter/static/js/chapters.js:5 pod/chapter/static/js/chapters.js:7
 #: pod/enrichment/static/js/enrichment.js:5
@@ -30,7 +28,7 @@ msgstr "Obtenir le temps du lecteur"
 #: pod/completion/static/js/completion.js:50
 #: pod/enrichment/static/js/enrichment.js:17
 msgid "Error getting form."
-msgstr "Erreur lors de la récupération du formulaire"
+msgstr "Erreur lors de la récupération du formulaire."
 
 #: pod/chapter/static/js/chapters.js:16
 #: pod/completion/static/js/completion.js:50
@@ -111,24 +109,25 @@ msgid "no data could be stored."
 msgstr "aucune donnée ne peut être stockée."
 
 #: pod/completion/static/js/caption_maker.js:113
-msgid "Are you sure you want to delete all caption ?"
-msgstr "Êtes-vous sûr(e) de vouloir supprimer les sous-titre ?"
+msgid "Are you sure you want to delete all caption?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer les sous-titre ?"
 
 #: pod/completion/static/js/completion.js:145
-msgid "Are you sure you want to delete this file ?"
+#: pod/podfile/static/podfile/js/filewidget.js:277
+msgid "Are you sure you want to delete this file?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer ce fichier ?"
 
 #: pod/completion/static/js/completion.js:147
-msgid "Are you sure you want to delete this contributor ?"
-msgstr "Êtes-vous sûr(e) de vouloir supprimer ce contributeur ?"
+msgid "Are you sure you want to delete this contributor?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer ce contributeur ?"
 
 #: pod/completion/static/js/completion.js:149
-msgid "Are you sure you want to delete this document ?"
-msgstr "Êtes-vous sûr(e) de vouloir supprimer ce document ?"
+msgid "Are you sure you want to delete this document?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer ce document ?"
 
 #: pod/completion/static/js/completion.js:151
-msgid "Are you sure you want to delete this overlay ?"
-msgstr "Êtes-vous sûr(e) de vouloir supprimer cette superposition ?"
+msgid "Are you sure you want to delete this overlay?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer cette superposition ?"
 
 #: pod/completion/static/js/completion.js:195 pod/main/static/js/main.js:265
 msgid "Changes have been saved."
@@ -369,11 +368,13 @@ msgid "Are you sure you want to delete this element?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer cet élément ?"
 
 #: pod/main/static/js/main.js:286
+#: pod/podfile/static/podfile/js/filewidget.js:114
 #: pod/podfile/static/podfile/js/filewidget.js:391
 msgid "Error during exchange"
 msgstr "Erreur durant le téléversement"
 
 #: pod/main/static/js/main.js:286
+#: pod/podfile/static/podfile/js/filewidget.js:114
 msgid "No data could be stored."
 msgstr "Aucune donnée ne peut être stockée."
 
@@ -394,14 +395,14 @@ msgid "Errors appear in the form, please correct them"
 msgstr "Des erreurs sont présentes dans le formulaire, veuillez les corriger"
 
 #: pod/main/static/js/main.js:513
-msgid "The file size exceeds the maximum allowed value :"
-msgstr "La fichier dépasse la taille maximum autorisée :"
+msgid "The file size exceeds the maximum allowed value:"
+msgstr "Le fichier dépasse la taille maximum autorisée :"
 
 #: pod/main/static/js/main.js:528
-msgid "The file extension not in the allowed extension :"
+msgid "The file extension not in the allowed extension:"
 msgstr ""
 "Cette extension de fichier n'est pas présente dans les extensions "
-"autorisées :"
+"autorisées :"
 
 #: pod/podfile/static/podfile/js/filewidget.js:11
 msgid "Change image"
@@ -422,11 +423,15 @@ msgstr "Ce dossier est vide"
 #: pod/podfile/static/podfile/js/filewidget.js:134
 #: pod/podfile/static/podfile/js/filewidget.js:141
 msgid "Change"
-msgstr "Changer de fichier"
+msgstr "Changer"
 
 #: pod/podfile/static/podfile/js/filewidget.js:149
 msgid "Enter new name of folder"
 msgstr "Indiquer un nouveau nom au dossier"
+
+#: pod/podfile/static/podfile/js/filewidget.js:167
+msgid "Remove"
+msgstr "Supprimer"
 
 #: pod/podfile/static/podfile/js/filewidget.js:180
 #: pod/podfile/static/podfile/js/filewidget.js:202
@@ -441,61 +446,53 @@ msgstr "Ajouter"
 
 #: pod/podfile/static/podfile/js/filewidget.js:268
 msgid "Are you sure you want to delete this folder?"
-msgstr "Êtes-vous sûr(e) de vouloir supprimer ce dossier ?"
-
-#: pod/podfile/static/podfile/js/filewidget.js:277
-msgid "Are you sure you want to delete this file?"
-msgstr "Êtes-vous sûr(e) de vouloir supprimer ce fichier ?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer ce dossier ?"
 
 #: pod/podfile/static/podfile/js/filewidget.js:477
 msgid "See more"
 msgstr "Voir plus"
 
-#: pod/video/static/js/comment-script.js:61
-#: pod/video/static/js/comment-script.js:166
+#: pod/video/static/js/comment-script.js:74
+#: pod/video/static/js/comment-script.js:171
 msgid "Delete"
 msgstr "Supprimer"
 
-#: pod/video/static/js/comment-script.js:80
+#: pod/video/static/js/comment-script.js:85
 msgid "Cancel"
 msgstr "Annuler"
 
-#: pod/video/static/js/comment-script.js:143
-msgid "Answer comment icon"
-msgstr "Icon réponse commentaire"
+#: pod/video/static/js/comment-script.js:144
+msgid "Agree with the comment"
+msgstr "D'accord avec ce commentaire"
 
-#: pod/video/static/js/comment-script.js:143
-msgid "Answer"
+#: pod/video/static/js/comment-script.js:155
+msgid "Reply to comment"
+msgstr "Répondre au commentaire"
+
+#: pod/video/static/js/comment-script.js:155
+msgid "Reply"
 msgstr "Répondre"
 
-#: pod/video/static/js/comment-script.js:152
-msgid "Comment vote icon"
-msgstr "Icon vote commentaire"
+#: pod/video/static/js/comment-script.js:168
+msgid "Remove this comment"
+msgstr "Supprimer ce commentaire"
 
-#: pod/video/static/js/comment-script.js:163
-msgid "Comment delete icon"
-msgstr "Icon suppression commentaire"
-
-#: pod/video/static/js/comment-script.js:180
+#: pod/video/static/js/comment-script.js:184
 msgid "Add a public comment"
 msgstr "Ajouter un commentaire public"
 
-#: pod/video/static/js/comment-script.js:261
-msgid "Comment show children icon"
-msgstr "Icon affichage commentaire enfant"
+#: pod/video/static/js/comment-script.js:267
+#: pod/video/static/js/comment-script.js:727
+msgid "Answers"
+msgstr "Réponses"
 
-#: pod/video/static/js/comment-script.js:264
-#: pod/video/static/js/comment-script.js:571
-msgid "Show responses"
+#: pod/video/static/js/comment-script.js:272
+msgid "Show answers"
 msgstr "Afficher les réponses"
 
-#: pod/video/static/js/comment-script.js:427
+#: pod/video/static/js/comment-script.js:416
 msgid "Comment has been deleted successfully."
 msgstr "Commentaire a été supprimé avec succès."
-
-#: pod/video/static/js/comment-script.js:569
-msgid "Hide responses"
-msgstr "Cacher les réponses"
 
 #: pod/video/static/js/validate-date_delete-field.js:26
 msgid "The date must be before or equal to"
@@ -503,7 +500,7 @@ msgstr "La date doit être anterieure ou égale à"
 
 #: pod/video/static/js/video_category.js:25
 msgid "Category changes saved successfully"
-msgstr "Les changements sur la catégorie ont été sauvegardés avec succès."
+msgstr "Les changements sur la catégorie ont été sauvegardés avec succès"
 
 #: pod/video/static/js/video_category.js:26
 msgid "You cannot add two categories with the same title."
@@ -511,12 +508,12 @@ msgstr "Vous ne pouvez pas ajouter deux catégories avec le même titre."
 
 #: pod/video/static/js/video_category.js:27
 msgid "Category deleted successfully"
-msgstr "Catégorie supprimée avec succès."
+msgstr "Catégorie supprimée avec succès"
 
 #: pod/video/static/js/video_category.js:28
 msgid "An error occured, please refresh the page and try again."
 msgstr ""
-"Une erreur est survenue, Veuillez recharger la page et rééssayer à nouveau."
+"Une erreur est survenue, veuillez recharger la page et réessayer à nouveau."
 
 #: pod/video/static/js/video_category.js:29
 msgid "Category title field is required."
@@ -538,6 +535,16 @@ msgstr "vidéo trouvée"
 msgid "Sorry, no video found"
 msgstr "Désolé, aucune vidéo trouvée"
 
+#: pod/video/static/js/video_category.js:380
+#: pod/video/static/js/video_category.js:484
+msgid "Video content."
+msgstr "Contenu vidéo."
+
+#: pod/video/static/js/video_category.js:381
+#: pod/video/static/js/video_category.js:492
+msgid "Audio content."
+msgstr "Contenu audio."
+
 #: pod/video/static/js/video_category.js:391
 msgid "Edit the category"
 msgstr "Éditer la catégorie"
@@ -546,17 +553,33 @@ msgstr "Éditer la catégorie"
 msgid "Delete the category"
 msgstr "Supprimer la catégorie"
 
+#: pod/video/static/js/video_category.js:456
+msgid "This content is password protected."
+msgstr "Ce contenu est protégé par mot de passe."
+
 #: pod/video/static/js/video_category.js:465
 msgid "This content is chaptered."
-msgstr "Ce contenu est chapitré"
+msgstr "Ce contenu est chapitré."
 
 #: pod/video/static/js/video_category.js:474
 msgid "This content is in draft."
-msgstr "Ce contenu est en privé"
+msgstr "Ce contenu est en brouillon."
 
-#: pod/video/static/js/video_category.js:492
-msgid "Audio content."
-msgstr "Contenu audio"
+#: pod/video/static/js/video_category.js:497
+msgid "Edit the video"
+msgstr "Éditer la vidéo"
+
+#: pod/video/static/js/video_category.js:498
+msgid "Complete the video"
+msgstr "Compléter la vidéo"
+
+#: pod/video/static/js/video_category.js:499
+msgid "Chapter the video"
+msgstr "Chapitrer la vidéo"
+
+#: pod/video/static/js/video_category.js:500
+msgid "Delete the video"
+msgstr "Supprimer la vidéo"
 
 #: pod/video/static/js/video_category.js:549
 msgid "Success.."
@@ -568,7 +591,7 @@ msgstr "Erreur.."
 
 #: pod/video/static/js/video_category.js:768
 msgid "Category created successfully"
-msgstr "Catégorie créée avec succès."
+msgstr "Catégorie créée avec succès"
 
 #: pod/video/static/js/video_category.js:788
 msgid "Create category"
