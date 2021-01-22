@@ -35,7 +35,6 @@ def index_es(video):
                                    id=video.id, doc_type='pod',
                                    body=data, refresh=True)
                 if DEBUG:
-                    print(res)
                     logger.info(res)
                 return res
         except TransportError as e:
