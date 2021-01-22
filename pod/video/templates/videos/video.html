@@ -276,7 +276,7 @@ body {
 </script>
 {% endif %}
 <script>
-    var user_fullName = `{{request.user.first_name}} {{request.user.last_name|upper}}`;
+    var user_fullName = `{{request.user.first_name}} {{request.user.last_name}}`;
     var user_id = "{{ request.user.id }}" === "None"? false: {{ request.user.id }};
     var is_authenticated = JSON.parse("{{request.user.is_authenticated|yesno:"true,false"}}");
     var is_superuser = JSON.parse("{{request.user.is_superuser|yesno:"true,false"}}");
