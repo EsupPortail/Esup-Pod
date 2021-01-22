@@ -34,7 +34,8 @@ from select2 import fields as select2_fields
 from sorl.thumbnail import get_thumbnail
 from pod.main.models import get_nextautoincrement
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
-from django.db.models import Q
+from django.db.models import Count, Case, When, Value, BooleanField, Q
+from django.db.models.functions import Concat
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -1460,8 +1461,11 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     parent = models.ForeignKey(
-            'self', related_name="children", null=True, blank=True,
-            on_delete=models.CASCADE)
+        'self', related_name="children", null=True, blank=True,
+        on_delete=models.CASCADE)
+    direct_parent = models.ForeignKey(
+        'self', related_name="direct_children", null=True, blank=True,
+        on_delete=models.CASCADE)
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
     added = models.DateTimeField(auto_now_add=True)
 
@@ -1470,8 +1474,34 @@ class Comment(models.Model):
         verbose_name_plural = _("Comments")
 
     @property
-    def numberVote(self):
+    def number_vote(self):
         self.vote_set.all().count()
+
+    @property
+    def get_children(self):
+        return Comment.objects.filter(parent_id=self.id).order_by('id')
+
+    def get_json_children(self, user_id):
+        return list(self.get_children.annotate(
+            nbr_vote=Count('vote', distinct=True)
+        ).annotate(
+            author_name=Concat(
+                'author__first_name',
+                Value(' '),
+                'author__last_name'
+            )
+        ).annotate(
+            is_owner=Case(
+                When(author__id=user_id, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField()
+            )
+        ).values(
+            'id', 'parent__id', 'direct_parent__id',
+            'is_owner', 'author_name',
+            'added', 'content',
+            'nbr_vote'
+        ))
 
     def __str__(self):
         return self.content

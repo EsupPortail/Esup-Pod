@@ -31,7 +31,7 @@
 {% if user.is_authenticated %}
 <p class="errornote">
   {% blocktrans trimmed %}
-    You are authenticated as {{ username }}, but are not authorized to
+    You are authenticated as {{ user }}, but are not authorized to
     access this page. Would you like to login to a different account?
   {% endblocktrans %}
 </p>
@@ -52,7 +52,6 @@
     <input type="hidden" name="next" value="{{ next }}">
   </div>
 
-  
 
   {% url 'admin_password_reset' as password_reset_url %}
   {% if password_reset_url %}

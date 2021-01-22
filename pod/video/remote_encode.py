@@ -35,6 +35,14 @@ log = logging.getLogger(__name__)
 
 DEBUG = getattr(settings, 'DEBUG', True)
 
+TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
+
+if TRANSCRIPT:
+    from . import transcript
+    TRANSCRIPT_VIDEO = getattr(settings,
+                               'TRANSCRIPT_VIDEO',
+                               'start_transcript')
+
 EMAIL_ON_ENCODING_COMPLETION = getattr(
     settings, 'EMAIL_ON_ENCODING_COMPLETION', True)
 
@@ -44,6 +52,8 @@ SSH_REMOTE_HOST = getattr(
     settings, 'SSH_REMOTE_HOST', "")
 SSH_REMOTE_KEY = getattr(
     settings, 'SSH_REMOTE_KEY', "")
+SSH_REMOTE_CMD = getattr(
+    settings, 'SSH_REMOTE_CMD', "")
 
 
 # ##########################################################################
@@ -91,11 +101,12 @@ def remote_encode_video(video_id):
             f.write("%s\n" % start)
 
         # launch remote encoding
-        cmd = "./pod-encoding/submit.sh \
+        cmd = "{remote_cmd} \
             -n encoding-{video_id} -i {video_input} \
             -v {video_id} -u {user_hashkey} -d {debug}".format(
+            remote_cmd=SSH_REMOTE_CMD,
             video_id=video_id,
-            video_input=video_to_encode.video,
+            video_input=os.path.basename(video_to_encode.video.name),
             user_hashkey=video_to_encode.owner.owner.hashkey,
             debug=DEBUG
         )
@@ -160,9 +171,9 @@ def store_remote_encoding_video(video_id):
     with open(output_dir + "/info_video.json") as json_file:
         info_video = json.load(json_file)
 
-    if DEBUG:
-        print(output_dir)
-        print(json.dumps(info_video, indent=2))
+    # if DEBUG:
+    #    print(output_dir)
+    #    print(json.dumps(info_video, indent=2))
 
     video_to_encode.duration = info_video["duration"]
     video_to_encode.encoding_in_progress = True
@@ -194,11 +205,10 @@ def store_remote_encoding_video(video_id):
         send_email_encoding(video_encoding)
 
     # Transcript
-    """
-    main_threaded_transcript(video_id) if (
-            TRANSCRIPT and video_to_encode.transcript
-        ) else False
-    """
+    if (TRANSCRIPT and video_encoding.transcript):
+        transcript_video = getattr(transcript, TRANSCRIPT_VIDEO)
+        transcript_video(video_id, False)
+
     print('ALL is DONE')
 
 
