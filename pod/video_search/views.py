@@ -8,8 +8,10 @@ from django.utils.translation import ugettext_lazy as _
 # import json
 
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
-
-# Create your views here.
+ES_INDEX = getattr(settings, 'ES_INDEX', 'pod')
+ES_TIMEOUT = getattr(settings, 'ES_TIMEOUT', 30)
+ES_MAX_RETRIES = getattr(settings, 'ES_MAX_RETRIES', 10)
+ES_VERSION = getattr(settings, 'ES_VERSION', 6)
 
 
 def get_filter_search(selected_facets, start_date, end_date):
@@ -77,7 +79,8 @@ def get_result_aggregations(result, selected_facets):
 
 
 def search_videos(request):
-    es = Elasticsearch(ES_URL)
+    es = Elasticsearch(ES_URL, timeout=ES_TIMEOUT, max_retries=ES_MAX_RETRIES,
+                       retry_on_timeout=True)
     aggsAttrs = ['owner_full_name', 'type.title',
                  'disciplines.title', 'tags.name', 'channels.title']
 
@@ -183,7 +186,7 @@ def search_videos(request):
     # if settings.DEBUG:
     #    print(json.dumps(bodysearch, indent=4))
 
-    result = es.search(index="pod", body=bodysearch)
+    result = es.search(index=ES_INDEX, body=bodysearch)
 
     # if settings.DEBUG:
     #    print(json.dumps(result, indent=4))
@@ -197,7 +200,11 @@ def search_videos(request):
 
     list_videos_id = [hit["_id"] for hit in result["hits"]["hits"]]
     videos = Video.objects.filter(id__in=list_videos_id)
-    num_result = result["hits"]["total"]
+    num_result = 0
+    if ES_VERSION == 7:
+        num_result = result["hits"]["total"]["value"]
+    else:
+        num_result = result["hits"]["total"]
     videos.has_next = ((page + 1) * 12) < num_result
     videos.next_page_number = page + 1
 
