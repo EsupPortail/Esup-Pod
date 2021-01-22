@@ -560,7 +560,7 @@ msgstr ""
 #: pod/static/admin/js/SelectFilter2.js:86 pod/static/js/comment-script.js:182
 #: pod/video/static/js/comment-script.js:182
 msgid "Remove"
-msgstr ""
+msgstr "Supprimer"
 
 #: pod/static/admin/js/SelectFilter2.js:92
 #, javascript-format
