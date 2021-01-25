@@ -409,6 +409,22 @@ ES_URL = ['http://127.0.0.1:9200/']
 # Valeur pour l’index de ElasticSearch
 """
 ES_INDEX = "pod"
+"""
+# Valeur timeout pour configuration de ElasticSearch
+"""
+ES_TIMEOUT = 30
+"""
+# Valeur max essai pour configuration de ElasticSearch
+"""
+ES_MAX_RETRIES = 10
+"""
+# Valeur la version d'ElasticSearch 
+# valeurs possibles 6 ou 7 (pour indiquer utiliser elasticsearch 6 ou 7)
+# pour utiliser la version 7, faire une mise à jour du paquet elasticsearch-py 
+# elasticsearch==7.10.1
+# https://elasticsearch-py.readthedocs.io/en/v7.10.1/
+"""
+ES_VERSION = 6 # Si 7, faire un une mise à jour du paquet 
 
 # ## Configuration encodage ## #
 
