@@ -375,10 +375,15 @@ function save_comment(content, date, comment_html, comment_container_html, direc
                     comment_container_html.after(comment_html);
                 }
                 else {
-                    // Add comment child into the DOM
-                    comment_container_html.appendChild(comment_html);
+                    // Fetch comment"s children if not already loaded
+                    if (get_comment_attribute(top_parent_comment_html, "children").length === 0)
+                        fetch_comment_children(top_parent_comment_html, top_parent_id, scroll_to_last = true);
+                    else {
+                        // Add comment child into the DOM
+                        comment_container_html.appendChild(comment_html);
+                        scrollToComment(comment_html);
+                    }
                     // Scroll to the comment child
-                    scrollToComment(comment_html);
                     // update local saved data (all_comment)
                     all_comment = all_comment.map((comment) => {
                         if (comment.id === top_parent_id) {
@@ -591,7 +596,7 @@ if (is_authenticated) {
 }
 /*****  Fetch children and add them into the DOM  *****
  ******************************************************/
-function fetch_comment_children(parent_comment_html, parent_comment_id) {
+function fetch_comment_children(parent_comment_html, parent_comment_id, scroll_to_last = false) {
     // fetch children only once
     if (all_comment.find(c => c.id === parent_comment_id).children.length === 0) {
         const children_loader = loader.cloneNode(true);
@@ -607,7 +612,7 @@ function fetch_comment_children(parent_comment_html, parent_comment_id) {
                         parent_comment_html.querySelector(".comments_children_container").removeChild(children_loader);
                         parent_comment.children = data.children
                         // Update DOM with children comments
-                        parent_comment.children.forEach(comment_child => {
+                        parent_comment.children.forEach((comment_child, index) => {
                             let parent_to_scroll = parent_comment_html;
                             if (comment_child.direct_parent__id != null && comment_child.direct_parent__id !== comment_child.parent__id) {
                                 let direct_parent_comment = parent_comment.children.find(
@@ -638,6 +643,8 @@ function fetch_comment_children(parent_comment_html, parent_comment_id) {
                             parent_comment_html.querySelector(".comments_children_container").appendChild(comment_child_html)
                             setBorderLeftColor(comment_child_html, parent_to_scroll)
                             manage_vote_frontend(comment_child.id, comment_child_html);
+                            if (scroll_to_last && index === (parent_comment.children.length - 1))
+                                scrollToComment(comment_child_html);
                         });
                     }
                     return parent_comment;
