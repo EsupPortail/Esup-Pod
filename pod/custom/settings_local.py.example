@@ -1,15 +1,24 @@
 """
-# ********************************************************** ATTENTION **********************************************************
+# *************************** ATTENTION ***************************************
 #
-# Attention ! Veuillez ne pas renommer ce fichier en settings_local.py mais vous en inspirer pour configurer votre instance Pod.
+# Attention ! Veuillez ne pas renommer ce fichier en settings_local.py
+# mais vous en inspirer pour configurer votre instance Pod.
 #
-# ********************************************************** WARNING ************************************************************
+# **************************** WARNING ****************************************
 #
-# Warning ! Please do not rename this file to settings_local.py but be inspired by it to configure your Pod instance.
+# Warning ! Please do not rename this file to settings_local.py
+#  but be inspired by it to configure your Pod instance.
 #
-#********************************************************************************************************************************
+#******************************************************************************
 """
 
+from django.utils.translation import ugettext_lazy as _
+from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
+import os
+##
+# Base folder
+#
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # configuration principale
 """
@@ -35,9 +44,11 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
 """
-# Une liste de chaînes représentant des noms de domaine/d’hôte que ce site Django peut servir.
+# Une liste de chaînes représentant des noms de domaine/d’hôte
+#  que ce site Django peut servir.
 # C’est une mesure de sécurité pour empêcher les attaques d’en-tête Host HTTP,
-# qui sont possibles même avec bien des configurations de serveur Web apparemment sécurisées.
+#  qui sont possibles même avec bien des configurations
+#  de serveur Web apparemment sécurisées.
 #  https://docs.djangoproject.com/fr/1.11/ref/settings/#allowed-hosts
 """
 ALLOWED_HOSTS = ['localhost']
@@ -49,32 +60,42 @@ ALLOWED_HOSTS = ['localhost']
 SESSION_COOKIE_AGE = 14400
 
 """
-# Indique s’il faut que la session expire lorsque l’utilisateur ferme son navigateur.
+# Indique s’il faut que la session expire
+#  lorsque l’utilisateur ferme son navigateur.
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#session-cookie-age
 """
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 """
-# Une liste de toutes les personnes qui reçoivent les notifications d’erreurs dans le code.
+# Une liste de toutes les personnes qui reçoivent les notifications
+# d’erreurs dans le code.
 # Lorsque DEBUG=False et qu’une vue lève une exception,
-# Django envoie un courriel à ces personnes contenant les informations complètes de l’exception.
-# Chaque élément de la liste doit être un tuple au format « (nom complet, adresse électronique) ».
-# Exemple : [('John', 'john@example.com'), ('Mary', 'mary@example.com')] Dans Pod,
-# les "admins" sont également destinataires des courriels de contact,
-# d'encodage ou de flux rss si la variable CONTACT_US_EMAIL n'est pas renseignée.
+# Django envoie un courriel à ces personnes contenant
+#  les informations complètes de l’exception.
+# Chaque élément de la liste doit être un tuple au format
+#  « (nom complet, adresse électronique) ».
+# Exemple : [('John', 'john@example.com'), ('Mary', 'mary@example.com')]
+# Dans Pod, les "admins" sont également destinataires
+#  des courriels de contact, d'encodage ou de flux rss
+#  si la variable CONTACT_US_EMAIL n'est pas renseignée.
 """
-ADMINS = ( ('Name', 'adminmail@univ.fr'),)
+ADMINS = (('Name', 'adminmail@univ.fr'),)
 
 """
-# Dans Pod, les "managers" sont destinataires des courriels de fin d'encodage (et ainsi des vidéos déposées sur la plateforme).
+# Dans Pod, les "managers" sont destinataires des courriels de fin d'encodage
+#  (et ainsi des vidéos déposées sur la plateforme).
 # Le premier managers renseigné est également contact des flus rss.
-# Ils sont aussi destinataires des courriels de contact si la variable CONTACT_US_EMAIL n'est pas renseignée.
+# Ils sont aussi destinataires des courriels de contact
+#  si la variable CONTACT_US_EMAIL n'est pas renseignée.
 """
 MANAGERS = ADMINS
 
 """
-# Un dictionnaire contenant les réglages de toutes les bases de données à utiliser avec Django.
-# C’est un dictionnaire imbriqué dont les contenus font correspondre l’alias de base de données avec un dictionnaire contenant les options de chacune des bases de données.
+# Un dictionnaire contenant les réglages de toutes les bases de données
+#  à utiliser avec Django.
+# C’est un dictionnaire imbriqué dont les contenus font correspondre
+#  l’alias de base de données avec un dictionnaire contenant
+#  les options de chacune des bases de données.
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#databases
 """
 DATABASES = {
@@ -103,19 +124,23 @@ LANGUAGES = (
 TIME_ZONE = "UTC"
 
 """
-# Le répertoire dans lequel stocker temporairement les données (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE) lors des téléversements de fichiers.
+# Le répertoire dans lequel stocker temporairement les données
+#  (typiquement pour les fichiers plus grands que FILE_UPLOAD_MAX_MEMORY_SIZE)
+#  lors des téléversements de fichiers.
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#file-upload-temp-dir
 """
 FILE_UPLOAD_TEMP_DIR = "/var/tmp"
 
 """
-# Le chemin absolu vers le répertoire dans lequel collectstatic rassemble les fichiers statiques en vue du déploiement.
-#  https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-STATIC_ROOT
+# Le chemin absolu vers le répertoire dans lequel collectstatic rassemble
+#  les fichiers statiques en vue du déploiement.
+# https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-STATIC_ROOT
 """
 STATIC_ROOT = "/pod/static"
 
 """
-# Chemin absolu de système de fichiers pointant vers le répertoire qui contiendra les fichiers téléversés par les utilisateurs.
+# Chemin absolu du système de fichiers pointant vers le répertoire
+#  qui contiendra les fichiers téléversés par les utilisateurs.
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-MEDIA_ROOT
 """
 MEDIA_ROOT = "/pod/media"
@@ -131,47 +156,54 @@ EMAIL_HOST = "smtp.univ.fr"
 EMAIL_PORT = 25
 
 """
-# courriel utilisé par défaut pour les envois automatique (erreur de code etc.)
+# Expediteur par défaut pour les envois automatique (erreur de code etc.)
 """
 SERVER_EMAIL = "noreply@univ.fr"
 
 """
-# courriel utilisé par défaut pour les envois de courriel (contact, encodage etc.)
+# Expediteur par défaut pour les envois de courriel (contact, encodage etc.)
 """
-DEFAULT_FROM_EMAIL= "noreply@univ.fr"
+DEFAULT_FROM_EMAIL = "noreply@univ.fr"
 
 """
-# Les utilisateurs inactif ne sont plus affichés dans la barre de menu utilisateur
+# Les utilisateurs inactifs ne sont plus affichés
+#  dans la barre de menu utilisateur
 """
 MENUBAR_HIDE_INACTIVE_OWNERS = True
 
 """
-# Les utilisateurs non staff ne sont plus affichés dans la barre de menu utilisateur
+# Les utilisateurs non staff ne sont plus affichés
+#  dans la barre de menu utilisateur
 """
 MENUBAR_SHOW_STAFF_OWNERS_ONLY = False
 
 """
-# Afficher les vidéos dont l'accès est protégé par mot de passe sur la page d'accueil
+# Afficher les vidéos dont l'accès est protégé par mot de passe
+#  sur la page d'accueil
 """
 HOMEPAGE_SHOWS_PASSWORDED = False
 
 """
-# Afficher les vidéos dont l'accès est protégé par authentification sur la page d'accueil
+# Afficher les vidéos dont l'accès est protégé par authentification
+#  sur la page d'accueil
 """
 HOMEPAGE_SHOWS_RESTRICTED = False
 
 """
-# Les mots clés saisis lors de l'ajout de vidéo sont convertis automatiquement en minuscule
+# Les mots clés saisis lors de l'ajout de vidéo sont convertis
+#  automatiquement en minuscule
 """
 FORCE_LOWERCASE_TAGS = True
 
 """
-# Les mots clés saisis lors de l'ajout de vidéo ne peuvent dépassé la longueur saisie
+# Les mots clés saisis lors de l'ajout de vidéo
+#  ne peuvent dépasser la longueur saisie
 """
 MAX_TAG_LENGTH = 50
 
 """
-# Utiliser l'application de gestion de fichier fourni avec le projet. Si False, chaque fichier envoyé ne pourra être utilisé qu'une seule fois.
+# Utiliser l'application de gestion de fichier fourni avec le projet.
+#  Si False, chaque fichier envoyé ne pourra être utilisé qu'une seule fois.
 """
 USE_PODFILE = False
 
@@ -181,7 +213,8 @@ USE_PODFILE = False
 THIRD_PARTY_APPS = []
 
 """
-# Nom du répertoire racine ou les fichiers "complémentaires" (hors vidéos etc.) sont téléversés.
+# Nom du répertoire racine où les fichiers "complémentaires"
+#  (hors vidéos etc.) sont téléversés.
 """
 FILES_DIR = "files"
 
@@ -199,54 +232,71 @@ SUBJECT_CHOICES = (
 )
 
 """
-# Si valeur vaut 'True', le username de l'utilisateur ne sera pas visible sur la plate-forme Pod et
-# si la valeur vaut 'False' le username sera affichés aux utilisateurs authentifiés. (par soucis du respect du RGPD)
+# Si valeur vaut 'True', le username de l'utilisateur ne sera pas visible
+   sur la plate-forme Pod et
+# si la valeur vaut 'False' le username sera affichés
+   aux utilisateurs authentifiés. (par soucis du respect du RGPD)
 """
 HIDE_USERNAME = False
 
 """
-# Si valeur vaut 'True', l'onglet Utilisateur ne sera pas visible et si la valeur vaut 'False' l'onglet Utilisateur ne sera visible qu'aux personnes authentifiées.
+# Si valeur vaut 'True', l'onglet Utilisateur ne sera pas visible
+# et si la valeur vaut 'False' l'onglet Utilisateur ne sera visible
+#  qu'aux personnes authentifiées.
 # (par soucis du respect du RGPD)
 """
 HIDE_USER_TAB = False
 
 """
-# Si la valeur vaut 'True', le filtre des vidéos par utilisateur ne sera plus visible sur la plate-forme Pod et
-# si la valeur vaut 'False' le filtre sera visible qu'aux personnes authentifiées. (par soucis du respect du RGPD)
+# Si 'True', le filtre des vidéos par utilisateur ne sera plus visible
+# si 'False' le filtre sera visible qu'aux personnes authentifiées.
+# (par soucis du respect du RGPD)
 """
 HIDE_USER_FILTER = False
 
 """
-# Si valeur vaut 'True', les URLs contenues dans le texte de superposition seront transformées, à la lecture de la vidéo, en lien cliquable.
+# Si valeur vaut 'True', les URLs contenues dans le texte de superposition
+#  seront transformées, à la lecture de la vidéo, en lien cliquable.
 """
 LINK_SUPERPOSITION = False
 
 """
-# Si valeur vaut 'True', les e-mails de contacts seront adressés, selon le sujet, soit au propriétaire de la vidéo soit au(x) manageur(s) des vidéos Pod.
-# (voir USER_CONTACT_EMAIL_CASE et USE_ESTABLISHMENT_FIELD )
+# Si 'True', les e-mails de contacts seront adressés, selon le sujet,
+#  soit au propriétaire de la vidéo soit au(x) manageur(s) des vidéos Pod.
+# (voir USER_CONTACT_EMAIL_CASE et USE_ESTABLISHMENT_FIELD)
 """
 CUSTOM_CONTACT_US = False
 
 """
-# Une liste contenant les sujets de contact dont l'utilisateur sera seul destinataire plutôt que le(s) manageur(s).
-# Si la liste est vide, les mails de contact seront envoyés au(x) manageur(s). Valeurs possibles :
-#   'info', 'contribute', 'request_password', 'inapropriate_content', 'bug', 'other'
+# Une liste contenant les sujets de contact dont l'utilisateur
+#  sera seul destinataire plutôt que le(s) manageur(s).
+# Si la liste est vide, les mails de contact seront envoyés au(x) manageur(s).
+# Valeurs possibles :
+#  'info', 'contribute', 'request_password',
+#  'inapropriate_content', 'bug', 'other'
 """
 USER_CONTACT_EMAIL_CASE = []
 
 """
-# Si valeur vaut 'True', rajoute un attribut 'establishment' à l'utilisateur Pod ce qui permet de gérer plus d'un établissement pouvant utiliser Pod.
-# Dans ce cas les emails de contact par exemple seront envoyés soit à l'utilisateur soit au(x) manageur(s) de l'établissement de l'utilisateur.
-# (voir USER_CONTACT_EMAIL_CASE )
-# Egalement les emails de fin d'encodage seront envoyés au(x) manageur(s) de l'établissement du propriétaire de la vidéo encodée,
-# en plus d'un email au propriétaire, en confirmation de la fin d'encodage de sa vidéo.
+# Si valeur vaut 'True', rajoute un attribut 'establishment'
+#  à l'utilisateur Pod, ce qui permet de gérer plus d'un établissement.
+# Dans ce cas, les emails de contact par exemple seront envoyés
+#  soit à l'utilisateur soit au(x) manageur(s)
+#  de l'établissement de l'utilisateur.
+# (voir USER_CONTACT_EMAIL_CASE)
+# Egalement, les emails de fin d'encodage seront envoyés au(x) manageur(s)
+#  de l'établissement du propriétaire de la vidéo encodée,
+#  en plus d'un email au propriétaire confirmant la fin d'encodage d'une vidéo.
 """
 USE_ESTABLISHMENT_FIELD = False
 
 """
-# Permet d'activer la possibilité de voir en details le nombre de visualisation d'une vidéo durant un jour donné ou mois,
-# année ou encore le nombre de vue total depuis la création de la vidéo. un lien est rajouté dans la partie info lors de la lecture d'une vidéo,
-# un lien est rajouté dans la page de visualisation d'une chaîne ou un theme ou encore toutes les vidéos présentes sur la plateforme.
+# Permet d'activer la possibilité de voir en details
+#  le nombre de visualisation d'une vidéo durant un jour donné ou mois,
+#  année ou encore le nombre de vue total depuis la création de la vidéo.
+# Un lien est rajouté dans la partie info lors de la lecture d'une vidéo,
+# un lien est rajouté dans la page de visualisation d'une chaîne ou un theme
+#  ou encore toutes les vidéos présentes sur la plateforme.
 """
 USE_STATS_VIEW = False
 
@@ -256,17 +306,14 @@ USE_STATS_VIEW = False
 VIEW_STATS_AUTH = False
 
 """
-# Fixe une année maximale que la date de suppression d'une vidéo ne peut dépasser. Par défaut MAX_DURATION_DATE_DELETE = 10. (Année courante + 10 ans).
-"""
-MAX_DURATION_DATE_DELETE = 10
-
-"""
-# Permet d'utiliser la mise en ligne fragmentée (qui permet de reprendre la mise en ligne lors de problèmes de connexion)
+# Permet d'utiliser la mise en ligne fragmentée
+#  (qui permet de reprendre la mise en ligne lors de problèmes de connexion)
 """
 USE_CHUNKED_UPLOAD = False
 
 """
-# Taille d'un fragment (le fichier sera mis en ligne par fragment de cette taille)
+# Taille d'un fragment
+# (le fichier sera mis en ligne par fragment de cette taille)
 """
 CHUNK_SIZE = 1000000
 
@@ -287,95 +334,74 @@ ORGANIZE_BY_THEME = False
 
 """
 # Configuration des templates / de l'affichage
-# L'ensemble des variables ci-après doivent être contnu dans un dictionnnaire TEMPLATE_VISIBLE_SETTINGS.
-# Voici sa valeur par défaut :
 """
 TEMPLATE_VISIBLE_SETTINGS = {
+    # Titre du site.
     'TITLE_SITE': 'Pod',
+
+    # Titre de l’établissement.
     'TITLE_ETB': 'University name',
+
+    # Logo affiché en haut à gauche sur toutes les pages.
+    # Doit se situer dans le répertoire static
     'LOGO_SITE': 'img/logoPod.svg',
+
+    # Logo affiché dans le footer sur toutes les pages.
+    # Doit se situer dans le répertoire static
     'LOGO_ETB': 'img/logo_etb.svg',
+
+    # Logo affiché sur le player video.
+    # Doit se situer dans le répertoire static
     'LOGO_PLAYER': 'img/logoPod.svg',
+
+    # Lien de destination du logo affiché sur le player
     'LINK_PLAYER': '',
+
+    # Texte affiché dans le footer. Une ligne par entrée, accepte du code html.
+    # Par exemple :
+    # ( '42, rue Paul Duez',
+    #   '59000 Lille - France',
+    #   ('<a href="https://goo.gl/maps/AZnyBK4hHaM2"'
+    #    ' target="_blank">Google maps</a>') )
     'FOOTER_TEXT': ('',),
+
+    # Icone affichée dans la barre d'adresse du navigateur
     'FAVICON': 'img/logoPod.svg',
-    'CSS_OVERRIDE' : '',
-    'PRE_HEADER_TEMPLATE' : '',
-    'POST_FOOTER_TEMPLATE' : '',
-    'TRACKING_TEMPLATE' : '',
+
+    # Si souhaitée, à créer et sauvegarder
+    #  dans le répertoire static de l'application custom et
+    #  préciser le chemin d'accès. Par exemple : "custom/etab.css"
+    'CSS_OVERRIDE': '',
+
+    # Vous pouvez créer un template dans votre application custom et
+    #  indiquer son chemin dans cette variable pour que ce code html,
+    # ce template soit affiché en haut de votre page, le code est ajouté
+    #  juste après la balise body.(Or iframe)
+    # Si le fichier créé est
+    # '/opt/django_projects/podv2/pod/custom/templates/custom/preheader.html'
+    # alors la variable doit prendre la valeur 'custom/preheader.html'
+    'PRE_HEADER_TEMPLATE': '',
+
+    # Idem que pre-header, le code contenu dans le template
+    #  sera affiché juste avant la fermeture du body. (Or iframe)
+    'POST_FOOTER_TEMPLATE': '',
+
+    # vous pouvez créer un template dans votre application custom
+    #  pour y intégrer votre code Piwik ou Google analytics.
+    # Ce template est inséré dans toutes les pages de la plateforme,
+    #  y compris en mode iframe
+    'TRACKING_TEMPLATE': '',
 }
 
 
-"""
-# Titre du site.
-TITLE_SITE = "Pod"
-"""
-
-"""
-# Titre de l’établissement.
-"""
-TITLE_ETB = "University name"
-
-"""
-# Logo affiché en haut à gauche sur toutes les pages. Doit se situer dans le répertoire static
-"""
-LOGO_SITE = "img/logoPod.svg"
-
-"""
-# Logo affiché dans le footer sur toutes les pages. Doit se situer dans le répertoire static
-"""
-LOGO_ETB = "img/logo_etb.svg"
-
-"""
-# Logo affiché sur le player video. Doit se situer dans le répertoire static
-"""
-LOGO_PLAYER = "img/logoPod.svg"
-
-"""
-# Lien de destination du logo affiché sur le player
-"""
-LINK_PLAYER = ""
-
-"""
-# Texte affiché dans le footer. Une ligne par entrée, accepte du code html.
-# Par exmple : ( '42, rue Paul Duez', '59000 Lille - France', ('<a href="https://goo.gl/maps/AZnyBK4hHaM2"' ' target="_blank">Google maps</a>') )
-"""
-FOOTER_TEXT = ('',)
-
-"""
-# Icon affiché dans la barre d'adresse du navigateur
-"""
-FAVICON = "img/logoPod.svg"
-
-"""
-# Si souhaitée, à créer et sauvegarder dans le répertoire static de l'application custom et préciser le chemin d'accès. Par exemple : "custom/etab.css"
-"""
-CSS_OVERRIDE = ""
-
-"""
-# vous pouvez créer un template dans votre application custom et indiquer son chemin dans cette variable pour que ce code html,
-# ce template soit affiché en haut de votre page, le code est ajouté juste après la balise body.(Or iframe)
-# Si le fichié créé est '/usr/local/django_projects/podv2/pod/custom/templates/custom/preheader.html' alors la varaible doit prendre la valeur 'custom/preheader.html'
-"""
-PRE_HEADER_TEMPLATE = ""
-
-"""
-# Idem que pre-header, le code contenu dans le template sera affiché juste avant la fermeture du body. (Or iframe)
-"""
-POST_FOOTER_TEMPLATE = ""
-
-"""
-# vous pouvez créer un template dans votre application custom pour y intégrer votre code Piwik ou Google analytics.
-# Ce template est inséré dans toutes les pages de la plateforme, y compris en mode iframe
-"""
-TRACKING_TEMPLATE = ""
-
 # Configuration application recherche
-# Pour mettre à jour le moteur de recherche, je lance toutes les nuits la tache cron suivante :
-#    0 5 * * * cd /home/pod/django_projects/podv2 && /home/pod/.virtualenvs/django_pod/bin/python manage.py index_videos --all
+# Pour mettre à jour le moteur de recherche, je lance toutes les nuits
+#  la tache cron suivante :
+# 0 5 * * * cd $path_pod/podv2 && $v_env/python manage.py index_videos --all
 
 """
-# adresse du ou des instances d'Elasticsearch utilisées pour l'indexation et la recherche de vidéo.
+# adresse du ou des instances d'Elasticsearch utilisées pour l'indexation
+#  et la recherche de vidéo.
 """
 ES_URL = ['http://127.0.0.1:9200/']
 
@@ -383,10 +409,24 @@ ES_URL = ['http://127.0.0.1:9200/']
 # Valeur pour l’index de ElasticSearch
 """
 ES_INDEX = "pod"
+"""
+# Valeur timeout pour configuration de ElasticSearch
+"""
+ES_TIMEOUT = 30
+"""
+# Valeur max essai pour configuration de ElasticSearch
+"""
+ES_MAX_RETRIES = 10
+"""
+# Valeur la version d'ElasticSearch 
+# valeurs possibles 6 ou 7 (pour indiquer utiliser elasticsearch 6 ou 7)
+# pour utiliser la version 7, faire une mise à jour du paquet elasticsearch-py 
+# elasticsearch==7.10.1
+# https://elasticsearch-py.readthedocs.io/en/v7.10.1/
+"""
+ES_VERSION = 6 # Si 7, faire un une mise à jour du paquet 
 
-
-
-# Configuration encodage
+# ## Configuration encodage ## #
 
 """
 # commande ffmpeg
@@ -404,7 +444,8 @@ FFPROBE = "ffprobe"
 SEGMENT_TARGET_DURATION = 2
 
 """
-# la taille du buffer est égale au bitrate vidéo du rendu multiplié par cette valeur
+# La taille du buffer est égale au bitrate vidéo du rendu
+#  multiplié par cette valeur
 """
 RATE_MONITOR_BUFFER_RATIO = 2
 
@@ -414,17 +455,20 @@ RATE_MONITOR_BUFFER_RATIO = 2
 FFMPEG_NB_THREADS = 0
 
 """
-# Commande utilisée pour récupérer les informations de la première piste video du fichier envoyé
+# Commande utilisée pour récupérer les informations
+#  de la première piste video du fichier envoyé
 """
 GET_INFO_VIDEO = "%(ffprobe)s -v quiet -show_format -show_streams -select_streams v:0 -print_format json -i %(source)s"
 
 """
-# Commande utilisée pour récupérer les informations de la première piste audio du fichier envoyé
+# Commande utilisée pour récupérer les informations
+#  de la première piste audio du fichier envoyé
 """
 GET_INFO_AUDIO = "%(ffprobe)s -v quiet -show_format -show_streams -select_streams a:0 -print_format json -i %(source)s"
 
 """
-# paramètres de la commande ffmpeg utilisés pour encoder toutes les vidéos, peu importe le rendu
+# paramètres de la commande ffmpeg utilisés
+#  pour encoder toutes les vidéos, peu importe le rendu
 """
 FFMPEG_STATIC_PARAMS = " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt yuv420p -crf 20 -sc_threshold 0 -force_key_frames \"expr:gte(t,n_forced*1)\" -deinterlace -threads %(nb_threads)s "
 
@@ -434,29 +478,32 @@ FFMPEG_STATIC_PARAMS = " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt y
 FFMPEG_MISC_PARAMS = " -hide_banner -y "
 
 """
-# bitrate audio pour l'encodage M4A (encodage des fichiers audio envoyés sur la plateforme)
+# bitrate audio pour l'encodage M4A
+#  (encodage des fichiers audio envoyés sur la plateforme)
 """
 AUDIO_BITRATE = "192k"
 
 """
-# commande utilisée pour l'encodage des fichiers audio envoyés sur la plateforme
+# commande utilisée pour l'encodage des fichiers audio envoyés
 """
 ENCODING_M4A = "%(ffmpeg)s -i %(source)s %(misc_params)s -c:a aac -b:a %(audio_bitrate)s -vn -threads %(nb_threads)s \"%(output_dir)s/audio_%(audio_bitrate)s.m4a\""
 
 """
-# commande utilisée pour l'encodage audio pour tous les fichiers envoyés sur la plateforme
+# commande utilisée pour l'encodage audio pour tous les fichiers envoyés
 """
 ENCODE_MP3_CMD = "%(ffmpeg)s -i %(source)s %(misc_params)s -vn -b:a %(audio_bitrate)s -vn -f mp3 -threads %(nb_threads)s \"%(output_dir)s/audio_%(audio_bitrate)s.mp3\""
 
 """
-# Si True, un courriel est envoyé aux managers et à l'auteur (si DEBUG est à False) à la fin de l'encodage
+# Si True, un courriel est envoyé aux managers
+#  et à l'auteur (si DEBUG est à False) à la fin de l'encodage/transcription
 """
 EMAIL_ON_ENCODING_COMPLETION = True
 
 """
-# Répertoire temporaire pour la création des thumbnails
+# Si True, un courriel est également envoyé à l'admin (si DEBUG est à False)
+#  à la fin de l'encodage/transcription
 """
-FILE_UPLOAD_TEMP_DIR = "/tmp" # déjà défini au dessus
+EMAIL_ADMIN_ON_ENCODING_COMPLETION = True
 
 """
 # Utilisation de Celery pour la gestion des taches d'encodage
@@ -464,7 +511,7 @@ FILE_UPLOAD_TEMP_DIR = "/tmp" # déjà défini au dessus
 CELERY_TO_ENCODE = False
 CELERY_BROKER_URL = "amqp://pod:xxx@localhost/rabbitpod"
 
-# Configuration flux RSS
+# ## Configuration flux RSS ## #
 
 """
 # couverture du droit pour chaque vidéo
@@ -479,20 +526,23 @@ DEFAULT_DC_RIGHTS = "BY-NC-SA"
 # Configuration application vidéo
 
 """
-# Si True, seule les personnes "Staff" peuvent déposer des vidéos sur la plateforme
+# Si True, seule les personnes "Staff" peuvent déposer des vidéos
 """
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = False
 
 """
-# image par défaut affichée comme poster ou vignette, utilisée pour présenter la vidéo. Cette image doit se situer dans le répertoire static.
+# Image par défaut affichée comme poster ou vignette,
+#  utilisée pour présenter la vidéo.
+# Cette image doit se situer dans le répertoire static.
 """
 DEFAULT_THUMBNAIL = "img/default.png"
 
 """
-# Encodage possible sur la plateforme. Associé à un rendu dans le cas d'une vidéo.
+# Encodage possible sur la plateforme.
+# Associé à un rendu dans le cas d'une vidéo.
 """
 ENCODING_CHOICES = (
-    ("audio", "audio"),*
+    ("audio", "audio"),
     ("360p", "360p"),
     ("480p", "480p"),
     ("720p", "720p"),
@@ -517,33 +567,43 @@ FORMAT_CHOICES = (
 """
 LICENCE_CHOICES = (
     ('by', ("Attribution 4.0 International (CC BY 4.0)")),
-    ('by-nd', ("Attribution-NoDerivatives 4.0 " "International (CC BY-ND 4.0)" )),
-    ('by-nc-nd', ( "Attribution-NonCommercial-NoDerivatives 4.0 " "International (CC BY-NC-ND 4.0)" )),
-    ('by-nc', ("Attribution-NonCommercial 4.0 " "International (CC BY-NC 4.0)")),
-    ('by-nc-sa', ( "Attribution-NonCommercial-ShareAlike 4.0 " "International (CC BY-NC-SA 4.0)" )),
-    ('by-sa', ( "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"))
+    ('by-nd', ("Attribution-NoDerivatives 4.0 "
+               "International (CC BY-ND 4.0)")),
+    ('by-nc-nd', ("Attribution-NonCommercial-NoDerivatives 4.0 "
+                  "International (CC BY-NC-ND 4.0)")),
+    ('by-nc', ("Attribution-NonCommercial 4.0 "
+               "International (CC BY-NC 4.0)")),
+    ('by-nc-sa', ("Attribution-NonCommercial-ShareAlike 4.0 "
+                  "International (CC BY-NC-SA 4.0)")),
+    ('by-sa', ("Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)"))
 )
 
 """
-# Les vidéos créées sans type (par importation par exemple) seront affectées au type par défaut (en général, le type ayant pour identifiant '1' est 'Other')
+# Les vidéos créées sans type (par importation par exemple)
+#  seront affectées au type par défaut
+#  (en général, le type ayant pour identifiant '1' est 'Other')
 """
 DEFAULT_TYPE_ID = 1
 
 """
-# Liste des cursus proposés lors de l'ajout des vidéos. Affichés en dessous d'une vidéos, ils sont aussi utilisés pour affiner la recherche.
+# Liste des cursus proposés lors de l'ajout des vidéos.
+# Affichés en dessous d'une vidéos,
+#  ils sont aussi utilisés pour affiner la recherche.
 """
 CURSUS_CODES = (
-    ('0', ("None / All")),
-    ('L', ("Bachelor’s Degree")),
-    ('M', ("Master’s Degree")),
-    ('D', ("Doctorate")),
+    ('0', _("None / All")),
+    ('L', _("Bachelor’s Degree")),
+    ('M', _("Master’s Degree")),
+    ('D', _("Doctorate")),
     ('1', _("Other"))
 )
 
 """
-# Liste des langues proposées lors de l'ajout des vidéos. Affichés en dessous d'une vidéos, ils sont aussi utilisés pour affiner la recherche.
+# Liste des langues proposées lors de l'ajout des vidéos.
+# Affichés en dessous d'une vidéos,
+#  ils sont aussi utilisés pour affiner la recherche.
 """
-LANG_CHOICES = ( settings.PREF_LANG_CHOICES + (('', '----------'),) + settings.ALL_LANG_CHOICES )
+LANG_CHOICES = (PREF_LANG_CHOICES + (('', '----------'),) + ALL_LANG_CHOICES)
 
 """
 # Répertoire par défaut pour le téléversement des vidéos.
@@ -557,7 +617,8 @@ VIDEOS_DIR = "videos"
 ENCODE_VIDEO = "start_encode"
 
 """
-# pour l'encodage distant, il faut préciser le login, l'host et la clé pour appeler cet encodage
+# pour l'encodage distant, il faut préciser le login,
+# l'host et la clé pour appeler cet encodage
 # REMOTE ENCODING SETTINGS
 # SSH_REMOTE_USER = ""
 # SSH_REMOTE_HOST = "xxx.univ.fr"
@@ -574,7 +635,8 @@ ENCODE_VIDEO = "start_encode"
 TRANSCRIPT_VIDEO = "start_transcript"
 
 """
-# pour la transcription distant, il faut préciser le login, l'host et la clé pour appeler la fonction
+# pour la transcription distante, il faut préciser le login,
+#  l'host et la clé pour appeler la fonction
 # REMOTE ENCODING SETTINGS
 # SSH_TRANSCRIPT_REMOTE_USER = "pod"
 # SSH_TRANSCRIPT_REMOTE_HOST = "xxx.univ.fr"
@@ -588,7 +650,9 @@ TRANSCRIPT_VIDEO = "start_transcript"
 """
 # Extension autorisée pour le téléversement sur la plateforme
 """
-VIDEO_ALLOWED_EXTENSIONS = ( '3gp', 'avi', 'divx', 'flv', 'm2p', 'm4v', 'mkv', 'mov', 'mp4', 'mpeg', 'mpg', 'mts', 'wmv', 'mp3', 'ogg', 'wav', 'wma' )
+VIDEO_ALLOWED_EXTENSIONS = ('3gp', 'avi', 'divx', 'flv', 'm2p', 'm4v', 'mkv',
+                            'mov', 'mp4', 'mpeg', 'mpg', 'mts', 'wmv', 'mp3',
+                            'ogg', 'wav', 'wma')
 
 """
 # Taille maximum en Go des fichiers téléversés sur la plateforme
@@ -604,7 +668,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = ""
 """
 # Liste des champs du formulaire d'édition de vidéos affichés
 """
-VIDEO_FORM_FIELDS = __all__
+VIDEO_FORM_FIELDS = '__all__'
 
 """
 # Ensemble des textes d'aide affichés avec le formulaire d'édition de chaine.
@@ -622,124 +686,147 @@ THEME_FORM_FIELDS_HELP_TEXT = ""
 
 """
 # Type d'enregistrement géré par la plateforme.
-# Un enregistreur ne peut déposer que des fichiers de type proposé par la plateforme.
+# Un enregistreur ne peut déposer que des fichiers
+#  de type proposé par la plateforme.
 # Le traitement se fait en fonction du type de fichier déposé.
 """
-RECORDER_TYPE = ( ('video', _('Video')), ('audiovideocast', _('Audiovideocast')), )
+RECORDER_TYPE = (('video', _('Video')),
+                 ('audiovideocast', _('Audiovideocast')))
 
 """
-# Chemin racine du répertoire où sont déposés les enregistrements (chemin du serveur FTP).
+# Chemin racine du répertoire où sont déposés les enregistrements
+#  (chemin du serveur FTP).
 """
 DEFAULT_RECORDER_PATH = "/data/ftp-pod/ftp/"
 
 """
-# Identifiant du propriétaire par défaut (si non spécifié) des enregistrements déposés.
+# Identifiant du propriétaire par défaut (si non spécifié)
+#  des enregistrements déposés.
 """
 DEFAULT_RECORDER_USER_ID = 1
 
 """
-# Ajoute un enregistreur par défaut à un enregistrement non identifiable (mauvais chemin dans le dépôt FTP).
+# Ajoute un enregistreur par défaut à un enregistrement non identifiable
+#  (mauvais chemin dans le dépôt FTP).
 """
 DEFAULT_RECORDER_ID = 1
 
 """
-# Identifiant du type de vidéo par défaut (si non spécifié). (Exemple : 3 pour Colloque/conférence, 4 pour Cours...)
+# Identifiant du type de vidéo par défaut (si non spécifié).
+# (Exemple : 3 pour Colloque/conférence, 4 pour Cours...)
 """
 DEFAULT_RECORDER_TYPE_ID = 1
 
 """
-# Si True, le manager de l'enregistreur pourra choisir un propriétaire de l'enregistrement.
+# Si True, le manager de l'enregistreur pourra choisir
+#  un propriétaire de l'enregistrement.
 """
 ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = True
 
 """
-# Si True, une page apparaîtra dans le menu du profil de l'utilisateur autorisé permettant de s'attribuer un enregistrement.
+# Si True, une page apparaîtra dans le menu du profil
+#  de l'utilisateur autorisé permettant de s'attribuer un enregistrement.
 """
 ALLOW_MANUAL_RECORDING_CLAIMING = False
 
 """
 # Liste des champs supplémentaires pour le formulaire des enregistreurs
-# Cette liste reprend le nom des champs correspondants aux paramètres d'édition d'une vidéo (Discipline, Chaine, Theme, mots clés...)
-# L'exemple suivant comporte l'ensemble des champs possibles mais peut être allégée en fonction des besoins.
-# Les vidéos seront alors générées avec les valeurs des champs supplémentaires telles que définies dans leur enregistreur.
+# Cette liste reprend le nom des champs correspondants aux paramètres
+#  d'édition d'une vidéo (Discipline, Chaine, Theme, mots clés...)
+# L'exemple suivant comporte l'ensemble des champs possibles,
+#  mais peut être allégée en fonction des besoins.
+# Les vidéos seront alors générées avec les valeurs
+#  des champs supplémentaires telles que définies dans leur enregistreur.
 """
 RECORDER_ADDITIONAL_FIELDS = ('additional_users', 'is_draft', 'password',
-                'is_restricted', 'restrict_access_to_groups',
-                'cursus','main_lang', 'tags','discipline',
-                'licence', 'channel', 'theme', 'transcript'
-                'allow_downloading', 'is_360', 'disable_comment',)
+                              'is_restricted', 'restrict_access_to_groups',
+                              'cursus', 'main_lang', 'tags', 'discipline',
+                              'licence', 'channel', 'theme', 'transcript'
+                              'allow_downloading', 'is_360', 'disable_comment')
 
 """
-# Si True, permet de ne pas prendre en compte la 1° image lors du traitement d'une fichier d'enregistrement de type AudioVideoCast.
+# Si True, permet de ne pas prendre en compte la 1° image
+# lors du traitement d'un fichier d'enregistrement de type AudioVideoCast.
 """
 RECORDER_SKIP_FIRST_IMAGE = False
 
 """
-# Précise les proxy à utiliser pour une requête vers l'application elle même, par défaut force la non utilisation de proxy
+# Précise les proxy à utiliser pour une requête vers l'application elle même,
+#  par défaut force la non utilisation de proxy
 """
-SELF_REQUESTS_PROXIES = { "http": None, "https": None}
+SELF_REQUESTS_PROXIES = {"http": None, "https": None}
 
 """
-# Autorise la requête sur l'application en elle même sans vérifier le certificat SSL
+# Autorise la requête sur l'application en elle-même
+#  sans vérifier le certificat SSL
 """
 ALLOW_INSECURE_REQUESTS = False
 
 """
-# Chemin d'accès web (public) au répertoire de dépot des enregistrements (DEFAULT_RECORDER_PATH). Attention à penser à modifier la conf de NGINX
+# Chemin d'accès web (public) au répertoire de dépot
+#  des enregistrements (DEFAULT_RECORDER_PATH).
+# Attention : penser à modifier la conf de NGINX
 """
 PUBLIC_RECORD_DIR = "records"
 
 """
-# Si True, affiche l'icone de prévisualisation des vidéos dans la page "Revendiquer un enregistrement"
+# Si True, affiche l'icone de prévisualisation des vidéos
+#  dans la page "Revendiquer un enregistrement"
 """
 USE_RECORD_PREVIEW = False
 
 # Configuration application podfile (gestion de fichier)
 
 """
-# Extensions autorisées pour les documents téléversés dans le gestionnaire de fichier
+# Extensions autorisées pour les documents téléversés
+#  dans le gestionnaire de fichier
 """
-FILE_ALLOWED_EXTENSIONS = ( 'doc', 'docx', 'odt', 'pdf', 'xls', 'xlsx', 'ods', 'ppt', 'pptx', 'txt', 'html', 'htm', 'vtt', 'srt', 'webm', 'ts', )
+FILE_ALLOWED_EXTENSIONS = ('doc', 'docx', 'odt', 'pdf', 'xls', 'xlsx', 'ods',
+                           'ppt', 'pptx', 'txt', 'html', 'htm', 'vtt', 'srt',
+                           'webm', 'ts')
 
 """
-# Extensions autorisées pour les images téléversés dans le gestionnaire de fichier
+# Extensions autorisées pour les images téléversés
+#  dans le gestionnaire de fichier
 """
-IMAGE_ALLOWED_EXTENSIONS = ( 'jpg', 'jpeg', 'bmp', 'png', 'gif', 'tiff', )
+IMAGE_ALLOWED_EXTENSIONS = ('jpg', 'jpeg', 'bmp', 'png', 'gif', 'tiff')
 
 """
 # Poids maximum en Mo par fichier téléversé dans le gestionnaire de fichier
 """
 FILE_MAX_UPLOAD_SIZE = 10
 
-# Configuration application completion (contributeur, sous-titre, document à télécharger, superposition)
+# Configuration application completion
+#  (contributeur, sous-titre, document à télécharger, superposition)
 
 """
 # Liste de rôle possible pour un contributeur
 """
 ROLE_CHOICES = (
-    ('actor', ('actor')),
-    ('author', ('author')),
-    ('designer', ('designer')),
-    ('consultant', ('consultant')),
-    ('contributor', ('contributor')),
-    ('editor', ('editor')),
-    ('speaker', ('speaker')),
-    ('soundman', ('soundman')),
-    ('director', ('director')),
-    ('writer', ('writer')),
-    ('technician', ('technician')),
-    ('voice-over', ('voice-over')),
+    ('actor', _('actor')),
+    ('author', _('author')),
+    ('designer', _('designer')),
+    ('consultant', _('consultant')),
+    ('contributor', _('contributor')),
+    ('editor', _('editor')),
+    ('speaker', _('speaker')),
+    ('soundman', _('soundman')),
+    ('director', _('director')),
+    ('writer', _('writer')),
+    ('technician', _('technician')),
+    ('voice-over', _('voice-over')),
 )
 
 """
 # Liste de type de piste possible pour une vidéo (sous-titre, légende etc.)
 """
-KIND_CHOICES = ( ('subtitles', ('subtitles')), ('captions', ('captions')), )
+KIND_CHOICES = (('subtitles', _('subtitles')), ('captions', _('captions')))
 
 # Configuration application authentification (Local, CAS et LDAP)
 
 """
-# Type d'authentification possible sur votre instance. Pour l'instant local ou cas
+# Type d'authentification possible sur votre instance.
+#  Pour l'instant local ou cas
 """
 AUTH_TYPE = (('local', _('local')), ('CAS', 'CAS'))
 
@@ -754,24 +841,30 @@ USE_CAS = False
 CAS_SERVER_URL = "sso_cas"
 
 """
-# Si True, authentifie automatiquement l'individu si déjà authentifié sur le serveur CAS
+# Si True, authentifie automatiquement l'individu
+#  si déjà authentifié sur le serveur CAS
 """
 CAS_GATEWAY = False
 
 """
-# Si utilisation de la connection CAS, renseigne les champs du compte de la personne depuis une source externe.
-# Valeur possible : None (pas de renseignement), CAS (renseigne les champs de la personne depuis les informations renvoyées par le CAS),
-# LDAP (Interroge le serveur LDAP pour renseigner les champs du compte de la personne)
+# Si utilisation de la connection CAS, renseigne les champs du compte
+#  de la personne depuis une source externe.
+# Valeurs possibles :
+#  - None (pas de renseignement),
+#  - CAS (renseigne les champs depuis les informations renvoyées par le CAS),
+#  - LDAP (Interroge le serveur LDAP pour renseigner les champs)
 """
 POPULATE_USER = None
 
 """
-# variable utilisée pour trouver les informations de l'individu connecté dans le fichier renvoyé par le CAS lors de l'authentification
+# Variable utilisée pour trouver les informations de l'individu
+#  connecté dans le fichier renvoyé par le CAS lors de l'authentification
 """
 AUTH_CAS_USER_SEARCH = "user"
 
 """
-# liste de correspondance entre les champs d'un compte de Pod et les champs renvoyés par le CAS
+# Liste de correspondance entre les champs d'un compte de Pod
+#  et les champs renvoyés par le CAS
 """
 USER_CAS_MAPPING_ATTRIBUTES = {
     "uid": "uid",
@@ -782,13 +875,16 @@ USER_CAS_MAPPING_ATTRIBUTES = {
 }
 
 """
-# Si True, des groupes sont créés automatiquement à partir des affiliations des individus qui se connectent sur la plateforme et
-# l'individu qui se connecte est ajouté automatiquement à ses groupes
+# Si True, des groupes sont créés automatiquement
+#  à partir des affiliations des individus qui se connectent sur la plateforme
+#  et l'individu qui se connecte est ajouté automatiquement à ses groupes
 """
 CREATE_GROUP_FROM_AFFILIATION = False
 
 """
-# Les personnes ayant pour affiliation les valeurs renseignées dans cette variable sont automatiquement la valeur staff de leur compte à True
+# Les personnes ayant pour affiliation les valeurs
+#  renseignées dans cette variable ont automatiquement
+#  la valeur staff de leur compte à True
 """
 AFFILIATION_STAFF = ('faculty', 'employee', 'staff')
 
@@ -796,25 +892,29 @@ AFFILIATION_STAFF = ('faculty', 'employee', 'staff')
 # Valeurs possibles pour l'Affiliation du compte
 """
 AFFILIATION = (
-    ('student', ('student')),
-    ('faculty', ('faculty')),
-    ('staff', ('staff')),
-    ('employee', ('employee')),
-    ('member', ('member')),
-    ('affiliate', ('affiliate')),
-    ('alum', ('alum')),
-    ('library-walk-in', ('library-walk-in')),
-    ('researcher', ('researcher')),
-    ('retired', ('retired')),
-    ('emeritus', ('emeritus')),
-    ('teacher', ('teacher')),
-    ('registered-reader', ('registered-reader'))
+    ('student', _('student')),
+    ('faculty', _('faculty')),
+    ('staff', _('staff')),
+    ('employee', _('employee')),
+    ('member', _('member')),
+    ('affiliate', _('affiliate')),
+    ('alum', _('alum')),
+    ('library-walk-in', _('library-walk-in')),
+    ('researcher', _('researcher')),
+    ('retired', _('retired')),
+    ('emeritus', _('emeritus')),
+    ('teacher', _('teacher')),
+    ('registered-reader', _('registered-reader'))
 )
 
 """
-# Information de connection au serveur LDAP. Le champ url peut contenir un ou plusieurs url pour ajouter des hôtes de référence, exemple :
-# Si un seul host : {'url': "ldap.univ.fr'', 'port': 389, 'use_ssl': False}
-# Si plusieurs : {'url': ("ldap.univ.fr'',"ldap2.univ.fr"), 'port': 389, 'use_ssl': False}
+# Information de connection au serveur LDAP.
+# Le champ url peut contenir une ou plusieurs url
+#  pour ajouter des hôtes de référence, exemple :
+# Si un seul host :
+# {'url': "ldap.univ.fr'', 'port': 389, 'use_ssl': False}
+# Si plusieurs :
+# {'url': ("ldap.univ.fr'',"ldap2.univ.fr"), 'port': 389, 'use_ssl': False}
 """
 LDAP_SERVER = {'url': '', 'port': 389, 'use_ssl': False}
 
@@ -834,7 +934,8 @@ AUTH_LDAP_BIND_PASSWORD = ""
 AUTH_LDAP_USER_SEARCH = ('ou=people,dc=univ,dc=fr', "(uid=%(uid)s)")
 
 """
-# liste de correspondance entre les champs d'un compte de Pod et les champs renvoyés par le LDAP
+# Liste de correspondance entre les champs d'un compte de Pod
+#  et les champs renvoyés par le LDAP
 """
 USER_LDAP_MAPPING_ATTRIBUTES = {
     "uid": "uid",
@@ -866,14 +967,14 @@ SHIBBOLETH_ATTRIBUTE_MAP = {
 }
 
 """
-# Nom de l'attribut dans les headers qui sert à identifier l'utilisateur connecté avec Shibboleth
+# Nom de l'attribut dans les headers qui sert à identifier
+#  l'utilisateur connecté avec Shibboleth
 """
-REMOTE_USER_HEADER = REMOTE_USER
+REMOTE_USER_HEADER = "REMOTE_USER"
 
 """
 # URL de connexion à votre instance Shibboleth
 """
-
 SHIB_URL = ""
 
 """
@@ -882,12 +983,13 @@ SHIB_URL = ""
 SHIB_LOGOUT_URL = ""
 
 """
-# Forcer le passage en minuscule du nom d'utilisateur CAS (permet de prévenir des doubles créations de comptes dans certain cas).
+# Forcer le passage en minuscule du nom d'utilisateur CAS
+#  (permet de prévenir des doubles créations de comptes dans certain cas).
 """
 CAS_FORCE_LOWERCASE_USERNAME = False
 
 """
-# Permettre l'usage du oembed, partage dans moodle, facebook, twitter etc.
+# Permettre l'usage du oembed, partage dans Moodle, Facebook, Twitter etc.
 """
 OEMBED = True
 
@@ -910,12 +1012,11 @@ AUDIO_SPLIT_TIME = 300
 # paramétrage de deepspeech pour le modele
 """
 DS_PARAM = {
-    'fr': {
-        # le modèle deepspeech
-        'model': "/usr/local/django_projects/transcription/model_tensorflow_fr/output_graph.pbmm",
-        'scorer': "/usr/local/django_projects/transcription/model_tensorflow_fr/kenlm.scorer",
-
-    }
+  'fr': {
+    # le modèle deepspeech
+    'model': "/usr/local/django_projects/transcription/model_tensorflow_fr/output_graph.pbmm",
+    'scorer': "/usr/local/django_projects/transcription/model_tensorflow_fr/kenlm.scorer",
+  }
 }
 
 """
@@ -924,13 +1025,16 @@ DS_PARAM = {
 VIEWERS_ONLY_FOR_STAFF = False
 
 """
-# Temps (en seconde) entre deux envois d'un signal au serveur, pour signaler la présence sur un live
-# Peut être augmenté en cas de perte de performance mais au détriment de la qualité du comptage des valeurs
+# Temps (en seconde) entre deux envois d'un signal au serveur,
+#  pour signaler la présence sur un live
+# Peut être augmenté en cas de perte de performance
+#  mais au détriment de la qualité du comptage des valeurs
 """
 HEARTBEAT_DELAY = 45
 
 """
-# Délai (en seconde) selon lequel une vue est considérée comme expirée si elle n'as pas renvoyé de signal depuis
+# Délai (en seconde) selon lequel une vue est considérée
+#  comme expirée si elle n'as pas renvoyé de signal depuis
 """
 VIEW_EXPIRATION_DELAY = 60
 
@@ -940,9 +1044,11 @@ VIEW_EXPIRATION_DELAY = 60
 USE_BBB = True
 
 """
-# Répertoire du plugin bbb-recorder (voir documentation https://github.com/jibon57/bbb-recorder)
-# bbb-recorder doit être installé dans ce répertoire, sur tous les serveurs d'encodage
-# bbb-recorder crée un répertoire 'homedir' / Downloads qui a besoin d'espace disque
+# Répertoire du plugin bbb-recorder
+#  (voir documentation https://github.com/jibon57/bbb-recorder)
+# bbb-recorder doit être installé dans ce répertoire,
+#  sur tous les serveurs d'encodage
+# bbb-recorder crée un répertoire 'homedir'/Downloads qui a besoin d'espace
 """
 DEFAULT_BBB_PLUGIN = '/home/podtest/bbb-recorder/'
 
@@ -952,7 +1058,8 @@ DEFAULT_BBB_PLUGIN = '/home/podtest/bbb-recorder/'
 DEFAULT_BBB_PATH = '/data/www/podtest/bbb-recorder/'
 
 """
-# URL du serveur BigBlueButton ou Scalelite, où se trouvent les présentations Web BBB et l'API
+# URL du serveur BigBlueButton ou Scalelite,
+#  où se trouvent les présentations Web BBB et l'API
 """
 BBB_SERVER_URL = 'https://bbb.univ.fr/'
 
@@ -969,13 +1076,18 @@ DEFAULT_BBB_TYPE_ID = 1
 """
 # Format du nom d'utilisateur dans BBB.
 # Valeurs possibles : 'first_name last_name', 'last_name first_name'
-# Exemple1 : si dans le serveur BBB, vous avez un utilisateur au format 'John Doe', mettez 'first_name last_name'
-# Exemple2 : si dans le serveur BBB, vous avez un utilisateur au format 'Doe John', mettez 'last_name first_name'
+# Exemple1 :
+#  si dans le serveur BBB, vous avez un utilisateur au format 'John Doe',
+#  mettez 'first_name last_name'
+# Exemple2 :
+#  si dans le serveur BBB, vous avez un utilisateur au format 'Doe John',
+#  mettez 'last_name first_name'
 """
 BBB_USERNAME_FORMAT = 'first_name last_name'
 
 """
-# Nombre de jours avant la suppression des sessions et des utilisateurs associés, non déjà publiés
+# Nombre de jours avant la suppression des sessions
+#  et des utilisateurs associés, non déjà publiés
 # Pour ne pas supprimer les anciennes sessions, utiliser la valeur 0
 """
 BBB_NUMBER_DAYS_BEFORE_DELETE = 0
@@ -994,6 +1106,13 @@ USER_VIDEO_CATEGORY = False
 USE_OBSOLESCENCE = True
 
 WARN_DEADLINES = [60, 30, 7]
+
+"""
+# Fixe une durée maximale que la date de suppression
+#  d'une vidéo ne peut dépasser.
+# Par défaut : 10 (Année courante + 10 ans).
+"""
+MAX_DURATION_DATE_DELETE = 10
 
 POD_ARCHIVE_AFFILIATION = ['faculty',
                            'staff',
@@ -1014,10 +1133,10 @@ ACCOMMODATION_YEARS = {
 DEFAULT_YEAR_DATE_DELETE = 2
 
 """
-# Configuration / Activtion du LTI
+# Configuration / Activation du LTI
 # voir pod/main/settings.py L.224
 """
-LTI_ENABLED = True # False par défaut
+LTI_ENABLED = True  # False par défaut
 
 """
 # Configuration H5P
