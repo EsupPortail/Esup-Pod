@@ -275,21 +275,19 @@ function hide_or_add_show_children_btn(parent_comment, parent_id, nb_child) {
         txt
     );
     children_action.addEventListener("click", function () {
-        //get_node(this.parentElement, "comment_element", "comment_child").classList.toggle("show");
         parent_comment.classList.toggle("show");
         fetch_comment_children(parent_comment, parent_id);
     });
-    if (parent_comment) {
-        let children_container = parent_comment.querySelector(".comments_children_container");
-        if (!parent_comment.querySelector(".actions .comment_show_children_action") && nb_child > 0) {
-            parent_comment.querySelector(".comment_content_footer .actions .comment_vote_action").after(children_action);
-        }
-        else if (parent_comment.querySelector(".actions .comment_show_children_action") && nb_child === 0) {
-            // remove action if exist
-            parent_comment.querySelector(".comment_content_footer .actions").removeChild(
-                parent_comment.querySelector(".comment_content_footer .actions .comment_show_children_action")
-            )
-        }
+
+    let children_container = parent_comment.querySelector(".comments_children_container");
+    if (!parent_comment.querySelector(".actions .comment_show_children_action") && nb_child > 0) {
+        parent_comment.querySelector(".comment_content_footer .actions .comment_vote_action").after(children_action);
+    }
+    else if (parent_comment.querySelector(".actions .comment_show_children_action") && nb_child === 0) {
+        // remove action if exist
+        parent_comment.querySelector(".comment_content_footer .actions").removeChild(
+            parent_comment.querySelector(".comment_content_footer .actions .comment_show_children_action")
+        )
     }
 }
 customElements.define("comment-element", Comment)
@@ -374,11 +372,13 @@ function save_comment(content, date, direct_parent_id = null, top_parent_comment
                         }
                         return comment;
                     });
+                    let nbr_child = get_comment_attribute(top_parent_comment_html, 'nbr_child');
                     hide_or_add_show_children_btn(
                         top_parent_comment_html,
                         top_parent_id,
-                        get_comment_attribute(top_parent_comment_html, 'children').length
+                        nbr_child
                     );
+                    update_answer_text(top_parent_comment_html, nbr_child);
                 }
                 set_comments_number()
             });
@@ -418,11 +418,11 @@ function delete_comment(comment) {
                 if (is_child) {
                     parent_el = get_node(comment, "comment_element", "comment_child");
                     let parent_id = get_comment_attribute(parent_el);
-                    delete_comment_child_DOM(comment, parent_id, is_child);
+                    delete_comment_child_DOM(comment, parent_id, is_child); // delete all children from the DOM
                     let remaining_children = get_comment_attribute(parent_el, 'nbr_child');
-                    deleteWithAnimation(comment, is_child = true);
-                    hide_or_add_show_children_btn(parent_el, parent_id, remaining_children);
-                    update_answer_text(parent_el);
+                    deleteWithAnimation(comment, is_child = true); // delete comment from the DOM
+                    hide_or_add_show_children_btn(parent_el, parent_id, remaining_children); // Manage show answers button
+                    update_answer_text(parent_el, remaining_children); // Update number of child text displayed
                     set_comments_number();
                     return;
                 }
@@ -651,17 +651,8 @@ function add_child_comment(el, container_el, top_parent_comment_html) {
             is_comment_owner = true);
         setBorderLeftColor(c, child_direct_parent)
         container_el.appendChild(c);
-
-        hide_or_add_show_children_btn(
-            top_parent_comment_html,
-            get_comment_attribute(top_parent_comment_html),
-            top_parent_comment_html.querySelector('.comments_children_container').childElementCount
-        );
-        update_answer_text(top_parent_comment_html)
-
         // INSERT INTO DATABASE THE CURRENT COMMENT CHILD
         let p_id = get_comment_attribute(child_direct_parent);
-
         // Scroll to the comment child
         scrollToComment(c);
         save_comment(el.value, date_added.toISOString(), p_id, top_parent_comment_html);
@@ -719,10 +710,11 @@ function get_node(el, class_name, not) {
 }
 
 /*******  Manage hide/show child comment text  ********
+ * update the number of child comments displayed
+ * only if element exists 
  ******************************************************/
-function update_answer_text(el) {
+function update_answer_text(el, nb_child = 0) {
     let children_container = get_node(el, "comments_children_container");
-    let nb_child = children_container.childElementCount;
     nb_child = nb_child === 0 ? '' : nb_child;
     let txt = gettext("Answers");
     txt = `${nb_child} ${txt}`;
