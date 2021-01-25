@@ -124,6 +124,11 @@
     /*padding: 0 2em;*/
     padding: 0 0;
 }
+.comment_main .comment_container .add_comment_footer{
+    border-bottom: 1px solid var(--background-color);
+    padding-bottom: 1em;
+}
+
 /* Alert message */
 .alert{
     display: -webkit-box;
@@ -320,9 +325,7 @@
 .comment_main .add_comment
 {
     width: 100%;
-    border-bottom: 1px solid var(--background-color);
     padding: 1em 0;
-    margin-bottom: 2em;
 }
 .comment_main .form-wrapper
 {
