@@ -305,19 +305,19 @@ function vote(comment_id, target_html_el) {
         body: data
     }).then(response => {
         response.json().then(data => {
+
+            const target_comment = get_node(target_html_el, "comment_element");
+
             if (data.voted === true) {
-                VOTED_COMMENTS.push({
-                    'comment__id': comment_id,
-                });
-                btn.innerHTML = parseInt(btn.textContent) + 1 + " votes";
+                const nb_vote = update_comment_attribute(target_comment, null, "nbr_vote", "increment")
+                // let vote_text = parseInt(btn.textContent)
+                btn.innerHTML = nb_vote + " votes";
                 if (!target_html_el.classList.contains('voted'))
                     target_html_el.classList.add('voted');
             }
             else {
-                VOTED_COMMENTS = VOTED_COMMENTS.filter(obj => {
-                    obj.comment__id !== comment_id
-                })
-                btn.innerHTML = parseInt(btn.textContent) - 1 + " votes";
+                const nb_vote = update_comment_attribute(target_comment, null, "nbr_vote", "decrement")
+                btn.innerHTML = nb_vote + " votes";
                 if (target_html_el.classList.contains('voted'))
                     target_html_el.classList.remove('voted');
             }
@@ -659,21 +659,67 @@ function add_child_comment(el, container_el, top_parent_comment_html) {
     }
 }
 
-/*********  Return backend comment attribute  *********
+/**** Set comment backend attribute from saved data ****
+ * @param comment_html HTMLElement
+ * @param value Any
+ * @param attr String
+ * @param action String values(increment or decrement)
+ * @return any
+ ******************************************************/
+function update_comment_attribute(comment_html, value, attr, action = null) {
+
+    let curr_html_id = comment_html.getAttribute('id');
+    let new_value = value;
+    all_comment = all_comment.map(comment_data => {
+        let comment_htmlID = `comment_${new Date(comment_data.added).getTime()}`;
+        if (comment_htmlID == curr_html_id) {
+            if (action !== null && action === "increment") {
+                comment_data[attr] += 1;
+                new_value = comment_data[attr];
+            }
+            else if (action !== null && action === "decrement") {
+                comment_data[attr] -= 1;
+                new_value = comment_data[attr];
+            }
+            else
+                comment_data[attr] = value;
+        }
+        comment_data.children = comment_data.children.map(child_comment_data => {
+            comment_htmlID = `comment_${new Date(child_comment_data.added).getTime()}`;
+            if (comment_htmlID == curr_html_id) {
+                if (action !== null && action === "increment") {
+                    child_comment_data[attr] += 1;
+                    new_value = child_comment_data[attr];
+                }
+                else if (action !== null && action === "decrement") {
+                    child_comment_data[attr] -= 1;
+                    new_value = child_comment_data[attr];
+                }
+                else
+                    child_comment_data[attr] = value;
+            }
+            return child_comment_data;
+        });
+        return comment_data;
+    });
+    return new_value;
+}
+
+/** Return comment backend attribute from saved data  **
  ******************************************************/
 function get_comment_attribute(comment_html, attr = "id") {
     let curr_html_id = comment_html.getAttribute('id');
     let comment_attr = null
-    for (const comment of all_comment) {
-        let comment_htmlID = `comment_${new Date(comment.added).getTime()}`;
+    for (const comment_data of all_comment) {
+        let comment_htmlID = `comment_${new Date(comment_data.added).getTime()}`;
         if (comment_htmlID == curr_html_id) {
-            comment_attr = comment[attr];
+            comment_attr = comment_data[attr];
             break;
         }
-        for (const child_comment of comment.children) {
-            comment_htmlID = `comment_${new Date(child_comment.added).getTime()}`;
+        for (const child_comment_data of comment_data.children) {
+            comment_htmlID = `comment_${new Date(child_comment_data.added).getTime()}`;
             if (comment_htmlID == curr_html_id) {
-                comment_attr = child_comment[attr];
+                comment_attr = child_comment_data[attr];
                 break;
             }
         }
