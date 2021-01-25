@@ -162,13 +162,15 @@ def reformat_url_if_use_cas_or_shib(request, link_url):
     # %2520juin%25202019%26recorder%3D1
     if USE_CAS:
         return ''.join(
-            [request.build_absolute_uri('/'), "sso-cas/login/?next=",
+            [request.build_absolute_uri('/'),
+             "sso-cas/login/?next=",
              urllib.parse.quote_plus(link_url)])
     elif USE_SHIB:
         return ''.join(
-            [request.build_absolute_uri('/'), "authentication_login/?referrer=",
+            [request.build_absolute_uri('/'),
+             "authentication_login/?referrer=",
              urllib.parse.quote_plus(link_url)])
-    else :
+    else:
         return link_url
 
 
