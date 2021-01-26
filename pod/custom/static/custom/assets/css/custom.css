@@ -32,10 +32,12 @@ body > .container.container-pod{ min-height: calc(100vh - 232px); }
     justify-content: center;
     align-items: center;
 }
+#my_videos_filter .category_icon{color: inherit !important;}
+#my_videos_filter .categories_list_item:not(.active) .cat_title{ color: var(--secondary) !important; }
 h1, h2, h3, h4, h5, h6{
   font-family: 'Montserrat', sans-serif !important;
   font-weight: 600 !important;
-  color: #4d8197 !important;
+  font-size: 1.4rem;
 }
 
 html,body{
