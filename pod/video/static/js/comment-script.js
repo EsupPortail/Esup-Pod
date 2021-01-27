@@ -102,6 +102,7 @@ class CommentSince extends HTMLElement {
         super();
         since = this.getAttribute("since") ? this.getAttribute("since") : since;
         since = typeof (since) === "string" ? new Date(since) : since;
+        this.setAttribute('title', since.toLocaleString());
         let date_since = moment(since).locale(LANG).fromNow();
         let div = document.createElement("DIV");
         div.setAttribute("class", "comment_since");
@@ -146,9 +147,15 @@ class Comment extends HTMLElement {
         let vote_text = (likes > 1) ? `${likes} votes` : `${likes} vote`;
         let vote_action = createFooterBtnAction("comment_actions comment_vote_action", "icon comment_vote_icon", gettext("Agree with the comment"), is_authenticated ? svg_icon : '', "comment_vote_btn", vote_text, id);
         if (is_authenticated) {
+            const vote_loader = document.createElement('DIV');
+            vote_loader.setAttribute('class', 'lds-ring hide');
+            vote_loader.innerHTML = `<div></div><div></div><div></div><div></div>`;
+            vote_action.prepend(vote_loader);
             vote_action.addEventListener("click", () => {
+                if (!vote_action.classList.contains('voting'))
+                    vote_action.classList.add('voting');
                 let comment_id = get_comment_attribute(document.getElementById(id));
-                vote(comment_id, vote_action);
+                vote(vote_action, comment_id, vote_action);
             });
         }
         comment_container.querySelector(".comment_content_footer .actions").appendChild(vote_action);
@@ -287,7 +294,7 @@ function hide_or_add_show_children_btn(parent_comment, parent_id, nb_child) {
         parent_comment.querySelector(".comment_content_footer .actions .comment_vote_action").after(children_action);
     }
     else if (parent_comment.querySelector(".actions .comment_show_children_action") && nb_child === 0) {
-        // remove action if exist
+        // remove action if exists
         parent_comment.querySelector(".comment_content_footer .actions").removeChild(
             parent_comment.querySelector(".comment_content_footer .actions .comment_show_children_action")
         )
@@ -297,7 +304,7 @@ customElements.define("comment-element", Comment)
 
 /*******************  Voting for a comment  ********************
  ***************************************************************/
-function vote(comment_id, target_html_el) {
+function vote(comment_action_html, comment_id, target_html_el) {
     // send request to the server to check if the current user already vote
     let vote_url = base_vote_url + comment_id + "/";
     let btn = target_html_el.querySelector('.comment_vote_btn')
@@ -308,12 +315,11 @@ function vote(comment_id, target_html_el) {
         body: data
     }).then(response => {
         response.json().then(data => {
-
+            comment_action_html.classList.remove('voting');
             const target_comment = get_node(target_html_el, "comment_element");
 
             if (data.voted === true) {
                 const nb_vote = update_comment_attribute(target_comment, null, "nbr_vote", "increment")
-                // let vote_text = parseInt(btn.textContent)
                 btn.innerHTML = nb_vote + ((nb_vote > 1) ? " votes" : " vote");
                 if (!target_html_el.classList.contains('voted'))
                     target_html_el.classList.add('voted');
@@ -381,9 +387,9 @@ function save_comment(content, date, comment_html, comment_container_html, direc
                     else {
                         // Add comment child into the DOM
                         comment_container_html.appendChild(comment_html);
+                        // Scroll to the comment child
                         scrollToComment(comment_html);
                     }
-                    // Scroll to the comment child
                     // update local saved data (all_comment)
                     all_comment = all_comment.map((comment) => {
                         if (comment.id === top_parent_id) {
@@ -643,6 +649,8 @@ function fetch_comment_children(parent_comment_html, parent_comment_id, scroll_t
                             parent_comment_html.querySelector(".comments_children_container").appendChild(comment_child_html)
                             setBorderLeftColor(comment_child_html, parent_to_scroll)
                             manage_vote_frontend(comment_child.id, comment_child_html);
+
+                            // Scrolling to the last comment child added
                             if (scroll_to_last && index === (parent_comment.children.length - 1))
                                 scrollToComment(comment_child_html);
                         });
