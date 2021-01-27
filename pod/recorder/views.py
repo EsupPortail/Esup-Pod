@@ -55,6 +55,7 @@ DEFAULT_RECORDER_PATH = getattr(
 )
 
 USE_CAS = getattr(settings, 'USE_CAS', False)
+USE_SHIB = getattr(settings, 'USE_SHIB', False)
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
 
 
@@ -152,7 +153,7 @@ def add_recording(request):
                   {"form": form})
 
 
-def reformat_url_if_use_cas(request, link_url):
+def reformat_url_if_use_cas_or_shib(request, link_url):
     # Pointing to the URL of the CAS allows to reach the already
     # authenticated form URL like
     # https://pod.univ.fr/sso-cas/login/?next=https%3A%2F%2Fpod.univ
@@ -161,8 +162,16 @@ def reformat_url_if_use_cas(request, link_url):
     # %2520juin%25202019%26recorder%3D1
     if USE_CAS:
         return ''.join(
-            [request.build_absolute_uri('/'), "sso-cas/login/?next=",
+            [request.build_absolute_uri('/'),
+             "sso-cas/login/?next=",
              urllib.parse.quote_plus(link_url)])
+    elif USE_SHIB:
+        return ''.join(
+            [request.build_absolute_uri('/'),
+             "authentication_login/?referrer=",
+             urllib.parse.quote_plus(link_url)])
+    else:
+        return link_url
 
 
 def recorder_notify(request):
@@ -194,7 +203,7 @@ def recorder_notify(request):
                 [request.build_absolute_uri(reverse('add_recording')),
                  "?mediapath=", mediapath, "&course_title=%s" % course_title,
                  "&recorder=%s" % recorder.id])
-            link_url = reformat_url_if_use_cas(request, link_url)
+            link_url = reformat_url_if_use_cas_or_shib(request, link_url)
 
             text_msg = _(
                 "Hello, \n\na new recording has just be added on the video "
