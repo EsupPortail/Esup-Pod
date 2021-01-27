@@ -558,6 +558,26 @@
 {
     color: var(--primary);
 }
+.comment_main .comment .comment_content_footer .comment_actions.voting .lds-ring{
+    opacity: 1;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    margin-right: .4em;
+}
+.comment_main .comment .comment_content_footer .comment_actions.voting .lds-ring > div{
+    width: 18px;
+    height: 18px;
+}
+.comment_main .comment .comment_content_footer .comment_actions.voting .comment_vote_icon{
+    display: none;
+}
 .comment_main .comment_vote_action.voted svg.unvoted,
 .comment_main .comment_vote_action svg.voted,
 .comment_main .comment_element svg.hide,
