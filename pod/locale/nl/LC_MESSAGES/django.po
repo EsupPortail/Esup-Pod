@@ -5,16 +5,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-22 11:22+0000\n"
+"POT-Creation-Date: 2021-01-29 14:49+0000\n"
 "PO-Revision-Date: 2021-01-22 12:27+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
+"Language-Team: \n"
 "Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.4.2\n"
-"Language-Team: \n"
 
 #: pod/authentication/admin.py:93 pod/main/forms.py:51
 msgid "Email"
@@ -152,7 +152,7 @@ msgstr ""
 #: pod/playlist/views.py:140
 #: pod/recorder/templates/recorder/add_recording.html:36
 #: pod/recorder/templates/recorder/record_delete.html:32
-#: pod/recorder/views.py:148 pod/recorder/views.py:309
+#: pod/recorder/views.py:149 pod/recorder/views.py:318
 #: pod/video/templates/channel/channel_edit.html:48
 #: pod/video/templates/videos/video-form.html:10
 #: pod/video/templates/videos/video_delete.html:33
@@ -3686,28 +3686,28 @@ msgstr ""
 msgid "Agree required"
 msgstr ""
 
-#: pod/recorder/views.py:64
+#: pod/recorder/views.py:65
 msgid "Recorder should be indicated."
 msgstr ""
 
-#: pod/recorder/views.py:70
+#: pod/recorder/views.py:71
 msgid "Recorder not found."
 msgstr ""
 
-#: pod/recorder/views.py:85
+#: pod/recorder/views.py:86
 msgid "The selected record has been deleted."
 msgstr ""
 
-#: pod/recorder/views.py:118
+#: pod/recorder/views.py:119
 msgid "Mediapath should be indicated."
 msgstr ""
 
-#: pod/recorder/views.py:142
+#: pod/recorder/views.py:143
 msgid ""
 "Your publication is saved. Adding it to your videos will be in a few minutes."
 msgstr ""
 
-#: pod/recorder/views.py:200
+#: pod/recorder/views.py:209
 #, python-format
 msgid ""
 "Hello, \n"
@@ -3722,7 +3722,7 @@ msgid ""
 "Regards"
 msgstr ""
 
-#: pod/recorder/views.py:211
+#: pod/recorder/views.py:220
 #, python-format
 msgid ""
 "Hello, <p>a new recording has just be added on %(title_site)s from the "
@@ -3731,11 +3731,11 @@ msgid ""
 "just copy-paste it in your browser.</i> <p><p>Regards</p>"
 msgstr ""
 
-#: pod/recorder/views.py:227
+#: pod/recorder/views.py:236
 msgid "New recording added."
 msgstr ""
 
-#: pod/recorder/views.py:302
+#: pod/recorder/views.py:311
 msgid "The record has been deleted."
 msgstr ""
 
@@ -3777,7 +3777,7 @@ msgstr ""
 msgid "You can send an audio or video file."
 msgstr ""
 
-#: pod/video/forms.py:89 pod/video/views.py:1642
+#: pod/video/forms.py:89 pod/video/views.py:1644
 #, python-format
 msgid "The following formats are supported: %s"
 msgstr ""
@@ -4796,11 +4796,11 @@ msgstr ""
 msgid "Audience:"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:90
+#: pod/video/templates/videos/video-info.html:91
 msgid "Disciplines:"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:99
+#: pod/video/templates/videos/video-info.html:100
 msgid "Licence:"
 msgstr ""
 
@@ -4831,39 +4831,55 @@ msgid ""
 "contain a key allowing access. Anyone with this links can access it."
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:174
+#: pod/video/templates/videos/video-info.html:173
+msgid "Options"
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html:176
 msgid "Autoplay"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:175
+#: pod/video/templates/videos/video-info.html:177
 msgid "Check the box to autoplay the video."
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:180
+#: pod/video/templates/videos/video-info.html:182
 msgid "Loop"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:181
+#: pod/video/templates/videos/video-info.html:183
 msgid "Check the box to loop the video."
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:187
+#: pod/video/templates/videos/video-info.html:189
 msgid "Start video"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html:190
-msgid "Check the box to indicate the beginning of playing desired."
+msgid "Start at"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html:193
+msgid "Check the box to indicate the beginning of playing desired."
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html:198
+msgid "Embed in a web page"
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html:200
 msgid "Copy the content of this text box and paste it in the page:"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:197
+#: pod/video/templates/videos/video-info.html:205
+msgid "Share the link"
+msgstr ""
+
+#: pod/video/templates/videos/video-info.html:207
 msgid "Use this link to share the video:"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:201
+#: pod/video/templates/videos/video-info.html:211
 msgid "QR code for this link:"
 msgstr ""
 
@@ -4972,6 +4988,14 @@ msgstr ""
 
 #: pod/video/templates/videos/video_edit.html:163
 msgid "Use this link to share the video in draft mode"
+msgstr ""
+
+#: pod/video/templates/videos/video_licencebox.html:2
+msgid "Creative Commons license:"
+msgstr ""
+
+#: pod/video/templates/videos/video_licencebox.html:2
+msgid "Creative Commons license"
 msgstr ""
 
 #: pod/video/templates/videos/video_list.html:10
@@ -5191,60 +5215,60 @@ msgstr ""
 msgid "You cannot access to this view."
 msgstr ""
 
-#: pod/video/views.py:1509
-msgid "Pod video view statistics"
+#: pod/video/views.py:1511
+msgid "Pod video viewing statistics"
 msgstr ""
 
-#: pod/video/views.py:1516
+#: pod/video/views.py:1518
 #, python-format
 msgid "Video viewing statistics for %s"
 msgstr ""
 
-#: pod/video/views.py:1520
+#: pod/video/views.py:1522
 #, python-format
 msgid "Video viewing statistics for the channel %s"
 msgstr ""
 
-#: pod/video/views.py:1524
+#: pod/video/views.py:1526
 #, python-format
 msgid "Video viewing statistics for the theme %s"
 msgstr ""
 
-#: pod/video/views.py:1566
+#: pod/video/views.py:1568
 #, python-format
 msgid "You do not have access rights to this video: %s "
 msgstr ""
 
-#: pod/video/views.py:1586
+#: pod/video/views.py:1588
 #, python-format
 msgid "The following video does not exist : %s"
 msgstr ""
 
-#: pod/video/views.py:1917
+#: pod/video/views.py:1919
 msgid "You do not have rights to delete this comment"
 msgstr ""
 
-#: pod/video/views.py:2008 pod/video/views.py:2074
+#: pod/video/views.py:2010 pod/video/views.py:2076
 msgid "One or many videos already have a category."
 msgstr ""
 
-#: pod/video/views.py:2044 pod/video/views.py:2114
+#: pod/video/views.py:2046 pod/video/views.py:2116
 msgid "Title field is required"
 msgstr ""
 
-#: pod/video/views.py:2049 pod/video/views.py:2119 pod/video/views.py:2161
+#: pod/video/views.py:2051 pod/video/views.py:2121 pod/video/views.py:2163
 msgid "Method Not Allowed"
 msgstr ""
 
-#: pod/video/views.py:2091
+#: pod/video/views.py:2093
 msgid "Category updated successfully."
 msgstr ""
 
-#: pod/video/views.py:2109
+#: pod/video/views.py:2111
 msgid "You do not have rights to edit this category"
 msgstr ""
 
-#: pod/video/views.py:2155
+#: pod/video/views.py:2157
 msgid "You do not have rights to delete this category"
 msgstr ""
 
@@ -5269,6 +5293,6 @@ msgstr ""
 msgid "faceting"
 msgstr ""
 
-#: pod/video_search/views.py:55
+#: pod/video_search/views.py:57
 msgid "Remove selection"
 msgstr ""

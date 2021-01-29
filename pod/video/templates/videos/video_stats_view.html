@@ -10,9 +10,9 @@
 {% block page_extra_head %}
     <link type="text/css" rel="stylesheet" href="{% static 'css/jquery-ui.min.css' %}">
     <link type="text/css" rel="stylesheet" href="{% static 'css/ui.jqgrid.min.css' %}">
-    <script src="{% static "js/jquery.jqgrid.min.js" %}" charset="utf-8"></script>
+    <script src="{% static 'js/jquery.jqgrid.min.js' %}" charset="utf-8"></script>
         <!-- https://free-jqgrid.github.io/getting-started/index.html -->
-    <script src="{% static "js/video_stats_view.js" %}" charset="utf-8"></script>
+    <script src="{% static 'js/video_stats_view.js' %}" charset="utf-8"></script>
     <link rel="stylesheet" href="{% static 'css/video_stats_view.css' %}">
 {% endblock page_extra_head %}
 {% block content %}
@@ -27,7 +27,9 @@
                 <input class="form-control" type="date" name="periode" id="jsperiode">
             </div>
         </div>
-        <table id="grid"></table>
+        <div class="table-responsive-md mb-2">
+            <table id="grid"></table>
+        </div>
         <div id="pager"></div>
     {% endif %}
 </div>
