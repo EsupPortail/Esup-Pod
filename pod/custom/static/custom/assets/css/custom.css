@@ -353,10 +353,14 @@ fieldset svg.feather.feather-send.align-bottom:hover{
   color: #4d8197;
 }
 /* FOOTER */
-
+footer .hidden-pod.footer-contact{
+    display: none;
+}
+footer .hidden-pod{ margin: 0; padding-top: 2em;}
 footer.bg-dark {
+    padding: .8em 0;
+    color: #d1d1d1;
     background-color: #102636 !important;
-    z-index: 9;
 }
 footer.text-muted{
   color: #fff !important;
