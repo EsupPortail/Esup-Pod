@@ -34,6 +34,11 @@ body > .container.container-pod{ min-height: calc(100vh - 232px); }
 }
 .comment_main .comment .comment_content_body{
     font-size: 14px;
+    color: var(--primary);
+}
+.comment_main .reply_to{
+    color: rgb(180,180,180) !important;
+    letter-spacing: 0;
 }
 .comment_main .comment_container .comment_label,
 .comment_main .comment_container h1,
