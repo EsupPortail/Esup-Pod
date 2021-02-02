@@ -491,13 +491,31 @@ function delete_comment_child_DOM(comment, comment_top_parent_id, is_child) {
     }
 }
 
+/*********** Get Html element his position ************
+ * ****************************************************/
+function getElementPosition(element) {
+    let xPosition = 0;
+    let yPosition = 0;
+    // get body padding top if exists that will be 
+    let bodyPaddingTop = getComputedStyle(document.body)['padding-top'];
+
+    while(element) {
+        xPosition += (element.offsetLeft - element.scrollLeft + element.clientLeft);
+        yPosition += (element.offsetTop - element.scrollTop + element.clientTop);
+        element = element.offsetParent;
+    }
+    // subtract the padding top from the body to the yPosition to get closer to the exact value
+    return { x: xPosition, y: (yPosition - bodyPaddingTop) };
+}
+
 /*********** Scroll to a specific comment *************
  * ****************************************************/
 function scrollToComment(targetComment) {
-    targetComment.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "nearest"
+    let currentElementPosition = getElementPosition(targetComment);
+    window.scrollTo({
+        top: currentElementPosition.y,
+        left: currentElementPosition.x,
+        behavior: "smooth"
     });
     let htmlTarget = targetComment.querySelector(".comment_content");
     if (htmlTarget.classList.contains("scroll_to"))
@@ -509,6 +527,7 @@ function scrollToComment(targetComment) {
 
     htmlTarget.classList.add('scroll_to');
 }
+
 
 
 /****** Add the owner of parent comment as a tag ******
