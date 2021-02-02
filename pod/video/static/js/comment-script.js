@@ -497,7 +497,9 @@ function getElementPosition(element) {
     let xPosition = 0;
     let yPosition = 0;
     // get body padding top if exists that will be 
-    let bodyPaddingTop = getComputedStyle(document.body)['padding-top'];
+    let bodyPaddingTop = Number.parseInt(
+        getComputedStyle(document.body)['padding-top']??0
+    );
 
     while(element) {
         xPosition += (element.offsetLeft - element.scrollLeft + element.clientLeft);
