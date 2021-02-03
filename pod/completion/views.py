@@ -34,8 +34,10 @@ CAPTION_MAKER_ACTION = ['save']
 def video_caption_maker(request, slug):
     video = get_object_or_404(Video, slug=slug,
                               sites=get_current_site(request))
-    user_home_folder = get_object_or_404(
-        UserFolder, name="home", owner=request.user)
+
+    video_folder, created = UserFolder.objects.get_or_create(
+        name=video.slug, owner=request.user)
+    request.session['current_session_folder'] = video.slug
     action = None
     if request.user != video.owner and not (
         request.user.is_superuser or request.user.has_perm(
@@ -54,7 +56,7 @@ def video_caption_maker(request, slug):
         return render(
             request,
             'video_caption_maker.html',
-            {'home_folder': user_home_folder,
+            {'current_folder': video_folder,
              'form_make_caption': form_caption,
              'video': video})
 
@@ -62,8 +64,8 @@ def video_caption_maker(request, slug):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def video_caption_maker_save(request, video):
-    user_home_folder = get_object_or_404(
-        UserFolder, name="home", owner=request.user)
+    video_folder, created = UserFolder.objects.get_or_create(
+        name=video.slug, owner=request.user)
     if (request.method == "POST"):
         cur_folder = get_current_session_folder(request)
         response = file_edit_save(request, cur_folder)
@@ -79,7 +81,7 @@ def video_caption_maker_save(request, video):
     return render(
         request,
         'video_caption_maker.html',
-        {'home_folder': user_home_folder,
+        {'current_folder': video_folder,
          'form_make_caption': form_caption,
          'video': video})
 

@@ -1,5 +1,5 @@
 // podfile:filewidjet.js
-// select file 
+// select file
 if(typeof loaded == 'undefined') {
     loaded = true;
     $(document).on("click", "a.file-name, a.file-image", function(e) {
@@ -235,7 +235,7 @@ $(document).on("click", ".btn-remove", function(e) {
             showalert(gettext("Server error") + "<br/>"+error, "alert-danger");
           }
       },
-      
+
   );
   });
 
@@ -334,8 +334,8 @@ $(document).on("click", ".btn-remove", function(e) {
       });
     }
   });
-  
-  
+
+
 
   function reloadFolder(data){
     if(data.list_element) {
@@ -344,7 +344,7 @@ $(document).on("click", ".btn-remove", function(e) {
         if(data.folder_name){
           $("#folder-name-"+ folder_id).text("  "+data.folder_name)
         }
-   
+
 
         if(data.new_folder == true){
           let type = $("#list_folders_sub").data("type")
@@ -355,7 +355,7 @@ $(document).on("click", ".btn-remove", function(e) {
          $("#folder_" + data.deleted_id).remove()
         }
         send_form_data("/podfile/get_folder_files/"+ folder_id, {}, "show_folder_files", "get");
-    
+
         //dismiss modal
         $('#folderModalCenter').modal('hide');
         $('#folderModalCenter').find('.modal-body input#folderInputName').val("");
@@ -436,7 +436,7 @@ function createFolder(foldid, foldname, isCurrent,type,owner=undefined){
     let isType = (type != "None" && type != undefined)
     construct+= ('/podfile/get_folder_files/' + foldid + (isType ? ('?type=' +type) : "") + '">')
     if(owner != undefined){
-      foldname = '<i><span id="folder-name-'+ foldid + '">  ' + foldname + '</span></i> <b>(' + owner+')</b>' 
+      foldname = '<i><span id="folder-name-'+ foldid + '">  ' + foldname + '</span></i> <b>(' + owner+')</b>'
     }
     else{
       foldname = '<span id="folder-name-' +foldid +  '">  ' +foldname+ '</span>'
@@ -473,7 +473,7 @@ function initFolders(){
 
 
 var seeMoreElement = function (nextPage, curr_page, tot_page, search=null){
-    search = search? `&page=${search}`: '';
+    search = search? `&search=${search}`: '';
     let seeMore = gettext('See more');
     return `
 	<div class="view-more-container">
@@ -507,7 +507,7 @@ var seeMoreElement = function (nextPage, curr_page, tot_page, search=null){
               if(nextPage != -1){
 		$("#list_folders_sub").append(seeMoreElement(nextPage, response.current_page+1, response.total_pages, search));
               }
-              
+
           }
       }
   );
@@ -517,7 +517,7 @@ var seeMoreElement = function (nextPage, curr_page, tot_page, search=null){
   $(document).on('show.bs.modal', '.podfilemodal', function (event) {
     event.stopPropagation();
     setTimeout(function(){initFolders()}, 500);
-    
+
   });
 
 

@@ -12,7 +12,7 @@
     {% if video.description or tag_list %}
       <p>{{ video.description|safe }}</p>
       {% if tag_list %}
-        <p>{% trans 'Tags' %}&nbsp;:&nbsp;
+        <p>{% trans 'Tags:' %}&nbsp;
           {% for tag in tag_list %}
            <a href="{% url 'videos' %}?tag={{ tag }}" title="{{ tag }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
                <span class="label label-default">{{ tag }}</span>
@@ -33,7 +33,7 @@
     <h5><i data-feather="info"></i>&nbsp;{% trans 'Infos' %}</h5>
     <div class="row">
       <div class="col-4">
-        <p><strong>{% trans 'Added by' %}&nbsp;</strong>:<br />
+        <p><strong>{% trans 'Added by:' %}</strong><br />
         <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
         {% if video.owner.owner.userpicture.file %}
         {% thumbnail video.owner.owner.userpicture.file "x50" as im %}
@@ -43,7 +43,7 @@
         {{ video.owner.get_full_name }}</a>
         </p>
         {% if video.additional_owners.all %}
-          <p><strong>{% trans 'Additional owners' %}&nbsp;</strong>:<br />
+          <p><strong>{% trans 'Additional owners:' %}</strong><br />
           {% for additionalOwner in video.additional_owners.all %}
             <a href="{% url 'videos' %}?owner={{ additionalOwner.username }}" title="{{ additionalOwner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
               {% if additionalOwner.owner.userpicture.file %}
@@ -56,16 +56,16 @@
           </p>
         {%endif%}
         {% if video.contributor_set.all %}
-        <p><strong>{% trans 'Contributors' %} : </strong><br />
+        <p><strong>{% trans 'Contributors:' %}</strong><br />
         {% for contrib in video.contributor_set.all %}
         {{ contrib.name }} ({% trans contrib.role %})
         {% if contrib.email_address %}
-        <a href="javascript:linkTo_UnCryptMailto('{{ contrib.get_base_mail }}');" title="{% trans "send an email" %}">
+        <a href="javascript:linkTo_UnCryptMailto('{{ contrib.get_base_mail }}');" title="{% trans 'send an email' %}">
           <i data-feather="mail"></i>
         </a>
         {% endif %}
         {% if contrib.weblink %}
-          <a href="{{ contrib.weblink }}" target="_blank" title="{% trans "go to his web link" %} : {{ contrib.weblink }}">
+          <a href="{{ contrib.weblink }}" target="_blank" title="{% trans 'contributor web link' %}">
               <i data-feather="external-link"></i>
           </a>
         {% endif %}
@@ -75,19 +75,19 @@
         {% endif %}
       </div>
       <div class="col-4">
-      <p><strong>{% trans 'Updated on' %}&nbsp;</strong>:<br /> {{ video.date_added }}</p>
-      <p><strong>{% trans 'Duration' %}&nbsp;</strong>:<br />{{ video.duration_in_time }}</p>
-      <p><strong>{% trans 'Number of view' %}&nbsp;</strong>:<br />{{ video.get_viewcount }}{% if USE_STATS_VIEW %} <a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video_stats_view' video.slug %}?from=video">({% trans 'Show details views' %})</a></p>{% endif %}
+      <p><strong>{% trans 'Updated on:' %}</strong><br /> {{ video.date_added }}</p>
+      <p><strong>{% trans 'Duration:' %}</strong><br />{{ video.duration_in_time }}</p>
+      <p><strong>{% trans 'Number of view:' %}</strong><br />{{ video.get_viewcount }}{% if USE_STATS_VIEW %} <a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video_stats_view' video.slug %}?from=video">({% trans 'Show details views' %})</a></p>{% endif %}
 
       </div>
       <div class="col-4">
-        <p><strong>{% trans 'Type' %}&nbsp;</strong>:<br /> <a href="{% url 'videos' %}?type={{ video.type.slug }}" title="{{ video.type.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ video.type.title }}</a></p>
-        <p><strong>{% trans "Main language" %}&nbsp;</strong>:<br /> {{video.get_main_lang}}</p>
+        <p><strong>{% trans 'Type:' %}</strong><br /> <a href="{% url 'videos' %}?type={{ video.type.slug }}" title="{{ video.type.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ video.type.title }}</a></p>
+        <p><strong>{% trans "Main language:" %}</strong><br /> {{video.get_main_lang}}</p>
         {% if video.cursus and video.cursus != '0' %}
-          <p><strong>{% trans 'Audience' %}&nbsp;</strong>:<br />{{video.get_cursus}}
+          <p><strong>{% trans 'Audience:' %}</strong><br />{{video.get_cursus}}
         {%endif%}
         {% if video.discipline.all %}
-        <p><strong>{% trans 'Disciplines' %}&nbsp;</strong>:<br />
+        <p><strong>{% trans 'Disciplines:' %}</strong><br />
         {% for disc in video.discipline.all %}
         <a href="{% url 'videos' %}?discipline={{ disc.slug }}" title="{{ disc.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
             {{ disc.title }}
@@ -96,7 +96,7 @@
         </p>
         {%endif%}
       {% if request.GET.is_iframe and video.licence %}
-       <p><strong>{% trans 'Licence' %}&nbsp;</strong>:<br />
+       <p><strong>{% trans 'Licence:' %}</strong><br />
           {% include "videos/video_licencebox.html" %}
        </p>
        {% endif %}
@@ -105,11 +105,11 @@
     </div>
   </div>
   <div class="tab-pane fade" id="downloads" role="tabpanel">
-    <h5 ><i data-feather="download"></i>&nbsp;{% trans 'Downloads' %}</h5>
+    <h5><i data-feather="download"></i>&nbsp;{% trans 'Downloads' %}</h5>
     <div class="row">
       <div class="col-4">
         {% if video.allow_downloading %}
-        <div>{% trans 'Video file(s)' %} :<br/>
+        <div>{% trans 'Video file(s):' %}<br/>
           {% for vid in video.get_video_mp4 %}
           <form method="post" action="{% url 'download_file' %}">
             {% csrf_token %}
@@ -123,7 +123,7 @@
       <div class="col-4">
       {% if video.allow_downloading %}
       {% if video.get_video_mp3 %}
-      <div>{% trans 'Audio file' %} :<br/>
+      <div>{% trans 'Audio file:' %}<br/>
       <form method="post" action="{% url 'download_file' %}">
         {% csrf_token %}
         <input type="hidden" value="{{video.get_video_mp3.source_file.name}}" name="filename" />
@@ -135,7 +135,7 @@
       </div>
     <div class="col-4">
     {% if video.document_set.all %}
-    <div>{% trans 'Document' %} :<br/>
+    <div>{% trans 'Document:' %}<br/>
       {% for doc in video.document_set.all %}
       <form method="post" action="{% url 'download_file' %}">
         {% csrf_token %}
@@ -157,7 +157,7 @@
         <label>{% trans 'Social Networks' %}</label>
         <a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Facebook"><i data-feather="facebook"></i></a>
         <a target="_blank" href="http://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} Twitter"><i data-feather="twitter"></i></a>
-	      <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} LinkedIn"><i data-feather="linkedin"></i></a>
+        <a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans "Share on" %} LinkedIn"><i data-feather="linkedin"></i></a>
       </p>
       <hr />
     {% endif %}
@@ -190,19 +190,18 @@
           <small id="displaytimeHelp" class="form-text text-muted">{% trans 'Check the box to indicate the beginning of playing desired.' %}</small>
         </div>
         <div class="form-group ">
-          <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page' %}&nbsp;:</label>
+          <label for="txtintegration">{% trans 'Copy the content of this text box and paste it in the page:' %}</label>
           <textarea name="txtintegration" id="txtintegration" class="form-control" rows="4">&lt;iframe src="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}?is_iframe=true" width="640" height="360" style="padding: 0; margin: 0; border:0" allowfullscreen &gt;&lt;/iframe&gt;</textarea>
         </div>
         <div class="form-group">
-          <label for="txtpartage">{% trans 'Use this link to share the video' %} :</label>
+          <label for="txtpartage">{% trans 'Use this link to share the video:' %}</label>
           <input class="form-control" type="text" name="txtpartage" id="txtpartage" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" />
         </div>
         <div class="form-group">
-          <label>{% trans 'QR code for this link' %} :</label>
+          <label>{% trans 'QR code for this link:' %}</label>
           <img src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" alt="qrcode" id="qrcode"/>
         </div>
       </fieldset>
-    
   </div>
   {%endif%}
 </div>
