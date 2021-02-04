@@ -5,15 +5,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-22 12:24+0100\n"
+"POT-Creation-Date: 2021-01-29 15:49+0100\n"
 "PO-Revision-Date: 2021-01-22 12:27+0100\n"
+"Last-Translator: obado <bado@unice.fr>\n"
+"Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Last-Translator: obado <bado@unice.fr>\n"
-"Language-Team: \n"
 "X-Generator: Poedit 2.4.2\n"
 
 #: pod/chapter/static/js/chapters.js:5 pod/chapter/static/js/chapters.js:7
@@ -150,7 +150,8 @@ msgid "Please enter a role."
 msgstr ""
 
 #: pod/completion/static/js/completion.js:267
-msgid "There is already a contributor with this same name and role in the list."
+msgid ""
+"There is already a contributor with this same name and role in the list."
 msgstr ""
 
 #: pod/completion/static/js/completion.js:278
@@ -389,6 +390,10 @@ msgstr ""
 msgid "The file size exceeds the maximum allowed value:"
 msgstr ""
 
+#: pod/main/static/js/main.js:513
+msgid " GB."
+msgstr ""
+
 #: pod/main/static/js/main.js:528
 msgid "The file extension not in the allowed extension:"
 msgstr ""
@@ -441,45 +446,48 @@ msgstr ""
 msgid "See more"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:74
-#: pod/video/static/js/comment-script.js:171
-msgid "Delete"
+#: pod/video/static/js/comment-script.js:25
+msgid "Answer"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:85
-msgid "Cancel"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js:144
-msgid "Agree with the comment"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js:155
-msgid "Reply to comment"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js:155
-msgid "Reply"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js:168
-msgid "Remove this comment"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js:184
-msgid "Add a public comment"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js:267
-#: pod/video/static/js/comment-script.js:727
+#: pod/video/static/js/comment-script.js:26
 msgid "Answers"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:272
+#: pod/video/static/js/comment-script.js:76
+#: pod/video/static/js/comment-script.js:181
+msgid "Delete"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:87
+msgid "Cancel"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:148
+msgid "Agree with the comment"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:165
+msgid "Reply to comment"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:165
+msgid "Reply"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:178
+msgid "Remove this comment"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:194
+msgid "Add a public comment"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:282
 msgid "Show answers"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:416
+#: pod/video/static/js/comment-script.js:442
 msgid "Comment has been deleted successfully."
 msgstr ""
 
