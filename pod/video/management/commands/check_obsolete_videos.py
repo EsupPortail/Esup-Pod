@@ -94,7 +94,7 @@ class Command(BaseCommand):
                                           sites=get_current_site(
                                               settings.SITE_ID))
             for video in videos:
-                # self.notify_user(video, step_day)
+                self.notify_user(video, step_day)
                 if (
                     USE_ESTABLISHMENT and
                     MANAGERS and
@@ -370,7 +370,7 @@ class Command(BaseCommand):
             video_estab = video.owner.owner.establishment.lower()
             return dict(MANAGERS)[video_estab]
         else:
-            return CONTACT_US_EMAIL
+            return dict(CONTACT_US_EMAIL)
 
     def write_in_csv(self, vid, type):
         file = '%s/%s.csv' % (settings.LOG_DIRECTORY, type)
