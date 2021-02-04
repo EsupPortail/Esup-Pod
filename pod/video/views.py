@@ -1499,14 +1499,16 @@ def get_all_views_count(v_id, date_filter=date.today()):
     return all_views
 
 
-# Retourne une ou plusieurs videos et le titre de
-# (theme, ou video ou channel ou videos pour toutes)
-# selon la réference du slug donnée
-# (video ou channel ou theme ou videos pour toutes les videos)
 def get_videos(p_slug, target, p_slug_t=None):
+    """Retourne une ou plusieurs videos selon le slug donné.
 
+    Renvoi vidéo/s et titre de
+    (theme, ou video ou channel ou videos pour toutes)
+    selon la réference du slug donnée
+    (video ou channel ou theme ou videos pour toutes les videos)
+    """
     videos = []
-    title = _("Pod video view statistics")
+    title = _("Pod video viewing statistics")
 
     if target.lower() == "video":
         video_founded = Video.objects.filter(slug=p_slug).first()
