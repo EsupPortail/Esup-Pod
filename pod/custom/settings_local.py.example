@@ -1160,3 +1160,13 @@ SESSION_COOKIE_SAMESITE_FORCE_ALL = True
 # 'Strict', 'Lax' ou 'None'
 """
 SESSION_COOKIE_SAMESITE = 'Lax'
+
+"""
+# Gerer des champs obligatoires dans le formulaire d'edition et
+# d'ajout d'une video:
+# Exemple valeur: ["discipline", "tags"]
+# NB: les champs cachés et suivant ne sont pas pris en compte:
+# (video, title, type, owner, date_added, cursus, main_lang)
+# 
+"""
+VIDEO_REQUIRED_FIELDS = []
