@@ -370,7 +370,7 @@ class Command(BaseCommand):
             video_estab = video.owner.owner.establishment.lower()
             return dict(MANAGERS)[video_estab]
         else:
-            return dict(CONTACT_US_EMAIL)
+            return CONTACT_US_EMAIL
 
     def write_in_csv(self, vid, type):
         file = '%s/%s.csv' % (settings.LOG_DIRECTORY, type)
