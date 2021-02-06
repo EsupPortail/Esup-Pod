@@ -678,6 +678,18 @@ def fetch_owners(request, folders_list):
     return folders_list
 
 
+def filter_folders_with_truly_files(folders):
+    if not TEST_SETTINGS:
+        return folders.annotate(
+            nbr_image=Count('customimagemodel', distinct=True)
+        ).annotate(
+            nbr_file=Count('customfilemodel', distinct=True)
+        ).filter(
+            Q(nbr_image__gt=0) | Q(nbr_file__gt=0)
+        )
+    return folders
+
+
 @staff_member_required(redirect_field_name='referrer')
 def user_folders(request):
     VALUES_LIST = ['id', 'name']
@@ -688,16 +700,9 @@ def user_folders(request):
 
     if not request.user.is_superuser:
         user_folder = user_folder.filter(owner=request.user)
-    
-    if not TEST_SETTINGS:
-        # filter folders to keep only those that have files
-        user_folder = user_folder.annotate(
-            nbr_image=Count('customimagemodel', distinct=True)
-        ).annotate(
-            nbr_file=Count('customfilemodel', distinct=True)
-        ).filter(
-            Q(nbr_image__gt=0) | Q(nbr_file__gt=0)
-        )
+
+    # filter folders to keep only those that have files
+    user_folder = filter_folders_with_truly_files(user_folder)
 
     user_folder = user_folder.values(*VALUES_LIST)
 
