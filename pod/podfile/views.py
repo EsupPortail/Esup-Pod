@@ -10,7 +10,7 @@ from django.core.exceptions import PermissionDenied
 from django.template.loader import render_to_string
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import SuspiciousOperation
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from .models import UserFolder
@@ -686,6 +686,15 @@ def user_folders(request):
 
     if not request.user.is_superuser:
         user_folder = user_folder.filter(owner=request.user)
+
+    # filter folders to keep only those that have files
+    user_folder = user_folder.annotate(
+        nbr_image=Count('customimagemodel', distinct=True)
+    ).annotate(
+        nbr_file=Count('customfilemodel', distinct=True)
+    ).filter(
+        Q(nbr_image__gt=0) | Q(nbr_file__gt=0)
+    )
 
     user_folder = user_folder.values(*VALUES_LIST)
 
