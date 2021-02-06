@@ -687,7 +687,7 @@ def user_folders(request):
     if not request.user.is_superuser:
         user_folder = user_folder.filter(owner=request.user)
 
-    user_folder = user_folder.values(*list(VALUES_LIST))
+    user_folder = user_folder.values(*VALUES_LIST)
 
     search = request.GET.get('search', "")
     current_fold = json.loads(
