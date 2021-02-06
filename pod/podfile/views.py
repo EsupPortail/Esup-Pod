@@ -56,6 +56,8 @@ FILE_ALLOWED_EXTENSIONS = getattr(
         'srt',
     )
 )
+
+TEST_SETTINGS = getattr(settings, "TEST_SETTINGS", False)
 FOLDER_FILE_TYPE = ['image', 'file']
 
 
@@ -686,15 +688,16 @@ def user_folders(request):
 
     if not request.user.is_superuser:
         user_folder = user_folder.filter(owner=request.user)
-
-    # filter folders to keep only those that have files
-    user_folder = user_folder.annotate(
-        nbr_image=Count('customimagemodel', distinct=True)
-    ).annotate(
-        nbr_file=Count('customfilemodel', distinct=True)
-    ).filter(
-        Q(nbr_image__gt=0) | Q(nbr_file__gt=0)
-    )
+    
+    if not TEST_SETTINGS:
+        # filter folders to keep only those that have files
+        user_folder = user_folder.annotate(
+            nbr_image=Count('customimagemodel', distinct=True)
+        ).annotate(
+            nbr_file=Count('customfilemodel', distinct=True)
+        ).filter(
+            Q(nbr_image__gt=0) | Q(nbr_file__gt=0)
+        )
 
     user_folder = user_folder.values(*VALUES_LIST)
 
