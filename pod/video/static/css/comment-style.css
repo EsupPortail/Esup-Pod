@@ -346,6 +346,11 @@
 	margin: 0;
 	padding: 0;
 }
+.comment_main .add_comment .form-wrapper .new_comment.new_parent_comment {
+	border: 1px solid var(--background-color);
+	padding: 0.4em 0.8em;
+	border-radius: 4px;
+}
 .comment_main .add_comment .new_comment::-webkit-input-placeholder {
 	font-size: 14px;
 	color: #6b6b6b;
