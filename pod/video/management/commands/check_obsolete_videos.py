@@ -94,7 +94,7 @@ class Command(BaseCommand):
                                           sites=get_current_site(
                                               settings.SITE_ID))
             for video in videos:
-                # self.notify_user(video, step_day)
+                self.notify_user(video, step_day)
                 if (
                     USE_ESTABLISHMENT and
                     MANAGERS and
