@@ -135,7 +135,7 @@ class TestStatsView(TestCase):
         response = self.client.get(stat_url_videos, {"from": "videos"})
         self.assertContains(
                 response,
-                b"Pod video view statistics",
+                b"Pod video viewing statistics",
                 status_code=200)
 
     @skipUnless(USE_STATS_VIEW, "Require acitvate URL video_stats_view")

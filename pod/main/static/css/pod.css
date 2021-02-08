@@ -49,8 +49,12 @@ label {
 
 /*** video ***/
 #myTabContent #info p {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-top: .5rem;
+  margin-bottom: .5rem;
+}
+#share legend{
+  /* align text with feather-icon */
+  line-height: 1em;
 }
 
 .hidespinner {

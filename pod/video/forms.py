@@ -53,6 +53,10 @@ ENCODE_VIDEO = getattr(settings,
 USE_OBSOLESCENCE = getattr(
     settings, "USE_OBSOLESCENCE", False)
 
+ACTIVE_VIDEO_COMMENT = getattr(settings, 'ACTIVE_VIDEO_COMMENT', False)
+
+VIDEO_REQUIRED_FIELDS = getattr(settings, 'VIDEO_REQUIRED_FIELDS', [])
+
 VIDEO_ALLOWED_EXTENSIONS = getattr(
     settings, 'VIDEO_ALLOWED_EXTENSIONS', (
         '3gp',
@@ -486,6 +490,9 @@ class VideoForm(forms.ModelForm):
         # QuerySet for channels and theme
         self.set_queryset()
         self.filter_fields_admin()
+        # Manage more required fields
+        self.manage_more_required_fields()
+        # Manage required fields html
         self.fields = add_placeholder_and_asterisk(self.fields)
         if self.fields.get('video'):
             self.fields['video'].label = _(u'File')
@@ -515,6 +522,12 @@ class VideoForm(forms.ModelForm):
 
         if not TRANSCRIPT:
             self.remove_field('transcript')
+
+    def manage_more_required_fields(self):
+        for field in VIDEO_REQUIRED_FIELDS:
+            # field exists, not hide
+            if self.fields.get(field, None):
+                self.fields[field].required = True
 
     def set_nostaff_config(self):
         if self.is_staff is False:
