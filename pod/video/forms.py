@@ -273,9 +273,9 @@ class AddOwnerWidget(s2forms.ModelSelect2MultipleWidget):
     ]
 
 
-class ChannelWidget(s2forms.ModelSelect2Widget):
+class ChannelWidget(s2forms.ModelSelect2MultipleWidget):
     search_fields = [
-        "name__icontains",
+        "title__icontains",
     ]
 
 

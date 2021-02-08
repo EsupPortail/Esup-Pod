@@ -140,6 +140,7 @@ class TestStatsView(TestCase):
 
     @skipUnless(USE_STATS_VIEW, "Require acitvate URL video_stats_view")
     def test_stats_view_GET_request_channel(self):
+        print("ABCDE " + self.stat_channel_url)
         response = self.client.get(self.stat_channel_url)
         # Check that the view function is stats_view
         self.assertEqual(response.resolver_match.func, stats_view)
