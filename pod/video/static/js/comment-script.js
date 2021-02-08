@@ -254,7 +254,7 @@ class Comment extends HTMLElement {
 				this.submit_comment_reply(new_comment, add_comment, comment_reply_btn);
 			});
 			new_comment.addEventListener("keyup", function (e) {
-				// Active send button
+				// Active/Disable send button
 				if (
 					this.value.trim().length > 0 &&
 					!comment_reply_btn.classList.contains("active")
