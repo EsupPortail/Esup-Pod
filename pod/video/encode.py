@@ -506,8 +506,9 @@ def get_video_command_mp4(video_id, video_data, output_dir):
 
             name = "%sp" % height
 
-            cmd += " %s -vf " % (static_params,)
-            cmd += "\"scale=-2:%s\"" % (height)
+            cmd += " %s " % (static_params,)
+            cmd += FFMPEG_SCALE.format(height=360)
+            # cmd += " -vf \"scale=-2:%s\" " % (height)
             # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
                 minrate, bitrate, maxrate, int(bufsize), audiorate)
@@ -741,10 +742,14 @@ def get_video_command_playlist(video_id, video_data, output_dir):
 
             name = "%sp" % height
 
-            cmd += " %s -vf " % (static_params,)
-            cmd += "\"scale=-2:%s\"" % (height)
+            cmd += " %s " % (static_params,)
+            cmd += FFMPEG_SCALE.format(height=360)
+
+            # cmd += " %s -vf " % (static_params,)
+            # cmd += "\"scale=-2:%s\"" % (height)
             # cmd += "scale=w=%s:h=%s:" % (width, height)
             # cmd += "force_original_aspect_ratio=decrease"
+
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
                 minrate, bitrate, maxrate, int(bufsize), audiorate)
             cmd += " -hls_playlist_type vod -hls_time %s \
