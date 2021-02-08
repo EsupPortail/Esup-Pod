@@ -89,9 +89,13 @@ FFMPEG_STATIC_PARAMS = getattr(
 
 FFMPEG_MISC_PARAMS = getattr(
     settings, 'FFMPEG_MISC_PARAMS', " -hide_banner -y ")
+# to use in GPU, specify for example
+# -y -vsync 0 -hwaccel_device {hwaccel_device} \
+# -hwaccel cuvid -c:v {codec}_cuvid
 
 FFMPEG_SCALE = getattr(
     settings, 'FFMPEG_SCALE', ' -vf "scale=-2:{height}" ')
+# to use in GPU, specify ' -vf "scale_npp=-2:{height}:interp_algo=super" '
 
 AUDIO_BITRATE = getattr(settings, 'AUDIO_BITRATE', "192k")
 
