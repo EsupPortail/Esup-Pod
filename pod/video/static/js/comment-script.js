@@ -260,6 +260,9 @@ class Comment extends HTMLElement {
 					!comment_reply_btn.classList.contains("active")
 				)
 					comment_reply_btn.classList.add("active");
+
+				if (this.value.trim().length === 0)
+					comment_reply_btn.classList.remove("active");
 			});
 			new_comment.addEventListener("keydown", (e) => {
 				if (
