@@ -90,6 +90,9 @@ FFMPEG_STATIC_PARAMS = getattr(
 FFMPEG_MISC_PARAMS = getattr(
     settings, 'FFMPEG_MISC_PARAMS', " -hide_banner -y ")
 
+FFMPEG_SCALE = getattr(
+    settings, 'FFMPEG_SCALE', ' -vf "scale=-2:{height}" ')
+
 AUDIO_BITRATE = getattr(settings, 'AUDIO_BITRATE', "192k")
 
 ENCODING_M4A = getattr(
