@@ -17,7 +17,6 @@ from .models import PlaylistVideo
 from .views import VIDEOS
 from .remote_encode import start_store_remote_encoding_video
 from .transcript import start_transcript
-from os.path import splitext
 
 import json
 
@@ -88,10 +87,16 @@ class VideoUserSerializer(serializers.ModelSerializer):
             {"get_encoding_step": instance.get_encoding_step})
         video_data.update(
             {"get_thumbnail_admin": instance.get_thumbnail_admin})
-        video_data.update({'video_files':
-                               instance.get_audio_and_video_json(request.GET.get('extensions', default=None))
-                               if instance.get_audio_and_video_json(request.GET.get('extensions', default=None))
-                               else ""})
+        video_data.update({
+            'video_files':
+            instance.get_audio_and_video_json(
+                request.GET.get('extensions', default=None)
+            )
+            if instance.get_audio_and_video_json(
+                request.GET.get('extensions', default=None)
+            )
+            else ""
+        })
         data["video_data"] = video_data
         return data
 
@@ -186,7 +191,6 @@ class VideoViewSet(viewsets.ModelViewSet):
             serializer = VideoUserSerializer(
                 page, many=True, context={'request': request})
             return self.get_paginated_response(serializer.data)
-
         serializer = VideoUserSerializer(
             user_videos, many=True, context={'request': request})
         return Response(serializer.data)
@@ -204,13 +208,16 @@ class EncodingVideoViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def video_encodedfiles(self, request):
-        if request.GET.get('extension') :
-            encoded_videos = self.filter_queryset(self.get_queryset()).filter(
-                video__id=request.GET.get('video'), source_file__iendswith = request.GET.get('extension'))
-        else :
+        if request.GET.get('extension'):
+            encoded_videos = self.filter_queryset(
+                self.get_queryset()).filter(
+                    video__id=request.GET.get('video'),
+                    source_file__iendswith=request.GET.get('extension')
+                )
+        else:
             encoded_videos = self.filter_queryset(self.get_queryset()).filter(
                 video__id=request.GET.get('video'))
-        encoded_videos = sorted(encoded_videos, key = lambda x : x.height)
+        encoded_videos = sorted(encoded_videos, key=lambda x: x.height)
         serializer = EncodingVideoSerializer(
             encoded_videos, many=True, context={'request': request})
         return Response(serializer.data)
@@ -222,12 +229,16 @@ class EncodingAudioViewSet(viewsets.ModelViewSet):
     filter_fields = ('video',)
 
     @action(detail=False, methods=['get'])
-    def audio_encodedfiles(self, request):
-        if request.GET.get('extension') :
-            encoded_audios= self.filter_queryset(self.get_queryset()).filter(
-            video__id=request.GET.get('video'), source_file__iendswith = request.GET.get('extension'))
-        encoded_audios = self.filter_queryset(self.get_queryset()).filter(
-            video__id=request.GET.get('video'))
+    def audio_encodedescription_nldfiles(self, request):
+        if request.GET.get('extension'):
+            encoded_audios = self.filter_queryset(
+                self.get_queryset()).filter(
+                video__id=request.GET.get('video'),
+                source_file__iendswith=request.GET.get('extension')
+            )
+        else:
+            encoded_audios = self.filter_queryset(self.get_queryset()).filter(
+                video__id=request.GET.get('video'))
         serializer = EncodingAudioSerializer(
             encoded_audios, many=True, context={'request': request})
         return Response(serializer.data)
