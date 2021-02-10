@@ -36,6 +36,7 @@ from pod.main.models import get_nextautoincrement
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from django.db.models import Count, Case, When, Value, BooleanField, Q
 from django.db.models.functions import Concat
+from os.path import splitext
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
@@ -807,14 +808,78 @@ class Video(models.Model):
         return EncodingVideo.objects.filter(
             video=self, encoding_format="video/mp4")
 
+    def get_video_json(self,extensions):
+        list_src = []
+        dict_src = {}
+        extension_list = extensions.split(',') if extensions else []
+        list_video = EncodingVideo.objects.filter(
+            video=self)
+        for video in list_video:
+            file_extension = splitext(video.source_file.url)[-1]
+            if extensions is None or file_extension[1:] in extension_list :
+                video_object = {
+                    'id': video.id,
+                    'type': video.encoding_format,
+                    'src': video.source_file.url,
+                    'height': video.height,
+                    'extension': file_extension,
+                    'label': video.name}
+                dict_entry = dict_src.get(file_extension[1:], None)
+                if dict_entry is None :
+                    dict_src[file_extension[1:]] = [video_object]
+                else:
+                    dict_entry.append(video_object)
+
+                list_src.append(
+                    {
+                        'id' : video.id,
+                        'type': video.encoding_format,
+                        'src': video.source_file.url,
+                        'height': video.height,
+                        'extension': file_extension,
+                        'label': video.name})
+        sorted_dict_src = {x: sorted(dict_src[x], key= lambda i:i['height']) for x in dict_src.keys()}
+        return sorted_dict_src
+
+    def get_audio_json(self, extensions):
+        list_src = []
+        dict_src = {}
+        extension_list = extensions.split(',') if extensions else []
+        list_audio = EncodingAudio.objects.filter(
+            name="audio", video=self)
+        for audio in list_audio:
+            file_extension = splitext(audio.source_file.url)[-1]
+            audio_object = {
+                'id': audio.id,
+                'type': audio.encoding_format,
+                'src': audio.source_file.url,
+                'height': None,
+                'extension': file_extension,
+                'label': audio.name}
+            if extensions is None or file_extension[1:] in extension_list:
+                dict_entry = dict_src.get(file_extension[1:], None)
+                if dict_entry is None :
+                    dict_src[file_extension[1:]] = [audio_object]
+                else:
+                    dict_entry.append(audio_object)
+
+                list_src.append(
+                    audio_object)
+        return dict_src
+
+    def get_audio_and_video_json(self, extensions):
+        return {**self.get_video_json(extensions), **self.get_audio_json(extensions)}
     def get_video_mp4_json(self):
         list_src = []
         list_video = sorted(self.get_video_mp4(), key=lambda m: m.height)
         for video in list_video:
             list_src.append(
-                {'type': video.encoding_format,
+                {
+                 'id' : video.id,
+                 'type': video.encoding_format,
                  'src': video.source_file.url,
                  'height': video.height,
+                  'extension': splitext(video.source_file.url)[-1],
                  'label': video.name})
         return list_src
 

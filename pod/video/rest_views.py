@@ -17,6 +17,7 @@ from .models import PlaylistVideo
 from .views import VIDEOS
 from .remote_encode import start_store_remote_encoding_video
 from .transcript import start_transcript
+from os.path import splitext
 
 import json
 
@@ -78,6 +79,7 @@ class VideoUserSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super(VideoUserSerializer, self).to_representation(instance)
+        request = self.context['request']
         video_data = json.loads(instance.get_json_to_index())
         video_data.update({"encoded": instance.encoded})
         video_data.update(
@@ -86,11 +88,10 @@ class VideoUserSerializer(serializers.ModelSerializer):
             {"get_encoding_step": instance.get_encoding_step})
         video_data.update(
             {"get_thumbnail_admin": instance.get_thumbnail_admin})
-        video_data.update({"mp4_file": instance.get_video_mp4_json()})
-        video_data.update({"mp3_file": instance.get_video_mp3(
-        ).source_file.url if instance.get_video_mp3() else ""})
-        video_data.update({"m4a_file": instance.get_video_m4a(
-        ).source_file.url if instance.get_video_m4a() else ""})
+        video_data.update({'video_files':
+                               instance.get_audio_and_video_json(request.GET.get('extensions', default=None))
+                               if instance.get_audio_and_video_json(request.GET.get('extensions', default=None))
+                               else ""})
         data["video_data"] = video_data
         return data
 
@@ -175,8 +176,6 @@ class VideoViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def user_videos(self, request):
-        # user_videos = Video.objects.filter(
-        #    owner__username=request.GET.get('username'))
         user_videos = self.filter_queryset(self.get_queryset()).filter(
             owner__username=request.GET.get('username'))
         if request.GET.get('encoded') and request.GET.get('encoded') == "true":
@@ -201,11 +200,37 @@ class VideoRenditionViewSet(viewsets.ModelViewSet):
 class EncodingVideoViewSet(viewsets.ModelViewSet):
     queryset = EncodingVideo.objects.all()
     serializer_class = EncodingVideoSerializer
+    filter_fields = ('video',)
+
+    @action(detail=False, methods=['get'])
+    def video_encodedfiles(self, request):
+        if request.GET.get('extension') :
+            encoded_videos = self.filter_queryset(self.get_queryset()).filter(
+                video__id=request.GET.get('video'), source_file__iendswith = request.GET.get('extension'))
+        else :
+            encoded_videos = self.filter_queryset(self.get_queryset()).filter(
+                video__id=request.GET.get('video'))
+        encoded_videos = sorted(encoded_videos, key = lambda x : x.height)
+        serializer = EncodingVideoSerializer(
+            encoded_videos, many=True, context={'request': request})
+        return Response(serializer.data)
 
 
 class EncodingAudioViewSet(viewsets.ModelViewSet):
     queryset = EncodingAudio.objects.all()
     serializer_class = EncodingAudioSerializer
+    filter_fields = ('video',)
+
+    @action(detail=False, methods=['get'])
+    def audio_encodedfiles(self, request):
+        if request.GET.get('extension') :
+            encoded_audios= self.filter_queryset(self.get_queryset()).filter(
+            video__id=request.GET.get('video'), source_file__iendswith = request.GET.get('extension'))
+        encoded_audios = self.filter_queryset(self.get_queryset()).filter(
+            video__id=request.GET.get('video'))
+        serializer = EncodingAudioSerializer(
+            encoded_audios, many=True, context={'request': request})
+        return Response(serializer.data)
 
 
 class PlaylistVideoViewSet(viewsets.ModelViewSet):
