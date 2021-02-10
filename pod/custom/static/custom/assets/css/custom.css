@@ -608,8 +608,9 @@ footer p {
 	justify-content: space-between;
 	flex-wrap: wrap;
 }
-.flex{
+.flex_items_center{
 	display: flex;
+	align-items: center;
 }
 .card-title,
 .card-text .live_on
