@@ -602,6 +602,11 @@ footer p {
 		margin-right: 0.8em;
 	}
 }
+/* podfile */
+#shareModalCenter #user-search.list-group{
+	max-height: 350px;
+	overflow-y: auto;
+}
 /* mainbreacrumb */
 #mainbreadcrumb{
 	display: flex;
@@ -659,10 +664,8 @@ footer p {
 .switch_mode.active{background: orange !important;}
 .switch_mode.active .switch_mode__toggle { left: 50%; }
 
-
 /* @import url("dark.css");
  */
-
 :root {
 	--background-dark-color: #1f2937;
 	--link-color: #dd930c;
@@ -679,7 +682,6 @@ body.dark {
 	background-color: var(--background-dark-color) !important;
 	color: white;
 }
-
 /* Generic dark css */
 body.dark .title,
 body.dark h1.title,
@@ -696,7 +698,9 @@ body.dark h5,
 body.dark h6{
 	color: #fff !important;
 }
-
+body.dark .lds-ellipsis div{
+	background-color: var(--link-color) !important;
+}
 body.dark .badge-primary{
 	background-color: var(--dark-primary) !important;
 	color: #fff !important;
@@ -723,6 +727,8 @@ body.dark button.close{
 	text-shadow: none !important;
 	opacity: 1;
 }
+body.dark .btn.btn-share.btn-success.btn-add,
+body.dark .foldable_event,
 body.dark .btn.btn-primary{
 	background-color: var(--dark-primary-color) !important;
 	border-color: var(--dark-primary-color) !important;
@@ -730,15 +736,20 @@ body.dark .btn.btn-primary{
 	box-shadow: 4px 4px 4px var(--dark-shadow-color);
 	transition: opacity .3s;
 }
+body.dark .btn.btn-share.btn-success.btn-add:hover,
+body.dark .foldable_event.opened:hover,
 body.dark .btn.btn-primary:hover{
 	opacity: .85;
 }
+
+body.dark #form_theme .btn#cancel_theme,
 body.dark .btn-secondary{
 	background-color: var(--dark) !important;
 	border-color: var(--dark) !important;
 	box-shadow: 4px 4px 4px var(--dark-shadow-color) !important;
 	color: var(--link-color) !important;
 }
+body.dark #form_theme .btn#cancel_theme:hover,
 body.dark .btn-secondary:hover{
 	border-color: var(--link-color) !important;
 	background-color: transparent !important;
@@ -750,6 +761,17 @@ body.dark .border-primary{
 	border-color: var(--dark-primary) !important;
 	overflow: hidden;
 }
+body.dark #user-search,
+body.dark #shared-people .list-group-item,
+body.dark #folderInputName,
+body.dark #userInputName{
+	background: var(--block-dark-color) !important;
+	border-color: var(--block-dark-color) !important;
+	color: #fff !important;
+	box-shadow: 4px 2px 4px var(--dark-shadow-color);
+}
+body.dark #user-search .list-group-item{background-color: transparent !important;}
+body.dark #shareModalCenter #shared-people.list-group .list-group-item .username{color: var(--comment-color) !important;}
 body.dark input,
 body.dark textarea,
 body.dark select{
@@ -828,6 +850,7 @@ body.dark .btn.btn-outline-secondary:hover{
 }
 body.dark .navbar a:hover,
 body.dark .navbar .nav-link:hover,
+body.dark #podfile #files #currentfolder *:hover > svg,
 body.dark .navbar .nav-link:hover .nav-link-icone,
 body.dark button.dropdown-item:hover,
 body.dark a.dropdown-item:hover{
@@ -841,10 +864,7 @@ body.dark a.dropdown-item{
 body.dark .btn-primary:hover svg:not(:root){
 	color: white;
 }
-
-
 /* Navbar */
-
 body.dark .navbar{
   background-color: var(--block-color) !important;
 }
@@ -904,7 +924,6 @@ body.dark #nav-languagechoicelg .btn.btn-lang:hover:not(.btn-lang-active){
 	color: var(--link-color) !important;
 	background-color: var(--link-color);
 }
-
 /*  main content */
 body.dark .switch_container .switch_text
 {
@@ -940,7 +959,6 @@ body.dark .ui-widget-header .ui-state-default
 	background-color: var(--block-dark-color);
 	border-color: var(--background-dark-color);
 }
-
 body.dark .ui-widget-content,
 body.dark .ui-widget-header
 {
@@ -948,7 +966,6 @@ body.dark .ui-widget-header
 	background-color: var(--block-color);
 	color: #fff;
 }
-
 body.dark .ui-state-highlight,
 body.dark .ui-widget-content .ui-state-highlight,
 body.dark .ui-widget-header .ui-state-highlight
@@ -956,7 +973,6 @@ body.dark .ui-widget-header .ui-state-highlight
 	border-color: var(--background-dark-color);
 	background-color: var(--background-dark-color);
 }
-
 /* Aside bar */
 body.dark #collapseAside{
 	background: transparent !important;
@@ -976,7 +992,7 @@ body.dark .card-title{
 	padding: .2em;
 }
 body.dark .card-title a{ transform: translateY(-6px);}
-body.dark #collapseAside #card-helpfields .btn-sm-light{
+body.dark #collapseAside .btn-sm-light{
 	color: #fff !important;
 	background-color: var(--link-color) !important;
 }
@@ -984,7 +1000,6 @@ body.dark fieldset svg.feather.feather-send.align-bottom{
 	color: inherit;
 	transform: translateY(-5px);
 }
-
 /* category */
 /* category Modal */
 body.dark .modal-content{
@@ -1031,7 +1046,6 @@ body.dark #manageCategoryModal .btn-danger#cancelDialog{
 	margin-left: .8em;
 }
 /* End category modal */
-
 body.dark #my_videos_filter .h5 .align_flex:last-child{
 	color: var(--link-color);
 }
@@ -1058,15 +1072,16 @@ body.dark #list-channels .list-group-item.list-group-item-action a{
 body.dark #list-channels .list-group-item.list-group-item-action:hover{
 	color: #fff !important;
 }
-
 /* Users Modal */
 body.dark #ownerboxnavbar {
 	background-color: var(--block-dark-color) !important;
 	color: #fff !important;
 }
-
-
 /* Jumbotron */
+.jumbotron{
+	display: flex;
+	flex-direction: column;
+}
 body.dark .jumbotron{
 	background-color: var(--block-color);
 }
@@ -1137,7 +1152,7 @@ body.dark .select2-search .select2-input:focus{
 	background-color: var(--background-dark-color) !important;
 	color: #fff !important;
 }
-body.dark .cke_1.cke.cke_reset.cke_chrome.cke_editor_id_description.cke_ltr.cke_browser_webkit{
+body.dark .cke.cke_reset.cke_chrome.cke_ltr.cke_browser_webkit{
 	background-color: var(--block-dark-color) !important;
 	border: 1px solid var(--block-dark-color);
 	color: #fff;
@@ -1146,8 +1161,6 @@ body.dark .cke_bottom.cke_reset_all
 {
 	background-color: var(--block-dark-color);
 }
-
-
 /* Comment */
 body.dark .comment_main,
 body.dark .comment_main .comment_content
@@ -1198,7 +1211,6 @@ border-color: var(--block-color);
 body.dark .comment_main .comment .comment_content_footer .add_comment .send_reply.active{
 	color: var(--dark-primary);
 }
-
 /* Videos_list */
 body.dark #videos_list .card-header,
 body.dark .playlist-videos .card-header
@@ -1212,11 +1224,155 @@ body.dark #videos_list a.btn-light:hover{
 	background-color: transparent;
 	border-color: transparent !important;
 }
+/* Channel edit */
+#channel_form {margin-top: 2em;}
+body.dark #channel_form .list-group-item{
+	background-color: var(--background-dark-color);
+}
+body.dark #channel_form .selector{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+body.dark #channel_form .selector-chooser{
+	align-self: center;
+	margin: 0 .2em;
+}
+body.dark #channel_form .selector-available,
+body.dark #channel_form .selector-chosen{
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+}
+body.dark #channel_form .selector-available .filtered,
+body.dark #channel_form .selector-chosen .filtered
+{
+	flex-grow: 1;
+}
+body.dark #channel_form .selector-available h2,
+body.dark #channel_form .selector-filter,
+body.dark  #channel_form .selector-chosen h2,
+body.dark #channel_form input,
+body.dark #channel_form textarea{
+	background-color: var(--block-dark-color) !important;
+	color: #fff !important;
+	border-color: var(--block-dark-color) !important;
+}
+body.dark #channel_form .selector-filter{
+	display: flex;
+	align-items: center;
+}
+body.dark #channel_form .selector-filter input{
+	background-color: var(--background-dark-color) !important;
+	color: #fff !important;
+	padding: .4em;
+	font-size: 14px;
+}
+body.dark #channel_form .btn.btn-primary{
+	padding: .8em 2.8em !important;
+}
+body.dark #channel_form .list-group fieldset > div{
+	margin: .8em 0;
+}
+/* Podfile */
+	/* Modal */
+body.dark #podfile .open-folder svg{
+	color: #fff !important;
+	transition: color .3s;
+}
+body.dark #podfile .open-folder svg:hover{
+	color: var(--dark-primary-color) !important;
+}
+body.dark #podfile #files .navbar,
+body.dark #podfile #files{
+	background-color: var(--block-dark-color) !important;
+	border-color: var(--block-dark-color) !important;
+	color: #fff !important;
+}
+body.dark #podfile .card.bg-light{
+	border: 1px solid var(--link-color) !important;
+	overflow:hidden !important;
+	padding: 0 !important;
+}
+body.dark #podfile .card-header{
+	border-color: var(--block-dark-color) !important;
+}
+body.dark #podfile #listfiles .file{
+	background-color: var(--block-dark-color) !important;
+}
+body.dark #podfile .btn.btn-outline-primary.active:hover,
+body.dark #podfile .btn.btn-outline-primary.active:hover > svg,
+body.dark #podfile #listfiles .navbar .btn:hover{
+	color: var(--link-color) !important;
+}
+body.dark #podfile .btn.btn-outline-primary.active,
+body.dark #podfile .btn.btn-outline-primary.active > svg,
+body.dark #podfile #listfiles .navbar .btn{
+	color: #fff !important;
+	border: none !important;
+}
+body.dark #podfile .card-body .text-muted{
+	width: 100%;
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: #fff !important;
+	font-size: 13px;
+	padding: 0.2em;
+}
+	/* folder */
+body.dark #podfile #dirs{
+	background-color: var(--background-dark-color);
+	box-shadow: 5px 0 5px -5px var(--dark-shadow-color);
+}
+body.dark #podfile #dirs .close-folder,
+body.dark #podfile #dirs .close-folder svg{
+	color: var(--link-color);
+}
+body.dark #podfile #dirs .folder-search{
+	background-color: var(--block-dark-color) !important;
+	color: #fff !important;
+}
+body.dark #podfile #dirs .folder-search::placeholder
+{
+	color: var(--comment-color) !important;
+}
+body.dark #podfile .alert-warning .close{
+	font-size: 20px !important;
+}
+body.dark #podfile .list_folders .folder_container:nth-child(2n),
+body.dark #podfile .list_folders_sub .folder_container:nth-child(2n){
+	background-color: var(--block-color);
+}
 
-
-
+body.dark #podfile #list_folders_sub .view-more-container::after,
+body.dark #podfile #list_folders_sub .view-more-container a#more{
+	border-color: var(--link-color);
+}
+body.dark #podfile #list_folders_sub .view-more-container a#more:hover{
+	background-color: var(--link-color);
+}
+/* Theme */
+body.dark th.theme_title,
+body.dark th.theme_time_start,
+body.dark th.theme_time_end
+{
+	color: var(--comment-color) !important;
+}
+body.dark .theme_title,
+body.dark .theme_description,
+body.dark .theme_headband
+{
+	color: #fff !important;
+}
+body.dark #form_theme .list-group-item{
+	background-color: var(--block-dark-color) !important;
+}
+body.dark #form_theme .btn#cancel_theme{
+	margin: 1em .4em;
+}
 /* Footer  */
-
 body.dark footer.bg-dark{
 	background-color: var(--block-color) !important;
 }
