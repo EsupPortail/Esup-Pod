@@ -1178,7 +1178,7 @@ class EncodingVideo(models.Model):
         choices=ENCODING_CHOICES,
         default="360p",
         help_text=_("Please use the only format in encoding choices:")
-                    + " %s" % ' '.join(str(key) for key, value in ENCODING_CHOICES)
+        + " %s" % ' '.join(str(key) for key, value in ENCODING_CHOICES)
     )
     video = models.ForeignKey(Video, verbose_name=_('Video'))
     rendition = models.ForeignKey(
@@ -1189,7 +1189,7 @@ class EncodingVideo(models.Model):
         choices=FORMAT_CHOICES,
         default="video/mp4",
         help_text=_("Please use the only format in format choices:")
-                  + " %s" % ' '.join(str(key) for key, value in FORMAT_CHOICES))
+        + " %s" % ' '.join(str(key) for key, value in FORMAT_CHOICES))
     source_file = models.FileField(
         _('encoding source file'),
         upload_to=get_storage_path_video,
@@ -1247,13 +1247,13 @@ class EncodingAudio(models.Model):
     name = models.CharField(
         _('Name'), max_length=10, choices=ENCODING_CHOICES, default="audio",
         help_text=_("Please use the only format in encoding choices:")
-                  + " %s" % ' '.join(str(key) for key, value in ENCODING_CHOICES))
+        + " %s" % ' '.join(str(key) for key, value in ENCODING_CHOICES))
     video = models.ForeignKey(Video, verbose_name=_('Video'))
     encoding_format = models.CharField(
         _('Format'), max_length=22, choices=FORMAT_CHOICES,
         default="audio/mp3",
         help_text=_("Please use the only format in format choices:")
-                  + " %s" % ' '.join(str(key) for key, value in FORMAT_CHOICES))
+        + " %s" % ' '.join(str(key) for key, value in FORMAT_CHOICES))
     source_file = models.FileField(
         _('encoding source file'),
         upload_to=get_storage_path_video,
@@ -1301,13 +1301,13 @@ class PlaylistVideo(models.Model):
     name = models.CharField(
         _('Name'), max_length=10, choices=ENCODING_CHOICES, default="360p",
         help_text=_("Please use the only format in encoding choices:")
-                  + " %s" % ' '.join(str(key) for key, value in ENCODING_CHOICES))
+        + " %s" % ' '.join(str(key) for key, value in ENCODING_CHOICES))
     video = select2_fields.ForeignKey(Video, verbose_name=_('Video'))
     encoding_format = models.CharField(
         _('Format'), max_length=22, choices=FORMAT_CHOICES,
         default="application/x-mpegURL",
         help_text=_("Please use the only format in format choices:")
-                  + " %s" % ' '.join(str(key) for key, value in FORMAT_CHOICES))
+        + " %s" % ' '.join(str(key) for key, value in FORMAT_CHOICES))
     source_file = models.FileField(
         _('encoding source file'),
         upload_to=get_storage_path_video,
