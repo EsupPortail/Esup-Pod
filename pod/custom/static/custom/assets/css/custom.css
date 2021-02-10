@@ -706,6 +706,14 @@ body.dark input:focus{
 	background-color: #fff !important;
 	color: var(--block-dark-color) !important;
 }
+body.dark #nav-authentication .nav-link.btn-connexion{
+	background-color: var(--dark-primary) !important;
+	color: #fff !important;
+	transition: opacity .3s;
+}
+body.dark #nav-authentication .nav-link.btn-connexion:hover{
+	opacity: .85;
+}
 body.dark .dropdown-menu{
 	background-color: var(--block-color) !important;
 }
