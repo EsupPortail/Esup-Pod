@@ -761,6 +761,7 @@ body.dark .border-primary{
 	border-color: var(--dark-primary) !important;
 	overflow: hidden;
 }
+body.dark #contact_us .list-group-item,
 body.dark #user-search,
 body.dark #shared-people .list-group-item,
 body.dark #folderInputName,
