@@ -604,7 +604,7 @@ footer p {
 }
 /* podfile */
 #shareModalCenter #user-search.list-group{
-	max-height: 350px;
+	max-height: 325px;
 	overflow-y: auto;
 }
 /* mainbreacrumb */
