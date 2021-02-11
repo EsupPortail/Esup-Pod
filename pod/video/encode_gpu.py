@@ -27,6 +27,8 @@ VIDEOS_DIR = "videos"
 VIDEOS_OUTPUT_DIR = "encoding_videos"
 HWACCEL_DEVICE = 0
 
+RENDITION = {"360": "640x360", "720": "1280x720", "1080": "1920x1080"}
+
 image_codec = ["jpeg", "gif", "png", "bmp", "jpg"]
 
 LIST_CODEC = ("h264",
@@ -72,22 +74,23 @@ rate_720 = '-b:a 128k -minrate 1000k -b:v 2000k -maxrate 3000k -bufsize 4000k '
 rate_1080 = '-b:a 192k -minrate 2M -b:v 3M -maxrate 4500k -bufsize 6M '
 
 end_360_m3u8 = rate_360 +\
-    '-hls_playlist_type vod -hls_time 2 \
+    '-max_muxing_queue_size 9999 -hls_playlist_type vod -hls_time 2 \
     -hls_flags single_file {output_dir}/360p_{output}.m3u8 '
 
 end_360_mp4 = rate_360 +\
-    '-movflags faststart -write_tmcd 0 \
+    '-max_muxing_queue_size 9999 -movflags faststart -write_tmcd 0 \
     "{output_dir}/360p_{output}.mp4" '
 
 end_720_m3u8 = rate_720 +\
-    '-hls_playlist_type vod -hls_time 2 \
+    '-max_muxing_queue_size 9999 -hls_playlist_type vod -hls_time 2 \
     -hls_flags single_file {output_dir}/720p_{output}.m3u8 '
 
 end_720_mp4 = rate_720 +\
-    '-movflags faststart -write_tmcd 0 "{output_dir}/720p_{output}.mp4" '
+    '-max_muxing_queue_size 9999 -movflags faststart -write_tmcd 0 \
+    "{output_dir}/720p_{output}.mp4" '
 
 end_1080_m3u8 = rate_720 +\
-    '-hls_playlist_type vod -hls_time 2 \
+    '-max_muxing_queue_size 9999 -hls_playlist_type vod -hls_time 2 \
     -hls_flags single_file {output_dir}/1080p_{output}.m3u8 '
 
 # :force_original_aspect_ratio=decrease,pad=1280:720:-1:-1:color=black
@@ -161,30 +164,12 @@ def get_cmd_gpu(format, codec, height, file):
                 output_dir=VIDEOS_OUTPUT_DIR,
                 output=filename
             )
-        add_info_video(
-            "encode_video",
-            {
-                "encoding_format": "video/mp2t",
-                "rendition": "640x360",
-                "filename": "360p_{output}.m3u8".format(output=filename),
-            },
-            True
-        )
     else:
         ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
             end_360_mp4.format(
                 output_dir=VIDEOS_OUTPUT_DIR,
                 output=filename
             )
-        add_info_video(
-            "encode_video",
-            {
-                "encoding_format": "video/mp4",
-                "rendition": "640x360",
-                "filename": "360p_{output}.mp4".format(output=filename),
-            },
-            True
-        )
     if height >= 720:
         ffmpeg_cmd = ffmpeg_cmd + scale_gpu.format(height=720)
         if format == "m3u8":
@@ -193,45 +178,17 @@ def get_cmd_gpu(format, codec, height, file):
                     output_dir=VIDEOS_OUTPUT_DIR,
                     output=filename
                 )
-            add_info_video(
-                "encode_video",
-                {
-                    "encoding_format": "video/mp2t",
-                    "rendition": "1280x720",
-                    "filename": "720p_{output}.m3u8".format(output=filename),
-                },
-                True
-            )
         else:
             ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
                 end_720_mp4.format(
                     output_dir=VIDEOS_OUTPUT_DIR,
                     output=filename)
-            add_info_video(
-                "encode_video",
-                {
-                    "encoding_format": "video/mp4",
-                    "rendition": "1280x720",
-                    "filename": "720p_{output}.mp4".format(output=filename),
-                },
-                True
-            )
-    if height >= 1080:
+    if height >= 1080 and format == "m3u8":
         ffmpeg_cmd = ffmpeg_cmd + COMMON + scale_gpu.format(height=1080)
-        if format == "m3u8":
-            ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
-                end_1080_m3u8.format(
-                    output_dir=VIDEOS_OUTPUT_DIR,
-                    output=filename)
-            add_info_video(
-                "encode_video",
-                {
-                    "encoding_format": "video/mp2t",
-                    "rendition": "1920x1080",
-                    "filename": "1080p_{output}.m3u8".format(output=filename),
-                },
-                True
-            )
+        ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
+            end_1080_m3u8.format(
+                output_dir=VIDEOS_OUTPUT_DIR,
+                output=filename)
     return ffmpeg_cmd
 
 
@@ -350,30 +307,12 @@ def get_cmd_cpu(format, codec, height, file):
                 output_dir=VIDEOS_OUTPUT_DIR,
                 output=filename
             )
-        add_info_video(
-            "encode_video",
-            {
-                "encoding_format": "video/mp2t",
-                "rendition": "640x360",
-                "filename": "360p_{output}.m3u8".format(output=filename),
-            },
-            True
-        )
     else:
         ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
             end_360_mp4.format(
                 output_dir=VIDEOS_OUTPUT_DIR,
                 output=filename
             )
-        add_info_video(
-            "encode_video",
-            {
-                "encoding_format": "video/mp4",
-                "rendition": "640x360",
-                "filename": "360p_{output}.mp4".format(output=filename),
-            },
-            True
-        )
     if height >= 720:
         ffmpeg_cmd = ffmpeg_cmd + scale_cpu.format(height=720)
         if format == "m3u8":
@@ -382,30 +321,12 @@ def get_cmd_cpu(format, codec, height, file):
                     output_dir=VIDEOS_OUTPUT_DIR,
                     output=filename
                 )
-            add_info_video(
-                "encode_video",
-                {
-                    "encoding_format": "video/mp2t",
-                    "rendition": "1280x720",
-                    "filename": "720p_{output}.m3u8".format(output=filename),
-                },
-                True
-            )
         else:
             ffmpeg_cmd = ffmpeg_cmd + SUBTIME +\
                 end_720_mp4.format(
                     output_dir=VIDEOS_OUTPUT_DIR,
                     output=filename
                 )
-            add_info_video(
-                "encode_video",
-                {
-                    "encoding_format": "video/mp4",
-                    "rendition": "1280x720",
-                    "filename": "720p_{output}.mp4".format(output=filename),
-                },
-                True
-            )
     if height >= 1080:
         ffmpeg_cmd = ffmpeg_cmd + scale_cpu.format(height=1080)
         if format == "m3u8":
@@ -414,15 +335,6 @@ def get_cmd_cpu(format, codec, height, file):
                     output_dir=VIDEOS_OUTPUT_DIR,
                     output=filename
                 )
-            add_info_video(
-                "encode_video",
-                {
-                    "encoding_format": "video/mp2t",
-                    "rendition": "1920x1080",
-                    "filename": "1080p_{output}.m3u8".format(output=filename),
-                },
-                True
-            )
     return ffmpeg_cmd
 
 
@@ -472,57 +384,106 @@ def encode(type, format, codec, height, file):
             ) if unicodedata.category(c) != 'Mn'
         )
     )
-
     if type == "gpu":
         ffmpeg_cmd = get_cmd_gpu(format, codec, height, file)
+        add_info_video_title = "encode_video"
+        add_info_video_content = {
+            "encoding_format":
+            "video/mp2t" if format == "m3u8" else "video/mp4",
+            "rendition": RENDITION["360"],
+            "filename":
+            "360p_{output}.{ext}".format(output=filename, ext=format)
+        }
+        add_info_video_append = True
     """
     if type == "mixed":
         ffmpeg_cmd = get_cmd_mixed(format, codec, height, file)
     """
     if type == "cpu":
         ffmpeg_cmd = get_cmd_cpu(format, codec, height, file)
+        add_info_video_title = "encode_video"
+        add_info_video_content = {
+            "encoding_format":
+                "video/mp2t" if format == "m3u8" else "video/mp4",
+            "rendition": RENDITION["360"],
+            "filename":
+                "360p_{output}.{ext}".format(output=filename, ext=format)
+        }
+        add_info_video_append = True
 
     if type == "mp3":
         ffmpeg_cmd = MP3.format(
             input=os.path.join(VIDEOS_DIR, file),
             output_dir=VIDEOS_OUTPUT_DIR,
             output=filename)
-        add_info_video(
-            "encode_audio",
-            {
-                "encoding_format": "audio/mp3",
-                "filename": "audio_192k_{output}.mp3".format(output=filename),
-            },
-            True
-        )
+
+        add_info_video_title = "encode_audio"
+        add_info_video_content = {
+            "encoding_format": "audio/mp3",
+            "filename": "audio_192k_{output}.mp3".format(output=filename),
+        }
+        add_info_video_append = True
     if type == "m4a":
         ffmpeg_cmd = M4A.format(
             input=os.path.join(VIDEOS_DIR, file),
             output_dir=VIDEOS_OUTPUT_DIR,
             output=filename)
-        add_info_video(
-            "encode_audio",
-            {
-                "encoding_format": "video/mp4",
-                "filename": "audio_192k_{output}.m4a".format(output=filename),
-            },
-            True
-        )
+        add_info_video_title = "encode_audio"
+        add_info_video_content = {
+            "encoding_format": "video/mp4",
+            "filename": "audio_192k_{output}.m4a".format(output=filename),
+        }
+        add_info_video_append = True
+
     if type == "thumbnail":
         ffmpeg_cmd = EXTRACT_THUMBNAIL.format(
             output_dir=VIDEOS_OUTPUT_DIR, input=os.path.join(VIDEOS_DIR, file))
-        add_info_video(
-            "encode_thumbnail",
-            {
-                "filename": "thumbnail.jpg",
-            },
-            False
-        )
+        add_info_video_title = "encode_thumbnail"
+        add_info_video_content = {
+            "filename": "thumbnail.jpg",
+        }
+        add_info_video_append = False
 
     return_value, return_msg = launch_cmd(ffmpeg_cmd, type, format)
+    if return_value is True:
+        add_info_video(
+            add_info_video_title,
+            add_info_video_content,
+            add_info_video_append
+        )
+        add_more_info_video(add_info_video_title, height, filename, format)
 
     encode_log(msg+return_msg)
     return return_value
+
+
+def add_more_info_video(add_info_video_title, height, filename, format):
+    if add_info_video_title == "encode_video" and height >= 720:
+        add_info_video_content = {
+            "encoding_format":
+            "video/mp2t" if format == "m3u8" else "video/mp4",
+            "rendition": RENDITION["720"],
+            "filename":
+            "720p_{output}.{ext}".format(output=filename, ext=format)
+        }
+        add_info_video(
+            add_info_video_title,
+            add_info_video_content,
+            True
+        )
+        if height >= 1080 and format == "m3u8":
+            add_info_video_content = {
+                "encoding_format":
+                "video/mp2t" if format == "m3u8" else "video/mp4",
+                "rendition": RENDITION["1080"],
+                "filename":
+                "1080p_{output}.{ext}".format(output=filename, ext=format)
+            }
+            add_info_video(
+                add_info_video_title,
+                add_info_video_content,
+                True
+            )
 
 
 def get_info_from_video(probe_cmd):

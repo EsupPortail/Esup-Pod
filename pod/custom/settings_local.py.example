@@ -476,6 +476,15 @@ FFMPEG_STATIC_PARAMS = " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt y
 # autres paramètres qui sont placés au début de la commande
 """
 FFMPEG_MISC_PARAMS = " -hide_banner -y "
+# to use in GPU, specify for example
+# -y -vsync 0 -hwaccel_device {hwaccel_device} \
+# -hwaccel cuvid -c:v {codec}_cuvid
+
+"""
+# gestion de la taille de la vidéo pour l'encodage ffmpeg
+"""
+FFMPEG_SCALE = ' -vf "scale=-2:{height}" '
+# to use in GPU, specify ' -vf "scale_npp=-2:{height}:interp_algo=super" '
 
 """
 # bitrate audio pour l'encodage M4A
