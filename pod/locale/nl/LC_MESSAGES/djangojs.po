@@ -1,22 +1,20 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Esup Pod JS Dutch strings.
+# This file is distributed under the same license as the POD package.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-09-07 07:29+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2021-01-29 15:49+0100\n"
+"PO-Revision-Date: 2021-01-22 12:27+0100\n"
+"Last-Translator: obado <bado@unice.fr>\n"
+"Language-Team: \n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: pod/chapter/static/js/chapters.js:5 pod/chapter/static/js/chapters.js:7
 #: pod/enrichment/static/js/enrichment.js:5
@@ -49,17 +47,17 @@ msgstr ""
 #: pod/enrichment/static/js/enrichment.js:72
 #: pod/enrichment/static/js/enrichment.js:93
 #: pod/enrichment/static/js/enrichment.js:120
-#: pod/enrichment/static/js/enrichment.js:149 pod/main/static/js/main.js:287
-#: pod/main/static/js/main.js:294 pod/main/static/js/main.js:305
-#: pod/main/static/js/main.js:319
-#: pod/podfile/static/podfile/js/filewidget.js:312
-#: pod/podfile/static/podfile/js/filewidget.js:341
+#: pod/enrichment/static/js/enrichment.js:149 pod/main/static/js/main.js:293
+#: pod/main/static/js/main.js:300 pod/main/static/js/main.js:311
+#: pod/main/static/js/main.js:325
+#: pod/podfile/static/podfile/js/filewidget.js:365
+#: pod/podfile/static/podfile/js/filewidget.js:398
 msgid "You are no longer authenticated. Please log in again."
 msgstr ""
 
 #: pod/chapter/static/js/chapters.js:146
-#: pod/enrichment/static/js/enrichment.js:136 pod/main/static/js/main.js:264
-#: pod/main/static/js/main.js:311
+#: pod/enrichment/static/js/enrichment.js:136 pod/main/static/js/main.js:263
+#: pod/main/static/js/main.js:317
 msgid "One or more errors have been found in the form."
 msgstr ""
 
@@ -107,26 +105,27 @@ msgid "no data could be stored."
 msgstr ""
 
 #: pod/completion/static/js/caption_maker.js:113
-msgid "Are you sure you want to delete all caption ?"
+msgid "Are you sure you want to delete all caption?"
 msgstr ""
 
 #: pod/completion/static/js/completion.js:145
-msgid "Are you sure you want to delete this file ?"
+#: pod/podfile/static/podfile/js/filewidget.js:277
+msgid "Are you sure you want to delete this file?"
 msgstr ""
 
 #: pod/completion/static/js/completion.js:147
-msgid "Are you sure you want to delete this contributor ?"
+msgid "Are you sure you want to delete this contributor?"
 msgstr ""
 
 #: pod/completion/static/js/completion.js:149
-msgid "Are you sure you want to delete this document ?"
+msgid "Are you sure you want to delete this document?"
 msgstr ""
 
 #: pod/completion/static/js/completion.js:151
-msgid "Are you sure you want to delete this overlay ?"
+msgid "Are you sure you want to delete this overlay?"
 msgstr ""
 
-#: pod/completion/static/js/completion.js:195 pod/main/static/js/main.js:266
+#: pod/completion/static/js/completion.js:195 pod/main/static/js/main.js:265
 msgid "Changes have been saved."
 msgstr ""
 
@@ -356,141 +355,242 @@ msgstr ""
 msgid "gridErrorText"
 msgstr ""
 
-#: pod/main/static/js/main.js:245
+#: pod/main/static/js/main.js:244
 msgid "Are you sure you want to delete this element?"
 msgstr ""
 
-#: pod/main/static/js/main.js:281
-#: pod/podfile/static/podfile/js/filewidget.js:79
-#: pod/podfile/static/podfile/js/filewidget.js:334
+#: pod/main/static/js/main.js:286
+#: pod/podfile/static/podfile/js/filewidget.js:114
+#: pod/podfile/static/podfile/js/filewidget.js:391
 msgid "Error during exchange"
 msgstr ""
 
-#: pod/main/static/js/main.js:281
-#: pod/podfile/static/podfile/js/filewidget.js:79
+#: pod/main/static/js/main.js:286
+#: pod/podfile/static/podfile/js/filewidget.js:114
 msgid "No data could be stored."
 msgstr ""
 
-#: pod/main/static/js/main.js:333
+#: pod/main/static/js/main.js:339
 msgid "Change your picture"
 msgstr ""
 
-#: pod/main/static/js/main.js:339
+#: pod/main/static/js/main.js:345
 msgid "Add your picture"
 msgstr ""
 
-#: pod/main/static/js/main.js:437
+#: pod/main/static/js/main.js:443
 msgid "text copied"
 msgstr ""
 
-#: pod/main/static/js/main.js:484
+#: pod/main/static/js/main.js:490
 msgid "Errors appear in the form, please correct them"
 msgstr ""
 
-#: pod/main/static/js/main.js:507
-msgid "The file size exceeds the maximum allowed value :"
+#: pod/main/static/js/main.js:513
+msgid "The file size exceeds the maximum allowed value:"
 msgstr ""
 
-#: pod/main/static/js/main.js:522
-msgid "The file extension not in the allowed extension :"
+#: pod/main/static/js/main.js:513
+msgid " GB."
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:13
+#: pod/main/static/js/main.js:528
+msgid "The file extension not in the allowed extension:"
+msgstr ""
+
+#: pod/podfile/static/podfile/js/filewidget.js:11
 msgid "Change image"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:15
+#: pod/podfile/static/podfile/js/filewidget.js:13
 msgid "Change file"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:30
+#: pod/podfile/static/podfile/js/filewidget.js:28
 msgid "Open file in a new tab"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:99
-#: pod/podfile/static/podfile/js/filewidget.js:106
+#: pod/podfile/static/podfile/js/filewidget.js:55
+msgid "This folder is empty"
+msgstr ""
+
+#: pod/podfile/static/podfile/js/filewidget.js:134
+#: pod/podfile/static/podfile/js/filewidget.js:141
 msgid "Change"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:114
+#: pod/podfile/static/podfile/js/filewidget.js:149
 msgid "Enter new name of folder"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:126
+#: pod/podfile/static/podfile/js/filewidget.js:167
 msgid "Remove"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:139
-#: pod/podfile/static/podfile/js/filewidget.js:161
-#: pod/podfile/static/podfile/js/filewidget.js:191
-#: pod/podfile/static/podfile/js/filewidget.js:210
+#: pod/podfile/static/podfile/js/filewidget.js:180
+#: pod/podfile/static/podfile/js/filewidget.js:202
+#: pod/podfile/static/podfile/js/filewidget.js:235
+#: pod/podfile/static/podfile/js/filewidget.js:254
 msgid "Server error"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:147
+#: pod/podfile/static/podfile/js/filewidget.js:188
 msgid "Add"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:224
+#: pod/podfile/static/podfile/js/filewidget.js:268
 msgid "Are you sure you want to delete this folder?"
 msgstr ""
 
-#: pod/podfile/static/podfile/js/filewidget.js:233
-msgid "Are you sure you want to delete this file?"
-msgstr ""
-
-#: pod/podfile/static/podfile/js/filewidget.js:396
+#: pod/podfile/static/podfile/js/filewidget.js:477
 msgid "See more"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:61
-#: pod/video/static/js/comment-script.js:166
-msgid "Delete"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js:80
-msgid "Cancel"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js:143
-msgid "Answer comment icon"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js:143
+#: pod/video/static/js/comment-script.js:25
 msgid "Answer"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:152
-msgid "Comment vote icon"
+#: pod/video/static/js/comment-script.js:26
+msgid "Answers"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:163
-msgid "Comment delete icon"
+#: pod/video/static/js/comment-script.js:76
+#: pod/video/static/js/comment-script.js:181
+msgid "Delete"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:180
+#: pod/video/static/js/comment-script.js:87
+msgid "Cancel"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:148
+msgid "Agree with the comment"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:165
+msgid "Reply to comment"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:165
+msgid "Reply"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:178
+msgid "Remove this comment"
+msgstr ""
+
+#: pod/video/static/js/comment-script.js:194
 msgid "Add a public comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:261
-msgid "Comment show children icon"
+#: pod/video/static/js/comment-script.js:282
+msgid "Show answers"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:264
-#: pod/video/static/js/comment-script.js:542
-msgid "Show responses"
-msgstr ""
-
-#: pod/video/static/js/comment-script.js:427
+#: pod/video/static/js/comment-script.js:442
 msgid "Comment has been deleted successfully."
-msgstr ""
-
-#: pod/video/static/js/comment-script.js:540
-msgid "Hide responses"
 msgstr ""
 
 #: pod/video/static/js/validate-date_delete-field.js:26
 msgid "The date must be before or equal to"
+msgstr ""
+
+#: pod/video/static/js/video_category.js:25
+msgid "Category changes saved successfully"
+msgstr ""
+
+#: pod/video/static/js/video_category.js:26
+msgid "You cannot add two categories with the same title."
+msgstr ""
+
+#: pod/video/static/js/video_category.js:27
+msgid "Category deleted successfully"
+msgstr ""
+
+#: pod/video/static/js/video_category.js:28
+msgid "An error occured, please refresh the page and try again."
+msgstr ""
+
+#: pod/video/static/js/video_category.js:29
+msgid "Category title field is required."
+msgstr ""
+
+#: pod/video/static/js/video_category.js:30
+msgid "Save category"
+msgstr ""
+
+#: pod/video/static/js/video_category.js:147
+msgid "videos found"
+msgstr ""
+
+#: pod/video/static/js/video_category.js:147
+msgid "video found"
+msgstr ""
+
+#: pod/video/static/js/video_category.js:152
+msgid "Sorry, no video found"
+msgstr ""
+
+#: pod/video/static/js/video_category.js:380
+#: pod/video/static/js/video_category.js:484
+msgid "Video content."
+msgstr ""
+
+#: pod/video/static/js/video_category.js:381
+#: pod/video/static/js/video_category.js:492
+msgid "Audio content."
+msgstr ""
+
+#: pod/video/static/js/video_category.js:391
+msgid "Edit the category"
+msgstr ""
+
+#: pod/video/static/js/video_category.js:404
+msgid "Delete the category"
+msgstr ""
+
+#: pod/video/static/js/video_category.js:456
+msgid "This content is password protected."
+msgstr ""
+
+#: pod/video/static/js/video_category.js:465
+msgid "This content is chaptered."
+msgstr ""
+
+#: pod/video/static/js/video_category.js:474
+msgid "This content is in draft."
+msgstr ""
+
+#: pod/video/static/js/video_category.js:497
+msgid "Edit the video"
+msgstr ""
+
+#: pod/video/static/js/video_category.js:498
+msgid "Complete the video"
+msgstr ""
+
+#: pod/video/static/js/video_category.js:499
+msgid "Chapter the video"
+msgstr ""
+
+#: pod/video/static/js/video_category.js:500
+msgid "Delete the video"
+msgstr ""
+
+#: pod/video/static/js/video_category.js:549
+msgid "Success.."
+msgstr ""
+
+#: pod/video/static/js/video_category.js:550
+msgid "Error.."
+msgstr ""
+
+#: pod/video/static/js/video_category.js:768
+msgid "Category created successfully"
+msgstr ""
+
+#: pod/video/static/js/video_category.js:788
+msgid "Create category"
 msgstr ""
 
 #: pod/video/static/js/video_stats_view.js:14

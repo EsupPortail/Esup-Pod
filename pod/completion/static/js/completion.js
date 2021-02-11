@@ -142,13 +142,13 @@ var sendandgetform = function(elt, action, name, form, list) {
 	if (action == 'delete') {
 		var deleteConfirm = '';
 		if (name == 'track') {
-			deleteConfirm = confirm(gettext('Are you sure you want to delete this file ?'));
+			deleteConfirm = confirm(gettext('Are you sure you want to delete this file?'));
 		} else if (name == 'contributor') {
-			deleteConfirm = confirm(gettext('Are you sure you want to delete this contributor ?'));
+			deleteConfirm = confirm(gettext('Are you sure you want to delete this contributor?'));
 		} else if (name == 'document') {
-			deleteConfirm = confirm(gettext('Are you sure you want to delete this document ?'));
+			deleteConfirm = confirm(gettext('Are you sure you want to delete this document?'));
 		} else if (name == 'overlay') {
-			deleteConfirm = confirm(gettext('Are you sure you want to delete this overlay ?'));
+			deleteConfirm = confirm(gettext('Are you sure you want to delete this overlay?'));
 		}
 		if (deleteConfirm) {
 			var id = $(elt).find('input[name=id]').val();

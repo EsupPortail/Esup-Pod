@@ -1,5 +1,5 @@
 // podfile:filewidjet.js
-// select file 
+// select file
 if(typeof loaded == 'undefined') {
     loaded = true;
     $(document).on("click", "a.file-name, a.file-image", function(e) {
@@ -235,7 +235,7 @@ $(document).on("click", ".btn-remove", function(e) {
             showalert(gettext("Server error") + "<br/>"+error, "alert-danger");
           }
       },
-      
+
   );
   });
 
@@ -309,7 +309,7 @@ $(document).on("click", ".btn-remove", function(e) {
             success: function (response) {
               let nextPage = response.next_page;
                 response.folders.forEach(elt => {
-                  $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
+                  $("#list_folders_sub").append('<div class="folder_container">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
                 })
                 if(nextPage != -1){
 		    $("#list_folders_sub").append(seeMoreElement(nextPage, response.current_page+1, response.total_pages, text));
@@ -334,8 +334,8 @@ $(document).on("click", ".btn-remove", function(e) {
       });
     }
   });
-  
-  
+
+
 
   function reloadFolder(data){
     if(data.list_element) {
@@ -344,18 +344,18 @@ $(document).on("click", ".btn-remove", function(e) {
         if(data.folder_name){
           $("#folder-name-"+ folder_id).text("  "+data.folder_name)
         }
-   
+
 
         if(data.new_folder == true){
           let type = $("#list_folders_sub").data("type")
-          $("#list_folders_sub").prepend('<div style="padding:0; margin:0;">' + createFolder(data.folder_id,data.folder_name,true,type,undefined) + '</div>')
+          $("#list_folders_sub").prepend('<div class="folder_container">' + createFolder(data.folder_id,data.folder_name,true,type,undefined) + '</div>')
         }
 
         if(data.deleted){
          $("#folder_" + data.deleted_id).remove()
         }
         send_form_data("/podfile/get_folder_files/"+ folder_id, {}, "show_folder_files", "get");
-    
+
         //dismiss modal
         $('#folderModalCenter').modal('hide');
         $('#folderModalCenter').find('.modal-body input#folderInputName').val("");
@@ -426,7 +426,7 @@ var folder_open_icon = `
 	    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder-open" class="svg-inline--fa fa-folder-open fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M572.694 292.093L500.27 416.248A63.997 63.997 0 0 1 444.989 448H45.025c-18.523 0-30.064-20.093-20.731-36.093l72.424-124.155A64 64 0 0 1 152 256h399.964c18.523 0 30.064 20.093 20.73 36.093zM152 224h328v-48c0-26.51-21.49-48-48-48H272l-64-64H48C21.49 64 0 85.49 0 112v278.046l69.077-118.418C86.214 242.25 117.989 224 152 224z"></path></svg>
 	</span>`;
 var folder_icon = `
-	<span class="folder" id="folder-icon">
+	<span class="folder-close" id="folder-icon">
 	    <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="folder" class="svg-inline--fa fa-folder fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M464 128H272l-64-64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V176c0-26.51-21.49-48-48-48z"></path></svg>
 	</span>`;
 
@@ -436,10 +436,10 @@ function createFolder(foldid, foldname, isCurrent,type,owner=undefined){
     let isType = (type != "None" && type != undefined)
     construct+= ('/podfile/get_folder_files/' + foldid + (isType ? ('?type=' +type) : "") + '">')
     if(owner != undefined){
-      foldname = '<i><span id="folder-name-'+ foldid + '">  ' + foldname + '</span></i> <b>(' + owner+')</b>' 
+      foldname = '<span class="folder_name" id="folder-name-'+ foldid + '">  ' + foldname + '</span> <span><b>(' + owner+')</b></span>'
     }
     else{
-      foldname = '<span id="folder-name-' +foldid +  '">  ' +foldname+ '</span>'
+      foldname = '<span class="folder_name" id="folder-name-' +foldid +  '">  ' +foldname+ '</span>'
     }
     construct += `${folder_open_icon} ${folder_icon} ${foldname}</a>`;
     return construct
@@ -456,7 +456,7 @@ function initFolders(){
           success: function (response) {
               let nextPage = response.next_page;
               response.folders.forEach(elt => {
-                $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
+                $("#list_folders_sub").append('<div class="folder_container">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
               })
               if(nextPage != -1){
 		$("#list_folders_sub").append(seeMoreElement(nextPage, response.current_page+1, response.total_pages));
@@ -473,7 +473,7 @@ function initFolders(){
 
 
 var seeMoreElement = function (nextPage, curr_page, tot_page, search=null){
-    search = search? `&page=${search}`: '';
+    search = search? `&search=${search}`: '';
     let seeMore = gettext('See more');
     return `
 	<div class="view-more-container">
@@ -502,12 +502,12 @@ var seeMoreElement = function (nextPage, curr_page, tot_page, search=null){
     	    parent_el.remove();
             let nextPage = response.next_page
                response.folders.forEach(elt => {
-                $("#list_folders_sub").append('<div style="padding:0; margin:0;">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
+                $("#list_folders_sub").append('<div class="folder_container">' + createFolder(elt.id,elt.name,(currentFolder == elt.name),type,elt.owner) + '</div>')
               })
               if(nextPage != -1){
 		$("#list_folders_sub").append(seeMoreElement(nextPage, response.current_page+1, response.total_pages, search));
               }
-              
+
           }
       }
   );
@@ -517,20 +517,6 @@ var seeMoreElement = function (nextPage, curr_page, tot_page, search=null){
   $(document).on('show.bs.modal', '.podfilemodal', function (event) {
     event.stopPropagation();
     setTimeout(function(){initFolders()}, 500);
-    
+
   });
-
-
-/*
-var send_form_data = function(url,data_form, fct, method="post") {
-    var jqxhr= '';
-    if(method=="post") jqxhr = $.post(url, data_form);
-    else jqxhr = $.get(url);
-    jqxhr.done(function(data){ window[fct](data); });
-    jqxhr.fail(function($xhr) {
-        var data = $xhr.status+ " : " +$xhr.statusText;
-        showalert(gettext("Error during exchange") + "("+data+")<br/>"+gettext("No data could be stored."), "alert-danger");
-    });
-}
-*/
 }

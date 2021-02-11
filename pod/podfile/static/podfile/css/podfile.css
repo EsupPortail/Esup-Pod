@@ -79,13 +79,14 @@ button.close {
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column;
-    width: 100%;
     pointer-events: auto;
     background-color: #fff;
     background-clip: padding-box;
     border: 1px solid rgba(0, 0, 0, 0.2);
-    /*border-radius: 0.3rem;*/
     outline: 0;
+    max-width: 100% !important;
+    width: calc(100% - 2em);
+    margin: 0 auto !important;
   }
   
   .modal-backdrop {
@@ -219,6 +220,14 @@ button.close {
       max-height:350px;
       overflow: auto;
   }
+  
+  #podfile .list_folders .folder_name{
+    max-width: 600px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   #podfile #listfiles{
       max-height:600px;
       overflow: auto;
@@ -250,9 +259,6 @@ button.close {
   #shareModalCenter #shared-people.list-group .list-group-item .username{
       color: var(--gray-dark);
       font-weight: 700;
-      -webkit-box-ordinal-group: 3;
-          -ms-flex-order: 2;
-              order: 2;
   }
   #shareModalCenter #shared-people.list-group .list-group-item .btn-share.btn-remove{
       -webkit-box-ordinal-group: 2;
@@ -392,6 +398,14 @@ button.close {
           -ms-flex-align: center;
               align-items: center;
   }
+  #podfile .list_folders .folder_container:nth-child(2n),
+  #podfile .list_folders_sub .folder_container:nth-child(2n) {
+    background-color: #ececec;
+  }
+  #podfile .list_folders .folder_container,
+  #podfile .list_folders_sub .folder_container{padding: .4em;}
+  #podfile .list_folders .folder,
+  #podfile .list_folders_sub .folder,
   #podfile #dirs .dirs-nav a.folder{
       display: -webkit-box;
       display: -ms-flexbox;
@@ -401,6 +415,10 @@ button.close {
               align-items: flex-end;
       margin-right: 1em;
   }
+  #podfile .list_folders .folder,
+  #podfile .list_folders_sub .folder{ align-items: center;}
+  #podfile .list_folders_sub .folder > *,
+  #podfile .list_folders .folder > *{flex: none;}
   #podfile #dirs .dirs-nav-container .add-folder-btn{ color: var(--secondary); -webkit-transition: .3s transform; -o-transition: .3s transform; transition: .3s transform; }
   #podfile #dirs .dirs-nav-container .add-folder-btn:hover{ text-decoration: none; -webkit-transform: scale(1.1); -ms-transform: scale(1.1); transform: scale(1.1);}
   
@@ -410,16 +428,16 @@ button.close {
   #podfile .share-folders .folder_title{ display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; margin-bottom: .4em; color: var(--primary);}
   #podfile .share-folders .home-directory{-webkit-transform: translateY(-8px);-ms-transform: translateY(-8px);transform: translateY(-8px) }
   #podfile #list_folders_sub a.folder:not(.folder-opened) span.folder-open,
-  #podfile #list_folders_sub a.folder-opened span.folder
+  #podfile #list_folders_sub a.folder-opened span#folder-icon
   { display: none;}
-  #podfile #list_folders_sub a.folder:not(.folder-opened) span.folder,
+  #podfile #list_folders_sub a.folder:not(.folder-opened) span#folder-icon,
   #podfile #list_folders_sub a.folder.folder-opened span.folder-open
   { display: inline-block;}
   
   #podfile #dirs .dirs-nav span.home-directory,
   #podfile #dirs .share-folders span.home-directory,
   #podfile #dirs .dirs-nav span.add-folder,
-  #podfile .list_folders span.folder,
+  #podfile .list_folders span#folder-icon,
   #podfile .list_folders span.folder-open
   {
       display: inline-block;

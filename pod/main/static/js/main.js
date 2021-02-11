@@ -510,7 +510,7 @@ var videocheck = function(form,event) {
         if(listext.indexOf(extension) !== -1) {
             if(fileSize>video_max_upload_size){
                 window.scrollTo($("#video_form").scrollTop(), 0);
-                showalert(gettext("The file size exceeds the maximum allowed value :")+" "+VIDEO_MAX_UPLOAD_SIZE+" Go.","alert-danger");
+                showalert(gettext("The file size exceeds the maximum allowed value:")+" "+VIDEO_MAX_UPLOAD_SIZE+ gettext(" GB."),"alert-danger");
                 event.preventDefault();
                 event.stopPropagation();
             } else {
@@ -525,7 +525,7 @@ var videocheck = function(form,event) {
             }
         } else {
             window.scrollTo($("#video_form").scrollTop(), 0);
-            showalert(gettext("The file extension not in the allowed extension :")+" "+listext+".","alert-danger");
+            showalert(gettext("The file extension not in the allowed extension:")+" "+listext+".","alert-danger");
             event.preventDefault();
             event.stopPropagation();
         }

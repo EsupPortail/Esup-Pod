@@ -9,7 +9,7 @@ from pod.main.settings import BASE_DIR
 ##
 # Version of the project
 #
-VERSION = '2.7.2'
+VERSION = '2.7.3'
 
 ##
 # Installed applications list
@@ -67,6 +67,8 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    # Django 3.1 starts to support SameSite middleware
+    'django_cookies_samesite.middleware.CookiesSameSite',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
