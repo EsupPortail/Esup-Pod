@@ -145,7 +145,7 @@ body {
 	border-color: #fff !important;
 	transition: 0.3s border-color;
 }
-.foldable_event: .arrow_right {
+.foldable_event .arrow_right {
 	border-color: var(--primary) !important;
 }
 
@@ -676,7 +676,7 @@ footer p {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: #171f2b;
+	color: #aaa;
 	transform: translateY(-.24em);
 }
 .switch_mode.active .switch_mode__toggle {color:  #dd930c; left: 35%; }
