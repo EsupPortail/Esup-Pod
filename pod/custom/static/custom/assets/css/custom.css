@@ -607,6 +607,10 @@ footer p {
 		margin-top: 4rem !important;
 	}
 }
+/* Covid info */
+.container-info-covid{
+	background-color: var(--primary) !important;
+}
 /* theme tree */
 #treeview ul.list-group li{
 	overflow: hidden;
