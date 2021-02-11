@@ -208,19 +208,23 @@ class EncodingVideoViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'])
     def video_encodedfiles(self, request):
-        if request.GET.get('extension'):
-            encoded_videos = self.filter_queryset(
-                self.get_queryset()).filter(
-                    video__id=request.GET.get('video'),
-                    source_file__iendswith=request.GET.get('extension')
-                )
-        else:
-            encoded_videos = self.filter_queryset(self.get_queryset()).filter(
-                video__id=request.GET.get('video'))
+        encoded_videos = EncodingVideoViewSet.filter_encoded_medias(
+            self.queryset, request)
         encoded_videos = sorted(encoded_videos, key=lambda x: x.height)
         serializer = EncodingVideoSerializer(
             encoded_videos, many=True, context={'request': request})
         return Response(serializer.data)
+
+    @staticmethod
+    def filter_encoded_medias(queryset, request):
+        encoded_audios = queryset
+        if request.GET.get('video'):
+            encoded_audios = encoded_audios.filter(
+                video__id=request.GET.get('video'))
+        if request.GET.get('extension'):
+            encoded_audios = encoded_audios.filter(
+                source_file__iendswith=request.GET.get('extension'))
+        return encoded_audios
 
 
 class EncodingAudioViewSet(viewsets.ModelViewSet):
@@ -229,16 +233,9 @@ class EncodingAudioViewSet(viewsets.ModelViewSet):
     filter_fields = ('video',)
 
     @action(detail=False, methods=['get'])
-    def audio_encodedescription_nldfiles(self, request):
-        if request.GET.get('extension'):
-            encoded_audios = self.filter_queryset(
-                self.get_queryset()).filter(
-                video__id=request.GET.get('video'),
-                source_file__iendswith=request.GET.get('extension')
-            )
-        else:
-            encoded_audios = self.filter_queryset(self.get_queryset()).filter(
-                video__id=request.GET.get('video'))
+    def audio_encodedfiles(self, request):
+        encoded_audios = EncodingVideoViewSet.filter_encoded_medias(
+            self.queryset, request)
         serializer = EncodingAudioSerializer(
             encoded_audios, many=True, context={'request': request})
         return Response(serializer.data)

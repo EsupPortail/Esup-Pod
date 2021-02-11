@@ -817,35 +817,10 @@ class Video(models.Model):
             video=self, encoding_format="video/mp4")
 
     def get_video_json(self, extensions):
-        list_src = []
-        dict_src = {}
         extension_list = extensions.split(',') if extensions else []
         list_video = EncodingVideo.objects.filter(
             video=self)
-        for video in list_video:
-            file_extension = splitext(video.source_file.url)[-1]
-            if extensions is None or file_extension[1:] in extension_list:
-                video_object = {
-                    'id': video.id,
-                    'type': video.encoding_format,
-                    'src': video.source_file.url,
-                    'height': video.height,
-                    'extension': file_extension,
-                    'label': video.name}
-                dict_entry = dict_src.get(file_extension[1:], None)
-                if dict_entry is None:
-                    dict_src[file_extension[1:]] = [video_object]
-                else:
-                    dict_entry.append(video_object)
-
-                list_src.append(
-                    {
-                        'id': video.id,
-                        'type': video.encoding_format,
-                        'src': video.source_file.url,
-                        'height': video.height,
-                        'extension': file_extension,
-                        'label': video.name})
+        dict_src = Video.get_media_json(extension_list, list_video)
         sorted_dict_src = {
             x: sorted(
                 dict_src[x],
@@ -854,48 +829,35 @@ class Video(models.Model):
         return sorted_dict_src
 
     def get_audio_json(self, extensions):
-        list_src = []
-        dict_src = {}
         extension_list = extensions.split(',') if extensions else []
         list_audio = EncodingAudio.objects.filter(
             name="audio", video=self)
-        for audio in list_audio:
-            file_extension = splitext(audio.source_file.url)[-1]
-            audio_object = {
-                'id': audio.id,
-                'type': audio.encoding_format,
-                'src': audio.source_file.url,
-                'height': None,
-                'extension': file_extension,
-                'label': audio.name}
-            if extensions is None or file_extension[1:] in extension_list:
-                dict_entry = dict_src.get(file_extension[1:], None)
-                if dict_entry is None:
-                    dict_src[file_extension[1:]] = [audio_object]
-                else:
-                    dict_entry.append(audio_object)
-
-                list_src.append(
-                    audio_object)
+        dict_src = Video.get_media_json(extension_list, list_audio)
         return dict_src
 
     def get_audio_and_video_json(self, extensions):
         return {**self.get_video_json(extensions),
                 **self.get_audio_json(extensions)}
 
-    def get_video_mp4_json(self):
-        list_src = []
-        list_video = sorted(self.get_video_mp4(), key=lambda m: m.height)
-        for video in list_video:
-            list_src.append(
-                {
-                    'id': video.id,
-                    'type': video.encoding_format,
-                    'src': video.source_file.url,
-                    'height': video.height,
-                    'extension': splitext(video.source_file.url)[-1],
-                    'label': video.name})
-        return list_src
+    @staticmethod
+    def get_media_json(self, extension_list, list_video):
+        dict_src = {}
+        for media in list_video:
+            file_extension = splitext(media.source_file.url)[-1]
+            if not extension_list or file_extension[1:] in extension_list:
+                video_object = {
+                    'id': media.id,
+                    'type': media.encoding_format,
+                    'src': media.source_file.url,
+                    'height': media.height,
+                    'extension': file_extension,
+                    'label': media.name}
+                dict_entry = dict_src.get(file_extension[1:], None)
+                if dict_entry is None:
+                    dict_src[file_extension[1:]] = [video_object]
+                else:
+                    dict_entry.append(video_object)
+        return dict_src
 
     def get_json_to_index(self):
         try:
