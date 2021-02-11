@@ -602,6 +602,11 @@ footer p {
 		margin-right: 0.8em;
 	}
 }
+@media only screen and (max-width: 405px) {
+	main.mt-3 {
+		margin-top: 4rem !important;
+	}
+}
 /* theme tree */
 #treeview ul.list-group li{
 	overflow: hidden;
@@ -633,7 +638,6 @@ footer p {
 	padding: .4em;
 }
 /* Switch mode css */
-
 .switch_container{
 	display: flex;
 	justify-content: flex-end;
@@ -647,17 +651,15 @@ footer p {
 	margin-right: .4em;
 	font-size: 12px;
 }
-
 .switch_mode{
-	width: 55px;
-	height: max-content;
+	width: 40px;
+	height: 20px;
 	background: #171f2b;
 	border-radius: 33px;
 	margin: .4em 0;
-	padding: .1em .2em;
-	overflow: hidden;
 	transition: justify-content .5s;
 	cursor: pointer;
+	border: 1px solid var(--gray);
 }
 .switch_mode__toggle{
 	width: 25px;
@@ -666,10 +668,17 @@ footer p {
 	border-radius: 50%;
 	box-shadow: 2px 0px 8px rgba(0,0,0,.25);
 	position: relative;
-	left: 0%;
+	left: -2%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: #171f2b;
+	transform: translateY(-.24em);
 }
-.switch_mode.active{background: orange !important;}
-.switch_mode.active .switch_mode__toggle { left: 50%; }
+.switch_mode.active .switch_mode__toggle {color:  #dd930c; left: 35%; }
+.switch_mode__toggle svg{width: 60%;}
+.switch_mode__toggle.active svg{color: inherit;}
+
 
 /* @import url("dark.css");
  */
@@ -1353,7 +1362,6 @@ body.dark #podfile .list_folders .folder_container:nth-child(2n),
 body.dark #podfile .list_folders_sub .folder_container:nth-child(2n){
 	background-color: var(--block-color);
 }
-
 body.dark #podfile #list_folders_sub .view-more-container::after,
 body.dark #podfile #list_folders_sub .view-more-container a#more{
 	border-color: var(--link-color);
@@ -1384,7 +1392,6 @@ body.dark #treeview ul.list-group li.list-group-item-info a,
 body.dark #treeview ul.list-group li:hover a{
 	color: inherit !important;
 }
-
 body.dark #treeview ul.list-group li{
 	background-color: var(--background-dark-color);
 	padding: .4em 0;
@@ -1398,7 +1405,6 @@ body.dark #treeview ul.list-group li.list-group-item-info
 	background-color: var(--link-color) !important;
 	color: #fff !important;
 }
-
 /* Footer  */
 body.dark footer.bg-dark{
 	background-color: var(--block-color) !important;
