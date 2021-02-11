@@ -758,6 +758,7 @@ body.dark .btn.btn-primary{
 	color: #fff !important;
 	box-shadow: 4px 4px 4px var(--dark-shadow-color);
 	transition: opacity .3s;
+	font-weight: 600;
 }
 body.dark .btn.btn-share.btn-success.btn-add:hover,
 body.dark .foldable_event.opened:hover,
@@ -955,6 +956,10 @@ body.dark .switch_container .switch_text
 }
 body.dark .breadcrumb{
 	background-color: var(--block-color) !important;
+}
+body.dark .breadcrumb-item.active,
+body.dark .breadcrumb-item + .breadcrumb-item::before{
+	color: var(--comment-color);
 }
 /* stat view */
 body.dark .stat-form-group .col-form-label{
@@ -1231,6 +1236,9 @@ body.dark .comment_main .comment .comment_content_footer .comment_actions:hover{
 body.dark .comment_main .comment .comment_content_footer .add_comment{
 background-color: var(--block-color);
 border-color: var(--block-color);
+}
+body.dark .comment_main .comment .comment_content_footer .add_comment .send_reply{
+	color: #6b6b6b;
 }
 body.dark .comment_main .comment .comment_content_footer .add_comment .send_reply.active{
 	color: var(--dark-primary);
