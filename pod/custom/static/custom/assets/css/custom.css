@@ -678,6 +678,7 @@ footer p {
 	align-items: center;
 	color: #aaa;
 	transform: translateY(-.24em);
+	transform: left .3s;
 }
 .switch_mode.active .switch_mode__toggle {color:  #dd930c; left: 35%; }
 .switch_mode__toggle svg{width: 60%;}
