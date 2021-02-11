@@ -702,6 +702,7 @@ footer p {
 body.dark {
 	background-color: var(--background-dark-color) !important;
 	color: white;
+	transition: background-color .3s;
 }
 /* Generic dark css */
 body.dark .title,
