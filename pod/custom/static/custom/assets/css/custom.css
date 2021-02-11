@@ -721,10 +721,13 @@ body.dark .badge-primary{
 	background-color: var(--dark-primary) !important;
 	color: #fff !important;
 }
-select[multiple]:focus option:checked,
-select[multiple]:focus option:active,
-select[multiple]:focus option:visited,
-select[multiple]:focus option:focus
+body.dark .container-info-covid{
+	background-color: var(--block-dark-color) !important;
+}
+body.dark select[multiple]:focus option:checked,
+body.dark select[multiple]:focus option:active,
+body.dark select[multiple]:focus option:visited,
+body.dark select[multiple]:focus option:focus
 {
 	background:  var(--link-color) linear-gradient(0deg,  var(--link-color) 0%, var(--link-color) 100%) !important;
 }
