@@ -1235,6 +1235,33 @@ border-color: var(--block-color);
 body.dark .comment_main .comment .comment_content_footer .add_comment .send_reply.active{
 	color: var(--dark-primary);
 }
+	/* Comment Scroll_to */
+	/* ***** on scroll to comment background */
+body.dark .scroll_to {
+	-webkit-animation-name: scrolltocommentDark;
+	animation-name: scrolltocommentDark;
+	-webkit-animation-duration: 5s;
+	animation-duration: 5s;
+	-webkit-animation-fill-mode: forwards;
+	animation-fill-mode: forwards;
+}
+@-webkit-keyframes scrolltocommentDark {
+	0% {
+		background-color:rgba(249,249,155, 1);
+	}
+	100% {
+		background-color:var(--background-dark-color);
+	}
+}
+@keyframes scrolltocommentDark {
+	0% {
+		background-color:rgba(249,249,155, 1);
+	}
+	100% {
+		background-color:var(--background-dark-color);
+	}
+}
+
 /* Videos_list */
 body.dark #videos_list .card-header,
 body.dark .playlist-videos .card-header
