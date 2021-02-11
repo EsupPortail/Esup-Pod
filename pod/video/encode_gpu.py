@@ -384,19 +384,17 @@ def encode(type, format, codec, height, file):
             ) if unicodedata.category(c) != 'Mn'
         )
     )
-
     if type == "gpu":
         ffmpeg_cmd = get_cmd_gpu(format, codec, height, file)
         add_info_video_title = "encode_video"
         add_info_video_content = {
             "encoding_format":
             "video/mp2t" if format == "m3u8" else "video/mp4",
-            "rendition": RENDITION[str(height)],
+            "rendition": RENDITION["360"],
             "filename":
             "360p_{output}.{ext}".format(output=filename, ext=format)
         }
         add_info_video_append = True
-
     """
     if type == "mixed":
         ffmpeg_cmd = get_cmd_mixed(format, codec, height, file)
@@ -407,7 +405,7 @@ def encode(type, format, codec, height, file):
         add_info_video_content = {
             "encoding_format":
                 "video/mp2t" if format == "m3u8" else "video/mp4",
-            "rendition": RENDITION[str(height)],
+            "rendition": RENDITION["360"],
             "filename":
                 "360p_{output}.{ext}".format(output=filename, ext=format)
         }
@@ -453,9 +451,39 @@ def encode(type, format, codec, height, file):
             add_info_video_content,
             add_info_video_append
         )
+        add_more_info_video(add_info_video_title, height, filename, format)
 
     encode_log(msg+return_msg)
     return return_value
+
+
+def add_more_info_video(add_info_video_title, height, filename, format):
+    if add_info_video_title == "encode_video" and height >= 720:
+        add_info_video_content = {
+            "encoding_format":
+            "video/mp2t" if format == "m3u8" else "video/mp4",
+            "rendition": RENDITION["720"],
+            "filename":
+            "720p_{output}.{ext}".format(output=filename, ext=format)
+        }
+        add_info_video(
+            add_info_video_title,
+            add_info_video_content,
+            True
+        )
+        if height >= 1080 and format == "m3u8":
+            add_info_video_content = {
+                "encoding_format":
+                "video/mp2t" if format == "m3u8" else "video/mp4",
+                "rendition": RENDITION["1080"],
+                "filename":
+                "1080p_{output}.{ext}".format(output=filename, ext=format)
+            }
+            add_info_video(
+                add_info_video_title,
+                add_info_video_content,
+                True
+            )
 
 
 def get_info_from_video(probe_cmd):
