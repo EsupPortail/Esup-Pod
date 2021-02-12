@@ -1233,7 +1233,7 @@ body.dark .comment_main .comment .comment_content_body
 	color: white;
 }
 body.dark .comment_main .comment .comment_content_footer .comment_actions:hover{
-	color: var(--dark-primary);
+	color: var(--link-color);
 }
 body.dark .comment_main .comment .comment_content_footer .add_comment{
 background-color: var(--block-color);
