@@ -831,8 +831,12 @@ body.dark #nav-authentication .nav-link.btn-connexion{
 body.dark #nav-authentication .nav-link.btn-connexion:hover{
 	opacity: .85;
 }
+body.dark .navbar-nav .login .dropdown-menu.show,
 body.dark .dropdown-menu{
 	background-color: var(--block-color) !important;
+}
+body.dark .dropdown-menu.dropdown-menu-right.show, .dropdown-item{
+	background-color: transparent !important;
 }
 body.dark .border-right,
 body.dark .border-bottom{
