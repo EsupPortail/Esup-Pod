@@ -531,6 +531,7 @@ footer.text-muted {
 	white-space: nowrap;
 	max-width: 100%;
 	padding: 0 0.4em;
+	font-size: 14px;
 }
 footer a,
 footer p {
