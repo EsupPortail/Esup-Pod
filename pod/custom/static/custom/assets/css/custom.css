@@ -755,8 +755,8 @@ body.dark button.close{
 body.dark .btn.btn-share.btn-success.btn-add,
 body.dark .foldable_event,
 body.dark .btn.btn-primary{
-	background-color: var(--dark-primary-color) !important;
-	border-color: var(--dark-primary-color) !important;
+	background-color: var(--link-color) !important;
+	border-color: var(--link-color) !important;
 	color: #fff !important;
 	box-shadow: 4px 4px 4px var(--dark-shadow-color);
 	transition: opacity .3s;
@@ -811,6 +811,17 @@ body.dark select{
 body.dark input:focus{
 	background-color: #fff !important;
 	color: var(--block-dark-color) !important;
+}
+body.dark .form_delete.completion input[type=submit],
+body.dark #clearAllCaptions,
+body.dark .btn-danger{
+	background-color: var(--danger) !important;
+	border: 1px solid var(--danger) !important;
+	color: #fff !important;
+	transition: opacity .3s;
+}
+body.dark .btn-danger:hover{
+	opacity: .85;
 }
 body.dark #nav-authentication .nav-link.btn-connexion{
 	background-color: var(--dark-primary) !important;
@@ -1025,6 +1036,11 @@ body.dark .card-title{
 body.dark .card-title a{ transform: translateY(-6px);}
 body.dark #collapseAside .btn-sm-light{
 	color: #fff !important;
+	background-color: transparent !important;
+	border-color: var(--link-color);
+	transition: background-color .3s;
+}
+body.dark #collapseAside .btn-sm-light:hover{
 	background-color: var(--link-color) !important;
 }
 body.dark fieldset svg.feather.feather-send.align-bottom{
@@ -1285,6 +1301,94 @@ body.dark #videos_list a.btn-light:hover{
 	background-color: transparent;
 	border-color: transparent !important;
 }
+/* Video Completion */
+body.dark #accordeon .card-body{
+	background-color: var(--background-dark-color) !important;
+}
+body.dark #accordeon table th{
+	color: var(--comment-color) !important;
+}
+body.dark #accordeon table.scroll thead th{
+	border-bottom: 1px solid var(--dark) !important;
+}
+body.dark #accordeon table tbody td{
+	color: #fff;
+}
+	/* Side bar */
+body.dark #track-info .list-group{
+	background-color:var(--background-dark-color) !important;
+}
+body.dark #track-info .list-group .list-group-item{
+	background-color: transparent !important;
+}
+body.dark #track-info .list-group .list-group-item input{
+	background-color: var(--block-dark-color) !important;
+	border: 1px solid var(--block-dark-color) !important;
+	color: #fff !important;
+}
+
+	/* track/caption */
+body.dark .grid-list-track
+{
+	grid-gap: 0 !important;
+}
+body.dark .grid-list-track .division{
+	display: none !important;
+}
+body.dark .thead_title{
+	color: var(--comment-color) !important;
+	border-bottom: 1px solid var(--dark);
+	margin-bottom: 0.8em !important;
+}
+body.dark .grid-list-track > *{
+	padding: .4em 0;
+	margin-bottom: 0.4em;
+}
+body.dark .grid-list-track > *:not(.track_kind.options){
+	padding-right: .8em;
+}
+
+body.dark .grid-list-track > .track_kind:not(.track_kind.options)
+{
+	padding-left: .4em;
+}
+body.dark .grid-list-track > .track_kind.options:nth-child(2n+1),
+body.dark .grid-list-track > .track_kind.options:nth-child(2n) ~ .track_kind
+{
+	background-color: var(--block-color)!important;
+}
+body.dark .grid-list-track .track_kind.options .dropdown{
+	background-color: inherit !important;
+}
+body.dark .grid-list-track .track_kind.options .dropdown #dropdownMenuButton{
+	border: 1px solid var(--dark);
+	background-color: transparent;
+	color: var(--link-color);
+	transition: background-color .3s;
+}
+body.dark .grid-list-track .track_kind.options .dropdown #dropdownMenuButton:hover{
+	background-color: var(--link-color);
+	color: #fff;
+}
+body.dark .grid-list-track .track_kind.options .dropdown .dropdown-menu .dropdown-item{
+	background-color: var(--background-dark-color);
+}
+	/* caption make */
+body.dark .caption_content svg{
+	color: var(--dark-primary-color);
+}
+body.dark .caption_content .help_text{
+	box-shadow: 4px 4px 10px var(--dark-shadow-color);
+	background-color: var(--block-dark-color);
+}
+	/* Overlay */
+body.dark #form_overlay input:not(#save_overlay):not(#cancle_overlay),
+body.dark #form_overlay select,
+body.dark #form_overlay textarea {
+	background-color: var(--block-dark-color) !important;
+	border-color: var(--block-dark-color) !important;
+	color: #fff !important;
+}
 /* Channel edit */
 #channel_form {margin-top: 2em;}
 body.dark #channel_form .list-group-item{
@@ -1336,7 +1440,7 @@ body.dark #channel_form .list-group fieldset > div{
 	margin: .8em 0;
 }
 /* Podfile */
-	/* Modal */
+	/* Podfile Modal */
 body.dark #podfile .open-folder svg{
 	color: #fff !important;
 	transition: color .3s;
@@ -1382,7 +1486,7 @@ body.dark #podfile .card-body .text-muted{
 	font-size: 13px;
 	padding: 0.2em;
 }
-	/* folder */
+	/* Podfile folder */
 body.dark #podfile #dirs{
 	background-color: var(--background-dark-color);
 	box-shadow: 5px 0 5px -5px var(--dark-shadow-color);
@@ -1402,6 +1506,10 @@ body.dark #podfile #dirs .folder-search::placeholder
 body.dark #podfile .alert-warning .close{
 	font-size: 20px !important;
 }
+body.dark #podfile .list_folders{
+	height: 100%;
+}
+body.dark #podfile .share-folders .folder_title{color: #fff;}
 body.dark #podfile .list_folders .folder_container:nth-child(2n),
 body.dark #podfile .list_folders_sub .folder_container:nth-child(2n){
 	background-color: var(--block-color);
