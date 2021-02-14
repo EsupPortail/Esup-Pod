@@ -673,6 +673,11 @@ footer p {
 {
 	font-size: 14px !important;
 }
+[data-theme="light"] .comment_main .comment .comment_content_footer .comment_actions:hover,
+[data-theme-mode="light"] .comment_main .comment .comment_content_footer .comment_actions:hover
+{
+	color: #e84e0f;
+}
 /* add vidéo to playlist dropdown menu */
 .nav-item.dropright.show .dropdown-menu.show {
     transform: translate(-100%, 50%);
