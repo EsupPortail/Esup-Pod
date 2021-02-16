@@ -19,7 +19,7 @@ class Command(BaseCommand):
         video = 1
         user = 1
         to_remove = len(_('Archived') + " 0000-00-00")
-        
+
         try:
             video = Video.objects.get(id=options['video_id'])
             if(video.owner.username != ARCHIVE_OWNER_USERNAME):
