@@ -4,8 +4,10 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import gettext as _
 from django.conf import settings
+from django.utils.translation import activate
 
 ARCHIVE_OWNER_USERNAME = getattr(settings, 'ARCHIVE_OWNER_USERNAME', 'archive')
+LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", 'fr')
 
 
 class Command(BaseCommand):
@@ -16,9 +18,10 @@ class Command(BaseCommand):
         parser.add_argument('user_id', type=int, help='Video id')
 
     def handle(self, *args, **options):
+        activate(LANGUAGE_CODE)
         video = 1
         user = 1
-        to_remove = len(_('Archived') + " 0000-00-00")
+        to_remove = len(_('Archived') + " 0000-00-00 ")
 
         try:
             video = Video.objects.get(id=options['video_id'])
