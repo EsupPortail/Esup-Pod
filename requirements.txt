@@ -9,7 +9,7 @@ ldap3==2.5
 django-simple-captcha==0.5.13
 urllib3==1.26.2
 elasticsearch==6.3.1
-djangorestframework==3.9.1
+djangorestframework==3.12.2
 django-filter==2.4.0
 sorl-thumbnail==12.7.0
 django-lti-provider==0.4.0
@@ -25,5 +25,3 @@ django-select2
 django-redis
 requests==2.25.1
 chardet==4.0.0
-django-cookies-samesite==0.8.0
-
