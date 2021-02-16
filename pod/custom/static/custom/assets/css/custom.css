@@ -1492,6 +1492,18 @@ color: var(--link-color) !important;
 	background-color: var(--background-dark-color) !important;
 	color: #fff !important;
 }
+[data-theme="dark"] > body .cke_top,
+[data-theme-mode="dark"] > body .cke_top{
+	border: 1px solid #151515;
+	background: #dfb05a;
+	padding: 6px 8px 2px;
+	white-space: normal;
+}
+[data-theme="dark"] > body .cke_bottom,
+[data-theme-mode="dark"] > body .cke_bottom{
+	background-color: var(--block-dark-color);
+	border-top: 1px solid var(--block-dark-color);
+}
 [data-theme="dark"] > body .cke.cke_reset.cke_chrome.cke_ltr.cke_browser_webkit,
 [data-theme-mode="dark"] > body .cke.cke_reset.cke_chrome.cke_ltr.cke_browser_webkit{
 	background-color: var(--block-dark-color) !important;
