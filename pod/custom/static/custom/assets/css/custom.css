@@ -723,6 +723,11 @@ body .selector-filter input{
 {
 	color: #e84e0f;
 }
+[data-theme-mode="dark"] > body .comment_main .reply_to,
+[data-theme="dark"] > body .comment_main .reply_to{
+	color: rgba(255,255,255,.3) !important;
+}
+/* enrichment */
 input#save_enrichment{
 	margin-right: 0.8em !important;
 }
