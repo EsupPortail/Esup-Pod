@@ -4773,14 +4773,20 @@ msgid "Duration:"
 msgstr ""
 
 #: pod/video/templates/videos/video-info.html:80
+msgid "Channel:"
+msgid_plural "Channels:"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/video/templates/videos/video-info.html:81
 msgid "Number of view:"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:80
+#: pod/video/templates/videos/video-info.html:81
 msgid "Show details of view statistics"
 msgstr ""
 
-#: pod/video/templates/videos/video-info.html:80
+#: pod/video/templates/videos/video-info.html:81
 msgid "Show details views"
 msgstr ""
 
