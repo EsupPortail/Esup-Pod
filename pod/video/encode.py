@@ -511,7 +511,7 @@ def get_video_command_mp4(video_id, video_data, output_dir):
             name = "%sp" % height
 
             cmd += " %s " % (static_params,)
-            cmd += FFMPEG_SCALE.format(height=360)
+            cmd += FFMPEG_SCALE.format(height=height)
             # cmd += " -vf \"scale=-2:%s\" " % (height)
             # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
@@ -747,7 +747,7 @@ def get_video_command_playlist(video_id, video_data, output_dir):
             name = "%sp" % height
 
             cmd += " %s " % (static_params,)
-            cmd += FFMPEG_SCALE.format(height=360)
+            cmd += FFMPEG_SCALE.format(height=height)
 
             # cmd += " %s -vf " % (static_params,)
             # cmd += "\"scale=-2:%s\"" % (height)
