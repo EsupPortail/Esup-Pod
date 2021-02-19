@@ -54,6 +54,8 @@ def get_remove_selected_facet_link(request, selected_facets):
             link = request.get_full_path().replace(
                 "&selected_facets=%s:%s" % (term, value), "")
             link = link.replace(
+                "?selected_facets=%s:%s&" % (term, value), "?")
+            link = link.replace(
                 "?selected_facets=%s:%s" % (term, value), "")
             msg_title = _('Remove selection')
             remove_selected_facet += (
