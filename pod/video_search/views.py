@@ -52,11 +52,13 @@ def get_remove_selected_facet_link(request, selected_facets):
             value = facet.split(":")[1]
             link = request.get_full_path().replace(
                 "&selected_facets=%s:%s" % (term, value), "")
-            link = request.get_full_path().replace(
+            link = link.replace(
+                "?selected_facets=%s:%s&" % (term, value), "?")
+            link = link.replace(
                 "?selected_facets=%s:%s" % (term, value), "")
             msg_title = _('Remove selection')
             remove_selected_facet += (
-                '&nbsp;<a href="%s" title="%s">&times;%s</a>&nbsp;' % (
+                '&nbsp;<a href="%s" title="%s">&times; %s</a>&nbsp;' % (
                     link, msg_title, value))
     return remove_selected_facet
 
@@ -121,11 +123,13 @@ def search_videos(request):
                     "owner_full_name^0.9",
                     "description^0.6",
                     "tags.name^1",
-                    "contributors^0.6",
-                    "chapters.title^0.5",
                     "type.title^0.6",
                     "disciplines.title^0.6",
-                    "channels.title^0.6"
+                    "channels.title^0.6",
+                    "themes.title^0.5",
+                    "contributors^0.6",
+                    "chapters.title^0.5",
+                    "overlays.title^0.5",
                 ]
             }
         }

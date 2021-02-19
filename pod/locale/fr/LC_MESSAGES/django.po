@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-18 09:38+0100\n"
+"POT-Creation-Date: 2021-02-19 08:39+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -26,11 +26,10 @@ msgid "Establishment"
 msgstr "Etablissement"
 
 #: pod/authentication/forms.py:60 pod/authentication/forms.py:61
-#: pod/bbb/models.py:141 pod/custom/templates/navbar.html:22
-#: pod/main/templates/navbar.html:22 pod/main/templates/navbar_collapse.html:76
-#: pod/podfile/models.py:37 pod/video/forms.py:236 pod/video/forms.py:589
-#: pod/video/forms.py:593 pod/video/models.py:248
-#: pod/video/templates/videos/filter_aside.html:13
+#: pod/bbb/models.py:141 pod/main/templates/navbar.html:22
+#: pod/main/templates/navbar_collapse.html:76 pod/podfile/models.py:37
+#: pod/video/forms.py:236 pod/video/forms.py:589 pod/video/forms.py:593
+#: pod/video/models.py:248 pod/video/templates/videos/filter_aside.html:13
 msgid "Users"
 msgstr "Utilisateurs"
 
@@ -115,7 +114,7 @@ msgstr "Authentification locale"
 #: pod/authentication/templates/registration/login.html:9
 #: pod/authentication/templates/registration/login.html:12
 #: pod/authentication/templates/registration/login.html:63
-#: pod/custom/templates/navbar.html:111 pod/main/templates/navbar.html:117
+#: pod/main/templates/navbar.html:117
 msgid "Log in"
 msgstr "Connexion"
 
@@ -141,7 +140,7 @@ msgid "Forgotten your password or username?"
 msgstr "Mot de passe ou identifiant perdu ?"
 
 #: pod/authentication/templates/userpicture/userpicture.html:7
-#: pod/custom/templates/navbar.html:85 pod/main/templates/navbar.html:88
+#: pod/main/templates/navbar.html:88
 msgid "Change your picture"
 msgstr "Changer votre image de profil"
 
@@ -594,7 +593,7 @@ msgstr "Éditer le chapitre"
 #: pod/completion/templates/track/list_track.html:23
 #: pod/completion/templates/track/list_track.html:42
 #: pod/enrichment/templates/enrichment/list_enrichment.html:30
-#: pod/podfile/templates/podfile/list_folder_files.html:251
+#: pod/podfile/templates/podfile/list_folder_files.html:249
 #: pod/video/templates/channel/list_theme.html:27
 msgid "Modify"
 msgstr "Modifier"
@@ -607,7 +606,7 @@ msgstr "Supprimer le chapitre"
 #: pod/enrichment/templates/enrichment/list_enrichment.html:38
 #: pod/playlist/templates/playlist.html:68
 #: pod/podfile/templates/podfile/list_folder_files.html:104
-#: pod/podfile/templates/podfile/list_folder_files.html:299
+#: pod/podfile/templates/podfile/list_folder_files.html:297
 #: pod/recorder/templates/recorder/record_delete.html:9
 #: pod/video/templates/channel/list_theme.html:35
 #: pod/video/templates/videos/category_modal.html:66
@@ -623,7 +622,6 @@ msgstr "Chapitre vidéo"
 #: pod/chapter/templates/video_chapter.html:16
 #: pod/completion/templates/video_caption_maker.html:13
 #: pod/completion/templates/video_completion.html:13
-#: pod/custom/templates/navbar.html:91
 #: pod/enrichment/templates/enrichment/group_enrichment.html:10
 #: pod/interactive/templates/interactive/group_interactive.html:10
 #: pod/main/templates/navbar.html:94
@@ -1368,363 +1366,6 @@ msgstr "Le fichier n’a pas été enregistré."
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
 
-#: pod/custom/templates/base.html:71 pod/main/templates/base.html:71
-msgid "Home"
-msgstr "Accueil"
-
-#: pod/custom/templates/footer.html:27 pod/main/templates/footer.html:30
-msgid "Pod Project"
-msgstr "Projet Pod"
-
-#: pod/custom/templates/footer.html:30 pod/main/templates/footer.html:34
-#: pod/video/feeds.py:107
-msgid "video platform of"
-msgstr "plateforme vidéos de"
-
-#: pod/custom/templates/footer.html:30 pod/main/templates/footer.html:34
-msgid "Release"
-msgstr "Version"
-
-#: pod/custom/templates/footer.html:30 pod/main/templates/footer.html:34
-msgid "videos availables"
-msgstr "vidéos disponibles"
-
-#: pod/custom/templates/navbar.html:17 pod/main/templates/navbar.html:17
-#: pod/recorder/models.py:194 pod/video/forms.py:172 pod/video/models.py:261
-#: pod/video/models.py:529
-msgid "Channels"
-msgstr "Chaînes"
-
-#: pod/custom/templates/navbar.html:27 pod/main/templates/navbar.html:27
-#: pod/video/models.py:419 pod/video/templates/videos/filter_aside.html:34
-msgid "Types"
-msgstr "Types"
-
-#: pod/custom/templates/navbar.html:32 pod/live/templates/live/building.html:11
-#: pod/live/templates/live/live.html:20 pod/live/templates/live/live.html:24
-#: pod/live/templates/live/lives.html:15 pod/live/templates/live/lives.html:18
-#: pod/live/templates/live/lives.html:21 pod/main/templates/navbar.html:32
-msgid "Lives"
-msgstr "Directs"
-
-#: pod/custom/templates/navbar.html:53 pod/custom/templates/navbar.html:55
-#: pod/main/templates/navbar.html:53 pod/main/templates/navbar.html:55
-#: pod/main/templates/navbar_collapse.html:85
-#: pod/main/templates/navbar_collapse.html:86
-#: pod/video/templates/videos/filter_aside.html:15
-#: pod/video/templates/videos/filter_aside_category.html:24
-#: pod/video_search/forms.py:8 pod/video_search/templates/search/search.html:8
-#: pod/video_search/templates/search/search.html:17
-#: pod/video_search/templates/search/search.html:38
-msgid "Search"
-msgstr "Rechercher"
-
-#: pod/custom/templates/navbar.html:60 pod/custom/templates/navbar.html:62
-#: pod/main/templates/navbar.html:63 pod/main/templates/navbar.html:65
-msgid "Add a video"
-msgstr "Ajouter une vidéo"
-
-#: pod/custom/templates/navbar.html:88 pod/main/templates/navbar.html:91
-msgid "Add your picture"
-msgstr "Ajouter votre image de profil"
-
-#: pod/custom/templates/navbar.html:93 pod/main/templates/navbar.html:96
-#: pod/video/templates/channel/channel_edit.html:17
-#: pod/video/templates/channel/my_channels.html:6
-#: pod/video/templates/channel/my_channels.html:9
-#: pod/video/templates/channel/theme_edit.html:18
-msgid "My channels"
-msgstr "Mes chaînes"
-
-#: pod/custom/templates/navbar.html:95
-#: pod/enrichment/templates/enrichment/video_enrichment.html:106
-#: pod/interactive/templates/interactive/video_interactive.html:101
-#: pod/main/templates/navbar.html:98
-#: pod/playlist/templates/my_playlists.html:10
-#: pod/playlist/templates/my_playlists.html:17
-#: pod/playlist/templates/playlist.html:14
-#: pod/video/templates/videos/video.html:218
-msgid "My playlists"
-msgstr "Mes listes de lecture"
-
-#: pod/custom/templates/navbar.html:97 pod/main/templates/navbar.html:100
-#: pod/podfile/templates/podfile/home.html:6
-#: pod/podfile/templates/podfile/home.html:10
-msgid "My files"
-msgstr "Mes fichiers"
-
-#: pod/custom/templates/navbar.html:100 pod/main/templates/navbar.html:103
-#: pod/recorder/templates/recorder/claim_record.html:11
-#: pod/recorder/templates/recorder/record_delete.html:8
-#: pod/recorder/templates/recorder/record_delete.html:20
-msgid "Claim a record"
-msgstr "Revendiquer un enregistrement"
-
-#: pod/custom/templates/navbar.html:104 pod/custom/templates/navbar.html:105
-#: pod/main/templates/navbar.html:110 pod/main/templates/navbar.html:111
-msgid "Log out"
-msgstr "Déconnexion"
-
-#: pod/custom/templates/videos/video-info.html:9
-#: pod/enrichment/templates/enrichment/video_enrichment.html:69
-#: pod/enrichment/templates/enrichment/video_enrichment.html:70
-#: pod/interactive/templates/interactive/video_interactive.html:56
-#: pod/interactive/templates/interactive/video_interactive.html:57
-#: pod/video/templates/videos/video-info.html:9
-#: pod/video/templates/videos/video.html:168
-#: pod/video/templates/videos/video.html:169
-msgid "Summary"
-msgstr "Description"
-
-#: pod/custom/templates/videos/video-info.html:10
-#: pod/video/templates/videos/video-info.html:10
-msgid ""
-"This is a 360 degree video. To look around click and drag your mouse on the "
-"video."
-msgstr ""
-"C'est une vidéo 360. Pour déplacer la vue, cliquer et faites glisser la "
-"souris sur la vidéo."
-
-#: pod/custom/templates/videos/video-info.html:15
-#: pod/video/templates/videos/video-info.html:15
-msgid "Tags:"
-msgstr "Mots clés :"
-
-#: pod/custom/templates/videos/video-info.html:24
-#: pod/video/templates/videos/video-info.html:24
-msgid "No information available"
-msgstr "Aucune information disponible"
-
-#: pod/custom/templates/videos/video-info.html:33
-#: pod/enrichment/templates/enrichment/video_enrichment.html:74
-#: pod/enrichment/templates/enrichment/video_enrichment.html:75
-#: pod/interactive/templates/interactive/video_interactive.html:61
-#: pod/interactive/templates/interactive/video_interactive.html:62
-#: pod/video/templates/videos/video-info.html:33
-#: pod/video/templates/videos/video.html:175
-#: pod/video/templates/videos/video.html:177
-#: pod/video/templates/videos/video.html:179
-msgid "Infos"
-msgstr "Informations"
-
-#: pod/custom/templates/videos/video-info.html:36
-#: pod/video/templates/videos/video-info.html:36
-msgid "Added by:"
-msgstr "Ajouté par :"
-
-#: pod/custom/templates/videos/video-info.html:46
-#: pod/video/templates/videos/video-info.html:46
-msgid "Additional owners:"
-msgstr "Propriétaires additionels :"
-
-#: pod/custom/templates/videos/video-info.html:59
-#: pod/video/templates/videos/video-info.html:59
-msgid "Contributors:"
-msgstr "Contributeurs :"
-
-#: pod/custom/templates/videos/video-info.html:63
-#: pod/video/templates/videos/video-info.html:63
-msgid "send an email"
-msgstr "envoyer un courriel"
-
-#: pod/custom/templates/videos/video-info.html:68
-#: pod/video/templates/videos/video-info.html:68
-msgid "contributor web link"
-msgstr "lien du contributeur"
-
-#: pod/custom/templates/videos/video-info.html:78
-#: pod/video/templates/videos/video-info.html:78
-msgid "Updated on:"
-msgstr "Mis à jour le :"
-
-#: pod/custom/templates/videos/video-info.html:79
-#: pod/video/templates/videos/video-info.html:79
-msgid "Duration:"
-msgstr "Durée :"
-
-#: pod/custom/templates/videos/video-info.html:82
-#, fuzzy
-#| msgid "Channel:"
-#| msgid_plural "Channels:"
-msgid "Channel:"
-msgid_plural " Channels:"
-msgstr[0] "Chaîne :"
-msgstr[1] "Chaînes :"
-
-#: pod/custom/templates/videos/video-info.html:83
-#: pod/video/templates/videos/video-info.html:80
-msgid "Number of view:"
-msgstr "Nombre de vues :"
-
-#: pod/custom/templates/videos/video-info.html:83
-#: pod/video/templates/videos/video-info.html:80
-msgid "Show details of view statistics"
-msgstr "Afficher les details des statistiques de visualisation"
-
-#: pod/custom/templates/videos/video-info.html:83
-#: pod/video/templates/videos/video-info.html:80
-msgid "Show details views"
-msgstr "Afficher les details de visualisation"
-
-#: pod/custom/templates/videos/video-info.html:87
-#: pod/video/templates/videos/video-info.html:84
-msgid "Type:"
-msgstr "Type :"
-
-#: pod/custom/templates/videos/video-info.html:88
-#: pod/video/templates/videos/video-info.html:85
-msgid "Main language:"
-msgstr "Langue principale :"
-
-#: pod/custom/templates/videos/video-info.html:90
-#: pod/video/templates/videos/video-info.html:87
-msgid "Audience:"
-msgstr "Public :"
-
-#: pod/custom/templates/videos/video-info.html:94
-#: pod/video/templates/videos/video-info.html:91
-msgid "Disciplines:"
-msgstr "Disciplines :"
-
-#: pod/custom/templates/videos/video-info.html:103
-#: pod/video/templates/videos/video-info.html:100
-msgid "Licence:"
-msgstr "Licence :"
-
-#: pod/custom/templates/videos/video-info.html:111
-#: pod/enrichment/templates/enrichment/video_enrichment.html:80
-#: pod/enrichment/templates/enrichment/video_enrichment.html:81
-#: pod/interactive/templates/interactive/video_interactive.html:67
-#: pod/interactive/templates/interactive/video_interactive.html:68
-#: pod/video/templates/videos/video-info.html:108
-#: pod/video/templates/videos/video.html:184
-#: pod/video/templates/videos/video.html:185
-msgid "Downloads"
-msgstr "Téléchargements"
-
-#: pod/custom/templates/videos/video-info.html:115
-#: pod/video/templates/videos/video-info.html:112
-msgid "Video file(s):"
-msgstr "Fichiers vidéos :"
-
-#: pod/custom/templates/videos/video-info.html:129
-#: pod/video/templates/videos/video-info.html:126
-msgid "Audio file:"
-msgstr "Fichier audio :"
-
-#: pod/custom/templates/videos/video-info.html:141
-#: pod/video/templates/videos/video-info.html:138
-msgid "Document:"
-msgstr "Document :"
-
-#: pod/custom/templates/videos/video-info.html:157
-#: pod/video/templates/videos/video-info.html:154
-#: pod/video/templates/videos/video_edit.html:161
-msgid "Embed/Share (Draft Mode)"
-msgstr "Intégrer/Partager (Mode brouillon)"
-
-#: pod/custom/templates/videos/video-info.html:157
-#: pod/enrichment/templates/enrichment/video_enrichment.html:86
-#: pod/enrichment/templates/enrichment/video_enrichment.html:87
-#: pod/interactive/templates/interactive/video_interactive.html:73
-#: pod/interactive/templates/interactive/video_interactive.html:74
-#: pod/video/templates/videos/video-info.html:154
-#: pod/video/templates/videos/video.html:191
-#: pod/video/templates/videos/video.html:192
-msgid "Embed/Share"
-msgstr "Intégrer/Partager"
-
-#: pod/custom/templates/videos/video-info.html:160
-#: pod/video/templates/videos/video-info.html:157
-msgid "Social Networks"
-msgstr "Réseaux sociaux"
-
-#: pod/custom/templates/videos/video-info.html:161
-#: pod/custom/templates/videos/video-info.html:162
-#: pod/custom/templates/videos/video-info.html:163
-#: pod/main/templates/aside.html:11 pod/main/templates/aside.html:12
-#: pod/main/templates/aside.html:13
-#: pod/video/templates/videos/video-info.html:158
-#: pod/video/templates/videos/video-info.html:159
-#: pod/video/templates/videos/video-info.html:160
-msgid "Share on"
-msgstr "Partager sur"
-
-#: pod/custom/templates/videos/video-info.html:170
-#: pod/video/templates/videos/video-info.html:167
-msgid ""
-"Please note that your video is in draft mode.<br/>The following links "
-"contain a key allowing access. Anyone with this links can access it."
-msgstr ""
-"Veuillez noter que votre vidéo est en mode brouillon. <br/>Les liens "
-"suivants contiennent une clé permettant l’accès. Toute personne disposant de "
-"ces liens peut y accéder."
-
-#: pod/custom/templates/videos/video-info.html:176
-#: pod/video/templates/videos/video-info.html:173
-msgid "Options"
-msgstr "Options"
-
-#: pod/custom/templates/videos/video-info.html:179
-#: pod/video/templates/videos/video-info.html:176
-msgid "Autoplay"
-msgstr "Lecture automatique"
-
-#: pod/custom/templates/videos/video-info.html:180
-#: pod/video/templates/videos/video-info.html:177
-msgid "Check the box to autoplay the video."
-msgstr "Cocher cette case pour lancer la lecture automatiquement."
-
-#: pod/custom/templates/videos/video-info.html:185
-#: pod/video/templates/videos/video-info.html:182
-msgid "Loop"
-msgstr "Boucle"
-
-#: pod/custom/templates/videos/video-info.html:186
-#: pod/video/templates/videos/video-info.html:183
-msgid "Check the box to loop the video."
-msgstr "Cocher cette case pour lire la vidéo en boucle."
-
-#: pod/custom/templates/videos/video-info.html:192
-#: pod/video/templates/videos/video-info.html:189
-msgid "Start video"
-msgstr "Début de la vidéo"
-
-#: pod/custom/templates/videos/video-info.html:193
-#: pod/video/templates/videos/video-info.html:190
-msgid "Start at"
-msgstr "Démarrer à"
-
-#: pod/custom/templates/videos/video-info.html:196
-#: pod/video/templates/videos/video-info.html:193
-msgid "Check the box to indicate the beginning of playing desired."
-msgstr "Cocher la case pour indiquer le début de lecture souhaité."
-
-#: pod/custom/templates/videos/video-info.html:201
-#: pod/video/templates/videos/video-info.html:198
-msgid "Embed in a web page"
-msgstr "Intégrer dans une page web"
-
-#: pod/custom/templates/videos/video-info.html:203
-#: pod/video/templates/videos/video-info.html:200
-msgid "Copy the content of this text box and paste it in the page:"
-msgstr "Copier le contenu de cette boite de texte et coller le sur la page :"
-
-#: pod/custom/templates/videos/video-info.html:208
-#: pod/video/templates/videos/video-info.html:205
-msgid "Share the link"
-msgstr "Partager le lien"
-
-#: pod/custom/templates/videos/video-info.html:210
-#: pod/video/templates/videos/video-info.html:207
-msgid "Use this link to share the video:"
-msgstr "Utiliser ce lien pour partager la vidéo :"
-
-#: pod/custom/templates/videos/video-info.html:214
-#: pod/video/templates/videos/video-info.html:211
-msgid "QR code for this link:"
-msgstr "QR code pour le lien :"
-
 #: pod/enrichment/apps.py:7
 msgid "Enrichment version"
 msgstr "Version enrichie"
@@ -1977,6 +1618,47 @@ msgstr "Enrichi"
 msgid "Report the video"
 msgstr "Signaler la vidéo"
 
+#: pod/enrichment/templates/enrichment/video_enrichment.html:69
+#: pod/enrichment/templates/enrichment/video_enrichment.html:70
+#: pod/interactive/templates/interactive/video_interactive.html:56
+#: pod/interactive/templates/interactive/video_interactive.html:57
+#: pod/video/templates/videos/video-info.html:9
+#: pod/video/templates/videos/video.html:168
+#: pod/video/templates/videos/video.html:169
+msgid "Summary"
+msgstr "Description"
+
+#: pod/enrichment/templates/enrichment/video_enrichment.html:74
+#: pod/enrichment/templates/enrichment/video_enrichment.html:75
+#: pod/interactive/templates/interactive/video_interactive.html:61
+#: pod/interactive/templates/interactive/video_interactive.html:62
+#: pod/video/templates/videos/video-info.html:33
+#: pod/video/templates/videos/video.html:175
+#: pod/video/templates/videos/video.html:177
+#: pod/video/templates/videos/video.html:179
+msgid "Infos"
+msgstr "Informations"
+
+#: pod/enrichment/templates/enrichment/video_enrichment.html:80
+#: pod/enrichment/templates/enrichment/video_enrichment.html:81
+#: pod/interactive/templates/interactive/video_interactive.html:67
+#: pod/interactive/templates/interactive/video_interactive.html:68
+#: pod/video/templates/videos/video-info.html:109
+#: pod/video/templates/videos/video.html:184
+#: pod/video/templates/videos/video.html:185
+msgid "Downloads"
+msgstr "Téléchargements"
+
+#: pod/enrichment/templates/enrichment/video_enrichment.html:86
+#: pod/enrichment/templates/enrichment/video_enrichment.html:87
+#: pod/interactive/templates/interactive/video_interactive.html:73
+#: pod/interactive/templates/interactive/video_interactive.html:74
+#: pod/video/templates/videos/video-info.html:155
+#: pod/video/templates/videos/video.html:191
+#: pod/video/templates/videos/video.html:192
+msgid "Embed/Share"
+msgstr "Intégrer/Partager"
+
 #: pod/enrichment/templates/enrichment/video_enrichment.html:92
 #: pod/enrichment/templates/enrichment/video_enrichment.html:93
 #: pod/interactive/templates/interactive/video_interactive.html:85
@@ -1999,6 +1681,16 @@ msgstr "Version originale"
 #: pod/video/templates/videos/video.html:217
 msgid "Add the video to a playlist"
 msgstr "Ajouter une vidéo à une liste de lecture"
+
+#: pod/enrichment/templates/enrichment/video_enrichment.html:106
+#: pod/interactive/templates/interactive/video_interactive.html:101
+#: pod/main/templates/navbar.html:98
+#: pod/playlist/templates/my_playlists.html:10
+#: pod/playlist/templates/my_playlists.html:17
+#: pod/playlist/templates/playlist.html:14
+#: pod/video/templates/videos/video.html:218
+msgid "My playlists"
+msgstr "Mes listes de lecture"
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html:138
 msgid "To help you, the different types of enrichments have specific colors"
@@ -2315,6 +2007,13 @@ msgstr "Signal"
 #: pod/live/models.py:165
 msgid "Heartbeats"
 msgstr "Signaux"
+
+#: pod/live/templates/live/building.html:11
+#: pod/live/templates/live/live.html:20 pod/live/templates/live/live.html:24
+#: pod/live/templates/live/lives.html:15 pod/live/templates/live/lives.html:18
+#: pod/live/templates/live/lives.html:21 pod/main/templates/navbar.html:32
+msgid "Lives"
+msgstr "Directs"
 
 #: pod/live/templates/live/building.html:39
 #: pod/live/templates/live/live.html:104 pod/live/templates/live/lives.html:37
@@ -3140,6 +2839,14 @@ msgstr "Administration de Pod"
 msgid "Share"
 msgstr "Partager"
 
+#: pod/main/templates/aside.html:11 pod/main/templates/aside.html:12
+#: pod/main/templates/aside.html:13
+#: pod/video/templates/videos/video-info.html:159
+#: pod/video/templates/videos/video-info.html:160
+#: pod/video/templates/videos/video-info.html:161
+msgid "Share on"
+msgstr "Partager sur"
+
 #: pod/main/templates/aside.html:21 pod/main/templates/aside.html:27
 #: pod/recorder/models.py:188 pod/video/forms.py:136 pod/video/models.py:445
 #: pod/video/models.py:523 pod/video/templates/videos/filter_aside.html:56
@@ -3156,6 +2863,10 @@ msgstr "Mots clés"
 #: pod/main/templates/base.html:68
 msgid "Breadcrumb"
 msgstr "Fil d’Ariane"
+
+#: pod/main/templates/base.html:71
+msgid "Home"
+msgstr "Accueil"
 
 #: pod/main/templates/base.html:76
 msgid "Toggle side Menu"
@@ -3195,6 +2906,22 @@ msgstr ""
 #: pod/main/templates/footer.html:29
 msgid "Esup Portal"
 msgstr "ESUP-Portail"
+
+#: pod/main/templates/footer.html:30
+msgid "Pod Project"
+msgstr "Projet Pod"
+
+#: pod/main/templates/footer.html:34 pod/video/feeds.py:107
+msgid "video platform of"
+msgstr "plateforme vidéos de"
+
+#: pod/main/templates/footer.html:34
+msgid "Release"
+msgstr "Version"
+
+#: pod/main/templates/footer.html:34
+msgid "videos availables"
+msgstr "vidéos disponibles"
 
 #: pod/main/templates/mail/mail.html:2 pod/main/templates/mail/mail.txt:2
 #: pod/main/templates/mail/mail_sender.html:2
@@ -3240,9 +2967,62 @@ msgstr "Vous venez d'envoyer un message depuis"
 msgid "Return to homepage"
 msgstr "Revenir à la page d'accueil"
 
+#: pod/main/templates/navbar.html:17 pod/recorder/models.py:194
+#: pod/video/forms.py:172 pod/video/models.py:261 pod/video/models.py:529
+msgid "Channels"
+msgstr "Chaînes"
+
+#: pod/main/templates/navbar.html:27 pod/video/models.py:419
+#: pod/video/templates/videos/filter_aside.html:34
+msgid "Types"
+msgstr "Types"
+
+#: pod/main/templates/navbar.html:53 pod/main/templates/navbar.html:55
+#: pod/main/templates/navbar_collapse.html:85
+#: pod/main/templates/navbar_collapse.html:86
+#: pod/video/templates/videos/filter_aside.html:15
+#: pod/video/templates/videos/filter_aside_category.html:24
+#: pod/video_search/forms.py:8 pod/video_search/templates/search/search.html:8
+#: pod/video_search/templates/search/search.html:17
+#: pod/video_search/templates/search/search.html:38
+msgid "Search"
+msgstr "Rechercher"
+
 #: pod/main/templates/navbar.html:60
 msgid "Some features are unavailable"
 msgstr "Certaines fonctionnalités sont indisponibles"
+
+#: pod/main/templates/navbar.html:63 pod/main/templates/navbar.html:65
+msgid "Add a video"
+msgstr "Ajouter une vidéo"
+
+#: pod/main/templates/navbar.html:91
+msgid "Add your picture"
+msgstr "Ajouter votre image de profil"
+
+#: pod/main/templates/navbar.html:96
+#: pod/video/templates/channel/channel_edit.html:17
+#: pod/video/templates/channel/my_channels.html:6
+#: pod/video/templates/channel/my_channels.html:9
+#: pod/video/templates/channel/theme_edit.html:18
+msgid "My channels"
+msgstr "Mes chaînes"
+
+#: pod/main/templates/navbar.html:100 pod/podfile/templates/podfile/home.html:6
+#: pod/podfile/templates/podfile/home.html:10
+msgid "My files"
+msgstr "Mes fichiers"
+
+#: pod/main/templates/navbar.html:103
+#: pod/recorder/templates/recorder/claim_record.html:11
+#: pod/recorder/templates/recorder/record_delete.html:8
+#: pod/recorder/templates/recorder/record_delete.html:20
+msgid "Claim a record"
+msgstr "Revendiquer un enregistrement"
+
+#: pod/main/templates/navbar.html:110 pod/main/templates/navbar.html:111
+msgid "Log out"
+msgstr "Déconnexion"
 
 #: pod/main/templates/navbar_collapse.html:8
 #, python-format
@@ -3548,7 +3328,7 @@ msgid "Enter new name of folder"
 msgstr "Indiquer un nouveau nom à ce dossier"
 
 #: pod/podfile/templates/podfile/home_content.html:53
-#: pod/podfile/templates/podfile/list_folder_files.html:189
+#: pod/podfile/templates/podfile/list_folder_files.html:187
 #: pod/video/templates/videos/video_edit.html:119
 msgid "Loading"
 msgstr "Chargement"
@@ -3577,11 +3357,11 @@ msgstr "Renomer"
 msgid "Share this folder"
 msgstr "Partager ce dossier"
 
-#: pod/podfile/templates/podfile/list_folder_files.html:179
+#: pod/podfile/templates/podfile/list_folder_files.html:177
 msgid "Upload Files"
 msgstr "Téléverser des fichiers"
 
-#: pod/podfile/templates/podfile/list_folder_files.html:273
+#: pod/podfile/templates/podfile/list_folder_files.html:271
 msgid "Download"
 msgstr "Télécharger"
 
@@ -4382,6 +4162,7 @@ msgid "USE_OBSOLESCENCE is FALSE"
 msgstr "USE_OBSOLESCENCE est à FALSE"
 
 #: pod/video/management/commands/check_obsolete_videos.py:139
+#: pod/video/management/commands/unarchive_video.py:24
 #: pod/video/tests/test_obsolescence.py:175
 msgid "Archived"
 msgstr "Archivé"
@@ -5199,6 +4980,170 @@ msgstr "Si vous n'avez pas le mot de passe pour ce contenu, veuillez"
 #: pod/video/templates/videos/video-form.html:37
 msgid "contact its owner"
 msgstr "contacter son propriétaire"
+
+#: pod/video/templates/videos/video-info.html:10
+msgid ""
+"This is a 360 degree video. To look around click and drag your mouse on the "
+"video."
+msgstr ""
+"C'est une vidéo 360. Pour déplacer la vue, cliquer et faites glisser la "
+"souris sur la vidéo."
+
+#: pod/video/templates/videos/video-info.html:15
+msgid "Tags:"
+msgstr "Mots clés :"
+
+#: pod/video/templates/videos/video-info.html:24
+msgid "No information available"
+msgstr "Aucune information disponible"
+
+#: pod/video/templates/videos/video-info.html:36
+msgid "Added by:"
+msgstr "Ajouté par :"
+
+#: pod/video/templates/videos/video-info.html:46
+msgid "Additional owners:"
+msgstr "Propriétaires additionels :"
+
+#: pod/video/templates/videos/video-info.html:59
+msgid "Contributors:"
+msgstr "Contributeurs :"
+
+#: pod/video/templates/videos/video-info.html:63
+msgid "send an email"
+msgstr "envoyer un courriel"
+
+#: pod/video/templates/videos/video-info.html:68
+msgid "contributor web link"
+msgstr "lien du contributeur"
+
+#: pod/video/templates/videos/video-info.html:78
+msgid "Updated on:"
+msgstr "Mis à jour le :"
+
+#: pod/video/templates/videos/video-info.html:79
+msgid "Duration:"
+msgstr "Durée :"
+
+#: pod/video/templates/videos/video-info.html:80
+msgid "Channel:"
+msgid_plural " Channels:"
+msgstr[0] "Chaîne:"
+msgstr[1] " Chaînes:"
+
+#: pod/video/templates/videos/video-info.html:81
+msgid "Number of view:"
+msgstr "Nombre de vues :"
+
+#: pod/video/templates/videos/video-info.html:81
+msgid "Show details of view statistics"
+msgstr "Afficher les details des statistiques de visualisation"
+
+#: pod/video/templates/videos/video-info.html:81
+msgid "Show details views"
+msgstr "Afficher les details de visualisation"
+
+#: pod/video/templates/videos/video-info.html:85
+msgid "Type:"
+msgstr "Type :"
+
+#: pod/video/templates/videos/video-info.html:86
+msgid "Main language:"
+msgstr "Langue principale :"
+
+#: pod/video/templates/videos/video-info.html:88
+msgid "Audience:"
+msgstr "Public :"
+
+#: pod/video/templates/videos/video-info.html:92
+msgid "Disciplines:"
+msgstr "Disciplines :"
+
+#: pod/video/templates/videos/video-info.html:101
+msgid "Licence:"
+msgstr "Licence :"
+
+#: pod/video/templates/videos/video-info.html:113
+msgid "Video file(s):"
+msgstr "Fichiers vidéos :"
+
+#: pod/video/templates/videos/video-info.html:127
+msgid "Audio file:"
+msgstr "Fichier audio :"
+
+#: pod/video/templates/videos/video-info.html:139
+msgid "Document:"
+msgstr "Document :"
+
+#: pod/video/templates/videos/video-info.html:155
+#: pod/video/templates/videos/video_edit.html:161
+msgid "Embed/Share (Draft Mode)"
+msgstr "Intégrer/Partager (Mode brouillon)"
+
+#: pod/video/templates/videos/video-info.html:158
+msgid "Social Networks"
+msgstr "Réseaux sociaux"
+
+#: pod/video/templates/videos/video-info.html:168
+msgid ""
+"Please note that your video is in draft mode.<br/>The following links "
+"contain a key allowing access. Anyone with this links can access it."
+msgstr ""
+"Veuillez noter que votre vidéo est en mode brouillon. <br/>Les liens "
+"suivants contiennent une clé permettant l’accès. Toute personne disposant de "
+"ces liens peut y accéder."
+
+#: pod/video/templates/videos/video-info.html:174
+msgid "Options"
+msgstr "Options"
+
+#: pod/video/templates/videos/video-info.html:177
+msgid "Autoplay"
+msgstr "Lecture automatique"
+
+#: pod/video/templates/videos/video-info.html:178
+msgid "Check the box to autoplay the video."
+msgstr "Cocher cette case pour lancer la lecture automatiquement."
+
+#: pod/video/templates/videos/video-info.html:183
+msgid "Loop"
+msgstr "Boucle"
+
+#: pod/video/templates/videos/video-info.html:184
+msgid "Check the box to loop the video."
+msgstr "Cocher cette case pour lire la vidéo en boucle."
+
+#: pod/video/templates/videos/video-info.html:190
+msgid "Start video"
+msgstr "Début de la vidéo"
+
+#: pod/video/templates/videos/video-info.html:191
+msgid "Start at"
+msgstr "Démarrer à"
+
+#: pod/video/templates/videos/video-info.html:194
+msgid "Check the box to indicate the beginning of playing desired."
+msgstr "Cocher la case pour indiquer le début de lecture souhaité."
+
+#: pod/video/templates/videos/video-info.html:199
+msgid "Embed in a web page"
+msgstr "Intégrer dans une page web"
+
+#: pod/video/templates/videos/video-info.html:201
+msgid "Copy the content of this text box and paste it in the page:"
+msgstr "Copier le contenu de cette boite de texte et coller le sur la page :"
+
+#: pod/video/templates/videos/video-info.html:206
+msgid "Share the link"
+msgstr "Partager le lien"
+
+#: pod/video/templates/videos/video-info.html:208
+msgid "Use this link to share the video:"
+msgstr "Utiliser ce lien pour partager la vidéo :"
+
+#: pod/video/templates/videos/video-info.html:212
+msgid "QR code for this link:"
+msgstr "QR code pour le lien :"
 
 #: pod/video/templates/videos/video.html:24
 #: pod/video/templates/videos/video.html:37

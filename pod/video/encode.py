@@ -511,7 +511,7 @@ def get_video_command_mp4(video_id, video_data, output_dir):
             name = "%sp" % height
 
             cmd += " %s " % (static_params,)
-            cmd += FFMPEG_SCALE.format(height=360)
+            cmd += FFMPEG_SCALE.format(height=height)
             # cmd += " -vf \"scale=-2:%s\" " % (height)
             # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
@@ -747,7 +747,7 @@ def get_video_command_playlist(video_id, video_data, output_dir):
             name = "%sp" % height
 
             cmd += " %s " % (static_params,)
-            cmd += FFMPEG_SCALE.format(height=360)
+            cmd += FFMPEG_SCALE.format(height=height)
 
             # cmd += " %s -vf " % (static_params,)
             # cmd += "\"scale=-2:%s\"" % (height)
@@ -878,7 +878,8 @@ def create_overview_image(
 ):
     """Create image overview for video navigation."""
     msg = "\ncreate overview image file"
-
+    cmd_ffmpegthumbnailer = ""
+    cmd_montage = ""
     for i in range(0, nb_img):
         stamp = "%s" % i
         if nb_img == 99:
@@ -937,6 +938,8 @@ def create_overview_image(
             + "\n%s" % overviewimagefilename
         msg += "\nthumbnailer command: \n- %s\n" % cmd_ffmpegthumbnailer
         msg += "\nmontage command: \n- %s\n" % cmd_montage
+        msg += "\nduration %s - nb_img %s - image_width %s \n" % (
+            duration, nb_img, image_width)
 
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)
