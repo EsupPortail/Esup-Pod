@@ -47,7 +47,6 @@ def get_filter_search(selected_facets, start_date, end_date):
 def get_remove_selected_facet_link(request, selected_facets):
     remove_selected_facet = ""
     for facet in selected_facets:
-        print(facet)
         if ":" in facet:
             term = facet.split(":")[0]
             value = facet.split(":")[1]
