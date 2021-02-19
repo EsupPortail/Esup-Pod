@@ -1,3 +1,33 @@
+[data-theme="light"] {
+  --primary-background-color: #fff !important;
+  --third-background-color: #fff !important;
+  --bg-color: #111;
+  --font-color: #212529;
+  --title-color: #fec150;
+  --title-background: #222;
+  --main-border: 1px solid rgba(255, 255, 255, 0.2);
+  --main-bg: #fff;
+  --jumbotron-bg: #f8f9fa;
+  --breadcrumbs-bg: #f8f9fa;
+  --card-bg: #fff;
+  --tab-active: #fff;
+}
+
+[data-theme="dark"] {
+  --primary-background-color: rgba(70,70,70) !important;
+  --third-background-color: #484848 !important;
+  --bg-color: #111;
+  --font-color: #d8d8d8;
+  --title-color: #fec150;
+  --title-background: #222;
+  --main-border: 1px solid rgba(255, 255, 255, 0.2);
+  --main-bg: rgba(70,70,70);
+  --jumbotron-bg: #4e4e4e;
+  --breadcrumbs-bg: #333333;
+  --card-bg: #2f2f2f;
+  --tab-active: #484848;
+}
+
 .submit-row a.deletelink {
   height: 35px;
 }
@@ -17,9 +47,12 @@ body[data-admin-utc-offset]
 }
 
 body {
+  background-color: var(--main-bg);
   padding-top: 3.5rem;
+  color: var(--font-color);
 }
 .jumbotron {
+    background-color: var(--jumbotron-bg) !important;
     padding: 1rem 2rem;
 }
 h1{
@@ -32,7 +65,7 @@ label {
   margin-top: 3.5rem;
 }
 .breadcrumb, .jumbotron{
-  background: #f8f9fa;
+  background: var(--breadcrumbs-bg) !important;
 }
 .list-group-item{
   padding:.25rem 1.25rem;
@@ -124,7 +157,7 @@ label {
 .tab-content>.active{
   border: 1px solid #ddd;
   padding: 1.5rem;
-  background: white;
+  background: var(--tab-active);
 }
 .nav-tabs{
   border: 0;
@@ -238,6 +271,10 @@ button.nav-link{
 }
 
 /*** CARD ***/
+.card {
+ background: var(--card-bg);
+}
+
 .infinite-item .card-body {
   padding: 0.9rem;
   height: 3.5rem;
@@ -462,3 +499,78 @@ input.select2-input{
 
 #viewers-ul{height:200px;list-style-type: none;padding-left: 0; }
 #viewers-ul{overflow:hidden; overflow-y:scroll;}
+
+/*** DARK MODE SWITCH ***/
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+}
+.theme-switch-wrapper em {
+  margin-left: 10px;
+  font-size: 1rem;
+}
+.theme-switch {
+  display: inline-block;
+  height: 34px;
+  position: relative;
+  width: 60px;
+  top:7px;
+}
+.theme-switch input {
+  display: none;
+}
+.slider {
+  background-color: #ccc;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+.slider:before {
+  background-color: #fff;
+  bottom: 4px;
+  content: "";
+  height: 26px;
+  left: 4px;
+  position: absolute;
+  transition: 0.4s;
+  width: 26px;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: var(--primary);
+}
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+.slider svg {
+  color: #222;
+  position: absolute;
+  transition: opacity 0.2s ease 0s, transform 0.35s ease 0s;
+  pointer-events: none;
+}
+.feather-moon {
+  opacity: 0;
+  left: 2px;
+  bottom: 5px;
+  color: white !important;
+  transform: translateX(4px);
+}
+.feather-sun {
+  opacity: 1;
+  right: 2px;
+  bottom: 5px;
+  transform: translateX(0px);
+}
+input:checked + .slider .feather-moon {
+  opacity: 1;
+  transform: translateX(0);
+}
+input:checked + .slider .feather-sun {
+  opacity: 0;
+  transform: translateX(-4px);
+}
