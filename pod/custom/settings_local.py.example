@@ -393,6 +393,9 @@ TEMPLATE_VISIBLE_SETTINGS = {
     'TRACKING_TEMPLATE': '',
 }
 
+# Configuration des choix de vitesse de lecture pour le lecteur vidéo
+# valeur par défaut '[0.5, 1, 1.5, 2]'
+VIDEO_PLAYBACKRATES = '[0.5, 1, 1.5, 2]'
 
 # Configuration application recherche
 # Pour mettre à jour le moteur de recherche, je lance toutes les nuits
