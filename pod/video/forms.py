@@ -521,7 +521,7 @@ class VideoForm(forms.ModelForm):
                 self.fields[
                     "date_delete"].widget = forms.DateInput(
                     format=('%Y-%m-%d'),
-                    attrs={"placeholder": "Select a date"})
+                    attrs={"placeholder": "Select a date", "type": "date"})
 
     def hide_default_language(self):
         if self.fields.get('description_%s' % settings.LANGUAGE_CODE):

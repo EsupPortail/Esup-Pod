@@ -1,5 +1,6 @@
-{% load staticfiles %}
+{% load staticfiles custom_tags %}
 {% load i18n %}
+{% get_setting "VIDEO_PLAYBACKRATES" '[0.5, 1, 1.5, 2]' as video_playbackrates %}
 <script>
 window.onmessage = function(event) {
    var evt = event || window.event;
@@ -30,7 +31,8 @@ const options = {
   {% else %}
     fluid: true,
   {% endif %}
-  playbackRates: [0.5, 1, 1.5, 2],
+  //playbackRates: [0.5, 1, 1.5, 2],
+  playbackRates: {{video_playbackrates}},
   userActions: {
     hotkeys: function(event) {
       // `this` is the player in this context

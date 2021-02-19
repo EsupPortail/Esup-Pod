@@ -77,6 +77,7 @@
       <div class="col-4">
       <p><strong>{% trans 'Updated on:' %}</strong><br /> {{ video.date_added }}</p>
       <p><strong>{% trans 'Duration:' %}</strong><br />{{ video.duration_in_time }}</p>
+      {% if video.channel.all %}<p><strong>{% blocktrans count counter=video.channel.all|length %}Channel:{% plural %} Channels:{% endblocktrans %}</strong><br />{% for channel in video.channel.all %}<a href="{% url 'channel' slug_c=channel.slug%}" title="{{ channel.title }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>{{ channel.title }}</a><br />{% endfor %}</p>{%endif%}
       <p><strong>{% trans 'Number of view:' %}</strong><br />{{ video.get_viewcount }}{% if USE_STATS_VIEW %} <a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video_stats_view' video.slug %}?from=video">({% trans 'Show details views' %})</a></p>{% endif %}
 
       </div>
