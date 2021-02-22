@@ -1458,6 +1458,10 @@ color: var(--link-color) !important;
 	color: var(--link-color) !important;
 	border-color: var(--dark);
 }
+[data-theme="dark"] > body #my_videos_filter .categories_list_item #edit_category,
+[data-theme-mode="dark"] > body #my_videos_filter .categories_list_item #edit_category{
+	color: var(--comment-color) !important;
+}
 /* Channel Modal */
 [data-theme="dark"] > body #list-channels,
 [data-theme-mode="dark"] > body #list-channels{
