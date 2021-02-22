@@ -1589,8 +1589,8 @@ color: var(--link-color) !important;
 }
 [data-theme="dark"] > body .cke_top,
 [data-theme-mode="dark"] > body .cke_top{
-	border: 1px solid #151515;
-	background: #dfb05a;
+	border: 1px solid var(--comment-color);
+	background: var(--comment-color);
 	padding: 6px 8px 2px;
 	white-space: normal;
 }
