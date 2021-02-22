@@ -1044,6 +1044,13 @@ input[type=checkbox]{
 	box-shadow: none !important;
 	color: #fff !important;
 }
+[data-theme="light"] > body select[multiple],
+[data-theme-mode="light"] > body select[multiple],
+[data-theme="dark"] > body select[multiple],
+[data-theme-mode="dark"] > body select[multiple]{
+	height: 200px;
+	overflow-y: auto;
+}
 [data-theme="dark"] > body input:focus,
 [data-theme-mode="dark"] > body input:focus{
 	background-color: #fff !important;
