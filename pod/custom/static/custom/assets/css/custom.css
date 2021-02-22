@@ -316,6 +316,7 @@ button.navbar-toggler svg.feather-menu {
 .modal-title svg {
 	color: #e84e0f;
 }
+.badge{font-size: 75% !important;}
 .badge-primary{
 	background-color: #aaa;
 	border: 1px solid inherit;
