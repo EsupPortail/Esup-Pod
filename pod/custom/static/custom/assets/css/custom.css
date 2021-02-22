@@ -1541,8 +1541,8 @@ color: var(--link-color) !important;
 }
 [data-theme="dark"] > body .select2-container,
 [data-theme-mode="dark"] > body .select2-container{
-	background-color: var(--block-color) !important;
-	border-color: var(--block-color) !important;
+	background-color: var(--background-dark-color) !important;
+	border-color: var(--background-dark-color) !important;
 }
 [data-theme="dark"] > body .select2-choices:focus,
 [data-theme-mode="dark"] > body .select2-choices:focus,
