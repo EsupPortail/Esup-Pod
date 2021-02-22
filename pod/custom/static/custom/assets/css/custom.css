@@ -735,7 +735,10 @@ input#save_enrichment{
 input[type=checkbox]{
 	width: auto !important;
 }
-
+/* Video card */
+.video-card .card-footer a.btn.btn-sm{
+	border-radius: 0;
+}
 /* add vidéo to playlist dropdown menu */
 .nav-item.dropright.show .dropdown-menu.show {
     transform: translate(-100%, 50%);
