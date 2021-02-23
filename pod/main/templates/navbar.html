@@ -2,6 +2,7 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% get_available_languages as LANGUAGES %}
 {% get_language_info_list for LANGUAGES as languages %}
+
 <div class="container container-pod" id="nav-mainbar">
   <div>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -137,6 +138,7 @@
         </div>
       </li>
       {% endif %}
+      {% if DARKMODE_ENABLED == True %}
       <li class="nav-item" id="theme-switch-wrapper">
         <label class="theme-switch" for="checkbox">
           <input type="checkbox" id="checkbox" />
@@ -145,7 +147,7 @@
 	             <i data-feather="moon"></i>
             </div>
         </label>
-      </li>
+      </li>{% endif %}
    </ul>
 </div> <!-- FIN Container -->
 {% endspaceless %}

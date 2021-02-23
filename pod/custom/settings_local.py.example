@@ -1179,3 +1179,8 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 # 
 """
 VIDEO_REQUIRED_FIELDS = []
+
+"""
+# Activation du darkmode
+"""
+DARKMODE_ENABLED = False
