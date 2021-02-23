@@ -23,6 +23,9 @@ MENUBAR_SHOW_STAFF_OWNERS_ONLY = getattr(
     django_settings, 'MENUBAR_SHOW_STAFF_OWNERS_ONLY', False)
 
 USE_PODFILE = getattr(django_settings, 'USE_PODFILE', False)
+
+DARKMODE_ENABLED = getattr(django_settings, 'DARKMODE_ENABLED', False)
+
 VERSION = getattr(
     django_settings,
     'VERSION',
@@ -148,6 +151,7 @@ def context_settings(request):
     new_settings['MAINTENANCE_REASON'] = maintenance_text_short
     new_settings['MAINTENANCE_MODE'] = maintenance_mode
     new_settings['USE_BBB'] = USE_BBB
+    new_settings['DARKMODE_ENABLED'] = DARKMODE_ENABLED
     return new_settings
 
 
