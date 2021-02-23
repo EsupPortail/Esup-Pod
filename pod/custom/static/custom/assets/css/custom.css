@@ -1096,7 +1096,7 @@ input[type=checkbox]{
 [data-theme-mode="dark"] > body .border-right,
 [data-theme="dark"] > body .border-bottom,
 [data-theme-mode="dark"] > body .border-bottom{
-	border: 1px solid var(--dark) !important;
+	border-color: var(--dark) !important;
 }
 [data-theme="dark"] > body .border,
 [data-theme-mode="dark"] > body .border{
