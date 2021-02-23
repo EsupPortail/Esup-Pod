@@ -81,6 +81,13 @@ h6 {
 	font-size: 1.4rem;
 }
 
+.jumbotron > h1 > .float-right{
+	display: flex;
+}
+.jumbotron > h1 > .float-right .btn.btn-outline-primary:nth-child(2){
+	margin: 0 .4em;
+}
+
 [data-theme="light"] #videos_list .card-header,
 [data-theme-mode="light"] #videos_list .card-header
 {
@@ -708,6 +715,10 @@ body .selector-filter input{
 	padding: .4em;
 	font-size: 14px;
 }
+/* table */
+table.scroll tbody td, table.scroll thead th{
+	width: max-content !important;
+}
 /* Stat view */
 .jumbotron .float-right .btn-outline-primary:first-child,
 .jumbotron .float-right .btn-outline-primary:first-child
@@ -736,6 +747,11 @@ input[type=checkbox]{
 	width: auto !important;
 }
 /* Video card */
+[data-theme="light"] body .title,
+[data-theme-mode="light"] body .title
+{
+	color: var(--primary) !important;
+}
 .video-card .card-footer a.btn.btn-sm{
 	border-radius: 0;
 }
@@ -809,7 +825,8 @@ input[type=checkbox]{
 .card-text .live_on
 {
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-start;
+	flex-wrap: wrap;
 	align-items: center;
 	padding: .4em;
 	color: #3c3c3b;
@@ -879,6 +896,10 @@ input[type=checkbox]{
 	transition: background-color .3s;
 }
 /* Generic dark css */
+body .card-title{
+	margin-bottom: .2em;
+	padding: .2em;
+}
 [data-theme="dark"] > body .title,
 [data-theme-mode="dark"] > body .title,
 [data-theme="dark"] > body h1.title,
@@ -970,7 +991,6 @@ input[type=checkbox]{
 	color: #fff !important;
 	box-shadow: 4px 4px 4px var(--dark-shadow-color);
 	transition: opacity .3s;
-	font-weight: 600;
 }
 [data-theme="dark"] > body .btn.btn-share.btn-success.btn-add:hover,
 [data-theme-mode="dark"] > body .btn.btn-share.btn-success.btn-add:hover,
@@ -1039,7 +1059,7 @@ input[type=checkbox]{
 [data-theme="dark"] > body select,
 [data-theme-mode="dark"] > body select{
 	background: var(--background-dark-color) !important;
-	border: 1px solid var(--background-dark-color) !important;
+	border-color: var(--background-dark-color) !important;
 	outline: none !important;
 	box-shadow: none !important;
 	color: #fff !important;
@@ -1351,12 +1371,7 @@ color: var(--link-color) !important;
 [data-theme-mode="dark"] > body #collapseAside .collapse > .card{
 	box-shadow: 4px 2px 8px var(--dark-shadow-color);
 }
-[data-theme="dark"] > body .card-text .live_on,
-[data-theme="dark"] > body .card-title,
-[data-theme-mode="dark"] > body .card-title{
-	margin-bottom: .2em;
-	padding: .2em;
-}
+
 [data-theme="dark"] > body .card-title a,
 [data-theme-mode="dark"] > body .card-title a{ transform: translateY(-6px);}
 [data-theme="dark"] > body #collapseAside .btn-sm-light,
