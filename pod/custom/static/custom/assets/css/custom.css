@@ -754,6 +754,10 @@ input[type=checkbox]{
 {
 	color: var(--primary) !important;
 }
+[data-theme="light"] body .carousel-item .carousel-caption .title,
+[data-theme-mode="light"] body .carousel-item .carousel-caption .title{
+	color: white !important;
+}
 .video-card .card-footer a.btn.btn-sm{
 	border-radius: 0;
 }
