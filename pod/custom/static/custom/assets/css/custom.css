@@ -168,16 +168,16 @@ body {
 }
 .foldable_event.opened:hover .arrow_bottom,
 .foldable_event .arrow_right {
-	border: 1px solid #fff !important;
+	border-color: #fff !important;
 	transition: 0.3s border-color;
 }
 .foldable_event .arrow_right {
-	border: 1px solid var(--primary) !important;
+	border-color: var(--primary) !important;
 }
 
 .foldable_event.opened .arrow_bottom,
 .foldable_event:hover .arrow_right {
-	border: 1px solid var(--primary) !important;
+	border-color: var(--primary) !important;
 }
 .foldable_event.opened:hover,
 .foldable_event {
@@ -186,7 +186,7 @@ body {
 	padding: 2px 8px;
 	margin-bottom: 8px;
 	border-radius: 8px;
-	border: 1px solid var(--primary);
+	border-color: var(--primary);
 	color: #fff !important;
 	transition: 0.3s background-color;
 }
@@ -992,7 +992,7 @@ body .card-title{
 [data-theme="dark"] > body .btn.btn-primary,
 [data-theme-mode="dark"] > body .btn.btn-primary{
 	background-color: var(--link-color) !important;
-	border: 1px solid var(--link-color) !important;
+	border-color: var(--link-color) !important;
 	color: #fff !important;
 	box-shadow: 4px 4px 4px var(--dark-shadow-color);
 	transition: opacity .3s;
@@ -1486,7 +1486,7 @@ color: var(--link-color) !important;
 [data-theme="dark"] > body #my_videos_filter .categories_list_item:not(.active) .cat_title,
 [data-theme-mode="dark"] > body #my_videos_filter .categories_list_item:not(.active) .cat_title{
 	color: var(--link-color) !important;
-	border: 1px solid var(--dark);
+	border-color: var(--dark);
 }
 [data-theme="dark"] > body #my_videos_filter .categories_list_item #edit_category,
 [data-theme-mode="dark"] > body #my_videos_filter .categories_list_item #edit_category{
