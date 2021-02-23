@@ -81,7 +81,7 @@
 		        </nav>
 
 		        <div class="row">
-		        	<div class="col order-12 order-md-1">
+		        	<div class="col col-md-9 order-12 order-md-1">
 						<!-- contenu page statique -->
 						<div class="jumbotron">
 							{% block page_content %}
@@ -92,7 +92,7 @@
 						{% if request.path == "/" %}
 						{% include "videos/last_videos.html" %}
                         {% endif %}
-		        	</div> <!-- fin col order-12 order-md-1 -->
+		        	</div>
 		        	<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
                         {% block page_aside %}
 					       {% include 'aside.html'%}

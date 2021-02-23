@@ -45,7 +45,8 @@ def get_filter_search(selected_facets, start_date, end_date):
 
 
 def get_remove_selected_facet_link(request, selected_facets):
-    remove_selected_facet = ""
+    """Return list of links to remove active search filters."""
+    remove_selected_facet = []
     for facet in selected_facets:
         if ":" in facet:
             term = facet.split(":")[0]
@@ -56,9 +57,9 @@ def get_remove_selected_facet_link(request, selected_facets):
                 "?selected_facets=%s:%s&" % (term, value), "?")
             link = link.replace(
                 "?selected_facets=%s:%s" % (term, value), "")
-            msg_title = _('Remove selection')
-            remove_selected_facet += (
-                '&nbsp;<a href="%s" title="%s">&times; %s</a>&nbsp;' % (
+            msg_title = _('Remove this filter')
+            remove_selected_facet.append(
+                '<a href="%s" title="%s">%s</a>' % (
                     link, msg_title, value))
     return remove_selected_facet
 

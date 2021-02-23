@@ -21,7 +21,7 @@
 {% endblock page_extra_head %}
 
 
-{% block breadcrumbs %}{{ block.super }} 
+{% block breadcrumbs %}{{ block.super }}
 {% endblock %}
 
 {% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Interactive video' %}) {{video.title}}{% endblock %}
@@ -40,7 +40,7 @@
 <form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
 {% csrf_token %}
 </form>
-    
+
 <h1 class="pt-2">
 {% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png"></a>{% endif %} {{video.title|title}}
 {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
@@ -119,9 +119,9 @@
 
   </ul>
   </div>
- 
+
   {% include 'videos/video-info.html' with interactive=True %}
-  
+
   <div class="tab-pane fade" id="score" role="tabpanel" aria-labelledby="score-tab">
     <h5><i data-feather="star"></i>&nbsp;{% trans 'Scoreboard' %}</h5>
     <i>{% trans 'Click below to refresh the information.' %}</i>
@@ -180,7 +180,7 @@
     </div>
     {% endif %}
   </div>
-  
+
 </div>
 <!-- -->
 {%endif%}
@@ -188,7 +188,7 @@
 {% endblock video-element %}
 
 {% block page_aside %}
-    {{ block.super }} 
+    {{ block.super }}
 {% endblock page_aside %}
 
 {% block more_script %}
@@ -242,11 +242,11 @@
         }
       });
     });
-    
+
     // Add dynamically the scoreboard to the panel
-    var $myTabContent = $("#myTabContent");
+    var $videoMeta = $("#video-meta");
     var divScore = document.getElementById("score");
-    $myTabContent.append(divScore);
+    $videoMeta.append(divScore);
 </script>
 {% endblock more_script %}
 

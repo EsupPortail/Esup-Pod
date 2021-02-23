@@ -1,3 +1,5 @@
+"""This module handles video encoding with CPU."""
+
 from django.conf import settings
 
 from django.core.files.images import ImageFile
@@ -25,6 +27,8 @@ import json
 import re
 import tempfile
 import threading
+
+__license__ = "LGPL v3"
 
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
@@ -183,7 +187,6 @@ def start_encode(video_id):
 
 def encode_video(video_id):
     """Encode video."""
-
     start = "Start at: %s" % time.ctime()
 
     video_to_encode = Video.objects.get(id=video_id)
@@ -604,7 +607,7 @@ def encode_m4a(video_id, contain_audio, source, output_dir):
 
 
 def encode_mp3(video_id, contain_audio, source, output_dir):
-    """encode audio mp3 for all file !"""
+    """Encode audio mp3 for all file."""
     msg = ""
     if contain_audio:
         change_encoding_step(

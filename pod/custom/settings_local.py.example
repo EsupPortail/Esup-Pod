@@ -421,13 +421,13 @@ ES_TIMEOUT = 30
 """
 ES_MAX_RETRIES = 10
 """
-# Valeur la version d'ElasticSearch 
-# valeurs possibles 6 ou 7 (pour indiquer utiliser elasticsearch 6 ou 7)
-# pour utiliser la version 7, faire une mise à jour du paquet elasticsearch-py 
+# Version d'ElasticSearch
+# valeurs possibles 6 ou 7 (pour indiquer utiliser ElasticSearch 6 ou 7)
+# pour utiliser la version 7, faire une mise à jour du paquet elasticsearch-py
 # elasticsearch==7.10.1
 # https://elasticsearch-py.readthedocs.io/en/v7.10.1/
 """
-ES_VERSION = 6 # Si 7, faire un une mise à jour du paquet 
+ES_VERSION = 6 # Si 7, faire un une mise à jour du paquet
 
 # ## Configuration encodage ## #
 
@@ -1179,6 +1179,6 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 # Exemple valeur: ["discipline", "tags"]
 # NB: les champs cachés et suivant ne sont pas pris en compte:
 # (video, title, type, owner, date_added, cursus, main_lang)
-# 
+#
 """
 VIDEO_REQUIRED_FIELDS = []
