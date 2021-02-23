@@ -1141,7 +1141,7 @@ input[type=checkbox]{
 [data-theme-mode="dark"] > body .btn-outline-primary > svg,
 [data-theme="dark"] > body .btn-outline-primary,
 [data-theme-mode="dark"] > body .btn-outline-primary{
-	border: 1px solid var(--link-color) !important;
+	border-color: var(--link-color) !important;
 	color: var(--link-color) !important;
 }
 [data-theme="dark"] > body .btn-outline-primary:hover,
