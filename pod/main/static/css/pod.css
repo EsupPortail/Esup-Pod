@@ -1,3 +1,8 @@
+/* OpenDyslexic Font via CDN */
+@font-face {
+font-family: "Open Dyslexic";
+src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Regular.woff") format("woff");
+}
 /* COMMON COLORS */
 :root {
 --color-transparent: transparent;
@@ -23,7 +28,7 @@
 /* BOOTSTRAP COLORS */
 --primary: #b03c7e;
 --primary2: #b03c7e;
---light: #f8f9fa;
+--light: #f2f2f2;
 --dark: #343a40;
 --color-formfields: #f1f1f1;
 }
@@ -40,11 +45,33 @@
 --color-formfields: #454c52;
 }
 
+[data-dyslexia="on"] {
+--font-family-sans-serif: "Open Dyslexic";
+}
+.btn-primary.focus, .btn-primary:focus, .btn-primary:hover {
+    background-color: var(--primary2);
+    border-color: var(--primary2);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary2);
+    border-color: var(--primary2);
+}
+.close {
+    color: var(--font-color);
+}
+.close:hover {
+    color: var(--primary2);
+}
+.btn-link:hover {
+    color: var(--primary2);
+}
+
 .navbar-light .navbar-nav .nav-link {
     color: var(--font-color);
 }
 .navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover {
-    color: var(--primary);
+    color: var(--primary2);
 }
 .navbar-brand {
     color: var(--font-color) !important;
@@ -74,7 +101,7 @@
     color: var(--color-white);
     background-color: var(--primary);
     border-color: var(--color-alto) var(--color-alto) var(--color-alto);
-}
+}b03c7e
 
 .btn-link {
     font-weight: 400;
@@ -125,6 +152,7 @@ body[data-admin-utc-offset]
 }
 
 body {
+  font-family: var(--font-family-sans-serif);
   padding-top: 3.5rem;
   color: var(--font-color);
   background-color: var(--bg-color);
@@ -250,7 +278,7 @@ label {
 }
 
 .dropdown-menu {
-  background-color: var(--bg-color);
+  background-color: var(--color-alto);
   color: var(--font-color);
   border: 1px solid var(--color-silver-chalice);
 }
@@ -610,9 +638,9 @@ input.select2-input{
 }
 .theme-switch {
   display: inline-block;
-  height: 34px;
+  height: 24px;
   position: relative;
-  width: 60px;
+  width: 50px;
   top:7px;
 }
 .theme-switch input {
@@ -627,17 +655,17 @@ input.select2-input{
   right: 0;
   top: 0;
   transition: 0.4s;
-  border-radius: 34px;
+  border-radius: 24px;
 }
 .slider:before {
   background-color: var(--white);
-  bottom: 4px;
+  bottom: 2px;
   content: "";
-  height: 26px;
-  left: 4px;
+  height: 20px;
+  left: 2px;
   position: absolute;
   transition: 0.4s;
-  width: 26px;
+  width: 20px;
   border-radius: 50%;
 }
 input:checked + .slider {
@@ -648,21 +676,22 @@ input:checked + .slider:before {
 }
 .slider svg {
   color: var(--color-mine-shaft);
+  width: 15px;
   position: absolute;
   transition: opacity 0.2s ease 0s, transform 0.35s ease 0s;
   pointer-events: none;
 }
 .feather-moon {
   opacity: 0;
-  left: 2px;
-  bottom: 5px;
+  left: 5px;
+  bottom: 0px;
   color: var(--white) !important;
   transform: translateX(4px);
 }
 .feather-sun {
   opacity: 1;
-  right: 2px;
-  bottom: 5px;
+  right: 5px;
+  bottom: 0px;
   transform: translateX(0px);
 }
 input:checked + .slider .feather-moon {
@@ -670,6 +699,48 @@ input:checked + .slider .feather-moon {
   transform: translateX(0);
 }
 input:checked + .slider .feather-sun {
+  opacity: 0;
+  transform: translateX(-4px);
+}
+
+/* DYSLEXIA SWITCH */
+.dyslexia-switch-wrapper {
+  display: flex;
+  align-items: center;
+}
+.dyslexia-switch-wrapper em {
+  margin-left: 10px;
+  font-size: 1rem;
+}
+.dyslexia-switch {
+  display: inline-block;
+  height: 24px;
+  position: relative;
+  width: 50px;
+  top:7px;
+}
+.dyslexia-switch input {
+  display: none;
+}
+
+.feather-book-open {
+  opacity: 0;
+  left: 5px;
+  bottom: 0px;
+  color: var(--white) !important;
+  transform: translateX(4px);
+}
+.feather-book {
+  opacity: 1;
+  right: 5px;
+  bottom: 0px;
+  transform: translateX(0px);
+}
+input:checked + .slider .feather-book-open {
+  opacity: 1;
+  transform: translateX(0);
+}
+input:checked + .slider .feather-book {
   opacity: 0;
   transform: translateX(-4px);
 }
