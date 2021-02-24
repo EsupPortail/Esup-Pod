@@ -723,24 +723,24 @@ input:checked + .slider .feather-sun {
   display: none;
 }
 
-.feather-book-open {
+.feather-eye {
   opacity: 0;
   left: 5px;
   bottom: 0px;
   color: var(--white) !important;
   transform: translateX(4px);
 }
-.feather-book {
+.feather-eye-off {
   opacity: 1;
   right: 5px;
   bottom: 0px;
   transform: translateX(0px);
 }
-input:checked + .slider .feather-book-open {
+input:checked + .slider .feather-eye {
   opacity: 1;
   transform: translateX(0);
 }
-input:checked + .slider .feather-book {
+input:checked + .slider .feather-eye-off {
   opacity: 0;
   transform: translateX(-4px);
 }
