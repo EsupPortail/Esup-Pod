@@ -25,7 +25,7 @@
 <div class="row">
     {% if remove_selected_facet %}
         <div class="col-sm-9">
-            <strong>{% trans 'Active filters (click to remove):' %}</strong>
+            <strong>{% trans 'Active filters (click to unfilter):' %}</strong>
             <ul class="list-inline">
             {% for facet in remove_selected_facet %}
                 <li class="list-inline-item remove-link">{{facet|safe}}</li>

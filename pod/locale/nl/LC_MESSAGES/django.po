@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-23 16:32+0000\n"
+"POT-Creation-Date: 2021-02-24 08:35+0000\n"
 "PO-Revision-Date: 2021-01-22 12:27+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -5291,7 +5291,7 @@ msgid "Search results"
 msgstr ""
 
 #: pod/video_search/templates/search/search.html:28
-msgid "Active filters (click to remove):"
+msgid "Active filters (click to unfilter):"
 msgstr ""
 
 #: pod/video_search/templates/search/search.html:46
