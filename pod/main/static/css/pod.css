@@ -1,5 +1,5 @@
-[data-theme="light"] {
-/* CUSTOM COLORS */
+/* COMMON COLORS */
+:root {
 --color-transparent: transparent;
 --color-white: white;
 --color-black: black;
@@ -14,80 +14,34 @@
 --color-outer-space: rgba(40,48,56, 0.5);
 --color-red: #FF0000;
 --color-mine-shaft: #222;
---bg-color: ;
---font-color: ;
+}
+
+[data-theme="light"] {
+/* CUSTOM COLORS */
+--bg-color: #FFF;
+--font-color: #222;
 /* BOOTSTRAP COLORS */
 --primary2: #b03c7e;
---blue: #007bff;
---indigo: #6610f2;
---purple: #6f42c1;
---pink: #e83e8c;
---red: #dc3545;
---orange: #fd7e14;
---yellow: #ffc107;
---green: #28a745;
---teal: #20c997;
---cyan: #17a2b8;
---white: #fff;
---gray: #6c757d;
---gray-dark: #343a40;
---primary: #b03c7e;
---secondary: #6c757d;
---success: #28a745;
---info: #17a2b8;
---warning: #ffc107;
---danger: #dc3545;
 --light: #f8f9fa;
 --dark: #343a40;
 }
 [data-theme="dark"] {
 /* CUSTOM COLORS */
---color-transparent: transparent;
---color-white: white;
---color-black: black;
---color-alto: #ddd;
---color-sisal: rgba(218,208,190,1);
---color-mine-shaft: rgba(60,60,60,0.3);
---color-black-alpha: rgba(0, 0, 0, 0.6);
---color-silver: #ccc;
---color-fuzzy-wuzzy-brown: rgba(201, 76, 76, 0.3);
---color-silver-chalice: #aaa;
---color-white: #FFF;
---color-outer-space: rgba(40,48,56, 0.5);
---color-red: #FF0000;
---color-mine-shaft: #222;
 --color-shark: #212529;
 --bg-color: #343a40;
 --font-color: #f8f9fa;
 /* BOOTSTRAP COLORS */
 --primary2: #b03c7e;
---blue: #007bff;
---indigo: #6610f2;
---purple: #6f42c1;
---pink: #e83e8c;
---red: #dc3545;
---orange: #fd7e14;
---yellow: #ffc107;
---green: #28a745;
---teal: #20c997;
---cyan: #17a2b8;
---white: #fff;
---gray: #6c757d;
---gray-dark: #343a40;
---primary: #b03c7e;
---secondary: #6c757d;
---success: #28a745;
---info: #17a2b8;
---warning: #ffc107;
---danger: #dc3545;
---light: #262d3540;
+--light: #343a40;
 --dark: #f8f9fa;
 }
 
 .navbar-light .navbar-nav .nav-link {
     color: var(--font-color);
 }
-
+.navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover {
+    color: var(--primary2);
+}
 .navbar-brand {
     color: var(--font-color) !important;
 }
@@ -98,6 +52,22 @@
 
 .bg-dark {
     background-color: var(--gray)!important;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: var(--color-white);
+    background-color: var(--primary2);
+    border-color: var(--color-alto) var(--color-alto) var(--color-alto);
+}
+
+.card-footer-pod .btn {
+color: var(--font-color);
+}
+
+.card-footer-pod .btn-light {
+    color: var(--font-color);
+    background-color: var(--light);
+    border-color: var(--color-alto);
 }
 
 .submit-row a.deletelink {
@@ -139,6 +109,7 @@ label {
   background: var(--light);
 }
 .list-group-item{
+  background: var(--bg-color);
   padding:.25rem 1.25rem;
 }
 
@@ -177,7 +148,8 @@ label {
   text-align: left;
 }
 .btn-lang-active{
-  background: var(--white);
+  background: var(--bg-color);
+  color: var(--font-color);
 }
 .navbar-inner-pod{
   position: relative;
@@ -197,6 +169,10 @@ label {
   height: 40px;
   width: 40px;
   /*color:var(--primary2);*/
+}
+
+.modal-content {
+  background-color: var(--bg-color);
 }
 
 .modal-title{
@@ -228,10 +204,16 @@ label {
 .tab-content>.active{
   border: 1px solid var(--color-alto);
   padding: 1.5rem;
-  background: var(--white);
+  background: var(--bg-color);
 }
 .nav-tabs{
   border: 0;
+}
+
+.dropdown-menu {
+  background-color: var(--bg-color);
+  color: var(--font-color);
+  border: 1px solid var(--color-silver-chalice);
 }
 
 /***aside ***/
@@ -389,6 +371,7 @@ div.card a:hover>img {
 
 .card {
   background-color: var(--bg-color);
+  border-color: var(--color-silver-chalice);
 }
 
 .card-footer-pod {
