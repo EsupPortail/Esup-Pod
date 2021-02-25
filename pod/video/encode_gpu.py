@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Encode.py
-# Encoding video for Pod
-#
-# Nicolas CAN <nicolas.can@univ-lille.fr>
+"""This module handles video encoding with GPU."""
+# encode_gpu.py
 # Wed Sep  2 11:49:12 CEST 2020
 
 from __future__ import absolute_import, division, print_function
@@ -18,8 +16,11 @@ import time
 from json.decoder import JSONDecodeError
 
 from timeit import default_timer as timer
-# from unidecode import unidecode # third partu package to remove accent
+# from unidecode import unidecode # third party package to remove accent
 import unicodedata
+
+__author__ = "Nicolas CAN <nicolas.can@univ-lille.fr>"
+__license__ = "LGPL v3"
 
 DEBUG = False
 
@@ -119,14 +120,14 @@ def encode_with_gpu(format, codec, height, file):
             msg += "Encode CPU %s ok \n" % format
             return_value = True
     if return_value is False:
-        msg += 20*"////" + "\n"
+        msg += 20 * "////" + "\n"
         msg += 'ERROR ENCODING %s FOR FILE %s \n' % (format, file)
     encode_log(msg)
     return return_value
 
 
 def encode_without_gpu(format, codec, height, file):
-    msg = "--> encode_with_gpu \n"
+    msg = "--> encode_without_gpu \n"
     return_value = False
     """
     if encode("mixed", format, codec, height, file):
