@@ -32,6 +32,7 @@ import importlib
 
 from select2 import fields as select2_fields
 from sorl.thumbnail import get_thumbnail
+from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from django.db.models import Count, Case, When, Value, BooleanField, Q
@@ -559,7 +560,7 @@ class Video(models.Model):
             'the video will only be accessible to authenticated users.'),
         default=False)
     restrict_access_to_groups = select2_fields.ManyToManyField(
-        Group, blank=True, verbose_name=_('Groups'),
+        AccessGroup, blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who can access to this video'))
     password = models.CharField(
         _('password'),

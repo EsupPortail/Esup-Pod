@@ -555,7 +555,7 @@ class VideoForm(forms.ModelForm):
             sites=Site.objects.get_current())
         self.fields["restrict_access_to_groups"].queryset = \
             self.fields["restrict_access_to_groups"].queryset.filter(
-                groupsite__sites=Site.objects.get_current())
+                sites=Site.objects.get_current())
         self.fields["discipline"].queryset = Discipline.objects.all(
         ).filter(
             sites=Site.objects.get_current())
