@@ -30,7 +30,7 @@ class UserFolder(models.Model):
     owner = select2_fields.ForeignKey(User, verbose_name=_('Owner'))
     created_at = models.DateTimeField(auto_now_add=True)
     groups = select2_fields.ManyToManyField(
-        Group, blank=True, verbose_name=_('Groups'),
+        'authentication.AccessGroup', blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who'
                     ' can access in read only to this folder'))
     users = select2_fields.ManyToManyField(
