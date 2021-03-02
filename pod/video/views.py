@@ -174,11 +174,7 @@ def paginator(videos_list, page):
     return videos
 
 
-def channel(request, slug_c, slug_t=None):
-    channel = get_object_or_404(Channel, slug=slug_c,
-                                sites=get_current_site(request))
-
-
+def check_access_to_channel(request, channel):
     if channel.allow_to_groups.exists():
         has_access = False
         for group in channel.allow_to_groups.all():
@@ -190,9 +186,14 @@ def channel(request, slug_c, slug_t=None):
                     u'You cannot view this channel.'))
             raise PermissionDenied
 
-    videos_list = VIDEOS.filter(channel=channel)
-  # if channel.allow_to_groups
 
+def channel(request, slug_c, slug_t=None):
+    channel = get_object_or_404(Channel, slug=slug_c,
+                                sites=get_current_site(request))
+
+    check_access_to_channel(request, channel)
+
+    videos_list = VIDEOS.filter(channel=channel)
 
     theme = None
     if slug_t:

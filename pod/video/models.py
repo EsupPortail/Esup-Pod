@@ -12,7 +12,6 @@ from django.utils.translation import get_language
 from django.template.defaultfilters import slugify
 from django.db.models import Sum
 from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
@@ -261,7 +260,8 @@ class Channel(models.Model):
         default=False)
     allow_to_groups = select2_fields.ManyToManyField(
         AccessGroup, blank=True, verbose_name=_('Groups'),
-        help_text=_('Select one or more groups who can access to this channel, if no group selected will no be protected'))
+        help_text=_('Select one or more groups who can access to this channel,'
+                    'if no group selected will no be protected'))
     sites = models.ManyToManyField(Site)
 
     class Meta:

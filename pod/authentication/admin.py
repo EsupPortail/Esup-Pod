@@ -184,6 +184,7 @@ class GroupAdmin(admin.ModelAdmin):
 class AccessGroupAdmin(admin.ModelAdmin):
     pass
 
+
 # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
