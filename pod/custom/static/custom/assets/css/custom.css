@@ -210,7 +210,7 @@ body {
 	border: 1px solid rgba(0, 0, 0, 0.4);
 }
 .dropdown-item.playlist-item:not(:last-child) {
-	border-bottom: 1px solid #50a5a6 !important;
+	border-bottom: 1px solid var(--dark-primary) !important;
 }
 .dropdown-item.playlist-item {
 	cursor: pointer;
@@ -245,7 +245,7 @@ body {
 }
 .text-center .btn {
 	white-space: unset !important;
-	padding: 1.5em 0.8em !important;
+	padding: .4em .8em !important;
 	justify-content: center !important;
 	align-items: center !important;
 	display: flex !important;
@@ -359,7 +359,7 @@ button.navbar-toggler svg.feather-menu {
 .badge-primary-pod a{color: inherit !important;}
 .btn-link:hover,
 .btn-link {
-    color: var(--primary);
+    color: var(--dark-primary);
 }
 [data-theme='light'] #podfile #dirs .dirs-nav-container .add-folder-btn,
 [data-theme-mode='light'] #podfile #dirs .dirs-nav-container .add-folder-btn
@@ -480,6 +480,34 @@ a.dropdown-item:hover {
 	background-color: #e84e0f !important;
 	color: #fff !important;
 }
+/* light mode btn */
+[data-theme="light"] > body .close,
+[data-theme-mode="light"] > body .close,
+[data-theme="light"] > body button.close,
+[data-theme-mode="light"] > body button.close,
+[data-theme="light"] > body a,
+[data-theme-mode="light"] > body a,
+[data-theme="light"] > body .btn.btn-link,
+[data-theme-mode="light"] > body .btn.btn-link
+{
+	color: #e84e0f;
+}
+/* video info */
+.tab-pane.active.show input.btn.btn-link.btn-sm {
+    overflow: hidden;
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+}
+/* end video info */
+[data-theme="dark"] > body fieldset svg.feather.feather-send.align-bottom,
+[data-theme-mode="dark"] > body fieldset svg.feather.feather-send.align-bottom{
+	color: inherit;
+    transform: translateY(-5px);
+}
+
+/* end light mode btn */
 
 .dropdown-menu.dropdown-menu-right.show,
 .dropdown-item {
@@ -555,14 +583,8 @@ main.mt-3 .nav-tabs .nav-link:hover,
 main.mt-3 .nav-tabs .nav-link.active {
 	border: none !important;
 }
-/* Stats view */
-
-
 /*  CONTENT SIDEBARD */
-fieldset svg.feather.feather-send.align-bottom {
-	color: #102636;
-	transition: color 0.3s;
-}
+
 fieldset svg.feather.feather-send.align-bottom:hover {
 	color: #e84e0f;
 }
@@ -608,7 +630,7 @@ footer p {
 	}
 	.navbar-nav {
 		background-color: #102636;
-		padding: 1em;
+		padding: .4em .8em;
 		z-index: 1;
 		justify-content: space-around !important;
 	}
@@ -1259,7 +1281,8 @@ color: var(--link-color) !important;
 [data-theme="dark"] > body #nav-languagechoice,
 [data-theme-mode="dark"] > body #nav-languagechoice{
 	flex-wrap: wrap;
-	justify-content: space-around !important;
+	border: none;
+	margin: 0 !important;
 }
 [data-theme="dark"] > body #nav-languagechoice input.btn.btn-lang,
 [data-theme-mode="dark"] > body #nav-languagechoice input.btn.btn-lang,
@@ -2016,7 +2039,7 @@ border: 1px solid var(--block-color);
 [data-theme-mode="dark"] > body #podfile #list_folders_sub .view-more-container::after,
 [data-theme="dark"] > body #podfile #list_folders_sub .view-more-container a#more,
 [data-theme-mode="dark"] > body #podfile #list_folders_sub .view-more-container a#more{
-	border: 1px solid var(--link-color);
+	border-color: var(--link-color);
 }
 [data-theme="dark"] > body #podfile #list_folders_sub .view-more-container a#more:hover,
 [data-theme-mode="dark"] > body #podfile #list_folders_sub .view-more-container a#more:hover{
