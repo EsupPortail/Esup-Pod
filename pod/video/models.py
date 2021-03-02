@@ -259,6 +259,9 @@ class Channel(models.Model):
             u'If checked, the channel appear in a list of available '
             + 'channels on the platform.'),
         default=False)
+    allow_to_groups = select2_fields.ManyToManyField(
+        AccessGroup, blank=True, verbose_name=_('Groups'),
+        help_text=_('Select one or more groups who can access to this channel, if no group selected will no be protected'))
     sites = models.ManyToManyField(Site)
 
     class Meta:

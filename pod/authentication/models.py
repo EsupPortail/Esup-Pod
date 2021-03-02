@@ -145,3 +145,7 @@ class AccessGroup(models.Model):
     display_name = models.CharField(max_length=64, unique=True, blank=False, default="")
     name = models.CharField(max_length=64, unique=True, blank=False, default="")
     sites = models.ManyToManyField(Site)
+    users = models.ManyToManyField(User)
+
+    def __str__(self):
+        return "%s" % (self.display_name)

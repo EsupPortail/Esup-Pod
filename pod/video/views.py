@@ -178,7 +178,18 @@ def channel(request, slug_c, slug_t=None):
     channel = get_object_or_404(Channel, slug=slug_c,
                                 sites=get_current_site(request))
 
+    print(channel.allow_to_groups.all())
+    if channel.allow_to_groups.exists():
+        #for group in channel.allow_to_groups.all():
+
+        messages.add_message(
+            request, messages.ERROR, _(
+                u'You cannot delete this video.'))
+        raise PermissionDenied
+
     videos_list = VIDEOS.filter(channel=channel)
+  # if channel.allow_to_groups
+
 
     theme = None
     if slug_t:
