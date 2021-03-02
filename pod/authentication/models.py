@@ -147,7 +147,7 @@ class AccessGroup(models.Model):
     name = models.CharField(
         max_length=64, unique=True, blank=False, default="")
     sites = models.ManyToManyField(Site)
-    users = models.ManyToManyField(User, blank=True)
+    users = models.ManyToManyField(Owner, blank=True)
 
     def __str__(self):
         return "%s" % (self.display_name)
