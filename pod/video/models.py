@@ -708,7 +708,8 @@ class Video(models.Model):
                  get_current_site(None).domain,
                  settings.STATIC_URL,
                  DEFAULT_THUMBNAIL])
-        return '<img class="card-img-top" src="%s" alt="%s" loading="lazy"/>' % (
+        return '<img class="card-img-top" src="%s" alt="%s"\
+            loading="lazy"/>' % (
             thumbnail_url, self.title.replace('"', "'"))
 
     @property

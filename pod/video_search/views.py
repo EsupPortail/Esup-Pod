@@ -77,7 +77,8 @@ def get_result_aggregations(result, selected_facets):
             else:
                 if agg_term == "type.slug":
                     del result["aggregations"]["type_title"]
-                if agg_term == "tags.slug":
+                if agg_term == "tags.slug" and (
+                        "tags_name" in result["aggregations"]):
                     del result["aggregations"]["tags_name"]
                 if agg_term == "disciplines.slug":
                     del result["aggregations"]["disciplines_title"]
