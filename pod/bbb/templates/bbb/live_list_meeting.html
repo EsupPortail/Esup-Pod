@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block page_extra_head %}
+<script type="text/javascript">
+window.setInterval("location.reload(true)",30000);
+</script>
+{% endblock %}
+
+{% block breadcrumbs %}{{ block.super }} 
+	{% if USE_BBB_LIVE %}	
+		<li class="breadcrumb-item" aria-current="page"><a href="{% url 'bbb:list_meeting' %}" title="{% trans 'My BigBlueButton records and lives' %}">{% trans 'My BigBlueButton records and lives' %}</a></li>
+	{% else %}
+		<li class="breadcrumb-item" aria-current="page"><a href="{% url 'bbb:list_meeting' %}" title="{% trans 'My BigBlueButton records' %}">{% trans 'My BigBlueButton records' %}</a></li>
+	{% endif %}
+	<li class="breadcrumb-item active" aria-current="page">{% trans 'Perform a BigBlueButton live' %}</li>
+{% endblock %}
+
+{% block page_title %}
+	{% trans 'Perform a BigBlueButton live' %}
+{% endblock %}
+
+{% block page_content %}
+
+  <h3>{% trans "Perform a BigBlueButton live" %}</h3>
+  {% if records.paginator.count == 0 %}
+	<h5>{% trans "No BigBlueButton session in progress found"%}</h5>
+  {% else %}
+	<h5>{% blocktrans count counter=records.paginator.count %}{{ counter }} BigBlueButton session in progress found{% plural %}{{ counter }} BigBlueButton sessions in progress found{% endblocktrans %}</h5>
+  {% endif %}
+	
+  {% trans "This is the list of current BigBlueButton sessions for which you are moderator. This module allows you to make a live stream from this BigBlueButton session (<i>useful if there are more than 100 users</i>)." %}
+  {% trans "<b>Remember to not use breakout rooms in this case and end the meeting once it is over.</b>" %}<br/>
+  {% trans "Shortly after clicking the \"Perform a BigBlueButton live\" button, and select the desired options, the live stream will be available to users on the <i data-feather=\"radio\"></i> <b>Lives</b> page." %}<br/>
+  <br/>
+  
+  {% if records.paginator.count == 0 %}
+	<p class="alert alert-info">{% trans 'There are no BigBlueButton sessions in progress.'%}</p>
+  {% else %}
+	{% include "bbb/live_record_list.html" %}
+  {% endif %}
+  
+<!--
+  <div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-xl" style="max-width:1440px"role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h2 class="modal-title" id="exampleModalLabel">{% trans "BigBlueButton presentation preview" %}</h2>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<center>
+				<iframe id="iframeBBB" src="" width="640" height="360" style="padding: 0; margin: 0 auto; border:0" allowfullscreen ></iframe>
+			</center>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+		  </div>
+		</div>
+	  </div>
+  </div>
+-->
+  <small class="form-text text-muted"><i>{% trans "Please note: this page refreshes automatically every 30 seconds." %}</i></small>
+
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+{% block more_script %}
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite.min.js' %}"></script>
+<script>
+  var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+      $('.loading').show();
+    },
+    onAfterPageLoad: function ($items) {
+      $('.loading').hide();
+      feather.replace({ class: 'align-bottom'});
+      $('footer.static-pod').addClass('small');
+      $('footer.static-pod').addClass('fixed-bottom');
+      $('footer.static-pod').attr('style','height:80px; overflow-y:auto');
+      $('footer.static-pod .hidden-pod').css('display','none');
+      $(window).scroll(function () {
+        if ($(window).height() + $(window).scrollTop() == $(document).height())
+        {
+           $('footer.static-pod .hidden-pod').css('display','block');
+           $('footer.static-pod').attr('style','height:auto;');
+           $('footer.static-pod').removeClass('fixed-bottom');
+        }
+      });
+    }
+  });
+
+$('.previewBtn').on('click', function (e) {
+	$('#iframeBBB').attr('src', $(this).data("recid"));
+})
+</script>
+{% endblock more_script %}
