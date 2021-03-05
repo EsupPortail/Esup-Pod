@@ -1105,6 +1105,21 @@ BBB_USERNAME_FORMAT = 'first_name last_name'
 BBB_NUMBER_DAYS_BEFORE_DELETE = 0
 
 """
+# Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton
+"""
+USE_BBB_LIVE = False
+
+"""
+# Autoriser les utilisateurs à enregistrer leur direct BigBlueButton directement dans Mes vidéos
+"""
+USE_BBB_LIVE_DOWNLOADING = False
+
+"""
+# Nombre maximum de directs BBB simultanés gérés par le système
+"""
+BBB_NUMBER_MAX_LIVES = 4
+
+"""
 #
 # Permet d'activer le fonctionnement de categorie au niveau de ses vidéos
 # Vous pouvez créer des catégories pour pouvoir ranger vos propres vidéos
