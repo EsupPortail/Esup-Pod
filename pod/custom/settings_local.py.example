@@ -144,6 +144,15 @@ FILE_UPLOAD_TEMP_DIR = "/var/tmp"
 STATIC_ROOT = "/pod/static"
 
 """
+# Indique à django de compresser automatiquement
+# les fichiers css/js les plus gros lors du collectstatic
+# pour optimiser les tailles de requetes.
+# À combiner avec un réglage webserver ("gzip_static  on;" sur nginx)
+# voir https://github.com/whs/django-static-compress
+"""
+STATICFILES_STORAGE = 'static_compress.CompressedStaticFilesStorage'
+
+"""
 # Chemin absolu du système de fichiers pointant vers le répertoire
 #  qui contiendra les fichiers téléversés par les utilisateurs.
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-MEDIA_ROOT

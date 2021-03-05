@@ -1425,8 +1425,9 @@ def video_oembed(request):
             data['provider_url'], reverse('videos'), video.owner.username)
         data['html'] = (
             "<iframe src=\"%(provider)s%(video_url)s%(slug_private)s"
-            + "?is_iframe=true\" width=\"640\" height=\"360\" style=\""
-            + "padding: 0; margin: 0; border:0\" allowfullscreen loading='lazy'></iframe>"
+            + "?is_iframe=true\" width=\"640\" height=\"360\" "
+            + "style=\"padding: 0; margin: 0; border:0\" "
+            + "allowfullscreen loading='lazy'></iframe>"
         ) % {
             'provider': data['provider_url'],
             'video_url': reverse('video', kwargs={'slug': video.slug}),
@@ -1584,7 +1585,7 @@ def stats_view(request, slug=None, slug_t=None):
 
     elif request.method == "GET" and target == "video" and not videos:
         return HttpResponseNotFound(
-            _("The following video does not exist : %s") % slug)
+            _("The following video does not exist: %s") % slug)
 
     if request.method == "GET" and (
             not videos and target in ("channel", "theme", "videos")):
