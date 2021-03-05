@@ -16,6 +16,9 @@ import importlib
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile import rest_views as podfile_views
 
+if getattr(settings, 'USE_BBB', True):
+    from pod.bbb import rest_views as bbb_views
+
 router = routers.DefaultRouter()
 
 router.register(r'mainfiles', main_views.CustomFileModelViewSet)
@@ -54,6 +57,11 @@ if getattr(settings, 'USE_PODFILE', False):
                     podfile_views.CustomFileModelSerializerViewSet)
     router.register(r'images',
                     podfile_views.CustomImageModelSerializerViewSet)
+
+if getattr(settings, 'USE_BBB', True):
+    router.register(r'bbb_meeting', bbb_views.MeetingModelViewSet)
+    router.register(r'bbb_attendee', bbb_views.AttendeeModelViewSet)
+    router.register(r'bbb_livestream', bbb_views.LivestreamModelViewSet)
 
 urlpatterns = [
     url(r'dublincore/$', video_views.DublinCoreView.as_view(),
