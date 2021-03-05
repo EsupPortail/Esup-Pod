@@ -91,6 +91,11 @@ ADMINS = (('Name', 'adminmail@univ.fr'),)
 MANAGERS = ADMINS
 
 """
+# Liste des adresses destinataires des courriels de contact
+"""
+CONTACT_US_EMAIL = []
+
+"""
 # Un dictionnaire contenant les réglages de toutes les bases de données
 #  à utiliser avec Django.
 # C’est un dictionnaire imbriqué dont les contenus font correspondre
