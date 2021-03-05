@@ -3937,7 +3937,7 @@ msgstr "Vous pouvez envoyer un fichier audio ou vidéo."
 #: pod/video/forms.py:91 pod/video/views.py:1639
 #, python-format
 msgid "The following formats are supported: %s"
-msgstr "Les formats suivants sont supportés: %s"
+msgstr "Les formats suivants sont supportés : %s"
 
 #: pod/video/forms.py:94 pod/video/forms.py:221 pod/video/forms.py:247
 msgid "Title field"

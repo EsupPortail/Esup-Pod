@@ -34,7 +34,7 @@
 
 {% else %}
 <div id="h5pcontent">
-    <iframe id="icontent" src="{% url 'h5pp:h5pcontent' %}?contentId={{more_data.h5p.content_id}}&is_iframe=true" style="display:none;" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+  <iframe id="icontent" src="{% url 'h5pp:h5pcontent' %}?contentId={{more_data.h5p.content_id}}&is_iframe=true" style="display:none;" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no" loading="lazy"></iframe>
 </div>
 
 <form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
@@ -42,10 +42,10 @@
 </form>
 
 <h1 class="pt-2">
-{% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png"></a>{% endif %} {{video.title|title}}
+{% if video.licence %}<a href="https://creativecommons.org/licenses/{{video.licence}}/4.0" title="{{video.get_licence}}" target="_blank"><img src="https://licensebuttons.net/l/{{video.licence}}/4.0/88x31.png" loading="lazy"></a>{% endif %} {{video.title|title}}
 {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
   <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans "Report the video"%}" >
-      <i data-feather="alert-octagon"></i>
+    <i data-feather="alert-octagon"></i>
   </a>
 </h1>
 

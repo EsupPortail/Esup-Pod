@@ -28,7 +28,7 @@
 {% include 'videos/video-form.html' %}
 {% else %}
 <div id="h5pcontent">
-    <iframe id="icontent" src="{% url 'h5pp:h5pcontent' %}?contentId={{more_data.h5p.content_id}}&is_iframe=true" style="display:none;" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no"></iframe>
+    <iframe id="icontent" src="{% url 'h5pp:h5pcontent' %}?contentId={{more_data.h5p.content_id}}&is_iframe=true" style="display:none;" frameBorder="0" allowfullscreen="allowfullscreen" scrolling="no" loading="lazy"></iframe>
 </div>
 <form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
 {% csrf_token %}
