@@ -2,34 +2,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>{{course_title}}</title>
-<style>
-* {
+  <meta charset="UTF-8">
+  <title>{{course_title}}</title>
+  <style>
+  * {
     margin:0;
     padding: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
-}
-</style>
+  }
+  </style>
 </head>
 
 <body>
 {% if messages %}
-<div id="base-message-alert">
-{% for message in messages %}
-  <p>{{ message }}</p>
-{% endfor %}
-</div>
+  <div id="base-message-alert">
+  {% for message in messages %}
+    <p>{{ message }}</p>
+  {% endfor %}
+  </div>
 {% else %}
-{% if iframe_url and iframe_url != "" %}
-<iframe title="{{course_title}}" src="{{iframe_url}}" width="100%" height="100%">
-<p>{% trans "Your browser does not support iframes"%}.</p>
-</iframe>
-{% else %}
-<p>{% trans "Activity not found" %}</p>
-{%endif%}
+  {% if iframe_url and iframe_url != "" %}
+    <iframe title="{{course_title}}" src="{{iframe_url}}" width="100%" height="100%" loading="lazy">
+      <p>{% trans "Your browser does not support iframes"%}.</p>
+    </iframe>
+  {% else %}
+    <p>{% trans "Activity not found" %}</p>
+  {%endif%}
 {% endif %}
 {% comment %}
 <!--
@@ -55,8 +55,8 @@
         </form>
     {% endif %}
 </div>
-% endblock 
+% endblock
 -->
 {% endcomment %}
 </body>
-</html> 
+</html>

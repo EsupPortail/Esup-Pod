@@ -35,7 +35,7 @@ body {
 </span>
 </h3>
 {% if form.instance.headband %}
-<img src="{{ form.instance.headband.file.url }}" alt="{% trans 'Headband' %} {{ form.instance.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
+  <img src="{{ form.instance.headband.file.url }}" alt="{% trans 'Headband' %} {{ form.instance.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
 {% endif %}
 
 <form id="channel_form" method="post"

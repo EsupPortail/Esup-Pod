@@ -443,6 +443,7 @@ footer a, footer a:hover{
 
 .footer_links{
   list-style: none;
+  padding-left: 1em;
 }
 .footer_links>li:before{
   margin-right: .5em;

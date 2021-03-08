@@ -328,12 +328,12 @@ var show_theme_form = function(data) {
 var show_picture_form = function(data) {
 	$( "#userpicture_form" ).html($(data).find("#userpicture_form").html());
     if($(data).find("#userpictureurl").val()) {
-        //$(".get_form_userpicture").html('<img src="'+$(data).find("#userpictureurl").val()+'" height="34" class="rounded" alt="">Change your picture');
+        //$(".get_form_userpicture").html('<img src="'+$(data).find("#userpictureurl").val()+'" height="34" class="rounded" alt="" loading="lazy">Change your picture');
         $("#navbarDropdown .userpicture").remove();
         $("#navbarDropdown .userinitial").hide();
         $("#navbarDropdown").removeClass('initials');
         $("#navbarDropdown").append(
-            '<img src="'+$(data).find("#userpictureurl").val()+'" class="userpicture img-fluid rounded" alt="avatar">'
+            '<img src="'+$(data).find("#userpictureurl").val()+'" class="userpicture img-fluid rounded" alt="avatar" loading="lazy">'
         );
         $('.get_form_userpicture').html($('.get_form_userpicture').children());
         $(".get_form_userpicture").append('&nbsp;'+gettext('Change your picture'));

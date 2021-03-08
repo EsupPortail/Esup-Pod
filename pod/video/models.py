@@ -675,7 +675,7 @@ class Video(models.Model):
                                crop='center', quality=72)
             thumbnail_url = im.url
             # <img src="{{ im.url }}" width="{{ im.width }}"
-            # height="{{ im.height }}">
+            # height="{{ im.height }}" loading="lazy">
         else:
             thumbnail_url = ''.join(
                 ['//',
@@ -683,30 +683,34 @@ class Video(models.Model):
                  settings.STATIC_URL,
                  DEFAULT_THUMBNAIL])
         return format_html('<img style="max-width:100px" '
-                           'src="%s" alt="%s" />' % (
+                           'src="%s" alt="%s" loading="lazy"/>' % (
                                thumbnail_url,
-                               self.title.replace("{", "").replace("}", "")
+                               self.title.replace("{", "")
+                               .replace("}", "")
+                               .replace('"', "'")
                            )
                            )
 
     get_thumbnail_admin.fget.short_description = _('Thumbnails')
 
     def get_thumbnail_card(self):
+        """Return thumbnail image card of current video."""
         thumbnail_url = ""
         if self.thumbnail and self.thumbnail.file_exist():
             im = get_thumbnail(self.thumbnail.file, 'x170',
                                crop='center', quality=72)
             thumbnail_url = im.url
             # <img src="{{ im.url }}" width="{{ im.width }}"
-            # height="{{ im.height }}">
+            # height="{{ im.height }}" loading="lazy">
         else:
             thumbnail_url = ''.join(
                 ['//',
                  get_current_site(None).domain,
                  settings.STATIC_URL,
                  DEFAULT_THUMBNAIL])
-        return '<img class="card-img-top" src="%s" alt="%s" />' % (
-            thumbnail_url, self.title)
+        return '<img class="card-img-top" src="%s" alt="%s"\
+            loading="lazy"/>' % (
+            thumbnail_url, self.title.replace('"', "'"))
 
     @property
     def duration_in_time(self):
