@@ -1,0 +1,59 @@
+version: '3.3'
+services:
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+     - app-tier
+  bbb-streamer:
+    image: aauzid/bigbluebutton-livestreaming
+    container_name: liveStreaming1
+    shm_size: '2gb'
+    environment:
+      # BigBlueButton Server url:
+      - BBB_URL=https://bbb.univ.fr/bigbluebutton/api
+      # BigBlueButton secret:
+      - BBB_SECRET=abcd
+      # BigBlueButton meetingID:
+      - BBB_MEETING_ID=abcd
+      # start meeting (optional):
+      - BBB_START_MEETING=false
+      # attendee password (optional - has to be set to the attendee password of moodle/greenlight or any other frontend to allow joining via their links):
+      - BBB_ATTENDEE_PASSWORD=JAMHEVcAdpoS
+      # moderator password (optional - has to be set to the moderator password of moodle/greenlight or any other frontend to allow joining via their links):
+      - BBB_MODERATOR_PASSWORD=AOcEHxFFDtrD
+      # meeting title (optional):
+      - BBB_MEETING_TITLE=(BBB) Webinaire de test 01
+      # download / save BigBlueButton meeting
+      - BBB_DOWNLOAD_MEETING=false
+      # Media server url:
+      - BBB_STREAM_URL=rtmp://live.univ.fr/live/bbb-Webinaire-de-test-01
+      # Resolution to be streamed/downloaded in format WxH (default 1920x1080)
+      - BBB_RESOLUTION=1280x720
+      # stream video bitrate
+      - FFMPEG_STREAM_VIDEO_BITRATE=3000
+      # threads used for stream (0=auto)
+      - FFMPEG_STREAM_THREADS=0
+      # Enable chat functionality
+      - BBB_ENABLE_CHAT=true
+      # shows the chat on the left side of the window (Default: false)
+      - BBB_SHOW_CHAT=true
+      # Timezone (default: Europe/Vienna):
+      - TZ=Europe/Paris
+      # Set REDIS host (default: 'redis')
+      #- BBB_REDIS_HOST=ts-sun-video.infra.umontpellier.fr
+      - BBB_REDIS_HOST=redis
+      # Set REDIS channel to subscribe (default: 'chat')
+      - BBB_REDIS_CHANNEL=chat1
+      # Username for the chat (default: 'Chat')
+      - BBB_CHAT_NAME=Chat
+      # DEBUG
+      - DEBUG=true
+    networks:
+      - app-tier
+    volumes:
+      - ./videodata:/video
+networks:
+  app-tier:
+    driver: bridge
