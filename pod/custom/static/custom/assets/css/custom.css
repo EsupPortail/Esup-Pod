@@ -2084,7 +2084,12 @@ border: 1px solid var(--block-color);
 	padding: .4em 0;
 	padding-left: .4em;
 	color: var(--link-color);
-	border: 1px solid var(--dark);
+	flex: none !important;
+}
+
+[data-theme="dark"] > body #treeview ul.list-group li:not(:hover):nth-child(2n+1),
+[data-theme-mode="dark"] > body #treeview ul.list-group li:not(:hover):nth-child(2n+1){
+	background-color: var(--block-color);
 }
 [data-theme="dark"] > body #treeview ul.list-group li:hover,
 [data-theme-mode="dark"] > body #treeview ul.list-group li:hover,
