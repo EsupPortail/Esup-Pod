@@ -42,7 +42,6 @@ services:
       # Timezone (default: Europe/Vienna):
       - TZ=Europe/Paris
       # Set REDIS host (default: 'redis')
-      #- BBB_REDIS_HOST=ts-sun-video.infra.umontpellier.fr
       - BBB_REDIS_HOST=redis
       # Set REDIS channel to subscribe (default: 'chat')
       - BBB_REDIS_CHANNEL=chat1
