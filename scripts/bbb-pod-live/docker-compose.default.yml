@@ -20,9 +20,9 @@ services:
       # start meeting (optional):
       - BBB_START_MEETING=false
       # attendee password (optional - has to be set to the attendee password of moodle/greenlight or any other frontend to allow joining via their links):
-      - BBB_ATTENDEE_PASSWORD=JAMHEVcAdpoS
+      - BBB_ATTENDEE_PASSWORD=xxxxxxxxxx
       # moderator password (optional - has to be set to the moderator password of moodle/greenlight or any other frontend to allow joining via their links):
-      - BBB_MODERATOR_PASSWORD=AOcEHxFFDtrD
+      - BBB_MODERATOR_PASSWORD=xxxxxxxxxx
       # meeting title (optional):
       - BBB_MEETING_TITLE=(BBB) Webinaire de test 01
       # download / save BigBlueButton meeting
