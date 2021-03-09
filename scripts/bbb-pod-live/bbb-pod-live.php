@@ -39,10 +39,10 @@ define ("FFMPEG_STREAM_THREADS", "0");
 define ("BBB_STREAM_URL", "rtmp://live.univ.fr/live/");
 // Mot de passe des participants cf. BBB_ATTENDEE_PASSWORD
 // Doit être défini comme le mot de passe du participant de Moodle / Greenlight ou de tout autre frontend pour permettre la participation via leurs liens
-define ("BBB_ATTENDEE_PASSWORD", "JAMHEVcAdpoS");
+define ("BBB_ATTENDEE_PASSWORD", "xxxxxxx");
 // Mot de passe des modérateurs cf. BBB_ATTENDEE_PASSWORD
 // Doit être défini comme le mot de passe du modérateur de Moodle / Greenlight ou de tout autre frontend pour permettre la participation via leurs liens
-define ("BBB_MODERATOR_PASSWORD", "AOcEHxFFDtrD");
+define ("BBB_MODERATOR_PASSWORD", "xxxxxxx");
 
 
 /* PARAMETRAGE NECESSAIRE POUR POD */
