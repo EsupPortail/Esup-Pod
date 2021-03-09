@@ -2089,7 +2089,7 @@ border: 1px solid var(--block-color);
 
 [data-theme="dark"] > body #treeview ul.list-group li:not(:hover):nth-child(2n+1),
 [data-theme-mode="dark"] > body #treeview ul.list-group li:not(:hover):nth-child(2n+1){
-	background-color: var(--block-color);
+	background-color: var(--block-color) !important;
 }
 [data-theme="dark"] > body #treeview ul.list-group li:hover,
 [data-theme-mode="dark"] > body #treeview ul.list-group li:hover,
