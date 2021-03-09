@@ -2078,13 +2078,15 @@ border: 1px solid var(--block-color);
 [data-theme-mode="dark"] > body #treeview ul.list-group li:hover a{
 	color: inherit !important;
 }
+#treeview ul.list-group li{
+	flex: none !important;
+}
 [data-theme="dark"] > body #treeview ul.list-group li,
 [data-theme-mode="dark"] > body #treeview ul.list-group li{
 	background-color: var(--background-dark-color);
 	padding: .4em 0;
 	padding-left: .4em;
 	color: var(--link-color);
-	flex: none !important;
 }
 
 [data-theme="dark"] > body #treeview ul.list-group li:not(:hover):nth-child(2n+1),
