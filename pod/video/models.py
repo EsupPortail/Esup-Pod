@@ -849,7 +849,7 @@ class Video(models.Model):
                     'id': media.id,
                     'type': media.encoding_format,
                     'src': media.source_file.url,
-                    'height': media.height,
+                    'height': media.height if hasattr(media, 'height') else None,
                     'extension': file_extension,
                     'label': media.name}
                 dict_entry = dict_src.get(file_extension[1:], None)
