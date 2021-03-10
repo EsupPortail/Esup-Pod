@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-05 15:42+0000\n"
+"POT-Creation-Date: 2021-03-10 11:14+0000\n"
 "PO-Revision-Date: 2021-01-22 12:27+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -148,7 +148,7 @@ msgstr ""
 #: pod/enrichment/templates/enrichment/group_enrichment.html:29
 #: pod/interactive/templates/interactive/group_interactive.html:29
 #: pod/live/templates/live/live-form.html:10
-#: pod/main/templates/contact_us.html:24 pod/main/views.py:255
+#: pod/main/templates/contact_us.html:24 pod/main/views.py:259
 #: pod/playlist/views.py:140
 #: pod/recorder/templates/recorder/add_recording.html:36
 #: pod/recorder/templates/recorder/record_delete.html:32
@@ -1300,10 +1300,6 @@ msgstr ""
 msgid "Please correct errors"
 msgstr ""
 
-#: pod/custom/settings_local.py:76
-msgid "Dutch (Netherlands)"
-msgstr ""
-
 #: pod/enrichment/apps.py:7
 msgid "Enrichment version"
 msgstr ""
@@ -2063,7 +2059,11 @@ msgstr ""
 msgid "Please indicate the result of the following operation"
 msgstr ""
 
-#: pod/main/forms.py:86
+#: pod/main/forms.py:72
+msgid "Check this box if you are a metal human (required)"
+msgstr ""
+
+#: pod/main/forms.py:91
 msgid "Please specify a subject"
 msgstr ""
 
@@ -2965,11 +2965,11 @@ msgstr ""
 msgid "Link"
 msgstr ""
 
-#: pod/main/views.py:229
+#: pod/main/views.py:233
 msgid "your message untitled"
 msgstr ""
 
-#: pod/main/views.py:248
+#: pod/main/views.py:252
 msgid "Your message have been sent."
 msgstr ""
 

@@ -69,7 +69,7 @@ class ContactUsForm(forms.Form):
 
     valid_human = forms.BooleanField(
         required=False,
-        label=_('check this box if you are a metal human'),
+        label=_('Check this box if you are a metal human (required)'),
         widget=forms.CheckboxInput())
 
     def __init__(self, request, *args, **kwargs):
