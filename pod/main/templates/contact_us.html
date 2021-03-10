@@ -18,6 +18,7 @@
     <fieldset>
       {% if form.errors %}
         <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+<<<<<<< HEAD
       {% endif %}
 
       {% for field_hidden in form.hidden_fields %}
@@ -28,6 +29,16 @@
       {% for field in form.visible_fields %}
         {% spaceless %}
           <div class="list-group-item">
+=======
+        {% endif %}
+        {% for field_hidden in form.hidden_fields %}
+            {{ field_hidden.errors }}
+            {{field_hidden}}
+            {% endfor %}
+            {% for field in form.visible_fields %}
+            {% spaceless %}
+            <div class="list-group-item{% if field.id_for_label == "id_valid_human" %} valid_human{% endif %}">
+>>>>>>> a00ab33f612a07cdd391dc8b41e7f9a802af54ef
             <div class="form-group {% if field.field.required %}form-group-required {%endif%}" >
               {{ field.errors }}
               {% if "form-check-input" in field.field.widget.attrs.class %}

@@ -489,3 +489,19 @@ input.select2-input{
 
 #viewers-ul{height: 200px;list-style-type: none;padding-left: 0;}
 #viewers-ul{overflow: hidden; overflow-y: scroll;}
+
+/* use to hide valid human chekbox in contact form to prevent spam */
+#contact_us .valid_human {
+  display: block;
+  overflow: hidden;
+  position:absolute !important;
+  left:0 !important;
+  top:0 !important;
+  width:1px !important;
+  height:1px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+
+
