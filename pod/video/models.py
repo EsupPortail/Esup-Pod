@@ -834,7 +834,7 @@ class Video(models.Model):
 
     def get_video_mp4_json(self):
         list_mp4 = self.get_video_json(extensions="mp4")
-        return list_mp4["mp4"]
+        return list_mp4["mp4"] if list_mp4.get("mp4") else []
 
     def get_audio_json(self, extensions):
         extension_list = extensions.split(',') if extensions else []
