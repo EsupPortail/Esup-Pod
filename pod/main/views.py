@@ -156,6 +156,7 @@ def contact_us(request):
     video = Video.objects.get(id=request.GET.get('video'),
                               sites=get_current_site(request)) if (
         request.GET.get('video')
+        and request.GET.get('video').isdigit()
         and Video.objects.filter(
             id=request.GET.get('video'),
             sites=get_current_site(request)).first()

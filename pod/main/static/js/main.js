@@ -171,39 +171,51 @@ $('#ownerboxnavbar').keyup(function() {
 
 /** MENU ASIDE **/
 $(document).ready(function () {
+    //.collapseAside is on the toggle button
+    //#collapseAside is the side menu
 
-    //when a group is shown, save it as the active accordion group
+    // Fired when #collapseAside has been made visible
     $("#collapseAside").on('shown.bs.collapse', function () {
         Cookies.set('activeCollapseAside', "open");
         $(".collapseAside").html('<i data-feather="corner-left-up"></i><i data-feather="menu"></i>');
         feather.replace({ class: 'align-bottom'});
+        $("#mainContent").addClass("col-md-9");
     });
+    // Fired when #collapseAside has been hidden
     $("#collapseAside").on('hidden.bs.collapse', function () {
         Cookies.set('activeCollapseAside', "close");
         $(".collapseAside").html('<i data-feather="corner-left-down"></i><i data-feather="menu"></i>');
         feather.replace({ class: 'align-bottom'});
+        $("#mainContent").removeClass("col-md-9");
     });
-    var last = Cookies.get('activeCollapseAside');
-    //alert('last '+last);
-    if (last != null && last=="close") {
-        //show the account_last visible group
-        $("#collapseAside").addClass("hide");
-        $(".collapseAside").html('<i data-feather="corner-left-down"></i><i data-feather="menu"></i>');
-        feather.replace({ class: 'align-bottom'});
-    } else {
-        $("#collapseAside").addClass("show");
-        $(".collapseAside").html('<i data-feather="corner-left-up"></i><i data-feather="menu"></i>');
-        feather.replace({ class: 'align-bottom'});
-    }
+
+    // If aside menu is empty, hide container and button
     if ($("#collapseAside").find("div").length == 0) {
+        $(".collapseAside").hide();
     	$("#collapseAside").collapse('hide');
+        // Destroy collapse object
+        $("#collapseAside").collapse('dispose');
+        $("#mainContent").removeClass("col-md-9");
+    } else {
+        // Use the last aside state, stored in Cookies
+        var last = Cookies.get('activeCollapseAside');
+        if (last != null && last=="close") {
+            $("#collapseAside").collapse('hide');
+            $(".collapseAside").html('<i data-feather="corner-left-down"></i><i data-feather="menu"></i>');
+            feather.replace({ class: 'align-bottom'});
+            $("#mainContent").removeClass("col-md-9");
+        } else {
+            $("#collapseAside").collapse('show');
+        }
     }
     TriggerAlertClose();
 });
 
 function TriggerAlertClose() {
+    // Automatically hide success type alerts
+    // (alert-warning and alert-danger will remain on screen)
     window.setTimeout(function () {
-        $(".alert").fadeTo(1000, 0).slideUp(1000, function () {
+        $(".alert.alert-success").fadeTo(1000, 0).slideUp(1000, function () {
             $(this).remove();
         });
     }, 5000);
