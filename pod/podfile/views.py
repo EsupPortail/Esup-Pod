@@ -14,6 +14,7 @@ from django.db.models import Count, Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from .models import UserFolder
+from pod.authentication.models import AccessGroup
 from .models import CustomFileModel
 from .models import CustomImageModel
 from .forms import UserFolderForm
@@ -70,8 +71,8 @@ def home(request, type=None):
         UserFolder, name="home", owner=request.user)
 
     share_folder = UserFolder.objects.filter(
-        groups__in=request.user.groups.all()
-    ).exclude(owner=request.user).order_by('owner', 'id')
+        groups=AccessGroup.objects.filter(users__user=request.user)).exclude(
+            owner=request.user).order_by('owner', 'id')
 
     share_folder_user = UserFolder.objects.filter(
         users=request.user).exclude(
@@ -104,8 +105,9 @@ def get_current_session_folder(request):
               'current_session_folder', "home")) | Q(
                  users=request.user, name=request.session.get(
                     'current_session_folder', "home")) | Q(
-                 groups=request.user.groups.all(), name=request.session.get(
-                    'current_session_folder', "home")))
+                 groups=AccessGroup.objects.filter(
+                     users__user=request.user), name=request.session.get(
+                         'current_session_folder', "home")))
     except ObjectDoesNotExist:
         if(request.user.is_superuser):
             try:
@@ -125,21 +127,23 @@ def get_current_session_folder(request):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def get_folder_files(request, id, type=None):
+    print("==> get_folder_file")
 
     if type is None:
         type = request.GET.get('type', None)
     folder = get_object_or_404(UserFolder, id=id)
+
     if (request.user != folder.owner
-            and not request.user.groups.filter(
+            and not (folder.groups.filter(
                 name__in=[
                     name[0]
-                    for name in folder.groups.values_list('name')
-                ]
-            ).exists()
+                    for name in AccessGroup.objects.filter(users__user=request.user).values_list('name')
+                ]).exists())
             and not (
                 request.user.is_superuser or request.user.has_perm(
                     "podfile.change_userfolder")) and not (
                         request.user in folder.users.all())):
+        print("not access")
         messages.add_message(
             request, messages.ERROR,
             _(u'You cannot see this folder.'))
@@ -170,7 +174,8 @@ def get_rendered(request):
     ).exclude(owner=request.user, name="home")
 
     share_folder = UserFolder.objects.filter(
-        groups__in=request.user.groups.all()
+        groups__in=AccessGroup.objects.filter(
+            users__user=request.user)
     ).exclude(owner=request.user).order_by('owner', 'id')
 
     share_folder_user = UserFolder.objects.filter(
@@ -529,6 +534,7 @@ def file_edit_save(request, folder):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def get_file(request, type):
+    print("==> get_file")
     id = None
     if request.method == 'POST' and request.POST.get('src'):
         id = request.POST.get('src')
@@ -539,12 +545,11 @@ def get_file(request, type):
     else:
         reqfile = get_object_or_404(CustomFileModel, id=id)
     if (request.user != reqfile.folder.owner
-            and not request.user.groups.filter(
+            and not reqfile.folder.groups.filter(
                 name__in=[
                     name[0]
-                    for name in reqfile.folder.groups.values_list('name')
-                ]
-            ).exists()
+                    for name in AccessGroup.objects.filter(users__user=request.user).values_list('name')
+                ]).exists()
             and not (request.user.is_superuser or request.user.has_perm(
                     "podfile.change_customfilemodel") or request.user.has_perm(
                     "podfile.change_customimagemodel") or (

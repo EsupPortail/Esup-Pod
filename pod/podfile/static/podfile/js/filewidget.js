@@ -35,6 +35,7 @@ if(typeof loaded == 'undefined') {
 
 $(document).on("click", "a.folder", function(e) {
     e.preventDefault();
+    console.log("opened file")
     $('#podfile #list_folders_sub a.folder-opened').removeClass('folder-opened');
     $(this).addClass('folder-opened');
     $('#files').addClass('loading');
