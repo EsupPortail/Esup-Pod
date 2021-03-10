@@ -196,6 +196,10 @@ def contact_us(request):
             email = form.cleaned_data['email']
             message = form.cleaned_data['description']
 
+            valid_human = form.cleaned_data['valid_human']
+            if valid_human:
+                return redirect(form.cleaned_data['url_referrer'])
+
             text_content = loader.get_template('mail/mail.txt').render({
                 'name': name,
                 'email': email,
