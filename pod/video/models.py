@@ -832,6 +832,10 @@ class Video(models.Model):
             ) for x in dict_src.keys()}
         return sorted_dict_src
 
+    def get_video_mp4_json(self):
+        list_mp4 = self.get_video_json(extensions="mp4")
+        return list_mp4["mp4"]
+
     def get_audio_json(self, extensions):
         extension_list = extensions.split(',') if extensions else []
         list_audio = EncodingAudio.objects.filter(
@@ -844,7 +848,7 @@ class Video(models.Model):
                 **self.get_audio_json(extensions)}
 
     @staticmethod
-    def get_media_json(self, extension_list, list_video):
+    def get_media_json(extension_list, list_video):
         dict_src = {}
         for media in list_video:
             file_extension = splitext(media.source_file.url)[-1]
