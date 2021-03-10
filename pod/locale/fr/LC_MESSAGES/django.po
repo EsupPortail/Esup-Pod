@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-05 15:42+0000\n"
+"POT-Creation-Date: 2021-03-10 11:14+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -150,7 +150,7 @@ msgstr "Changer votre image de profil"
 #: pod/enrichment/templates/enrichment/group_enrichment.html:29
 #: pod/interactive/templates/interactive/group_interactive.html:29
 #: pod/live/templates/live/live-form.html:10
-#: pod/main/templates/contact_us.html:24 pod/main/views.py:255
+#: pod/main/templates/contact_us.html:24 pod/main/views.py:259
 #: pod/playlist/views.py:140
 #: pod/recorder/templates/recorder/add_recording.html:36
 #: pod/recorder/templates/recorder/record_delete.html:32
@@ -1366,10 +1366,6 @@ msgstr "Le fichier n’a pas été enregistré."
 msgid "Please correct errors"
 msgstr "Veuillez corriger les erreurs"
 
-#: pod/custom/settings_local.py:76
-msgid "Dutch (Netherlands)"
-msgstr "Néerlandais (Pays-Bas)"
-
 #: pod/enrichment/apps.py:7
 msgid "Enrichment version"
 msgstr "Version enrichie"
@@ -2160,7 +2156,11 @@ msgstr "Renseignez une description complète pour votre requête"
 msgid "Please indicate the result of the following operation"
 msgstr "Veuillez indiquer le résultat de l'opération suivante"
 
-#: pod/main/forms.py:86
+#: pod/main/forms.py:72
+msgid "Check this box if you are a metal human (required)"
+msgstr "Cocher cette case si vous êtes un humain en métal (obligatoire)"
+
+#: pod/main/forms.py:91
 msgid "Please specify a subject"
 msgstr "Veuillez spécifier un sujet"
 
@@ -3064,11 +3064,11 @@ msgstr "Utiliser le champ pour filtrer les utilisateurs par nom de famille."
 msgid "Link"
 msgstr "Lien"
 
-#: pod/main/views.py:229
+#: pod/main/views.py:233
 msgid "your message untitled"
 msgstr "votre message intitulé"
 
-#: pod/main/views.py:248
+#: pod/main/views.py:252
 msgid "Your message have been sent."
 msgstr "Votre message a été envoyé."
 
@@ -5586,6 +5586,9 @@ msgstr "Recherche avancée"
 #: pod/video_search/views.py:63
 msgid "Remove this filter"
 msgstr "Retirer ce filtre"
+
+#~ msgid "Dutch (Netherlands)"
+#~ msgstr "Néerlandais (Pays-Bas)"
 
 #~ msgid "link"
 #~ msgstr "lien"
