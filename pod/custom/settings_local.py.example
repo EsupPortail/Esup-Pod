@@ -1187,3 +1187,8 @@ VIDEO_REQUIRED_FIELDS = []
 # Activation du darkmode
 """
 DARKMODE_ENABLED = False
+
+"""
+# Activation du mode dyslexie
+"""
+DYSLEXIAMODE_ENABLED = False
