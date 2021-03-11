@@ -845,11 +845,14 @@ class Video(models.Model):
         for media in list_video:
             file_extension = splitext(media.source_file.url)[-1]
             if not extension_list or file_extension[1:] in extension_list:
+                media_height = None
+                if hasattr(media, 'height'):
+                    media_height = media.height
                 video_object = {
                     'id': media.id,
                     'type': media.encoding_format,
                     'src': media.source_file.url,
-                    'height': media.height if hasattr(media, 'height') else None,
+                    'height': media_height,
                     'extension': file_extension,
                     'label': media.name}
                 dict_entry = dict_src.get(file_extension[1:], None)
