@@ -1,444 +1,292 @@
 /* OpenDyslexic Font via CDN */
-@font-face {
+/* @font-face {
 font-family: "Open Dyslexic";
 src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Regular.woff") format("woff");
-}
+} */
 
+/* @import url('./dyslexie.css') screen; */
 /* COMMON COLORS */
 :root {
-  --color-transparent: transparent;
+  --color-transparent:transparent;
   --color-white: white;
   --color-black: black;
-  --color-alto: #ddd;
+  --color-alto:#ddd;
   --color-sisal: rgba(218,208,190,1);
-  --color-mine-shaft: rgba(60,60,60,0.3);
   --color-black-alpha: rgba(0, 0, 0, 0.6);
-  --color-silver: #ccc;
+  --color-silver:#ccc;
   --color-fuzzy-wuzzy-brown: rgba(201, 76, 76, 0.3);
-  --color-silver-chalice: #aaa;
-  --color-white: #FFF;
+  --color-silver-chalice:#aaa;
   --color-outer-space: rgba(40,48,56, 0.5);
-  --color-red: #FF0000;
-  --color-mine-shaft: #222;
-  }
-  
-  [data-theme="light"] {
-  /* CUSTOM COLORS */
-  --bg-color: #FFF;
-  --font-color: #222;
-  /* BOOTSTRAP COLORS */
-  --primary: #b03c7e;
-  --primary2: #b03c7e;
-  --light: #f8f9fa;
-  --dark: #343a40;
-  --color-formfields: #f1f1f1;
-  }
-  [data-theme="dark"] {
-  /* CUSTOM COLORS */
-  --color-shark: #212529;
-  --bg-color: #343a40;
-  --font-color: #f8f9fa;
-  /* BOOTSTRAP COLORS */
-  --primary: #b03c7e;
-  --primary2: #b03c7e;
-  --light: #393f46;
-  --dark: #f8f9fa;
-  --color-formfields: #454c52;
-  }
-  
-  /* DARK MODE CUSTOM COLORS and CSS */
-  [data-theme="dark"] {
-    --background-color: #1e1e2c;
-    /* CUSTOM COLORS */
-    --link-color: #fdb6de;
-    --color-shark: #212529;
-    --bg-color: #303238;
-    --font-color: #f8f9fa;
-    /* BOOTSTRAP COLORS */
-    --primary: #b03c7e;
-    --primary2: var(--primary);
-    --light: var(--dark);
-    --dark: #202025;
-    --gray: var(--dark);
-    --color-formfields: #454c52;
-    --color-silver-chalice: #000;
-    --color-alto: var(--bg-color);
-    /* Video Comment variable */
-    --primary-background-color: var(--bg-color) !important;
-    --third-background-color: var(--bg-color) !important;
-    --content-primary-color: var(--font-color) !important;
-  
-  }
-  [data-theme="dark"] a{
-    color: var(--link-color);
-  }
-  [data-theme="dark"] .btn,
-  [data-theme="dark"] .dropdown-item,
-  [data-theme="dark"] footer{
-    color: var(--font-color);
-  }
-  [data-theme="dark"] .btn:hover{
-    color: inherit;
-  }
-  [data-theme="dark"] .btn.btn-light{
-    background-color: var(--dark);
-    border-color: var(--dark);
-    color: var(--primary);
-  }
-  [data-theme="dark"] .btn-primary.focus,
-  [data-theme="dark"] .btn-outline-primary:focus,
-  [data-theme="dark"] .btn-outline-primary:active,
-  [data-theme="dark"] .btn-primary:focus,
-  [data-theme="dark"] .btn-primary:hover,
-  [data-theme="dark"] .dropdown-item:hover,
-  [data-theme="dark"] .btn-outline-primary:hover,
-  [data-theme="dark"] .btn-primary:not(:disabled):not(.disabled).active,
-  [data-theme="dark"] .btn-primary:not(:disabled):not(.disabled):active,
-  [data-theme="dark"] .show>.btn-primary.dropdown-toggle,
-  [data-theme] .badge-primary,
-  [data-theme="dark"] .btn-primary
-  {
-    background: var(--primary);
-    border-color: var(--primary);
-    box-shadow: none;
-    color: var(--font-color);
-  }
-  
-  [data-theme="dark"] .card{
-    background-color: var(--dark);
-    border-color: var(--dark);
-  }
-  
-  body.dark {
-    background-color: var(--background-color) !important;
-  }
-  
-  /* Video Comment override css dark mode */
-  [data-theme="dark"] .comment_main .comment .comment_content
-  {
-    box-shadow: 2px 2px 12px var(--dark);
-  }
-  [data-theme="dark"] .comment_main .add_comment .add_comment_btn{
-    box-shadow: 4px 8px var(--bg-color);
-  }
-  
-  /* Modal override css dark mode */
-  [data-theme="dark"] .comment_main .comment .comment_content_footer .add_comment, /* comment text-area wrapper */
-  [data-theme="dark"] .comment_main .add_comment .form-wrapper .new_comment.new_parent_comment, /* comment text-area */
-  [data-theme="dark"] .comment_main .comment .comment_content_footer .add_comment .new_comment, /* comment text-area */
-  [data-theme] #podfile #dirs .folder-search,
-  [data-theme="dark"] #podfile .list_folders .folder_container:nth-child(2n),
-  [data-theme="dark"] #podfile .list_folders_sub .folder_container:nth-child(2n),
-  [data-theme="dark"] .modal-content{
-    background-color: var(--dark) !important;
-    border-color: var(--dark) !important;
-    color: #fff !important;
-  }
-  [data-theme="dark"] #podfile #dirs .folder-search::placeholder{
-    color: #ccc;
-  }
-  [data-theme="dark"] #podfile .col{
-    background-color: var(--bg-color);
-  }
-  [data-theme="dark"] .list-group-item-action:focus, .list-group-item-action:hover
-  {
-    background-color: var(--dark);
-  }
-  
-  /* INPUT TEXT-AREA SELECT dark mode */
-  [data-theme="dark"] select,
-  [data-theme="dark"] input:not(.btn-lang), 
-  [data-theme="dark"] text-area,
-  [data-theme="dark"] .select2-container,
-  [data-theme="dark"] .select2-container-multi .select2-choices .select2-search-field input,
-  [data-theme="dark"] .select2-container-multi .select2-choices,
-  [data-theme="dark"] .select2-drop-active,
-  [data-theme="dark"] .select2-choice,
-  [data-theme="dark"] .select2-choice  .select2-search-choice-close + div,
-  [data-theme="dark"] .select2-dropdown-open .select2-choice,
-  [data-theme="dark"] .select2-results .select2-no-results,
-  [data-theme="dark"] .select2-results .select2-searching
-  {
-    background: var(--bg-color) !important;
-    border-color: var(--bg-color) !important;
-    color: var(--font-color) !important;
-    box-shadow: none !important;
-  }
-  /* END DARK MODE */
-  
-  /* START DISLEXIA FONT */
-  [data-dyslexia="on"] {
-    --font-family-sans-serif: "Open Dyslexic";
-  }
-  /* END DISLEXIA MODE */
-
-  .navbar-light .navbar-nav .nav-link {
+  --color-red:#FF0000;
+  --color-mine-shaft:#222;
+}
+.navbar-light.navbar-nav.nav-link {
       color: var(--font-color);
-  }
-  .navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover {
+}
+.navbar-light.navbar-nav.nav-link:focus,.navbar-light.navbar-nav.nav-link:hover {
       color: var(--primary);
-  }
-  .navbar-brand {
+}
+.navbar-brand {
       color: var(--font-color) !important;
-  }
-  .nav-link-icone {
+}
+.nav-link-icone {
       color: var(--primary);
-  }
-  .btn-primary {
+}
+.btn-primary {
       /* color: var(--font-color); */
       background-color: var(--primary);
       border-color: var(--primary);
-  }
+}
   
-  .modal-title svg {
+.modal-title svg {
       color: var(--primary)!important;
-  }
+}
   
-  .bg-light {
+.bg-light {
       background-color: var(--light)!important;
-  }
+}
   
-  .bg-dark {
+.bg-dark {
       background-color: var(--gray)!important;
-  }
+}
   
-  .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+.nav-tabs.nav-item.show.nav-link,.nav-tabs.nav-link.active {
       color: var(--color-white);
       background-color: var(--primary);
       border-color: var(--color-alto) var(--color-alto) var(--color-alto);
-  }
+}
   
-  .btn-link {
+.btn-link {
       font-weight: 400;
       color: var(--primary);
       text-decoration: none;
-  }
+}
   
-  .btn-outline-primary {
+.btn-outline-primary {
       color: var(--primary);
       border-color: var(--primary);
-  }
+}
   
-  a.btn-outline-primary svg {
+a.btn-outline-primary svg {
       fill: var(--primary);
-  }
+}
   
-  #formfields .btn {
+#formfields.btn {
     color: var(--font-color);
     background-color: var(--color-formfields);
-  }
+}
   
-  .card-footer-pod .btn {
+.card-footer-pod.btn {
   color: var(--font-color);
-  }
+}
   
-  .card-footer-pod .btn-light {
+.card-footer-pod.btn-light {
       color: var(--font-color);
       background-color: var(--light);
       border-color: var(--color-alto);
-  }
+}
   
-  .submit-row a.deletelink {
+.submit-rowa.deletelink {
     height: 35px;
-  }
+}
   
-  .select2-container{
+.select2-container{
     position: static !important;
     height:auto;
-  }
+}
   
-  tr ,.rowl{
+tr ,.rowl{
     display: table-row !important;
-  }
+}
   
-  body[data-admin-utc-offset]
+body[data-admin-utc-offset]
   {
     padding-top: 0;
-  }
+}
   
-  body {
+body {
     padding-top: 3.5rem;
     color: var(--font-color);
     background-color: var(--bg-color);
-  }
-  .jumbotron {
+}
+.jumbotron {
       padding: 1rem 2rem;
-  }
-  h1{
+}
+h1{
     font-size: 2rem;
-  }
+}
   label {
     font-variant: small-caps;
-  }
-  .pod-mt-7{
+}
+.pod-mt-7{
     margin-top: 3.5rem;
-  }
-  .breadcrumb, .jumbotron{
+}
+.breadcrumb,.jumbotron{
     background: var(--light);
-  }
-  .list-group-item{
+}
+.list-group-item{
     background: var(--bg-color);
     padding:.25rem 1.25rem;
-  }
+}
   
-  .container-pod{
+.container-pod{
     max-width: 1400px;
-  }
+}
   
   /*** video ***/
-  #myTabContent #info p {
-    margin-top: .5rem;
-    margin-bottom: .5rem;
-  }
-  #share legend{
+#myTabContent#info p {
+    margin-top:.5rem;
+    margin-bottom:.5rem;
+}
+#share legend{
     /* align text with feather-icon */
     line-height: 1em;
-  }
+}
   
-  .hidespinner {
+.hidespinner {
     display: none;
-  }
+}
   
-  .link-center-pod {
+.link-center-pod {
     margin-left: auto;
     margin-right: auto;
-  }
+}
   
   /*** navbar **/
   /*.nav-link.btn-connexion{
     background: var(--primary);
-    color: var(--white) .btn-outline-primary {
-      color: #b03c7e;
-      border-color: #b03c7e;
-  }!important;
-  }*/
-  .btn-lang{
+    color: var(--white).btn-outline-primary {
+      color:#b03c7e;
+      border-color:#b03c7e;
+}!important;
+}*/
+.btn-lang{
     padding: 0.2rem 0.25rem;
     background: var(--color-transparent);
     width: 100%;
     text-align: left;
-  }
-  .btn-lang-active{
+}
+.btn-lang-active{
     background: var(--bg-color);
     color: var(--font-color);
-  }
-  .navbar-inner-pod{
+}
+.navbar-inner-pod{
     position: relative;
-  }
-  .navbar-toggler{
+}
+.navbar-toggler{
     padding: 0.5rem;
     line-height: inherit;
     font-size: 1rem;
-  }
+}
   
-  .userpicture {
+.userpicture {
     height: 34px;
-  }
+}
   
   /** modal **/
-  .modal-title svg {
+.modal-title svg {
     height: 40px;
     width: 40px;
     /*color:var(--primary);*/
-  }
+}
   
-  .modal-content {
+.modal-content {
     background-color: var(--bg-color);
-  }
+}
   
-  .modal-title{
+.modal-title{
     display: flex;
     align-items: center;
-  }
+}
   
   /*.modal-pod-full {
       max-width: 90%;
-  }*/
-  .modal-pod-full .close{
+}*/
+.modal-pod-full.close{
     font-size:3rem;
-  }
+}
   
-  .title-chaine{
+.title-chaine{
     margin-right: 0.5rem;
     font-weight: 600;
-  }
-  #listeChaines{
+}
+#listeChaines{
     max-height: 30rem;
     overflow: auto;
     border-bottom: 1px solid var(--color-black);
-  }
-  .liste-collapse{
+}
+.liste-collapse{
     z-index: 900;
-  }
+}
   /**end modal **/
   /*** tab **/
-  .tab-content>.active{
+.tab-content>.active{
     border: 1px solid var(--color-alto);
     padding: 1.5rem;
     background: var(--bg-color);
-  }
-  .nav-tabs{
+}
+.nav-tabs{
     border: 0;
-  }
+}
   
-  .dropdown-menu {
+.dropdown-menu {
     background-color: var(--bg-color);
     color: var(--font-color);
     border: 1px solid var(--color-silver-chalice);
-  }
+}
   
   /***aside ***/
-  .open-aside{
+.open-aside{
     margin-right: 15px;
-  }
-  #card-takenote .dropdown-menu{
+}
+#card-takenote.dropdown-menu{
     border: none;
-  }
+}
   /*** modif taille logo ***/
   @media (max-width: 576px ){
-    .navbar-brand img{
+.navbar-brand img{
       height: 35px;
-    }
-    .navbar-brand{
+}
+.navbar-brand{
       font-size: 0.9rem;
-    }
-  }
+}
+}
   @media (max-width: 992px){
-    .langs{
+.langs{
       border-top: 1px solid var(--color-silver);
-    }
-    .langs .active{
+}
+.langs.active{
       /*background:var(--primary); */
       border: none;
       color: var(--white);
-    }
-    .btn-connexion{
+}
+.btn-connexion{
       font-size: 0.9rem;
-    }
-    .navbar-items-pod{
+}
+.navbar-items-pod{
       position: absolute;
       top:53px;
       left:0;
       padding: 1rem;
       width: 100%;
-    }
-    .navbar-nav .login .dropdown-menu {
+}
+.navbar-nav.login.dropdown-menu {
       position: absolute;
       float: left;
-    }
-    #s::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+}
+#s::-webkit-input-placeholder { /* Chrome/Opera/Safari */
       color: var(--white);
-    }
-    #s::-moz-placeholder { /* Firefox 19+ */
+}
+#s::-moz-placeholder { /* Firefox 19+ */
       color: var(--white);
-    }
-    #s:-ms-input-placeholder { /* IE 10+ */
+}
+#s:-ms-input-placeholder { /* IE 10+ */
       color: var(--white);
-    }
-    #s:-moz-placeholder { /* Firefox 18- */
+}
+#s:-moz-placeholder { /* Firefox 18- */
       color: var(--white);
-    }
-    #s{
+}
+#s{
       width:1px;
       border-radius:0;
       box-shadow:none;
@@ -449,8 +297,8 @@ src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Reg
       background-color: var(--color-transparent);
       opacity:0;
       position: absolute;
-    }
-    #s:focus{
+}
+#s:focus{
       width:100%;
       opacity:1;
       display: inline-block !important;
@@ -462,8 +310,8 @@ src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Reg
       z-index: 99;
       color:var(--white) !important;
       height: 74px;
-    }
-    .navbar label{
+}
+.navbar label{
       padding-left: 1px;
       display:inline-block;
       margin-top:0.3em;
@@ -472,85 +320,85 @@ src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Reg
       position: relative;
       left:0.1em;
       cursor:pointer;
-    }
+}
   
-  }
+}
   /*** end MQueries **/
   
-  .login > .initials{
+.login >.initials{
     border-radius: 50%;
     /*background: var(--light);*/
     color: var(--white) !important;
     font-weight: 600;
     height: 3rem;
     width: 3rem;
-  }
-  .nav-link{
+}
+.nav-link{
     padding: 0.25rem 0.5rem;
-  }
+}
   button.nav-link{
     background: none;
     border: none;
     cursor: pointer;
-  }
+}
   
   /*** CARD ***/
-  .infinite-item .card-body {
+.infinite-item.card-body {
     padding: 0.9rem;
     height: 3.5rem;
     overflow: hidden;
-  }
-  .infinite-item .card-header .octicon {
+}
+.infinite-item.card-header.octicon {
     height:0.9rem;
     margin:0.1rem;
-  }
+}
   
-  #videos_list .card-header, .playlist-videos .card-header {
+#videos_list.card-header,.playlist-videos.card-header {
       position:absolute;
       width:100%;
       background: var(--color-black-alpha);
       padding: 0 0.25rem;
       z-index: 9;
-  }
-  #videos_list .card-header .text-muted {
+}
+#videos_list.card-header.text-muted {
     color:var(--white) !important;
-  }
+}
   
-  #videos_list .video-title{
+#videos_list.video-title{
     line-height: 1.2;
     display: inline-block;
-  }
+}
   
-  div.video-card .d-flex {
+  div.video-card.d-flex {
     min-height:70%;
     /*position:relative;*/
     top:0;
-  }
+}
   
   a:hover {
         color: var(--primary);
-  }
+}
   
   div.card a{
     overflow:hidden;
-  }
+}
   div.card a img {
-    transition:-webkit-transform .5s ease;
-    transition:transform .5s ease;
-    transition:transform .5s ease, -webkit-transform .5s ease
-  }
+transition: -webkit-transform.5s ease;
+transition: transform.5s ease;
+transition: transform.5s ease, -webkit-transform.5s ease
+}
   div.card a:hover>img {
     -webkit-transform:scale(1.1);
     transform:scale(1.1);
     z-index:0;
-  }
+}
   
-  .card {
+.card {
     background-color: var(--bg-color);
     border-color: var(--color-silver-chalice);
-  }
+}
   
-  .card-footer-pod {
+.card-footer-pod {
     position: absolute;
     bottom: 57px;
     right: 2px;
@@ -559,25 +407,25 @@ src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Reg
     border:none;
     /*background: rgba(220,220,220);*/
     /*height: 1rem;*/
-  }
-  .card-footer .feather, .card-header .feather{
+}
+.card-footer.feather,.card-header.feather{
     height: 1rem;
-  }
+}
   /* menu channels */
-  .dropdown-submenu > .dropdown-menu {
+.dropdown-submenu >.dropdown-menu {
     top: 0;
     left: 100%;
     margin-top: -6px;
     margin-left: -1px;
     border-radius: 0 6px 6px 6px;
-  }
-  .dropdown-submenu:hover {
+}
+.dropdown-submenu:hover {
     background-color: var(--white);
-  }
-  .dropdown-submenu:hover > .dropdown-menu {
+}
+.dropdown-submenu:hover >.dropdown-menu {
     display: block;
-  }
-  .dropdown-submenu > a:after {
+}
+.dropdown-submenu > a:after {
     display: block;
     content: " ";
     float: right;
@@ -589,128 +437,128 @@ src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Reg
     border-left-color: var(--color-silver);
     margin-top: 5px;
     margin-right: -10px;
-  }
+}
   
   /** aside list video **/
-  #filterType div.collapse:not(.show), #filterDiscipline div.collapse:not(.show), #filterTag div.collapse:not(.show) {
+#filterType div.collapse:not(.show),#filterDiscipline div.collapse:not(.show),#filterTag div.collapse:not(.show) {
     height: 148px !important;
     overflow: hidden;
   
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-  }
+}
   
-  #filterType div.collapsing, #filterDiscipline div.collapsing, #filterTag  div.collapsing{
+#filterType div.collapsing,#filterDiscipline div.collapsing,#filterTag  div.collapsing{
     min-height: 148px !important;
-  }
+}
   
-  #filterType a.collapsed:after, #filterDiscipline a.collapsed:after, #filterTag a.collapsed:after {
+#filterTypea.collapsed:after,#filterDisciplinea.collapsed:after,#filterTaga.collapsed:after {
     content: '+';
-  }
+}
   
-  #filterType a:not(.collapsed):after, #filterDiscipline a:not(.collapsed):after, #filterTag  a:not(.collapsed):after {
+#filterType a:not(.collapsed):after,#filterDiscipline a:not(.collapsed):after,#filterTag  a:not(.collapsed):after {
     content: '-';
-  }
+}
   /** ckeditor **/
-  .django-ckeditor-widget {
+.django-ckeditor-widget {
     width: 100%;
-  }
+}
   /** video form **/
-  .required {
+.required {
     color:var(--primary);
     font-size: 1.3rem;
-  }
+}
   /*.form-group-required {
       border-left: 3px solid var(--color-fuzzy-wuzzy-brown);
       padding-left : 5px;
-  }*/
-  .form-group-required .errors {
+}*/
+.form-group-required.errors {
     background-color: var(--color-fuzzy-wuzzy-brown);
-  }
-  #base-message-alert, #formalertdiv{
+}
+#base-message-alert,#formalertdiv{
     position:fixed;
     top:50%;
     text-align: center;
     margin:0 auto;
     left: 50%;
-    transform: translate(-50%, 0);
+transform:translate(-50%, 0);
     z-index:1000;
-  }
+}
   
   /** channel form **/
-  #channel_form .selector, #enrichment_group_form .selector{
+#channel_form.selector,#enrichment_group_form.selector{
     width: 100% !important;
-  }
-  #channel_form .selector select, #enrichment_group_form .selector select {
+}
+#channel_form.selector select,#enrichment_group_form.selector select {
     width:100% !important;
-  }
-  #channel_form .selector-available, #channel_form .selector-chosen, #enrichment_group_form .selector-available, #enrichment_group_form .selector-chosen {
+}
+#channel_form.selector-available,#channel_form.selector-chosen,#enrichment_group_form.selector-available,#enrichment_group_form.selector-chosen {
     width: 47% !important;
-  }
-  #channel_form .selector-available h2, #channel_form .selector-chosen h2, #enrichment_group_form .selector-available h2, #enrichment_group_form .selector-chosen h2 {
+}
+#channel_form.selector-available h2,#channel_form.selector-chosen h2,#enrichment_group_form.selector-available h2,#enrichment_group_form.selector-chosen h2 {
     margin: 0;
     padding: 8px;
     font-weight: 400;
     font-size: 13px;
     text-align: left;
-  }
+}
   
   /* vignettes video */
   @media (max-width: 575.98px) {
-    .pod-flex-direction{
+.pod-flex-direction{
       flex-direction: column;
-    }
-  }
+}
+}
   @media screen and (min-width:768px){
-    .card-img-top {
+.card-img-top {
       max-height:184.13px;
-    }
-  }
+}
+}
   @media screen and (min-width:992px){
-    .card-img-top {
+.card-img-top {
       max-height:195.36px;
-    }
-    .flex-2{
+}
+.flex-2{
       flex: 2;
-    }
-  }
+}
+}
   /*** footer **/
   footer{
     color:var(--color-silver-chalice);
-  }
+}
   footer a, footer a:hover{
     color: var(--white);
-  }
+}
   
-  .footer_links{
+.footer_links{
     list-style:none;
-  }
-  .footer_links>li:before{
+}
+.footer_links>li:before{
     margin-right:.5em;
     content: ">";
     font-weight: bold;
-  }
+}
   
-  .top_link:before{
+.top_link:before{
     content: "\21E7";
     padding-right: 4px;
     text-decoration: none;
     display: inline-block;
     font-size: 1.2em;
-  }
+}
   
   /*** Useful for additional owners ***/
   input.select2-input{
     width: 100% !important;
-  }
+}
   
-  #view-counter-icon{
+#view-counter-icon{
     color: var(--primary);
-  }
+}
   
   
-  #viewers-list {
+#viewers-list {
     position: absolute;
     right: 0;
     margin-right: 80px;
@@ -722,134 +570,17 @@ src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Reg
     z-index: 2147483647;
     bottom: 100px;
     display: none;
-  }
+}
   
-  .live-video {
+.live-video {
     z-index: 1;
-  }
+}
   
-  #viewers-ul{height:200px;list-style-type: none;padding-left: 0; }
-  #viewers-ul{overflow:hidden; overflow-y:scroll;}
+#viewers-ul{height:200px;list-style-type: none;padding-left: 0;}
+#viewers-ul{overflow:hidden; overflow-y:scroll;}
   
-/*** DARK MODE SWITCH ***/
-.theme-switch-wrapper {
-  display: flex;
-  align-items: center;
-}
-.theme-switch-wrapper em {
-  margin-left: 10px;
-  font-size: 1rem;
-}
-.theme-switch {
-  display: inline-block;
-  height: 24px;
-  position: relative;
-  width: 50px;
-  top:7px;
-}
-.theme-switch input {
-  display: none;
-}
-.slider {
-  background-color: var(--color-silver-chalice);
-  bottom: 0;
-  cursor: pointer;
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  transition: 0.4s;
-  border-radius: 24px;
-}
-.slider:before {
-  background-color: var(--white);
-  bottom: 2px;
-  content: "";
-  height: 20px;
-  left: 2px;
-  position: absolute;
-  transition: 0.4s;
-  width: 20px;
-  border-radius: 50%;
-}
-input:checked + .slider {
-  background-color: var(--primary);
-}
-input:checked + .slider:before {
-  transform: translateX(26px);
-}
-.slider svg {
-  color: var(--color-mine-shaft);
-  width: 15px;
-  position: absolute;
-  transition: opacity 0.2s ease 0s, transform 0.35s ease 0s;
-  pointer-events: none;
-}
-.feather-moon {
-  opacity: 0;
-  left: 5px;
-  bottom: 0px;
-  color: var(--white) !important;
-  transform: translateX(4px);
-}
-.feather-sun {
-  opacity: 1;
-  right: 5px;
-  bottom: 0px;
-  transform: translateX(0px);
-}
-input:checked + .slider .feather-moon {
-  opacity: 1;
-  transform: translateX(0);
-}
-input:checked + .slider .feather-sun {
-  opacity: 0;
-  transform: translateX(-4px);
-}
-
-/* DYSLEXIA SWITCH */
-.dyslexia-switch-wrapper {
-  display: flex;
-  align-items: center;
-}
-.dyslexia-switch-wrapper em {
-  margin-left: 10px;
-  font-size: 1rem;
-}
-.dyslexia-switch {
-  display: inline-block;
-  height: 24px;
-  position: relative;
-  width: 50px;
-  top:7px;
-}
-.dyslexia-switch input {
-  display: none;
-}
-
-.feather-eye {
-  opacity: 0;
-  left: 5px;
-  bottom: 0px;
-  color: var(--white) !important;
-  transform: translateX(4px);
-}
-.feather-eye-off {
-  opacity: 1;
-  right: 5px;
-  bottom: 0px;
-  transform: translateX(0px);
-}
-input:checked + .slider .feather-eye {
-  opacity: 1;
-  transform: translateX(0);
-}
-input:checked + .slider .feather-eye-off {
-  opacity: 0;
-  transform: translateX(-4px);
-}
 /* use to hide valid human chekbox in contact form to prevent spam */
-#contact_us .valid_human {
+#contact_us.valid_human {
   display: block;
   overflow: hidden;
   position:absolute !important;
