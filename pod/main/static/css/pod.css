@@ -848,3 +848,15 @@ input:checked + .slider .feather-eye-off {
   opacity: 0;
   transform: translateX(-4px);
 }
+/* use to hide valid human chekbox in contact form to prevent spam */
+#contact_us .valid_human {
+  display: block;
+  overflow: hidden;
+  position:absolute !important;
+  left:0 !important;
+  top:0 !important;
+  width:1px !important;
+  height:1px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}

@@ -50,9 +50,9 @@
 <style>
 {{channel.style}}
 {% if channel.color %}
-body {
-  background-color: {{channel.color}};
-}
+  body {
+    background-color: {{channel.color}};
+  }
 {%endif%}
 </style>
 {% endblock page_extra_head %}
@@ -97,7 +97,7 @@ body {
 {%if channel %}
 <h1>{{channel.title}}{% if request.user in channel.owners.all %}<span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-primary btn-sm"><svg height="32" class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="32" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg>&nbsp;{% trans "Edit the channel"%}</a></span>{%endif%}</h1>
 {% if channel.headband %}
-<img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
+<img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
 {% endif %}
 {% if channel.description %}
 {{ channel.description|safe }}
@@ -106,7 +106,7 @@ body {
 <h2>{{theme.title}}</h2>
 {% if theme.headband %}
 <div align="center" class="channelheader">
-    <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" />
+    <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" loading="lazy"/>
 </div>
 {% endif %}
 {% if theme.description %}
@@ -136,28 +136,25 @@ body {
 {% block video-element %}
 
 {% if form %}
-
-{% include 'videos/video-form.html' %}
-
+  {% include 'videos/video-form.html' %}
 {% else %}
+  {% if playlist %}
+    {% include 'playlist/playlist_player.html' with playlist=playlist %}
+  {% endif %}
 
-{% if playlist %}
-  {% include 'playlist/playlist_player.html' with playlist=playlist %}
-{% endif %}
+  {% include 'videos/video-element.html' %}
 
-{% include 'videos/video-element.html' %}
-
-<h1 class="pt-2">
-{% if video.licence %} {% include "videos/video_licencebox.html" %}{% endif %} {{video.title|capfirst}}
-{% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
-  <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans 'Report the video'%}" >
+  <h1 class="pt-2">
+    {% if video.licence %} {% include "videos/video_licencebox.html" %}{% endif %} {{video.title|capfirst}}
+    {% if video.date_evt %}<small>[{{ video.date_evt }}]</small>{% endif %}
+    <a href="{% url 'contact_us' %}?video={{video.id}}&subject=inappropriate_content" title="{% trans 'Report the video'%}" >
       <i data-feather="alert-octagon"></i>
-  </a>
-</h1>
+    </a>
+  </h1>
 
-{% if video.chapter_set.all %}
-<div class="alert alert-info" role="alert">{% blocktrans %}This video is chaptered. Click the chapter button <span class="vjs-icon-chapters"></span> on the video player to view them.{% endblocktrans %}</div>
-{%endif%}
+  {% if video.chapter_set.all %}
+    <div class="alert alert-info" role="alert">{% blocktrans %}This video is chaptered. Click the chapter button <span class="vjs-icon-chapters"></span> on the video player to view them.{% endblocktrans %}</div>
+  {%endif%}
 
 <div class="pl-0 pr-0">
   <div class="navbar d-flex flex-row-reverse p-0" >
@@ -193,7 +190,7 @@ body {
       </a>
     </li>
     {%endif%}
-    {% with video.get_other_version as versions %} 
+    {% with video.get_other_version as versions %}
     {% if versions|length > 0 %}
     <li class="nav-item dropdown" id="list_third_apps">
       <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
@@ -238,7 +235,7 @@ body {
   {% include 'videos/video-info.html' %}
 </div>
 {% if active_video_comment %}
-{% include 'videos/video-comment.html' with is_auth=request.user.is_authenticated disable=video.disable_comment %}
+  {% include 'videos/video-comment.html' with is_auth=request.user.is_authenticated disable=video.disable_comment %}
 {% endif %}
 {%endif%}
 {% endblock video-element %}
@@ -263,26 +260,37 @@ body {
 
 
 {% block more_script %}
-{% if not form %}
-{% include 'videos/video-script.html'%}
-{% endif %}
-{% if active_video_comment and not video.disable_comment %}
-{% if request.user == video.owner %}
-<script>
-    var is_video_owner = true;
-</script>
-{% else %}
-<script>
-    var is_video_owner = false;
-</script>
-{% endif %}
-<script>
-    var user_fullName = `{{request.user.first_name}} {{request.user.last_name}}`;
-    var user_id = "{{ request.user.id }}" === "None"? false: {{ request.user.id }};
-    var is_authenticated = JSON.parse("{{request.user.is_authenticated|yesno:"true,false"}}");
-    var is_superuser = JSON.parse("{{request.user.is_superuser|yesno:"true,false"}}");
-</script>
-<script src="{% static 'js/moment_with_locales.min.js' %}"></script>
-<script defer src="{% static 'js/comment-script.js' %}"></script>
-{% endif %}
+  {% if not form %}
+    <script>
+    // Allow anchor links to automatically load JS tabs
+    $(document).ready(() => {
+      var url = window.location.href;
+        if (url.indexOf("#") > 0){
+        var activeTab = url.substring(url.indexOf("#") + 1);
+        $('.nav[role="tablist"] a[href="#'+activeTab+'"]').tab('show');
+        var position = $("#myTab").offset().top -57;
+        $("html, body").animate({
+          scrollTop: position
+        }, 1000);
+      }
+    });
+    </script>
+    {% include 'videos/video-script.html'%}
+  {% endif %}
+
+  {% if active_video_comment and not video.disable_comment %}
+    <script>
+      {% if request.user == video.owner %}
+        var is_video_owner = true;
+      {% else %}
+        var is_video_owner = false;
+      {% endif %}
+      var user_fullName = `{{request.user.first_name}} {{request.user.last_name}}`;
+      var user_id = "{{ request.user.id }}" === "None"? false: {{ request.user.id }};
+      var is_authenticated = JSON.parse("{{request.user.is_authenticated|yesno:"true,false"}}");
+      var is_superuser = JSON.parse("{{request.user.is_superuser|yesno:"true,false"}}");
+    </script>
+    <script src="{% static 'js/moment_with_locales.min.js' %}"></script>
+    <script defer src="{% static 'js/comment-script.js' %}"></script>
+  {% endif %}
 {% endblock more_script %}

@@ -22,11 +22,19 @@
 {% block page_content %}
 
 <h3>{% trans "Search results" %}</h3>
-<p>{% blocktrans count counter=num_result %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</p>
-
-{% if remove_selected_facet != "" %}
-<p><strong>{% trans 'Remove filters' %} : </strong>{{remove_selected_facet|safe}}</p>
-{% endif %}
+<div class="row">
+    {% if remove_selected_facet %}
+        <div class="col-sm-9">
+            <strong>{% trans 'Active filters (click to unfilter):' %}</strong>
+            <ul class="list-inline">
+            {% for facet in remove_selected_facet %}
+                <li class="list-inline-item remove-link">{{facet|safe}}</li>
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    <div class="col-sm-3 text-right">{% blocktrans count counter=num_result %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</div>
+</div>
 
 {% include "videos/video_list.html" %}
 
@@ -35,20 +43,22 @@
 {% block page_aside %}
 
 <div class="card card-body">
-    <h5 class="card-title">{% trans "Search" %}</h5>
+    <h5 class="card-title">{% trans "Advanced search" %}</h5>
     <div class="card-text" >
         <form method="get" action="{{ request.get_full_path }}" id="video_search_form">
         {% if form.errors %}
-        <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+            <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
         {% endif %}
         {% for field_hidden in form.hidden_fields %}
-        {{field_hidden}}
+            {{field_hidden}}
         {% endfor %}
         {% for field in form.visible_fields %}
-        {% spaceless %}
-        {{ field.errors }}
-        <div class="form-group"><!-- <label for="{{ field.id_for_label }}">{{ field.label }}</label>--> {{field}}</div>
-        {% endspaceless %}
+            {% spaceless %}
+                {{ field.errors }}
+                <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{field}}</div>
+            {% endspaceless %}
         {%endfor%}
         <div class="text-center">
             <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
@@ -58,7 +68,7 @@
 </div>
 
 <div class="card card-body">
-    <h5 class="card-title">{% trans 'faceting' %}</h5>
+    <h5 class="card-title">{% trans 'Filter' %}</h5>
     <div class="card-text" >
         <dl>
         {% if aggregations.owner_full_name and aggregations.owner_full_name.buckets %}
@@ -182,14 +192,12 @@
     }
   });
 </script>
-<script type="text/javascript" src="/admin/jsi18n/"></script>
-<script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
-<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-<script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
+<script src="/admin/jsi18n/"></script>
+<script src="{% static 'admin/js/core.js' %}"></script>
+<script src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script src="{% static 'admin/js/jquery.init.js' %}"></script>
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
 
 {{ form.media }}
 
 {% endblock more_script %}
-
-

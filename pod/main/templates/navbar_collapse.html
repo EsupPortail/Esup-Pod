@@ -17,9 +17,9 @@
             <div class=" d-flex justify-content-between align-items-center">
           <span class="d-flex align-items-center title-chaine">
             {% if channel.headband %}
-            {% thumbnail channel.headband.file "x34" as im %}
-            <img src="{{ im.url }}" height="34" class='rounded mr-2' alt="{{channel.title|title}}">
-            {% endthumbnail %}
+              {% thumbnail channel.headband.file "x34" as im %}
+              <img src="{{ im.url }}" height="34" class='rounded mr-2' alt="{{channel.title|title}}" loading="lazy">
+              {% endthumbnail %}
             {% else %}<i data-feather="youtube" style="height:34px" class="mr-2"></i>{% endif %}
             <a href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">
             {{channel.title}}</a></span>
@@ -58,7 +58,7 @@
         <ul class="row list-unstyled" id="list-types">
           {% for type in TYPES %}
           <li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1 col-12 text-left text-truncate" href="{% url 'videos' %}?type={{type.slug}}" title="{{type.title}} ({{type.video_count}})">
-          {% if type.icon %}<img src="{{type.icon.file.url}}" alt="{{type.title}}" style="max-height:32px; max-width:32px;"/>{% else %}<i data-feather="type"></i>{% endif %}&nbsp;{{type.title}} ({{type.video_count}})</a> </li>
+          {% if type.icon %}<img src="{{type.icon.file.url}}" alt="{{type.title}}" style="max-height:32px; max-width:32px;" loading="lazy"/>{% else %}<i data-feather="type"></i>{% endif %}&nbsp;{{type.title}} ({{type.video_count}})</a></li>
           {% endfor %}
         </ul>
       </div>

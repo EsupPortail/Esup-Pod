@@ -11,7 +11,7 @@ window.setInterval("location.reload(true)",30000);
 
 
 {% block breadcrumbs %}
-{{ block.super }} 
+{{ block.super }}
 <li class="breadcrumb-item active" aria-current="page">{% trans "Lives" %}</li>
 {% endblock %}
 
@@ -24,7 +24,7 @@ window.setInterval("location.reload(true)",30000);
 {% for building in buildings %}
   <div class="card-group col-12 col-md-6 col-lg-3 mb-2 ">
     <div class="card  mb-4 box-shadow border-secondary ">
-    <img class="card-img-top" src="{{building.get_headband_url}}" alt="{{building.name}}">
+    <img class="card-img-top" src="{{building.get_headband_url}}" alt="{{building.name}}" loading="lazy">
     <div class="card-body">
       <h5 class="card-title">{{building.name}}
         {% if is_supervisor %}<a href="{% url "live:building" building_id=building.id %}"><i data-feather="eye"></i></a>{% endif %}
@@ -32,7 +32,7 @@ window.setInterval("location.reload(true)",30000);
       {% for broadcaster in building.broadcaster_set.all %}
       <p class="card-text">
         {%if broadcaster.status %}<a href="{% url "live:video_live" slug=broadcaster.slug %}" class="live_on">{%if broadcaster.password%}<i data-feather="lock"></i>{%else%}<i data-feather="airplay"></i>{%endif%}&nbsp;{{broadcaster.name}} </a>
-        {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}</p>      
+        {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}</p>
       {% empty %}
       <p class="card-text">{% trans "Sorry, no lives found" %}.</p>
       {% endfor %}

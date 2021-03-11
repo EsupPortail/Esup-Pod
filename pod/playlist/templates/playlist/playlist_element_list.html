@@ -21,7 +21,7 @@
 				<tr class="video">
 					<td class="video_thumbnail">
 						<a href="{% url 'video' slug=element.video.slug %}">
-							<img class="img-thumbnail" src="{{element.video.get_thumbnail_url}}" alt="{% trans 'Video thumbnail' %}" width="100" height="50">
+							<img class="img-thumbnail" src="{{element.video.get_thumbnail_url}}" alt="{% trans 'Video thumbnail' %}" width="100" height="50" loading="lazy">
 						</a>
 					</td>
 					<td class="video-title" data-slug="{{element.video.slug}}">{{element.video.title}}</td>
@@ -43,7 +43,7 @@
 			{% endfor %}
 		</tbody>
 	</table>
-	 <div class="text-center">
-        <button id="save-position" type="submit" class="btn btn-primary">{% trans "Save position" %}</button>
+	<div class="text-center">
+		<button id="save-position" type="submit" class="btn btn-primary">{% trans "Save position" %}</button>
 	</div>
 </div>
