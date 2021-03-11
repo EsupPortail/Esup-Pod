@@ -91,6 +91,11 @@ ADMINS = (('Name', 'adminmail@univ.fr'),)
 MANAGERS = ADMINS
 
 """
+# Liste des adresses destinataires des courriels de contact
+"""
+CONTACT_US_EMAIL = []
+
+"""
 # Un dictionnaire contenant les réglages de toutes les bases de données
 #  à utiliser avec Django.
 # C’est un dictionnaire imbriqué dont les contenus font correspondre
@@ -137,6 +142,15 @@ FILE_UPLOAD_TEMP_DIR = "/var/tmp"
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-STATIC_ROOT
 """
 STATIC_ROOT = "/pod/static"
+
+"""
+# Indique à django de compresser automatiquement
+# les fichiers css/js les plus gros lors du collectstatic
+# pour optimiser les tailles de requetes.
+# À combiner avec un réglage webserver ("gzip_static  on;" sur nginx)
+# voir https://github.com/whs/django-static-compress
+"""
+STATICFILES_STORAGE = 'static_compress.CompressedStaticFilesStorage'
 
 """
 # Chemin absolu du système de fichiers pointant vers le répertoire
@@ -421,13 +435,13 @@ ES_TIMEOUT = 30
 """
 ES_MAX_RETRIES = 10
 """
-# Valeur la version d'ElasticSearch 
-# valeurs possibles 6 ou 7 (pour indiquer utiliser elasticsearch 6 ou 7)
-# pour utiliser la version 7, faire une mise à jour du paquet elasticsearch-py 
+# Version d'ElasticSearch
+# valeurs possibles 6 ou 7 (pour indiquer utiliser ElasticSearch 6 ou 7)
+# pour utiliser la version 7, faire une mise à jour du paquet elasticsearch-py
 # elasticsearch==7.10.1
 # https://elasticsearch-py.readthedocs.io/en/v7.10.1/
 """
-ES_VERSION = 6 # Si 7, faire un une mise à jour du paquet 
+ES_VERSION = 6 # Si 7, faire un une mise à jour du paquet
 
 # ## Configuration encodage ## #
 
@@ -1179,6 +1193,16 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 # Exemple valeur: ["discipline", "tags"]
 # NB: les champs cachés et suivant ne sont pas pris en compte:
 # (video, title, type, owner, date_added, cursus, main_lang)
-# 
+#
 """
 VIDEO_REQUIRED_FIELDS = []
+
+"""
+# Activation du darkmode
+"""
+DARKMODE_ENABLED = False
+
+"""
+# Activation du mode dyslexie
+"""
+DYSLEXIAMODE_ENABLED = False

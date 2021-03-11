@@ -13,13 +13,13 @@
 
 <div class="text-center">
   {% if USE_CAS %}
-  <p><a class="btn btn-primary" href="{% url 'cas-login' %}?next={{ referrer|urlencode }}"  title="{% trans 'Single sign on' %} {{TITLE_ETB}}">{% trans "Single sign on" %} {{TITLE_ETB}}</a></p>
+  <p><a class="btn btn-primary" role="button" href="{% url 'cas-login' %}?next={{ referrer|urlencode }}">{% trans "Single sign on" %} {{TITLE_ETB}}</a></p>
   {% endif %}
   {% if USE_SHIB %}
-    <p><a class="btn btn-primary" href="{{SHIB_URL }}?target={{ referrer|urlencode }}"  title="{{ SHIB_NAME }}">{{ SHIB_NAME}}</a></p>
+    <p><a class="btn btn-primary" role="button" href="{{SHIB_URL }}?target={{ referrer|urlencode }}">{{ SHIB_NAME}}</a></p>
   {% endif %}
   {% if not local_login %}
-  <p><a class="btn btn-primary" href="{% url 'local-login'%}?{% if request.GET.is_iframe %}is_iframe=true&{%endif%}next={{ referrer|urlencode }}" title="">{% trans "Local sign on" %}</a></p>
+  <p><a class="btn btn-secondary" role="button" href="{% url 'local-login'%}?{% if request.GET.is_iframe %}is_iframe=true&{%endif%}next={{ referrer|urlencode }}">{% trans "Local sign on" %}</a></p>
   {% endif %}
 </div>
 

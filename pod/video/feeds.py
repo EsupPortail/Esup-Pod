@@ -66,6 +66,7 @@ class RssFeedGenerator(Rss201rev2Feed):
         }
 
     def add_root_elements(self, handler):
+        """Add root elements."""
         super(RssFeedGenerator, self).add_root_elements(handler)
         handler.startElement(u'image', {})
         handler.addQuickElement(u"url", self.feed['image_url'])

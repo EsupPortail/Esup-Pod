@@ -67,6 +67,11 @@ class ContactUsForm(forms.Form):
 
     url_referrer = forms.URLField(required=False, widget=forms.HiddenInput())
 
+    valid_human = forms.BooleanField(
+        required=False,
+        label=_('Check this box if you are a metal human (required)'),
+        widget=forms.CheckboxInput())
+
     def __init__(self, request, *args, **kwargs):
         super(ContactUsForm, self).__init__(*args, **kwargs)
 

@@ -3,54 +3,53 @@
 <link rel="stylesheet" type="text/css" href="{% static 'podfile/css/podfile.css' %}">
 {% endblock more_style %}
 <div>
-{{input|safe}}
-<span>
-{% if value %}
-<span id="fileinput_{{id}}">
-  {% if document.class_name == "CustomImageModel" and document.file_exist %}<img src="{{document.file.url}}" height="34" alt="{{document.name}}"/>&nbsp;
+  {{input|safe}}
+  <span>
+  {% if value %}
+    <span id="fileinput_{{id}}">
+      {% if document.class_name == "CustomImageModel" and document.file_exist %}<img src="{{document.file.url}}" height="34" alt="{{document.name}}" loading="lazy"/>&nbsp;
+      {% else %}
+        <img style="height: 26px;vertical-align: middle;" src="{% static "podfile/images/icons/default.png" %}" alt="" loading="lazy">&nbsp;
+      {%endif%}
+      {% if document.file_exist %}
+        <strong><a href="{{document.file.url}}" target="_blank" title="{% trans 'Open file in a new tab'%}">{{document.name}}</a></strong>&nbsp;
+      ({{document.file_type}} - {{document.file.size|filesizeformat}})
+      {% else %}
+        {{document.name}}
+      {%endif%}
+    </span>
+    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">
+      {% if type == "image" %}
+        {% trans 'Change image' %}
+      {% else %}
+        {% trans 'Change file' %}
+      {% endif %}
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}">
+      {% if type == "image" %}
+        {% trans 'Remove image' %}
+      {% else %}
+        {% trans 'Remove file' %}
+      {% endif %}
+    </button>
   {% else %}
-  <img style="height: 26px;vertical-align: middle;" src="{% static "podfile/images/icons/default.png" %}" alt="">&nbsp;
-  {%endif%}
-  {% if document.file_exist %}
-  <strong><a href="{{document.file.url}}" target="_blank" title="{% trans 'Open file in a new tab'%}">{{document.name}}</a></strong>&nbsp;
-  ({{document.file_type}} - {{document.file.size|filesizeformat}})
-  {% else %}
-  {{document.name}}
-  {%endif%}
-</span>
-<button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">
-  {% if type == "image" %}
-  {% trans 'Change image' %}
-  {% else %}
-  {% trans 'Change file' %}
-  {% endif %}
-</button>
-<button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}">
-  {% if type == "image" %}
-  {% trans 'Remove image' %}
-  {% else %}
-  {% trans 'Remove file' %}
-  {% endif %}
-</button>
-{% else %}
-<span id="fileinput_{{id}}">
-</span>
-<button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">
-  {% if type == "image" %}
-  {% trans 'Select an image' %}
-  {% else %}
-  {% trans 'Select a file' %}
-  {% endif %}
-</button>
-<button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}" style="display:none">
-  {% if type == "image" %}
-  {% trans 'Remove image' %}
-  {% else %}
-  {% trans 'Remove file' %}
-  {% endif %}
-</button>
-{% endif%}
-</span>
+    <span id="fileinput_{{id}}"></span>
+    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">
+      {% if type == "image" %}
+        {% trans 'Select an image' %}
+      {% else %}
+        {% trans 'Select a file' %}
+      {% endif %}
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}" style="display:none">
+      {% if type == "image" %}
+        {% trans 'Remove image' %}
+      {% else %}
+        {% trans 'Remove file' %}
+      {% endif %}
+    </button>
+  {% endif%}
+  </span>
 </div>
 <!-- Select File Modal -->
 <div class="modal fade podfilemodal" id="fileModal_{{id}}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true" data-id="{{id}}"  style="z-index:1050">

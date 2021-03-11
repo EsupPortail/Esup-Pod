@@ -2,110 +2,107 @@
 {% get_current_language as LANGUAGE_CODE %}
 <!doctype html>
 <html lang="{{ LANGUAGE_CODE }}">
-	<head>{% spaceless %}
+  <head>{% spaceless %}
 
-	    <!-- Required meta tags -->
-	    <meta charset="utf-8">
-	    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	    {% block opengraph %}
-        <meta name="description" content="">
-        <!-- Open Graph data -->
-        <meta property="og:title" content="{{ TITLE_SITE }}" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-        <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
-        <meta property="og:description" content="" />
-        <meta property="og:site_name" content="{{ TITLE_SITE }}" />
-        {% endblock %}
-        {% if FAVICON %}
-	    <link rel="icon" href="{% static FAVICON %}">
-        {% endif %}
-	    <!-- Bootstrap CSS -->
-	    {% if BOOTSTRAP_CUSTOM %}
-	    <link rel="stylesheet" href="{% static BOOTSTRAP_CUSTOM %}" crossorigin="anonymous">
-	    {% else %}
-	    <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap-'%}{{ USE_THEME }}.min.css" crossorigin="anonymous">
-	    {% endif %}
-	    <!-- pod.css -->
-	    <link rel="stylesheet" href="{% static 'css/pod.css' %}" media="screen" title="no title">
-        {% if CSS_OVERRIDE %}
-        <link rel="stylesheet" href="{% static CSS_OVERRIDE %}" media="screen" title="no title">
-        {% endif %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% block opengraph %}
+      <meta name="description" content="">
+      <!-- Open Graph data -->
+      <meta property="og:title" content="{{ TITLE_SITE }}" />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+      <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
+      <meta property="og:description" content="" />
+      <meta property="og:site_name" content="{{ TITLE_SITE }}" />
+    {% endblock %}
+    {% if FAVICON %}
+      <link rel="icon" href="{% static FAVICON %}?ver={{VERSION}}">
+    {% endif %}
+    <!-- Bootstrap CSS -->
+    {% if BOOTSTRAP_CUSTOM %}
+       <link rel="stylesheet" href="{% static BOOTSTRAP_CUSTOM %}?ver={{VERSION}}" crossorigin="anonymous">
+    {% else %}
+       <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap-'%}{{ USE_THEME }}.min.css?ver={{VERSION}}" crossorigin="anonymous">
+    {% endif %}
+    <!-- pod.css -->
+    <link rel="stylesheet" href="{% static 'css/pod.css' %}?ver={{VERSION}}" media="screen" title="no title">
+    {% if CSS_OVERRIDE %}
+      <link rel="stylesheet" href="{% static CSS_OVERRIDE %}?ver={{VERSION}}" media="screen" title="no title">
+    {% endif %}
 
-        <!-- more styles for each App -->
-	{% block more_style %}
-	{% endblock more_style %}
+    <!-- more styles for each App -->
+    {% block more_style %}{% endblock more_style %}
 
-        <!-- Javascript -->
-        <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
-        <script src="{% static 'bootstrap-4/js/bootstrap.bundle.js' %}"></script>
-        <script src="{% static 'js/js.cookie.js' %}"></script>
-        <script src="{% url 'javascript-catalog' %}"></script>
-	    <title>{{ TITLE_SITE }} - {% block page_title %}{% endblock %}</title>
+    <!-- Javascript -->
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'bootstrap-4/js/bootstrap.bundle.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'js/js.cookie.js' %}?ver={{VERSION}}"></script>
+    <script src="{% url 'javascript-catalog' %}"></script>
+    <title>{{ TITLE_SITE }} - {% block page_title %}{% endblock %}</title>
 
-	    {% block page_extra_head %}{% endblock %}
-        {% if request.GET.is_iframe %}
-        <link rel="stylesheet" href="{% static 'css/iframe.css' %}" media="screen" title="no title">
-        {% endif %}
+    {% block page_extra_head %}{% endblock %}
+    {% if request.GET.is_iframe %}
+      <link rel="stylesheet" href="{% static 'css/iframe.css' %}?ver={{VERSION}}" media="screen" title="no title">
+    {% endif %}
+  {% endspaceless %}</head>
 
-        {% endspaceless %}
-	</head>
-	<body>
-        {% if PRE_HEADER_TEMPLATE %}{% include PRE_HEADER_TEMPLATE %}{% endif %}
-		<!-- barre nav-->
-		<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light m-0 p-0">
-		{% include 'navbar.html' %}
-		</nav><!-- fin barre nav-->
-		{% include 'navbar_collapse.html' %}
-		{% block content %}
-		{% if request.path == "/" and MAINTENANCE_MODE %}
-			{% get_maintenance_welcome as maintenance_text %}
-			<div class="p-3 mb-2 bg-danger text-white">{{maintenance_text}}</div>
-        {%endif%}
-		<div class="container container-pod">
-			<main class="mt-3">
-		        <nav aria-label="{% trans 'Breadcrumb' %}" class="breadcrumb d-flex justify-content-between p-0" id="mainbreadcrumb">
-		          <ol class="breadcrumb p-1 pl-4 mb-0">
-		          	{% block breadcrumbs %}
-		                <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
-					{% endblock breadcrumbs %}
-		          </ol>
-		          <div class="p-0">
-                    {% block collapse_page_aside %}
-		            <a class="btn btn-primary btn-sm collapseAside" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" aria-label="{% trans 'Toggle side Menu' %}">
-		              <i data-feather="corner-left-up"></i><i data-feather="menu"></i>
-		            </a>
-                    {% endblock collapse_page_aside %}
-		          </div>
-		        </nav>
+  <body>
+    {% if PRE_HEADER_TEMPLATE %}{% include PRE_HEADER_TEMPLATE %}{% endif %}
+    <!-- barre nav-->
+    <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light m-0 p-0">
+      {% include 'navbar.html' %}
+    </nav><!-- fin barre nav-->
+    {% include 'navbar_collapse.html' %}
+    {% block content %}
+    {% if request.path == "/" and MAINTENANCE_MODE %}
+      {% get_maintenance_welcome as maintenance_text %}
+      <div class="p-3 mb-2 bg-danger text-white">{{maintenance_text}}</div>
+    {%endif%}
+    <div class="container container-pod">
+      <main class="mt-3">
+        <nav aria-label="{% trans 'Breadcrumb' %}" class="breadcrumb d-flex justify-content-between p-0" id="mainbreadcrumb">
+          <ol class="breadcrumb p-1 pl-4 mb-0">
+          {% block breadcrumbs %}
+            <li class="breadcrumb-item"><a href="/">{% trans 'Home' %}</a></li>
+          {% endblock breadcrumbs %}
+          </ol>
+          <div class="p-0">
+          {% block collapse_page_aside %}
+          <a class="btn btn-primary btn-sm collapseAside" data-toggle="collapse" href="#collapseAside" role="button" aria-expanded="false" aria-controls="collapseAside" aria-label="{% trans 'Toggle side Menu' %}">
+            <i data-feather="corner-left-up"></i><i data-feather="menu"></i>
+          </a>
+          {% endblock collapse_page_aside %}
+          </div>
+        </nav>
 
-		        <div class="row">
-		        	<div class="col order-12 order-md-1">
-						<!-- contenu page statique -->
-						<div class="jumbotron">
-							{% block page_content %}
-								<p> Contenu block page_content </p>
-							{% endblock page_content %}
-						</div>
-                        <!-- fin contenu page statique -->
-						{% if request.path == "/" %}
-						{% include "videos/last_videos.html" %}
-                        {% endif %}
-		        	</div> <!-- fin col order-12 order-md-1 -->
-		        	<aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
-                        {% block page_aside %}
-					       {% include 'aside.html'%}
-                        {% endblock page_aside %}
-					</aside>
-		        </div> <!-- fin row -->
-		    </main>
-		</div> <!-- fin container -->
-		{% endblock content %}
-		<footer class="bg-dark pt-2 static-pod">
-		{% include 'footer.html' %}
-		</footer>
-
+        <div class="row">
+          <div class="col col-md-9 order-12 order-md-1" id="mainContent">
+            <!-- contenu page statique -->
+            <div class="jumbotron">
+              {% block page_content %}
+                <p> Contenu block page_content </p>
+              {% endblock page_content %}
+            </div>
+            <!-- fin contenu page statique -->
+            {% if request.path == "/" %}
+            {% include "videos/last_videos.html" %}
+            {% endif %}
+          </div>
+          <aside class="collapse col-12 col-md-3 order-1 order-md-12 mb-3" id="collapseAside">
+            {% block page_aside %}
+               {% include 'aside.html'%}
+            {% endblock page_aside %}
+          </aside>
+        </div> <!-- fin row -->
+      </main>
+    </div> <!-- fin container -->
+    {% endblock content %}
+    <footer class="bg-dark pt-2 static-pod">
+      {% include 'footer.html' %}
+    </footer>
         {% if messages %}
         <div id="base-message-alert">
         {% for message in messages %}
@@ -130,13 +127,84 @@
         /** USERS **/
         var urlvideos = "{% url 'videos' %}";
 		</script>
-        <script src="{% static 'js/main.js' %}"></script>
+        <script src="{% static 'js/main.js' %}?ver={{VERSION}}"></script>
 		{% block more_script %}
 		{% endblock more_script %}
-		<script src="{% static 'feather-icons/feather.min.js' %}"></script>
+		<script src="{% static 'feather-icons/feather.min.js' %}?ver={{VERSION}}"></script>
         <script>
           feather.replace({ class: 'align-bottom'});
         </script>
+	
+  {% if DARKMODE_ENABLED == True %}
+  <script>
+		// Get the theme toggle input
+		const themeToggle = document.querySelector(
+		  '.theme-switch input[type="checkbox"]'
+		);
+		// Get the current theme from local storage
+		const currentTheme = localStorage.getItem("theme");
+		// If the current local storage item can be found
+		if (currentTheme) {
+		  // Set the body data-theme attribute to match the local storage item
+		  document.documentElement.setAttribute("data-theme", currentTheme);
+		  // If the current theme is dark, check the theme toggle
+		  if (currentTheme === "dark") {
+		    themeToggle.checked = true;
+		  }
+		}
+		// Function that will switch the theme based on the if the theme toggle is checked or not
+		function switchTheme(e) {
+		  if (e.target.checked) {
+		    document.documentElement.setAttribute("data-theme", "dark");
+		    localStorage.setItem("theme", "dark");
+		  } else {
+		    document.documentElement.setAttribute("data-theme", "light");
+		    localStorage.setItem("theme", "light");
+		  }
+		}
+		// Add an event listener to the theme toggle, which will switch the theme
+		themeToggle.addEventListener("change", switchTheme, false);
+	</script>
+{% endif %}
+{% if DYSLEXIAMODE_ENABLED == True %}
+	<script>
+		// Get the dyslexia toggle input
+		const dyslexiaToggle = document.querySelector(
+		  '.dyslexia-switch input[type="checkbox"]'
+		);
+		// Get the current dyslexia from local storage
+		const currentDyslexia = localStorage.getItem("dyslexia");
+		// If the current local storage item can be found
+		if (currentDyslexia) {
+		  // Set the body data-dyslexia attribute to match the local storage item
+		  document.documentElement.setAttribute("data-dyslexia", currentDyslexia);
+		  // If the current dyslexia is on, check the dyslexia toggle
+		  if (currentDyslexia === "on") {
+		    dyslexiaToggle.checked = true;
+		  }
+		}
+		// Function that will switch the dyslexia based on the if the dyslexia toggle is checked or not
+		function switchDyslexia(e) {
+		  if (e.target.checked) {
+		    document.documentElement.setAttribute("data-dyslexia", "on");
+		    localStorage.setItem("dyslexia", "on");
+		  } else {
+		    document.documentElement.setAttribute("data-dyslexia", "off");
+		    localStorage.setItem("dyslexia", "off");
+		  }
+		}
+		// Add an event listener to the dyslexia toggle, which will switch the dyslexia
+		dyslexiaToggle.addEventListener("change", switchDyslexia, false);
+	</script>
+{% endif %}
+{% if DARKMODE_ENABLED == True or DYSLEXIAMODE_ENABLED == True %}
+<script>
+	$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+	</script>
+{% endif %}
+
         {% if POST_FOOTER_TEMPLATE %}{% include POST_FOOTER_TEMPLATE %}{% endif %}
         {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
 	</body>

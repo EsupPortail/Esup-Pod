@@ -27,3 +27,4 @@ django-chunked-upload==2.0.0
 requests==2.25.1
 chardet==4.0.0
 django-cookies-samesite==0.8.0
+django-static-compress>=1.2.1
