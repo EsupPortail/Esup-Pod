@@ -134,7 +134,9 @@
         <script>
           feather.replace({ class: 'align-bottom'});
         </script>
-	<script>
+	
+  {% if DARKMODE_ENABLED == True %}
+  <script>
 		// Get the theme toggle input
 		const themeToggle = document.querySelector(
 		  '.theme-switch input[type="checkbox"]'
@@ -163,7 +165,8 @@
 		// Add an event listener to the theme toggle, which will switch the theme
 		themeToggle.addEventListener("change", switchTheme, false);
 	</script>
-
+{% endif %}
+{% if DYSLEXIAMODE_ENABLED == True %}
 	<script>
 		// Get the dyslexia toggle input
 		const dyslexiaToggle = document.querySelector(
@@ -193,11 +196,14 @@
 		// Add an event listener to the dyslexia toggle, which will switch the dyslexia
 		dyslexiaToggle.addEventListener("change", switchDyslexia, false);
 	</script>
-	<script>
+{% endif %}
+{% if DARKMODE_ENABLED == True or DYSLEXIAMODE_ENABLED == True %}
+<script>
 	$(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
 	</script>
+{% endif %}
 
         {% if POST_FOOTER_TEMPLATE %}{% include POST_FOOTER_TEMPLATE %}{% endif %}
         {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
