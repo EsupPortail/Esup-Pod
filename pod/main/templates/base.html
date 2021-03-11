@@ -27,12 +27,10 @@
 	    {% else %}
 	    <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap-'%}{{ USE_THEME }}.min.css" crossorigin="anonymous">
 	    {% endif %}
-
+		<!-- pod.css -->
+		<link rel="stylesheet" href="{% static 'css/pod.css' %}" media="screen" title="no title">
         {% if CSS_OVERRIDE %}
         <link rel="stylesheet" href="{% static CSS_OVERRIDE %}" media="screen" title="no title">
-				{% else %}
-				<!-- pod.css -->
-				<link rel="stylesheet" href="{% static 'css/pod.css' %}" media="screen" title="no title">
         {% endif %}
 
         <!-- more styles for each App -->
