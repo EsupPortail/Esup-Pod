@@ -47,7 +47,7 @@ src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Reg
 }
 
 .bg-dark {
-  background-color: var(--gray-dark);
+  background-color: var(--gray-dark)!important;
 }
 
 .nav-tabs.nav-item.show.nav-link,.nav-tabs.nav-link.active {
@@ -74,9 +74,9 @@ src: url("https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/woff/OpenDyslexic-Reg
   border-color: var(--primary);
 }
 
-a.btn-outline-primary svg {
+/*a.btn-outline-primary svg {
   fill: var(--primary);
-}
+}*/
 
 #formfields.btn {
   color: var(--font-color);

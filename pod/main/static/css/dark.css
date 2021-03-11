@@ -95,6 +95,13 @@
 [data-theme="dark"] .btn-secondary{
   color: var(--white);
 }
+[data-theme="dark"] .btn-outline-primary>svg{
+  color: var(--primary);
+}
+[data-theme="dark"] .btn-outline-primary:hover>svg,
+[data-theme="dark"] .btn-outline-primary:focus>svg{
+  color: var(--white);
+}
 
 [data-theme="dark"] .card{
   background-color: var(--dark);
@@ -154,10 +161,10 @@ body.dark {
 [data-theme="dark"] .select2-results .select2-no-results,
 [data-theme="dark"] .select2-results .select2-searching
 {
-  background: var(--bg-color) !important;
-  border-color: var(--bg-color) !important;
-  color: var(--font-color) !important;
-  box-shadow: none !important;
+  background: var(--bg-color);
+  border-color: var(--bg-color);
+  color: var(--font-color);
+  box-shadow: none;
 }
 .theme-switch-wrapper {
   display: flex;
