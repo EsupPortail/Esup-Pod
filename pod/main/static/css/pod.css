@@ -114,6 +114,7 @@ body {
   padding-top: 3.5rem;
   color: var(--font-color);
   background-color: var(--bg-color);
+  font-family: var(--font-family-sans-serif);
 }
 .jumbotron {
     padding: 1rem 2rem;
@@ -483,13 +484,13 @@ div.card a:hover>img {
   background-color: var(--color-fuzzy-wuzzy-brown);
 }
 #base-message-alert,#formalertdiv{
-  position:fixed;
-  top:50%;
+  position: fixed;
+  top: 50%;
   text-align: center;
-  margin:0 auto;
+  margin: 0 auto;
   left: 50%;
   transform:translate(-50%, 0);
-  z-index:1000;
+  z-index: 1000;
 }
 
   /** channel form **/

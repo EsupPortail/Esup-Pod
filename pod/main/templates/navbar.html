@@ -138,27 +138,32 @@
         </div>
       </li>
       {% endif %}{% if DARKMODE_ENABLED == True or DYSLEXIAMODE_ENABLED == True %}
-      <div class="btn-group">
-      {% if DARKMODE_ENABLED == True %}
-      <li class="nav-item" id="theme-switch-wrapper" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="{% trans 'Dark Mode' %}">
-        <label class="theme-switch" for="checkbox-darkmode">
-          <input type="checkbox" id="checkbox-darkmode" />
-            <div class="slider">
-	             <i data-feather="sun"></i>
-	             <i data-feather="moon"></i>
-            </div>
-        </label>
-      </li>{% endif %}
-      {% if DYSLEXIAMODE_ENABLED == True %}
-      <li class="nav-item" id="dyslexia-switch-wrapper" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="{% trans 'Dyslexia Mode' %}">
-        <label class="dyslexia-switch" for="checkbox-dyslexia">
-          <input type="checkbox" id="checkbox-dyslexia" />
-            <div class="slider">
-               <i data-feather="eye-off"></i>
-               <i data-feather="eye"></i>
-            </div>
-        </label>
-      </li>{% endif %}</div>{% endif %}
+        <div class="btn-group">
+        {% if DARKMODE_ENABLED == True %}
+          <li class="nav-item" id="theme-switch-wrapper" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="{% trans 'Dark mode' %}">
+            <label class="theme-switch" for="checkbox-darkmode">
+              <span class="sr-only">{% trans 'Dark mode' %}</span>
+              <input type="checkbox" id="checkbox-darkmode" />
+                <div class="slider">
+    	             <i data-feather="sun"></i>
+    	             <i data-feather="moon"></i>
+                </div>
+            </label>
+          </li>
+        {% endif %}{% if DYSLEXIAMODE_ENABLED == True %}
+          <li class="nav-item" id="dyslexia-switch-wrapper" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="{% trans 'Dyslexia mode' %}">
+            <label class="dyslexia-switch" for="checkbox-dyslexia">
+              <span class="sr-only">{% trans 'Dyslexia mode' %}</span>
+              <input type="checkbox" id="checkbox-dyslexia" />
+                <div class="slider">
+                   <i data-feather="eye-off"></i>
+                   <i data-feather="eye"></i>
+                </div>
+            </label>
+          </li>
+        {% endif %}
+        </div>
+      {% endif %}
    </ul>
 </div> <!-- FIN Container -->
 {% endspaceless %}
