@@ -100,44 +100,112 @@
       </main>
     </div> <!-- fin container -->
     {% endblock content %}
-
     <footer class="bg-dark pt-2 static-pod">
       {% include 'footer.html' %}
     </footer>
+        {% if messages %}
+        <div id="base-message-alert">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="{% trans 'Close' %}">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {% endfor %}
+        </div>
+        {% endif %}
+        <!-- JS -->
+		<script>
+		/** HIDE USERNAME **/
+		const HIDE_USERNAME = {% if HIDE_USERNAME %} true {% else %} false {% endif %};
+        /** ALL_CHANNELS **/
+        var listTheme = new Array();
+	{% get_setting "SHOW_ONLY_PARENT_THEMES" False as only_parent_theme %}
+	var show_only_parent_themes = {% if only_parent_theme %} true {% else %} false {% endif %};
+        {% for channel in ALL_CHANNELS %}{% if channel.themes.count > 0 %}listTheme["channel_{{channel.id}}"] = {{channel.get_all_theme_json|safe}};{% endif %}{% endfor %}
+        /** USERS **/
+        var urlvideos = "{% url 'videos' %}";
+		</script>
+        <script src="{% static 'js/main.js' %}?ver={{VERSION}}"></script>
+		{% block more_script %}
+		{% endblock more_script %}
+		<script src="{% static 'feather-icons/feather.min.js' %}?ver={{VERSION}}"></script>
+        <script>
+          feather.replace({ class: 'align-bottom'});
+        </script>
+	
+  {% if DARKMODE_ENABLED == True %}
+  <script>
+		// Get the theme toggle input
+		const themeToggle = document.querySelector(
+		  '.theme-switch input[type="checkbox"]'
+		);
+		// Get the current theme from local storage
+		const currentTheme = localStorage.getItem("theme");
+		// If the current local storage item can be found
+		if (currentTheme) {
+		  // Set the body data-theme attribute to match the local storage item
+		  document.documentElement.setAttribute("data-theme", currentTheme);
+		  // If the current theme is dark, check the theme toggle
+		  if (currentTheme === "dark") {
+		    themeToggle.checked = true;
+		  }
+		}
+		// Function that will switch the theme based on the if the theme toggle is checked or not
+		function switchTheme(e) {
+		  if (e.target.checked) {
+		    document.documentElement.setAttribute("data-theme", "dark");
+		    localStorage.setItem("theme", "dark");
+		  } else {
+		    document.documentElement.setAttribute("data-theme", "light");
+		    localStorage.setItem("theme", "light");
+		  }
+		}
+		// Add an event listener to the theme toggle, which will switch the theme
+		themeToggle.addEventListener("change", switchTheme, false);
+	</script>
+{% endif %}
+{% if DYSLEXIAMODE_ENABLED == True %}
+	<script>
+		// Get the dyslexia toggle input
+		const dyslexiaToggle = document.querySelector(
+		  '.dyslexia-switch input[type="checkbox"]'
+		);
+		// Get the current dyslexia from local storage
+		const currentDyslexia = localStorage.getItem("dyslexia");
+		// If the current local storage item can be found
+		if (currentDyslexia) {
+		  // Set the body data-dyslexia attribute to match the local storage item
+		  document.documentElement.setAttribute("data-dyslexia", currentDyslexia);
+		  // If the current dyslexia is on, check the dyslexia toggle
+		  if (currentDyslexia === "on") {
+		    dyslexiaToggle.checked = true;
+		  }
+		}
+		// Function that will switch the dyslexia based on the if the dyslexia toggle is checked or not
+		function switchDyslexia(e) {
+		  if (e.target.checked) {
+		    document.documentElement.setAttribute("data-dyslexia", "on");
+		    localStorage.setItem("dyslexia", "on");
+		  } else {
+		    document.documentElement.setAttribute("data-dyslexia", "off");
+		    localStorage.setItem("dyslexia", "off");
+		  }
+		}
+		// Add an event listener to the dyslexia toggle, which will switch the dyslexia
+		dyslexiaToggle.addEventListener("change", switchDyslexia, false);
+	</script>
+{% endif %}
+{% if DARKMODE_ENABLED == True or DYSLEXIAMODE_ENABLED == True %}
+<script>
+	$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+	</script>
+{% endif %}
 
-    {% if messages %}
-    <div id="base-message-alert">
-      {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="close" data-dismiss="alert" aria-label="{% trans 'Close' %}">
-        <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      {% endfor %}
-    </div>
-    {% endif %}
-    <!-- JS -->
-    <script>
-    /** HIDE USERNAME **/
-    const HIDE_USERNAME = {% if HIDE_USERNAME %} true {% else %} false {% endif %};
-    /** ALL_CHANNELS **/
-    var listTheme = new Array();
-  {% get_setting "SHOW_ONLY_PARENT_THEMES" False as only_parent_theme %}
-  var show_only_parent_themes = {% if only_parent_theme %} true {% else %} false {% endif %};
-    {% for channel in ALL_CHANNELS %}{% if channel.themes.count > 0 %}listTheme["channel_{{channel.id}}"] = {{channel.get_all_theme_json|safe}};{% endif %}{% endfor %}
-    /** USERS **/
-    var urlvideos = "{% url 'videos' %}";
-    </script>
-    <script src="{% static 'js/main.js' %}?ver={{VERSION}}"></script>
-
-    {% block more_script %}{% endblock more_script %}
-
-    <script src="{% static 'feather-icons/feather.min.js' %}?ver={{VERSION}}"></script>
-    <script>
-      feather.replace({ class: 'align-bottom'});
-    </script>
-    {% if POST_FOOTER_TEMPLATE %}{% include POST_FOOTER_TEMPLATE %}{% endif %}
-    {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
-  </body>
+        {% if POST_FOOTER_TEMPLATE %}{% include POST_FOOTER_TEMPLATE %}{% endif %}
+        {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
+	</body>
 </html>
