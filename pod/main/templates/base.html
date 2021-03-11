@@ -27,8 +27,8 @@
 	    {% else %}
 	    <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap-'%}{{ USE_THEME }}.min.css" crossorigin="anonymous">
 	    {% endif %}
-	    <!-- pod.css -->
-	    <link rel="stylesheet" href="{% static 'css/pod.css' %}" media="screen" title="no title">
+		<!-- pod.css -->
+		<link rel="stylesheet" href="{% static 'css/pod.css' %}" media="screen" title="no title">
         {% if CSS_OVERRIDE %}
         <link rel="stylesheet" href="{% static CSS_OVERRIDE %}" media="screen" title="no title">
         {% endif %}
@@ -167,6 +167,40 @@
 		themeToggle.addEventListener("change", switchTheme, false);
 	</script>
 
+	<script>
+		// Get the dyslexia toggle input
+		const dyslexiaToggle = document.querySelector(
+		  '.dyslexia-switch input[type="checkbox"]'
+		);
+		// Get the current dyslexia from local storage
+		const currentDyslexia = localStorage.getItem("dyslexia");
+		// If the current local storage item can be found
+		if (currentDyslexia) {
+		  // Set the body data-dyslexia attribute to match the local storage item
+		  document.documentElement.setAttribute("data-dyslexia", currentDyslexia);
+		  // If the current dyslexia is on, check the dyslexia toggle
+		  if (currentDyslexia === "on") {
+		    dyslexiaToggle.checked = true;
+		  }
+		}
+		// Function that will switch the dyslexia based on the if the dyslexia toggle is checked or not
+		function switchDyslexia(e) {
+		  if (e.target.checked) {
+		    document.documentElement.setAttribute("data-dyslexia", "on");
+		    localStorage.setItem("dyslexia", "on");
+		  } else {
+		    document.documentElement.setAttribute("data-dyslexia", "off");
+		    localStorage.setItem("dyslexia", "off");
+		  }
+		}
+		// Add an event listener to the dyslexia toggle, which will switch the dyslexia
+		dyslexiaToggle.addEventListener("change", switchDyslexia, false);
+	</script>
+	<script>
+	$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+	</script>
 
         {% if POST_FOOTER_TEMPLATE %}{% include POST_FOOTER_TEMPLATE %}{% endif %}
         {% if TRACKING_TEMPLATE %}{% include TRACKING_TEMPLATE %}{% endif %}
