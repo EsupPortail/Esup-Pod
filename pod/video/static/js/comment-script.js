@@ -1,3 +1,5 @@
+/** Comment Scripts **/
+
 let base_url = window.location.href.replace("/video/", "/comment/");
 let base_vote_url = base_url.replace("comment", "comment/vote");
 let base_delete_url = base_url.replace("comment", "comment/del");

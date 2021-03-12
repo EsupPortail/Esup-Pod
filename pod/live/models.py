@@ -21,7 +21,7 @@ else:
     from pod.main.models import CustomImageModel
 
 DEFAULT_THUMBNAIL = getattr(
-    settings, 'DEFAULT_THUMBNAIL', 'img/default.png')
+    settings, 'DEFAULT_THUMBNAIL', 'img/default.svg')
 
 
 class Building(models.Model):
