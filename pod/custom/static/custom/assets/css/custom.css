@@ -105,6 +105,9 @@ h6 {
 	font-weight: 600 !important;
 	font-size: var(--font-size-medium);
 }
+.btn-lang-active{
+	color: var(--primary);
+}
 /* Override Comment style */
 .comment_label, .comment_main h1, .comment_main h2, .comment_main h3, .comment_main h4, .comment_main h5, .comment_main h6
 {
