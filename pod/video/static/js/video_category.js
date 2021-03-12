@@ -536,7 +536,7 @@
 		    </a>
                 </footer>
 		<span class="small video-title">
-                    <a href="${VIDEO_URL}${video.slug}" title="${video.title}">${video.title.charAt(0).toUpperCase()}${video.title.slice(1)}</a>
+                    <a href="${VIDEO_URL}${video.slug}">${video.title.charAt(0).toUpperCase()}${video.title.slice(1)}</a>
 		</span>
 	    </div>
 	`;
