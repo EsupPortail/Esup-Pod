@@ -1,0 +1,242 @@
+
+[data-theme="light"] {
+  /* CUSTOM COLORS */
+  --bg-color: #FFF;
+  --font-color: #222;
+  /* BOOTSTRAP COLORS */
+  --primary: #b03c7e;
+  --primary2: #b03c7e;
+  --light: #f8f9fa;
+  --dark: #343a40;
+  --color-formfields: #f1f1f1;
+}
+[data-theme="dark"] {
+  --background-color: #1e1e2c;
+  /* CUSTOM COLORS */
+  --link-color: #fdb6de;
+  --activelink-color: #fbdfef;
+  --color-shark: #212529;
+  --bg-color: #303238;
+  --font-color: #f8f9fa;
+  /* BOOTSTRAP COLORS */
+  --primary: #b03c7e;
+  --primary2: var(--primary);
+  --light: var(--dark);
+  --dark: #202025;
+  --gray-dark: var(--dark);
+  --color-formfields: #454c52;
+  --color-silver-chalice: #000;
+  --color-alto: var(--bg-color);
+  /* Video Comment variable */
+  --primary-background-color: var(--bg-color) !important;
+  --third-background-color: var(--bg-color) !important;
+  --content-primary-color: var(--font-color) !important;
+}
+
+[data-theme="dark"] a,
+[data-theme="dark"] .navbar-light .navbar-nav .nav-link{
+  color: var(--link-color);
+}
+[data-theme="dark"] .navbar-light .navbar-nav .nav-link:focus,
+[data-theme="dark"] .navbar-light .navbar-nav .nav-link:hover{
+  color: var(--activelink-color);
+}
+
+[data-theme="dark"] .form-control::placeholder{
+  color: #BEC1C6;
+}
+
+[data-theme="dark"] .breadcrumb-item + .breadcrumb-item::before{
+  color:var(--white);
+}
+[data-theme="dark"] .breadcrumb-item.active{
+  color:#A8ABB3;
+}
+
+[data-theme="dark"] .nav-tabs .nav-item.show .nav-link,
+[data-theme="dark"]  .nav-tabs .nav-link.active{
+  background-color: var(--bg-color);
+  color:var(--white);
+  border-bottom: none;
+}
+
+
+[data-theme="dark"] .btn,
+[data-theme="dark"] .dropdown-item,
+[data-theme="dark"] footer{
+  color: var(--font-color);
+}
+[data-theme="dark"] .btn:hover{
+  color: inherit;
+}
+[data-theme="dark"] .btn.btn-light{
+  background-color: var(--dark);
+  border-color: var(--dark);
+  color: var(--primary);
+}
+[data-theme="dark"] .btn-primary.focus,
+[data-theme="dark"] .btn-outline-primary:focus,
+[data-theme="dark"] .btn-outline-primary:active,
+[data-theme="dark"] .btn-primary:focus,
+[data-theme="dark"] .btn-primary:hover,
+[data-theme="dark"] .dropdown-item:hover,
+[data-theme="dark"] .btn-outline-primary:hover,
+[data-theme="dark"] .btn-primary:not(:disabled):not(.disabled).active,
+[data-theme="dark"] .btn-primary:not(:disabled):not(.disabled):active,
+[data-theme="dark"] .show>.btn-primary.dropdown-toggle,
+[data-theme] .badge-primary,
+[data-theme="dark"] .btn-primary
+{
+  background: var(--primary);
+  border-color: var(--primary);
+  box-shadow: none;
+  color: var(--font-color);
+}
+[data-theme="dark"] .btn-secondary{
+  color: var(--white);
+}
+[data-theme="dark"] .btn-outline-primary>svg{
+  color: var(--primary);
+}
+[data-theme="dark"] .btn-outline-primary:hover>svg,
+[data-theme="dark"] .btn-outline-primary:focus>svg{
+  color: var(--white);
+}
+
+[data-theme="dark"] .card{
+  background-color: var(--dark);
+  border-color: var(--dark);
+}
+
+body.dark {
+  background-color: var(--background-color) !important;
+}
+
+/* Video Comment override css dark mode */
+[data-theme="dark"] .comment_main .comment .comment_content
+{
+  box-shadow: 2px 2px 12px var(--dark);
+}
+[data-theme="dark"] .comment_main .add_comment .add_comment_btn{
+  box-shadow: 4px 8px var(--bg-color);
+}
+
+/* Modal override css dark mode */
+[data-theme="dark"] .comment_main .comment .comment_content_footer .add_comment, /* comment text-area wrapper */
+[data-theme="dark"] .comment_main .add_comment .form-wrapper .new_comment.new_parent_comment, /* comment text-area */
+[data-theme="dark"] .comment_main .comment .comment_content_footer .add_comment .new_comment, /* comment text-area */
+[data-theme] #podfile #dirs .folder-search,
+[data-theme="dark"] #podfile .list_folders .folder_container:nth-child(2n),
+[data-theme="dark"] #podfile .list_folders_sub .folder_container:nth-child(2n),
+[data-theme="dark"] .modal-content{
+  background-color: var(--dark) !important;
+  border-color: var(--dark) !important;
+  color: #fff !important;
+}
+[data-theme="dark"] .close{
+  color: #fff;
+}
+[data-theme="dark"] #podfile #dirs .folder-search::placeholder{
+  color: #ccc;
+}
+[data-theme="dark"] #podfile .col{
+  background-color: var(--bg-color);
+}
+[data-theme="dark"] .list-group-item-action:focus, .list-group-item-action:hover
+{
+  background-color: var(--dark);
+}
+
+/* INPUT TEXT-AREA SELECT dark mode */
+[data-theme="dark"] select,
+[data-theme="dark"] input:not(.btn-lang),
+[data-theme="dark"] text-area,
+[data-theme="dark"] .select2-container,
+[data-theme="dark"] .select2-container-multi .select2-choices .select2-search-field input,
+[data-theme="dark"] .select2-container-multi .select2-choices,
+[data-theme="dark"] .select2-drop-active,
+[data-theme="dark"] .select2-choice,
+[data-theme="dark"] .select2-choice  .select2-search-choice-close + div,
+[data-theme="dark"] .select2-dropdown-open .select2-choice,
+[data-theme="dark"] .select2-results .select2-no-results,
+[data-theme="dark"] .select2-results .select2-searching
+{
+  background: var(--bg-color);
+  border-color: var(--bg-color);
+  color: var(--font-color);
+  box-shadow: none;
+}
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+}
+.theme-switch-wrapper em {
+  margin-left: 10px;
+  font-size: 1rem;
+}
+.theme-switch {
+  display: inline-block;
+  height: 24px;
+  position: relative;
+  width: 50px;
+  top:7px;
+}
+.theme-switch input {
+  display: none;
+}
+.slider {
+  background-color: var(--color-silver-chalice);
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+.slider:before {
+  background-color: var(--white);
+  bottom: 2px;
+  content: "";
+  height: 20px;
+  left: 2px;
+  position: absolute;
+  transition: 0.4s;
+  width: 20px;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: var(--primary);
+}
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+.slider svg {
+  color: var(--color-mine-shaft);
+  width: 15px;
+  position: absolute;
+  transition: opacity 0.2s ease 0s, transform 0.35s ease 0s;
+  pointer-events: none;
+}
+.feather-moon {
+  opacity: 0;
+  left: 5px;
+  bottom: 0px;
+  color: var(--white) !important;
+  transform: translateX(4px);
+}
+.feather-sun {
+  opacity: 1;
+  right: 5px;
+  bottom: 0px;
+  transform: translateX(0px);
+}
+input:checked + .slider .feather-moon {
+  opacity: 1;
+  transform: translateX(0);
+}
+input:checked + .slider .feather-sun {
+  opacity: 0;
+  transform: translateX(-4px);
+}
