@@ -20,6 +20,23 @@
 	--font-family: "Open Sans", sans-serif;
 	--card-min-width: 200px;
 }
+/* Django login view */
+form#login-form, form#login-form .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-top: .4em;
+}
+form#login-form input{
+	border-width: inherit;
+	border-block: none;
+	padding: .4em;
+}
+form#login-form .btn.btn-primary{
+	align-self: center;
+	padding: .4em 2em;
+}
+/* End django login view */
+
 [data-theme="dark"] > body, [data-theme-mode="dark"] > body,
 [data-theme="light"] > body, [data-theme-mode="light"] > body,
 html,body,
