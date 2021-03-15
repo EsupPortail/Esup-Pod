@@ -210,6 +210,16 @@ h6 {
 	flex-grow: 1;
 	background-color: var(--background-dark-color);
 }
+#videos_list .infinite-item .video-card .card-header .small{
+	display: flex;
+	justify-content: flex-end;
+	flex-grow: 1;
+	margin-left: .8em;
+}
+#videos_list .infinite-item .video-card .card-header .small > span{
+	margin-left: .4em;
+}
+#videos_list .infinite-item .video-card .card-header svg.feather.feather-film{width: 20px;}
 #videos_list .infinite-item .video-card .card-body{
 	padding: 0 !important;
 	height: unset;
