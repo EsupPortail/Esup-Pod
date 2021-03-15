@@ -3,7 +3,6 @@ from .models import CustomFileModel
 from .models import CustomImageModel
 from .models import UserFolder
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from pod.authentication.models import AccessGroup
@@ -28,6 +27,7 @@ class UserFolderAdmin(admin.ModelAdmin):
             kwargs["queryset"] = AccessGroup.objects.filter(
                 sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:

@@ -137,7 +137,8 @@ def get_folder_files(request, id, type=None):
             and not (folder.groups.filter(
                 name__in=[
                     name[0]
-                    for name in AccessGroup.objects.filter(users__user=request.user).values_list('name')
+                    for name in AccessGroup.objects.filter(
+                        users__user=request.user).values_list('name')
                 ]).exists())
             and not (
                 request.user.is_superuser or request.user.has_perm(
@@ -548,7 +549,8 @@ def get_file(request, type):
             and not reqfile.folder.groups.filter(
                 name__in=[
                     name[0]
-                    for name in AccessGroup.objects.filter(users__user=request.user).values_list('name')
+                    for name in AccessGroup.objects.filter(
+                        users__user=request.user).values_list('name')
                 ]).exists()
             and not (request.user.is_superuser or request.user.has_perm(
                     "podfile.change_customfilemodel") or request.user.has_perm(

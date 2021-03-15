@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
-from .models import Owner
+from .models import Owner, AccessGroup
 from rest_framework import serializers, viewsets
 
 # Serializers define the API representation.
@@ -35,6 +35,12 @@ class SiteSerializer(serializers.HyperlinkedModelSerializer):
         model = Site
         fields = ('url', 'name', 'domain')
 
+
+class AccessGroupSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = AccessGroup
+        fields = ('display_name', 'name', 'sites', 'users')
 # ViewSets define the view behavior.
 
 
@@ -55,4 +61,9 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 class SiteViewSet(viewsets.ModelViewSet):
     queryset = Site.objects.all()
+    serializer_class = SiteSerializer
+
+
+class AccessGroupViewSet(viewsets.ModelViewSet):
+    queryset = AccessGroup.objects.all()
     serializer_class = SiteSerializer

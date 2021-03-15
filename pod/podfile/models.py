@@ -6,7 +6,6 @@ from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from django.contrib.auth.models import Group
 from select2 import fields as select2_fields
 from sorl.thumbnail import delete
 from itertools import chain
