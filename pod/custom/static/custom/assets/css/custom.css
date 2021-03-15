@@ -20,9 +20,15 @@
 	--font-family: "Open Sans", sans-serif;
 	--card-min-width: 200px;
 }
+*{
+	transition-property: color, background, font-size, width, max-width, min-width !important;
+	transition-duration: .3s !important;
+	transition-timing-function: ease-in-out !important;
+}
+[data-theme="dark"] > body, [data-theme-mode="dark"] > body,
+[data-theme="light"] > body, [data-theme-mode="light"] > body,
 html,body{
 	font-size: var(--font-size-semi-thin);
-	transition: font-size .3s ease-in-out, width .3s ease-in-out;
 }
 body > .container.container-pod {
 	min-height: calc(100vh - 232px);
