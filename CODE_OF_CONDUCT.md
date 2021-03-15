@@ -1,5 +1,5 @@
 
-# Code de conduite _Contributor Covenant_
+# Code de conduite _Esup-Pod_
 
 ## Notre engagement
 
@@ -12,8 +12,7 @@ le niveau d'expérience, l'éducation, le statut socio-économique,
 la nationalité, l'apparence personnelle, la race, la religion, 
 ou l'identité et l'orientation sexuelle.
 
-Nous nous engageons à agir et interagir de manière à contribuer à une communauté 
-ouverte, accueillante, diversifiée, inclusive et saine.
+Nous nous engageons à agir et interagir de manière à contribuer à une communauté ouverte, accueillante, diversifiée, inclusive et saine.
 
 ## Nos critères
 
@@ -49,35 +48,28 @@ le cas échéant.
 
 ## Portée d'application
 
-Ce code de conduite s'applique à la fois au sein des espaces du projet ainsi que
-dans les espaces publics lorsqu'un individu représente officiellement le projet ou sa
-communauté. Font parties des exemples de représentation d'un projet ou d'une
-communauté l'utilisation d'une adresse électronique officielle, la publication sur
-les réseaux sociaux à l'aide d'un compte officiel ou le fait d'agir en tant que représentant·e désigné·e
-lors d'un événement en ligne ou hors-ligne.
+Ce code de conduite s'applique à la fois au sein des espaces du projet ainsi que dans les espaces publics lorsqu'un individu représente officiellement le projet ou sa communauté.
+Font parties des exemples de représentation d'un projet ou d'une
+communauté l'utilisation d'une adresse électronique officielle, la publication sur les réseaux sociaux à l'aide d'un compte officiel ou le fait d'agir en tant que représentant·e désigné·e lors d'un événement en ligne ou hors-ligne.
 
 ## Application
 
 Les cas de comportements abusifs, harcelants ou tout autre comportement
 inacceptables peuvent être signalés aux dirigeant·e·s de la communauté responsables de l'application du code de conduite à
-[INSÉRER UNE ADRESSE EMAIL]. 
+[Esup-Pod](https://github.com/EsupPortail/Esup-Pod). 
 Toutes les plaintes seront examinées et feront l'objet d'une enquête rapide et équitable.
 
-Tou·te·s les dirigeant·e·s de la communauté sont tenu·e·s de respecter la vie privée et la sécurité des
-personnes ayant signalé un incident.
+Tou·te·s les dirigeant·e·s de la communauté sont tenu·e·s de respecter la vie privée et la sécurité des personnes ayant signalé un incident.
 
 ## Directives d'application
 
-Les dirigeant·e·s de communauté suivront ces directives d'application sur l'impact communautaire afin de déterminer
-les conséquences de toute action qu'ils jugent contraire au présent code de conduite :
+Les dirigeant·e·s de communauté suivront ces directives d'application sur l'impact communautaire afin de déterminer les conséquences de toute action qu'ils jugent contraire au présent code de conduite :
 
 ### 1. Correction
 
-**Impact communautaire** : utilisation d'un langage inapproprié ou tout autre comportement jugé
-non professionnel ou indésirable dans la communauté.
+**Impact communautaire** : utilisation d'un langage inapproprié ou tout autre comportement jugé non professionnel ou indésirable dans la communauté.
 
-**Conséquence** : un avertissement écrit et privé de la part des dirigeant·e·s de la communauté, clarifiant
-la nature du non-respect et expliquant pourquoi
+**Conséquence** : un avertissement écrit et privé de la part des dirigeant·e·s de la communauté, clarifiant la nature du non-respect et expliquant pourquoi
 le comportement était inapproprié. Des excuses publiques peuvent être demandées.
 
 ### 2. Avertissement
@@ -85,31 +77,23 @@ le comportement était inapproprié. Des excuses publiques peuvent être demand�
 **Impact communautaire** : un non-respect par un seul incident ou une série d'actions.
 
 **Conséquence** : un avertissement avec des conséquences dû à la poursuite du comportement.
-Aucune interaction avec les personnes concernées, y compris l'interaction non sollicitée avec
-celles et ceux qui sont chargé·e·s de l'application de ce code de conduite, pendant une période déterminée. 
-Cela comprend le fait d'éviter les interactions dans les espaces communautaires ainsi que sur les canaux externes
-comme les médias sociaux. Le non-respect de ces conditions peut entraîner
-un bannissement temporaire ou permanent.
+Aucune interaction avec les personnes concernées, y compris l'interaction non sollicitée avec celles et ceux qui sont chargé·e·s de l'application de ce code de conduite, pendant une période déterminée. 
+Cela comprend le fait d'éviter les interactions dans les espaces communautaires ainsi que sur les canaux externes comme les médias sociaux.
+Le non-respect de ces conditions peut entraîner un bannissement temporaire ou permanent.
 
 ### 3. Bannissement temporaire
 
-**Impact communautaire** : un non-respect grave des normes communautaires, notamment
-un comportement inapproprié soutenu.
+**Impact communautaire** : un non-respect grave des normes communautaires, notamment un comportement inapproprié soutenu.
 
-**Conséquence** : un bannissement temporaire de toutes formes d'interactions ou de
-communications avec la communauté pendant une période déterminée. Aucune interaction publique ou
-privée avec les personnes concernées, y compris les interactions non sollicitées
-avec celles et ceux qui appliquent ce code de conduite, n'est autorisée pendant cette période.
+**Conséquence** : un bannissement temporaire de toutes formes d'interactions ou de communications avec la communauté pendant une période déterminée.
+Aucune interaction publique ou privée avec les personnes concernées, y compris les interactions non sollicitées avec celles et ceux qui appliquent ce code de conduite, n'est autorisée pendant cette période.
 Le non-respect de ces conditions peut entraîner un bannissement permanent.
 
 ### 4. Bannissement permanent
 
-**Impact communautaire** : démontrer un schéma récurrent de non-respect des normes de la 
-communauté y compris un comportement inapproprié soutenu, le harcèlement d'un individu
-ainsi que l'agression ou le dénigrement de catégories d'individus.
+**Impact communautaire** : démontrer un schéma récurrent de non-respect des normes de la communauté y compris un comportement inapproprié soutenu, le harcèlement d'un individu ainsi que l'agression ou le dénigrement de catégories d'individus.
 
-**Conséquence** : un bannissement permanent de toutes formes d'interactions publiques au sein de
-la communauté.
+**Conséquence** : un bannissement permanent de toutes formes d'interactions publiques au sein de la communauté.
 
 ## Attributions
 
@@ -121,9 +105,8 @@ disponible à
 Les Directives d'application ont été inspirées par le
 [Code of conduct enforcement ladder][Mozilla CoC] de Mozilla.
 
-Pour obtenir des réponses aux questions courantes sur ce code de conduite, consultez la FAQ à
-[https://www.contributor-covenant.org/faq][FAQ]. Les traductions sont disponibles
-sur [https://www.contributor-covenant.org/translations][translations].
+Pour obtenir des réponses aux questions courantes sur ce code de conduite, consultez la FAQ à [https://www.contributor-covenant.org/faq][FAQ].
+Les traductions sont disponibles sur [https://www.contributor-covenant.org/translations][translations].
 
 [homepage]: https://www.contributor-covenant.org
 [v2.0]: https://www.contributor-covenant.org/version/2/0/code_of_conduct.html
