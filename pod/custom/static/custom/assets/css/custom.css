@@ -36,6 +36,17 @@ form#login-form .btn.btn-primary{
 	padding: .4em 2em;
 }
 /* End django login view */
+html > body input,
+html > body input,
+html > body textarea,
+html > body textarea,
+html > body select,
+html > body select,
+html > body select *
+{
+	outline: none !important;
+	box-shadow: none !important;
+}
 
 [data-theme="dark"] > body, [data-theme-mode="dark"] > body,
 [data-theme="light"] > body, [data-theme-mode="light"] > body,
@@ -1243,8 +1254,6 @@ body .card-title{
 {
 	background: var(--background-dark-color) !important;
 	border-color: var(--background-dark-color) !important;
-	outline: none !important;
-	box-shadow: none !important;
 	color: #fff !important;
 }
 [data-theme="light"] > body select[multiple],
