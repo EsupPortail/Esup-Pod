@@ -121,7 +121,7 @@ player.on('firstplay', function(){
       src: '{% if request.is_secure %}https://{%else%}http://{% endif %}{{request.get_host}}{{video.overview.url}}'
     });
   {%endif%}
-  
+
   {% if video.overlay_set.all %}
     var list_overlays = [];
     $('ul#overlays li').each(function() {
@@ -147,7 +147,7 @@ player.on('firstplay', function(){
   {% if request.GET.is_iframe %}
   player.videoJsInfo();
   {%endif%}
-  
+
   player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
 {% else %}
   {% if video.get_video_m4a %}

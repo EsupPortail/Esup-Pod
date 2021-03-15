@@ -1,3 +1,5 @@
+"""Pod video_search views."""
+
 from django.shortcuts import render
 from elasticsearch import Elasticsearch
 from pod.video_search.forms import SearchForm
@@ -15,6 +17,7 @@ ES_VERSION = getattr(settings, 'ES_VERSION', 6)
 
 
 def get_filter_search(selected_facets, start_date, end_date):
+    """Return a list of search filters."""
     filter_search = []
     for facet in selected_facets:
         if ":" in facet:
@@ -74,7 +77,8 @@ def get_result_aggregations(result, selected_facets):
             else:
                 if agg_term == "type.slug":
                     del result["aggregations"]["type_title"]
-                if agg_term == "tags.slug":
+                if agg_term == "tags.slug" and (
+                        "tags_name" in result["aggregations"]):
                     del result["aggregations"]["tags_name"]
                 if agg_term == "disciplines.slug":
                     del result["aggregations"]["disciplines_title"]
@@ -82,6 +86,7 @@ def get_result_aggregations(result, selected_facets):
 
 
 def search_videos(request):
+    """Send a search request to ES."""
     es = Elasticsearch(ES_URL, timeout=ES_TIMEOUT, max_retries=ES_MAX_RETRIES,
                        retry_on_timeout=True)
     aggsAttrs = ['owner_full_name', 'type.title',

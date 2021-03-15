@@ -138,7 +138,8 @@ USE_CATEGORY = getattr(settings, 'USER_VIDEO_CATEGORY', False)
 
 def regroup_videos_by_theme(videos, page, channel, theme=None):
     """
-    " Regroup videos by theme
+    " Regroup videos by theme.
+
     " @return [ (theme, set()), (theme, set()) ]
     """
     if not theme:
@@ -533,8 +534,9 @@ def get_video_access(request, video, slug_private):
 
         show_page = (
             access_granted_for_private
-            or
-            (is_draft and access_granted_for_draft)
+            or (
+                is_draft
+                and access_granted_for_draft)
             or (
                 is_restricted
                 and access_granted_for_restricted)
@@ -1438,8 +1440,9 @@ def video_oembed(request):
             data['provider_url'], reverse('videos'), video.owner.username)
         data['html'] = (
             "<iframe src=\"%(provider)s%(video_url)s%(slug_private)s"
-            + "?is_iframe=true\" width=\"640\" height=\"360\" style=\""
-            + "padding: 0; margin: 0; border:0\" allowfullscreen ></iframe>"
+            + "?is_iframe=true\" width=\"640\" height=\"360\" "
+            + "style=\"padding: 0; margin: 0; border:0\" "
+            + "allowfullscreen loading='lazy'></iframe>"
         ) % {
             'provider': data['provider_url'],
             'video_url': reverse('video', kwargs={'slug': video.slug}),
@@ -1581,6 +1584,8 @@ def manage_access_rights_stats_video(request, video, page_title):
 @user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
 def stats_view(request, slug=None, slug_t=None):
     """
+    View for statistics.
+
     " slug reference video's slug or channel's slug
     " t_slug reference theme's slug
     " from defined the source of the request such as
@@ -1588,14 +1593,14 @@ def stats_view(request, slug=None, slug_t=None):
     """
     target = request.GET.get('from', "videos")
     videos, title = get_videos(slug, target, slug_t)
-    error_message = (
+    error_message = _(
         "The following %s does not exist or contain any videos: %s")
     if request.method == "GET" and target == "video" and videos:
         return manage_access_rights_stats_video(request, videos[0], title)
 
     elif request.method == "GET" and target == "video" and not videos:
         return HttpResponseNotFound(
-            _("The following video does not exist : %s") % slug)
+            _("The following video does not exist: %s") % slug)
 
     if request.method == "GET" and (
             not videos and target in ("channel", "theme", "videos")):
@@ -1762,7 +1767,8 @@ def add_comment(request, video_slug, comment_id=None):
 
 def get_parent_comments(request, video):
     """
-    return only comments without parent
+    Return only comments without parent.
+
     (direct comments to video) which contains
     number of votes and children
     """
@@ -2201,6 +2207,7 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
         pass
 
     def on_completion(self, uploaded_file, request):
+        """Triggered when a chunked upload is complete."""
         edit_slug = request.POST.get("slug")
         transcript = request.POST.get("transcript")
         if edit_slug == "":
@@ -2228,7 +2235,7 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 
 """
 # check access to video
-# change tempalte to fix height and breadcrumbs
+# change template to fix height and breadcrumbs
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_collaborate(request, slug):

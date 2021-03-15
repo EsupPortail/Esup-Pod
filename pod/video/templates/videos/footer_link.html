@@ -1,12 +1,11 @@
 {% load i18n %}
 <div class="card card-body p-2 mt-1" id="card-videofooterlink">
-    <h5 class="card-title pl-2">
-      <i data-feather="link"></i>&nbsp;
-      {% trans "link" %}
-    </h5>
-    <div class="card-text" >
-        {% for link in LINK_FOOTER %}<p><a href="{{link.url}}" title="{{link.title}}" >&gt;  {{link.title}}</a></p>{% endfor %}
-    </div>
+  <h5 class="card-title pl-2">
+    <i data-feather="link"></i>&nbsp;{% trans "Links" %}
+  </h5>
+  <div class="card-text" >
+    <ul class="footer_links">
+      {% for link in LINK_FOOTER %}<li><a href="{{link.url}}" title="{{link.title}}">{{link.title}}</a></li>{% endfor %}
+    </ul>
+  </div>
 </div>
-
-    
