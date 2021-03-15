@@ -138,6 +138,11 @@ h6 {
 [data-dyslexia="on"][data-dyslexia-mode="on"] *{
 	letter-spacing: .075em;
 }
+[data-dyslexia="on"][data-dyslexia-mode="on"] .container-pod,
+[data-dyslexia="on"][data-dyslexia-mode="on"] .container
+{
+	max-width: 1600px;
+}
 [data-dyslexia="on"] h1,
 [data-dyslexia="on"] h2,
 [data-dyslexia="on"] h3,
