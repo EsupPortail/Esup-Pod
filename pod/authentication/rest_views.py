@@ -66,4 +66,4 @@ class SiteViewSet(viewsets.ModelViewSet):
 
 class AccessGroupViewSet(viewsets.ModelViewSet):
     queryset = AccessGroup.objects.all()
-    serializer_class = SiteSerializer
+    serializer_class = AccessGroupSerializer
