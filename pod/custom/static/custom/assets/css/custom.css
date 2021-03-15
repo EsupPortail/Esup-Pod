@@ -17,6 +17,7 @@
 	--font-size-medium: 20px;
 	--font-size-semi-bold: 24px;
 	--font-size-bold: 28px;
+	--font-size-close-btn: 34px;
 	--font-family: "Open Sans", sans-serif;
 	--card-min-width: 200px;
 }
@@ -46,6 +47,12 @@ html > body select *
 {
 	outline: none !important;
 	box-shadow: none !important;
+}
+html > body .close,
+html > body .close,
+html > body button.close,
+html > body button.close{
+	font-size: var(--font-size-close-btn) !important;
 }
 
 [data-theme="dark"] > body, [data-theme-mode="dark"] > body,
@@ -1308,12 +1315,6 @@ body .card-title{
 [data-theme="dark"] > body .border,
 [data-theme-mode="dark"] > body .border{
 	border: 1px solid var(--dark) !important;
-}
-[data-theme="dark"] > body .close,
-[data-theme-mode="dark"] > body .close,
-[data-theme="dark"] > body button.close,
-[data-theme-mode="dark"] > body button.close{
-	font-size: var(--font-size-bold) !important;
 }
 [data-theme="dark"] > body .close,
 [data-theme-mode="dark"] > body .close,
