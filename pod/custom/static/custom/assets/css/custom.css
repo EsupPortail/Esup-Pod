@@ -2030,7 +2030,9 @@ body #videos_list .card .card-body .card-footer.card-footer-pod svg{
 
 	/* track/caption */
 [data-theme="dark"] > body .grid-list-track,
-[data-theme-mode="dark"] > body .grid-list-track
+[data-theme-mode="light"] > body .grid-list-track,
+[data-theme="dark"] > body .grid-list-track,
+[data-theme-mode="light"] > body .grid-list-track
 {
 	grid-gap: 0 !important;
 }
@@ -2042,20 +2044,33 @@ body #videos_list .card .card-body .card-footer.card-footer-pod svg{
 [data-theme-mode="dark"] > body .thead_title{
 	color: var(--comment-color) !important;
 	border-bottom: 1px solid var(--dark);
+}
+[data-theme="dark"] > body .thead_title,
+[data-theme-mode="light"] > body .thead_title,
+[data-theme="dark"] > body .thead_title,
+[data-theme-mode="light"] > body .thead_title
+{
 	margin-bottom: 0.8em !important;
 }
 [data-theme="dark"] > body .grid-list-track > *,
-[data-theme-mode="dark"] > body .grid-list-track > *{
+[data-theme="light"] > body .grid-list-track > *,
+[data-theme-mode="dark"] > body .grid-list-track > *,
+[data-theme-mode="light"] > body .grid-list-track > *
+{
 	padding: .4em 0;
 	margin-bottom: 0.4em;
 }
 [data-theme="dark"] > body .grid-list-track > *:not(.track_kind.options),
-[data-theme-mode="dark"] > body .grid-list-track > *:not(.track_kind.options){
+[data-theme="light"] > body .grid-list-track > *:not(.track_kind.options),
+[data-theme-mode="dark"] > body .grid-list-track > *:not(.track_kind.options),
+	[data-theme-mode="light"] > body .grid-list-track > *:not(.track_kind.options){
 	padding-right: .8em;
 }
 
 [data-theme="dark"] > body .grid-list-track > .track_kind:not(.track_kind.options),
-[data-theme-mode="dark"] > body .grid-list-track > .track_kind:not(.track_kind.options)
+[data-theme="light"] > body .grid-list-track > .track_kind:not(.track_kind.options),
+[data-theme-mode="dark"] > body .grid-list-track > .track_kind:not(.track_kind.options),
+[data-theme-mode="light"] > body .grid-list-track > .track_kind:not(.track_kind.options)
 {
 	padding-left: .4em;
 }
@@ -2145,6 +2160,12 @@ body #videos_list .card .card-body .card-footer.card-footer-pod svg{
 [data-theme-mode="dark"] > body .selector-filter input{
 	background-color: var(--background-dark-color) !important;
 	color: #fff !important;
+}
+[data-theme="dark"] > body .selector-filter input,
+[data-theme="light"] > body .selector-filter input,
+[data-theme-mode="dark"] > body .selector-filter input,
+[data-theme-mode="light"] > body .selector-filter input
+{
 	padding: .4em;
 	font-size: var(--font-size-semi-thin);
 }
@@ -2158,6 +2179,11 @@ body #videos_list .card .card-body .card-footer.card-footer-pod svg{
 }
 /* Podfile */
 	/* Podfile Modal */
+[data-theme="light"][data-theme-mode="light"] #podfile #listfiles .navbar .btn:hover,
+[data-theme="light"][data-theme-mode="light"] #podfile .navbar .nav-link:hover svg,
+[data-theme="light"][data-theme-mode="light"] #podfile #files #currentfolder .upload-file:hover svg{
+	color: var(--primary2) !important;
+}
 [data-theme="dark"] > body #podfile .open-folder svg,
 [data-theme-mode="dark"] > body #podfile .open-folder svg{
 	color: #fff !important;
@@ -2181,8 +2207,16 @@ body #videos_list .card .card-body .card-footer.card-footer-pod svg{
 	color: #fff !important;
 }
 [data-theme="dark"] > body #podfile .card.bg-light,
-[data-theme-mode="dark"] > body #podfile .card.bg-light{
+[data-theme-mode="dark"] > body #podfile .card.bg-light
+{
 	border: 1px solid var(--link-color) !important;
+}
+
+[data-theme="dark"] > body #podfile .card.bg-light,
+[data-theme="light"] > body #podfile .card.bg-light,
+[data-theme-mode="dark"] > body #podfile .card.bg-light,
+[data-theme-mode="light"] > body #podfile .card.bg-light
+{
 	overflow:hidden !important;
 	padding: 0 !important;
 }
@@ -2220,7 +2254,10 @@ body #videos_list .card .card-body .card-footer.card-footer-pod svg{
 	border: none !important;
 }
 [data-theme="dark"] > body #podfile .card-body .text-muted,
-[data-theme-mode="dark"] > body #podfile .card-body .text-muted{
+[data-theme="light"] > body #podfile .card-body .text-muted,
+[data-theme-mode="dark"] > body #podfile .card-body .text-muted,
+[data-theme-mode="light"] > body #podfile .card-body .text-muted
+{
 	width: 100%;
 	display: block;
 	overflow: hidden;
@@ -2257,7 +2294,10 @@ body #videos_list .card .card-body .card-footer.card-footer-pod svg{
 	font-size: var(--font-size-medium) !important;
 }
 [data-theme="dark"] > body #podfile .list_folders,
-[data-theme-mode="dark"] > body #podfile .list_folders{
+[data-theme="light"] > body #podfile .list_folders,
+[data-theme-mode="dark"] > body #podfile .list_folders,
+[data-theme-mode="light"] > body #podfile .list_folders
+{
 	height: 100%;
 }
 [data-theme="dark"] > body #podfile .share-folders .folder_title,
@@ -2302,7 +2342,10 @@ body #videos_list .card .card-body .card-footer.card-footer-pod svg{
 	background-color: var(--block-dark-color) !important;
 }
 [data-theme="dark"] > body #form_theme .btn#cancel_theme,
-[data-theme-mode="dark"] > body #form_theme .btn#cancel_theme{
+[data-theme="light"] > body #form_theme .btn#cancel_theme,
+[data-theme-mode="dark"] > body #form_theme .btn#cancel_theme,
+[data-theme-mode="light"] > body #form_theme .btn#cancel_theme
+{
 	margin: 1em .4em;
 }
 [data-theme="dark"] > body #treeview ul.list-group li.list-group-item-info a,
@@ -2317,11 +2360,17 @@ body #videos_list .card .card-body .card-footer.card-footer-pod svg{
 [data-theme="dark"] > body #treeview ul.list-group li,
 [data-theme-mode="dark"] > body #treeview ul.list-group li{
 	background-color: var(--background-dark-color);
-	padding: .4em 0;
-	padding-left: .4em;
 	color: var(--link-color);
 }
 
+[data-theme="dark"] > body #treeview ul.list-group li,
+[data-theme="light"] > body #treeview ul.list-group li,
+[data-theme-mode="dark"] > body #treeview ul.list-group li,
+[data-theme-mode="light"] > body #treeview ul.list-group li
+{
+	padding: .4em 0;
+	padding-left: .4em;
+}
 [data-theme="dark"] > body #treeview ul.list-group li:not(:hover):nth-child(2n+1),
 [data-theme-mode="dark"] > body #treeview ul.list-group li:not(:hover):nth-child(2n+1){
 	background-color: var(--block-color) !important;
