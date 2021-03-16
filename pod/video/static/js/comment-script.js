@@ -1,3 +1,4 @@
+// import relativeTime from "/static/js/dayjs_relativeTime.min.js";
 let base_url = window.location.href.replace("/video/", "/comment/");
 let base_vote_url = base_url.replace("comment", "comment/vote");
 let base_delete_url = base_url.replace("comment", "comment/del");
@@ -19,6 +20,9 @@ const COLORS = [
 	"darkgray",
 ];
 const LANG = lang_btn ? lang_btn.textContent.trim() : "fr";
+dayjs.extend(dayjs_plugin_relativeTime)
+dayjs.locale(LANG);
+
 const ACTION_COMMENT = {
 	comment_to_delete: null,
 };
@@ -112,13 +116,13 @@ class CommentSince extends HTMLElement {
 		since = this.getAttribute("since") ? this.getAttribute("since") : since;
 		since = typeof since === "string" ? new Date(since) : since;
 		this.setAttribute("title", since.toLocaleString());
-		let date_since = moment(since).locale(LANG).fromNow();
+		let date_since = dayjs(since).fromNow();
 		let div = document.createElement("DIV");
 		div.setAttribute("class", "comment_since");
 		div.innerText = date_since;
 		this.appendChild(div);
 		window.setInterval(() => {
-			date_since = moment(since).locale(LANG).fromNow();
+			date_since = dayjs(since).fromNow();
 			div.innerText = date_since;
 		}, 60000);
 	}
@@ -187,7 +191,7 @@ class Comment extends HTMLElement {
 				if (!vote_action.classList.contains("voting"))
 					vote_action.classList.add("voting");
 				let comment_id = get_comment_attribute(document.getElementById(id));
-				vote(vote_action, comment_id, vote_action);
+				vote(vote_action, comment_id);
 			});
 		}
 		comment_container
@@ -404,10 +408,10 @@ customElements.define("comment-element", Comment);
 
 /*******************  Voting for a comment  ********************
  ***************************************************************/
-function vote(comment_action_html, comment_id, target_html_el) {
+function vote(comment_action_html, comment_id) {
 	// send request to the server to check if the current user already vote
 	let vote_url = base_vote_url + comment_id + "/";
-	let btn = target_html_el.querySelector(".comment_vote_btn");
+	let btn = comment_action_html.querySelector(".comment_vote_btn");
 	let data = new FormData();
 	data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
 	fetch(vote_url, {
@@ -417,7 +421,7 @@ function vote(comment_action_html, comment_id, target_html_el) {
 		.then((response) => {
 			response.json().then((data) => {
 				comment_action_html.classList.remove("voting");
-				const target_comment = get_node(target_html_el, "comment_element");
+				const target_comment = get_node(comment_action_html, "comment_element");
 
 				if (data.voted === true) {
 					const nb_vote = update_comment_attribute(
@@ -427,8 +431,8 @@ function vote(comment_action_html, comment_id, target_html_el) {
 						"increment"
 					);
 					btn.innerHTML = nb_vote + (nb_vote > 1 ? " votes" : " vote");
-					if (!target_html_el.classList.contains("voted"))
-						target_html_el.classList.add("voted");
+					if (!comment_action_html.classList.contains("voted"))
+					comment_action_html.classList.add("voted");
 				} else {
 					const nb_vote = update_comment_attribute(
 						target_comment,
@@ -437,8 +441,8 @@ function vote(comment_action_html, comment_id, target_html_el) {
 						"decrement"
 					);
 					btn.innerHTML = nb_vote + (nb_vote > 1 ? " votes" : " vote");
-					if (target_html_el.classList.contains("voted"))
-						target_html_el.classList.remove("voted");
+					if (comment_action_html.classList.contains("voted"))
+						comment_action_html.classList.remove("voted");
 				}
 			});
 		})
@@ -507,7 +511,7 @@ function save_comment(
 							fetch_comment_children(
 								top_parent_comment_html,
 								top_parent_id,
-								(scroll_to_last = true)
+								true
 							);
 						else {
 							// Add comment child into the DOM
@@ -580,7 +584,7 @@ function delete_comment(comment) {
 							parent_el,
 							"nbr_child"
 						);
-						deleteWithAnimation(comment, (is_child = true)); // delete comment from the DOM
+						deleteWithAnimation(comment, true); // delete comment from the DOM
 						hide_or_add_show_children_btn(
 							parent_el,
 							parent_id,
@@ -591,7 +595,7 @@ function delete_comment(comment) {
 						return;
 					}
 					all_comment = all_comment.filter((c) => c.id != data.comment_deleted);
-					deleteWithAnimation(comment, (is_child = false));
+					deleteWithAnimation(comment, false);
 					set_comments_number();
 				} else document.body.appendChild(new AlertMessage(data.message));
 			});
@@ -619,7 +623,7 @@ function delete_comment_child_DOM(comment, comment_top_parent_id, is_child) {
 								child_comment.added
 							).getTime()}`;
 							let child_comment_html = document.querySelector(html_id);
-							deleteWithAnimation(child_comment_html, (is_child = true));
+							deleteWithAnimation(child_comment_html, true);
 						}
 						return !list_parent_id.includes(child_comment.direct_parent__id); // Remove comment data from all_comment
 					});
@@ -649,33 +653,50 @@ function getElementPosition(element) {
 	return { x: xPosition, y: yPosition - bodyPaddingTop };
 }
 
+/***** Check if element is visible in the viewport *****
+ * ****************************************************/
+ function isInViewport(el) {
+    const rect = el.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+
+    );
+}
 /*********** Scroll to a specific comment *************
  * ****************************************************/
 function scrollToComment(targetComment) {
-	let currentElementPosition = getElementPosition(targetComment);
-	window.scrollTo({
-		top: currentElementPosition.y,
-		left: currentElementPosition.x,
+	const alreadyInViewPort = isInViewport(targetComment);
+	const animationDuration = alreadyInViewPort?2000:4000;
+	if(!alreadyInViewPort)
+	{
+
+		let currentElementPosition = getElementPosition(targetComment);
+		window.scrollTo({
+			top: currentElementPosition.y,
+			left: currentElementPosition.x,
 		behavior: "smooth",
-	});
-	let htmlTarget = targetComment.querySelector(".comment_content");
-	if (htmlTarget.classList.contains("scroll_to"))
+		});
+	}
+		let htmlTarget = targetComment.querySelector(".comment_content");
+		if (htmlTarget.classList.contains("scroll_to"))
 		htmlTarget.classList.remove("scroll_to");
-
-	window.setTimeout(() => {
-		htmlTarget.classList.remove("scroll_to");
-	}, 4000);
-
-	htmlTarget.classList.add("scroll_to");
+		
+		window.setTimeout(() => {
+			htmlTarget.classList.remove("scroll_to");
+		}, animationDuration);
+		
+		htmlTarget.classList.add("scroll_to");
 }
 
 /****** Add the owner of parent comment as a tag ******
  ******************************************************/
 function add_user_tag(comment_value, parent_comment) {
-	let reply_to = get_comment_attribute(parent_comment, (attr = "author_name"));
-	reply_content = get_comment_attribute(parent_comment, (attr = "content"));
-	let htmlTarget = parent_comment.querySelector(".comment_content");
-	let tag = document.createElement("a");
+	const reply_to = get_comment_attribute(parent_comment, "author_name");
+	const reply_content = get_comment_attribute(parent_comment,"content");
+	const tag = document.createElement("a");
 	tag.setAttribute("href", "#");
 	tag.addEventListener("click", (e) => {
 		e.preventDefault();
@@ -688,11 +709,11 @@ function add_user_tag(comment_value, parent_comment) {
 	    <span class="reply_author">@${reply_to}</span>
 	    <span class="reply_content">${reply_content}</span>
         </span>`;
-	let comment_text = document.createElement("span");
+	const comment_text = document.createElement("span");
 	comment_text.setAttribute("class", "comment_text");
 	comment_text.innerText = comment_value;
 
-	let comment_content = document.createElement("p");
+	const comment_content = document.createElement("p");
 	comment_content.appendChild(tag);
 	comment_content.appendChild(comment_text);
 	return comment_content;
@@ -739,13 +760,13 @@ if (is_authenticated) {
 		if (el.value.trim() != "") {
 			let comment_content = el.value;
 			let c = new Comment(
-				(owner = user_fullName),
-				(content = comment_content),
-				(likes = 0),
-				(added_since = date_added),
-				(id = `comment_${date_added.getTime()}`),
-				(is_parent = true),
-				(is_comment_owner = true)
+				user_fullName,
+				comment_content,
+				0,
+				date_added,
+				`comment_${date_added.getTime()}`,
+				true,
+				true
 			);
 			c.dataset.level = "-1";
 			el.value = "";
@@ -817,13 +838,13 @@ function fetch_comment_children(
 							);
 
 							let comment_child_html = new Comment(
-								(owner = `${comment_child.author_name}`),
-								(content = comment_child_content),
-								(likes = comment_child.nbr_vote),
-								(added_since = date_added),
-								(id = `comment_${date_added.getTime()}`),
-								(is_parent = false),
-								(is_comment_owner = comment_child.is_owner)
+								`${comment_child.author_name}`,
+								comment_child_content,
+								comment_child.nbr_vote,
+								date_added,
+								`comment_${date_added.getTime()}`,
+								false,
+								comment_child.is_owner
 							);
 
 							parent_comment_html
@@ -858,13 +879,13 @@ function add_child_comment(el, container_el, top_parent_comment_html) {
 
 		let comment_child_content = add_user_tag(el.value, child_direct_parent);
 		let c = new Comment(
-			(owner = user_fullName),
-			(content = comment_child_content),
-			(likes = 0),
-			(added_since = date_added),
-			(id = `comment_${date_added.getTime()}`),
-			(is_parent = false),
-			(is_comment_owner = true)
+			user_fullName,
+			comment_child_content,
+			0,
+			date_added,
+			`comment_${date_added.getTime()}`,
+			false,
+			true
 		);
 		setBorderLeftColor(c, child_direct_parent);
 		// INSERT INTO DATABASE THE CURRENT COMMENT CHILD
@@ -1031,13 +1052,13 @@ fetch(base_vote_url)
 					let date_added = new Date(comment_data.added);
 					let html_id = `comment_${date_added.getTime().toString()}`;
 					let parent_c = new Comment(
-						(owner = `${comment_data.author_name}`),
-						(content = comment_data.content),
-						(likes = comment_data.nbr_vote),
-						(added_since = date_added),
-						(id = html_id),
-						(is_parent = true),
-						(is_comment_owner = comment_data.is_owner)
+						`${comment_data.author_name}`,
+						comment_data.content,
+						comment_data.nbr_vote,
+						date_added,
+						html_id,
+						true,
+						comment_data.is_owner
 					);
 					parent_c.dataset.level = "-1";
 					manage_vote_frontend(comment_data.id, parent_c);
