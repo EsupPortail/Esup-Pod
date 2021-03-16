@@ -492,10 +492,10 @@ def videos(request):
 
 
 def is_in_video_groups(user, video):
-    return user.groups.filter(
-        name__in=[
+    return user.owner.accessgroup_set.filter(
+        code_name__in=[
             name[0]
-            for name in video.restrict_access_to_groups.values_list('name')
+            for name in video.restrict_access_to_groups.values_list('code_name')
         ]
     ).exists()
 
