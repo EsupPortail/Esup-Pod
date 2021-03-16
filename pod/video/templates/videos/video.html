@@ -290,7 +290,11 @@
       var is_authenticated = JSON.parse("{{request.user.is_authenticated|yesno:"true,false"}}");
       var is_superuser = JSON.parse("{{request.user.is_superuser|yesno:"true,false"}}");
     </script>
-    <script src="{% static 'js/moment_with_locales.min.js' %}"></script>
-    <script defer src="{% static 'js/comment-script.js' %}"></script>
+    <script src="{% static 'js/dayjs_relativeTime.min.js' %}"></script>
+    <script src="{% static 'js/dayjs.min.js' %}"></script>
+    <script src="{% static 'js/dayjs_en.min.js' %}"></script>
+    <script src="{% static 'js/dayjs_fr.min.js' %}"></script>
+    <script src="{% static 'js/dayjs_nl.min.js' %}"></script>
+    <script type="module" defer src="{% static 'js/comment-script.js' %}"></script>
   {% endif %}
 {% endblock more_script %}
