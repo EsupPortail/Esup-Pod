@@ -504,6 +504,11 @@ FFMPEG_SCALE = ' -vf "scale=-2:{height}" '
 # to use in GPU, specify ' -vf "scale_npp=-2:{height}:interp_algo=super" '
 
 """
+# Pour spécifier le shell utilisé pour lancer la commande ffmpeg (/bin/sh par défaut)
+"""
+ENCODE_SHELL = '/bin/sh'
+
+"""
 # bitrate audio pour l'encodage M4A
 #  (encodage des fichiers audio envoyés sur la plateforme)
 """
