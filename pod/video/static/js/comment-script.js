@@ -187,7 +187,7 @@ class Comment extends HTMLElement {
 				if (!vote_action.classList.contains("voting"))
 					vote_action.classList.add("voting");
 				let comment_id = get_comment_attribute(document.getElementById(id));
-				vote(vote_action, comment_id, vote_action);
+				vote(vote_action, comment_id);
 			});
 		}
 		comment_container
@@ -404,10 +404,10 @@ customElements.define("comment-element", Comment);
 
 /*******************  Voting for a comment  ********************
  ***************************************************************/
-function vote(comment_action_html, comment_id, target_html_el) {
+function vote(comment_action_html, comment_id) {
 	// send request to the server to check if the current user already vote
 	let vote_url = base_vote_url + comment_id + "/";
-	let btn = target_html_el.querySelector(".comment_vote_btn");
+	let btn = comment_action_html.querySelector(".comment_vote_btn");
 	let data = new FormData();
 	data.append("csrfmiddlewaretoken", Cookies.get("csrftoken"));
 	fetch(vote_url, {
@@ -417,7 +417,7 @@ function vote(comment_action_html, comment_id, target_html_el) {
 		.then((response) => {
 			response.json().then((data) => {
 				comment_action_html.classList.remove("voting");
-				const target_comment = get_node(target_html_el, "comment_element");
+				const target_comment = get_node(comment_action_html, "comment_element");
 
 				if (data.voted === true) {
 					const nb_vote = update_comment_attribute(
@@ -427,8 +427,8 @@ function vote(comment_action_html, comment_id, target_html_el) {
 						"increment"
 					);
 					btn.innerHTML = nb_vote + (nb_vote > 1 ? " votes" : " vote");
-					if (!target_html_el.classList.contains("voted"))
-						target_html_el.classList.add("voted");
+					if (!comment_action_html.classList.contains("voted"))
+					comment_action_html.classList.add("voted");
 				} else {
 					const nb_vote = update_comment_attribute(
 						target_comment,
@@ -437,8 +437,8 @@ function vote(comment_action_html, comment_id, target_html_el) {
 						"decrement"
 					);
 					btn.innerHTML = nb_vote + (nb_vote > 1 ? " votes" : " vote");
-					if (target_html_el.classList.contains("voted"))
-						target_html_el.classList.remove("voted");
+					if (comment_action_html.classList.contains("voted"))
+						comment_action_html.classList.remove("voted");
 				}
 			});
 		})
@@ -649,24 +649,42 @@ function getElementPosition(element) {
 	return { x: xPosition, y: yPosition - bodyPaddingTop };
 }
 
+/***** Check if element is visible in the viewport *****
+ * ****************************************************/
+ function isInViewport(el) {
+    const rect = el.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+
+    );
+}
 /*********** Scroll to a specific comment *************
  * ****************************************************/
 function scrollToComment(targetComment) {
-	let currentElementPosition = getElementPosition(targetComment);
-	window.scrollTo({
-		top: currentElementPosition.y,
-		left: currentElementPosition.x,
+	const alreadyInViewPort = isInViewport(targetComment);
+	const animationDuration = alreadyInViewPort?2000:4000;
+	if(!alreadyInViewPort)
+	{
+
+		let currentElementPosition = getElementPosition(targetComment);
+		window.scrollTo({
+			top: currentElementPosition.y,
+			left: currentElementPosition.x,
 		behavior: "smooth",
-	});
-	let htmlTarget = targetComment.querySelector(".comment_content");
-	if (htmlTarget.classList.contains("scroll_to"))
+		});
+	}
+		let htmlTarget = targetComment.querySelector(".comment_content");
+		if (htmlTarget.classList.contains("scroll_to"))
 		htmlTarget.classList.remove("scroll_to");
-
-	window.setTimeout(() => {
-		htmlTarget.classList.remove("scroll_to");
-	}, 4000);
-
-	htmlTarget.classList.add("scroll_to");
+		
+		window.setTimeout(() => {
+			htmlTarget.classList.remove("scroll_to");
+		}, animationDuration);
+		
+		htmlTarget.classList.add("scroll_to");
 }
 
 /****** Add the owner of parent comment as a tag ******
