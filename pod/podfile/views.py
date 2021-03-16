@@ -132,10 +132,10 @@ def get_folder_files(request, id, type=None):
 
     if (request.user != folder.owner
             and not (folder.groups.filter(
-                name__in=[
+                code_name__in=[
                     name[0]
                     for name in request.user.owner.accessgroup_set.values_list(
-                        'name')
+                        'code_name')
                 ]).exists())
             and not (
                 request.user.is_superuser or request.user.has_perm(
@@ -541,10 +541,10 @@ def get_file(request, type):
         reqfile = get_object_or_404(CustomFileModel, id=id)
     if (request.user != reqfile.folder.owner
             and not reqfile.folder.groups.filter(
-                name__in=[
+                code_name__in=[
                     name[0]
                     for name in request.user.owner.accessgroup_set.values_list(
-                        'name')
+                        'code_name')
                 ]).exists()
             and not (request.user.is_superuser or request.user.has_perm(
                     "podfile.change_customfilemodel") or request.user.has_perm(
