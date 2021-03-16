@@ -52,6 +52,7 @@ settings_local.py
 pod/static/
 *.bak
 .coverage
+htmlcov
 
 # IDE Files #
 #############
