@@ -1,10 +1,6 @@
 """
 Unit tests for playlist models
 """
-import os
-
-from django.conf import settings
-from django.test import override_settings
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -14,16 +10,6 @@ from pod.playlist.models import Playlist
 from pod.playlist.models import PlaylistElement
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class PlaylistModelTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 

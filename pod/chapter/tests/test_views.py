@@ -2,15 +2,13 @@
 Unit tests for chapters views
 """
 from django.conf import settings
-from django.test import override_settings
 from django.test import TestCase
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from pod.video.models import Video, Type
-from pod.chapter.models import Chapter
-
-import os
+from ..models import Chapter
+from django.contrib.sites.models import Site
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomFileModel
@@ -21,20 +19,11 @@ else:
     from pod.main.models import CustomFileModel
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class ChapterViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         owner = User.objects.create(
             username='test', password='azerty', is_staff=True)
         owner.set_password('hello')
@@ -42,13 +31,21 @@ class ChapterViewsTestCase(TestCase):
         owner2 = User.objects.create(username='test2', password='azerty')
         owner2.set_password('hello')
         owner2.save()
-        Video.objects.create(
+        vid = Video.objects.create(
             title='videotest',
             owner=owner,
             video='test.mp4',
             duration=20,
             type=Type.objects.get(id=1)
         )
+
+        owner.owner.sites.add(Site.objects.get_current())
+        owner.owner.save()
+
+        owner2.owner.sites.add(Site.objects.get_current())
+        owner2.owner.save()
+
+        vid.sites.add(site)
 
     def test_video_chapter_owner(self):
         video = Video.objects.get(id=1)

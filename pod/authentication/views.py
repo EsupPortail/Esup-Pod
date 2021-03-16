@@ -7,15 +7,20 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
-
-from django_cas.decorators import gateway
-
+from cas.decorators import gateway
 from pod.authentication.forms import FrontOwnerForm
+from django.contrib import auth
 
 USE_CAS = getattr(
     settings, 'USE_CAS', False)
+USE_SHIB = getattr(
+    settings, 'USE_SHIB', False)
 CAS_GATEWAY = getattr(
     settings, 'CAS_GATEWAY', False)
+SHIB_URL = getattr(
+    settings, 'SHIB_URL', "/idp/shibboleth.sso/Login")
+SHIB_LOGOUT_URL = getattr(
+    settings, 'SHIB_LOGOUT_URL', "")
 
 if CAS_GATEWAY:
     @gateway()
@@ -25,7 +30,8 @@ if CAS_GATEWAY:
             return redirect(next)
 
         return render(request, 'authentication/login.html', {
-            'USE_CAS': USE_CAS, 'referrer': next
+            'USE_CAS': USE_CAS, 'USE_SHIB': USE_SHIB, "SHIB_URL": SHIB_URL,
+            'referrer': next
         })
 else:
     def authentication_login_gateway(request):
@@ -43,9 +49,10 @@ def authentication_login(request):
         url = reverse('authentication_login_gateway')
         url += '?%snext=%s' % (iframe_param, referrer)
         return redirect(url)
-    elif USE_CAS:
+    elif USE_CAS or USE_SHIB:
         return render(request, 'authentication/login.html', {
-            'USE_CAS': USE_CAS, 'referrer': referrer
+            'USE_CAS': USE_CAS, 'USE_SHIB': USE_SHIB, "SHIB_URL": SHIB_URL,
+            'referrer': referrer
         })
     else:
         url = reverse('local-login')
@@ -53,13 +60,23 @@ def authentication_login(request):
         return redirect(url)
 
 
+def local_logout(request):
+    url = reverse('local-logout')
+    url += '?next=/'
+    return redirect(url)
+
+
 def authentication_logout(request):
-    if USE_CAS:
-        return redirect('django_cas:logout')
+    if request.user.is_anonymous():
+        return local_logout(request)
+    if request.user.owner.auth_type == "CAS":
+        return redirect(reverse('cas-logout'))
+    elif request.user.owner.auth_type == "Shibboleth":
+        auth.logout(request)
+        logout = SHIB_LOGOUT_URL + "?return=" + request.build_absolute_uri("/")
+        return redirect(logout)
     else:
-        url = reverse('local-logout')
-        url += '?next=/'
-        return redirect(url)
+        return local_logout(request)
 
 
 @csrf_protect
@@ -73,8 +90,8 @@ def userpicture(request):
             request.POST, instance=request.user.owner)
         if frontOwnerForm.is_valid():
             frontOwnerForm.save()
-            messages.add_message(
-                request, messages.INFO, _('Your picture has been saved.'))
+            # messages.add_message(
+            #    request, messages.INFO, _('Your picture has been saved.'))
         else:
             messages.add_message(
                 request, messages.ERROR,

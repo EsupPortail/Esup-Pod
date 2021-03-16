@@ -1,5 +1,4 @@
 from pod.main.forms import ContactUsForm, SUBJECT_CHOICES
-from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from django.shortcuts import render
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib import messages
@@ -11,19 +10,74 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-
-from django.http import HttpResponse
+from django.db.models import Count
+from django.http import HttpResponse, HttpResponseBadRequest
 from wsgiref.util import FileWrapper
-
+from django.db.models import Q
 from pod.video.models import Video
 import os
 import mimetypes
+import json
+import unicodedata
+from django.contrib.auth.decorators import login_required
+from .models import Configuration
+
+##
+# Settings exposed in templates
+#
+TEMPLATE_VISIBLE_SETTINGS = getattr(
+    settings,
+    'TEMPLATE_VISIBLE_SETTINGS',
+    {
+        'TITLE_SITE': 'Pod',
+        'TITLE_ETB': 'University name',
+        'LOGO_SITE': 'img/logoPod.svg',
+        'LOGO_ETB': 'img/logo_etb.svg',
+        'LOGO_PLAYER': 'img/logoPod.svg',
+        'LINK_PLAYER': '',
+        'FOOTER_TEXT': ('',),
+        'FAVICON': 'img/logoPod.svg',
+        'CSS_OVERRIDE': '',
+        'PRE_HEADER_TEMPLATE': '',
+        'POST_FOOTER_TEMPLATE': '',
+        'TRACKING_TEMPLATE': '',
+    }
+)
 
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
 CONTACT_US_EMAIL = getattr(
     settings, 'CONTACT_US_EMAIL', [
         mail for name, mail in getattr(settings, 'MANAGERS')])
 DEFAULT_FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@univ.fr')
+USER_CONTACT_EMAIL_CASE = getattr(
+        settings, 'USER_CONTACT_EMAIL_CASE', [])
+CUSTOM_CONTACT_US = getattr(
+        settings, 'CUSTOM_CONTACT_US', False)
+MANAGERS = getattr(settings, "MANAGERS", [])
+USE_ESTABLISHMENT = getattr(
+        settings, 'USE_ESTABLISHMENT_FIELD', False)
+USER_CONTACT_EMAIL_CASE = getattr(
+        settings, 'USER_CONTACT_EMAIL_CASE', [])
+CUSTOM_CONTACT_US = getattr(
+        settings, 'CUSTOM_CONTACT_US', False)
+SUPPORT_EMAIL = getattr(
+    settings, "SUPPORT_EMAIL", []
+)
+USE_SUPPORT_EMAIL = getattr(
+        settings, "USE_SUPPORT_EMAIL", False)
+HIDE_USERNAME = getattr(
+        settings, 'HIDE_USERNAME', False)
+MENUBAR_HIDE_INACTIVE_OWNERS = getattr(
+        settings, 'HIDE_USERNAME', True)
+MENUBAR_SHOW_STAFF_OWNERS_ONLY = getattr(
+        settings, 'MENUBAR_SHOW_STAFF_OWNERS_ONLY', False)
+HIDE_USER_TAB = getattr(
+        settings, 'HIDE_USER_TAB', False)
+
+
+def in_maintenance():
+    return (True if Configuration.objects.get(
+        key="maintenance_mode").value == "1" else False)
 
 
 @csrf_protect
@@ -43,16 +97,69 @@ def download_file(request):
         raise PermissionDenied
 
 
+def get_manager_email(owner):
+    """ owner instanceOf User Model
+        return email of user's manager if exist
+        else return all managers email
+    """
+    # Si la fonctionnalité des etablissements est activée
+    if USE_ESTABLISHMENT and owner:
+        v_estab = owner.owner.establishment.lower()
+        # vérifier si le mail du manager (de l'etablissement
+        # du propriétaire de la vidéo) est renseigné
+        if v_estab in dict(MANAGERS):
+            # print('send to ------> ', [dict(MANAGERS)[v_estab]])
+            return [dict(MANAGERS)[v_estab]]
+    return CONTACT_US_EMAIL
+
+
+def get_dest_email(owner, video, form_subject, request):
+    dest_email = []
+    # Soit le owner a été spécifié
+    # Soit on le récupere via la video
+    # v_owner = instance de User
+    v_owner = owner if (
+            owner) else getattr(
+                    video, 'owner', None)
+    # Si ni le owner ni la video a été renseigné
+    if not v_owner:
+        # Vérifier si l'utilisateur est authentifié
+        # le manager de son etablissement sera le dest du mail
+        if request.user.is_authenticated():
+            return get_manager_email(request.user)
+        # Autrement le destinataire du mail sera le(s) manager(s)
+        # ou le support dans le cas de Grenoble
+        return SUPPORT_EMAIL if (
+            USE_SUPPORT_EMAIL) else CONTACT_US_EMAIL
+
+    # Si activation de la fonctionnalité de mail custom
+    if CUSTOM_CONTACT_US:
+        # vérifier si le sujet du mail est attribué
+        # au propriétaire de la vidéo
+        if form_subject in USER_CONTACT_EMAIL_CASE:
+            dest_email = [v_owner.email]
+        else:
+            dest_email = get_manager_email(v_owner)
+    else:
+        # Sinon aucune envie d'utiliser cette fonctionnalité
+        # On utilise le fonctionnement de base
+        dest_email = [owner.email] if owner else CONTACT_US_EMAIL
+    return dest_email
+
+
 @csrf_protect
 def contact_us(request):
     owner = User.objects.get(id=request.GET.get('owner')) if (
         request.GET.get('owner')
         and User.objects.filter(id=request.GET.get('owner')).first()) else None
 
-    video = Video.objects.get(id=request.GET.get('video')) if (
+    video = Video.objects.get(id=request.GET.get('video'),
+                              sites=get_current_site(request)) if (
         request.GET.get('video')
+        and request.GET.get('video').isdigit()
         and Video.objects.filter(
-            id=request.GET.get('video')).first()
+            id=request.GET.get('video'),
+            sites=get_current_site(request)).first()
     ) else None
 
     description = "%s: %s\n%s: %s%s\n\n" % (
@@ -90,6 +197,10 @@ def contact_us(request):
             email = form.cleaned_data['email']
             message = form.cleaned_data['description']
 
+            valid_human = form.cleaned_data['valid_human']
+            if valid_human:
+                return redirect(form.cleaned_data['url_referrer'])
+
             text_content = loader.get_template('mail/mail.txt').render({
                 'name': name,
                 'email': email,
@@ -105,7 +216,13 @@ def contact_us(request):
                 'url_referrer': form.cleaned_data['url_referrer']
             })
 
-            dest_email = [owner.email] if owner else CONTACT_US_EMAIL
+            dest_email = []
+            dest_email = get_dest_email(
+                owner,
+                video,
+                form_subject,
+                request
+                )
 
             msg = EmailMultiAlternatives(
                 subject, text_content, email, dest_email)
@@ -146,3 +263,43 @@ def contact_us(request):
         'form': form,
         'owner': owner}
     )
+
+
+def remove_accents(input_str):
+    nfkd_form = unicodedata.normalize('NFKD', input_str)
+    only_ascii = nfkd_form.encode('ASCII', 'ignore')
+    return only_ascii
+
+
+@login_required(redirect_field_name='referrer')
+def user_autocomplete(request):
+    if request.is_ajax():
+        additional_filters = {
+            'video__is_draft': False,
+            'owner__sites': get_current_site(request)
+        }
+        if MENUBAR_HIDE_INACTIVE_OWNERS:
+            additional_filters['is_active'] = True
+        if MENUBAR_SHOW_STAFF_OWNERS_ONLY:
+            additional_filters['is_staff'] = True
+        VALUES_LIST = ['username', 'first_name', 'last_name', 'video_count']
+        q = remove_accents(request.GET.get('term', '').lower())
+        users = User.objects.filter(
+          **additional_filters
+        ).filter(Q(username__istartswith=q) |
+                 Q(last_name__istartswith=q) |
+                 Q(first_name__istartswith=q)).distinct().order_by(
+            "last_name").annotate(video_count=Count(
+                "video", sites=get_current_site(
+                    request), distinct=True)).values(*list(VALUES_LIST))
+
+        data = json.dumps(list(users))
+    else:
+        return HttpResponseBadRequest()
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
+def maintenance(request):
+    text = Configuration.objects.get(key="maintenance_text_disabled").value
+    return render(request, 'maintenance.html', {'text': text})

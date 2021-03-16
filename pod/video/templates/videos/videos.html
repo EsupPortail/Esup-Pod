@@ -23,19 +23,30 @@
 
   <h1>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
     <span class="float-right">
-      <a href="{% url "rss-video"%}?{{request.GET.urlencode}}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm">
+	{% if USE_STATS_VIEW %}
+      <a href="{% url "video_stats_view" 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm"> {% trans "Statistics views" %}</a>
+      {% endif %}
+      <a href="{% url "rss-video"%}?{{request.GET.urlencode}}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm">
         <i data-feather="rss"></i>&nbsp;Video</a>
-      <a href="{% url "rss-audio"%}?{{request.GET.urlencode}}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-dark btn-sm">
+      <a href="{% url "rss-audio"%}?{{request.GET.urlencode}}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm">
         <i data-feather="rss"></i>&nbsp;Audio</a>
     </span>
   </h1>
+  {% comment %}
+  <p>
+    "types": request.GET.getlist('type'),
+    "owners": request.GET.getlist('owner'),
+    "disciplines": request.GET.getlist('discipline'),
+    "tags_slug": request.GET.getlist('tag'),
+  </p>
+  {% endcomment %}
 
   {% include "videos/video_list.html" %}
 
 {% endblock page_content %}
 
 {% block page_aside %}
-    {% include 'videos/filter_aside.html'%}
+    {% include 'videos/filter_aside.html' %}
 {% endblock page_aside %}
 
 
@@ -46,16 +57,23 @@
   var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],
     onBeforePageLoad: function () {
-      $('.loading').show();
+      $('.infinite-loading').show();
     },
     onAfterPageLoad: function ($items) {
-      $('.loading').hide();
+      $('.infinite-loading').hide();
       feather.replace({ class: 'align-bottom'});
-      if(!$('footer').hasClass('small')) {
-        $('footer').addClass('small');
-        $('footer').addClass('fixed-bottom');
-        $('footer').attr('style','height:80px; overflow-y:auto');
-      }
+      $('footer.static-pod').addClass('small');
+      $('footer.static-pod').addClass('fixed-bottom');
+      $('footer.static-pod').attr('style','height:80px; overflow-y:auto');
+      $('footer.static-pod .hidden-pod').css('display','none');
+      $(window).scroll(function () {
+        if ($(window).height() + $(window).scrollTop() == $(document).height())
+        {
+           $('footer.static-pod .hidden-pod').css('display','block');
+           $('footer.static-pod').attr('style','height:auto;');
+           $('footer.static-pod').removeClass('fixed-bottom');
+        }
+      });
     }
   });
 </script>

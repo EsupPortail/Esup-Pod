@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from pod.authentication.models import Owner
 from pod.authentication.models import AFFILIATION
-
+from django.contrib.sites.models import Site
 from ldap3 import Server
 from ldap3 import ALL
 from ldap3 import Connection
@@ -26,6 +26,7 @@ USER_CAS_MAPPING_ATTRIBUTES = getattr(
         "mail": "mail",
         "last_name": "sn",
         "first_name": "givenname",
+        "primaryAffiliation": "eduPersonPrimaryAffiliation",
         "affiliation": "eduPersonAffiliation"
     })
 
@@ -33,7 +34,7 @@ CREATE_GROUP_FROM_AFFILIATION = getattr(
     settings, 'CREATE_GROUP_FROM_AFFILIATION', False)
 
 AFFILIATION_STAFF = getattr(
-    settings, 'USER_CAS_MAPPING_ATTRIBUTES',
+    settings, 'AFFILIATION_STAFF',
     ('faculty', 'employee', 'staff')
 )
 
@@ -61,8 +62,11 @@ USER_LDAP_MAPPING_ATTRIBUTES = getattr(
         "last_name": "sn",
         "first_name": "givenname",
         "primaryAffiliation": "eduPersonPrimaryAffiliation",
-        "affiliation": "eduPersonAffiliation"
+        "affiliations": "eduPersonAffiliation"
     })
+
+CAS_FORCE_LOWERCASE_USERNAME = getattr(
+    settings, 'CAS_FORCE_LOWERCASE_USERNAME', False)
 
 # search scope
 BASE = 'BASE'
@@ -74,6 +78,8 @@ def populateUser(tree):
     username_element = tree.find(
         './/{http://www.yale.edu/tp/cas}%s' % AUTH_CAS_USER_SEARCH)
     username = username_element.text
+    if CAS_FORCE_LOWERCASE_USERNAME:
+        username = username.lower()
     user, user_created = User.objects.get_or_create(username=username)
     owner, owner_created = Owner.objects.get_or_create(user=user)
     owner.auth_type = 'CAS'
@@ -92,10 +98,26 @@ def populateUser(tree):
                 populate_user_from_entry(user, owner, entry)
 
 
+def get_server():
+    if isinstance(LDAP_SERVER['url'], str):
+        server = Server(LDAP_SERVER['url'], port=LDAP_SERVER[
+                        'port'], use_ssl=LDAP_SERVER[
+                            'use_ssl'], get_info=ALL)
+    elif isinstance(LDAP_SERVER['url'], tuple):
+        hosts = []
+        for server in LDAP_SERVER['url']:
+            if not (server == LDAP_SERVER['url'][0]):
+                hosts.append(server)
+        server = Server(LDAP_SERVER['url'][0], port=LDAP_SERVER[
+            'port'], use_ssl=LDAP_SERVER[
+                'use_ssl'], get_info=ALL,
+                        allowed_referral_hosts=hosts)
+    return server
+
+
 def get_ldap_conn():
     try:
-        server = Server(LDAP_SERVER['url'], port=LDAP_SERVER[
-                        'port'], use_ssl=LDAP_SERVER['use_ssl'], get_info=ALL)
+        server = get_server()
         conn = Connection(
             server, AUTH_LDAP_BIND_DN, AUTH_LDAP_BIND_PASSWORD, auto_bind=True)
         return conn
@@ -151,6 +173,12 @@ def populate_user_from_entry(user, owner, entry):
             and entry[USER_LDAP_MAPPING_ATTRIBUTES['primaryAffiliation']]
         ) else AFFILIATION[0][0]
     )
+    owner.establishment = (
+        entry[USER_LDAP_MAPPING_ATTRIBUTES['establishment']].value if (
+            USER_LDAP_MAPPING_ATTRIBUTES.get('establishment')
+            and entry[USER_LDAP_MAPPING_ATTRIBUTES['establishment']]
+        ) else ""
+    )
     owner.save()
     affiliations = (
         entry[USER_LDAP_MAPPING_ATTRIBUTES['affiliations']].values if (
@@ -164,6 +192,7 @@ def populate_user_from_entry(user, owner, entry):
         if CREATE_GROUP_FROM_AFFILIATION:
             group, group_created = Group.objects.get_or_create(
                 name=affiliation)
+            group.groupsite.sites.add(Site.objects.get_current())
             user.groups.add(group)
     user.save()
 
@@ -192,6 +221,13 @@ def populate_user_from_tree(user, owner, tree):
         last_name_element.text if last_name_element is not None else ""
     )
     user.save()
+    # PrimaryAffiliation
+    primary_affiliation_element = tree.find(
+        './/{http://www.yale.edu/tp/cas}%s' % (
+            USER_CAS_MAPPING_ATTRIBUTES["primaryAffiliation"])
+    )
+    owner.affiliation = primary_affiliation_element.text if (
+        primary_affiliation_element is not None) else AFFILIATION[0][0]
     # affiliation
     affiliation_element = tree.findall(
         './/{http://www.yale.edu/tp/cas}%s' % (
@@ -205,5 +241,4 @@ def populate_user_from_tree(user, owner, tree):
                 name=affiliation.text)
             user.groups.add(group)
     user.save()
-    owner.affiliation = affiliation_element[0].text
     owner.save()

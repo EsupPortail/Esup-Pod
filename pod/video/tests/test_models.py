@@ -1,6 +1,5 @@
 from django.test import TestCase
-from django.test import override_settings
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.template.defaultfilters import slugify
 from django.db.models.fields.files import ImageFieldFile
 from django.contrib.auth.models import User
@@ -22,7 +21,7 @@ from ..models import EncodingAudio
 from ..models import PlaylistVideo
 from ..models import EncodingLog
 from ..models import EncodingStep
-from ..models import Notes
+from ..models import Notes, AdvancedNotes
 
 from datetime import datetime
 from datetime import timedelta
@@ -43,15 +42,6 @@ else:
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class ChannelTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -129,15 +119,6 @@ class ChannelTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class ThemeTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -212,15 +193,6 @@ class ThemeTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class TypeTestCase(TestCase):
     # fixtures = ['initial_data.json', ]
 
@@ -276,15 +248,6 @@ class TypeTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class DisciplineTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -340,15 +303,6 @@ class DisciplineTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class VideoTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -374,8 +328,8 @@ class VideoTestCase(TestCase):
             thumbnail = CustomImageModel.objects.create(file="blabla.jpg")
 
         video2 = Video.objects.create(
-            type=type, title="Video2",
-            date_added=datetime.today(),
+            type=type, title="Video2", password=None,
+            date_added=datetime.today(), encoding_in_progress=False,
             owner=user, date_evt=datetime.today(),
             video=os.path.join(VIDEOS_DIR, user.owner.hashkey,
                                '%s.%s' % (slugify(fname), extension)),
@@ -386,6 +340,17 @@ class VideoTestCase(TestCase):
         tomorrow = datetime.today() + timedelta(days=1)
         ViewCount.objects.create(video=video2, date=tomorrow, count=2)
         print(" --->  SetUp of VideoTestCase : OK !")
+
+    def test_last_Video_display(self):
+
+        filter_en = Video.objects.filter(
+            encoding_in_progress=False, is_draft=False)
+        filter_pass = filter_en.filter(
+            Q(password='') | Q(password=None), is_restricted=False)
+        self.assertEqual(bool(filter_pass.filter(password='toto')), False)
+        self.assertEqual(bool(filter_pass.filter(password='')), False)
+        self.assertEqual(bool(filter_pass.filter(password__isnull=True)), True)
+        print('--->  test_last_Video_display of VideoTestCase: OK')
 
     def test_Video_null_attributs(self):
         video = Video.objects.get(id=1)
@@ -453,15 +418,6 @@ class VideoTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class VideoRenditionTestCase(TestCase):
     # fixtures = ['initial_data.json', ]
 
@@ -559,15 +515,6 @@ class VideoRenditionTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class EncodingVideoTestCase(TestCase):
     # fixtures = ['initial_data.json', ]
 
@@ -589,7 +536,7 @@ class EncodingVideoTestCase(TestCase):
             video=Video.objects.get(id=1),
             rendition=VideoRendition.objects.get(resolution="640x360"))
         self.assertTrue(isinstance(ev, EncodingVideo))
-        evslug = "EncodingVideo num : %s with resolution %s " % (
+        evslug = "EncodingVideo num: %s with resolution %s " % (
             '%04d' % ev.id, ev.name)
         evslug += "for video %s in %s" % (ev.video.id, ev.encoding_format)
         self.assertEqual(ev.__str__(), evslug)
@@ -606,7 +553,7 @@ class EncodingVideoTestCase(TestCase):
             name="480p",
             encoding_format="audio/mp3")
         self.assertTrue(isinstance(ev, EncodingVideo))
-        evslug = "EncodingVideo num : %s with resolution %s " % (
+        evslug = "EncodingVideo num: %s with resolution %s " % (
             '%04d' % ev.id, ev.name)
         evslug += "for video %s in %s" % (ev.video.id, ev.encoding_format)
         self.assertEqual(ev.__str__(), evslug)
@@ -643,15 +590,6 @@ class EncodingVideoTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class EncodingAudioTestCase(TestCase):
     # fixtures = ['initial_data.json', ]
 
@@ -668,7 +606,7 @@ class EncodingAudioTestCase(TestCase):
             video=Video.objects.get(id=1)
         )
         self.assertTrue(isinstance(ea, EncodingAudio))
-        easlug = "EncodingAudio num : %s for video %s in %s"\
+        easlug = "EncodingAudio num: %s for video %s in %s"\
             % ('%04d' % ea.id,
                ea.video.id,
                ea.encoding_format)
@@ -685,7 +623,7 @@ class EncodingAudioTestCase(TestCase):
             name="audio",
             encoding_format="video/mp4")
         self.assertTrue(isinstance(ea, EncodingAudio))
-        easlug = "EncodingAudio num : %s for video %s in %s"\
+        easlug = "EncodingAudio num: %s for video %s in %s"\
             % ('%04d' % ea.id,
                ea.video.id,
                ea.encoding_format)
@@ -722,15 +660,6 @@ class EncodingAudioTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class PlaylistVideoTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -746,7 +675,7 @@ class PlaylistVideoTestCase(TestCase):
             video=Video.objects.get(id=1)
         )
         self.assertTrue(isinstance(pv, PlaylistVideo))
-        pvslug = "Playlist num : %s for video %s in %s"\
+        pvslug = "Playlist num: %s for video %s in %s"\
             % ('%04d' % pv.id,
                pv.video.id,
                pv.encoding_format)
@@ -763,7 +692,7 @@ class PlaylistVideoTestCase(TestCase):
             name="audio",
             encoding_format="video/mp4")
         self.assertTrue(isinstance(pv, PlaylistVideo))
-        pvslug = "Playlist num : %s for video %s in %s"\
+        pvslug = "Playlist num: %s for video %s in %s"\
             % ('%04d' % pv.id,
                pv.video.id,
                pv.encoding_format)
@@ -800,15 +729,6 @@ class PlaylistVideoTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class EncodingLogTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -856,15 +776,6 @@ class EncodingLogTestCase(TestCase):
 """
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class EncodingStepTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -910,15 +821,6 @@ class EncodingStepTestCase(TestCase):
             "   --->  test_delete_object of EncodingStepTestCase : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    }
-)
 class NotesTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -934,10 +836,22 @@ class NotesTestCase(TestCase):
             user=User.objects.get(username="pod"),
             video=Video.objects.get(id=1)
         )
+        advnote = AdvancedNotes.objects.create(
+            user=User.objects.get(username="pod"),
+            video=Video.objects.get(id=1)
+        )
         self.assertTrue(isinstance(note, Notes))
+        self.assertTrue(isinstance(advnote, AdvancedNotes))
         self.assertEqual(note.__str__(), "%s-%s" %
                          (note.user.username, note.video))
+        self.assertEqual(advnote.__str__(), "%s-%s-%s" %
+                         (advnote.user.username,
+                          advnote.video,
+                          advnote.timestamp))
         self.assertEqual(note.note, None)
+        self.assertEqual(advnote.note, None)
+        self.assertEqual(advnote.timestamp, None)
+        self.assertEqual(advnote.status, '0')
         print(" --->  test_NotesTestCase_null_attributs : OK !")
 
     def test_NotesTestCase_with_attributs(self):
@@ -946,10 +860,24 @@ class NotesTestCase(TestCase):
             video=Video.objects.get(id=1),
             note="coucou"
         )
+        advnote = AdvancedNotes.objects.create(
+            user=User.objects.get(username="pod"),
+            video=Video.objects.get(id=1),
+            note="coucou", timestamp=0,
+            status='1'
+        )
         self.assertTrue(isinstance(note, Notes))
+        self.assertTrue(isinstance(advnote, AdvancedNotes))
         self.assertEqual(note.__str__(), "%s-%s" %
                          (note.user.username, note.video))
+        self.assertEqual(advnote.__str__(), "%s-%s-%s" %
+                         (advnote.user.username,
+                          advnote.video,
+                          advnote.timestamp))
         self.assertEqual(note.note, "coucou")
+        self.assertEqual(advnote.note, "coucou")
+        self.assertEqual(advnote.timestamp, 0)
+        self.assertEqual(advnote.status, '1')
         print(" --->  test_NotesTestCase_with_attributs : OK !")
 
     def test_delete_object(self):
@@ -957,8 +885,14 @@ class NotesTestCase(TestCase):
             user=User.objects.get(username="pod"),
             video=Video.objects.get(id=1)
         )
+        AdvancedNotes.objects.create(
+            user=User.objects.get(username="pod"),
+            video=Video.objects.get(id=1)
+        )
         Notes.objects.get(id=1).delete()
+        AdvancedNotes.objects.get(id=1).delete()
         self.assertEqual(Notes.objects.all().count(), 0)
+        self.assertEqual(AdvancedNotes.objects.all().count(), 0)
 
         print(
             "   --->  test_delete_object of NotesTestCase : OK !")

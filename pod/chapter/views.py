@@ -11,6 +11,8 @@ from pod.video.models import Video
 from pod.chapter.models import Chapter
 from pod.chapter.forms import ChapterForm
 from pod.chapter.forms import ChapterImportForm
+from django.middleware.csrf import get_token
+from django.contrib.sites.shortcuts import get_current_site
 
 import json
 
@@ -20,11 +22,16 @@ ACTION = ['new', 'save', 'modify', 'delete', 'cancel', 'import', 'export']
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_chapter(request, slug):
-    video = get_object_or_404(Video, slug=slug)
-    if request.user != video.owner and not request.user.is_superuser:
+    video = get_object_or_404(Video, slug=slug,
+                              sites=get_current_site(request))
+    if request.user != video.owner and not (
+        request.user.is_superuser or
+        request.user.has_perm('chapter.change_chapter')) and (
+            request.user not in video.additional_owners.all()):
         messages.add_message(
             request, messages.ERROR, _(u'You cannot chapter this video.'))
-        return HttpResponseForbidden(u'Only the owner can add chapter.')
+        return HttpResponseForbidden(u'Only the owner and additional owners '
+                                     'can add chapter.')
 
     list_chapter = video.chapter_set.all()
 
@@ -78,11 +85,18 @@ def video_chapter_save(request, video):
         form_chapter.save()
         list_chapter = video.chapter_set.all()
         if request.is_ajax():
+            csrf_token_value = get_token(request)
             some_data_to_dump = {
                 'list_chapter': render_to_string(
                     'chapter/list_chapter.html',
                     {'list_chapter': list_chapter,
-                     'video': video}),
+                     'video': video,
+                     "csrf_token_value": csrf_token_value},
+                    request=request),
+                'video-elem': render_to_string(
+                    'videos/video-element.html',
+                    {'video': video},
+                    request=request)
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
@@ -94,12 +108,15 @@ def video_chapter_save(request, video):
                  'list_chapter': list_chapter})
     else:
         if request.is_ajax():
+            csrf_token_value = get_token(request)
             some_data_to_dump = {
                 'errors': '{0}'.format(_('Please correct errors.')),
                 'form': render_to_string(
                     'chapter/form_chapter.html',
                     {'video': video,
-                     'form_chapter': form_chapter})
+                     'form_chapter': form_chapter,
+                     "csrf_token_value": csrf_token_value},
+                    request=request)
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')
@@ -140,11 +157,18 @@ def video_chapter_delete(request, video):
     chapter.delete()
     list_chapter = video.chapter_set.all()
     if request.is_ajax():
+        csrf_token_value = get_token(request)
         some_data_to_dump = {
             'list_chapter': render_to_string(
                 'chapter/list_chapter.html',
                 {'list_chapter': list_chapter,
-                 'video': video})
+                 'video': video,
+                 "csrf_token_value": csrf_token_value},
+                request=request),
+            'video-elem': render_to_string(
+                'videos/video-element.html',
+                {'video': video},
+                request=request)
         }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type='application/json')
@@ -175,11 +199,18 @@ def video_chapter_import(request, video):
     if form_import.is_valid():
         list_chapter = video.chapter_set.all()
         if request.is_ajax():
+            csrf_token_value = get_token(request)
             some_data_to_dump = {
                 'list_chapter': render_to_string(
                     'chapter/list_chapter.html',
                     {'list_chapter': list_chapter,
-                     'video': video}),
+                     'video': video,
+                     "csrf_token_value": csrf_token_value},
+                    request=request),
+                'video-elem': render_to_string(
+                    'videos/video-element.html',
+                    {'video': video},
+                    request=request)
             }
             data = json.dumps(some_data_to_dump)
             return HttpResponse(data, content_type='application/json')

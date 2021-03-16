@@ -1,0 +1,52 @@
+name: Django Pod CI
+
+on:
+  push:
+    branches: [ master , dev]
+  pull_request:
+    branches: [ '*' ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.5, 3.6, 3.7]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Configure sysctl limits (for ES)
+      run: |
+        sudo swapoff -a
+        sudo sysctl -w vm.swappiness=1
+        sudo sysctl -w fs.file-max=262144
+        sudo sysctl -w vm.max_map_count=262144
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install ffmpeg
+        sudo apt-get install -y ffmpegthumbnailer
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install flake8
+    - name: Flake8 compliance
+      run: |
+        flake8 --max-complexity=7 --exclude .git,pod/*/migrations/*.py,test_settings.py
+    - name: Runs Elasticsearch
+      uses: elastic/elastic-github-actions/elasticsearch@master
+      with:
+        stack-version: 7.6.0
+    - name: Setup Pod
+      run: |
+        python manage.py create_pod_index
+        python manage.py makemigrations
+        python manage.py migrate
+    - name: Run Tests
+      run: |
+        python manage.py test --settings=pod.main.test_settings

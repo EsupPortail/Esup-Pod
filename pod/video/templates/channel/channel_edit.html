@@ -13,7 +13,7 @@ body {
 </style>
 {% endblock page_extra_head %}
 
-{% block breadcrumbs %}{{ block.super }} 
+{% block breadcrumbs %}{{ block.super }}
 <li class="breadcrumb-item"><a href="{% url 'my_channels' %}" title="{% trans 'My channels' %}">{% trans 'My channels' %}</a></li>
 <li class="breadcrumb-item active" aria-current="page">{% if form.instance.title %}{{form.instance.title}}{%endif%}</li>
 {% endblock %}
@@ -26,16 +26,16 @@ body {
 {% block page_content %}
 <h3>{% if form.instance.title %}{% trans "Editing the channel" %} {{form.instance.title}}{%endif%}
 <span class="float-right">
-    <a href="{% url 'channel' slug_c=form.instance.slug %}" title="{% trans "View the channel"%}" class="btn btn btn-outline-dark btn-sm">
+    <a href="{% url 'channel' slug_c=form.instance.slug %}" title="{% trans 'View the channel'%}" class="btn btn btn-outline-primary btn-sm">
         <i data-feather="youtube"></i>&nbsp;{% trans "View the channel"%}
     </a>
-    <a href="{% url 'theme_edit' slug=form.instance.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-dark btn-sm">
+    <a href="{% url 'theme_edit' slug=form.instance.slug %}" title="{% trans 'Edit the themes'%}" class="btn btn btn-outline-primary btn-sm">
         <i data-feather="edit"></i>&nbsp;{% trans "Edit the themes"%}
     </a>
 </span>
 </h3>
 {% if form.instance.headband %}
-<img src="{{ form.instance.headband.file.url }}" alt="{% trans 'Headband' %} {{ form.instance.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
+  <img src="{{ form.instance.headband.file.url }}" alt="{% trans 'Headband' %} {{ form.instance.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
 {% endif %}
 
 <form id="channel_form" method="post"

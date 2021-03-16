@@ -1,21 +1,20 @@
 """
 Unit tests for completion views
 """
-import os
-
-from django.conf import settings
 from django.test import TestCase
-from django.test import override_settings
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import authenticate
 from django.utils.translation import ugettext_lazy as _
 from pod.video.models import Video, Type
-from pod.completion.models import Contributor
-from pod.completion.models import Document
-from pod.completion.models import Overlay
-from pod.completion.models import Track
+from ..models import Contributor
+from ..models import Document
+from ..models import Overlay
+from ..models import Track
 from datetime import datetime
+from django.contrib.sites.models import Site
+
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.models import CustomFileModel
@@ -25,20 +24,11 @@ else:
     from pod.main.models import CustomFileModel
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class CompletionViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         user = User.objects.create(username='test', password='azerty')
         user.set_password('hello')
         user.save()
@@ -46,18 +36,25 @@ class CompletionViewsTestCase(TestCase):
             username='staff', password='azerty', is_staff=True)
         staff.set_password('hello')
         staff.save()
-        Video.objects.create(
+        vid1 = Video.objects.create(
             title='videotest',
             owner=user,
             video='test.mp4',
             type=Type.objects.get(id=1)
         )
-        Video.objects.create(
+        vid1.sites.add(site)
+        vid2 = Video.objects.create(
             title='videotest2',
             owner=staff,
             video='test.mp4',
             type=Type.objects.get(id=1)
         )
+        vid2.sites.add(site)
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        staff.owner.sites.add(Site.objects.get_current())
+        staff.owner.save()
 
     def test_video_completion_user(self):
         video = Video.objects.get(id=1)
@@ -93,30 +90,24 @@ class CompletionViewsTestCase(TestCase):
         print(" ---> test_video_completion_staff : OK!")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class CompletionContributorViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         staff = User.objects.create(
             username='staff', password='azerty', is_staff=True)
         staff.set_password('hello')
         staff.save()
-        Video.objects.create(
+        vid = Video.objects.create(
             title='videotest2',
             owner=staff,
             video='test.mp4',
             type=Type.objects.get(id=1)
         )
+        vid.sites.add(site)
+        staff.owner.sites.add(Site.objects.get_current())
+        staff.owner.save()
 
     def test_video_completion_contributor(self):
         video = Video.objects.get(id=1)
@@ -254,32 +245,26 @@ class CompletionContributorViewsTestCase(TestCase):
         print(" ---> test_video_completion_contributor_delete : OK!")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class CompletionTrackViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         staff = User.objects.create(
             username='staff', password='azerty', is_staff=True)
         staff.set_password('hello')
         staff.save()
         if FILEPICKER:
             UserFolder.objects.create(owner=staff, name='Home')
-        Video.objects.create(
+        vid = Video.objects.create(
             title='videotest2',
             owner=staff,
             video='test.mp4',
             type=Type.objects.get(id=1)
         )
+        vid.sites.add(site)
+        staff.owner.sites.add(Site.objects.get_current())
+        staff.owner.save()
 
     def test_video_completion_track(self):
         video = Video.objects.get(id=1)
@@ -468,32 +453,26 @@ class CompletionTrackViewsTestCase(TestCase):
         print(" ---> test_video_completion_track_delete : OK!")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class CompletionDocumentViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         staff = User.objects.create(
             username='staff', password='azerty', is_staff=True)
         staff.set_password('hello')
         staff.save()
         if FILEPICKER:
             UserFolder.objects.create(owner=staff, name='Home')
-        Video.objects.create(
+        vid = Video.objects.create(
             title='videotest2',
             owner=staff,
             video='test.mp4',
             type=Type.objects.get(id=1)
         )
+        vid.sites.add(site)
+        staff.owner.sites.add(Site.objects.get_current())
+        staff.owner.save()
 
     def test_video_completion_document(self):
         video = Video.objects.get(id=1)
@@ -691,16 +670,6 @@ class CompletionDocumentViewsTestCase(TestCase):
         print(" ---> test_video_completion_document_delete : OK!")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class CompletionOverlayViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -716,6 +685,8 @@ class CompletionOverlayViewsTestCase(TestCase):
             duration=3,
             type=Type.objects.get(id=1)
         )
+        staff.owner.sites.add(Site.objects.get_current())
+        staff.owner.save()
 
     def test_video_completion_overlay(self):
         video = Video.objects.get(id=1)

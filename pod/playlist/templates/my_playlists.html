@@ -18,7 +18,7 @@
 	{% if playlists.paginator.count == 0 %}
 		<h3>{% trans 'No playlist found' %}</h3>
 		<p class="alert alert-info">{% trans 'You have not created any playlists yet, please use the "Add a new playlist" button to add one.' %}</p>
-		<a href="{% url 'playlist' %}" class="btn btn-success">{% trans 'Add a new playlist' %}</a>
+		<a href="{% url 'playlist' %}" class="btn btn-primary">{% trans 'Add a new playlist' %}</a>
 	{% else %}
 		<h3>{% blocktrans count counter=playlists.paginator.count %}{{ counter }} playlist found{% plural %}{{ counter }} playlists found{% endblocktrans %}</h3>
 		{% include 'playlist/playlist_list.html' %}

@@ -4,57 +4,57 @@
     <div class="modal-content">
     <form method="post" action="{% url 'userpicture' %}" id="userpicture_form">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h2 class="modal-title" id="exampleModalLabel">{% trans "Change your picture" %}</h2>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         {% if messages %}
-        <div id="base-message-alert">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        {% endfor %}
-        </div>
+          <div id="base-message-alert">
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endfor %}
+          </div>
         {% endif %}
-        
+
         {% csrf_token %}
         <fieldset>
             {% if frontOwnerForm.errors %}
-            <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+              <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
             {% endif %}
             {% for field_hidden in frontOwnerForm.hidden_fields %}
-                {{field_hidden}}
+              {{field_hidden}}
             {% endfor %}
             {% for field in frontOwnerForm.visible_fields %}
-                {% spaceless %}
-                <div class="form-group" >
-                    {{ field.errors }}
-                    {{ field }}
-                    {% if field.help_text %}
-                    <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
-                    {% endif %}
-                    {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
-                </div>
-                {% endspaceless %}
+              {% spaceless %}
+              <div class="form-group" >
+                {{ field.errors }}
+                {{ field }}
+                {% if field.help_text %}
+                  <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+                {% endif %}
+                {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+              </div>
+              {% endspaceless %}
             {% endfor %}
             {% if frontOwnerForm.instance.id %}
-                <input type="hidden" id="user_id" name="user_id" value="{{frontOwnerForm.instance.id}}"/>
+              <input type="hidden" id="user_id" name="user_id" value="{{frontOwnerForm.instance.id}}"/>
             {% endif %}
             {% if frontOwnerForm.instance.userpicture %}
-            <input type="hidden" id="userpictureurl" name="userpictureurl" value="{{frontOwnerForm.instance.userpicture.file.url}}"/>
+              <input type="hidden" id="userpictureurl" name="userpictureurl" value="{{frontOwnerForm.instance.userpicture.file.url}}"/>
             {% endif %}
         </fieldset>
         {{frontOwnerForm.media}}
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+        <button type="submit" class="btn btn-primary">{% trans "Save changes" %}</button>
       </div>
     </form>
     </div>

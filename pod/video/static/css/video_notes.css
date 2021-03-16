@@ -1,0 +1,170 @@
+#video_notes_form {
+    padding: 0 2px;
+}
+
+#video_notes_form .text-danger {
+    font-size: 11px;
+    margin: 0;
+}
+
+.comments.offset {
+    margin: 0 0 0 10px;
+}
+
+#id_notes small {
+    font-size: 9px;
+    font-weight: bold;
+}
+
+.bigtakenote #id_notes small {
+    font-size: 11px;
+}
+
+#id_notes .form-group {
+    margin: 0;
+}
+
+#id_notes p.note.form, #id_notes div.comment.form {
+    margin: auto;
+}
+
+.bigtakenote #id_notes {
+  overflow: scroll;
+  height: 600px;
+}
+
+.mgtNote div.dropdown-menu, .mgtComment div.dropdown-menu {
+    min-width: auto;
+    padding: 5px;
+}
+
+span.timestamp {
+    font-size: 11px;
+    align-self: center;
+}
+.bigtakenote span.timestamp {
+    font-size: 14px;
+}
+
+.bigtakenote div.mgtNotes a.open{
+  display: none;
+}
+
+span.timestamp, .view_video_notes_form, .view_video_note_coms_form {
+    cursor: pointer;
+    padding: 3px 0 3px 0;
+}
+
+p.note, div.comment {
+    font-size: 12px;
+}
+
+.bigtakenote p.note, .bigtakenote div.comment {
+    font-size: 14px;
+}
+
+div.comment {
+  flex: auto;
+}
+
+div.header {
+    display: flex;
+}
+
+div.header:hover{
+  background:#f2f2f2;
+}
+
+div.header > form {
+    align-self: center;
+    width: 70%;
+}
+
+div.header > span, div.header > form {
+    flex: auto;
+}
+
+span.user {
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.bigtakenote span.user {
+    font-size: 14px;
+}
+
+.notdisplayed p.note, .notdisplayed p.comment {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+textarea#id_note, textarea#id_comment, select#id_status {
+    font-size: 11px;
+    height: auto;
+    padding: 5px;
+}
+
+.bigtakenote textarea#id_note, .bigtakenote textarea#id_comment, .bigtakenote select#id_status {
+    font-size: 14px;
+  }
+
+#card-takenote > div.card-text {
+    width: 100%;
+}
+
+#card-takenote > div.mgtNotes > div.dropdown-menu {
+    background-color: #fff5f5;
+}
+
+div.mgtNotes, div.mgtNote, div.mgtComment {
+    align-self: center;
+}
+div.mgtNotes {
+  display:block;
+}
+div.mgtNotes form{
+  display: inline-block;
+  text-align: center;
+}
+
+div.mgtNotes.dropleft > button,
+div.mgtNote.dropleft > button,
+div.mgtComment.dropleft > button {
+    border: none;
+}
+
+#id_notes > div.status-0 > div.header, #id_notes > div.status-0 > div.header div.dropdown-menu,
+.comments > div.status-0 > .header, .comments > div.status-0 > form,
+.comments > div.status-0 > div.header div.dropdown-menu {
+    color: rgba(0,0,0,0.5);
+}
+#id_notes > div.status-1 > .header, #id_notes > div.status-1 div.dropdown-menu,
+.comments > div.status-1 > .header, .comments > div.status-1 > form,
+.comments > div.status-1 > div.header div.dropdown-menu {
+  color:rgba(0,0,0,0.7);
+}
+#id_notes > div.status-2 > .header, #id_notes > div.status-2 div.dropdown-menu,
+.comments > div.status-2 > .header, .comments > div.status-2 > form,
+.comments > div.status-2 > div.header div.dropdown-menu {
+  color:rgba(0,0,0,1);
+}
+
+form.view_video_notes_form.hidden, form.view_video_note_coms_form.hidden {
+    display: none;
+}
+
+.noNotes {
+    font-size: 13px;
+    font-style: italic;
+    font-weight: bold;
+    margin: 5px;
+}
+
+div.note, div.comment {
+    margin: 3px 0 3px 0;
+}
+
+.user-comment {
+  display: flex;
+}

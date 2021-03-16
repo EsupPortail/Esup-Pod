@@ -20,7 +20,7 @@ def metaformat(content):
     Returns:
         content (str):  the cleaned string
     """
-    content = re.sub('\s\s+', " ", parser.unescape(content))
+    content = re.sub(r'\s\s+', " ", parser.unescape(content))
     toReplace = {
         '&#39;': "'",
         '"': "'",

@@ -1,3 +1,5 @@
+"""Pod video_search views."""
+
 from django.shortcuts import render
 from elasticsearch import Elasticsearch
 from pod.video_search.forms import SearchForm
@@ -8,11 +10,14 @@ from django.utils.translation import ugettext_lazy as _
 # import json
 
 ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
-
-# Create your views here.
+ES_INDEX = getattr(settings, 'ES_INDEX', 'pod')
+ES_TIMEOUT = getattr(settings, 'ES_TIMEOUT', 30)
+ES_MAX_RETRIES = getattr(settings, 'ES_MAX_RETRIES', 10)
+ES_VERSION = getattr(settings, 'ES_VERSION', 6)
 
 
 def get_filter_search(selected_facets, start_date, end_date):
+    """Return a list of search filters."""
     filter_search = []
     for facet in selected_facets:
         if ":" in facet:
@@ -43,18 +48,21 @@ def get_filter_search(selected_facets, start_date, end_date):
 
 
 def get_remove_selected_facet_link(request, selected_facets):
-    remove_selected_facet = ""
+    """Return list of links to remove active search filters."""
+    remove_selected_facet = []
     for facet in selected_facets:
         if ":" in facet:
             term = facet.split(":")[0]
             value = facet.split(":")[1]
             link = request.get_full_path().replace(
                 "&selected_facets=%s:%s" % (term, value), "")
-            link = request.get_full_path().replace(
+            link = link.replace(
+                "?selected_facets=%s:%s&" % (term, value), "?")
+            link = link.replace(
                 "?selected_facets=%s:%s" % (term, value), "")
-            msg_title = _('Remove selection')
-            remove_selected_facet += (
-                '&nbsp;<a href="%s" title="%s">&times;%s</a>&nbsp;' % (
+            msg_title = _('Remove this filter')
+            remove_selected_facet.append(
+                '<a href="%s" title="%s">%s</a>' % (
                     link, msg_title, value))
     return remove_selected_facet
 
@@ -69,7 +77,8 @@ def get_result_aggregations(result, selected_facets):
             else:
                 if agg_term == "type.slug":
                     del result["aggregations"]["type_title"]
-                if agg_term == "tags.slug":
+                if agg_term == "tags.slug" and (
+                        "tags_name" in result["aggregations"]):
                     del result["aggregations"]["tags_name"]
                 if agg_term == "disciplines.slug":
                     del result["aggregations"]["disciplines_title"]
@@ -77,7 +86,9 @@ def get_result_aggregations(result, selected_facets):
 
 
 def search_videos(request):
-    es = Elasticsearch(ES_URL)
+    """Send a search request to ES."""
+    es = Elasticsearch(ES_URL, timeout=ES_TIMEOUT, max_retries=ES_MAX_RETRIES,
+                       retry_on_timeout=True)
     aggsAttrs = ['owner_full_name', 'type.title',
                  'disciplines.title', 'tags.name', 'channels.title']
 
@@ -118,11 +129,13 @@ def search_videos(request):
                     "owner_full_name^0.9",
                     "description^0.6",
                     "tags.name^1",
-                    "contributors^0.6",
-                    "chapters.title^0.5",
                     "type.title^0.6",
                     "disciplines.title^0.6",
-                    "channels.title^0.6"
+                    "channels.title^0.6",
+                    "themes.title^0.5",
+                    "contributors^0.6",
+                    "chapters.title^0.5",
+                    "overlays.title^0.5",
                 ]
             }
         }
@@ -183,7 +196,7 @@ def search_videos(request):
     # if settings.DEBUG:
     #    print(json.dumps(bodysearch, indent=4))
 
-    result = es.search(index="pod", body=bodysearch)
+    result = es.search(index=ES_INDEX, body=bodysearch)
 
     # if settings.DEBUG:
     #    print(json.dumps(result, indent=4))
@@ -197,7 +210,11 @@ def search_videos(request):
 
     list_videos_id = [hit["_id"] for hit in result["hits"]["hits"]]
     videos = Video.objects.filter(id__in=list_videos_id)
-    num_result = result["hits"]["total"]
+    num_result = 0
+    if ES_VERSION == 7:
+        num_result = result["hits"]["total"]["value"]
+    else:
+        num_result = result["hits"]["total"]
     videos.has_next = ((page + 1) * 12) < num_result
     videos.next_page_number = page + 1
 

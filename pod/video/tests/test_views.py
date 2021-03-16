@@ -1,38 +1,26 @@
 from django.test import TestCase
-from django.test import override_settings
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.conf import settings
 from django.test import Client
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 
-from pod.video.models import Channel
-from pod.video.models import Theme
-from pod.video.models import Video
-from pod.video.models import Type
-from pod.video.models import Discipline
-from pod.video.models import Notes
-
-import os
+from ..models import Channel
+from ..models import Theme
+from ..models import Video
+from ..models import Type
+from ..models import Discipline
+from ..models import AdvancedNotes
+from django.contrib.sites.models import Site
 import re
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class ChannelTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         c = Channel.objects.create(title="ChannelTest1")
-        Channel.objects.create(title="ChannelTest2")
+        c2 = Channel.objects.create(title="ChannelTest2")
         Theme.objects.create(
             title="Theme1", slug="blabla",
             channel=Channel.objects.get(title="ChannelTest1"))
@@ -42,6 +30,12 @@ class ChannelTestView(TestCase):
             type=Type.objects.get(id=1))
         v.channel.add(c)
         v.save()
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        c.sites.add(site)
+        c2.sites.add(site)
 
     def test_get_channel_view(self):
         self.client = Client()
@@ -83,26 +77,25 @@ class ChannelTestView(TestCase):
             " of ChannelTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class MyChannelsTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
-        User.objects.create(username="pod2", password="pod1234pod")
+        user2 = User.objects.create(username="pod2", password="pod1234pod")
         c1 = Channel.objects.create(title="ChannelTest1")
         c1.owners.add(user)
         c2 = Channel.objects.create(title="ChannelTest2")
         c2.owners.add(user)
+        for c in Channel.objects.all():
+            c.sites.add(site)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
         print(" --->  SetUp of MyChannelsTestView : OK !")
 
     def test_get_mychannels_view(self):
@@ -122,24 +115,23 @@ class MyChannelsTestView(TestCase):
         print(" --->  test_get_mychannels_view of MyChannelsTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class ChannelEditTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
-        User.objects.create(username="pod2", password="pod1234pod")
+        user2 = User.objects.create(username="pod2", password="pod1234pod")
         c1 = Channel.objects.create(title="ChannelTest1")
         c1.owners.add(user)
+        c1.sites.add(site)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
+
         print(" --->  SetUp of ChannelEditTestView : OK !")
 
     def test_channel_edit_get_request(self):
@@ -179,20 +171,11 @@ class ChannelEditTestView(TestCase):
             " of ChannelEditTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class ThemeEditTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         c1 = Channel.objects.create(title="ChannelTest1")
         c1.owners.add(user)
@@ -205,6 +188,10 @@ class ThemeEditTestView(TestCase):
         Theme.objects.create(
             title="Theme3", slug="theme3",
             channel=Channel.objects.get(title="ChannelTest1"))
+        c1.sites.add(site)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
         print(" --->  SetUp of ThemeEditTestView : OK !")
 
     def test_theme_edit_get_request(self):
@@ -284,20 +271,11 @@ class ThemeEditTestView(TestCase):
             " --->  test_theme_edit_post_request of ThemeEditTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class MyVideosTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
         Video.objects.create(
@@ -312,6 +290,16 @@ class MyVideosTestView(TestCase):
         Video.objects.create(
             title="Video4", owner=user2, video="test4.mp4", is_draft=False,
             type=Type.objects.get(id=1))
+
+        for v in Video.objects.all():
+            v.sites.add(site)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
+
         print(" --->  SetUp of MyChannelsTestView : OK !")
 
     def test_get_myvideos_view(self):
@@ -331,16 +319,6 @@ class MyVideosTestView(TestCase):
         print(" --->  test_get_myvideos_view of MyVideosTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class VideosTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -437,29 +415,37 @@ class VideosTestView(TestCase):
         print(" --->  test_get_videos_view of VideosTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class VideoTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
         # type, discipline, owner et tag
+        site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
-        User.objects.create(username="pod2", password="pod1234pod")
+        user2 = User.objects.create(username="pod2", password="pod1234pod")
+        user3 = User.objects.create(username="pod3", password="pod1234pod")
         Group.objects.create(name='student')
         Group.objects.create(name='employee')
         Group.objects.create(name='member')
-        Video.objects.create(
+        v0 = Video.objects.create(
             title="Video1", owner=user,
             video="test1.mp4", type=Type.objects.get(id=1))
+        v = Video.objects.create(
+            title="VideoWithAdditionalOwners", owner=user,
+            video="test2.mp4", type=Type.objects.get(id=1),
+            id=2)
+        v0.sites.add(site)
+        v.sites.add(site)
+        v.additional_owners.add(user2)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
+
+        user3.owner.sites.add(Site.objects.get_current())
+        user3.owner.save()
 
     def test_video_get_request(self):
         v = Video.objects.get(title="Video1")
@@ -520,27 +506,51 @@ class VideoTestView(TestCase):
         response = self.client.get("/video/%s/%s/" % (v.slug, v.get_hashkey()))
         self.assertEqual(response.status_code, 200)
         self.assertEqual("form" in response.context.keys(), False)
+        # Tests for additional owners
+        v = Video.objects.get(title="VideoWithAdditionalOwners")
+        self.client = Client()
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.get("/video/%s/" % v.slug)
+        self.assertEqual(response.status_code, 200)
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        response = self.client.get("/video/%s/" % v.slug)
+        self.assertEqual(response.status_code, 200)
+        self.user = User.objects.get(username="pod3")
+        self.client.force_login(self.user)
+        response = self.client.get("/video/%s/" % v.slug)
+        self.assertEqual(response.status_code, 403)
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class VideoEditTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
-        User.objects.create(username="pod2", password="pod1234pod")
-        Video.objects.create(
+        user2 = User.objects.create(username="pod2", password="pod1234pod")
+        user3 = User.objects.create(username="pod3", password="pod1234pod")
+        video0 = Video.objects.create(
             title="Video1", owner=user,
             video="test1.mp4", type=Type.objects.get(id=1))
+        video = Video.objects.create(
+            title="VideoWithAdditionalOwners", owner=user,
+            video="test2.mp4", type=Type.objects.get(id=1))
+        video.save()
+        video.sites.add(site)
+        video0.sites.add(site)
+        video.additional_owners.add(user2)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
+
+        user3.owner.sites.add(Site.objects.get_current())
+        user3.owner.save()
+
         print(" --->  SetUp of VideoEditTestView : OK !")
 
     def test_video_edit_get_request(self):
@@ -558,6 +568,19 @@ class VideoEditTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['form'].instance, video)
         self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        response = self.client.get("/video_edit/%s/" % video.slug)
+        self.assertEqual(response.status_code, 403)
+        # Tests for additional owners
+        video = Video.objects.get(title="VideoWithAdditionalOwners")
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        response = self.client.get("/video_edit/")
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get("/video_edit/%s/" % video.slug)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['form'].instance, video)
+        self.user = User.objects.get(username="pod3")
         self.client.force_login(self.user)
         response = self.client.get("/video_edit/%s/" % video.slug)
         self.assertEqual(response.status_code, 403)
@@ -582,6 +605,7 @@ class VideoEditTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         # print(response.context["form"].errors)
         self.assertTrue(b"The changes have been saved." in response.content)
+
         v = Video.objects.get(title="VideoTest1")
         self.assertEqual(v.description, '<p>bl</p>')
         videofile = SimpleUploadedFile(
@@ -616,31 +640,67 @@ class VideoEditTestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(b"The changes have been saved." in response.content)
         v = Video.objects.get(title="VideoTest2")
-
+        # Additional owners
+        self.client = Client()
+        video = Video.objects.get(title="VideoWithAdditionalOwners")
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        # modify one
+        response = self.client.post(
+            '/video_edit/%s/' % video.slug, {
+                'title': "VideoTest3",
+                'description': '<p>bl</p>\r\n',
+                'main_lang': 'fr',
+                'cursus': "0",
+                'type': 1,
+                'additional_owners': [self.user.pk]
+            }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(b"The changes have been saved." in response.content)
+        v = Video.objects.get(title="VideoTest3")
+        self.assertEqual(v.description, '<p>bl</p>')
+        videofile = SimpleUploadedFile(
+            "file.mp4", b"file_content", content_type="video/mp4")
+        response = self.client.post(
+            '/video_edit/%s/' % v.slug, {
+                'video': videofile,
+                'title': "VideoTest3",
+                'main_lang': 'fr',
+                'cursus': "0",
+                'type': 1,
+                'additional_owners': [self.user.pk]
+            }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(b"The changes have been saved." in response.content)
         print(
             "   --->  test_video_edit_post_request"
             " of VideoEditTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class video_deleteTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
-        User.objects.create(username="pod2", password="pod1234pod")
-        Video.objects.create(
+        user2 = User.objects.create(username="pod2", password="pod1234pod")
+        video0 = Video.objects.create(
             title="Video1", owner=user,
             video="test1.mp4", type=Type.objects.get(id=1))
+        video = Video.objects.create(
+            title="VideoWithAdditionalOwners", owner=user,
+            video="test2.mp4", type=Type.objects.get(id=1),
+            id=2)
+
+        video0.sites.add(site)
+        video.sites.add(site)
+        video.additional_owners.add(user2)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
+
+        user2.owner.sites.add(Site.objects.get_current())
+        user2.owner.save()
         print(" --->  SetUp of video_deleteTestView : OK !")
 
     def test_video_delete_get_request(self):
@@ -658,6 +718,13 @@ class video_deleteTestView(TestCase):
         self.client.force_login(self.user)
         response = self.client.get("/video_delete/%s/" % video.slug)
         self.assertEqual(response.status_code, 403)
+        # An additional owner can't delete the video
+        video = Video.objects.get(title="VideoWithAdditionalOwners")
+        self.user = User.objects.get(username="pod2")
+        self.client.force_login(self.user)
+        response = self.client.get("/video_delete/%s/" % video.slug)
+        self.assertEqual(response.status_code, 403)
+        self.user = User.objects.get(username="pod")
         print(
             " --->  test_video_edit_get_request"
             " of video_deleteTestView : OK !")
@@ -673,30 +740,33 @@ class video_deleteTestView(TestCase):
                 'agree': True,
             })
         self.assertRedirects(response, '/my_videos/')
+        self.assertEqual(Video.objects.all().count(), 1)
+        video = Video.objects.get(title="VideoWithAdditionalOwners")
+        response = self.client.post(
+            "/video_delete/%s/" % video.slug,
+            {
+                'agree': True,
+            })
+        self.assertRedirects(response, '/my_videos/')
         self.assertEqual(Video.objects.all().count(), 0)
         print(
             " --->  test_video_edit_post_request"
             " of video_deleteTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class video_notesTestView(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         user = User.objects.create(username="pod", password="pod1234pod")
-        Video.objects.create(
+        v = Video.objects.create(
             title="Video1", owner=user,
             video="test1.mp4", type=Type.objects.get(id=1))
+        v.sites.add(site)
+
+        user.owner.sites.add(Site.objects.get_current())
+        user.owner.save()
         print(" --->  SetUp of video_notesTestView : OK !")
 
     def test_video_notesTestView_get_request(self):
@@ -705,16 +775,18 @@ class video_notesTestView(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         response = self.client.get("/video/%s/" % video.slug)
+        """
         note = Notes.objects.get(
             user=User.objects.get(username="pod"),
             video=video)
+        """
         self.client.logout()
-        response = self.client.get("/video_notes/%s/" % note.id)
-        self.assertEqual(response.status_code, 302)
-        self.client.force_login(self.user)
-        response = self.client.get("/video_notes/%s/" % note.id)
+        response = self.client.get("/video_notes/%s/" % video.slug)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['notesForm'].instance, note)
+        self.client.force_login(self.user)
+        response = self.client.get("/video_notes/%s/" % video.slug)
+        self.assertEqual(response.status_code, 200)
+        # self.assertEqual(response.context['notesForm'].instance, note)
         print(
             " --->  test_video_notesTestView_get_request"
             " of video_notesTestView : OK !")
@@ -724,38 +796,34 @@ class video_notesTestView(TestCase):
         video = Video.objects.get(title="Video1")
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        note = Notes.objects.create(
+        note = AdvancedNotes.objects.create(
             user=User.objects.get(username="pod"),
             video=video)
         self.assertEqual(note.note, None)
+        self.assertEqual(note.timestamp, None)
+        self.assertEqual(note.status, '0')
         response = self.client.post(
-            "/video_notes/%s/" % note.id,
+            "/video_notes/%s/" % video.slug,
             {
-                'user': self.user.id,
-                'video': video.id,
-                'note': 'coucou'
+                'action': 'save_note',
+                'note': 'coucou',
+                'timestamp': 10,
+                'status': '0'
             })
         self.assertEqual(response.status_code, 200)
         self.assertTrue(b"The note has been saved." in response.content)
-        note = Notes.objects.get(
+        note = AdvancedNotes.objects.get(
             user=User.objects.get(id=self.user.id),
-            video=video)
+            video=video,
+            timestamp=10, status='0')
         self.assertEqual(note.note, 'coucou')
+        self.assertEqual(note.timestamp, 10)
+        self.assertEqual(note.status, '0')
         print(
             " --->  test_video_notesTestView_post_request"
             " of video_notesTestView : OK !")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class video_countTestView(TestCase):
     fixtures = ['initial_data.json', ]
 

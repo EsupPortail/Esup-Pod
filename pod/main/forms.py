@@ -20,6 +20,9 @@ SUBJECT_CHOICES = getattr(
 def add_placeholder_and_asterisk(fields):
     for myField in fields:
         classname = fields[myField].widget.__class__.__name__
+        if classname == 'PasswordInput' or classname == 'TextInput':
+            fields[myField].widget.attrs[
+                'placeholder'] = fields[myField].label
         if classname == 'CheckboxInput':
             if fields[myField].widget.attrs.get('class'):
                 fields[myField].widget.attrs[
@@ -28,14 +31,12 @@ def add_placeholder_and_asterisk(fields):
                 fields[myField].widget.attrs[
                     'class'] = 'form-check-input '
         else:
-            fields[myField].widget.attrs[
-                'placeholder'] = fields[myField].label
             if fields[myField].required:
                 fields[myField].label = mark_safe(
                     "%s <span class=\"required\">*</span>" %
                     fields[myField].label
                 )
-                fields[myField].widget.attrs["required"] = "true"
+                fields[myField].widget.attrs["required"] = ""
             if fields[myField].widget.attrs.get('class'):
                 fields[myField].widget.attrs[
                     'class'] += ' form-control'
@@ -62,10 +63,14 @@ class ContactUsForm(forms.Form):
         required=True)
 
     captcha = CaptchaField(
-        label=_('Please indicate the result of'
-                ' the following operation hereunder'))
+        label=_('Please indicate the result of the following operation'))
 
     url_referrer = forms.URLField(required=False, widget=forms.HiddenInput())
+
+    valid_human = forms.BooleanField(
+        required=False,
+        label=_('Check this box if you are a metal human (required)'),
+        widget=forms.CheckboxInput())
 
     def __init__(self, request, *args, **kwargs):
         super(ContactUsForm, self).__init__(*args, **kwargs)

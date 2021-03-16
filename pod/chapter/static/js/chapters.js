@@ -2,9 +2,9 @@ var id_form = "form_chapter";
 function show_form(data) {
     $('#'+id_form).hide().html(data).fadeIn();
     $("input#id_time_start")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-info btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-primary btn-sm text-white'>" + gettext('Get time from the player') + "</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
     $("input#id_time_end")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-info btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
+        .before("&nbsp;<span class='getfromvideo pull-right' style='margin:0;margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-primary btn-sm text-white'>" + gettext('Get time from the player') + "</a><span class='timecode' style='font-size: 12px;'>&nbsp;</span></span>");
 };
 
 var showalert = function(message, alerttype) {
@@ -21,6 +21,7 @@ var ajaxfail = function(data) {
 $(document).on('click', '#cancel_chapter', function() {
     $('form.get_form').show();
     show_form('');
+    $('#fileModal_id_file').remove();
 });
 
 $(document).on('submit', 'form.get_form', function(e) {
@@ -91,7 +92,13 @@ var sendandgetform = function(elt, action) {
             if (data.indexOf('list_chapter') == -1) {
                 showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
             } else {
-                location.reload();
+                data = JSON.parse(data);
+                //location.reload();
+                updateDom(data);
+                manageDelete();
+                $(list_chapter).html(data['list_chapter']);
+                show_form('');
+                $('form.get_form').show();
             }
         });
         jqxhr.fail(function($xhr) {
@@ -122,7 +129,12 @@ var sendform = function(elt, action) {
                         show_form(data.form);
                         $('form#form_chapter').show();
                     } else {
-                        location.reload();
+                        //location.reload();
+                        updateDom(data);
+                        manageSave();
+                        $(list_chapter).html(data['list_chapter']);
+                        show_form('');
+                        $('form.get_form').show();
                     }
                 }
             });
@@ -146,7 +158,13 @@ var sendform = function(elt, action) {
             if (data.indexOf('list_chapter') == -1) {
                 showalert(gettext('You are no longer authenticated. Please log in again.'), 'alert-danger');
             } else {
-                location.reload();
+                //location.reload();
+                data = JSON.parse(data);
+                updateDom(data);
+                manageImport();
+                $(list_chapter).html(data['list_chapter']);
+                show_form('');
+                $('form.get_form').show();
             }
         });
         jqxhr.fail(function($xhr) {
@@ -216,3 +234,68 @@ $(document).on('click','#info_video span.getfromvideo a',function(e) {
         }
     }
 });
+
+
+
+var updateDom = function(data) {
+    let player = window.videojs.players.podvideoplayer;
+    let n1 = document.querySelector('ul#chapters');
+    let n2 = document.querySelector('div.chapters-list');
+    let tmp_node = document.createElement('div');
+    $(tmp_node).html(data['video-elem']);
+    let chaplist  = tmp_node.querySelector('div.chapters-list');
+    if (n1 != null) {
+        n1.parentNode.removeChild(n1);
+    }
+    if (n2 != null) {
+        n2.parentNode.removeChild(n2);
+    }
+    if (chaplist != null && n2 != null) {
+        chaplist.className = n2.className;
+    }
+    $("#" + window.videojs.players.podvideoplayer.id_).append(chaplist);
+    $("#" + window.videojs.players.podvideoplayer.id_).append(tmp_node.querySelector('ul#chapters'));
+}
+
+var manageSave = function() {
+    let player = window.videojs.players.podvideoplayer;
+    if(player.usingPlugin('videoJsChapters')) {
+        player.main();
+    }
+    else {
+        player.videoJsChapters();
+    }
+}
+
+var manageDelete = function() {
+    let player = window.videojs.players.podvideoplayer;
+    let n = document.querySelector('div.chapters-list');
+    if(n != null) {
+        player.main();
+    }
+    else {
+        player.controlBar.chapters.dispose();
+        player.videoJsChapters().dispose();
+    }
+}
+
+var manageImport = function() {
+    let player = window.videojs.players.podvideoplayer;
+    let n = document.querySelector('div.chapters-list');
+    if(n != null) {
+        if(player.usingPlugin('videoJsChapters')) {
+            player.main();
+        }
+        else {
+            player.videoJsChapters();
+        }
+    }
+    else {
+        if(typeof(player.controlBar.chapters) != 'undefined') {
+            player.controlBar.chapters.dispose();
+        }
+        if(player.usingPlugin('videoJsChapters')) {
+            player.videoJsChapters().dispose();
+        }
+    }
+}

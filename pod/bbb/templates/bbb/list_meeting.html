@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My BigBlueButton records" %}</li>{% endblock %}
+
+{% block page_title %}
+{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}
+{% endblock %}
+
+{% block page_content %}
+  {% if records.paginator.count == 0 %}
+	<h3>{% trans "No record found"%}</h3>
+	<p class="alert alert-info">{% trans 'There are no BigBlueButton records.'%}</p>
+  {% else %}
+	<h3>{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}</h3>
+	{% trans "This is the list of the recorded BigBlueButton sessions for which you were moderator. This module allows you to create a video from a BigBlueButton presentation." %}<br/>
+	{% trans "Shortly after the presentation is published, the corresponding video will appear in your videos." %}<br/>
+	<small class="form-text text-muted">
+		<i>
+			{% trans "Please note: a BigBlueButton presentation can be encoded by another moderator." %}
+			{% trans "If such a case occurs, this information will be displayed directly in the list. You can then contact this user directly to ask him/her to share the video with you, or even to put you as additional owner of the video." %}
+		</i>
+	</small>
+	<br/>
+	{% include "bbb/record_list.html" %}
+  {% endif %}
+
+  <div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-xl" style="max-width:1440px"role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h2 class="modal-title" id="exampleModalLabel">{% trans "BigBlueButton presentation preview" %}</h2>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+			<center>
+				<iframe id="iframeBBB" src="" width="640" height="360" style="padding: 0; margin: 0 auto; border:0" allowfullscreen loading="lazy"></iframe>
+			</center>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
+		  </div>
+		</div>
+	  </div>
+  </div>
+
+{% endblock page_content %}
+
+{% block collapse_page_aside %}
+{% endblock collapse_page_aside %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+{% block more_script %}
+<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
+<script src="{% static 'js/infinite.min.js' %}"></script>
+<script>
+  var infinite = new Waypoint.Infinite({
+    element: $('.infinite-container')[0],
+    onBeforePageLoad: function () {
+      $('.loading').show();
+    },
+    onAfterPageLoad: function ($items) {
+      $('.loading').hide();
+      feather.replace({ class: 'align-bottom'});
+      $('footer.static-pod').addClass('small');
+      $('footer.static-pod').addClass('fixed-bottom');
+      $('footer.static-pod').attr('style','height:80px; overflow-y:auto');
+      $('footer.static-pod .hidden-pod').css('display','none');
+      $(window).scroll(function () {
+        if ($(window).height() + $(window).scrollTop() == $(document).height())
+        {
+           $('footer.static-pod .hidden-pod').css('display','block');
+           $('footer.static-pod').attr('style','height:auto;');
+           $('footer.static-pod').removeClass('fixed-bottom');
+        }
+      });
+    }
+  });
+
+$('.previewBtn').on('click', function (e) {
+	$('#iframeBBB').attr('src', $(this).data("recid"));
+})
+</script>
+{% endblock more_script %}

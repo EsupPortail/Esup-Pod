@@ -14,7 +14,7 @@
             };
 
         /*
-         * Chapter menu button
+         * Logo menu button
          */
         var MenuButton = videojs.getComponent('Button');
 

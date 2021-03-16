@@ -27,7 +27,7 @@
 							{% csrf_token %}
 							<input type="hidden" name="action" value="modify"/>
 							<input type="hidden" name="id" value="{{contributor.id}}"/>
-							<input type="submit" title="{% trans 'Edit the contributor' %}" value="{% trans 'modify' %}" class="edt_contributor btn btn-info btn-sm"/>
+							<input type="submit" title="{% trans 'Edit the contributor' %}" value="{% trans 'modify' %}" class="edt_contributor btn btn-secondary btn-sm"/>
 						</form>
 					</td>
 					<td>

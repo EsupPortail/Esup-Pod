@@ -24,6 +24,7 @@ router.register(r'mainimages', main_views.CustomImageModelViewSet)
 router.register(r'users', authentication_views.UserViewSet)
 router.register(r'groups', authentication_views.GroupViewSet)
 router.register(r'owners', authentication_views.OwnerViewSet)
+router.register(r'sites', authentication_views.SiteViewSet)
 
 router.register(r'channels', video_views.ChannelViewSet)
 router.register(r'themes', video_views.ThemeViewSet)
@@ -44,7 +45,7 @@ router.register(r'chapters', chapter_views.ChapterViewSet)
 
 router.register(r'recording', recorder_views.RecordingModelViewSet)
 router.register(r'recordingfile', recorder_views.RecordingFileModelViewSet)
-
+router.register(r'recorder', recorder_views.RecorderModelViewSet)
 
 if getattr(settings, 'USE_PODFILE', False):
     router.register(r'folders',
@@ -57,6 +58,13 @@ if getattr(settings, 'USE_PODFILE', False):
 urlpatterns = [
     url(r'dublincore/$', video_views.DublinCoreView.as_view(),
         name='dublincore'),
+    url(r'launch_encode_view/$', video_views.launch_encode_view,
+        name='launch_encode_view'),
+    url(r'launch_transcript_view/$', video_views.launch_transcript_view,
+        name='launch_transcript_view'),
+    url(r'store_remote_encoded_video/$',
+        video_views.store_remote_encoded_video,
+        name='store_remote_encoded_video'),
 ]
 
 for apps in settings.THIRD_PARTY_APPS:

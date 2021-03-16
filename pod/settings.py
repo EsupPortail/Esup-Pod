@@ -6,11 +6,10 @@ Django version : 1.11.16.
 import os
 import sys
 from pod.main.settings import BASE_DIR
-
 ##
 # Version of the project
 #
-VERSION = '2.0.2'
+VERSION = '2.8'
 
 ##
 # Installed applications list
@@ -31,13 +30,14 @@ INSTALLED_APPS = [
     'ckeditor',
     'sorl.thumbnail',
     'tagging',
-    'django_cas',
+    'cas',
     'captcha',
     'progressbarupload',
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
     'lti_provider',
+    'select2',
     # Pod Applications
     'pod.main',
     'django.contrib.admin',  # put it here for template override
@@ -53,6 +53,9 @@ INSTALLED_APPS = [
     'pod.recorder',
     'pod.lti',
     'pod.custom',
+    'shibboleth',
+    'chunked_upload',
+    'pod.bbb',
 ]
 
 ##
@@ -64,6 +67,8 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    # Django 3.1 starts to support SameSite middleware
+    'django_cookies_samesite.middleware.CookiesSameSite',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -73,8 +78,7 @@ MIDDLEWARE = [
 
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    # 'django_cas.backends.CASBackend',
+    'pod.main.auth_backend.SiteBackend',
 )
 
 ##
@@ -195,6 +199,9 @@ LOGGING = {
     },
 }
 
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('fr', 'en', 'nl')
+
+
 ##
 # Applications settings (and settings locale if any)
 #
@@ -223,15 +230,21 @@ for application in INSTALLED_APPS:
 #
 if 'USE_CAS' in globals() and eval('USE_CAS') is True:
     AUTHENTICATION_BACKENDS = (
-        'django.contrib.auth.backends.ModelBackend',
-        'django_cas.backends.CASBackend',
+        'pod.main.auth_backend.SiteBackend',
+        'cas.backends.CASBackend',
     )
     CAS_RESPONSE_CALLBACKS = (
         'pod.authentication.populatedCASbackend.populateUser',
         # function call to add some information to user login by CAS
     )
-    MIDDLEWARE.append('django_cas.middleware.CASMiddleware')
+    MIDDLEWARE.append('cas.middleware.CASMiddleware')
 
+if 'USE_SHIB' in globals() and eval('USE_SHIB') is True:
+    AUTHENTICATION_BACKENDS += (
+        'pod.authentication.backends.ShibbBackend',
+    )
+    MIDDLEWARE.append(
+        'pod.authentication.shibmiddleware.ShibbMiddleware')
 
 ##
 # Authentication backend : add lti backend if use

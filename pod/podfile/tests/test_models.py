@@ -4,26 +4,14 @@ Unit tests for podfile models
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.conf import settings
 from ..models import CustomFileModel
 from ..models import CustomImageModel
 from ..models import UserFolder
 from datetime import datetime
-from django.test import override_settings
 
 import os
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class CustomFileModelTestCase(TestCase):
 
     def setUp(self):
@@ -60,6 +48,7 @@ class CustomFileModelTestCase(TestCase):
         self.assertEqual(file.description, 'testfile')
         self.assertEqual(file.file_size, file.file.size)
         self.assertEqual(file.file_type, 'text/plain')
+        self.assertEqual(file.file_ext, 'txt')
         self.assertTrue(isinstance(file.uploaded_at, datetime))
         self.assertEqual(file.created_by, user)
         self.assertEqual(file.folder.name, 'home')
@@ -77,6 +66,7 @@ class CustomFileModelTestCase(TestCase):
         self.assertEqual(file.description, '')
         self.assertEqual(file.file_size, file.file.size)
         self.assertEqual(file.file_type, 'text/plain')
+        self.assertEqual(file.file_ext, 'txt')
         self.assertTrue(isinstance(file.uploaded_at, datetime))
         self.assertEqual(file.created_by, user)
         self.assertEqual(file.folder.name, 'home')
@@ -96,16 +86,6 @@ class CustomFileModelTestCase(TestCase):
         print(" ---> test_delete : OK ! --- CustomFileModel")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class CustomImageModelTestCase(TestCase):
 
     def setUp(self):
@@ -176,16 +156,6 @@ class CustomImageModelTestCase(TestCase):
         print(" ---> test_delete : OK ! --- CustomImageModel")
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class UserFolderTestCase(TestCase):
 
     def setUp(self):

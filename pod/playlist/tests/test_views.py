@@ -2,10 +2,7 @@
 Unit tests for playlist views
 """
 import json
-import os
 
-from django.conf import settings
-from django.test import override_settings
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -14,18 +11,9 @@ from pod.video.models import Video
 from pod.video.models import Type
 from pod.playlist.models import Playlist
 from pod.playlist.models import PlaylistElement
+from django.contrib.sites.models import Site
 
 
-@override_settings(
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class PlaylistViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
@@ -50,6 +38,9 @@ class PlaylistViewsTestCase(TestCase):
             video='video2.mp4',
             duration=30,
             is_draft=False)
+
+        owner.owner.sites.add(Site.objects.get_current())
+        owner.owner.save()
 
     def test_myplaylist(self):
         response = self.client.get('/my_playlists/')

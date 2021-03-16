@@ -10,6 +10,12 @@ Original Authors
 Contributors
 ----------------
 A list of much-appreciated contributors who have submitted patches and reported bugs:
-* Frédéric COLAU, University Grenoble Alpes (patches and documentation)
+* All participants of the October 2018 Pod Technical Workshop
+* Frédéric Colau, Eliam Lotonga and Jeremie Grepilloux, University Grenoble Alpes
+* Loic Bonavent, University of Montpellier
+* Guillaume Condesse, University of Bordeaux
+* Franck Charneau and Joshua Baubry, University of La Rochelle
+* Olivier Bado, University Cote d'Azur
+* Frederic Sene, INSA Rennes
 * Nicolas Lahoche, University of Lille (design and template)
 * Charlotte Benard (Logo and color)

@@ -1,14 +1,71 @@
-{% load staticfiles %}
+{% load staticfiles custom_tags %}
+{% load i18n %}
+{% get_setting "VIDEO_PLAYBACKRATES" '[0.5, 1, 1.5, 2]' as video_playbackrates %}
 <script>
-var options = {
-  notSupportedMessage: "Please use different browser (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
-  language: "fr", //en or nl
+window.onmessage = function(event) {
+   var evt = event || window.event;
+   {# maybe use request.get_host to protect it... #}
+    if(evt.data.type == 'player:play') {
+      player.play();
+      evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
+    }
+    if(evt.data.type == 'player:pause') {
+      player.pause();
+      evt.source.postMessage({paused: player.paused(), data: {}}, evt.origin);
+    }
+    if(evt.data.type == 'player:mute') {
+      player.muted(true);
+      evt.source.postMessage({paused: player.muted(), data: {}}, evt.origin);
+    }
+    if(evt.data.type == 'player:unmute') {
+      player.muted(false);
+      evt.source.postMessage({paused: player.muted(), data: {}}, evt.origin);
+    }
+};
+const seektime = 10;
+const options = {
+  notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
+  //language: "fr", //en or nl
   {% if request.GET.is_iframe %}
-  fluid: false, 
+    fluid: false,
   {% else %}
-  fluid: true, 
+    fluid: true,
   {% endif %}
-  playbackRates: [0.5, 1, 1.5, 2]
+  //playbackRates: [0.5, 1, 1.5, 2],
+  playbackRates: {{video_playbackrates}},
+  userActions: {
+    hotkeys: function(event) {
+      // `this` is the player in this context
+      if (event.code === 'Space') {
+        event.preventDefault();
+        var isPlaying = !this.paused();
+        if(isPlaying) this.pause();
+        else this.play();
+      }
+      if (event.key === 'm') {
+        event.preventDefault();
+        this.muted(!this.muted());
+      }
+      // `arrow left`
+      if (event.code === 'ArrowLeft') {
+        event.preventDefault();
+        const now = this.currentTime();
+        this.currentTime(now - seektime);
+      }
+      // `arrow right`
+      if (event.code === 'ArrowRight') {
+        event.preventDefault();
+        const now = this.currentTime();
+        this.currentTime(now + seektime);
+      }
+    }
+  },
+  plugins: {
+   seekButtons: {
+    forward: seektime,
+    back: seektime
+   }
+  }
 }
 var player = videojs('podvideoplayer', options, function(){});
 
@@ -23,15 +80,14 @@ player.on('firstplay', function(){
 {% if video.is_video %}
   /** get all mp4 format **/
   var mp4_sources = {{video.get_video_mp4_json|safe}};
-  
+
   {% if video.get_playlist_master %}
     var srcOptions = {
       src: '{{video.get_playlist_master.source_file.url}}',
       type: '{{video.get_playlist_master.encoding_format}}',
     };
     player.on('loadedmetadata', function() {
-      //console.log('LOADEDMETADATA');
-      var qualityLevels = this.qualityLevels();
+      //var qualityLevels = this.qualityLevels();
       {% if request.GET.start and request.GET.start != '0' %}
       player.currentTime({{request.GET.start}});
       {%endif%}
@@ -39,7 +95,9 @@ player.on('firstplay', function(){
     //Add source to player
     player.src(srcOptions);
     //add quality selector to player
-    player.hlsQualitySelector();
+    player.hlsQualitySelector({
+        displayCurrentQuality: true,
+    });
     player.on("error", function(e){
       e.stopImmediatePropagation();
       var error = player.error();
@@ -57,6 +115,12 @@ player.on('firstplay', function(){
     player.src(mp4_sources);
     player.controlBar.addChild('QualitySelector');
   {% endif %}
+  {% if video.overview %}
+    //add overview
+    player.vttThumbnails({
+      src: '{% if request.is_secure %}https://{%else%}http://{% endif %}{{request.get_host}}{{video.overview.url}}'
+    });
+  {%endif%}
 
   {% if video.overlay_set.all %}
     var list_overlays = [];
@@ -69,19 +133,13 @@ player.on('firstplay', function(){
         end: parseInt($(this).attr('data-timeend'))
       });
     });
-    if (typeof player.overlay === "function") { 
+    if (typeof player.overlay === "function") {
     player.overlay({
       overlays: list_overlays
     });
     }
   {% endif %}
 
-  {% if video.overview %}
-    //add overview
-    player.vttThumbnails({
-      src: '{% if request.is_secure %}https://{%else%}http://{% endif %}{{request.get_host}}{{video.overview.url}}'
-    });
-  {%endif%}
   {% if video.is_360 %}
     player.vr({projection: '360'});
   {% endif %}
@@ -89,6 +147,7 @@ player.on('firstplay', function(){
   {% if request.GET.is_iframe %}
   player.videoJsInfo();
   {%endif%}
+
   player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
 {% else %}
   {% if video.get_video_m4a %}
@@ -114,5 +173,6 @@ player.on('firstplay', function(){
     player.videoJsChapters();
     $('.vjs-big-play-button').css('z-index', 2)
     $('.vjs-control-bar').css('z-index', 3);
-  {% endif %}
+{% endif %}
+
 </script>

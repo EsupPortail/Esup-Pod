@@ -1,35 +1,63 @@
 {% load i18n static %}
-
-<div >
-{{input|safe}}
-{% if value %}
-<span id="fileinput_{{id}}">
-    {% if type == "image" %}<img src="{{document.file.url}}" height="34" alt="{{document.name}}"/>&nbsp;
-    {% else %}<i data-feather="file"></i>&nbsp;{%endif%}
-<strong>{{document.name}}</strong>&nbsp;({{document.file_type}} - {{document.file.size|filesizeformat}})
-</span>
-<button type="button" class="btn btn-primary btn-fileinput" data-toggle="modal" data-target="#fileModal_{{id}}">
-  {% trans 'Change file' %}
-</button>
-{% else %}
-<span id="fileinput_{{id}}">
-</span>
-<button type="button" class="btn btn-primary btn-fileinput" data-toggle="modal" data-target="#fileModal_{{id}}">
-{% if type == "file" %}
-{% trans 'Select a file' %}
-{% else %}
-{% trans 'Select an image' %}
-{% endif %}
-</button>
-{% endif%}
+{% block more_style %}
+<link rel="stylesheet" type="text/css" href="{% static 'podfile/css/podfile.css' %}">
+{% endblock more_style %}
+<div>
+  {{input|safe}}
+  <span>
+  {% if value %}
+    <span id="fileinput_{{id}}">
+      {% if document.class_name == "CustomImageModel" and document.file_exist %}<img src="{{document.file.url}}" height="34" alt="{{document.name}}" loading="lazy"/>&nbsp;
+      {% else %}
+        <img style="height: 26px;vertical-align: middle;" src="{% static "podfile/images/icons/default.png" %}" alt="" loading="lazy">&nbsp;
+      {%endif%}
+      {% if document.file_exist %}
+        <strong><a href="{{document.file.url}}" target="_blank" title="{% trans 'Open file in a new tab'%}">{{document.name}}</a></strong>&nbsp;
+      ({{document.file_type}} - {{document.file.size|filesizeformat}})
+      {% else %}
+        {{document.name}}
+      {%endif%}
+    </span>
+    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">
+      {% if type == "image" %}
+        {% trans 'Change image' %}
+      {% else %}
+        {% trans 'Change file' %}
+      {% endif %}
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}">
+      {% if type == "image" %}
+        {% trans 'Remove image' %}
+      {% else %}
+        {% trans 'Remove file' %}
+      {% endif %}
+    </button>
+  {% else %}
+    <span id="fileinput_{{id}}"></span>
+    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput_{{id}} mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">
+      {% if type == "image" %}
+        {% trans 'Select an image' %}
+      {% else %}
+        {% trans 'Select a file' %}
+      {% endif %}
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}" style="display:none">
+      {% if type == "image" %}
+        {% trans 'Remove image' %}
+      {% else %}
+        {% trans 'Remove file' %}
+      {% endif %}
+    </button>
+  {% endif%}
+  </span>
 </div>
 <!-- Select File Modal -->
-<div class="modal fade" id="fileModal_{{id}}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true" data-id="{{id}}">
-  <div class="modal-dialog modal-lg" role="document">
+<div class="modal fade podfilemodal" id="fileModal_{{id}}" tabindex="-1" role="dialog" aria-labelledby="fileModalLabel" aria-hidden="true" data-id="{{id}}"  style="z-index:1050">
+  <div class="modal-dialog modal-lg modal-pod-full" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="fileModalLabel_{{id}}">
-            {% if type == "file" %}{% trans 'Select a file' %}{% else %}{% trans 'Select an image' %}{% endif %}</h5>
+        <h2 class="modal-title" id="fileModalLabel_{{id}}">
+            {% if type == "image" %}{% trans 'Select an image' %}{% else %}{% trans 'Select a file' %}{% endif %}</h2>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -44,18 +72,44 @@
   </div>
 </div>
 <!-- End Select File Modal -->
-<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
-<script src="{% static 'js/infinite.min.js' %}"></script>
 <script>
 var id_input="";
+
+var static_url = "{% get_static_prefix %}";
+var deletefolder_url = "{% url 'podfile:deletefolder' %}";
+var deletefile_url = "{% url 'podfile:deletefile' %}";
+
 $('#fileModal_{{id}}').appendTo(document.body);
-$('#fileModal_{{id}}').on('hide.bs.modal', function (event) {
-  console.log($(this).data('id'));
-    $("#modal-folder_"+$(this).data('id')).html("");
+
+$(document).on('hide.bs.modal', '#fileModal_{{id}}', function (event) {
+  event.stopPropagation();
+  $("#modal-folder_"+$(this).data('id')).html("");
 });
-$('#fileModal_{{id}}').on('show.bs.modal', function (event) {
-  console.log($(this).data('id'));
+
+$(document).on('show.bs.modal', '#fileModal_{{id}}', function (event) {
+  event.stopPropagation();
   id_input = $(this).data('id');
-  send_form_data("{% url "podfile:folder" type=type %}", {}, "append_folder_html_in_modal", "get");
+  send_form_data("{% if type %}{% url "podfile:home" type=type %}{% else %}{% url "podfile:home" %}{%endif%}", {}, "append_folder_html_in_modal", "get");
 });
+
+$(document).on("click", "#remove_file_{{id}}", function(event) {
+  var html_div = '<span id="fileinput_{{id}}"></span>\
+    <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">\
+    {% if type == "image" %}\
+    {% trans 'Select an image' %}\
+    {% else %}\
+    {% trans 'Select a file' %}\
+    {% endif %}\
+    </button>\
+    <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}" style="display:none">\
+      {% if type == "image" %}\
+      {% trans 'Remove image' %}\
+      {% else %}\
+      {% trans 'Remove file' %}\
+      {% endif %}\
+    </button>';
+  $(this).parent('span').html(html_div);
+  $("#{{id}}").val("");
+});
+
 </script>

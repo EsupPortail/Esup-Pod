@@ -2,10 +2,12 @@ from django import forms
 from django.conf import settings
 from django.forms.widgets import HiddenInput
 from django.utils.safestring import mark_safe
+# from django.utils.translation import ugettext_lazy as _
 from pod.completion.models import Contributor
 from pod.completion.models import Document
 from pod.completion.models import Track
 from pod.completion.models import Overlay
+
 FILEPICKER = False
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
@@ -20,15 +22,12 @@ class ContributorForm(forms.ModelForm):
             self.fields['video'].widget = HiddenInput()
             self.fields[myField].widget.attrs[
                 'placeholder'] = self.fields[myField].label
+            self.fields[myField].widget.attrs['class'] = 'form-control'
             if self.fields[myField].required:
-                self.fields[myField].widget.attrs[
-                    'class'] = 'form-control required'
                 label_unicode = u'{0}'.format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
                     '{0} <span class="special_class">*</span>'.format(
                         label_unicode))
-            else:
-                self.fields[myField].widget.attrs['class'] = 'form-control'
         self.fields['role'].widget.attrs['class'] = 'custom-select'
 
     class Meta(object):
@@ -54,7 +53,7 @@ class DocumentForm(forms.ModelForm):
             else:
                 self.fields[myField].widget.attrs['class'] = 'form-control'
         if FILEPICKER:
-            self.fields['document'].widget = CustomFileWidget(type="file")
+            self.fields['document'].widget = CustomFileWidget(type='file')
 
     class Meta(object):
         model = Document

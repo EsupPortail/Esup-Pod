@@ -20,16 +20,33 @@
         To view this video please enable JavaScript, and consider upgrading to a web browser that
         <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
       </p>
-      <track kind="metadata" src="{{video.enrichmentvtt.src.file.url}}">
+      <track kind="metadata" src="{{video.enrichmentvtt.src.file.url}}?{% now "U" %}" label="enrichment">
 
-    {% for track in video.track_set.all%}
-      <track id= "track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.url }}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}">
-    {%endfor%}
+      {% for track in video.track_set.all%}
+      <track id= "track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.file.url }}?{% now "U" %}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}" {% if forloop.first %}default{%endif%}>
+      {%endfor%}
     </video>
 
     <form method="post" action="{% url 'video_count' id=video.id %}" id="video_count_form">
     {% csrf_token %}
     </form>
+
+    {% if video.chapter_set.all %}
+      <div class="chapters-list inactive" role="menu">
+        <h6><span class="vjs-icon-chapters"></span>{% trans "Chapters" %}</h6>
+        <ol id="chapters-list"></ol>
+      </div>
+      <ul id="chapters">
+        {% for chapter in video.chapter_set.all %}
+          <li data-start="{{chapter.time_start}}"
+            data-id="{{chapter.id}}"
+            data-title="{{chapter.title}}">
+            {{chapter.title}}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
 {% endif %}
 {% endblock video-element %}
 
@@ -37,32 +54,54 @@
 {% block more_script %}
 {{block.super}}
 <script>
+{% if not video.is_video %}
+slide_mode = 'video off';
+{% endif %}
 player.ready(function() {
     var tracks = player.textTracks();
-    var metadataTrack;
-    for (let i = 0; i < tracks.length; i++) {
+    var metadataTrack, i;
+    for (i = 0; i < tracks.length; i++) {
         var track = tracks[i];
-        if (track.kind === 'metadata' && track.label === '') {
+        if (track.kind === 'metadata' && track.label === 'enrichment') {
             metadataTrack = track;
+            metadataTrack.index = i;
+            break;
         }
     }
+
     player.on('loadedmetadata', function() {
         var slide = [];
-        for (let i = 0; i < metadataTrack.cues.length; i++) {
-            data = JSON.parse(metadataTrack.cues[i].text);
-            slide.push({
-                title: data.title,
-                url: data.url,
-                type: data.type,
-                start: metadataTrack.cues[i].startTime,
-                end: metadataTrack.cues[i].endTime
+        if(!metadataTrack.cues) { //Safari do not get cues
+            let tracksrc = player.el().getElementsByTagName('TRACK')[metadataTrack.index].src;
+            loadEnrichmentVTTfile(tracksrc, function(cues) {
+                if (typeof player.slides === "function") {
+                    player.slides(cues);
+                }
             });
+        } else {
+            for (i = 0; i < metadataTrack.cues.length; i++) {
+                // Replace tabs by spaces to prevent a "JSON.parse: bad control character in string literal" error.
+                data = JSON.parse(metadataTrack.cues[i].text.replace(/\t/g, ' '));
+                //console.log('Parsed '+data.title)
+                slide.push({
+                    title: data.title,
+                    url: data.url,
+                    type: data.type,
+                    stop_video: data.stop_video,
+                    start: metadataTrack.cues[i].startTime,
+                    end: metadataTrack.cues[i].endTime
+                });
+            }
         }
-        player.slides(slide);
+        if (typeof player.slides === "function") {
+            //console.log('Call player.slides');
+            player.slides(slide);
+        }
+
     });
+
     $('.vjs-big-play-button').css('z-index', 2)
     $('.vjs-control-bar').css('z-index', 3);
 });
 </script>
 {% endblock more_script %}
-

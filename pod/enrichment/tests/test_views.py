@@ -5,46 +5,30 @@ from django.test import TestCase
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.conf import settings
-from django.test import override_settings
-from django.conf.urls import url
-from django.conf.urls import include
 from pod.video.models import Video, Type
 from ..models import Enrichment
-
-from pod.urls import urlpatterns
-
-import os
-
-urlpatterns += [url(r'^enrichment/', include('pod.enrichment.urls')), ]
+from django.contrib.sites.models import Site
 
 
-@override_settings(
-    ROOT_URLCONF=__name__,
-    MEDIA_ROOT=os.path.join(settings.BASE_DIR, 'media'),
-    DATABASES={
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'db.sqlite',
-        }
-    },
-    LANGUAGE_CODE='en'
-)
 class EnrichmentViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
+        site = Site.objects.get(id=1)
         owner = User.objects.create(
             username='test', password='azerty', is_staff=True)
         owner.set_password('hello')
         owner.save()
-        Video.objects.create(
+        vid = Video.objects.create(
             title='videotest',
             owner=owner,
             video='test.mp4',
             duration=20,
             type=Type.objects.get(id=1)
         )
+        owner.owner.sites.add(Site.objects.get_current())
+        owner.owner.save()
+        vid.sites.add(site)
 
     def test_video_enrichment(self):
         video = Video.objects.get(id=1)

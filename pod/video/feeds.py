@@ -14,6 +14,7 @@ from pod.video.models import Channel
 from pod.video.models import Theme
 
 import re
+import os
 
 
 ##
@@ -31,13 +32,20 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
         'LINK_PLAYER': '',
         'FOOTER_TEXT': ('',),
         'FAVICON': 'img/logoPod.svg',
-        'CSS_OVERRIDE': ''
+        'CSS_OVERRIDE': '',
+        'PRE_HEADER_TEMPLATE': '',
+        'POST_FOOTER_TEMPLATE': '',
+        'TRACKING_TEMPLATE': '',
     }
 )
 
-TITLE_ETB = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_ETB', 'University')
-TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'TITLE_SITE', 'Pod')
-LOGO_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, 'LOGO_SITE', 'img/logoPod.svg')
+TITLE_ETB = TEMPLATE_VISIBLE_SETTINGS['TITLE_ETB'] if (
+    TEMPLATE_VISIBLE_SETTINGS.get('TITLE_ETB')) else 'University name'
+TITLE_SITE = TEMPLATE_VISIBLE_SETTINGS['TITLE_SITE'] if (
+    TEMPLATE_VISIBLE_SETTINGS.get('TITLE_SITE')) else 'Pod'
+LOGO_SITE = TEMPLATE_VISIBLE_SETTINGS['LOGO_SITE'] if (
+    TEMPLATE_VISIBLE_SETTINGS.get('LOGO_SITE')) else 'img/logoPod.svg'
+
 CONTACT_US_EMAIL = getattr(
     settings,
     'CONTACT_US_EMAIL',
@@ -58,6 +66,7 @@ class RssFeedGenerator(Rss201rev2Feed):
         }
 
     def add_root_elements(self, handler):
+        """Add root elements."""
         super(RssFeedGenerator, self).add_root_elements(handler)
         handler.startElement(u'image', {})
         handler.addQuickElement(u"url", self.feed['image_url'])
@@ -129,23 +138,25 @@ class RssSiteVideosFeed(Feed):
         self.feed_url = request.build_absolute_uri()
 
         videos_list = get_videos_list(request)
+
         if slug_c:
-            channel = get_object_or_404(Channel, slug=slug_c)
+            channel = get_object_or_404(Channel, slug=slug_c,
+                                        sites=get_current_site(request))
             self.subtitle = "%s" % (channel.title)
             videos_list = videos_list.filter(channel=channel)
             self.link = reverse('channel', kwargs={'slug_c': channel.slug})
 
-        theme = None
-        if slug_t:
-            theme = get_object_or_404(Theme, slug=slug_t)
-            self.subtitle = "%s of %s" % (
-                theme.title, theme.channel.title)
-            list_theme = theme.get_all_children_flat()
-            videos_list = videos_list.filter(theme__in=list_theme)
-            self.link = reverse(
-                'theme', kwargs={
-                    'slug_c': theme.channel.slug,
-                    'slug_t': theme.slug})
+            theme = None
+            if slug_t:
+                theme = get_object_or_404(Theme, channel=channel, slug=slug_t)
+                self.subtitle = "%s of %s" % (
+                    theme.title, theme.channel.title)
+                list_theme = theme.get_all_children_flat()
+                videos_list = videos_list.filter(theme__in=list_theme)
+                self.link = reverse(
+                    'theme', kwargs={
+                        'slug_c': theme.channel.slug,
+                        'slug_t': theme.slug})
 
         return videos_list
 
@@ -187,6 +198,8 @@ class RssSiteVideosFeed(Feed):
             item.date_added.strftime('%Y-%m-%d'), '%Y-%m-%d')
 
     def item_enclosure_url(self, item):
+        if (item.password is not None) or item.is_restricted:
+            return ""
         if item.get_video_mp4().count() > 0:
             mp4 = sorted(item.get_video_mp4(), key=lambda m: m.height)[0]
             return ''.join([self.author_link, mp4.source_file.url])
@@ -204,9 +217,11 @@ class RssSiteVideosFeed(Feed):
     def item_enclosure_length(self, item):
         if item.get_video_mp4().count() > 0:
             mp4 = sorted(item.get_video_mp4(), key=lambda m: m.height)[0]
-            return mp4.source_file.size
+            return mp4.source_file.size if (
+                os.path.isfile(mp4.source_file.path)) else 0
         elif item.get_video_m4a():
-            return item.get_video_m4a().source_file.size
+            return item.get_video_m4a().source_file.size if (
+                os.path.isfile(item.get_video_m4a().source_file.path)) else 0
         return ""
 
     def item_categories(self, item):
@@ -222,6 +237,8 @@ class RssSiteAudiosFeed(RssSiteVideosFeed):
         try:
             mp3 = EncodingAudio.objects.get(
                 name="audio", video=item, encoding_format="audio/mp3")
+            if (item.password is not None) or item.is_restricted:
+                return ""
             return ''.join([self.author_link, mp3.source_file.url])
         except EncodingAudio.DoesNotExist:
             return ""
@@ -236,6 +253,7 @@ class RssSiteAudiosFeed(RssSiteVideosFeed):
         try:
             mp3 = EncodingAudio.objects.get(
                 name="audio", video=item, encoding_format="audio/mp3")
-            return mp3.source_file.size
+            return mp3.source_file.size if (
+                os.path.isfile(mp3.source_file.path)) else 0
         except EncodingAudio.DoesNotExist:
             return ""

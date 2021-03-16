@@ -5,9 +5,12 @@
 {% block page_title %}{% trans 'Enrichment of the video' %} "{{video.title}}" {% endblock page_title %}
 
 {% block page_extra_head %}
+
 {{ block.super }} 
+
 <link rel="stylesheet" href="{% static 'css/enrichment.css' %}"/>
 <script src="{% static 'js/enrichment.js' %}"></script>
+
 <!-- form.media -->
 <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
 
@@ -35,11 +38,11 @@
         To view this video please enable JavaScript, and consider upgrading to a web browser that
         <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
     </p>
-    {% if video.enrichmentvtt.src %}
-    <track kind="metadata" src="{{video.enrichmentvtt.src.file.url}}">
-    {% endif %}
+
+    <track kind="metadata" src="{{video.enrichmentvtt.src.file.url}}?{% now "U" %}" label="enrichment">
+    
     {% for track in video.track_set.all%}
-    <track id= "track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.url }}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}">
+    <track id= "track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.url }}?{% now "U" %}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}">
     {%endfor%}
 </video>
 <hr/>
@@ -56,28 +59,29 @@
 		<form id="form_new" class="get_form" action="{% url 'enrichment:edit_enrichment' slug=video.slug %}" method="POST">
 			{% csrf_token %}
 			<input type="hidden" name="action" value="new"/>
-			<input type="submit" id="add_new_enrichment" value="{% trans 'Add a new enrichment' %}" class="btn btn-info btn-sm"/>
+			<input type="submit" id="add_new_enrichment" value="{% trans 'Add a new enrichment' %}" class="btn btn-primary btn-sm"/>
 		</form>
 	{% endif %}
 	<hr/>
 	<div class="d-flex justify-content-between">
-	<a href="{% url 'video_edit' slug=video.slug %}" class="btn btn-info btn-sm" title="{% trans 'Back to video edit' %}">
+	<a href="{% url 'video_edit' slug=video.slug %}" class="btn btn-secondary btn-sm" title="{% trans 'Back to video edit' %}">
 		{% trans 'Back to video edit' %}
 	</a>
-	<a href="{% url 'enrichment:video_enrichment' slug=video.slug %}" class="btn btn-info btn-sm" title="{% trans 'See the enrich video' %}">
+	<a href="{% url 'enrichment:video_enrichment' slug=video.slug %}" class="btn btn-primary btn-sm" title="{% trans 'See the enrich video' %}">
 		{% trans 'See the enrich video' %}
 	</a>
 	</div>
 </div>
 </div>
 {% endblock video-element %}
+
 {% block page_aside %}
 <div class="card card-body p-2 mt-1" id="card-enrichmenteditinformations">
     <h5 class="card-title pl-2">
         <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
     </h5>
     <div class="card-text small">
-        {% if video.owner == request.user or request.user.is_superuser %}
+        {% if video.owner == request.user or request.user.is_superuser or perms.enrichment.change_enrichment or request.user in video.additional_owners.all %}
         <p><a href="{% url 'enrichment:group_enrichment' slug=video.slug %}" title="{% trans 'You can specify the group(s) of users who can access this page' %}"><i data-feather="users"></i>&nbsp;{% trans 'You can specify the group(s) of users who can access this page' %}</a></p>
         {% endif %}
         <p>{% trans 'The title field is required and must contains from 2 to 100 characters.' %}</p>

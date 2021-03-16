@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load i18n static %}
+
+{% block breadcrumbs %}
+{{ block.super }} 
+<li class="breadcrumb-item active" aria-current="page">{% trans "My files" %}</li>
+{% endblock %}
+
+{% block page_title %}
+{% trans "My files" %}
+{% endblock %}
+
+{% block more_style %}
+    <link rel="stylesheet" type="text/css" href="{% static 'podfile/css/podfile.css' %}">
+{% endblock more_style %}
+
+{% block page_extra_head %}
+<script>
+var id_input="";
+var static_url = "{% get_static_prefix %}";
+var deletefolder_url = "{% url 'podfile:deletefolder' %}";
+var deletefile_url = "{% url 'podfile:deletefile' %}";
+var myFilesView = true;
+</script>
+<script src="{% static 'podfile/js/filewidget.js' %}"></script>
+
+{% endblock %}
+
+{% block page_content %}
+{% include 'podfile/home_content.html' %}
+
+
+{% endblock %}
