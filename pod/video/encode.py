@@ -797,7 +797,7 @@ def encode_video_playlist(source, cmd, output_dir):
         msg += "- %s\n" % ffmpegPlaylistCommand
         with open(logfile, "ab") as f:
             procs.append(subprocess.Popen(
-                ffmpegMp4Command,
+                ffmpegPlaylistCommand,
                 shell=True,
                 executable=ENCODE_SHELL,
                 stdout=f,
