@@ -552,7 +552,7 @@ def encode_video_mp4(source, cmd, output_dir):
             procs.append(subprocess.Popen(
                 ffmpegMp4Command,
                 shell=True,
-                executable=ENCODE_SHELL
+                executable=ENCODE_SHELL,
                 stdout=f,
                 stderr=f))
     msg += "\n- Encoding Mp4: %s" % time.ctime()
@@ -799,7 +799,7 @@ def encode_video_playlist(source, cmd, output_dir):
             procs.append(subprocess.Popen(
                 ffmpegMp4Command,
                 shell=True,
-                executable=ENCODE_SHELL
+                executable=ENCODE_SHELL,
                 stdout=f,
                 stderr=f))
     msg += "\n- Encoding Playlist: %s" % time.ctime()
