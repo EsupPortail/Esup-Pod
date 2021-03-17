@@ -428,9 +428,9 @@ class VideoTestView(TestCase):
         Group.objects.create(name='student')
         Group.objects.create(name='employee')
         Group.objects.create(name='member')
-        AccessGroup.objects.create(code_name='group1',display_name="Group 1")
-        AccessGroup.objects.create(code_name='group2',display_name="Group 2")
-        AccessGroup.objects.create(code_name='group3',display_name="Group 3")
+        AccessGroup.objects.create(code_name='group1', display_name="Group 1")
+        AccessGroup.objects.create(code_name='group2', display_name="Group 2")
+        AccessGroup.objects.create(code_name='group3', display_name="Group 3")
         v0 = Video.objects.create(
             title="Video1", owner=user,
             video="test1.mp4", type=Type.objects.get(id=1))
@@ -482,14 +482,18 @@ class VideoTestView(TestCase):
         response = self.client.get("/video/%s/" % v.slug)
         self.assertEqual(response.status_code, 200)
         # test restricted group
-        v.restrict_access_to_groups.add(AccessGroup.objects.get(code_name='group2'))
-        v.restrict_access_to_groups.add(AccessGroup.objects.get(code_name='group3'))
+        v.restrict_access_to_groups.add(AccessGroup.objects.get(
+            code_name='group2'))
+        v.restrict_access_to_groups.add(AccessGroup.objects.get(
+            code_name='group3'))
         response = self.client.get("/video/%s/" % v.slug)
         self.assertEqual(response.status_code, 403)
-        self.user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name='group1'))
+        self.user.owner.accessgroup_set.add(AccessGroup.objects.get(
+            code_name='group1'))
         response = self.client.get("/video/%s/" % v.slug)
         self.assertEqual(response.status_code, 403)
-        self.user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name='group2'))
+        self.user.owner.accessgroup_set.add(AccessGroup.objects.get(
+            code_name='group2'))
         response = self.client.get("/video/%s/" % v.slug)
         self.assertEqual(response.status_code, 200)
         # TODO test with password
