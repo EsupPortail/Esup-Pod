@@ -538,10 +538,13 @@ class VideoForm(forms.ModelForm):
     def set_queryset(self):
 
         if self.current_user is not None:
+            users_groups = self.current_user.owner.accessgroup_set.all()
             user_channels = Channel.objects.all() if self.is_superuser else (
                 self.current_user.owners_channels.all(
-                ) | self.current_user.users_channels.all()
+                ) | self.current_user.users_channels.all(
+                ) | Channel.objects.filter(allow_to_groups=users_groups)
             ).distinct()
+            print(user_channels.all())
             user_channels.filter(sites=get_current_site(None))
             if user_channels:
                 self.fields["channel"].queryset = user_channels
