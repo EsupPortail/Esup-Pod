@@ -1,19 +1,8 @@
 /*** Esup Pod main CSS ***/
 
 :root {
-  /* CUSTOM COLORS */
-  --bg-color: #FFF;
-  --font-color: #222;
-
-  /* BOOTSTRAP COLORS */
-  --primary: #b03c7e;
-  --primary2: #b03c7e;
-  --light: #f8f9fa;
-  --dark: #343a40;
-  --color-formfields: #f1f1f1;
-
   /* COMMON COLORS */
-  --color-transparent:transparent;
+  --color-transparent: transparent;
   --color-white: white;
   --color-black: black;
   --color-alto: #ddd;
@@ -25,6 +14,19 @@
   --color-outer-space: rgba(40,48,56, .5);
   --color-red: #FF0000;
   --color-mine-shaft: #222;
+
+  /*****************
+   * CUSTOM COLORS *
+   *****************/
+  --bg-color: var(--color-white);
+  --font-color: var(--color-mine-shaft);
+
+  /* BOOTSTRAP COLORS */
+  --primary: #b03c7e;
+  --primary2: var(--primary);
+  --light: #f8f9fa;
+  --dark: #343a40;
+  --color-formfields: #f1f1f1;
 }
 .navbar-light.navbar-nav.nav-link {
   color: var(--font-color);
@@ -174,13 +176,6 @@ label {
 }
 
 /*** navbar **/
-/*.nav-link.btn-connexion{
-  background: var(--primary);
-  color: var(--white).btn-outline-primary {
-    color:#b03c7e;
-    border-color:#b03c7e;
-  }!important;
-}*/
 .btn-lang {
   padding: .2rem .25rem;
   background: var(--color-transparent);
@@ -220,9 +215,6 @@ label {
   align-items: center;
 }
 
-/*.modal-pod-full {
-  max-width: 90%;
-}*/
 .modal-pod-full.close {
   font-size: 3rem;
 }
@@ -277,7 +269,6 @@ label {
     border-top: 1px solid var(--color-silver);
   }
   .langs.active {
-    /*background:var(--primary); */
     border: none;
     color: var(--white);
   }
@@ -400,9 +391,6 @@ a:hover {
   color: var(--primary);
 }
 
-/*.card-img-top {
-  overflow: hidden;
-}*/
 div.card a img {
   transition: -webkit-transform.5s ease;
   transition: transform.5s ease;
@@ -423,16 +411,13 @@ div.card a:hover>img {
   position: absolute;
   bottom: 57px;
   right: 2px;
-  /*width: 100%;
-  text-align: center;*/
   border: none;
-  /*background: rgba(220,220,220);*/
-  /*height: 1rem;*/
 }
 .card-footer.feather,.card-header.feather {
   height: 1rem;
 }
-  /* menu channels */
+
+/** menu channels **/
 .dropdown-submenu >.dropdown-menu {
   top: 0;
   left: 100%;
@@ -498,10 +483,7 @@ div.card a:hover>img {
   color: var(--primary);
   font-size: 1.3rem;
 }
-/*.form-group-required {
-    border-left: 3px solid var(--color-fuzzy-wuzzy-brown);
-    padding-left : 5px;
-}*/
+
 .form-group-required.errors {
   background-color: var(--color-fuzzy-wuzzy-brown);
 }
@@ -516,7 +498,7 @@ div.card a:hover>img {
   z-index: 1000;
 }
 
-  /** channel form **/
+/** channel form **/
 #channel_form.selector,
 #enrichment_group_form.selector {
   width: 100% !important;
@@ -542,7 +524,7 @@ div.card a:hover>img {
   text-align: left;
 }
 
-/* vignettes video */
+/** vignettes video **/
 @media (max-width: 575.98px) {
   .pod-flex-direction {
     flex-direction: column;
@@ -561,6 +543,7 @@ div.card a:hover>img {
     flex: 2;
   }
 }
+
 /*** footer **/
 footer {
   color: var(--color-silver-chalice);
