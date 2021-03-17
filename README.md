@@ -1,6 +1,8 @@
 # <img src="./pod/main/static/img/logoPod.svg" width="80" alt="" role="presentation"> Pod v2
 <a href="https://github.com/EsupPortail/Esup-Pod/actions"><img src="https://github.com/EsupPortail/Esup-Pod/actions/workflows/pod.yml/badge.svg" alt="Testing status" /></a>
 
+![Licence LGPL 3.0](https://img.shields.io/github/license/EsupPortail/Esup-Pod)
+
 ## Plateforme de gestion de fichier vidéo
 
 Créé en 2014, le projet Pod a connu de nombreux changement ces dernières années. Initié à l’[Université de Lille](https://www.univ-lille.fr/), il est depuis septembre 2015 piloté par le consortium [Esup Portail](https://www.esup-portail.org/) et soutenu également par le [Ministère de l’Enseignement supérieur, de la Recherche et de l’Innovation](http://www.enseignementsup-recherche.gouv.fr/).

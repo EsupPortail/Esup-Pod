@@ -1,7 +1,8 @@
 {% load i18n %}
 {% spaceless %}
-<div class="card mb-4 box-shadow border-secondary video-card"> <!-- the good one -->
-  <div class="card-header" style="">
+<div class="card mb-4 box-shadow border-secondary video-card">
+  <!-- card.html -->
+  <div class="card-header">
     <div class="d-flex justify-content-between align-items-center">
       <small class="text-muted time">{{video.duration_in_time}}</small>
       <span class="text-muted small">
@@ -33,7 +34,7 @@
       </span>
     </div>
   </div>
-  <div class="d-flex align-items-center">
+  <div class="card-thumbnail">
     {% if channel %}
       {% if theme %}
         <a class="link-center-pod" href="{% url 'video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">

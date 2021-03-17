@@ -44,11 +44,11 @@
 					{% trans "Already published"%}
 					{% if request.user != record.encoded_by %}
 						{% trans "by"%} {{ record.encoded_by.first_name }} {{ record.encoded_by.last_name }} ({{ record.encoded_by.email }})
-					{% endif %}	
+					{% endif %}
 				</small>
 			{% endif %}
 		</footer>
-	
+
 	</div>
 </div>
 {% endspaceless %}

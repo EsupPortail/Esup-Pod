@@ -19,6 +19,7 @@ These are mostly guidelines, not rules. Use your best judgment, and feel free to
 
 * [Coding conventions](#coding-conventions)
   * [JavaScript Styleguide](#javascript-styleguide)
+  * [Python Styleguide](#python-styleguide)
 
 
 ## Code of Conduct
@@ -28,7 +29,7 @@ By participating, you are expected to uphold this code. Please report unacceptab
 
 ## I don't want to read this whole thing I just have a question!!!
 
-If chat is more your speed, you can join the Pod team on Rocket: https://rocket.esup-portail.org/channel/esup_-_pod
+If chat is more your speed, you can join the Pod team on Rocket chat: https://rocket.esup-portail.org/channel/esup_-_pod
 
 
 
@@ -114,9 +115,6 @@ While the prerequisites above must be satisfied prior to having your pull reques
     * :racehorse: `:racehorse:` when improving performance
     * :non-potable_water: `:non-potable_water:` when plugging memory leaks
     * :memo: `:memo:` when writing docs
-    * :penguin: `:penguin:` when fixing something on Linux
-    * :apple: `:apple:` when fixing something on macOS
-    * :checkered_flag: `:checkered_flag:` when fixing something on Windows
     * :bug: `:bug:` when fixing a bug
     * :fire: `:fire:` when removing code or files
     * :green_heart: `:green_heart:` when fixing the CI build
@@ -136,11 +134,9 @@ Start reading our code and you'll get the hang of it. We optimize for readabilit
 
 ### JavaScript Styleguide
 
-All JavaScript code is linted with [Prettier](https://prettier.io/).
+All JavaScript code is linted with [eslint](https://eslint.org/).
 
-* Prefer the object spread operator (`{...anotherObj}`) to `Object.assign()`
+### Python Styleguide
 
-
-
-
+All python code is linted with [flake8](https://flake8.pycqa.org/en/latest/)
 
