@@ -1,9 +1,7 @@
-/** Comment Scripts **/
+const base_url = window.location.origin + `/comment/${video_slug}/`;
 
-// import relativeTime from "/static/js/dayjs_relativeTime.min.js";
-let base_url = window.location.href.replace("/video/", "/comment/");
-let base_vote_url = base_url.replace("comment", "comment/vote");
-let base_delete_url = base_url.replace("comment", "comment/del");
+const base_vote_url = base_url.replace("comment", "comment/vote");
+const base_delete_url = base_url.replace("comment", "comment/del");
 let all_comment = null;
 const lang_btn = document.querySelector(".btn-lang.btn-lang-active");
 const comment_label = document.querySelector(".comment_label");
