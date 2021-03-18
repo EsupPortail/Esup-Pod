@@ -566,7 +566,7 @@ RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = False
 #  utilisée pour présenter la vidéo.
 # Cette image doit se situer dans le répertoire static.
 """
-DEFAULT_THUMBNAIL = "img/default.png"
+DEFAULT_THUMBNAIL = "img/default.svg"
 
 """
 # Encodage possible sur la plateforme.

@@ -1,3 +1,5 @@
+"""Esup-Pod Video models."""
+
 import os
 import time
 import unicodedata
@@ -17,6 +19,7 @@ from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.dispatch import receiver
 from django.utils.html import format_html
 from django.db.models.signals import pre_delete
@@ -116,7 +119,7 @@ ENCODING_CHOICES = getattr(
         ("playlist", "playlist")
     ))
 DEFAULT_THUMBNAIL = getattr(
-    settings, 'DEFAULT_THUMBNAIL', 'img/default.png')
+    settings, 'DEFAULT_THUMBNAIL', 'img/default.svg')
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
 
 NOTES_STATUS = getattr(
@@ -200,7 +203,10 @@ def remove_accents(input_str):
 
 
 def get_storage_path_video(instance, filename):
-    """ Get the storage path. Instance needs to implement owner """
+    """Get the storage path.
+
+    Instance needs to implement owner
+    """
     fname, dot, extension = filename.rpartition('.')
     try:
         fname.index("/")
@@ -660,11 +666,7 @@ class Video(models.Model):
                  get_current_site(request).domain,
                  self.thumbnail.file.url])
         else:
-            thumbnail_url = ''.join(
-                ['//',
-                 get_current_site(request).domain,
-                 settings.STATIC_URL,
-                 DEFAULT_THUMBNAIL])
+            thumbnail_url = static(DEFAULT_THUMBNAIL)
         return thumbnail_url
 
     @property
@@ -677,11 +679,7 @@ class Video(models.Model):
             # <img src="{{ im.url }}" width="{{ im.width }}"
             # height="{{ im.height }}" loading="lazy">
         else:
-            thumbnail_url = ''.join(
-                ['//',
-                 get_current_site(None).domain,
-                 settings.STATIC_URL,
-                 DEFAULT_THUMBNAIL])
+            thumbnail_url = static(DEFAULT_THUMBNAIL)
         return format_html('<img style="max-width:100px" '
                            'src="%s" alt="%s" loading="lazy"/>' % (
                                thumbnail_url,
@@ -703,11 +701,7 @@ class Video(models.Model):
             # <img src="{{ im.url }}" width="{{ im.width }}"
             # height="{{ im.height }}" loading="lazy">
         else:
-            thumbnail_url = ''.join(
-                ['//',
-                 get_current_site(None).domain,
-                 settings.STATIC_URL,
-                 DEFAULT_THUMBNAIL])
+            thumbnail_url = static(DEFAULT_THUMBNAIL)
         return '<img class="card-img-top" src="%s" alt="%s"\
             loading="lazy"/>' % (
             thumbnail_url, self.title.replace('"', "'"))

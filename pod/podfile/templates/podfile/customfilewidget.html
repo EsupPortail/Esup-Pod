@@ -9,7 +9,7 @@
     <span id="fileinput_{{id}}">
       {% if document.class_name == "CustomImageModel" and document.file_exist %}<img src="{{document.file.url}}" height="34" alt="{{document.name}}" loading="lazy"/>&nbsp;
       {% else %}
-        <img style="height: 26px;vertical-align: middle;" src="{% static "podfile/images/icons/default.png" %}" alt="" loading="lazy">&nbsp;
+        <img style="height: 26px;vertical-align: middle;" src="{% static "podfile/images/icons/default.svg" %}" alt="" loading="lazy">&nbsp;
       {%endif%}
       {% if document.file_exist %}
         <strong><a href="{{document.file.url}}" target="_blank" title="{% trans 'Open file in a new tab'%}">{{document.name}}</a></strong>&nbsp;

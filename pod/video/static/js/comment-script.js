@@ -1,3 +1,5 @@
+/** Comment Scripts **/
+
 // import relativeTime from "/static/js/dayjs_relativeTime.min.js";
 let base_url = window.location.href.replace("/video/", "/comment/");
 let base_vote_url = base_url.replace("comment", "comment/vote");
