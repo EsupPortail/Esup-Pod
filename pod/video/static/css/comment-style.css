@@ -73,7 +73,7 @@
 }
 .comment_main .icon.comments_icon {
 	width: var(--padding-comment-content);
-	margin: 0 6px;
+	margin-right: 6px;
 	-webkit-box-flex: 0;
 	-ms-flex: none;
 	flex: none;
@@ -144,7 +144,7 @@
 	-webkit-box-direction: normal;
 	-ms-flex-direction: column;
 	flex-direction: column;
-	/*background-color: #00baf3;*/
+	background-color: #00baf3;
 	font-family: "Source Sans Pro", Arial, sans-serif;
 	padding: 11px 30px;
 	border-radius: 4px;
@@ -153,7 +153,7 @@
 	bottom: 20px;
 	right: 20px;
 	font-size: 16px;
-	/*color: #fff;*/
+	color: #fff;
 	transition: opacity 1s;
 	-webkit-animation: up 1s cubic-bezier(.77, 0, .18, 1) forwards;
 	animation: up 1s cubic-bezier(.77, 0, .18, 1) forwards;
@@ -187,41 +187,41 @@
 @-webkit-keyframes down {
 	0% {
 		bottom: 20px;
-		/*background-color: rgba(153, 201, 61, 1);*/
+		opacity: 1;
 	}
 	100% {
 		bottom: -100%;
-		/*background-color: rgba(153, 201, 61, 0);*/
+		opacity: .1;
 	}
 }
 @keyframes down {
 	0% {
 		bottom: 20px;
-		/*background-color: rgba(153, 201, 61, 1);*/
+		opacity: 1;
 	}
 	100% {
 		bottom: -100%;
-		/*background-color: rgba(153, 201, 61, 0);*/
+		opacity: .1;
 	}
 }
 @-webkit-keyframes up {
 	0% {
 		bottom: -100%;
-		/*background-color: rgba(153, 201, 61, .1);*/
+		opacity: .1;
 	}
 	100% {
 		bottom: 20px;
-		/*background-color: rgba(153, 201, 61, 1);*/
+		opacity: 1;
 	}
 }
 @keyframes up {
 	0% {
 		bottom: -100%;
-		/*background-color: rgba(153, 201, 61, .1);*/
+		opacity: .1;
 	}
 	100% {
 		bottom: 20px;
-		/*background-color: rgba(153, 201, 61, 1);*/
+		opacity: 1;
 	}
 }
 /* End Alert message */
@@ -317,9 +317,9 @@
 /* End Confirm Modal */
 
 .comment_main .comment_content {
+	overflow: hidden;
 	background-color: var(--third-background-color);
-	/*padding: 2em var(--padding-comment-content);*/
-	padding: 1em 0 1em 0;
+	padding: 1em 0.4em 1em 0;
 	border-left: 2px solid var(--primary-background-color);
 }
 .comment_main .add_comment {
@@ -459,6 +459,7 @@
 	display: -ms-flexbox;
 	display: flex;
 	margin-top: calc(var(--margin-between-comment) - .2em);
+	padding-right: 0.8em;
 }
 .comment_main .comment_element > .comment.onDelete,
 .comment_main
@@ -493,7 +494,7 @@
 	border-top: 1px solid var(--primary-background-color);
 	border-bottom: 1px solid var(--primary-background-color);
 	border-right: 1px solid var(--primary-background-color);
-	width: calc(100% - 42px);
+	flex-grow: 1;
 }
 
 .comment_main .comment .comment_content_header .comment_since {
