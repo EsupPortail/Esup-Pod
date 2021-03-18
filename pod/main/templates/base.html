@@ -30,10 +30,10 @@
     <!-- pod.css -->
     <link rel="stylesheet" href="{% static 'css/pod.css' %}?ver={{VERSION}}" media="screen" title="no title">
     {% if DARKMODE_ENABLED == True %}
-    <link rel="stylesheet" href="{% static 'css/dark.css' %}?ver={{VERSION}}" media="screen" title="no title">
+      <link rel="stylesheet" href="{% static 'css/dark.css' %}?ver={{VERSION}}" media="screen" title="no title">
     {% endif %}
     {% if DYSLEXIAMODE_ENABLED == True %}
-    <link rel="stylesheet" href="{% static 'css/dyslexia.css' %}?ver={{VERSION}}" media="screen" title="no title">
+      <link rel="stylesheet" href="{% static 'css/dyslexia.css' %}?ver={{VERSION}}" media="screen" title="no title">
     {% endif %}
     {% if CSS_OVERRIDE %}
       <link rel="stylesheet" href="{% static CSS_OVERRIDE %}?ver={{VERSION}}" media="screen" title="no title">
