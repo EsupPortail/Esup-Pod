@@ -421,7 +421,7 @@ function vote(comment_action_html, comment_id) {
 		.then((response) => {
 			response.json().then((data) => {
 				comment_action_html.classList.remove("voting");
-				const target_comment = get_node(comment_action_html, "comment_element");
+				const target_comment = document.getElementById(comment_action_html.dataset.comment)
 
 				if (data.voted === true) {
 					const nb_vote = update_comment_attribute(
