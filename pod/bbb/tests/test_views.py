@@ -14,18 +14,22 @@ class MeetingViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        meeting1 = Meeting.objects.create(id=1, meeting_id="id1",
-                                          internal_meeting_id="internalid1",
-                                          meeting_name="Session BBB1",
-                                          recorded=True,
-                                          recording_available=True,
-                                          encoding_step=0)
+        meeting1 = Meeting.objects.create(
+            id=1,
+            meeting_id="id1",
+            internal_meeting_id="internalid1",
+            meeting_name="Session BBB1",
+            recorded=True,
+            recording_available=True,
+            encoding_step=0)
         userJohnDoe = User.objects.create(username="pod")
-        Attendee.objects.create(id=1, full_name="John Doe",
-                                role="MODERATOR",
-                                username="pod",
-                                meeting=meeting1,
-                                user=userJohnDoe)
+        Attendee.objects.create(
+            id=1,
+            full_name="John Doe",
+            role="MODERATOR",
+            username="pod",
+            meeting=meeting1,
+            user=userJohnDoe)
         print(" --->  SetUp of MeetingViewsTestCase : OK !")
 
     def test_list_meeting(self):
@@ -68,23 +72,28 @@ class LivestreamViewsTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        meeting1 = Meeting.objects.create(id=1, meeting_id="id1",
-                                          internal_meeting_id="internalid1",
-                                          meeting_name="Session BBB1",
-                                          session_date=timezone.now(),
-                                          encoding_step=0)
+        meeting1 = Meeting.objects.create(
+            id=1,
+            meeting_id="id1",
+            internal_meeting_id="internalid1",
+            meeting_name="Session BBB1",
+            session_date=timezone.now(),
+            encoding_step=0)
         userJohnDoe = User.objects.create(username="john.doe")
-        Attendee.objects.create(id=1, full_name="John Doe",
-                                role="MODERATOR",
-                                username="john.doe",
-                                meeting=meeting1,
-                                user=userJohnDoe)
+        Attendee.objects.create(
+            id=1,
+            full_name="John Doe",
+            role="MODERATOR",
+            username="john.doe",
+            meeting=meeting1,
+            user=userJohnDoe)
 
-        Livestream.objects.create(id=1,
-                                  start_date=timezone.now(),
-                                  meeting=meeting1,
-                                  status=0,
-                                  user=userJohnDoe)
+        Livestream.objects.create(
+            id=1,
+            start_date=timezone.now(),
+            meeting=meeting1,
+            status=0,
+            user=userJohnDoe)
         print(" --->  SetUp of LivestreamViewsTestCase : OK !")
 
     def test_live_list_meeting(self):

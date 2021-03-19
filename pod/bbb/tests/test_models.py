@@ -77,17 +77,21 @@ class AttendeeTestCase(TestCase):
                                           meeting_name="Session BBB1",
                                           encoding_step=0)
 
-        Attendee.objects.create(id=1, full_name="John Doe",
-                                role="MODERATOR",
-                                meeting=meeting1)
+        Attendee.objects.create(
+            id=1,
+            full_name="John Doe",
+            role="MODERATOR",
+            meeting=meeting1)
 
         User.objects.create(username="pod")
         userJaneDoe = User.objects.create(username="pod2")
-        Attendee.objects.create(id=2, full_name="Jane Doe",
-                                role="MODERATOR",
-                                username="pod2",
-                                meeting=meeting1,
-                                user=userJaneDoe)
+        Attendee.objects.create(
+            id=2,
+            full_name="Jane Doe",
+            role="MODERATOR",
+            username="pod2",
+            meeting=meeting1,
+            user=userJaneDoe)
 
         print(" --->  SetUp of AttendeeTestCase : OK !")
 
@@ -136,17 +140,20 @@ class LivestreamTestCase(TestCase):
     fixtures = ['initial_data.json', ]
 
     def setUp(self):
-        meeting1 = Meeting.objects.create(id=1, meeting_id="id1",
-                                          internal_meeting_id="internalid1",
-                                          meeting_name="Session BBB1",
-                                          encoding_step=0)
+        meeting1 = Meeting.objects.create(
+            id=1,
+            meeting_id="id1",
+            internal_meeting_id="internalid1",
+            meeting_name="Session BBB1",
+            encoding_step=0)
 
         user1 = User.objects.create(username="pod")
 
-        Livestream.objects.create(id=1,
-                                  start_date=timezone.now(),
-                                  meeting=meeting1,
-                                  user=user1)
+        Livestream.objects.create(
+            id=1,
+            start_date=timezone.now(),
+            meeting=meeting1,
+            user=user1)
 
         print(" --->  SetUp of LivestreamTestCase : OK !")
 
