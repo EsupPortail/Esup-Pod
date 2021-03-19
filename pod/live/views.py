@@ -106,9 +106,8 @@ def video_live(request, slug):  # affichage des directs
     if USE_BBB and USE_BBB_LIVE:
         livestreams_list = Livestream.objects.\
             filter(broadcaster_id=broadcaster.id)
-        if len(livestreams_list) > 0:
-            for livestream in livestreams_list:
-                display_chat = livestream.enable_chat
+        for livestream in livestreams_list:
+            display_chat = livestream.enable_chat
     return render(request, "live/live.html", {
         'display_chat': display_chat,
         'broadcaster': broadcaster,
