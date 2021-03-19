@@ -2,18 +2,41 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My BigBlueButton records" %}</li>{% endblock %}
+{% block page_extra_head %}
+<script>
+window.setInterval("location.reload(true)",30000);
+</script>
+{% endblock %}
+
+{% block breadcrumbs %}
+{{ block.super }}
+  {% if USE_BBB_LIVE %}	
+	<li class="breadcrumb-item active" aria-current="page">{% trans "My BigBlueButton records and lives" %}</li>
+  {% else %}
+	<li class="breadcrumb-item active" aria-current="page">{% trans "My BigBlueButton records" %}</li>
+  {% endif %}
+{% endblock %}
 
 {% block page_title %}
-{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}
+  {% if USE_BBB_LIVE %}	
+	{% trans "My BigBlueButton records and lives" %}
+  {% else %}
+	{% trans "My BigBlueButton records" %}
+  {% endif %}
 {% endblock %}
 
 {% block page_content %}
+
+  {% if request.user.is_staff and USE_BBB and USE_BBB_LIVE %}		  
+	<h4><a href="{% url 'bbb:live_list_meeting' %}" title="{% trans 'Perform a BigBlueButton live' %}"><i data-feather="radio"></i>&nbsp;{% trans 'Perform a BigBlueButton live' %}</a></h4>
+  {% endif %}
+
+  <h3>{% trans "Create a video from a BigBlueButton presentation" %}</h3>
   {% if records.paginator.count == 0 %}
-	<h3>{% trans "No record found"%}</h3>
+	<h4>{% trans "No record found"%}</h4>
 	<p class="alert alert-info">{% trans 'There are no BigBlueButton records.'%}</p>
   {% else %}
-	<h3>{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}</h3>
+	<h4>{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}</h4>
 	{% trans "This is the list of the recorded BigBlueButton sessions for which you were moderator. This module allows you to create a video from a BigBlueButton presentation." %}<br/>
 	{% trans "Shortly after the presentation is published, the corresponding video will appear in your videos." %}<br/>
 	<small class="form-text text-muted">
@@ -46,6 +69,8 @@
 		</div>
 	  </div>
   </div>
+  
+  <small class="form-text text-muted"><i>{% trans "Please note: this page refreshes automatically every 30 seconds." %}</i></small>
 
 {% endblock page_content %}
 

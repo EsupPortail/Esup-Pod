@@ -108,6 +108,9 @@ CHUNK_SIZE = getattr(
 USE_BBB = getattr(
     django_settings, 'USE_BBB', False)
 
+USE_BBB_LIVE = getattr(
+    django_settings, 'USE_BBB_LIVE', False)
+
 
 def context_settings(request):
     maintenance_mode = False
@@ -154,6 +157,7 @@ def context_settings(request):
     new_settings['USE_BBB'] = USE_BBB
     new_settings['DARKMODE_ENABLED'] = DARKMODE_ENABLED
     new_settings['DYSLEXIAMODE_ENABLED'] = DYSLEXIAMODE_ENABLED
+    new_settings['USE_BBB_LIVE'] = USE_BBB_LIVE
 
     return new_settings
 

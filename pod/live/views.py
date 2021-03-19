@@ -14,12 +14,16 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 import json
 from django.utils import timezone
+from pod.bbb.models import Livestream
 
 VIEWERS_ONLY_FOR_STAFF = getattr(
     settings, 'VIEWERS_ONLY_FOR_STAFF', False)
 
 HEARTBEAT_DELAY = getattr(
     settings, 'HEARTBEAT_DELAY', 45)
+
+USE_BBB = getattr(settings, 'USE_BBB', False)
+USE_BBB_LIVE = getattr(settings, 'USE_BBB_LIVE', False)
 
 
 def lives(request):  # affichage des directs
@@ -96,7 +100,16 @@ def video_live(request, slug):  # affichage des directs
                 'heartbeat_delay': HEARTBEAT_DELAY
             }
         )
+    # Search if broadcaster is used to display a BBB streaming live
+    # for which students can send message from this live page
+    display_chat = False
+    if USE_BBB and USE_BBB_LIVE:
+        livestreams_list = Livestream.objects.\
+            filter(broadcaster_id=broadcaster.id)
+        for livestream in livestreams_list:
+            display_chat = livestream.enable_chat
     return render(request, "live/live.html", {
+        'display_chat': display_chat,
         'broadcaster': broadcaster,
         'heartbeat_delay': HEARTBEAT_DELAY
     })
