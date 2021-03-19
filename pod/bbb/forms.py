@@ -20,17 +20,14 @@ class MeetingForm(forms.ModelForm):
 
         # All fields are hidden. This form is like a Confirm prompt
         self.fields = add_placeholder_and_asterisk(self.fields)
-        self.fields['meeting_id'].widget = forms.HiddenInput()
-        self.fields['internal_meeting_id'].widget = forms.HiddenInput()
-        # self.fields['meeting_name'].widget = forms.HiddenInput()
-        self.fields['session_date'].widget = forms.HiddenInput()
-        self.fields['encoding_step'].widget = forms.HiddenInput()
-        self.fields['recorded'].widget = forms.HiddenInput()
-        self.fields['recording_available'].widget = forms.HiddenInput()
-        self.fields['recording_url'].widget = forms.HiddenInput()
-        self.fields['thumbnail_url'].widget = forms.HiddenInput()
-        self.fields['encoded_by'].widget = forms.HiddenInput()
-        self.fields['last_date_in_progress'].widget = forms.HiddenInput()
+        hidden_fields = (
+            'meeting_id', 'internal_meeting_id', 'session_date',
+            'encoding_step', 'recorded', 'recording_available',
+            'recording_url', 'thumbnail_url', 'encoded_by',
+            'last_date_in_progress')
+        for field in hidden_fields:
+            if self.fields.get(field, None):
+                self.fields[field].widget = forms.HiddenInput()
 
     class Meta:
         model = Meeting
@@ -59,17 +56,16 @@ class LivestreamForm(forms.ModelForm):
     def __init__(self, request, *args, **kwargs):
         super(LivestreamForm, self).__init__(*args, **kwargs)
 
+        # All fields are hidden. This form is like a Confirm prompt
         self.fields = add_placeholder_and_asterisk(self.fields)
-        self.fields['meeting'].widget = forms.HiddenInput()
-        self.fields['start_date'].widget = forms.HiddenInput()
-        self.fields['end_date'].widget = forms.HiddenInput()
-        self.fields['status'].widget = forms.HiddenInput()
-        self.fields['user'].widget = forms.HiddenInput()
-        self.fields['server'].widget = forms.HiddenInput()
-        self.fields['broadcaster_id'].widget = forms.HiddenInput()
-        self.fields['redis_hostname'].widget = forms.HiddenInput()
-        self.fields['redis_port'].widget = forms.HiddenInput()
-        self.fields['redis_channel'].widget = forms.HiddenInput()
+        hidden_fields = (
+            'meeting', 'start_date', 'end_date', 'status', 'user',
+            'server', 'broadcaster_id', 'redis_hostname', 'redis_port',
+            'redis_channel')
+        for field in hidden_fields:
+            if self.fields.get(field, None):
+                self.fields[field].widget = forms.HiddenInput()
+
         if not USE_BBB_LIVE_DOWNLOADING:
             self.fields['download_meeting'].widget = forms.HiddenInput()
 
