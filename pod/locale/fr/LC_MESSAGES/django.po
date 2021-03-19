@@ -348,14 +348,6 @@ msgid "User from the Pod database, if user found."
 msgstr ""
 "Utilisateur dans la base de données de Pod, si l'utilisateur est trouvé."
 
-#: pod/bbb/models.py:146
-msgid "Attendee"
-msgstr ""
-
-#: pod/bbb/models.py:147
-msgid "Attendees"
-msgstr ""
-
 #: pod/bbb/models.py:160 pod/video_search/forms.py:11
 msgid "Start date"
 msgstr "Date de début"
@@ -379,6 +371,10 @@ msgstr "Statut du direct"
 #: pod/bbb/models.py:172
 msgid "Live status : 0.not started, 1.in progress, 2.stopped"
 msgstr "Statut du direct: 0. non démarré, 1. en cours, 2. arrêté"
+
+#: pod/bbb/models.py:172
+msgid "Live not started"
+msgstr "Le direct n'a pas encore démarré"
 
 #: pod/bbb/models.py:175
 msgid "Server"
@@ -472,6 +468,14 @@ msgstr "Direct"
 #: pod/bbb/models.py:246
 msgid "Livestreams"
 msgstr "Directs"
+
+#: pod/bbb/models.py:146
+msgid "Attendee"
+msgstr "Participant"
+
+#: pod/bbb/models.py:147
+msgid "Attendees"
+msgstr "Participants"
 
 #: pod/bbb/templates/bbb/card.html:26 pod/bbb/templates/bbb/card.html:27
 #: pod/bbb/templates/bbb/list_meeting.html:56
@@ -5895,6 +5899,10 @@ msgstr "Recherche avancée"
 #: pod/video_search/views.py:60
 msgid "Remove this filter"
 msgstr "Retirer ce filtre"
+
+#: pod/bbb/templates/live_record_list.html:18
+msgid "Loading..."
+msgstr "Chargement en cours..."
 
 #~ msgid "Dutch (Netherlands)"
 #~ msgstr "Néerlandais (Pays-Bas)"
