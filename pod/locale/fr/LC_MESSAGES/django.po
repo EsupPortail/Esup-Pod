@@ -2274,11 +2274,6 @@ msgstr "Activer le compteur de spectateurs"
 msgid "Enable viewers count on live."
 msgstr "Active le compteur de spectateurs sur le direct."
 
-#: pod/live/models.py:102 pod/recorder/models.py:155 pod/video/forms.py:186
-#: pod/video/models.py:556
-msgid "Restricted access"
-msgstr "Accès restreint"
-
 #: pod/live/models.py:104
 msgid "Live is accessible only to authenticated users."
 msgstr ""
@@ -3216,11 +3211,6 @@ msgstr "Accueil"
 #: pod/main/templates/base.html:80
 msgid "Toggle side Menu"
 msgstr "Afficher/masquer le menu latéral"
-
-#: pod/main/templates/contact_us.html:7 pod/main/templates/contact_us.html:10
-#: pod/main/templates/contact_us.html:13 pod/main/templates/maintenance.html:15
-msgid "Contact us"
-msgstr "Contactez nous"
 
 #: pod/main/templates/contact_us.html:52
 msgid "Back to the previous page"
@@ -5624,10 +5614,6 @@ msgstr "Désolé, aucune vidéo trouvée."
 #: pod/video/templates/videos/video_list.html:15
 msgid "More"
 msgstr "Plus"
-
-#: pod/video/templates/videos/video_list.html:18
-msgid "Loading..."
-msgstr "Chargement…"
 
 #: pod/video/templates/videos/video_note_comments_display.html:8
 #: pod/video/templates/videos/video_note_display.html:14
