@@ -155,9 +155,9 @@ def context_settings(request):
     new_settings['MAINTENANCE_REASON'] = maintenance_text_short
     new_settings['MAINTENANCE_MODE'] = maintenance_mode
     new_settings['USE_BBB'] = USE_BBB
+    new_settings['USE_BBB_LIVE'] = USE_BBB_LIVE
     new_settings['DARKMODE_ENABLED'] = DARKMODE_ENABLED
     new_settings['DYSLEXIAMODE_ENABLED'] = DYSLEXIAMODE_ENABLED
-    new_settings['USE_BBB_LIVE'] = USE_BBB_LIVE
 
     return new_settings
 
