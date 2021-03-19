@@ -1,24 +1,22 @@
 /** Dark mode for Esup Pod **/
 
 [data-theme="dark"] {
-  --background-color: #1e1e2c;
 
   /* CUSTOM COLORS */
-  --link-color: #fdb6de;
-  --activelink-color: #fbdfef;
   --color-shark: #212529;
   --bg-color: #303238;
+  --background-color: #1e1e2c;
   --font-color: #f8f9fa;
 
   /* BOOTSTRAP COLORS */
-  --primary: #b03c7e;
-  --primary2: var(--primary);
-  --light: var(--dark);
   --dark: #202025;
+  --light: var(--dark);
   --gray-dark: var(--dark);
   --color-formfields: #454c52;
   --color-silver-chalice: #000;
   --color-alto: var(--bg-color);
+  --color-black: #FFF;
+  --color-black-alpha: #FFFA;
 
   /* Video Comment variable */
   --primary-background-color: var(--bg-color) !important;
@@ -39,6 +37,7 @@
   color: #BEC1C6;
 }
 [data-theme="dark"] .form-control:focus {
+    background-color: var(--background-color);
     border-color: var(--primary);
     box-shadow: 0 0 0 .2rem rgba(126,126,126,.25);
 }
@@ -51,19 +50,26 @@
 }
 
 [data-theme="dark"] .nav-tabs .nav-item.show .nav-link,
-[data-theme="dark"]  .nav-tabs .nav-link.active {
+[data-theme="dark"] .nav-tabs .nav-link.active {
   background-color: var(--bg-color);
   color:var(--white);
   border-bottom: none;
 }
 
+[data-theme="dark"] .dropdown-item:hover,
+[data-theme="dark"] .dropdown-item:focus {
+  color: var(--primary);
+}
 
 [data-theme="dark"] .btn,
 [data-theme="dark"] .dropdown-item,
 [data-theme="dark"] footer {
   color: var(--font-color);
 }
-[data-theme="dark"] .btn:hover {
+
+[data-theme="dark"] .btn:hover,
+[data-theme="dark"] .btn:active,
+[data-theme="dark"] .btn:focus {
   color: inherit;
 }
 [data-theme="dark"] .btn.btn-light {
@@ -134,10 +140,27 @@ body.dark {
 [data-theme="dark"] .border {
     border-color: var(--gray) !important;
 }
+
+/** Admin widgets styles **/
+[data-theme="dark"] .selector .selector-filter,
+[data-theme="dark"] .selector .selector-available h2,
+[data-theme="dark"] .selector-chosen h2 {
+  color: var(--font-color);
+  border-color: var(--background-color);
+}
+[data-theme="dark"] .selector .selector-filter {
+  background-color: var(--bg-color);
+}
+[data-theme="dark"] .selector .selector-available h2,
+[data-theme="dark"] .selector-chosen h2 {
+  background-color: var(--color-silver-chalice);
+}
+
+
 /* INPUT TEXT-AREA SELECT dark mode */
 [data-theme="dark"] select,
-[data-theme="dark"] input:not(.btn-lang),
-[data-theme="dark"] text-area,
+[data-theme="dark"] input:not(.btn),
+[data-theme="dark"] textarea,
 [data-theme="dark"] .select2-container,
 [data-theme="dark"] .select2-container-multi .select2-choices .select2-search-field input,
 [data-theme="dark"] .select2-container-multi .select2-choices,
@@ -147,7 +170,7 @@ body.dark {
 [data-theme="dark"] .select2-dropdown-open .select2-choice,
 [data-theme="dark"] .select2-results .select2-no-results,
 [data-theme="dark"] .select2-results .select2-searching {
-  background: var(--bg-color);
+  background: var(--background-color);
   border-color: var(--bg-color);
   color: var(--font-color);
   box-shadow: none;
@@ -180,6 +203,10 @@ body.dark {
   top: 0;
   transition: .4s;
   border-radius: 24px;
+}
+.slider:focus,
+.slider:hover{
+  box-shadow: 0 0 3px var(--primary);
 }
 .slider:before {
   background-color: var(--white);

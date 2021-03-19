@@ -6,964 +6,965 @@
 */
 
 button.close {
-    padding: 0;
-    background-color: transparent;
-    border: 0;
-    -webkit-appearance: none;
-  }
-  
-  .modal-open {
-    overflow: hidden;
-  }
-  
-  .modal {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1050;
-    display: none;
-    overflow: hidden;
-    outline: 0;
-  }
-  
-  .modal-open .modal {
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
-  
-  .modal-dialog {
-    position: relative;
-    width: auto;
-    margin: 0 auto;
-    pointer-events: none;
-    width: calc(100% - 2em);
-    max-width: 950px;
-    padding: 0 !important;
-  }
-  
-  .modal.fade .modal-dialog {
-    transition: -webkit-transform 0.3s ease-out;
-    -webkit-transition: -webkit-transform 0.3s ease-out;
-    -o-transition: transform 0.3s ease-out;
-    transition: transform 0.3s ease-out;
-    transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
-    -webkit-transform: translate(0, -25%);
-    -ms-transform: translate(0, -25%);
-        transform: translate(0, -25%);
-  }
-  
-  .modal.show .modal-dialog {
-    -webkit-transform: translate(0, 0);
-    -ms-transform: translate(0, 0);
-        transform: translate(0, 0);
-  }
-  
-  .modal-dialog-centered {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  -webkit-appearance: none;
+}
+
+.modal-open {
+  overflow: hidden;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1050;
+  display: none;
+  overflow: hidden;
+  outline: 0;
+}
+
+.modal-open .modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.modal-dialog {
+  position: relative;
+  width: auto;
+  margin: 0 auto;
+  pointer-events: none;
+  width: calc(100% - 2em);
+  max-width: 950px;
+  padding: 0 !important;
+}
+
+.modal.fade .modal-dialog {
+  transition: -webkit-transform 0.3s ease-out;
+  -webkit-transition: -webkit-transform 0.3s ease-out;
+  -o-transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
+  -webkit-transform: translate(0, -25%);
+  -ms-transform: translate(0, -25%);
+    transform: translate(0, -25%);
+}
+
+.modal.show .modal-dialog {
+  -webkit-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+    transform: translate(0, 0);
+}
+
+.modal-dialog-centered {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  min-height: calc(100% - (0.5rem * 2));
+}
+
+.modal-content {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  pointer-events: auto;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  outline: 0;
+  max-width: 100% !important;
+  width: calc(100% - 2em);
+  margin: 0 auto !important;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: #000;
+}
+
+.modal-backdrop.fade {
+  opacity: 0;
+}
+
+.modal-backdrop.show {
+  opacity: 0.5;
+}
+
+.modal-header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+     -ms-flex-align: start;
+  align-items: flex-start;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid #e9ecef;
+  border-top-left-radius: 0.3rem;
+  border-top-right-radius: 0.3rem;
+}
+
+.modal-header .close {
+  padding: 1rem;
+  margin: -1rem -1rem -1rem auto;
+}
+
+.modal-title {
+  margin-bottom: 0;
+  line-height: 1.5;
+  font-size: 1.4rem;
+}
+
+.modal-body {
+  position: relative;
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  padding: 1rem;
+}
+
+.modal-footer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+     -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: end;
+     -ms-flex-pack: end;
+   justify-content: flex-end;
+  padding: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.modal-footer > :not(:first-child) {
+  margin-left: .25rem;
+}
+
+.modal-footer > :not(:last-child) {
+  margin-right: .25rem;
+}
+
+.modal-scrollbar-measure {
+  position: absolute;
+  top: -9999px;
+  width: 50px;
+  height: 50px;
+  overflow: scroll;
+}
+/*
+.modal-dialog {
+  margin: 1.75rem auto;
+}
+.modal-dialog-centered {
+  min-height: calc(100% - (1.75rem * 2));
+ }
+.modal-sm {
+  max-width: 300px;
+}
+*/
+
+/**********************************
+ ********** Improve css ***********
+ **********************************/
+@media only screen and (min-width: 950px)
+{
+  .modal-dialog{ width: 850px; }
+}
+#podfile .row{
+  margin: 10px 10px 5px 10px;
+}
+#podfile .col{
+  padding: 5px;
+  background: white;
+  border: 1px solid rgba(0,0,0,.125);
+}
+#podifle .card-body{
+  padding: 0;
+  font-size: .8rem;
+}
+#podfile .card-img-top {
+  width: 100%;
+  height: 10vh;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+#podifle img.directory-image {
+  height: 26px;
+  vertical-align: middle;
+}
+#podfile a, #podifle .folder_title{
+  font-size: .8rem;
+}
+#podfile .list_folders{
+  padding-left: 15px;
+  max-height:350px;
+  overflow: auto;
+}
+
+#podfile .list_folders .folder_name{
+  max-width: 600px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#podfile #listfiles{
+  max-height:600px;
+  overflow: auto;
+}
+
+/**********************************
+ ********** Overrid css ***********
+ **********************************/
+#modal-folder_id_src .modal-body{
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+#shareModalCenter #shared-people.list-group .list-group-item{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+     -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: center;
+     -ms-flex-align: center;
+        align-items: center;
+  border: 1px solid rgba(0,0,0,.08);
+  padding: .8em;
+}
+#shareModalCenter #shared-people.list-group .list-group-item:not(:last-child){
+  border-bottom: none;
+}
+#shareModalCenter #shared-people.list-group .list-group-item .username{
+  color: var(--gray-dark);
+  font-weight: 700;
+}
+#shareModalCenter #shared-people.list-group .list-group-item .btn-share.btn-remove{
+  -webkit-box-ordinal-group: 2;
+    -ms-flex-order: 1;
+      order: 1;
+  padding: .4em .8em;
+  color: #fff !important;
+  background-color: var(--danger);
+  line-height: 1;
+  -webkit-box-flex: 0;
+    -ms-flex: none;
+      flex: none;
+}
+#shareModalCenter #shareFormName .form-group{position: relative;}
+#shareModalCenter #shareFormName .form-group .form-control{ outline: none !important; -webkit-box-shadow: none !important; box-shadow: none !important;}
+#shareModalCenter #user-search.list-group{
+  padding: .8em 0;
+  width: 400px;
+  max-width: 100%;
+  border: 1px solid rgba(0,0,0,.1);
+  -webkit-box-shadow: 0 8px 10px 4px rgba(0,0,0,.08);
+          box-shadow: 0 8px 10px 4px rgba(0,0,0,.08);
+  position: absolute;
+  top: 100%;
+}
+#shareModalCenter #user-search.list-group .list-group-item{
+  border: none !important;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+     -ms-flex-pack: justify;
+   justify-content: space-between;
+  -webkit-box-align: center;
+     -ms-flex-align: center;
+        align-items: center;
+  padding: .8em;
+  line-height: 1;
+}
+#shareModalCenter #user-search.list-group .list-group-item .btn-share.btn-add{
+  padding: .4em .8em;
+  line-height: 1;
+  -webkit-box-flex: 0;
+    -ms-flex: none;
+      flex: none;
+}
+#shareModalCenter #user-search.list-group .list-group-item .username{
+  font-weight: 700;
+  color: var(--gray);
+}
+
+.modal-header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+     -ms-flex-align: start;
+        align-items: flex-start;
+  -webkit-box-pack: justify;
+     -ms-flex-pack: justify;
+   justify-content: space-between;
+}
+.modal-header .modal-title{
+  color: var(--primary);
+}
+.modal-header .close {
+  margin: 0;
+  color: var(--font-color);
+  opacity: 1;
+  padding: 0;
+  -webkit-transform: translate(10px, -15px);
+    -ms-transform: translate(10px, -15px);
+      transform: translate(10px, -15px);
+}
+.podfilemodal{
+  padding: 0 !important;
+}
+#podfile{
+  position: relative;
+  padding-bottom: 4em;
+  overflow: hidden;
+}
+#podfile > .row{
+  -webkit-box-pack: justify;
+     -ms-flex-pack: justify;
+   justify-content: space-between;
+}
+#podfile #dirs{
+  position: absolute;
+  left: 0;
+  width: calc(100% - 25px);
+  max-width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+      flex-direction: column;
+  opacity: 0;
+  z-index: -1;
+  -webkit-transition: .5s opacity;
+  -o-transition: .5s opacity;
+  transition: .5s opacity;
+  border: none;
+  border-top-right-radius: 4px;
+  -webkit-box-shadow: 5px 0 5px -5px #ccc;
+      box-shadow: 5px 0 5px -5px #ccc;
+}
+#podfile #dirs.open{
+  opacity: 1;
+  z-index: 9;
+}
+#podfile #dirs .close-folder, #podfile #dirs .close-folder svg{
+  width: 30px;
+  color: var(--secondary);
+  cursor: pointer;
+}
+#podfile #dirs .dirs-nav{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+     -ms-flex-pack: justify;
+   justify-content: space-between;
+  -webkit-box-align: center;
+     -ms-flex-align: center;
+        align-items: center;
+  padding-left: 0;
+}
+#podfile #dirs .dirs-nav .dirs-nav-container{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+     -ms-flex-align: center;
+        align-items: center;
+}
+#podfile .list_folders .folder_container:nth-child(2n),
+#podfile .list_folders_sub .folder_container:nth-child(2n) {
+  background-color: #ececec;
+}
+#podfile .list_folders .folder_container,
+#podfile .list_folders_sub .folder_container{padding: .4em;}
+#podfile .list_folders .folder,
+#podfile .list_folders_sub .folder,
+#podfile #dirs .dirs-nav a.folder{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: end;
+    -ms-flex-align: end;
+      align-items: flex-end;
+  margin-right: 1em;
+}
+#podfile .list_folders .folder,
+#podfile .list_folders_sub .folder{ align-items: center;}
+#podfile .list_folders_sub .folder > *,
+#podfile .list_folders .folder > *{flex: none;}
+#podfile #dirs .dirs-nav-container .add-folder-btn{ color: var(--secondary); -webkit-transition: .3s transform; -o-transition: .3s transform; transition: .3s transform; }
+#podfile #dirs .dirs-nav-container .add-folder-btn:hover{ text-decoration: none; -webkit-transform: scale(1.1); -ms-transform: scale(1.1); transform: scale(1.1);}
+
+#podfile .share-folders{ padding-top: .4em; border-top: 2px dotted var(--primary); }
+#podfile .share-folders,
+#podfile #list_folders_sub{ overflow: auto; max-height: 250px; margin-bottom: 1em; }
+#podfile .share-folders .folder_title{ display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; margin-bottom: .4em; color: var(--primary);}
+#podfile .share-folders .home-directory{-webkit-transform: translateY(-8px);-ms-transform: translateY(-8px);transform: translateY(-8px) }
+#podfile #list_folders_sub a.folder:not(.folder-opened) span.folder-open,
+#podfile #list_folders_sub a.folder-opened span#folder-icon
+{ display: none;}
+#podfile #list_folders_sub a.folder:not(.folder-opened) span#folder-icon,
+#podfile #list_folders_sub a.folder.folder-opened span.folder-open
+{ display: inline-block;}
+
+#podfile #dirs .dirs-nav span.home-directory,
+#podfile #dirs .share-folders span.home-directory,
+#podfile #dirs .dirs-nav span.add-folder,
+#podfile .list_folders span#folder-icon,
+#podfile .list_folders span.folder-open
+{
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  margin-right: 8px;
+  color: inherit;
+}
+#podfile #dirs .share-folder span.home-directory{ color: var(--primary); }
+#podfile #dirs .folder-search{
+  border: 1px solid #ccc;
+  font-size: 14px;
+  padding: .4em;
+  color: rgba(0,0,0,.75);
+  margin-top: .8em;
+}
+#podfile #dirs .folder-search::-webkit-input-placeholder{
+  color: rgba(0,0,0,.5);
+  text-transform: capitalize;
+}
+#podfile #dirs .folder-search::-moz-placeholder{
+  color: rgba(0,0,0,.5);
+  text-transform: capitalize;
+}
+#podfile #dirs .folder-search:-ms-input-placeholder{
+  color: rgba(0,0,0,.5);
+  text-transform: capitalize;
+}
+#podfile #dirs .folder-search::-ms-input-placeholder{
+  color: rgba(0,0,0,.5);
+  text-transform: capitalize;
+}
+#podfile #dirs .folder-search::placeholder{
+  color: rgba(0,0,0,.5);
+  text-transform: capitalize;
+}
+#podfile #list_folders_sub .view-more-container{
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+     -ms-flex-align: center;
+        align-items: center;
+  -webkit-box-pack: center;
+     -ms-flex-pack: center;
+   justify-content: center;
+  height: 40px;
+  margin-top: 1em;
+}
+#podfile #list_folders_sub .view-more-container::after{
+  content: "";
+  width: 100%;
+  -webkit-transform: translateY(50%);
+      -ms-transform: translateY(50%);
+          transform: translateY(50%);
+  height: 100%;
+  border-top: 1px solid var(--secondary);
+}
+#podfile #list_folders_sub .view-more-container a#more{
+  text-align: center;
+  padding: .4em 2em;
+  border: 1px solid var(--secondary);
+  width: 50%;
+  margin: 0 auto;
+  border-radius: 4em;
+  z-index: 9;
+  background: white;
+  position: absolute;
+  -webkit-transition: all .2s linear .0s;
+  -o-transition: all .2s linear .0s;
+  transition: all .2s linear .0s;
+  font-weight: 600;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+     -ms-flex-align: center;
+        align-items: center;
+  overflow: hidden;
+}
+#podfile #list_folders_sub .view-more-container a#more:hover{
+  background: var(--secondary);
+  color: #fff !important;
+}
+#podfile #list_folders_sub .view-more-container.loading a#more:hover{
+  background: white;
+  color: var(--secondary);
+}
+#podfile #list_folders_sub .view-more-container a#more .text{
+  -ms-flex-item-align: center;
+   -ms-grid-row-align: center;
+           align-self: center;
+  -webkit-box-flex: 1;
+  -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+#podfile #list_folders_sub .view-more-container.loading .loader{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+#podfile #list_folders_sub .view-more-container .see-more{
+  display: block;
+  position: absolute;
+  width: 15px;
+  left: 15px;
+}
+#podfile .alert-warning{
+  position: relative;
+  color: #856404!important;
+  padding: .4em .8em;
+  padding-right: 25px;
+  text-align: center;
+  border-radius: 4px;
+  font-size: 14px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
     -ms-flex-align: center;
-    align-items: center;
-    min-height: calc(100% - (0.5rem * 2));
+      align-items: center;
+  margin-bottom: .8em;
+}
+#podfile .alert-warning .close{
+  position:absolute;
+  right: 5px;
+  top: 2px;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--gray-dark);
+  cursor: pointer;
+}
+#podfile .alert-warning .warning-icon{
+  display: inline-block;
+  width: 20px;
+  -webkit-transform: translateY(-2px);
+    -ms-transform: translateY(-2px);
+      transform: translateY(-2px);
+  margin-right: 8px;
+}
+#podfile .open-folder{
+  min-height: 400px;
+}
+#podfile .open-folder, #podifle .open-folder svg{
+  width: 30px;
+  cursor: pointer;
+  -webkit-transform: translateX(-10px);
+    -ms-transform: translateX(-10px);
+      transform: translateX(-10px);
+  color: var(--primary);
+}
+#podfile #files{
+  max-width: calc(100% - 30px);
+  z-index: 1;
+  -webkit-box-flex: 0;
+    -ms-flex: none;
+      flex: none;
+  border-top-right-radius: 4px;
+  padding: 0;
+}
+#podfile #files .navbar{
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+     -ms-flex-pack: justify;
+   justify-content: space-between;
+  -webkit-box-align: center;
+     -ms-flex-align: center;
+        align-items: center;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  background: var(--primary);
+  color: var(--white);
+  height: 35px;
+}
+#podfile #files #currentfolder{
+  -webkit-box-flex: unset;
+  -ms-flex-positive: unset;
+          flex-grow: unset;
+  -ms-flex-preferred-size: auto;
+               flex-basis: auto;
+}
+#podfile .current-folder-icon{
+  width: 25px;
+  display: inline-block;
+  -webkit-transform: translateY(-3px);
+    -ms-transform: translateY(-3px);
+      transform: translateY(-3px);
+}
+#podfile #files #currentfolder .delete-folder svg,
+#podfile #files #currentfolder .edit-folder svg,
+#podfile #files #currentfolder .download-file svg,
+#podfile #files #currentfolder .upload-file svg,
+#podfile #files #currentfolder .share-folder svg{
+  width: 20px;
+  display: inline-block;
+  -webkit-transition: .3s color;
+  -o-transition: .3s color;
+  transition: .3s color;
+  height: 20px;
+  color: #fff;
+}
+#podfile #files #currentfolder .share-folder:hover svg,
+#podfile #files #currentfolder .download-file:hover svg,
+#podfile #files #currentfolder .edit-folder:hover svg,
+#podfile #files #currentfolder .delete-folder:hover svg,
+#podfile #files #currentfolder .upload-file:hover svg{ color: var(--secondary); }
+#podfile #files .btn.navbar-toggler{
+  width: 15px;
+  color: #fff;
+  padding: 0;
+  color: #fff;
+  background: transparent !important;
+}
+#podfile #files .navbar-toggler svg{ height: 22px; }
+
+#podfile #currentfolder .nav-item:not(:last-child){margin-right: .8em}
+#podfile #files #currentfolder .edit-folder svg{width: 25px; height: 25px;}
+#podfile #currentfolder .nav-item{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+    -ms-flex-align: center;
+      align-items: center;
+}
+#podfile #currentfolder .nav-item > form{ height: 26px;}
+
+#podfile #currentfolder .nav-item .btn{padding: 0;}
+#podfile .current-folder-name{
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 16px;
+}
+#podfile .flex{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+      flex-direction: column;
+}
+#podfile .list_folders{
+  height: auto;
+  max-height: unset;
+}
+#podfile #listfiles{
+  display: -ms-grid;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-gap: 5px;
+}
+#podfile #files.loading .container-loader{
+  position: relative;
+  margin: 0 auto;
+  margin-top: 4em;
+  width: 75px;
+
+}
+#podfile #files.loading .lds-ellipsis{
+  display: block;
+  -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+      transform: translateX(-50%);
+  width: 75px;
+}
+#podfile #listfiles .empty-folder-warning{
+  grid-column: 1/-1;
+  -ms-grid-row: 10;
+  grid-row: 10;
+  text-align: center;
+  background: #fff3cd;
+  color: #856404;
+  font-weight: 600;
+}
+#podfile #listfiles .navbar-toggler-icon{
+  background: none;
+}
+#podfile #listfiles .col-sm-2{
+  max-width: unset;
+}
+#podfile #listfiles .navbar{
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+     -ms-flex-pack: end;
+   justify-content: flex-end;
+  -webkit-box-align: center;
+     -ms-flex-align: center;
+        align-items: center;
+}
+#podfile #listfiles .card{
+  overflow: unset;
+}
+#podfile #listfiles .file{
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  -webkit-transform: translateY(100%);
+    -ms-transform: translateY(100%);
+      transform: translateY(100%);
+  background: var(--primary);
+  padding: .4em;
+  -webkit-transition: .1s all;
+  -o-transition: .1s all;
+  transition: .1s all;
+}
+#podfile #listfiles .file-navbar{
+  -ms-flex-pack: distribute;
+  justify-content: space-around;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+     -ms-flex-direction: row;
+         flex-direction: row;
+  -webkit-box-align: end;
+     -ms-flex-align: end;
+        align-items: flex-end;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  overflow-y: auto;
+  max-height: 110px;
+}
+#podfile #listfiles .file-navbar .nav-item{
+  width: 25px;
+  display: inline-block;
+  height: 25px;
+  margin: 0 .4em .4em .4em !important;
+}
+#podfile #listfiles .file-navbar .nav-item .edit-file{
+  display: inline-block;
+  width: 24px; height: 24px;
+}
+#podfile #listfiles .file-navbar .nav-item .download-file{
+  display: inline-block;
+  width: 24px; height: 24px;
+}
+#podfile #listfiles .file-navbar .nav-item .delete-file{
+  display: inline-block;
+  width: 22px; height: 22px;
+}
+#podfile #listfiles .file-navbar .nav-item form{
+  height: 100%;
+  width: 100%;
+  margin: 0 !important;
+}
+
+#podfile #listfiles .navbar .btn{
+  background: none;
+  color: #fff;
+  width: 25px;
+  height: 100%;
+  border: none;
+  opacity: 1!important;
+}
+#podfile #listfiles .navbar{
+  background: var(--primary) !important;
+  position: relative;
+}
+#podfile #listfiles .navbar svg{
+  height: 100%;
+}
+
+#podfile #listfiles .card-body{
+  overflow: hidden;
+}
+@media only screen and (max-width: 992px){
+  #podfile #currentfolder{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  -webkit-transform: translateY(100%);
+    -ms-transform: translateY(100%);
+      transform: translateY(100%);
+  max-width: 180px;
+  z-index: 9;
+  -webkit-transition: all .1s linear 0s;
+  -o-transition: all .1s linear 0s;
+  transition: all .1s linear 0s;
   }
-  
-  .modal-content {
-    position: relative;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
+  #podfile #currentfolder .navbar-nav{
+  margin: O !important;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+      flex-direction: row;
+  }
+  #podfile #currentfolder .custom-file label{
+  margin: 0;
+
+  }
+}
+
+@media only screen and (max-width: 550px)
+{
+  #podfile .alert-warning{
     -webkit-box-orient: vertical;
     -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    pointer-events: auto;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    outline: 0;
-    max-width: 100% !important;
-    width: calc(100% - 2em);
-    margin: 0 auto !important;
-  }
-  
-  .modal-backdrop {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1040;
-    background-color: #000;
-  }
-  
-  .modal-backdrop.fade {
-    opacity: 0;
-  }
-  
-  .modal-backdrop.show {
-    opacity: 0.5;
-  }
-  
-  .modal-header {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: start;
-    -ms-flex-align: start;
-    align-items: flex-start;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
-    padding: 1rem;
-    border-bottom: 1px solid #e9ecef;
-    border-top-left-radius: 0.3rem;
-    border-top-right-radius: 0.3rem;
-  }
-  
-  .modal-header .close {
-    padding: 1rem;
-    margin: -1rem -1rem -1rem auto;
-  }
-  
-  .modal-title {
-    margin-bottom: 0;
-    line-height: 1.5;
-    font-size: 1.4rem;
-  }
-  
-  .modal-body {
-    position: relative;
-    -webkit-box-flex: 1;
-    -ms-flex: 1 1 auto;
-    flex: 1 1 auto;
-    padding: 1rem;
-  }
-  
-  .modal-footer {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-pack: end;
-    -ms-flex-pack: end;
-    justify-content: flex-end;
-    padding: 1rem;
-    border-top: 1px solid #e9ecef;
-  }
-  
-  .modal-footer > :not(:first-child) {
-    margin-left: .25rem;
-  }
-  
-  .modal-footer > :not(:last-child) {
-    margin-right: .25rem;
-  }
-  
-  .modal-scrollbar-measure {
-    position: absolute;
-    top: -9999px;
-    width: 50px;
-    height: 50px;
-    overflow: scroll;
-  }
-  /*
-  .modal-dialog {
-      margin: 1.75rem auto;
-  }
-  .modal-dialog-centered {
-      min-height: calc(100% - (1.75rem * 2));
-   }
-  .modal-sm {
-      max-width: 300px;
-  }
-  */
-  
-  /**********************************
-   ********** Improve css ***********
-   **********************************/
-  @media only screen and (min-width: 950px)
-  {
-      .modal-dialog{ width: 850px; }
-  }
-  #podfile .row{
-      margin: 10px 10px 5px 10px;
-  }
-  #podfile .col{
-      padding: 5px;
-      background: white;
-      border: 1px solid rgba(0,0,0,.125);
-  }
-  #podifle .card-body{
-      padding:0;
-      font-size: .8rem;
-  }
-  #podfile .card-img-top {
-      width: 100%;
-      height: 10vh;
-      -o-object-fit: cover;
-         object-fit: cover;
-  }
-  #podifle img.directory-image {
-      height: 26px;
-      vertical-align: middle;
-  }
-  #podfile a, #podifle .folder_title{
-      font-size: .8rem;
-  }
-  #podfile .list_folders{
-      padding-left: 15px;
-      max-height:350px;
-      overflow: auto;
-  }
-  
-  #podfile .list_folders .folder_name{
-    max-width: 600px;
-    display: inline-block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  #podfile #listfiles{
-      max-height:600px;
-      overflow: auto;
-  }
-  
-  /**********************************
-   ********** Overrid css ***********
-   **********************************/
-  #modal-folder_id_src .modal-body{ 
-      padding-top: 0 !important;
-      padding-bottom: 0 !important; 
-  }
-  #shareModalCenter #shared-people.list-group .list-group-item{
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-pack: justify;
-          -ms-flex-pack: justify;
-              justify-content: space-between;
-      -webkit-box-align: center;
-          -ms-flex-align: center;
-              align-items: center;
-      border: 1px solid rgba(0,0,0,.08);
-      padding: .8em;
-  }
-  #shareModalCenter #shared-people.list-group .list-group-item:not(:last-child){
-      border-bottom: none;
-  }
-  #shareModalCenter #shared-people.list-group .list-group-item .username{
-      color: var(--gray-dark);
-      font-weight: 700;
-  }
-  #shareModalCenter #shared-people.list-group .list-group-item .btn-share.btn-remove{
-      -webkit-box-ordinal-group: 2;
-          -ms-flex-order: 1;
-              order: 1;
-      padding: .4em .8em;
-      color: #fff !important;
-      background-color: var(--danger);
-      line-height: 1;
-      -webkit-box-flex: 0;
-          -ms-flex: none;
-              flex: none;
-  }
-  #shareModalCenter #shareFormName .form-group{position: relative;}
-  #shareModalCenter #shareFormName .form-group .form-control{ outline: none !important; -webkit-box-shadow: none !important; box-shadow: none !important;}
-  #shareModalCenter #user-search.list-group{
-      padding: .8em 0;
-      width: 400px;
-      max-width: 100%;
-      border: 1px solid rgba(0,0,0,.1);
-      -webkit-box-shadow: 0px 8px 10px 4px rgba(0,0,0,.08);
-              box-shadow: 0px 8px 10px 4px rgba(0,0,0,.08);
-      position: absolute;
-      top: 100%;
-  }
-  #shareModalCenter #user-search.list-group .list-group-item{
-      border: none !important;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-pack: justify;
-          -ms-flex-pack: justify;
-              justify-content: space-between;
-      -webkit-box-align: center;
-          -ms-flex-align: center;
-              align-items: center;
-      padding: .8em;
-      line-height: 1;
-  }
-  #shareModalCenter #user-search.list-group .list-group-item .btn-share.btn-add{
-      padding: .4em .8em;
-      line-height: 1;
-      -webkit-box-flex: 0;
-          -ms-flex: none;
-              flex: none;
-  }
-  #shareModalCenter #user-search.list-group .list-group-item .username{
-      font-weight: 700;
-      color: var(--gray);
-  }
-  
-  .modal-header {
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-align: start;
-          -ms-flex-align: start;
-              align-items: flex-start;
-      -webkit-box-pack: justify;
-          -ms-flex-pack: justify;
-              justify-content: space-between;
-  }
-  .modal-header .modal-title{
-      color: var(--primary);
-  }
-  .modal-header .close {
-      margin: 0;
-      color: var(--primary);
-      opacity: 1;
-      padding: 0;
-      -webkit-transform: translate(10px, -15px);
-          -ms-transform: translate(10px, -15px);
-              transform: translate(10px, -15px);
-  }
-  .podfilemodal{
-      padding: 0 !important;
-  }
-  #podfile{
-      position: relative;
-      padding-bottom: 4em;
-      overflow: hidden;
-  }
-  #podfile > .row{
-     -webkit-box-pack: justify;
-         -ms-flex-pack: justify;
-             justify-content: space-between;
-  }
-  #podfile #dirs{
-      position: absolute;
-      left: 0;
-      width: calc(100% - 25px);
-      max-width: 100%;
-      height: 100%;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-orient: vertical;
-      -webkit-box-direction: normal;
-          -ms-flex-direction: column;
-              flex-direction: column;
-      opacity: 0;
-      z-index: -1;
-      -webkit-transition: .5s opacity;
-      -o-transition: .5s opacity;
-      transition: .5s opacity;
-      border: none;
-      border-top-right-radius: 4px;
-      -webkit-box-shadow: 5px 0 5px -5px #ccc;
-              box-shadow: 5px 0 5px -5px #ccc;
-  }
-  #podfile #dirs.open{
-      opacity: 1;
-      z-index: 9;
-  }
-  #podfile #dirs .close-folder, #podfile #dirs .close-folder svg{
-      width: 30px;
-      color: var(--secondary);
-      cursor: pointer;
-  }
-  #podfile #dirs .dirs-nav{
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-pack: justify;
-          -ms-flex-pack: justify;
-              justify-content: space-between;
-      -webkit-box-align: center;
-          -ms-flex-align: center;
-              align-items: center;
-      padding-left: 0;
+      -ms-flex-direction: column;
+        flex-direction: column;
+  line-height: 1.2;
   }
   #podfile #dirs .dirs-nav .dirs-nav-container{
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-align: center;
-          -ms-flex-align: center;
-              align-items: center;
-  }
-  #podfile .list_folders .folder_container:nth-child(2n),
-  #podfile .list_folders_sub .folder_container:nth-child(2n) {
-    background-color: #ececec;
-  }
-  #podfile .list_folders .folder_container,
-  #podfile .list_folders_sub .folder_container{padding: .4em;}
-  #podfile .list_folders .folder,
-  #podfile .list_folders_sub .folder,
-  #podfile #dirs .dirs-nav a.folder{
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-align: end;
-          -ms-flex-align: end;
-              align-items: flex-end;
-      margin-right: 1em;
-  }
-  #podfile .list_folders .folder,
-  #podfile .list_folders_sub .folder{ align-items: center;}
-  #podfile .list_folders_sub .folder > *,
-  #podfile .list_folders .folder > *{flex: none;}
-  #podfile #dirs .dirs-nav-container .add-folder-btn{ color: var(--secondary); -webkit-transition: .3s transform; -o-transition: .3s transform; transition: .3s transform; }
-  #podfile #dirs .dirs-nav-container .add-folder-btn:hover{ text-decoration: none; -webkit-transform: scale(1.1); -ms-transform: scale(1.1); transform: scale(1.1);}
-  
-  #podfile .share-folders{ padding-top: .4em; border-top: 2px dotted var(--primary); }
-  #podfile .share-folders,
-  #podfile #list_folders_sub{ overflow: auto; max-height: 250px; margin-bottom: 1em; }
-  #podfile .share-folders .folder_title{ display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; margin-bottom: .4em; color: var(--primary);}
-  #podfile .share-folders .home-directory{-webkit-transform: translateY(-8px);-ms-transform: translateY(-8px);transform: translateY(-8px) }
-  #podfile #list_folders_sub a.folder:not(.folder-opened) span.folder-open,
-  #podfile #list_folders_sub a.folder-opened span#folder-icon
-  { display: none;}
-  #podfile #list_folders_sub a.folder:not(.folder-opened) span#folder-icon,
-  #podfile #list_folders_sub a.folder.folder-opened span.folder-open
-  { display: inline-block;}
-  
-  #podfile #dirs .dirs-nav span.home-directory,
-  #podfile #dirs .share-folders span.home-directory,
-  #podfile #dirs .dirs-nav span.add-folder,
-  #podfile .list_folders span#folder-icon,
-  #podfile .list_folders span.folder-open
-  {
-      display: inline-block;
-      width: 22px;
-      height: 22px;
-      margin-right: 8px;
-      color: inherit;
-  }
-  #podfile #dirs .share-folder span.home-directory{ color: var(--primary); }
-  #podfile #dirs .folder-search{
-      border: 1px solid #ccc;
-      font-size: 14px;
-      padding: .4em;
-      color: rgba(0,0,0,.75);
-      margin-top: .8em;
-  }
-  #podfile #dirs .folder-search::-webkit-input-placeholder{
-      color: rgba(0,0,0,.5);
-      text-transform: capitalize;
-  }
-  #podfile #dirs .folder-search::-moz-placeholder{
-      color: rgba(0,0,0,.5);
-      text-transform: capitalize;
-  }
-  #podfile #dirs .folder-search:-ms-input-placeholder{
-      color: rgba(0,0,0,.5);
-      text-transform: capitalize;
-  }
-  #podfile #dirs .folder-search::-ms-input-placeholder{
-      color: rgba(0,0,0,.5);
-      text-transform: capitalize;
-  }
-  #podfile #dirs .folder-search::placeholder{
-      color: rgba(0,0,0,.5);
-      text-transform: capitalize;
-  }
-  #podfile #list_folders_sub .view-more-container{
-      position: relative;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-align: center;
-          -ms-flex-align: center;
-              align-items: center;
-      -webkit-box-pack: center;
-          -ms-flex-pack: center;
-              justify-content: center;
-      height: 40px;
-      margin-top: 1em;
-  }
-  #podfile #list_folders_sub .view-more-container::after{
-      content: "";
-      width: 100%;
-      -webkit-transform: translateY(50%);
-          -ms-transform: translateY(50%);
-              transform: translateY(50%);
-      height: 100%;
-      border-top: 1px solid var(--secondary);
-  }
-  #podfile #list_folders_sub .view-more-container a#more{
-      text-align: center;
-      padding: .4em 2em;
-      border: 1px solid var(--secondary);
-      width: 50%;
-      margin: 0 auto;
-      border-radius: 4em;
-      z-index: 9;
-      background: white;
-      position: absolute;
-      -webkit-transition: all .2s linear .0s;
-      -o-transition: all .2s linear .0s;
-      transition: all .2s linear .0s;
-      font-weight: 600;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-align: center;
-          -ms-flex-align: center;
-              align-items: center;
-      overflow: hidden;
-  }
-  #podfile #list_folders_sub .view-more-container a#more:hover{
-      background: var(--secondary);
-      color: #fff !important;
-  }
-  #podfile #list_folders_sub .view-more-container.loading a#more:hover{
-      background: white;
-      color: var(--secondary);
-  }
-  #podfile #list_folders_sub .view-more-container a#more .text{
-      -ms-flex-item-align: center;
-          -ms-grid-row-align: center;
-          align-self: center;
-      -webkit-box-flex: 1;
-          -ms-flex-positive: 1;
-              flex-grow: 1;
-  }
-  #podfile #list_folders_sub .view-more-container.loading .loader{
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-  }
-  #podfile #list_folders_sub .view-more-container .see-more{
-      display: block;
-      position: absolute;
-      width: 15px;
-      left: 15px;
-  }
-  #podfile .alert-warning{
-      position: relative;
-      color: #856404!important;
-      padding: .4em .8em;
-      padding-right: 25px;
-      text-align: center;
-      border-radius: 4px;
-      font-size: 14px;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-align: center;
-          -ms-flex-align: center;
-              align-items: center;
-      margin-bottom: .8em;
-  }
-  #podfile .alert-warning .close{
-      position:absolute;
-      right: 5px;
-      top: 2px;
-      font-size: 20px;
-      font-weight: 900;
-      color: var(--gray-dark);
-      cursor: pointer;
-  }
-  #podfile .alert-warning .warning-icon{
-      display: inline-block;
-      width: 20px;
-      -webkit-transform: translateY(-2px);
-          -ms-transform: translateY(-2px);
-              transform: translateY(-2px);
-      margin-right: 8px;
-  }
-  #podfile .open-folder{
-      min-height: 400px;
-  }
-  #podfile .open-folder, #podifle .open-folder svg{
-      width: 30px;
-      cursor: pointer;
-      -webkit-transform: translateX(-10px);
-          -ms-transform: translateX(-10px);
-              transform: translateX(-10px);
-      color: var(--primary);
-  }
-  #podfile #files{
-      max-width: calc(100% - 30px);
-      z-index: 1;
-      -webkit-box-flex: 0;
-          -ms-flex: none;
-              flex: none;
-      border-top-right-radius: 4px;
-      padding: 0;
-  }
-  #podfile #files .navbar{
-      position: relative;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-pack: justify;
-          -ms-flex-pack: justify;
-              justify-content: space-between;
-      -webkit-box-align: center;
-          -ms-flex-align: center;
-              align-items: center;
-      -ms-flex-wrap: nowrap;
-          flex-wrap: nowrap;
-      background: var(--primary) !important;
-      height: 35px;
-  }
-  #podfile #files #currentfolder{
-      -webkit-box-flex: unset;
-          -ms-flex-positive: unset;
-              flex-grow: unset;
-      -ms-flex-preferred-size: auto;
-          flex-basis: auto;
-  }
-  #podfile .current-folder-icon{
-      width: 25px;
-      display: inline-block;
-      -webkit-transform: translateY(-3px);
-          -ms-transform: translateY(-3px);
-              transform: translateY(-3px);
-  }
-  #podfile #files #currentfolder .delete-folder svg,
-  #podfile #files #currentfolder .edit-folder svg,
-  #podfile #files #currentfolder .download-file svg,
-  #podfile #files #currentfolder .upload-file svg,
-  #podfile #files #currentfolder .share-folder svg{
-      width: 20px;
-      display: inline-block;
-      -webkit-transition: .3s color;
-      -o-transition: .3s color;
-      transition: .3s color;
-      height: 20px;
-      color: #fff;
-  }
-  #podfile #files #currentfolder .share-folder:hover svg,
-  #podfile #files #currentfolder .download-file:hover svg,
-  #podfile #files #currentfolder .edit-folder:hover svg,
-  #podfile #files #currentfolder .delete-folder:hover svg,
-  #podfile #files #currentfolder .upload-file:hover svg{ color: var(--secondary); }
-  #podfile #files .btn.navbar-toggler{
-    width: 15px;
-    color: #fff;
-    padding: 0;
-    color: #fff;
-    background: transparent !important;
-  }
-  #podfile #files .navbar-toggler svg{ height: 22px; }
-  
-  #podfile #currentfolder .nav-item:not(:last-child){margin-right: .8em}
-  #podfile #files #currentfolder .edit-folder svg{width: 25px; height: 25px;}
-  #podfile #currentfolder .nav-item{
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-align: center;
-          -ms-flex-align: center;
-              align-items: center;
-  }
-  #podfile #currentfolder .nav-item > form{ height: 26px;}
-  
-  #podfile #currentfolder .nav-item .btn{padding: 0;}
-  #podfile .current-folder-name{
-      font-weight: 700;
-      text-transform: uppercase;
-      font-size: 16px;
-  }
-  #podfile .flex{
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-orient: vertical;
-      -webkit-box-direction: normal;
-          -ms-flex-direction: column;
-              flex-direction: column;
-  }
-  #podfile .list_folders{
-      height: auto;
-      max-height: unset;
-  }
-  #podfile #listfiles{
-      display: -ms-grid;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      grid-gap: 5px;
-  }
-  #podfile #files.loading .container-loader{
-      position: relative;
-      margin: 0 auto;
-      margin-top: 4em;
-      width: 75px;
-  
-  }
-  #podfile #files.loading .lds-ellipsis{
-      display: block;
-      -webkit-transform: translateX(-50%);
-          -ms-transform: translateX(-50%);
-              transform: translateX(-50%);
-      width: 75px;
-  }
-  #podfile #listfiles .empty-folder-warning{
-      grid-column: 1/-1;
-      -ms-grid-row: 10;
-      grid-row: 10;
-      text-align: center;
-      background: #fff3cd;
-      color: #856404;
-      font-weight: 600;
-  }
-  #podfile #listfiles .navbar-toggler-icon{
-      background: none;
-  }
-  #podfile #listfiles .col-sm-2{
-      max-width: unset;
-  }
-  #podfile #listfiles .navbar{
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-pack: end;
-          -ms-flex-pack: end;
-              justify-content: flex-end;
-      -webkit-box-align: center;
-          -ms-flex-align: center;
-              align-items: center;
-  }
-  #podfile #listfiles .card{
-      overflow: unset;
-  }
-  #podfile #listfiles .file{
-      position: absolute;
-      bottom: 4px;
-      left: 0;
-      right: 0;
-      -webkit-transform: translateY(100%);
-          -ms-transform: translateY(100%);
-              transform: translateY(100%);
-      background: var(--primary);
-      padding: .4em;
-      -webkit-transition: .1s all;
-      -o-transition: .1s all;
-      transition: .1s all;
-  }
-  #podfile #listfiles .file-navbar{
-      -ms-flex-pack: distribute;
-          justify-content: space-around;
-      -webkit-box-orient: horizontal;
-      -webkit-box-direction: normal;
-          -ms-flex-direction: row;
-              flex-direction: row;
-      -webkit-box-align: end;
-          -ms-flex-align: end;
-              align-items: flex-end;
-      -ms-flex-wrap: wrap;
-          flex-wrap: wrap;
-      overflow-y: auto;
-      max-height: 110px;
-  }
-  #podfile #listfiles .file-navbar .nav-item{
-      width: 25px;
-      display: inline-block;
-      height: 25px;
-      margin: 0 .4em .4em .4em !important;
-  }
-  #podfile #listfiles .file-navbar .nav-item .edit-file{ 
-      display: inline-block;
-      width: 24px; height: 24px; 
-  }
-  #podfile #listfiles .file-navbar .nav-item .download-file{
-      display: inline-block;
-      width: 24px; height: 24px;
-  }
-  #podfile #listfiles .file-navbar .nav-item .delete-file{
-      display: inline-block;
-      width: 22px; height: 22px;
-  }
-  #podfile #listfiles .file-navbar .nav-item form{
-      height: 100%;
-      width: 100%;
-      margin: 0 !important;
-  }
-  
-  #podfile #listfiles .navbar .btn{
-      background: none;
-      color: #fff;
-      width: 25px;
-      height: 100%;
-      border: none;
-      opacity: 1!important;
-  }
-  #podfile #listfiles .navbar{
-      background: var(--primary) !important;
-      position: relative;
-  }
-  #podfile #listfiles .navbar svg{
-      height: 100%;
-  }
-  
-  #podfile #listfiles .card-body{
-      overflow: hidden;
-  }
-  @media only screen and (max-width: 992px){
-      #podfile #currentfolder{
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      -webkit-transform: translateY(100%);
-          -ms-transform: translateY(100%);
-              transform: translateY(100%);
-      max-width: 180px;
-      z-index: 9;
-      -webkit-transition: all .1s linear 0s;
-      -o-transition: all .1s linear 0s;
-      transition: all .1s linear 0s;
-      }
-      #podfile #currentfolder .navbar-nav{
-      margin: O !important;
-      width: 100%;
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-orient: horizontal;
-      -webkit-box-direction: normal;
-          -ms-flex-direction: row;
-              flex-direction: row;
-      }
-      #podfile #currentfolder .custom-file label{
-      margin: 0;
-  
-      }
-  }
-  
-  @media only screen and (max-width: 550px)
-  {
-      #podfile .alert-warning{
-          -webkit-box-orient: vertical;
-          -webkit-box-direction: normal;
-              -ms-flex-direction: column;
-                  flex-direction: column;
-      line-height: 1.2;
-      }
-      #podfile #dirs .dirs-nav .dirs-nav-container{
-          -webkit-box-orient: vertical;
-          -webkit-box-direction: normal;
-              -ms-flex-direction: column;
-                  flex-direction: column;
-      -webkit-box-align: start;
-          -ms-flex-align: start;
-              align-items: flex-start;
-      }
-      #podfile #dirs .dirs-nav .dirs-nav-container .add-folder-btn{
-          padding-left: 0;
-          margin-left: 0;	
-      }
-  }
-  
-  /*** Loader CSS ***/
-  .lds-ellipsis {
-    display: none;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    z-index: 9;
-  }
-  .lds-ellipsis div {
-    position: absolute;
-    width: 13px;
-    height: 13px;
-    border-radius: 50%;
-    background: var(--secondary);
-    -webkit-animation-timing-function: cubic-bezier(0, 1, 1, 0);
-            animation-timing-function: cubic-bezier(0, 1, 1, 0);
-  }
-  .lds-ellipsis div:nth-child(1) {
-    left: 8px;
-    -webkit-animation: lds-ellipsis1 0.6s infinite;
-            animation: lds-ellipsis1 0.6s infinite;
-  }
-  .lds-ellipsis div:nth-child(2) {
-    left: 8px;
-    -webkit-animation: lds-ellipsis2 0.6s infinite;
-            animation: lds-ellipsis2 0.6s infinite;
-  }
-  .lds-ellipsis div:nth-child(3) {
-    left: 32px;
-    -webkit-animation: lds-ellipsis2 0.6s infinite;
-            animation: lds-ellipsis2 0.6s infinite;
-  }
-  .lds-ellipsis div:nth-child(4) {
-    left: 56px;
-    -webkit-animation: lds-ellipsis3 0.6s infinite;
-            animation: lds-ellipsis3 0.6s infinite;
-  }
-  @-webkit-keyframes lds-ellipsis1 {
-    0% {
-      -webkit-transform: scale(0);
-              transform: scale(0);
-    }
-    100% {
-      -webkit-transform: scale(1);
-              transform: scale(1);
-    }
-  }
-  @keyframes lds-ellipsis1 {
-    0% {
-      -webkit-transform: scale(0);
-              transform: scale(0);
-    }
-    100% {
-      -webkit-transform: scale(1);
-              transform: scale(1);
-    }
-  }
-  @-webkit-keyframes lds-ellipsis3 {
-    0% {
-      -webkit-transform: scale(1);
-              transform: scale(1);
-    }
-    100% {
-      -webkit-transform: scale(0);
-              transform: scale(0);
-    }
-  }
-  @keyframes lds-ellipsis3 {
-    0% {
-      -webkit-transform: scale(1);
-              transform: scale(1);
-    }
-    100% {
-      -webkit-transform: scale(0);
-              transform: scale(0);
-    }
-  }
-  @-webkit-keyframes lds-ellipsis2 {
-    0% {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    100% {
-      -webkit-transform: translate(24px, 0);
-              transform: translate(24px, 0);
-    }
-  }
-  @keyframes lds-ellipsis2 {
-    0% {
-      -webkit-transform: translate(0, 0);
-              transform: translate(0, 0);
-    }
-    100% {
-      -webkit-transform: translate(24px, 0);
-              transform: translate(24px, 0);
-    }
-  }
-  
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+        flex-direction: column;
+  -webkit-box-align: start;
+    -ms-flex-align: start;
+      align-items: flex-start;
+  }
+  #podfile #dirs .dirs-nav .dirs-nav-container .add-folder-btn{
+    padding-left: 0;
+    margin-left: 0;
+  }
+}
+
+/*** Loader CSS ***/
+.lds-ellipsis {
+  display: none;
+  -webkit-box-align: center;
+    -ms-flex-align: center;
+      align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  z-index: 9;
+}
+.lds-ellipsis div {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--secondary);
+  -webkit-animation-timing-function: cubic-bezier(0, 1, 1, 0);
+      animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  -webkit-animation: lds-ellipsis1 0.6s infinite;
+      animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  -webkit-animation: lds-ellipsis2 0.6s infinite;
+      animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  -webkit-animation: lds-ellipsis2 0.6s infinite;
+      animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  -webkit-animation: lds-ellipsis3 0.6s infinite;
+      animation: lds-ellipsis3 0.6s infinite;
+}
+@-webkit-keyframes lds-ellipsis1 {
+  0% {
+  -webkit-transform: scale(0);
+      transform: scale(0);
+  }
+  100% {
+  -webkit-transform: scale(1);
+      transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis1 {
+  0% {
+  -webkit-transform: scale(0);
+      transform: scale(0);
+  }
+  100% {
+  -webkit-transform: scale(1);
+      transform: scale(1);
+  }
+}
+@-webkit-keyframes lds-ellipsis3 {
+  0% {
+  -webkit-transform: scale(1);
+      transform: scale(1);
+  }
+  100% {
+  -webkit-transform: scale(0);
+      transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+  -webkit-transform: scale(1);
+      transform: scale(1);
+  }
+  100% {
+  -webkit-transform: scale(0);
+      transform: scale(0);
+  }
+}
+@-webkit-keyframes lds-ellipsis2 {
+  0% {
+  -webkit-transform: translate(0, 0);
+      transform: translate(0, 0);
+  }
+  100% {
+  -webkit-transform: translate(24px, 0);
+      transform: translate(24px, 0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+  -webkit-transform: translate(0, 0);
+      transform: translate(0, 0);
+  }
+  100% {
+  -webkit-transform: translate(24px, 0);
+      transform: translate(24px, 0);
+  }
+}
+
