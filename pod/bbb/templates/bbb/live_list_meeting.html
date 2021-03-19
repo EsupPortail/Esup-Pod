@@ -3,31 +3,30 @@
 {% load staticfiles %}
 
 {% block page_extra_head %}
-<script type="text/javascript">
-window.setInterval("location.reload(true)",30000);
-</script>
+  <script type="text/javascript">
+    window.setInterval("location.reload(true)",30000);
+  </script>
 {% endblock %}
 
 {% block breadcrumbs %}{{ block.super }} 
-	{% if USE_BBB_LIVE %}	
-		<li class="breadcrumb-item" aria-current="page"><a href="{% url 'bbb:list_meeting' %}" title="{% trans 'My BigBlueButton records and lives' %}">{% trans 'My BigBlueButton records and lives' %}</a></li>
-	{% else %}
-		<li class="breadcrumb-item" aria-current="page"><a href="{% url 'bbb:list_meeting' %}" title="{% trans 'My BigBlueButton records' %}">{% trans 'My BigBlueButton records' %}</a></li>
-	{% endif %}
-	<li class="breadcrumb-item active" aria-current="page">{% trans 'Perform a BigBlueButton live' %}</li>
+  {% if USE_BBB_LIVE %}	
+    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'bbb:list_meeting' %}" title="{% trans 'My BigBlueButton records and lives' %}">{% trans 'My BigBlueButton records and lives' %}</a></li>
+  {% else %}
+    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'bbb:list_meeting' %}" title="{% trans 'My BigBlueButton records' %}">{% trans 'My BigBlueButton records' %}</a></li>
+  {% endif %}
+  <li class="breadcrumb-item active" aria-current="page">{% trans 'Perform a BigBlueButton live' %}</li>
 {% endblock %}
 
 {% block page_title %}
-	{% trans 'Perform a BigBlueButton live' %}
+  {% trans 'Perform a BigBlueButton live' %}
 {% endblock %}
 
 {% block page_content %}
-
   <h3>{% trans "Perform a BigBlueButton live" %}</h3>
   {% if records.paginator.count == 0 %}
-	<h5>{% trans "No BigBlueButton session in progress found"%}</h5>
+	<h4>{% trans "No BigBlueButton session in progress found"%}</h4>
   {% else %}
-	<h5>{% blocktrans count counter=records.paginator.count %}{{ counter }} BigBlueButton session in progress found{% plural %}{{ counter }} BigBlueButton sessions in progress found{% endblocktrans %}</h5>
+	<h4>{% blocktrans count counter=records.paginator.count %}{{ counter }} BigBlueButton session in progress found{% plural %}{{ counter }} BigBlueButton sessions in progress found{% endblocktrans %}</h4>
   {% endif %}
 	
   {% trans "This is the list of current BigBlueButton sessions for which you are moderator. This module allows you to make a live stream from this BigBlueButton session (<i>useful if there are more than 100 users</i>)." %}
@@ -40,31 +39,8 @@ window.setInterval("location.reload(true)",30000);
   {% else %}
 	{% include "bbb/live_record_list.html" %}
   {% endif %}
-  
-<!--
-  <div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	  <div class="modal-dialog modal-xl" style="max-width:1440px"role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<h2 class="modal-title" id="exampleModalLabel">{% trans "BigBlueButton presentation preview" %}</h2>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-			<center>
-				<iframe id="iframeBBB" src="" width="640" height="360" style="padding: 0; margin: 0 auto; border:0" allowfullscreen ></iframe>
-			</center>
-		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
-		  </div>
-		</div>
-	  </div>
-  </div>
--->
-  <small class="form-text text-muted"><i>{% trans "Please note: this page refreshes automatically every 30 seconds." %}</i></small>
 
+  <small class="form-text text-muted"><i>{% trans "Please note: this page refreshes automatically every 30 seconds." %}</i></small>
 {% endblock page_content %}
 
 {% block collapse_page_aside %}
@@ -99,9 +75,5 @@ window.setInterval("location.reload(true)",30000);
       });
     }
   });
-
-$('.previewBtn').on('click', function (e) {
-	$('#iframeBBB').attr('src', $(this).data("recid"));
-})
 </script>
 {% endblock more_script %}

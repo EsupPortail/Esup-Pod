@@ -15,10 +15,10 @@ body {
 
 {% block breadcrumbs %}{{ block.super }} 
 	<li class="breadcrumb-item" aria-current="page">
-		<a href="{% url 'bbb:list_meeting' %}" title="{% trans 'My BigBlueButton records and lives' %}">{% trans 'My BigBlueButton records and lives' %}</a>
+		<a href="{% url 'bbb:list_meeting' %}">{% trans 'My BigBlueButton records and lives' %}</a>
 	</li>
 	<li class="breadcrumb-item" aria-current="page">
-		<a  href="{% url 'bbb:live_list_meeting' %}" title="{% trans 'Perform a BigBlueButton live' %}">{% trans 'Perform a BigBlueButton live' %}</a>
+		<a  href="{% url 'bbb:live_list_meeting' %}">{% trans 'Perform a BigBlueButton live' %}</a>
 	</li>
 	<li class="breadcrumb-item active" aria-current="page">{% trans "Publish the BigBlueButton presentation" %}</li>
 {% endblock %}

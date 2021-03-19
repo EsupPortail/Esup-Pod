@@ -3,65 +3,64 @@
 
 {% block page_extra_head %}
   <style>
-	.card-body {
-		padding-top:  4em !important;
-		padding-bottom:  4em !important;
-		text-align: center;
-	}
-	/*** CARD ***/
-	.infinite-item .card-body {
-		height: 13rem;
-	}
+    .card-body {
+    padding-top:  4em !important;
+    padding-bottom:  4em !important;
+    text-align: center;
+  }
+  /*** CARD ***/
+  .infinite-item .card-body {
+    height: 13rem;
+  }
   </style>
 {% endblock page_extra_head %}
 
 <div class="card mb-4 box-shadow border-secondary">
-    <div class="card-header" style="">
-        <div class="d-flex justify-content-between align-items-center" style="min-height: 2.4rem;">
-            <small class="text-muted time">{{record.meeting_name}} ({{ record.session_date }})</small>
-        </div>
+  <div class="card-header">
+    <div class="d-flex justify-content-between align-items-center" style="min-height: 2.4rem;">
+      <small class="text-muted time">{{record.meeting_name}} ({{ record.session_date }})</small>
     </div>
-	<div class="card-body">
-		<div class="d-flex align-items-center">
-			{% if not record.live %}
-				<span style="width: 100%; height:96px;">
-					<br/>
-					{% if not max_limit_reached %}
-						<a href="{% url 'bbb:live_publish_meeting' id=record.id %}" title="{% trans "Perform a BigBlueButton live"%}" class="p-0 m-0 btn btn-primary btn-sm pl-1">
-							{% trans "Perform a BigBlueButton live"%}
-						</a>
-					{% else %}
-						<span data-feather="alert-triangle" style="color: Darkred;"></span> {% trans "Impossible to perform a BigBlueButton live for the moment (all resources are busy)"%}
-					{% endif %}
-				</span>
-			{% else %}
-				{% if record.live.status == 0 %}
-					<span data-feather="loader" style="width: 100%; height:96px;"></span>
-				{% endif %}
-				{% if record.live.status == 1 %}
-					<span data-feather="play-circle" style="width: 100%; height:96px;"></span>
-				{% endif %}
-				{% if record.live.status == 2 %}
-					<span data-feather="stop-circle" style="width: 100%; height:96px;"></span>
-				{% endif %}
-			{% endif %}
-		</div>
-		<footer class="card-footer p-0 m-1">
-			{% if not record.live %}
-				<small class="form-text text-muted">{% trans "Live not published"%}</small>
-			{% else %}
-				{% if record.live.status == 0 %}
-					<small class="form-text text-muted">{% trans "Live not already started"%}</small>
-				{% endif %}
-				{% if record.live.status == 1 %}
-					<small class="form-text text-muted">{% trans "Live in progress"%}</small>
-				{% endif %}
-				{% if record.live.status == 2 %}
-					<small class="form-text text-muted">{% trans "Live stopped"%}</small>
-				{% endif %}
-			{% endif %}
-		</footer>
-	
-	</div>
+  </div>
+  <div class="card-body">
+    <div class="d-flex align-items-center">
+      {% if not record.live %}
+        <span style="width: 100%; height:96px;">
+          <br/>
+          {% if not max_limit_reached %}
+            <a href="{% url 'bbb:live_publish_meeting' id=record.id %}" title="{% trans "Perform a BigBlueButton live"%}" class="p-0 m-0 btn btn-primary btn-sm pl-1">
+              {% trans "Perform a BigBlueButton live"%}
+            </a>
+          {% else %}
+            <span data-feather="alert-triangle" style="color: Darkred;"></span> {% trans "Impossible to perform a BigBlueButton live for the moment (all resources are busy)"%}
+          {% endif %}
+        </span>
+      {% else %}
+        {% if record.live.status == 0 %}
+          <span data-feather="loader" style="width: 100%; height:96px;"></span>
+        {% endif %}
+        {% if record.live.status == 1 %}
+          <span data-feather="play-circle" style="width: 100%; height:96px;"></span>
+        {% endif %}
+        {% if record.live.status == 2 %}
+          <span data-feather="stop-circle" style="width: 100%; height:96px;"></span>
+        {% endif %}
+      {% endif %}
+    </div>
+    <footer class="card-footer p-0 m-1">
+      {% if not record.live %}
+        <small class="form-text text-muted">{% trans "Live not published"%}</small>
+      {% else %}
+        {% if record.live.status == 0 %}
+          <small class="form-text text-muted">{% trans "Live not already started"%}</small>
+        {% endif %}
+        {% if record.live.status == 1 %}
+          <small class="form-text text-muted">{% trans "Live in progress"%}</small>
+        {% endif %}
+        {% if record.live.status == 2 %}
+          <small class="form-text text-muted">{% trans "Live stopped"%}</small>
+        {% endif %}
+      {% endif %}
+    </footer>
+  </div>
 </div>
 {% endspaceless %}
