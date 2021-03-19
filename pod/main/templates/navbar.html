@@ -103,11 +103,11 @@
           <a class="dropdown-item" href="{% url 'claim_record' %}" title="{% trans 'Claim a record' %}"><i data-feather="share"></i>&nbsp;{% trans 'Claim a record' %}</a>
           {% endif %}
           {% if request.user.is_staff and USE_BBB %}
-			{% if USE_BBB_LIVE %}
-				<a class="dropdown-item" href="{% url 'bbb:list_meeting' %}" title="{% trans 'My BigBlueButton records and lives' %}"><i data-feather="square"></i>&nbsp;{% trans 'My BigBlueButton records and lives' %}</a>
-			{% else %}
-				<a class="dropdown-item" href="{% url 'bbb:list_meeting' %}" title="{% trans 'My BigBlueButton records' %}"><i data-feather="square"></i>&nbsp;{% trans 'My BigBlueButton records' %}</a>
-			{% endif %}
+            {% if USE_BBB_LIVE %}
+              <a class="dropdown-item" href="{% url 'bbb:list_meeting' %}"><i data-feather="square"></i>&nbsp;{% trans 'My BigBlueButton records and lives' %}</a>
+            {% else %}
+              <a class="dropdown-item" href="{% url 'bbb:list_meeting' %}"><i data-feather="square"></i>&nbsp;{% trans 'My BigBlueButton records' %}</a>
+            {% endif %}
           {% endif %}
           <!-- <a class="dropdown-item" href="#">Gestion de mon compte</a> -->
           <div class="dropdown-divider"></div>
