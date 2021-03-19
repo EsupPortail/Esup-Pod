@@ -106,7 +106,7 @@ def process_recording(sender, instance, created, **kwargs):
 # Management of the BigBlueButton users,
 # with role = MODERATOR in BigBlueButton
 class Attendee(models.Model):
-    # User who performed the session in BigBlueButton
+    # Meeting for which this user was a moderator
     meeting = models.ForeignKey(Meeting,
                                 on_delete=models.CASCADE,
                                 verbose_name=_('Meeting'))
@@ -163,13 +163,15 @@ class Livestream(models.Model):
     end_date = models.DateTimeField(
         _('End date'), null=True, blank=True, help_text=_(
             'End date of the live.'))
-    # Live status. Possible values are :
-    #  - 0 : live not started
-    #  - 1 : live in progress
-    #  - 2 : live stopped
+    # Live status
+    STATUS = (
+        (0, _('Live not started')),
+        (1, _('Live in progress')),
+        (2, _('Live stopped')),
+    )
     status = models.IntegerField(
         _('Live status'),
-        help_text=_('Live status : 0.not started, 1.in progress, 2.stopped'),
+        choices=STATUS,
         default=0)
     # Server/Process performing the live
     server = models.CharField(_('Server'), max_length=20,
