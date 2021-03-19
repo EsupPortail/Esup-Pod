@@ -36,7 +36,7 @@ body {
 {% endblock %}
 
 
-{% block breadcrumbs %}{{ block.super }} 
+{% block breadcrumbs %}{{ block.super }}
 {% if theme %}
 <li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
 {% for t in theme.get_all_parents reversed %}
@@ -58,45 +58,47 @@ body {
   <h1>{{channel.title}}
     <span class="float-right">
       {% if theme %}
-      {% if USE_STATS_VIEW %}
-      <a href="{% url "video_stats_view" slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
-      {% endif %}
-      <a href="{% url "rss-video" slug_c=channel.slug slug_t=theme.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
-      <a href="{% url "rss-audio" slug_c=channel.slug slug_t=theme.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
+        {% if USE_STATS_VIEW %}
+          <a href="{% url "video_stats_view" slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+        {% endif %}
+        <a href="feed://{{ request.META.HTTP_HOST }}{% url "rss-video" slug_c=channel.slug slug_t=theme.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
+        <a href="feed://{{ request.META.HTTP_HOST }}{% url "rss-audio" slug_c=channel.slug slug_t=theme.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
       {% else %}
-      {% if USE_STATS_VIEW %}
-      <a href="{% url "video_stats_view" slug=channel.slug %}?from=channel" title="{% trans 'Show view statistics for all videos in this channel' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
-      {% endif %}
-      <a href="{% url "rss-video" slug_c=channel.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
-      <a href="{% url "rss-audio" slug_c=channel.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
+        {% if USE_STATS_VIEW %}
+          <a href="{% url "video_stats_view" slug=channel.slug %}?from=channel" title="{% trans 'Show view statistics for all videos in this channel' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+        {% endif %}
+        <a href="{% url "rss-video" slug_c=channel.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
+        <a href="{% url "rss-audio" slug_c=channel.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
       {% endif %}
     </span>
     {% if request.user in channel.owners.all %}
-    <span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-primary btn-sm">
-      <i data-feather="edit"></i>&nbsp;{% trans "Edit the channel"%}</a>&nbsp;</span>{%endif%}</h1>
+      <span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-primary btn-sm">
+        <i data-feather="edit"></i>&nbsp;{% trans "Edit the channel"%}</a>&nbsp;</span>
+    {%endif%}
+  </h1>
 
   {% if channel.headband %}
-  <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
+    <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
   {% endif %}
 
   {% if channel.description %}
-      {{ channel.description|safe }}
+    {{ channel.description|safe }}
   {% endif %}
 
   {% if theme %}
-  <h2>{{theme.title}}</h2>
-  {% if theme.headband %}
-  <div align="center" class="channelheader">
-      <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" />
-  </div>
-  {% endif %}
-  {% if theme.description %}
+    <h2>{{theme.title}}</h2>
+    {% if theme.headband %}
+      <div align="center" class="channelheader">
+        <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" loading="lazy"/>
+      </div>
+    {% endif %}
+    {% if theme.description %}
       {{ theme.description|safe }}
-  {% endif %}
+    {% endif %}
   {%endif%}
 
   <p>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</p>
-  {% if organize_theme %} 
+  {% if organize_theme %}
       {% for t_obj, videos in videos_theme %}
 	<div class="inline-flex">
       	    {% if t_obj|isinstance:"Theme" %}
@@ -174,9 +176,9 @@ body {
 <script type="text/javascript">
 var str = get_list(listTheme["channel_"+{{channel.id}}], 0, [], tag_type="li", li_class="list-group-item", attrs='', add_link=true, current="{{theme.slug}}", channel="");
 $("#ultreeview").html(str);
-setTimeout(function(){ 
+setTimeout(function(){
   var position = parseInt($("#ultreeview li.list-group-item-info").position().top) - parseInt($("#ultreeview li").first().position().top);
-  $("#ultreeview").scrollTop(position); 
+  $("#ultreeview").scrollTop(position);
 }, 500);
 </script>
 

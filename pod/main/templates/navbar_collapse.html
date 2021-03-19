@@ -13,29 +13,29 @@
       <div class="modal-body row">
         <ul class="col-12 list-group list-group-flush" id="list-channels">
           {% for channel in CHANNELS %}
-          <li class="list-group-item list-group-item-action" data-id="{{channel.id}}">
-            <div class=" d-flex justify-content-between align-items-center">
-          <span class="d-flex align-items-center title-chaine">
-            {% if channel.headband %}
-            {% thumbnail channel.headband.file "x34" as im %}
-            <img src="{{ im.url }}" height="34" class='rounded mr-2' alt="{{channel.title|title}}">
-            {% endthumbnail %}
-            {% else %}<i data-feather="youtube" style="height:34px" class="mr-2"></i>{% endif %}
-            <a href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}">
-            {{channel.title}}</a></span>
-          <span>
-          {% if channel.themes.all.count > 0 %}
-          <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThemes{{channel.id}}" aria-expanded="true" aria-controls="collapseThemes{{channel.id}}">
-          {% blocktrans count counter=channel.themes.all.count %}{{counter}} Theme{% plural %}{{counter}} Themes{% endblocktrans %} <i data-feather="chevron-down" class="chevron-down m-0 p-0"></i>
-          </button>
-          {% endif %}
-          <span class="badge badge-primary badge-pill">{% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</span>
-          </span>
-            </div>
-          <div id="collapseThemes{{channel.id}}" class="collapse collapsibleThemes" aria-labelledby="headingOne" data-parent="#list-channels" data-id="{{channel.id}}"></div>
-          </li>
+            <li class="list-group-item list-group-item-action" data-id="{{channel.id}}">
+              <div class=" d-flex justify-content-between align-items-center">
+                <span class="d-flex align-items-center title-chaine">
+                  {% if channel.headband %}
+                    {% thumbnail channel.headband.file "x34" as im %}
+                    <img src="{{ im.url }}" height="34" class='rounded mr-2' alt="{{channel.title|title}}" loading="lazy">
+                    {% endthumbnail %}
+                  {% else %}<i data-feather="youtube" style="height:34px" class="mr-2"></i>{% endif %}
+                  <a href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}" id="channel-title_{{channel.id}}">
+                  {{channel.title}}</a></span>
+                <span>
+                  {% if channel.themes.all.count > 0 %}
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThemes{{channel.id}}" aria-expanded="true" aria-controls="collapseThemes{{channel.id}}">
+                    {% blocktrans count counter=channel.themes.all.count %}{{counter}} Theme{% plural %}{{counter}} Themes{% endblocktrans %} <i data-feather="chevron-down" class="chevron-down m-0 p-0"></i>
+                    </button>
+                  {% endif %}
+                  <span class="badge badge-primary badge-pill">{% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</span>
+                </span>
+              </div>
+              <div id="collapseThemes{{channel.id}}" class="collapse collapsibleThemes" aria-labelledby="channel-title_{{channel.id}}" data-parent="#list-channels" data-id="{{channel.id}}"></div>
+            </li>
           {% empty %}
-          <li class="list-group-item"> {% trans "No channels found" %} </li>
+            <li class="list-group-item"> {% trans "No channels found" %} </li>
           {%endfor%}
         </ul>
       </div>
@@ -58,7 +58,7 @@
         <ul class="row list-unstyled" id="list-types">
           {% for type in TYPES %}
           <li class="col-3"><a class="btn btn-sm btn-outline-secondary mb-1 col-12 text-left text-truncate" href="{% url 'videos' %}?type={{type.slug}}" title="{{type.title}} ({{type.video_count}})">
-          {% if type.icon %}<img src="{{type.icon.file.url}}" alt="{{type.title}}" style="max-height:32px; max-width:32px;"/>{% else %}<i data-feather="type"></i>{% endif %}&nbsp;{{type.title}} ({{type.video_count}})</a> </li>
+          {% if type.icon %}<img src="{{type.icon.file.url}}" alt="{{type.title}}" style="max-height:32px; max-width:32px;" loading="lazy"/>{% else %}<i data-feather="type"></i>{% endif %}&nbsp;{{type.title}} ({{type.video_count}})</a></li>
           {% endfor %}
         </ul>
       </div>
@@ -89,11 +89,11 @@
         <div class="row p-2">{% spaceless %}
           {% endspaceless %}</div>
           <div class="row">
-          <div class="col-12" >
-                <ul class="list-unstyled" id="accordion" style="max-height:350px; overflow:auto">
-                    <li>&nbsp;</li>
-                </ul>
-          </div>
+            <div class="col-12" >
+              <ul class="list-unstyled" id="accordion" style="max-height:350px; overflow:auto">
+                <li>&nbsp;</li>
+              </ul>
+            </div>
           </div>
       </div>
       <div class="modal-footer">

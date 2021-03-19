@@ -55,16 +55,15 @@
 				</ul> </div>
 	{% endif %}
 
-
 	<p>{{ broadcaster.description|safe }}</p>
 
-	{% if broadcaster.iframe_url != "" and broadcaster.iframe_url != None  %}
-	<iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
-		title="Inline Frame Example"
-		height="{{broadcaster.iframe_height}}"
-		src="{{broadcaster.iframe_url}}">
-	</iframe>
-	{% endif %}
+  {% if broadcaster.iframe_url != "" and broadcaster.iframe_url != None  %}
+  <iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
+    title="Inline Frame Example" loading="lazy"
+	  height="{{broadcaster.iframe_height}}"
+    src="{{broadcaster.iframe_url}}">
+  </iframe>
+  {% endif %}
 	
 	{% if USE_BBB and USE_BBB_LIVE and display_chat %}
 	  <div id="container" style="float:center; width:100%">
@@ -105,7 +104,7 @@
 <div class="card-text">
     {% if broadcaster.building.headband %}
     <p class="card-text">
-        <img src="{{ broadcaster.building.headband.file.url }}" alt="{% trans 'Headband' %} {{ broadcaster.building.name }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
+        <img src="{{ broadcaster.building.headband.file.url }}" alt="{% trans 'Headband' %} {{ broadcaster.building.name }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
     </p>
     {% endif %}
     {% for otherbroadcaster in broadcaster.building.broadcaster_set.all%}

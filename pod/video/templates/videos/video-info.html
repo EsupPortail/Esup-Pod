@@ -41,7 +41,7 @@
           <a href="{% url 'videos' %}?owner={{ video.owner.username }}" title="{{ video.owner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
           {% if video.owner.owner.userpicture.file %}
             {% thumbnail video.owner.owner.userpicture.file "x50" as im %}
-              <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{ video.owner.get_full_name }}">
+              <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{ video.owner.get_full_name }}" loading="lazy">
             {% endthumbnail %}
           {% endif %}
           {{ video.owner.get_full_name }}</a>
@@ -55,7 +55,7 @@
               <li><a href="{% url 'videos' %}?owner={{ additionalOwner.username }}" title="{{ additionalOwner.get_full_name }}" {% if request.GET.is_iframe %}target="_blank"{% endif %}>
                 {% if additionalOwner.owner.userpicture.file %}
                   {% thumbnail additionalOwner.owner.userpicture.file "x50" as im %}
-                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}">
+                    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{user}}" loading="lazy">
                   {% endthumbnail %}
                 {% endif %}
                 {{ additionalOwner.get_full_name }}
@@ -200,9 +200,9 @@
         <dl class="row">
           <dt class="col-sm-3 text-right">{% trans 'Social Networks' %}</dt>
           <dd class="col-sm-9 mb-0">
-            <ul class="list-inline mb-0">
-              <li class="list-inline-item"><a target="_blank" href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans 'Share on' %} Facebook"><i data-feather="facebook"></i></a></li>
-              <li class="list-inline-item"><a target="_blank" href="http://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans 'Share on' %} Twitter"><i data-feather="twitter"></i></a></li>
+            <ul class="list-inline mb-0 social_links">
+              <li class="list-inline-item"><a target="_blank" href="https://www.facebook.com/sharer.php?u={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans 'Share on' %} Facebook"><i data-feather="facebook"></i></a></li>
+              <li class="list-inline-item"><a target="_blank" href="https://twitter.com/share?url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans 'Share on' %} Twitter"><i data-feather="twitter"></i></a></li>
               <li class="list-inline-item"><a target="_blank" href="https://www.linkedin.com/shareArticle?mini=true&url={{request.build_absolute_uri|urlencode}}" class="btn btn-outline-primary btn-sm m-1" title="{% trans 'Share on' %} LinkedIn"><i data-feather="linkedin"></i></a></li>
             </ul>
           </dd>
@@ -258,7 +258,7 @@
             </div>
             <div class="form-group">
               <label>{% trans 'QR code for this link:' %}</label>
-              <img src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" alt="qrcode" id="qrcode"/>
+              <img src="//chart.apis.google.com/chart?cht=qr&chs=200x200&chl={% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{%if enrichment%}{% url 'enrichment:video_enrichment' slug=video.slug %}{%else%}{% url 'video' slug=video.slug %}{%endif%}{% if video.is_draft == True %}{{ video.get_hashkey }}/{% endif %}" alt="qrcode" id="qrcode" loading="lazy"/>
             </div>
           </fieldset>
         </div>

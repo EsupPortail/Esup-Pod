@@ -91,6 +91,11 @@ ADMINS = (('Name', 'adminmail@univ.fr'),)
 MANAGERS = ADMINS
 
 """
+# Liste des adresses destinataires des courriels de contact
+"""
+CONTACT_US_EMAIL = []
+
+"""
 # Un dictionnaire contenant les réglages de toutes les bases de données
 #  à utiliser avec Django.
 # C’est un dictionnaire imbriqué dont les contenus font correspondre
@@ -137,6 +142,15 @@ FILE_UPLOAD_TEMP_DIR = "/var/tmp"
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-STATIC_ROOT
 """
 STATIC_ROOT = "/pod/static"
+
+"""
+# Indique à django de compresser automatiquement
+# les fichiers css/js les plus gros lors du collectstatic
+# pour optimiser les tailles de requetes.
+# À combiner avec un réglage webserver ("gzip_static  on;" sur nginx)
+# voir https://github.com/whs/django-static-compress
+"""
+STATICFILES_STORAGE = 'static_compress.CompressedStaticFilesStorage'
 
 """
 # Chemin absolu du système de fichiers pointant vers le répertoire
@@ -490,6 +504,11 @@ FFMPEG_SCALE = ' -vf "scale=-2:{height}" '
 # to use in GPU, specify ' -vf "scale_npp=-2:{height}:interp_algo=super" '
 
 """
+# Pour spécifier le shell utilisé pour lancer la commande ffmpeg (/bin/sh par défaut)
+"""
+ENCODE_SHELL = '/bin/sh'
+
+"""
 # bitrate audio pour l'encodage M4A
 #  (encodage des fichiers audio envoyés sur la plateforme)
 """
@@ -547,7 +566,7 @@ RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = False
 #  utilisée pour présenter la vidéo.
 # Cette image doit se situer dans le répertoire static.
 """
-DEFAULT_THUMBNAIL = "img/default.png"
+DEFAULT_THUMBNAIL = "img/default.svg"
 
 """
 # Encodage possible sur la plateforme.
@@ -1197,3 +1216,13 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 #
 """
 VIDEO_REQUIRED_FIELDS = []
+
+"""
+# Activation du darkmode
+"""
+DARKMODE_ENABLED = False
+
+"""
+# Activation du mode dyslexie
+"""
+DYSLEXIAMODE_ENABLED = False

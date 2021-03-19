@@ -24,7 +24,7 @@
 	<div class="card-body">
 		<div class="d-flex align-items-center">
 			<a class="previewBtn link-center-pod" href="" title="{% trans "BigBlueButton presentation preview"%}" data-toggle="modal"  data-recid="{{record.recording_url}}" data-target="#previewModal">
-				<img class="card-img-top" src="{{record.thumbnail_url}}" alt="{% trans "BigBlueButton presentation preview"%}">
+				<img class="card-img-top" src="{{record.thumbnail_url}}" alt="{% trans "BigBlueButton presentation preview"%}" loading="lazy">
 			</a>
 		</div>
 		<footer class="card-footer p-0 m-1">
@@ -44,11 +44,11 @@
 					{% trans "Already published"%}
 					{% if request.user != record.encoded_by %}
 						{% trans "by"%} {{ record.encoded_by.first_name }} {{ record.encoded_by.last_name }} ({{ record.encoded_by.email }})
-					{% endif %}	
+					{% endif %}
 				</small>
 			{% endif %}
 		</footer>
-	
+
 	</div>
 </div>
 {% endspaceless %}

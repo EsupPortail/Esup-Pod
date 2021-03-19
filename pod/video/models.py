@@ -1,3 +1,5 @@
+"""Esup-Pod Video models."""
+
 import os
 import time
 import unicodedata
@@ -17,6 +19,7 @@ from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.dispatch import receiver
 from django.utils.html import format_html
 from django.db.models.signals import pre_delete
@@ -116,7 +119,7 @@ ENCODING_CHOICES = getattr(
         ("playlist", "playlist")
     ))
 DEFAULT_THUMBNAIL = getattr(
-    settings, 'DEFAULT_THUMBNAIL', 'img/default.png')
+    settings, 'DEFAULT_THUMBNAIL', 'img/default.svg')
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
 
 NOTES_STATUS = getattr(
@@ -200,7 +203,10 @@ def remove_accents(input_str):
 
 
 def get_storage_path_video(instance, filename):
-    """ Get the storage path. Instance needs to implement owner """
+    """Get the storage path.
+
+    Instance needs to implement owner
+    """
     fname, dot, extension = filename.rpartition('.')
     try:
         fname.index("/")
@@ -660,11 +666,7 @@ class Video(models.Model):
                  get_current_site(request).domain,
                  self.thumbnail.file.url])
         else:
-            thumbnail_url = ''.join(
-                ['//',
-                 get_current_site(request).domain,
-                 settings.STATIC_URL,
-                 DEFAULT_THUMBNAIL])
+            thumbnail_url = static(DEFAULT_THUMBNAIL)
         return thumbnail_url
 
     @property
@@ -675,38 +677,34 @@ class Video(models.Model):
                                crop='center', quality=72)
             thumbnail_url = im.url
             # <img src="{{ im.url }}" width="{{ im.width }}"
-            # height="{{ im.height }}">
+            # height="{{ im.height }}" loading="lazy">
         else:
-            thumbnail_url = ''.join(
-                ['//',
-                 get_current_site(None).domain,
-                 settings.STATIC_URL,
-                 DEFAULT_THUMBNAIL])
+            thumbnail_url = static(DEFAULT_THUMBNAIL)
         return format_html('<img style="max-width:100px" '
-                           'src="%s" alt="%s" />' % (
+                           'src="%s" alt="%s" loading="lazy"/>' % (
                                thumbnail_url,
-                               self.title.replace("{", "").replace("}", "")
+                               self.title.replace("{", "")
+                               .replace("}", "")
+                               .replace('"', "'")
                            )
                            )
 
     get_thumbnail_admin.fget.short_description = _('Thumbnails')
 
     def get_thumbnail_card(self):
+        """Return thumbnail image card of current video."""
         thumbnail_url = ""
         if self.thumbnail and self.thumbnail.file_exist():
             im = get_thumbnail(self.thumbnail.file, 'x170',
                                crop='center', quality=72)
             thumbnail_url = im.url
             # <img src="{{ im.url }}" width="{{ im.width }}"
-            # height="{{ im.height }}">
+            # height="{{ im.height }}" loading="lazy">
         else:
-            thumbnail_url = ''.join(
-                ['//',
-                 get_current_site(None).domain,
-                 settings.STATIC_URL,
-                 DEFAULT_THUMBNAIL])
-        return '<img class="card-img-top" src="%s" alt="%s" />' % (
-            thumbnail_url, self.title)
+            thumbnail_url = static(DEFAULT_THUMBNAIL)
+        return '<img class="card-img-top" src="%s" alt="%s"\
+            loading="lazy"/>' % (
+            thumbnail_url, self.title.replace('"', "'"))
 
     @property
     def duration_in_time(self):
@@ -828,6 +826,10 @@ class Video(models.Model):
             ) for x in dict_src.keys()}
         return sorted_dict_src
 
+    def get_video_mp4_json(self):
+        list_mp4 = self.get_video_json(extensions="mp4")
+        return list_mp4["mp4"] if list_mp4.get("mp4") else []
+
     def get_audio_json(self, extensions):
         extension_list = extensions.split(',') if extensions else []
         list_audio = EncodingAudio.objects.filter(
@@ -840,16 +842,19 @@ class Video(models.Model):
                 **self.get_audio_json(extensions)}
 
     @staticmethod
-    def get_media_json(self, extension_list, list_video):
+    def get_media_json(extension_list, list_video):
         dict_src = {}
         for media in list_video:
             file_extension = splitext(media.source_file.url)[-1]
             if not extension_list or file_extension[1:] in extension_list:
+                media_height = None
+                if hasattr(media, 'height'):
+                    media_height = media.height
                 video_object = {
                     'id': media.id,
                     'type': media.encoding_format,
                     'src': media.source_file.url,
-                    'height': media.height,
+                    'height': media_height,
                     'extension': file_extension,
                     'label': media.name}
                 dict_entry = dict_src.get(file_extension[1:], None)

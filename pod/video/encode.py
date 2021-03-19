@@ -48,6 +48,9 @@ if TRANSCRIPT:
         'start_transcript'
     )
 
+ENCODE_SHELL = getattr(
+    settings, 'ENCODE_SHELL', '/bin/sh')
+
 USE_ESTABLISHMENT = getattr(
     settings, 'USE_ESTABLISHMENT_FIELD', False)
 
@@ -547,7 +550,11 @@ def encode_video_mp4(source, cmd, output_dir):
         msg += "- %s\n" % ffmpegMp4Command
         with open(logfile, "ab") as f:
             procs.append(subprocess.Popen(
-                ffmpegMp4Command, shell=True, stdout=f, stderr=f))
+                ffmpegMp4Command,
+                shell=True,
+                executable=ENCODE_SHELL,
+                stdout=f,
+                stderr=f))
     msg += "\n- Encoding Mp4: %s" % time.ctime()
     with open(logfile, "a") as f:
         f.write(msg)
@@ -790,7 +797,11 @@ def encode_video_playlist(source, cmd, output_dir):
         msg += "- %s\n" % ffmpegPlaylistCommand
         with open(logfile, "ab") as f:
             procs.append(subprocess.Popen(
-                ffmpegPlaylistCommand, shell=True, stdout=f, stderr=f))
+                ffmpegPlaylistCommand,
+                shell=True,
+                executable=ENCODE_SHELL,
+                stdout=f,
+                stderr=f))
     msg += "\n- Encoding Playlist: %s" % time.ctime()
     with open(logfile, "a") as f:
         f.write(msg)
