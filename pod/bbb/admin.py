@@ -4,19 +4,15 @@ from .forms import MeetingForm
 from django.utils.translation import ugettext_lazy as _
 
 
-class MeetingSuperAdminForm(MeetingForm):
-    is_staff = True
-    is_superuser = True
-    is_admin = True
-    admin_form = True
-    encoding_step = 1
-
-
 class MeetingAdminForm(MeetingForm):
-    is_staff = True
-    is_superuser = False
-    is_admin = True
-    admin_form = True
+    is_staff: bool = True
+    is_superuser: bool = False
+    is_admin: bool = True
+
+
+class MeetingSuperAdminForm(MeetingAdminForm):
+    is_superuser: bool = True
+    encoding_step: int = 1
 
 
 class MeetingAdmin(admin.ModelAdmin):
