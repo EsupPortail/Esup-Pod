@@ -3,7 +3,7 @@
 {% load staticfiles %}
 
 {% block page_extra_head %}
-<script type="text/javascript">
+<script>
 window.setInterval("location.reload(true)",30000);
 </script>
 {% endblock %}
@@ -28,15 +28,15 @@ window.setInterval("location.reload(true)",30000);
 {% block page_content %}
 
   {% if request.user.is_staff and USE_BBB and USE_BBB_LIVE %}		  
-	<h5><a  href="{% url 'bbb:live_list_meeting' %}" title="{% trans 'Perform a BigBlueButton live' %}"><i data-feather="radio"></i>&nbsp;{% trans 'Perform a BigBlueButton live' %}</a></h5>
+	<h4><a href="{% url 'bbb:live_list_meeting' %}" title="{% trans 'Perform a BigBlueButton live' %}"><i data-feather="radio"></i>&nbsp;{% trans 'Perform a BigBlueButton live' %}</a></h4>
   {% endif %}
 
   <h3>{% trans "Create a video from a BigBlueButton presentation" %}</h3>
   {% if records.paginator.count == 0 %}
-	<h5>{% trans "No record found"%}</h5>
+	<h4>{% trans "No record found"%}</h4>
 	<p class="alert alert-info">{% trans 'There are no BigBlueButton records.'%}</p>
   {% else %}
-	<h5>{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}</h5>
+	<h4>{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}</h4>
 	{% trans "This is the list of the recorded BigBlueButton sessions for which you were moderator. This module allows you to create a video from a BigBlueButton presentation." %}<br/>
 	{% trans "Shortly after the presentation is published, the corresponding video will appear in your videos." %}<br/>
 	<small class="form-text text-muted">
