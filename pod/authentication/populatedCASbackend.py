@@ -11,6 +11,8 @@ from ldap3.core.exceptions import LDAPSocketOpenError
 from ldap3.core.exceptions import LDAPBindError
 from ldap3.core.exceptions import LDAPAttributeError
 from ldap3.core.exceptions import LDAPInvalidFilterError
+from pod.authentication.models import AccessGroup
+from django.core.exceptions import ObjectDoesNotExist
 
 import logging
 logger = logging.getLogger(__name__)
@@ -27,13 +29,22 @@ USER_CAS_MAPPING_ATTRIBUTES = getattr(
         "last_name": "sn",
         "first_name": "givenname",
         "primaryAffiliation": "eduPersonPrimaryAffiliation",
-        "affiliation": "eduPersonAffiliation"
+        "affiliation": "eduPersonAffiliation",
+        "groups": ""
     })
 
 CREATE_GROUP_FROM_AFFILIATION = getattr(
     settings, 'CREATE_GROUP_FROM_AFFILIATION', False)
 
+CREATE_GROUP_FROM_GROUPS = getattr(
+    settings, 'CREATE_GROUP_FROM_GROUPS', False)
+
 AFFILIATION_STAFF = getattr(
+    settings, 'AFFILIATION_STAFF',
+    ('faculty', 'employee', 'staff')
+)
+
+GROUP_STAFF = getattr(
     settings, 'AFFILIATION_STAFF',
     ('faculty', 'employee', 'staff')
 )
@@ -62,7 +73,8 @@ USER_LDAP_MAPPING_ATTRIBUTES = getattr(
         "last_name": "sn",
         "first_name": "givenname",
         "primaryAffiliation": "eduPersonPrimaryAffiliation",
-        "affiliations": "eduPersonAffiliation"
+        "affiliations": "eduPersonAffiliation",
+        "groups" : ""
     })
 
 CAS_FORCE_LOWERCASE_USERNAME = getattr(
@@ -147,6 +159,28 @@ def get_entry(conn, username, list_value):
         return None
 
 
+def create_accessgroups_ldap(user, entry):
+    groups_element = (
+        entry[USER_LDAP_MAPPING_ATTRIBUTES['groups']].values if (
+            USER_LDAP_MAPPING_ATTRIBUTES.get('groups')
+            and entry[USER_LDAP_MAPPING_ATTRIBUTES['groups']]
+        ) else []
+    )
+    for group in groups_element:
+        if group.text in GROUP_STAFF:
+            user.is_staff = True
+        if CREATE_GROUP_FROM_GROUPS:
+            accessgroup, group_created = AccessGroup.objects.get_or_create(
+                name=group.text)
+            user.owner.accessgroup_set.add(group)
+        else:
+            try:
+                accessgroup = AccessGroup.objects.get(code_name=group.text)
+                user.owner.accessgroup_set.add(accessgroup)
+            except ObjectDoesNotExist:
+                pass
+
+
 def populate_user_from_entry(user, owner, entry):
     user.email = (
         entry[USER_LDAP_MAPPING_ATTRIBUTES['mail']].value if (
@@ -194,7 +228,28 @@ def populate_user_from_entry(user, owner, entry):
                 name=affiliation)
             group.groupsite.sites.add(Site.objects.get_current())
             user.groups.add(group)
+
+    create_accessgroups_ldap(user, entry)
     user.save()
+
+
+def create_accessgroups_cas(user, tree):
+    groups_element = tree.findall('.//{http://www.yale.edu/tp/cas}%s' % (
+        USER_CAS_MAPPING_ATTRIBUTES['groups'])
+    )
+    for group in groups_element:
+        if group.text in GROUP_STAFF:
+            user.is_staff = True
+        if CREATE_GROUP_FROM_GROUPS:
+            accessgroup, group_created = AccessGroup.objects.get_or_create(
+                name=group.text)
+            user.owner.accessgroup_set.add(group)
+        else:
+            try:
+                accessgroup = AccessGroup.objects.get(code_name=group.text)
+                user.owner.accessgroup_set.add(accessgroup)
+            except ObjectDoesNotExist:
+                pass
 
 
 def populate_user_from_tree(user, owner, tree):
@@ -237,8 +292,10 @@ def populate_user_from_tree(user, owner, tree):
         if affiliation.text in AFFILIATION_STAFF:
             user.is_staff = True
         if CREATE_GROUP_FROM_AFFILIATION:
-            group, group_created = Group.objects.get_or_create(
+            accessgroup, group_created = AccessGroup.objects.get_or_create(
                 name=affiliation.text)
-            user.groups.add(group)
+            user.groups.add(accessgroup)
+    create_accessgroups_cas(user, tree)
+
     user.save()
     owner.save()

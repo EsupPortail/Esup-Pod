@@ -40,7 +40,7 @@ class AccessGroupSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = AccessGroup
-        fields = ('display_name', 'name', 'sites', 'users')
+        fields = ('display_name', 'code_name', 'sites', 'users')
 # ViewSets define the view behavior.
 
 
