@@ -22,30 +22,57 @@
   --font-color: var(--color-mine-shaft);
 
   /* BOOTSTRAP COLORS */
-  --primary: #b03c7e;
+  /* primary color is defined in bootstrap-$theme$.css */
   --primary2: var(--primary);
   --light: #f8f9fa;
   --dark: #343a40;
   --color-formfields: #f1f1f1;
 }
-.navbar-light.navbar-nav.nav-link {
+.table,
+.navbar-light.navbar-nav.nav-link,
+.navbar-light .navbar-toggler {
   color: var(--font-color);
+}
+.table-hover tbody tr{
+  transition: background-color .5s;
+}
+.table-hover tbody tr:hover{
+  color: var(--font-color);
+  background-color: var(--bg-color);
 }
 .navbar-light.navbar-nav.nav-link:focus,
 .navbar-light.navbar-nav.nav-link:hover {
   color: var(--primary);
 }
-.navbar-brand {
-  color: var(--font-color) !important;
-}
-.nav-link-icone {
+.navbar-toggler:focus,
+.navbar-toggler:hover{
   color: var(--primary);
-}
-.btn-primary {
-  /* color: var(--font-color); */
-  background-color: var(--primary);
   border-color: var(--primary);
 }
+.navbar-light .navbar-brand{
+  color: var(--color-black-alpha)
+}
+.navbar-light .navbar-brand:focus,
+.navbar-light .navbar-brand:hover {
+  color: var(--color-black)
+}
+.btn-lang:focus,
+.btn-lang:hover,
+.btn-lang:active {
+  box-shadow: 0 0 3px var(--primary);
+}
+.nav-link-icone {
+  color: var(--link-color);
+}
+.nav-link:focus .nav-link-icone,
+.nav-link:hover .nav-link-icone{
+  color: var(--activelink-color);
+}
+/*.btn-primary {
+  color: var(--font-color);
+  background-color: var(--primary);
+  border-color: var(--primary);
+}*/
 
 .modal-title svg {
   color: var(--primary)!important;
@@ -171,6 +198,8 @@ label {
 .link-center-pod {
   margin-left: auto;
   margin-right: auto;
+}
+.link-center-pod, .file-image {
   display: block;
   overflow: hidden;
 }
@@ -178,7 +207,6 @@ label {
 /*** navbar **/
 .btn-lang {
   padding: .2rem .25rem;
-  background: var(--color-transparent);
   width: 100%;
   text-align: left;
 }
@@ -247,6 +275,9 @@ label {
   color: var(--font-color);
   border: 1px solid var(--color-silver-chalice);
 }
+.dropdown-header{
+  color: var(--color-black);
+}
 
 /***aside ***/
 .open-aside {
@@ -260,7 +291,7 @@ label {
   .navbar-brand img {
     height: 35px;
   }
-  .navbar-brand {
+  .navbar-brand, .nav-item>.btn {
     font-size: .9rem;
   }
 }
@@ -268,65 +299,57 @@ label {
   .langs {
     border-top: 1px solid var(--color-silver);
   }
-  .langs.active {
-    border: none;
+  .langs .active{
+    background:var(--primary);
     color: var(--white);
   }
-  .btn-connexion {
-    font-size: .9rem;
-  }
+
   .navbar-items-pod {
     position: absolute;
-    top: 53px;
+    top: 60px;
     left: 0;
     padding: 1rem;
     width: 100%;
+    box-shadow: 1px 1px 3px gray;
+    z-index: 100;
   }
   .navbar-nav.login.dropdown-menu {
     position: absolute;
     float: left;
   }
-  #s::-webkit-input-placeholder { /* Chrome/Opera/Safari */
-    color: var(--white);
-  }
-  #s::-moz-placeholder { /* Firefox 19+ */
-    color: var(--white);
-  }
-  #s:-ms-input-placeholder { /* IE 10+ */
-    color: var(--white);
-  }
-  #s:-moz-placeholder { /* Firefox 18- */
+  #s:not(:focus)::placeholder {
     color: var(--white);
   }
   #s {
-    width: 1px;
     border-radius: 0;
-    box-shadow: none;
-    outline: none;
     padding: 0;
     margin: 0;
-    border: 0;
-    background-color: var(--color-transparent);
-    opacity: 0;
     position: absolute;
+    left: 0;
+    top: 0;
+    transition: height .5s;
+  }
+  #s:not(:focus) {
+    width: 1px;
+    height: 1px;
+    box-shadow: none;
+    outline: none;
+    border: 0;
+    opacity: 0;
   }
   #s:focus {
     width: 100%;
     opacity: 1;
-    display: inline-block !important;
-    position: absolute;
+    display: inline-block;
     /*background: var(--primary) !important;*/
     padding: .5rem 1rem;
-    left: 0;
-    top: 0;
     z-index: 99;
-    color: var(--white) !important;
-    height: 74px;
+    height: 3rem;
   }
   .navbar label {
     padding-left: 1px;
     display: inline-block;
-    margin-top: .3em;
+    /*margin-top: .3em;*/
     color: var(--color-sisal);
     text-shadow: 0 0 .1em var(--color-mine-shaft);
     position: relative;
@@ -335,12 +358,10 @@ label {
   }
 
 }
-  /*** end MQueries **/
+/*** end MQueries **/
 
-.login >.initials {
+.login>.initials {
   border-radius: 50%;
-  /*background: var(--light);*/
-  color: var(--white) !important;
   font-weight: 600;
   height: 3rem;
   width: 3rem;
@@ -354,7 +375,7 @@ button.nav-link {
   cursor: pointer;
 }
 
-  /*** CARD ***/
+/*** CARD ***/
 .infinite-item.card-body {
   padding: .9rem;
   height: 3.5rem;
@@ -499,24 +520,41 @@ div.card a:hover>img {
 }
 
 /** channel form **/
-#channel_form.selector,
-#enrichment_group_form.selector {
-  width: 100% !important;
+
+#channel_form .selector,
+#enrichment_group_form .selector {
+  width: 100%;
 }
-#channel_form.selector select,
-#enrichment_group_form.selector select {
-  width: 100% !important;
+#channel_form .selector select,
+#enrichment_group_form .selector select {
+  width: 100%;
 }
-#channel_form.selector-available,
-#channel_form.selector-chosen,
-#enrichment_group_form.selector-available,
-#enrichment_group_form.selector-chosen {
-  width: 47% !important;
+#channel_form .selector-available,
+#channel_form .selector-chosen,
+#enrichment_group_form .selector-available,
+#enrichment_group_form .selector-chosen {
+  width: 88%;
 }
-#channel_form.selector-available h2,
-#channel_form.selector-chosen h2,
-#enrichment_group_form.selector-available h2,
-#enrichment_group_form.selector-chosen h2 {
+@media screen and (min-width:992px) {
+  #channel_form .selector-available,
+  #channel_form .selector-chosen,
+  #enrichment_group_form .selector-available,
+  #enrichment_group_form .selector-chosen {
+    width: 47%;
+  }
+}
+#channel_form .selector .selector-available input,
+#enrichment_group_form .selector .selector-available input{
+  width: 90%;
+}
+#channel_form .selector .selector-filter label
+#enrichment_group_form .selector .selector-filter label {
+  margin-top: 0;
+}
+#channel_form .selector-available h2,
+#channel_form .selector-chosen h2,
+#enrichment_group_form .selector-available h2,
+#enrichment_group_form .selector-chosen h2 {
   margin: 0;
   padding: 8px;
   font-weight: 400;

@@ -193,8 +193,8 @@
 <div class="row" id="listfiles">
   {% for file in folder.get_all_files %}
   <div class="col-sm-2 p-0">
-    <div class="card bg-light mb-3 m-1 p-1 text-truncate" style="border: 1px solid grey;">
-      <div class="card-header p-0  m-0" style="background: none">
+    <div class="card bg-light mb-3 m-1 text-truncate">
+      <div class="card-header p-0 m-0" style="background: none">
         {% if request.user == file.created_by or request.user.is_superuser or perms.podfile.change_customfilemodel or perms.podfile.change_customimagemodel or request.user in folder.users.all %}
         <nav class="navbar navbar-expand-lg navbar-light p-0 m-0">
           <button
