@@ -5,14 +5,14 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class MeetingAdminForm(MeetingForm):
-    is_staff: bool = True
-    is_superuser: bool = False
-    is_admin: bool = True
+    is_staff = True
+    is_superuser = False
+    is_admin = True
 
 
 class MeetingSuperAdminForm(MeetingAdminForm):
-    is_superuser: bool = True
-    encoding_step: int = 1
+    is_superuser = True
+    encoding_step = 1
 
 
 class MeetingAdmin(admin.ModelAdmin):
@@ -25,14 +25,14 @@ class MeetingAdmin(admin.ModelAdmin):
     search_fields = ['id', 'meeting_name', 'encoded_by__username',
                      'encoded_by__first_name', 'encoded_by__last_name']
 
-    actions = ['encode_video']
+    actions = ['encode_meeting']
 
     # Re-encode a BBB presentation Web
-    def encode_video(self, request, queryset):
+    def encode_meeting(self, request, queryset):
         for item in queryset:
             item.launch_encode = True
             item.save()
-    encode_video.short_description = _('Encode selected')
+    encode_meeting.short_description = _('Encode selected')
 
 
 class AttendeeAdmin(admin.ModelAdmin):
