@@ -75,6 +75,8 @@ html > body button.close,
 html > body button.close{
 	font-size: var(--font-size-close-btn) !important;
 }
+html > body #dirs .alert-warning strong.close{font-size: var(--font-size-semi-bold) !important;}
+html > body .close, html > body .close, html > body button.close, html > body button.close
 /* Video channel card center vignette */
 .video-thumb a.video-holder {
     display: block;
@@ -90,10 +92,11 @@ span.poster img.preview {
 
 [data-theme="dark"] > body, [data-theme-mode="dark"] > body,
 [data-theme="light"] > body, [data-theme-mode="light"] > body,
+#podfile a, #podifle .folder_title,
 html,body,
 .container,
 .container-pod{
-	font-size: var(--font-size-semi-thin);
+	font-size: var(--font-size-semi-thin) !important;
 	transition-property: color, background, font-size, width, max-width, min-width;
 	transition-duration: .3s;
 	transition-timing-function: ease-in-out;
@@ -125,7 +128,7 @@ body > .mention-container {
 	align-items: center;
 }
 .comment_main .comment .comment_content_body {
-	font-size: var(--font-size-semi-thin);
+	font-size: var(--font-size-semi-thin) !important;
 	color: var(--primary);
 }
 .comment_main .reply_to {
@@ -177,7 +180,7 @@ h4,
 h5,
 h6 {
 	font-weight: 600 !important;
-	font-size: var(--font-size-medium);
+	font-size: var(--font-size-medium) !important;
 }
 .btn-lang-active{
 	color: var(--primary);
@@ -235,7 +238,7 @@ h6 {
 [data-dyslexia="on"] h4,
 [data-dyslexia="on"] h5,
 [data-dyslexia="on"] h6{
-	font-size: var(--font-size-medium);
+	font-size: var(--font-size-medium) !important;
 }
 /* End dyslexia mode style */
 #video-list {
@@ -270,7 +273,7 @@ h6 {
 	overflow: hidden;
 	white-space: nowrap;
 	max-width: 100%;
-	font-size: var(--font-size-semi-thin);
+	font-size: var(--font-size-semi-thin) !important;
 	padding: .4em;
 }
 #videos_list .infinite-item .video-card{
@@ -368,7 +371,7 @@ body > nav .navbar-items-pod{
 	background-color: var(--primary);
 }
 .chapters-list h6 .vjs-icon-chapters {
-	font-size: var(--font-size-medium);
+	font-size: var(--font-size-medium) !important;
 }
 .chapters-list ol li:last-child {
 	border: none !important;
@@ -502,10 +505,14 @@ a:hover {
 .carousel-caption .title {
 	color: #fff !important;
 }
+[data-theme="light"][data-theme-mode="light"] .podfilemodal .navbar,
 .navbar {
-	background-color: #102636 !important;
+	background: #102636 !important;
 	color: #fff;
 	min-height: 35px;
+}
+[data-theme="light"][data-theme-mode="light"] .podfilemodal .navbar {
+	background: var(--primary) !important;
 }
 .navbar-items-pod {
 	background-color: inherit !important;
@@ -670,7 +677,7 @@ button.navbar-toggler svg.feather-menu {
 	color: var(--primary) !important;
 }
 .btn-outline-primary b {
-	font-size: var(--font-size-semi-bold);
+	font-size: var(--font-size-semi-bold) !important;
 }
 .btn-outline-primary:hover .feather,
 .btn-outline-primary:hover b {
@@ -809,7 +816,7 @@ main.mt-3 .nav-tabs .nav-link.active {
 /*  CONTENT SIDEBARD */
 
 #card-share .btn-outline-primary{
-	font-size: var(--font-size-medium);
+	font-size: var(--font-size-medium) !important;
 }
 #card-share .btn-outline-primary svg{
 	flex: none;
@@ -957,7 +964,7 @@ body .selector-filter{
 body .selector-filter input,
 body .selector-filter input{
 	padding: .4em;
-	font-size: var(--font-size-semi-thin);
+	font-size: var(--font-size-semi-thin) !important;
 }
 /* table */
 table.scroll tbody td, table.scroll thead th{
@@ -1527,7 +1534,7 @@ color: var(--link-color) !important;
 	border: 1px solid var(--link-color) !important;
 	color: #fff;
 	padding: 0 1em;
-	font-size: var(--font-size-medium);
+	font-size: var(--font-size-medium) !important;
 	font-weight: 700;
 	outline: none !important;
 }
@@ -1548,7 +1555,8 @@ color: var(--link-color) !important;
 /* Thumbnail filter on dark mode */
 [data-theme="dark"][data-theme-mode="dark"] .card-thumbnail img,
 [data-theme="dark"][data-theme-mode="dark"] .video-holder img.preview,
-[data-theme="dark"][data-theme-mode="dark"] .carousel-item img{
+[data-theme="dark"][data-theme-mode="dark"] .carousel-item img,
+[data-theme="dark"][data-theme-mode="dark"] img.card-img-top{
 	opacity: .75;
 	transition: opacity .3s, transform .3s;
 }
@@ -1569,10 +1577,12 @@ color: var(--link-color) !important;
 [data-theme="dark"][data-theme-mode="dark"] .card-thumbnail img:hover,
 [data-theme="dark"][data-theme-mode="dark"] .video-holder img.preview:hover,
 [data-theme="dark"][data-theme-mode="dark"] .carousel-item img:hover,
-[data-theme="dark"][data-theme-mode="dark"] #podvideoplayer_html5_api:hover
+[data-theme="dark"][data-theme-mode="dark"] img.card-img-top:hover
 {
 	opacity: 1;
 }
+
+/* END Thumbnail filter on dark mode */
 [data-theme="dark"] > body .breadcrumb,
 [data-theme-mode="dark"] > body .breadcrumb{
 	background-color: var(--block-color) !important;
@@ -2067,7 +2077,7 @@ body #videos_list .card .card-body .card-footer.card-footer-pod .btn.btn-light{
 }
 body #videos_list .card .card-body .card-footer.card-footer-pod svg,
 body #videos_list .card .card-body .card-footer.card-footer-pod svg{
-	width: var(--font-size-medium);
+	width: var(--font-size-medium) !important;
 }
 [data-theme="dark"] > body #videos_list a.btn-light:hover,
 [data-theme-mode="dark"] > body #videos_list a.btn-light:hover{
@@ -2239,7 +2249,7 @@ body #videos_list .card .card-body .card-footer.card-footer-pod svg{
 [data-theme-mode="light"] > body .selector-filter input
 {
 	padding: .4em;
-	font-size: var(--font-size-semi-thin);
+	font-size: var(--font-size-semi-thin) !important;
 }
 [data-theme="dark"] > body #channel_form .btn.btn-primary,
 [data-theme-mode="dark"] > body #channel_form .btn.btn-primary{
@@ -2254,7 +2264,7 @@ body #videos_list .card .card-body .card-footer.card-footer-pod svg{
 [data-theme="light"][data-theme-mode="light"] #podfile #listfiles .navbar .btn:hover,
 [data-theme="light"][data-theme-mode="light"] #podfile .navbar .nav-link:hover svg,
 [data-theme="light"][data-theme-mode="light"] #podfile #files #currentfolder .upload-file:hover svg{
-	color: var(--primary2) !important;
+	color: var(--gray) !important;
 }
 [data-theme="dark"] > body #podfile .open-folder svg,
 [data-theme-mode="dark"] > body #podfile .open-folder svg{
@@ -2335,8 +2345,8 @@ body #videos_list .card .card-body .card-footer.card-footer-pod svg{
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	color: #fff !important;
-	font-size: var(--font-size-thin);
+	color: inherit !important;
+	font-size: var(--font-size-thin) !important;
 	padding: 0.2em;
 }
 	/* Podfile folder */
