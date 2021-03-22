@@ -48,9 +48,9 @@ jobs:
         python manage.py create_pod_index
         python manage.py makemigrations
         python manage.py migrate
-    - name: Run Tests
+    - name: Run Tests and coveralls
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        coverage run manage.py test --settings=pod.main.test_settings
-        coveralls
+        coverage run --source='.' manage.py test --settings=pod.main.test_settings
+        coveralls  --service=github
