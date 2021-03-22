@@ -37,7 +37,7 @@ BBB_NUMBER_DAYS_BEFORE_DELETE days, will be deleted.
 Finally, if there was at least one error, an email is sent to Pod admins.
 
 This script must be executed regurlaly (for an example, with a CRON task).
-Example : crontab -e */5 * * * * /usr/bin/bash -c 'export
+Example : crontab -e */2 * * * * /usr/bin/bash -c 'export
 WORKON_HOME=/data/www/%userpod%/.virtualenvs; export
 VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.6; cd
 /data/www/%userpod%/django_projects/podv2; source
@@ -48,8 +48,7 @@ import traceback
 from django.utils import translation
 from django.core.management.base import BaseCommand
 from django.conf import settings
-from pod.bbb.models import Meeting
-from pod.bbb.models import User as BBBUser
+from pod.bbb.models import Meeting, Attendee
 import hashlib
 import requests
 import datetime
@@ -290,7 +289,10 @@ def get_meeting(meeting, html_message_error, message_error):
             if oMeeting.recorded is False and recording == "true":
                 print_if_debug("   + Recording this meeting. ")
                 oMeeting.recorded = True
-                oMeeting.save()
+            # In all case, save the last date where BBB session was in progress
+            lastDateInProgress = timezone.now()
+            oMeeting.last_date_in_progress = lastDateInProgress
+            oMeeting.save()
         else:
             # Create the meeting in Pod database
             print_if_debug("   + Create the meeting in Pod database. "
@@ -340,22 +342,22 @@ def get_attendee(attendee, idActualMeeting, html_message_error, message_error):
         # We save only the BBB moderator
         if role == "MODERATOR":
             # Search if the BBB user already exists in Pod
-            oBBBUser = BBBUser.objects.filter(
+            oAttendee = Attendee.objects.filter(
                 full_name=fullName, meeting_id=idActualMeeting).first()
-            if oBBBUser:
+            if oAttendee:
                 print_if_debug("   + User already exists "
                                "in Pod database : "
-                               "" + oBBBUser.full_name)
+                               "" + oAttendee.full_name)
             else:
                 # Create the meeting user in Pod database
                 print_if_debug("   + Create the meeting user "
                                "in Pod database : " + fullName)
-                bbbUserToCreate = BBBUser()
-                bbbUserToCreate.full_name = fullName
-                bbbUserToCreate.role = 'MODERATOR'
-                bbbUserToCreate.meeting_id = idActualMeeting
+                attendeeToCreate = Attendee()
+                attendeeToCreate.full_name = fullName
+                attendeeToCreate.role = 'MODERATOR'
+                attendeeToCreate.meeting_id = idActualMeeting
 
-                bbbUserToCreate.save()
+                attendeeToCreate.save()
     except Exception as e:
         err = "Problem to get BBB attendee "\
             "and save in Pod database : " + str(e) + ". "\
@@ -374,7 +376,7 @@ def matching_bbb_pod_user(html_message_error, message_error):
         # Search for BBB users already in Pod database, without matching
         # By security : take only the 500 last BBB users, to avoid process
         # too long. Usefull when users are not known in Pod.
-        bbbUsers = BBBUser.objects.filter(
+        attendees = Attendee.objects.filter(
             user_id__isnull=True
         ).order_by('-id')[:500]
 
@@ -384,25 +386,25 @@ def matching_bbb_pod_user(html_message_error, message_error):
         else:
             bbbUsernameFormat = Concat('first_name', Value(' '), 'last_name')
 
-        for bbbUser in bbbUsers:
+        for attendee in attendees:
             # Search if this BBB user matching to a Pod user.
             # Take the first one (This can cause an error in case of namesake!)
             podUser = User.objects.annotate(
                 name=bbbUsernameFormat,
-            ).filter(name__icontains=bbbUser.full_name).first()
+            ).filter(name__icontains=attendee.full_name).first()
             if podUser:
                 # Update the id and the username of this user
                 print_if_debug(" - A Pod user matching a BBB user "
                                "was found in Pod database. "
-                               "BBB user : " + bbbUser.full_name + ". "
+                               "BBB user : " + attendee.full_name + ". "
                                "Pod user : " + podUser.username)
-                bbbUser.username = podUser.username
-                bbbUser.user_id = podUser.id
-                bbbUser.save()
+                attendee.username = podUser.username
+                attendee.user_id = podUser.id
+                attendee.save()
             else:
                 print_if_debug(" - A Pod user matching a BBB user "
                                "was NOT found in Pod database. "
-                               "BBB user : " + bbbUser.full_name)
+                               "BBB user : " + attendee.full_name)
 
     except Exception as e:
         err = "Problem to matching BBB user to Pod user : " + str(e) + ". "\

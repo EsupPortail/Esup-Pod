@@ -73,7 +73,7 @@
 }
 .comment_main .icon.comments_icon {
 	width: var(--padding-comment-content);
-	margin: 0 6px;
+	margin-right: 6px;
 	-webkit-box-flex: 0;
 	-ms-flex: none;
 	flex: none;
@@ -154,6 +154,7 @@
 	right: 20px;
 	font-size: 16px;
 	color: #fff;
+	transition: opacity 1s;
 	-webkit-animation: up 1s cubic-bezier(.77, 0, .18, 1) forwards;
 	animation: up 1s cubic-bezier(.77, 0, .18, 1) forwards;
 	-webkit-animation-direction: normal;
@@ -186,48 +187,40 @@
 @-webkit-keyframes down {
 	0% {
 		bottom: 20px;
-		/*background-color: rgba(153, 201, 61, 1);*/
 		opacity: 1;
 	}
 	100% {
 		bottom: -100%;
-		opacity: 0;
-		/*background-color: rgba(153, 201, 61, 0);*/
+		opacity: .1;
 	}
 }
 @keyframes down {
 	0% {
 		bottom: 20px;
-		/*background-color: rgba(153, 201, 61, 1);*/
 		opacity: 1;
 	}
 	100% {
 		bottom: -100%;
-		/*background-color: rgba(153, 201, 61, 0);*/
-		opacity: 0;
+		opacity: .1;
 	}
 }
 @-webkit-keyframes up {
 	0% {
 		bottom: -100%;
-		/*background-color: rgba(153, 201, 61, .1);*/
 		opacity: .1;
 	}
 	100% {
 		bottom: 20px;
-		/*background-color: rgba(153, 201, 61, 1);*/
 		opacity: 1;
 	}
 }
 @keyframes up {
 	0% {
 		bottom: -100%;
-		/*background-color: rgba(153, 201, 61, .1);*/
 		opacity: .1;
 	}
 	100% {
 		bottom: 20px;
-		/*background-color: rgba(153, 201, 61, 1);*/
 		opacity: 1;
 	}
 }
@@ -243,7 +236,7 @@
 	-ms-flex-pack: center;
 	justify-content: center;
 	padding-top: 20px;
-	z-index: 9;
+	z-index: 99;
 	position: fixed;
 	left: 0;
 	right: 0;
@@ -324,9 +317,9 @@
 /* End Confirm Modal */
 
 .comment_main .comment_content {
+	overflow: hidden;
 	background-color: var(--third-background-color);
-	/*padding: 2em var(--padding-comment-content);*/
-	padding: 1em 0 1em 0;
+	padding: 1em 0.4em 1em 0;
 	border-left: 2px solid var(--primary-background-color);
 }
 .comment_main .add_comment {
@@ -466,6 +459,7 @@
 	display: -ms-flexbox;
 	display: flex;
 	margin-top: calc(var(--margin-between-comment) - .2em);
+	padding-right: 0.8em;
 }
 .comment_main .comment_element > .comment.onDelete,
 .comment_main
@@ -500,7 +494,7 @@
 	border-top: 1px solid var(--primary-background-color);
 	border-bottom: 1px solid var(--primary-background-color);
 	border-right: 1px solid var(--primary-background-color);
-	width: calc(100% - 42px);
+	flex-grow: 1;
 }
 
 .comment_main .comment .comment_content_header .comment_since {

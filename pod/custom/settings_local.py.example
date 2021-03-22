@@ -504,6 +504,11 @@ FFMPEG_SCALE = ' -vf "scale=-2:{height}" '
 # to use in GPU, specify ' -vf "scale_npp=-2:{height}:interp_algo=super" '
 
 """
+# Pour spécifier le shell utilisé pour lancer la commande ffmpeg (/bin/sh par défaut)
+"""
+ENCODE_SHELL = '/bin/sh'
+
+"""
 # bitrate audio pour l'encodage M4A
 #  (encodage des fichiers audio envoyés sur la plateforme)
 """
@@ -561,7 +566,7 @@ RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = False
 #  utilisée pour présenter la vidéo.
 # Cette image doit se situer dans le répertoire static.
 """
-DEFAULT_THUMBNAIL = "img/default.png"
+DEFAULT_THUMBNAIL = "img/default.svg"
 
 """
 # Encodage possible sur la plateforme.
@@ -1117,6 +1122,21 @@ BBB_USERNAME_FORMAT = 'first_name last_name'
 # Pour ne pas supprimer les anciennes sessions, utiliser la valeur 0
 """
 BBB_NUMBER_DAYS_BEFORE_DELETE = 0
+
+"""
+# Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton
+"""
+USE_BBB_LIVE = False
+
+"""
+# Autoriser les utilisateurs à enregistrer leur direct BigBlueButton directement dans Mes vidéos
+"""
+USE_BBB_LIVE_DOWNLOADING = False
+
+"""
+# Nombre maximum de directs BBB simultanés gérés par le système
+"""
+BBB_NUMBER_MAX_LIVES = 4
 
 """
 #

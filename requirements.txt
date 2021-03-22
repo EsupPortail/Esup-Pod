@@ -1,6 +1,7 @@
 Django==1.11.29
 django-ckeditor==5.3.1
-Pillow==7.2.0
+Pillow>=7.2.0; python_version <= '3.5'
+Pillow==8.1.1; python_version > '3.5'
 django-tagging==0.4.6
 django-modeltranslation==0.12.2
 webvtt-py==0.4.5
@@ -8,9 +9,9 @@ django-cas-client==1.5.2
 ldap3==2.5
 django-progressbarupload==0.1.7
 django-simple-captcha==0.5.12
-urllib3==1.26.2
+urllib3==1.26.3
 elasticsearch==6.3.1
-djangorestframework==3.9.1
+djangorestframework==3.11.2
 django-filter==1.1.0
 sorl-thumbnail==12.6.3
 django-lti-provider==0.4.0
@@ -28,3 +29,4 @@ requests==2.25.1
 chardet==4.0.0
 django-cookies-samesite==0.8.0
 django-static-compress>=1.2.1
+redis==3.5.3

@@ -23,7 +23,7 @@ if(typeof loaded == 'undefined') {
         if($(this).data("filetype")=="CustomImageModel"){
             html += '<img src="'+$(this).attr('href')+'" height="34" alt="'+$(this).attr('title')+'" loading="lazy"/>&nbsp;';
         } else {
-            html += '<img style="height: 26px;vertical-align: middle;" src="'+static_url+'podfile/images/icons/default.png" alt="" loading="lazy">&nbsp;';
+            html += '<img style="height: 26px;vertical-align: middle;" src="'+static_url+'podfile/images/icons/default.svg" alt="" loading="lazy">&nbsp;';
         }
         html += '<strong><a href="'+$(this).attr('href')+'" target="_blank" title="'+gettext('Open file in a new tab')+'">'+$(this).attr('title')+'</a></strong>&nbsp;';
         $("#fileinput_"+id_input).html(html);

@@ -1,3 +1,5 @@
+"""Esup-Pod "live" models."""
+
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -21,7 +23,7 @@ else:
     from pod.main.models import CustomImageModel
 
 DEFAULT_THUMBNAIL = getattr(
-    settings, 'DEFAULT_THUMBNAIL', 'img/default.png')
+    settings, 'DEFAULT_THUMBNAIL', 'img/default.svg')
 
 
 class Building(models.Model):

@@ -1,27 +1,13 @@
 {% load i18n %}
 {% spaceless %}
 
-{% block page_extra_head %}
-  <style>
-	.card-body {
-		padding-top:  4em !important;
-		padding-bottom:  4em !important;
-		text-align: center;
-	}
-	/*** CARD ***/
-	.infinite-item .card-body {
-		height: 13rem;
-	}
-  </style>
-{% endblock page_extra_head %}
-
 <div class="card mb-4 box-shadow border-secondary">
-    <div class="card-header" style="">
+    <div class="card-header">
         <div class="d-flex justify-content-between align-items-center" style="min-height: 2.4rem;">
             <small class="text-muted time">{{record.meeting_name}} ({{ record.session_date }})</small>
         </div>
     </div>
-	<div class="card-body">
+	<div class="card-body py-4">
 		<div class="d-flex align-items-center">
 			<a class="previewBtn link-center-pod" href="" title="{% trans "BigBlueButton presentation preview"%}" data-toggle="modal"  data-recid="{{record.recording_url}}" data-target="#previewModal">
 				<img class="card-img-top" src="{{record.thumbnail_url}}" alt="{% trans "BigBlueButton presentation preview"%}" loading="lazy">
@@ -44,11 +30,11 @@
 					{% trans "Already published"%}
 					{% if request.user != record.encoded_by %}
 						{% trans "by"%} {{ record.encoded_by.first_name }} {{ record.encoded_by.last_name }} ({{ record.encoded_by.email }})
-					{% endif %}	
+					{% endif %}
 				</small>
 			{% endif %}
 		</footer>
-	
+
 	</div>
 </div>
 {% endspaceless %}
