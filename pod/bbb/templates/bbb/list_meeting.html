@@ -3,9 +3,10 @@
 {% load staticfiles %}
 
 {% block page_extra_head %}
-<script>
-window.setInterval("location.reload(true)",30000);
-</script>
+  <link rel="stylesheet" href="{% static 'css/bbb.css' %}"/>
+  <script>
+  window.setInterval("location.reload(true)",30000);
+  </script>
 {% endblock %}
 
 {% block breadcrumbs %}
