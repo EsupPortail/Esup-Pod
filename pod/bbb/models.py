@@ -32,13 +32,16 @@ class Meeting(models.Model):
     # Date of the BBB session
     session_date = models.DateTimeField(
         _('Session date'), default=timezone.now)
-    # Encoding step / status of the process. Possible values are :
-    #  - 0 : default (Publish is possible)
-    #  - 1 : Waiting for encoding
-    #  - 2 : Encoding in progress
-    #  - 3 : Already published
+    # Encoding step / status of the process
+    ENCODING_STEP = (
+        (0, _('Publish is possible')),
+        (1, _('Waiting for encoding')),
+        (2, _('Encoding in progress')),
+        (3, _('Already published')),
+    )
     encoding_step = models.IntegerField(
         _('Encoding step'),
+        choices=ENCODING_STEP,
         help_text=_('Encoding step for conversion of the '
                     'BBB presentation to video file.'),
         default=0)
