@@ -49,6 +49,8 @@ jobs:
         python manage.py makemigrations
         python manage.py migrate
     - name: Run Tests
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         coverage run manage.py test --settings=pod.main.test_settings
         coveralls
