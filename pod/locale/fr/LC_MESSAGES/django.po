@@ -632,8 +632,8 @@ msgstr "Aucune session BigBlueButton en cours trouvée"
 #, python-format
 msgid "%(counter)s BigBlueButton session in progress found"
 msgid_plural "%(counter)s BigBlueButton sessions in progress found"
-msgstr[0] "%(counter)s session BigBlueButton en cours trouvé"
-msgstr[1] "%(counter)s sessions BigBlueButton en cours trouvés"
+msgstr[0] "%(counter)s session BigBlueButton en cours trouvée"
+msgstr[1] "%(counter)s sessions BigBlueButton en cours trouvées"
 
 #: pod/bbb/templates/bbb/live_list_meeting.html:33
 msgid ""
