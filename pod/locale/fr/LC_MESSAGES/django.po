@@ -488,6 +488,10 @@ msgstr "Publier la présentation BigBlueButton sur cette plateforme"
 msgid "Publish this presentation"
 msgstr "Publier cette présentation"
 
+#: pod/bbb/models.py:37
+msgid "Publish is possible"
+msgstr "La publication est possible"
+
 #: pod/bbb/templates/bbb/card.html:37
 msgid "Waiting for encoding"
 msgstr "En attente d'encodage"
