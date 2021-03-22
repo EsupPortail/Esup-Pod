@@ -1,7 +1,7 @@
-# <img src="./pod/main/static/img/logoPod.svg" width="80" alt="" role="presentation"> Pod v2
-<a href="https://github.com/EsupPortail/Esup-Pod/actions"><img src="https://github.com/EsupPortail/Esup-Pod/actions/workflows/pod.yml/badge.svg" alt="Testing status" /></a>
+# <img src="./pod/main/static/img/logoPod.svg" width="80" alt="" role="presentation"> Esup-Pod
 
-![Licence LGPL 3.0](https://img.shields.io/github/license/EsupPortail/Esup-Pod)
+![Licence LGPL 3.0](https://img.shields.io/github/license/EsupPortail/Esup-Pod) - <a href="https://github.com/EsupPortail/Esup-Pod/actions"><img src="https://github.com/EsupPortail/Esup-Pod/actions/workflows/pod.yml/badge.svg" alt="Testing status" /></a> - [![Coverage Status](https://coveralls.io/repos/github/EsupPortail/Esup-Pod/badge.svg?branch=master)](https://coveralls.io/github/EsupPortail/Esup-Pod?branch=master)
+
 
 ## Plateforme de gestion de fichier vidéo
 
