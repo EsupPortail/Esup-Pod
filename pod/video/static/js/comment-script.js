@@ -32,7 +32,7 @@ if (!is_authenticated)
 	document.querySelector(".comment_counter_container").style.margin = "2em 0";
 
 class AlertMessage extends HTMLElement {
-	constructor(message, alert_class = "alert_success") {
+	constructor(message, alert_class = "success") {
 		super();
 		this.setAttribute("class", "alert " + `alert_${alert_class}`);
 		let html = document.createElement("DIV");
