@@ -1126,7 +1126,7 @@ input[type=checkbox]{
 	justify-content: center;
 	align-items: center;
 	color: #aaa;
-	transform: translateY(-.24em);
+	transform: translateY(-.28em);
 	transition: left .3s;
 }
 .switch_mode.active .switch_mode__toggle {color:  #dd930c; left: 35%; }
