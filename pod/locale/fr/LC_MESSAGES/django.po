@@ -657,7 +657,7 @@ msgid "Shortly after clicking the \"Perform a BigBlueButton live\" button, "
 "and select the desired options, the live stream will be available to users "
 "on the <i data-feather=\"radio\"></i> <b>Lives</b> page."
 msgstr "Peu de temps après avoir cliqué sur le bouton "
-"\"Réaliser un direct BigBlueButton\" et sélectionnez les options souhaitées, "
+"\"Réaliser un direct BigBlueButton\" et sélectionné les options souhaitées, "
 "le direct sera disponible pour les utilisateurs sur la page "
 "<i data-feather=\"radio\"></i> <b>Directs</b>."
 
