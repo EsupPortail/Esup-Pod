@@ -74,7 +74,7 @@ USER_LDAP_MAPPING_ATTRIBUTES = getattr(
         "first_name": "givenname",
         "primaryAffiliation": "eduPersonPrimaryAffiliation",
         "affiliations": "eduPersonAffiliation",
-        "groups" : ""
+        "groups": ""
     })
 
 CAS_FORCE_LOWERCASE_USERNAME = getattr(
