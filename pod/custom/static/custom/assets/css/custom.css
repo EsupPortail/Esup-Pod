@@ -22,6 +22,22 @@
 	--card-min-width: 200px;
 	--primary: #ff4f1e;
 	--secondary: #dd930c;
+	--font-color: #fff;
+	--red-color: rgb(169 1 1) !important;
+	--green-color: rgb(13 158 0) !important;
+	--warning-color: #866a3b !important;
+}
+[data-theme][data-theme-mode] .alert_success {
+	background: var(--green-color) !important;
+	color: #fff !important;
+}
+[data-theme][data-theme-mode] .alert_warning {
+	color: #fff;
+	background: var(--warning-color);
+}
+[data-theme][data-theme-mode] .alert_error {
+	background: var(--red-color) !important;
+	color: #fff !important;
 }
 /* Django login view */
 form#login-form, form#login-form .form-group {
@@ -59,6 +75,18 @@ html > body button.close,
 html > body button.close{
 	font-size: var(--font-size-close-btn) !important;
 }
+/* Video channel card center vignette */
+.video-thumb a.video-holder {
+    display: block;
+}
+span.poster{
+    display: flex;
+    justify-content: center;
+}
+span.poster img.preview {
+    width: 100%;
+}
+.social_links a svg.feather{fill: transparent;}
 
 [data-theme="dark"] > body, [data-theme-mode="dark"] > body,
 [data-theme="light"] > body, [data-theme-mode="light"] > body,
@@ -79,10 +107,10 @@ body > .mention-container {
 .not-displayed {
 	width: 0 !important;
 	height: 0 !important;
-	overflow: hidden;
+	overflow: hidden !important;
 	margin: 0 !important;
 	padding: 0 !important;
-	visibility: hidden;
+	visibility: hidden !important;
 	min-width: 0 !important;
 	max-width: 0 !important;
 }
@@ -158,6 +186,18 @@ h6 {
 .comment_label, .comment_main h1, .comment_main h2, .comment_main h3, .comment_main h4, .comment_main h5, .comment_main h6
 {
 	font-size: var(--font-size-semi-medium) !important;
+}
+[data-theme="dark"][data-theme-mode="dark"] .comment_main .confirm_delete_container{
+	background-color: var(--block-dark-color);
+	box-shadow: 2px 2px 4px var(--dark-shadow-color);
+	color: #fff;
+}
+[data-theme="dark"][data-theme-mode="dark"] .comment_main .confirm_delete_container .confirm_title *{
+	color: var(--dark-primary-color) !important;
+}
+[data-theme="dark"][data-theme-mode="dark"] .comment_main .confirm_delete_container .actions .delete,
+[data-theme="dark"][data-theme-mode="dark"] .comment_main .confirm_delete_container .actions .cancel{
+	box-shadow: 0 4px 8px var(--dark-shadow-color);
 }
 .comment_main .comment .comment_content_footer > *,
 .comment_main .comment .comment_content_body,
@@ -236,6 +276,7 @@ h6 {
 #videos_list .infinite-item .video-card{
 	display: flex;
 	flex-direction: column;
+	justify-content: space-between;
 }
 #videos_list .infinite-item .video-card .card-header{
 	flex: none !important;
@@ -248,6 +289,9 @@ h6 {
 #videos_list .infinite-item .video-card .d-flex{
 	flex: none;
 	flex-grow: 1;
+}
+[data-theme="dark"][data-theme-mode="dark"] #videos_list .infinite-item .video-card .card-header *{ background: transparent !important;}
+[data-theme="dark"][data-theme-mode="dark"] #videos_list .infinite-item .video-card .d-flex{
 	background-color: var(--background-dark-color);
 }
 #videos_list .infinite-item .video-card .card-header .small{
@@ -991,17 +1035,17 @@ input[type=checkbox]{
 	margin: 0 auto!important;
 }
 .nav-info-covid{
-	background-color: var(--primary2);
+	background-color: #102636;
 	color:#fff;
 	padding: 1em;
 	flex-direction: column;
 	border-radius: 4px;
 	border: 1px solid var(--primary);
 }
-.nav-info-covid .info-covid-title,
+/* .nav-info-covid .info-covid-title,
 .nav-info-covid .info-covid-title{
-	color: var(--primary) !important;
-}
+	color: #fff;
+} */
 .nav-info-covid .info-covid-redirect{
 	margin: 0;
 }
@@ -1501,6 +1545,34 @@ color: var(--link-color) !important;
 	color: #fff !important;
 }
 /*  main content */
+/* Thumbnail filter on dark mode */
+[data-theme="dark"][data-theme-mode="dark"] .card-thumbnail img,
+[data-theme="dark"][data-theme-mode="dark"] .video-holder img.preview,
+[data-theme="dark"][data-theme-mode="dark"] .carousel-item img{
+	opacity: .75;
+	transition: opacity .3s, transform .3s;
+}
+[data-theme="dark"][data-theme-mode="dark"] .video-js::after
+{
+	content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+    background: rgba(0,0,0,.3);
+	transition: transform .3s;
+}
+[data-theme="dark"][data-theme-mode="dark"] .video-js:hover::after{
+	transform: translateY(-100%);
+}
+[data-theme="dark"][data-theme-mode="dark"] .card-thumbnail img:hover,
+[data-theme="dark"][data-theme-mode="dark"] .video-holder img.preview:hover,
+[data-theme="dark"][data-theme-mode="dark"] .carousel-item img:hover,
+[data-theme="dark"][data-theme-mode="dark"] #podvideoplayer_html5_api:hover
+{
+	opacity: 1;
+}
 [data-theme="dark"] > body .breadcrumb,
 [data-theme-mode="dark"] > body .breadcrumb{
 	background-color: var(--block-color) !important;
