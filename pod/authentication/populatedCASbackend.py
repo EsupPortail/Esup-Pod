@@ -30,7 +30,7 @@ USER_CAS_MAPPING_ATTRIBUTES = getattr(
         "first_name": "givenname",
         "primaryAffiliation": "eduPersonPrimaryAffiliation",
         "affiliation": "eduPersonAffiliation",
-        "groups": ""
+        "groups": "memberOf"
     })
 
 CREATE_GROUP_FROM_AFFILIATION = getattr(
