@@ -706,7 +706,7 @@ button.navbar-toggler svg.feather-menu {
 a.btn-outline-primary svg {
 	fill: transparent;
 }
-.navbar a:hover,
+.navbar a:not(.btn):hover,
 .navbar .nav-link:hover,
 .navbar .nav-link:hover .nav-link-icone,
 button.dropdown-item:hover,
@@ -756,6 +756,7 @@ a.dropdown-item:hover {
 .dropdown-menu.dropdown-menu-right.show,
 .dropdown-item {
 	background-color: #2c2947;
+	border-color: #2c2947;
 	color: #fff;
 }
 span.dropdown-item:hover {
@@ -1340,8 +1341,8 @@ body .card-title{
 
 [data-theme="dark"] > body .list-group-item,
 [data-theme-mode="dark"] > body .list-group-item,
-[data-theme="dark"] > body input,
-[data-theme-mode="dark"] > body input,
+[data-theme="dark"] > body input:not(.dropdown-item),
+[data-theme-mode="dark"] > body input:not(.dropdown-item),
 [data-theme="dark"] > body textarea,
 [data-theme-mode="dark"] > body textarea,
 [data-theme="dark"] > body select,
@@ -1394,6 +1395,7 @@ body .btn-danger:hover{
 [data-theme="dark"] > body .dropdown-menu.dropdown-menu-right.show, .dropdown-item,
 [data-theme-mode="dark"] > body .dropdown-menu.dropdown-menu-right.show, .dropdown-item{
 	background-color: transparent !important;
+	border-color: transparent;
 }
 [data-theme="dark"] > body .border-right,
 [data-theme-mode="dark"] > body .border-right,
@@ -1405,6 +1407,7 @@ body .btn-danger:hover{
 [data-theme-mode="dark"] > body .border{
 	border: 1px solid var(--dark) !important;
 }
+[data-theme="dark"][data-theme-mode="dark"] .btn-lang + .dropdown-menu .dropdown-item:hover,
 [data-theme="dark"] > body .close,
 [data-theme-mode="dark"] > body .close,
 [data-theme="dark"] > body button.close,
@@ -1544,7 +1547,8 @@ color: var(--link-color) !important;
 [data-theme-mode="dark"] > body #nav-languagechoice input.btn.btn-lang,
 [data-theme="dark"] > body #nav-languagechoicelg .dropdown-item,
 [data-theme-mode="dark"] > body #nav-languagechoicelg .dropdown-item{
-	background-color: var(--block-dark-color) !important;
+	background-color: var(--block-color) !important;
+	border-color: var(--block-color) !important;
 }
 [data-theme="dark"] > body #nav-languagechoice input.btn.btn-lang:hover,
 [data-theme-mode="dark"] > body #nav-languagechoice input.btn.btn-lang:hover,
@@ -1586,7 +1590,7 @@ color: var(--link-color) !important;
 	opacity: .75;
 	transition: opacity .3s, transform .3s;
 }
-[data-theme="dark"][data-theme-mode="dark"] .video-js::after
+[data-theme="dark"][data-theme-mode="dark"] .video-js.vjs-paused::after
 {
 	content: "";
     position: absolute;
