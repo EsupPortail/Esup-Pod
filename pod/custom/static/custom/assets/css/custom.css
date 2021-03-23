@@ -22,14 +22,22 @@
 	--card-min-width: 200px;
 	--primary: #fc2c00;
 	--secondary: #dd930c;
-	--font-color: #fff;
+	--font-color: #3c3c3b;
 	--red-color: rgb(169 1 1) !important;
 	--green-color: rgb(13 158 0) !important;
 	--warning-color: #866a3b !important;
+	--light: #e9ecef;
+}
+[data-theme="dark"][data-theme-mode="dark"]{
+	
+	--font-color: #fff;
 }
 .navbar .container.container-pod .navbar-brand{
 	flex-grow: 1;
 	text-align: center;
+}
+.breadcrumb, .jumbotron{
+	background: var(--light);
 }
 [data-theme][data-theme-mode] .alert_success {
 	background: var(--green-color) !important;
@@ -611,10 +619,6 @@ button.navbar-toggler svg.feather-menu {
 	box-shadow: none !important;
 	outline: none !important;
 }
-.btn-primary:hover {
-	background: transparent !important;
-	color: #2c2947 !important;
-}
 .btn.btn-info,
 .btn.btn-info:hover {
 	color: #fff !important;
@@ -661,11 +665,14 @@ button.navbar-toggler svg.feather-menu {
 }
 #navbarDropdown {
 	background-color: transparent !important;
-	border-radius: 5px !important;
 	-webkit-transition: background-color 0.3s;
 	-o-transition: background-color 0.3s;
 	transition: background-color 0.3s;
 	outline: none;
+	width: unset;
+	height: unset;
+	padding: .2em .4em !important;
+	border-radius: 2px !important;
 }
 #navbarDropdown:hover {
 	color: #fff;
@@ -1060,12 +1067,13 @@ input[type=checkbox]{
 	margin-top: 2em !important;
 }
 .nav-info-covid{
-	background-color: #2c2947;
-	color:#fff;
+	background-color: var(--light);
+	color:var(--font-color);
 	padding: 1em;
 	flex-direction: column;
 	border-radius: 4px;
 	border: 1px solid var(--primary);
+	font-weight: 600;
 }
 .nav-info-covid .info-covid-redirect{
 	margin: 0;
