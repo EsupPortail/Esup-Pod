@@ -2,6 +2,11 @@ from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
 from .models import Owner, AccessGroup
 from rest_framework import serializers, viewsets
+from rest_framework.decorators import api_view
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse
 
 # Serializers define the API representation.
 
@@ -67,3 +72,23 @@ class SiteViewSet(viewsets.ModelViewSet):
 class AccessGroupViewSet(viewsets.ModelViewSet):
     queryset = AccessGroup.objects.all()
     serializer_class = AccessGroupSerializer
+
+
+@api_view(['POST'])
+def accesgroups_set_users_by_name(request):
+    if ("users" in request.data) and ("users" in request.data):
+        code_name = request.data["code_name"]
+        users = request.data["users"]
+        accessgroup = get_object_or_404(AccessGroup, code_name=code_name)
+        for user in users:
+            try:
+                owner = Owner.objects.get(user__username=user)
+                accessgroup.users.add(owner)
+            except ObjectDoesNotExist:
+                pass
+        return Response(
+            AccessGroupSerializer(
+                instance=accessgroup, context={'request': request}).data
+        )
+    else:
+        return HttpResponse(status=500)

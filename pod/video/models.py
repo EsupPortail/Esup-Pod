@@ -266,7 +266,8 @@ class Channel(models.Model):
         default=False)
     allow_to_groups = select2_fields.ManyToManyField(
         AccessGroup, blank=True, verbose_name=_('Groups'), ajax=True,
-        search_field=lambda q: Q(code_name__icontains=q) | Q(display_name__icontains=q),
+        search_field=lambda q: Q(code_name__icontains=q) | Q(
+            display_name__icontains=q),
         help_text=_('Select one or more groups who can access to this channel,'
                     'if no group selected will no be protected'))
     sites = models.ManyToManyField(Site)

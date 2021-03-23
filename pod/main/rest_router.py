@@ -4,6 +4,7 @@ from django.conf.urls import include
 from pod.authentication import rest_views as authentication_views
 from pod.video import rest_views as video_views
 from pod.main import rest_views as main_views
+from pod.authentication import rest_views as auth_views
 
 from pod.chapter import rest_views as chapter_views
 from pod.completion import rest_views as completion_views
@@ -74,6 +75,9 @@ urlpatterns = [
     url(r'store_remote_encoded_video/$',
         video_views.store_remote_encoded_video,
         name='store_remote_encoded_video'),
+    url(r'accesgroups_set_users_by_name/$',
+        auth_views.accesgroups_set_users_by_name,
+        name='accesgroups_set_users_by_name'),
 ]
 
 for apps in settings.THIRD_PARTY_APPS:
