@@ -424,7 +424,7 @@ button.close {
 
 #podfile .share-folders{ padding-top: .4em; border-top: 2px dotted var(--primary); }
 #podfile .share-folders,
-#podfile #list_folders_sub{ overflow: auto; max-height: 250px; margin-bottom: 1em; }
+#podfile #list_folders_sub{ overflow: auto; margin-bottom: 1em; }
 #podfile .share-folders .folder_title{ display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; margin-bottom: .4em; color: var(--primary);}
 #podfile .share-folders .home-directory{-webkit-transform: translateY(-8px);-ms-transform: translateY(-8px);transform: translateY(-8px) }
 #podfile #list_folders_sub a.folder:not(.folder-opened) span.folder-open,
@@ -968,3 +968,9 @@ button.close {
   }
 }
 
+.display-vertical{
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(2, minmax(auto, 1fr) );
+      overflow: auto;
+  }
