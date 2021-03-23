@@ -33,6 +33,7 @@ class OwnerTestCase(TestCase):
         self.assertEqual(Owner.objects.filter(user__username="pod").count(), 0)
         print("test_suppression_owner OwnerTestCase OK")
 
+
 class AccessGroupTestCase(TestCase):
 
     """AcessGroupTestCase"""
@@ -41,7 +42,7 @@ class AccessGroupTestCase(TestCase):
         """setUp AcessGroupTestCase create user pod"""
         User.objects.create(username="pod", password="pod1234pod")
 
-        AccessGroup.objects.create(code_name="group1",display_name="Group 1")
+        AccessGroup.objects.create(code_name="group1", display_name="Group 1")
 
     def test_creation_accessgroup(self):
         """check if owner exist with username pod and check hashkey"""
@@ -53,5 +54,6 @@ class AccessGroupTestCase(TestCase):
     def test_suppression_accessgroup(self):
         accessgroup = AccessGroup.objects.get(code_name="group1")
         accessgroup.delete()
-        self.assertEqual(AccessGroup.objects.filter(code_name="group1").count(), 0)
+        self.assertEqual(AccessGroup.objects.filter(
+            code_name="group1").count(), 0)
         print("test_suppression_accessgroup AccessGroupTestCase OK")
