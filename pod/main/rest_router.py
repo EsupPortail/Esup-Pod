@@ -78,6 +78,9 @@ urlpatterns = [
     url(r'accesgroups_set_users_by_name/$',
         auth_views.accesgroups_set_users_by_name,
         name='accesgroups_set_users_by_name'),
+    url(r'accesgroups_set_groups_by_username/$',
+        auth_views.accesgroups_set_groups_by_username,
+        name='accesgroups_set_groups_by_username'),
 ]
 
 for apps in settings.THIRD_PARTY_APPS:
