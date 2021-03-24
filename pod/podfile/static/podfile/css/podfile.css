@@ -1,10 +1,3 @@
-/*
-* Prefixed by https://autoprefixer.github.io
-* PostCSS: v7.0.29,
-* Autoprefixer: v9.7.6
-* Browsers: last 4 version
-*/
-
 button.close {
   padding: 0;
   background-color: transparent;
@@ -217,15 +210,15 @@ button.close {
 }
 #podfile .list_folders{
   padding-left: 15px;
-  max-height:350px;
-  overflow: auto;
+  height: auto;
+  overflow: hidden;
 }
-
 #podfile .list_folders .folder_name{
   max-width: 600px;
   display: inline-block;
   overflow: hidden;
-  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+     text-overflow: ellipsis;
   white-space: nowrap;
 }
 #podfile #listfiles{
@@ -345,6 +338,7 @@ button.close {
   -webkit-box-pack: justify;
      -ms-flex-pack: justify;
    justify-content: space-between;
+
 }
 #podfile #dirs{
   position: absolute;
@@ -352,13 +346,9 @@ button.close {
   width: calc(100% - 25px);
   max-width: 100%;
   height: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-      flex-direction: column;
+  display: -ms-grid;
+  display: grid;
+  grid-row-gap: .4em;
   opacity: 0;
   z-index: -1;
   -webkit-transition: .5s opacity;
@@ -416,15 +406,15 @@ button.close {
   margin-right: 1em;
 }
 #podfile .list_folders .folder,
-#podfile .list_folders_sub .folder{ align-items: center;}
+#podfile .list_folders_sub .folder{ -webkit-box-align: center; -ms-flex-align: center; align-items: center;}
 #podfile .list_folders_sub .folder > *,
-#podfile .list_folders .folder > *{flex: none;}
+#podfile .list_folders .folder > *{-webkit-box-flex: 0;-ms-flex: none;flex: none;}
 #podfile #dirs .dirs-nav-container .add-folder-btn{ color: var(--secondary); -webkit-transition: .3s transform; -o-transition: .3s transform; transition: .3s transform; }
 #podfile #dirs .dirs-nav-container .add-folder-btn:hover{ text-decoration: none; -webkit-transform: scale(1.1); -ms-transform: scale(1.1); transform: scale(1.1);}
 
 #podfile .share-folders{ padding-top: .4em; border-top: 2px dotted var(--primary); }
 #podfile .share-folders,
-#podfile #list_folders_sub{ overflow: auto; margin-bottom: 1em; }
+#podfile #list_folders_sub{ overflow-y: auto;}
 #podfile .share-folders .folder_title{ display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; margin-bottom: .4em; color: var(--primary);}
 #podfile .share-folders .home-directory{-webkit-transform: translateY(-8px);-ms-transform: translateY(-8px);transform: translateY(-8px) }
 #podfile #list_folders_sub a.folder:not(.folder-opened) span.folder-open,
@@ -446,13 +436,34 @@ button.close {
   margin-right: 8px;
   color: inherit;
 }
+#podfile #dirs .dirs-nav + *{
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: 1fr;
+  grid-template-columns: 1fr;
+  -ms-grid-rows: (minmax(auto, 1fr))[2];
+  grid-template-rows: repeat(2, minmax(auto, 1fr) );
+  overflow: auto;
+}
+#podfile #dirs .dirs-nav + * > *:nth-child(1){
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
+}
+#podfile #dirs .dirs-nav + * > *:nth-child(2){
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
+}
 #podfile #dirs .share-folder span.home-directory{ color: var(--primary); }
 #podfile #dirs .folder-search{
   border: 1px solid #ccc;
   font-size: 14px;
   padding: .4em;
   color: rgba(0,0,0,.75);
-  margin-top: .8em;
+  -webkit-box-flex: 0;
+      -ms-flex: none;
+          flex: none;
+  height: 35px;
+
 }
 #podfile #dirs .folder-search::-webkit-input-placeholder{
   color: rgba(0,0,0,.5);
@@ -560,7 +571,6 @@ button.close {
   -webkit-box-align: center;
     -ms-flex-align: center;
       align-items: center;
-  margin-bottom: .8em;
 }
 #podfile .alert-warning .close{
   position:absolute;
@@ -675,19 +685,16 @@ button.close {
   text-transform: uppercase;
   font-size: 16px;
 }
-#podfile .flex{
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-      flex-direction: column;
+#podfile .flex,
+#podfile .folder-search + div{
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-rows: minmax(.5fr, 1fr);
+  grid-template-rows: minmax(.5fr, 1fr);
+  grid-auto-rows: minmax(.5fr, 1fr);
+  min-height: 100%;
 }
-#podfile .list_folders{
-  height: auto;
-  max-height: unset;
-}
+
 #podfile #listfiles{
   display: -ms-grid;
   display: grid;
@@ -967,10 +974,3 @@ button.close {
       transform: translate(24px, 0);
   }
 }
-
-.display-vertical{
-      display: grid;
-      grid-template-columns: 1fr;
-      grid-template-rows: repeat(2, minmax(auto, 1fr) );
-      overflow: auto;
-  }
