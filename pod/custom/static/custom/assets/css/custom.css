@@ -36,6 +36,7 @@
 	flex-grow: 1;
 	text-align: center;
 }
+.dropdown-header{color: #fff;}
 .breadcrumb, .jumbotron{
 	background: var(--light);
 }
