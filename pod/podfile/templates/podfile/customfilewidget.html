@@ -1,6 +1,6 @@
 {% load i18n static %}
 {% block more_style %}
-<link rel="stylesheet" type="text/css" href="{% static 'podfile/css/podfile.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'podfile/css/podfile.css' %}?ver={{VERSION}}">
 {% endblock more_style %}
 <div>
   {{input|safe}}
@@ -62,11 +62,9 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body row" id="modal-folder_{{id}}">
-
-      </div>
+      <div class="modal-body row" id="modal-folder_{{id}}"></div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{%trans 'Close' %}</button>
       </div>
     </div>
   </div>
@@ -96,16 +94,16 @@ $(document).on("click", "#remove_file_{{id}}", function(event) {
   var html_div = '<span id="fileinput_{{id}}"></span>\
     <button type="button" class="btn btn-sm btn-outline-primary btn-fileinput mx-1" data-toggle="modal" data-target="#fileModal_{{id}}">\
     {% if type == "image" %}\
-    {% trans 'Select an image' %}\
+      {% trans 'Select an image' %}\
     {% else %}\
-    {% trans 'Select a file' %}\
+      {% trans 'Select a file' %}\
     {% endif %}\
     </button>\
     <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id="remove_file_{{id}}" style="display:none">\
       {% if type == "image" %}\
-      {% trans 'Remove image' %}\
+        {% trans 'Remove image' %}\
       {% else %}\
-      {% trans 'Remove file' %}\
+        {% trans 'Remove file' %}\
       {% endif %}\
     </button>';
   $(this).parent('span').html(html_div);

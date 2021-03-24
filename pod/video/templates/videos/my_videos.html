@@ -3,54 +3,54 @@
 {% load staticfiles %}
 
 {% block more_style %}
-{% if use_category %}
-<link rel="stylesheet" href="{% static 'css/video_category.css' %}"> 
-{% endif %}
+  {% if use_category %}
+    <link rel="stylesheet" href="{% static 'css/video_category.css' %}?ver={{VERSION}}">
+  {% endif %}
 {% endblock more_style %}
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My videos" %}</li>{% endblock %}
 
 {% block page_title %}
-{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
+  {% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
 {% endblock %}
 
 
 {% block page_content %}
-    {% if use_category %}
+  {% if use_category %}
     <!-- Loader -->
     <div class="loader_wrapper">
-        <div id="my_videos" class="lds-roller">
-	    <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
-	</div>
+      <div id="my_videos" class="lds-roller">
+        <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+      </div>
     </div>
     <!-- End Loader -->
     {% include "videos/category_modal.html" %}
-    {% endif %}
+  {% endif %}
   {% if videos.paginator.count == 0 %}
-  <h3>{% trans "No video found"%}</h3>
+    <h3>{% trans "No video found"%}</h3>
     <p class="alert alert-info">{% trans 'You have not uploaded any videos yet, please use the "Add a new video" button to add one'%}</p>
   {% else %}
-  <h3>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h3>
-  <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the video on which you want to work with." %}</p>
-  {% include "videos/video_list.html" %}
+    <h3>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</h3>
+    <p class="alert alert-info">{% trans "Please use the thumbnails toolbar which is located under the video on which you want to work with." %}</p>
+    {% include "videos/video_list.html" %}
   {% endif %}
 {% endblock page_content %}
 
-    {% block collapse_page_aside %}
-{% if use_category %}
+{% block collapse_page_aside %}
+  {% if use_category %}
     {{ block.super }}
-{% endif %}
-    {% endblock collapse_page_aside %}
+  {% endif %}
+{% endblock collapse_page_aside %}
 
-    {% block page_aside %}
-{% if use_category %}
+{% block page_aside %}
+  {% if use_category %}
     {% include 'videos/filter_aside_category.html' %}
-{% endif %}
-    {% endblock page_aside %}
+  {% endif %}
+{% endblock page_aside %}
 
 {% block more_script %}
-<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
-<script src="{% static 'js/infinite.min.js' %}"></script>
+<script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script>
   var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],
@@ -75,11 +75,11 @@
     }
   });
 {% if use_category %}
-const CATEGORIES_DATA = {{ categories | safe }};
-</script>
-<script tyep="text/javascript" defer src="{% static 'js/video_category.js' %}"></script>
+  const CATEGORIES_DATA = {{ categories | safe }};
+  </script>
+  <script defer src="{% static 'js/video_category.js' %}?ver={{VERSION}}"></script>
 {% else %}
-</script>
+  </script>
 {% endif %}
 
 {% endblock more_script %}

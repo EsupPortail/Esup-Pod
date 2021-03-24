@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-11 17:17+0100\n"
-"PO-Revision-Date: 2021-01-29 15:57+0100\n"
+"POT-Creation-Date: 2021-03-24 12:09+0100\n"
+"PO-Revision-Date: 2021-03-24 12:11+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -115,7 +115,7 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer les sous-titre ?"
 #: pod/completion/static/js/completion.js:145
 #: pod/podfile/static/podfile/js/filewidget.js:277
 msgid "Are you sure you want to delete this file?"
-msgstr "Êtes-vous sûr(e) de vouloir supprimer ce fichier ?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer ce fichier ?"
 
 #: pod/completion/static/js/completion.js:147
 msgid "Are you sure you want to delete this contributor?"
@@ -365,7 +365,7 @@ msgstr ""
 
 #: pod/main/static/js/main.js:256
 msgid "Are you sure you want to delete this element?"
-msgstr "Êtes-vous sûr(e) de vouloir supprimer cet élément ?"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer cet élément ?"
 
 #: pod/main/static/js/main.js:298
 #: pod/podfile/static/podfile/js/filewidget.js:114
@@ -456,48 +456,48 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer ce dossier ?"
 msgid "See more"
 msgstr "Voir plus"
 
-#: pod/video/static/js/comment-script.js:25
+#: pod/video/static/js/comment-script.js:29
 msgid "Answer"
 msgstr "Réponse"
 
-#: pod/video/static/js/comment-script.js:26
+#: pod/video/static/js/comment-script.js:30
 msgid "Answers"
 msgstr "Réponses"
 
-#: pod/video/static/js/comment-script.js:81
-#: pod/video/static/js/comment-script.js:226
+#: pod/video/static/js/comment-script.js:85
+#: pod/video/static/js/comment-script.js:230
 msgid "Delete"
 msgstr "Supprimer"
 
-#: pod/video/static/js/comment-script.js:94
+#: pod/video/static/js/comment-script.js:98
 msgid "Cancel"
 msgstr "Annuler"
 
-#: pod/video/static/js/comment-script.js:175
+#: pod/video/static/js/comment-script.js:179
 msgid "Agree with the comment"
 msgstr "D'accord avec ce commentaire"
 
-#: pod/video/static/js/comment-script.js:202
+#: pod/video/static/js/comment-script.js:206
 msgid "Reply to comment"
 msgstr "Répondre au commentaire"
 
-#: pod/video/static/js/comment-script.js:205
+#: pod/video/static/js/comment-script.js:209
 msgid "Reply"
 msgstr "Répondre"
 
-#: pod/video/static/js/comment-script.js:223
+#: pod/video/static/js/comment-script.js:227
 msgid "Remove this comment"
 msgstr "Supprimer ce commentaire"
 
-#: pod/video/static/js/comment-script.js:245
+#: pod/video/static/js/comment-script.js:249
 msgid "Add a public comment"
 msgstr "Ajouter un commentaire public"
 
-#: pod/video/static/js/comment-script.js:369
+#: pod/video/static/js/comment-script.js:373
 msgid "Show answers"
 msgstr "Afficher les réponses"
 
-#: pod/video/static/js/comment-script.js:572
+#: pod/video/static/js/comment-script.js:576
 msgid "Comment has been deleted successfully."
 msgstr "Commentaire a été supprimé avec succès."
 

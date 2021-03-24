@@ -5,7 +5,7 @@
 <link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
 <script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
 <script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
-<script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
+<script src="{% static 'js/videojs-http-streaming.min.js' %}?ver={{VERSION}}"></script>
 {% endblock %}
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Claim a record" %}</li>{% endblock %}
@@ -34,17 +34,14 @@
         </button>
       </div>
       <div class="modal-body">
- <video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
+        <video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
  data-setup='{}'>
-    <p class="vjs-no-js">
-        To view this video please enable JavaScript, and consider upgrading to a web browser that
-        <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-    </p>
-
-
-</video>
-
+          <p class="vjs-no-js">
+            {%blocktrans%}To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>{%endblocktrans%}
+          </p>
+        </video>
       </div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
       </div>
@@ -61,8 +58,8 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
-<script src="{% static 'js/infinite.min.js' %}"></script>
+<script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script>
   var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],

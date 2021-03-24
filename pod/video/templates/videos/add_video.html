@@ -109,105 +109,100 @@
 
 
 {% block more_script %}
-<script type="text/javascript" src="/admin/jsi18n/"></script>
-<script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
-<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-<script type="text/javascript" src="{% static 'admin/js/jquery.init.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/jquery-ui.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/jquery-iframe-transport.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/jquery-fileupload.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/jquery.fileupload-process.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/jquery.fileupload-validate.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/jquery.fileupload-ui.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/spark-md5.js' %}"></script>
+  <script src="/admin/jsi18n/"></script>
+  <script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/jquery-ui.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/jquery-iframe-transport.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/jquery-fileupload.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/jquery.fileupload-process.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/jquery.fileupload-validate.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/jquery.fileupload-ui.js' %}?ver={{VERSION}}"></script>
+  <script src="{% static 'js/spark-md5.js' %}?ver={{VERSION}}"></script>
 
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
 
 
 <script>
-
-/** formulaire **/
-var max_chunk_size = {{CHUNK_SIZE}}
-var slug = "{{ slug }}"
-var max_size = {{ max_size }} 
- var md5 = "",
-        csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
-        form_data = [{"name": "csrfmiddlewaretoken", "value": csrf}];
-    function calculate_md5(file, chunk_size) {
-      var slice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
-          chunks = chunks = Math.ceil(file.size / chunk_size),
-          current_chunk = 0,
-          spark = new SparkMD5.ArrayBuffer();
-      function onload(e) {
-        spark.append(e.target.result);  // append chunk
-        current_chunk++;
-        if (current_chunk < chunks) {
-          read_next_chunk();
-        } else {
-          md5 = spark.end();
+  /** formulaire **/
+  var max_chunk_size = {{CHUNK_SIZE}}
+  var slug = "{{ slug }}"
+  var max_size = {{ max_size }} 
+  var md5 = "",
+      csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
+      form_data = [{"name": "csrfmiddlewaretoken", "value": csrf}];
+  function calculate_md5(file, chunk_size) {
+    var slice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
+      chunks = chunks = Math.ceil(file.size / chunk_size),
+      current_chunk = 0,
+      spark = new SparkMD5.ArrayBuffer();
+    function onload(e) {
+      spark.append(e.target.result);  // append chunk
+      current_chunk++;
+      if (current_chunk < chunks) {
+        read_next_chunk();
+      } else {
+        md5 = spark.end();
+      }
+    };
+    function read_next_chunk() {
+      var reader = new FileReader();
+      reader.onload = onload;
+      var start = current_chunk * chunk_size,
+          end = Math.min(start + chunk_size, file.size);
+      reader.readAsArrayBuffer(slice.call(file, start, end));
+    };
+    read_next_chunk();
+  }
+  $("#chunked_upload").fileupload({
+    url: "{% url 'api_chunked_upload' %}",
+    dataType: "json",
+    maxChunkSize: max_chunk_size, // Chunks of 100 kB
+    maxFileSize:  1,
+    formData: form_data,
+    add: function(e, data) { // Called before starting upload
+        // If this is the second file you're uploading we need to remove the
+        // old upload_id and just keep the csrftoken (which is always first).
+        $(".hide-on-processing").hide();
+        $(".show-on-processing").show();
+        form_data.splice(1);
+        calculate_md5(data.files[0], max_chunk_size);  // Again, chunks of 100 kB
+        data.submit();
+    },
+    chunkdone: function (e, data) { // Called after uploading each chunk
+    $(this).is(':checked')
+      if (form_data.length < 2) {
+        form_data.push(
+          {"name": "upload_id", "value": data.result.upload_id}
+        );
+      }
+      console.log(JSON.stringify(data.result))
+      var progress = parseInt(data.loaded / data.total * 100.0, 10);
+      $('#progBar').val(progress);
+    },
+    done: function (e, data) { // Called when the file has completely uploaded
+      $.ajax({
+        type: "POST",
+        url: "{% url 'api_chunked_upload_complete' %}",
+        data: {
+          csrfmiddlewaretoken: csrf,
+          upload_id: data.result.upload_id,
+          md5: md5,
+          slug : slug,
+          transcript : $("#transcript-box").is(':checked')
+        },
+        dataType: "json",
+        success: function(data) {
+         console.log(JSON.stringify(data));
+         location.href= data.redirlink
         }
-      };
-      function read_next_chunk() {
-        var reader = new FileReader();
-        reader.onload = onload;
-        var start = current_chunk * chunk_size,
-            end = Math.min(start + chunk_size, file.size);
-        reader.readAsArrayBuffer(slice.call(file, start, end));
-      };
-      read_next_chunk();
-    }
-    $("#chunked_upload").fileupload({
-      url: "{% url 'api_chunked_upload' %}",
-      dataType: "json",
-      maxChunkSize: max_chunk_size, // Chunks of 100 kB
-      maxFileSize:  1,
-      formData: form_data,
-      add: function(e, data) { // Called before starting upload
-          // If this is the second file you're uploading we need to remove the
-          // old upload_id and just keep the csrftoken (which is always first).
-          $(".hide-on-processing").hide();
-          $(".show-on-processing").show();
-          form_data.splice(1);
-          calculate_md5(data.files[0], max_chunk_size);  // Again, chunks of 100 kB
-          data.submit();
-      },
-      chunkdone: function (e, data) { // Called after uploading each chunk
-      $(this).is(':checked')
-        if (form_data.length < 2) {
-          form_data.push(
-            {"name": "upload_id", "value": data.result.upload_id}
-          );
-        }
-        console.log(JSON.stringify(data.result))
-        var progress = parseInt(data.loaded / data.total * 100.0, 10);
-        $('#progBar').val(progress);
-      },
-      done: function (e, data) { // Called when the file has completely uploaded
-        $.ajax({
-          type: "POST",
-          url: "{% url 'api_chunked_upload_complete' %}",
-          data: {
-            csrfmiddlewaretoken: csrf,
-            upload_id: data.result.upload_id,
-            md5: md5,
-            slug : slug,
-            transcript : $("#transcript-box").is(':checked')
-          },
-          dataType: "json",
-          success: function(data) {
-           console.log(JSON.stringify(data));
-           location.href= data.redirlink
-          }
-        });
-      },
-    });
-
+      });
+    },
+  });
 </script>
 
-
-
 {{form.media}}
-
 
 <style>
   .file {
@@ -237,7 +232,5 @@ var max_size = {{ max_size }}
     display:none;
   }
 </style>
-
-
 
 {% endblock more_script %}

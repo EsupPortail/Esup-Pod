@@ -13,7 +13,7 @@
 </style>
 {% endblock page_extra_head %}
 
-{% block breadcrumbs %}{{ block.super }} 
+{% block breadcrumbs %}{{ block.super }}
   <li class="breadcrumb-item" aria-current="page"><a href="{% url 'bbb:list_meeting' %}">{% trans 'My BigBlueButton records and lives' %}</a></li>
   <li class="breadcrumb-item active" aria-current="page">{% trans "Publish the BigBlueButton presentation" %}</li>
 {% endblock %}
@@ -24,7 +24,7 @@
 
 
 {% block page_content %}
-<h3>{% trans "Are you sure you want to publish this BigBlueButton presentation ?" %}</h3>
+<h3>{% trans "Are you sure you want to publish this BigBlueButton presentation?" %}</h3>
 
 <form id="recording_form" method="post"
   action="{{request.get_full_path}}"

@@ -719,7 +719,7 @@ class Video(models.Model):
                 self.get_video_mp4() is not None or
                 self.get_video_m4a() is not None)
 
-    encoded.fget.short_description = _('Is the video encoded ?')
+    encoded.fget.short_description = _('Is the video encoded?')
 
     @property
     def get_version(self):
