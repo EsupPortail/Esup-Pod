@@ -1510,11 +1510,14 @@ color: var(--link-color) !important;
 [data-theme-mode="dark"] > body #nav-search:hover{
 	color: var(--link-color);
 }
+[data-theme="dark"][data-theme-mode="dark"] #video_notes_form textarea#id_note,
+[data-theme="dark"][data-theme-mode="dark"] #video_notes_form select#id_status,
+[data-theme="dark"][data-theme-mode="dark"] #video_notes_form select#id_status *,
 [data-theme="dark"][data-theme-mode="dark"] #s:focus,
 [data-theme="dark"] > body .navbar .form-control#s,
 [data-theme-mode="dark"] > body .navbar .form-control#s{
-	background-color: var(--block-dark-color);
-	border: 1px solid var(--block-dark-color);
+	background: var(--block-dark-color) !important;
+	border: 1px solid var(--block-dark-color) !important;
 	color: white;
 	width: calc(100% - 2em);
 	margin: 0 1em !important;
@@ -1587,29 +1590,23 @@ color: var(--link-color) !important;
 [data-theme="dark"][data-theme-mode="dark"] .video-holder img.preview,
 [data-theme="dark"][data-theme-mode="dark"] .carousel-item img,
 [data-theme="dark"][data-theme-mode="dark"] img.card-img-top{
-	opacity: .75;
-	transition: opacity .3s, transform .3s;
+	filter: grayscale(80%);
+	transition: filter .3s, transform .3s;
 }
-[data-theme="dark"][data-theme-mode="dark"] .video-js.vjs-paused::after
+[data-theme="dark"][data-theme-mode="dark"] .video-js.vjs-paused
 {
-	content: "";
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    top: 0;
-    background: rgba(0,0,0,.3);
-	transition: transform .3s;
+	filter: grayscale(100%) contrast(70%);
+	transition: filter .3s;
 }
-[data-theme="dark"][data-theme-mode="dark"] .video-js:hover::after{
-	transform: translateY(-100%);
+[data-theme="dark"][data-theme-mode="dark"] .video-js:hover{
+	filter: grayscale(0%) contrast(100%);
 }
 [data-theme="dark"][data-theme-mode="dark"] .card-thumbnail img:hover,
 [data-theme="dark"][data-theme-mode="dark"] .video-holder img.preview:hover,
 [data-theme="dark"][data-theme-mode="dark"] .carousel-item img:hover,
 [data-theme="dark"][data-theme-mode="dark"] img.card-img-top:hover
 {
-	opacity: 1;
+	filter: grayscale(0%);
 }
 
 /* END Thumbnail filter on dark mode */
@@ -2404,13 +2401,6 @@ body #videos_list .card .card-body .card-footer.card-footer-pod svg{
 [data-theme="dark"] > body #podfile .alert-warning .close,
 [data-theme-mode="dark"] > body #podfile .alert-warning .close{
 	font-size: var(--font-size-medium) !important;
-}
-[data-theme="dark"] > body #podfile .list_folders,
-[data-theme="light"] > body #podfile .list_folders,
-[data-theme-mode="dark"] > body #podfile .list_folders,
-[data-theme-mode="light"] > body #podfile .list_folders
-{
-	height: 100%;
 }
 [data-theme="dark"] > body #podfile .share-folders .folder_title,
 [data-theme-mode="dark"] > body #podfile .share-folders .folder_title{color: #fff;}
