@@ -1,10 +1,3 @@
-/*
-* Prefixed by https://autoprefixer.github.io
-* PostCSS: v7.0.29,
-* Autoprefixer: v9.7.6
-* Browsers: last 4 version
-*/
-
 button.close {
   padding: 0;
   background-color: transparent;
@@ -224,7 +217,8 @@ button.close {
   max-width: 600px;
   display: inline-block;
   overflow: hidden;
-  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+     text-overflow: ellipsis;
   white-space: nowrap;
 }
 #podfile #listfiles{
@@ -352,6 +346,7 @@ button.close {
   width: calc(100% - 25px);
   max-width: 100%;
   height: 100%;
+  display: -ms-grid;
   display: grid;
   grid-row-gap: .4em;
   opacity: 0;
@@ -411,9 +406,9 @@ button.close {
   margin-right: 1em;
 }
 #podfile .list_folders .folder,
-#podfile .list_folders_sub .folder{ align-items: center;}
+#podfile .list_folders_sub .folder{ -webkit-box-align: center; -ms-flex-align: center; align-items: center;}
 #podfile .list_folders_sub .folder > *,
-#podfile .list_folders .folder > *{flex: none;}
+#podfile .list_folders .folder > *{-webkit-box-flex: 0;-ms-flex: none;flex: none;}
 #podfile #dirs .dirs-nav-container .add-folder-btn{ color: var(--secondary); -webkit-transition: .3s transform; -o-transition: .3s transform; transition: .3s transform; }
 #podfile #dirs .dirs-nav-container .add-folder-btn:hover{ text-decoration: none; -webkit-transform: scale(1.1); -ms-transform: scale(1.1); transform: scale(1.1);}
 
@@ -442,10 +437,21 @@ button.close {
   color: inherit;
 }
 #podfile #dirs .dirs-nav + *{
+  display: -ms-grid;
   display: grid;
+  -ms-grid-columns: 1fr;
   grid-template-columns: 1fr;
+  -ms-grid-rows: (minmax(auto, 1fr))[2];
   grid-template-rows: repeat(2, minmax(auto, 1fr) );
   overflow: auto;
+}
+#podfile #dirs .dirs-nav + * > *:nth-child(1){
+  -ms-grid-row: 1;
+  -ms-grid-column: 1;
+}
+#podfile #dirs .dirs-nav + * > *:nth-child(2){
+  -ms-grid-row: 2;
+  -ms-grid-column: 1;
 }
 #podfile #dirs .share-folder span.home-directory{ color: var(--primary); }
 #podfile #dirs .folder-search{
@@ -453,7 +459,9 @@ button.close {
   font-size: 14px;
   padding: .4em;
   color: rgba(0,0,0,.75);
-  flex: none;
+  -webkit-box-flex: 0;
+      -ms-flex: none;
+          flex: none;
   height: 35px;
 
 }
@@ -679,7 +687,9 @@ button.close {
 }
 #podfile .flex,
 #podfile .folder-search + div{
+  display: -ms-grid;
   display: grid;
+  -ms-grid-rows: minmax(.5fr, 1fr);
   grid-template-rows: minmax(.5fr, 1fr);
   grid-auto-rows: minmax(.5fr, 1fr);
   min-height: 100%;
@@ -964,4 +974,3 @@ button.close {
       transform: translate(24px, 0);
   }
 }
-
