@@ -2,7 +2,6 @@ from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client
 from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
 from pod.authentication.models import AccessGroup
 
 from ..models import Channel
