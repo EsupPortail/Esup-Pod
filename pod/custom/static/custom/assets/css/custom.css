@@ -1586,27 +1586,21 @@ color: var(--link-color) !important;
 }
 /*  main content */
 /* Thumbnail filter on dark mode */
+[data-theme="dark"][data-theme-mode="dark"] .video-js.vjs-paused,
 [data-theme="dark"][data-theme-mode="dark"] .card-thumbnail img,
 [data-theme="dark"][data-theme-mode="dark"] .video-holder img.preview,
 [data-theme="dark"][data-theme-mode="dark"] .carousel-item img,
 [data-theme="dark"][data-theme-mode="dark"] img.card-img-top{
-	filter: grayscale(80%);
+	filter: grayscale(80%) contrast(70%);
 	transition: filter .3s, transform .3s;
 }
-[data-theme="dark"][data-theme-mode="dark"] .video-js.vjs-paused
-{
-	filter: grayscale(100%) contrast(70%);
-	transition: filter .3s;
-}
-[data-theme="dark"][data-theme-mode="dark"] .video-js:hover{
-	filter: grayscale(0%) contrast(100%);
-}
+[data-theme="dark"][data-theme-mode="dark"] .video-js:hover,
 [data-theme="dark"][data-theme-mode="dark"] .card-thumbnail img:hover,
 [data-theme="dark"][data-theme-mode="dark"] .video-holder img.preview:hover,
 [data-theme="dark"][data-theme-mode="dark"] .carousel-item img:hover,
 [data-theme="dark"][data-theme-mode="dark"] img.card-img-top:hover
 {
-	filter: grayscale(0%);
+	filter: grayscale(0%) contrast(100%);
 }
 
 /* END Thumbnail filter on dark mode */
