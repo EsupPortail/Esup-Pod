@@ -2218,6 +2218,12 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
                             (chunked_upload.filename, chunked_upload.offset))}
 
 
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+def video_record(request):
+    return render(request, 'video_record.html', {})
+
+
 """
 # check access to video
 # change template to fix height and breadcrumbs

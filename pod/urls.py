@@ -37,6 +37,7 @@ from pod.video.views import vote_get, vote_post
 from pod.video.views import get_categories, add_category
 from pod.video.views import edit_category, delete_category
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
+from pod.video.views import video_record
 from pod.main.views import contact_us, download_file, user_autocomplete,\
     maintenance
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
@@ -87,6 +88,7 @@ urlpatterns = [
         name='video_private'),
     url(r'^video_add/$', video_add, name='video_add'),
     url(r'^video_edit/$', video_edit, name='video_edit'),
+    url(r'^video_record/$', video_record, name='video_record'),
     url(r'^video_edit/(?P<slug>[\-\d\w]+)/$', video_edit, name='video_edit'),
     url(r'^video_delete/(?P<slug>[\-\d\w]+)/$',
         video_delete, name='video_delete'),
