@@ -217,10 +217,9 @@ button.close {
 }
 #podfile .list_folders{
   padding-left: 15px;
-  max-height:350px;
-  overflow: auto;
+  height: auto;
+  overflow: hidden;
 }
-
 #podfile .list_folders .folder_name{
   max-width: 600px;
   display: inline-block;
@@ -352,13 +351,8 @@ button.close {
   width: calc(100% - 25px);
   max-width: 100%;
   height: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-      flex-direction: column;
+  display: grid;
+  grid-row-gap: .4em;
   opacity: 0;
   z-index: -1;
   -webkit-transition: .5s opacity;
@@ -424,7 +418,7 @@ button.close {
 
 #podfile .share-folders{ padding-top: .4em; border-top: 2px dotted var(--primary); }
 #podfile .share-folders,
-#podfile #list_folders_sub{ overflow: auto; max-height: 250px; margin-bottom: 1em; }
+#podfile #list_folders_sub{ overflow-y: auto;}
 #podfile .share-folders .folder_title{ display: -webkit-box; display: -ms-flexbox; display: flex; -webkit-box-align: center; -ms-flex-align: center; align-items: center; margin-bottom: .4em; color: var(--primary);}
 #podfile .share-folders .home-directory{-webkit-transform: translateY(-8px);-ms-transform: translateY(-8px);transform: translateY(-8px) }
 #podfile #list_folders_sub a.folder:not(.folder-opened) span.folder-open,
@@ -446,13 +440,21 @@ button.close {
   margin-right: 8px;
   color: inherit;
 }
+#podfile #dirs .dirs-nav + *{
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(2, minmax(auto, 1fr) );
+  overflow: auto;
+}
 #podfile #dirs .share-folder span.home-directory{ color: var(--primary); }
 #podfile #dirs .folder-search{
   border: 1px solid #ccc;
   font-size: 14px;
   padding: .4em;
   color: rgba(0,0,0,.75);
-  margin-top: .8em;
+  flex: none;
+  height: 35px;
+
 }
 #podfile #dirs .folder-search::-webkit-input-placeholder{
   color: rgba(0,0,0,.5);
@@ -560,7 +562,6 @@ button.close {
   -webkit-box-align: center;
     -ms-flex-align: center;
       align-items: center;
-  margin-bottom: .8em;
 }
 #podfile .alert-warning .close{
   position:absolute;
@@ -675,19 +676,13 @@ button.close {
   text-transform: uppercase;
   font-size: 16px;
 }
-#podfile .flex{
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-      flex-direction: column;
+#podfile .flex,
+#podfile .folder-search + div{
+  display: grid;
+  grid-template-rows: repeat(2, minmax(auto, .5fr));
+  min-height: 100%;
 }
-#podfile .list_folders{
-  height: auto;
-  max-height: unset;
-}
+
 #podfile #listfiles{
   display: -ms-grid;
   display: grid;
