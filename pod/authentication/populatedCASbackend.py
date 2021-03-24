@@ -159,13 +159,7 @@ def get_entry(conn, username, list_value):
         return None
 
 
-def create_accessgroups_ldap(user, entry):
-    groups_element = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES['groups']].values if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get('groups')
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES['groups']]
-        ) else []
-    )
+def assign_accessgroups(groups_element, user):
     for group in groups_element:
         if group.text in GROUP_STAFF:
             user.is_staff = True
@@ -179,6 +173,24 @@ def create_accessgroups_ldap(user, entry):
                 user.owner.accessgroup_set.add(accessgroup)
             except ObjectDoesNotExist:
                 pass
+
+
+def create_accessgroups(user, tree_or_entry, auth_type):
+    if auth_type == "cas":
+        groups_element = tree_or_entry.findall(
+            './/{http://www.yale.edu/tp/cas}%s' % (USER_CAS_MAPPING_ATTRIBUTES[
+                'groups'])
+        )
+    elif auth_type == "ldap":
+        groups_element = (
+            tree_or_entry[USER_LDAP_MAPPING_ATTRIBUTES['groups']].values if (
+                USER_LDAP_MAPPING_ATTRIBUTES.get('groups')
+                and tree_or_entry[USER_LDAP_MAPPING_ATTRIBUTES['groups']]
+            ) else []
+        )
+    else:
+        return
+    assign_accessgroups(groups_element, user)
 
 
 def populate_user_from_entry(user, owner, entry):
@@ -229,27 +241,8 @@ def populate_user_from_entry(user, owner, entry):
             group.groupsite.sites.add(Site.objects.get_current())
             user.groups.add(group)
 
-    create_accessgroups_ldap(user, entry)
+    create_accessgroups(user, entry, "ldap")
     user.save()
-
-
-def create_accessgroups_cas(user, tree):
-    groups_element = tree.findall('.//{http://www.yale.edu/tp/cas}%s' % (
-        USER_CAS_MAPPING_ATTRIBUTES['groups'])
-    )
-    for group in groups_element:
-        if group.text in GROUP_STAFF:
-            user.is_staff = True
-        if CREATE_GROUP_FROM_GROUPS:
-            accessgroup, group_created = AccessGroup.objects.get_or_create(
-                name=group.text)
-            user.owner.accessgroup_set.add(group)
-        else:
-            try:
-                accessgroup = AccessGroup.objects.get(code_name=group.text)
-                user.owner.accessgroup_set.add(accessgroup)
-            except ObjectDoesNotExist:
-                pass
 
 
 def populate_user_from_tree(user, owner, tree):
@@ -295,7 +288,7 @@ def populate_user_from_tree(user, owner, tree):
             accessgroup, group_created = AccessGroup.objects.get_or_create(
                 name=affiliation.text)
             user.groups.add(accessgroup)
-    create_accessgroups_cas(user, tree)
+    create_accessgroups(user, tree, "cas")
 
     user.save()
     owner.save()
