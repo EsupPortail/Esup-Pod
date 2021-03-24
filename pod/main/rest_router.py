@@ -4,6 +4,7 @@ from django.conf.urls import include
 from pod.authentication import rest_views as authentication_views
 from pod.video import rest_views as video_views
 from pod.main import rest_views as main_views
+from pod.authentication import rest_views as auth_views
 
 from pod.chapter import rest_views as chapter_views
 from pod.completion import rest_views as completion_views
@@ -28,6 +29,7 @@ router.register(r'users', authentication_views.UserViewSet)
 router.register(r'groups', authentication_views.GroupViewSet)
 router.register(r'owners', authentication_views.OwnerViewSet)
 router.register(r'sites', authentication_views.SiteViewSet)
+router.register(r'accessgroups', authentication_views.AccessGroupViewSet)
 
 router.register(r'channels', video_views.ChannelViewSet)
 router.register(r'themes', video_views.ThemeViewSet)
@@ -73,6 +75,12 @@ urlpatterns = [
     url(r'store_remote_encoded_video/$',
         video_views.store_remote_encoded_video,
         name='store_remote_encoded_video'),
+    url(r'accesgroups_set_users_by_name/$',
+        auth_views.accesgroups_set_users_by_name,
+        name='accesgroups_set_users_by_name'),
+    url(r'accesgroups_set_groups_by_username/$',
+        auth_views.accesgroups_set_groups_by_username,
+        name='accesgroups_set_groups_by_username'),
 ]
 
 for apps in settings.THIRD_PARTY_APPS:

@@ -1,7 +1,12 @@
 from django.contrib.auth.models import User, Group
 from django.contrib.sites.models import Site
-from .models import Owner
+from .models import Owner, AccessGroup
 from rest_framework import serializers, viewsets
+from rest_framework.decorators import api_view
+from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse
 
 # Serializers define the API representation.
 
@@ -12,6 +17,15 @@ class OwnerSerializer(serializers.HyperlinkedModelSerializer):
         model = Owner
         fields = ('id', 'url', 'user', 'auth_type',
                   'affiliation', 'commentaire', 'hashkey', 'userpicture')
+
+
+class OwnerWithGroupsSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Owner
+        fields = ('id', 'url', 'user', 'auth_type',
+                  'affiliation', 'commentaire',
+                  'hashkey', 'userpicture', "accessgroup_set")
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -35,6 +49,12 @@ class SiteSerializer(serializers.HyperlinkedModelSerializer):
         model = Site
         fields = ('url', 'name', 'domain')
 
+
+class AccessGroupSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = AccessGroup
+        fields = ('display_name', 'code_name', 'sites', 'users')
 # ViewSets define the view behavior.
 
 
@@ -56,3 +76,48 @@ class GroupViewSet(viewsets.ModelViewSet):
 class SiteViewSet(viewsets.ModelViewSet):
     queryset = Site.objects.all()
     serializer_class = SiteSerializer
+
+
+class AccessGroupViewSet(viewsets.ModelViewSet):
+    queryset = AccessGroup.objects.all()
+    serializer_class = AccessGroupSerializer
+
+
+@api_view(['POST'])
+def accesgroups_set_users_by_name(request):
+    if ("users" in request.data) and ("code_name" in request.data):
+        code_name = request.data["code_name"]
+        users = request.data["users"]
+        accessgroup = get_object_or_404(AccessGroup, code_name=code_name)
+        for user in users:
+            try:
+                owner = Owner.objects.get(user__username=user)
+                accessgroup.users.add(owner)
+            except ObjectDoesNotExist:
+                pass
+        return Response(
+            AccessGroupSerializer(
+                instance=accessgroup, context={'request': request}).data
+        )
+    else:
+        return HttpResponse(status=500)
+
+
+@api_view(['POST'])
+def accesgroups_set_groups_by_username(request):
+    if ("username" in request.data) and ("groups" in request.data):
+        username = request.data["username"]
+        groups = request.data["groups"]
+        owner = get_object_or_404(Owner, user__username=username)
+        for group in groups:
+            try:
+                accessgroup = AccessGroup.objects.get(code_name=group)
+                owner.accessgroup_set.add(accessgroup)
+            except ObjectDoesNotExist:
+                pass
+        return Response(
+            OwnerWithGroupsSerializer(
+                instance=owner, context={'request': request}).data
+        )
+    else:
+        return HttpResponse(status=500)

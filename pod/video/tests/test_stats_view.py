@@ -4,11 +4,11 @@ from datetime import date
 from django.conf import settings
 from django.test import TestCase, Client
 from django.urls import reverse, NoReverseMatch
-from django.contrib.auth.models import Group
 from pod.authentication.models import User
 from pod.video.models import Channel, Theme, Video, Type
 from pod.video.views import get_all_views_count, stats_view
 from django.contrib.sites.models import Site
+from pod.authentication.models import AccessGroup
 
 import json
 import logging
@@ -324,7 +324,7 @@ class TestStatsView(TestCase):
         # **************************************************** #
         # ************ Test restricted by group ************** #
         # **************************************************** #
-        group1 = Group.objects.create(name="group1")
+        group1 = AccessGroup.objects.create(code_name="group1")
         self.video3.password = None
         self.video3.is_restricted = True
         self.video3.restrict_access_to_groups.add(group1)
@@ -343,7 +343,7 @@ class TestStatsView(TestCase):
                 status_code=404)
         # add visitor to the group of the video
         # test that visitor has access rights
-        self.visitor.groups.add(group1)
+        self.visitor.owner.accessgroup_set.add(group1)
         response = self.client.get(url, {"from": "video"})
         self.assertContains(
                 response,
