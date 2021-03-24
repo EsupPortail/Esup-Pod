@@ -544,7 +544,6 @@ class VideoForm(forms.ModelForm):
                 ) | self.current_user.users_channels.all(
                 ) | Channel.objects.filter(allow_to_groups=users_groups)
             ).distinct()
-            print(user_channels.all())
             user_channels.filter(sites=get_current_site(None))
             if user_channels:
                 self.fields["channel"].queryset = user_channels
