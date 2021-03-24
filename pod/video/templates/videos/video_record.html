@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block opengraph %}
+
+{% endblock %}
+
+{% block page_extra_head %}
+
+{% include 'videos/video-header.html' %}
+
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}{{ block.super }}
+<li class="breadcrumb-item active" aria-current="page">{% trans "Video Record"%}</li>
+
+{% endblock %}
+
+{% block page_title %}{% trans "Video Record"%}{% endblock %}
+
+{% block page_content %}
+
+<video id="myScreen" playsinline class="video-js vjs-default-skin"></video>
+
+<script>
+var options = {
+    controls: true,
+    bigPlayButton: false,
+    width: 800,
+    height: 450,
+    fluid: false,
+    controlBar: {
+        fullscreenToggle: false
+    },
+    plugins: {
+        record: {
+            audio: true,
+            screen: true,
+            displayMilliseconds: false,
+            debug: true
+        }
+    }
+};
+
+// apply some workarounds for certain browsers
+applyVideoWorkaround();
+applyScreenWorkaround();
+
+var player = videojs('myScreen', options, function() {
+    // print version information at startup
+    var msg = 'Using video.js ' + videojs.VERSION +
+        ' with videojs-record ' + videojs.getPluginVersion('record') +
+        ' and recordrtc ' + RecordRTC.version;
+    videojs.log(msg);
+});
+
+// error handling
+player.on('deviceError', function() {
+    console.warn('device error:', player.deviceErrorCode);
+});
+
+player.on('error', function(element, error) {
+    console.error(error);
+});
+
+// snapshot is available
+player.on('finishRecord', function() {
+    // the blob object contains the image data that
+    // can be downloaded by the user, stored on server etc.
+    console.log('screen+audio capture ready: ', player.recordedData);
+});
+</script>
+
+
+{% endblock page_content %}
+
+{% block page_aside %}
+  
+  {% include 'aside.html' %}
+{% endblock page_aside %}
+
+
+{% block more_script %}
+  
+{% endblock more_script %}

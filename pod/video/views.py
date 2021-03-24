@@ -2221,7 +2221,7 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_record(request):
-    return render(request, 'video_record.html', {})
+    return render(request, 'videos/video_record.html', {})
 
 
 """
