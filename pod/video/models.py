@@ -269,7 +269,7 @@ class Channel(models.Model):
         search_field=lambda q: Q(code_name__icontains=q) | Q(
             display_name__icontains=q),
         help_text=_('Select one or more groups who can access to this channel,'
-                    'if no group selected will no be protected'))
+                    ' if no group selected channel will not be protected'))
     sites = models.ManyToManyField(Site)
 
     class Meta:

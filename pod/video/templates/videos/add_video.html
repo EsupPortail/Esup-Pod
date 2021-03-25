@@ -9,58 +9,56 @@
 
 
 {% block breadcrumbs %}{{ block.super }}
-<li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
-
-<li class="breadcrumb-item active" aria-current="page">{% trans "Choose an audio or video file to upload" %}</li>
-
+  <li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
+  <li class="breadcrumb-item active" aria-current="page">{% trans "Choose an audio or video file to upload" %}</li>
 {% endblock %}
 
 {% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Choose an audio or video file to upload" %}{%endif%}{% endblock %}
 
 {% block collapse_page_aside %}
-{% if access_not_allowed == True %}
+  {% if access_not_allowed == True %}
 
-{% else %}
-{{block.super}}
-{% endif %}
+  {% else %}
+    {{block.super}}
+  {% endif %}
 {% endblock collapse_page_aside %}
 
 
 {% block page_content %}
 
 {% if restricted_to_staff and not user.is_staff %}
-<p class="text-info">
-  <i data-feather="info"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}" title="{% trans 'contact us' %}">{% trans 'contact us' %}</a>
-</p>
+  <p class="text-info">
+    <i data-feather="info"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}" title="{% trans 'contact us' %}">{% trans 'contact us' %}</a>
+  </p>
 {% else %}
 <h3>{% trans "Media upload" %}</h3>
 
 <div id="uploadblock">
-    {% csrf_token %}
-    <div class="form-group hide-on-processing">
-        <label for="chunked_upload">{% trans "Choose an audio or video file to upload" %}</label><br/>
-        <input id="chunked_upload" accept="{{allow_extension}}" type="file" name="the_file" class="form-control-file">
-    </div>
-    <div class="show-on-processing">
-        <label for="progBar">{% trans "Upload progress:" %}</label>
-        <progress id="progBar" value="0" max="100"></progress>
-    </div>
+  {% csrf_token %}
+  <div class="form-group hide-on-processing">
+    <label for="chunked_upload">{% trans "Choose an audio or video file to upload" %}</label><br/>
+    <input id="chunked_upload" accept="{{allow_extension}}" type="file" name="the_file" class="form-control-file">
+  </div>
+  <div class="show-on-processing">
+    <label for="progBar">{% trans "Upload progress:" %}</label>
+    <progress id="progBar" value="0" max="100"></progress>
+  </div>
 
-    {%if TRANSCRIPT %}
-      <div class="form-check hide-on-processing">
-        <input class="form-check-input" type="checkbox" id="transcript-box" name="transbox">
-        <label class="form-check-label" for="transcript-box">{% trans "Transcript" %}</label>
-        <small class="form-text text-muted">{% trans "Check this box if you want to transcript the audio.(beta version)"%}</small>
-      </div>
-    {%endif%}
+  {%if TRANSCRIPT %}
+    <div class="form-check hide-on-processing">
+      <input class="form-check-input" type="checkbox" id="transcript-box" name="transbox">
+      <label class="form-check-label" for="transcript-box">{% trans "Transcript" %}</label>
+      <small class="form-text text-muted">{% trans "Check this box if you want to transcript the audio.(beta version)"%}</small>
+    </div>
+  {%endif%}
 
-    <p class="mt-3">{% trans "Do not leave the page if you encounter a connection problem during the upload, it will resume automatically when your connection is available again." %}</p>
+  <p class="mt-3">{% trans "Do not leave the page if you encounter a connection problem during the upload, it will resume automatically when your connection is available again." %}</p>
 
 </div>
 {%if slug %}
-<a href="{% url 'video_edit' slug=slug %}" title="{% trans "Back to video edit"%}" class="btn btn-primary btn-sm m-2">
-  <i data-feather="edit"></i>&nbsp;{% trans "Back to video edit"%}
-</a>
+  <a href="{% url 'video_edit' slug=slug %}" title="{% trans "Back to video edit"%}" class="btn btn-primary btn-sm m-2">
+    <i data-feather="edit"></i>&nbsp;{% trans "Back to video edit"%}
+  </a>
 {% endif %}
 
 {%endif%}
@@ -70,38 +68,38 @@
 <div class="card card-body p-2 mt-1" id="card-sharedraftversion">
   <h5 class="card-title pl-2">{% trans "Uploading" %}</h5>
   <div class="card-text" >
-      <p>{% blocktrans with max_size as video_max_upload_size %}The file size must be lower than {{video_max_upload_size}} Go.{% endblocktrans %}</p>
-      <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
-      <p>{% trans "While sending your file, do not close your browser until you have received a message of success or failure." %}</p>
-      <p>{% trans "An email will be sent to you when all encoding tasks are completed." %}<p>
+    <p>{% blocktrans with max_size as video_max_upload_size %}The file size must be lower than {{video_max_upload_size}} Go.{% endblocktrans %}</p>
+    <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
+    <p>{% trans "While sending your file, do not close your browser until you have received a message of success or failure." %}</p>
+    <p>{% trans "An email will be sent to you when all encoding tasks are completed." %}<p>
   </div>
 </div>
 
-<div class="card card-body p-2 mt-1" id="card-helpfields">
+<div class="card mt-1" id="card-helpfields">
   <h5 class="card-title pl-2">{% trans "Help for form fields"%}</h5>
-  <div class="card-text" id="formfields">
-          <div class="card card-body p-1">
-              <button class="btn btn-sm-light" id="heading-1" data-toggle="collapse" data-target="#collapse-1" aria-expanded="true" aria-controls="collapse-1" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
-                   {% trans "File" %}
-              </button>
-              <div id="collapse-1" class="collapse hide card-text small" aria-labelledby="heading-1" data-parent="#formfields">
-                  <p> {% trans "You can send an audio or video file." %}</p>
-                  <p> {{allowed_text}} </p>
-              </div>
-          </div>
+  <div class="card-body" id="formfields">
+    <div class="card">
+      <button class="btn btn-light rounded-0" id="heading-1" data-toggle="collapse" data-target="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
+         {% trans "File" %}
+      </button>
+      <div id="collapse-1" class="card-body collapse hide card-text small" aria-labelledby="heading-1" data-parent="#formfields">
+        <p> {% trans "You can send an audio or video file." %}</p>
+        <p> {{allowed_text}} </p>
+      </div>
+    </div>
   </div>
-  
+
   {%if TRANSCRIPT %}
   <div class="card-text" id="formfields">
-    <div class="card card-body p-1">
-        <button class="btn btn-sm-light" id="heading-2" data-toggle="collapse" data-target="#collapse-2" aria-expanded="true" aria-controls="collapse-2" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
-             {% trans "Transcript" %}
-        </button>
-        <div id="collapse-2" class="collapse hide card-text small" aria-labelledby="heading-2" data-parent="#formfields">
-            <p> {% trans "Available only in French and English, transcription is a speech recognition technology that transforms an oral speech into text in an automated way. By checking this box, it will generate a subtitle file automatically when encoding the video." %}</p>
-            <p> {% trans "You will probably have to modify this file using the captioning tool in the completion page to improve it." %} </p>
-        </div>
+  <div class="card card-body p-1">
+    <button class="btn btn-sm-light" id="heading-2" data-toggle="collapse" data-target="#collapse-2" aria-expanded="true" aria-controls="collapse-2" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
+       {% trans "Transcript" %}
+    </button>
+    <div id="collapse-2" class="collapse hide card-text small" aria-labelledby="heading-2" data-parent="#formfields">
+      <p> {% trans "Available only in French and English, transcription is a speech recognition technology that transforms an oral speech into text in an automated way. By checking this box, it will generate a subtitle file automatically when encoding the video." %}</p>
+      <p> {% trans "You will probably have to modify this file using the captioning tool in the completion page to improve it." %} </p>
     </div>
+  </div>
   </div>
   {%endif%}
 </div>
@@ -128,77 +126,77 @@
   /** formulaire **/
   var max_chunk_size = {{CHUNK_SIZE}}
   var slug = "{{ slug }}"
-  var max_size = {{ max_size }} 
+  var max_size = {{ max_size }}
   var md5 = "",
-      csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
-      form_data = [{"name": "csrfmiddlewaretoken", "value": csrf}];
+    csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
+    form_data = [{"name": "csrfmiddlewaretoken", "value": csrf}];
   function calculate_md5(file, chunk_size) {
-    var slice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
-      chunks = chunks = Math.ceil(file.size / chunk_size),
-      current_chunk = 0,
-      spark = new SparkMD5.ArrayBuffer();
-    function onload(e) {
-      spark.append(e.target.result);  // append chunk
-      current_chunk++;
-      if (current_chunk < chunks) {
-        read_next_chunk();
-      } else {
-        md5 = spark.end();
-      }
-    };
-    function read_next_chunk() {
-      var reader = new FileReader();
-      reader.onload = onload;
-      var start = current_chunk * chunk_size,
-          end = Math.min(start + chunk_size, file.size);
-      reader.readAsArrayBuffer(slice.call(file, start, end));
-    };
+  var slice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
+    chunks = chunks = Math.ceil(file.size / chunk_size),
+    current_chunk = 0,
+    spark = new SparkMD5.ArrayBuffer();
+  function onload(e) {
+    spark.append(e.target.result);  // append chunk
+    current_chunk++;
+    if (current_chunk < chunks) {
     read_next_chunk();
+    } else {
+    md5 = spark.end();
+    }
+  };
+  function read_next_chunk() {
+    var reader = new FileReader();
+    reader.onload = onload;
+    var start = current_chunk * chunk_size,
+      end = Math.min(start + chunk_size, file.size);
+    reader.readAsArrayBuffer(slice.call(file, start, end));
+  };
+  read_next_chunk();
   }
   $("#chunked_upload").fileupload({
-    url: "{% url 'api_chunked_upload' %}",
+  url: "{% url 'api_chunked_upload' %}",
+  dataType: "json",
+  maxChunkSize: max_chunk_size, // Chunks of 100 kB
+  maxFileSize:  1,
+  formData: form_data,
+  add: function(e, data) { // Called before starting upload
+    // If this is the second file you're uploading we need to remove the
+    // old upload_id and just keep the csrftoken (which is always first).
+    $(".hide-on-processing").hide();
+    $(".show-on-processing").show();
+    form_data.splice(1);
+    calculate_md5(data.files[0], max_chunk_size);  // Again, chunks of 100 kB
+    data.submit();
+  },
+  chunkdone: function (e, data) { // Called after uploading each chunk
+  $(this).is(':checked')
+    if (form_data.length < 2) {
+    form_data.push(
+      {"name": "upload_id", "value": data.result.upload_id}
+    );
+    }
+    console.log(JSON.stringify(data.result))
+    var progress = parseInt(data.loaded / data.total * 100.0, 10);
+    $('#progBar').val(progress);
+  },
+  done: function (e, data) { // Called when the file has completely uploaded
+    $.ajax({
+    type: "POST",
+    url: "{% url 'api_chunked_upload_complete' %}",
+    data: {
+      csrfmiddlewaretoken: csrf,
+      upload_id: data.result.upload_id,
+      md5: md5,
+      slug : slug,
+      transcript : $("#transcript-box").is(':checked')
+    },
     dataType: "json",
-    maxChunkSize: max_chunk_size, // Chunks of 100 kB
-    maxFileSize:  1,
-    formData: form_data,
-    add: function(e, data) { // Called before starting upload
-        // If this is the second file you're uploading we need to remove the
-        // old upload_id and just keep the csrftoken (which is always first).
-        $(".hide-on-processing").hide();
-        $(".show-on-processing").show();
-        form_data.splice(1);
-        calculate_md5(data.files[0], max_chunk_size);  // Again, chunks of 100 kB
-        data.submit();
-    },
-    chunkdone: function (e, data) { // Called after uploading each chunk
-    $(this).is(':checked')
-      if (form_data.length < 2) {
-        form_data.push(
-          {"name": "upload_id", "value": data.result.upload_id}
-        );
-      }
-      console.log(JSON.stringify(data.result))
-      var progress = parseInt(data.loaded / data.total * 100.0, 10);
-      $('#progBar').val(progress);
-    },
-    done: function (e, data) { // Called when the file has completely uploaded
-      $.ajax({
-        type: "POST",
-        url: "{% url 'api_chunked_upload_complete' %}",
-        data: {
-          csrfmiddlewaretoken: csrf,
-          upload_id: data.result.upload_id,
-          md5: md5,
-          slug : slug,
-          transcript : $("#transcript-box").is(':checked')
-        },
-        dataType: "json",
-        success: function(data) {
-         console.log(JSON.stringify(data));
-         location.href= data.redirlink
-        }
-      });
-    },
+    success: function(data) {
+     console.log(JSON.stringify(data));
+     location.href= data.redirlink
+    }
+    });
+  },
   });
 </script>
 
@@ -206,30 +204,30 @@
 
 <style>
   .file {
-    position: relative;
-    background: linear-gradient(to right, lightblue 50%, transparent 50%);
-    background-size: 200% 100%;
-    background-position: right bottom;
-    transition:all 1s ease;
+  position: relative;
+  background: linear-gradient(to right, lightblue 50%, transparent 50%);
+  background-size: 200% 100%;
+  background-position: right bottom;
+  transition:all 1s ease;
   }
   .file.done {
-    background: lightgreen;
+  background: lightgreen;
   }
   .file a {
-    display: block;
-    position: relative;
-    padding: 5px;
-    color: black;
+  display: block;
+  position: relative;
+  padding: 5px;
+  color: black;
   }
   #progBar{
-    width: 100%;
+  width: 100%;
   }
   #uploadblock, #completebox{
-    margin-left:10px;
-    margin-top: 20px;
+  margin-left:10px;
+  margin-top: 20px;
   }
   .show-on-processing{
-    display:none;
+  display:none;
   }
 </style>
 

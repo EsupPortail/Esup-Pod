@@ -62,11 +62,11 @@
     </div>
   </div>
 {% endif %}
-<div id="chapter-info" class="card card-body p-2 mt-1">
-  <button class="btn btn-sm-light" id="heading-0" data-toggle="collapse" data-target="#collapse-0" aria-expanded="true" aria-controls="collapse-0" style="white-space: normal !important; word-wrap: break-word; word-break: normal;">
+<div id="chapter-info" class="card mt-1">
+  <button class="btn btn-light rounded-0" id="heading-0" data-toggle="collapse" data-target="#collapse-0" aria-expanded="true" aria-controls="collapse-0">
     {% trans 'Chapters' %}
   </button>
-  <div id="collapse-0" class="collapse hide card-text small">
+  <div id="collapse-0" class="card-body collapse hide card-text small">
     <p>{% trans '"Add a new chapter" allows you to add a new chapter, "modify" allows you to modify it and "delete" allows you to remove the chapter.' %}</p>
     <p>{% trans 'Start playback of the video, pause the video and click on "Get time from the player" to fill in the field untitled "Start time".' %}</p>
     <p>{% trans 'The chapters cannot start at the same time.' %}</p>

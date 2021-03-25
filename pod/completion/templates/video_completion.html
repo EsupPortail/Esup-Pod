@@ -121,27 +121,27 @@
 {% block page_aside %}
 
 {% if video.owner == request.user or request.user.is_superuser or perms.video.change_video or request.user in video.additional_owners.all %}
-  <div class="card card-body p-2 mt-1" id="card-managevideo">
+  <div class="card mb-2" id="card-managevideo">
     <h5 class="card-title pl-2"><i data-feather="settings"></i>&nbsp;{% trans "Manage video"%}</h5>
     <div class="card-text text-center">
       {% include "videos/link_video.html" %}
     </div>
   </div>
 {% endif %}
-<div id="contributor-info" class="card card-body p-2 mt-1">
-  <button class="btn btn-sm-light" id="heading-1" data-toggle="collapse" data-target="#collapse-1" aria-expanded="true" aria-controls="collapse-1" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
+<div id="contributor-info" class="card">
+  <button class="btn btn-light rounded-0" id="heading-1" data-toggle="collapse" data-target="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
     {% trans 'Contributor(s)' %}
   </button>
-  <div id="collapse-1" class="collapse hide card-text small">
+  <div id="collapse-1" class="card-body collapse hide card-text small">
     <p>{% trans 'List of people related to this video.' %}</p>
     <p>{% trans 'A contributor must at least have a name and a role. You can also join the email of this contributor as well as a link (professional website for example).' %}</p>
   </div>
 </div>
-<div id="track-info" class="card card-body p-2 mt-1">
-  <button class="btn btn-sm-light" id="heading-2" data-toggle="collapse" data-target="#collapse-2" aria-expanded="true" aria-controls="collapse-2" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
+<div id="track-info" class="card">
+  <button class="btn btn-light rounded-0" id="heading-2" data-toggle="collapse" data-target="#collapse-2" aria-expanded="true" aria-controls="collapse-2">
     {% trans 'Subtitle(s) and Caption(s)' %}
   </button>
-  <div id="collapse-2" class="collapse hide card-text small">
+  <div id="collapse-2" class="card-body collapse hide card-text small">
     <p>{% trans 'Subtitle(s) and/or captions(s) related to this video.' %}</p>
     <!-- <p>{% trans 'Several web sites allows you to subtitle or caption videos (for example: Amara)' %}</p> -->
     <p>{% trans 'You can add several subtitle or caption files to a signle video (for example, in order to subtitle or caption this video in several languages' %}</p>
@@ -158,20 +158,20 @@
     </ul>
   </div>
 </div>
-<div id="document-info" class="card card-body p-2 mt-1">
-  <button class="btn btn-sm-light" id="heading-3" data-toggle="collapse" data-target="#collapse-3" aria-expanded="true" aria-controls="collapse-3" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
+<div id="document-info" class="card">
+  <button class="btn btn-light rounded-0" id="heading-3" data-toggle="collapse" data-target="#collapse-3" aria-expanded="true" aria-controls="collapse-3">
     {% trans 'Additional resource(s)' %}
   </button>
-  <div id="collapse-3" class="collapse hide card-text small">
+  <div id="collapse-3" class="card-body collapse hide card-text small">
     <p>{% trans 'Document(s) related to this video. These documents will be downloadable by users.' %}</p>
     <p>{% trans 'Be careful, not to be confused with enrichment. These documents are attached to the video, not integrated.' %}</p>
   </div>
 </div>
-<div id="overlay-info" class="card card-body p-2 mt-1">
-  <button class="btn btn-sm-light" id="heading-4" data-toggle="collapse" data-target="#collapse-4" aria-expanded="true" aria-controls="collapse-4" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
+<div id="overlay-info" class="card">
+  <button class="btn btn-light rounded-0" id="heading-4" data-toggle="collapse" data-target="#collapse-4" aria-expanded="true" aria-controls="collapse-4">
     {% trans 'Overlay(s)' %}
   </button>
-  <div id="collapse-4" class="collapse hide card-text small">
+  <div id="collapse-4" class="card-body collapse hide card-text small">
     <p>{% trans 'Overlay allows you to display text (with ou without html tag) over the video at specific times and positions.' %}</p>
     <p>{% trans 'You can add a solid background or a transparent background to the text you want to display with the option "Show background"' %}</p>
   </div>
