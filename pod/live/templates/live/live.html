@@ -3,15 +3,15 @@
 {% load staticfiles %}
 
 {% block page_extra_head %}
-  <link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
-  <script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
-  <script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
-  <script src="{% static 'js/videojs-http-streaming.min.js' %}?ver={{VERSION}}"></script>
-  <script src="{% static 'js/videojs-logo-controlbar.js' %}?ver={{VERSION}}"></script>
-  {% if broadcaster.enable_viewer_count%}
-    <script>let heartbeat_delay = {{heartbeat_delay}}</script>
-    <script src="{% static 'js/viewcounter.js' %}?ver={{VERSION}}"></script>
-  {%endif%}
+<link href="{% static 'player/videojs/video-js.min.css' %}" rel="stylesheet" />
+<script src="{% static 'player/videojs/video.min.js' %}"></script>
+<script src="{% static 'player/videojs/lang/fr.js' %}"></script>
+
+<script src="{% static 'js/videojs-logo-controlbar.js' %}"></script>
+{% if broadcaster.enable_viewer_count%}
+<script>let heartbeat_delay = {{heartbeat_delay}}</script>
+<script src="{% static 'js/viewcounter.js' %}"></script>
+{%endif%}
 {% endblock %}
 
 
