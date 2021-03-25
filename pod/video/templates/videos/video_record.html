@@ -33,6 +33,7 @@
 {% block page_title %}{% trans "Video Record"%}{% endblock %}
 
 {% block page_content %}
+{% csrf_token %}
 <h1 class="pt-2">{% trans "Video Record"%}</h1>
 <div class="container">
   <div class="row">
@@ -50,12 +51,31 @@
       <p>{% trans "Click on player to select device to record"%}.</p>
       <p>{% trans "Then, click on rec button to launch record"%}.</p>
       <p>{% trans "You will see a rec notification at the top-right of player, click on stop button to stop the record"%}.</p>
+      <p>{% trans "You will be able to choose between sending your recording directly to Pod or downloading it to your computer"%}.</p>
     </div>
   </div>
 </div>
 
-
-
+<!-- Modal t osave record-->
+<div class="modal fade" id="saveRecordModal" tabindex="-1" role="dialog" aria-labelledby="saveRecordModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{% trans "Save Record"%}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>{% trans "You can choose between sending your recording directly to Pod or downloading it to your computer"%}.</p>
+      </div>
+      <div class="modal-footer">
+        <button id="saveRecordPod" type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Save to Pod"%}</button>
+        <button id="downloadRecord" type="button" class="btn btn-primary" data-dismiss="modal">{% trans "Download record"%}</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock page_content %}
 
@@ -114,9 +134,89 @@ player.on('finishRecord', function() {
     // the blob object contains the image data that
     // can be downloaded by the user, stored on server etc.
     console.log('screen+audio capture ready: ', player.recordedData);
-    player.record().saveAs({'video': 'my-video-file-name.webm'});
-    //restart the playeur
+    $('#saveRecordModal').modal('show');
+});
+
+
+
+$(document).on('click',  '#saveRecordPod', function(e){
+	var data = player.recordedData;
+    var formData = new FormData();
+    formData.append('video', data, data.name);
+    formData.append('title', 'podscreenrecord-'+get_now());
+    formData.append('type', 7);
+    formData.append('owner', {{request.user.id}});
+    formData.append('cursus', 0);
+    formData.append('main_lang', "fr");
+    formData.append('date_added', get_date_added()); 
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    formData.append('csrfmiddlewaretoken', csrftoken);
+
+    console.log('uploading recording:', data.name);
+
+    $.ajax({
+        url: '{% url 'video_edit' %}',
+        method: 'POST',
+        data: formData,
+        cache: false,
+        processData: false,
+        contentType: false,
+        mimeType: 'multipart/form-data',
+        success: function(data, textStatus, jqXHR) {
+            //alert("filePath:" + data + "--" +textStatus);
+            console.log(data, textStatus, jqXHR);
+        }, 
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert("error occured"+textStatus);
+        }
+    });
+	//restart the playeur
     player.record().reset();
 });
+
+$(document).on('click',  '#downloadRecord', function(e){
+	player.record().saveAs({'video': 'podscreenrecord-'+get_now()+'.webm'});
+	//restart the playeur
+    player.record().reset();
+})
+
+function get_now() {
+	var today = new Date();
+    var y = today.getFullYear();
+    // JavaScript months are 0-based.
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    var h = today.getHours();
+    var mi = today.getMinutes();
+    var s = today.getSeconds();
+    var now = y + "-" + m + "-" + d + "-" + h + "-" + mi + "-" + s;
+    return now;
+}
+
+function get_date_added() {
+	var today = new Date();
+    var y = today.getFullYear();
+    // JavaScript months are 0-based.
+    var m = today.getMonth() + 1;
+    var d = today.getDate();
+    var h = today.getHours();
+    var mi = today.getMinutes();
+    var s = today.getSeconds();
+
+    if(m.toString().length == 1)
+    m = '0' + m;      
+    if(d.toString().length == 1)
+    d = '0' + d;
+    if(h.toString().length == 1)
+    h = '0' + h;
+    if(mi.toString().length == 1)
+    mi = '0' + mi;
+	if(s.toString().length == 1)
+    s = '0' + s;
+
+    var date_added = d+"/"+m+"/"+y+" "+h+":"+mi+":"+s;
+    return date_added;
+}
+
 </script>
 {% endblock more_script %}
