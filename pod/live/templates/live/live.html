@@ -96,49 +96,34 @@
 
 {% block page_aside %}
 <div class="card card-body p-2 mt-1" id="card-livebuilding">
-<<<<<<< HEAD
-  <h5 class="card-title pl-2">
-    <i data-feather="radio"></i>&nbsp;{{broadcaster.building.name}}
-  </h5>
-  <div class="card-text">
-    {% if broadcaster.building.headband %}
-      <p class="card-text">
-=======
 <h5 class="card-title pl-2">
   <i data-feather="radio"></i>
   <span class="ml-1 broadcaster-name">
-	  {{broadcaster.building.name}}
+    {{broadcaster.building.name}}
   </span>
 </h5>
 <div class="card-text">
     {% if broadcaster.building.headband %}
     <p class="card-text broadcaster-headband">
->>>>>>> c377f0d815be214c6fec3e6b17d28c4fa0f1e035
         <img src="{{ broadcaster.building.headband.file.url }}" alt="{% trans 'Headband' %} {{ broadcaster.building.name }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
       </p>
     {% endif %}
     {% for otherbroadcaster in broadcaster.building.broadcaster_set.all%}
-<<<<<<< HEAD
       {% if otherbroadcaster != broadcaster and otherbroadcaster.public %}
-        <p class="card-text">
-=======
-    {% if otherbroadcaster != broadcaster and otherbroadcaster.public %}
-      <p class="card-text broadcaster-status">
->>>>>>> c377f0d815be214c6fec3e6b17d28c4fa0f1e035
-        {%if otherbroadcaster.status %}<a href="{% url 'live:video_live' slug=otherbroadcaster.slug %}" class="live_on">{%if otherbroadcaster.password%}<i data-feather="lock"></i>{%else%}<i data-feather="airplay"></i>{%endif%}</i>&nbsp;{{otherbroadcaster.name}}</a>
-        {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{otherbroadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}</p>
+        <p class="card-text broadcaster-status">
+          {%if otherbroadcaster.status %}<a href="{% url 'live:video_live' slug=otherbroadcaster.slug %}" class="live_on">{%if otherbroadcaster.password%}<i data-feather="lock"></i>{%else%}<i data-feather="airplay"></i>{%endif%}</i>&nbsp;{{otherbroadcaster.name}}</a>
+          {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{otherbroadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}
+        </p>
       {% endif %}
     {% empty %}
-<<<<<<< HEAD
-      <p class="card-text">{% trans "Sorry, no lives found" %}.</p>
-=======
-    <p class="card-text not-found">{% trans "Sorry, no lives found" %}.</p>
->>>>>>> c377f0d815be214c6fec3e6b17d28c4fa0f1e035
+      <p class="card-text not-found">{% trans "Sorry, no lives found" %}.</p>
     {% endfor %}
     {% if broadcaster.building.gmapurl %}
-    <p class="card-text"><small class="text-muted"><a href='{{broadcaster.building.gmapurl}}' title="{% trans 'access map' %}" target="_blank"><i data-feather="map-pin"></i>
-		<span class="ml-1 access-map">{% trans "access map" %}</span></a></small>
-	</p>
+      <p class="card-text">
+        <small class="text-muted"><a href='{{broadcaster.building.gmapurl}}' title="{% trans 'access map' %}" target="_blank"><i data-feather="map-pin"></i>
+          <span class="ml-1 access-map">{% trans "access map" %}</span>
+        </a></small>
+      </p>
     {% endif %}
   </div>
 </div>

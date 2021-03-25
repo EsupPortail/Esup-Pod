@@ -6,7 +6,7 @@
   {{input|safe}}
   <span>
   {% if value %}
-    <span id="fileinput_{{id}}">
+    <span id="fileinput_{{id}}" class="d-flex m-1">
       {% if document.class_name == "CustomImageModel" and document.file_exist %}<img src="{{document.file.url}}" height="34" alt="{{document.name}}" loading="lazy"/>&nbsp;
       {% else %}
         <img style="height: 26px;vertical-align: middle;" src="{% static "podfile/images/icons/default.svg" %}" alt="" loading="lazy">&nbsp;
