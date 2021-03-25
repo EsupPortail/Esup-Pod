@@ -576,7 +576,7 @@ button.navbar-toggler svg.feather-menu {
 .modal-title svg {
 	color: var(--primary);
 }
-.badge{font-size: 75% !important;}
+.badge{font-size: var(--font-size-thin) !important;}
 .badge-primary{
 	background-color: #aaa;
 	border: 1px solid inherit;
@@ -1136,7 +1136,7 @@ input[type=checkbox]{
 	margin: .4em 0;
 	cursor: pointer;
 	border: 1px solid var(--gray);
-	transition: background-color .4s, justify-content .3s;
+	transition: background-color .4s ease-in-out, justify-content .3s;
 }
 .switch_mode.active{
 	background-color: var(--link-color);
