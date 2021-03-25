@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% load staticfiles %}
 
 {% block opengraph %}
 
@@ -7,37 +8,80 @@
 
 {% block page_extra_head %}
 
-{% include 'videos/video-header.html' %}
+<link href="{% static 'player/videojs/video-js.min.css' %}" rel="stylesheet" />
+<script src="{% static 'player/videojs/video.min.js' %}"></script>
+<script src="{% static 'player/videojs/lang/fr.js' %}"></script>
+<link href="{% static 'record/videojs.record.min.css' %}" rel="stylesheet">
+<script src="{% static 'record/RecordRTC.js' %}"></script>
+<script src="{% static 'record/adapter.js' %}"></script>
+<script src="{% static 'record/videojs.record.min.js' %}"></script>
+<script src="{% static 'record/browser-workarounds.js' %}"></script>
+
+<style>
+/* change player background color */
+#podvideoplayer {
+  background-color: #ede4b7;
+}
+</style>
 
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
 <li class="breadcrumb-item active" aria-current="page">{% trans "Video Record"%}</li>
-
 {% endblock %}
 
 {% block page_title %}{% trans "Video Record"%}{% endblock %}
 
 {% block page_content %}
+<h1 class="pt-2">{% trans "Video Record"%}</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      	<div itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+			<video id="podvideoplayer" playsinline class="video-js vjs-default-skin">
+				  <p class="vjs-no-js">
+				    To view this video please enable JavaScript, and consider upgrading to a web browser that
+				    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+				  </p>
+			</video>
+		</div>
+    </div>
+    <div class="col-sm">
+      <p>{% trans "Click on player to select device to record"%}.</p>
+      <p>{% trans "Then, click on rec button to launch record"%}.</p>
+      <p>{% trans "You will see a rec notification at the top-right of player, click on stop button to stop the record"%}.</p>
+    </div>
+  </div>
+</div>
 
-<video id="myScreen" playsinline class="video-js vjs-default-skin"></video>
 
-<script>
+
+
+{% endblock page_content %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+
+{% block more_script %}
+  <script>
 var options = {
     controls: true,
     bigPlayButton: false,
-    width: 800,
-    height: 450,
-    fluid: false,
+    height: 360,
+    fluid: true,
     controlBar: {
         fullscreenToggle: false
     },
     plugins: {
         record: {
+        	pip: true,
             audio: true,
             screen: true,
+            video:false,
             displayMilliseconds: false,
-            debug: true
+            debug: true,
+            maxLength: 3600
         }
     }
 };
@@ -46,7 +90,7 @@ var options = {
 applyVideoWorkaround();
 applyScreenWorkaround();
 
-var player = videojs('myScreen', options, function() {
+var player = videojs('podvideoplayer', options, function() {
     // print version information at startup
     var msg = 'Using video.js ' + videojs.VERSION +
         ' with videojs-record ' + videojs.getPluginVersion('record') +
@@ -68,18 +112,9 @@ player.on('finishRecord', function() {
     // the blob object contains the image data that
     // can be downloaded by the user, stored on server etc.
     console.log('screen+audio capture ready: ', player.recordedData);
+    player.record().saveAs({'video': 'my-video-file-name.webm'});
+    //restart the playeur
+    player.record().reset();
 });
 </script>
-
-
-{% endblock page_content %}
-
-{% block page_aside %}
-  
-  {% include 'aside.html' %}
-{% endblock page_aside %}
-
-
-{% block more_script %}
-  
 {% endblock more_script %}
