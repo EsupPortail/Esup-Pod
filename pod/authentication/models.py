@@ -139,3 +139,15 @@ def create_groupsite_profile(sender, instance, created, **kwargs):
             msg += '\n%s' % traceback.format_exc()
             logger.error(msg)
             print(msg)
+
+
+class AccessGroup(models.Model):
+    display_name = models.CharField(
+        max_length=64, unique=True, blank=True, default="")
+    code_name = models.CharField(
+        max_length=64, unique=True, blank=False, default="")
+    sites = models.ManyToManyField(Site)
+    users = models.ManyToManyField(Owner, blank=True)
+
+    def __str__(self):
+        return "%s" % (self.display_name)
