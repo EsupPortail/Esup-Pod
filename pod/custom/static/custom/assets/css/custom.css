@@ -1131,12 +1131,15 @@ input[type=checkbox]{
 .switch_mode{
 	width: 40px;
 	height: 20px;
-	background: #171f2b;
+	background: #626c76;
 	border-radius: 33px;
 	margin: .4em 0;
-	transition: justify-content .5s;
 	cursor: pointer;
 	border: 1px solid var(--gray);
+	transition: background-color .4s, justify-content .3s;
+}
+.switch_mode.active{
+	background-color: var(--link-color);
 }
 .switch_mode__toggle{
 	width: 25px;
