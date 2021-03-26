@@ -8,12 +8,51 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
 from dateutil.parser import parse
 from django.db.models import Sum
+import os
+import shutil
+import re
 
 TODAY = datetime.now()
 
 def index(request):
     return HttpResponse("Hello word from custom")
 
+def move_video_file(video, new_owner, old_owner):
+    # overview and encoding video folder name
+    encod_folder_pattern = "%04d" % video.id + "/?"
+    old_dest = os.path.join(
+            os.path.dirname(video.video.path),
+            "%04d" % video.id)
+    new_dest = re.sub(
+        old_owner.owner.hashkey,
+        new_owner.owner.hashkey,
+        old_dest
+    )
+    # move encoding and overview folder
+    if not os.path.exists(new_dest):
+        new_dest = re.sub(encod_folder_pattern, "", new_dest)
+        print("__________________________________________")
+        print("OLD DEST", old_dest, "NEW DEST", new_dest)
+        shutil.move(old_dest, new_dest)
+    
+    # move video path
+    video_file_pattern = r"[\w-]+\.\w+"
+    old_video_path = video.video.path
+    new_video_path = re.sub(
+        re.search(r"\w{10,}", video.video.path).group(),
+        new_owner.owner.hashkey,
+        old_video_path
+    )
+    print("_____ NEW PATH NAME _________")
+    print(new_video_path.split("media/")[1])
+    print("_____ END NEW PATH NAME _________")
+    video.video.name = new_video_path.split("media/")[1]
+    if not os.path.exists(new_video_path):
+        new_video_path = re.sub(video_file_pattern, "", new_video_path)
+        print("OLD DEST", old_video_path, "NEW DEST", new_video_path)
+        print("__________________________________________")
+        shutil.move(old_video_path, new_video_path)
+    video.save()
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
@@ -64,6 +103,11 @@ def change_owner(videos, old_owner, new_owner_login):
     for v in vs:
         v.owner = new_owner
         v.save()
+        old_owner = User.objects.filter(username=old_owner).first()
+        print("------- OLD OWNER ---------")
+        print(old_owner)
+        print("___________________________")
+        move_video_file(v, new_owner, old_owner)
     return {"success": True}
         
 # return all videos with id, title thumbnail and url data
