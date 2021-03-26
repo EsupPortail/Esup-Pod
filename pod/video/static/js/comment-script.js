@@ -244,12 +244,12 @@ class Comment extends HTMLElement {
       let add_comment = document.createElement("DIV");
       add_comment.setAttribute("class", "add_comment");
       add_comment.innerHTML = `
-    <textarea class="new_comment form-control" name="new_comment" id="comment" rows="10" placeholder="${gettext(
-                  "Add a public comment"
-                )}"></textarea>
-    <div class="send_reply" id="sendReply">
-        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="paper-plane" class="svg-inline--fa fa-paper-plane fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"></path></svg>
-    </div>
+        <textarea class="new_comment form-control form-control-sm"
+          name="new_comment" id="comment" rows="1"
+          placeholder="${gettext("Add a public comment")}"></textarea>
+        <div class="send_reply" id="sendReply" role="button">
+            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="paper-plane" class="svg-inline--fa fa-paper-plane fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z"></path></svg>
+        </div>
       `;
       let new_comment = add_comment.querySelector(".new_comment");
       let comment_reply_btn = add_comment.querySelector("#sendReply");
@@ -347,9 +347,10 @@ function createFooterBtnAction(
   comment_id = null
 ) {
   let el = document.createElement("DIV");
-  el.setAttribute("class", classes);
+  el.setAttribute("class", classes + " btn btn-link btn-sm");
+  el.setAttribute("role", "button");
   if (comment_id) el.setAttribute("data-comment", comment_id);
-  let el_icon = document.createElement("DIV");
+    let el_icon = document.createElement("DIV");
   el_icon.setAttribute("class", icon_classes);
   el_icon.setAttribute("title", title);
   if (Array.isArray(svg)) el_icon.innerHTML = svg.join(" ");

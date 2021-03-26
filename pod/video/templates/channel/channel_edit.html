@@ -88,13 +88,13 @@
 
 {% block page_aside %}
 <div class="card">
-  <h5 class="card-title">{% trans "Mandatory fields" %}</h5>
+  <h5 class="card-header card-title">{% trans "Mandatory fields" %}</h5>
   <div class="card-body" >
     <p class="card-text">{% trans "Fields marked with an asterisk are mandatory."%}</p>
   </div>
 </div>
 <div class="card">
-  <h5 class="card-title">{% trans "Form fields"%}</h5>
+  <h5 class="card-header card-title">{% trans "Form fields"%}</h5>
   <div class="card-body" id="formfields">
     {% for title, values in form.CHANNEL_FORM_FIELDS_HELP_TEXT.items %}
       <div class="card">

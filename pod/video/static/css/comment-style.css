@@ -4,7 +4,7 @@
 	--third-background-color: rgb(255, 255, 255);
 	--content-primary-color: rgba(6, 14, 29, .75);
 	--content-secondary-color: rgba(54, 56, 58, .65);
-	--content-third-color: rgb(156, 154, 154);
+	--content-third-color: rgb(121, 118, 118);
 	--padding-comment-content: 25px;
 	--margin-between-comment: 1em;
 	--red-color: rgb(255, 95, 95);
@@ -259,6 +259,7 @@
 .comment_main .add_comment {
 	width: 100%;
 	padding: 1em 0;
+	position: relative;
 }
 .comment_main .form-wrapper {
 	display: -webkit-box;
@@ -422,7 +423,6 @@
 	-webkit-box-align: center;
 	-ms-flex-align: center;
 	align-items: center;
-	cursor: pointer;
 	font-size: 13px;
 }
 .comment_main .comment .comment_content_footer > * .icon {
@@ -509,72 +509,32 @@
 	height: 60px;
 }
 .comment_main .comment .comment_content_footer .add_comment {
-	z-index: 9;
-	width: 100%;
-	border: 1px solid var(--background-color);
 	padding: .8em .2em 0;
-	display: flex;
-	border-radius: 4px;
 }
-.comment_main .comment .comment_content_footer .add_comment > * {
-	width: 100%;
+
+.comment_main .add_comment .new_comment {
+	resize: none;
 }
-.comment_main
-	.comment
-	.comment_content_footer
-	.add_comment
-	.new_comment::-webkit-input-placeholder {
-	font-size: 12px;
-}
-.comment_main
-	.comment
-	.comment_content_footer
-	.add_comment
-	.new_comment::-moz-placeholder {
-	font-size: 12px;
-}
-.comment_main
-	.comment
-	.comment_content_footer
-	.add_comment
-	.new_comment:-ms-input-placeholder {
-	font-size: 12px;
-}
-.comment_main
-	.comment
-	.comment_content_footer
-	.add_comment
-	.new_comment::-ms-input-placeholder {
-	font-size: 12px;
-}
-.comment_main
-	.comment
-	.comment_content_footer
-	.add_comment
-	.new_comment::placeholder {
-	font-size: 12px;
-}
-.comment_main .comment .comment_content_footer .add_comment .new_comment {
-	height: 30px;
-	font-size: 12px;
-	min-height: 20px;
-}
-.comment_main .comment .comment_content_footer .add_comment .send_reply {
-	width: 44px;
-	padding: 0 .8em;
-	flex: none;
-	transform: translateY(-.4em);
-	cursor: default;
+.comment_main .send_reply {
+	width: 26px;
+	position: absolute;
+	right: 20px;
+	top: 20px;
 	color: var(--background-color);
 }
-.comment_main .comment .comment_content_footer .add_comment .send_reply.active {
+.comment_main .send_reply.active {
 	cursor: pointer;
-	color: var(--primary);
+	color: var(--link-color);
 }
-.comment_main .comment .comment_content_footer .add_comment .send_reply svg {
+.comment_main .send_reply.active:hover,
+.comment_main .send_reply.active:focus {
+	color: var(--active-link-color);
+}
+.comment_main .send_reply svg {
 	width: 100%;
 	height: 100%;
 }
+
 
 @media only screen and (max-width: 650px) {
 	.comment_main .comment_actions:not(.comment_vote_action) span {

@@ -475,7 +475,7 @@ msgstr "Annuler"
 
 #: pod/video/static/js/comment-script.js:178
 msgid "Agree with the comment"
-msgstr "D'accord avec ce commentaire"
+msgstr "D’accord avec ce commentaire"
 
 #: pod/video/static/js/comment-script.js:205
 msgid "Reply to comment"
