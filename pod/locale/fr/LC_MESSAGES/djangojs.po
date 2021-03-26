@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-25 15:42+0100\n"
-"PO-Revision-Date: 2021-03-24 12:11+0100\n"
+"POT-Creation-Date: 2021-03-26 18:26+0100\n"
+"PO-Revision-Date: 2021-03-26 17:58+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -465,7 +465,7 @@ msgid "Answers"
 msgstr "Réponses"
 
 #: pod/video/static/js/comment-script.js:84
-#: pod/video/static/js/comment-script.js:229
+#: pod/video/static/js/comment-script.js:234
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -473,31 +473,40 @@ msgstr "Supprimer"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: pod/video/static/js/comment-script.js:178
+#: pod/video/static/js/comment-script.js:175
+#: pod/video/static/js/comment-script.js:438
+#: pod/video/static/js/comment-script.js:449
+#, javascript-format
+msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
+msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
+msgstr[0] "%s <span class=\"d-none d-md-inline\">vote</span>"
+msgstr[1] "%s <span class=\"d-none d-md-inline\">votes</span>"
+
+#: pod/video/static/js/comment-script.js:183
 msgid "Agree with the comment"
 msgstr "D’accord avec ce commentaire"
 
-#: pod/video/static/js/comment-script.js:205
+#: pod/video/static/js/comment-script.js:210
 msgid "Reply to comment"
 msgstr "Répondre au commentaire"
 
-#: pod/video/static/js/comment-script.js:208
+#: pod/video/static/js/comment-script.js:213
 msgid "Reply"
 msgstr "Répondre"
 
-#: pod/video/static/js/comment-script.js:226
+#: pod/video/static/js/comment-script.js:231
 msgid "Remove this comment"
 msgstr "Supprimer ce commentaire"
 
-#: pod/video/static/js/comment-script.js:248
+#: pod/video/static/js/comment-script.js:254
 msgid "Add a public comment"
 msgstr "Ajouter un commentaire public"
 
-#: pod/video/static/js/comment-script.js:372
+#: pod/video/static/js/comment-script.js:378
 msgid "Show answers"
 msgstr "Afficher les réponses"
 
-#: pod/video/static/js/comment-script.js:575
+#: pod/video/static/js/comment-script.js:583
 msgid "Comment has been deleted successfully."
 msgstr "Commentaire a été supprimé avec succès."
 

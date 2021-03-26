@@ -120,7 +120,7 @@ msgstr "Connexion"
 
 #: pod/authentication/templates/registration/login.html:17
 msgid "Please correct the error below."
-msgstr "Veuillez corriger l'erreur ci-dessous."
+msgstr "Veuillez corriger l’erreur ci-dessous."
 
 #: pod/authentication/templates/registration/login.html:17
 msgid "Please correct the errors below."
@@ -132,7 +132,7 @@ msgid ""
 "You are authenticated as %(user)s, but are not authorized to access this "
 "page. Would you like to login to a different account?"
 msgstr ""
-"Vous êtes authentifiés en tant que %(user)s, mais vous n'êtes pas autorisé à "
+"Vous êtes authentifiés en tant que %(user)s, mais vous n’êtes pas autorisé à "
 "accéder à cette page. Voulez-vous vous connecter avec un autre compte ?"
 
 #: pod/authentication/templates/registration/login.html:59
@@ -219,7 +219,7 @@ msgid ""
 "It is not possible to re-encode a recording that was not originally encoded "
 "by an user."
 msgstr ""
-"Il n'est pas possible de ré-encoder un enregistrement qui n'a pas été encodé "
+"Il n’est pas possible de ré-encoder un enregistrement qui n’a pas été encodé "
 "initialement par un utilisateur."
 
 #: pod/bbb/models.py:19
@@ -256,7 +256,7 @@ msgstr "La publication est possible"
 
 #: pod/bbb/models.py:38 pod/bbb/templates/bbb/card.html:23
 msgid "Waiting for encoding"
-msgstr "En attente d'encodage"
+msgstr "En attente d’encodage"
 
 #: pod/bbb/models.py:39 pod/bbb/templates/bbb/card.html:26
 #: pod/video/models.py:592
@@ -269,12 +269,12 @@ msgstr "Déjà publié"
 
 #: pod/bbb/models.py:43 pod/video/models.py:665 pod/video/models.py:1378
 msgid "Encoding step"
-msgstr "Étape de l'encodage"
+msgstr "Étape de l’encodage"
 
 #: pod/bbb/models.py:45
 msgid "Encoding step for conversion of the BBB presentation to video file."
 msgstr ""
-"Étape d'encodage pour la conversion de la présentation BBB en fichier vidéo."
+"Étape d’encodage pour la conversion de la présentation BBB en fichier vidéo."
 
 #: pod/bbb/models.py:50
 msgid "Recorded"
@@ -282,7 +282,7 @@ msgstr "Enregistrée"
 
 #: pod/bbb/models.py:51
 msgid "BBB presentation recorded?"
-msgstr "La présentation BBB a t'elle été enregistrée ?"
+msgstr "La présentation BBB a-t-elle été enregistrée ?"
 
 #: pod/bbb/models.py:55
 msgid "Recording available"
@@ -294,11 +294,11 @@ msgstr "Un enregistrement de la présentation BBB est-il disponible ?"
 
 #: pod/bbb/models.py:60
 msgid "Recording url"
-msgstr "URL de l'enregistrement"
+msgstr "URL de l’enregistrement"
 
 #: pod/bbb/models.py:61
 msgid "URL of the recording of the BBB presentation."
-msgstr "URL de l'enregistrement de la présentation BBB."
+msgstr "URL de l’enregistrement de la présentation BBB."
 
 #: pod/bbb/models.py:66
 msgid "Thumbnail url"
@@ -307,7 +307,7 @@ msgstr "URL de la vignette"
 #: pod/bbb/models.py:67
 msgid "URL of the recording thumbnail of the BBB presentation."
 msgstr ""
-"URL de la vignette correspondant à l'enregistrement de la présentation BBB."
+"URL de la vignette correspondant à l’enregistrement de la présentation BBB."
 
 #: pod/bbb/models.py:74 pod/bbb/models.py:135 pod/bbb/models.py:188
 #: pod/interactive/templates/interactive/video_interactive.html:135
@@ -341,7 +341,7 @@ msgstr "Nom complet"
 
 #: pod/bbb/models.py:118
 msgid "Full name of the user from BBB."
-msgstr "Nom complet de l'utilisateur dans BBB."
+msgstr "Nom complet de l’utilisateur dans BBB."
 
 #: pod/bbb/models.py:121
 msgid "User role"

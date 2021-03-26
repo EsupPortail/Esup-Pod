@@ -514,6 +514,7 @@
 
 .comment_main .add_comment .new_comment {
 	resize: none;
+	padding-right: 3em;
 }
 .comment_main .send_reply {
 	width: 1.5em;
