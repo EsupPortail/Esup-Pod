@@ -509,17 +509,18 @@
 	height: 60px;
 }
 .comment_main .comment .comment_content_footer .add_comment {
-	padding: .8em .2em 0;
+	margin: .8em .2em 0;
 }
 
 .comment_main .add_comment .new_comment {
 	resize: none;
 }
 .comment_main .send_reply {
-	width: 26px;
+	width: 1.5em;
 	position: absolute;
-	right: 20px;
-	top: 20px;
+	right: 1.5em;
+	top: 0;
+	height: 100%;
 	color: var(--background-color);
 }
 .comment_main .send_reply.active {
@@ -528,7 +529,7 @@
 }
 .comment_main .send_reply.active:hover,
 .comment_main .send_reply.active:focus {
-	color: var(--active-link-color);
+	color: var(--activelink-color);
 }
 .comment_main .send_reply svg {
 	width: 100%;
