@@ -19,6 +19,7 @@
    * CUSTOM COLORS *
    *****************/
   --bg-color: var(--color-white);
+  --background-color: var(--bg-color);
   --font-color: var(--color-mine-shaft);
 
   /* BOOTSTRAP COLORS */
@@ -144,7 +145,7 @@ body {
   font-family: var(--font-family-sans-serif);
 }
 .jumbotron {
-    padding: 1rem 2rem;
+  padding: 1rem 2rem;
 }
 h1 {
   font-size: 2rem;
@@ -498,8 +499,16 @@ div.card a:hover>img {
   width: 100%;
 }
 /** video form **/
+
+/* as video filename can be very long,
+  it is usefull to wrap it anywhere
+  (specially on Chrome) */
+.field_video a{
+  overflow-wrap: anywhere;
+}
+
 .required {
-  color: var(--primary);
+  color: var(--danger);
   font-size: 1.3rem;
 }
 

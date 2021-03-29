@@ -111,9 +111,6 @@
 .comment_main {
 	margin-top: 1em;
 	overflow-y: auto;
-	/*font-size: 14px;
-	font-weight: 300;
-	line-height: 1.4;*/
 	background-color: var(--primary-background-color);
 	border: 1px solid var(--color-alto);
 }

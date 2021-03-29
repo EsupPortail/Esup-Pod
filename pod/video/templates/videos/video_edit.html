@@ -60,34 +60,34 @@
   {% csrf_token %}
   <!--<div class="group-video-edit">-->
   {% if form.errors %}
-  <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
-  {{form.errors}}
+    <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+    {{form.errors}}
   {% endif %}
 
   {% if form.instance.id and form.instance.get_encoding_step == "" %}
-  <div class="alert alert-warning" role="alert">
-    {% trans "The video is currently waiting for encoding." %}
-  </div>
+    <div class="alert alert-warning" role="alert">
+      {% trans "The video is currently waiting for encoding." %}
+    </div>
   {% endif %}
 
   {% if form.instance.encoding_in_progress %}
-  <div class="alert alert-warning" role="alert">
-    {% trans "The video is currently being encoded." %}
-  </div>
+    <div class="alert alert-warning" role="alert">
+      {% trans "The video is currently being encoded." %}
+    </div>
   {% endif %}
 
   {% if form.instance.get_encoding_step == "5 : transcripting audio" %}
-  <p class="text-info">
-    {% trans "The video is currently being transcripted." %}
-  </p>
+    <p class="text-info">
+      {% trans "The video is currently being transcripted." %}
+    </p>
   {% endif %}
 
   {% for field_hidden in form.hidden_fields %}
-  {{field_hidden}}
+    {{field_hidden}}
   {% endfor %}
   {% for field in form.visible_fields %}
   {% spaceless %}
-  <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}"{% if field.name == "restrict_access_to_groups" %}style="padding-left:2em;"{% endif %}>
+  <div class="{% if 'description_' in field.name or 'title_'  in field.name %}collapse hide{% endif %}{% if 'description_' in field.name %} description{%endif%}{% if 'title_' in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %} field_{{field.name}}" {% if field.name == "restrict_access_to_groups" %}style="padding-left:2em;"{% endif %}>
     <div class="form-group {% if field.field.required %}form-group-required{%endif%}" {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}style="max-width:44rem; overflow-x:hidden"{%endif%}>
     {{ field.errors }}
     {% if "form-check-input" in field.field.widget.attrs.class %}
