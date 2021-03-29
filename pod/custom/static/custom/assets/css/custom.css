@@ -231,6 +231,7 @@ h6 {
 	--font-size-bold: 28px;
 	--font-family: "opendyslexic", Arial;
 	--card-min-width: 250px;
+	--breakpoint-lg: 1100px;
 }
 [data-dyslexia="on"][data-dyslexia-mode="on"] html > body a,
 [data-dyslexia="on"][data-dyslexia-mode="on"] html > body 
@@ -878,6 +879,13 @@ footer p {
 	color: inherit !important;
 }
 @media only screen and (max-width: 992px) {
+	div#mainContent,
+	aside#collapseAside{
+		flex: 0 0 100%;
+		max-width: 100%;
+		order: 1;
+	}
+	div#mainContent{order: 2;}
 	.navbar #nav-mainbar div:first-child {
 		flex-grow: 1;
 		display: flex;
