@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load staticfiles %}
+{% load custom_tags %}
+{% get_current_language as LANGUAGE_CODE %}
 
 {% block opengraph %}
 
@@ -141,10 +143,10 @@ $(document).on('click',  '#saveRecordPod', function(e){
     var formData = new FormData();
     formData.append('video', data, data.name);
     formData.append('title', 'podscreenrecord-'+get_now());
-    formData.append('type', 7);
+    formData.append('type', {% get_setting "DEFAULT_RECORDER_TYPE_ID" 1 %});
     formData.append('owner', {{request.user.id}});
     formData.append('cursus', 0);
-    formData.append('main_lang', "fr");
+    formData.append('main_lang', "{{ LANGUAGE_CODE }}");
     formData.append('date_added', get_date_added()); 
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     formData.append('csrfmiddlewaretoken', csrftoken);
