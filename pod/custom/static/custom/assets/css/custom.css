@@ -120,10 +120,10 @@ body > .container.container-pod {
 body > .mention-container {
 	min-height: calc(100vh - 266px);
 }
-[data-theme="light"][data-theme-theme="light"] body > .mention-container #jsmentionslegales section{
+[data-theme="light"][data-theme-theme="light"] body > .mention-container #jsmentionslegales .section{
 	background-color: var(--light);
 }
-[data-theme="dark"][data-theme-theme="dark"] body > .mention-container #jsmentionslegales section{
+[data-theme="dark"][data-theme-theme="dark"] body > .mention-container #jsmentionslegales .section{
 	background-color: var(--block-dark-color);
 }
 .not-displayed {
