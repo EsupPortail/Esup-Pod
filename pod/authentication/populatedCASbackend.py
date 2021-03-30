@@ -166,6 +166,9 @@ def assign_accessgroups(groups_element, user):
         if CREATE_GROUP_FROM_GROUPS:
             accessgroup, group_created = AccessGroup.objects.get_or_create(
                 code_name=group.text)
+            if group_created:
+                accessgroup.display_name = group.text
+                accessgroup.save()
             user.owner.accessgroup_set.add(accessgroup)
         else:
             try:
@@ -238,6 +241,9 @@ def populate_user_from_entry(user, owner, entry):
         if CREATE_GROUP_FROM_AFFILIATION:
             accessgroup, group_created = AccessGroup.objects.get_or_create(
                 code_name=affiliation.text)
+            if group_created:
+                accessgroup.display_name = affiliation.text
+                accessgroup.save()
             # group.groupsite.sites.add(Site.objects.get_current())
             user.owner.accessgroup_set.add(accessgroup)
 
@@ -246,6 +252,14 @@ def populate_user_from_entry(user, owner, entry):
 
 
 def populate_user_from_tree(user, owner, tree):
+    import xml.etree.ElementTree as ET
+    import xml.dom.minidom
+    import os
+    xml_string = xml.dom.minidom.parseString(
+        ET.tostring(tree)).toprettyxml()
+    xml_string = os.linesep.join([s for s in xml_string.splitlines(
+    ) if s.strip()]) # remove the weird newline issue
+    print(xml_string)
     # Mail
     mail_element = tree.find(
         './/{http://www.yale.edu/tp/cas}%s' % (
@@ -287,6 +301,9 @@ def populate_user_from_tree(user, owner, tree):
         if CREATE_GROUP_FROM_AFFILIATION:
             accessgroup, group_created = AccessGroup.objects.get_or_create(
                 code_name=affiliation.text)
+            if group_created:
+                accessgroup.display_name = affiliation.text
+                accessgroup.save()
             user.owner.accessgroup_set.add(accessgroup)
     create_accessgroups(user, tree, "cas")
 
