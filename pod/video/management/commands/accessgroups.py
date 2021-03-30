@@ -10,7 +10,7 @@ LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", 'fr')
 
 def edit_group_properties(group):
     existing_group = AccessGroup.objects.get(
-        name=group["name"])
+        code_name=group["code_name"])
     print("--> Already exists")
     if group["display_name"] != existing_group.display_name:
         print(
@@ -60,11 +60,12 @@ class Command(BaseCommand):
     args = 'import_json'
     help = 'Import groups from json'
     'published by the recorders. '
-    valid_args = ['import_json']
+    valid_args = ['import_json', 'migrate_groups']
 
     def add_arguments(self, parser):
+        print(parser)
         parser.add_argument('task')
-        parser.add_argument('file')
+        parser.add_argument('file', nargs='?', default="")
 
     def handle(self, *args, **options):
 
@@ -74,7 +75,7 @@ class Command(BaseCommand):
             json_data = open(options['file'])
             groups = json.load(json_data)
             for group in groups:
-                print("\n-> Processing " + group["name"])
+                print("\n-> Processing " + group["code_name"])
                 try:
                     existing_group = edit_group_properties(group)
                     add_users_to_group(group, existing_group)
@@ -82,15 +83,15 @@ class Command(BaseCommand):
                     existing_group.save()
                 except ObjectDoesNotExist:
                     print("Group with name " + group[
-                        "name"] + " doesn't exists")
-                    if not (group["name"] and group["display_name"]):
+                        "code_name"] + " doesn't exists")
+                    if not (group["code_name"] and group["display_name"]):
                         print(
-                            "No such informations to create " + group["name"])
+                            "No such informations to create " + group["code_name"])
                     else:
                         AccessGroup.objects.create(
-                            name=group[
-                                "name"], display_name=group["display_name"])
-                        print("Successfully creating " + group["name"])
+                            code_name=group[
+                                "code_name"], display_name=group["display_name"])
+                        print("Successfully creating " + group["code_name"])
             json_data.close()
         else:
             print(

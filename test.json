@@ -1,12 +1,12 @@
 [
 {
-    "name" : "mygroup12",
+    "code_name" : "mygroup12",
     "display_name": "My grookkoup 1jj22",
     "users_to_add" : [],
     "users_to_remove" : ["admin"]
 },
 {
-    "name" : "mygroup2",
+    "code_name" : "mygroup2",
     "display_name" : "My group 2",
     "users_to_add" : ["login1","login2"],
     "users_to_remove" : ["login3","login4"]
