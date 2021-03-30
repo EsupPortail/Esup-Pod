@@ -3,95 +3,95 @@
 {% load staticfiles %}
 
 {% block page_extra_head %}
-<link href="{% static 'player/videojs/video-js.min.css' %}" rel="stylesheet" />
-<script src="{% static 'player/videojs/video.min.js' %}"></script>
-<script src="{% static 'player/videojs/lang/fr.js' %}"></script>
+  <link href="{% static 'player/videojs/video-js.min.css' %}?ver={{VERSION}}" rel="stylesheet" />
+  <script src="{% static 'player/videojs/video.min.js' %}?ver={{VERSION}}"></script>
+  {% with 'player/videojs/lang/'|add:request.LANGUAGE_CODE|add:'.js' as videojs_lang %}
+    <script src="{% static videojs_lang %}?ver={{VERSION}}"></script>
+  {% endwith %}
 
-<script src="{% static 'js/videojs-logo-controlbar.js' %}"></script>
-{% if broadcaster.enable_viewer_count%}
-<script>let heartbeat_delay = {{heartbeat_delay}}</script>
-<script src="{% static 'js/viewcounter.js' %}"></script>
-{%endif%}
+  <script src="{% static 'js/videojs-logo-controlbar.js' %}?ver={{VERSION}}"></script>
+  {% if broadcaster.enable_viewer_count%}
+    <script>let heartbeat_delay = {{heartbeat_delay}}</script>
+    <script src="{% static 'js/viewcounter.js' %}?ver={{VERSION}}"></script>
+  {%endif%}
 {% endblock %}
 
 
 {% block breadcrumbs %}
-{{ block.super }}
-<li class="breadcrumb-item" ><a href="{% url 'live:lives'%}" title="{% trans 'Lives' %}">{% trans "Lives" %}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{broadcaster.name}}</li>
+  {{ block.super }}
+  <li class="breadcrumb-item" ><a href="{% url 'live:lives'%}" title="{% trans 'Lives' %}">{% trans "Lives" %}</a></li>
+  <li class="breadcrumb-item active" aria-current="page">{{broadcaster.name}}</li>
 {% endblock %}
 
 {% block page_title %}{% trans "Lives" %}{% endblock %}
 
 {% block page_content %}
 
-
 {% if form %}
-{% include 'live/live-form.html' %}
+  {% include 'live/live-form.html' %}
 {% else %}
 
-	<h3 id="livename" data-liveid="{{broadcaster.id}}"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}}</h3>
+  <h3 id="livename" data-liveid="{{broadcaster.id}}"><i data-feather="airplay"></i>&nbsp;{{broadcaster.name}}</h3>
 
-	{% if broadcaster.video_on_hold.is_video %}
-		<div id="divvideoonhold" style="display: block;">
-			<video id="podvideoonholdplayer" class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" muted autoplay>
-			</video>
-		</div>
-		<div id="divvideoplayer" style="display: none;">
-			<video id="podvideoplayer" class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" poster="{{broadcaster.get_poster_url}}" muted autoplay>
-				<source
-				 src="{{broadcaster.url}}"
-				 type="application/x-mpegURL">
-			</video>
-		</div>
-	{% else %}
-		<video id="podvideoplayer" class="live-video video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" poster="{{broadcaster.get_poster_url}}" muted autoplay>
-			<source
-			 src="{{broadcaster.url}}"
-			 type="application/x-mpegURL">
-		</video>
-		  <div id="viewers-list"> <ul id="viewers-ul">
+  {% if broadcaster.video_on_hold.is_video %}
+    <div id="divvideoonhold" style="display: block;">
+      <video id="podvideoonholdplayer" class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" muted autoplay>
+      </video>
+    </div>
+    <div id="divvideoplayer" style="display: none;">
+      <video id="podvideoplayer" class="video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" poster="{{broadcaster.get_poster_url}}" muted autoplay>
+        <source
+         src="{{broadcaster.url}}"
+         type="application/x-mpegURL">
+      </video>
+    </div>
+  {% else %}
+    <video id="podvideoplayer" class="live-video video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" poster="{{broadcaster.get_poster_url}}" muted autoplay>
+      <source
+       src="{{broadcaster.url}}"
+       type="application/x-mpegURL">
+    </video>
+    <div id="viewers-list"><ul id="viewers-ul"></ul></div>
+  {% endif %}
 
-				</ul> </div>
-	{% endif %}
+  <p>{{ broadcaster.description|safe }}</p>
 
-	<p>{{ broadcaster.description|safe }}</p>
+  {% if broadcaster.iframe_url != "" and broadcaster.iframe_url != None  %}
+    <iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
+      title="Inline Frame Example" loading="lazy"
+      height="{{broadcaster.iframe_height}}"
+      src="{{broadcaster.iframe_url}}">
+    </iframe>
+  {% endif %}
 
-	{% if broadcaster.iframe_url != "" and broadcaster.iframe_url != None  %}
-	<iframe id="inlineFrameExample" style="padding: 0; margin: 0; border:0; width: 100%;"
-		title="Inline Frame Example" loading="lazy"
-		height="{{broadcaster.iframe_height}}"
-		src="{{broadcaster.iframe_url}}">
-	</iframe>
-	{% endif %}
-	
-	{% if USE_BBB and USE_BBB_LIVE and display_chat %}
-	  <div id="container" style="float:center; width:100%">
-		<form method="post" action="" id="live_bbb_chat_form">
-		  <div class="form-group">
-			<h2>{% trans 'Send message' %}</h2>
-			{% if user.is_authenticated %}
-				{% trans 'You can send a message (100 characters maximum) to the BigBlueButton session. It will be displayed within 15 to 30 seconds on the live video.' %}
-				<textarea name="message" rows="2" cols="90" maxlength="100" class="form-control" id="message"></textarea>
-			{% else %}
-				{% trans 'You must be authenticated to send a message.' %}
-			{% endif %}
-		  </div>
-		  <div id="message_return" style="float:right; width:30%">
-		  </div>
-		  {% if user.is_authenticated %}
-			<button type="submit" class="btn btn-primary send-message">{% trans 'Submit' %}</button>
-		  {% endif %}
-		</form>		
-	  </div>
-	{% endif %}
+  {% if USE_BBB and USE_BBB_LIVE and display_chat %}
+    <div id="container" style="float:center; width:100%">
+    <form method="post" action="" id="live_bbb_chat_form">
+      <div class="form-group">
+      <h2>{% trans 'Send message' %}</h2>
+      {% if user.is_authenticated %}
+        {% trans 'You can send a message (100 characters maximum) to the BigBlueButton session. It will be displayed within 15 to 30 seconds on the live video.' %}
+        <label for="message">{% trans "Message" %}</label>
+        <textarea name="message" rows="2" cols="90" maxlength="100" class="form-control" id="message"></textarea>
+      {% else %}
+        {% trans 'You must be authenticated to send a message.' %}
+      {% endif %}
+      </div>
+      <div id="message_return" style="float:right; width:30%">
+      </div>
+      {% if user.is_authenticated %}
+      <button type="submit" class="btn btn-primary send-message">{% trans 'Submit' %}</button>
+      {% endif %}
+    </form>
+    </div>
+  {% endif %}
 
 {%endif%}
 
 <div id="info-video" style="display:none" class="jumbotron">
-	<button type="button" class="close" aria-label="Close">
-		<span aria-hidden="true">&times;</span>
-	</button>
+  <button type="button" class="close" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
 </div>
 
 {% endblock page_content %}
@@ -101,183 +101,186 @@
 <h5 class="card-title pl-2">
   <i data-feather="radio"></i>
   <span class="ml-1 broadcaster-name">
-	  {{broadcaster.building.name}}
+    {{broadcaster.building.name}}
   </span>
 </h5>
 <div class="card-text">
     {% if broadcaster.building.headband %}
     <p class="card-text broadcaster-headband">
         <img src="{{ broadcaster.building.headband.file.url }}" alt="{% trans 'Headband' %} {{ broadcaster.building.name }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
-    </p>
+      </p>
     {% endif %}
     {% for otherbroadcaster in broadcaster.building.broadcaster_set.all%}
-    {% if otherbroadcaster != broadcaster and otherbroadcaster.public %}
-      <p class="card-text broadcaster-status">
-        {%if otherbroadcaster.status %}<a href="{% url 'live:video_live' slug=otherbroadcaster.slug %}" class="live_on">{%if otherbroadcaster.password%}<i data-feather="lock"></i>{%else%}<i data-feather="airplay"></i>{%endif%}</i>&nbsp;{{otherbroadcaster.name}}</a>
-        {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{otherbroadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}</p>
-    {% endif %}
+      {% if otherbroadcaster != broadcaster and otherbroadcaster.public %}
+        <p class="card-text broadcaster-status">
+          {%if otherbroadcaster.status %}<a href="{% url 'live:video_live' slug=otherbroadcaster.slug %}" class="live_on">{%if otherbroadcaster.password%}<i data-feather="lock"></i>{%else%}<i data-feather="airplay"></i>{%endif%}</i>&nbsp;{{otherbroadcaster.name}}</a>
+          {%else%}<span class="live_off"><i data-feather="airplay"></i>&nbsp;{{otherbroadcaster.name}} ({% trans "no broadcast in progress" %})</span>{%endif%}
+        </p>
+      {% endif %}
     {% empty %}
-    <p class="card-text not-found">{% trans "Sorry, no lives found" %}.</p>
+      <p class="card-text not-found">{% trans "Sorry, no lives found" %}.</p>
     {% endfor %}
     {% if broadcaster.building.gmapurl %}
-    <p class="card-text"><small class="text-muted"><a href='{{broadcaster.building.gmapurl}}' title="{% trans 'access map' %}" target="_blank"><i data-feather="map-pin"></i>
-		<span class="ml-1 access-map">{% trans "access map" %}</span></a></small>
-	</p>
+      <p class="card-text">
+        <small class="text-muted"><a href='{{broadcaster.building.gmapurl}}' title="{% trans 'access map' %}" target="_blank"><i data-feather="map-pin"></i>
+          <span class="ml-1 access-map">{% trans "access map" %}</span>
+        </a></small>
+      </p>
     {% endif %}
-</div>
+  </div>
 </div>
 {% include 'aside.html'%}
 {% endblock page_aside %}
 
 {% block more_script %}
 <script>
-	// Debug if necessary, depends on the settings_local
-	{% if debug %}
-		var debug = true;
-	{% else %}
-		var debug = false;
-	{% endif %}
-	// Live started
-	var started = false;
-	// Number of loop until we are sure the live is stopped
-	// See video state (cf. https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/readyState)
-	var nbLoop = 0;
-	// Live seems stopped
-	var stopped = false;
+  // Debug if necessary, depends on the settings_local
+  {% if debug %}
+    var debug = true;
+  {% else %}
+    var debug = false;
+  {% endif %}
+  // Live started
+  var started = false;
+  // Number of loop until we are sure the live is stopped
+  // See video state (cf. https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/readyState)
+  var nbLoop = 0;
+  // Live seems stopped
+  var stopped = false;
 
-    //videojs.options.flash.swf = "video-js.swf"
-    var options = {
-      notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
-      language: "fr", //en or nl
-      {% if request.GET.is_iframe %}
-		fluid: false,
-      {% else %}
-		fluid: true,
-      {% endif %}
-      playbackRates: [0.5, 1, 1.5, 2],
-      errorDisplay: false,
-	  loop: false
+  //videojs.options.flash.swf = "video-js.swf"
+  var options = {
+    notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
+    language: "fr", //en or nl
+    {% if request.GET.is_iframe %}
+      fluid: false,
+    {% else %}
+      fluid: true,
+    {% endif %}
+    playbackRates: [0.5, 1, 1.5, 2],
+    errorDisplay: false,
+    loop: false
+  }
+
+  // Management of the end of the stream (for Firefox, Chrome... not working for Edge, Safari)
+  videojs.Hls.xhr.beforeRequest = function(options) {
+    // Reset counter if video state is ok
+    if (started && player.readyState() > 2) { nbLoop = 0; }
+    if (started && player.readyState() <= 2) {
+      // Check if .m3u8 exists, to be sure that live is stopped
+      $.ajax({ url: '{{broadcaster.url}}',
+        type : 'GET',
+        crossDomain: true,
+        dataType : 'html',
+        success: function(html, status){
+          stopped = false;
+        },
+        error : function(result, status, error){
+          stopped = true;
+        },
+        complete : function(result, status){
+        }
+      });
+      if (stopped) {
+        nbLoop = nbLoop + 1;
+        // We're waiting a bit to make sure it's not a network / data flow issue...
+        if (debug) { console.info("The streaming live stopped? Video state: " + player.readyState() + ". It's been " + nbLoop + " times that there is no more video stream. After 4 times, we stop."); }
+        if (nbLoop > 3) {
+          // Display of a message of end of live and reload of the page in 9 seconds
+          let modal = player.createModal('{% trans "Thank you for watching this streaming live with us. The page will reload automatically within a few seconds to display the video on hold." %}');
+          setTimeout(function(){ location.reload(); }, 9000);
+        }
+      }
     }
+    return options;
+  }
 
-	// Management of the end of the stream (for Firefox, Chrome... not working for Edge, Safari)
-	videojs.Hls.xhr.beforeRequest = function(options) {
-		// Reset counter if video state is ok
-		if (started && player.readyState() > 2) { nbLoop = 0; }
-		if (started && player.readyState() <= 2) {
-			// Check if .m3u8 exists, to be sure that live is stopped
-			$.ajax({ url: '{{broadcaster.url}}',
-				type : 'GET',
-				crossDomain: true,
-				dataType : 'html',
-				success: function(html, status){
-					stopped = false;
-				},
-				error : function(result, status, error){
-					stopped = true;
-				},
-				complete : function(result, status){
-				}
-			});
-			if (stopped) {
-				nbLoop = nbLoop + 1;
-				// We're waiting a bit to make sure it's not a network / data flow issue...
-				if (debug) { console.info("The streaming live stopped? Video state: " + player.readyState() + ". It's been " + nbLoop + " times that there is no more video stream. After 4 times, we stop."); }
-				if (nbLoop > 3) {
-					// Display of a message of end of live and reload of the page in 9 seconds
-					let modal = player.createModal('{% trans "Thank you for watching this streaming live with us. The page will reload automatically within a few seconds to display the video on hold." %}');
-					setTimeout(function(){ location.reload(); }, 9000);
-				}
-			}
-		}
-		return options;
-	}
+  // Management of the video on hold
+  {% if broadcaster.video_on_hold.is_video %}
+    // In this case, loop is necessary
+    options["loop"] = true;
+    var playerOnHold = videojs('podvideoonholdplayer', options, function(){});
 
-	// Management of the video on hold
-	{% if broadcaster.video_on_hold.is_video %}
-		// In this case, loop is necessary
-		options["loop"] = true;
-		var playerOnHold = videojs('podvideoonholdplayer', options, function(){});
+    playerOnHold.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
+    var mp4_sources = {{broadcaster.video_on_hold.get_video_mp4_json|safe}};
+    playerOnHold.src(mp4_sources);
+    let modalOnHold = playerOnHold.createModal('{% trans "Live not found, displaying the video on hold, retry every 10 seconds" %}');
+    setTimeout(function(){ modalOnHold.close(); }, 10000);
+  {% endif %}
 
-		playerOnHold.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
-		var mp4_sources = {{broadcaster.video_on_hold.get_video_mp4_json|safe}};
-		playerOnHold.src(mp4_sources);
-		let modalOnHold = playerOnHold.createModal('{% trans "Live not found, displaying the video on hold, retry every 10 seconds" %}');
-		setTimeout(function(){ modalOnHold.close(); }, 10000);
-	{% endif %}
+  // Management of the streaming live
+  var player = videojs('podvideoplayer', options, function(){});
 
-	// Management of the streaming live
-	var player = videojs('podvideoplayer', options, function(){});
+  {% if broadcaster.enable_viewer_count%}
+  player.videoJsViewerCount();
+  {% endif %}
+  player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
+  player.on('error', function() {
+    // Handle successives errors to avoid multiple reload
+    if (typeof(errored) == 'undefined' || !errored) {
+    var errored = true;
+    let modal = player.createModal('{% trans "Live not found, retry in 10 seconds" %}');
+    setTimeout(function() {
+      errored = false;
+      modal.close();
+      player.src({
+      src: player.currentSrc(),
+      type: player.currentType(),
+      overrideNative: true
+      });
+    }, 10000)
+    }
+  })
 
-    {% if broadcaster.enable_viewer_count%}
-	player.videoJsViewerCount();
-	{% endif %}
-	player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
-	player.on('error', function() {
-	  // Handle successives errors to avoid multiple reload
-	  if (typeof(errored) == 'undefined' || !errored) {
-		var errored = true;
-		let modal = player.createModal('{% trans "Live not found, retry in 10 seconds" %}');
-		setTimeout(function() {
-		  errored = false;
-		  modal.close();
-		  player.src({
-			src: player.currentSrc(),
-			type: player.currentType(),
-			overrideNative: true
-		  });
-		}, 10000)
-	  }
-	})
-
-	// Fire this event when live started
-    player.on('loadedmetadata', function() {
-		if(debug) { console.info("Streaming live starts."); }
-		// Display the streaming live
-		started = true;
-		if ($("#divvideoonhold")) { $("#divvideoonhold").html("");}
-		if ($("#divvideoplayer")) { $("#divvideoplayer").css("display", "block"); }
-    })
+  // Fire this event when live started
+  player.on('loadedmetadata', function() {
+    if(debug) { console.info("Streaming live starts."); }
+    // Display the streaming live
+    started = true;
+    if ($("#divvideoonhold")) { $("#divvideoonhold").html("");}
+    if ($("#divvideoplayer")) { $("#divvideoplayer").css("display", "block"); }
+  })
 </script>
 {% if USE_BBB and USE_BBB_LIVE and display_chat %}
   <script>
-    // Send question for BBB live
-    $(document).ready(function () {
-      $('.send-message').click(function (e) {
-      e.preventDefault();
-      var message = $('#message').val();
-      $.ajax
-        ({
-          type: "GET",
-          url: "{% url 'bbb:live_publish_chat' id=broadcaster.id %}",
-          data: { "message": message },
-          success: function (data) {
-            $('#live_bbb_chat_form')[0].reset();
-            if (data.is_sent) {
-               // message_sent
-              displayReturnMessage("info", data.message_return);
-            }
-            else {
-              // error_no_broadcaster_found : Message not sent : no broadcaster found
-              // error_no_connection : Message not sent : no connection to REDIS
-              displayReturnMessage("error", data.message_return);
-            }
-          }
-        });
-      });
-    });
-    function displayReturnMessage(level, returnCode) {
-      let returnMessage = "";
-      if (level == "info"){
-        $("#message_return").attr('class', 'alert alert-info');
-      } else {
-        $("#message_return").attr('class', 'alert alert-warning');
+  // Send question for BBB live
+  $(document).ready(function () {
+    $('.send-message').click(function (e) {
+    e.preventDefault();
+    var message = $('#message').val();
+    $.ajax
+    ({
+      type: "GET",
+      url: "{% url 'bbb:live_publish_chat' id=broadcaster.id %}",
+      data: { "message": message },
+      success: function (data) {
+      $('#live_bbb_chat_form')[0].reset();
+      if (data.is_sent) {
+         // message_sent
+        displayReturnMessage("info", data.message_return);
       }
-      if (returnCode == "message_sent") { returnMessage = "{% trans 'Message sent' %}";}
-      if (returnCode == "error_no_broadcaster_found") { returnMessage = "{% trans 'Message not sent: no broadcaster found' %}";}
-      if (returnCode == "error_no_connection") { returnMessage = "{% trans 'Message not sent: connection problem (REDIS)' %}";}
-      $("#message_return").html(returnMessage);
-      $("#message_return").show("slow").delay(3000).hide("slow");
-	}
+      else {
+        // error_no_broadcaster_found : Message not sent : no broadcaster found
+        // error_no_connection : Message not sent : no connection to REDIS
+        displayReturnMessage("error", data.message_return);
+      }
+      }
+    });
+    });
+  });
+  function displayReturnMessage(level, returnCode) {
+    let returnMessage = "";
+    if (level == "info"){
+    $("#message_return").attr('class', 'alert alert-info');
+    } else {
+    $("#message_return").attr('class', 'alert alert-warning');
+    }
+    if (returnCode == "message_sent") { returnMessage = "{% trans 'Message sent' %}";}
+    if (returnCode == "error_no_broadcaster_found") { returnMessage = "{% trans 'Message not sent: no broadcaster found' %}";}
+    if (returnCode == "error_no_connection") { returnMessage = "{% trans 'Message not sent: connection problem (REDIS)' %}";}
+    $("#message_return").html(returnMessage);
+    $("#message_return").show("slow").delay(3000).hide("slow");
+  }
   </script>
 {% endif %}
 

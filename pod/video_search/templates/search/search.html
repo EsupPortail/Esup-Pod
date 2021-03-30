@@ -3,14 +3,14 @@
 {% load staticfiles %}
 
 {% block opengraph %}
-    <meta name="description" content="{{ query }}">
-    <!-- Open Graph data -->
-    <meta property="og:title" content="{% trans 'Search' %}" />
-    <meta property="og:type" content="article" />
-    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-    <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
-    <meta property="og:description" content="{{ query }}" />
-    <meta property="og:site_name" content="{{ TITLE_SITE }}" />
+  <meta name="description" content="{{ query }}">
+  <!-- Open Graph data -->
+  <meta property="og:title" content="{% trans 'Search' %}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+  <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
+  <meta property="og:description" content="{{ query }}" />
+  <meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock opengraph %}
 
 
@@ -23,17 +23,17 @@
 
 <h3>{% trans "Search results" %}</h3>
 <div class="row">
-    {% if remove_selected_facet %}
-        <div class="col-sm-9">
-            <strong>{% trans 'Active filters (click to unfilter):' %}</strong>
-            <ul class="list-inline">
-            {% for facet in remove_selected_facet %}
-                <li class="list-inline-item remove-link">{{facet|safe}}</li>
-            {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
-    <div class="col-sm-3 text-right">{% blocktrans count counter=num_result %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</div>
+  {% if remove_selected_facet %}
+    <div class="col-sm-9">
+      <strong>{% trans 'Active filters (click to unfilter):' %}</strong>
+      <ul class="list-inline">
+      {% for facet in remove_selected_facet %}
+        <li class="list-inline-item remove-link">{{facet|safe}}</li>
+      {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+  <div class="col-sm-3 text-right">{% blocktrans count counter=num_result %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</div>
 </div>
 
 {% include "videos/video_list.html" %}
@@ -43,160 +43,160 @@
 {% block page_aside %}
 
 <div class="card card-body">
-    <h5 class="card-title">{% trans "Advanced search" %}</h5>
-    <div class="card-text" >
-        <form method="get" action="{{ request.get_full_path }}" id="video_search_form">
-        {% if form.errors %}
-            <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
-        {% endif %}
-        {% for field_hidden in form.hidden_fields %}
-            {{field_hidden}}
-        {% endfor %}
-        {% for field in form.visible_fields %}
-            {% spaceless %}
-                {{ field.errors }}
-                <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{field}}</div>
-            {% endspaceless %}
-        {%endfor%}
-        <div class="text-center">
-            <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
-        </div>
-        </form>
+  <h5 class="card-title">{% trans "Advanced search" %}</h5>
+  <div class="card-text" >
+    <form method="get" action="{{ request.get_full_path }}" id="video_search_form">
+    {% if form.errors %}
+      <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+    {% endif %}
+    {% for field_hidden in form.hidden_fields %}
+      {{field_hidden}}
+    {% endfor %}
+    {% for field in form.visible_fields %}
+      {% spaceless %}
+        {{ field.errors }}
+        <div class="form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{field}}</div>
+      {% endspaceless %}
+    {%endfor%}
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary">{% trans "Send" %}</button>
     </div>
+    </form>
+  </div>
 </div>
 
 <div class="card card-body">
-    <h5 class="card-title">{% trans 'Filter' %}</h5>
-    <div class="card-text" >
-        <dl>
-        {% if aggregations.owner_full_name and aggregations.owner_full_name.buckets %}
-            <dt>{% trans 'Owner' %}</dt>
-            {# Provide only the top 5 owner #}
-            {% for owner in aggregations.owner_full_name.buckets %}
-                <dd>
-                    <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=owner_full_name.raw:{{ owner.key|urlencode }}">
-                        {{ owner.key }}
-                    </a>
-                    ({{ owner.doc_count }})
-                </dd>
-            {% endfor %}
-        {%endif%}
-        {% if aggregations.type_title and aggregations.type_title.buckets %}
-            <dt>{% trans 'Type' %}</dt>
-            {# Provide only the top 5 type #}
-            {% for type in aggregations.type_title.buckets %}
-                <dd>
-                    <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=type.slug:{{ type.key|slugify }}">
-                        {{ type.key }}
-                    </a>
-                    ({{ type.doc_count }})
-                </dd>
-            {% endfor %}
-        {% endif %}
-        {% if aggregations.tags_name and aggregations.tags_name.buckets %}
-            <dt>{% trans 'Tags' %}</dt>
-            {# Provide only the top 5 type #}
-            {% for tag in aggregations.tags_name.buckets %}
-                <dd>
-                    <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=tags.slug:{{ tag.key|slugify }}">
-                        {{ tag.key }}
-                    </a>
-                    ({{ tag.doc_count }})
-                </dd>
-            {% endfor %}
-        {% endif %}
-        {% if aggregations.disciplines_title and aggregations.disciplines_title.buckets %}
-            <dt>{% trans 'Discipline' %}</dt>
-            {# Provide only the top 5 type #}
-            {% for discipline in aggregations.disciplines_title.buckets %}
-                <dd>
-                    <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=disciplines.slug:{{ discipline.key|slugify }}">
-                        {{ discipline.key }}
-                    </a>
-                    ({{ discipline.doc_count }})
-                </dd>
-            {% endfor %}
-        {% endif %}
+  <h5 class="card-title">{% trans 'Filter' %}</h5>
+  <div class="card-text" >
+    <dl>
+    {% if aggregations.owner_full_name and aggregations.owner_full_name.buckets %}
+      <dt>{% trans 'Owner' %}</dt>
+      {# Provide only the top 5 owner #}
+      {% for owner in aggregations.owner_full_name.buckets %}
+        <dd>
+          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=owner_full_name.raw:{{ owner.key|urlencode }}">
+            {{ owner.key }}
+          </a>
+          ({{ owner.doc_count }})
+        </dd>
+      {% endfor %}
+    {%endif%}
+    {% if aggregations.type_title and aggregations.type_title.buckets %}
+      <dt>{% trans 'Type' %}</dt>
+      {# Provide only the top 5 type #}
+      {% for type in aggregations.type_title.buckets %}
+        <dd>
+          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=type.slug:{{ type.key|slugify }}">
+            {{ type.key }}
+          </a>
+          ({{ type.doc_count }})
+        </dd>
+      {% endfor %}
+    {% endif %}
+    {% if aggregations.tags_name and aggregations.tags_name.buckets %}
+      <dt>{% trans 'Tags' %}</dt>
+      {# Provide only the top 5 type #}
+      {% for tag in aggregations.tags_name.buckets %}
+        <dd>
+          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=tags.slug:{{ tag.key|slugify }}">
+            {{ tag.key }}
+          </a>
+          ({{ tag.doc_count }})
+        </dd>
+      {% endfor %}
+    {% endif %}
+    {% if aggregations.disciplines_title and aggregations.disciplines_title.buckets %}
+      <dt>{% trans 'Discipline' %}</dt>
+      {# Provide only the top 5 type #}
+      {% for discipline in aggregations.disciplines_title.buckets %}
+        <dd>
+          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=disciplines.slug:{{ discipline.key|slugify }}">
+            {{ discipline.key }}
+          </a>
+          ({{ discipline.doc_count }})
+        </dd>
+      {% endfor %}
+    {% endif %}
 
-        {% if aggregations.channels_title and aggregations.channels_title.buckets %}
-            <dt>{% trans 'Channel' %}</dt>
-            {# Provide only the top 5 type #}
-            {% for channel in aggregations.channels_title.buckets %}
-                <dd>
-                    <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=channels.slug:{{ channel.key|slugify }}">
-                        {{ channel.key }}
-                    </a>
-                    ({{ channel.doc_count }})
-                </dd>
-            {% endfor %}
-        {% endif %}
+    {% if aggregations.channels_title and aggregations.channels_title.buckets %}
+      <dt>{% trans 'Channel' %}</dt>
+      {# Provide only the top 5 type #}
+      {% for channel in aggregations.channels_title.buckets %}
+        <dd>
+          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=channels.slug:{{ channel.key|slugify }}">
+            {{ channel.key }}
+          </a>
+          ({{ channel.doc_count }})
+        </dd>
+      {% endfor %}
+    {% endif %}
 
-        {% if aggregations.main_lang and aggregations.main_lang.buckets %}
-            <dt>{% trans 'Main language' %}</dt>
-            {# Provide only the top 5 type #}
-            {% for main_lang in aggregations.main_lang.buckets %}
-                <dd>
-                    <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=main_lang:{{ main_lang.key }}">
-                       {{main_lang.key}}
-                    </a>
-                    ({{ main_lang.doc_count }})
-                </dd>
-            {% endfor %}
-        {% endif %}
+    {% if aggregations.main_lang and aggregations.main_lang.buckets %}
+      <dt>{% trans 'Main language' %}</dt>
+      {# Provide only the top 5 type #}
+      {% for main_lang in aggregations.main_lang.buckets %}
+        <dd>
+          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=main_lang:{{ main_lang.key }}">
+             {{main_lang.key}}
+          </a>
+          ({{ main_lang.doc_count }})
+        </dd>
+      {% endfor %}
+    {% endif %}
 
-        {% if aggregations.cursus and result.aggregations.cursus.buckets %}
-            <dt>{% trans 'University course' %}</dt>
-            {# Provide only the top 5 cursus #}
-            {% for cursus in aggregations.cursus.buckets %}
-                <dd>
-                    <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=cursus:{{ cursus.key }}">
-                       {{cursus.key }}
-                    </a>
-                    ({{ cursus.doc_count }})
-                </dd>
-            {% endfor %}
-        {% endif %}
-        </dl>
-    </div>
+    {% if aggregations.cursus and result.aggregations.cursus.buckets %}
+      <dt>{% trans 'University course' %}</dt>
+      {# Provide only the top 5 cursus #}
+      {% for cursus in aggregations.cursus.buckets %}
+        <dd>
+          <a href="{{ request.get_full_path }}{% if "?" in request.get_full_path %}&amp;{% else %}?{% endif%}selected_facets=cursus:{{ cursus.key }}">
+             {{cursus.key }}
+          </a>
+          ({{ cursus.doc_count }})
+        </dd>
+      {% endfor %}
+    {% endif %}
+    </dl>
+  </div>
 </div>
 
 {% endblock page_aside %}
 
 {% block more_script %}
 
-<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
-<script src="{% static 'js/infinite.min.js' %}"></script>
+<script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script>
   var infinite = new Waypoint.Infinite({
-    element: $('.infinite-container')[0],
-    onBeforePageLoad: function () {
-      $('.infinite-loading').show();
-    },
-    onAfterPageLoad: function ($items) {
-      $('.infinite-loading').hide();
-      feather.replace({ class: 'align-bottom'});
-      $('footer.static-pod').addClass('small');
-      $('footer.static-pod').addClass('fixed-bottom');
-      $('footer.static-pod').attr('style','height:80px; overflow-y:auto');
-      $('footer.static-pod .hidden-pod').css('display','none');
-      $(window).scroll(function () {
-        if ($(window).height() + $(window).scrollTop() == $(document).height())
-        {
-           $('footer.static-pod .hidden-pod').css('display','block');
-           $('footer.static-pod').attr('style','height:auto;');
-           $('footer.static-pod').removeClass('fixed-bottom');
-        }
-      });
+  element: $('.infinite-container')[0],
+  onBeforePageLoad: function () {
+    $('.infinite-loading').show();
+  },
+  onAfterPageLoad: function ($items) {
+    $('.infinite-loading').hide();
+    feather.replace({ class: 'align-bottom'});
+    $('footer.static-pod').addClass('small');
+    $('footer.static-pod').addClass('fixed-bottom');
+    $('footer.static-pod').attr('style','height:80px; overflow-y:auto');
+    $('footer.static-pod .hidden-pod').css('display','none');
+    $(window).scroll(function () {
+    if ($(window).height() + $(window).scrollTop() == $(document).height())
+    {
+       $('footer.static-pod .hidden-pod').css('display','block');
+       $('footer.static-pod').attr('style','height:auto;');
+       $('footer.static-pod').removeClass('fixed-bottom');
     }
+    });
+  }
   });
 </script>
 <script src="/admin/jsi18n/"></script>
-<script src="{% static 'admin/js/core.js' %}"></script>
-<script src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-<script src="{% static 'admin/js/jquery.init.js' %}"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
+<script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
 
 {{ form.media }}
 

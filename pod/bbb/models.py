@@ -45,15 +45,15 @@ class Meeting(models.Model):
         help_text=_('Encoding step for conversion of the '
                     'BBB presentation to video file.'),
         default=0)
-    # Is this meeting was recorded in BigBlueButton ?
+    # Is this meeting was recorded in BigBlueButton?
     recorded = models.BooleanField(
         _('Recorded'),
-        help_text=_('BBB presentation recorded ?'),
+        help_text=_('BBB presentation recorded?'),
         default=False)
-    # Is the recording of the presentation is available in BigBlueButton ?
+    # Is the recording of the presentation is available in BigBlueButton?
     recording_available = models.BooleanField(
         _('Recording available'),
-        help_text=_('BBB presentation recording is available ?'),
+        help_text=_('BBB presentation recording is available?'),
         default=False)
     # URL of the recording of the BigBlueButton presentation
     recording_url = models.CharField(
@@ -192,7 +192,7 @@ class Livestream(models.Model):
     is_restricted = models.BooleanField(
         verbose_name=_(u'Restricted access'),
         help_text=_(
-            'Is live only accessible to authenticated users ?'),
+            'Is live only accessible to authenticated users?'),
         default=False)
     # Broadcaster in charge to perform the live
     broadcaster_id = models.IntegerField(
@@ -204,21 +204,21 @@ class Livestream(models.Model):
     show_chat = models.BooleanField(
         verbose_name=_('Show public chat'),
         help_text=_(
-            'Do you want to show the public chat in the live ?'),
+            'Do you want to show the public chat in the live?'),
         default=True)
     # If the user wants to download the video of this meeting after the live
     download_meeting = models.BooleanField(
         verbose_name=_('Save meeting in My videos'),
         help_text=_(
             'Do you want to save the video of '
-            'this meeting, at the end of the live, directly in My videos ?'),
+            'this meeting, at the end of the live, directly in "My videos"?'),
         default=False)
     # If the user wants that students have a chat in the live page
     enable_chat = models.BooleanField(
         verbose_name=_('Enable chat'),
         help_text=_(
             'Do you want a chat on the live page '
-            'for students ? Messages sent in this live page\'s chat will '
+            'for students? Messages sent in this live page\'s chat will '
             'end up in BigBlueButton\'s public chat.'),
         default=False)
     # Redis hostname, useful for chat

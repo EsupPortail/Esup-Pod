@@ -24,22 +24,18 @@
   --content-primary-color: var(--font-color) !important;
 }
 
-[data-theme="dark"] a,
-[data-theme="dark"] .navbar-light .navbar-nav .nav-link {
-  color: var(--link-color);
-}
-[data-theme="dark"] .navbar-light .navbar-nav .nav-link:focus,
-[data-theme="dark"] .navbar-light .navbar-nav .nav-link:hover {
-  color: var(--activelink-color);
-}
-
 [data-theme="dark"] .form-control::placeholder {
   color: #BEC1C6;
 }
 [data-theme="dark"] .form-control:focus {
     background-color: var(--background-color);
+    color: var(--font-color);
     border-color: var(--primary);
     box-shadow: 0 0 0 .2rem rgba(126,126,126,.25);
+}
+
+[data-theme="dark"] .card-takenote .header:hover{
+  background-color: var(--bg-color)
 }
 
 [data-theme="dark"] .breadcrumb-item + .breadcrumb-item::before {
@@ -54,6 +50,17 @@
   background-color: var(--bg-color);
   color:var(--white);
   border-bottom: none;
+}
+
+[data-theme="dark"] .nav-tabs .nav-link:focus,
+[data-theme="dark"] .nav-tabs .nav-link:hover {
+  background-color: var(--bg-color);
+  border-color: var(--bg-color);
+}
+
+[data-theme="dark"] .navbar-nav .nav-link:focus,
+[data-theme="dark"] .navbar-nav .nav-link:hover {
+  color: var(--activelink-color);
 }
 
 [data-theme="dark"] .dropdown-item:hover,
@@ -72,15 +79,16 @@
 [data-theme="dark"] .btn:focus {
   color: inherit;
 }
-[data-theme="dark"] .btn.btn-light {
+[data-theme="dark"] .btn-light {
   background-color: var(--dark);
-  border-color: var(--dark);
-  color: var(--primary);
+  border-color: var(--color-formfields);
+  color: var(--link-color);
 }
-[data-theme="dark"] .btn.btn-light:hover,
-[data-theme="dark"] .btn.btn-light:active,
-[data-theme="dark"] .btn.btn-light:focus {
+[data-theme="dark"] .btn-light:hover,
+[data-theme="dark"] .btn-light:active,
+[data-theme="dark"] .btn-light:focus {
   color: var(--activelink-color);
+  background-color: var(--color-silver);
 }
 
 [data-theme="dark"] .btn-secondary {
@@ -98,6 +106,10 @@
   background-color: var(--dark);
   border-color: var(--dark);
 }
+[data-theme="dark"] .card-header {
+  border-bottom-color: var(--color-formfields);
+}
+
 
 body.dark {
   background-color: var(--background-color) !important;
@@ -107,14 +119,8 @@ body.dark {
 [data-theme="dark"] .comment_main .comment .comment_content {
   box-shadow: 2px 2px 12px var(--dark);
 }
-[data-theme="dark"] .comment_main .add_comment .add_comment_btn {
-  box-shadow: 4px 8px var(--bg-color);
-}
 
 /* Modal override css dark mode */
-[data-theme="dark"] .comment_main .comment .comment_content_footer .add_comment, /* comment text-area wrapper */
-[data-theme="dark"] .comment_main .add_comment .form-wrapper .new_comment.new_parent_comment, /* comment text-area */
-[data-theme="dark"] .comment_main .comment .comment_content_footer .add_comment .new_comment, /* comment text-area */
 [data-theme="dark"] #podfile #dirs .folder-search,
 [data-theme="dark"] #podfile .list_folders .folder_container:nth-child(2n),
 [data-theme="dark"] #podfile .list_folders_sub .folder_container:nth-child(2n),
