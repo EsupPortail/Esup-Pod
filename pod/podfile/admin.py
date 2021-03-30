@@ -23,7 +23,7 @@ class UserFolderAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
-        if (db_field.name) == "groups":
+        if (db_field.name) == "access_groups":
             kwargs["queryset"] = AccessGroup.objects.filter(
                 sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)

@@ -70,7 +70,7 @@ def home(request, type=None):
         UserFolder, name="home", owner=request.user)
 
     share_folder = UserFolder.objects.filter(
-        groups=request.user.owner.accessgroup_set.all()).exclude(
+        access_groups=request.user.owner.accessgroup_set.all()).exclude(
             owner=request.user).order_by('owner', 'id')
 
     share_folder_user = UserFolder.objects.filter(
@@ -104,7 +104,7 @@ def get_current_session_folder(request):
               'current_session_folder', "home")) | Q(
                  users=request.user, name=request.session.get(
                     'current_session_folder', "home")) | Q(
-                 groups=request.user.owner.accessgroup_set.all(
+                 access_groups=request.user.owner.accessgroup_set.all(
                  ), name=request.session.get(
                          'current_session_folder', "home")))
     except ObjectDoesNotExist:
@@ -131,7 +131,7 @@ def get_folder_files(request, id, type=None):
     folder = get_object_or_404(UserFolder, id=id)
 
     if (request.user != folder.owner
-            and not (folder.groups.filter(
+            and not (folder.access_groups.filter(
                 code_name__in=[
                     name[0]
                     for name in request.user.owner.accessgroup_set.values_list(
@@ -171,7 +171,7 @@ def get_rendered(request):
     ).exclude(owner=request.user, name="home")
 
     share_folder = UserFolder.objects.filter(
-        groups__in=request.user.owner.accessgroup_set.all()
+        access_groups__in=request.user.owner.accessgroup_set.all()
     ).exclude(owner=request.user).order_by('owner', 'id')
 
     share_folder_user = UserFolder.objects.filter(
@@ -540,7 +540,7 @@ def get_file(request, type):
     else:
         reqfile = get_object_or_404(CustomFileModel, id=id)
     if (request.user != reqfile.folder.owner
-            and not reqfile.folder.groups.filter(
+            and not reqfile.folder.access_groups.filter(
                 code_name__in=[
                     name[0]
                     for name in request.user.owner.accessgroup_set.values_list(
