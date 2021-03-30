@@ -31,7 +31,7 @@ body {
 
 
 {% block page_content %}
-  <h3>{% trans "Are you sure you want to perform a BigBlueButton live ?" %}</h3>
+  <h3>{% trans "Are you sure you want to perform a BigBlueButton live?" %}</h3>
 
   <form id="recording_form" method="post"
     action="{{request.get_full_path}}"
@@ -39,7 +39,7 @@ body {
     {% csrf_token %}
 
     <div class="list-group">
-      {% trans "Select the desired options than validate this form by clicking \"Perform a BigBlueButton live\"." %}<br/>
+      {% trans 'Select the desired options than validate this form by clicking "Perform a BigBlueButton live".' %}<br/>
       <p class="text-info">
         <i data-feather="info"></i> {% trans "This live will be stopped automatically when BigBlueButton session ends." %}
       </p>
@@ -80,7 +80,7 @@ body {
             {% endspaceless %}
         {% endfor %}
       </fieldset>
-	  <small class="form-text text-muted">{% trans "Please note: shortly after clicking the \"Perform a BigBlueButton live\" button, the live stream will be available to users on the <i data-feather=\"radio\"></i> <b>Lives</b> page." %}</small><br/>
+	  <small class="form-text text-muted">{% trans 'Please note: shortly after clicking the "Perform a BigBlueButton live" button, the live stream will be available to users on the <i data-feather=\"radio\"></i> <b>Lives</b> page.' %}</small><br/>
     </div>
     <div class="text-center">
       <button type="submit" class="btn btn-primary">{% trans "Perform a BigBlueButton live" %}</button>

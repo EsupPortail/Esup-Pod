@@ -46,36 +46,36 @@
 {% block page_extra_head %}
 
 {% include 'videos/video-header.html' %}
-<link rel="stylesheet" href="{% static 'css/comment-style.css' %}">
+<link rel="stylesheet" href="{% static 'css/comment-style.css' %}?ver={{VERSION}}">
 <style>
-{{channel.style}}
-{% if channel.color %}
-  body {
-    background-color: {{channel.color}};
-  }
-{%endif%}
+  {{channel.style}}
+  {% if channel.color %}
+    body {
+      background-color: {{channel.color}};
+    }
+  {%endif%}
 </style>
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }}
-{%if channel %}
-{% if theme %}
-<li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
-{% for t in theme.get_all_parents reversed %}
-{% if t is not theme %}
-<li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
-{% endif %}
-{% endfor %}
-<li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=theme.slug%}">{{theme.title}}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
-{% else %}
-<li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
-{% endif %}
-{% else %}
-<li class="breadcrumb-item"><a href="{% url "videos"%}" title="{% trans 'Videos' %}">{% trans 'Videos' %}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
-{% endif %}
+  {%if channel %}
+    {% if theme %}
+      <li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+      {% for t in theme.get_all_parents reversed %}
+        {% if t is not theme %}
+          <li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
+        {% endif %}
+      {% endfor %}
+      <li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=theme.slug%}">{{theme.title}}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
+    {% else %}
+      <li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{video.title|title|truncatechars:45}}</li>
+    {% endif %}
+  {% else %}
+    <li class="breadcrumb-item"><a href="{% url "videos"%}" title="{% trans 'Videos' %}">{% trans 'Videos' %}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{video.title|capfirst|truncatechars:45}}</li>
+  {% endif %}
 {% endblock %}
 
 {% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}{{video.title|title|truncatechars:45}}{% endblock %}
@@ -291,11 +291,11 @@
       var is_authenticated = JSON.parse(`{{request.user.is_authenticated|yesno:"true,false"}}`);
       var is_superuser = JSON.parse(`{{request.user.is_superuser|yesno:"true,false"}}`);
     </script>
-    <script src="{% static 'js/dayjs_relativeTime.min.js' %}"></script>
-    <script src="{% static 'js/dayjs.min.js' %}"></script>
-    <script src="{% static 'js/dayjs_en.min.js' %}"></script>
-    <script src="{% static 'js/dayjs_fr.min.js' %}"></script>
-    <script src="{% static 'js/dayjs_nl.min.js' %}"></script>
-    <script type="module" defer src="{% static 'js/comment-script.js' %}"></script>
+    <script src="{% static 'js/dayjs_relativeTime.min.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'js/dayjs.min.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'js/dayjs_en.min.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'js/dayjs_fr.min.js' %}?ver={{VERSION}}"></script>
+    <script src="{% static 'js/dayjs_nl.min.js' %}?ver={{VERSION}}"></script>
+    <script type="module" defer src="{% static 'js/comment-script.js' %}?ver={{VERSION}}"></script>
   {% endif %}
 {% endblock more_script %}

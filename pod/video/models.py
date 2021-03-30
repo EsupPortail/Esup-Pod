@@ -269,7 +269,7 @@ class Channel(models.Model):
         search_field=lambda q: Q(code_name__icontains=q) | Q(
             display_name__icontains=q),
         help_text=_('Select one or more groups who can access to this channel,'
-                    'if no group selected will no be protected'))
+                    ' if no group selected channel will not be protected'))
     sites = models.ManyToManyField(Site)
 
     class Meta:
@@ -725,7 +725,7 @@ class Video(models.Model):
                 self.get_video_mp4() is not None or
                 self.get_video_m4a() is not None)
 
-    encoded.fget.short_description = _('Is the video encoded ?')
+    encoded.fget.short_description = _('Is the video encoded?')
 
     @property
     def get_version(self):

@@ -4,162 +4,163 @@
 {% load thumbnail %}
 {% load video_filters %}
 
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/MediaObject">
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
 
-    <title>{{ TITLE_SITE }} - {% block page_title %}{{video.title}}{% endblock page_title %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ TITLE_SITE }} - {% block page_title %}{{video.title}}{% endblock page_title %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+  <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
 
-    {% block page_extra_head %}
+  {% block page_extra_head %}
     {% include 'videos/video-header.html' %}
-    {% endblock page_extra_head %}
+  {% endblock page_extra_head %}
 
-    <script src="{% static 'js/videojs-info-controlbar.js' %}"></script>
+  <script src="{% static 'js/videojs-info-controlbar.js' %}?ver={{VERSION}}"></script>
 
-    <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap.min.css' %}" crossorigin="anonymous">
-    <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}"></script>
-    <script src="{% url 'javascript-catalog' %}"></script>
+  <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap.min.css' %}?ver={{VERSION}}" crossorigin="anonymous">
+  <script src="{% static 'bootstrap-4/js/bootstrap.min.js' %}?ver={{VERSION}}"></script>
+  <script src="{% url 'javascript-catalog' %}"></script>
 
-    <style>
-        body{
-            margin: 0;
-            padding:0;
-            background-color: black;
-            height: 100%;
-        }
-        /* Add extra classes for a variable width / height*/
-        #div-video-wrapper {
-            position: absolute;
-            display:block;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-        #podvideoplayer {
-            margin-left: auto;
-            margin-right: auto;
-            /*border-radius: 1%;
-            border: 1% #ccc solid;*/
-            /*box-shadow: 0 0 20px rgba(50, 50, 50, 0.95);*/
-        }
-        #info-video {
-            position:relative;
-            margin-left: auto;
-            margin-right: auto;
-            border-radius: 1%;
-            border: 1px #ccc solid;
-            box-shadow: 0 0 10px rgba(50, 50, 50, 0.95);
-            padding: 1.25rem;
-            /*margin:5%;*/
-            background-color: rgba(250, 250, 250, 0.90) !important;
-            overflow: auto;
-            z-index:1000;
-        }
-        .list-group-item {
-            background-color: rgba(250, 250, 250, 0.90) !important;
-        }
-        .close {
-            margin:10px;
-            border: 1px solid black !important;
-            color: black !important;
-        }
+  <style>
+    body{
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      height: 100%;
+    }
+    /* Add extra classes for a variable width / height*/
+    #div-video-wrapper {
+      position: absolute;
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    #podvideoplayer {
+      margin-left: auto;
+      margin-right: auto;
+      /*border-radius: 1%;
+      border: 1% #ccc solid;*/
+      /*box-shadow: 0 0 20px rgba(50, 50, 50, 0.95);*/
+    }
+    #info-video {
+      position: relative;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 1%;
+      border: 1px #ccc solid;
+      box-shadow: 0 0 10px rgba(50, 50, 50, 0.95);
+      padding: 1.25rem;
+      /*margin:5%;*/
+      background-color: rgba(250, 250, 250, 0.90) !important;
+      overflow: auto;
+      z-index: 1000;
+    }
+    .list-group-item {
+      background-color: rgba(250, 250, 250, 0.90) !important;
+    }
+    .close {
+      margin: 10px;
+      border: 1px solid black !important;
+      color: black !important;
+    }
 
-        /* Info button with current color */
-        .video-js .vjs-info-button{
-            background-color:#FFF;
-            mask: url("{% static 'feather-icons/icons/info.svg' %}") no-repeat 50% 50%;
-            -webkit-mask: url("{% static 'feather-icons/icons/info.svg' %}") no-repeat 50% 50%;
-        }
-        .video-js .vjs-info-button:hover,
-        .video-js .vjs-info-button:active,
-        .video-js .vjs-info-button:focus{
-            background-color:#FFF9;
-        }
+    /* Info button with current color */
+    .video-js .vjs-info-button{
+      background-color: #FFF;
+      mask: url("{% static 'feather-icons/icons/info.svg' %}?ver={{VERSION}}") no-repeat 50% 50%;
+      -webkit-mask: url("{% static 'feather-icons/icons/info.svg' %}?ver={{VERSION}}") no-repeat 50% 50%;
+    }
+    .video-js .vjs-info-button:hover,
+    .video-js .vjs-info-button:active,
+    .video-js .vjs-info-button:focus{
+      background-color:#FFF9;
+    }
+  </style>
 
-    </style>
+  <meta itemprop="duration" content="{{ video.duration }}" />
+  <meta itemprop="thumbnailUrl" content="{{ video.get_thumbnail_url }}" />
+  <meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
+  <meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" />
 
 </head>
 <body>
-<meta itemprop="duration" content="{{ video.duration }}" />
-<meta itemprop="thumbnailUrl" content="{{ video.get_thumbnail_url }}" />
-<meta itemprop="contentURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}" />
-<meta itemprop="embedURL" content="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{% url 'video' slug=video.slug %}?is_iframe=true" />
+
 <div class="player_wrapper" id="div-video-wrapper">
 
-{% block video-element %}
+  {% block video-element %}
     {% include 'videos/video-element.html' %}
-{% endblock video-element %}
+  {% endblock video-element %}
 
-    <div id="info-video" style="display:none" class="jumbotron">
-        <button type="button" class="close" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        {% include 'videos/video-info.html'%}
-    </div>
+  <div id="info-video" style="display:none" class="jumbotron">
+    <button type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    {% include 'videos/video-info.html'%}
+  </div>
 
 </div>
 {% block more_script %}
 {% if not form %}
-{% include 'videos/video-script.html'%}
-<script>
-// Responsive
-  var hdres = 1920/1080;
-  function resizeVideoJs(){
-        var width = document.getElementById(player.id()).parentElement.offsetWidth;
-        var height = document.getElementById(player.id()).parentElement.offsetHeight;
-        var ratio = width/height;
-        if(ratio<hdres) {
-            player.width(width);
-            player.height(width / hdres);
-            var margintop = parseInt((height - player.height())/2);
-            document.getElementById("podvideoplayer").style.marginTop = margintop+"px";
-        } else {
-            player.height(height);
-            player.width(height*hdres);
-            document.getElementById("podvideoplayer").style.marginTop = "0px";
-        }
-        player.height(player.height()-7);
-        if(document.getElementById("info-video").style.display=="block") {
-            resizeInfoVideo();
-        }
-  }
-  resizeVideoJs(); // Initialize the function right now
-  window.onresize = resizeVideoJs; // Call the function on resize
-</script>
-<script>
-var show_info_video = function() {
-    if(document.getElementById("info-video").style.display=="none") {
-        document.getElementById("info-video").style.display="block";
+  {% include 'videos/video-script.html'%}
+  <script>
+    // Responsive
+    var hdres = 1920/1080;
+    function resizeVideoJs(){
+      var width = document.getElementById(player.id()).parentElement.offsetWidth;
+      var height = document.getElementById(player.id()).parentElement.offsetHeight;
+      var ratio = width/height;
+      if(ratio<hdres) {
+        player.width(width);
+        player.height(width / hdres);
+        var margintop = parseInt((height - player.height())/2);
+        document.getElementById("podvideoplayer").style.marginTop = margintop+"px";
+      } else {
+        player.height(height);
+        player.width(height*hdres);
+        document.getElementById("podvideoplayer").style.marginTop = "0";
+      }
+      player.height(player.height()-7);
+      if(document.getElementById("info-video").style.display=="block") {
         resizeInfoVideo();
-        player.pause();
-    } else {
-        document.getElementById("info-video").style.display="none";
-        player.play();
+      }
     }
-}
-function resizeInfoVideo() {
+    resizeVideoJs(); // Initialize the function right now
+    window.onresize = resizeVideoJs; // Call the function on resize
+  </script>
+  <script>
+  var show_info_video = function() {
+    if(document.getElementById("info-video").style.display=="none") {
+      document.getElementById("info-video").style.display="block";
+      resizeInfoVideo();
+      player.pause();
+    } else {
+      document.getElementById("info-video").style.display="none";
+      player.play();
+    }
+  }
+  function resizeInfoVideo() {
     var height = document.getElementById("podvideoplayer").offsetHeight-30-player.controlBar.el_.offsetHeight;
     var width = document.getElementById("podvideoplayer").offsetWidth-30;
     var margintop = document.getElementById("podvideoplayer").offsetHeight-10;
     document.getElementById("info-video").style.width = width+"px";
     document.getElementById("info-video").style.height = height+"px";
     document.getElementById("info-video").style.marginTop = "-"+margintop+"px";
-}
-$(document).on('click', '.close', function(){
+  }
+  $(document).on('click', '.close', function(){
     document.getElementById("info-video").style.display="none";
     player.play();
-});
-</script>
-<script>
-$('#video-meta .tab-pane').addClass('show').show();
-</script>
+  });
+  </script>
+  <script>
+    $('#video-meta .tab-pane').addClass('show').show();
+  </script>
 {% endif %}
 {% endblock more_script %}
-<script src="{% static 'feather-icons/feather.min.js' %}"></script>
+<script src="{% static 'feather-icons/feather.min.js' %}?ver={{VERSION}}"></script>
 <script>
   feather.replace({ class: 'align-bottom'});
 </script>
