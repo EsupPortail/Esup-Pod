@@ -165,7 +165,7 @@ def assign_accessgroups(groups_element, user):
             user.is_staff = True
         if CREATE_GROUP_FROM_GROUPS:
             accessgroup, group_created = AccessGroup.objects.get_or_create(
-                name=group.text)
+                code_name=group.text)
             user.owner.accessgroup_set.add(accessgroup)
         else:
             try:
@@ -237,7 +237,7 @@ def populate_user_from_entry(user, owner, entry):
             user.is_staff = True
         if CREATE_GROUP_FROM_AFFILIATION:
             accessgroup, group_created = AccessGroup.objects.get_or_create(
-                name=affiliation.text)
+                code_name=affiliation.text)
             # group.groupsite.sites.add(Site.objects.get_current())
             user.owner.accessgroup_set.add(accessgroup)
 
@@ -286,7 +286,7 @@ def populate_user_from_tree(user, owner, tree):
             user.is_staff = True
         if CREATE_GROUP_FROM_AFFILIATION:
             accessgroup, group_created = AccessGroup.objects.get_or_create(
-                name=affiliation.text)
+                code_name=affiliation.text)
             user.owner.accessgroup_set.add(accessgroup)
     create_accessgroups(user, tree, "cas")
 
