@@ -4,6 +4,7 @@ from django.utils import translation
 from django.conf import settings
 from pod.authentication.models import AccessGroup, Owner
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import Group
 
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", 'fr')
 
@@ -73,12 +74,28 @@ def command_import_json(options):
                     "No such informations to create " + group["code_name"])
             else:
                 newgroup = AccessGroup.objects.create(
-                    code_name=group["code_name"], display_name=group["display_name"])
+                    code_name=group["code_name"], display_name=group[
+                        "display_name"])
                 print("Successfully creating " + group["code_name"])
                 add_users_to_group(group, newgroup)
                 remove_users_to_group(group, newgroup)
                 newgroup.save()
     json_data.close()
+
+
+def command_migrate_groups(options):
+    for group in Group.objects.all():
+        if AccessGroup.objects.filter(id=group.id).exists():
+            print(
+                "-> AccessGroup with id \"" + str(
+                    group.id) + "\" already exists.")
+        else:
+            AccessGroup.objects.create(
+                code_name=group.name, id=group.id, display_name=group.name)
+            print(
+                "-> Successfully creating AccessGroup \""
+                + group.name + "\" with id \"" + str(
+                    group.id) + "\".")
 
 
 class Command(BaseCommand):
@@ -99,6 +116,9 @@ class Command(BaseCommand):
         if options['task'] and options['task'] in self.valid_args:
             if options['task'] == "import_json":
                 command_import_json(options)
+            elif options['task'] == "migrate_groups":
+                command_migrate_groups(options)
+
         else:
             print(
                 "*** Warning: you must give some arguments: %s ***" %
