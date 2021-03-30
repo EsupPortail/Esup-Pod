@@ -166,7 +166,7 @@ def assign_accessgroups(groups_element, user):
         if CREATE_GROUP_FROM_GROUPS:
             accessgroup, group_created = AccessGroup.objects.get_or_create(
                 name=group.text)
-            user.owner.accessgroup_set.add(group)
+            user.owner.accessgroup_set.add(accessgroup)
         else:
             try:
                 accessgroup = AccessGroup.objects.get(code_name=group.text)
@@ -236,10 +236,10 @@ def populate_user_from_entry(user, owner, entry):
         if affiliation in AFFILIATION_STAFF:
             user.is_staff = True
         if CREATE_GROUP_FROM_AFFILIATION:
-            group, group_created = Group.objects.get_or_create(
-                name=affiliation)
-            group.groupsite.sites.add(Site.objects.get_current())
-            user.groups.add(group)
+            accessgroup, group_created = AccessGroup.objects.get_or_create(
+                name=affiliation.text)
+            # group.groupsite.sites.add(Site.objects.get_current())
+            user.owner.accessgroup_set.add(accessgroup)
 
     create_accessgroups(user, entry, "ldap")
     user.save()
@@ -287,7 +287,7 @@ def populate_user_from_tree(user, owner, tree):
         if CREATE_GROUP_FROM_AFFILIATION:
             accessgroup, group_created = AccessGroup.objects.get_or_create(
                 name=affiliation.text)
-            user.groups.add(accessgroup)
+            user.owner.accessgroup_set.add(accessgroup)
     create_accessgroups(user, tree, "cas")
 
     user.save()
