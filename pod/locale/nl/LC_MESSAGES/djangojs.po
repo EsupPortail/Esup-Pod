@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-11 17:17+0100\n"
+"POT-Creation-Date: 2021-03-26 18:26+0100\n"
 "PO-Revision-Date: 2021-01-22 12:27+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -446,48 +446,57 @@ msgstr ""
 msgid "See more"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:25
+#: pod/video/static/js/comment-script.js:29
 msgid "Answer"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:26
+#: pod/video/static/js/comment-script.js:30
 msgid "Answers"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:81
-#: pod/video/static/js/comment-script.js:226
+#: pod/video/static/js/comment-script.js:84
+#: pod/video/static/js/comment-script.js:234
 msgid "Delete"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:94
+#: pod/video/static/js/comment-script.js:97
 msgid "Cancel"
 msgstr ""
 
 #: pod/video/static/js/comment-script.js:175
+#: pod/video/static/js/comment-script.js:438
+#: pod/video/static/js/comment-script.js:449
+#, javascript-format
+msgid "%s <span class=\"d-none d-md-inline\">vote</span>"
+msgid_plural "%s <span class=\"d-none d-md-inline\">votes</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/video/static/js/comment-script.js:183
 msgid "Agree with the comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:202
+#: pod/video/static/js/comment-script.js:210
 msgid "Reply to comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:205
+#: pod/video/static/js/comment-script.js:213
 msgid "Reply"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:223
+#: pod/video/static/js/comment-script.js:231
 msgid "Remove this comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:245
+#: pod/video/static/js/comment-script.js:254
 msgid "Add a public comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:369
+#: pod/video/static/js/comment-script.js:378
 msgid "Show answers"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:572
+#: pod/video/static/js/comment-script.js:583
 msgid "Comment has been deleted successfully."
 msgstr ""
 
@@ -531,33 +540,33 @@ msgstr ""
 msgid "Sorry, no video found"
 msgstr ""
 
-#: pod/video/static/js/video_category.js:380
-#: pod/video/static/js/video_category.js:484
+#: pod/video/static/js/video_category.js:376
+#: pod/video/static/js/video_category.js:487
 msgid "Video content."
 msgstr ""
 
-#: pod/video/static/js/video_category.js:381
+#: pod/video/static/js/video_category.js:377
 #: pod/video/static/js/video_category.js:492
 msgid "Audio content."
 msgstr ""
 
-#: pod/video/static/js/video_category.js:391
+#: pod/video/static/js/video_category.js:387
 msgid "Edit the category"
 msgstr ""
 
-#: pod/video/static/js/video_category.js:404
+#: pod/video/static/js/video_category.js:400
 msgid "Delete the category"
 msgstr ""
 
-#: pod/video/static/js/video_category.js:456
+#: pod/video/static/js/video_category.js:462
 msgid "This content is password protected."
 msgstr ""
 
-#: pod/video/static/js/video_category.js:465
+#: pod/video/static/js/video_category.js:470
 msgid "This content is chaptered."
 msgstr ""
 
-#: pod/video/static/js/video_category.js:474
+#: pod/video/static/js/video_category.js:478
 msgid "This content is in draft."
 msgstr ""
 
@@ -577,19 +586,19 @@ msgstr ""
 msgid "Delete the video"
 msgstr ""
 
-#: pod/video/static/js/video_category.js:549
+#: pod/video/static/js/video_category.js:550
 msgid "Success.."
 msgstr ""
 
-#: pod/video/static/js/video_category.js:550
+#: pod/video/static/js/video_category.js:551
 msgid "Error.."
 msgstr ""
 
-#: pod/video/static/js/video_category.js:768
+#: pod/video/static/js/video_category.js:756
 msgid "Category created successfully"
 msgstr ""
 
-#: pod/video/static/js/video_category.js:788
+#: pod/video/static/js/video_category.js:775
 msgid "Create category"
 msgstr ""
 

@@ -68,7 +68,7 @@ def url_to_edit_object(obj):
 
 
 class EncodedFilter(admin.SimpleListFilter):
-    title = _('Encoded ?')
+    title = _('Encoded?')
     parameter_name = 'encoded'
 
     def lookups(self, request, model_admin):

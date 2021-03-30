@@ -6,91 +6,90 @@
 
 {% block page_extra_head %}
 
-{{ block.super }} 
+{{ block.super }}
 
-<link rel="stylesheet" href="{% static 'css/enrichment.css' %}"/>
-<script src="{% static 'js/enrichment.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/enrichment.css' %}?ver={{VERSION}}"/>
+<script src="{% static 'js/enrichment.js' %}?ver={{VERSION}}"></script>
 
 <!-- form.media -->
-<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+<script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}?ver={{VERSION}}"></script>
 
 <script>
-	var num = 0,
-    name = '';
-	/*** For the form ***/;
-	var video_duration = {{video.duration}};
-	/*** For the Cancel button ***/
-	$(document).on("reset", "#page-video form", function (e) {
-	    $("span#form_enrich").html("");
-	    $('form#form_new').show();
-	    $('form').show();
-	    $("table tr").removeClass("info");
-	    manageResize();
-	});
+  var num = 0,
+  name = '';
+  /*** For the form ***/;
+  var video_duration = {{video.duration}};
+  /*** For the Cancel button ***/
+  $(document).on("reset", "#page-video form", function (e) {
+    $("span#form_enrich").html("");
+    $('form#form_new').show();
+    $('form').show();
+    $("table tr").removeClass("info");
+    manageResize();
+  });
 </script>
 {% endblock page_extra_head %}
 
 {% block video-element %}
 <div id="page-video">
-<video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
-    poster="{{video.get_thumbnail_url}}" data-setup='{}'>
+  <video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
+  poster="{{video.get_thumbnail_url}}" data-setup='{}'>
     <p class="vjs-no-js">
-        To view this video please enable JavaScript, and consider upgrading to a web browser that
-        <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+      {%blocktrans%}To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>{%endblocktrans%}
     </p>
 
     <track kind="metadata" src="{{video.enrichmentvtt.src.file.url}}?{% now "U" %}" label="enrichment">
-    
+
     {% for track in video.track_set.all%}
     <track id= "track_{{ track.id }}" kind="{{ track.kind }}" src="{{ track.src.url }}?{% now "U" %}" srclang="{{ track.lang }}" label="{{track.get_label_lang}}">
     {%endfor%}
-</video>
-<hr/>
-<div id="info_video">
-	<div id="list_enrich">
-		{% include 'enrichment/list_enrichment.html' %}
-	</div>
-	<div id="form_enrich">
-		{% if form_enrichment %}
-			{% include 'enrichment/form_enrichment.html' with form_enrichment=form_enrichment %}
-		{% endif %}
-	</div>
-	{% if not form_enrichment %}
-		<form id="form_new" class="get_form" action="{% url 'enrichment:edit_enrichment' slug=video.slug %}" method="POST">
-			{% csrf_token %}
-			<input type="hidden" name="action" value="new"/>
-			<input type="submit" id="add_new_enrichment" value="{% trans 'Add a new enrichment' %}" class="btn btn-primary btn-sm"/>
-		</form>
-	{% endif %}
-	<hr/>
-	<div class="d-flex justify-content-between">
-	<a href="{% url 'video_edit' slug=video.slug %}" class="btn btn-secondary btn-sm" title="{% trans 'Back to video edit' %}">
-		{% trans 'Back to video edit' %}
-	</a>
-	<a href="{% url 'enrichment:video_enrichment' slug=video.slug %}" class="btn btn-primary btn-sm" title="{% trans 'See the enrich video' %}">
-		{% trans 'See the enrich video' %}
-	</a>
-	</div>
-</div>
+  </video>
+  <hr/>
+  <div id="info_video">
+    <div id="list_enrich">
+      {% include 'enrichment/list_enrichment.html' %}
+    </div>
+    <div id="form_enrich">
+      {% if form_enrichment %}
+        {% include 'enrichment/form_enrichment.html' with form_enrichment=form_enrichment %}
+      {% endif %}
+    </div>
+    {% if not form_enrichment %}
+      <form id="form_new" class="get_form" action="{% url 'enrichment:edit_enrichment' slug=video.slug %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="new"/>
+        <input type="submit" id="add_new_enrichment" value="{% trans 'Add a new enrichment' %}" class="btn btn-primary btn-sm"/>
+      </form>
+    {% endif %}
+    <hr/>
+    <div class="d-flex justify-content-between">
+    <a href="{% url 'video_edit' slug=video.slug %}" class="btn btn-secondary btn-sm" title="{% trans 'Back to video edit' %}">
+      {% trans 'Back to video edit' %}
+    </a>
+    <a href="{% url 'enrichment:video_enrichment' slug=video.slug %}" class="btn btn-primary btn-sm" title="{% trans 'See the enrich video' %}">
+      {% trans 'See the enrich video' %}
+    </a>
+    </div>
+  </div>
 </div>
 {% endblock video-element %}
 
 {% block page_aside %}
 <div class="card card-body p-2 mt-1" id="card-enrichmenteditinformations">
-    <h5 class="card-title pl-2">
-        <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
-    </h5>
-    <div class="card-text small">
-        {% if video.owner == request.user or request.user.is_superuser or perms.enrichment.change_enrichment or request.user in video.additional_owners.all %}
-        <p><a href="{% url 'enrichment:group_enrichment' slug=video.slug %}" title="{% trans 'You can specify the group(s) of users who can access this page' %}"><i data-feather="users"></i>&nbsp;{% trans 'You can specify the group(s) of users who can access this page' %}</a></p>
-        {% endif %}
-        <p>{% trans 'The title field is required and must contains from 2 to 100 characters.' %}</p>
-		<p>{% trans 'The fields "Start" and "End" must contain an indication value in seconds. Start playback of the video, pause the video and click on "Get time from the player" to fill in the field untitled "Start". Then do the same to fill in the field untitled "End".' %}</p>
-		<p>{% trans 'You cannot overlap enrichments.' %}</p>
-		<p>{% trans 'You must save your enrichments to view the result.' %}</p>
-    </div>
+  <h5 class="card-title pl-2">
+    <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
+  </h5>
+  <div class="card-text small">
+    {% if video.owner == request.user or request.user.is_superuser or perms.enrichment.change_enrichment or request.user in video.additional_owners.all %}
+      <p><a href="{% url 'enrichment:group_enrichment' slug=video.slug %}" title="{% trans 'You can specify the group(s) of users who can access this page' %}"><i data-feather="users"></i>&nbsp;{% trans 'You can specify the group(s) of users who can access this page' %}</a></p>
+    {% endif %}
+    <p>{% trans 'The title field is required and must contains from 2 to 100 characters.' %}</p>
+    <p>{% trans 'The fields "Start" and "End" must contain an indication value in seconds. Start playback of the video, pause the video and click on "Get time from the player" to fill in the field untitled "Start". Then do the same to fill in the field untitled "End".' %}</p>
+    <p>{% trans 'You cannot overlap enrichments.' %}</p>
+    <p>{% trans 'You must save your enrichments to view the result.' %}</p>
+  </div>
 </div>
-{{ block.super }} 
+{{ block.super }}
 {% endblock page_aside %}
 
 {% block more_script %}
