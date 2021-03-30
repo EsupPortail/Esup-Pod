@@ -1,9 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
 from pod.authentication.models import Owner
 from pod.authentication.models import AFFILIATION
-from django.contrib.sites.models import Site
 from ldap3 import Server
 from ldap3 import ALL
 from ldap3 import Connection
@@ -16,6 +14,8 @@ from django.core.exceptions import ObjectDoesNotExist
 
 import logging
 logger = logging.getLogger(__name__)
+
+DEBUG = getattr(settings, 'DEBUG', True)
 
 POPULATE_USER = getattr(
     settings, 'POPULATE_USER', None)
@@ -252,14 +252,15 @@ def populate_user_from_entry(user, owner, entry):
 
 
 def populate_user_from_tree(user, owner, tree):
-    import xml.etree.ElementTree as ET
-    import xml.dom.minidom
-    import os
-    xml_string = xml.dom.minidom.parseString(
-        ET.tostring(tree)).toprettyxml()
-    xml_string = os.linesep.join([s for s in xml_string.splitlines(
-    ) if s.strip()]) # remove the weird newline issue
-    print(xml_string)
+    if DEBUG:
+        import xml.etree.ElementTree as ET
+        import xml.dom.minidom
+        import os
+        xml_string = xml.dom.minidom.parseString(
+            ET.tostring(tree)).toprettyxml()
+        xml_string = os.linesep.join([s for s in xml_string.splitlines(
+        ) if s.strip()])  # remove the weird newline issue
+        print(xml_string)
     # Mail
     mail_element = tree.find(
         './/{http://www.yale.edu/tp/cas}%s' % (
