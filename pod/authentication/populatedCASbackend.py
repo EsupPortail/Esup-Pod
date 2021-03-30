@@ -1,9 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
 from pod.authentication.models import Owner
 from pod.authentication.models import AFFILIATION
-from django.contrib.sites.models import Site
 from ldap3 import Server
 from ldap3 import ALL
 from ldap3 import Connection
@@ -16,6 +14,8 @@ from django.core.exceptions import ObjectDoesNotExist
 
 import logging
 logger = logging.getLogger(__name__)
+
+DEBUG = getattr(settings, 'DEBUG', True)
 
 POPULATE_USER = getattr(
     settings, 'POPULATE_USER', None)
@@ -165,8 +165,11 @@ def assign_accessgroups(groups_element, user):
             user.is_staff = True
         if CREATE_GROUP_FROM_GROUPS:
             accessgroup, group_created = AccessGroup.objects.get_or_create(
-                name=group.text)
-            user.owner.accessgroup_set.add(group)
+                code_name=group.text)
+            if group_created:
+                accessgroup.display_name = group.text
+                accessgroup.save()
+            user.owner.accessgroup_set.add(accessgroup)
         else:
             try:
                 accessgroup = AccessGroup.objects.get(code_name=group.text)
@@ -236,16 +239,28 @@ def populate_user_from_entry(user, owner, entry):
         if affiliation in AFFILIATION_STAFF:
             user.is_staff = True
         if CREATE_GROUP_FROM_AFFILIATION:
-            group, group_created = Group.objects.get_or_create(
-                name=affiliation)
-            group.groupsite.sites.add(Site.objects.get_current())
-            user.groups.add(group)
+            accessgroup, group_created = AccessGroup.objects.get_or_create(
+                code_name=affiliation.text)
+            if group_created:
+                accessgroup.display_name = affiliation.text
+                accessgroup.save()
+            # group.groupsite.sites.add(Site.objects.get_current())
+            user.owner.accessgroup_set.add(accessgroup)
 
     create_accessgroups(user, entry, "ldap")
     user.save()
 
 
 def populate_user_from_tree(user, owner, tree):
+    if DEBUG:
+        import xml.etree.ElementTree as ET
+        import xml.dom.minidom
+        import os
+        xml_string = xml.dom.minidom.parseString(
+            ET.tostring(tree)).toprettyxml()
+        xml_string = os.linesep.join([s for s in xml_string.splitlines(
+        ) if s.strip()])  # remove the weird newline issue
+        print(xml_string)
     # Mail
     mail_element = tree.find(
         './/{http://www.yale.edu/tp/cas}%s' % (
@@ -286,8 +301,11 @@ def populate_user_from_tree(user, owner, tree):
             user.is_staff = True
         if CREATE_GROUP_FROM_AFFILIATION:
             accessgroup, group_created = AccessGroup.objects.get_or_create(
-                name=affiliation.text)
-            user.groups.add(accessgroup)
+                code_name=affiliation.text)
+            if group_created:
+                accessgroup.display_name = affiliation.text
+                accessgroup.save()
+            user.owner.accessgroup_set.add(accessgroup)
     create_accessgroups(user, tree, "cas")
 
     user.save()
