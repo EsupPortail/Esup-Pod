@@ -293,12 +293,15 @@ def populate_user_from_tree(user, owner, tree):
     user.save()
     owner.save()
 
+
 """
 if you want to print tree :
     import xml.etree.ElementTree as ET
     import xml.dom.minidom
     import os
-    xml_string = xml.dom.minidom.parseString(ET.tostring(tree)).toprettyxml()
-    xml_string = os.linesep.join([s for s in xml_string.splitlines() if s.strip()]) # remove the weird newline issue
+    xml_string = xml.dom.minidom.parseString(
+        ET.tostring(tree)).toprettyxml()
+    xml_string = os.linesep.join([s for s in xml_string.splitlines(
+    ) if s.strip()]) # remove the weird newline issue
     print(xml_string)
 """
