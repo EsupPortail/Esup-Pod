@@ -15,12 +15,18 @@ USE_CAS = getattr(
     settings, 'USE_CAS', False)
 USE_SHIB = getattr(
     settings, 'USE_SHIB', False)
+USE_OIDC = getattr(
+    settings, 'USE_OIDC', False)
 CAS_GATEWAY = getattr(
     settings, 'CAS_GATEWAY', False)
 SHIB_URL = getattr(
     settings, 'SHIB_URL', "/idp/shibboleth.sso/Login")
+OIDC_URL = getattr(
+    settings, 'OIDC_URL', "")
 SHIB_LOGOUT_URL = getattr(
     settings, 'SHIB_LOGOUT_URL', "")
+OIDC_LOGOUT_URL = getattr(
+    settings, 'OIDC_LOGOUT_URL, "")
 
 if CAS_GATEWAY:
     @gateway()
