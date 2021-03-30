@@ -161,29 +161,32 @@ def get_entry(conn, username, list_value):
 
 def assign_accessgroups(groups_element, user):
     for group in groups_element:
-        if group.text in GROUP_STAFF:
+        if group in GROUP_STAFF:
             user.is_staff = True
         if CREATE_GROUP_FROM_GROUPS:
             accessgroup, group_created = AccessGroup.objects.get_or_create(
-                code_name=group.text)
+                code_name=group)
             if group_created:
-                accessgroup.display_name = group.text
+                accessgroup.display_name = group
                 accessgroup.save()
             user.owner.accessgroup_set.add(accessgroup)
         else:
             try:
-                accessgroup = AccessGroup.objects.get(code_name=group.text)
+                accessgroup = AccessGroup.objects.get(code_name=group)
                 user.owner.accessgroup_set.add(accessgroup)
             except ObjectDoesNotExist:
                 pass
 
 
 def create_accessgroups(user, tree_or_entry, auth_type):
+    groups_element = []
     if auth_type == "cas":
-        groups_element = tree_or_entry.findall(
+        tree_groups_element = tree_or_entry.findall(
             './/{http://www.yale.edu/tp/cas}%s' % (USER_CAS_MAPPING_ATTRIBUTES[
                 'groups'])
         )
+        for tge in tree_groups_element:
+            groups_element.append(tge.text)
     elif auth_type == "ldap":
         groups_element = (
             tree_or_entry[USER_LDAP_MAPPING_ATTRIBUTES['groups']].values if (
@@ -197,6 +200,8 @@ def create_accessgroups(user, tree_or_entry, auth_type):
 
 
 def populate_user_from_entry(user, owner, entry):
+    if DEBUG:
+        print(entry)
     user.email = (
         entry[USER_LDAP_MAPPING_ATTRIBUTES['mail']].value if (
             USER_LDAP_MAPPING_ATTRIBUTES.get('mail')
@@ -240,13 +245,13 @@ def populate_user_from_entry(user, owner, entry):
             user.is_staff = True
         if CREATE_GROUP_FROM_AFFILIATION:
             accessgroup, group_created = AccessGroup.objects.get_or_create(
-                code_name=affiliation.text)
+                code_name=affiliation)
             if group_created:
-                accessgroup.display_name = affiliation.text
+                accessgroup.display_name = affiliation
                 accessgroup.save()
             # group.groupsite.sites.add(Site.objects.get_current())
             user.owner.accessgroup_set.add(accessgroup)
-
+    print("create_accessgroups")
     create_accessgroups(user, entry, "ldap")
     user.save()
 
