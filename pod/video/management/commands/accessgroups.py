@@ -22,7 +22,7 @@ def edit_group_properties(group):
 
 
 def add_users_to_group(group, existing_group):
-    if group["users_to_add"]:
+    if "users_to_add" in group:
         print("---> There is some users to add")
         for user in group["users_to_add"]:
             try:
@@ -39,7 +39,7 @@ def add_users_to_group(group, existing_group):
 
 
 def remove_users_to_group(group, existing_group):
-    if group["users_to_remove"]:
+    if "users_to_remove" in group:
         print("---> There is some users to remove")
         for user in group["users_to_remove"]:
             try:
@@ -55,6 +55,32 @@ def remove_users_to_group(group, existing_group):
                     "----> User with username \"" + user + "\" doesn't exist")
 
 
+def command_import_json(options):
+    json_data = open(options['file'])
+    groups = json.load(json_data)
+    for group in groups:
+        print("\n-> Processing " + group["code_name"])
+        try:
+            existing_group = edit_group_properties(group)
+            add_users_to_group(group, existing_group)
+            remove_users_to_group(group, existing_group)
+            existing_group.save()
+        except ObjectDoesNotExist:
+            print("Group with name " + group[
+                "code_name"] + " doesn't exists")
+            if not (group["code_name"] and group["display_name"]):
+                print(
+                    "No such informations to create " + group["code_name"])
+            else:
+                newgroup = AccessGroup.objects.create(
+                    code_name=group["code_name"], display_name=group["display_name"])
+                print("Successfully creating " + group["code_name"])
+                add_users_to_group(group, newgroup)
+                remove_users_to_group(group, newgroup)
+                newgroup.save()
+    json_data.close()
+
+
 class Command(BaseCommand):
     # First possible argument : checkDirectory
     args = 'import_json'
@@ -63,7 +89,6 @@ class Command(BaseCommand):
     valid_args = ['import_json', 'migrate_groups']
 
     def add_arguments(self, parser):
-        print(parser)
         parser.add_argument('task')
         parser.add_argument('file', nargs='?', default="")
 
@@ -72,27 +97,8 @@ class Command(BaseCommand):
         # Activate a fixed locale fr
         translation.activate(LANGUAGE_CODE)
         if options['task'] and options['task'] in self.valid_args:
-            json_data = open(options['file'])
-            groups = json.load(json_data)
-            for group in groups:
-                print("\n-> Processing " + group["code_name"])
-                try:
-                    existing_group = edit_group_properties(group)
-                    add_users_to_group(group, existing_group)
-                    remove_users_to_group(group, existing_group)
-                    existing_group.save()
-                except ObjectDoesNotExist:
-                    print("Group with name " + group[
-                        "code_name"] + " doesn't exists")
-                    if not (group["code_name"] and group["display_name"]):
-                        print(
-                            "No such informations to create " + group["code_name"])
-                    else:
-                        AccessGroup.objects.create(
-                            code_name=group[
-                                "code_name"], display_name=group["display_name"])
-                        print("Successfully creating " + group["code_name"])
-            json_data.close()
+            if options['task'] == "import_json":
+                command_import_json(options)
         else:
             print(
                 "*** Warning: you must give some arguments: %s ***" %
