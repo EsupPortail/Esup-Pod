@@ -19,6 +19,7 @@
    * CUSTOM COLORS *
    *****************/
   --bg-color: var(--color-white);
+  --background-color: var(--bg-color);
   --font-color: var(--color-mine-shaft);
 
   /* BOOTSTRAP COLORS */
@@ -29,7 +30,7 @@
   --color-formfields: #f1f1f1;
 }
 .table,
-.navbar-light.navbar-nav.nav-link,
+.navbar-light .navbar-nav .nav-link,
 .navbar-light .navbar-toggler {
   color: var(--font-color);
 }
@@ -40,10 +41,7 @@
   color: var(--font-color);
   background-color: var(--bg-color);
 }
-.navbar-light.navbar-nav.nav-link:focus,
-.navbar-light.navbar-nav.nav-link:hover {
-  color: var(--primary);
-}
+
 .navbar-toggler:focus,
 .navbar-toggler:hover{
   color: var(--primary);
@@ -61,6 +59,7 @@
 .btn-lang:active {
   box-shadow: 0 0 3px var(--primary);
 }
+
 .nav-link-icone {
   color: var(--link-color);
 }
@@ -86,17 +85,10 @@
   background-color: var(--gray-dark)!important;
 }
 
-.nav-tabs.nav-item.show.nav-link,
-.nav-tabs.nav-link.active {
-  color: var(--color-white);
-  background-color: var(--primary);
-  border-color: var(--color-alto) var(--color-alto) var(--color-alto);
-}
-
-.tab-title{
+.tab-title {
   font-size: 1.5rem;
 }
-.meta-title{
+.meta-title {
   font-size: 1.2rem;
   margin: .5em 0 .2rem 0;
 }
@@ -112,6 +104,9 @@
   border-color: var(--primary);
 }
 
+a.btn-outline-primary:not(:hover) svg{
+  fill:var(--primary)
+}
 a.btn-outline-primary svg.feather {
   fill: transparent;
 }
@@ -119,22 +114,14 @@ a.btn-outline-primary svg.feather {
   fill: var(--primary);
 }
 
-#formfields.btn {
-  color: var(--font-color);
-  background-color: var(--color-formfields);
+#collapseAside .card>.btn {
+  white-space: normal !important;
+  word-wrap: break-word;
+  word-break: normal;
+  padding: 1rem;
 }
 
-.card-footer-pod.btn {
-  color: var(--font-color);
-}
-
-.card-footer-pod.btn-light {
-  color: var(--font-color);
-  background-color: var(--light);
-  border-color: var(--color-alto);
-}
-
-.submit-rowa.deletelink {
+.submit-row a.deletelink {
   height: 35px;
 }
 
@@ -158,7 +145,7 @@ body {
   font-family: var(--font-family-sans-serif);
 }
 .jumbotron {
-    padding: 1rem 2rem;
+  padding: 1rem 2rem;
 }
 h1 {
   font-size: 2rem;
@@ -169,7 +156,7 @@ label {
 .pod-mt-7 {
   margin-top: 3.5rem;
 }
-.breadcrumb,.jumbotron {
+.breadcrumb, .jumbotron {
   background: var(--light);
 }
 .list-group-item {
@@ -182,7 +169,7 @@ label {
 }
 
   /*** video ***/
-#myTabContent#info p {
+#myTabContent #info p {
   margin-top: .5rem;
   margin-bottom: .5rem;
 }
@@ -243,7 +230,7 @@ label {
   align-items: center;
 }
 
-.modal-pod-full.close {
+.modal-pod-full .close {
   font-size: 3rem;
 }
 
@@ -283,7 +270,7 @@ label {
 .open-aside {
   margin-right: 15px;
 }
-#card-takenote.dropdown-menu {
+#card-takenote .dropdown-menu {
   border: none;
 }
 /*** modif taille logo ***/
@@ -310,10 +297,11 @@ label {
     left: 0;
     padding: 1rem;
     width: 100%;
+    background-color: var(--light);
     box-shadow: 1px 1px 3px gray;
     z-index: 100;
   }
-  .navbar-nav.login.dropdown-menu {
+  .navbar-nav .login .dropdown-menu {
     position: absolute;
     float: left;
   }
@@ -346,6 +334,10 @@ label {
     z-index: 99;
     height: 3rem;
   }
+  #nav-search label:hover .nav-link-icone,
+  #nav-search label:focus .nav-link-icone{
+    color:var(--activelink-color);
+  }
   .navbar label {
     padding-left: 1px;
     display: inline-block;
@@ -374,48 +366,54 @@ button.nav-link {
   border: none;
   cursor: pointer;
 }
+button:hover .userpicture,
+button:focus .userpicture{
+  opacity: .8;
+}
 
 /*** CARD ***/
-.infinite-item.card-body {
+.infinite-item .card-body {
   padding: .9rem;
   height: 3.5rem;
   overflow: hidden;
 }
-.infinite-item.card-header.octicon {
+.infinite-item .card-header .octicon {
   height: .9rem;
   margin: .1rem;
 }
 
-#videos_list.card-header,.playlist-videos.card-header {
-  position: absolute;
+#videos_list .card-header,
+.playlist-videos .card-header {
+/*position: absolute;
   width: 100%;
   background: var(--color-black-alpha);
   padding: 0 .25rem;
-  z-index: 9;
+  z-index: 9;*/
+  padding: .4rem;
 }
-#videos_list.card-header.text-muted {
+/*#videos_list .card-header .text-muted {
   color: var(--white) !important;
-}
+}*/
 
-#videos_list.video-title {
+#videos_list .video-title {
   line-height: 1.2;
   display: inline-block;
 }
 
-div.video-card.d-flex {
+div.video-card .d-flex {
   min-height: 70%;
   /*position:relative;*/
   top: 0;
 }
 
-a:hover {
-  color: var(--primary);
+a:hover, a:focus {
+  color: var(--activelink-color);
 }
 
 div.card a img {
-  transition: -webkit-transform.5s ease;
-  transition: transform.5s ease;
-  transition: transform.5s ease, -webkit-transform.5s ease
+  transition: -webkit-transform .5s ease;
+  transition: transform .5s ease;
+  transition: transform .5s ease, -webkit-transform .5s ease
 }
 div.card a:hover>img {
   -webkit-transform: scale(1.1);
@@ -423,10 +421,10 @@ div.card a:hover>img {
   z-index: 0;
 }
 
-.card {
+/*.card {
   background-color: var(--bg-color);
   border-color: var(--color-silver-chalice);
-}
+}*/
 
 .card-footer-pod {
   position: absolute;
@@ -434,12 +432,13 @@ div.card a:hover>img {
   right: 2px;
   border: none;
 }
-.card-footer.feather,.card-header.feather {
+.card-footer .feather,
+.card-header .feather {
   height: 1rem;
 }
 
 /** menu channels **/
-.dropdown-submenu >.dropdown-menu {
+.dropdown-submenu > .dropdown-menu {
   top: 0;
   left: 100%;
   margin-top: -6px;
@@ -449,7 +448,7 @@ div.card a:hover>img {
 .dropdown-submenu:hover {
   background-color: var(--white);
 }
-.dropdown-submenu:hover >.dropdown-menu {
+.dropdown-submenu:hover > .dropdown-menu {
   display: block;
 }
 .dropdown-submenu > a:after {
@@ -467,9 +466,9 @@ div.card a:hover>img {
 }
 
 /** aside list video **/
-#filterType div.collapse:not(.show),
+#filterType       div.collapse:not(.show),
 #filterDiscipline div.collapse:not(.show),
-#filterTag div.collapse:not(.show) {
+#filterTag        div.collapse:not(.show) {
   height: 148px !important;
   overflow: hidden;
 
@@ -478,21 +477,21 @@ div.card a:hover>img {
   -webkit-box-orient: vertical;
 }
 
-#filterType div.collapsing,
+#filterType       div.collapsing,
 #filterDiscipline div.collapsing,
-#filterTag  div.collapsing{
+#filterTag        div.collapsing{
   min-height: 148px !important;
 }
 
-#filterTypea.collapsed:after,
-#filterDisciplinea.collapsed:after,
-#filterTaga.collapsed:after {
+#filterType       a.collapsed:after,
+#filterDiscipline a.collapsed:after,
+#filterTag        a.collapsed:after {
   content: '+';
 }
 
-#filterType a:not(.collapsed):after,
+#filterType       a:not(.collapsed):after,
 #filterDiscipline a:not(.collapsed):after,
-#filterTag  a:not(.collapsed):after {
+#filterTag        a:not(.collapsed):after {
   content: '-';
 }
 /** ckeditor **/
@@ -500,12 +499,20 @@ div.card a:hover>img {
   width: 100%;
 }
 /** video form **/
+
+/* as video filename can be very long,
+  it is usefull to wrap it anywhere
+  (specially on Chrome) */
+.field_video a{
+  overflow-wrap: anywhere;
+}
+
 .required {
-  color: var(--primary);
+  color: var(--danger);
   font-size: 1.3rem;
 }
 
-.form-group-required.errors {
+.form-group-required .errors {
   background-color: var(--color-fuzzy-wuzzy-brown);
 }
 #base-message-alert,
@@ -568,11 +575,11 @@ div.card a:hover>img {
     flex-direction: column;
   }
 }
-@media screen and (min-width:768px) {
+/*@media screen and (min-width:768px) {
   .card-img-top {
     max-height: 184.13px;
   }
-}
+}*/
 @media screen and (min-width:992px) {
   .card-img-top {
     max-height: 195.36px;
@@ -639,7 +646,7 @@ input.select2-input {
 #viewers-ul {overflow:hidden; overflow-y:scroll;}
 
 /* use to hide valid human chekbox in contact form to prevent spam */
-#contact_us.valid_human {
+#contact_us .valid_human {
   display: block;
   overflow: hidden;
   position: absolute !important;

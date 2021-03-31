@@ -14,7 +14,6 @@ from django.utils.translation import get_language
 from django.template.defaultfilters import slugify
 from django.db.models import Sum
 from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
@@ -35,6 +34,7 @@ import importlib
 
 from select2 import fields as select2_fields
 from sorl.thumbnail import get_thumbnail
+from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from django.db.models import Count, Case, When, Value, BooleanField, Q
@@ -264,6 +264,12 @@ class Channel(models.Model):
             u'If checked, the channel appear in a list of available '
             + 'channels on the platform.'),
         default=False)
+    allow_to_groups = select2_fields.ManyToManyField(
+        AccessGroup, blank=True, verbose_name=_('Groups'), ajax=True,
+        search_field=lambda q: Q(code_name__icontains=q) | Q(
+            display_name__icontains=q),
+        help_text=_('Select one or more groups who can access to this channel,'
+                    ' if no group selected channel will not be protected'))
     sites = models.ManyToManyField(Site)
 
     class Meta:
@@ -565,7 +571,7 @@ class Video(models.Model):
             'the video will only be accessible to authenticated users.'),
         default=False)
     restrict_access_to_groups = select2_fields.ManyToManyField(
-        Group, blank=True, verbose_name=_('Groups'),
+        AccessGroup, blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who can access to this video'))
     password = models.CharField(
         _('password'),
@@ -719,7 +725,7 @@ class Video(models.Model):
                 self.get_video_mp4() is not None or
                 self.get_video_m4a() is not None)
 
-    encoded.fget.short_description = _('Is the video encoded ?')
+    encoded.fget.short_description = _('Is the video encoded?')
 
     @property
     def get_version(self):

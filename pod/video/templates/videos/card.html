@@ -51,7 +51,7 @@
       </a>
     {% endif %}
   </div>
-  <div class="card-body">
+  <div class="card-body px-3 py-2">
     {% if video.owner == request.user or request.user.is_superuser or perms.video.change_video or request.user in video.additional_owners.all %}
       <footer class="card-footer card-footer-pod p-0 m-0">
         {% include "videos/link_video.html" %}

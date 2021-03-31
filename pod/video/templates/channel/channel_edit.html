@@ -87,21 +87,21 @@
 {% endblock collapse_page_aside %}
 
 {% block page_aside %}
-<div class="card card-body">
-  <h5 class="card-title">{% trans "Mandatory fields" %}</h5>
-  <div class="card-text" >
-    <p>{% trans "Fields marked with an asterisk are mandatory."%}</p>
+<div class="card">
+  <h5 class="card-header card-title">{% trans "Mandatory fields" %}</h5>
+  <div class="card-body" >
+    <p class="card-text">{% trans "Fields marked with an asterisk are mandatory."%}</p>
   </div>
 </div>
-<div class="card card-body">
-  <h5 class="card-title">{% trans "Form fields"%}</h5>
-  <div class="card-text" id="formfields">
+<div class="card">
+  <h5 class="card-header card-title">{% trans "Form fields"%}</h5>
+  <div class="card-body" id="formfields">
     {% for title, values in form.CHANNEL_FORM_FIELDS_HELP_TEXT.items %}
-      <div class="card card-body p-1">
-        <button class="btn btn-sm-light" id="heading-{{forloop.counter}}" data-toggle="collapse" data-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
+      <div class="card">
+        <button class="btn btn-light rounded-0" id="heading-{{forloop.counter}}" data-toggle="collapse" data-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}">
           {{title}}
         </button>
-        <div id="collapse-{{forloop.counter}}" class="collapse hide card-text small" aria-labelledby="heading-{{forloop.counter}}" data-parent="#formfields">
+        <div id="collapse-{{forloop.counter}}" class="card-body collapse hide card-text small" aria-labelledby="heading-{{forloop.counter}}" data-parent="#formfields">
           {% for value in values %}
             <p>{{value|safe}}</p>
           {%endfor%}
