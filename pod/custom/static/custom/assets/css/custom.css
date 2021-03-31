@@ -463,10 +463,31 @@ body > nav .navbar-items-pod{
 	border-color: #fff !important;
 	transition: 0.3s border-color;
 }
+.foldable_event,
 .foldable_event .arrow_right {
-	border-color: var(--primary) !important;
+	border-color: #fff !important;
 }
 
+.foldable_event:hover,
+.foldable_event:hover .arrow_right,
+.foldable_event:opened .arrow_bottom {
+	background: transparent !important;
+	border-color: var(--primary) !important;
+	color: var(--primary);
+}
+[data-theme="dark"][data-theme-mode="dark"] .foldable_event,
+[data-theme="dark"][data-theme-mode="dark"] .foldable_event .arrow_right
+{
+	color: var(--block-color) !important;
+	border-color: var(--block-color) !important;
+}
+[data-theme="dark"][data-theme-mode="dark"] .foldable_event.opened .arrow_bottom,
+[data-theme="dark"][data-theme-mode="dark"] .foldable_event:hover .arrow_right,
+[data-theme="dark"][data-theme-mode="dark"] .foldable_event:hover
+{
+	border-color: #fff !important;
+	color: #fff !important;
+}
 .foldable_event.opened .arrow_bottom,
 .foldable_event:hover .arrow_right {
 	border-color: var(--primary) !important;
