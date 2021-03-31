@@ -898,7 +898,7 @@ main.mt-3 {
 }
 #collapseAside > .card:not(#card-helpfields),
 #collapseAside .card-body:not(#card-helpfields){
-	padding: .8em;
+	padding: .8em .4em !important;
 }
 [data-theme][data-theme-mode] .card-body .card {
 	background-color: transparent !important;
@@ -1745,6 +1745,13 @@ color: var(--link-color) !important;
 [data-theme="dark"] > body #collapseAside,
 [data-theme-mode="dark"] > body #collapseAside{
 	background: transparent !important;
+}
+
+[data-theme][data-theme-mode] > body aside .card,
+[data-theme][data-theme-mode] > body #collapseAside .collapse > .card
+{
+	background-color: var(--light);
+	margin-bottom: .8em;
 }
 [data-theme="dark"][data-theme-mode="dark"] > body aside .card,
 [data-theme="dark"][data-theme-mode="dark"] > body #collapseAside .collapse > .card{
