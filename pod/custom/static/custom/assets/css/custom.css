@@ -472,7 +472,7 @@ body > nav .navbar-items-pod{
 .foldable_event:hover .arrow_right,
 .foldable_event.opened,
 .foldable_event.opened .arrow_bottom{
-	background: transparent !important;
+	background: var(--primary) !important;
 	border-color: var(--primary) !important;
 	color: var(--primary);
 }
