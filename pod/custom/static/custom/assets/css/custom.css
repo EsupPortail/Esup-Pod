@@ -1250,7 +1250,7 @@ input[type=checkbox]{
 	border: 1px solid var(--gray);
 	transition: background-color .4s ease-in-out, justify-content .3s;
 }
-.switch_mode.active{
+.active .switch_mode{
 	background-color: var(--link-color);
 }
 .switch_mode__toggle{
@@ -1268,7 +1268,7 @@ input[type=checkbox]{
 	transform: translateY(-.28em);
 	transition: left .3s;
 }
-.switch_mode.active .switch_mode__toggle {color:  #dd930c; left: 35%; }
+.active .switch_mode .switch_mode__toggle {color:  #dd930c; left: 35%; }
 .switch_mode__toggle svg{width: 70%;}
 
 /* @import url("dark.css");
