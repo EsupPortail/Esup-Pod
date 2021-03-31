@@ -655,8 +655,8 @@ button.navbar-toggler:hover {
 	background: var(--uga-color);
 }
 .badge-primary{
-	background-color: #aaa;
-	border: 1px solid inherit;
+	background-color: var(--uga-color);
+	border: 1px solid var(--uga-color);
 	color: #fff;
 }
 .btn-primary {
