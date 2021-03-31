@@ -1,28 +1,26 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Esup Pod main dutch strings.
+# This file is distributed under the same license as the POD package.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-31 14:05+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2021-03-31 09:14+0000\n"
+"PO-Revision-Date: 2021-01-22 12:27+0100\n"
+"Last-Translator: obado <bado@unice.fr>\n"
+"Language-Team: \n"
+"Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: pod/authentication/admin.py:94 pod/main/forms.py:51
 msgid "Email"
-msgstr ""
+msgstr "E-mail"
 
-#: pod/authentication/admin.py:131 pod/authentication/models.py:76
+#: pod/authentication/admin.py:131 pod/authentication/models.py:75
 #: pod/video/admin.py:154
 msgid "Establishment"
 msgstr ""
@@ -35,72 +33,72 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: pod/authentication/models.py:23
+#: pod/authentication/models.py:22
 msgid "local"
 msgstr ""
 
-#: pod/authentication/models.py:27
+#: pod/authentication/models.py:26
 msgid "student"
-msgstr ""
+msgstr "student"
+
+#: pod/authentication/models.py:27
+msgid "faculty"
+msgstr "faculteit"
 
 #: pod/authentication/models.py:28
-msgid "faculty"
-msgstr ""
+msgid "staff"
+msgstr "personeel"
 
 #: pod/authentication/models.py:29
-msgid "staff"
-msgstr ""
+msgid "employee"
+msgstr "werknemer"
 
 #: pod/authentication/models.py:30
-msgid "employee"
-msgstr ""
+msgid "member"
+msgstr "lid"
 
 #: pod/authentication/models.py:31
-msgid "member"
-msgstr ""
+msgid "affiliate"
+msgstr "filiaal"
 
 #: pod/authentication/models.py:32
-msgid "affiliate"
-msgstr ""
-
-#: pod/authentication/models.py:33
 msgid "alum"
 msgstr ""
 
-#: pod/authentication/models.py:34
+#: pod/authentication/models.py:33
 msgid "library-walk-in"
 msgstr ""
 
-#: pod/authentication/models.py:35
+#: pod/authentication/models.py:34
 msgid "researcher"
 msgstr ""
 
-#: pod/authentication/models.py:36
+#: pod/authentication/models.py:35
 msgid "retired"
 msgstr ""
 
-#: pod/authentication/models.py:37
+#: pod/authentication/models.py:36
 msgid "emeritus"
 msgstr ""
 
-#: pod/authentication/models.py:38
+#: pod/authentication/models.py:37
 msgid "teacher"
 msgstr ""
 
-#: pod/authentication/models.py:39
+#: pod/authentication/models.py:38
 msgid "registered-reader"
 msgstr ""
 
-#: pod/authentication/models.py:69 pod/recorder/models.py:266
+#: pod/authentication/models.py:68 pod/recorder/models.py:266
 #: pod/video/models.py:1472 pod/video/models.py:1524 pod/video/views.py:1304
 msgid "Comment"
 msgstr ""
 
-#: pod/authentication/models.py:74
+#: pod/authentication/models.py:73
 msgid "Picture"
 msgstr ""
 
-#: pod/authentication/models.py:160 pod/authentication/models.py:161
+#: pod/authentication/models.py:156 pod/authentication/models.py:157
 msgid "Access Groups"
 msgstr ""
 
@@ -120,9 +118,9 @@ msgstr ""
 #: pod/authentication/templates/registration/login.html:9
 #: pod/authentication/templates/registration/login.html:12
 #: pod/authentication/templates/registration/login.html:63
-#: pod/main/templates/navbar.html:119
+#: pod/main/templates/navbar.html:118
 msgid "Log in"
-msgstr ""
+msgstr "Inloggen"
 
 #: pod/authentication/templates/registration/login.html:17
 msgid "Please correct the error below."
@@ -515,14 +513,14 @@ msgstr ""
 #: pod/bbb/templates/bbb/live_list_meeting.html:14
 #: pod/bbb/templates/bbb/live_publish_meeting.html:18
 #: pod/bbb/templates/bbb/publish_meeting.html:17
-#: pod/main/templates/navbar.html:105
+#: pod/main/templates/navbar.html:104
 msgid "My BigBlueButton records and lives"
 msgstr ""
 
 #: pod/bbb/templates/bbb/list_meeting.html:17
 #: pod/bbb/templates/bbb/list_meeting.html:25
 #: pod/bbb/templates/bbb/live_list_meeting.html:16
-#: pod/main/templates/navbar.html:107
+#: pod/main/templates/navbar.html:106
 msgid "My BigBlueButton records"
 msgstr ""
 
@@ -736,7 +734,7 @@ msgstr ""
 #: pod/chapter/models.py:15 pod/enrichment/models.py:115
 #: pod/recorder/models.py:259 pod/video/models.py:440
 msgid "title"
-msgstr ""
+msgstr "titel"
 
 #: pod/chapter/models.py:17 pod/enrichment/models.py:117
 #: pod/video/models.py:442
@@ -1914,7 +1912,7 @@ msgstr ""
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html:103
 #: pod/interactive/templates/interactive/video_interactive.html:101
-#: pod/main/templates/navbar.html:96
+#: pod/main/templates/navbar.html:95
 #: pod/playlist/templates/my_playlists.html:10
 #: pod/playlist/templates/my_playlists.html:17
 #: pod/playlist/templates/playlist.html:14
@@ -3231,14 +3229,7 @@ msgstr ""
 msgid "Add your picture"
 msgstr ""
 
-#: pod/main/templates/navbar.html:92
-#: pod/video/templates/videos/video_record.html:29
-#: pod/video/templates/videos/video_record.html:32
-#: pod/video/templates/videos/video_record.html:36
-msgid "Video Record"
-msgstr ""
-
-#: pod/main/templates/navbar.html:94
+#: pod/main/templates/navbar.html:93
 #: pod/video/templates/channel/channel_edit.html:17
 #: pod/video/templates/channel/my_channels.html:6
 #: pod/video/templates/channel/my_channels.html:9
@@ -3246,27 +3237,27 @@ msgstr ""
 msgid "My channels"
 msgstr ""
 
-#: pod/main/templates/navbar.html:98 pod/podfile/templates/podfile/home.html:6
+#: pod/main/templates/navbar.html:97 pod/podfile/templates/podfile/home.html:6
 #: pod/podfile/templates/podfile/home.html:10
 msgid "My files"
 msgstr ""
 
-#: pod/main/templates/navbar.html:101
+#: pod/main/templates/navbar.html:100
 #: pod/recorder/templates/recorder/claim_record.html:12
 #: pod/recorder/templates/recorder/record_delete.html:7
 #: pod/recorder/templates/recorder/record_delete.html:19
 msgid "Claim a record"
 msgstr ""
 
-#: pod/main/templates/navbar.html:112 pod/main/templates/navbar.html:113
+#: pod/main/templates/navbar.html:111 pod/main/templates/navbar.html:112
 msgid "Log out"
 msgstr ""
 
-#: pod/main/templates/navbar.html:146 pod/main/templates/navbar.html:148
+#: pod/main/templates/navbar.html:145 pod/main/templates/navbar.html:147
 msgid "Dark mode"
 msgstr ""
 
-#: pod/main/templates/navbar.html:157 pod/main/templates/navbar.html:159
+#: pod/main/templates/navbar.html:156 pod/main/templates/navbar.html:158
 msgid "Dyslexia mode"
 msgstr ""
 
@@ -3952,8 +3943,10 @@ msgid "Has this recording file require a manual claim by a user?"
 msgstr ""
 
 #: pod/recorder/models.py:328
+#, fuzzy
+#| msgid "Email"
 msgid "Email sent?"
-msgstr ""
+msgstr "E-mail"
 
 #: pod/recorder/models.py:330
 msgid "Has an email been sent to the manager of the concerned recorder?"
@@ -4078,7 +4071,7 @@ msgstr ""
 msgid "The record has been deleted."
 msgstr ""
 
-#: pod/urls.py:292 pod/urls.py:293
+#: pod/urls.py:290 pod/urls.py:291
 msgid "Pod Administration"
 msgstr ""
 
@@ -5322,7 +5315,7 @@ msgstr ""
 
 #: pod/video/templates/videos/video_edit.html:149
 msgid "Staff"
-msgstr ""
+msgstr "Personeel"
 
 #: pod/video/templates/videos/video_edit.html:149
 msgid "Alternative version"
@@ -5404,57 +5397,6 @@ msgstr ""
 
 #: pod/video/templates/videos/video_notes.html:53
 msgid "Log in to create a new one."
-msgstr ""
-
-#: pod/video/templates/videos/video_record.html:49
-#: pod/video/templates/videos/video_record.html:70
-msgid "Save Record"
-msgstr ""
-
-#: pod/video/templates/videos/video_record.html:50
-msgid "Cancel Record"
-msgstr ""
-
-#: pod/video/templates/videos/video_record.html:54
-msgid "Click on player to select device to record"
-msgstr ""
-
-#: pod/video/templates/videos/video_record.html:55
-msgid "For the moment, you can only record screen and audio"
-msgstr ""
-
-#: pod/video/templates/videos/video_record.html:56
-msgid "Then, click on rec button to launch record"
-msgstr ""
-
-#: pod/video/templates/videos/video_record.html:57
-msgid ""
-"You will see a rec notification at the top-right of player, click on stop "
-"button to stop the record"
-msgstr ""
-
-#: pod/video/templates/videos/video_record.html:57
-msgid "You can click on play to watch your recording"
-msgstr ""
-
-#: pod/video/templates/videos/video_record.html:58
-msgid ""
-"You will be able to choose between sending your recording directly to Pod or "
-"downloading it to your computer"
-msgstr ""
-
-#: pod/video/templates/videos/video_record.html:76
-msgid ""
-"You can choose between sending your recording directly to Pod or downloading "
-"it to your computer"
-msgstr ""
-
-#: pod/video/templates/videos/video_record.html:79
-msgid "Save to Pod"
-msgstr ""
-
-#: pod/video/templates/videos/video_record.html:80
-msgid "Download record"
 msgstr ""
 
 #: pod/video/templates/videos/video_stats_view.html:9
