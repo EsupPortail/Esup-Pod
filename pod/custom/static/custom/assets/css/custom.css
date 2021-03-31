@@ -474,7 +474,7 @@ body > nav .navbar-items-pod{
 .foldable_event.opened .arrow_bottom{
 	background: var(--primary) !important;
 	border-color: var(--primary) !important;
-	color: var(--primary);
+	color: var(--block-color);
 }
 [data-theme="dark"][data-theme-mode="dark"] .foldable_event,
 [data-theme="dark"][data-theme-mode="dark"] .foldable_event .arrow_right
