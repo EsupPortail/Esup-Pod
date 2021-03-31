@@ -45,6 +45,10 @@
 				  </p>
 			</video>
 		</div>
+        <div class="btn-group ustify-content-center p-1 d-none" role="group" aria-label="save or cancel record" id="savecancelrecord">
+          <button type="button" class="btn btn-secondary btn-sm m-1" id="showsaverecord">{% trans "Save Record"%}</button>
+          <button type="button" class="btn btn-secondary btn-sm m-1" id="cancelrecord">{% trans "Cancel Record"%}</button>
+        </div>
     </div>
     <div class="col-sm">
       <p>{% trans "Click on player to select device to record"%}.</p>
@@ -55,12 +59,14 @@
   </div>
 </div>
 
-<!-- Modal t osave record-->
+
+
+<!-- Modal to save record-->
 <div class="modal fade" id="saveRecordModal" tabindex="-1" role="dialog" aria-labelledby="saveRecordModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{% trans "Save Record"%}</h5>
+        <h5 class="modal-title" >{% trans "Save Record"%}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -133,9 +139,20 @@ player.on('finishRecord', function() {
     // the blob object contains the image data that
     // can be downloaded by the user, stored on server etc.
     console.log('screen+audio capture ready: ', player.recordedData);
+    //$('#saveRecordModal').modal('show');
+    $("#savecancelrecord").removeClass('d-none');
+    $("#savecancelrecord").addClass('d-flex');
+});
+
+$(document).on('click',  '#showsaverecord', function(e){
     $('#saveRecordModal').modal('show');
 });
 
+$(document).on('click',  '#cancelrecord', function(e){
+    $("#savecancelrecord").addClass('d-none');
+    $("#savecancelrecord").removeClass('d-flex');
+    player.record().reset();
+});
 
 
 $(document).on('click',  '#saveRecordPod', function(e){
@@ -164,19 +181,24 @@ $(document).on('click',  '#saveRecordPod', function(e){
         success: function(data, textStatus, jqXHR) {
             //alert("filePath:" + data + "--" +textStatus);
             console.log(data, textStatus, jqXHR);
+            //restart the playeur
+            player.record().reset();
+            $("#savecancelrecord").addClass('d-none');
+            $("#savecancelrecord").removeClass('d-flex');
         }, 
         error: function(jqXHR, textStatus, errorThrown) {
             alert("error occured"+textStatus);
         }
     });
-	//restart the playeur
-    player.record().reset();
+	
 });
 
 $(document).on('click',  '#downloadRecord', function(e){
 	player.record().saveAs({'video': 'podscreenrecord-'+get_now()+'.webm'});
 	//restart the playeur
     player.record().reset();
+    $("#savecancelrecord").addClass('d-none');
+    $("#savecancelrecord").removeClass('d-flex');
 })
 
 function get_now() {
