@@ -480,10 +480,11 @@ body > nav .navbar-items-pod{
 	border-color: var(--block-color) !important;
 	color: var(--block-color) !important;
 }
+
+.foldable_event.opened:hover .arrow_bottom,
 .foldable_event .arrow_right{border-color: var(--block-color) !important; color: var(--block-color) !important;}
 
-.foldable_event:hover .arrow_bottom,
-.foldable_event .arrow_right,
+.foldable_event:hover .arrow_right,
 .foldable_event.opened .arrow_bottom,
 .foldable_event.opened
 {
