@@ -470,7 +470,8 @@ body > nav .navbar-items-pod{
 
 .foldable_event:hover,
 .foldable_event:hover .arrow_right,
-.foldable_event:opened .arrow_bottom {
+.foldable_event.opened,
+.foldable_event.opened .arrow_bottom{
 	background: transparent !important;
 	border-color: var(--primary) !important;
 	color: var(--primary);
@@ -482,6 +483,7 @@ body > nav .navbar-items-pod{
 	border-color: var(--block-color) !important;
 }
 [data-theme="dark"][data-theme-mode="dark"] .foldable_event.opened .arrow_bottom,
+[data-theme="dark"][data-theme-mode="dark"] .foldable_event.opened,
 [data-theme="dark"][data-theme-mode="dark"] .foldable_event:hover .arrow_right,
 [data-theme="dark"][data-theme-mode="dark"] .foldable_event:hover
 {
