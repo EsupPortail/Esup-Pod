@@ -991,7 +991,7 @@ footer p {
 	}
 	div#mainContent{order: 2;}
 	.navbar #nav-mainbar > div:first-child {
-		flex-grow: 1;
+		flex-grow: .5;
 		display: flex;
 		margin-right: 0.8em;
 	}
