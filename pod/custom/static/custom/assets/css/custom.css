@@ -685,7 +685,7 @@ button.navbar-toggler:hover {
 .badge-primary-pod{
 	border: 1px solid var(--primary);
 	color: var(--primary);
-	background: transparent !important;
+	background-color: transparent;
 }
 .badge-primary-pod:hover{
 	background-color: var(--primary);
