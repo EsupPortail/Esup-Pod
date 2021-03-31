@@ -37,30 +37,28 @@
 <div class="container">
   <div class="row">
     <div class="col-sm">
-      	<div itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
-			<video id="podvideoplayer" playsinline class="video-js vjs-default-skin">
-				  <p class="vjs-no-js">
-				    To view this video please enable JavaScript, and consider upgrading to a web browser that
-				    <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-				  </p>
-			</video>
-		</div>
-        <div class="btn-group ustify-content-center p-1 d-none" role="group" aria-label="save or cancel record" id="savecancelrecord">
-          <button type="button" class="btn btn-secondary btn-sm m-1" id="showsaverecord">{% trans "Save Record"%}</button>
-          <button type="button" class="btn btn-secondary btn-sm m-1" id="cancelrecord">{% trans "Cancel Record"%}</button>
-        </div>
+      <div itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+        <video id="podvideoplayer" playsinline class="video-js vjs-default-skin">
+          <p class="vjs-no-js">
+            To view this video please enable JavaScript, and consider upgrading to a web browser that
+            <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+          </p>
+        </video>
+      </div>
+      <div class="btn-group ustify-content-center p-1 d-none" role="group" aria-label="save or cancel record" id="savecancelrecord">
+        <button type="button" class="btn btn-secondary btn-sm m-1" id="showsaverecord">{% trans "Save Record"%}</button>
+        <button type="button" class="btn btn-secondary btn-sm m-1" id="cancelrecord">{% trans "Cancel Record"%}</button>
+      </div>
     </div>
     <div class="col-sm">
       <p>{% trans "Click on player to select device to record"%}.</p>
       <p>{% trans "For the moment, you can only record screen and audio"%}.</p>
       <p>{% trans "Then, click on rec button to launch record"%}.</p>
-      <p>{% trans "You will see a rec notification at the top-right of player, click on stop button to stop the record"%}.{% trans "You can click on play to watch your recording"%}.</p>
+      <p>{% trans "You will see a rec notification at the top-right of player, click on stop button to stop the record"%}. {% trans "You can click on play to watch your recording"%}.</p>
       <p>{% trans "You will be able to choose between sending your recording directly to Pod or downloading it to your computer"%}.</p>
     </div>
   </div>
 </div>
-
-
 
 <!-- Modal to save record-->
 <div class="modal fade" id="saveRecordModal" tabindex="-1" role="dialog" aria-labelledby="saveRecordModalLabel" aria-hidden="true">
@@ -102,7 +100,7 @@ var options = {
     },
     plugins: {
         record: {
-        	pip: true,
+            pip: true,
             audio: true,
             screen: true,
             video:false,
@@ -157,7 +155,7 @@ $(document).on('click',  '#cancelrecord', function(e){
 
 
 $(document).on('click',  '#saveRecordPod', function(e){
-	var data = player.recordedData;
+    var data = player.recordedData;
     var formData = new FormData();
     formData.append('video', data, data.name);
     formData.append('title', 'podscreenrecord-'+get_now());
@@ -191,19 +189,19 @@ $(document).on('click',  '#saveRecordPod', function(e){
             alert("error occured"+textStatus);
         }
     });
-	
+    
 });
 
 $(document).on('click',  '#downloadRecord', function(e){
-	player.record().saveAs({'video': 'podscreenrecord-'+get_now()+'.webm'});
-	//restart the playeur
+    player.record().saveAs({'video': 'podscreenrecord-'+get_now()+'.webm'});
+    //restart the playeur
     player.record().reset();
     $("#savecancelrecord").addClass('d-none');
     $("#savecancelrecord").removeClass('d-flex');
 })
 
 function get_now() {
-	var today = new Date();
+    var today = new Date();
     var y = today.getFullYear();
     // JavaScript months are 0-based.
     var m = today.getMonth() + 1;
@@ -216,7 +214,7 @@ function get_now() {
 }
 
 function get_date_added() {
-	var today = new Date();
+    var today = new Date();
     var y = today.getFullYear();
     // JavaScript months are 0-based.
     var m = today.getMonth() + 1;
@@ -233,7 +231,7 @@ function get_date_added() {
     h = '0' + h;
     if(mi.toString().length == 1)
     mi = '0' + mi;
-	if(s.toString().length == 1)
+    if(s.toString().length == 1)
     s = '0' + s;
 
     var date_added = d+"/"+m+"/"+y+" "+h+":"+mi+":"+s;
