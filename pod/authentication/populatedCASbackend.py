@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from pod.authentication.models import Owner
 from pod.authentication.models import AFFILIATION
 from ldap3 import Server
@@ -168,7 +169,8 @@ def assign_accessgroups(groups_element, user):
                 code_name=group)
             if group_created:
                 accessgroup.display_name = group
-                accessgroup.save()
+            accessgroup.sites.add(Site.objects.get_current())
+            accessgroup.save()
             user.owner.accessgroup_set.add(accessgroup)
         else:
             try:
@@ -248,7 +250,8 @@ def populate_user_from_entry(user, owner, entry):
                 code_name=affiliation)
             if group_created:
                 accessgroup.display_name = affiliation
-                accessgroup.save()
+            accessgroup.sites.add(Site.objects.get_current())
+            accessgroup.save()
             # group.groupsite.sites.add(Site.objects.get_current())
             user.owner.accessgroup_set.add(accessgroup)
     print("create_accessgroups")
@@ -309,7 +312,8 @@ def populate_user_from_tree(user, owner, tree):
                 code_name=affiliation.text)
             if group_created:
                 accessgroup.display_name = affiliation.text
-                accessgroup.save()
+            accessgroup.sites.add(Site.objects.get_current())
+            accessgroup.save()
             user.owner.accessgroup_set.add(accessgroup)
     create_accessgroups(user, tree, "cas")
 
