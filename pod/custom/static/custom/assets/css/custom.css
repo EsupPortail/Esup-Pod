@@ -685,6 +685,7 @@ button.navbar-toggler:hover {
 .badge-primary-pod{
 	border: 1px solid var(--primary);
 	color: var(--primary);
+	background: transparent !important;
 }
 .badge-primary-pod:hover{
 	background-color: var(--primary);
@@ -1362,7 +1363,7 @@ body .card-title{
 [data-theme="dark"] > body .badge-primary,
 [data-theme-mode="dark"] > body .badge-primary{
 	background-color: var(--dark-primary) !important;
-	color: #fff !important;
+	color: var(--block-color) !important;
 }
 [data-theme="dark"] > body .nav-info-covid,
 [data-theme-mode="dark"] > body .nav-info-covid{
