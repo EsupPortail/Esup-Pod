@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-25 14:42+0000\n"
+"POT-Creation-Date: 2021-03-31 09:14+0000\n"
 "PO-Revision-Date: 2021-01-22 12:27+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -96,6 +96,10 @@ msgstr ""
 
 #: pod/authentication/models.py:73
 msgid "Picture"
+msgstr ""
+
+#: pod/authentication/models.py:156 pod/authentication/models.py:157
+msgid "Access Groups"
 msgstr ""
 
 #: pod/authentication/templates/authentication/login.html:7
@@ -199,7 +203,7 @@ msgstr ""
 #: pod/podfile/templates/podfile/customfilewidget.html:67
 #: pod/podfile/templates/podfile/home_content.html:60
 #: pod/podfile/templates/podfile/home_content.html:96
-#: pod/recorder/templates/recorder/claim_record.html:46
+#: pod/recorder/templates/recorder/claim_record.html:47
 msgid "Close"
 msgstr ""
 
@@ -536,7 +540,7 @@ msgid "Create a video from a BigBlueButton presentation"
 msgstr ""
 
 #: pod/bbb/templates/bbb/list_meeting.html:37
-#: pod/recorder/templates/recorder/claim_record.html:19
+#: pod/recorder/templates/recorder/claim_record.html:20
 msgid "No record found"
 msgstr ""
 
@@ -545,8 +549,8 @@ msgid "There are no BigBlueButton records."
 msgstr ""
 
 #: pod/bbb/templates/bbb/list_meeting.html:40
-#: pod/recorder/templates/recorder/claim_record.html:14
-#: pod/recorder/templates/recorder/claim_record.html:22
+#: pod/recorder/templates/recorder/claim_record.html:15
+#: pod/recorder/templates/recorder/claim_record.html:23
 #, python-format
 msgid "%(counter)s record found"
 msgid_plural "%(counter)s records found"
@@ -1748,7 +1752,7 @@ msgstr ""
 #: pod/enrichment/templates/enrichment/edit_enrichment.html:38
 #: pod/enrichment/templates/enrichment/video_enrichment-iframe.html:20
 #: pod/enrichment/templates/enrichment/video_enrichment.html:24
-#: pod/recorder/templates/recorder/claim_record.html:40
+#: pod/recorder/templates/recorder/claim_record.html:41
 #: pod/video/templates/videos/video-element.html:13
 msgid ""
 "To view this video please enable JavaScript, and consider upgrading to a web "
@@ -2088,7 +2092,7 @@ msgstr ""
 msgid "name"
 msgstr ""
 
-#: pod/live/models.py:33 pod/live/templates/live/live.html:108
+#: pod/live/models.py:33 pod/live/templates/live/live.html:110
 #: pod/video/models.py:246 pod/video/models.py:336
 #: pod/video/templates/channel/channel.html:77
 #: pod/video/templates/channel/channel.html:88
@@ -2208,14 +2212,14 @@ msgid "Heartbeats"
 msgstr ""
 
 #: pod/live/templates/live/building.html:11
-#: pod/live/templates/live/live.html:20 pod/live/templates/live/live.html:24
+#: pod/live/templates/live/live.html:22 pod/live/templates/live/live.html:26
 #: pod/live/templates/live/lives.html:15 pod/live/templates/live/lives.html:18
 #: pod/live/templates/live/lives.html:21 pod/main/templates/navbar.html:33
 msgid "Lives"
 msgstr ""
 
 #: pod/live/templates/live/building.html:38
-#: pod/live/templates/live/live.html:119 pod/live/templates/live/lives.html:41
+#: pod/live/templates/live/live.html:121 pod/live/templates/live/lives.html:41
 msgid "Sorry, no lives found"
 msgstr ""
 
@@ -2239,65 +2243,65 @@ msgstr ""
 msgid "Send"
 msgstr ""
 
-#: pod/live/templates/live/live.html:69
+#: pod/live/templates/live/live.html:71
 msgid "Send message"
 msgstr ""
 
-#: pod/live/templates/live/live.html:71
+#: pod/live/templates/live/live.html:73
 msgid ""
 "You can send a message (100 characters maximum) to the BigBlueButton "
 "session. It will be displayed within 15 to 30 seconds on the live video."
 msgstr ""
 
-#: pod/live/templates/live/live.html:72
+#: pod/live/templates/live/live.html:74
 msgid "Message"
 msgstr ""
 
-#: pod/live/templates/live/live.html:75
+#: pod/live/templates/live/live.html:77
 msgid "You must be authenticated to send a message."
 msgstr ""
 
-#: pod/live/templates/live/live.html:81
+#: pod/live/templates/live/live.html:83
 msgid "Submit"
 msgstr ""
 
-#: pod/live/templates/live/live.html:115 pod/live/templates/live/lives.html:39
+#: pod/live/templates/live/live.html:117 pod/live/templates/live/lives.html:39
 msgid "no broadcast in progress"
 msgstr ""
 
-#: pod/live/templates/live/live.html:123 pod/live/templates/live/live.html:124
+#: pod/live/templates/live/live.html:125 pod/live/templates/live/live.html:126
 #: pod/live/templates/live/lives.html:45 pod/live/templates/live/lives.html:46
 msgid "access map"
 msgstr ""
 
-#: pod/live/templates/live/live.html:151
+#: pod/live/templates/live/live.html:153
 #: pod/video/templates/videos/video-script.html:27
 msgid "Please use different browser"
 msgstr ""
 
-#: pod/live/templates/live/live.html:188
+#: pod/live/templates/live/live.html:190
 msgid ""
 "Thank you for watching this streaming live with us. The page will reload "
 "automatically within a few seconds to display the video on hold."
 msgstr ""
 
-#: pod/live/templates/live/live.html:205
+#: pod/live/templates/live/live.html:207
 msgid "Live not found, displaying the video on hold, retry every 10 seconds"
 msgstr ""
 
-#: pod/live/templates/live/live.html:220
+#: pod/live/templates/live/live.html:222
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
 
-#: pod/live/templates/live/live.html:276
+#: pod/live/templates/live/live.html:278
 msgid "Message sent"
 msgstr ""
 
-#: pod/live/templates/live/live.html:277
+#: pod/live/templates/live/live.html:279
 msgid "Message not sent: no broadcaster found"
 msgstr ""
 
-#: pod/live/templates/live/live.html:278
+#: pod/live/templates/live/live.html:280
 msgid "Message not sent: connection problem (REDIS)"
 msgstr ""
 
@@ -3239,7 +3243,7 @@ msgid "My files"
 msgstr ""
 
 #: pod/main/templates/navbar.html:100
-#: pod/recorder/templates/recorder/claim_record.html:11
+#: pod/recorder/templates/recorder/claim_record.html:12
 #: pod/recorder/templates/recorder/record_delete.html:7
 #: pod/recorder/templates/recorder/record_delete.html:19
 msgid "Claim a record"
@@ -3978,11 +3982,11 @@ msgstr ""
 msgid "Date of recording."
 msgstr ""
 
-#: pod/recorder/templates/recorder/claim_record.html:20
+#: pod/recorder/templates/recorder/claim_record.html:21
 msgid "There is no unassigned records"
 msgstr ""
 
-#: pod/recorder/templates/recorder/claim_record.html:31
+#: pod/recorder/templates/recorder/claim_record.html:32
 msgid "Record preview"
 msgstr ""
 
