@@ -990,7 +990,7 @@ footer p {
 		order: 1;
 	}
 	div#mainContent{order: 2;}
-	.navbar #nav-mainbar div:first-child {
+	.navbar #nav-mainbar > div:first-child {
 		flex-grow: 1;
 		display: flex;
 		margin-right: 0.8em;
@@ -1045,9 +1045,6 @@ footer p {
 	}
 }
 @media only screen and (max-width: 600px) {
-	.text-center {
-		flex-direction: column;
-	}
 	.navbar-light .navbar-toggler {
 		margin-right: 0.8em;
 	}
