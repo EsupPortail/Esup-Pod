@@ -89,6 +89,7 @@
             </button>
           {% endif %}
           <a class="dropdown-item" href="{% url 'my_videos' %}" title="{% trans 'My videos' %}"><i data-feather="film"></i>&nbsp;{% trans 'My videos' %}</a>
+          <a class="dropdown-item" href="{% url 'video_record' %}" title="{% trans 'Video Record' %}"><i data-feather="video"></i>&nbsp;{% trans "Video Record" %}</a>
           {% if request.user.owners_channels.all %}
             <a class="dropdown-item" href="{% url 'my_channels' %}" title="{% trans 'My channels' %}"><i data-feather="youtube"></i>&nbsp;{% trans 'My channels' %}</a>
           {% endif %}
