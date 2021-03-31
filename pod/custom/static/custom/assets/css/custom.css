@@ -854,7 +854,7 @@ main.mt-3 {
 .btn.btn-outline-primary,
 .btn.btn-light{
 	padding: .4em !important;
-	margin: 0 .4em !important;
+	margin: .2em .4em !important;
 	display: inline-flex;
 	justify-content: center;
 	align-items: center;
