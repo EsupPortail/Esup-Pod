@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'shibboleth',
     'chunked_upload',
     'pod.bbb',
+    'mozilla_django_oidc',
 ]
 
 ##
@@ -245,6 +246,12 @@ if 'USE_SHIB' in globals() and eval('USE_SHIB') is True:
     )
     MIDDLEWARE.append(
         'pod.authentication.shibmiddleware.ShibbMiddleware')
+
+if 'USE_OIDC' in globals() and eval('USE_OIDC') is True:
+    AUTHENTICATION_BACKENDS += (
+        'pod.authentication.backends.OIDCBackend',
+    )
+    LOGIN_REDIRECT_URL = "/"
 
 ##
 # Authentication backend : add lti backend if use
