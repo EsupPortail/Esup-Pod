@@ -315,6 +315,11 @@ USE_ESTABLISHMENT_FIELD = False
 USE_STATS_VIEW = False
 
 """
+# Permet d'activer la possibilité d'enregistrer son ecran et son micro
+"""
+USE_VIDEO_RECORD = False
+
+"""
 # affichage de la statistique de vue des videos si utilisateur authentifié
 """
 VIEW_STATS_AUTH = False

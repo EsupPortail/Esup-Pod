@@ -88,7 +88,6 @@ urlpatterns = [
         name='video_private'),
     url(r'^video_add/$', video_add, name='video_add'),
     url(r'^video_edit/$', video_edit, name='video_edit'),
-    url(r'^video_record/$', video_record, name='video_record'),
     url(r'^video_edit/(?P<slug>[\-\d\w]+)/$', video_edit, name='video_edit'),
     url(r'^video_delete/(?P<slug>[\-\d\w]+)/$',
         video_delete, name='video_delete'),
@@ -185,6 +184,11 @@ if USE_BBB:
 #
 if OEMBED:
     urlpatterns += [url(r'^oembed/', video_oembed, name='video_oembed'), ]
+
+if getattr(settings, 'USE_VIDEO_RECORD', False):
+    urlpatterns += [
+        url(r'^video_record/$', video_record, name='video_record'),
+    ]
 
 # APPS -> to change !
 urlpatterns += [url(r'^', include('pod.completion.urls')), ]
