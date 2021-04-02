@@ -201,7 +201,7 @@ $(document).on('click',  '#saveRecordPod', function(e){
                 var percentComplete = evt.loaded / evt.total;
                 //Do something with upload progress
                 console.log(percentComplete);
-                var percent = Math.round((e.loaded / e.total) * 100);
+                var percent = Math.round((evt.loaded / evt.total) * 100);
                 $("#uploadprogressbar").html(percent + '%');
                 $("#uploadprogressbar").width(percent + '%');
               }
@@ -213,9 +213,9 @@ $(document).on('click',  '#saveRecordPod', function(e){
             //alert("filePath:" + data + "--" +textStatus);
             console.log(data, textStatus, jqXHR);
             //restart the playeur
-            player.record().reset();
-            $("#savecancelrecord").addClass('d-none');
-            $("#savecancelrecord").removeClass('d-flex');
+            //player.record().reset();
+            //$("#savecancelrecord").addClass('d-none');
+            //$("#savecancelrecord").removeClass('d-flex');
             // redirect to url_edit
             window.location.href = data["url_edit"];
         }, 
