@@ -14,7 +14,8 @@ class ShibbBackend(ShibbolethRemoteUserBackend):
         user.owner.save()
 
 # Fetch profile claims to fill User model
-# ref: https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html#changing-how-django-users-are-created
+# ref: https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html\
+# #changing-how-django-users-are-created
 class OIDCBackend(OIDCAuthenticationBackend):
     def create_user(self, claims):
         user = super(OIDCBackend, self).create_user(claims)
