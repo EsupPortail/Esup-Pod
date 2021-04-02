@@ -16,7 +16,7 @@
   <p><a class="btn btn-primary" href="{% url 'cas-login' %}?next={{ referrer|urlencode }}"  title="{% trans 'Single sign on' %} {{TITLE_ETB}}">{% trans "Single sign on" %} {{TITLE_ETB}}</a></p>
   {% endif %}
   {% if USE_SHIB %}
-  <p><a class="btn btn-primary" href="{{SHIB_URL }}?target={{ referrer|urlencode }}"  title="{{ SHIB_NAME }}">{{ SHIB_NAME}}</a></p>
+    <p><a class="btn btn-primary" role="button" href="{{SHIB_URL }}?target={{ referrer|urlencode }}">{{ SHIB_NAME}}</a></p>
   {% endif %}
   {% if USE_OIDC %}
   <p><a class="btn btn-primary" href="{%url 'oidc_authentication_init' %}"  title="{{ OIDC_NAME }}">{{ OIDC_NAME}}</a></p>
