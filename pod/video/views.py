@@ -720,27 +720,49 @@ def video_edit(request, slug=None):
             current_lang=request.LANGUAGE_CODE,
 
         )
-        if form.is_valid():
-            video = save_video_form(request, form)
-            messages.add_message(
-                request, messages.INFO,
-                _('The changes have been saved.')
-            )
-            if request.POST.get('_saveandsee'):
-                return redirect(
-                    reverse('video', args=(video.slug,))
-                )
-            else:
-                return redirect(
-                    reverse('video_edit', args=(video.slug,))
-                )
-        else:
-            messages.add_message(
-                request, messages.ERROR,
-                _(u'One or more errors have been found in the form.'))
+        return check_form(request, form)
+
     return render(request, 'videos/video_edit.html', {
         'form': form}
     )
+
+
+def check_form(request, form):
+    if form.is_valid():
+        video = save_video_form(request, form)
+        messages.add_message(
+            request, messages.INFO,
+            _('The changes have been saved.')
+        )
+        if request.is_ajax():
+            return JsonResponse({
+                "id": video.id,
+                "url_edit": reverse('video_edit', args=(video.slug,)),
+                })
+
+        if request.POST.get('_saveandsee'):
+            return redirect(
+                reverse('video', args=(video.slug,))
+            )
+        else:
+            return redirect(
+                reverse('video_edit', args=(video.slug,))
+            )
+    else:
+        if request.is_ajax():
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error":
+                    _(u'One or more errors have been found in the form.')
+                }
+            )
+        messages.add_message(
+            request, messages.ERROR,
+            _(u'One or more errors have been found in the form.'))
+        return render(request, 'videos/video_edit.html', {
+            'form': form}
+        )
 
 
 def save_video_form(request, form):
@@ -1918,7 +1940,7 @@ def delete_comment(request, video_slug, comment_id):
 
         response['deleted'] = False
         response['message'] = _(
-                'You do not have rights to delete this comment')
+            'You do not have rights to delete this comment')
         return HttpResponse(
             json.dumps(response, cls=DjangoJSONEncoder),
             content_type="application/json")
@@ -1959,8 +1981,8 @@ def get_categories(request, c_slug=None):
                 cat.video.remove(v)
 
         return HttpResponse(
-                json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json")
+            json.dumps(response, cls=DjangoJSONEncoder),
+            content_type="application/json")
 
     else:  # get all categories of connected user
 
@@ -2009,7 +2031,7 @@ def add_category(request):
 
         if v_already_in_user_cat:
             response['message'] = _(
-                    "One or many videos already have a category.")
+                "One or many videos already have a category.")
 
             return HttpResponseBadRequest(
                 json.dumps(response, cls=DjangoJSONEncoder),
@@ -2075,7 +2097,7 @@ def edit_category(request, c_slug):
 
         if v_already_in_user_cat:
             response['message'] = _(
-                    "One or many videos already have a category.")
+                "One or many videos already have a category.")
 
             return HttpResponseBadRequest(
                 json.dumps(response, cls=DjangoJSONEncoder),
@@ -2110,7 +2132,7 @@ def edit_category(request, c_slug):
                     content_type="application/json")
 
             response['message'] = _(
-                        'You do not have rights to edit this category')
+                'You do not have rights to edit this category')
             return HttpResponseForbidden(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
@@ -2122,8 +2144,8 @@ def edit_category(request, c_slug):
 
     response['message'] = _("Method Not Allowed")
     return HttpResponseNotAllowed(
-                json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json")
+        json.dumps(response, cls=DjangoJSONEncoder),
+        content_type="application/json")
 
 
 @login_required(redirect_field_name='referrer')
@@ -2156,11 +2178,11 @@ def delete_category(request, c_id):
                 content_type="application/json")
 
         response['message'] = _(
-                'You do not have rights to delete this category')
+            'You do not have rights to delete this category')
 
         return HttpResponseForbidden(
-                json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json")
+            json.dumps(response, cls=DjangoJSONEncoder),
+            content_type="application/json")
 
     return HttpResponseNotAllowed(_("Method Not Allowed"))
 

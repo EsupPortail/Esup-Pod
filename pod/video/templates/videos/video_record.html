@@ -71,10 +71,21 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>{% trans "You can choose between sending your recording directly to Pod or downloading it to your computer"%}.</p>
+        <p>
+            <span class="textsendchoice">{% trans "You can choose between sending your recording directly to Pod or downloading it to your computer"%}.</span>
+            <span class="textsending d-none">
+            {% trans "Sending, please wait." %}<br/>
+            {% trans "The page will refresh after the upload completes." %}
+            </span>
+        </p>
+        <div class="progress d-none" style="width:100%">
+            <div id="uploadprogressbar" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                0%
+            </div>
+        </div>
       </div>
       <div class="modal-footer">
-        <button id="saveRecordPod" type="button" class="btn btn-primary" data-dismiss="modal">{% trans "Save to Pod"%}</button>
+        <button id="saveRecordPod" type="button" class="btn btn-primary" >{% trans "Save to Pod"%}</button>
         <button id="downloadRecord" type="button" class="btn btn-primary" data-dismiss="modal">{% trans "Download record"%}</button>
       </div>
     </div>
@@ -155,6 +166,9 @@ $(document).on('click',  '#cancelrecord', function(e){
 
 
 $(document).on('click',  '#saveRecordPod', function(e){
+    $('#saveRecordModal span.textsendchoice').addClass('d-none');
+    $('#saveRecordModal span.textsending').removeClass('d-none');
+    $('#saveRecordModal div.progress').removeClass('d-none');
     var data = player.recordedData;
     var formData = new FormData();
     formData.append('video', data, data.name);
@@ -168,7 +182,7 @@ $(document).on('click',  '#saveRecordPod', function(e){
     formData.append('csrfmiddlewaretoken', csrftoken);
 
     console.log('uploading recording:', data.name);
-
+    
     $.ajax({
         url: '{% url 'video_edit' %}',
         method: 'POST',
@@ -176,7 +190,25 @@ $(document).on('click',  '#saveRecordPod', function(e){
         cache: false,
         processData: false,
         contentType: false,
+        dataType: 'JSON',
         mimeType: 'multipart/form-data',
+        xhr: function()
+        {
+            var xhr = new window.XMLHttpRequest();
+            //Upload progress
+            xhr.upload.addEventListener("progress", function(evt){
+              if (evt.lengthComputable) {
+                var percentComplete = evt.loaded / evt.total;
+                //Do something with upload progress
+                console.log(percentComplete);
+                var percent = Math.round((e.loaded / e.total) * 100);
+                $("#uploadprogressbar").html(percent + '%');
+                $("#uploadprogressbar").width(percent + '%');
+              }
+            }, false);
+            
+            return xhr;
+        },
         success: function(data, textStatus, jqXHR) {
             //alert("filePath:" + data + "--" +textStatus);
             console.log(data, textStatus, jqXHR);
@@ -184,9 +216,12 @@ $(document).on('click',  '#saveRecordPod', function(e){
             player.record().reset();
             $("#savecancelrecord").addClass('d-none');
             $("#savecancelrecord").removeClass('d-flex');
+            // redirect to url_edit
+            window.location.href = data["url_edit"];
         }, 
         error: function(jqXHR, textStatus, errorThrown) {
-            alert("error occured"+textStatus);
+            alert("error occured : "+textStatus);
+            console.log(jqXHR, textStatus, errorThrown);
         }
     });
     
