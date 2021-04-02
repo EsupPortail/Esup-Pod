@@ -13,6 +13,7 @@ class ShibbBackend(ShibbolethRemoteUserBackend):
             user.owner.sites.add(get_current_site(None))
         user.owner.save()
 
+
 # Fetch profile claims to fill User model
 # ref: https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html\
 # #changing-how-django-users-are-created
