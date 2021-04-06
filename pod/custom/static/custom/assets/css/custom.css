@@ -314,7 +314,7 @@ h6 {
 [data-dyslexia="on"][data-dyslexia-mode="on"] .container-pod,
 [data-dyslexia="on"][data-dyslexia-mode="on"] .container
 {
-	max-width: calc(100% -2em);
+	max-width: calc(100% - 2em);
 }
 [data-dyslexia="on"] h1,
 [data-dyslexia="on"] h2,
