@@ -1887,6 +1887,10 @@ body .btn-danger:hover{
 	color: var(--comment-color) !important;
 }
 /* Channel Modal */
+
+#list-channels .list-group-item{
+	transform: translateX(1px);
+}
 [data-theme="dark"] > body #list-channels,
 [data-theme-mode="dark"] > body #list-channels{
 	background-color: var(--background-dark-color) !important;
