@@ -11,6 +11,7 @@
     font-style: 600;
 }
 :root{
+	--font-size-badge-info: 10px;
 	--font-size-thin: 13px;
 	--font-size-semi-thin: 14px;
 	--font-size-semi-medium: 16px;
@@ -168,7 +169,7 @@ svg{
 }
 .social_links a svg.feather{fill: transparent;}
 
-[data-theme] > body, [data-theme-mode] > body,
+[data-theme][data-theme-mode] > body,
 #podfile a, #podifle .folder_title,
 html,body,
 .container,
@@ -254,6 +255,9 @@ h6 {
 	font-weight: 500 !important;
 	font-size: var(--font-size-medium) !important;
 }
+#last_videos > h3 {
+	align-self: flex-start;
+}
 .btn.btn-default{
 	color: var(--link-color);
 }
@@ -288,7 +292,8 @@ h6 {
 }
 /* Dyslexia mode style */
 [data-dyslexia="on"][data-dyslexia-mode="on"]{
-	--font-size-thin: 16px;
+	--font-size-badge-info: var(--font-size-thin);
+	--font-size-thin: 14.5px;
 	--font-size-semi-thin: 16px;
 	--font-size-semi-medium: 20px;
 	--font-size-medium: 24px;
@@ -359,13 +364,31 @@ btn.btn-lang:hover {
 }
 .badge{
 	font-size: var(--font-size-thin) !important;
-	background: var(--uga-color);
 }
+.badge,
 .badge-primary{
 	background-color: var(--uga-color);
 	border: 1px solid var(--uga-color);
 	color: #fff;
 }
+#card-tags .badge{
+	background-color: transparent;
+	border: none;
+	color: var(--link-color);
+}
+#card-tags .badge:hover{color: #2c2947}
+[data-theme="dark"][data-theme-mode="dark"] #card-tags .badge:hover{color: #2c2947}
+#card-tags .badge .badge-pill.badge-info{
+	background-color: var(--link-color) !important;
+	color: #fff;
+	font-weight: 400 !important;
+	padding: .2em .4em;
+	font-size: var(--font-size-badge-info) !important;
+}
+[data-theme="dark"][data-theme-mode="dark"] #card-tags .badge .badge-pill.badge-info{
+	color: var(--block-color);
+}
+
 .btn-primary {
 	background-color: var(--link-color)!important;
 	border: 1px solid var(--link-color) !important;
@@ -480,6 +503,7 @@ btn.btn-lang:hover {
 .btn.btn-light:hover{
 	color: #2C2947 !important;
 }
+.btn.btn-light .file-options-icon,
 [data-theme="dark"][data-theme-mode="dark"] .btn.btn-light:hover{
 	color: #fff !important;
 }
@@ -586,6 +610,7 @@ main.mt-3 {
 }
 .video-thumb .video-holder .poster + h5{
 	margin-top: .4em;
+	color: var(--link-color) !important;
 }
 #last_videos{
 	align-items: center;
@@ -600,7 +625,9 @@ main.mt-3 {
 	margin-top: 2em;
 	width: 100%;
 }
-#videos_list .card-body .small.video-title {
+#videos_list .card-body .small.video-title,
+#videos_list .video-title a {
+	display: block;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
@@ -679,7 +706,7 @@ main.mt-3 {
 
 [data-theme="light"][data-theme-mode="light"] #videos_list .card-header
 {
-	background-color: var(--primary);
+	background-color: var(--link-color);
 }
 
 html,
@@ -974,10 +1001,11 @@ a.btn-outline-primary svg {
 }
 .navbar a:not(.btn):hover,
 .navbar .nav-link:hover,
+#podfile #files #currentfolder .btn:hover svg,
 .navbar .nav-link:hover .nav-link-icone,
 button.dropdown-item:hover,
-a.dropdown-item:hover {
-	color: var(--primary) !important;
+a.dropdown-item:not(.btn):hover {
+	color: var(--link-color) !important;
 }
 .nav-link.btn-connexion {
 	background: #fff;
@@ -1631,14 +1659,6 @@ body .btn-danger:hover{
 [data-theme="dark"] > body .btn.btn-outline-secondary:hover,
 [data-theme-mode="dark"] > body .btn.btn-outline-secondary:hover{
 	background-color: var(--dark) !important;
-}
-[data-theme="dark"][data-theme-mode="dark"] > body .navbar a:not(.btn):hover,
-[data-theme="dark"][data-theme-mode="dark"] > body .navbar .nav-link:hover,
-[data-theme="dark"][data-theme-mode="dark"] > body #podfile #files #currentfolder *:hover > svg,
-[data-theme="dark"][data-theme-mode="dark"] > body .navbar .nav-link:hover .nav-link-icone,
-[data-theme="dark"][data-theme-mode="dark"] > body button.dropdown-item:hover,
-[data-theme="dark"][data-theme-mode="dark"] > body a.dropdown-item:not(.btn):hover{
-color: var(--link-color) !important;
 }
 [data-theme="dark"][data-theme-mode="dark"] > body .navbar a,
 [data-theme="dark"][data-theme-mode="dark"] > body a.dropdown-item{
