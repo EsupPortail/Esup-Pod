@@ -1,10 +1,10 @@
 # test_populated
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from pod.authentication.models import Owner, AccessGroup
+from pod.authentication import populatedCASbackend
 from django.contrib.auth.models import User
-# from django.conf import settings
-from django.test.utils import override_settings
+from importlib import reload
 
 from xml.etree import ElementTree as ET
 
@@ -32,21 +32,22 @@ class PopulatedTestCase(TestCase):
     def setUp(self):
         """setUp OwnerTestCase create user pod"""
         User.objects.create(username="pod", password="pod1234pod")
-        AccessGroup.objects.create(code_name="group1", display_name="Group 1")
+        AccessGroup.objects.create(
+            code_name="groupTest",
+            display_name="Group de test"
+        )
         print(" --->  SetUp of PopulatedTestCase : OK !")
 
-    @override_settings(DEBUG=True)
+    @override_settings(DEBUG=False)
     def test_populate_user_from_tree(self):
         owner = Owner.objects.get(user__username="pod")
         user = User.objects.get(username="pod")
         self.assertEqual(user.owner, owner)
-        from pod.authentication.populatedCASbackend\
-            import populate_user_from_tree
         tree = ET.fromstring(self.xml_string)
-        populate_user_from_tree(user, owner, tree)
+        populatedCASbackend.populate_user_from_tree(user, owner, tree)
         self.assertEqual(user.email, "pod@univ.fr")
-        self.assertEqual(user.first_name, "Pod")
-        self.assertEqual(user.last_name, "Univ")
+        self.assertEqual(user.first_name, "Univ")
+        self.assertEqual(user.last_name, "Pod")
         # CREATE_GROUP_FROM_AFFILIATION = getattr(
         #    settings, 'CREATE_GROUP_FROM_AFFILIATION', False)
         # CREATE_GROUP_FROM_GROUPS = getattr(
@@ -54,38 +55,56 @@ class PopulatedTestCase(TestCase):
         # check no group are created any from affiliation or groups
         self.assertEqual(user.is_staff, True)
         self.assertEqual(AccessGroup.objects.all().count(), 1)
+        self.assertEqual(user.owner.accessgroup_set.all().count(), 0)
         print(
             " --->  test_populate_user_from_tree by default"
             " of PopulatedTestCase : OK !")
 
     @override_settings(
-        DEBUG=True,
+        DEBUG=False,
         CREATE_GROUP_FROM_AFFILIATION=True
     )
     def test_populate_user_from_tree_affiliation(self):
         owner = Owner.objects.get(user__username="pod")
         user = User.objects.get(username="pod")
         self.assertEqual(user.owner, owner)
-        from pod.authentication.populatedCASbackend\
-            import populate_user_from_tree
+        reload(populatedCASbackend)
         tree = ET.fromstring(self.xml_string)
-        populate_user_from_tree(user, owner, tree)
-        self.assertEqual(user.email, "pod@univ.fr")
-        self.assertEqual(user.first_name, "Pod")
-        self.assertEqual(user.last_name, "Univ")
-        # CREATE_GROUP_FROM_AFFILIATION = getattr(
-        #    settings, 'CREATE_GROUP_FROM_AFFILIATION', False)
-        # CREATE_GROUP_FROM_GROUPS = getattr(
-        #    settings, 'CREATE_GROUP_FROM_GROUPS', False)
-        # check no group are created any from affiliation or groups
-        self.assertEqual(user.is_staff, True)
+        populatedCASbackend.populate_user_from_tree(user, owner, tree)
         self.assertEqual(AccessGroup.objects.all().count(), 3)
-        # user.owner.accessgroup_set.add(accessgroup)
         self.assertTrue(
             user.owner.accessgroup_set.filter(
-                name__in=['member', 'staff']
+                code_name__in=['member', 'staff']
             ).exists()
         )
         print(
             " --->  test_populate_user_from_tree_affiliation"
+            " of PopulatedTestCase : OK !")
+
+    @override_settings(
+        DEBUG=True,
+        CREATE_GROUP_FROM_AFFILIATION=True,
+        CREATE_GROUP_FROM_GROUPS=True
+    )
+    def test_populate_user_from_tree_affiliation_group(self):
+        owner = Owner.objects.get(user__username="pod")
+        user = User.objects.get(username="pod")
+        self.assertEqual(user.owner, owner)
+        reload(populatedCASbackend)
+        tree = ET.fromstring(self.xml_string)
+        populatedCASbackend.populate_user_from_tree(user, owner, tree)
+        self.assertEqual(AccessGroup.objects.all().count(), 5)
+        # user.owner.accessgroup_set.add(accessgroup)
+        self.assertTrue(
+            user.owner.accessgroup_set.filter(
+                code_name__in=[
+                    'member',
+                    'staff',
+                    'cn=group1,ou=groups,dc=univ,dc=fr',
+                    'cn=group2,ou=groups,dc=univ,dc=fr'
+                ]
+            ).exists()
+        )
+        print(
+            " --->  test_populate_user_from_tree_affiliation_group"
             " of PopulatedTestCase : OK !")

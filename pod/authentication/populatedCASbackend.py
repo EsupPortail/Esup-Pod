@@ -254,9 +254,9 @@ def populate_user_from_entry(user, owner, entry):
             accessgroup.save()
             # group.groupsite.sites.add(Site.objects.get_current())
             user.owner.accessgroup_set.add(accessgroup)
-    print("create_accessgroups")
     create_accessgroups(user, entry, "ldap")
     user.save()
+    owner.save()
 
 
 def populate_user_from_tree(user, owner, tree):
@@ -316,7 +316,6 @@ def populate_user_from_tree(user, owner, tree):
             accessgroup.save()
             user.owner.accessgroup_set.add(accessgroup)
     create_accessgroups(user, tree, "cas")
-
     user.save()
     owner.save()
 
