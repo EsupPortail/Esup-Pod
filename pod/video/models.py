@@ -252,10 +252,10 @@ class Channel(models.Model):
     style = models.TextField(
         _('Extra style'), null=True, blank=True,
         help_text=_("The style will be added to your channel to show it"))
-    owners = models.ManyToManyField(
+    owners = select2_fields.ManyToManyField(
         User, related_name='owners_channels', verbose_name=_('Owners'),
         blank=True)
-    users = models.ManyToManyField(
+    users = select2_fields.ManyToManyField(
         User, related_name='users_channels', verbose_name=_('Users'),
         blank=True)
     visible = models.BooleanField(
