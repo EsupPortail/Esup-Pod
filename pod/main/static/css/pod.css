@@ -468,6 +468,7 @@ div.card a:hover>img {
 /** aside list video **/
 #filterType       div.collapse:not(.show),
 #filterDiscipline div.collapse:not(.show),
+#filterCursus     div.collapse:not(.show),
 #filterTag        div.collapse:not(.show) {
   height: 148px !important;
   overflow: hidden;
@@ -479,18 +480,21 @@ div.card a:hover>img {
 
 #filterType       div.collapsing,
 #filterDiscipline div.collapsing,
+#filterCursus     div.collapsing,
 #filterTag        div.collapsing{
   min-height: 148px !important;
 }
 
 #filterType       a.collapsed:after,
 #filterDiscipline a.collapsed:after,
+#filterCursus     a.collapsed:after,
 #filterTag        a.collapsed:after {
   content: '+';
 }
 
 #filterType       a:not(.collapsed):after,
 #filterDiscipline a:not(.collapsed):after,
+#filterCursus     a:not(.collapsed):after,
 #filterTag        a:not(.collapsed):after {
   content: '-';
 }

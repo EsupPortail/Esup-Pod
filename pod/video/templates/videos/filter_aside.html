@@ -96,6 +96,28 @@
 {% endwith %}
 </div>
 </fieldset>
+
+
+<fieldset class="border-right border-bottom mt-2">
+
+  <legend class="h5"><i data-feather="archive"></i> {% trans "University course"%}<button type="submit" class="btn btn-link btn-sm float-right" title="{% trans "Send" %}"><i data-feather="send"></i></button></legend>
+  <div id="filterCursus">
+  <div class="form-group collapse" id="collapseFilterCursus">
+  {% for keyCursus , transCursus in cursus_list %}
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="cursus"
+    value="{{keyCursus}}" id="{{keyCursus}}" {% if keyCursus in cursus_selected %}checked{% endif %}>
+    <label class="form-check-label" for="{{cursus}}">
+      {{transCursus}}
+    </label>
+  </div>
+  {% endfor %}
+  </div>
+   {% if cursus_list|length > 5 %}
+       <span class="badge badge-light float-right"><a class="collapsed" data-toggle="collapse" href="#collapseFilterCursus" aria-expanded="false" aria-controls="collapseFilterCursus"></a></span>
+  {% endif %}
+  </div>
+  </fieldset>
 <!-- <button type="submit" class="btn btn-link">&gt;&gt;{% trans "Filter"%}</button> -->
 </form>
 
