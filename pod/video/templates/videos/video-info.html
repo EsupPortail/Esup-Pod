@@ -111,7 +111,8 @@
         <h3 class="meta-title">{% trans 'Number of views:' %}</h3>
         <div>
           {{ video.get_viewcount }}
-          {% if USE_STATS_VIEW %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video_stats_view' video.slug %}?from=video">({% trans 'Show details views' %})</a>{% endif %}
+
+          {% if USE_STATS_VIEW and not video.encoding_in_progress %}<a rel="noopener" target="_blank" title="{% trans 'Show details of view statistics' %}" href="{% url 'video_stats_view' video.slug %}?from=video">({% trans 'Show details views' %})</a>{% endif %}
         </div>
       </li>
 
