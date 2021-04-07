@@ -504,9 +504,11 @@ btn.btn-lang:hover {
 	color: #2C2947 !important;
 }
 .btn.btn-light .file-options-icon,
+#podfile .navbar-toggler.btn.btn-outline-primary.active,
 [data-theme="dark"][data-theme-mode="dark"] .btn.btn-light:hover{
 	color: #fff !important;
 }
+#podfile .navbar-toggler.btn.btn-outline-primary.active{border: none !important;}
 .btn-link:hover,
 .btn-link {
     color: var(--dark-primary);
@@ -663,6 +665,7 @@ main.mt-3 {
 #videos_list .infinite-item .video-card .d-flex{
 	flex: none;
 	flex-grow: 1;
+	min-height: unset;
 }
 [data-theme="dark"][data-theme-mode="dark"] #videos_list .infinite-item .video-card .card-header *{ background: transparent !important;}
 [data-theme="dark"][data-theme-mode="dark"] #videos_list .infinite-item .video-card .d-flex{
@@ -735,9 +738,6 @@ body > nav .navbar-items-pod{
 }
 .video-js {
 	overflow: hidden;
-}
-[data-theme="light"][data-theme-mode="light"] #info_video .card{
-	background-color: #2C2947;
 }
 [data-theme="dark"][data-theme-mode="dark"] #info_video .card{
 	background: var(--block-dark-color);
@@ -1343,7 +1343,8 @@ input[type=checkbox]{
 .nav-info-covid .info-covid-redirect{
 	margin: 0;
 }
-.nav-info-covid .info-covid-redirect a{color: var(--primary) !important;}
+.nav-info-covid .info-covid-redirect a{transition: color .3s;}
+.nav-info-covid .info-covid-redirect a:hover{color: #2c2947;}
 /* theme tree */
 #treeview ul.list-group li{
 	overflow: hidden;
@@ -1660,10 +1661,6 @@ body .btn-danger:hover{
 [data-theme-mode="dark"] > body .btn.btn-outline-secondary:hover{
 	background-color: var(--dark) !important;
 }
-[data-theme="dark"][data-theme-mode="dark"] > body .navbar a,
-[data-theme="dark"][data-theme-mode="dark"] > body a.dropdown-item{
-	color: #fff !important;
-}
 /* Navbar */
 [data-theme="dark"][data-theme-mode="dark"] > body .navbar{
   background-color: var(--block-color) !important;
@@ -1823,10 +1820,11 @@ body .btn-danger:hover{
 	background-color: var(--background-dark-color);
 }
 /* category */
+[data-theme="light"][data-theme="light"] #my_videos_filter .categories_list_item.active{background: #2C2947; border-color: #2C2947;}
 [data-theme="dark"][data-theme-mode="dark"] > body #my_videos_filter .categories_list_item.active
 {
-	background-color: var(--dark);
-	border: 1px solid var(--dark);
+	background-color: var(--block-dark-color);
+	border-color: var(--block-dark-color);
 }
 /* category Modal */
 [data-theme="dark"][data-theme-mode="dark"] > body .modal-content{
