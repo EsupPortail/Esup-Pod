@@ -111,6 +111,9 @@ USE_BBB = getattr(
 USE_BBB_LIVE = getattr(
     django_settings, 'USE_BBB_LIVE', False)
 
+USE_VIDEO_RECORD = getattr(
+    django_settings, 'USE_VIDEO_RECORD', False)
+
 
 def context_settings(request):
     maintenance_mode = False
@@ -158,6 +161,7 @@ def context_settings(request):
     new_settings['USE_BBB_LIVE'] = USE_BBB_LIVE
     new_settings['DARKMODE_ENABLED'] = DARKMODE_ENABLED
     new_settings['DYSLEXIAMODE_ENABLED'] = DYSLEXIAMODE_ENABLED
+    new_settings['USE_VIDEO_RECORD'] = USE_VIDEO_RECORD
 
     return new_settings
 

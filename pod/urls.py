@@ -37,6 +37,7 @@ from pod.video.views import vote_get, vote_post
 from pod.video.views import get_categories, add_category
 from pod.video.views import edit_category, delete_category
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
+from pod.video.views import video_record
 from pod.main.views import contact_us, download_file, user_autocomplete,\
     maintenance
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
@@ -183,6 +184,11 @@ if USE_BBB:
 #
 if OEMBED:
     urlpatterns += [url(r'^oembed/', video_oembed, name='video_oembed'), ]
+
+if getattr(settings, 'USE_VIDEO_RECORD', False):
+    urlpatterns += [
+        url(r'^video_record/$', video_record, name='video_record'),
+    ]
 
 # APPS -> to change !
 urlpatterns += [url(r'^', include('pod.completion.urls')), ]
