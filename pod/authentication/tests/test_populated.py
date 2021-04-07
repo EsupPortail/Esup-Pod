@@ -34,6 +34,7 @@ class PopulatedTestCase(TestCase):
         """setUp OwnerTestCase create user pod"""
         User.objects.create(username="pod", password="pod1234pod")
         AccessGroup.objects.create(code_name="group1", display_name="Group 1")
+        print(" --->  SetUp of PopulatedTestCase : OK !")
 
     @override_settings(DEBUG=True)
     def test_populate_user_from_tree(self):
@@ -47,3 +48,13 @@ class PopulatedTestCase(TestCase):
         self.assertEqual(user.email, "pod@univ.fr")
         self.assertEqual(user.first_name, "Pod")
         self.assertEqual(user.last_name, "Univ")
+        # CREATE_GROUP_FROM_AFFILIATION = getattr(
+        #    settings, 'CREATE_GROUP_FROM_AFFILIATION', False)
+        # CREATE_GROUP_FROM_GROUPS = getattr(
+        #    settings, 'CREATE_GROUP_FROM_GROUPS', False)
+        # check no group are created any from affiliation or groups
+        self.assertEqual(user.is_staff, True)
+        self.assertEqual(AccessGroup.objects.all().count(), 1)
+        print(
+            " --->  test_populate_user_from_tree by default"
+            " of PopulatedTestCase : OK !")
