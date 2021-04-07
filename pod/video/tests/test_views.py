@@ -863,3 +863,24 @@ class video_countTestView(TestCase):
         print(
             " --->  test_video_countTestView_post_request"
             " of video_countTestView : OK !")
+
+
+# add test to video record : USE_VIDEO_RECORD = True
+class video_recordTestView(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        User.objects.create(username="pod", password="pod1234pod")
+        print(" --->  SetUp of video_recordTestView : OK !")
+
+    def test_video_recordTestView_get_request(self):
+        self.client = Client()
+        response = self.client.get("/video_record/")
+        self.assertEqual(response.status_code, 302)
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.get("/video_record/")
+        self.assertEqual(response.status_code, 200)
+        print(
+            " --->  test_video_recordTestView_get_request"
+            " of video_recordTestView : OK !")
