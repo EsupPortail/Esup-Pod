@@ -158,8 +158,8 @@ class AccessGroup(models.Model):
         search_field=lambda q: Q(
             user__username__icontains=q) | Q(
                 user__first_name__icontains=q) | Q(
-                    user__last_name__icontains=q),
-        through='Owner_accessgroups')
+                    user__last_name__icontains=q), 
+                    through='Owner_accessgroups')
 
     def __str__(self):
         return "%s" % (self.display_name)

@@ -254,9 +254,19 @@ class Channel(models.Model):
         help_text=_("The style will be added to your channel to show it"))
     owners = select2_fields.ManyToManyField(
         User, related_name='owners_channels', verbose_name=_('Owners'),
+        ajax=True,
+        search_field=lambda q: Q(
+            username__icontains=q) | Q(
+                first_name__icontains=q) | Q(
+                    last_name__icontains=q),
         blank=True)
     users = select2_fields.ManyToManyField(
         User, related_name='users_channels', verbose_name=_('Users'),
+        ajax=True,
+        search_field=lambda q: Q(
+            username__icontains=q) | Q(
+                first_name__icontains=q) | Q(
+                    last_name__icontains=q),
         blank=True)
     visible = models.BooleanField(
         verbose_name=_('Visible'),
