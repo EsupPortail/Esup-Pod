@@ -51,6 +51,8 @@ USE_CAS = getattr(
     settings, 'USE_CAS', False)
 USE_SHIB = getattr(
     settings, 'USE_SHIB', False)
+USE_OIDC = getattr(
+    settings, 'USE_OIDC', False)
 OEMBED = getattr(
     settings, 'OEMBED', False)
 USE_BBB = getattr(
@@ -171,6 +173,12 @@ if USE_CAS:
     urlpatterns += [
         url(r'^sso-cas/login/$', cas_views.login, name='cas-login'),
         url(r'^sso-cas/logout/$', cas_views.logout, name='cas-logout'),
+    ]
+
+# OIDC
+if USE_OIDC:
+    urlpatterns += [
+      url(r'^oidc/', include('mozilla_django_oidc.urls')),
     ]
 
 # BBB

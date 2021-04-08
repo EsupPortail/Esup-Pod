@@ -1027,6 +1027,40 @@ SHIB_LOGOUT_URL = ""
 CAS_FORCE_LOWERCASE_USERNAME = False
 
 """
+# Utiliser l'authentification OpenID Connect
+"""
+USE_OIDC = False
+
+"""
+# Nom du Service Provider OIDC
+"""
+OIDC_NAME = ""
+
+"""
+# CLIENT_ID et CLIENT_SECRET de OIDC sont plutôt à positionner
+# à travers des variables d'environnement
+"""
+OIDC_RP_CLIENT_ID = os.environ('OIDC_CLIENT_ID')
+OIDC_RP_CLIENT_SECRET = os.environ('OIDC_CLIENT_SECRET')
+
+"""
+# Différents paramètres pour OIDC
+# tant que mozilla_django_oidc n'accepte le mécanisme de discovery
+# ref: https://github.com/mozilla/mozilla-django-oidc/pull/309
+"""
+OIDC_OP_AUTHORIZATION_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/authorize"
+OIDC_OP_TOKEN_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/token"
+OIDC_OP_USER_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/userinfo"
+OIDC_RP_SIGN_ALGO = 'RS256'
+OIDC_OP_JWKS_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/discovery/keys"
+
+"""
+# Noms des Claim permettant de récupérer les attributs nom, prénom, email
+"""
+OIDC_CLAIM_FAMILY_NAME = "family_name"
+OIDC_CLAIM_GIVEN_NAME = "given_name"
+
+"""
 # Permettre l'usage du oembed, partage dans Moodle, Facebook, Twitter etc.
 """
 OEMBED = True

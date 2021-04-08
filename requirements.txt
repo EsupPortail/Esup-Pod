@@ -30,3 +30,4 @@ chardet==4.0.0
 django-cookies-samesite==0.8.0
 django-static-compress>=1.2.1
 redis==3.5.3
+mozilla_django_oidc==1.2.4
