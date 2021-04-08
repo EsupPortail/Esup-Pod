@@ -1,9 +1,10 @@
 {% load i18n %}
 
 {% spaceless %}
+{% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.video.change_video %}
 <a href="{% url 'video_edit' slug=video.slug %}" title="{% trans "Edit the video"%}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
   <i data-feather="edit"></i></a>
-
+{%endif%}
 {% if request.resolver_match.namespace %}
   {% with request.resolver_match.namespace as app %}
   {% with ""|add:app|add:":edit_"|add:app as urleditapp %}
@@ -12,15 +13,19 @@
   {% endwith %}
   {% endwith %}
 {%endif%}
-
+{% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.completion.add_contributor or perms.completion.add_track or perms.completion.add_document or perms.completion.add_overlay %}
 <a href="{% url 'video_completion' slug=video.slug %}" title="{% trans "Complete the video"%}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
   <i data-feather="file-text"></i></a>
+{%endif%}
+{% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all or perms.chapter.change_chapter %}
 <a href="{% url 'video_chapter' slug=video.slug %}" title="{% trans "Chapter the video"%}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1">
   <i data-feather="list"></i></a>
+{%endif%}
 {% if video.owner == request.user or request.user.is_superuser or perms.video.delete_video %}
   <a href="{% url 'video_delete' slug=video.slug %}" class="btn btn-light btn-sm p-0 pb-1 m-0 ml-1" title="{% trans "Delete the video." %}">
     <i data-feather="trash-2"></i></a>
 {% endif %}
+
 {% if "edit" in request.resolver_match.url_name %}
   {% with video.get_other_version as versions %}
     {% if versions|length > 0 %}
