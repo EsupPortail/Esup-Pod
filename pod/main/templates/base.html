@@ -132,7 +132,7 @@
               <img src="https://i.imgur.com/Tl8ZBUe.png" width="50">
               <span class="mt-2">{% trans 'We use third party cookies to personalize content, manage session and analyze site traffic.' %}</span>
               {% if COOKIE_LEARN_MORE != "" %}
-              <a class="d-flex align-items-center" href="#">{% trans 'Learn more' %}<i class="fa fa-angle-right ml-2"></i></a> 
+              <a class="d-flex align-items-center" href="{{COOKIE_LEARN_MORE}}">{% trans 'Learn more' %}<i class="fa fa-angle-right ml-2"></i></a> 
               {% endif %}
               <button class="btn btn-dark mt-3 px-4" type="button" id='okcookie'>{% trans 'I understand' %}</button>
             </div>

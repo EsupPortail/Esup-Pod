@@ -1280,3 +1280,9 @@ DARKMODE_ENABLED = False
 # Activation du mode dyslexie
 """
 DYSLEXIAMODE_ENABLED = False
+
+"""
+# Lien pour en avoir plus sur dialog de consentement du cookie
+# on peut préciser un lien vers les mentions légales ou page dpo
+"""
+COOKIE_LEARN_MORE = ""
