@@ -1616,8 +1616,10 @@ def stats_view(request, slug=None, slug_t=None):
     """
     target = request.GET.get('from', "videos")
     videos, title = get_videos(slug, target, slug_t)
-    error_message = "The following %(target)s does not exist \
-        or contain any videos: %(slug)s"
+    error_message = (
+        "The following %(target)s does not "
+        "exist or contain any videos: %(slug)s"
+    )
     if request.method == "GET" and target == "video" and videos:
         return manage_access_rights_stats_video(request, videos[0], title)
 
