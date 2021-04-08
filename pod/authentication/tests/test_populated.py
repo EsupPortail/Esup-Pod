@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from importlib import reload
 from xml.etree import ElementTree as ET
 
-from ldap3 import Server, Connection, ALL, ALL_ATTRIBUTES, MOCK_SYNC
+from ldap3 import Server, Connection, MOCK_SYNC
 
 """
 USER_CAS_MAPPING_ATTRIBUTES = getattr(
@@ -22,6 +22,16 @@ USER_CAS_MAPPING_ATTRIBUTES = getattr(
         "groups": "memberOf"
     })
 """
+USER_CAS_MAPPING_ATTRIBUTES_TEST_NOGROUPS = {
+    "uid": "uid",
+    "mail": "mail",
+    "last_name": "sn",
+    "first_name": "givenname",
+    "primaryAffiliation": "eduPersonPrimaryAffiliation",
+    "affiliation": "eduPersonAffiliation",
+    "groups": ""
+}
+
 USER_LDAP_MAPPING_ATTRIBUTES = getattr(
     settings, 'USER_LDAP_MAPPING_ATTRIBUTES',
     {
@@ -33,7 +43,6 @@ USER_LDAP_MAPPING_ATTRIBUTES = getattr(
         "affiliations": "eduPersonAffiliation",
         "groups": "memberOf"
     })
-
 
 
 class PopulatedCASTestCase(TestCase):
@@ -122,7 +131,6 @@ class PopulatedCASTestCase(TestCase):
         tree = ET.fromstring(self.xml_string)
         populatedCASbackend.populate_user_from_tree(user, owner, tree)
         self.assertEqual(AccessGroup.objects.all().count(), 5)
-        # user.owner.accessgroup_set.add(accessgroup)
         self.assertTrue(
             user.owner.accessgroup_set.filter(
                 code_name__in=[
@@ -135,6 +143,35 @@ class PopulatedCASTestCase(TestCase):
         )
         print(
             " --->  test_populate_user_from_tree_affiliation_group"
+            " of PopulatedCASTestCase : OK !")
+
+    @override_settings(
+        DEBUG=True,
+        CREATE_GROUP_FROM_AFFILIATION=True,
+        CREATE_GROUP_FROM_GROUPS=True,
+        USER_CAS_MAPPING_ATTRIBUTES=USER_CAS_MAPPING_ATTRIBUTES_TEST_NOGROUPS
+
+    )
+    def test_populate_user_from_tree_affiliation_nogroup(self):
+        owner = Owner.objects.get(user__username="pod")
+        user = User.objects.get(username="pod")
+        self.assertEqual(user.owner, owner)
+        reload(populatedCASbackend)
+        tree = ET.fromstring(self.xml_string)
+        populatedCASbackend.populate_user_from_tree(user, owner, tree)
+        # check they are only existing group and affiliation groups x2
+        self.assertEqual(AccessGroup.objects.all().count(), 3)
+
+        self.assertTrue(
+            user.owner.accessgroup_set.filter(
+                code_name__in=[
+                    'member',
+                    'staff',
+                ]
+            ).exists()
+        )
+        print(
+            " --->  test_populate_user_from_tree_affiliation_nogroup"
             " of PopulatedCASTestCase : OK !")
 
 
@@ -163,7 +200,7 @@ class PopulatedLDAPTestCase(TestCase):
         fake_server = Server('my_fake_server')
         fake_connection = Connection(fake_server, client_strategy=MOCK_SYNC)
         fake_connection.strategy.add_entry(
-            'uid=pod,ou=people,dc=univ,dc=fr', 
+            'uid=pod,ou=people,dc=univ,dc=fr',
             self.attrs)
         fake_connection.bind()
         list_value = []
@@ -201,7 +238,6 @@ class PopulatedLDAPTestCase(TestCase):
         print(
             " --->  test_populate_user_from_entry by default"
             " of PopulatedLDAPTestCase : OK !")
-
 
     @override_settings(
         DEBUG=False,
@@ -249,4 +285,3 @@ class PopulatedLDAPTestCase(TestCase):
         print(
             " --->  test_populate_user_from_entry_affiliation_group"
             " of PopulatedLDAPTestCase : OK !")
-
