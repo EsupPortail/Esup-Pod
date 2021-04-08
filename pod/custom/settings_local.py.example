@@ -919,9 +919,17 @@ USER_CAS_MAPPING_ATTRIBUTES = {
 """
 # Si True, des groupes sont créés automatiquement
 #  à partir des affiliations des individus qui se connectent sur la plateforme
-#  et l'individu qui se connecte est ajouté automatiquement à ses groupes
+#  et l'individu qui se connecte est ajouté automatiquement à ces groupes
 """
 CREATE_GROUP_FROM_AFFILIATION = False
+
+"""
+# Si True, des groupes sont créés automatiquement
+#  à partir des groupes (attribut groups à memberOf) 
+#  des individus qui se connectent sur la plateforme
+#  et l'individu qui se connecte est ajouté automatiquement à ces groupes
+"""
+CREATE_GROUP_FROM_GROUPS = False
 
 """
 # Les personnes ayant pour affiliation les valeurs
