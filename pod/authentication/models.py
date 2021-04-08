@@ -21,7 +21,13 @@ else:
 HIDE_USERNAME = getattr(settings, 'HIDE_USERNAME', False)
 
 AUTH_TYPE = getattr(
-    settings, 'AUTH_TYPE', (('local', _('local')), ('CAS', 'CAS')))
+    settings, 'AUTH_TYPE', (
+        ('local', _('local')),
+        ('CAS', 'CAS'),
+        ('OIDC', "OIDC"),
+        ("Shibboleth", "Shibboleth")
+    )
+)
 AFFILIATION = getattr(
     settings, 'AFFILIATION',
     (

@@ -864,7 +864,12 @@ KIND_CHOICES = (('subtitles', _('subtitles')), ('captions', _('captions')))
 # Type d'authentification possible sur votre instance.
 #  Pour l'instant local ou cas
 """
-AUTH_TYPE = (('local', _('local')), ('CAS', 'CAS'))
+AUTH_TYPE = (
+        ('local', _('local')),
+        ('CAS', 'CAS'),
+        ('OIDC', "OIDC"),
+        ("Shibboleth", "Shibboleth")
+    )
 
 """
 # Activation de l'authentification CAS en plus de l'authentification locale
