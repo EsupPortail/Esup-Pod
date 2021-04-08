@@ -125,6 +125,16 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
     )
 )
 
+CURSUS_CODES = getattr(
+    settings, 'CURSUS_CODES', (
+        ('0', _("None / All")),
+        ('L', _("Bachelor’s Degree")),
+        ('M', _("Master’s Degree")),
+        ('D', _("Doctorate")),
+        ('1', _("Other"))
+    )
+)
+
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 ORGANIZE_BY_THEME = getattr(settings, 'ORGANIZE_BY_THEME', False)
 VIEW_STATS_AUTH = getattr(settings, 'VIEW_STATS_AUTH', False)
@@ -427,6 +437,9 @@ def get_videos_list(request):
         videos_list = TaggedItem.objects.get_union_by_model(
             videos_list,
             request.GET.getlist('tag'))
+    if request.GET.getlist('cursus'):
+        videos_list = videos_list.filter(
+            cursus__in=request.GET.getlist('cursus'))
     return videos_list.distinct()
 
 
@@ -471,8 +484,10 @@ def videos(request):
         "owners": request.GET.getlist('owner'),
         "disciplines": request.GET.getlist('discipline'),
         "tags_slug": request.GET.getlist('tag'),
+        "cursus_selected": request.GET.getlist('cursus'),
         "full_path": full_path,
-        "ownersInstances": ownersInstances
+        "ownersInstances": ownersInstances,
+        "cursus_list": CURSUS_CODES
     })
 
 

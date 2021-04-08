@@ -585,19 +585,6 @@ class VideoForm(forms.ModelForm):
 
 
 class ChannelForm(forms.ModelForm):
-    users = forms.ModelMultipleChoiceField(
-        User.objects.all(),
-        widget=widgets.FilteredSelectMultiple(
-            _("Users"),
-            False,
-            attrs={}),
-        required=False,
-        label=_('Users'))
-    owners = forms.ModelMultipleChoiceField(
-        User.objects.all(),
-        widget=widgets.FilteredSelectMultiple(_("Owners"), False, attrs={}),
-        required=False,
-        label=_('Owners'))
     sites = forms.ModelMultipleChoiceField(
         Site.objects.all(),
         required=False
