@@ -521,8 +521,11 @@ class VideoRenditionAdmin(admin.ModelAdmin):
 
 
 class EncodingLogAdmin(admin.ModelAdmin):
-    list_display = ('video',)
+    def video_id(self, obj):
+        return obj.video.id
+    list_display = ('id', 'video_id', 'video',)
     readonly_fields = ('video', 'log')
+    search_fields = ['id', 'video__id', 'video__title']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
