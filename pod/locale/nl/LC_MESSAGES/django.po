@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-08 14:09+0000\n"
+"POT-Creation-Date: 2021-04-08 15:09+0000\n"
 "PO-Revision-Date: 2021-01-22 12:27+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -4113,7 +4113,7 @@ msgstr ""
 msgid "You can send an audio or video file."
 msgstr ""
 
-#: pod/video/forms.py:91 pod/video/views.py:1684
+#: pod/video/forms.py:91 pod/video/views.py:1686
 #, python-format
 msgid "The following formats are supported: %s"
 msgstr ""
@@ -5639,36 +5639,36 @@ msgstr ""
 msgid "You do not have access rights to this video: %s "
 msgstr ""
 
-#: pod/video/views.py:1626
+#: pod/video/views.py:1628
 #, python-format
 msgid "The following video does not exist: %s"
 msgstr ""
 
-#: pod/video/views.py:1960
+#: pod/video/views.py:1962
 msgid "You do not have rights to delete this comment"
 msgstr ""
 
-#: pod/video/views.py:2051 pod/video/views.py:2117
+#: pod/video/views.py:2053 pod/video/views.py:2119
 msgid "One or many videos already have a category."
 msgstr ""
 
-#: pod/video/views.py:2087 pod/video/views.py:2157
+#: pod/video/views.py:2089 pod/video/views.py:2159
 msgid "Title field is required"
 msgstr ""
 
-#: pod/video/views.py:2092 pod/video/views.py:2162 pod/video/views.py:2204
+#: pod/video/views.py:2094 pod/video/views.py:2164 pod/video/views.py:2206
 msgid "Method Not Allowed"
 msgstr ""
 
-#: pod/video/views.py:2134
+#: pod/video/views.py:2136
 msgid "Category updated successfully."
 msgstr ""
 
-#: pod/video/views.py:2152
+#: pod/video/views.py:2154
 msgid "You do not have rights to edit this category"
 msgstr ""
 
-#: pod/video/views.py:2198
+#: pod/video/views.py:2200
 msgid "You do not have rights to delete this category"
 msgstr ""
 
