@@ -182,7 +182,13 @@ class GroupAdmin(admin.ModelAdmin):
 
 
 class AccessGroupAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ['id', 'code_name', 'display_name']
+    list_display = (
+        'id',
+        'code_name',
+        'display_name',
+    )
+
 
 
 # Re-register UserAdmin
