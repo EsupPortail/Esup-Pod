@@ -864,7 +864,12 @@ KIND_CHOICES = (('subtitles', _('subtitles')), ('captions', _('captions')))
 # Type d'authentification possible sur votre instance.
 #  Pour l'instant local ou cas
 """
-AUTH_TYPE = (('local', _('local')), ('CAS', 'CAS'))
+AUTH_TYPE = (
+        ('local', _('local')),
+        ('CAS', 'CAS'),
+        ('OIDC', "OIDC"),
+        ("Shibboleth", "Shibboleth")
+    )
 
 """
 # Activation de l'authentification CAS en plus de l'authentification locale
@@ -914,9 +919,17 @@ USER_CAS_MAPPING_ATTRIBUTES = {
 """
 # Si True, des groupes sont créés automatiquement
 #  à partir des affiliations des individus qui se connectent sur la plateforme
-#  et l'individu qui se connecte est ajouté automatiquement à ses groupes
+#  et l'individu qui se connecte est ajouté automatiquement à ces groupes
 """
 CREATE_GROUP_FROM_AFFILIATION = False
+
+"""
+# Si True, des groupes sont créés automatiquement
+#  à partir des groupes (attribut groups à memberOf) 
+#  des individus qui se connectent sur la plateforme
+#  et l'individu qui se connecte est ajouté automatiquement à ces groupes
+"""
+CREATE_GROUP_FROM_GROUPS = False
 
 """
 # Les personnes ayant pour affiliation les valeurs
