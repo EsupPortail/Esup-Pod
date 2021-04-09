@@ -117,6 +117,7 @@ USE_VIDEO_RECORD = getattr(
 COOKIE_LEARN_MORE = getattr(
     django_settings, 'COOKIE_LEARN_MORE', "")
 
+
 def context_settings(request):
     maintenance_mode = False
     maintenance_text_short = ""
