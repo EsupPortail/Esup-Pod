@@ -1280,3 +1280,10 @@ DARKMODE_ENABLED = False
 # Activation du mode dyslexie
 """
 DYSLEXIAMODE_ENABLED = False
+
+"""
+# Ce paramètre permet d'afficher un lien "En savoir plus" 
+# sur la boite de dialogue d'information sur l'usage des cookies dans Pod.
+# On peut préciser un lien vers les mentions légales ou page dpo
+"""
+COOKIE_LEARN_MORE = ""

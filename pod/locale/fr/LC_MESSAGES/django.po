@@ -5,10 +5,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-08 15:09+0000\n"
+"POT-Creation-Date: 2021-04-09 07:57+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: obado <bado@unice.fr>\n"
-"Language-Team: \n"
+"Last-Translator: Nicolas CAN <nicolas.can@univ-lille.fr>\n"
+"Language-Team: Pod Team pod@esup-portail.org\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -197,7 +197,7 @@ msgid "Please provide a valid value for this field"
 msgstr "Veuillez renseigner une valeur valide pour ce champ"
 
 #: pod/authentication/templates/userpicture/userpicture.html:56
-#: pod/bbb/templates/bbb/list_meeting.html:68 pod/main/templates/base.html:117
+#: pod/bbb/templates/bbb/list_meeting.html:68 pod/main/templates/base.html:118
 #: pod/main/templates/navbar_collapse.html:43
 #: pod/main/templates/navbar_collapse.html:66
 #: pod/main/templates/navbar_collapse.html:100
@@ -3232,6 +3232,23 @@ msgstr "Accueil"
 #: pod/main/templates/base.html:80
 msgid "Toggle side Menu"
 msgstr "Afficher/masquer le menu latéral"
+
+#: pod/main/templates/base.html:133
+msgid ""
+"We use third party cookies to personalize content, manage session and "
+"analyze site traffic."
+msgstr ""
+"Nous utilisons des cookies pour personnaliser l’affichage (barre de menu de "
+"droite, mode sombre ou dyslexie etc.), gérer la session (authentification) "
+"et analyser le trafic du site (pour certaines instances)."
+
+#: pod/main/templates/base.html:135
+msgid "Learn more"
+msgstr "En savoir plus"
+
+#: pod/main/templates/base.html:137
+msgid "I understand"
+msgstr "J’ai compris"
 
 #: pod/main/templates/contact_us.html:7 pod/main/templates/contact_us.html:10
 #: pod/main/templates/contact_us.html:13 pod/main/templates/maintenance.html:15

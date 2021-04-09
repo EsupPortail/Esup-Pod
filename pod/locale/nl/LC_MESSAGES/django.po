@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-08 15:09+0000\n"
+"POT-Creation-Date: 2021-04-09 07:57+0000\n"
 "PO-Revision-Date: 2021-01-22 12:27+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -195,7 +195,7 @@ msgid "Please provide a valid value for this field"
 msgstr ""
 
 #: pod/authentication/templates/userpicture/userpicture.html:56
-#: pod/bbb/templates/bbb/list_meeting.html:68 pod/main/templates/base.html:117
+#: pod/bbb/templates/bbb/list_meeting.html:68 pod/main/templates/base.html:118
 #: pod/main/templates/navbar_collapse.html:43
 #: pod/main/templates/navbar_collapse.html:66
 #: pod/main/templates/navbar_collapse.html:100
@@ -3102,6 +3102,20 @@ msgstr ""
 
 #: pod/main/templates/base.html:80
 msgid "Toggle side Menu"
+msgstr ""
+
+#: pod/main/templates/base.html:133
+msgid ""
+"We use third party cookies to personalize content, manage session and "
+"analyze site traffic."
+msgstr ""
+
+#: pod/main/templates/base.html:135
+msgid "Learn more"
+msgstr ""
+
+#: pod/main/templates/base.html:137
+msgid "I understand"
 msgstr ""
 
 #: pod/main/templates/contact_us.html:7 pod/main/templates/contact_us.html:10
