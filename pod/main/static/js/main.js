@@ -177,7 +177,7 @@ $(document).ready(function () {
     $('#cookieModal').modal('show');
   }
   $(document).on("click", "#okcookie", function() {
-    var expiryDate = new Date();
+    let expiryDate = new Date();
     expiryDate.setFullYear(expiryDate.getFullYear() + 1);
     document.cookie = 'podCookieConsent=ok; path=/; expires=' + expiryDate.toGMTString();
     $('#cookieModal').modal('hide');

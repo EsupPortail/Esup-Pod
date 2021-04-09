@@ -1282,7 +1282,7 @@ DARKMODE_ENABLED = False
 DYSLEXIAMODE_ENABLED = False
 
 """
-# Lien pour en avoir plus sur dialog de consentement du cookie
+# Lien pour en savoir plus sur dialog de consentement du cookie
 # on peut préciser un lien vers les mentions légales ou page dpo
 """
 COOKIE_LEARN_MORE = ""
