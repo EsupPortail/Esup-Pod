@@ -1282,7 +1282,8 @@ DARKMODE_ENABLED = False
 DYSLEXIAMODE_ENABLED = False
 
 """
-# Lien pour en savoir plus sur dialog de consentement du cookie
-# on peut préciser un lien vers les mentions légales ou page dpo
+# Ce paramètre permet d'afficher un lien "En savoir plus" 
+# sur la boite de dialogue d'information sur l'usage des cookies dans Pod.
+# On peut préciser un lien vers les mentions légales ou page dpo
 """
 COOKIE_LEARN_MORE = ""
