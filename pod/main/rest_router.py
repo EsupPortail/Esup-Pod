@@ -82,10 +82,10 @@ urlpatterns = [
         auth_views.accessgroups_remove_users_by_name,
         name='accessgroups_set_users_by_name'),
     url(r'accessgroups_set_user_accessgroup /$',
-        auth_views.accessgroups_set_user_accessgroup ,
+        auth_views.accessgroups_set_user_accessgroup,
         name='accessgroups_set_user_accessgroup '),
     url(r'accessgroups_remove_user_accessgroup /$',
-        auth_views.accessgroups_remove_user_accessgroup ,
+        auth_views.accessgroups_remove_user_accessgroup,
         name='accessgroups_remove_user_accessgroup '),
 ]
 
