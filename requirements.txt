@@ -9,7 +9,7 @@ django-cas-client==1.5.2
 ldap3==2.5
 django-progressbarupload==0.1.7
 django-simple-captcha==0.5.12
-urllib3==1.26.3
+urllib3==1.26.4
 elasticsearch==6.3.1
 djangorestframework==3.11.2
 django-filter==1.1.0
@@ -30,3 +30,4 @@ chardet==4.0.0
 django-cookies-samesite==0.8.0
 django-static-compress>=1.2.1
 redis==3.5.3
+mozilla_django_oidc==1.2.4

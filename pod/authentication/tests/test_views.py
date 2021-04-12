@@ -73,9 +73,10 @@ class authenticationViewsTestCase(TestCase):
         # Form is valid
         response = self.client.post('/accounts/userpicture/',
                                     {'userpicture': ''})
-        messages = list(response.wsgi_request._messages)
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(str(messages[0]), 'Your picture has been saved.')
+        # le message a été retiré dans le code
+        # messages = list(response.wsgi_request._messages)
+        # self.assertEqual(len(messages), 1)
+        # self.assertEqual(str(messages[0]), 'Your picture has been saved.')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'userpicture/userpicture.html')
         # Form is not valid

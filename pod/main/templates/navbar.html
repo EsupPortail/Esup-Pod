@@ -81,35 +81,38 @@
           <h6 class="dropdown-header">{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</h6>
           <div class="dropdown-divider"></div>
           {% if request.user.is_superuser or user.owner.is_manager %}
-            <a class="dropdown-item" href="{% url 'admin:index' %}"><i data-feather="cpu"></i>&nbsp;Administration</a>
+            <a class="dropdown-item" href="{% url 'admin:index' %}"><i data-feather="cpu" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>Administration</a>
           {% endif %}
           {% if request.user.is_staff or request.user.is_superuser %}
             <button class="dropdown-item get_form_userpicture" data-url="{% url "userpicture" %}">
-              <i data-feather="image"></i>&nbsp;{% if request.user.owner.userpicture  %}{% trans 'Change your picture' %}{% else %}{% trans 'Add your picture' %}{% endif %}
+              <i data-feather="image" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% if request.user.owner.userpicture  %}{% trans 'Change your picture' %}{% else %}{% trans 'Add your picture' %}{% endif %}
             </button>
           {% endif %}
-          <a class="dropdown-item" href="{% url 'my_videos' %}" title="{% trans 'My videos' %}"><i data-feather="film"></i>&nbsp;{% trans 'My videos' %}</a>
-          {% if request.user.owners_channels.all %}
-            <a class="dropdown-item" href="{% url 'my_channels' %}" title="{% trans 'My channels' %}"><i data-feather="youtube"></i>&nbsp;{% trans 'My channels' %}</a>
+          <a class="dropdown-item" href="{% url 'my_videos' %}" title="{% trans 'My videos' %}"><i data-feather="film" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My videos' %}</a>
+          {% if USE_VIDEO_RECORD %}
+          <a class="dropdown-item" href="{% url 'video_record' %}" title="{% trans 'Video Record' %}"><i data-feather="video" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans "Video Record" %}</a>
           {% endif %}
-          <a class="dropdown-item" href="{% url 'my_playlists' %}" title="{% trans 'My playlists' %}"><i data-feather="airplay"></i>&nbsp;{% trans 'My playlists' %}</a>
+          {% if request.user.owners_channels.all %}
+            <a class="dropdown-item" href="{% url 'my_channels' %}" title="{% trans 'My channels' %}"><i data-feather="youtube" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My channels' %}</a>
+          {% endif %}
+          <a class="dropdown-item" href="{% url 'my_playlists' %}" title="{% trans 'My playlists' %}"><i data-feather="airplay" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My playlists' %}</a>
           {% if request.user.is_staff and USE_PODFILE %}
-            <a class="dropdown-item" href="{% url 'podfile:home' %}" title="{% trans 'My files' %}"><i data-feather="folder"></i>&nbsp;{% trans 'My files' %}</a>
+            <a class="dropdown-item" href="{% url 'podfile:home' %}" title="{% trans 'My files' %}"><i data-feather="folder" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My files' %}</a>
           {% endif %}
           {% if request.user.is_staff and ALLOW_MANUAL_RECORDING_CLAIMING %}
-            <a class="dropdown-item" href="{% url 'claim_record' %}" title="{% trans 'Claim a record' %}"><i data-feather="share"></i>&nbsp;{% trans 'Claim a record' %}</a>
+            <a class="dropdown-item" href="{% url 'claim_record' %}" title="{% trans 'Claim a record' %}"><i data-feather="share" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'Claim a record' %}</a>
           {% endif %}
           {% if request.user.is_staff and USE_BBB %}
             {% if USE_BBB_LIVE %}
-              <a class="dropdown-item" href="{% url 'bbb:list_meeting' %}"><i data-feather="square"></i>&nbsp;{% trans 'My BigBlueButton records and lives' %}</a>
+              <a class="dropdown-item" href="{% url 'bbb:list_meeting' %}"><i data-feather="square" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My BigBlueButton records and lives' %}</a>
             {% else %}
-              <a class="dropdown-item" href="{% url 'bbb:list_meeting' %}"><i data-feather="square"></i>&nbsp;{% trans 'My BigBlueButton records' %}</a>
+              <a class="dropdown-item" href="{% url 'bbb:list_meeting' %}"><i data-feather="square" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My BigBlueButton records' %}</a>
             {% endif %}
           {% endif %}
           <!-- <a class="dropdown-item" href="#">Gestion de mon compte</a> -->
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{% url 'authentication_logout' %}" title="{% trans 'Log out' %}">
-            <i data-feather="log-out"></i>&nbsp;{% trans 'Log out' %}</a>
+            <i data-feather="log-out" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'Log out' %}</a>
         </div>
       </li>
       {% else %}

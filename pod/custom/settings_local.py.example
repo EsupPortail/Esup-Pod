@@ -315,6 +315,11 @@ USE_ESTABLISHMENT_FIELD = False
 USE_STATS_VIEW = False
 
 """
+# Permet d'activer la possibilité d'enregistrer son ecran et son micro
+"""
+USE_VIDEO_RECORD = False
+
+"""
 # affichage de la statistique de vue des videos si utilisateur authentifié
 """
 VIEW_STATS_AUTH = False
@@ -859,7 +864,12 @@ KIND_CHOICES = (('subtitles', _('subtitles')), ('captions', _('captions')))
 # Type d'authentification possible sur votre instance.
 #  Pour l'instant local ou cas
 """
-AUTH_TYPE = (('local', _('local')), ('CAS', 'CAS'))
+AUTH_TYPE = (
+        ('local', _('local')),
+        ('CAS', 'CAS'),
+        ('OIDC', "OIDC"),
+        ("Shibboleth", "Shibboleth")
+    )
 
 """
 # Activation de l'authentification CAS en plus de l'authentification locale
@@ -909,9 +919,17 @@ USER_CAS_MAPPING_ATTRIBUTES = {
 """
 # Si True, des groupes sont créés automatiquement
 #  à partir des affiliations des individus qui se connectent sur la plateforme
-#  et l'individu qui se connecte est ajouté automatiquement à ses groupes
+#  et l'individu qui se connecte est ajouté automatiquement à ces groupes
 """
 CREATE_GROUP_FROM_AFFILIATION = False
+
+"""
+# Si True, des groupes sont créés automatiquement
+#  à partir des groupes (attribut groups à memberOf) 
+#  des individus qui se connectent sur la plateforme
+#  et l'individu qui se connecte est ajouté automatiquement à ces groupes
+"""
+CREATE_GROUP_FROM_GROUPS = False
 
 """
 # Les personnes ayant pour affiliation les valeurs
@@ -1020,6 +1038,40 @@ SHIB_LOGOUT_URL = ""
 #  (permet de prévenir des doubles créations de comptes dans certain cas).
 """
 CAS_FORCE_LOWERCASE_USERNAME = False
+
+"""
+# Utiliser l'authentification OpenID Connect
+"""
+USE_OIDC = False
+
+"""
+# Nom du Service Provider OIDC
+"""
+OIDC_NAME = ""
+
+"""
+# CLIENT_ID et CLIENT_SECRET de OIDC sont plutôt à positionner
+# à travers des variables d'environnement
+"""
+OIDC_RP_CLIENT_ID = os.environ('OIDC_CLIENT_ID')
+OIDC_RP_CLIENT_SECRET = os.environ('OIDC_CLIENT_SECRET')
+
+"""
+# Différents paramètres pour OIDC
+# tant que mozilla_django_oidc n'accepte le mécanisme de discovery
+# ref: https://github.com/mozilla/mozilla-django-oidc/pull/309
+"""
+OIDC_OP_AUTHORIZATION_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/authorize"
+OIDC_OP_TOKEN_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/token"
+OIDC_OP_USER_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/userinfo"
+OIDC_RP_SIGN_ALGO = 'RS256'
+OIDC_OP_JWKS_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/discovery/keys"
+
+"""
+# Noms des Claim permettant de récupérer les attributs nom, prénom, email
+"""
+OIDC_CLAIM_FAMILY_NAME = "family_name"
+OIDC_CLAIM_GIVEN_NAME = "given_name"
 
 """
 # Permettre l'usage du oembed, partage dans Moodle, Facebook, Twitter etc.
@@ -1228,3 +1280,10 @@ DARKMODE_ENABLED = False
 # Activation du mode dyslexie
 """
 DYSLEXIAMODE_ENABLED = False
+
+"""
+# Ce paramètre permet d'afficher un lien "En savoir plus" 
+# sur la boite de dialogue d'information sur l'usage des cookies dans Pod.
+# On peut préciser un lien vers les mentions légales ou page dpo
+"""
+COOKIE_LEARN_MORE = ""

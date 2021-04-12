@@ -254,21 +254,14 @@ def populate_user_from_entry(user, owner, entry):
             accessgroup.save()
             # group.groupsite.sites.add(Site.objects.get_current())
             user.owner.accessgroup_set.add(accessgroup)
-    print("create_accessgroups")
     create_accessgroups(user, entry, "ldap")
     user.save()
+    owner.save()
 
 
 def populate_user_from_tree(user, owner, tree):
     if DEBUG:
-        import xml.etree.ElementTree as ET
-        import xml.dom.minidom
-        import os
-        xml_string = xml.dom.minidom.parseString(
-            ET.tostring(tree)).toprettyxml()
-        xml_string = os.linesep.join([s for s in xml_string.splitlines(
-        ) if s.strip()])  # remove the weird newline issue
-        print(xml_string)
+        print_xml_tree(tree)
     # Mail
     mail_element = tree.find(
         './/{http://www.yale.edu/tp/cas}%s' % (
@@ -316,19 +309,16 @@ def populate_user_from_tree(user, owner, tree):
             accessgroup.save()
             user.owner.accessgroup_set.add(accessgroup)
     create_accessgroups(user, tree, "cas")
-
     user.save()
     owner.save()
 
 
-"""
-if you want to print tree :
+def print_xml_tree(tree):
     import xml.etree.ElementTree as ET
     import xml.dom.minidom
     import os
     xml_string = xml.dom.minidom.parseString(
         ET.tostring(tree)).toprettyxml()
     xml_string = os.linesep.join([s for s in xml_string.splitlines(
-    ) if s.strip()]) # remove the weird newline issue
+    ) if s.strip()])  # remove the weird newline issue
     print(xml_string)
-"""

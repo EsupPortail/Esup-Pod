@@ -168,7 +168,21 @@ $('#ownerboxnavbar').keyup(function() {
     $("#accordion").html("");
   }
 });
-
+/** COOKIE DIALOG **/
+$(document).ready(function () {
+  let consent = Cookies.get('podCookieConsent');
+  if (consent != null && consent=="ok") {
+    $('#cookieModal').modal('hide');
+  } else {
+    $('#cookieModal').modal('show');
+  }
+  $(document).on("click", "#okcookie", function() {
+    let expiryDate = new Date();
+    expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+    document.cookie = 'podCookieConsent=ok; path=/; expires=' + expiryDate.toGMTString();
+    $('#cookieModal').modal('hide');
+  });
+});
 /** MENU ASIDE **/
 $(document).ready(function () {
   //.collapseAside is on the toggle button
