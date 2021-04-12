@@ -125,7 +125,7 @@ def accessgroups_remove_users_by_name(request):
 
 
 @api_view(['POST'])
-def accessgroups_set_groups_by_username(request):
+def accessgroups_set_user_accessgroup (request):
     if ("username" in request.data) and ("groups" in request.data):
         username = request.data["username"]
         groups = request.data["groups"]
@@ -145,7 +145,7 @@ def accessgroups_set_groups_by_username(request):
 
 
 @api_view(['POST'])
-def accessgroups_remove_groups_by_username(request):
+def accessgroups_remove_user_accessgroup(request):
     if ("username" in request.data) and ("groups" in request.data):
         username = request.data["username"]
         groups = request.data["groups"]
