@@ -84,7 +84,7 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['POST'])
-def accesgroups_set_users_by_name(request):
+def accessgroups_set_users_by_name(request):
     if ("users" in request.data) and ("code_name" in request.data):
         code_name = request.data["code_name"]
         users = request.data["users"]
@@ -104,7 +104,28 @@ def accesgroups_set_users_by_name(request):
 
 
 @api_view(['POST'])
-def accesgroups_set_groups_by_username(request):
+def accessgroups_remove_users_by_name(request):
+    if ("users" in request.data) and ("code_name" in request.data):
+        code_name = request.data["code_name"]
+        users = request.data["users"]
+        accessgroup = get_object_or_404(AccessGroup, code_name=code_name)
+        for user in users:
+            try:
+                owner = Owner.objects.get(user__username=user)
+                if owner in accessgroup.users.all():
+                    accessgroup.users.remove(owner)
+            except ObjectDoesNotExist:
+                pass
+        return Response(
+            AccessGroupSerializer(
+                instance=accessgroup, context={'request': request}).data
+        )
+    else:
+        return HttpResponse(status=500)
+
+
+@api_view(['POST'])
+def accessgroups_set_user_accessgroup(request):
     if ("username" in request.data) and ("groups" in request.data):
         username = request.data["username"]
         groups = request.data["groups"]
@@ -113,6 +134,27 @@ def accesgroups_set_groups_by_username(request):
             try:
                 accessgroup = AccessGroup.objects.get(code_name=group)
                 owner.accessgroup_set.add(accessgroup)
+            except ObjectDoesNotExist:
+                pass
+        return Response(
+            OwnerWithGroupsSerializer(
+                instance=owner, context={'request': request}).data
+        )
+    else:
+        return HttpResponse(status=500)
+
+
+@api_view(['POST'])
+def accessgroups_remove_user_accessgroup(request):
+    if ("username" in request.data) and ("groups" in request.data):
+        username = request.data["username"]
+        groups = request.data["groups"]
+        owner = get_object_or_404(Owner, user__username=username)
+        for group in groups:
+            try:
+                accessgroup = AccessGroup.objects.get(code_name=group)
+                if accessgroup in owner.accessgroup_set.all():
+                    owner.accessgroup_set.remove(accessgroup)
             except ObjectDoesNotExist:
                 pass
         return Response(
