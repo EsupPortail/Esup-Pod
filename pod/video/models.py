@@ -278,8 +278,7 @@ class Channel(models.Model):
         AccessGroup, blank=True, verbose_name=_('Groups'), ajax=True,
         search_field=lambda q: Q(code_name__icontains=q) | Q(
             display_name__icontains=q),
-        help_text=_('Select one or more groups who can access to this channel,'
-                    ' if no group selected channel will not be protected'))
+        help_text=_('Select one or more groups who can upload video this channel'))
     sites = models.ManyToManyField(Site)
 
     class Meta:
