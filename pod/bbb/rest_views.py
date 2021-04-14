@@ -1,6 +1,5 @@
 from rest_framework import serializers, viewsets
-from .models import Meeting
-from .models import User as BBBUser
+from .models import Meeting, Attendee, Livestream
 
 
 class MeetingModelSerializer(
@@ -8,7 +7,10 @@ class MeetingModelSerializer(
 
     class Meta:
         model = Meeting
-        fields = ('id',)
+        fields = ('id', 'meeting_id', 'internal_meeting_id', 'meeting_name',
+                  'encoding_step', 'recorded', 'recording_available',
+                  'recording_url', 'thumbnail_url', 'encoded_by',
+                  'session_date', 'last_date_in_progress')
 
 
 class MeetingModelViewSet(viewsets.ModelViewSet):
@@ -16,14 +18,32 @@ class MeetingModelViewSet(viewsets.ModelViewSet):
     serializer_class = MeetingModelSerializer
 
 
-class BBBUserModelSerializer(
+class AttendeeModelSerializer(
         serializers.HyperlinkedModelSerializer):
 
     class Meta:
-        model = BBBUser
-        fields = ('id',)
+        model = Attendee
+        fields = ('id', 'full_name', 'role', 'username', 'meeting', 'user')
 
 
-class BBBUserModelViewSet(viewsets.ModelViewSet):
-    queryset = BBBUser.objects.all()
-    serializer_class = BBBUserModelSerializer
+class AttendeeModelViewSet(viewsets.ModelViewSet):
+    queryset = Attendee.objects.all()
+    serializer_class = AttendeeModelSerializer
+
+
+class LivestreamModelSerializer(
+        serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = Livestream
+        fields = ('id', 'meeting', 'start_date', 'end_date',
+                  'show_chat', 'download_meeting', 'enable_chat',
+                  'is_restricted', 'broadcaster_id', 'redis_hostname',
+                  'redis_port', 'redis_channel', 'status', 'server', 'user')
+        filter_fields = ('status', 'server')
+
+
+class LivestreamModelViewSet(viewsets.ModelViewSet):
+    queryset = Livestream.objects.all()
+    serializer_class = LivestreamModelSerializer
+    filter_fields = ('status', 'server')

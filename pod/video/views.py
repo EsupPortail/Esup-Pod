@@ -125,6 +125,16 @@ VIDEO_ALLOWED_EXTENSIONS = getattr(
     )
 )
 
+CURSUS_CODES = getattr(
+    settings, 'CURSUS_CODES', (
+        ('0', _("None / All")),
+        ('L', _("Bachelor’s Degree")),
+        ('M', _("Master’s Degree")),
+        ('D', _("Doctorate")),
+        ('1', _("Other"))
+    )
+)
+
 TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
 ORGANIZE_BY_THEME = getattr(settings, 'ORGANIZE_BY_THEME', False)
 VIEW_STATS_AUTH = getattr(settings, 'VIEW_STATS_AUTH', False)
@@ -138,7 +148,8 @@ USE_CATEGORY = getattr(settings, 'USER_VIDEO_CATEGORY', False)
 
 def regroup_videos_by_theme(videos, page, channel, theme=None):
     """
-    " Regroup videos by theme
+    " Regroup videos by theme.
+
     " @return [ (theme, set()), (theme, set()) ]
     """
     if not theme:
@@ -426,6 +437,9 @@ def get_videos_list(request):
         videos_list = TaggedItem.objects.get_union_by_model(
             videos_list,
             request.GET.getlist('tag'))
+    if request.GET.getlist('cursus'):
+        videos_list = videos_list.filter(
+            cursus__in=request.GET.getlist('cursus'))
     return videos_list.distinct()
 
 
@@ -470,16 +484,19 @@ def videos(request):
         "owners": request.GET.getlist('owner'),
         "disciplines": request.GET.getlist('discipline'),
         "tags_slug": request.GET.getlist('tag'),
+        "cursus_selected": request.GET.getlist('cursus'),
         "full_path": full_path,
-        "ownersInstances": ownersInstances
+        "ownersInstances": ownersInstances,
+        "cursus_list": CURSUS_CODES
     })
 
 
 def is_in_video_groups(user, video):
-    return user.groups.filter(
-        name__in=[
+    return user.owner.accessgroup_set.filter(
+        code_name__in=[
             name[0]
-            for name in video.restrict_access_to_groups.values_list('name')
+            for name in video.restrict_access_to_groups.values_list(
+                'code_name')
         ]
     ).exists()
 
@@ -518,8 +535,9 @@ def get_video_access(request, video, slug_private):
 
         show_page = (
             access_granted_for_private
-            or
-            (is_draft and access_granted_for_draft)
+            or (
+                is_draft
+                and access_granted_for_draft)
             or (
                 is_restricted
                 and access_granted_for_restricted)
@@ -717,27 +735,49 @@ def video_edit(request, slug=None):
             current_lang=request.LANGUAGE_CODE,
 
         )
-        if form.is_valid():
-            video = save_video_form(request, form)
-            messages.add_message(
-                request, messages.INFO,
-                _('The changes have been saved.')
-            )
-            if request.POST.get('_saveandsee'):
-                return redirect(
-                    reverse('video', args=(video.slug,))
-                )
-            else:
-                return redirect(
-                    reverse('video_edit', args=(video.slug,))
-                )
-        else:
-            messages.add_message(
-                request, messages.ERROR,
-                _(u'One or more errors have been found in the form.'))
+        return check_form(request, form)
+
     return render(request, 'videos/video_edit.html', {
         'form': form}
     )
+
+
+def check_form(request, form):
+    if form.is_valid():
+        video = save_video_form(request, form)
+        messages.add_message(
+            request, messages.INFO,
+            _('The changes have been saved.')
+        )
+        if request.is_ajax():
+            return JsonResponse({
+                "id": video.id,
+                "url_edit": reverse('video_edit', args=(video.slug,)),
+                })
+
+        if request.POST.get('_saveandsee'):
+            return redirect(
+                reverse('video', args=(video.slug,))
+            )
+        else:
+            return redirect(
+                reverse('video_edit', args=(video.slug,))
+            )
+    else:
+        if request.is_ajax():
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error":
+                    _(u'One or more errors have been found in the form.')
+                }
+            )
+        messages.add_message(
+            request, messages.ERROR,
+            _(u'One or more errors have been found in the form.'))
+        return render(request, 'videos/video_edit.html', {
+            'form': form}
+        )
 
 
 def save_video_form(request, form):
@@ -1423,8 +1463,9 @@ def video_oembed(request):
             data['provider_url'], reverse('videos'), video.owner.username)
         data['html'] = (
             "<iframe src=\"%(provider)s%(video_url)s%(slug_private)s"
-            + "?is_iframe=true\" width=\"640\" height=\"360\" style=\""
-            + "padding: 0; margin: 0; border:0\" allowfullscreen ></iframe>"
+            + "?is_iframe=true\" width=\"640\" height=\"360\" "
+            + "style=\"padding: 0; margin: 0; border:0\" "
+            + "allowfullscreen loading='lazy'></iframe>"
         ) % {
             'provider': data['provider_url'],
             'video_url': reverse('video', kwargs={'slug': video.slug}),
@@ -1566,6 +1607,8 @@ def manage_access_rights_stats_video(request, video, page_title):
 @user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
 def stats_view(request, slug=None, slug_t=None):
     """
+    View for statistics.
+
     " slug reference video's slug or channel's slug
     " t_slug reference theme's slug
     " from defined the source of the request such as
@@ -1574,19 +1617,23 @@ def stats_view(request, slug=None, slug_t=None):
     target = request.GET.get('from', "videos")
     videos, title = get_videos(slug, target, slug_t)
     error_message = (
-        "The following %s does not exist or contain any videos: %s")
+        "The following %(target)s does not "
+        "exist or contain any videos: %(slug)s"
+    )
     if request.method == "GET" and target == "video" and videos:
         return manage_access_rights_stats_video(request, videos[0], title)
 
     elif request.method == "GET" and target == "video" and not videos:
         return HttpResponseNotFound(
-            _("The following video does not exist : %s") % slug)
+            _("The following video does not exist: %s") % slug)
 
     if request.method == "GET" and (
             not videos and target in ("channel", "theme", "videos")):
         slug = slug if not slug_t else slug_t
         target = "Pod" if target == "videos" else target
-        return HttpResponseNotFound(_(error_message % (target, slug)))
+        return HttpResponseNotFound(
+            _(error_message) % {"target": target, "slug": slug}
+        )
 
     if (request.method == "POST" and target == "video" and (
             request.POST.get('password') and
@@ -1747,7 +1794,8 @@ def add_comment(request, video_slug, comment_id=None):
 
 def get_parent_comments(request, video):
     """
-    return only comments without parent
+    Return only comments without parent.
+
     (direct comments to video) which contains
     number of votes and children
     """
@@ -1911,7 +1959,7 @@ def delete_comment(request, video_slug, comment_id):
 
         response['deleted'] = False
         response['message'] = _(
-                'You do not have rights to delete this comment')
+            'You do not have rights to delete this comment')
         return HttpResponse(
             json.dumps(response, cls=DjangoJSONEncoder),
             content_type="application/json")
@@ -1952,8 +2000,8 @@ def get_categories(request, c_slug=None):
                 cat.video.remove(v)
 
         return HttpResponse(
-                json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json")
+            json.dumps(response, cls=DjangoJSONEncoder),
+            content_type="application/json")
 
     else:  # get all categories of connected user
 
@@ -2002,7 +2050,7 @@ def add_category(request):
 
         if v_already_in_user_cat:
             response['message'] = _(
-                    "One or many videos already have a category.")
+                "One or many videos already have a category.")
 
             return HttpResponseBadRequest(
                 json.dumps(response, cls=DjangoJSONEncoder),
@@ -2068,7 +2116,7 @@ def edit_category(request, c_slug):
 
         if v_already_in_user_cat:
             response['message'] = _(
-                    "One or many videos already have a category.")
+                "One or many videos already have a category.")
 
             return HttpResponseBadRequest(
                 json.dumps(response, cls=DjangoJSONEncoder),
@@ -2103,7 +2151,7 @@ def edit_category(request, c_slug):
                     content_type="application/json")
 
             response['message'] = _(
-                        'You do not have rights to edit this category')
+                'You do not have rights to edit this category')
             return HttpResponseForbidden(
                 json.dumps(response, cls=DjangoJSONEncoder),
                 content_type="application/json")
@@ -2115,8 +2163,8 @@ def edit_category(request, c_slug):
 
     response['message'] = _("Method Not Allowed")
     return HttpResponseNotAllowed(
-                json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json")
+        json.dumps(response, cls=DjangoJSONEncoder),
+        content_type="application/json")
 
 
 @login_required(redirect_field_name='referrer')
@@ -2149,11 +2197,11 @@ def delete_category(request, c_id):
                 content_type="application/json")
 
         response['message'] = _(
-                'You do not have rights to delete this category')
+            'You do not have rights to delete this category')
 
         return HttpResponseForbidden(
-                json.dumps(response, cls=DjangoJSONEncoder),
-                content_type="application/json")
+            json.dumps(response, cls=DjangoJSONEncoder),
+            content_type="application/json")
 
     return HttpResponseNotAllowed(_("Method Not Allowed"))
 
@@ -2186,6 +2234,7 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
         pass
 
     def on_completion(self, uploaded_file, request):
+        """Triggered when a chunked upload is complete."""
         edit_slug = request.POST.get("slug")
         transcript = request.POST.get("transcript")
         if edit_slug == "":
@@ -2211,9 +2260,15 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
                             (chunked_upload.filename, chunked_upload.offset))}
 
 
+@csrf_protect
+@login_required(redirect_field_name='referrer')
+def video_record(request):
+    return render(request, 'videos/video_record.html', {})
+
+
 """
 # check access to video
-# change tempalte to fix height and breadcrumbs
+# change template to fix height and breadcrumbs
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_collaborate(request, slug):

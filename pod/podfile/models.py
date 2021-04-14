@@ -6,7 +6,6 @@ from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from django.contrib.auth.models import Group
 from select2 import fields as select2_fields
 from sorl.thumbnail import delete
 from itertools import chain
@@ -29,8 +28,8 @@ class UserFolder(models.Model):
     #    'self', blank=True, null=True, related_name='children')
     owner = select2_fields.ForeignKey(User, verbose_name=_('Owner'))
     created_at = models.DateTimeField(auto_now_add=True)
-    groups = select2_fields.ManyToManyField(
-        Group, blank=True, verbose_name=_('Groups'),
+    access_groups = select2_fields.ManyToManyField(
+        'authentication.AccessGroup', blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who'
                     ' can access in read only to this folder'))
     users = select2_fields.ManyToManyField(

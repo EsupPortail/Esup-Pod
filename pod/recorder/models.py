@@ -319,17 +319,16 @@ class RecordingFileTreatment(models.Model):
                                      'Recorder that made this recording.'))
     date_added = models.DateTimeField(_('Date added'), default=timezone.now,
                                       editable=True)
-    require_manual_claim = models.BooleanField(_('Require manual claim ?'),
+    require_manual_claim = models.BooleanField(_('Require manual claim?'),
                                                default=False,
                                                help_text=_(
                                                    'Has this recording file '
                                                    'require a manual claim '
-                                                   'by a user ?'))
-    email_sent = models.BooleanField(_('Email sent ?'), default=False,
+                                                   'by a user?'))
+    email_sent = models.BooleanField(_('Email sent?'), default=False,
                                      help_text=_(
                                          'Has an email been sent to the '
-                                         'manager of the concerned recorder '
-                                         '?'))
+                                         'manager of the concerned recorder?'))
     date_email_sent = models.DateTimeField(_('Date email sent'), blank=True,
                                            null=True, editable=False)
     type = models.CharField(max_length=50, choices=RECORDER_TYPE,

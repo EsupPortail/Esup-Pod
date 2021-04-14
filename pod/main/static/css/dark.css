@@ -1,0 +1,264 @@
+/** Dark mode for Esup Pod **/
+
+[data-theme="dark"] {
+
+  /* CUSTOM COLORS */
+  --color-shark: #212529;
+  --bg-color: #303238;
+  --background-color: #1e1e2c;
+  --font-color: #f8f9fa;
+
+  /* BOOTSTRAP COLORS */
+  --dark: #202025;
+  --light: var(--dark);
+  --gray-dark: var(--dark);
+  --color-formfields: #454c52;
+  --color-silver-chalice: #000;
+  --color-alto: var(--bg-color);
+  --color-black: #FFF;
+  --color-black-alpha: #FFFA;
+
+  /* Video Comment variable */
+  --primary-background-color: var(--bg-color) !important;
+  --third-background-color: var(--bg-color) !important;
+  --content-primary-color: var(--font-color) !important;
+}
+
+[data-theme="dark"] .form-control::placeholder {
+  color: #BEC1C6;
+}
+[data-theme="dark"] .form-control:focus {
+    background-color: var(--background-color);
+    color: var(--font-color);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 .2rem rgba(126,126,126,.25);
+}
+
+[data-theme="dark"] .card-takenote .header:hover{
+  background-color: var(--bg-color)
+}
+
+[data-theme="dark"] .breadcrumb-item + .breadcrumb-item::before {
+  color:var(--white);
+}
+[data-theme="dark"] .breadcrumb-item.active {
+  color:#A8ABB3;
+}
+
+[data-theme="dark"] .nav-tabs .nav-item.show .nav-link,
+[data-theme="dark"] .nav-tabs .nav-link.active {
+  background-color: var(--bg-color);
+  color:var(--white);
+  border-bottom: none;
+}
+
+[data-theme="dark"] .nav-tabs .nav-link:focus,
+[data-theme="dark"] .nav-tabs .nav-link:hover {
+  background-color: var(--bg-color);
+  border-color: var(--bg-color);
+}
+
+[data-theme="dark"] .navbar-nav .nav-link:focus,
+[data-theme="dark"] .navbar-nav .nav-link:hover {
+  color: var(--activelink-color);
+}
+
+[data-theme="dark"] .dropdown-item:hover,
+[data-theme="dark"] .dropdown-item:focus {
+  color: var(--primary);
+}
+
+[data-theme="dark"] .btn,
+[data-theme="dark"] .dropdown-item,
+[data-theme="dark"] footer {
+  color: var(--font-color);
+}
+
+[data-theme="dark"] .btn:hover,
+[data-theme="dark"] .btn:active,
+[data-theme="dark"] .btn:focus {
+  color: inherit;
+}
+[data-theme="dark"] .btn-light {
+  background-color: var(--dark);
+  border-color: var(--color-formfields);
+  color: var(--link-color);
+}
+[data-theme="dark"] .btn-light:hover,
+[data-theme="dark"] .btn-light:active,
+[data-theme="dark"] .btn-light:focus {
+  color: var(--activelink-color);
+  background-color: var(--color-silver);
+}
+
+[data-theme="dark"] .btn-secondary {
+  color: var(--white);
+}
+[data-theme="dark"] .btn-outline-primary>svg {
+  color: var(--primary);
+}
+[data-theme="dark"] .btn-outline-primary:hover>svg,
+[data-theme="dark"] .btn-outline-primary:focus>svg {
+  color: var(--white);
+}
+
+[data-theme="dark"] .card {
+  background-color: var(--dark);
+  border-color: var(--dark);
+}
+[data-theme="dark"] .card-header {
+  border-bottom-color: var(--color-formfields);
+}
+
+
+body.dark {
+  background-color: var(--background-color) !important;
+}
+
+/* Video Comment override css dark mode */
+[data-theme="dark"] .comment_main .comment .comment_content {
+  box-shadow: 2px 2px 12px var(--dark);
+}
+
+/* Modal override css dark mode */
+[data-theme="dark"] #podfile #dirs .folder-search,
+[data-theme="dark"] #podfile .list_folders .folder_container:nth-child(2n),
+[data-theme="dark"] #podfile .list_folders_sub .folder_container:nth-child(2n),
+[data-theme="dark"] .modal-content {
+  background-color: var(--dark) !important;
+  border-color: var(--dark) !important;
+  color: #fff !important;
+}
+[data-theme="dark"] .close {
+  color: #fff;
+}
+[data-theme="dark"] #podfile #dirs .folder-search::placeholder {
+  color: #ccc;
+}
+[data-theme="dark"] #podfile .col {
+  background-color: var(--bg-color);
+}
+[data-theme="dark"] .list-group-item-action:focus,
+[data-theme="dark"] .list-group-item-action:hover {
+  background-color: var(--dark);
+}
+
+[data-theme="dark"] .border {
+    border-color: var(--gray) !important;
+}
+
+/** Admin widgets styles **/
+[data-theme="dark"] .selector .selector-filter,
+[data-theme="dark"] .selector .selector-available h2,
+[data-theme="dark"] .selector-chosen h2 {
+  color: var(--font-color);
+  border-color: var(--background-color);
+}
+[data-theme="dark"] .selector .selector-filter {
+  background-color: var(--bg-color);
+}
+[data-theme="dark"] .selector .selector-available h2,
+[data-theme="dark"] .selector-chosen h2 {
+  background-color: var(--color-silver-chalice);
+}
+
+
+/* INPUT TEXT-AREA SELECT dark mode */
+[data-theme="dark"] select,
+[data-theme="dark"] input:not(.btn),
+[data-theme="dark"] textarea,
+[data-theme="dark"] .select2-container,
+[data-theme="dark"] .select2-container-multi .select2-choices .select2-search-field input,
+[data-theme="dark"] .select2-container-multi .select2-choices,
+[data-theme="dark"] .select2-drop-active,
+[data-theme="dark"] .select2-choice,
+[data-theme="dark"] .select2-choice  .select2-search-choice-close + div,
+[data-theme="dark"] .select2-dropdown-open .select2-choice,
+[data-theme="dark"] .select2-results .select2-no-results,
+[data-theme="dark"] .select2-results .select2-searching {
+  background: var(--background-color);
+  border-color: var(--bg-color);
+  color: var(--font-color);
+  box-shadow: none;
+}
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+}
+.theme-switch-wrapper em {
+  margin-left: 10px;
+  font-size: 1rem;
+}
+.theme-switch {
+  display: inline-block;
+  height: 24px;
+  position: relative;
+  width: 50px;
+  top:7px;
+}
+.theme-switch input {
+  display: none;
+}
+.slider {
+  background-color: var(--color-silver-chalice);
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s;
+  border-radius: 24px;
+}
+.slider:focus,
+.slider:hover{
+  box-shadow: 0 0 3px var(--primary);
+}
+.slider:before {
+  background-color: var(--white);
+  bottom: 2px;
+  content: "";
+  height: 20px;
+  left: 2px;
+  position: absolute;
+  transition: .4s;
+  width: 20px;
+  border-radius: 50%;
+}
+[data-theme="dark"] .slider {
+    background-color: var(--gray);
+}
+input:checked + .slider {
+  background-color: var(--primary);
+}
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+.slider svg {
+  color: var(--color-mine-shaft);
+  width: 15px;
+  position: absolute;
+  transition: opacity .2s ease 0s, transform .35s ease 0s;
+  pointer-events: none;
+}
+.feather-moon {
+  opacity: 0;
+  left: 5px;
+  bottom: 0;
+  color: var(--white) !important;
+  transform: translateX(4px);
+}
+.feather-sun {
+  opacity: 1;
+  right: 5px;
+  bottom: 0;
+  transform: translateX(0);
+}
+input:checked + .slider .feather-moon {
+  opacity: 1;
+  transform: translateX(0);
+}
+input:checked + .slider .feather-sun {
+  opacity: 0;
+  transform: translateX(-4px);
+}

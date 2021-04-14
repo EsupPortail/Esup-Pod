@@ -538,9 +538,11 @@ class VideoForm(forms.ModelForm):
     def set_queryset(self):
 
         if self.current_user is not None:
+            users_groups = self.current_user.owner.accessgroup_set.all()
             user_channels = Channel.objects.all() if self.is_superuser else (
                 self.current_user.owners_channels.all(
-                ) | self.current_user.users_channels.all()
+                ) | self.current_user.users_channels.all(
+                ) | Channel.objects.filter(allow_to_groups=users_groups)
             ).distinct()
             user_channels.filter(sites=get_current_site(None))
             if user_channels:
@@ -555,7 +557,7 @@ class VideoForm(forms.ModelForm):
             sites=Site.objects.get_current())
         self.fields["restrict_access_to_groups"].queryset = \
             self.fields["restrict_access_to_groups"].queryset.filter(
-                groupsite__sites=Site.objects.get_current())
+                sites=Site.objects.get_current())
         self.fields["discipline"].queryset = Discipline.objects.all(
         ).filter(
             sites=Site.objects.get_current())
@@ -583,19 +585,6 @@ class VideoForm(forms.ModelForm):
 
 
 class ChannelForm(forms.ModelForm):
-    users = forms.ModelMultipleChoiceField(
-        User.objects.all(),
-        widget=widgets.FilteredSelectMultiple(
-            _("Users"),
-            False,
-            attrs={}),
-        required=False,
-        label=_('Users'))
-    owners = forms.ModelMultipleChoiceField(
-        User.objects.all(),
-        widget=widgets.FilteredSelectMultiple(_("Owners"), False, attrs={}),
-        required=False,
-        label=_('Owners'))
     sites = forms.ModelMultipleChoiceField(
         Site.objects.all(),
         required=False

@@ -15,12 +15,16 @@ USE_CAS = getattr(
     settings, 'USE_CAS', False)
 USE_SHIB = getattr(
     settings, 'USE_SHIB', False)
+USE_OIDC = getattr(
+    settings, 'USE_OIDC', False)
 CAS_GATEWAY = getattr(
     settings, 'CAS_GATEWAY', False)
 SHIB_URL = getattr(
     settings, 'SHIB_URL', "/idp/shibboleth.sso/Login")
 SHIB_LOGOUT_URL = getattr(
     settings, 'SHIB_LOGOUT_URL', "")
+OIDC_NAME = getattr(
+    settings, 'OIDC_NAME', 'OpenID Connect')
 
 if CAS_GATEWAY:
     @gateway()
@@ -49,9 +53,10 @@ def authentication_login(request):
         url = reverse('authentication_login_gateway')
         url += '?%snext=%s' % (iframe_param, referrer)
         return redirect(url)
-    elif USE_CAS or USE_SHIB:
+    elif USE_CAS or USE_SHIB or USE_OIDC:
         return render(request, 'authentication/login.html', {
             'USE_CAS': USE_CAS, 'USE_SHIB': USE_SHIB, "SHIB_URL": SHIB_URL,
+            'USE_OIDC': USE_OIDC, 'OIDC_NAME': OIDC_NAME,
             'referrer': referrer
         })
     else:

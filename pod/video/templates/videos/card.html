@@ -1,79 +1,78 @@
 {% load i18n %}
 {% spaceless %}
-<div class="card mb-4 box-shadow border-secondary video-card"> <!-- the good one -->
-    <div class="card-header" style="">
-        <div class="d-flex justify-content-between align-items-center">
-            <small class="text-muted time">{{video.duration_in_time}}</small>
-            <span class="text-muted small">
-                {% if video.password or video.is_restricted %}
-                <span title="{% trans 'This content is password protected.' %}">
-                    <i data-feather="lock"></i>
-                </span>
-                {% endif %}
+<div class="card mb-4 box-shadow border-secondary video-card">
+  <!-- card.html -->
+  <div class="card-header">
+    <div class="d-flex justify-content-between align-items-center">
+      <small class="text-muted time">{{video.duration_in_time}}</small>
+      <span class="text-muted small">
+        {% if video.password or video.is_restricted %}
+          <span title="{% trans 'This content is password protected.' %}">
+            <i data-feather="lock"></i>
+          </span>
+        {% endif %}
 
-                {% if video.is_draft %}
-                <span title="{% trans 'This content is in draft.' %}">
-                    <i data-feather="x-circle"></i>
-                </span>
-                {% endif %}
-                {% if video.chapter_set.all %}
-                <span title="{% trans 'This content is chaptered.' %}">
-                    <i data-feather="list"></i>
-                </span>
-                {% endif %}
-                {% if video.is_video %}
-                <span title="{% trans 'Video content.' %}" >
-                    <i data-feather="film"></i>
-                </span>
-                {% else %}
-                <span title="{% trans 'Audio content.' %}" >
-                    <i data-feather="radio"></i>
-                </span>
-                {% endif %}
-            </span>
-        </div>
+        {% if video.is_draft %}
+          <span title="{% trans 'This content is in draft.' %}">
+            <i data-feather="x-circle"></i>
+          </span>
+        {% endif %}
+        {% if video.chapter_set.all %}
+          <span title="{% trans 'This content is chaptered.' %}">
+            <i data-feather="list"></i>
+          </span>
+        {% endif %}
+        {% if video.is_video %}
+          <span title="{% trans 'Video content.' %}" >
+            <i data-feather="film"></i>
+          </span>
+        {% else %}
+          <span title="{% trans 'Audio content.' %}" >
+            <i data-feather="radio"></i>
+          </span>
+        {% endif %}
+      </span>
     </div>
-    <div class="d-flex align-items-center">
+  </div>
+  <div class="card-thumbnail">
     {% if channel %}
-    {% if theme %}
-    <a class="link-center-pod" href="{% url 'video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
-        {{video.get_thumbnail_card|safe}}
-    </a>
+      {% if theme %}
+        <a class="link-center-pod" href="{% url 'video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
+          {{video.get_thumbnail_card|safe}}
+        </a>
+      {% else %}
+        <a class="link-center-pod" href="{% url 'video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
+          {{video.get_thumbnail_card|safe}}
+        </a>
+      {% endif %}
     {% else %}
-    <a class="link-center-pod" href="{% url 'video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
+      <a class="link-center-pod" href="{{video.get_absolute_url}}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
         {{video.get_thumbnail_card|safe}}
-    </a>
+      </a>
     {% endif %}
-    {% else %}
-    <a class="link-center-pod" href="{{video.get_absolute_url}}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
-        {{video.get_thumbnail_card|safe}}
-    </a>
-    {% endif %}
-    </div>
-    <div class="card-body">
-
-      {% if video.owner == request.user or request.user.is_superuser or perms.video.change_video or request.user in video.additional_owners.all %}
+  </div>
+  <div class="card-body px-3 py-2">
+    {% if video.owner == request.user or request.user.is_superuser or perms.video.change_video or request.user in video.additional_owners.all %}
       <footer class="card-footer card-footer-pod p-0 m-0">
         {% include "videos/link_video.html" %}
       </footer>
-      {% endif %}
+    {% endif %}
 
-      <span class="small video-title">
-        {% if channel %}
+    <span class="small video-title">
+      {% if channel %}
         {% if theme %}
-        <a href="{% url 'video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
+          <a href="{% url 'video' slug_c=channel.slug slug_t=theme.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}">
             {{video.title|capfirst|truncatechars:43}}
-        </a>
+          </a>
         {% else %}
-        <a href="{% url 'video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">
+          <a href="{% url 'video' slug_c=channel.slug slug=video.slug %}{% if playlist %}?playlist={{playlist.slug}}{% endif %}">
             {{video.title|capfirst|truncatechars:43}}
-        </a>
+          </a>
         {% endif %}
-        {% else %}
+      {% else %}
         <a href="{{video.get_absolute_url}}{% if playlist %}?playlist={{playlist.slug}}{% endif %}" title="{{video.title}}">{{video.title|capfirst|truncatechars:43}}</a>
-        {% endif %}
-      </span>
-
-    </div>
+      {% endif %}
+    </span>
+  </div>
 </div>
 {% endspaceless %}
