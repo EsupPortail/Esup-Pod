@@ -665,9 +665,10 @@ main.mt-3 {
 
 
 #videos_list .infinite-item .video-card .card-header *{ background: transparent !important;}
-#videos_list .infinite-item .video-card .d-flex{
+#videos_list .video-card .d-flex{
 	flex: none;
 	flex-grow: 1;
+	min-height: unset !important;
 }
 [data-theme="dark"][data-theme-mode="dark"] #videos_list .infinite-item .video-card .card-header *{ background: transparent !important;}
 [data-theme="dark"][data-theme-mode="dark"] #videos_list .infinite-item .video-card .d-flex{
