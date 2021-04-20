@@ -18,7 +18,7 @@ from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 from django.dispatch import receiver
 from django.utils.html import format_html
 from django.db.models.signals import pre_delete
@@ -252,20 +252,10 @@ class Channel(models.Model):
         _('Extra style'), null=True, blank=True,
         help_text=_("The style will be added to your channel to show it"))
     owners = models.ManyToManyField(
-        User, related_name='owners_channels', verbose_name=_('Owners'),
-        ajax=True,
-        search_field=lambda q: Q(
-            username__icontains=q) | Q(
-                first_name__icontains=q) | Q(
-                    last_name__icontains=q),
-        blank=True)
+        User, related_name='owners_channels', verbose_name=_(
+            'Owners'), blank=True)
     users = models.ManyToManyField(
         User, related_name='users_channels', verbose_name=_('Users'),
-        ajax=True,
-        search_field=lambda q: Q(
-            username__icontains=q) | Q(
-                first_name__icontains=q) | Q(
-                    last_name__icontains=q),
         blank=True)
     visible = models.BooleanField(
         verbose_name=_('Visible'),
@@ -274,9 +264,7 @@ class Channel(models.Model):
             + 'channels on the platform.'),
         default=False)
     allow_to_groups = models.ManyToManyField(
-        AccessGroup, blank=True, verbose_name=_('Groups'), ajax=True,
-        search_field=lambda q: Q(code_name__icontains=q) | Q(
-            display_name__icontains=q),
+        AccessGroup, blank=True, verbose_name=_('Groups'),
         help_text=_(
             'Select one or more groups who can upload video this channel'))
     sites = models.ManyToManyField(Site)
