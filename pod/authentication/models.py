@@ -82,7 +82,7 @@ class Owner(models.Model):
     establishment = models.CharField(
         _('Establishment'), max_length=10, blank=True, choices=ESTABLISHMENTS,
         default=ESTABLISHMENTS[0][0])
-    accessgroups = select2_fields.ManyToManyField(
+    accessgroups = models.ManyToManyField(
         'authentication.AccessGroup', blank=True)
     sites = models.ManyToManyField(Site)
 
@@ -157,7 +157,7 @@ class AccessGroup(models.Model):
     code_name = models.CharField(
         max_length=128, unique=True)
     sites = models.ManyToManyField(Site)
-    users = select2_fields.ManyToManyField(
+    users = models.ManyToManyField(
         Owner,
         blank=True,
         ajax=True,
