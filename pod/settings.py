@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     'pod.bbb',
     'shibboleth',
     'chunked_upload',
-    'pod.bbb',
     'mozilla_django_oidc',
 ]
 
