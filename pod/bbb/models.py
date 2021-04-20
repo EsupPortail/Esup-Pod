@@ -181,7 +181,7 @@ class Livestream(models.Model):
             'Server/process performing the live.')
     )
     # User that want to perform the live
-    user = select2_fields.ForeignKey(
+    user = models.ForeignKey(
         User, on_delete=models.CASCADE,
         limit_choices_to={'is_staff': True},
         verbose_name=_('User'), null=True, blank=True, help_text=_(

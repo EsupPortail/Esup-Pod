@@ -6,7 +6,6 @@ from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-from django.contrib.auth.models import Group
 from sorl.thumbnail import delete
 from itertools import chain
 from operator import attrgetter
@@ -29,7 +28,7 @@ class UserFolder(models.Model):
     owner = models.ForeignKey(User, verbose_name=_('Owner'),
                               on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    access_groups = select2_fields.ManyToManyField(
+    access_groups = models.ManyToManyField(
         'authentication.AccessGroup', blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who'
                     ' can access in read only to this folder'))

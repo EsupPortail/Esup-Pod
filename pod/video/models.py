@@ -251,7 +251,7 @@ class Channel(models.Model):
     style = models.TextField(
         _('Extra style'), null=True, blank=True,
         help_text=_("The style will be added to your channel to show it"))
-    owners = select2_fields.ManyToManyField(
+    owners = models.ManyToManyField(
         User, related_name='owners_channels', verbose_name=_('Owners'),
         ajax=True,
         search_field=lambda q: Q(
@@ -259,7 +259,7 @@ class Channel(models.Model):
                 first_name__icontains=q) | Q(
                     last_name__icontains=q),
         blank=True)
-    users = select2_fields.ManyToManyField(
+    users = models.ManyToManyField(
         User, related_name='users_channels', verbose_name=_('Users'),
         ajax=True,
         search_field=lambda q: Q(
@@ -273,7 +273,7 @@ class Channel(models.Model):
             u'If checked, the channel appear in a list of available '
             + 'channels on the platform.'),
         default=False)
-    allow_to_groups = select2_fields.ManyToManyField(
+    allow_to_groups = models.ManyToManyField(
         AccessGroup, blank=True, verbose_name=_('Groups'), ajax=True,
         search_field=lambda q: Q(code_name__icontains=q) | Q(
             display_name__icontains=q),
