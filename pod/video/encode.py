@@ -1,3 +1,5 @@
+"""This module handles video encoding with CPU."""
+
 from django.conf import settings
 
 from django.core.files.images import ImageFile
@@ -26,6 +28,8 @@ import re
 import tempfile
 import threading
 
+__license__ = "LGPL v3"
+
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
     from pod.podfile.models import CustomImageModel
@@ -43,6 +47,9 @@ if TRANSCRIPT:
         'TRANSCRIPT_VIDEO',
         'start_transcript'
     )
+
+ENCODE_SHELL = getattr(
+    settings, 'ENCODE_SHELL', '/bin/sh')
 
 USE_ESTABLISHMENT = getattr(
     settings, 'USE_ESTABLISHMENT_FIELD', False)
@@ -89,6 +96,13 @@ FFMPEG_STATIC_PARAMS = getattr(
 
 FFMPEG_MISC_PARAMS = getattr(
     settings, 'FFMPEG_MISC_PARAMS', " -hide_banner -y ")
+# to use in GPU, specify for example
+# -y -vsync 0 -hwaccel_device {hwaccel_device} \
+# -hwaccel cuvid -c:v {codec}_cuvid
+
+FFMPEG_SCALE = getattr(
+    settings, 'FFMPEG_SCALE', ' -vf "scale=-2:{height}" ')
+# to use in GPU, specify ' -vf "scale_npp=-2:{height}:interp_algo=super" '
 
 AUDIO_BITRATE = getattr(settings, 'AUDIO_BITRATE', "192k")
 
@@ -176,7 +190,6 @@ def start_encode(video_id):
 
 def encode_video(video_id):
     """Encode video."""
-
     start = "Start at: %s" % time.ctime()
 
     video_to_encode = Video.objects.get(id=video_id)
@@ -503,8 +516,9 @@ def get_video_command_mp4(video_id, video_data, output_dir):
 
             name = "%sp" % height
 
-            cmd += " %s -vf " % (static_params,)
-            cmd += "\"scale=-2:%s\"" % (height)
+            cmd += " %s " % (static_params,)
+            cmd += FFMPEG_SCALE.format(height=height)
+            # cmd += " -vf \"scale=-2:%s\" " % (height)
             # cmd += "force_original_aspect_ratio=decrease"
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
                 minrate, bitrate, maxrate, int(bufsize), audiorate)
@@ -536,7 +550,11 @@ def encode_video_mp4(source, cmd, output_dir):
         msg += "- %s\n" % ffmpegMp4Command
         with open(logfile, "ab") as f:
             procs.append(subprocess.Popen(
-                ffmpegMp4Command, shell=True, stdout=f, stderr=f))
+                ffmpegMp4Command,
+                shell=True,
+                executable=ENCODE_SHELL,
+                stdout=f,
+                stderr=f))
     msg += "\n- Encoding Mp4: %s" % time.ctime()
     with open(logfile, "a") as f:
         f.write(msg)
@@ -596,7 +614,7 @@ def encode_m4a(video_id, contain_audio, source, output_dir):
 
 
 def encode_mp3(video_id, contain_audio, source, output_dir):
-    """encode audio mp3 for all file !"""
+    """Encode audio mp3 for all file."""
     msg = ""
     if contain_audio:
         change_encoding_step(
@@ -738,10 +756,14 @@ def get_video_command_playlist(video_id, video_data, output_dir):
 
             name = "%sp" % height
 
-            cmd += " %s -vf " % (static_params,)
-            cmd += "\"scale=-2:%s\"" % (height)
+            cmd += " %s " % (static_params,)
+            cmd += FFMPEG_SCALE.format(height=height)
+
+            # cmd += " %s -vf " % (static_params,)
+            # cmd += "\"scale=-2:%s\"" % (height)
             # cmd += "scale=w=%s:h=%s:" % (width, height)
             # cmd += "force_original_aspect_ratio=decrease"
+
             cmd += " -minrate %s -b:v %s -maxrate %s -bufsize %sk -b:a %s" % (
                 minrate, bitrate, maxrate, int(bufsize), audiorate)
             cmd += " -hls_playlist_type vod -hls_time %s \
@@ -775,7 +797,11 @@ def encode_video_playlist(source, cmd, output_dir):
         msg += "- %s\n" % ffmpegPlaylistCommand
         with open(logfile, "ab") as f:
             procs.append(subprocess.Popen(
-                ffmpegPlaylistCommand, shell=True, stdout=f, stderr=f))
+                ffmpegPlaylistCommand,
+                shell=True,
+                executable=ENCODE_SHELL,
+                stdout=f,
+                stderr=f))
     msg += "\n- Encoding Playlist: %s" % time.ctime()
     with open(logfile, "a") as f:
         f.write(msg)
@@ -866,7 +892,8 @@ def create_overview_image(
 ):
     """Create image overview for video navigation."""
     msg = "\ncreate overview image file"
-
+    cmd_ffmpegthumbnailer = ""
+    cmd_montage = ""
     for i in range(0, nb_img):
         stamp = "%s" % i
         if nb_img == 99:
@@ -925,6 +952,8 @@ def create_overview_image(
             + "\n%s" % overviewimagefilename
         msg += "\nthumbnailer command: \n- %s\n" % cmd_ffmpegthumbnailer
         msg += "\nmontage command: \n- %s\n" % cmd_montage
+        msg += "\nduration %s - nb_img %s - image_width %s \n" % (
+            duration, nb_img, image_width)
 
         add_encoding_log(video_id, msg)
         change_encoding_step(video_id, -1, msg)

@@ -4,180 +4,179 @@
 {% load static %}
 {% block page_title %}{% trans 'Completion video' %} "{{video.title}}"{% endblock page_title %}
 {% block page_extra_head %}
-	<!-- media -->
-	<link rel="stylesheet" href="{% static 'css/completion.css' %}"/>
+  <!-- media -->
+  <link rel="stylesheet" href="{% static 'css/completion.css' %}?ver={{VERSION}}"/>
 
 {% endblock page_extra_head %}
 {% block breadcrumbs %}
-	{{block.super}}
-	<li class="breadcrumb-item"><a href="{% url "my_videos"%}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
-	<li class="breadcrumb-item">
-		<a href="{% url 'video' slug=video.slug %}" title="{{video.title}}">
-			{{video.title|title|truncatechars:45}}
-		</a>
-	</li>
-	<li class="breadcrumb-item active"  aria-current="page">
-		{% trans 'Completion video' %}
-	</li>
+  {{block.super}}
+  <li class="breadcrumb-item"><a href="{% url 'my_videos'%}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
+  <li class="breadcrumb-item">
+    <a href="{% url 'video' slug=video.slug %}" title="{{video.title}}">
+      {{video.title|title|truncatechars:45}}
+    </a>
+  </li>
+  <li class="breadcrumb-item active"  aria-current="page">
+    {% trans 'Completion video' %}
+  </li>
 {% endblock %}
 {% block page_content %}
-	<div id="accordeon" >
-		<li>
-			<a id="section_contributor" href="#" title="{% trans 'Display &quot;Contributor(s)&quot; section' %}" class="title">
-				{% trans 'Contributor(s)' %}&nbsp;<i data-feather="chevron-down"></i>
-			</a>
-		</li>
-		<li class="contenuTitre">
-			<span id="list_contributor">
-				{% include 'contributor/list_contributor.html' %}
-			</span>
-			&nbsp;
-			<span id="form_contributor">
-				{% if form_contributor %}
-					{% include 'contributor/form_contributor.html' with form_contributor=form_contributor %}
-				{% endif %}
-			</span>
-			<form class="form_new completion" id="form_new_contributor" action="{% url 'video_completion_contributor' slug=video.slug %}" method="POST">
-				{% csrf_token %}
-				<input type="hidden" name="action" value="new"/>
-				<input type="submit" value="{% trans 'Add a new contributor' %}" class="new_contributor btn btn-primary"/>
-			</form>
-		</li>
-		&nbsp;
-		{% if request.user.is_staff %}
-			<li>
-				<a id="section_track" href="#" title="{% trans 'Display &quot;Subtitle(s) and Caption(s) &quot; section' %}" class="title">
-					{% trans 'Subtitle(s) and Caption(s)' %}&nbsp;<i data-feather="chevron-down"></i>
-				</a>
-			</li>
-			<li class="contenuTitre">
-				<span id="list_track">
-					{% include 'track/list_track.html' with dest='video_completion_track' %}
-				</span>
-				&nbsp;
-				<div class="breadcrumb">
-				    <p><a class="btn btn-secondary" href="{% url "video_caption_maker" slug=video.slug%}" title="{% trans 'to create your subtitles and/or caption(s) files' %}">{% trans 'Video Caption Maker' %}</a></p>
-				    <span id="form_track">
-				    {% if form_track %}
-					{% include 'track/form_track.html' with form_track=form_track %}
-				    {% endif %}
-				    </span>
-				    <form class="form_new completion" id="form_new_track" action="{% url 'video_completion_track' slug=video.slug %}" method="POST">
-					{% csrf_token %}
-					<input type="hidden" name="action" value="new"/>
-					<input type="submit" value="{% trans 'Add a new subtitle or caption file' %}" class="new_track btn btn-primary"/>
-				    </form>
-				</div>
-			</li>
-			&nbsp;
-			<li>
-				<a id="section_document" href="#" title="{% trans 'Display &quot; Additional resource(s)&quot; section' %}" class="title">
-					{% trans 'Additional resource(s)' %}&nbsp;<i data-feather="chevron-down"></i>
-				</a>
-			</li>
-			<li class="contenuTitre">
-				<span id="list_document">
-					{% include 'document/list_document.html' %}
-				</span>
-				&nbsp;
-				<span id="form_document">
-					{% if form_document %}
-						{% include 'document/form_document.html' with form_document=form_document %}
-					{% endif %}
-				</span>
-				<form class="form_new completion" id="form_new_document" action="{% url 'video_completion_document' slug=video.slug %}" method="POST">
-					{% csrf_token %}
-					<input type="hidden" name="action" value="new"/>
-					<input type="submit" value="{% trans 'Add a new additional resource' %}" class="new_document btn btn-primary"/>
-				</form>
-			</li>
-			&nbsp;
-			<li>
-				<a id="section_overlay" href="#" title="{% trans 'Display &quot; Overlay(s)&quot; section' %}" class="title">
-					{% trans 'Overlay(s)' %}&nbsp;<i data-feather="chevron-down"></i>
-				</a>
-			</li>
-			<li class="contenuTitre">
-				<span id="list_overlay">
-					{% include 'overlay/list_overlay.html' %}
-				</span>
-				&nbsp;
-				<span id="form_overlay">
-					{% if form_overlay %}
-						{% include 'overlay/form_overlay.html' with form_overlay=form_overlay %}
-					{% endif %}
-				</span>
-				<form class="form_new completion" id="form_new_overlay" action="{% url 'video_completion_overlay' slug=video.slug %}" method="POST">
-					{% csrf_token %}
-					<input type="hidden" name="action" value="new"/>
-					<input type="submit" value="{% trans 'Add a new overlay' %}" class="new_overlay btn btn-primary"/>
-				</form>
-			</li>
-			&nbsp;
-		{% endif %}
-	</div>
+  <div id="accordeon" >
+    <li>
+      <a id="section_contributor" href="#" title="{% trans 'Display &quot;Contributor(s)&quot; section' %}" class="title">
+        {% trans 'Contributor(s)' %}&nbsp;<i data-feather="chevron-down"></i>
+      </a>
+    </li>
+    <li class="contenuTitre">
+      <span id="list_contributor">
+        {% include 'contributor/list_contributor.html' %}
+      </span>
+      &nbsp;
+      <span id="form_contributor">
+        {% if form_contributor %}
+          {% include 'contributor/form_contributor.html' with form_contributor=form_contributor %}
+        {% endif %}
+      </span>
+      <form class="form_new completion" id="form_new_contributor" action="{% url 'video_completion_contributor' slug=video.slug %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="new"/>
+        <input type="submit" value="{% trans 'Add a new contributor' %}" class="new_contributor btn btn-primary"/>
+      </form>
+    </li>
+    &nbsp;
+    {% if request.user.is_staff %}
+      <li>
+        <a id="section_track" href="#" title="{% trans 'Display &quot;Subtitle(s) and Caption(s) &quot; section' %}" class="title">
+          {% trans 'Subtitle(s) and Caption(s)' %}&nbsp;<i data-feather="chevron-down"></i>
+        </a>
+      </li>
+      <li class="contenuTitre">
+        <span id="list_track">
+          {% include 'track/list_track.html' with dest='video_completion_track' %}
+        </span>
+        &nbsp;
+        <div class="breadcrumb">
+          <p><a class="btn btn-secondary" href="{% url "video_caption_maker" slug=video.slug%}" title="{% trans 'to create your subtitles and/or caption(s) files' %}">{% trans 'Video Caption Maker' %}</a></p>
+          <span id="form_track">
+            {% if form_track %}
+              {% include 'track/form_track.html' with form_track=form_track %}
+            {% endif %}
+          </span>
+          <form class="form_new completion" id="form_new_track" action="{% url 'video_completion_track' slug=video.slug %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="new"/>
+            <input type="submit" value="{% trans 'Add a new subtitle or caption file' %}" class="new_track btn btn-primary"/>
+          </form>
+        </div>
+      </li>
+      &nbsp;
+      <li>
+        <a id="section_document" href="#" title="{% trans 'Display &quot; Additional resource(s)&quot; section' %}" class="title">
+          {% trans 'Additional resource(s)' %}&nbsp;<i data-feather="chevron-down"></i>
+        </a>
+      </li>
+      <li class="contenuTitre">
+        <span id="list_document">
+          {% include 'document/list_document.html' %}
+        </span>
+        &nbsp;
+        <span id="form_document">
+          {% if form_document %}
+            {% include 'document/form_document.html' with form_document=form_document %}
+          {% endif %}
+        </span>
+        <form class="form_new completion" id="form_new_document" action="{% url 'video_completion_document' slug=video.slug %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="new"/>
+          <input type="submit" value="{% trans 'Add a new additional resource' %}" class="new_document btn btn-primary"/>
+        </form>
+      </li>
+      &nbsp;
+      <li>
+        <a id="section_overlay" href="#" title="{% trans 'Display &quot; Overlay(s)&quot; section' %}" class="title">
+          {% trans 'Overlay(s)' %}&nbsp;<i data-feather="chevron-down"></i>
+        </a>
+      </li>
+      <li class="contenuTitre">
+        <span id="list_overlay">
+          {% include 'overlay/list_overlay.html' %}
+        </span>
+        &nbsp;
+        <span id="form_overlay">
+          {% if form_overlay %}
+            {% include 'overlay/form_overlay.html' with form_overlay=form_overlay %}
+          {% endif %}
+        </span>
+        <form class="form_new completion" id="form_new_overlay" action="{% url 'video_completion_overlay' slug=video.slug %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="new"/>
+          <input type="submit" value="{% trans 'Add a new overlay' %}" class="new_overlay btn btn-primary"/>
+        </form>
+      </li>
+      &nbsp;
+    {% endif %}
+  </div>
 {% endblock page_content %}
 
 {% block page_aside %}
 
 {% if video.owner == request.user or request.user.is_superuser or perms.video.change_video or request.user in video.additional_owners.all %}
-<div class="card card-body p-2 mt-1" id="card-managevideo">
-<h5 class="card-title pl-2"><i data-feather="settings"></i>&nbsp;{% trans "Manage video"%}</h5>
-      <div class="card-text text-center">
-        {% include "videos/link_video.html" %}
-      </div>
-</div>
+  <div class="card mb-2" id="card-managevideo">
+    <h5 class="card-title pl-2"><i data-feather="settings"></i>&nbsp;{% trans "Manage video"%}</h5>
+    <div class="card-text text-center">
+      {% include "videos/link_video.html" %}
+    </div>
+  </div>
 {% endif %}
-<div id="contributor-info" class="card card-body p-2 mt-1">
-	<button class="btn btn-sm-light" id="heading-1" data-toggle="collapse" data-target="#collapse-1" aria-expanded="true" aria-controls="collapse-1" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
-		{% trans 'Contributor(s)' %}
-	</button>
-	<div id="collapse-1" class="collapse hide card-text small">
-		<p>{% trans 'List of people related to this video.' %}</p>
-		<p>{% trans 'A contributor must at least have a name and a role. You can also join the email of this contributor as well as a link (professional website for example).' %}</p>
-	</div>
+<div id="contributor-info" class="card">
+  <button class="btn btn-light rounded-0" id="heading-1" data-toggle="collapse" data-target="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
+    {% trans 'Contributor(s)' %}
+  </button>
+  <div id="collapse-1" class="card-body collapse hide card-text small">
+    <p>{% trans 'List of people related to this video.' %}</p>
+    <p>{% trans 'A contributor must at least have a name and a role. You can also join the email of this contributor as well as a link (professional website for example).' %}</p>
+  </div>
 </div>
-<div id="track-info" class="card card-body p-2 mt-1">
-	<button class="btn btn-sm-light" id="heading-2" data-toggle="collapse" data-target="#collapse-2" aria-expanded="true" aria-controls="collapse-2" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
-		{% trans 'Subtitle(s) and Caption(s)' %}
-	</button>
-	<div id="collapse-2" class="collapse hide card-text small">
-		<p>{% trans 'Subtitle(s) and/or captions(s) related to this video.' %}</p>
-		<!-- <p>{% trans 'Several web sites allows you to subtitle or caption videos (for example: Amara)' %}</p> -->
-		<p>{% trans 'You can add several subtitle or caption files to a signle video (for example, in order to subtitle or caption this video in several languages' %}</p>
-		<p>{% trans 'Subtitles and/or caption(s) files must be in ".vtt" format.' %}</p>
-		<p>{% trans 'You can use' %} <a href="{% url "video_caption_maker" slug=video.slug%}" title="{% trans 'Video Caption Maker' %}">{% trans 'Video Caption Maker' %}</a> {% trans 'to create your subtitles and/or caption(s) files' %}.</p>
-		<p>{% trans 'You will need the URL of this video to make subtitles and/or captions. This URL is a direct access to this video. Please do not communicate it outside of this site to avoid any misuse.' %}</p>
-		<ul class="list-group">
-		{% for vid in video.get_video_mp4 %}
-		<li  class="list-group-item">{{vid.name}} : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly/></li>
-		{% endfor %}
-		{% if video.is_video == False and video.get_video_mp3 %}
-		<li  class="list-group-item">{{video.get_video_mp3.name}} : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly/></li>
-		{% endif %}
-		</ul>
-	</div>
+<div id="track-info" class="card">
+  <button class="btn btn-light rounded-0" id="heading-2" data-toggle="collapse" data-target="#collapse-2" aria-expanded="true" aria-controls="collapse-2">
+    {% trans 'Subtitle(s) and Caption(s)' %}
+  </button>
+  <div id="collapse-2" class="card-body collapse hide card-text small">
+    <p>{% trans 'Subtitle(s) and/or captions(s) related to this video.' %}</p>
+    <!-- <p>{% trans 'Several web sites allows you to subtitle or caption videos (for example: Amara)' %}</p> -->
+    <p>{% trans 'You can add several subtitle or caption files to a signle video (for example, in order to subtitle or caption this video in several languages' %}</p>
+    <p>{% trans 'Subtitles and/or caption(s) files must be in ".vtt" format.' %}</p>
+    <p>{% trans 'You can use' %} <a href="{% url "video_caption_maker" slug=video.slug%}" title="{% trans 'Video Caption Maker' %}">{% trans 'Video Caption Maker' %}</a> {% trans 'to create your subtitles and/or caption(s) files' %}.</p>
+    <p>{% trans 'You will need the URL of this video to make subtitles and/or captions. This URL is a direct access to this video. Please do not communicate it outside of this site to avoid any misuse.' %}</p>
+    <ul class="list-group">
+      {% for vid in video.get_video_mp4 %}
+        <li  class="list-group-item">{{vid.name}} : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly/></li>
+      {% endfor %}
+      {% if video.is_video == False and video.get_video_mp3 %}
+        <li  class="list-group-item">{{video.get_video_mp3.name}} : <input type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly/></li>
+      {% endif %}
+    </ul>
+  </div>
 </div>
-<div id="document-info" class="card card-body p-2 mt-1">
-	<button class="btn btn-sm-light" id="heading-3" data-toggle="collapse" data-target="#collapse-3" aria-expanded="true" aria-controls="collapse-3" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
-		{% trans 'Additional resource(s)' %}
-	</button>
-	<div id="collapse-3" class="collapse hide card-text small">
-		<p>{% trans 'Document(s) related to this video. These documents will be downloadable by users.' %}</p>
-		<p>{% trans 'Be careful, not to be confused with enrichment. These documents are attached to the video, not integrated.' %}</p>
-	</div>
+<div id="document-info" class="card">
+  <button class="btn btn-light rounded-0" id="heading-3" data-toggle="collapse" data-target="#collapse-3" aria-expanded="true" aria-controls="collapse-3">
+    {% trans 'Additional resource(s)' %}
+  </button>
+  <div id="collapse-3" class="card-body collapse hide card-text small">
+    <p>{% trans 'Document(s) related to this video. These documents will be downloadable by users.' %}</p>
+    <p>{% trans 'Be careful, not to be confused with enrichment. These documents are attached to the video, not integrated.' %}</p>
+  </div>
 </div>
-<div id="overlay-info" class="card card-body p-2 mt-1">
-	<button class="btn btn-sm-light" id="heading-4" data-toggle="collapse" data-target="#collapse-4" aria-expanded="true" aria-controls="collapse-4" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
-		{% trans 'Overlay(s)' %}
-	</button>
-	<div id="collapse-4" class="collapse hide card-text small">
-		<p>{% trans 'Overlay allows you to display text (with ou without html tag) over the video at specific times and positions.' %}</p>
-		<p>{% trans 'You can add a solid background or a transparent background to the text you want to display with the option "Show background"' %}</p>
-	</div>
+<div id="overlay-info" class="card">
+  <button class="btn btn-light rounded-0" id="heading-4" data-toggle="collapse" data-target="#collapse-4" aria-expanded="true" aria-controls="collapse-4">
+    {% trans 'Overlay(s)' %}
+  </button>
+  <div id="collapse-4" class="card-body collapse hide card-text small">
+    <p>{% trans 'Overlay allows you to display text (with ou without html tag) over the video at specific times and positions.' %}</p>
+    <p>{% trans 'You can add a solid background or a transparent background to the text you want to display with the option "Show background"' %}</p>
+  </div>
 </div>
 {% endblock page_aside %}
 {% block more_script %}
-	<script src="{% static 'js/completion.js' %}"></script>
+  <script src="{% static 'js/completion.js' %}?ver={{VERSION}}"></script>
 {% endblock more_script %}
-

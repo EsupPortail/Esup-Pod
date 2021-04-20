@@ -10,7 +10,7 @@ from django.core.exceptions import PermissionDenied
 from django.template.loader import render_to_string
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import SuspiciousOperation
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from .models import UserFolder
@@ -56,6 +56,8 @@ FILE_ALLOWED_EXTENSIONS = getattr(
         'srt',
     )
 )
+
+TEST_SETTINGS = getattr(settings, "TEST_SETTINGS", False)
 FOLDER_FILE_TYPE = ['image', 'file']
 
 
@@ -67,8 +69,8 @@ def home(request, type=None):
     user_home_folder = get_object_or_404(
         UserFolder, name="home", owner=request.user)
     share_folder = UserFolder.objects.filter(
-        groups__in=request.user.groups.all()
-    ).exclude(owner=request.user).order_by('owner', 'id')
+        access_groups=request.user.owner.accessgroup_set.all()).exclude(
+            owner=request.user).order_by('owner', 'id')
 
     share_folder_user = UserFolder.objects.filter(
         users=request.user).exclude(
@@ -98,9 +100,9 @@ def get_current_session_folder(request):
               'current_session_folder', "home")) | Q(
                  users=request.user, name=request.session.get(
                     'current_session_folder', "home")) | Q(
-                 groups__in=request.user.groups.all(
+                 access_groups=request.user.owner.accessgroup_set.all(
                  ), name=request.session.get(
-                    'current_session_folder', "home")))
+                         'current_session_folder', "home")))
     except ObjectDoesNotExist:
         if(request.user.is_superuser):
             try:
@@ -119,17 +121,17 @@ def get_current_session_folder(request):
 @csrf_protect
 @staff_member_required(redirect_field_name='referrer')
 def get_folder_files(request, id, type=None):
-
     if type is None:
         type = request.GET.get('type', None)
     folder = get_object_or_404(UserFolder, id=id)
+
     if (request.user != folder.owner
-            and not request.user.groups.filter(
-                name__in=[
+            and not (folder.access_groups.filter(
+                code_name__in=[
                     name[0]
-                    for name in folder.groups.values_list('name')
-                ]
-            ).exists()
+                    for name in request.user.owner.accessgroup_set.values_list(
+                        'code_name')
+                ]).exists())
             and not (
                 request.user.is_superuser or request.user.has_perm(
                     "podfile.change_userfolder")) and not (
@@ -164,7 +166,7 @@ def get_rendered(request):
     ).exclude(owner=request.user, name="home")
 
     share_folder = UserFolder.objects.filter(
-        groups__in=request.user.groups.all()
+        access_groups__in=request.user.owner.accessgroup_set.all()
     ).exclude(owner=request.user).order_by('owner', 'id')
 
     share_folder_user = UserFolder.objects.filter(
@@ -537,12 +539,12 @@ def get_file(request, type):
     else:
         reqfile = get_object_or_404(CustomFileModel, id=id)
     if (request.user != reqfile.folder.owner
-            and not request.user.groups.filter(
-                name__in=[
+            and not reqfile.folder.access_groups.filter(
+                code_name__in=[
                     name[0]
-                    for name in reqfile.folder.groups.values_list('name')
-                ]
-            ).exists()
+                    for name in request.user.owner.accessgroup_set.values_list(
+                        'code_name')
+                ]).exists()
             and not (request.user.is_superuser or request.user.has_perm(
                     "podfile.change_customfilemodel") or request.user.has_perm(
                     "podfile.change_customimagemodel") or (
@@ -676,6 +678,18 @@ def fetch_owners(request, folders_list):
     return folders_list
 
 
+def filter_folders_with_truly_files(folders):
+    if not TEST_SETTINGS:
+        return folders.annotate(
+            nbr_image=Count('customimagemodel', distinct=True)
+        ).annotate(
+            nbr_file=Count('customfilemodel', distinct=True)
+        ).filter(
+            Q(nbr_image__gt=0) | Q(nbr_file__gt=0)
+        )
+    return folders
+
+
 @staff_member_required(redirect_field_name='referrer')
 def user_folders(request):
     VALUES_LIST = ['id', 'name']
@@ -687,7 +701,10 @@ def user_folders(request):
     if not request.user.is_superuser:
         user_folder = user_folder.filter(owner=request.user)
 
-    user_folder = user_folder.values(*list(VALUES_LIST))
+    # filter folders to keep only those that have files
+    user_folder = filter_folders_with_truly_files(user_folder)
+
+    user_folder = user_folder.values(*VALUES_LIST)
 
     search = request.GET.get('search', "")
     current_fold = json.loads(

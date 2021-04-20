@@ -3,8 +3,8 @@
 {% load static %}
 
 {% block page_extra_head %}
-	<link href="{% static 'css/playlist.css' %}" rel="stylesheet">
-	<script src="{% static 'js/playlist.js' %}"></script>
+	<link href="{% static 'css/playlist.css' %}?ver={{VERSION}}" rel="stylesheet">
+	<script src="{% static 'js/playlist.js' %}?ver={{VERSION}}"></script>
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "My playlists" %}</li>{% endblock %}

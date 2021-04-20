@@ -23,12 +23,12 @@
 
   <h1>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}
     <span class="float-right">
-	{% if USE_STATS_VIEW %}
-      <a href="{% url "video_stats_view" 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm"> {% trans "Statistics views" %}</a>
+    	{% if USE_STATS_VIEW %}
+        <a href="{% url "video_stats_view" 'videos'  %}" title="{% trans 'Show view statistics for all videos' %}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm"> {% trans "Statistics views" %}</a>
       {% endif %}
-      <a href="{% url "rss-video"%}?{{request.GET.urlencode}}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm">
+      <a href="feed://{{ request.META.HTTP_HOST }}{% url "rss-video"%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm">
         <i data-feather="rss"></i>&nbsp;Video</a>
-      <a href="{% url "rss-audio"%}?{{request.GET.urlencode}}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm">
+      <a href="feed://{{ request.META.HTTP_HOST }}{% url "rss-audio"%}?{{request.GET.urlencode}}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm">
         <i data-feather="rss"></i>&nbsp;Audio</a>
     </span>
   </h1>
@@ -46,13 +46,13 @@
 {% endblock page_content %}
 
 {% block page_aside %}
-    {% include 'videos/filter_aside.html' %}
+  {% include 'videos/filter_aside.html' %}
 {% endblock page_aside %}
 
 
 {% block more_script %}
-<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
-<script src="{% static 'js/infinite.min.js' %}"></script>
+<script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script>
   var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],

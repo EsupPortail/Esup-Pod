@@ -4,6 +4,7 @@ from django.conf.urls import include
 from pod.authentication import rest_views as authentication_views
 from pod.video import rest_views as video_views
 from pod.main import rest_views as main_views
+from pod.authentication import rest_views as auth_views
 
 from pod.chapter import rest_views as chapter_views
 from pod.completion import rest_views as completion_views
@@ -16,6 +17,9 @@ import importlib
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile import rest_views as podfile_views
 
+if getattr(settings, 'USE_BBB', True):
+    from pod.bbb import rest_views as bbb_views
+
 router = routers.DefaultRouter()
 
 router.register(r'mainfiles', main_views.CustomFileModelViewSet)
@@ -25,6 +29,7 @@ router.register(r'users', authentication_views.UserViewSet)
 router.register(r'groups', authentication_views.GroupViewSet)
 router.register(r'owners', authentication_views.OwnerViewSet)
 router.register(r'sites', authentication_views.SiteViewSet)
+router.register(r'accessgroups', authentication_views.AccessGroupViewSet)
 
 router.register(r'channels', video_views.ChannelViewSet)
 router.register(r'themes', video_views.ThemeViewSet)
@@ -55,6 +60,11 @@ if getattr(settings, 'USE_PODFILE', False):
     router.register(r'images',
                     podfile_views.CustomImageModelSerializerViewSet)
 
+if getattr(settings, 'USE_BBB', True):
+    router.register(r'bbb_meeting', bbb_views.MeetingModelViewSet)
+    router.register(r'bbb_attendee', bbb_views.AttendeeModelViewSet)
+    router.register(r'bbb_livestream', bbb_views.LivestreamModelViewSet)
+
 urlpatterns = [
     url(r'dublincore/$', video_views.DublinCoreView.as_view(),
         name='dublincore'),
@@ -65,6 +75,18 @@ urlpatterns = [
     url(r'store_remote_encoded_video/$',
         video_views.store_remote_encoded_video,
         name='store_remote_encoded_video'),
+    url(r'accessgroups_set_users_by_name/$',
+        auth_views.accessgroups_set_users_by_name,
+        name='accessgroups_set_users_by_name'),
+    url(r'accessgroups_remove_users_by_name/$',
+        auth_views.accessgroups_remove_users_by_name,
+        name='accessgroups_set_users_by_name'),
+    url(r'accessgroups_set_user_accessgroup /$',
+        auth_views.accessgroups_set_user_accessgroup,
+        name='accessgroups_set_user_accessgroup '),
+    url(r'accessgroups_remove_user_accessgroup /$',
+        auth_views.accessgroups_remove_user_accessgroup,
+        name='accessgroups_remove_user_accessgroup '),
 ]
 
 for apps in settings.THIRD_PARTY_APPS:

@@ -17,7 +17,7 @@ class BroadcasterSerializer(serializers.HyperlinkedModelSerializer):
         model = Broadcaster
         fields = ('id', 'url', 'name', 'slug',
                   'building', 'description', 'poster',
-                  'url', 'status')
+                  'url', 'status', 'is_restricted')
         lookup_field = 'slug'
 
 

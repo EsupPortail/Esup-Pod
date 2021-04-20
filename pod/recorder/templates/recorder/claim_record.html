@@ -2,10 +2,11 @@
 {% load i18n %}
 {% load static %}
 {% block page_extra_head %}
-<link href="{% static 'video-js-6.8.0/video-js.min.css' %}" rel="stylesheet">
-<script src="{% static 'video-js-6.8.0/ie8/videojs-ie8.min.js' %}"></script>
-<script src="{% static 'video-js-6.8.0/video.min.js' %}"></script>
-<script src="{% static 'js/videojs-http-streaming.min.js' %}"></script>
+  <link href="{% static 'player/videojs/video-js.min.css' %}?ver={{VERSION}}" rel="stylesheet">
+  <script src="{% static 'player/videojs/video.min.js' %}?ver={{VERSION}}"></script>
+  {% with 'player/videojs/lang/'|add:request.LANGUAGE_CODE|add:'.js' as videojs_lang %}
+    <script src="{% static videojs_lang %}?ver={{VERSION}}"></script>
+  {% endwith %}
 {% endblock %}
 
 {% block breadcrumbs %}{{ block.super }} <li class="breadcrumb-item active" aria-current="page">{% trans "Claim a record" %}</li>{% endblock %}
@@ -16,11 +17,11 @@
 
 {% block page_content %}
   {% if records.paginator.count == 0 %}
-  <h3>{% trans "No record found"%}</h3>
+    <h3>{% trans "No record found"%}</h3>
     <p class="alert alert-info">{% trans 'There is no unassigned records'%}</p>
   {% else %}
-  <h3>{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}</h3>
-  {% include "recorder/record_list.html" %}
+    <h3>{% blocktrans count counter=records.paginator.count %}{{ counter }} record found{% plural %}{{ counter }} records found{% endblocktrans %}</h3>
+    {% include "recorder/record_list.html" %}
   {% endif %}
 
 {% if USE_RECORD_PREVIEW%}
@@ -34,17 +35,14 @@
         </button>
       </div>
       <div class="modal-body">
- <video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered" controls preload="auto" height="360"
- data-setup='{}'>
-    <p class="vjs-no-js">
-        To view this video please enable JavaScript, and consider upgrading to a web browser that
-        <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-    </p>
-
-
-</video>
-
+        <video id="podvideoplayer" class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered"
+         controls preload="auto" height="360" data-setup='{}'>
+          <p class="vjs-no-js">
+            {%blocktrans%}To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>{%endblocktrans%}
+          </p>
+        </video>
       </div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
       </div>
@@ -61,8 +59,8 @@
 {% endblock page_aside %}
 
 {% block more_script %}
-<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
-<script src="{% static 'js/infinite.min.js' %}"></script>
+<script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script>
   var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],

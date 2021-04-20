@@ -156,6 +156,7 @@ def contact_us(request):
     video = Video.objects.get(id=request.GET.get('video'),
                               sites=get_current_site(request)) if (
         request.GET.get('video')
+        and request.GET.get('video').isdigit()
         and Video.objects.filter(
             id=request.GET.get('video'),
             sites=get_current_site(request)).first()
@@ -195,6 +196,10 @@ def contact_us(request):
                 dict(SUBJECT_CHOICES)[form_subject])
             email = form.cleaned_data['email']
             message = form.cleaned_data['description']
+
+            valid_human = form.cleaned_data['valid_human']
+            if valid_human:
+                return redirect(form.cleaned_data['url_referrer'])
 
             text_content = loader.get_template('mail/mail.txt').render({
                 'name': name,

@@ -2,16 +2,17 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% get_available_languages as LANGUAGES %}
 {% get_language_info_list for LANGUAGES as languages %}
+
 <div class="container container-pod" id="nav-mainbar">
   <div>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <i data-feather="menu" aria-hidden="true"></i>
     </button>
-    <a class="navbar-brand mr-0 mr-sm-1" href="/"><img src="{% static LOGO_SITE %}" height="48" alt="" role="presentation"/><strong>{{ TITLE_SITE }}</strong></a>
+    <a class="navbar-brand mr-0 mr-sm-1" href="/"><img src="{% static LOGO_SITE %}" height="48" alt="" role="presentation" loading="lazy"/><strong>{{ TITLE_SITE }}</strong></a>
   </div>
 
-  <div class="collapse navbar-collapse bg-light navbar-items-pod" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
+  <div class="collapse navbar-collapse navbar-items-pod" id="navbarSupportedContent">
+    <ul class="navbar-nav mx-auto">
       {% if HIDE_CHANNEL_TAB == False %}
       <li class="nav-item" id="nav-channels">
         <button class="nav-link" data-toggle="modal" data-target=".chaines-modal"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Channels" %}</button>
@@ -23,28 +24,28 @@
       </li>
       {% endif %}
       {% if HIDE_TYPES_TAB == False %}
-       <li class="nav-item" id="nav-types">
-        <button class="nav-link" data-toggle="modal" data-target=".types-modal"><i data-feather="tv" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Types"%}</button>
-      </li>
+        <li class="nav-item" id="nav-types">
+          <button class="nav-link" data-toggle="modal" data-target=".types-modal">  <i data-feather="tv" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Types"%}</button>
+        </li>
       {% endif %}
       {% if "live" in THIRD_PARTY_APPS %}
-      <li class="nav-item" id="nav-live">
-        <a class="nav-link" href="{% url 'live:lives'%}"><i data-feather="radio" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Lives"%}</a>
-      </li>
+        <li class="nav-item" id="nav-live">
+          <a class="nav-link" href="{% url 'live:lives'%}"><i data-feather="radio" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Lives"%}</a>
+        </li>
       {% endif %}
       {% if HIDE_LANGUAGE_SELECTOR == False %}
-      <li class="nav-item d-flex d-block d-lg-none langs pt-2 mt-2 justify-content-between" id="nav-languagechoice">
-        <button class="active">{{LANGUAGE_CODE}}</button>
-        {% for language in languages %}
-        {% if language.code != LANGUAGE_CODE %}
-        <form class="form form-inline p-0 m-0" action="/i18n/setlang/" method="post">
-          {% csrf_token %}
-          <input name="language" value="{{ language.code }}" type="hidden">
-          <input value="{{ language.name_local }} ({{ language.code }})" class="btn btn-lang my-2 mr-sm-2" type="submit">
-        </form>
-        {% endif %}
-        {% endfor %}
-      </li>
+        <li class="nav-item d-flex d-block d-lg-none langs pt-2 mt-2 justify-content-around" id="nav-languagechoice">
+          <div class="active alert m-0">{{LANGUAGE_CODE}}</div>
+          {% for language in languages %}
+            {% if language.code != LANGUAGE_CODE %}
+              <form class="form form-inline p-0 m-0" action="/i18n/setlang/" method="post">
+                {% csrf_token %}
+                <input name="language" value="{{ language.code }}" type="hidden">
+                <input value="{{ language.name_local }} ({{ language.code }})" class="btn btn-light my-2 mr-sm-2" type="submit">
+              </form>
+            {% endif %}
+          {% endfor %}
+        </li>
       {% endif %}
     </ul>
   </div>
@@ -59,84 +60,115 @@
       {%if MAINTENANCE_MODE%}
         <span class="badge badge-danger">{{MAINTENANCE_REASON}} <br/><i width=16 height=16 data-feather="alert-triangle"></i> {%trans "Some features are unavailable" %}</span>
       {%else%}
-          {% if USE_CHUNKED_UPLOAD %}
-            <a class="nav-link pl-2 pr-2" href="{% url 'video_add' %}"><i data-feather="plus-square" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i>  <span class="d-none d-md-inline-block">{% trans "Add a video" %}</span></a>
-          {% else %}
-            <a class="nav-link pl-2 pr-2" href="{% url 'video_edit' %}"><i data-feather="plus-square" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i>  <span class="d-none d-md-inline-block">{% trans "Add a video" %}</span></a>
-          {% endif %}
-        {%endif%}
-      </li>
-      {% if user.is_authenticated %}
-      <li class="nav-item dropdown login mr-2" id="nav-usermenu">
-        <button class="{% if not request.user.owner.userpicture  %}initials {% endif %}nav-link pl-2 pr-2 dropdown-toggle d-flex justify-content-center align-items-center " id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        {% if request.user.owner.userpicture  %}
-          <img src="{{user.owner.userpicture.file.url}}" class="userpicture rounded" alt="{{user}}">
+        {% if USE_CHUNKED_UPLOAD %}
+          <a class="nav-link pl-2 pr-2" href="{% url 'video_add' %}"><i data-feather="plus-square" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>  <span class="d-none d-md-inline-block">{% trans "Add a video" %}</span></a>
+        {% else %}
+          <a class="nav-link pl-2 pr-2" href="{% url 'video_edit' %}"><i data-feather="plus-square" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>  <span class="d-none d-md-inline-block">{% trans "Add a video" %}</span></a>
         {% endif %}
-        <span class="userinitial" {% if request.user.owner.userpicture  %}style="display:none"{% endif %}>
-          {% if user.first_name != '' and user.last_name != '' %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.username|slice:":2"|upper}}{% endif %}
-        </span>
+      {%endif%}
+    </li>
+    {% if user.is_authenticated %}
+      <li class="nav-item dropdown login mr-2" id="nav-usermenu">
+        <button class="{% if not request.user.owner.userpicture  %}initials btn btn-primary{% else %} nav-link{% endif %} pl-2 pr-2 dropdown-toggle d-flex justify-content-center align-items-center" id="navbarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {% if request.user.owner.userpicture  %}
+            <img src="{{user.owner.userpicture.file.url}}" class="userpicture rounded" alt="{{user.get_full_name}}" loading="lazy">
+          {% endif %}
+          <span class="userinitial" {% if request.user.owner.userpicture  %}style="display:none"{% endif %}>
+            {% if user.first_name != '' and user.last_name != '' %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.username|slice:":2"|upper}}{% endif %}
+          </span>
         </button>
         <div class="dropdown-menu dropdown-menu-right" >
-          <span class="dropdown-item" >{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</span>
+          <h6 class="dropdown-header">{% if user.get_full_name != '' %}{{ user.get_full_name }}{% else %}{{ user.username }}{% endif %}</h6>
           <div class="dropdown-divider"></div>
           {% if request.user.is_superuser or user.owner.is_manager %}
-          <a class="dropdown-item" href="{% url 'admin:index' %}"><i data-feather="cpu"></i>&nbsp;Administration</a>
+            <a class="dropdown-item" href="{% url 'admin:index' %}"><i data-feather="cpu" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>Administration</a>
           {% endif %}
           {% if request.user.is_staff or request.user.is_superuser %}
-          {% if request.user.owner.userpicture  %}
-          <button class="btn btn-link dropdown-item get_form_userpicture" data-url="{% url "userpicture" %}">
-              <i data-feather="image"></i>&nbsp;{% trans 'Change your picture' %}</button>
-          {% else %}
-          <button class="btn btn-link dropdown-item get_form_userpicture"  data-url="{% url "userpicture" %}">
-              <i data-feather="image"></i>&nbsp;{% trans 'Add your picture' %}</button>
+            <button class="dropdown-item get_form_userpicture" data-url="{% url "userpicture" %}">
+              <i data-feather="image" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% if request.user.owner.userpicture  %}{% trans 'Change your picture' %}{% else %}{% trans 'Add your picture' %}{% endif %}
+            </button>
           {% endif %}
+          <a class="dropdown-item" href="{% url 'my_videos' %}" title="{% trans 'My videos' %}"><i data-feather="film" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My videos' %}</a>
+          {% if USE_VIDEO_RECORD %}
+          <a class="dropdown-item" href="{% url 'video_record' %}" title="{% trans 'Video Record' %}"><i data-feather="video" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans "Video Record" %}</a>
           {% endif %}
-          <a class="dropdown-item" href="{% url 'my_videos' %}" title="{% trans 'My videos' %}"><i data-feather="film"></i>&nbsp;{% trans 'My videos' %}</a>
           {% if request.user.owners_channels.all %}
-          <a class="dropdown-item" href="{% url 'my_channels' %}" title="{% trans 'My channels' %}"><i data-feather="youtube"></i>&nbsp;{% trans 'My channels' %}</a>
+            <a class="dropdown-item" href="{% url 'my_channels' %}" title="{% trans 'My channels' %}"><i data-feather="youtube" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My channels' %}</a>
           {% endif %}
-          <a class="dropdown-item" href="{% url 'my_playlists' %}" title="{% trans 'My playlists' %}"><i data-feather="airplay"></i>&nbsp;{% trans 'My playlists' %}</a>
+          <a class="dropdown-item" href="{% url 'my_playlists' %}" title="{% trans 'My playlists' %}"><i data-feather="airplay" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My playlists' %}</a>
           {% if request.user.is_staff and USE_PODFILE %}
-          <a class="dropdown-item" href="{% url 'podfile:home' %}" title="{% trans 'My files' %}"><i data-feather="folder"></i>&nbsp;{% trans 'My files' %}</a>
+            <a class="dropdown-item" href="{% url 'podfile:home' %}" title="{% trans 'My files' %}"><i data-feather="folder" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My files' %}</a>
           {% endif %}
           {% if request.user.is_staff and ALLOW_MANUAL_RECORDING_CLAIMING %}
-          <a class="dropdown-item" href="{% url 'claim_record' %}" title="{% trans 'Claim a record' %}"><i data-feather="share"></i>&nbsp;{% trans 'Claim a record' %}</a>
+            <a class="dropdown-item" href="{% url 'claim_record' %}" title="{% trans 'Claim a record' %}"><i data-feather="share" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'Claim a record' %}</a>
           {% endif %}
           {% if request.user.is_staff and USE_BBB %}
-          <a class="dropdown-item" href="{% url 'bbb:list_meeting' %}" title="{% trans 'My BigBlueButton records' %}"><i data-feather="square"></i>&nbsp;{% trans 'My BigBlueButton records' %}</a>
+            {% if USE_BBB_LIVE %}
+              <a class="dropdown-item" href="{% url 'bbb:list_meeting' %}"><i data-feather="square" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My BigBlueButton records and lives' %}</a>
+            {% else %}
+              <a class="dropdown-item" href="{% url 'bbb:list_meeting' %}"><i data-feather="square" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My BigBlueButton records' %}</a>
+            {% endif %}
           {% endif %}
           <!-- <a class="dropdown-item" href="#">Gestion de mon compte</a> -->
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="{% url 'authentication_logout' %}" title="{% trans 'Log out' %}">
-              <i data-feather="log-out"></i>&nbsp;{% trans 'Log out' %}</a>
+            <i data-feather="log-out" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'Log out' %}</a>
         </div>
       </li>
       {% else %}
-      <li class="nav-item dropdown login mr-2" id="nav-authentication">
-        <a class="btn btn-connexion nav-link pl-2 pr-2 d-flex justify-content-center" href="{% url 'authentication_login' %}?referrer={{request.build_absolute_uri|urlencode}}" >
-          {% trans 'Log in' %}
-        </a>
-      </li>
+        <li class="nav-item dropdown login mr-2" id="nav-authentication">
+          <a class="btn btn-primary pl-2 pr-2 d-flex justify-content-center" href="{% url 'authentication_login' %}?referrer={{request.build_absolute_uri|urlencode}}" >
+            {% trans 'Log in' %}
+          </a>
+        </li>
       {% endif %}
       {% if HIDE_LANGUAGE_SELECTOR == False %}
-      <li class="nav-item d-none d-lg-block" id="nav-languagechoicelg">
-        <div class="btn-group"><button type="button" class="btn btn-lang btn-lang-active my-2 mr-sm-2 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {{LANGUAGE_CODE}}
+        <li class="nav-item d-none d-lg-block" id="nav-languagechoicelg">
+          <div class="btn-group"><button type="button" class="btn btn-lang btn-lang-active my-2 mr-sm-2 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{LANGUAGE_CODE}}
             </button>
-        <div class="dropdown-menu dropdown-menu-right p-0 m-0">
-        {% for language in languages %}
-        {% if language.code != LANGUAGE_CODE %}
-        <form class="form form-inline dropdown-item p-0 m-0" action="/i18n/setlang/" method="post">
-          {% csrf_token %}
-          <input name="language" value="{{ language.code }}" type="hidden">
-          <input value="{{ language.name_local }} ({{ language.code }})" class="btn btn-lang my-2 mr-sm-2" type="submit">
-        </form>
-        {% endif %}
-        {% endfor %}
-        </div>
-        </div>
-      </li>
+            <div class="dropdown-menu dropdown-menu-right p-0 m-0">
+              {% for language in languages %}
+                {% if language.code != LANGUAGE_CODE %}
+                  <form action="/i18n/setlang/" method="post">
+                    {% csrf_token %}
+                    <input name="language" value="{{ language.code }}" type="hidden">
+                    <input value="{{ language.name_local }} ({{ language.code }})" class="dropdown-item" type="submit">
+                  </form>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        </li>
       {% endif %}
-   </ul>
+    </ul>
+    {% if DARKMODE_ENABLED == True or DYSLEXIAMODE_ENABLED == True %}
+      <ul class="navbar-nav" id="nav-theme-switch">
+        {% if DARKMODE_ENABLED == True %}
+          <li class="nav-item mx-1" id="theme-switch-wrapper" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="{% trans 'Dark mode' %}">
+            <label class="theme-switch" for="checkbox-darkmode">
+              <span class="sr-only">{% trans 'Dark mode' %}</span>
+              <input type="checkbox" id="checkbox-darkmode" />
+              <div class="slider">
+                <i data-feather="sun"></i>
+                <i data-feather="moon"></i>
+              </div>
+            </label>
+          </li>
+        {% endif %}{% if DYSLEXIAMODE_ENABLED == True %}
+          <li class="nav-item mx-1" id="dyslexia-switch-wrapper" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="{% trans 'Dyslexia mode' %}">
+            <label class="dyslexia-switch" for="checkbox-dyslexia">
+              <span class="sr-only">{% trans 'Dyslexia mode' %}</span>
+              <input type="checkbox" id="checkbox-dyslexia" />
+              <div class="slider">
+                 <i data-feather="eye-off"></i>
+                 <i data-feather="eye"></i>
+              </div>
+            </label>
+          </li>
+        {% endif %}
+      </ul>
+    {% endif %}
+
 </div> <!-- FIN Container -->
 {% endspaceless %}

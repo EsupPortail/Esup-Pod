@@ -19,9 +19,9 @@
 <span>
   <a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the channel"%}" class="btn btn-light btn-sm"><i data-feather="edit"></i>&nbsp;</a>
 <a href="{% url 'channel' slug_c=channel.slug %}" title="{{channel.title}}">
-{% if channel.headband %}<!-- <img src="{{channel.headband.file.url}}" class="rounded img-thumbnail" alt="{{channel.title}}"> -->
+{% if channel.headband %}<!-- <img src="{{channel.headband.file.url}}" class="rounded img-thumbnail" alt="{{channel.title}}" loading="lazy"> -->
 {% thumbnail channel.headband.file "x34" as im %}
-    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{channel.title}}">
+    <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}" class='rounded' alt="{{channel.title}}" loading="lazy">
 {% endthumbnail %}
 {% endif %}
 {{channel.title}}</a>

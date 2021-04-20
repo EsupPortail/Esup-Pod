@@ -4,28 +4,27 @@
 {% load tagging_tags %}
 
 {% block page_extra_head %}
-
 {% endblock page_extra_head %}
 
 
 {% block breadcrumbs %}{{ block.super }}
-<li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
-{% if form.instance.title and form.instance.slug != '' %}
-<li class="breadcrumb-item"><a href="{% url 'video' slug=form.instance.slug %}" title="{{form.instance.title}}">{{form.instance.title|title|truncatechars:45}}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
-{%else%}
-<li class="breadcrumb-item active" aria-current="page">{% trans "Add a new video" %}</li>
-{%endif%}
+  <li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
+  {% if form.instance.title and form.instance.slug != '' %}
+  <li class="breadcrumb-item"><a href="{% url 'video' slug=form.instance.slug %}" title="{{form.instance.title}}">{{form.instance.title|title|truncatechars:45}}</a></li>
+  <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
+  {%else%}
+  <li class="breadcrumb-item active" aria-current="page">{% trans "Add a new video" %}</li>
+  {%endif%}
 {% endblock %}
 
 {% block page_title %}{% if form.instance.title %}{% trans "Editing the video" %} "{{form.instance.title}}"{% else %}{% trans "Add a new video" %}{%endif%}{% endblock %}
 
 {% block collapse_page_aside %}
-{% if access_not_allowed == True %}
+  {% if access_not_allowed == True %}
 
-{% else %}
-{{block.super}}
-{% endif %}
+  {% else %}
+  {{block.super}}
+  {% endif %}
 {% endblock collapse_page_aside %}
 
 
@@ -33,56 +32,84 @@
 
 {% spaceless %}
 <h3>{% if form.instance.title and form.instance.slug != '' %}{% trans "Editing the video" %} "{{form.instance.title}}"
-<span class="float-right">
-    <a href="{% url 'video' slug=form.instance.slug %}" title="{% trans 'View the video'%}" class="btn btn-primary btn-sm m-2">
-        <i data-feather="film"></i>&nbsp;{% trans "View the video"%}
-    </a>
-    <a href="{% url 'video_delete' slug=form.instance.slug %}" title="{% trans 'Delete the video'%}" class="btn btn btn-primary btn-sm m-2">
-        <i data-feather="trash-2"></i>&nbsp;{% trans "Delete the video"%}
-    </a>
-</span>
+  <span>
+  <a href="{% url 'video' slug=form.instance.slug %}" title="{% trans 'View the video'%}" class="btn btn-primary btn-sm m-2">
+    <i data-feather="film"></i>&nbsp;{% trans "View the video"%}
+  </a>
+  <a href="{% url 'video_delete' slug=form.instance.slug %}" title="{% trans 'Delete the video'%}" class="btn btn btn-danger btn-sm m-2">
+    <i data-feather="trash-2"></i>&nbsp;{% trans "Delete the video"%}
+  </a>
+  </span>
 {% else %}{% trans "Add a new video" %}{%endif%}
 </h3>
 {% if access_not_allowed == True %}
-<p class="text-info">
-    <i data-feather="info"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}" title="{% trans 'contact us' %}">{% trans 'contact us' %}</a>
-</p>
+  <p class="text-info">
+  <i data-feather="info"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}" title="{% trans 'contact us' %}">{% trans 'contact us' %}</a>
+  </p>
 {% else %}
-{% if form.instance.slug and form.instance.slug != '' %}
-<form id="video_form" method="post"
+  {% if form.instance.slug and form.instance.slug != '' %}
+  <form id="video_form" method="post"
     action="{% url 'video_edit' slug=form.instance.slug %}"
     accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
-{% else %}
-<form id="video_form" method="post"
+  {% else %}
+  <form id="video_form" method="post"
     action="{% url 'video_edit' %}"
     accept-charset="utf-8" enctype="multipart/form-data" class="needs-validation" novalidate data-morecheck="videocheck">
-{% endif %}
-    {% csrf_token %}
-    <!--<div class="group-video-edit">-->
-        <fieldset>
-            {% if form.errors %}
-            <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
-            {{form.errors}}
-            {% endif %}
+  {% endif %}
+  {% csrf_token %}
+  <!--<div class="group-video-edit">-->
+  {% if form.errors %}
+    <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p>
+    {{form.errors}}
+  {% endif %}
 
-            {% if form.instance.id and form.instance.get_encoding_step == "" %}
-            <div class="alert alert-warning" role="alert">
-                {% trans "The video is currently waiting for encoding." %}
-            </div>
-            {% endif %}
+  {% if form.instance.id and form.instance.get_encoding_step == "" %}
+    <div class="alert alert-warning" role="alert">
+      {% trans "The video is currently waiting for encoding." %}
+    </div>
+  {% endif %}
 
-            {% if form.instance.encoding_in_progress %}
-            <div class="alert alert-warning" role="alert">
-                {% trans "The video is currently being encoded." %}
-            </div>
-            {% endif %}
+  {% if form.instance.encoding_in_progress %}
+    <div class="alert alert-warning" role="alert">
+      {% trans "The video is currently being encoded." %}
+    </div>
+  {% endif %}
 
-            {% if form.instance.get_encoding_step == "5 : transcripting audio" %}
-            <p class="text-info">
-                {% trans "The video is currently being transcripted." %}
-            </p>
-            {% endif %}
+  {% if form.instance.get_encoding_step == "5 : transcripting audio" %}
+    <p class="text-info">
+      {% trans "The video is currently being transcripted." %}
+    </p>
+  {% endif %}
 
+  {% for field_hidden in form.hidden_fields %}
+    {{field_hidden}}
+  {% endfor %}
+  {% for field in form.visible_fields %}
+  {% spaceless %}
+  <div class="{% if 'description_' in field.name or 'title_'  in field.name %}collapse hide{% endif %}{% if 'description_' in field.name %} description{%endif%}{% if 'title_' in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %} field_{{field.name}}" {% if field.name == "restrict_access_to_groups" %}style="padding-left:2em;"{% endif %}>
+    <div class="form-group {% if field.field.required %}form-group-required{%endif%}" {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}style="max-width:44rem; overflow-x:hidden"{%endif%}>
+    {{ field.errors }}
+    {% if "form-check-input" in field.field.widget.attrs.class %}
+      <div class="form-check">
+      {{ field }} <label for="{{ field.id_for_label }}" class="form-check-label" >{{ field.label }}</label>
+      </div>
+    {% else %}
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {% if "form-control-file" in field.field.widget.attrs.class and form.instance.video %}<br/>{%endif%}
+      {{ field }}
+    {% endif %}
+    {% if field.help_text %}
+      <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+    {% endif %}
+    {% if field.field.required %}<div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div>{%endif%}
+    {% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
+    {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other(s) language(s)" %}</button>{%endif%}
+    </div>
+  </div>
+  {% endspaceless %}
+  {% endfor %}
+
+<<<<<<< HEAD
             {% for field_hidden in form.hidden_fields %}
             {{field_hidden}}
             {% endfor %}
@@ -128,7 +155,26 @@
         <button type="submit" class="btn btn-primary btn-sm m-2" name="_continue" value="">{% trans 'Save and continue editing' %}</button>
         {% if form.instance.title and form.instance.slug != '' %}<button type="submit" class="btn btn-primary btn-sm m-2" name="_saveandsee" value="{{form.instance.get_full_url}}">{% trans 'Save and see' %}</button> {%endif%}
         <a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}" class="btn btn-secondary btn-sm m-2">{% trans 'back to my videos' %}</a>
+=======
+  <div class="card" id='js-process'>
+  <div class="card-body">
+    <h5 class="card-title">{% trans "Sending, please wait." %}</h5>
+    <div class="spinner-border hidespinner" role="status">
+    <span class="sr-only">{% trans "Loading" %}...</span>
+>>>>>>> aa2dcb92a706032bc9caec2b360ec27aea5fc1c0
     </div>
+    <p class="card-text">{% progress_bar %}</p>
+  </div>
+  <div class="card-footer">
+    {% trans "The page will refresh after the upload completes." %}
+  </div>
+  </div>
+  <!--</div>-->
+  <div class="text-center">
+    <button type="submit" class="btn btn-primary btn-sm m-2" name="_continue" value="">{% trans 'Save and continue editing' %}</button>
+    {% if form.instance.title and form.instance.slug != '' %}<button type="submit" class="btn btn-primary btn-sm m-2" name="_saveandsee" value="{{form.instance.get_full_url}}">{% trans 'Save and see' %}</button> {%endif%}
+    <a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}" class="btn btn-secondary btn-sm m-2">{% trans 'back to my videos' %}</a>
+  </div>
 </form>
 {% endif %}
 {% endspaceless %}
@@ -141,71 +187,71 @@
 {% if form.instance.title  and form.instance.slug != '' %}
 <div class="card card-body p-2 mt-1" id="card-managevideo">
 <h5 class="card-title pl-2"><i data-feather="settings"></i>&nbsp;{% trans "Manage video"%}</h5>
-      <div class="card-text text-center">
-        {% include "videos/link_video.html" with video=form.instance %}
-      </div>
+    <div class="card-text text-center">
+    {% include "videos/link_video.html" with video=form.instance %}
+    </div>
 </div>
 {% if form.instance.slug != '' and request.user.is_staff or request.user.is_superuser or perms.video.change_video %}
-    {% if THIRD_PARTY_APPS|length > 0 %}
-    <div class="card card-body p-2 mt-1" id="card-alternativeversion">
-        <h5 class="card-title pl-2">{% trans "Staff" %} - {% trans "Alternative version" %}</h5>
-        <div class="card-text">
-            <p>{% trans 'As a staff member you can create other version of your video.' %}</p>
-            <div class="input-group-button">
-                {% for app in THIRD_PARTY_APPS %}{% if app != "live" %}{% with urledit=app|add:':edit_'|add:app %}<a href="{% url urledit slug=form.instance.slug %}" title="{% blocktrans %}Edit the {{app}}{% endblocktrans %}" class="p-0 m-0 btn btn-light btn-sm pl-1"><i data-feather="file-plus"></i>&nbsp;{% trans app|capfirst %}</a>     {% endwith %}{% endif %}{% endfor %}
-            </div>
-        </div>
+  {% if THIRD_PARTY_APPS|length > 0 %}
+  <div class="card card-body p-2 mt-1" id="card-alternativeversion">
+    <h5 class="card-title pl-2">{% trans "Staff" %} - {% trans "Alternative version" %}</h5>
+    <div class="card-text">
+      <p>{% trans 'As a staff member you can create other version of your video.' %}</p>
+      <div class="input-group-button">
+        {% for app in THIRD_PARTY_APPS %}{% if app != "live" %}{% with urledit=app|add:':edit_'|add:app %}<a href="{% url urledit slug=form.instance.slug %}" title="{% blocktrans %}Edit the {{app}}{% endblocktrans %}" class="p-0 m-0 btn btn-light btn-sm pl-1"><i data-feather="file-plus"></i>&nbsp;{% trans app|capfirst %}</a>     {% endwith %}{% endif %}{% endfor %}
+      </div>
     </div>
-    {% endif %}
-    <div class="card card-body p-2 mt-1" id="card-sharedraftversion">
-        <h5 class="card-title pl-2">{% trans 'Embed/Share (Draft Mode)' %}</h5>
-        <div class="card-text" >
-            <p>{% trans 'Use this link to share the video in draft mode' %}</p>
-            <div>
-                <div class="input-group">
-                  <input class="form-control form-control-sm form-control-plaintext" type="text" name="txtpartageprive" id="txtpartageprive" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video/{{ form.instance.slug }}/{{ form.instance.get_hashkey }}/" readonly/>
-                  <div class="input-group-button">
-                    <clipboard-copy aria-label="Copy to clipboard" class="btn btn-sm btn-default" tabindex="0" role="button" id="btnpartageprive">
-                      <i data-feather="copy"></i>
-                    </clipboard-copy>
-                  </div>
-                </div>
-            </div>
+  </div>
+  {% endif %}
+  <div class="card mt-1" id="card-sharedraftversion">
+    <h5 class="card-header card-title pl-2">{% trans 'Embed/Share (Draft Mode)' %}</h5>
+    <div class="card-body card-text" >
+      <p>{% trans 'Use this link to share the video in draft mode' %}</p>
+      <div>
+        <div class="input-group">
+          <input class="form-control form-control-sm form-control-plaintext" type="text" name="txtpartageprive" id="txtpartageprive" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}/video/{{ form.instance.slug }}/{{ form.instance.get_hashkey }}/" readonly/>
+          <div class="input-group-button">
+          <clipboard-copy aria-label="Copy to clipboard" class="btn btn-sm btn-default" tabindex="0" role="button" id="btnpartageprive">
+            <i data-feather="copy"></i>
+          </clipboard-copy>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 {% endif %}
 {% endif %}
-<div class="card card-body p-2 mt-1" id="card-sharedraftversion">
-    <h5 class="card-title pl-2">{% trans "Uploading" %}</h5>
-    <div class="card-text" >
-        <p>{% blocktrans with form.VIDEO_MAX_UPLOAD_SIZE as video_max_upload_size %}The file size must be lower than {{video_max_upload_size}} Go.{% endblocktrans %}</p>
-        <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
-        <p>{% trans "While sending your file, do not close your browser until you have received a message of success or failure." %}</p>
-        <p>{% trans "An email will be sent to you when all encoding tasks are completed." %}<p>
-    </div>
+<div class="card mt-1" id="card-sharedraftversion">
+  <h5 class="card-header card-title pl-2">{% trans "Uploading" %}</h5>
+  <div class="card-body card-text" >
+    <p>{% blocktrans with form.VIDEO_MAX_UPLOAD_SIZE as video_max_upload_size %}The file size must be lower than {{video_max_upload_size}} Go.{% endblocktrans %}</p>
+    <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
+    <p>{% trans "While sending your file, do not close your browser until you have received a message of success or failure." %}</p>
+    <p>{% trans "An email will be sent to you when all encoding tasks are completed." %}<p>
+  </div>
 </div>
-<div class="card card-body p-2 mt-1" id="card-mandatoryfields">
-    <h5 class="card-title pl-2">{% trans "Mandatory fields" %}</h5>
-    <div class="card-text" >
-        <p>{% trans "Fields marked with an asterisk are mandatory."%}</p>
-    </div>
+<div class="card mt-1" id="card-mandatoryfields">
+  <h5 class="card-header card-title pl-2">{% trans "Mandatory fields" %}</h5>
+  <div class="card-body card-text">
+    <p>{% trans "Fields marked with an asterisk are mandatory."%}</p>
+  </div>
 </div>
-<div class="card card-body p-2 mt-1" id="card-helpfields">
-    <h5 class="card-title pl-2">{% trans "Help for form fields"%}</h5>
-    <div class="card-text" id="formfields">
-        {% for title, values in form.VIDEO_FORM_FIELDS_HELP_TEXT.items %}
-            <div class="card card-body p-1">
-                <button class="btn btn-sm-light" id="heading-{{forloop.counter}}" data-toggle="collapse" data-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}" style="white-space:normal !important; word-wrap: break-word; word-break: normal;">
-                    {% trans title %}
-                </button>
-                <div id="collapse-{{forloop.counter}}" class="collapse hide card-text small" aria-labelledby="heading-{{forloop.counter}}" data-parent="#formfields">
-                    {% for value in values %}
-                    <p>{{value|safe}}</p>
-                    {%endfor%}
-                </div>
-            </div>
-        {% endfor %}
-    </div>
+<div class="card mt-1" id="card-helpfields">
+  <h5 class="card-header card-title pl-2">{% trans "Help for form fields"%}</h5>
+  <div class="card-body" id="formfields">
+    {% for title, values in form.VIDEO_FORM_FIELDS_HELP_TEXT.items %}
+      <div class="card">
+        <button class="btn btn-light rounded-0" id="heading-{{forloop.counter}}" data-toggle="collapse" data-target="#collapse-{{forloop.counter}}" aria-expanded="true" aria-controls="collapse-{{forloop.counter}}">
+          {% trans title %}
+        </button>
+        <div id="collapse-{{forloop.counter}}" class="card-body collapse hide card-text small" aria-labelledby="heading-{{forloop.counter}}" data-parent="#formfields">
+          {% for value in values %}
+            <p>{{value|safe}}</p>
+          {%endfor%}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
 </div>
 {% endif %}
 {% endblock page_aside %}
@@ -213,63 +259,60 @@
 
 {% block more_script %}
 <script src="/admin/jsi18n/"></script>
-<script src="{% static 'admin/js/core.js' %}"></script>
-<script src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
-<script src="{% static 'admin/js/jquery.init.js' %}"></script>
+<script src="{% static 'admin/js/core.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'admin/js/vendor/jquery/jquery.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'admin/js/jquery.init.js' %}?ver={{VERSION}}"></script>
 
-<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/widgets.css' %}?ver={{VERSION}}" />
 <!-- form . media -->
-{{form.media}}
+
 </style>
 
-
 {% if USE_CHUNKED_UPLOAD %}
-<script>
+  <script>
   var slug = "{{ form.instance.slug }}";
   $("#id_video").click(function(event){
     location.href= "/video_add?slug=" + slug
     event.preventDefault();
   });
-</script>
-
+  </script>
 {% else %}
 
-<script>
-    /** progress_bar **/
-    uuid = $('#progressBar').data('progress_bar_uuid');
-    function show_progress_bar(form) {
-        if ($.data(form, 'submitted')) return false;
-        form.action += (form.action.indexOf('?') == -1 ? '?' : '&') + 'X-Progress-ID=' + uuid;
-        window.setTimeout(update_progress_info, 200);
-        $.data(form, 'submitted', true); // mark form as submitted.
-        return true;
+  <script>
+  /** progress_bar **/
+  uuid = $('#progressBar').data('progress_bar_uuid');
+  function show_progress_bar(form) {
+    if ($.data(form, 'submitted')) return false;
+    form.action += (form.action.indexOf('?') == -1 ? '?' : '&') + 'X-Progress-ID=' + uuid;
+    window.setTimeout(update_progress_info, 200);
+    $.data(form, 'submitted', true); // mark form as submitted.
+    return true;
+  }
+  function update_progress_info() {
+    $.getJSON(upload_progress_url, {'X-Progress-ID': uuid}, function(data, status){
+    console.log(data);
+    if(data){
+      $('#progressBar').removeAttr('hidden');  // show progress bar if there are datas
+      var progress = parseInt(data.received, 10)/parseInt(data.size, 10)*100;
+      $('#progressBar').attr('value', progress);
     }
-    function update_progress_info() {
-      $.getJSON(upload_progress_url, {'X-Progress-ID': uuid}, function(data, status){
-        console.log(data);
-        if(data){
-          $('#progressBar').removeAttr('hidden');  // show progress bar if there are datas
-          var progress = parseInt(data.received, 10)/parseInt(data.size, 10)*100;
-          $('#progressBar').attr('value', progress);
-        }
-        else {
-          $('#progressBar').attr('hidden', '');  // hide progress bar if no datas
-        }
-        window.setTimeout(update_progress_info, 200);
-      });
+    else {
+      $('#progressBar').attr('hidden', '');  // hide progress bar if no datas
     }
-    </script>
-
+    window.setTimeout(update_progress_info, 200);
+    });
+  }
+  </script>
 {%endif%}
 
 <script>
-    /** formulaire **/
-    $("#js-process").hide();
-    var VIDEO_MAX_UPLOAD_SIZE = {{form.VIDEO_MAX_UPLOAD_SIZE}};
-    var video_max_upload_size = VIDEO_MAX_UPLOAD_SIZE*1024*1024*1024;
-    var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfor%}";
-    const max_duration_date_delete = {{form.max_duration_date_delete}};
+  /** formulaire **/
+  $("#js-process").hide();
+  var VIDEO_MAX_UPLOAD_SIZE = {{form.VIDEO_MAX_UPLOAD_SIZE}};
+  var video_max_upload_size = VIDEO_MAX_UPLOAD_SIZE*1024*1024*1024;
+  var listext = "{% for ext in form.VIDEO_ALLOWED_EXTENSIONS%} {{ext|safe}}{%endfor%}";
+  const max_duration_date_delete = {{form.max_duration_date_delete}};
 </script>
-<script defer src="{% static 'js/validate-date_delete-field.js' %}"></script>
-{{ form.media.js }}
+<script defer src="{% static 'js/validate-date_delete-field.js' %}?ver={{VERSION}}"></script>
+
 {% endblock more_script %}

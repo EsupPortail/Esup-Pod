@@ -6,27 +6,27 @@
 
 {% block page_extra_head %}
 <style>
-    div.jumbotron {
-        min-height: 56rem;
-        height:100%;
-    }
-    #collapseAside {
-        max-height: 60rem;
-        overflow-y: auto;
-    }
-    .loader {
-        border: 5px solid #f3f3f3;
-        border-top: 5px solid #3498db;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        animation: spin 2s linear infinite;
-        margin: auto;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
+  div.jumbotron {
+    min-height: 56rem;
+    height:100%;
+  }
+  #collapseAside {
+    max-height: 60rem;
+    overflow-y: auto;
+  }
+  .loader {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+    margin: auto;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 </style>
 
 {% endblock page_extra_head %}
@@ -34,73 +34,73 @@
 {% block video-element %}
 
 <div id="load-message" align="center">
-    {% trans 'Loading, please wait...' %}
+  {% trans 'Loading, please wait...' %}
 </div>
 <div class="loader"></div>
 <div id="configuration" style="display:none;">
-        <h3 itemprop="name" >
-            {{video.title}}
-            <small>
-            {% if video.interactive.is_interactive %}        
-                {% if request.user == video.owner or request.user.is_superuser %}
-                <!--
-                <button type="submit" class="btn btn-primary btn-sm" id="button_delete_video" title="{% trans 'Delete the interactive part of this video' %}">
-                    <i data-feather="x-circle"></i>
-                    <span class="sr-only">{% trans 'Delete the interactive part of this video' %}</span>
-                </button>
-                -->
-                <form action="{% url 'h5pp:h5plistContents' %}?contentId={{interactive.h5p.content_id}}" id="button_delete_video" style="display:inline-block;">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-secondary btn-sm" title="{% trans 'Back' %}">
-                        <i data-feather="x-circle"></i>
-                        <span class="sr-only">{% trans 'Delete the interactive part of this video' %}</span>
-                    </button>
-                </form>
-                <button type="submit" class="btn btn-primary btn-sm" id="button_manage" title="{% trans 'Manage scores' %}">
-                    <i data-feather="list"></i>
-                    <span class="sr-only">{% trans 'Manage scores' %}</span>
-                </button>
-                {% endif %}
-            {% endif %}
-                <form action="{% url 'video' slug=video.slug %}" id="video_back" style="display:inline-block;">
-                    <button type="submit" class="btn btn-secondary btn-sm" id="button_video_back" title="{% trans 'Back' %}">
-                        <i data-feather="arrow-left-circle"></i>
-                        <span class="sr-only">{% trans 'Back' %}</span>
-                    </button>
-                </form>
-            </small>
-        </h3>
+    <h3 itemprop="name" >
+      {{video.title}}
+      <small>
+      {% if video.interactive.is_interactive %}
+        {% if request.user == video.owner or request.user.is_superuser %}
+        <!--
+        <button type="submit" class="btn btn-primary btn-sm" id="button_delete_video" title="{% trans 'Delete the interactive part of this video' %}">
+          <i data-feather="x-circle"></i>
+          <span class="sr-only">{% trans 'Delete the interactive part of this video' %}</span>
+        </button>
+        -->
+        <form action="{% url 'h5pp:h5plistContents' %}?contentId={{interactive.h5p.content_id}}" id="button_delete_video" style="display:inline-block;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-secondary btn-sm" title="{% trans 'Back' %}">
+            <i data-feather="x-circle"></i>
+            <span class="sr-only">{% trans 'Back' %}</span>
+          </button>
+        </form>
+        <button type="submit" class="btn btn-primary btn-sm" id="button_manage" title="{% trans 'Manage scores' %}">
+          <i data-feather="list"></i>
+          <span class="sr-only">{% trans 'Manage scores' %}</span>
+        </button>
+        {% endif %}
+      {% endif %}
+        <form action="{% url 'video' slug=video.slug %}" id="video_back" style="display:inline-block;">
+          <button type="submit" class="btn btn-secondary btn-sm" id="button_video_back" title="{% trans 'Back' %}">
+            <i data-feather="arrow-left-circle"></i>
+            <span class="sr-only">{% trans 'Back' %}</span>
+          </button>
+        </form>
+      </small>
+    </h3>
 </div>
 
 {% if not request.GET.is_iframe%}
 <p class="save-button" align="center" style="display:none;">
-    <button type="submit" class="btn btn-primary btn-sm button_savecontinue_interactive" title="{% trans 'Save and continue' %}">
-        <span id="save" class="glyphicon glyphicon-check"></span> {% trans 'Save and continue' %}
-        <span class="sr-only">{trans 'Save and continue' %}</span>
-    </button>
-    <button type="submit" class="btn btn-primary btn-sm button_savequit_interactive" title="{% trans 'Save and return to video' %}">
-        <span id="save" class="glyphicon glyphicon-new-window"></span> {% trans 'Save and see the interactive video' %}
-        <span class="sr-only">{trans 'Save and see the interactive video' %}</span>
-    </button>
+  <button type="submit" class="btn btn-primary btn-sm button_savecontinue_interactive">
+    <span id="save" class="glyphicon glyphicon-check"></span>
+    {% trans 'Save and continue' %}
+  </button>
+  <button type="submit" class="btn btn-primary btn-sm button_savequit_interactive">
+    <span id="save" class="glyphicon glyphicon-new-window"></span>
+    {% trans 'Save and see the interactive video' %}
+  </button>
 </p>
 {% endif %}
 
 {% if video.interactive.is_interactive == True %}
-<iframe id="ieditor" src="{% url "h5pp:h5pedit" contentId=interactive.h5p.content_id %}?title={{video.title}}&is_iframe=true" style="display:none; overflow: auto;min-height: 70%;" width="100%" frameBorder="0"></iframe><!-- height=985px-->
+  <iframe id="ieditor" src="{% url "h5pp:h5pedit" contentId=interactive.h5p.content_id %}?title={{video.title}}&is_iframe=true" style="display:none; overflow: auto;min-height: 70%;" width="100%" frameBorder="0" loading="lazy"></iframe><!-- height=985px-->
 {% else %}
-<iframe id="ieditor" src="{% url "h5pp:h5pcreate" %}?h5p_library={{interactive.version.machine_name}} {{interactive.version.major_version}}.{{interactive.version.minor_version}}&title={{video.title}}&is_iframe=true" style="display:none; overflow: auto; min-height: 70%;" width="100%" frameBorder="0"></iframe>
+  <iframe id="ieditor" src="{% url 'h5pp:h5pcreate' %}?h5p_library={{interactive.version.machine_name}} {{interactive.version.major_version}}.{{interactive.version.minor_version}}&title={{video.title}}&is_iframe=true" style="display:none; overflow: auto; min-height: 70%;" width="100%" frameBorder="0" loading="lazy"></iframe>
 {% endif %}
 
 {% if not request.GET.is_iframe%}
 <div class="save-button" align="center" style="display:none;">
-    <button type="submit" class="btn btn-primary button_savecontinue_interactive" title="{% trans 'Save and continue' %}">
-        <span id="save" class="glyphicon glyphicon-check"></span> {% trans 'Save and continue' %}
-        <span class="sr-only">{trans 'Save and continue' %}</span>
-    </button>
-    <button type="submit" class="btn btn-primary button_savequit_interactive" title="{% trans 'Save and return to video' %}">
-        <span id="save" class="glyphicon glyphicon-new-window"></span> {% trans 'Save and see the interactive video' %}
-        <span class="sr-only">{trans 'Save and see the interactive video' %}</span>
-    </button>
+  <button type="submit" class="btn btn-primary button_savecontinue_interactive" title="{% trans 'Save and continue' %}">
+    <span id="save" class="glyphicon glyphicon-check"></span>
+    {% trans 'Save and continue' %}
+  </button>
+  <button type="submit" class="btn btn-primary button_savequit_interactive" title="{% trans 'Save and return to video' %}">
+    <span id="save" class="glyphicon glyphicon-new-window"></span>
+    {% trans 'Save and see the interactive video' %}
+  </button>
 </div>
 {% endif %}
 
@@ -108,148 +108,146 @@
 
 
 {% block page_aside %}
-    <div class="card card-body p-2 mt-1" id="card-interactiveeditinformations">
-        <h5 class="card-title pl-2">
-            <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
-        </h5>
-        <div class="card-text small">
-            {% if video.owner == request.user or request.user.is_superuser %}
-            <p><a href="{% url 'interactive:group_interactive' slug=video.slug %}" title="{% trans 'You can specify the group(s) of users who can access this page' %}"><i data-feather="users"></i>&nbsp;{% trans 'You can specify the group(s) of users who can access this page' %}</a></p>
-            {% endif %}
-            <p class="text-info">
-                {% trans 'Do not forget to save your work regularly. Especially if you add an interaction.' %}
-                <br> 
-                {% trans "To save and continue your work click on the button [Save and continue]. If you have completed your work click on the button [Save and see the interactive video] to view your new interactive video." %}
-            </p>
-        </div>
+  <div class="card card-body p-2 mt-1" id="card-interactiveeditinformations">
+    <h5 class="card-title pl-2">
+      <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
+    </h5>
+    <div class="card-text small">
+      {% if video.owner == request.user or request.user.is_superuser %}
+      <p><a href="{% url 'interactive:group_interactive' slug=video.slug %}" title="{% trans 'You can specify the group(s) of users who can access this page' %}"><i data-feather="users"></i>&nbsp;{% trans 'You can specify the group(s) of users who can access this page' %}</a></p>
+      {% endif %}
+      <p class="text-info">
+        {% trans 'Do not forget to save your work regularly. Especially if you add an interaction.' %}
+        <br>
+        {% trans "To save and continue your work click on the button [Save and continue]. If you have completed your work click on the button [Save and see the interactive video] to view your new interactive video." %}
+      </p>
     </div>
-    {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all %}
-    <div class="card card-body p-2 mt-1" id="card-managevideo">
-    <h5 class="card-title pl-2"><i data-feather="settings"></i>&nbsp;{% trans "Manage video"%}</h5>
-          <div class="card-text text-center">
-            {% include "videos/link_video.html" %}
-          </div>
-    </div>
-    {% endif %}
+  </div>
+  {% if video.owner == request.user or request.user.is_superuser or request.user in video.additional_owners.all %}
+  <div class="card card-body p-2 mt-1" id="card-managevideo">
+  <h5 class="card-title pl-2"><i data-feather="settings"></i>&nbsp;{% trans "Manage video"%}</h5>
+      <div class="card-text text-center">
+      {% include "videos/link_video.html" %}
+      </div>
+  </div>
+  {% endif %}
 
 {% endblock page_aside %}
 
 {% block more_script %}
 <script>
-    var editorReady = false;
-    var continueClick = false;
-    var quitClick = false;
-    function chargementEditeur(){
-        //lancement interface editeur quand ce dernier est fini de charger
-        if( $('#ieditor').contents().find('.h5p-editor-iframe').length > 0 && 
-            $('#ieditor').contents().find('.h5p-editor-iframe').contents().find('.h5p-add-file').length > 0 && editorReady == false)
-        {
-            editor();
-            $('#ieditor').get(0).contentWindow.ns.$('.h5p-chooser.h5p-quality.h5p-show li').first().click()
-            $('#load-message').hide();
-            $('.loader').hide();
-            $("#ieditor").fadeIn('slow');
-            $('.save-button').show();
-            $('#configuration').show();
-        } else {
-            setTimeout(chargementEditeur,2000); /* rappel après 2 secondes = 2000 millisecondes */
-        }
+  var editorReady = false;
+  var continueClick = false;
+  var quitClick = false;
+  function chargementEditeur(){
+    //lancement interface editeur quand ce dernier est fini de charger
+    if( $('#ieditor').contents().find('.h5p-editor-iframe').length > 0 &&
+      $('#ieditor').contents().find('.h5p-editor-iframe').contents().find('.h5p-add-file').length > 0 && editorReady == false)
+    {
+      editor();
+      $('#ieditor').get(0).contentWindow.ns.$('.h5p-chooser.h5p-quality.h5p-show li').first().click()
+      $('#load-message').hide();
+      $('.loader').hide();
+      $("#ieditor").fadeIn('slow');
+      $('.save-button').show();
+      $('#configuration').show();
+    } else {
+      setTimeout(chargementEditeur,2000); /* rappel après 2 secondes = 2000 millisecondes */
     }
-    {% if video.is_video %}
-    /** get all mp4 format **/
-    var mp4_sources = {{video.get_video_mp4_json|safe}};
-    {% else %}
-    {% if video.get_video_m4a %}
-    var mp4_sources = [{
-      src: '{{video.get_video_m4a.source_file.url}}',
-      type: '{{video.get_video_m4a.encoding_format}}',
-    }];
-    {% endif %}
-    {% endif %}
+  }
+  {% if video.is_video %}
+  /** get all mp4 format **/
+  var mp4_sources = {{video.get_video_mp4_json|safe}};
+  {% else %}
+  {% if video.get_video_m4a %}
+  var mp4_sources = [{
+    src: '{{video.get_video_m4a.source_file.url}}',
+    type: '{{video.get_video_m4a.encoding_format}}',
+  }];
+  {% endif %}
+  {% endif %}
 
-    function editor() {
-        editorReady = true;
-        $('#ieditor').get(0).contentWindow.ns.$('select[name="h5peditor-library"]').hide();
-        $('#ieditor').get(0).contentWindow.ns.$('.h5p-more-libraries').hide();
+  function editor() {
+    editorReady = true;
+    $('#ieditor').get(0).contentWindow.ns.$('select[name="h5peditor-library"]').hide();
+    $('#ieditor').get(0).contentWindow.ns.$('.h5p-more-libraries').hide();
 
-        {% if not interactive.h5p %}
-        for(i=0;i<mp4_sources.length;i++){
-            //console.log(mp4_sources[i].src);
-            $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}'+mp4_sources[i].src);
-            $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
-        }
-        {% endif %}
-
-        $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-tab-a.h5peditor-tab-assets').click();
-        $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-tab-li:first').hide();
-        $('#ieditor').fadeIn('slow');
-        $('#button_save_interactive').show();
-        $('.alert').hide();
+    {% if not interactive.h5p %}
+    for(i=0;i<mp4_sources.length;i++){
+      //console.log(mp4_sources[i].src);
+      $('#ieditor').get(0).contentWindow.ns.$('.h5p-file-url.h5peditor-text').val('{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}'+mp4_sources[i].src);
+      $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-button-textual.h5p-insert').click();
     }
+    {% endif %}
+
+    $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-tab-a.h5peditor-tab-assets').click();
+    $('#ieditor').get(0).contentWindow.ns.$('.h5peditor-tab-li:first').hide();
+    $('#ieditor').fadeIn('slow');
+    $('#button_save_interactive').show();
+    $('.alert').hide();
+  }
 
 
-        $('#configuration').hide();
-        $('#info').hide();
-        // Save and continue editing
-        $('.button_savecontinue_interactive').on('click', function(){
-            continueClick = true;
-            $('#load-message').show();
-            $('.loader').show();
-            $('#info').hide();
-            $('#configuration').hide();
-            $('.save-button').hide();
-            $("#ieditor").hide();
-            $('#ieditor').contents().find('#submit_editor').click();
-        });
-        // Save and return to video page
-        $('.button_savequit_interactive').on('click', function() {
-            quitClick = true;
-            $('#load-message').show();
-            $('.loader').show();
-            $('#info').hide();
-            $('#configuration').hide();
-            $('.save-button').hide();
-            $('#ieditor').hide();
-            $('#ieditor').contents().find('#submit_editor').click();
-        });
-        //Delete interactive video
-        $('#button_delete_video').on('submit', function() {
-            var data_form = $( this ).serializeArray();
-            $.ajax({
-                url: '{% url 'h5pp:h5plistContents' %}?contentId={{interactive.h5p.content_id}}',
-                data:data_form,
-                type: 'POST',
-                success: function() {
-                    window.location.assign("{% url 'video' slug=video.slug %}");
-                }
-            });
-            return false;
-        });
+    $('#configuration').hide();
+    $('#info').hide();
+    // Save and continue editing
+    $('.button_savecontinue_interactive').on('click', function(){
+      continueClick = true;
+      $('#load-message').show();
+      $('.loader').show();
+      $('#info').hide();
+      $('#configuration').hide();
+      $('.save-button').hide();
+      $("#ieditor").hide();
+      $('#ieditor').contents().find('#submit_editor').click();
+    });
+    // Save and return to video page
+    $('.button_savequit_interactive').on('click', function() {
+      quitClick = true;
+      $('#load-message').show();
+      $('.loader').show();
+      $('#info').hide();
+      $('#configuration').hide();
+      $('.save-button').hide();
+      $('#ieditor').hide();
+      $('#ieditor').contents().find('#submit_editor').click();
+    });
+    //Delete interactive video
+    $('#button_delete_video').on('submit', function() {
+      var data_form = $( this ).serializeArray();
+      $.ajax({
+        url: '{% url 'h5pp:h5plistContents' %}?contentId={{interactive.h5p.content_id}}',
+        data:data_form,
+        type: 'POST',
+        success: function() {
+          window.location.assign("{% url 'video' slug=video.slug %}");
+        }
+      });
+      return false;
+    });
 
-        //Go to H5PP plugin management
-        {% if interactive.h5p %}
-        $('#button_manage').on('click', function() {
-            window.location.assign("{% url 'h5pp:h5pscore' contentId=interactive.h5p.content_id %}" );
-        });
-        {% endif %}
-        
-        chargementEditeur();
+    //Go to H5PP plugin management
+    {% if interactive.h5p %}
+    $('#button_manage').on('click', function() {
+      window.location.assign("{% url 'h5pp:h5pscore' contentId=interactive.h5p.content_id %}" );
+    });
+    {% endif %}
 
-        $('#ieditor').on('load', function() {
+    chargementEditeur();
 
-            if(continueClick == true) {
-                window.location.assign(window.location.href);
-            }
-            if(quitClick == true) {
-                window.location.assign("{% url 'interactive:video_interactive' slug=video.slug %}");
-            }
-            $('#ieditor').contents().find('#id_title').hide();
-            $('#ieditor').contents().find('.label_form').hide();
-            $('#ieditor').contents().find('#id_h5p_type').hide();
-            $('#ieditor').contents().find('#submit_editor').hide();
-        });
+    $('#ieditor').on('load', function() {
 
-    
-    
+      if(continueClick == true) {
+        window.location.assign(window.location.href);
+      }
+      if(quitClick == true) {
+        window.location.assign("{% url 'interactive:video_interactive' slug=video.slug %}");
+      }
+      $('#ieditor').contents().find('#id_title').hide();
+      $('#ieditor').contents().find('.label_form').hide();
+      $('#ieditor').contents().find('#id_h5p_type').hide();
+      $('#ieditor').contents().find('#submit_editor').hide();
+    });
+
 </script>
 {% endblock more_script %}

@@ -91,6 +91,11 @@ ADMINS = (('Name', 'adminmail@univ.fr'),)
 MANAGERS = ADMINS
 
 """
+# Liste des adresses destinataires des courriels de contact
+"""
+CONTACT_US_EMAIL = []
+
+"""
 # Un dictionnaire contenant les réglages de toutes les bases de données
 #  à utiliser avec Django.
 # C’est un dictionnaire imbriqué dont les contenus font correspondre
@@ -137,6 +142,15 @@ FILE_UPLOAD_TEMP_DIR = "/var/tmp"
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-STATIC_ROOT
 """
 STATIC_ROOT = "/pod/static"
+
+"""
+# Indique à django de compresser automatiquement
+# les fichiers css/js les plus gros lors du collectstatic
+# pour optimiser les tailles de requetes.
+# À combiner avec un réglage webserver ("gzip_static  on;" sur nginx)
+# voir https://github.com/whs/django-static-compress
+"""
+STATICFILES_STORAGE = 'static_compress.CompressedStaticFilesStorage'
 
 """
 # Chemin absolu du système de fichiers pointant vers le répertoire
@@ -301,6 +315,11 @@ USE_ESTABLISHMENT_FIELD = False
 USE_STATS_VIEW = False
 
 """
+# Permet d'activer la possibilité d'enregistrer son ecran et son micro
+"""
+USE_VIDEO_RECORD = False
+
+"""
 # affichage de la statistique de vue des videos si utilisateur authentifié
 """
 VIEW_STATS_AUTH = False
@@ -393,6 +412,9 @@ TEMPLATE_VISIBLE_SETTINGS = {
     'TRACKING_TEMPLATE': '',
 }
 
+# Configuration des choix de vitesse de lecture pour le lecteur vidéo
+# valeur par défaut '[0.5, 1, 1.5, 2]'
+VIDEO_PLAYBACKRATES = '[0.5, 1, 1.5, 2]'
 
 # Configuration application recherche
 # Pour mettre à jour le moteur de recherche, je lance toutes les nuits
@@ -418,13 +440,13 @@ ES_TIMEOUT = 30
 """
 ES_MAX_RETRIES = 10
 """
-# Valeur la version d'ElasticSearch 
-# valeurs possibles 6 ou 7 (pour indiquer utiliser elasticsearch 6 ou 7)
-# pour utiliser la version 7, faire une mise à jour du paquet elasticsearch-py 
+# Version d'ElasticSearch
+# valeurs possibles 6 ou 7 (pour indiquer utiliser ElasticSearch 6 ou 7)
+# pour utiliser la version 7, faire une mise à jour du paquet elasticsearch-py
 # elasticsearch==7.10.1
 # https://elasticsearch-py.readthedocs.io/en/v7.10.1/
 """
-ES_VERSION = 6 # Si 7, faire un une mise à jour du paquet 
+ES_VERSION = 6 # Si 7, faire un une mise à jour du paquet
 
 # ## Configuration encodage ## #
 
@@ -476,6 +498,20 @@ FFMPEG_STATIC_PARAMS = " -c:a aac -ar 48000 -c:v h264 -profile:v high -pix_fmt y
 # autres paramètres qui sont placés au début de la commande
 """
 FFMPEG_MISC_PARAMS = " -hide_banner -y "
+# to use in GPU, specify for example
+# -y -vsync 0 -hwaccel_device {hwaccel_device} \
+# -hwaccel cuvid -c:v {codec}_cuvid
+
+"""
+# gestion de la taille de la vidéo pour l'encodage ffmpeg
+"""
+FFMPEG_SCALE = ' -vf "scale=-2:{height}" '
+# to use in GPU, specify ' -vf "scale_npp=-2:{height}:interp_algo=super" '
+
+"""
+# Pour spécifier le shell utilisé pour lancer la commande ffmpeg (/bin/sh par défaut)
+"""
+ENCODE_SHELL = '/bin/sh'
 
 """
 # bitrate audio pour l'encodage M4A
@@ -535,7 +571,7 @@ RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = False
 #  utilisée pour présenter la vidéo.
 # Cette image doit se situer dans le répertoire static.
 """
-DEFAULT_THUMBNAIL = "img/default.png"
+DEFAULT_THUMBNAIL = "img/default.svg"
 
 """
 # Encodage possible sur la plateforme.
@@ -828,7 +864,12 @@ KIND_CHOICES = (('subtitles', _('subtitles')), ('captions', _('captions')))
 # Type d'authentification possible sur votre instance.
 #  Pour l'instant local ou cas
 """
-AUTH_TYPE = (('local', _('local')), ('CAS', 'CAS'))
+AUTH_TYPE = (
+        ('local', _('local')),
+        ('CAS', 'CAS'),
+        ('OIDC', "OIDC"),
+        ("Shibboleth", "Shibboleth")
+    )
 
 """
 # Activation de l'authentification CAS en plus de l'authentification locale
@@ -871,15 +912,24 @@ USER_CAS_MAPPING_ATTRIBUTES = {
     "mail": "mail",
     "last_name": "sn",
     "first_name": "givenname",
-    "affiliation": "eduPersonAffiliation"
+    "affiliation": "eduPersonAffiliation",
+    "groups": "memberOf"
 }
 
 """
 # Si True, des groupes sont créés automatiquement
 #  à partir des affiliations des individus qui se connectent sur la plateforme
-#  et l'individu qui se connecte est ajouté automatiquement à ses groupes
+#  et l'individu qui se connecte est ajouté automatiquement à ces groupes
 """
 CREATE_GROUP_FROM_AFFILIATION = False
+
+"""
+# Si True, des groupes sont créés automatiquement
+#  à partir des groupes (attribut groups à memberOf) 
+#  des individus qui se connectent sur la plateforme
+#  et l'individu qui se connecte est ajouté automatiquement à ces groupes
+"""
+CREATE_GROUP_FROM_GROUPS = False
 
 """
 # Les personnes ayant pour affiliation les valeurs
@@ -943,7 +993,8 @@ USER_LDAP_MAPPING_ATTRIBUTES = {
     "last_name": "sn",
     "first_name": "givenname",
     "primaryAffiliation": "eduPersonPrimaryAffiliation",
-    "affiliations": "eduPersonAffiliation"
+    "affiliations": "eduPersonAffiliation",
+    "groups": "memberOf"
 }
 
 """
@@ -987,6 +1038,40 @@ SHIB_LOGOUT_URL = ""
 #  (permet de prévenir des doubles créations de comptes dans certain cas).
 """
 CAS_FORCE_LOWERCASE_USERNAME = False
+
+"""
+# Utiliser l'authentification OpenID Connect
+"""
+USE_OIDC = False
+
+"""
+# Nom du Service Provider OIDC
+"""
+OIDC_NAME = ""
+
+"""
+# CLIENT_ID et CLIENT_SECRET de OIDC sont plutôt à positionner
+# à travers des variables d'environnement
+"""
+OIDC_RP_CLIENT_ID = os.environ('OIDC_CLIENT_ID')
+OIDC_RP_CLIENT_SECRET = os.environ('OIDC_CLIENT_SECRET')
+
+"""
+# Différents paramètres pour OIDC
+# tant que mozilla_django_oidc n'accepte le mécanisme de discovery
+# ref: https://github.com/mozilla/mozilla-django-oidc/pull/309
+"""
+OIDC_OP_AUTHORIZATION_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/authorize"
+OIDC_OP_TOKEN_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/token"
+OIDC_OP_USER_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/userinfo"
+OIDC_RP_SIGN_ALGO = 'RS256'
+OIDC_OP_JWKS_ENDPOINT = "https://plm.math.cnrs.fr/sp/oauth/discovery/keys"
+
+"""
+# Noms des Claim permettant de récupérer les attributs nom, prénom, email
+"""
+OIDC_CLAIM_FAMILY_NAME = "family_name"
+OIDC_CLAIM_GIVEN_NAME = "given_name"
 
 """
 # Permettre l'usage du oembed, partage dans Moodle, Facebook, Twitter etc.
@@ -1093,6 +1178,21 @@ BBB_USERNAME_FORMAT = 'first_name last_name'
 BBB_NUMBER_DAYS_BEFORE_DELETE = 0
 
 """
+# Utilisation du système de diffusion de Webinaires en lien avec BigBlueButton
+"""
+USE_BBB_LIVE = False
+
+"""
+# Autoriser les utilisateurs à enregistrer leur direct BigBlueButton directement dans Mes vidéos
+"""
+USE_BBB_LIVE_DOWNLOADING = False
+
+"""
+# Nombre maximum de directs BBB simultanés gérés par le système
+"""
+BBB_NUMBER_MAX_LIVES = 4
+
+"""
 #
 # Permet d'activer le fonctionnement de categorie au niveau de ses vidéos
 # Vous pouvez créer des catégories pour pouvoir ranger vos propres vidéos
@@ -1167,6 +1267,23 @@ SESSION_COOKIE_SAMESITE = 'Lax'
 # Exemple valeur: ["discipline", "tags"]
 # NB: les champs cachés et suivant ne sont pas pris en compte:
 # (video, title, type, owner, date_added, cursus, main_lang)
-# 
+#
 """
 VIDEO_REQUIRED_FIELDS = []
+
+"""
+# Activation du darkmode
+"""
+DARKMODE_ENABLED = False
+
+"""
+# Activation du mode dyslexie
+"""
+DYSLEXIAMODE_ENABLED = False
+
+"""
+# Ce paramètre permet d'afficher un lien "En savoir plus" 
+# sur la boite de dialogue d'information sur l'usage des cookies dans Pod.
+# On peut préciser un lien vers les mentions légales ou page dpo
+"""
+COOKIE_LEARN_MORE = ""

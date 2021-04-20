@@ -3,9 +3,9 @@ from .models import CustomFileModel
 from .models import CustomImageModel
 from .models import UserFolder
 from django.contrib.sites.shortcuts import get_current_site
-from django.contrib.auth.models import Group
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+from pod.authentication.models import AccessGroup
 # Register your models here.
 
 
@@ -24,9 +24,9 @@ class UserFolderAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
-        if (db_field.name) == "groups":
-            kwargs["queryset"] = Group.objects.filter(
-                    groupsite__sites=Site.objects.get_current())
+        if (db_field.name) == "access_groups":
+            kwargs["queryset"] = AccessGroup.objects.filter(
+                sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_queryset(self, request):

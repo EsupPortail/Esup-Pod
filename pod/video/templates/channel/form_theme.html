@@ -8,43 +8,43 @@
 	{% csrf_token %}
 	<div id="formcontent" class="form-container">
 		{% if form_theme.errors or form_theme.non_field_errors %}
-			<p style="color:red;">{% trans 'One or more errors have been found in the form:' %}<br />
-			{% for error in form_theme.non_field_errors %}
-				- {{error}}<br />
-			{% endfor %}
-			{% for field in form %}
-				- {{ field.errors }}<br />
-			{% endfor %}
-			</p>
+			<div class="alert alert-danger">{% trans 'One or more errors have been found in the form:' %}<br />
+				{% for error in form_theme.non_field_errors %}
+					- {{error}}<br />
+				{% endfor %}
+				{% for field in form %}
+					- {{ field.errors }}<br />
+				{% endfor %}
+			</div>
 		{% endif %}
 		{% for field_hidden in form_theme.hidden_fields %}
 			{{field_hidden}}
 		{% endfor %}
 		{% for field in form_theme.visible_fields %}
-		{% spaceless %}
-            <div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
-            <div class="list-group-item">
-			<div class="form-group row">
-				{{ field.errors }}
-				<label for="{{field.auto_id}}" class="col-sm-2 col-form-label">{{field.label}}</label>
-				<div class="col-sm-10">{{field}}
-				{% if field.help_text %}
-                <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
+			{% spaceless %}
+      	<div class="{% if "description_" in field.name or "title_"  in field.name %}collapse hide{% else %}{% endif %}{% if "description_" in field.name %} description{%endif%}{% if "title_" in field.name %} title{%endif%}{% with 'is_restricted restrict_access_to_groups password' as res %}{% if field.name in res.split %}collapse restricted_access{% endif %}{% endwith %}">
+      		<div class="list-group-item">
+						<div class="form-group row">
+							{{ field.errors }}
+							<label for="{{field.auto_id}}" class="col-sm-2 col-form-label">{{field.label}}</label>
+							<div class="col-sm-10">{{field}}
+								{% if field.help_text %}
+                	<small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small>
                 {% endif %}
-                </div>
-				{% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
-                {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
-			</div>
-			</div>
-			</div>
-		{% endspaceless %}
+              </div>
+							{% if field.name == "description" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".description" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
+              {% if field.name == "title" %}<button class="btn btn-link" type="button" data-toggle="collapse" data-target=".title" aria-expanded="false"> > {% trans "Other language" %}</button>{%endif%}
+						</div>
+					</div>
+				</div>
+			{% endspaceless %}
 		{% endfor %}
 		{% if form_theme.instance %}
 			<input type="hidden" id="id_theme" name="theme_id" value="{{form_theme.instance.id}}"/>
 		{% endif %}
 		<input type="hidden" name="action" value="save"/>
 		<input type="submit" id="save_theme" value="{% trans 'Save' %}" class="btn btn-primary"/>
-		<input type="reset" action="cancel" id="cancel_theme" value="{% trans 'Cancel' %}" class="btn btn-primary" />
+		<input type="reset" action="cancel" id="cancel_theme" value="{% trans 'Cancel' %}" class="btn btn-secondary" />
 	</div>
 </form>
 {{form_theme.media}}

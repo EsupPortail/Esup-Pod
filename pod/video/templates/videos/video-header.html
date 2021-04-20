@@ -1,47 +1,48 @@
 {% load static %}
-<link href="{% static 'player/videojs/video-js.min.css' %}" rel="stylesheet" />
-<script src="{% static 'player/videojs/video.min.js' %}"></script>
-<script src="{% static 'player/videojs/lang/fr.js' %}"></script>
+<link href="{% static 'player/videojs/video-js.min.css' %}?ver={{VERSION}}" rel="stylesheet" />
+<script src="{% static 'player/videojs/video.min.js' %}?ver={{VERSION}}"></script>
+  {% with 'player/videojs/lang/'|add:request.LANGUAGE_CODE|add:'.js' as videojs_lang %}
+    <script src="{% static videojs_lang %}?ver={{VERSION}}"></script>
+  {% endwith %}
+
 <!-- seek button -->
-<link href="{% static 'player/videojs-seek-buttons.css' %}" rel="stylesheet" />
-<script src="{% static 'player/videojs-seek-buttons.min.js' %}"></script>
+<link href="{% static 'player/videojs-seek-buttons.css' %}?ver={{VERSION}}" rel="stylesheet" />
+<script src="{% static 'player/videojs-seek-buttons.min.js' %}?ver={{VERSION}}"></script>
 
 <!-- quality selector -->
-<link href="{% static 'player/videojs-hls-quality-selector.css' %}" rel="stylesheet">
-<script src="{% static 'player/videojs-contrib-quality-levels.min.js' %}"></script>
-<script src="{% static 'player/videojs-hls-quality-selector.min.js' %}"></script>
+<link href="{% static 'player/videojs-hls-quality-selector.css' %}?ver={{VERSION}}" rel="stylesheet">
+<script src="{% static 'player/videojs-contrib-quality-levels.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'player/videojs-hls-quality-selector.min.js' %}?ver={{VERSION}}"></script>
 <!-- mp4 quality selector -->
-<script src="{% static 'js/silvermine-videojs-quality-selector.min.js' %}"></script>
+<script src="{% static 'js/silvermine-videojs-quality-selector.min.js' %}?ver={{VERSION}}"></script>
 <!--
-<link href="{% static 'css/quality-selector.css' %}" rel="stylesheet">
+<link href="{% static 'css/quality-selector.css' %}?ver={{VERSION}}" rel="stylesheet">
 -->
 <!-- notes -->
-<link href="{% static 'css/video_notes.css' %}" rel="stylesheet">
-<script src="{% static 'js/video_notes.js' %}"></script>
+<link href="{% static 'css/video_notes.css' %}?ver={{VERSION}}" rel="stylesheet">
+<script src="{% static 'js/video_notes.js' %}?ver={{VERSION}}"></script>
 <!-- logo -->
-<link href="{% static 'css/videojs-controlbar.css' %}" rel="stylesheet">
-<script src="{% static 'js/videojs-logo-controlbar.js' %}"></script>
+<link href="{% static 'css/videojs-controlbar.css' %}?ver={{VERSION}}" rel="stylesheet">
+<script src="{% static 'js/videojs-logo-controlbar.js' %}?ver={{VERSION}}"></script>
 <!-- chapitre : depuis videojs7, plus besoin de plugin js https://docs.videojs.com/tutorial-text-tracks.html -->
-<link href="{% static 'css/videojs-chapters.css' %}" rel="stylesheet">
-<script src="{% static 'js/videojs-chapters.js' %}"></script>
+<link href="{% static 'css/videojs-chapters.css' %}?ver={{VERSION}}" rel="stylesheet">
+<script src="{% static 'js/videojs-chapters.js' %}?ver={{VERSION}}"></script>
 {% if video.overview %}
-  <link href="{% static 'css/videojs-vtt-thumbnails.css' %}" rel="stylesheet">
-  <script src="{% static 'js/videojs-vtt-thumbnails.min.js' %}"></script>
+  <link href="{% static 'css/videojs-vtt-thumbnails.css' %}?ver={{VERSION}}" rel="stylesheet">
+  <script src="{% static 'js/videojs-vtt-thumbnails.min.js' %}?ver={{VERSION}}"></script>
 {% endif %}
 
 {% if video.overlay_set.all and not enrichment%}
-<link href="{% static 'css/videojs-overlay.css' %}" rel="stylesheet">
-<script src="{% static 'js/videojs-overlay.js' %}"></script>
+  <link href="{% static 'css/videojs-overlay.css' %}?ver={{VERSION}}" rel="stylesheet">
+  <script src="{% static 'js/videojs-overlay.js' %}?ver={{VERSION}}"></script>
 {% endif %}
 
 {% if request.user.playlist_set.all %}
-  <link href="{% static 'css/playlist.css' %}" rel="stylesheet">
-  <script src="{% static 'js/playlist.js' %}"></script>
+  <link href="{% static 'css/playlist.css' %}?ver={{VERSION}}" rel="stylesheet">
+  <script src="{% static 'js/playlist.js' %}?ver={{VERSION}}"></script>
 {% endif %}
 
 {% if video.is_360 %}
-  <link href="{% static 'videojs-vr/videojs-vr.css' %}" rel="stylesheet">
-  <script src="{% static 'videojs-vr/videojs-vr.min.js' %}"></script>
+  <link href="{% static 'videojs-vr/videojs-vr.css' %}?ver={{VERSION}}" rel="stylesheet">
+  <script src="{% static 'videojs-vr/videojs-vr.min.js' %}?ver={{VERSION}}"></script>
 {% endif %}
-
-

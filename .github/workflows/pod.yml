@@ -35,6 +35,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install flake8
+        pip install coveralls
     - name: Flake8 compliance
       run: |
         flake8 --max-complexity=7 --exclude .git,pod/*/migrations/*.py,test_settings.py
@@ -44,9 +45,12 @@ jobs:
         stack-version: 7.6.0
     - name: Setup Pod
       run: |
-        python manage.py create_pod_index --settings=pod.main.test_settings
-        python manage.py makemigrations --settings=pod.main.test_settings
-        python manage.py migrate --settings=pod.main.test_settings
-    - name: Run Tests
+        python manage.py create_pod_index
+        python manage.py makemigrations
+        python manage.py migrate
+    - name: Run Tests and coveralls
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        python manage.py test --settings=pod.main.test_settings
+        coverage run --source='.' manage.py test --settings=pod.main.test_settings
+        coveralls  --service=github

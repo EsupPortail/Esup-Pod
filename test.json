@@ -1,0 +1,25 @@
+[
+{
+    "code_name" : "mygroup12",
+    "display_name": "My grookkoup 1jj22",
+    "users_to_add" : [],
+    "users_to_remove" : ["admin"]
+},
+{
+    "code_name" : "mygroup2",
+    "display_name" : "My group 2",
+    "users_to_add" : ["login1","login2"],
+    "users_to_remove" : ["login3","login4"]
+},
+{
+    "code_name" : "mygroup4",
+    "display_name" : "My group 4",
+    "users_to_add" : ["admin"],
+    "users_to_remove" : []
+},
+{
+    "code_name" : "mygroup5",
+    "display_name" : "My group 5",
+    "users_to_add" : ["admin"]
+}
+]
