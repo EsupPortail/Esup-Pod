@@ -108,8 +108,6 @@
   </div>
   {% endspaceless %}
   {% endfor %}
-
-<<<<<<< HEAD
             {% for field_hidden in form.hidden_fields %}
             {{field_hidden}}
             {% endfor %}
@@ -155,15 +153,7 @@
         <button type="submit" class="btn btn-primary btn-sm m-2" name="_continue" value="">{% trans 'Save and continue editing' %}</button>
         {% if form.instance.title and form.instance.slug != '' %}<button type="submit" class="btn btn-primary btn-sm m-2" name="_saveandsee" value="{{form.instance.get_full_url}}">{% trans 'Save and see' %}</button> {%endif%}
         <a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}" class="btn btn-secondary btn-sm m-2">{% trans 'back to my videos' %}</a>
-=======
-  <div class="card" id='js-process'>
-  <div class="card-body">
-    <h5 class="card-title">{% trans "Sending, please wait." %}</h5>
-    <div class="spinner-border hidespinner" role="status">
-    <span class="sr-only">{% trans "Loading" %}...</span>
->>>>>>> aa2dcb92a706032bc9caec2b360ec27aea5fc1c0
     </div>
-    <p class="card-text">{% progress_bar %}</p>
   </div>
   <div class="card-footer">
     {% trans "The page will refresh after the upload completes." %}
