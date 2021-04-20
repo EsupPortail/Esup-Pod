@@ -5,7 +5,6 @@ from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.sites.models import Site
-from select2 import fields as select2_fields
 from django.db.models import Q
 
 import hashlib
