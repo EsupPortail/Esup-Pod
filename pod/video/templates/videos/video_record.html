@@ -174,7 +174,6 @@ $(document).on('click',  '#saveRecordPod', function(e){
     formData.append('video', data, data.name);
     formData.append('title', 'podscreenrecord-'+get_now());
     formData.append('type', {% get_setting "DEFAULT_RECORDER_TYPE_ID" 1 %});
-    formData.append('owner', {{request.user.id}});
     formData.append('cursus', 0);
     formData.append('main_lang', "{{ LANGUAGE_CODE }}");
     formData.append('date_added', get_date_added()); 
@@ -200,7 +199,7 @@ $(document).on('click',  '#saveRecordPod', function(e){
               if (evt.lengthComputable) {
                 var percentComplete = evt.loaded / evt.total;
                 //Do something with upload progress
-                console.log(percentComplete);
+                //console.log(percentComplete);
                 var percent = Math.round((evt.loaded / evt.total) * 100);
                 $("#uploadprogressbar").html(percent + '%');
                 $("#uploadprogressbar").width(percent + '%');
@@ -217,10 +216,13 @@ $(document).on('click',  '#saveRecordPod', function(e){
             //$("#savecancelrecord").addClass('d-none');
             //$("#savecancelrecord").removeClass('d-flex');
             // redirect to url_edit
-            window.location.href = data["url_edit"];
+            if(data["url_edit"])
+                window.location.href = data["url_edit"];
+            else
+                alert("{% trans 'One or more errors have been found in the form.' %}");
         }, 
         error: function(jqXHR, textStatus, errorThrown) {
-            alert("error occured : "+textStatus);
+            alert("error occured : "+jqXHR.responseText+"\n"+errorThrown);
             console.log(jqXHR, textStatus, errorThrown);
         }
     });
