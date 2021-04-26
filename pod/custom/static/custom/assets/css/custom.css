@@ -78,6 +78,10 @@ a{
 	flex-grow: 1;
 	text-align: center;
 }
+.navbar #nav-mainbar{flex-wrap: wrap;}
+.navbar #nav-search{min-width: 200px;}
+.navbar #nav-search #s{min-width: 100%;}
+
 .dropdown-header{color: #fff;}
 .breadcrumb, .jumbotron{
 	background: var(--light);
