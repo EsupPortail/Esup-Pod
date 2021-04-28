@@ -42,6 +42,7 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
+
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import ObjectDoesNotExist
 import json
@@ -2253,30 +2254,24 @@ def video_record(request):
                       {'access_not_allowed': True}
                       )
     if request.method == 'POST' and request.is_ajax():
-        vid = Video()
-        vid.video = request.FILES['video']
-        vid.title = request.POST['title']
-        vid.owner = request.user
-        vid.type = Type.objects.get(id=DEFAULT_RECORDER_TYPE_ID)
-        vid.sites.add(get_current_site(request))
-        vid.save()
-        # encode_video = getattr(encode, ENCODE_VIDEO)
-        # encode_video(video.id)
-        return JsonResponse({
-                "id": video.id,
-                "url_edit": reverse('video_edit', args=(video.slug,)),
-                })
-        """
-        return JsonResponse(
-                {
-                    "success": False,
-                    "error": "%s - %s" % (
-                        _(u'One or more errors have been found in the form.'),
-                        form.errors
-                    )
-                }
-            )
-        """
+        try:
+            vid = Video()
+            vid.video = request.FILES['video']
+            vid.title = request.POST['title']
+            vid.owner = request.user
+            vid.type = Type.objects.get(id=DEFAULT_RECORDER_TYPE_ID)
+            vid.save()
+            vid.sites.add(get_current_site(request))
+            vid.launch_encode = True
+            vid.save()
+            return JsonResponse({
+                "id": vid.id,
+                "url_edit": reverse('video_edit', args=(vid.slug,)),
+            })
+        except (RuntimeError, TypeError, NameError, AttributeError) as err:
+            return JsonResponse({
+                "error": "Unexpected error: {0}".format(err),
+            })
     return render(request, 'videos/video_record.html', {})
 
 

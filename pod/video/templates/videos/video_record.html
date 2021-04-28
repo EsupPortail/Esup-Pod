@@ -174,9 +174,6 @@ $(document).on('click',  '#saveRecordPod', function(e){
     let formData = new FormData();
     formData.append('video', data, data.name);
     formData.append('title', 'podscreenrecord-'+get_now());
-    //formData.append('type', {% get_setting "DEFAULT_RECORDER_TYPE_ID" 1 %});
-    //formData.append('cursus', 0);
-    //formData.append('main_lang', "{{ LANGUAGE_CODE }}");
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     formData.append('csrfmiddlewaretoken', csrftoken);
     
@@ -211,13 +208,13 @@ $(document).on('click',  '#saveRecordPod', function(e){
             if(data["url_edit"])
                 window.location.href = data["url_edit"];
             else {
-                alert("{% trans 'One or more errors have been found in the form.' %}");
+                alert("{% trans 'One or more errors have been found in the form.' %}: \n"+data["error"]);
                 console.log(data["error"])
             }
         }, 
         error: function(jqXHR, textStatus, errorThrown) {
-            alert("error occured : "+jqXHR.responseText+"\n"+errorThrown);
-            console.log(jqXHR, textStatus, errorThrown);
+            alert("error occured : \n"+errorThrown);
+            console.log(jqXHR, jqXHR.responseText, textStatus, errorThrown);
         }
     });
     
