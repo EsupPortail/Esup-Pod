@@ -433,7 +433,12 @@ def get_video_data(video_id, output_dir):
     duration = 0
     key_frames_interval = 0
     if len(info["streams"]) > 0:
-        is_video = True
+        codec = info["streams"][0].get("codec_name", "unknown")
+        image_codec = ["jpeg", "gif", "png", "bmp", "jpg"]
+        is_stream_thumbnail = any(ext in codec.lower()
+                                  for ext in image_codec)
+        if not is_stream_thumbnail:
+            is_video = True
         if info["streams"][0].get('height'):
             in_height = info["streams"][0]['height']
         """

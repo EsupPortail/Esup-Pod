@@ -7,7 +7,7 @@ from django.core.mail import EmailMultiAlternatives
 
 from .models import EncodingStep
 from .models import EncodingLog
-from .models import Video
+from .models import Video, EncodingAudio, EncodingVideo
 
 import os
 import subprocess
@@ -85,6 +85,26 @@ def get_duration_from_mp4(mp4_file, output_dir):
         print("Duration : %s" % duration)
 
     return duration
+
+
+def fix_video_duration(video_id, output_dir):
+    vid = Video.objects.get(id=video_id)
+    if vid.duration == 0:
+        if vid.is_video:
+            ev = EncodingVideo.objects.filter(
+                video=vid, encoding_format="video/mp4")
+            if ev.count() > 0:
+                video_mp4 = sorted(ev, key=lambda m: m.height)[0]
+                vid.duration = get_duration_from_mp4(
+                    video_mp4.source_file.path, output_dir)
+                vid.save()
+        else:
+            ea = EncodingAudio.objects.filter(
+                video=vid, encoding_format="audio/mp3")
+            if ea.count() > 0:
+                vid.duration = get_duration_from_mp4(
+                    ea.first().source_file.path, output_dir)
+                vid.save()
 
 
 def change_encoding_step(video_id, num_step, desc):
