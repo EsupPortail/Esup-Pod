@@ -911,6 +911,7 @@ class video_recordTestView(TestCase):
             " of video_recordTestView : OK !")
 
     def test_video_recordTestView_upload_recordvideo(self):
+        reload(views)
         video = SimpleUploadedFile(
             "file.mp4", b"file_content", content_type="video/mp4")
         self.client = Client()
@@ -918,9 +919,18 @@ class video_recordTestView(TestCase):
         self.client.force_login(self.user)
         response = self.client.post(
             reverse('video_record'),
-            {'video': video, 'title': 'test upload'}
+            {'video': video, 'title': 'test upload'},
+            **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'}
         )
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context, None)
+        self.assertEqual(
+           response.content,
+           b'{"id": 1, "url_edit": "/video_edit/0001-test-upload/"}'
+        )
+        self.assertEqual(Video.objects.all().count(), 1)
+        vid = Video.objects.get(id=1)
+        self.assertEqual(vid.title, 'test upload')
         print(
             " --->  test_video_recordTestView_upload_recordvideo"
             " of video_recordTestView : OK !")
