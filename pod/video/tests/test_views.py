@@ -4,6 +4,7 @@ from django.test import Client
 from django.contrib.auth.models import User
 from pod.authentication.models import AccessGroup
 from django.core.urlresolvers import reverse
+from django.contrib.sites.models import Site
 
 from ..models import Channel
 from ..models import Theme
@@ -12,9 +13,10 @@ from ..models import Type
 from ..models import Discipline
 from ..models import AdvancedNotes
 from .. import views
-from django.contrib.sites.models import Site
-import re
+
 from importlib import reload
+import re
+import json
 
 
 class ChannelTestView(TestCase):
@@ -924,10 +926,9 @@ class video_recordTestView(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context, None)
-        self.assertEqual(
-           response.content,
-           b'{"id": 1, "url_edit": "/video_edit/0001-test-upload/"}'
-        )
+        data = json.loads(response.content)
+        self.assertEqual(data['id'], 1)
+        self.assertEqual(data['url_edit'], "/video_edit/0001-test-upload/")
         self.assertEqual(Video.objects.all().count(), 1)
         vid = Video.objects.get(id=1)
         self.assertEqual(vid.title, 'test upload')
