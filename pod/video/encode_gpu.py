@@ -120,7 +120,7 @@ def encode_with_gpu(format, codec, height, file):
             msg += "Encode CPU %s ok \n" % format
             return_value = True
     if return_value is False:
-        msg += 20 * "////" + "\n"
+        msg += 20*"////" + "\n"
         msg += 'ERROR ENCODING %s FOR FILE %s \n' % (format, file)
     encode_log(msg)
     return return_value
@@ -706,6 +706,8 @@ if __name__ == "__main__":
         info_video = {}
 
         info_video = get_info_video(filename)
+        if not DEBUG and info_video["duration"] > 0:
+            SUBTIME = ' -ss 0 -to %s ' % info_video["duration"]
         msg += " \n"
         msg += json.dumps(info_video, indent=2)
         msg += " \n"

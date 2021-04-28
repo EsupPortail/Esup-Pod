@@ -66,23 +66,23 @@ def get_duration_from_mp4(mp4_file, output_dir):
         command, shell=True, stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT)
     msg += "\nduration ffprobe command: \n- %s\n" % command
-    
+
     try:
         duration = int(float("%s" % ffproberesult.stdout.decode('utf-8')))
-    except (RuntimeError, TypeError, NameError, AttributeError, ValueError) as err :
+    except (RuntimeError, TypeError, AttributeError, ValueError) as err:
         msg += "\nUnexpected error: {0}".format(err)
 
     with open(output_dir + "/encoding.log", "a") as f:
         f.write(msg)
         f.write('\nffprobe command duration video result: ')
         f.write(ffproberesult.stdout.decode('utf-8')+"\n")
-        f.write("Duration : %s \n\n" %duration)
+        f.write("Duration : %s \n\n" % duration)
 
     if DEBUG:
         print(msg)
         print('\nffprobe command duration video result: ')
         print(ffproberesult.stdout.decode('utf-8'))
-        print("Duration : %s" %duration)
+        print("Duration : %s" % duration)
 
     return duration
 
