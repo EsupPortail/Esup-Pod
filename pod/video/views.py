@@ -141,6 +141,11 @@ VIEW_STATS_AUTH = getattr(settings, 'VIEW_STATS_AUTH', False)
 ACTIVE_VIDEO_COMMENT = getattr(settings, 'ACTIVE_VIDEO_COMMENT', False)
 USE_CATEGORY = getattr(settings, 'USER_VIDEO_CATEGORY', False)
 
+DEFAULT_RECORDER_TYPE_ID = getattr(
+    settings, 'DEFAULT_RECORDER_TYPE_ID',
+    1
+)
+
 # ############################################################################
 # CHANNEL
 # ############################################################################
@@ -735,49 +740,27 @@ def video_edit(request, slug=None):
             current_lang=request.LANGUAGE_CODE,
 
         )
-        return check_form(request, form)
-
+        if form.is_valid():
+            video = save_video_form(request, form)
+            messages.add_message(
+                request, messages.INFO,
+                _('The changes have been saved.')
+            )
+            if request.POST.get('_saveandsee'):
+                return redirect(
+                    reverse('video', args=(video.slug,))
+                )
+            else:
+                return redirect(
+                    reverse('video_edit', args=(video.slug,))
+                )
+        else:
+            messages.add_message(
+                request, messages.ERROR,
+                _(u'One or more errors have been found in the form.'))
     return render(request, 'videos/video_edit.html', {
         'form': form}
     )
-
-
-def check_form(request, form):
-    if form.is_valid():
-        video = save_video_form(request, form)
-        messages.add_message(
-            request, messages.INFO,
-            _('The changes have been saved.')
-        )
-        if request.is_ajax():
-            return JsonResponse({
-                "id": video.id,
-                "url_edit": reverse('video_edit', args=(video.slug,)),
-                })
-
-        if request.POST.get('_saveandsee'):
-            return redirect(
-                reverse('video', args=(video.slug,))
-            )
-        else:
-            return redirect(
-                reverse('video_edit', args=(video.slug,))
-            )
-    else:
-        if request.is_ajax():
-            return JsonResponse(
-                {
-                    "success": False,
-                    "error":
-                    _(u'One or more errors have been found in the form.')
-                }
-            )
-        messages.add_message(
-            request, messages.ERROR,
-            _(u'One or more errors have been found in the form.'))
-        return render(request, 'videos/video_edit.html', {
-            'form': form}
-        )
 
 
 def save_video_form(request, form):
@@ -2263,6 +2246,37 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 @csrf_protect
 @login_required(redirect_field_name='referrer')
 def video_record(request):
+    if (RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+            and request.user.is_staff is False):
+        return render(request,
+                      'videos/video_edit.html',
+                      {'access_not_allowed': True}
+                      )
+    if request.method == 'POST' and request.is_ajax():
+        vid = Video()
+        vid.video = request.FILES['video']
+        vid.title = request.POST['title']
+        vid.owner = request.user
+        vid.type = Type.objects.get(id=DEFAULT_RECORDER_TYPE_ID)
+        vid.sites.add(get_current_site(request))
+        vid.save()
+        # encode_video = getattr(encode, ENCODE_VIDEO)
+        # encode_video(video.id)
+        return JsonResponse({
+                "id": video.id,
+                "url_edit": reverse('video_edit', args=(video.slug,)),
+                })
+        """
+        return JsonResponse(
+                {
+                    "success": False,
+                    "error": "%s - %s" % (
+                        _(u'One or more errors have been found in the form.'),
+                        form.errors
+                    )
+                }
+            )
+        """
     return render(request, 'videos/video_record.html', {})
 
 

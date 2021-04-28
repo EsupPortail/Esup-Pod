@@ -100,7 +100,10 @@
 
 {% block more_script %}
   <script>
-var options = {
+    
+    const tpdebug = "{% get_setting "DEBUG" False %}" == "True";
+
+const options = {
     controls: true,
     bigPlayButton: false,
     height: 360,
@@ -117,7 +120,7 @@ var options = {
             video:false,
             hotKeys: true,
             displayMilliseconds: false,
-            debug: true,
+            debug: tpdebug,
             maxLength: 3600
         }
     }
@@ -127,9 +130,9 @@ var options = {
 applyVideoWorkaround();
 applyScreenWorkaround();
 
-var player = videojs('podvideoplayer', options, function() {
+const player = videojs('podvideoplayer', options, function() {
     // print version information at startup
-    var msg = 'Using video.js ' + videojs.VERSION +
+    const msg = 'Using video.js ' + videojs.VERSION +
         ' with videojs-record ' + videojs.getPluginVersion('record') +
         ' and recordrtc ' + RecordRTC.version;
     videojs.log(msg);
@@ -148,8 +151,6 @@ player.on('error', function(element, error) {
 player.on('finishRecord', function() {
     // the blob object contains the image data that
     // can be downloaded by the user, stored on server etc.
-    console.log('screen+audio capture ready: ', player.recordedData);
-    //$('#saveRecordModal').modal('show');
     $("#savecancelrecord").removeClass('d-none');
     $("#savecancelrecord").addClass('d-flex');
 });
@@ -169,21 +170,18 @@ $(document).on('click',  '#saveRecordPod', function(e){
     $('#saveRecordModal span.textsendchoice').addClass('d-none');
     $('#saveRecordModal span.textsending').removeClass('d-none');
     $('#saveRecordModal div.progress').removeClass('d-none');
-    var data = player.recordedData;
-    var formData = new FormData();
+    const data = player.recordedData;
+    let formData = new FormData();
     formData.append('video', data, data.name);
     formData.append('title', 'podscreenrecord-'+get_now());
-    formData.append('type', {% get_setting "DEFAULT_RECORDER_TYPE_ID" 1 %});
-    formData.append('cursus', 0);
-    formData.append('main_lang', "{{ LANGUAGE_CODE }}");
-    formData.append('date_added', get_date_added()); 
+    //formData.append('type', {% get_setting "DEFAULT_RECORDER_TYPE_ID" 1 %});
+    //formData.append('cursus', 0);
+    //formData.append('main_lang', "{{ LANGUAGE_CODE }}");
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     formData.append('csrfmiddlewaretoken', csrftoken);
-
-    console.log('uploading recording:', data.name);
     
     $.ajax({
-        url: '{% url 'video_edit' %}',
+        url: "{% url 'video_record' %}",
         method: 'POST',
         data: formData,
         cache: false,
@@ -193,33 +191,29 @@ $(document).on('click',  '#saveRecordPod', function(e){
         mimeType: 'multipart/form-data',
         xhr: function()
         {
-            var xhr = new window.XMLHttpRequest();
+            const xhr = new window.XMLHttpRequest();
             //Upload progress
             xhr.upload.addEventListener("progress", function(evt){
               if (evt.lengthComputable) {
-                var percentComplete = evt.loaded / evt.total;
+                const percentComplete = evt.loaded / evt.total;
                 //Do something with upload progress
-                //console.log(percentComplete);
-                var percent = Math.round((evt.loaded / evt.total) * 100);
-                $("#uploadprogressbar").html(percent + '%');
-                $("#uploadprogressbar").width(percent + '%');
+                const percent = Math.round((evt.loaded / evt.total) * 100) + "%";
+                $("#uploadprogressbar").html(percent);
+                $("#uploadprogressbar").width(percent);
               }
             }, false);
             
             return xhr;
         },
         success: function(data, textStatus, jqXHR) {
-            //alert("filePath:" + data + "--" +textStatus);
-            console.log(data, textStatus, jqXHR);
             //restart the playeur
-            //player.record().reset();
-            //$("#savecancelrecord").addClass('d-none');
-            //$("#savecancelrecord").removeClass('d-flex');
             // redirect to url_edit
             if(data["url_edit"])
                 window.location.href = data["url_edit"];
-            else
+            else {
                 alert("{% trans 'One or more errors have been found in the form.' %}");
+                console.log(data["error"])
+            }
         }, 
         error: function(jqXHR, textStatus, errorThrown) {
             alert("error occured : "+jqXHR.responseText+"\n"+errorThrown);
@@ -237,43 +231,14 @@ $(document).on('click',  '#downloadRecord', function(e){
     $("#savecancelrecord").removeClass('d-flex');
 })
 
+/**
+ * @return date string format yyyy-mm-dd-hh-mi-ss
+ **/
 function get_now() {
-    var today = new Date();
-    var y = today.getFullYear();
-    // JavaScript months are 0-based.
-    var m = today.getMonth() + 1;
-    var d = today.getDate();
-    var h = today.getHours();
-    var mi = today.getMinutes();
-    var s = today.getSeconds();
-    var now = y + "-" + m + "-" + d + "-" + h + "-" + mi + "-" + s;
-    return now;
+    return (new Date())
+      .toISOString()
+      .replace(/\.\w+$/, "")
+      .replace(/[T:]/g, "-");
 }
-
-function get_date_added() {
-    var today = new Date();
-    var y = today.getFullYear();
-    // JavaScript months are 0-based.
-    var m = today.getMonth() + 1;
-    var d = today.getDate();
-    var h = today.getHours();
-    var mi = today.getMinutes();
-    var s = today.getSeconds();
-
-    if(m.toString().length == 1)
-    m = '0' + m;      
-    if(d.toString().length == 1)
-    d = '0' + d;
-    if(h.toString().length == 1)
-    h = '0' + h;
-    if(mi.toString().length == 1)
-    mi = '0' + mi;
-    if(s.toString().length == 1)
-    s = '0' + s;
-
-    var date_added = d+"/"+m+"/"+y+" "+h+":"+mi+":"+s;
-    return date_added;
-}
-
 </script>
 {% endblock more_script %}
