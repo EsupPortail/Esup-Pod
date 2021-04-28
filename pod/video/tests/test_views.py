@@ -926,7 +926,11 @@ class video_recordTestView(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context, None)
-        data = json.loads(response.content)
+        try:
+            data = json.loads(response.content)
+        except (RuntimeError, TypeError, NameError, AttributeError) as err:
+            print("Unexpected error: {0}".format(err))
+            data = json.loads(str(response.content))
         self.assertEqual(data['id'], 1)
         self.assertEqual(data['url_edit'], "/video_edit/0001-test-upload/")
         self.assertEqual(Video.objects.all().count(), 1)
