@@ -10,6 +10,7 @@ from .models import EncodingLog
 from .models import Video
 
 import os
+import subprocess
 
 DEBUG = getattr(settings, 'DEBUG', True)
 
@@ -44,10 +45,37 @@ MANAGERS = getattr(settings, 'MANAGERS', {})
 
 SECURE_SSL_REDIRECT = getattr(settings, 'SECURE_SSL_REDIRECT', False)
 
+FFPROBE = getattr(settings, 'FFPROBE', 'ffprobe')
+
+GET_DURATION_VIDEO = getattr(
+    settings,
+    'GET_DURATION_VIDEO',
+    "%(ffprobe)s -v error -show_entries format=duration "
+    + "-of default=noprint_wrappers=1:nokey=1 -i %(source)s")
 
 # ##########################################################################
 # ENCODE VIDEO : GENERIC FUNCTION
 # ##########################################################################
+
+
+def get_duration_from_mp4(mp4_file, output_dir):
+    msg = ""
+    duration = 0
+    command = GET_DURATION_VIDEO % {'ffprobe': FFPROBE, 'source': mp4_file}
+    ffproberesult = subprocess.run(
+        command, shell=True, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+    msg += "\nduration ffprobe command: \n- %s\n" % command
+    if DEBUG:
+        print(msg)
+        print('\nffprobe command duration video result: ')
+        print(ffproberesult.stdout.decode('utf-8'))
+    with open(output_dir + "/encoding.log", "a") as f:
+        f.write(msg)
+        f.write('\nffprobe command duration video result: ')
+        f.write(ffproberesult.stdout.decode('utf-8')+"\n\n")
+    duration = int(float("%s" % ffproberesult.stdout.decode('utf-8')))
+    return duration
 
 
 def change_encoding_step(video_id, num_step, desc):
