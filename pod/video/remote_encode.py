@@ -22,7 +22,7 @@ from .encode import create_overview_image, create_and_save_thumbnails
 
 from .utils import change_encoding_step, add_encoding_log, check_file
 from .utils import create_outputdir, send_email, send_email_encoding
-from .utils import fix_video_duration
+from .utils import fix_video_duration, get_duration_from_mp4
 
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
