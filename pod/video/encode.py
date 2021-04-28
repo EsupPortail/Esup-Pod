@@ -15,6 +15,7 @@ from .models import Video
 from .utils import change_encoding_step, add_encoding_log, check_file
 from .utils import create_outputdir, send_email, send_email_encoding
 from .utils import get_duration_from_mp4
+from .utils import fix_video_duration
 # from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from pod.main.tasks import task_start_encode
 
@@ -372,6 +373,8 @@ def encode_video(video_id):
         video_to_encode = Video.objects.get(id=video_id)
         video_to_encode.encoding_in_progress = False
         video_to_encode.save()
+
+        fix_video_duration(video_id, output_dir)
 
         # End
         add_encoding_log(video_id, "End: %s" % time.ctime())

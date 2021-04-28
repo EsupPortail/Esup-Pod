@@ -22,6 +22,7 @@ from .encode import create_overview_image, create_and_save_thumbnails
 
 from .utils import change_encoding_step, add_encoding_log, check_file
 from .utils import create_outputdir, send_email, send_email_encoding
+from .utils import fix_video_duration
 
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
@@ -195,6 +196,8 @@ def store_remote_encoding_video(video_id):
     video_encoding.encoding_in_progress = False
     video_encoding.save()
 
+    fix_video_duration(video_encoding.id, output_dir)
+
     # End
     add_encoding_log(video_id, "End : %s" % time.ctime())
     with open(output_dir + "/encoding.log", "a") as f:
@@ -271,20 +274,23 @@ def remote_video_part(video_to_encode, info_video, output_dir):
         image_width = video_mp4.width / 4  # width of generate image file
         change_encoding_step(
             video_id, 4,
-            "encoding video file : 7/11 remove_previous_overview")
+            "encoding video file: 7/11 remove_previous_overview")
         remove_previous_overview(overviewfilename, overviewimagefilename)
+        video_duration = info_video["duration"] if (
+            info_video["duration"] > 0) else get_duration_from_mp4(
+            video_mp4.source_file.path, output_dir)
         nb_img = 99 if (
-            info_video["duration"] > 99) else info_video["duration"]
+            video_duration > 99) else video_duration
         change_encoding_step(
             video_id, 4,
-            "encoding video file : 8/11 create_overview_image")
+            "encoding video file: 8/11 create_overview_image")
         msg_overview = create_overview_image(
             video_id,
-            video_mp4.video.video.path, info_video["duration"],
+            video_mp4.source_file.path, video_duration,
             nb_img, image_width, overviewimagefilename, overviewfilename)
         add_encoding_log(
             video_id,
-            "create_overview_image : %s" % msg_overview)
+            "create_overview_image: %s" % msg_overview)
         # create thumbnail
         if (
                 info_video["has_stream_thumbnail"]
