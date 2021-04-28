@@ -510,8 +510,6 @@ def get_info_video(file):
     msg = "--> get_info_video" + "\n"
     probe_cmd = 'ffprobe -v quiet -show_format -show_streams \
                 -print_format json -i {}/{}'.format(VIDEOS_DIR, file)
-    if DEBUG:
-        print(probe_cmd)
     msg += probe_cmd + "\n"
     has_stream_video = False
     has_stream_thumbnail = False
@@ -523,7 +521,10 @@ def get_info_video(file):
     msg += json.dumps(info, indent=2)
     msg += " \n"
     msg += return_msg + "\n"
-    duration = int(float("%s" % info["format"]['duration']))
+    try:
+        duration = int(float("%s" % info["format"]['duration']))
+    except (RuntimeError, KeyError, AttributeError, ValueError) as err:
+        msg += "\nUnexpected error: {0}".format(err)
     streams = info.get("streams", [])
     for stream in streams:
         msg += stream.get("codec_type", "unknown")
@@ -538,9 +539,7 @@ def get_info_video(file):
                 height = stream.get("height", 0)
         if stream.get("codec_type", "unknown") == "audio":
             has_stream_audio = True
-
     encode_log(msg)
-
     return {
         "has_stream_video": has_stream_video,
         "has_stream_thumbnail": has_stream_thumbnail,
