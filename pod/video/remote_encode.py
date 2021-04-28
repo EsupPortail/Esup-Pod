@@ -55,11 +55,20 @@ SSH_REMOTE_KEY = getattr(
     settings, 'SSH_REMOTE_KEY', "")
 SSH_REMOTE_CMD = getattr(
     settings, 'SSH_REMOTE_CMD', "")
-
+ENCODING_CHOICES = getattr(
+    settings, 'ENCODING_CHOICES', (
+        ("audio", "audio"),
+        ("360p", "360p"),
+        ("480p", "480p"),
+        ("720p", "720p"),
+        ("1080p", "1080p"),
+        ("playlist", "playlist")
+    ))
 
 # ##########################################################################
 # REMOTE ENCODE VIDEO : THREAD TO LAUNCH ENCODE
 # ##########################################################################
+
 
 def start_store_remote_encoding_video(video_id):
     log.info("START STORE ENCODED FILES FOR VIDEO ID %s" % video_id)
@@ -469,7 +478,7 @@ def import_mp4(encod_video, output_dir, video_to_encode):
         rendition = VideoRendition.objects.get(
             resolution=encod_video["rendition"])
         encoding, created = EncodingVideo.objects.get_or_create(
-            name=filename,
+            name=get_encoding_choice_from_filename(filename),
             video=video_to_encode,
             rendition=rendition,
             encoding_format="video/mp4")
@@ -509,7 +518,7 @@ def import_m3u8(encod_video, output_dir, video_to_encode):
     ):
 
         encoding, created = EncodingVideo.objects.get_or_create(
-            name=filename,
+            name=get_encoding_choice_from_filename(filename),
             video=video_to_encode,
             rendition=rendition,
             encoding_format="video/mp2t")
@@ -518,7 +527,7 @@ def import_m3u8(encod_video, output_dir, video_to_encode):
         encoding.save()
 
         playlist, created = PlaylistVideo.objects.get_or_create(
-            name=filename,
+            name=get_encoding_choice_from_filename(filename),
             video=video_to_encode,
             encoding_format="application/x-mpegURL")
         playlist.source_file = videofilenameM3u8.replace(
@@ -538,3 +547,10 @@ def import_m3u8(encod_video, output_dir, video_to_encode):
         send_email(msg, video_to_encode.id)
 
     return msg, master_playlist
+
+
+def get_encoding_choice_from_filename(filename):
+    choices = {}
+    for choice in ENCODING_CHOICES:
+        choices[choice[0][:3]] = choice[0]
+    return choices.get(filename[:3], "360p")
