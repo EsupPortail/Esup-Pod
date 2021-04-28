@@ -14,6 +14,7 @@ from .models import Video
 
 from .utils import change_encoding_step, add_encoding_log, check_file
 from .utils import create_outputdir, send_email, send_email_encoding
+from .utils import get_duration_from_mp4
 # from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from pod.main.tasks import task_start_encode
 
@@ -331,14 +332,17 @@ def encode_video(video_id):
                 video_id, 4,
                 "encoding video file: 7/11 remove_previous_overview")
             remove_previous_overview(overviewfilename, overviewimagefilename)
+            video_duration = video_data["duration"] if (
+                video_data["duration"] > 0) else get_duration_from_mp4(
+                video_mp4.source_file.path, output_dir)
             nb_img = 99 if (
-                video_data["duration"] > 99) else video_data["duration"]
+                video_duration > 99) else video_duration
             change_encoding_step(
                 video_id, 4,
                 "encoding video file: 8/11 create_overview_image")
             msg = create_overview_image(
                 video_id,
-                video_mp4.video.video.path, video_data["duration"],
+                video_mp4.source_file.path, video_duration,
                 nb_img, image_width, overviewimagefilename, overviewfilename)
             add_encoding_log(
                 video_id,
@@ -348,7 +352,7 @@ def encode_video(video_id):
                 video_id, 4,
                 "encoding video file: 11/11 create_and_save_thumbnails")
             msg = create_and_save_thumbnails(
-                video_mp4.video.video.path, video_mp4.width, video_id)
+                video_mp4.source_file.path, video_mp4.width, video_id)
             add_encoding_log(
                 video_id,
                 "create_and_save_thumbnails: %s" % msg)
