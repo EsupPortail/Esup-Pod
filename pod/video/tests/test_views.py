@@ -917,7 +917,7 @@ class video_recordTestView(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         response = self.client.post(
-            reverse('video:video_record'),
+            reverse('video_record'),
             {'video': video, 'title': 'test upload'}
         )
         self.assertEqual(response.status_code, 200)
