@@ -76,6 +76,8 @@ def encode_recording(recording):
     video.is_360 = recorder.is_360
     # Désactiver les commentaires
     video.disable_comment = recorder.disable_comment
+    # add sites
+    video.sites.add(*recorder.sites.all())
     video.save()
 
     encode_video = getattr(encode, ENCODE_VIDEO)

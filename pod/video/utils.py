@@ -4,12 +4,14 @@ from django.core.mail import send_mail
 from django.core.mail import mail_admins
 from django.core.mail import mail_managers
 from django.core.mail import EmailMultiAlternatives
+from django.core.exceptions import ObjectDoesNotExist
 
 from .models import EncodingStep
 from .models import EncodingLog
-from .models import Video
+from .models import Video, EncodingAudio, EncodingVideo
 
 import os
+import subprocess
 
 DEBUG = getattr(settings, 'DEBUG', True)
 
@@ -44,10 +46,70 @@ MANAGERS = getattr(settings, 'MANAGERS', {})
 
 SECURE_SSL_REDIRECT = getattr(settings, 'SECURE_SSL_REDIRECT', False)
 
+FFPROBE = getattr(settings, 'FFPROBE', 'ffprobe')
+
+GET_DURATION_VIDEO = getattr(
+    settings,
+    'GET_DURATION_VIDEO',
+    "%(ffprobe)s -v error -show_entries format=duration "
+    + "-of default=noprint_wrappers=1:nokey=1 -i %(source)s")
 
 # ##########################################################################
 # ENCODE VIDEO : GENERIC FUNCTION
 # ##########################################################################
+
+
+def get_duration_from_mp4(mp4_file, output_dir):
+    msg = ""
+    duration = 0
+    command = GET_DURATION_VIDEO % {'ffprobe': FFPROBE, 'source': mp4_file}
+    ffproberesult = subprocess.run(
+        command, shell=True, stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT)
+    msg += "\nduration ffprobe command: \n- %s\n" % command
+
+    try:
+        duration = int(float("%s" % ffproberesult.stdout.decode('utf-8')))
+    except (RuntimeError, TypeError, AttributeError, ValueError) as err:
+        msg += "\nUnexpected error: {0}".format(err)
+
+    with open(output_dir + "/encoding.log", "a") as f:
+        f.write(msg)
+        f.write('\nffprobe command duration video result: ')
+        f.write(ffproberesult.stdout.decode('utf-8')+"\n")
+        f.write("Duration : %s \n\n" % duration)
+
+    if DEBUG:
+        print(msg)
+        print('\nffprobe command duration video result: ')
+        print(ffproberesult.stdout.decode('utf-8'))
+        print("Duration : %s" % duration)
+
+    return duration
+
+
+def fix_video_duration(video_id, output_dir):
+    try:
+        vid = Video.objects.get(id=video_id)
+    except ObjectDoesNotExist as err:
+        print("ObjectDoesNotExist error: {0}".format(err))
+        return
+    if vid.duration == 0:
+        if vid.is_video:
+            ev = EncodingVideo.objects.filter(
+                video=vid, encoding_format="video/mp4")
+            if ev.count() > 0:
+                video_mp4 = sorted(ev, key=lambda m: m.height)[0]
+                vid.duration = get_duration_from_mp4(
+                    video_mp4.source_file.path, output_dir)
+                vid.save()
+        else:
+            ea = EncodingAudio.objects.filter(
+                video=vid, encoding_format="audio/mp3")
+            if ea.count() > 0:
+                vid.duration = get_duration_from_mp4(
+                    ea.first().source_file.path, output_dir)
+                vid.save()
 
 
 def change_encoding_step(video_id, num_step, desc):
