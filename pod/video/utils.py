@@ -4,6 +4,7 @@ from django.core.mail import send_mail
 from django.core.mail import mail_admins
 from django.core.mail import mail_managers
 from django.core.mail import EmailMultiAlternatives
+from django.core.exceptions import ObjectDoesNotExist
 
 from .models import EncodingStep
 from .models import EncodingLog
@@ -88,7 +89,11 @@ def get_duration_from_mp4(mp4_file, output_dir):
 
 
 def fix_video_duration(video_id, output_dir):
-    vid = Video.objects.get(id=video_id)
+    try:
+        vid = Video.objects.get(id=video_id)
+    except ObjectDoesNotExist as err:
+        print("ObjectDoesNotExist error: {0}".format(err))
+        return
     if vid.duration == 0:
         if vid.is_video:
             ev = EncodingVideo.objects.filter(
