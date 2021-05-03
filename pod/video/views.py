@@ -2245,8 +2245,11 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
 
 
 @csrf_protect
+@ensure_csrf_cookie
 @login_required(redirect_field_name='referrer')
 def video_record(request):
+    if in_maintenance():
+        return redirect(reverse('maintenance'))
     if (RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
             and request.user.is_staff is False):
         return render(request,
