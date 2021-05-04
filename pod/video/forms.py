@@ -569,7 +569,7 @@ class VideoForm(forms.ModelForm):
             user_channels = Channel.objects.all() if self.is_superuser else (
                 self.current_user.owners_channels.all(
                 ) | self.current_user.users_channels.all(
-                ) | Channel.objects.filter(allow_to_groups=users_groups)
+                ) | Channel.objects.filter(allow_to_groups__in=users_groups)
             ).distinct()
             user_channels.filter(sites=get_current_site(None))
             if user_channels:
