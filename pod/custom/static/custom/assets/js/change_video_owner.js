@@ -70,7 +70,7 @@
      */
     const addNotFound = (container, clickable = false) => {
         const div = document.createElement("DIV");
-        div.setAttribute("class", "text-center full-width");
+        div.setAttribute("class", "not-found text-center full-width");
         div.innerText = gettext("Aucun élément trouvé");
         if (clickable) div.addEventListener("click", (e) => {
             e.preventDefault();

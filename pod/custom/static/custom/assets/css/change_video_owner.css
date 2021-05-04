@@ -17,6 +17,12 @@
     align-items: center;
 }
 
+.not-found {
+    font-weight: 600;
+    background: #c7b683;
+    color: #000;
+}
+
 .full-width {
     width: 100% !important;
     flex-grow: 1 !important;
