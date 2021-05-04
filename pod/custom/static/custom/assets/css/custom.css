@@ -1848,8 +1848,9 @@ body .btn-danger:hover{
 [data-theme="dark"][data-theme-mode="dark"] > body .modal-content{
 	background-color: var(--background-dark-color);
 }
-[data-theme="dark"] > body .paginator .previous_content.disable,
-[data-theme="dark"][data-theme-mode="dark"] > body .paginator .previous_content.disable, .paginator .next_content.disable{
+
+[data-theme][data-theme-mode] .paginator .previous_content.disable,
+[data-theme][data-theme-mode] .paginator .next_content.disable{
 	color: var(--comment-color) !important;
 }
 [data-theme="dark"][data-theme-mode="dark"] > body .paginator .previous_content,
