@@ -134,7 +134,7 @@ LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'locale'),
 )
 
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField' 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 ##
 # Time zone support is enabled (True) or not (False)
