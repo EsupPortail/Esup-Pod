@@ -103,7 +103,7 @@ def get_current_session_folder(request):
               'current_session_folder', "home")) | Q(
                  users=request.user, name=request.session.get(
                     'current_session_folder', "home")) | Q(
-                 access_groups=request.user.owner.accessgroup_set.all(
+                 access_groups__in=request.user.owner.accessgroup_set.all(
                  ), name=request.session.get(
                          'current_session_folder', "home")))
         print(current_session_folder)
