@@ -8,7 +8,6 @@
 source = pod/
 omit = pod/*settings*.py
        pod/*apps.py
-       pod/*models.py
        pod/wsgi.py
        */tests/*
        */commands/*
