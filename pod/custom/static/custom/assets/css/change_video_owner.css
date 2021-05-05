@@ -189,8 +189,21 @@ main {
     cursor: pointer;
 }
 
-.form-wrapper__control.select-videos .card.manage_video.choosed {
-    filter: blur(1.4px) opacity(.2);
+.form-wrapper__control.select-videos .card.manage_video::after {
+    content: "";
+    width: 35px;
+    height: 35px;
+    background: var(--success);
+    position: absolute;
+    top: calc(50% - 17.5px);
+    right: calc(50% - 17.5px);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity .3s ease-in-out;
+}
+
+.form-wrapper__control.select-videos .card.manage_video.choosed::after {
+    opacity: 1;
 }
 
 .form-wrapper__control.select-videos .card.manage_video img {
@@ -228,7 +241,6 @@ main {
     -ms-flex-direction: column;
     flex-direction: column;
     background-color: #00baf3;
-    font-family: "Source Sans Pro", Arial, sans-serif;
     padding: 11px 30px;
     border-radius: 4px;
     font-weight: 400;

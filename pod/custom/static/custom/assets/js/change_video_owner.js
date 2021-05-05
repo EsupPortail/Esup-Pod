@@ -1,8 +1,8 @@
 (function() {
     const base = window.location.origin;
-    const update_videos_url = "/custom/manage/videos/put/";
-    const get_videos_url = "/custom/manage/videos/";
-    const get_owners_url = "/custom/manage/videos/owners/";
+    const update_videos_url = `${base}/custom/manage/videos/put/`;
+    const get_videos_url = `${base}/custom/manage/videos/`;
+    const get_owners_url = `${base}/custom/manage/videos/owners/`;
 
     const old_owner_input = document.querySelector("#oldlogin");
     const new_owner_input = document.querySelector("#newlogin");
@@ -316,7 +316,7 @@
             input.value = current_username_filter;
             clearSuggestions(input.nextElementSibling);
             if (input.id.includes("oldlogin")) {
-                const url = `${base}${get_videos_url}${current_username_id}?limit=${limit}&offset=${offset}`;
+                const url = `${get_videos_url}${current_username_id}?limit=${limit}&offset=${offset}`;
                 getVideos(url, (data) => {
                     DATA = data;
                     if (!!!data.results.length) {
@@ -330,6 +330,14 @@
         });
     }
 
+    /**
+     * Filter videos by title
+     * @param {HTMLParagraphElement} p suggestion user
+     * @param {Any} _ Not use
+     * @param {HTMLInputElement} input field
+     * @param {String} text input value
+     * @param {String} url current url
+     */
     const filterVideosListener = (p, _, input, text, url) => {
         p.addEventListener("click", (e) => {
             const title = text || p.textContent.trim().toLowerCase();
@@ -347,10 +355,17 @@
      * @returns {Promise} users found
      */
     const getUsers = (search) => {
-        const url = `${base}${get_owners_url}?q=${search}&limit=${limit}&offset=${offset}`;
+        const url = `${get_owners_url}?q=${search}&limit=${limit}&offset=${offset}`;
         return makeRequest(url);
     };
 
+    /**
+     * Make request from server to get videos
+     * @param {String} url current url
+     * @param {Callable} callback callback after request
+     * @param {Boolean} is_filter is filter input
+     * @returns 
+     */
     const getVideos = (url, callback, is_filter = false) => {
         return makeRequest(url).then(data => {
             if (!is_filter) {
@@ -403,6 +418,15 @@
         refreshPageInfos(url);
     };
 
+    /**
+     * 
+     * @param {String} text user first_name & last_name
+     * @param {Number} id user id
+     * @param {HTMLInputElement} input field
+     * @param {String} cls css class
+     * @param {Callable} listenerCallback callback on click
+     * @param {String} url current url
+     */
     const addSuggestionElement = (text, id, input, cls, listenerCallback, url = null) => {
         // add current search as option
         if (!input.nextElementSibling.querySelector("#current_search") && url) {
@@ -454,7 +478,7 @@
     addSearchListener(list_videos__search, (input) => {
         const search = input.value.trim().toLowerCase();
         if (!!current_username_id && can_filter && search.length >= 3) {
-            const url = `${base}${get_videos_url}${current_username_id}?limit=${limit}&offset=${offset}&title=${search}`;
+            const url = `${get_videos_url}${current_username_id}?limit=${limit}&offset=${offset}&title=${search}`;
             getVideos(url, (data) => {
                     DATA = {...data };
                     if (!!!data.results.length) {
@@ -514,7 +538,7 @@
         e.stopPropagation();
         // TODO make a great validation with css error maybe
         if (!!choosed_videos.length && !!current_username_id && !!new_username_id) {
-            const url = `${base}${update_videos_url}${current_username_id}/`
+            const url = `${update_videos_url}${current_username_id}/`
             const post_data = new FormData();
             post_data.append("videos", choosed_videos);
             post_data.append("owner", new_username_id);
