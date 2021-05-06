@@ -152,34 +152,91 @@ DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
 # ############################################################################
 
 
-def regroup_videos_by_theme(videos, page, channel, theme=None):
-    """
-    " Regroup videos by theme.
+def _regroup_videos_by_theme(request, videos, channel, theme=None):
+    """Regroup videos by theme.\n
 
-    " @return [ (theme, set()), (theme, set()) ]
+    Args:\n
+        request (Request): current HTTP Request\n
+        videos (List[Video]): list of vidéo filter by channel\n
+        channel (Channel): current channel\n
+        theme (Theme, optional): current theme. Defaults to None.\n
+
+    Returns:\n
+        Dict[str, Any]: json data\n
     """
-    if not theme:
-        children_themes = channel.themes.filter(parentId_id=None)
-    else:
-        children_themes = theme.children.all()
-    videos_regrouped = []
-    no_theme_videos = videos
-    # Loop on theme  and filter by theme
-    for t in children_themes:
-        videos_founded = videos.filter(theme__in=t.get_all_children_flat())
-        no_theme_videos = no_theme_videos.exclude(
-            theme__in=t.get_all_children_flat()
+    limit = int(request.GET.get("limit", 6))
+    offset = int(request.GET.get("offset", 0))
+    next_url = None
+    previous_url = None
+    request_path = request.path
+    theme_children = channel.themes.filter(parentId=None)
+    videos = videos.filter(theme=None, channel=channel)
+    parent_title = ""
+
+    if theme is not None:
+        theme_children = Theme.objects.filter(parentId=theme.id)
+        videos = videos.filter(theme=theme, channel=channel)
+        if theme.parentId is not None:
+            parent_title = theme.parentId.title
+        else:
+            parent_title = channel.title
+
+    # calculate the total available data
+    count = theme_children.count() + videos.count()
+    theme_children = theme_children.values("slug", "title")[
+        offset : limit + offset
+    ]
+
+    # manage next previous url (Pagination)
+    if offset + limit < count and limit <= count:
+        next_url = "{}?limit={}&offset={}".format(
+            request_path, limit, limit + offset
         )
-        if videos_founded:
-            videos_regrouped.append(
-                (t, paginator(list(set(videos_founded)), page))
-            )
-    if children_themes and no_theme_videos:
-        videos_regrouped.append((_("Other"), paginator(no_theme_videos, page)))
-    if not children_themes:
-        videos_regrouped.append((" ", paginator(videos, page)))
+    if offset - limit >= 0 and limit <= count:
+        previous_url = "{}?limit={}&offset={}".format(
+            request_path, limit, offset - limit
+        )
 
-    return videos_regrouped
+    title = channel.title if theme is None else theme.title
+    description = channel.description if theme is None else theme.description
+    headband = "#"
+    if theme is None and channel.headband is not None:
+        headband = channel.headband.file.url
+    elif theme is not None and theme.headband is not None:
+        headband = theme.headband.file.url
+
+    limit += limit - theme_children.count()
+    videos = list(
+        map(
+            lambda v: {
+                "slug": v.slug,
+                "title": v.title,
+                "duration": v.duration_in_time,
+                "thumbnail": v.get_thumbnail_card(),
+                "is_video": v.is_video,
+                "has_password": bool(v.password),
+                "is_restricted": v.is_restricted,
+                "has_chapter": v.chapter_set.all().count() > 0,
+                "is_draft": v.is_draft,
+            },
+            videos[offset : limit + offset],
+        )
+    )
+
+    return JsonResponse(
+        {
+            "next": next_url,
+            "previous": previous_url,
+            "parent_title": parent_title,
+            "title": title,
+            "description": description,
+            "headband": headband,
+            "theme_children": list(theme_children),
+            "videos": videos,
+            "count": count,
+        },
+        safe=False,
+    )
 
 
 def paginator(videos_list, page):
@@ -206,6 +263,9 @@ def channel(request, slug_c, slug_t=None):
         list_theme = theme.get_all_children_flat()
         videos_list = videos_list.filter(theme__in=list_theme)
 
+    if ORGANIZE_BY_THEME:
+        return _regroup_videos_by_theme(request, videos_list, channel, theme)
+
     page = request.GET.get("page", 1)
     full_path = ""
     if page:
@@ -223,11 +283,6 @@ def channel(request, slug_c, slug_t=None):
             "videos/video_list.html",
             {"videos": videos, "full_path": full_path},
         )
-    videos_theme = None
-    if ORGANIZE_BY_THEME:
-        videos_theme = regroup_videos_by_theme(
-            videos_list, page, channel, theme
-        )
 
     return render(
         request,
@@ -237,8 +292,6 @@ def channel(request, slug_c, slug_t=None):
             "videos": videos,
             "theme": theme,
             "full_path": full_path,
-            "videos_theme": videos_theme,
-            "organize_theme": ORGANIZE_BY_THEME,
         },
     )
 
