@@ -171,7 +171,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
     request_path = request.path
     theme_children = channel.themes.filter(parentId=None)
     videos = videos.filter(theme=None, channel=channel)
-    parent_title = ""
+    parent_title = None
 
     if theme is not None:
         theme_children = Theme.objects.filter(parentId=theme.id)
@@ -199,43 +199,54 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
 
     title = channel.title if theme is None else theme.title
     description = channel.description if theme is None else theme.description
-    headband = "#"
+    headband = None
     if theme is None and channel.headband is not None:
         headband = channel.headband.file.url
     elif theme is not None and theme.headband is not None:
         headband = theme.headband.file.url
 
     limit += limit - theme_children.count()
-    videos = list(
-        map(
-            lambda v: {
-                "slug": v.slug,
-                "title": v.title,
-                "duration": v.duration_in_time,
-                "thumbnail": v.get_thumbnail_card(),
-                "is_video": v.is_video,
-                "has_password": bool(v.password),
-                "is_restricted": v.is_restricted,
-                "has_chapter": v.chapter_set.all().count() > 0,
-                "is_draft": v.is_draft,
-            },
-            videos[offset : limit + offset],
+    videos = videos[offset : limit + offset]
+    data = {
+        "next": next_url,
+        "previous": previous_url,
+        "parent_title": parent_title,
+        "title": title,
+        "description": description,
+        "headband": headband,
+        "theme_children": list(theme_children),
+        "videos": videos,
+        "count": count,
+    }
+    if request.is_ajax():
+        videos = list(
+            map(
+                lambda v: {
+                    "slug": v.slug,
+                    "title": v.title,
+                    "duration": v.duration_in_time,
+                    "thumbnail": v.get_thumbnail_card(),
+                    "is_video": v.is_video,
+                    "has_password": bool(v.password),
+                    "is_restricted": v.is_restricted,
+                    "has_chapter": v.chapter_set.all().count() > 0,
+                    "is_draft": v.is_draft,
+                },
+                videos,
+            )
         )
-    )
+        data["videos"] = videos
+        return JsonResponse(data, safe=False)
 
-    return JsonResponse(
+    return render(
+        request,
+        "channel/channel.html",
         {
-            "next": next_url,
-            "previous": previous_url,
-            "parent_title": parent_title,
-            "title": title,
-            "description": description,
-            "headband": headband,
-            "theme_children": list(theme_children),
-            "videos": videos,
-            "count": count,
+            **data,
+            "theme": theme,
+            "channel": channel,
+            "organize_theme": ORGANIZE_BY_THEME,
         },
-        safe=False,
     )
 
 
