@@ -1,0 +1,18 @@
+.list-children-theme {
+    margin-bottom: 2rem;
+}
+
+.headband-description {
+    margin-bottom: 1em;
+}
+
+.channelheader {
+    float: left;
+    margin-right: 1em;
+    margin-bottom: .8em;
+}
+
+.channelheader .img-responsive {
+    width: 300px;
+    max-width: 100%;
+}
