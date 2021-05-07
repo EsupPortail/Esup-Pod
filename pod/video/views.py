@@ -42,6 +42,7 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
+from pod.video.utils import pagination_data, get_headband
 
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import ObjectDoesNotExist
@@ -167,11 +168,8 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
     target = request.GET.get("target", "").lower()
     limit = int(request.GET.get("limit", 6))
     offset = int(request.GET.get("offset", 0))
-    next_url = None
-    previous_url = None
-    request_path = request.path
     parent_title = ""
-    response = {"next": next_url, "previous": previous_url}
+    response = {"next": None, "previous": None}
     if target in ("", "theme"):
         theme_children = channel.themes.filter(parentId=None)
         response["theme_children"] = theme_children
@@ -179,13 +177,15 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         videos = videos.filter(theme=None, channel=channel)
         response["videos"] = videos
 
+    # response, theme_children, videos, parent_title =
+
     if theme is not None and target in ("", "theme"):
         theme_children = Theme.objects.filter(parentId=theme.id)
         videos = videos.filter(theme=theme, channel=channel)
+        parent_title = channel.title
         if theme.parentId is not None:
             parent_title = theme.parentId.title
-        else:
-            parent_title = channel.title
+
         response = {
             **response,
             "theme_children": theme_children,
@@ -194,30 +194,20 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         }
 
     # calculate the total available data
-    count = theme_children.count() + videos.count()
+    count_themes = theme_children.count()
     has_more_themes = (offset + limit) < theme_children.count()
     has_more_videos = (offset + limit) < videos.count()
     theme_children = theme_children.values("slug", "title")[
         offset : limit + offset
     ]
 
-    # manage next previous url (Pagination)
-    if offset + limit < count and limit <= count:
-        next_url = "{}?limit={}&offset={}".format(
-            request_path, limit, limit + offset
-        )
-    if offset - limit >= 0 and limit <= count:
-        previous_url = "{}?limit={}&offset={}".format(
-            request_path, limit, offset - limit
-        )
+    next_url, previous_url, theme_pages_info = pagination_data(
+        request.path, offset, limit, count_themes
+    )
 
     title = channel.title if theme is None else theme.title
     description = channel.description if theme is None else theme.description
-    headband = None
-    if theme is None and channel.headband is not None:
-        headband = channel.headband.file.url
-    elif theme is not None and theme.headband is not None:
-        headband = theme.headband.file.url
+    headband = get_headband(theme, channel)
     limit += limit - theme_children.count()
     videos = videos[offset : limit + offset]
     response = {
@@ -230,7 +220,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         "has_more_themes": has_more_themes,
         "has_more_videos": has_more_videos,
         "videos": videos,
-        "count": count,
+        "count_themes": count_themes,
     }
     if request.is_ajax():
         videos = list(
@@ -249,8 +239,8 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
                 videos,
             )
         )
-        data["videos"] = videos
-        return JsonResponse(data, safe=False)
+        response["videos"] = videos
+        return JsonResponse(response, safe=False)
 
     return render(
         request,
@@ -259,6 +249,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
             **response,
             "theme": theme,
             "channel": channel,
+            "pages_info": theme_pages_info,
             "organize_theme": ORGANIZE_BY_THEME,
         },
     )
