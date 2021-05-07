@@ -27,9 +27,9 @@
       }
     {%endif%}
   </style>
-
   {% if organize_theme %}
-    <link rel='stylesheet' href='{% static "css/video_foldable_theme.css" %}?ver={{VERSION}}'>
+      <link rel="stylesheet" type="text/css" href="{% static 'css/organize_channel_theme.css' %}?ver={{VERSION}}" />
+      <link rel="stylesheet" type="text/css" href="{% static 'css/paginator.css' %}?ver={{VERSION}}" />
   {% endif %}
 {% endblock %}
 
@@ -80,25 +80,45 @@
         <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video' slug_c=channel.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
         <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio' slug_c=channel.slug %}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
         {% endif %}
+        {% if request.user in channel.owners.all %}
+          <a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans 'Edit the themes'%}" class="btn btn btn-outline-primary btn-sm">
+            <i data-feather="edit"></i>&nbsp;{% trans "Edit the channel"%}</a>
+        {% endif %}
     </span>
-    {% if request.user in channel.owners.all %}
-      <span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans 'Edit the themes'%}" class="btn btn btn-outline-primary btn-sm">
-        <i data-feather="edit"></i>&nbsp;{% trans "Edit the channel"%}</a>&nbsp;</span>
-    {% endif %}
   </h1>
-  {% if parent_title %}
-  <h2>{{title}}</h2>
-  {% endif %}
-  {% if headband %}
-    <div align="center" class="channelheader">
-      <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" loading="lazy"/>
-    </div>
-  {% endif %}
-  {% if theme.description %}
-    {{ theme.description|safe }}
-  {% endif %}
-  <p>{% blocktrans count counter=videos|length %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</p>
-  {% include "videos/video_list.html" %}
+  <div class="headband-description">
+    {% if parent_title %}
+    <h2>{{title}}</h2>
+    {% endif %}
+    {% if headband %}
+      <div align="center" class="channelheader">
+        <img src="{{ headband }}" alt="{% trans 'Headband' %} {{ title }}" class="img-responsive" loading="lazy"/>
+      </div>
+    {% endif %}
+    {% if description %}
+      {{ description|safe }}
+    {% endif %}
+  </div>
+  <div class="themes-videos">
+    {% comment %} Themes {% endcomment %}
+    <section class="theme-section">
+      <p class="theme-count">{% blocktrans count counter=theme_children|length %}{{ counter }} theme found{% plural %}{{ counter }} themes found{% endblocktrans %}</p>
+      {% if theme_children|length %}
+        <ul class="list-children-theme">
+        {% for th in theme_children %}
+          <li class="btn btn-sm btn-outline-secondary text-truncate child-theme" title="{{th.title}}">
+            <a href="{% url 'theme' slug_c=channel.slug slug_t=th.slug%}">{{th.title}}</a>
+          </li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    </section>
+    <section class="video-section">
+      <p class="video-count">{% blocktrans count counter=videos|length %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</p>
+      {% include "videos/video_list.html" %}
+      {% include "videos/paginator.html" %}
+    </section>
+  </div>
 {% else %}
   <h1>{{channel.title}}
     <span class="float-right">
