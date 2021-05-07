@@ -171,7 +171,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
     request_path = request.path
     theme_children = channel.themes.filter(parentId=None)
     videos = videos.filter(theme=None, channel=channel)
-    parent_title = None
+    parent_title = ""
 
     if theme is not None:
         theme_children = Theme.objects.filter(parentId=theme.id)
@@ -204,7 +204,6 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         headband = channel.headband.file.url
     elif theme is not None and theme.headband is not None:
         headband = theme.headband.file.url
-
     limit += limit - theme_children.count()
     videos = videos[offset : limit + offset]
     data = {
