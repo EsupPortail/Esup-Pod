@@ -164,25 +164,39 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
     Returns:\n
         Dict[str, Any]: json data\n
     """
+    target = request.GET.get("target", "").lower()
     limit = int(request.GET.get("limit", 6))
     offset = int(request.GET.get("offset", 0))
     next_url = None
     previous_url = None
     request_path = request.path
-    theme_children = channel.themes.filter(parentId=None)
-    videos = videos.filter(theme=None, channel=channel)
     parent_title = ""
+    response = {"next": next_url, "previous": previous_url}
+    if target in ("", "theme"):
+        theme_children = channel.themes.filter(parentId=None)
+        response["theme_children"] = theme_children
+    if target in ("", "video"):
+        videos = videos.filter(theme=None, channel=channel)
+        response["videos"] = videos
 
-    if theme is not None:
+    if theme is not None and target in ("", "theme"):
         theme_children = Theme.objects.filter(parentId=theme.id)
         videos = videos.filter(theme=theme, channel=channel)
         if theme.parentId is not None:
             parent_title = theme.parentId.title
         else:
             parent_title = channel.title
+        response = {
+            **response,
+            "theme_children": theme_children,
+            "videos": videos,
+            "parent_title": parent_title,
+        }
 
     # calculate the total available data
     count = theme_children.count() + videos.count()
+    has_more_themes = (offset + limit) < theme_children.count()
+    has_more_videos = (offset + limit) < videos.count()
     theme_children = theme_children.values("slug", "title")[
         offset : limit + offset
     ]
@@ -206,14 +220,15 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         headband = theme.headband.file.url
     limit += limit - theme_children.count()
     videos = videos[offset : limit + offset]
-    data = {
-        "next": next_url,
-        "previous": previous_url,
+    response = {
+        **response,
         "parent_title": parent_title,
         "title": title,
         "description": description,
         "headband": headband,
         "theme_children": list(theme_children),
+        "has_more_themes": has_more_themes,
+        "has_more_videos": has_more_videos,
         "videos": videos,
         "count": count,
     }
@@ -241,7 +256,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         request,
         "channel/channel.html",
         {
-            **data,
+            **response,
             "theme": theme,
             "channel": channel,
             "organize_theme": ORGANIZE_BY_THEME,
