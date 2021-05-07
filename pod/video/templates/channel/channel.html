@@ -74,15 +74,15 @@
           {% endif %}
         {% endif %}
         {% if theme %}
-        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
-        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio' slug_c=channel.slug slug_t=theme.slug%}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
+        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video' slug_c=channel.slug slug_t=theme.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss" class="mr-1"></i>Video</a>
+        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio' slug_c=channel.slug slug_t=theme.slug%}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss" class="mr-1"></i>Audio</a>
         {% else %}
-        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video' slug_c=channel.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
-        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio' slug_c=channel.slug %}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
+        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-video' slug_c=channel.slug %}" title="{% trans 'subscribe to the video feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss" class="mr-1"></i>Video</a>
+        <a href="feed://{{ request.META.HTTP_HOST }}{% url 'rss-audio' slug_c=channel.slug %}" title="{% trans 'subscribe to the audio feed'%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss" class="mr-1"></i>Audio</a>
         {% endif %}
         {% if request.user in channel.owners.all %}
           <a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans 'Edit the themes'%}" class="btn btn btn-outline-primary btn-sm">
-            <i data-feather="edit"></i>&nbsp;{% trans "Edit the channel"%}</a>
+            <i data-feather="edit" class="mr-1"></i>{% trans "Edit the channel"%}</a>
         {% endif %}
     </span>
   </h1>
@@ -126,19 +126,19 @@
         {% if USE_STATS_VIEW %}
           <a href="{% url "video_stats_view" slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
         {% endif %}
-        <a href="feed://{{ request.META.HTTP_HOST }}{% url "rss-video" slug_c=channel.slug slug_t=theme.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
-        <a href="feed://{{ request.META.HTTP_HOST }}{% url "rss-audio" slug_c=channel.slug slug_t=theme.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
+        <a href="feed://{{ request.META.HTTP_HOST }}{% url "rss-video" slug_c=channel.slug slug_t=theme.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss" class="mr-1"></i>Video</a>
+        <a href="feed://{{ request.META.HTTP_HOST }}{% url "rss-audio" slug_c=channel.slug slug_t=theme.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss" class="mr-1"></i>Audio</a>
       {% else %}
         {% if USE_STATS_VIEW %}
           <a href="{% url "video_stats_view" slug=channel.slug %}?from=channel" title="{% trans 'Show view statistics for all videos in this channel' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
         {% endif %}
-        <a href="{% url "rss-video" slug_c=channel.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
-        <a href="{% url "rss-audio" slug_c=channel.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
+        <a href="{% url "rss-video" slug_c=channel.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss" class="mr-1"></i>Video</a>
+        <a href="{% url "rss-audio" slug_c=channel.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss" class="mr-1"></i>Audio</a>
       {% endif %}
     </span>
     {% if request.user in channel.owners.all %}
-      <span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-primary btn-sm">
-        <i data-feather="edit"></i>&nbsp;{% trans "Edit the channel"%}</a>&nbsp;</span>
+      <span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-primary btn-sm mr-1">
+        <i data-feather="edit" class="mr-1"></i>{% trans "Edit the channel"%}</a></span>
     {%endif%}
   </h1>
 
@@ -170,7 +170,7 @@
 {% block page_aside %}
   <div class="card card-body p-2 mt-1" id="card-channelthemes">
     <h5 class="card-title pl-2">
-      <i data-feather="list"></i>&nbsp;
+      <i data-feather="list" class="mr-1"></i>
       {% trans 'Themes of ' %}&nbsp;{{ channel.title }}
     </h5>
     <div class="card-text" id="treeview">
