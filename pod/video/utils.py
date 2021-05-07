@@ -390,3 +390,21 @@ def pagination_data(request_path, offset, limit, total_count):
     pages_info = "{}/{}".format(current_page, total)
 
     return next_url, previous_url, pages_info
+
+
+def get_headband(theme, channel):
+    """Get headband priority to theme headband
+
+    Args:
+        theme (Theme): theme
+        channel (Channel): channel
+
+    Returns:
+        str: headband path
+    """
+    headband = None
+    if theme is None and channel.headband is not None:
+        headband = channel.headband.file.url
+    elif theme is not None and theme.headband is not None:
+        headband = theme.headband.file.url
+    return headband
