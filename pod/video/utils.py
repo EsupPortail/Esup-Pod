@@ -358,3 +358,35 @@ def send_email_encoding(video_to_encode):
                 fail_silently=False,
                 html_message=html_message,
             )
+
+
+def pagination_data(request_path, offset, limit, total_count):
+    """Get next, previous url and info about
+    max number of page and current page\n
+
+    Args:\n
+        request_path (str): current request path
+        offset (int): data offset\n
+        limit (int): data max number\n
+        total_count (int): total data count\n
+
+    Returns:\n
+        Tuple[str]: next, previous url and current page info\n
+    """
+    next_url = previous_url = None
+    pages_info = "0/0"
+    # manage next previous url (Pagination)
+    if offset + limit < total_count and limit <= total_count:
+        next_url = "{}?limit={}&offset={}".format(
+            request_path, limit, limit + offset
+        )
+    if offset - limit >= 0 and limit <= total_count:
+        previous_url = "{}?limit={}&offset={}".format(
+            request_path, limit, offset - limit
+        )
+
+    current_page = 1
+    total = ceil(total_count / limit)
+    pages_info = "{}/{}".format(current_page, total)
+
+    return next_url, previous_url, pages_info
