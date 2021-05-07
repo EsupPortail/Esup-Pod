@@ -192,8 +192,8 @@ def send_email_transcript(video_to_encode):
     message = "%s\n%s\n\n%s\n%s\n%s\n" % (
         _("Hello,"),
         _(
-            u"The content “%(content_title)s” has been automatically transcript"
-            + ", and is now available on %(site_title)s."
+            u"The content “%(content_title)s” has been automatically"
+            + " transcript, and is now available on %(site_title)s."
         )
         % {"content_title": video_to_encode.title, "site_title": TITLE_SITE},
         _(u"You will find it here:"),
@@ -215,8 +215,8 @@ def send_email_transcript(video_to_encode):
                 </p><p>%s</p>' % (
         _("Hello,"),
         _(
-            u"The content “%(content_title)s” has been automatically transcript"
-            + ", and is now available on %(site_title)s."
+            u"The content “%(content_title)s” has been automatically"
+            + " transcript, and is now available on %(site_title)s."
         )
         % {
             "content_title": "<b>%s</b>" % video_to_encode.title,
