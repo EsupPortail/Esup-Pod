@@ -102,7 +102,7 @@
   <div class="themes-videos">
     {% comment %} Themes {% endcomment %}
     <section class="theme-section">
-      <p class="theme-count">{% blocktrans count counter=theme_children|length %}{{ counter }} theme found{% plural %}{{ counter }} themes found{% endblocktrans %}</p>
+      <p class="theme-count">{% blocktrans count counter=count_themes %}{{ counter }} theme found{% plural %}{{ counter }} themes found{% endblocktrans %}</p>
       {% if theme_children|length %}
         <ul class="list-children-theme">
         {% for th in theme_children %}
