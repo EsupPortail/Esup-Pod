@@ -141,7 +141,6 @@ CURSUS_CODES = getattr(
 )
 
 TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
-ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
 VIEW_STATS_AUTH = getattr(settings, "VIEW_STATS_AUTH", False)
 ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
 USE_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
@@ -175,9 +174,6 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         response["theme_children"] = theme_children
     if target in ("", "video"):
         videos = videos.filter(theme=None, channel=channel)
-        response["videos"] = videos
-
-    # response, theme_children, videos, parent_title =
 
     if theme is not None and target in ("", "theme"):
         theme_children = Theme.objects.filter(parentId=theme.id)
@@ -185,13 +181,6 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         parent_title = channel.title
         if theme.parentId is not None:
             parent_title = theme.parentId.title
-
-        response = {
-            **response,
-            "theme_children": theme_children,
-            "videos": videos,
-            "parent_title": parent_title,
-        }
 
     # calculate the total available data
     count_themes = theme_children.count()
@@ -219,8 +208,9 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         "theme_children": list(theme_children),
         "has_more_themes": has_more_themes,
         "has_more_videos": has_more_videos,
-        "videos": videos,
+        "videos": list(videos),
         "count_themes": count_themes,
+        "pages_info": theme_pages_info,
     }
     if request.is_ajax():
         videos = list(
@@ -249,8 +239,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
             **response,
             "theme": theme,
             "channel": channel,
-            "pages_info": theme_pages_info,
-            "organize_theme": ORGANIZE_BY_THEME,
+            "organize_theme": True,
         },
     )
 
@@ -279,7 +268,7 @@ def channel(request, slug_c, slug_t=None):
         list_theme = theme.get_all_children_flat()
         videos_list = videos_list.filter(theme__in=list_theme)
 
-    if ORGANIZE_BY_THEME:
+    if getattr(settings, "ORGANIZE_BY_THEME", False):
         return _regroup_videos_by_theme(request, videos_list, channel, theme)
 
     page = request.GET.get("page", 1)
