@@ -1,7 +1,13 @@
 .list-children-theme {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding: 0;
 }
 
+.paginator,
 .headband-description {
     margin-bottom: 1em;
 }
@@ -15,4 +21,23 @@
 .channelheader .img-responsive {
     width: 300px;
     max-width: 100%;
+}
+
+li.child-theme {
+    padding: 0;
+    margin: .4em 0;
+    margin-right: .8em;
+    max-width: 200px;
+    min-width: 200px
+}
+
+.child-theme a {
+    padding: .4em;
+    max-width: 100%;
+    width: 100%;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: inherit !important;
 }
