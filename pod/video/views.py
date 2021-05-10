@@ -169,11 +169,12 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
     offset = int(request.GET.get("offset", 0))
     theme_children = None
     parent_title = ""
-    response = {"next": None, "previous": None}
-    if target in ("", "theme"):
+    response = {}
+
+    if target in ("", "themes"):
         theme_children = channel.themes.filter(parentId=None)
 
-    if target in ("", "video"):
+    if target in ("", "videos"):
         videos = videos.filter(theme=None, channel=channel)
 
     if theme is not None and target in ("", "theme"):
@@ -189,22 +190,24 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         theme_children = theme_children.values("slug", "title")[
             offset : limit + offset
         ]
+        next_url, previous_url, theme_pages_info = pagination_data(
+            request.path, offset, limit, count_themes
+        )
         response = {
             **response,
+            "next": next_url,
+            "previous": previous_url,
             "has_more_themes": has_more_themes,
             "count_themes": count_themes,
             "theme_children": list(theme_children),
+            "pages_info": theme_pages_info,
         }
-    has_more_videos = (offset + limit) < videos.count()
 
-    next_url, previous_url, theme_pages_info = pagination_data(
-        request.path, offset, limit, count_themes
-    )
+    has_more_videos = (offset + limit) < videos.count()
 
     title = channel.title if theme is None else theme.title
     description = channel.description if theme is None else theme.description
     headband = get_headband(channel, theme).get("headband", None)
-    limit += limit - theme_children.count()
     videos = videos[offset : limit + offset]
     response = {
         **response,
@@ -214,7 +217,6 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         "headband": headband,
         "has_more_videos": has_more_videos,
         "videos": list(videos),
-        "pages_info": theme_pages_info,
     }
     if request.is_ajax():
         videos = list(
