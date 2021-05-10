@@ -167,11 +167,12 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
     target = request.GET.get("target", "").lower()
     limit = int(request.GET.get("limit", 6))
     offset = int(request.GET.get("offset", 0))
+    theme_children = None
     parent_title = ""
     response = {"next": None, "previous": None}
     if target in ("", "theme"):
         theme_children = channel.themes.filter(parentId=None)
-        response["theme_children"] = theme_children
+
     if target in ("", "video"):
         videos = videos.filter(theme=None, channel=channel)
 
@@ -182,13 +183,19 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         if theme.parentId is not None:
             parent_title = theme.parentId.title
 
-    # calculate the total available data
-    count_themes = theme_children.count()
-    has_more_themes = (offset + limit) < theme_children.count()
+    if theme_children is not None:
+        has_more_themes = (offset + limit) < theme_children.count()
+        count_themes = theme_children.count()
+        theme_children = theme_children.values("slug", "title")[
+            offset : limit + offset
+        ]
+        response = {
+            **response,
+            "has_more_themes": has_more_themes,
+            "count_themes": count_themes,
+            "theme_children": list(theme_children),
+        }
     has_more_videos = (offset + limit) < videos.count()
-    theme_children = theme_children.values("slug", "title")[
-        offset : limit + offset
-    ]
 
     next_url, previous_url, theme_pages_info = pagination_data(
         request.path, offset, limit, count_themes
@@ -196,7 +203,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
 
     title = channel.title if theme is None else theme.title
     description = channel.description if theme is None else theme.description
-    headband = get_headband(theme, channel)
+    headband = get_headband(channel, theme).get("headband", None)
     limit += limit - theme_children.count()
     videos = videos[offset : limit + offset]
     response = {
@@ -205,11 +212,8 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         "title": title,
         "description": description,
         "headband": headband,
-        "theme_children": list(theme_children),
-        "has_more_themes": has_more_themes,
         "has_more_videos": has_more_videos,
         "videos": list(videos),
-        "count_themes": count_themes,
         "pages_info": theme_pages_info,
     }
     if request.is_ajax():
