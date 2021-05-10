@@ -385,7 +385,7 @@ def pagination_data(request_path, offset, limit, total_count):
             request_path, limit, offset - limit
         )
 
-    current_page = 1
+    current_page = 1 if offset <= 0 else int((offset / limit)) + 1
     total = ceil(total_count / limit)
     pages_info = "{}/{}".format(current_page, total)
 
