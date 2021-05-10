@@ -34,7 +34,7 @@
   box-shadow: 0 0 0 .2rem rgba(126,126,126,.25);
 }
 
-[data-theme="dark"] .card-takenote .header:hover{
+[data-theme="dark"] #card-takenote .header:hover{
   background-color: var(--bg-color)
 }
 
@@ -68,10 +68,13 @@
   color: var(--primary);
 }
 
-[data-theme="dark"] .btn,
+[data-theme="dark"] .btn-link.disabled,
 [data-theme="dark"] .dropdown-item,
 [data-theme="dark"] footer {
   color: var(--font-color);
+}
+[data-theme="dark"] .btn-link.disabled{
+  opacity:.7;
 }
 
 [data-theme="dark"] .btn:hover,
@@ -233,10 +236,10 @@ body.dark {
   border-radius: 50%;
 }
 [data-theme="dark"] .slider {
-    background-color: var(--gray);
+  background-color: var(--gray);
 }
 input:checked + .slider {
-  background-color: var(--primary);
+  background-color: var(--primary2);
 }
 input:checked + .slider:before {
   transform: translateX(26px);
