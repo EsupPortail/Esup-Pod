@@ -78,9 +78,11 @@ class ChannelTestView(TestCase):
         )
 
     def test_regroup_videos_by_theme(self):
+        # Test get videos and theme from channel view
         self.client = Client()
         response = self.client.get("/%s/" % self.c.slug)
         expected = {
+            "next_videos": None,
             "next": None,
             "previous": None,
             "parent_title": "",
@@ -103,7 +105,7 @@ class ChannelTestView(TestCase):
         for key in expected.keys():
             assert expected[key] == response.context[key]
 
-        # Test ajax request
+        # Test ajax request, get videos, theme from channel view
         self.client = Client()
         response = self.client.get(
             "/%s/" % self.c.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
@@ -124,6 +126,37 @@ class ChannelTestView(TestCase):
         expected.pop("organize_theme", None)
         expected.pop("theme", None)
         expected.pop("channel", None)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertCountEqual(expected, response.json())
+
+        # Test ajax request, get only themes from channel view
+        self.client = Client()
+        response = self.client.get(
+            "/%s/" % self.c.slug,
+            {"target": "themes"},
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        expected.pop("next_videos", None)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertCountEqual(expected, response.json())
+
+        # Test ajax request, get only videos from channel view
+        self.client = Client()
+        response = self.client.get(
+            "/%s/" % self.c.slug,
+            {"target": "videos"},
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+        expected["next_videos"] = None
+
+        expected.pop("next", None)
+        expected.pop("previous", None)
+        expected.pop("theme_children", None)
+        expected.pop("has_more_themes", None)
+        expected.pop("pages_info", None)
+        expected.pop("count_themes", None)
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertCountEqual(expected, response.json())
