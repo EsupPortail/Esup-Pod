@@ -69,7 +69,60 @@ class ChannelTestView(TestCase):
             "   --->  test_channel_with_theme_in_argument"
             " of ChannelTestView : OK !")
 
+    def test_regroup_videos_by_theme(self):
+        self.client = Client()
+        response = self.client.get("/%s/" % self.c.slug)
+        expected = {
+            "next": None,
+            "previous": None,
+            "parent_title": "",
+            "title": self.c.title,
+            "description": self.c.description,
+            "headband": None,
+            "theme_children": [
+                {
+                    "slug": self.theme.slug,
+                    "title": self.theme.title
+                }
+            ],
+            "has_more_themes": False,
+            "has_more_videos": False,
+            "videos": [self.v],
+            "count_themes": 1,
+            "theme": None,
+            "channel": self.c,
+            "pages_info": "1/1",
+            "organize_theme": True
+        }
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        for key in expected.keys():
+            assert expected[key] == response.context[key]
 
+        # Test ajax request
+        headers = {"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
+        self.client = Client()
+        response = self.client.get(
+            "/%s/" % self.c.slug,
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        expected["videos"] = [
+            {
+                'slug': self.v.slug,
+                'title': self.v.title,
+                'duration': self.v.duration_in_time,
+                'thumbnail': self.v.get_thumbnail_card(),
+                'is_video': self.v.is_video,
+                'has_password': bool(self.v.password),
+                'is_restricted': self.v.is_restricted,
+                'has_chapter': self.v.chapter_set.all().count() > 0,
+                'is_draft': self.v.is_draft
+            }
+        ]
+        expected.pop("organize_theme", None)
+        expected.pop("theme", None)
+        expected.pop("channel", None)
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertCountEqual(expected, response.json())
 
 class MyChannelsTestView(TestCase):
     fixtures = ['initial_data.json', ]
