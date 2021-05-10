@@ -393,14 +393,14 @@ def pagination_data(request_path, offset, limit, total_count):
 
 
 def get_headband(channel, theme=None):
-    """Get headband with priority to theme headband
+    """Get headband with priority to theme headband\n
 
-    Args:
-        channel (Channel): channel
-        theme (Theme, optional): theme, Defaults to None.
+    Args:\n
+        channel (Channel): channel\n
+        theme (Theme, optional): theme, Defaults to None.\n
 
-    Returns:
-        dict: type(theme, channel) and headband path
+    Returns:\n
+        dict: type(theme, channel) and headband path\n
     """
     result = {
         "type": "channel" if theme is None else "theme",
