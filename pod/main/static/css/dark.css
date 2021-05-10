@@ -28,10 +28,10 @@
   color: #BEC1C6;
 }
 [data-theme="dark"] .form-control:focus {
-    background-color: var(--background-color);
-    color: var(--font-color);
-    border-color: var(--primary);
-    box-shadow: 0 0 0 .2rem rgba(126,126,126,.25);
+  background-color: var(--background-color);
+  color: var(--font-color);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 .2rem rgba(126,126,126,.25);
 }
 
 [data-theme="dark"] .card-takenote .header:hover{
@@ -79,6 +79,13 @@
 [data-theme="dark"] .btn:focus {
   color: inherit;
 }
+
+[data-theme="dark"] .btn-link:focus,
+[data-theme="dark"] .btn-link:active,
+[data-theme="dark"] .btn-link:hover {
+  color: var(--activelink-color);
+}
+
 [data-theme="dark"] .btn-light {
   background-color: var(--dark);
   border-color: var(--color-formfields);
