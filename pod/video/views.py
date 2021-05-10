@@ -944,7 +944,8 @@ def can_edit_or_remove_note_or_com(request, nc, action):
 
 def can_see_note_or_com(request, nc):
     """
-    Check if the current user can view the note or comment nc
+    Check if the current user can view the note or comment nc.
+
     If not raise PermissionDenied
     """
     if isinstance(nc, AdvancedNotes):
