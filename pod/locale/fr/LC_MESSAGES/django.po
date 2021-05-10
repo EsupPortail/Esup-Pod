@@ -933,7 +933,7 @@ msgstr "Supprimer"
 #: pod/chapter/templates/video_chapter.html:5
 #: pod/chapter/templates/video_chapter.html:23
 msgid "Chapter video"
-msgstr "Chapitre vidéo"
+msgstr "Chapitrer la vidéo"
 
 #: pod/chapter/templates/video_chapter.html:16
 #: pod/completion/templates/video_caption_maker.html:12
