@@ -14,6 +14,7 @@ from ..models import Discipline
 from ..models import AdvancedNotes
 from .. import views
 
+from http import HTTPStatus
 from importlib import reload
 import re
 import json
@@ -24,62 +25,50 @@ class ChannelTestView(TestCase):
 
     def setUp(self):
         site = Site.objects.get(id=1)
-        c = Channel.objects.create(title="ChannelTest1")
-        c2 = Channel.objects.create(title="ChannelTest2")
-        Theme.objects.create(
+        self.c = Channel.objects.create(title="ChannelTest1")
+        self.c2 = Channel.objects.create(title="ChannelTest2")
+        self.theme = Theme.objects.create(
             title="Theme1", slug="blabla",
-            channel=Channel.objects.get(title="ChannelTest1"))
+            channel=self.c)
         user = User.objects.create(username="pod", password="pod1234pod")
-        v = Video.objects.create(
+        self.v = Video.objects.create(
             title="Video1", owner=user, video="test.mp4", is_draft=False,
             type=Type.objects.get(id=1))
-        v.channel.add(c)
-        v.save()
+        self.v.channel.add(self.c)
+        self.v.save()
 
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
 
-        c.sites.add(site)
-        c2.sites.add(site)
+        self.c.sites.add(site)
+        self.c2.sites.add(site)
 
+    @override_settings(ORGANIZE_BY_THEME=False)
     def test_get_channel_view(self):
         self.client = Client()
-        response = self.client.get(
-            "/%s/" % Channel.objects.get(title="ChannelTest1").slug)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.context["channel"],
-            Channel.objects.get(title="ChannelTest1"))
-        self.assertEqual(
-            response.context["theme"], None)
-        self.assertEqual(
-            response.context["videos"].paginator.count, 1)
+        response = self.client.get("/%s/" % self.c.slug)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context["channel"], self.c)
+        self.assertEqual(response.context["theme"], None)
+        self.assertEqual(response.context["videos"].paginator.count, 1)
         print(
             "   --->  test_channel_without_theme"
             "_in_argument of ChannelTestView : OK !"
         )
-        response = self.client.get(
-            "/%s/" % Channel.objects.get(title="ChannelTest2").slug)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.context["channel"],
-            Channel.objects.get(title="ChannelTest2"))
-        self.assertEqual(
-            response.context["theme"], None)
-        self.assertEqual(
-            response.context["videos"].paginator.count, 0)
+        response = self.client.get("/%s/" % self.c2.slug)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.context["channel"], self.c2)
+        self.assertEqual(response.context["theme"], None)
+        self.assertEqual(response.context["videos"].paginator.count, 0)
         print(
             "   --->  test_channel_2_without_theme_in_argument"
             " of ChannelTestView : OK !")
-        response = self.client.get(
-            "/%s/%s/" % (
-                Channel.objects.get(title="ChannelTest1").slug,
-                Theme.objects.get(title="Theme1").slug)
-        )
-        self.assertEqual(response.status_code, 200)
+        response = self.client.get("/%s/%s/" % (self.c.slug, self.theme.slug))
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         print(
             "   --->  test_channel_with_theme_in_argument"
             " of ChannelTestView : OK !")
+
 
 
 class MyChannelsTestView(TestCase):
@@ -108,13 +97,13 @@ class MyChannelsTestView(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         response = self.client.get("/my_channels/")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["channels"].count(), 2)
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
         response = self.client.get("/my_channels/")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["channels"].count(), 0)
         print(" --->  test_get_mychannels_view of MyChannelsTestView : OK !")
@@ -147,7 +136,7 @@ class ChannelEditTestView(TestCase):
         response = self.client.get("/channel_edit/slugauhasard/")
         self.assertEqual(response.status_code, 404)
         response = self.client.get("/channel_edit/%s/" % channel.slug)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context['form'].instance, channel)
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
@@ -167,7 +156,7 @@ class ChannelEditTestView(TestCase):
                 'title': "ChannelTest1",
                 'description': '<p>bl</p>\r\n'
             }, follow=True)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"The changes have been saved." in response.content)
         c = Channel.objects.get(title="ChannelTest1")
         self.assertEqual(c.description, '<p>bl</p>')
@@ -205,7 +194,7 @@ class ThemeEditTestView(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         response = self.client.get("/theme_edit/%s/" % channel.slug)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context['channel'], channel)
         self.assertEqual(
             response.context['form_theme'].initial['channel'], channel)
@@ -222,7 +211,7 @@ class ThemeEditTestView(TestCase):
             '/theme_edit/%s/' % channel.slug, {
                 'action': "new"
             }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context['channel'], channel)
         self.assertEqual(
             response.context['form_theme'].initial['channel'], channel)
@@ -232,7 +221,7 @@ class ThemeEditTestView(TestCase):
                 'action': "modify",
                 'id': 1
             }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context['channel'], channel)
         theme = Theme.objects.get(id=1)
         self.assertEqual(response.context['form_theme'].instance, theme)
@@ -243,7 +232,7 @@ class ThemeEditTestView(TestCase):
                 'action': "delete",
                 'id': 1
             }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context['channel'], channel)
         self.assertEqual(
             Channel.objects.get(title="ChannelTest1").themes.all().count(), 2)
@@ -255,7 +244,7 @@ class ThemeEditTestView(TestCase):
                 'title': "Theme4",
                 'channel': Channel.objects.get(title="ChannelTest1").id
             }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context['channel'], channel)
         theme = Theme.objects.get(title="Theme4")
         self.assertEqual(
@@ -268,7 +257,7 @@ class ThemeEditTestView(TestCase):
                 'title': "Theme3-1",
                 'channel': Channel.objects.get(title="ChannelTest1").id
             }, follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context['channel'], channel)
         theme = Theme.objects.get(id=3)
         self.assertEqual(theme.title, "Theme3-1")
@@ -312,13 +301,13 @@ class MyVideosTestView(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         response = self.client.get("/my_videos/")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["videos"].paginator.count, 3)
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
         response = self.client.get("/my_videos/")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["videos"].paginator.count, 1)
         print(" --->  test_get_myvideos_view of MyVideosTestView : OK !")
@@ -360,61 +349,61 @@ class VideosTestView(TestCase):
     def test_get_videos_view(self):
         self.client = Client()
         response = self.client.get("/videos/")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["videos"].paginator.count, 4)
         # type
         response = self.client.get("/videos/?type=type1")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["videos"].paginator.count, 3)
         response = self.client.get("/videos/?type=type2")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["videos"].paginator.count, 1)
         response = self.client.get("/videos/?type=type2&type=type1")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["videos"].paginator.count, 4)
         # discipline
         response = self.client.get("/videos/?discipline=discipline1")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["videos"].paginator.count, 2)
         response = self.client.get("/videos/?discipline=discipline2")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["videos"].paginator.count, 2)
         response = self.client.get(
             "/videos/?discipline=discipline1&discipline=discipline2"
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["videos"].paginator.count, 3)
         # owner
         response = self.client.get("/videos/?owner=pod")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["videos"].paginator.count, 2)
         response = self.client.get("/videos/?owner=pod2")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["videos"].paginator.count, 2)
         response = self.client.get("/videos/?owner=pod&owner=pod2")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["videos"].paginator.count, 4)
         # tag
         response = self.client.get("/videos/?tag=tag1")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["videos"].paginator.count, 2)
         response = self.client.get("/videos/?tag=tag2")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["videos"].paginator.count, 2)
         response = self.client.get("/videos/?tag=tag1&tag=tag2")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(
             response.context["videos"].paginator.count, 3)
         print(" --->  test_get_videos_view of VideosTestView : OK !")
@@ -462,7 +451,7 @@ class VideoTestView(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         response = self.client.get("/video/%s/" % v.slug)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
         response = self.client.get("/video/%s/" % v.slug)
@@ -472,7 +461,7 @@ class VideoTestView(TestCase):
         v.is_draft = False
         v.save()
         response = self.client.get("/video/%s/" % v.slug)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         # test restricted
         v.is_restricted = True
         v.save()
@@ -481,7 +470,7 @@ class VideoTestView(TestCase):
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
         response = self.client.get("/video/%s/" % v.slug)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         # test restricted group
         v.restrict_access_to_groups.add(AccessGroup.objects.get(
             code_name='group2'))
@@ -496,7 +485,7 @@ class VideoTestView(TestCase):
         self.user.owner.accessgroup_set.add(AccessGroup.objects.get(
             code_name='group2'))
         response = self.client.get("/video/%s/" % v.slug)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         # TODO test with password
         v.is_restricted = False
         v.restrict_access_to_groups = []
@@ -504,16 +493,16 @@ class VideoTestView(TestCase):
         v.save()
         self.client.logout()
         response = self.client.get("/video/%s/" % v.slug)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(response.context["form"])
         # TODO test with hashkey
         response = self.client.get("/video/%s/%s/" % (v.slug, v.get_hashkey()))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual("form" in response.context.keys(), False)
         v.is_draft = True
         v.save()
         response = self.client.get("/video/%s/%s/" % (v.slug, v.get_hashkey()))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual("form" in response.context.keys(), False)
         # Tests for additional owners
         v = Video.objects.get(title="VideoWithAdditionalOwners")
@@ -521,11 +510,11 @@ class VideoTestView(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         response = self.client.get("/video/%s/" % v.slug)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
         response = self.client.get("/video/%s/" % v.slug)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.user = User.objects.get(username="pod3")
         self.client.force_login(self.user)
         response = self.client.get("/video/%s/" % v.slug)
@@ -570,11 +559,11 @@ class VideoEditTestView(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         response = self.client.get("/video_edit/")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         response = self.client.get("/video_edit/slugauhasard/")
         self.assertEqual(response.status_code, 404)
         response = self.client.get("/video_edit/%s/" % video.slug)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context['form'].instance, video)
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
@@ -585,9 +574,9 @@ class VideoEditTestView(TestCase):
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
         response = self.client.get("/video_edit/")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         response = self.client.get("/video_edit/%s/" % video.slug)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context['form'].instance, video)
         self.user = User.objects.get(username="pod3")
         self.client.force_login(self.user)
@@ -611,7 +600,7 @@ class VideoEditTestView(TestCase):
                 'cursus': "0",
                 'type': 1
             }, follow=True)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         # print(response.context["form"].errors)
         self.assertTrue(b"The changes have been saved." in response.content)
 
@@ -627,7 +616,7 @@ class VideoEditTestView(TestCase):
                 'cursus': "0",
                 'type': 1
             }, follow=True)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"The changes have been saved." in response.content)
         v = Video.objects.get(title="VideoTest1")
         p = re.compile(r'^videos/([\d\w]+)/file([_\d\w]*).mp4$')
@@ -646,7 +635,7 @@ class VideoEditTestView(TestCase):
                 'type': 1
             }
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"The changes have been saved." in response.content)
         v = Video.objects.get(title="VideoTest2")
         # Additional owners
@@ -664,7 +653,7 @@ class VideoEditTestView(TestCase):
                 'type': 1,
                 'additional_owners': [self.user.pk]
             }, follow=True)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"The changes have been saved." in response.content)
         v = Video.objects.get(title="VideoTest3")
         self.assertEqual(v.description, '<p>bl</p>')
@@ -679,7 +668,7 @@ class VideoEditTestView(TestCase):
                 'type': 1,
                 'additional_owners': [self.user.pk]
             }, follow=True)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"The changes have been saved." in response.content)
         print(
             "   --->  test_video_edit_post_request"
@@ -722,7 +711,7 @@ class video_deleteTestView(TestCase):
         response = self.client.get("/video_delete/slugauhasard/")
         self.assertEqual(response.status_code, 404)
         response = self.client.get("/video_delete/%s/" % video.slug)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
         response = self.client.get("/video_delete/%s/" % video.slug)
@@ -791,10 +780,10 @@ class video_notesTestView(TestCase):
         """
         self.client.logout()
         response = self.client.get("/video_notes/%s/" % video.slug)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.client.force_login(self.user)
         response = self.client.get("/video_notes/%s/" % video.slug)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         # self.assertEqual(response.context['notesForm'].instance, note)
         print(
             " --->  test_video_notesTestView_get_request"
@@ -819,7 +808,7 @@ class video_notesTestView(TestCase):
                 'timestamp': 10,
                 'status': '0'
             })
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"The note has been saved." in response.content)
         note = AdvancedNotes.objects.get(
             user=User.objects.get(id=self.user.id),
@@ -862,7 +851,7 @@ class video_countTestView(TestCase):
         response = self.client.post(
             "/video_count/%s/" % video.id,
             {})
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"ok" in response.content)
         self.assertEqual(video.get_viewcount(), 1)
         print(
@@ -885,7 +874,7 @@ class video_recordTestView(TestCase):
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
         response = self.client.get("/video_record/")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
 
         print(
             " --->  test_video_recordTestView_get_request"
@@ -907,7 +896,7 @@ class video_recordTestView(TestCase):
         self.user.is_staff = True
         self.user.save()
         response = self.client.get("/video_record/")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         print(
             " --->  test_video_recordTestView_get_request_restrict"
             " of video_recordTestView : OK !")
@@ -924,7 +913,7 @@ class video_recordTestView(TestCase):
             {'video': video, 'title': 'test upload'},
             **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'}
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context, None)
         try:
             data = json.loads(response.content)
