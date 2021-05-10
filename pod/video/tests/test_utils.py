@@ -1,8 +1,9 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 
+from pod.video.models import Channel, Theme
 from pod.video.models import Video, Type
-from pod.video.utils import pagination_data
+from pod.video.utils import pagination_data, get_headband
 
 
 class ChannelTestView(TestCase):
@@ -12,6 +13,10 @@ class ChannelTestView(TestCase):
 
     def setUp(self):
         user = User.objects.create(username="pod", password="pod1234pod")
+        self.c = Channel.objects.create(title="ChannelTest1")
+        self.theme = Theme.objects.create(
+            title="Theme1", slug="blabla", channel=self.c
+        )
         self.v = Video.objects.create(
             title="Video1",
             owner=user,
@@ -43,3 +48,9 @@ class ChannelTestView(TestCase):
         )
         actual = pagination_data(path, offset, limit, data_length)
         self.assertEqual(actual, expected)
+
+    def test_get_headband(self):
+        self.assertEqual(get_headband(self.c).get("type", None), "channel")
+        self.assertEqual(
+            get_headband(self.c, self.theme).get("type", None), "theme"
+        )
