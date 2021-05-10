@@ -104,7 +104,6 @@ class ChannelTestView(TestCase):
             assert expected[key] == response.context[key]
 
         # Test ajax request
-        headers = {"HTTP_X_REQUESTED_WITH": "XMLHttpRequest"}
         self.client = Client()
         response = self.client.get(
             "/%s/" % self.c.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
