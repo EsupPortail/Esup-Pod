@@ -165,24 +165,32 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         Dict[str, Any]: json data\n
     """
     target = request.GET.get("target", "").lower()
-    limit = int(request.GET.get("limit", 6))
+    limit = int(request.GET.get("limit", 4))
     offset = int(request.GET.get("offset", 0))
     theme_children = None
     parent_title = ""
     response = {}
 
     if target in ("", "themes"):
-        theme_children = channel.themes.filter(parentId=None)
+        theme_children = Theme.objects.filter(parentId=theme)
+        videos = videos.filter(theme=theme, channel=channel)
+
+        if theme is not None and theme.parentId is not None:
+            parent_title = theme.parentId.title
+        elif theme is not None and theme.parentId is None:
+            parent_title = channel.title
 
     if target in ("", "videos"):
-        videos = videos.filter(theme=None, channel=channel)
-
-    if theme is not None and target in ("", "theme"):
-        theme_children = Theme.objects.filter(parentId=theme.id)
         videos = videos.filter(theme=theme, channel=channel)
-        parent_title = channel.title
-        if theme.parentId is not None:
-            parent_title = theme.parentId.title
+        response["next_videos"], *_ = pagination_data(
+            request.path, offset, limit, videos.count()
+        )
+        videos = videos[offset : limit + offset]
+        response = {
+            **response,
+            "videos": list(videos),
+            "has_more_videos": (offset + limit) < videos.count(),
+        }
 
     if theme_children is not None:
         has_more_themes = (offset + limit) < theme_children.count()
@@ -202,21 +210,15 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
             "theme_children": list(theme_children),
             "pages_info": theme_pages_info,
         }
-
-    has_more_videos = (offset + limit) < videos.count()
-
     title = channel.title if theme is None else theme.title
     description = channel.description if theme is None else theme.description
     headband = get_headband(channel, theme).get("headband", None)
-    videos = videos[offset : limit + offset]
     response = {
         **response,
         "parent_title": parent_title,
         "title": title,
         "description": description,
         "headband": headband,
-        "has_more_videos": has_more_videos,
-        "videos": list(videos),
     }
     if request.is_ajax():
         videos = list(
