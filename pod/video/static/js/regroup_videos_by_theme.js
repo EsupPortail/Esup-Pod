@@ -1,7 +1,6 @@
 function run(has_more_theme, next_url) {
 	const URLPathName = window.location.pathname;
 	const scroll_wrapper = document.querySelector(".scroll_wrapper");
-	// const paginator = document.querySelector('.paginator')
 	const videos_container = document.querySelector("#videos_list");
 	const EDIT_URL = `${window.location.origin}/video_edit/`;
 	const COMPLETION_URL = `${window.location.origin}/video_completion/`;
@@ -157,31 +156,49 @@ function run(has_more_theme, next_url) {
 	 * @param {String} title
 	 * @param {String} slug
 	 */
-	const createThemeElement = (title, slug) => {
+	const createThemeElement = (theme) => {
 		const li = document.createElement("LI");
 		li.setAttribute(
 			"class",
 			"btn btn-sm btn-outline-secondary text-truncate child-theme"
 		);
-		li.setAttribute("title", title);
+		li.setAttribute("title", theme.title);
 		const link = document.createElement("A");
-		link.setAttribute("href", `${URLPathName}${slug}/`);
-		link.innerText = title;
+		link.setAttribute("href", `${URLPathName}${theme.slug}/`);
+		link.innerText = theme.title;
 
 		li.appendChild(link);
 		return li;
 	};
 
 	const loadNextListThemeElement = () => {
-		console.log("TODO");
+		const url =
+			window.location.href +
+			`?limit=${limit}&offset=${current_theme_offset}&target=themes`;
+		makeRequest(url).then((response) => {
+			if (!!response.theme_children.length) {
+				const ul = document.createElement("UL");
+				ul.setAttribute("class", "list-children-theme");
+				response.theme_children.forEach((child_theme) => {
+					ul.appendChild(createThemeElement(child_theme));
+				});
+				scroll_wrapper.appendChild(ul);
+			}
+		});
 	};
+	// Load next list of theme
+	loadNextListThemeElement();
 
+	/**
+	 * loading more videos handler
+	 * @param {ClickEvent} e
+	 */
 	const loadMoreVideos = (e) => {
 		e.preventDefault();
 		e.stopPropagation();
 		const url =
 			window.location.href +
-			`?limit=${limit}&offset=${current_video_offset}&target=video`;
+			`?limit=${limit}&offset=${current_video_offset}&target=videos`;
 		// Chargement vidéos..
 		const save_text = video_loader_btn.textContent;
 		video_loader_btn.textContent = gettext("Loading videos..");
