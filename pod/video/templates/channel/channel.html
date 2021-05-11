@@ -191,8 +191,6 @@
 {% if organize_theme %}
 <script>
     const has_more_themes = "{{has_more_themes}}" == "True";
-    const count_themes = "{{count_themes}}";
-    const next_url = "{{next}}";
 </script>
 <script src="{% static 'js/regroup_videos_by_theme.js' %}?ver={{VERSION}}" defer></script>
 {% endif %} {% endblock more_script %}
