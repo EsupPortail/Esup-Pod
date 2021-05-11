@@ -271,7 +271,7 @@ function run(has_more_themes) {
 			});
 		});
 	};
-	const video_loader_btn = document.querySelector(".video-section .btn");
+	const video_loader_btn = document.querySelector(".video-section #load-more-videos");
 	if (!!video_loader_btn)
 		video_loader_btn.addEventListener("click", loadMoreVideos);
 }
