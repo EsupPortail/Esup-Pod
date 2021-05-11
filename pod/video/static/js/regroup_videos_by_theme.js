@@ -1,4 +1,4 @@
-function run(has_more_themes, count_themes, next_url) {
+function run(has_more_themes) {
 	const URLPathName = window.location.pathname;
 	const scroll_wrapper = document.querySelector(".scroll_wrapper");
 	const videos_container = document.querySelector("#videos_list");
@@ -10,11 +10,13 @@ function run(has_more_themes, count_themes, next_url) {
 	const previous_btn = document.querySelector(".paginator .previous_content");
 	const current_page_info = document.querySelector(".paginator .pages_infos");
 	const next_btn = document.querySelector(".paginator .next_content");
+	const PAGE_INFO_SEPARATOR = "/";
 
-	const limit = 4;
-	let current_video_offset = 4;
-	let current_theme_offset = 4;
+	const limit = 8;
+	let current_video_offset = limit;
+	let current_theme_offset = limit;
 	let current_position = 0;
+	let current_page = `1${PAGE_INFO_SEPARATOR}1`;
 
 	/**
 	 * Make request to url
@@ -177,6 +179,7 @@ function run(has_more_themes, count_themes, next_url) {
 				window.location.href +
 				`?limit=${limit}&offset=${current_theme_offset}&target=themes`;
 			makeRequest(url).then((response) => {
+				current_page = response.pages_info;
 				has_more_themes = response.has_more_themes;
 				current_theme_offset += limit;
 				const ul = document.createElement("UL");
@@ -189,7 +192,7 @@ function run(has_more_themes, count_themes, next_url) {
 		}
 	};
 	// Disable next btn if no more themes to load
-	if (!has_more_themes && !next_btn.classList.contains("disable"))
+	if (!has_more_themes && next_btn && !next_btn.classList.contains("disable"))
 		next_btn.classList.add("disable");
 	// Load next list of theme
 	loadNextListThemeElement();
@@ -201,18 +204,13 @@ function run(has_more_themes, count_themes, next_url) {
 	const nextPreviousHandler = function (e) {
 		e.preventDefault();
 		e.stopPropagation();
+		let curr_page = Math.abs(current_position) / 100 + 1;
+		const [_, max_pages] = current_page.split(PAGE_INFO_SEPARATOR);
 		if (this.classList.contains("disable")) return;
 		const themes_contents = scroll_wrapper.querySelectorAll(
 			".list-children-theme"
 		);
-		if (this.isEqualNode(next_btn)) {
-			const all_themes_loaded = current_theme_offset > count_themes;
-			if (
-				!all_themes_loaded &&
-				!has_more_themes &&
-				!next_btn.classList.contains("disable")
-			)
-				next_btn.classList.add("disable");
+		if (this.isEqualNode(next_btn) && curr_page < Number.parseInt(max_pages)) {
 			current_position -= 100;
 			// swipe content on the right
 			themes_contents.forEach(
@@ -231,13 +229,23 @@ function run(has_more_themes, count_themes, next_url) {
 					(theme_content.style.transform = `translateX(${current_position}%)`)
 			);
 		}
+		curr_page = Math.abs(current_position) / 100 + 1;
+		if (
+			curr_page === Number.parseInt(max_pages) &&
+			!next_btn.classList.contains("disable")
+		)
+			next_btn.classList.add("disable");
+
+		if (current_position === 0 && !previous_btn.classList.contains("disable"))
+			previous_btn.classList.add("disable");
+		current_page_info.innerText = `${curr_page}${PAGE_INFO_SEPARATOR}${max_pages}`;
 	};
 
 	/**
 	 * Manage next/ previous  click Event
 	 */
 	[previous_btn, next_btn].forEach((btn) => {
-		btn.addEventListener("click", nextPreviousHandler);
+		if (!!btn) btn.addEventListener("click", nextPreviousHandler);
 	});
 
 	/**
@@ -254,16 +262,17 @@ function run(has_more_themes, count_themes, next_url) {
 		const save_text = video_loader_btn.textContent;
 		video_loader_btn.textContent = gettext("Loading videos..");
 		makeRequest(url).then((response) => {
+			current_video_offset += limit;
 			video_loader_btn.textContent = save_text;
 			if (!response.has_more_videos) video_loader_btn.remove();
 
 			response.videos.forEach((v) => {
 				videos_container.appendChild(createVideoElement(v));
-				current_video_offset += current_video_offset;
 			});
 		});
 	};
 	const video_loader_btn = document.querySelector(".video-section .btn");
-	video_loader_btn.addEventListener("click", loadMoreVideos);
+	if (!!video_loader_btn)
+		video_loader_btn.addEventListener("click", loadMoreVideos);
 }
-run(has_more_themes, next_url);
+run(has_more_themes);
