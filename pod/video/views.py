@@ -185,16 +185,17 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         response["next_videos"], *_ = pagination_data(
             request.path, offset, limit, videos.count()
         )
+        count = videos.count()
         videos = videos[offset : limit + offset]
         response = {
             **response,
             "videos": list(videos),
-            "has_more_videos": (offset + limit) < videos.count(),
+            "has_more_videos": (offset + limit) < count,
         }
 
     if theme_children is not None:
-        has_more_themes = (offset + limit) < theme_children.count()
         count_themes = theme_children.count()
+        has_more_themes = (offset + limit) < count_themes
         theme_children = theme_children.values("slug", "title")[
             offset : limit + offset
         ]
