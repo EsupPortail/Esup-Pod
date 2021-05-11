@@ -18,7 +18,7 @@
 		 */
 		var MenuButton = videojs.getComponent('MenuButton');
 		var ChapterMenuButton = videojs.extend(MenuButton, {
-			constructor: function(player, options){ 
+			constructor: function(player, options){
 				options.label = gettext('Chapters');
 				MenuButton.call(this, player, options);
 				this.el().setAttribute('aria-label', gettext('Chapters'));
@@ -70,7 +70,7 @@
 						var newA = document.createElement('a');
 						newA.setAttribute('id', "chapter"+chapId);
 						newA.setAttribute('start', chapTime);
-						
+
 						var newTitle = document.createTextNode(chapTitle);
 						newA.appendChild(newTitle);
 						newLi.appendChild(newA);
@@ -83,7 +83,7 @@
 					var oldList  = document.getElementById('chapters');
 					var newList = document.getElementsByClassName('chapters-list inactive');
 					oldList.parentNode.removeChild(oldList);
-					$(newList).appendTo('#'+player.id());	
+					$(newList).appendTo('#'+player.id());
 				};
 
 				/**
@@ -149,7 +149,7 @@
 		videoJsChapters.prototype.dispose = function() {
 			Plugin.prototype.dispose.call(this);
 		};
-			
+
 		// Register the plugin
 		videojs.registerPlugin('videoJsChapters', videoJsChapters);
 	})(window, videojs);
