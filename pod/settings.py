@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
-    'lti_provider',
     'django_select2',
     # Pod Applications
     'pod.main',

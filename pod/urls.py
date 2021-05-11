@@ -44,7 +44,7 @@ from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
 from pod.recorder.views import add_recording, recorder_notify, claim_record,\
     delete_record
-from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
+#from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
 from pod.video.views import PodChunkedUploadView, PodChunkedUploadCompleteView
 from django.urls import path
 
