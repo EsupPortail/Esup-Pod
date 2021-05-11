@@ -96,7 +96,8 @@
     </section>
     <section class="video-section">
         <p class="video-count">{% blocktrans count counter=videos|length %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</p>
-        {% include "videos/video_list.html" %} {% if has_more_videos %}
+        {% include "videos/video_list.html" %}
+        {% if has_more_videos %}
         <div class="float-right">
             <button class="btn btn-primary" type="button">{% trans "Load more videos" %}</button>
         </div>
@@ -189,8 +190,9 @@
 
 {% if organize_theme %}
 <script>
-    const has_more_themes = "{{has_more_themes}}" == "True"
-    const next_url = "{{next}}"
+    const has_more_themes = "{{has_more_themes}}" == "True";
+    const count_themes = "{{count_themes}}";
+    const next_url = "{{next}}";
 </script>
 <script src="{% static 'js/regroup_videos_by_theme.js' %}?ver={{VERSION}}" defer></script>
 {% endif %} {% endblock more_script %}

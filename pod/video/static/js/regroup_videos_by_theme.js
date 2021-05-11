@@ -1,4 +1,4 @@
-function run(has_more_theme, next_url) {
+function run(has_more_themes, count_themes, next_url) {
 	const URLPathName = window.location.pathname;
 	const scroll_wrapper = document.querySelector(".scroll_wrapper");
 	const videos_container = document.querySelector("#videos_list");
@@ -8,13 +8,13 @@ function run(has_more_theme, next_url) {
 	const DELETE_URL = `${window.location.origin}/video_delete/`;
 	const VIDEO_URL = `${window.location.origin}/video/`;
 	const previous_btn = document.querySelector(".paginator .previous_content");
-	const current_page = document.querySelector(".paginator .pages_infos");
+	const current_page_info = document.querySelector(".paginator .pages_infos");
 	const next_btn = document.querySelector(".paginator .next_content");
 
-	const previous_url = null;
 	const limit = 4;
 	let current_video_offset = 4;
 	let current_theme_offset = 4;
+	let current_position = 0;
 
 	/**
 	 * Make request to url
@@ -42,9 +42,6 @@ function run(has_more_theme, next_url) {
 	};
 
 	const createVideoElement = (video) => {
-		let span_info = `
-      <span>
-    `;
 		let has_password = () => {
 			let span = ``;
 			let title = gettext("This content is password protected.");
@@ -171,23 +168,77 @@ function run(has_more_theme, next_url) {
 		return li;
 	};
 
+	/**
+	 * Load more themes
+	 */
 	const loadNextListThemeElement = () => {
-		const url =
-			window.location.href +
-			`?limit=${limit}&offset=${current_theme_offset}&target=themes`;
-		makeRequest(url).then((response) => {
-			if (!!response.theme_children.length) {
+		if (has_more_themes) {
+			const url =
+				window.location.href +
+				`?limit=${limit}&offset=${current_theme_offset}&target=themes`;
+			makeRequest(url).then((response) => {
+				has_more_themes = response.has_more_themes;
+				current_theme_offset += limit;
 				const ul = document.createElement("UL");
 				ul.setAttribute("class", "list-children-theme");
 				response.theme_children.forEach((child_theme) => {
 					ul.appendChild(createThemeElement(child_theme));
 				});
 				scroll_wrapper.appendChild(ul);
-			}
-		});
+			});
+		}
 	};
+	// Disable next btn if no more themes to load
+	if (!has_more_themes && !next_btn.classList.contains("disable"))
+		next_btn.classList.add("disable");
 	// Load next list of theme
 	loadNextListThemeElement();
+
+	/**
+	 * listener to next/previous buttons
+	 * @param {ClickEvent} e
+	 */
+	const nextPreviousHandler = function (e) {
+		e.preventDefault();
+		e.stopPropagation();
+		if (this.classList.contains("disable")) return;
+		const themes_contents = scroll_wrapper.querySelectorAll(
+			".list-children-theme"
+		);
+		if (this.isEqualNode(next_btn)) {
+			const all_themes_loaded = current_theme_offset > count_themes;
+			if (
+				!all_themes_loaded &&
+				!has_more_themes &&
+				!next_btn.classList.contains("disable")
+			)
+				next_btn.classList.add("disable");
+			current_position -= 100;
+			// swipe content on the right
+			themes_contents.forEach(
+				(theme_content) =>
+					(theme_content.style.transform = `translateX(${current_position}%)`)
+			);
+			previous_btn.classList.remove("disable");
+			loadNextListThemeElement();
+		} else if (this.isEqualNode(previous_btn) && current_position < 0) {
+			current_position += 100;
+			next_btn.classList.remove("disable");
+			if (current_position == 0) previous_btn.classList.add("disable");
+			// swipe content on the left
+			themes_contents.forEach(
+				(theme_content) =>
+					(theme_content.style.transform = `translateX(${current_position}%)`)
+			);
+		}
+	};
+
+	/**
+	 * Manage next/ previous  click Event
+	 */
+	[previous_btn, next_btn].forEach((btn) => {
+		btn.addEventListener("click", nextPreviousHandler);
+	});
 
 	/**
 	 * loading more videos handler
@@ -210,31 +261,9 @@ function run(has_more_theme, next_url) {
 				videos_container.appendChild(createVideoElement(v));
 				current_video_offset += current_video_offset;
 			});
-			console.log(response);
 		});
 	};
 	const video_loader_btn = document.querySelector(".video-section .btn");
 	video_loader_btn.addEventListener("click", loadMoreVideos);
-
-	[previous_btn, next_btn].forEach((element) => {
-		element.addEventListener("click", (e) => {
-			e.preventDefault();
-			e.stopPropagation();
-			const themes_content = scroll_wrapper.querySelector(
-				".list-children-theme"
-			);
-			// clone themes_content
-			const clone = themes_content.cloneNode(true);
-			clone.classList.add("scroll-right");
-			if (element.isEqualNode(previous)) {
-				themes_content.classList.add("scroll-left");
-				clone.classList.add("scroll-left");
-			} else {
-				themes_content.classList.add("scroll-right");
-				clone.classList.add("scroll-right");
-			}
-			scroll_wrapper.appendChild(clone);
-		});
-	});
 }
-run();
+run(has_more_themes, next_url);
