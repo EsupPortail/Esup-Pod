@@ -105,7 +105,7 @@ class ChannelTestView(TestCase):
         for key in expected.keys():
             assert expected[key] == response.context[key]
 
-        # Test ajax request, get videos, theme from channel view
+        # Test ajax request, get videos and themes from channel view
         self.client = Client()
         response = self.client.get(
             "/%s/" % self.c.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
@@ -138,7 +138,7 @@ class ChannelTestView(TestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         expected.pop("next_videos", None)
-
+        expected.pop("has_more_videos", None)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertCountEqual(expected, response.json())
 
@@ -150,6 +150,7 @@ class ChannelTestView(TestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         expected["next_videos"] = None
+        expected["has_more_videos"] = False
 
         expected.pop("next", None)
         expected.pop("previous", None)
