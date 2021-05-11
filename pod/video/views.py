@@ -165,7 +165,7 @@ def _regroup_videos_by_theme(request, videos, channel, theme=None):
         Dict[str, Any]: json data\n
     """
     target = request.GET.get("target", "").lower()
-    limit = int(request.GET.get("limit", 4))
+    limit = int(request.GET.get("limit", 8))
     offset = int(request.GET.get("offset", 0))
     theme_children = None
     parent_title = ""
