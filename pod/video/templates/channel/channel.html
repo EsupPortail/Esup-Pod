@@ -176,15 +176,16 @@
     });
 </script>
 <script>
-    var str = get_list(listTheme["channel_" + {
-        {
-            channel.id
-        }
-    }], 0, [], tag_type = "li", li_class = "list-group-item", attrs = '', add_link = true, current = "{{theme.slug}}", channel = "");
+    var str = get_list(listTheme["channel_" + "{{channel.id}}"], 0, [], tag_type = "li", li_class = "list-group-item", attrs = '', add_link = true, current = "{{theme.slug}}", channel = "");
     $("#ultreeview").html(str);
     setTimeout(function() {
-        var position = parseInt($("#ultreeview li.list-group-item-info").position().top) - parseInt($("#ultreeview li").first().position().top);
-        $("#ultreeview").scrollTop(position);
+        const tree_item_info = $("#ultreeview li.list-group-item-info");
+        const tree_item = $("#ultreeview li")
+        if(!!tree_item_info.length && !!tree_item.length)
+        {
+            const position = parseInt(tree_item_info.position().top) - parseInt(tree_item.first().position().top);
+            $("#ultreeview").scrollTop(position);
+        }
     }, 500);
 </script>
 
