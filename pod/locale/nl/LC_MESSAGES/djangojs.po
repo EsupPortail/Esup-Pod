@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-03-26 18:26+0100\n"
-"PO-Revision-Date: 2021-01-22 12:27+0100\n"
+"PO-Revision-Date: 2021-05-12 11:08+0200\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -150,8 +150,7 @@ msgid "Please enter a role."
 msgstr ""
 
 #: pod/completion/static/js/completion.js:267
-msgid ""
-"There is already a contributor with this same name and role in the list."
+msgid "There is already a contributor with this same name and role in the list."
 msgstr ""
 
 #: pod/completion/static/js/completion.js:278

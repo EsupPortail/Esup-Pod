@@ -5,9 +5,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-13 13:43+0000\n"
+"POT-Creation-Date: 2021-05-12 09:06+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Nicolas CAN <nicolas.can@univ-lille.fr>\n"
+"Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -892,12 +892,18 @@ msgstr "Liste des chapitres"
 #: pod/completion/models.py:257
 #: pod/completion/templates/overlay/list_overlay.html:10
 #: pod/enrichment/templates/enrichment/list_enrichment.html:10
-#: pod/main/models.py:103 pod/main/views.py:166 pod/playlist/models.py:12
+#: pod/main/models.py:103 pod/main/views.py:191 pod/playlist/models.py:12
 #: pod/playlist/templates/playlist/playlist_element_list.html:11
-#: pod/video/models.py:226 pod/video/models.py:327 pod/video/models.py:423
-#: pod/video/models.py:486 pod/video/templates/channel/list_theme.html:9
+#: pod/video/models.py:226 pod/video/models.py:328 pod/video/models.py:424
+#: pod/video/models.py:487 pod/video/templates/channel/list_theme.html:9
 msgid "Title"
 msgstr "Titre"
+
+#: pod/chapter/templates/chapter/list_chapter.html:12
+#: pod/enrichment/templates/enrichment/list_enrichment.html:14
+#: pod/video/templates/channel/list_theme.html:12
+msgid "Actions"
+msgstr "Actions"
 
 #: pod/chapter/templates/chapter/list_chapter.html:26
 msgid "Edit the chapter"
@@ -933,7 +939,7 @@ msgstr "Supprimer"
 #: pod/chapter/templates/video_chapter.html:5
 #: pod/chapter/templates/video_chapter.html:23
 msgid "Chapter video"
-msgstr "Chapitre vidéo"
+msgstr "Chapitrer la vidéo"
 
 #: pod/chapter/templates/video_chapter.html:16
 #: pod/completion/templates/video_caption_maker.html:12
@@ -2023,10 +2029,10 @@ msgid "My playlists"
 msgstr "Mes listes de lecture"
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html:135
-msgid "To help you, the different types of enrichments have specific colors"
+msgid "To help you, the different types of enrichments have specific colors:"
 msgstr ""
 "Pour vous aider, les différents types d'enrichissements ont des couleurs "
-"spécifiques"
+"spécifiques :"
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html:141
 msgid "Weblink"
@@ -3157,24 +3163,25 @@ msgstr "Valeur de la configuration"
 msgid "Description of the configuration"
 msgstr "Description de la configuration"
 
-#: pod/main/templates/403.html:4 pod/main/templates/404.html:4
-#: pod/main/templates/404.html:9 pod/main/templates/404.html:15
-msgid "Page not found"
-msgstr "Page non trouvée"
-
-#: pod/main/templates/403.html:9 pod/main/templates/403.html:15
+#: pod/main/templates/403.html:4 pod/main/templates/403.html:9
+#: pod/main/templates/403.html:14
 msgid "Permission Denied"
 msgstr "Accès refusé"
 
-#: pod/main/templates/403.html:17
+#: pod/main/templates/403.html:15
 msgid "You are not allowed to access this web page."
 msgstr "Vous n’avez pas accès à cette page."
 
-#: pod/main/templates/404.html:17
+#: pod/main/templates/404.html:4 pod/main/templates/404.html:9
+#: pod/main/templates/404.html:14
+msgid "Page not found"
+msgstr "Page non trouvée"
+
+#: pod/main/templates/404.html:15
 msgid "We're sorry, but the requested page could not be found."
 msgstr "Nous sommes désolés, mais la page demandée est inaccessible."
 
-#: pod/main/templates/500.html:7 pod/main/templates/500.html:11
+#: pod/main/templates/500.html:4 pod/main/templates/500.html:9
 msgid "Server error (500)"
 msgstr "Erreur serveur (500)"
 
@@ -4692,10 +4699,11 @@ msgid ""
 msgstr ""
 "Si coché, la chaîne apparaîtra dans la liste des chaînes de la plateforme."
 
-#: pod/video/models.py:281
-#| msgid "Select one or more groups who can access to this video"
-msgid "Select one or more groups who can upload video this channel"
-msgstr "Groupes : Sélectionnez un ou plusieurs groupes qui peuvent ajouter des vidéos à cette chaîne."
+#: pod/video/models.py:282
+msgid "Select one or more groups who can upload video to this channel."
+msgstr ""
+"Sélectionnez un ou plusieurs groupes qui peuvent ajouter des vidéos à cette "
+"chaîne."
 
 #: pod/video/models.py:286 pod/video/models.py:348
 #: pod/video_search/templates/search/search.html:124
@@ -4905,8 +4913,8 @@ msgstr "Note"
 msgid "Notes"
 msgstr "Notes"
 
-#: pod/video/models.py:1416
-msgid "Note availibility level"
+#: pod/video/models.py:1417
+msgid "Note availability level"
 msgstr "Niveau de disponibilité de la note"
 
 #: pod/video/models.py:1418
@@ -5095,10 +5103,6 @@ msgstr "Autre langue"
 #: pod/video/templates/channel/list_theme.html:4
 msgid "List of themes"
 msgstr "Liste des thèmes"
-
-#: pod/video/templates/channel/list_theme.html:12
-msgid "Actions"
-msgstr "Actions"
 
 #: pod/video/templates/channel/list_theme.html:26
 msgid "Edit the theme"
@@ -5679,16 +5683,16 @@ msgstr "Gérer le commentaire"
 msgid "Edit the comment"
 msgstr "Éditer le commentaire"
 
-#: pod/video/templates/videos/video_note_comments_display.html:35
-msgid "Remove the comment"
-msgstr "Retirer le commentaire"
-
 #: pod/video/templates/videos/video_note_comments_display.html:47
 #: pod/video/templates/videos/video_note_display.html:96
 msgid "Comment the note"
 msgstr "Commenter la note"
 
-#: pod/video/templates/videos/video_note_display.html:63
+#: pod/video/templates/videos/video_note_comments_display.html:44
+msgid "Remove the comment"
+msgstr "Retirer le commentaire"
+
+#: pod/video/templates/videos/video_note_display.html:60
 msgid "Manage note"
 msgstr "Gérer la note"
 

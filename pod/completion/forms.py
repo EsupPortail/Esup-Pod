@@ -1,3 +1,4 @@
+"""Completion forms."""
 from django import forms
 from django.conf import settings
 from django.forms.widgets import HiddenInput
@@ -15,8 +16,10 @@ if getattr(settings, 'USE_PODFILE', False):
 
 
 class ContributorForm(forms.ModelForm):
+    """Contributor form fields."""
 
     def __init__(self, *args, **kwargs):
+        """Initialize fields."""
         super(ContributorForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
             self.fields['video'].widget = HiddenInput()
@@ -26,18 +29,22 @@ class ContributorForm(forms.ModelForm):
             if self.fields[myField].required:
                 label_unicode = u'{0}'.format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
-                    '{0} <span class="special_class">*</span>'.format(
+                    '{0} <span class="required_star">*</span>'.format(
                         label_unicode))
         self.fields['role'].widget.attrs['class'] = 'custom-select'
 
     class Meta(object):
+        """Set form Metadata."""
+
         model = Contributor
         fields = '__all__'
 
 
 class DocumentForm(forms.ModelForm):
+    """Document form fields."""
 
     def __init__(self, *args, **kwargs):
+        """Initialize fields."""
         super(DocumentForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
             self.fields['video'].widget = HiddenInput()
@@ -48,7 +55,7 @@ class DocumentForm(forms.ModelForm):
                     'class'] = 'form-control required'
                 label_unicode = '{0}'.format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
-                    '{0} <span class="special_class">*</span>'.format(
+                    '{0} <span class="required_star">*</span>'.format(
                         label_unicode))
             else:
                 self.fields[myField].widget.attrs['class'] = 'form-control'
@@ -56,25 +63,33 @@ class DocumentForm(forms.ModelForm):
             self.fields['document'].widget = CustomFileWidget(type='file')
 
     class Meta(object):
+        """Set form Metadata."""
+
         model = Document
         fields = '__all__'
 
 
 class DocumentAdminForm(forms.ModelForm):
+    """DocumentAdmin form fields."""
 
     def __init__(self, *args, **kwargs):
+        """Initialize fields."""
         super(DocumentAdminForm, self).__init__(*args, **kwargs)
         if FILEPICKER:
             self.fields['document'].widget = CustomFileWidget(type="file")
 
     class Meta(object):
+        """Set form Metadata."""
+
         model = Document
         fields = '__all__'
 
 
 class TrackForm(forms.ModelForm):
+    """Track form fields."""
 
     def __init__(self, *args, **kwargs):
+        """Initialize fields."""
         super(TrackForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
             self.fields['video'].widget = HiddenInput()
@@ -85,7 +100,7 @@ class TrackForm(forms.ModelForm):
                     'class'] = 'form-control required'
                 label_unicode = u'{0}'.format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
-                    '{0} <span class="special_class">*</span>'.format(
+                    '{0} <span class="required_star">*</span>'.format(
                         label_unicode))
             else:
                 self.fields[myField].widget.attrs['class'] = 'form-control'
@@ -95,25 +110,33 @@ class TrackForm(forms.ModelForm):
             self.fields['src'].widget = CustomFileWidget(type="file")
 
     class Meta(object):
+        """Set form Metadata."""
+
         model = Track
         fields = '__all__'
 
 
 class TrackAdminForm(forms.ModelForm):
+    """TrackAdmin form fields."""
 
     def __init__(self, *args, **kwargs):
+        """Initialize fields."""
         super(TrackAdminForm, self).__init__(*args, **kwargs)
         if FILEPICKER:
             self.fields['src'].widget = CustomFileWidget(type="file")
 
     class Meta(object):
+        """Set form Metadata."""
+
         model = Track
         fields = '__all__'
 
 
 class OverlayForm(forms.ModelForm):
+    """Overlay form fields."""
 
     def __init__(self, *args, **kwargs):
+        """Initialize fields."""
         super(OverlayForm, self).__init__(*args, **kwargs)
         self.fields['video'].widget = HiddenInput()
         self.fields['time_start'].widget.attrs['min'] = 1
@@ -134,7 +157,7 @@ class OverlayForm(forms.ModelForm):
                     'class'] = 'form-control required'
                 label_unicode = u'{0}'.format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
-                    '{0} <span class="special_class">*</span>'.format(
+                    '{0} <span class="required_star">*</span>'.format(
                         label_unicode))
             else:
                 self.fields[myField].widget.attrs['class'] = 'form-control'
@@ -142,5 +165,7 @@ class OverlayForm(forms.ModelForm):
         self.fields['background'].widget.attrs['class'] = 'form-check-input'
 
     class Meta(object):
+        """Set form Metadata."""
+
         model = Overlay
         fields = '__all__'

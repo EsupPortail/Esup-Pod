@@ -84,11 +84,11 @@ var videojs = window.videojs;
 const defaults = {};
 const registerPlugin = videojs.registerPlugin || videojs.plugin;
 const slide_color = {
-	'document': 'yellow',
-	'image': 'purple',
-	'richtext': 'blue',
-	'weblink': 'red',
-	'embed': 'green'
+	'document': 'var(--orange)',
+	'image': 'var(--purple)',
+	'richtext': 'var(--blue)',
+	'weblink': 'var(--red)',
+	'embed': 'var(--green)'
 };
 const slide_mode_list = { //Is now a list of css class instead of video/slide width values
 	'slide off': 'no-slide',
@@ -195,7 +195,7 @@ var VideoSlides = function(items) {
 		var keys = Object.keys(this.slidesItems);
 		var active = false;
 		for (let i = 0; i <= keys.length - 1; i++) {
-                  
+
                     //if (currentTime >= this.slidesItems[i].start && currentTime < this.slidesItems[i].end) {
                     if ( currentTime >= this.slidesItems[i].start
                        && ( currentTime < this.slidesItems[i].end
@@ -212,7 +212,7 @@ var VideoSlides = function(items) {
                         //*/
                         /* Uncomment (and comment previous) to hide all slide at end
                         currentSlide = document.getElementById('slide_'+i);
-                        //*/                     
+                        //*/
                         if(currentSlide.style.display != 'block' && this.slidesItems[i].stop_video == "1") {
                                 player.pause();
                         }
