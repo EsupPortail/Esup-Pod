@@ -1,6 +1,8 @@
 name: Prettier JavaScript
 
-on: pull_request
+on:
+  push:
+    branches: [master, dev]
 
 jobs:
   format:
@@ -8,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: prettier
-        run: npx prettier --write pod/*/static/**/*.js
+        run: npx prettier --write pod/*/static/**/*(?!min).js
       - name: Check for modified files
         id: git-check
         run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
