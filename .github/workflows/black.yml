@@ -2,7 +2,7 @@ name: Auto-format
 
 on:
   push:
-    branches: [master]
+    branches: [master, dev]
 
 jobs:
   lint:
