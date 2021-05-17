@@ -17,6 +17,7 @@ jobs:
         run: |
           git config --global user.name 'Eliam LOTONGA'
           git config --global user.email 'e.m.lotonga@gmail.com'
+          git config --global push.default current
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git commit -am "Fixup: format code with Prettier"
           git push
