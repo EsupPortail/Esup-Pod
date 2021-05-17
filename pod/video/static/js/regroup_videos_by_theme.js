@@ -164,6 +164,7 @@ function run(has_more_themes) {
 		li.setAttribute("title", theme.title);
 		const link = document.createElement("A");
 		link.setAttribute("href", `${URLPathName}${theme.slug}/`);
+		link.setAttribute("class", "text-truncate");
 		link.innerText = theme.title;
 
 		li.appendChild(link);
@@ -239,6 +240,10 @@ function run(has_more_themes) {
 		if (current_position === 0 && !previous_btn.classList.contains("disable"))
 			previous_btn.classList.add("disable");
 		current_page_info.innerText = `${curr_page}${PAGE_INFO_SEPARATOR}${max_pages}`;
+		current_page_info.setAttribute(
+			"title",
+			`${curr_page}${PAGE_INFO_SEPARATOR}${max_pages}`
+		);
 	};
 
 	/**
@@ -271,7 +276,9 @@ function run(has_more_themes) {
 			});
 		});
 	};
-	const video_loader_btn = document.querySelector(".video-section #load-more-videos");
+	const video_loader_btn = document.querySelector(
+		".video-section #load-more-videos"
+	);
 	if (!!video_loader_btn)
 		video_loader_btn.addEventListener("click", loadMoreVideos);
 }
