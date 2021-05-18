@@ -1,9 +1,9 @@
-name: Black
+name: Black-Formatting
 
 on:
   workflow_run:
     workflows:
-      - "Prettier"
+      - "Prettier-Formatting"
     types:
       - completed
 

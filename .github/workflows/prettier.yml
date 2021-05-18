@@ -1,8 +1,8 @@
-name: Prettier
+name: Prettier-Formatting
 
 on:
   push:
-    branches: [master, dev]
+    branches: [dev]
   pull_request:
     branches: ["*"]
 

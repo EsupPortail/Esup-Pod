@@ -3,7 +3,7 @@ name: Django Pod CI
 on:
   workflow_run:
     workflows:
-      - "Black"
+      - "Black-Formatting"
     types:
       - completed
 
