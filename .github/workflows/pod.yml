@@ -2,13 +2,60 @@ name: Django Pod CI
 
 on:
   push:
-    branches: [ master , dev]
+    branches: [master, dev]
   pull_request:
-    branches: [ '*' ]
+    branches: ["*"]
 
 jobs:
-  build:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: prettier
+        run: npx prettier --write pod/*/static/**/*.js
 
+      - name: Check for modified files
+        id: git-check
+        run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
+
+      - name: Push changes
+        if: steps.git-check.outputs.modified == 'true'
+        run: |
+          git config --global user.name 'Eliam LOTONGA'
+          git config --global user.email 'e.m.lotonga@gmail.com'
+          git config --global push.default current
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git commit -am "Fixup: format code with Prettier"
+          git push
+
+  black-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@master
+
+      - name: Install Black
+        run: |
+          python -m pip install --upgrade pip
+          pip install black
+
+      - name: Black formatting code
+        run: black . -l 80
+      - name: Check for modified files
+        id: git-check
+        run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
+
+      - name: Push changes
+        if: steps.git-check.outputs.modified == 'true'
+        run: |
+          git config --global user.name 'Eliam LOTONGA'
+          git config --global user.email 'e.m.lotonga@gmail.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git commit -am "Fixup: format code with Black"
+          git push
+
+  build:
+    needs: [black-format, prettier-format]
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
@@ -16,41 +63,41 @@ jobs:
         python-version: [3.5, 3.6, 3.7]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Configure sysctl limits (for ES)
-      run: |
-        sudo swapoff -a
-        sudo sysctl -w vm.swappiness=1
-        sudo sysctl -w fs.file-max=262144
-        sudo sysctl -w vm.max_map_count=262144
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install ffmpeg
-        sudo apt-get install -y ffmpegthumbnailer
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install flake8
-        pip install coveralls
-    - name: Flake8 compliance
-      run: |
-        flake8 --max-complexity=7 --exclude .git,pod/*/migrations/*.py,test_settings.py
-    - name: Runs Elasticsearch
-      uses: elastic/elastic-github-actions/elasticsearch@master
-      with:
-        stack-version: 7.6.0
-    - name: Setup Pod
-      run: |
-        python manage.py create_pod_index
-        python manage.py makemigrations
-        python manage.py migrate
-    - name: Run Tests and coveralls
-      env:
+      - uses: actions/checkout@v2
+      - name: Configure sysctl limits (for ES)
+        run: |
+          sudo swapoff -a
+          sudo sysctl -w vm.swappiness=1
+          sudo sysctl -w fs.file-max=262144
+          sudo sysctl -w vm.max_map_count=262144
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install ffmpeg
+          sudo apt-get install -y ffmpegthumbnailer
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8
+          pip install coveralls
+      - name: Flake8 compliance
+        run: |
+          flake8 --max-complexity=7 --exclude .git,pod/*/migrations/*.py,test_settings.py
+      - name: Runs Elasticsearch
+        uses: elastic/elastic-github-actions/elasticsearch@master
+        with:
+          stack-version: 7.6.0
+      - name: Setup Pod
+        run: |
+          python manage.py create_pod_index
+          python manage.py makemigrations
+          python manage.py migrate
+      - name: Run Tests and coveralls
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        coverage run --source='.' manage.py test --settings=pod.main.test_settings
-        coveralls  --service=github
+        run: |
+          coverage run --source='.' manage.py test --settings=pod.main.test_settings
+          coveralls  --service=github
