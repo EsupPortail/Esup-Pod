@@ -29,10 +29,16 @@ jobs:
           git push
 
   black-format:
+    needs: ["prettier-format"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-python@master
+
+      - name: Pull changes
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git pull
 
       - name: Install Black
         run: |
@@ -55,7 +61,7 @@ jobs:
           git push
 
   build:
-    needs: [black-format, prettier-format]
+    needs: [black-format]
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
