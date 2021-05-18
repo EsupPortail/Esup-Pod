@@ -1,4 +1,4 @@
-	{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
 {% load tagging_tags %}
@@ -9,8 +9,7 @@
 
 {% block page_content %}
 
-	
-	<div class="p-3 mb-2 bg-danger text-white">{{text}}</div>
-<a href="/" type="button" class="btn btn-primary" data-dismiss="modal">{%trans "Return to homepage"%}</a>
-<a href="{% url 'contact_us' %}" type="button" class="btn btn-secondary" data-dismiss="modal">{%trans "Contact us"%}</a>
+  <div class="p-3 mb-2 bg-danger text-white">{{text}}</div>
+  <a href="/" type="button" class="btn btn-primary" data-dismiss="modal">{%trans "Return to homepage"%}</a>
+  <a href="{% url 'contact_us' %}" type="button" class="btn btn-secondary" data-dismiss="modal">{%trans "Contact us"%}</a>
 {%endblock page_content%}

@@ -64,7 +64,7 @@ class EnrichmentForm(forms.ModelForm):
                     'class'] = 'form-control required'
                 label_unicode = u'{0}'.format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
-                    '{0} <span class=\'special_class\'>*</span>'.format(
+                    '{0} <span class=\'required_star\'>*</span>'.format(
                         label_unicode))
             else:
                 self.fields[myField].widget.attrs['class'] = 'form-control'

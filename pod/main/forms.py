@@ -33,7 +33,7 @@ def add_placeholder_and_asterisk(fields):
         else:
             if fields[myField].required:
                 fields[myField].label = mark_safe(
-                    "%s <span class=\"required\">*</span>" %
+                    "%s <span class=\"required_star\">*</span>" %
                     fields[myField].label
                 )
                 fields[myField].widget.attrs["required"] = ""

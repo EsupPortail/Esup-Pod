@@ -28,15 +28,15 @@
        <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap-'%}{{ USE_THEME }}.min.css?ver={{VERSION}}" crossorigin="anonymous">
     {% endif %}
     <!-- pod.css -->
-    <link rel="stylesheet" href="{% static 'css/pod.css' %}?ver={{VERSION}}" media="screen" title="no title">
+    <link rel="stylesheet" href="{% static 'css/pod.css' %}?ver={{VERSION}}" media="screen">
     {% if DARKMODE_ENABLED == True %}
-      <link rel="stylesheet" href="{% static 'css/dark.css' %}?ver={{VERSION}}" media="screen" title="no title">
+      <link rel="stylesheet" href="{% static 'css/dark.css' %}?ver={{VERSION}}" media="screen">
     {% endif %}
     {% if DYSLEXIAMODE_ENABLED == True %}
-      <link rel="stylesheet" href="{% static 'css/dyslexia.css' %}?ver={{VERSION}}" media="screen" title="no title">
+      <link rel="stylesheet" href="{% static 'css/dyslexia.css' %}?ver={{VERSION}}" media="screen">
     {% endif %}
     {% if CSS_OVERRIDE %}
-      <link rel="stylesheet" href="{% static CSS_OVERRIDE %}?ver={{VERSION}}" media="screen" title="no title">
+      <link rel="stylesheet" href="{% static CSS_OVERRIDE %}?ver={{VERSION}}" media="screen">
     {% endif %}
 
     <!-- more styles for each App -->
