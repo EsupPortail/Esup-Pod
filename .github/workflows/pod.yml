@@ -35,13 +35,10 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-python@master
 
-      # https://github.com/marketplace/actions/pull-request-merge-command
-      - name: Merge command
-        uses: Goobles/gh-actions-merge-command@v1
-        with:
-          allow_ff: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Pull changes
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git pull origin ${GITHUB_REF##*/}
 
       - name: Install Black
         run: |
