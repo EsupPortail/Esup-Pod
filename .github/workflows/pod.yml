@@ -21,6 +21,8 @@ jobs:
       - name: Push changes
         if: steps.git-check.outputs.modified == 'true'
         run: |
+          git config --global user.name 'ptitloup'
+          git config --global user.email 'nicolas.can@univ-lille.fr'
           git commit -am "Fixup: format code with Prettier"
 
   black-format:
