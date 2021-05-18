@@ -2,7 +2,7 @@ name: Prettier-Formatting
 
 on:
   push:
-    branches: [dev]
+    branches: ["*"]
   pull_request:
     branches: ["*"]
 
