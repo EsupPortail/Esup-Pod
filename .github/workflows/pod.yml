@@ -2,7 +2,7 @@ name: Django Pod CI
 
 on:
   push:
-    branches: [master, dev]
+    branches: ["*"]
   pull_request:
     branches: ["*"]
 
@@ -21,8 +21,8 @@ jobs:
       - name: Push changes
         if: steps.git-check.outputs.modified == 'true'
         run: |
-          git config --global user.name 'ptitloup'
-          git config --global user.email 'nicolas.can@univ-lille.fr'
+          git config --global user.name 'Eliam LOTONGA'
+          git config --global user.email 'e.m.lotonga@gmail.com'
           git config --global push.default current
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git commit -am "Fixup: format code with Prettier"
@@ -54,8 +54,8 @@ jobs:
       - name: Push changes
         if: steps.git-check.outputs.modified == 'true'
         run: |
-          git config --global user.name 'ptitloup'
-          git config --global user.email 'nicolas.can@univ-lille.fr'
+          git config --global user.name 'Eliam LOTONGA'
+          git config --global user.email 'e.m.lotonga@gmail.com'
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git commit -am "Fixup: format code with Black"
           git push
