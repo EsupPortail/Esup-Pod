@@ -1,14 +1,13 @@
 name: Black-Formatting
 
 on:
-  workflow_run:
-    workflows:
-      - "Prettier-Formatting"
-    types:
-      - completed
+  push:
+    branches: ["*"]
+  pull_request:
+    branches: ["*"]
 
 jobs:
-  lint:
+  format:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
