@@ -32,7 +32,7 @@ jobs:
           pip install black
 
       - name: Running Black
-        run: black . -l 80
+        run: black . -l 90
 
       - name: Check for modified files
         id: black-git-check
