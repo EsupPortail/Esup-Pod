@@ -1,2 +1,2 @@
 # Ignore all minified files:
-pod/*/static/**/*.min.html
+pod/**/*.min.js
