@@ -1,8 +1,10 @@
-name: Prettier JavaScript
+name: Prettier
 
 on:
   push:
     branches: [master, dev]
+  pull_request:
+    branches: ["*"]
 
 jobs:
   format:

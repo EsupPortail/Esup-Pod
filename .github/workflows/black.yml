@@ -1,8 +1,11 @@
-name: Auto-format
+name: Black
 
 on:
-  push:
-    branches: [master, dev]
+  workflow_run:
+    workflows:
+      - "Prettier"
+    types:
+      - completed
 
 jobs:
   lint:
