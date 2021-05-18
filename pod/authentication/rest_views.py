@@ -12,59 +12,79 @@ from django.http import HttpResponse
 
 
 class OwnerSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = Owner
-        fields = ('id', 'url', 'user', 'auth_type',
-                  'affiliation', 'commentaire', 'hashkey', 'userpicture')
+        fields = (
+            "id",
+            "url",
+            "user",
+            "auth_type",
+            "affiliation",
+            "commentaire",
+            "hashkey",
+            "userpicture",
+        )
 
 
 class OwnerWithGroupsSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = Owner
-        fields = ('id', 'url', 'user', 'auth_type',
-                  'affiliation', 'commentaire',
-                  'hashkey', 'userpicture', "accessgroup_set")
+        fields = (
+            "id",
+            "url",
+            "user",
+            "auth_type",
+            "affiliation",
+            "commentaire",
+            "hashkey",
+            "userpicture",
+            "accessgroup_set",
+        )
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = User
-        fields = ('id', 'url', 'username', 'first_name', 'is_staff',
-                  'last_name', 'email', 'groups')
+        fields = (
+            "id",
+            "url",
+            "username",
+            "first_name",
+            "is_staff",
+            "last_name",
+            "email",
+            "groups",
+        )
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = Group
-        fields = ('url', 'name')
+        fields = ("url", "name")
 
 
 class SiteSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = Site
-        fields = ('url', 'name', 'domain')
+        fields = ("url", "name", "domain")
 
 
 class AccessGroupSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = AccessGroup
-        fields = ('display_name', 'code_name', 'sites', 'users')
+        fields = ("display_name", "code_name", "sites", "users")
+
+
 # ViewSets define the view behavior.
 
 
 class OwnerViewSet(viewsets.ModelViewSet):
-    queryset = Owner.objects.all().order_by('-user')
+    queryset = Owner.objects.all().order_by("-user")
     serializer_class = OwnerSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all().order_by('-date_joined')
+    queryset = User.objects.all().order_by("-date_joined")
     serializer_class = UserSerializer
 
 
@@ -83,7 +103,7 @@ class AccessGroupViewSet(viewsets.ModelViewSet):
     serializer_class = AccessGroupSerializer
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def accessgroups_set_users_by_name(request):
     if ("users" in request.data) and ("code_name" in request.data):
         code_name = request.data["code_name"]
@@ -97,13 +117,14 @@ def accessgroups_set_users_by_name(request):
                 pass
         return Response(
             AccessGroupSerializer(
-                instance=accessgroup, context={'request': request}).data
+                instance=accessgroup, context={"request": request}
+            ).data
         )
     else:
         return HttpResponse(status=500)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def accessgroups_remove_users_by_name(request):
     if ("users" in request.data) and ("code_name" in request.data):
         code_name = request.data["code_name"]
@@ -118,13 +139,14 @@ def accessgroups_remove_users_by_name(request):
                 pass
         return Response(
             AccessGroupSerializer(
-                instance=accessgroup, context={'request': request}).data
+                instance=accessgroup, context={"request": request}
+            ).data
         )
     else:
         return HttpResponse(status=500)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def accessgroups_set_user_accessgroup(request):
     if ("username" in request.data) and ("groups" in request.data):
         username = request.data["username"]
@@ -138,13 +160,14 @@ def accessgroups_set_user_accessgroup(request):
                 pass
         return Response(
             OwnerWithGroupsSerializer(
-                instance=owner, context={'request': request}).data
+                instance=owner, context={"request": request}
+            ).data
         )
     else:
         return HttpResponse(status=500)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def accessgroups_remove_user_accessgroup(request):
     if ("username" in request.data) and ("groups" in request.data):
         username = request.data["username"]
@@ -159,7 +182,8 @@ def accessgroups_remove_user_accessgroup(request):
                 pass
         return Response(
             OwnerWithGroupsSerializer(
-                instance=owner, context={'request': request}).data
+                instance=owner, context={"request": request}
+            ).data
         )
     else:
         return HttpResponse(status=500)

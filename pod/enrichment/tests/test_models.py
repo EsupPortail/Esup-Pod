@@ -15,9 +15,10 @@ from ..models import Enrichment, EnrichmentVtt, EnrichmentGroup
 
 import os
 
-if getattr(settings, 'USE_PODFILE', False):
+if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import UserFolder
+
     FILEPICKER = True
 else:
     FILEPICKER = False
@@ -25,31 +26,34 @@ else:
 
 
 class EnrichmentGroupModelTestCase(TestCase):
-    fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data.json",
+    ]
 
     def setUp(self):
-        owner = User.objects.create(username='test')
-        videotype = Type.objects.create(title='others')
+        owner = User.objects.create(username="test")
+        videotype = Type.objects.create(title="others")
         Video.objects.create(
-            title='video',
+            title="video",
             type=videotype,
             owner=owner,
-            video='test.mp4',
-            duration=20
+            video="test.mp4",
+            duration=20,
         )
         Group.objects.create(name="group1")
         Group.objects.create(name="group2")
 
     def test_create_enrichmentGroup(self):
         video = Video.objects.get(id=1)
-        self.assertTrue(not hasattr(video, 'enrichmentgroup'))
+        self.assertTrue(not hasattr(video, "enrichmentgroup"))
         EnrichmentGroup.objects.create(video=video)
         self.assertTrue(video.enrichmentgroup)
         with self.assertRaises(IntegrityError):
             EnrichmentGroup.objects.create(video=video)
         print(
             " ---> test_create_enrichmentGroup : OK !"
-            " --- EnrichmentGroupModel")
+            " --- EnrichmentGroupModel"
+        )
 
     def test_modify_enrichmentGroup(self):
         video = Video.objects.get(id=1)
@@ -67,7 +71,8 @@ class EnrichmentGroupModelTestCase(TestCase):
         self.assertEqual(video.enrichmentgroup.groups.all().count(), 1)
         print(
             " ---> test_modify_enrichmentGroup : OK !"
-            " --- EnrichmentGroupModel")
+            " --- EnrichmentGroupModel"
+        )
 
     def test_delete_enrichmentGroup(self):
         video = Video.objects.get(id=1)
@@ -83,78 +88,83 @@ class EnrichmentGroupModelTestCase(TestCase):
         self.assertTrue(Group.objects.filter(id=2).exists())
         print(
             " ---> test_delete_enrichmentGroup : OK !"
-            " --- EnrichmentGroupModel")
+            " --- EnrichmentGroupModel"
+        )
 
 
 class EnrichmentModelTestCase(TestCase):
-    fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data.json",
+    ]
 
     def setUp(self):
-        owner = User.objects.create(username='test')
-        videotype = Type.objects.create(title='others')
+        owner = User.objects.create(username="test")
+        videotype = Type.objects.create(title="others")
         video = Video.objects.create(
-            title='video',
+            title="video",
             type=videotype,
             owner=owner,
-            video='test.mp4',
-            duration=20
+            video="test.mp4",
+            duration=20,
         )
-        currentdir = os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__)))
+        currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         simplefile = SimpleUploadedFile(
-            name='testimage.jpg',
+            name="testimage.jpg",
             content=open(
-                os.path.join(
-                    currentdir, 'tests', 'testimage.jpg'), 'rb').read(),
-            content_type='image/jpeg')
+                os.path.join(currentdir, "tests", "testimage.jpg"), "rb"
+            ).read(),
+            content_type="image/jpeg",
+        )
 
         if FILEPICKER:
-            home = UserFolder.objects.get(name='home', owner=owner)
+            home = UserFolder.objects.get(name="home", owner=owner)
             customImage = CustomImageModel.objects.create(
-                name='testimage',
-                description='testimage',
+                name="testimage",
+                description="testimage",
                 created_by=owner,
                 folder=home,
-                file=simplefile)
+                file=simplefile,
+            )
         else:
-            customImage = CustomImageModel.objects.create(
-                file=simplefile)
+            customImage = CustomImageModel.objects.create(file=simplefile)
         Enrichment.objects.create(
             video=video,
-            title='testimg',
+            title="testimg",
             start=1,
             end=2,
             stop_video=True,
-            type='image',
-            image=customImage)
+            type="image",
+            image=customImage,
+        )
         Enrichment.objects.create(
             video=video,
-            title='testlink',
-            type='weblink',
-            weblink='http://test.com')
+            title="testlink",
+            type="weblink",
+            weblink="http://test.com",
+        )
 
     def test_attributs_full(self):
         enrichment = Enrichment.objects.get(id=1)
         video = Video.objects.get(id=1)
         self.assertEqual(enrichment.video, video)
-        self.assertEqual(enrichment.title, 'testimg')
+        self.assertEqual(enrichment.title, "testimg")
         self.assertEqual(enrichment.start, 1)
         self.assertEqual(enrichment.end, 2)
         self.assertTrue(enrichment.stop_video)
-        self.assertEqual(enrichment.type, 'image')
-        self.assertTrue('testimage' in enrichment.image.name)
+        self.assertEqual(enrichment.type, "image")
+        self.assertTrue("testimage" in enrichment.image.name)
         print(" ---> test_attributs_full : OK ! --- EnrichmentModel")
 
     def test_attributs(self):
         enrichment = Enrichment.objects.get(id=2)
         video = Video.objects.get(id=1)
         self.assertEqual(enrichment.video, video)
-        self.assertEqual(enrichment.title, 'testlink')
+        self.assertEqual(enrichment.title, "testlink")
         self.assertEqual(enrichment.start, 0)
         self.assertEqual(enrichment.end, 1)
         self.assertFalse(enrichment.stop_video)
-        self.assertEqual(enrichment.type, 'weblink')
-        self.assertEqual(enrichment.weblink, 'http://test.com')
+        self.assertEqual(enrichment.type, "weblink")
+        self.assertEqual(enrichment.weblink, "http://test.com")
 
         print(" [ BEGIN ENRICHMENT_TEST MODEL ] ")
         print(" ---> test_attributs : OK ! --- EnrichmentModel")
@@ -162,9 +172,9 @@ class EnrichmentModelTestCase(TestCase):
     def test_type(self):
         video = Video.objects.get(id=1)
         enrichment = Enrichment()
-        enrichment.title = 'test'
+        enrichment.title = "test"
         enrichment.video = video
-        enrichment.type = 'badtype'
+        enrichment.type = "badtype"
         self.assertRaises(ValidationError, enrichment.clean)
 
         print(" ---> test_type : OK ! --- EnrichmentModel")
@@ -174,11 +184,11 @@ class EnrichmentModelTestCase(TestCase):
         video = Video.objects.get(id=1)
         enrichment = Enrichment()
         enrichment.video = video
-        enrichment.type = 'image'
+        enrichment.type = "image"
         enrichment.start = 1
         enrichment.end = 2
         self.assertRaises(ValidationError, enrichment.clean)
-        enrichment.title = 't'
+        enrichment.title = "t"
         self.assertRaises(ValidationError, enrichment.clean)
         enrichment.start = None
         self.assertRaises(ValidationError, enrichment.clean)
@@ -193,8 +203,8 @@ class EnrichmentModelTestCase(TestCase):
         video = Video.objects.get(id=1)
         enrichment = Enrichment()
         enrichment.video = video
-        enrichment.type = 'image'
-        enrichment.title = 'test'
+        enrichment.type = "image"
+        enrichment.title = "test"
         enrichment.start = 1
         enrichment.end = 3
         self.assertRaises(ValidationError, enrichment.clean)
