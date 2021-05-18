@@ -10,7 +10,9 @@ jobs:
   code-formatting:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
 
       - name: Running prettier
         run: npx prettier --write pod/*/static/**/*.js
