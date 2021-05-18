@@ -14,16 +14,16 @@ from pod.authentication.models import AccessGroup
 from django.core.exceptions import ObjectDoesNotExist
 
 import logging
+
 logger = logging.getLogger(__name__)
 
-DEBUG = getattr(settings, 'DEBUG', True)
+DEBUG = getattr(settings, "DEBUG", True)
 
-POPULATE_USER = getattr(
-    settings, 'POPULATE_USER', None)
-AUTH_CAS_USER_SEARCH = getattr(
-    settings, 'AUTH_CAS_USER_SEARCH', "user")
+POPULATE_USER = getattr(settings, "POPULATE_USER", None)
+AUTH_CAS_USER_SEARCH = getattr(settings, "AUTH_CAS_USER_SEARCH", "user")
 USER_CAS_MAPPING_ATTRIBUTES = getattr(
-    settings, 'USER_CAS_MAPPING_ATTRIBUTES',
+    settings,
+    "USER_CAS_MAPPING_ATTRIBUTES",
     {
         "uid": "uid",
         "mail": "mail",
@@ -31,43 +31,37 @@ USER_CAS_MAPPING_ATTRIBUTES = getattr(
         "first_name": "givenname",
         "primaryAffiliation": "eduPersonPrimaryAffiliation",
         "affiliation": "eduPersonAffiliation",
-        "groups": "memberOf"
-    })
+        "groups": "memberOf",
+    },
+)
 
 CREATE_GROUP_FROM_AFFILIATION = getattr(
-    settings, 'CREATE_GROUP_FROM_AFFILIATION', False)
+    settings, "CREATE_GROUP_FROM_AFFILIATION", False
+)
 
-CREATE_GROUP_FROM_GROUPS = getattr(
-    settings, 'CREATE_GROUP_FROM_GROUPS', False)
+CREATE_GROUP_FROM_GROUPS = getattr(settings, "CREATE_GROUP_FROM_GROUPS", False)
 
 AFFILIATION_STAFF = getattr(
-    settings, 'AFFILIATION_STAFF',
-    ('faculty', 'employee', 'staff')
+    settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff")
 )
 
 GROUP_STAFF = getattr(
-    settings, 'AFFILIATION_STAFF',
-    ('faculty', 'employee', 'staff')
+    settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff")
 )
 
 LDAP_SERVER = getattr(
-    settings, 'LDAP_SERVER',
-    {'url': '', 'port': 389, 'use_ssl': False}
+    settings, "LDAP_SERVER", {"url": "", "port": 389, "use_ssl": False}
 )
-AUTH_LDAP_BIND_DN = getattr(
-    settings, 'AUTH_LDAP_BIND_DN',
-    ''
-)
-AUTH_LDAP_BIND_PASSWORD = getattr(
-    settings, 'AUTH_LDAP_BIND_PASSWORD',
-    ''
-)
+AUTH_LDAP_BIND_DN = getattr(settings, "AUTH_LDAP_BIND_DN", "")
+AUTH_LDAP_BIND_PASSWORD = getattr(settings, "AUTH_LDAP_BIND_PASSWORD", "")
 AUTH_LDAP_USER_SEARCH = getattr(
-    settings, 'AUTH_LDAP_USER_SEARCH',
-    ('ou=people,dc=univ,dc=fr', "(uid=%(uid)s)")
+    settings,
+    "AUTH_LDAP_USER_SEARCH",
+    ("ou=people,dc=univ,dc=fr", "(uid=%(uid)s)"),
 )
 USER_LDAP_MAPPING_ATTRIBUTES = getattr(
-    settings, 'USER_LDAP_MAPPING_ATTRIBUTES',
+    settings,
+    "USER_LDAP_MAPPING_ATTRIBUTES",
     {
         "uid": "uid",
         "mail": "mail",
@@ -75,32 +69,35 @@ USER_LDAP_MAPPING_ATTRIBUTES = getattr(
         "first_name": "givenname",
         "primaryAffiliation": "eduPersonPrimaryAffiliation",
         "affiliations": "eduPersonAffiliation",
-        "groups": "memberOf"
-    })
+        "groups": "memberOf",
+    },
+)
 
 CAS_FORCE_LOWERCASE_USERNAME = getattr(
-    settings, 'CAS_FORCE_LOWERCASE_USERNAME', False)
+    settings, "CAS_FORCE_LOWERCASE_USERNAME", False
+)
 
 # search scope
-BASE = 'BASE'
-LEVEL = 'LEVEL'
-SUBTREE = 'SUBTREE'
+BASE = "BASE"
+LEVEL = "LEVEL"
+SUBTREE = "SUBTREE"
 
 
 def populateUser(tree):
     username_element = tree.find(
-        './/{http://www.yale.edu/tp/cas}%s' % AUTH_CAS_USER_SEARCH)
+        ".//{http://www.yale.edu/tp/cas}%s" % AUTH_CAS_USER_SEARCH
+    )
     username = username_element.text
     if CAS_FORCE_LOWERCASE_USERNAME:
         username = username.lower()
     user, user_created = User.objects.get_or_create(username=username)
     owner, owner_created = Owner.objects.get_or_create(user=user)
-    owner.auth_type = 'CAS'
+    owner.auth_type = "CAS"
     owner.save()
 
-    if POPULATE_USER == 'CAS':
+    if POPULATE_USER == "CAS":
         populate_user_from_tree(user, owner, tree)
-    if POPULATE_USER == 'LDAP' and LDAP_SERVER['url'] != '':
+    if POPULATE_USER == "LDAP" and LDAP_SERVER["url"] != "":
         list_value = []
         for val in USER_LDAP_MAPPING_ATTRIBUTES.values():
             list_value.append(str(val))
@@ -112,19 +109,25 @@ def populateUser(tree):
 
 
 def get_server():
-    if isinstance(LDAP_SERVER['url'], str):
-        server = Server(LDAP_SERVER['url'], port=LDAP_SERVER[
-                        'port'], use_ssl=LDAP_SERVER[
-                            'use_ssl'], get_info=ALL)
-    elif isinstance(LDAP_SERVER['url'], tuple):
+    if isinstance(LDAP_SERVER["url"], str):
+        server = Server(
+            LDAP_SERVER["url"],
+            port=LDAP_SERVER["port"],
+            use_ssl=LDAP_SERVER["use_ssl"],
+            get_info=ALL,
+        )
+    elif isinstance(LDAP_SERVER["url"], tuple):
         hosts = []
-        for server in LDAP_SERVER['url']:
-            if not (server == LDAP_SERVER['url'][0]):
+        for server in LDAP_SERVER["url"]:
+            if not (server == LDAP_SERVER["url"][0]):
                 hosts.append(server)
-        server = Server(LDAP_SERVER['url'][0], port=LDAP_SERVER[
-            'port'], use_ssl=LDAP_SERVER[
-                'use_ssl'], get_info=ALL,
-                        allowed_referral_hosts=hosts)
+        server = Server(
+            LDAP_SERVER["url"][0],
+            port=LDAP_SERVER["port"],
+            use_ssl=LDAP_SERVER["use_ssl"],
+            get_info=ALL,
+            allowed_referral_hosts=hosts,
+        )
     return server
 
 
@@ -132,7 +135,8 @@ def get_ldap_conn():
     try:
         server = get_server()
         conn = Connection(
-            server, AUTH_LDAP_BIND_DN, AUTH_LDAP_BIND_PASSWORD, auto_bind=True)
+            server, AUTH_LDAP_BIND_DN, AUTH_LDAP_BIND_PASSWORD, auto_bind=True
+        )
         return conn
     except LDAPBindError as err:
         logger.error("LDAPBindError, credentials incorrect: {0}".format(err))
@@ -144,19 +148,19 @@ def get_ldap_conn():
 
 def get_entry(conn, username, list_value):
     try:
-        conn.search(AUTH_LDAP_USER_SEARCH[0],
-                    AUTH_LDAP_USER_SEARCH[1] % {"uid": username},
-                    search_scope=SUBTREE,  # BASE, LEVEL and SUBTREE
-                    attributes=list_value,
-                    size_limit=1)
+        conn.search(
+            AUTH_LDAP_USER_SEARCH[0],
+            AUTH_LDAP_USER_SEARCH[1] % {"uid": username},
+            search_scope=SUBTREE,  # BASE, LEVEL and SUBTREE
+            attributes=list_value,
+            size_limit=1,
+        )
         return conn.entries[0] if len(conn.entries) > 0 else None
     except LDAPAttributeError as err:
-        logger.error(
-            "LDAPAttributeError, invalid attribute: {0}".format(err))
+        logger.error("LDAPAttributeError, invalid attribute: {0}".format(err))
         return None
     except LDAPInvalidFilterError as err:
-        logger.error(
-            "LDAPInvalidFilterError, invalid filter: {0}".format(err))
+        logger.error("LDAPInvalidFilterError, invalid filter: {0}".format(err))
         return None
 
 
@@ -166,7 +170,8 @@ def assign_accessgroups(groups_element, user):
             user.is_staff = True
         if CREATE_GROUP_FROM_GROUPS:
             accessgroup, group_created = AccessGroup.objects.get_or_create(
-                code_name=group)
+                code_name=group
+            )
             if group_created:
                 accessgroup.display_name = group
             accessgroup.sites.add(Site.objects.get_current())
@@ -184,17 +189,19 @@ def create_accessgroups(user, tree_or_entry, auth_type):
     groups_element = []
     if auth_type == "cas":
         tree_groups_element = tree_or_entry.findall(
-            './/{http://www.yale.edu/tp/cas}%s' % (USER_CAS_MAPPING_ATTRIBUTES[
-                'groups'])
+            ".//{http://www.yale.edu/tp/cas}%s"
+            % (USER_CAS_MAPPING_ATTRIBUTES["groups"])
         )
         for tge in tree_groups_element:
             groups_element.append(tge.text)
     elif auth_type == "ldap":
         groups_element = (
-            tree_or_entry[USER_LDAP_MAPPING_ATTRIBUTES['groups']].values if (
-                USER_LDAP_MAPPING_ATTRIBUTES.get('groups')
-                and tree_or_entry[USER_LDAP_MAPPING_ATTRIBUTES['groups']]
-            ) else []
+            tree_or_entry[USER_LDAP_MAPPING_ATTRIBUTES["groups"]].values
+            if (
+                USER_LDAP_MAPPING_ATTRIBUTES.get("groups")
+                and tree_or_entry[USER_LDAP_MAPPING_ATTRIBUTES["groups"]]
+            )
+            else []
         )
     else:
         return
@@ -205,49 +212,62 @@ def populate_user_from_entry(user, owner, entry):
     if DEBUG:
         print(entry)
     user.email = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES['mail']].value if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get('mail')
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES['mail']]
-        ) else ""
+        entry[USER_LDAP_MAPPING_ATTRIBUTES["mail"]].value
+        if (
+            USER_LDAP_MAPPING_ATTRIBUTES.get("mail")
+            and entry[USER_LDAP_MAPPING_ATTRIBUTES["mail"]]
+        )
+        else ""
     )
     user.first_name = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES['first_name']].value if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get('first_name')
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES['first_name']]
-        ) else ""
+        entry[USER_LDAP_MAPPING_ATTRIBUTES["first_name"]].value
+        if (
+            USER_LDAP_MAPPING_ATTRIBUTES.get("first_name")
+            and entry[USER_LDAP_MAPPING_ATTRIBUTES["first_name"]]
+        )
+        else ""
     )
     user.last_name = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES['last_name']].value if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get('last_name')
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES['last_name']]
-        ) else ""
+        entry[USER_LDAP_MAPPING_ATTRIBUTES["last_name"]].value
+        if (
+            USER_LDAP_MAPPING_ATTRIBUTES.get("last_name")
+            and entry[USER_LDAP_MAPPING_ATTRIBUTES["last_name"]]
+        )
+        else ""
     )
     user.save()
     owner.affiliation = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES['primaryAffiliation']].value if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get('primaryAffiliation')
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES['primaryAffiliation']]
-        ) else AFFILIATION[0][0]
+        entry[USER_LDAP_MAPPING_ATTRIBUTES["primaryAffiliation"]].value
+        if (
+            USER_LDAP_MAPPING_ATTRIBUTES.get("primaryAffiliation")
+            and entry[USER_LDAP_MAPPING_ATTRIBUTES["primaryAffiliation"]]
+        )
+        else AFFILIATION[0][0]
     )
     owner.establishment = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES['establishment']].value if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get('establishment')
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES['establishment']]
-        ) else ""
+        entry[USER_LDAP_MAPPING_ATTRIBUTES["establishment"]].value
+        if (
+            USER_LDAP_MAPPING_ATTRIBUTES.get("establishment")
+            and entry[USER_LDAP_MAPPING_ATTRIBUTES["establishment"]]
+        )
+        else ""
     )
     owner.save()
     affiliations = (
-        entry[USER_LDAP_MAPPING_ATTRIBUTES['affiliations']].values if (
-            USER_LDAP_MAPPING_ATTRIBUTES.get('affiliations')
-            and entry[USER_LDAP_MAPPING_ATTRIBUTES['affiliations']]
-        ) else []
+        entry[USER_LDAP_MAPPING_ATTRIBUTES["affiliations"]].values
+        if (
+            USER_LDAP_MAPPING_ATTRIBUTES.get("affiliations")
+            and entry[USER_LDAP_MAPPING_ATTRIBUTES["affiliations"]]
+        )
+        else []
     )
     for affiliation in affiliations:
         if affiliation in AFFILIATION_STAFF:
             user.is_staff = True
         if CREATE_GROUP_FROM_AFFILIATION:
             accessgroup, group_created = AccessGroup.objects.get_or_create(
-                code_name=affiliation)
+                code_name=affiliation
+            )
             if group_created:
                 accessgroup.display_name = affiliation
             accessgroup.sites.add(Site.objects.get_current())
@@ -264,22 +284,22 @@ def populate_user_from_tree(user, owner, tree):
         print_xml_tree(tree)
     # Mail
     mail_element = tree.find(
-        './/{http://www.yale.edu/tp/cas}%s' % (
-            USER_CAS_MAPPING_ATTRIBUTES["mail"])
+        ".//{http://www.yale.edu/tp/cas}%s"
+        % (USER_CAS_MAPPING_ATTRIBUTES["mail"])
     )
     user.email = mail_element.text if mail_element is not None else ""
     # first_name
     first_name_element = tree.find(
-        './/{http://www.yale.edu/tp/cas}%s' % (
-            USER_CAS_MAPPING_ATTRIBUTES["first_name"])
+        ".//{http://www.yale.edu/tp/cas}%s"
+        % (USER_CAS_MAPPING_ATTRIBUTES["first_name"])
     )
     user.first_name = (
         first_name_element.text if first_name_element is not None else ""
     )
     # last_name
     last_name_element = tree.find(
-        './/{http://www.yale.edu/tp/cas}%s' % (
-            USER_CAS_MAPPING_ATTRIBUTES["last_name"])
+        ".//{http://www.yale.edu/tp/cas}%s"
+        % (USER_CAS_MAPPING_ATTRIBUTES["last_name"])
     )
     user.last_name = (
         last_name_element.text if last_name_element is not None else ""
@@ -287,22 +307,26 @@ def populate_user_from_tree(user, owner, tree):
     user.save()
     # PrimaryAffiliation
     primary_affiliation_element = tree.find(
-        './/{http://www.yale.edu/tp/cas}%s' % (
-            USER_CAS_MAPPING_ATTRIBUTES["primaryAffiliation"])
+        ".//{http://www.yale.edu/tp/cas}%s"
+        % (USER_CAS_MAPPING_ATTRIBUTES["primaryAffiliation"])
     )
-    owner.affiliation = primary_affiliation_element.text if (
-        primary_affiliation_element is not None) else AFFILIATION[0][0]
+    owner.affiliation = (
+        primary_affiliation_element.text
+        if (primary_affiliation_element is not None)
+        else AFFILIATION[0][0]
+    )
     # affiliation
     affiliation_element = tree.findall(
-        './/{http://www.yale.edu/tp/cas}%s' % (
-            USER_CAS_MAPPING_ATTRIBUTES["affiliation"])
+        ".//{http://www.yale.edu/tp/cas}%s"
+        % (USER_CAS_MAPPING_ATTRIBUTES["affiliation"])
     )
     for affiliation in affiliation_element:
         if affiliation.text in AFFILIATION_STAFF:
             user.is_staff = True
         if CREATE_GROUP_FROM_AFFILIATION:
             accessgroup, group_created = AccessGroup.objects.get_or_create(
-                code_name=affiliation.text)
+                code_name=affiliation.text
+            )
             if group_created:
                 accessgroup.display_name = affiliation.text
             accessgroup.sites.add(Site.objects.get_current())
@@ -317,8 +341,9 @@ def print_xml_tree(tree):
     import xml.etree.ElementTree as ET
     import xml.dom.minidom
     import os
-    xml_string = xml.dom.minidom.parseString(
-        ET.tostring(tree)).toprettyxml()
-    xml_string = os.linesep.join([s for s in xml_string.splitlines(
-    ) if s.strip()])  # remove the weird newline issue
+
+    xml_string = xml.dom.minidom.parseString(ET.tostring(tree)).toprettyxml()
+    xml_string = os.linesep.join(
+        [s for s in xml_string.splitlines() if s.strip()]
+    )  # remove the weird newline issue
     print(xml_string)
