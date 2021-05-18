@@ -21,12 +21,7 @@ jobs:
       - name: Push changes
         if: steps.git-check.outputs.modified == 'true'
         run: |
-          git config --global user.name 'ptitloup'
-          git config --global user.email 'nicolas.can@univ-lille.fr'
-          git config --global push.default current
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git commit -am "Fixup: format code with Prettier"
-          git push
 
   black-format:
     runs-on: ubuntu-latest
@@ -34,11 +29,6 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-python@master
-
-      - name: Pull changes
-        run: |
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git pull ${GITHUB_REF##*/}
 
       - name: Install Black
         run: |
