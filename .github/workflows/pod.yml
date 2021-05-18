@@ -85,6 +85,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          sudo apt-get clean
           sudo apt-get update
           sudo apt-get install ffmpeg
           sudo apt-get install -y ffmpegthumbnailer
