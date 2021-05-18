@@ -2,9 +2,9 @@ var id_form = 'form_enrich';
 function show_form(data) {
     $('#'+id_form).hide().html(data).fadeIn();
     $("input#id_start")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_start' class='btn btn-primary btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode'></span></span>");
+        .before("&nbsp;<div class='getfromvideo pull-right mb-1'><a href='' id='getfromvideo_start' class='btn btn-primary btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode'></span></div>");
     $("input#id_end")
-        .before("&nbsp;<span class='getfromvideo pull-right' style='margin-bottom:4px'><a id='getfromvideo_end' class='btn btn-primary btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode'></span></span>");
+        .before("&nbsp;<div class='getfromvideo pull-right mb-1'><a href='' id='getfromvideo_end' class='btn btn-primary btn-sm'>" + gettext('Get time from the player') + "</a><span class='timecode'></span></div>");
     enrich_type();
 };
 
@@ -203,7 +203,7 @@ $(document).on('change','#page-video input#id_start',function() {
 $(document).on('change','#page-video input#id_end',function() {
     $(this).parent().find("span.getfromvideo span.timecode").html(" "+parseInt($(this).val()).toHHMMSS());
 });
-$(document).on('click','#page-video span.getfromvideo a',function(e) {
+$(document).on('click','#page-video .getfromvideo a',function(e) {
     e.preventDefault();
     if(!(typeof player === 'undefined')) {
         if($(this).attr('id') == "getfromvideo_start"){
