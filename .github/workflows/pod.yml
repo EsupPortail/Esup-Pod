@@ -29,8 +29,8 @@ jobs:
           git push
 
   black-format:
-    needs: ["prettier-format"]
     runs-on: ubuntu-latest
+    needs: [prettier-format]
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-python@master
@@ -61,8 +61,8 @@ jobs:
           git push
 
   build:
-    needs: [black-format]
     runs-on: ubuntu-latest
+    needs: [black-format]
     strategy:
       max-parallel: 4
       matrix:
@@ -70,16 +70,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Configure sysctl limits (for ES)
         run: |
           sudo swapoff -a
           sudo sysctl -w vm.swappiness=1
           sudo sysctl -w fs.file-max=262144
           sudo sysctl -w vm.max_map_count=262144
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install Dependencies
         run: |
           sudo apt-get update
@@ -89,18 +92,22 @@ jobs:
           pip install -r requirements.txt
           pip install flake8
           pip install coveralls
+
       - name: Flake8 compliance
         run: |
           flake8 --max-complexity=7 --exclude .git,pod/*/migrations/*.py,test_settings.py
+
       - name: Runs Elasticsearch
         uses: elastic/elastic-github-actions/elasticsearch@master
         with:
           stack-version: 7.6.0
+
       - name: Setup Pod
         run: |
           python manage.py create_pod_index
           python manage.py makemigrations
           python manage.py migrate
+
       - name: Run Tests and coveralls
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
