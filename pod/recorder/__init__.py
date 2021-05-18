@@ -1,1 +1,1 @@
-default_app_config = 'pod.recorder.apps.RecorderConfig'
+default_app_config = "pod.recorder.apps.RecorderConfig"

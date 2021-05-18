@@ -10,37 +10,31 @@ from ..models import Chapter
 
 
 class ChapterModelTestCase(TestCase):
-    fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data.json",
+    ]
 
     def setUp(self):
-        owner = User.objects.create(username='test')
-        videotype = Type.objects.create(
-            title='others'
-        )
+        owner = User.objects.create(username="test")
+        videotype = Type.objects.create(title="others")
         video = Video.objects.create(
-            title='video',
+            title="video",
             type=videotype,
             owner=owner,
-            video='test.mp4',
+            video="test.mp4",
             duration=20,
         )
-        Chapter.objects.create(
-            video=video,
-            title='Chaptertest',
-            time_start=1
-        )
-        Chapter.objects.create(
-            video=video,
-            title='Chaptertest2'
-        )
+        Chapter.objects.create(video=video, title="Chaptertest", time_start=1)
+        Chapter.objects.create(video=video, title="Chaptertest2")
 
     def test_attributs_full(self):
         chapter = Chapter.objects.get(id=1)
         video = Video.objects.get(id=1)
         self.assertEqual(chapter.video, video)
-        self.assertEqual(chapter.title, 'Chaptertest')
+        self.assertEqual(chapter.title, "Chaptertest")
         self.assertEqual(
-            chapter.slug, '{0}-{1}'.format(chapter.id, 'chaptertest'))
+            chapter.slug, "{0}-{1}".format(chapter.id, "chaptertest")
+        )
         self.assertEqual(chapter.time_start, 1)
 
         print(" ---> test_attributs_full : OK ! --- ChapterModel")
@@ -49,9 +43,10 @@ class ChapterModelTestCase(TestCase):
         chapter = Chapter.objects.get(id=2)
         video = Video.objects.get(id=1)
         self.assertEqual(chapter.video, video)
-        self.assertEqual(chapter.title, 'Chaptertest2')
+        self.assertEqual(chapter.title, "Chaptertest2")
         self.assertEqual(
-            chapter.slug, '{0}-{1}'.format(chapter.id, 'chaptertest2'))
+            chapter.slug, "{0}-{1}".format(chapter.id, "chaptertest2")
+        )
         self.assertEqual(chapter.time_start, 0)
 
         print(" [ BEGIN CHAPTER_TEST MODEL ] ")
@@ -71,7 +66,7 @@ class ChapterModelTestCase(TestCase):
         video = Video.objects.get(id=1)
         chapter = Chapter()
         chapter.video = video
-        chapter.title = 'test'
+        chapter.title = "test"
         self.assertRaises(ValidationError, chapter.clean)
         chapter.time_start = 21
         self.assertRaises(ValidationError, chapter.clean)
@@ -84,7 +79,7 @@ class ChapterModelTestCase(TestCase):
         video = Video.objects.get(id=1)
         chapter = Chapter()
         chapter.video = video
-        chapter.title = 'test'
+        chapter.title = "test"
         chapter.time_start = 1
         self.assertRaises(ValidationError, chapter.clean)
 

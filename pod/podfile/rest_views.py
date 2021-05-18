@@ -6,24 +6,21 @@ from rest_framework import serializers, viewsets
 
 
 class UserFolderSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = UserFolder
-        fields = ('id', 'url', 'name', 'owner')
+        fields = ("id", "url", "name", "owner")
 
 
 class CustomFileModelSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = CustomFileModel
-        fields = ('id', 'url', 'folder', 'name', 'file', 'created_by')
+        fields = ("id", "url", "folder", "name", "file", "created_by")
 
 
 class CustomImageModelSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = CustomImageModel
-        fields = ('id', 'url', 'folder', 'name', 'file', 'created_by')
+        fields = ("id", "url", "folder", "name", "file", "created_by")
 
 
 # ViewSets define the view behavior.

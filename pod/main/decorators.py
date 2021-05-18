@@ -3,7 +3,6 @@ from django.core.exceptions import PermissionDenied
 
 
 def ajax_required(_view):
-
     @wraps(_view)
     def _wrapped_view(request, *args, **kwargs):
 

@@ -8,11 +8,11 @@ from pod.main.forms import add_placeholder_and_asterisk
 
 
 DEFAULT_RECORDER_PATH = getattr(
-    settings, 'DEFAULT_RECORDER_PATH',
-    "/data/ftp-pod/ftp/"
+    settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/"
 )
 ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = getattr(
-    settings, "ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER", True)
+    settings, "ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER", True
+)
 
 
 def check_show_user(request):
@@ -28,52 +28,57 @@ def check_show_user(request):
 
 
 class RecordingForm(forms.ModelForm):
-
     def __init__(self, request, *args, **kwargs):
         super(RecordingForm, self).__init__(*args, **kwargs)
 
         self.fields = add_placeholder_and_asterisk(self.fields)
 
         if self.initial.get("type"):
-            self.fields['type'].widget = forms.HiddenInput()
+            self.fields["type"].widget = forms.HiddenInput()
 
-        self.fields['source_file'] = forms.FilePathField(
-            path=DEFAULT_RECORDER_PATH,
-            recursive=True,
-            label=_("source_file")
+        self.fields["source_file"] = forms.FilePathField(
+            path=DEFAULT_RECORDER_PATH, recursive=True, label=_("source_file")
         )
-        self.fields['source_file'].widget.attrs['class'] = 'form-control'
-        self.fields["recorder"].queryset = self.fields["recorder"].queryset.\
-            filter(
-                sites=Site.objects.get_current())
+        self.fields["source_file"].widget.attrs["class"] = "form-control"
+        self.fields["recorder"].queryset = self.fields[
+            "recorder"
+        ].queryset.filter(sites=Site.objects.get_current())
         self.fields["user"].queryset = self.fields["user"].queryset.filter(
-                owner__sites=Site.objects.get_current())
+            owner__sites=Site.objects.get_current()
+        )
 
-        if not(check_show_user(request) or request.user.is_superuser or
-           request.user.has_perm("recorder.add_recording")):
-            del self.fields['user']
-        if not (request.user.is_superuser or
-           request.user.has_perm("recorder.add_recording")):
-            self.fields['recorder'].widget = forms.HiddenInput()
-            self.fields['delete'].widget = forms.HiddenInput()
-            self.fields['source_file'].widget = forms.HiddenInput()
+        if not (
+            check_show_user(request)
+            or request.user.is_superuser
+            or request.user.has_perm("recorder.add_recording")
+        ):
+            del self.fields["user"]
+        if not (
+            request.user.is_superuser
+            or request.user.has_perm("recorder.add_recording")
+        ):
+            self.fields["recorder"].widget = forms.HiddenInput()
+            self.fields["delete"].widget = forms.HiddenInput()
+            self.fields["source_file"].widget = forms.HiddenInput()
 
     class Meta:
         model = Recording
-        exclude = ('comment', 'date_added')
+        exclude = ("comment", "date_added")
 
     delete = forms.BooleanField(
         required=False,
-        label=_('Delete the record'),
-        help_text=_('If checked, record will be deleted instead of saving it'),
-        widget=forms.CheckboxInput())
+        label=_("Delete the record"),
+        help_text=_("If checked, record will be deleted instead of saving it"),
+        widget=forms.CheckboxInput(),
+    )
 
 
 class RecordingFileTreatmentDeleteForm(forms.Form):
     agree = forms.BooleanField(
-        label=_('I agree'),
-        help_text=_('Delete this record cannot be undo'),
-        widget=forms.CheckboxInput())
+        label=_("I agree"),
+        help_text=_("Delete this record cannot be undo"),
+        widget=forms.CheckboxInput(),
+    )
 
     def __init__(self, *args, **kwargs):
         super(RecordingFileTreatmentDeleteForm, self).__init__(*args, **kwargs)

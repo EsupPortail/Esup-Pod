@@ -20,27 +20,31 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required, user_passes_test
 import redis
 
-USE_BBB = getattr(settings, 'USE_BBB', False)
-USE_BBB_LIVE = getattr(settings, 'USE_BBB_LIVE', False)
-BBB_NUMBER_MAX_LIVES = getattr(settings, 'BBB_NUMBER_MAX_LIVES', 1)
+USE_BBB = getattr(settings, "USE_BBB", False)
+USE_BBB_LIVE = getattr(settings, "USE_BBB_LIVE", False)
+BBB_NUMBER_MAX_LIVES = getattr(settings, "BBB_NUMBER_MAX_LIVES", 1)
 
 
 @csrf_protect
-@login_required(redirect_field_name='referrer')
-@staff_member_required(redirect_field_name='referrer')
+@login_required(redirect_field_name="referrer")
+@staff_member_required(redirect_field_name="referrer")
 def list_meeting(request):
     # Get meetings list, which recordings are available, ordered by date
-    meetings_list = Meeting.objects.\
-        filter(attendee__user_id=request.user.id, recording_available=True)
-    meetings_list = meetings_list.order_by('-session_date')
+    meetings_list = Meeting.objects.filter(
+        attendee__user_id=request.user.id, recording_available=True
+    )
+    meetings_list = meetings_list.order_by("-session_date")
     # print(str(meetings_list.query))
 
-    page = request.GET.get('page', 1)
+    page = request.GET.get("page", 1)
 
     full_path = ""
     if page:
-        full_path = request.get_full_path().replace(
-            "?page=%s" % page, "").replace("&page=%s" % page, "")
+        full_path = (
+            request.get_full_path()
+            .replace("?page=%s" % page, "")
+            .replace("&page=%s" % page, "")
+        )
 
     paginator = Paginator(meetings_list, 12)
     try:
@@ -52,42 +56,50 @@ def list_meeting(request):
 
     if request.is_ajax():
         return render(
-            request, 'bbb/record_list.html',
-            {'records': records, "full_path": full_path})
+            request,
+            "bbb/record_list.html",
+            {"records": records, "full_path": full_path},
+        )
 
-    return render(request, 'bbb/list_meeting.html', {
-        'records': records, "full_path": full_path
-    })
+    return render(
+        request,
+        "bbb/list_meeting.html",
+        {"records": records, "full_path": full_path},
+    )
 
 
 @csrf_protect
-@staff_member_required(redirect_field_name='referrer')
+@staff_member_required(redirect_field_name="referrer")
 def publish_meeting(request, id=None):
     # Allows you to create a video from a BigBlueButton presentation
 
     record = get_object_or_404(Meeting, id=id)
 
     initial = {
-        'id': record.id,
-        'meeting_id': record.meeting_id,
-        'internal_meeting_id': record.internal_meeting_id,
-        'meeting_name': record.meeting_name,
-        'recorded': record.recorded,
-        'recording_available': record.recording_available,
-        'recording_url': record.recording_url,
-        'thumbnail_url': record.thumbnail_url,
-        'session_date': record.session_date}
+        "id": record.id,
+        "meeting_id": record.meeting_id,
+        "internal_meeting_id": record.internal_meeting_id,
+        "meeting_name": record.meeting_name,
+        "recorded": record.recorded,
+        "recording_available": record.recording_available,
+        "recording_url": record.recording_url,
+        "thumbnail_url": record.thumbnail_url,
+        "session_date": record.session_date,
+    }
 
     form = MeetingForm(request, initial=initial)
 
     # Check security : a normal user can publish only a meeting
     # where he was moderator
-    meetings_list = Meeting.objects.\
-        filter(attendee__user_id=request.user.id, id=id)
+    meetings_list = Meeting.objects.filter(
+        attendee__user_id=request.user.id, id=id
+    )
     if not meetings_list and not request.user.is_superuser:
         messages.add_message(
-            request, messages.ERROR,
-            _(u'You aren\'t the moderator of this BigBlueButton session.'))
+            request,
+            messages.ERROR,
+            _("You aren't the moderator of this BigBlueButton session."),
+        )
         raise PermissionDenied
 
     if request.method == "POST":
@@ -105,36 +117,37 @@ def publish_meeting(request, id=None):
             meeting.encoded_by = request.user
             meeting.save()
             messages.add_message(
-                request, messages.INFO,
-                _(u'The BigBlueButton session has been published.'))
-            return redirect(
-                reverse('bbb:list_meeting')
+                request,
+                messages.INFO,
+                _("The BigBlueButton session has been published."),
             )
+            return redirect(reverse("bbb:list_meeting"))
         else:
             messages.add_message(
-                request, messages.ERROR,
-                _(u'One or more errors have been found in the form.'))
+                request,
+                messages.ERROR,
+                _("One or more errors have been found in the form."),
+            )
 
-    return render(request, 'bbb/publish_meeting.html', {
-        'record': record,
-        'form': form}
+    return render(
+        request, "bbb/publish_meeting.html", {"record": record, "form": form}
     )
 
 
 @csrf_protect
-@login_required(redirect_field_name='referrer')
-@staff_member_required(redirect_field_name='referrer')
+@login_required(redirect_field_name="referrer")
+@staff_member_required(redirect_field_name="referrer")
 def live_list_meeting(request):
     # Get meetings list in progress
     dateSince10Min = timezone.now() - timezone.timedelta(minutes=10)
-    meetings_list = Meeting.objects.\
-        filter(attendee__user_id=request.user.id,
-               last_date_in_progress__gte=dateSince10Min)
-    meetings_list = meetings_list.order_by('-session_date')
+    meetings_list = Meeting.objects.filter(
+        attendee__user_id=request.user.id,
+        last_date_in_progress__gte=dateSince10Min,
+    )
+    meetings_list = meetings_list.order_by("-session_date")
     # print(str(meetings_list.query))
 
-    meetings_list = check_meetings_have_live_in_progress(meetings_list,
-                                                         request)
+    meetings_list = check_meetings_have_live_in_progress(meetings_list, request)
 
     # Get number of lives in progress
     lives_in_progress = Livestream.objects.filter(status=1)
@@ -143,12 +156,15 @@ def live_list_meeting(request):
     else:
         max_limit_reached = False
 
-    page = request.GET.get('page', 1)
+    page = request.GET.get("page", 1)
 
     full_path = ""
     if page:
-        full_path = request.get_full_path().replace(
-            "?page=%s" % page, "").replace("&page=%s" % page, "")
+        full_path = (
+            request.get_full_path()
+            .replace("?page=%s" % page, "")
+            .replace("&page=%s" % page, "")
+        )
 
     paginator = Paginator(meetings_list, 12)
     try:
@@ -160,14 +176,24 @@ def live_list_meeting(request):
 
     if request.is_ajax():
         return render(
-            request, 'bbb/live_record_list.html',
-            {'records': records, 'full_path': full_path,
-             'max_limit_reached': max_limit_reached})
+            request,
+            "bbb/live_record_list.html",
+            {
+                "records": records,
+                "full_path": full_path,
+                "max_limit_reached": max_limit_reached,
+            },
+        )
 
-    return render(request, 'bbb/live_list_meeting.html', {
-        'records': records, 'full_path': full_path,
-        'max_limit_reached': max_limit_reached
-    })
+    return render(
+        request,
+        "bbb/live_list_meeting.html",
+        {
+            "records": records,
+            "full_path": full_path,
+            "max_limit_reached": max_limit_reached,
+        },
+    )
 
 
 def check_meetings_have_live_in_progress(meetings_list, request):
@@ -176,9 +202,11 @@ def check_meetings_have_live_in_progress(meetings_list, request):
     if len(meetings_list) > 0:
         for meeting in meetings_list:
             # Get the live object that corresponds to this meeting in progress
-            lives_list = Livestream.objects.\
-                filter(user_id=request.user.id, start_date__gte=dateToday,
-                       meeting_id=meeting.id)
+            lives_list = Livestream.objects.filter(
+                user_id=request.user.id,
+                start_date__gte=dateToday,
+                meeting_id=meeting.id,
+            )
             if len(lives_list) > 0:
                 # Use case : only 1 live for a meeting
                 for live in lives_list:
@@ -189,29 +217,27 @@ def check_meetings_have_live_in_progress(meetings_list, request):
 
 
 @csrf_protect
-@staff_member_required(redirect_field_name='referrer')
+@staff_member_required(redirect_field_name="referrer")
 def live_publish_meeting(request, id=None):
     # Allows you to create a live streaming from a BigBlueButton presentation
 
     record = get_object_or_404(Meeting, id=id)
 
-    initial = {
-        'meeting': record,
-        'status': 0,
-        'end_date': None,
-        'server': None
-    }
+    initial = {"meeting": record, "status": 0, "end_date": None, "server": None}
 
     form = LivestreamForm(request, initial=initial)
 
     # Check security : a normal user can publish only a meeting
     # where he was moderator
-    meetings_list = Meeting.objects.\
-        filter(attendee__user_id=request.user.id, id=id)
+    meetings_list = Meeting.objects.filter(
+        attendee__user_id=request.user.id, id=id
+    )
     if not meetings_list and not request.user.is_superuser:
         messages.add_message(
-            request, messages.ERROR,
-            _(u'You aren\'t the moderator of this BigBlueButton session.'))
+            request,
+            messages.ERROR,
+            _("You aren't the moderator of this BigBlueButton session."),
+        )
         raise PermissionDenied
 
     if request.method == "POST":
@@ -222,19 +248,22 @@ def live_publish_meeting(request, id=None):
             live.user = request.user
             live.save()
             messages.add_message(
-                request, messages.INFO,
-                _(u'The BigBlueButton live has been performed.'))
-            return redirect(
-                reverse('bbb:live_list_meeting')
+                request,
+                messages.INFO,
+                _("The BigBlueButton live has been performed."),
             )
+            return redirect(reverse("bbb:live_list_meeting"))
         else:
             messages.add_message(
-                request, messages.ERROR,
-                _(u'One or more errors have been found in the form.'))
+                request,
+                messages.ERROR,
+                _("One or more errors have been found in the form."),
+            )
 
-    return render(request, 'bbb/live_publish_meeting.html', {
-        'record': record,
-        'form': form}
+    return render(
+        request,
+        "bbb/live_publish_meeting.html",
+        {"record": record, "form": form},
     )
 
 
@@ -245,36 +274,33 @@ def live_publish_chat_if_authenticated(user):
 
 
 @csrf_protect
-@user_passes_test(live_publish_chat_if_authenticated,
-                  redirect_field_name="referrer")
+@user_passes_test(
+    live_publish_chat_if_authenticated, redirect_field_name="referrer"
+)
 def live_publish_chat(request, id=None):
     # Allows an authenticated user to send chat question to BBB
     who_sent = "(%s %s) " % (request.user.first_name, request.user.last_name)
-    message = request.GET.get('message', None)
+    message = request.GET.get("message", None)
 
     livestreams_list = Livestream.objects.filter(broadcaster_id=id)
 
-    data = {
-        'message_return': 'error_no_broadcaster_found',
-        'is_sent': False
-    }
+    data = {"message_return": "error_no_broadcaster_found", "is_sent": False}
     if len(livestreams_list) > 0:
         for livestream in livestreams_list:
             try:
                 # Publish on Redis
-                r = redis.Redis(host=livestream.redis_hostname,
-                                port=str(livestream.redis_port),
-                                db=0)
+                r = redis.Redis(
+                    host=livestream.redis_hostname,
+                    port=str(livestream.redis_port),
+                    db=0,
+                )
                 r.publish(livestream.redis_channel, who_sent + message)
 
-                data = {
-                    'message_return': 'message_sent',
-                    'is_sent': True
-                }
+                data = {"message_return": "message_sent", "is_sent": True}
             except Exception:
                 data = {
-                    'message_return': 'error_no_connection',
-                    'is_sent': False
+                    "message_return": "error_no_connection",
+                    "is_sent": False,
                 }
 
     return JsonResponse(data)
