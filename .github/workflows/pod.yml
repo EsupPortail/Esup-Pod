@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-        with:
-          ref: ${{github.event.pull_request.head.ref}}
 
       - name: Running prettier
         run: npx prettier --write pod/*/static/**/*.js
@@ -41,6 +39,8 @@ jobs:
         run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
 
       - name: Push changes
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
         if: steps.black-git-check.outputs.modified == 'true'
         run: |
           git config user.name github-actions
