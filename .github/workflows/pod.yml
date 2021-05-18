@@ -38,7 +38,7 @@ jobs:
       - name: Pull changes
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
-          git pull origin ${GITHUB_REF##*/}
+          git pull ${GITHUB_REF##*/}
 
       - name: Install Black
         run: |
