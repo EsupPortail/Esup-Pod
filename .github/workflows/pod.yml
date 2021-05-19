@@ -46,16 +46,9 @@ jobs:
           pip install flake8
           pip install coveralls
 
-      - name: Formattings code with Black $ Prettier
-        run: |
-          python -m pip install --upgrade pip
-          pip install black
-          npx prettier --write pod/*/static/**/*.js
-          black . -l 90
-
       - name: Flake8 compliance
         run: |
-          flake8 --max-complexity=7 --exclude .git,pod/*/migrations/*.py,test_settings.py
+          flake8 --max-complexity=7 --ignore=E501 --exclude .git,pod/*/migrations/*.py,test_settings.py
 
       - name: Runs Elasticsearch
         uses: elastic/elastic-github-actions/elasticsearch@master
