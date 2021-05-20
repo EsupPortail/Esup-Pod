@@ -13,45 +13,46 @@ import os
 
 
 class CustomFileModelTestCase(TestCase):
-
     def setUp(self):
-        test = User.objects.create(username='test')
-        currentdir = os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__)))
+        test = User.objects.create(username="test")
+        currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
         simplefile = SimpleUploadedFile(
-            name='testfile.txt',
+            name="testfile.txt",
             content=open(
-                os.path.join(
-                    currentdir, 'tests', 'testfile.txt'), 'rb').read(),
-            content_type='text/plain')
-        home = UserFolder.objects.get(name='home', owner=test)
+                os.path.join(currentdir, "tests", "testfile.txt"), "rb"
+            ).read(),
+            content_type="text/plain",
+        )
+        home = UserFolder.objects.get(name="home", owner=test)
         CustomFileModel.objects.create(
-            name='testfile',
-            description='testfile',
+            name="testfile",
+            description="testfile",
             uploaded_at=datetime.now(),
             created_by=test,
             folder=home,
-            file=simplefile)
+            file=simplefile,
+        )
         CustomFileModel.objects.create(
-            name='testfile2',
-            description='',
+            name="testfile2",
+            description="",
             uploaded_at=datetime.now(),
             created_by=test,
             folder=home,
-            file=simplefile)
+            file=simplefile,
+        )
 
     def test_attributs_full(self):
         user = User.objects.get(id=1)
         file = CustomFileModel.objects.get(id=1)
-        self.assertEqual(file.name, 'testfile')
-        self.assertEqual(file.description, 'testfile')
+        self.assertEqual(file.name, "testfile")
+        self.assertEqual(file.description, "testfile")
         self.assertEqual(file.file_size, file.file.size)
-        self.assertEqual(file.file_type, 'text/plain')
-        self.assertEqual(file.file_ext, 'txt')
+        self.assertEqual(file.file_type, "text/plain")
+        self.assertEqual(file.file_ext, "txt")
         self.assertTrue(isinstance(file.uploaded_at, datetime))
         self.assertEqual(file.created_by, user)
-        self.assertEqual(file.folder.name, 'home')
+        self.assertEqual(file.folder.name, "home")
         if user.owner:
             self.assertTrue(user.owner.hashkey in file.file.path)
         else:
@@ -62,14 +63,14 @@ class CustomFileModelTestCase(TestCase):
     def test_attributs(self):
         user = User.objects.get(id=1)
         file = CustomFileModel.objects.get(id=2)
-        self.assertTrue(file.name, 'testfile')
-        self.assertEqual(file.description, '')
+        self.assertTrue(file.name, "testfile")
+        self.assertEqual(file.description, "")
         self.assertEqual(file.file_size, file.file.size)
-        self.assertEqual(file.file_type, 'text/plain')
-        self.assertEqual(file.file_ext, 'txt')
+        self.assertEqual(file.file_type, "text/plain")
+        self.assertEqual(file.file_ext, "txt")
         self.assertTrue(isinstance(file.uploaded_at, datetime))
         self.assertEqual(file.created_by, user)
-        self.assertEqual(file.folder.name, 'home')
+        self.assertEqual(file.folder.name, "home")
         if user.owner:
             self.assertTrue(user.owner.hashkey in file.file.path)
         else:
@@ -87,43 +88,44 @@ class CustomFileModelTestCase(TestCase):
 
 
 class CustomImageModelTestCase(TestCase):
-
     def setUp(self):
-        test = User.objects.create(username='test')
-        currentdir = os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__)))
+        test = User.objects.create(username="test")
+        currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         simplefile = SimpleUploadedFile(
-            name='testimage.jpg',
+            name="testimage.jpg",
             content=open(
-                os.path.join(
-                    currentdir, 'tests', 'testimage.jpg'), 'rb').read(),
-            content_type='image/jpeg')
-        home = UserFolder.objects.get(name='home', owner=test)
+                os.path.join(currentdir, "tests", "testimage.jpg"), "rb"
+            ).read(),
+            content_type="image/jpeg",
+        )
+        home = UserFolder.objects.get(name="home", owner=test)
         CustomImageModel.objects.create(
-            name='testimage',
-            description='testimage',
+            name="testimage",
+            description="testimage",
             uploaded_at=datetime.now(),
             created_by=test,
             folder=home,
-            file=simplefile)
+            file=simplefile,
+        )
         CustomImageModel.objects.create(
-            name='testimage2',
-            description='',
+            name="testimage2",
+            description="",
             uploaded_at=datetime.now(),
             created_by=test,
             folder=home,
-            file=simplefile)
+            file=simplefile,
+        )
 
     def test_attributs_full(self):
         user = User.objects.get(id=1)
         file = CustomImageModel.objects.get(id=1)
-        self.assertEqual(file.name, 'testimage')
-        self.assertEqual(file.description, 'testimage')
+        self.assertEqual(file.name, "testimage")
+        self.assertEqual(file.description, "testimage")
         self.assertEqual(file.file_size, file.file.size)
-        self.assertEqual(file.file_type, 'image/jpeg')
+        self.assertEqual(file.file_type, "image/jpeg")
         self.assertTrue(isinstance(file.uploaded_at, datetime))
         self.assertEqual(file.created_by, user)
-        self.assertEqual(file.folder.name, 'home')
+        self.assertEqual(file.folder.name, "home")
         if user.owner:
             self.assertTrue(user.owner.hashkey in file.file.path)
         else:
@@ -134,13 +136,13 @@ class CustomImageModelTestCase(TestCase):
     def test_attributs(self):
         user = User.objects.get(id=1)
         file = CustomImageModel.objects.get(id=2)
-        self.assertTrue(file.name, 'testimage')
-        self.assertEqual(file.description, '')
+        self.assertTrue(file.name, "testimage")
+        self.assertEqual(file.description, "")
         self.assertEqual(file.file_size, file.file.size)
-        self.assertEqual(file.file_type, 'image/jpeg')
+        self.assertEqual(file.file_type, "image/jpeg")
         self.assertTrue(isinstance(file.uploaded_at, datetime))
         self.assertEqual(file.created_by, user)
-        self.assertEqual(file.folder.name, 'home')
+        self.assertEqual(file.folder.name, "home")
         if user.owner:
             self.assertTrue(user.owner.hashkey in file.file.path)
         else:
@@ -157,17 +159,16 @@ class CustomImageModelTestCase(TestCase):
 
 
 class UserFolderTestCase(TestCase):
-
     def setUp(self):
-        test = User.objects.create(username='test')
-        UserFolder.objects.get(name='home', owner=test)
-        UserFolder.objects.create(name='Images', owner=test)
-        UserFolder.objects.create(name='Documents', owner=test)
+        test = User.objects.create(username="test")
+        UserFolder.objects.get(name="home", owner=test)
+        UserFolder.objects.create(name="Images", owner=test)
+        UserFolder.objects.create(name="Documents", owner=test)
 
     def test_attributs_full(self):
         user = User.objects.get(id=1)
         child = UserFolder.objects.get(id=2)
-        self.assertEqual(child.name, 'Images')
+        self.assertEqual(child.name, "Images")
         self.assertEqual(child.owner, user)
 
         print(" ---> test_attributs_full : OK ! --- UserFolder")
@@ -175,7 +176,7 @@ class UserFolderTestCase(TestCase):
     def test_attributs(self):
         user = User.objects.get(id=1)
         home = UserFolder.objects.get(id=1)
-        self.assertEqual(home.name, 'home')
+        self.assertEqual(home.name, "home")
         self.assertEqual(home.owner, user)
 
         print(" ---> test_attributs : OK ! --- UserFolder")

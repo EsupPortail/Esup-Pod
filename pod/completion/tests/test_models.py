@@ -14,7 +14,7 @@ from pod.completion.models import Overlay
 from pod.completion.models import Track
 from datetime import datetime
 
-if getattr(settings, 'USE_PODFILE', False):
+if getattr(settings, "USE_PODFILE", False):
     FILEPICKER = True
     from pod.podfile.models import CustomFileModel
     from pod.podfile.models import UserFolder
@@ -24,36 +24,33 @@ else:
 
 
 class ContributorModelTestCase(TestCase):
-    fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data.json",
+    ]
 
     def setUp(self):
-        owner = User.objects.create(username='test')
-        videotype = Type.objects.create(title='others')
+        owner = User.objects.create(username="test")
+        videotype = Type.objects.create(title="others")
         video = Video.objects.create(
-            title='video',
-            type=videotype,
-            owner=owner,
-            video='test.mp4')
-        Contributor.objects.create(
-            video=video,
-            name='contributor',
-            email_address='contributor@pod.com',
-            role='actor',
-            weblink='http://pod.com'
+            title="video", type=videotype, owner=owner, video="test.mp4"
         )
         Contributor.objects.create(
             video=video,
-            name='contributor2'
+            name="contributor",
+            email_address="contributor@pod.com",
+            role="actor",
+            weblink="http://pod.com",
         )
+        Contributor.objects.create(video=video, name="contributor2")
 
     def test_attributs_full(self):
         contributor = Contributor.objects.get(id=1)
         video = Video.objects.get(id=1)
         self.assertEqual(contributor.video, video)
-        self.assertEqual(contributor.name, 'contributor')
-        self.assertEqual(contributor.email_address, 'contributor@pod.com')
-        self.assertEqual(contributor.role, 'actor')
-        self.assertEqual(contributor.weblink, 'http://pod.com')
+        self.assertEqual(contributor.name, "contributor")
+        self.assertEqual(contributor.email_address, "contributor@pod.com")
+        self.assertEqual(contributor.role, "actor")
+        self.assertEqual(contributor.weblink, "http://pod.com")
 
         print(" ---> test_attributs_full : OK ! --- ContributorModel")
 
@@ -61,9 +58,9 @@ class ContributorModelTestCase(TestCase):
         contributor = Contributor.objects.get(id=2)
         video = Video.objects.get(id=1)
         self.assertEqual(contributor.video, video)
-        self.assertEqual(contributor.name, 'contributor2')
-        self.assertEqual(contributor.email_address, '')
-        self.assertEqual(contributor.role, 'author')
+        self.assertEqual(contributor.name, "contributor2")
+        self.assertEqual(contributor.email_address, "")
+        self.assertEqual(contributor.role, "author")
         self.assertEqual(contributor.weblink, None)
 
         print(" [ BEGIN COMPLETION_TEST_MODELS ] ")
@@ -73,11 +70,11 @@ class ContributorModelTestCase(TestCase):
         video = Video.objects.get(id=1)
         contributor = Contributor()
         contributor.video = video
-        contributor.role = 'actor'
+        contributor.role = "actor"
         self.assertRaises(ValidationError, contributor.clean)
-        contributor.name = 't'
+        contributor.name = "t"
         self.assertRaises(ValidationError, contributor.clean)
-        contributor.name = 'test'
+        contributor.name = "test"
         contributor.role = None
         self.assertRaises(ValidationError, contributor.clean)
 
@@ -87,8 +84,8 @@ class ContributorModelTestCase(TestCase):
         video = Video.objects.get(id=1)
         contributor = Contributor()
         contributor.video = video
-        contributor.name = 'contributor'
-        contributor.role = 'actor'
+        contributor.name = "contributor"
+        contributor.role = "actor"
         self.assertRaises(ValidationError, contributor.clean)
 
         print(" ---> test_same : OK ! --- ContributorModel")
@@ -102,50 +99,43 @@ class ContributorModelTestCase(TestCase):
 
 
 class DocumentModelTestCase(TestCase):
-    fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data.json",
+    ]
 
     def setUp(self):
-        owner = User.objects.create(username='test')
-        videotype = Type.objects.create(title='others')
+        owner = User.objects.create(username="test")
+        videotype = Type.objects.create(title="others")
         video = Video.objects.create(
-            title='video',
-            type=videotype,
-            owner=owner,
-            video='test.mp4'
+            title="video", type=videotype, owner=owner, video="test.mp4"
         )
         testfile = SimpleUploadedFile(
-            name='testfile.vtt',
-            content=open(
-                './pod/completion/tests/testfile.vtt', 'rb').read(),
-            content_type='text/plain')
+            name="testfile.vtt",
+            content=open("./pod/completion/tests/testfile.vtt", "rb").read(),
+            content_type="text/plain",
+        )
         if FILEPICKER:
-            home = UserFolder.objects.create(name='Home', owner=owner)
+            home = UserFolder.objects.create(name="Home", owner=owner)
             file = CustomFileModel.objects.create(
-                name='testfile',
+                name="testfile",
                 uploaded_at=datetime.now(),
                 created_by=owner,
                 folder=home,
-                file=testfile
+                file=testfile,
             )
         else:
-            file = CustomFileModel.objects.create(
-                file=testfile
-            )
-        Document.objects.create(
-            video=video,
-            document=file)
-        Document.objects.create(
-            video=video
-        )
+            file = CustomFileModel.objects.create(file=testfile)
+        Document.objects.create(video=video, document=file)
+        Document.objects.create(video=video)
 
     def test_attributs_full(self):
         document = Document.objects.get(id=1)
         video = Video.objects.get(id=1)
         self.assertEqual(document.video, video)
         if FILEPICKER:
-            self.assertTrue(document.document.name, 'testfile')
+            self.assertTrue(document.document.name, "testfile")
         else:
-            self.assertTrue(document.document.name, 'testfile.txt')
+            self.assertTrue(document.document.name, "testfile.txt")
 
         print(" ---> test_attributs_full : OK ! --- DocumentModel")
 
@@ -166,41 +156,39 @@ class DocumentModelTestCase(TestCase):
 
 
 class OverlayModelTestCase(TestCase):
-    fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data.json",
+    ]
 
     def setUp(self):
-        owner = User.objects.create(username='test')
-        videotype = Type.objects.create(title='others')
+        owner = User.objects.create(username="test")
+        videotype = Type.objects.create(title="others")
         video = Video.objects.create(
-            title='video',
+            title="video",
             type=videotype,
             owner=owner,
-            video='test.mp4',
-            duration=10
+            video="test.mp4",
+            duration=10,
         )
         Overlay.objects.create(
             video=video,
-            title='overlay',
-            content='test',
+            title="overlay",
+            content="test",
             time_start=1,
             time_end=5,
-            position='top-left'
+            position="top-left",
         )
-        Overlay.objects.create(
-            video=video,
-            title='overlay2',
-            content='test'
-        )
+        Overlay.objects.create(video=video, title="overlay2", content="test")
 
     def test_attributs_full(self):
         overlay = Overlay.objects.get(id=1)
         video = Video.objects.get(id=1)
         self.assertEqual(overlay.video, video)
-        self.assertEqual(overlay.title, 'overlay')
-        self.assertEqual(overlay.content, 'test')
+        self.assertEqual(overlay.title, "overlay")
+        self.assertEqual(overlay.content, "test")
         self.assertEqual(overlay.time_start, 1)
         self.assertEqual(overlay.time_end, 5)
-        self.assertEqual(overlay.position, 'top-left')
+        self.assertEqual(overlay.position, "top-left")
 
         print(" ---> test_attributs_full : OK ! --- OverlayModel")
 
@@ -208,11 +196,11 @@ class OverlayModelTestCase(TestCase):
         overlay = Overlay.objects.get(id=2)
         video = Video.objects.get(id=1)
         self.assertEqual(overlay.video, video)
-        self.assertEqual(overlay.title, 'overlay2')
-        self.assertEqual(overlay.content, 'test')
+        self.assertEqual(overlay.title, "overlay2")
+        self.assertEqual(overlay.content, "test")
         self.assertEqual(overlay.time_start, 1)
         self.assertEqual(overlay.time_end, 2)
-        self.assertEqual(overlay.position, 'bottom-right')
+        self.assertEqual(overlay.position, "bottom-right")
         self.assertTrue(overlay.background)
 
         print(" ---> test_attributs : OK ! --- OverlayModel")
@@ -221,9 +209,9 @@ class OverlayModelTestCase(TestCase):
         video = Video.objects.get(id=1)
         overlay = Overlay()
         overlay.video = video
-        overlay.content = 'test'
+        overlay.content = "test"
         self.assertRaises(ValidationError, overlay.clean)
-        overlay.title = 't'
+        overlay.title = "t"
         self.assertRaises(ValidationError, overlay.clean)
 
         print(" ---> test_title : OK ! --- OverlayModel")
@@ -232,8 +220,8 @@ class OverlayModelTestCase(TestCase):
         video = Video.objects.get(id=1)
         overlay = Overlay()
         overlay.video = video
-        overlay.title = 'test'
-        overlay.content = 'test'
+        overlay.title = "test"
+        overlay.content = "test"
         overlay.time_start = 7
         overlay.time_end = 6
         self.assertRaises(ValidationError, overlay.clean)
@@ -248,8 +236,8 @@ class OverlayModelTestCase(TestCase):
         video = Video.objects.get(id=1)
         overlay = Overlay()
         overlay.video = video
-        overlay.title = 'test'
-        overlay.content = 'test'
+        overlay.title = "test"
+        overlay.content = "test"
         overlay.time_start = 2
         overlay.time_end = 3
         self.assertRaises(ValidationError, overlay.clean)
@@ -265,53 +253,42 @@ class OverlayModelTestCase(TestCase):
 
 
 class TrackModelTestCase(TestCase):
-    fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data.json",
+    ]
 
     def setUp(self):
-        owner = User.objects.create(username='test')
-        videotype = Type.objects.create(title='others')
+        owner = User.objects.create(username="test")
+        videotype = Type.objects.create(title="others")
         video = Video.objects.create(
-            title='video',
-            type=videotype,
-            owner=owner,
-            video='test.mp4'
+            title="video", type=videotype, owner=owner, video="test.mp4"
         )
         testfile = SimpleUploadedFile(
-            name='testfile.vtt',
-            content=open(
-                './pod/completion/tests/testfile.vtt', 'rb').read(),
-            content_type='text/plain')
+            name="testfile.vtt",
+            content=open("./pod/completion/tests/testfile.vtt", "rb").read(),
+            content_type="text/plain",
+        )
         if FILEPICKER:
-            home = UserFolder.objects.create(name='Home', owner=owner)
+            home = UserFolder.objects.create(name="Home", owner=owner)
             file = CustomFileModel.objects.create(
-                name='testfile',
+                name="testfile",
                 uploaded_at=datetime.now(),
                 created_by=owner,
                 folder=home,
-                file=testfile
+                file=testfile,
             )
         else:
-            file = CustomFileModel.objects.create(
-                file=testfile
-            )
-        Track.objects.create(
-            video=video,
-            lang='fr',
-            kind='captions',
-            src=file
-        )
-        Track.objects.create(
-            video=video,
-            lang='en'
-        )
+            file = CustomFileModel.objects.create(file=testfile)
+        Track.objects.create(video=video, lang="fr", kind="captions", src=file)
+        Track.objects.create(video=video, lang="en")
 
     def test_attributs_full(self):
         track = Track.objects.get(id=1)
         video = Video.objects.get(id=1)
         self.assertEqual(track.video, video)
-        self.assertEqual(track.lang, 'fr')
-        self.assertEqual(track.kind, 'captions')
-        self.assertTrue('testfile' in track.src.name)
+        self.assertEqual(track.lang, "fr")
+        self.assertEqual(track.kind, "captions")
+        self.assertTrue("testfile" in track.src.name)
         # self.assertEqual(track.src.name, 'testfile')
 
         print(" ---> test_attributs_full : OK ! --- TrackModel")
@@ -320,8 +297,8 @@ class TrackModelTestCase(TestCase):
         track = Track.objects.get(id=2)
         video = Video.objects.get(id=1)
         self.assertEqual(track.video, video)
-        self.assertEqual(track.lang, 'en')
-        self.assertEqual(track.kind, 'subtitles')
+        self.assertEqual(track.lang, "en")
+        self.assertEqual(track.kind, "subtitles")
         self.assertEqual(track.src, None)
 
         print(" ---> test_attributs : OK ! --- TrackModel")
@@ -330,12 +307,12 @@ class TrackModelTestCase(TestCase):
         track = Track.objects.get(id=1)
         track.kind = None
         self.assertRaises(ValidationError, track.clean)
-        track.kind = 'other'
+        track.kind = "other"
         self.assertRaises(ValidationError, track.clean)
-        track.kind = 'captions'
+        track.kind = "captions"
         track.lang = None
         self.assertRaises(ValidationError, track.clean)
-        track.lang = 'en'
+        track.lang = "en"
         track.src = None
         self.assertRaises(ValidationError, track.clean)
 
@@ -345,8 +322,8 @@ class TrackModelTestCase(TestCase):
         video = Video.objects.get(id=1)
         track = Track()
         track.video = video
-        track.kind = 'captions'
-        track.lang = 'en'
+        track.kind = "captions"
+        track.lang = "en"
         self.assertRaises(ValidationError, track.clean)
 
         print(" ---> test_same : OK ! --- TrackModel")

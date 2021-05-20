@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 from pod.main.models import Configuration
 
-SITE_ID = getattr(settings, 'SITE_ID', 1)
+SITE_ID = getattr(settings, "SITE_ID", 1)
 
 """
     test the flatepages
@@ -14,10 +14,8 @@ SITE_ID = getattr(settings, 'SITE_ID', 1)
 
 
 class FlatepageTestCase(TestCase):
-
     def setUp(self):
-        fp1 = FlatPage.objects.create(
-            title="Home", url="/")
+        fp1 = FlatPage.objects.create(title="Home", url="/")
         fp1.sites.add(Site.objects.get(id=SITE_ID))
         fp1.save()
         fp2 = FlatPage.objects.create(
@@ -26,7 +24,7 @@ class FlatepageTestCase(TestCase):
             title_fr="Accueil",
             title_en="Home",
             content_fr="<p>Bienvenue</p>\r\n",
-            content_en="<p>Welcome</p>\r\n"
+            content_en="<p>Welcome</p>\r\n",
         )
         fp2.sites.add(Site.objects.get(id=SITE_ID))
         fp2.save()
@@ -40,15 +38,18 @@ class FlatepageTestCase(TestCase):
     def test_Flatepage_null_attribut(self):
         flatPage = FlatPage.objects.get(url="/")
         self.assertQuerysetEqual(
-            flatPage.sites.all(), Site.objects.filter(id=SITE_ID),
-            transform=lambda x: x)
+            flatPage.sites.all(),
+            Site.objects.filter(id=SITE_ID),
+            transform=lambda x: x,
+        )
         self.assertEqual(flatPage.registration_required, False)
         self.assertEqual(flatPage.title, "Home")
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
         print(
             "   --->  test_Flatepage_null_attribut"
-            " of FlatepageTestCase : OK !")
+            " of FlatepageTestCase : OK !"
+        )
 
     """
         test attributs when a channel have many attributs
@@ -57,8 +58,10 @@ class FlatepageTestCase(TestCase):
     def test_Flatepage_with_attributs(self):
         flatPage = FlatPage.objects.get(url="/home/")
         self.assertQuerysetEqual(
-            flatPage.sites.all(), Site.objects.filter(id=SITE_ID),
-            transform=lambda x: x)
+            flatPage.sites.all(),
+            Site.objects.filter(id=SITE_ID),
+            transform=lambda x: x,
+        )
         self.assertEqual(flatPage.registration_required, False)
         self.assertEqual(flatPage.title, "Home")  # langage code : en
         self.assertEqual(flatPage.title_fr, "Accueil")
@@ -69,7 +72,8 @@ class FlatepageTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         print(
             "   --->  test_Flatepage_with_attributs"
-            " of FlatepageTestCase : OK !")
+            " of FlatepageTestCase : OK !"
+        )
 
     """
         test delete object
@@ -80,12 +84,13 @@ class FlatepageTestCase(TestCase):
         FlatPage.objects.get(id=2).delete()
         self.assertEqual(FlatPage.objects.all().count(), 0)
 
-        print(
-            "   --->  test_delete_object of ChannelTestCase : OK !")
+        print("   --->  test_delete_object of ChannelTestCase : OK !")
 
 
 class ConfigurationTestCase(TestCase):
-    fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data.json",
+    ]
 
     def setUp(self):
         print(" --->  SetUp of ConfigurationTestCase : OK !")
@@ -97,18 +102,17 @@ class ConfigurationTestCase(TestCase):
     def test_exist(self):
         maintenance_conf = Configuration.objects.filter(key="maintenance_mode")
         self.assertTrue(maintenance_conf.exists())
-        print(
-            "   --->  test_exist of ConfigurationTestCase : OK !")
+        print("   --->  test_exist of ConfigurationTestCase : OK !")
 
     def test_attributs(self):
         conf = Configuration.objects.get(key="maintenance_mode")
         self.assertEqual(conf.key, "maintenance_mode")
         self.assertEqual(conf.value, "0")
         self.assertEqual(
-            conf.description, "Activation of maintenance mode or not")
+            conf.description, "Activation of maintenance mode or not"
+        )
 
-        print(
-            "   --->  test_attributs of ConfigurationTestCase : OK !")
+        print("   --->  test_attributs of ConfigurationTestCase : OK !")
 
     """
         test delete object
@@ -116,9 +120,8 @@ class ConfigurationTestCase(TestCase):
 
     def test_delete_object(self):
         Configuration.objects.filter(key="maintenance_mode").delete()
-        self.assertEquals(Configuration.objects.filter(
-            key="maintenance_mode").count(), 0)
+        self.assertEquals(
+            Configuration.objects.filter(key="maintenance_mode").count(), 0
+        )
 
-        print(
-            "--->  test_delete_object of ConfigurationTestCase : OK "
-            "!")
+        print("--->  test_delete_object of ConfigurationTestCase : OK " "!")

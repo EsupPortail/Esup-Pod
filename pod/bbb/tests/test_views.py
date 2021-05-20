@@ -11,7 +11,9 @@ from django.utils import timezone
 
 
 class MeetingViewsTestCase(TestCase):
-    fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data.json",
+    ]
 
     def setUp(self):
         meeting1 = Meeting.objects.create(
@@ -21,7 +23,8 @@ class MeetingViewsTestCase(TestCase):
             meeting_name="Session BBB1",
             recorded=True,
             recording_available=True,
-            encoding_step=0)
+            encoding_step=0,
+        )
         userJohnDoe = User.objects.create(username="pod")
         Attendee.objects.create(
             id=1,
@@ -29,7 +32,8 @@ class MeetingViewsTestCase(TestCase):
             role="MODERATOR",
             username="pod",
             meeting=meeting1,
-            user=userJohnDoe)
+            user=userJohnDoe,
+        )
         print(" --->  SetUp of MeetingViewsTestCase : OK !")
 
     def test_list_meeting(self):
@@ -46,8 +50,7 @@ class MeetingViewsTestCase(TestCase):
         self.assertTrue(b"Session BBB1" in response.content)
         self.assertEqual(response.status_code, 200)
 
-        print(
-            "   --->  test_list_meeting of MeetingViewsTestCase : OK !")
+        print("   --->  test_list_meeting of MeetingViewsTestCase : OK !")
 
     def test_publish_meeting(self):
         self.client = Client()
@@ -64,12 +67,13 @@ class MeetingViewsTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
         else:
             self.assertEqual(response.status_code, 301)
-        print(
-            "   --->  test_publish_meeting of MeetingViewsTestCase : OK !")
+        print("   --->  test_publish_meeting of MeetingViewsTestCase : OK !")
 
 
 class LivestreamViewsTestCase(TestCase):
-    fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data.json",
+    ]
 
     def setUp(self):
         meeting1 = Meeting.objects.create(
@@ -78,7 +82,8 @@ class LivestreamViewsTestCase(TestCase):
             internal_meeting_id="internalid1",
             meeting_name="Session BBB1",
             session_date=timezone.now(),
-            encoding_step=0)
+            encoding_step=0,
+        )
         userJohnDoe = User.objects.create(username="john.doe")
         Attendee.objects.create(
             id=1,
@@ -86,14 +91,16 @@ class LivestreamViewsTestCase(TestCase):
             role="MODERATOR",
             username="john.doe",
             meeting=meeting1,
-            user=userJohnDoe)
+            user=userJohnDoe,
+        )
 
         Livestream.objects.create(
             id=1,
             start_date=timezone.now(),
             meeting=meeting1,
             status=0,
-            user=userJohnDoe)
+            user=userJohnDoe,
+        )
         print(" --->  SetUp of LivestreamViewsTestCase : OK !")
 
     def test_live_list_meeting(self):
@@ -111,7 +118,8 @@ class LivestreamViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         print(
-            "   ---> test_live_list_meeting of LivestreamViewsTestCase : OK !")
+            "   ---> test_live_list_meeting of LivestreamViewsTestCase : OK !"
+        )
 
     def test_live_publish_meeting(self):
         self.client = Client()
@@ -129,4 +137,5 @@ class LivestreamViewsTestCase(TestCase):
         else:
             self.assertEqual(response.status_code, 301)
         print(
-            "   ---> test_live_publish_meeting of LivestreamViewsTestCase:OK!")
+            "   ---> test_live_publish_meeting of LivestreamViewsTestCase:OK!"
+        )

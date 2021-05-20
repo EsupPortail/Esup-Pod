@@ -7,7 +7,7 @@ register = template.Library()
 parser = HTMLParser()
 
 
-@register.filter(name='metaformat')
+@register.filter(name="metaformat")
 def metaformat(content):
     """
         Meta tag content text formatter
@@ -20,9 +20,9 @@ def metaformat(content):
     Returns:
         content (str):  the cleaned string
     """
-    content = re.sub(r'\s\s+', " ", parser.unescape(content))
+    content = re.sub(r"\s\s+", " ", parser.unescape(content))
     toReplace = {
-        '&#39;': "'",
+        "&#39;": "'",
         '"': "'",
     }
     for bad, good in toReplace.items():

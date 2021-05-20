@@ -15,22 +15,18 @@ from pod.video import encode
 from pod.enrichment.models import Enrichment
 from ..models import Recording
 
-DEFAULT_RECORDER_TYPE_ID = getattr(
-    settings, 'DEFAULT_RECORDER_TYPE_ID',
-    1
+DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
+
+ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
+
+RECORDER_SKIP_FIRST_IMAGE = getattr(
+    settings, "RECORDER_SKIP_FIRST_IMAGE", False
 )
 
-ENCODE_VIDEO = getattr(settings,
-                       'ENCODE_VIDEO',
-                       "start_encode")
-
-RECORDER_SKIP_FIRST_IMAGE = getattr(settings,
-                                    'RECORDER_SKIP_FIRST_IMAGE',
-                                    False)
-
-if getattr(settings, 'USE_PODFILE', False):
+if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import UserFolder
+
     FILEPICKER = True
 else:
     FILEPICKER = False
@@ -41,8 +37,7 @@ log = logging.getLogger(__name__)
 
 def process(recording):
     log.info("START PROCESS OF RECORDING %s" % recording)
-    t = threading.Thread(target=encode_recording,
-                         args=[recording])
+    t = threading.Thread(target=encode_recording, args=[recording])
     t.setDaemon(True)
     t.start()
 
@@ -63,7 +58,8 @@ def save_video(recording, video_data, video_src):
     video.video.save(
         "record_" + slugify(recording.title) + ext,
         ContentFile(video_data),
-        save=False)
+        save=False,
+    )
     # on recupere le nom du fichier sur le serveur
     video.title = recording.title
     video.save()
@@ -74,7 +70,8 @@ def save_video(recording, video_data, video_src):
     # Accès restreint (eventuellement à des groupes ou par mot de passe)
     video.is_restricted = recorder.is_restricted
     video.restrict_access_to_groups.add(
-        *recorder.restrict_access_to_groups.all())
+        *recorder.restrict_access_to_groups.all()
+    )
     video.password = recorder.password
     # on ajoute les eventuelles chaines
     video.channel.add(*recorder.channel.all())
@@ -89,7 +86,7 @@ def save_video(recording, video_data, video_src):
     # mot clefs
     video.tags = recorder.tags
     # transcript
-    if getattr(settings, 'USE_TRANSCRIPTION', False):
+    if getattr(settings, "USE_TRANSCRIPTION", False):
         video.transcript = recorder.transcript
     # Licence
     video.licence = recorder.licence
@@ -110,40 +107,37 @@ def save_video(recording, video_data, video_src):
 
 def save_slide(data, filename, video, enrichment, recording):
     if len(data):
-        slide_name, ext = os.path.splitext(
-            os.path.basename(filename))
+        slide_name, ext = os.path.splitext(os.path.basename(filename))
         if FILEPICKER:
             homedir, created = UserFolder.objects.get_or_create(
-                name='home',
-                owner=video.owner)
+                name="home", owner=video.owner
+            )
             videodir, created = UserFolder.objects.get_or_create(
-                name='%s' % video.slug,
-                owner=video.owner)
+                name="%s" % video.slug, owner=video.owner
+            )
             previousImage = CustomImageModel.objects.filter(
-                name__startswith=slugify(
-                    video.title + "_" + slide_name),
+                name__startswith=slugify(video.title + "_" + slide_name),
                 folder=videodir,
-                created_by=video.owner
+                created_by=video.owner,
             )
             for img in previousImage:
                 img.delete()
-            image = CustomImageModel(
-                folder=videodir,
-                created_by=video.owner
-            )
+            image = CustomImageModel(folder=videodir, created_by=video.owner)
             image.file.save(
                 slugify(video.title + "_" + slide_name) + ext,
                 ContentFile(data),
-                save=True)
+                save=True,
+            )
             image.save()
         else:
             image = CustomImageModel()
             image.file.save(
                 slugify(video.title + "_" + slide_name) + ext,
                 ContentFile(data),
-                save=True)
+                save=True,
+            )
             image.save()
-        enrichment.type = 'image'
+        enrichment.type = "image"
         enrichment.image = image
         enrichment.save()
     else:
@@ -157,17 +151,17 @@ def save_enrichment(video, list_node_img, recording, media_name, zip):
     start_img = 1 if RECORDER_SKIP_FIRST_IMAGE else 0
     for item in list_node_img[start_img:]:  # skip the first
         i += 1
-        add_comment(recording.id, ">> ITEM %s: %s" %
-                    (i, item.getAttribute("src")))
-        filename = media_name + \
-            "/%s" % item.getAttribute("src")
+        add_comment(
+            recording.id, ">> ITEM %s: %s" % (i, item.getAttribute("src"))
+        )
+        filename = media_name + "/%s" % item.getAttribute("src")
         timecode = float("%s" % item.getAttribute("begin"))
         timecode = int(round(timecode))
         add_comment(recording.id, ">> timecode %s" % timecode)
         # Enrichment
         enrichment = Enrichment.objects.create(
             video=video,
-            title='slide %s' % i,
+            title="slide %s" % i,
             start=timecode,
             end=timecode + 1,
             stop_video=False,
@@ -176,26 +170,23 @@ def save_enrichment(video, list_node_img, recording, media_name, zip):
         data = zip.read(filename)
         save_slide(data, filename, video, enrichment, recording)
         if previousEnrichment is not None:
-            previousEnrichment.end = timecode - 1 if (
-                timecode - 1 > 0) else previousEnrichment.end
+            previousEnrichment.end = (
+                timecode - 1 if (timecode - 1 > 0) else previousEnrichment.end
+            )
             previousEnrichment.save()
         previousEnrichment = enrichment
 
     video = Video.objects.get(id=video.id)
-    if (previousEnrichment is not None
-            and video.duration
-            and video.duration > 0):
+    if previousEnrichment is not None and video.duration and video.duration > 0:
         previousEnrichment.end = video.duration
         previousEnrichment.save()
 
 
 def get_video_source(xmldoc):
     if xmldoc.getElementsByTagName("audio"):
-        return xmldoc.getElementsByTagName(
-            "audio").item(0).getAttribute("src")
+        return xmldoc.getElementsByTagName("audio").item(0).getAttribute("src")
     if xmldoc.getElementsByTagName("video"):
-        return xmldoc.getElementsByTagName(
-            "video").item(0).getAttribute("src")
+        return xmldoc.getElementsByTagName("video").item(0).getAttribute("src")
     return None
 
 
@@ -214,13 +205,12 @@ def open_zipfile(recording):
 def encode_recording(recording):
     recording.comment = ""
     recording.save()
-    add_comment(recording.id, 'Start at %s\n--\n' % datetime.datetime.now())
+    add_comment(recording.id, "Start at %s\n--\n" % datetime.datetime.now())
     zip = open_zipfile(recording)
     if zip == -1:
         return -1
 
-    media_name, ext = os.path.splitext(
-        os.path.basename(recording.source_file))
+    media_name, ext = os.path.splitext(os.path.basename(recording.source_file))
     add_comment(recording.id, "> media name %s" % media_name)
     try:
         smil = zip.open(media_name + "/cours.smil")
@@ -250,5 +240,5 @@ def encode_recording(recording):
         zip.close()
         return -1
     zip.close()
-    add_comment(recording.id, 'End processing zip file')
-    os.rename(recording.source_file, recording.source_file+"_treated")
+    add_comment(recording.id, "End processing zip file")
+    os.rename(recording.source_file, recording.source_file + "_treated")

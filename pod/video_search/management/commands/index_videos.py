@@ -9,22 +9,23 @@ import time
 
 
 class Command(BaseCommand):
-    args = '--all or -id <video_id video_id ...>'
-    help = 'Indexes the specified video in Elasticsearch.'
+    args = "--all or -id <video_id video_id ...>"
+    help = "Indexes the specified video in Elasticsearch."
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-id', '--video_id', nargs='+', type=int, dest="video_id")
+            "-id", "--video_id", nargs="+", type=int, dest="video_id"
+        )
         parser.add_argument(
-            '--all',
-            action='store_true',
-            dest='all',
-            help='index all video',
+            "--all",
+            action="store_true",
+            dest="all",
+            help="index all video",
         )
 
     def handle(self, *args, **options):
         translation.activate(settings.LANGUAGE_CODE)
-        if options['all']:
+        if options["all"]:
             delete_index_es()
             time.sleep(10)
             create_index_es()
@@ -35,14 +36,16 @@ class Command(BaseCommand):
                     time.sleep(10)
                 iteration += 1
                 index_es(video)
-        elif options['video_id']:
-            for video_id in options['video_id']:
+        elif options["video_id"]:
+            for video_id in options["video_id"]:
                 self.manage_es(video_id)
         else:
             self.stdout.write(
                 self.style.ERROR(
                     "****** Warning: you must give some arguments: %s ******"
-                    % self.args))
+                    % self.args
+                )
+            )
         translation.deactivate()
 
     def manage_es(self, video_id):
@@ -52,12 +55,12 @@ class Command(BaseCommand):
                 index_es(video)
                 self.stdout.write(
                     self.style.SUCCESS(
-                        'Successfully index Video "%s"' % video_id)
+                        'Successfully index Video "%s"' % video_id
+                    )
                 )
             else:
                 delete_es(video)
         except Video.DoesNotExist:
             self.stdout.write(
-                self.style.ERROR(
-                    'Video "%s" does not exist' % video_id)
+                self.style.ERROR('Video "%s" does not exist' % video_id)
             )
