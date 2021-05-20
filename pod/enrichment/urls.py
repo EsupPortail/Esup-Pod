@@ -6,9 +6,7 @@ from .views import group_enrichment
 app_name = "enrichment"
 
 urlpatterns = [
-    url(
-        r"^edit/(?P<slug>[\-\d\w]+)/$", edit_enrichment, name="edit_enrichment"
-    ),
+    url(r"^edit/(?P<slug>[\-\d\w]+)/$", edit_enrichment, name="edit_enrichment"),
     url(
         r"^group/(?P<slug>[\-\d\w]+)/$",
         group_enrichment,

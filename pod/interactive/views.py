@@ -21,9 +21,7 @@ from django.contrib.sites.shortcuts import get_current_site
 @staff_member_required(redirect_field_name="referrer")
 def group_interactive(request, slug):
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
-    interactiveGroup, created = InteractiveGroup.objects.get_or_create(
-        video=video
-    )
+    interactiveGroup, created = InteractiveGroup.objects.get_or_create(video=video)
     if (
         request.user != video.owner
         and not request.user.is_superuser
@@ -54,10 +52,7 @@ def check_interactive_group(request, video):
     if not hasattr(video, "interactivegroup"):
         return False
     if not request.user.groups.filter(
-        name__in=[
-            name[0]
-            for name in video.interactivegroup.groups.values_list("name")
-        ]
+        name__in=[name[0] for name in video.interactivegroup.groups.values_list("name")]
     ).exists():
         return False
 
@@ -101,9 +96,7 @@ def edit_interactive(request, slug):
 
 
 @csrf_protect
-def video_interactive(
-    request, slug, slug_c=None, slug_t=None, slug_private=None
-):
+def video_interactive(request, slug, slug_c=None, slug_t=None, slug_private=None):
     try:
         id = int(slug[: slug.find("-")])
     except ValueError:

@@ -50,9 +50,7 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     },
 )
 
-DEFAULT_RECORDER_PATH = getattr(
-    settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/"
-)
+DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")
 
 USE_CAS = getattr(settings, "USE_CAS", False)
 USE_SHIB = getattr(settings, "USE_SHIB", False)
@@ -61,9 +59,7 @@ TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, "TITLE_SITE", "Pod")
 
 def check_recorder(recorder, request):
     if recorder is None:
-        messages.add_message(
-            request, messages.ERROR, _("Recorder should be indicated.")
-        )
+        messages.add_message(request, messages.ERROR, _("Recorder should be indicated."))
         raise PermissionDenied
     try:
         recorder = Recorder.objects.get(id=recorder)
@@ -98,13 +94,9 @@ def fetch_user(request, form):
 def add_recording(request):
     if in_maintenance():
         return redirect(reverse("maintenance"))
-    mediapath = (
-        request.GET.get("mediapath") if (request.GET.get("mediapath")) else ""
-    )
+    mediapath = request.GET.get("mediapath") if (request.GET.get("mediapath")) else ""
     course_title = (
-        request.GET.get("course_title")
-        if request.GET.get("course_title")
-        else ""
+        request.GET.get("course_title") if request.GET.get("course_title") else ""
     )
     recorder = request.GET.get("recorder") or None
 
@@ -118,18 +110,13 @@ def add_recording(request):
     }
 
     if not mediapath and not (
-        request.user.is_superuser
-        or request.user.has_perm("recorder.add_recording")
+        request.user.is_superuser or request.user.has_perm("recorder.add_recording")
     ):
-        messages.add_message(
-            request, messages.ERROR, _("Mediapath should be indicated.")
-        )
+        messages.add_message(request, messages.ERROR, _("Mediapath should be indicated."))
         raise PermissionDenied
 
     if mediapath != "":
-        initial["source_file"] = "%s" % os.path.join(
-            DEFAULT_RECORDER_PATH, mediapath
-        )
+        initial["source_file"] = "%s" % os.path.join(DEFAULT_RECORDER_PATH, mediapath)
 
     form = RecordingForm(request, initial=initial)
 
@@ -209,9 +196,7 @@ def recorder_notify(request):
         if recorder:
             # Generate hashkey
             m = hashlib.md5()
-            m.update(
-                recording_place.encode("utf-8") + recorder.salt.encode("utf-8")
-            )
+            m.update(recording_place.encode("utf-8") + recorder.salt.encode("utf-8"))
             if key != m.hexdigest():
                 return HttpResponse("nok : key is not valid")
 
@@ -257,9 +242,9 @@ def recorder_notify(request):
             if recorder.user:
                 admin_emails = [recorder.user.email]
             else:
-                admin_emails = User.objects.filter(
-                    is_superuser=True
-                ).values_list("email", flat=True)
+                admin_emails = User.objects.filter(is_superuser=True).values_list(
+                    "email", flat=True
+                )
             subject = "[" + TITLE_SITE + "] %s" % _("New recording added.")
             # Send the mail to the managers or admins (if not found)
             email_msg = EmailMultiAlternatives(
@@ -271,13 +256,10 @@ def recorder_notify(request):
             return HttpResponse("ok")
         else:
             return HttpResponse(
-                "nok : address_ip not valid or "
-                "recorder not found in this site"
+                "nok : address_ip not valid or " "recorder not found in this site"
             )
     else:
-        return HttpResponse(
-            "nok : recordingPlace or mediapath or key are " "missing"
-        )
+        return HttpResponse("nok : recordingPlace or mediapath or key are " "missing")
 
 
 @csrf_protect
@@ -288,16 +270,10 @@ def claim_record(request):
         return redirect(reverse("maintenance"))
     site = get_current_site(request)
     # get records list ordered by date
-    records_list = RecordingFileTreatment.objects.filter(
-        require_manual_claim=True
-    )
+    records_list = RecordingFileTreatment.objects.filter(require_manual_claim=True)
 
     records_list = records_list.exclude(
-        pk__in=[
-            rec.id
-            for rec in records_list
-            if site not in rec.recorder.sites.all()
-        ]
+        pk__in=[rec.id for rec in records_list if site not in rec.recorder.sites.all()]
     )
 
     records_list = records_list.order_by("-date_added")

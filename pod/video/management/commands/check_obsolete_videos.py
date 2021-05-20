@@ -75,9 +75,7 @@ class Command(BaseCommand):
             self.notify_manager_of_deleted_video(list_video_to_delete)
             self.notify_manager_of_archived_video(list_video_to_archive)
         else:
-            self.stderr.write(
-                self.style.ERROR(_("An Error occurred while processing "))
-            )
+            self.stderr.write(self.style.ERROR(_("An Error occurred while processing ")))
             raise CommandError(_("USE_OBSOLESCENCE is FALSE"))
 
     def get_video_treatment_and_notify_user(self):
@@ -94,8 +92,7 @@ class Command(BaseCommand):
                 if (
                     USE_ESTABLISHMENT
                     and MANAGERS
-                    and video.owner.owner.establishment.lower()
-                    in dict(MANAGERS)
+                    and video.owner.owner.establishment.lower() in dict(MANAGERS)
                 ):
                     list_video_notified_by_establishment.setdefault(
                         video.owner.owner.establishment.lower(), {}
@@ -401,9 +398,7 @@ class Command(BaseCommand):
                 "Video title",
                 "Video URL",
             ]
-            writer = csv.DictWriter(
-                csvfile, delimiter=";", fieldnames=fieldnames
-            )
+            writer = csv.DictWriter(csvfile, delimiter=";", fieldnames=fieldnames)
             if not exists:
                 writer.writeheader()
             writer.writerow(

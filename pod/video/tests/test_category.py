@@ -63,14 +63,10 @@ class TestCategory(TestCase):
             video="testvideo2category.mp4",
             type=self.t1,
         )
-        self.cat_1 = Category.objects.create(
-            title="testCategory", owner=self.owner_user
-        )
+        self.cat_1 = Category.objects.create(title="testCategory", owner=self.owner_user)
         self.cat_1.video.add(self.video)
         self.cat_1.save()
-        self.cat_2 = Category.objects.create(
-            title="test2Category", owner=self.owner_user
-        )
+        self.cat_2 = Category.objects.create(title="test2Category", owner=self.owner_user)
         self.cat_3 = Category.objects.create(
             title="test3Category", owner=self.simple_user
         )
@@ -114,8 +110,7 @@ class TestCategory(TestCase):
                             "is_video": self.video.is_video,
                             "is_draft": self.video.is_draft,
                             "is_restricted": self.video.is_restricted,
-                            "has_chapter": self.video.chapter_set.all().count()
-                            > 0,
+                            "has_chapter": self.video.chapter_set.all().count() > 0,
                             "has_password": bool(self.video.password),
                         }
                     ],
@@ -172,12 +167,8 @@ class TestCategory(TestCase):
 
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 200)
-        self.assertCountEqual(
-            list(actual_data.keys()), list(expected_data.keys())
-        )
-        self.assertCountEqual(
-            list(actual_data.values()), list(expected_data.values())
-        )
+        self.assertCountEqual(list(actual_data.keys()), list(expected_data.keys()))
+        self.assertCountEqual(list(actual_data.values()), list(expected_data.values()))
 
         # GET category as additional owner
         # Ajax request, should return HttpResponse:200 with one category
@@ -296,13 +287,9 @@ class TestCategory(TestCase):
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.status_code, 200)
         self.assertTrue(actual_data["success"])
-        self.assertEqual(
-            actual_data["category"]["title"], expected_data["title"]
-        )
+        self.assertEqual(actual_data["category"]["title"], expected_data["title"])
         self.assertEqual(actual_data["category"]["slug"], expected_data["slug"])
-        self.assertCountEqual(
-            actual_data["category"]["videos"], expected_data["videos"]
-        )
+        self.assertCountEqual(actual_data["category"]["videos"], expected_data["videos"])
 
         # Add video in another category
         # should return HttpResponseBadRequest:400

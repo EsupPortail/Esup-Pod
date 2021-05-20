@@ -31,11 +31,7 @@ def add_users_to_group(group, existing_group):
             try:
                 owner = Owner.objects.get(user__username=user)
                 if owner in existing_group.users.all():
-                    print(
-                        '----> User with username "'
-                        + user
-                        + '" is already in group'
-                    )
+                    print('----> User with username "' + user + '" is already in group')
                 else:
                     print('----> Adding "' + user + '" to the group')
                     existing_group.users.add(owner)
@@ -50,11 +46,7 @@ def remove_users_to_group(group, existing_group):
             try:
                 owner = Owner.objects.get(user__username=user)
                 if owner not in existing_group.users.all():
-                    print(
-                        '----> User with username "'
-                        + user
-                        + '" is not in group'
-                    )
+                    print('----> User with username "' + user + '" is not in group')
                 else:
                     print('----> Removing "' + user + '" to the group')
                     existing_group.users.remove(owner)
@@ -91,9 +83,7 @@ def command_import_json(options):
 def command_migrate_groups(options):
     for group in Group.objects.all():
         if AccessGroup.objects.filter(id=group.id).exists():
-            print(
-                '-> AccessGroup with id "' + str(group.id) + '" already exists.'
-            )
+            print('-> AccessGroup with id "' + str(group.id) + '" already exists.')
         else:
             AccessGroup.objects.create(
                 code_name=group.name, id=group.id, display_name=group.name
@@ -129,7 +119,4 @@ class Command(BaseCommand):
                 command_migrate_groups(options)
 
         else:
-            print(
-                "*** Warning: you must give some arguments: %s ***"
-                % self.valid_args
-            )
+            print("*** Warning: you must give some arguments: %s ***" % self.valid_args)

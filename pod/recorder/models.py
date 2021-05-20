@@ -71,13 +71,12 @@ LICENCE_CHOICES = getattr(
 def select_recorder_user():
     if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY:
         return lambda q: (
-            Q(is_staff=True)
-            & (Q(first_name__icontains=q) | Q(last_name__icontains=q))
+            Q(is_staff=True) & (Q(first_name__icontains=q) | Q(last_name__icontains=q))
         ) & Q(owner__sites=Site.objects.get_current())
     else:
-        return lambda q: (
-            Q(first_name__icontains=q) | Q(last_name__icontains=q)
-        ) & Q(owner__sites=Site.objects.get_current())
+        return lambda q: (Q(first_name__icontains=q) | Q(last_name__icontains=q)) & Q(
+            owner__sites=Site.objects.get_current()
+        )
 
 
 RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
@@ -92,9 +91,7 @@ RECORDER_TYPE = getattr(
         ("audiovideocast", _("Audiovideocast")),
     ),
 )
-DEFAULT_RECORDER_PATH = getattr(
-    settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/"
-)
+DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")
 DEFAULT_RECORDER_USER_ID = getattr(settings, "DEFAULT_RECORDER_USER_ID", 1)
 DEFAULT_RECORDER_ID = getattr(settings, "DEFAULT_RECORDER_ID", 1)
 PUBLIC_RECORD_DIR = getattr(settings, "PUBLIC_RECORD_DIR", "records")
@@ -104,9 +101,7 @@ class Recorder(models.Model):
     # Recorder name
     name = models.CharField(_("name"), max_length=200, unique=True)
     # Description of the recorder
-    description = RichTextField(
-        _("description"), config_name="complete", blank=True
-    )
+    description = RichTextField(_("description"), config_name="complete", blank=True)
     # IP address of the recorder
     address_ip = models.GenericIPAddressField(
         _("Address IP"), unique=True, help_text=_("IP address of the recorder.")
@@ -182,9 +177,7 @@ class Recorder(models.Model):
     )
     password = models.CharField(
         _("password"),
-        help_text=_(
-            "Viewing this video will not be possible without this password."
-        ),
+        help_text=_("Viewing this video will not be possible without this password."),
         max_length=50,
         blank=True,
         null=True,
@@ -194,9 +187,7 @@ class Recorder(models.Model):
         max_length=1,
         choices=CURSUS_CODES,
         default="0",
-        help_text=_(
-            "Select an university course as " "audience target of the content."
-        ),
+        help_text=_("Select an university course as " "audience target of the content."),
     )
     main_lang = models.CharField(
         _("Main language"),
@@ -209,8 +200,7 @@ class Recorder(models.Model):
         _("Transcript"),
         default=False,
         help_text=_(
-            "Check this box if you want to transcript the audio."
-            "(beta version)"
+            "Check this box if you want to transcript the audio." "(beta version)"
         ),
     )
     tags = TagField(
@@ -238,23 +228,18 @@ class Recorder(models.Model):
         verbose_name=_("Themes"),
         blank=True,
         help_text=_(
-            'Hold down "Control", or "Command" '
-            "on a Mac, to select more than one."
+            'Hold down "Control", or "Command" ' "on a Mac, to select more than one."
         ),
     )
     allow_downloading = models.BooleanField(
         _("allow downloading"),
         default=False,
-        help_text=_(
-            "Check this box if you to allow downloading " "of the encoded files"
-        ),
+        help_text=_("Check this box if you to allow downloading " "of the encoded files"),
     )
     is_360 = models.BooleanField(
         _("video 360"),
         default=False,
-        help_text=_(
-            "Check this box if you want to use the 360 player " "for the video"
-        ),
+        help_text=_("Check this box if you want to use the 360 player " "for the video"),
     )
     disable_comment = models.BooleanField(
         _("Disable comment"),
@@ -267,9 +252,7 @@ class Recorder(models.Model):
         _("Publication directory"),
         max_length=50,
         unique=True,
-        help_text=_(
-            "Basic directory containing the videos published by the recorder."
-        ),
+        help_text=_("Basic directory containing the videos published by the recorder."),
     )
     sites = models.ManyToManyField(Site)
 
@@ -323,9 +306,7 @@ class Recording(models.Model):
         path=DEFAULT_RECORDER_PATH, unique=True, recursive=True
     )
     comment = models.TextField(_("Comment"), blank=True, default="")
-    date_added = models.DateTimeField(
-        "date added", default=timezone.now, editable=False
-    )
+    date_added = models.DateTimeField("date added", default=timezone.now, editable=False)
 
     @property
     def sites(self):
@@ -363,9 +344,7 @@ class Recording(models.Model):
 @receiver(post_save, sender=Recording)
 def process_recording(sender, instance, created, **kwargs):
     if created and os.path.exists(instance.source_file):
-        mod = importlib.import_module(
-            "%s.plugins.type_%s" % (__package__, instance.type)
-        )
+        mod = importlib.import_module("%s.plugins.type_%s" % (__package__, instance.type))
         mod.process(instance)
 
 
@@ -390,16 +369,13 @@ class RecordingFileTreatment(models.Model):
     require_manual_claim = models.BooleanField(
         _("Require manual claim?"),
         default=False,
-        help_text=_(
-            "Has this recording file " "require a manual claim " "by a user?"
-        ),
+        help_text=_("Has this recording file " "require a manual claim " "by a user?"),
     )
     email_sent = models.BooleanField(
         _("Email sent?"),
         default=False,
         help_text=_(
-            "Has an email been sent to the "
-            "manager of the concerned recorder?"
+            "Has an email been sent to the " "manager of the concerned recorder?"
         ),
     )
     date_email_sent = models.DateTimeField(

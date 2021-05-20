@@ -42,8 +42,7 @@ def video_caption_maker(request, slug):
     if (
         request.user != video.owner
         and not (
-            request.user.is_superuser
-            or request.user.has_perm("completion.add_track")
+            request.user.is_superuser or request.user.has_perm("completion.add_track")
         )
         and (request.user not in video.additional_owners.all())
     ):
@@ -78,9 +77,7 @@ def video_caption_maker_save(request, video):
         cur_folder = get_current_session_folder(request)
         response = file_edit_save(request, cur_folder)
         if b"list_element" in response.content:
-            messages.add_message(
-                request, messages.INFO, _(u"The file has been saved.")
-            )
+            messages.add_message(request, messages.INFO, _(u"The file has been saved."))
         else:
             messages.add_message(
                 request, messages.WARNING, _(u"The file has not been saved.")
@@ -230,13 +227,8 @@ def video_completion_contributor_save(request, video):
     list_overlay = video.overlay_set.all()
 
     form_contributor = None
-    if (
-        request.POST.get("contributor_id")
-        and request.POST["contributor_id"] != "None"
-    ):
-        contributor = get_object_or_404(
-            Contributor, id=request.POST["contributor_id"]
-        )
+    if request.POST.get("contributor_id") and request.POST["contributor_id"] != "None":
+        contributor = get_object_or_404(Contributor, id=request.POST["contributor_id"])
         form_contributor = ContributorForm(request.POST, instance=contributor)
     else:
         form_contributor = ContributorForm(request.POST)
@@ -424,10 +416,7 @@ def video_completion_document_save(request, video):
     list_track = video.track_set.all()
     list_overlay = video.overlay_set.all()
     form_document = DocumentForm(request.POST)
-    if (
-        request.POST.get("document_id")
-        and request.POST["document_id"] != "None"
-    ):
+    if request.POST.get("document_id") and request.POST["document_id"] != "None":
         document = get_object_or_404(Document, id=request.POST["document_id"])
         form_document = DocumentForm(request.POST, instance=document)
     else:
@@ -766,17 +755,13 @@ def transform_url_to_link(text):
                 if "http://" in url[0] or "https://" in url[0]:
                     text = re.sub(
                         re.compile(r"\s" + re.escape(url[0])).pattern,
-                        " <a href='{0}' target='_blank'>{1}</a>".format(
-                            url[0], url[0]
-                        ),
+                        " <a href='{0}' target='_blank'>{1}</a>".format(url[0], url[0]),
                         text,
                     )
                 else:
                     text = re.sub(
                         re.compile(r"\s" + re.escape(url[0])).pattern,
-                        " <a href='//{0}' target='_blank'>{1}</a>".format(
-                            url[0], url[0]
-                        ),
+                        " <a href='//{0}' target='_blank'>{1}</a>".format(url[0], url[0]),
                         text,
                     )
     return text.strip()

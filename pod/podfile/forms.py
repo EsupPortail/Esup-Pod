@@ -91,9 +91,7 @@ class CustomFileModelForm(forms.ModelForm):
         self.fields["file"].validators = [valid_ext, FileSizeValidator]
         self.fields["file"].widget.attrs["class"] = self.fileattrs["class"]
         self.fields["file"].widget.attrs["accept"] = self.fileattrs["accept"]
-        self.fields["file"].widget.attrs["data-maxsize"] = self.fileattrs[
-            "data-maxsize"
-        ]
+        self.fields["file"].widget.attrs["data-maxsize"] = self.fileattrs["data-maxsize"]
 
     class Meta:
         model = CustomFileModel
@@ -114,9 +112,7 @@ class CustomImageModelForm(forms.ModelForm):
         self.fields["file"].validators = [valid_ext, FileSizeValidator]
         self.fields["file"].widget.attrs["class"] = self.fileattrs["class"]
         self.fields["file"].widget.attrs["accept"] = self.fileattrs["accept"]
-        self.fields["file"].widget.attrs["data-maxsize"] = self.fileattrs[
-            "data-maxsize"
-        ]
+        self.fields["file"].widget.attrs["data-maxsize"] = self.fileattrs["data-maxsize"]
 
     class Meta:
         model = CustomImageModel

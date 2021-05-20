@@ -47,9 +47,7 @@ class BroadcasterAdminForm(forms.ModelForm):
 
 
 class LivePasswordForm(forms.Form):
-    password = forms.CharField(
-        label=_("Password"), widget=forms.PasswordInput()
-    )
+    password = forms.CharField(label=_("Password"), widget=forms.PasswordInput())
 
     def __init__(self, *args, **kwargs):
         super(LivePasswordForm, self).__init__(*args, **kwargs)

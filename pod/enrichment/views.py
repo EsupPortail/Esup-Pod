@@ -27,9 +27,7 @@ ACTION = ["new", "save", "modify", "delete", "cancel"]
 @staff_member_required(redirect_field_name="referrer")
 def group_enrichment(request, slug):
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
-    enrichmentGroup, created = EnrichmentGroup.objects.get_or_create(
-        video=video
-    )
+    enrichmentGroup, created = EnrichmentGroup.objects.get_or_create(video=video)
     if (
         request.user != video.owner
         and not (
@@ -38,9 +36,7 @@ def group_enrichment(request, slug):
         )
         and (request.user not in video.additional_owners.all())
     ):
-        messages.add_message(
-            request, messages.ERROR, _(u"You cannot enrich this video.")
-        )
+        messages.add_message(request, messages.ERROR, _(u"You cannot enrich this video."))
         raise PermissionDenied
 
     form = EnrichmentGroupForm(instance=enrichmentGroup)
@@ -60,9 +56,7 @@ def check_enrichment_group(request, video):
     if not hasattr(video, "enrichmentgroup"):
         return False
     if not request.user.groups.filter(
-        name__in=[
-            name[0] for name in video.enrichmentgroup.groups.values_list("name")
-        ]
+        name__in=[name[0] for name in video.enrichmentgroup.groups.values_list("name")]
     ).exists():
         return False
     return True
@@ -91,9 +85,7 @@ def edit_enrichment(request, slug):
     if request.POST and request.POST.get("action"):
         if request.POST["action"] in ACTION:
             return eval(
-                "edit_enrichment_{0}(request, video)".format(
-                    request.POST["action"]
-                )
+                "edit_enrichment_{0}(request, video)".format(request.POST["action"])
             )
     else:
         return render(
@@ -106,9 +98,7 @@ def edit_enrichment(request, slug):
 def edit_enrichment_new(request, video):
     list_enrichment = video.enrichment_set.all()
 
-    form_enrichment = EnrichmentForm(
-        initial={"video": video, "start": 0, "end": 1}
-    )
+    form_enrichment = EnrichmentForm(initial={"video": video, "start": 0, "end": 1})
     if request.is_ajax():
         return render(
             request,
@@ -239,9 +229,7 @@ def edit_enrichment_cancel(request, video):
 
 @csrf_protect
 @ensure_csrf_cookie
-def video_enrichment(
-    request, slug, slug_c=None, slug_t=None, slug_private=None
-):
+def video_enrichment(request, slug, slug_c=None, slug_t=None, slug_private=None):
 
     template_video = (
         "enrichment/video_enrichment-iframe.html"
@@ -254,9 +242,7 @@ def video_enrichment(
     except ValueError:
         raise SuspiciousOperation("Invalid video id")
 
-    return render_video(
-        request, id, slug_c, slug_t, slug_private, template_video
-    )
+    return render_video(request, id, slug_c, slug_t, slug_private, template_video)
 
 
 """

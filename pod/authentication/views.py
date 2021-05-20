@@ -99,9 +99,7 @@ def userpicture(request):
     frontOwnerForm = FrontOwnerForm(instance=request.user.owner)
 
     if request.method == "POST":
-        frontOwnerForm = FrontOwnerForm(
-            request.POST, instance=request.user.owner
-        )
+        frontOwnerForm = FrontOwnerForm(request.POST, instance=request.user.owner)
         if frontOwnerForm.is_valid():
             frontOwnerForm.save()
             # messages.add_message(

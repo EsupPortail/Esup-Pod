@@ -50,24 +50,18 @@ LANG_CHOICES = getattr(
     "LANG_CHOICES",
     ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),
 )
-LANG_CHOICES_DICT = {
-    key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]
-}
+LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}
 
 
 class Contributor(models.Model):
 
     video = select2_fields.ForeignKey(Video, verbose_name=_("video"))
     name = models.CharField(_("lastname / firstname"), max_length=200)
-    email_address = models.EmailField(
-        _("mail"), null=True, blank=True, default=""
-    )
+    email_address = models.EmailField(_("mail"), null=True, blank=True, default="")
     role = models.CharField(
         _(u"role"), max_length=200, choices=ROLE_CHOICES, default="author"
     )
-    weblink = models.URLField(
-        _(u"Web link"), max_length=200, null=True, blank=True
-    )
+    weblink = models.URLField(_(u"Web link"), max_length=200, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Contributor")
@@ -90,9 +84,7 @@ class Contributor(models.Model):
         elif len(self.name) < 2 or len(self.name) > 200:
             msg.append(_("Please enter a name from 2 to 200 caracters."))
         if self.weblink and len(self.weblink) > 200:
-            msg.append(
-                _("You cannot enter a weblink with more than 200 caracters.")
-            )
+            msg.append(_("You cannot enter a weblink with more than 200 caracters."))
         if not self.role:
             msg.append(_("Please enter a role."))
         if len(msg) > 0:
@@ -118,9 +110,7 @@ class Contributor(models.Model):
         return list()
 
     def __str__(self):
-        return u"Video:{0} - Name:{1} - Role:{2}".format(
-            self.video, self.name, self.role
-        )
+        return u"Video:{0} - Name:{1} - Role:{2}".format(self.video, self.name, self.role)
 
     def get_base_mail(self):
         data = base64.b64encode(self.email_address.encode())
@@ -167,17 +157,13 @@ class Document(models.Model):
         if len(list_doc) > 0:
             for element in list_doc:
                 if self.document == element.document:
-                    msg.append(
-                        _("This document is already contained " + "in the list")
-                    )
+                    msg.append(_("This document is already contained " + "in the list"))
             if len(msg) > 0:
                 return msg
         return list()
 
     def __str__(self):
-        return u"Document: {0} - Video: {1}".format(
-            self.document.name, self.video
-        )
+        return u"Document: {0} - Video: {1}".format(self.document.name, self.video)
 
 
 class Track(models.Model):
@@ -284,9 +270,7 @@ class Overlay(models.Model):
         default=2,
         help_text=_(u"End time of the overlay, in seconds."),
     )
-    content = RichTextField(
-        _("Content"), null=False, blank=False, config_name="complete"
-    )
+    content = RichTextField(_("Content"), null=False, blank=False, config_name="complete")
     position = models.CharField(
         _("Position"),
         max_length=100,
@@ -341,15 +325,10 @@ class Overlay(models.Model):
             )
         elif self.time_end > self.video.duration:
             msg.append(
-                _(
-                    "The value of time end field is greater than the "
-                    + "video duration."
-                )
+                _("The value of time end field is greater than the " + "video duration.")
             )
         elif self.time_start == self.time_end:
-            msg.append(
-                _("Time end field and time start field can't " + "be equal.")
-            )
+            msg.append(_("Time end field and time start field can't " + "be equal."))
         if len(msg) > 0:
             return msg
         else:

@@ -117,9 +117,7 @@ class LivestreamViewsTestCase(TestCase):
         self.assertTrue(b"Session BBB1" in response.content)
         self.assertEqual(response.status_code, 200)
 
-        print(
-            "   ---> test_live_list_meeting of LivestreamViewsTestCase : OK !"
-        )
+        print("   ---> test_live_list_meeting of LivestreamViewsTestCase : OK !")
 
     def test_live_publish_meeting(self):
         self.client = Client()
@@ -136,6 +134,4 @@ class LivestreamViewsTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
         else:
             self.assertEqual(response.status_code, 301)
-        print(
-            "   ---> test_live_publish_meeting of LivestreamViewsTestCase:OK!"
-        )
+        print("   ---> test_live_publish_meeting of LivestreamViewsTestCase:OK!")

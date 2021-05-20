@@ -57,9 +57,7 @@ def remote_transcript_video(video_id):
 
     video_to_encode = Video.objects.get(id=video_id)
 
-    encoding_log, created = EncodingLog.objects.get_or_create(
-        video=video_to_encode
-    )
+    encoding_log, created = EncodingLog.objects.get_or_create(video=video_to_encode)
     encoding_log.log = "%s\n%s" % (encoding_log.log, start)
     encoding_log.save()
 
@@ -174,9 +172,7 @@ def store_remote_transcripting_video(video_id):
             if duration + word["duration"] > SENTENCE_MAX_LENGTH:
                 caption = Caption(
                     format_time_caption(start_caption),
-                    format_time_caption(
-                        start_caption + duration + word["duration"]
-                    ),
+                    format_time_caption(start_caption + duration + word["duration"]),
                     " ".join(text_caption),
                 )
                 webvtt.captions.append(caption)
@@ -247,9 +243,7 @@ def saveVTT(video, webvtt):
         )
         msg += "\nstore vtt file in bdd with Track model src field"
 
-        subtitleVtt, created = Track.objects.get_or_create(
-            video=video, lang=lang
-        )
+        subtitleVtt, created = Track.objects.get_or_create(video=video, lang=lang)
         subtitleVtt.src = subtitleFile
         subtitleVtt.lang = lang
         subtitleVtt.save()

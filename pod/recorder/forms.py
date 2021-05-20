@@ -7,9 +7,7 @@ from .models import Recording, Recorder
 from pod.main.forms import add_placeholder_and_asterisk
 
 
-DEFAULT_RECORDER_PATH = getattr(
-    settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/"
-)
+DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")
 ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER = getattr(
     settings, "ALLOW_RECORDER_MANAGER_CHOICE_VID_OWNER", True
 )
@@ -40,9 +38,9 @@ class RecordingForm(forms.ModelForm):
             path=DEFAULT_RECORDER_PATH, recursive=True, label=_("source_file")
         )
         self.fields["source_file"].widget.attrs["class"] = "form-control"
-        self.fields["recorder"].queryset = self.fields[
-            "recorder"
-        ].queryset.filter(sites=Site.objects.get_current())
+        self.fields["recorder"].queryset = self.fields["recorder"].queryset.filter(
+            sites=Site.objects.get_current()
+        )
         self.fields["user"].queryset = self.fields["user"].queryset.filter(
             owner__sites=Site.objects.get_current()
         )
@@ -54,8 +52,7 @@ class RecordingForm(forms.ModelForm):
         ):
             del self.fields["user"]
         if not (
-            request.user.is_superuser
-            or request.user.has_perm("recorder.add_recording")
+            request.user.is_superuser or request.user.has_perm("recorder.add_recording")
         ):
             self.fields["recorder"].widget = forms.HiddenInput()
             self.fields["delete"].widget = forms.HiddenInput()

@@ -35,9 +35,7 @@ class LiveViewsTestCase(TestCase):
         user = User.objects.create(username="pod", password="podv2")
         building = Building.objects.create(name="bulding1")
         if FILEPICKER:
-            homedir, created = UserFolder.objects.get_or_create(
-                name="Home", owner=user
-            )
+            homedir, created = UserFolder.objects.get_or_create(name="Home", owner=user)
             poster = CustomImageModel.objects.create(
                 folder=homedir, created_by=user, file="blabla.jpg"
             )
@@ -203,13 +201,9 @@ class LiveViewsTestCase(TestCase):
 
         paris_tz = pytz.timezone("Europe/Paris")
         # make heartbeat expire now
-        hb1.last_heartbeat = paris_tz.localize(
-            datetime.datetime(2012, 3, 3, 1, 30)
-        )
+        hb1.last_heartbeat = paris_tz.localize(datetime.datetime(2012, 3, 3, 1, 30))
         hb1.save()
-        hb2.last_heartbeat = paris_tz.localize(
-            datetime.datetime(2012, 3, 3, 1, 30)
-        )
+        hb2.last_heartbeat = paris_tz.localize(datetime.datetime(2012, 3, 3, 1, 30))
         hb2.save()
 
         call_command("live_viewcounter")
@@ -229,8 +223,7 @@ class LiveViewsTestCase(TestCase):
         response = self.client.get("/live/%s/" % self.broadcaster.slug)
         self.assertRedirects(
             response,
-            "%s?referrer=%s"
-            % (settings.LOGIN_URL, "/live/%s/" % self.broadcaster.slug),
+            "%s?referrer=%s" % (settings.LOGIN_URL, "/live/%s/" % self.broadcaster.slug),
             status_code=302,
             target_status_code=302,
         )

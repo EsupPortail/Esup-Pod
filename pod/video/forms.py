@@ -245,8 +245,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
                     )
                     % {
                         "lic": _(
-                            "Attribution-ShareAlike 4.0 "
-                            "International (CC BY-SA 4.0)"
+                            "Attribution-ShareAlike 4.0 " "International (CC BY-SA 4.0)"
                         )
                     },
                 ],
@@ -254,9 +253,7 @@ VIDEO_FORM_FIELDS_HELP_TEXT = getattr(
             (
                 "{0} / {1}".format(_("Channels"), _("Themes")),
                 [
-                    _(
-                        "Select the channel in which you want your content to appear."
-                    ),
+                    _("Select the channel in which you want your content to appear."),
                     _(
                         "Themes related to this channel will "
                         "appear in the “Themes” list below."
@@ -486,28 +483,20 @@ class VideoForm(forms.ModelForm):
         )
         # Overview
         if self.instance.overview:
-            self.instance.overview = self.instance.overview.name.replace(
-                old_dir, new_dir
-            )
+            self.instance.overview = self.instance.overview.name.replace(old_dir, new_dir)
 
     def change_encoded_path(self, video, new_dir, old_dir):
         encoding_video = EncodingVideo.objects.filter(video=video)
         for encoding in encoding_video:
-            encoding.source_file = encoding.source_file.name.replace(
-                old_dir, new_dir
-            )
+            encoding.source_file = encoding.source_file.name.replace(old_dir, new_dir)
             encoding.save()
         encoding_audio = EncodingAudio.objects.filter(video=video)
         for encoding in encoding_audio:
-            encoding.source_file = encoding.source_file.name.replace(
-                old_dir, new_dir
-            )
+            encoding.source_file = encoding.source_file.name.replace(old_dir, new_dir)
             encoding.save()
         playlist = PlaylistVideo.objects.filter(video=video)
         for encoding in playlist:
-            encoding.source_file = encoding.source_file.name.replace(
-                old_dir, new_dir
-            )
+            encoding.source_file = encoding.source_file.name.replace(old_dir, new_dir)
             encoding.save()
 
     def save(self, commit=True, *args, **kwargs):
@@ -519,14 +508,10 @@ class VideoForm(forms.ModelForm):
                 self.instance, os.path.basename(self.cleaned_data["video"].name)
             )
             dt = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            nom, ext = os.path.splitext(
-                os.path.basename(self.cleaned_data["video"].name)
-            )
+            nom, ext = os.path.splitext(os.path.basename(self.cleaned_data["video"].name))
             ext = ext.lower()
             nom = re.sub(r"_\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2}$", "", nom)
-            new_path = os.path.join(
-                os.path.dirname(storage_path), nom + "_" + dt + ext
-            )
+            new_path = os.path.join(os.path.dirname(storage_path), nom + "_" + dt + ext)
             if self.instance.overview:
                 old_dir = os.path.dirname(self.instance.overview.name)
             else:
@@ -536,9 +521,7 @@ class VideoForm(forms.ModelForm):
                         "%04d" % self.instance.id,
                     )
                 )
-            new_dir = os.path.join(
-                os.path.dirname(new_path), "%04d" % self.instance.id
-            )
+            new_dir = os.path.join(os.path.dirname(new_path), "%04d" % self.instance.id)
             self.move_video_source_file(new_path, new_dir, old_dir)
 
         video = super(VideoForm, self).save(commit, *args, **kwargs)
@@ -559,10 +542,7 @@ class VideoForm(forms.ModelForm):
             or (in_dt.years == mddd and in_dt.months == 0 and in_dt.days > 0)
         ):
             raise ValidationError(
-                _(
-                    "The date must be before or equal to "
-                    + MAX_D.strftime("%d-%m-%Y")
-                )
+                _("The date must be before or equal to " + MAX_D.strftime("%d-%m-%Y"))
             )
         return self.cleaned_data["date_delete"]
 
@@ -579,10 +559,7 @@ class VideoForm(forms.ModelForm):
                 if "owner" in cleaned_data.keys()
                 else self.current_user
             )
-            if (
-                vidowner
-                and vidowner in self.cleaned_data["additional_owners"].all()
-            ):
+            if vidowner and vidowner in self.cleaned_data["additional_owners"].all():
                 raise ValidationError(
                     _("Owner of the video cannot be an additional owner too")
                 )
@@ -615,9 +592,7 @@ class VideoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.is_staff = (
-            kwargs.pop("is_staff")
-            if "is_staff" in kwargs.keys()
-            else self.is_staff
+            kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
         )
         self.is_superuser = (
             kwargs.pop("is_superuser")
@@ -650,12 +625,8 @@ class VideoForm(forms.ModelForm):
             self.fields["video"].label = _(u"File")
             valid_ext = FileExtensionValidator(VIDEO_ALLOWED_EXTENSIONS)
             self.fields["video"].validators = [valid_ext, FileSizeValidator]
-            self.fields["video"].widget.attrs["class"] = self.videoattrs[
-                "class"
-            ]
-            self.fields["video"].widget.attrs["accept"] = self.videoattrs[
-                "accept"
-            ]
+            self.fields["video"].widget.attrs["class"] = self.videoattrs["class"]
+            self.fields["video"].widget.attrs["accept"] = self.videoattrs["accept"]
         if self.instance.encoding_in_progress:
             self.remove_field("owner")
             self.remove_field("video")  # .widget = forms.HiddenInput()
@@ -663,9 +634,9 @@ class VideoForm(forms.ModelForm):
         if self.fields.get("video") and self.instance and self.instance.video:
             del self.fields["video"].widget.attrs["required"]
         if self.fields.get("owner"):
-            self.fields["owner"].queryset = self.fields[
-                "owner"
-            ].queryset.filter(owner__sites=Site.objects.get_current())
+            self.fields["owner"].queryset = self.fields["owner"].queryset.filter(
+                owner__sites=Site.objects.get_current()
+            )
 
     def custom_video_form(self):
 
@@ -688,9 +659,7 @@ class VideoForm(forms.ModelForm):
         if self.is_staff is False:
             del self.fields["thumbnail"]
 
-            self.fields["description"].widget = CKEditorWidget(
-                config_name="default"
-            )
+            self.fields["description"].widget = CKEditorWidget(config_name="default")
             for key, value in settings.LANGUAGES:
                 self.fields[
                     "description_%s" % key.replace("-", "_")
@@ -714,9 +683,7 @@ class VideoForm(forms.ModelForm):
                 "description_%s" % settings.LANGUAGE_CODE
             ].widget = forms.HiddenInput()
         if self.fields.get("title_%s" % settings.LANGUAGE_CODE):
-            self.fields[
-                "title_%s" % settings.LANGUAGE_CODE
-            ].widget = forms.HiddenInput()
+            self.fields["title_%s" % settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
     def remove_field(self, field):
         if self.fields.get(field):
@@ -738,9 +705,9 @@ class VideoForm(forms.ModelForm):
             user_channels.filter(sites=get_current_site(None))
             if user_channels:
                 self.fields["channel"].queryset = user_channels
-                list_theme = Theme.objects.filter(
-                    channel__in=user_channels
-                ).order_by("channel", "title")
+                list_theme = Theme.objects.filter(channel__in=user_channels).order_by(
+                    "channel", "title"
+                )
                 self.fields["theme"].queryset = list_theme
             else:
                 del self.fields["theme"]
@@ -755,14 +722,14 @@ class VideoForm(forms.ModelForm):
             sites=Site.objects.get_current()
         )
         if "channel" in self.fields:
-            self.fields["channel"].queryset = self.fields[
-                "channel"
-            ].queryset.filter(sites=Site.objects.get_current())
+            self.fields["channel"].queryset = self.fields["channel"].queryset.filter(
+                sites=Site.objects.get_current()
+            )
 
         if "theme" in self.fields:
-            self.fields["theme"].queryset = self.fields[
-                "theme"
-            ].queryset.filter(channel__sites=Site.objects.get_current())
+            self.fields["theme"].queryset = self.fields["theme"].queryset.filter(
+                channel__sites=Site.objects.get_current()
+            )
 
     class Meta(object):
         model = Video
@@ -783,19 +750,15 @@ class ChannelForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(ChannelForm, self).clean()
         if "description" in cleaned_data.keys():
-            cleaned_data[
-                "description_%s" % settings.LANGUAGE_CODE
-            ] = cleaned_data["description"]
-        if "title" in cleaned_data.keys():
-            cleaned_data["title_%s" % settings.LANGUAGE_CODE] = cleaned_data[
-                "title"
+            cleaned_data["description_%s" % settings.LANGUAGE_CODE] = cleaned_data[
+                "description"
             ]
+        if "title" in cleaned_data.keys():
+            cleaned_data["title_%s" % settings.LANGUAGE_CODE] = cleaned_data["title"]
 
     def __init__(self, *args, **kwargs):
         self.is_staff = (
-            kwargs.pop("is_staff")
-            if "is_staff" in kwargs.keys()
-            else self.is_staff
+            kwargs.pop("is_staff") if "is_staff" in kwargs.keys() else self.is_staff
         )
         self.is_superuser = (
             kwargs.pop("is_superuser")
@@ -814,21 +777,19 @@ class ChannelForm(forms.ModelForm):
             if self.fields.get("sites"):
                 del self.fields["sites"]
         if not self.is_superuser or not hasattr(self, "admin_form"):
-            self.fields["owners"].queryset = self.fields[
-                "owners"
-            ].queryset.filter(owner__sites=Site.objects.get_current())
-            self.fields["users"].queryset = self.fields[
-                "users"
-            ].queryset.filter(owner__sites=Site.objects.get_current())
+            self.fields["owners"].queryset = self.fields["owners"].queryset.filter(
+                owner__sites=Site.objects.get_current()
+            )
+            self.fields["users"].queryset = self.fields["users"].queryset.filter(
+                owner__sites=Site.objects.get_current()
+            )
 
         # change ckeditor config for no staff user
         if not hasattr(self, "admin_form") and (
             self.is_staff is False and self.is_superuser is False
         ):
             del self.fields["headband"]
-            self.fields["description"].widget = CKEditorWidget(
-                config_name="default"
-            )
+            self.fields["description"].widget = CKEditorWidget(config_name="default")
             for key, value in settings.LANGUAGES:
                 self.fields[
                     "description_%s" % key.replace("-", "_")
@@ -837,9 +798,7 @@ class ChannelForm(forms.ModelForm):
         self.fields[
             "description_%s" % settings.LANGUAGE_CODE
         ].widget = forms.HiddenInput()
-        self.fields[
-            "title_%s" % settings.LANGUAGE_CODE
-        ].widget = forms.HiddenInput()
+        self.fields["title_%s" % settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
         self.fields = add_placeholder_and_asterisk(self.fields)
 
@@ -858,22 +817,18 @@ class ThemeForm(forms.ModelForm):
         self.fields[
             "description_%s" % settings.LANGUAGE_CODE
         ].widget = forms.HiddenInput()
-        self.fields[
-            "title_%s" % settings.LANGUAGE_CODE
-        ].widget = forms.HiddenInput()
+        self.fields["title_%s" % settings.LANGUAGE_CODE].widget = forms.HiddenInput()
 
         self.fields = add_placeholder_and_asterisk(self.fields)
 
     def clean(self):
         cleaned_data = super(ThemeForm, self).clean()
         if "description" in cleaned_data.keys():
-            cleaned_data[
-                "description_%s" % settings.LANGUAGE_CODE
-            ] = cleaned_data["description"]
-        if "title" in cleaned_data.keys():
-            cleaned_data["title_%s" % settings.LANGUAGE_CODE] = cleaned_data[
-                "title"
+            cleaned_data["description_%s" % settings.LANGUAGE_CODE] = cleaned_data[
+                "description"
             ]
+        if "title" in cleaned_data.keys():
+            cleaned_data["title_%s" % settings.LANGUAGE_CODE] = cleaned_data["title"]
 
     class Meta(object):
         model = Theme
@@ -890,9 +845,7 @@ class FrontThemeForm(ThemeForm):
         self.fields["channel"].widget = forms.HiddenInput()
         # self.fields["parentId"].label = _('Theme parent')
         if "channel" in self.initial.keys():
-            themes_queryset = Theme.objects.filter(
-                channel=self.initial["channel"]
-            )
+            themes_queryset = Theme.objects.filter(channel=self.initial["channel"])
             self.fields["parentId"].queryset = themes_queryset
 
     class Meta(object):
@@ -901,9 +854,7 @@ class FrontThemeForm(ThemeForm):
 
 
 class VideoPasswordForm(forms.Form):
-    password = forms.CharField(
-        label=_("Password"), widget=forms.PasswordInput()
-    )
+    password = forms.CharField(label=_("Password"), widget=forms.PasswordInput())
 
     def __init__(self, *args, **kwargs):
         super(VideoPasswordForm, self).__init__(*args, **kwargs)

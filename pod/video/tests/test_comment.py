@@ -97,9 +97,7 @@ class TestComment(TestCase):
             self.owner_to_admin_comment.content.encode("utf-8"),
             status_code=200,
         )
-        self.assertContains(
-            response, self.simple_user_comment.content.encode("utf-8")
-        )
+        self.assertContains(response, self.simple_user_comment.content.encode("utf-8"))
 
     def test_get_only_parent_comment(self):
         url = reverse("get_comments", kwargs={"video_slug": self.video.slug})
@@ -224,9 +222,7 @@ class TestComment(TestCase):
         )
         self.client.logout()
         self.client.force_login(self.owner_user)
-        response = self.client.post(
-            url, {"content": "Response to third comment"}
-        )
+        response = self.client.post(url, {"content": "Response to third comment"})
         data["author_name"] = "{0} {1}".format(
             self.owner_user.first_name, self.owner_user.last_name
         )
@@ -253,9 +249,7 @@ class TestComment(TestCase):
 
         # test method not allowed
         response = self.client.get(url, HTTP_ACCEPT_LANGUAGE="en")
-        self.assertContains(
-            response, b"<h1>Method Not Allowed</h1>", status_code=405
-        )
+        self.assertContains(response, b"<h1>Method Not Allowed</h1>", status_code=405)
 
     def test_delete_comment(self):
         # simple_user cannot delete a comment that does not belongs to him
@@ -291,9 +285,7 @@ class TestComment(TestCase):
         response = self.client.post(url)
         self.assertEqual(response.content, expected_content)
         # should also remove child comment
-        comment = Comment.objects.filter(
-            id=self.owner_to_admin_comment.id
-        ).first()
+        comment = Comment.objects.filter(id=self.owner_to_admin_comment.id).first()
         self.assertIsNone(comment)
         # Admin user can delete any comment
         url = reverse(
@@ -312,9 +304,7 @@ class TestComment(TestCase):
         self.client.force_login(self.admin_user)
         response = self.client.post(url)
         self.assertEqual(response.content, expected_content)
-        comment = Comment.objects.filter(
-            id=self.owner_to_simple_user_comment.id
-        ).first()
+        comment = Comment.objects.filter(id=self.owner_to_simple_user_comment.id).first()
         self.assertIsNone(comment)
 
     """
@@ -351,9 +341,7 @@ class TestComment(TestCase):
 
         # test method not allowed
         response = self.client.get(url, HTTP_ACCEPT_LANGUAGE="en")
-        self.assertContains(
-            response, b"<h1>Method Not Allowed</h1>", status_code=405
-        )
+        self.assertContains(response, b"<h1>Method Not Allowed</h1>", status_code=405)
 
     def tearDown(self):
         del self.video

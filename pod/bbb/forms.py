@@ -48,9 +48,7 @@ def launch_encode(sender, instance, created, **kwargs):
         # Re-encode is only possible when an user has already tried it
         # Re-encode is not depending on the encoding_step
         if instance.encoded_by is not None:
-            mod = importlib.import_module(
-                "%s.plugins.type_%s" % (__package__, "bbb")
-            )
+            mod = importlib.import_module("%s.plugins.type_%s" % (__package__, "bbb"))
             mod.process(instance)
         else:
             raise ValidationError(

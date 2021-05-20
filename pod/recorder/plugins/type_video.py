@@ -27,9 +27,7 @@ def encode_recording(recording):
     video.owner = recording.user
     video.type = recorder.type
     # gestion de la video
-    storage_path = get_storage_path_video(
-        video, os.path.basename(recording.source_file)
-    )
+    storage_path = get_storage_path_video(video, os.path.basename(recording.source_file))
     dt = str(datetime.datetime.now()).replace(":", "-")
     nom, ext = os.path.splitext(os.path.basename(recording.source_file))
     ext = ext.lower()
@@ -46,9 +44,7 @@ def encode_recording(recording):
     video.is_draft = recorder.is_draft
     # Accès restreint (eventuellement à des groupes ou par mot de passe)
     video.is_restricted = recorder.is_restricted
-    video.restrict_access_to_groups.add(
-        *recorder.restrict_access_to_groups.all()
-    )
+    video.restrict_access_to_groups.add(*recorder.restrict_access_to_groups.all())
     video.password = recorder.password
     # on ajoute les eventuelles chaines
     video.channel.add(*recorder.channel.all())

@@ -13,9 +13,7 @@ class Command(BaseCommand):
     help = "Indexes the specified video in Elasticsearch."
 
     def add_arguments(self, parser):
-        parser.add_argument(
-            "-id", "--video_id", nargs="+", type=int, dest="video_id"
-        )
+        parser.add_argument("-id", "--video_id", nargs="+", type=int, dest="video_id")
         parser.add_argument(
             "--all",
             action="store_true",
@@ -42,8 +40,7 @@ class Command(BaseCommand):
         else:
             self.stdout.write(
                 self.style.ERROR(
-                    "****** Warning: you must give some arguments: %s ******"
-                    % self.args
+                    "****** Warning: you must give some arguments: %s ******" % self.args
                 )
             )
         translation.deactivate()
@@ -54,13 +51,9 @@ class Command(BaseCommand):
             if video.is_draft is False:
                 index_es(video)
                 self.stdout.write(
-                    self.style.SUCCESS(
-                        'Successfully index Video "%s"' % video_id
-                    )
+                    self.style.SUCCESS('Successfully index Video "%s"' % video_id)
                 )
             else:
                 delete_es(video)
         except Video.DoesNotExist:
-            self.stdout.write(
-                self.style.ERROR('Video "%s" does not exist' % video_id)
-            )
+            self.stdout.write(self.style.ERROR('Video "%s" does not exist' % video_id))

@@ -70,9 +70,7 @@ class PopulatedCASTestCase(TestCase):
     def setUp(self):
         """setUp PopulatedCASTestCase create user pod"""
         User.objects.create(username="pod", password="pod1234pod")
-        AccessGroup.objects.create(
-            code_name="groupTest", display_name="Group de test"
-        )
+        AccessGroup.objects.create(code_name="groupTest", display_name="Group de test")
         print(" --->  SetUp of PopulatedCASTestCase : OK !")
 
     @override_settings(DEBUG=False)
@@ -109,9 +107,7 @@ class PopulatedCASTestCase(TestCase):
         populatedCASbackend.populate_user_from_tree(user, owner, tree)
         self.assertEqual(AccessGroup.objects.all().count(), 3)
         self.assertTrue(
-            user.owner.accessgroup_set.filter(
-                code_name__in=["member", "staff"]
-            ).exists()
+            user.owner.accessgroup_set.filter(code_name__in=["member", "staff"]).exists()
         )
         print(
             " --->  test_populate_user_from_tree_affiliation"
@@ -194,14 +190,10 @@ class PopulatedLDAPTestCase(TestCase):
     def setUp(self):
         """setUp PopulatedLDAPTestCase create user pod"""
         User.objects.create(username="pod", password="pod1234pod")
-        AccessGroup.objects.create(
-            code_name="groupTest", display_name="Group de test"
-        )
+        AccessGroup.objects.create(code_name="groupTest", display_name="Group de test")
         fake_server = Server("my_fake_server")
         fake_connection = Connection(fake_server, client_strategy=MOCK_SYNC)
-        fake_connection.strategy.add_entry(
-            "uid=pod,ou=people,dc=univ,dc=fr", self.attrs
-        )
+        fake_connection.strategy.add_entry("uid=pod,ou=people,dc=univ,dc=fr", self.attrs)
         fake_connection.bind()
         list_value = []
         for val in USER_LDAP_MAPPING_ATTRIBUTES.values():
@@ -250,9 +242,7 @@ class PopulatedLDAPTestCase(TestCase):
         populatedCASbackend.populate_user_from_entry(user, owner, self.entry)
         self.assertEqual(AccessGroup.objects.all().count(), 3)
         self.assertTrue(
-            user.owner.accessgroup_set.filter(
-                code_name__in=["member", "staff"]
-            ).exists()
+            user.owner.accessgroup_set.filter(code_name__in=["member", "staff"]).exists()
         )
         print(
             " --->  test_populate_user_from_entry_affiliation"

@@ -59,9 +59,7 @@ class FolderViewTestCase(TestCase):
             },
         )
 
-        response = self.client.get(
-            reverse("podfile:home", kwargs={"type": "file"})
-        )
+        response = self.client.get(reverse("podfile:home", kwargs={"type": "file"}))
         self.assertEqual(
             response.context["user_home_folder"],
             UserFolder.objects.get(owner=self.user, name="home"),
@@ -71,14 +69,10 @@ class FolderViewTestCase(TestCase):
             response.context["current_session_folder"],
             UserFolder.objects.get(owner=self.user, name="home"),
         )
-        response = self.client.get(
-            reverse("podfile:home", kwargs={"type": "image"})
-        )
+        response = self.client.get(reverse("podfile:home", kwargs={"type": "image"}))
         self.assertEqual(response.status_code, 200)  # type image ok
 
-        response = self.client.get(
-            reverse("podfile:home", kwargs={"type": "toto"})
-        )
+        response = self.client.get(reverse("podfile:home", kwargs={"type": "toto"}))
         # type nok SuspiciousOperation
         self.assertEqual(response.status_code, 400)
 
@@ -99,24 +93,18 @@ class FolderViewTestCase(TestCase):
             follow=True,
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(
-            UserFolder.objects.get(owner=self.user, name="NewFolder")
-        )
+        self.assertTrue(UserFolder.objects.get(owner=self.user, name="NewFolder"))
         self.assertEqual(response.context["user_folder"].count(), 2)
         response = self.client.post(
             reverse("podfile:editfolder"),
             {
                 "name": "NewFolder2",
-                "folderid": UserFolder.objects.get(
-                    owner=self.user, name="NewFolder"
-                ).id,
+                "folderid": UserFolder.objects.get(owner=self.user, name="NewFolder").id,
             },
             follow=True,
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(
-            UserFolder.objects.get(owner=self.user, name="NewFolder2")
-        )
+        self.assertTrue(UserFolder.objects.get(owner=self.user, name="NewFolder2"))
         self.assertEqual(response.context["user_folder"].count(), 2)
         print(" ---> test_edit_folders : OK!")
 
@@ -175,16 +163,12 @@ class FileViewTestCase(TestCase):
         currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         simplefile = SimpleUploadedFile(
             name="testfile.txt",
-            content=open(
-                os.path.join(currentdir, "tests", "testfile.txt"), "rb"
-            ).read(),
+            content=open(os.path.join(currentdir, "tests", "testfile.txt"), "rb").read(),
             content_type="text/plain",
         )
         simpleImage = SimpleUploadedFile(
             name="testimage.jpg",
-            content=open(
-                os.path.join(currentdir, "tests", "testimage.jpg"), "rb"
-            ).read(),
+            content=open(os.path.join(currentdir, "tests", "testimage.jpg"), "rb").read(),
             content_type="image/jpeg",
         )
         CustomFileModel.objects.create(
@@ -211,11 +195,7 @@ class FileViewTestCase(TestCase):
         response = self.client.get(
             reverse(
                 "podfile:get_folder_files",
-                kwargs={
-                    "id": UserFolder.objects.get(
-                        owner=self.user, name="home"
-                    ).id
-                },
+                kwargs={"id": UserFolder.objects.get(owner=self.user, name="home").id},
             )
         )
         self.assertEqual(response.status_code, 302)  # user is not staff
@@ -225,11 +205,7 @@ class FileViewTestCase(TestCase):
         response = self.client.get(
             reverse(
                 "podfile:get_folder_files",
-                kwargs={
-                    "id": UserFolder.objects.get(
-                        owner=self.user, name="home"
-                    ).id
-                },
+                kwargs={"id": UserFolder.objects.get(owner=self.user, name="home").id},
             )
         )
         self.assertEqual(response.status_code, 200)  # user is staff
@@ -242,11 +218,7 @@ class FileViewTestCase(TestCase):
         response = self.client.get(
             reverse(
                 "podfile:get_folder_files",
-                kwargs={
-                    "id": UserFolder.objects.get(
-                        owner=self.user, name="Child"
-                    ).id
-                },
+                kwargs={"id": UserFolder.objects.get(owner=self.user, name="Child").id},
             )
         )
         self.assertEqual(response.status_code, 200)  # user is staff

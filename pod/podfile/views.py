@@ -70,14 +70,10 @@ FOLDER_FILE_TYPE = ["image", "file"]
 def home(request, type=None):
     if type is not None and type not in FOLDER_FILE_TYPE:
         raise SuspiciousOperation("--> Invalid type")
-    user_home_folder = get_object_or_404(
-        UserFolder, name="home", owner=request.user
-    )
+    user_home_folder = get_object_or_404(UserFolder, name="home", owner=request.user)
 
     share_folder = (
-        UserFolder.objects.filter(
-            access_groups=request.user.owner.accessgroup_set.all()
-        )
+        UserFolder.objects.filter(access_groups=request.user.owner.accessgroup_set.all())
         .exclude(owner=request.user)
         .order_by("owner", "id")
     )
@@ -90,11 +86,7 @@ def home(request, type=None):
 
     current_session_folder = get_current_session_folder(request)
 
-    template = (
-        "podfile/home_content.html"
-        if (request.is_ajax())
-        else "podfile/home.html"
-    )
+    template = "podfile/home_content.html" if (request.is_ajax()) else "podfile/home.html"
 
     return render(
         request,
@@ -169,9 +161,7 @@ def get_folder_files(request, id, type=None):
         )
         and not (request.user in folder.users.all())
     ):
-        messages.add_message(
-            request, messages.ERROR, _(u"You cannot see this folder.")
-        )
+        messages.add_message(request, messages.ERROR, _(u"You cannot see this folder."))
         raise PermissionDenied
 
     request.session["current_session_folder"] = folder.name
@@ -191,9 +181,7 @@ def get_folder_files(request, id, type=None):
 
 
 def get_rendered(request):
-    user_home_folder = get_object_or_404(
-        UserFolder, name="home", owner=request.user
-    )
+    user_home_folder = get_object_or_404(UserFolder, name="home", owner=request.user)
 
     user_folder = UserFolder.objects.filter(owner=request.user).exclude(
         owner=request.user, name="home"
@@ -324,9 +312,7 @@ def deletefolder(request):
 @staff_member_required(redirect_field_name="referrer")
 def deletefile(request):
     if request.POST["id"] and request.POST["classname"]:
-        file = get_object_or_404(
-            eval(request.POST["classname"]), id=request.POST["id"]
-        )
+        file = get_object_or_404(eval(request.POST["classname"]), id=request.POST["id"])
         folder = file.folder
         if request.user != file.created_by and not (
             request.user.is_superuser
@@ -411,23 +397,12 @@ def save_uploaded_files(request, folder, files):
     for file in files:
         # Check if file is image
         fname, dot, extension = file.name.rpartition(".")
-        if (
-            "image" in file.content_type
-            and extension in IMAGE_ALLOWED_EXTENSIONS
-        ):
-            form_file = CustomImageModelForm(
-                {"folder": folder.id}, {"file": file}
-            )
-            upload_errors = manage_form_file(
-                request, upload_errors, fname, form_file
-            )
+        if "image" in file.content_type and extension in IMAGE_ALLOWED_EXTENSIONS:
+            form_file = CustomImageModelForm({"folder": folder.id}, {"file": file})
+            upload_errors = manage_form_file(request, upload_errors, fname, form_file)
         elif extension in FILE_ALLOWED_EXTENSIONS:
-            form_file = CustomFileModelForm(
-                {"folder": folder.id}, {"file": file}
-            )
-            upload_errors = manage_form_file(
-                request, upload_errors, fname, form_file
-            )
+            form_file = CustomFileModelForm({"folder": folder.id}, {"file": file})
+            upload_errors = manage_form_file(request, upload_errors, fname, form_file)
         else:
             upload_errors += "\n%s" % _(
                 "The file %(fname)s has not allowed format" % {"fname": fname}
@@ -532,12 +507,8 @@ def changefile(request):
 def file_edit_save(request, folder):
     form_file = None
     if request.POST.get("file_id") and request.POST.get("file_id") != "None":
-        customfile = get_object_or_404(
-            CustomFileModel, id=request.POST["file_id"]
-        )
-        form_file = CustomFileModelForm(
-            request.POST, request.FILES, instance=customfile
-        )
+        customfile = get_object_or_404(CustomFileModel, id=request.POST["file_id"])
+        form_file = CustomFileModelForm(request.POST, request.FILES, instance=customfile)
     else:
         form_file = CustomFileModelForm(request.POST, request.FILES)
     if form_file.is_valid():
@@ -588,9 +559,7 @@ def get_file(request, type):
         and not reqfile.folder.access_groups.filter(
             code_name__in=[
                 name[0]
-                for name in request.user.owner.accessgroup_set.values_list(
-                    "code_name"
-                )
+                for name in request.user.owner.accessgroup_set.values_list("code_name")
             ]
         ).exists()
         and not (
@@ -600,9 +569,7 @@ def get_file(request, type):
             or (request.user in reqfile.folder.users.all())
         )
     ):
-        messages.add_message(
-            request, messages.ERROR, _(u"You cannot see this folder.")
-        )
+        messages.add_message(request, messages.ERROR, _(u"You cannot see this folder."))
         raise PermissionDenied
 
     request.session["current_session_folder"] = reqfile.folder.name
@@ -634,11 +601,7 @@ def folder_shared_with(request):
         folder = UserFolder.objects.get(id=foldid)
         if folder.owner == request.user or request.user.is_superuser:
             data = json.dumps(
-                list(
-                    folder.users.values(
-                        "id", "first_name", "last_name", "username"
-                    )
-                )
+                list(folder.users.values("id", "first_name", "last_name", "username"))
             )
             mimetype = "application/json"
             return HttpResponse(data, mimetype)
@@ -786,9 +749,7 @@ def user_folders(request):
     json_resp = {
         "folders": folders,
         "current_page": int(page),
-        "next_page": (
-            -1 if ((int(page) + 1) > paginator.num_pages) else (int(page) + 1)
-        ),
+        "next_page": (-1 if ((int(page) + 1) > paginator.num_pages) else (int(page) + 1)),
         "total_pages": paginator.num_pages,
     }
     data = json.dumps(json_resp)

@@ -99,9 +99,7 @@ def fix_video_duration(video_id, output_dir):
         return
     if vid.duration == 0:
         if vid.is_video:
-            ev = EncodingVideo.objects.filter(
-                video=vid, encoding_format="video/mp4"
-            )
+            ev = EncodingVideo.objects.filter(video=vid, encoding_format="video/mp4")
             if ev.count() > 0:
                 video_mp4 = sorted(ev, key=lambda m: m.height)[0]
                 vid.duration = get_duration_from_mp4(
@@ -109,9 +107,7 @@ def fix_video_duration(video_id, output_dir):
                 )
                 vid.save()
         else:
-            ea = EncodingAudio.objects.filter(
-                video=vid, encoding_format="audio/mp3"
-            )
+            ea = EncodingAudio.objects.filter(video=vid, encoding_format="audio/mp3")
             if ea.count() > 0:
                 vid.duration = get_duration_from_mp4(
                     ea.first().source_file.path, output_dir
@@ -170,9 +166,7 @@ def send_email(msg, video_id):
         video_id,
         msg.replace("\n", "<br/>"),
     )
-    mail_admins(
-        subject, message, fail_silently=False, html_message=html_message
-    )
+    mail_admins(subject, message, fail_silently=False, html_message=html_message)
 
 
 def send_email_transcript(video_to_encode):
@@ -273,8 +267,7 @@ def send_email_encoding(video_to_encode):
     content_url = "%s:%s" % (url_scheme, video_to_encode.get_full_url())
     subject = "[%s] %s" % (
         TITLE_SITE,
-        _(u"Encoding #%(content_id)s completed")
-        % {"content_id": video_to_encode.id},
+        _(u"Encoding #%(content_id)s completed") % {"content_id": video_to_encode.id},
     )
     message = "%s\n%s\n\n%s\n%s\n%s\n" % (
         _("Hello,"),

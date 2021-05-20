@@ -10,9 +10,7 @@ class Command(BaseCommand):
     help = "Update viewcounter for lives"
 
     def handle(self, *args, **options):
-        accepted_time = timezone.now() - timezone.timedelta(
-            seconds=VIEW_EXPIRATION_DELAY
-        )
+        accepted_time = timezone.now() - timezone.timedelta(seconds=VIEW_EXPIRATION_DELAY)
         HeartBeat.objects.filter(last_heartbeat__lt=accepted_time).delete()
 
         for broad in Broadcaster.objects.filter(enable_viewer_count=True):

@@ -80,9 +80,7 @@ class Broadcaster(models.Model):
         default="",
     )  # default empty, fill it in save
     building = models.ForeignKey("Building", verbose_name=_("Building"))
-    description = RichTextField(
-        _("description"), config_name="complete", blank=True
-    )
+    description = RichTextField(_("description"), config_name="complete", blank=True)
     poster = models.ForeignKey(
         CustomImageModel,
         models.SET_NULL,
@@ -90,14 +88,10 @@ class Broadcaster(models.Model):
         null=True,
         verbose_name=_("Poster"),
     )
-    url = models.URLField(
-        _("URL"), help_text=_("Url of the stream"), unique=True
-    )
+    url = models.URLField(_("URL"), help_text=_("Url of the stream"), unique=True)
     video_on_hold = select2_fields.ForeignKey(
         Video,
-        help_text=_(
-            "This video will be displayed when there is no live stream."
-        ),
+        help_text=_("This video will be displayed when there is no live stream."),
         blank=True,
         null=True,
         verbose_name=_("Video on hold"),
@@ -135,16 +129,12 @@ class Broadcaster(models.Model):
     )
     password = models.CharField(
         _("password"),
-        help_text=_(
-            "Viewing this live will not be possible without this password."
-        ),
+        help_text=_("Viewing this live will not be possible without this password."),
         max_length=50,
         blank=True,
         null=True,
     )
-    viewcount = models.IntegerField(
-        _("Number of viewers"), default=0, editable=False
-    )
+    viewcount = models.IntegerField(_("Number of viewers"), default=0, editable=False)
     viewers = models.ManyToManyField(User, editable=False)
 
     def get_absolute_url(self):
@@ -180,9 +170,7 @@ class HeartBeat(models.Model):
     broadcaster = models.ForeignKey(
         Broadcaster, null=False, verbose_name=_("Broadcaster")
     )
-    last_heartbeat = models.DateTimeField(
-        _("Last heartbeat"), default=timezone.now
-    )
+    last_heartbeat = models.DateTimeField(_("Last heartbeat"), default=timezone.now)
 
     class Meta:
         verbose_name = _("Heartbeat")

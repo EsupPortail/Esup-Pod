@@ -28,10 +28,7 @@ class Interactive(models.Model):
     def is_interactive(self):
         return (
             True
-            if h5p_contents.objects.filter(
-                slug=slugify(self.video.title)
-            ).count()
-            > 0
+            if h5p_contents.objects.filter(slug=slugify(self.video.title)).count() > 0
             else False
         )
 

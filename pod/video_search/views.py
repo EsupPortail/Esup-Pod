@@ -29,17 +29,17 @@ def get_filter_search(selected_facets, start_date, end_date):
         filter_date_search = {}
         filter_date_search["range"] = {"date_added": {}}
         if start_date:
-            filter_date_search["range"]["date_added"][
-                "gte"
-            ] = "%04d-%02d-%02d" % (
+            filter_date_search["range"]["date_added"]["gte"] = "%04d-%02d-%02d" % (
                 start_date.year,
                 start_date.month,
                 start_date.day,
             )
         if end_date:
-            filter_date_search["range"]["date_added"][
-                "lte"
-            ] = "%04d-%02d-%02d" % (end_date.year, end_date.month, end_date.day)
+            filter_date_search["range"]["date_added"]["lte"] = "%04d-%02d-%02d" % (
+                end_date.year,
+                end_date.month,
+                end_date.day,
+            )
 
         filter_search.append(filter_date_search)
     return filter_search
@@ -74,9 +74,7 @@ def get_result_aggregations(result, selected_facets):
             else:
                 if agg_term == "type.slug":
                     del result["aggregations"]["type_title"]
-                if agg_term == "tags.slug" and (
-                    "tags_name" in result["aggregations"]
-                ):
+                if agg_term == "tags.slug" and ("tags_name" in result["aggregations"]):
                     del result["aggregations"]["tags_name"]
                 if agg_term == "disciplines.slug":
                     del result["aggregations"]["disciplines_title"]
@@ -183,9 +181,7 @@ def search_videos(request):
     if filter_search != {}:
         bodysearch["query"]["function_score"]["query"] = {"bool": {}}
         bodysearch["query"]["function_score"]["query"]["bool"]["must"] = query
-        bodysearch["query"]["function_score"]["query"]["bool"][
-            "filter"
-        ] = filter_search
+        bodysearch["query"]["function_score"]["query"]["bool"]["filter"] = filter_search
     else:
         bodysearch["query"]["function_score"]["query"] = query
 
@@ -214,9 +210,7 @@ def search_videos(request):
     # if settings.DEBUG:
     #    print(json.dumps(result, indent=4))
 
-    remove_selected_facet = get_remove_selected_facet_link(
-        request, selected_facets
-    )
+    remove_selected_facet = get_remove_selected_facet_link(request, selected_facets)
     aggregations = get_result_aggregations(result, selected_facets)
 
     full_path = (

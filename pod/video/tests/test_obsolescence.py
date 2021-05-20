@@ -202,9 +202,7 @@ class ObsolescenceTestCase(TestCase):
         self.assertTrue(video_to_archive.is_draft)
         self.assertTrue(video_to_archive.owner == archive_user)
 
-        vid_delete = VideoToDelete.objects.get(
-            date_deletion=video_to_archive.date_delete
-        )
+        vid_delete = VideoToDelete.objects.get(date_deletion=video_to_archive.date_delete)
         self.assertTrue(video_to_archive in vid_delete.video.all())
 
         # on vérifie que la video supprimée est bien supprimée

@@ -42,12 +42,8 @@ class PlaylistModelTestCase(TestCase):
             description="description",
             visible=True,
         )
-        PlaylistElement.objects.create(
-            playlist=playlist, video=video, position=1
-        )
-        PlaylistElement.objects.create(
-            playlist=playlist, video=video2, position=2
-        )
+        PlaylistElement.objects.create(playlist=playlist, video=video, position=1)
+        PlaylistElement.objects.create(playlist=playlist, video=video2, position=2)
 
     def test_attributs(self):
         playlist = Playlist.objects.get(id=1)
@@ -140,9 +136,7 @@ class PlaylistElementModelTestCase(TestCase):
             password="test",
         )
         PlaylistElement.objects.create(playlist=playlist, video=video)
-        PlaylistElement.objects.create(
-            playlist=playlist, video=video2, position=2
-        )
+        PlaylistElement.objects.create(playlist=playlist, video=video2, position=2)
 
     def test_attributs(self):
         element = PlaylistElement.objects.get(id=1)

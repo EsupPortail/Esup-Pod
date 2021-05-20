@@ -119,9 +119,7 @@ class CustomFileModel(models.Model):
 
 class LinkFooter(models.Model):
     title = models.CharField(_("Title"), max_length=250)
-    order = models.PositiveSmallIntegerField(
-        _("order"), default=1, blank=True, null=True
-    )
+    order = models.PositiveSmallIntegerField(_("order"), default=1, blank=True, null=True)
     url = models.CharField(
         _("Web link"),
         blank=True,
@@ -151,9 +149,7 @@ class LinkFooter(models.Model):
 
     def clean(self):
         if self.url is None and self.page is None:
-            raise ValidationError(
-                _("You must give an URL or a page to link the link")
-            )
+            raise ValidationError(_("You must give an URL or a page to link the link"))
 
 
 class Configuration(models.Model):

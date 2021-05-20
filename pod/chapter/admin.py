@@ -24,9 +24,7 @@ class ChapterAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "video":
-            kwargs["queryset"] = Video.objects.filter(
-                sites=Site.objects.get_current()
-            )
+            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 

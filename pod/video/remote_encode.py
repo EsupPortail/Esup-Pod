@@ -43,9 +43,7 @@ if TRANSCRIPT:
 
     TRANSCRIPT_VIDEO = getattr(settings, "TRANSCRIPT_VIDEO", "start_transcript")
 
-EMAIL_ON_ENCODING_COMPLETION = getattr(
-    settings, "EMAIL_ON_ENCODING_COMPLETION", True
-)
+EMAIL_ON_ENCODING_COMPLETION = getattr(settings, "EMAIL_ON_ENCODING_COMPLETION", True)
 
 SSH_REMOTE_USER = getattr(settings, "SSH_REMOTE_USER", "")
 SSH_REMOTE_HOST = getattr(settings, "SSH_REMOTE_HOST", "")
@@ -89,9 +87,7 @@ def remote_encode_video(video_id):
     video_to_encode.save()
     change_encoding_step(video_id, 0, "start")
 
-    encoding_log, created = EncodingLog.objects.get_or_create(
-        video=video_to_encode
-    )
+    encoding_log, created = EncodingLog.objects.get_or_create(video=video_to_encode)
     encoding_log.log = "%s" % start
     encoding_log.save()
 
@@ -232,9 +228,7 @@ def remote_audio_part(video_to_encode, info_video, output_dir):
         msg += import_remote_audio(
             info_video["encode_audio"], output_dir, video_to_encode
         )
-        if info_video["has_stream_thumbnail"] and info_video.get(
-            "encode_thumbnail"
-        ):
+        if info_video["has_stream_thumbnail"] and info_video.get("encode_thumbnail"):
             msg += import_remote_thumbnail(
                 info_video["encode_thumbnail"], output_dir, video_to_encode
             )
@@ -266,9 +260,7 @@ def remote_video_part(video_to_encode, info_video, output_dir):
         video_mp4 = sorted(ev, key=lambda m: m.height)[0]
 
         # create overview
-        overviewfilename = "%(output_dir)s/overview.vtt" % {
-            "output_dir": output_dir
-        }
+        overviewfilename = "%(output_dir)s/overview.vtt" % {"output_dir": output_dir}
         image_url = "overview.png"
         overviewimagefilename = "%(output_dir)s/%(image_url)s" % {
             "output_dir": output_dir,
@@ -299,9 +291,7 @@ def remote_video_part(video_to_encode, info_video, output_dir):
         )
         add_encoding_log(video_id, "create_overview_image: %s" % msg_overview)
         # create thumbnail
-        if info_video["has_stream_thumbnail"] and info_video.get(
-            "encode_thumbnail"
-        ):
+        if info_video["has_stream_thumbnail"] and info_video.get("encode_thumbnail"):
             msg += import_remote_thumbnail(
                 info_video["encode_thumbnail"], output_dir, video_to_encode
             )
@@ -314,9 +304,7 @@ def remote_video_part(video_to_encode, info_video, output_dir):
             msg_thumbnail = create_and_save_thumbnails(
                 video_mp4.video.video.path, video_mp4.width, video_id
             )
-            add_encoding_log(
-                video_id, "create_and_save_thumbnails : %s" % msg_thumbnail
-            )
+            add_encoding_log(video_id, "create_and_save_thumbnails : %s" % msg_thumbnail)
     elif info_video["has_stream_video"] or info_video.get("encode_video"):
         msg += "\n- has stream video but not info video "
         add_encoding_log(video_to_encode.id, msg)
@@ -331,9 +319,7 @@ def import_remote_thumbnail(info_encode_thumbnail, output_dir, video_to_encode):
     if type(info_encode_thumbnail) is list:
         info_encode_thumbnail = info_encode_thumbnail[0]
 
-    thumbnailfilename = os.path.join(
-        output_dir, info_encode_thumbnail["filename"]
-    )
+    thumbnailfilename = os.path.join(output_dir, info_encode_thumbnail["filename"])
     if check_file(thumbnailfilename):
         if FILEPICKER:
             homedir, created = UserFolder.objects.get_or_create(
@@ -475,9 +461,7 @@ def import_mp4(encod_video, output_dir, video_to_encode):
     videofilenameMp4 = os.path.join(output_dir, "%s.mp4" % filename)
     msg = "\n- videofilenameMp4 :\n%s" % videofilenameMp4
     if check_file(videofilenameMp4):
-        rendition = VideoRendition.objects.get(
-            resolution=encod_video["rendition"]
-        )
+        rendition = VideoRendition.objects.get(resolution=encod_video["rendition"])
         encoding, created = EncodingVideo.objects.get_or_create(
             name=get_encoding_choice_from_filename(filename),
             video=video_to_encode,
@@ -489,9 +473,7 @@ def import_mp4(encod_video, output_dir, video_to_encode):
         )
         encoding.save()
     else:
-        msg = "save_mp4_file Wrong file or path : " + "\n%s " % (
-            videofilenameMp4
-        )
+        msg = "save_mp4_file Wrong file or path : " + "\n%s " % (videofilenameMp4)
         add_encoding_log(video_to_encode.id, msg)
         change_encoding_step(video_to_encode.id, -1, msg)
         send_email(msg, video_to_encode.id)
@@ -509,9 +491,7 @@ def import_m3u8(encod_video, output_dir, video_to_encode):
 
     rendition = VideoRendition.objects.get(resolution=encod_video["rendition"])
 
-    int_bitrate = int(
-        re.search(r"(\d+)k", rendition.video_bitrate, re.I).groups()[0]
-    )
+    int_bitrate = int(re.search(r"(\d+)k", rendition.video_bitrate, re.I).groups()[0])
     bandwidth = int_bitrate * 1000
 
     if check_file(videofilenameM3u8) and check_file(videofilenameTS):

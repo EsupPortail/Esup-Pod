@@ -53,9 +53,7 @@ class authenticationViewsTestCase(TestCase):
         self.client = Client()
         # USE_CAS is valued to False
         response = self.client.get("/authentication_logout/")
-        self.assertRedirects(
-            response, "/accounts/logout/?next=/", target_status_code=302
-        )
+        self.assertRedirects(response, "/accounts/logout/?next=/", target_status_code=302)
 
         print(
             "   --->  test_authentication_logout \
@@ -79,9 +77,7 @@ class authenticationViewsTestCase(TestCase):
         self.assertTemplateUsed(response, "userpicture/userpicture.html")
         # POST method
         # Form is valid
-        response = self.client.post(
-            "/accounts/userpicture/", {"userpicture": ""}
-        )
+        response = self.client.post("/accounts/userpicture/", {"userpicture": ""})
         # le message a été retiré dans le code
         # messages = list(response.wsgi_request._messages)
         # self.assertEqual(len(messages), 1)
@@ -89,9 +85,7 @@ class authenticationViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "userpicture/userpicture.html")
         # Form is not valid
-        response = self.client.post(
-            "/accounts/userpicture/", {"userpicture": 12}
-        )
+        response = self.client.post("/accounts/userpicture/", {"userpicture": 12})
         messages = list(response.wsgi_request._messages)
         self.assertEqual(len(messages), 1)
         self.assertEqual(

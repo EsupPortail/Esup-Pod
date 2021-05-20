@@ -121,9 +121,7 @@ class VideoUserSerializer(serializers.ModelSerializer):
         request = self.context["request"]
         video_data = json.loads(instance.get_json_to_index())
         video_data.update({"encoded": instance.encoded})
-        video_data.update(
-            {"encoding_in_progress": instance.encoding_in_progress}
-        )
+        video_data.update({"encoding_in_progress": instance.encoding_in_progress})
         video_data.update({"get_encoding_step": instance.get_encoding_step})
         video_data.update({"get_thumbnail_admin": instance.get_thumbnail_admin})
         video_data.update(
@@ -299,9 +297,7 @@ class EncodingVideoViewSet(viewsets.ModelViewSet):
     def filter_encoded_medias(queryset, request):
         encoded_audios = queryset
         if request.GET.get("video"):
-            encoded_audios = encoded_audios.filter(
-                video__id=request.GET.get("video")
-            )
+            encoded_audios = encoded_audios.filter(video__id=request.GET.get("video"))
         if request.GET.get("extension"):
             encoded_audios = encoded_audios.filter(
                 source_file__iendswith=request.GET.get("extension")
@@ -362,8 +358,7 @@ class DublinCoreView(APIView):
             list_videos = VIDEOS.filter(**request.GET.dict())
         xmlcontent = '<?xml version="1.0" encoding="utf-8"?>\n'
         xmlcontent += (
-            "<!DOCTYPE rdf:RDF PUBLIC "
-            '"-//DUBLIN CORE//DCMES DTD 2002/07/31//EN" \n'
+            "<!DOCTYPE rdf:RDF PUBLIC " '"-//DUBLIN CORE//DCMES DTD 2002/07/31//EN" \n'
         )
         xmlcontent += (
             '"http://dublincore.org/documents/2002/07'
@@ -389,16 +384,13 @@ def launch_encode_view(request):
     if (
         video is not None
         and (
-            not hasattr(video, "launch_encode")
-            or getattr(video, "launch_encode") is True
+            not hasattr(video, "launch_encode") or getattr(video, "launch_encode") is True
         )
         and video.encoding_in_progress is False
     ):
         video.launch_encode = True
         video.save()
-    return Response(
-        VideoSerializer(instance=video, context={"request": request}).data
-    )
+    return Response(VideoSerializer(instance=video, context={"request": request}).data)
 
 
 @api_view(["GET"])
@@ -406,9 +398,7 @@ def launch_transcript_view(request):
     video = get_object_or_404(Video, slug=request.GET.get("slug"))
     if video is not None and video.get_video_mp3():
         start_transcript(video.id, threaded=True)
-    return Response(
-        VideoSerializer(instance=video, context={"request": request}).data
-    )
+    return Response(VideoSerializer(instance=video, context={"request": request}).data)
 
 
 @api_view(["GET"])
@@ -416,6 +406,4 @@ def store_remote_encoded_video(request):
     video_id = request.GET.get("id", 0)
     video = get_object_or_404(Video, id=video_id)
     start_store_remote_encoding_video(video_id)
-    return Response(
-        VideoSerializer(instance=video, context={"request": request}).data
-    )
+    return Response(VideoSerializer(instance=video, context={"request": request}).data)

@@ -65,9 +65,9 @@ class ChannelTestCase(TestCase):
     """
 
     def test_Channel_null_attribut(self):
-        channel = Channel.objects.annotate(
-            video_count=Count("video", distinct=True)
-        ).get(title="ChannelTest1")
+        channel = Channel.objects.annotate(video_count=Count("video", distinct=True)).get(
+            title="ChannelTest1"
+        )
         self.assertEqual(channel.visible, False)
         self.assertFalse(channel.slug == slugify("blabla"))
         self.assertEqual(channel.color, None)
@@ -88,9 +88,9 @@ class ChannelTestCase(TestCase):
     """
 
     def test_Channel_with_attributs(self):
-        channel = Channel.objects.annotate(
-            video_count=Count("video", distinct=True)
-        ).get(title="ChannelTest2")
+        channel = Channel.objects.annotate(video_count=Count("video", distinct=True)).get(
+            title="ChannelTest2"
+        )
         self.assertEqual(channel.visible, True)
         channel.color = "Blue"
         self.assertEqual(channel.color, "Blue")
@@ -147,9 +147,9 @@ class ThemeTestCase(TestCase):
     """
 
     def test_Theme_null_attribut(self):
-        theme = Theme.objects.annotate(
-            video_count=Count("video", distinct=True)
-        ).get(title="Theme1")
+        theme = Theme.objects.annotate(video_count=Count("video", distinct=True)).get(
+            title="Theme1"
+        )
         self.assertFalse(theme.slug == slugify("blabla"))
         if isinstance(theme.headband, ImageFieldFile):
             self.assertEqual(theme.headband.name, "")
@@ -211,17 +211,15 @@ class TypeTestCase(TestCase):
     """
 
     def test_Type_null_attribut(self):
-        type1 = Type.objects.annotate(
-            video_count=Count("video", distinct=True)
-        ).get(title="Type1")
+        type1 = Type.objects.annotate(video_count=Count("video", distinct=True)).get(
+            title="Type1"
+        )
         self.assertEqual(type1.slug, slugify(type1.title))
         if isinstance(type1.icon, ImageFieldFile):
             self.assertEqual(type1.icon.name, "")
         self.assertEqual(type1.__str__(), "Type1")
         self.assertEqual(type1.video_count, 0)
-        self.assertEqual(
-            type1.description, _("-- sorry, no translation provided --")
-        )
+        self.assertEqual(type1.description, _("-- sorry, no translation provided --"))
         print("   --->  test_Type_null_attribut of TypeTestCase : OK !")
 
     """
@@ -322,9 +320,7 @@ class VideoTestCase(TestCase):
         fname, dot, extension = filename.rpartition(".")
 
         if FILEPICKER:
-            homedir, created = UserFolder.objects.get_or_create(
-                name="Home", owner=user
-            )
+            homedir, created = UserFolder.objects.get_or_create(name="Home", owner=user)
             thumbnail = CustomImageModel.objects.create(
                 folder=homedir, created_by=user, file="blabla.jpg"
             )
@@ -358,9 +354,7 @@ class VideoTestCase(TestCase):
 
     def test_last_Video_display(self):
 
-        filter_en = Video.objects.filter(
-            encoding_in_progress=False, is_draft=False
-        )
+        filter_en = Video.objects.filter(encoding_in_progress=False, is_draft=False)
         filter_pass = filter_en.filter(
             Q(password="") | Q(password=None), is_restricted=False
         )
@@ -374,9 +368,7 @@ class VideoTestCase(TestCase):
         self.assertEqual(video.video.name, "test.mp4")
         self.assertEqual(video.allow_downloading, False)
         self.assertEqual(video.description, "")
-        self.assertEqual(
-            video.slug, "%04d-%s" % (video.id, slugify(video.title))
-        )
+        self.assertEqual(video.slug, "%04d-%s" % (video.id, slugify(video.title)))
         date = datetime.today()
 
         self.assertEqual(video.owner, User.objects.get(username="pod"))
@@ -394,17 +386,13 @@ class VideoTestCase(TestCase):
 
         self.assertEqual(video.duration, 0)
         # self.assertEqual(pod.get_absolute_url(), "/video/" + pod.slug + "/")
-        self.assertEqual(
-            video.__str__(), "%s - %s" % ("%04d" % video.id, video.title)
-        )
+        self.assertEqual(video.__str__(), "%s - %s" % ("%04d" % video.id, video.title))
 
         print("   --->  test_Video_null_attributs of VideoTestCase : OK !")
 
     def test_Video_many_attributs(self):
         video2 = Video.objects.get(id=2)
-        self.assertEqual(
-            video2.video.name, get_storage_path_video(video2, "test.mp4")
-        )
+        self.assertEqual(video2.video.name, get_storage_path_video(video2, "test.mp4"))
         self.assertEqual(video2.allow_downloading, True)
         self.assertEqual(video2.description, "fl")
         self.assertEqual(video2.get_viewcount(), 3)
@@ -460,8 +448,7 @@ class VideoRenditionTestCase(TestCase):
         self.assertTrue(isinstance(vr, VideoRendition))
         self.assertEqual(
             vr.__str__(),
-            "VideoRendition num %s with resolution %s"
-            % ("%04d" % vr.id, vr.resolution),
+            "VideoRendition num %s with resolution %s" % ("%04d" % vr.id, vr.resolution),
         )
         vr.clean()
         print(
@@ -475,58 +462,44 @@ class VideoRenditionTestCase(TestCase):
         self.assertTrue(isinstance(vr, VideoRendition))
         self.assertEqual(
             vr.__str__(),
-            "VideoRendition num %s with resolution %s"
-            % ("%04d" % vr.id, vr.resolution),
+            "VideoRendition num %s with resolution %s" % ("%04d" % vr.id, vr.resolution),
         )
         self.assertRaises(ValidationError, vr.clean)
         vr = self.create_video_rendition(resolution="totoxtoto")
         self.assertTrue(isinstance(vr, VideoRendition))
         self.assertEqual(
             vr.__str__(),
-            "VideoRendition num %s with resolution %s"
-            % ("%04d" % vr.id, vr.resolution),
+            "VideoRendition num %s with resolution %s" % ("%04d" % vr.id, vr.resolution),
         )
         self.assertRaises(ValidationError, vr.clean)
         print("check video bitrate error")
-        vr = self.create_video_rendition(
-            resolution="640x361", video_bitrate="dfk"
-        )
+        vr = self.create_video_rendition(resolution="640x361", video_bitrate="dfk")
         self.assertTrue(isinstance(vr, VideoRendition))
         self.assertEqual(
             vr.__str__(),
-            "VideoRendition num %s with resolution %s"
-            % ("%04d" % vr.id, vr.resolution),
+            "VideoRendition num %s with resolution %s" % ("%04d" % vr.id, vr.resolution),
         )
         self.assertRaises(ValidationError, vr.clean)
-        vr = self.create_video_rendition(
-            resolution="640x362", video_bitrate="100"
-        )
+        vr = self.create_video_rendition(resolution="640x362", video_bitrate="100")
         self.assertTrue(isinstance(vr, VideoRendition))
         self.assertEqual(
             vr.__str__(),
-            "VideoRendition num %s with resolution %s"
-            % ("%04d" % vr.id, vr.resolution),
+            "VideoRendition num %s with resolution %s" % ("%04d" % vr.id, vr.resolution),
         )
         self.assertRaises(ValidationError, vr.clean)
         print("check audio bitrate error")
-        vr = self.create_video_rendition(
-            resolution="640x363", audio_bitrate="dfk"
-        )
+        vr = self.create_video_rendition(resolution="640x363", audio_bitrate="dfk")
         self.assertTrue(isinstance(vr, VideoRendition))
         self.assertEqual(
             vr.__str__(),
-            "VideoRendition num %s with resolution %s"
-            % ("%04d" % vr.id, vr.resolution),
+            "VideoRendition num %s with resolution %s" % ("%04d" % vr.id, vr.resolution),
         )
         self.assertRaises(ValidationError, vr.clean)
-        vr = self.create_video_rendition(
-            resolution="640x364", audio_bitrate="100"
-        )
+        vr = self.create_video_rendition(resolution="640x364", audio_bitrate="100")
         self.assertTrue(isinstance(vr, VideoRendition))
         self.assertEqual(
             vr.__str__(),
-            "VideoRendition num %s with resolution %s"
-            % ("%04d" % vr.id, vr.resolution),
+            "VideoRendition num %s with resolution %s" % ("%04d" % vr.id, vr.resolution),
         )
         self.assertRaises(ValidationError, vr.clean)
         print(
@@ -798,9 +771,7 @@ class EncodingLogTestCase(TestCase):
         print(" --->  test_EncodingLogTestCase_null_attributs : OK !")
 
     def test_EncodingLogTestCase_with_attributs(self):
-        el = EncodingLog.objects.create(
-            video=Video.objects.get(id=1), log="encoding log"
-        )
+        el = EncodingLog.objects.create(video=Video.objects.get(id=1), log="encoding log")
         self.assertTrue(isinstance(el, EncodingLog))
         elslug = "Log for encoding video %s" % (el.video.id)
         self.assertEqual(el.__str__(), elslug)
@@ -889,13 +860,10 @@ class NotesTestCase(TestCase):
         )
         self.assertTrue(isinstance(note, Notes))
         self.assertTrue(isinstance(advnote, AdvancedNotes))
-        self.assertEqual(
-            note.__str__(), "%s-%s" % (note.user.username, note.video)
-        )
+        self.assertEqual(note.__str__(), "%s-%s" % (note.user.username, note.video))
         self.assertEqual(
             advnote.__str__(),
-            "%s-%s-%s"
-            % (advnote.user.username, advnote.video, advnote.timestamp),
+            "%s-%s-%s" % (advnote.user.username, advnote.video, advnote.timestamp),
         )
         self.assertEqual(note.note, None)
         self.assertEqual(advnote.note, None)
@@ -918,13 +886,10 @@ class NotesTestCase(TestCase):
         )
         self.assertTrue(isinstance(note, Notes))
         self.assertTrue(isinstance(advnote, AdvancedNotes))
-        self.assertEqual(
-            note.__str__(), "%s-%s" % (note.user.username, note.video)
-        )
+        self.assertEqual(note.__str__(), "%s-%s" % (note.user.username, note.video))
         self.assertEqual(
             advnote.__str__(),
-            "%s-%s-%s"
-            % (advnote.user.username, advnote.video, advnote.timestamp),
+            "%s-%s-%s" % (advnote.user.username, advnote.video, advnote.timestamp),
         )
         self.assertEqual(note.note, "coucou")
         self.assertEqual(advnote.note, "coucou")

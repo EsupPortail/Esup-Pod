@@ -28,8 +28,7 @@ class CustomFileWidget(widgets.TextInput):
                 pass
 
         input = (
-            '<input type="hidden" id="%(id)s" '
-            'name="%(name)s" value="%(value)s">'
+            '<input type="hidden" id="%(id)s" ' 'name="%(name)s" value="%(value)s">'
         ) % {
             "id": attrs["id"] if attrs.get("id") else "",
             "name": name,

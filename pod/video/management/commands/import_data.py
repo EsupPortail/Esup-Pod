@@ -76,9 +76,7 @@ class Command(BaseCommand):
 
         if options["import"] and options["import"] in self.valid_args:
             type_to_import = options["import"]
-            filepath = os.path.join(
-                BASE_DIR, "../../import/", type_to_import + ".json"
-            )
+            filepath = os.path.join(BASE_DIR, "../../import/", type_to_import + ".json")
             print(type_to_import, filepath)
             self.migrate_to_v2(filepath, type_to_import)
             with open(filepath, "r") as infile:
@@ -107,9 +105,7 @@ class Command(BaseCommand):
                     data = json.load(infile)
                     for obj in data:
                         if int(obj) not in VIDEO_ID_TO_EXCLUDE:
-                            self.add_data_to_video(
-                                type_to_import, obj, data[obj]
-                            )
+                            self.add_data_to_video(type_to_import, obj, data[obj])
         else:
             print(
                 "******* Warning: you must give some arguments: %s *******"
@@ -119,9 +115,7 @@ class Command(BaseCommand):
     def save_object(self, type_to_import, obj):
         """Save object obj of type 'type_to_import'."""
         if AUTHENTICATION and type_to_import == "UserProfile":
-            owner, owner_created = Owner.objects.get_or_create(
-                user_id=obj.object.user_id
-            )
+            owner, owner_created = Owner.objects.get_or_create(user_id=obj.object.user_id)
             owner.auth_type = obj.object.auth_type
             owner.affiliation = obj.object.affiliation
             owner.commentaire = obj.object.commentaire
@@ -168,9 +162,7 @@ class Command(BaseCommand):
 
     def Type(self, filedata):
         """Rename type model in specified filedata."""
-        return filedata.replace("pods.type", "video.type").replace(
-            "headband", "icon"
-        )
+        return filedata.replace("pods.type", "video.type").replace("headband", "icon")
 
     def Discipline(self, filedata):
         """Rename discipline model in specified filedata."""
@@ -190,9 +182,7 @@ class Command(BaseCommand):
 
     def Contributor(self, filedata):
         """Rename contributor model in specified filedata."""
-        return filedata.replace(
-            "pods.contributorpods", "completion.contributor"
-        )
+        return filedata.replace("pods.contributorpods", "completion.contributor")
 
     def Overlay(self, filedata):
         """Rename overlay model in specified filedata."""
@@ -291,9 +281,7 @@ class Command(BaseCommand):
         except UnicodeDecodeError:
             print("************ codecs ***********")
             with codecs.open(new_file, "r", encoding="latin-1") as sourceFile:
-                with codecs.open(
-                    new_file[:-3] + "txt", "w", "utf-8"
-                ) as targetFile:
+                with codecs.open(new_file[:-3] + "txt", "w", "utf-8") as targetFile:
                     contents = sourceFile.read()
                     targetFile.write(contents)
             webvtt.from_srt(new_file[:-3] + "txt").save(new_file[:-3] + "vtt")
@@ -352,9 +340,7 @@ class Command(BaseCommand):
     def download_doc(self, doc):
         """Download doc from pod v1."""
         source_url = FROM_URL + doc
-        dest_file = os.path.join(
-            settings.MEDIA_ROOT, "tempfile", os.path.basename(doc)
-        )
+        dest_file = os.path.join(settings.MEDIA_ROOT, "tempfile", os.path.basename(doc))
         os.makedirs(os.path.dirname(dest_file), exist_ok=True)
         new_file = wget.download(source_url, dest_file)
         return new_file

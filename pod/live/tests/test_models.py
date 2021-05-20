@@ -33,9 +33,7 @@ class BuildingTestCase(TestCase):
         self.assertEqual(building.gmapurl, "b")
         if FILEPICKER:
             user = User.objects.create(username="pod")
-            homedir, created = UserFolder.objects.get_or_create(
-                name="Home", owner=user
-            )
+            homedir, created = UserFolder.objects.get_or_create(name="Home", owner=user)
             headband = CustomImageModel.objects.create(
                 folder=homedir, created_by=user, file="blabla.jpg"
             )
@@ -71,9 +69,7 @@ class BroadcasterTestCase(TestCase):
         building = Building.objects.create(name="building1")
         if FILEPICKER:
             user = User.objects.create(username="pod")
-            homedir, created = UserFolder.objects.get_or_create(
-                name="Home", owner=user
-            )
+            homedir, created = UserFolder.objects.get_or_create(name="Home", owner=user)
             poster = CustomImageModel.objects.create(
                 folder=homedir, created_by=user, file="blabla.jpg"
             )

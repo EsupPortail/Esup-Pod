@@ -43,8 +43,7 @@ class Meeting(models.Model):
         _("Encoding step"),
         choices=ENCODING_STEP,
         help_text=_(
-            "Encoding step for conversion of the "
-            "BBB presentation to video file."
+            "Encoding step for conversion of the " "BBB presentation to video file."
         ),
         default=0,
     )
@@ -108,9 +107,7 @@ def process_recording(sender, instance, created, **kwargs):
     # Be careful : this is the condition to create a video of the
     # BigBlueButton presentation only one time.
     if instance.encoding_step == 1 and instance.encoded_by is not None:
-        mod = importlib.import_module(
-            "%s.plugins.type_%s" % (__package__, "bbb")
-        )
+        mod = importlib.import_module("%s.plugins.type_%s" % (__package__, "bbb"))
         mod.process(instance)
 
 
@@ -138,9 +135,7 @@ class Attendee(models.Model):
     username = models.CharField(
         _("Username / User id"),
         max_length=150,
-        help_text=_(
-            "Username / User id, if the BBB user was matching a Pod user."
-        ),
+        help_text=_("Username / User id, if the BBB user was matching a Pod user."),
     )
 
     # Pod user, if the BBB user was translated with a Pod user

@@ -32,8 +32,7 @@ class Playlist(models.Model):
         _("Visible"),
         default=False,
         help_text=_(
-            "If checked, the playlist can be visible to users"
-            + " other than the owner."
+            "If checked, the playlist can be visible to users" + " other than the owner."
         ),
     )
 
@@ -66,9 +65,7 @@ class Playlist(models.Model):
         return PlaylistElement.objects.get(playlist=self, position=1)
 
     def last(self):
-        last = PlaylistElement.objects.filter(playlist=self).order_by(
-            "-position"
-        )
+        last = PlaylistElement.objects.filter(playlist=self).order_by("-position")
         if last:
             return last[0].position + 1
         else:

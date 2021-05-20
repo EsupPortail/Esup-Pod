@@ -80,9 +80,7 @@ class Owner(models.Model):
         max_length=50, choices=AFFILIATION, default=AFFILIATION[0][0]
     )
     commentaire = models.TextField(_("Comment"), blank=True, default="")
-    hashkey = models.CharField(
-        max_length=64, unique=True, blank=True, default=""
-    )
+    hashkey = models.CharField(max_length=64, unique=True, blank=True, default="")
     userpicture = models.ForeignKey(
         CustomImageModel, blank=True, null=True, verbose_name=_("Picture")
     )

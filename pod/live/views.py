@@ -55,9 +55,7 @@ def building(request, building_id):  # affichage des directs
         request.user.is_superuser
         or request.user.has_perm("live.view_building_supervisor")
     ):
-        messages.add_message(
-            request, messages.ERROR, _("You cannot view this page.")
-        )
+        messages.add_message(request, messages.ERROR, _("You cannot view this page."))
         raise PermissionDenied
     building = get_object_or_404(Building, id=building_id)
     return render(request, "live/building.html", {"building": building})
@@ -71,9 +69,7 @@ def get_broadcaster_by_slug(slug, site):
         except ObjectDoesNotExist:
             pass
     if broadcaster is None:
-        broadcaster = get_object_or_404(
-            Broadcaster, slug=slug, building__sites=site
-        )
+        broadcaster = get_object_or_404(Broadcaster, slug=slug, building__sites=site)
     return broadcaster
 
 
@@ -81,9 +77,7 @@ def video_live(request, slug):  # affichage des directs
     site = get_current_site(request)
     broadcaster = get_broadcaster_by_slug(slug, site)
     if broadcaster.is_restricted and not request.user.is_authenticated():
-        iframe_param = (
-            "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
-        )
+        iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
         return redirect(
             "%s?%sreferrer=%s"
             % (settings.LOGIN_URL, iframe_param, request.get_full_path())
@@ -95,18 +89,12 @@ def video_live(request, slug):  # affichage des directs
         request.POST.get("password")
         and request.POST.get("password") == broadcaster.password
     ):
-        form = (
-            LivePasswordForm(request.POST)
-            if request.POST
-            else LivePasswordForm()
-        )
+        form = LivePasswordForm(request.POST) if request.POST else LivePasswordForm()
         if (
             request.POST.get("password")
             and request.POST.get("password") != broadcaster.password
         ):
-            messages.add_message(
-                request, messages.ERROR, _("The password is incorrect.")
-            )
+            messages.add_message(request, messages.ERROR, _("The password is incorrect."))
         return render(
             request,
             "live/live.html",
@@ -120,9 +108,7 @@ def video_live(request, slug):  # affichage des directs
     # for which students can send message from this live page
     display_chat = False
     if USE_BBB and USE_BBB_LIVE:
-        livestreams_list = Livestream.objects.filter(
-            broadcaster_id=broadcaster.id
-        )
+        livestreams_list = Livestream.objects.filter(broadcaster_id=broadcaster.id)
         for livestream in livestreams_list:
             display_chat = livestream.enable_chat
     return render(
@@ -163,9 +149,7 @@ def heartbeat(request):
         heartbeat.save()
 
         mimetype = "application/json"
-        viewers = broadcast.viewers.values(
-            "first_name", "last_name", "is_superuser"
-        )
+        viewers = broadcast.viewers.values("first_name", "last_name", "is_superuser")
         can_see = (
             VIEWERS_ONLY_FOR_STAFF and request.user.is_staff
         ) or not VIEWERS_ONLY_FOR_STAFF

@@ -12,12 +12,8 @@ import importlib
 
 register = template.Library()
 
-HOMEPAGE_SHOWS_PASSWORDED = getattr(
-    django_settings, "HOMEPAGE_SHOWS_PASSWORDED", True
-)
-HOMEPAGE_SHOWS_RESTRICTED = getattr(
-    django_settings, "HOMEPAGE_SHOWS_RESTRICTED", True
-)
+HOMEPAGE_SHOWS_PASSWORDED = getattr(django_settings, "HOMEPAGE_SHOWS_PASSWORDED", True)
+HOMEPAGE_SHOWS_RESTRICTED = getattr(django_settings, "HOMEPAGE_SHOWS_RESTRICTED", True)
 
 
 @register.simple_tag
@@ -25,8 +21,7 @@ def get_app_link(video, app):
     mod = importlib.import_module("pod.%s.models" % app)
     if hasattr(mod, capfirst(app)):
         video_app = eval(
-            "mod.%s.objects.filter(video__id=%s).all()"
-            % (capfirst(app), video.id)
+            "mod.%s.objects.filter(video__id=%s).all()" % (capfirst(app), video.id)
         )
         if (
             app == "interactive"
@@ -65,9 +60,7 @@ def get_last_videos(context):
         videos = videos.filter(Q(password="") | Q(password__isnull=True))
     if not HOMEPAGE_SHOWS_RESTRICTED:
         videos = videos.filter(is_restricted=False)
-    videos = videos.defer(
-        "video", "slug", "owner", "additional_owners", "description"
-    )
+    videos = videos.defer("video", "slug", "owner", "additional_owners", "description")
     count = 0
     recent_vids = []
     for vid in videos:

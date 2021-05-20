@@ -34,9 +34,7 @@ class CompletionViewsTestCase(TestCase):
         user = User.objects.create(username="test", password="azerty")
         user.set_password("hello")
         user.save()
-        staff = User.objects.create(
-            username="staff", password="azerty", is_staff=True
-        )
+        staff = User.objects.create(username="staff", password="azerty", is_staff=True)
         staff.set_password("hello")
         staff.save()
         vid1 = Video.objects.create(
@@ -100,9 +98,7 @@ class CompletionContributorViewsTestCase(TestCase):
 
     def setUp(self):
         site = Site.objects.get(id=1)
-        staff = User.objects.create(
-            username="staff", password="azerty", is_staff=True
-        )
+        staff = User.objects.create(username="staff", password="azerty", is_staff=True)
         staff.set_password("hello")
         staff.save()
         vid = Video.objects.create(
@@ -271,9 +267,7 @@ class CompletionTrackViewsTestCase(TestCase):
 
     def setUp(self):
         site = Site.objects.get(id=1)
-        staff = User.objects.create(
-            username="staff", password="azerty", is_staff=True
-        )
+        staff = User.objects.create(username="staff", password="azerty", is_staff=True)
         staff.set_password("hello")
         staff.save()
         if FILEPICKER:
@@ -290,16 +284,12 @@ class CompletionTrackViewsTestCase(TestCase):
 
     def test_video_completion_track(self):
         video = Video.objects.get(id=1)
-        response = self.client.get(
-            "/video_completion_track/{0}/".format(video.slug)
-        )
+        response = self.client.get("/video_completion_track/{0}/".format(video.slug))
         self.assertEqual(response.status_code, 302)
         authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
-        response = self.client.get(
-            "/video_completion_track/{0}/".format(video.slug)
-        )
+        response = self.client.get("/video_completion_track/{0}/".format(video.slug))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
@@ -489,9 +479,7 @@ class CompletionDocumentViewsTestCase(TestCase):
 
     def setUp(self):
         site = Site.objects.get(id=1)
-        staff = User.objects.create(
-            username="staff", password="azerty", is_staff=True
-        )
+        staff = User.objects.create(username="staff", password="azerty", is_staff=True)
         staff.set_password("hello")
         staff.save()
         if FILEPICKER:
@@ -508,16 +496,12 @@ class CompletionDocumentViewsTestCase(TestCase):
 
     def test_video_completion_document(self):
         video = Video.objects.get(id=1)
-        response = self.client.get(
-            "/video_completion_document/{0}/".format(video.slug)
-        )
+        response = self.client.get("/video_completion_document/{0}/".format(video.slug))
         self.assertEqual(response.status_code, 302)
         authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
-        response = self.client.get(
-            "/video_completion_document/{0}/".format(video.slug)
-        )
+        response = self.client.get("/video_completion_document/{0}/".format(video.slug))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")
@@ -713,9 +697,7 @@ class CompletionOverlayViewsTestCase(TestCase):
     ]
 
     def setUp(self):
-        staff = User.objects.create(
-            username="staff", password="azerty", is_staff=True
-        )
+        staff = User.objects.create(username="staff", password="azerty", is_staff=True)
         staff.set_password("hello")
         staff.save()
         Video.objects.create(
@@ -730,16 +712,12 @@ class CompletionOverlayViewsTestCase(TestCase):
 
     def test_video_completion_overlay(self):
         video = Video.objects.get(id=1)
-        response = self.client.get(
-            "/video_completion_overlay/{0}/".format(video.slug)
-        )
+        response = self.client.get("/video_completion_overlay/{0}/".format(video.slug))
         self.assertEqual(response.status_code, 302)
         authenticate(username="staff", password="hello")
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
-        response = self.client.get(
-            "/video_completion_overlay/{0}/".format(video.slug)
-        )
+        response = self.client.get("/video_completion_overlay/{0}/".format(video.slug))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "videotest2")

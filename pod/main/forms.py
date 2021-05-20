@@ -32,8 +32,7 @@ def add_placeholder_and_asterisk(fields):
         else:
             if fields[myField].required:
                 fields[myField].label = mark_safe(
-                    '%s <span class="required_star">*</span>'
-                    % fields[myField].label
+                    '%s <span class="required_star">*</span>' % fields[myField].label
                 )
                 fields[myField].widget.attrs["required"] = ""
             if fields[myField].widget.attrs.get("class"):
@@ -89,7 +88,5 @@ class ContactUsForm(forms.Form):
     def clean(self):
         cleaned_data = super(ContactUsForm, self).clean()
         if cleaned_data["subject"] == "-----":
-            self._errors["subject"] = self.error_class(
-                [_("Please specify a subject")]
-            )
+            self._errors["subject"] = self.error_class([_("Please specify a subject")])
         return cleaned_data

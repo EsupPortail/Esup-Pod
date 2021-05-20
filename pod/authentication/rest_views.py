@@ -116,9 +116,7 @@ def accessgroups_set_users_by_name(request):
             except ObjectDoesNotExist:
                 pass
         return Response(
-            AccessGroupSerializer(
-                instance=accessgroup, context={"request": request}
-            ).data
+            AccessGroupSerializer(instance=accessgroup, context={"request": request}).data
         )
     else:
         return HttpResponse(status=500)
@@ -138,9 +136,7 @@ def accessgroups_remove_users_by_name(request):
             except ObjectDoesNotExist:
                 pass
         return Response(
-            AccessGroupSerializer(
-                instance=accessgroup, context={"request": request}
-            ).data
+            AccessGroupSerializer(instance=accessgroup, context={"request": request}).data
         )
     else:
         return HttpResponse(status=500)
@@ -159,9 +155,7 @@ def accessgroups_set_user_accessgroup(request):
             except ObjectDoesNotExist:
                 pass
         return Response(
-            OwnerWithGroupsSerializer(
-                instance=owner, context={"request": request}
-            ).data
+            OwnerWithGroupsSerializer(instance=owner, context={"request": request}).data
         )
     else:
         return HttpResponse(status=500)
@@ -181,9 +175,7 @@ def accessgroups_remove_user_accessgroup(request):
             except ObjectDoesNotExist:
                 pass
         return Response(
-            OwnerWithGroupsSerializer(
-                instance=owner, context={"request": request}
-            ).data
+            OwnerWithGroupsSerializer(instance=owner, context={"request": request}).data
         )
     else:
         return HttpResponse(status=500)

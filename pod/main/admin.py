@@ -97,9 +97,7 @@ class LinkFooterAdmin(TranslationAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "page":
-            kwargs["queryset"] = FlatPage.objects.filter(
-                sites=Site.objects.get_current()
-            )
+            kwargs["queryset"] = FlatPage.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 

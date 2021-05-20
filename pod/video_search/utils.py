@@ -30,9 +30,7 @@ def index_es(video):
             data = video.get_json_to_index()
             if data != "{}":
                 if ES_VERSION == 7:
-                    res = es.index(
-                        index=ES_INDEX, id=video.id, body=data, refresh=True
-                    )
+                    res = es.index(index=ES_INDEX, id=video.id, body=data, refresh=True)
                 else:
                     res = es.index(
                         index=ES_INDEX,
@@ -97,9 +95,7 @@ def create_index_es():
     json_data = open(template_file)
     es_template = json.load(json_data)
     try:
-        create = es.indices.create(
-            index=ES_INDEX, body=es_template
-        )  # ignore=[400, 404]
+        create = es.indices.create(index=ES_INDEX, body=es_template)  # ignore=[400, 404]
         logger.info(create)
         return create
     except TransportError as e:

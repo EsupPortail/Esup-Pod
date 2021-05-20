@@ -32,8 +32,7 @@ class UserFolder(models.Model):
         blank=True,
         verbose_name=_("Groups"),
         help_text=_(
-            "Select one or more groups who"
-            " can access in read only to this folder"
+            "Select one or more groups who" " can access in read only to this folder"
         ),
     )
     users = select2_fields.ManyToManyField(
@@ -42,8 +41,7 @@ class UserFolder(models.Model):
         verbose_name=_("Users"),
         related_name="shared_files",
         help_text=_(
-            "Select one or more users who"
-            " can access in read only to this folder"
+            "Select one or more users who" " can access in read only to this folder"
         ),
     )
 
@@ -68,9 +66,7 @@ class UserFolder(models.Model):
     def get_all_files(self):
         file_list = self.customfilemodel_set.all()
         image_list = self.customimagemodel_set.all()
-        result_list = sorted(
-            chain(image_list, file_list), key=attrgetter("uploaded_at")
-        )
+        result_list = sorted(chain(image_list, file_list), key=attrgetter("uploaded_at"))
         return result_list
 
     def delete(self):
@@ -114,9 +110,7 @@ def get_upload_path_files(instance, filename):
             ),
         )
     except ValueError:
-        return os.path.join(
-            FILES_DIR, user_rep, "%s.%s" % (slugify(fname), extension)
-        )
+        return os.path.join(FILES_DIR, user_rep, "%s.%s" % (slugify(fname), extension))
 
 
 class BaseFileModel(models.Model):

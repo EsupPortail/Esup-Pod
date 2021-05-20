@@ -99,9 +99,7 @@ class RssFeedGenerator(Rss201rev2Feed):
         handler.addQuickElement("itunes:name", self.feed["iTunes_name"])
         handler.addQuickElement("itunes:email", self.feed["iTunes_email"])
         handler.endElement("itunes:owner")
-        handler.addQuickElement(
-            "itunes:image", "", {"href": self.feed["image_url"]}
-        )
+        handler.addQuickElement("itunes:image", "", {"href": self.feed["image_url"]})
 
     def add_item_elements(self, handler, item):
         super(RssFeedGenerator, self).add_item_elements(handler, item)
@@ -143,9 +141,7 @@ class RssSiteVideosFeed(Feed):
         prefix = "https://" if request.is_secure() else "http://"
         self.author_link = "".join([prefix, get_current_site(request).domain])
         self.link = (
-            request.get_full_path()
-            .replace("rss-audio", "")
-            .replace("rss-video", "")
+            request.get_full_path().replace("rss-audio", "").replace("rss-video", "")
         )
         self.feed_url = request.build_absolute_uri()
 
@@ -205,14 +201,10 @@ class RssSiteVideosFeed(Feed):
         return description
 
     def item_pubdate(self, item):
-        return datetime.strptime(
-            item.date_added.strftime("%Y-%m-%d"), "%Y-%m-%d"
-        )
+        return datetime.strptime(item.date_added.strftime("%Y-%m-%d"), "%Y-%m-%d")
 
     def item_updateddate(self, item):
-        return datetime.strptime(
-            item.date_added.strftime("%Y-%m-%d"), "%Y-%m-%d"
-        )
+        return datetime.strptime(item.date_added.strftime("%Y-%m-%d"), "%Y-%m-%d")
 
     def item_enclosure_url(self, item):
         if (item.password is not None) or item.is_restricted:
@@ -221,9 +213,7 @@ class RssSiteVideosFeed(Feed):
             mp4 = sorted(item.get_video_mp4(), key=lambda m: m.height)[0]
             return "".join([self.author_link, mp4.source_file.url])
         elif item.get_video_m4a():
-            return "".join(
-                [self.author_link, item.get_video_m4a().source_file.url]
-            )
+            return "".join([self.author_link, item.get_video_m4a().source_file.url])
         return ""
 
     def item_enclosure_mime_type(self, item):
@@ -234,11 +224,7 @@ class RssSiteVideosFeed(Feed):
     def item_enclosure_length(self, item):
         if item.get_video_mp4().count() > 0:
             mp4 = sorted(item.get_video_mp4(), key=lambda m: m.height)[0]
-            return (
-                mp4.source_file.size
-                if (os.path.isfile(mp4.source_file.path))
-                else 0
-            )
+            return mp4.source_file.size if (os.path.isfile(mp4.source_file.path)) else 0
         elif item.get_video_m4a():
             return (
                 item.get_video_m4a().source_file.size
@@ -277,10 +263,6 @@ class RssSiteAudiosFeed(RssSiteVideosFeed):
             mp3 = EncodingAudio.objects.get(
                 name="audio", video=item, encoding_format="audio/mp3"
             )
-            return (
-                mp3.source_file.size
-                if (os.path.isfile(mp3.source_file.path))
-                else 0
-            )
+            return mp3.source_file.size if (os.path.isfile(mp3.source_file.path)) else 0
         except EncodingAudio.DoesNotExist:
             return ""

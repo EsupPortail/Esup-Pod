@@ -23,9 +23,7 @@ class RecordingAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "recorder":
-            kwargs["queryset"] = Recorder.objects.filter(
-                sites=Site.objects.get_current()
-            )
+            kwargs["queryset"] = Recorder.objects.filter(sites=Site.objects.get_current())
         if (db_field.name) == "user":
             kwargs["queryset"] = User.objects.filter(
                 owner__sites=Site.objects.get_current()
@@ -55,9 +53,7 @@ class RecordingFileTreatmentAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "recorder":
-            kwargs["queryset"] = Recorder.objects.filter(
-                sites=Site.objects.get_current()
-            )
+            kwargs["queryset"] = Recorder.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_queryset(self, request):
@@ -83,9 +79,7 @@ class RecorderAdmin(admin.ModelAdmin):
                 owner__sites=Site.objects.get_current()
             )
         if (db_field.name) == "type":
-            kwargs["queryset"] = Type.objects.filter(
-                sites=Site.objects.get_current()
-            )
+            kwargs["queryset"] = Type.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_form(self, request, obj=None, **kwargs):
@@ -150,9 +144,7 @@ class RecordingFileAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "recorder":
-            kwargs["queryset"] = Recorder.objects.filter(
-                sites=Site.objects.get_current()
-            )
+            kwargs["queryset"] = Recorder.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 

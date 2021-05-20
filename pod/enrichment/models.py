@@ -37,12 +37,10 @@ __NAME__ = _("Enrichment")
 def enrichment_to_vtt(list_enrichment, video):
     webvtt = WebVTT()
     for enrich in list_enrichment:
-        start = datetime.datetime.utcfromtimestamp(enrich.start).strftime(
-            "%H:%M:%S.%f"
-        )[:-3]
-        end = datetime.datetime.utcfromtimestamp(enrich.end).strftime(
-            "%H:%M:%S.%f"
-        )[:-3]
+        start = datetime.datetime.utcfromtimestamp(enrich.start).strftime("%H:%M:%S.%f")[
+            :-3
+        ]
+        end = datetime.datetime.utcfromtimestamp(enrich.end).strftime("%H:%M:%S.%f")[:-3]
         url = enrichment_to_vtt_type(enrich)
         caption = Caption(
             "{0}".format(start),
@@ -51,9 +49,7 @@ def enrichment_to_vtt(list_enrichment, video):
                 "{",
                 '"title": "{0}",'.format(enrich.title),
                 '"type": "{0}",'.format(enrich.type),
-                '"stop_video": "{0}",'.format(
-                    "%s" % 1 if enrich.stop_video else 0
-                ),
+                '"stop_video": "{0}",'.format("%s" % 1 if enrich.stop_video else 0),
                 '"url": "{0}"'.format(url),
                 "}",
             ],
@@ -156,9 +152,7 @@ class Enrichment(models.Model):
         help_text=_(u"Integrate an document (PDF, text, html)"),
     )
     richtext = RichTextField(_("Richtext"), config_name="complete", blank=True)
-    weblink = models.URLField(
-        _(u"Web link"), max_length=200, null=True, blank=True
-    )
+    weblink = models.URLField(_(u"Web link"), max_length=200, null=True, blank=True)
     embed = models.TextField(
         _("Embed"),
         null=True,
@@ -251,10 +245,7 @@ class Enrichment(models.Model):
             )
         if self.end > video.duration:
             msg.append(
-                _(
-                    "The value of end field is greater than "
-                    + "the video duration."
-                )
+                _("The value of end field is greater than " + "the video duration.")
             )
         if self.end and self.start == self.end:
             msg.append(_("End field and start field can't be equal."))

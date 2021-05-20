@@ -17,19 +17,14 @@ class Command(BaseCommand):
     def download(self, vid, video_id, source_url, dest_file):
         try:
             self.stdout.write(
-                "\n - download %s : from %s to %s\n"
-                % (video_id, source_url, dest_file)
+                "\n - download %s : from %s to %s\n" % (video_id, source_url, dest_file)
             )
             new_file = wget.download(source_url, dest_file)
             self.stdout.write("\n")
-            vid.video = new_file.replace(
-                os.path.join(settings.MEDIA_ROOT, ""), ""
-            )
+            vid.video = new_file.replace(os.path.join(settings.MEDIA_ROOT, ""), "")
             vid.save()
             self.stdout.write(
-                self.style.SUCCESS(
-                    'Successfully download video "%s"' % video_id
-                )
+                self.style.SUCCESS('Successfully download video "%s"' % video_id)
             )
         except ValueError as e:
             raise CommandError('ValueError "%s"' % e)

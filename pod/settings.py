@@ -144,17 +144,13 @@ USE_TZ = True
 # curl -X GET http://127.0.0.1:8000/api/example/ -H 'Authorization: Token
 # 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b'
 REST_FRAMEWORK = {
-    "DEFAULT_FILTER_BACKENDS": (
-        "django_filters.rest_framework.DjangoFilterBackend",
-    ),
+    "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAdminUser",),
-    "DEFAULT_PAGINATION_CLASS": (
-        "rest_framework.pagination.PageNumberPagination"
-    ),
+    "DEFAULT_PAGINATION_CLASS": ("rest_framework.pagination.PageNumberPagination"),
     "PAGE_SIZE": 12,
 }
 
@@ -217,9 +213,7 @@ for application in INSTALLED_APPS:
     if application.startswith("pod"):
         path = application.replace(".", os.path.sep) + "/settings_local.py"
         if os.path.exists(path):
-            _temp = __import__(
-                application, globals(), locals(), ["settings_local"]
-            )
+            _temp = __import__(application, globals(), locals(), ["settings_local"])
             for variable in dir(_temp.settings_local):
                 if variable == variable.upper():
                     locals()[variable] = getattr(_temp.settings_local, variable)

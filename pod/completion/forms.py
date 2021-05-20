@@ -24,16 +24,12 @@ class ContributorForm(forms.ModelForm):
         super(ContributorForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
             self.fields["video"].widget = HiddenInput()
-            self.fields[myField].widget.attrs["placeholder"] = self.fields[
-                myField
-            ].label
+            self.fields[myField].widget.attrs["placeholder"] = self.fields[myField].label
             self.fields[myField].widget.attrs["class"] = "form-control"
             if self.fields[myField].required:
                 label_unicode = u"{0}".format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
-                    '{0} <span class="required_star">*</span>'.format(
-                        label_unicode
-                    )
+                    '{0} <span class="required_star">*</span>'.format(label_unicode)
                 )
         self.fields["role"].widget.attrs["class"] = "custom-select"
 
@@ -52,18 +48,12 @@ class DocumentForm(forms.ModelForm):
         super(DocumentForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
             self.fields["video"].widget = HiddenInput()
-            self.fields[myField].widget.attrs["placeholder"] = self.fields[
-                myField
-            ].label
+            self.fields[myField].widget.attrs["placeholder"] = self.fields[myField].label
             if self.fields[myField].required or myField == "document":
-                self.fields[myField].widget.attrs[
-                    "class"
-                ] = "form-control required"
+                self.fields[myField].widget.attrs["class"] = "form-control required"
                 label_unicode = "{0}".format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
-                    '{0} <span class="required_star">*</span>'.format(
-                        label_unicode
-                    )
+                    '{0} <span class="required_star">*</span>'.format(label_unicode)
                 )
             else:
                 self.fields[myField].widget.attrs["class"] = "form-control"
@@ -101,18 +91,12 @@ class TrackForm(forms.ModelForm):
         super(TrackForm, self).__init__(*args, **kwargs)
         for myField in self.fields:
             self.fields["video"].widget = HiddenInput()
-            self.fields[myField].widget.attrs["placeholder"] = self.fields[
-                myField
-            ].label
+            self.fields[myField].widget.attrs["placeholder"] = self.fields[myField].label
             if self.fields[myField].required or myField == "src":
-                self.fields[myField].widget.attrs[
-                    "class"
-                ] = "form-control required"
+                self.fields[myField].widget.attrs["class"] = "form-control required"
                 label_unicode = u"{0}".format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
-                    '{0} <span class="required_star">*</span>'.format(
-                        label_unicode
-                    )
+                    '{0} <span class="required_star">*</span>'.format(label_unicode)
                 )
             else:
                 self.fields[myField].widget.attrs["class"] = "form-control"
@@ -154,28 +138,18 @@ class OverlayForm(forms.ModelForm):
         self.fields["time_start"].widget.attrs["min"] = 1
         self.fields["time_end"].widget.attrs["min"] = 2
         try:
-            self.fields["time_start"].widget.attrs[
-                "max"
-            ] = self.instance.video.duration
-            self.fields["time_end"].widget.attrs[
-                "max"
-            ] = self.instance.video.duration
+            self.fields["time_start"].widget.attrs["max"] = self.instance.video.duration
+            self.fields["time_end"].widget.attrs["max"] = self.instance.video.duration
         except Exception:
             self.fields["time_start"].widget.attrs["max"] = 36000
             self.fields["time_end"].widget.attrs["max"] = 36000
         for myField in self.fields:
-            self.fields[myField].widget.attrs["placeholder"] = self.fields[
-                myField
-            ].label
+            self.fields[myField].widget.attrs["placeholder"] = self.fields[myField].label
             if self.fields[myField].required:
-                self.fields[myField].widget.attrs[
-                    "class"
-                ] = "form-control required"
+                self.fields[myField].widget.attrs["class"] = "form-control required"
                 label_unicode = u"{0}".format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
-                    '{0} <span class="required_star">*</span>'.format(
-                        label_unicode
-                    )
+                    '{0} <span class="required_star">*</span>'.format(label_unicode)
                 )
             else:
                 self.fields[myField].widget.attrs["class"] = "form-control"

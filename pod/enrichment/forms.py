@@ -48,28 +48,18 @@ class EnrichmentForm(forms.ModelForm):
         self.fields["start"].widget.attrs["min"] = 0
         self.fields["end"].widget.attrs["min"] = 1
         try:
-            self.fields["start"].widget.attrs[
-                "max"
-            ] = self.instance.video.duration
-            self.fields["end"].widget.attrs[
-                "max"
-            ] = self.instance.video.duration
+            self.fields["start"].widget.attrs["max"] = self.instance.video.duration
+            self.fields["end"].widget.attrs["max"] = self.instance.video.duration
         except Exception:
             self.fields["start"].widget.attrs["max"] = 36000
             self.fields["end"].widget.attrs["max"] = 36000
         for myField in self.fields:
-            self.fields[myField].widget.attrs["placeholder"] = self.fields[
-                myField
-            ].label
+            self.fields[myField].widget.attrs["placeholder"] = self.fields[myField].label
             if self.fields[myField].required or myField == "type":
-                self.fields[myField].widget.attrs[
-                    "class"
-                ] = "form-control required"
+                self.fields[myField].widget.attrs["class"] = "form-control required"
                 label_unicode = u"{0}".format(self.fields[myField].label)
                 self.fields[myField].label = mark_safe(
-                    "{0} <span class='required_star'>*</span>".format(
-                        label_unicode
-                    )
+                    "{0} <span class='required_star'>*</span>".format(label_unicode)
                 )
             else:
                 self.fields[myField].widget.attrs["class"] = "form-control"

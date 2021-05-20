@@ -208,11 +208,7 @@ class VideoAdmin(admin.ModelAdmin):
             )
         if not TRANSCRIPT:
             exclude += ("transcript",)
-        if (
-            request.user.is_staff is False
-            or obj is None
-            or USE_OBSOLESCENCE is False
-        ):
+        if request.user.is_staff is False or obj is None or USE_OBSOLESCENCE is False:
             exclude += ("date_delete",)
         if not request.user.is_superuser:
             exclude += ("sites",)
@@ -292,9 +288,7 @@ class ChannelAdmin(admin.ModelAdmin):
         owners = []
         for owner in obj.owners.all():
             url = url_to_edit_object(owner)
-            owners.append(
-                "%s %s (%s)" % (owner.first_name, owner.last_name, url)
-            )
+            owners.append("%s %s (%s)" % (owner.first_name, owner.last_name, url))
         return ", ".join(owners)
 
     get_owners.allow_tags = True
@@ -389,9 +383,7 @@ class ThemeAdmin(admin.ModelAdmin):
                 channel__sites=Site.objects.get_current()
             )
         if (db_field.name) == "channel":
-            kwargs["queryset"] = Channel.objects.filter(
-                sites=Site.objects.get_current()
-            )
+            kwargs["queryset"] = Channel.objects.filter(sites=Site.objects.get_current())
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
@@ -494,9 +486,7 @@ class EncodingVideoAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "video":
-            kwargs["queryset"] = Video.objects.filter(
-                sites=Site.objects.get_current()
-            )
+            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
         if (db_field.name) == "rendition":
             kwargs["queryset"] = VideoRendition.objects.filter(
                 sites=Site.objects.get_current()
@@ -517,9 +507,7 @@ class EncodingAudioAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "video":
-            kwargs["queryset"] = Video.objects.filter(
-                sites=Site.objects.get_current()
-            )
+            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
@@ -536,9 +524,7 @@ class PlaylistVideoAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "video":
-            kwargs["queryset"] = Video.objects.filter(
-                sites=Site.objects.get_current()
-            )
+            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
@@ -621,9 +607,7 @@ class NotesAdmin(admin.ModelAdmin):
                 owner__sites=Site.objects.get_current()
             )
         if (db_field.name) == "video":
-            kwargs["queryset"] = Video.objects.filter(
-                sites=Site.objects.get_current()
-            )
+            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
@@ -653,9 +637,7 @@ class AdvancedNotesAdmin(admin.ModelAdmin):
                 owner__sites=Site.objects.get_current()
             )
         if (db_field.name) == "video":
-            kwargs["queryset"] = Video.objects.filter(
-                sites=Site.objects.get_current()
-            )
+            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 

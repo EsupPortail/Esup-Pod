@@ -186,9 +186,7 @@ class RecordingFileTreatmentTestCase(TestCase):
         self.assertEqual(recording_file.date_added.year, date.year)
         self.assertEqual(recording_file.date_added.month, date.month)
         self.assertEqual(recording_file.date_added.day, date.day)
-        print(
-            "   --->  test_attributs of RecordingFileTreatmentTestCase : OK !"
-        )
+        print("   --->  test_attributs of RecordingFileTreatmentTestCase : OK !")
 
     """
         test delete object
@@ -199,10 +197,7 @@ class RecordingFileTreatmentTestCase(TestCase):
         RecordingFileTreatment.objects.filter(file=filepath).delete()
         self.assertEquals(RecordingFileTreatment.objects.all().count(), 0)
 
-        print(
-            "--->  test_delete_object of RecordingFileTreatmentTestCase : OK "
-            "!"
-        )
+        print("--->  test_delete_object of RecordingFileTreatmentTestCase : OK " "!")
 
 
 class RecordingFileTestCase(TestCase):

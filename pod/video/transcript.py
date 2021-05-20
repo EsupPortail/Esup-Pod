@@ -96,9 +96,7 @@ def start_transcript(video_id, threaded=True):
             task_start_transcript.delay(video_id)
         else:
             log.info("START TRANSCRIPT VIDEO %s" % video_id)
-            t = threading.Thread(
-                target=main_threaded_transcript, args=[video_id]
-            )
+            t = threading.Thread(target=main_threaded_transcript, args=[video_id])
             t.setDaemon(True)
             t.start()
     else:
@@ -117,9 +115,7 @@ def get_model(lang):
         scorer_load_start = timer()
         ds_model.enableExternalScorer(DS_PARAM[lang]["scorer"])
         scorer_load_end = timer() - scorer_load_start
-        print(
-            "Loaded scorer in {:.3}s.".format(scorer_load_end), file=sys.stderr
-        )
+        print("Loaded scorer in {:.3}s.".format(scorer_load_end), file=sys.stderr)
         if DS_PARAM[lang].get("lm_alpha") and DS_PARAM[lang].get("lm_beta"):
             ds_model.setScorerAlphaBeta(
                 DS_PARAM[lang]["lm_alpha"], DS_PARAM[lang]["lm_beta"]
@@ -183,9 +179,7 @@ def convert_samplerate(audio_path, desired_sample_rate, trim_start, duration):
     sox_cmd += "--no-dither - trim {} {}".format(trim_start, duration)
 
     try:
-        output = subprocess.check_output(
-            shlex.split(sox_cmd), stderr=subprocess.PIPE
-        )
+        output = subprocess.check_output(shlex.split(sox_cmd), stderr=subprocess.PIPE)
 
     except subprocess.CalledProcessError as e:
         raise RuntimeError("SoX returned non-zero status: {}".format(e.stderr))
@@ -213,14 +207,10 @@ def normalize_mp3(mp3filepath):
     if DEBUG:
         print(normalize_cmd)
     try:
-        subprocess.check_output(
-            shlex.split(normalize_cmd), stderr=subprocess.PIPE
-        )
+        subprocess.check_output(shlex.split(normalize_cmd), stderr=subprocess.PIPE)
         return mp3normfile
     except subprocess.CalledProcessError as e:
-        log.error(
-            "ffmpeg-normalize returned non-zero status: {}".format(e.stderr)
-        )
+        log.error("ffmpeg-normalize returned non-zero status: {}".format(e.stderr))
         return mp3filepath
     except OSError as e:
         log.error("ffmpeg-normalize not found {}".format(e.strerror))
@@ -262,9 +252,7 @@ def main_transcript(norm_mp3_file, duration, ds_model):
 
         msg += "\ntake audio from %s to %s - %s" % (start_trim, end_trim, dur)
 
-        audio = convert_samplerate(
-            norm_mp3_file, desired_sample_rate, start_trim, dur
-        )
+        audio = convert_samplerate(norm_mp3_file, desired_sample_rate, start_trim, dur)
         msg += "\nRunning inference."
 
         metadata = ds_model.sttWithMetadata(audio)
@@ -289,13 +277,9 @@ def main_transcript(norm_mp3_file, duration, ds_model):
                         # A revoir, fusion de la nouvelle ligne avec
                         # l'ancienne...
                         is_first_caption = False
-                        text_caption = get_text_caption(
-                            text_caption, last_word_added
-                        )
+                        text_caption = get_text_caption(text_caption, last_word_added)
 
-                    stop_caption = (
-                        start_trim + word["start_time"] + word["duration"]
-                    )
+                    stop_caption = start_trim + word["start_time"] + word["duration"]
 
                     # on evite le chevauchement
                     change_previous_end_caption(webvtt, start_caption)
@@ -424,9 +408,7 @@ def saveVTT(video, webvtt):
         )
         msg += "\nstore vtt file in bdd with Track model src field"
 
-        subtitleVtt, created = Track.objects.get_or_create(
-            video=video, lang=lang
-        )
+        subtitleVtt, created = Track.objects.get_or_create(video=video, lang=lang)
         subtitleVtt.src = subtitleFile
         subtitleVtt.lang = lang
         subtitleVtt.save()

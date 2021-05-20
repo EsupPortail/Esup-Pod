@@ -19,11 +19,7 @@ class SiteBackend(ModelBackend):
         try:
             site = Site.objects.get_current()
             user = User.objects.get(pk=user_id)
-            if (
-                user
-                and not user.is_superuser
-                and (site not in user.owner.sites.all())
-            ):
+            if user and not user.is_superuser and (site not in user.owner.sites.all()):
                 user = None
             return user
         except User.DoesNotExist:

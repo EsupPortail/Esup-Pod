@@ -7,9 +7,7 @@ from django.contrib.auth.models import User
 from pod.video.models import Video, Type
 from ..models import Recording, Recorder
 
-VIDEO_TEST = getattr(
-    settings, "VIDEO_TEST", "pod/main/static/video_test/pod.mp4"
-)
+VIDEO_TEST = getattr(settings, "VIDEO_TEST", "pod/main/static/video_test/pod.mp4")
 
 AUDIOVIDEOCAST_TEST = getattr(
     settings, "AUDIOVIDEOCAST_TEST", "pod/main/static/video_test/pod.zip"
@@ -33,9 +31,7 @@ class PluginVideoTestCase(TestCase):
             cursus="0",
             directory="dirVideo",
         )
-        source_file1 = os.path.join(
-            settings.MEDIA_ROOT, os.path.basename(VIDEO_TEST)
-        )
+        source_file1 = os.path.join(settings.MEDIA_ROOT, os.path.basename(VIDEO_TEST))
         Recording.objects.create(
             id=1,
             user=user,
@@ -71,9 +67,7 @@ class PluginVideoTestCase(TestCase):
         recording = Recording.objects.get(id=1)
         recorder = recording.recorder
         shutil.copyfile(VIDEO_TEST, recording.source_file)
-        mod = importlib.import_module(
-            "pod.recorder.plugins.type_%s" % ("video")
-        )
+        mod = importlib.import_module("pod.recorder.plugins.type_%s" % ("video"))
         nbnow = Video.objects.all().count()
         nbtest = nbnow + 1
         mod.encode_recording(recording)
@@ -81,12 +75,8 @@ class PluginVideoTestCase(TestCase):
         self.assertEquals(Video.objects.all().count(), nbtest)
         video = Video.objects.last()
         self.assertEquals(video.is_draft, recorder.is_draft)
-        self.assertEquals(
-            video.channel.all().count(), recorder.channel.all().count()
-        )
-        self.assertEquals(
-            video.theme.all().count(), recorder.theme.all().count()
-        )
+        self.assertEquals(video.channel.all().count(), recorder.channel.all().count())
+        self.assertEquals(video.theme.all().count(), recorder.theme.all().count())
         self.assertEquals(
             video.discipline.all().count(), recorder.discipline.all().count()
         )
@@ -95,17 +85,14 @@ class PluginVideoTestCase(TestCase):
         self.assertEquals(video.tags, recorder.tags)
 
         print(
-            "   --->  test_type_video_published_attributs "
-            "of PluginVideoTestCase: OK !"
+            "   --->  test_type_video_published_attributs " "of PluginVideoTestCase: OK !"
         )
 
     def test_type_audiovideocast_published_attributs(self):
         recording = Recording.objects.get(id=2)
         recorder = recording.recorder
         shutil.copyfile(AUDIOVIDEOCAST_TEST, recording.source_file)
-        mod = importlib.import_module(
-            "pod.recorder.plugins.type_%s" % ("audiovideocast")
-        )
+        mod = importlib.import_module("pod.recorder.plugins.type_%s" % ("audiovideocast"))
         nbnow = Video.objects.all().count()
         nbtest = nbnow + 1
         mod.encode_recording(recording)
@@ -116,12 +103,8 @@ class PluginVideoTestCase(TestCase):
         #       video.enrichment_set.all().count())
         self.assertEquals((video.enrichment_set.all().count() > 0), True)
         self.assertEquals(video.is_draft, recorder.is_draft)
-        self.assertEquals(
-            video.channel.all().count(), recorder.channel.all().count()
-        )
-        self.assertEquals(
-            video.theme.all().count(), recorder.theme.all().count()
-        )
+        self.assertEquals(video.channel.all().count(), recorder.channel.all().count())
+        self.assertEquals(video.theme.all().count(), recorder.theme.all().count())
         self.assertEquals(
             video.discipline.all().count(), recorder.discipline.all().count()
         )

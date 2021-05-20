@@ -63,9 +63,7 @@ if getattr(settings, "USE_BBB", True):
     router.register(r"bbb_livestream", bbb_views.LivestreamModelViewSet)
 
 urlpatterns = [
-    url(
-        r"dublincore/$", video_views.DublinCoreView.as_view(), name="dublincore"
-    ),
+    url(r"dublincore/$", video_views.DublinCoreView.as_view(), name="dublincore"),
     url(
         r"launch_encode_view/$",
         video_views.launch_encode_view,

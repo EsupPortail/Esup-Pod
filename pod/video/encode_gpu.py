@@ -71,9 +71,7 @@ scale_mixed = \
     '-vf "fade,hwupload_cuda,scale_npp=-2:{height}:interp_algo=super" \
     -c:v h264_nvenc '
 """
-scale_gpu = (
-    COMMON + '-vf "scale_npp=-2:{height}:interp_algo=super" -c:v h264_nvenc '
-)
+scale_gpu = COMMON + '-vf "scale_npp=-2:{height}:interp_algo=super" -c:v h264_nvenc '
 scale_cpu = COMMON + '-vf "scale=-2:{height}" -c:v h264 '
 
 rate_360 = "-b:a 96k -minrate 500k -b:v 750k -maxrate 1000k -bufsize 1500k "
@@ -195,26 +193,20 @@ def get_cmd_gpu(format, codec, height, file):
             ffmpeg_cmd = (
                 ffmpeg_cmd
                 + SUBTIME
-                + end_720_m3u8.format(
-                    output_dir=VIDEOS_OUTPUT_DIR, output=filename
-                )
+                + end_720_m3u8.format(output_dir=VIDEOS_OUTPUT_DIR, output=filename)
             )
         else:
             ffmpeg_cmd = (
                 ffmpeg_cmd
                 + SUBTIME
-                + end_720_mp4.format(
-                    output_dir=VIDEOS_OUTPUT_DIR, output=filename
-                )
+                + end_720_mp4.format(output_dir=VIDEOS_OUTPUT_DIR, output=filename)
             )
     if height >= 1080 and format == "m3u8":
         ffmpeg_cmd = ffmpeg_cmd + COMMON + scale_gpu.format(height=1080)
         ffmpeg_cmd = (
             ffmpeg_cmd
             + SUBTIME
-            + end_1080_m3u8.format(
-                output_dir=VIDEOS_OUTPUT_DIR, output=filename
-            )
+            + end_1080_m3u8.format(output_dir=VIDEOS_OUTPUT_DIR, output=filename)
         )
     return ffmpeg_cmd
 
@@ -345,17 +337,13 @@ def get_cmd_cpu(format, codec, height, file):
             ffmpeg_cmd = (
                 ffmpeg_cmd
                 + SUBTIME
-                + end_720_m3u8.format(
-                    output_dir=VIDEOS_OUTPUT_DIR, output=filename
-                )
+                + end_720_m3u8.format(output_dir=VIDEOS_OUTPUT_DIR, output=filename)
             )
         else:
             ffmpeg_cmd = (
                 ffmpeg_cmd
                 + SUBTIME
-                + end_720_mp4.format(
-                    output_dir=VIDEOS_OUTPUT_DIR, output=filename
-                )
+                + end_720_mp4.format(output_dir=VIDEOS_OUTPUT_DIR, output=filename)
             )
     if height >= 1080:
         ffmpeg_cmd = ffmpeg_cmd + scale_cpu.format(height=1080)
@@ -363,9 +351,7 @@ def get_cmd_cpu(format, codec, height, file):
             ffmpeg_cmd = (
                 ffmpeg_cmd
                 + SUBTIME
-                + end_1080_m3u8.format(
-                    output_dir=VIDEOS_OUTPUT_DIR, output=filename
-                )
+                + end_1080_m3u8.format(output_dir=VIDEOS_OUTPUT_DIR, output=filename)
             )
     return ffmpeg_cmd
 
@@ -426,13 +412,9 @@ def encode(type, format, codec, height, file):
         ffmpeg_cmd = get_cmd_gpu(format, codec, height, file)
         add_info_video_title = "encode_video"
         add_info_video_content = {
-            "encoding_format": "video/mp2t"
-            if format == "m3u8"
-            else "video/mp4",
+            "encoding_format": "video/mp2t" if format == "m3u8" else "video/mp4",
             "rendition": RENDITION["360"],
-            "filename": "360p_{output}.{ext}".format(
-                output=filename, ext=format
-            ),
+            "filename": "360p_{output}.{ext}".format(output=filename, ext=format),
         }
         add_info_video_append = True
     """
@@ -443,13 +425,9 @@ def encode(type, format, codec, height, file):
         ffmpeg_cmd = get_cmd_cpu(format, codec, height, file)
         add_info_video_title = "encode_video"
         add_info_video_content = {
-            "encoding_format": "video/mp2t"
-            if format == "m3u8"
-            else "video/mp4",
+            "encoding_format": "video/mp2t" if format == "m3u8" else "video/mp4",
             "rendition": RENDITION["360"],
-            "filename": "360p_{output}.{ext}".format(
-                output=filename, ext=format
-            ),
+            "filename": "360p_{output}.{ext}".format(output=filename, ext=format),
         }
         add_info_video_append = True
 
@@ -503,24 +481,16 @@ def encode(type, format, codec, height, file):
 def add_more_info_video(add_info_video_title, height, filename, format):
     if add_info_video_title == "encode_video" and height >= 720:
         add_info_video_content = {
-            "encoding_format": "video/mp2t"
-            if format == "m3u8"
-            else "video/mp4",
+            "encoding_format": "video/mp2t" if format == "m3u8" else "video/mp4",
             "rendition": RENDITION["720"],
-            "filename": "720p_{output}.{ext}".format(
-                output=filename, ext=format
-            ),
+            "filename": "720p_{output}.{ext}".format(output=filename, ext=format),
         }
         add_info_video(add_info_video_title, add_info_video_content, True)
         if height >= 1080 and format == "m3u8":
             add_info_video_content = {
-                "encoding_format": "video/mp2t"
-                if format == "m3u8"
-                else "video/mp4",
+                "encoding_format": "video/mp2t" if format == "m3u8" else "video/mp4",
                 "rendition": RENDITION["1080"],
-                "filename": "1080p_{output}.{ext}".format(
-                    output=filename, ext=format
-                ),
+                "filename": "1080p_{output}.{ext}".format(output=filename, ext=format),
             }
             add_info_video(add_info_video_title, add_info_video_content, True)
 
@@ -529,9 +499,7 @@ def get_info_from_video(probe_cmd):
     info = None
     msg = ""
     try:
-        output = subprocess.check_output(
-            shlex.split(probe_cmd), stderr=subprocess.PIPE
-        )
+        output = subprocess.check_output(shlex.split(probe_cmd), stderr=subprocess.PIPE)
         info = json.loads(output)
     except subprocess.CalledProcessError as e:
         # raise RuntimeError('ffprobe returned non-zero status: {}'.format(
@@ -573,9 +541,7 @@ def get_info_video(file):
         msg += stream.get("codec_name", "unknown")
         if stream.get("codec_type", "unknown") == "video":
             codec = stream.get("codec_name", "unknown")
-            has_stream_thumbnail = any(
-                ext in codec.lower() for ext in image_codec
-            )
+            has_stream_thumbnail = any(ext in codec.lower() for ext in image_codec)
             if not has_stream_thumbnail:
                 has_stream_video = True
                 height = stream.get("height", 0)
@@ -694,9 +660,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Running encoding video.")
     parser.add_argument("--device", required=True, help="CUDA_VISIBLE_DEVICES")
     parser.add_argument("--dir", required=False, help="base dir to encode")
-    parser.add_argument(
-        "--input", required=True, help="name of input file to encode"
-    )
+    parser.add_argument("--input", required=True, help="name of input file to encode")
     parser.add_argument("--job", required=False, help="the ID of job")
     parser.add_argument("--name", required=False, help="the name of job")
     parser.add_argument("--debug", required=False, help="run job in debug mode")

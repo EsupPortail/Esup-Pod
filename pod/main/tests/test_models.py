@@ -46,10 +46,7 @@ class FlatepageTestCase(TestCase):
         self.assertEqual(flatPage.title, "Home")
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
-        print(
-            "   --->  test_Flatepage_null_attribut"
-            " of FlatepageTestCase : OK !"
-        )
+        print("   --->  test_Flatepage_null_attribut" " of FlatepageTestCase : OK !")
 
     """
         test attributs when a channel have many attributs
@@ -70,10 +67,7 @@ class FlatepageTestCase(TestCase):
         self.assertEqual(flatPage.content_fr, "<p>Bienvenue</p>\r\n")
         response = self.client.get("/home/")
         self.assertEqual(response.status_code, 200)
-        print(
-            "   --->  test_Flatepage_with_attributs"
-            " of FlatepageTestCase : OK !"
-        )
+        print("   --->  test_Flatepage_with_attributs" " of FlatepageTestCase : OK !")
 
     """
         test delete object
@@ -108,9 +102,7 @@ class ConfigurationTestCase(TestCase):
         conf = Configuration.objects.get(key="maintenance_mode")
         self.assertEqual(conf.key, "maintenance_mode")
         self.assertEqual(conf.value, "0")
-        self.assertEqual(
-            conf.description, "Activation of maintenance mode or not"
-        )
+        self.assertEqual(conf.description, "Activation of maintenance mode or not")
 
         print("   --->  test_attributs of ConfigurationTestCase : OK !")
 
@@ -120,8 +112,6 @@ class ConfigurationTestCase(TestCase):
 
     def test_delete_object(self):
         Configuration.objects.filter(key="maintenance_mode").delete()
-        self.assertEquals(
-            Configuration.objects.filter(key="maintenance_mode").count(), 0
-        )
+        self.assertEquals(Configuration.objects.filter(key="maintenance_mode").count(), 0)
 
         print("--->  test_delete_object of ConfigurationTestCase : OK " "!")

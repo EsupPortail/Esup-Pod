@@ -19,9 +19,7 @@ DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
 
 ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
 
-RECORDER_SKIP_FIRST_IMAGE = getattr(
-    settings, "RECORDER_SKIP_FIRST_IMAGE", False
-)
+RECORDER_SKIP_FIRST_IMAGE = getattr(settings, "RECORDER_SKIP_FIRST_IMAGE", False)
 
 if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomImageModel
@@ -69,9 +67,7 @@ def save_video(recording, video_data, video_src):
     video.is_draft = recorder.is_draft
     # Accès restreint (eventuellement à des groupes ou par mot de passe)
     video.is_restricted = recorder.is_restricted
-    video.restrict_access_to_groups.add(
-        *recorder.restrict_access_to_groups.all()
-    )
+    video.restrict_access_to_groups.add(*recorder.restrict_access_to_groups.all())
     video.password = recorder.password
     # on ajoute les eventuelles chaines
     video.channel.add(*recorder.channel.all())
@@ -151,9 +147,7 @@ def save_enrichment(video, list_node_img, recording, media_name, zip):
     start_img = 1 if RECORDER_SKIP_FIRST_IMAGE else 0
     for item in list_node_img[start_img:]:  # skip the first
         i += 1
-        add_comment(
-            recording.id, ">> ITEM %s: %s" % (i, item.getAttribute("src"))
-        )
+        add_comment(recording.id, ">> ITEM %s: %s" % (i, item.getAttribute("src")))
         filename = media_name + "/%s" % item.getAttribute("src")
         timecode = float("%s" % item.getAttribute("begin"))
         timecode = int(round(timecode))

@@ -61,9 +61,7 @@ HIDE_CHANNEL_TAB = getattr(django_settings, "HIDE_CHANNEL_TAB", False)
 
 HIDE_TYPES_TAB = getattr(django_settings, "HIDE_TYPES_TAB", False)
 
-HIDE_LANGUAGE_SELECTOR = getattr(
-    django_settings, "HIDE_LANGUAGE_SELECTOR", False
-)
+HIDE_LANGUAGE_SELECTOR = getattr(django_settings, "HIDE_LANGUAGE_SELECTOR", False)
 
 HIDE_USER_FILTER = getattr(django_settings, "HIDE_USER_FILTER", False)
 
@@ -134,9 +132,7 @@ def context_settings(request):
     new_settings["USE_STATS_VIEW"] = USE_STATS_VIEW
     new_settings["USE_RECORD_PREVIEW"] = USE_RECORD_PREVIEW
     new_settings["SHIB_NAME"] = SHIB_NAME
-    new_settings[
-        "ALLOW_MANUAL_RECORDING_CLAIMING"
-    ] = ALLOW_MANUAL_RECORDING_CLAIMING
+    new_settings["ALLOW_MANUAL_RECORDING_CLAIMING"] = ALLOW_MANUAL_RECORDING_CLAIMING
     new_settings["USE_THEME"] = USE_THEME
     new_settings["BOOTSTRAP_CUSTOM"] = BOOTSTRAP_CUSTOM
     new_settings["USE_CHUNKED_UPLOAD"] = USE_CHUNKED_UPLOAD
@@ -180,9 +176,7 @@ def context_navbar(request):
         .prefetch_related(
             Prefetch(
                 "themes",
-                queryset=Theme.objects.filter(
-                    channel__sites=get_current_site(request)
-                )
+                queryset=Theme.objects.filter(channel__sites=get_current_site(request))
                 .distinct()
                 .annotate(video_count=Count("video", distinct=True)),
             )
@@ -199,16 +193,12 @@ def context_navbar(request):
     )
 
     disciplines = (
-        Discipline.objects.filter(
-            video__is_draft=False, sites=get_current_site(request)
-        )
+        Discipline.objects.filter(video__is_draft=False, sites=get_current_site(request))
         .distinct()
         .annotate(video_count=Count("video", distinct=True))
     )
 
-    linkFooter = LinkFooter.objects.all().filter(
-        page__sites=get_current_site(request)
-    )
+    linkFooter = LinkFooter.objects.all().filter(page__sites=get_current_site(request))
 
     list_videos = Video.objects.filter(
         encoding_in_progress=False,
@@ -217,11 +207,7 @@ def context_navbar(request):
     )
     VIDEOS_COUNT = list_videos.count()
     VIDEOS_DURATION = (
-        str(
-            timedelta(
-                seconds=list_videos.aggregate(Sum("duration"))["duration__sum"]
-            )
-        )
+        str(timedelta(seconds=list_videos.aggregate(Sum("duration"))["duration__sum"]))
         if list_videos.aggregate(Sum("duration"))["duration__sum"]
         else 0
     )

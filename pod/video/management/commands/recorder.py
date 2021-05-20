@@ -35,9 +35,7 @@ from django.contrib.sites.shortcuts import get_current_site
 LANGUAGE_CODE = getattr(settings, "LANGUAGE_CODE", "fr")
 
 # Mediacourse directory
-DEFAULT_RECORDER_PATH = getattr(
-    settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/"
-)
+DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-pod/ftp/")
 
 # Site address
 BASE_URL = getattr(settings, "BASE_URL", "https://pod.univ.fr")
@@ -99,9 +97,7 @@ def case_full_upload(
     filename,
     file_size,
 ):
-    print_if_debug(
-        "- This video wasn't already processed. Starting the " "process."
-    )
+    print_if_debug("- This video wasn't already processed. Starting the " "process.")
     # Generation of the hashkey, depending on the IP address of the
     # recorder
     m = hashlib.md5()
@@ -160,9 +156,7 @@ def case_manager_exist(
         request = requests.get(urlNotify, proxies=SELF_REQUESTS_PROXIES)
     except Exception:
         if ALLOW_INSECURE_REQUESTS:
-            request = requests.get(
-                urlNotify, proxies=SELF_REQUESTS_PROXIES, verify=False
-            )
+            request = requests.get(urlNotify, proxies=SELF_REQUESTS_PROXIES, verify=False)
         else:
             certif_err = (
                 "The request on recorder_notfy cannot be complete."
@@ -184,12 +178,11 @@ def case_manager_exist(
         )
         # Save this information in the database, to avoid to
         # send multiple emails
-        RecordingFileTreatment.objects.filter(file=source_file,).update(
-            file_size=file_size, email_sent=True, date_email_sent=timezone.now()
-        )
+        RecordingFileTreatment.objects.filter(
+            file=source_file,
+        ).update(file_size=file_size, email_sent=True, date_email_sent=timezone.now())
         print_if_debug(
-            "- Information saved in the "
-            "recorder_recordingfiletreatment table."
+            "- Information saved in the " "recorder_recordingfiletreatment table."
         )
     else:
         # Email wasn't sent, due to an error
@@ -228,9 +221,7 @@ def case_no_manager(html_message_error, message_error, recorder, source_file):
     if not ALLOW_MANUAL_RECORDING_CLAIMING:
         html_message_error += (
             "<li><b>Error</b> : No manager "
-            "for the recorder"
-            + recorder.name
-            + "<br/><i>>>> You must assign a "
+            "for the recorder" + recorder.name + "<br/><i>>>> You must assign a "
             "user for this recorder"
             " or set the"
             " ALLOW_MANUAL_RECORDING"
@@ -288,8 +279,7 @@ def file_exist(
         # Check if file is complete
         if file_size > 0 and file_size > file_size_in_db:
             print_if_debug(
-                "- This video was partially uploaded. Waiting for "
-                "complete file."
+                "- This video was partially uploaded. Waiting for " "complete file."
             )
             file = RecordingFileTreatment.objects.filter(
                 file=source_file,
@@ -310,14 +300,10 @@ def file_exist(
 
 def recorder_exist(recorder, filename, message_error, html_message_error):
     # There is a connection between the directory and a recorder
-    print_if_debug(
-        " - This video was published by '" + recorder.name + "' recorder."
-    )
+    print_if_debug(" - This video was published by '" + recorder.name + "' recorder.")
     # Absolute path of the video
 
-    source_file = os.path.join(
-        DEFAULT_RECORDER_PATH, recorder.directory, filename
-    )
+    source_file = os.path.join(DEFAULT_RECORDER_PATH, recorder.directory, filename)
     # Check if this video was already processed
     recording = Recording.objects.filter(source_file=source_file).first()
     # Check if an email was already sent to recorder's manager
@@ -445,7 +431,4 @@ class Command(BaseCommand):
                     html_message=html_message_error,
                 )
         else:
-            print(
-                "*** Warning: you must give some arguments: %s ***"
-                % self.valid_args
-            )
+            print("*** Warning: you must give some arguments: %s ***" % self.valid_args)

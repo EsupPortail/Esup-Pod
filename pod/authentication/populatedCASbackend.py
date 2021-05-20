@@ -35,9 +35,7 @@ USER_CAS_MAPPING_ATTRIBUTES = getattr(
     },
 )
 
-CREATE_GROUP_FROM_AFFILIATION = getattr(
-    settings, "CREATE_GROUP_FROM_AFFILIATION", False
-)
+CREATE_GROUP_FROM_AFFILIATION = getattr(settings, "CREATE_GROUP_FROM_AFFILIATION", False)
 
 CREATE_GROUP_FROM_GROUPS = getattr(settings, "CREATE_GROUP_FROM_GROUPS", False)
 
@@ -45,13 +43,9 @@ AFFILIATION_STAFF = getattr(
     settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff")
 )
 
-GROUP_STAFF = getattr(
-    settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff")
-)
+GROUP_STAFF = getattr(settings, "AFFILIATION_STAFF", ("faculty", "employee", "staff"))
 
-LDAP_SERVER = getattr(
-    settings, "LDAP_SERVER", {"url": "", "port": 389, "use_ssl": False}
-)
+LDAP_SERVER = getattr(settings, "LDAP_SERVER", {"url": "", "port": 389, "use_ssl": False})
 AUTH_LDAP_BIND_DN = getattr(settings, "AUTH_LDAP_BIND_DN", "")
 AUTH_LDAP_BIND_PASSWORD = getattr(settings, "AUTH_LDAP_BIND_PASSWORD", "")
 AUTH_LDAP_USER_SEARCH = getattr(
@@ -73,9 +67,7 @@ USER_LDAP_MAPPING_ATTRIBUTES = getattr(
     },
 )
 
-CAS_FORCE_LOWERCASE_USERNAME = getattr(
-    settings, "CAS_FORCE_LOWERCASE_USERNAME", False
-)
+CAS_FORCE_LOWERCASE_USERNAME = getattr(settings, "CAS_FORCE_LOWERCASE_USERNAME", False)
 
 # search scope
 BASE = "BASE"
@@ -189,8 +181,7 @@ def create_accessgroups(user, tree_or_entry, auth_type):
     groups_element = []
     if auth_type == "cas":
         tree_groups_element = tree_or_entry.findall(
-            ".//{http://www.yale.edu/tp/cas}%s"
-            % (USER_CAS_MAPPING_ATTRIBUTES["groups"])
+            ".//{http://www.yale.edu/tp/cas}%s" % (USER_CAS_MAPPING_ATTRIBUTES["groups"])
         )
         for tge in tree_groups_element:
             groups_element.append(tge.text)
@@ -284,26 +275,19 @@ def populate_user_from_tree(user, owner, tree):
         print_xml_tree(tree)
     # Mail
     mail_element = tree.find(
-        ".//{http://www.yale.edu/tp/cas}%s"
-        % (USER_CAS_MAPPING_ATTRIBUTES["mail"])
+        ".//{http://www.yale.edu/tp/cas}%s" % (USER_CAS_MAPPING_ATTRIBUTES["mail"])
     )
     user.email = mail_element.text if mail_element is not None else ""
     # first_name
     first_name_element = tree.find(
-        ".//{http://www.yale.edu/tp/cas}%s"
-        % (USER_CAS_MAPPING_ATTRIBUTES["first_name"])
+        ".//{http://www.yale.edu/tp/cas}%s" % (USER_CAS_MAPPING_ATTRIBUTES["first_name"])
     )
-    user.first_name = (
-        first_name_element.text if first_name_element is not None else ""
-    )
+    user.first_name = first_name_element.text if first_name_element is not None else ""
     # last_name
     last_name_element = tree.find(
-        ".//{http://www.yale.edu/tp/cas}%s"
-        % (USER_CAS_MAPPING_ATTRIBUTES["last_name"])
+        ".//{http://www.yale.edu/tp/cas}%s" % (USER_CAS_MAPPING_ATTRIBUTES["last_name"])
     )
-    user.last_name = (
-        last_name_element.text if last_name_element is not None else ""
-    )
+    user.last_name = last_name_element.text if last_name_element is not None else ""
     user.save()
     # PrimaryAffiliation
     primary_affiliation_element = tree.find(
@@ -317,8 +301,7 @@ def populate_user_from_tree(user, owner, tree):
     )
     # affiliation
     affiliation_element = tree.findall(
-        ".//{http://www.yale.edu/tp/cas}%s"
-        % (USER_CAS_MAPPING_ATTRIBUTES["affiliation"])
+        ".//{http://www.yale.edu/tp/cas}%s" % (USER_CAS_MAPPING_ATTRIBUTES["affiliation"])
     )
     for affiliation in affiliation_element:
         if affiliation.text in AFFILIATION_STAFF:

@@ -42,7 +42,5 @@ urlpatterns = [
     url(r"^ajax_calls/remove_shared_user/", remove_shared_user),
     url(r"^ajax_calls/add_shared_user/", add_shared_user),
     url(r"^ajax_calls/user_folders/", user_folders),
-    url(
-        r"^ajax_calls/current_session_folder/", get_current_session_folder_ajax
-    ),
+    url(r"^ajax_calls/current_session_folder/", get_current_session_folder_ajax),
 ]

@@ -27,9 +27,7 @@ class ChapterViewsTestCase(TestCase):
 
     def setUp(self):
         site = Site.objects.get(id=1)
-        owner = User.objects.create(
-            username="test", password="azerty", is_staff=True
-        )
+        owner = User.objects.create(username="test", password="azerty", is_staff=True)
         owner.set_password("hello")
         owner.save()
         owner2 = User.objects.create(username="test2", password="azerty")

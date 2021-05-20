@@ -174,9 +174,7 @@ urlpatterns = [
         {"next_page": "/"},
         name="local-logout",
     ),
-    url(
-        r"^accounts/change-password/$", auth_views.PasswordChangeView.as_view()
-    ),
+    url(r"^accounts/change-password/$", auth_views.PasswordChangeView.as_view()),
     url(r"^accounts/reset-password/$", auth_views.PasswordResetView.as_view()),
     url(r"^accounts/userpicture/$", userpicture, name="userpicture"),
     # rest framework
@@ -348,17 +346,14 @@ if getattr(settings, "USER_VIDEO_CATEGORY", False):
 # CHANNELS
 urlpatterns += [
     url(r"^(?P<slug_c>[\-\d\w]+)/$", channel, name="channel"),
-    url(
-        r"^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$", channel, name="theme"
-    ),
+    url(r"^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$", channel, name="theme"),
     url(
         r"^(?P<slug_c>[\-\d\w]+)/video/(?P<slug>[\-\d\w]+)/$",
         video,
         name="video",
     ),
     url(
-        r"^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)"
-        r"/video/(?P<slug>[\-\d\w]+)/$",
+        r"^(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)" r"/video/(?P<slug>[\-\d\w]+)/$",
         video,
         name="video",
     ),

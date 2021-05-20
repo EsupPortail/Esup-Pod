@@ -91,9 +91,7 @@ def publish_meeting(request, id=None):
 
     # Check security : a normal user can publish only a meeting
     # where he was moderator
-    meetings_list = Meeting.objects.filter(
-        attendee__user_id=request.user.id, id=id
-    )
+    meetings_list = Meeting.objects.filter(attendee__user_id=request.user.id, id=id)
     if not meetings_list and not request.user.is_superuser:
         messages.add_message(
             request,
@@ -129,9 +127,7 @@ def publish_meeting(request, id=None):
                 _("One or more errors have been found in the form."),
             )
 
-    return render(
-        request, "bbb/publish_meeting.html", {"record": record, "form": form}
-    )
+    return render(request, "bbb/publish_meeting.html", {"record": record, "form": form})
 
 
 @csrf_protect
@@ -229,9 +225,7 @@ def live_publish_meeting(request, id=None):
 
     # Check security : a normal user can publish only a meeting
     # where he was moderator
-    meetings_list = Meeting.objects.filter(
-        attendee__user_id=request.user.id, id=id
-    )
+    meetings_list = Meeting.objects.filter(attendee__user_id=request.user.id, id=id)
     if not meetings_list and not request.user.is_superuser:
         messages.add_message(
             request,
@@ -274,9 +268,7 @@ def live_publish_chat_if_authenticated(user):
 
 
 @csrf_protect
-@user_passes_test(
-    live_publish_chat_if_authenticated, redirect_field_name="referrer"
-)
+@user_passes_test(live_publish_chat_if_authenticated, redirect_field_name="referrer")
 def live_publish_chat(request, id=None):
     # Allows an authenticated user to send chat question to BBB
     who_sent = "(%s %s) " % (request.user.first_name, request.user.last_name)

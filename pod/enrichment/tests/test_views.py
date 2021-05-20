@@ -17,9 +17,7 @@ class EnrichmentViewsTestCase(TestCase):
 
     def setUp(self):
         site = Site.objects.get(id=1)
-        owner = User.objects.create(
-            username="test", password="azerty", is_staff=True
-        )
+        owner = User.objects.create(username="test", password="azerty", is_staff=True)
         owner.set_password("hello")
         owner.save()
         vid = Video.objects.create(
@@ -152,9 +150,7 @@ class EnrichmentViewsTestCase(TestCase):
         result = Enrichment.objects.all()
         self.assertTrue(result)
         result = Enrichment.objects.get(id=1)
-        response = self.client.post(
-            url, data={"action": "delete", "id": result.id}
-        )
+        response = self.client.post(url, data={"action": "delete", "id": result.id})
         self.assertEqual(response.status_code, 200)
         result = Enrichment.objects.all()
         self.assertFalse(result)

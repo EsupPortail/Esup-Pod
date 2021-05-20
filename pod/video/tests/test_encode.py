@@ -14,13 +14,9 @@ from pod.video.models import PlaylistVideo
 import shutil
 import os
 
-VIDEO_TEST = getattr(
-    settings, "VIDEO_TEST", "pod/main/static/video_test/pod.mp4"
-)
+VIDEO_TEST = getattr(settings, "VIDEO_TEST", "pod/main/static/video_test/pod.mp4")
 
-AUDIO_TEST = getattr(
-    settings, "VIDEO_TEST", "pod/main/static/video_test/pod.mp3"
-)
+AUDIO_TEST = getattr(settings, "VIDEO_TEST", "pod/main/static/video_test/pod.mp3")
 
 
 class EncodeTestCase(TestCase):
@@ -91,12 +87,8 @@ class EncodeTestCase(TestCase):
     def test_result_encoding_audio(self):
         # video id=1 et audio id=2
         audio = Video.objects.get(id=2)
-        list_m4a = EncodingAudio.objects.filter(
-            video=audio, encoding_format="video/mp4"
-        )
-        list_mp3 = EncodingAudio.objects.filter(
-            video=audio, encoding_format="audio/mp3"
-        )
+        list_m4a = EncodingAudio.objects.filter(video=audio, encoding_format="video/mp4")
+        list_mp3 = EncodingAudio.objects.filter(video=audio, encoding_format="audio/mp3")
         el = EncodingLog.objects.get(video=audio)
         self.assertTrue("NO VIDEO AND AUDIO FOUND" not in el.log)
         self.assertTrue(len(list_mp3) > 0)

@@ -26,8 +26,7 @@ def video_chapter(request, slug):
     if (
         request.user != video.owner
         and not (
-            request.user.is_superuser
-            or request.user.has_perm("chapter.change_chapter")
+            request.user.is_superuser or request.user.has_perm("chapter.change_chapter")
         )
         and (request.user not in video.additional_owners.all())
     ):
@@ -43,9 +42,7 @@ def video_chapter(request, slug):
     if request.POST and request.POST.get("action"):
         if request.POST["action"] in ACTION:
             return eval(
-                "video_chapter_{0}(request, video)".format(
-                    request.POST["action"]
-                )
+                "video_chapter_{0}(request, video)".format(request.POST["action"])
             )
     else:
         return render(
@@ -220,9 +217,7 @@ def video_chapter_import(request, video):
     list_chapter = video.chapter_set.all()
 
     form_chapter = ChapterForm(initial={"video": video})
-    form_import = ChapterImportForm(
-        request.POST, user=request.user, video=video
-    )
+    form_import = ChapterImportForm(request.POST, user=request.user, video=video)
     if form_import.is_valid():
         list_chapter = video.chapter_set.all()
         if request.is_ajax():

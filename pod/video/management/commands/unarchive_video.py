@@ -49,6 +49,4 @@ class Command(BaseCommand):
         video.title = video.title[to_remove:]
         video.date_delete = default_date_delete()
         video.save()
-        self.stdout.write(
-            self.style.SUCCESS('Video "%s" has been unarchived' % video.id)
-        )
+        self.stdout.write(self.style.SUCCESS('Video "%s" has been unarchived' % video.id))

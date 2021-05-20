@@ -62,11 +62,15 @@ VIDEOS = Video.objects.filter(encoding_in_progress=False, is_draft=False).defer(
 
 # for clean install, produces errors
 try:
-    VIDEOS = VIDEOS.exclude(pk__in=[vid.id for vid in VIDEOS if not vid.encoded]).filter(sites=get_current_site(None))
+    VIDEOS = VIDEOS.exclude(pk__in=[vid.id for vid in VIDEOS if not vid.encoded]).filter(
+        sites=get_current_site(None)
+    )
 except Exception:
     pass
 
-RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False)
+RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY = getattr(
+    settings, "RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY", False
+)
 THEME_ACTION = ["new", "modify", "delete", "save"]
 NOTE_ACTION = ["get", "save", "remove", "form", "download"]
 
@@ -89,7 +93,11 @@ TEMPLATE_VISIBLE_SETTINGS = getattr(
     },
 )
 
-TITLE_SITE = TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"] if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE")) else "Pod"
+TITLE_SITE = (
+    TEMPLATE_VISIBLE_SETTINGS["TITLE_SITE"]
+    if (TEMPLATE_VISIBLE_SETTINGS.get("TITLE_SITE"))
+    else "Pod"
+)
 
 VIDEO_MAX_UPLOAD_SIZE = getattr(settings, "VIDEO_MAX_UPLOAD_SIZE", 1)
 
@@ -195,7 +203,11 @@ def channel(request, slug_c, slug_t=None):
     page = request.GET.get("page", 1)
     full_path = ""
     if page:
-        full_path = request.get_full_path().replace("?page=%s" % page, "").replace("&page=%s" % page, "")
+        full_path = (
+            request.get_full_path()
+            .replace("?page=%s" % page, "")
+            .replace("&page=%s" % page, "")
+        )
 
     videos = paginator(videos_list, page)
 
@@ -226,7 +238,11 @@ def channel(request, slug_c, slug_t=None):
 @login_required(redirect_field_name="referrer")
 def my_channels(request):
     site = get_current_site(request)
-    channels = request.user.owners_channels.all().filter(sites=site).annotate(video_count=Count("video", distinct=True))
+    channels = (
+        request.user.owners_channels.all()
+        .filter(sites=site)
+        .annotate(video_count=Count("video", distinct=True))
+    )
     return render(request, "channel/my_channels.html", {"channels": channels})
 
 
@@ -253,7 +269,9 @@ def channel_edit(request, slug):
         )
         if channel_form.is_valid():
             channel = channel_form.save()
-            messages.add_message(request, messages.INFO, _("The changes have been saved."))
+            messages.add_message(
+                request, messages.INFO, _("The changes have been saved.")
+            )
         else:
             messages.add_message(
                 request,
@@ -366,13 +384,19 @@ def my_videos(request):
     data_context = {}
     site = get_current_site(request)
     # Videos list which user is the owner + which user is an additional owner
-    videos_list = request.user.video_set.all().filter(sites=site) | request.user.owners_videos.all().filter(sites=site)
+    videos_list = request.user.video_set.all().filter(
+        sites=site
+    ) | request.user.owners_videos.all().filter(sites=site)
     videos_list = videos_list.distinct()
     page = request.GET.get("page", 1)
 
     full_path = ""
     if page:
-        full_path = request.get_full_path().replace("?page=%s" % page, "").replace("&page=%s" % page, "")
+        full_path = (
+            request.get_full_path()
+            .replace("?page=%s" % page, "")
+            .replace("&page=%s" % page, "")
+        )
 
     cats = []
     videos_without_cat = []
@@ -429,7 +453,9 @@ def get_videos_list(request):
     if request.GET.getlist("type"):
         videos_list = videos_list.filter(type__slug__in=request.GET.getlist("type"))
     if request.GET.getlist("discipline"):
-        videos_list = videos_list.filter(discipline__slug__in=request.GET.getlist("discipline"))
+        videos_list = videos_list.filter(
+            discipline__slug__in=request.GET.getlist("discipline")
+        )
     if request.GET.getlist("owner"):
         # Add filter on additional owners
         videos_list = videos_list.filter(
@@ -437,7 +463,9 @@ def get_videos_list(request):
             | Q(additional_owners__username__in=request.GET.getlist("owner"))
         )
     if request.GET.getlist("tag"):
-        videos_list = TaggedItem.objects.get_union_by_model(videos_list, request.GET.getlist("tag"))
+        videos_list = TaggedItem.objects.get_union_by_model(
+            videos_list, request.GET.getlist("tag")
+        )
     if request.GET.getlist("cursus"):
         videos_list = videos_list.filter(cursus__in=request.GET.getlist("cursus"))
     return videos_list.distinct()
@@ -460,7 +488,11 @@ def videos(request):
     page = request.GET.get("page", 1)
     full_path = ""
     if page:
-        full_path = request.get_full_path().replace("?page=%s" % page, "").replace("&page=%s" % page, "")
+        full_path = (
+            request.get_full_path()
+            .replace("?page=%s" % page, "")
+            .replace("&page=%s" % page, "")
+        )
 
     paginator = Paginator(videos_list, 12)
     try:
@@ -498,7 +530,9 @@ def videos(request):
 
 def is_in_video_groups(user, video):
     return user.owner.accessgroup_set.filter(
-        code_name__in=[name[0] for name in video.restrict_access_to_groups.values_list("code_name")]
+        code_name__in=[
+            name[0] for name in video.restrict_access_to_groups.values_list("code_name")
+        ]
     ).exists()
 
 
@@ -524,7 +558,9 @@ def get_video_access(request, video, slug_private):
             or request.user.has_perm("video.change_video")
             or (request.user in video.additional_owners.all())
         )
-        access_granted_for_restricted = request.user.is_authenticated() and not is_restricted_to_group
+        access_granted_for_restricted = (
+            request.user.is_authenticated() and not is_restricted_to_group
+        )
         access_granted_for_group = (
             (request.user.is_authenticated() and is_in_video_groups(request.user, video))
             or request.user == video.owner
@@ -598,9 +634,17 @@ def render_video(
         return redirect(video.get_default_version_link())
     """
     listNotes = get_adv_note_list(request, video)
-    channel = get_object_or_404(Channel, slug=slug_c, sites=get_current_site(request)) if slug_c else None
+    channel = (
+        get_object_or_404(Channel, slug=slug_c, sites=get_current_site(request))
+        if slug_c
+        else None
+    )
     theme = get_object_or_404(Theme, channel=channel, slug=slug_t) if slug_t else None
-    playlist = get_object_or_404(Playlist, slug=request.GET["playlist"]) if request.GET.get("playlist") else None
+    playlist = (
+        get_object_or_404(Playlist, slug=request.GET["playlist"])
+        if request.GET.get("playlist")
+        else None
+    )
     if playlist and request.user != playlist.owner and not playlist.visible:
         # not (request.user.is_superuser or request.user.has_perm(
         #        "video.change_theme")
@@ -646,10 +690,19 @@ def render_video(
         is_restricted = video.is_restricted
         is_restricted_to_group = video.restrict_access_to_groups.all().exists()
         is_access_protected = is_draft or is_restricted or is_restricted_to_group
-        if is_password_protected and (not is_access_protected or (is_access_protected and show_page)):
-            form = VideoPasswordForm(request.POST) if request.POST else VideoPasswordForm()
-            if request.POST.get("password") and request.POST.get("password") != video.password:
-                messages.add_message(request, messages.ERROR, _("The password is incorrect."))
+        if is_password_protected and (
+            not is_access_protected or (is_access_protected and show_page)
+        ):
+            form = (
+                VideoPasswordForm(request.POST) if request.POST else VideoPasswordForm()
+            )
+            if (
+                request.POST.get("password")
+                and request.POST.get("password") != video.password
+            ):
+                messages.add_message(
+                    request, messages.ERROR, _("The password is incorrect.")
+                )
             return render(
                 request,
                 "videos/video.html",
@@ -664,11 +717,16 @@ def render_video(
                 },
             )
         elif request.user.is_authenticated():
-            messages.add_message(request, messages.ERROR, _("You cannot watch this video."))
+            messages.add_message(
+                request, messages.ERROR, _("You cannot watch this video.")
+            )
             raise PermissionDenied
         else:
             iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
-            return redirect("%s?%sreferrer=%s" % (settings.LOGIN_URL, iframe_param, request.get_full_path()))
+            return redirect(
+                "%s?%sreferrer=%s"
+                % (settings.LOGIN_URL, iframe_param, request.get_full_path())
+            )
 
 
 @csrf_protect
@@ -677,7 +735,11 @@ def render_video(
 def video_edit(request, slug=None):
     if in_maintenance():
         return redirect(reverse("maintenance"))
-    video = get_object_or_404(Video, slug=slug, sites=get_current_site(request)) if slug else None
+    video = (
+        get_object_or_404(Video, slug=slug, sites=get_current_site(request))
+        if slug
+        else None
+    )
 
     if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
         return render(request, "videos/video_edit.html", {"access_not_allowed": True})
@@ -685,7 +747,9 @@ def video_edit(request, slug=None):
     if (
         video
         and request.user != video.owner
-        and (not (request.user.is_superuser or request.user.has_perm("video.change_video")))
+        and (
+            not (request.user.is_superuser or request.user.has_perm("video.change_video"))
+        )
         and (request.user not in video.additional_owners.all())
     ):
         messages.add_message(request, messages.ERROR, _(u"You cannot edit this video."))
@@ -713,7 +777,9 @@ def video_edit(request, slug=None):
         )
         if form.is_valid():
             video = save_video_form(request, form)
-            messages.add_message(request, messages.INFO, _("The changes have been saved."))
+            messages.add_message(
+                request, messages.INFO, _("The changes have been saved.")
+            )
             if request.POST.get("_saveandsee"):
                 return redirect(reverse("video", args=(video.slug,)))
             else:
@@ -752,7 +818,9 @@ def video_delete(request, slug=None):
 
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
 
-    if request.user != video.owner and not (request.user.is_superuser or request.user.has_perm("video.delete_video")):
+    if request.user != video.owner and not (
+        request.user.is_superuser or request.user.has_perm("video.delete_video")
+    ):
         messages.add_message(request, messages.ERROR, _(u"You cannot delete this video."))
         raise PermissionDenied
 
@@ -780,10 +848,19 @@ def get_adv_note_list(request, video):
       that can be seen by the current user
     """
     if request.user.is_authenticated:
-        filter = Q(user=request.user) | (Q(video__owner=request.user) & Q(status="1")) | Q(status="2")
+        filter = (
+            Q(user=request.user)
+            | (Q(video__owner=request.user) & Q(status="1"))
+            | Q(status="2")
+        )
     else:
         filter = Q(status="2")
-    return AdvancedNotes.objects.all().filter(video=video).filter(filter).order_by("timestamp", "added_on")
+    return (
+        AdvancedNotes.objects.all()
+        .filter(video=video)
+        .filter(filter)
+        .order_by("timestamp", "added_on")
+    )
 
 
 def get_adv_note_com_list(request, id):
@@ -794,10 +871,19 @@ def get_adv_note_com_list(request, id):
     if id:
         note = get_object_or_404(AdvancedNotes, id=id)
         if request.user.is_authenticated:
-            filter = Q(user=request.user) | (Q(parentNote__video__owner=request.user) & Q(status="1")) | Q(status="2")
+            filter = (
+                Q(user=request.user)
+                | (Q(parentNote__video__owner=request.user) & Q(status="1"))
+                | Q(status="2")
+            )
         else:
             filter = Q(status="2")
-        return NoteComments.objects.all().filter(parentNote=note, parentCom=None).filter(filter).order_by("added_on")
+        return (
+            NoteComments.objects.all()
+            .filter(parentNote=note, parentCom=None)
+            .filter(filter)
+            .order_by("added_on")
+        )
     else:
         return []
 
@@ -819,11 +905,20 @@ def get_com_coms_dict(request, listComs):
     if not listComs:
         return dictComs
     if request.user.is_authenticated:
-        filter = Q(user=request.user) | (Q(parentNote__video__owner=request.user) & Q(status="1")) | Q(status="2")
+        filter = (
+            Q(user=request.user)
+            | (Q(parentNote__video__owner=request.user) & Q(status="1"))
+            | Q(status="2")
+        )
     else:
         filter = Q(status="2")
     for c in listComs:
-        lComs = NoteComments.objects.all().filter(parentCom=c).filter(filter).order_by("added_on")
+        lComs = (
+            NoteComments.objects.all()
+            .filter(parentCom=c)
+            .filter(filter)
+            .order_by("added_on")
+        )
         dictComs[str(c.id)] = lComs
         dictComs.update(get_com_coms_dict(request, lComs))
     return dictComs
@@ -882,7 +977,10 @@ def can_see_note_or_com(request, nc):
         or nc.status == "2"
         or (
             request.user.is_superuser
-            or (request.user.has_perm("video.change_notes") and request.user.has_perm("video.change_advancednotes"))
+            or (
+                request.user.has_perm("video.change_notes")
+                and request.user.has_perm("video.change_advancednotes")
+            )
         )
     ):
         messages.add_message(
@@ -1189,7 +1287,11 @@ def video_note_save_form_valid(request, video, params):
         dictComments,
     ) = params
     # Saving a com after an edit
-    if idCom is not None and idNote is not None and request.POST.get("action") == "save_com_edit":
+    if (
+        idCom is not None
+        and idNote is not None
+        and request.POST.get("action") == "save_com_edit"
+    ):
         com.comment = request.POST.get("comment")
         com.status = request.POST.get("status")
         com.modified_on = timezone.now()
@@ -1199,7 +1301,11 @@ def video_note_save_form_valid(request, video, params):
         listNotesCom = get_adv_note_com_list(request, idNote)
         dictComments = get_com_coms_dict(request, listNotesCom)
     # Saving a new answer (com) to a com
-    elif idCom is not None and idNote is not None and request.POST.get("action") == "save_com_new":
+    elif (
+        idCom is not None
+        and idNote is not None
+        and request.POST.get("action") == "save_com_new"
+    ):
         com2 = NoteComments.objects.create(
             user=request.user,
             parentNote=note,
@@ -1213,14 +1319,18 @@ def video_note_save_form_valid(request, video, params):
         listNotesCom = get_adv_note_com_list(request, idNote)
         dictComments = get_com_coms_dict(request, listNotesCom)
     # Saving a note after an edit
-    elif idCom is None and idNote is not None and request.POST.get("action") == "save_note":
+    elif (
+        idCom is None and idNote is not None and request.POST.get("action") == "save_note"
+    ):
         note.note = request.POST.get("note")
         note.status = request.POST.get("status")
         note.modified_on = timezone.now()
         note.save()
         messages.add_message(request, messages.INFO, _("The note has been saved."))
     # Saving a new com for a note
-    elif idCom is None and idNote is not None and request.POST.get("action") == "save_com":
+    elif (
+        idCom is None and idNote is not None and request.POST.get("action") == "save_com"
+    ):
         com = NoteComments.objects.create(
             user=request.user,
             parentNote=note,
@@ -1267,7 +1377,11 @@ def video_note_form_not_valid(request, params):
     if (
         (idCom is not None and idNote is not None)
         or (idCom is not None and idNote is None)
-        or (idCom is None and idNote is not None and request.POST.get("action") == "save_com")
+        or (
+            idCom is None
+            and idNote is not None
+            and request.POST.get("action") == "save_com"
+        )
     ):
         noteToDisplay = note
         listNotesCom = get_adv_note_com_list(request, idNote)
@@ -1297,7 +1411,9 @@ def video_note_remove(request, slug):
             can_edit_or_remove_note_or_com(request, com, "delete")
             comToDisplay = get_com_tree(com)
             com.delete()
-            messages.add_message(request, messages.INFO, _("The comment has been deleted."))
+            messages.add_message(
+                request, messages.INFO, _("The comment has been deleted.")
+            )
             noteToDisplay = note
             listNotesCom = get_adv_note_com_list(request, idNote)
 
@@ -1479,7 +1595,10 @@ def video_oembed(request):
     data["width"] = 640
     data["height"] = 360
 
-    reg = r"^https?://(.*)/video/(?P<slug>[\-\d\w]+)/" + r"(?P<slug_private>[\-\d\w]+)?/?(.*)"
+    reg = (
+        r"^https?://(.*)/video/(?P<slug>[\-\d\w]+)/"
+        + r"(?P<slug_private>[\-\d\w]+)?/?(.*)"
+    )
     url = request.GET.get("url")
     p = re.compile(reg)
     m = p.match(url)
@@ -1548,7 +1667,9 @@ def get_all_views_count(v_id, date_filter=date.today()):
     all_views = {}
 
     # view count in day
-    count = ViewCount.objects.filter(video_id=v_id, date=date_filter).aggregate(Sum("count"))["count__sum"]
+    count = ViewCount.objects.filter(video_id=v_id, date=date_filter).aggregate(
+        Sum("count")
+    )["count__sum"]
     all_views["day"] = count if count else 0
 
     # view count in month
@@ -1560,7 +1681,9 @@ def get_all_views_count(v_id, date_filter=date.today()):
     all_views["month"] = count if count else 0
 
     # view count in year
-    count = ViewCount.objects.filter(date__year=date_filter.year, video_id=v_id).aggregate(Sum("count"))["count__sum"]
+    count = ViewCount.objects.filter(
+        date__year=date_filter.year, video_id=v_id
+    ).aggregate(Sum("count"))["count__sum"]
     all_views["year"] = count if count else 0
 
     # view count since video was created
@@ -1586,7 +1709,9 @@ def get_videos(p_slug, target, p_slug_t=None):
         # In case that the slug is a bad one
         if video_founded:
             videos.append(video_founded)
-            title = _("Video viewing statistics for %s") % video_founded.title.capitalize()
+            title = (
+                _("Video viewing statistics for %s") % video_founded.title.capitalize()
+            )
 
     elif target.lower() == "channel":
         title = _("Video viewing statistics for the channel %s") % p_slug
@@ -1630,7 +1755,9 @@ def manage_access_rights_stats_video(request, video, page_title):
         or has_rights
     ):
         return render(request, "videos/video_stats_view.html", {"title": page_title})
-    return HttpResponseNotFound(_("You do not have access rights to this video: %s " % video.slug))
+    return HttpResponseNotFound(
+        _("You do not have access rights to this video: %s " % video.slug)
+    )
 
 
 @user_passes_test(view_stats_if_authenticated, redirect_field_name="referrer")
@@ -1645,14 +1772,18 @@ def stats_view(request, slug=None, slug_t=None):
     """
     target = request.GET.get("from", "videos")
     videos, title = get_videos(slug, target, slug_t)
-    error_message = "The following %(target)s does not " "exist or contain any videos: %(slug)s"
+    error_message = (
+        "The following %(target)s does not " "exist or contain any videos: %(slug)s"
+    )
     if request.method == "GET" and target == "video" and videos:
         return manage_access_rights_stats_video(request, videos[0], title)
 
     elif request.method == "GET" and target == "video" and not videos:
         return HttpResponseNotFound(_("The following video does not exist: %s") % slug)
 
-    if request.method == "GET" and (not videos and target in ("channel", "theme", "videos")):
+    if request.method == "GET" and (
+        not videos and target in ("channel", "theme", "videos")
+    ):
         slug = slug if not slug_t else slug_t
         target = "Pod" if target == "videos" else target
         return HttpResponseNotFound(_(error_message) % {"target": target, "slug": slug})
@@ -1660,8 +1791,13 @@ def stats_view(request, slug=None, slug_t=None):
     if (
         request.method == "POST"
         and target == "video"
-        and (request.POST.get("password") and request.POST.get("password") == videos[0].password)
-    ) or (request.method == "GET" and videos and target in ("videos", "channel", "theme")):
+        and (
+            request.POST.get("password")
+            and request.POST.get("password") == videos[0].password
+        )
+    ) or (
+        request.method == "GET" and videos and target in ("videos", "channel", "theme")
+    ):
         return render(request, "videos/video_stats_view.html", {"title": title})
     else:
         date_filter = request.POST.get("periode", date.today())
@@ -1694,19 +1830,29 @@ def video_add(request):
     if slug != "":
         try:
             video = Video.objects.get(slug=slug, sites=get_current_site(request))
-            if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY and request.user.is_staff is False:
+            if (
+                RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY
+                and request.user.is_staff is False
+            ):
                 return HttpResponseNotFound("<h1>Permission Denied</h1>")
 
             if (
                 video
                 and request.user != video.owner
-                and (not (request.user.is_superuser or request.user.has_perm("video.change_video")))
+                and (
+                    not (
+                        request.user.is_superuser
+                        or request.user.has_perm("video.change_video")
+                    )
+                )
                 and (request.user not in video.additional_owners.all())
             ):
                 return HttpResponseNotFound("<h1>Permission Denied</h1>")
         except Video.DoesNotExist:
             pass
-    allowed_text = _("The following formats are supported: %s") % ", ".join(map(str, VIDEO_ALLOWED_EXTENSIONS))
+    allowed_text = _("The following formats are supported: %s") % ", ".join(
+        map(str, VIDEO_ALLOWED_EXTENSIONS)
+    )
     return render(
         request,
         "videos/add_video.html",
@@ -1731,7 +1877,9 @@ def vote_get(request, video_slug):
                 json.dumps({"comments_votes": []}),
                 content_type="application/json",
             )
-        votes = Vote.objects.filter(comment__video=c_video, user=request.user).values("comment__id")
+        votes = Vote.objects.filter(comment__video=c_video, user=request.user).values(
+            "comment__id"
+        )
         return HttpResponse(
             json.dumps({"comments_votes": list(votes)}),
             content_type="application/json",
@@ -1818,7 +1966,9 @@ def get_parent_comments(request, video):
         Comment.objects.filter(video=video, parent=None)
         .order_by("added")
         .annotate(nbr_vote=Count("vote", distinct=True))
-        .annotate(author_name=Concat("author__first_name", Value(" "), "author__last_name"))
+        .annotate(
+            author_name=Concat("author__first_name", Value(" "), "author__last_name")
+        )
         .annotate(nbr_child=Count("children", distinct=True))
         .annotate(
             is_owner=Case(
@@ -1852,7 +2002,9 @@ def get_children_comment(request, comment_id, video_slug):
         v = get_object_or_404(Video, slug=video_slug)
         parent_comment = (
             Comment.objects.filter(video=v, id=comment_id)
-            .annotate(author_name=Concat("author__first_name", Value(" "), "author__last_name"))
+            .annotate(
+                author_name=Concat("author__first_name", Value(" "), "author__last_name")
+            )
             .annotate(nbr_child=Count("children", distinct=True))
             .annotate(
                 is_owner=Case(
@@ -1904,7 +2056,9 @@ def get_comments(request, video_slug):
             Comment.objects.filter(video=v, parent=None)
             .order_by("added")
             .annotate(nbr_vote=Count("vote", distinct=True))
-            .annotate(author_name=Concat("author__first_name", Value(" "), "author__last_name"))
+            .annotate(
+                author_name=Concat("author__first_name", Value(" "), "author__last_name")
+            )
             .annotate(nbr_child=Count("children", distinct=True))
             .annotate(
                 is_owner=Case(
@@ -2284,7 +2438,8 @@ class PodChunkedUploadCompleteView(ChunkedUploadCompleteView):
         return {
             "redirlink": reverse("video_edit", args=(self.slug,)),
             "message": (
-                "You successfully uploaded '%s' (%s bytes)!" % (chunked_upload.filename, chunked_upload.offset)
+                "You successfully uploaded '%s' (%s bytes)!"
+                % (chunked_upload.filename, chunked_upload.offset)
             ),
         }
 

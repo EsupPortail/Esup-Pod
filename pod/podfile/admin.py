@@ -69,9 +69,7 @@ class CustomImageModelAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(
-                folder__owner__owner__sites=get_current_site(request)
-            )
+            qs = qs.filter(folder__owner__owner__sites=get_current_site(request))
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -111,9 +109,7 @@ class CustomFileModelAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(
-                folder__owner__owner__sites=get_current_site(request)
-            )
+            qs = qs.filter(folder__owner__owner__sites=get_current_site(request))
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

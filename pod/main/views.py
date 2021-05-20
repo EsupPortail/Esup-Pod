@@ -86,9 +86,7 @@ HIDE_USER_TAB = getattr(settings, "HIDE_USER_TAB", False)
 
 def in_maintenance():
     return (
-        True
-        if Configuration.objects.get(key="maintenance_mode").value == "1"
-        else False
+        True if Configuration.objects.get(key="maintenance_mode").value == "1" else False
     )
 
 
@@ -97,13 +95,11 @@ def download_file(request):
     if request.POST and request.POST.get("filename"):
         filename = os.path.join(settings.MEDIA_ROOT, request.POST["filename"])
         wrapper = FileWrapper(open(filename, "rb"))
-        response = HttpResponse(
-            wrapper, content_type=mimetypes.guess_type(filename)[0]
-        )
+        response = HttpResponse(wrapper, content_type=mimetypes.guess_type(filename)[0])
         response["Content-Length"] = os.path.getsize(filename)
-        response[
-            "Content-Disposition"
-        ] = 'attachment; filename="%s"' % os.path.basename(filename)
+        response["Content-Disposition"] = 'attachment; filename="%s"' % os.path.basename(
+            filename
+        )
         return response
     else:
         raise PermissionDenied
@@ -168,9 +164,7 @@ def contact_us(request):
     )
 
     video = (
-        Video.objects.get(
-            id=request.GET.get("video"), sites=get_current_site(request)
-        )
+        Video.objects.get(id=request.GET.get("video"), sites=get_current_site(request))
         if (
             request.GET.get("video")
             and request.GET.get("video").isdigit()
@@ -198,8 +192,7 @@ def contact_us(request):
         request.GET.get("subject")
         if (
             request.GET.get("subject")
-            and request.GET.get("subject")
-            in [key for key, value in SUBJECT_CHOICES]
+            and request.GET.get("subject") in [key for key, value in SUBJECT_CHOICES]
         )
         else None
     )
@@ -207,9 +200,7 @@ def contact_us(request):
     prefix = "https://" if request.is_secure() else "http://"
     home_page = "".join([prefix, get_current_site(request).domain])
     url_referrer = (
-        request.META["HTTP_REFERER"]
-        if request.META.get("HTTP_REFERER")
-        else home_page
+        request.META["HTTP_REFERER"] if request.META.get("HTTP_REFERER") else home_page
     )
 
     form = ContactUsForm(
@@ -263,9 +254,7 @@ def contact_us(request):
             dest_email = []
             dest_email = get_dest_email(owner, video, form_subject, request)
 
-            msg = EmailMultiAlternatives(
-                subject, text_content, email, dest_email
-            )
+            msg = EmailMultiAlternatives(subject, text_content, email, dest_email)
             msg.attach_alternative(html_content, "text/html")
             msg.send(fail_silently=False)
 
@@ -336,9 +325,7 @@ def user_autocomplete(request):
             .distinct()
             .order_by("last_name")
             .annotate(
-                video_count=Count(
-                    "video", sites=get_current_site(request), distinct=True
-                )
+                video_count=Count("video", sites=get_current_site(request), distinct=True)
             )
             .values(*list(VALUES_LIST))
         )

@@ -119,9 +119,7 @@ class PlaylistViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "success")
-        result = PlaylistElement.objects.get(
-            playlist=playlist, video=video1, position=1
-        )
+        result = PlaylistElement.objects.get(playlist=playlist, video=video1, position=1)
         self.assertTrue(result)
         response = self.client.post(
             "/playlist/{0}/".format(playlist.slug),
@@ -130,9 +128,7 @@ class PlaylistViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "success")
-        result = PlaylistElement.objects.get(
-            playlist=playlist, video=video2, position=2
-        )
+        result = PlaylistElement.objects.get(playlist=playlist, video=video2, position=2)
         self.assertTrue(result)
 
         print(" ---> test_playlist_add : OK!")
@@ -144,12 +140,8 @@ class PlaylistViewsTestCase(TestCase):
         )
         video1 = Video.objects.get(id=1)
         video2 = Video.objects.get(id=2)
-        PlaylistElement.objects.create(
-            playlist=playlist, video=video1, position=1
-        )
-        PlaylistElement.objects.create(
-            playlist=playlist, video=video2, position=2
-        )
+        PlaylistElement.objects.create(playlist=playlist, video=video1, position=1)
+        PlaylistElement.objects.create(playlist=playlist, video=video2, position=2)
         response = self.client.get("/playlist/{0}/".format(playlist.slug))
         self.assertEqual(response.status_code, 302)
         authenticate(username="test", password="hello")
@@ -189,12 +181,8 @@ class PlaylistViewsTestCase(TestCase):
         )
         video1 = Video.objects.get(id=1)
         video2 = Video.objects.get(id=2)
-        PlaylistElement.objects.create(
-            playlist=playlist, video=video1, position=1
-        )
-        PlaylistElement.objects.create(
-            playlist=playlist, video=video2, position=2
-        )
+        PlaylistElement.objects.create(playlist=playlist, video=video1, position=1)
+        PlaylistElement.objects.create(playlist=playlist, video=video2, position=2)
         response = self.client.get("/playlist/{0}/".format(playlist.slug))
         self.assertEqual(response.status_code, 302)
         authenticate(username="test", password="hello")
@@ -234,9 +222,7 @@ class PlaylistViewsTestCase(TestCase):
             title="playlist1", owner=owner, description="test", visible=False
         )
         video1 = Video.objects.get(id=1)
-        PlaylistElement.objects.create(
-            playlist=playlist, video=video1, position=1
-        )
+        PlaylistElement.objects.create(playlist=playlist, video=video1, position=1)
         response = self.client.get("/playlist/{0}/".format(playlist.slug))
         self.assertEqual(response.status_code, 302)
         authenticate(username="test", password="hello")

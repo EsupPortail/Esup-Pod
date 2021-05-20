@@ -75,9 +75,7 @@ CURSUS_CODES = getattr(
     ),
 )
 
-LANG_CHOICES_DICT = {
-    key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]
-}
+LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}
 CURSUS_CODES_DICT = {key: value for key, value in CURSUS_CODES}
 
 DEFAULT_TYPE_ID = getattr(settings, "DEFAULT_TYPE_ID", 1)
@@ -208,13 +206,12 @@ def default_date_delete():
 def select_video_owner():
     if RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY:
         return lambda q: (
-            Q(is_staff=True)
-            & (Q(first_name__icontains=q) | Q(last_name__icontains=q))
+            Q(is_staff=True) & (Q(first_name__icontains=q) | Q(last_name__icontains=q))
         ) & Q(owner__sites=Site.objects.get_current())
     else:
-        return lambda q: (
-            Q(first_name__icontains=q) | Q(last_name__icontains=q)
-        ) & Q(owner__sites=Site.objects.get_current())
+        return lambda q: (Q(first_name__icontains=q) | Q(last_name__icontains=q)) & Q(
+            owner__sites=Site.objects.get_current()
+        )
 
 
 def remove_accents(input_str):
@@ -338,11 +335,8 @@ class Channel(models.Model):
         blank=True,
         verbose_name=_("Groups"),
         ajax=True,
-        search_field=lambda q: Q(code_name__icontains=q)
-        | Q(display_name__icontains=q),
-        help_text=_(
-            "Select one or more groups who can upload video this channel"
-        ),
+        search_field=lambda q: Q(code_name__icontains=q) | Q(display_name__icontains=q),
+        help_text=_("Select one or more groups who can upload video this channel"),
     )
     sites = models.ManyToManyField(Site)
 
@@ -659,9 +653,7 @@ class Video(models.Model):
         max_length=1,
         choices=CURSUS_CODES,
         default="0",
-        help_text=_(
-            "Select an university course as " "audience target of the content."
-        ),
+        help_text=_("Select an university course as " "audience target of the content."),
     )
     main_lang = models.CharField(
         _("Main language"),
@@ -674,8 +666,7 @@ class Video(models.Model):
         _("Transcript"),
         default=False,
         help_text=_(
-            "Check this box if you want to transcript the audio."
-            "(beta version)"
+            "Check this box if you want to transcript the audio." "(beta version)"
         ),
     )
     tags = TagField(
@@ -703,23 +694,18 @@ class Video(models.Model):
         verbose_name=_("Themes"),
         blank=True,
         help_text=_(
-            'Hold down "Control", or "Command" '
-            "on a Mac, to select more than one."
+            'Hold down "Control", or "Command" ' "on a Mac, to select more than one."
         ),
     )
     allow_downloading = models.BooleanField(
         _("allow downloading"),
         default=False,
-        help_text=_(
-            "Check this box if you to allow downloading of the encoded files"
-        ),
+        help_text=_("Check this box if you to allow downloading of the encoded files"),
     )
     is_360 = models.BooleanField(
         _("video 360"),
         default=False,
-        help_text=_(
-            "Check this box if you want to use the 360 player for the video"
-        ),
+        help_text=_("Check this box if you want to use the 360 player for the video"),
     )
 
     is_draft = models.BooleanField(
@@ -747,9 +733,7 @@ class Video(models.Model):
     )
     password = models.CharField(
         _("password"),
-        help_text=_(
-            "Viewing this video will not be possible without this password."
-        ),
+        help_text=_("Viewing this video will not be possible without this password."),
         max_length=50,
         blank=True,
         null=True,
@@ -762,9 +746,7 @@ class Video(models.Model):
         null=True,
         verbose_name=_("Thumbnails"),
     )
-    duration = models.IntegerField(
-        _("Duration"), default=0, editable=False, blank=True
-    )
+    duration = models.IntegerField(_("Duration"), default=0, editable=False, blank=True)
     overview = models.ImageField(
         _("Overview"),
         null=True,
@@ -779,9 +761,7 @@ class Video(models.Model):
     )
     is_video = models.BooleanField(_("Is Video"), default=True, editable=False)
 
-    date_delete = models.DateField(
-        _("Date to delete"), default=default_date_delete
-    )
+    date_delete = models.DateField(_("Date to delete"), default=default_date_delete)
 
     disable_comment = models.BooleanField(
         _("Disable comment"),
@@ -866,9 +846,7 @@ class Video(models.Model):
     def get_thumbnail_admin(self):
         thumbnail_url = ""
         if self.thumbnail and self.thumbnail.file_exist():
-            im = get_thumbnail(
-                self.thumbnail.file, "100x100", crop="center", quality=72
-            )
+            im = get_thumbnail(self.thumbnail.file, "100x100", crop="center", quality=72)
             thumbnail_url = im.url
             # <img src="{{ im.url }}" width="{{ im.width }}"
             # height="{{ im.height }}" loading="lazy">
@@ -889,9 +867,7 @@ class Video(models.Model):
         """Return thumbnail image card of current video."""
         thumbnail_url = ""
         if self.thumbnail and self.thumbnail.file_exist():
-            im = get_thumbnail(
-                self.thumbnail.file, "x170", crop="center", quality=72
-            )
+            im = get_thumbnail(self.thumbnail.file, "x170", crop="center", quality=72)
             thumbnail_url = im.url
             # <img src="{{ im.url }}" width="{{ im.width }}"
             # height="{{ im.height }}" loading="lazy">
@@ -932,8 +908,7 @@ class Video(models.Model):
             mod = importlib.import_module("pod.%s.models" % app)
             if hasattr(mod, capfirst(app)):
                 video_app = eval(
-                    "mod.%s.objects.filter(video__id=%s).all()"
-                    % (capfirst(app), self.id)
+                    "mod.%s.objects.filter(video__id=%s).all()" % (capfirst(app), self.id)
                 )
                 if (
                     app == "interactive"
@@ -1019,17 +994,14 @@ class Video(models.Model):
             return None
 
     def get_video_mp4(self):
-        return EncodingVideo.objects.filter(
-            video=self, encoding_format="video/mp4"
-        )
+        return EncodingVideo.objects.filter(video=self, encoding_format="video/mp4")
 
     def get_video_json(self, extensions):
         extension_list = extensions.split(",") if extensions else []
         list_video = EncodingVideo.objects.filter(video=self)
         dict_src = Video.get_media_json(extension_list, list_video)
         sorted_dict_src = {
-            x: sorted(dict_src[x], key=lambda i: i["height"])
-            for x in dict_src.keys()
+            x: sorted(dict_src[x], key=lambda i: i["height"]) for x in dict_src.keys()
         }
         return sorted_dict_src
 
@@ -1081,8 +1053,7 @@ class Video(models.Model):
                 "title": u"%s" % self.title,
                 "owner": u"%s" % self.owner.username,
                 "owner_full_name": u"%s" % self.owner.get_full_name(),
-                "date_added": u"%s"
-                % self.date_added.strftime("%Y-%m-%dT%H:%M:%S")
+                "date_added": u"%s" % self.date_added.strftime("%Y-%m-%dT%H:%M:%S")
                 if self.date_added
                 else None,
                 "date_evt": u"%s" % self.date_evt.strftime("%Y-%m-%dT%H:%M:%S")
@@ -1094,9 +1065,7 @@ class Video(models.Model):
                 "tags": list(
                     [
                         {"name": name[0], "slug": slugify(name)}
-                        for name in Tag.objects.get_for_object(
-                            self
-                        ).values_list("name")
+                        for name in Tag.objects.get_for_object(self).values_list("name")
                     ]
                 ),
                 "type": {"title": self.type.title, "slug": self.type.slug},
@@ -1106,14 +1075,10 @@ class Video(models.Model):
                     .values("title", "slug")
                 ),
                 "channels": list(
-                    self.channel.all()
-                    .filter(sites=current_site)
-                    .values("title", "slug")
+                    self.channel.all().filter(sites=current_site).values("title", "slug")
                 ),
                 "themes": list(self.theme.all().values("title", "slug")),
-                "contributors": list(
-                    self.contributor_set.values("name", "role")
-                ),
+                "contributors": list(self.contributor_set.values("name", "role")),
                 "chapters": list(self.chapter_set.values("title", "slug")),
                 "overlays": list(self.overlay_set.values("title", "slug")),
                 "full_url": self.get_full_url(),
@@ -1164,9 +1129,7 @@ class Video(models.Model):
                 "dc.identifier": "http:%s" % self.get_full_url(),
                 "dc.language": "%s" % self.main_lang,
                 "dc.coverage": DEFAULT_DC_COVERAGE,
-                "dc.rights": self.licence
-                if (self.licence)
-                else DEFAULT_DC_RIGHTS,
+                "dc.rights": self.licence if (self.licence) else DEFAULT_DC_RIGHTS,
                 "dc.format": "video/mp4" if self.is_video else "audio/mp3",
             }
             return data_to_dump
@@ -1200,9 +1163,7 @@ def default_site(sender, instance, created, **kwargs):
         instance.sites.add(Site.objects.get_current())
 
 
-@receiver(
-    pre_delete, sender=Video, dispatch_uid="pre_delete-video_files_removal"
-)
+@receiver(pre_delete, sender=Video, dispatch_uid="pre_delete-video_files_removal")
 def video_files_removal(sender, instance, using, **kwargs):
     remove_video_file(instance)
 
@@ -1324,45 +1285,37 @@ class VideoRendition(models.Model):
                     "%s %s"
                     % (
                         msg,
-                        VideoRendition._meta.get_field(
-                            "video_bitrate"
-                        ).help_text,
+                        VideoRendition._meta.get_field("video_bitrate").help_text,
                     )
                 )
         if self.maxrate and "k" not in self.maxrate:
             msg = "Error in %s: " % _("maxrate")
             raise ValidationError(
-                "%s %s"
-                % (msg, VideoRendition._meta.get_field("maxrate").help_text)
+                "%s %s" % (msg, VideoRendition._meta.get_field("maxrate").help_text)
             )
         else:
             vb = self.video_bitrate.replace("k", "")
             if not vb.isdigit():
                 msg = "Error in %s: " % _("maxrate")
                 raise ValidationError(
-                    "%s %s"
-                    % (msg, VideoRendition._meta.get_field("maxrate").help_text)
+                    "%s %s" % (msg, VideoRendition._meta.get_field("maxrate").help_text)
                 )
         if self.minrate and "k" not in self.minrate:
             msg = "Error in %s: " % _("minrate")
             raise ValidationError(
-                "%s %s"
-                % (msg, VideoRendition._meta.get_field("minrate").help_text)
+                "%s %s" % (msg, VideoRendition._meta.get_field("minrate").help_text)
             )
         else:
             vb = self.video_bitrate.replace("k", "")
             if not vb.isdigit():
                 msg = "Error in %s: " % _("minrate")
                 raise ValidationError(
-                    "%s %s"
-                    % (msg, VideoRendition._meta.get_field("minrate").help_text)
+                    "%s %s" % (msg, VideoRendition._meta.get_field("minrate").help_text)
                 )
 
     def clean(self):
         if self.resolution and "x" not in self.resolution:
-            raise ValidationError(
-                VideoRendition._meta.get_field("resolution").help_text
-            )
+            raise ValidationError(VideoRendition._meta.get_field("resolution").help_text)
         else:
             res = self.resolution.replace("x", "")
             if not res.isdigit():
@@ -1389,9 +1342,7 @@ class VideoRendition(models.Model):
                     "%s %s"
                     % (
                         msg,
-                        VideoRendition._meta.get_field(
-                            "audio_bitrate"
-                        ).help_text,
+                        VideoRendition._meta.get_field("audio_bitrate").help_text,
                     )
                 )
 
@@ -1434,9 +1385,7 @@ class EncodingVideo(models.Model):
     def clean(self):
         if self.name:
             if self.name not in dict(ENCODING_CHOICES):
-                raise ValidationError(
-                    EncodingVideo._meta.get_field("name").help_text
-                )
+                raise ValidationError(EncodingVideo._meta.get_field("name").help_text)
         if self.encoding_format:
             if self.encoding_format not in dict(FORMAT_CHOICES):
                 raise ValidationError(
@@ -1511,9 +1460,7 @@ class EncodingAudio(models.Model):
     def clean(self):
         if self.name:
             if self.name not in dict(ENCODING_CHOICES):
-                raise ValidationError(
-                    EncodingAudio._meta.get_field("name").help_text
-                )
+                raise ValidationError(EncodingAudio._meta.get_field("name").help_text)
         if self.encoding_format:
             if self.encoding_format not in dict(FORMAT_CHOICES):
                 raise ValidationError(
@@ -1573,9 +1520,7 @@ class PlaylistVideo(models.Model):
     def clean(self):
         if self.name:
             if self.name not in dict(ENCODING_CHOICES):
-                raise ValidationError(
-                    PlaylistVideo._meta.get_field("name").help_text
-                )
+                raise ValidationError(PlaylistVideo._meta.get_field("name").help_text)
         if self.encoding_format:
             if self.encoding_format not in dict(FORMAT_CHOICES):
                 raise ValidationError(
@@ -1652,9 +1597,7 @@ class EncodingStep(models.Model):
         Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE
     )
     num_step = models.IntegerField(default=0, editable=False)
-    desc_step = models.CharField(
-        null=True, max_length=255, blank=True, editable=False
-    )
+    desc_step = models.CharField(null=True, max_length=255, blank=True, editable=False)
 
     @property
     def sites(self):
@@ -1716,21 +1659,15 @@ class AdvancedNotes(models.Model):
 
     def clean(self):
         if not self.note:
-            raise ValidationError(
-                AdvancedNotes._meta.get_field("note").help_text
-            )
+            raise ValidationError(AdvancedNotes._meta.get_field("note").help_text)
         if not self.status or self.status not in dict(NOTES_STATUS):
-            raise ValidationError(
-                AdvancedNotes._meta.get_field("status").help_text
-            )
+            raise ValidationError(AdvancedNotes._meta.get_field("status").help_text)
         if (
             self.timestamp is None
             or self.timestamp < 0
             or (self.video.duration and self.timestamp > self.video.duration)
         ):
-            raise ValidationError(
-                AdvancedNotes._meta.get_field("timestamp").help_text
-            )
+            raise ValidationError(AdvancedNotes._meta.get_field("timestamp").help_text)
 
     def timestampstr(self):
         if self.timestamp is None:
@@ -1770,13 +1707,9 @@ class NoteComments(models.Model):
 
     def clean(self):
         if not self.comment:
-            raise ValidationError(
-                NoteComments._meta.get_field("comment").help_text
-            )
+            raise ValidationError(NoteComments._meta.get_field("comment").help_text)
         if not self.status or self.status not in dict(NOTES_STATUS):
-            raise ValidationError(
-                NoteComments._meta.get_field("status").help_text
-            )
+            raise ValidationError(NoteComments._meta.get_field("status").help_text)
 
 
 class VideoToDelete(models.Model):
@@ -1829,9 +1762,7 @@ class Comment(models.Model):
         return list(
             self.get_children.annotate(nbr_vote=Count("vote", distinct=True))
             .annotate(
-                author_name=Concat(
-                    "author__first_name", Value(" "), "author__last_name"
-                )
+                author_name=Concat("author__first_name", Value(" "), "author__last_name")
             )
             .annotate(
                 is_owner=Case(
@@ -1884,8 +1815,7 @@ class Category(models.Model):
         verbose_name=_("Videos"),
         blank=True,
         help_text=_(
-            'Hold down "Control", or "Command" '
-            "on a Mac, to select more than one."
+            'Hold down "Control", or "Command" ' "on a Mac, to select more than one."
         ),
     )
     slug = models.SlugField(

@@ -18,9 +18,7 @@ class ShibbBackend(ShibbolethRemoteUserBackend):
 # ref: https://mozilla-django-oidc.readthedocs.io/en/stable/installation.html\
 # #changing-how-django-users-are-created
 OIDC_CLAIM_GIVEN_NAME = getattr(settings, "OIDC_CLAIM_GIVEN_NAME", "given_name")
-OIDC_CLAIM_FAMILY_NAME = getattr(
-    settings, "OIDC_CLAIM_FAMILY_NAME", "family_name"
-)
+OIDC_CLAIM_FAMILY_NAME = getattr(settings, "OIDC_CLAIM_FAMILY_NAME", "family_name")
 
 
 class OIDCBackend(OIDCAuthenticationBackend):

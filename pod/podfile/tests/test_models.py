@@ -19,9 +19,7 @@ class CustomFileModelTestCase(TestCase):
 
         simplefile = SimpleUploadedFile(
             name="testfile.txt",
-            content=open(
-                os.path.join(currentdir, "tests", "testfile.txt"), "rb"
-            ).read(),
+            content=open(os.path.join(currentdir, "tests", "testfile.txt"), "rb").read(),
             content_type="text/plain",
         )
         home = UserFolder.objects.get(name="home", owner=test)
@@ -93,9 +91,7 @@ class CustomImageModelTestCase(TestCase):
         currentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         simplefile = SimpleUploadedFile(
             name="testimage.jpg",
-            content=open(
-                os.path.join(currentdir, "tests", "testimage.jpg"), "rb"
-            ).read(),
+            content=open(os.path.join(currentdir, "tests", "testimage.jpg"), "rb").read(),
             content_type="image/jpeg",
         )
         home = UserFolder.objects.get(name="home", owner=test)

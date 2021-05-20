@@ -61,20 +61,15 @@ def playlist(request, slug=None):
         playlist
         and request.user != playlist.owner
         and not (
-            request.user.is_superuser
-            or request.user.has_perm("playlist.change_playlist")
+            request.user.is_superuser or request.user.has_perm("playlist.change_playlist")
         )
     ):
-        messages.add_message(
-            request, messages.ERROR, _("You cannot edit this playlist.")
-        )
+        messages.add_message(request, messages.ERROR, _("You cannot edit this playlist."))
         raise PermissionDenied
     form = PlaylistForm(instance=playlist, initial={"owner": request.user})
     if request.POST and request.POST.get("action"):
         if request.POST["action"] in ACTION:
-            return eval(
-                "playlist_{0}(request, playlist)".format(request.POST["action"])
-            )
+            return eval("playlist_{0}(request, playlist)".format(request.POST["action"]))
     else:
         return render(
             request, "playlist.html", {"form": form, "list_videos": list_videos}
@@ -100,9 +95,7 @@ def playlist_move(request, playlist):
             }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type="application/json")
-    return HttpResponseBadRequest(
-        _("Only ajax request are accepted for this action.")
-    )
+    return HttpResponseBadRequest(_("Only ajax request are accepted for this action."))
 
 
 def playlist_remove(request, playlist):
@@ -124,9 +117,7 @@ def playlist_remove(request, playlist):
             }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type="application/json")
-    return HttpResponseBadRequest(
-        _("Only ajax request are accepted for this action.")
-    )
+    return HttpResponseBadRequest(_("Only ajax request are accepted for this action."))
 
 
 def playlist_edit(request, playlist):
@@ -137,18 +128,14 @@ def playlist_edit(request, playlist):
     form = PlaylistForm(request.POST, instance=playlist)
     if form.is_valid():
         playlist = form.save()
-        messages.add_message(
-            request, messages.INFO, _("The playlist have been saved.")
-        )
+        messages.add_message(request, messages.INFO, _("The playlist have been saved."))
     else:
         messages.add_message(
             request,
             messages.ERROR,
             _("One or more errors have been found in the form."),
         )
-    return render(
-        request, "playlist.html", {"form": form, "list_videos": list_videos}
-    )
+    return render(request, "playlist.html", {"form": form, "list_videos": list_videos})
 
 
 def playlist_add(request, playlist):
@@ -159,9 +146,7 @@ def playlist_add(request, playlist):
             if video.is_draft:
                 msg = _("A video in draft mode cannot be added to a playlist.")
             if video.password:
-                msg = _(
-                    "A video with a password cannot be added to a playlist."
-                )
+                msg = _("A video with a password cannot be added to a playlist.")
 
             if msg:
                 some_data_to_dump = {"fail": "{0}".format(msg)}
@@ -182,9 +167,7 @@ def playlist_add(request, playlist):
             }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type="application/json")
-    return HttpResponseBadRequest(
-        _("Only ajax request are accepted for this action.")
-    )
+    return HttpResponseBadRequest(_("Only ajax request are accepted for this action."))
 
 
 def playlist_delete(request, playlist):
@@ -196,6 +179,4 @@ def playlist_delete(request, playlist):
         }
         data = json.dumps(some_data_to_dump)
         return HttpResponse(data, content_type="application/json")
-    return HttpResponseBadRequest(
-        _("Only ajax request are accepted for this action.")
-    )
+    return HttpResponseBadRequest(_("Only ajax request are accepted for this action."))

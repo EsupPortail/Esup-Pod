@@ -121,9 +121,7 @@ class UserAdmin(BaseUserAdmin):
             kwargs["queryset"] = Group.objects.filter(
                 groupsite__sites=Site.objects.get_current()
             )
-        kwargs["widget"] = widgets.FilteredSelectMultiple(
-            db_field.verbose_name, False
-        )
+        kwargs["widget"] = widgets.FilteredSelectMultiple(db_field.verbose_name, False)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def owner_establishment(self, obj):

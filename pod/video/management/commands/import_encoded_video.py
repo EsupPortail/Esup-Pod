@@ -30,9 +30,7 @@ class Command(BaseCommand):
             video = Video.objects.get(id=video_id)
             store_remote_encoding_video(video_id)
             self.stdout.write(
-                self.style.SUCCESS(
-                    'Successfully import encoded video "%s"' % (video)
-                )
+                self.style.SUCCESS('Successfully import encoded video "%s"' % (video))
             )
         except ObjectDoesNotExist:
             self.stdout.write(

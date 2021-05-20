@@ -62,9 +62,7 @@ class VoiceActivityDetector(object):
             else:
                 voiced_frames.append(frame)
                 ring_buffer.append((frame, is_speech))
-                num_unvoiced = len(
-                    [f for f, speech in ring_buffer if not speech]
-                )
+                num_unvoiced = len([f for f, speech in ring_buffer if not speech])
                 if num_unvoiced > THRESHOLD_UNVOICED * ring_buffer.maxlen:
                     triggered = False
                     yield (
@@ -85,9 +83,7 @@ class VoiceActivityDetector(object):
 
     def vad_segment_generator(self):
         vad = webrtcvad.Vad(int(VAD_AGRESSIVITY))
-        frames = self.frame_generator(
-            SAMPLE_WINDOW, self.pcm_data, self.sample_rate
-        )
+        frames = self.frame_generator(SAMPLE_WINDOW, self.pcm_data, self.sample_rate)
         frames = list(frames)
         segments = self.vad_collector(
             self.sample_rate, SAMPLE_WINDOW, SAMPLE_OVERLAP, vad, frames
