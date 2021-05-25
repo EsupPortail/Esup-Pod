@@ -5,32 +5,26 @@ import urllib.request
 from django.conf import settings
 from pod.video.models import Video
 
-FROM_URL = getattr(settings, 'FROM_URL', "https://pod.univ.fr/media/")
+FROM_URL = getattr(settings, "FROM_URL", "https://pod.univ.fr/media/")
 
 
 class Command(BaseCommand):
-    help = 'Download the specified video source file from previous instance'
+    help = "Download the specified video source file from previous instance"
 
     def add_arguments(self, parser):
-        parser.add_argument('video_id', nargs='+', type=int)
+        parser.add_argument("video_id", nargs="+", type=int)
 
     def download(self, vid, video_id, source_url, dest_file):
         try:
-            self.stdout.write("\n - download %s : from %s to %s\n" % (
-                video_id,
-                source_url,
-                dest_file
-            ))
+            self.stdout.write(
+                "\n - download %s : from %s to %s\n" % (video_id, source_url, dest_file)
+            )
             new_file = wget.download(source_url, dest_file)
             self.stdout.write("\n")
-            vid.video = new_file.replace(
-                os.path.join(settings.MEDIA_ROOT, ""), ''
-            )
+            vid.video = new_file.replace(os.path.join(settings.MEDIA_ROOT, ""), "")
             vid.save()
             self.stdout.write(
-                self.style.SUCCESS(
-                    'Successfully download video "%s"' % video_id
-                )
+                self.style.SUCCESS('Successfully download video "%s"' % video_id)
             )
         except ValueError as e:
             raise CommandError('ValueError "%s"' % e)
@@ -40,7 +34,7 @@ class Command(BaseCommand):
             raise CommandError('HTTPError "%s"' % err)
 
     def handle(self, *args, **options):
-        for video_id in options['video_id']:
+        for video_id in options["video_id"]:
             vid = None
             try:
                 vid = Video.objects.get(pk=video_id)
@@ -50,11 +44,11 @@ class Command(BaseCommand):
             if source_url != "":
                 dest_file = os.path.join(
                     settings.MEDIA_ROOT,
-                    'videos',
+                    "videos",
                     vid.owner.owner.hashkey,
-                    os.path.basename(vid.video.name)
+                    os.path.basename(vid.video.name),
                 )
                 os.makedirs(os.path.dirname(dest_file), exist_ok=True)
                 self.download(vid, video_id, source_url, dest_file)
             else:
-                raise CommandError('source url is empty')
+                raise CommandError("source url is empty")

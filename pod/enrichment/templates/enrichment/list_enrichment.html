@@ -7,12 +7,11 @@
 	<table class="table table-striped table-condensed scroll" id="table_list_enrich">
 		<thead>
 			<tr>
-				<th>{% trans 'Title' %}</th>
-				<th>{% trans 'Type' %}</th>
-				<th class="enrich_start">{% trans 'Start' %}</th>
-				<th class="enrich_end">{% trans 'End' %}</th>
-				<th>&nbsp;</th>
-				<th>&nbsp;</th>
+				<th scope="col">{% trans 'Title' %}</th>
+				<th scope="col">{% trans 'Type' %}</th>
+				<th scope="col" class="enrich_start">{% trans 'Start' %}</th>
+				<th scope="col" class="enrich_end">{% trans 'End' %}</th>
+				<th scope="col">{% trans 'Actions' %}</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -29,13 +28,11 @@
 							<input type="hidden" name="id" value="{{enrich.id}}"/>
 							<input type="submit" title="{% trans 'Edit the enrichment' %}" value="{% trans 'Modify' %}" class="btn btn-primary btn-sm"/>
 						</form>
-					</td>
-					<td>
 						<form class="get_form" action="{% url 'enrichment:video_enrichment' slug=video.slug %}" method="POST">
 							{% csrf_token %}
 							<input type="hidden" name="action" value="delete"/>
 							<input type="hidden" name="id" value="{{enrich.id}}"/>
-							<input type="submit" title="{% trans 'Delete the enrichment' %}" value="{% trans 'Delete' %}" class="btn btn-primary btn-sm"/>
+							<input type="submit" title="{% trans 'Delete the enrichment' %}" value="{% trans 'Delete' %}" class="btn btn-danger btn-sm"/>
 						</form>
 					</td>
 				</tr>
