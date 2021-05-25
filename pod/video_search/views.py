@@ -16,9 +16,7 @@ ES_MAX_RETRIES = getattr(settings, "ES_MAX_RETRIES", 10)
 ES_VERSION = getattr(settings, "ES_VERSION", 6)
 
 
-def get_filter_search(
-    selected_facets, start_date, end_date
-):  # pragma: no cover
+def get_filter_search(selected_facets, start_date, end_date):
     """Return a list of search filters."""
     filter_search = []
     for facet in selected_facets:
@@ -31,17 +29,13 @@ def get_filter_search(
         filter_date_search = {}
         filter_date_search["range"] = {"date_added": {}}
         if start_date:
-            filter_date_search["range"]["date_added"][
-                "gte"
-            ] = "%04d-%02d-%02d" % (
+            filter_date_search["range"]["date_added"]["gte"] = "%04d-%02d-%02d" % (
                 start_date.year,
                 start_date.month,
                 start_date.day,
             )
         if end_date:
-            filter_date_search["range"]["date_added"][
-                "lte"
-            ] = "%04d-%02d-%02d" % (
+            filter_date_search["range"]["date_added"]["lte"] = "%04d-%02d-%02d" % (
                 end_date.year,
                 end_date.month,
                 end_date.day,
@@ -51,9 +45,7 @@ def get_filter_search(
     return filter_search
 
 
-def get_remove_selected_facet_link(
-    request, selected_facets
-):  # pragma: no cover
+def get_remove_selected_facet_link(request, selected_facets):
     """Return list of links to remove active search filters."""
     remove_selected_facet = []
     for facet in selected_facets:
@@ -72,7 +64,7 @@ def get_remove_selected_facet_link(
     return remove_selected_facet
 
 
-def get_result_aggregations(result, selected_facets):  # pragma: no cover
+def get_result_aggregations(result, selected_facets):
     for facet in selected_facets:
         if ":" in facet:
             term = facet.split(":")[0]
@@ -82,16 +74,14 @@ def get_result_aggregations(result, selected_facets):  # pragma: no cover
             else:
                 if agg_term == "type.slug":
                     del result["aggregations"]["type_title"]
-                if agg_term == "tags.slug" and (
-                    "tags_name" in result["aggregations"]
-                ):
+                if agg_term == "tags.slug" and ("tags_name" in result["aggregations"]):
                     del result["aggregations"]["tags_name"]
                 if agg_term == "disciplines.slug":
                     del result["aggregations"]["disciplines_title"]
     return result["aggregations"]
 
 
-def search_videos(request):  # pragma: no cover
+def search_videos(request):
     """Send a search request to ES."""
     es = Elasticsearch(
         ES_URL,
@@ -191,9 +181,7 @@ def search_videos(request):  # pragma: no cover
     if filter_search != {}:
         bodysearch["query"]["function_score"]["query"] = {"bool": {}}
         bodysearch["query"]["function_score"]["query"]["bool"]["must"] = query
-        bodysearch["query"]["function_score"]["query"]["bool"][
-            "filter"
-        ] = filter_search
+        bodysearch["query"]["function_score"]["query"]["bool"]["filter"] = filter_search
     else:
         bodysearch["query"]["function_score"]["query"] = query
 
@@ -222,9 +210,7 @@ def search_videos(request):  # pragma: no cover
     # if settings.DEBUG:
     #    print(json.dumps(result, indent=4))
 
-    remove_selected_facet = get_remove_selected_facet_link(
-        request, selected_facets
-    )
+    remove_selected_facet = get_remove_selected_facet_link(request, selected_facets)
     aggregations = get_result_aggregations(result, selected_facets)
 
     full_path = (

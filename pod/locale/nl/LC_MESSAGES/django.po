@@ -764,6 +764,7 @@ msgid "Chapter"
 msgstr ""
 
 #: pod/chapter/models.py:31 pod/chapter/templates/video_chapter.html:67
+#: pod/enrichment/templates/enrichment/edit_enrichment.html:50
 #: pod/enrichment/templates/enrichment/video_enrichment-iframe.html:35
 #: pod/enrichment/templates/enrichment/video_enrichment.html:39
 #: pod/video/templates/videos/video-element.html:37
@@ -842,6 +843,12 @@ msgstr ""
 #: pod/video/models.py:226 pod/video/models.py:327 pod/video/models.py:423
 #: pod/video/models.py:486 pod/video/templates/channel/list_theme.html:9
 msgid "Title"
+msgstr ""
+
+#: pod/chapter/templates/chapter/list_chapter.html:12
+#: pod/enrichment/templates/enrichment/list_enrichment.html:14
+#: pod/video/templates/channel/list_theme.html:12
+msgid "Actions"
 msgstr ""
 
 #: pod/chapter/templates/chapter/list_chapter.html:26
@@ -3028,24 +3035,25 @@ msgstr ""
 msgid "Description of the configuration"
 msgstr ""
 
-#: pod/main/templates/403.html:4 pod/main/templates/404.html:4
-#: pod/main/templates/404.html:9 pod/main/templates/404.html:15
-msgid "Page not found"
-msgstr ""
-
-#: pod/main/templates/403.html:9 pod/main/templates/403.html:15
+#: pod/main/templates/403.html:4 pod/main/templates/403.html:9
+#: pod/main/templates/403.html:14
 msgid "Permission Denied"
 msgstr ""
 
-#: pod/main/templates/403.html:17
+#: pod/main/templates/403.html:15
 msgid "You are not allowed to access this web page."
 msgstr ""
 
-#: pod/main/templates/404.html:17
+#: pod/main/templates/404.html:4 pod/main/templates/404.html:9
+#: pod/main/templates/404.html:14
+msgid "Page not found"
+msgstr ""
+
+#: pod/main/templates/404.html:15
 msgid "We're sorry, but the requested page could not be found."
 msgstr ""
 
-#: pod/main/templates/500.html:7 pod/main/templates/500.html:11
+#: pod/main/templates/500.html:4 pod/main/templates/500.html:9
 msgid "Server error (500)"
 msgstr ""
 
@@ -4821,10 +4829,6 @@ msgstr ""
 
 #: pod/video/templates/channel/list_theme.html:4
 msgid "List of themes"
-msgstr ""
-
-#: pod/video/templates/channel/list_theme.html:12
-msgid "Actions"
 msgstr ""
 
 #: pod/video/templates/channel/list_theme.html:26

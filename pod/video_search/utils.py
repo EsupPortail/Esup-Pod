@@ -17,7 +17,7 @@ ES_MAX_RETRIES = getattr(settings, "ES_MAX_RETRIES", 10)
 ES_VERSION = getattr(settings, "ES_VERSION", 6)
 
 
-def index_es(video):  # pragma: no cover
+def index_es(video):
     translation.activate(settings.LANGUAGE_CODE)
     es = Elasticsearch(
         ES_URL,
@@ -30,9 +30,7 @@ def index_es(video):  # pragma: no cover
             data = video.get_json_to_index()
             if data != "{}":
                 if ES_VERSION == 7:
-                    res = es.index(
-                        index=ES_INDEX, id=video.id, body=data, refresh=True
-                    )
+                    res = es.index(index=ES_INDEX, id=video.id, body=data, refresh=True)
                 else:
                     res = es.index(
                         index=ES_INDEX,
@@ -52,7 +50,7 @@ def index_es(video):  # pragma: no cover
     translation.deactivate()
 
 
-def delete_es(video):  # pragma: no cover
+def delete_es(video):
     es = Elasticsearch(
         ES_URL,
         timeout=ES_TIMEOUT,
@@ -63,10 +61,7 @@ def delete_es(video):  # pragma: no cover
         try:
             if ES_VERSION == 7:
                 delete = es.delete(
-                    index=ES_INDEX,
-                    id=video.id,
-                    refresh=True,
-                    ignore=[400, 404],
+                    index=ES_INDEX, id=video.id, refresh=True, ignore=[400, 404]
                 )
             else:
                 delete = es.delete(
@@ -86,7 +81,7 @@ def delete_es(video):  # pragma: no cover
             )
 
 
-def create_index_es():  # pragma: no cover
+def create_index_es():
     es = Elasticsearch(
         ES_URL,
         timeout=ES_TIMEOUT,
@@ -100,9 +95,7 @@ def create_index_es():  # pragma: no cover
     json_data = open(template_file)
     es_template = json.load(json_data)
     try:
-        create = es.indices.create(
-            index=ES_INDEX, body=es_template
-        )  # ignore=[400, 404]
+        create = es.indices.create(index=ES_INDEX, body=es_template)  # ignore=[400, 404]
         logger.info(create)
         return create
     except TransportError as e:
@@ -117,7 +110,7 @@ def create_index_es():  # pragma: no cover
             )
 
 
-def delete_index_es():  # pragma: no cover
+def delete_index_es():
     es = Elasticsearch(
         ES_URL,
         timeout=ES_TIMEOUT,
