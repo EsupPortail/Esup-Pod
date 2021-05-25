@@ -102,6 +102,12 @@ class Broadcaster(models.Model):
         null=True,
         blank=True,
     )
+    aside_iframe_url = models.URLField(
+        _("Embedded aside Site URL"),
+        help_text=_("Url of the embedded site to display on aside"),
+        null=True,
+        blank=True,
+    )
     iframe_height = models.IntegerField(
         _("Embedded Site Height"),
         null=True,
