@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-26 18:26+0100\n"
-"PO-Revision-Date: 2021-05-12 11:08+0200\n"
+"POT-Creation-Date: 2021-05-25 10:04+0200\n"
+"PO-Revision-Date: 2021-01-22 12:27+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl\n"
@@ -47,17 +47,17 @@ msgstr ""
 #: pod/enrichment/static/js/enrichment.js:72
 #: pod/enrichment/static/js/enrichment.js:93
 #: pod/enrichment/static/js/enrichment.js:120
-#: pod/enrichment/static/js/enrichment.js:149 pod/main/static/js/main.js:305
-#: pod/main/static/js/main.js:312 pod/main/static/js/main.js:323
-#: pod/main/static/js/main.js:337
+#: pod/enrichment/static/js/enrichment.js:149 pod/main/static/js/main.js:319
+#: pod/main/static/js/main.js:326 pod/main/static/js/main.js:337
+#: pod/main/static/js/main.js:351
 #: pod/podfile/static/podfile/js/filewidget.js:365
 #: pod/podfile/static/podfile/js/filewidget.js:398
 msgid "You are no longer authenticated. Please log in again."
 msgstr ""
 
 #: pod/chapter/static/js/chapters.js:146
-#: pod/enrichment/static/js/enrichment.js:136 pod/main/static/js/main.js:275
-#: pod/main/static/js/main.js:329
+#: pod/enrichment/static/js/enrichment.js:136 pod/main/static/js/main.js:289
+#: pod/main/static/js/main.js:343
 msgid "One or more errors have been found in the form."
 msgstr ""
 
@@ -125,7 +125,7 @@ msgstr ""
 msgid "Are you sure you want to delete this overlay?"
 msgstr ""
 
-#: pod/completion/static/js/completion.js:195 pod/main/static/js/main.js:277
+#: pod/completion/static/js/completion.js:195 pod/main/static/js/main.js:291
 msgid "Changes have been saved."
 msgstr ""
 
@@ -150,7 +150,8 @@ msgid "Please enter a role."
 msgstr ""
 
 #: pod/completion/static/js/completion.js:267
-msgid "There is already a contributor with this same name and role in the list."
+msgid ""
+"There is already a contributor with this same name and role in the list."
 msgstr ""
 
 #: pod/completion/static/js/completion.js:278
@@ -180,6 +181,14 @@ msgstr ""
 
 #: pod/completion/static/js/completion.js:331
 msgid "Iframe and Script tags are not allowed."
+msgstr ""
+
+#: pod/custom/static/custom/assets/js/change_video_owner.js:81
+msgid "Aucun élément trouvé"
+msgstr ""
+
+#: pod/custom/static/custom/assets/js/change_video_owner.js:670
+msgid "Traitement en cours.."
 msgstr ""
 
 #: pod/enrichment/static/js/enrichment.js:229
@@ -354,46 +363,44 @@ msgstr ""
 msgid "gridErrorText"
 msgstr ""
 
-#: pod/main/static/js/main.js:256
+#: pod/main/static/js/main.js:270
 msgid "Are you sure you want to delete this element?"
 msgstr ""
 
-#: pod/main/static/js/main.js:298
-#: pod/podfile/static/podfile/js/filewidget.js:114
+#: pod/main/static/js/main.js:312
 #: pod/podfile/static/podfile/js/filewidget.js:391
 msgid "Error during exchange"
 msgstr ""
 
-#: pod/main/static/js/main.js:298
-#: pod/podfile/static/podfile/js/filewidget.js:114
+#: pod/main/static/js/main.js:312
 msgid "No data could be stored."
 msgstr ""
 
-#: pod/main/static/js/main.js:351
+#: pod/main/static/js/main.js:365
 msgid "Change your picture"
 msgstr ""
 
-#: pod/main/static/js/main.js:357
+#: pod/main/static/js/main.js:371
 msgid "Add your picture"
 msgstr ""
 
-#: pod/main/static/js/main.js:453
+#: pod/main/static/js/main.js:467
 msgid "text copied"
 msgstr ""
 
-#: pod/main/static/js/main.js:500
+#: pod/main/static/js/main.js:514
 msgid "Errors appear in the form, please correct them"
 msgstr ""
 
-#: pod/main/static/js/main.js:523
+#: pod/main/static/js/main.js:537
 msgid "The file size exceeds the maximum allowed value:"
 msgstr ""
 
-#: pod/main/static/js/main.js:523
+#: pod/main/static/js/main.js:537
 msgid " GB."
 msgstr ""
 
-#: pod/main/static/js/main.js:538
+#: pod/main/static/js/main.js:552
 msgid "The file extension not in the allowed extension:"
 msgstr ""
 
@@ -420,10 +427,6 @@ msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js:149
 msgid "Enter new name of folder"
-msgstr ""
-
-#: pod/podfile/static/podfile/js/filewidget.js:167
-msgid "Remove"
 msgstr ""
 
 #: pod/podfile/static/podfile/js/filewidget.js:180
@@ -487,16 +490,35 @@ msgstr ""
 msgid "Remove this comment"
 msgstr ""
 
-#: pod/video/static/js/comment-script.js:254
-msgid "Add a public comment"
-msgstr ""
-
 #: pod/video/static/js/comment-script.js:378
 msgid "Show answers"
 msgstr ""
 
 #: pod/video/static/js/comment-script.js:583
 msgid "Comment has been deleted successfully."
+msgstr ""
+
+#: pod/video/static/js/regroup_videos_by_theme.js:55
+msgid "This content is password protected."
+msgstr ""
+
+#: pod/video/static/js/regroup_videos_by_theme.js:65
+#: pod/video/static/js/video_category.js:470
+msgid "This content is chaptered."
+msgstr ""
+
+#: pod/video/static/js/regroup_videos_by_theme.js:75
+#: pod/video/static/js/video_category.js:478
+msgid "This content is in draft."
+msgstr ""
+
+#: pod/video/static/js/regroup_videos_by_theme.js:93
+#: pod/video/static/js/video_category.js:492
+msgid "Audio content."
+msgstr ""
+
+#: pod/video/static/js/regroup_videos_by_theme.js:284
+msgid "Loading videos.."
 msgstr ""
 
 #: pod/video/static/js/validate-date_delete-field.js:26
@@ -539,58 +561,12 @@ msgstr ""
 msgid "Sorry, no video found"
 msgstr ""
 
-#: pod/video/static/js/video_category.js:376
-#: pod/video/static/js/video_category.js:487
-msgid "Video content."
-msgstr ""
-
-#: pod/video/static/js/video_category.js:377
-#: pod/video/static/js/video_category.js:492
-msgid "Audio content."
-msgstr ""
-
 #: pod/video/static/js/video_category.js:387
 msgid "Edit the category"
 msgstr ""
 
 #: pod/video/static/js/video_category.js:400
 msgid "Delete the category"
-msgstr ""
-
-#: pod/video/static/js/video_category.js:462
-msgid "This content is password protected."
-msgstr ""
-
-#: pod/video/static/js/video_category.js:470
-msgid "This content is chaptered."
-msgstr ""
-
-#: pod/video/static/js/video_category.js:478
-msgid "This content is in draft."
-msgstr ""
-
-#: pod/video/static/js/video_category.js:497
-msgid "Edit the video"
-msgstr ""
-
-#: pod/video/static/js/video_category.js:498
-msgid "Complete the video"
-msgstr ""
-
-#: pod/video/static/js/video_category.js:499
-msgid "Chapter the video"
-msgstr ""
-
-#: pod/video/static/js/video_category.js:500
-msgid "Delete the video"
-msgstr ""
-
-#: pod/video/static/js/video_category.js:550
-msgid "Success.."
-msgstr ""
-
-#: pod/video/static/js/video_category.js:551
-msgid "Error.."
 msgstr ""
 
 #: pod/video/static/js/video_category.js:756

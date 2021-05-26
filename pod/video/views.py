@@ -42,6 +42,7 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
+from pod.video.utils import pagination_data, get_headband
 
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import ObjectDoesNotExist
@@ -140,7 +141,6 @@ CURSUS_CODES = getattr(
 )
 
 TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
-ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
 VIEW_STATS_AUTH = getattr(settings, "VIEW_STATS_AUTH", False)
 ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
 USE_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
@@ -152,30 +152,103 @@ DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
 # ############################################################################
 
 
-def regroup_videos_by_theme(videos, page, channel, theme=None):
-    """
-    " Regroup videos by theme.
+def _regroup_videos_by_theme(request, videos, channel, theme=None):
+    """Regroup videos by theme.\n
 
-    " @return [ (theme, set()), (theme, set()) ]
-    """
-    if not theme:
-        children_themes = channel.themes.filter(parentId_id=None)
-    else:
-        children_themes = theme.children.all()
-    videos_regrouped = []
-    no_theme_videos = videos
-    # Loop on theme  and filter by theme
-    for t in children_themes:
-        videos_founded = videos.filter(theme__in=t.get_all_children_flat())
-        no_theme_videos = no_theme_videos.exclude(theme__in=t.get_all_children_flat())
-        if videos_founded:
-            videos_regrouped.append((t, paginator(list(set(videos_founded)), page)))
-    if children_themes and no_theme_videos:
-        videos_regrouped.append((_("Other"), paginator(no_theme_videos, page)))
-    if not children_themes:
-        videos_regrouped.append((" ", paginator(videos, page)))
+    Args:\n
+        request (Request): current HTTP Request\n
+        videos (List[Video]): list of vidéo filter by channel\n
+        channel (Channel): current channel\n
+        theme (Theme, optional): current theme. Defaults to None.\n
 
-    return videos_regrouped
+    Returns:\n
+        Dict[str, Any]: json data\n
+    """
+    target = request.GET.get("target", "").lower()
+    limit = int(request.GET.get("limit", 8))
+    offset = int(request.GET.get("offset", 0))
+    theme_children = None
+    parent_title = ""
+    response = {}
+
+    if target in ("", "themes"):
+        theme_children = Theme.objects.filter(parentId=theme)
+        videos = videos.filter(theme=theme, channel=channel)
+
+        if theme is not None and theme.parentId is not None:
+            parent_title = theme.parentId.title
+        elif theme is not None and theme.parentId is None:
+            parent_title = channel.title
+
+    if target in ("", "videos"):
+        videos = videos.filter(theme=theme, channel=channel)
+        response["next_videos"], *_ = pagination_data(
+            request.path, offset, limit, videos.count()
+        )
+        count = videos.count()
+        videos = videos[offset : limit + offset]
+        response = {
+            **response,
+            "videos": list(videos),
+            "has_more_videos": (offset + limit) < count,
+        }
+
+    if theme_children is not None:
+        count_themes = theme_children.count()
+        has_more_themes = (offset + limit) < count_themes
+        theme_children = theme_children.values("slug", "title")[offset : limit + offset]
+        next_url, previous_url, theme_pages_info = pagination_data(
+            request.path, offset, limit, count_themes
+        )
+        response = {
+            **response,
+            "next": next_url,
+            "previous": previous_url,
+            "has_more_themes": has_more_themes,
+            "count_themes": count_themes,
+            "theme_children": list(theme_children),
+            "pages_info": theme_pages_info,
+        }
+    title = channel.title if theme is None else theme.title
+    description = channel.description if theme is None else theme.description
+    headband = get_headband(channel, theme).get("headband", None)
+    response = {
+        **response,
+        "parent_title": parent_title,
+        "title": title,
+        "description": description,
+        "headband": headband,
+    }
+    if request.is_ajax():
+        videos = list(
+            map(
+                lambda v: {
+                    "slug": v.slug,
+                    "title": v.title,
+                    "duration": v.duration_in_time,
+                    "thumbnail": v.get_thumbnail_card(),
+                    "is_video": v.is_video,
+                    "has_password": bool(v.password),
+                    "is_restricted": v.is_restricted,
+                    "has_chapter": v.chapter_set.all().count() > 0,
+                    "is_draft": v.is_draft,
+                },
+                videos,
+            )
+        )
+        response["videos"] = videos
+        return JsonResponse(response, safe=False)
+
+    return render(
+        request,
+        "channel/channel.html",
+        {
+            **response,
+            "theme": theme,
+            "channel": channel,
+            "organize_theme": True,
+        },
+    )
 
 
 def paginator(videos_list, page):
@@ -200,6 +273,9 @@ def channel(request, slug_c, slug_t=None):
         list_theme = theme.get_all_children_flat()
         videos_list = videos_list.filter(theme__in=list_theme)
 
+    if getattr(settings, "ORGANIZE_BY_THEME", False):
+        return _regroup_videos_by_theme(request, videos_list, channel, theme)
+
     page = request.GET.get("page", 1)
     full_path = ""
     if page:
@@ -217,9 +293,6 @@ def channel(request, slug_c, slug_t=None):
             "videos/video_list.html",
             {"videos": videos, "full_path": full_path},
         )
-    videos_theme = None
-    if ORGANIZE_BY_THEME:
-        videos_theme = regroup_videos_by_theme(videos_list, page, channel, theme)
 
     return render(
         request,
@@ -229,8 +302,6 @@ def channel(request, slug_c, slug_t=None):
             "videos": videos,
             "theme": theme,
             "full_path": full_path,
-            "videos_theme": videos_theme,
-            "organize_theme": ORGANIZE_BY_THEME,
         },
     )
 
@@ -963,8 +1034,7 @@ def can_edit_or_remove_note_or_com(request, nc, action):
 
 def can_see_note_or_com(request, nc):
     """
-    Check if the current user can view the note or comment nc.
-
+    Check if the current user can view the note or comment nc
     If not raise PermissionDenied
     """
     if isinstance(nc, AdvancedNotes):
