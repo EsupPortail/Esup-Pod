@@ -18,9 +18,18 @@
 <script src="{% static 'vendor/record/videojs.record.min.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'vendor/record/browser-workarounds.min.js' %}?ver={{VERSION}}"></script>
 <style>
+#players-container {
+    display: none;
+}
 /* change player background color */
 #podvideoplayer {
   background-color: #ede4b7;
+}
+#podvideoplayer2 {
+    display: none;
+}
+#podvideoplayer2 .vjs-device-button {
+    display: none;
 }
 </style>
 {% endblock page_extra_head %}
@@ -32,13 +41,29 @@
 {% block page_title %}{% trans "Video Record"%}{% endblock %}
 
 {% block page_content %}
+
 {% csrf_token %}
 <h1 class="pt-2">{% trans "Video Record"%}</h1>
-<div class="container">
+<div class="form-group">
+<label for="recordtype-select">{% trans "Choose record type"%}:</label>
+<select class="form-control" name="recordtype" id="recordtype-select">
+    <option value="">--</option>
+    <option value="mix">Screen and Camera</option>
+    <option value="screen">Screen only</option>
+    <option value="camera">Camera only</option>
+</select>
+</div>
+<div class="container" id="players-container">
   <div class="row">
     <div class="col-sm">
       <div itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
         <video id="podvideoplayer" playsinline class="video-js vjs-default-skin">
+          <p class="vjs-no-js">
+            To view this video please enable JavaScript, and consider upgrading to a web browser that
+            <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+          </p>
+        </video>
+        <video id="podvideoplayer2" class="video-js vjs-default-skin"> 
           <p class="vjs-no-js">
             To view this video please enable JavaScript, and consider upgrading to a web browser that
             <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
@@ -99,11 +124,11 @@
 
 
 {% block more_script %}
-  <script>
-    
-    const tpdebug = "{% get_setting "DEBUG" False %}" == "True";
+<script>
 
-const options = {
+let recordtype = "";
+const tpdebug = "{% get_setting "DEBUG" False %}" == "True";
+let options = {
     controls: true,
     bigPlayButton: false,
     height: 360,
@@ -114,10 +139,33 @@ const options = {
     },
     plugins: {
         record: {
-            pip: true,
+            pip: false,
             audio: true,
             screen: true,
-            video:false,
+            video: false,
+            hotKeys: true,
+            displayMilliseconds: false,
+            debug: tpdebug,
+            maxLength: 3600
+        }
+    }
+};
+let options2 = {
+    controls: false,
+    bigPlayButton: false,
+    height: '90px',
+    width: '90px',
+    fluid: false,
+    controlBar: {
+        fullscreenToggle: false,
+        volumePanel: false
+    },
+    plugins: {
+        record: {
+            pip: false,
+            audio: true,
+            screen: false,
+            video: true,
             hotKeys: true,
             displayMilliseconds: false,
             debug: tpdebug,
@@ -126,34 +174,95 @@ const options = {
     }
 };
 
-// apply some workarounds for certain browsers
-applyVideoWorkaround();
-applyScreenWorkaround();
+let player, player2;
 
-const player = videojs('podvideoplayer', options, function() {
-    // print version information at startup
-    const msg = 'Using video.js ' + videojs.VERSION +
-        ' with videojs-record ' + videojs.getPluginVersion('record') +
-        ' and recordrtc ' + RecordRTC.version;
-    videojs.log(msg);
+$(document).on('change',  '#recordtype-select', function(e){
+    $('#recordtype-select').parent('div').hide();
+    $('#players-container').show();
+    recordtype = $('#recordtype-select').val();
+    console.log("recordtype : "+recordtype);
+    switch (recordtype) {
+      case 'mix':
+        options.plugins.record.audio = false;
+        break;
+      case 'screen':
+        //$("podvideoplayer2").hide();
+        break;
+      case 'camera':
+        options.plugins.record.screen = false;
+        options.plugins.record.video = true;
+        break;
+      default:
+        console.log(`Sorry, we are out of ${expr}.`);
+    }
+    // apply some workarounds for certain browsers
+    applyVideoWorkaround();
+    applyScreenWorkaround();
+    start_player();
 });
 
-// error handling
-player.on('deviceError', function() {
-    console.warn('device error:', player.deviceErrorCode);
-});
 
-player.on('error', function(element, error) {
-    console.error(error);
-});
+function start_player() {
+    player = videojs('podvideoplayer', options, function() {
+        // print version information at startup
+        const msg = 'Using video.js ' + videojs.VERSION +
+            ' with videojs-record ' + videojs.getPluginVersion('record') +
+            ' and recordrtc ' + RecordRTC.version;
+        videojs.log(msg);
+    });
 
-// snapshot is available
-player.on('finishRecord', function() {
-    // the blob object contains the image data that
-    // can be downloaded by the user, stored on server etc.
-    $("#savecancelrecord").removeClass('d-none');
-    $("#savecancelrecord").addClass('d-flex');
-});
+    // error handling
+    player.on('deviceError', function() {
+        console.warn('device error:', player.deviceErrorCode);
+    });
+    player.on('error', function(element, error) {
+        console.error(error);
+    });
+
+    // snapshot is available
+    player.on('finishRecord', function() {
+        player2.record().stopDevice();
+        $("#podvideoplayer2").hide();
+        // the blob object contains the image data that
+        // can be downloaded by the user, stored on server etc.
+        $("#savecancelrecord").removeClass('d-none');
+        $("#savecancelrecord").addClass('d-flex');
+    });
+
+    if(recordtype === "mix") {
+        console.log("MIX");
+        $("#podvideoplayer2").show();
+        player2 = videojs('podvideoplayer2', options2, function() {
+            // print version information at startup
+            const msg = 'Player 2 - Using video.js ' + videojs.VERSION +
+                ' with videojs-record ' + videojs.getPluginVersion('record') +
+                ' and recordrtc ' + RecordRTC.version;
+            videojs.log(msg);
+        });
+
+        // error handling
+        player2.on('deviceError', function() {
+            console.warn('device error:', player.deviceErrorCode);
+        });
+
+        player2.on('error', function(element, error) {
+            console.error(error);
+        });
+        player.on('deviceReady', function() {
+            player2.record().getDevice();
+        });
+        player.on('startRecord', function() {
+            player2.record().start();
+        });
+        player2.on('deviceReady', function() {
+            //alert('set size !');
+            $("#podvideoplayer2").css({ display: "block", position: "absolute", bottom:0, right:0 });
+        });
+    }
+
+}
+
+
 
 $(document).on('click',  '#showsaverecord', function(e){
     $('#saveRecordModal').modal('show');
@@ -163,6 +272,9 @@ $(document).on('click',  '#cancelrecord', function(e){
     $("#savecancelrecord").addClass('d-none');
     $("#savecancelrecord").removeClass('d-flex');
     player.record().reset();
+    if(player2) {
+        player2.record().reset();
+    }
 });
 
 
@@ -224,6 +336,10 @@ $(document).on('click',  '#downloadRecord', function(e){
     player.record().saveAs({'video': 'podscreenrecord-'+get_now()+'.webm'});
     //restart the playeur
     player.record().reset();
+    if(player2) {
+        player2.record().saveAs({'video': 'podvideorecord-'+get_now()+'.webm'})
+        player2.record().reset();
+    }
     $("#savecancelrecord").addClass('d-none');
     $("#savecancelrecord").removeClass('d-flex');
 })
