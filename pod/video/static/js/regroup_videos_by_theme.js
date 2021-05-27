@@ -1,4 +1,6 @@
-function run(has_more_themes) {
+import { Helper } from "/static/js/utils.js";
+
+function run(has_more_themes, Helper) {
 	const URLPathName = window.location.pathname;
 	const scroll_wrapper = document.querySelector(".scroll_wrapper");
 	const videos_container = document.querySelector("#videos_list");
@@ -12,7 +14,7 @@ function run(has_more_themes) {
 	const next_btn = document.querySelector(".paginator .next_content");
 	const PAGE_INFO_SEPARATOR = "/";
 
-	const limit = 8;
+	const limit = 5;
 	let current_video_offset = limit;
 	let current_theme_offset = limit;
 	let current_position = 0;
@@ -279,7 +281,18 @@ function run(has_more_themes) {
 	const video_loader_btn = document.querySelector(
 		".video-section #load-more-videos"
 	);
-	if (!!video_loader_btn)
+	if (!!video_loader_btn) {
 		video_loader_btn.addEventListener("click", loadMoreVideos);
+		let loadOnce = true;
+		let alreadyClicked = false;
+		window.onscroll = function (e) {
+			const isVisible = Helper.isElementInView(video_loader_btn);
+			if (isVisible && loadOnce) {
+				video_loader_btn.click();
+				alreadyClicked = true;
+			}
+			if (alreadyClicked) loadOnce = !isVisible;
+		};
+	}
 }
-run(has_more_themes);
+run(has_more_themes, Helper);
