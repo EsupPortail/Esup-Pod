@@ -111,14 +111,14 @@ function run(has_more_themes, Helper) {
           </span>
         </div>
       </div>
-      <div class="d-flex align_items-center">
+      <div class="card-thumbnail">
         <a class="link-center-pod" href="${VIDEO_URL}${
 			video.slug
 		}" title="${video.title.charAt(0).toUpperCase()}${video.title.slice(1)}">
           ${video.thumbnail}
         </a>
       </div>
-      <div class="card-body">
+      <div class="card-body px-3 py-2">
         <footer class="card-footer card-footer-pod p-0 m-0">
           <a href="${EDIT_URL}${
 			video.slug
