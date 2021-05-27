@@ -268,9 +268,11 @@ function run(has_more_themes, Helper) {
 		// Chargement vidéos..
 		const save_text = video_loader_btn.textContent;
 		video_loader_btn.textContent = gettext("Loading videos..");
+		video_loader_btn.setAttribute("disabled", "disabled");
 		makeRequest(url).then((response) => {
 			current_video_offset += limit;
 			video_loader_btn.textContent = save_text;
+			video_loader_btn.removeAttribute("disabled");
 			if (!response.has_more_videos) video_loader_btn.remove();
 
 			response.videos.forEach((v) => {
