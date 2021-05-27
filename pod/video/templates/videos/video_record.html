@@ -28,7 +28,7 @@
 #podvideoplayer2 {
     display: none;
 }
-#podvideoplayer2 .vjs-device-button {
+#podvideoplayer2 .vjs-device-button, #switchcameraposition {
     display: none;
 }
 </style>
@@ -48,9 +48,9 @@
 <label for="recordtype-select">{% trans "Choose record type"%}:</label>
 <select class="form-control" name="recordtype" id="recordtype-select">
     <option value="">--</option>
-    <option value="mix">Screen and Camera</option>
-    <option value="screen">Screen only</option>
-    <option value="camera">Camera only</option>
+    <option value="mix">{% trans "Audio, Screen and Camera"%}</option>
+    <option value="screen">{% trans "Audio and Screen only"%}</option>
+    <option value="camera">{% trans "Audio and Camera only"%}</option>
 </select>
 </div>
 <div class="container" id="players-container">
@@ -81,6 +81,12 @@
       <p>{% trans "Then, click on rec button to launch record"%}.</p>
       <p>{% trans "You will see a rec notification at the top-right of player, click on stop button to stop the record"%}. {% trans "You can click on play to watch your recording"%}.</p>
       <p>{% trans "You will be able to choose between sending your recording directly to Pod or downloading it to your computer"%}.</p>
+      
+      <div class="custom-control custom-switch" id="switchcameraposition">
+        <input type="checkbox" class="custom-control-input" id="videocameraposition">
+        <label class="custom-control-label" for="videocameraposition">{% trans "Move camera to top or bottom" %}</label>
+      </div>
+      
     </div>
   </div>
 </div>
@@ -153,7 +159,7 @@ let options = {
 let options2 = {
     controls: false,
     bigPlayButton: false,
-    height: '90px',
+    //height: '90px',
     width: '90px',
     fluid: false,
     controlBar: {
@@ -201,6 +207,15 @@ $(document).on('change',  '#recordtype-select', function(e){
     start_player();
 });
 
+$(document).on('change', "#videocameraposition", function(e){
+  $("#podvideoplayer2").removeAttr("style")
+  if($(this).is(':checked')) {
+    $("#podvideoplayer2").css({ display: "block", position: "absolute", bottom:0, right:0 });
+  } else {
+    $("#podvideoplayer2").css({ display: "block", position: "absolute", top:0, right:0 });
+  }
+});
+
 
 function start_player() {
     player = videojs('podvideoplayer', options, function() {
@@ -222,7 +237,8 @@ function start_player() {
     // snapshot is available
     player.on('finishRecord', function() {
         player2.record().stopDevice();
-        $("#podvideoplayer2").hide();
+        //$("#podvideoplayer2").hide();
+
         // the blob object contains the image data that
         // can be downloaded by the user, stored on server etc.
         $("#savecancelrecord").removeClass('d-none');
@@ -230,7 +246,7 @@ function start_player() {
     });
 
     if(recordtype === "mix") {
-        console.log("MIX");
+        
         $("#podvideoplayer2").show();
         player2 = videojs('podvideoplayer2', options2, function() {
             // print version information at startup
@@ -256,7 +272,8 @@ function start_player() {
         });
         player2.on('deviceReady', function() {
             //alert('set size !');
-            $("#podvideoplayer2").css({ display: "block", position: "absolute", bottom:0, right:0 });
+            $("#switchcameraposition").show();
+            $("#podvideoplayer2").css({ display: "block", position: "absolute", top:0, right:0 });
         });
     }
 
@@ -285,7 +302,12 @@ $(document).on('click',  '#saveRecordPod', function(e){
     const data = player.recordedData;
     let formData = new FormData();
     formData.append('video', data, data.name);
-    formData.append('title', 'podscreenrecord-'+get_now());
+    formData.append('title', 'podwebrecord-'+get_now());
+    formData.append('recordtype', recordtype);
+    if(player2) {
+        const data2 = player2.recordedData;
+        formData.append('video2', data2, data2.name);
+    }
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     formData.append('csrfmiddlewaretoken', csrftoken);
     
