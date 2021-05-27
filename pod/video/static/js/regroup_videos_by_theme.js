@@ -283,6 +283,7 @@ function run(has_more_themes, Helper) {
 	);
 	if (!!video_loader_btn) {
 		video_loader_btn.addEventListener("click", loadMoreVideos);
+		// Overriding click event to loading more videos
 		let loadOnce = true;
 		let alreadyClicked = false;
 		window.onscroll = function (e) {
