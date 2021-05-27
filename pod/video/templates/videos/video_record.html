@@ -171,7 +171,15 @@ let options2 = {
             pip: false,
             audio: true,
             screen: false,
-            video: true,
+            //video: true,
+            video: {
+                // video media constraints: set resolution of camera
+                width: { min: 320, ideal: 640, max: 1280 },
+                height: { min: 180, ideal: 360, max: 720 }
+            },
+            // dimensions of captured video frames
+            frameWidth: 640,
+            frameHeight: 360,
             hotKeys: true,
             displayMilliseconds: false,
             debug: tpdebug,
@@ -186,7 +194,7 @@ $(document).on('change',  '#recordtype-select', function(e){
     $('#recordtype-select').parent('div').hide();
     $('#players-container').show();
     recordtype = $('#recordtype-select').val();
-    console.log("recordtype : "+recordtype);
+    //console.log("recordtype : "+recordtype);
     switch (recordtype) {
       case 'mix':
         options.plugins.record.audio = false;
@@ -265,6 +273,7 @@ function start_player() {
             console.error(error);
         });
         player.on('deviceReady', function() {
+            $("#podvideoplayer2").show();
             player2.record().getDevice();
         });
         player.on('startRecord', function() {
@@ -291,6 +300,7 @@ $(document).on('click',  '#cancelrecord', function(e){
     player.record().reset();
     if(player2) {
         player2.record().reset();
+        $("#podvideoplayer2").hide();
     }
 });
 
@@ -361,6 +371,7 @@ $(document).on('click',  '#downloadRecord', function(e){
     if(player2) {
         player2.record().saveAs({'video': 'podvideorecord-'+get_now()+'.webm'})
         player2.record().reset();
+        $("#podvideoplayer2").hide();
     }
     $("#savecancelrecord").addClass('d-none');
     $("#savecancelrecord").removeClass('d-flex');
