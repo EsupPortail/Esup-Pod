@@ -223,6 +223,6 @@
         <script>
             const has_more_themes = "{{has_more_themes}}" == "True";
         </script>
-        <script src="{% static 'js/regroup_videos_by_theme.js' %}?ver={{VERSION}}" defer></script>
+        <script type="module" src="{% static 'js/regroup_videos_by_theme.js' %}?ver={{VERSION}}" defer></script>
     {% endif %}
 {% endblock more_script %}
