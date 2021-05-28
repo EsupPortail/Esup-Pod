@@ -104,7 +104,7 @@
                         </ul>
                     </div>
                     {% if has_more_themes %}
-                        {% include "videos/paginator.html" %}
+                        {% include "videos/paginator.html" with pages_info=page_infos %}
                     {% endif %}
                 {% endif %}
             </section>
@@ -223,6 +223,6 @@
         <script>
             const has_more_themes = "{{has_more_themes}}" == "True";
         </script>
-        <script type="module" src="{% static 'js/regroup_videos_by_theme.js' %}?ver={{VERSION}}" defer></script>
+        <script src="{% static 'js/regroup_videos_by_theme.js' %}?ver={{VERSION}}" defer></script>
     {% endif %}
 {% endblock more_script %}
