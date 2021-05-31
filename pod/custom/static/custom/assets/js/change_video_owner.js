@@ -18,7 +18,9 @@
     const pages_info = document.querySelector(".paginator #pages_infos")
     const previous_content = document.querySelector(".paginator #previous_content");
 
-    const submitBTN = document.querySelector("#submitChanges")
+    const submitBTN = document.querySelector("#submitChanges");
+
+    const selectAllVideos = document.getElementById("select_all");
 
     let new_username_id = null;
 
@@ -35,6 +37,34 @@
     let current_username_filter = null;
     let current_username_id = null;
     let DATA = { count: 0, next: null, previous: null, results: [] }
+    
+
+    /**
+     * Select all videos
+     */
+    const checkAllVideos = () => {
+        selectAllVideos.addEventListener("change", () => {
+            const videosCards = videos_container.querySelectorAll(".card.manage_video")
+            if(selectAllVideos.checked && !!DATA.results.length) // select all videos
+            {
+                videosCards.forEach(videoCard => {
+                    if( !videoCard.classList.contains("choosed"))
+                        videoCard.click()
+                })
+            }
+            else if(!selectAllVideos.checked && !!DATA.results.length) // Unselect all videos
+            {
+                videosCards.forEach(videoCard => {
+                    if( videoCard.classList.contains("choosed"))
+                        videoCard.click()
+                })
+            }
+
+        });
+    }
+
+    // Apply listener on selectAllVideos/UnselectAllVideos checkbox
+    checkAllVideos();
 
     /**
      * Show alert message
@@ -167,6 +197,7 @@
     const nextPreviousHandler = function(e) {
         e.preventDefault();
         e.stopPropagation();
+        selectAllVideos.checked = false;
         addRemoveLoader(videos_container);
         if (this.isEqualNode(previous_content)) {
             if (!!DATA.previous && current_username_id) {
@@ -576,6 +607,7 @@
             new_owner_input.value = "";
             old_owner_input.value = ""
         }
+        selectAllVideos.checked = false;
         DATA = { count: 0, next: null, previous: null, results: [] }
         videos_container.innerHTML = "";
         list_videos__search.value = "";
