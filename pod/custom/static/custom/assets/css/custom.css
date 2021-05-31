@@ -34,6 +34,7 @@
     --light: #e9ecef;
 }
 
+.required { color: var(--uga-color) !important}
 a {
     text-decoration: none !important;
 }
@@ -937,9 +938,11 @@ body {
 p {
     color: var(--dark);
 }
+.suggestions *,
 [data-theme=dark][data-theme-mode=dark] p {
     color: var(--font-color);
 }
+.suggestions p,
 #mainbreadcrumb p{color: var(--light);}
 body>nav .navbar-items-pod {
     margin: 0;
