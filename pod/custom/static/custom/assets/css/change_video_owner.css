@@ -396,7 +396,7 @@ main {
     width: 13px;
     height: 13px;
     border-radius: 50%;
-    background: var(--link-color);
+    background: var(--primary);
     animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
 
