@@ -940,6 +940,7 @@ p {
 [data-theme=dark][data-theme-mode=dark] p {
     color: var(--font-color);
 }
+.suggestions *,
 #mainbreadcrumb p{color: var(--light);}
 body>nav .navbar-items-pod {
     margin: 0;
