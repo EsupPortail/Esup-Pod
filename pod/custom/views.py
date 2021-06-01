@@ -125,16 +125,24 @@ def get_owners(request):
     offset = int(request.GET.get("offset", 0))
     search = request.GET.get("q", "")
     users = list(User.objects.annotate(
-            full_name=Concat("first_name", V(" "), "last_name")
+        full_name=Concat(
+            "first_name", V(" "), "last_name")
+        ).annotate(
+            full_name2=Concat(
+                "last_name", V(" "), "first_name"
+            )
         ).filter(
-        Q(first_name__icontains=search) |
-        Q(last_name__icontains=search) |
-        Q(full_name__icontains=search)
-    ).values(
-        "id",
-        "first_name",
-        "last_name",
-        ))[offset:limit]
+            Q(first_name__icontains=search) |
+            Q(last_name__icontains=search) |
+            Q(full_name__icontains=search) |
+            Q(full_name2__icontains=search)
+        ).values(
+            "id",
+            "first_name",
+            "last_name",
+        )
+    )[offset:limit]
+
     return JsonResponse(users, safe=False)
 
 def get_videos(request, user_id):
