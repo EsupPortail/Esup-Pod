@@ -68,7 +68,7 @@ def url_to_edit_object(obj):
 
 
 class EncodedFilter(admin.SimpleListFilter):
-    title = _('Encoded ?')
+    title = _('Encoded?')
     parameter_name = 'encoded'
 
     def lookups(self, request, model_admin):
@@ -436,6 +436,8 @@ class DisciplineAdmin(TranslationAdmin):
 
 class EncodingVideoAdmin(admin.ModelAdmin):
     list_display = ('video', 'get_resolution', 'encoding_format')
+    list_filter = ['encoding_format', 'rendition']
+    search_fields = ['id', 'video__id', 'video__title']
 
     def get_resolution(self, obj):
         return obj.rendition.resolution
@@ -459,7 +461,9 @@ class EncodingVideoAdmin(admin.ModelAdmin):
 
 
 class EncodingAudioAdmin(admin.ModelAdmin):
-    list_display = ('name', 'video', 'encoding_format')
+    list_display = ('video', 'encoding_format')
+    list_filter = ['encoding_format']
+    search_fields = ['id', 'video__id', 'video__title']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -477,6 +481,8 @@ class EncodingAudioAdmin(admin.ModelAdmin):
 
 class PlaylistVideoAdmin(admin.ModelAdmin):
     list_display = ('name', 'video', 'encoding_format')
+    search_fields = ['id', 'video__id', 'video__title']
+    list_filter = ['encoding_format']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -521,8 +527,11 @@ class VideoRenditionAdmin(admin.ModelAdmin):
 
 
 class EncodingLogAdmin(admin.ModelAdmin):
-    list_display = ('video',)
+    def video_id(self, obj):
+        return obj.video.id
+    list_display = ('id', 'video_id', 'video',)
     readonly_fields = ('video', 'log')
+    search_fields = ['id', 'video__id', 'video__title']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -533,8 +542,9 @@ class EncodingLogAdmin(admin.ModelAdmin):
 
 
 class EncodingStepAdmin(admin.ModelAdmin):
-    list_display = ('video',)
+    list_display = ('video', 'num_step', 'desc_step')
     readonly_fields = ('video', 'num_step', 'desc_step')
+    search_fields = ['id', 'video__id', 'video__title']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

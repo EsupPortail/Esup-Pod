@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Encode.py
-# Encoding video for Pod
-#
-# Nicolas CAN <nicolas.can@univ-lille.fr>
+"""This module handles video encoding with GPU."""
+# encode_gpu.py
 # Wed Sep  2 11:49:12 CEST 2020
 
 from __future__ import absolute_import, division, print_function
@@ -18,8 +16,11 @@ import time
 from json.decoder import JSONDecodeError
 
 from timeit import default_timer as timer
-# from unidecode import unidecode # third partu package to remove accent
+# from unidecode import unidecode # third party package to remove accent
 import unicodedata
+
+__author__ = "Nicolas CAN <nicolas.can@univ-lille.fr>"
+__license__ = "LGPL v3"
 
 DEBUG = False
 
@@ -126,7 +127,7 @@ def encode_with_gpu(format, codec, height, file):
 
 
 def encode_without_gpu(format, codec, height, file):
-    msg = "--> encode_with_gpu \n"
+    msg = "--> encode_without_gpu \n"
     return_value = False
     """
     if encode("mixed", format, codec, height, file):
@@ -509,8 +510,6 @@ def get_info_video(file):
     msg = "--> get_info_video" + "\n"
     probe_cmd = 'ffprobe -v quiet -show_format -show_streams \
                 -print_format json -i {}/{}'.format(VIDEOS_DIR, file)
-    if DEBUG:
-        print(probe_cmd)
     msg += probe_cmd + "\n"
     has_stream_video = False
     has_stream_thumbnail = False
@@ -522,7 +521,10 @@ def get_info_video(file):
     msg += json.dumps(info, indent=2)
     msg += " \n"
     msg += return_msg + "\n"
-    duration = int(float("%s" % info["format"]['duration']))
+    try:
+        duration = int(float("%s" % info["format"]['duration']))
+    except (RuntimeError, KeyError, AttributeError, ValueError) as err:
+        msg += "\nUnexpected error: {0}".format(err)
     streams = info.get("streams", [])
     for stream in streams:
         msg += stream.get("codec_type", "unknown")
@@ -537,9 +539,7 @@ def get_info_video(file):
                 height = stream.get("height", 0)
         if stream.get("codec_type", "unknown") == "audio":
             has_stream_audio = True
-
     encode_log(msg)
-
     return {
         "has_stream_video": has_stream_video,
         "has_stream_thumbnail": has_stream_thumbnail,
@@ -705,6 +705,8 @@ if __name__ == "__main__":
         info_video = {}
 
         info_video = get_info_video(filename)
+        if not DEBUG and info_video["duration"] > 0:
+            SUBTIME = ' -ss 0 -to %s ' % info_video["duration"]
         msg += " \n"
         msg += json.dumps(info_video, indent=2)
         msg += " \n"

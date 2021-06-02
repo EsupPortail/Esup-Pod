@@ -1,3 +1,5 @@
+"""Esup-Pod Video models."""
+
 import os
 import time
 import unicodedata
@@ -12,11 +14,11 @@ from django.utils.translation import get_language
 from django.template.defaultfilters import slugify
 from django.db.models import Sum
 from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.dispatch import receiver
 from django.utils.html import format_html
 from django.db.models.signals import pre_delete
@@ -32,13 +34,16 @@ import importlib
 
 from select2 import fields as select2_fields
 from sorl.thumbnail import get_thumbnail
+from pod.authentication.models import AccessGroup
 from pod.main.models import get_nextautoincrement
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 from django.db.models import Count, Case, When, Value, BooleanField, Q
 from django.db.models.functions import Concat
+from os.path import splitext
 
 if getattr(settings, 'USE_PODFILE', False):
     from pod.podfile.models import CustomImageModel
+
     FILEPICKER = True
 else:
     FILEPICKER = False
@@ -67,8 +72,10 @@ CURSUS_CODES = getattr(
         ('1', _("Other"))
     ))
 
-LANG_CHOICES_DICT = {key: value for key,
-                     value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}
+LANG_CHOICES_DICT = {
+    key: value for key,
+    value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]
+}
 CURSUS_CODES_DICT = {key: value for key, value in CURSUS_CODES}
 
 DEFAULT_TYPE_ID = getattr(
@@ -112,7 +119,7 @@ ENCODING_CHOICES = getattr(
         ("playlist", "playlist")
     ))
 DEFAULT_THUMBNAIL = getattr(
-    settings, 'DEFAULT_THUMBNAIL', 'img/default.png')
+    settings, 'DEFAULT_THUMBNAIL', 'img/default.svg')
 SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
 
 NOTES_STATUS = getattr(
@@ -128,7 +135,7 @@ THIRD_PARTY_APPS = getattr(
 
 THIRD_PARTY_APPS_CHOICES = THIRD_PARTY_APPS.copy()
 THIRD_PARTY_APPS_CHOICES.remove("live") if (
-    "live" in THIRD_PARTY_APPS_CHOICES) else THIRD_PARTY_APPS_CHOICES
+        "live" in THIRD_PARTY_APPS_CHOICES) else THIRD_PARTY_APPS_CHOICES
 THIRD_PARTY_APPS_CHOICES.insert(0, 'Original')
 
 VERSION_CHOICES = [
@@ -166,6 +173,7 @@ DEFAULT_DC_RIGHTS = getattr(settings, 'DEFAULT_DC_RIGHT', "BY-NC-SA")
 
 DEFAULT_YEAR_DATE_DELETE = getattr(settings, 'DEFAULT_YEAR_DATE_DELETE', 2)
 
+
 # FUNCTIONS
 
 
@@ -195,7 +203,10 @@ def remove_accents(input_str):
 
 
 def get_storage_path_video(instance, filename):
-    """ Get the storage path. Instance needs to implement owner """
+    """Get the storage path.
+
+    Instance needs to implement owner
+    """
     fname, dot, extension = filename.rpartition('.')
     try:
         fname.index("/")
@@ -241,11 +252,21 @@ class Channel(models.Model):
     style = models.TextField(
         _('Extra style'), null=True, blank=True,
         help_text=_("The style will be added to your channel to show it"))
-    owners = models.ManyToManyField(
+    owners = select2_fields.ManyToManyField(
         User, related_name='owners_channels', verbose_name=_('Owners'),
+        ajax=True,
+        search_field=lambda q: Q(
+            username__icontains=q) | Q(
+                first_name__icontains=q) | Q(
+                    last_name__icontains=q),
         blank=True)
-    users = models.ManyToManyField(
+    users = select2_fields.ManyToManyField(
         User, related_name='users_channels', verbose_name=_('Users'),
+        ajax=True,
+        search_field=lambda q: Q(
+            username__icontains=q) | Q(
+                first_name__icontains=q) | Q(
+                    last_name__icontains=q),
         blank=True)
     visible = models.BooleanField(
         verbose_name=_('Visible'),
@@ -253,6 +274,12 @@ class Channel(models.Model):
             u'If checked, the channel appear in a list of available '
             + 'channels on the platform.'),
         default=False)
+    allow_to_groups = select2_fields.ManyToManyField(
+        AccessGroup, blank=True, verbose_name=_('Groups'), ajax=True,
+        search_field=lambda q: Q(code_name__icontains=q) | Q(
+            display_name__icontains=q),
+        help_text=_(
+            'Select one or more groups who can upload video this channel'))
     sites = models.ManyToManyField(Site)
 
     class Meta:
@@ -554,7 +581,7 @@ class Video(models.Model):
             'the video will only be accessible to authenticated users.'),
         default=False)
     restrict_access_to_groups = select2_fields.ManyToManyField(
-        Group, blank=True, verbose_name=_('Groups'),
+        AccessGroup, blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who can access to this video'))
     password = models.CharField(
         _('password'),
@@ -634,6 +661,7 @@ class Video(models.Model):
     @property
     def viewcount(self):
         return self.get_viewcount()
+
     viewcount.fget.short_description = _('Sum of view')
 
     @property
@@ -643,6 +671,7 @@ class Video(models.Model):
         except ObjectDoesNotExist:
             return ""
         return "%s : %s" % (es.num_step, es.desc_step)
+
     get_encoding_step.fget.short_description = _('Encoding step')
 
     def get_thumbnail_url(self):
@@ -653,11 +682,7 @@ class Video(models.Model):
                  get_current_site(request).domain,
                  self.thumbnail.file.url])
         else:
-            thumbnail_url = ''.join(
-                ['//',
-                 get_current_site(request).domain,
-                 settings.STATIC_URL,
-                 DEFAULT_THUMBNAIL])
+            thumbnail_url = static(DEFAULT_THUMBNAIL)
         return thumbnail_url
 
     @property
@@ -668,51 +693,49 @@ class Video(models.Model):
                                crop='center', quality=72)
             thumbnail_url = im.url
             # <img src="{{ im.url }}" width="{{ im.width }}"
-            # height="{{ im.height }}">
+            # height="{{ im.height }}" loading="lazy">
         else:
-            thumbnail_url = ''.join(
-                ['//',
-                 get_current_site(None).domain,
-                 settings.STATIC_URL,
-                 DEFAULT_THUMBNAIL])
+            thumbnail_url = static(DEFAULT_THUMBNAIL)
         return format_html('<img style="max-width:100px" '
-                           'src="%s" alt="%s" />' % (
+                           'src="%s" alt="%s" loading="lazy"/>' % (
                                thumbnail_url,
-                               self.title.replace("{", "").replace("}", "")
+                               self.title.replace("{", "")
+                               .replace("}", "")
+                               .replace('"', "'")
                            )
                            )
+
     get_thumbnail_admin.fget.short_description = _('Thumbnails')
 
     def get_thumbnail_card(self):
+        """Return thumbnail image card of current video."""
         thumbnail_url = ""
         if self.thumbnail and self.thumbnail.file_exist():
             im = get_thumbnail(self.thumbnail.file, 'x170',
                                crop='center', quality=72)
             thumbnail_url = im.url
             # <img src="{{ im.url }}" width="{{ im.width }}"
-            # height="{{ im.height }}">
+            # height="{{ im.height }}" loading="lazy">
         else:
-            thumbnail_url = ''.join(
-                ['//',
-                 get_current_site(None).domain,
-                 settings.STATIC_URL,
-                 DEFAULT_THUMBNAIL])
-        return '<img class="card-img-top" src="%s" alt="%s" />' % (
-            thumbnail_url, self.title)
+            thumbnail_url = static(DEFAULT_THUMBNAIL)
+        return '<img class="card-img-top" src="%s" alt="%s"\
+            loading="lazy"/>' % (
+            thumbnail_url, self.title.replace('"', "'"))
 
     @property
     def duration_in_time(self):
         return time.strftime('%H:%M:%S', time.gmtime(self.duration))
+
     duration_in_time.fget.short_description = _('Duration')
 
     @property
     def encoded(self):
         return (
-            self.get_playlist_master() is not None or
-            self.get_video_mp4() is not None or
-            self.get_video_m4a() is not None)
+                self.get_playlist_master() is not None or
+                self.get_video_mp4() is not None or
+                self.get_video_m4a() is not None)
 
-    encoded.fget.short_description = _('Is the video encoded ?')
+    encoded.fget.short_description = _('Is the video encoded?')
 
     @property
     def get_version(self):
@@ -749,7 +772,7 @@ class Video(models.Model):
         for version in self.get_other_version():
             if version["link"] == VERSION_CHOICES_DICT[self.get_version]:
                 if slug_private:
-                    return version["url"]+slug_private+"/"
+                    return version["url"] + slug_private + "/"
                 else:
                     return version["url"]
 
@@ -807,16 +830,55 @@ class Video(models.Model):
         return EncodingVideo.objects.filter(
             video=self, encoding_format="video/mp4")
 
+    def get_video_json(self, extensions):
+        extension_list = extensions.split(',') if extensions else []
+        list_video = EncodingVideo.objects.filter(
+            video=self)
+        dict_src = Video.get_media_json(extension_list, list_video)
+        sorted_dict_src = {
+            x: sorted(
+                dict_src[x],
+                key=lambda i: i['height']
+            ) for x in dict_src.keys()}
+        return sorted_dict_src
+
     def get_video_mp4_json(self):
-        list_src = []
-        list_video = sorted(self.get_video_mp4(), key=lambda m: m.height)
-        for video in list_video:
-            list_src.append(
-                {'type': video.encoding_format,
-                 'src': video.source_file.url,
-                 'height': video.height,
-                 'label': video.name})
-        return list_src
+        list_mp4 = self.get_video_json(extensions="mp4")
+        return list_mp4["mp4"] if list_mp4.get("mp4") else []
+
+    def get_audio_json(self, extensions):
+        extension_list = extensions.split(',') if extensions else []
+        list_audio = EncodingAudio.objects.filter(
+            name="audio", video=self)
+        dict_src = Video.get_media_json(extension_list, list_audio)
+        return dict_src
+
+    def get_audio_and_video_json(self, extensions):
+        return {**self.get_video_json(extensions),
+                **self.get_audio_json(extensions)}
+
+    @staticmethod
+    def get_media_json(extension_list, list_video):
+        dict_src = {}
+        for media in list_video:
+            file_extension = splitext(media.source_file.url)[-1]
+            if not extension_list or file_extension[1:] in extension_list:
+                media_height = None
+                if hasattr(media, 'height'):
+                    media_height = media.height
+                video_object = {
+                    'id': media.id,
+                    'type': media.encoding_format,
+                    'src': media.source_file.url,
+                    'height': media_height,
+                    'extension': file_extension,
+                    'label': media.name}
+                dict_entry = dict_src.get(file_extension[1:], None)
+                if dict_entry is None:
+                    dict_src[file_extension[1:]] = [video_object]
+                else:
+                    dict_entry.append(video_object)
+        return dict_src
 
     def get_json_to_index(self):
         try:
@@ -838,7 +900,7 @@ class Video(models.Model):
                 "tags": list([
                     {
                         'name': name[0],
-                        'slug':slugify(name)
+                        'slug': slugify(name)
                     } for name in Tag.objects.get_for_object(
                         self).values_list('name')]),
                 "type": {"title": self.type.title, "slug": self.type.slug},
@@ -931,7 +993,6 @@ def default_site(sender, instance, created, **kwargs):
 @receiver(pre_delete, sender=Video,
           dispatch_uid='pre_delete-video_files_removal')
 def video_files_removal(sender, instance, using, **kwargs):
-
     remove_video_file(instance)
 
     previous_encoding_video = EncodingVideo.objects.filter(
@@ -1140,11 +1201,11 @@ class EncodingVideo(models.Model):
 
     def __str__(self):
         return (
-            "EncodingVideo num: %s with resolution %s for video %s in %s"
-            % ('%04d' % self.id,
-               self.name,
-               self.video.id,
-               self.encoding_format))
+                "EncodingVideo num: %s with resolution %s for video %s in %s"
+                % ('%04d' % self.id,
+                   self.name,
+                   self.video.id,
+                   self.encoding_format))
 
     @property
     def owner(self):

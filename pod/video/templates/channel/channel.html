@@ -4,132 +4,130 @@
 {% load video_filters %}
 {% load filters %}
 
-
 {% block opengraph %}
-<meta name="description" content="{{channel.description|metaformat|safe|striptags|truncatechars:150}}" />
-<!-- Open Graph data -->
-<meta property="og:title" content="{{ channel.title }}" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="{{ request.build_absolute_uri }}" />
-<meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
-<meta property="og:description" content="{{channel.description|metaformat|safe|striptags|truncatechars:250}}" />
-<meta property="og:site_name" content="{{ TITLE_SITE }}" />
+  <meta name="description" content="{{channel.description|metaformat|safe|striptags|truncatechars:150}}" />
+  <!-- Open Graph data -->
+  <meta property="og:title" content="{{ channel.title }}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+  <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
+  <meta property="og:description" content="{{channel.description|metaformat|safe|striptags|truncatechars:250}}" />
+  <meta property="og:site_name" content="{{ TITLE_SITE }}" />
 {% endblock %}
 
-
 {% block page_extra_head %}
-<style>
-#treeview ul.list-group li{
-  padding: 0;
-}
-{{channel.style}}
-{% if channel.color %}
-body {
-  background-color: {{channel.color}};
-}
-{%endif%}
-</style>
+  <style>
+    #treeview ul.list-group li{
+      padding: 0;
+    }
+    {{channel.style}}
+    {% if channel.color %}
+      body {
+        background-color: {{channel.color}};
+      }
+    {%endif%}
+  </style>
 
   {% if organize_theme %}
-  <link rel='stylesheet' href='{% static "css/video_foldable_theme.css" %}'>
+    <link rel='stylesheet' href='{% static "css/video_foldable_theme.css" %}?ver={{VERSION}}'>
   {% endif %}
 {% endblock %}
 
 
-{% block breadcrumbs %}{{ block.super }} 
-{% if theme %}
-<li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
-{% for t in theme.get_all_parents reversed %}
-{% if t is not theme %}
-<li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
-{% endif %}
-{% endfor %}
-<li class="breadcrumb-item active" aria-current="page">{{theme.title}}</li>
-{% else %}
-<li class="breadcrumb-item active" aria-current="page">{{channel.title}}</li>
-{% endif %}
+{% block breadcrumbs %}{{ block.super }}
+  {% if theme %}
+    <li class="breadcrumb-item"><a href="{% url 'channel' slug_c=channel.slug%}">{{channel.title}}</a></li>
+    {% for t in theme.get_all_parents reversed %}
+      {% if t is not theme %}
+        <li class="breadcrumb-item"><a href="{% url 'theme' slug_c=channel.slug slug_t=t.slug%}">{{t.title}}</a></li>
+      {% endif %}
+    {% endfor %}
+    <li class="breadcrumb-item active" aria-current="page">{{theme.title}}</li>
+  {% else %}
+    <li class="breadcrumb-item active" aria-current="page">{{channel.title}}</li>
+  {% endif %}
 {% endblock %}
 
 {% block page_title %}{{channel.title}}{% endblock %}
 
-
 {% block page_content %}
-
   <h1>{{channel.title}}
     <span class="float-right">
       {% if theme %}
-      {% if USE_STATS_VIEW %}
-      <a href="{% url "video_stats_view" slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
-      {% endif %}
-      <a href="{% url "rss-video" slug_c=channel.slug slug_t=theme.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
-      <a href="{% url "rss-audio" slug_c=channel.slug slug_t=theme.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
+        {% if USE_STATS_VIEW %}
+          <a href="{% url "video_stats_view" slug=channel.slug slug_t=theme.slug %}?from=theme" title="{% trans 'Show view statistics for all videos in this theme' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+        {% endif %}
+        <a href="feed://{{ request.META.HTTP_HOST }}{% url "rss-video" slug_c=channel.slug slug_t=theme.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
+        <a href="feed://{{ request.META.HTTP_HOST }}{% url "rss-audio" slug_c=channel.slug slug_t=theme.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
       {% else %}
-      {% if USE_STATS_VIEW %}
-      <a href="{% url "video_stats_view" slug=channel.slug %}?from=channel" title="{% trans 'Show view statistics for all videos in this channel' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
-      {% endif %}
-      <a href="{% url "rss-video" slug_c=channel.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
-      <a href="{% url "rss-audio" slug_c=channel.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
+        {% if USE_STATS_VIEW %}
+          <a href="{% url "video_stats_view" slug=channel.slug %}?from=channel" title="{% trans 'Show view statistics for all videos in this channel' %}" target="_blank" class="btn btn-outline-primary btn-sm">{% trans 'Statistics views' %}</a>
+        {% endif %}
+        <a href="{% url "rss-video" slug_c=channel.slug %}" title="{% trans "subscribe to the video feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Video</a>
+        <a href="{% url "rss-audio" slug_c=channel.slug%}" title="{% trans "subscribe to the audio feed"%}" target="_blank" class="btn btn btn-outline-primary btn-sm"><i data-feather="rss"></i>&nbsp;Audio</a>
       {% endif %}
     </span>
     {% if request.user in channel.owners.all %}
-    <span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-primary btn-sm">
-      <i data-feather="edit"></i>&nbsp;{% trans "Edit the channel"%}</a>&nbsp;</span>{%endif%}</h1>
+      <span class="float-right"><a href="{% url 'channel_edit' slug=channel.slug %}" title="{% trans "Edit the themes"%}" class="btn btn btn-outline-primary btn-sm">
+        <i data-feather="edit"></i>&nbsp;{% trans "Edit the channel"%}</a>&nbsp;</span>
+    {%endif%}
+  </h1>
 
   {% if channel.headband %}
-  <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" />
+    <img src="{{ channel.headband.file.url }}" alt="{% trans 'Headband' %} {{ channel.title }}" class="rounded mx-auto d-block img-fluid img-responsive img-thumbnail" loading="lazy"/>
   {% endif %}
 
   {% if channel.description %}
-      {{ channel.description|safe }}
+    {{ channel.description|safe }}
   {% endif %}
 
   {% if theme %}
-  <h2>{{theme.title}}</h2>
-  {% if theme.headband %}
-  <div align="center" class="channelheader">
-      <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" />
-  </div>
-  {% endif %}
-  {% if theme.description %}
+    <h2>{{theme.title}}</h2>
+    {% if theme.headband %}
+      <div align="center" class="channelheader">
+        <img src="{{ theme.headband.file.url }}" alt="{% trans 'Headband' %} {{ theme.title }}" class="img-responsive" loading="lazy"/>
+      </div>
+    {% endif %}
+    {% if theme.description %}
       {{ theme.description|safe }}
-  {% endif %}
+    {% endif %}
   {%endif%}
 
   <p>{% blocktrans count counter=videos.paginator.count %}{{ counter }} video found{% plural %}{{ counter }} videos found{% endblocktrans %}</p>
-  {% if organize_theme %} 
-      {% for t_obj, videos in videos_theme %}
-	<div class="inline-flex">
-      	    {% if t_obj|isinstance:"Theme" %}
-	    <h5 class="title_foldable" title="{{t_obj.title}}" ><a href="{% url 'theme' slug_c=channel.slug slug_t=t_obj.slug %}">{{t_obj.title|truncatechars:29}}</a></h5>
-	    {% else %}
-	    <h5 class="title_foldable" title="{{t_obj.title}}">{{t_obj}}</h5>
-	    {% endif %}
-	    {% if not t_obj|isempty %}
-	    <div class="foldable_event">
-		<span class="hideShowText"></span>
-		<span class="arrow_right"></span>
-	    </div>
-	    {% endif %}
-	</div>
-	{% if not t_obj|isempty %}
-	<div class="closed">
-	{% else %}
-	<div>
-	{% endif %}
-      	{% include "videos/video_list.html" %}
-	</div>
-	{% if not forloop.last %}
-	<hr>
-	{% endif %}
-      {% endfor %}
+  {% if organize_theme %}
+    {% for t_obj, videos in videos_theme %}
+      <div class="inline-flex">
+        {% if t_obj|isinstance:"Theme" %}
+          <h5 class="title_foldable" title="{{t_obj.title}}" ><a href="{% url 'theme' slug_c=channel.slug slug_t=t_obj.slug %}">{{t_obj.title|truncatechars:29}}</a></h5>
+        {% else %}
+          <h5 class="title_foldable" title="{{t_obj.title}}">{{t_obj}}</h5>
+        {% endif %}
+        {% if not t_obj|isempty %}
+          <div class="foldable_event">
+            <span class="hideShowText"></span>
+            <span class="arrow_right"></span>
+          </div>
+        {% endif %}
+      </div>
+      {% if not t_obj|isempty %}
+        <div class="closed">
+      {% else %}
+        <div>
+      {% endif %}
+        {% include "videos/video_list.html" %}
+      </div>
+      {% if not forloop.last %}
+        <hr>
+      {% endif %}
+    {% endfor %}
   {% else %}
-      {% include "videos/video_list.html" %}
+    {% include "videos/video_list.html" %}
   {% endif %}
 
 {% endblock page_content %}
 
 {% block page_aside %}
-    <div class="card card-body p-2 mt-1" id="card-channelthemes">
+  <div class="card card-body p-2 mt-1" id="card-channelthemes">
     <h5 class="card-title pl-2">
       <i data-feather="list"></i>&nbsp;
       {% trans 'Themes of ' %}&nbsp;{{ channel.title }}
@@ -138,15 +136,15 @@ body {
       <ul class="list-group list-group-flush {% if channel.themes.count > 5 %}small{%endif%}" id="ultreeview" style="max-height:300px; overflow:auto;">
       </ul>
     </div>
-    </div>
-    {% include 'aside.html'%}
-    {% include 'videos/footer_link.html' %}
+  </div>
+  {% include 'aside.html'%}
+  {% include 'videos/footer_link.html' %}
 {% endblock page_aside %}
 
 
 {% block more_script %}
-<script src="{% static 'js/jquery.waypoints.min.js' %}"></script>
-<script src="{% static 'js/infinite.min.js' %}"></script>
+<script src="{% static 'js/jquery.waypoints.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'js/infinite.min.js' %}?ver={{VERSION}}"></script>
 <script>
   var infinite = new Waypoint.Infinite({
     element: $('.infinite-container')[0],
@@ -171,46 +169,46 @@ body {
     }
   });
 </script>
-<script type="text/javascript">
+<script>
 var str = get_list(listTheme["channel_"+{{channel.id}}], 0, [], tag_type="li", li_class="list-group-item", attrs='', add_link=true, current="{{theme.slug}}", channel="");
 $("#ultreeview").html(str);
-setTimeout(function(){ 
+setTimeout(function(){
   var position = parseInt($("#ultreeview li.list-group-item-info").position().top) - parseInt($("#ultreeview li").first().position().top);
-  $("#ultreeview").scrollTop(position); 
+  $("#ultreeview").scrollTop(position);
 }, 500);
 </script>
 
 {% if organize_theme %}
-<script>
+  <script>
     let setText = function()
     {
-	let texts = document.querySelectorAll(".foldable_event .hideShowText")
-	texts.forEach( text =>
-	{
-	    if( text.nextElementSibling.classList.contains("arrow_bottom") )
-	        text.innerHTML = gettext("Hide");
-	    else
-	        text.innerHTML = gettext("Show")
-	});
+      let texts = document.querySelectorAll(".foldable_event .hideShowText");
+      texts.forEach( text =>
+      {
+          if( text.nextElementSibling.classList.contains("arrow_bottom") )
+              text.innerHTML = gettext("Hide");
+          else
+              text.innerHTML = gettext("Show");
+      });
     }
     // manage text
     setText();
     (function()
     {
-        let els = document.querySelectorAll('.foldable_event');
-        els.forEach(function(el)
+      let els = document.querySelectorAll('.foldable_event');
+      els.forEach(function(el)
+      {
+        el.addEventListener('click', function()
         {
-            el.addEventListener('click', function(event)
-            {
-                let target_content = this.parentNode.nextElementSibling;
-		this.classList.toggle("opened")
-		this.querySelector(".arrow_right").classList.toggle('arrow_bottom')
-                target_content.classList.toggle('closed');
-		// manage text
-		setText();
-            })
+          let target_content = this.parentNode.nextElementSibling;
+          this.classList.toggle("opened");
+          this.querySelector(".arrow_right").classList.toggle('arrow_bottom');
+          target_content.classList.toggle('closed');
+          // manage text
+          setText();
         })
+      })
     })();
-</script>
+  </script>
 {% endif %}
 {% endblock more_script %}

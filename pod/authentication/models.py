@@ -5,6 +5,8 @@ from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.sites.models import Site
+from select2 import fields as select2_fields
+from django.db.models import Q
 
 import hashlib
 import logging
@@ -19,7 +21,13 @@ else:
 HIDE_USERNAME = getattr(settings, 'HIDE_USERNAME', False)
 
 AUTH_TYPE = getattr(
-    settings, 'AUTH_TYPE', (('local', _('local')), ('CAS', 'CAS')))
+    settings, 'AUTH_TYPE', (
+        ('local', _('local')),
+        ('CAS', 'CAS'),
+        ('OIDC', "OIDC"),
+        ("Shibboleth", "Shibboleth")
+    )
+)
 AFFILIATION = getattr(
     settings, 'AFFILIATION',
     (
@@ -74,6 +82,8 @@ class Owner(models.Model):
     establishment = models.CharField(
         _('Establishment'), max_length=10, blank=True, choices=ESTABLISHMENTS,
         default=ESTABLISHMENTS[0][0])
+    accessgroups = select2_fields.ManyToManyField(
+        'authentication.AccessGroup', blank=True)
     sites = models.ManyToManyField(Site)
 
     def __str__(self):
@@ -139,3 +149,27 @@ def create_groupsite_profile(sender, instance, created, **kwargs):
             msg += '\n%s' % traceback.format_exc()
             logger.error(msg)
             print(msg)
+
+
+class AccessGroup(models.Model):
+    display_name = models.CharField(
+        max_length=128, blank=True, default="")
+    code_name = models.CharField(
+        max_length=128, unique=True)
+    sites = models.ManyToManyField(Site)
+    users = select2_fields.ManyToManyField(
+        Owner,
+        blank=True,
+        ajax=True,
+        search_field=lambda q: Q(
+            user__username__icontains=q) | Q(
+                user__first_name__icontains=q) | Q(
+                    user__last_name__icontains=q),
+        through='Owner_accessgroups')
+
+    def __str__(self):
+        return "%s" % (self.display_name)
+
+    class Meta:
+        verbose_name = _('Access Groups')
+        verbose_name_plural = _('Access Groups')

@@ -1,75 +1,54 @@
-{% extends "base.html" %}
-{% load staticfiles %}
-{% block opengraph %}
-{{ block.super }}
-<link rel="stylesheet" href="{% static "custom/assets/css/change_video_owner.css" %}">
-{% endblock opengraph %}
-{% block page_title %}Modifier propriétaire vidéo{% endblock %}
-{% block  more_script %} 
-    {# Javascript #}
-    <script type="text/javascript">  var data = {{data | safe }}; </script>
-    <script type="text/javascript" src="{% static "custom/assets/js/change_video_owner.js" %}"></script>
-{% endblock %}
-{% block content %}
-    <div class="main">
-        <div class="container">
-            <h1 class="text-center">Changer le propriétaire de la vidéo</h1>
-            <div class="form">
-                <form method="post">
-			{% csrf_token %}
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label for="oldlogin" class="label-control">Ancien propriétaire<i class="required">*</i></label>
-                                <input type="text" class="form-control" name="oldlogin" placeholder="Identifiant ancien propriétaire" required id="oldlogin">
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                            <div class="form-group">
-                                <label for="newlogin" class="label-control">Nouveau propriétaire<i class="required">*</i></label>
-                                <input type="text" class="form-control" name="newlogin" placeholder="Identifiant nouveau propriétaire" required id="newlogin">
-                            </div>
+{% extends "base.html" %} {% load staticfiles %} {% block opengraph %} {{ block.super }}
+<link rel="stylesheet" href="{% static 'custom/assets/css/change_video_owner.css' %}"> {% endblock opengraph %} {% block page_title %}Modifier propriétaire vidéo{% endblock page_title %} {% block more_script %}
+<script type="text/javascript" src="{% static 'custom/assets/js/change_video_owner.js' %}"></script>
+{% endblock more_script %} {% block content %}
+<main>
+    <div class="container">
+        <div class="content">
+            <form class="form" autocomplete="off">
+                {% csrf_token %}
+                <h1 class="title">Changer le propriétaire d'une vidéo</https:>
+                </h1>
+                <div class="form-wrapper">
+                    <label for="oldlogin" class="form-wrapper__label">Ancien Propriétaire<i class="required">*</i></label>
+                    <input type="text" id="oldlogin" class="form-wrapper__control" placeholder="Prénom et/ou Nom" />
+                    <div class="oldlogin suggestions"></div>
+                </div>
+                <div class="form-wrapper">
+                    <label for="newlogin" class="form-wrapper__label">Nouveau Propriétaire<i class="required">*</i></label>
+                    <input type="text" id="newlogin" class="form-wrapper__control" placeholder="Prénom et/ou Nom" />
+                    <div class="newlogin suggestions"></div>
+                </div>
+                <div class="form-wrapper select-videos">
+                    <label class="label-control">Cliquer sur la/les vidéo(s) à modifier<i class="required">*</i></label>
+                    <div class="form-wrapper full-width">
+                        <input name="all" placeholder="Filtrer par titre" type="text" id="list_videos__search" class="list_videos__search">
+                        <div class="newlogin suggestions semi-width"></div>
+                    </div>
+                    <div class="form-wrapper select_all_wrapper">
+                        <label for="select_all">Selectionner/Deselectionner toutes les vidéos</label>
+                        <input name="select_all" type="checkbox" id="select_all" class="select_all">
+                    </div>
+                    <div class="form-wrapper__control select-videos">
+                    </div>
+                    <div class="paginator">
+                        <div class="paginator-content">
+                            <span class="previous_content disable" id="previous_content" title="Previous page">
+                                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-alt-circle-left" class="svg-inline--fa fa-arrow-alt-circle-left fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 504C119 504 8 393 8 256S119 8 256 8s248 111 248 248-111 248-248 248zm116-292H256v-70.9c0-10.7-13-16.1-20.5-8.5L121.2 247.5c-4.7 4.7-4.7 12.2 0 16.9l114.3 114.9c7.6 7.6 20.5 2.2 20.5-8.5V300h116c6.6 0 12-5.4 12-12v-64c0-6.6-5.4-12-12-12z"></path></svg>
+                            </span>
+                            <span class="pages_infos" id="pages_infos" title="0/0">0/0</span>
+                            <span class="next_content disable" id="next_content" title="Next page">
+                                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-alt-circle-right" class="svg-inline--fa fa-arrow-alt-circle-right fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 8c137 0 248 111 248 248S393 504 256 504 8 393 8 256 119 8 256 8zM140 300h116v70.9c0 10.7 13 16.1 20.5 8.5l114.3-114.9c4.7-4.7 4.7-12.2 0-16.9l-114.3-115c-7.6-7.6-20.5-2.2-20.5 8.5V212H140c-6.6 0-12 5.4-12 12v64c0 6.6 5.4 12 12 12z"></path></svg>
+                            </span>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                            <div class="form-group">
-                                <label class="label-control">Cocher la/les vidéo(s) à modifier<i class="required">*</i></label>
-                                <div class="row">
-                                    
-                                    <div class="list_videos col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                        <div class="form-group all_video">
-                                            <input name="all" placeholder="Filtrer par titre" type="text" id="list_videos__search" class="list_videos__search" >
-                                        </div>
-                                        <!-- DYNAMIC DATA -->
-                                        <!-- <div class="form-group list_videos__data">
-                                            <input type="checkbox" id="video1" name="videos[]" >
-                                            <label for="video1">Title video 1</label>
-                                        </div>
-                                        <div class="form-group list_videos__data">
-                                            <input type="checkbox" id="video2" name="videos[]" >
-                                            <label for="video2">Title video 2</label>
-                                        </div>
-                                        <div class="form-group list_videos__data">
-                                            <input type="checkbox" id="video3" name="videos[]" >
-                                            <label for="video3">Title video 3</label>
-                                        </div>
-                                        <div class="form-group list_videos__data">
-                                            <input type="checkbox" id="video4" name="videos[]" >
-                                            <label for="video4">Title video 4</label>
-                                        </div> -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="form-wrapper full-width children-center">
+                        <button id="submitChanges" class="btn btn-primary">Soumettre le changement</button>
                     </div>
-                    <div class="row">
-                        <div class=" text-center">
-                            <input type="submit" class="btn btn-primary max100" id="changeownerjs" value="Modifier le propriétaire">
-                        </div>
-                    </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
-    {% endblock content %}
+    <script src="app.js"></script>
+</main>
+{% endblock content %}

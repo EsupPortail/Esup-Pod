@@ -11,6 +11,7 @@ from django.contrib.auth.models import Group
 from pod.authentication.forms import GroupAdminForm
 from django.contrib.sites.models import Site
 from django.contrib.admin import widgets
+from pod.authentication.models import AccessGroup
 
 # Define an inline admin descriptor for Owner model
 # which acts a bit like a singleton
@@ -180,6 +181,15 @@ class GroupAdmin(admin.ModelAdmin):
         return _inlines
 
 
+class AccessGroupAdmin(admin.ModelAdmin):
+    search_fields = ['id', 'code_name', 'display_name']
+    list_display = (
+        'id',
+        'code_name',
+        'display_name',
+    )
+
+
 # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
@@ -187,3 +197,5 @@ admin.site.register(User, UserAdmin)
 # Register the new Group ModelAdmin instead of the original one.
 admin.site.unregister(Group)
 admin.site.register(Group, GroupAdmin)
+
+admin.site.register(AccessGroup, AccessGroupAdmin)

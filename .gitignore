@@ -24,7 +24,7 @@
 *.log
 *.sql
 *.sqlite*
-pod/log
+
 # OS generated files #
 ######################
 .DS_Store
@@ -44,18 +44,15 @@ Icon?
 import_data/
 log/
 media/
-pod/media
 pod/*/migrations/
-!pod/custom/templates
-!pod/custom/templatetags
-!pod/custom/settings_local.py.example
-!pod/custom/static/custom/assets/css/bootstrap-default.min.css
 pod/custom/*
+!pod/custom/settings_local.py.example
 settings_local.py
 ## Others
 pod/static/
 *.bak
 .coverage
+htmlcov
 
 # IDE Files #
 #############

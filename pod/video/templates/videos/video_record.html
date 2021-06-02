@@ -1,0 +1,241 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% load custom_tags %}
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block opengraph %}
+
+{% endblock %}
+
+{% block page_extra_head %}
+<link href="{% static 'player/videojs/video-js.min.css' %}?ver={{VERSION}}" rel="stylesheet" />
+<script src="{% static 'player/videojs/video.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'player/videojs/lang/fr.js' %}?ver={{VERSION}}"></script>
+<link href="{% static 'vendor/record/videojs.record.min.css' %}?ver={{VERSION}}" rel="stylesheet">
+<script src="{% static 'vendor/record/RecordRTC.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'vendor/record/adapter.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'vendor/record/videojs.record.min.js' %}?ver={{VERSION}}"></script>
+<script src="{% static 'vendor/record/browser-workarounds.min.js' %}?ver={{VERSION}}"></script>
+<style>
+/* change player background color */
+#podvideoplayer {
+  background-color: #ede4b7;
+}
+</style>
+{% endblock page_extra_head %}
+
+{% block breadcrumbs %}{{ block.super }}
+<li class="breadcrumb-item active" aria-current="page">{% trans "Video Record"%}</li>
+{% endblock %}
+
+{% block page_title %}{% trans "Video Record"%}{% endblock %}
+
+{% block page_content %}
+{% csrf_token %}
+<h1 class="pt-2">{% trans "Video Record"%}</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <div itemprop="video" itemscope itemtype="http://schema.org/VideoObject">
+        <video id="podvideoplayer" playsinline class="video-js vjs-default-skin">
+          <p class="vjs-no-js">
+            To view this video please enable JavaScript, and consider upgrading to a web browser that
+            <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+          </p>
+        </video>
+      </div>
+      <div class="btn-group ustify-content-center p-1 d-none" role="group" aria-label="save or cancel record" id="savecancelrecord">
+        <button type="button" class="btn btn-primary btn-sm m-1" id="showsaverecord">{% trans "Save Record"%}</button>
+        <button type="button" class="btn btn-secondary btn-sm m-1" id="cancelrecord">{% trans "Cancel Record"%}</button>
+      </div>
+    </div>
+    <div class="col-sm">
+      <p>{% trans "Click on player to select device to record"%}.</p>
+      <p>{% trans "For the moment, you can only record screen and audio"%}.</p>
+      <p>{% trans "Then, click on rec button to launch record"%}.</p>
+      <p>{% trans "You will see a rec notification at the top-right of player, click on stop button to stop the record"%}. {% trans "You can click on play to watch your recording"%}.</p>
+      <p>{% trans "You will be able to choose between sending your recording directly to Pod or downloading it to your computer"%}.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal to save record-->
+<div class="modal fade" id="saveRecordModal" tabindex="-1" role="dialog" aria-labelledby="saveRecordModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" >{% trans "Save Record"%}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+            <span class="textsendchoice">{% trans "You can choose between sending your recording directly to Pod or downloading it to your computer"%}.</span>
+            <span class="textsending d-none">
+            {% trans "Sending, please wait." %}<br/>
+            {% trans "The page will refresh after the upload completes." %}
+            </span>
+        </p>
+        <div class="progress d-none" style="width:100%">
+            <div id="uploadprogressbar" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                0%
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="saveRecordPod" type="button" class="btn btn-primary" >{% trans "Save to Pod"%}</button>
+        <button id="downloadRecord" type="button" class="btn btn-primary" data-dismiss="modal">{% trans "Download record"%}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock page_content %}
+
+{% block page_aside %}
+{% endblock page_aside %}
+
+
+{% block more_script %}
+  <script>
+    
+    const tpdebug = "{% get_setting "DEBUG" False %}" == "True";
+
+const options = {
+    controls: true,
+    bigPlayButton: false,
+    height: 360,
+    fluid: true,
+    controlBar: {
+        fullscreenToggle: false,
+        volumePanel: false
+    },
+    plugins: {
+        record: {
+            pip: true,
+            audio: true,
+            screen: true,
+            video:false,
+            hotKeys: true,
+            displayMilliseconds: false,
+            debug: tpdebug,
+            maxLength: 3600
+        }
+    }
+};
+
+// apply some workarounds for certain browsers
+applyVideoWorkaround();
+applyScreenWorkaround();
+
+const player = videojs('podvideoplayer', options, function() {
+    // print version information at startup
+    const msg = 'Using video.js ' + videojs.VERSION +
+        ' with videojs-record ' + videojs.getPluginVersion('record') +
+        ' and recordrtc ' + RecordRTC.version;
+    videojs.log(msg);
+});
+
+// error handling
+player.on('deviceError', function() {
+    console.warn('device error:', player.deviceErrorCode);
+});
+
+player.on('error', function(element, error) {
+    console.error(error);
+});
+
+// snapshot is available
+player.on('finishRecord', function() {
+    // the blob object contains the image data that
+    // can be downloaded by the user, stored on server etc.
+    $("#savecancelrecord").removeClass('d-none');
+    $("#savecancelrecord").addClass('d-flex');
+});
+
+$(document).on('click',  '#showsaverecord', function(e){
+    $('#saveRecordModal').modal('show');
+});
+
+$(document).on('click',  '#cancelrecord', function(e){
+    $("#savecancelrecord").addClass('d-none');
+    $("#savecancelrecord").removeClass('d-flex');
+    player.record().reset();
+});
+
+
+$(document).on('click',  '#saveRecordPod', function(e){
+    $('#saveRecordModal span.textsendchoice').addClass('d-none');
+    $('#saveRecordModal span.textsending').removeClass('d-none');
+    $('#saveRecordModal div.progress').removeClass('d-none');
+    const data = player.recordedData;
+    let formData = new FormData();
+    formData.append('video', data, data.name);
+    formData.append('title', 'podscreenrecord-'+get_now());
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    formData.append('csrfmiddlewaretoken', csrftoken);
+    
+    $.ajax({
+        url: "{% url 'video_record' %}",
+        method: 'POST',
+        data: formData,
+        cache: false,
+        processData: false,
+        contentType: false,
+        dataType: 'JSON',
+        mimeType: 'multipart/form-data',
+        xhr: function()
+        {
+            const xhr = new window.XMLHttpRequest();
+            //Upload progress
+            xhr.upload.addEventListener("progress", function(evt){
+              if (evt.lengthComputable) {
+                const percentComplete = evt.loaded / evt.total;
+                //Do something with upload progress
+                const percent = Math.round((evt.loaded / evt.total) * 100) + "%";
+                $("#uploadprogressbar").html(percent);
+                $("#uploadprogressbar").width(percent);
+              }
+            }, false);
+            
+            return xhr;
+        },
+        success: function(data, textStatus, jqXHR) {
+            //restart the playeur
+            // redirect to url_edit
+            if(data["url_edit"])
+                window.location.href = data["url_edit"];
+            else {
+                alert("{% trans 'One or more errors have been found in the form.' %}: \n"+data["error"]);
+                console.log(data["error"])
+            }
+        }, 
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert("error occured : \n"+errorThrown);
+            console.log(jqXHR, jqXHR.responseText, textStatus, errorThrown);
+        }
+    });
+    
+});
+
+$(document).on('click',  '#downloadRecord', function(e){
+    player.record().saveAs({'video': 'podscreenrecord-'+get_now()+'.webm'});
+    //restart the playeur
+    player.record().reset();
+    $("#savecancelrecord").addClass('d-none');
+    $("#savecancelrecord").removeClass('d-flex');
+})
+
+/**
+ * @return date string format yyyy-mm-dd-hh-mi-ss
+ **/
+function get_now() {
+    return (new Date())
+      .toISOString()
+      .replace(/\.\w+$/, "")
+      .replace(/[T:]/g, "-");
+}
+</script>
+{% endblock more_script %}

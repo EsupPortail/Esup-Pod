@@ -1,0 +1,14 @@
+
+[report]
+# Here you can exclude a file from coverage testing
+
+# nb : you can also add a "# pragma: no cover"
+# on each function you don't want to be covered
+[run]
+source = pod/
+omit = pod/*/settings*.py
+       pod/wsgi.py
+       */tests/*
+       */commands/*
+       */migrations/*
+

@@ -1,3 +1,5 @@
+"""This module handles video encoding with CPU."""
+
 from django.conf import settings
 
 from django.core.files.images import ImageFile
@@ -12,6 +14,8 @@ from .models import Video
 
 from .utils import change_encoding_step, add_encoding_log, check_file
 from .utils import create_outputdir, send_email, send_email_encoding
+from .utils import get_duration_from_mp4
+from .utils import fix_video_duration
 # from pod.main.context_processors import TEMPLATE_VISIBLE_SETTINGS
 from pod.main.tasks import task_start_encode
 
@@ -25,6 +29,8 @@ import json
 import re
 import tempfile
 import threading
+
+__license__ = "LGPL v3"
 
 if getattr(settings, 'USE_PODFILE', False):
     FILEPICKER = True
@@ -43,6 +49,9 @@ if TRANSCRIPT:
         'TRANSCRIPT_VIDEO',
         'start_transcript'
     )
+
+ENCODE_SHELL = getattr(
+    settings, 'ENCODE_SHELL', '/bin/sh')
 
 USE_ESTABLISHMENT = getattr(
     settings, 'USE_ESTABLISHMENT_FIELD', False)
@@ -183,7 +192,6 @@ def start_encode(video_id):
 
 def encode_video(video_id):
     """Encode video."""
-
     start = "Start at: %s" % time.ctime()
 
     video_to_encode = Video.objects.get(id=video_id)
@@ -325,14 +333,17 @@ def encode_video(video_id):
                 video_id, 4,
                 "encoding video file: 7/11 remove_previous_overview")
             remove_previous_overview(overviewfilename, overviewimagefilename)
+            video_duration = video_data["duration"] if (
+                video_data["duration"] > 0) else get_duration_from_mp4(
+                video_mp4.source_file.path, output_dir)
             nb_img = 99 if (
-                video_data["duration"] > 99) else video_data["duration"]
+                video_duration > 99) else video_duration
             change_encoding_step(
                 video_id, 4,
                 "encoding video file: 8/11 create_overview_image")
             msg = create_overview_image(
                 video_id,
-                video_mp4.video.video.path, video_data["duration"],
+                video_mp4.source_file.path, video_duration,
                 nb_img, image_width, overviewimagefilename, overviewfilename)
             add_encoding_log(
                 video_id,
@@ -342,7 +353,7 @@ def encode_video(video_id):
                 video_id, 4,
                 "encoding video file: 11/11 create_and_save_thumbnails")
             msg = create_and_save_thumbnails(
-                video_mp4.video.video.path, video_mp4.width, video_id)
+                video_mp4.source_file.path, video_mp4.width, video_id)
             add_encoding_log(
                 video_id,
                 "create_and_save_thumbnails: %s" % msg)
@@ -362,6 +373,8 @@ def encode_video(video_id):
         video_to_encode = Video.objects.get(id=video_id)
         video_to_encode.encoding_in_progress = False
         video_to_encode.save()
+
+        fix_video_duration(video_id, output_dir)
 
         # End
         add_encoding_log(video_id, "End: %s" % time.ctime())
@@ -423,7 +436,12 @@ def get_video_data(video_id, output_dir):
     duration = 0
     key_frames_interval = 0
     if len(info["streams"]) > 0:
-        is_video = True
+        codec = info["streams"][0].get("codec_name", "unknown")
+        image_codec = ["jpeg", "gif", "png", "bmp", "jpg"]
+        is_stream_thumbnail = any(ext in codec.lower()
+                                  for ext in image_codec)
+        if not is_stream_thumbnail:
+            is_video = True
         if info["streams"][0].get('height'):
             in_height = info["streams"][0]['height']
         """
@@ -544,7 +562,11 @@ def encode_video_mp4(source, cmd, output_dir):
         msg += "- %s\n" % ffmpegMp4Command
         with open(logfile, "ab") as f:
             procs.append(subprocess.Popen(
-                ffmpegMp4Command, shell=True, stdout=f, stderr=f))
+                ffmpegMp4Command,
+                shell=True,
+                executable=ENCODE_SHELL,
+                stdout=f,
+                stderr=f))
     msg += "\n- Encoding Mp4: %s" % time.ctime()
     with open(logfile, "a") as f:
         f.write(msg)
@@ -604,7 +626,7 @@ def encode_m4a(video_id, contain_audio, source, output_dir):
 
 
 def encode_mp3(video_id, contain_audio, source, output_dir):
-    """encode audio mp3 for all file !"""
+    """Encode audio mp3 for all file."""
     msg = ""
     if contain_audio:
         change_encoding_step(
@@ -787,7 +809,11 @@ def encode_video_playlist(source, cmd, output_dir):
         msg += "- %s\n" % ffmpegPlaylistCommand
         with open(logfile, "ab") as f:
             procs.append(subprocess.Popen(
-                ffmpegPlaylistCommand, shell=True, stdout=f, stderr=f))
+                ffmpegPlaylistCommand,
+                shell=True,
+                executable=ENCODE_SHELL,
+                stdout=f,
+                stderr=f))
     msg += "\n- Encoding Playlist: %s" % time.ctime()
     with open(logfile, "a") as f:
         f.write(msg)

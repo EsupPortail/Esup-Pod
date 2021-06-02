@@ -1,8 +1,10 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client
 from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
+from pod.authentication.models import AccessGroup
+from django.core.urlresolvers import reverse
+from django.contrib.sites.models import Site
 
 from ..models import Channel
 from ..models import Theme
@@ -10,8 +12,11 @@ from ..models import Video
 from ..models import Type
 from ..models import Discipline
 from ..models import AdvancedNotes
-from django.contrib.sites.models import Site
+from .. import views
+
+from importlib import reload
 import re
+import json
 
 
 class ChannelTestView(TestCase):
@@ -424,9 +429,9 @@ class VideoTestView(TestCase):
         user = User.objects.create(username="pod", password="pod1234pod")
         user2 = User.objects.create(username="pod2", password="pod1234pod")
         user3 = User.objects.create(username="pod3", password="pod1234pod")
-        Group.objects.create(name='student')
-        Group.objects.create(name='employee')
-        Group.objects.create(name='member')
+        AccessGroup.objects.create(code_name='group1', display_name="Group 1")
+        AccessGroup.objects.create(code_name='group2', display_name="Group 2")
+        AccessGroup.objects.create(code_name='group3', display_name="Group 3")
         v0 = Video.objects.create(
             title="Video1", owner=user,
             video="test1.mp4", type=Type.objects.get(id=1))
@@ -478,14 +483,18 @@ class VideoTestView(TestCase):
         response = self.client.get("/video/%s/" % v.slug)
         self.assertEqual(response.status_code, 200)
         # test restricted group
-        v.restrict_access_to_groups.add(Group.objects.get(name='employee'))
-        v.restrict_access_to_groups.add(Group.objects.get(name='member'))
+        v.restrict_access_to_groups.add(AccessGroup.objects.get(
+            code_name='group2'))
+        v.restrict_access_to_groups.add(AccessGroup.objects.get(
+            code_name='group3'))
         response = self.client.get("/video/%s/" % v.slug)
         self.assertEqual(response.status_code, 403)
-        self.user.groups.add(Group.objects.get(name='student'))
+        self.user.owner.accessgroup_set.add(AccessGroup.objects.get(
+            code_name='group1'))
         response = self.client.get("/video/%s/" % v.slug)
         self.assertEqual(response.status_code, 403)
-        self.user.groups.add(Group.objects.get(name='employee'))
+        self.user.owner.accessgroup_set.add(AccessGroup.objects.get(
+            code_name='group2'))
         response = self.client.get("/video/%s/" % v.slug)
         self.assertEqual(response.status_code, 200)
         # TODO test with password
@@ -859,3 +868,74 @@ class video_countTestView(TestCase):
         print(
             " --->  test_video_countTestView_post_request"
             " of video_countTestView : OK !")
+
+
+# add test to video record : USE_VIDEO_RECORD = True
+class video_recordTestView(TestCase):
+    fixtures = ['initial_data.json', ]
+
+    def setUp(self):
+        User.objects.create(username="pod", password="pod1234pod")
+        print(" --->  SetUp of video_recordTestView : OK !")
+
+    def test_video_recordTestView_get_request(self):
+        self.client = Client()
+        response = self.client.get("/video_record/")
+        self.assertEqual(response.status_code, 302)
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.get("/video_record/")
+        self.assertEqual(response.status_code, 200)
+
+        print(
+            " --->  test_video_recordTestView_get_request"
+            " of video_recordTestView : OK !")
+
+    @override_settings(
+        DEBUG=True,
+        RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True
+    )
+    def test_video_recordTestView_get_request_restrict(self):
+        reload(views)
+        self.client = Client()
+        response = self.client.get("/video_record/")
+        self.assertEqual(response.status_code, 302)
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.get("/video_record/")
+        self.assertEquals(response.context['access_not_allowed'], True)
+        self.user.is_staff = True
+        self.user.save()
+        response = self.client.get("/video_record/")
+        self.assertEqual(response.status_code, 200)
+        print(
+            " --->  test_video_recordTestView_get_request_restrict"
+            " of video_recordTestView : OK !")
+
+    def test_video_recordTestView_upload_recordvideo(self):
+        reload(views)
+        video = SimpleUploadedFile(
+            "file.mp4", b"file_content", content_type="video/mp4")
+        self.client = Client()
+        self.user = User.objects.get(username="pod")
+        self.client.force_login(self.user)
+        response = self.client.post(
+            reverse('video_record'),
+            {'video': video, 'title': 'test upload'},
+            **{'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context, None)
+        try:
+            data = json.loads(response.content)
+        except (RuntimeError, TypeError, NameError, AttributeError) as err:
+            print("Unexpected error: {0}".format(err))
+            data = json.loads(response.content.decode("utf-8"))
+        self.assertEqual(data['id'], 1)
+        self.assertEqual(data['url_edit'], "/video_edit/0001-test-upload/")
+        self.assertEqual(Video.objects.all().count(), 1)
+        vid = Video.objects.get(id=1)
+        self.assertEqual(vid.title, 'test upload')
+        print(
+            " --->  test_video_recordTestView_upload_recordvideo"
+            " of video_recordTestView : OK !")

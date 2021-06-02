@@ -46,17 +46,27 @@ const options = {
         event.preventDefault();
         this.muted(!this.muted());
       }
+      if (event.key === 'f') {
+        event.preventDefault();
+        this.requestFullscreen();
+      }
       // `arrow left`
       if (event.code === 'ArrowLeft') {
         event.preventDefault();
-        const now = this.currentTime();
-        this.currentTime(now - seektime);
+        this.currentTime(Math.floor(this.currentTime())-seektime);
       }
       // `arrow right`
       if (event.code === 'ArrowRight') {
         event.preventDefault();
-        const now = this.currentTime();
-        this.currentTime(now + seektime);
+        this.currentTime(Math.floor(this.currentTime())+seektime);
+      }
+      if( event.code === "ArrowUp" ) {
+        event.preventDefault();
+        this.volume(this.volume()+0.1);
+      }
+      if( event.code === "ArrowDown" ) {
+        event.preventDefault();
+        this.volume(this.volume()-0.1);
       }
     }
   },
@@ -121,7 +131,7 @@ player.on('firstplay', function(){
       src: '{% if request.is_secure %}https://{%else%}http://{% endif %}{{request.get_host}}{{video.overview.url}}'
     });
   {%endif%}
-  
+
   {% if video.overlay_set.all %}
     var list_overlays = [];
     $('ul#overlays li').each(function() {
@@ -147,7 +157,7 @@ player.on('firstplay', function(){
   {% if request.GET.is_iframe %}
   player.videoJsInfo();
   {%endif%}
-  
+
   player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
 {% else %}
   {% if video.get_video_m4a %}
