@@ -37,7 +37,7 @@
     let current_username_filter = null;
     let current_username_id = null;
     let DATA = { count: 0, next: null, previous: null, results: [] }
-    
+
 
     /**
      * Select all videos
@@ -95,7 +95,7 @@
 
     /**
      * Add not found text
-     * @param {HTMLElement} container 
+     * @param {HTMLElement} container
      * @param {Boolean} clickable if true, text can be remove by a click on it
      */
     const addNotFound = (container, clickable = false) => {
@@ -113,7 +113,7 @@
 
     /**
      * Add or remove loader
-     * @param {HTMLElement} container 
+     * @param {HTMLElement} container
      * @param {Boolean} remove if true, try to remove loader
      */
     const addRemoveLoader = (container = null, remove = false) => {
@@ -132,7 +132,7 @@
 
     /**
      * Add element in list
-     * @param {Number} el 
+     * @param {Number} el
      * @param {Array} list where to add element
      */
     const addInChoosedVideosArray = (el) => {
@@ -143,7 +143,7 @@
     }
 
     /**
-     * 
+     *
      * @param {HTMLInputElement} input field
      * @param {Number} user_id user ID
      */
@@ -175,7 +175,7 @@
 
     /**
      * Refresh info current page 0/0
-     * @param {String} url 
+     * @param {String} url
      */
     const refreshPageInfos = (url = null) => {
         let text = "0/0";
@@ -248,7 +248,7 @@
         previous_content.addEventListener("click", nextPreviousHandler);
     }
 
-    /**	
+    /**
      * Clear suggestion elements
      * @param {HTMLElement} suggestion suggestion container
      */
@@ -382,7 +382,7 @@
 
     /**
      * Get users from the server
-     * @param {String} search 
+     * @param {String} search
      * @returns {Promise} users found
      */
     const getUsers = (search) => {
@@ -395,7 +395,7 @@
      * @param {String} url current url
      * @param {Callable} callback callback after request
      * @param {Boolean} is_filter is filter input
-     * @returns 
+     * @returns
      */
     const getVideos = (url, callback, is_filter = false) => {
         return makeRequest(url).then(data => {
@@ -450,7 +450,7 @@
     };
 
     /**
-     * 
+     *
      * @param {String} text user first_name & last_name
      * @param {Number} id user id
      * @param {HTMLInputElement} input field
@@ -545,7 +545,7 @@
     });
 
     /**
-     * Adding search Listener to owner inputs 
+     * Adding search Listener to owner inputs
      */
     [old_owner_input, new_owner_input].forEach((input) => {
         addSearchListener(input, proposeUsers)
@@ -567,8 +567,14 @@
     submitBTN.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
+
         // TODO make a great validation with css error maybe
         if (!!choosed_videos.length && !!current_username_id && !!new_username_id) {
+            // Show loader on the videos container / disable submit button
+            addRemoveLoader(videos_container)
+            const saveText = submitBTN.textContent
+            submitBTN.textContent = "Changement en cours...";
+            submitBTN.setAttribute("disabled", true);
             const url = `${update_videos_url}${current_username_id}/`
             const post_data = new FormData();
             post_data.append("videos", choosed_videos);
@@ -576,6 +582,10 @@
             const token = document.querySelector("input[name=csrfmiddlewaretoken]").value || Cookies.get("csrftoken");
             post_data.append("csrfmiddlewaretoken", token);
             makeRequest(url, "POST", post_data).then(response => {
+                // Remove loader on videos container / undisable submit button
+                addRemoveLoader(videos_container, true);
+                submitBTN.textContent = saveText;
+                submitBTN.removeAttribute("disabled");
                 if (response.success) {
                     document.querySelector("main").appendChild(
                         new AlertMessage(gettext(response.detail))
