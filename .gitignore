@@ -63,3 +63,7 @@ htmlcov
 ################
 *.crt
 *.key
+
+# Bower dependencies #
+######################
+bower_components
