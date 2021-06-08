@@ -18,24 +18,44 @@ def index(request):
 
 def move_video_file(video, new_owner):
     # overview and encoding video folder name
-    encod_folder_pattern = "%04d" % video.id + "/?"
+    encod_folder_pattern = "%04d" % video.id 
     old_dest = os.path.join(
-            os.path.dirname(video.video.path),
-            "%04d" % video.id)
+        os.path.dirname(video.video.path),
+        encod_folder_pattern
+    )
     new_dest = re.sub(
         r"\w{64}",
         new_owner.owner.hashkey,
         old_dest
     )
-    
-    # move encoding and overview folder
+
+    # move video files folder contains(overview, format etc...)
     if not os.path.exists(new_dest) and os.path.exists(old_dest):
-        new_dest = re.sub(encod_folder_pattern, "", new_dest)
+        new_dest = re.sub(encod_folder_pattern + "/?", "", new_dest)
         if not os.path.exists(new_dest):
             os.makedirs(new_dest)
         shutil.move(old_dest, new_dest)
     
-    # move video path
+    # update video overview path
+    if bool(video.overview):
+        video_overview = video.overview
+        video.overview = re.sub(
+            r"\w{64}",
+            new_owner.owner.hashkey,
+            video.overview.__str__()
+        )
+
+    # Update video playlist source file
+    video_playlist_master = video.get_playlist_master()
+    if video_playlist_master is not None:
+        video_playlist_master.source_file.name = re.sub(
+            r"\w{64}",
+            new_owner.owner.hashkey,
+            video_playlist_master.source_file.name
+        )
+        video_playlist_master.save()
+
+    # update video path
     video_file_pattern = r"[\w-]+\.\w+"
     old_video_path = video.video.path
     new_video_path = re.sub(
@@ -48,6 +68,7 @@ def move_video_file(video, new_owner):
         new_video_path = re.sub(video_file_pattern, "", new_video_path)
         shutil.move(old_video_path, new_video_path)
     video.save()
+
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
