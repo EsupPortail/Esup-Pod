@@ -6,6 +6,7 @@ from django.test.client import RequestFactory
 from pod.video_search.views import (
     get_filter_search,
     get_remove_selected_facet_link,
+    get_result_aggregations,
 )
 
 
@@ -15,13 +16,12 @@ class VideoSearchTest(TestCase):
     ]
 
     def setUp(self):
-        pass
+        self.selected_facets = ["term1.field:value1", "term2.field:value2"]
 
     def test_get_filter_search(self):
         start_date = datetime.now()
         end_date = start_date + timedelta(days=10)
 
-        selected_facets = []
         expected = [
             {
                 "range": {
@@ -42,16 +42,17 @@ class VideoSearchTest(TestCase):
                 }
             }
         ]
-        actual = get_filter_search(selected_facets, start_date, end_date)
+        actual = get_filter_search([], start_date, end_date)
         self.assertEqual(actual, expected)
 
-        selected_facets = ["term1:value1", "term2:value2"]
         expected = [
-            {"term": {"term1": "value1"}},
-            {"term": {"term2": "value2"}},
+            *[
+                {"term": {facet.split(":")[0]: facet.split(":")[1]}}
+                for facet in self.selected_facets
+            ],
             *expected,
         ]
-        actual = get_filter_search(selected_facets, start_date, end_date)
+        actual = get_filter_search(self.selected_facets, start_date, end_date)
         self.assertEqual(actual, expected)
 
     def test_get_remove_selected_facet_link(self):
@@ -63,9 +64,8 @@ class VideoSearchTest(TestCase):
                 "selected_facets": ["term1:value1", "term2:value2"],
             },
         )
-        selected_facets = ["term1:value1", "term2:value2"]
 
-        actual = get_remove_selected_facet_link(request, selected_facets)
+        actual = get_remove_selected_facet_link(request, self.selected_facets)
 
         link1 = request.get_full_path().replace(
             "&selected_facets=term1:value1", ""
