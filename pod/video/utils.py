@@ -1,3 +1,5 @@
+from math import ceil
+
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.core.mail import send_mail
@@ -182,8 +184,8 @@ def send_email_transcript(video_to_encode):
     message = "%s\n%s\n\n%s\n%s\n%s\n" % (
         _("Hello,"),
         _(
-            u"The content “%(content_title)s” has been automatically transcript"
-            + ", and is now available on %(site_title)s."
+            u"The content “%(content_title)s” has been automatically"
+            + " transcript, and is now available on %(site_title)s."
         )
         % {"content_title": video_to_encode.title, "site_title": TITLE_SITE},
         _(u"You will find it here:"),
@@ -205,8 +207,8 @@ def send_email_transcript(video_to_encode):
                 </p><p>%s</p>' % (
         _("Hello,"),
         _(
-            u"The content “%(content_title)s” has been automatically transcript"
-            + ", and is now available on %(site_title)s."
+            u"The content “%(content_title)s” has been automatically"
+            + " transcript, and is now available on %(site_title)s."
         )
         % {
             "content_title": "<b>%s</b>" % video_to_encode.title,
@@ -347,3 +349,53 @@ def send_email_encoding(video_to_encode):
                 fail_silently=False,
                 html_message=html_message,
             )
+
+
+def pagination_data(request_path, offset, limit, total_count):
+    """Get next, previous url and info about
+    max number of page and current page\n
+
+    Args:\n
+        request_path (str): current request path
+        offset (int): data offset\n
+        limit (int): data max number\n
+        total_count (int): total data count\n
+
+    Returns:\n
+        Tuple[str]: next, previous url and current page info\n
+    """
+    next_url = previous_url = None
+    pages_info = "0/0"
+    # manage next previous url (Pagination)
+    if offset + limit < total_count and limit <= total_count:
+        next_url = "{}?limit={}&offset={}".format(request_path, limit, limit + offset)
+    if offset - limit >= 0 and limit <= total_count:
+        previous_url = "{}?limit={}&offset={}".format(request_path, limit, offset - limit)
+
+    current_page = 1 if offset <= 0 else int((offset / limit)) + 1
+    total = ceil(total_count / limit)
+    pages_info = "{}/{}".format(current_page, total)
+
+    return next_url, previous_url, pages_info
+
+
+def get_headband(channel, theme=None):
+    """Get headband with priority to theme headband\n
+
+    Args:\n
+        channel (Channel): channel\n
+        theme (Theme, optional): theme, Defaults to None.\n
+
+    Returns:\n
+        dict: type(theme, channel) and headband path\n
+    """
+    result = {
+        "type": "channel" if theme is None else "theme",
+        "headband": None,
+    }
+    if theme is not None and theme.headband is not None:
+        result["headband"] = theme.headband.file.url
+    elif theme is None and channel.headband is not None:
+        result["headband"] = channel.headband.file.url
+
+    return result

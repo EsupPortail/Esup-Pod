@@ -79,6 +79,7 @@ def populateUser(tree):
     username_element = tree.find(
         ".//{http://www.yale.edu/tp/cas}%s" % AUTH_CAS_USER_SEARCH
     )
+    username_element.text = username_element.text.strip()
     username = username_element.text
     if CAS_FORCE_LOWERCASE_USERNAME:
         username = username.lower()
