@@ -6,7 +6,6 @@ from django.test.client import RequestFactory
 from pod.video_search.views import (
     get_filter_search,
     get_remove_selected_facet_link,
-    get_result_aggregations,
 )
 
 
