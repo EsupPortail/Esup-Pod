@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from django.test import TestCase
 
-from pod.video.views import get_filter_search
+from pod.video_search.views import get_filter_search
 
 
 class VideoSearchTest(TestCase):
