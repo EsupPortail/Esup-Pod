@@ -6,6 +6,7 @@ from django.test.client import RequestFactory
 from pod.video_search.views import (
     get_filter_search,
     get_remove_selected_facet_link,
+    get_result_aggregations,
 )
 
 
@@ -16,9 +17,9 @@ class VideoSearchTest(TestCase):
 
     def setUp(self):
         self.selected_facets = [
-            "type.slug.raw:value1",
-            "tags.slug.raw:value2",
-            "disciplines.slug:value3",
+            "type_slug.raw:value1",
+            "tags_slug.raw:value2",
+            "disciplines_slug.raw:value3",
         ]
 
     def test_get_filter_search(self):
@@ -82,3 +83,18 @@ class VideoSearchTest(TestCase):
             )
 
         self.assertEqual(actual, expected)
+
+    def test_get_result_aggregations(self):
+        results = {
+            "aggregations": {
+                "tag.name": "",
+                "type.title": "",
+                "disciplines.title": "",
+                "tag_name": "",
+                "type_title": "",
+                "disciplines_title": "",
+            }
+        }
+        actual = get_result_aggregations(results, self.selected_facets)
+
+        self.assertEqual(actual, results["aggregations"])
