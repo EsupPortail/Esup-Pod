@@ -15,7 +15,11 @@ class VideoSearchTest(TestCase):
     ]
 
     def setUp(self):
-        self.selected_facets = ["term1.field:value1", "term2.field:value2"]
+        self.selected_facets = [
+            "type.slug.raw:value1",
+            "tags.slug.raw:value2",
+            "disciplines.slug:value3",
+        ]
 
     def test_get_filter_search(self):
         start_date = datetime.now()
@@ -60,22 +64,21 @@ class VideoSearchTest(TestCase):
             "/search/?q=video",
             {
                 "q": "video",
-                "selected_facets": ["term1:value1", "term2:value2"],
+                "selected_facets": self.selected_facets,
             },
         )
 
         actual = get_remove_selected_facet_link(request, self.selected_facets)
 
-        link1 = request.get_full_path().replace(
-            "&selected_facets=term1:value1", ""
-        )
-        link2 = request.get_full_path().replace(
-            "&selected_facets=term2:value2", ""
-        )
         msg_title = "Remove this filter"
-        expected = [
-            '<a href="%s" title="%s">%s</a>' % (link1, msg_title, "value1"),
-            '<a href="%s" title="%s">%s</a>' % (link2, msg_title, "value2"),
-        ]
+        expected = []
+        for index, facet in enumerate(self.selected_facets):
+            link = request.get_full_path().replace(
+                f"&selected_facets={facet}", ""
+            )
+            expected.append(
+                '<a href="%s" title="%s">%s</a>'
+                % (link, msg_title, facet.split(":")[1]),
+            )
 
         self.assertEqual(actual, expected)
