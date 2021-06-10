@@ -72,9 +72,9 @@ class VideoSearchTest(TestCase):
 
         msg_title = "Remove this filter"
         expected = []
-        for index, facet in enumerate(self.selected_facets):
+        for facet in self.selected_facets:
             link = request.get_full_path().replace(
-                f"&selected_facets={facet}", ""
+                "&selected_facets={}".format(facet), ""
             )
             expected.append(
                 '<a href="%s" title="%s">%s</a>'
