@@ -20,6 +20,9 @@ class VideoSearchTest(TestCase):
             "type_slug.raw:value1",
             "tags_slug.raw:value2",
             "disciplines_slug.raw:value3",
+            "type.slug.raw:value11",
+            "tags.slug.raw:value22",
+            "disciplines.slug.raw:value33",
         ]
 
     def test_get_filter_search(self):
@@ -90,9 +93,6 @@ class VideoSearchTest(TestCase):
                 "tag.name": "",
                 "type.title": "",
                 "disciplines.title": "",
-                "tag_name": "",
-                "type_title": "",
-                "disciplines_title": "",
             }
         }
         actual = get_result_aggregations(results, self.selected_facets)
