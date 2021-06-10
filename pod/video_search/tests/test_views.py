@@ -17,12 +17,12 @@ class VideoSearchTest(TestCase):
 
     def setUp(self):
         self.selected_facets = [
+            "type_field.raw:value11",
+            "tags_field.raw:value22",
+            "disciplines_field.raw:value33",
             "type.slug.raw:value1",
             "tags.slug.raw:value2",
             "disciplines.slug.raw:value3",
-            "type.field.raw:value11",
-            "tags.field.raw:value22",
-            "disciplines.field.raw:value33",
         ]
 
     def test_get_filter_search(self):
@@ -90,12 +90,12 @@ class VideoSearchTest(TestCase):
     def test_get_result_aggregations(self):
         results = {
             "aggregations": {
-                "type_title": "",
-                "tags_name": "",
-                "disciplines_title": "",
-                "tags.field": "",
-                "type.field": "",
-                "disciplines.field": "",
+                "type_title": "value1",
+                "tags_name": "value2",
+                "disciplines_title": "value3",
+                "tags_field": "value22",
+                "type_field": "value11",
+                "disciplines_field": "value33",
             }
         }
         actual = get_result_aggregations(results, self.selected_facets)
