@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block opengraph %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/change_video_owner.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/paginator.css' %}?ver={{VERSION}}" />
+{% endblock opengraph %}
+
+{% block page_title %}Modifier propriétaire vidéo{% endblock page_title %}
+
+{% block more_script %}
+<script type="text/javascript" src="{% static 'js/change_video_owner.js' %}"></script>
+{% endblock more_script %}
+
+{% block content %}
+<main>
+    <div class="container">
+        <div class="content">
+            <form class="form" autocomplete="off">
+                {% csrf_token %}
+                <h1 class="title">Changer le propriétaire d'une vidéo</https:>
+                </h1>
+                <div class="form-wrapper">
+                    <label for="oldlogin" class="form-wrapper__label">Ancien Propriétaire<i class="required">*</i></label>
+                    <input type="text" id="oldlogin" class="form-wrapper__control" placeholder="Prénom et/ou Nom" />
+                    <div class="oldlogin suggestions"></div>
+                </div>
+                <div class="form-wrapper">
+                    <label for="newlogin" class="form-wrapper__label">Nouveau Propriétaire<i class="required">*</i></label>
+                    <input type="text" id="newlogin" class="form-wrapper__control" placeholder="Prénom et/ou Nom" />
+                    <div class="newlogin suggestions"></div>
+                </div>
+                <div class="form-wrapper select-videos">
+                    <label class="label-control">Cliquer sur la/les vidéo(s) à modifier<i class="required">*</i></label>
+                    <div class="form-wrapper full-width">
+                        <input name="all" placeholder="Filtrer par titre" type="text" id="list_videos__search" class="list_videos__search">
+                        <div class="newlogin suggestions semi-width"></div>
+                    </div>
+                    <div class="form-wrapper select_all_wrapper">
+                        <label for="select_all">Selectionner/Deselectionner toutes les vidéos</label>
+                        <input name="select_all" type="checkbox" id="select_all" class="select_all">
+                    </div>
+                    <div class="form-wrapper__control select-videos">
+                    </div>
+                    {% include "videos/paginator.html" with disable_next=True%}
+                    <div class="form-wrapper full-width children-center">
+                        <button id="submitChanges" class="btn btn-primary">Soumettre le changement</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</main>
+{% endblock content %}
