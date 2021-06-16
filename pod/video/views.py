@@ -45,7 +45,7 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
-from pod.video.utils import pagination_data, get_headband, update_owner
+from pod.video.utils import pagination_data, get_headband, change_owner
 
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import ObjectDoesNotExist
@@ -2586,8 +2586,8 @@ def update_video_owner(request, user_id):
         with futures.ThreadPoolExecutor() as executor:
             for v in videos:
                 res = executor.submit(
-                    update_owner,
-                    v, old_owner, new_owner).result()
+                    change_owner,
+                    v, new_owner).result()
                 if res is False:
                     one_or_more_not_updated = False
 

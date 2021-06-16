@@ -11,6 +11,8 @@ from django.core.mail import mail_admins
 from django.core.mail import mail_managers
 from django.core.mail import EmailMultiAlternatives
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import JsonResponse
+from django.db.models import Q
 
 from .models import EncodingStep
 from .models import EncodingLog
@@ -403,7 +405,7 @@ def get_headband(channel, theme=None):
     return result
 
 
-def update_owner(video_id, old_owner, new_owner):
+def change_owner(video_id, new_owner):
     # nonlocal old_owner, new_owner
     video_id = int(video_id) if video_id.isnumeric else None
 
@@ -422,15 +424,8 @@ def update_owner(video_id, old_owner, new_owner):
 def move_video_file(video, new_owner):
     # overview and encoding video folder name
     encod_folder_pattern = "%04d" % video.id
-    old_dest = os.path.join(
-        os.path.dirname(video.video.path),
-        encod_folder_pattern
-    )
-    new_dest = re.sub(
-        r"\w{64}",
-        new_owner.owner.hashkey,
-        old_dest
-    )
+    old_dest = os.path.join(os.path.dirname(video.video.path), encod_folder_pattern)
+    new_dest = re.sub(r"\w{64}", new_owner.owner.hashkey, old_dest)
 
     # move video files folder contains(overview, format etc...)
     if not os.path.exists(new_dest) and os.path.exists(old_dest):
@@ -442,18 +437,14 @@ def move_video_file(video, new_owner):
     # update video overview path
     if bool(video.overview):
         video.overview = re.sub(
-            r"\w{64}",
-            new_owner.owner.hashkey,
-            video.overview.__str__()
+            r"\w{64}", new_owner.owner.hashkey, video.overview.__str__()
         )
 
     # Update video playlist source file
     video_playlist_master = video.get_playlist_master()
     if video_playlist_master is not None:
         video_playlist_master.source_file.name = re.sub(
-            r"\w{64}",
-            new_owner.owner.hashkey,
-            video_playlist_master.source_file.name
+            r"\w{64}", new_owner.owner.hashkey, video_playlist_master.source_file.name
         )
         video_playlist_master.save()
 
@@ -463,10 +454,60 @@ def move_video_file(video, new_owner):
     new_video_path = re.sub(
         re.search(r"\w{10,}", video.video.path).group(),
         new_owner.owner.hashkey,
-        old_video_path
+        old_video_path,
     )
     video.video.name = new_video_path.split("media/")[1]
     if not os.path.exists(new_video_path) and os.path.exists(old_video_path):
         new_video_path = re.sub(video_file_pattern, "", new_video_path)
         shutil.move(old_video_path, new_video_path)
     video.save()
+
+
+def get_videos(title, user_id, search=None, limit=12, offset=0):
+    """Return videos filtered by GET parameters 'title'
+        With limit and offset
+
+    Args:
+        request (Request): Http Request
+
+    Returns:
+        list[dict]: videos found
+    """
+    videos = Video.objects.filter(owner__id=user_id).order_by("id")
+    if search is not None:
+        videos = videos.filter(title__icontains=search)
+
+    if title is not None:
+        videos = videos.filter(
+            Q(title__icontains=title)
+            | Q(title_fr__icontains=title)
+            | Q(title_en__icontains=title)
+            | Q(title_nl__icontains=title)
+        )
+
+    count = videos.count()
+    results = list(
+        map(
+            lambda v: {"id": v.id, "title": v.title, "thumbnail": v.get_thumbnail_url()},
+            videos[offset : limit + offset],
+        )
+    )
+    next_url = None
+    previous_url = None
+
+    if offset + limit < count and limit <= count:
+        next_url = "/custom/manage/videos/{}/?limit={}&offset={}".format(
+            user_id, limit, limit + offset
+        )
+    if offset - limit >= 0 and limit <= count:
+        previous_url = "/custom/manage/videos/{}/?limit={}&offset={}".format(
+            user_id, limit, offset - limit
+        )
+
+    response = {
+        "count": count,
+        "next": next_url,
+        "previous": previous_url,
+        "results": results,
+    }
+    return JsonResponse(response, safe=False)
