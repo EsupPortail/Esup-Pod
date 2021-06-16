@@ -1,4 +1,4 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.db.models import Q, Value as V
 from django.db.models.functions import Concat
 
