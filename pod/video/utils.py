@@ -1,3 +1,7 @@
+import os
+import re
+import shutil
+import subprocess
 from math import ceil
 
 from django.conf import settings
@@ -12,8 +16,6 @@ from .models import EncodingStep
 from .models import EncodingLog
 from .models import Video, EncodingAudio, EncodingVideo
 
-import os
-import subprocess
 
 DEBUG = getattr(settings, "DEBUG", True)
 
@@ -399,3 +401,72 @@ def get_headband(channel, theme=None):
         result["headband"] = channel.headband.file.url
 
     return result
+
+
+def update_owner(video_id, old_owner, new_owner):
+    # nonlocal old_owner, new_owner
+    video_id = int(video_id) if video_id.isnumeric else None
+
+    if video_id is None:
+        return False
+
+    video = Video.objects.filter(pk=video_id).first()
+    if video is None:
+        return False
+    video.owner = new_owner
+    video.save()
+    move_video_file(video, new_owner)
+    return True
+
+
+def move_video_file(video, new_owner):
+    # overview and encoding video folder name
+    encod_folder_pattern = "%04d" % video.id
+    old_dest = os.path.join(
+        os.path.dirname(video.video.path),
+        encod_folder_pattern
+    )
+    new_dest = re.sub(
+        r"\w{64}",
+        new_owner.owner.hashkey,
+        old_dest
+    )
+
+    # move video files folder contains(overview, format etc...)
+    if not os.path.exists(new_dest) and os.path.exists(old_dest):
+        new_dest = re.sub(encod_folder_pattern + "/?", "", new_dest)
+        if not os.path.exists(new_dest):
+            os.makedirs(new_dest)
+        shutil.move(old_dest, new_dest)
+
+    # update video overview path
+    if bool(video.overview):
+        video.overview = re.sub(
+            r"\w{64}",
+            new_owner.owner.hashkey,
+            video.overview.__str__()
+        )
+
+    # Update video playlist source file
+    video_playlist_master = video.get_playlist_master()
+    if video_playlist_master is not None:
+        video_playlist_master.source_file.name = re.sub(
+            r"\w{64}",
+            new_owner.owner.hashkey,
+            video_playlist_master.source_file.name
+        )
+        video_playlist_master.save()
+
+    # update video path
+    video_file_pattern = r"[\w-]+\.\w+"
+    old_video_path = video.video.path
+    new_video_path = re.sub(
+        re.search(r"\w{10,}", video.video.path).group(),
+        new_owner.owner.hashkey,
+        old_video_path
+    )
+    video.video.name = new_video_path.split("media/")[1]
+    if not os.path.exists(new_video_path) and os.path.exists(old_video_path):
+        new_video_path = re.sub(video_file_pattern, "", new_video_path)
+        shutil.move(old_video_path, new_video_path)
+    video.save()
