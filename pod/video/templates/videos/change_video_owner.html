@@ -51,11 +51,6 @@
 					<div class="newlogin suggestions"></div>
 				</div>
 				<div class="form-wrapper select-videos">
-					<label class="label-control"
-						>{% trans "Click on the video(s) to edit" %}<i class="required"
-							>*</i
-						></label
-					>
 					<div class="form-wrapper full-width">
 						<input
 							name="all"
@@ -66,16 +61,23 @@
 						/>
 						<div class="newlogin suggestions semi-width"></div>
 					</div>
-					<div class="form-wrapper select_all_wrapper">
-						<label for="select_all"
-							>{% trans "Select/Deselect all videos" %}</label
-						>
-						<input
-							name="select_all"
-							type="checkbox"
-							id="select_all"
-							class="select_all"
-						/>
+					<div class="form-wrapper select_all_wrapper full-width">
+							<label class="label-control"
+								>{% trans "Click on the video(s) to edit" %}<i class="required"
+									>*</i
+								></label
+							>
+							<div>
+								<label for="select_all"
+									>{% trans "Select/Deselect all videos" %}</label
+								>
+								<input
+									name="select_all"
+									type="checkbox"
+									id="select_all"
+									class="select_all"
+								/>
+							</div>
 					</div>
 					<div class="form-wrapper__control select-videos"></div>
 					{% include "videos/paginator.html" with disable_next=True%}

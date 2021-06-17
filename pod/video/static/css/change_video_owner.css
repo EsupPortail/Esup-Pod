@@ -93,7 +93,9 @@ main {
 
 .form .form-wrapper.select_all_wrapper {
   flex-direction: row;
-  padding: 0;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0.8em 1em 0 0;
   align-items: center;
 }
 .form .form-wrapper.select_all_wrapper label {
