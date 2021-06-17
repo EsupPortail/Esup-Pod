@@ -475,7 +475,7 @@ def get_videos(title, user_id, search=None, limit=12, offset=0):
     """
     videos = Video.objects.filter(owner__id=user_id).order_by("id")
     if search is not None:
-        videos = videos.filter(title__icontains=search)
+        title = search
 
     if title is not None:
         videos = videos.filter(
