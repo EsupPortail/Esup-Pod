@@ -27,7 +27,7 @@ from dateutil.parser import parse
 import concurrent.futures as futures
 
 from pod.main.views import in_maintenance
-from pod.main.decorators import ajax_required
+from pod.main.decorators import ajax_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
 from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
@@ -2552,7 +2552,7 @@ def video_record(request):
 
 
 @csrf_protect
-@login_required(redirect_field_name="referrer")
+@admin_required(redirect_field_name="referrer")
 def update_video_owner(request, user_id):
     if request.method == "POST":
         post_data = {**request.POST}
@@ -2606,7 +2606,7 @@ def update_video_owner(request, user_id):
         safe=False)
 
 
-@login_required(redirect_field_name="referrer")
+@admin_required(redirect_field_name="referrer")
 def filter_owners(request):
     try:
         limit = int(request.GET.get("limit", 12))
@@ -2623,7 +2623,7 @@ def filter_owners(request):
         )
 
 
-@login_required(redirect_field_name="referrer")
+@admin_required(redirect_field_name="referrer")
 def filter_videos(request, user_id):
     try:
         limit = int(request.GET.get("limit", 12))
