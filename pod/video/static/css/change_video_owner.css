@@ -65,7 +65,6 @@ main {
   gap: .4em;
   min-width: 200px;
   width: calc(50% - 1em);
-  margin: 0.4em 0;
   position: relative;
   flex-grow: 1;
   padding: .4em;
