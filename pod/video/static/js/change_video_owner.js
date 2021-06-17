@@ -1,8 +1,8 @@
 (function () {
 	const base = window.location.origin;
-	const update_videos_url = `${base}/custom/manage/videos/put/`;
-	const get_videos_url = `${base}/custom/manage/videos/`;
-	const get_owners_url = `${base}/custom/manage/videos/owners/`;
+	const update_videos_url = `${base}/video/updateowner/put/`;
+	const get_videos_url = `${base}/video/updateowner/videos/`;
+	const get_owners_url = `${base}/video/updateowner/owners/`;
 
 	const old_owner_input = document.querySelector("#oldlogin");
 	const new_owner_input = document.querySelector("#newlogin");
