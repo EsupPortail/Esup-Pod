@@ -1,18 +1,25 @@
 {% extends "base.html" %} {% load i18n %} {% load staticfiles %}
-{% block opengraph %} {{block.super }}
+
+{% block opengraph %}
+ {{block.super }}
 <link rel="stylesheet" href="{% static 'css/change_video_owner.css' %}" />
 <link
 	rel="stylesheet"
 	type="text/css"
 	href="{% static 'css/paginator.css' %}?ver={{VERSION}}"
 />
-{% endblock opengraph %} {% block page_title %} Modifier propriétaire vidéo
-{%endblock page_title %} {% block more_script %}
+{% endblock opengraph %}
+
+{% block page_title %}
+{%trans "Edit video owner" %}
+{%endblock page_title %}
+{% block more_script %}
 <script
 	type="text/javascript"
 	src="{% static 'js/change_video_owner.js' %}"
 ></script>
-{% endblock more_script %} {% block content %}
+{% endblock more_script %}
+{% block content %}
 <main>
 	<div class="container">
 		<div class="content">
@@ -27,7 +34,7 @@
 						type="text"
 						id="oldlogin"
 						class="form-wrapper__control"
-						placeholder="Prénom et/ou Nom"
+						placeholder="{% trans 'FirstName/LastName' %}"
 					/>
 					<div class="oldlogin suggestions"></div>
 				</div>
@@ -39,7 +46,7 @@
 						type="text"
 						id="newlogin"
 						class="form-wrapper__control"
-						placeholder="Prénom et/ou Nom"
+						placeholder="{% trans 'FirstName/LastName' %}"
 					/>
 					<div class="newlogin suggestions"></div>
 				</div>
@@ -52,7 +59,7 @@
 					<div class="form-wrapper full-width">
 						<input
 							name="all"
-							placeholder="Filtrer par titre"
+							placeholder="{% trans 'Filter by title' %}"
 							type="text"
 							id="list_videos__search"
 							class="list_videos__search"
