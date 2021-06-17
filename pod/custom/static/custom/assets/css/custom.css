@@ -408,6 +408,31 @@ main.mt-3 {
     margin-top: 2rem !important;
 }
 
+/* Change Video owner */
+.container.change_video_owner .content{
+    background: var(--light);
+}
+[data-theme="dark"][data-theme-mode="dark"] .container.change_video_owner .content{
+    background: var(--block-dark-color);
+}
+[data-theme="dark"][data-theme-mode="dark"] .container.change_video_owner .form-wrapper__control.select-videos
+{
+    background-color:var(--background-dark-color);
+    border-color: var(--background-dark-color);
+}
+
+.container.change_video_owner .form-wrapper .suggestions{
+    background: var(--font-color);
+}
+[data-theme="dark"][data-theme-mode="dark"] .container.change_video_owner .form-wrapper .suggestions{
+    background: var(--background-dark-color);
+}
+.form-wrapper .suggestions > p:nth-child(even) {
+    border-top: 1px solid #3c3e44;
+    border-bottom: 1px solid #3c3e44;
+}
+/* End change video owner */
+
 .border-secondary {
     border: 1px solid var(--primary) !important;
     color: #fff !important;
