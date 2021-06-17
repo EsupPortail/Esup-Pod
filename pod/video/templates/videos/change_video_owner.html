@@ -1,13 +1,13 @@
-{% extends "base.html" %} {% load staticfiles %} {% block opengraph %} {{
-block.super }}
+{% extends "base.html" %} {% load i18n %} {% load staticfiles %} {% block
+opengraph %} {{block.super }}
 <link rel="stylesheet" href="{% static 'css/change_video_owner.css' %}" />
 <link
 	rel="stylesheet"
 	type="text/css"
 	href="{% static 'css/paginator.css' %}?ver={{VERSION}}"
 />
-{% endblock opengraph %} {% block page_title %}Modifier propriétaire vidéo{%
-endblock page_title %} {% block more_script %}
+{% endblock opengraph %} {% block page_title %} Modifier propriétaire vidéo
+{%endblock page_title %} {% block more_script %}
 <script
 	type="text/javascript"
 	src="{% static 'js/change_video_owner.js' %}"
@@ -81,6 +81,5 @@ endblock page_title %} {% block more_script %}
 			</form>
 		</div>
 	</div>
-	<script src="app.js"></script>
 </main>
 {% endblock content %}
