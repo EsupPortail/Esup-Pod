@@ -279,7 +279,7 @@ class Channel(models.Model):
         search_field=lambda q: Q(code_name__icontains=q) | Q(
             display_name__icontains=q),
         help_text=_(
-            'Select one or more groups who can upload video this channel'))
+            'Select one or more groups who can upload video to this channel.'))
     sites = models.ManyToManyField(Site)
 
     class Meta:
@@ -1414,7 +1414,7 @@ class AdvancedNotes(models.Model):
     user = select2_fields.ForeignKey(User)
     video = select2_fields.ForeignKey(Video)
     status = models.CharField(
-        _('Note availibility level'), max_length=1,
+        _('Note availability level'), max_length=1,
         choices=NOTES_STATUS, default="0",
         help_text=_("Select an availability level "
                     "for the note."))
