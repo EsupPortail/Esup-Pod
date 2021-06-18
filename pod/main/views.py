@@ -67,34 +67,40 @@ CONTACT_US_EMAIL = getattr(
         mail for name, mail in getattr(settings, 'MANAGERS')])
 DEFAULT_FROM_EMAIL = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@univ.fr')
 USER_CONTACT_EMAIL_CASE = getattr(
-        settings, 'USER_CONTACT_EMAIL_CASE', [])
+    settings, 'USER_CONTACT_EMAIL_CASE', [])
 CUSTOM_CONTACT_US = getattr(
-        settings, 'CUSTOM_CONTACT_US', False)
+    settings, 'CUSTOM_CONTACT_US', False)
 MANAGERS = getattr(settings, "MANAGERS", [])
 USE_ESTABLISHMENT = getattr(
-        settings, 'USE_ESTABLISHMENT_FIELD', False)
+    settings, 'USE_ESTABLISHMENT_FIELD', False)
 USER_CONTACT_EMAIL_CASE = getattr(
-        settings, 'USER_CONTACT_EMAIL_CASE', [])
+    settings, 'USER_CONTACT_EMAIL_CASE', [])
 CUSTOM_CONTACT_US = getattr(
-        settings, 'CUSTOM_CONTACT_US', False)
+    settings, 'CUSTOM_CONTACT_US', False)
 SUPPORT_EMAIL = getattr(
     settings, "SUPPORT_EMAIL", []
 )
 USE_SUPPORT_EMAIL = getattr(
-        settings, "USE_SUPPORT_EMAIL", False)
+    settings, "USE_SUPPORT_EMAIL", False)
 HIDE_USERNAME = getattr(
-        settings, 'HIDE_USERNAME', False)
+    settings, 'HIDE_USERNAME', False)
 MENUBAR_HIDE_INACTIVE_OWNERS = getattr(
-        settings, 'HIDE_USERNAME', True)
+    settings, 'HIDE_USERNAME', True)
 MENUBAR_SHOW_STAFF_OWNERS_ONLY = getattr(
-        settings, 'MENUBAR_SHOW_STAFF_OWNERS_ONLY', False)
+    settings, 'MENUBAR_SHOW_STAFF_OWNERS_ONLY', False)
 HIDE_USER_TAB = getattr(
-        settings, 'HIDE_USER_TAB', False)
+    settings, 'HIDE_USER_TAB', False)
 
 
 def in_maintenance():
     return (True if Configuration.objects.get(
         key="maintenance_mode").value == "1" else False)
+
+
+def is_sheduled_maintenance():
+    """Return true if a maintenance has been sheduled."""
+    return (True if Configuration.objects.get(
+        key="maintenance_sheduled").value == "1" else False)
 
 
 @csrf_protect
@@ -115,9 +121,11 @@ def download_file(request):
 
 
 def get_manager_email(owner):
-    """ owner instanceOf User Model
-        return email of user's manager if exist
-        else return all managers email
+    """
+    Owner instanceOf User Model.
+
+    return email of user's manager if exist
+    else return all managers email
     """
     # Si la fonctionnalité des etablissements est activée
     if USE_ESTABLISHMENT and owner:
