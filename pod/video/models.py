@@ -336,7 +336,7 @@ class Channel(models.Model):
         verbose_name=_("Groups"),
         ajax=True,
         search_field=lambda q: Q(code_name__icontains=q) | Q(display_name__icontains=q),
-        help_text=_("Select one or more groups who can upload video this channel"),
+        help_text=_("Select one or more groups who can upload video to this channel"),
     )
     sites = models.ManyToManyField(Site)
 
@@ -1634,11 +1634,11 @@ class AdvancedNotes(models.Model):
     user = select2_fields.ForeignKey(User)
     video = select2_fields.ForeignKey(Video)
     status = models.CharField(
-        _("Note availibility level"),
+        _("Note availability level"),
         max_length=1,
         choices=NOTES_STATUS,
         default="0",
-        help_text=_("Select an availability level " "for the note."),
+        help_text=_("Select an availability level for the note."),
     )
     note = models.TextField(_("Note"), null=True, blank=True)
     timestamp = models.IntegerField(_("Timestamp"), null=True, blank=True)
@@ -1688,11 +1688,11 @@ class NoteComments(models.Model):
     parentNote = models.ForeignKey(AdvancedNotes)
     parentCom = models.ForeignKey("NoteComments", blank=True, null=True)
     status = models.CharField(
-        _("Comment availibility level"),
+        _("Comment availability level"),
         max_length=1,
         choices=NOTES_STATUS,
         default="0",
-        help_text=_("Select an availability level " "for the comment."),
+        help_text=_("Select an availability level for the comment."),
     )
     comment = models.TextField(_("Comment"), null=True, blank=True)
     added_on = models.DateTimeField(_("Date added"), default=timezone.now)

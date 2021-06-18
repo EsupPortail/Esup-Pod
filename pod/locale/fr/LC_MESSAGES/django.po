@@ -4908,7 +4908,7 @@ msgid "Notes"
 msgstr "Notes"
 
 #: pod/video/models.py:1417
-msgid "Note availibility level"
+msgid "Note availability level"
 msgstr "Niveau de disponibilité de la note"
 
 #: pod/video/models.py:1419
@@ -4932,7 +4932,7 @@ msgid "Advanced Notes"
 msgstr "Notes avancées"
 
 #: pod/video/models.py:1477
-msgid "Comment availibility level"
+msgid "Comment availability level"
 msgstr "Niveau de disponibilité du commentaire"
 
 #: pod/video/models.py:1479
