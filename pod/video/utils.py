@@ -4,6 +4,7 @@ import shutil
 import subprocess
 from math import ceil
 
+from django.urls import reverse
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.core.mail import send_mail
@@ -378,7 +379,7 @@ def pagination_data(request_path, offset, limit, total_count):
 
     current_page = 1 if offset <= 0 else int((offset / limit)) + 1
     total = ceil(total_count / limit)
-    pages_info = "{}/{}".format(current_page, total)
+    pages_info = "{}/{}".format(current_page if total > 0 else 0, total)
 
     return next_url, previous_url, pages_info
 
@@ -492,22 +493,19 @@ def get_videos(title, user_id, search=None, limit=12, offset=0):
             videos[offset : limit + offset],
         )
     )
-    next_url = None
-    previous_url = None
 
-    if offset + limit < count and limit <= count:
-        next_url = "/custom/manage/videos/{}/?limit={}&offset={}".format(
-            user_id, limit, limit + offset
-        )
-    if offset - limit >= 0 and limit <= count:
-        previous_url = "/custom/manage/videos/{}/?limit={}&offset={}".format(
-            user_id, limit, offset - limit
-        )
+    next_url, previous_url, page_infos = pagination_data(
+        reverse("filter_videos", kwargs={"user_id": user_id}),
+        offset,
+        limit,
+        count
+    )
 
     response = {
         "count": count,
         "next": next_url,
         "previous": previous_url,
+        "page_infos": page_infos,
         "results": results,
     }
     return JsonResponse(response, safe=False)
