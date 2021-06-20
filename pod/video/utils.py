@@ -452,9 +452,9 @@ def move_video_file(video, new_owner):
     video_file_pattern = r"[\w-]+\.\w+"
     old_video_path = video.video.path
     new_video_path = re.sub(
-        re.search(r"\w{10,}", video.video.path).group(),
+        r"\w{64}",
         new_owner.owner.hashkey,
-        old_video_path,
+        old_video_path
     )
     video.video.name = new_video_path.split("media/")[1]
     if not os.path.exists(new_video_path) and os.path.exists(old_video_path):

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from pod.video.models import Channel, Theme
 from pod.video.models import Video, Type
 from pod.video.utils import pagination_data, get_headband
+from pod.video.utils import change_owner
 
 
 class ChannelTestUtils(TestCase):
@@ -12,12 +13,13 @@ class ChannelTestUtils(TestCase):
     ]
 
     def setUp(self):
-        user = User.objects.create(username="pod", password="pod1234pod")
+        self.user = User.objects.create(username="pod", password="pod1234pod")
+        self.user2 = User.objects.create(username="pod2", password="pod1234pod2")
         self.c = Channel.objects.create(title="ChannelTest1")
         self.theme = Theme.objects.create(title="Theme1", slug="blabla", channel=self.c)
         self.v = Video.objects.create(
             title="Video1",
-            owner=user,
+            owner=self.user,
             video="test.mp4",
             is_draft=False,
             type=Type.objects.get(id=1),
@@ -50,3 +52,9 @@ class ChannelTestUtils(TestCase):
     def test_get_headband(self):
         self.assertEqual(get_headband(self.c).get("type", None), "channel")
         self.assertEqual(get_headband(self.c, self.theme).get("type", None), "theme")
+
+    def test_change_owner(self):
+        actual = change_owner(str(self.v.id), self.user2)
+        self.assertEqual(actual, True)
+        actual = change_owner("100", self.user2)
+        self.assertEqual(actual, False)
