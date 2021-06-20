@@ -108,7 +108,7 @@ urlpatterns = [
     url(
         r"^video/updateowner/videos/(?P<user_id>[\d]+)/$",
         filter_videos,
-        name="get_videos",
+        name="filter_videos",
     ),
     url(r"^video/(?P<slug>[\-\d\w]+)/$", video, name="video"),
     url(
