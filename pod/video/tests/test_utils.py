@@ -1,10 +1,12 @@
+import json
+
 from django.test import TestCase
 from django.contrib.auth.models import User
 
 from pod.video.models import Channel, Theme
 from pod.video.models import Video, Type
 from pod.video.utils import pagination_data, get_headband
-from pod.video.utils import change_owner
+from pod.video.utils import change_owner, get_videos
 
 
 class ChannelTestUtils(TestCase):
@@ -58,3 +60,31 @@ class ChannelTestUtils(TestCase):
         self.assertEqual(actual, True)
         actual = change_owner("100", self.user2)
         self.assertEqual(actual, False)
+
+    def test_get_videos(self):
+        actual = get_videos(self.v.title, self.user.id)
+        expected = {
+            "count": 1,
+            "next": None,
+            "previous": None,
+            "page_infos": "1/1",
+            "results": [
+                {
+                "id": self.v.id,
+                "title": self.v.title,
+                "thumbnail": self.v.get_thumbnail_url()
+                },
+            ]
+        }
+        self.assertEqual(json.loads(actual.content.decode("utf-8")), expected)
+
+        # Test with search
+        actual = get_videos(self.v.title, self.user.id, search="not found")
+        expected = {
+            **expected,
+            "count": 0,
+            "page_infos": "0/0",
+            "results": []
+        }
+        self.assertEqual(json.loads(actual.content.decode("utf-8")), expected)
+
