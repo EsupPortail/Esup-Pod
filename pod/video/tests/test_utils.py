@@ -70,21 +70,15 @@ class ChannelTestUtils(TestCase):
             "page_infos": "1/1",
             "results": [
                 {
-                "id": self.v.id,
-                "title": self.v.title,
-                "thumbnail": self.v.get_thumbnail_url()
+                    "id": self.v.id,
+                    "title": self.v.title,
+                    "thumbnail": self.v.get_thumbnail_url(),
                 },
-            ]
+            ],
         }
         self.assertEqual(json.loads(actual.content.decode("utf-8")), expected)
 
         # Test with search
         actual = get_videos(self.v.title, self.user.id, search="not found")
-        expected = {
-            **expected,
-            "count": 0,
-            "page_infos": "0/0",
-            "results": []
-        }
+        expected = {**expected, "count": 0, "page_infos": "0/0", "results": []}
         self.assertEqual(json.loads(actual.content.decode("utf-8")), expected)
-

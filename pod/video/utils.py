@@ -452,11 +452,7 @@ def move_video_file(video, new_owner):  # pragma: no cover
     # update video path
     video_file_pattern = r"[\w-]+\.\w+"
     old_video_path = video.video.path
-    new_video_path = re.sub(
-        r"\w{64}",
-        new_owner.owner.hashkey,
-        old_video_path
-    )
+    new_video_path = re.sub(r"\w{64}", new_owner.owner.hashkey, old_video_path)
     video.video.name = new_video_path.split("media/")[1]
     if not os.path.exists(new_video_path) and os.path.exists(old_video_path):
         new_video_path = re.sub(video_file_pattern, "", new_video_path)
@@ -495,10 +491,7 @@ def get_videos(title, user_id, search=None, limit=12, offset=0):
     )
 
     next_url, previous_url, page_infos = pagination_data(
-        reverse("filter_videos", kwargs={"user_id": user_id}),
-        offset,
-        limit,
-        count
+        reverse("filter_videos", kwargs={"user_id": user_id}), offset, limit, count
     )
 
     response = {
