@@ -421,7 +421,7 @@ def change_owner(video_id, new_owner):
     return True
 
 
-def move_video_file(video, new_owner):
+def move_video_file(video, new_owner):  # pragma: no cover
     # overview and encoding video folder name
     encod_folder_pattern = "%04d" % video.id
     old_dest = os.path.join(os.path.dirname(video.video.path), encod_folder_pattern)
