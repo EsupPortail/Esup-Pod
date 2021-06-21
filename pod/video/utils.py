@@ -399,9 +399,9 @@ def get_headband(channel, theme=None):
         "headband": None,
     }
     if theme is not None and theme.headband is not None:
-        result["headband"] = theme.headband.file.url
+        result["headband"] = theme.headband.file.url  # pragma: no cover
     elif theme is None and channel.headband is not None:
-        result["headband"] = channel.headband.file.url
+        result["headband"] = channel.headband.file.url  # pragma: no cover
 
     return result
 
