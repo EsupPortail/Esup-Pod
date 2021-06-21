@@ -1,5 +1,5 @@
 from django.test import Client
-from django.test import TestCase, override_settings
+from django.test import TestCase, override_settings, TransactionTestCase
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
@@ -1101,7 +1101,7 @@ class video_recordTestView(TestCase):
         )
 
 
-class VideoTestUpdateOwner(TestCase):
+class VideoTestUpdateOwner(TransactionTestCase):
     fixtures = [
         "initial_data.json",
     ]
@@ -1110,8 +1110,8 @@ class VideoTestUpdateOwner(TestCase):
         self.client = Client()
 
         self.admin = User.objects.create(
-            username="pod",
-            password="pod1234pod",
+            username="Admin",
+            password="admin1234admin",
             is_superuser=True,
         )
         self.simple_user = User.objects.create(username="pod2", password="pod1234pod2")
@@ -1147,33 +1147,37 @@ class VideoTestUpdateOwner(TestCase):
 
         # Access Denied: user is not admin
         self.client.force_login(self.simple_user)
-        response = self.client.post(
-            url,
-            {
-                "videos": ["1", "2"],
-                "owner": [self.simple_user.id]
-            }
-        )
-        self.assertEqual(response.status_code, HTTPStatus.UNAUTHORIZED)
+        access_url = reverse("admin:video_updateowner_changelist")
+        response = self.client.get(access_url, follow=True)
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
 
         # Method not allowed
         self.client.force_login(self.admin)
-        response = self.client.get(url, HTTP_ACCEPT="application/json")
-        self.assertEqual(response.status_code, HTTPStatus.METHOD_NOT_ALLOWED)
+        url = reverse(
+            "update_video_owner",
+            kwargs={"user_id": self.admin.id}
+        )
+        response = self.client.get(url, follow=False)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        expected = {
+            "success": False,
+            "detail": "Method not allowed: Please use post method"
+        }
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
-        # Access Denied: user is not admin
+        # Good request
         response = self.client.post(
             url,
             {
                 "videos": ["1", "2"],
-                "owner": [self.simple_user.id]
+                "owner": self.simple_user.id
             }
         )
+
         expected = {
             "success": True,
             "detail": "Update successfully"
         }
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
-        self.assertEqual(self.v1.owner.id, self.simple_user.id)
-        self.assertEqual(self.v2.owner.id, self.simple_user.id)
+        self.assertEqual(Video.objects.filter(owner=self.simple_user).count(), 2)
