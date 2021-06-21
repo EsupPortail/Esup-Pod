@@ -1,23 +1,23 @@
-from django.test import TestCase, override_settings
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client
-from django.contrib.auth.models import User
-from pod.authentication.models import AccessGroup
+from django.test import TestCase, override_settings
 from django.core.urlresolvers import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 
-from ..models import Channel
+from .. import views
+from ..models import Type
 from ..models import Theme
 from ..models import Video
-from ..models import Type
+from ..models import Channel
 from ..models import Discipline
 from ..models import AdvancedNotes
-from .. import views
+from pod.authentication.models import AccessGroup
 
-from http import HTTPStatus
-from importlib import reload
 import re
 import json
+from http import HTTPStatus
+from importlib import reload
 
 
 class ChannelTestView(TestCase):
@@ -1099,3 +1099,81 @@ class video_recordTestView(TestCase):
             " --->  test_video_recordTestView_upload_recordvideo"
             " of video_recordTestView : OK !"
         )
+
+
+class VideoTestUpdateOwner(TestCase):
+    fixtures = [
+        "initial_data.json",
+    ]
+
+    def setUp(self):
+        self.client = Client()
+
+        self.admin = User.objects.create(
+            username="pod",
+            password="pod1234pod",
+            is_superuser=True,
+        )
+        self.simple_user = User.objects.create(username="pod2", password="pod1234pod2")
+        self.v1 = Video.objects.create(
+            title="Video1",
+            owner=self.admin,
+            video="test1.mp4",
+            type=Type.objects.get(id=1),
+        )
+        self.v2 = Video.objects.create(
+            title="Video2",
+            owner=self.admin,
+            video="test3.mp4",
+            type=Type.objects.get(id=1),
+        )
+        print(" --->  SetUp of VideoTestUpdateOwner : OK !")
+    
+    def test_update_video_owner(self):
+        url = reverse(
+            "update_video_owner",
+            kwargs={"user_id": self.simple_user}
+        )
+
+        # Method not allowed
+        response = self.client.get(url, HTTP_ACCEPT="application/json")
+        self.assertEqual(response.status_code, HTTPStatus.METHOD_NOT_ALLOWED)
+
+        # Authentication required move TEMPORARY_REDIRECT
+        response = self.client.post(
+            url,
+            {
+                "videos": ["1", "2"],
+                "owner":[self.admin.id]
+            }
+        )
+        self.assertEqual(response.status_code, HTTPStatus.TEMPORARY_REDIRECT)
+
+        # Access Denied: user is not admin
+        self.client.force_login(self.simple_user)
+        response = self.client.post(
+            url,
+            {
+                "videos": ["1", "2"],
+                "owner":[self.admin.id]
+            }
+        )
+        self.assertEqual(response.status_code, HTTPStatus.UNAUTHORIZED)
+
+        # Access Denied: user is not admin
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            url,
+            {
+                "videos": ["1", "2"],
+                "owner":[self.simple_user.id]
+            }
+        )
+        expected = {
+            "success": True,
+            "detail": "Update successfully"
+        }
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+        self.assertEqual(self.v1.owner.id, self.simple_user.id)
+        self.assertEqual(self.v2.owner.id, self.simple_user.id)
