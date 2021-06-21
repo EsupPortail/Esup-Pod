@@ -9,7 +9,7 @@ from pod.video.utils import pagination_data, get_headband
 from pod.video.utils import change_owner, get_videos
 
 
-class ChannelTestUtils(TestCase):
+class VideoTestUtils(TestCase):
     fixtures = [
         "initial_data.json",
     ]
