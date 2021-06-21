@@ -1132,7 +1132,7 @@ class VideoTestUpdateOwner(TestCase):
     def test_update_video_owner(self):
         url = reverse(
             "update_video_owner",
-            kwargs={"user_id": self.simple_user}
+            kwargs={"user_id": self.admin.id}
         )
 
         # Method not allowed
