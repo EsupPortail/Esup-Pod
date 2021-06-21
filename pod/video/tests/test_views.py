@@ -1135,19 +1135,19 @@ class VideoTestUpdateOwner(TestCase):
             kwargs={"user_id": self.admin.id}
         )
 
-        # Method not allowed
-        response = self.client.get(url, HTTP_ACCEPT="application/json")
-        self.assertEqual(response.status_code, HTTPStatus.METHOD_NOT_ALLOWED)
-
         # Authentication required move TEMPORARY_REDIRECT
         response = self.client.post(
             url,
             {
                 "videos": ["1", "2"],
-                "owner": [self.admin.id]
+                "owner": [self.simple_user.id]
             }
         )
         self.assertEqual(response.status_code, HTTPStatus.TEMPORARY_REDIRECT)
+
+        # Method not allowed
+        response = self.client.get(url, HTTP_ACCEPT="application/json")
+        self.assertEqual(response.status_code, HTTPStatus.METHOD_NOT_ALLOWED)
 
         # Access Denied: user is not admin
         self.client.force_login(self.simple_user)
@@ -1155,13 +1155,17 @@ class VideoTestUpdateOwner(TestCase):
             url,
             {
                 "videos": ["1", "2"],
-                "owner": [self.admin.id]
+                "owner": [self.simple_user.id]
             }
         )
         self.assertEqual(response.status_code, HTTPStatus.UNAUTHORIZED)
 
-        # Access Denied: user is not admin
+        # Method not allowed
         self.client.force_login(self.admin)
+        response = self.client.get(url, HTTP_ACCEPT="application/json")
+        self.assertEqual(response.status_code, HTTPStatus.METHOD_NOT_ALLOWED)
+
+        # Access Denied: user is not admin
         response = self.client.post(
             url,
             {
