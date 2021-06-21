@@ -1149,7 +1149,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
         self.client.force_login(self.simple_user)
         access_url = reverse("admin:video_updateowner_changelist")
         response = self.client.get(access_url, follow=True)
-        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
 
         # Method not allowed
         self.client.force_login(self.admin)
