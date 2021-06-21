@@ -1128,7 +1128,7 @@ class VideoTestUpdateOwner(TestCase):
             type=Type.objects.get(id=1),
         )
         print(" --->  SetUp of VideoTestUpdateOwner : OK !")
-    
+
     def test_update_video_owner(self):
         url = reverse(
             "update_video_owner",
@@ -1144,7 +1144,7 @@ class VideoTestUpdateOwner(TestCase):
             url,
             {
                 "videos": ["1", "2"],
-                "owner":[self.admin.id]
+                "owner": [self.admin.id]
             }
         )
         self.assertEqual(response.status_code, HTTPStatus.TEMPORARY_REDIRECT)
@@ -1155,7 +1155,7 @@ class VideoTestUpdateOwner(TestCase):
             url,
             {
                 "videos": ["1", "2"],
-                "owner":[self.admin.id]
+                "owner": [self.admin.id]
             }
         )
         self.assertEqual(response.status_code, HTTPStatus.UNAUTHORIZED)
@@ -1166,7 +1166,7 @@ class VideoTestUpdateOwner(TestCase):
             url,
             {
                 "videos": ["1", "2"],
-                "owner":[self.simple_user.id]
+                "owner": [self.simple_user.id]
             }
         )
         expected = {
