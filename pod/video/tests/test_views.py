@@ -1145,10 +1145,6 @@ class VideoTestUpdateOwner(TestCase):
         )
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
-        # Method not allowed
-        response = self.client.get(url, HTTP_ACCEPT="application/json")
-        self.assertEqual(response.status_code, HTTPStatus.METHOD_NOT_ALLOWED)
-
         # Access Denied: user is not admin
         self.client.force_login(self.simple_user)
         response = self.client.post(
