@@ -1143,7 +1143,7 @@ class VideoTestUpdateOwner(TestCase):
                 "owner": [self.simple_user.id]
             }
         )
-        self.assertEqual(response.status_code, HTTPStatus.TEMPORARY_REDIRECT)
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
         # Method not allowed
         response = self.client.get(url, HTTP_ACCEPT="application/json")
