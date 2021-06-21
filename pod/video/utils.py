@@ -408,7 +408,7 @@ def get_headband(channel, theme=None):
 
 def change_owner(video_id, new_owner):
     # nonlocal old_owner, new_owner
-    video_id = int(video_id) if video_id.isnumeric else None
+    video_id = int(video_id) if video_id.isnumeric() else None
 
     if video_id is None:
         return False
