@@ -31,6 +31,7 @@ class PageForm(FlatpageForm):
 class AddChannelsTabAdmin(admin.ModelAdmin):
     list_display = ("name",)
 
+
 class ConfigurationAdmin(admin.ModelAdmin):
     list_display = ("key", "value", "description")
 
