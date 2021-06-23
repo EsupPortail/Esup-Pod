@@ -44,16 +44,11 @@
          src="{{broadcaster.url}}"
          type="application/x-mpegURL">
       </video>
-      {% if broadcaster.aside_iframe_url != "" and broadcaster.aside_iframe_url != None  %}
-<iframe id="inlineFrameExample" style="padding: 0; margin: 20; border:0; width: 100%;"
-  title="Inline Frame Example" loading="lazy"
-  height="{{broadcaster.iframe_height}}"
-  src="{{broadcaster.aside_iframe_url}}">
-</iframe>
-{% endif %}
     </div>
   {% else %}
+  
     <video id="podvideoplayer" class="live-video video-js vjs-default-skin{% if request.GET.is_iframe %} vjs-16-9{% endif %} vjs-big-play-centered" controls height="360" poster="{{broadcaster.get_poster_url}}" muted autoplay>
+      
       <source
        src="{{broadcaster.url}}"
        type="application/x-mpegURL">
