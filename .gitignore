@@ -67,3 +67,4 @@ htmlcov
 # Bower dependencies #
 ######################
 bower_components
+node_modules
