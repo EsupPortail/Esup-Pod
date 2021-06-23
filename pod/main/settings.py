@@ -117,8 +117,8 @@ PROGRESSBARUPLOAD_INCLUDE_JQUERY = False
 # Static files (assets, CSS, JavaScript, fonts...)
 #
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-STATIC_URL = "/bower_components/"
-STATIC_ROOT = os.path.join(BASE_DIR, "bower_components")
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 ##
 # Dynamic files (user managed content: videos, subtitles, documents, etc...)

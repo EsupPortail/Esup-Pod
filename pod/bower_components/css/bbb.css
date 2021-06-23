@@ -1,9 +1,0 @@
-#bbb_meetings_list .card-header {
-  background: var(--color-black-alpha);
-  padding: 0 .25rem;
-  z-index: 9;
-}
-
-#bbb_meetings_list .card-header .text-muted{
-	color: var(--color-white) !important;
-}
