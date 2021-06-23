@@ -1,5 +1,11 @@
-{ 
-"name": "esupPod", 
-"version": "0.1.0", 
-"dependencies": { "jquery": "~3.6.0", "videojs": "~7.12.4" }
+{
+  "name": "esupPod",
+  "version": "0.1.0",
+  "dependencies": {
+    "jquery": "~3.6.0",
+    "videojs": "~7.12.4"
+  },
+  "resolutions": {
+    "webcomponentsjs": "0.5.5"
+  }
 }
