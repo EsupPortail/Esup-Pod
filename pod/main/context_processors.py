@@ -13,6 +13,7 @@ from pod.video.models import Discipline
 from pod.video.models import Video
 from pod.main.models import Configuration
 from django.contrib.sites.shortcuts import get_current_site
+from pod.main.models import AddChannelsTab
 
 ORDER_BY = "last_name"
 VALUES_LIST = ["username", "first_name", "last_name"]
@@ -168,6 +169,8 @@ def context_navbar(request):
         )
     )
 
+    add_channels_tab = AddChannelsTab.objects.all()
+
     all_channels = (
         Channel.objects.all()
         .filter(sites=get_current_site(request))
@@ -214,6 +217,7 @@ def context_navbar(request):
 
     return {
         "ALL_CHANNELS": all_channels,
+        "ADD_CHANNELS_TAB" : add_channels_tab,
         "CHANNELS": channels,
         "TYPES": types,
         "DISCIPLINES": disciplines,
