@@ -595,7 +595,7 @@
 			submitBTN.setAttribute("disabled", true);
 			const url = `${update_videos_url}${current_username_id}/`;
 			const post_data = new FormData();
-			post_data.append("videos", choosed_videos);
+			choosed_videos.forEach(v => post_data.append( "videos", v ));
 			post_data.append("owner", new_username_id);
 			const token =
 				document.querySelector("input[name=csrfmiddlewaretoken]").value ||

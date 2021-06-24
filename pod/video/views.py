@@ -2558,53 +2558,49 @@ def update_video_owner(request, user_id):
         post_data = {**request.POST}
 
         videos = post_data.get("videos", [])
-        owner_id = post_data.get(
-            "owner",
-            [
-                0,
-            ],
-        )[0]
+        owner_id = post_data.get("owner", [0, ])[0]
         owner_id = int(owner_id) if owner_id.isnumeric() else 0
-
-        response = {"success": True, "detail": "Update successfully"}
+        response = {
+            "success": True,
+            "detail": "Update successfully"
+        }
         if 0 in (owner_id, len(videos)):
-            return JsonResponse(
-                {
-                    "success": False,
-                    "detail": "Bad request: Please one or more fields are invalid",
-                },
-                safe=False,
-            )
-
-        videos = videos[0].split(",")
+            return JsonResponse({
+                "success": False,
+                "detail": "Bad request: Please one or more fields are invalid"},
+                safe=False)
 
         old_owner = User.objects.filter(pk=user_id).first()
         new_owner = User.objects.filter(pk=owner_id).first()
 
         if None in (old_owner, new_owner):
-            return JsonResponse(
-                {"success": False, "detail": "New owner or Old owner does not exist"},
-                safe=False,
-            )
+            return JsonResponse({
+                "success": False,
+                "detail": "New owner or Old owner does not exist"
+            }, safe=False)
 
         one_or_more_not_updated = False
         with futures.ThreadPoolExecutor() as executor:
             for v in videos:
-                res = executor.submit(change_owner, v, new_owner).result()
+                res = executor.submit(
+                    change_owner,
+                    v, new_owner).result()
                 if res is False:
                     one_or_more_not_updated = False
 
         if one_or_more_not_updated:
             return JsonResponse(
-                {**response, "detail": "One or more videos not updated"}, safe=False
-            )
+                {
+                    **response,
+                    "detail": "One or more videos not updated"
+                }, safe=False)
 
         return JsonResponse(response, safe=False)
 
-    return JsonResponse(
-        {"success": False, "detail": "Method not allowed: Please use post method"},
-        safe=False,
-    )
+    return JsonResponse({
+        "success": False,
+        "detail": "Method not allowed: Please use post method"},
+        safe=False)
 
 
 @admin_required(redirect_field_name="referrer")
@@ -2616,7 +2612,12 @@ def filter_owners(request):
         return auth_get_owners(search, limit, offset)
 
     except Exception as err:
-        return JsonResponse({"success": False, "detail": "Syntax error: {0}".format(err)})
+        return JsonResponse(
+            {
+                "success": False,
+                "detail": "Syntax error: {0}".format(err)
+            }
+        )
 
 
 @admin_required(redirect_field_name="referrer")
@@ -2629,7 +2630,12 @@ def filter_videos(request, user_id):
         return video_get_videos(title, user_id, search, limit, offset)
 
     except Exception as err:
-        return JsonResponse({"success": False, "detail": "Syntax error: {0}".format(err)})
+        return JsonResponse(
+            {
+                "success": False,
+                "detail": "Syntax error: {0}".format(err)
+            }
+        )
 
 
 """
