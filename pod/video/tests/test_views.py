@@ -1258,8 +1258,10 @@ class VideoTestFiltersViews(TestCase):
                 "last_name": self.simple_user.last_name,
             },
         ]
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
         response = self.client.get(url, {"q": "user pod"})
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
         response = self.client.get(url, {"q": "admin pod"})
@@ -1270,8 +1272,10 @@ class VideoTestFiltersViews(TestCase):
                 "last_name": self.admin.last_name,
             },
         ]
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
         response = self.client.get(url, {"q": "pod admin"})
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
         response = self.client.get(url, {"q": "pod"})
@@ -1283,10 +1287,58 @@ class VideoTestFiltersViews(TestCase):
                 "last_name": self.simple_user.last_name,
             },
         ]
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
         expected = []
         response = self.client.get(url, {"q": "user not exists"})
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+    def test_filter_videos(self):
+        url = reverse("filter_videos", kwargs={user_id: self.admin.id})
+
+        # Authentication required
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+
+        # authenticated
+        self.client.force_login(self.admin)
+        response = self.client.get(url)
+        expected = {
+            "count": 2,
+            "next": None,
+            "previous": None,
+            "page_infos": "1/1",
+            "results": [
+                {
+                    "id": self.v1.id,
+                    "title": self.v1.title,
+                    "thumbnail": self.v1.get_thumbnail_url()
+                },
+                {
+                    "id": self.v2.id,
+                    "title": self.v2.title,
+                    "thumbnail": self.v2.get_thumbnail_url()
+                },
+            ],
+        }
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+        response = self.client.get(url, {"q": self.v1.title})
+        expected = {
+            **expected,
+            "count": 1,
+            "results": [
+                {
+                    "id": self.v1.id,
+                    "title": self.v1.title,
+                    "thumbnail": self.v1.get_thumbnail_url()
+                },
+            ]
+        }
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
     def tearDown(self):
