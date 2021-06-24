@@ -27,7 +27,7 @@ from dateutil.parser import parse
 import concurrent.futures as futures
 
 from pod.main.views import in_maintenance
-from pod.main.decorators import ajax_required
+from pod.main.decorators import ajax_required, admin_required
 from pod.authentication.utils import get_owners as auth_get_owners
 from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
@@ -2553,62 +2553,61 @@ def video_record(request):
 
 @csrf_protect
 @login_required(redirect_field_name="referrer")
+@admin_required
 def update_video_owner(request, user_id):
-    if not request.user.is_superuser:
-        raise PermissionDenied()
     if request.method == "POST":
         post_data = {**request.POST}
 
         videos = post_data.get("videos", [])
-        owner_id = post_data.get("owner", [0, ])[0]
+        owner_id = post_data.get(
+            "owner",
+            [
+                0,
+            ],
+        )[0]
         owner_id = int(owner_id) if owner_id.isnumeric() else 0
-        response = {
-            "success": True,
-            "detail": "Update successfully"
-        }
+        response = {"success": True, "detail": "Update successfully"}
         if 0 in (owner_id, len(videos)):
-            return JsonResponse({
-                "success": False,
-                "detail": "Bad request: Please one or more fields are invalid"},
-                safe=False)
+            return JsonResponse(
+                {
+                    "success": False,
+                    "detail": "Bad request: Please one or more fields are invalid",
+                },
+                safe=False,
+            )
 
         old_owner = User.objects.filter(pk=user_id).first()
         new_owner = User.objects.filter(pk=owner_id).first()
 
         if None in (old_owner, new_owner):
-            return JsonResponse({
-                "success": False,
-                "detail": "New owner or Old owner does not exist"
-            }, safe=False)
+            return JsonResponse(
+                {"success": False, "detail": "New owner or Old owner does not exist"},
+                safe=False,
+            )
 
         one_or_more_not_updated = False
         with futures.ThreadPoolExecutor() as executor:
             for v in videos:
-                res = executor.submit(
-                    change_owner,
-                    v, new_owner).result()
+                res = executor.submit(change_owner, v, new_owner).result()
                 if res is False:
                     one_or_more_not_updated = True
 
         if one_or_more_not_updated:
             return JsonResponse(
-                {
-                    **response,
-                    "detail": "One or more videos not updated"
-                }, safe=False)
+                {**response, "detail": "One or more videos not updated"}, safe=False
+            )
 
         return JsonResponse(response, safe=False)
 
-    return JsonResponse({
-        "success": False,
-        "detail": "Method not allowed: Please use post method"},
-        safe=False)
+    return JsonResponse(
+        {"success": False, "detail": "Method not allowed: Please use post method"},
+        safe=False,
+    )
 
 
 @login_required(redirect_field_name="referrer")
+@admin_required
 def filter_owners(request):
-    if not request.user.is_superuser:
-        raise PermissionDenied()
     try:
         limit = int(request.GET.get("limit", 12))
         offset = int(request.GET.get("offset", 0))
@@ -2616,18 +2615,12 @@ def filter_owners(request):
         return auth_get_owners(search, limit, offset)
 
     except Exception as err:
-        return JsonResponse(
-            {
-                "success": False,
-                "detail": "Syntax error: {0}".format(err)
-            }
-        )
+        return JsonResponse({"success": False, "detail": "Syntax error: {0}".format(err)})
 
 
 @login_required(redirect_field_name="referrer")
+@admin_required
 def filter_videos(request, user_id):
-    if not request.user.is_superuser:
-        raise PermissionDenied()
     try:
         limit = int(request.GET.get("limit", 12))
         offset = int(request.GET.get("offset", 0))
@@ -2636,12 +2629,7 @@ def filter_videos(request, user_id):
         return video_get_videos(title, user_id, search, limit, offset)
 
     except Exception as err:
-        return JsonResponse(
-            {
-                "success": False,
-                "detail": "Syntax error: {0}".format(err)
-            }
-        )
+        return JsonResponse({"success": False, "detail": "Syntax error: {0}".format(err)})
 
 
 """
