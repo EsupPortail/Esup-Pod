@@ -29,6 +29,6 @@ def get_owners(search, limit, offset):
             "first_name",
             "last_name",
         )
-    )[offset:limit]
+    )[offset : limit + offset]
 
     return JsonResponse(users, safe=False)
