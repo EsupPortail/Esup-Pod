@@ -1149,7 +1149,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
         self.client.force_login(self.simple_user)
         access_url = reverse("admin:video_updateowner_changelist")
         response = self.client.get(access_url, follow=True)
-        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
 
         # Method not allowed
         self.client.force_login(self.admin)
@@ -1163,6 +1163,21 @@ class VideoTestUpdateOwner(TransactionTestCase):
             "success": False,
             "detail": "Method not allowed: Please use post method"
         }
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+        # Partial update request
+        response = self.client.post(
+            url,
+            {
+                "videos": ["1", "2", "100"], #  video with id 100 doesn't exist
+                "owner": self.simple_user.id
+            }
+        )
+        expected = {
+            "success": True,
+            "detail": "One or more videos not updated"
+        }
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
         # Good request
