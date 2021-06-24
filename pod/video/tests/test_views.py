@@ -1110,11 +1110,18 @@ class VideoTestUpdateOwner(TransactionTestCase):
         self.client = Client()
 
         self.admin = User.objects.create(
-            username="Admin",
+            first_name="pod",
+            last_name="Admin",
+            username="admin",
             password="admin1234admin",
             is_superuser=True,
         )
-        self.simple_user = User.objects.create(username="pod2", password="pod1234pod2")
+        self.simple_user = User.objects.create(
+            first_name="Pod",
+            last_name="User",
+            username="pod",
+            password="pod1234pod"
+        )
         self.v1 = Video.objects.create(
             title="Video1",
             owner=self.admin,
@@ -1169,7 +1176,8 @@ class VideoTestUpdateOwner(TransactionTestCase):
         response = self.client.post(
             url,
             {
-                "videos": ["1", "2", "100"], #  video with id 100 doesn't exist
+                # video with id 100 doesn't exist
+                "videos": ["1", "2", "100"],
                 "owner": self.simple_user.id
             }
         )
@@ -1196,3 +1204,90 @@ class VideoTestUpdateOwner(TransactionTestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
         self.assertEqual(Video.objects.filter(owner=self.simple_user).count(), 2)
+
+
+class VideoTestFiltersViews(TestCase):
+    fixtures = [
+        "initial_data.json",
+    ]
+
+    def setUp(self):
+        self.client = Client()
+
+        self.admin = User.objects.create(
+            first_name="pod",
+            last_name="Admin",
+            username="admin",
+            password="admin1234admin",
+            is_superuser=True,
+        )
+        self.simple_user = User.objects.create(
+            first_name="Pod",
+            last_name="User",
+            username="pod",
+            password="pod1234pod"
+        )
+        self.v1 = Video.objects.create(
+            title="Video1",
+            owner=self.admin,
+            video="test1.mp4",
+            type=Type.objects.get(id=1),
+        )
+        self.v2 = Video.objects.create(
+            title="Video2",
+            owner=self.admin,
+            video="test3.mp4",
+            type=Type.objects.get(id=1),
+        )
+        print(" --->  SetUp of VideoTestFiltersViews : OK !")
+
+    def test_filter_owners(self):
+        url = reverse("filter_owners")
+
+        # Authentication required
+        response = self.client.get(url, {"q": "pod"})
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+
+        # authenticated
+        self.client.force_login(self.admin)
+        response = self.client.get(url, {"q": "pod user"})
+        expected = [
+            {
+                "id": self.simple_user.id,
+                "first_name": self.simple_user.first_name,
+                "last_name": self.simple_user.last_name,
+            },
+        ]
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+        response = self.client.get(url, {"q": "user pod"})
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+        response = self.client.get(url, {"q": "admin pod"})
+        expected = [
+            {
+                "id": self.admin.id,
+                "first_name": self.admin.first_name,
+                "last_name": self.admin.last_name,
+            },
+        ]
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+        response = self.client.get(url, {"q": "pod admin"})
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+        response = self.client.get(url, {"q": "pod"})
+        expected = [
+            *expected,
+            {
+                "id": self.simple_user.id,
+                "first_name": self.simple_user.first_name,
+                "last_name": self.simple_user.last_name,
+            },
+        ]
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+        expected = []
+        response = self.client.get(url, {"q": "user not exists"})
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+    def tearDown(self):
+        super(VideoTestUpdateOwner, self).tearDown()
