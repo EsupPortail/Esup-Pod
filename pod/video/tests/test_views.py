@@ -1296,7 +1296,7 @@ class VideoTestFiltersViews(TestCase):
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
     def test_filter_videos(self):
-        url = reverse("filter_videos", kwargs={user_id: self.admin.id})
+        url = reverse("filter_videos", kwargs={"user_id": self.admin.id})
 
         # Authentication required
         response = self.client.get(url)
