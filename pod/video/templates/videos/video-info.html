@@ -246,11 +246,11 @@
           <label for="txtintegrationh5p">{% trans 'Use these links in a BigBlueButton meeting or an interactive H5P video activity:' %}</label>
           <div class="form-group">
                 {% for vid in video.get_video_mp4 %}
-                        <ul class="list-group-item">{{vid.name}} : <input class="form-control" style="display:table-row; width:87%;" type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly/></ul>
+                        <li class="list-group-item">{{vid.name}} :&nbsp;<input class="form-control" style="display:table-row; width:85%;" type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{vid.source_file.url}}" readonly/></li>
                 {% endfor %}
-		{% if video.is_video == False and video.get_video_mp3 %}
-        		<ul class="list-group-item">{{video.get_video_mp3.name}} : <input class="form-control" style="display:table-row; width:87%;" type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly/></li>
-      		{% endif %}
+                {% if video.is_video == False and video.get_video_mp3 %}
+                        <li class="list-group-item">{{video.get_video_mp3.name}} :&nbsp;<input class="form-control" style="display:table-row; width:85%;" type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly/></li>
+                {% endif %}
           </div>
         </fieldset>
         <div class="col-md-6">
