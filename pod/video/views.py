@@ -27,7 +27,7 @@ from dateutil.parser import parse
 import concurrent.futures as futures
 
 from pod.main.views import in_maintenance
-from pod.main.decorators import ajax_required, admin_required
+from pod.main.decorators import ajax_required
 from pod.authentication.utils import get_owners as auth_get_owners
 from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
@@ -2552,8 +2552,10 @@ def video_record(request):
 
 
 @csrf_protect
-@admin_required(redirect_field_name="referrer")
+@login_required(redirect_field_name="referrer")
 def update_video_owner(request, user_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied()
     if request.method == "POST":
         post_data = {**request.POST}
 
@@ -2603,8 +2605,10 @@ def update_video_owner(request, user_id):
         safe=False)
 
 
-@admin_required(redirect_field_name="referrer")
+@login_required(redirect_field_name="referrer")
 def filter_owners(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied()
     try:
         limit = int(request.GET.get("limit", 12))
         offset = int(request.GET.get("offset", 0))
@@ -2620,8 +2624,10 @@ def filter_owners(request):
         )
 
 
-@admin_required(redirect_field_name="referrer")
+@login_required(redirect_field_name="referrer")
 def filter_videos(request, user_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied()
     try:
         limit = int(request.GET.get("limit", 12))
         offset = int(request.GET.get("offset", 0))
