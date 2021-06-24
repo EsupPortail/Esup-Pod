@@ -81,8 +81,7 @@ class VideoSearchTest(TestCase):
                 "&selected_facets={}".format(facet), ""
             )
             expected.append(
-                '<a href="%s" title="%s">%s</a>'
-                % (link, msg_title, facet.split(":")[1]),
+                '<a href="%s" title="%s">%s</a>' % (link, msg_title, facet.split(":")[1]),
             )
 
         self.assertEqual(actual, expected)
