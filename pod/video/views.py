@@ -2586,7 +2586,7 @@ def update_video_owner(request, user_id):
                     change_owner,
                     v, new_owner).result()
                 if res is False:
-                    one_or_more_not_updated = False
+                    one_or_more_not_updated = True
 
         if one_or_more_not_updated:
             return JsonResponse(
