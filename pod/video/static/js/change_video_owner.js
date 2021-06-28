@@ -297,11 +297,12 @@
 	 * @param {FormData} body post data
 	 * @returns {Promise} response
 	 */
-	const makeRequest = ( url, method = "GET", body = new FormData() ) =>
+	const makeRequest = ( url, method = "GET", body = new FormData(), csrf = null ) =>
 	{
-		const data = {
+		let data = {
 			method,
 		};
+		if ( csrf ) data = { ...data, headers: { "X-CSRFToken": csrf } };
 		if ( method.toLowerCase() === "post" ) data[ "body" ] = body;
 		return fetch( url, data ).then( ( data ) =>
 		{
@@ -675,14 +676,14 @@
 			submitBTN.textContent = "Changement en cours...";
 			submitBTN.setAttribute( "disabled", true );
 			const url = `${ update_videos_url }${ current_username_id }/`;
-			const post_data = new FormData();
-			choosed_videos.forEach( v => post_data.append( "videos", v ) );
-			post_data.append( "owner", new_username_id );
 			const token =
 				document.querySelector( "input[name=csrfmiddlewaretoken]" ).value ||
 				Cookies.get( "csrftoken" );
-			post_data.append( "csrfmiddlewaretoken", token );
-			makeRequest( url, "POST", post_data )
+			const data = {
+				videos: choosed_videos,
+				owner: new_username_id,
+			};
+			makeRequest( url, "POST", JSON.stringify( data ), csrf = token )
 				.then( ( response ) =>
 				{
 					// Remove loader on videos container / undisable submit button

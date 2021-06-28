@@ -1145,10 +1145,11 @@ class VideoTestUpdateOwner(TransactionTestCase):
         # Authentication required move TEMPORARY_REDIRECT
         response = self.client.post(
             url,
-            {
+            json.dumps({
                 "videos": ["1", "2"],
                 "owner": [self.simple_user.id]
-            }
+            }),
+            content_type="application/json"
         )
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
@@ -1175,11 +1176,12 @@ class VideoTestUpdateOwner(TransactionTestCase):
         # Partial update request
         response = self.client.post(
             url,
-            {
+            json.dumps({
                 # video with id 100 doesn't exist
                 "videos": ["1", "2", "100"],
                 "owner": self.simple_user.id
-            }
+            }),
+            content_type="application/json"
         )
         expected = {
             "success": True,
@@ -1191,10 +1193,11 @@ class VideoTestUpdateOwner(TransactionTestCase):
         # Good request
         response = self.client.post(
             url,
-            {
+            json.dumps({
                 "videos": ["1", "2"],
                 "owner": self.simple_user.id
-            }
+            }),
+            content_type="application/json"
         )
 
         expected = {

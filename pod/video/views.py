@@ -2556,15 +2556,10 @@ def video_record(request):
 @admin_required
 def update_video_owner(request, user_id):
     if request.method == "POST":
-        post_data = {**request.POST}
+        post_data = json.loads(request.body.decode("utf-8"))
 
         videos = post_data.get("videos", [])
-        owner_id = post_data.get(
-            "owner",
-            [
-                0,
-            ],
-        )[0]
+        owner_id = post_data.get("owner", 0)
         owner_id = int(owner_id) if owner_id.isnumeric() else 0
         response = {"success": True, "detail": "Update successfully"}
         if 0 in (owner_id, len(videos)):
