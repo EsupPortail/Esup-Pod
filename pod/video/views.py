@@ -2560,7 +2560,6 @@ def update_video_owner(request, user_id):
 
         videos = post_data.get("videos", [])
         owner_id = post_data.get("owner", 0)
-        owner_id = int(owner_id) if owner_id.isnumeric() else 0
         response = {"success": True, "detail": "Update successfully"}
         if 0 in (owner_id, len(videos)):
             return JsonResponse(

@@ -1146,7 +1146,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
         response = self.client.post(
             url,
             json.dumps({
-                "videos": ["1", "2"],
+                "videos": [1, 2],
                 "owner": [self.simple_user.id]
             }),
             content_type="application/json"
@@ -1178,7 +1178,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
             url,
             json.dumps({
                 # video with id 100 doesn't exist
-                "videos": ["1", "2", "100"],
+                "videos": [1, 2, 100],
                 "owner": self.simple_user.id
             }),
             content_type="application/json"
@@ -1194,7 +1194,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
         response = self.client.post(
             url,
             json.dumps({
-                "videos": ["1", "2"],
+                "videos": [1, 2],
                 "owner": self.simple_user.id
             }),
             content_type="application/json"
