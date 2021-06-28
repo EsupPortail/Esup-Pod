@@ -59,8 +59,7 @@ class VideoTestUtils(TestCase):
         actual = change_owner(str(self.v.id), self.user2)
         self.assertEqual(actual, True)
         # test video doesn't exist
-        self.assertEqual(change_owner("100", self.user2), False)
-        self.assertEqual(change_owner("not_numeric", self.user2), False)
+        self.assertEqual(change_owner(100, self.user2), False)
 
     def test_get_videos(self):
         actual = get_videos(self.v.title, self.user.id)
