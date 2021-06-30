@@ -40,6 +40,7 @@ router.register(r"renditions", video_views.VideoRenditionViewSet)
 router.register(r"encodings_video", video_views.EncodingVideoViewSet)
 router.register(r"encodings_audio", video_views.EncodingAudioViewSet)
 router.register(r"playlist_videos", video_views.PlaylistVideoViewSet)
+router.register(r"view_count", video_views.ViewCountViewSet)
 
 router.register(r"contributors", completion_views.ContributorViewSet)
 router.register(r"documents", completion_views.DocumentViewSet)
