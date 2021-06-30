@@ -1184,9 +1184,9 @@ def video_files_removal(sender, instance, using, **kwargs):
 
 
 class ViewCount(models.Model):
-    video = models.ForeignKey(Video, verbose_name=_("Video"), editable=False)
-    date = models.DateField(_(u"Date"), default=date.today, editable=False)
-    count = models.IntegerField(_("Number of view"), default=0, editable=False)
+    video = models.ForeignKey(Video, verbose_name=_("Video"), editable=True)
+    date = models.DateField(_(u"Date"), default=date.today, editable=True)
+    count = models.IntegerField(_("Number of view"), default=0, editable=True)
 
     @property
     def sites(self):
