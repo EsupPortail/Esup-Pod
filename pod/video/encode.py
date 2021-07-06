@@ -1092,8 +1092,9 @@ def create_and_save_thumbnails(source, image_width, video_id):
                 thumbnail.save()
                 if i == 0:
                     video_to_encode = Video.objects.get(id=video_id)
-                    video_to_encode.thumbnail = thumbnail
-                    video_to_encode.save()
+                    if video_to_encode.thumbnail is None:
+                        video_to_encode.thumbnail = thumbnail
+                        video_to_encode.save()
             else:
                 thumbnail = CustomImageModel()
                 thumbnail.file.save(
@@ -1104,8 +1105,9 @@ def create_and_save_thumbnails(source, image_width, video_id):
                 thumbnail.save()
                 if i == 0:
                     video_to_encode = Video.objects.get(id=video_id)
-                    video_to_encode.thumbnail = thumbnail
-                    video_to_encode.save()
+                    if video_to_encode.thumbnail is None:
+                        video_to_encode.thumbnail = thumbnail
+                        video_to_encode.save()
             # remove tempfile
             msg += "\n- thumbnailfilename %s:\n%s" % (i, thumbnail.file.path)
             os.remove(thumbnailfilename)
@@ -1126,7 +1128,7 @@ def create_and_save_thumbnails(source, image_width, video_id):
 def remove_old_data(video_id):
     """Remove old data."""
     video_to_encode = Video.objects.get(id=video_id)
-    video_to_encode.thumbnail = None
+    #video_to_encode.thumbnail = None
     if video_to_encode.overview:
         image_overview = os.path.join(
             os.path.dirname(video_to_encode.overview.path), "overview.png"
