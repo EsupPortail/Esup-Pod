@@ -108,6 +108,18 @@ class Broadcaster(models.Model):
         blank=True,
         help_text=_("Height of the embedded site (in pixels)"),
     )
+    aside_iframe_url = models.URLField(
+        _("Embedded aside Site URL"),
+        help_text=_("Url of the embedded site to display on aside"),
+        null=True,
+        blank=True,
+    )
+    aside_iframe_height = models.IntegerField(
+        _("Embedded aside Site Height"),
+        null=True,
+        blank=True,
+        help_text=_("Height of the aside embedded site (in pixels)"),
+    )
     status = models.BooleanField(
         default=0,
         help_text=_("Check if the broadcaster is currently sending stream."),
