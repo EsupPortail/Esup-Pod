@@ -1117,10 +1117,7 @@ class VideoTestUpdateOwner(TransactionTestCase):
             is_superuser=True,
         )
         self.simple_user = User.objects.create(
-            first_name="Pod",
-            last_name="User",
-            username="pod",
-            password="pod1234pod"
+            first_name="Pod", last_name="User", username="pod", password="pod1234pod"
         )
         self.v1 = Video.objects.create(
             title="Video1",
@@ -1137,19 +1134,13 @@ class VideoTestUpdateOwner(TransactionTestCase):
         print(" --->  SetUp of VideoTestUpdateOwner : OK !")
 
     def test_update_video_owner(self):
-        url = reverse(
-            "update_video_owner",
-            kwargs={"user_id": self.admin.id}
-        )
+        url = reverse("update_video_owner", kwargs={"user_id": self.admin.id})
 
         # Authentication required move TEMPORARY_REDIRECT
         response = self.client.post(
             url,
-            json.dumps({
-                "videos": [1, 2],
-                "owner": [self.simple_user.id]
-            }),
-            content_type="application/json"
+            json.dumps({"videos": [1, 2], "owner": [self.simple_user.id]}),
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
@@ -1161,49 +1152,39 @@ class VideoTestUpdateOwner(TransactionTestCase):
 
         # Method not allowed
         self.client.force_login(self.admin)
-        url = reverse(
-            "update_video_owner",
-            kwargs={"user_id": self.admin.id}
-        )
+        url = reverse("update_video_owner", kwargs={"user_id": self.admin.id})
         response = self.client.get(url, follow=False)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         expected = {
             "success": False,
-            "detail": "Method not allowed: Please use post method"
+            "detail": "Method not allowed: Please use post method",
         }
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
         # Partial update request
         response = self.client.post(
             url,
-            json.dumps({
-                # video with id 100 doesn't exist
-                "videos": [1, 2, 100],
-                "owner": self.simple_user.id
-            }),
-            content_type="application/json"
+            json.dumps(
+                {
+                    # video with id 100 doesn't exist
+                    "videos": [1, 2, 100],
+                    "owner": self.simple_user.id,
+                }
+            ),
+            content_type="application/json",
         )
-        expected = {
-            "success": True,
-            "detail": "One or more videos not updated"
-        }
+        expected = {"success": True, "detail": "One or more videos not updated"}
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
 
         # Good request
         response = self.client.post(
             url,
-            json.dumps({
-                "videos": [1, 2],
-                "owner": self.simple_user.id
-            }),
-            content_type="application/json"
+            json.dumps({"videos": [1, 2], "owner": self.simple_user.id}),
+            content_type="application/json",
         )
 
-        expected = {
-            "success": True,
-            "detail": "Update successfully"
-        }
+        expected = {"success": True, "detail": "Update successfully"}
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
         self.assertEqual(Video.objects.filter(owner=self.simple_user).count(), 2)
@@ -1228,10 +1209,7 @@ class VideoTestFiltersViews(TestCase):
             is_superuser=True,
         )
         self.simple_user = User.objects.create(
-            first_name="Pod",
-            last_name="User",
-            username="pod",
-            password="pod1234pod"
+            first_name="Pod", last_name="User", username="pod", password="pod1234pod"
         )
         self.v1 = Video.objects.create(
             title="Video1",
@@ -1320,12 +1298,12 @@ class VideoTestFiltersViews(TestCase):
                 {
                     "id": self.v1.id,
                     "title": self.v1.title,
-                    "thumbnail": self.v1.get_thumbnail_url()
+                    "thumbnail": self.v1.get_thumbnail_url(),
                 },
                 {
                     "id": self.v2.id,
                     "title": self.v2.title,
-                    "thumbnail": self.v2.get_thumbnail_url()
+                    "thumbnail": self.v2.get_thumbnail_url(),
                 },
             ],
         }
@@ -1340,9 +1318,9 @@ class VideoTestFiltersViews(TestCase):
                 {
                     "id": self.v1.id,
                     "title": self.v1.title,
-                    "thumbnail": self.v1.get_thumbnail_url()
+                    "thumbnail": self.v1.get_thumbnail_url(),
                 },
-            ]
+            ],
         }
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
