@@ -1145,6 +1145,12 @@ class Video(models.Model):
             return {}
 
 
+class UpdateOwner(models.Model):
+    class Meta:
+        verbose_name = _("Update Owner")
+        verbose_name_plural = _("Update Owners")
+
+
 def remove_video_file(video):
     if video.video:
         log_file = os.path.join(
