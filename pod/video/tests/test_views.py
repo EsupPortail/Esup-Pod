@@ -1,23 +1,23 @@
-from django.test import TestCase, override_settings
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client
+from django.test import TestCase, override_settings, TransactionTestCase
+from django.urls import reverse
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
-from pod.authentication.models import AccessGroup
-from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
 
-from ..models import Channel
+from .. import views
+from ..models import Type
 from ..models import Theme
 from ..models import Video
-from ..models import Type
+from ..models import Channel
 from ..models import Discipline
 from ..models import AdvancedNotes
-from .. import views
+from pod.authentication.models import AccessGroup
 
-from http import HTTPStatus
-from importlib import reload
 import re
 import json
+from http import HTTPStatus
+from importlib import reload
 
 
 class ChannelTestView(TestCase):
@@ -1099,3 +1099,253 @@ class video_recordTestView(TestCase):
             " --->  test_video_recordTestView_upload_recordvideo"
             " of video_recordTestView : OK !"
         )
+
+
+class VideoTestUpdateOwner(TransactionTestCase):
+    fixtures = [
+        "initial_data.json",
+    ]
+
+    def setUp(self):
+        self.client = Client()
+
+        self.admin = User.objects.create(
+            first_name="pod",
+            last_name="Admin",
+            username="admin",
+            password="admin1234admin",
+            is_superuser=True,
+        )
+        self.simple_user = User.objects.create(
+            first_name="Pod",
+            last_name="User",
+            username="pod",
+            password="pod1234pod"
+        )
+        self.v1 = Video.objects.create(
+            title="Video1",
+            owner=self.admin,
+            video="test1.mp4",
+            type=Type.objects.get(id=1),
+        )
+        self.v2 = Video.objects.create(
+            title="Video2",
+            owner=self.admin,
+            video="test3.mp4",
+            type=Type.objects.get(id=1),
+        )
+        print(" --->  SetUp of VideoTestUpdateOwner : OK !")
+
+    def test_update_video_owner(self):
+        url = reverse(
+            "update_video_owner",
+            kwargs={"user_id": self.admin.id}
+        )
+
+        # Authentication required move TEMPORARY_REDIRECT
+        response = self.client.post(
+            url,
+            json.dumps({
+                "videos": [1, 2],
+                "owner": [self.simple_user.id]
+            }),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+
+        # Access Denied: user is not admin
+        self.client.force_login(self.simple_user)
+        access_url = reverse("admin:video_updateowner_changelist")
+        response = self.client.get(access_url, follow=True)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+
+        # Method not allowed
+        self.client.force_login(self.admin)
+        url = reverse(
+            "update_video_owner",
+            kwargs={"user_id": self.admin.id}
+        )
+        response = self.client.get(url, follow=False)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        expected = {
+            "success": False,
+            "detail": "Method not allowed: Please use post method"
+        }
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+        # Partial update request
+        response = self.client.post(
+            url,
+            json.dumps({
+                # video with id 100 doesn't exist
+                "videos": [1, 2, 100],
+                "owner": self.simple_user.id
+            }),
+            content_type="application/json"
+        )
+        expected = {
+            "success": True,
+            "detail": "One or more videos not updated"
+        }
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+        # Good request
+        response = self.client.post(
+            url,
+            json.dumps({
+                "videos": [1, 2],
+                "owner": self.simple_user.id
+            }),
+            content_type="application/json"
+        )
+
+        expected = {
+            "success": True,
+            "detail": "Update successfully"
+        }
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+        self.assertEqual(Video.objects.filter(owner=self.simple_user).count(), 2)
+
+    def tearDown(self):
+        super(VideoTestUpdateOwner, self).tearDown()
+
+
+class VideoTestFiltersViews(TestCase):
+    fixtures = [
+        "initial_data.json",
+    ]
+
+    def setUp(self):
+        self.client = Client()
+
+        self.admin = User.objects.create(
+            first_name="pod",
+            last_name="Admin",
+            username="admin",
+            password="admin1234admin",
+            is_superuser=True,
+        )
+        self.simple_user = User.objects.create(
+            first_name="Pod",
+            last_name="User",
+            username="pod",
+            password="pod1234pod"
+        )
+        self.v1 = Video.objects.create(
+            title="Video1",
+            owner=self.admin,
+            video="test1.mp4",
+            type=Type.objects.get(id=1),
+        )
+        self.v2 = Video.objects.create(
+            title="Video2",
+            owner=self.admin,
+            video="test3.mp4",
+            type=Type.objects.get(id=1),
+        )
+        print(" --->  SetUp of VideoTestFiltersViews : OK !")
+
+    def test_filter_owners(self):
+        url = reverse("filter_owners")
+
+        # Authentication required
+        response = self.client.get(url, {"q": "pod"})
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+
+        # authenticated
+        self.client.force_login(self.admin)
+        response = self.client.get(url, {"q": "pod user"})
+        expected = [
+            {
+                "id": self.simple_user.id,
+                "first_name": self.simple_user.first_name,
+                "last_name": self.simple_user.last_name,
+            },
+        ]
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+        response = self.client.get(url, {"q": "user pod"})
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+        response = self.client.get(url, {"q": "admin pod"})
+        expected = [
+            {
+                "id": self.admin.id,
+                "first_name": self.admin.first_name,
+                "last_name": self.admin.last_name,
+            },
+        ]
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+        response = self.client.get(url, {"q": "pod admin"})
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+        response = self.client.get(url, {"q": "pod"})
+        expected = [
+            *expected,
+            {
+                "id": self.simple_user.id,
+                "first_name": self.simple_user.first_name,
+                "last_name": self.simple_user.last_name,
+            },
+        ]
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+        expected = []
+        response = self.client.get(url, {"q": "user not exists"})
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+    def test_filter_videos(self):
+        url = reverse("filter_videos", kwargs={"user_id": self.admin.id})
+
+        # Authentication required
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+
+        # authenticated
+        self.client.force_login(self.admin)
+        response = self.client.get(url)
+        expected = {
+            "count": 2,
+            "next": None,
+            "previous": None,
+            "page_infos": "1/1",
+            "results": [
+                {
+                    "id": self.v1.id,
+                    "title": self.v1.title,
+                    "thumbnail": self.v1.get_thumbnail_url()
+                },
+                {
+                    "id": self.v2.id,
+                    "title": self.v2.title,
+                    "thumbnail": self.v2.get_thumbnail_url()
+                },
+            ],
+        }
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+        response = self.client.get(url, {"q": self.v1.title})
+        expected = {
+            **expected,
+            "count": 1,
+            "results": [
+                {
+                    "id": self.v1.id,
+                    "title": self.v1.title,
+                    "thumbnail": self.v1.get_thumbnail_url()
+                },
+            ]
+        }
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(json.loads(response.content.decode("utf-8")), expected)
+
+    def tearDown(self):
+        super(VideoTestFiltersViews, self).tearDown()
