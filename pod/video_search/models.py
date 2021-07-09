@@ -13,7 +13,9 @@ ES_URL = getattr(settings, "ES_URL", ["http://127.0.0.1:9200/"])
 
 
 @receiver(post_save, sender=Video)
-def update_video_index(sender, instance=None, created=False, **kwargs):
+def update_video_index(
+    sender, instance=None, created=False, **kwargs
+):  # pragma: no cover
     if TEST_SETTINGS or ES_URL is None:
         return
     t = threading.Thread(target=index_video, args=[instance])
@@ -21,7 +23,7 @@ def update_video_index(sender, instance=None, created=False, **kwargs):
     t.start()
 
 
-def index_video(video):
+def index_video(video):  # pragma: no cover
     if video.is_draft is False and video.encoding_in_progress is False:
         index_es(video)
     else:
@@ -29,7 +31,9 @@ def index_video(video):
 
 
 @receiver(post_delete, sender=Video)
-def delete_video_index(sender, instance=None, created=False, **kwargs):
+def delete_video_index(
+    sender, instance=None, created=False, **kwargs
+):  # pragma: no cover
     if TEST_SETTINGS or ES_URL is None:
         return
     # delete_es(instance)

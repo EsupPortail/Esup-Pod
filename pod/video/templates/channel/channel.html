@@ -98,13 +98,13 @@
                         <ul class="list-children-theme">
                             {% for th in theme_children %}
                             <li class="btn btn-sm btn-outline-secondary text-truncate child-theme" title="{{th.title}}">
-                                <a href="{% url 'theme' slug_c=channel.slug slug_t=th.slug%}">{{th.title}}</a>
+                                <a href="{% url 'theme' slug_c=channel.slug slug_t=th.slug%}" class="text-truncate">{{th.title}}</a>
                             </li>
                             {% endfor %}
                         </ul>
                     </div>
                     {% if has_more_themes %}
-                        {% include "videos/paginator.html" %}
+                        {% include "videos/paginator.html" with pages_info=pages_info %}
                     {% endif %}
                 {% endif %}
             </section>
@@ -223,6 +223,6 @@
         <script>
             const has_more_themes = "{{has_more_themes}}" == "True";
         </script>
-        <script src="{% static 'js/regroup_videos_by_theme.js' %}?ver={{VERSION}}" defer></script>
+        <script type="module" src="{% static 'js/regroup_videos_by_theme.js' %}?ver={{VERSION}}" defer></script>
     {% endif %}
 {% endblock more_script %}

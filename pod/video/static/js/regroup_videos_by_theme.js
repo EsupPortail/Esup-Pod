@@ -1,4 +1,6 @@
-function run(has_more_themes) {
+import { Helper } from "/static/js/utils.js";
+
+function run(has_more_themes, Helper) {
   const URLPathName = window.location.pathname;
   const scroll_wrapper = document.querySelector(".scroll_wrapper");
   const videos_container = document.querySelector("#videos_list");
@@ -109,14 +111,14 @@ function run(has_more_themes) {
           </span>
         </div>
       </div>
-      <div class="d-flex align_items-center">
+      <div class="card-thumbnail">
         <a class="link-center-pod" href="${VIDEO_URL}${
       video.slug
     }" title="${video.title.charAt(0).toUpperCase()}${video.title.slice(1)}">
           ${video.thumbnail}
         </a>
       </div>
-      <div class="card-body">
+      <div class="card-body px-3 py-2">
         <footer class="card-footer card-footer-pod p-0 m-0">
           <a href="${EDIT_URL}${
       video.slug
@@ -266,9 +268,11 @@ function run(has_more_themes) {
     // Chargement vidéos..
     const save_text = video_loader_btn.textContent;
     video_loader_btn.textContent = gettext("Loading videos..");
+    video_loader_btn.setAttribute("disabled", "disabled");
     makeRequest(url).then((response) => {
       current_video_offset += limit;
       video_loader_btn.textContent = save_text;
+      video_loader_btn.removeAttribute("disabled");
       if (!response.has_more_videos) video_loader_btn.remove();
 
       response.videos.forEach((v) => {
@@ -279,7 +283,19 @@ function run(has_more_themes) {
   const video_loader_btn = document.querySelector(
     ".video-section #load-more-videos"
   );
-  if (!!video_loader_btn)
+  if (!!video_loader_btn) {
     video_loader_btn.addEventListener("click", loadMoreVideos);
+    // Overriding click event to loading more videos
+    let loadOnce = true;
+    let alreadyClicked = false;
+    window.onscroll = function (e) {
+      const isVisible = Helper.isElementInView(video_loader_btn);
+      if (isVisible && loadOnce) {
+        video_loader_btn.click();
+        alreadyClicked = true;
+      }
+      if (alreadyClicked) loadOnce = !isVisible;
+    };
+  }
 }
-run(has_more_themes);
+run(has_more_themes, Helper);
