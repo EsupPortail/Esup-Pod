@@ -64,4 +64,3 @@ htmlcov
 ################
 *.crt
 *.key
-node_modules
