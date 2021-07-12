@@ -223,6 +223,7 @@ class ViewCountSerializer(serializers.HyperlinkedModelSerializer):
             "count",
         )
 
+
 #############################################################################
 # ViewSets define the view behavior.
 #############################################################################
