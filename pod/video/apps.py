@@ -15,6 +15,7 @@ def set_default_site(sender, **kwargs):
     from pod.video.models import VideoRendition
     from pod.video.models import Type
     from django.contrib.sites.models import Site
+
     site = Site.objects.get_current()
     for vid in Video.objects.all():
         apply_default_site(vid, site)
@@ -29,7 +30,7 @@ def set_default_site(sender, **kwargs):
 
 
 class VideoConfig(AppConfig):
-    name = 'pod.video'
+    name = "pod.video"
 
     def ready(self):
         post_migrate.connect(set_default_site, sender=self)

@@ -29,11 +29,12 @@ USER_CAS_MAPPING_ATTRIBUTES_TEST_NOGROUPS = {
     "first_name": "givenname",
     "primaryAffiliation": "eduPersonPrimaryAffiliation",
     "affiliation": "eduPersonAffiliation",
-    "groups": ""
+    "groups": "",
 }
 
 USER_LDAP_MAPPING_ATTRIBUTES = getattr(
-    settings, 'USER_LDAP_MAPPING_ATTRIBUTES',
+    settings,
+    "USER_LDAP_MAPPING_ATTRIBUTES",
     {
         "uid": "uid",
         "mail": "mail",
@@ -41,13 +42,14 @@ USER_LDAP_MAPPING_ATTRIBUTES = getattr(
         "first_name": "givenname",
         "primaryAffiliation": "eduPersonPrimaryAffiliation",
         "affiliations": "eduPersonAffiliation",
-        "groups": "memberOf"
-    })
+        "groups": "memberOf",
+    },
+)
 
 
 class PopulatedCASTestCase(TestCase):
     # populate_user_from_tree(user, owner, tree)
-    xml_string = '''<?xml version="1.0" ?>
+    xml_string = """<?xml version="1.0" ?>
 <ns0:serviceResponse xmlns:ns0="http://www.yale.edu/tp/cas">
     <ns0:authenticationSuccess>
         <ns0:user>pod</ns0:user>
@@ -63,15 +65,12 @@ class PopulatedCASTestCase(TestCase):
             <ns0:memberOf>cn=group2,ou=groups,dc=univ,dc=fr</ns0:memberOf>
         </ns0:attributes>
     </ns0:authenticationSuccess>
-</ns0:serviceResponse>'''
+</ns0:serviceResponse>"""
 
     def setUp(self):
         """setUp PopulatedCASTestCase create user pod"""
         User.objects.create(username="pod", password="pod1234pod")
-        AccessGroup.objects.create(
-            code_name="groupTest",
-            display_name="Group de test"
-        )
+        AccessGroup.objects.create(code_name="groupTest", display_name="Group de test")
         print(" --->  SetUp of PopulatedCASTestCase : OK !")
 
     @override_settings(DEBUG=False)
@@ -95,12 +94,10 @@ class PopulatedCASTestCase(TestCase):
         self.assertEqual(user.owner.accessgroup_set.all().count(), 0)
         print(
             " --->  test_populate_user_from_tree by default"
-            " of PopulatedCASTestCase : OK !")
+            " of PopulatedCASTestCase : OK !"
+        )
 
-    @override_settings(
-        DEBUG=False,
-        CREATE_GROUP_FROM_AFFILIATION=True
-    )
+    @override_settings(DEBUG=False, CREATE_GROUP_FROM_AFFILIATION=True)
     def test_populate_user_from_tree_affiliation(self):
         owner = Owner.objects.get(user__username="pod")
         user = User.objects.get(username="pod")
@@ -110,18 +107,17 @@ class PopulatedCASTestCase(TestCase):
         populatedCASbackend.populate_user_from_tree(user, owner, tree)
         self.assertEqual(AccessGroup.objects.all().count(), 3)
         self.assertTrue(
-            user.owner.accessgroup_set.filter(
-                code_name__in=['member', 'staff']
-            ).exists()
+            user.owner.accessgroup_set.filter(code_name__in=["member", "staff"]).exists()
         )
         print(
             " --->  test_populate_user_from_tree_affiliation"
-            " of PopulatedCASTestCase : OK !")
+            " of PopulatedCASTestCase : OK !"
+        )
 
     @override_settings(
         DEBUG=True,
         CREATE_GROUP_FROM_AFFILIATION=True,
-        CREATE_GROUP_FROM_GROUPS=True
+        CREATE_GROUP_FROM_GROUPS=True,
     )
     def test_populate_user_from_tree_affiliation_group(self):
         owner = Owner.objects.get(user__username="pod")
@@ -134,23 +130,23 @@ class PopulatedCASTestCase(TestCase):
         self.assertTrue(
             user.owner.accessgroup_set.filter(
                 code_name__in=[
-                    'member',
-                    'staff',
-                    'cn=group1,ou=groups,dc=univ,dc=fr',
-                    'cn=group2,ou=groups,dc=univ,dc=fr'
+                    "member",
+                    "staff",
+                    "cn=group1,ou=groups,dc=univ,dc=fr",
+                    "cn=group2,ou=groups,dc=univ,dc=fr",
                 ]
             ).exists()
         )
         print(
             " --->  test_populate_user_from_tree_affiliation_group"
-            " of PopulatedCASTestCase : OK !")
+            " of PopulatedCASTestCase : OK !"
+        )
 
     @override_settings(
         DEBUG=True,
         CREATE_GROUP_FROM_AFFILIATION=True,
         CREATE_GROUP_FROM_GROUPS=True,
-        USER_CAS_MAPPING_ATTRIBUTES=USER_CAS_MAPPING_ATTRIBUTES_TEST_NOGROUPS
-
+        USER_CAS_MAPPING_ATTRIBUTES=USER_CAS_MAPPING_ATTRIBUTES_TEST_NOGROUPS,
     )
     def test_populate_user_from_tree_affiliation_nogroup(self):
         owner = Owner.objects.get(user__username="pod")
@@ -165,14 +161,15 @@ class PopulatedCASTestCase(TestCase):
         self.assertTrue(
             user.owner.accessgroup_set.filter(
                 code_name__in=[
-                    'member',
-                    'staff',
+                    "member",
+                    "staff",
                 ]
             ).exists()
         )
         print(
             " --->  test_populate_user_from_tree_affiliation_nogroup"
-            " of PopulatedCASTestCase : OK !")
+            " of PopulatedCASTestCase : OK !"
+        )
 
 
 class PopulatedLDAPTestCase(TestCase):
@@ -183,35 +180,31 @@ class PopulatedLDAPTestCase(TestCase):
         "mail": "pod@univ.fr",
         "memberOf": [
             "cn=group1,ou=groups,dc=univ,dc=fr",
-            "cn=group2,ou=groups,dc=univ,dc=fr"
+            "cn=group2,ou=groups,dc=univ,dc=fr",
         ],
         "sn": "Pod",
-        "uid": "pod"
+        "uid": "pod",
     }
     entry = ""
 
     def setUp(self):
         """setUp PopulatedLDAPTestCase create user pod"""
         User.objects.create(username="pod", password="pod1234pod")
-        AccessGroup.objects.create(
-            code_name="groupTest",
-            display_name="Group de test"
-        )
-        fake_server = Server('my_fake_server')
+        AccessGroup.objects.create(code_name="groupTest", display_name="Group de test")
+        fake_server = Server("my_fake_server")
         fake_connection = Connection(fake_server, client_strategy=MOCK_SYNC)
-        fake_connection.strategy.add_entry(
-            'uid=pod,ou=people,dc=univ,dc=fr',
-            self.attrs)
+        fake_connection.strategy.add_entry("uid=pod,ou=people,dc=univ,dc=fr", self.attrs)
         fake_connection.bind()
         list_value = []
         for val in USER_LDAP_MAPPING_ATTRIBUTES.values():
             list_value.append(str(val))
         is_entry = fake_connection.search(
             "ou=people,dc=univ,dc=fr",
-            '(uid=pod)',
-            search_scope='SUBTREE',
+            "(uid=pod)",
+            search_scope="SUBTREE",
             attributes=list_value,
-            size_limit=1)
+            size_limit=1,
+        )
         if is_entry:
             self.entry = fake_connection.entries[0]
         fake_connection.unbind()
@@ -237,12 +230,10 @@ class PopulatedLDAPTestCase(TestCase):
         self.assertEqual(user.owner.accessgroup_set.all().count(), 0)
         print(
             " --->  test_populate_user_from_entry by default"
-            " of PopulatedLDAPTestCase : OK !")
+            " of PopulatedLDAPTestCase : OK !"
+        )
 
-    @override_settings(
-        DEBUG=False,
-        CREATE_GROUP_FROM_AFFILIATION=True
-    )
+    @override_settings(DEBUG=False, CREATE_GROUP_FROM_AFFILIATION=True)
     def test_populate_user_from_entry_affiliation(self):
         owner = Owner.objects.get(user__username="pod")
         user = User.objects.get(username="pod")
@@ -251,18 +242,17 @@ class PopulatedLDAPTestCase(TestCase):
         populatedCASbackend.populate_user_from_entry(user, owner, self.entry)
         self.assertEqual(AccessGroup.objects.all().count(), 3)
         self.assertTrue(
-            user.owner.accessgroup_set.filter(
-                code_name__in=['member', 'staff']
-            ).exists()
+            user.owner.accessgroup_set.filter(code_name__in=["member", "staff"]).exists()
         )
         print(
             " --->  test_populate_user_from_entry_affiliation"
-            " of PopulatedLDAPTestCase : OK !")
+            " of PopulatedLDAPTestCase : OK !"
+        )
 
     @override_settings(
         DEBUG=True,
         CREATE_GROUP_FROM_AFFILIATION=True,
-        CREATE_GROUP_FROM_GROUPS=True
+        CREATE_GROUP_FROM_GROUPS=True,
     )
     def test_populate_user_from_entry_affiliation_group(self):
         owner = Owner.objects.get(user__username="pod")
@@ -275,13 +265,14 @@ class PopulatedLDAPTestCase(TestCase):
         self.assertTrue(
             user.owner.accessgroup_set.filter(
                 code_name__in=[
-                    'member',
-                    'staff',
-                    'cn=group1,ou=groups,dc=univ,dc=fr',
-                    'cn=group2,ou=groups,dc=univ,dc=fr'
+                    "member",
+                    "staff",
+                    "cn=group1,ou=groups,dc=univ,dc=fr",
+                    "cn=group2,ou=groups,dc=univ,dc=fr",
                 ]
             ).exists()
         )
         print(
             " --->  test_populate_user_from_entry_affiliation_group"
-            " of PopulatedLDAPTestCase : OK !")
+            " of PopulatedLDAPTestCase : OK !"
+        )

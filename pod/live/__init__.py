@@ -1,1 +1,1 @@
-default_app_config = 'pod.live.apps.LiveConfig'
+default_app_config = "pod.live.apps.LiveConfig"

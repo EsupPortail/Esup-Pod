@@ -5,12 +5,24 @@ from rest_framework import serializers, viewsets
 
 
 class EnrichmentSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = Enrichment
-        fields = ('id', 'url', 'video', 'title', 'stop_video', 'start',
-                  'end', 'type', 'image', 'document', 'richtext', 'weblink',
-                  'embed')
+        fields = (
+            "id",
+            "url",
+            "video",
+            "title",
+            "stop_video",
+            "start",
+            "end",
+            "type",
+            "image",
+            "document",
+            "richtext",
+            "weblink",
+            "embed",
+        )
+
 
 #############################################################################
 # ViewSets define the view behavior.
@@ -18,5 +30,5 @@ class EnrichmentSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class EnrichmentViewSet(viewsets.ModelViewSet):
-    queryset = Enrichment.objects.all().order_by('video', 'start')
+    queryset = Enrichment.objects.all().order_by("video", "start")
     serializer_class = EnrichmentSerializer

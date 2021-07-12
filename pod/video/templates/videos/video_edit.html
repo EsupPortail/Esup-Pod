@@ -9,12 +9,12 @@
 
 
 {% block breadcrumbs %}{{ block.super }}
-  <li class="breadcrumb-item"><a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}">{% trans 'My videos' %}</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'my_videos' %}">{% trans 'My videos' %}</a></li>
   {% if form.instance.title and form.instance.slug != '' %}
-  <li class="breadcrumb-item"><a href="{% url 'video' slug=form.instance.slug %}" title="{{form.instance.title}}">{{form.instance.title|title|truncatechars:45}}</a></li>
-  <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
+    <li class="breadcrumb-item"><a href="{% url 'video' slug=form.instance.slug %}" title="{{form.instance.title}}">{{form.instance.title|title|truncatechars:45}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans "Edit" %}</li>
   {%else%}
-  <li class="breadcrumb-item active" aria-current="page">{% trans "Add a new video" %}</li>
+    <li class="breadcrumb-item active" aria-current="page">{% trans "Add a new video" %}</li>
   {%endif%}
 {% endblock %}
 
@@ -24,7 +24,7 @@
   {% if access_not_allowed == True %}
 
   {% else %}
-  {{block.super}}
+    {{block.super}}
   {% endif %}
 {% endblock collapse_page_aside %}
 
@@ -34,10 +34,10 @@
 {% spaceless %}
 <h3>{% if form.instance.title and form.instance.slug != '' %}{% trans "Editing the video" %} "{{form.instance.title}}"
   <span>
-  <a href="{% url 'video' slug=form.instance.slug %}" title="{% trans 'View the video'%}" class="btn btn-primary btn-sm m-2">
+  <a href="{% url 'video' slug=form.instance.slug %}" class="btn btn-primary btn-sm m-2">
     <i data-feather="film"></i>&nbsp;{% trans "View the video"%}
   </a>
-  <a href="{% url 'video_delete' slug=form.instance.slug %}" title="{% trans 'Delete the video'%}" class="btn btn btn-danger btn-sm m-2">
+  <a href="{% url 'video_delete' slug=form.instance.slug %}" class="btn btn btn-danger btn-sm m-2">
     <i data-feather="trash-2"></i>&nbsp;{% trans "Delete the video"%}
   </a>
   </span>
@@ -45,7 +45,7 @@
 </h3>
 {% if access_not_allowed == True %}
   <p class="text-info">
-  <i data-feather="info"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}" title="{% trans 'contact us' %}">{% trans 'contact us' %}</a>
+  <i data-feather="info"></i>&nbsp;{% trans "Access to adding video has been restricted. If you want to add videos on the platform, please" %} <a href="{% url 'contact_us' %}">{% trans 'contact us' %}</a>
   </p>
 {% else %}
   {% if form.instance.slug and form.instance.slug != '' %}
@@ -126,7 +126,7 @@
   <div class="text-center">
     <button type="submit" class="btn btn-primary btn-sm m-2" name="_continue" value="">{% trans 'Save and continue editing' %}</button>
     {% if form.instance.title and form.instance.slug != '' %}<button type="submit" class="btn btn-primary btn-sm m-2" name="_saveandsee" value="{{form.instance.get_full_url}}">{% trans 'Save and see' %}</button> {%endif%}
-    <a href="{% url 'my_videos' %}" title="{% trans 'My videos' %}" class="btn btn-secondary btn-sm m-2">{% trans 'back to my videos' %}</a>
+    <a href="{% url 'my_videos' %}" class="btn btn-secondary btn-sm m-2">{% trans 'back to my videos' %}</a>
   </div>
 </form>
 {% endif %}
@@ -222,7 +222,7 @@
 {% progress_bar_media %}
 -->
 <!-- fin form . media -->
-</style>
+
 
 {% if USE_CHUNKED_UPLOAD %}
   <script>

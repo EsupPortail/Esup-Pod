@@ -5,15 +5,18 @@ from pod.main.models import Configuration
 
 
 class FlatPageTranslationOptions(TranslationOptions):
-    fields = ('title', 'content',)
+    fields = (
+        "title",
+        "content",
+    )
 
 
 class LinkFooterTranslationOptions(TranslationOptions):
-    fields = ('title', )
+    fields = ("title",)
 
 
 class ConfigurationTranslationOptions(TranslationOptions):
-    fields = ('description', )
+    fields = ("description",)
 
 
 translator.register(FlatPage, FlatPageTranslationOptions)

@@ -3,11 +3,11 @@ from .models import Interactive, InteractiveGroup
 
 
 class InteractiveAdmin(admin.ModelAdmin):
-    list_display = ('video',)
+    list_display = ("video",)
 
 
 class InteractiveGroupAdmin(admin.ModelAdmin):
-    list_display = ('video', 'get_groups')
+    list_display = ("video", "get_groups")
     # readonly_fields = ('video', )
 
     def get_groups(self, obj):

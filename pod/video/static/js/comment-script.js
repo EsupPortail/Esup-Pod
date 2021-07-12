@@ -20,7 +20,7 @@ const COLORS = [
   "darkgray",
 ];
 const LANG = lang_btn ? lang_btn.textContent.trim() : "fr";
-dayjs.extend(dayjs_plugin_relativeTime)
+dayjs.extend(dayjs_plugin_relativeTime);
 dayjs.locale(LANG);
 
 const ACTION_COMMENT = {
@@ -29,7 +29,8 @@ const ACTION_COMMENT = {
 const answer_sing = gettext("Answer");
 const answer_plural = gettext("Answers");
 if (!is_authenticated)
-  document.querySelector(".comment_counter_container").style.margin = "0 0 1em 0";
+  document.querySelector(".comment_counter_container").style.margin =
+    "0 0 1em 0";
 
 class AlertMessage extends HTMLElement {
   constructor(message, alert_class = "success") {
@@ -160,9 +161,8 @@ class Comment extends HTMLElement {
   `;
     comment_container.appendChild(comment_content);
     if (is_parent)
-      comment_container.querySelector(
-        ".comment_content_body"
-      ).innerHTML = content;
+      comment_container.querySelector(".comment_content_body").innerHTML =
+        content;
     else
       comment_container
         .querySelector(".comment_content_body")
@@ -172,13 +172,18 @@ class Comment extends HTMLElement {
       `<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="star" class="voted svg-inline--fa fa-star fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M259.3 17.8L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0z"></path></svg>`,
     ];
 
-    let vote_text = interpolate(ngettext('%s <span class="d-none d-md-inline">vote</span>',
-      '%s <span class="d-none d-md-inline">votes</span>',
-      likes), [likes]);
+    let vote_text = interpolate(
+      ngettext(
+        '%s <span class="d-none d-md-inline">vote</span>',
+        '%s <span class="d-none d-md-inline">votes</span>',
+        likes
+      ),
+      [likes]
+    );
 
-    let btn_classes = "comment_actions comment_vote_action"
+    let btn_classes = "comment_actions comment_vote_action";
     let vote_action = createFooterBtnAction(
-      is_authenticated ? btn_classes : btn_classes+" disabled",
+      is_authenticated ? btn_classes : btn_classes + " disabled",
       "icon comment_vote_icon",
       gettext("Agree with the comment"),
       svg_icon,
@@ -355,7 +360,7 @@ function createFooterBtnAction(
   el.setAttribute("class", classes + " btn btn-link btn-sm");
   el.setAttribute("role", "button");
   if (comment_id) el.setAttribute("data-comment", comment_id);
-    let el_icon = document.createElement("DIV");
+  let el_icon = document.createElement("DIV");
   el_icon.setAttribute("class", icon_classes);
   el_icon.setAttribute("title", title);
   if (Array.isArray(svg)) el_icon.innerHTML = svg.join(" ");
@@ -426,7 +431,9 @@ function vote(comment_action_html, comment_id) {
     .then((response) => {
       response.json().then((data) => {
         comment_action_html.classList.remove("voting");
-        const target_comment = document.getElementById(comment_action_html.dataset.comment)
+        const target_comment = document.getElementById(
+          comment_action_html.dataset.comment
+        );
 
         if (data.voted === true) {
           const nb_vote = update_comment_attribute(
@@ -435,10 +442,16 @@ function vote(comment_action_html, comment_id) {
             "nbr_vote",
             "increment"
           );
-          btn.innerHTML = interpolate(ngettext('%s <span class="d-none d-md-inline">vote</span>',
-          '%s <span class="d-none d-md-inline">votes</span>', nb_vote), [nb_vote]);
+          btn.innerHTML = interpolate(
+            ngettext(
+              '%s <span class="d-none d-md-inline">vote</span>',
+              '%s <span class="d-none d-md-inline">votes</span>',
+              nb_vote
+            ),
+            [nb_vote]
+          );
           if (!comment_action_html.classList.contains("voted"))
-          comment_action_html.classList.add("voted");
+            comment_action_html.classList.add("voted");
         } else {
           const nb_vote = update_comment_attribute(
             target_comment,
@@ -446,8 +459,14 @@ function vote(comment_action_html, comment_id) {
             "nbr_vote",
             "decrement"
           );
-          btn.innerHTML = interpolate(ngettext('%s <span class="d-none d-md-inline">vote</span>',
-          '%s <span class="d-none d-md-inline">votes</span>', nb_vote), [nb_vote]);
+          btn.innerHTML = interpolate(
+            ngettext(
+              '%s <span class="d-none d-md-inline">vote</span>',
+              '%s <span class="d-none d-md-inline">votes</span>',
+              nb_vote
+            ),
+            [nb_vote]
+          );
           if (comment_action_html.classList.contains("voted"))
             comment_action_html.classList.remove("voted");
         }
@@ -662,34 +681,32 @@ function getElementPosition(element) {
 
 /***** Check if element is visible in the viewport *****
  * ****************************************************/
- function isInViewport(el) {
-    const rect = el.getBoundingClientRect();
-    return (
-  rect.top >= 0 &&
-  rect.left >= 0 &&
-  rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-  rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-
-    );
+function isInViewport(el) {
+  const rect = el.getBoundingClientRect();
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <=
+      (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
 }
 /*********** Scroll to a specific comment *************
  * ****************************************************/
 function scrollToComment(targetComment) {
   const alreadyInViewPort = isInViewport(targetComment);
-  const animationDuration = alreadyInViewPort?2000:4000;
-  if(!alreadyInViewPort)
-  {
-
+  const animationDuration = alreadyInViewPort ? 2000 : 4000;
+  if (!alreadyInViewPort) {
     let currentElementPosition = getElementPosition(targetComment);
     window.scrollTo({
       top: currentElementPosition.y,
       left: currentElementPosition.x,
-    behavior: "smooth",
+      behavior: "smooth",
     });
   }
   let htmlTarget = targetComment.querySelector(".comment_content");
   if (htmlTarget.classList.contains("scroll_to"))
-  htmlTarget.classList.remove("scroll_to");
+    htmlTarget.classList.remove("scroll_to");
 
   window.setTimeout(() => {
     htmlTarget.classList.remove("scroll_to");
@@ -702,7 +719,7 @@ function scrollToComment(targetComment) {
  ******************************************************/
 function add_user_tag(comment_value, parent_comment) {
   const reply_to = get_comment_attribute(parent_comment, "author_name");
-  const reply_content = get_comment_attribute(parent_comment,"content");
+  const reply_content = get_comment_attribute(parent_comment, "content");
   const tag = document.createElement("a");
   tag.setAttribute("href", "#");
   tag.addEventListener("click", (e) => {

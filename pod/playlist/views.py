@@ -17,20 +17,22 @@ from pod.video.models import Video
 
 import json
 
-ACTION = ['add', 'edit', 'move', 'remove', 'delete']
+ACTION = ["add", "edit", "move", "remove", "delete"]
 
 
-@login_required(redirect_field_name='referrer')
+@login_required(redirect_field_name="referrer")
 @csrf_protect
 def my_playlists(request):
     playlists = request.user.playlist_set.all()
-    page = request.GET.get('page', 1)
+    page = request.GET.get("page", 1)
 
-    full_path = ''
+    full_path = ""
     if page:
-        full_path = request.get_full_path().replace(
-            '?page={0}'.format(page), '').replace(
-            '&page={0}'.format(page), '')
+        full_path = (
+            request.get_full_path()
+            .replace("?page={0}".format(page), "")
+            .replace("&page={0}".format(page), "")
+        )
     paginator = Paginator(playlists, 12)
     try:
         playlists = paginator.page(page)
@@ -41,8 +43,8 @@ def my_playlists(request):
 
     return render(
         request,
-        'my_playlists.html',
-        {'playlists': playlists, 'full_path': full_path}
+        "my_playlists.html",
+        {"playlists": playlists, "full_path": full_path},
     )
 
 
@@ -55,72 +57,67 @@ def playlist(request, slug=None):
     else:
         playlist = None
         list_videos = None
-    if (playlist and
-            request.user != playlist.owner and not (
-                request.user.is_superuser or request.user.has_perm(
-                    "playlist.change_playlist"))):
-        messages.add_message(
-            request, messages.ERROR, _('You cannot edit this playlist.'))
+    if (
+        playlist
+        and request.user != playlist.owner
+        and not (
+            request.user.is_superuser or request.user.has_perm("playlist.change_playlist")
+        )
+    ):
+        messages.add_message(request, messages.ERROR, _("You cannot edit this playlist."))
         raise PermissionDenied
-    form = PlaylistForm(instance=playlist, initial={'owner': request.user})
-    if request.POST and request.POST.get('action'):
-        if request.POST['action'] in ACTION:
-            return eval(
-                'playlist_{0}(request, playlist)'.format(
-                    request.POST['action'])
-            )
+    form = PlaylistForm(instance=playlist, initial={"owner": request.user})
+    if request.POST and request.POST.get("action"):
+        if request.POST["action"] in ACTION:
+            return eval("playlist_{0}(request, playlist)".format(request.POST["action"]))
     else:
         return render(
-            request,
-            'playlist.html',
-            {'form': form, 'list_videos': list_videos}
+            request, "playlist.html", {"form": form, "list_videos": list_videos}
         )
 
 
 def playlist_move(request, playlist):
     if request.is_ajax():
-        if request.POST.get('videos'):
-            data = json.loads(request.POST['videos'])
+        if request.POST.get("videos"):
+            data = json.loads(request.POST["videos"])
             for slug in data:
                 element = get_object_or_404(
-                    PlaylistElement, video__slug=slug, playlist=playlist)
+                    PlaylistElement, video__slug=slug, playlist=playlist
+                )
                 element.position = data[slug]
                 element.save()
             some_data_to_dump = {
-                'success': '{0}'.format(
-                    _('The playlist has been saved!'))
+                "success": "{0}".format(_("The playlist has been saved!"))
             }
         else:
             some_data_to_dump = {
-                'fail': '{0}'.format(
-                    _('The request is wrong. No video given.'))
+                "fail": "{0}".format(_("The request is wrong. No video given."))
             }
         data = json.dumps(some_data_to_dump)
-        return HttpResponse(data, content_type='application/json')
-    return HttpResponseBadRequest(
-        _('Only ajax request are accepted for this action.'))
+        return HttpResponse(data, content_type="application/json")
+    return HttpResponseBadRequest(_("Only ajax request are accepted for this action."))
 
 
 def playlist_remove(request, playlist):
     if request.is_ajax():
-        if request.POST.get('video'):
-            slug = request.POST['video']
+        if request.POST.get("video"):
+            slug = request.POST["video"]
             element = get_object_or_404(
-                PlaylistElement, video__slug=slug, playlist=playlist)
+                PlaylistElement, video__slug=slug, playlist=playlist
+            )
             element.delete()
             some_data_to_dump = {
-                'success': '{0}'.format(
-                    _('This video has been removed from your playlist.'))
+                "success": "{0}".format(
+                    _("This video has been removed from your playlist.")
+                )
             }
         else:
             some_data_to_dump = {
-                'fail': '{0}'.format(
-                    _('The request is wrong. No video given.'))
+                "fail": "{0}".format(_("The request is wrong. No video given."))
             }
         data = json.dumps(some_data_to_dump)
-        return HttpResponse(data, content_type='application/json')
-    return HttpResponseBadRequest(
-        _('Only ajax request are accepted for this action.'))
+        return HttpResponse(data, content_type="application/json")
+    return HttpResponseBadRequest(_("Only ajax request are accepted for this action."))
 
 
 def playlist_edit(request, playlist):
@@ -131,36 +128,28 @@ def playlist_edit(request, playlist):
     form = PlaylistForm(request.POST, instance=playlist)
     if form.is_valid():
         playlist = form.save()
-        messages.add_message(
-            request, messages.INFO, _('The playlist have been saved.'))
+        messages.add_message(request, messages.INFO, _("The playlist have been saved."))
     else:
         messages.add_message(
             request,
             messages.ERROR,
-            _('One or more errors have been found in the form.'))
-    return render(
-        request,
-        'playlist.html',
-        {'form': form, 'list_videos': list_videos}
-    )
+            _("One or more errors have been found in the form."),
+        )
+    return render(request, "playlist.html", {"form": form, "list_videos": list_videos})
 
 
 def playlist_add(request, playlist):
     if request.is_ajax():
-        if request.POST.get('video'):
-            video = get_object_or_404(Video, slug=request.POST['video'])
+        if request.POST.get("video"):
+            video = get_object_or_404(Video, slug=request.POST["video"])
             msg = None
             if video.is_draft:
-                msg = _(
-                    'A video in draft mode cannot be added to a playlist.')
+                msg = _("A video in draft mode cannot be added to a playlist.")
             if video.password:
-                msg = _(
-                    'A video with a password cannot be added to a playlist.')
+                msg = _("A video with a password cannot be added to a playlist.")
 
             if msg:
-                some_data_to_dump = {
-                    'fail': '{0}'.format(msg)
-                }
+                some_data_to_dump = {"fail": "{0}".format(msg)}
             else:
                 new = PlaylistElement()
                 new.playlist = playlist
@@ -168,18 +157,17 @@ def playlist_add(request, playlist):
                 new.position = playlist.last()
                 new.save()
                 some_data_to_dump = {
-                    'success': '{0}'.format(
-                        _('The video has been added to your playlist.'))
+                    "success": "{0}".format(
+                        _("The video has been added to your playlist.")
+                    )
                 }
         else:
             some_data_to_dump = {
-                'fail': '{0}'.format(
-                    _('The request is wrong. No video given.'))
+                "fail": "{0}".format(_("The request is wrong. No video given."))
             }
         data = json.dumps(some_data_to_dump)
-        return HttpResponse(data, content_type='application/json')
-    return HttpResponseBadRequest(
-        _('Only ajax request are accepted for this action.'))
+        return HttpResponse(data, content_type="application/json")
+    return HttpResponseBadRequest(_("Only ajax request are accepted for this action."))
 
 
 def playlist_delete(request, playlist):
@@ -187,10 +175,8 @@ def playlist_delete(request, playlist):
         if playlist:
             playlist.delete()
         some_data_to_dump = {
-            'success': '{0}'.format(
-                _('This playlist has been deleted.'))
+            "success": "{0}".format(_("This playlist has been deleted."))
         }
         data = json.dumps(some_data_to_dump)
-        return HttpResponse(data, content_type='application/json')
-    return HttpResponseBadRequest(
-        _('Only ajax request are accepted for this action.'))
+        return HttpResponse(data, content_type="application/json")
+    return HttpResponseBadRequest(_("Only ajax request are accepted for this action."))

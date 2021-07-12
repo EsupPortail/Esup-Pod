@@ -347,7 +347,8 @@ HIDE_LOCAL_LOGIN = False
 SHOW_ONLY_PARENT_THEMES = False
 
 """
-# Organiser l'affichage des vidéos dans des themes par sections pliables
+# Affichage uniquement des vidéos de la chaîne ou du thème actuel(le).
+# Affichage des sous-thèmes directs de la chaîne ou du thème actuel(le)
 """
 ORGANIZE_BY_THEME = False
 
@@ -925,7 +926,7 @@ CREATE_GROUP_FROM_AFFILIATION = False
 
 """
 # Si True, des groupes sont créés automatiquement
-#  à partir des groupes (attribut groups à memberOf) 
+#  à partir des groupes (attribut groups à memberOf)
 #  des individus qui se connectent sur la plateforme
 #  et l'individu qui se connecte est ajouté automatiquement à ces groupes
 """
@@ -1282,7 +1283,7 @@ DARKMODE_ENABLED = False
 DYSLEXIAMODE_ENABLED = False
 
 """
-# Ce paramètre permet d'afficher un lien "En savoir plus" 
+# Ce paramètre permet d'afficher un lien "En savoir plus"
 # sur la boite de dialogue d'information sur l'usage des cookies dans Pod.
 # On peut préciser un lien vers les mentions légales ou page dpo
 """

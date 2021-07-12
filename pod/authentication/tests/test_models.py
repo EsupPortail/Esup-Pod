@@ -5,7 +5,7 @@ from django.conf import settings
 
 import hashlib
 
-SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
+SECRET_KEY = getattr(settings, "SECRET_KEY", "")
 
 
 class OwnerTestCase(TestCase):
@@ -22,8 +22,7 @@ class OwnerTestCase(TestCase):
         owner = Owner.objects.get(user__username="pod")
         user = User.objects.get(username="pod")
         self.assertEqual(user.owner, owner)
-        hashkey = hashlib.sha256(
-            (SECRET_KEY + "pod").encode('utf-8')).hexdigest()
+        hashkey = hashlib.sha256((SECRET_KEY + "pod").encode("utf-8")).hexdigest()
         self.assertEqual(owner.hashkey, hashkey)
         print("test_creation_owner OwnerTestCase OK")
 
@@ -54,6 +53,5 @@ class AccessGroupTestCase(TestCase):
     def test_suppression_accessgroup(self):
         accessgroup = AccessGroup.objects.get(code_name="group1")
         accessgroup.delete()
-        self.assertEqual(AccessGroup.objects.filter(
-            code_name="group1").count(), 0)
+        self.assertEqual(AccessGroup.objects.filter(code_name="group1").count(), 0)
         print("test_suppression_accessgroup AccessGroupTestCase OK")

@@ -95,7 +95,7 @@
 
 .btn-link {
   font-weight: 400;
-  color: var(--primary);
+  color: var(--link-color);
   text-decoration: none;
 }
 
@@ -511,13 +511,17 @@ div.card a:hover>img {
   overflow-wrap: anywhere;
 }
 
-.required {
+.required_star, .form-help-inline {
   color: var(--danger);
   font-size: 1.3rem;
 }
 
-.form-group-required .errors {
+.form-group-required .errors,
+.form-group .errorlist {
   background-color: var(--color-fuzzy-wuzzy-brown);
+}
+.form-group .errorlist{
+  margin-bottom: 0;
 }
 #base-message-alert,
 #formalertdiv {

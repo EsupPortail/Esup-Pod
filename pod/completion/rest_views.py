@@ -5,33 +5,46 @@ from rest_framework import serializers, viewsets
 
 
 class ContributorSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = Contributor
-        fields = ('id', 'url', 'video', 'name', 'email_address',
-                  'role', 'weblink')
+        fields = (
+            "id",
+            "url",
+            "video",
+            "name",
+            "email_address",
+            "role",
+            "weblink",
+        )
 
 
 class DocumentSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = Document
-        fields = ('id', 'url', 'video', 'document')
+        fields = ("id", "url", "video", "document")
 
 
 class TrackSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = Track
-        fields = ('id', 'url', 'video', 'kind', 'lang', 'src')
+        fields = ("id", "url", "video", "kind", "lang", "src")
 
 
 class OverlaySerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = Overlay
-        fields = ('id', 'url', 'video', 'title', 'time_start',
-                  'time_end', 'content', 'position', 'background')
+        fields = (
+            "id",
+            "url",
+            "video",
+            "title",
+            "time_start",
+            "time_end",
+            "content",
+            "position",
+            "background",
+        )
+
 
 #############################################################################
 # ViewSets define the view behavior.

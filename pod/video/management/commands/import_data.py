@@ -22,7 +22,7 @@ import wget
 import webvtt
 import codecs
 
-if getattr(settings, 'USE_PODFILE', False):
+if getattr(settings, "USE_PODFILE", False):
     FILEPICKER = True
     from pod.podfile.models import CustomFileModel, CustomImageModel
     from pod.podfile.models import UserFolder
@@ -30,15 +30,13 @@ else:
     FILEPICKER = False
     from pod.main.models import CustomFileModel
 
-AUTHENTICATION = True if apps.is_installed('pod.authentication') else False
+AUTHENTICATION = True if apps.is_installed("pod.authentication") else False
 
-BASE_DIR = getattr(
-    settings, 'BASE_DIR', '/home/pod/django_projects/podv2/pod')
+BASE_DIR = getattr(settings, "BASE_DIR", "/home/pod/django_projects/podv2/pod")
 
-VIDEO_ID_TO_EXCLUDE = getattr(
-    settings, 'VIDEO_ID_TO_EXCLUDE', [])
+VIDEO_ID_TO_EXCLUDE = getattr(settings, "VIDEO_ID_TO_EXCLUDE", [])
 
-FROM_URL = getattr(settings, 'FROM_URL', "https://pod.univ.fr/media/")
+FROM_URL = getattr(settings, "FROM_URL", "https://pod.univ.fr/media/")
 
 
 class Command(BaseCommand):
@@ -47,54 +45,77 @@ class Command(BaseCommand):
     To be called by a 'python manage.py import_data $type'.
     """
 
-    args = 'Channel Theme Type User Discipline Pod tags Chapter Contributor...'
-    help = 'Import from V1'
-    valid_args = ['User', 'Channel', 'Theme', 'Type', 'Discipline', 'FlatPage',
-                  'UserProfile', 'tags', 'Chapter', 'Contributor',
-                  'Overlay', 'docpods', 'trackpods', 'enrichpods', 'Pod']
+    args = "Channel Theme Type User Discipline Pod tags Chapter Contributor..."
+    help = "Import from V1"
+    valid_args = [
+        "User",
+        "Channel",
+        "Theme",
+        "Type",
+        "Discipline",
+        "FlatPage",
+        "UserProfile",
+        "tags",
+        "Chapter",
+        "Contributor",
+        "Overlay",
+        "docpods",
+        "trackpods",
+        "enrichpods",
+        "Pod",
+    ]
 
     def add_arguments(self, parser):
         """Add 'import' argument."""
-        parser.add_argument('import')
+        parser.add_argument("import")
 
     def handle(self, *args, **options):
         """Handle the command call."""
         # Activate a fixed locale fr
-        translation.activate('fr')
+        translation.activate("fr")
 
-        if options['import'] and options['import'] in self.valid_args:
-            type_to_import = options['import']
-            filepath = os.path.join(BASE_DIR, '../../import/',
-                                    type_to_import + ".json")
+        if options["import"] and options["import"] in self.valid_args:
+            type_to_import = options["import"]
+            filepath = os.path.join(BASE_DIR, "../../import/", type_to_import + ".json")
             print(type_to_import, filepath)
             self.migrate_to_v2(filepath, type_to_import)
             with open(filepath, "r") as infile:
-                if type_to_import in ('User', 'Channel', 'Theme', 'Type',
-                                      'Discipline', 'FlatPage', 'UserProfile',
-                                      'Chapter', 'Contributor',
-                                      'Overlay', 'Pod'):
+                if type_to_import in (
+                    "User",
+                    "Channel",
+                    "Theme",
+                    "Type",
+                    "Discipline",
+                    "FlatPage",
+                    "UserProfile",
+                    "Chapter",
+                    "Contributor",
+                    "Overlay",
+                    "Pod",
+                ):
                     data = serializers.deserialize("json", infile)
                     for obj in data:
                         self.save_object(type_to_import, obj)
                 if type_to_import in (
-                        'tags', 'docpods', 'trackpods', 'enrichpods'):
+                    "tags",
+                    "docpods",
+                    "trackpods",
+                    "enrichpods",
+                ):
                     data = json.load(infile)
                     for obj in data:
                         if int(obj) not in VIDEO_ID_TO_EXCLUDE:
-                            self.add_data_to_video(
-                                type_to_import,
-                                obj,
-                                data[obj])
+                            self.add_data_to_video(type_to_import, obj, data[obj])
         else:
             print(
                 "******* Warning: you must give some arguments: %s *******"
-                % self.valid_args)
+                % self.valid_args
+            )
 
     def save_object(self, type_to_import, obj):
         """Save object obj of type 'type_to_import'."""
-        if AUTHENTICATION and type_to_import == 'UserProfile':
-            owner, owner_created = Owner.objects.get_or_create(
-                user_id=obj.object.user_id)
+        if AUTHENTICATION and type_to_import == "UserProfile":
+            owner, owner_created = Owner.objects.get_or_create(user_id=obj.object.user_id)
             owner.auth_type = obj.object.auth_type
             owner.affiliation = obj.object.affiliation
             owner.commentaire = obj.object.commentaire
@@ -102,16 +123,15 @@ class Command(BaseCommand):
             owner.save()
         else:
             # print(obj, obj.object.id, obj.object.video.id)
-            if (type_to_import == 'Pod'
-                    and obj.object.id in VIDEO_ID_TO_EXCLUDE):
+            if type_to_import == "Pod" and obj.object.id in VIDEO_ID_TO_EXCLUDE:
                 print(obj.object.id, " are exclude")
             else:
                 try:
                     if (
-                        type_to_import == 'Pod'
-                        or not hasattr(obj.object, 'video')
+                        type_to_import == "Pod"
+                        or not hasattr(obj.object, "video")
                         or (
-                            hasattr(obj.object, 'video')
+                            hasattr(obj.object, "video")
                             and obj.object.video.id not in VIDEO_ID_TO_EXCLUDE
                         )
                     ):
@@ -124,72 +144,49 @@ class Command(BaseCommand):
 
     def migrate_to_v2(self, filepath, type_to_import):
         """Convert data type in specified filepath."""
-        f = open(filepath, 'r')
+        f = open(filepath, "r")
         filedata = f.read()
         f.close()
         newdata = self.get_new_data(type_to_import, filedata)
-        f = open(filepath, 'w')
+        f = open(filepath, "w")
         f.write(newdata)
         f.close()
 
     def Channel(self, filedata):
         """Rename channel model in specified filedata."""
-        return filedata.replace(
-            "pods.channel",
-            "video.channel"
-        )
+        return filedata.replace("pods.channel", "video.channel")
 
     def Theme(self, filedata):
         """Rename theme model in specified filedata."""
-        return filedata.replace(
-            "pods.theme",
-            "video.theme"
-        )
+        return filedata.replace("pods.theme", "video.theme")
 
     def Type(self, filedata):
         """Rename type model in specified filedata."""
-        return filedata.replace(
-            "pods.type",
-            "video.type"
-        ).replace("headband", "icon")
+        return filedata.replace("pods.type", "video.type").replace("headband", "icon")
 
     def Discipline(self, filedata):
         """Rename discipline model in specified filedata."""
-        return filedata.replace(
-            "pods.discipline",
-            "video.discipline"
-        ).replace("headband", "icon")
+        return filedata.replace("pods.discipline", "video.discipline").replace(
+            "headband", "icon"
+        )
 
     def Pod(self, filedata):
         """Rename pod model in specified filedata."""
-        return filedata.replace(
-            "pods.pod",
-            "video.video"
-        )
+        return filedata.replace("pods.pod", "video.video")
 
     def Chapter(self, filedata):
         """Rename chapter model in specified filedata."""
-        return filedata.replace(
-            "pods.chapterpods",
-            "chapter.chapter"
-        ).replace(
-            "\"time\"",
-            "\"time_start\""
+        return filedata.replace("pods.chapterpods", "chapter.chapter").replace(
+            '"time"', '"time_start"'
         )
 
     def Contributor(self, filedata):
         """Rename contributor model in specified filedata."""
-        return filedata.replace(
-            "pods.contributorpods",
-            "completion.contributor"
-        )
+        return filedata.replace("pods.contributorpods", "completion.contributor")
 
     def Overlay(self, filedata):
         """Rename overlay model in specified filedata."""
-        return filedata.replace(
-            "pods.overlaypods",
-            "completion.overlay"
-        )
+        return filedata.replace("pods.overlaypods", "completion.overlay")
 
     def get_new_data(self, type_to_import, filedata):
         """Get new data."""
@@ -207,29 +204,29 @@ class Command(BaseCommand):
         if type_import.get(type_to_import):
             func = type_import.get(type_to_import)
             return func(filedata)
-        if type_to_import == 'UserProfile':
+        if type_to_import == "UserProfile":
             newdata = filedata.replace(
                 "core.userprofile", "authentication.owner"
-            ).replace("\"image\":", "\"userpicture\":")
+            ).replace('"image":', '"userpicture":')
 
         return newdata
 
     def add_data_to_video(self, type_to_import, obj, data):
         """Add related data (docs, tags, track, enrich) to video."""
-        if type_to_import in ('docpods',):
+        if type_to_import in ("docpods",):
             self.add_doc_to_video(obj, data)
-        if type_to_import in ('tags',):
+        if type_to_import in ("tags",):
             self.add_tag_to_video(obj, data)
-        if type_to_import in ('trackpods',):
+        if type_to_import in ("trackpods",):
             self.add_track_to_video(obj, data)
-        if type_to_import in ('enrichpods',):
+        if type_to_import in ("enrichpods",):
             self.add_enrich_to_video(obj, data)
 
     def add_tag_to_video(self, video_id, list_tag):
         """Add tags to video."""
         try:
             video = Video.objects.get(id=video_id)
-            video.tags = ', '.join(list_tag)
+            video.tags = ", ".join(list_tag)
             video.save()
         except ObjectDoesNotExist:
             print(video_id, " does not exist")
@@ -255,7 +252,7 @@ class Command(BaseCommand):
             for doc in list_doc:
                 new_file = self.download_doc(doc["src"])
                 print("\n", new_file)
-                fname, dot, extension = new_file.rpartition('.')
+                fname, dot, extension = new_file.rpartition(".")
                 if extension == "srt":
                     new_file = self.convert_to_vtt(new_file)
                 else:
@@ -266,8 +263,12 @@ class Command(BaseCommand):
                         new_file = ""
                 if new_file != "":
                     document = self.create_and_save_doc(new_file, video)
-                    Track.objects.create(video=video, src=document,
-                                         kind=doc["kind"], lang=doc["lang"])
+                    Track.objects.create(
+                        video=video,
+                        src=document,
+                        kind=doc["kind"],
+                        lang=doc["lang"],
+                    )
         except ObjectDoesNotExist:
             print(video_id, " does not exist")
 
@@ -279,22 +280,19 @@ class Command(BaseCommand):
             return new_file
         except UnicodeDecodeError:
             print("************ codecs ***********")
-            with codecs.open(new_file,
-                             "r",
-                             encoding="latin-1") as sourceFile:
-                with codecs.open(new_file[:-3] + "txt",
-                                 "w",
-                                 "utf-8") as targetFile:
+            with codecs.open(new_file, "r", encoding="latin-1") as sourceFile:
+                with codecs.open(new_file[:-3] + "txt", "w", "utf-8") as targetFile:
                     contents = sourceFile.read()
                     targetFile.write(contents)
-            webvtt.from_srt(
-                new_file[:-3] + "txt").save(new_file[:-3] + "vtt")
+            webvtt.from_srt(new_file[:-3] + "txt").save(new_file[:-3] + "vtt")
             new_file = new_file[:-3] + "vtt"
             return new_file
         except webvtt.errors.MalformedFileError:
-            print("************ "
-                  "The file does not have a valid format. !!!!! "
-                  "************")
+            print(
+                "************ "
+                "The file does not have a valid format. !!!!! "
+                "************"
+            )
             print(new_file)
             print("************ ************")
         return ""
@@ -308,20 +306,32 @@ class Command(BaseCommand):
                 image = None
                 if doc["type"] == "image" and doc["image"] != "":
                     new_file = self.download_doc(doc["image"])
-                    image = self.create_and_save_image(
-                        new_file, video) if new_file != "" else None
+                    image = (
+                        self.create_and_save_image(new_file, video)
+                        if new_file != ""
+                        else None
+                    )
                 document = None
                 if doc["type"] == "document" and doc["document"] != "":
                     new_file = self.download_doc(doc["document"])
-                    document = self.create_and_save_doc(
-                        new_file, video) if new_file != "" else None
+                    document = (
+                        self.create_and_save_doc(new_file, video)
+                        if new_file != ""
+                        else None
+                    )
 
                 Enrichment.objects.create(
-                    video=video, title=doc["title"],
-                    stop_video=doc["stop_video"], start=doc["start"],
-                    end=doc["end"], type=doc["type"], image=image,
-                    document=document, richtext=doc["richtext"],
-                    weblink=doc["weblink"], embed=doc["embed"]
+                    video=video,
+                    title=doc["title"],
+                    stop_video=doc["stop_video"],
+                    start=doc["start"],
+                    end=doc["end"],
+                    type=doc["type"],
+                    image=image,
+                    document=document,
+                    richtext=doc["richtext"],
+                    weblink=doc["weblink"],
+                    embed=doc["embed"],
                 )
 
         except ObjectDoesNotExist:
@@ -330,11 +340,7 @@ class Command(BaseCommand):
     def download_doc(self, doc):
         """Download doc from pod v1."""
         source_url = FROM_URL + doc
-        dest_file = os.path.join(
-            settings.MEDIA_ROOT,
-            'tempfile',
-            os.path.basename(doc)
-        )
+        dest_file = os.path.join(settings.MEDIA_ROOT, "tempfile", os.path.basename(doc))
         os.makedirs(os.path.dirname(dest_file), exist_ok=True)
         new_file = wget.download(source_url, dest_file)
         return new_file
@@ -343,26 +349,25 @@ class Command(BaseCommand):
         """Create and save doc."""
         if FILEPICKER:
             homedir, created = UserFolder.objects.get_or_create(
-                name='home',
-                owner=video.owner)
-            videodir, created = UserFolder.objects.get_or_create(
-                name='%s' % video.slug,
-                owner=video.owner)
-            document = CustomFileModel(
-                folder=videodir,
-                created_by=video.owner
+                name="home", owner=video.owner
             )
+            videodir, created = UserFolder.objects.get_or_create(
+                name="%s" % video.slug, owner=video.owner
+            )
+            document = CustomFileModel(folder=videodir, created_by=video.owner)
             document.file.save(
                 os.path.basename(new_file),
                 File(open(new_file, "rb")),
-                save=True)
+                save=True,
+            )
             document.save()
         else:
             document = CustomFileModel()
             document.file.save(
                 os.path.basename(new_file),
                 File(open(new_file, "rb")),
-                save=True)
+                save=True,
+            )
             document.save()
         return document
 
@@ -370,26 +375,25 @@ class Command(BaseCommand):
         """Create and save image."""
         if FILEPICKER:
             homedir, created = UserFolder.objects.get_or_create(
-                name='home',
-                owner=video.owner)
-            videodir, created = UserFolder.objects.get_or_create(
-                name='%s' % video.slug,
-                owner=video.owner)
-            image = CustomImageModel(
-                folder=videodir,
-                created_by=video.owner
+                name="home", owner=video.owner
             )
+            videodir, created = UserFolder.objects.get_or_create(
+                name="%s" % video.slug, owner=video.owner
+            )
+            image = CustomImageModel(folder=videodir, created_by=video.owner)
             image.file.save(
                 os.path.basename(new_file),
                 File(open(new_file, "rb")),
-                save=True)
+                save=True,
+            )
             image.save()
         else:
             image = CustomFileModel()
             image.file.save(
                 os.path.basename(new_file),
                 File(open(new_file, "rb")),
-                save=True)
+                save=True,
+            )
             image.save()
         return image
 

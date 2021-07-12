@@ -3,22 +3,18 @@ from pod.live.models import HeartBeat, Broadcaster
 from django.utils import timezone
 from django.conf import settings
 
-VIEW_EXPIRATION_DELAY = getattr(
-        settings, 'VIEW_EXPIRATION_DELAY', 60)
+VIEW_EXPIRATION_DELAY = getattr(settings, "VIEW_EXPIRATION_DELAY", 60)
 
 
 class Command(BaseCommand):
-    help = 'Update viewcounter for lives'
+    help = "Update viewcounter for lives"
 
     def handle(self, *args, **options):
-        accepted_time = (
-            timezone.now() - timezone.timedelta(
-                seconds=VIEW_EXPIRATION_DELAY))
+        accepted_time = timezone.now() - timezone.timedelta(seconds=VIEW_EXPIRATION_DELAY)
         HeartBeat.objects.filter(last_heartbeat__lt=accepted_time).delete()
 
         for broad in Broadcaster.objects.filter(enable_viewer_count=True):
-            hbs = HeartBeat.objects.filter(
-                broadcaster=broad)
+            hbs = HeartBeat.objects.filter(broadcaster=broad)
             broad.viewcount = hbs.count()
             hbs = hbs.exclude(user=None)
             users = []

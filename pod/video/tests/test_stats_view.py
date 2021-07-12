@@ -18,7 +18,9 @@ USE_STATS_VIEW = getattr(settings, "USE_STATS_VIEW", False)
 
 
 class TestStatsView(TestCase):
-    fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data.json",
+    ]
 
     def setUp(self):
         self.logger = logging.getLogger("django.request")
@@ -27,49 +29,52 @@ class TestStatsView(TestCase):
         self.logger.setLevel(logging.ERROR)
 
         self.client = Client()
-        self.channel = Channel.objects.create(
-                title="statsChannelTest",
-                visible=True)
-        self.theme = Theme.objects.create(
-                title="statsThemeTest", channel=self.channel)
+        self.channel = Channel.objects.create(title="statsChannelTest", visible=True)
+        self.theme = Theme.objects.create(title="statsThemeTest", channel=self.channel)
         self.t1 = Type.objects.get(id=1)
         self.user = User.objects.create(
-                username="doejohn",
-                first_name="John",
-                last_name="DOE",
-                password="Toto1234_4321")
+            username="doejohn",
+            first_name="John",
+            last_name="DOE",
+            password="Toto1234_4321",
+        )
         self.visitor = User.objects.create(
-                username="visitorpod",
-                first_name="Visitor",
-                last_name="Pod",
-                password="Visitor1234*")
+            username="visitorpod",
+            first_name="Visitor",
+            last_name="Pod",
+            password="Visitor1234*",
+        )
         self.superuser = User.objects.create(
-                username="SuperUser",
-                first_name="Super",
-                last_name="User",
-                password="SuperPassword1234",
-                is_superuser=True)
+            username="SuperUser",
+            first_name="Super",
+            last_name="User",
+            password="SuperPassword1234",
+            is_superuser=True,
+        )
         self.video = Video.objects.create(
-                title="Test stats view",
-                is_draft=False,
-                encoding_in_progress=False,
-                owner=self.user,
-                video="teststatsviews.mp4",
-                type=self.t1)
+            title="Test stats view",
+            is_draft=False,
+            encoding_in_progress=False,
+            owner=self.user,
+            video="teststatsviews.mp4",
+            type=self.t1,
+        )
         self.video2 = Video.objects.create(
-                title="Test stats view second",
-                owner=self.user,
-                is_draft=False,
-                encoding_in_progress=False,
-                video="teststatsviewssecond.mp4",
-                type=self.t1)
+            title="Test stats view second",
+            owner=self.user,
+            is_draft=False,
+            encoding_in_progress=False,
+            video="teststatsviewssecond.mp4",
+            type=self.t1,
+        )
         self.video3 = Video.objects.create(
-                title="Test stats view third",
-                owner=self.user,
-                is_draft=False,
-                encoding_in_progress=False,
-                video="teststatsviewthird.mp4",
-                type=self.t1)
+            title="Test stats view third",
+            owner=self.user,
+            is_draft=False,
+            encoding_in_progress=False,
+            video="teststatsviewthird.mp4",
+            type=self.t1,
+        )
         self.video.channel = [self.channel]
         self.video.theme = [self.theme]
         self.video2.channel = [self.channel]
@@ -86,17 +91,24 @@ class TestStatsView(TestCase):
         self.superuser.owner.save()
         try:
 
-            self.stat_video_url = reverse(
-                    "video_stats_view",
-                    kwargs={"slug": self.video.slug})+"?from=video"
-            self.stat_channel_url = reverse(
-                    "video_stats_view",
-                    kwargs={"slug": self.channel.slug})+"?from=channel"
-            self.stat_theme_url = reverse(
+            self.stat_video_url = (
+                reverse("video_stats_view", kwargs={"slug": self.video.slug})
+                + "?from=video"
+            )
+            self.stat_channel_url = (
+                reverse("video_stats_view", kwargs={"slug": self.channel.slug})
+                + "?from=channel"
+            )
+            self.stat_theme_url = (
+                reverse(
                     "video_stats_view",
                     kwargs={
                         "slug": self.channel.slug,
-                        "slug_t": self.theme.slug})+"?from=theme"
+                        "slug_t": self.theme.slug,
+                    },
+                )
+                + "?from=theme"
+            )
             USE_STATS_VIEW = True
         except NoReverseMatch:
             USE_STATS_VIEW = False
@@ -110,15 +122,19 @@ class TestStatsView(TestCase):
         # Check that the response is 200 OK.
         # and content the expected title
         self.assertContains(
-                response,
-                (b"Video viewing statistics for %s"
-                    % self.video.title.capitalize().encode("utf-8")),
-                status_code=200)
+            response,
+            (
+                b"Video viewing statistics for %s"
+                % self.video.title.capitalize().encode("utf-8")
+            ),
+            status_code=200,
+        )
         # Check that the response is 404 Not Found.
         # Check the response contains the error message
-        stat_video_url = reverse(
-                "video_stats_view",
-                kwargs={"slug": "0001_videodoesnotexist"})+"?from=video"
+        stat_video_url = (
+            reverse("video_stats_view", kwargs={"slug": "0001_videodoesnotexist"})
+            + "?from=video"
+        )
         response = self.client.get(stat_video_url)
         self.assertEqual(response.status_code, 404)
         """
@@ -133,10 +149,7 @@ class TestStatsView(TestCase):
     def test_stats_view_GET_request_videos(self):
         stat_url_videos = reverse("video_stats_view")
         response = self.client.get(stat_url_videos, {"from": "videos"})
-        self.assertContains(
-                response,
-                b"Pod video viewing statistics",
-                status_code=200)
+        self.assertContains(response, b"Pod video viewing statistics", status_code=200)
 
     @skipUnless(USE_STATS_VIEW, "Require acitvate URL video_stats_view")
     def test_stats_view_GET_request_channel(self):
@@ -146,21 +159,22 @@ class TestStatsView(TestCase):
         # Check that the response is 200 OK.
         # Check that the response contains the expected title
         self.assertContains(
-                response,
-                (b"Video viewing statistics for the channel %s"
-                    % self.channel.slug.encode("utf-8")),
-                status_code=200)
+            response,
+            (
+                b"Video viewing statistics for the channel %s"
+                % self.channel.slug.encode("utf-8")
+            ),
+            status_code=200,
+        )
         # Check that the response is 404 Not Found.
         # Check that the response contains the error message
-        stat_channel_url = reverse(
-                "video_stats_view",
-                kwargs={"slug": "0001_channeldoesnotexist"})+"?from=channel"
+        stat_channel_url = (
+            reverse("video_stats_view", kwargs={"slug": "0001_channeldoesnotexist"})
+            + "?from=channel"
+        )
         response = self.client.get(stat_channel_url)
         msg = b"The following channel does not exist or contain any videos: %b"
-        self.assertContains(
-                response,
-                msg % b"0001_channeldoesnotexist",
-                status_code=404)
+        self.assertContains(response, msg % b"0001_channeldoesnotexist", status_code=404)
 
     @skipUnless(USE_STATS_VIEW, "Require URL video_stats_view")
     def test_stats_view_GET_request_theme(self):
@@ -170,32 +184,38 @@ class TestStatsView(TestCase):
         # Check that the response is 200 OK.
         # Check that the response contains the expected title
         self.assertContains(
-                response,
-                (b"Video viewing statistics for the theme %s"
-                    % self.theme.slug.encode("utf-8")),
-                status_code=200)
+            response,
+            (
+                b"Video viewing statistics for the theme %s"
+                % self.theme.slug.encode("utf-8")
+            ),
+            status_code=200,
+        )
         # Check that the response is 404 Not Found.
         # Check that the response contains the error message
-        stat_theme_url = reverse(
+        stat_theme_url = (
+            reverse(
                 "video_stats_view",
                 kwargs={
                     "slug": "0001_channeldoesnotexist",
-                    "slug_t": "0001_themedoesnotexist"})+"?from=theme"
+                    "slug_t": "0001_themedoesnotexist",
+                },
+            )
+            + "?from=theme"
+        )
         response = self.client.get(stat_theme_url)
         msg = b"The following theme does not exist or contain any videos: %b"
-        self.assertContains(
-                response,
-                msg % b"0001_themedoesnotexist",
-                status_code=404)
+        self.assertContains(response, msg % b"0001_themedoesnotexist", status_code=404)
 
     @skipUnless(USE_STATS_VIEW, "Require activate URL video_stats_view")
     def test_stats_view_POST_request_video(self):
-        data = [{
-            "title": self.video.title,
-            "slug": self.video.slug,
-            **get_all_views_count(self.video.id)
+        data = [
+            {
+                "title": self.video.title,
+                "slug": self.video.slug,
+                **get_all_views_count(self.video.id),
             },
-            {"min_date": TODAY}
+            {"min_date": TODAY},
         ]
         expected_content = JsonResponse(data, safe=False).content
         response = self.client.post(self.stat_video_url)
@@ -219,14 +239,14 @@ class TestStatsView(TestCase):
             data = {
                 "title": self.video.title,
                 "slug": self.video.slug,
-                **get_all_views_count(video.id)
+                **get_all_views_count(video.id),
             }
             # the content contains the title of the video and expected data
             self.assertIn(json.dumps(data), response.content.decode("utf-8"))
         # the content contains the title of the video and expected data
         self.assertContains(
-                response,
-                json.dumps({"min_date": TODAY.strftime("%Y-%m-%d")}))
+            response, json.dumps({"min_date": TODAY.strftime("%Y-%m-%d")})
+        )
 
     @skipUnless(USE_STATS_VIEW, "Require URL video_stats_view")
     def test_stats_view_POST_request_channel(self):
@@ -240,14 +260,14 @@ class TestStatsView(TestCase):
             data = {
                 "title": video.title,
                 "slug": video.slug,
-                **get_all_views_count(video.id)
+                **get_all_views_count(video.id),
             }
             # the content contains the expected data
             self.assertIn(json.dumps(data), response.content.decode("utf-8"))
         # the content contains the expected data
         self.assertContains(
-                response,
-                json.dumps({"min_date": TODAY.strftime("%Y-%m-%d")}))
+            response, json.dumps({"min_date": TODAY.strftime("%Y-%m-%d")})
+        )
 
     @skipUnless(USE_STATS_VIEW, "Require URL video_stats_view")
     def test_stats_view_POST_request_theme(self):
@@ -261,14 +281,14 @@ class TestStatsView(TestCase):
             data = {
                 "title": video.title,
                 "slug": video.slug,
-                **get_all_views_count(video.id)
+                **get_all_views_count(video.id),
             }
             # the content contains the expected data
             self.assertIn(json.dumps(data), response.content.decode("utf-8"))
         # the content contains the expected data
         self.assertContains(
-                response,
-                json.dumps({"min_date": TODAY.strftime("%Y-%m-%d")}))
+            response, json.dumps({"min_date": TODAY.strftime("%Y-%m-%d")})
+        )
 
     @skipUnless(USE_STATS_VIEW, "Require URL video_stats_view")
     def test_stats_view_GET_request_video_access_rights(self):
@@ -278,9 +298,7 @@ class TestStatsView(TestCase):
         password = "ThisVideoRequiredAPassword"
         self.video3.password = password
         self.video3.save()
-        url = reverse(
-                "video_stats_view",
-                kwargs={"slug": self.video3.slug})
+        url = reverse("video_stats_view", kwargs={"slug": self.video3.slug})
         response = self.client.get(url, {"from": "video"})
         input_expected = '<input type="password" name="password" \
                 placeholder="Password" id="id_password" class="form-control " \
@@ -291,35 +309,26 @@ class TestStatsView(TestCase):
         self.assertInHTML(input_expected, response.content.decode("utf-8"))
 
         # Test with passing a good video password
-        response = self.client.post(url+"?from=video", {"password": password})
+        response = self.client.post(url + "?from=video", {"password": password})
         title_expected = (
-                "<h1 class=\"title\">Video viewing statistics for %s</h1>"
-                ) % self.video3.title.capitalize()
+            '<h1 class="title">Video viewing statistics for %s</h1>'
+        ) % self.video3.title.capitalize()
         # Test that the response is 200 OK.
         # Test that the response content contains the expected title
-        self.assertContains(
-                response,
-                title_expected.encode(),
-                status_code=200)
+        self.assertContains(response, title_expected.encode(), status_code=200)
 
         # Test with the owner of the video who doesn't need to
         # specify a password
         self.client.force_login(self.user)
         response = self.client.get(url, {"from": "video"})
-        self.assertContains(
-                response,
-                title_expected.encode(),
-                status_code=200)
+        self.assertContains(response, title_expected.encode(), status_code=200)
 
         # Test with the superuser who doesn't need to
         # specify a password
         self.client.logout()
         self.client.force_login(self.superuser)
         response = self.client.get(url, {"from": "video"})
-        self.assertContains(
-                response,
-                title_expected.encode(),
-                status_code=200)
+        self.assertContains(response, title_expected.encode(), status_code=200)
 
         # **************************************************** #
         # ************ Test restricted by group ************** #
@@ -337,36 +346,27 @@ class TestStatsView(TestCase):
         # the video that is restricted by group which visitor
         # do not has access rights
         self.assertContains(
-                response,
-                "You do not have access rights to this video: %s"
-                % self.video3.slug,
-                status_code=404)
+            response,
+            "You do not have access rights to this video: %s" % self.video3.slug,
+            status_code=404,
+        )
         # add visitor to the group of the video
         # test that visitor has access rights
         self.visitor.owner.accessgroup_set.add(group1)
         response = self.client.get(url, {"from": "video"})
-        self.assertContains(
-                response,
-                title_expected.encode(),
-                status_code=200)
+        self.assertContains(response, title_expected.encode(), status_code=200)
 
         # Disconnect visitor and connect the owner of the video
         self.client.logout()
         self.client.force_login(self.user)
         response = self.client.get(url, {"from": "video"})
         # Test that owner has access rights to the video
-        self.assertContains(
-                response,
-                title_expected.encode(),
-                status_code=200)
+        self.assertContains(response, title_expected.encode(), status_code=200)
         # Test if that superuser has access rights
         self.client.logout()
         self.client.force_login(self.superuser)
         response = self.client.get(url, {"from": "video"})
-        self.assertContains(
-                response,
-                title_expected.encode(),
-                status_code=200)
+        self.assertContains(response, title_expected.encode(), status_code=200)
         # ***************************************************** #
         # *************** Test private video ****************** #
         # ***************************************************** #
@@ -379,27 +379,21 @@ class TestStatsView(TestCase):
         self.client.force_login(self.visitor)
         response = self.client.get(url, {"from": "video"})
         self.assertContains(
-                response,
-                "You do not have access rights to this video: %s"
-                % self.video3.slug,
-                status_code=404)
+            response,
+            "You do not have access rights to this video: %s" % self.video3.slug,
+            status_code=404,
+        )
         self.client.logout()
         # Test that connected owner has access rights
         self.client.force_login(self.user)
         response = self.client.get(url, {"from": "video"})
-        self.assertContains(
-                response,
-                title_expected.encode("utf-8"),
-                status_code=200)
+        self.assertContains(response, title_expected.encode("utf-8"), status_code=200)
 
         # Test that connected superuser has access rights
         self.client.logout()
         self.client.force_login(self.superuser)
         response = self.client.get(url, {"from": "video"})
-        self.assertContains(
-                response,
-                title_expected.encode("utf-8"),
-                status_code=200)
+        self.assertContains(response, title_expected.encode("utf-8"), status_code=200)
         del title_expected
         del response
         del password

@@ -2,28 +2,22 @@ from rest_framework import serializers, viewsets
 from .models import RecordingFile, Recording, Recorder
 
 
-class RecordingModelSerializer(
-        serializers.HyperlinkedModelSerializer):
-
+class RecordingModelSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Recording
-        fields = ('id', 'url', 'user', 'title', 'source_file', 'type')
+        fields = ("id", "url", "user", "title", "source_file", "type")
 
 
-class RecorderModelSerializer(
-        serializers.HyperlinkedModelSerializer):
-
+class RecorderModelSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Recorder
-        fields = ('id',)
+        fields = ("id",)
 
 
-class RecordingFileModelSerializer(
-        serializers.HyperlinkedModelSerializer):
-
+class RecordingFileModelSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RecordingFile
-        fields = ('id', 'url', 'file', 'recorder')
+        fields = ("id", "url", "file", "recorder")
 
 
 class RecordingModelViewSet(viewsets.ModelViewSet):

@@ -1,1 +1,1 @@
-default_app_config = 'pod.video.apps.VideoConfig'
+default_app_config = "pod.video.apps.VideoConfig"

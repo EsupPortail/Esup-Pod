@@ -6,11 +6,11 @@ from django.contrib.auth.models import Group
 
 
 class InteractiveGroupForm(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
         super(InteractiveGroupForm, self).__init__(*args, **kwargs)
-        self.fields['groups'].widget = widgets.FilteredSelectMultiple(
-            _("Groups"), False, attrs={})
+        self.fields["groups"].widget = widgets.FilteredSelectMultiple(
+            _("Groups"), False, attrs={}
+        )
         self.fields["groups"].queryset = Group.objects.all()
 
     class Meta(object):
