@@ -44,4 +44,3 @@ class PlaylistViewSet(viewsets.ModelViewSet):
 class PlaylistElementViewSet(viewsets.ModelViewSet):
     queryset = PlaylistElement.objects.all()
     serializer_class = PlaylistElementSerializer
-    
