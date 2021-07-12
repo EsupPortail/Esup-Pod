@@ -213,6 +213,7 @@ class PlaylistVideoSerializer(serializers.HyperlinkedModelSerializer):
             "source_file",
         )
 
+
 class ViewCountSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ViewCount
@@ -333,9 +334,11 @@ class PlaylistVideoViewSet(viewsets.ModelViewSet):
     queryset = PlaylistVideo.objects.all()
     serializer_class = PlaylistVideoSerializer
 
+
 class ViewCountViewSet(viewsets.ModelViewSet):
     queryset = ViewCount.objects.all()
     serializer_class = ViewCountSerializer
+
 
 class XmlTextRenderer(renderers.BaseRenderer):
     media_type = "text/xml"
