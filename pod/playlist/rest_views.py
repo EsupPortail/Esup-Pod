@@ -3,9 +3,9 @@ from rest_framework import serializers, viewsets
 from .models import Playlist
 from .models import PlaylistElement
 
-import json
 
 # Serializers define the API representation.
+
 
 class PlaylistSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -19,6 +19,7 @@ class PlaylistSerializer(serializers.HyperlinkedModelSerializer):
             "visible"
         )
 
+
 class PlaylistElementSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = PlaylistElement
@@ -30,7 +31,6 @@ class PlaylistElementSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-
 #############################################################################
 # ViewSets define the view behavior.
 #############################################################################
@@ -40,6 +40,8 @@ class PlaylistViewSet(viewsets.ModelViewSet):
     queryset = Playlist.objects.all()
     serializer_class = PlaylistSerializer
 
+
 class PlaylistElementViewSet(viewsets.ModelViewSet):
     queryset = PlaylistElement.objects.all()
     serializer_class = PlaylistElementSerializer
+    
