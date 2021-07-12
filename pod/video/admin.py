@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy as _
 from modeltranslation.admin import TranslationAdmin
 
 from .models import Video
+from .models import UpdateOwner
 from .models import Channel
 from .models import Theme
 from .models import Type
@@ -269,6 +270,29 @@ class VideoAdmin(admin.ModelAdmin):
             "feather-icons/feather.min.js",
             "bootstrap-4/js/bootstrap.min.js",
         )
+
+
+class updateOwnerAdmin(admin.ModelAdmin):
+    change_list_template = "videos/change_video_owner.html"
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        return super(updateOwnerAdmin, self).changelist_view(
+            request, extra_context=extra_context
+        )
+
+    def has_add_permission(self, request, obj=None):
+        """Manage create new instance link from admin interface.
+        if return False no add link
+
+        Args:
+            request (Request): Http request
+            obj (dict, optional): Defaults to None.
+
+        Returns:
+            bool: add or remove add link
+        """
+        return False
 
 
 class ChannelSuperAdminForm(ChannelForm):
@@ -696,6 +720,7 @@ admin.site.register(Type, TypeAdmin)
 admin.site.register(Discipline, DisciplineAdmin)
 admin.site.register(Theme, ThemeAdmin)
 admin.site.register(Video, VideoAdmin)
+admin.site.register(UpdateOwner, updateOwnerAdmin)
 admin.site.register(EncodingVideo, EncodingVideoAdmin)
 admin.site.register(EncodingAudio, EncodingAudioAdmin)
 admin.site.register(VideoRendition, VideoRenditionAdmin)
