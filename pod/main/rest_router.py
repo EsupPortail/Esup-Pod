@@ -3,6 +3,7 @@ from django.conf.urls import url
 from django.conf.urls import include
 from pod.authentication import rest_views as authentication_views
 from pod.video import rest_views as video_views
+from pod.playlist import rest_views as playlist_views
 from pod.main import rest_views as main_views
 from pod.authentication import rest_views as auth_views
 
@@ -41,6 +42,9 @@ router.register(r"encodings_video", video_views.EncodingVideoViewSet)
 router.register(r"encodings_audio", video_views.EncodingAudioViewSet)
 router.register(r"playlist_videos", video_views.PlaylistVideoViewSet)
 router.register(r"view_count", video_views.ViewCountViewSet)
+
+router.register(r"playlist", playlist_views.PlaylistViewSet)
+router.register(r"playlist_element", playlist_views.PlaylistElementViewSet)
 
 router.register(r"contributors", completion_views.ContributorViewSet)
 router.register(r"documents", completion_views.DocumentViewSet)
