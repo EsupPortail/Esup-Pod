@@ -45,6 +45,57 @@
     </div>
   </div>
 </div>
+
+
+
+{% for add_channel_tab in ADD_CHANNELS_TAB %}
+<div class="modal fade chaines-modal-{{add_channel_tab.id}}" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-pod-full">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title"><i data-feather="youtube"></i>&nbsp;{% blocktrans count counter=add_channel_tab.channel_set.all.count %}{{ counter }} Channel{% plural %}{{ counter }} Channels{% endblocktrans %}</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body row">
+        <ul class="col-12 list-group list-group-flush" id="list-channels">
+          {% for channel in add_channel_tab.channel_set.all %}
+            <li class="list-group-item list-group-item-action" data-id="{{channel.id}}">
+              <div class=" d-flex justify-content-between align-items-center">
+                <span class="d-flex align-items-center title-chaine">
+                  {% if channel.headband %}
+                    {% thumbnail channel.headband.file "x34" as im %}
+                    <img src="{{ im.url }}" height="34" class='rounded mr-2' alt="{{channel.title|title}}" loading="lazy">
+                    {% endthumbnail %}
+                  {% else %}<i data-feather="youtube" style="height:34px" class="mr-2"></i>{% endif %}
+                  <a href="{% url 'channel' slug_c=channel.slug%}" title="{{channel.title}}" id="channel-title_{{channel.id}}">
+                  {{channel.title}}</a></span>
+                <span>
+                  {% if channel.themes.all.count > 0 %}
+                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseThemes{{channel.id}}" aria-expanded="true" aria-controls="collapseThemes{{channel.id}}">
+                    {% blocktrans count counter=channel.themes.all.count %}{{counter}} Theme{% plural %}{{counter}} Themes{% endblocktrans %} <i data-feather="chevron-down" class="chevron-down m-0 p-0"></i>
+                    </button>
+                  {% endif %}
+                  <span class="badge badge-primary badge-pill">{% blocktrans count counter=channel.video_count %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</span>
+                </span>
+              </div>
+              <div id="collapseThemes{{channel.id}}" class="collapse collapsibleThemes" aria-labelledby="channel-title_{{channel.id}}" data-parent="#list-channels" data-id="{{channel.id}}"></div>
+            </li>
+          {% empty %}
+            <li class="list-group-item"> {% trans "No channels found" %} </li>
+          {%endfor%}
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close'%}</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+
 <div class="modal fade types-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
