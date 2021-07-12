@@ -37,6 +37,7 @@ from pod.video.views import add_comment, delete_comment
 from pod.video.views import vote_get, vote_post
 from pod.video.views import get_categories, add_category
 from pod.video.views import edit_category, delete_category
+from pod.video.views import update_video_owner, filter_owners, filter_videos
 from pod.video.feeds import RssSiteVideosFeed, RssSiteAudiosFeed
 from pod.video.views import video_record
 from pod.main.views import (
@@ -96,6 +97,18 @@ urlpatterns = [
         r"^rss-audio/(?P<slug_c>[\-\d\w]+)/(?P<slug_t>[\-\d\w]+)/$",
         RssSiteAudiosFeed(),
         name="rss-audio",
+    ),
+    # Manage video owner
+    url(
+        r"^video/updateowner/put/(?P<user_id>[\d]+)/$",
+        update_video_owner,
+        name="update_video_owner",
+    ),
+    url(r"^video/updateowner/owners/$", filter_owners, name="filter_owners"),
+    url(
+        r"^video/updateowner/videos/(?P<user_id>[\d]+)/$",
+        filter_videos,
+        name="filter_videos",
     ),
     url(r"^video/(?P<slug>[\-\d\w]+)/$", video, name="video"),
     url(
