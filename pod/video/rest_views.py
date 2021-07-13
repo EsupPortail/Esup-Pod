@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404
 from .models import Channel, Theme
 from .models import Type, Discipline, Video
 from .models import VideoRendition, EncodingVideo, EncodingAudio
-from .models import PlaylistVideo
+from .models import PlaylistVideo, ViewCount
 from .views import VIDEOS
 from .remote_encode import start_store_remote_encoding_video
 from .transcript import start_transcript
@@ -214,6 +214,16 @@ class PlaylistVideoSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
+class ViewCountSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ViewCount
+        fields = (
+            "video",
+            "date",
+            "count",
+        )
+
+
 #############################################################################
 # ViewSets define the view behavior.
 #############################################################################
@@ -324,6 +334,11 @@ class EncodingAudioViewSet(viewsets.ModelViewSet):
 class PlaylistVideoViewSet(viewsets.ModelViewSet):
     queryset = PlaylistVideo.objects.all()
     serializer_class = PlaylistVideoSerializer
+
+
+class ViewCountViewSet(viewsets.ModelViewSet):
+    queryset = ViewCount.objects.all()
+    serializer_class = ViewCountSerializer
 
 
 class XmlTextRenderer(renderers.BaseRenderer):
