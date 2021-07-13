@@ -105,7 +105,6 @@ class VideoTestUtils(TestCase):
 
     def test_add_default_thumbnail_to_video(self):
         add_default_thumbnail_to_video(self.v.id, self.thumbnail)
-
         self.assertEqual(Video.objects.get(id=self.v.id).thumbnail.file, "blabla.jpg")
         add_default_thumbnail_to_video(self.v.id, self.thumbnail2)
         self.assertEqual(Video.objects.get(id=self.v.id).thumbnail.file, "blabla.jpg")
