@@ -1,12 +1,21 @@
 import json
 
 from django.test import TestCase
+from django.conf import settings
 from django.contrib.auth.models import User
 
 from pod.video.models import Channel, Theme
 from pod.video.models import Video, Type
 from pod.video.utils import pagination_data, get_headband
-from pod.video.utils import change_owner, get_videos
+from pod.video.utils import change_owner, get_videos, add_default_thumbnail_to_video
+
+if getattr(settings, "USE_PODFILE", False):
+    FILEPICKER = True
+    from pod.podfile.models import CustomImageModel
+    from pod.podfile.models import UserFolder
+else:
+    FILEPICKER = False
+    from pod.main.models import CustomImageModel
 
 
 class VideoTestUtils(TestCase):
@@ -26,6 +35,17 @@ class VideoTestUtils(TestCase):
             is_draft=False,
             type=Type.objects.get(id=1),
         )
+        if FILEPICKER:
+            homedir, created = UserFolder.objects.get_or_create(name="Home", owner=self.user)
+            self.thumbnail = CustomImageModel.objects.create(
+                folder=homedir, created_by=self.user, file="blabla.jpg"
+            )
+            self.thumbnail2 = CustomImageModel.objects.create(
+                folder=homedir, created_by=self.user, file="piapia.jpg"
+            )
+        else:
+            self.thumbnail = CustomImageModel.objects.create(file="blabla.jpg")
+            self.thumbnail2 = CustomImageModel.objects.create(file="piapia.jpg")
 
     def test_pagination_data(self):
         # First data, previous_url = None
@@ -82,3 +102,9 @@ class VideoTestUtils(TestCase):
         actual = get_videos(self.v.title, self.user.id, search="not found")
         expected = {**expected, "count": 0, "page_infos": "0/0", "results": []}
         self.assertEqual(json.loads(actual.content.decode("utf-8")), expected)
+
+    def test_add_default_thumbnail_to_video(self):
+        add_default_thumbnail_to_video(self.v.id, self.thumbnail)
+        self.assertEqual(self.v.thumbnail.file, "blabla.jpg")
+        add_default_thumbnail_to_video(self.v.id, self.thumbnail2)
+        self.assertEqual(self.v.thumbnail.file, "blabla.jpg")

@@ -457,6 +457,13 @@ def move_video_file(video, new_owner):  # pragma: no cover
     video.save()
 
 
+def add_default_thumbnail_to_video(video_id, thumbnail):
+    video_to_encode = Video.objects.get(id=video_id)
+    if video_to_encode.thumbnail is None:
+        video_to_encode.thumbnail = thumbnail
+        video_to_encode.save()
+
+
 def get_videos(title, user_id, search=None, limit=12, offset=0):
     """Return videos filtered by GET parameters 'title'
         With limit and offset

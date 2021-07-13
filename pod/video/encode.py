@@ -12,7 +12,7 @@ from .models import EncodingLog
 from .models import PlaylistVideo
 from .models import Video
 
-from .utils import change_encoding_step, add_encoding_log, check_file
+from .utils import change_encoding_step, add_encoding_log, check_file, add_default_thumbnail_to_video
 from .utils import create_outputdir, send_email, send_email_encoding
 from .utils import get_duration_from_mp4
 from .utils import fix_video_duration
@@ -1091,9 +1091,7 @@ def create_and_save_thumbnails(source, image_width, video_id):
                 )
                 thumbnail.save()
                 if i == 0:
-                    video_to_encode = Video.objects.get(id=video_id)
-                    video_to_encode.thumbnail = thumbnail
-                    video_to_encode.save()
+                    add_default_thumbnail_to_video(video_id, thumbnail)
             else:
                 thumbnail = CustomImageModel()
                 thumbnail.file.save(
@@ -1103,9 +1101,7 @@ def create_and_save_thumbnails(source, image_width, video_id):
                 )
                 thumbnail.save()
                 if i == 0:
-                    video_to_encode = Video.objects.get(id=video_id)
-                    video_to_encode.thumbnail = thumbnail
-                    video_to_encode.save()
+                    add_default_thumbnail_to_video(video_id, thumbnail)
             # remove tempfile
             msg += "\n- thumbnailfilename %s:\n%s" % (i, thumbnail.file.path)
             os.remove(thumbnailfilename)
@@ -1126,7 +1122,6 @@ def create_and_save_thumbnails(source, image_width, video_id):
 def remove_old_data(video_id):
     """Remove old data."""
     video_to_encode = Video.objects.get(id=video_id)
-    video_to_encode.thumbnail = None
     if video_to_encode.overview:
         image_overview = os.path.join(
             os.path.dirname(video_to_encode.overview.path), "overview.png"
