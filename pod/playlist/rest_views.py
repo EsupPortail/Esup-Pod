@@ -10,14 +10,7 @@ from .models import PlaylistElement
 class PlaylistSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Playlist
-        fields = (
-            "id",
-            "title",
-            "slug",
-            "owner",
-            "description",
-            "visible"
-        )
+        fields = ("id", "title", "slug", "owner", "description", "visible")
 
 
 class PlaylistElementSerializer(serializers.HyperlinkedModelSerializer):
