@@ -48,6 +48,7 @@
           </video>
     
         </div>
+        {% if broadcaster.aside_iframe_url %}
         <div class="col">
     
           <iframe id="inlineFrameExample" style="padding: 0; margin: 20; border:0; width: 100%;"
@@ -56,6 +57,7 @@
           src="{{broadcaster.aside_iframe_url}}">
           </iframe>
         </div>
+        {% endif %}
       </div>
 
     </div>
@@ -69,6 +71,7 @@
       </video>
 
     </div>
+    {% if broadcaster.aside_iframe_url %}
     <div class="col">
 
       <iframe id="inlineFrameExample" style="padding: 0; margin: 20; border:0; width: 100%;"
@@ -77,6 +80,7 @@
       src="{{broadcaster.aside_iframe_url}}">
       </iframe>
     </div>
+    {% endif %}
   </div>
     <div id="viewers-list"><ul id="viewers-ul"></ul></div>
   {% endif %}
