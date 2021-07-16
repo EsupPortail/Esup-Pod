@@ -1,23 +1,27 @@
+import json
+
 from django.test import TestCase
 from django.contrib.auth.models import User
 
 from pod.video.models import Channel, Theme
 from pod.video.models import Video, Type
 from pod.video.utils import pagination_data, get_headband
+from pod.video.utils import change_owner, get_videos
 
 
-class ChannelTestUtils(TestCase):
+class VideoTestUtils(TestCase):
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
-        user = User.objects.create(username="pod", password="pod1234pod")
+        self.user = User.objects.create(username="pod", password="pod1234pod")
+        self.user2 = User.objects.create(username="pod2", password="pod1234pod2")
         self.c = Channel.objects.create(title="ChannelTest1")
         self.theme = Theme.objects.create(title="Theme1", slug="blabla", channel=self.c)
         self.v = Video.objects.create(
             title="Video1",
-            owner=user,
+            owner=self.user,
             video="test.mp4",
             is_draft=False,
             type=Type.objects.get(id=1),
@@ -50,3 +54,31 @@ class ChannelTestUtils(TestCase):
     def test_get_headband(self):
         self.assertEqual(get_headband(self.c).get("type", None), "channel")
         self.assertEqual(get_headband(self.c, self.theme).get("type", None), "theme")
+
+    def test_change_owner(self):
+        actual = change_owner(str(self.v.id), self.user2)
+        self.assertEqual(actual, True)
+        # test video doesn't exist
+        self.assertEqual(change_owner(100, self.user2), False)
+
+    def test_get_videos(self):
+        actual = get_videos(self.v.title, self.user.id)
+        expected = {
+            "count": 1,
+            "next": None,
+            "previous": None,
+            "page_infos": "1/1",
+            "results": [
+                {
+                    "id": self.v.id,
+                    "title": self.v.title,
+                    "thumbnail": self.v.get_thumbnail_url(),
+                },
+            ],
+        }
+        self.assertEqual(json.loads(actual.content.decode("utf-8")), expected)
+
+        # Test with search
+        actual = get_videos(self.v.title, self.user.id, search="not found")
+        expected = {**expected, "count": 0, "page_infos": "0/0", "results": []}
+        self.assertEqual(json.loads(actual.content.decode("utf-8")), expected)
