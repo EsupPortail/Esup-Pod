@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-24 10:00+0200\n"
+"POT-Creation-Date: 2021-07-16 12:02+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nicolas CAN <nicolas.can@univ-lille.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -423,7 +423,7 @@ msgid "Username / User id, that want to perform the live."
 msgstr ""
 "Nom d'utilisateur / ID d'utilisateur, qui souhaite effectuer le direct."
 
-#: pod/bbb/models.py:214 pod/live/models.py:121 pod/recorder/models.py:165
+#: pod/bbb/models.py:214 pod/live/models.py:127 pod/recorder/models.py:165
 #: pod/video/forms.py:282 pod/video/models.py:721
 msgid "Restricted access"
 msgstr "Accès restreint"
@@ -432,7 +432,7 @@ msgstr "Accès restreint"
 msgid "Is live only accessible to authenticated users?"
 msgstr "Le direct est-il uniquement accessible aux utilisateurs authentifiés ?"
 
-#: pod/bbb/models.py:222 pod/live/models.py:158 pod/live/models.py:171
+#: pod/bbb/models.py:222 pod/live/models.py:164 pod/live/models.py:177
 msgid "Broadcaster"
 msgstr "Diffuseur"
 
@@ -1129,7 +1129,7 @@ msgstr ""
 #: pod/completion/templates/video_caption_maker.html:84
 #: pod/enrichment/models.py:322 pod/enrichment/models.py:356
 #: pod/interactive/models.py:18 pod/interactive/models.py:48
-#: pod/playlist/models.py:84 pod/recorder/models.py:90 pod/video/models.py:589
+#: pod/playlist/models.py:85 pod/recorder/models.py:90 pod/video/models.py:589
 #: pod/video/models.py:1193 pod/video/models.py:1371 pod/video/models.py:1442
 #: pod/video/models.py:1503 pod/video/models.py:1556 pod/video/models.py:1575
 #: pod/video/models.py:1603
@@ -1261,7 +1261,7 @@ msgstr "Contenu"
 
 #: pod/completion/models.py:275
 #: pod/completion/templates/overlay/list_overlay.html:13
-#: pod/playlist/models.py:86
+#: pod/playlist/models.py:87
 #: pod/playlist/templates/playlist/playlist_element_list.html:14
 msgid "Position"
 msgstr "Position"
@@ -2028,8 +2028,6 @@ msgid "My playlists"
 msgstr "Mes listes de lecture"
 
 #: pod/enrichment/templates/enrichment/video_enrichment.html:135
-#, fuzzy
-#| msgid "To help you, the different types of enrichments have specific colors"
 msgid "To help you, the different types of enrichments have specific colors:"
 msgstr ""
 "Pour vous aider, les différents types d'enrichissements ont des couleurs "
@@ -2211,7 +2209,7 @@ msgstr "Mot de passe"
 msgid "name"
 msgstr "nom"
 
-#: pod/live/models.py:36 pod/live/templates/live/live.html:110
+#: pod/live/models.py:36 pod/live/templates/live/live.html:140
 #: pod/video/models.py:287 pod/video/models.py:425
 #: pod/video/templates/channel/channel.html:85
 #: pod/video/templates/channel/channel.html:145
@@ -2271,67 +2269,75 @@ msgstr "Hauteur du site intégré"
 msgid "Height of the embedded site (in pixels)"
 msgstr "Hauteur (en pixel) du site intégré sur la page du live"
 
+#: pod/live/models.py:112
+msgid "Embedded aside Site URL"
+msgstr "Lien du site intégré"
+
 #: pod/live/models.py:113
+msgid "Url of the embedded site to display on aside"
+msgstr "Lien du site à intégrer sous forme d'iframe à droite du live"
+
+#: pod/live/models.py:119
 msgid "Check if the broadcaster is currently sending stream."
 msgstr "Cocher la case si le diffuseur envoie un flux."
 
-#: pod/live/models.py:117
+#: pod/live/models.py:123
 msgid "Enable viewers count"
 msgstr "Activer le compteur de spectateurs"
 
-#: pod/live/models.py:118
+#: pod/live/models.py:124
 msgid "Enable viewers count on live."
 msgstr "Active le compteur de spectateurs sur le direct."
 
-#: pod/live/models.py:122
+#: pod/live/models.py:128
 msgid "Live is accessible only to authenticated users."
 msgstr ""
 "Si cette case est cochée, la page du direct sera accessible uniquement aux "
 "utilisateurs authentifiés."
 
-#: pod/live/models.py:126
+#: pod/live/models.py:132
 msgid "Show in live tab"
 msgstr "Montrer dans l'onglet Directs"
 
-#: pod/live/models.py:127
+#: pod/live/models.py:133
 msgid "Live is accessible from the Live tab"
 msgstr ""
 "Si cette case est cochée, la page du direct sera accessible publiquement "
 "dans l'onglet Directs"
 
-#: pod/live/models.py:131 pod/recorder/models.py:179 pod/video/models.py:735
+#: pod/live/models.py:137 pod/recorder/models.py:179 pod/video/models.py:735
 msgid "password"
 msgstr "mot de passe"
 
-#: pod/live/models.py:132
+#: pod/live/models.py:138
 msgid "Viewing this live will not be possible without this password."
 msgstr "Voir ce direct n'est pas possible sans mot de passe."
 
-#: pod/live/models.py:137
+#: pod/live/models.py:143
 msgid "Number of viewers"
 msgstr "Nombre de spectateurs"
 
-#: pod/live/models.py:159
+#: pod/live/models.py:165
 msgid "Broadcasters"
 msgstr "Diffuseurs"
 
-#: pod/live/models.py:168
+#: pod/live/models.py:174
 msgid "Viewer"
 msgstr "Spectateur"
 
-#: pod/live/models.py:169
+#: pod/live/models.py:175
 msgid "Viewkey"
 msgstr "Clé de visionnage"
 
-#: pod/live/models.py:173
+#: pod/live/models.py:179
 msgid "Last heartbeat"
 msgstr "Dernier signal"
 
-#: pod/live/models.py:176
+#: pod/live/models.py:182
 msgid "Heartbeat"
 msgstr "Signal"
 
-#: pod/live/models.py:177
+#: pod/live/models.py:183
 msgid "Heartbeats"
 msgstr "Signaux"
 
@@ -2343,7 +2349,7 @@ msgid "Lives"
 msgstr "Directs"
 
 #: pod/live/templates/live/building.html:38
-#: pod/live/templates/live/live.html:121 pod/live/templates/live/lives.html:41
+#: pod/live/templates/live/live.html:151 pod/live/templates/live/lives.html:41
 msgid "Sorry, no lives found"
 msgstr "Désolé, aucun direct trouvé"
 
@@ -2370,11 +2376,11 @@ msgstr "Mot de passe requis"
 msgid "Send"
 msgstr "Envoyer"
 
-#: pod/live/templates/live/live.html:71
+#: pod/live/templates/live/live.html:98
 msgid "Send message"
 msgstr "Envoyer un message"
 
-#: pod/live/templates/live/live.html:73
+#: pod/live/templates/live/live.html:100
 msgid ""
 "You can send a message (100 characters maximum) to the BigBlueButton "
 "session. It will be displayed within 15 to 30 seconds on the live video."
@@ -2383,33 +2389,33 @@ msgstr ""
 "BigBlueButton. Il sera affiché dans les 15 à 30 secondes sur la vidéo en "
 "direct."
 
-#: pod/live/templates/live/live.html:74
+#: pod/live/templates/live/live.html:101
 msgid "Message"
 msgstr "Message"
 
-#: pod/live/templates/live/live.html:77
+#: pod/live/templates/live/live.html:104
 msgid "You must be authenticated to send a message."
 msgstr "Vous devez être authentifié pour envoyer un message."
 
-#: pod/live/templates/live/live.html:83
+#: pod/live/templates/live/live.html:110
 msgid "Submit"
 msgstr "Envoyer"
 
-#: pod/live/templates/live/live.html:117 pod/live/templates/live/lives.html:39
+#: pod/live/templates/live/live.html:147 pod/live/templates/live/lives.html:39
 msgid "no broadcast in progress"
 msgstr "aucune diffusion actuellement"
 
-#: pod/live/templates/live/live.html:125 pod/live/templates/live/live.html:126
+#: pod/live/templates/live/live.html:155 pod/live/templates/live/live.html:156
 #: pod/live/templates/live/lives.html:45 pod/live/templates/live/lives.html:46
 msgid "access map"
 msgstr "plan d'accès"
 
-#: pod/live/templates/live/live.html:153
+#: pod/live/templates/live/live.html:186
 #: pod/video/templates/videos/video-script.html:27
 msgid "Please use different browser"
 msgstr "Utilisez un navigateur compatible"
 
-#: pod/live/templates/live/live.html:190
+#: pod/live/templates/live/live.html:223
 msgid ""
 "Thank you for watching this streaming live with us. The page will reload "
 "automatically within a few seconds to display the video on hold."
@@ -2418,27 +2424,27 @@ msgstr ""
 "rechargera automatiquement dans quelques secondes pour afficher la vidéo "
 "d’attente."
 
-#: pod/live/templates/live/live.html:207
+#: pod/live/templates/live/live.html:240
 msgid "Live not found, displaying the video on hold, retry every 10 seconds"
 msgstr ""
 "Le direct n’a pas encore commencé, affichage de la vidéo d’attente, nouvelle "
 "tentative de lecture dans 10 secondes"
 
-#: pod/live/templates/live/live.html:222
+#: pod/live/templates/live/live.html:255
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
 "Le direct n’a pas encore commencé, nouvelle tentative de lecture dans 10 "
 "secondes"
 
-#: pod/live/templates/live/live.html:278
+#: pod/live/templates/live/live.html:311
 msgid "Message sent"
 msgstr "Message envoyé"
 
-#: pod/live/templates/live/live.html:279
+#: pod/live/templates/live/live.html:312
 msgid "Message not sent: no broadcaster found"
 msgstr "Message non envoyé: aucun diffuseur trouvé"
 
-#: pod/live/templates/live/live.html:280
+#: pod/live/templates/live/live.html:313
 msgid "Message not sent: connection problem (REDIS)"
 msgstr "Message non envoyé: problème de connexion (REDIS)"
 
@@ -2508,7 +2514,7 @@ msgstr "Sujet"
 msgid "Please choose a subjects related your request"
 msgstr "Veuillez choisir un sujet en lien avec votre requête"
 
-#: pod/main/forms.py:58 pod/main/models.py:167 pod/playlist/models.py:25
+#: pod/main/forms.py:58 pod/main/models.py:167 pod/playlist/models.py:26
 #: pod/video/forms.py:135 pod/video/forms.py:352 pod/video/forms.py:403
 #: pod/video/models.py:273 pod/video/models.py:410 pod/video/models.py:638
 #: pod/video/templates/channel/list_theme.html:10
@@ -3472,51 +3478,51 @@ msgstr "votre message intitulé"
 msgid "Your message have been sent."
 msgstr "Votre message a été envoyé."
 
-#: pod/playlist/models.py:23
+#: pod/playlist/models.py:24
 #: pod/playlist/templates/playlist/playlist_element_list.html:12
 #: pod/podfile/models.py:28 pod/video/admin.py:193 pod/video/models.py:619
 #: pod/video_search/templates/search/search.html:75
 msgid "Owner"
 msgstr "Propriétaire"
 
-#: pod/playlist/models.py:29
+#: pod/playlist/models.py:30
 msgid "Short description of the playlist."
 msgstr "Courte description de la liste de lecture."
 
-#: pod/playlist/models.py:32 pod/video/models.py:326
+#: pod/playlist/models.py:33 pod/video/models.py:326
 msgid "Visible"
 msgstr "Visible"
 
-#: pod/playlist/models.py:35
+#: pod/playlist/models.py:36
 msgid "If checked, the playlist can be visible to users other than the owner."
 msgstr "Si coché, cette liste de lecture sera visible aux autres utilisateurs."
 
-#: pod/playlist/models.py:41 pod/playlist/models.py:83
+#: pod/playlist/models.py:42 pod/playlist/models.py:84
 msgid "Playlist"
 msgstr "Liste de lecture"
 
-#: pod/playlist/models.py:42
+#: pod/playlist/models.py:43
 msgid "Playlists"
 msgstr "Listes de lecture"
 
-#: pod/playlist/models.py:88
+#: pod/playlist/models.py:89
 msgid "Position of the video in a playlist."
 msgstr "Position de la vidéo dans la liste de lecture."
 
-#: pod/playlist/models.py:97
+#: pod/playlist/models.py:98
 msgid "Playlist element"
 msgstr "Élément de liste de lecture"
 
-#: pod/playlist/models.py:98
+#: pod/playlist/models.py:99
 msgid "Playlist elements"
 msgstr "Éléments de liste de lecture"
 
-#: pod/playlist/models.py:103 pod/playlist/views.py:147
+#: pod/playlist/models.py:104 pod/playlist/views.py:147
 msgid "A video in draft mode cannot be added to a playlist."
 msgstr ""
 "Une vidéo en mode brouillon ne peut être ajoutée à une liste de lecture."
 
-#: pod/playlist/models.py:107 pod/playlist/views.py:149
+#: pod/playlist/models.py:108 pod/playlist/views.py:149
 msgid "A video with a password cannot be added to a playlist."
 msgstr ""
 "Une vidéo avec mot de passe ne peut être ajoutée à une liste de lecture."
@@ -6088,6 +6094,14 @@ msgstr "Recherche avancée"
 #: pod/video_search/views.py:60
 msgid "Remove this filter"
 msgstr "Retirer ce filtre"
+
+#~| msgid "Embedded Site Height"
+#~ msgid "Embedded aside Site Height"
+#~ msgstr "Hauteur du site intégré"
+
+#~| msgid "Height of the embedded site (in pixels)"
+#~ msgid "Height of the aside embedded site (in pixels)"
+#~ msgstr "Hauteur (en pixel) du site intégré à droite sur la page du live"
 
 #, fuzzy
 #~| msgid "Archived"

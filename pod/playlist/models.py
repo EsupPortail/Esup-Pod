@@ -19,6 +19,7 @@ class Playlist(models.Model):
             + " label containing only letters, numbers, underscore"
             + " or dash top."
         ),
+        editable=False,
     )
     owner = select2_fields.ForeignKey(User, verbose_name=_("Owner"))
     description = models.TextField(

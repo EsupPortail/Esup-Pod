@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-24 10:00+0200\n"
+"POT-Creation-Date: 2021-07-16 12:02+0000\n"
 "PO-Revision-Date: 2021-01-22 12:27+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -413,7 +413,7 @@ msgstr ""
 msgid "Username / User id, that want to perform the live."
 msgstr ""
 
-#: pod/bbb/models.py:214 pod/live/models.py:121 pod/recorder/models.py:165
+#: pod/bbb/models.py:214 pod/live/models.py:127 pod/recorder/models.py:165
 #: pod/video/forms.py:282 pod/video/models.py:721
 msgid "Restricted access"
 msgstr ""
@@ -422,7 +422,7 @@ msgstr ""
 msgid "Is live only accessible to authenticated users?"
 msgstr ""
 
-#: pod/bbb/models.py:222 pod/live/models.py:158 pod/live/models.py:171
+#: pod/bbb/models.py:222 pod/live/models.py:164 pod/live/models.py:177
 msgid "Broadcaster"
 msgstr ""
 
@@ -1066,7 +1066,7 @@ msgstr ""
 #: pod/completion/templates/video_caption_maker.html:84
 #: pod/enrichment/models.py:322 pod/enrichment/models.py:356
 #: pod/interactive/models.py:18 pod/interactive/models.py:48
-#: pod/playlist/models.py:84 pod/recorder/models.py:90 pod/video/models.py:589
+#: pod/playlist/models.py:85 pod/recorder/models.py:90 pod/video/models.py:589
 #: pod/video/models.py:1193 pod/video/models.py:1371 pod/video/models.py:1442
 #: pod/video/models.py:1503 pod/video/models.py:1556 pod/video/models.py:1575
 #: pod/video/models.py:1603
@@ -1196,7 +1196,7 @@ msgstr ""
 
 #: pod/completion/models.py:275
 #: pod/completion/templates/overlay/list_overlay.html:13
-#: pod/playlist/models.py:86
+#: pod/playlist/models.py:87
 #: pod/playlist/templates/playlist/playlist_element_list.html:14
 msgid "Position"
 msgstr ""
@@ -2096,7 +2096,7 @@ msgstr ""
 msgid "name"
 msgstr ""
 
-#: pod/live/models.py:36 pod/live/templates/live/live.html:110
+#: pod/live/models.py:36 pod/live/templates/live/live.html:140
 #: pod/video/models.py:287 pod/video/models.py:425
 #: pod/video/templates/channel/channel.html:85
 #: pod/video/templates/channel/channel.html:145
@@ -2156,63 +2156,71 @@ msgstr ""
 msgid "Height of the embedded site (in pixels)"
 msgstr ""
 
+#: pod/live/models.py:112
+msgid "Embedded aside Site URL"
+msgstr ""
+
 #: pod/live/models.py:113
+msgid "Url of the embedded site to display on aside"
+msgstr ""
+
+#: pod/live/models.py:119
 msgid "Check if the broadcaster is currently sending stream."
 msgstr ""
 
-#: pod/live/models.py:117
+#: pod/live/models.py:123
 msgid "Enable viewers count"
 msgstr ""
 
-#: pod/live/models.py:118
+#: pod/live/models.py:124
 msgid "Enable viewers count on live."
 msgstr ""
 
-#: pod/live/models.py:122
+#: pod/live/models.py:128
 msgid "Live is accessible only to authenticated users."
 msgstr ""
 
-#: pod/live/models.py:126
+#: pod/live/models.py:132
 msgid "Show in live tab"
 msgstr ""
 
-#: pod/live/models.py:127
+#: pod/live/models.py:133
 msgid "Live is accessible from the Live tab"
 msgstr ""
 
-#: pod/live/models.py:131 pod/recorder/models.py:179 pod/video/models.py:735
+#: pod/live/models.py:137 pod/recorder/models.py:179 pod/video/models.py:735
 msgid "password"
 msgstr ""
 
-#: pod/live/models.py:132
+#: pod/live/models.py:138
 msgid "Viewing this live will not be possible without this password."
 msgstr ""
 
-#: pod/live/models.py:137
+#: pod/live/models.py:143
 msgid "Number of viewers"
 msgstr ""
 
-#: pod/live/models.py:159
+#: pod/live/models.py:165
 msgid "Broadcasters"
 msgstr ""
 
-#: pod/live/models.py:168
+#: pod/live/models.py:174
 msgid "Viewer"
 msgstr ""
 
-#: pod/live/models.py:169
+#: pod/live/models.py:175
 msgid "Viewkey"
 msgstr ""
 
-#: pod/live/models.py:173
+#: pod/live/models.py:179
 msgid "Last heartbeat"
 msgstr ""
 
-#: pod/live/models.py:176
+#: pod/live/models.py:182
 msgid "Heartbeat"
 msgstr ""
 
-#: pod/live/models.py:177
+#: pod/live/models.py:183
 msgid "Heartbeats"
 msgstr ""
 
@@ -2224,7 +2232,7 @@ msgid "Lives"
 msgstr ""
 
 #: pod/live/templates/live/building.html:38
-#: pod/live/templates/live/live.html:121 pod/live/templates/live/lives.html:41
+#: pod/live/templates/live/live.html:151 pod/live/templates/live/lives.html:41
 msgid "Sorry, no lives found"
 msgstr ""
 
@@ -2249,65 +2257,65 @@ msgstr ""
 msgid "Send"
 msgstr ""
 
-#: pod/live/templates/live/live.html:71
+#: pod/live/templates/live/live.html:98
 msgid "Send message"
 msgstr ""
 
-#: pod/live/templates/live/live.html:73
+#: pod/live/templates/live/live.html:100
 msgid ""
 "You can send a message (100 characters maximum) to the BigBlueButton "
 "session. It will be displayed within 15 to 30 seconds on the live video."
 msgstr ""
 
-#: pod/live/templates/live/live.html:74
+#: pod/live/templates/live/live.html:101
 msgid "Message"
 msgstr ""
 
-#: pod/live/templates/live/live.html:77
+#: pod/live/templates/live/live.html:104
 msgid "You must be authenticated to send a message."
 msgstr ""
 
-#: pod/live/templates/live/live.html:83
+#: pod/live/templates/live/live.html:110
 msgid "Submit"
 msgstr ""
 
-#: pod/live/templates/live/live.html:117 pod/live/templates/live/lives.html:39
+#: pod/live/templates/live/live.html:147 pod/live/templates/live/lives.html:39
 msgid "no broadcast in progress"
 msgstr ""
 
-#: pod/live/templates/live/live.html:125 pod/live/templates/live/live.html:126
+#: pod/live/templates/live/live.html:155 pod/live/templates/live/live.html:156
 #: pod/live/templates/live/lives.html:45 pod/live/templates/live/lives.html:46
 msgid "access map"
 msgstr ""
 
-#: pod/live/templates/live/live.html:153
+#: pod/live/templates/live/live.html:186
 #: pod/video/templates/videos/video-script.html:27
 msgid "Please use different browser"
 msgstr ""
 
-#: pod/live/templates/live/live.html:190
+#: pod/live/templates/live/live.html:223
 msgid ""
 "Thank you for watching this streaming live with us. The page will reload "
 "automatically within a few seconds to display the video on hold."
 msgstr ""
 
-#: pod/live/templates/live/live.html:207
+#: pod/live/templates/live/live.html:240
 msgid "Live not found, displaying the video on hold, retry every 10 seconds"
 msgstr ""
 
-#: pod/live/templates/live/live.html:222
+#: pod/live/templates/live/live.html:255
 msgid "Live not found, retry in 10 seconds"
 msgstr ""
 
-#: pod/live/templates/live/live.html:278
+#: pod/live/templates/live/live.html:311
 msgid "Message sent"
 msgstr ""
 
-#: pod/live/templates/live/live.html:279
+#: pod/live/templates/live/live.html:312
 msgid "Message not sent: no broadcaster found"
 msgstr ""
 
-#: pod/live/templates/live/live.html:280
+#: pod/live/templates/live/live.html:313
 msgid "Message not sent: connection problem (REDIS)"
 msgstr ""
 
@@ -2377,7 +2385,7 @@ msgstr ""
 msgid "Please choose a subjects related your request"
 msgstr ""
 
-#: pod/main/forms.py:58 pod/main/models.py:167 pod/playlist/models.py:25
+#: pod/main/forms.py:58 pod/main/models.py:167 pod/playlist/models.py:26
 #: pod/video/forms.py:135 pod/video/forms.py:352 pod/video/forms.py:403
 #: pod/video/models.py:273 pod/video/models.py:410 pod/video/models.py:638
 #: pod/video/templates/channel/list_theme.html:10
@@ -3336,50 +3344,50 @@ msgstr ""
 msgid "Your message have been sent."
 msgstr ""
 
-#: pod/playlist/models.py:23
+#: pod/playlist/models.py:24
 #: pod/playlist/templates/playlist/playlist_element_list.html:12
 #: pod/podfile/models.py:28 pod/video/admin.py:193 pod/video/models.py:619
 #: pod/video_search/templates/search/search.html:75
 msgid "Owner"
 msgstr ""
 
-#: pod/playlist/models.py:29
+#: pod/playlist/models.py:30
 msgid "Short description of the playlist."
 msgstr ""
 
-#: pod/playlist/models.py:32 pod/video/models.py:326
+#: pod/playlist/models.py:33 pod/video/models.py:326
 msgid "Visible"
 msgstr ""
 
-#: pod/playlist/models.py:35
+#: pod/playlist/models.py:36
 msgid "If checked, the playlist can be visible to users other than the owner."
 msgstr ""
 
-#: pod/playlist/models.py:41 pod/playlist/models.py:83
+#: pod/playlist/models.py:42 pod/playlist/models.py:84
 msgid "Playlist"
 msgstr ""
 
-#: pod/playlist/models.py:42
+#: pod/playlist/models.py:43
 msgid "Playlists"
 msgstr ""
 
-#: pod/playlist/models.py:88
+#: pod/playlist/models.py:89
 msgid "Position of the video in a playlist."
 msgstr ""
 
-#: pod/playlist/models.py:97
+#: pod/playlist/models.py:98
 msgid "Playlist element"
 msgstr ""
 
-#: pod/playlist/models.py:98
+#: pod/playlist/models.py:99
 msgid "Playlist elements"
 msgstr ""
 
-#: pod/playlist/models.py:103 pod/playlist/views.py:147
+#: pod/playlist/models.py:104 pod/playlist/views.py:147
 msgid "A video in draft mode cannot be added to a playlist."
 msgstr ""
 
-#: pod/playlist/models.py:107 pod/playlist/views.py:149
+#: pod/playlist/models.py:108 pod/playlist/views.py:149
 msgid "A video with a password cannot be added to a playlist."
 msgstr ""
 
