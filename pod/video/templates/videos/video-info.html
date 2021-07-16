@@ -242,6 +242,7 @@
             </div>
             <small id="displaytimeHelp" class="form-text text-muted">{% trans 'Check the box to indicate the beginning of playing desired.' %}</small>
           </div>
+	  {% if request.user == video.owner or request.user in video.additional_owners.all%}
 	  <legend><i data-feather="upload-cloud""></i>&nbsp;{% trans 'BigBlueButton/H5P Integration' %}</legend>
           <label for="txtintegrationh5p">{% trans 'Use these links in a BigBlueButton meeting or an interactive H5P video activity:' %}</label>
           <div class="form-group">
@@ -252,6 +253,7 @@
                         <li class="list-group-item">{{video.get_video_mp3.name}} :&nbsp;<input class="form-control" style="display:table-row; width:85%;" type="text" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.META.HTTP_HOST }}{{video.get_video_mp3.source_file.url}}" readonly/></li>
                 {% endif %}
           </div>
+	  {% endif %}
         </fieldset>
         <div class="col-md-6">
           <fieldset>
