@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-16 10:42+0000\n"
+"POT-Creation-Date: 2021-07-16 12:02+0000\n"
 "PO-Revision-Date: 2021-01-22 12:27+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -413,7 +413,7 @@ msgstr ""
 msgid "Username / User id, that want to perform the live."
 msgstr ""
 
-#: pod/bbb/models.py:214 pod/live/models.py:133 pod/recorder/models.py:165
+#: pod/bbb/models.py:214 pod/live/models.py:127 pod/recorder/models.py:165
 #: pod/video/forms.py:282 pod/video/models.py:721
 msgid "Restricted access"
 msgstr ""
@@ -422,7 +422,7 @@ msgstr ""
 msgid "Is live only accessible to authenticated users?"
 msgstr ""
 
-#: pod/bbb/models.py:222 pod/live/models.py:170 pod/live/models.py:183
+#: pod/bbb/models.py:222 pod/live/models.py:164 pod/live/models.py:177
 msgid "Broadcaster"
 msgstr ""
 
@@ -2164,71 +2164,63 @@ msgstr ""
 msgid "Url of the embedded site to display on aside"
 msgstr ""
 
-#: pod/live/models.py:118
-msgid "Embedded aside Site Height"
-msgstr ""
-
-#: pod/live/models.py:121
-msgid "Height of the aside embedded site (in pixels)"
-msgstr ""
-
-#: pod/live/models.py:125
+#: pod/live/models.py:119
 msgid "Check if the broadcaster is currently sending stream."
 msgstr ""
 
-#: pod/live/models.py:129
+#: pod/live/models.py:123
 msgid "Enable viewers count"
 msgstr ""
 
-#: pod/live/models.py:130
+#: pod/live/models.py:124
 msgid "Enable viewers count on live."
 msgstr ""
 
-#: pod/live/models.py:134
+#: pod/live/models.py:128
 msgid "Live is accessible only to authenticated users."
 msgstr ""
 
-#: pod/live/models.py:138
+#: pod/live/models.py:132
 msgid "Show in live tab"
 msgstr ""
 
-#: pod/live/models.py:139
+#: pod/live/models.py:133
 msgid "Live is accessible from the Live tab"
 msgstr ""
 
-#: pod/live/models.py:143 pod/recorder/models.py:179 pod/video/models.py:735
+#: pod/live/models.py:137 pod/recorder/models.py:179 pod/video/models.py:735
 msgid "password"
 msgstr ""
 
-#: pod/live/models.py:144
+#: pod/live/models.py:138
 msgid "Viewing this live will not be possible without this password."
 msgstr ""
 
-#: pod/live/models.py:149
+#: pod/live/models.py:143
 msgid "Number of viewers"
 msgstr ""
 
-#: pod/live/models.py:171
+#: pod/live/models.py:165
 msgid "Broadcasters"
 msgstr ""
 
-#: pod/live/models.py:180
+#: pod/live/models.py:174
 msgid "Viewer"
 msgstr ""
 
-#: pod/live/models.py:181
+#: pod/live/models.py:175
 msgid "Viewkey"
 msgstr ""
 
-#: pod/live/models.py:185
+#: pod/live/models.py:179
 msgid "Last heartbeat"
 msgstr ""
 
-#: pod/live/models.py:188
+#: pod/live/models.py:182
 msgid "Heartbeat"
 msgstr ""
 
-#: pod/live/models.py:189
+#: pod/live/models.py:183
 msgid "Heartbeats"
 msgstr ""
 
