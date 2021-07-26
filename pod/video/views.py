@@ -676,12 +676,13 @@ def video_all_info(request, slug, slug_private=None):
     except ValueError:
         raise SuspiciousOperation("Invalid video id")
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
-    is_password_protected = (
-        video.password is not None
-        and video.password != ""
-    )
+    is_password_protected = video.password is not None and video.password != ""
     show_page = get_video_access(request, video, slug_private)
-    template_video = "videos/video-info.html" if request.GET.get("is_iframe") and request.GET.get("is_iframe") == "true" else "videos/video-all-info.html"
+    template_video = (
+        "videos/video-info.html"
+        if request.GET.get("is_iframe") and request.GET.get("is_iframe") == "true"
+        else "videos/video-all-info.html"
+    )
 
     if (
         (show_page and not is_password_protected)
@@ -713,13 +714,15 @@ def video_all_info(request, slug, slug_private=None):
                 VideoPasswordForm(request.POST) if request.POST else VideoPasswordForm()
             )
             rendered = render_to_string(
-                'videos/video-form.html',
+                "videos/video-form.html",
                 {"video": video, "form": form},
                 request,
             )
-            response = {"status": "nok",
-                        "error": "password",
-                        "html_content": rendered, }
+            response = {
+                "status": "nok",
+                "error": "password",
+                "html_content": rendered,
+            }
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
         elif request.user.is_authenticated():
@@ -730,14 +733,13 @@ def video_all_info(request, slug, slug_private=None):
             params = []
             iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
             url = "%s?%sreferrer=%s" % (
-                   settings.LOGIN_URL,
-                   iframe_param,
-                   request.get_full_path()
-                          .replace('/video_info/', '/video/')
-                          .replace('&', '%26'), )
-            response = {"status": "nok",
-                        "error": "access",
-                        "url": url}
+                settings.LOGIN_URL,
+                iframe_param,
+                request.get_full_path()
+                .replace("/video_info/", "/video/")
+                .replace("&", "%26"),
+            )
+            response = {"status": "nok", "error": "access", "url": url}
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
 

@@ -52,7 +52,7 @@ def authentication_login(request):
         return redirect(referrer)
     if USE_CAS and CAS_GATEWAY:
         url = reverse("authentication_login_gateway")
-        url += "?%snext=%s" % (iframe_param, referrer.replace('&', '%26'))
+        url += "?%snext=%s" % (iframe_param, referrer.replace("&", "%26"))
         return redirect(url)
     elif USE_CAS or USE_SHIB or USE_OIDC:
         return render(
@@ -69,7 +69,7 @@ def authentication_login(request):
         )
     else:
         url = reverse("local-login")
-        url += "?%snext=%s" % (iframe_param, referrer.replace('&', '%26'))
+        url += "?%snext=%s" % (iframe_param, referrer.replace("&", "%26"))
         return redirect(url)
 
 
