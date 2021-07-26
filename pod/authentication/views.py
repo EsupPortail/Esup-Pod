@@ -24,9 +24,6 @@ if CAS_GATEWAY:
     @gateway()
     def authentication_login_gateway(request):
         next = request.GET["next"] if request.GET.get("next") else "/"
-        f=open('/home/pod/django_projects/podv2dev/pod/log/custom.log', 'a')
-        f.write('In authentication_login_gateway next is : \n'+next+'\n')
-        f.close()
         if request.user.is_authenticated():
             return redirect(next)
 
@@ -50,9 +47,6 @@ else:
 
 def authentication_login(request):
     referrer = request.GET["referrer"] if request.GET.get("referrer") else "/"
-    f=open('/home/pod/django_projects/podv2dev/pod/log/custom.log', 'a')
-    f.write('In authentication_login referrer is : \n'+referrer+'\n')
-    f.close()
     iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
     if request.user.is_authenticated():
         return redirect(referrer)
