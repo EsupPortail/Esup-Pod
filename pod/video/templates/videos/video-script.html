@@ -156,6 +156,9 @@ player.on('firstplay', function(){
   //add logo to the player
   {% if request.GET.is_iframe %}
   player.videoJsInfo();
+  {% if request.GET.playlist %}
+  player.videoJsPlaylist();
+  {%endif%}
   {%endif%}
 
   player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});

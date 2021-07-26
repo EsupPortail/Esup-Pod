@@ -668,6 +668,80 @@ def get_video_access(request, video, slug_private):
         return True
 
 
+@ajax_required
+@csrf_protect
+def video_all_info(request, slug, slug_private=None):
+    try:
+        id = int(slug[: slug.find("-")])
+    except ValueError:
+        raise SuspiciousOperation("Invalid video id")
+    video = get_object_or_404(Video, id=id, sites=get_current_site(request))
+    is_password_protected = (
+        video.password is not None
+        and video.password != ""
+    )
+    show_page = get_video_access(request, video, slug_private)
+    template_video = "videos/video-info.html" if request.GET.get("is_iframe") and request.GET.get("is_iframe") == "true" else "videos/video-all-info.html"
+
+    if (
+        (show_page and not is_password_protected)
+        or (
+            show_page
+            and is_password_protected
+            and request.POST.get("password")
+            and request.POST.get("password") == video.password
+        )
+        or (slug_private and slug_private == video.get_hashkey())
+        or request.user == video.owner
+        or request.user.is_superuser
+        or request.user.has_perm("video.change_video")
+        or (request.user in video.additional_owners.all())
+    ):
+        rendered = render_to_string(template_video, {"video": video}, request)
+        response = {"status": "ok", "html_content": rendered}
+        data = json.dumps(response)
+        return HttpResponse(data, content_type="application/json")
+    else:
+        is_draft = video.is_draft
+        is_restricted = video.is_restricted
+        is_restricted_to_group = video.restrict_access_to_groups.all().exists()
+        is_access_protected = is_draft or is_restricted or is_restricted_to_group
+        if is_password_protected and (
+            not is_access_protected or (is_access_protected and show_page)
+        ):
+            form = (
+                VideoPasswordForm(request.POST) if request.POST else VideoPasswordForm()
+            )
+            rendered = render_to_string(
+                'videos/video-form.html',
+                {"video": video, "form": form},
+                request,
+            )
+            response = {"status": "nok",
+                        "error": "password",
+                        "html_content": rendered, }
+            data = json.dumps(response)
+            return HttpResponse(data, content_type="application/json")
+        elif request.user.is_authenticated():
+            response = {"status": "nok", "error": "deny", "html_content": ""}
+            data = json.dumps(response)
+            return HttpResponse(data, content_type="application/json")
+        else:
+            params = []
+            iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
+            url = "%s?%sreferrer=%s" % (
+                   settings.LOGIN_URL,
+                   iframe_param,
+                   request.get_full_path()
+                          .replace('/video_info/', '/video/')
+                          .replace('&', '%26'), )
+            response = {"status": "nok",
+                        "error": "access",
+                        "url": url}
+            data = json.dumps(response)
+            return HttpResponse(data, content_type="application/json")
+
+
 @csrf_protect
 def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
     template_video = "videos/video.html"
