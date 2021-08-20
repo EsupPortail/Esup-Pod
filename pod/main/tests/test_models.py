@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.contrib.flatpages.models import FlatPage
 from django.conf import settings
 from django.contrib.sites.models import Site
-from pod.main.models import Configuration
+from pod.main.models import Configuration, AdditionalChannelTab
 
 SITE_ID = getattr(settings, "SITE_ID", 1)
 
