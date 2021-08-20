@@ -30,7 +30,7 @@ from tagging.fields import TagField
 from django.utils.text import capfirst
 from django.contrib.sites.models import Site
 from django.db.models.signals import post_save
-from pod.main.models import AddChannelsTab
+from pod.main.models import AdditionalChannelTab
 import importlib
 
 from select2 import fields as select2_fields
@@ -340,7 +340,7 @@ class Channel(models.Model):
         help_text=_("Select one or more groups who can upload video this channel"),
     )
     add_channels_tab = select2_fields.ManyToManyField(
-        AddChannelsTab, verbose_name=_("Additionals channels tab"), blank=True
+        AdditionalChannelTab, verbose_name=_("Additionals channels tab"), blank=True
     )
     sites = models.ManyToManyField(Site)
 

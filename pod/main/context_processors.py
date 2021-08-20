@@ -13,7 +13,7 @@ from pod.video.models import Discipline
 from pod.video.models import Video
 from pod.main.models import Configuration
 from django.contrib.sites.shortcuts import get_current_site
-from pod.main.models import AddChannelsTab
+from pod.main.models import AdditionalChannelTab
 
 ORDER_BY = "last_name"
 VALUES_LIST = ["username", "first_name", "last_name"]
@@ -170,7 +170,7 @@ def context_navbar(request):
         )
     )
 
-    add_channels_tab = AddChannelsTab.objects.all().prefetch_related(
+    add_channels_tab = AdditionalChannelTab.objects.all().prefetch_related(
         Prefetch(
             "channel_set",
             queryset=Channel.objects.filter(sites=get_current_site(request))

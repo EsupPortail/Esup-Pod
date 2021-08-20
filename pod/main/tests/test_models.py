@@ -117,69 +117,33 @@ class ConfigurationTestCase(TestCase):
         print("--->  test_delete_object of ConfigurationTestCase : OK " "!")
 
 
-class ConfigurationTestCase(TestCase):
-    fixtures = [
-        "initial_data.json",
-    ]
+class AdditionalChannelTabTestCase(TestCase):
 
     def setUp(self):
-        print(" --->  SetUp of ConfigurationTestCase : OK !")
+        AdditionalChannelTab.objects.create(name="Tab0")
+        print(" --->  SetUp of AdditionalChannelTabTestCase : OK !")
 
     """
         test attributs
     """
 
     def test_exist(self):
-        maintenance_conf = Configuration.objects.filter(key="maintenance_mode")
-        self.assertTrue(maintenance_conf.exists())
-        print("   --->  test_exist of ConfigurationTestCase : OK !")
-
-    def test_attributs(self):
-        conf = Configuration.objects.get(key="maintenance_mode")
-        self.assertEqual(conf.key, "maintenance_mode")
-        self.assertEqual(conf.value, "0")
-        self.assertEqual(conf.description, "Activation of maintenance mode or not")
-
-        print("   --->  test_attributs of ConfigurationTestCase : OK !")
-
-    """
-        test delete object
-    """
-
-    def test_delete_object(self):
-        Configuration.objects.filter(key="maintenance_mode").delete()
-        self.assertEquals(Configuration.objects.filter(key="maintenance_mode").count(), 0)
-
-        print("--->  test_delete_object of ConfigurationTestCase : OK " "!")
-
-
-class AddChannelsTabTestCase(TestCase):
-
-    def setUp(self):
-        AddChannelsTab.objects.create(name="Tab0")
-        print(" --->  SetUp of AddChannelsTabTestCase : OK !")
-
-    """
-        test attributs
-    """
-
-    def test_exist(self):
-        tab = AddChannelsTab.objects.filter(name="Tab0")
+        tab = AdditionalChannelTab.objects.filter(name="Tab0")
         self.assertTrue(tab.exists())
-        print("   --->  test_exist of AddChannelsTabTestCase : OK !")
+        print("   --->  test_exist of AdditionalChannelTabTestCase : OK !")
 
     def test_attributs(self):
-        tab = AddChannelsTab.objects.get(name="Tab0")
+        tab = AdditionalChannelTab.objects.get(name="Tab0")
         self.assertEqual(tab.name, "Tab0")
 
-        print("   --->  test_attributs of AddChannelsTabTestCase : OK !")
+        print("   --->  test_attributs of AdditionalChannelTabTestCase : OK !")
 
     """
         test delete object
     """
 
     def test_delete_object(self):
-        AddChannelsTab.objects.filter(key="maintenance_mode").delete()
-        self.assertEquals(AddChannelsTab.objects.filter(name="Tab0").count(), 0)
+        AdditionalChannelTab.objects.filter(key="maintenance_mode").delete()
+        self.assertEquals(AdditionalChannelTab.objects.filter(name="Tab0").count(), 0)
 
-        print("--->  test_delete_object of AddChannelsTabTestCase : OK " "!")
+        print("--->  test_delete_object of AdditionalChannelTabTestCase : OK " "!")
