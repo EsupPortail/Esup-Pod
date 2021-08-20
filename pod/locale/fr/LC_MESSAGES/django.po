@@ -5595,23 +5595,31 @@ msgstr "Démarrer à"
 msgid "Check the box to indicate the beginning of playing desired."
 msgstr "Cocher la case pour indiquer le début de lecture souhaité."
 
-#: pod/video/templates/videos/video-info.html:248
+#: pod/video/templates/videos/video-info.html:245
+msgid "BigBlueButton/H5P Integration"
+msgstr "Intégration BigBlueButton/H5P"
+
+#: pod/video/templates/videos/video-info.html:246
+msgid "Use these links in a BigBlueButton meeting or an interactive H5P video activity:"
+msgstr "Utilisez ces liens dans une conférence BigBlueButton ou une activité vidéo intéractive H5P :"
+
+#: pod/video/templates/videos/video-info.html:255
 msgid "Embed in a web page"
 msgstr "Intégrer dans une page web"
 
-#: pod/video/templates/videos/video-info.html:250
+#: pod/video/templates/videos/video-info.html:257
 msgid "Copy the content of this text box and paste it in the page:"
 msgstr "Copier le contenu de cette boite de texte et coller le sur la page :"
 
-#: pod/video/templates/videos/video-info.html:255
+#: pod/video/templates/videos/video-info.html:262
 msgid "Share the link"
 msgstr "Partager le lien"
 
-#: pod/video/templates/videos/video-info.html:257
+#: pod/video/templates/videos/video-info.html:264
 msgid "Use this link to share the video:"
 msgstr "Utiliser ce lien pour partager la vidéo :"
 
-#: pod/video/templates/videos/video-info.html:261
+#: pod/video/templates/videos/video-info.html:268
 msgid "QR code for this link:"
 msgstr "QR code pour le lien :"
 
