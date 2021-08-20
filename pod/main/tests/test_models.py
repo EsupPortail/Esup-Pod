@@ -143,7 +143,7 @@ class AdditionalChannelTabTestCase(TestCase):
     """
 
     def test_delete_object(self):
-        AdditionalChannelTab.objects.filter(key="maintenance_mode").delete()
+        AdditionalChannelTab.objects.filter(name="Tab0").delete()
         self.assertEquals(AdditionalChannelTab.objects.filter(name="Tab0").count(), 0)
 
         print("--->  test_delete_object of AdditionalChannelTabTestCase : OK " "!")
