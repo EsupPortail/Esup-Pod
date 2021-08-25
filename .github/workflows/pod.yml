@@ -65,5 +65,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          coverage run --source='.' manage.py test --settings=pod.main.test_settings
+          coverage run --source='.' manage.py test -v 3 --settings=pod.main.test_settings
           coveralls  --service=github

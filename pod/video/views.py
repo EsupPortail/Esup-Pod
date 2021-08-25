@@ -11,6 +11,7 @@ from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count, F, Q, Case, When, Value, BooleanField
@@ -20,12 +21,15 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
-
 from django.db.models import Sum, Min
+
 from dateutil.parser import parse
+import concurrent.futures as futures
 
 from pod.main.views import in_maintenance
-from pod.main.decorators import ajax_required
+from pod.main.decorators import ajax_required, admin_required
+from pod.authentication.utils import get_owners as auth_get_owners
+from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
 from pod.video.models import Type
 from pod.video.models import Channel
@@ -34,7 +38,6 @@ from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
 from tagging.models import TaggedItem
-from django.contrib.auth.models import User
 
 from pod.video.forms import VideoForm, VideoVersionForm
 from pod.video.forms import ChannelForm
@@ -42,7 +45,7 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
-from pod.video.utils import pagination_data, get_headband
+from pod.video.utils import pagination_data, get_headband, change_owner
 
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import ObjectDoesNotExist
@@ -2546,6 +2549,81 @@ def video_record(request):
                 }
             )
     return render(request, "videos/video_record.html", {})
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+@admin_required
+def update_video_owner(request, user_id):
+    if request.method == "POST":
+        post_data = json.loads(request.body.decode("utf-8"))
+
+        videos = post_data.get("videos", [])
+        owner_id = post_data.get("owner", 0)
+        response = {"success": True, "detail": "Update successfully"}
+        if 0 in (owner_id, len(videos)):
+            return JsonResponse(
+                {
+                    "success": False,
+                    "detail": "Bad request: Please one or more fields are invalid",
+                },
+                safe=False,
+            )
+
+        old_owner = User.objects.filter(pk=user_id).first()
+        new_owner = User.objects.filter(pk=owner_id).first()
+
+        if None in (old_owner, new_owner):
+            return JsonResponse(
+                {"success": False, "detail": "New owner or Old owner does not exist"},
+                safe=False,
+            )
+
+        one_or_more_not_updated = False
+        with futures.ThreadPoolExecutor() as executor:
+            for v in videos:
+                res = executor.submit(change_owner, v, new_owner).result()
+                if res is False:
+                    one_or_more_not_updated = True
+
+        if one_or_more_not_updated:
+            return JsonResponse(
+                {**response, "detail": "One or more videos not updated"}, safe=False
+            )
+
+        return JsonResponse(response, safe=False)
+
+    return JsonResponse(
+        {"success": False, "detail": "Method not allowed: Please use post method"},
+        safe=False,
+    )
+
+
+@login_required(redirect_field_name="referrer")
+@admin_required
+def filter_owners(request):
+    try:
+        limit = int(request.GET.get("limit", 12))
+        offset = int(request.GET.get("offset", 0))
+        search = request.GET.get("q", "")
+        return auth_get_owners(search, limit, offset)
+
+    except Exception as err:
+        return JsonResponse({"success": False, "detail": "Syntax error: {0}".format(err)})
+
+
+@login_required(redirect_field_name="referrer")
+@admin_required
+def filter_videos(request, user_id):
+    try:
+        limit = int(request.GET.get("limit", 12))
+        offset = int(request.GET.get("offset", 0))
+        title = request.GET.get("title", None)
+        search = request.GET.get("q", None)
+        return video_get_videos(title, user_id, search, limit, offset)
+
+    except Exception as err:
+        return JsonResponse({"success": False, "detail": "Syntax error: {0}".format(err)})
 
 
 """
