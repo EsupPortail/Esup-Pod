@@ -7,6 +7,7 @@ register = template.Library()
 parser = HTMLParser()
 html_parser = html
 
+
 @register.filter(name="metaformat")
 def metaformat(content):
     """
@@ -22,7 +23,7 @@ def metaformat(content):
     """
     try:
         content = re.sub(r'\s\s+', " ", parser.unescape(content))
-    except :
+    except AttributeError:
         content = re.sub(r'\s\s+', " ", html_parser.unescape(content))
     toReplace = {
         "&#39;": "'",
