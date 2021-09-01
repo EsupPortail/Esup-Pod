@@ -5775,8 +5775,12 @@ msgstr ""
 msgid "Advanced search"
 msgstr ""
 
-#: pod/video_search/views.py:60
+#: pod/video_search/views.py:61
 msgid "Remove this filter"
+msgstr ""
+
+#: pod/video_search/views.py:122
+msgid "Sorry, video search is limited to 500 pages max."
 msgstr ""
 
 #, fuzzy
