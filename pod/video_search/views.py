@@ -4,6 +4,7 @@ from django.shortcuts import render
 from elasticsearch import Elasticsearch
 from pod.video_search.forms import SearchForm
 from django.conf import settings
+from django.contrib import messages
 from pod.video.models import Video
 from django.utils.translation import ugettext_lazy as _
 
@@ -81,6 +82,17 @@ def get_result_aggregations(result, selected_facets):
     return result["aggregations"]
 
 
+def get_search_page(request):
+    """Return page number to start search from Elasticsearch."""
+    page = request.GET.get("page", "0")
+    page = int(page) if page.isdigit() else 0
+    if page > 500:
+        page = 500
+        messages.warning(request, _("Sorry, video search is limited to 500 pages max."))
+
+    return page
+
+
 def search_videos(request):
     """Send a search request to ES."""
     es = Elasticsearch(
@@ -114,10 +126,8 @@ def search_videos(request):
         else []
     )
 
-    page = request.GET.get("page", "0")
-    page = int(page) if page.isdigit() else 0
+    page = get_search_page(request)
     size = 12
-
     search_from = page * size
 
     # Filter query
