@@ -22,9 +22,9 @@ def metaformat(content):
         content (str):  the cleaned string
     """
     try:
-        content = re.sub(r'\s\s+', " ", parser.unescape(content))
+        content = re.sub(r"\s\s+", " ", parser.unescape(content))
     except AttributeError:
-        content = re.sub(r'\s\s+', " ", html_parser.unescape(content))
+        content = re.sub(r"\s\s+", " ", html_parser.unescape(content))
     toReplace = {
         "&#39;": "'",
         '"': "'",
