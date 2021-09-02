@@ -4657,13 +4657,8 @@ msgstr ""
 msgid "Notes"
 msgstr ""
 
-<<<<<<< HEAD
 #: pod/video/models.py:1417
 msgid "Note availability level"
-=======
-#: pod/video/models.py:1643
-msgid "Note availibility level"
->>>>>>> dev
 msgstr ""
 
 #: pod/video/models.py:1647
@@ -4686,13 +4681,8 @@ msgstr ""
 msgid "Advanced Notes"
 msgstr ""
 
-<<<<<<< HEAD
 #: pod/video/models.py:1477
 msgid "Comment availability level"
-=======
-#: pod/video/models.py:1697
-msgid "Comment availibility level"
->>>>>>> dev
 msgstr ""
 
 #: pod/video/models.py:1701
