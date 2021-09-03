@@ -90,12 +90,6 @@ def in_maintenance():
     )
 
 
-def is_sheduled_maintenance():
-    """Return true if a maintenance has been sheduled."""
-    return (True if Configuration.objects.get(
-        key="maintenance_sheduled").value == "1" else False)
-
-
 @csrf_protect
 def download_file(request):
     if request.POST and request.POST.get("filename"):
