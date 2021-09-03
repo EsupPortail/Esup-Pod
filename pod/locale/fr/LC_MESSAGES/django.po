@@ -7,7 +7,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-07-16 12:02+0000\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Nicolas CAN <nicolas.can@univ-lille.fr>\n"
+"Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -6099,9 +6099,13 @@ msgstr "Filtres actifs (cliquer pour en retirer) :"
 msgid "Advanced search"
 msgstr "Recherche avancée"
 
-#: pod/video_search/views.py:60
+#: pod/video_search/views.py:61
 msgid "Remove this filter"
 msgstr "Retirer ce filtre"
+
+#: pod/video_search/views.py:122
+msgid "Sorry, video search is limited to 500 pages max."
+msgstr "Désolé, la recherche de vidéos est limitée à 500 pages maximum."
 
 #~| msgid "Embedded Site Height"
 #~ msgid "Embedded aside Site Height"
