@@ -98,13 +98,22 @@ COOKIE_LEARN_MORE = getattr(django_settings, "COOKIE_LEARN_MORE", "")
 
 
 def context_settings(request):
+    """Return all context settings."""
     maintenance_mode = False
     maintenance_text_short = ""
+    maintenance_sheduled = False
+    maintenance_text_sheduled = ""
     try:
         maintenance_mode = Configuration.objects.get(key="maintenance_mode")
         maintenance_mode = True if maintenance_mode.value == "1" else False
         maintenance_text_short = Configuration.objects.get(
             key="maintenance_text_short"
+        ).value
+
+        maintenance_sheduled = Configuration.objects.get(key="maintenance_sheduled")
+        maintenance_sheduled = True if maintenance_sheduled.value == "1" else False
+        maintenance_text_sheduled = Configuration.objects.get(
+            key="maintenance_text_sheduled"
         ).value
     except ObjectDoesNotExist:
         pass
@@ -139,6 +148,8 @@ def context_settings(request):
     new_settings["CHUNK_SIZE"] = CHUNK_SIZE
     new_settings["MAINTENANCE_REASON"] = maintenance_text_short
     new_settings["MAINTENANCE_MODE"] = maintenance_mode
+    new_settings["MAINTENANCE_TEXT_SHEDULED"] = maintenance_text_sheduled
+    new_settings["MAINTENANCE_SHEDULED"] = maintenance_sheduled
     new_settings["USE_BBB"] = USE_BBB
     new_settings["USE_BBB_LIVE"] = USE_BBB_LIVE
     new_settings["DARKMODE_ENABLED"] = DARKMODE_ENABLED
