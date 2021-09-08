@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Handle the clean_video_files command call."""
-        VIDEOS_DIR = getattr(settings, 'VIDEOS_DIR', 'videos')
+        VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
         list_dir = listdir(join(settings.MEDIA_ROOT, VIDEOS_DIR))
         print("Start cleaning useless video files, please wait...")
         for video_dir in list_dir:
