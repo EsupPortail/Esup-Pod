@@ -11,7 +11,7 @@ from os.path import isfile, join
 class Command(BaseCommand):
     """Delete useless video files."""
 
-    help = 'Delete useless video files (not associated with a video Object)'
+    help = "Delete useless video files (not associated with a video Object)"
 
     def handle(self, *args, **options):
         """Handle the clean_video_files command call."""
@@ -23,7 +23,7 @@ class Command(BaseCommand):
             for myfile in onlyfiles:
                 try:
                     Video.objects.get(video="videos/%s/%s" % (video_dir, myfile))
-                except Video.DoesNotExist :
+                except Video.DoesNotExist:
                     vid_path = join(settings.MEDIA_ROOT, "videos", video_dir, myfile)
                     print(vid_path)
                     remove(vid_path)
