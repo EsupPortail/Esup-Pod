@@ -86,7 +86,7 @@ LICENCE_CHOICES = getattr(
         ("by", _("Attribution 4.0 International (CC BY 4.0)")),
         (
             "by-nd",
-            _("Attribution-NoDerivatives 4.0 " "International (CC BY-ND 4.0)"),
+            _("Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)"),
         ),
         (
             "by-nc-nd",
@@ -97,7 +97,7 @@ LICENCE_CHOICES = getattr(
         ),
         (
             "by-nc",
-            _("Attribution-NonCommercial 4.0 " "International (CC BY-NC 4.0)"),
+            _("Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"),
         ),
         (
             "by-nc-sa",
@@ -653,7 +653,9 @@ class Video(models.Model):
         max_length=1,
         choices=CURSUS_CODES,
         default="0",
-        help_text=_("Select an university course as " "audience target of the content."),
+        help_text=_(
+            "Select an university course as audience target of the content."
+        ),
     )
     main_lang = models.CharField(
         _("Main language"),
@@ -666,7 +668,7 @@ class Video(models.Model):
         _("Transcript"),
         default=False,
         help_text=_(
-            "Check this box if you want to transcript the audio." "(beta version)"
+            "Check this box if you want to transcript the audio. (beta version)"
         ),
     )
     tags = TagField(

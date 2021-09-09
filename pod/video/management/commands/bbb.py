@@ -1,12 +1,12 @@
 """
 This command is used to manage the recordings made by BigBlueButton.
-To achieve this, this command performs the following tasks :
+To achieve this, this command performs the following tasks:
 
 - Connect to BBB / Scalelite server to get informations about the
 current meetings and save then in Pod database.
 This is useful to obtain the actuel meetings
 and the moderators list of theses meetings.
-Be careful : in BBB, we only have the firstname and last name
+Be careful: in BBB, we only have the firstname and last name
 of these moderators.
 
 - Search for recordings available for meetings.
@@ -22,7 +22,7 @@ a Pod user. You can parameter the BBB username format via the use
 of BBB_USERNAME_FORMAT setting.
 At each use of this script, we search to matching BBB users
 - not already known - as Pod users.
-Be careful : tested with the Moodle plugin, mod_bigbluebuttonbn,
+Be careful: tested with the Moodle plugin, mod_bigbluebuttonbn,
 not with Greenlight (should be the same if use of LDAP with givenName
 and lastName).
 
@@ -37,7 +37,7 @@ BBB_NUMBER_DAYS_BEFORE_DELETE days, will be deleted.
 Finally, if there was at least one error, an email is sent to Pod admins.
 
 This script must be executed regurlaly (for an example, with a CRON task).
-Example : crontab -e */2 * * * * /usr/bin/bash -c 'export
+Example: crontab -e */2 * * * * /usr/bin/bash -c 'export
 WORKON_HOME=/data/www/%userpod%/.virtualenvs; export
 VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3.6; cd
 /data/www/%userpod%/django_projects/podv2; source
@@ -128,12 +128,12 @@ def print_if_debug(str):
 
 
 def encode_file_exist(filename, extension, message_error, html_message_error):
-    # A video file exist in the BBB directory : encode it
-    print_if_debug(" - Encode BBB video file : " + filename)
+    # A video file exist in the BBB directory: encode it
+    print_if_debug(" - Encode BBB video file: " + filename)
     # Absolute path of the video
     source_file = os.path.join(DEFAULT_BBB_PATH, filename)
 
-    # Filename corresponds to : internal_meeting_id.webm
+    # Filename corresponds to: internal_meeting_id.webm
     internalMeetingId = filename.replace("." + extension, "")
     # Check if the meeting already exists in Pod database
     oMeeting = Meeting.objects.filter(internal_meeting_id=internalMeetingId).first()
@@ -163,9 +163,9 @@ def encode_file_exist(filename, extension, message_error, html_message_error):
     else:
         # Meeting was certainly deleted in Pod database
         print_if_debug(
-            " - WARNING : It seems that this meeting was deleted "
+            " - WARNING: It seems that this meeting was deleted "
             "from Pod database. "
-            "internal_meeting_id : " + internalMeetingId
+            "internal_meeting_id: " + internalMeetingId
         )
 
     return html_message_error, message_error
@@ -187,7 +187,7 @@ def process_directory(files, root, html_message_error, message_error):
         valid_ext = VIDEO_ALLOWED_EXTENSIONS
         if not (extension in valid_ext and filename != extension):
             print_if_debug(
-                " - WARNING : " + extension + "is not a valid video "
+                " - WARNING: " + extension + "is not a valid video "
                 "extension. If it should "
                 "be, add it to the setting "
                 "VIDEO_ALLOWED_EXTENSIONS"
@@ -209,20 +209,20 @@ def get_bbb_meetings_by_xml(html_message_error, message_error):
             str("getMeetings" + BBB_SECRET_KEY).encode("utf-8")
         ).hexdigest()
         # Request on BBB/Scalelite server (API)
-        # URL example :
+        # URL example:
         # https://bbb.univ.fr/bigbluebutton/api/getMeetings?checksum=xxxx
         urlToRequest = BBB_SERVER_URL
         urlToRequest += "bigbluebutton/api/getMeetings?checksum=" + checksum
         addr = requests.get(urlToRequest)
         print_if_debug(
-            "Request on URL : " + urlToRequest + "" ", status : " + str(addr.status_code)
+            "Request on URL: " + urlToRequest + "" ", status: " + str(addr.status_code)
         )
         # XML result to parse
         xmldoc = minidom.parseString(addr.text)
         returncode = xmldoc.getElementsByTagName("returncode")[0].firstChild.data
         # Management of FAILED error (basically error in checksum)
         if returncode == "FAILED":
-            err = "Return code = FAILED for : " + urlToRequest
+            err = "Return code = FAILED for: " + urlToRequest
             err += " => : " + xmldoc.toxml() + ""
             message_error += err + "\n"
             html_message_error += "<li>" + err + "</li>"
@@ -234,8 +234,7 @@ def get_bbb_meetings_by_xml(html_message_error, message_error):
     except Exception as e:
         err = (
             "Problem to parse XML meetings on the BBB/Scalelite server "
-            "or save in Pod database : " + str(e) + ". "
-            "" + traceback.format_exc()
+            "or save in Pod database: " + str(e) + ". " + traceback.format_exc()
         )
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
@@ -257,7 +256,7 @@ def get_meeting(meeting, html_message_error, message_error):
         # Recording seems useless (~always True)
         recording = meeting.getElementsByTagName("recording")[0].firstChild.data
 
-        print_if_debug("\n - Meeting : " + internalMeetingID)
+        print_if_debug("\n - Meeting: " + internalMeetingID)
 
         # Id of the current meeting
         idActualMeeting = 0
@@ -278,7 +277,7 @@ def get_meeting(meeting, html_message_error, message_error):
             # Create the meeting in Pod database
             print_if_debug(
                 "   + Create the meeting in Pod database. "
-                "internal_meeting_id : " + internalMeetingID
+                "internal_meeting_id: " + internalMeetingID
             )
             meetingToCreate = Meeting()
             meetingToCreate.meeting_id = meetingID
@@ -305,8 +304,8 @@ def get_meeting(meeting, html_message_error, message_error):
     except Exception as e:
         err = (
             "Problem to get BBB meeting "
-            "and save in Pod database : " + str(e) + ". "
-            "" + traceback.format_exc()
+            "and save in Pod database: " + str(e) + ". "
+            + traceback.format_exc()
         )
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
@@ -319,7 +318,7 @@ def get_meeting(meeting, html_message_error, message_error):
 def get_attendee(attendee, idActualMeeting, html_message_error, message_error):
     try:
         # In BigBlueButton, we have only the full name
-        # Full name format : "first_name last_name"
+        # Full name format: "first_name last_name"
         fullName = attendee.getElementsByTagName("fullName")[0].firstChild.data
         role = attendee.getElementsByTagName("role")[0].firstChild.data
         # We save only the BBB moderator
@@ -331,13 +330,13 @@ def get_attendee(attendee, idActualMeeting, html_message_error, message_error):
             if oAttendee:
                 print_if_debug(
                     "   + User already exists "
-                    "in Pod database : "
+                    "in Pod database: "
                     "" + oAttendee.full_name
                 )
             else:
                 # Create the meeting user in Pod database
                 print_if_debug(
-                    "   + Create the meeting user " "in Pod database : " + fullName
+                    "   + Create the meeting user in Pod database: " + fullName
                 )
                 attendeeToCreate = Attendee()
                 attendeeToCreate.full_name = fullName
@@ -348,8 +347,8 @@ def get_attendee(attendee, idActualMeeting, html_message_error, message_error):
     except Exception as e:
         err = (
             "Problem to get BBB attendee "
-            "and save in Pod database : " + str(e) + ". "
-            "" + traceback.format_exc()
+            "and save in Pod database: " + str(e) + ". "
+            + traceback.format_exc()
         )
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
@@ -363,7 +362,7 @@ def matching_bbb_pod_user(html_message_error, message_error):
     print_if_debug("\n*** Search if BBB users matching to Pod users ***")
     try:
         # Search for BBB users already in Pod database, without matching
-        # By security : take only the 500 last BBB users, to avoid process
+        # By security: take only the 500 last BBB users, to avoid process
         # too long. Usefull when users are not known in Pod.
         attendees = Attendee.objects.filter(user_id__isnull=True).order_by("-id")[:500]
 
@@ -388,8 +387,8 @@ def matching_bbb_pod_user(html_message_error, message_error):
                 print_if_debug(
                     " - A Pod user matching a BBB user "
                     "was found in Pod database. "
-                    "BBB user : " + attendee.full_name + ". "
-                    "Pod user : " + podUser.username
+                    "BBB user: " + attendee.full_name + ". "
+                    "Pod user: " + podUser.username
                 )
                 attendee.username = podUser.username
                 attendee.user_id = podUser.id
@@ -398,13 +397,13 @@ def matching_bbb_pod_user(html_message_error, message_error):
                 print_if_debug(
                     " - A Pod user matching a BBB user "
                     "was NOT found in Pod database. "
-                    "BBB user : " + attendee.full_name
+                    "BBB user: " + attendee.full_name
                 )
 
     except Exception as e:
         err = (
-            "Problem to matching BBB user to Pod user : " + str(e) + ". "
-            "" + traceback.format_exc()
+            "Problem to matching BBB user to Pod user: " + str(e) + ". "
+            + traceback.format_exc()
         )
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
@@ -416,7 +415,7 @@ def matching_bbb_pod_user(html_message_error, message_error):
 
 def get_bbb_meetings_recorded(html_message_error, message_error):
     print_if_debug(
-        "\n*** Check BBB meetings recorded in Pod, " "not already available ***"
+        "\n*** Check BBB meetings recorded in Pod, not already available ***"
     )
 
     try:
@@ -424,7 +423,7 @@ def get_bbb_meetings_recorded(html_message_error, message_error):
         # recorded where the recording is not available for the moment.
         # The idea of the 4 days is to avoid to process recordings that
         # were deleted or with bad data in the database.
-        # For informations : parameter Recorded seems useless (~always True)
+        # For informations: parameter Recorded seems useless (~always True)
         dateSince4d = timezone.now() - timezone.timedelta(days=4)
         meetings = Meeting.objects.filter(
             recorded=True,
@@ -443,8 +442,8 @@ def get_bbb_meetings_recorded(html_message_error, message_error):
     except Exception as e:
         err = (
             "Problem to get recorded meetings "
-            "in Pod database : " + str(e) + ". "
-            "" + traceback.format_exc()
+            "in Pod database: " + str(e) + ". "
+            + traceback.format_exc()
         )
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
@@ -465,7 +464,7 @@ def get_bbb_recording_by_xml(
         uri += urllib.parse.quote_plus(meeting_id) + BBB_SECRET_KEY
         checksum = hashlib.sha1(str(uri).encode("utf-8")).hexdigest()
         # Request on BBB/Scalelite server (API)
-        # URL example : https://bbb.univ.fr/bigbluebutton/api/getRecordings?
+        # URL example: https://bbb.univ.fr/bigbluebutton/api/getRecordings?
         # meetingID=xxxxxxxxxxxxxx&checksum=yyyyyyyyyyyyyyy
         urlToRequest = BBB_SERVER_URL
         urlToRequest += "bigbluebutton/api/getRecordings?meetingID="
@@ -473,15 +472,15 @@ def get_bbb_recording_by_xml(
         urlToRequest += "&checksum=" + checksum
         addr = requests.get(urlToRequest)
         print_if_debug(
-            "   + Request on URL : " + urlToRequest + ""
-            ", status : " + str(addr.status_code)
+            "   + Request on URL: " + urlToRequest + ""
+            ", status: " + str(addr.status_code)
         )
         # XML result to parse
         xmldoc = minidom.parseString(addr.text)
         returncode = xmldoc.getElementsByTagName("returncode")[0].firstChild.data
         # Management of FAILED error (basically error in checksum)
         if returncode == "FAILED":
-            err = "Return code = FAILED for : " + urlToRequest
+            err = "Return code = FAILED for: " + urlToRequest
             err += " => : " + xmldoc.toxml() + ""
             message_error += err + "\n"
             html_message_error += "<li>" + err + "</li>"
@@ -498,8 +497,8 @@ def get_bbb_recording_by_xml(
     except Exception as e:
         err = (
             "Problem to parse XML recording on the BBB/Scalelite server "
-            "or save in Pod database : " + str(e) + ". "
-            "" + traceback.format_exc()
+            "or save in Pod database: " + str(e) + ". "
+            + traceback.format_exc()
         )
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
@@ -537,17 +536,12 @@ def get_recording(recording, internal_meeting_id, html_message_error, message_er
             else:
                 # Meeting was certainly deleted in Pod database
                 print_if_debug(
-                    "   + WARNING : It seems that this "
-                    "meeting was deleted from Pod database "
-                    " : " + internalMeetingID
+                    "   + WARNING: It seems that this "
+                    "meeting was deleted from Pod database: " + internalMeetingID
                 )
 
     except Exception as e:
-        err = (
-            "Problem to get BBB recording "
-            " : " + str(e) + ". "
-            "" + traceback.format_exc()
-        )
+        err = "Problem to get BBB recording: " + str(e) + ". " + traceback.format_exc()
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
         print_if_debug(err)
@@ -573,7 +567,9 @@ def get_and_save_recording_url(
                 # For bbb-recorder, we need URL of presentation format
                 if type == "presentation":
                     # Recording URL is the BBB presentation URL
-                    recording_url = format.getElementsByTagName("url")[0].firstChild.data
+                    recording_url = format.getElementsByTagName("url")[
+                        0
+                    ].firstChild.data
                     # We take the first thumbnail found
                     thumbnail_url = playback.getElementsByTagName("image")[
                         0
@@ -582,8 +578,8 @@ def get_and_save_recording_url(
         if recording_url != "":
             print_if_debug(
                 "   + The recording was found. "
-                "internal_meeting_id : " + internal_meeting_id + ". "
-                "recording_url : " + recording_url
+                "internal_meeting_id: " + internal_meeting_id + ". "
+                "recording_url: " + recording_url
             )
             oMeeting.recording_available = True
             oMeeting.recording_url = recording_url
@@ -593,8 +589,8 @@ def get_and_save_recording_url(
     except Exception as e:
         err = (
             "Problem to get BBB recording url "
-            "and save in Pod database : " + str(e) + ". "
-            "" + traceback.format_exc()
+            "and save in Pod database: " + str(e) + ". "
+            + traceback.format_exc()
         )
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
@@ -609,7 +605,7 @@ def delete_old_meetings(html_message_error, message_error):
     try:
         # Delete only old meetings if parameter set
         if BBB_NUMBER_DAYS_BEFORE_DELETE == 0:
-            print_if_debug(" - BBB_NUMBER_DAYS_BEFORE_DELETE = 0 " ": nothing to remove.")
+            print_if_debug(" - BBB_NUMBER_DAYS_BEFORE_DELETE = 0: nothing to remove.")
         else:
             # Search for BBB meetings, not already published, older than
             # BBB_NUMBER_DAYS_BEFORE_DELETE days
@@ -621,13 +617,13 @@ def delete_old_meetings(html_message_error, message_error):
             for meeting in meetings:
                 print_if_debug(
                     " - Removal of this meeting. "
-                    "internal_meeting_id : " + meeting.internal_meeting_id + "."
+                    "internal_meeting_id: " + meeting.internal_meeting_id + "."
                 )
                 meeting.delete()
     except Exception as e:
         err = (
-            "Problem to delete old meetings : " + str(e) + ". "
-            "" + traceback.format_exc()
+            "Problem to delete old meetings: " + str(e) + ". "
+            + traceback.format_exc()
         )
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
@@ -638,7 +634,7 @@ def delete_old_meetings(html_message_error, message_error):
 
 
 class Command(BaseCommand):
-    # First possible argument : main
+    # First possible argument: main
     args = "main"
     help = "Manage the BigBlueButton presentation "
     valid_args = ["main"]
@@ -686,7 +682,7 @@ class Command(BaseCommand):
             if message_error != "":
                 print_if_debug(
                     "\n\n*** An email BBB job [Error(s) "
-                    "encountered] was sent to Pod admins, with message : "
+                    "encountered] was sent to Pod admins, with message: "
                     "***\n\n" + message_error
                 )
                 mail_admins(
