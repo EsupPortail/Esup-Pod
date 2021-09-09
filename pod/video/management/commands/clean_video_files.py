@@ -6,6 +6,8 @@ from django.conf import settings
 from os import listdir, remove
 from os.path import isfile, join
 
+VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
+
 
 class Command(BaseCommand):
     """Delete useless video files."""
@@ -14,7 +16,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Handle the clean_video_files command call."""
-        VIDEOS_DIR = getattr(settings, "VIDEOS_DIR", "videos")
         list_dir = listdir(join(settings.MEDIA_ROOT, VIDEOS_DIR))
         print("Start cleaning useless video files, please wait...")
         for video_dir in list_dir:
