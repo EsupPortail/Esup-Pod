@@ -56,7 +56,7 @@ class ChannelTestView(TestCase):
         self.assertEqual(response.context["theme"], None)
         self.assertEqual(response.context["videos"].paginator.count, 1)
         print(
-            "   --->  test_channel_without_theme" "_in_argument of ChannelTestView : OK !"
+            "   --->  test_channel_without_theme _in_argument of ChannelTestView: OK!"
         )
         response = self.client.get("/%s/" % self.c2.slug)
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -64,12 +64,11 @@ class ChannelTestView(TestCase):
         self.assertEqual(response.context["theme"], None)
         self.assertEqual(response.context["videos"].paginator.count, 0)
         print(
-            "   --->  test_channel_2_without_theme_in_argument"
-            " of ChannelTestView : OK !"
+            "   --->  test_channel_2_without_theme_in_argument of ChannelTestView: OK!"
         )
         response = self.client.get("/%s/%s/" % (self.c.slug, self.theme.slug))
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        print("   --->  test_channel_with_theme_in_argument" " of ChannelTestView : OK !")
+        print("   --->  test_channel_with_theme_in_argument of ChannelTestView: OK!")
 
     def test_regroup_videos_by_theme(self):
         # Test get videos and theme from channel view
@@ -176,7 +175,7 @@ class MyChannelsTestView(TestCase):
 
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
-        print(" --->  SetUp of MyChannelsTestView : OK !")
+        print(" --->  SetUp of MyChannelsTestView: OK!")
 
     def test_get_mychannels_view(self):
         self.client = Client()
@@ -190,7 +189,7 @@ class MyChannelsTestView(TestCase):
         response = self.client.get("/my_channels/")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["channels"].count(), 0)
-        print(" --->  test_get_mychannels_view of MyChannelsTestView : OK !")
+        print(" --->  test_get_mychannels_view of MyChannelsTestView: OK!")
 
 
 class ChannelEditTestView(TestCase):
@@ -212,7 +211,7 @@ class ChannelEditTestView(TestCase):
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
 
-        print(" --->  SetUp of ChannelEditTestView : OK !")
+        print(" --->  SetUp of ChannelEditTestView: OK!")
 
     def test_channel_edit_get_request(self):
         self.client = Client()
@@ -228,7 +227,7 @@ class ChannelEditTestView(TestCase):
         self.client.force_login(self.user)
         response = self.client.get("/channel_edit/%s/" % channel.slug)
         self.assertEqual(response.status_code, 403)
-        print(" --->  test_channel_edit_get_request" " of ChannelEditTestView : OK !")
+        print(" --->  test_channel_edit_get_request of ChannelEditTestView: OK!")
 
     def test_channel_edit_post_request(self):
         self.client = Client()
@@ -244,7 +243,7 @@ class ChannelEditTestView(TestCase):
         self.assertTrue(b"The changes have been saved." in response.content)
         c = Channel.objects.get(title="ChannelTest1")
         self.assertEqual(c.description, "<p>bl</p>")
-        print("   --->  test_channel_edit_post_request" " of ChannelEditTestView : OK !")
+        print("   --->  test_channel_edit_post_request of ChannelEditTestView: OK!")
 
 
 class ThemeEditTestView(TestCase):
@@ -276,7 +275,7 @@ class ThemeEditTestView(TestCase):
 
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
-        print(" --->  SetUp of ThemeEditTestView : OK !")
+        print(" --->  SetUp of ThemeEditTestView: OK!")
 
     def test_theme_edit_get_request(self):
         self.client = Client()
@@ -288,7 +287,7 @@ class ThemeEditTestView(TestCase):
         self.assertEqual(response.context["channel"], channel)
         self.assertEqual(response.context["form_theme"].initial["channel"], channel)
         self.assertEqual(channel.themes.all().count(), 3)
-        print(" --->  test_theme_edit_get_request of ThemeEditTestView : OK !")
+        print(" --->  test_theme_edit_get_request of ThemeEditTestView: OK!")
 
     def test_theme_edit_post_request(self):
         self.client = Client()
@@ -363,7 +362,7 @@ class ThemeEditTestView(TestCase):
         self.assertEqual(response.context["channel"], channel)
         theme = Theme.objects.get(id=3)
         self.assertEqual(theme.title, "Theme3-1")
-        print(" --->  test_theme_edit_post_request of ThemeEditTestView : OK !")
+        print(" --->  test_theme_edit_post_request of ThemeEditTestView: OK!")
 
 
 class MyVideosTestView(TestCase):
@@ -412,7 +411,7 @@ class MyVideosTestView(TestCase):
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
 
-        print(" --->  SetUp of MyChannelsTestView : OK !")
+        print(" --->  SetUp of MyChannelsTestView: OK!")
 
     def test_get_myvideos_view(self):
         self.client = Client()
@@ -426,7 +425,7 @@ class MyVideosTestView(TestCase):
         response = self.client.get("/my_videos/")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 1)
-        print(" --->  test_get_myvideos_view of MyVideosTestView : OK !")
+        print(" --->  test_get_myvideos_view of MyVideosTestView: OK!")
 
 
 class VideosTestView(TestCase):
@@ -485,7 +484,7 @@ class VideosTestView(TestCase):
             is_draft=False,
         )
         v.discipline.add(d2)
-        print(" --->  SetUp of VideosTestView : OK !")
+        print(" --->  SetUp of VideosTestView: OK!")
 
     def test_get_videos_view(self):
         self.client = Client()
@@ -534,7 +533,7 @@ class VideosTestView(TestCase):
         response = self.client.get("/videos/?tag=tag1&tag=tag2")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["videos"].paginator.count, 3)
-        print(" --->  test_get_videos_view of VideosTestView : OK !")
+        print(" --->  test_get_videos_view of VideosTestView: OK!")
 
 
 class VideoTestView(TestCase):
@@ -689,7 +688,7 @@ class VideoEditTestView(TestCase):
         user3.owner.sites.add(Site.objects.get_current())
         user3.owner.save()
 
-        print(" --->  SetUp of VideoEditTestView : OK !")
+        print(" --->  SetUp of VideoEditTestView: OK!")
 
     def test_video_edit_get_request(self):
         self.client = Client()
@@ -722,7 +721,7 @@ class VideoEditTestView(TestCase):
         self.client.force_login(self.user)
         response = self.client.get("/video_edit/%s/" % video.slug)
         self.assertEqual(response.status_code, 403)
-        print(" --->  test_video_edit_get_request" " of VideoEditTestView : OK !")
+        print(" --->  test_video_edit_get_request of VideoEditTestView: OK!")
 
     def test_video_edit_post_request(self):
         self.client = Client()
@@ -823,7 +822,7 @@ class VideoEditTestView(TestCase):
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"The changes have been saved." in response.content)
-        print("   --->  test_video_edit_post_request" " of VideoEditTestView : OK !")
+        print("   --->  test_video_edit_post_request of VideoEditTestView: OK!")
 
 
 class video_deleteTestView(TestCase):
@@ -858,7 +857,7 @@ class video_deleteTestView(TestCase):
 
         user2.owner.sites.add(Site.objects.get_current())
         user2.owner.save()
-        print(" --->  SetUp of video_deleteTestView : OK !")
+        print(" --->  SetUp of video_deleteTestView: OK!")
 
     def test_video_delete_get_request(self):
         self.client = Client()
@@ -882,7 +881,7 @@ class video_deleteTestView(TestCase):
         response = self.client.get("/video_delete/%s/" % video.slug)
         self.assertEqual(response.status_code, 403)
         self.user = User.objects.get(username="pod")
-        print(" --->  test_video_edit_get_request" " of video_deleteTestView : OK !")
+        print(" --->  test_video_edit_get_request of video_deleteTestView: OK!")
 
     def test_video_delete_post_request(self):
         self.client = Client()
@@ -906,7 +905,7 @@ class video_deleteTestView(TestCase):
         )
         self.assertRedirects(response, "/my_videos/")
         self.assertEqual(Video.objects.all().count(), 0)
-        print(" --->  test_video_edit_post_request" " of video_deleteTestView : OK !")
+        print(" --->  test_video_edit_post_request of video_deleteTestView: OK!")
 
 
 class video_notesTestView(TestCase):
@@ -927,7 +926,7 @@ class video_notesTestView(TestCase):
 
         user.owner.sites.add(Site.objects.get_current())
         user.owner.save()
-        print(" --->  SetUp of video_notesTestView : OK !")
+        print(" --->  SetUp of video_notesTestView: OK!")
 
     def test_video_notesTestView_get_request(self):
         self.client = Client()
@@ -947,9 +946,7 @@ class video_notesTestView(TestCase):
         response = self.client.get("/video_notes/%s/" % video.slug)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         # self.assertEqual(response.context['notesForm'].instance, note)
-        print(
-            " --->  test_video_notesTestView_get_request" " of video_notesTestView : OK !"
-        )
+        print(" --->  test_video_notesTestView_get_request of video_notesTestView: OK!")
 
     def test_video_notesTestView_post_request(self):
         self.client = Client()
@@ -983,8 +980,7 @@ class video_notesTestView(TestCase):
         self.assertEqual(note.timestamp, 10)
         self.assertEqual(note.status, "0")
         print(
-            " --->  test_video_notesTestView_post_request"
-            " of video_notesTestView : OK !"
+            " --->  test_video_notesTestView_post_request of video_notesTestView: OK!"
         )
 
 
@@ -1001,7 +997,7 @@ class video_countTestView(TestCase):
             video="test1.mp4",
             type=Type.objects.get(id=1),
         )
-        print(" --->  SetUp of video_countTestView : OK !")
+        print(" --->  SetUp of video_countTestView: OK!")
 
     def test_video_countTestView_get_request(self):
         self.client = Client()
@@ -1010,9 +1006,7 @@ class video_countTestView(TestCase):
         self.assertEqual(response.status_code, 404)
         response = self.client.get("/video_count/%s/" % video.id)
         self.assertEqual(response.status_code, 403)
-        print(
-            " --->  test_video_countTestView_get_request" " of video_countTestView : OK !"
-        )
+        print(" --->  test_video_countTestView_get_request of video_countTestView: OK!")
 
     def test_video_countTestView_post_request(self):
         self.client = Client()
@@ -1024,8 +1018,7 @@ class video_countTestView(TestCase):
         self.assertTrue(b"ok" in response.content)
         self.assertEqual(video.get_viewcount(), 1)
         print(
-            " --->  test_video_countTestView_post_request"
-            " of video_countTestView : OK !"
+            " --->  test_video_countTestView_post_request of video_countTestView: OK!"
         )
 
 
@@ -1037,7 +1030,7 @@ class video_recordTestView(TestCase):
 
     def setUp(self):
         User.objects.create(username="pod", password="pod1234pod")
-        print(" --->  SetUp of video_recordTestView : OK !")
+        print(" --->  SetUp of video_recordTestView: OK!")
 
     def test_video_recordTestView_get_request(self):
         self.client = Client()
@@ -1049,8 +1042,7 @@ class video_recordTestView(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
         print(
-            " --->  test_video_recordTestView_get_request"
-            " of video_recordTestView : OK !"
+            " --->  test_video_recordTestView_get_request of video_recordTestView: OK!"
         )
 
     @override_settings(DEBUG=True, RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
@@ -1068,13 +1060,14 @@ class video_recordTestView(TestCase):
         response = self.client.get("/video_record/")
         self.assertEqual(response.status_code, HTTPStatus.OK)
         print(
-            " --->  test_video_recordTestView_get_request_restrict"
-            " of video_recordTestView : OK !"
+            " --->  test_video_recordTestView_get_request_restrict of video_recordTestView: OK!"
         )
 
     def test_video_recordTestView_upload_recordvideo(self):
         reload(views)
-        video = SimpleUploadedFile("file.mp4", b"file_content", content_type="video/mp4")
+        video = SimpleUploadedFile(
+            "file.mp4", b"file_content", content_type="video/mp4"
+        )
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
@@ -1096,8 +1089,7 @@ class video_recordTestView(TestCase):
         vid = Video.objects.get(id=1)
         self.assertEqual(vid.title, "test upload")
         print(
-            " --->  test_video_recordTestView_upload_recordvideo"
-            " of video_recordTestView : OK !"
+            " --->  test_video_recordTestView_upload_recordvideo of video_recordTestView: OK!"
         )
 
 
