@@ -304,8 +304,7 @@ def get_meeting(meeting, html_message_error, message_error):
     except Exception as e:
         err = (
             "Problem to get BBB meeting "
-            "and save in Pod database: " + str(e) + ". "
-            + traceback.format_exc()
+            "and save in Pod database: " + str(e) + ". " + traceback.format_exc()
         )
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
@@ -347,8 +346,7 @@ def get_attendee(attendee, idActualMeeting, html_message_error, message_error):
     except Exception as e:
         err = (
             "Problem to get BBB attendee "
-            "and save in Pod database: " + str(e) + ". "
-            + traceback.format_exc()
+            "and save in Pod database: " + str(e) + ". " + traceback.format_exc()
         )
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
@@ -402,7 +400,9 @@ def matching_bbb_pod_user(html_message_error, message_error):
 
     except Exception as e:
         err = (
-            "Problem to matching BBB user to Pod user: " + str(e) + ". "
+            "Problem to matching BBB user to Pod user: "
+            + str(e)
+            + ". "
             + traceback.format_exc()
         )
         message_error += err + "\n"
@@ -414,9 +414,7 @@ def matching_bbb_pod_user(html_message_error, message_error):
 
 
 def get_bbb_meetings_recorded(html_message_error, message_error):
-    print_if_debug(
-        "\n*** Check BBB meetings recorded in Pod, not already available ***"
-    )
+    print_if_debug("\n*** Check BBB meetings recorded in Pod, not already available ***")
 
     try:
         # Search for meetings, made since 4 days, with their presentation
@@ -442,8 +440,7 @@ def get_bbb_meetings_recorded(html_message_error, message_error):
     except Exception as e:
         err = (
             "Problem to get recorded meetings "
-            "in Pod database: " + str(e) + ". "
-            + traceback.format_exc()
+            "in Pod database: " + str(e) + ". " + traceback.format_exc()
         )
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
@@ -497,8 +494,7 @@ def get_bbb_recording_by_xml(
     except Exception as e:
         err = (
             "Problem to parse XML recording on the BBB/Scalelite server "
-            "or save in Pod database: " + str(e) + ". "
-            + traceback.format_exc()
+            "or save in Pod database: " + str(e) + ". " + traceback.format_exc()
         )
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
@@ -567,9 +563,7 @@ def get_and_save_recording_url(
                 # For bbb-recorder, we need URL of presentation format
                 if type == "presentation":
                     # Recording URL is the BBB presentation URL
-                    recording_url = format.getElementsByTagName("url")[
-                        0
-                    ].firstChild.data
+                    recording_url = format.getElementsByTagName("url")[0].firstChild.data
                     # We take the first thumbnail found
                     thumbnail_url = playback.getElementsByTagName("image")[
                         0
@@ -589,8 +583,7 @@ def get_and_save_recording_url(
     except Exception as e:
         err = (
             "Problem to get BBB recording url "
-            "and save in Pod database: " + str(e) + ". "
-            + traceback.format_exc()
+            "and save in Pod database: " + str(e) + ". " + traceback.format_exc()
         )
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
@@ -621,10 +614,7 @@ def delete_old_meetings(html_message_error, message_error):
                 )
                 meeting.delete()
     except Exception as e:
-        err = (
-            "Problem to delete old meetings: " + str(e) + ". "
-            + traceback.format_exc()
-        )
+        err = "Problem to delete old meetings: " + str(e) + ". " + traceback.format_exc()
         message_error += err + "\n"
         html_message_error += "<li>" + err + "</li>"
         print_if_debug(err)

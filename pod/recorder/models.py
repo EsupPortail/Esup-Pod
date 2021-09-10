@@ -199,9 +199,7 @@ class Recorder(models.Model):
     transcript = models.BooleanField(
         _("Transcript"),
         default=False,
-        help_text=_(
-            "Check this box if you want to transcript the audio. (beta version)"
-        ),
+        help_text=_("Check this box if you want to transcript the audio. (beta version)"),
     )
     tags = TagField(
         help_text=_(
@@ -306,9 +304,7 @@ class Recording(models.Model):
         path=DEFAULT_RECORDER_PATH, unique=True, recursive=True
     )
     comment = models.TextField(_("Comment"), blank=True, default="")
-    date_added = models.DateTimeField(
-        "date added", default=timezone.now, editable=False
-    )
+    date_added = models.DateTimeField("date added", default=timezone.now, editable=False)
 
     @property
     def sites(self):
@@ -346,9 +342,7 @@ class Recording(models.Model):
 @receiver(post_save, sender=Recording)
 def process_recording(sender, instance, created, **kwargs):
     if created and os.path.exists(instance.source_file):
-        mod = importlib.import_module(
-            "%s.plugins.type_%s" % (__package__, instance.type)
-        )
+        mod = importlib.import_module("%s.plugins.type_%s" % (__package__, instance.type))
         mod.process(instance)
 
 

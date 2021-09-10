@@ -84,17 +84,13 @@ class PluginVideoTestCase(TestCase):
         self.assertEquals(video.cursus, recorder.cursus)
         self.assertEquals(video.tags, recorder.tags)
 
-        print(
-            "   --->  test_type_video_published_attributs of PluginVideoTestCase: OK!"
-        )
+        print("   --->  test_type_video_published_attributs of PluginVideoTestCase: OK!")
 
     def test_type_audiovideocast_published_attributs(self):
         recording = Recording.objects.get(id=2)
         recorder = recording.recorder
         shutil.copyfile(AUDIOVIDEOCAST_TEST, recording.source_file)
-        mod = importlib.import_module(
-            "pod.recorder.plugins.type_%s" % ("audiovideocast")
-        )
+        mod = importlib.import_module("pod.recorder.plugins.type_%s" % ("audiovideocast"))
         nbnow = Video.objects.all().count()
         nbtest = nbnow + 1
         mod.encode_recording(recording)

@@ -55,17 +55,13 @@ class ChannelTestView(TestCase):
         self.assertEqual(response.context["channel"], self.c)
         self.assertEqual(response.context["theme"], None)
         self.assertEqual(response.context["videos"].paginator.count, 1)
-        print(
-            "   --->  test_channel_without_theme _in_argument of ChannelTestView: OK!"
-        )
+        print("   --->  test_channel_without_theme _in_argument of ChannelTestView: OK!")
         response = self.client.get("/%s/" % self.c2.slug)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.context["channel"], self.c2)
         self.assertEqual(response.context["theme"], None)
         self.assertEqual(response.context["videos"].paginator.count, 0)
-        print(
-            "   --->  test_channel_2_without_theme_in_argument of ChannelTestView: OK!"
-        )
+        print("   --->  test_channel_2_without_theme_in_argument of ChannelTestView: OK!")
         response = self.client.get("/%s/%s/" % (self.c.slug, self.theme.slug))
         self.assertEqual(response.status_code, HTTPStatus.OK)
         print("   --->  test_channel_with_theme_in_argument of ChannelTestView: OK!")
@@ -979,9 +975,7 @@ class video_notesTestView(TestCase):
         self.assertEqual(note.note, "coucou")
         self.assertEqual(note.timestamp, 10)
         self.assertEqual(note.status, "0")
-        print(
-            " --->  test_video_notesTestView_post_request of video_notesTestView: OK!"
-        )
+        print(" --->  test_video_notesTestView_post_request of video_notesTestView: OK!")
 
 
 class video_countTestView(TestCase):
@@ -1017,9 +1011,7 @@ class video_countTestView(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTrue(b"ok" in response.content)
         self.assertEqual(video.get_viewcount(), 1)
-        print(
-            " --->  test_video_countTestView_post_request of video_countTestView: OK!"
-        )
+        print(" --->  test_video_countTestView_post_request of video_countTestView: OK!")
 
 
 # add test to video record : USE_VIDEO_RECORD = True
@@ -1041,9 +1033,7 @@ class video_recordTestView(TestCase):
         response = self.client.get("/video_record/")
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
-        print(
-            " --->  test_video_recordTestView_get_request of video_recordTestView: OK!"
-        )
+        print(" --->  test_video_recordTestView_get_request of video_recordTestView: OK!")
 
     @override_settings(DEBUG=True, RESTRICT_EDIT_VIDEO_ACCESS_TO_STAFF_ONLY=True)
     def test_video_recordTestView_get_request_restrict(self):
@@ -1065,9 +1055,7 @@ class video_recordTestView(TestCase):
 
     def test_video_recordTestView_upload_recordvideo(self):
         reload(views)
-        video = SimpleUploadedFile(
-            "file.mp4", b"file_content", content_type="video/mp4"
-        )
+        video = SimpleUploadedFile("file.mp4", b"file_content", content_type="video/mp4")
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)

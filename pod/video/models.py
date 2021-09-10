@@ -653,9 +653,7 @@ class Video(models.Model):
         max_length=1,
         choices=CURSUS_CODES,
         default="0",
-        help_text=_(
-            "Select an university course as audience target of the content."
-        ),
+        help_text=_("Select an university course as audience target of the content."),
     )
     main_lang = models.CharField(
         _("Main language"),
@@ -667,9 +665,7 @@ class Video(models.Model):
     transcript = models.BooleanField(
         _("Transcript"),
         default=False,
-        help_text=_(
-            "Check this box if you want to transcript the audio. (beta version)"
-        ),
+        help_text=_("Check this box if you want to transcript the audio. (beta version)"),
     )
     tags = TagField(
         help_text=_(
