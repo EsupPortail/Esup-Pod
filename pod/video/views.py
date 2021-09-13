@@ -730,7 +730,6 @@ def video_all_info(request, slug, slug_private=None):
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
         else:
-            params = []
             iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
             url = "%s?%sreferrer=%s" % (
                 settings.LOGIN_URL,
