@@ -169,3 +169,12 @@ class Configuration(models.Model):
         help_text=_("Description of the configuration"),
         editable=False,
     )
+
+
+class AdditionalChannelTab(models.Model):
+    name = models.CharField(
+        _("Value"), max_length=40, help_text=_("Name of the tab")
+    )
+
+    def __str__(self):
+        return "%s" % (self.name)

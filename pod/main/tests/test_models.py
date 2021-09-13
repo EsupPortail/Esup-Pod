@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.contrib.flatpages.models import FlatPage
 from django.conf import settings
 from django.contrib.sites.models import Site
-from pod.main.models import Configuration
+from pod.main.models import Configuration, AdditionalChannelTab
 
 SITE_ID = getattr(settings, "SITE_ID", 1)
 
@@ -115,3 +115,35 @@ class ConfigurationTestCase(TestCase):
         self.assertEquals(Configuration.objects.filter(key="maintenance_mode").count(), 0)
 
         print("--->  test_delete_object of ConfigurationTestCase : OK " "!")
+
+
+class AdditionalChannelTabTestCase(TestCase):
+
+    def setUp(self):
+        AdditionalChannelTab.objects.create(name="Tab0")
+        print(" --->  SetUp of AdditionalChannelTabTestCase : OK !")
+
+    """
+        test attributs
+    """
+
+    def test_exist(self):
+        tab = AdditionalChannelTab.objects.filter(name="Tab0")
+        self.assertTrue(tab.exists())
+        print("   --->  test_exist of AdditionalChannelTabTestCase : OK !")
+
+    def test_attributs(self):
+        tab = AdditionalChannelTab.objects.get(name="Tab0")
+        self.assertEqual(tab.name, "Tab0")
+
+        print("   --->  test_attributs of AdditionalChannelTabTestCase : OK !")
+
+    """
+        test delete object
+    """
+
+    def test_delete_object(self):
+        AdditionalChannelTab.objects.filter(name="Tab0").delete()
+        self.assertEquals(AdditionalChannelTab.objects.filter(name="Tab0").count(), 0)
+
+        print("--->  test_delete_object of AdditionalChannelTabTestCase : OK " "!")

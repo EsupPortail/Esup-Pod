@@ -8,6 +8,7 @@ from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from modeltranslation.admin import TranslationAdmin
 from pod.main.models import LinkFooter, Configuration
+from pod.main.models import AdditionalChannelTab
 
 
 SITE_ID = getattr(settings, "SITE_ID", 1)
@@ -26,6 +27,9 @@ class PageForm(FlatpageForm):
 
 
 # CustomFlatPage admin panel
+
+class AdditionalChannelTabAdmin(admin.ModelAdmin):
+    list_display = ("name",)
 
 
 class ConfigurationAdmin(admin.ModelAdmin):
@@ -106,3 +110,4 @@ admin.site.unregister(FlatPage)
 admin.site.register(FlatPage, CustomFlatPageAdmin)
 admin.site.register(LinkFooter, LinkFooterAdmin)
 admin.site.register(Configuration, ConfigurationAdmin)
+admin.site.register(AdditionalChannelTab, AdditionalChannelTabAdmin)
