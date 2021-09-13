@@ -106,9 +106,12 @@ def download_file(request):
 
 
 def get_manager_email(owner):
-    """owner instanceOf User Model
+    """
+    Get manager email.
+
+    @param owner instanceOf User Model.
     return email of user's manager if exist
-    else return all managers email
+    else return all managers emails
     """
     # Si la fonctionnalité des etablissements est activée
     if USE_ESTABLISHMENT and owner:

@@ -1,10 +1,11 @@
 from django import template
 from html.parser import HTMLParser
-
+import html
 import re
 
 register = template.Library()
 parser = HTMLParser()
+html_parser = html
 
 
 @register.filter(name="metaformat")
@@ -20,7 +21,10 @@ def metaformat(content):
     Returns:
         content (str):  the cleaned string
     """
-    content = re.sub(r"\s\s+", " ", parser.unescape(content))
+    try:
+        content = re.sub(r"\s\s+", " ", parser.unescape(content))
+    except AttributeError:
+        content = re.sub(r"\s\s+", " ", html_parser.unescape(content))
     toReplace = {
         "&#39;": "'",
         '"': "'",

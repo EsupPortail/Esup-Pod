@@ -515,11 +515,9 @@ class VideoForm(forms.ModelForm):
             if self.instance.overview:
                 old_dir = os.path.dirname(self.instance.overview.name)
             else:
-                old_dir = os.path.dirname(
-                    os.path.join(
-                        self.cleaned_data["video"].name,
-                        "%04d" % self.instance.id,
-                    )
+                old_dir = os.path.join(
+                    os.path.dirname(self.cleaned_data["video"].name),
+                    "%04d" % self.instance.id,
                 )
             new_dir = os.path.join(os.path.dirname(new_path), "%04d" % self.instance.id)
             self.move_video_source_file(new_path, new_dir, old_dir)

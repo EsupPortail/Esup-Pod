@@ -33,7 +33,7 @@ class Playlist(models.Model):
         _("Visible"),
         default=False,
         help_text=_(
-            "If checked, the playlist can be visible to users" + " other than the owner."
+            "If checked, the playlist can be visible to users other than the owner."
         ),
     )
 
