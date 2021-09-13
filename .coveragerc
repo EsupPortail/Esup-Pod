@@ -6,7 +6,8 @@
 # on each function you don't want to be covered
 [run]
 source = pod/
-omit = pod/*/settings*.py
+omit = pod/*settings*.py
+       pod/*apps.py
        pod/wsgi.py
        */tests/*
        */commands/*

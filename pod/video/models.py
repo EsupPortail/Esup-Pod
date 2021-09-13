@@ -30,6 +30,7 @@ from tagging.fields import TagField
 from django.utils.text import capfirst
 from django.contrib.sites.models import Site
 from django.db.models.signals import post_save
+from pod.main.models import AdditionalChannelTab
 import importlib
 
 from select2 import fields as select2_fields
@@ -86,7 +87,7 @@ LICENCE_CHOICES = getattr(
         ("by", _("Attribution 4.0 International (CC BY 4.0)")),
         (
             "by-nd",
-            _("Attribution-NoDerivatives 4.0 " "International (CC BY-ND 4.0)"),
+            _("Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)"),
         ),
         (
             "by-nc-nd",
@@ -97,7 +98,7 @@ LICENCE_CHOICES = getattr(
         ),
         (
             "by-nc",
-            _("Attribution-NonCommercial 4.0 " "International (CC BY-NC 4.0)"),
+            _("Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"),
         ),
         (
             "by-nc-sa",
@@ -336,7 +337,10 @@ class Channel(models.Model):
         verbose_name=_("Groups"),
         ajax=True,
         search_field=lambda q: Q(code_name__icontains=q) | Q(display_name__icontains=q),
-        help_text=_("Select one or more groups who can upload video this channel"),
+        help_text=_("Select one or more groups who can upload video to this channel"),
+    )
+    add_channels_tab = select2_fields.ManyToManyField(
+        AdditionalChannelTab, verbose_name=_("Additionals channels tab"), blank=True
     )
     sites = models.ManyToManyField(Site)
 
@@ -653,7 +657,7 @@ class Video(models.Model):
         max_length=1,
         choices=CURSUS_CODES,
         default="0",
-        help_text=_("Select an university course as " "audience target of the content."),
+        help_text=_("Select an university course as audience target of the content."),
     )
     main_lang = models.CharField(
         _("Main language"),
@@ -665,9 +669,7 @@ class Video(models.Model):
     transcript = models.BooleanField(
         _("Transcript"),
         default=False,
-        help_text=_(
-            "Check this box if you want to transcript the audio." "(beta version)"
-        ),
+        help_text=_("Check this box if you want to transcript the audio. (beta version)"),
     )
     tags = TagField(
         help_text=_(
@@ -1139,6 +1141,12 @@ class Video(models.Model):
                 " for video %s: %s" % (self.id, e)
             )
             return {}
+
+
+class UpdateOwner(models.Model):
+    class Meta:
+        verbose_name = _("Update Owner")
+        verbose_name_plural = _("Update Owners")
 
 
 def remove_video_file(video):
@@ -1634,11 +1642,11 @@ class AdvancedNotes(models.Model):
     user = select2_fields.ForeignKey(User)
     video = select2_fields.ForeignKey(Video)
     status = models.CharField(
-        _("Note availibility level"),
+        _("Note availability level"),
         max_length=1,
         choices=NOTES_STATUS,
         default="0",
-        help_text=_("Select an availability level " "for the note."),
+        help_text=_("Select an availability level for the note."),
     )
     note = models.TextField(_("Note"), null=True, blank=True)
     timestamp = models.IntegerField(_("Timestamp"), null=True, blank=True)
@@ -1688,11 +1696,11 @@ class NoteComments(models.Model):
     parentNote = models.ForeignKey(AdvancedNotes)
     parentCom = models.ForeignKey("NoteComments", blank=True, null=True)
     status = models.CharField(
-        _("Comment availibility level"),
+        _("Comment availability level"),
         max_length=1,
         choices=NOTES_STATUS,
         default="0",
-        help_text=_("Select an availability level " "for the comment."),
+        help_text=_("Select an availability level for the comment."),
     )
     comment = models.TextField(_("Comment"), null=True, blank=True)
     added_on = models.DateTimeField(_("Date added"), default=timezone.now)

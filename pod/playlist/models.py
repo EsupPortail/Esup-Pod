@@ -19,6 +19,7 @@ class Playlist(models.Model):
             + " label containing only letters, numbers, underscore"
             + " or dash top."
         ),
+        editable=False,
     )
     owner = select2_fields.ForeignKey(User, verbose_name=_("Owner"))
     description = models.TextField(
@@ -32,7 +33,7 @@ class Playlist(models.Model):
         _("Visible"),
         default=False,
         help_text=_(
-            "If checked, the playlist can be visible to users" + " other than the owner."
+            "If checked, the playlist can be visible to users other than the owner."
         ),
     )
 

@@ -11,6 +11,7 @@ from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_protect
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count, F, Q, Case, When, Value, BooleanField
@@ -20,12 +21,15 @@ from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
-
 from django.db.models import Sum, Min
+
 from dateutil.parser import parse
+import concurrent.futures as futures
 
 from pod.main.views import in_maintenance
-from pod.main.decorators import ajax_required
+from pod.main.decorators import ajax_required, admin_required
+from pod.authentication.utils import get_owners as auth_get_owners
+from pod.video.utils import get_videos as video_get_videos
 from pod.video.models import Video
 from pod.video.models import Type
 from pod.video.models import Channel
@@ -34,7 +38,6 @@ from pod.video.models import AdvancedNotes, NoteComments, NOTES_STATUS
 from pod.video.models import ViewCount, VideoVersion
 from pod.video.models import Comment, Vote, Category
 from tagging.models import TaggedItem
-from django.contrib.auth.models import User
 
 from pod.video.forms import VideoForm, VideoVersionForm
 from pod.video.forms import ChannelForm
@@ -42,6 +45,7 @@ from pod.video.forms import FrontThemeForm
 from pod.video.forms import VideoPasswordForm
 from pod.video.forms import VideoDeleteForm
 from pod.video.forms import AdvancedNotesForm, NoteCommentsForm
+from pod.video.utils import pagination_data, get_headband, change_owner
 
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core.exceptions import ObjectDoesNotExist
@@ -140,7 +144,6 @@ CURSUS_CODES = getattr(
 )
 
 TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
-ORGANIZE_BY_THEME = getattr(settings, "ORGANIZE_BY_THEME", False)
 VIEW_STATS_AUTH = getattr(settings, "VIEW_STATS_AUTH", False)
 ACTIVE_VIDEO_COMMENT = getattr(settings, "ACTIVE_VIDEO_COMMENT", False)
 USE_CATEGORY = getattr(settings, "USER_VIDEO_CATEGORY", False)
@@ -152,30 +155,103 @@ DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
 # ############################################################################
 
 
-def regroup_videos_by_theme(videos, page, channel, theme=None):
-    """
-    " Regroup videos by theme.
+def _regroup_videos_by_theme(request, videos, channel, theme=None):
+    """Regroup videos by theme.\n
 
-    " @return [ (theme, set()), (theme, set()) ]
-    """
-    if not theme:
-        children_themes = channel.themes.filter(parentId_id=None)
-    else:
-        children_themes = theme.children.all()
-    videos_regrouped = []
-    no_theme_videos = videos
-    # Loop on theme  and filter by theme
-    for t in children_themes:
-        videos_founded = videos.filter(theme__in=t.get_all_children_flat())
-        no_theme_videos = no_theme_videos.exclude(theme__in=t.get_all_children_flat())
-        if videos_founded:
-            videos_regrouped.append((t, paginator(list(set(videos_founded)), page)))
-    if children_themes and no_theme_videos:
-        videos_regrouped.append((_("Other"), paginator(no_theme_videos, page)))
-    if not children_themes:
-        videos_regrouped.append((" ", paginator(videos, page)))
+    Args:\n
+        request (Request): current HTTP Request\n
+        videos (List[Video]): list of vidéo filter by channel\n
+        channel (Channel): current channel\n
+        theme (Theme, optional): current theme. Defaults to None.\n
 
-    return videos_regrouped
+    Returns:\n
+        Dict[str, Any]: json data\n
+    """
+    target = request.GET.get("target", "").lower()
+    limit = int(request.GET.get("limit", 8))
+    offset = int(request.GET.get("offset", 0))
+    theme_children = None
+    parent_title = ""
+    response = {}
+
+    if target in ("", "themes"):
+        theme_children = Theme.objects.filter(parentId=theme, channel=channel)
+        videos = videos.filter(theme=theme, channel=channel)
+
+        if theme is not None and theme.parentId is not None:
+            parent_title = theme.parentId.title
+        elif theme is not None and theme.parentId is None:
+            parent_title = channel.title
+
+    if target in ("", "videos"):
+        videos = videos.filter(theme=theme, channel=channel)
+        response["next_videos"], *_ = pagination_data(
+            request.path, offset, limit, videos.count()
+        )
+        count = videos.count()
+        videos = videos[offset : limit + offset]
+        response = {
+            **response,
+            "videos": list(videos),
+            "has_more_videos": (offset + limit) < count,
+        }
+
+    if theme_children is not None:
+        count_themes = theme_children.count()
+        has_more_themes = (offset + limit) < count_themes
+        theme_children = theme_children.values("slug", "title")[offset : limit + offset]
+        next_url, previous_url, theme_pages_info = pagination_data(
+            request.path, offset, limit, count_themes
+        )
+        response = {
+            **response,
+            "next": next_url,
+            "previous": previous_url,
+            "has_more_themes": has_more_themes,
+            "count_themes": count_themes,
+            "theme_children": list(theme_children),
+            "pages_info": theme_pages_info,
+        }
+    title = channel.title if theme is None else theme.title
+    description = channel.description if theme is None else theme.description
+    headband = get_headband(channel, theme).get("headband", None)
+    response = {
+        **response,
+        "parent_title": parent_title,
+        "title": title,
+        "description": description,
+        "headband": headband,
+    }
+    if request.is_ajax():
+        videos = list(
+            map(
+                lambda v: {
+                    "slug": v.slug,
+                    "title": v.title,
+                    "duration": v.duration_in_time,
+                    "thumbnail": v.get_thumbnail_card(),
+                    "is_video": v.is_video,
+                    "has_password": bool(v.password),
+                    "is_restricted": v.is_restricted,
+                    "has_chapter": v.chapter_set.all().count() > 0,
+                    "is_draft": v.is_draft,
+                },
+                videos,
+            )
+        )
+        response["videos"] = videos
+        return JsonResponse(response, safe=False)
+
+    return render(
+        request,
+        "channel/channel.html",
+        {
+            **response,
+            "theme": theme,
+            "channel": channel,
+            "organize_theme": True,
+        },
+    )
 
 
 def paginator(videos_list, page):
@@ -200,6 +276,9 @@ def channel(request, slug_c, slug_t=None):
         list_theme = theme.get_all_children_flat()
         videos_list = videos_list.filter(theme__in=list_theme)
 
+    if getattr(settings, "ORGANIZE_BY_THEME", False):
+        return _regroup_videos_by_theme(request, videos_list, channel, theme)
+
     page = request.GET.get("page", 1)
     full_path = ""
     if page:
@@ -217,9 +296,6 @@ def channel(request, slug_c, slug_t=None):
             "videos/video_list.html",
             {"videos": videos, "full_path": full_path},
         )
-    videos_theme = None
-    if ORGANIZE_BY_THEME:
-        videos_theme = regroup_videos_by_theme(videos_list, page, channel, theme)
 
     return render(
         request,
@@ -229,8 +305,6 @@ def channel(request, slug_c, slug_t=None):
             "videos": videos,
             "theme": theme,
             "full_path": full_path,
-            "videos_theme": videos_theme,
-            "organize_theme": ORGANIZE_BY_THEME,
         },
     )
 
@@ -963,8 +1037,7 @@ def can_edit_or_remove_note_or_com(request, nc, action):
 
 def can_see_note_or_com(request, nc):
     """
-    Check if the current user can view the note or comment nc.
-
+    Check if the current user can view the note or comment nc
     If not raise PermissionDenied
     """
     if isinstance(nc, AdvancedNotes):
@@ -2476,6 +2549,81 @@ def video_record(request):
                 }
             )
     return render(request, "videos/video_record.html", {})
+
+
+@csrf_protect
+@login_required(redirect_field_name="referrer")
+@admin_required
+def update_video_owner(request, user_id):
+    if request.method == "POST":
+        post_data = json.loads(request.body.decode("utf-8"))
+
+        videos = post_data.get("videos", [])
+        owner_id = post_data.get("owner", 0)
+        response = {"success": True, "detail": "Update successfully"}
+        if 0 in (owner_id, len(videos)):
+            return JsonResponse(
+                {
+                    "success": False,
+                    "detail": "Bad request: Please one or more fields are invalid",
+                },
+                safe=False,
+            )
+
+        old_owner = User.objects.filter(pk=user_id).first()
+        new_owner = User.objects.filter(pk=owner_id).first()
+
+        if None in (old_owner, new_owner):
+            return JsonResponse(
+                {"success": False, "detail": "New owner or Old owner does not exist"},
+                safe=False,
+            )
+
+        one_or_more_not_updated = False
+        with futures.ThreadPoolExecutor() as executor:
+            for v in videos:
+                res = executor.submit(change_owner, v, new_owner).result()
+                if res is False:
+                    one_or_more_not_updated = True
+
+        if one_or_more_not_updated:
+            return JsonResponse(
+                {**response, "detail": "One or more videos not updated"}, safe=False
+            )
+
+        return JsonResponse(response, safe=False)
+
+    return JsonResponse(
+        {"success": False, "detail": "Method not allowed: Please use post method"},
+        safe=False,
+    )
+
+
+@login_required(redirect_field_name="referrer")
+@admin_required
+def filter_owners(request):
+    try:
+        limit = int(request.GET.get("limit", 12))
+        offset = int(request.GET.get("offset", 0))
+        search = request.GET.get("q", "")
+        return auth_get_owners(search, limit, offset)
+
+    except Exception as err:
+        return JsonResponse({"success": False, "detail": "Syntax error: {0}".format(err)})
+
+
+@login_required(redirect_field_name="referrer")
+@admin_required
+def filter_videos(request, user_id):
+    try:
+        limit = int(request.GET.get("limit", 12))
+        offset = int(request.GET.get("offset", 0))
+        title = request.GET.get("title", None)
+        search = request.GET.get("q", None)
+        return video_get_videos(title, user_id, search, limit, offset)
+
+    except Exception as err:
+        return JsonResponse({"success": False, "detail": "Syntax error: {0}".format(err)})
 
 
 """

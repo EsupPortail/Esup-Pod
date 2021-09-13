@@ -48,6 +48,7 @@ pod/*/migrations/
 pod/custom/*
 !pod/custom/settings_local.py.example
 settings_local.py
+scripts/bbb-pod-live/docker-compose.yml
 ## Others
 pod/static/
 *.bak
@@ -68,3 +69,4 @@ htmlcov
 ######################
 bower_components
 node_modules
+
