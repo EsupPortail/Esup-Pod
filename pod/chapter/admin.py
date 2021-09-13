@@ -10,7 +10,6 @@ class ChapterAdmin(admin.ModelAdmin):
         "title",
         "video",
     )
-    #test
     list_display_links = ("title",)
     search_fields = ["id", "title", "video__title"]
 
