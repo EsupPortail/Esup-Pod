@@ -4657,8 +4657,8 @@ msgstr ""
 msgid "Notes"
 msgstr ""
 
-#: pod/video/models.py:1643
-msgid "Note availibility level"
+#: pod/video/models.py:1417
+msgid "Note availability level"
 msgstr ""
 
 #: pod/video/models.py:1647
@@ -4681,8 +4681,8 @@ msgstr ""
 msgid "Advanced Notes"
 msgstr ""
 
-#: pod/video/models.py:1697
-msgid "Comment availibility level"
+#: pod/video/models.py:1477
+msgid "Comment availability level"
 msgstr ""
 
 #: pod/video/models.py:1701
@@ -5775,8 +5775,12 @@ msgstr ""
 msgid "Advanced search"
 msgstr ""
 
-#: pod/video_search/views.py:60
+#: pod/video_search/views.py:61
 msgid "Remove this filter"
+msgstr ""
+
+#: pod/video_search/views.py:122
+msgid "Sorry, video search is limited to 500 pages max."
 msgstr ""
 
 #, fuzzy

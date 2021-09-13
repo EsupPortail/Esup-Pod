@@ -84,9 +84,7 @@ class PluginVideoTestCase(TestCase):
         self.assertEquals(video.cursus, recorder.cursus)
         self.assertEquals(video.tags, recorder.tags)
 
-        print(
-            "   --->  test_type_video_published_attributs " "of PluginVideoTestCase: OK !"
-        )
+        print("   --->  test_type_video_published_attributs of PluginVideoTestCase: OK!")
 
     def test_type_audiovideocast_published_attributs(self):
         recording = Recording.objects.get(id=2)
@@ -113,5 +111,5 @@ class PluginVideoTestCase(TestCase):
         self.assertEquals(video.tags, recorder.tags)
         print(
             "   --->  test_type_video_published_attributs "
-            "of PluginAudioVideoCastTestCase: OK !"
+            "of PluginAudioVideoCastTestCase: OK!"
         )
