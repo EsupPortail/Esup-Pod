@@ -28,6 +28,7 @@ class PageForm(FlatpageForm):
 
 # CustomFlatPage admin panel
 
+
 class AdditionalChannelTabAdmin(admin.ModelAdmin):
     list_display = ("name",)
 

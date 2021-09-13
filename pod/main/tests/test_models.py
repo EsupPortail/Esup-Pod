@@ -118,7 +118,6 @@ class ConfigurationTestCase(TestCase):
 
 
 class AdditionalChannelTabTestCase(TestCase):
-
     def setUp(self):
         AdditionalChannelTab.objects.create(name="Tab0")
         print(" --->  SetUp of AdditionalChannelTabTestCase : OK !")
