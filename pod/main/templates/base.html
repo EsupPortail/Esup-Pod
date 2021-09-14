@@ -28,15 +28,15 @@
        <link rel="stylesheet" href="{% static 'bootstrap-4/css/bootstrap-'%}{{ USE_THEME }}.min.css?ver={{VERSION}}" crossorigin="anonymous">
     {% endif %}
     <!-- pod.css -->
-    <link rel="stylesheet" href="{% static 'css/pod.css' %}?ver={{VERSION}}" media="screen" title="no title">
+    <link rel="stylesheet" href="{% static 'css/pod.css' %}?ver={{VERSION}}" media="screen">
     {% if DARKMODE_ENABLED == True %}
-      <link rel="stylesheet" href="{% static 'css/dark.css' %}?ver={{VERSION}}" media="screen" title="no title">
+      <link rel="stylesheet" href="{% static 'css/dark.css' %}?ver={{VERSION}}" media="screen">
     {% endif %}
     {% if DYSLEXIAMODE_ENABLED == True %}
-      <link rel="stylesheet" href="{% static 'css/dyslexia.css' %}?ver={{VERSION}}" media="screen" title="no title">
+      <link rel="stylesheet" href="{% static 'css/dyslexia.css' %}?ver={{VERSION}}" media="screen">
     {% endif %}
     {% if CSS_OVERRIDE %}
-      <link rel="stylesheet" href="{% static CSS_OVERRIDE %}?ver={{VERSION}}" media="screen" title="no title">
+      <link rel="stylesheet" href="{% static CSS_OVERRIDE %}?ver={{VERSION}}" media="screen">
     {% endif %}
 
     <!-- more styles for each App -->
@@ -57,11 +57,13 @@
 
   <body>
     {% if PRE_HEADER_TEMPLATE %}{% include PRE_HEADER_TEMPLATE %}{% endif %}
-    <!-- barre nav-->
-    <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light m-0 p-0">
-      {% include 'navbar.html' %}
-    </nav><!-- fin barre nav-->
-    {% include 'navbar_collapse.html' %}
+    <header>
+      <!-- barre nav-->
+      <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light m-0 p-0">
+        {% include 'navbar.html' %}
+      </nav><!-- fin barre nav-->
+      {% include 'navbar_collapse.html' %}
+    </header>
     {% block content %}
     {% if request.path == "/" and MAINTENANCE_MODE %}
       {% get_maintenance_welcome as maintenance_text %}
@@ -69,6 +71,11 @@
     {%endif%}
     <div class="container container-pod">
       <main class="mt-3">
+
+        {%if MAINTENANCE_SHEDULED%}
+          <div class="alert alert-warning">{{MAINTENANCE_TEXT_SHEDULED|safe}}</div>
+        {%endif%}
+
         <nav aria-label="{% trans 'Breadcrumb' %}" class="breadcrumb d-flex justify-content-between p-0" id="mainbreadcrumb">
           <ol class="breadcrumb p-1 pl-4 mb-0">
           {% block breadcrumbs %}
@@ -132,7 +139,7 @@
               <img src="https://i.imgur.com/Tl8ZBUe.png" width="50">
               <span class="mt-2">{% trans 'We use third party cookies to personalize content, manage session and analyze site traffic.' %}</span>
               {% if COOKIE_LEARN_MORE != "" %}
-              <a class="d-flex align-items-center" href="{{COOKIE_LEARN_MORE}}">{% trans 'Learn more' %}<i class="fa fa-angle-right ml-2"></i></a> 
+              <a class="d-flex align-items-center" href="{{COOKIE_LEARN_MORE}}">{% trans 'Learn more' %}<i class="fa fa-angle-right ml-2"></i></a>
               {% endif %}
               <button class="btn btn-dark mt-3 px-4" type="button" id='okcookie'>{% trans 'I understand' %}</button>
             </div>
@@ -140,7 +147,7 @@
         </div>
       </div>
     </div>
-    
+
     <!-- JS -->
     <script>
       /** HIDE USERNAME **/
@@ -160,7 +167,7 @@
     <script>
       feather.replace({ class: 'align-bottom'});
     </script>
-  
+
     {% if DARKMODE_ENABLED == True %}
     <script>
       // Get the theme toggle input
