@@ -12,4 +12,5 @@ omit = pod/*settings*.py
        */tests/*
        */commands/*
        */migrations/*
-
+       pod/video/bbb.py
+       scripts/bbb-pod-live/*.*
