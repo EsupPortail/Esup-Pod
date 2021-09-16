@@ -23,7 +23,7 @@ class OwnerSerializer(serializers.HyperlinkedModelSerializer):
             "commentaire",
             "hashkey",
             "userpicture",
-            "sites"
+            "sites",
         )
 
 
