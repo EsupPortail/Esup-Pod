@@ -38,6 +38,7 @@ class ChannelSerializer(serializers.HyperlinkedModelSerializer):
             "users",
             "visible",
             "themes",
+            "sites"
         )
 
 
@@ -171,6 +172,7 @@ class VideoRenditionSerializer(serializers.HyperlinkedModelSerializer):
             "video_bitrate",
             "audio_bitrate",
             "encode_mp4",
+            "sites"
         )
 
 
