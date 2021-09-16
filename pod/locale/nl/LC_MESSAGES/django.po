@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-13 15:09+0000\n"
+"POT-Creation-Date: 2021-09-16 11:50+0000\n"
 "PO-Revision-Date: 2021-01-22 12:27+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -118,7 +118,7 @@ msgstr ""
 #: pod/authentication/templates/registration/login.html:9
 #: pod/authentication/templates/registration/login.html:12
 #: pod/authentication/templates/registration/login.html:63
-#: pod/main/templates/navbar.html:129
+#: pod/main/templates/navbar.html:128
 msgid "Log in"
 msgstr "Inloggen"
 
@@ -148,7 +148,7 @@ msgstr ""
 
 #: pod/authentication/templates/userpicture/userpicture.html:29
 #: pod/authentication/views.py:111
-#: pod/bbb/templates/bbb/live_publish_meeting.html:48
+#: pod/bbb/templates/bbb/live_publish_meeting.html:45
 #: pod/bbb/templates/bbb/publish_meeting.html:37 pod/bbb/views.py:127
 #: pod/bbb/views.py:254 pod/completion/templates/video_caption_maker.html:56
 #: pod/enrichment/templates/enrichment/group_enrichment.html:29
@@ -175,7 +175,7 @@ msgid "One or more errors have been found in the form."
 msgstr ""
 
 #: pod/authentication/templates/userpicture/userpicture.html:42
-#: pod/bbb/templates/bbb/live_publish_meeting.html:76
+#: pod/bbb/templates/bbb/live_publish_meeting.html:73
 #: pod/bbb/templates/bbb/publish_meeting.html:65
 #: pod/completion/templates/video_caption_maker.html:68
 #: pod/enrichment/templates/enrichment/group_enrichment.html:51
@@ -197,7 +197,7 @@ msgid "Please provide a valid value for this field"
 msgstr ""
 
 #: pod/authentication/templates/userpicture/userpicture.html:56
-#: pod/bbb/templates/bbb/list_meeting.html:68 pod/main/templates/base.html:125
+#: pod/bbb/templates/bbb/list_meeting.html:56 pod/main/templates/base.html:125
 #: pod/main/templates/navbar_collapse.html:43
 #: pod/main/templates/navbar_collapse.html:91
 #: pod/main/templates/navbar_collapse.html:117
@@ -493,7 +493,7 @@ msgid "Livestreams"
 msgstr ""
 
 #: pod/bbb/templates/bbb/card.html:12 pod/bbb/templates/bbb/card.html:13
-#: pod/bbb/templates/bbb/list_meeting.html:57
+#: pod/bbb/templates/bbb/list_meeting.html:45
 msgid "BigBlueButton presentation preview"
 msgstr ""
 
@@ -510,47 +510,27 @@ msgstr ""
 msgid "by"
 msgstr ""
 
-#: pod/bbb/templates/bbb/list_meeting.html:15
-#: pod/bbb/templates/bbb/list_meeting.html:23
-#: pod/bbb/templates/bbb/live_list_meeting.html:14
-#: pod/bbb/templates/bbb/live_publish_meeting.html:18
+#: pod/bbb/templates/bbb/list_meeting.html:14
+#: pod/bbb/templates/bbb/list_meeting.html:18
 #: pod/bbb/templates/bbb/publish_meeting.html:17
-#: pod/main/templates/navbar.html:115
-msgid "My BigBlueButton records and lives"
-msgstr ""
-
-#: pod/bbb/templates/bbb/list_meeting.html:17
-#: pod/bbb/templates/bbb/list_meeting.html:25
-#: pod/bbb/templates/bbb/live_list_meeting.html:16
-#: pod/main/templates/navbar.html:117
+#: pod/main/templates/navbar.html:114
 msgid "My BigBlueButton records"
 msgstr ""
 
-#: pod/bbb/templates/bbb/list_meeting.html:32
-#: pod/bbb/templates/bbb/live_card.html:16
-#: pod/bbb/templates/bbb/live_card.html:17
-#: pod/bbb/templates/bbb/live_list_meeting.html:18
-#: pod/bbb/templates/bbb/live_list_meeting.html:22
-#: pod/bbb/templates/bbb/live_list_meeting.html:26
-#: pod/bbb/templates/bbb/live_publish_meeting.html:21
-#: pod/bbb/templates/bbb/live_publish_meeting.html:86
-msgid "Perform a BigBlueButton live"
-msgstr ""
-
-#: pod/bbb/templates/bbb/list_meeting.html:35
+#: pod/bbb/templates/bbb/list_meeting.html:23
 msgid "Create a video from a BigBlueButton presentation"
 msgstr ""
 
-#: pod/bbb/templates/bbb/list_meeting.html:37
+#: pod/bbb/templates/bbb/list_meeting.html:25
 #: pod/recorder/templates/recorder/claim_record.html:20
 msgid "No record found"
 msgstr ""
 
-#: pod/bbb/templates/bbb/list_meeting.html:38
+#: pod/bbb/templates/bbb/list_meeting.html:26
 msgid "There are no BigBlueButton records."
 msgstr ""
 
-#: pod/bbb/templates/bbb/list_meeting.html:40
+#: pod/bbb/templates/bbb/list_meeting.html:28
 #: pod/recorder/templates/recorder/claim_record.html:15
 #: pod/recorder/templates/recorder/claim_record.html:23
 #, python-format
@@ -559,35 +539,46 @@ msgid_plural "%(counter)s records found"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pod/bbb/templates/bbb/list_meeting.html:41
+#: pod/bbb/templates/bbb/list_meeting.html:29
 msgid ""
 "This is the list of the recorded BigBlueButton sessions for which you were "
 "moderator. This module allows you to create a video from a BigBlueButton "
 "presentation."
 msgstr ""
 
-#: pod/bbb/templates/bbb/list_meeting.html:42
+#: pod/bbb/templates/bbb/list_meeting.html:30
 msgid ""
 "Shortly after the presentation is published, the corresponding video will "
 "appear in your videos."
 msgstr ""
 
-#: pod/bbb/templates/bbb/list_meeting.html:45
+#: pod/bbb/templates/bbb/list_meeting.html:33
 msgid ""
 "Please note: a BigBlueButton presentation can be encoded by another "
 "moderator."
 msgstr ""
 
-#: pod/bbb/templates/bbb/list_meeting.html:46
+#: pod/bbb/templates/bbb/list_meeting.html:34
 msgid ""
 "If such a case occurs, this information will be displayed directly in the "
 "list. You can then contact this user directly to ask him/her to share the "
 "video with you, or even to put you as additional owner of the video."
 msgstr ""
 
-#: pod/bbb/templates/bbb/list_meeting.html:74
-#: pod/bbb/templates/bbb/live_list_meeting.html:44
+#: pod/bbb/templates/bbb/list_meeting.html:62
+#: pod/bbb/templates/bbb/live_list_meeting.html:39
 msgid "Please note: this page refreshes automatically every 30 seconds."
+msgstr ""
+
+#: pod/bbb/templates/bbb/live_card.html:16
+#: pod/bbb/templates/bbb/live_card.html:17
+#: pod/bbb/templates/bbb/live_list_meeting.html:13
+#: pod/bbb/templates/bbb/live_list_meeting.html:17
+#: pod/bbb/templates/bbb/live_list_meeting.html:21
+#: pod/bbb/templates/bbb/live_publish_meeting.html:18
+#: pod/bbb/templates/bbb/live_publish_meeting.html:83
+#: pod/main/templates/navbar.html:116
+msgid "Perform a BigBlueButton live"
 msgstr ""
 
 #: pod/bbb/templates/bbb/live_card.html:20
@@ -604,62 +595,62 @@ msgstr ""
 msgid "Live not already started"
 msgstr ""
 
-#: pod/bbb/templates/bbb/live_list_meeting.html:28
+#: pod/bbb/templates/bbb/live_list_meeting.html:23
 msgid "No BigBlueButton session in progress found"
 msgstr ""
 
-#: pod/bbb/templates/bbb/live_list_meeting.html:30
+#: pod/bbb/templates/bbb/live_list_meeting.html:25
 #, python-format
 msgid "%(counter)s BigBlueButton session in progress found"
 msgid_plural "%(counter)s BigBlueButton sessions in progress found"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pod/bbb/templates/bbb/live_list_meeting.html:33
+#: pod/bbb/templates/bbb/live_list_meeting.html:28
 msgid ""
 "This is the list of current BigBlueButton sessions for which you are "
 "moderator. This module allows you to make a live stream from this "
 "BigBlueButton session (<i>useful if there are more than 100 users</i>)."
 msgstr ""
 
-#: pod/bbb/templates/bbb/live_list_meeting.html:34
+#: pod/bbb/templates/bbb/live_list_meeting.html:29
 msgid ""
 "<b>Remember to not use breakout rooms in this case and end the meeting once "
 "it is over.</b>"
 msgstr ""
 
-#: pod/bbb/templates/bbb/live_list_meeting.html:35
+#: pod/bbb/templates/bbb/live_list_meeting.html:30
 msgid ""
 "Shortly after clicking the \"Perform a BigBlueButton live\" button, and "
 "select the desired options, the live stream will be available to users on "
 "the <i data-feather=\\\"radio\\\"></i> <b>Lives</b> page."
 msgstr ""
 
-#: pod/bbb/templates/bbb/live_list_meeting.html:39
+#: pod/bbb/templates/bbb/live_list_meeting.html:34
 msgid "There are no BigBlueButton sessions in progress."
 msgstr ""
 
-#: pod/bbb/templates/bbb/live_publish_meeting.html:24
-#: pod/bbb/templates/bbb/live_publish_meeting.html:29
+#: pod/bbb/templates/bbb/live_publish_meeting.html:21
+#: pod/bbb/templates/bbb/live_publish_meeting.html:26
 msgid "Confirmation of performing a BigBlueButton live"
 msgstr ""
 
-#: pod/bbb/templates/bbb/live_publish_meeting.html:34
+#: pod/bbb/templates/bbb/live_publish_meeting.html:31
 msgid "Are you sure you want to perform a BigBlueButton live?"
 msgstr ""
 
-#: pod/bbb/templates/bbb/live_publish_meeting.html:42
+#: pod/bbb/templates/bbb/live_publish_meeting.html:39
 msgid ""
 "Select the desired options than validate this form by clicking \"Perform a "
 "BigBlueButton live\"."
 msgstr ""
 
-#: pod/bbb/templates/bbb/live_publish_meeting.html:44
+#: pod/bbb/templates/bbb/live_publish_meeting.html:41
 msgid ""
 "This live will be stopped automatically when BigBlueButton session ends."
 msgstr ""
 
-#: pod/bbb/templates/bbb/live_publish_meeting.html:83
+#: pod/bbb/templates/bbb/live_publish_meeting.html:80
 msgid ""
 "Please note: shortly after clicking the \"Perform a BigBlueButton live\" "
 "button, the live stream will be available to users on the <i data-feather=\\"
@@ -3048,6 +3039,14 @@ msgstr ""
 msgid "Name of the tab"
 msgstr ""
 
+#: pod/main/models.py:181
+msgid "Additional Channels Tab"
+msgstr ""
+
+#: pod/main/models.py:182
+msgid "Additional Channel Tabs"
+msgstr ""
+
 #: pod/main/templates/403.html:4 pod/main/templates/403.html:9
 #: pod/main/templates/403.html:14
 msgid "Permission Denied"
@@ -3291,15 +3290,15 @@ msgstr ""
 msgid "Claim a record"
 msgstr ""
 
-#: pod/main/templates/navbar.html:122 pod/main/templates/navbar.html:123
+#: pod/main/templates/navbar.html:121 pod/main/templates/navbar.html:122
 msgid "Log out"
 msgstr ""
 
-#: pod/main/templates/navbar.html:156 pod/main/templates/navbar.html:158
+#: pod/main/templates/navbar.html:155 pod/main/templates/navbar.html:157
 msgid "Dark mode"
 msgstr ""
 
-#: pod/main/templates/navbar.html:167 pod/main/templates/navbar.html:169
+#: pod/main/templates/navbar.html:166 pod/main/templates/navbar.html:168
 msgid "Dyslexia mode"
 msgstr ""
 
