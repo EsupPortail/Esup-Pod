@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_protect
+from django.core.exceptions import SuspiciousOperation
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
@@ -47,6 +48,8 @@ else:
 
 def authentication_login(request):
     referrer = request.GET["referrer"] if request.GET.get("referrer") else "/"
+    if not referrer.startswith('/'):
+        raise SuspiciousOperation("referrer is not internal") 
     iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
     if request.user.is_authenticated():
         return redirect(referrer)
