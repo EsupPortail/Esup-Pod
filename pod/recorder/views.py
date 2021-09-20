@@ -158,7 +158,7 @@ def reformat_url_if_use_cas_or_shib(request, link_url):
     # %2520juin%25202019%26recorder%3D1
     host = "https://%s" % request.get_host() if (
         request.is_secure()) else "http://%s" % request.get_host()
-    if not link_url.startswith(['/', host]):
+    if not link_url.startswith(('/', host)):
         raise SuspiciousOperation("link url is not internal")
     if USE_CAS:
         return "".join(
