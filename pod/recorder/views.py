@@ -157,7 +157,7 @@ def reformat_url_if_use_cas_or_shib(request, link_url):
     # -7a142a67a935.zip%26course_title%3DEnregistrement%252021
     # %2520juin%25202019%26recorder%3D1
     if not link_url.startswith('/'):
-        raise SuspiciousOperation("link url is not internal") 
+        raise SuspiciousOperation("link url is not internal")
     if USE_CAS:
         return "".join(
             [

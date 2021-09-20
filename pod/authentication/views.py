@@ -27,7 +27,6 @@ if CAS_GATEWAY:
         next = request.GET["next"] if request.GET.get("next") else "/"
         if request.user.is_authenticated():
             return redirect(next)
-
         return render(
             request,
             "authentication/login.html",
@@ -49,7 +48,7 @@ else:
 def authentication_login(request):
     referrer = request.GET["referrer"] if request.GET.get("referrer") else "/"
     if not referrer.startswith('/'):
-        raise SuspiciousOperation("referrer is not internal") 
+        raise SuspiciousOperation("referrer is not internal")
     iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
     if request.user.is_authenticated():
         return redirect(referrer)
