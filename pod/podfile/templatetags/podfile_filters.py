@@ -1,5 +1,6 @@
 from django import template
 from django.core.files.storage import default_storage
+
 # import os
 
 ICON_LISTE = [
@@ -23,25 +24,25 @@ ICON_LISTE = [
     "txt",
     "xls",
     "xlsx",
-    "zip"
+    "zip",
 ]
 
 register = template.Library()
 
 
-@register.filter(name='file_exists')
+@register.filter(name="file_exists")
 def file_exists(filepath):
     if default_storage.exists(filepath):
         return filepath
     else:
-        index = filepath.rfind('/')
-        new_filepath = filepath[:index] + '/image.png'
+        index = filepath.rfind("/")
+        new_filepath = filepath[:index] + "/image.png"
         return new_filepath
 
 
-@register.filter(name='icon_exists')
+@register.filter(name="icon_exists")
 def icon_exists(filename):
-    fname, dot, extension = filename.rpartition('.')
+    fname, dot, extension = filename.rpartition(".")
     # print(fname, extension)
     if extension in ICON_LISTE:
         return extension

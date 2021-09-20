@@ -11,53 +11,45 @@ from pod.playlist.models import PlaylistElement
 
 
 class PlaylistModelTestCase(TestCase):
-    fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data.json",
+    ]
 
     def setUp(self):
-        owner = User.objects.create(username='test')
+        owner = User.objects.create(username="test")
         playlist = Playlist.objects.create(
-            title='playlist',
+            title="playlist",
             owner=owner,
         )
-        videotype = Type.objects.create(
-            title='others'
-        )
+        videotype = Type.objects.create(title="others")
         video = Video.objects.create(
-            title='video1',
+            title="video1",
             type=videotype,
             owner=owner,
-            video='test.mp4',
-            is_draft=False
+            video="test.mp4",
+            is_draft=False,
         )
         video2 = Video.objects.create(
-            title='video2',
+            title="video2",
             type=videotype,
             owner=owner,
-            video='test.mp4',
-            is_draft=False
+            video="test.mp4",
+            is_draft=False,
         )
         Playlist.objects.create(
-            title='playlist2',
+            title="playlist2",
             owner=owner,
-            description='description',
-            visible=True
+            description="description",
+            visible=True,
         )
-        PlaylistElement.objects.create(
-            playlist=playlist,
-            video=video,
-            position=1
-        )
-        PlaylistElement.objects.create(
-            playlist=playlist,
-            video=video2,
-            position=2
-        )
+        PlaylistElement.objects.create(playlist=playlist, video=video, position=1)
+        PlaylistElement.objects.create(playlist=playlist, video=video2, position=2)
 
     def test_attributs(self):
         playlist = Playlist.objects.get(id=1)
         owner = User.objects.get(id=1)
-        self.assertEqual(playlist.title, 'playlist')
-        self.assertEqual(playlist.slug, '1-playlist')
+        self.assertEqual(playlist.title, "playlist")
+        self.assertEqual(playlist.slug, "1-playlist")
         self.assertEqual(playlist.owner, owner)
         self.assertEqual(playlist.description, None)
         self.assertFalse(playlist.visible)
@@ -67,10 +59,10 @@ class PlaylistModelTestCase(TestCase):
     def test_attributs_full(self):
         playlist = Playlist.objects.get(id=2)
         owner = User.objects.get(id=1)
-        self.assertEqual(playlist.title, 'playlist2')
-        self.assertEqual(playlist.slug, '2-playlist2')
+        self.assertEqual(playlist.title, "playlist2")
+        self.assertEqual(playlist.slug, "2-playlist2")
         self.assertEqual(playlist.owner, owner)
-        self.assertEqual(playlist.description, 'description')
+        self.assertEqual(playlist.description, "description")
         self.assertTrue(playlist.visible)
 
         print(" ---> test_attributs_full : OK ! --- PlaylistModel")
@@ -111,53 +103,40 @@ class PlaylistModelTestCase(TestCase):
 
 
 class PlaylistElementModelTestCase(TestCase):
-
     def setUp(self):
-        owner = User.objects.create(username='test')
+        owner = User.objects.create(username="test")
         playlist = Playlist.objects.create(
-            title='playlist',
+            title="playlist",
             owner=owner,
         )
-        videotype = Type.objects.create(
-            title='others'
-        )
+        videotype = Type.objects.create(title="others")
         video = Video.objects.create(
-            title='video1',
+            title="video1",
             type=videotype,
             owner=owner,
-            video='test.mp4',
-            is_draft=False
+            video="test.mp4",
+            is_draft=False,
         )
         video2 = Video.objects.create(
-            title='video2',
+            title="video2",
             type=videotype,
             owner=owner,
-            video='test.mp4',
-            is_draft=False
-        )
-        Video.objects.create(
-            title='video3',
-            type=videotype,
-            owner=owner,
-            video='test.mp4'
-        )
-        Video.objects.create(
-            title='video4',
-            type=videotype,
-            owner=owner,
-            video='test.mp4',
+            video="test.mp4",
             is_draft=False,
-            password='test'
         )
-        PlaylistElement.objects.create(
-            playlist=playlist,
-            video=video
+        Video.objects.create(
+            title="video3", type=videotype, owner=owner, video="test.mp4"
         )
-        PlaylistElement.objects.create(
-            playlist=playlist,
-            video=video2,
-            position=2
+        Video.objects.create(
+            title="video4",
+            type=videotype,
+            owner=owner,
+            video="test.mp4",
+            is_draft=False,
+            password="test",
         )
+        PlaylistElement.objects.create(playlist=playlist, video=video)
+        PlaylistElement.objects.create(playlist=playlist, video=video2, position=2)
 
     def test_attributs(self):
         element = PlaylistElement.objects.get(id=1)

@@ -56,5 +56,25 @@
         "description_fr" : "Texte qui sera affiché sur les pages qui sont désactivées pendant la maintenance",
         "description_en" : "Text that will be displayed on pages that are disabled during maintenance"
     }
+  },
+  {
+    "pk": 5,
+    "model": "main.configuration",
+    "fields": {
+        "key" : "maintenance_sheduled",
+        "value": "0",
+        "description_fr" : "Affichage d'une maintenance programmée (1) ou non (0).",
+        "description_en" : "Display a sheduled maintenance message (1) or not (0)."
+    }
+  },
+  {
+    "pk": 6,
+    "model": "main.configuration",
+    "fields": {
+        "key" : "maintenance_text_sheduled",
+        "value": "Pod sera en maintenance <strong>le _/_/_</strong>. Évitez tout transfert de contenu à cette date.",
+        "description_fr" : "Texte annoncant une maintenance.",
+        "description_en" : "Text announcing a sheduled maintenance."
+    }
   }
 ]
