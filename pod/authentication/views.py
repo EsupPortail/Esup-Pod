@@ -25,6 +25,10 @@ if CAS_GATEWAY:
     @gateway()
     def authentication_login_gateway(request):
         next = request.GET["next"] if request.GET.get("next") else "/"
+        host = "https://%s" % request.get_host() if (
+            request.is_secure()) else "http://%s" % request.get_host()
+        if not next.startswith(['/', host]):
+            raise SuspiciousOperation("next is not internal")
         if request.user.is_authenticated():
             return redirect(next)
         return render(
