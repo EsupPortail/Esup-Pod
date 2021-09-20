@@ -52,7 +52,7 @@ else:
 def authentication_login(request):
     referrer = request.GET["referrer"] if request.GET.get("referrer") else "/"
     host = "https://%s" % request.get_host() if (
-            request.is_secure()) else "http://%s" % request.get_host()
+        request.is_secure()) else "http://%s" % request.get_host()
     if not referrer.startswith(('/', host)):
         raise SuspiciousOperation("referrer is not internal")
     iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
