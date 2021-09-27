@@ -13,6 +13,7 @@ from pod.video.models import Discipline
 from pod.video.models import Video
 from pod.main.models import Configuration
 from django.contrib.sites.shortcuts import get_current_site
+from pod.main.models import AdditionalChannelTab
 
 ORDER_BY = "last_name"
 VALUES_LIST = ["username", "first_name", "last_name"]
@@ -163,7 +164,10 @@ def context_settings(request):
 def context_navbar(request):
     channels = (
         Channel.objects.filter(
-            visible=True, video__is_draft=False, sites=get_current_site(request)
+            visible=True,
+            video__is_draft=False,
+            add_channels_tab=None,
+            sites=get_current_site(request),
         )
         .distinct()
         .annotate(video_count=Count("video", distinct=True))
@@ -176,6 +180,15 @@ def context_navbar(request):
                 .distinct()
                 .annotate(video_count=Count("video", distinct=True)),
             )
+        )
+    )
+
+    add_channels_tab = AdditionalChannelTab.objects.all().prefetch_related(
+        Prefetch(
+            "channel_set",
+            queryset=Channel.objects.filter(sites=get_current_site(request))
+            .distinct()
+            .annotate(video_count=Count("video", distinct=True)),
         )
     )
 
@@ -225,6 +238,7 @@ def context_navbar(request):
 
     return {
         "ALL_CHANNELS": all_channels,
+        "ADD_CHANNELS_TAB": add_channels_tab,
         "CHANNELS": channels,
         "TYPES": types,
         "DISCIPLINES": disciplines,

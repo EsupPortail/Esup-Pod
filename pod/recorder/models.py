@@ -43,7 +43,7 @@ LICENCE_CHOICES = getattr(
         ("by", _("Attribution 4.0 International (CC BY 4.0)")),
         (
             "by-nd",
-            _("Attribution-NoDerivatives 4.0 " "International (CC BY-ND 4.0)"),
+            _("Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)"),
         ),
         (
             "by-nc-nd",
@@ -54,7 +54,7 @@ LICENCE_CHOICES = getattr(
         ),
         (
             "by-nc",
-            _("Attribution-NonCommercial 4.0 " "International (CC BY-NC 4.0)"),
+            _("Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"),
         ),
         (
             "by-nc-sa",
@@ -187,7 +187,7 @@ class Recorder(models.Model):
         max_length=1,
         choices=CURSUS_CODES,
         default="0",
-        help_text=_("Select an university course as " "audience target of the content."),
+        help_text=_("Select an university course as audience target of the content."),
     )
     main_lang = models.CharField(
         _("Main language"),
@@ -199,9 +199,7 @@ class Recorder(models.Model):
     transcript = models.BooleanField(
         _("Transcript"),
         default=False,
-        help_text=_(
-            "Check this box if you want to transcript the audio." "(beta version)"
-        ),
+        help_text=_("Check this box if you want to transcript the audio. (beta version)"),
     )
     tags = TagField(
         help_text=_(
@@ -234,12 +232,12 @@ class Recorder(models.Model):
     allow_downloading = models.BooleanField(
         _("allow downloading"),
         default=False,
-        help_text=_("Check this box if you to allow downloading " "of the encoded files"),
+        help_text=_("Check this box if you to allow downloading of the encoded files"),
     )
     is_360 = models.BooleanField(
         _("video 360"),
         default=False,
-        help_text=_("Check this box if you want to use the 360 player " "for the video"),
+        help_text=_("Check this box if you want to use the 360 player for the video"),
     )
     disable_comment = models.BooleanField(
         _("Disable comment"),
@@ -286,7 +284,7 @@ class Recording(models.Model):
         on_delete=models.CASCADE,
         verbose_name=_("Recorder"),
         default=DEFAULT_RECORDER_ID,
-        help_text=_("Recorder that made this " "recording."),
+        help_text=_("Recorder that made this recording."),
     )
     user = select2_fields.ForeignKey(
         User,
@@ -369,14 +367,12 @@ class RecordingFileTreatment(models.Model):
     require_manual_claim = models.BooleanField(
         _("Require manual claim?"),
         default=False,
-        help_text=_("Has this recording file " "require a manual claim " "by a user?"),
+        help_text=_("Has this recording file require a manual claim by a user?"),
     )
     email_sent = models.BooleanField(
         _("Email sent?"),
         default=False,
-        help_text=_(
-            "Has an email been sent to the " "manager of the concerned recorder?"
-        ),
+        help_text=_("Has an email been sent to the manager of the concerned recorder?"),
     )
     date_email_sent = models.DateTimeField(
         _("Date email sent"), blank=True, null=True, editable=False
@@ -412,7 +408,7 @@ class RecordingFile(models.Model):
         on_delete=models.CASCADE,
         default=DEFAULT_RECORDER_ID,
         verbose_name=_("Recorder"),
-        help_text=_("Recorder that made this " "recording."),
+        help_text=_("Recorder that made this recording."),
     )
 
     class Meta:

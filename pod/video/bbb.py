@@ -60,10 +60,14 @@ def bbb_encode_meeting(id):
     command += "cd %s; " % (DEFAULT_BBB_PLUGIN)
     # The command looks like :
     # node export.js https://bbb.univ.fr/playback/presentation/2.0/
-    # playback.html?meetingId=INTERNAL_MEETING_ID
+    # playback.html?meetingId=INTERNAL_MEETING_ID INTERNAL_MEETING_ID.webm
     # > /data/www/USERPOD/bbb-recorder/logs/INTERNAL_MEETING_ID.log
     # 2>&1 < /dev/null
+    # Recording_URL can be like https://bbb.univ.fr/playback/presentation/2.3/
+    # INTERNAL_MEETING_ID/?meetingId=INTERNAL_MEETING_ID/
+    # Check BBB_VERSION_IS_23 parameter.
     command += "node export.js " + str(meeting_to_encode.recording_url)
+    command += " " + str(meeting_to_encode.internal_meeting_id) + ".webm"
     command += " > " + DEFAULT_BBB_PATH + "logs/"
     command += str(meeting_to_encode.internal_meeting_id)
     command += ".log 2>&1 < /dev/null"

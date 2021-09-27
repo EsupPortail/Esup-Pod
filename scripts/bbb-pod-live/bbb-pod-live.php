@@ -9,7 +9,7 @@ define ("PHYSICAL_BASE_ROOT","/home/pod/bbb-pod-live/");
 // Constante permettant de définir le chemin physique du répertoire contenant les logs applicatifs.
 // !!! L'arborescence doit être sur un disque dur local de la machine serveur.
 define ("PHYSICAL_LOG_ROOT", "/home/pod/bbb-pod-live/logs/");
-// Mail de l'administrateur de BBB-POD-LIVE, qui recevra les mails en cas d'erreur
+// Mail de l'administrateur de BBB-POD-LIVE, qui recevra les mails en cas de démarrage de live ou d'erreur
 define ("ADMIN_EMAIL", "admin@univ.fr");
 // Hostname de ce serveur BBB-POD-LIVE (utile pour Redis et le chat)
 define ("SERVER_HOSTNAME", "server.univ.fr");
@@ -96,14 +96,7 @@ catch(Exception $e) {
 
 // Envoi d'un message à l'administrateur en cas d'erreur de script
 if ($GLOBALS["txtErrorInScript"] != "") {
-	$to = ADMIN_EMAIL;
-	$subject = "[BBB-POD-LIVE] Erreur rencontrée";
-	$message = nl2br($GLOBALS["txtErrorInScript"]);
-
-	$headers  = "MIME-Version: 1.0\r\n";
-	$headers .= "Content-type: text/html; charset=utf-8\r\n";
-
-	mail ($to, $subject, $message, $headers);
+	sendEmail("[BBB-POD-LIVE] Erreur rencontrée", $GLOBALS["txtErrorInScript"]);
 }
 /********** Fin de la phase principale**********/
 
@@ -280,7 +273,7 @@ function configureAndStartLive($idLive, $urlMeeting, $idBbbLiveStreaming) {
 		// Nom de la session, sans caractères problématiques ni espaces, et la chaîne bbb- en premier pour éviter toute confusion avec un diffuseur existant
 		$nameMeeting = "bbb-" . formatString($oMeeting->meeting_name);
 		// Nom de la session, sans caractères problématiques avec espaces, et la chaîne (BBB) en premier pour éviter toute confusion avec un diffuseur existant
-		$nameMeetingToDisplay = "(BBB) " . formatStringToDisplay($oMeeting->meeting_name);
+		$nameMeetingToDisplay = "[BBB] " . formatStringToDisplay($oMeeting->meeting_name);
 		// Id de la session
 		$idMeeting = $oMeeting->meeting_id;
 		
@@ -527,6 +520,7 @@ function startLive($idLive, $streamName, $idBbbLiveStreaming, $idBroadcaster) {
 	else {
 		writeLog("  + Commande '$cmd' : $sRetourVerification[0]", "ERROR", __FILE__, __LINE__);
 	}
+	sendEmail("[BBB-POD-LIVE] Démarrage d'un live", "Démarrage d'un direct (id : $idLive, stream : $streamName) sur le serveur " . SERVER_NUMBER);
 }
 
 /**
@@ -687,7 +681,7 @@ function stopLives() {
  */
 function deleteBroadcaster($broadcasterName) {
 	// Via l'API, il faut utiliser le slug et non le nom
-	$slug = str_replace("(BBB)", "bbb", $broadcasterName);
+	$slug = str_replace("[BBB]", "bbb", $broadcasterName);
 	/* Suppression du diffuseur correspondant dans Pod */
 	$cmdBroadcaster = "curl --silent ";
 	$cmdBroadcaster .= "-H 'Authorization: Token " . POD_TOKEN . "' ";
@@ -824,6 +818,7 @@ function formatString($string) {
 	$string = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $string);
 	$string = preg_replace('#&[^;]+;".()\'#', '', $string);
 	$string = preg_replace('/\s+/', '-', $string);
+	$string = str_replace("'", "-", $string);
 	return $string;
 }
 
@@ -838,6 +833,22 @@ function formatStringToDisplay($string) {
 	$string = preg_replace('#&([A-za-z])(?:uml|circ|tilde|acute|grave|cedil|ring);#', '\1', $string);
 	$string = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $string);
 	$string = preg_replace('#&[^;]+;".()\'#', '', $string);
+	$string = str_replace("'", "-", $string);
 	return $string;
 }
+
+/**
+* Procédure permettant d'envoyer un email à l'administrateur.
+* @param $subject - sujet du mail
+* @param $message - message du mail
+*/
+function sendEmail($subject, $message) {
+	$to = ADMIN_EMAIL;
+	$message = nl2br($message);
+
+	$headers  = "MIME-Version: 1.0\r\n";
+	$headers .= "Content-type: text/html; charset=utf-8\r\n";
+
+	mail ($to, $subject, $message, $headers);
+}			   
 ?>

@@ -2,6 +2,7 @@
 {% get_current_language as LANGUAGE_CODE %}
 {% get_available_languages as LANGUAGES %}
 {% get_language_info_list for LANGUAGES as languages %}
+{% load thumbnail %}
 
 <div class="container container-pod" id="nav-mainbar">
   <h1 class="pod-brand">
@@ -17,6 +18,12 @@
       <li class="nav-item" id="nav-channels">
         <button class="nav-link" data-toggle="modal" data-target=".chaines-modal"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {% trans "Channels" %}</button>
       </li>
+      {% for add_channel_tab in ADD_CHANNELS_TAB %}
+        <li class="nav-item" id="nav-channels">
+          <button class="nav-link" data-toggle="modal" data-target=".chaines-modal-{{add_channel_tab.id}}"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {{ add_channel_tab.name }}</button>
+        </li>
+      {% endfor %}
+      
       {% endif %}
       {% if HIDE_USER_TAB == False and user.is_authenticated %}
       <li class="nav-item" id="nav-users">
@@ -104,10 +111,9 @@
             <a class="dropdown-item" href="{% url 'claim_record' %}" title="{% trans 'Claim a record' %}"><i data-feather="share" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'Claim a record' %}</a>
           {% endif %}
           {% if request.user.is_staff and USE_BBB %}
+			<a class="dropdown-item" href="{% url 'bbb:list_meeting' %}"><i data-feather="square" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My BigBlueButton records' %}</a>
             {% if USE_BBB_LIVE %}
-              <a class="dropdown-item" href="{% url 'bbb:list_meeting' %}"><i data-feather="square" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My BigBlueButton records and lives' %}</a>
-            {% else %}
-              <a class="dropdown-item" href="{% url 'bbb:list_meeting' %}"><i data-feather="square" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'My BigBlueButton records' %}</a>
+              <a class="dropdown-item" href="{% url 'bbb:live_list_meeting' %}"><i data-feather="zap" class="nav-link-icone d-lg-none d-xl-inline mx-1"></i>{% trans 'Perform a BigBlueButton live' %}</a>
             {% endif %}
           {% endif %}
           <!-- <a class="dropdown-item" href="#">Gestion de mon compte</a> -->
@@ -173,3 +179,4 @@
 
 </div> <!-- FIN Container -->
 {% endspaceless %}
+
