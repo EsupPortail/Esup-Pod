@@ -178,3 +178,11 @@
   position: absolute;
   background-color: #ffe800;
 }
+
+/* Enrich types colors */
+.enrich_image{color:var(--purple)}
+.enrich_document{color:var(--orange)}
+.enrich_richtext{color:var(--blue)}
+.enrich_weblink{color:var(--red)}
+.enrich_embed{color:var(--green)}
+

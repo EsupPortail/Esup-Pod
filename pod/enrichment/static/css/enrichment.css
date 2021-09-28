@@ -1,3 +1,6 @@
+/*
+ * CSS for enrichment editing
+ **/
 
 /*** Table scroll ***/
 table.scroll {
@@ -46,13 +49,6 @@ table.scroll thead th {
 form#form_enrich {
 	background-color: rgba(0, 0, 0, .05);
 }
-
-/* Enrich types colors */
-.enrich_image{color:var(--purple)}
-.enrich_document{color:var(--orange)}
-.enrich_richtext{color:var(--blue)}
-.enrich_weblink{color:var(--red)}
-.enrich_embed{color:var(--green)}
 
 /*
 #form_new,
