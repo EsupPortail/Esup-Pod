@@ -92,11 +92,11 @@
 {% endblock video-element %}
 
 {% block page_aside %}
-<div class="card card-body p-2 mt-1" id="card-enrichmenteditinformations">
-  <h5 class="card-title pl-2">
-    <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
+<div class="card mt-1" id="card-enrichmenteditinformations">
+  <h5 class="card-header card-title pl-2">
+    <i data-feather="info"></i>&nbsp;{% trans 'Editing enrichments' %}
   </h5>
-  <div class="card-text small">
+  <div class="card-body card-text small">
     {% if video.owner == request.user or request.user.is_superuser or perms.enrichment.change_enrichment or request.user in video.additional_owners.all %}
       <p><a href="{% url 'enrichment:group_enrichment' slug=video.slug %}" title="{% trans 'You can specify the group(s) of users who can access this page' %}"><i data-feather="users"></i>&nbsp;{% trans 'You can specify the group(s) of users who can access this page' %}</a></p>
     {% endif %}

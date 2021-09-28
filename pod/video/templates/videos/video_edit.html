@@ -111,16 +111,16 @@
   {% endfor %}
 
   <div class="card" id='js-process'>
-  <div class="card-body">
-    <h5 class="card-title">{% trans "Sending, please wait." %}</h5>
-    <div class="spinner-border hidespinner" role="status">
-    <span class="sr-only">{% trans "Loading" %}...</span>
+    <h5 class="card-header card-title">{% trans "Sending, please wait." %}</h5>
+    <div class="card-body">
+      <div class="spinner-border hidespinner" role="status">
+        <span class="sr-only">{% trans "Loading" %}...</span>
+      </div>
+      <p class="card-text">{% progress_bar %}</p>
     </div>
-    <p class="card-text">{% progress_bar %}</p>
-  </div>
-  <div class="card-footer">
-    {% trans "The page will refresh after the upload completes." %}
-  </div>
+    <div class="card-footer">
+      {% trans "The page will refresh after the upload completes." %}
+    </div>
   </div>
   <!--</div>-->
   <div class="text-center">
@@ -175,7 +175,7 @@
   {% endif %}
   <div class="card mt-1" id="card-sharedraftversion">
     <h5 class="card-header card-title pl-2">{% trans "Uploading" %}</h5>
-    <div class="card-body card-text" >
+    <div class="card-body card-text">
       <p>{% blocktrans with form.VIDEO_MAX_UPLOAD_SIZE as video_max_upload_size %}The file size must be lower than {{video_max_upload_size}} Go.{% endblocktrans %}</p>
       <p>{% trans "The sending time depends on the size of your file and your upload speed. This can be quite long." %}</p>
       <p>{% trans "While sending your file, do not close your browser until you have received a message of success or failure." %}</p>

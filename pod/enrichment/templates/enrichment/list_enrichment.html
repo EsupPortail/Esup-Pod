@@ -18,7 +18,7 @@
 			{% for enrich in list_enrichment %}
 				<tr>
 					<td class="enrich_title">{{enrich.title}}</td>
-					<td class="enrich_type">{% if enrich.type %}{{enrich.type}}{% endif %}</td>
+					<td class="enrich_type enrich_{{enrich.type}}">{% if enrich.type %}{% trans enrich.type %}{% endif %}</td>
 					<td class="enrich_start">{{enrich.start}}</td>
 					<td class="enrich_end">{{enrich.end}}</td>
 					<td>
