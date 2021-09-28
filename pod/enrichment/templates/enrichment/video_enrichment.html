@@ -172,11 +172,6 @@
     player.on('loadedmetadata', function() {
         var slide = [];
         if(!metadataTrack.cues) { //Safari do not get cues
-            /*console.log("metadataTrack:"+metadataTrack.index);
-            var t = player.el().childNodes;
-            console.log("player.el().childNodes:"+t.length);
-            for(i=0; i<t.length; i++) console.log(t[i].tagName);
-            console.log("player.el():"+player.el().id);*/
             let tracksrc = player.el().getElementsByTagName('TRACK')[metadataTrack.index].src;
             loadEnrichmentVTTfile(tracksrc, function(cues) {
                 if (typeof player.slides === "function") {
