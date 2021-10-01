@@ -165,6 +165,16 @@ if not os.path.exists(LOG_DIRECTORY):
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} {levelname} [{module}] {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{asctime} {levelname} - {message}',
+            'style': '{',
+        },
+    },
     "handlers": {
         "file": {
             # 'level': 'DEBUG',
@@ -173,6 +183,7 @@ LOGGING = {
         },
         "console": {
             "class": "logging.StreamHandler",
+            'formatter': 'verbose',
         },
         "mail_admins": {
             "level": "ERROR",
@@ -182,7 +193,7 @@ LOGGING = {
     "loggers": {
         "django": {
             "handlers": ["file", "console", "mail_admins"],
-            "level": "INFO",
+            "level": "WARNING",
             "propagate": True,
         },
         "pod.*": {
