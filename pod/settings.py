@@ -165,14 +165,14 @@ if not os.path.exists(LOG_DIRECTORY):
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    'formatters': {
-        'verbose': {
-            'format': '{asctime} {levelname} [{module}] {message}',
-            'style': '{',
+    "formatters": {
+        "verbose": {
+            "format": "{asctime} {levelname} [{module}] {message}",
+            "style": "{",
         },
-        'simple': {
-            'format': '{asctime} {levelname} - {message}',
-            'style': '{',
+        "simple": {
+            "format": "{asctime} {levelname} - {message}",
+            "style": "{",
         },
     },
     "handlers": {
@@ -183,7 +183,7 @@ LOGGING = {
         },
         "console": {
             "class": "logging.StreamHandler",
-            'formatter': 'verbose',
+            "formatter": "verbose",
         },
         "mail_admins": {
             "level": "ERROR",

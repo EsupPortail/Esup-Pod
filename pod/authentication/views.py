@@ -46,6 +46,7 @@ if CAS_GATEWAY:
             },
         )
 
+
 else:
 
     def authentication_login_gateway(request):
