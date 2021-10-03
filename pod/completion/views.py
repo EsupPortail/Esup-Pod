@@ -75,8 +75,17 @@ def video_caption_maker_save(request, video):
     )
     if request.method == "POST":
         cur_folder = get_current_session_folder(request)
-        response = file_edit_save(request, cur_folder)
+        response, newfile = file_edit_save(request, cur_folder)
         if b"list_element" in response.content:
+
+            # immediately assign the newly created captions file to the video
+            Track(
+                video = video,
+                kind = 'captions',
+                lang = 'en', # TODO: add language selection to the form
+                src = newfile,
+            ).save()
+
             messages.add_message(request, messages.INFO, _(u"The file has been saved."))
         else:
             messages.add_message(

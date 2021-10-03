@@ -530,7 +530,7 @@ def file_edit_save(request, folder):
 
         list_element = {"list_element": rendered, "folder_id": folder.id}
         data = json.dumps(list_element)
-        return HttpResponse(data, content_type="application/json")
+        return HttpResponse(data, content_type="application/json"), customfile
     else:
         some_data_to_dump = {
             "errors": "%s" % _("Please correct errors"),

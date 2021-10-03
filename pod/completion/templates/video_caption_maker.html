@@ -49,36 +49,11 @@
   </div>
 {% endif %}
 
-<p>{% trans "Load Existing Caption File [optional]:" %}
-<form method="post" action="{% url 'video_caption_maker' slug=video.slug %}" id="captionmaker_form">
-  {% csrf_token %}
-  <fieldset>
-    {% if form_make_caption.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
-    {% comment %} {% for field_hidden in form_make_caption.hidden_fields %} {{field_hidden}} {% endfor %} {% endcomment %}
-    {% comment %} {% for field in form_make_caption.visible_fields %} {% endcomment %}
-    {% for field in form_make_caption.visible_fields %}
-      {% if field.name == 'src' %}
-      {% spaceless %}
-      <div class="form-group" >
-        {{ field.errors }}
-        {{ field }}
-        {% if field.help_text %} <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small> {% endif %}
-        {% if field.field.required %} <div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div> {%endif%}
-      </div>
-      {% endspaceless %}
-      {% endif %}
-    {% endfor %}
-    {% comment %} {% endfor %} {% endcomment %}
-    {% if form_make_caption.instance.id %} <input type="hidden" id="user_id" name="user_id" value="{{form_make_caption.instance.id}}"/> {% endif %}
-  </fieldset>
-  {{form_make_caption.media}}
-</form>
-
 
 <div class="gray_no_video">
   <div style="display: inline-block; float: left; margin-right: 2%; min-height: 425px;
       width: 49%;">
-    <span>{% trans "Video" %} :</span>
+    <!--<span>{% trans "Video" %} :</span>-->
     {% include 'videos/video-element.html' %}
     <div id="videoError" class="videoError" style="display: none;"></div>
     <div id="captionTitle"></div>
@@ -93,15 +68,39 @@
     </div>
   </div>
   <div class="caption_content" style="display: inline-block; float: left; width: 49%;">
-    <span class="caption_title">{% trans "Caption list" %} :<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="question-circle" class="svg-inline--fa fa-question-circle fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 448c-110.532 0-200-89.431-200-200 0-110.495 89.472-200 200-200 110.491 0 200 89.471 200 200 0 110.53-89.431 200-200 200zm107.244-255.2c0 67.052-72.421 68.084-72.421 92.863V300c0 6.627-5.373 12-12 12h-45.647c-6.627 0-12-5.373-12-12v-8.659c0-35.745 27.1-50.034 47.579-61.516 17.561-9.845 28.324-16.541 28.324-29.579 0-17.246-21.999-28.693-39.784-28.693-23.189 0-33.894 10.977-48.942 29.969-4.057 5.12-11.46 6.071-16.666 2.124l-27.824-21.098c-5.107-3.872-6.251-11.066-2.644-16.363C184.846 131.491 214.94 112 261.794 112c49.071 0 101.45 38.304 101.45 88.8zM298 368c0 23.159-18.841 42-42 42s-42-18.841-42-42 18.841-42 42-42 42 18.841 42 42z"></path></svg><span class="help_text">{% trans "Use the Play and Pause buttons to determine when the subtitles appear, enter the text in the field below the video then click the Save / (Save & Continue) button to complete your subtitles and finally click the Save Subtitles button to create a subtitle file." %}</span></span>
+  <!--<span class="caption_title">{% trans "Caption list" %} :<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="question-circle" class="svg-inline--fa fa-question-circle fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 448c-110.532 0-200-89.431-200-200 0-110.495 89.472-200 200-200 110.491 0 200 89.471 200 200 0 110.53-89.431 200-200 200zm107.244-255.2c0 67.052-72.421 68.084-72.421 92.863V300c0 6.627-5.373 12-12 12h-45.647c-6.627 0-12-5.373-12-12v-8.659c0-35.745 27.1-50.034 47.579-61.516 17.561-9.845 28.324-16.541 28.324-29.579 0-17.246-21.999-28.693-39.784-28.693-23.189 0-33.894 10.977-48.942 29.969-4.057 5.12-11.46 6.071-16.666 2.124l-27.824-21.098c-5.107-3.872-6.251-11.066-2.644-16.363C184.846 131.491 214.94 112 261.794 112c49.071 0 101.45 38.304 101.45 88.8zM298 368c0 23.159-18.841 42-42 42s-42-18.841-42-42 18.841-42 42-42 42 18.841 42 42z"></path></svg><span class="help_text">{% trans "Use the Play and Pause buttons to determine when the subtitles appear, enter the text in the field below the video then click the Save / (Save & Continue) button to complete your subtitles and finally click the Save Subtitles button to create a subtitle file." %}</span></span>-->
   <textarea style="border: 1px solid #999; height: 442px; overflow:auto; resize:none; width:100%;" id="captionContent"></textarea>
     <div >
-    <form class="form_save completion" id="form_save_captions" action="{% url 'video_caption_maker' slug=video.slug %}" method="post" enctype="multipart/form-data">
+    <!--<p>{% trans "Load Existing Caption File [optional]:" %}-->
+    <form method="post" style="float: left" action="{% url 'video_caption_maker' slug=video.slug %}" id="captionmaker_form">
+      {% csrf_token %}
+      <fieldset>
+        {% if form_make_caption.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
+        {% comment %} {% for field_hidden in form_make_caption.hidden_fields %} {{field_hidden}} {% endfor %} {% endcomment %}
+        {% comment %} {% for field in form_make_caption.visible_fields %} {% endcomment %}
+        {% for field in form_make_caption.visible_fields %}
+          {% if field.name == 'src' %}
+          {% spaceless %}
+          <div class="form-group" >
+            {{ field.errors }}
+            {{ field }}
+            {% if field.help_text %} <small id="{{field.id_for_label}}Help" class="form-text text-muted">{{ field.help_text|safe }}</small> {% endif %}
+            {% if field.field.required %} <div class="invalid-feedback">{% trans "Please provide a valid value for this field" %}.</div> {%endif%}
+          </div>
+          {% endspaceless %}
+          {% endif %}
+        {% endfor %}
+        {% comment %} {% endfor %} {% endcomment %}
+        {% if form_make_caption.instance.id %} <input type="hidden" id="user_id" name="user_id" value="{{form_make_caption.instance.id}}"/> {% endif %}
+      </fieldset>
+      {{form_make_caption.media}}
+    </form>
+    <form class="form_save completion" style="float: left" id="form_save_captions" action="{% url 'video_caption_maker' slug=video.slug %}" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <input type="hidden" name="action" value="save"/>
       <input type="hidden" name="file_id"/>
-      <input type="submit" value="{% trans 'Save Captions' %}" id="save_captions" class="btn btn-primary btn-sm mt-1"/>
-      <button id="clearAllCaptions" class="btn btn-primary btn-sm mt-1">{% trans "Clear All" %}</button>
+      <input type="submit" value="{% trans 'Save Captions' %}" id="save_captions" class="btn btn-primary btn-sm"/>
+      <button id="clearAllCaptions" class="btn btn-primary btn-sm">{% trans "Clear All" %}</button>
     </form>
     </div>
   </div>
