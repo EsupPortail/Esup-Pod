@@ -1354,50 +1354,68 @@ class VideoTestJSONView(TestCase):
         v = Video.objects.get(title="Video1")
         self.assertEqual(v.is_draft, True)
         # test draft
-        response = self.client.get("/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.json()['status'], 302)
-        self.assertEqual(response.json()['error'], 'access')
+        self.assertEqual(response.json()["status"], 302)
+        self.assertEqual(response.json()["error"], "access")
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        response = self.client.get("/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
         self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertEqual(response.json()['status'], 'ok')
+        self.assertEqual(response.json()["status"], "ok")
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
-        response = self.client.get("/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.json()['status'], 403)
-        self.assertEqual(response.json()['error'], 'deny')
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], 403)
+        self.assertEqual(response.json()["error"], "deny")
         # test normal
         self.client.logout()
         v.is_draft = False
         v.save()
-        response = self.client.get("/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.json()['status'], 'ok')
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], "ok")
         # test restricted
         v.is_restricted = True
         v.save()
-        response = self.client.get("/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.json()['status'], 302)
-        self.assertEqual(response.json()['error'], 'access')
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], 302)
+        self.assertEqual(response.json()["error"], "access")
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
-        response = self.client.get("/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.json()['status'], 'ok')
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], "ok")
         # test restricted group
         v.restrict_access_to_groups.add(AccessGroup.objects.get(code_name="group2"))
         v.restrict_access_to_groups.add(AccessGroup.objects.get(code_name="group3"))
-        response = self.client.get("/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.json()['status'], 403)
-        self.assertEqual(response.json()['error'], 'deny')
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], 403)
+        self.assertEqual(response.json()["error"], "deny")
         self.user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="group1"))
-        response = self.client.get("/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.json()['status'], 403)
-        self.assertEqual(response.json()['error'], 'deny')
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], 403)
+        self.assertEqual(response.json()["error"], "deny")
         self.user.owner.accessgroup_set.add(AccessGroup.objects.get(code_name="group2"))
-        response = self.client.get("/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.json()['status'], 'ok')
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], "ok")
         # TODO test with password (actualy not used in playlist)
         """v.is_restricted = False
         v.restrict_access_to_groups = []
@@ -1423,14 +1441,20 @@ class VideoTestJSONView(TestCase):
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
-        response = self.client.get("/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.json()['status'], 'ok')
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], "ok")
         self.user = User.objects.get(username="pod2")
         self.client.force_login(self.user)
-        response = self.client.get("/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.json()['status'], 'ok')
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], "ok")
         self.user = User.objects.get(username="pod3")
         self.client.force_login(self.user)
-        response = self.client.get("/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-        self.assertEqual(response.json()['status'], 403)
-        self.assertEqual(response.json()['error'], 'deny')
+        response = self.client.get(
+            "/video_xhr/%s/" % v.slug, HTTP_X_REQUESTED_WITH="XMLHttpRequest"
+        )
+        self.assertEqual(response.json()["status"], 403)
+        self.assertEqual(response.json()["error"], "deny")
