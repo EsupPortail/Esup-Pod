@@ -4,6 +4,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_protect
+from django.core.exceptions import SuspiciousOperation
 from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.decorators import login_required
@@ -24,9 +25,15 @@ if CAS_GATEWAY:
     @gateway()
     def authentication_login_gateway(request):
         next = request.GET["next"] if request.GET.get("next") else "/"
+        host = (
+            "https://%s" % request.get_host()
+            if (request.is_secure())
+            else "http://%s" % request.get_host()
+        )
+        if not next.startswith(("/", host)):
+            raise SuspiciousOperation("next is not internal")
         if request.user.is_authenticated():
             return redirect(next)
-
         return render(
             request,
             "authentication/login.html",
@@ -47,6 +54,13 @@ else:
 
 def authentication_login(request):
     referrer = request.GET["referrer"] if request.GET.get("referrer") else "/"
+    host = (
+        "https://%s" % request.get_host()
+        if (request.is_secure())
+        else "http://%s" % request.get_host()
+    )
+    if not referrer.startswith(("/", host)):
+        raise SuspiciousOperation("referrer is not internal")
     iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
     if request.user.is_authenticated():
         return redirect(referrer)
