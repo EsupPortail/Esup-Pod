@@ -13,7 +13,7 @@
 .playlist-videos p {
 	position: absolute;
 	right: 2.5em;
-	top: 2.25em;
+	top: .5em;
 	display: block;
 	font-size: small;
 	text-align: right;
@@ -67,3 +67,5 @@
 	left: 1.5em;
 	right: 1.5em;
 }
+
+.vjs-control-bar {z-index:1}

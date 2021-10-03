@@ -1,7 +1,7 @@
 {% load staticfiles custom_tags %}
 {% load i18n %}
 {% get_setting "VIDEO_PLAYBACKRATES" '[0.5, 1, 1.5, 2]' as video_playbackrates %}
-<script>
+<script id="id_video_script">
 window.onmessage = function(event) {
    var evt = event || window.event;
    {# maybe use request.get_host to protect it... #}
@@ -154,13 +154,6 @@ player.on('firstplay', function(){
     player.vr({projection: '360'});
   {% endif %}
   //add logo to the player
-  {% if request.GET.is_iframe %}
-  player.videoJsInfo();
-  {% if request.GET.playlist %}
-  player.videoJsPlaylist();
-  {%endif%}
-  {%endif%}
-
   player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
 {% else %}
   {% if video.get_video_m4a %}
@@ -170,9 +163,6 @@ player.on('firstplay', function(){
     };
     //Add source to player
     player.src(srcOptions);
-    {% if request.GET.is_iframe %}
-    player.videoJsInfo();
-    {%endif%}
     //add logo to the player
     player.videoJsLogo({imgsrc: '{% static LOGO_PLAYER %}', linktitle:'{{TITLE_ETB}} - {{TITLE_SITE}}', link:'{{LINK_PLAYER}}'});
     player.on('loadedmetadata', function() {
@@ -182,10 +172,70 @@ player.on('firstplay', function(){
     });
   {% endif %}
 {% endif %}
+
+{% if request.GET.is_iframe %}
+player.videoJsInfo();
+{% if request.GET.playlist %}
+player.videoJsPlaylist();
+{%endif%}
+{%endif%}
+
 {% if video.chapter_set.all %}
     player.videoJsChapters();
     $('.vjs-big-play-button').css('z-index', 2)
     $('.vjs-control-bar').css('z-index', 3);
 {% endif %}
 
+{% if video.enrichment_set.all %}
+
+  {% if not video.is_video %}
+    slide_mode = 'video off';
+  {% endif %}
+  player.ready(function() {
+    var tracks = player.textTracks();
+    var metadataTrack, i;
+    for (i = 0; i < tracks.length; i++) {
+        var track = tracks[i];
+        if (track.kind === 'metadata' && track.label === 'enrichment') {
+            metadataTrack = track;
+            metadataTrack.index = i;
+            break;
+        }
+    }
+
+    player.on('loadedmetadata', function() {
+        var slide = [];
+        if(!metadataTrack.cues) { //Safari do not get cues
+            let tracksrc = player.el().getElementsByTagName('TRACK')[metadataTrack.index].src;
+            loadEnrichmentVTTfile(tracksrc, function(cues) {
+                if (typeof player.slides === "function") {
+                    player.slides(cues);
+                }
+            });
+        } else {
+          //console.log(metadataTrack.cues.length);
+          for (i = 0; i < metadataTrack.cues.length; i++) {
+            // Replace tabs by spaces to prevent a "JSON.parse: bad control character in string literal" error.
+            data = JSON.parse(metadataTrack.cues[i].text.replace(/\t/g, ' '));
+            //console.log('Parsed '+data.title)
+            slide.push({
+              title: data.title,
+              url: data.url,
+              type: data.type,
+              stop_video: data.stop_video,
+              start: metadataTrack.cues[i].startTime,
+              end: metadataTrack.cues[i].endTime
+            });
+          }
+        }
+        if (typeof player.slides === "function") {
+          //console.log('Call player.slides');
+          player.slides(slide);
+        }
+    });
+
+    $('.vjs-big-play-button').css('z-index', 2)
+    $('.vjs-control-bar').css('z-index', 3);
+  });
+{% endif %}
 </script>

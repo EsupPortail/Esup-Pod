@@ -668,21 +668,84 @@ def get_video_access(request, video, slug_private):
         return True
 
 
-@ajax_required
-@csrf_protect
-def video_all_info(request, slug, slug_private=None):
-    try:
-        id = int(slug[: slug.find("-")])
-    except ValueError:
-        raise SuspiciousOperation("Invalid video id")
-    video = get_object_or_404(Video, id=id, sites=get_current_site(request))
-    is_password_protected = video.password is not None and video.password != ""
-    show_page = get_video_access(request, video, slug_private)
-    template_video = (
+def get_video_source(video):
+    video_src = {}
+    if(video.is_video):
+        video_src['mp4'] = video.get_video_mp4_json()
+        m3u8 = video.get_playlist_master()
+        if m3u8:
+            video_src['m3u8'] = {
+                'src': m3u8.source_file.url,
+                'type': m3u8.encoding_format}
+    else:
+        m4a = video.get_video_m4a()
+        video_src['m4a'] = {
+            'src': m4a.source_file.url,
+            'type': m4a.encoding_format}
+    return video_src
+
+
+def video_json_response(request, video):
+    template_info = (
         "videos/video-info.html"
         if request.GET.get("is_iframe") and request.GET.get("is_iframe") == "true"
         else "videos/video-all-info.html"
     )
+    template_video_element = ("videos/video-element.html")
+    rendered_info = render_to_string(template_info, {"video": video}, request)
+    rendered_video = render_to_string(template_video_element, {"video": video}, request)
+    list_track = []
+    for track in video.track_set.all():
+        list_track.append({
+            'id': track.id,
+            'kind': track.kind,
+            'src': track.src.file.url,
+            'srclang': track.lang,
+            'label': track.get_label_lang()})
+    list_overlay = []
+    if(video.overlay_set.all()):
+        for o in video.overlay_set.all():
+            list_overlay.append({
+                'start': o.time_start,
+                'end': o.time_end,
+                'content': o.content,
+                'align': o.position,
+                'showBackground': o.background})
+    list_chapter = []
+    if(video.chapter_set.all()):
+        for c in video.chapter_set.all():
+            list_chapter.append({
+                'time_start': c.time_start,
+                'id': c.id,
+                'title': c.title
+            })
+    overview = video.overview.url if(video.overview) else ''
+
+    response = {
+        "status": "ok",
+        "html_video_info": rendered_info,
+        "html_video_element": rendered_video,
+        'version': video.get_version,
+        'tracks': list_track,
+        'is_video': video.is_video,
+        'src': get_video_source(video),
+        'is_360': video.is_360,
+        'thumbnail': video.get_thumbnail_url(),
+        'overview': overview,
+        'overlay': list_overlay,
+        'chapter': list_chapter}
+
+    if (hasattr(video, 'enrichmentvtt')):
+        response['enrichtracksrc'] = video.enrichmentvtt.src.file.url
+    return response
+
+
+@ajax_required
+@csrf_protect
+def video_xhr(request, slug, slug_private=None):
+    video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
+    is_password_protected = video.password is not None and video.password != ""
+    show_page = get_video_access(request, video, slug_private)
 
     if (
         (show_page and not is_password_protected)
@@ -698,8 +761,7 @@ def video_all_info(request, slug, slug_private=None):
         or request.user.has_perm("video.change_video")
         or (request.user in video.additional_owners.all())
     ):
-        rendered = render_to_string(template_video, {"video": video}, request)
-        response = {"status": "ok", "html_content": rendered}
+        response = video_json_response(request, video)
         data = json.dumps(response)
         return HttpResponse(data, content_type="application/json")
     else:
@@ -709,7 +771,8 @@ def video_all_info(request, slug, slug_private=None):
         is_access_protected = is_draft or is_restricted or is_restricted_to_group
         if is_password_protected and (
             not is_access_protected or (is_access_protected and show_page)
-        ):
+        ):  # Should not go here has video with password are not allowed in playlist
+            # (but should work if need...)
             form = (
                 VideoPasswordForm(request.POST) if request.POST else VideoPasswordForm()
             )
@@ -719,14 +782,14 @@ def video_all_info(request, slug, slug_private=None):
                 request,
             )
             response = {
-                "status": "nok",
+                "status": 403,
                 "error": "password",
                 "html_content": rendered,
             }
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
         elif request.user.is_authenticated():
-            response = {"status": "nok", "error": "deny", "html_content": ""}
+            response = {"status": 403, "error": "deny", "html_content": ""}
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
         else:
@@ -735,10 +798,10 @@ def video_all_info(request, slug, slug_private=None):
                 settings.LOGIN_URL,
                 iframe_param,
                 request.get_full_path()
-                .replace("/video_info/", "/video/")
+                .replace("/video_xhr/", "/video/")
                 .replace("&", "%26"),
             )
-            response = {"status": "nok", "error": "access", "url": url}
+            response = {"status": 302, "error": "access", "url": url}
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
 
@@ -756,7 +819,11 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         raise SuspiciousOperation("Invalid video id")
 
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
-    if video.get_version != "O" and request.GET.get("redirect") != "false":
+    if (
+        video.get_version != "O"
+        and request.GET.get("redirect") != "false"
+        and not request.GET.get("playlist")
+    ):
         return redirect(video.get_default_version_link(slug_private))
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 

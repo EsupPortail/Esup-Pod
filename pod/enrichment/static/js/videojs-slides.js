@@ -108,8 +108,8 @@ var loadEnrichmentVTTfile = function (url, callback) {
 
 var videojs = window.videojs;
 
-const defaults = {};
-const registerPlugin = videojs.registerPlugin || videojs.plugin;
+const slides_defaults = {};
+const registerSlidePlugin = videojs.registerPlugin || videojs.plugin;
 const slide_color = {
   document: "var(--orange)",
   image: "var(--purple)",
@@ -462,9 +462,9 @@ const onPlayerReady = function (player, options) {
  */
 const slides = function (options) {
   this.ready(function () {
-    onPlayerReady(this, videojs.mergeOptions(defaults, options));
+    onPlayerReady(this, videojs.mergeOptions(slides_defaults, options));
   });
 };
 
 // Register the plugin with video.js.
-registerPlugin("slides", slides);
+registerSlidePlugin("slides", slides);

@@ -1,6 +1,6 @@
 {% load staticfiles %}
 <link href="{% static 'player/videojs/video-js.min.css' %}?ver={{VERSION}}" rel="stylesheet" />
-<script src="{% static 'player/videojs/video.min.js' %}?ver={{VERSION}}"></script>
+<script id="videojs_script_id" src="{% static 'player/videojs/video.min.js' %}?ver={{VERSION}}"></script>
   {% with 'player/videojs/lang/'|add:request.LANGUAGE_CODE|add:'.js' as videojs_lang %}
     <script src="{% static videojs_lang %}?ver={{VERSION}}"></script>
   {% endwith %}
@@ -27,13 +27,13 @@
 <link href="{% static 'css/videojs-chapters.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'js/videojs-chapters.js' %}?ver={{VERSION}}"></script>
 {% if video.overview %}
-  <link href="{% static 'css/videojs-vtt-thumbnails.css' %}?ver={{VERSION}}" rel="stylesheet">
-  <script src="{% static 'js/videojs-vtt-thumbnails.min.js' %}?ver={{VERSION}}"></script>
+  <link id="overview_style_id" href="{% static 'css/videojs-vtt-thumbnails.css' %}?ver={{VERSION}}" rel="stylesheet">
+  <script id="overview_script_id" src="{% static 'js/videojs-vtt-thumbnails.min.js' %}?ver={{VERSION}}"></script>
 {% endif %}
 
 {% if video.overlay_set.all and not enrichment%}
-  <link href="{% static 'css/videojs-overlay.css' %}?ver={{VERSION}}" rel="stylesheet">
-  <script src="{% static 'js/videojs-overlay.js' %}?ver={{VERSION}}"></script>
+  <link id="overlay_style_id" href="{% static 'css/videojs-overlay.css' %}?ver={{VERSION}}" rel="stylesheet">
+  <script id="overlay_script_id" src="{% static 'js/videojs-overlay.js' %}?ver={{VERSION}}"></script>
 {% endif %}
 
 {% if request.user.playlist_set.all %}
@@ -41,7 +41,12 @@
   <script src="{% static 'js/playlist.js' %}?ver={{VERSION}}"></script>
 {% endif %}
 
+{% if video.enrichment_set.all %}
+  <link id="enrichment_style_id" href="{% static 'css/videojs-slides.css' %}?ver={{VERSION}}" rel="stylesheet">
+  <script id="enrichment_script_id" src="{% static 'js/videojs-slides.js' %}?ver={{VERSION}}"></script>
+{% endif %}
+
 {% if video.is_360 %}
-  <link href="{% static 'videojs-vr/videojs-vr.css' %}?ver={{VERSION}}" rel="stylesheet">
-  <script src="{% static 'videojs-vr/videojs-vr.min.js' %}?ver={{VERSION}}"></script>
+  <link id="vr360_style_id" href="{% static 'videojs-vr/videojs-vr.css' %}?ver={{VERSION}}" rel="stylesheet">
+  <script id="vr360_script_id" src="{% static 'videojs-vr/videojs-vr.min.js' %}?ver={{VERSION}}"></script>
 {% endif %}

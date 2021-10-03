@@ -2,26 +2,34 @@
 {% load i18n %}
 {% load staticfiles %}
 <link href="{% static 'css/videojs-playlist.css' %}?ver={{VERSION}}" rel="stylesheet">
+<script src="{% static 'js/playlist_player.js' %}?ver={{VERSION}}"></script>
 <div class="card" id="playlist">
   <div class="card-header bg-dark">
     <h2 class="card-title text-white text-center">{{playlist.title}}</h2>
     <h3 class="playlist-counter text-center">
-      <a id="loop" class="playlist-options" active="off" title="{% trans 'Repeat the playlist' %}">
-        <svg height="32" class="octicon octicon-sync fill-color-pod m-1" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true"><path fill-rule="evenodd" d="M10.24 7.4a4.15 4.15 0 0 1-1.2 3.6 4.346 4.346 0 0 1-5.41.54L4.8 10.4.5 9.8l.6 4.2 1.31-1.26c2.36 1.74 5.7 1.57 7.84-.54a5.876 5.876 0 0 0 1.74-4.46l-1.75-.34zM2.96 5a4.346 4.346 0 0 1 5.41-.54L7.2 5.6l4.3.6-.6-4.2-1.31 1.26c-2.36-1.74-5.7-1.57-7.85.54C.5 5.03-.06 6.65.01 8.26l1.75.35A4.17 4.17 0 0 1 2.96 5z"></path></svg>
+      <a id="loop" class="playlist-options" title="{% trans 'Repeat the playlist' %}">
+        <svg height="32" class="octicon octicon-sync fill-color-pod m-1" viewBox="0 0 12 16" version="1.1" width="24" aria-hidden="true">
+          <path fill-rule="evenodd"
+            d="M10.24 7.4a4.15 4.15 0 0 1-1.2 3.6 4.346 4.346 0 0 1-5.41.54L4.8 10.4.5 9.8l.6 4.2 1.31-1.26c2.36 1.74 5.7 1.57 7.84-.54a5.876 5.876 0 0 0 1.74-4.46l-1.75-.34zM2.96 5a4.346 4.346 0 0 1 5.41-.54L7.2 5.6l4.3.6-.6-4.2-1.31 1.26c-2.36-1.74-5.7-1.57-7.85.54C.5 5.03-.06 6.65.01 8.26l1.75.35A4.17 4.17 0 0 1 2.96 5z">
+          </path>
+        </svg>
       </a>
-      <a id="auto" class="playlist-options" active="off" title="{% trans 'Switch to next video automatically' %}">
-        <svg height="32" class="octicon octicon-diff-renamed fill-color-pod m-1" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true"><path fill-rule="evenodd" d="M6 9H3V7h3V4l5 4-5 4V9zm8-7v12c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V2c0-.55.45-1 1-1h12c.55 0 1 .45 1 1zm-1 0H1v12h12V2z"></path></svg>
+      <a id="auto" class="playlist-options" title="{% trans 'Switch to next video automatically' %}">
+        <svg height="32" class="octicon octicon-diff-renamed fill-color-pod m-1" viewBox="0 0 14 16" version="1.1" width="28" aria-hidden="true">
+          <path fill-rule="evenodd" d="M6 9H3V7h3V4l5 4-5 4V9zm8-7v12c0 .55-.45 1-1 1H1c-.55 0-1-.45-1-1V2c0-.55.45-1 1-1h12c.55 0 1 .45 1 1zm-1 0H1v12h12V2z"></path>
+        </svg>
       </a>
     </h3>
     <div class="row">
       <div class="col-6">
         <p id="playlist-video-info" class="text-white">{{video.title}} - {% spaceless %}
           {% for pvideo in playlist.videos %}
-            {% if pvideo.id == video.id %}
-              {{forloop.counter}}
-            {% endif %}
+          {% if pvideo.id == video.id %}
+          {{forloop.counter}}
+          {% endif %}
           {% endfor %}
-          {% endspaceless %} / {{playlist.videos|length}}</p>
+          {% endspaceless %} / {{playlist.videos|length}}
+        </p>
       </div>
       <div class="col-6">
         <p class="text-white text-right">{% blocktrans count counter=playlist.videos|length %}{{counter}} video{% plural %}{{counter}} videos{% endblocktrans %}</p>
@@ -32,32 +40,25 @@
     <div class="row">
       {% with pllength=playlist.videos|length %}
       {% for pvideo in playlist.videos %}
-        <div class="col-12 col-md-6 col-lg-3 mb-2 card-group{% if pvideo.id == video.id %} on{% endif %}">
-          {% include 'videos/card.html' with video=pvideo playlist=playlist %}
-          <p class="vdata" {% spaceless %}
-          data-src="{{ pvideo.get_playlist_master.source_file.url }}"
-          data-type="{{ pvideo.get_playlist_master.encoding_format }}"
-          data-info="{{ pvideo.title|safe }} - {{forloop.counter}} / {{pllength}}"
-          data-vid="{{ pvideo.id }}"
-          {% if pvideo.is_draf %} data-is_draft="{{ pvideo.is_draft }}"{% endif %}
-          {% if pvideo.is_restricted %} data-is_restricted="{{ pvideo.is_restricted }}"{% endif %}
-          {% if pvideo.password != "" %} data-password="unchecked"{% endif %}
-
-          {% endspaceless %}>
-          {% if pvideo.id == video.id %}
-            <i data-feather="chevron-up"></i>
-          {% else %}
-            {{forloop.counter}}
-          {% endif %}
-          </p>
-
-        </div>
+      <div class="col-12 col-md-6 col-lg-3 mb-2 card-group{% if pvideo.id == video.id %} on{% endif %}">
+        {% include 'videos/card.html' with video=pvideo playlist=playlist %}
+        <p class="vdata" {% spaceless %}
+        data-info="{{ pvideo.title|safe }} - {{forloop.counter}} / {{pllength}}"
+        data-vid="{{ pvideo.id }}"{% endspaceless %}>
+        {% if pvideo.id == video.id %}
+          <i data-feather="chevron-up"></i>
+        {% else %}
+          {{forloop.counter}}
+        {% endif %}
+        </p>
+      </div>
       {% endfor %}
       {% endwith %}
     </div>
   </div>
 </div>
-<script>
+<script type="text/JavaScript">
+var metadataTrack;
   {% if request.GET.is_iframe and request.GET.is_iframe == 'true' %}
   $('#playlist div').first()
                     .append('<button type="button" class="close hidden" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
@@ -68,125 +69,44 @@
                      $('#playlist .close.hidden').removeClass('hidden');
                    })
   const formctn = $('body')
+      , is_iframe = true
   {% else %}
   const formctn = $('#mainContent')
+      , is_iframe = false
   {% endif %}
   $(window).ready(function() {
     const length = parseInt({{playlist.videos|length}});
-    var current_position = parseInt($('.playlist-videos div.row .on').index()) + 1;
-    var current_element = $('.playlist-videos div.row .on .card')[0];
-    //var next_element = $('.playlist-videos .card')[current_position];
-    const parameter = [
-      /(playlist)\=([^&]+)/, /(auto)\=([^&]+)/, /(loop)\=([^&]+)/
-    ];
-    var playlist = window.location.href.match(parameter[0])[2];
-    var auto_on, loop_on = false;
-
-    if (window.location.href.match(parameter[1])) {
-      $('#auto').attr('active', 'on');
-      $('#auto').addClass('on');
-      auto_on = true;
-    }
-    if (window.location.href.match(parameter[2])) {
-      $('#loop').attr('active', 'on');
-      $('#loop').addClass('on');
-      loop_on = true;
-    }
-
-    player.on('ended', function() {
-      let auto = $('#auto').attr('active');
-      let loop = $('#loop').attr('active');
-      let parameters ='';
-      if (auto == 'on') {
-        parameters = parameters + '&auto=on';
-      }
-      if (loop == 'on'){
-        parameters = parameters + '&loop=on';
-      }
-
-      if (current_position != length || loop == 'on') {
-        $(current_element).parent().removeClass('on')
-        if (current_position != length) {
-          current_position++;
-          current_element = $('.playlist-videos div.row > div > div.card')[current_position - 1];
-        } else if(loop == 'on') {
-          current_position = 1;
-          current_element = $('.playlist-videos div.row > div > div.card')[0];
-        }
-        let current_url = current_element.children[1].children[0].href
-          , password = $(current_element).parent().children('.vdata').data('password') == 'unchecked'
-          , ajax_url = current_url.replace('/video/','/video_info/')
-          , setPlayer = function(json) {
-            $('#info-video').html(json.html_content);
-            history.pushState({title:$(current_element).parent().children('.vdata').data('info')}, '', current_url);
-            player.src({src:$(current_element).parent().children('.vdata').data('src')
-                       ,type:$(current_element).parent().children('.vdata').data('type')})
-            $(current_element).parent().addClass('on')
-            $('#playlist-video-info')[0].innerHTML = $(current_element).parent().children('.vdata').data('info')
-            feather.replace({ class: 'align-bottom'});
-            if (auto == 'on') player.play()
-          }
-
-        $.ajax({
-          url: ajax_url + parameters,
-          context: document.body,
-          dataType: 'json'
-        }).done(function(json) {
-          if(json.status == 'ok') {
-            setPlayer(json)
-          } else if(json.error == 'password') { //Acces restrict by password => Display video password form
-            if($('#video-form-wrapper').length == 0) {
-              formctn.append('<div id="video-form-wrapper" class="jumbotron"></div>')
-            }
-            $('#video-form-wrapper').removeClass('hidden')
-            $('#video-form-wrapper').html(json.html_content)
-            $('#video-form-wrapper .invalid-feedback').hide()
-            $('#video-form-wrapper button[type="submit"]').click(function(e) {
-              e.preventDefault();
-              e.stopPropagation();
-              const password = $('#id_password').val()
-                  , csrfmiddlewaretoken = $('#video_password_form > input[name="csrfmiddlewaretoken"]').first().val()
-              if(password == '') {
-                $('#video-form-wrapper .invalid-feedback').html('{% trans "Please provide a valid value for this field" %}'.replace("'","\'")).show()
-                return;
-              }
-              $.ajax({
-                type: 'POST',
-                data: {password:password, csrfmiddlewaretoken:csrfmiddlewaretoken},
-                url: ajax_url,
-                context: document.body,
-                dataType:'json'
-              }).done(function(json) {
-                if(json.status == "ok") {
-                  $('#video-form-wrapper').empty().addClass('hidden')
-                  setPlayer(json)
-                } else {
-                  $('#video-form-wrapper .invalid-feedback').html('{% trans "The password is incorrect." %}').show()
-                }
-              });
-            })
-          } else if(json.error == 'access') { //Acces restrict by authentication => Redirect to loggin page
-            window.location.href = json.url
-          } else if(json.error == 'deny') { //User is authenticate but not allowed => Go next (TODO... actualy just reload page)
-            window.location.href = current_url
-          }
-        });
-      }
-    });
-
-    function toogleOption(e) {
-      e.preventDefault();
-      e.stopPropagation();
-			if($(this).attr('active') == 'off') {
-				$(this).attr('active', 'on');
-				$(this).addClass('on');
-			} else {
-				$(this).attr('active', 'off');
-				$(this).removeClass('on');
-			}
-		}
-		$('#auto').on('click', toogleOption);
-		$('#loop').on('click', toogleOption);
-
+    let current_position = parseInt($('.playlist-videos div.row .on').index()) + 1;
+    let current_element = $('.playlist-videos div.row .on .card')[0];
+    PlaylistPlayer.init({
+      // static:'{{static}}',
+      // version:'{{VERSION}}',
+      length: length,
+      is_iframe: is_iframe,
+      formctn: formctn,
+      current_position: parseInt($('.playlist-videos div.row .on').index()) + 1,
+      current_element: $('.playlist-videos div.row .on .card')[0],
+      baseurl: '{% if request.is_secure %}https://{%else%}http://{% endif %}{{request.get_host}}',
+      controls: {loop:$('#loop')[0],auto:$('#auto')[0]},
+      head_files: {
+        overlay: {
+          js:'{% static 'js/videojs-overlay.js' %}?ver={{VERSION}}',
+          css: '{% static 'css/videojs-overlay.css' %}?ver={{VERSION}}'},
+        enrichment: {
+          js: '{% static 'js/videojs-slides.js' %}?ver={{VERSION}}',
+          css: '{% static 'css/videojs-slides.css' %}?ver={{VERSION}}'},
+        overview: {
+          js: '{% static 'js/videojs-vtt-thumbnails.min.js' %}?ver={{VERSION}}',
+          css: '{% static 'css/videojs-vtt-thumbnails.css' %}?ver={{VERSION}}'},
+        chapter: {
+          js:'{% static 'js/videojs-chapters.js' %}?ver={{VERSION}}',
+          css: '{% static 'css/videojs-chapters.css' %}?ver={{VERSION}}'},
+        vr360: {
+          js:'{% static 'videojs-vr/videojs-vr.js' %}?ver={{VERSION}}',
+          css: '{% static 'videojs-vr/videojs-vr.css' %}?ver={{VERSION}}'},
+      },
+      strings:{invalid_feedback_value:'{% trans "Please provide a valid value for this field" %}'
+              ,invalid_feedback_password:'{% trans "The password is incorrect." %}'}
+    })
   });
 </script>
