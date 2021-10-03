@@ -7,7 +7,7 @@ from rest_framework import serializers, viewsets
 class BuildingSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Building
-        fields = ("id", "url", "name", "headband", "gmapurl")
+        fields = ("id", "url", "name", "headband", "gmapurl", "sites")
 
 
 class BroadcasterSerializer(serializers.HyperlinkedModelSerializer):

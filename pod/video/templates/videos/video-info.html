@@ -243,7 +243,7 @@
             <small id="displaytimeHelp" class="form-text text-muted">{% trans 'Check the box to indicate the beginning of playing desired.' %}</small>
           </div>
 	  {% if request.user == video.owner or request.user in video.additional_owners.all%}
-	  <legend><i data-feather="upload-cloud""></i>&nbsp;{% trans 'BigBlueButton/H5P Integration' %}</legend>
+	  <legend><i data-feather="upload-cloud"></i>&nbsp;{% trans 'BigBlueButton/H5P Integration' %}</legend>
           <label for="txtintegrationh5p">{% trans 'Use these links in a BigBlueButton meeting or an interactive H5P video activity:' %}</label>
           <div class="form-group">
                 {% for vid in video.get_video_mp4 %}

@@ -176,3 +176,7 @@ class AdditionalChannelTab(models.Model):
 
     def __str__(self):
         return "%s" % (self.name)
+
+    class Meta:
+        verbose_name = _("Additional Channels Tab")
+        verbose_name_plural = _("Additional Channel Tabs")

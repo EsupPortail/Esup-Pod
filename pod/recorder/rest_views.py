@@ -11,7 +11,7 @@ class RecordingModelSerializer(serializers.HyperlinkedModelSerializer):
 class RecorderModelSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Recorder
-        fields = ("id",)
+        fields = ("id", "name", "description", "address_ip", "recording_type", "sites")
 
 
 class RecordingFileModelSerializer(serializers.HyperlinkedModelSerializer):
