@@ -79,6 +79,60 @@ textarea {
     line-height: 1.4;
 }
 
+.captions_editor {
+    height: 442px; 
+    overflow: auto; 
+    resize: none; 
+    width: 100%;
+    padding: 0;
+}
+
+#newCaptionsEditor {
+    margin-bottom: 6px;
+}
+
+.newEditorBlock > textarea {
+    width: 85%;
+    height: 80px;
+    margin: 8px;
+}
+
+.newEditorBlock > div {
+    float: right;
+    line-height: 32px;
+}
+
+.newEditorBlock a {
+    margin-top: 10px;
+    display: block;
+}
+
+.caption_block_delete_btn {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    margin: 0;
+    transform: translate(-18px, 78px);
+    border: 0;
+    border-radius: 50%;
+    background: #222;
+}
+
+.caption_block_delete_btn svg{
+    color: #fff;
+    margin: 0;
+    transform: translate(0px, -4px);
+}
+
+.newEditorBlock .caption_block_delete_btn{
+    visibility: hidden;
+}
+
+.newEditorBlock:hover .caption_block_delete_btn{
+    visibility: visible;
+}
+
 #captionmakerModal.save > .modal-dialog {
     max-width: 1000px;
 }

@@ -37,6 +37,10 @@ $(document).ready(function () {
 
 $(document).on("submit", "#form_save_captions", function (e) {
   e.preventDefault();
+
+  if (!oldModeSelected)
+    $("#captionContent").val(GenerateWEBVTT());
+
   if ($("#captionContent").val().trim() === "") {
     showalert(gettext("There is no captions to save"), "alert-danger");
     return;
@@ -50,6 +54,9 @@ $(document).on("submit", "#form_save_captions", function (e) {
 });
 
 $(document).on("click", "#modal-btn-new, #modal-btn-override", function () {
+  if (!oldModeSelected)
+    $("#captionContent").val(GenerateWEBVTT());
+  
   $("#saveCaptionsModal").modal("hide");
   if (this.id == "modal-btn-override") {
     $("#form_save_captions").find('input[name="file_id"]').val(file_loaded_id);
@@ -136,9 +143,27 @@ $("#clearAllCaptions").on("click", function (e) {
   if (deleteConfirm) {
     captionsArray.length = 0;
     autoPauseAtTime = -1;
+
     $("#captionContent").val("");
     $("#captionTitle").html("&nbsp;");
     $("#textCaptionEntry").val("");
+    $("#newCaptionsEditor").empty();
+  }
+});
+
+var oldModeSelected = false;
+
+$("#switchOldEditMode").on("click", function (e) {
+  oldModeSelected = !oldModeSelected;
+
+  if (oldModeSelected) {
+    $("#captionContent").val(GenerateWEBVTT());
+    $("#captionContent").show();
+    $("#newCaptionsEditor").hide();
+  }
+  else {
+    $("#captionContent").hide();
+    $("#newCaptionsEditor").show();
   }
 });
 
@@ -302,6 +327,24 @@ $("#pauseButton").on("click", function () {
   $("#podvideoplayer").get(0).player.pause();
 });
 
+function GenerateWEBVTT() {
+  let vtt = "";
+  $('#newCaptionsEditor > .newEditorBlock').each(function() {
+    let captionText = this.querySelector('textarea').value;
+    let startTime = this.querySelectorAll('a')[0].text;
+    let endTime = this.querySelectorAll('a')[1].text;
+
+    vtt += `\n\n${startTime} --> ${endTime}\n${
+      captionText
+    }`;
+  })
+
+  if (vtt.length > 0)
+    vtt = "WEBVTT" + vtt;
+  
+  return vtt;
+}
+
 function SaveCurrentCaption() {
   var playTime = $("#podvideoplayer").get(0).player.currentTime();
   var captionsEndTime = existingCaptionsEndTime();
@@ -344,6 +387,37 @@ function UpdateCaption(ci, captionText) {
   updateCaptionHtmlContent();
 }
 
+function CreateCaptionBlock(captionText, start, end) {
+  let captionBlock = $("<div></div>");
+  captionBlock.addClass("newEditorBlock");
+
+  let newArea = $("<textarea></textarea>");
+  newArea.val(captionText);
+  newArea.bind('input propertychange', function() {
+    captionsArray[captionBlock.index()].caption = this.value;
+  });
+
+  let deleteBtn = $("<button><i data-feather='trash-2' width='12px' height='12px'></i></button>");
+  deleteBtn.addClass("caption_block_delete_btn");
+  deleteBtn.on("click", function(e) {
+    captionsArray.splice(captionBlock.index(), 1);
+    captionBlock.remove();
+  })
+
+  let timeBlock = $("<div></div>");
+
+  let startTimeBtn = $("<a href='#'></a>");
+  startTimeBtn.text(start);
+
+  let endTimeBtn = $("<a href='#'></a>");
+  endTimeBtn.text(end);
+
+  timeBlock.append(startTimeBtn, endTimeBtn);
+  captionBlock.append(newArea, deleteBtn, timeBlock);
+  $("#newCaptionsEditor").append(captionBlock);
+  feather.replace();
+}
+
 function AddCaptionListRow(ci) {
   let vtt = $("#captionContent");
   let vtt_entry = $("#textCaptionEntry").val().trim();
@@ -357,8 +431,10 @@ function AddCaptionListRow(ci) {
     } else {
       vtt.val(`${vtt.val()}\n\n${caption_text}`);
     }
-    caption_memories.start_time = end;
   }
+
+  CreateCaptionBlock(vtt_entry, start, end);
+  caption_memories.start_time = end;
 }
 
 function AddCaption(captionStart, captionEnd, captionText) {
@@ -367,6 +443,7 @@ function AddCaption(captionStart, captionEnd, captionText) {
     end: captionEnd,
     caption: captionText.trim(),
   });
+  
   AddCaptionListRow(captionsArray.length - 1);
 }
 
