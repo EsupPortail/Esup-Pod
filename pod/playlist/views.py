@@ -78,16 +78,14 @@ def playlist(request, slug=None):
 
 def check_playlist_videos(playlist, data):
     for slug in data:
-        element = get_object_or_404(
-            PlaylistElement, video__slug=slug, playlist=playlist
-        )
+        element = get_object_or_404(PlaylistElement, video__slug=slug, playlist=playlist)
         if element.video.is_draft:
             return _("A video in draft mode cannot be added to a playlist.")
         if element.video.password:
             return _("A video with a password cannot be added to a playlist.")
     return None
 
-            
+
 def playlist_move(request, playlist):
     if request.is_ajax():
         if request.POST.get("videos"):
