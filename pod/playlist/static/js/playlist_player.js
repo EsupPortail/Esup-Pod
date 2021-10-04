@@ -368,7 +368,6 @@ let PlaylistPlayer = {
           player.controlBar.addChild("QualitySelector");
         }
       } else if (json.src.m4a) player.src(json.src.m4a);
-      console.log("SetPlayer src " + player.src());
 
       // Add videojs logo if defined
       if (_this.vjsLogo) player.videoJsLogo(_this.vjsLogo);
