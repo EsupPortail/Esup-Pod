@@ -322,15 +322,17 @@ let PlaylistPlayer = {
       }
 
       // Add 360° video
-      if(json.is_360) {
-        if(typeof player.vttThumbnails === 'function') {
-          player.vr({projection: '360'});
+      if (json.is_360) {
+        if (typeof player.vttThumbnails === "function") {
+          player.vr({ projection: "360" });
         } else {
-          _this.headFiles.getOrLoad('overview', function() {
+          _this.headFiles.getOrLoad("overview", function () {
             try {
-              player.vr({projection: '360'});
-            } catch(e) { console.error('Error in calling video 360° function : '+e) }
-          })
+              player.vr({ projection: "360" });
+            } catch (e) {
+              console.error("Error in calling video 360° function : " + e);
+            }
+          });
         }
       }
 
