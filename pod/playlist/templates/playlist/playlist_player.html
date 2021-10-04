@@ -76,8 +76,8 @@ var metadataTrack;
   {% endif %}
   $(window).ready(function() {
     const length = parseInt({{playlist.videos|length}});
-    let current_position = parseInt($('.playlist-videos div.row .on').index()) + 1;
-    let current_element = $('.playlist-videos div.row .on .card')[0];
+    const current_position = parseInt($('.playlist-videos div.row .on').index()) + 1;
+    const current_element = $('.playlist-videos div.row .on .card')[0];
     PlaylistPlayer.init({
       // static:'{{static}}',
       // version:'{{VERSION}}',

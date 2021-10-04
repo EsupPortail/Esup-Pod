@@ -252,8 +252,17 @@ let PlaylistPlayer = {
       }
 
       // Add 360° video
-      // TODO :
-      if(json.is_360) player.vr({projection: '360'});
+      if(json.is_360) {
+        if(typeof player.vttThumbnails === 'function') {
+          player.vr({projection: '360'});
+        } else {
+          _this.headFiles.getOrLoad('overview', function() {
+            try {
+              player.vr({projection: '360'});
+            } catch(e) { console.error('Error in calling video 360° function : '+e) }
+          })
+        }
+      }
 
       // Add info and playlist controls and resize player if is_iframe
       if(_this.is_iframe) {

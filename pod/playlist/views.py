@@ -76,19 +76,35 @@ def playlist(request, slug=None):
         )
 
 
+def check_playlist_videos(playlist, data):
+    for slug in data:
+        element = get_object_or_404(
+            PlaylistElement, video__slug=slug, playlist=playlist
+        )
+        if element.video.is_draft:
+            return _("A video in draft mode cannot be added to a playlist.")
+        if element.video.password:
+            return _("A video with a password cannot be added to a playlist.")
+    return None
+
+            
 def playlist_move(request, playlist):
     if request.is_ajax():
         if request.POST.get("videos"):
             data = json.loads(request.POST["videos"])
-            for slug in data:
-                element = get_object_or_404(
-                    PlaylistElement, video__slug=slug, playlist=playlist
-                )
-                element.position = data[slug]
-                element.save()
-            some_data_to_dump = {
-                "success": "{0}".format(_("The playlist has been saved!"))
-            }
+            err = check_playlist_videos(playlist, data)
+            if err:
+                some_data_to_dump = {"fail": "{0}".format(err)}
+            else:
+                for slug in data:
+                    element = get_object_or_404(
+                        PlaylistElement, video__slug=slug, playlist=playlist
+                    )
+                    element.position = data[slug]
+                    element.save()
+                some_data_to_dump = {
+                    "success": "{0}".format(_("The playlist has been saved!"))
+                }
         else:
             some_data_to_dump = {
                 "fail": "{0}".format(_("The request is wrong. No video given."))
