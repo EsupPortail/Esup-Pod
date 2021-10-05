@@ -1,3 +1,4 @@
+"""Esup-Pod forms handling."""
 from django import forms
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
@@ -20,6 +21,7 @@ SUBJECT_CHOICES = getattr(
 
 
 def add_placeholder_and_asterisk(fields):
+    """Add placeholder and asterisk to specified fields."""
     for myField in fields:
         classname = fields[myField].widget.__class__.__name__
         if classname == "PasswordInput" or classname == "TextInput":
@@ -43,12 +45,14 @@ def add_placeholder_and_asterisk(fields):
 
 
 class ContactUsForm(forms.Form):
+    """Manage "Contact us" form."""
+
     name = forms.CharField(label=_("Name"), required=True, max_length=512)
     email = forms.EmailField(label=_("Email"), required=True)
 
     subject = forms.ChoiceField(
         label=_("Subject"),
-        help_text=_("Please choose a subjects related your request"),
+        help_text=_("Please choose a subject related to your request"),
         required=True,
         choices=SUBJECT_CHOICES,
         widget=forms.Select(),
@@ -74,6 +78,7 @@ class ContactUsForm(forms.Form):
     )
 
     def __init__(self, request, *args, **kwargs):
+        """Init contact us form."""
         super(ContactUsForm, self).__init__(*args, **kwargs)
 
         if request.user and request.user.is_authenticated():
@@ -86,7 +91,8 @@ class ContactUsForm(forms.Form):
         self.fields = add_placeholder_and_asterisk(self.fields)
 
     def clean(self):
+        """Clean "contact us" form submission."""
         cleaned_data = super(ContactUsForm, self).clean()
-        if cleaned_data["subject"] == "-----":
+        if "subject" in cleaned_data and cleaned_data["subject"] == "-----":
             self._errors["subject"] = self.error_class([_("Please specify a subject")])
         return cleaned_data
