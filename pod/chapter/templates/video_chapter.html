@@ -8,7 +8,7 @@
   {% include 'videos/video-header.html' %}
   <script src="{% static 'js/chapters.js' %}?ver={{VERSION}}"></script>
   <script>
-    var video_duration = {{video.duration}};
+    const video_duration = {{video.duration}};
   </script>
 {% endblock page_extra_head %}
 {% block breadcrumbs %}

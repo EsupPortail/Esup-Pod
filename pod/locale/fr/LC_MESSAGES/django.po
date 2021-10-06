@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-28 13:16+0000\n"
+"POT-Creation-Date: 2021-10-06 07:26+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: Pod Team pod@esup-portail.org\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 2.4.2\n"
 
-#: pod/authentication/admin.py:93 pod/main/forms.py:47
+#: pod/authentication/admin.py:93 pod/main/forms.py:51
 msgid "Email"
 msgstr "Courriel"
 
@@ -149,14 +149,14 @@ msgid "Change your picture"
 msgstr "Changer votre image de profil"
 
 #: pod/authentication/templates/userpicture/userpicture.html:29
-#: pod/authentication/views.py:125
+#: pod/authentication/views.py:130
 #: pod/bbb/templates/bbb/live_publish_meeting.html:45
 #: pod/bbb/templates/bbb/publish_meeting.html:37 pod/bbb/views.py:127
 #: pod/bbb/views.py:254 pod/completion/templates/video_caption_maker.html:56
 #: pod/enrichment/templates/enrichment/group_enrichment.html:29
 #: pod/interactive/templates/interactive/group_interactive.html:27
 #: pod/live/templates/live/live-form.html:10
-#: pod/main/templates/contact_us.html:20 pod/main/views.py:296
+#: pod/main/templates/contact_us.html:20 pod/main/views.py:297
 #: pod/playlist/views.py:136
 #: pod/recorder/templates/recorder/add_recording.html:36
 #: pod/recorder/templates/recorder/record_delete.html:31
@@ -887,7 +887,7 @@ msgstr "Liste des chapitres"
 #: pod/completion/models.py:251
 #: pod/completion/templates/overlay/list_overlay.html:10
 #: pod/enrichment/templates/enrichment/list_enrichment.html:10
-#: pod/main/models.py:121 pod/main/views.py:184 pod/playlist/models.py:12
+#: pod/main/models.py:121 pod/main/views.py:185 pod/playlist/models.py:12
 #: pod/playlist/templates/playlist/playlist_element_list.html:11
 #: pod/video/models.py:254 pod/video/models.py:396 pod/video/models.py:518
 #: pod/video/models.py:599 pod/video/templates/channel/list_theme.html:9
@@ -2476,37 +2476,37 @@ msgstr "L'identifiant de la vidéo n'est pas valide."
 msgid "Advanced options"
 msgstr "Options avancées"
 
-#: pod/main/forms.py:12
+#: pod/main/forms.py:13
 msgid "Request more information"
 msgstr "Demander plus d'informations"
 
-#: pod/main/forms.py:13
+#: pod/main/forms.py:14
 msgid "Learn more about how to contribute"
 msgstr "En savoir plus sur comment contribuer"
 
-#: pod/main/forms.py:14
+#: pod/main/forms.py:15
 msgid "Password request for a video"
 msgstr "Demande de mot de passe pour cette vidéo"
 
-#: pod/main/forms.py:15
+#: pod/main/forms.py:16
 msgid "Report inappropriate content"
 msgstr "Signaler un contenu inapproprié"
 
-#: pod/main/forms.py:16
+#: pod/main/forms.py:17
 msgid "Correction or bug report"
 msgstr "Correctif ou signalement de bug"
 
-#: pod/main/forms.py:17
+#: pod/main/forms.py:18
 msgid "Other (please specify)"
 msgstr "Autre (spécifiez)"
 
-#: pod/main/forms.py:46 pod/podfile/models.py:25 pod/podfile/models.py:117
+#: pod/main/forms.py:50 pod/podfile/models.py:25 pod/podfile/models.py:117
 #: pod/podfile/templates/podfile/home_content.html:32 pod/video/models.py:1366
 #: pod/video/models.py:1437 pod/video/models.py:1498
 msgid "Name"
 msgstr "Nom"
 
-#: pod/main/forms.py:50
+#: pod/main/forms.py:54
 msgid "Subject"
 msgstr "Sujet"
 
@@ -2514,26 +2514,26 @@ msgstr "Sujet"
 msgid "Please choose a subject related to your request"
 msgstr "Veuillez choisir un sujet en lien avec votre requête"
 
-#: pod/main/forms.py:58 pod/main/models.py:167 pod/playlist/models.py:26
+#: pod/main/forms.py:62 pod/main/models.py:167 pod/playlist/models.py:26
 #: pod/video/forms.py:135 pod/video/forms.py:352 pod/video/forms.py:403
 #: pod/video/models.py:274 pod/video/models.py:414 pod/video/models.py:642
 #: pod/video/templates/channel/list_theme.html:10
 msgid "Description"
 msgstr "Description"
 
-#: pod/main/forms.py:59
+#: pod/main/forms.py:63
 msgid "Provide a full description for your request"
 msgstr "Renseignez une description complète pour votre requête"
 
-#: pod/main/forms.py:65
+#: pod/main/forms.py:69
 msgid "Please indicate the result of the following operation"
 msgstr "Veuillez indiquer le résultat de l'opération suivante"
 
-#: pod/main/forms.py:72
+#: pod/main/forms.py:76
 msgid "Check this box if you are a metal human (required)"
 msgstr "Cocher cette case si vous êtes un humain en métal (obligatoire)"
 
-#: pod/main/forms.py:91
+#: pod/main/forms.py:97
 msgid "Please specify a subject"
 msgstr "Veuillez spécifier un sujet"
 
@@ -3482,15 +3482,15 @@ msgstr "Types de vidéos"
 msgid "Use the input to filter user by last name."
 msgstr "Utiliser le champ pour filtrer les utilisateurs par nom de famille."
 
-#: pod/main/views.py:186
+#: pod/main/views.py:187
 msgid "Link"
 msgstr "Lien"
 
-#: pod/main/views.py:267
+#: pod/main/views.py:268
 msgid "your message untitled"
 msgstr "votre message intitulé"
 
-#: pod/main/views.py:287
+#: pod/main/views.py:288
 msgid "Your message have been sent."
 msgstr "Votre message a été envoyé."
 
@@ -6128,7 +6128,7 @@ msgstr "Recherche avancée"
 msgid "Remove this filter"
 msgstr "Retirer ce filtre"
 
-#: pod/video_search/views.py:91
+#: pod/video_search/views.py:93
 msgid "Sorry, video search is limited to 500 pages max."
 msgstr "Désolé, la recherche de vidéos est limitée à 500 pages maximum."
 
