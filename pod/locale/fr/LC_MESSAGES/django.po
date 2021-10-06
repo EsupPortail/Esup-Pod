@@ -2510,8 +2510,8 @@ msgstr "Nom"
 msgid "Subject"
 msgstr "Sujet"
 
-#: pod/main/forms.py:51
-msgid "Please choose a subjects related your request"
+#: pod/main/forms.py:55
+msgid "Please choose a subject related to your request"
 msgstr "Veuillez choisir un sujet en lien avec votre requête"
 
 #: pod/main/forms.py:58 pod/main/models.py:167 pod/playlist/models.py:26
