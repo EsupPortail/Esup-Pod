@@ -85,6 +85,7 @@ HIDE_USER_TAB = getattr(settings, "HIDE_USER_TAB", False)
 
 
 def in_maintenance():
+    """Return true if maintenance_mode is ON."""
     return (
         True if Configuration.objects.get(key="maintenance_mode").value == "1" else False
     )

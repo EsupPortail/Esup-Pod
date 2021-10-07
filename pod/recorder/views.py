@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Esup-pod recorder views."""
 from __future__ import unicode_literals
 import os
 
@@ -264,10 +265,10 @@ def recorder_notify(request):
             return HttpResponse("ok")
         else:
             return HttpResponse(
-                "nok : address_ip not valid or " "recorder not found in this site"
+                "nok : address_ip not valid or recorder not found in this site"
             )
     else:
-        return HttpResponse("nok : recordingPlace or mediapath or key are " "missing")
+        return HttpResponse("nok : recordingPlace or mediapath or key are missing")
 
 
 @csrf_protect

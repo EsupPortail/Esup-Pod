@@ -1,6 +1,4 @@
-"""
-Unit tests for authentication views
-"""
+"""Unit tests for authentication views."""
 from django.test import TestCase
 from django.test import Client
 from django.contrib.auth.models import User
@@ -13,7 +11,7 @@ class authenticationViewsTestCase(TestCase):
 
     def setUp(self):
         User.objects.create(username="pod", password="podv2")
-        print(" --->  SetUp of authenticationViewsTestCase : OK !")
+        print(" --->  SetUp of authenticationViewsTestCase: OK!")
 
     def test_authentication_login_gateway(self):
         self.client = Client()
@@ -57,7 +55,7 @@ class authenticationViewsTestCase(TestCase):
 
         print(
             "   --->  test_authentication_logout \
-            of authenticationViewsTestCase : OK !"
+            of authenticationViewsTestCase: OK!"
         )
 
     def test_userpicture(self):
@@ -94,4 +92,4 @@ class authenticationViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "userpicture/userpicture.html")
 
-        print("   --->  test_userpicture of authenticationViewsTestCase : OK !")
+        print("   --->  test_userpicture of authenticationViewsTestCase: OK!")
