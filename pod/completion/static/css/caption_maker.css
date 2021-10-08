@@ -151,3 +151,19 @@ textarea {
 	min-height: unset !important;
     }
 }
+
+.keyframe {
+    position: absolute;
+    z-index: 2;
+    background-color: var(--primary2);
+    width: 6px;
+    height: 8px;
+    transform: translateY(-3px, -8px);
+}
+
+.regionHighligh {
+    position: absolute;
+    z-index: 1;
+    background-color: var(--primary2);
+    height: 3px;
+}

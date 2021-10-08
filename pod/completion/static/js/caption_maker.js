@@ -387,7 +387,7 @@ function UpdateCaption(ci, captionText) {
   updateCaptionHtmlContent();
 }
 
-function CreateCaptionBlock(captionText, start, end) {
+function CreateCaptionBlock(captionText, start, end, newCaption) {
   let captionBlock = $("<div></div>");
   captionBlock.addClass("newEditorBlock");
 
@@ -415,10 +415,17 @@ function CreateCaptionBlock(captionText, start, end) {
   timeBlock.append(startTimeBtn, endTimeBtn);
   captionBlock.append(newArea, deleteBtn, timeBlock);
   $("#newCaptionsEditor").append(captionBlock);
+
+  captionBlock.hover(function() {
+    highlightVideoRegion(newCaption.start, newCaption.end);
+  }, function() {
+    clearVideoRegion();
+  })
+
   feather.replace();
 }
 
-function AddCaptionListRow(ci) {
+function AddCaptionListRow(ci, newCaption) {
   let vtt = $("#captionContent");
   let vtt_entry = $("#textCaptionEntry").val().trim();
   let start = caption_memories.start_time;
@@ -433,18 +440,20 @@ function AddCaptionListRow(ci) {
     }
   }
 
-  CreateCaptionBlock(vtt_entry, start, end);
+  CreateCaptionBlock(vtt_entry, start, end, newCaption);
   caption_memories.start_time = end;
 }
 
 function AddCaption(captionStart, captionEnd, captionText) {
-  captionsArray.push({
+  let newCaption = {
     start: captionStart,
     end: captionEnd,
     caption: captionText.trim(),
-  });
+  };
   
-  AddCaptionListRow(captionsArray.length - 1);
+  captionsArray.push(newCaption);
+  
+  AddCaptionListRow(captionsArray.length - 1, newCaption);
 }
 
 function hmsToSecondsOnly(str) {
@@ -654,3 +663,59 @@ function ParseAndLoadWebVTT(vtt) {
   $("#captionContent").val("");
   $("#captionContent").val(vtt);
 }
+
+// videojs region highlighting 
+
+var highlightVideoRegion;
+var clearVideoRegion;
+
+const registerPlugin = videojs.registerPlugin || videojs.plugin;
+
+const onPlayerReady = function(player, options) {
+  var startKeyframe;
+  var endKeyframe;
+  var regionHighlight;
+  
+  clearVideoRegion = function() {
+    if (startKeyframe)
+      startKeyframe.remove()
+      
+    if (endKeyframe)
+      endKeyframe.remove()
+
+    if (regionHighlight)
+      regionHighlight.remove()
+  }
+
+  highlightVideoRegion = function(startTime, endTime) {
+    clearVideoRegion();
+
+    let startPercent = (startTime / player.duration()) * 100;
+    let endPercent = (endTime / player.duration()) * 100;
+
+    startKeyframe = $("<div class='keyframe'></div>");
+    startKeyframe.css('left', `${startPercent}%`);
+    $(player.controlBar.progressControl.seekBar.playProgressBar.el_).before(startKeyframe);
+
+    regionHighlight = $("<div class='regionHighligh'></div>");
+    regionHighlight.css('left', `${startPercent}%`);
+    regionHighlight.css('width', `${endPercent - startPercent}%`);
+    startKeyframe.after(regionHighlight);
+
+    endKeyframe = $("<div class='keyframe'></div>");
+    endKeyframe.css('left', `${endPercent}%`);
+    regionHighlight.after(endKeyframe);
+  }
+};
+
+const timelineRegions = function(options) {
+  this.ready(function() {
+    onPlayerReady(this, options);
+  });
+};
+
+registerPlugin('timelineRegions', timelineRegions);
+
+videojs.hook('setup', function(player) {
+  player.timelineRegions();
+});
