@@ -1,3 +1,6 @@
+/*
+ * CSS for enrichment editing
+ **/
 
 /*** Table scroll ***/
 table.scroll {
@@ -30,11 +33,8 @@ table.scroll thead th {
 	white-space: nowrap;
 	line-height: 20px;
 }
-table.scroll thead th.enrich_title,
-table.scroll thead th.enrich_type,
-table.scroll thead th.enrich_start,
-table.scroll thead th.enrich_end {
-	white-space: nowrap;
+.enrich_type{
+	text-transform: capitalize;
 }
 #list_enrich .panel-heading,
 #form_enrich .panel-heading {
@@ -49,6 +49,7 @@ table.scroll thead th.enrich_end {
 form#form_enrich {
 	background-color: rgba(0, 0, 0, .05);
 }
+
 /*
 #form_new,
 .video_back {

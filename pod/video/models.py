@@ -337,7 +337,7 @@ class Channel(models.Model):
         verbose_name=_("Groups"),
         ajax=True,
         search_field=lambda q: Q(code_name__icontains=q) | Q(display_name__icontains=q),
-        help_text=_("Select one or more groups who can upload video to this channel"),
+        help_text=_("Select one or more groups who can upload video to this channel."),
     )
     add_channels_tab = select2_fields.ManyToManyField(
         AdditionalChannelTab, verbose_name=_("Additionals channels tab"), blank=True
