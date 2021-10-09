@@ -33,6 +33,15 @@ $(document).ready(function () {
       .substring(this.selectionStart, this.selectionEnd);
     playSelectedCaption(selectedText.trim());
   });
+  
+  captionContent.bind('input propertychange', function() {
+    captionsArray.length = 0;
+    if (this.value.match(/^WEBVTT/)) {
+      ParseAndLoadWebVTT(this.value);
+    } else {
+      alert("Unrecognized caption file format.");
+    }
+  });
 });
 
 $(document).on("submit", "#form_save_captions", function (e) {
@@ -206,11 +215,14 @@ let updateCaptionsArray = (vtt) => {
     if (text.trim().toLowerCase() !== "webvtt") {
       let data = text.split("\n");
       let times = data[0].split("-->");
-      captionsArray.push({
+      newCaption = {
         start: ParseTime(times[0]),
         end: ParseTime(times[1]),
         caption: data[1],
-      });
+      };
+
+      captionsArray.push(newCaption);
+      CreateCaptionBlock(newCaption);
     }
   });
 };
@@ -387,7 +399,11 @@ function UpdateCaption(ci, captionText) {
   updateCaptionHtmlContent();
 }
 
-function CreateCaptionBlock(captionText, start, end, newCaption) {
+function CreateCaptionBlock(newCaption) {
+  let captionText = newCaption.caption;
+  let start = FormatTime(newCaption.start);
+  let end = FormatTime(newCaption.end);
+
   let captionBlock = $("<div></div>");
   captionBlock.addClass("newEditorBlock");
 
@@ -440,7 +456,7 @@ function AddCaptionListRow(ci, newCaption) {
     }
   }
 
-  CreateCaptionBlock(vtt_entry, start, end, newCaption);
+  CreateCaptionBlock(newCaption);
   caption_memories.start_time = end;
 }
 
@@ -452,7 +468,6 @@ function AddCaption(captionStart, captionEnd, captionText) {
   };
   
   captionsArray.push(newCaption);
-  
   AddCaptionListRow(captionsArray.length - 1, newCaption);
 }
 
@@ -609,6 +624,8 @@ function ParseAndLoadWebVTT(vtt) {
     return;
   }
 
+  $("#newCaptionsEditor").empty();
+
   var rxTimeLine = /^([\d\.:]+)\s+-->\s+([\d\.:]+)(?:\s.*)?$/;
   var rxCaptionLine = /^(?:<v\s+([^>]+)>)?([^\r\n]+)$/;
   var rxBlankLine = /^\s*$/;
@@ -620,11 +637,13 @@ function ParseAndLoadWebVTT(vtt) {
 
   function appendCurrentCaption() {
     if (cueStart && cueEnd && cueText) {
-      captionsArray.push({
+      newCaption = {
         start: cueStart,
         end: cueEnd,
         caption: cueText.trim(),
-      });
+      };
+      captionsArray.push(newCaption);
+      CreateCaptionBlock(newCaption);
     }
     cueStart = cueEnd = cueText = null;
   }
