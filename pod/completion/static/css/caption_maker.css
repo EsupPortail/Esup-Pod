@@ -155,15 +155,20 @@ textarea {
 .keyframe {
     position: absolute;
     z-index: 2;
-    background-color: var(--primary2);
-    width: 6px;
-    height: 8px;
-    transform: translateY(-3px, -8px);
+    height: 11px;
+}
+
+.keyframe-left {
+    transform: translate(-6px, -11px);
+}
+
+.keyframe-right {
+    transform: translate(0px, -11px);
 }
 
 .regionHighligh {
     position: absolute;
     z-index: 1;
-    background-color: var(--primary2);
+    background-color: rgba(173, 50, 122, 0.5);
     height: 3px;
 }

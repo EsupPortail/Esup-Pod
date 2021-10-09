@@ -693,7 +693,9 @@ const onPlayerReady = function(player, options) {
     let startPercent = (startTime / player.duration()) * 100;
     let endPercent = (endTime / player.duration()) * 100;
 
-    startKeyframe = $("<div class='keyframe'></div>");
+    startKeyframe = $(`<svg class='keyframe keyframe-left' xmlns="http://www.w3.org/2000/svg" width="6" height="11" viewBox="0 0 6 11">
+        <path id="Path_4" data-name="Path 4" d="M4.667,0H1.333A1.281,1.281,0,0,0,0,1.222V6.256L6,11V1.222A1.281,1.281,0,0,0,4.667,0Z" fill="#ad327a"/>
+      </svg>`);
     startKeyframe.css('left', `${startPercent}%`);
     $(player.controlBar.progressControl.seekBar.playProgressBar.el_).before(startKeyframe);
 
@@ -702,7 +704,9 @@ const onPlayerReady = function(player, options) {
     regionHighlight.css('width', `${endPercent - startPercent}%`);
     startKeyframe.after(regionHighlight);
 
-    endKeyframe = $("<div class='keyframe'></div>");
+    endKeyframe = $(`<svg class='keyframe keyframe-right' xmlns="http://www.w3.org/2000/svg" width="6" height="11" viewBox="0 0 6 11">
+        <path id="Path_5" data-name="Path 5" d="M1.333,0H4.667A1.281,1.281,0,0,1,6,1.222V6.256L0,11V1.222A1.281,1.281,0,0,1,1.333,0Z" fill="#ad327a"/>
+      </svg>`);
     endKeyframe.css('left', `${endPercent}%`);
     regionHighlight.after(endKeyframe);
   }
