@@ -399,46 +399,129 @@ function UpdateCaption(ci, captionText) {
   updateCaptionHtmlContent();
 }
 
+var lastEditedBlock = null;
+
 function CreateCaptionBlock(newCaption) {
   let captionText = newCaption.caption;
   let start = FormatTime(newCaption.start);
   let end = FormatTime(newCaption.end);
+  
+  let block = {
+    // parent
+    div: $(`<div class='newEditorBlock'></div>`),
 
-  let captionBlock = $("<div></div>");
-  captionBlock.addClass("newEditorBlock");
+    // textarea
+    captionTextInput: $(`<textarea value='${captionText}'></textarea>`),
+    deleteBtn: $(`<button class='caption_block_delete_btn'><i data-feather='trash-2' width='12px' height='12px'></i></button>`),
 
-  let newArea = $("<textarea></textarea>");
-  newArea.val(captionText);
-  newArea.bind('input propertychange', function() {
-    captionsArray[captionBlock.index()].caption = this.value;
+    // time editable
+    timeBlockEditable: $(`<div style='display:none'></div>"`),
+    startTimeInput: $(`<input type='text'>`),
+    endTimeInput: $(`<input type='text'>`),
+
+    // time links
+    timeBlock: $(`<div></div>`),
+    startTimeBtn: $(`<a href='#'>${start}</a>`),
+    endTimeBtn: $(`<a href='#'>${end}</a>`),
+
+    // flags
+    isEditEnabled: false,
+
+    // methods
+    enableEdit: function() {
+      if (!this.isEditEnabled) {
+        if (lastEditedBlock) {
+          lastEditedBlock.disableEdit();
+        }
+
+        this.startTimeInput.val(
+          this.startTimeBtn.text()
+        );
+
+        this.endTimeInput.val(
+          this.endTimeBtn.text()
+        );
+
+        this.timeBlockEditable.css('display', '');
+        this.timeBlock.css('display', 'none');
+
+        lastEditedBlock = this;
+
+        this.isEditEnabled = true;
+      }
+    },
+
+    disableEdit: function() {
+      if (this.isEditEnabled) {
+        let newStartTime = ParseTime(this.startTimeInput.val());
+        let newEndTime = ParseTime(this.endTimeInput.val());
+
+        newCaption.start = newStartTime;
+        newCaption.end = newEndTime;
+
+        this.startTimeBtn.text(FormatTime(newStartTime));
+        this.endTimeBtn.text(FormatTime(newEndTime));
+
+        this.timeBlockEditable.css('display', 'none');
+        this.timeBlock.css('display', '');
+
+        this.isEditEnabled = false;
+      }
+    },
+
+    delete: function() {
+      captionsArray.splice(this.div.index(), 1);
+      this.div.remove();
+    },
+
+    init: function() {
+      this.deleteBtn.click(() => this.delete());
+      this.startTimeBtn.click(() => this.enableEdit());
+      this.endTimeBtn.click(() => this.enableEdit());
+      this.captionTextInput.focus(() => this.enableEdit());
+
+      this.timeBlock.append(this.startTimeBtn, this.endTimeBtn);
+      this.timeBlockEditable.append(this.startTimeInput, this.endTimeInput);
+
+      this.div.append(
+        this.captionTextInput, 
+        this.deleteBtn, 
+        this.timeBlock, 
+        this.timeBlockEditable
+      );
+
+      this.startTimeInput.keypress((e) => {
+        if (e.which == 13)
+          this.disableEdit();
+      });
+
+      this.endTimeInput.keypress((e) => {
+        if (e.which == 13)
+          this.disableEdit();
+      });
+
+      $(document).click((e) => { 
+        var target = $(e.target);
+        if (!target.closest(this.div).length) 
+          this.disableEdit();
+      });
+    }
+  }
+
+  block.init();
+  $("#newCaptionsEditor").append(block.div);
+
+  feather.replace();
+
+  block.captionTextInput.bind('input propertychange', function() {
+    captionsArray[block.div.index()].caption = this.value;
   });
-
-  let deleteBtn = $("<button><i data-feather='trash-2' width='12px' height='12px'></i></button>");
-  deleteBtn.addClass("caption_block_delete_btn");
-  deleteBtn.on("click", function(e) {
-    captionsArray.splice(captionBlock.index(), 1);
-    captionBlock.remove();
-  })
-
-  let timeBlock = $("<div></div>");
-
-  let startTimeBtn = $("<a href='#'></a>");
-  startTimeBtn.text(start);
-
-  let endTimeBtn = $("<a href='#'></a>");
-  endTimeBtn.text(end);
-
-  timeBlock.append(startTimeBtn, endTimeBtn);
-  captionBlock.append(newArea, deleteBtn, timeBlock);
-  $("#newCaptionsEditor").append(captionBlock);
-
-  captionBlock.hover(function() {
+  
+  block.div.hover(function() {
     highlightVideoRegion(newCaption.start, newCaption.end);
   }, function() {
     clearVideoRegion();
   })
-
-  feather.replace();
 }
 
 function AddCaptionListRow(ci, newCaption) {
@@ -476,7 +559,7 @@ function hmsToSecondsOnly(str) {
     s = 0,
     m = 1;
   while (p.length > 0) {
-    s += m * parseInt(p.pop(), 10);
+    s += m * (parseInt(p.pop(), 10) || 0);
     m *= 60;
   }
   return s;
@@ -485,7 +568,7 @@ function hmsToSecondsOnly(str) {
 // parses webvtt time string format into floating point seconds
 function ParseTime(sTime) {
   let seconds = hmsToSecondsOnly(sTime);
-  return seconds + "." + sTime.split(".")[1];
+  return seconds + "." + (sTime.split(".")[1] || 0);
   /*//  parse time formatted as hours:mm:ss.sss where hours are optional
     if (sTime) {
         if (m != null) {

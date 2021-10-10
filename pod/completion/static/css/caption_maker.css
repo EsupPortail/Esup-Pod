@@ -104,6 +104,17 @@ textarea {
 
 .newEditorBlock a {
     margin-top: 10px;
+    max-width: 70px;
+    display: block;
+    color: #3EA6FF;
+    font-weight: 400;
+}
+
+.newEditorBlock input {
+    margin-top: 10px;
+    max-width: 70px;
+    height: 32px;
+    padding: 0;
     display: block;
 }
 
