@@ -15,5 +15,4 @@ deploy:
     - /usr/bin/sshpass -e ssh -o stricthostkeychecking=no sunieadm@pod-dev.grenet.fr "sudo /etc/init.d/celeryd stop"
     - /usr/bin/sshpass -e ssh -o stricthostkeychecking=no sunieadm@pod-dev.grenet.fr "sudo /etc/init.d/celeryd start"
   only:
-    - master
-    - update-version
+    - loppins_develop
