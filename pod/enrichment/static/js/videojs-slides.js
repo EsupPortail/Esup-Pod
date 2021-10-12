@@ -189,6 +189,7 @@ var VideoSlides = function (items) {
         slide.height = player.currentDimensions().height / 2;
       } else if (type == "embed") {
         slide = document.createElement("div");
+        slide.classList.add("slide_embed");
         slide.innerHTML = this.slidesItems[i].url;
       }
       const li = document.createElement("li");

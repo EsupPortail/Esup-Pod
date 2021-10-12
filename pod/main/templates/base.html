@@ -72,9 +72,9 @@
     <div class="container container-pod">
       <main class="mt-3">
 
-        {%if MAINTENANCE_SHEDULED%}
+        {% if MAINTENANCE_SHEDULED and not request.GET.is_iframe %}
           <div class="alert alert-warning">{{MAINTENANCE_TEXT_SHEDULED|safe}}</div>
-        {%endif%}
+        {% endif %}
 
         <nav aria-label="{% trans 'Breadcrumb' %}" class="breadcrumb d-flex justify-content-between p-0" id="mainbreadcrumb">
           <ol class="breadcrumb p-1 pl-4 mb-0">

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-24 10:13+0200\n"
+"POT-Creation-Date: 2021-10-06 09:26+0200\n"
 "PO-Revision-Date: 2021-03-26 17:58+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -368,11 +368,13 @@ msgid "Are you sure you want to delete this element?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer cet élément ?"
 
 #: pod/main/static/js/main.js:454
+#: pod/podfile/static/podfile/js/filewidget.js:114
 #: pod/podfile/static/podfile/js/filewidget.js:391
 msgid "Error during exchange"
 msgstr "Erreur durant le téléversement"
 
 #: pod/main/static/js/main.js:458
+#: pod/podfile/static/podfile/js/filewidget.js:114
 msgid "No data could be stored."
 msgstr "Aucune donnée ne peut être stockée."
 
@@ -431,6 +433,10 @@ msgstr "Changer"
 msgid "Enter new name of folder"
 msgstr "Indiquer un nouveau nom au dossier"
 
+#: pod/podfile/static/podfile/js/filewidget.js:167
+msgid "Remove"
+msgstr "Retirer"
+
 #: pod/podfile/static/podfile/js/filewidget.js:180
 #: pod/podfile/static/podfile/js/filewidget.js:202
 #: pod/podfile/static/podfile/js/filewidget.js:235
@@ -450,15 +456,15 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer ce dossier ?"
 msgid "See more"
 msgstr "Voir plus"
 
-#: pod/video/static/js/change_video_owner.js:117
+#: pod/video/static/js/change_video_owner.js:104
 msgid "No element found"
 msgstr "Aucun élément trouvé"
 
-#: pod/video/static/js/change_video_owner.js:717
+#: pod/video/static/js/change_video_owner.js:637
 msgid "An error occurred during the change of owner"
 msgstr "Une erreur s'est produite lors du changement de propriétaire"
 
-#: pod/video/static/js/change_video_owner.js:730
+#: pod/video/static/js/change_video_owner.js:648
 msgid "Please complete all fields correctly"
 msgstr "Veuillez remplir tous les champs correctement"
 
@@ -504,6 +510,10 @@ msgstr "Répondre"
 msgid "Remove this comment"
 msgstr "Supprimer ce commentaire"
 
+#: pod/video/static/js/comment-script.js:259
+msgid "Add a public comment"
+msgstr "Ajouter un commentaire public"
+
 #: pod/video/static/js/comment-script.js:383
 msgid "Show answers"
 msgstr "Afficher les réponses"
@@ -513,6 +523,7 @@ msgid "Comment has been deleted successfully."
 msgstr "Commentaire a été supprimé avec succès."
 
 #: pod/video/static/js/regroup_videos_by_theme.js:51
+#: pod/video/static/js/video_category.js:530
 msgid "This content is password protected."
 msgstr "Ce contenu est protégé par mot de passe."
 
@@ -526,10 +537,37 @@ msgstr "Ce contenu est chapitré."
 msgid "This content is in draft."
 msgstr "Ce contenu est en brouillon."
 
+#: pod/video/static/js/regroup_videos_by_theme.js:76
+#: pod/video/static/js/video_category.js:436
+#: pod/video/static/js/video_category.js:555
+msgid "Video content."
+msgstr "Contenu vidéo."
+
 #: pod/video/static/js/regroup_videos_by_theme.js:81
+#: pod/video/static/js/video_category.js:437
 #: pod/video/static/js/video_category.js:560
 msgid "Audio content."
 msgstr "Contenu audio."
+
+#: pod/video/static/js/regroup_videos_by_theme.js:86
+#: pod/video/static/js/video_category.js:565
+msgid "Edit the video"
+msgstr "Éditer la vidéo"
+
+#: pod/video/static/js/regroup_videos_by_theme.js:87
+#: pod/video/static/js/video_category.js:566
+msgid "Complete the video"
+msgstr "Compléter la vidéo"
+
+#: pod/video/static/js/regroup_videos_by_theme.js:88
+#: pod/video/static/js/video_category.js:567
+msgid "Chapter the video"
+msgstr "Chapitrer la vidéo"
+
+#: pod/video/static/js/regroup_videos_by_theme.js:89
+#: pod/video/static/js/video_category.js:568
+msgid "Delete the video"
+msgstr "Supprimer la vidéo"
 
 #: pod/video/static/js/regroup_videos_by_theme.js:270
 msgid "Loading videos.."
@@ -584,6 +622,14 @@ msgstr "Éditer la catégorie"
 msgid "Delete the category"
 msgstr "Supprimer la catégorie"
 
+#: pod/video/static/js/video_category.js:636
+msgid "Success.."
+msgstr "Succès.."
+
+#: pod/video/static/js/video_category.js:637
+msgid "Error.."
+msgstr "Erreur.."
+
 #: pod/video/static/js/video_category.js:907
 msgid "Category created successfully"
 msgstr "Catégorie créée avec succès"
@@ -615,30 +661,3 @@ msgstr "Vue totale depuis création"
 #: pod/video/static/js/video_stats_view.js:24
 msgid "Slug"
 msgstr "Titre court"
-
-#~ msgid "Remove"
-#~ msgstr "Retirer"
-
-#~ msgid "Add a public comment"
-#~ msgstr "Ajouter un commentaire public"
-
-#~ msgid "Video content."
-#~ msgstr "Contenu vidéo."
-
-#~ msgid "Edit the video"
-#~ msgstr "Éditer la vidéo"
-
-#~ msgid "Complete the video"
-#~ msgstr "Compléter la vidéo"
-
-#~ msgid "Chapter the video"
-#~ msgstr "Chapitrer la vidéo"
-
-#~ msgid "Delete the video"
-#~ msgstr "Supprimer la vidéo"
-
-#~ msgid "Success.."
-#~ msgstr "Succès.."
-
-#~ msgid "Error.."
-#~ msgstr "Erreur.."
