@@ -2,101 +2,119 @@ let PlaylistPlayer = {
   staticdir: null,
   invalid_feedback_value: "Please provide a valid value for this field",
   invalid_feedback_password: "The password is incorrect.",
-  onPlayerEnd: function () {
-    let _this = this;
+  getParameters: function() {
     let parameters = "";
-    if (this.auto_on) {
-      parameters = parameters + "&auto=on";
-    }
-    if (this.loop_on) {
-      parameters = parameters + "&loop=on";
-    }
-    if (this.is_iframe) {
-      parameters = parameters + "&is_iframe=true";
-    }
+    if (this.auto_on) { parameters += "&auto=on"; }
+    if (this.loop_on) { parameters += "&loop=on"; }
+    if (this.is_iframe) { parameters += "&is_iframe=true"; }
+    return parameters;
+  },
+  unselectCurrent: function() {
+    $(this.elements[this.current_position-1]).parent().removeClass("on");
+    $(this.elements[this.current_position-1])
+      .parent()
+      .children(".vdata")
+      .text(this.current_position);
+  },
+  setCurrent: function(position) {
+    this.current_position = position
+    $(this.elements[this.current_position-1]).parent().addClass("on");
+    $(this.elements[this.current_position-1])
+      .parent()
+      .children(".vdata")
+      .html(this.chevron_up);
+    const vtitle = $( this.elements[this.current_position-1] )
+      .parent()
+      .children(".vdata")
+      .data("info")
+        , vurl = this.elements[this.current_position-1].children[1].children[0].href
+    history.pushState( {title: vtitle}, "", vurl );
+    this.titlectn.innerHTML = vtitle
+  },
+  onPlayerEnd: function () {
+    const _this = this
+    console.log('On player end current_position : '+this.current_position)
     if (this.current_position != this.length || this.loop_on) {
-      $(this.current_element).parent().removeClass("on");
-      $(this.current_element)
-        .parent()
-        .children(".vdata")
-        .text(this.current_position);
       if (this.current_position != this.length) {
-        this.current_position++;
-        this.current_element = $(".playlist-videos div.row > div > div.card")[
-          this.current_position - 1
-        ];
+        this.loadVideo(this.current_position + 1)
       } else if (this.loop_on) {
-        this.current_position = 1;
-        this.current_element = $(
-          ".playlist-videos div.row > div > div.card"
-        )[0];
+        this.loadVideo(1)
       }
-      let current_url = this.current_element.children[1].children[0].href,
-        //, password = $(this.current_element).parent().children('.vdata').data('password') == 'unchecked'
-        ajax_url = current_url.replace("/video/", "/video_xhr/");
-      $.ajax({
-        url: ajax_url + parameters,
-        context: document.body,
-        dataType: "json",
-      }).done(function (json) {
-        if (json.status == "ok") {
-          _this.setPlayer(json);
-          $("#info-video").html(json.html_video_info);
-        } else if (json.error == "password") {
-          //Acces restrict by password => Display video password form
-          if ($("#video-form-wrapper").length == 0) {
-            _this.formctn.append(
-              '<div id="video-form-wrapper" class="jumbotron"></div>'
-            );
-          }
-          $("#video-form-wrapper").removeClass("hidden");
-          $("#video-form-wrapper").html(json.html_content);
-          $("#video-form-wrapper .invalid-feedback").hide();
-          $('#video-form-wrapper button[type="submit"]').click(function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            const password = $("#id_password").val(),
-              csrfmiddlewaretoken = $(
-                '#video_password_form > input[name="csrfmiddlewaretoken"]'
-              )
-                .first()
-                .val();
-            if (password == "") {
-              $("#video-form-wrapper .invalid-feedback")
-                .html(this.strings.invalid_feedback_value.replace("'", "'"))
-                .show();
-              return;
-            }
-            $.ajax({
-              type: "POST",
-              data: {
-                password: password,
-                csrfmiddlewaretoken: csrfmiddlewaretoken,
-              },
-              url: ajax_url,
-              context: document.body,
-              dataType: "json",
-            }).done(function (json) {
-              if (json.status == "ok") {
-                $("#video-form-wrapper").empty().addClass("hidden");
-                _this.setPlayer(json);
-                $("#info-video").html(json.html_video_info);
-              } else {
-                $("#video-form-wrapper .invalid-feedback")
-                  .html(this.strings.invalid_feedback_password)
-                  .show();
-              }
-            });
-          });
-        } else if (json.error == "access") {
-          //Acces restrict by authentication => Redirect to loggin page
-          window.location.href = json.url;
-        } else if (json.error == "deny") {
-          //User is authenticate but not allowed => Go next (TODO... actualy just reload page)
-          window.location.href = current_url;
-        }
-      });
     }
+  },
+  loadVideo: function(position) {
+    this.unselectCurrent()
+    const video_url = this.elements[position-1].children[1].children[0].href
+        , ajax_url = video_url.replace("/video/", "/video_xhr/")
+        , parameters = this.getParameters()
+        //, password = $(this.current_element).parent().children('.vdata').data('password') == 'unchecked'
+        , _this = this
+
+    $.ajax({
+      url: ajax_url + parameters,
+      context: document.body,
+      dataType: "json",
+    }).done(function (json) {
+      if (json.status == "ok") {
+        _this.setPlayer(json)
+        $("#info-video").html(json.html_video_info)
+        feather.replace({ class: 'align-bottom'});
+        _this.setCurrent(position)
+      } else if (json.error == "password") {
+        //Acces restrict by password => Display video password form
+        if ($("#video-form-wrapper").length == 0) {
+          _this.formctn.append(
+            '<div id="video-form-wrapper" class="jumbotron"></div>'
+          );
+        }
+        $("#video-form-wrapper").removeClass("hidden");
+        $("#video-form-wrapper").html(json.html_content);
+        $("#video-form-wrapper .invalid-feedback").hide();
+        $('#video-form-wrapper button[type="submit"]').click(function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          const password = $("#id_password").val(),
+            csrfmiddlewaretoken = $(
+              '#video_password_form > input[name="csrfmiddlewaretoken"]'
+            )
+              .first()
+              .val();
+          if (password == "") {
+            $("#video-form-wrapper .invalid-feedback")
+              .html(this.strings.invalid_feedback_value.replace("'", "'"))
+              .show();
+            return;
+          }
+          $.ajax({
+            type: "POST",
+            data: {
+              password: password,
+              csrfmiddlewaretoken: csrfmiddlewaretoken,
+            },
+            url: ajax_url,
+            context: document.body,
+            dataType: "json",
+          }).done(function (json) {
+            if (json.status == "ok") {
+              $("#video-form-wrapper").empty().addClass("hidden")
+              _this.setPlayer(json)
+              $("#info-video").html(json.html_video_info)
+              _this.setCurrent(position)
+            } else {
+              $("#video-form-wrapper .invalid-feedback")
+                .html(this.strings.invalid_feedback_password)
+                .show();
+            }
+          });
+        });
+      } else if (json.error == "access") {
+        //Acces restrict by authentication => Redirect to loggin page
+        window.location.href = json.url;
+      } else if (json.error == "deny") {
+        //User is authenticate but not allowed => Go next (TODO... actualy just reload page)
+        window.location.href = video_url;
+      }
+    });
   },
   init: function (o) {
     this.staticdir = o.static;
@@ -109,6 +127,7 @@ let PlaylistPlayer = {
     this.is_360 = o.is_360;
     this.vjsLogo = o.vjsLogo;
     this.formctn = o.formctn;
+    this.titlectn = o.vtitlectn;
     this.headFiles.set(o.head_files);
     this.controls = o.controls;
     this.strings = o.strings ? o.strings : this.strings;
@@ -117,6 +136,7 @@ let PlaylistPlayer = {
       .children(".vdata")
       .html();
     this.auto_on = this.loop_on = false;
+    this.elements = []
 
     const parameter = [
         /(playlist)\=([^&]+)/,
@@ -152,11 +172,24 @@ let PlaylistPlayer = {
       this.controls[c].onclick = toogleOption;
     }
 
+    let p = 1
+    $('.playlist-videos div.row .card').each(function() {
+      _this.elements.push(this)
+      $(this).find('a').data('position', p).on('click', function(e) {
+        if($(this).data('position') == _this.current_position) {
+          e.preventDefault();//e.stopPropagation();
+          player.play()
+        } else /*if(_this.auto_on)*/{
+          e.preventDefault();//e.stopPropagation();
+          _this.loadVideo($(this).data('position'))
+        }
+      })
+      p++;
+    })
     player.on("ended", function () {
       _this.onPlayerEnd();
     });
   },
-
   headFiles: {
     plugins: {
       enrichment: null,
@@ -201,7 +234,7 @@ let PlaylistPlayer = {
     },
     unloadCSS: function (p) {
       $("#" + p + "_style_id").remove();
-    },
+    }
   },
 
   setPlayer: function (json) {
@@ -323,10 +356,10 @@ let PlaylistPlayer = {
 
       // Add 360° video
       if (json.is_360) {
-        if (typeof player.vttThumbnails === "function") {
+        if (typeof player.vr === "function") {
           player.vr({ projection: "360" });
         } else {
-          _this.headFiles.getOrLoad("overview", function () {
+          _this.headFiles.getOrLoad("vr360", function () {
             try {
               player.vr({ projection: "360" });
             } catch (e) {
@@ -342,6 +375,9 @@ let PlaylistPlayer = {
         player.videoJsPlaylist();
         if (typeof resizeVideoJs === "function") {
           resizeVideoJs();
+        }
+        if (typeof setOnPlayerPlayPause === "function") {
+          setOnPlayerPlayPause()
         }
       }
 
@@ -385,23 +421,10 @@ let PlaylistPlayer = {
         _this.onPlayerEnd();
       });
 
-      // Update current_element stylesheet
-      $(_this.current_element).parent().addClass("on");
-      $(_this.current_element)
-        .parent()
-        .children(".vdata")
-        .html(_this.chevron_up);
-      let current_url = _this.current_element.children[1].children[0].href;
-      history.pushState(
-        {
-          title: $(_this.current_element)
-            .parent()
-            .children(".vdata")
-            .data("info"),
-        },
-        "",
-        current_url
-      );
+      // Add a playlisterner to stop video when
+      if(_this.is_iframe) {
+        isPlaying
+      }
 
       // Restore registered settings
       player.volume(volume);
