@@ -144,6 +144,18 @@ $("#podvideoplayer").on("error", function (event) {
   $(this).css("display", "none");
 });
 
+var shortcutsDisplayed = false;
+$("#showShortcutTips").on("click", function (e) {
+  if (shortcutsDisplayed) {
+    $("#shortcutsBlock").hide();
+  }
+  else {
+    $("#shortcutsBlock").show();
+  }
+
+  shortcutsDisplayed = !shortcutsDisplayed;
+});
+
 $("#clearAllCaptions").on("click", function (e) {
   e.preventDefault();
   var deleteConfirm = confirm(
@@ -411,7 +423,7 @@ function CreateCaptionBlock(newCaption) {
     div: $(`<div class='newEditorBlock'></div>`),
 
     // textarea
-    captionTextInput: $(`<textarea value='${captionText}'></textarea>`),
+    captionTextInput: $(`<textarea></textarea>`),
     deleteBtn: $(`<button class='caption_block_delete_btn'><i data-feather='trash-2' width='12px' height='12px'></i></button>`),
 
     // time editable
@@ -475,6 +487,9 @@ function CreateCaptionBlock(newCaption) {
     },
 
     init: function() {
+      this.div.captionBlockObject = this;
+      this.captionTextInput.val(captionText);
+
       this.deleteBtn.click(() => this.delete());
       this.startTimeBtn.click(() => this.enableEdit());
       this.endTimeBtn.click(() => this.enableEdit());
@@ -522,7 +537,40 @@ function CreateCaptionBlock(newCaption) {
   }, function() {
     clearVideoRegion();
   })
+
+  $("#noCaptionsText").remove();
 }
+
+// alt+del shortcut
+$(document).bind('keydown', function(event) {
+  if (event.which === 46 && event.altKey && lastEditedBlock) {
+    lastEditedBlock.delete();
+  }
+});
+
+// pgUp shortcut
+$(document).bind('keydown', function(event) {
+  if (lastEditedBlock && event.which === 33) {
+    let prev = lastEditedBlock.div.prev();
+    if (prev) {
+      let textarea = prev.find("textarea");
+      textarea.focus();
+      return false;
+    }
+  }
+});
+
+// pgDown shortcut
+$(document).bind('keydown', function(event) {
+  if (lastEditedBlock && event.which === 34) {
+    let next = lastEditedBlock.div.next();
+    if (next) {
+      let textarea = next.find("textarea");
+      textarea.focus();
+      return false;
+    }
+  }
+});
 
 function AddCaptionListRow(ci, newCaption) {
   let vtt = $("#captionContent");
