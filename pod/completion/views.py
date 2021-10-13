@@ -20,6 +20,7 @@ from .models import Overlay
 from .forms import OverlayForm
 from pod.podfile.models import UserFolder
 from pod.podfile.views import get_current_session_folder, file_edit_save
+from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
 import re
 import json
 from django.contrib.sites.shortcuts import get_current_site
@@ -27,7 +28,6 @@ from django.contrib.sites.shortcuts import get_current_site
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTION = ["new", "save", "modify", "delete"]
 CAPTION_MAKER_ACTION = ["save"]
-
 
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
@@ -53,7 +53,8 @@ def video_caption_maker(request, slug):
     if request.method == "POST" and request.POST.get("action"):
         action = request.POST.get("action")
     if action in CAPTION_MAKER_ACTION:
-        return eval("video_caption_maker_{0}(request, video)".format(action))
+        lang = request.POST.get("lang")
+        return eval("video_caption_maker_{0}(request, video, lang)".format(action))
     else:
         form_caption = TrackForm(initial={"video": video})
         return render(
@@ -63,13 +64,14 @@ def video_caption_maker(request, slug):
                 "current_folder": video_folder,
                 "form_make_caption": form_caption,
                 "video": video,
+                "languages": ALL_LANG_CHOICES,
             },
         )
 
 
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
-def video_caption_maker_save(request, video):
+def video_caption_maker_save(request, video, lang):
     video_folder, created = UserFolder.objects.get_or_create(
         name=video.slug, owner=request.user
     )
@@ -82,7 +84,7 @@ def video_caption_maker_save(request, video):
             Track(
                 video = video,
                 kind = 'captions',
-                lang = 'en', # TODO: add language selection to the form
+                lang = lang,
                 src = newfile,
             ).save()
 
