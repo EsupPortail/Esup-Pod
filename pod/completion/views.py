@@ -28,6 +28,8 @@ from django.contrib.sites.shortcuts import get_current_site
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTION = ["new", "save", "modify", "delete"]
 CAPTION_MAKER_ACTION = ["save"]
+LANG_CHOISES = PREF_LANG_CHOICES + ALL_LANG_CHOICES
+
 
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
@@ -54,7 +56,7 @@ def video_caption_maker(request, slug):
         action = request.POST.get("action")
     if action in CAPTION_MAKER_ACTION:
         lang = request.POST.get("lang")
-        return eval("video_caption_maker_{0}(request, video, lang)".format(action))
+        return eval("video_caption_maker_{0}".format(action))(request, video, lang)
     else:
         form_caption = TrackForm(initial={"video": video})
         return render(
@@ -64,7 +66,7 @@ def video_caption_maker(request, slug):
                 "current_folder": video_folder,
                 "form_make_caption": form_caption,
                 "video": video,
-                "languages": ALL_LANG_CHOICES,
+                "languages": LANG_CHOISES,
             },
         )
 
@@ -82,10 +84,10 @@ def video_caption_maker_save(request, video, lang):
 
             # immediately assign the newly created captions file to the video
             Track(
-                video = video,
-                kind = 'captions',
-                lang = lang,
-                src = newfile,
+                video=video,
+                kind='captions',
+                lang=lang,
+                src=newfile,
             ).save()
 
             messages.add_message(request, messages.INFO, _(u"The file has been saved."))
