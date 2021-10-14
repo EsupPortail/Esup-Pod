@@ -659,7 +659,6 @@ ENCODE_VIDEO = "start_encode"
 # REMOTE ENCODING SETTINGS
 # SSH_REMOTE_USER = ""
 # SSH_REMOTE_HOST = "xxx.univ.fr"
-# SSH_REMOTE_PORT = "22"
 # SSH_REMOTE_KEY = "/home/pod/.ssh/id_rsa"
 # Remote command to launch, it will be call with this arguments :
 # -n encoding-<video_id> -i <video_src_file>  -v <video_id> -u <video_user_hash> -d <settings_debug>
@@ -1198,7 +1197,7 @@ BBB_NUMBER_MAX_LIVES = 4
 # Version de BigBlueButton utilisée.
 # Si les URLs de présentations Web contiennent /2.3/ (et non /2.0/),
 # il est nécessaire de mettre ce paramètre à True.
-# Remarque : si vous utilisez Scalelite, il est possible que les URLS générés soient 
+# Remarque : si vous utilisez Scalelite, il est possible que les URLS générés soient
 # au format 2.3 même si la version de BigBlueButton est une 2.2.X.
 """
 BBB_VERSION_IS_23 = False
