@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-14 20:08+0000\n"
+"POT-Creation-Date: 2021-10-14 23:47+0000\n"
 "PO-Revision-Date: 2021-01-22 12:27+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -150,7 +150,7 @@ msgstr ""
 #: pod/authentication/views.py:130
 #: pod/bbb/templates/bbb/live_publish_meeting.html:45
 #: pod/bbb/templates/bbb/publish_meeting.html:37 pod/bbb/views.py:127
-#: pod/bbb/views.py:254 pod/completion/templates/video_caption_maker.html:103
+#: pod/bbb/views.py:254 pod/completion/templates/video_caption_maker.html:104
 #: pod/enrichment/templates/enrichment/group_enrichment.html:29
 #: pod/interactive/templates/interactive/group_interactive.html:27
 #: pod/live/templates/live/live-form.html:10
@@ -177,7 +177,7 @@ msgstr ""
 #: pod/authentication/templates/userpicture/userpicture.html:42
 #: pod/bbb/templates/bbb/live_publish_meeting.html:73
 #: pod/bbb/templates/bbb/publish_meeting.html:65
-#: pod/completion/templates/video_caption_maker.html:111
+#: pod/completion/templates/video_caption_maker.html:112
 #: pod/enrichment/templates/enrichment/group_enrichment.html:51
 #: pod/interactive/templates/interactive/group_interactive.html:49
 #: pod/live/templates/live/live-form.html:25
@@ -794,7 +794,7 @@ msgid "One or more errors have been found in the form:"
 msgstr ""
 
 #: pod/chapter/templates/chapter/form_chapter.html:30
-#: pod/completion/templates/video_caption_maker.html:73
+#: pod/completion/templates/video_caption_maker.html:74
 #: pod/enrichment/templates/enrichment/form_enrichment.html:37
 #: pod/enrichment/templates/enrichment/group_enrichment.html:60
 #: pod/interactive/templates/interactive/group_interactive.html:58
@@ -896,7 +896,7 @@ msgid "My videos"
 msgstr ""
 
 #: pod/chapter/templates/video_chapter.html:42
-#: pod/completion/templates/video_caption_maker.html:133
+#: pod/completion/templates/video_caption_maker.html:134
 #: pod/video/templates/videos/video_collaborate.html:66
 #: pod/video/templates/videos/video_delete.html:20
 #: pod/video/templates/videos/video_edit.html:38
@@ -1057,7 +1057,7 @@ msgstr ""
 
 #: pod/completion/models.py:124 pod/completion/models.py:171
 #: pod/completion/models.py:250
-#: pod/completion/templates/video_caption_maker.html:63
+#: pod/completion/templates/video_caption_maker.html:64
 #: pod/enrichment/models.py:322 pod/enrichment/models.py:356
 #: pod/interactive/models.py:18 pod/interactive/models.py:48
 #: pod/playlist/models.py:85 pod/recorder/models.py:90 pod/video/models.py:593
@@ -1385,27 +1385,31 @@ msgstr ""
 msgid "Video Caption Maker"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:71
-msgid "Play"
+#: pod/completion/templates/video_caption_maker.html:32
+msgid "Change mode"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html:72
+msgid "Play"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:73
 msgid "Pause"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:74
+#: pod/completion/templates/video_caption_maker.html:75
 msgid "Save &amp; Continue"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:78
+#: pod/completion/templates/video_caption_maker.html:79
 msgid "Key Schortcuts"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:92
+#: pod/completion/templates/video_caption_maker.html:93
 msgid "Caption list"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:92
+#: pod/completion/templates/video_caption_maker.html:93
 msgid ""
 "Use the Play and Pause buttons to determine when the subtitles appear, enter "
 "the text in the field below the video then click the Save / (Save & "
@@ -1413,39 +1417,39 @@ msgid ""
 "Subtitles button to create a subtitle file."
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:99
+#: pod/completion/templates/video_caption_maker.html:97
+msgid "No captions"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:100
 msgid "You can load and existing caption file below :"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:124
+#: pod/completion/templates/video_caption_maker.html:125
 msgid "Save Captions"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:125
+#: pod/completion/templates/video_caption_maker.html:126
 msgid "Clear All"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:127
-msgid "Change mode"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html:134
+#: pod/completion/templates/video_caption_maker.html:135
 msgid "Back to the completion"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:145
+#: pod/completion/templates/video_caption_maker.html:146
 msgid "Save captions file."
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:149
+#: pod/completion/templates/video_caption_maker.html:150
 msgid "You have loaded a file. Do you want to override it?"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:152
+#: pod/completion/templates/video_caption_maker.html:153
 msgid "New"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:153
+#: pod/completion/templates/video_caption_maker.html:154
 msgid "Override"
 msgstr ""
 

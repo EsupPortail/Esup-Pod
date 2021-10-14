@@ -29,7 +29,7 @@
 {% block page_content %}
 <h3 class="d-inline">{% trans "Video Caption Maker" %}</h3>
 <div class="d-inline float-right">
-  <button id="switchOldEditMode" class="btn btn-primary btn-sm float-right">{% trans "Change mode" %}</button> <!-- TODO: translate -->
+  <button id="switchOldEditMode" class="btn btn-primary btn-sm float-right">{% trans "Change mode" %}</button>
   <select name="lang" form="form_save_captions" style="margin-right: 10px;">
     {% for lang in languages %}
       <option value="{{ lang.0 }}">{{ lang.1 }}</option>
@@ -94,7 +94,7 @@
     <textarea class="captions_editor" id="captionContent" style="display:none;"></textarea>
     <div class="captions_editor" id="newCaptionsEditor">
       <!-- TODO: Translate -->
-      <h5 id="noCaptionsText">No captions...</h5>
+      <h5 id="noCaptionsText">{% trans "No captions" %} </h5>
     </div>
     <div>
       <p>{% trans "You can load and existing caption file below :" %}
