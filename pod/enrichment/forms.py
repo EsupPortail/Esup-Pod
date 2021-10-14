@@ -42,7 +42,10 @@ class EnrichmentGroupForm(forms.ModelForm):
 
 
 class EnrichmentForm(forms.ModelForm):
+    """Define edit forms for all enrichments types."""
+
     def __init__(self, *args, **kwargs):
+        """Init an EnrichmentForm."""
         super(EnrichmentForm, self).__init__(*args, **kwargs)
         self.fields["video"].widget = HiddenInput()
         self.fields["start"].widget.attrs["min"] = 0
@@ -54,7 +57,6 @@ class EnrichmentForm(forms.ModelForm):
             self.fields["start"].widget.attrs["max"] = 36000
             self.fields["end"].widget.attrs["max"] = 36000
         for myField in self.fields:
-            self.fields[myField].widget.attrs["placeholder"] = self.fields[myField].label
             if self.fields[myField].required or myField == "type":
                 self.fields[myField].widget.attrs["class"] = "form-control required"
                 label_unicode = u"{0}".format(self.fields[myField].label)

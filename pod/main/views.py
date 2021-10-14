@@ -158,6 +158,7 @@ def get_dest_email(owner, video, form_subject, request):
 
 @csrf_protect
 def contact_us(request):
+    """Handle "Contact us" form."""
     owner = (
         User.objects.get(id=request.GET.get("owner"))
         if (
@@ -301,6 +302,7 @@ def contact_us(request):
 
 
 def remove_accents(input_str):
+    """Remove diacritics(accent, cedilla...) in input string."""
     nfkd_form = unicodedata.normalize("NFKD", input_str)
     only_ascii = nfkd_form.encode("ASCII", "ignore")
     return only_ascii
