@@ -96,7 +96,7 @@
       <h5 id="noCaptionsText">No captions...</h5>
     </div>
     <div>
-      <!--<p>{% trans "Load Existing Caption File [optional]:" %}-->
+      <p>{% trans "You can load and existing caption file below :" %}
       <form method="post" class="float-left" action="{% url 'video_caption_maker' slug=video.slug %}" id="captionmaker_form">
         {% csrf_token %}
         <fieldset>
