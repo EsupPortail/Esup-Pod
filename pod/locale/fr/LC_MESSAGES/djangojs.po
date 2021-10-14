@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-24 10:13+0200\n"
+"POT-Creation-Date: 2021-10-14 19:18+0000\n"
 "PO-Revision-Date: 2021-03-26 17:58+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -96,21 +96,49 @@ msgstr ""
 "temps début(00:00.000) --> temps fin(00:00.000)\n"
 "texte de sous-titre"
 
-#: pod/completion/static/js/caption_maker.js:41
+#: pod/completion/static/js/caption_maker.js:42
+#: pod/completion/static/js/caption_maker.js:740
+msgid "Unrecognized caption file format."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:54
 msgid "There is no captions to save"
 msgstr "Il n’y a aucun sous-titre à sauvegarder"
 
-#: pod/completion/static/js/caption_maker.js:90
+#: pod/completion/static/js/caption_maker.js:85
+#: pod/completion/static/js/caption_maker.js:754
+msgid "Not a valid time track file."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:106
 msgid "error during exchange"
 msgstr "erreur durant le téléversement"
 
-#: pod/completion/static/js/caption_maker.js:94
+#: pod/completion/static/js/caption_maker.js:110
 msgid "no data could be stored."
 msgstr "aucune donnée ne peut être stockée."
 
-#: pod/completion/static/js/caption_maker.js:134
+#: pod/completion/static/js/caption_maker.js:162
 msgid "Are you sure you want to delete all caption?"
 msgstr "Êtes-vous sûr(e) de vouloir supprimer les sous-titre ?"
+
+#: pod/completion/static/js/caption_maker.js:713
+msgid "Error reading caption file. Code = "
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:719
+msgid "Exception thrown reading caption file. Code = "
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:722
+msgid "Your browser does not support FileReader."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:729
+#, fuzzy
+#| msgid "Error during exchange"
+msgid "Error loading caption file: "
+msgstr "Erreur durant le téléversement"
 
 #: pod/completion/static/js/completion.js:175
 #: pod/podfile/static/podfile/js/filewidget.js:277
@@ -450,15 +478,15 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer ce dossier ?"
 msgid "See more"
 msgstr "Voir plus"
 
-#: pod/video/static/js/change_video_owner.js:117
+#: pod/video/static/js/change_video_owner.js:104
 msgid "No element found"
 msgstr "Aucun élément trouvé"
 
-#: pod/video/static/js/change_video_owner.js:717
+#: pod/video/static/js/change_video_owner.js:637
 msgid "An error occurred during the change of owner"
 msgstr "Une erreur s'est produite lors du changement de propriétaire"
 
-#: pod/video/static/js/change_video_owner.js:730
+#: pod/video/static/js/change_video_owner.js:648
 msgid "Please complete all fields correctly"
 msgstr "Veuillez remplir tous les champs correctement"
 

@@ -38,6 +38,7 @@ import json
 import unicodedata
 from django.contrib.auth.decorators import login_required
 from .models import Configuration
+from django.template.loader import render_to_string
 
 ##
 # Settings exposed in templates
@@ -343,3 +344,13 @@ def user_autocomplete(request):
 def maintenance(request):
     text = Configuration.objects.get(key="maintenance_text_disabled").value
     return render(request, "maintenance.html", {"text": text})
+
+def channel_tab(request):
+    rendered = render_to_string(
+        "channel_modal.html",
+    {
+    },request)
+
+    list_element = {"render": rendered}
+    data = json.dumps(list_element)
+    return HttpResponse(data, content_type="application/json")

@@ -826,3 +826,23 @@ function show_messages(msgText, msgClass, loadUrl) {
     });
   }
 }
+
+
+$(document).ready(function () {
+
+  $('#main-chaine-modal').on('shown.bs.modal', function (e) {
+    $.ajax({
+      type: "GET",
+      url:
+        "/ajax_calls/channels/",
+      cache: false,
+      success: function (response) {
+        $(".channel-body").html(response.render);
+    
+      },
+    });
+  })
+
+
+
+});
