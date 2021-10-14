@@ -83,13 +83,16 @@ def video_caption_maker_save(request, video, lang):
         if b"list_element" in response.content:
 
             # immediately assign the newly created captions file to the video
-            Track(
-                video=video,
-                kind='captions',
-                lang=lang,
-                src=newfile,
-            ).save()
-
+            desired = Track.objects.filter(video=video, kind='captions', lang=lang)
+            if desired.first():
+                desired.update(src=newfile)
+            else:
+                Track(
+                    video=video,
+                    kind='captions',
+                    lang=lang,
+                    src=newfile,
+                ).save()
             messages.add_message(request, messages.INFO, _(u"The file has been saved."))
         else:
             messages.add_message(
