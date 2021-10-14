@@ -89,13 +89,8 @@ def video_caption_maker_save(request, video):
         if b"list_element" in response.content and LANG_CHOICES_DICT[lang]:
             # immediately assign the newly created captions file to the video
             desired = Track.objects.filter(video=video, kind='captions', lang=lang)
-<<<<<<< HEAD
             if desired.exists():
                 desired.update(src=newfile)
-=======
-            if desired.first():
-                desired.update(lang=lang, src=newfile)
->>>>>>> 34b00bd59c62bc4af220b2f9a554bafd096b3cf6
             else:
                 Track(
                     video=video,
