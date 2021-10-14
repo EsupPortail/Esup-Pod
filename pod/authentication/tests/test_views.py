@@ -25,26 +25,27 @@ class authenticationViewsTestCase(TestCase):
 
         print(
             "   --->  test_authentication_login_gateway \
-            of authenticationViewsTestCase : OK !"
+            of authenticationViewsTestCase: OK!"
         )
 
     def test_authentication_login(self):
         self.client = Client()
         self.user = User.objects.get(username="pod")
+        login_url = settings.LOGIN_URL
 
         # User already authenticated
         self.client.force_login(self.user)
-        response = self.client.get("/authentication_login/")
+        response = self.client.get(login_url)
         self.assertRedirects(response, "/")
 
         # User not authenticated and CAS are valued to False
         self.client.logout()
-        response = self.client.get("/authentication_login/")
+        response = self.client.get(login_url)
         self.assertRedirects(response, "/accounts/login/?next=/")
 
         print(
             "   --->  test_authentication_login \
-            of authenticationViewsTestCase : OK !"
+            of authenticationViewsTestCase: OK!"
         )
 
     def test_authentication_logout(self):

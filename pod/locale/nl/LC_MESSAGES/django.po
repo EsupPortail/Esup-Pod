@@ -3350,7 +3350,7 @@ msgid "your message untitled"
 msgstr ""
 
 #: pod/main/views.py:287
-msgid "Your message have been sent."
+msgid "Your message has been sent."
 msgstr ""
 
 #: pod/playlist/models.py:24

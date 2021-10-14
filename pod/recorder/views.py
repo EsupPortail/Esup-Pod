@@ -56,6 +56,7 @@ DEFAULT_RECORDER_PATH = getattr(settings, "DEFAULT_RECORDER_PATH", "/data/ftp-po
 
 USE_CAS = getattr(settings, "USE_CAS", False)
 USE_SHIB = getattr(settings, "USE_SHIB", False)
+LOGIN_URL = getattr(settings, "LOGIN_URL", "/authentication_login/")
 TITLE_SITE = getattr(TEMPLATE_VISIBLE_SETTINGS, "TITLE_SITE", "Pod")
 
 
@@ -175,8 +176,8 @@ def reformat_url_if_use_cas_or_shib(request, link_url):
     elif USE_SHIB:
         return "".join(
             [
-                request.build_absolute_uri("/"),
-                "authentication_login/?referrer=",
+                request.build_absolute_uri(LOGIN_URL),
+                "?referrer=",
                 urllib.parse.quote_plus(link_url),
             ]
         )
