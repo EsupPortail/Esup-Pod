@@ -29,7 +29,8 @@
 {% block page_content %}
 <h3 class="d-inline">{% trans "Video Caption Maker" %}</h3>
 <div class="d-inline float-right">
-  <select name="lang" form="form_save_captions">
+  <button id="switchOldEditMode" class="btn btn-primary btn-sm float-right">{% trans "Change mode" %}</button> <!-- TODO: translate -->
+  <select name="lang" form="form_save_captions" style="margin-right: 10px;">
     {% for lang in languages %}
       <option value="{{ lang.0 }}">{{ lang.1 }}</option>
     {% endfor %}
@@ -124,7 +125,7 @@
         <input type="submit" value="{% trans 'Save Captions' %}" id="save_captions" class="btn btn-primary btn-sm"/>
         <button id="clearAllCaptions" class="btn btn-primary btn-sm">{% trans "Clear All" %}</button>
       </form>
-      <button id="switchOldEditMode" class="btn btn-primary btn-sm float-right">{% trans "Change mode" %}</button> <!-- TODO: translate -->
+
     </div>
   </div>
   <div id="captionFileAndMarkup" style="width: 100%; clear: both; padding-top: 24px; padding-bottom: 24px; display: block;">
