@@ -659,7 +659,6 @@ ENCODE_VIDEO = "start_encode"
 # REMOTE ENCODING SETTINGS
 # SSH_REMOTE_USER = ""
 # SSH_REMOTE_HOST = "xxx.univ.fr"
-# SSH_REMOTE_PORT = "22"
 # SSH_REMOTE_KEY = "/home/pod/.ssh/id_rsa"
 # Remote command to launch, it will be call with this arguments :
 # -n encoding-<video_id> -i <video_src_file>  -v <video_id> -u <video_user_hash> -d <settings_debug>
