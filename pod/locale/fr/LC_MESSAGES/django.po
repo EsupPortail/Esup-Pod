@@ -1465,7 +1465,7 @@ msgstr "Sauvegarder & continuer"
 
 #: pod/completion/templates/video_caption_maker.html:78
 msgid "Key Schortcuts"
-msgstr ""
+msgstr "Raccourcis clavier"
 
 #: pod/completion/templates/video_caption_maker.html:92
 msgid "Caption list"
@@ -1497,10 +1497,9 @@ msgid "Clear All"
 msgstr "Tout effacer"
 
 #: pod/completion/templates/video_caption_maker.html:127
-#, fuzzy
 #| msgid "Change image"
 msgid "Change mode"
-msgstr "Changer d’image"
+msgstr "Changer le mode d'édition"
 
 #: pod/completion/templates/video_caption_maker.html:134
 msgid "Back to the completion"

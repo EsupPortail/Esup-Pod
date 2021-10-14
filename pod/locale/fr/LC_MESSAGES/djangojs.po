@@ -99,7 +99,7 @@ msgstr ""
 #: pod/completion/static/js/caption_maker.js:42
 #: pod/completion/static/js/caption_maker.js:740
 msgid "Unrecognized caption file format."
-msgstr ""
+msgstr "Format de fichier de traduction non reconnu"
 
 #: pod/completion/static/js/caption_maker.js:54
 msgid "There is no captions to save"
@@ -108,7 +108,7 @@ msgstr "Il n’y a aucun sous-titre à sauvegarder"
 #: pod/completion/static/js/caption_maker.js:85
 #: pod/completion/static/js/caption_maker.js:754
 msgid "Not a valid time track file."
-msgstr ""
+msgstr "Fichier de traduction invalide"
 
 #: pod/completion/static/js/caption_maker.js:106
 msgid "error during exchange"
@@ -124,15 +124,15 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer les sous-titre ?"
 
 #: pod/completion/static/js/caption_maker.js:713
 msgid "Error reading caption file. Code = "
-msgstr ""
+msgstr "Erreur durant la lecture du fichier de traduction, Code = "
 
 #: pod/completion/static/js/caption_maker.js:719
 msgid "Exception thrown reading caption file. Code = "
-msgstr ""
+msgstr "Une exception a été levée durant la lecture du fichier. Code = "
 
 #: pod/completion/static/js/caption_maker.js:722
 msgid "Your browser does not support FileReader."
-msgstr ""
+msgstr "Votre navigateur ne supporte pas FileReader"
 
 #: pod/completion/static/js/caption_maker.js:729
 #, fuzzy
