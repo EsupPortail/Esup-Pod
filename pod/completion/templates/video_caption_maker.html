@@ -101,8 +101,6 @@
         {% csrf_token %}
         <fieldset>
           {% if form_make_caption.errors %} <p class="text-danger">{% trans "One or more errors have been found in the form." %}</p> {% endif %}
-          {% comment %} {% for field_hidden in form_make_caption.hidden_fields %} {{field_hidden}} {% endfor %} {% endcomment %}
-          {% comment %} {% for field in form_make_caption.visible_fields %} {% endcomment %}
           {% for field in form_make_caption.visible_fields %}
             {% if field.name == 'src' %}
             {% spaceless %}
@@ -115,7 +113,6 @@
             {% endspaceless %}
             {% endif %}
           {% endfor %}
-          {% comment %} {% endfor %} {% endcomment %}
           {% if form_make_caption.instance.id %} <input type="hidden" id="user_id" name="user_id" value="{{form_make_caption.instance.id}}"/> {% endif %}
         </fieldset>
         {{form_make_caption.media}}

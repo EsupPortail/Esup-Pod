@@ -39,7 +39,7 @@ $(document).ready(function () {
     if (this.value.match(/^WEBVTT/)) {
       ParseAndLoadWebVTT(this.value);
     } else {
-      alert("Unrecognized caption file format.");
+      alert(gettext("Unrecognized caption file format."));
     }
   });
 });
@@ -82,7 +82,7 @@ var send_form_save_captions = function (name) {
   vttContent = $("#captionContent").val().trim();
   vttLines = vttContent.split(/\r\n|\r|\n/);
   if (!rxSignatureLine.test(vttLines[0])) {
-    alert("Not a valid time track file.");
+    alert(gettext("Not a valid time track file."));
     return;
   }
   let n = name;
@@ -710,23 +710,23 @@ function LoadCaptionFile(fileObject) {
     };
 
     reader.onerror = function (evt) {
-      alert("Error reading caption file. Code = " + evt.code);
+      alert(gettext("Error reading caption file. Code = ") + evt.code);
     };
 
     try {
       reader.readAsText(fileObject);
     } catch (exc) {
-      alert("Exception thrown reading caption file. Code = " + exc.code);
+      alert(gettext("Exception thrown reading caption file. Code = ") + exc.code);
     }
   } else {
-    alert("Your browser does not support FileReader.");
+    alert(gettext("Your browser does not support FileReader."));
   }
 }
 
 // invoked by script insertion of proxyvtt.ashx
 function ProcessProxyVttResponse(obj) {
   if (obj.status == "error")
-    alert("Error loading caption file: " + obj.message);
+    alert(gettext("Error loading caption file: ") + obj.message);
   else if (obj.status == "success") {
     //  delete any captions we've got
     captionsArray.length = 0;
@@ -737,7 +737,7 @@ function ProcessProxyVttResponse(obj) {
     if (obj.response.match(/^WEBVTT/)) {
       ParseAndLoadWebVTT(obj.response);
     } else {
-      alert("Unrecognized caption file format.");
+      alert(gettext("Unrecognized caption file format."));
     }
   }
 }
@@ -751,7 +751,7 @@ function ParseAndLoadWebVTT(vtt) {
 
   if (vttLines[0].trim().toLowerCase() != "webvtt") {
     // must start with a signature line
-    alert("Not a valid time track file.");
+    alert(gettext("Not a valid time track file."));
     return;
   }
 
