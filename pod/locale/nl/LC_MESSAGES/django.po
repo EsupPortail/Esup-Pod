@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-14 23:47+0000\n"
+"POT-Creation-Date: 2021-10-15 19:51+0000\n"
 "PO-Revision-Date: 2021-01-22 12:27+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -27,7 +27,7 @@ msgstr ""
 
 #: pod/authentication/forms.py:57 pod/authentication/forms.py:58
 #: pod/main/templates/navbar.html:30
-#: pod/main/templates/navbar_collapse.html:101 pod/podfile/models.py:41
+#: pod/main/templates/navbar_collapse.html:127 pod/podfile/models.py:41
 #: pod/video/forms.py:371 pod/video/models.py:319
 #: pod/video/templates/videos/filter_aside.html:13
 msgid "Users"
@@ -150,11 +150,11 @@ msgstr ""
 #: pod/authentication/views.py:130
 #: pod/bbb/templates/bbb/live_publish_meeting.html:45
 #: pod/bbb/templates/bbb/publish_meeting.html:37 pod/bbb/views.py:127
-#: pod/bbb/views.py:254 pod/completion/templates/video_caption_maker.html:104
+#: pod/bbb/views.py:254 pod/completion/templates/video_caption_maker.html:116
 #: pod/enrichment/templates/enrichment/group_enrichment.html:29
 #: pod/interactive/templates/interactive/group_interactive.html:27
 #: pod/live/templates/live/live-form.html:10
-#: pod/main/templates/contact_us.html:20 pod/main/views.py:298
+#: pod/main/templates/contact_us.html:20 pod/main/views.py:297
 #: pod/playlist/views.py:136
 #: pod/recorder/templates/recorder/add_recording.html:36
 #: pod/recorder/templates/recorder/record_delete.html:31
@@ -177,7 +177,7 @@ msgstr ""
 #: pod/authentication/templates/userpicture/userpicture.html:42
 #: pod/bbb/templates/bbb/live_publish_meeting.html:73
 #: pod/bbb/templates/bbb/publish_meeting.html:65
-#: pod/completion/templates/video_caption_maker.html:112
+#: pod/completion/templates/video_caption_maker.html:124
 #: pod/enrichment/templates/enrichment/group_enrichment.html:51
 #: pod/interactive/templates/interactive/group_interactive.html:49
 #: pod/live/templates/live/live-form.html:25
@@ -198,10 +198,10 @@ msgstr ""
 
 #: pod/authentication/templates/userpicture/userpicture.html:56
 #: pod/bbb/templates/bbb/list_meeting.html:56 pod/main/templates/base.html:125
-#: pod/main/templates/navbar_collapse.html:17
-#: pod/main/templates/navbar_collapse.html:65
+#: pod/main/templates/navbar_collapse.html:43
 #: pod/main/templates/navbar_collapse.html:91
-#: pod/main/templates/navbar_collapse.html:125
+#: pod/main/templates/navbar_collapse.html:117
+#: pod/main/templates/navbar_collapse.html:151
 #: pod/podfile/templates/podfile/customfilewidget.html:67
 #: pod/podfile/templates/podfile/home_content.html:60
 #: pod/podfile/templates/podfile/home_content.html:96
@@ -794,7 +794,7 @@ msgid "One or more errors have been found in the form:"
 msgstr ""
 
 #: pod/chapter/templates/chapter/form_chapter.html:30
-#: pod/completion/templates/video_caption_maker.html:74
+#: pod/completion/templates/video_caption_maker.html:78
 #: pod/enrichment/templates/enrichment/form_enrichment.html:37
 #: pod/enrichment/templates/enrichment/group_enrichment.html:60
 #: pod/interactive/templates/interactive/group_interactive.html:58
@@ -832,7 +832,7 @@ msgstr ""
 #: pod/completion/models.py:251
 #: pod/completion/templates/overlay/list_overlay.html:10
 #: pod/enrichment/templates/enrichment/list_enrichment.html:10
-#: pod/main/models.py:121 pod/main/views.py:186 pod/playlist/models.py:12
+#: pod/main/models.py:121 pod/main/views.py:185 pod/playlist/models.py:12
 #: pod/playlist/templates/playlist/playlist_element_list.html:11
 #: pod/video/models.py:254 pod/video/models.py:396 pod/video/models.py:518
 #: pod/video/models.py:599 pod/video/templates/channel/list_theme.html:9
@@ -896,7 +896,7 @@ msgid "My videos"
 msgstr ""
 
 #: pod/chapter/templates/video_chapter.html:42
-#: pod/completion/templates/video_caption_maker.html:134
+#: pod/completion/templates/video_caption_maker.html:146
 #: pod/video/templates/videos/video_collaborate.html:66
 #: pod/video/templates/videos/video_delete.html:20
 #: pod/video/templates/videos/video_edit.html:38
@@ -1057,7 +1057,7 @@ msgstr ""
 
 #: pod/completion/models.py:124 pod/completion/models.py:171
 #: pod/completion/models.py:250
-#: pod/completion/templates/video_caption_maker.html:64
+#: pod/completion/templates/video_caption_maker.html:68
 #: pod/enrichment/models.py:322 pod/enrichment/models.py:356
 #: pod/interactive/models.py:18 pod/interactive/models.py:48
 #: pod/playlist/models.py:85 pod/recorder/models.py:90 pod/video/models.py:593
@@ -1385,31 +1385,83 @@ msgstr ""
 msgid "Video Caption Maker"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:32
+#: pod/completion/templates/video_caption_maker.html:33
 msgid "Change mode"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:72
+#: pod/completion/templates/video_caption_maker.html:76
 msgid "Play"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:73
+#: pod/completion/templates/video_caption_maker.html:77
 msgid "Pause"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:75
+#: pod/completion/templates/video_caption_maker.html:79
 msgid "Save &amp; Continue"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:79
+#: pod/completion/templates/video_caption_maker.html:83
 msgid "Key Schortcuts"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:93
-msgid "Caption list"
+#: pod/completion/templates/video_caption_maker.html:85
+msgid "Video Player"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:86
+msgid "Space"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:86
+msgid "Pause / unpause"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:87
+msgid "Rewind the video 10 seconds back"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:88
+msgid "Skip 10 seconds"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:89
+msgid "Mute/unmute video"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:91
+msgid "Captions Editor"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:92
+msgid "Select previous caption"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html:93
+msgid "Select next caption"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:94
+msgid "Del"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:94
+msgid "Delete selected caption"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:95
+msgid "Add new caption"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:97
+msgid "Show/hide this window"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:101
+msgid "Caption list"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:101
 msgid ""
 "Use the Play and Pause buttons to determine when the subtitles appear, enter "
 "the text in the field below the video then click the Save / (Save & "
@@ -1417,39 +1469,39 @@ msgid ""
 "Subtitles button to create a subtitle file."
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:97
+#: pod/completion/templates/video_caption_maker.html:105
 msgid "No captions"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:100
+#: pod/completion/templates/video_caption_maker.html:112
 msgid "You can load and existing caption file below :"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:125
+#: pod/completion/templates/video_caption_maker.html:137
 msgid "Save Captions"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:126
+#: pod/completion/templates/video_caption_maker.html:138
 msgid "Clear All"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:135
+#: pod/completion/templates/video_caption_maker.html:147
 msgid "Back to the completion"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:146
+#: pod/completion/templates/video_caption_maker.html:158
 msgid "Save captions file."
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:150
+#: pod/completion/templates/video_caption_maker.html:162
 msgid "You have loaded a file. Do you want to override it?"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:153
+#: pod/completion/templates/video_caption_maker.html:165
 msgid "New"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:154
+#: pod/completion/templates/video_caption_maker.html:166
 msgid "Override"
 msgstr ""
 
@@ -1581,22 +1633,22 @@ msgid ""
 "want to display with the option \"Show background\""
 msgstr ""
 
-#: pod/completion/views.py:52 pod/completion/views.py:131
-#: pod/completion/views.py:172 pod/completion/views.py:371
-#: pod/completion/views.py:563 pod/completion/views.py:806
+#: pod/completion/views.py:53 pod/completion/views.py:134
+#: pod/completion/views.py:175 pod/completion/views.py:374
+#: pod/completion/views.py:566 pod/completion/views.py:809
 msgid "You cannot complement this video."
 msgstr ""
 
-#: pod/completion/views.py:96
+#: pod/completion/views.py:99
 msgid "The file has been saved."
 msgstr ""
 
-#: pod/completion/views.py:99
+#: pod/completion/views.py:102
 msgid "The file has not been saved."
 msgstr ""
 
-#: pod/completion/views.py:279 pod/completion/views.py:468
-#: pod/completion/views.py:906 pod/podfile/views.py:492
+#: pod/completion/views.py:282 pod/completion/views.py:471
+#: pod/completion/views.py:909 pod/podfile/views.py:492
 #: pod/podfile/views.py:536 pod/video/views.py:443 pod/video/views.py:1645
 msgid "Please correct errors"
 msgstr ""
@@ -3157,29 +3209,6 @@ msgstr ""
 msgid "I understand"
 msgstr ""
 
-#: pod/main/templates/channel_modal.html:19
-#: pod/main/templates/navbar_collapse.html:51
-#, python-format
-msgid "%(counter)s Theme"
-msgid_plural "%(counter)s Themes"
-msgstr[0] ""
-msgstr[1] ""
-
-#: pod/main/templates/channel_modal.html:22
-#: pod/main/templates/navbar_collapse.html:54
-#: pod/playlist/templates/playlist/playlist_list.html:14
-#: pod/playlist/templates/playlist/playlist_player.html:21
-#, python-format
-msgid "%(counter)s video"
-msgid_plural "%(counter)s videos"
-msgstr[0] ""
-msgstr[1] ""
-
-#: pod/main/templates/channel_modal.html:28
-#: pod/main/templates/navbar_collapse.html:60
-msgid "No channels found"
-msgstr ""
-
 #: pod/main/templates/contact_us.html:7 pod/main/templates/contact_us.html:10
 #: pod/main/templates/contact_us.html:13 pod/main/templates/maintenance.html:14
 msgid "Contact us"
@@ -3284,8 +3313,8 @@ msgid "Types"
 msgstr ""
 
 #: pod/main/templates/navbar.html:61 pod/main/templates/navbar.html:63
-#: pod/main/templates/navbar_collapse.html:110
-#: pod/main/templates/navbar_collapse.html:111
+#: pod/main/templates/navbar_collapse.html:136
+#: pod/main/templates/navbar_collapse.html:137
 #: pod/video/templates/videos/filter_aside.html:15
 #: pod/video/templates/videos/filter_aside_category.html:24
 #: pod/video_search/forms.py:10 pod/video_search/templates/search/search.html:8
@@ -3345,30 +3374,53 @@ msgid "Dyslexia mode"
 msgstr ""
 
 #: pod/main/templates/navbar_collapse.html:8
-#: pod/main/templates/navbar_collapse.html:30
+#: pod/main/templates/navbar_collapse.html:56
 #, python-format
 msgid "%(counter)s Channel"
 msgid_plural "%(counter)s Channels"
 msgstr[0] ""
 msgstr[1] ""
 
+#: pod/main/templates/navbar_collapse.html:29
 #: pod/main/templates/navbar_collapse.html:77
+#, python-format
+msgid "%(counter)s Theme"
+msgid_plural "%(counter)s Themes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/main/templates/navbar_collapse.html:32
+#: pod/main/templates/navbar_collapse.html:80
+#: pod/playlist/templates/playlist/playlist_list.html:14
+#: pod/playlist/templates/playlist/playlist_player.html:21
+#, python-format
+msgid "%(counter)s video"
+msgid_plural "%(counter)s videos"
+msgstr[0] ""
+msgstr[1] ""
+
+#: pod/main/templates/navbar_collapse.html:38
+#: pod/main/templates/navbar_collapse.html:86
+msgid "No channels found"
+msgstr ""
+
+#: pod/main/templates/navbar_collapse.html:103
 msgid "Types of videos"
 msgstr ""
 
-#: pod/main/templates/navbar_collapse.html:109
+#: pod/main/templates/navbar_collapse.html:135
 msgid "Use the input to filter user by last name."
 msgstr ""
 
-#: pod/main/views.py:188
+#: pod/main/views.py:187
 msgid "Link"
 msgstr ""
 
-#: pod/main/views.py:269
+#: pod/main/views.py:268
 msgid "your message untitled"
 msgstr ""
 
-#: pod/main/views.py:289
+#: pod/main/views.py:288
 msgid "Your message have been sent."
 msgstr ""
 
@@ -3679,7 +3731,7 @@ msgstr ""
 msgid "Shared folders"
 msgstr ""
 
-#: pod/podfile/views.py:164 pod/podfile/views.py:572
+#: pod/podfile/views.py:164 pod/podfile/views.py:570
 msgid "You cannot see this folder."
 msgstr ""
 
@@ -4134,7 +4186,7 @@ msgstr ""
 msgid "The record has been deleted."
 msgstr ""
 
-#: pod/urls.py:383 pod/urls.py:384
+#: pod/urls.py:381 pod/urls.py:382
 msgid "Pod Administration"
 msgstr ""
 

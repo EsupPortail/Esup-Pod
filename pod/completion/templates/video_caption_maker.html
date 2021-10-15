@@ -82,19 +82,19 @@
     <!-- TODO: Translate -->
     <button id="showShortcutTips" class="btn btn-primary btn-sm mt-5">{% trans "Key Schortcuts" %}</button> 
     <div id="shortcutsBlock" style="display:none" class="shadow p-3 mb-5 bg-white rounded">
-      <h5>Video Player</h5>
-      <p><div class="shortcutKey">Space</div> Pause / unpause</p>
-      <p><div class="shortcutKey"><i data-feather="arrow-left" width="18px" height="18px"></i></div> Rewind the video 10 seconds back</p>
-      <p><div class="shortcutKey"><i data-feather="arrow-right" width="18px" height="18px"></i></div> Skip 10 seconds</p>
-      <p><div class="shortcutKey">M</div> Mute/unmute video</p>
+      <h5>{% trans "Video Player" %}</h5>
+      <p><div class="shortcutKey">{% trans "Space" %}</div> {% trans "Pause / unpause" %}</p>
+      <p><div class="shortcutKey"><i data-feather="arrow-left" width="18px" height="18px"></i></div> {% trans "Rewind the video 10 seconds back" %}</p>
+      <p><div class="shortcutKey"><i data-feather="arrow-right" width="18px" height="18px"></i></div> {% trans "Skip 10 seconds" %}</p>
+      <p><div class="shortcutKey">M</div> {% trans "Mute/unmute video" %}</p>
       <br>
-      <h5>Captions Editor</h5>
-      <p><div class="shortcutKey">PgUP</div> Select previous caption</p>
-      <p><div class="shortcutKey">PgDOWN</div> Select next caption</p>
-      <p><div class="shortcutKey">Alt</div>+<div class="shortcutKey">Del</div> Delete selected caption</p>
-      <p><div class="shortcutKey">Insert</div> Add new caption</p>
+      <h5>{% trans "Captions Editor" %}</h5>
+      <p><div class="shortcutKey">PgUP</div> {% trans "Select previous caption" %}</p>
+      <p><div class="shortcutKey">PgDOWN</div> {% trans "Select next caption" %}</p>
+      <p><div class="shortcutKey">Alt</div>+<div class="shortcutKey">{% trans "Del" %}</div> {% trans "Delete selected caption" %}</p>
+      <p><div class="shortcutKey">INSER</div> {% trans "Add new caption" %}</p>
       <br>
-      <p><div class="shortcutKey">?</div> Show/hide this window</p>
+      <p><div class="shortcutKey">?</div> {% trans "Show/hide this window" %} </p>
     </div>
   </div>
   <div class="caption_content" style="display: inline-block; float: left; width: 49%;">
