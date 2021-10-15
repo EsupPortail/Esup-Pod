@@ -18,6 +18,7 @@ from .models import Track
 from .forms import TrackForm
 from .models import Overlay
 from .forms import OverlayForm
+from .models import CustomFileModel
 from pod.podfile.models import UserFolder
 from pod.podfile.views import get_current_session_folder, file_edit_save
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
@@ -79,18 +80,21 @@ def video_caption_maker_save(request, video):
     if request.method == "POST":
         lang = request.POST.get("lang")
         cur_folder = get_current_session_folder(request)
-        response, newfile = file_edit_save(request, cur_folder)
-        if b"list_element" in response.content and LANG_CHOICES_DICT[lang]:
+        response = file_edit_save(request, cur_folder)
+        response_data = json.loads(response.content)
+        if ("list_element" in response_data) and (lang in LANG_CHOICES_DICT):
+            captFile = get_object_or_404(CustomFileModel, id=response_data["file_id"])
+
             # immediately assign the newly created captions file to the video
             desired = Track.objects.filter(video=video, kind='captions', lang=lang)
             if desired.exists():
-                desired.update(lang=lang, src=newfile)
+                desired.update(lang=lang, src=captFile)
             else:
                 Track(
                     video=video,
                     kind='captions',
                     lang=lang,
-                    src=newfile,
+                    src=captFile,
                 ).save()
             messages.add_message(request, messages.INFO, _(u"The file has been saved."))
         else:

@@ -148,7 +148,6 @@ textarea {
 .captionButtons svg{
     color: #707070;
     margin: 0;
-    transform: translate(0px, 0px);
 }
 
 #addSubtitle svg {

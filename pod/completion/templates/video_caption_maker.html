@@ -35,7 +35,7 @@
     {% for lang_group in languages %}
       <optgroup label="{{ lang_group.0 }}">
         {% for lang in lang_group.1 %}
-          <option value="lang.0">{{ lang.1 }}</option>
+          <option value="{{ lang.0 }}">{{ lang.1 }}</option>
         {% endfor %}
     {% endfor %}
   </select>
