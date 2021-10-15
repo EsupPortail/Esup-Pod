@@ -32,8 +32,11 @@
 <div class="d-inline float-right">
   <button id="switchOldEditMode" class="btn btn-primary btn-sm float-right">{% trans "Change mode" %}</button> <!-- TODO: translate -->
   <select id="captionLanguageSelect" name="lang" form="form_save_captions">
-    {% for lang in languages %}
-      <option value="{{ lang.0 }}">{{ lang.1 }}</option>
+    {% for lang_group in languages %}
+      <optgroup label="{{ lang_group.0 }}">
+        {% for lang in lang_group.1 %}
+          <option value="lang.0">{{ lang.1 }}</option>
+        {% endfor %}
     {% endfor %}
   </select>
 </div>
@@ -83,11 +86,15 @@
       <p><b>[Space]</b> Pause / unpause</p>
       <p><b>[←]</b> Rewind the video 10 seconds back</p>
       <p><b>[→]</b> Skip 10 seconds</p>
+      <p><b>[M]</b> Mute/unmute video</p>
       <br>
       <p>Captions Editor: </p>
       <p><b>[PgUP]</b> Select previous caption</p>
       <p><b>[PgDOWN]</b> Select next caption</p>
       <p><b>[Alt] + [Del]</b> Delete selected caption</p>
+      <p><b>[Insert]</b> Add new caption</p>
+      <br>
+      <p><b>[?]</b> Show/hide this window</p>
     </div>
   </div>
   <div class="caption_content" style="display: inline-block; float: left; width: 49%;">
