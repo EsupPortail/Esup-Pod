@@ -866,7 +866,7 @@ function ParseAndLoadWebVTT(vtt) {
     return;
   }
 
-  $("#newCaptionsEditor").empty();
+  $(".newEditorBlock").each(function() {this.remove()});
 
   var rxTimeLine = /^([\d\.:]+)\s+-->\s+([\d\.:]+)(?:\s.*)?$/;
   var rxCaptionLine = /^(?:<v\s+([^>]+)>)?([^\r\n]+)$/;
