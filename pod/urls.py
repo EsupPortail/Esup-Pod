@@ -44,8 +44,7 @@ from pod.main.views import (
     contact_us,
     download_file,
     user_autocomplete,
-    maintenance,
-    channel_tab
+    maintenance
 )
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
@@ -142,7 +141,6 @@ urlpatterns = [
         name="api_chunked_upload",
     ),
     url(r"^ajax_calls/search_user/", user_autocomplete),
-    url(r"^ajax_calls/channels/", channel_tab),
     # my channels
     url(r"^my_channels/$", my_channels, name="my_channels"),
     url(
