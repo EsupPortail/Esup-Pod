@@ -175,7 +175,7 @@ $("#showShortcutTips").on("click", function (e) {
 $("#addSubtitle").on("click", function (e) {
   var playTime = $("#podvideoplayer").get(0).player.currentTime();
   var captionsEndTime = existingCaptionsEndTime();
-  AddCaption(captionsEndTime, playTime > captionsEndTime ? playTime : 2 + captionsEndTime, "");
+  AddCaption(captionsEndTime, playTime > captionsEndTime ? playTime : parseInt(captionsEndTime) + 2, "");
 });
 
 $("#clearAllCaptions").on("click", function (e) {
@@ -444,17 +444,21 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
     // parent
     div: $(`<div class='newEditorBlock'></div>`),
 
+    // circle buttons
+    buttonsDiv: $("<div class='captionButtons'></div>"),
+    insertBtn: $(`<button><i data-feather='plus' width='28px' height='28px'></i></button>`),
+    deleteBtn: $(`<button><i data-feather='x' width='28px' height='28px'></i></button>`),
+
     // textarea
     captionTextInput: $(`<textarea></textarea>`),
-    deleteBtn: $(`<button class='caption_block_delete_btn'><i data-feather='trash-2' width='12px' height='12px'></i></button>`),
 
     // time editable
-    timeBlockEditable: $(`<div style='display:none'></div>"`),
+    timeBlockEditable: $(`<div class='captionTimestamps' style='display:none'></div>"`),
     startTimeInput: $(`<input type='text'>`),
     endTimeInput: $(`<input type='text'>`),
 
     // time links
-    timeBlock: $(`<div></div>`),
+    timeBlock: $(`<div class='captionTimestamps'></div>`),
     startTimeBtn: $(`<a href='#'>${start}</a>`),
     endTimeBtn: $(`<a href='#'>${end}</a>`),
 
@@ -507,7 +511,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
       let playTime = $("#podvideoplayer").get(0).player.currentTime();
       let captionObj = {
         start: newCaption.end,
-        end: playTime > newCaption.end ? playTime : 2 + newCaption.end,
+        end: playTime > newCaption.end ? playTime : parseInt(newCaption.end) + 2,
         caption: "",
       };
 
@@ -524,6 +528,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
       this.div.captionBlockObject = this;
       this.captionTextInput.val(captionText);
 
+      this.insertBtn.click(() => this.spawnNew());
       this.deleteBtn.click(() => this.delete());
       this.startTimeBtn.click(() => seekVideoTo(newCaption.start));
       this.endTimeBtn.click(() => seekVideoTo(newCaption.end));
@@ -531,10 +536,11 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
 
       this.timeBlock.append(this.startTimeBtn, this.endTimeBtn);
       this.timeBlockEditable.append(this.startTimeInput, this.endTimeInput);
+      this.buttonsDiv.append(this.insertBtn, this.deleteBtn);
 
       this.div.append(
+        this.buttonsDiv,
         this.captionTextInput, 
-        this.deleteBtn, 
         this.timeBlock, 
         this.timeBlockEditable
       );

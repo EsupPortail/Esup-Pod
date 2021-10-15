@@ -92,12 +92,12 @@ textarea {
 }
 
 .newEditorBlock > textarea {
-    width: 85%;
+    width: 80%;
     height: 80px;
     margin: 8px;
 }
 
-.newEditorBlock > div {
+.captionTimestamps {
     float: right;
     line-height: 32px;
 }
@@ -118,30 +118,41 @@ textarea {
     display: block;
 }
 
-.caption_block_delete_btn {
-    position: absolute;
-    width: 20px;
-    height: 20px;
+.captionButtons {
+    float: left;
+    margin-top: 8px;
+}
+
+.captionButtons button {
+    margin: 9px 2px 2px 2px;
+    display: block;
+    left: 0px;
+    left: 16px;
+    width: 28px;
+    height: 28px;
     padding: 0;
-    margin: 0;
-    transform: translate(-18px, 78px);
     border: 0;
     border-radius: 50%;
-    background: #222;
+    background: #fff;
+    box-shadow: 0px 0px 4px rgba(0,0,0,.15)
 }
 
-.caption_block_delete_btn svg{
+.captionButtons button:hover {
+    background: var(--primary);
+}
+
+.captionButtons button:hover svg {
     color: #fff;
+}
+
+.captionButtons svg{
+    color: #707070;
     margin: 0;
-    transform: translate(0px, -4px);
+    transform: translate(0px, 0px);
 }
 
-.newEditorBlock .caption_block_delete_btn{
-    visibility: hidden;
-}
-
-.newEditorBlock:hover .caption_block_delete_btn{
-    visibility: visible;
+#addSubtitle svg {
+    color: var(--link-color);
 }
 
 #captionFilename {
