@@ -507,8 +507,8 @@ function CreateCaptionBlock(newCaption) {
       this.captionTextInput.val(captionText);
 
       this.deleteBtn.click(() => this.delete());
-      this.startTimeBtn.click(() => this.enableEdit());
-      this.endTimeBtn.click(() => this.enableEdit());
+      this.startTimeBtn.click(() => seekVideoTo(newCaption.start));
+      this.endTimeBtn.click(() => seekVideoTo(newCaption.end));
       this.captionTextInput.focus(() => this.enableEdit());
 
       this.timeBlock.append(this.startTimeBtn, this.endTimeBtn);
@@ -854,10 +854,13 @@ const onPlayerReady = function(player, options) {
 
     if (regionHighlight)
       regionHighlight.remove()
+
+    player.userActive(false);
   }
 
   highlightVideoRegion = function(startTime, endTime) {
     clearVideoRegion();
+    player.userActive(true);
 
     let startPercent = (startTime / player.duration()) * 100;
     let endPercent = (endTime / player.duration()) * 100;
@@ -878,6 +881,11 @@ const onPlayerReady = function(player, options) {
       </svg>`);
     endKeyframe.css('left', `${endPercent}%`);
     regionHighlight.after(endKeyframe);
+  }
+
+  seekVideoTo = function(time) {
+    player.userActive(true);
+    player.currentTime(time);
   }
 };
 
