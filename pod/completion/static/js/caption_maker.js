@@ -172,6 +172,12 @@ $("#showShortcutTips").on("click", function (e) {
   shortcutsDisplayed = !shortcutsDisplayed;
 });
 
+$("#addSubtitle").on("click", function (e) {
+  var playTime = $("#podvideoplayer").get(0).player.currentTime();
+  var captionsEndTime = existingCaptionsEndTime();
+  AddCaption(captionsEndTime, playTime > captionsEndTime ? playTime : captionsEndTime + 2, "");
+});
+
 $("#clearAllCaptions").on("click", function (e) {
   e.preventDefault();
   var deleteConfirm = confirm(
@@ -540,7 +546,7 @@ function CreateCaptionBlock(newCaption) {
   }
 
   block.init();
-  $("#newCaptionsEditor").append(block.div);
+  $("#addSubtitle").before(block.div);
 
   feather.replace();
 
