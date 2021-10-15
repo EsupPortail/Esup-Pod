@@ -86,7 +86,7 @@ def video_caption_maker_save(request, video):
             captFile = get_object_or_404(CustomFileModel, id=response_data["file_id"])
 
             # immediately assign the newly created captions file to the video
-            desired = Track.objects.filter(video=video, kind='captions', lang=lang)
+            desired = Track.objects.filter(video=video, kind='captions', src=captFile)
             if desired.exists():
                 desired.update(lang=lang, src=captFile)
             else:
