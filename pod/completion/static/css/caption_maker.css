@@ -144,6 +144,23 @@ textarea {
     visibility: visible;
 }
 
+#captionFilename {
+    width: 280px;
+    margin-left: 32px;
+    transform: translateY(-4px);
+    border-top-style: hidden;
+    border-right-style: hidden;
+    border-left-style: hidden;
+    border-bottom-style: groove;
+    background-color: transparent;
+}
+
+#captionLanguageSelect {
+    margin-right: 10px;
+    height: 31px;
+    width: 150px;
+}
+
 #captionmakerModal.save > .modal-dialog {
     max-width: 1000px;
 }

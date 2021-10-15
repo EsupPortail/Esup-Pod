@@ -22,6 +22,10 @@ $(document).ready(function () {
     };
     send_form_data(url, data, "ProcessProxyVttResponse");
   }
+  else {
+    $("#captionFilename").val(`${file_prefix}_captions_${Date.now()}`);
+  }
+  
   let placeholder = gettext(
     "WEBVTT\n\nstart time(00:00.000) --> end time(00:00.000)\ncaption text"
   );
@@ -34,7 +38,7 @@ $(document).ready(function () {
     playSelectedCaption(selectedText.trim());
   });
   
-  captionContent.bind('input propertychange', function() {
+  captionContent.bind('input propertychange', function () {
     captionsArray.length = 0;
     if (this.value.match(/^WEBVTT/)) {
       ParseAndLoadWebVTT(this.value);
@@ -58,7 +62,7 @@ $(document).on("submit", "#form_save_captions", function (e) {
     $("#saveCaptionsModal").modal("show");
   } else {
     $(this).find('input[name="file_id"]').val("");
-    send_form_save_captions(`${file_prefix}_captions_${Date.now()}`);
+    send_form_save_captions();
   }
 });
 
@@ -70,14 +74,26 @@ $(document).on("click", "#modal-btn-new, #modal-btn-override", function () {
   if (this.id == "modal-btn-override") {
     $("#form_save_captions").find('input[name="file_id"]').val(file_loaded_id);
     updateCaptionsArray($("#captionContent").val());
-    send_form_save_captions(file_loaded_name);
+    send_form_save_captions();
   } else if (this.id == "modal-btn-new") {
     $("#form_save_captions").find('input[name="file_id"]').val("");
-    send_form_save_captions(`${file_prefix}_captions_${Date.now()}`);
+    send_form_save_captions();
   }
 });
 
-var send_form_save_captions = function (name) {
+$("#captionFilename").on('input', function (e) {
+  file_loaded = false;
+  removeFileBtn = $("#remove_file_id_src");
+  if (removeFileBtn.length)
+    removeFileBtn.click();
+});
+
+var send_form_save_captions = function () {
+  let fileName = $("#captionFilename").val()
+  if (fileName.length == 0) {
+    fileName = `${file_prefix}_captions_${Date.now()}`;
+  }
+
   rxSignatureLine = /^WEBVTT(?:\s.*)?$/;
   vttContent = $("#captionContent").val().trim();
   vttLines = vttContent.split(/\r\n|\r|\n/);
@@ -85,8 +101,8 @@ var send_form_save_captions = function (name) {
     alert(gettext("Not a valid time track file."));
     return;
   }
-  let n = name;
-  let f = new File([vttContent], n + ".vtt", { type: "text/vtt" });
+
+  let f = new File([vttContent], fileName + ".vtt", { type: "text/vtt" });
   let data_form = new FormData($("#form_save_captions")[0]);
   data_form.append("folder", current_folder);
   data_form.append("file", f);
@@ -731,9 +747,12 @@ function ProcessProxyVttResponse(obj) {
     //  delete any captions we've got
     captionsArray.length = 0;
     file_loaded = true;
-    file_loaded_name = obj.file_name;
     file_loaded_id = obj.id_file;
     current_folder = obj.id_folder;
+
+    // strip file extension and set as title
+    $("#captionFilename").val(obj.file_name.replace(/\.[^/.]+$/, ""))
+
     if (obj.response.match(/^WEBVTT/)) {
       ParseAndLoadWebVTT(obj.response);
     } else {

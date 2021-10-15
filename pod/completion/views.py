@@ -28,7 +28,8 @@ from django.contrib.sites.shortcuts import get_current_site
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTION = ["new", "save", "modify", "delete"]
 CAPTION_MAKER_ACTION = ["save"]
-LANG_CHOISES = PREF_LANG_CHOICES + ALL_LANG_CHOICES
+LANG_CHOICES = PREF_LANG_CHOICES + ALL_LANG_CHOICES
+LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES}
 
 
 @csrf_protect
@@ -55,8 +56,7 @@ def video_caption_maker(request, slug):
     if request.method == "POST" and request.POST.get("action"):
         action = request.POST.get("action")
     if action in CAPTION_MAKER_ACTION:
-        lang = request.POST.get("lang")
-        return eval("video_caption_maker_{0}".format(action))(request, video, lang)
+        return eval("video_caption_maker_{0}".format(action))(request, video)
     else:
         form_caption = TrackForm(initial={"video": video})
         return render(
@@ -66,26 +66,26 @@ def video_caption_maker(request, slug):
                 "current_folder": video_folder,
                 "form_make_caption": form_caption,
                 "video": video,
-                "languages": LANG_CHOISES,
+                "languages": LANG_CHOICES,
             },
         )
 
 
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
-def video_caption_maker_save(request, video, lang):
+def video_caption_maker_save(request, video):
     video_folder, created = UserFolder.objects.get_or_create(
         name=video.slug, owner=request.user
     )
     if request.method == "POST":
+        lang = request.POST.get("lang")
         cur_folder = get_current_session_folder(request)
         response, newfile = file_edit_save(request, cur_folder)
-        if b"list_element" in response.content:
-
+        if b"list_element" in response.content and LANG_CHOICES_DICT[lang]:
             # immediately assign the newly created captions file to the video
             desired = Track.objects.filter(video=video, kind='captions', lang=lang)
             if desired.first():
-                desired.update(src=newfile)
+                desired.update(lang=lang, src=newfile)
             else:
                 Track(
                     video=video,

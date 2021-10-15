@@ -28,9 +28,10 @@
 
 {% block page_content %}
 <h3 class="d-inline">{% trans "Video Caption Maker" %}</h3>
+<input id="captionFilename" name="file_name" type="text" form="form_save_captions"/>
 <div class="d-inline float-right">
   <button id="switchOldEditMode" class="btn btn-primary btn-sm float-right">{% trans "Change mode" %}</button> <!-- TODO: translate -->
-  <select name="lang" form="form_save_captions" style="margin-right: 10px;">
+  <select id="captionLanguageSelect" name="lang" form="form_save_captions">
     {% for lang in languages %}
       <option value="{{ lang.0 }}">{{ lang.1 }}</option>
     {% endfor %}
