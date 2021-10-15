@@ -28,10 +28,8 @@ from django.contrib.sites.shortcuts import get_current_site
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTION = ["new", "save", "modify", "delete"]
 CAPTION_MAKER_ACTION = ["save"]
-LANG_CHOICES = getattr(settings,"LANG_CHOICES",((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),)
+LANG_CHOICES = getattr(settings,"LANG_CHOICES", ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)), )
 LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES}
-
-
 
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
