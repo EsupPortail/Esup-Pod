@@ -1198,7 +1198,7 @@ BBB_NUMBER_MAX_LIVES = 4
 # Version de BigBlueButton utilisée.
 # Si les URLs de présentations Web contiennent /2.3/ (et non /2.0/),
 # il est nécessaire de mettre ce paramètre à True.
-# Remarque : si vous utilisez Scalelite, il est possible que les URLS générés soient
+# Remarque : si vous utilisez Scalelite, il est possible que les URLS générés soient 
 # au format 2.3 même si la version de BigBlueButton est une 2.2.X.
 """
 BBB_VERSION_IS_23 = False
