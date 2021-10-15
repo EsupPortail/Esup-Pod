@@ -28,11 +28,7 @@ from django.contrib.sites.shortcuts import get_current_site
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTION = ["new", "save", "modify", "delete"]
 CAPTION_MAKER_ACTION = ["save"]
-LANG_CHOICES = getattr(
-settings,
-"LANG_CHOICES",
-((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),
-)
+LANG_CHOICES = getattr(settings,"LANG_CHOICES",((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),)
 LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES}
 
 
@@ -41,7 +37,6 @@ LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES}
 @staff_member_required(redirect_field_name="referrer")
 def video_caption_maker(request, slug):
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
-
     video_folder, created = UserFolder.objects.get_or_create(
         name=video.slug, owner=request.user
     )
