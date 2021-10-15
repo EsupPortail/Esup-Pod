@@ -9,7 +9,7 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <i data-feather="menu" aria-hidden="true"></i>
     </button>
-    <a class="navbar-brand mr-0 mr-sm-1" href="/"><img src="{% static LOGO_SITE %}" height="48" alt="" role="presentation" loading="lazy"/><strong>{{ TITLE_SITE }}</strong></a>
+    <a class="navbar-brand mr-0 mr-sm-1" href="/"><img src="{% static LOGO_SITE %}" height="48" alt="" loading="lazy"/><strong>{{ TITLE_SITE }}</strong></a>
   </h1>
 
   <div class="collapse navbar-collapse navbar-items-pod" id="navbarSupportedContent">
@@ -23,7 +23,7 @@
           <button class="nav-link" data-toggle="modal" data-target=".chaines-modal-{{add_channel_tab.id}}"><i data-feather="youtube" aria-hidden="true" class="nav-link-icone d-lg-none d-xl-inline"></i> {{ add_channel_tab.name }}</button>
         </li>
       {% endfor %}
-      
+
       {% endif %}
       {% if HIDE_USER_TAB == False and user.is_authenticated %}
       <li class="nav-item" id="nav-users">
@@ -156,10 +156,10 @@
             <label class="theme-switch" for="checkbox-darkmode">
               <span class="sr-only">{% trans 'Dark mode' %}</span>
               <input type="checkbox" id="checkbox-darkmode" />
-              <div class="slider">
+              <span class="slider">
                 <i data-feather="sun"></i>
                 <i data-feather="moon"></i>
-              </div>
+              </span>
             </label>
           </li>
         {% endif %}{% if DYSLEXIAMODE_ENABLED == True %}
@@ -167,10 +167,10 @@
             <label class="dyslexia-switch" for="checkbox-dyslexia">
               <span class="sr-only">{% trans 'Dyslexia mode' %}</span>
               <input type="checkbox" id="checkbox-dyslexia" />
-              <div class="slider">
+              <span class="slider">
                  <i data-feather="eye-off"></i>
                  <i data-feather="eye"></i>
-              </div>
+              </span>
             </label>
           </li>
         {% endif %}
