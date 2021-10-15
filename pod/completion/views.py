@@ -84,7 +84,7 @@ def video_caption_maker_save(request, video):
             # immediately assign the newly created captions file to the video
             desired = Track.objects.filter(video=video, kind='captions', lang=lang)
             if desired.exists():
-                desired.update(src=newfile)
+                desired.update(lang=lang, src=newfile)
             else:
                 Track(
                     video=video,
