@@ -38,7 +38,6 @@ import json
 import unicodedata
 from django.contrib.auth.decorators import login_required
 from .models import Configuration
-from django.template.loader import render_to_string
 
 ##
 # Settings exposed in templates
