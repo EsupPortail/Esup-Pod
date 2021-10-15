@@ -175,7 +175,7 @@ $("#showShortcutTips").on("click", function (e) {
 $("#addSubtitle").on("click", function (e) {
   var playTime = $("#podvideoplayer").get(0).player.currentTime();
   var captionsEndTime = existingCaptionsEndTime();
-  AddCaption(captionsEndTime, playTime > captionsEndTime ? playTime : captionsEndTime + 2, "");
+  AddCaption(captionsEndTime, playTime > captionsEndTime ? playTime : 2 + captionsEndTime, "");
 });
 
 $("#clearAllCaptions").on("click", function (e) {
@@ -249,7 +249,7 @@ let updateCaptionsArray = (vtt) => {
     if (text.trim().toLowerCase() !== "webvtt") {
       let data = text.split("\n");
       let times = data[0].split("-->");
-      newCaption = {
+      let newCaption = {
         start: ParseTime(times[0]),
         end: ParseTime(times[1]),
         caption: data[1],
@@ -314,7 +314,7 @@ function videoPauseEventHandler() {
     captionBeingDisplayed = -1;
   }
 
-  $("#textCaptionEntry").focus().get(0).setSelectionRange(1000, 1000); // set focus and selection point to end
+  //$("#textCaptionEntry").focus().get(0).setSelectionRange(1000, 1000); // set focus and selection point to end
 }
 
 function videoTimeUpdateEventHandler() {
@@ -435,7 +435,7 @@ function UpdateCaption(ci, captionText) {
 
 var lastEditedBlock = null;
 
-function CreateCaptionBlock(newCaption) {
+function CreateCaptionBlock(newCaption, spawnFunction) {
   let captionText = newCaption.caption;
   let start = FormatTime(newCaption.start);
   let end = FormatTime(newCaption.end);
@@ -503,6 +503,18 @@ function CreateCaptionBlock(newCaption) {
       }
     },
 
+    spawnNew: function() {
+      let playTime = $("#podvideoplayer").get(0).player.currentTime();
+      let captionObj = {
+        start: newCaption.end,
+        end: playTime > newCaption.end ? playTime : 2 + newCaption.end,
+        caption: "",
+      };
+
+      captionsArray.splice(this.div.index() + 1, 0, captionObj);
+      CreateCaptionBlock(captionObj, (newDiv) => this.div.after(newDiv));
+    },
+
     delete: function() {
       captionsArray.splice(this.div.index(), 1);
       this.div.remove();
@@ -546,7 +558,13 @@ function CreateCaptionBlock(newCaption) {
   }
 
   block.init();
-  $("#addSubtitle").before(block.div);
+
+  if (spawnFunction) {
+    spawnFunction(block.div);
+  }
+  else {
+    $("#addSubtitle").before(block.div);
+  }
 
   feather.replace();
 
@@ -561,38 +579,100 @@ function CreateCaptionBlock(newCaption) {
   })
 
   $("#noCaptionsText").remove();
+
+  return block;
 }
 
-// alt+del shortcut
-$(document).bind('keydown', function(event) {
-  if (event.which === 46 && event.altKey && lastEditedBlock) {
-    lastEditedBlock.delete();
-  }
-});
-
-// pgUp shortcut
-$(document).bind('keydown', function(event) {
-  if (lastEditedBlock && event.which === 33) {
-    let prev = lastEditedBlock.div.prev();
-    if (prev) {
-      let textarea = prev.find("textarea");
-      textarea.focus();
+let editorShortcuts = {
+  'Delete': function(e) {
+    if (e.altKey && lastEditedBlock) {
+      lastEditedBlock.delete();
       return false;
     }
-  }
-});
-
-// pgDown shortcut
-$(document).bind('keydown', function(event) {
-  if (lastEditedBlock && event.which === 34) {
-    let next = lastEditedBlock.div.next();
-    if (next) {
-      let textarea = next.find("textarea");
-      textarea.focus();
+  },
+  'PageUp': function(e) {
+    if (lastEditedBlock) {
+      let prev = lastEditedBlock.div.prev();
+      if (prev) {
+        let textarea = prev.find("textarea");
+        textarea.focus();
+        return false;
+      }
+    }
+  },
+  'PageDown': function(e) {
+    if (lastEditedBlock) {
+      let next = lastEditedBlock.div.next();
+      if (next) {
+        let textarea = next.find("textarea");
+        textarea.focus();
+        return false;
+      }
+    }
+  },
+  'ArrowLeft': function(e) {
+    if (this.notFocused()) {
+      seekVideo(-10);
       return false;
     }
+  },
+  'ArrowRight': function(e) {
+    if (this.notFocused()) {
+      seekVideo(10);
+      return false;
+    }
+  },
+  ' ': function(e) { // space
+    if (this.notFocused()) {
+      let player = $("#podvideoplayer").get(0).player
+      if (player.paused())
+        player.play(); 
+      else 
+        player.pause();
+
+      return false;
+    }
+  },
+  'm': function(e) {
+    if (this.notFocused()) {
+      let player = $("#podvideoplayer").get(0).player
+      player.muted(!player.muted());
+      return false;
+    }
+  },
+  '?': function(e) {
+    if (this.notFocused()) {
+      $("#showShortcutTips").click();
+      return false;
+    }
+  },
+  'Insert': function(e) {
+    if (lastEditedBlock) {
+      lastEditedBlock.spawnNew();
+    }
+    else {
+      $("#addSubtitle").click();
+    }
+
+    return false;
+  },
+
+  notFocused: function() {
+    var focused = $(':focus');
+    return focused.length == 0;
+  },
+
+  init: function() {
+    let self = this;
+    $(document).bind('keydown', function(e) {
+      if (self[e.key]) {
+        return self[e.key]();
+      }
+    });
   }
-});
+}
+
+editorShortcuts.init();
 
 function AddCaptionListRow(ci, newCaption) {
   let vtt = $("#captionContent");
@@ -793,7 +873,7 @@ function ParseAndLoadWebVTT(vtt) {
 
   function appendCurrentCaption() {
     if (cueStart && cueEnd && cueText) {
-      newCaption = {
+      let newCaption = {
         start: cueStart,
         end: cueEnd,
         caption: cueText.trim(),
@@ -892,6 +972,11 @@ const onPlayerReady = function(player, options) {
   seekVideoTo = function(time) {
     player.userActive(true);
     player.currentTime(time);
+  }
+
+  seekVideo = function(time) {
+    player.userActive(true);
+    player.currentTime(player.currentTime() + time);
   }
 };
 
