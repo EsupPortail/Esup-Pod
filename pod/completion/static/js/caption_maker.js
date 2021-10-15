@@ -672,7 +672,7 @@ let editorShortcuts = {
     let self = this;
     $(document).bind('keydown', function(e) {
       if (self[e.key]) {
-        return self[e.key]();
+        return self[e.key](e);
       }
     });
   }

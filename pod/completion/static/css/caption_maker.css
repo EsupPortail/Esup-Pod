@@ -48,6 +48,22 @@ textarea {
     border-radius: 4px;
 }
 
+.shortcutKey {
+    display: inline-block;
+    border: 2px solid #222;
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-weight: 600;
+    margin-right: 8px;
+    margin-left: 8px;
+    min-width: 35px;
+    text-align: center;
+}
+
+.shortcutKey svg {
+    transform: translateY(-2px);
+}
+
 /* the list of captions */
 .gray_no_video{
     display: flex;
