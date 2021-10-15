@@ -272,8 +272,10 @@ class VideoViewSet(viewsets.ModelViewSet):
             user_videos = user_videos.exclude(
                 pk__in=[vid.id for vid in VIDEOS if not vid.encoded]
             )
-        if request.GET.get('search_title') and request.GET.get('search_title') != "":
-            user_videos = user_videos.filter(title__icontains=request.GET.get('search_title'))
+        if request.GET.get("search_title") and request.GET.get("search_title") != "":
+            user_videos = user_videos.filter(
+                title__icontains=request.GET.get("search_title")
+            )
         page = self.paginate_queryset(user_videos)
         if page is not None:
             serializer = VideoUserSerializer(
