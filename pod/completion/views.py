@@ -22,6 +22,7 @@ from .models import CustomFileModel
 from pod.podfile.models import UserFolder
 from pod.podfile.views import get_current_session_folder, file_edit_save
 from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
+from pod.main.settings import LANGUAGE_CODE
 import re
 import json
 from django.contrib.sites.shortcuts import get_current_site
@@ -58,6 +59,16 @@ def video_caption_maker(request, slug):
     if action in CAPTION_MAKER_ACTION:
         return eval("video_caption_maker_{0}".format(action))(request, video)
     else:
+        track_language = LANGUAGE_CODE
+        captionFileId = request.GET.get('src')
+        if captionFileId:
+            captionFile = CustomFileModel.objects.filter(id=captionFileId).first()
+            if captionFile:
+                track = Track.objects.filter(video=video, src=captionFile).first()
+                if track:
+                    track_language = track.lang
+
+
         form_caption = TrackForm(initial={"video": video})
         return render(
             request,
@@ -67,6 +78,7 @@ def video_caption_maker(request, slug):
                 "form_make_caption": form_caption,
                 "video": video,
                 "languages": LANG_CHOICES,
+                "track_language": track_language,
             },
         )
 
@@ -86,7 +98,7 @@ def video_caption_maker_save(request, video):
             captFile = get_object_or_404(CustomFileModel, id=response_data["file_id"])
 
             # immediately assign the newly created captions file to the video
-            desired = Track.objects.filter(video=video, kind='captions', src=captFile)
+            desired = Track.objects.filter(video=video, src=captFile)
             if desired.exists():
                 desired.update(lang=lang, src=captFile)
             else:
