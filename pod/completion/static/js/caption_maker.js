@@ -700,6 +700,10 @@ function AddCaptionListRow(ci, newCaption) {
 }
 
 function AddCaption(captionStart, captionEnd, captionText) {
+  let videoDuration = $("#podvideoplayer").get(0).player.duration();
+  captionStart = Math.max(Math.min(captionStart, videoDuration), 0);
+  captionEnd = Math.max(Math.min(captionEnd, videoDuration), 0);
+
   let newCaption = {
     start: captionStart,
     end: captionEnd,
@@ -956,6 +960,9 @@ const onPlayerReady = function(player, options) {
 
     let startPercent = (startTime / player.duration()) * 100;
     let endPercent = (endTime / player.duration()) * 100;
+
+    startPercent = Math.max(Math.min(startPercent, 100), 0);
+    endPercent = Math.max(Math.min(endPercent, 100), 0);
 
     startKeyframe = $(`<svg class='keyframe keyframe-left' xmlns="http://www.w3.org/2000/svg" width="6" height="11" viewBox="0 0 6 11">
         <path id="Path_4" data-name="Path 4" d="M4.667,0H1.333A1.281,1.281,0,0,0,0,1.222V6.256L6,11V1.222A1.281,1.281,0,0,0,4.667,0Z" fill="#ad327a"/>
