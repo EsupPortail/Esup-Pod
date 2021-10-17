@@ -68,7 +68,6 @@ def video_caption_maker(request, slug):
                 if track:
                     track_language = track.lang
 
-
         form_caption = TrackForm(initial={"video": video})
         return render(
             request,
