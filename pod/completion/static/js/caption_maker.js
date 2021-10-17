@@ -40,6 +40,7 @@ $(document).ready(function () {
   
   captionContent.bind('input propertychange', function () {
     captionsArray.length = 0;
+    $(".newEditorBlock").each(function() {this.remove()});
     if (this.value.match(/^WEBVTT/)) {
       ParseAndLoadWebVTT(this.value);
     } else {
@@ -81,12 +82,12 @@ $(document).on("click", "#modal-btn-new, #modal-btn-override", function () {
   }
 });
 
-$("#captionFilename").on('input', function (e) {
+/*$("#captionFilename").on('input', function (e) {
   file_loaded = false;
   removeFileBtn = $("#remove_file_id_src");
   if (removeFileBtn.length)
     removeFileBtn.click();
-});
+});*/
 
 var send_form_save_captions = function () {
   let fileName = $("#captionFilename").val()
@@ -190,7 +191,7 @@ $("#clearAllCaptions").on("click", function (e) {
     $("#captionContent").val("");
     $("#captionTitle").html("&nbsp;");
     $("#textCaptionEntry").val("");
-    $("#newCaptionsEditor").empty();
+    $(".newEditorBlock").each(function() {this.remove()});
   }
 });
 
@@ -245,6 +246,7 @@ function existingCaptionsEndTime() {
 let updateCaptionsArray = (vtt) => {
   let arr = vtt.split("\n\n");
   captionsArray = [];
+  $(".newEditorBlock").each(function() {this.remove()});
   arr.forEach((text) => {
     if (text.trim().toLowerCase() !== "webvtt") {
       let data = text.split("\n");
@@ -855,6 +857,7 @@ function ProcessProxyVttResponse(obj) {
     file_loaded = true;
     file_loaded_id = obj.id_file;
     current_folder = obj.id_folder;
+    $(".newEditorBlock").each(function() {this.remove()});
 
     // strip file extension and set as title
     $("#captionFilename").val(obj.file_name.replace(/\.[^/.]+$/, ""))
