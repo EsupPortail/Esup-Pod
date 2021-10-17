@@ -68,7 +68,21 @@ textarea {
 .gray_no_video{
     display: flex;
     flex-wrap: wrap;
+    border-top: 1px solid #E1E1E1;
 }
+
+.videoSection {
+    float: left; 
+    margin-right: 24px; 
+    min-height: 425px;
+    width: 49%;
+    padding: 24px 0px;
+}
+
+.caption_content {
+    border-left: 1px solid #E1E1E1;
+}
+
 .caption_content .caption_title{
    display: flex;
    position: relative;
@@ -96,7 +110,7 @@ textarea {
 }
 
 .captions_editor {
-    height: 442px; 
+    height: 470px; 
     overflow: auto; 
     resize: none; 
     width: 100%;
@@ -107,10 +121,32 @@ textarea {
     margin-bottom: 6px;
 }
 
+.newEditorBlock {
+    border-bottom: 1px solid #E1E1E1;
+    padding: 8px;
+}
+
+.newEditorBlock:hover {
+    background-color: rgba(223, 230, 246, 0.4);
+}
+
 .newEditorBlock > textarea {
-    width: 80%;
+    width: 480px;
     height: 80px;
-    margin: 8px;
+    border-style: hidden;
+    background-color: transparent;
+    padding: 8px;
+}
+
+.captionBeingEdited {
+    border-left: 3px solid var(--primary);
+    background-color: rgba(223, 230, 246, 0.4);
+}
+
+.captionBeingEdited > textarea {
+    border: 1px solid var(--primary);
+    border-radius: 4px;
+    background-color: #FFF5FB;
 }
 
 .captionTimestamps {
@@ -119,24 +155,24 @@ textarea {
 }
 
 .newEditorBlock a {
-    margin-top: 10px;
-    max-width: 70px;
+    margin: 6px 0px;
+    max-width: 78px;
     display: block;
     color: #3EA6FF;
     font-weight: 400;
 }
 
 .newEditorBlock input {
-    margin-top: 10px;
-    max-width: 70px;
+    margin: 6px 0px;
+    max-width: 78px;
     height: 32px;
     padding: 0;
     display: block;
+    padding: 0px 2px;
 }
 
 .captionButtons {
     float: left;
-    margin-top: 8px;
 }
 
 .captionButtons button {
@@ -184,12 +220,33 @@ textarea {
 #captionLanguageSelect {
     margin-right: 10px;
     height: 31px;
-    width: 150px;
+    width: 120px;
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 20px;
+}
+
+#captionLanguageSelect option {
+    color: black;
+    text-align: left;
+    font-size: 16px;
 }
 
 #captionmakerModal.save > .modal-dialog {
     max-width: 1000px;
 }
+
+#editorTipsAndGoBack {
+    width: 100%; 
+    clear: both; 
+    padding-top: 24px; 
+    padding-bottom: 24px; 
+    display: block;
+    border-top: 1px solid #E1E1E1;
+}
+
 @media only screen and (max-width: 800px){
     .gray_no_video{
         display: flex;
@@ -225,4 +282,18 @@ textarea {
     z-index: 1;
     background-color: rgba(173, 50, 122, 0.5);
     height: 3px;
+}
+
+::-webkit-scrollbar {
+    padding: 2px;
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: none;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 2px;
 }

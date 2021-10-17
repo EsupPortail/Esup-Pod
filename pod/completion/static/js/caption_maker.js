@@ -480,8 +480,9 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
           this.endTimeBtn.text()
         );
 
-        this.timeBlockEditable.css('display', '');
-        this.timeBlock.css('display', 'none');
+        this.timeBlockEditable.css("display", "");
+        this.timeBlock.css("display", "none");
+        this.div.addClass("captionBeingEdited");
 
         lastEditedBlock = this;
 
@@ -500,8 +501,9 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
         this.startTimeBtn.text(FormatTime(newStartTime));
         this.endTimeBtn.text(FormatTime(newEndTime));
 
-        this.timeBlockEditable.css('display', 'none');
-        this.timeBlock.css('display', '');
+        this.timeBlockEditable.css("display", "none");
+        this.timeBlock.css("display", "");
+        this.div.removeClass("captionBeingEdited");
 
         this.isEditEnabled = false;
       }
@@ -574,7 +576,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
 
   feather.replace();
 
-  block.captionTextInput.bind('input propertychange', function() {
+  block.captionTextInput.bind("input propertychange", function() {
     captionsArray[block.div.index()].caption = this.value;
   });
   
@@ -590,13 +592,13 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
 }
 
 let editorShortcuts = {
-  'Delete': function(e) {
+  "Delete": function(e) {
     if (e.altKey && lastEditedBlock) {
       lastEditedBlock.delete();
       return false;
     }
   },
-  'PageUp': function(e) {
+  "PageUp": function(e) {
     if (lastEditedBlock) {
       let prev = lastEditedBlock.div.prev();
       if (prev) {
@@ -606,7 +608,7 @@ let editorShortcuts = {
       }
     }
   },
-  'PageDown': function(e) {
+  "PageDown": function(e) {
     if (lastEditedBlock) {
       let next = lastEditedBlock.div.next();
       if (next) {
@@ -616,19 +618,19 @@ let editorShortcuts = {
       }
     }
   },
-  'ArrowLeft': function(e) {
+  "ArrowLeft": function(e) {
     if (this.notFocused()) {
       seekVideo(-10);
       return false;
     }
   },
-  'ArrowRight': function(e) {
+  "ArrowRight": function(e) {
     if (this.notFocused()) {
       seekVideo(10);
       return false;
     }
   },
-  ' ': function(e) { // space
+  " ": function(e) { // space
     if (this.notFocused()) {
       let player = $("#podvideoplayer").get(0).player
       if (player.paused())
@@ -639,20 +641,20 @@ let editorShortcuts = {
       return false;
     }
   },
-  'm': function(e) {
+  "m": function(e) {
     if (this.notFocused()) {
       let player = $("#podvideoplayer").get(0).player
       player.muted(!player.muted());
       return false;
     }
   },
-  '?': function(e) {
+  "?": function(e) {
     if (this.notFocused()) {
       $("#showShortcutTips").click();
       return false;
     }
   },
-  'Insert': function(e) {
+  "Insert": function(e) {
     if (lastEditedBlock) {
       lastEditedBlock.spawnNew();
     }
@@ -664,13 +666,13 @@ let editorShortcuts = {
   },
 
   notFocused: function() {
-    var focused = $(':focus');
+    var focused = $(":focus");
     return focused.length == 0;
   },
 
   init: function() {
     let self = this;
-    $(document).bind('keydown', function(e) {
+    $(document).bind("keydown", function(e) {
       if (self[e.key]) {
         return self[e.key](e);
       }
