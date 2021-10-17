@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-15 19:51+0000\n"
+"POT-Creation-Date: 2021-10-17 19:30+0000\n"
 "PO-Revision-Date: 2021-01-22 12:27+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -150,7 +150,7 @@ msgstr ""
 #: pod/authentication/views.py:130
 #: pod/bbb/templates/bbb/live_publish_meeting.html:45
 #: pod/bbb/templates/bbb/publish_meeting.html:37 pod/bbb/views.py:127
-#: pod/bbb/views.py:254 pod/completion/templates/video_caption_maker.html:116
+#: pod/bbb/views.py:254 pod/completion/templates/video_caption_maker.html:96
 #: pod/enrichment/templates/enrichment/group_enrichment.html:29
 #: pod/interactive/templates/interactive/group_interactive.html:27
 #: pod/live/templates/live/live-form.html:10
@@ -177,7 +177,7 @@ msgstr ""
 #: pod/authentication/templates/userpicture/userpicture.html:42
 #: pod/bbb/templates/bbb/live_publish_meeting.html:73
 #: pod/bbb/templates/bbb/publish_meeting.html:65
-#: pod/completion/templates/video_caption_maker.html:124
+#: pod/completion/templates/video_caption_maker.html:104
 #: pod/enrichment/templates/enrichment/group_enrichment.html:51
 #: pod/interactive/templates/interactive/group_interactive.html:49
 #: pod/live/templates/live/live-form.html:25
@@ -794,7 +794,7 @@ msgid "One or more errors have been found in the form:"
 msgstr ""
 
 #: pod/chapter/templates/chapter/form_chapter.html:30
-#: pod/completion/templates/video_caption_maker.html:78
+#: pod/completion/templates/video_caption_maker.html:77
 #: pod/enrichment/templates/enrichment/form_enrichment.html:37
 #: pod/enrichment/templates/enrichment/group_enrichment.html:60
 #: pod/interactive/templates/interactive/group_interactive.html:58
@@ -896,7 +896,7 @@ msgid "My videos"
 msgstr ""
 
 #: pod/chapter/templates/video_chapter.html:42
-#: pod/completion/templates/video_caption_maker.html:146
+#: pod/completion/templates/video_caption_maker.html:144
 #: pod/video/templates/videos/video_collaborate.html:66
 #: pod/video/templates/videos/video_delete.html:20
 #: pod/video/templates/videos/video_edit.html:38
@@ -1057,7 +1057,7 @@ msgstr ""
 
 #: pod/completion/models.py:124 pod/completion/models.py:171
 #: pod/completion/models.py:250
-#: pod/completion/templates/video_caption_maker.html:68
+#: pod/completion/templates/video_caption_maker.html:67
 #: pod/enrichment/models.py:322 pod/enrichment/models.py:356
 #: pod/interactive/models.py:18 pod/interactive/models.py:48
 #: pod/playlist/models.py:85 pod/recorder/models.py:90 pod/video/models.py:593
@@ -1389,79 +1389,23 @@ msgstr ""
 msgid "Change mode"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:76
+#: pod/completion/templates/video_caption_maker.html:75
 msgid "Play"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:77
+#: pod/completion/templates/video_caption_maker.html:76
 msgid "Pause"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:79
+#: pod/completion/templates/video_caption_maker.html:78
 msgid "Save &amp; Continue"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:83
-msgid "Key Schortcuts"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html:85
-msgid "Video Player"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html:86
-msgid "Space"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html:86
-msgid "Pause / unpause"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html:87
-msgid "Rewind the video 10 seconds back"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html:88
-msgid "Skip 10 seconds"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html:89
-msgid "Mute/unmute video"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html:91
-msgid "Captions Editor"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html:92
-msgid "Select previous caption"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html:93
-msgid "Select next caption"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html:94
-msgid "Del"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html:94
-msgid "Delete selected caption"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html:95
-msgid "Add new caption"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html:97
-msgid "Show/hide this window"
-msgstr ""
-
-#: pod/completion/templates/video_caption_maker.html:101
+#: pod/completion/templates/video_caption_maker.html:82
 msgid "Caption list"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:101
+#: pod/completion/templates/video_caption_maker.html:82
 msgid ""
 "Use the Play and Pause buttons to determine when the subtitles appear, enter "
 "the text in the field below the video then click the Save / (Save & "
@@ -1469,39 +1413,99 @@ msgid ""
 "Subtitles button to create a subtitle file."
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:105
+#: pod/completion/templates/video_caption_maker.html:85
 msgid "No captions"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:112
+#: pod/completion/templates/video_caption_maker.html:88
+msgid "Add subtitle"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:92
 msgid "You can load and existing caption file below :"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:137
+#: pod/completion/templates/video_caption_maker.html:117
 msgid "Save Captions"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:138
+#: pod/completion/templates/video_caption_maker.html:118
 msgid "Clear All"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:147
+#: pod/completion/templates/video_caption_maker.html:126
+msgid "Key Schortcuts"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:128
+msgid "Video Player"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:129
+msgid "Space"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:129
+msgid "Pause / unpause"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:130
+msgid "Rewind the video 10 seconds back"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:131
+msgid "Skip 10 seconds"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:132
+msgid "Mute/unmute video"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:134
+msgid "Captions Editor"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:135
+msgid "Select previous caption"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:136
+msgid "Select next caption"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:137
+msgid "Del"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:137
+msgid "Delete selected caption"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:138
+msgid "Add new caption"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:140
+msgid "Show/hide this window"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:145
 msgid "Back to the completion"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:158
+#: pod/completion/templates/video_caption_maker.html:156
 msgid "Save captions file."
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:162
+#: pod/completion/templates/video_caption_maker.html:160
 msgid "You have loaded a file. Do you want to override it?"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:165
+#: pod/completion/templates/video_caption_maker.html:163
 msgid "New"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:166
+#: pod/completion/templates/video_caption_maker.html:164
 msgid "Override"
 msgstr ""
 
@@ -1633,22 +1637,22 @@ msgid ""
 "want to display with the option \"Show background\""
 msgstr ""
 
-#: pod/completion/views.py:53 pod/completion/views.py:134
-#: pod/completion/views.py:175 pod/completion/views.py:374
-#: pod/completion/views.py:566 pod/completion/views.py:809
+#: pod/completion/views.py:54 pod/completion/views.py:146
+#: pod/completion/views.py:187 pod/completion/views.py:386
+#: pod/completion/views.py:578 pod/completion/views.py:821
 msgid "You cannot complement this video."
 msgstr ""
 
-#: pod/completion/views.py:99
+#: pod/completion/views.py:111
 msgid "The file has been saved."
 msgstr ""
 
-#: pod/completion/views.py:102
+#: pod/completion/views.py:114
 msgid "The file has not been saved."
 msgstr ""
 
-#: pod/completion/views.py:282 pod/completion/views.py:471
-#: pod/completion/views.py:909 pod/podfile/views.py:492
+#: pod/completion/views.py:294 pod/completion/views.py:483
+#: pod/completion/views.py:921 pod/podfile/views.py:492
 #: pod/podfile/views.py:536 pod/video/views.py:443 pod/video/views.py:1645
 msgid "Please correct errors"
 msgstr ""
