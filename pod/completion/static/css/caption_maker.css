@@ -72,11 +72,11 @@ textarea {
 }
 
 .videoSection {
-    float: left; 
-    margin-right: 24px; 
+    float: left;  
     min-height: 425px;
     width: 49%;
     padding: 24px 0px;
+    padding-right: 24px;
 }
 
 .caption_content {
@@ -132,7 +132,7 @@ textarea {
 }
 
 .newEditorBlock > textarea {
-    width: 480px;
+    width: 77%;
     height: 80px;
     border-style: hidden;
     background-color: transparent;
@@ -209,6 +209,16 @@ textarea {
     color: var(--link-color);
 }
 
+.makerNavbarRight {
+    float: right;
+}
+
+@media only screen and (max-width: 1000px) {
+    .makerNavbarRight {
+        float: none;
+    }
+}
+
 #captionFilename {
     width: 280px;
     margin-left: 32px;
@@ -218,6 +228,10 @@ textarea {
     border-left-style: hidden;
     border-bottom-style: groove;
     background-color: transparent;
+}
+
+#switchOldEditMode {
+    margin-bottom: 8px;
 }
 
 #captionLanguageSelect {
@@ -267,6 +281,10 @@ textarea {
 	margin: 0;
 	margin-bottom: 1em;
 	min-height: unset !important;
+    }
+
+    .newEditorBlock > textarea {
+        width: 60%;
     }
 }
 

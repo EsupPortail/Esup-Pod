@@ -27,18 +27,20 @@
 
 
 {% block page_content %}
-<h3 class="d-inline">{% trans "Video Caption Maker" %}</h3>
-<input id="captionFilename" name="file_name" type="text" form="form_save_captions"/>
-<div class="d-inline float-right">
-  <button id="switchOldEditMode" class="btn btn-primary btn-sm float-right">{% trans "Change mode" %}</button>
-  <select id="captionLanguageSelect" name="lang" form="form_save_captions">
-    {% for lang_group in languages %}
-      <optgroup label="{{ lang_group.0 }}">
-        {% for lang in lang_group.1 %}
-          <option value="{{ lang.0 }}" {% if track_language == lang.0 %} selected {% endif %} >{{ lang.1 }}</option>
-        {% endfor %}
-    {% endfor %}
-  </select>
+<div class="overflow-hidden">
+  <h3 class="d-inline">{% trans "Video Caption Maker" %}</h3>
+  <input id="captionFilename" name="file_name" type="text" form="form_save_captions"/>
+  <div class="d-inline-block makerNavbarRight">
+    <select id="captionLanguageSelect" name="lang" form="form_save_captions">
+      {% for lang_group in languages %}
+        <optgroup label="{{ lang_group.0 }}">
+          {% for lang in lang_group.1 %}
+            <option value="{{ lang.0 }}" {% if track_language == lang.0 %} selected {% endif %} >{{ lang.1 }}</option>
+          {% endfor %}
+      {% endfor %}
+    </select>
+    <button id="switchOldEditMode" class="btn btn-primary btn-sm">{% trans "Change mode" %}</button>
+  </div>
 </div>
 
 <!-- extract from https://webcache.googleusercontent.com/search?q=cache:-ebduGPpZGYJ:https://testdrive-archive.azurewebsites.net/Graphics/CaptionMaker/Default.html+&cd=1&hl=fr&ct=clnk&gl=fr -->
