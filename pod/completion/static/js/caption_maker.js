@@ -414,6 +414,14 @@ $("#saveCaptionAndPlay").on("click", function () {
   $("#podvideoplayer").get(0).player.play();
 });
 
+$("#textCaptionEntry").keypress(function (e) {
+  var code = (e.keyCode ? e.keyCode : e.which);
+  if (code == 13 && !e.shiftKey) {
+    $("#saveCaptionAndPlay").click();
+    return false;
+  }
+});
+
 /**
  * Updat caption html content
  */
