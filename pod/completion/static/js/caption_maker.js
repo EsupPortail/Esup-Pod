@@ -82,14 +82,7 @@ $(document).on("click", "#modal-btn-new, #modal-btn-override", function () {
   }
 });
 
-/*$("#captionFilename").on('input', function (e) {
-  file_loaded = false;
-  removeFileBtn = $("#remove_file_id_src");
-  if (removeFileBtn.length)
-    removeFileBtn.click();
-});*/
-
-var send_form_save_captions = function () {
+const send_form_save_captions = function () {
   let fileName = $("#captionFilename").val()
   if (fileName.length == 0) {
     fileName = `${file_prefix}_captions_${Date.now()}`;
@@ -161,7 +154,7 @@ $("#podvideoplayer").on("error", function (event) {
   $(this).css("display", "none");
 });
 
-var shortcutsDisplayed = false;
+let shortcutsDisplayed = false;
 $("#showShortcutTips").on("click", function (e) {
   if (shortcutsDisplayed) {
     $("#shortcutsBlock").hide();
@@ -181,7 +174,7 @@ $("#addSubtitle").on("click", function (e) {
 
 $("#clearAllCaptions").on("click", function (e) {
   e.preventDefault();
-  var deleteConfirm = confirm(
+  let deleteConfirm = confirm(
     gettext("Are you sure you want to delete all caption?")
   );
   if (deleteConfirm) {
@@ -195,20 +188,16 @@ $("#clearAllCaptions").on("click", function (e) {
   }
 });
 
-var oldModeSelected = false;
+let oldModeSelected = false;
 
 $("#switchOldEditMode").on("click", function (e) {
   oldModeSelected = !oldModeSelected;
 
   if (oldModeSelected) {
     $("#captionContent").val(GenerateWEBVTT());
-    $("#captionContent").show();
-    $("#newCaptionsEditor").hide();
   }
-  else {
-    $("#captionContent").hide();
-    $("#newCaptionsEditor").show();
-  }
+  $("#captionContent").toggle(oldModeSelected);
+  $("#newCaptionsEditor").toggle(!oldModeSelected);
 });
 
 //  index into captionsArray of the caption being displayed. -1 if none.
@@ -417,7 +406,7 @@ $("#saveCaptionAndPlay").on("click", function () {
 });
 
 $("#textCaptionEntry").keypress(function (e) {
-  var code = (e.keyCode ? e.keyCode : e.which);
+  var code = e.keyCode ?? e.which
   if (code == 13 && !e.shiftKey) {
     $("#saveCaptionAndPlay").click();
     return false;
@@ -443,7 +432,7 @@ function UpdateCaption(ci, captionText) {
   updateCaptionHtmlContent();
 }
 
-var lastEditedBlock = null;
+let lastEditedBlock = null;
 
 function CreateCaptionBlock(newCaption, spawnFunction) {
   let captionText = newCaption.caption;
@@ -950,19 +939,17 @@ var clearVideoRegion;
 const registerPlugin = videojs.registerPlugin || videojs.plugin;
 
 const onPlayerReady = function(player, options) {
-  var startKeyframe;
-  var endKeyframe;
-  var regionHighlight;
+  let startKeyframe;
+  let endKeyframe;
+  let regionHighlight;
   
-  clearVideoRegion = function() {
-    if (startKeyframe)
-      startKeyframe.remove()
-      
-    if (endKeyframe)
-      endKeyframe.remove()
+  const clearVideoRegion = () => {
 
-    if (regionHighlight)
-      regionHighlight.remove()
+    startKeyframe?.remove()
+
+    endKeyframe?.remove()
+
+    regionHighlight?.remove()
 
     player.userActive(false);
   }
