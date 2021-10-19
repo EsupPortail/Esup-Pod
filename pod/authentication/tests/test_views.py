@@ -1,7 +1,12 @@
-"""Unit tests for authentication views."""
+"""Unit tests for authentication views.
+
+*  run with 'python manage.py test pod.authentication.tests.test_views'
+"""
 from django.test import TestCase
 from django.test import Client
 from django.contrib.auth.models import User
+from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
 
 class authenticationViewsTestCase(TestCase):
@@ -29,6 +34,7 @@ class authenticationViewsTestCase(TestCase):
         )
 
     def test_authentication_login(self):
+        """Test authentication login page."""
         self.client = Client()
         self.user = User.objects.get(username="pod")
         login_url = settings.LOGIN_URL
@@ -88,7 +94,7 @@ class authenticationViewsTestCase(TestCase):
         messages = list(response.wsgi_request._messages)
         self.assertEqual(len(messages), 1)
         self.assertEqual(
-            str(messages[0]), "One or more errors have been found in the form."
+            str(messages[0]), _("One or more errors have been found in the form.")
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "userpicture/userpicture.html")
