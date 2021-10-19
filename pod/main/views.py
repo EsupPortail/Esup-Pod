@@ -287,9 +287,7 @@ def contact_us(request):
             msg.attach_alternative(html_content, "text/html")
             msg.send(fail_silently=False)
 
-            messages.add_message(
-                request, messages.INFO, _("Your message has been sent.")
-            )
+            messages.add_message(request, messages.INFO, _("Your message has been sent."))
 
             return redirect(form.cleaned_data["url_referrer"])
 
