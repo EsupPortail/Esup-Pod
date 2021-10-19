@@ -3356,13 +3356,8 @@ msgstr ""
 msgid "your message untitled"
 msgstr ""
 
-<<<<<<< HEAD
 #: pod/main/views.py:287
 msgid "Your message has been sent."
-=======
-#: pod/main/views.py:288
-msgid "Your message have been sent."
->>>>>>> dev
 msgstr ""
 
 #: pod/playlist/models.py:24
