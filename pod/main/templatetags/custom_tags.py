@@ -4,6 +4,8 @@ from django.conf import settings
 from pod.main.models import Configuration
 import json
 
+from urllib.parse import urlparse, urlunparse, parse_qs
+
 register = template.Library()
 
 
