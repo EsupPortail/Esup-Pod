@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-06 07:26+0000\n"
-"PO-Revision-Date: 2021-10-06 09:28+0200\n"
+"POT-Creation-Date: 2021-10-17 19:30+0000\n"
+"PO-Revision-Date: 2021-01-22 12:27+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
 "Language: nl_NL\n"
@@ -150,7 +150,7 @@ msgstr ""
 #: pod/authentication/views.py:130
 #: pod/bbb/templates/bbb/live_publish_meeting.html:45
 #: pod/bbb/templates/bbb/publish_meeting.html:37 pod/bbb/views.py:127
-#: pod/bbb/views.py:254 pod/completion/templates/video_caption_maker.html:56
+#: pod/bbb/views.py:254 pod/completion/templates/video_caption_maker.html:96
 #: pod/enrichment/templates/enrichment/group_enrichment.html:29
 #: pod/interactive/templates/interactive/group_interactive.html:27
 #: pod/live/templates/live/live-form.html:10
@@ -163,11 +163,11 @@ msgstr ""
 #: pod/video/templates/videos/video-form.html:10
 #: pod/video/templates/videos/video_delete.html:32
 #: pod/video/templates/videos/video_edit.html:63
-#: pod/video/templates/videos/video_note_comments_display.html:73
-#: pod/video/templates/videos/video_note_comments_display.html:134
-#: pod/video/templates/videos/video_note_display.html:24
-#: pod/video/templates/videos/video_notes.html:76
-#: pod/video/templates/videos/video_notes.html:111
+#: pod/video/templates/videos/video_note_comments_display.html:82
+#: pod/video/templates/videos/video_note_comments_display.html:148
+#: pod/video/templates/videos/video_note_display.html:27
+#: pod/video/templates/videos/video_notes.html:80
+#: pod/video/templates/videos/video_notes.html:116
 #: pod/video/templates/videos/video_record.html:211 pod/video/views.py:353
 #: pod/video/views.py:865 pod/video/views.py:913 pod/video/views.py:1448
 #: pod/video_search/templates/search/search.html:50
@@ -177,7 +177,7 @@ msgstr ""
 #: pod/authentication/templates/userpicture/userpicture.html:42
 #: pod/bbb/templates/bbb/live_publish_meeting.html:73
 #: pod/bbb/templates/bbb/publish_meeting.html:65
-#: pod/completion/templates/video_caption_maker.html:68
+#: pod/completion/templates/video_caption_maker.html:104
 #: pod/enrichment/templates/enrichment/group_enrichment.html:51
 #: pod/interactive/templates/interactive/group_interactive.html:49
 #: pod/live/templates/live/live-form.html:25
@@ -188,11 +188,11 @@ msgstr ""
 #: pod/video/templates/videos/video-form.html:25
 #: pod/video/templates/videos/video_delete.html:54
 #: pod/video/templates/videos/video_edit.html:105
-#: pod/video/templates/videos/video_note_comments_display.html:82
-#: pod/video/templates/videos/video_note_comments_display.html:143
-#: pod/video/templates/videos/video_note_display.html:33
-#: pod/video/templates/videos/video_notes.html:85
-#: pod/video/templates/videos/video_notes.html:120
+#: pod/video/templates/videos/video_note_comments_display.html:90
+#: pod/video/templates/videos/video_note_comments_display.html:156
+#: pod/video/templates/videos/video_note_display.html:35
+#: pod/video/templates/videos/video_notes.html:88
+#: pod/video/templates/videos/video_notes.html:124
 msgid "Please provide a valid value for this field"
 msgstr ""
 
@@ -794,7 +794,7 @@ msgid "One or more errors have been found in the form:"
 msgstr ""
 
 #: pod/chapter/templates/chapter/form_chapter.html:30
-#: pod/completion/templates/video_caption_maker.html:94
+#: pod/completion/templates/video_caption_maker.html:77
 #: pod/enrichment/templates/enrichment/form_enrichment.html:37
 #: pod/enrichment/templates/enrichment/group_enrichment.html:60
 #: pod/interactive/templates/interactive/group_interactive.html:58
@@ -802,9 +802,9 @@ msgstr ""
 #: pod/recorder/templates/recorder/add_recording.html:68
 #: pod/video/templates/channel/channel_edit.html:80
 #: pod/video/templates/channel/form_theme.html:46
-#: pod/video/templates/videos/video_note_display.html:40
-#: pod/video/templates/videos/video_notes.html:92
-#: pod/video/templates/videos/video_notes.html:125
+#: pod/video/templates/videos/video_note_display.html:42
+#: pod/video/templates/videos/video_notes.html:94
+#: pod/video/templates/videos/video_notes.html:129
 msgid "Save"
 msgstr ""
 
@@ -813,9 +813,9 @@ msgstr ""
 #: pod/video/templates/channel/form_theme.html:47
 #: pod/video/templates/videos/category_modal.html:45
 #: pod/video/templates/videos/category_modal.html:65
-#: pod/video/templates/videos/video_note_display.html:41
-#: pod/video/templates/videos/video_notes.html:93
-#: pod/video/templates/videos/video_notes.html:126
+#: pod/video/templates/videos/video_note_display.html:43
+#: pod/video/templates/videos/video_notes.html:95
+#: pod/video/templates/videos/video_notes.html:130
 msgid "Cancel"
 msgstr ""
 
@@ -896,7 +896,7 @@ msgid "My videos"
 msgstr ""
 
 #: pod/chapter/templates/video_chapter.html:42
-#: pod/completion/templates/video_caption_maker.html:114
+#: pod/completion/templates/video_caption_maker.html:144
 #: pod/video/templates/videos/video_collaborate.html:66
 #: pod/video/templates/videos/video_delete.html:20
 #: pod/video/templates/videos/video_edit.html:38
@@ -1057,7 +1057,7 @@ msgstr ""
 
 #: pod/completion/models.py:124 pod/completion/models.py:171
 #: pod/completion/models.py:250
-#: pod/completion/templates/video_caption_maker.html:84
+#: pod/completion/templates/video_caption_maker.html:67
 #: pod/enrichment/models.py:322 pod/enrichment/models.py:356
 #: pod/interactive/models.py:18 pod/interactive/models.py:48
 #: pod/playlist/models.py:85 pod/recorder/models.py:90 pod/video/models.py:593
@@ -1251,7 +1251,7 @@ msgstr ""
 #: pod/completion/templates/document/form_document.html:24
 #: pod/completion/templates/overlay/form_overlay.html:26
 #: pod/completion/templates/track/form_track.html:27
-#: pod/video/templates/videos/video_note_comments_display.html:90
+#: pod/video/templates/videos/video_note_comments_display.html:98
 msgid "save"
 msgstr ""
 
@@ -1259,7 +1259,7 @@ msgstr ""
 #: pod/completion/templates/document/form_document.html:25
 #: pod/completion/templates/overlay/form_overlay.html:27
 #: pod/completion/templates/track/form_track.html:28
-#: pod/video/templates/videos/video_note_comments_display.html:91
+#: pod/video/templates/videos/video_note_comments_display.html:99
 msgid "cancel"
 msgstr ""
 
@@ -1385,27 +1385,27 @@ msgstr ""
 msgid "Video Caption Maker"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:52
-msgid "Load Existing Caption File [optional]:"
+#: pod/completion/templates/video_caption_maker.html:33
+msgid "Change mode"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:92
+#: pod/completion/templates/video_caption_maker.html:75
 msgid "Play"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:93
+#: pod/completion/templates/video_caption_maker.html:76
 msgid "Pause"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:95
+#: pod/completion/templates/video_caption_maker.html:78
 msgid "Save &amp; Continue"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:99
+#: pod/completion/templates/video_caption_maker.html:82
 msgid "Caption list"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:99
+#: pod/completion/templates/video_caption_maker.html:82
 msgid ""
 "Use the Play and Pause buttons to determine when the subtitles appear, enter "
 "the text in the field below the video then click the Save / (Save & "
@@ -1413,31 +1413,99 @@ msgid ""
 "Subtitles button to create a subtitle file."
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:106
+#: pod/completion/templates/video_caption_maker.html:85
+msgid "No captions"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:88
+msgid "Add subtitle"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:92
+msgid "You can load and existing caption file below :"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:117
 msgid "Save Captions"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:107
+#: pod/completion/templates/video_caption_maker.html:118
 msgid "Clear All"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:115
-msgid "Back to the completion"
+#: pod/completion/templates/video_caption_maker.html:126
+msgid "Key Schortcuts"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:126
-msgid "Save captions file."
+#: pod/completion/templates/video_caption_maker.html:128
+msgid "Video Player"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:129
+msgid "Space"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:129
+msgid "Pause / unpause"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html:130
-msgid "You have loaded a file. Do you want to override it?"
+msgid "Rewind the video 10 seconds back"
 msgstr ""
 
-#: pod/completion/templates/video_caption_maker.html:133
-msgid "New"
+#: pod/completion/templates/video_caption_maker.html:131
+msgid "Skip 10 seconds"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:132
+msgid "Mute/unmute video"
 msgstr ""
 
 #: pod/completion/templates/video_caption_maker.html:134
+msgid "Captions Editor"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:135
+msgid "Select previous caption"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:136
+msgid "Select next caption"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:137
+msgid "Del"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:137
+msgid "Delete selected caption"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:138
+msgid "Add new caption"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:140
+msgid "Show/hide this window"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:145
+msgid "Back to the completion"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:156
+msgid "Save captions file."
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:160
+msgid "You have loaded a file. Do you want to override it?"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:163
+msgid "New"
+msgstr ""
+
+#: pod/completion/templates/video_caption_maker.html:164
 msgid "Override"
 msgstr ""
 
@@ -1569,22 +1637,22 @@ msgid ""
 "want to display with the option \"Show background\""
 msgstr ""
 
-#: pod/completion/views.py:50 pod/completion/views.py:115
-#: pod/completion/views.py:156 pod/completion/views.py:355
-#: pod/completion/views.py:547 pod/completion/views.py:790
+#: pod/completion/views.py:54 pod/completion/views.py:146
+#: pod/completion/views.py:187 pod/completion/views.py:386
+#: pod/completion/views.py:578 pod/completion/views.py:821
 msgid "You cannot complement this video."
 msgstr ""
 
-#: pod/completion/views.py:80
+#: pod/completion/views.py:111
 msgid "The file has been saved."
 msgstr ""
 
-#: pod/completion/views.py:83
+#: pod/completion/views.py:114
 msgid "The file has not been saved."
 msgstr ""
 
-#: pod/completion/views.py:263 pod/completion/views.py:452
-#: pod/completion/views.py:890 pod/podfile/views.py:492
+#: pod/completion/views.py:294 pod/completion/views.py:483
+#: pod/completion/views.py:921 pod/podfile/views.py:492
 #: pod/podfile/views.py:536 pod/video/views.py:443 pod/video/views.py:1645
 msgid "Please correct errors"
 msgstr ""
@@ -3667,7 +3735,7 @@ msgstr ""
 msgid "Shared folders"
 msgstr ""
 
-#: pod/podfile/views.py:164 pod/podfile/views.py:572
+#: pod/podfile/views.py:164 pod/podfile/views.py:570
 msgid "You cannot see this folder."
 msgstr ""
 
@@ -5123,8 +5191,7 @@ msgid "Chapter the video"
 msgstr ""
 
 #: pod/video/templates/videos/link_video.html:25
-#: pod/video/templates/videos/video_edit.html:41
-msgid "Delete the video"
+msgid "Delete the video."
 msgstr ""
 
 #: pod/video/templates/videos/link_video.html:35
@@ -5415,6 +5482,10 @@ msgstr ""
 msgid "Add a new video"
 msgstr ""
 
+#: pod/video/templates/videos/video_edit.html:41
+msgid "Delete the video"
+msgstr ""
+
 #: pod/video/templates/videos/video_edit.html:114
 #: pod/video/templates/videos/video_record.html:77
 msgid "Sending, please wait."
@@ -5465,37 +5536,37 @@ msgstr ""
 msgid "Sorry, no video found."
 msgstr ""
 
-#: pod/video/templates/videos/video_note_comments_display.html:9
-#: pod/video/templates/videos/video_note_display.html:12
+#: pod/video/templates/videos/video_note_comments_display.html:8
+#: pod/video/templates/videos/video_note_display.html:14
 msgid "the"
 msgstr ""
 
-#: pod/video/templates/videos/video_note_comments_display.html:14
+#: pod/video/templates/videos/video_note_comments_display.html:11
 msgid "Manage comment"
 msgstr ""
 
-#: pod/video/templates/videos/video_note_comments_display.html:24
+#: pod/video/templates/videos/video_note_comments_display.html:23
 msgid "Edit the comment"
 msgstr ""
 
-#: pod/video/templates/videos/video_note_comments_display.html:34
-#: pod/video/templates/videos/video_note_display.html:87
-msgid "Comment the note"
-msgstr ""
-
-#: pod/video/templates/videos/video_note_comments_display.html:44
+#: pod/video/templates/videos/video_note_comments_display.html:35
 msgid "Remove the comment"
 msgstr ""
 
-#: pod/video/templates/videos/video_note_display.html:60
+#: pod/video/templates/videos/video_note_comments_display.html:47
+#: pod/video/templates/videos/video_note_display.html:96
+msgid "Comment the note"
+msgstr ""
+
+#: pod/video/templates/videos/video_note_display.html:63
 msgid "Manage note"
 msgstr ""
 
-#: pod/video/templates/videos/video_note_display.html:70
+#: pod/video/templates/videos/video_note_display.html:75
 msgid "Edit the note"
 msgstr ""
 
-#: pod/video/templates/videos/video_note_display.html:78
+#: pod/video/templates/videos/video_note_display.html:85
 msgid "Remove the note"
 msgstr ""
 
@@ -5511,15 +5582,15 @@ msgstr ""
 msgid "Download the notes"
 msgstr ""
 
-#: pod/video/templates/videos/video_notes.html:48
+#: pod/video/templates/videos/video_notes.html:49
 msgid "There is no note available for you for this video."
 msgstr ""
 
-#: pod/video/templates/videos/video_notes.html:50
+#: pod/video/templates/videos/video_notes.html:51
 msgid "You can create a new one with the + icon."
 msgstr ""
 
-#: pod/video/templates/videos/video_notes.html:52
+#: pod/video/templates/videos/video_notes.html:53
 msgid "Log in to create a new one."
 msgstr ""
 

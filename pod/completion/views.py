@@ -18,8 +18,11 @@ from .models import Track
 from .forms import TrackForm
 from .models import Overlay
 from .forms import OverlayForm
+from .models import CustomFileModel
 from pod.podfile.models import UserFolder
 from pod.podfile.views import get_current_session_folder, file_edit_save
+from pod.main.lang_settings import ALL_LANG_CHOICES, PREF_LANG_CHOICES
+from pod.main.settings import LANGUAGE_CODE
 import re
 import json
 from django.contrib.sites.shortcuts import get_current_site
@@ -27,13 +30,14 @@ from django.contrib.sites.shortcuts import get_current_site
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTION = ["new", "save", "modify", "delete"]
 CAPTION_MAKER_ACTION = ["save"]
+LANG_CHOICES = getattr(settings, "LANG_CHOICES", ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)), )
+LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}
 
 
 @csrf_protect
 @staff_member_required(redirect_field_name="referrer")
 def video_caption_maker(request, slug):
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
-
     video_folder, created = UserFolder.objects.get_or_create(
         name=video.slug, owner=request.user
     )
@@ -53,8 +57,17 @@ def video_caption_maker(request, slug):
     if request.method == "POST" and request.POST.get("action"):
         action = request.POST.get("action")
     if action in CAPTION_MAKER_ACTION:
-        return eval("video_caption_maker_{0}(request, video)".format(action))
+        return eval("video_caption_maker_{0}".format(action))(request, video)
     else:
+        track_language = LANGUAGE_CODE
+        captionFileId = request.GET.get('src')
+        if captionFileId:
+            captionFile = CustomFileModel.objects.filter(id=captionFileId).first()
+            if captionFile:
+                track = Track.objects.filter(video=video, src=captionFile).first()
+                if track:
+                    track_language = track.lang
+
         form_caption = TrackForm(initial={"video": video})
         return render(
             request,
@@ -63,6 +76,8 @@ def video_caption_maker(request, slug):
                 "current_folder": video_folder,
                 "form_make_caption": form_caption,
                 "video": video,
+                "languages": LANG_CHOICES,
+                "track_language": track_language,
             },
         )
 
@@ -74,9 +89,24 @@ def video_caption_maker_save(request, video):
         name=video.slug, owner=request.user
     )
     if request.method == "POST":
+        lang = request.POST.get("lang")
         cur_folder = get_current_session_folder(request)
         response = file_edit_save(request, cur_folder)
-        if b"list_element" in response.content:
+        response_data = json.loads(response.content)
+        if ("list_element" in response_data) and (lang in LANG_CHOICES_DICT):
+            captFile = get_object_or_404(CustomFileModel, id=response_data["file_id"])
+
+            # immediately assign the newly created captions file to the video
+            desired = Track.objects.filter(video=video, src=captFile)
+            if desired.exists():
+                desired.update(lang=lang, src=captFile)
+            else:
+                Track(
+                    video=video,
+                    kind='captions',
+                    lang=lang,
+                    src=captFile,
+                ).save()
             messages.add_message(request, messages.INFO, _(u"The file has been saved."))
         else:
             messages.add_message(
