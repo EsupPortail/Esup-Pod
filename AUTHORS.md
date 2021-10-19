@@ -22,4 +22,5 @@ A list of much-appreciated contributors who have submitted patches and reported 
 
 Pictures credits
 ----------------
-* cookie.svg ([Broken oatmeal cookie created by pch.vector](https://www.freepik.com/vectors/logo))
+* default.svg: adapted from Play button Icon by [Freepik](https://www.freepik.com/free-vector) - Freepik License
+* cookie.svg: [Broken oatmeal cookie created by pch.vector](https://www.freepik.com/vectors/logo) - Freepik License
