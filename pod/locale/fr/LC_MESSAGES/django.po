@@ -3482,17 +3482,17 @@ msgstr "Types de vidéos"
 msgid "Use the input to filter user by last name."
 msgstr "Utiliser le champ pour filtrer les utilisateurs par nom de famille."
 
-#: pod/main/views.py:187
+#: pod/main/tests/test_views.py:80 pod/main/views.py:291
+msgid "Your message has been sent."
+msgstr "Votre message a été envoyé."
+
+#: pod/main/views.py:190
 msgid "Link"
 msgstr "Lien"
 
-#: pod/main/views.py:268
+#: pod/main/views.py:271
 msgid "your message untitled"
 msgstr "votre message intitulé"
-
-#: pod/main/views.py:287
-msgid "Your message has been sent."
-msgstr "Votre message a été envoyé."
 
 #: pod/playlist/models.py:24
 #: pod/playlist/templates/playlist/playlist_element_list.html:12

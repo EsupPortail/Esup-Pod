@@ -3348,16 +3348,16 @@ msgstr ""
 msgid "Use the input to filter user by last name."
 msgstr ""
 
-#: pod/main/views.py:187
+#: pod/main/tests/test_views.py:80 pod/main/views.py:291
+msgid "Your message has been sent."
+msgstr ""
+
+#: pod/main/views.py:190
 msgid "Link"
 msgstr ""
 
-#: pod/main/views.py:268
+#: pod/main/views.py:271
 msgid "your message untitled"
-msgstr ""
-
-#: pod/main/views.py:287
-msgid "Your message has been sent."
 msgstr ""
 
 #: pod/playlist/models.py:24
