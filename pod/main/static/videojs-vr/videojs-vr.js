@@ -1,25 +1,37 @@
-/**
- * videojs-vr
- * @version 1.3.0
- * @copyright 2018 [object Object]
- * @license Apache-2.0
- */
+/*! @name videojs-vr @version 1.8.0 @license Apache-2.0 */
 (function (global, factory) {
   typeof exports === "object" && typeof module !== "undefined"
-    ? (module.exports = factory(require("video.js")))
+    ? (module.exports = factory(
+        require("global/window"),
+        require("global/document"),
+        require("video.js")
+      ))
     : typeof define === "function" && define.amd
-    ? define(["video.js"], factory)
-    : (global.videojsVr = factory(global.videojs));
-})(this, function (videojs) {
+    ? define(["global/window", "global/document", "video.js"], factory)
+    : ((global = global || self),
+      (global.videojsVr = factory(
+        global.window,
+        global.document,
+        global.videojs
+      )));
+})(this, function (window$1, document$1, videojs) {
   "use strict";
 
+  window$1 =
+    window$1 && window$1.hasOwnProperty("default")
+      ? window$1["default"]
+      : window$1;
+  document$1 =
+    document$1 && document$1.hasOwnProperty("default")
+      ? document$1["default"]
+      : document$1;
   videojs =
     videojs && videojs.hasOwnProperty("default") ? videojs["default"] : videojs;
 
-  var version = "1.3.0";
-
   var commonjsGlobal =
-    typeof window !== "undefined"
+    typeof globalThis !== "undefined"
+      ? globalThis
+      : typeof window !== "undefined"
       ? window
       : typeof global !== "undefined"
       ? global
@@ -41,48 +53,60 @@
     );
   }
 
-  var win;
+  var assertThisInitialized = createCommonjsModule(function (module) {
+    function _assertThisInitialized(self) {
+      if (self === void 0) {
+        throw new ReferenceError(
+          "this hasn't been initialised - super() hasn't been called"
+        );
+      }
 
-  if (typeof window !== "undefined") {
-    win = window;
-  } else if (typeof commonjsGlobal !== "undefined") {
-    win = commonjsGlobal;
-  } else if (typeof self !== "undefined") {
-    win = self;
-  } else {
-    win = {};
-  }
+      return self;
+    }
 
-  var window_1 = win;
-
-  var empty = {};
-
-  var empty$1 = /*#__PURE__*/ Object.freeze({
-    default: empty,
+    module.exports = _assertThisInitialized;
+    (module.exports["default"] = module.exports),
+      (module.exports.__esModule = true);
   });
 
-  var minDoc = (empty$1 && empty) || empty$1;
+  var _assertThisInitialized = unwrapExports(assertThisInitialized);
 
-  var topLevel =
-    typeof commonjsGlobal !== "undefined"
-      ? commonjsGlobal
-      : typeof window !== "undefined"
-      ? window
-      : {};
+  var setPrototypeOf = createCommonjsModule(function (module) {
+    function _setPrototypeOf(o, p) {
+      module.exports = _setPrototypeOf =
+        Object.setPrototypeOf ||
+        function _setPrototypeOf(o, p) {
+          o.__proto__ = p;
+          return o;
+        };
 
-  var doccy;
-
-  if (typeof document !== "undefined") {
-    doccy = document;
-  } else {
-    doccy = topLevel["__GLOBAL_DOCUMENT_CACHE@4"];
-
-    if (!doccy) {
-      doccy = topLevel["__GLOBAL_DOCUMENT_CACHE@4"] = minDoc;
+      (module.exports["default"] = module.exports),
+        (module.exports.__esModule = true);
+      return _setPrototypeOf(o, p);
     }
-  }
 
-  var document_1 = doccy;
+    module.exports = _setPrototypeOf;
+    (module.exports["default"] = module.exports),
+      (module.exports.__esModule = true);
+  });
+
+  unwrapExports(setPrototypeOf);
+
+  var inheritsLoose = createCommonjsModule(function (module) {
+    function _inheritsLoose(subClass, superClass) {
+      subClass.prototype = Object.create(superClass.prototype);
+      subClass.prototype.constructor = subClass;
+      setPrototypeOf(subClass, superClass);
+    }
+
+    module.exports = _inheritsLoose;
+    (module.exports["default"] = module.exports),
+      (module.exports.__esModule = true);
+  });
+
+  var _inheritsLoose = unwrapExports(inheritsLoose);
+
+  var version = "1.8.0";
 
   var webvrPolyfill = createCommonjsModule(function (module, exports) {
     /**
@@ -187,7 +211,7 @@
     (function (global, factory) {
       module.exports = factory();
     })(commonjsGlobal, function () {
-      var commonjsGlobal$$1 =
+      var commonjsGlobal$1 =
         typeof window !== "undefined"
           ? window
           : typeof commonjsGlobal !== "undefined"
@@ -196,7 +220,7 @@
           ? self
           : {};
 
-      function unwrapExports$$1(x) {
+      function unwrapExports(x) {
         return x &&
           x.__esModule &&
           Object.prototype.hasOwnProperty.call(x, "default")
@@ -204,22 +228,11 @@
           : x;
       }
 
-      function createCommonjsModule$$1(fn, module) {
+      function createCommonjsModule(fn, module) {
         return (
           (module = { exports: {} }), fn(module, module.exports), module.exports
         );
       }
-
-      var race = function race(promises) {
-        if (Promise.race) {
-          return Promise.race(promises);
-        }
-        return new Promise(function (resolve, reject) {
-          for (var i = 0; i < promises.length; i++) {
-            promises[i].then(resolve, reject);
-          }
-        });
-      };
 
       var isMobile = function isMobile() {
         return (
@@ -241,10 +254,7 @@
         return dest;
       };
 
-      var cardboardVrDisplay = createCommonjsModule$$1(function (
-        module,
-        exports
-      ) {
+      var cardboardVrDisplay = createCommonjsModule(function (module, exports) {
         /**
          * @license
          * cardboard-vr-display
@@ -325,7 +335,7 @@
          */
         (function (global, factory) {
           module.exports = factory();
-        })(commonjsGlobal$$1, function () {
+        })(commonjsGlobal$1, function () {
           var classCallCheck = function (instance, Constructor) {
             if (!(instance instanceof Constructor)) {
               throw new TypeError("Cannot call a class as a function");
@@ -389,8 +399,8 @@
           })();
           var MIN_TIMESTEP = 0.001;
           var MAX_TIMESTEP = 1;
-          var base64 = function base64(mimeType, _base) {
-            return "data:" + mimeType + ";base64," + _base;
+          var dataUri = function dataUri(mimeType, svg) {
+            return "data:" + mimeType + "," + encodeURIComponent(svg);
           };
           var lerp = function lerp(a, b, t) {
             return a + (b - a) * t;
@@ -429,6 +439,16 @@
           var getChromeVersion = (function () {
             var match = navigator.userAgent.match(/.*Chrome\/([0-9]+)/);
             var value = match ? parseInt(match[1], 10) : null;
+            return function () {
+              return value;
+            };
+          })();
+          var isSafariWithoutDeviceMotion = (function () {
+            var value = false;
+            value =
+              isIOS() &&
+              isSafari() &&
+              navigator.userAgent.indexOf("13_4") !== -1;
             return function () {
               return value;
             };
@@ -1058,6 +1078,7 @@
             this.bufferScale = bufferScale;
             this.dirtySubmitFrameBindings = dirtySubmitFrameBindings;
             this.ctxAttribs = gl.getContextAttributes();
+            this.instanceExt = gl.getExtension("ANGLE_instanced_arrays");
             this.meshWidth = 20;
             this.meshHeight = 20;
             this.bufferWidth = gl.drawingBufferWidth;
@@ -1446,6 +1467,18 @@
             }
             glPreserveState(gl, glState, function (gl) {
               self.realBindFramebuffer.call(gl, gl.FRAMEBUFFER, null);
+              var positionDivisor = 0;
+              var texCoordDivisor = 0;
+              if (self.instanceExt) {
+                positionDivisor = gl.getVertexAttrib(
+                  self.attribs.position,
+                  self.instanceExt.VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE
+                );
+                texCoordDivisor = gl.getVertexAttrib(
+                  self.attribs.texCoord,
+                  self.instanceExt.VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE
+                );
+              }
               if (self.cullFace) {
                 self.realDisable.call(gl, gl.CULL_FACE);
               }
@@ -1494,6 +1527,20 @@
                 20,
                 8
               );
+              if (self.instanceExt) {
+                if (positionDivisor != 0) {
+                  self.instanceExt.vertexAttribDivisorANGLE(
+                    self.attribs.position,
+                    0
+                  );
+                }
+                if (texCoordDivisor != 0) {
+                  self.instanceExt.vertexAttribDivisorANGLE(
+                    self.attribs.texCoord,
+                    0
+                  );
+                }
+              }
               gl.activeTexture(gl.TEXTURE0);
               gl.uniform1i(self.uniforms.diffuse, 0);
               gl.bindTexture(gl.TEXTURE_2D, self.renderTarget);
@@ -1548,6 +1595,20 @@
                 !self.ctxAttribs.preserveDrawingBuffer
               ) {
                 self.realClearColor.apply(gl, self.clearColor);
+              }
+              if (self.instanceExt) {
+                if (positionDivisor != 0) {
+                  self.instanceExt.vertexAttribDivisorANGLE(
+                    self.attribs.position,
+                    positionDivisor
+                  );
+                }
+                if (texCoordDivisor != 0) {
+                  self.instanceExt.vertexAttribDivisorANGLE(
+                    self.attribs.texCoord,
+                    texCoordDivisor
+                  );
+                }
               }
             });
             if (isIOS()) {
@@ -2227,12 +2288,16 @@
               ],
             }),
           };
-          function DeviceInfo(deviceParams) {
+          function DeviceInfo(deviceParams, additionalViewers) {
             this.viewer = Viewers.CardboardV2;
             this.updateDeviceParams(deviceParams);
             this.distortion = new Distortion(
               this.viewer.distortionCoefficients
             );
+            for (var i = 0; i < additionalViewers.length; i++) {
+              var viewer = additionalViewers[i];
+              Viewers[viewer.id] = new CardboardViewer(viewer);
+            }
           }
           DeviceInfo.prototype.updateDeviceParams = function (deviceParams) {
             this.device = this.determineDevice_(deviceParams) || this.device;
@@ -2473,12 +2538,26 @@
           }
           DeviceInfo.Viewers = Viewers;
           var format = 1;
-          var last_updated = "2018-02-20T22:55:10Z";
+          var last_updated = "2019-11-09T17:36:14Z";
           var devices = [
             {
               type: "android",
               rules: [{ mdmh: "asus/*/Nexus 7/*" }, { ua: "Nexus 7" }],
               dpi: [320.8, 323],
+              bw: 3,
+              ac: 500,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "asus/*/ASUS_X00PD/*" }, { ua: "ASUS_X00PD" }],
+              dpi: 245,
+              bw: 3,
+              ac: 500,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "asus/*/ASUS_X008D/*" }, { ua: "ASUS_X008D" }],
+              dpi: 282,
               bw: 3,
               ac: 500,
             },
@@ -2491,10 +2570,38 @@
             },
             {
               type: "android",
+              rules: [{ mdmh: "Google/*/Pixel 2 XL/*" }, { ua: "Pixel 2 XL" }],
+              dpi: 537.9,
+              bw: 3,
+              ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "Google/*/Pixel 3 XL/*" }, { ua: "Pixel 3 XL" }],
+              dpi: [558.5, 553.8],
+              bw: 3,
+              ac: 1000,
+            },
+            {
+              type: "android",
               rules: [{ mdmh: "Google/*/Pixel XL/*" }, { ua: "Pixel XL" }],
               dpi: [537.9, 533],
               bw: 3,
               ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "Google/*/Pixel 3/*" }, { ua: "Pixel 3" }],
+              dpi: 442.4,
+              bw: 3,
+              ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "Google/*/Pixel 2/*" }, { ua: "Pixel 2" }],
+              dpi: 441,
+              bw: 3,
+              ac: 500,
             },
             {
               type: "android",
@@ -2551,6 +2658,20 @@
               dpi: [515.1, 518],
               bw: 3,
               ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "Huawei/*/BLN-L24/*" }, { ua: "HONORBLN-L24" }],
+              dpi: 480,
+              bw: 4,
+              ac: 500,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "Huawei/*/BKL-L09/*" }, { ua: "BKL-L09" }],
+              dpi: 403,
+              bw: 3.47,
+              ac: 500,
             },
             {
               type: "android",
@@ -2773,8 +2894,36 @@
             },
             {
               type: "android",
+              rules: [{ mdmh: "OnePlus/*/ONE E1001/*" }, { ua: "ONE E1001" }],
+              dpi: [442.4, 441.4],
+              bw: 3,
+              ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "OnePlus/*/ONE E1003/*" }, { ua: "ONE E1003" }],
+              dpi: [442.4, 441.4],
+              bw: 3,
+              ac: 1000,
+            },
+            {
+              type: "android",
               rules: [{ mdmh: "OnePlus/*/ONE E1005/*" }, { ua: "ONE E1005" }],
               dpi: [442.4, 441.4],
+              bw: 3,
+              ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "OnePlus/*/ONE A2001/*" }, { ua: "ONE A2001" }],
+              dpi: [391.9, 405.4],
+              bw: 3,
+              ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "OnePlus/*/ONE A2003/*" }, { ua: "ONE A2003" }],
+              dpi: [391.9, 405.4],
               bw: 3,
               ac: 1000,
             },
@@ -2784,6 +2933,36 @@
               dpi: [391.9, 405.4],
               bw: 3,
               ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [
+                { mdmh: "OnePlus/*/ONEPLUS A3000/*" },
+                { ua: "ONEPLUS A3000" },
+              ],
+              dpi: 401,
+              bw: 3,
+              ac: 500,
+            },
+            {
+              type: "android",
+              rules: [
+                { mdmh: "OnePlus/*/ONEPLUS A3003/*" },
+                { ua: "ONEPLUS A3003" },
+              ],
+              dpi: 401,
+              bw: 3,
+              ac: 500,
+            },
+            {
+              type: "android",
+              rules: [
+                { mdmh: "OnePlus/*/ONEPLUS A3010/*" },
+                { ua: "ONEPLUS A3010" },
+              ],
+              dpi: 401,
+              bw: 3,
+              ac: 500,
             },
             {
               type: "android",
@@ -2804,6 +2983,46 @@
               dpi: [403, 400],
               bw: 2,
               ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [
+                { mdmh: "OnePlus/*/ONEPLUS A6000/*" },
+                { ua: "ONEPLUS A6000" },
+              ],
+              dpi: 401,
+              bw: 3,
+              ac: 500,
+            },
+            {
+              type: "android",
+              rules: [
+                { mdmh: "OnePlus/*/ONEPLUS A6003/*" },
+                { ua: "ONEPLUS A6003" },
+              ],
+              dpi: 401,
+              bw: 3,
+              ac: 500,
+            },
+            {
+              type: "android",
+              rules: [
+                { mdmh: "OnePlus/*/ONEPLUS A6010/*" },
+                { ua: "ONEPLUS A6010" },
+              ],
+              dpi: 401,
+              bw: 2,
+              ac: 500,
+            },
+            {
+              type: "android",
+              rules: [
+                { mdmh: "OnePlus/*/ONEPLUS A6013/*" },
+                { ua: "ONEPLUS A6013" },
+              ],
+              dpi: 401,
+              bw: 2,
+              ac: 500,
             },
             {
               type: "android",
@@ -3103,6 +3322,76 @@
             },
             {
               type: "android",
+              rules: [{ mdmh: "samsung/*/SM-G955F/*" }, { ua: "SM-G955F" }],
+              dpi: [522.514, 525.762],
+              bw: 3,
+              ac: 500,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "samsung/*/SM-G960F/*" }, { ua: "SM-G960F" }],
+              dpi: [569.575, 571.5],
+              bw: 3,
+              ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "samsung/*/SM-G9600/*" }, { ua: "SM-G9600" }],
+              dpi: [569.575, 571.5],
+              bw: 3,
+              ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "samsung/*/SM-G960T/*" }, { ua: "SM-G960T" }],
+              dpi: [569.575, 571.5],
+              bw: 3,
+              ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "samsung/*/SM-G960N/*" }, { ua: "SM-G960N" }],
+              dpi: [569.575, 571.5],
+              bw: 3,
+              ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "samsung/*/SM-G960U/*" }, { ua: "SM-G960U" }],
+              dpi: [569.575, 571.5],
+              bw: 3,
+              ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "samsung/*/SM-G9608/*" }, { ua: "SM-G9608" }],
+              dpi: [569.575, 571.5],
+              bw: 3,
+              ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "samsung/*/SM-G960FD/*" }, { ua: "SM-G960FD" }],
+              dpi: [569.575, 571.5],
+              bw: 3,
+              ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "samsung/*/SM-G960W/*" }, { ua: "SM-G960W" }],
+              dpi: [569.575, 571.5],
+              bw: 3,
+              ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "samsung/*/SM-G965F/*" }, { ua: "SM-G965F" }],
+              dpi: 529,
+              bw: 2,
+              ac: 1000,
+            },
+            {
+              type: "android",
               rules: [{ mdmh: "Sony/*/C6903/*" }, { ua: "C6903" }],
               dpi: [442.5, 443.3],
               bw: 3,
@@ -3216,6 +3505,69 @@
               bw: 4,
               ac: 1000,
             },
+            {
+              type: "android",
+              rules: [{ mdmh: "Huawei/*/EML-L29/*" }, { ua: "EML-L29" }],
+              dpi: 428,
+              bw: 3.45,
+              ac: 500,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "Nokia/*/Nokia 7.1/*" }, { ua: "Nokia 7.1" }],
+              dpi: [432, 431.9],
+              bw: 3,
+              ac: 500,
+            },
+            {
+              type: "ios",
+              rules: [{ res: [1242, 2688] }],
+              dpi: 458,
+              bw: 4,
+              ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "samsung/*/SM-G570M/*" }, { ua: "SM-G570M" }],
+              dpi: 320,
+              bw: 3.684,
+              ac: 1000,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "samsung/*/SM-G970F/*" }, { ua: "SM-G970F" }],
+              dpi: 438,
+              bw: 2.281,
+              ac: 500,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "samsung/*/SM-G973F/*" }, { ua: "SM-G973F" }],
+              dpi: 550,
+              bw: 2.002,
+              ac: 500,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "samsung/*/SM-G975F/*" }, { ua: "SM-G975F" }],
+              dpi: 522,
+              bw: 2.054,
+              ac: 500,
+            },
+            {
+              type: "android",
+              rules: [{ mdmh: "samsung/*/SM-G977F/*" }, { ua: "SM-G977F" }],
+              dpi: 505,
+              bw: 2.334,
+              ac: 500,
+            },
+            {
+              type: "ios",
+              rules: [{ res: [828, 1792] }],
+              dpi: 326,
+              bw: 5,
+              ac: 500,
+            },
           ];
           var DPDB_CACHE = {
             format: format,
@@ -3292,7 +3644,7 @@
               var matched = false;
               for (var j = 0; j < device.rules.length; j++) {
                 var rule = device.rules[j];
-                if (this.matchRule_(rule, userAgent, width, height)) {
+                if (this.ruleMatches_(rule, userAgent, width, height)) {
                   matched = true;
                   break;
                 }
@@ -3309,13 +3661,15 @@
             console.warn("No DPDB device match.");
             return null;
           };
-          Dpdb.prototype.matchRule_ = function (
+          Dpdb.prototype.ruleMatches_ = function (
             rule,
             ua,
             screenWidth,
             screenHeight
           ) {
             if (!rule.ua && !rule.res) return false;
+            if (rule.ua && rule.ua.substring(0, 2) === "SM")
+              rule.ua = rule.ua.substring(0, 7);
             if (rule.ua && ua.indexOf(rule.ua) < 0) return false;
             if (rule.res) {
               if (!rule.res[0] || !rule.res[1]) return false;
@@ -3507,7 +3861,8 @@
             var chromeVersion = getChromeVersion();
             this.isDeviceMotionInRadians =
               !this.isIOS && chromeVersion && chromeVersion < 66;
-            this.isWithoutDeviceMotion = isChromeWithoutDeviceMotion();
+            this.isWithoutDeviceMotion =
+              isChromeWithoutDeviceMotion() || isSafariWithoutDeviceMotion();
             this.filterToWorldQ = new Quaternion();
             if (isIOS()) {
               this.filterToWorldQ.setFromAxisAngle(
@@ -3652,16 +4007,18 @@
               return;
             }
             this.accelerometer.set(-accGravity.x, -accGravity.y, -accGravity.z);
-            if (isR7()) {
-              this.gyroscope.set(-rotRate.beta, rotRate.alpha, rotRate.gamma);
-            } else {
-              this.gyroscope.set(rotRate.alpha, rotRate.beta, rotRate.gamma);
-            }
-            if (!this.isDeviceMotionInRadians) {
-              this.gyroscope.multiplyScalar(Math.PI / 180);
+            if (rotRate) {
+              if (isR7()) {
+                this.gyroscope.set(-rotRate.beta, rotRate.alpha, rotRate.gamma);
+              } else {
+                this.gyroscope.set(rotRate.alpha, rotRate.beta, rotRate.gamma);
+              }
+              if (!this.isDeviceMotionInRadians) {
+                this.gyroscope.multiplyScalar(Math.PI / 180);
+              }
+              this.filter.addGyroMeasurement(this.gyroscope, timestampS);
             }
             this.filter.addAccelMeasurement(this.accelerometer, timestampS);
-            this.filter.addGyroMeasurement(this.gyroscope, timestampS);
             this.previousTimestampS = timestampS;
           };
           FusionPoseSensor.prototype.onOrientationChange_ = function (
@@ -3747,18 +4104,6 @@
           var SENSOR_FREQUENCY = 60;
           var X_AXIS = new Vector3(1, 0, 0);
           var Z_AXIS = new Vector3(0, 0, 1);
-          var orientation = {};
-          if (screen.orientation) {
-            orientation = screen.orientation;
-          } else if (screen.msOrientation) {
-            orientation = screen.msOrientation;
-          } else {
-            Object.defineProperty(orientation, "angle", {
-              get: function get$$1() {
-                return window.orientation || 0;
-              },
-            });
-          }
           var SENSOR_TO_VR = new Quaternion();
           SENSOR_TO_VR.setFromAxisAngle(X_AXIS, -Math.PI / 2);
           SENSOR_TO_VR.multiply(
@@ -3774,12 +4119,9 @@
               this.api = null;
               this.errors = [];
               this._sensorQ = new Quaternion();
-              this._worldToScreenQ = new Quaternion();
               this._outQ = new Quaternion();
               this._onSensorRead = this._onSensorRead.bind(this);
               this._onSensorError = this._onSensorError.bind(this);
-              this._onOrientationChange = this._onOrientationChange.bind(this);
-              this._onOrientationChange();
               this.init();
             }
             createClass(PoseSensor, [
@@ -3790,6 +4132,7 @@
                   try {
                     sensor = new RelativeOrientationSensor({
                       frequency: SENSOR_FREQUENCY,
+                      referenceFrame: "screen",
                     });
                     sensor.addEventListener("error", this._onSensorError);
                   } catch (error) {
@@ -3815,10 +4158,6 @@
                     this.sensor.addEventListener("reading", this._onSensorRead);
                     this.sensor.start();
                   }
-                  window.addEventListener(
-                    "orientationchange",
-                    this._onOrientationChange
-                  );
                 },
               },
               {
@@ -3831,6 +4170,17 @@
                     this.config.YAW_ONLY,
                     this.config.DEBUG
                   );
+                  if (this.sensor) {
+                    this.sensor.removeEventListener(
+                      "reading",
+                      this._onSensorRead
+                    );
+                    this.sensor.removeEventListener(
+                      "error",
+                      this._onSensorError
+                    );
+                    this.sensor = null;
+                  }
                 },
               },
               {
@@ -3849,7 +4199,6 @@
                   var out = this._outQ;
                   out.copy(SENSOR_TO_VR);
                   out.multiply(this._sensorQ);
-                  out.multiply(this._worldToScreenQ);
                   if (this.config.YAW_ONLY) {
                     out.x = out.z = 0;
                     out.normalize();
@@ -3872,24 +4221,18 @@
                   } else {
                     console.error(event.error);
                   }
+                  this.useDeviceMotion();
                 },
               },
               {
                 key: "_onSensorRead",
                 value: function _onSensorRead() {},
               },
-              {
-                key: "_onOrientationChange",
-                value: function _onOrientationChange() {
-                  var angle = (-orientation.angle * Math.PI) / 180;
-                  this._worldToScreenQ.setFromAxisAngle(Z_AXIS, angle);
-                },
-              },
             ]);
             return PoseSensor;
           })();
           var rotateInstructionsAsset =
-            "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+Cjxzdmcgd2lkdGg9IjE5OHB4IiBoZWlnaHQ9IjI0MHB4IiB2aWV3Qm94PSIwIDAgMTk4IDI0MCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4bWxuczpza2V0Y2g9Imh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaC9ucyI+CiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDMuMy4zICgxMjA4MSkgLSBodHRwOi8vd3d3LmJvaGVtaWFuY29kaW5nLmNvbS9za2V0Y2ggLS0+CiAgICA8dGl0bGU+dHJhbnNpdGlvbjwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPjwvZGVmcz4KICAgIDxnIGlkPSJQYWdlLTEiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHNrZXRjaDp0eXBlPSJNU1BhZ2UiPgogICAgICAgIDxnIGlkPSJ0cmFuc2l0aW9uIiBza2V0Y2g6dHlwZT0iTVNBcnRib2FyZEdyb3VwIj4KICAgICAgICAgICAgPGcgaWQ9IkltcG9ydGVkLUxheWVycy1Db3B5LTQtKy1JbXBvcnRlZC1MYXllcnMtQ29weS0rLUltcG9ydGVkLUxheWVycy1Db3B5LTItQ29weSIgc2tldGNoOnR5cGU9Ik1TTGF5ZXJHcm91cCI+CiAgICAgICAgICAgICAgICA8ZyBpZD0iSW1wb3J0ZWQtTGF5ZXJzLUNvcHktNCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMC4wMDAwMDAsIDEwNy4wMDAwMDApIiBza2V0Y2g6dHlwZT0iTVNTaGFwZUdyb3VwIj4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTQ5LjYyNSwyLjUyNyBDMTQ5LjYyNSwyLjUyNyAxNTUuODA1LDYuMDk2IDE1Ni4zNjIsNi40MTggTDE1Ni4zNjIsNy4zMDQgQzE1Ni4zNjIsNy40ODEgMTU2LjM3NSw3LjY2NCAxNTYuNCw3Ljg1MyBDMTU2LjQxLDcuOTM0IDE1Ni40Miw4LjAxNSAxNTYuNDI3LDguMDk1IEMxNTYuNTY3LDkuNTEgMTU3LjQwMSwxMS4wOTMgMTU4LjUzMiwxMi4wOTQgTDE2NC4yNTIsMTcuMTU2IEwxNjQuMzMzLDE3LjA2NiBDMTY0LjMzMywxNy4wNjYgMTY4LjcxNSwxNC41MzYgMTY5LjU2OCwxNC4wNDIgQzE3MS4wMjUsMTQuODgzIDE5NS41MzgsMjkuMDM1IDE5NS41MzgsMjkuMDM1IEwxOTUuNTM4LDgzLjAzNiBDMTk1LjUzOCw4My44MDcgMTk1LjE1Miw4NC4yNTMgMTk0LjU5LDg0LjI1MyBDMTk0LjM1Nyw4NC4yNTMgMTk0LjA5NSw4NC4xNzcgMTkzLjgxOCw4NC4wMTcgTDE2OS44NTEsNzAuMTc5IEwxNjkuODM3LDcwLjIwMyBMMTQyLjUxNSw4NS45NzggTDE0MS42NjUsODQuNjU1IEMxMzYuOTM0LDgzLjEyNiAxMzEuOTE3LDgxLjkxNSAxMjYuNzE0LDgxLjA0NSBDMTI2LjcwOSw4MS4wNiAxMjYuNzA3LDgxLjA2OSAxMjYuNzA3LDgxLjA2OSBMMTIxLjY0LDk4LjAzIEwxMTMuNzQ5LDEwMi41ODYgTDExMy43MTIsMTAyLjUyMyBMMTEzLjcxMiwxMzAuMTEzIEMxMTMuNzEyLDEzMC44ODUgMTEzLjMyNiwxMzEuMzMgMTEyLjc2NCwxMzEuMzMgQzExMi41MzIsMTMxLjMzIDExMi4yNjksMTMxLjI1NCAxMTEuOTkyLDEzMS4wOTQgTDY5LjUxOSwxMDYuNTcyIEM2OC41NjksMTA2LjAyMyA2Ny43OTksMTA0LjY5NSA2Ny43OTksMTAzLjYwNSBMNjcuNzk5LDEwMi41NyBMNjcuNzc4LDEwMi42MTcgQzY3LjI3LDEwMi4zOTMgNjYuNjQ4LDEwMi4yNDkgNjUuOTYyLDEwMi4yMTggQzY1Ljg3NSwxMDIuMjE0IDY1Ljc4OCwxMDIuMjEyIDY1LjcwMSwxMDIuMjEyIEM2NS42MDYsMTAyLjIxMiA2NS41MTEsMTAyLjIxNSA2NS40MTYsMTAyLjIxOSBDNjUuMTk1LDEwMi4yMjkgNjQuOTc0LDEwMi4yMzUgNjQuNzU0LDEwMi4yMzUgQzY0LjMzMSwxMDIuMjM1IDYzLjkxMSwxMDIuMjE2IDYzLjQ5OCwxMDIuMTc4IEM2MS44NDMsMTAyLjAyNSA2MC4yOTgsMTAxLjU3OCA1OS4wOTQsMTAwLjg4MiBMMTIuNTE4LDczLjk5MiBMMTIuNTIzLDc0LjAwNCBMMi4yNDUsNTUuMjU0IEMxLjI0NCw1My40MjcgMi4wMDQsNTEuMDM4IDMuOTQzLDQ5LjkxOCBMNTkuOTU0LDE3LjU3MyBDNjAuNjI2LDE3LjE4NSA2MS4zNSwxNy4wMDEgNjIuMDUzLDE3LjAwMSBDNjMuMzc5LDE3LjAwMSA2NC42MjUsMTcuNjYgNjUuMjgsMTguODU0IEw2NS4yODUsMTguODUxIEw2NS41MTIsMTkuMjY0IEw2NS41MDYsMTkuMjY4IEM2NS45MDksMjAuMDAzIDY2LjQwNSwyMC42OCA2Ni45ODMsMjEuMjg2IEw2Ny4yNiwyMS41NTYgQzY5LjE3NCwyMy40MDYgNzEuNzI4LDI0LjM1NyA3NC4zNzMsMjQuMzU3IEM3Ni4zMjIsMjQuMzU3IDc4LjMyMSwyMy44NCA4MC4xNDgsMjIuNzg1IEM4MC4xNjEsMjIuNzg1IDg3LjQ2NywxOC41NjYgODcuNDY3LDE4LjU2NiBDODguMTM5LDE4LjE3OCA4OC44NjMsMTcuOTk0IDg5LjU2NiwxNy45OTQgQzkwLjg5MiwxNy45OTQgOTIuMTM4LDE4LjY1MiA5Mi43OTIsMTkuODQ3IEw5Ni4wNDIsMjUuNzc1IEw5Ni4wNjQsMjUuNzU3IEwxMDIuODQ5LDI5LjY3NCBMMTAyLjc0NCwyOS40OTIgTDE0OS42MjUsMi41MjcgTTE0OS42MjUsMC44OTIgQzE0OS4zNDMsMC44OTIgMTQ5LjA2MiwwLjk2NSAxNDguODEsMS4xMSBMMTAyLjY0MSwyNy42NjYgTDk3LjIzMSwyNC41NDIgTDk0LjIyNiwxOS4wNjEgQzkzLjMxMywxNy4zOTQgOTEuNTI3LDE2LjM1OSA4OS41NjYsMTYuMzU4IEM4OC41NTUsMTYuMzU4IDg3LjU0NiwxNi42MzIgODYuNjQ5LDE3LjE1IEM4My44NzgsMTguNzUgNzkuNjg3LDIxLjE2OSA3OS4zNzQsMjEuMzQ1IEM3OS4zNTksMjEuMzUzIDc5LjM0NSwyMS4zNjEgNzkuMzMsMjEuMzY5IEM3Ny43OTgsMjIuMjU0IDc2LjA4NCwyMi43MjIgNzQuMzczLDIyLjcyMiBDNzIuMDgxLDIyLjcyMiA2OS45NTksMjEuODkgNjguMzk3LDIwLjM4IEw2OC4xNDUsMjAuMTM1IEM2Ny43MDYsMTkuNjcyIDY3LjMyMywxOS4xNTYgNjcuMDA2LDE4LjYwMSBDNjYuOTg4LDE4LjU1OSA2Ni45NjgsMTguNTE5IDY2Ljk0NiwxOC40NzkgTDY2LjcxOSwxOC4wNjUgQzY2LjY5LDE4LjAxMiA2Ni42NTgsMTcuOTYgNjYuNjI0LDE3LjkxMSBDNjUuNjg2LDE2LjMzNyA2My45NTEsMTUuMzY2IDYyLjA1MywxNS4zNjYgQzYxLjA0MiwxNS4zNjYgNjAuMDMzLDE1LjY0IDU5LjEzNiwxNi4xNTggTDMuMTI1LDQ4LjUwMiBDMC40MjYsNTAuMDYxIC0wLjYxMyw1My40NDIgMC44MTEsNTYuMDQgTDExLjA4OSw3NC43OSBDMTEuMjY2LDc1LjExMyAxMS41MzcsNzUuMzUzIDExLjg1LDc1LjQ5NCBMNTguMjc2LDEwMi4yOTggQzU5LjY3OSwxMDMuMTA4IDYxLjQzMywxMDMuNjMgNjMuMzQ4LDEwMy44MDYgQzYzLjgxMiwxMDMuODQ4IDY0LjI4NSwxMDMuODcgNjQuNzU0LDEwMy44NyBDNjUsMTAzLjg3IDY1LjI0OSwxMDMuODY0IDY1LjQ5NCwxMDMuODUyIEM2NS41NjMsMTAzLjg0OSA2NS42MzIsMTAzLjg0NyA2NS43MDEsMTAzLjg0NyBDNjUuNzY0LDEwMy44NDcgNjUuODI4LDEwMy44NDkgNjUuODksMTAzLjg1MiBDNjUuOTg2LDEwMy44NTYgNjYuMDgsMTAzLjg2MyA2Ni4xNzMsMTAzLjg3NCBDNjYuMjgyLDEwNS40NjcgNjcuMzMyLDEwNy4xOTcgNjguNzAyLDEwNy45ODggTDExMS4xNzQsMTMyLjUxIEMxMTEuNjk4LDEzMi44MTIgMTEyLjIzMiwxMzIuOTY1IDExMi43NjQsMTMyLjk2NSBDMTE0LjI2MSwxMzIuOTY1IDExNS4zNDcsMTMxLjc2NSAxMTUuMzQ3LDEzMC4xMTMgTDExNS4zNDcsMTAzLjU1MSBMMTIyLjQ1OCw5OS40NDYgQzEyMi44MTksOTkuMjM3IDEyMy4wODcsOTguODk4IDEyMy4yMDcsOTguNDk4IEwxMjcuODY1LDgyLjkwNSBDMTMyLjI3OSw4My43MDIgMTM2LjU1Nyw4NC43NTMgMTQwLjYwNyw4Ni4wMzMgTDE0MS4xNCw4Ni44NjIgQzE0MS40NTEsODcuMzQ2IDE0MS45NzcsODcuNjEzIDE0Mi41MTYsODcuNjEzIEMxNDIuNzk0LDg3LjYxMyAxNDMuMDc2LDg3LjU0MiAxNDMuMzMzLDg3LjM5MyBMMTY5Ljg2NSw3Mi4wNzYgTDE5Myw4NS40MzMgQzE5My41MjMsODUuNzM1IDE5NC4wNTgsODUuODg4IDE5NC41OSw4NS44ODggQzE5Ni4wODcsODUuODg4IDE5Ny4xNzMsODQuNjg5IDE5Ny4xNzMsODMuMDM2IEwxOTcuMTczLDI5LjAzNSBDMTk3LjE3MywyOC40NTEgMTk2Ljg2MSwyNy45MTEgMTk2LjM1NSwyNy42MTkgQzE5Ni4zNTUsMjcuNjE5IDE3MS44NDMsMTMuNDY3IDE3MC4zODUsMTIuNjI2IEMxNzAuMTMyLDEyLjQ4IDE2OS44NSwxMi40MDcgMTY5LjU2OCwxMi40MDcgQzE2OS4yODUsMTIuNDA3IDE2OS4wMDIsMTIuNDgxIDE2OC43NDksMTIuNjI3IEMxNjguMTQzLDEyLjk3OCAxNjUuNzU2LDE0LjM1NyAxNjQuNDI0LDE1LjEyNSBMMTU5LjYxNSwxMC44NyBDMTU4Ljc5NiwxMC4xNDUgMTU4LjE1NCw4LjkzNyAxNTguMDU0LDcuOTM0IEMxNTguMDQ1LDcuODM3IDE1OC4wMzQsNy43MzkgMTU4LjAyMSw3LjY0IEMxNTguMDA1LDcuNTIzIDE1Ny45OTgsNy40MSAxNTcuOTk4LDcuMzA0IEwxNTcuOTk4LDYuNDE4IEMxNTcuOTk4LDUuODM0IDE1Ny42ODYsNS4yOTUgMTU3LjE4MSw1LjAwMiBDMTU2LjYyNCw0LjY4IDE1MC40NDIsMS4xMTEgMTUwLjQ0MiwxLjExMSBDMTUwLjE4OSwwLjk2NSAxNDkuOTA3LDAuODkyIDE0OS42MjUsMC44OTIiIGlkPSJGaWxsLTEiIGZpbGw9IiM0NTVBNjQiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNOTYuMDI3LDI1LjYzNiBMMTQyLjYwMyw1Mi41MjcgQzE0My44MDcsNTMuMjIyIDE0NC41ODIsNTQuMTE0IDE0NC44NDUsNTUuMDY4IEwxNDQuODM1LDU1LjA3NSBMNjMuNDYxLDEwMi4wNTcgTDYzLjQ2LDEwMi4wNTcgQzYxLjgwNiwxMDEuOTA1IDYwLjI2MSwxMDEuNDU3IDU5LjA1NywxMDAuNzYyIEwxMi40ODEsNzMuODcxIEw5Ni4wMjcsMjUuNjM2IiBpZD0iRmlsbC0yIiBmaWxsPSIjRkFGQUZBIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTYzLjQ2MSwxMDIuMTc0IEM2My40NTMsMTAyLjE3NCA2My40NDYsMTAyLjE3NCA2My40MzksMTAyLjE3MiBDNjEuNzQ2LDEwMi4wMTYgNjAuMjExLDEwMS41NjMgNTguOTk4LDEwMC44NjMgTDEyLjQyMiw3My45NzMgQzEyLjM4Niw3My45NTIgMTIuMzY0LDczLjkxNCAxMi4zNjQsNzMuODcxIEMxMi4zNjQsNzMuODMgMTIuMzg2LDczLjc5MSAxMi40MjIsNzMuNzcgTDk1Ljk2OCwyNS41MzUgQzk2LjAwNCwyNS41MTQgOTYuMDQ5LDI1LjUxNCA5Ni4wODUsMjUuNTM1IEwxNDIuNjYxLDUyLjQyNiBDMTQzLjg4OCw1My4xMzQgMTQ0LjY4Miw1NC4wMzggMTQ0Ljk1Nyw1NS4wMzcgQzE0NC45Nyw1NS4wODMgMTQ0Ljk1Myw1NS4xMzMgMTQ0LjkxNSw1NS4xNjEgQzE0NC45MTEsNTUuMTY1IDE0NC44OTgsNTUuMTc0IDE0NC44OTQsNTUuMTc3IEw2My41MTksMTAyLjE1OCBDNjMuNTAxLDEwMi4xNjkgNjMuNDgxLDEwMi4xNzQgNjMuNDYxLDEwMi4xNzQgTDYzLjQ2MSwxMDIuMTc0IFogTTEyLjcxNCw3My44NzEgTDU5LjExNSwxMDAuNjYxIEM2MC4yOTMsMTAxLjM0MSA2MS43ODYsMTAxLjc4MiA2My40MzUsMTAxLjkzNyBMMTQ0LjcwNyw1NS4wMTUgQzE0NC40MjgsNTQuMTA4IDE0My42ODIsNTMuMjg1IDE0Mi41NDQsNTIuNjI4IEw5Ni4wMjcsMjUuNzcxIEwxMi43MTQsNzMuODcxIEwxMi43MTQsNzMuODcxIFoiIGlkPSJGaWxsLTMiIGZpbGw9IiM2MDdEOEIiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTQ4LjMyNyw1OC40NzEgQzE0OC4xNDUsNTguNDggMTQ3Ljk2Miw1OC40OCAxNDcuNzgxLDU4LjQ3MiBDMTQ1Ljg4Nyw1OC4zODkgMTQ0LjQ3OSw1Ny40MzQgMTQ0LjYzNiw1Ni4zNCBDMTQ0LjY4OSw1NS45NjcgMTQ0LjY2NCw1NS41OTcgMTQ0LjU2NCw1NS4yMzUgTDYzLjQ2MSwxMDIuMDU3IEM2NC4wODksMTAyLjExNSA2NC43MzMsMTAyLjEzIDY1LjM3OSwxMDIuMDk5IEM2NS41NjEsMTAyLjA5IDY1Ljc0MywxMDIuMDkgNjUuOTI1LDEwMi4wOTggQzY3LjgxOSwxMDIuMTgxIDY5LjIyNywxMDMuMTM2IDY5LjA3LDEwNC4yMyBMMTQ4LjMyNyw1OC40NzEiIGlkPSJGaWxsLTQiIGZpbGw9IiNGRkZGRkYiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNNjkuMDcsMTA0LjM0NyBDNjkuMDQ4LDEwNC4zNDcgNjkuMDI1LDEwNC4zNCA2OS4wMDUsMTA0LjMyNyBDNjguOTY4LDEwNC4zMDEgNjguOTQ4LDEwNC4yNTcgNjguOTU1LDEwNC4yMTMgQzY5LDEwMy44OTYgNjguODk4LDEwMy41NzYgNjguNjU4LDEwMy4yODggQzY4LjE1MywxMDIuNjc4IDY3LjEwMywxMDIuMjY2IDY1LjkyLDEwMi4yMTQgQzY1Ljc0MiwxMDIuMjA2IDY1LjU2MywxMDIuMjA3IDY1LjM4NSwxMDIuMjE1IEM2NC43NDIsMTAyLjI0NiA2NC4wODcsMTAyLjIzMiA2My40NSwxMDIuMTc0IEM2My4zOTksMTAyLjE2OSA2My4zNTgsMTAyLjEzMiA2My4zNDcsMTAyLjA4MiBDNjMuMzM2LDEwMi4wMzMgNjMuMzU4LDEwMS45ODEgNjMuNDAyLDEwMS45NTYgTDE0NC41MDYsNTUuMTM0IEMxNDQuNTM3LDU1LjExNiAxNDQuNTc1LDU1LjExMyAxNDQuNjA5LDU1LjEyNyBDMTQ0LjY0Miw1NS4xNDEgMTQ0LjY2OCw1NS4xNyAxNDQuNjc3LDU1LjIwNCBDMTQ0Ljc4MSw1NS41ODUgMTQ0LjgwNiw1NS45NzIgMTQ0Ljc1MSw1Ni4zNTcgQzE0NC43MDYsNTYuNjczIDE0NC44MDgsNTYuOTk0IDE0NS4wNDcsNTcuMjgyIEMxNDUuNTUzLDU3Ljg5MiAxNDYuNjAyLDU4LjMwMyAxNDcuNzg2LDU4LjM1NSBDMTQ3Ljk2NCw1OC4zNjMgMTQ4LjE0Myw1OC4zNjMgMTQ4LjMyMSw1OC4zNTQgQzE0OC4zNzcsNTguMzUyIDE0OC40MjQsNTguMzg3IDE0OC40MzksNTguNDM4IEMxNDguNDU0LDU4LjQ5IDE0OC40MzIsNTguNTQ1IDE0OC4zODUsNTguNTcyIEw2OS4xMjksMTA0LjMzMSBDNjkuMTExLDEwNC4zNDIgNjkuMDksMTA0LjM0NyA2OS4wNywxMDQuMzQ3IEw2OS4wNywxMDQuMzQ3IFogTTY1LjY2NSwxMDEuOTc1IEM2NS43NTQsMTAxLjk3NSA2NS44NDIsMTAxLjk3NyA2NS45MywxMDEuOTgxIEM2Ny4xOTYsMTAyLjAzNyA2OC4yODMsMTAyLjQ2OSA2OC44MzgsMTAzLjEzOSBDNjkuMDY1LDEwMy40MTMgNjkuMTg4LDEwMy43MTQgNjkuMTk4LDEwNC4wMjEgTDE0Ny44ODMsNTguNTkyIEMxNDcuODQ3LDU4LjU5MiAxNDcuODExLDU4LjU5MSAxNDcuNzc2LDU4LjU4OSBDMTQ2LjUwOSw1OC41MzMgMTQ1LjQyMiw1OC4xIDE0NC44NjcsNTcuNDMxIEMxNDQuNTg1LDU3LjA5MSAxNDQuNDY1LDU2LjcwNyAxNDQuNTIsNTYuMzI0IEMxNDQuNTYzLDU2LjAyMSAxNDQuNTUyLDU1LjcxNiAxNDQuNDg4LDU1LjQxNCBMNjMuODQ2LDEwMS45NyBDNjQuMzUzLDEwMi4wMDIgNjQuODY3LDEwMi4wMDYgNjUuMzc0LDEwMS45ODIgQzY1LjQ3MSwxMDEuOTc3IDY1LjU2OCwxMDEuOTc1IDY1LjY2NSwxMDEuOTc1IEw2NS42NjUsMTAxLjk3NSBaIiBpZD0iRmlsbC01IiBmaWxsPSIjNjA3RDhCIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTIuMjA4LDU1LjEzNCBDMS4yMDcsNTMuMzA3IDEuOTY3LDUwLjkxNyAzLjkwNiw0OS43OTcgTDU5LjkxNywxNy40NTMgQzYxLjg1NiwxNi4zMzMgNjQuMjQxLDE2LjkwNyA2NS4yNDMsMTguNzM0IEw2NS40NzUsMTkuMTQ0IEM2NS44NzIsMTkuODgyIDY2LjM2OCwyMC41NiA2Ni45NDUsMjEuMTY1IEw2Ny4yMjMsMjEuNDM1IEM3MC41NDgsMjQuNjQ5IDc1LjgwNiwyNS4xNTEgODAuMTExLDIyLjY2NSBMODcuNDMsMTguNDQ1IEM4OS4zNywxNy4zMjYgOTEuNzU0LDE3Ljg5OSA5Mi43NTUsMTkuNzI3IEw5Ni4wMDUsMjUuNjU1IEwxMi40ODYsNzMuODg0IEwyLjIwOCw1NS4xMzQgWiIgaWQ9IkZpbGwtNiIgZmlsbD0iI0ZBRkFGQSI+PC9wYXRoPgogICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMi40ODYsNzQuMDAxIEMxMi40NzYsNzQuMDAxIDEyLjQ2NSw3My45OTkgMTIuNDU1LDczLjk5NiBDMTIuNDI0LDczLjk4OCAxMi4zOTksNzMuOTY3IDEyLjM4NCw3My45NCBMMi4xMDYsNTUuMTkgQzEuMDc1LDUzLjMxIDEuODU3LDUwLjg0NSAzLjg0OCw0OS42OTYgTDU5Ljg1OCwxNy4zNTIgQzYwLjUyNSwxNi45NjcgNjEuMjcxLDE2Ljc2NCA2Mi4wMTYsMTYuNzY0IEM2My40MzEsMTYuNzY0IDY0LjY2NiwxNy40NjYgNjUuMzI3LDE4LjY0NiBDNjUuMzM3LDE4LjY1NCA2NS4zNDUsMTguNjYzIDY1LjM1MSwxOC42NzQgTDY1LjU3OCwxOS4wODggQzY1LjU4NCwxOS4xIDY1LjU4OSwxOS4xMTIgNjUuNTkxLDE5LjEyNiBDNjUuOTg1LDE5LjgzOCA2Ni40NjksMjAuNDk3IDY3LjAzLDIxLjA4NSBMNjcuMzA1LDIxLjM1MSBDNjkuMTUxLDIzLjEzNyA3MS42NDksMjQuMTIgNzQuMzM2LDI0LjEyIEM3Ni4zMTMsMjQuMTIgNzguMjksMjMuNTgyIDgwLjA1MywyMi41NjMgQzgwLjA2NCwyMi41NTcgODAuMDc2LDIyLjU1MyA4MC4wODgsMjIuNTUgTDg3LjM3MiwxOC4zNDQgQzg4LjAzOCwxNy45NTkgODguNzg0LDE3Ljc1NiA4OS41MjksMTcuNzU2IEM5MC45NTYsMTcuNzU2IDkyLjIwMSwxOC40NzIgOTIuODU4LDE5LjY3IEw5Ni4xMDcsMjUuNTk5IEM5Ni4xMzgsMjUuNjU0IDk2LjExOCwyNS43MjQgOTYuMDYzLDI1Ljc1NiBMMTIuNTQ1LDczLjk4NSBDMTIuNTI2LDczLjk5NiAxMi41MDYsNzQuMDAxIDEyLjQ4Niw3NC4wMDEgTDEyLjQ4Niw3NC4wMDEgWiBNNjIuMDE2LDE2Ljk5NyBDNjEuMzEyLDE2Ljk5NyA2MC42MDYsMTcuMTkgNTkuOTc1LDE3LjU1NCBMMy45NjUsNDkuODk5IEMyLjA4Myw1MC45ODUgMS4zNDEsNTMuMzA4IDIuMzEsNTUuMDc4IEwxMi41MzEsNzMuNzIzIEw5NS44NDgsMjUuNjExIEw5Mi42NTMsMTkuNzgyIEM5Mi4wMzgsMTguNjYgOTAuODcsMTcuOTkgODkuNTI5LDE3Ljk5IEM4OC44MjUsMTcuOTkgODguMTE5LDE4LjE4MiA4Ny40ODksMTguNTQ3IEw4MC4xNzIsMjIuNzcyIEM4MC4xNjEsMjIuNzc4IDgwLjE0OSwyMi43ODIgODAuMTM3LDIyLjc4NSBDNzguMzQ2LDIzLjgxMSA3Ni4zNDEsMjQuMzU0IDc0LjMzNiwyNC4zNTQgQzcxLjU4OCwyNC4zNTQgNjkuMDMzLDIzLjM0NyA2Ny4xNDIsMjEuNTE5IEw2Ni44NjQsMjEuMjQ5IEM2Ni4yNzcsMjAuNjM0IDY1Ljc3NCwxOS45NDcgNjUuMzY3LDE5LjIwMyBDNjUuMzYsMTkuMTkyIDY1LjM1NiwxOS4xNzkgNjUuMzU0LDE5LjE2NiBMNjUuMTYzLDE4LjgxOSBDNjUuMTU0LDE4LjgxMSA2NS4xNDYsMTguODAxIDY1LjE0LDE4Ljc5IEM2NC41MjUsMTcuNjY3IDYzLjM1NywxNi45OTcgNjIuMDE2LDE2Ljk5NyBMNjIuMDE2LDE2Ljk5NyBaIiBpZD0iRmlsbC03IiBmaWxsPSIjNjA3RDhCIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTQyLjQzNCw0OC44MDggTDQyLjQzNCw0OC44MDggQzM5LjkyNCw0OC44MDcgMzcuNzM3LDQ3LjU1IDM2LjU4Miw0NS40NDMgQzM0Ljc3MSw0Mi4xMzkgMzYuMTQ0LDM3LjgwOSAzOS42NDEsMzUuNzg5IEw1MS45MzIsMjguNjkxIEM1My4xMDMsMjguMDE1IDU0LjQxMywyNy42NTggNTUuNzIxLDI3LjY1OCBDNTguMjMxLDI3LjY1OCA2MC40MTgsMjguOTE2IDYxLjU3MywzMS4wMjMgQzYzLjM4NCwzNC4zMjcgNjIuMDEyLDM4LjY1NyA1OC41MTQsNDAuNjc3IEw0Ni4yMjMsNDcuNzc1IEM0NS4wNTMsNDguNDUgNDMuNzQyLDQ4LjgwOCA0Mi40MzQsNDguODA4IEw0Mi40MzQsNDguODA4IFogTTU1LjcyMSwyOC4xMjUgQzU0LjQ5NSwyOC4xMjUgNTMuMjY1LDI4LjQ2MSA1Mi4xNjYsMjkuMDk2IEwzOS44NzUsMzYuMTk0IEMzNi41OTYsMzguMDg3IDM1LjMwMiw0Mi4xMzYgMzYuOTkyLDQ1LjIxOCBDMzguMDYzLDQ3LjE3MyA0MC4wOTgsNDguMzQgNDIuNDM0LDQ4LjM0IEM0My42NjEsNDguMzQgNDQuODksNDguMDA1IDQ1Ljk5LDQ3LjM3IEw1OC4yODEsNDAuMjcyIEM2MS41NiwzOC4zNzkgNjIuODUzLDM0LjMzIDYxLjE2NCwzMS4yNDggQzYwLjA5MiwyOS4yOTMgNTguMDU4LDI4LjEyNSA1NS43MjEsMjguMTI1IEw1NS43MjEsMjguMTI1IFoiIGlkPSJGaWxsLTgiIGZpbGw9IiM2MDdEOEIiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTQ5LjU4OCwyLjQwNyBDMTQ5LjU4OCwyLjQwNyAxNTUuNzY4LDUuOTc1IDE1Ni4zMjUsNi4yOTcgTDE1Ni4zMjUsNy4xODQgQzE1Ni4zMjUsNy4zNiAxNTYuMzM4LDcuNTQ0IDE1Ni4zNjIsNy43MzMgQzE1Ni4zNzMsNy44MTQgMTU2LjM4Miw3Ljg5NCAxNTYuMzksNy45NzUgQzE1Ni41Myw5LjM5IDE1Ny4zNjMsMTAuOTczIDE1OC40OTUsMTEuOTc0IEwxNjUuODkxLDE4LjUxOSBDMTY2LjA2OCwxOC42NzUgMTY2LjI0OSwxOC44MTQgMTY2LjQzMiwxOC45MzQgQzE2OC4wMTEsMTkuOTc0IDE2OS4zODIsMTkuNCAxNjkuNDk0LDE3LjY1MiBDMTY5LjU0MywxNi44NjggMTY5LjU1MSwxNi4wNTcgMTY5LjUxNywxNS4yMjMgTDE2OS41MTQsMTUuMDYzIEwxNjkuNTE0LDEzLjkxMiBDMTcwLjc4LDE0LjY0MiAxOTUuNTAxLDI4LjkxNSAxOTUuNTAxLDI4LjkxNSBMMTk1LjUwMSw4Mi45MTUgQzE5NS41MDEsODQuMDA1IDE5NC43MzEsODQuNDQ1IDE5My43ODEsODMuODk3IEwxNTEuMzA4LDU5LjM3NCBDMTUwLjM1OCw1OC44MjYgMTQ5LjU4OCw1Ny40OTcgMTQ5LjU4OCw1Ni40MDggTDE0OS41ODgsMjIuMzc1IiBpZD0iRmlsbC05IiBmaWxsPSIjRkFGQUZBIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTE5NC41NTMsODQuMjUgQzE5NC4yOTYsODQuMjUgMTk0LjAxMyw4NC4xNjUgMTkzLjcyMiw4My45OTcgTDE1MS4yNSw1OS40NzYgQzE1MC4yNjksNTguOTA5IDE0OS40NzEsNTcuNTMzIDE0OS40NzEsNTYuNDA4IEwxNDkuNDcxLDIyLjM3NSBMMTQ5LjcwNSwyMi4zNzUgTDE0OS43MDUsNTYuNDA4IEMxNDkuNzA1LDU3LjQ1OSAxNTAuNDUsNTguNzQ0IDE1MS4zNjYsNTkuMjc0IEwxOTMuODM5LDgzLjc5NSBDMTk0LjI2Myw4NC4wNCAxOTQuNjU1LDg0LjA4MyAxOTQuOTQyLDgzLjkxNyBDMTk1LjIyNyw4My43NTMgMTk1LjM4NCw4My4zOTcgMTk1LjM4NCw4Mi45MTUgTDE5NS4zODQsMjguOTgyIEMxOTQuMTAyLDI4LjI0MiAxNzIuMTA0LDE1LjU0MiAxNjkuNjMxLDE0LjExNCBMMTY5LjYzNCwxNS4yMiBDMTY5LjY2OCwxNi4wNTIgMTY5LjY2LDE2Ljg3NCAxNjkuNjEsMTcuNjU5IEMxNjkuNTU2LDE4LjUwMyAxNjkuMjE0LDE5LjEyMyAxNjguNjQ3LDE5LjQwNSBDMTY4LjAyOCwxOS43MTQgMTY3LjE5NywxOS41NzggMTY2LjM2NywxOS4wMzIgQzE2Ni4xODEsMTguOTA5IDE2NS45OTUsMTguNzY2IDE2NS44MTQsMTguNjA2IEwxNTguNDE3LDEyLjA2MiBDMTU3LjI1OSwxMS4wMzYgMTU2LjQxOCw5LjQzNyAxNTYuMjc0LDcuOTg2IEMxNTYuMjY2LDcuOTA3IDE1Ni4yNTcsNy44MjcgMTU2LjI0Nyw3Ljc0OCBDMTU2LjIyMSw3LjU1NSAxNTYuMjA5LDcuMzY1IDE1Ni4yMDksNy4xODQgTDE1Ni4yMDksNi4zNjQgQzE1NS4zNzUsNS44ODMgMTQ5LjUyOSwyLjUwOCAxNDkuNTI5LDIuNTA4IEwxNDkuNjQ2LDIuMzA2IEMxNDkuNjQ2LDIuMzA2IDE1NS44MjcsNS44NzQgMTU2LjM4NCw2LjE5NiBMMTU2LjQ0Miw2LjIzIEwxNTYuNDQyLDcuMTg0IEMxNTYuNDQyLDcuMzU1IDE1Ni40NTQsNy41MzUgMTU2LjQ3OCw3LjcxNyBDMTU2LjQ4OSw3LjggMTU2LjQ5OSw3Ljg4MiAxNTYuNTA3LDcuOTYzIEMxNTYuNjQ1LDkuMzU4IDE1Ny40NTUsMTAuODk4IDE1OC41NzIsMTEuODg2IEwxNjUuOTY5LDE4LjQzMSBDMTY2LjE0MiwxOC41ODQgMTY2LjMxOSwxOC43MiAxNjYuNDk2LDE4LjgzNyBDMTY3LjI1NCwxOS4zMzYgMTY4LDE5LjQ2NyAxNjguNTQzLDE5LjE5NiBDMTY5LjAzMywxOC45NTMgMTY5LjMyOSwxOC40MDEgMTY5LjM3NywxNy42NDUgQzE2OS40MjcsMTYuODY3IDE2OS40MzQsMTYuMDU0IDE2OS40MDEsMTUuMjI4IEwxNjkuMzk3LDE1LjA2NSBMMTY5LjM5NywxMy43MSBMMTY5LjU3MiwxMy44MSBDMTcwLjgzOSwxNC41NDEgMTk1LjU1OSwyOC44MTQgMTk1LjU1OSwyOC44MTQgTDE5NS42MTgsMjguODQ3IEwxOTUuNjE4LDgyLjkxNSBDMTk1LjYxOCw4My40ODQgMTk1LjQyLDgzLjkxMSAxOTUuMDU5LDg0LjExOSBDMTk0LjkwOCw4NC4yMDYgMTk0LjczNyw4NC4yNSAxOTQuNTUzLDg0LjI1IiBpZD0iRmlsbC0xMCIgZmlsbD0iIzYwN0Q4QiI+PC9wYXRoPgogICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xNDUuNjg1LDU2LjE2MSBMMTY5LjgsNzAuMDgzIEwxNDMuODIyLDg1LjA4MSBMMTQyLjM2LDg0Ljc3NCBDMTM1LjgyNiw4Mi42MDQgMTI4LjczMiw4MS4wNDYgMTIxLjM0MSw4MC4xNTggQzExNi45NzYsNzkuNjM0IDExMi42NzgsODEuMjU0IDExMS43NDMsODMuNzc4IEMxMTEuNTA2LDg0LjQxNCAxMTEuNTAzLDg1LjA3MSAxMTEuNzMyLDg1LjcwNiBDMTEzLjI3LDg5Ljk3MyAxMTUuOTY4LDk0LjA2OSAxMTkuNzI3LDk3Ljg0MSBMMTIwLjI1OSw5OC42ODYgQzEyMC4yNiw5OC42ODUgOTQuMjgyLDExMy42ODMgOTQuMjgyLDExMy42ODMgTDcwLjE2Nyw5OS43NjEgTDE0NS42ODUsNTYuMTYxIiBpZD0iRmlsbC0xMSIgZmlsbD0iI0ZGRkZGRiI+PC9wYXRoPgogICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik05NC4yODIsMTEzLjgxOCBMOTQuMjIzLDExMy43ODUgTDY5LjkzMyw5OS43NjEgTDcwLjEwOCw5OS42NiBMMTQ1LjY4NSw1Ni4wMjYgTDE0NS43NDMsNTYuMDU5IEwxNzAuMDMzLDcwLjA4MyBMMTQzLjg0Miw4NS4yMDUgTDE0My43OTcsODUuMTk1IEMxNDMuNzcyLDg1LjE5IDE0Mi4zMzYsODQuODg4IDE0Mi4zMzYsODQuODg4IEMxMzUuNzg3LDgyLjcxNCAxMjguNzIzLDgxLjE2MyAxMjEuMzI3LDgwLjI3NCBDMTIwLjc4OCw4MC4yMDkgMTIwLjIzNiw4MC4xNzcgMTE5LjY4OSw4MC4xNzcgQzExNS45MzEsODAuMTc3IDExMi42MzUsODEuNzA4IDExMS44NTIsODMuODE5IEMxMTEuNjI0LDg0LjQzMiAxMTEuNjIxLDg1LjA1MyAxMTEuODQyLDg1LjY2NyBDMTEzLjM3Nyw4OS45MjUgMTE2LjA1OCw5My45OTMgMTE5LjgxLDk3Ljc1OCBMMTE5LjgyNiw5Ny43NzkgTDEyMC4zNTIsOTguNjE0IEMxMjAuMzU0LDk4LjYxNyAxMjAuMzU2LDk4LjYyIDEyMC4zNTgsOTguNjI0IEwxMjAuNDIyLDk4LjcyNiBMMTIwLjMxNyw5OC43ODcgQzEyMC4yNjQsOTguODE4IDk0LjU5OSwxMTMuNjM1IDk0LjM0LDExMy43ODUgTDk0LjI4MiwxMTMuODE4IEw5NC4yODIsMTEzLjgxOCBaIE03MC40MDEsOTkuNzYxIEw5NC4yODIsMTEzLjU0OSBMMTE5LjA4NCw5OS4yMjkgQzExOS42Myw5OC45MTQgMTE5LjkzLDk4Ljc0IDEyMC4xMDEsOTguNjU0IEwxMTkuNjM1LDk3LjkxNCBDMTE1Ljg2NCw5NC4xMjcgMTEzLjE2OCw5MC4wMzMgMTExLjYyMiw4NS43NDYgQzExMS4zODIsODUuMDc5IDExMS4zODYsODQuNDA0IDExMS42MzMsODMuNzM4IEMxMTIuNDQ4LDgxLjUzOSAxMTUuODM2LDc5Ljk0MyAxMTkuNjg5LDc5Ljk0MyBDMTIwLjI0Niw3OS45NDMgMTIwLjgwNiw3OS45NzYgMTIxLjM1NSw4MC4wNDIgQzEyOC43NjcsODAuOTMzIDEzNS44NDYsODIuNDg3IDE0Mi4zOTYsODQuNjYzIEMxNDMuMjMyLDg0LjgzOCAxNDMuNjExLDg0LjkxNyAxNDMuNzg2LDg0Ljk2NyBMMTY5LjU2Niw3MC4wODMgTDE0NS42ODUsNTYuMjk1IEw3MC40MDEsOTkuNzYxIEw3MC40MDEsOTkuNzYxIFoiIGlkPSJGaWxsLTEyIiBmaWxsPSIjNjA3RDhCIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTE2Ny4yMywxOC45NzkgTDE2Ny4yMyw2OS44NSBMMTM5LjkwOSw4NS42MjMgTDEzMy40NDgsNzEuNDU2IEMxMzIuNTM4LDY5LjQ2IDEzMC4wMiw2OS43MTggMTI3LjgyNCw3Mi4wMyBDMTI2Ljc2OSw3My4xNCAxMjUuOTMxLDc0LjU4NSAxMjUuNDk0LDc2LjA0OCBMMTE5LjAzNCw5Ny42NzYgTDkxLjcxMiwxMTMuNDUgTDkxLjcxMiw2Mi41NzkgTDE2Ny4yMywxOC45NzkiIGlkPSJGaWxsLTEzIiBmaWxsPSIjRkZGRkZGIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTkxLjcxMiwxMTMuNTY3IEM5MS42OTIsMTEzLjU2NyA5MS42NzIsMTEzLjU2MSA5MS42NTMsMTEzLjU1MSBDOTEuNjE4LDExMy41MyA5MS41OTUsMTEzLjQ5MiA5MS41OTUsMTEzLjQ1IEw5MS41OTUsNjIuNTc5IEM5MS41OTUsNjIuNTM3IDkxLjYxOCw2Mi40OTkgOTEuNjUzLDYyLjQ3OCBMMTY3LjE3MiwxOC44NzggQzE2Ny4yMDgsMTguODU3IDE2Ny4yNTIsMTguODU3IDE2Ny4yODgsMTguODc4IEMxNjcuMzI0LDE4Ljg5OSAxNjcuMzQ3LDE4LjkzNyAxNjcuMzQ3LDE4Ljk3OSBMMTY3LjM0Nyw2OS44NSBDMTY3LjM0Nyw2OS44OTEgMTY3LjMyNCw2OS45MyAxNjcuMjg4LDY5Ljk1IEwxMzkuOTY3LDg1LjcyNSBDMTM5LjkzOSw4NS43NDEgMTM5LjkwNSw4NS43NDUgMTM5Ljg3Myw4NS43MzUgQzEzOS44NDIsODUuNzI1IDEzOS44MTYsODUuNzAyIDEzOS44MDIsODUuNjcyIEwxMzMuMzQyLDcxLjUwNCBDMTMyLjk2Nyw3MC42ODIgMTMyLjI4LDcwLjIyOSAxMzEuNDA4LDcwLjIyOSBDMTMwLjMxOSw3MC4yMjkgMTI5LjA0NCw3MC45MTUgMTI3LjkwOCw3Mi4xMSBDMTI2Ljg3NCw3My4yIDEyNi4wMzQsNzQuNjQ3IDEyNS42MDYsNzYuMDgyIEwxMTkuMTQ2LDk3LjcwOSBDMTE5LjEzNyw5Ny43MzggMTE5LjExOCw5Ny43NjIgMTE5LjA5Miw5Ny43NzcgTDkxLjc3LDExMy41NTEgQzkxLjc1MiwxMTMuNTYxIDkxLjczMiwxMTMuNTY3IDkxLjcxMiwxMTMuNTY3IEw5MS43MTIsMTEzLjU2NyBaIE05MS44MjksNjIuNjQ3IEw5MS44MjksMTEzLjI0OCBMMTE4LjkzNSw5Ny41OTggTDEyNS4zODIsNzYuMDE1IEMxMjUuODI3LDc0LjUyNSAxMjYuNjY0LDczLjA4MSAxMjcuNzM5LDcxLjk1IEMxMjguOTE5LDcwLjcwOCAxMzAuMjU2LDY5Ljk5NiAxMzEuNDA4LDY5Ljk5NiBDMTMyLjM3Nyw2OS45OTYgMTMzLjEzOSw3MC40OTcgMTMzLjU1NCw3MS40MDcgTDEzOS45NjEsODUuNDU4IEwxNjcuMTEzLDY5Ljc4MiBMMTY3LjExMywxOS4xODEgTDkxLjgyOSw2Mi42NDcgTDkxLjgyOSw2Mi42NDcgWiIgaWQ9IkZpbGwtMTQiIGZpbGw9IiM2MDdEOEIiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTY4LjU0MywxOS4yMTMgTDE2OC41NDMsNzAuMDgzIEwxNDEuMjIxLDg1Ljg1NyBMMTM0Ljc2MSw3MS42ODkgQzEzMy44NTEsNjkuNjk0IDEzMS4zMzMsNjkuOTUxIDEyOS4xMzcsNzIuMjYzIEMxMjguMDgyLDczLjM3NCAxMjcuMjQ0LDc0LjgxOSAxMjYuODA3LDc2LjI4MiBMMTIwLjM0Niw5Ny45MDkgTDkzLjAyNSwxMTMuNjgzIEw5My4wMjUsNjIuODEzIEwxNjguNTQzLDE5LjIxMyIgaWQ9IkZpbGwtMTUiIGZpbGw9IiNGRkZGRkYiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNOTMuMDI1LDExMy44IEM5My4wMDUsMTEzLjggOTIuOTg0LDExMy43OTUgOTIuOTY2LDExMy43ODUgQzkyLjkzMSwxMTMuNzY0IDkyLjkwOCwxMTMuNzI1IDkyLjkwOCwxMTMuNjg0IEw5Mi45MDgsNjIuODEzIEM5Mi45MDgsNjIuNzcxIDkyLjkzMSw2Mi43MzMgOTIuOTY2LDYyLjcxMiBMMTY4LjQ4NCwxOS4xMTIgQzE2OC41MiwxOS4wOSAxNjguNTY1LDE5LjA5IDE2OC42MDEsMTkuMTEyIEMxNjguNjM3LDE5LjEzMiAxNjguNjYsMTkuMTcxIDE2OC42NiwxOS4yMTIgTDE2OC42Niw3MC4wODMgQzE2OC42Niw3MC4xMjUgMTY4LjYzNyw3MC4xNjQgMTY4LjYwMSw3MC4xODQgTDE0MS4yOCw4NS45NTggQzE0MS4yNTEsODUuOTc1IDE0MS4yMTcsODUuOTc5IDE0MS4xODYsODUuOTY4IEMxNDEuMTU0LDg1Ljk1OCAxNDEuMTI5LDg1LjkzNiAxNDEuMTE1LDg1LjkwNiBMMTM0LjY1NSw3MS43MzggQzEzNC4yOCw3MC45MTUgMTMzLjU5Myw3MC40NjMgMTMyLjcyLDcwLjQ2MyBDMTMxLjYzMiw3MC40NjMgMTMwLjM1Nyw3MS4xNDggMTI5LjIyMSw3Mi4zNDQgQzEyOC4xODYsNzMuNDMzIDEyNy4zNDcsNzQuODgxIDEyNi45MTksNzYuMzE1IEwxMjAuNDU4LDk3Ljk0MyBDMTIwLjQ1LDk3Ljk3MiAxMjAuNDMxLDk3Ljk5NiAxMjAuNDA1LDk4LjAxIEw5My4wODMsMTEzLjc4NSBDOTMuMDY1LDExMy43OTUgOTMuMDQ1LDExMy44IDkzLjAyNSwxMTMuOCBMOTMuMDI1LDExMy44IFogTTkzLjE0Miw2Mi44ODEgTDkzLjE0MiwxMTMuNDgxIEwxMjAuMjQ4LDk3LjgzMiBMMTI2LjY5NSw3Ni4yNDggQzEyNy4xNCw3NC43NTggMTI3Ljk3Nyw3My4zMTUgMTI5LjA1Miw3Mi4xODMgQzEzMC4yMzEsNzAuOTQyIDEzMS41NjgsNzAuMjI5IDEzMi43Miw3MC4yMjkgQzEzMy42ODksNzAuMjI5IDEzNC40NTIsNzAuNzMxIDEzNC44NjcsNzEuNjQxIEwxNDEuMjc0LDg1LjY5MiBMMTY4LjQyNiw3MC4wMTYgTDE2OC40MjYsMTkuNDE1IEw5My4xNDIsNjIuODgxIEw5My4xNDIsNjIuODgxIFoiIGlkPSJGaWxsLTE2IiBmaWxsPSIjNjA3RDhCIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTE2OS44LDcwLjA4MyBMMTQyLjQ3OCw4NS44NTcgTDEzNi4wMTgsNzEuNjg5IEMxMzUuMTA4LDY5LjY5NCAxMzIuNTksNjkuOTUxIDEzMC4zOTMsNzIuMjYzIEMxMjkuMzM5LDczLjM3NCAxMjguNSw3NC44MTkgMTI4LjA2NCw3Ni4yODIgTDEyMS42MDMsOTcuOTA5IEw5NC4yODIsMTEzLjY4MyBMOTQuMjgyLDYyLjgxMyBMMTY5LjgsMTkuMjEzIEwxNjkuOCw3MC4wODMgWiIgaWQ9IkZpbGwtMTciIGZpbGw9IiNGQUZBRkEiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNOTQuMjgyLDExMy45MTcgQzk0LjI0MSwxMTMuOTE3IDk0LjIwMSwxMTMuOTA3IDk0LjE2NSwxMTMuODg2IEM5NC4wOTMsMTEzLjg0NSA5NC4wNDgsMTEzLjc2NyA5NC4wNDgsMTEzLjY4NCBMOTQuMDQ4LDYyLjgxMyBDOTQuMDQ4LDYyLjczIDk0LjA5Myw2Mi42NTIgOTQuMTY1LDYyLjYxMSBMMTY5LjY4MywxOS4wMSBDMTY5Ljc1NSwxOC45NjkgMTY5Ljg0NCwxOC45NjkgMTY5LjkxNywxOS4wMSBDMTY5Ljk4OSwxOS4wNTIgMTcwLjAzMywxOS4xMjkgMTcwLjAzMywxOS4yMTIgTDE3MC4wMzMsNzAuMDgzIEMxNzAuMDMzLDcwLjE2NiAxNjkuOTg5LDcwLjI0NCAxNjkuOTE3LDcwLjI4NSBMMTQyLjU5NSw4Ni4wNiBDMTQyLjUzOCw4Ni4wOTIgMTQyLjQ2OSw4Ni4xIDE0Mi40MDcsODYuMDggQzE0Mi4zNDQsODYuMDYgMTQyLjI5Myw4Ni4wMTQgMTQyLjI2Niw4NS45NTQgTDEzNS44MDUsNzEuNzg2IEMxMzUuNDQ1LDcwLjk5NyAxMzQuODEzLDcwLjU4IDEzMy45NzcsNzAuNTggQzEzMi45MjEsNzAuNTggMTMxLjY3Niw3MS4yNTIgMTMwLjU2Miw3Mi40MjQgQzEyOS41NCw3My41MDEgMTI4LjcxMSw3NC45MzEgMTI4LjI4Nyw3Ni4zNDggTDEyMS44MjcsOTcuOTc2IEMxMjEuODEsOTguMDM0IDEyMS43NzEsOTguMDgyIDEyMS43Miw5OC4xMTIgTDk0LjM5OCwxMTMuODg2IEM5NC4zNjIsMTEzLjkwNyA5NC4zMjIsMTEzLjkxNyA5NC4yODIsMTEzLjkxNyBMOTQuMjgyLDExMy45MTcgWiBNOTQuNTE1LDYyLjk0OCBMOTQuNTE1LDExMy4yNzkgTDEyMS40MDYsOTcuNzU0IEwxMjcuODQsNzYuMjE1IEMxMjguMjksNzQuNzA4IDEyOS4xMzcsNzMuMjQ3IDEzMC4yMjQsNzIuMTAzIEMxMzEuNDI1LDcwLjgzOCAxMzIuNzkzLDcwLjExMiAxMzMuOTc3LDcwLjExMiBDMTM0Ljk5NSw3MC4xMTIgMTM1Ljc5NSw3MC42MzggMTM2LjIzLDcxLjU5MiBMMTQyLjU4NCw4NS41MjYgTDE2OS41NjYsNjkuOTQ4IEwxNjkuNTY2LDE5LjYxNyBMOTQuNTE1LDYyLjk0OCBMOTQuNTE1LDYyLjk0OCBaIiBpZD0iRmlsbC0xOCIgZmlsbD0iIzYwN0Q4QiI+PC9wYXRoPgogICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMDkuODk0LDkyLjk0MyBMMTA5Ljg5NCw5Mi45NDMgQzEwOC4xMiw5Mi45NDMgMTA2LjY1Myw5Mi4yMTggMTA1LjY1LDkwLjgyMyBDMTA1LjU4Myw5MC43MzEgMTA1LjU5Myw5MC42MSAxMDUuNjczLDkwLjUyOSBDMTA1Ljc1Myw5MC40NDggMTA1Ljg4LDkwLjQ0IDEwNS45NzQsOTAuNTA2IEMxMDYuNzU0LDkxLjA1MyAxMDcuNjc5LDkxLjMzMyAxMDguNzI0LDkxLjMzMyBDMTEwLjA0Nyw5MS4zMzMgMTExLjQ3OCw5MC44OTQgMTEyLjk4LDkwLjAyNyBDMTE4LjI5MSw4Ni45NiAxMjIuNjExLDc5LjUwOSAxMjIuNjExLDczLjQxNiBDMTIyLjYxMSw3MS40ODkgMTIyLjE2OSw2OS44NTYgMTIxLjMzMyw2OC42OTIgQzEyMS4yNjYsNjguNiAxMjEuMjc2LDY4LjQ3MyAxMjEuMzU2LDY4LjM5MiBDMTIxLjQzNiw2OC4zMTEgMTIxLjU2Myw2OC4yOTkgMTIxLjY1Niw2OC4zNjUgQzEyMy4zMjcsNjkuNTM3IDEyNC4yNDcsNzEuNzQ2IDEyNC4yNDcsNzQuNTg0IEMxMjQuMjQ3LDgwLjgyNiAxMTkuODIxLDg4LjQ0NyAxMTQuMzgyLDkxLjU4NyBDMTEyLjgwOCw5Mi40OTUgMTExLjI5OCw5Mi45NDMgMTA5Ljg5NCw5Mi45NDMgTDEwOS44OTQsOTIuOTQzIFogTTEwNi45MjUsOTEuNDAxIEMxMDcuNzM4LDkyLjA1MiAxMDguNzQ1LDkyLjI3OCAxMDkuODkzLDkyLjI3OCBMMTA5Ljg5NCw5Mi4yNzggQzExMS4yMTUsOTIuMjc4IDExMi42NDcsOTEuOTUxIDExNC4xNDgsOTEuMDg0IEMxMTkuNDU5LDg4LjAxNyAxMjMuNzgsODAuNjIxIDEyMy43OCw3NC41MjggQzEyMy43OCw3Mi41NDkgMTIzLjMxNyw3MC45MjkgMTIyLjQ1NCw2OS43NjcgQzEyMi44NjUsNzAuODAyIDEyMy4wNzksNzIuMDQyIDEyMy4wNzksNzMuNDAyIEMxMjMuMDc5LDc5LjY0NSAxMTguNjUzLDg3LjI4NSAxMTMuMjE0LDkwLjQyNSBDMTExLjY0LDkxLjMzNCAxMTAuMTMsOTEuNzQyIDEwOC43MjQsOTEuNzQyIEMxMDguMDgzLDkxLjc0MiAxMDcuNDgxLDkxLjU5MyAxMDYuOTI1LDkxLjQwMSBMMTA2LjkyNSw5MS40MDEgWiIgaWQ9IkZpbGwtMTkiIGZpbGw9IiM2MDdEOEIiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTEzLjA5Nyw5MC4yMyBDMTE4LjQ4MSw4Ny4xMjIgMTIyLjg0NSw3OS41OTQgMTIyLjg0NSw3My40MTYgQzEyMi44NDUsNzEuMzY1IDEyMi4zNjIsNjkuNzI0IDEyMS41MjIsNjguNTU2IEMxMTkuNzM4LDY3LjMwNCAxMTcuMTQ4LDY3LjM2MiAxMTQuMjY1LDY5LjAyNiBDMTA4Ljg4MSw3Mi4xMzQgMTA0LjUxNyw3OS42NjIgMTA0LjUxNyw4NS44NCBDMTA0LjUxNyw4Ny44OTEgMTA1LDg5LjUzMiAxMDUuODQsOTAuNyBDMTA3LjYyNCw5MS45NTIgMTEwLjIxNCw5MS44OTQgMTEzLjA5Nyw5MC4yMyIgaWQ9IkZpbGwtMjAiIGZpbGw9IiNGQUZBRkEiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTA4LjcyNCw5MS42MTQgTDEwOC43MjQsOTEuNjE0IEMxMDcuNTgyLDkxLjYxNCAxMDYuNTY2LDkxLjQwMSAxMDUuNzA1LDkwLjc5NyBDMTA1LjY4NCw5MC43ODMgMTA1LjY2NSw5MC44MTEgMTA1LjY1LDkwLjc5IEMxMDQuNzU2LDg5LjU0NiAxMDQuMjgzLDg3Ljg0MiAxMDQuMjgzLDg1LjgxNyBDMTA0LjI4Myw3OS41NzUgMTA4LjcwOSw3MS45NTMgMTE0LjE0OCw2OC44MTIgQzExNS43MjIsNjcuOTA0IDExNy4yMzIsNjcuNDQ5IDExOC42MzgsNjcuNDQ5IEMxMTkuNzgsNjcuNDQ5IDEyMC43OTYsNjcuNzU4IDEyMS42NTYsNjguMzYyIEMxMjEuNjc4LDY4LjM3NyAxMjEuNjk3LDY4LjM5NyAxMjEuNzEyLDY4LjQxOCBDMTIyLjYwNiw2OS42NjIgMTIzLjA3OSw3MS4zOSAxMjMuMDc5LDczLjQxNSBDMTIzLjA3OSw3OS42NTggMTE4LjY1Myw4Ny4xOTggMTEzLjIxNCw5MC4zMzggQzExMS42NCw5MS4yNDcgMTEwLjEzLDkxLjYxNCAxMDguNzI0LDkxLjYxNCBMMTA4LjcyNCw5MS42MTQgWiBNMTA2LjAwNiw5MC41MDUgQzEwNi43OCw5MS4wMzcgMTA3LjY5NCw5MS4yODEgMTA4LjcyNCw5MS4yODEgQzExMC4wNDcsOTEuMjgxIDExMS40NzgsOTAuODY4IDExMi45OCw5MC4wMDEgQzExOC4yOTEsODYuOTM1IDEyMi42MTEsNzkuNDk2IDEyMi42MTEsNzMuNDAzIEMxMjIuNjExLDcxLjQ5NCAxMjIuMTc3LDY5Ljg4IDEyMS4zNTYsNjguNzE4IEMxMjAuNTgyLDY4LjE4NSAxMTkuNjY4LDY3LjkxOSAxMTguNjM4LDY3LjkxOSBDMTE3LjMxNSw2Ny45MTkgMTE1Ljg4Myw2OC4zNiAxMTQuMzgyLDY5LjIyNyBDMTA5LjA3MSw3Mi4yOTMgMTA0Ljc1MSw3OS43MzMgMTA0Ljc1MSw4NS44MjYgQzEwNC43NTEsODcuNzM1IDEwNS4xODUsODkuMzQzIDEwNi4wMDYsOTAuNTA1IEwxMDYuMDA2LDkwLjUwNSBaIiBpZD0iRmlsbC0yMSIgZmlsbD0iIzYwN0Q4QiI+PC9wYXRoPgogICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xNDkuMzE4LDcuMjYyIEwxMzkuMzM0LDE2LjE0IEwxNTUuMjI3LDI3LjE3MSBMMTYwLjgxNiwyMS4wNTkgTDE0OS4zMTgsNy4yNjIiIGlkPSJGaWxsLTIyIiBmaWxsPSIjRkFGQUZBIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTE2OS42NzYsMTMuODQgTDE1OS45MjgsMTkuNDY3IEMxNTYuMjg2LDIxLjU3IDE1MC40LDIxLjU4IDE0Ni43ODEsMTkuNDkxIEMxNDMuMTYxLDE3LjQwMiAxNDMuMTgsMTQuMDAzIDE0Ni44MjIsMTEuOSBMMTU2LjMxNyw2LjI5MiBMMTQ5LjU4OCwyLjQwNyBMNjcuNzUyLDQ5LjQ3OCBMMTEzLjY3NSw3NS45OTIgTDExNi43NTYsNzQuMjEzIEMxMTcuMzg3LDczLjg0OCAxMTcuNjI1LDczLjMxNSAxMTcuMzc0LDcyLjgyMyBDMTE1LjAxNyw2OC4xOTEgMTE0Ljc4MSw2My4yNzcgMTE2LjY5MSw1OC41NjEgQzEyMi4zMjksNDQuNjQxIDE0MS4yLDMzLjc0NiAxNjUuMzA5LDMwLjQ5MSBDMTczLjQ3OCwyOS4zODggMTgxLjk4OSwyOS41MjQgMTkwLjAxMywzMC44ODUgQzE5MC44NjUsMzEuMDMgMTkxLjc4OSwzMC44OTMgMTkyLjQyLDMwLjUyOCBMMTk1LjUwMSwyOC43NSBMMTY5LjY3NiwxMy44NCIgaWQ9IkZpbGwtMjMiIGZpbGw9IiNGQUZBRkEiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTEzLjY3NSw3Ni40NTkgQzExMy41OTQsNzYuNDU5IDExMy41MTQsNzYuNDM4IDExMy40NDIsNzYuMzk3IEw2Ny41MTgsNDkuODgyIEM2Ny4zNzQsNDkuNzk5IDY3LjI4NCw0OS42NDUgNjcuMjg1LDQ5LjQ3OCBDNjcuMjg1LDQ5LjMxMSA2Ny4zNzQsNDkuMTU3IDY3LjUxOSw0OS4wNzMgTDE0OS4zNTUsMi4wMDIgQzE0OS40OTksMS45MTkgMTQ5LjY3NywxLjkxOSAxNDkuODIxLDIuMDAyIEwxNTYuNTUsNS44ODcgQzE1Ni43NzQsNi4wMTcgMTU2Ljg1LDYuMzAyIDE1Ni43MjIsNi41MjYgQzE1Ni41OTIsNi43NDkgMTU2LjMwNyw2LjgyNiAxNTYuMDgzLDYuNjk2IEwxNDkuNTg3LDIuOTQ2IEw2OC42ODcsNDkuNDc5IEwxMTMuNjc1LDc1LjQ1MiBMMTE2LjUyMyw3My44MDggQzExNi43MTUsNzMuNjk3IDExNy4xNDMsNzMuMzk5IDExNi45NTgsNzMuMDM1IEMxMTQuNTQyLDY4LjI4NyAxMTQuMyw2My4yMjEgMTE2LjI1OCw1OC4zODUgQzExOS4wNjQsNTEuNDU4IDEyNS4xNDMsNDUuMTQzIDEzMy44NCw0MC4xMjIgQzE0Mi40OTcsMzUuMTI0IDE1My4zNTgsMzEuNjMzIDE2NS4yNDcsMzAuMDI4IEMxNzMuNDQ1LDI4LjkyMSAxODIuMDM3LDI5LjA1OCAxOTAuMDkxLDMwLjQyNSBDMTkwLjgzLDMwLjU1IDE5MS42NTIsMzAuNDMyIDE5Mi4xODYsMzAuMTI0IEwxOTQuNTY3LDI4Ljc1IEwxNjkuNDQyLDE0LjI0NCBDMTY5LjIxOSwxNC4xMTUgMTY5LjE0MiwxMy44MjkgMTY5LjI3MSwxMy42MDYgQzE2OS40LDEzLjM4MiAxNjkuNjg1LDEzLjMwNiAxNjkuOTA5LDEzLjQzNSBMMTk1LjczNCwyOC4zNDUgQzE5NS44NzksMjguNDI4IDE5NS45NjgsMjguNTgzIDE5NS45NjgsMjguNzUgQzE5NS45NjgsMjguOTE2IDE5NS44NzksMjkuMDcxIDE5NS43MzQsMjkuMTU0IEwxOTIuNjUzLDMwLjkzMyBDMTkxLjkzMiwzMS4zNSAxOTAuODksMzEuNTA4IDE4OS45MzUsMzEuMzQ2IEMxODEuOTcyLDI5Ljk5NSAxNzMuNDc4LDI5Ljg2IDE2NS4zNzIsMzAuOTU0IEMxNTMuNjAyLDMyLjU0MyAxNDIuODYsMzUuOTkzIDEzNC4zMDcsNDAuOTMxIEMxMjUuNzkzLDQ1Ljg0NyAxMTkuODUxLDUyLjAwNCAxMTcuMTI0LDU4LjczNiBDMTE1LjI3LDYzLjMxNCAxMTUuNTAxLDY4LjExMiAxMTcuNzksNzIuNjExIEMxMTguMTYsNzMuMzM2IDExNy44NDUsNzQuMTI0IDExNi45OSw3NC42MTcgTDExMy45MDksNzYuMzk3IEMxMTMuODM2LDc2LjQzOCAxMTMuNzU2LDc2LjQ1OSAxMTMuNjc1LDc2LjQ1OSIgaWQ9IkZpbGwtMjQiIGZpbGw9IiM0NTVBNjQiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTUzLjMxNiwyMS4yNzkgQzE1MC45MDMsMjEuMjc5IDE0OC40OTUsMjAuNzUxIDE0Ni42NjQsMTkuNjkzIEMxNDQuODQ2LDE4LjY0NCAxNDMuODQ0LDE3LjIzMiAxNDMuODQ0LDE1LjcxOCBDMTQzLjg0NCwxNC4xOTEgMTQ0Ljg2LDEyLjc2MyAxNDYuNzA1LDExLjY5OCBMMTU2LjE5OCw2LjA5MSBDMTU2LjMwOSw2LjAyNSAxNTYuNDUyLDYuMDYyIDE1Ni41MTgsNi4xNzMgQzE1Ni41ODMsNi4yODQgMTU2LjU0Nyw2LjQyNyAxNTYuNDM2LDYuNDkzIEwxNDYuOTQsMTIuMTAyIEMxNDUuMjQ0LDEzLjA4MSAxNDQuMzEyLDE0LjM2NSAxNDQuMzEyLDE1LjcxOCBDMTQ0LjMxMiwxNy4wNTggMTQ1LjIzLDE4LjMyNiAxNDYuODk3LDE5LjI4OSBDMTUwLjQ0NiwyMS4zMzggMTU2LjI0LDIxLjMyNyAxNTkuODExLDE5LjI2NSBMMTY5LjU1OSwxMy42MzcgQzE2OS42NywxMy41NzMgMTY5LjgxMywxMy42MTEgMTY5Ljg3OCwxMy43MjMgQzE2OS45NDMsMTMuODM0IDE2OS45MDQsMTMuOTc3IDE2OS43OTMsMTQuMDQyIEwxNjAuMDQ1LDE5LjY3IEMxNTguMTg3LDIwLjc0MiAxNTUuNzQ5LDIxLjI3OSAxNTMuMzE2LDIxLjI3OSIgaWQ9IkZpbGwtMjUiIGZpbGw9IiM2MDdEOEIiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTEzLjY3NSw3NS45OTIgTDY3Ljc2Miw0OS40ODQiIGlkPSJGaWxsLTI2IiBmaWxsPSIjNDU1QTY0Ij48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTExMy42NzUsNzYuMzQyIEMxMTMuNjE1LDc2LjM0MiAxMTMuNTU1LDc2LjMyNyAxMTMuNSw3Ni4yOTUgTDY3LjU4Nyw0OS43ODcgQzY3LjQxOSw0OS42OSA2Ny4zNjIsNDkuNDc2IDY3LjQ1OSw0OS4zMDkgQzY3LjU1Niw0OS4xNDEgNjcuNzcsNDkuMDgzIDY3LjkzNyw0OS4xOCBMMTEzLjg1LDc1LjY4OCBDMTE0LjAxOCw3NS43ODUgMTE0LjA3NSw3NiAxMTMuOTc4LDc2LjE2NyBDMTEzLjkxNCw3Ni4yNzkgMTEzLjc5Niw3Ni4zNDIgMTEzLjY3NSw3Ni4zNDIiIGlkPSJGaWxsLTI3IiBmaWxsPSIjNDU1QTY0Ij48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTY3Ljc2Miw0OS40ODQgTDY3Ljc2MiwxMDMuNDg1IEM2Ny43NjIsMTA0LjU3NSA2OC41MzIsMTA1LjkwMyA2OS40ODIsMTA2LjQ1MiBMMTExLjk1NSwxMzAuOTczIEMxMTIuOTA1LDEzMS41MjIgMTEzLjY3NSwxMzEuMDgzIDExMy42NzUsMTI5Ljk5MyBMMTEzLjY3NSw3NS45OTIiIGlkPSJGaWxsLTI4IiBmaWxsPSIjRkFGQUZBIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTExMi43MjcsMTMxLjU2MSBDMTEyLjQzLDEzMS41NjEgMTEyLjEwNywxMzEuNDY2IDExMS43OCwxMzEuMjc2IEw2OS4zMDcsMTA2Ljc1NSBDNjguMjQ0LDEwNi4xNDIgNjcuNDEyLDEwNC43MDUgNjcuNDEyLDEwMy40ODUgTDY3LjQxMiw0OS40ODQgQzY3LjQxMiw0OS4yOSA2Ny41NjksNDkuMTM0IDY3Ljc2Miw0OS4xMzQgQzY3Ljk1Niw0OS4xMzQgNjguMTEzLDQ5LjI5IDY4LjExMyw0OS40ODQgTDY4LjExMywxMDMuNDg1IEM2OC4xMTMsMTA0LjQ0NSA2OC44MiwxMDUuNjY1IDY5LjY1NywxMDYuMTQ4IEwxMTIuMTMsMTMwLjY3IEMxMTIuNDc0LDEzMC44NjggMTEyLjc5MSwxMzAuOTEzIDExMywxMzAuNzkyIEMxMTMuMjA2LDEzMC42NzMgMTEzLjMyNSwxMzAuMzgxIDExMy4zMjUsMTI5Ljk5MyBMMTEzLjMyNSw3NS45OTIgQzExMy4zMjUsNzUuNzk4IDExMy40ODIsNzUuNjQxIDExMy42NzUsNzUuNjQxIEMxMTMuODY5LDc1LjY0MSAxMTQuMDI1LDc1Ljc5OCAxMTQuMDI1LDc1Ljk5MiBMMTE0LjAyNSwxMjkuOTkzIEMxMTQuMDI1LDEzMC42NDggMTEzLjc4NiwxMzEuMTQ3IDExMy4zNSwxMzEuMzk5IEMxMTMuMTYyLDEzMS41MDcgMTEyLjk1MiwxMzEuNTYxIDExMi43MjcsMTMxLjU2MSIgaWQ9IkZpbGwtMjkiIGZpbGw9IiM0NTVBNjQiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTEyLjg2LDQwLjUxMiBDMTEyLjg2LDQwLjUxMiAxMTIuODYsNDAuNTEyIDExMi44NTksNDAuNTEyIEMxMTAuNTQxLDQwLjUxMiAxMDguMzYsMzkuOTkgMTA2LjcxNywzOS4wNDEgQzEwNS4wMTIsMzguMDU3IDEwNC4wNzQsMzYuNzI2IDEwNC4wNzQsMzUuMjkyIEMxMDQuMDc0LDMzLjg0NyAxMDUuMDI2LDMyLjUwMSAxMDYuNzU0LDMxLjUwNCBMMTE4Ljc5NSwyNC41NTEgQzEyMC40NjMsMjMuNTg5IDEyMi42NjksMjMuMDU4IDEyNS4wMDcsMjMuMDU4IEMxMjcuMzI1LDIzLjA1OCAxMjkuNTA2LDIzLjU4MSAxMzEuMTUsMjQuNTMgQzEzMi44NTQsMjUuNTE0IDEzMy43OTMsMjYuODQ1IDEzMy43OTMsMjguMjc4IEMxMzMuNzkzLDI5LjcyNCAxMzIuODQxLDMxLjA2OSAxMzEuMTEzLDMyLjA2NyBMMTE5LjA3MSwzOS4wMTkgQzExNy40MDMsMzkuOTgyIDExNS4xOTcsNDAuNTEyIDExMi44Niw0MC41MTIgTDExMi44Niw0MC41MTIgWiBNMTI1LjAwNywyMy43NTkgQzEyMi43OSwyMy43NTkgMTIwLjcwOSwyNC4yNTYgMTE5LjE0NiwyNS4xNTggTDEwNy4xMDQsMzIuMTEgQzEwNS42MDIsMzIuOTc4IDEwNC43NzQsMzQuMTA4IDEwNC43NzQsMzUuMjkyIEMxMDQuNzc0LDM2LjQ2NSAxMDUuNTg5LDM3LjU4MSAxMDcuMDY3LDM4LjQzNCBDMTA4LjYwNSwzOS4zMjMgMTEwLjY2MywzOS44MTIgMTEyLjg1OSwzOS44MTIgTDExMi44NiwzOS44MTIgQzExNS4wNzYsMzkuODEyIDExNy4xNTgsMzkuMzE1IDExOC43MjEsMzguNDEzIEwxMzAuNzYyLDMxLjQ2IEMxMzIuMjY0LDMwLjU5MyAxMzMuMDkyLDI5LjQ2MyAxMzMuMDkyLDI4LjI3OCBDMTMzLjA5MiwyNy4xMDYgMTMyLjI3OCwyNS45OSAxMzAuOCwyNS4xMzYgQzEyOS4yNjEsMjQuMjQ4IDEyNy4yMDQsMjMuNzU5IDEyNS4wMDcsMjMuNzU5IEwxMjUuMDA3LDIzLjc1OSBaIiBpZD0iRmlsbC0zMCIgZmlsbD0iIzYwN0Q4QiI+PC9wYXRoPgogICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xNjUuNjMsMTYuMjE5IEwxNTkuODk2LDE5LjUzIEMxNTYuNzI5LDIxLjM1OCAxNTEuNjEsMjEuMzY3IDE0OC40NjMsMTkuNTUgQzE0NS4zMTYsMTcuNzMzIDE0NS4zMzIsMTQuNzc4IDE0OC40OTksMTIuOTQ5IEwxNTQuMjMzLDkuNjM5IEwxNjUuNjMsMTYuMjE5IiBpZD0iRmlsbC0zMSIgZmlsbD0iI0ZBRkFGQSI+PC9wYXRoPgogICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xNTQuMjMzLDEwLjQ0OCBMMTY0LjIyOCwxNi4yMTkgTDE1OS41NDYsMTguOTIzIEMxNTguMTEyLDE5Ljc1IDE1Ni4xOTQsMjAuMjA2IDE1NC4xNDcsMjAuMjA2IEMxNTIuMTE4LDIwLjIwNiAxNTAuMjI0LDE5Ljc1NyAxNDguODE0LDE4Ljk0MyBDMTQ3LjUyNCwxOC4xOTkgMTQ2LjgxNCwxNy4yNDkgMTQ2LjgxNCwxNi4yNjkgQzE0Ni44MTQsMTUuMjc4IDE0Ny41MzcsMTQuMzE0IDE0OC44NSwxMy41NTYgTDE1NC4yMzMsMTAuNDQ4IE0xNTQuMjMzLDkuNjM5IEwxNDguNDk5LDEyLjk0OSBDMTQ1LjMzMiwxNC43NzggMTQ1LjMxNiwxNy43MzMgMTQ4LjQ2MywxOS41NSBDMTUwLjAzMSwyMC40NTUgMTUyLjA4NiwyMC45MDcgMTU0LjE0NywyMC45MDcgQzE1Ni4yMjQsMjAuOTA3IDE1OC4zMDYsMjAuNDQ3IDE1OS44OTYsMTkuNTMgTDE2NS42MywxNi4yMTkgTDE1NC4yMzMsOS42MzkiIGlkPSJGaWxsLTMyIiBmaWxsPSIjNjA3RDhCIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTE0NS40NDUsNzIuNjY3IEwxNDUuNDQ1LDcyLjY2NyBDMTQzLjY3Miw3Mi42NjcgMTQyLjIwNCw3MS44MTcgMTQxLjIwMiw3MC40MjIgQzE0MS4xMzUsNzAuMzMgMTQxLjE0NSw3MC4xNDcgMTQxLjIyNSw3MC4wNjYgQzE0MS4zMDUsNjkuOTg1IDE0MS40MzIsNjkuOTQ2IDE0MS41MjUsNzAuMDExIEMxNDIuMzA2LDcwLjU1OSAxNDMuMjMxLDcwLjgyMyAxNDQuMjc2LDcwLjgyMiBDMTQ1LjU5OCw3MC44MjIgMTQ3LjAzLDcwLjM3NiAxNDguNTMyLDY5LjUwOSBDMTUzLjg0Miw2Ni40NDMgMTU4LjE2Myw1OC45ODcgMTU4LjE2Myw1Mi44OTQgQzE1OC4xNjMsNTAuOTY3IDE1Ny43MjEsNDkuMzMyIDE1Ni44ODQsNDguMTY4IEMxNTYuODE4LDQ4LjA3NiAxNTYuODI4LDQ3Ljk0OCAxNTYuOTA4LDQ3Ljg2NyBDMTU2Ljk4OCw0Ny43ODYgMTU3LjExNCw0Ny43NzQgMTU3LjIwOCw0Ny44NCBDMTU4Ljg3OCw0OS4wMTIgMTU5Ljc5OCw1MS4yMiAxNTkuNzk4LDU0LjA1OSBDMTU5Ljc5OCw2MC4zMDEgMTU1LjM3Myw2OC4wNDYgMTQ5LjkzMyw3MS4xODYgQzE0OC4zNiw3Mi4wOTQgMTQ2Ljg1LDcyLjY2NyAxNDUuNDQ1LDcyLjY2NyBMMTQ1LjQ0NSw3Mi42NjcgWiBNMTQyLjQ3Niw3MSBDMTQzLjI5LDcxLjY1MSAxNDQuMjk2LDcyLjAwMiAxNDUuNDQ1LDcyLjAwMiBDMTQ2Ljc2Nyw3Mi4wMDIgMTQ4LjE5OCw3MS41NSAxNDkuNyw3MC42ODIgQzE1NS4wMSw2Ny42MTcgMTU5LjMzMSw2MC4xNTkgMTU5LjMzMSw1NC4wNjUgQzE1OS4zMzEsNTIuMDg1IDE1OC44NjgsNTAuNDM1IDE1OC4wMDYsNDkuMjcyIEMxNTguNDE3LDUwLjMwNyAxNTguNjMsNTEuNTMyIDE1OC42Myw1Mi44OTIgQzE1OC42Myw1OS4xMzQgMTU0LjIwNSw2Ni43NjcgMTQ4Ljc2NSw2OS45MDcgQzE0Ny4xOTIsNzAuODE2IDE0NS42ODEsNzEuMjgzIDE0NC4yNzYsNzEuMjgzIEMxNDMuNjM0LDcxLjI4MyAxNDMuMDMzLDcxLjE5MiAxNDIuNDc2LDcxIEwxNDIuNDc2LDcxIFoiIGlkPSJGaWxsLTMzIiBmaWxsPSIjNjA3RDhCIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTE0OC42NDgsNjkuNzA0IEMxNTQuMDMyLDY2LjU5NiAxNTguMzk2LDU5LjA2OCAxNTguMzk2LDUyLjg5MSBDMTU4LjM5Niw1MC44MzkgMTU3LjkxMyw0OS4xOTggMTU3LjA3NCw0OC4wMyBDMTU1LjI4OSw0Ni43NzggMTUyLjY5OSw0Ni44MzYgMTQ5LjgxNiw0OC41MDEgQzE0NC40MzMsNTEuNjA5IDE0MC4wNjgsNTkuMTM3IDE0MC4wNjgsNjUuMzE0IEMxNDAuMDY4LDY3LjM2NSAxNDAuNTUyLDY5LjAwNiAxNDEuMzkxLDcwLjE3NCBDMTQzLjE3Niw3MS40MjcgMTQ1Ljc2NSw3MS4zNjkgMTQ4LjY0OCw2OS43MDQiIGlkPSJGaWxsLTM0IiBmaWxsPSIjRkFGQUZBIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTE0NC4yNzYsNzEuMjc2IEwxNDQuMjc2LDcxLjI3NiBDMTQzLjEzMyw3MS4yNzYgMTQyLjExOCw3MC45NjkgMTQxLjI1Nyw3MC4zNjUgQzE0MS4yMzYsNzAuMzUxIDE0MS4yMTcsNzAuMzMyIDE0MS4yMDIsNzAuMzExIEMxNDAuMzA3LDY5LjA2NyAxMzkuODM1LDY3LjMzOSAxMzkuODM1LDY1LjMxNCBDMTM5LjgzNSw1OS4wNzMgMTQ0LjI2LDUxLjQzOSAxNDkuNyw0OC4yOTggQzE1MS4yNzMsNDcuMzkgMTUyLjc4NCw0Ni45MjkgMTU0LjE4OSw0Ni45MjkgQzE1NS4zMzIsNDYuOTI5IDE1Ni4zNDcsNDcuMjM2IDE1Ny4yMDgsNDcuODM5IEMxNTcuMjI5LDQ3Ljg1NCAxNTcuMjQ4LDQ3Ljg3MyAxNTcuMjYzLDQ3Ljg5NCBDMTU4LjE1Nyw0OS4xMzggMTU4LjYzLDUwLjg2NSAxNTguNjMsNTIuODkxIEMxNTguNjMsNTkuMTMyIDE1NC4yMDUsNjYuNzY2IDE0OC43NjUsNjkuOTA3IEMxNDcuMTkyLDcwLjgxNSAxNDUuNjgxLDcxLjI3NiAxNDQuMjc2LDcxLjI3NiBMMTQ0LjI3Niw3MS4yNzYgWiBNMTQxLjU1OCw3MC4xMDQgQzE0Mi4zMzEsNzAuNjM3IDE0My4yNDUsNzEuMDA1IDE0NC4yNzYsNzEuMDA1IEMxNDUuNTk4LDcxLjAwNSAxNDcuMDMsNzAuNDY3IDE0OC41MzIsNjkuNiBDMTUzLjg0Miw2Ni41MzQgMTU4LjE2Myw1OS4wMzMgMTU4LjE2Myw1Mi45MzkgQzE1OC4xNjMsNTEuMDMxIDE1Ny43MjksNDkuMzg1IDE1Ni45MDcsNDguMjIzIEMxNTYuMTMzLDQ3LjY5MSAxNTUuMjE5LDQ3LjQwOSAxNTQuMTg5LDQ3LjQwOSBDMTUyLjg2Nyw0Ny40MDkgMTUxLjQzNSw0Ny44NDIgMTQ5LjkzMyw0OC43MDkgQzE0NC42MjMsNTEuNzc1IDE0MC4zMDIsNTkuMjczIDE0MC4zMDIsNjUuMzY2IEMxNDAuMzAyLDY3LjI3NiAxNDAuNzM2LDY4Ljk0MiAxNDEuNTU4LDcwLjEwNCBMMTQxLjU1OCw3MC4xMDQgWiIgaWQ9IkZpbGwtMzUiIGZpbGw9IiM2MDdEOEIiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTUwLjcyLDY1LjM2MSBMMTUwLjM1Nyw2NS4wNjYgQzE1MS4xNDcsNjQuMDkyIDE1MS44NjksNjMuMDQgMTUyLjUwNSw2MS45MzggQzE1My4zMTMsNjAuNTM5IDE1My45NzgsNTkuMDY3IDE1NC40ODIsNTcuNTYzIEwxNTQuOTI1LDU3LjcxMiBDMTU0LjQxMiw1OS4yNDUgMTUzLjczMyw2MC43NDUgMTUyLjkxLDYyLjE3MiBDMTUyLjI2Miw2My4yOTUgMTUxLjUyNSw2NC4zNjggMTUwLjcyLDY1LjM2MSIgaWQ9IkZpbGwtMzYiIGZpbGw9IiM2MDdEOEIiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTE1LjkxNyw4NC41MTQgTDExNS41NTQsODQuMjIgQzExNi4zNDQsODMuMjQ1IDExNy4wNjYsODIuMTk0IDExNy43MDIsODEuMDkyIEMxMTguNTEsNzkuNjkyIDExOS4xNzUsNzguMjIgMTE5LjY3OCw3Ni43MTcgTDEyMC4xMjEsNzYuODY1IEMxMTkuNjA4LDc4LjM5OCAxMTguOTMsNzkuODk5IDExOC4xMDYsODEuMzI2IEMxMTcuNDU4LDgyLjQ0OCAxMTYuNzIyLDgzLjUyMSAxMTUuOTE3LDg0LjUxNCIgaWQ9IkZpbGwtMzciIGZpbGw9IiM2MDdEOEIiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTE0LDEzMC40NzYgTDExNCwxMzAuMDA4IEwxMTQsNzYuMDUyIEwxMTQsNzUuNTg0IEwxMTQsNzYuMDUyIEwxMTQsMTMwLjAwOCBMMTE0LDEzMC40NzYiIGlkPSJGaWxsLTM4IiBmaWxsPSIjNjA3RDhCIj48L3BhdGg+CiAgICAgICAgICAgICAgICA8L2c+CiAgICAgICAgICAgICAgICA8ZyBpZD0iSW1wb3J0ZWQtTGF5ZXJzLUNvcHkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDYyLjAwMDAwMCwgMC4wMDAwMDApIiBza2V0Y2g6dHlwZT0iTVNTaGFwZUdyb3VwIj4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTkuODIyLDM3LjQ3NCBDMTkuODM5LDM3LjMzOSAxOS43NDcsMzcuMTk0IDE5LjU1NSwzNy4wODIgQzE5LjIyOCwzNi44OTQgMTguNzI5LDM2Ljg3MiAxOC40NDYsMzcuMDM3IEwxMi40MzQsNDAuNTA4IEMxMi4zMDMsNDAuNTg0IDEyLjI0LDQwLjY4NiAxMi4yNDMsNDAuNzkzIEMxMi4yNDUsNDAuOTI1IDEyLjI0NSw0MS4yNTQgMTIuMjQ1LDQxLjM3MSBMMTIuMjQ1LDQxLjQxNCBMMTIuMjM4LDQxLjU0MiBDOC4xNDgsNDMuODg3IDUuNjQ3LDQ1LjMyMSA1LjY0Nyw0NS4zMjEgQzUuNjQ2LDQ1LjMyMSAzLjU3LDQ2LjM2NyAyLjg2LDUwLjUxMyBDMi44Niw1MC41MTMgMS45NDgsNTcuNDc0IDEuOTYyLDcwLjI1OCBDMS45NzcsODIuODI4IDIuNTY4LDg3LjMyOCAzLjEyOSw5MS42MDkgQzMuMzQ5LDkzLjI5MyA2LjEzLDkzLjczNCA2LjEzLDkzLjczNCBDNi40NjEsOTMuNzc0IDYuODI4LDkzLjcwNyA3LjIxLDkzLjQ4NiBMODIuNDgzLDQ5LjkzNSBDODQuMjkxLDQ4Ljg2NiA4NS4xNSw0Ni4yMTYgODUuNTM5LDQzLjY1MSBDODYuNzUyLDM1LjY2MSA4Ny4yMTQsMTAuNjczIDg1LjI2NCwzLjc3MyBDODUuMDY4LDMuMDggODQuNzU0LDIuNjkgODQuMzk2LDIuNDkxIEw4Mi4zMSwxLjcwMSBDODEuNTgzLDEuNzI5IDgwLjg5NCwyLjE2OCA4MC43NzYsMi4yMzYgQzgwLjYzNiwyLjMxNyA0MS44MDcsMjQuNTg1IDIwLjAzMiwzNy4wNzIgTDE5LjgyMiwzNy40NzQiIGlkPSJGaWxsLTEiIGZpbGw9IiNGRkZGRkYiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNODIuMzExLDEuNzAxIEw4NC4zOTYsMi40OTEgQzg0Ljc1NCwyLjY5IDg1LjA2OCwzLjA4IDg1LjI2NCwzLjc3MyBDODcuMjEzLDEwLjY3MyA4Ni43NTEsMzUuNjYgODUuNTM5LDQzLjY1MSBDODUuMTQ5LDQ2LjIxNiA4NC4yOSw0OC44NjYgODIuNDgzLDQ5LjkzNSBMNy4yMSw5My40ODYgQzYuODk3LDkzLjY2NyA2LjU5NSw5My43NDQgNi4zMTQsOTMuNzQ0IEw2LjEzMSw5My43MzMgQzYuMTMxLDkzLjczNCAzLjM0OSw5My4yOTMgMy4xMjgsOTEuNjA5IEMyLjU2OCw4Ny4zMjcgMS45NzcsODIuODI4IDEuOTYzLDcwLjI1OCBDMS45NDgsNTcuNDc0IDIuODYsNTAuNTEzIDIuODYsNTAuNTEzIEMzLjU3LDQ2LjM2NyA1LjY0Nyw0NS4zMjEgNS42NDcsNDUuMzIxIEM1LjY0Nyw0NS4zMjEgOC4xNDgsNDMuODg3IDEyLjIzOCw0MS41NDIgTDEyLjI0NSw0MS40MTQgTDEyLjI0NSw0MS4zNzEgQzEyLjI0NSw0MS4yNTQgMTIuMjQ1LDQwLjkyNSAxMi4yNDMsNDAuNzkzIEMxMi4yNCw0MC42ODYgMTIuMzAyLDQwLjU4MyAxMi40MzQsNDAuNTA4IEwxOC40NDYsMzcuMDM2IEMxOC41NzQsMzYuOTYyIDE4Ljc0NiwzNi45MjYgMTguOTI3LDM2LjkyNiBDMTkuMTQ1LDM2LjkyNiAxOS4zNzYsMzYuOTc5IDE5LjU1NCwzNy4wODIgQzE5Ljc0NywzNy4xOTQgMTkuODM5LDM3LjM0IDE5LjgyMiwzNy40NzQgTDIwLjAzMywzNy4wNzIgQzQxLjgwNiwyNC41ODUgODAuNjM2LDIuMzE4IDgwLjc3NywyLjIzNiBDODAuODk0LDIuMTY4IDgxLjU4MywxLjcyOSA4Mi4zMTEsMS43MDEgTTgyLjMxMSwwLjcwNCBMODIuMjcyLDAuNzA1IEM4MS42NTQsMC43MjggODAuOTg5LDAuOTQ5IDgwLjI5OCwxLjM2MSBMODAuMjc3LDEuMzczIEM4MC4xMjksMS40NTggNTkuNzY4LDEzLjEzNSAxOS43NTgsMzYuMDc5IEMxOS41LDM1Ljk4MSAxOS4yMTQsMzUuOTI5IDE4LjkyNywzNS45MjkgQzE4LjU2MiwzNS45MjkgMTguMjIzLDM2LjAxMyAxNy45NDcsMzYuMTczIEwxMS45MzUsMzkuNjQ0IEMxMS40OTMsMzkuODk5IDExLjIzNiw0MC4zMzQgMTEuMjQ2LDQwLjgxIEwxMS4yNDcsNDAuOTYgTDUuMTY3LDQ0LjQ0NyBDNC43OTQsNDQuNjQ2IDIuNjI1LDQ1Ljk3OCAxLjg3Nyw1MC4zNDUgTDEuODcxLDUwLjM4NCBDMS44NjIsNTAuNDU0IDAuOTUxLDU3LjU1NyAwLjk2NSw3MC4yNTkgQzAuOTc5LDgyLjg3OSAxLjU2OCw4Ny4zNzUgMi4xMzcsOTEuNzI0IEwyLjEzOSw5MS43MzkgQzIuNDQ3LDk0LjA5NCA1LjYxNCw5NC42NjIgNS45NzUsOTQuNzE5IEw2LjAwOSw5NC43MjMgQzYuMTEsOTQuNzM2IDYuMjEzLDk0Ljc0MiA2LjMxNCw5NC43NDIgQzYuNzksOTQuNzQyIDcuMjYsOTQuNjEgNy43MSw5NC4zNSBMODIuOTgzLDUwLjc5OCBDODQuNzk0LDQ5LjcyNyA4NS45ODIsNDcuMzc1IDg2LjUyNSw0My44MDEgQzg3LjcxMSwzNS45ODcgODguMjU5LDEwLjcwNSA4Ni4yMjQsMy41MDIgQzg1Ljk3MSwyLjYwOSA4NS41MiwxLjk3NSA4NC44ODEsMS42MiBMODQuNzQ5LDEuNTU4IEw4Mi42NjQsMC43NjkgQzgyLjU1MSwwLjcyNSA4Mi40MzEsMC43MDQgODIuMzExLDAuNzA0IiBpZD0iRmlsbC0yIiBmaWxsPSIjNDU1QTY0Ij48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTY2LjI2NywxMS41NjUgTDY3Ljc2MiwxMS45OTkgTDExLjQyMyw0NC4zMjUiIGlkPSJGaWxsLTMiIGZpbGw9IiNGRkZGRkYiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTIuMjAyLDkwLjU0NSBDMTIuMDI5LDkwLjU0NSAxMS44NjIsOTAuNDU1IDExLjc2OSw5MC4yOTUgQzExLjYzMiw5MC4wNTcgMTEuNzEzLDg5Ljc1MiAxMS45NTIsODkuNjE0IEwzMC4zODksNzguOTY5IEMzMC42MjgsNzguODMxIDMwLjkzMyw3OC45MTMgMzEuMDcxLDc5LjE1MiBDMzEuMjA4LDc5LjM5IDMxLjEyNyw3OS42OTYgMzAuODg4LDc5LjgzMyBMMTIuNDUxLDkwLjQ3OCBMMTIuMjAyLDkwLjU0NSIgaWQ9IkZpbGwtNCIgZmlsbD0iIzYwN0Q4QiI+PC9wYXRoPgogICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMy43NjQsNDIuNjU0IEwxMy42NTYsNDIuNTkyIEwxMy43MDIsNDIuNDIxIEwxOC44MzcsMzkuNDU3IEwxOS4wMDcsMzkuNTAyIEwxOC45NjIsMzkuNjczIEwxMy44MjcsNDIuNjM3IEwxMy43NjQsNDIuNjU0IiBpZD0iRmlsbC01IiBmaWxsPSIjNjA3RDhCIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTguNTIsOTAuMzc1IEw4LjUyLDQ2LjQyMSBMOC41ODMsNDYuMzg1IEw3NS44NCw3LjU1NCBMNzUuODQsNTEuNTA4IEw3NS43NzgsNTEuNTQ0IEw4LjUyLDkwLjM3NSBMOC41Miw5MC4zNzUgWiBNOC43Nyw0Ni41NjQgTDguNzcsODkuOTQ0IEw3NS41OTEsNTEuMzY1IEw3NS41OTEsNy45ODUgTDguNzcsNDYuNTY0IEw4Ljc3LDQ2LjU2NCBaIiBpZD0iRmlsbC02IiBmaWxsPSIjNjA3RDhCIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTI0Ljk4Niw4My4xODIgQzI0Ljc1Niw4My4zMzEgMjQuMzc0LDgzLjU2NiAyNC4xMzcsODMuNzA1IEwxMi42MzIsOTAuNDA2IEMxMi4zOTUsOTAuNTQ1IDEyLjQyNiw5MC42NTggMTIuNyw5MC42NTggTDEzLjI2NSw5MC42NTggQzEzLjU0LDkwLjY1OCAxMy45NTgsOTAuNTQ1IDE0LjE5NSw5MC40MDYgTDI1LjcsODMuNzA1IEMyNS45MzcsODMuNTY2IDI2LjEyOCw4My40NTIgMjYuMTI1LDgzLjQ0OSBDMjYuMTIyLDgzLjQ0NyAyNi4xMTksODMuMjIgMjYuMTE5LDgyLjk0NiBDMjYuMTE5LDgyLjY3MiAyNS45MzEsODIuNTY5IDI1LjcwMSw4Mi43MTkgTDI0Ljk4Niw4My4xODIiIGlkPSJGaWxsLTciIGZpbGw9IiM2MDdEOEIiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTMuMjY2LDkwLjc4MiBMMTIuNyw5MC43ODIgQzEyLjUsOTAuNzgyIDEyLjM4NCw5MC43MjYgMTIuMzU0LDkwLjYxNiBDMTIuMzI0LDkwLjUwNiAxMi4zOTcsOTAuMzk5IDEyLjU2OSw5MC4yOTkgTDI0LjA3NCw4My41OTcgQzI0LjMxLDgzLjQ1OSAyNC42ODksODMuMjI2IDI0LjkxOCw4My4wNzggTDI1LjYzMyw4Mi42MTQgQzI1LjcyMyw4Mi41NTUgMjUuODEzLDgyLjUyNSAyNS44OTksODIuNTI1IEMyNi4wNzEsODIuNTI1IDI2LjI0NCw4Mi42NTUgMjYuMjQ0LDgyLjk0NiBDMjYuMjQ0LDgzLjE2IDI2LjI0NSw4My4zMDkgMjYuMjQ3LDgzLjM4MyBMMjYuMjUzLDgzLjM4NyBMMjYuMjQ5LDgzLjQ1NiBDMjYuMjQ2LDgzLjUzMSAyNi4yNDYsODMuNTMxIDI1Ljc2Myw4My44MTIgTDE0LjI1OCw5MC41MTQgQzE0LDkwLjY2NSAxMy41NjQsOTAuNzgyIDEzLjI2Niw5MC43ODIgTDEzLjI2Niw5MC43ODIgWiBNMTIuNjY2LDkwLjUzMiBMMTIuNyw5MC41MzMgTDEzLjI2Niw5MC41MzMgQzEzLjUxOCw5MC41MzMgMTMuOTE1LDkwLjQyNSAxNC4xMzIsOTAuMjk5IEwyNS42MzcsODMuNTk3IEMyNS44MDUsODMuNDk5IDI1LjkzMSw4My40MjQgMjUuOTk4LDgzLjM4MyBDMjUuOTk0LDgzLjI5OSAyNS45OTQsODMuMTY1IDI1Ljk5NCw4Mi45NDYgTDI1Ljg5OSw4Mi43NzUgTDI1Ljc2OCw4Mi44MjQgTDI1LjA1NCw4My4yODcgQzI0LjgyMiw4My40MzcgMjQuNDM4LDgzLjY3MyAyNC4yLDgzLjgxMiBMMTIuNjk1LDkwLjUxNCBMMTIuNjY2LDkwLjUzMiBMMTIuNjY2LDkwLjUzMiBaIiBpZD0iRmlsbC04IiBmaWxsPSIjNjA3RDhCIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTEzLjI2Niw4OS44NzEgTDEyLjcsODkuODcxIEMxMi41LDg5Ljg3MSAxMi4zODQsODkuODE1IDEyLjM1NCw4OS43MDUgQzEyLjMyNCw4OS41OTUgMTIuMzk3LDg5LjQ4OCAxMi41NjksODkuMzg4IEwyNC4wNzQsODIuNjg2IEMyNC4zMzIsODIuNTM1IDI0Ljc2OCw4Mi40MTggMjUuMDY3LDgyLjQxOCBMMjUuNjMyLDgyLjQxOCBDMjUuODMyLDgyLjQxOCAyNS45NDgsODIuNDc0IDI1Ljk3OCw4Mi41ODQgQzI2LjAwOCw4Mi42OTQgMjUuOTM1LDgyLjgwMSAyNS43NjMsODIuOTAxIEwxNC4yNTgsODkuNjAzIEMxNCw4OS43NTQgMTMuNTY0LDg5Ljg3MSAxMy4yNjYsODkuODcxIEwxMy4yNjYsODkuODcxIFogTTEyLjY2Niw4OS42MjEgTDEyLjcsODkuNjIyIEwxMy4yNjYsODkuNjIyIEMxMy41MTgsODkuNjIyIDEzLjkxNSw4OS41MTUgMTQuMTMyLDg5LjM4OCBMMjUuNjM3LDgyLjY4NiBMMjUuNjY3LDgyLjY2OCBMMjUuNjMyLDgyLjY2NyBMMjUuMDY3LDgyLjY2NyBDMjQuODE1LDgyLjY2NyAyNC40MTgsODIuNzc1IDI0LjIsODIuOTAxIEwxMi42OTUsODkuNjAzIEwxMi42NjYsODkuNjIxIEwxMi42NjYsODkuNjIxIFoiIGlkPSJGaWxsLTkiIGZpbGw9IiM2MDdEOEIiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNMTIuMzcsOTAuODAxIEwxMi4zNyw4OS41NTQgTDEyLjM3LDkwLjgwMSIgaWQ9IkZpbGwtMTAiIGZpbGw9IiM2MDdEOEIiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNNi4xMyw5My45MDEgQzUuMzc5LDkzLjgwOCA0LjgxNiw5My4xNjQgNC42OTEsOTIuNTI1IEMzLjg2LDg4LjI4NyAzLjU0LDgzLjc0MyAzLjUyNiw3MS4xNzMgQzMuNTExLDU4LjM4OSA0LjQyMyw1MS40MjggNC40MjMsNTEuNDI4IEM1LjEzNCw0Ny4yODIgNy4yMSw0Ni4yMzYgNy4yMSw0Ni4yMzYgQzcuMjEsNDYuMjM2IDgxLjY2NywzLjI1IDgyLjA2OSwzLjAxNyBDODIuMjkyLDIuODg4IDg0LjU1NiwxLjQzMyA4NS4yNjQsMy45NCBDODcuMjE0LDEwLjg0IDg2Ljc1MiwzNS44MjcgODUuNTM5LDQzLjgxOCBDODUuMTUsNDYuMzgzIDg0LjI5MSw0OS4wMzMgODIuNDgzLDUwLjEwMSBMNy4yMSw5My42NTMgQzYuODI4LDkzLjg3NCA2LjQ2MSw5My45NDEgNi4xMyw5My45MDEgQzYuMTMsOTMuOTAxIDMuMzQ5LDkzLjQ2IDMuMTI5LDkxLjc3NiBDMi41NjgsODcuNDk1IDEuOTc3LDgyLjk5NSAxLjk2Miw3MC40MjUgQzEuOTQ4LDU3LjY0MSAyLjg2LDUwLjY4IDIuODYsNTAuNjggQzMuNTcsNDYuNTM0IDUuNjQ3LDQ1LjQ4OSA1LjY0Nyw0NS40ODkgQzUuNjQ2LDQ1LjQ4OSA4LjA2NSw0NC4wOTIgMTIuMjQ1LDQxLjY3OSBMMTMuMTE2LDQxLjU2IEwxOS43MTUsMzcuNzMgTDE5Ljc2MSwzNy4yNjkgTDYuMTMsOTMuOTAxIiBpZD0iRmlsbC0xMSIgZmlsbD0iI0ZBRkFGQSI+PC9wYXRoPgogICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik02LjMxNyw5NC4xNjEgTDYuMTAyLDk0LjE0OCBMNi4xMDEsOTQuMTQ4IEw1Ljg1Nyw5NC4xMDEgQzUuMTM4LDkzLjk0NSAzLjA4NSw5My4zNjUgMi44ODEsOTEuODA5IEMyLjMxMyw4Ny40NjkgMS43MjcsODIuOTk2IDEuNzEzLDcwLjQyNSBDMS42OTksNTcuNzcxIDIuNjA0LDUwLjcxOCAyLjYxMyw1MC42NDggQzMuMzM4LDQ2LjQxNyA1LjQ0NSw0NS4zMSA1LjUzNSw0NS4yNjYgTDEyLjE2Myw0MS40MzkgTDEzLjAzMyw0MS4zMiBMMTkuNDc5LDM3LjU3OCBMMTkuNTEzLDM3LjI0NCBDMTkuNTI2LDM3LjEwNyAxOS42NDcsMzcuMDA4IDE5Ljc4NiwzNy4wMjEgQzE5LjkyMiwzNy4wMzQgMjAuMDIzLDM3LjE1NiAyMC4wMDksMzcuMjkzIEwxOS45NSwzNy44ODIgTDEzLjE5OCw0MS44MDEgTDEyLjMyOCw0MS45MTkgTDUuNzcyLDQ1LjcwNCBDNS43NDEsNDUuNzIgMy43ODIsNDYuNzcyIDMuMTA2LDUwLjcyMiBDMy4wOTksNTAuNzgyIDIuMTk4LDU3LjgwOCAyLjIxMiw3MC40MjQgQzIuMjI2LDgyLjk2MyAyLjgwOSw4Ny40MiAzLjM3Myw5MS43MjkgQzMuNDY0LDkyLjQyIDQuMDYyLDkyLjg4MyA0LjY4Miw5My4xODEgQzQuNTY2LDkyLjk4NCA0LjQ4Niw5Mi43NzYgNC40NDYsOTIuNTcyIEMzLjY2NSw4OC41ODggMy4yOTEsODQuMzcgMy4yNzYsNzEuMTczIEMzLjI2Miw1OC41MiA0LjE2Nyw1MS40NjYgNC4xNzYsNTEuMzk2IEM0LjkwMSw0Ny4xNjUgNy4wMDgsNDYuMDU5IDcuMDk4LDQ2LjAxNCBDNy4wOTQsNDYuMDE1IDgxLjU0MiwzLjAzNCA4MS45NDQsMi44MDIgTDgxLjk3MiwyLjc4NSBDODIuODc2LDIuMjQ3IDgzLjY5MiwyLjA5NyA4NC4zMzIsMi4zNTIgQzg0Ljg4NywyLjU3MyA4NS4yODEsMy4wODUgODUuNTA0LDMuODcyIEM4Ny41MTgsMTEgODYuOTY0LDM2LjA5MSA4NS43ODUsNDMuODU1IEM4NS4yNzgsNDcuMTk2IDg0LjIxLDQ5LjM3IDgyLjYxLDUwLjMxNyBMNy4zMzUsOTMuODY5IEM2Ljk5OSw5NC4wNjMgNi42NTgsOTQuMTYxIDYuMzE3LDk0LjE2MSBMNi4zMTcsOTQuMTYxIFogTTYuMTcsOTMuNjU0IEM2LjQ2Myw5My42OSA2Ljc3NCw5My42MTcgNy4wODUsOTMuNDM3IEw4Mi4zNTgsNDkuODg2IEM4NC4xODEsNDguODA4IDg0Ljk2LDQ1Ljk3MSA4NS4yOTIsNDMuNzggQzg2LjQ2NiwzNi4wNDkgODcuMDIzLDExLjA4NSA4NS4wMjQsNC4wMDggQzg0Ljg0NiwzLjM3NyA4NC41NTEsMi45NzYgODQuMTQ4LDIuODE2IEM4My42NjQsMi42MjMgODIuOTgyLDIuNzY0IDgyLjIyNywzLjIxMyBMODIuMTkzLDMuMjM0IEM4MS43OTEsMy40NjYgNy4zMzUsNDYuNDUyIDcuMzM1LDQ2LjQ1MiBDNy4zMDQsNDYuNDY5IDUuMzQ2LDQ3LjUyMSA0LjY2OSw1MS40NzEgQzQuNjYyLDUxLjUzIDMuNzYxLDU4LjU1NiAzLjc3NSw3MS4xNzMgQzMuNzksODQuMzI4IDQuMTYxLDg4LjUyNCA0LjkzNiw5Mi40NzYgQzUuMDI2LDkyLjkzNyA1LjQxMiw5My40NTkgNS45NzMsOTMuNjE1IEM2LjA4Nyw5My42NCA2LjE1OCw5My42NTIgNi4xNjksOTMuNjU0IEw2LjE3LDkzLjY1NCBMNi4xNyw5My42NTQgWiIgaWQ9IkZpbGwtMTIiIGZpbGw9IiM0NTVBNjQiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNNy4zMTcsNjguOTgyIEM3LjgwNiw2OC43MDEgOC4yMDIsNjguOTI2IDguMjAyLDY5LjQ4NyBDOC4yMDIsNzAuMDQ3IDcuODA2LDcwLjczIDcuMzE3LDcxLjAxMiBDNi44MjksNzEuMjk0IDYuNDMzLDcxLjA2OSA2LjQzMyw3MC41MDggQzYuNDMzLDY5Ljk0OCA2LjgyOSw2OS4yNjUgNy4zMTcsNjguOTgyIiBpZD0iRmlsbC0xMyIgZmlsbD0iI0ZGRkZGRiI+PC9wYXRoPgogICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik02LjkyLDcxLjEzMyBDNi42MzEsNzEuMTMzIDYuNDMzLDcwLjkwNSA2LjQzMyw3MC41MDggQzYuNDMzLDY5Ljk0OCA2LjgyOSw2OS4yNjUgNy4zMTcsNjguOTgyIEM3LjQ2LDY4LjkgNy41OTUsNjguODYxIDcuNzE0LDY4Ljg2MSBDOC4wMDMsNjguODYxIDguMjAyLDY5LjA5IDguMjAyLDY5LjQ4NyBDOC4yMDIsNzAuMDQ3IDcuODA2LDcwLjczIDcuMzE3LDcxLjAxMiBDNy4xNzQsNzEuMDk0IDcuMDM5LDcxLjEzMyA2LjkyLDcxLjEzMyBNNy43MTQsNjguNjc0IEM3LjU1Nyw2OC42NzQgNy4zOTIsNjguNzIzIDcuMjI0LDY4LjgyMSBDNi42NzYsNjkuMTM4IDYuMjQ2LDY5Ljg3OSA2LjI0Niw3MC41MDggQzYuMjQ2LDcwLjk5NCA2LjUxNyw3MS4zMiA2LjkyLDcxLjMyIEM3LjA3OCw3MS4zMiA3LjI0Myw3MS4yNzEgNy40MTEsNzEuMTc0IEM3Ljk1OSw3MC44NTcgOC4zODksNzAuMTE3IDguMzg5LDY5LjQ4NyBDOC4zODksNjkuMDAxIDguMTE3LDY4LjY3NCA3LjcxNCw2OC42NzQiIGlkPSJGaWxsLTE0IiBmaWxsPSIjODA5N0EyIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTYuOTIsNzAuOTQ3IEM2LjY0OSw3MC45NDcgNi42MjEsNzAuNjQgNi42MjEsNzAuNTA4IEM2LjYyMSw3MC4wMTcgNi45ODIsNjkuMzkyIDcuNDExLDY5LjE0NSBDNy41MjEsNjkuMDgyIDcuNjI1LDY5LjA0OSA3LjcxNCw2OS4wNDkgQzcuOTg2LDY5LjA0OSA4LjAxNSw2OS4zNTUgOC4wMTUsNjkuNDg3IEM4LjAxNSw2OS45NzggNy42NTIsNzAuNjAzIDcuMjI0LDcwLjg1MSBDNy4xMTUsNzAuOTE0IDcuMDEsNzAuOTQ3IDYuOTIsNzAuOTQ3IE03LjcxNCw2OC44NjEgQzcuNTk1LDY4Ljg2MSA3LjQ2LDY4LjkgNy4zMTcsNjguOTgyIEM2LjgyOSw2OS4yNjUgNi40MzMsNjkuOTQ4IDYuNDMzLDcwLjUwOCBDNi40MzMsNzAuOTA1IDYuNjMxLDcxLjEzMyA2LjkyLDcxLjEzMyBDNy4wMzksNzEuMTMzIDcuMTc0LDcxLjA5NCA3LjMxNyw3MS4wMTIgQzcuODA2LDcwLjczIDguMjAyLDcwLjA0NyA4LjIwMiw2OS40ODcgQzguMjAyLDY5LjA5IDguMDAzLDY4Ljg2MSA3LjcxNCw2OC44NjEiIGlkPSJGaWxsLTE1IiBmaWxsPSIjODA5N0EyIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTcuNDQ0LDg1LjM1IEM3LjcwOCw4NS4xOTggNy45MjEsODUuMzE5IDcuOTIxLDg1LjYyMiBDNy45MjEsODUuOTI1IDcuNzA4LDg2LjI5MiA3LjQ0NCw4Ni40NDQgQzcuMTgxLDg2LjU5NyA2Ljk2Nyw4Ni40NzUgNi45NjcsODYuMTczIEM2Ljk2Nyw4NS44NzEgNy4xODEsODUuNTAyIDcuNDQ0LDg1LjM1IiBpZD0iRmlsbC0xNiIgZmlsbD0iI0ZGRkZGRiI+PC9wYXRoPgogICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik03LjIzLDg2LjUxIEM3LjA3NCw4Ni41MSA2Ljk2Nyw4Ni4zODcgNi45NjcsODYuMTczIEM2Ljk2Nyw4NS44NzEgNy4xODEsODUuNTAyIDcuNDQ0LDg1LjM1IEM3LjUyMSw4NS4zMDUgNy41OTQsODUuMjg0IDcuNjU4LDg1LjI4NCBDNy44MTQsODUuMjg0IDcuOTIxLDg1LjQwOCA3LjkyMSw4NS42MjIgQzcuOTIxLDg1LjkyNSA3LjcwOCw4Ni4yOTIgNy40NDQsODYuNDQ0IEM3LjM2Nyw4Ni40ODkgNy4yOTQsODYuNTEgNy4yMyw4Ni41MSBNNy42NTgsODUuMDk4IEM3LjU1OCw4NS4wOTggNy40NTUsODUuMTI3IDcuMzUxLDg1LjE4OCBDNy4wMzEsODUuMzczIDYuNzgxLDg1LjgwNiA2Ljc4MSw4Ni4xNzMgQzYuNzgxLDg2LjQ4MiA2Ljk2Niw4Ni42OTcgNy4yMyw4Ni42OTcgQzcuMzMsODYuNjk3IDcuNDMzLDg2LjY2NiA3LjUzOCw4Ni42MDcgQzcuODU4LDg2LjQyMiA4LjEwOCw4NS45ODkgOC4xMDgsODUuNjIyIEM4LjEwOCw4NS4zMTMgNy45MjMsODUuMDk4IDcuNjU4LDg1LjA5OCIgaWQ9IkZpbGwtMTciIGZpbGw9IiM4MDk3QTIiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNNy4yMyw4Ni4zMjIgTDcuMTU0LDg2LjE3MyBDNy4xNTQsODUuOTM4IDcuMzMzLDg1LjYyOSA3LjUzOCw4NS41MTIgTDcuNjU4LDg1LjQ3MSBMNy43MzQsODUuNjIyIEM3LjczNCw4NS44NTYgNy41NTUsODYuMTY0IDcuMzUxLDg2LjI4MiBMNy4yMyw4Ni4zMjIgTTcuNjU4LDg1LjI4NCBDNy41OTQsODUuMjg0IDcuNTIxLDg1LjMwNSA3LjQ0NCw4NS4zNSBDNy4xODEsODUuNTAyIDYuOTY3LDg1Ljg3MSA2Ljk2Nyw4Ni4xNzMgQzYuOTY3LDg2LjM4NyA3LjA3NCw4Ni41MSA3LjIzLDg2LjUxIEM3LjI5NCw4Ni41MSA3LjM2Nyw4Ni40ODkgNy40NDQsODYuNDQ0IEM3LjcwOCw4Ni4yOTIgNy45MjEsODUuOTI1IDcuOTIxLDg1LjYyMiBDNy45MjEsODUuNDA4IDcuODE0LDg1LjI4NCA3LjY1OCw4NS4yODQiIGlkPSJGaWxsLTE4IiBmaWxsPSIjODA5N0EyIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTc3LjI3OCw3Ljc2OSBMNzcuMjc4LDUxLjQzNiBMMTAuMjA4LDkwLjE2IEwxMC4yMDgsNDYuNDkzIEw3Ny4yNzgsNy43NjkiIGlkPSJGaWxsLTE5IiBmaWxsPSIjNDU1QTY0Ij48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTEwLjA4Myw5MC4zNzUgTDEwLjA4Myw0Ni40MjEgTDEwLjE0Niw0Ni4zODUgTDc3LjQwMyw3LjU1NCBMNzcuNDAzLDUxLjUwOCBMNzcuMzQxLDUxLjU0NCBMMTAuMDgzLDkwLjM3NSBMMTAuMDgzLDkwLjM3NSBaIE0xMC4zMzMsNDYuNTY0IEwxMC4zMzMsODkuOTQ0IEw3Ny4xNTQsNTEuMzY1IEw3Ny4xNTQsNy45ODUgTDEwLjMzMyw0Ni41NjQgTDEwLjMzMyw0Ni41NjQgWiIgaWQ9IkZpbGwtMjAiIGZpbGw9IiM2MDdEOEIiPjwvcGF0aD4KICAgICAgICAgICAgICAgIDwvZz4KICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMjUuNzM3LDg4LjY0NyBMMTE4LjA5OCw5MS45ODEgTDExOC4wOTgsODQgTDEwNi42MzksODguNzEzIEwxMDYuNjM5LDk2Ljk4MiBMOTksMTAwLjMxNSBMMTEyLjM2OSwxMDMuOTYxIEwxMjUuNzM3LDg4LjY0NyIgaWQ9IkltcG9ydGVkLUxheWVycy1Db3B5LTIiIGZpbGw9IiM0NTVBNjQiIHNrZXRjaDp0eXBlPSJNU1NoYXBlR3JvdXAiPjwvcGF0aD4KICAgICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+";
+            "<svg width='198' height='240' viewBox='0 0 198 240' xmlns='http://www.w3.org/2000/svg'><g fill='none' fill-rule='evenodd'><path d='M149.625 109.527l6.737 3.891v.886c0 .177.013.36.038.549.01.081.02.162.027.242.14 1.415.974 2.998 2.105 3.999l5.72 5.062.081-.09s4.382-2.53 5.235-3.024l25.97 14.993v54.001c0 .771-.386 1.217-.948 1.217-.233 0-.495-.076-.772-.236l-23.967-13.838-.014.024-27.322 15.775-.85-1.323c-4.731-1.529-9.748-2.74-14.951-3.61a.27.27 0 0 0-.007.024l-5.067 16.961-7.891 4.556-.037-.063v27.59c0 .772-.386 1.217-.948 1.217-.232 0-.495-.076-.772-.236l-42.473-24.522c-.95-.549-1.72-1.877-1.72-2.967v-1.035l-.021.047a5.111 5.111 0 0 0-1.816-.399 5.682 5.682 0 0 0-.546.001 13.724 13.724 0 0 1-1.918-.041c-1.655-.153-3.2-.6-4.404-1.296l-46.576-26.89.005.012-10.278-18.75c-1.001-1.827-.241-4.216 1.698-5.336l56.011-32.345a4.194 4.194 0 0 1 2.099-.572c1.326 0 2.572.659 3.227 1.853l.005-.003.227.413-.006.004a9.63 9.63 0 0 0 1.477 2.018l.277.27c1.914 1.85 4.468 2.801 7.113 2.801 1.949 0 3.948-.517 5.775-1.572.013 0 7.319-4.219 7.319-4.219a4.194 4.194 0 0 1 2.099-.572c1.326 0 2.572.658 3.226 1.853l3.25 5.928.022-.018 6.785 3.917-.105-.182 46.881-26.965m0-1.635c-.282 0-.563.073-.815.218l-46.169 26.556-5.41-3.124-3.005-5.481c-.913-1.667-2.699-2.702-4.66-2.703-1.011 0-2.02.274-2.917.792a3825 3825 0 0 1-7.275 4.195l-.044.024a9.937 9.937 0 0 1-4.957 1.353c-2.292 0-4.414-.832-5.976-2.342l-.252-.245a7.992 7.992 0 0 1-1.139-1.534 1.379 1.379 0 0 0-.06-.122l-.227-.414a1.718 1.718 0 0 0-.095-.154c-.938-1.574-2.673-2.545-4.571-2.545-1.011 0-2.02.274-2.917.792L3.125 155.502c-2.699 1.559-3.738 4.94-2.314 7.538l10.278 18.75c.177.323.448.563.761.704l46.426 26.804c1.403.81 3.157 1.332 5.072 1.508a15.661 15.661 0 0 0 2.146.046 4.766 4.766 0 0 1 .396 0c.096.004.19.011.283.022.109 1.593 1.159 3.323 2.529 4.114l42.472 24.522c.524.302 1.058.455 1.59.455 1.497 0 2.583-1.2 2.583-2.852v-26.562l7.111-4.105a1.64 1.64 0 0 0 .749-.948l4.658-15.593c4.414.797 8.692 1.848 12.742 3.128l.533.829a1.634 1.634 0 0 0 2.193.531l26.532-15.317L193 192.433c.523.302 1.058.455 1.59.455 1.497 0 2.583-1.199 2.583-2.852v-54.001c0-.584-.312-1.124-.818-1.416l-25.97-14.993a1.633 1.633 0 0 0-1.636.001c-.606.351-2.993 1.73-4.325 2.498l-4.809-4.255c-.819-.725-1.461-1.933-1.561-2.936a7.776 7.776 0 0 0-.033-.294 2.487 2.487 0 0 1-.023-.336v-.886c0-.584-.312-1.123-.817-1.416l-6.739-3.891a1.633 1.633 0 0 0-.817-.219' fill='#455A64'/><path d='M96.027 132.636l46.576 26.891c1.204.695 1.979 1.587 2.242 2.541l-.01.007-81.374 46.982h-.001c-1.654-.152-3.199-.6-4.403-1.295l-46.576-26.891 83.546-48.235' fill='#FAFAFA'/><path d='M63.461 209.174c-.008 0-.015 0-.022-.002-1.693-.156-3.228-.609-4.441-1.309l-46.576-26.89a.118.118 0 0 1 0-.203l83.546-48.235a.117.117 0 0 1 .117 0l46.576 26.891c1.227.708 2.021 1.612 2.296 2.611a.116.116 0 0 1-.042.124l-.021.016-81.375 46.981a.11.11 0 0 1-.058.016zm-50.747-28.303l46.401 26.79c1.178.68 2.671 1.121 4.32 1.276l81.272-46.922c-.279-.907-1.025-1.73-2.163-2.387l-46.517-26.857-83.313 48.1z' fill='#607D8B'/><path d='M148.327 165.471a5.85 5.85 0 0 1-.546.001c-1.894-.083-3.302-1.038-3.145-2.132a2.693 2.693 0 0 0-.072-1.105l-81.103 46.822c.628.058 1.272.073 1.918.042.182-.009.364-.009.546-.001 1.894.083 3.302 1.038 3.145 2.132l79.257-45.759' fill='#FFF'/><path d='M69.07 211.347a.118.118 0 0 1-.115-.134c.045-.317-.057-.637-.297-.925-.505-.61-1.555-1.022-2.738-1.074a5.966 5.966 0 0 0-.535.001 14.03 14.03 0 0 1-1.935-.041.117.117 0 0 1-.103-.092.116.116 0 0 1 .055-.126l81.104-46.822a.117.117 0 0 1 .171.07c.104.381.129.768.074 1.153-.045.316.057.637.296.925.506.61 1.555 1.021 2.739 1.073.178.008.357.008.535-.001a.117.117 0 0 1 .064.218l-79.256 45.759a.114.114 0 0 1-.059.016zm-3.405-2.372c.089 0 .177.002.265.006 1.266.056 2.353.488 2.908 1.158.227.274.35.575.36.882l78.685-45.429c-.036 0-.072-.001-.107-.003-1.267-.056-2.354-.489-2.909-1.158-.282-.34-.402-.724-.347-1.107a2.604 2.604 0 0 0-.032-.91L63.846 208.97a13.91 13.91 0 0 0 1.528.012c.097-.005.194-.007.291-.007z' fill='#607D8B'/><path d='M2.208 162.134c-1.001-1.827-.241-4.217 1.698-5.337l56.011-32.344c1.939-1.12 4.324-.546 5.326 1.281l.232.41a9.344 9.344 0 0 0 1.47 2.021l.278.27c3.325 3.214 8.583 3.716 12.888 1.23l7.319-4.22c1.94-1.119 4.324-.546 5.325 1.282l3.25 5.928-83.519 48.229-10.278-18.75z' fill='#FAFAFA'/><path d='M12.486 181.001a.112.112 0 0 1-.031-.005.114.114 0 0 1-.071-.056L2.106 162.19c-1.031-1.88-.249-4.345 1.742-5.494l56.01-32.344a4.328 4.328 0 0 1 2.158-.588c1.415 0 2.65.702 3.311 1.882.01.008.018.017.024.028l.227.414a.122.122 0 0 1 .013.038 9.508 9.508 0 0 0 1.439 1.959l.275.266c1.846 1.786 4.344 2.769 7.031 2.769 1.977 0 3.954-.538 5.717-1.557a.148.148 0 0 1 .035-.013l7.284-4.206a4.321 4.321 0 0 1 2.157-.588c1.427 0 2.672.716 3.329 1.914l3.249 5.929a.116.116 0 0 1-.044.157l-83.518 48.229a.116.116 0 0 1-.059.016zm49.53-57.004c-.704 0-1.41.193-2.041.557l-56.01 32.345c-1.882 1.086-2.624 3.409-1.655 5.179l10.221 18.645 83.317-48.112-3.195-5.829c-.615-1.122-1.783-1.792-3.124-1.792a4.08 4.08 0 0 0-2.04.557l-7.317 4.225a.148.148 0 0 1-.035.013 11.7 11.7 0 0 1-5.801 1.569c-2.748 0-5.303-1.007-7.194-2.835l-.278-.27a9.716 9.716 0 0 1-1.497-2.046.096.096 0 0 1-.013-.037l-.191-.347a.11.11 0 0 1-.023-.029c-.615-1.123-1.783-1.793-3.124-1.793z' fill='#607D8B'/><path d='M42.434 155.808c-2.51-.001-4.697-1.258-5.852-3.365-1.811-3.304-.438-7.634 3.059-9.654l12.291-7.098a7.599 7.599 0 0 1 3.789-1.033c2.51 0 4.697 1.258 5.852 3.365 1.811 3.304.439 7.634-3.059 9.654l-12.291 7.098a7.606 7.606 0 0 1-3.789 1.033zm13.287-20.683a7.128 7.128 0 0 0-3.555.971l-12.291 7.098c-3.279 1.893-4.573 5.942-2.883 9.024 1.071 1.955 3.106 3.122 5.442 3.122a7.13 7.13 0 0 0 3.556-.97l12.291-7.098c3.279-1.893 4.572-5.942 2.883-9.024-1.072-1.955-3.106-3.123-5.443-3.123z' fill='#607D8B'/><path d='M149.588 109.407l6.737 3.89v.887c0 .176.013.36.037.549.011.081.02.161.028.242.14 1.415.973 2.998 2.105 3.999l7.396 6.545c.177.156.358.295.541.415 1.579 1.04 2.95.466 3.062-1.282.049-.784.057-1.595.023-2.429l-.003-.16v-1.151l25.987 15.003v54c0 1.09-.77 1.53-1.72.982l-42.473-24.523c-.95-.548-1.72-1.877-1.72-2.966v-34.033' fill='#FAFAFA'/><path d='M194.553 191.25c-.257 0-.54-.085-.831-.253l-42.472-24.521c-.981-.567-1.779-1.943-1.779-3.068v-34.033h.234v34.033c0 1.051.745 2.336 1.661 2.866l42.473 24.521c.424.245.816.288 1.103.122.285-.164.442-.52.442-1.002v-53.933l-25.753-14.868.003 1.106c.034.832.026 1.654-.024 2.439-.054.844-.396 1.464-.963 1.746-.619.309-1.45.173-2.28-.373a5.023 5.023 0 0 1-.553-.426l-7.397-6.544c-1.158-1.026-1.999-2.625-2.143-4.076a9.624 9.624 0 0 0-.027-.238 4.241 4.241 0 0 1-.038-.564v-.82l-6.68-3.856.117-.202 6.738 3.89.058.034v.954c0 .171.012.351.036.533.011.083.021.165.029.246.138 1.395.948 2.935 2.065 3.923l7.397 6.545c.173.153.35.289.527.406.758.499 1.504.63 2.047.359.49-.243.786-.795.834-1.551.05-.778.057-1.591.024-2.417l-.004-.163v-1.355l.175.1 25.987 15.004.059.033v54.068c0 .569-.198.996-.559 1.204a1.002 1.002 0 0 1-.506.131' fill='#607D8B'/><path d='M145.685 163.161l24.115 13.922-25.978 14.998-1.462-.307c-6.534-2.17-13.628-3.728-21.019-4.616-4.365-.524-8.663 1.096-9.598 3.62a2.746 2.746 0 0 0-.011 1.928c1.538 4.267 4.236 8.363 7.995 12.135l.532.845-25.977 14.997-24.115-13.922 75.518-43.6' fill='#FFF'/><path d='M94.282 220.818l-.059-.033-24.29-14.024.175-.101 75.577-43.634.058.033 24.29 14.024-26.191 15.122-.045-.01-1.461-.307c-6.549-2.174-13.613-3.725-21.009-4.614a13.744 13.744 0 0 0-1.638-.097c-3.758 0-7.054 1.531-7.837 3.642a2.62 2.62 0 0 0-.01 1.848c1.535 4.258 4.216 8.326 7.968 12.091l.016.021.526.835.006.01.064.102-.105.061-25.977 14.998-.058.033zm-23.881-14.057l23.881 13.788 24.802-14.32c.546-.315.846-.489 1.017-.575l-.466-.74c-3.771-3.787-6.467-7.881-8.013-12.168a2.851 2.851 0 0 1 .011-2.008c.815-2.199 4.203-3.795 8.056-3.795.557 0 1.117.033 1.666.099 7.412.891 14.491 2.445 21.041 4.621.836.175 1.215.254 1.39.304l25.78-14.884-23.881-13.788-75.284 43.466z' fill='#607D8B'/><path d='M167.23 125.979v50.871l-27.321 15.773-6.461-14.167c-.91-1.996-3.428-1.738-5.624.574a10.238 10.238 0 0 0-2.33 4.018l-6.46 21.628-27.322 15.774v-50.871l75.518-43.6' fill='#FFF'/><path d='M91.712 220.567a.127.127 0 0 1-.059-.016.118.118 0 0 1-.058-.101v-50.871c0-.042.023-.08.058-.101l75.519-43.6a.117.117 0 0 1 .175.101v50.871c0 .041-.023.08-.059.1l-27.321 15.775a.118.118 0 0 1-.094.01.12.12 0 0 1-.071-.063l-6.46-14.168c-.375-.822-1.062-1.275-1.934-1.275-1.089 0-2.364.686-3.5 1.881a10.206 10.206 0 0 0-2.302 3.972l-6.46 21.627a.118.118 0 0 1-.054.068L91.77 220.551a.12.12 0 0 1-.058.016zm.117-50.92v50.601l27.106-15.65 6.447-21.583a10.286 10.286 0 0 1 2.357-4.065c1.18-1.242 2.517-1.954 3.669-1.954.969 0 1.731.501 2.146 1.411l6.407 14.051 27.152-15.676v-50.601l-75.284 43.466z' fill='#607D8B'/><path d='M168.543 126.213v50.87l-27.322 15.774-6.46-14.168c-.91-1.995-3.428-1.738-5.624.574a10.248 10.248 0 0 0-2.33 4.019l-6.461 21.627-27.321 15.774v-50.87l75.518-43.6' fill='#FFF'/><path d='M93.025 220.8a.123.123 0 0 1-.059-.015.12.12 0 0 1-.058-.101v-50.871c0-.042.023-.08.058-.101l75.518-43.6a.112.112 0 0 1 .117 0c.036.02.059.059.059.1v50.871a.116.116 0 0 1-.059.101l-27.321 15.774a.111.111 0 0 1-.094.01.115.115 0 0 1-.071-.062l-6.46-14.168c-.375-.823-1.062-1.275-1.935-1.275-1.088 0-2.363.685-3.499 1.881a10.19 10.19 0 0 0-2.302 3.971l-6.461 21.628a.108.108 0 0 1-.053.067l-27.322 15.775a.12.12 0 0 1-.058.015zm.117-50.919v50.6l27.106-15.649 6.447-21.584a10.293 10.293 0 0 1 2.357-4.065c1.179-1.241 2.516-1.954 3.668-1.954.969 0 1.732.502 2.147 1.412l6.407 14.051 27.152-15.676v-50.601l-75.284 43.466z' fill='#607D8B'/><path d='M169.8 177.083l-27.322 15.774-6.46-14.168c-.91-1.995-3.428-1.738-5.625.574a10.246 10.246 0 0 0-2.329 4.019l-6.461 21.627-27.321 15.774v-50.87l75.518-43.6v50.87z' fill='#FAFAFA'/><path d='M94.282 220.917a.234.234 0 0 1-.234-.233v-50.871c0-.083.045-.161.117-.202l75.518-43.601a.234.234 0 1 1 .35.202v50.871a.233.233 0 0 1-.116.202l-27.322 15.775a.232.232 0 0 1-.329-.106l-6.461-14.168c-.36-.789-.992-1.206-1.828-1.206-1.056 0-2.301.672-3.415 1.844a10.099 10.099 0 0 0-2.275 3.924l-6.46 21.628a.235.235 0 0 1-.107.136l-27.322 15.774a.23.23 0 0 1-.116.031zm.233-50.969v50.331l26.891-15.525 6.434-21.539a10.41 10.41 0 0 1 2.384-4.112c1.201-1.265 2.569-1.991 3.753-1.991 1.018 0 1.818.526 2.253 1.48l6.354 13.934 26.982-15.578v-50.331l-75.051 43.331z' fill='#607D8B'/><path d='M109.894 199.943c-1.774 0-3.241-.725-4.244-2.12a.224.224 0 0 1 .023-.294.233.233 0 0 1 .301-.023c.78.547 1.705.827 2.75.827 1.323 0 2.754-.439 4.256-1.306 5.311-3.067 9.631-10.518 9.631-16.611 0-1.927-.442-3.56-1.278-4.724a.232.232 0 0 1 .323-.327c1.671 1.172 2.591 3.381 2.591 6.219 0 6.242-4.426 13.863-9.865 17.003-1.574.908-3.084 1.356-4.488 1.356zm-2.969-1.542c.813.651 1.82.877 2.968.877h.001c1.321 0 2.753-.327 4.254-1.194 5.311-3.067 9.632-10.463 9.632-16.556 0-1.979-.463-3.599-1.326-4.761.411 1.035.625 2.275.625 3.635 0 6.243-4.426 13.883-9.865 17.023-1.574.909-3.084 1.317-4.49 1.317-.641 0-1.243-.149-1.799-.341z' fill='#607D8B'/><path d='M113.097 197.23c5.384-3.108 9.748-10.636 9.748-16.814 0-2.051-.483-3.692-1.323-4.86-1.784-1.252-4.374-1.194-7.257.47-5.384 3.108-9.748 10.636-9.748 16.814 0 2.051.483 3.692 1.323 4.86 1.784 1.252 4.374 1.194 7.257-.47' fill='#FAFAFA'/><path d='M108.724 198.614c-1.142 0-2.158-.213-3.019-.817-.021-.014-.04.014-.055-.007-.894-1.244-1.367-2.948-1.367-4.973 0-6.242 4.426-13.864 9.865-17.005 1.574-.908 3.084-1.363 4.49-1.363 1.142 0 2.158.309 3.018.913a.23.23 0 0 1 .056.056c.894 1.244 1.367 2.972 1.367 4.997 0 6.243-4.426 13.783-9.865 16.923-1.574.909-3.084 1.276-4.49 1.276zm-2.718-1.109c.774.532 1.688.776 2.718.776 1.323 0 2.754-.413 4.256-1.28 5.311-3.066 9.631-10.505 9.631-16.598 0-1.909-.434-3.523-1.255-4.685-.774-.533-1.688-.799-2.718-.799-1.323 0-2.755.441-4.256 1.308-5.311 3.066-9.631 10.506-9.631 16.599 0 1.909.434 3.517 1.255 4.679z' fill='#607D8B'/><path d='M149.318 114.262l-9.984 8.878 15.893 11.031 5.589-6.112-11.498-13.797' fill='#FAFAFA'/><path d='M169.676 120.84l-9.748 5.627c-3.642 2.103-9.528 2.113-13.147.024-3.62-2.089-3.601-5.488.041-7.591l9.495-5.608-6.729-3.885-81.836 47.071 45.923 26.514 3.081-1.779c.631-.365.869-.898.618-1.39-2.357-4.632-2.593-9.546-.683-14.262 5.638-13.92 24.509-24.815 48.618-28.07 8.169-1.103 16.68-.967 24.704.394.852.145 1.776.008 2.407-.357l3.081-1.778-25.825-14.91' fill='#FAFAFA'/><path d='M113.675 183.459a.47.47 0 0 1-.233-.062l-45.924-26.515a.468.468 0 0 1 .001-.809l81.836-47.071a.467.467 0 0 1 .466 0l6.729 3.885a.467.467 0 0 1-.467.809l-6.496-3.75-80.9 46.533 44.988 25.973 2.848-1.644c.192-.111.62-.409.435-.773-2.416-4.748-2.658-9.814-.7-14.65 2.806-6.927 8.885-13.242 17.582-18.263 8.657-4.998 19.518-8.489 31.407-10.094 8.198-1.107 16.79-.97 24.844.397.739.125 1.561.007 2.095-.301l2.381-1.374-25.125-14.506a.467.467 0 0 1 .467-.809l25.825 14.91a.467.467 0 0 1 0 .809l-3.081 1.779c-.721.417-1.763.575-2.718.413-7.963-1.351-16.457-1.486-24.563-.392-11.77 1.589-22.512 5.039-31.065 9.977-8.514 4.916-14.456 11.073-17.183 17.805-1.854 4.578-1.623 9.376.666 13.875.37.725.055 1.513-.8 2.006l-3.081 1.78a.476.476 0 0 1-.234.062' fill='#455A64'/><path d='M153.316 128.279c-2.413 0-4.821-.528-6.652-1.586-1.818-1.049-2.82-2.461-2.82-3.975 0-1.527 1.016-2.955 2.861-4.02l9.493-5.607a.233.233 0 1 1 .238.402l-9.496 5.609c-1.696.979-2.628 2.263-2.628 3.616 0 1.34.918 2.608 2.585 3.571 3.549 2.049 9.343 2.038 12.914-.024l9.748-5.628a.234.234 0 0 1 .234.405l-9.748 5.628c-1.858 1.072-4.296 1.609-6.729 1.609' fill='#607D8B'/><path d='M113.675 182.992l-45.913-26.508M113.675 183.342a.346.346 0 0 1-.175-.047l-45.913-26.508a.35.35 0 1 1 .35-.607l45.913 26.508a.35.35 0 0 1-.175.654' fill='#455A64'/><path d='M67.762 156.484v54.001c0 1.09.77 2.418 1.72 2.967l42.473 24.521c.95.549 1.72.11 1.72-.98v-54.001' fill='#FAFAFA'/><path d='M112.727 238.561c-.297 0-.62-.095-.947-.285l-42.473-24.521c-1.063-.613-1.895-2.05-1.895-3.27v-54.001a.35.35 0 1 1 .701 0v54.001c0 .96.707 2.18 1.544 2.663l42.473 24.522c.344.198.661.243.87.122.206-.119.325-.411.325-.799v-54.001a.35.35 0 1 1 .7 0v54.001c0 .655-.239 1.154-.675 1.406a1.235 1.235 0 0 1-.623.162' fill='#455A64'/><path d='M112.86 147.512h-.001c-2.318 0-4.499-.522-6.142-1.471-1.705-.984-2.643-2.315-2.643-3.749 0-1.445.952-2.791 2.68-3.788l12.041-6.953c1.668-.962 3.874-1.493 6.212-1.493 2.318 0 4.499.523 6.143 1.472 1.704.984 2.643 2.315 2.643 3.748 0 1.446-.952 2.791-2.68 3.789l-12.042 6.952c-1.668.963-3.874 1.493-6.211 1.493zm12.147-16.753c-2.217 0-4.298.497-5.861 1.399l-12.042 6.952c-1.502.868-2.33 1.998-2.33 3.182 0 1.173.815 2.289 2.293 3.142 1.538.889 3.596 1.378 5.792 1.378h.001c2.216 0 4.298-.497 5.861-1.399l12.041-6.953c1.502-.867 2.33-1.997 2.33-3.182 0-1.172-.814-2.288-2.292-3.142-1.539-.888-3.596-1.377-5.793-1.377z' fill='#607D8B'/><path d='M165.63 123.219l-5.734 3.311c-3.167 1.828-8.286 1.837-11.433.02-3.147-1.817-3.131-4.772.036-6.601l5.734-3.31 11.397 6.58' fill='#FAFAFA'/><path d='M154.233 117.448l9.995 5.771-4.682 2.704c-1.434.827-3.352 1.283-5.399 1.283-2.029 0-3.923-.449-5.333-1.263-1.29-.744-2-1.694-2-2.674 0-.991.723-1.955 2.036-2.713l5.383-3.108m0-.809l-5.734 3.31c-3.167 1.829-3.183 4.784-.036 6.601 1.568.905 3.623 1.357 5.684 1.357 2.077 0 4.159-.46 5.749-1.377l5.734-3.311-11.397-6.58M145.445 179.667c-1.773 0-3.241-.85-4.243-2.245-.067-.092-.057-.275.023-.356.08-.081.207-.12.3-.055.781.548 1.706.812 2.751.811 1.322 0 2.754-.446 4.256-1.313 5.31-3.066 9.631-10.522 9.631-16.615 0-1.927-.442-3.562-1.279-4.726a.235.235 0 0 1 .024-.301.232.232 0 0 1 .3-.027c1.67 1.172 2.59 3.38 2.59 6.219 0 6.242-4.425 13.987-9.865 17.127-1.573.908-3.083 1.481-4.488 1.481zM142.476 178c.814.651 1.82 1.002 2.969 1.002 1.322 0 2.753-.452 4.255-1.32 5.31-3.065 9.631-10.523 9.631-16.617 0-1.98-.463-3.63-1.325-4.793.411 1.035.624 2.26.624 3.62 0 6.242-4.425 13.875-9.865 17.015-1.573.909-3.084 1.376-4.489 1.376a5.49 5.49 0 0 1-1.8-.283z' fill='#607D8B'/><path d='M148.648 176.704c5.384-3.108 9.748-10.636 9.748-16.813 0-2.052-.483-3.693-1.322-4.861-1.785-1.252-4.375-1.194-7.258.471-5.383 3.108-9.748 10.636-9.748 16.813 0 2.051.484 3.692 1.323 4.86 1.785 1.253 4.374 1.195 7.257-.47' fill='#FAFAFA'/><path d='M144.276 178.276c-1.143 0-2.158-.307-3.019-.911a.217.217 0 0 1-.055-.054c-.895-1.244-1.367-2.972-1.367-4.997 0-6.241 4.425-13.875 9.865-17.016 1.573-.908 3.084-1.369 4.489-1.369 1.143 0 2.158.307 3.019.91a.24.24 0 0 1 .055.055c.894 1.244 1.367 2.971 1.367 4.997 0 6.241-4.425 13.875-9.865 17.016-1.573.908-3.084 1.369-4.489 1.369zm-2.718-1.172c.773.533 1.687.901 2.718.901 1.322 0 2.754-.538 4.256-1.405 5.31-3.066 9.631-10.567 9.631-16.661 0-1.908-.434-3.554-1.256-4.716-.774-.532-1.688-.814-2.718-.814-1.322 0-2.754.433-4.256 1.3-5.31 3.066-9.631 10.564-9.631 16.657 0 1.91.434 3.576 1.256 4.738z' fill='#607D8B'/><path d='M150.72 172.361l-.363-.295a24.105 24.105 0 0 0 2.148-3.128 24.05 24.05 0 0 0 1.977-4.375l.443.149a24.54 24.54 0 0 1-2.015 4.46 24.61 24.61 0 0 1-2.19 3.189M115.917 191.514l-.363-.294a24.174 24.174 0 0 0 2.148-3.128 24.038 24.038 0 0 0 1.976-4.375l.443.148a24.48 24.48 0 0 1-2.015 4.461 24.662 24.662 0 0 1-2.189 3.188M114 237.476V182.584 237.476' fill='#607D8B'/><g><path d='M81.822 37.474c.017-.135-.075-.28-.267-.392-.327-.188-.826-.21-1.109-.045l-6.012 3.471c-.131.076-.194.178-.191.285.002.132.002.461.002.578v.043l-.007.128-6.591 3.779c-.001 0-2.077 1.046-2.787 5.192 0 0-.912 6.961-.898 19.745.015 12.57.606 17.07 1.167 21.351.22 1.684 3.001 2.125 3.001 2.125.331.04.698-.027 1.08-.248l75.273-43.551c1.808-1.069 2.667-3.719 3.056-6.284 1.213-7.99 1.675-32.978-.275-39.878-.196-.693-.51-1.083-.868-1.282l-2.086-.79c-.727.028-1.416.467-1.534.535L82.032 37.072l-.21.402' fill='#FFF'/><path d='M144.311 1.701l2.085.79c.358.199.672.589.868 1.282 1.949 6.9 1.487 31.887.275 39.878-.39 2.565-1.249 5.215-3.056 6.284L69.21 93.486a1.78 1.78 0 0 1-.896.258l-.183-.011c0 .001-2.782-.44-3.003-2.124-.56-4.282-1.151-8.781-1.165-21.351-.015-12.784.897-19.745.897-19.745.71-4.146 2.787-5.192 2.787-5.192l6.591-3.779.007-.128v-.043c0-.117 0-.446-.002-.578-.003-.107.059-.21.191-.285l6.012-3.472a.98.98 0 0 1 .481-.11c.218 0 .449.053.627.156.193.112.285.258.268.392l.211-.402 60.744-34.836c.117-.068.806-.507 1.534-.535m0-.997l-.039.001c-.618.023-1.283.244-1.974.656l-.021.012-60.519 34.706a2.358 2.358 0 0 0-.831-.15c-.365 0-.704.084-.98.244l-6.012 3.471c-.442.255-.699.69-.689 1.166l.001.15-6.08 3.487c-.373.199-2.542 1.531-3.29 5.898l-.006.039c-.009.07-.92 7.173-.906 19.875.014 12.62.603 17.116 1.172 21.465l.002.015c.308 2.355 3.475 2.923 3.836 2.98l.034.004c.101.013.204.019.305.019a2.77 2.77 0 0 0 1.396-.392l75.273-43.552c1.811-1.071 2.999-3.423 3.542-6.997 1.186-7.814 1.734-33.096-.301-40.299-.253-.893-.704-1.527-1.343-1.882l-.132-.062-2.085-.789a.973.973 0 0 0-.353-.065' fill='#455A64'/><path d='M128.267 11.565l1.495.434-56.339 32.326' fill='#FFF'/><path d='M74.202 90.545a.5.5 0 0 1-.25-.931l18.437-10.645a.499.499 0 1 1 .499.864L74.451 90.478l-.249.067M75.764 42.654l-.108-.062.046-.171 5.135-2.964.17.045-.045.171-5.135 2.964-.063.017M70.52 90.375V46.421l.063-.036L137.84 7.554v43.954l-.062.036L70.52 90.375zm.25-43.811v43.38l66.821-38.579V7.985L70.77 46.564z' fill='#607D8B'/><path d='M86.986 83.182c-.23.149-.612.384-.849.523l-11.505 6.701c-.237.139-.206.252.068.252h.565c.275 0 .693-.113.93-.252L87.7 83.705c.237-.139.428-.253.425-.256a11.29 11.29 0 0 1-.006-.503c0-.274-.188-.377-.418-.227l-.715.463' fill='#607D8B'/><path d='M75.266 90.782H74.7c-.2 0-.316-.056-.346-.166-.03-.11.043-.217.215-.317l11.505-6.702c.236-.138.615-.371.844-.519l.715-.464a.488.488 0 0 1 .266-.089c.172 0 .345.13.345.421 0 .214.001.363.003.437l.006.004-.004.069c-.003.075-.003.075-.486.356l-11.505 6.702a2.282 2.282 0 0 1-.992.268zm-.6-.25l.034.001h.566c.252 0 .649-.108.866-.234l11.505-6.702c.168-.098.294-.173.361-.214-.004-.084-.004-.218-.004-.437l-.095-.171-.131.049-.714.463c-.232.15-.616.386-.854.525l-11.505 6.702-.029.018z' fill='#607D8B'/><path d='M75.266 89.871H74.7c-.2 0-.316-.056-.346-.166-.03-.11.043-.217.215-.317l11.505-6.702c.258-.151.694-.268.993-.268h.565c.2 0 .316.056.346.166.03.11-.043.217-.215.317l-11.505 6.702a2.282 2.282 0 0 1-.992.268zm-.6-.25l.034.001h.566c.252 0 .649-.107.866-.234l11.505-6.702.03-.018-.035-.001h-.565c-.252 0-.649.108-.867.234l-11.505 6.702-.029.018zM74.37 90.801v-1.247 1.247' fill='#607D8B'/><path d='M68.13 93.901c-.751-.093-1.314-.737-1.439-1.376-.831-4.238-1.151-8.782-1.165-21.352-.015-12.784.897-19.745.897-19.745.711-4.146 2.787-5.192 2.787-5.192l74.859-43.219c.223-.129 2.487-1.584 3.195.923 1.95 6.9 1.488 31.887.275 39.878-.389 2.565-1.248 5.215-3.056 6.283L69.21 93.653c-.382.221-.749.288-1.08.248 0 0-2.781-.441-3.001-2.125-.561-4.281-1.152-8.781-1.167-21.351-.014-12.784.898-19.745.898-19.745.71-4.146 2.787-5.191 2.787-5.191l6.598-3.81.871-.119 6.599-3.83.046-.461L68.13 93.901' fill='#FAFAFA'/><path d='M68.317 94.161l-.215-.013h-.001l-.244-.047c-.719-.156-2.772-.736-2.976-2.292-.568-4.34-1.154-8.813-1.168-21.384-.014-12.654.891-19.707.9-19.777.725-4.231 2.832-5.338 2.922-5.382l6.628-3.827.87-.119 6.446-3.742.034-.334a.248.248 0 0 1 .273-.223.248.248 0 0 1 .223.272l-.059.589-6.752 3.919-.87.118-6.556 3.785c-.031.016-1.99 1.068-2.666 5.018-.007.06-.908 7.086-.894 19.702.014 12.539.597 16.996 1.161 21.305.091.691.689 1.154 1.309 1.452a1.95 1.95 0 0 1-.236-.609c-.781-3.984-1.155-8.202-1.17-21.399-.014-12.653.891-19.707.9-19.777.725-4.231 2.832-5.337 2.922-5.382-.004.001 74.444-42.98 74.846-43.212l.028-.017c.904-.538 1.72-.688 2.36-.433.555.221.949.733 1.172 1.52 2.014 7.128 1.46 32.219.281 39.983-.507 3.341-1.575 5.515-3.175 6.462L69.335 93.869a2.023 2.023 0 0 1-1.018.292zm-.147-.507c.293.036.604-.037.915-.217l75.273-43.551c1.823-1.078 2.602-3.915 2.934-6.106 1.174-7.731 1.731-32.695-.268-39.772-.178-.631-.473-1.032-.876-1.192-.484-.193-1.166-.052-1.921.397l-.034.021-74.858 43.218c-.031.017-1.989 1.069-2.666 5.019-.007.059-.908 7.085-.894 19.702.015 13.155.386 17.351 1.161 21.303.09.461.476.983 1.037 1.139.114.025.185.037.196.039h.001z' fill='#455A64'/><path d='M69.317 68.982c.489-.281.885-.056.885.505 0 .56-.396 1.243-.885 1.525-.488.282-.884.057-.884-.504 0-.56.396-1.243.884-1.526' fill='#FFF'/><path d='M68.92 71.133c-.289 0-.487-.228-.487-.625 0-.56.396-1.243.884-1.526a.812.812 0 0 1 .397-.121c.289 0 .488.229.488.626 0 .56-.396 1.243-.885 1.525a.812.812 0 0 1-.397.121m.794-2.459a.976.976 0 0 0-.49.147c-.548.317-.978 1.058-.978 1.687 0 .486.271.812.674.812a.985.985 0 0 0 .491-.146c.548-.317.978-1.057.978-1.687 0-.486-.272-.813-.675-.813' fill='#8097A2'/><path d='M68.92 70.947c-.271 0-.299-.307-.299-.439 0-.491.361-1.116.79-1.363a.632.632 0 0 1 .303-.096c.272 0 .301.306.301.438 0 .491-.363 1.116-.791 1.364a.629.629 0 0 1-.304.096m.794-2.086a.812.812 0 0 0-.397.121c-.488.283-.884.966-.884 1.526 0 .397.198.625.487.625a.812.812 0 0 0 .397-.121c.489-.282.885-.965.885-1.525 0-.397-.199-.626-.488-.626' fill='#8097A2'/><path d='M69.444 85.35c.264-.152.477-.031.477.272 0 .303-.213.67-.477.822-.263.153-.477.031-.477-.271 0-.302.214-.671.477-.823' fill='#FFF'/><path d='M69.23 86.51c-.156 0-.263-.123-.263-.337 0-.302.214-.671.477-.823a.431.431 0 0 1 .214-.066c.156 0 .263.124.263.338 0 .303-.213.67-.477.822a.431.431 0 0 1-.214.066m.428-1.412c-.1 0-.203.029-.307.09-.32.185-.57.618-.57.985 0 .309.185.524.449.524a.63.63 0 0 0 .308-.09c.32-.185.57-.618.57-.985 0-.309-.185-.524-.45-.524' fill='#8097A2'/><path d='M69.23 86.322l-.076-.149c0-.235.179-.544.384-.661l.12-.041.076.151c0 .234-.179.542-.383.66l-.121.04m.428-1.038a.431.431 0 0 0-.214.066c-.263.152-.477.521-.477.823 0 .214.107.337.263.337a.431.431 0 0 0 .214-.066c.264-.152.477-.519.477-.822 0-.214-.107-.338-.263-.338' fill='#8097A2'/><path d='M139.278 7.769v43.667L72.208 90.16V46.493l67.07-38.724' fill='#455A64'/><path d='M72.083 90.375V46.421l.063-.036 67.257-38.831v43.954l-.062.036-67.258 38.831zm.25-43.811v43.38l66.821-38.579V7.985L72.333 46.564z' fill='#607D8B'/></g><path d='M125.737 88.647l-7.639 3.334V84l-11.459 4.713v8.269L99 100.315l13.369 3.646 13.368-15.314' fill='#455A64'/></g></svg>";
           function RotateInstructions() {
             this.loadIcon_();
             var overlay = document.createElement("div");
@@ -3994,19 +4337,19 @@
             }
           };
           RotateInstructions.prototype.loadIcon_ = function () {
-            this.icon = base64("image/svg+xml", rotateInstructionsAsset);
+            this.icon = dataUri("image/svg+xml", rotateInstructionsAsset);
           };
           var DEFAULT_VIEWER = "CardboardV1";
           var VIEWER_KEY = "WEBVR_CARDBOARD_VIEWER";
           var CLASS_NAME = "webvr-polyfill-viewer-selector";
-          function ViewerSelector() {
+          function ViewerSelector(defaultViewer) {
             try {
               this.selectedKey = localStorage.getItem(VIEWER_KEY);
             } catch (error) {
               console.error("Failed to load viewer profile: %s", error);
             }
             if (!this.selectedKey) {
-              this.selectedKey = DEFAULT_VIEWER;
+              this.selectedKey = defaultViewer || DEFAULT_VIEWER;
             }
             this.dialog = this.createDialog_(DeviceInfo.Viewers);
             this.root = null;
@@ -4144,13 +4487,17 @@
           var commonjsGlobal$$1 =
             typeof window !== "undefined"
               ? window
-              : typeof commonjsGlobal$$1 !== "undefined"
-              ? commonjsGlobal$$1
+              : typeof commonjsGlobal$1 !== "undefined"
+              ? commonjsGlobal$1
               : typeof self !== "undefined"
               ? self
               : {};
           function unwrapExports$$1(x) {
-            return x && x.__esModule ? x["default"] : x;
+            return x &&
+              x.__esModule &&
+              Object.prototype.hasOwnProperty.call(x, "default")
+              ? x["default"]
+              : x;
           }
           function createCommonjsModule$$1(fn, module) {
             return (
@@ -4822,6 +5169,8 @@
             return null;
           };
           var config = {
+            ADDITIONAL_VIEWERS: [],
+            DEFAULT_VIEWER: "",
             MOBILE_WAKE_LOCK: true,
             DEBUG: false,
             DPDB_URL: "https://dpdb.webvr.rocks/dpdb.json",
@@ -4861,8 +5210,11 @@
               this.config.DPDB_URL,
               this.onDeviceParamsUpdated_.bind(this)
             );
-            this.deviceInfo_ = new DeviceInfo(this.dpdb_.getDeviceParams());
-            this.viewerSelector_ = new ViewerSelector();
+            this.deviceInfo_ = new DeviceInfo(
+              this.dpdb_.getDeviceParams(),
+              config$$1.ADDITIONAL_VIEWERS
+            );
+            this.viewerSelector_ = new ViewerSelector(config$$1.DEFAULT_VIEWER);
             this.viewerSelector_.onChange(this.onViewerChanged_.bind(this));
             this.deviceInfo_.setViewer(this.viewerSelector_.getCurrentViewer());
             if (!this.config.ROTATE_INSTRUCTIONS_DISABLED) {
@@ -5054,7 +5406,10 @@
               this.updateBounds_();
               this.distorter_.submitFrame();
             } else if (this.cardboardUI_ && this.layer_) {
-              var canvas = this.layer_.source.getContext("webgl").canvas;
+              var gl = this.layer_.source.getContext("webgl");
+              if (!gl) gl = this.layer_.source.getContext("experimental-webgl");
+              if (!gl) gl = this.layer_.source.getContext("webgl2");
+              var canvas = gl.canvas;
               if (
                 canvas.width != this.lastWidth ||
                 canvas.height != this.lastHeight
@@ -5076,6 +5431,8 @@
           CardboardVRDisplay.prototype.onResize_ = function (e) {
             if (this.layer_) {
               var gl = this.layer_.source.getContext("webgl");
+              if (!gl) gl = this.layer_.source.getContext("experimental-webgl");
+              if (!gl) gl = this.layer_.source.getContext("webgl2");
               var cssProperties = [
                 "position: absolute",
                 "top: 0",
@@ -5113,19 +5470,19 @@
           return CardboardVRDisplay;
         });
       });
-      var CardboardVRDisplay = unwrapExports$$1(cardboardVrDisplay);
+      var CardboardVRDisplay = unwrapExports(cardboardVrDisplay);
 
-      var version = "0.10.5";
+      var version = "0.10.12";
 
       var DefaultConfig = {
+        ADDITIONAL_VIEWERS: [],
+        DEFAULT_VIEWER: "",
         PROVIDE_MOBILE_VRDISPLAY: true,
-        GET_VR_DISPLAYS_TIMEOUT: 1000,
         MOBILE_WAKE_LOCK: true,
         DEBUG: false,
         DPDB_URL: "https://dpdb.webvr.rocks/dpdb.json",
         K_FILTER: 0.98,
         PREDICTION_TIME_S: 0.04,
-        TOUCH_PANNER_DISABLED: true,
         CARDBOARD_UI_DISABLED: false,
         ROTATE_INSTRUCTIONS_DISABLED: false,
         YAW_ONLY: false,
@@ -5160,13 +5517,14 @@
         }
         if (isMobile()) {
           var vrDisplay = new CardboardVRDisplay({
+            ADDITIONAL_VIEWERS: this.config.ADDITIONAL_VIEWERS,
+            DEFAULT_VIEWER: this.config.DEFAULT_VIEWER,
             MOBILE_WAKE_LOCK: this.config.MOBILE_WAKE_LOCK,
             DEBUG: this.config.DEBUG,
             DPDB_URL: this.config.DPDB_URL,
             CARDBOARD_UI_DISABLED: this.config.CARDBOARD_UI_DISABLED,
             K_FILTER: this.config.K_FILTER,
             PREDICTION_TIME_S: this.config.PREDICTION_TIME_S,
-            TOUCH_PANNER_DISABLED: this.config.TOUCH_PANNER_DISABLED,
             ROTATE_INSTRUCTIONS_DISABLED:
               this.config.ROTATE_INSTRUCTIONS_DISABLED,
             YAW_ONLY: this.config.YAW_ONLY,
@@ -5217,24 +5575,13 @@
         if (!this.hasNative) {
           return Promise.resolve(this.getPolyfillDisplays());
         }
-        var timeoutId;
-        var vrDisplaysNative = this.native.getVRDisplays.call(navigator);
-        var timeoutPromise = new Promise(function (resolve) {
-          timeoutId = setTimeout(function () {
-            console.warn(
-              "Native WebVR implementation detected, but `getVRDisplays()` failed to resolve. Falling back to polyfill."
-            );
-            resolve([]);
-          }, config.GET_VR_DISPLAYS_TIMEOUT);
-        });
-        return race([vrDisplaysNative, timeoutPromise]).then(function (
-          nativeDisplays
-        ) {
-          clearTimeout(timeoutId);
-          return nativeDisplays.length > 0
-            ? nativeDisplays
-            : _this.getPolyfillDisplays();
-        });
+        return this.native.getVRDisplays
+          .call(navigator)
+          .then(function (nativeDisplays) {
+            return nativeDisplays.length > 0
+              ? nativeDisplays
+              : _this.getPolyfillDisplays();
+          });
       };
       WebVRPolyfill.version = version;
       WebVRPolyfill.VRFrameData = CardboardVRDisplay.VRFrameData;
@@ -5246,15 +5593,12 @@
 
       var require$$0 = (webvrPolyfill && WebVRPolyfill) || webvrPolyfill;
 
-      if (
-        typeof commonjsGlobal$$1 !== "undefined" &&
-        commonjsGlobal$$1.window
-      ) {
-        if (!commonjsGlobal$$1.document) {
-          commonjsGlobal$$1.document = commonjsGlobal$$1.window.document;
+      if (typeof commonjsGlobal$1 !== "undefined" && commonjsGlobal$1.window) {
+        if (!commonjsGlobal$1.document) {
+          commonjsGlobal$1.document = commonjsGlobal$1.window.document;
         }
-        if (!commonjsGlobal$$1.navigator) {
-          commonjsGlobal$$1.navigator = commonjsGlobal$$1.window.navigator;
+        if (!commonjsGlobal$1.navigator) {
+          commonjsGlobal$1.navigator = commonjsGlobal$1.window.navigator;
         }
       }
       var src = require$$0;
@@ -5399,7 +5743,7 @@
     },
   });
 
-  var REVISION = "92";
+  var REVISION = "93";
   var MOUSE = { LEFT: 0, MIDDLE: 1, RIGHT: 2 };
   var CullFaceNone = 0;
   var CullFaceBack = 1;
@@ -6196,6 +6540,8 @@
       var v1 = new Vector3();
 
       return function extractRotation(m) {
+        // this method does not support reflection matrices
+
         var te = this.elements;
         var me = m.elements;
 
@@ -6206,14 +6552,22 @@
         te[0] = me[0] * scaleX;
         te[1] = me[1] * scaleX;
         te[2] = me[2] * scaleX;
+        te[3] = 0;
 
         te[4] = me[4] * scaleY;
         te[5] = me[5] * scaleY;
         te[6] = me[6] * scaleY;
+        te[7] = 0;
 
         te[8] = me[8] * scaleZ;
         te[9] = me[9] * scaleZ;
         te[10] = me[10] * scaleZ;
+        te[11] = 0;
+
+        te[12] = 0;
+        te[13] = 0;
+        te[14] = 0;
+        te[15] = 1;
 
         return this;
       };
@@ -6342,12 +6696,12 @@
         te[10] = bd * f + ac;
       }
 
-      // last column
+      // bottom row
       te[3] = 0;
       te[7] = 0;
       te[11] = 0;
 
-      // bottom row
+      // last column
       te[12] = 0;
       te[13] = 0;
       te[14] = 0;
@@ -6356,51 +6710,14 @@
       return this;
     },
 
-    makeRotationFromQuaternion: function (q) {
-      var te = this.elements;
+    makeRotationFromQuaternion: (function () {
+      var zero = new Vector3(0, 0, 0);
+      var one = new Vector3(1, 1, 1);
 
-      var x = q._x,
-        y = q._y,
-        z = q._z,
-        w = q._w;
-      var x2 = x + x,
-        y2 = y + y,
-        z2 = z + z;
-      var xx = x * x2,
-        xy = x * y2,
-        xz = x * z2;
-      var yy = y * y2,
-        yz = y * z2,
-        zz = z * z2;
-      var wx = w * x2,
-        wy = w * y2,
-        wz = w * z2;
-
-      te[0] = 1 - (yy + zz);
-      te[4] = xy - wz;
-      te[8] = xz + wy;
-
-      te[1] = xy + wz;
-      te[5] = 1 - (xx + zz);
-      te[9] = yz - wx;
-
-      te[2] = xz - wy;
-      te[6] = yz + wx;
-      te[10] = 1 - (xx + yy);
-
-      // last column
-      te[3] = 0;
-      te[7] = 0;
-      te[11] = 0;
-
-      // bottom row
-      te[12] = 0;
-      te[13] = 0;
-      te[14] = 0;
-      te[15] = 1;
-
-      return this;
-    },
+      return function makeRotationFromQuaternion(q) {
+        return this.compose(zero, q, one);
+      };
+    })(),
 
     lookAt: (function () {
       var x = new Vector3();
@@ -6946,9 +7263,48 @@
     },
 
     compose: function (position, quaternion, scale) {
-      this.makeRotationFromQuaternion(quaternion);
-      this.scale(scale);
-      this.setPosition(position);
+      var te = this.elements;
+
+      var x = quaternion._x,
+        y = quaternion._y,
+        z = quaternion._z,
+        w = quaternion._w;
+      var x2 = x + x,
+        y2 = y + y,
+        z2 = z + z;
+      var xx = x * x2,
+        xy = x * y2,
+        xz = x * z2;
+      var yy = y * y2,
+        yz = y * z2,
+        zz = z * z2;
+      var wx = w * x2,
+        wy = w * y2,
+        wz = w * z2;
+
+      var sx = scale.x,
+        sy = scale.y,
+        sz = scale.z;
+
+      te[0] = (1 - (yy + zz)) * sx;
+      te[1] = (xy + wz) * sx;
+      te[2] = (xz - wy) * sx;
+      te[3] = 0;
+
+      te[4] = (xy - wz) * sy;
+      te[5] = (1 - (xx + zz)) * sy;
+      te[6] = (yz + wx) * sy;
+      te[7] = 0;
+
+      te[8] = (xz + wy) * sz;
+      te[9] = (yz - wx) * sz;
+      te[10] = (1 - (xx + yy)) * sz;
+      te[11] = 0;
+
+      te[12] = position.x;
+      te[13] = position.y;
+      te[14] = position.z;
+      te[15] = 1;
 
       return this;
     },
@@ -9445,10 +9801,10 @@
    */
 
   /*
-   In options, we can specify:
-   * Texture parameters for an auto-generated target texture
-   * depthBuffer/stencilBuffer: Booleans to indicate if we should generate these buffers
-  */
+	 In options, we can specify:
+	 * Texture parameters for an auto-generated target texture
+	 * depthBuffer/stencilBuffer: Booleans to indicate if we should generate these buffers
+	*/
   function WebGLRenderTarget(width, height, options) {
     this.width = width;
     this.height = height;
@@ -9474,6 +9830,9 @@
       options.anisotropy,
       options.encoding
     );
+
+    this.texture.generateMipmaps =
+      options.generateMipmaps !== undefined ? options.generateMipmaps : true;
 
     this.depthBuffer =
       options.depthBuffer !== undefined ? options.depthBuffer : true;
@@ -10082,37 +10441,46 @@
       return this;
     },
 
-    applyMatrix4: (function () {
-      var points = [
-        new Vector3(),
-        new Vector3(),
-        new Vector3(),
-        new Vector3(),
-        new Vector3(),
-        new Vector3(),
-        new Vector3(),
-        new Vector3(),
-      ];
+    applyMatrix4: function (matrix) {
+      // transform of empty box is an empty box.
+      if (this.isEmpty()) return this;
 
-      return function applyMatrix4(matrix) {
-        // transform of empty box is an empty box.
-        if (this.isEmpty()) return this;
+      var m = matrix.elements;
 
-        // NOTE: I am using a binary pattern to specify all 2^3 combinations below
-        points[0].set(this.min.x, this.min.y, this.min.z).applyMatrix4(matrix); // 000
-        points[1].set(this.min.x, this.min.y, this.max.z).applyMatrix4(matrix); // 001
-        points[2].set(this.min.x, this.max.y, this.min.z).applyMatrix4(matrix); // 010
-        points[3].set(this.min.x, this.max.y, this.max.z).applyMatrix4(matrix); // 011
-        points[4].set(this.max.x, this.min.y, this.min.z).applyMatrix4(matrix); // 100
-        points[5].set(this.max.x, this.min.y, this.max.z).applyMatrix4(matrix); // 101
-        points[6].set(this.max.x, this.max.y, this.min.z).applyMatrix4(matrix); // 110
-        points[7].set(this.max.x, this.max.y, this.max.z).applyMatrix4(matrix); // 111
+      var xax = m[0] * this.min.x,
+        xay = m[1] * this.min.x,
+        xaz = m[2] * this.min.x;
+      var xbx = m[0] * this.max.x,
+        xby = m[1] * this.max.x,
+        xbz = m[2] * this.max.x;
+      var yax = m[4] * this.min.y,
+        yay = m[5] * this.min.y,
+        yaz = m[6] * this.min.y;
+      var ybx = m[4] * this.max.y,
+        yby = m[5] * this.max.y,
+        ybz = m[6] * this.max.y;
+      var zax = m[8] * this.min.z,
+        zay = m[9] * this.min.z,
+        zaz = m[10] * this.min.z;
+      var zbx = m[8] * this.max.z,
+        zby = m[9] * this.max.z,
+        zbz = m[10] * this.max.z;
 
-        this.setFromPoints(points);
+      this.min.x =
+        Math.min(xax, xbx) + Math.min(yax, ybx) + Math.min(zax, zbx) + m[12];
+      this.min.y =
+        Math.min(xay, xby) + Math.min(yay, yby) + Math.min(zay, zby) + m[13];
+      this.min.z =
+        Math.min(xaz, xbz) + Math.min(yaz, ybz) + Math.min(zaz, zbz) + m[14];
+      this.max.x =
+        Math.max(xax, xbx) + Math.max(yax, ybx) + Math.max(zax, zbx) + m[12];
+      this.max.y =
+        Math.max(xay, xby) + Math.max(yay, yby) + Math.max(zay, zby) + m[13];
+      this.max.z =
+        Math.max(xaz, xbz) + Math.max(yaz, ybz) + Math.max(zaz, zbz) + m[14];
 
-        return this;
-      };
-    })(),
+      return this;
+    },
 
     translate: function (offset) {
       this.min.add(offset);
@@ -10639,7 +11007,7 @@
     "float punctualLightIntensityToIrradianceFactor( const in float lightDistance, const in float cutoffDistance, const in float decayExponent ) {\n\tif( decayExponent > 0.0 ) {\n#if defined ( PHYSICALLY_CORRECT_LIGHTS )\n\t\tfloat distanceFalloff = 1.0 / max( pow( lightDistance, decayExponent ), 0.01 );\n\t\tfloat maxDistanceCutoffFactor = pow2( saturate( 1.0 - pow4( lightDistance / cutoffDistance ) ) );\n\t\treturn distanceFalloff * maxDistanceCutoffFactor;\n#else\n\t\treturn pow( saturate( -lightDistance / cutoffDistance + 1.0 ), decayExponent );\n#endif\n\t}\n\treturn 1.0;\n}\nvec3 BRDF_Diffuse_Lambert( const in vec3 diffuseColor ) {\n\treturn RECIPROCAL_PI * diffuseColor;\n}\nvec3 F_Schlick( const in vec3 specularColor, const in float dotLH ) {\n\tfloat fresnel = exp2( ( -5.55473 * dotLH - 6.98316 ) * dotLH );\n\treturn ( 1.0 - specularColor ) * fresnel + specularColor;\n}\nfloat G_GGX_Smith( const in float alpha, const in float dotNL, const in float dotNV ) {\n\tfloat a2 = pow2( alpha );\n\tfloat gl = dotNL + sqrt( a2 + ( 1.0 - a2 ) * pow2( dotNL ) );\n\tfloat gv = dotNV + sqrt( a2 + ( 1.0 - a2 ) * pow2( dotNV ) );\n\treturn 1.0 / ( gl * gv );\n}\nfloat G_GGX_SmithCorrelated( const in float alpha, const in float dotNL, const in float dotNV ) {\n\tfloat a2 = pow2( alpha );\n\tfloat gv = dotNL * sqrt( a2 + ( 1.0 - a2 ) * pow2( dotNV ) );\n\tfloat gl = dotNV * sqrt( a2 + ( 1.0 - a2 ) * pow2( dotNL ) );\n\treturn 0.5 / max( gv + gl, EPSILON );\n}\nfloat D_GGX( const in float alpha, const in float dotNH ) {\n\tfloat a2 = pow2( alpha );\n\tfloat denom = pow2( dotNH ) * ( a2 - 1.0 ) + 1.0;\n\treturn RECIPROCAL_PI * a2 / pow2( denom );\n}\nvec3 BRDF_Specular_GGX( const in IncidentLight incidentLight, const in GeometricContext geometry, const in vec3 specularColor, const in float roughness ) {\n\tfloat alpha = pow2( roughness );\n\tvec3 halfDir = normalize( incidentLight.direction + geometry.viewDir );\n\tfloat dotNL = saturate( dot( geometry.normal, incidentLight.direction ) );\n\tfloat dotNV = saturate( dot( geometry.normal, geometry.viewDir ) );\n\tfloat dotNH = saturate( dot( geometry.normal, halfDir ) );\n\tfloat dotLH = saturate( dot( incidentLight.direction, halfDir ) );\n\tvec3 F = F_Schlick( specularColor, dotLH );\n\tfloat G = G_GGX_SmithCorrelated( alpha, dotNL, dotNV );\n\tfloat D = D_GGX( alpha, dotNH );\n\treturn F * ( G * D );\n}\nvec2 LTC_Uv( const in vec3 N, const in vec3 V, const in float roughness ) {\n\tconst float LUT_SIZE  = 64.0;\n\tconst float LUT_SCALE = ( LUT_SIZE - 1.0 ) / LUT_SIZE;\n\tconst float LUT_BIAS  = 0.5 / LUT_SIZE;\n\tfloat dotNV = saturate( dot( N, V ) );\n\tvec2 uv = vec2( roughness, sqrt( 1.0 - dotNV ) );\n\tuv = uv * LUT_SCALE + LUT_BIAS;\n\treturn uv;\n}\nfloat LTC_ClippedSphereFormFactor( const in vec3 f ) {\n\tfloat l = length( f );\n\treturn max( ( l * l + f.z ) / ( l + 1.0 ), 0.0 );\n}\nvec3 LTC_EdgeVectorFormFactor( const in vec3 v1, const in vec3 v2 ) {\n\tfloat x = dot( v1, v2 );\n\tfloat y = abs( x );\n\tfloat a = 0.8543985 + ( 0.4965155 + 0.0145206 * y ) * y;\n\tfloat b = 3.4175940 + ( 4.1616724 + y ) * y;\n\tfloat v = a / b;\n\tfloat theta_sintheta = ( x > 0.0 ) ? v : 0.5 * inversesqrt( max( 1.0 - x * x, 1e-7 ) ) - v;\n\treturn cross( v1, v2 ) * theta_sintheta;\n}\nvec3 LTC_Evaluate( const in vec3 N, const in vec3 V, const in vec3 P, const in mat3 mInv, const in vec3 rectCoords[ 4 ] ) {\n\tvec3 v1 = rectCoords[ 1 ] - rectCoords[ 0 ];\n\tvec3 v2 = rectCoords[ 3 ] - rectCoords[ 0 ];\n\tvec3 lightNormal = cross( v1, v2 );\n\tif( dot( lightNormal, P - rectCoords[ 0 ] ) < 0.0 ) return vec3( 0.0 );\n\tvec3 T1, T2;\n\tT1 = normalize( V - N * dot( V, N ) );\n\tT2 = - cross( N, T1 );\n\tmat3 mat = mInv * transposeMat3( mat3( T1, T2, N ) );\n\tvec3 coords[ 4 ];\n\tcoords[ 0 ] = mat * ( rectCoords[ 0 ] - P );\n\tcoords[ 1 ] = mat * ( rectCoords[ 1 ] - P );\n\tcoords[ 2 ] = mat * ( rectCoords[ 2 ] - P );\n\tcoords[ 3 ] = mat * ( rectCoords[ 3 ] - P );\n\tcoords[ 0 ] = normalize( coords[ 0 ] );\n\tcoords[ 1 ] = normalize( coords[ 1 ] );\n\tcoords[ 2 ] = normalize( coords[ 2 ] );\n\tcoords[ 3 ] = normalize( coords[ 3 ] );\n\tvec3 vectorFormFactor = vec3( 0.0 );\n\tvectorFormFactor += LTC_EdgeVectorFormFactor( coords[ 0 ], coords[ 1 ] );\n\tvectorFormFactor += LTC_EdgeVectorFormFactor( coords[ 1 ], coords[ 2 ] );\n\tvectorFormFactor += LTC_EdgeVectorFormFactor( coords[ 2 ], coords[ 3 ] );\n\tvectorFormFactor += LTC_EdgeVectorFormFactor( coords[ 3 ], coords[ 0 ] );\n\tfloat result = LTC_ClippedSphereFormFactor( vectorFormFactor );\n\treturn vec3( result );\n}\nvec3 BRDF_Specular_GGX_Environment( const in GeometricContext geometry, const in vec3 specularColor, const in float roughness ) {\n\tfloat dotNV = saturate( dot( geometry.normal, geometry.viewDir ) );\n\tconst vec4 c0 = vec4( - 1, - 0.0275, - 0.572, 0.022 );\n\tconst vec4 c1 = vec4( 1, 0.0425, 1.04, - 0.04 );\n\tvec4 r = roughness * c0 + c1;\n\tfloat a004 = min( r.x * r.x, exp2( - 9.28 * dotNV ) ) * r.x + r.y;\n\tvec2 AB = vec2( -1.04, 1.04 ) * a004 + r.zw;\n\treturn specularColor * AB.x + AB.y;\n}\nfloat G_BlinnPhong_Implicit( ) {\n\treturn 0.25;\n}\nfloat D_BlinnPhong( const in float shininess, const in float dotNH ) {\n\treturn RECIPROCAL_PI * ( shininess * 0.5 + 1.0 ) * pow( dotNH, shininess );\n}\nvec3 BRDF_Specular_BlinnPhong( const in IncidentLight incidentLight, const in GeometricContext geometry, const in vec3 specularColor, const in float shininess ) {\n\tvec3 halfDir = normalize( incidentLight.direction + geometry.viewDir );\n\tfloat dotNH = saturate( dot( geometry.normal, halfDir ) );\n\tfloat dotLH = saturate( dot( incidentLight.direction, halfDir ) );\n\tvec3 F = F_Schlick( specularColor, dotLH );\n\tfloat G = G_BlinnPhong_Implicit( );\n\tfloat D = D_BlinnPhong( shininess, dotNH );\n\treturn F * ( G * D );\n}\nfloat GGXRoughnessToBlinnExponent( const in float ggxRoughness ) {\n\treturn ( 2.0 / pow2( ggxRoughness + 0.0001 ) - 2.0 );\n}\nfloat BlinnExponentToGGXRoughness( const in float blinnExponent ) {\n\treturn sqrt( 2.0 / ( blinnExponent + 2.0 ) );\n}\n";
 
   var bumpmap_pars_fragment =
-    "#ifdef USE_BUMPMAP\n\tuniform sampler2D bumpMap;\n\tuniform float bumpScale;\n\tvec2 dHdxy_fwd() {\n\t\tvec2 dSTdx = dFdx( vUv );\n\t\tvec2 dSTdy = dFdy( vUv );\n\t\tfloat Hll = bumpScale * texture2D( bumpMap, vUv ).x;\n\t\tfloat dBx = bumpScale * texture2D( bumpMap, vUv + dSTdx ).x - Hll;\n\t\tfloat dBy = bumpScale * texture2D( bumpMap, vUv + dSTdy ).x - Hll;\n\t\treturn vec2( dBx, dBy );\n\t}\n\tvec3 perturbNormalArb( vec3 surf_pos, vec3 surf_norm, vec2 dHdxy ) {\n\t\tvec3 vSigmaX = vec3( dFdx( surf_pos.x ), dFdx( surf_pos.y ), dFdx( surf_pos.z ) );\n\t\tvec3 vSigmaY = vec3( dFdy( surf_pos.x ), dFdy( surf_pos.y ), dFdy( surf_pos.z ) );\n\t\tvec3 vN = surf_norm;\n\t\tvec3 R1 = cross( vSigmaY, vN );\n\t\tvec3 R2 = cross( vN, vSigmaX );\n\t\tfloat fDet = dot( vSigmaX, R1 );\n\t\tvec3 vGrad = sign( fDet ) * ( dHdxy.x * R1 + dHdxy.y * R2 );\n\t\treturn normalize( abs( fDet ) * surf_norm - vGrad );\n\t}\n#endif\n";
+    "#ifdef USE_BUMPMAP\n\tuniform sampler2D bumpMap;\n\tuniform float bumpScale;\n\tvec2 dHdxy_fwd() {\n\t\tvec2 dSTdx = dFdx( vUv );\n\t\tvec2 dSTdy = dFdy( vUv );\n\t\tfloat Hll = bumpScale * texture2D( bumpMap, vUv ).x;\n\t\tfloat dBx = bumpScale * texture2D( bumpMap, vUv + dSTdx ).x - Hll;\n\t\tfloat dBy = bumpScale * texture2D( bumpMap, vUv + dSTdy ).x - Hll;\n\t\treturn vec2( dBx, dBy );\n\t}\n\tvec3 perturbNormalArb( vec3 surf_pos, vec3 surf_norm, vec2 dHdxy ) {\n\t\tvec3 vSigmaX = vec3( dFdx( surf_pos.x ), dFdx( surf_pos.y ), dFdx( surf_pos.z ) );\n\t\tvec3 vSigmaY = vec3( dFdy( surf_pos.x ), dFdy( surf_pos.y ), dFdy( surf_pos.z ) );\n\t\tvec3 vN = surf_norm;\n\t\tvec3 R1 = cross( vSigmaY, vN );\n\t\tvec3 R2 = cross( vN, vSigmaX );\n\t\tfloat fDet = dot( vSigmaX, R1 );\n\t\tfDet *= ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t\tvec3 vGrad = sign( fDet ) * ( dHdxy.x * R1 + dHdxy.y * R2 );\n\t\treturn normalize( abs( fDet ) * surf_norm - vGrad );\n\t}\n#endif\n";
 
   var clipping_planes_fragment =
     "#if NUM_CLIPPING_PLANES > 0\n\tvec4 plane;\n\t#pragma unroll_loop\n\tfor ( int i = 0; i < UNION_CLIPPING_PLANES; i ++ ) {\n\t\tplane = clippingPlanes[ i ];\n\t\tif ( dot( vViewPosition, plane.xyz ) > plane.w ) discard;\n\t}\n\t#if UNION_CLIPPING_PLANES < NUM_CLIPPING_PLANES\n\t\tbool clipped = true;\n\t\t#pragma unroll_loop\n\t\tfor ( int i = UNION_CLIPPING_PLANES; i < NUM_CLIPPING_PLANES; i ++ ) {\n\t\t\tplane = clippingPlanes[ i ];\n\t\t\tclipped = ( dot( vViewPosition, plane.xyz ) > plane.w ) && clipped;\n\t\t}\n\t\tif ( clipped ) discard;\n\t#endif\n#endif\n";
@@ -10796,7 +11164,7 @@
     "#ifdef USE_NORMALMAP\n\tnormal = perturbNormal2Arb( -vViewPosition, normal );\n#elif defined( USE_BUMPMAP )\n\tnormal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\n#endif\n";
 
   var normalmap_pars_fragment =
-    "#ifdef USE_NORMALMAP\n\tuniform sampler2D normalMap;\n\tuniform vec2 normalScale;\n\tvec3 perturbNormal2Arb( vec3 eye_pos, vec3 surf_norm ) {\n\t\tvec3 q0 = vec3( dFdx( eye_pos.x ), dFdx( eye_pos.y ), dFdx( eye_pos.z ) );\n\t\tvec3 q1 = vec3( dFdy( eye_pos.x ), dFdy( eye_pos.y ), dFdy( eye_pos.z ) );\n\t\tvec2 st0 = dFdx( vUv.st );\n\t\tvec2 st1 = dFdy( vUv.st );\n\t\tfloat scale = sign( st1.t * st0.s - st0.t * st1.s );\t\tscale *= float( gl_FrontFacing ) * 2.0 - 1.0;\n\t\tvec3 S = normalize( ( q0 * st1.t - q1 * st0.t ) * scale );\n\t\tvec3 T = normalize( ( - q0 * st1.s + q1 * st0.s ) * scale );\n\t\tvec3 N = normalize( surf_norm );\n\t\tvec3 mapN = texture2D( normalMap, vUv ).xyz * 2.0 - 1.0;\n\t\tmapN.xy = normalScale * mapN.xy;\n\t\tmat3 tsn = mat3( S, T, N );\n\t\treturn normalize( tsn * mapN );\n\t}\n#endif\n";
+    "#ifdef USE_NORMALMAP\n\tuniform sampler2D normalMap;\n\tuniform vec2 normalScale;\n\tvec3 perturbNormal2Arb( vec3 eye_pos, vec3 surf_norm ) {\n\t\tvec3 q0 = vec3( dFdx( eye_pos.x ), dFdx( eye_pos.y ), dFdx( eye_pos.z ) );\n\t\tvec3 q1 = vec3( dFdy( eye_pos.x ), dFdy( eye_pos.y ), dFdy( eye_pos.z ) );\n\t\tvec2 st0 = dFdx( vUv.st );\n\t\tvec2 st1 = dFdy( vUv.st );\n\t\tfloat scale = sign( st1.t * st0.s - st0.t * st1.s );\n\t\tvec3 S = normalize( ( q0 * st1.t - q1 * st0.t ) * scale );\n\t\tvec3 T = normalize( ( - q0 * st1.s + q1 * st0.s ) * scale );\n\t\tvec3 N = normalize( surf_norm );\n\t\tmat3 tsn = mat3( S, T, N );\n\t\tvec3 mapN = texture2D( normalMap, vUv ).xyz * 2.0 - 1.0;\n\t\tmapN.xy *= normalScale;\n\t\tmapN.xy *= ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n\t\treturn normalize( tsn * mapN );\n\t}\n#endif\n";
 
   var packing =
     "vec3 packNormalToRGB( const in vec3 normal ) {\n\treturn normalize( normal ) * 0.5 + 0.5;\n}\nvec3 unpackRGBToNormal( const in vec3 rgb ) {\n\treturn 2.0 * rgb.xyz - 1.0;\n}\nconst float PackUpscale = 256. / 255.;const float UnpackDownscale = 255. / 256.;\nconst vec3 PackFactors = vec3( 256. * 256. * 256., 256. * 256.,  256. );\nconst vec4 UnpackFactors = UnpackDownscale / vec4( PackFactors, 1. );\nconst float ShiftRight8 = 1. / 256.;\nvec4 packDepthToRGBA( const in float v ) {\n\tvec4 r = vec4( fract( v * PackFactors ), v );\n\tr.yzw -= r.xyz * ShiftRight8;\treturn r * PackUpscale;\n}\nfloat unpackRGBAToDepth( const in vec4 v ) {\n\treturn dot( v, UnpackFactors );\n}\nfloat viewZToOrthographicDepth( const in float viewZ, const in float near, const in float far ) {\n\treturn ( viewZ + near ) / ( near - far );\n}\nfloat orthographicDepthToViewZ( const in float linearClipZ, const in float near, const in float far ) {\n\treturn linearClipZ * ( near - far ) - near;\n}\nfloat viewZToPerspectiveDepth( const in float viewZ, const in float near, const in float far ) {\n\treturn (( near + viewZ ) * far ) / (( far - near ) * viewZ );\n}\nfloat perspectiveDepthToViewZ( const in float invClipZ, const in float near, const in float far ) {\n\treturn ( near * far ) / ( ( far - near ) * invClipZ - far );\n}\n";
@@ -10937,10 +11305,10 @@
     "#define NORMAL\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || defined( USE_NORMALMAP )\n\tvarying vec3 vViewPosition;\n#endif\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <uv_pars_vertex>\n#include <displacementmap_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <skinning_pars_vertex>\n#include <logdepthbuf_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <skinbase_vertex>\n\t#include <skinnormal_vertex>\n\t#include <defaultnormal_vertex>\n#ifndef FLAT_SHADED\n\tvNormal = normalize( transformedNormal );\n#endif\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <skinning_vertex>\n\t#include <displacementmap_vertex>\n\t#include <project_vertex>\n\t#include <logdepthbuf_vertex>\n#if defined( FLAT_SHADED ) || defined( USE_BUMPMAP ) || defined( USE_NORMALMAP )\n\tvViewPosition = - mvPosition.xyz;\n#endif\n}\n";
 
   var points_frag =
-    "uniform vec3 diffuse;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <color_pars_fragment>\n#include <map_particle_pars_fragment>\n#include <fog_pars_fragment>\n#include <shadowmap_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tvec3 outgoingLight = vec3( 0.0 );\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\t#include <logdepthbuf_fragment>\n\t#include <map_particle_fragment>\n\t#include <color_fragment>\n\t#include <alphatest_fragment>\n\toutgoingLight = diffuseColor.rgb;\n\tgl_FragColor = vec4( outgoingLight, diffuseColor.a );\n\t#include <premultiplied_alpha_fragment>\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n}\n";
+    "uniform vec3 diffuse;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <color_pars_fragment>\n#include <map_particle_pars_fragment>\n#include <fog_pars_fragment>\n#include <logdepthbuf_pars_fragment>\n#include <clipping_planes_pars_fragment>\nvoid main() {\n\t#include <clipping_planes_fragment>\n\tvec3 outgoingLight = vec3( 0.0 );\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\t#include <logdepthbuf_fragment>\n\t#include <map_particle_fragment>\n\t#include <color_fragment>\n\t#include <alphatest_fragment>\n\toutgoingLight = diffuseColor.rgb;\n\tgl_FragColor = vec4( outgoingLight, diffuseColor.a );\n\t#include <premultiplied_alpha_fragment>\n\t#include <tonemapping_fragment>\n\t#include <encodings_fragment>\n\t#include <fog_fragment>\n}\n";
 
   var points_vert =
-    "uniform float size;\nuniform float scale;\n#include <common>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <shadowmap_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\nvoid main() {\n\t#include <color_vertex>\n\t#include <begin_vertex>\n\t#include <project_vertex>\n\t#ifdef USE_SIZEATTENUATION\n\t\tgl_PointSize = size * ( scale / - mvPosition.z );\n\t#else\n\t\tgl_PointSize = size;\n\t#endif\n\t#include <logdepthbuf_vertex>\n\t#include <clipping_planes_vertex>\n\t#include <worldpos_vertex>\n\t#include <shadowmap_vertex>\n\t#include <fog_vertex>\n}\n";
+    "uniform float size;\nuniform float scale;\n#include <common>\n#include <color_pars_vertex>\n#include <fog_pars_vertex>\n#include <morphtarget_pars_vertex>\n#include <logdepthbuf_pars_vertex>\n#include <clipping_planes_pars_vertex>\nvoid main() {\n\t#include <color_vertex>\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <project_vertex>\n\t#ifdef USE_SIZEATTENUATION\n\t\tgl_PointSize = size * ( scale / - mvPosition.z );\n\t#else\n\t\tgl_PointSize = size;\n\t#endif\n\t#include <logdepthbuf_vertex>\n\t#include <clipping_planes_vertex>\n\t#include <worldpos_vertex>\n\t#include <fog_vertex>\n}\n";
 
   var shadow_frag =
     "uniform vec3 color;\nuniform float opacity;\n#include <common>\n#include <packing>\n#include <fog_pars_fragment>\n#include <bsdfs>\n#include <lights_pars_begin>\n#include <shadowmap_pars_fragment>\n#include <shadowmask_pars_fragment>\nvoid main() {\n\tgl_FragColor = vec4( color, opacity * ( 1.0 - getShadowMask() ) );\n\t#include <fog_fragment>\n}\n";
@@ -11506,22 +11874,14 @@
       return this;
     },
 
-    convertGammaToLinear: function () {
-      var r = this.r,
-        g = this.g,
-        b = this.b;
-
-      this.r = r * r;
-      this.g = g * g;
-      this.b = b * b;
+    convertGammaToLinear: function (gammaFactor) {
+      this.copyGammaToLinear(this, gammaFactor);
 
       return this;
     },
 
-    convertLinearToGamma: function () {
-      this.r = Math.sqrt(this.r);
-      this.g = Math.sqrt(this.g);
-      this.b = Math.sqrt(this.b);
+    convertLinearToGamma: function (gammaFactor) {
+      this.copyLinearToGamma(this, gammaFactor);
 
       return this;
     },
@@ -12005,8 +12365,8 @@
     },
 
     /* -------------------------------------------------------------------------
-  	//	Cube map shader
-  	 ------------------------------------------------------------------------- */
+		//	Cube map shader
+		 ------------------------------------------------------------------------- */
 
     cube: {
       uniforms: {
@@ -12070,6 +12430,47 @@
     vertexShader: ShaderChunk.meshphysical_vert,
     fragmentShader: ShaderChunk.meshphysical_frag,
   };
+
+  /**
+   * @author mrdoob / http://mrdoob.com/
+   */
+
+  function WebGLAnimation() {
+    var context = null;
+    var isAnimating = false;
+    var animationLoop = null;
+
+    function onAnimationFrame(time, frame) {
+      if (isAnimating === false) return;
+
+      animationLoop(time, frame);
+
+      context.requestAnimationFrame(onAnimationFrame);
+    }
+
+    return {
+      start: function () {
+        if (isAnimating === true) return;
+        if (animationLoop === null) return;
+
+        context.requestAnimationFrame(onAnimationFrame);
+
+        isAnimating = true;
+      },
+
+      stop: function () {
+        isAnimating = false;
+      },
+
+      setAnimationLoop: function (callback) {
+        animationLoop = callback;
+      },
+
+      setContext: function (value) {
+        context = value;
+      },
+    };
+  }
 
   /**
    * @author mrdoob / http://mrdoob.com/
@@ -14350,28 +14751,28 @@
 
     clone: function () {
       /*
-  		 // Handle primitives
+			 // Handle primitives
 
-  		 var parameters = this.parameters;
+			 var parameters = this.parameters;
 
-  		 if ( parameters !== undefined ) {
+			 if ( parameters !== undefined ) {
 
-  		 var values = [];
+			 var values = [];
 
-  		 for ( var key in parameters ) {
+			 for ( var key in parameters ) {
 
-  		 values.push( parameters[ key ] );
+			 values.push( parameters[ key ] );
 
-  		 }
+			 }
 
-  		 var geometry = Object.create( this.constructor.prototype );
-  		 this.constructor.apply( geometry, values );
-  		 return geometry;
+			 var geometry = Object.create( this.constructor.prototype );
+			 this.constructor.apply( geometry, values );
+			 return geometry;
 
-  		 }
+			 }
 
-  		 return new this.constructor().copy( this );
-  		 */
+			 return new this.constructor().copy( this );
+			 */
 
       return new Geometry().copy(this);
     },
@@ -15027,6 +15428,12 @@
 
       //
 
+      if (faces.length === 0) {
+        console.error(
+          "THREE.DirectGeometry: Faceless geometries are not supported."
+        );
+      }
+
       for (var i = 0; i < faces.length; i++) {
         var face = faces[i];
 
@@ -15185,6 +15592,8 @@
     this.boundingSphere = null;
 
     this.drawRange = { start: 0, count: Infinity };
+
+    this.userData = {};
   }
 
   BufferGeometry.prototype = Object.assign(
@@ -15219,12 +15628,10 @@
             "THREE.BufferGeometry: .addAttribute() now expects ( name, attribute )."
           );
 
-          this.addAttribute(
+          return this.addAttribute(
             name,
             new BufferAttribute(arguments[1], arguments[2])
           );
-
-          return;
         }
 
         if (name === "index") {
@@ -15233,7 +15640,7 @@
           );
           this.setIndex(attribute);
 
-          return;
+          return this;
         }
 
         this.attributes[name] = attribute;
@@ -15958,6 +16365,8 @@
         data.uuid = this.uuid;
         data.type = this.type;
         if (this.name !== "") data.name = this.name;
+        if (Object.keys(this.userData).length > 0)
+          data.userData = this.userData;
 
         if (this.parameters !== undefined) {
           var parameters = this.parameters;
@@ -16017,28 +16426,28 @@
 
       clone: function () {
         /*
-  		 // Handle primitives
+			 // Handle primitives
 
-  		 var parameters = this.parameters;
+			 var parameters = this.parameters;
 
-  		 if ( parameters !== undefined ) {
+			 if ( parameters !== undefined ) {
 
-  		 var values = [];
+			 var values = [];
 
-  		 for ( var key in parameters ) {
+			 for ( var key in parameters ) {
 
-  		 values.push( parameters[ key ] );
+			 values.push( parameters[ key ] );
 
-  		 }
+			 }
 
-  		 var geometry = Object.create( this.constructor.prototype );
-  		 this.constructor.apply( geometry, values );
-  		 return geometry;
+			 var geometry = Object.create( this.constructor.prototype );
+			 this.constructor.apply( geometry, values );
+			 return geometry;
 
-  		 }
+			 }
 
-  		 return new this.constructor().copy( this );
-  		 */
+			 return new this.constructor().copy( this );
+			 */
 
         return new BufferGeometry().copy(this);
       },
@@ -16120,6 +16529,10 @@
 
         this.drawRange.start = source.drawRange.start;
         this.drawRange.count = source.drawRange.count;
+
+        // user data
+
+        this.userData = source.userData;
 
         return this;
       },
@@ -16700,19 +17113,28 @@
         data.alphaMap = this.alphaMap.toJSON(meta).uuid;
       if (this.lightMap && this.lightMap.isTexture)
         data.lightMap = this.lightMap.toJSON(meta).uuid;
+
+      if (this.aoMap && this.aoMap.isTexture) {
+        data.aoMap = this.aoMap.toJSON(meta).uuid;
+        data.aoMapIntensity = this.aoMapIntensity;
+      }
+
       if (this.bumpMap && this.bumpMap.isTexture) {
         data.bumpMap = this.bumpMap.toJSON(meta).uuid;
         data.bumpScale = this.bumpScale;
       }
+
       if (this.normalMap && this.normalMap.isTexture) {
         data.normalMap = this.normalMap.toJSON(meta).uuid;
         data.normalScale = this.normalScale.toArray();
       }
+
       if (this.displacementMap && this.displacementMap.isTexture) {
         data.displacementMap = this.displacementMap.toJSON(meta).uuid;
         data.displacementScale = this.displacementScale;
         data.displacementBias = this.displacementBias;
       }
+
       if (this.roughnessMap && this.roughnessMap.isTexture)
         data.roughnessMap = this.roughnessMap.toJSON(meta).uuid;
       if (this.metalnessMap && this.metalnessMap.isTexture)
@@ -18090,7 +18512,6 @@
           Triangle.getNormal(vA, vB, vC, face.normal);
 
           intersection.face = face;
-          intersection.faceIndex = a;
         }
 
         return intersection;
@@ -18152,7 +18573,7 @@
               );
 
               if (intersection) {
-                intersection.faceIndex = Math.floor(i / 3); // triangle number in indices buffer semantics
+                intersection.faceIndex = Math.floor(i / 3); // triangle number in indexed buffer semantics
                 intersects.push(intersection);
               }
             }
@@ -18175,7 +18596,10 @@
                 c
               );
 
-              if (intersection) intersects.push(intersection);
+              if (intersection) {
+                intersection.faceIndex = Math.floor(i / 3); // triangle number in non-indexed buffer semantics
+                intersects.push(intersection);
+              }
             }
           }
         } else if (geometry.isGeometry) {
@@ -18286,7 +18710,7 @@
    * @author mrdoob / http://mrdoob.com/
    */
 
-  function WebGLBackground(renderer, state, geometries, premultipliedAlpha) {
+  function WebGLBackground(renderer, state, objects, premultipliedAlpha) {
     var clearColor = new Color(0x000000);
     var clearAlpha = 0;
 
@@ -18333,7 +18757,7 @@
             this.matrixWorld.copyPosition(camera.matrixWorld);
           };
 
-          geometries.update(boxMesh.geometry);
+          objects.update(boxMesh);
         }
 
         boxMesh.material.uniforms.tCube.value = background;
@@ -18352,7 +18776,7 @@
             })
           );
 
-          geometries.update(planeMesh.geometry);
+          objects.update(planeMesh);
         }
 
         planeMesh.material.map = background;
@@ -18427,25 +18851,12 @@
         return;
       }
 
-      var position = geometry.attributes.position;
-
-      if (position.isInterleavedBufferAttribute) {
-        count = position.data.count;
-
-        extension.drawArraysInstancedANGLE(
-          mode,
-          0,
-          count,
-          geometry.maxInstancedCount
-        );
-      } else {
-        extension.drawArraysInstancedANGLE(
-          mode,
-          start,
-          count,
-          geometry.maxInstancedCount
-        );
-      }
+      extension.drawArraysInstancedANGLE(
+        mode,
+        start,
+        count,
+        geometry.maxInstancedCount
+      );
 
       info.update(count, mode, geometry.maxInstancedCount);
     }
@@ -19281,6 +19692,7 @@
 
   var mat4array = new Float32Array(16);
   var mat3array = new Float32Array(9);
+  var mat2array = new Float32Array(4);
 
   // Flattening for arrays of vectors and matrices
 
@@ -19311,6 +19723,22 @@
     return r;
   }
 
+  function arraysEqual(a, b) {
+    if (a.length !== b.length) return false;
+
+    for (var i = 0, l = a.length; i < l; i++) {
+      if (a[i] !== b[i]) return false;
+    }
+
+    return true;
+  }
+
+  function copyArray(a, b) {
+    for (var i = 0, l = b.length; i < l; i++) {
+      a[i] = b[i];
+    }
+  }
+
   // Texture unit allocation
 
   function allocTexUnits(renderer, n) {
@@ -19334,91 +19762,221 @@
   // Single scalar
 
   function setValue1f(gl, v) {
+    var cache = this.cache;
+
+    if (cache[0] === v) return;
+
     gl.uniform1f(this.addr, v);
+
+    cache[0] = v;
   }
 
   function setValue1i(gl, v) {
+    var cache = this.cache;
+
+    if (cache[0] === v) return;
+
     gl.uniform1i(this.addr, v);
+
+    cache[0] = v;
   }
 
   // Single float vector (from flat array or THREE.VectorN)
 
   function setValue2fv(gl, v) {
-    if (v.x === undefined) {
-      gl.uniform2fv(this.addr, v);
+    var cache = this.cache;
+
+    if (v.x !== undefined) {
+      if (cache[0] !== v.x || cache[1] !== v.y) {
+        gl.uniform2f(this.addr, v.x, v.y);
+
+        cache[0] = v.x;
+        cache[1] = v.y;
+      }
     } else {
-      gl.uniform2f(this.addr, v.x, v.y);
+      if (arraysEqual(cache, v)) return;
+
+      gl.uniform2fv(this.addr, v);
+
+      copyArray(cache, v);
     }
   }
 
   function setValue3fv(gl, v) {
+    var cache = this.cache;
+
     if (v.x !== undefined) {
-      gl.uniform3f(this.addr, v.x, v.y, v.z);
+      if (cache[0] !== v.x || cache[1] !== v.y || cache[2] !== v.z) {
+        gl.uniform3f(this.addr, v.x, v.y, v.z);
+
+        cache[0] = v.x;
+        cache[1] = v.y;
+        cache[2] = v.z;
+      }
     } else if (v.r !== undefined) {
-      gl.uniform3f(this.addr, v.r, v.g, v.b);
+      if (cache[0] !== v.r || cache[1] !== v.g || cache[2] !== v.b) {
+        gl.uniform3f(this.addr, v.r, v.g, v.b);
+
+        cache[0] = v.r;
+        cache[1] = v.g;
+        cache[2] = v.b;
+      }
     } else {
+      if (arraysEqual(cache, v)) return;
+
       gl.uniform3fv(this.addr, v);
+
+      copyArray(cache, v);
     }
   }
 
   function setValue4fv(gl, v) {
-    if (v.x === undefined) {
-      gl.uniform4fv(this.addr, v);
+    var cache = this.cache;
+
+    if (v.x !== undefined) {
+      if (
+        cache[0] !== v.x ||
+        cache[1] !== v.y ||
+        cache[2] !== v.z ||
+        cache[3] !== v.w
+      ) {
+        gl.uniform4f(this.addr, v.x, v.y, v.z, v.w);
+
+        cache[0] = v.x;
+        cache[1] = v.y;
+        cache[2] = v.z;
+        cache[3] = v.w;
+      }
     } else {
-      gl.uniform4f(this.addr, v.x, v.y, v.z, v.w);
+      if (arraysEqual(cache, v)) return;
+
+      gl.uniform4fv(this.addr, v);
+
+      copyArray(cache, v);
     }
   }
 
   // Single matrix (from flat array or MatrixN)
 
   function setValue2fm(gl, v) {
-    gl.uniformMatrix2fv(this.addr, false, v.elements || v);
+    var cache = this.cache;
+    var elements = v.elements;
+
+    if (elements === undefined) {
+      if (arraysEqual(cache, v)) return;
+
+      gl.uniformMatrix2fv(this.addr, false, v);
+
+      copyArray(cache, v);
+    } else {
+      if (arraysEqual(cache, elements)) return;
+
+      mat2array.set(elements);
+
+      gl.uniformMatrix2fv(this.addr, false, mat2array);
+
+      copyArray(cache, elements);
+    }
   }
 
   function setValue3fm(gl, v) {
-    if (v.elements === undefined) {
+    var cache = this.cache;
+    var elements = v.elements;
+
+    if (elements === undefined) {
+      if (arraysEqual(cache, v)) return;
+
       gl.uniformMatrix3fv(this.addr, false, v);
+
+      copyArray(cache, v);
     } else {
-      mat3array.set(v.elements);
+      if (arraysEqual(cache, elements)) return;
+
+      mat3array.set(elements);
+
       gl.uniformMatrix3fv(this.addr, false, mat3array);
+
+      copyArray(cache, elements);
     }
   }
 
   function setValue4fm(gl, v) {
-    if (v.elements === undefined) {
+    var cache = this.cache;
+    var elements = v.elements;
+
+    if (elements === undefined) {
+      if (arraysEqual(cache, v)) return;
+
       gl.uniformMatrix4fv(this.addr, false, v);
+
+      copyArray(cache, v);
     } else {
-      mat4array.set(v.elements);
+      if (arraysEqual(cache, elements)) return;
+
+      mat4array.set(elements);
+
       gl.uniformMatrix4fv(this.addr, false, mat4array);
+
+      copyArray(cache, elements);
     }
   }
 
   // Single texture (2D / Cube)
 
   function setValueT1(gl, v, renderer) {
+    var cache = this.cache;
     var unit = renderer.allocTextureUnit();
-    gl.uniform1i(this.addr, unit);
+
+    if (cache[0] !== unit) {
+      gl.uniform1i(this.addr, unit);
+      cache[0] = unit;
+    }
+
     renderer.setTexture2D(v || emptyTexture, unit);
   }
 
   function setValueT6(gl, v, renderer) {
+    var cache = this.cache;
     var unit = renderer.allocTextureUnit();
-    gl.uniform1i(this.addr, unit);
+
+    if (cache[0] !== unit) {
+      gl.uniform1i(this.addr, unit);
+      cache[0] = unit;
+    }
+
     renderer.setTextureCube(v || emptyCubeTexture, unit);
   }
 
   // Integer / Boolean vectors or arrays thereof (always flat arrays)
 
   function setValue2iv(gl, v) {
+    var cache = this.cache;
+
+    if (arraysEqual(cache, v)) return;
+
     gl.uniform2iv(this.addr, v);
+
+    copyArray(cache, v);
   }
 
   function setValue3iv(gl, v) {
+    var cache = this.cache;
+
+    if (arraysEqual(cache, v)) return;
+
     gl.uniform3iv(this.addr, v);
+
+    copyArray(cache, v);
   }
 
   function setValue4iv(gl, v) {
+    var cache = this.cache;
+
+    if (arraysEqual(cache, v)) return;
+
     gl.uniform4iv(this.addr, v);
+
+    copyArray(cache, v);
   }
 
   // Helper to pick the right setter for the singular case
@@ -19465,47 +20023,106 @@
   // Array of scalars
 
   function setValue1fv(gl, v) {
+    var cache = this.cache;
+
+    if (arraysEqual(cache, v)) return;
+
     gl.uniform1fv(this.addr, v);
+
+    copyArray(cache, v);
   }
   function setValue1iv(gl, v) {
+    var cache = this.cache;
+
+    if (arraysEqual(cache, v)) return;
+
     gl.uniform1iv(this.addr, v);
+
+    copyArray(cache, v);
   }
 
   // Array of vectors (flat or from THREE classes)
 
   function setValueV2a(gl, v) {
-    gl.uniform2fv(this.addr, flatten(v, this.size, 2));
+    var cache = this.cache;
+    var data = flatten(v, this.size, 2);
+
+    if (arraysEqual(cache, data)) return;
+
+    gl.uniform2fv(this.addr, data);
+
+    this.updateCache(data);
   }
 
   function setValueV3a(gl, v) {
-    gl.uniform3fv(this.addr, flatten(v, this.size, 3));
+    var cache = this.cache;
+    var data = flatten(v, this.size, 3);
+
+    if (arraysEqual(cache, data)) return;
+
+    gl.uniform3fv(this.addr, data);
+
+    this.updateCache(data);
   }
 
   function setValueV4a(gl, v) {
-    gl.uniform4fv(this.addr, flatten(v, this.size, 4));
+    var cache = this.cache;
+    var data = flatten(v, this.size, 4);
+
+    if (arraysEqual(cache, data)) return;
+
+    gl.uniform4fv(this.addr, data);
+
+    this.updateCache(data);
   }
 
   // Array of matrices (flat or from THREE clases)
 
   function setValueM2a(gl, v) {
-    gl.uniformMatrix2fv(this.addr, false, flatten(v, this.size, 4));
+    var cache = this.cache;
+    var data = flatten(v, this.size, 4);
+
+    if (arraysEqual(cache, data)) return;
+
+    gl.uniformMatrix2fv(this.addr, false, data);
+
+    this.updateCache(data);
   }
 
   function setValueM3a(gl, v) {
-    gl.uniformMatrix3fv(this.addr, false, flatten(v, this.size, 9));
+    var cache = this.cache;
+    var data = flatten(v, this.size, 9);
+
+    if (arraysEqual(cache, data)) return;
+
+    gl.uniformMatrix3fv(this.addr, false, data);
+
+    this.updateCache(data);
   }
 
   function setValueM4a(gl, v) {
-    gl.uniformMatrix4fv(this.addr, false, flatten(v, this.size, 16));
+    var cache = this.cache;
+    var data = flatten(v, this.size, 16);
+
+    if (arraysEqual(cache, data)) return;
+
+    gl.uniformMatrix4fv(this.addr, false, data);
+
+    this.updateCache(data);
   }
 
   // Array of textures (2D / Cube)
 
   function setValueT1a(gl, v, renderer) {
-    var n = v.length,
-      units = allocTexUnits(renderer, n);
+    var cache = this.cache;
+    var n = v.length;
 
-    gl.uniform1iv(this.addr, units);
+    var units = allocTexUnits(renderer, n);
+
+    if (arraysEqual(cache, units) === false) {
+      gl.uniform1iv(this.addr, units);
+      copyArray(cache, units);
+    }
 
     for (var i = 0; i !== n; ++i) {
       renderer.setTexture2D(v[i] || emptyTexture, units[i]);
@@ -19513,10 +20130,15 @@
   }
 
   function setValueT6a(gl, v, renderer) {
-    var n = v.length,
-      units = allocTexUnits(renderer, n);
+    var cache = this.cache;
+    var n = v.length;
 
-    gl.uniform1iv(this.addr, units);
+    var units = allocTexUnits(renderer, n);
+
+    if (arraysEqual(cache, units) === false) {
+      gl.uniform1iv(this.addr, units);
+      copyArray(cache, units);
+    }
 
     for (var i = 0; i !== n; ++i) {
       renderer.setTextureCube(v[i] || emptyCubeTexture, units[i]);
@@ -19568,6 +20190,7 @@
   function SingleUniform(id, activeInfo, addr) {
     this.id = id;
     this.addr = addr;
+    this.cache = [];
     this.setValue = getSingularSetter(activeInfo.type);
 
     // this.path = activeInfo.name; // DEBUG
@@ -19576,11 +20199,22 @@
   function PureArrayUniform(id, activeInfo, addr) {
     this.id = id;
     this.addr = addr;
+    this.cache = [];
     this.size = activeInfo.size;
     this.setValue = getPureArraySetter(activeInfo.type);
 
     // this.path = activeInfo.name; // DEBUG
   }
+
+  PureArrayUniform.prototype.updateCache = function (data) {
+    var cache = this.cache;
+
+    if (data instanceof Float32Array && cache.length !== data.length) {
+      this.cache = new Float32Array(data.length);
+    }
+
+    copyArray(cache, data);
+  };
 
   function StructuredUniform(id) {
     this.id = id;
@@ -19627,7 +20261,7 @@
     // reset RegExp object, because of the early exit of a previous run
     RePathPart.lastIndex = 0;
 
-    for (;;) {
+    while (true) {
       var match = RePathPart.exec(path),
         matchEnd = RePathPart.lastIndex,
         id = match[1],
@@ -20183,7 +20817,11 @@
 
         customDefines,
 
-        parameters.alphaTest ? "#define ALPHATEST " + parameters.alphaTest : "",
+        parameters.alphaTest
+          ? "#define ALPHATEST " +
+            parameters.alphaTest +
+            (parameters.alphaTest % 1 ? "" : ".0")
+          : "", // add '.0' if integer
 
         "#define GAMMA_FACTOR " + gammaFactorDefine,
 
@@ -21932,6 +22570,7 @@
 
   CanvasTexture.prototype = Object.create(Texture.prototype);
   CanvasTexture.prototype.constructor = CanvasTexture;
+  CanvasTexture.prototype.isCanvasTexture = true;
 
   /**
    * @author mikael emtinger / http://gomo.se/
@@ -22662,19 +23301,7 @@
     }
 
     function enableAttribute(attribute) {
-      newAttributes[attribute] = 1;
-
-      if (enabledAttributes[attribute] === 0) {
-        gl.enableVertexAttribArray(attribute);
-        enabledAttributes[attribute] = 1;
-      }
-
-      if (attributeDivisors[attribute] !== 0) {
-        var extension = extensions.get("ANGLE_instanced_arrays");
-
-        extension.vertexAttribDivisorANGLE(attribute, 0);
-        attributeDivisors[attribute] = 0;
-      }
+      enableAttributeAndDivisor(attribute, 0);
     }
 
     function enableAttributeAndDivisor(attribute, meshPerAttribute) {
@@ -24618,12 +25245,16 @@
         currentSize = renderer.getSize();
 
         renderer.setDrawingBufferSize(renderWidth * 2, renderHeight, 1);
+
+        animation.start();
       } else if (scope.enabled) {
         renderer.setDrawingBufferSize(
           currentSize.width,
           currentSize.height,
           currentPixelRatio
         );
+
+        animation.stop();
       }
     }
 
@@ -24638,6 +25269,8 @@
 
     this.setDevice = function (value) {
       if (value !== undefined) device = value;
+
+      animation.setContext(value);
     };
 
     this.setPoseTarget = function (object) {
@@ -24755,6 +25388,16 @@
       return standingMatrix;
     };
 
+    this.isPresenting = isPresenting;
+
+    // Animation Loop
+
+    var animation = new WebGLAnimation();
+
+    this.setAnimationLoop = function (callback) {
+      animation.setAnimationLoop(callback);
+    };
+
     this.submitFrame = function () {
       if (isPresenting()) device.submitFrame();
     };
@@ -24767,6 +25410,175 @@
         );
       }
     };
+  }
+
+  /**
+   * @author mrdoob / http://mrdoob.com/
+   */
+
+  function WebXRManager(renderer) {
+    var gl = renderer.context;
+
+    var device = null;
+    var session = null;
+
+    var frameOfRef = null;
+
+    var pose = null;
+
+    function isPresenting() {
+      return session !== null && frameOfRef !== null;
+    }
+
+    //
+
+    var cameraL = new PerspectiveCamera();
+    cameraL.layers.enable(1);
+    cameraL.viewport = new Vector4();
+
+    var cameraR = new PerspectiveCamera();
+    cameraR.layers.enable(2);
+    cameraR.viewport = new Vector4();
+
+    var cameraVR = new ArrayCamera([cameraL, cameraR]);
+    cameraVR.layers.enable(1);
+    cameraVR.layers.enable(2);
+
+    //
+
+    this.enabled = false;
+
+    this.getDevice = function () {
+      return device;
+    };
+
+    this.setDevice = function (value) {
+      if (value !== undefined) device = value;
+
+      gl.setCompatibleXRDevice(value);
+    };
+
+    //
+
+    this.setSession = function (value, options) {
+      session = value;
+
+      if (session !== null) {
+        session.addEventListener("end", function () {
+          renderer.setFramebuffer(null);
+          animation.stop();
+        });
+
+        session.baseLayer = new XRWebGLLayer(session, gl);
+        session
+          .requestFrameOfReference(options.frameOfReferenceType)
+          .then(function (value) {
+            frameOfRef = value;
+
+            renderer.setFramebuffer(session.baseLayer.framebuffer);
+
+            animation.setContext(session);
+            animation.start();
+          });
+      }
+    };
+
+    function updateCamera(camera, parent) {
+      if (parent === null) {
+        camera.matrixWorld.copy(camera.matrix);
+      } else {
+        camera.matrixWorld.multiplyMatrices(parent.matrixWorld, camera.matrix);
+      }
+
+      camera.matrixWorldInverse.getInverse(camera.matrixWorld);
+    }
+
+    this.getCamera = function (camera) {
+      if (isPresenting()) {
+        var parent = camera.parent;
+        var cameras = cameraVR.cameras;
+
+        // apply camera.parent to cameraVR
+
+        updateCamera(cameraVR, parent);
+
+        for (var i = 0; i < cameras.length; i++) {
+          updateCamera(cameras[i], parent);
+        }
+
+        // update camera and its children
+
+        camera.matrixWorld.copy(cameraVR.matrixWorld);
+
+        var children = camera.children;
+
+        for (var i = 0, l = children.length; i < l; i++) {
+          children[i].updateMatrixWorld(true);
+        }
+
+        return cameraVR;
+      }
+
+      return camera;
+    };
+
+    this.isPresenting = isPresenting;
+
+    // Animation Loop
+
+    var onAnimationFrameCallback = null;
+
+    function onAnimationFrame(time, frame) {
+      pose = frame.getDevicePose(frameOfRef);
+
+      var layer = session.baseLayer;
+      var views = frame.views;
+
+      for (var i = 0; i < views.length; i++) {
+        var view = views[i];
+        var viewport = layer.getViewport(view);
+        var viewMatrix = pose.getViewMatrix(view);
+
+        var camera = cameraVR.cameras[i];
+        camera.matrix.fromArray(viewMatrix).getInverse(camera.matrix);
+        camera.projectionMatrix.fromArray(view.projectionMatrix);
+        camera.viewport.set(
+          viewport.x,
+          viewport.y,
+          viewport.width,
+          viewport.height
+        );
+
+        if (i === 0) {
+          cameraVR.matrix.copy(camera.matrix);
+
+          // HACK (mrdoob)
+          // https://github.com/w3c/webvr/issues/203
+
+          cameraVR.projectionMatrix.copy(camera.projectionMatrix);
+        }
+      }
+
+      if (onAnimationFrameCallback) onAnimationFrameCallback();
+    }
+
+    var animation = new WebGLAnimation();
+    animation.setAnimationLoop(onAnimationFrame);
+
+    this.setAnimationLoop = function (callback) {
+      onAnimationFrameCallback = callback;
+    };
+
+    // DEPRECATED
+
+    this.getStandingMatrix = function () {
+      console.warn(
+        "THREE.WebXRManager: getStandingMatrix() is no longer needed."
+      );
+      return new THREE.Matrix4();
+    };
+
+    this.submitFrame = function () {};
   }
 
   /**
@@ -24856,6 +25668,7 @@
       _isContextLost = false,
       // internal state cache
 
+      _framebuffer = null,
       _currentRenderTarget = null,
       _currentFramebuffer = null,
       _currentMaterialId = -1,
@@ -24991,7 +25804,7 @@
       background = new WebGLBackground(
         _this,
         state,
-        geometries,
+        objects,
         _premultipliedAlpha
       );
 
@@ -25025,7 +25838,8 @@
 
     // vr
 
-    var vr = new WebVRManager(_this);
+    var vr =
+      "xr" in navigator ? new WebXRManager(_this) : new WebVRManager(_this);
 
     this.vr = vr;
 
@@ -25079,9 +25893,7 @@
     };
 
     this.setSize = function (width, height, updateStyle) {
-      var device = vr.getDevice();
-
-      if (device && device.isPresenting) {
+      if (vr.isPresenting()) {
         console.warn(
           "THREE.WebGLRenderer: Can't change size while VR device is presenting."
         );
@@ -25203,7 +26015,7 @@
 
       vr.dispose();
 
-      stopAnimation();
+      animation.stop();
     };
 
     // Events
@@ -25661,42 +26473,22 @@
 
     // Animation Loop
 
-    var isAnimating = false;
-    var onAnimationFrame = null;
+    var onAnimationFrameCallback = null;
 
-    function startAnimation() {
-      if (isAnimating) return;
-
-      requestAnimationLoopFrame();
-
-      isAnimating = true;
+    function onAnimationFrame() {
+      if (vr.isPresenting()) return;
+      if (onAnimationFrameCallback) onAnimationFrameCallback();
     }
 
-    function stopAnimation() {
-      isAnimating = false;
-    }
+    var animation = new WebGLAnimation();
+    animation.setAnimationLoop(onAnimationFrame);
+    animation.setContext(window);
 
-    function requestAnimationLoopFrame() {
-      var device = vr.getDevice();
+    this.setAnimationLoop = function (callback) {
+      onAnimationFrameCallback = callback;
+      vr.setAnimationLoop(callback);
 
-      if (device && device.isPresenting) {
-        device.requestAnimationFrame(animationLoop);
-      } else {
-        window.requestAnimationFrame(animationLoop);
-      }
-    }
-
-    function animationLoop(time) {
-      if (isAnimating === false) return;
-
-      onAnimationFrame(time);
-
-      requestAnimationLoopFrame();
-    }
-
-    this.animate = function (callback) {
-      onAnimationFrame = callback;
-      onAnimationFrame !== null ? startAnimation() : stopAnimation();
+      animation.start();
     };
 
     // Rendering
@@ -25840,59 +26632,59 @@
     };
 
     /*
-  	// TODO Duplicated code (Frustum)
+		// TODO Duplicated code (Frustum)
 
-  	var _sphere = new Sphere();
+		var _sphere = new Sphere();
 
-  	function isObjectViewable( object ) {
+		function isObjectViewable( object ) {
 
-  		var geometry = object.geometry;
+			var geometry = object.geometry;
 
-  		if ( geometry.boundingSphere === null )
-  			geometry.computeBoundingSphere();
+			if ( geometry.boundingSphere === null )
+				geometry.computeBoundingSphere();
 
-  		_sphere.copy( geometry.boundingSphere ).
-  		applyMatrix4( object.matrixWorld );
+			_sphere.copy( geometry.boundingSphere ).
+			applyMatrix4( object.matrixWorld );
 
-  		return isSphereViewable( _sphere );
+			return isSphereViewable( _sphere );
 
-  	}
+		}
 
-  	function isSpriteViewable( sprite ) {
+		function isSpriteViewable( sprite ) {
 
-  		_sphere.center.set( 0, 0, 0 );
-  		_sphere.radius = 0.7071067811865476;
-  		_sphere.applyMatrix4( sprite.matrixWorld );
+			_sphere.center.set( 0, 0, 0 );
+			_sphere.radius = 0.7071067811865476;
+			_sphere.applyMatrix4( sprite.matrixWorld );
 
-  		return isSphereViewable( _sphere );
+			return isSphereViewable( _sphere );
 
-  	}
+		}
 
-  	function isSphereViewable( sphere ) {
+		function isSphereViewable( sphere ) {
 
-  		if ( ! _frustum.intersectsSphere( sphere ) ) return false;
+			if ( ! _frustum.intersectsSphere( sphere ) ) return false;
 
-  		var numPlanes = _clipping.numPlanes;
+			var numPlanes = _clipping.numPlanes;
 
-  		if ( numPlanes === 0 ) return true;
+			if ( numPlanes === 0 ) return true;
 
-  		var planes = _this.clippingPlanes,
+			var planes = _this.clippingPlanes,
 
-  			center = sphere.center,
-  			negRad = - sphere.radius,
-  			i = 0;
+				center = sphere.center,
+				negRad = - sphere.radius,
+				i = 0;
 
-  		do {
+			do {
 
-  			// out when deeper than radius in the negative halfspace
-  			if ( planes[ i ].distanceToPoint( center ) < negRad ) return false;
+				// out when deeper than radius in the negative halfspace
+				if ( planes[ i ].distanceToPoint( center ) < negRad ) return false;
 
-  		} while ( ++ i !== numPlanes );
+			} while ( ++ i !== numPlanes );
 
-  		return true;
+			return true;
 
-  	}
-  	*/
+		}
+		*/
 
     function projectObject(object, camera, sortObjects) {
       if (object.visible === false) return;
@@ -25997,18 +26789,24 @@
             var camera2 = cameras[j];
 
             if (object.layers.test(camera2.layers)) {
-              var bounds = camera2.bounds;
+              if ("viewport" in camera2) {
+                // XR
 
-              var x = bounds.x * _width;
-              var y = bounds.y * _height;
-              var width = bounds.z * _width;
-              var height = bounds.w * _height;
+                state.viewport(_currentViewport.copy(camera2.viewport));
+              } else {
+                var bounds = camera2.bounds;
 
-              state.viewport(
-                _currentViewport
-                  .set(x, y, width, height)
-                  .multiplyScalar(_pixelRatio)
-              );
+                var x = bounds.x * _width;
+                var y = bounds.y * _height;
+                var width = bounds.z * _width;
+                var height = bounds.w * _height;
+
+                state.viewport(
+                  _currentViewport
+                    .set(x, y, width, height)
+                    .multiplyScalar(_pixelRatio)
+                );
+              }
 
               renderObject(object, scene, camera2, geometry, material, group);
             }
@@ -26643,11 +27441,13 @@
       if (material.bumpMap) {
         uniforms.bumpMap.value = material.bumpMap;
         uniforms.bumpScale.value = material.bumpScale;
+        if (material.side === BackSide) uniforms.bumpScale.value *= -1;
       }
 
       if (material.normalMap) {
         uniforms.normalMap.value = material.normalMap;
         uniforms.normalScale.value.copy(material.normalScale);
+        if (material.side === BackSide) uniforms.normalScale.value.negate();
       }
 
       if (material.displacementMap) {
@@ -26684,11 +27484,13 @@
       if (material.bumpMap) {
         uniforms.bumpMap.value = material.bumpMap;
         uniforms.bumpScale.value = material.bumpScale;
+        if (material.side === BackSide) uniforms.bumpScale.value *= -1;
       }
 
       if (material.normalMap) {
         uniforms.normalMap.value = material.normalMap;
         uniforms.normalScale.value.copy(material.normalScale);
+        if (material.side === BackSide) uniforms.normalScale.value.negate();
       }
 
       if (material.displacementMap) {
@@ -26734,11 +27536,13 @@
       if (material.bumpMap) {
         uniforms.bumpMap.value = material.bumpMap;
         uniforms.bumpScale.value = material.bumpScale;
+        if (material.side === BackSide) uniforms.bumpScale.value *= -1;
       }
 
       if (material.normalMap) {
         uniforms.normalMap.value = material.normalMap;
         uniforms.normalScale.value.copy(material.normalScale);
+        if (material.side === BackSide) uniforms.normalScale.value.negate();
       }
 
       if (material.displacementMap) {
@@ -26851,6 +27655,12 @@
       };
     })();
 
+    //
+
+    this.setFramebuffer = function (value) {
+      _framebuffer = value;
+    };
+
     this.getRenderTarget = function () {
       return _currentRenderTarget;
     };
@@ -26865,7 +27675,7 @@
         textures.setupRenderTarget(renderTarget);
       }
 
-      var framebuffer = null;
+      var framebuffer = _framebuffer;
       var isCube = false;
 
       if (renderTarget) {
@@ -27035,23 +27845,32 @@
       var height = srcTexture.image.height;
       var glFormat = utils.convert(dstTexture.format);
       var glType = utils.convert(dstTexture.type);
-      var pixels = srcTexture.isDataTexture
-        ? srcTexture.image.data
-        : srcTexture.image;
 
       this.setTexture2D(dstTexture, 0);
 
-      _gl.texSubImage2D(
-        _gl.TEXTURE_2D,
-        level || 0,
-        position.x,
-        position.y,
-        width,
-        height,
-        glFormat,
-        glType,
-        pixels
-      );
+      if (srcTexture.isDataTexture) {
+        _gl.texSubImage2D(
+          _gl.TEXTURE_2D,
+          level || 0,
+          position.x,
+          position.y,
+          width,
+          height,
+          glFormat,
+          glType,
+          srcTexture.image.data
+        );
+      } else {
+        _gl.texSubImage2D(
+          _gl.TEXTURE_2D,
+          level || 0,
+          position.x,
+          position.y,
+          glFormat,
+          glType,
+          srcTexture.image
+        );
+      }
     };
   }
 
@@ -27070,7 +27889,7 @@
   FogExp2.prototype.isFogExp2 = true;
 
   FogExp2.prototype.clone = function () {
-    return new FogExp2(this.color.getHex(), this.density);
+    return new FogExp2(this.color, this.density);
   };
 
   FogExp2.prototype.toJSON = function (/* meta */) {
@@ -27098,7 +27917,7 @@
   Fog.prototype.isFog = true;
 
   Fog.prototype.clone = function () {
-    return new Fog(this.color.getHex(), this.near, this.far);
+    return new Fog(this.color, this.near, this.far);
   };
 
   Fog.prototype.toJSON = function (/* meta */) {
@@ -28050,6 +28869,8 @@
    *
    *  size: <float>,
    *  sizeAttenuation: <bool>
+   *
+   *  morphTargets: <bool>
    * }
    */
 
@@ -28064,6 +28885,8 @@
 
     this.size = 1;
     this.sizeAttenuation = true;
+
+    this.morphTargets = false;
 
     this.lights = false;
 
@@ -28084,6 +28907,8 @@
 
     this.size = source.size;
     this.sizeAttenuation = source.sizeAttenuation;
+
+    this.morphTargets = source.morphTargets;
 
     return this;
   };
@@ -28569,6 +29394,12 @@
       pv = new Vector3();
 
     var i, j;
+
+    if (func.length < 3) {
+      console.error(
+        "THREE.ParametricGeometry: Function must now modify a Vector3 as third parameter."
+      );
+    }
 
     // generate vertices, normals and uvs
 
@@ -30591,7 +31422,7 @@
    *
    *  curveSegments: <int>, // number of points on the curves
    *  steps: <int>, // number of points for z-side extrusions / used for subdividing segments of extrude spline too
-   *  amount: <int>, // Depth to extrude the shape
+   *  depth: <float>, // Depth to extrude the shape
    *
    *  bevelEnabled: <bool>, // turn on bevel
    *  bevelThickness: <float>, // how deep into the original shape bevel goes
@@ -30624,6 +31455,15 @@
   ExtrudeGeometry.prototype = Object.create(Geometry.prototype);
   ExtrudeGeometry.prototype.constructor = ExtrudeGeometry;
 
+  ExtrudeGeometry.prototype.toJSON = function () {
+    var data = Geometry.prototype.toJSON.call(this);
+
+    var shapes = this.parameters.shapes;
+    var options = this.parameters.options;
+
+    return toJSON(shapes, options, data);
+  };
+
   // ExtrudeBufferGeometry
 
   function ExtrudeBufferGeometry(shapes, options) {
@@ -30645,7 +31485,7 @@
 
     for (var i = 0, l = shapes.length; i < l; i++) {
       var shape = shapes[i];
-      addShape(shape, options);
+      addShape(shape);
     }
 
     // build geometry
@@ -30665,7 +31505,7 @@
       var curveSegments =
         options.curveSegments !== undefined ? options.curveSegments : 12;
       var steps = options.steps !== undefined ? options.steps : 1;
-      var amount = options.amount !== undefined ? options.amount : 100;
+      var depth = options.depth !== undefined ? options.depth : 100;
 
       var bevelEnabled =
         options.bevelEnabled !== undefined ? options.bevelEnabled : true;
@@ -30684,6 +31524,15 @@
         options.UVGenerator !== undefined
           ? options.UVGenerator
           : WorldUVGenerator;
+
+      // deprecated options
+
+      if (options.amount !== undefined) {
+        console.warn(
+          "THREE.ExtrudeBufferGeometry: amount has been renamed to depth."
+        );
+        depth = options.amount;
+      }
 
       //
 
@@ -30974,7 +31823,7 @@
             : vertices[i];
 
           if (!extrudeByPath) {
-            v(vert.x, vert.y, (amount / steps) * s);
+            v(vert.x, vert.y, (depth / steps) * s);
           } else {
             // v( vert.x, vert.y + extrudePts[ s - 1 ].y, extrudePts[ s - 1 ].x );
 
@@ -31000,7 +31849,7 @@
 
         for (i = 0, il = contour.length; i < il; i++) {
           vert = scalePt2(contour[i], contourMovements[i], bs);
-          v(vert.x, vert.y, amount + z);
+          v(vert.x, vert.y, depth + z);
         }
 
         // expand holes
@@ -31013,7 +31862,7 @@
             vert = scalePt2(ahole[i], oneHoleMovements[i], bs);
 
             if (!extrudeByPath) {
-              v(vert.x, vert.y, amount + z);
+              v(vert.x, vert.y, depth + z);
             } else {
               v(
                 vert.x,
@@ -31199,6 +32048,17 @@
   ExtrudeBufferGeometry.prototype = Object.create(BufferGeometry.prototype);
   ExtrudeBufferGeometry.prototype.constructor = ExtrudeBufferGeometry;
 
+  ExtrudeBufferGeometry.prototype.toJSON = function () {
+    var data = BufferGeometry.prototype.toJSON.call(this);
+
+    var shapes = this.parameters.shapes;
+    var options = this.parameters.options;
+
+    return toJSON(shapes, options, data);
+  };
+
+  //
+
   var WorldUVGenerator = {
     generateTopUV: function (geometry, vertices, indexA, indexB, indexC) {
       var a_x = vertices[indexA * 3];
@@ -31253,6 +32113,29 @@
       }
     },
   };
+
+  function toJSON(shapes, options, data) {
+    //
+
+    data.shapes = [];
+
+    if (Array.isArray(shapes)) {
+      for (var i = 0, l = shapes.length; i < l; i++) {
+        var shape = shapes[i];
+
+        data.shapes.push(shape.uuid);
+      }
+    } else {
+      data.shapes.push(shapes.uuid);
+    }
+
+    //
+
+    if (options.extrudePath !== undefined)
+      data.options.extrudePath = options.extrudePath.toJSON();
+
+    return data;
+  }
 
   /**
    * @author zz85 / http://www.lab4games.net/zz85/blog
@@ -31314,8 +32197,7 @@
 
     // translate parameters to ExtrudeGeometry API
 
-    parameters.amount =
-      parameters.height !== undefined ? parameters.height : 50;
+    parameters.depth = parameters.height !== undefined ? parameters.height : 50;
 
     // defaults
 
@@ -31850,7 +32732,7 @@
 
     var shapes = this.parameters.shapes;
 
-    return toJSON(shapes, data);
+    return toJSON$1(shapes, data);
   };
 
   // ShapeBufferGeometry
@@ -31970,12 +32852,12 @@
 
     var shapes = this.parameters.shapes;
 
-    return toJSON(shapes, data);
+    return toJSON$1(shapes, data);
   };
 
   //
 
-  function toJSON(shapes, data) {
+  function toJSON$1(shapes, data) {
     data.shapes = [];
 
     if (Array.isArray(shapes)) {
@@ -32591,7 +33473,7 @@
   CircleBufferGeometry.prototype = Object.create(BufferGeometry.prototype);
   CircleBufferGeometry.prototype.constructor = CircleBufferGeometry;
 
-  var Geometries = Object.freeze({
+  var Geometries = /*#__PURE__*/ Object.freeze({
     WireframeGeometry: WireframeGeometry,
     ParametricGeometry: ParametricGeometry,
     ParametricBufferGeometry: ParametricBufferGeometry,
@@ -33327,7 +34209,7 @@
     return this;
   };
 
-  var Materials = Object.freeze({
+  var Materials = /*#__PURE__*/ Object.freeze({
     ShadowMaterial: ShadowMaterial,
     SpriteMaterial: SpriteMaterial,
     RawShaderMaterial: RawShaderMaterial,
@@ -33589,18 +34471,12 @@
 
             delete loading[url];
 
-            if (this.status === 200) {
-              for (var i = 0, il = callbacks.length; i < il; i++) {
-                var callback = callbacks[i];
-                if (callback.onLoad) callback.onLoad(response);
-              }
-
-              scope.manager.itemEnd(url);
-            } else if (this.status === 0) {
+            if (this.status === 200 || this.status === 0) {
               // Some browsers return HTTP Status 0 when using non-http protocol
               // e.g. 'file://' or 'data://'. Handle as success.
 
-              console.warn("THREE.FileLoader: HTTP Status 0 received.");
+              if (this.status === 0)
+                console.warn("THREE.FileLoader: HTTP Status 0 received.");
 
               for (var i = 0, il = callbacks.length; i < il; i++) {
                 var callback = callbacks[i];
@@ -33931,36 +34807,29 @@
         "img"
       );
 
-      image.addEventListener(
-        "load",
-        function () {
-          Cache.add(url, this);
+      function onImageLoad() {
+        image.removeEventListener("load", onImageLoad, false);
+        image.removeEventListener("error", onImageError, false);
 
-          if (onLoad) onLoad(this);
+        Cache.add(url, this);
 
-          scope.manager.itemEnd(url);
-        },
-        false
-      );
+        if (onLoad) onLoad(this);
 
-      /*
-  		image.addEventListener( 'progress', function ( event ) {
+        scope.manager.itemEnd(url);
+      }
 
-  			if ( onProgress ) onProgress( event );
+      function onImageError(event) {
+        image.removeEventListener("load", onImageLoad, false);
+        image.removeEventListener("error", onImageError, false);
 
-  		}, false );
-  		*/
+        if (onError) onError(event);
 
-      image.addEventListener(
-        "error",
-        function (event) {
-          if (onError) onError(event);
+        scope.manager.itemEnd(url);
+        scope.manager.itemError(url);
+      }
 
-          scope.manager.itemEnd(url);
-          scope.manager.itemError(url);
-        },
-        false
-      );
+      image.addEventListener("load", onImageLoad, false);
+      image.addEventListener("error", onImageError, false);
 
       if (url.substr(0, 5) !== "data:") {
         if (this.crossOrigin !== undefined)
@@ -34620,14 +35489,14 @@
    */
 
   /*
-  Based on an optimized c++ solution in
-   - http://stackoverflow.com/questions/9489736/catmull-rom-curve-with-no-cusps-and-no-self-intersections/
-   - http://ideone.com/NoEbVM
+	Based on an optimized c++ solution in
+	 - http://stackoverflow.com/questions/9489736/catmull-rom-curve-with-no-cusps-and-no-self-intersections/
+	 - http://ideone.com/NoEbVM
 
-  This CubicPoly class could be used for reusing some variables and calculations,
-  but for three.js curve use, it could be possible inlined and flatten into a single function call
-  which can be placed in CurveUtils.
-  */
+	This CubicPoly class could be used for reusing some variables and calculations,
+	but for three.js curve use, it could be possible inlined and flatten into a single function call
+	which can be placed in CurveUtils.
+	*/
 
   function CubicPoly() {
     var c0 = 0,
@@ -34678,9 +35547,9 @@
   //
 
   var tmp = new Vector3();
-  var px = new CubicPoly();
-  var py = new CubicPoly();
-  var pz = new CubicPoly();
+  var px = new CubicPoly(),
+    py = new CubicPoly(),
+    pz = new CubicPoly();
 
   function CatmullRomCurve3(points, closed, curveType, tension) {
     Curve.call(this);
@@ -35342,7 +36211,7 @@
     return this;
   };
 
-  var Curves = Object.freeze({
+  var Curves = /*#__PURE__*/ Object.freeze({
     ArcCurve: ArcCurve,
     CatmullRomCurve3: CatmullRomCurve3,
     CubicBezierCurve: CubicBezierCurve,
@@ -37491,6 +38360,7 @@
         name: clip.name,
         duration: clip.duration,
         tracks: tracks,
+        uuid: clip.uuid,
       };
 
       for (var i = 0, n = clipTracks.length; i !== n; ++i) {
@@ -38951,10 +39821,12 @@
 
     setTexturePath: function (value) {
       this.texturePath = value;
+      return this;
     },
 
     setCrossOrigin: function (value) {
       this.crossOrigin = value;
+      return this;
     },
 
     parse: function (json, onLoad) {
@@ -39175,6 +40047,31 @@
 
               break;
 
+            case "ExtrudeGeometry":
+            case "ExtrudeBufferGeometry":
+              var geometryShapes = [];
+
+              for (var j = 0, jl = data.shapes.length; j < jl; j++) {
+                var shape = shapes[data.shapes[j]];
+
+                geometryShapes.push(shape);
+              }
+
+              var extrudePath = data.options.extrudePath;
+
+              if (extrudePath !== undefined) {
+                data.options.extrudePath = new Curves[
+                  extrudePath.type
+                ]().fromJSON(extrudePath);
+              }
+
+              geometry = new Geometries[data.type](
+                geometryShapes,
+                data.options
+              );
+
+              break;
+
             case "BufferGeometry":
               geometry = bufferGeometryLoader.parse(data);
 
@@ -39198,6 +40095,8 @@
           geometry.uuid = data.uuid;
 
           if (data.name !== undefined) geometry.name = data.name;
+          if (geometry.isBufferGeometry === true && data.userData !== undefined)
+            geometry.userData = data.userData;
 
           geometries[data.uuid] = geometry;
         }
@@ -39239,7 +40138,11 @@
       var animations = [];
 
       for (var i = 0; i < json.length; i++) {
-        var clip = AnimationClip.parse(json[i]);
+        var data = json[i];
+
+        var clip = AnimationClip.parse(data);
+
+        if (data.uuid !== undefined) clip.uuid = data.uuid;
 
         animations.push(clip);
       }
@@ -39914,7 +40817,7 @@
   });
 
   function createPaths(text, size, divisions, data) {
-    var chars = String(text).split("");
+    var chars = Array.from ? Array.from(text) : String(text).split(""); // see #13988
     var scale = size / data.resolution;
     var line_height =
       (data.boundingBox.yMax -
@@ -40450,6 +41353,15 @@
       this.hasPlaybackControl = false;
       this.sourceType = "audioNode";
       this.source = audioNode;
+      this.connect();
+
+      return this;
+    },
+
+    setMediaElementSource: function (mediaElement) {
+      this.hasPlaybackControl = false;
+      this.sourceType = "mediaNode";
+      this.source = this.context.createMediaElementSource(mediaElement);
       this.connect();
 
       return this;
@@ -44102,26 +45014,26 @@
     this.update();
 
     /*
-  	var distanceGeometry = new THREE.IcosahedronGeometry( 1, 2 );
-  	var distanceMaterial = new THREE.MeshBasicMaterial( { color: hexColor, fog: false, wireframe: true, opacity: 0.1, transparent: true } );
+		var distanceGeometry = new THREE.IcosahedronGeometry( 1, 2 );
+		var distanceMaterial = new THREE.MeshBasicMaterial( { color: hexColor, fog: false, wireframe: true, opacity: 0.1, transparent: true } );
 
-  	this.lightSphere = new THREE.Mesh( bulbGeometry, bulbMaterial );
-  	this.lightDistance = new THREE.Mesh( distanceGeometry, distanceMaterial );
+		this.lightSphere = new THREE.Mesh( bulbGeometry, bulbMaterial );
+		this.lightDistance = new THREE.Mesh( distanceGeometry, distanceMaterial );
 
-  	var d = light.distance;
+		var d = light.distance;
 
-  	if ( d === 0.0 ) {
+		if ( d === 0.0 ) {
 
-  		this.lightDistance.visible = false;
+			this.lightDistance.visible = false;
 
-  	} else {
+		} else {
 
-  		this.lightDistance.scale.set( d, d, d );
+			this.lightDistance.scale.set( d, d, d );
 
-  	}
+		}
 
-  	this.add( this.lightDistance );
-  	*/
+		this.add( this.lightDistance );
+		*/
   }
 
   PointLightHelper.prototype = Object.create(Mesh.prototype);
@@ -44140,19 +45052,19 @@
     }
 
     /*
-  	var d = this.light.distance;
+		var d = this.light.distance;
 
-  	if ( d === 0.0 ) {
+		if ( d === 0.0 ) {
 
-  		this.lightDistance.visible = false;
+			this.lightDistance.visible = false;
 
-  	} else {
+		} else {
 
-  		this.lightDistance.visible = true;
-  		this.lightDistance.scale.set( d, d, d );
+			this.lightDistance.visible = true;
+			this.lightDistance.scale.set( d, d, d );
 
-  	}
-  	*/
+		}
+		*/
   };
 
   /**
@@ -44871,20 +45783,20 @@
       var max = box.max;
 
       /*
-  		  5____4
-  		1/___0/|
-  		| 6__|_7
-  		2/___3/
+			  5____4
+			1/___0/|
+			| 6__|_7
+			2/___3/
 
-  		0: max.x, max.y, max.z
-  		1: min.x, max.y, max.z
-  		2: min.x, min.y, max.z
-  		3: max.x, min.y, max.z
-  		4: max.x, max.y, min.z
-  		5: min.x, max.y, min.z
-  		6: min.x, min.y, min.z
-  		7: max.x, min.y, min.z
-  		*/
+			0: max.x, max.y, max.z
+			1: min.x, max.y, max.z
+			2: min.x, min.y, max.z
+			3: max.x, min.y, max.z
+			4: max.x, max.y, min.z
+			5: min.x, max.y, min.z
+			6: min.x, min.y, min.z
+			7: max.x, min.y, min.z
+			*/
 
       var position = this.geometry.attributes.position;
       var array = position.array;
@@ -45035,6 +45947,8 @@
 
     this.scale.set(0.5 * this.size, 0.5 * this.size, scale);
 
+    this.children[0].material.side = scale < 0 ? BackSide : FrontSide; // renderer flips side when determinant < 0; flipping not wanted here
+
     this.lookAt(this.plane.normal);
 
     Object3D.prototype.updateMatrixWorld.call(this, force);
@@ -45056,8 +45970,7 @@
    *  headWidth - Number
    */
 
-  var lineGeometry;
-  var coneGeometry;
+  var lineGeometry, coneGeometry;
 
   function ArrowHelper(dir, origin, length, color, headLength, headWidth) {
     // dir is assumed to be normalized
@@ -46072,6 +46985,13 @@
   //
 
   Object.assign(WebGLRenderer.prototype, {
+    animate: function (callback) {
+      console.warn(
+        "THREE.WebGLRenderer: .animate() is now .setAnimationLoop()."
+      );
+      this.setAnimationLoop(callback);
+    },
+
     getCurrentRenderTarget: function () {
       console.warn(
         "THREE.WebGLRenderer: .getCurrentRenderTarget() is now .getRenderTarget()."
@@ -47475,10 +48395,8 @@
           ? scope.domElement.body
           : scope.domElement;
 
-      // rotating across whole screen goes 360 degrees around
-      scope.rotateLeft((2 * Math.PI * rotateDelta.x) / element.clientWidth);
+      scope.rotateLeft((2 * Math.PI * rotateDelta.x) / element.clientHeight); // yes, height
 
-      // rotating up and down along whole screen attempts to go 360, but limited to 180
       scope.rotateUp((2 * Math.PI * rotateDelta.y) / element.clientHeight);
 
       rotateStart.copy(rotateEnd);
@@ -47596,10 +48514,8 @@
           ? scope.domElement.body
           : scope.domElement;
 
-      // rotating across whole screen goes 360 degrees around
-      scope.rotateLeft((2 * Math.PI * rotateDelta.x) / element.clientWidth);
+      scope.rotateLeft((2 * Math.PI * rotateDelta.x) / element.clientHeight); // yes, height
 
-      // rotating up and down along whole screen attempts to go 360, but limited to 180
       scope.rotateUp((2 * Math.PI * rotateDelta.y) / element.clientHeight);
 
       rotateStart.copy(rotateEnd);
@@ -47833,7 +48749,7 @@
 
     //
 
-    scope.domElement.addEventListener("contextmenu", onContextMenu, false);
+    //scope.domElement.addEventListener\( 'contextmenu', onContextMenu, false );
 
     scope.domElement.addEventListener("mousedown", onMouseDown, false);
     scope.domElement.addEventListener("wheel", onMouseWheel, false);
@@ -48075,70 +48991,31 @@
     this.connect();
   };
 
-  var classCallCheck = function (instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-      throw new TypeError("Cannot call a class as a function");
-    }
-  };
-
-  var inherits = function (subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-      throw new TypeError(
-        "Super expression must either be null or a function, not " +
-          typeof superClass
-      );
-    }
-
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: false,
-        writable: true,
-        configurable: true,
-      },
-    });
-    if (superClass)
-      Object.setPrototypeOf
-        ? Object.setPrototypeOf(subClass, superClass)
-        : (subClass.__proto__ = superClass);
-  };
-
-  var possibleConstructorReturn = function (self, call) {
-    if (!self) {
-      throw new ReferenceError(
-        "this hasn't been initialised - super() hasn't been called"
-      );
-    }
-
-    return call && (typeof call === "object" || typeof call === "function")
-      ? call
-      : self;
-  };
-
   /**
    * Convert a quaternion to an angle
    *
    * Taken from https://stackoverflow.com/a/35448946
    * Thanks P. Ellul
    */
-  function Quat2Angle(x, y, z, w) {
-    var test = x * y + z * w;
 
-    // singularity at north pole
+  function Quat2Angle(x, y, z, w) {
+    var test = x * y + z * w; // singularity at north pole
+
     if (test > 0.499) {
       var _yaw = 2 * Math.atan2(x, w);
+
       var _pitch = Math.PI / 2;
+
       var _roll = 0;
-
       return new Vector3(_pitch, _roll, _yaw);
-    }
+    } // singularity at south pole
 
-    // singularity at south pole
     if (test < -0.499) {
       var _yaw2 = -2 * Math.atan2(x, w);
-      var _pitch2 = -Math.PI / 2;
-      var _roll2 = 0;
 
+      var _pitch2 = -Math.PI / 2;
+
+      var _roll2 = 0;
       return new Vector3(_pitch2, _roll2, _yaw2);
     }
 
@@ -48148,31 +49025,34 @@
     var yaw = Math.atan2(2 * y * w - 2 * x * z, 1 - 2 * sqy - 2 * sqz);
     var pitch = Math.asin(2 * test);
     var roll = Math.atan2(2 * x * w - 2 * y * z, 1 - 2 * sqx - 2 * sqz);
-
     return new Vector3(pitch, roll, yaw);
   }
 
-  var OrbitOrientationControls = (function () {
+  var OrbitOrientationControls = /*#__PURE__*/ (function () {
     function OrbitOrientationControls(options) {
-      classCallCheck(this, OrbitOrientationControls);
-
       this.object = options.camera;
       this.domElement = options.canvas;
       this.orbit = new OrbitControls(this.object, this.domElement);
-
       this.speed = 0.5;
       this.orbit.target.set(0, 0, -1);
       this.orbit.enableZoom = false;
       this.orbit.enablePan = false;
-      this.orbit.rotateSpeed = -this.speed;
+      this.orbit.rotateSpeed = -this.speed; // if orientation is supported
 
-      // if orientation is supported
       if (options.orientation) {
         this.orientation = new DeviceOrientationControls(this.object);
+      } // if projection is not full view
+      // limit the rotation angle in order to not display back half view
+
+      if (options.halfView) {
+        this.orbit.minAzimuthAngle = -Math.PI / 4;
+        this.orbit.maxAzimuthAngle = Math.PI / 4;
       }
     }
 
-    OrbitOrientationControls.prototype.update = function update() {
+    var _proto = OrbitOrientationControls.prototype;
+
+    _proto.update = function update() {
       // orientation updates the camera using quaternions and
       // orbit updates the camera using angles. They are incompatible
       // and one update overrides the other. So before
@@ -48182,11 +49062,9 @@
       // our changes
       if (this.orientation) {
         this.orientation.update();
-
         var quat = this.orientation.object.quaternion;
-        var currentAngle = Quat2Angle(quat.x, quat.y, quat.z, quat.w);
+        var currentAngle = Quat2Angle(quat.x, quat.y, quat.z, quat.w); // we also have to store the last angle since quaternions are b
 
-        // we also have to store the last angle since quaternions are b
         if (typeof this.lastAngle_ === "undefined") {
           this.lastAngle_ = currentAngle;
         }
@@ -48203,7 +49081,7 @@
       this.orbit.update();
     };
 
-    OrbitOrientationControls.prototype.dispose = function dispose() {
+    _proto.dispose = function dispose() {
       this.orbit.dispose();
 
       if (this.orientation) {
@@ -48214,27 +49092,27 @@
     return OrbitOrientationControls;
   })();
 
-  // check if the browser supports cors
   var corsSupport = (function () {
-    var video = document_1.createElement("video");
-
+    var video = document$1.createElement("video");
     video.crossOrigin = "anonymous";
-
     return video.hasAttribute("crossorigin");
   })();
-
   var validProjections = [
     "360",
     "360_LR",
     "360_TB",
     "360_CUBE",
+    "EAC",
+    "EAC_LR",
     "NONE",
     "AUTO",
     "Sphere",
     "Cube",
     "equirectangular",
+    "180",
+    "180_LR",
+    "180_MONO",
   ];
-
   var getInternalProjectionName = function getInternalProjectionName(
     projection
   ) {
@@ -48263,61 +49141,301 @@
     }
   };
 
-  // Add Cardboard button
-  var Button = videojs.getComponent("Button");
+  /**
+   * This class reacts to interactions with the canvas and
+   * triggers appropriate functionality on the player. Right now
+   * it does two things:
+   *
+   * 1. A `mousedown`/`touchstart` followed by `touchend`/`mouseup` without any
+   *    `touchmove` or `mousemove` toggles play/pause on the player
+   * 2. Only moving on/clicking the control bar or toggling play/pause should
+   *    show the control bar. Moving around the scene in the canvas should not.
+   */
 
-  var CardboardButton = (function (_Button) {
-    inherits(CardboardButton, _Button);
+  var CanvasPlayerControls = /*#__PURE__*/ (function (_videojs$EventTarget) {
+    _inheritsLoose(CanvasPlayerControls, _videojs$EventTarget);
 
-    function CardboardButton(player, options) {
-      classCallCheck(this, CardboardButton);
+    function CanvasPlayerControls(player, canvas, options) {
+      var _this;
 
-      var _this = possibleConstructorReturn(
-        this,
-        _Button.call(this, player, options)
+      _this = _videojs$EventTarget.call(this) || this;
+      _this.player = player;
+      _this.canvas = canvas;
+      _this.options = options;
+      _this.onMoveEnd = videojs.bind(
+        _assertThisInitialized(_this),
+        _this.onMoveEnd
+      );
+      _this.onMoveStart = videojs.bind(
+        _assertThisInitialized(_this),
+        _this.onMoveStart
+      );
+      _this.onMove = videojs.bind(_assertThisInitialized(_this), _this.onMove);
+      _this.onControlBarMove = videojs.bind(
+        _assertThisInitialized(_this),
+        _this.onControlBarMove
       );
 
+      _this.player.controlBar.on(
+        [
+          "mousedown",
+          "mousemove",
+          "mouseup",
+          "touchstart",
+          "touchmove",
+          "touchend",
+        ],
+        _this.onControlBarMove
+      ); // we have to override these here because
+      // video.js listens for user activity on the video element
+      // and makes the user active when the mouse moves.
+      // We don't want that for 3d videos
+
+      _this.oldReportUserActivity = _this.player.reportUserActivity;
+
+      _this.player.reportUserActivity = function () {}; // canvas movements
+
+      _this.canvas.addEventListener("mousedown", _this.onMoveStart);
+
+      _this.canvas.addEventListener("touchstart", _this.onMoveStart);
+
+      _this.canvas.addEventListener("mousemove", _this.onMove);
+
+      _this.canvas.addEventListener("touchmove", _this.onMove);
+
+      _this.canvas.addEventListener("mouseup", _this.onMoveEnd);
+
+      _this.canvas.addEventListener("touchend", _this.onMoveEnd);
+
+      _this.shouldTogglePlay = false;
+      return _this;
+    }
+
+    var _proto = CanvasPlayerControls.prototype;
+
+    _proto.togglePlay = function togglePlay() {
+      if (this.player.paused()) {
+        this.player.play();
+      } else {
+        this.player.pause();
+      }
+    };
+
+    _proto.onMoveStart = function onMoveStart(e) {
+      // if the player does not have a controlbar or
+      // the move was a mouse click but not left click do not
+      // toggle play.
+      if (
+        this.options.disableTogglePlay ||
+        !this.player.controls() ||
+        (e.type === "mousedown" && !videojs.dom.isSingleLeftClick(e))
+      ) {
+        this.shouldTogglePlay = false;
+        return;
+      }
+
+      this.shouldTogglePlay = true;
+      this.touchMoveCount_ = 0;
+    };
+
+    _proto.onMoveEnd = function onMoveEnd(e) {
+      // We want to have the same behavior in VR360 Player and standard player.
+      // in touchend we want to know if was a touch click, for a click we show the bar,
+      // otherwise continue with the mouse logic.
+      //
+      // Maximum movement allowed during a touch event to still be considered a tap
+      // Other popular libs use anywhere from 2 (hammer.js) to 15,
+      // so 10 seems like a nice, round number.
+      if (e.type === "touchend" && this.touchMoveCount_ < 10) {
+        if (this.player.userActive() === false) {
+          this.player.userActive(true);
+          return;
+        }
+
+        this.player.userActive(false);
+        return;
+      }
+
+      if (!this.shouldTogglePlay) {
+        return;
+      } // We want the same behavior in Desktop for VR360  and standard player
+
+      if (e.type == "mouseup") {
+        this.togglePlay();
+      }
+    };
+
+    _proto.onMove = function onMove(e) {
+      // Increase touchMoveCount_ since Android detects 1 - 6 touches when user click normally
+      this.touchMoveCount_++;
+      this.shouldTogglePlay = false;
+    };
+
+    _proto.onControlBarMove = function onControlBarMove(e) {
+      this.player.userActive(true);
+    };
+
+    _proto.dispose = function dispose() {
+      this.canvas.removeEventListener("mousedown", this.onMoveStart);
+      this.canvas.removeEventListener("touchstart", this.onMoveStart);
+      this.canvas.removeEventListener("mousemove", this.onMove);
+      this.canvas.removeEventListener("touchmove", this.onMove);
+      this.canvas.removeEventListener("mouseup", this.onMoveEnd);
+      this.canvas.removeEventListener("touchend", this.onMoveEnd);
+      this.player.controlBar.off(
+        [
+          "mousedown",
+          "mousemove",
+          "mouseup",
+          "touchstart",
+          "touchmove",
+          "touchend",
+        ],
+        this.onControlBarMove
+      );
+      this.player.reportUserActivity = this.oldReportUserActivity;
+    };
+
+    return CanvasPlayerControls;
+  })(videojs.EventTarget);
+
+  /**
+   * This class manages ambisonic decoding and binaural rendering via Omnitone library.
+   */
+
+  var OmnitoneController = /*#__PURE__*/ (function (_videojs$EventTarget) {
+    _inheritsLoose(OmnitoneController, _videojs$EventTarget);
+
+    /**
+     * Omnitone controller class.
+     *
+     * @class
+     * @param {AudioContext} audioContext - associated AudioContext.
+     * @param {Omnitone library} omnitone - Omnitone library element.
+     * @param {HTMLVideoElement} video - vidoe tag element.
+     * @param {Object} options - omnitone options.
+     */
+    function OmnitoneController(audioContext, omnitone, video, options) {
+      var _this;
+
+      _this = _videojs$EventTarget.call(this) || this;
+      var settings = videojs.mergeOptions(
+        {
+          // Safari uses the different AAC decoder than FFMPEG. The channel order is
+          // The default 4ch AAC channel layout for FFMPEG AAC channel ordering.
+          channelMap: videojs.browser.IS_SAFARI ? [2, 0, 1, 3] : [0, 1, 2, 3],
+          ambisonicOrder: 1,
+        },
+        options
+      );
+      _this.videoElementSource = audioContext.createMediaElementSource(video);
+      _this.foaRenderer = omnitone.createFOARenderer(audioContext, settings);
+
+      _this.foaRenderer.initialize().then(
+        function () {
+          if (audioContext.state === "suspended") {
+            _this.trigger({
+              type: "audiocontext-suspended",
+            });
+          }
+
+          _this.videoElementSource.connect(_this.foaRenderer.input);
+
+          _this.foaRenderer.output.connect(audioContext.destination);
+
+          _this.initialized = true;
+
+          _this.trigger({
+            type: "omnitone-ready",
+          });
+        },
+        function (error) {
+          videojs.log.warn(
+            "videojs-vr: Omnitone initializes failed with the following error: " +
+              error +
+              ")"
+          );
+        }
+      );
+
+      return _this;
+    }
+    /**
+     * Updates the rotation of the Omnitone decoder based on three.js camera matrix.
+     *
+     * @param {Camera} camera Three.js camera object
+     */
+
+    var _proto = OmnitoneController.prototype;
+
+    _proto.update = function update(camera) {
+      if (!this.initialized) {
+        return;
+      }
+
+      this.foaRenderer.setRotationMatrixFromCamera(camera.matrix);
+    };
+    /**
+     * Destroys the controller and does any necessary cleanup.
+     */
+
+    _proto.dispose = function dispose() {
+      this.initialized = false;
+      this.foaRenderer.setRenderingMode("bypass");
+      this.foaRenderer = null;
+    };
+
+    return OmnitoneController;
+  })(videojs.EventTarget);
+
+  var Button = videojs.getComponent("Button");
+
+  var CardboardButton = /*#__PURE__*/ (function (_Button) {
+    _inheritsLoose(CardboardButton, _Button);
+
+    function CardboardButton(player, options) {
+      var _this;
+
+      _this = _Button.call(this, player, options) || this;
       _this.handleVrDisplayActivate_ = videojs.bind(
-        _this,
+        _assertThisInitialized(_this),
         _this.handleVrDisplayActivate_
       );
       _this.handleVrDisplayDeactivate_ = videojs.bind(
-        _this,
+        _assertThisInitialized(_this),
         _this.handleVrDisplayDeactivate_
       );
       _this.handleVrDisplayPresentChange_ = videojs.bind(
-        _this,
+        _assertThisInitialized(_this),
         _this.handleVrDisplayPresentChange_
       );
       _this.handleOrientationChange_ = videojs.bind(
-        _this,
+        _assertThisInitialized(_this),
         _this.handleOrientationChange_
       );
-      window_1.addEventListener(
+      window$1.addEventListener(
         "orientationchange",
         _this.handleOrientationChange_
       );
-      window_1.addEventListener(
+      window$1.addEventListener(
         "vrdisplayactivate",
         _this.handleVrDisplayActivate_
       );
-      window_1.addEventListener(
+      window$1.addEventListener(
         "vrdisplaydeactivate",
         _this.handleVrDisplayDeactivate_
-      );
-
-      // vrdisplaypresentchange does not fire activate or deactivate
+      ); // vrdisplaypresentchange does not fire activate or deactivate
       // and happens when hitting the back button during cardboard mode
       // so we need to make sure we stay in the correct state by
       // listening to it and checking if we are presenting it or not
-      window_1.addEventListener(
+
+      window$1.addEventListener(
         "vrdisplaypresentchange",
         _this.handleVrDisplayPresentChange_
-      );
-
-      // we cannot show the cardboard button in fullscreen on
+      ); // we cannot show the cardboard button in fullscreen on
       // android as it breaks the controls, and makes it impossible
       // to exit cardboard mode
+
       if (videojs.browser.IS_ANDROID) {
         _this.on(player, "fullscreenchange", function () {
           if (player.isFullscreen()) {
@@ -48327,93 +49445,97 @@
           }
         });
       }
+
       return _this;
     }
 
-    CardboardButton.prototype.buildCSSClass = function buildCSSClass() {
+    var _proto = CardboardButton.prototype;
+
+    _proto.buildCSSClass = function buildCSSClass() {
       return "vjs-button-vr " + _Button.prototype.buildCSSClass.call(this);
     };
 
-    CardboardButton.prototype.handleVrDisplayPresentChange_ =
+    _proto.handleVrDisplayPresentChange_ =
       function handleVrDisplayPresentChange_() {
         if (!this.player_.vr().vrDisplay.isPresenting && this.active_) {
           this.handleVrDisplayDeactivate_();
         }
+
         if (this.player_.vr().vrDisplay.isPresenting && !this.active_) {
           this.handleVrDisplayActivate_();
         }
       };
 
-    CardboardButton.prototype.handleOrientationChange_ =
-      function handleOrientationChange_() {
-        if (this.active_ && videojs.browser.IS_IOS) {
-          this.changeSize_();
-        }
-      };
-
-    CardboardButton.prototype.changeSize_ = function changeSize_() {
-      this.player_.width(window_1.innerWidth);
-      this.player_.height(window_1.innerHeight);
-      window_1.dispatchEvent(new window_1.Event("resize"));
+    _proto.handleOrientationChange_ = function handleOrientationChange_() {
+      if (this.active_ && videojs.browser.IS_IOS) {
+        this.changeSize_();
+      }
     };
 
-    CardboardButton.prototype.handleVrDisplayActivate_ =
-      function handleVrDisplayActivate_() {
-        // we mimic fullscreen on IOS
-        if (videojs.browser.IS_IOS) {
-          this.oldWidth_ = this.player_.currentWidth();
-          this.oldHeight_ = this.player_.currentHeight();
-          this.player_.enterFullWindow();
-          this.changeSize_();
+    _proto.changeSize_ = function changeSize_() {
+      this.player_.width(window$1.innerWidth);
+      this.player_.height(window$1.innerHeight);
+      window$1.dispatchEvent(new window$1.Event("resize"));
+    };
+
+    _proto.handleVrDisplayActivate_ = function handleVrDisplayActivate_() {
+      // we mimic fullscreen on IOS
+      if (videojs.browser.IS_IOS) {
+        this.oldWidth_ = this.player_.currentWidth();
+        this.oldHeight_ = this.player_.currentHeight();
+        this.player_.enterFullWindow();
+        this.changeSize_();
+      }
+
+      this.active_ = true;
+    };
+
+    _proto.handleVrDisplayDeactivate_ = function handleVrDisplayDeactivate_() {
+      // un-mimic fullscreen on iOS
+      if (videojs.browser.IS_IOS) {
+        if (this.oldWidth_) {
+          this.player_.width(this.oldWidth_);
         }
 
-        this.active_ = true;
-      };
-
-    CardboardButton.prototype.handleVrDisplayDeactivate_ =
-      function handleVrDisplayDeactivate_() {
-        // un-mimic fullscreen on iOS
-        if (videojs.browser.IS_IOS) {
-          if (this.oldWidth_) {
-            this.player_.width(this.oldWidth_);
-          }
-          if (this.oldHeight_) {
-            this.player_.height(this.oldHeight_);
-          }
-          this.player_.exitFullWindow();
-          window_1.dispatchEvent(new window_1.Event("resize"));
+        if (this.oldHeight_) {
+          this.player_.height(this.oldHeight_);
         }
 
-        this.active_ = false;
-      };
+        this.player_.exitFullWindow();
+      }
 
-    CardboardButton.prototype.handleClick = function handleClick(event) {
+      this.active_ = false;
+    };
+
+    _proto.handleClick = function handleClick(event) {
       // if cardboard mode display is not active, activate it
       // otherwise deactivate it
       if (!this.active_) {
         // This starts playback mode when the cardboard button
-        // is clicked on Andriod. We need to do this as the controls
+        // is clicked on Android. We need to do this as the controls
         // disappear
         if (!this.player_.hasStarted() && videojs.browser.IS_ANDROID) {
           this.player_.play();
         }
-        window_1.dispatchEvent(new window_1.Event("vrdisplayactivate"));
+
+        window$1.dispatchEvent(new window$1.Event("vrdisplayactivate"));
       } else {
-        window_1.dispatchEvent(new window_1.Event("vrdisplaydeactivate"));
+        window$1.dispatchEvent(new window$1.Event("vrdisplaydeactivate"));
       }
     };
 
-    CardboardButton.prototype.dispose = function dispose() {
+    _proto.dispose = function dispose() {
       _Button.prototype.dispose.call(this);
-      window_1.removeEventListener(
+
+      window$1.removeEventListener(
         "vrdisplayactivate",
         this.handleVrDisplayActivate_
       );
-      window_1.removeEventListener(
+      window$1.removeEventListener(
         "vrdisplaydeactivate",
         this.handleVrDisplayDeactivate_
       );
-      window_1.removeEventListener(
+      window$1.removeEventListener(
         "vrdisplaypresentchange",
         this.handleVrDisplayPresentChange_
       );
@@ -48426,18 +49548,16 @@
 
   var BigPlayButton = videojs.getComponent("BigPlayButton");
 
-  var BigVrPlayButton = (function (_BigPlayButton) {
-    inherits(BigVrPlayButton, _BigPlayButton);
+  var BigVrPlayButton = /*#__PURE__*/ (function (_BigPlayButton) {
+    _inheritsLoose(BigVrPlayButton, _BigPlayButton);
 
     function BigVrPlayButton() {
-      classCallCheck(this, BigVrPlayButton);
-      return possibleConstructorReturn(
-        this,
-        _BigPlayButton.apply(this, arguments)
-      );
+      return _BigPlayButton.apply(this, arguments) || this;
     }
 
-    BigVrPlayButton.prototype.buildCSSClass = function buildCSSClass() {
+    var _proto = BigVrPlayButton.prototype;
+
+    _proto.buildCSSClass = function buildCSSClass() {
       return (
         "vjs-big-vr-play-button " +
         _BigPlayButton.prototype.buildCSSClass.call(this)
@@ -48449,13 +49569,54 @@
 
   videojs.registerComponent("BigVrPlayButton", BigVrPlayButton);
 
-  // Default options for the plugin.
-  var defaults$1 = {
-    projection: "AUTO",
-    forceCardboard: false,
-    debug: false,
-  };
+  function _createForOfIteratorHelperLoose(o, allowArrayLike) {
+    var it =
+      (typeof Symbol !== "undefined" && o[Symbol.iterator]) || o["@@iterator"];
+    if (it) return (it = it.call(o)).next.bind(it);
+    if (
+      Array.isArray(o) ||
+      (it = _unsupportedIterableToArray(o)) ||
+      (allowArrayLike && o && typeof o.length === "number")
+    ) {
+      if (it) o = it;
+      var i = 0;
+      return function () {
+        if (i >= o.length) return { done: true };
+        return { done: false, value: o[i++] };
+      };
+    }
+    throw new TypeError(
+      "Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."
+    );
+  }
 
+  function _unsupportedIterableToArray(o, minLen) {
+    if (!o) return;
+    if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+    var n = Object.prototype.toString.call(o).slice(8, -1);
+    if (n === "Object" && o.constructor) n = o.constructor.name;
+    if (n === "Map" || n === "Set") return Array.from(o);
+    if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
+      return _arrayLikeToArray(o, minLen);
+  }
+
+  function _arrayLikeToArray(arr, len) {
+    if (len == null || len > arr.length) len = arr.length;
+    for (var i = 0, arr2 = new Array(len); i < len; i++) {
+      arr2[i] = arr[i];
+    }
+    return arr2;
+  }
+
+  var defaults = {
+    debug: false,
+    omnitone: false,
+    forceCardboard: false,
+    omnitoneOptions: {},
+    projection: "AUTO",
+    sphereDetail: 32,
+    disableTogglePlay: false,
+  };
   var errors = {
     "web-vr-out-of-date": {
       headline: "360 is out of date",
@@ -48476,44 +49637,42 @@
         "Your browser/device does not support HLS 360 video. See <a href='http://webvr.info'>http://webvr.info</a> for assistance.",
     },
   };
-
   var Plugin = videojs.getPlugin("plugin");
   var Component = videojs.getComponent("Component");
 
-  var VR = (function (_Plugin) {
-    inherits(VR, _Plugin);
+  var VR = /*#__PURE__*/ (function (_Plugin) {
+    _inheritsLoose(VR, _Plugin);
 
     function VR(player, options) {
-      classCallCheck(this, VR);
+      var _this;
 
-      var settings = videojs.mergeOptions(defaults$1, options);
-
-      var _this = possibleConstructorReturn(
-        this,
-        _Plugin.call(this, player, settings)
-      );
-
+      var settings = videojs.mergeOptions(defaults, options);
+      _this = _Plugin.call(this, player, settings) || this;
       _this.options_ = settings;
       _this.player_ = player;
       _this.bigPlayButtonIndex_ =
-        player.children().indexOf(player.getChild("BigPlayButton")) || 0;
+        player.children().indexOf(player.getChild("BigPlayButton")) || 0; // custom videojs-errors integration boolean
 
-      // custom videojs-errors integration boolean
       _this.videojsErrorsSupport_ = !!videojs.errors;
 
       if (_this.videojsErrorsSupport_) {
-        player.errors({ errors: errors });
-      }
-
-      // IE 11 does not support enough webgl to be supported
+        player.errors({
+          errors: errors,
+        });
+      } // IE 11 does not support enough webgl to be supported
       // older safari does not support cors, so it wont work
+
       if (videojs.browser.IE_VERSION || !corsSupport) {
         // if a player triggers error before 'loadstart' is fired
         // video.js will reset the error overlay
         _this.player_.on("loadstart", function () {
-          _this.triggerError_({ code: "web-vr-not-supported", dismiss: false });
+          _this.triggerError_({
+            code: "web-vr-not-supported",
+            dismiss: false,
+          });
         });
-        return possibleConstructorReturn(_this);
+
+        return _assertThisInitialized(_this);
       }
 
       _this.polyfill_ = new WebVRPolyfill({
@@ -48521,39 +49680,79 @@
         ROTATE_INSTRUCTIONS_DISABLED: true,
       });
       _this.polyfill_ = new WebVRPolyfill();
-
       _this.handleVrDisplayActivate_ = videojs.bind(
-        _this,
+        _assertThisInitialized(_this),
         _this.handleVrDisplayActivate_
       );
       _this.handleVrDisplayDeactivate_ = videojs.bind(
-        _this,
+        _assertThisInitialized(_this),
         _this.handleVrDisplayDeactivate_
       );
-      _this.handleResize_ = videojs.bind(_this, _this.handleResize_);
-      _this.animate_ = videojs.bind(_this, _this.animate_);
+      _this.handleResize_ = videojs.bind(
+        _assertThisInitialized(_this),
+        _this.handleResize_
+      );
+      _this.animate_ = videojs.bind(
+        _assertThisInitialized(_this),
+        _this.animate_
+      );
 
-      _this.setProjection(_this.options_.projection);
+      _this.setProjection(_this.options_.projection); // any time the video element is recycled for ads
+      // we have to reset the vr state and re-init after ad
+
+      _this.on(
+        player,
+        "adstart",
+        function () {
+          return player.setTimeout(function () {
+            // if the video element was recycled for this ad
+            if (!player.ads || !player.ads.videoElementRecycled()) {
+              _this.log(
+                "video element not recycled for this ad, no need to reset"
+              );
+
+              return;
+            }
+
+            _this.log("video element recycled for this ad, reseting");
+
+            _this.reset();
+
+            _this.one(player, "playing", _this.init);
+          });
+        },
+        1
+      );
 
       _this.on(player, "loadedmetadata", _this.init);
+
       return _this;
     }
 
-    VR.prototype.changeProjection_ = function changeProjection_(projection) {
-      projection = getInternalProjectionName(projection);
-      // don't change to an invalid projection
+    var _proto = VR.prototype;
+
+    _proto.changeProjection_ = function changeProjection_(projection) {
+      var _this2 = this;
+
+      projection = getInternalProjectionName(projection); // don't change to an invalid projection
+
       if (!projection) {
         projection = "NONE";
       }
 
-      var position = { x: 0, y: 0, z: 0 };
+      var position = {
+        x: 0,
+        y: 0,
+        z: 0,
+      };
 
       if (this.scene) {
         this.scene.remove(this.movieScreen);
       }
+
       if (projection === "AUTO") {
         // mediainfo cannot be set to auto or we would infinite loop here
-        // each source should know wether they are 360 or not, if using AUTO
+        // each source should know whatever they are 360 or not, if using AUTO
         if (
           this.player_.mediainfo &&
           this.player_.mediainfo.projection &&
@@ -48562,31 +49761,40 @@
           var autoProjection = getInternalProjectionName(
             this.player_.mediainfo.projection
           );
-
           return this.changeProjection_(autoProjection);
         }
+
         return this.changeProjection_("NONE");
       } else if (projection === "360") {
-        this.movieGeometry = new SphereBufferGeometry(256, 32, 32);
+        this.movieGeometry = new SphereBufferGeometry(
+          256,
+          this.options_.sphereDetail,
+          this.options_.sphereDetail
+        );
         this.movieMaterial = new MeshBasicMaterial({
           map: this.videoTexture,
           overdraw: true,
           side: BackSide,
         });
-
         this.movieScreen = new Mesh(this.movieGeometry, this.movieMaterial);
         this.movieScreen.position.set(position.x, position.y, position.z);
-
         this.movieScreen.scale.x = -1;
         this.movieScreen.quaternion.setFromAxisAngle(
-          { x: 0, y: 1, z: 0 },
+          {
+            x: 0,
+            y: 1,
+            z: 0,
+          },
           -Math.PI / 2
         );
         this.scene.add(this.movieScreen);
       } else if (projection === "360_LR" || projection === "360_TB") {
-        var geometry = new SphereGeometry(256, 32, 32);
-
         // Left eye view
+        var geometry = new SphereGeometry(
+          256,
+          this.options_.sphereDetail,
+          this.options_.sphereDetail
+        );
         var uvs = geometry.faceVertexUvs[0];
 
         for (var i = 0; i < uvs.length; i++) {
@@ -48599,7 +49807,6 @@
             }
           }
         }
-        geometry.scale(-1, 1, 1);
 
         this.movieGeometry = new BufferGeometry().fromGeometry(geometry);
         this.movieMaterial = new MeshBasicMaterial({
@@ -48607,16 +49814,25 @@
           overdraw: true,
           side: BackSide,
         });
-
         this.movieScreen = new Mesh(this.movieGeometry, this.movieMaterial);
-        this.movieScreen.rotation.y = -Math.PI / 2;
-        // display in left eye only
+        this.movieScreen.scale.x = -1;
+        this.movieScreen.quaternion.setFromAxisAngle(
+          {
+            x: 0,
+            y: 1,
+            z: 0,
+          },
+          -Math.PI / 2
+        ); // display in left eye only
+
         this.movieScreen.layers.set(1);
-        this.scene.add(this.movieScreen);
+        this.scene.add(this.movieScreen); // Right eye view
 
-        // Right eye view
-        geometry = new SphereGeometry(256, 32, 32);
-
+        geometry = new SphereGeometry(
+          256,
+          this.options_.sphereDetail,
+          this.options_.sphereDetail
+        );
         uvs = geometry.faceVertexUvs[0];
 
         for (var _i = 0; _i < uvs.length; _i++) {
@@ -48629,7 +49845,6 @@
             }
           }
         }
-        geometry.scale(-1, 1, 1);
 
         this.movieGeometry = new BufferGeometry().fromGeometry(geometry);
         this.movieMaterial = new MeshBasicMaterial({
@@ -48637,10 +49852,17 @@
           overdraw: true,
           side: BackSide,
         });
-
         this.movieScreen = new Mesh(this.movieGeometry, this.movieMaterial);
-        this.movieScreen.rotation.y = -Math.PI / 2;
-        // display in right eye only
+        this.movieScreen.scale.x = -1;
+        this.movieScreen.quaternion.setFromAxisAngle(
+          {
+            x: 0,
+            y: 1,
+            z: 0,
+          },
+          -Math.PI / 2
+        ); // display in right eye only
+
         this.movieScreen.layers.set(2);
         this.scene.add(this.movieScreen);
       } else if (projection === "360_CUBE") {
@@ -48650,7 +49872,6 @@
           overdraw: true,
           side: BackSide,
         });
-
         var left = [
           new Vector2(0, 0.5),
           new Vector2(0.333, 0.5),
@@ -48687,18 +49908,13 @@
           new Vector2(1, 0.5),
           new Vector2(0.666, 0.5),
         ];
-
         this.movieGeometry.faceVertexUvs[0] = [];
-
         this.movieGeometry.faceVertexUvs[0][0] = [right[2], right[1], right[3]];
         this.movieGeometry.faceVertexUvs[0][1] = [right[1], right[0], right[3]];
-
         this.movieGeometry.faceVertexUvs[0][2] = [left[2], left[1], left[3]];
         this.movieGeometry.faceVertexUvs[0][3] = [left[1], left[0], left[3]];
-
         this.movieGeometry.faceVertexUvs[0][4] = [top[2], top[1], top[3]];
         this.movieGeometry.faceVertexUvs[0][5] = [top[1], top[0], top[3]];
-
         this.movieGeometry.faceVertexUvs[0][6] = [
           bottom[2],
           bottom[1],
@@ -48709,37 +49925,293 @@
           bottom[0],
           bottom[3],
         ];
-
         this.movieGeometry.faceVertexUvs[0][8] = [front[2], front[1], front[3]];
         this.movieGeometry.faceVertexUvs[0][9] = [front[1], front[0], front[3]];
-
         this.movieGeometry.faceVertexUvs[0][10] = [back[2], back[1], back[3]];
         this.movieGeometry.faceVertexUvs[0][11] = [back[1], back[0], back[3]];
-
         this.movieScreen = new Mesh(this.movieGeometry, this.movieMaterial);
         this.movieScreen.position.set(position.x, position.y, position.z);
         this.movieScreen.rotation.y = -Math.PI;
-
         this.scene.add(this.movieScreen);
+      } else if (
+        projection === "180" ||
+        projection === "180_LR" ||
+        projection === "180_MONO"
+      ) {
+        var _geometry = new SphereGeometry(
+          256,
+          this.options_.sphereDetail,
+          this.options_.sphereDetail,
+          Math.PI,
+          Math.PI
+        ); // Left eye view
+
+        _geometry.scale(-1, 1, 1);
+
+        var _uvs = _geometry.faceVertexUvs[0];
+
+        if (projection !== "180_MONO") {
+          for (var _i2 = 0; _i2 < _uvs.length; _i2++) {
+            for (var _j2 = 0; _j2 < 3; _j2++) {
+              _uvs[_i2][_j2].x *= 0.5;
+            }
+          }
+        }
+
+        this.movieGeometry = new BufferGeometry().fromGeometry(_geometry);
+        this.movieMaterial = new MeshBasicMaterial({
+          map: this.videoTexture,
+          overdraw: true,
+        });
+        this.movieScreen = new Mesh(this.movieGeometry, this.movieMaterial); // display in left eye only
+
+        this.movieScreen.layers.set(1);
+        this.scene.add(this.movieScreen); // Right eye view
+
+        _geometry = new SphereGeometry(
+          256,
+          this.options_.sphereDetail,
+          this.options_.sphereDetail,
+          Math.PI,
+          Math.PI
+        );
+
+        _geometry.scale(-1, 1, 1);
+
+        _uvs = _geometry.faceVertexUvs[0];
+
+        for (var _i3 = 0; _i3 < _uvs.length; _i3++) {
+          for (var _j3 = 0; _j3 < 3; _j3++) {
+            _uvs[_i3][_j3].x *= 0.5;
+            _uvs[_i3][_j3].x += 0.5;
+          }
+        }
+
+        this.movieGeometry = new BufferGeometry().fromGeometry(_geometry);
+        this.movieMaterial = new MeshBasicMaterial({
+          map: this.videoTexture,
+          overdraw: true,
+        });
+        this.movieScreen = new Mesh(this.movieGeometry, this.movieMaterial); // display in right eye only
+
+        this.movieScreen.layers.set(2);
+        this.scene.add(this.movieScreen);
+      } else if (projection === "EAC" || projection === "EAC_LR") {
+        var makeScreen = function makeScreen(mapMatrix, scaleMatrix) {
+          // "Continuity correction?": because of discontinuous faces and aliasing,
+          // we truncate the 2-pixel-wide strips on all discontinuous edges,
+          var contCorrect = 2;
+          _this2.movieGeometry = new BoxGeometry(256, 256, 256);
+          _this2.movieMaterial = new ShaderMaterial({
+            overdraw: true,
+            side: BackSide,
+            uniforms: {
+              mapped: {
+                value: _this2.videoTexture,
+              },
+              mapMatrix: {
+                value: mapMatrix,
+              },
+              contCorrect: {
+                value: contCorrect,
+              },
+              faceWH: {
+                value: new Vector2(1 / 3, 1 / 2).applyMatrix3(scaleMatrix),
+              },
+              vidWH: {
+                value: new Vector2(
+                  _this2.videoTexture.image.videoWidth,
+                  _this2.videoTexture.image.videoHeight
+                ).applyMatrix3(scaleMatrix),
+              },
+            },
+            vertexShader:
+              "\nvarying vec2 vUv;\nuniform mat3 mapMatrix;\n\nvoid main() {\n  vUv = (mapMatrix * vec3(uv, 1.)).xy;\n  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.);\n}",
+            fragmentShader:
+              "\nvarying vec2 vUv;\nuniform sampler2D mapped;\nuniform vec2 faceWH;\nuniform vec2 vidWH;\nuniform float contCorrect;\n\nconst float PI = 3.1415926535897932384626433832795;\n\nvoid main() {\n  vec2 corner = vUv - mod(vUv, faceWH) + vec2(0, contCorrect / vidWH.y);\n\n  vec2 faceWHadj = faceWH - vec2(0, contCorrect * 2. / vidWH.y);\n\n  vec2 p = (vUv - corner) / faceWHadj - .5;\n  vec2 q = 2. / PI * atan(2. * p) + .5;\n\n  vec2 eUv = corner + q * faceWHadj;\n\n  gl_FragColor = texture2D(mapped, eUv);\n}",
+          });
+          var right = [
+            new Vector2(0, 1 / 2),
+            new Vector2(1 / 3, 1 / 2),
+            new Vector2(1 / 3, 1),
+            new Vector2(0, 1),
+          ];
+          var front = [
+            new Vector2(1 / 3, 1 / 2),
+            new Vector2(2 / 3, 1 / 2),
+            new Vector2(2 / 3, 1),
+            new Vector2(1 / 3, 1),
+          ];
+          var left = [
+            new Vector2(2 / 3, 1 / 2),
+            new Vector2(1, 1 / 2),
+            new Vector2(1, 1),
+            new Vector2(2 / 3, 1),
+          ];
+          var bottom = [
+            new Vector2(1 / 3, 0),
+            new Vector2(1 / 3, 1 / 2),
+            new Vector2(0, 1 / 2),
+            new Vector2(0, 0),
+          ];
+          var back = [
+            new Vector2(1 / 3, 1 / 2),
+            new Vector2(1 / 3, 0),
+            new Vector2(2 / 3, 0),
+            new Vector2(2 / 3, 1 / 2),
+          ];
+          var top = [
+            new Vector2(1, 0),
+            new Vector2(1, 1 / 2),
+            new Vector2(2 / 3, 1 / 2),
+            new Vector2(2 / 3, 0),
+          ];
+
+          for (
+            var _i4 = 0, _arr = [right, front, left, bottom, back, top];
+            _i4 < _arr.length;
+            _i4++
+          ) {
+            var face = _arr[_i4];
+            var height = _this2.videoTexture.image.videoHeight;
+            var lowY = 1;
+            var highY = 0;
+
+            for (
+              var _iterator = _createForOfIteratorHelperLoose(face), _step;
+              !(_step = _iterator()).done;
+
+            ) {
+              var vector = _step.value;
+
+              if (vector.y < lowY) {
+                lowY = vector.y;
+              }
+
+              if (vector.y > highY) {
+                highY = vector.y;
+              }
+            }
+
+            for (
+              var _iterator2 = _createForOfIteratorHelperLoose(face), _step2;
+              !(_step2 = _iterator2()).done;
+
+            ) {
+              var _vector = _step2.value;
+
+              if (Math.abs(_vector.y - lowY) < Number.EPSILON) {
+                _vector.y += contCorrect / height;
+              }
+
+              if (Math.abs(_vector.y - highY) < Number.EPSILON) {
+                _vector.y -= contCorrect / height;
+              }
+
+              _vector.x =
+                (_vector.x / height) * (height - contCorrect * 2) +
+                contCorrect / height;
+            }
+          }
+
+          _this2.movieGeometry.faceVertexUvs[0] = [];
+          _this2.movieGeometry.faceVertexUvs[0][0] = [
+            right[2],
+            right[1],
+            right[3],
+          ];
+          _this2.movieGeometry.faceVertexUvs[0][1] = [
+            right[1],
+            right[0],
+            right[3],
+          ];
+          _this2.movieGeometry.faceVertexUvs[0][2] = [
+            left[2],
+            left[1],
+            left[3],
+          ];
+          _this2.movieGeometry.faceVertexUvs[0][3] = [
+            left[1],
+            left[0],
+            left[3],
+          ];
+          _this2.movieGeometry.faceVertexUvs[0][4] = [top[2], top[1], top[3]];
+          _this2.movieGeometry.faceVertexUvs[0][5] = [top[1], top[0], top[3]];
+          _this2.movieGeometry.faceVertexUvs[0][6] = [
+            bottom[2],
+            bottom[1],
+            bottom[3],
+          ];
+          _this2.movieGeometry.faceVertexUvs[0][7] = [
+            bottom[1],
+            bottom[0],
+            bottom[3],
+          ];
+          _this2.movieGeometry.faceVertexUvs[0][8] = [
+            front[2],
+            front[1],
+            front[3],
+          ];
+          _this2.movieGeometry.faceVertexUvs[0][9] = [
+            front[1],
+            front[0],
+            front[3],
+          ];
+          _this2.movieGeometry.faceVertexUvs[0][10] = [
+            back[2],
+            back[1],
+            back[3],
+          ];
+          _this2.movieGeometry.faceVertexUvs[0][11] = [
+            back[1],
+            back[0],
+            back[3],
+          ];
+          _this2.movieScreen = new Mesh(
+            _this2.movieGeometry,
+            _this2.movieMaterial
+          );
+
+          _this2.movieScreen.position.set(position.x, position.y, position.z);
+
+          _this2.movieScreen.rotation.y = -Math.PI;
+          return _this2.movieScreen;
+        };
+
+        if (projection === "EAC") {
+          this.scene.add(makeScreen(new Matrix3(), new Matrix3()));
+        } else {
+          var scaleMatrix = new Matrix3().set(0, 0.5, 0, 1, 0, 0, 0, 0, 1);
+          makeScreen(
+            new Matrix3().set(0, -0.5, 0.5, 1, 0, 0, 0, 0, 1),
+            scaleMatrix
+          ); // display in left eye only
+
+          this.movieScreen.layers.set(1);
+          this.scene.add(this.movieScreen);
+          makeScreen(
+            new Matrix3().set(0, -0.5, 1, 1, 0, 0, 0, 0, 1),
+            scaleMatrix
+          ); // display in right eye only
+
+          this.movieScreen.layers.set(2);
+          this.scene.add(this.movieScreen);
+        }
       }
 
       this.currentProjection_ = projection;
     };
 
-    VR.prototype.triggerError_ = function triggerError_(errorObj) {
+    _proto.triggerError_ = function triggerError_(errorObj) {
       // if we have videojs-errors use it
       if (this.videojsErrorsSupport_) {
-        this.player_.error(errorObj);
-        // if we don't have videojs-errors just use a normal player error
+        this.player_.error(errorObj); // if we don't have videojs-errors just use a normal player error
       } else {
         // strip any html content from the error message
         // as it is not supported outside of videojs-errors
-        var div = document_1.createElement("div");
-
+        var div = document$1.createElement("div");
         div.innerHTML = errors[errorObj.code].message;
-
         var message = div.textContent || div.innerText || "";
-
         this.player_.error({
           code: errorObj.code,
           message: message,
@@ -48747,13 +50219,13 @@
       }
     };
 
-    VR.prototype.log = function log() {
+    _proto.log = function log() {
       if (!this.options_.debug) {
         return;
       }
 
       for (
-        var _len = arguments.length, msgs = Array(_len), _key = 0;
+        var _len = arguments.length, msgs = new Array(_len), _key = 0;
         _key < _len;
         _key++
       ) {
@@ -48761,105 +50233,112 @@
       }
 
       msgs.forEach(function (msg) {
-        videojs.log(msg);
+        videojs.log("VR: ", msg);
       });
     };
 
-    VR.prototype.handleVrDisplayActivate_ =
-      function handleVrDisplayActivate_() {
-        var _this2 = this;
+    _proto.handleVrDisplayActivate_ = function handleVrDisplayActivate_() {
+      var _this3 = this;
 
-        if (!this.vrDisplay) {
-          return;
-        }
-        this.vrDisplay
-          .requestPresent([{ source: this.renderedCanvas }])
-          .then(function () {
-            if (!_this2.vrDisplay.cardboardUI_ || !videojs.browser.IS_IOS) {
+      if (!this.vrDisplay) {
+        return;
+      }
+
+      this.vrDisplay
+        .requestPresent([
+          {
+            source: this.renderedCanvas,
+          },
+        ])
+        .then(function () {
+          if (!_this3.vrDisplay.cardboardUI_ || !videojs.browser.IS_IOS) {
+            return;
+          } // webvr-polyfill/cardboard ui only watches for click events
+          // to tell that the back arrow button is pressed during cardboard vr.
+          // but somewhere along the line these events are silenced with preventDefault
+          // but only on iOS, so we translate them ourselves here
+
+          var touches = [];
+
+          var iosCardboardTouchStart_ = function iosCardboardTouchStart_(e) {
+            for (var i = 0; i < e.touches.length; i++) {
+              touches.push(e.touches[i]);
+            }
+          };
+
+          var iosCardboardTouchEnd_ = function iosCardboardTouchEnd_(e) {
+            if (!touches.length) {
               return;
             }
 
-            // webvr-polyfill/cardboard ui only watches for click events
-            // to tell that the back arrow button is pressed during cardboard vr.
-            // but somewhere along the line these events are silenced with preventDefault
-            // but only on iOS, so we translate them ourselves here
-            var touches = [];
-            var iosCardboardTouchStart_ = function iosCardboardTouchStart_(e) {
-              for (var i = 0; i < e.touches.length; i++) {
-                touches.push(e.touches[i]);
-              }
-            };
-
-            var iosCardboardTouchEnd_ = function iosCardboardTouchEnd_(e) {
-              if (!touches.length) {
-                return;
-              }
-
-              touches.forEach(function (t) {
-                var simulatedClick = new window_1.MouseEvent("click", {
-                  screenX: t.screenX,
-                  screenY: t.screenY,
-                  clientX: t.clientX,
-                  clientY: t.clientY,
-                });
-
-                _this2.renderedCanvas.dispatchEvent(simulatedClick);
+            touches.forEach(function (t) {
+              var simulatedClick = new window$1.MouseEvent("click", {
+                screenX: t.screenX,
+                screenY: t.screenY,
+                clientX: t.clientX,
+                clientY: t.clientY,
               });
 
-              touches = [];
-            };
+              _this3.renderedCanvas.dispatchEvent(simulatedClick);
+            });
+            touches = [];
+          };
 
-            _this2.renderedCanvas.addEventListener(
+          _this3.renderedCanvas.addEventListener(
+            "touchstart",
+            iosCardboardTouchStart_
+          );
+
+          _this3.renderedCanvas.addEventListener(
+            "touchend",
+            iosCardboardTouchEnd_
+          );
+
+          _this3.iosRevertTouchToClick_ = function () {
+            _this3.renderedCanvas.removeEventListener(
               "touchstart",
               iosCardboardTouchStart_
             );
-            _this2.renderedCanvas.addEventListener(
+
+            _this3.renderedCanvas.removeEventListener(
               "touchend",
               iosCardboardTouchEnd_
             );
 
-            _this2.iosRevertTouchToClick_ = function () {
-              _this2.renderedCanvas.removeEventListener(
-                "touchstart",
-                iosCardboardTouchStart_
-              );
-              _this2.renderedCanvas.removeEventListener(
-                "touchend",
-                iosCardboardTouchEnd_
-              );
-              _this2.iosRevertTouchToClick_ = null;
-            };
-          });
-      };
+            _this3.iosRevertTouchToClick_ = null;
+          };
+        });
+    };
 
-    VR.prototype.handleVrDisplayDeactivate_ =
-      function handleVrDisplayDeactivate_() {
-        if (!this.vrDisplay || !this.vrDisplay.isPresenting) {
-          return;
-        }
-        if (this.iosRevertTouchToClick_) {
-          this.iosRevertTouchToClick_();
-        }
-        this.vrDisplay.exitPresent();
-      };
+    _proto.handleVrDisplayDeactivate_ = function handleVrDisplayDeactivate_() {
+      if (!this.vrDisplay || !this.vrDisplay.isPresenting) {
+        return;
+      }
 
-    VR.prototype.requestAnimationFrame = function requestAnimationFrame(fn) {
+      if (this.iosRevertTouchToClick_) {
+        this.iosRevertTouchToClick_();
+      }
+
+      this.vrDisplay.exitPresent();
+    };
+
+    _proto.requestAnimationFrame = function requestAnimationFrame(fn) {
       if (this.vrDisplay) {
         return this.vrDisplay.requestAnimationFrame(fn);
       }
 
-      return Component.prototype.requestAnimationFrame.call(this, fn);
+      return this.player_.requestAnimationFrame(fn);
     };
 
-    VR.prototype.cancelAnimationFrame = function cancelAnimationFrame(id) {
+    _proto.cancelAnimationFrame = function cancelAnimationFrame(id) {
       if (this.vrDisplay) {
         return this.vrDisplay.cancelAnimationFrame(id);
       }
 
-      return Component.prototype.cancelAnimationFrame.call(this, id);
+      return this.player_.cancelAnimationFrame(id);
     };
 
-    VR.prototype.togglePlay_ = function togglePlay_() {
+    _proto.togglePlay_ = function togglePlay_() {
       if (this.player_.paused()) {
         this.player_.play();
       } else {
@@ -48867,10 +50346,11 @@
       }
     };
 
-    VR.prototype.animate_ = function animate_() {
+    _proto.animate_ = function animate_() {
       if (!this.initialized_) {
         return;
       }
+
       if (
         this.getVideoEl_().readyState === this.getVideoEl_().HAVE_ENOUGH_DATA
       ) {
@@ -48880,17 +50360,21 @@
       }
 
       this.controls3d.update();
+
+      if (this.omniController) {
+        this.omniController.update(this.camera);
+      }
+
       this.effect.render(this.scene, this.camera);
 
-      if (window_1.navigator.getGamepads) {
+      if (window$1.navigator.getGamepads) {
         // Grab all gamepads
-        var gamepads = window_1.navigator.getGamepads();
+        var gamepads = window$1.navigator.getGamepads();
 
         for (var i = 0; i < gamepads.length; ++i) {
-          var gamepad = gamepads[i];
-
-          // Make sure gamepad is defined
+          var gamepad = gamepads[i]; // Make sure gamepad is defined
           // Only take input if state has changed since we checked last
+
           if (
             !gamepad ||
             !gamepad.timestamp ||
@@ -48898,6 +50382,7 @@
           ) {
             continue;
           }
+
           for (var j = 0; j < gamepad.buttons.length; ++j) {
             if (gamepad.buttons[j].pressed) {
               this.togglePlay_();
@@ -48907,21 +50392,20 @@
           }
         }
       }
-      this.camera.getWorldDirection(this.cameraVector);
 
+      this.camera.getWorldDirection(this.cameraVector);
       this.animationFrameId_ = this.requestAnimationFrame(this.animate_);
     };
 
-    VR.prototype.handleResize_ = function handleResize_() {
+    _proto.handleResize_ = function handleResize_() {
       var width = this.player_.currentWidth();
       var height = this.player_.currentHeight();
-
       this.effect.setSize(width, height, false);
       this.camera.aspect = width / height;
       this.camera.updateProjectionMatrix();
     };
 
-    VR.prototype.setProjection = function setProjection(projection) {
+    _proto.setProjection = function setProjection(projection) {
       if (!getInternalProjectionName(projection)) {
         videojs.log.error(
           "videojs-vr: please pass a valid projection " +
@@ -48934,38 +50418,39 @@
       this.defaultProjection_ = projection;
     };
 
-    VR.prototype.init = function init() {
-      var _this3 = this;
+    _proto.init = function init() {
+      var _this4 = this;
 
       this.reset();
-
       this.camera = new PerspectiveCamera(
         75,
         this.player_.currentWidth() / this.player_.currentHeight(),
         1,
         1000
-      );
-      // Store vector representing the direction in which the camera is looking, in world space.
+      ); // Store vector representing the direction in which the camera is looking, in world space.
+
       this.cameraVector = new Vector3();
 
       if (
         this.currentProjection_ === "360_LR" ||
-        this.currentProjection_ === "360_TB"
+        this.currentProjection_ === "360_TB" ||
+        this.currentProjection_ === "180" ||
+        this.currentProjection_ === "180_LR" ||
+        this.currentProjection_ === "180_MONO" ||
+        this.currentProjection_ === "EAC_LR"
       ) {
         // Render left eye when not in VR mode
         this.camera.layers.enable(1);
       }
 
       this.scene = new Scene();
-      this.videoTexture = new VideoTexture(this.getVideoEl_());
-
-      // shared regardless of wether VideoTexture is used or
+      this.videoTexture = new VideoTexture(this.getVideoEl_()); // shared regardless of wether VideoTexture is used or
       // an image canvas is used
+
       this.videoTexture.generateMipmaps = false;
       this.videoTexture.minFilter = LinearFilter;
       this.videoTexture.magFilter = LinearFilter;
       this.videoTexture.format = RGBFormat;
-
       this.changeProjection_(this.currentProjection_);
 
       if (this.currentProjection_ === "NONE") {
@@ -48976,52 +50461,56 @@
 
       this.player_.removeChild("BigPlayButton");
       this.player_.addChild("BigVrPlayButton", {}, this.bigPlayButtonIndex_);
-      this.player_.bigPlayButton = this.player_.getChild("BigVrPlayButton");
+      this.player_.bigPlayButton = this.player_.getChild("BigVrPlayButton"); // mobile devices, or cardboard forced to on
 
-      // mobile devices, or cardboard forced to on
       if (
         this.options_.forceCardboard ||
         videojs.browser.IS_ANDROID ||
         videojs.browser.IS_IOS
       ) {
         this.addCardboardButton_();
-      }
+      } // if ios remove full screen toggle
 
-      // if ios remove full screen toggle
-      if (videojs.browser.IS_IOS) {
+      if (
+        videojs.browser.IS_IOS &&
+        this.player_.controlBar &&
+        this.player_.controlBar.fullscreenToggle
+      ) {
         this.player_.controlBar.fullscreenToggle.hide();
       }
 
       this.camera.position.set(0, 0, 0);
       this.renderer = new WebGLRenderer({
-        devicePixelRatio: window_1.devicePixelRatio,
+        devicePixelRatio: window$1.devicePixelRatio,
         alpha: false,
         clearColor: 0xffffff,
         antialias: true,
       });
-
       var webglContext = this.renderer.getContext("webgl");
       var oldTexImage2D = webglContext.texImage2D;
-
       /* this is a workaround since threejs uses try catch */
-      webglContext.texImage2D = function () {
-        for (
-          var _len2 = arguments.length, args = Array(_len2), _key2 = 0;
-          _key2 < _len2;
-          _key2++
-        ) {
-          args[_key2] = arguments[_key2];
-        }
 
+      webglContext.texImage2D = function () {
         try {
+          for (
+            var _len2 = arguments.length, args = new Array(_len2), _key2 = 0;
+            _key2 < _len2;
+            _key2++
+          ) {
+            args[_key2] = arguments[_key2];
+          }
+
           return oldTexImage2D.apply(webglContext, args);
         } catch (e) {
-          _this3.reset();
-          _this3.player_.pause();
-          _this3.triggerError_({
+          _this4.reset();
+
+          _this4.player_.pause();
+
+          _this4.triggerError_({
             code: "web-vr-hls-cors-not-supported",
             dismiss: false,
           });
+
           throw new Error(e);
         }
       };
@@ -49032,158 +50521,207 @@
         false
       );
       this.effect = new VREffect(this.renderer);
-
       this.effect.setSize(
         this.player_.currentWidth(),
         this.player_.currentHeight(),
         false
       );
-      this.vrDisplay = null;
+      this.vrDisplay = null; // Previous timestamps for gamepad updates
 
-      // Previous timestamps for gamepad updates
       this.prevTimestamps_ = [];
-
       this.renderedCanvas = this.renderer.domElement;
       this.renderedCanvas.setAttribute(
         "style",
         "width: 100%; height: 100%; position: absolute; top:0;"
       );
+      var videoElStyle = this.getVideoEl_().style;
       this.player_
         .el()
         .insertBefore(this.renderedCanvas, this.player_.el().firstChild);
-      this.getVideoEl_().style.display = "none";
+      videoElStyle.zIndex = "-1";
+      videoElStyle.opacity = "0";
 
-      if (window_1.navigator.getVRDisplays) {
-        this.log("VR is supported, getting vr displays");
-        window_1.navigator.getVRDisplays().then(function (displays) {
+      if (window$1.navigator.getVRDisplays) {
+        this.log("is supported, getting vr displays");
+        window$1.navigator.getVRDisplays().then(function (displays) {
           if (displays.length > 0) {
-            _this3.log("VR Displays found", displays);
-            _this3.vrDisplay = displays[0];
+            _this4.log("Displays found", displays);
 
-            // Native WebVR Head Mounted Displays (HMDs) like the HTC Vive
+            _this4.vrDisplay = displays[0]; // Native WebVR Head Mounted Displays (HMDs) like the HTC Vive
             // also need the cardboard button to enter fully immersive mode
             // so, we want to add the button if we're not polyfilled.
-            if (!_this3.vrDisplay.isPolyfilled) {
-              _this3.log("Real HMD found using VRControls", _this3.vrDisplay);
-              _this3.addCardboardButton_();
 
-              // We use VRControls here since we are working with an HMD
+            if (!_this4.vrDisplay.isPolyfilled) {
+              _this4.log("Real HMD found using VRControls", _this4.vrDisplay);
+
+              _this4.addCardboardButton_(); // We use VRControls here since we are working with an HMD
               // and we only want orientation controls.
-              _this3.controls3d = new VRControls(_this3.camera);
+
+              _this4.controls3d = new VRControls(_this4.camera);
             }
           }
 
-          if (!_this3.controls3d) {
-            _this3.log("no HMD found Using Orbit & Orientation Controls");
-            _this3.controls3d = new OrbitOrientationControls({
-              camera: _this3.camera,
-              canvas: _this3.renderedCanvas,
+          if (!_this4.controls3d) {
+            _this4.log("no HMD found Using Orbit & Orientation Controls");
+
+            var options = {
+              camera: _this4.camera,
+              canvas: _this4.renderedCanvas,
+              // check if its a half sphere view projection
+              halfView: _this4.currentProjection_.indexOf("180") === 0,
               orientation:
                 videojs.browser.IS_IOS || videojs.browser.IS_ANDROID || false,
-            });
+            };
+
+            if (_this4.options_.motionControls === false) {
+              options.orientation = false;
+            }
+
+            _this4.controls3d = new OrbitOrientationControls(options);
+            _this4.canvasPlayerControls = new CanvasPlayerControls(
+              _this4.player_,
+              _this4.renderedCanvas,
+              _this4.options_
+            );
           }
-          _this3.animationFrameId_ = _this3.requestAnimationFrame(
-            _this3.animate_
+
+          _this4.animationFrameId_ = _this4.requestAnimationFrame(
+            _this4.animate_
           );
         });
-      } else if (window_1.navigator.getVRDevices) {
-        this.triggerError_({ code: "web-vr-out-of-date", dismiss: false });
+      } else if (window$1.navigator.getVRDevices) {
+        this.triggerError_({
+          code: "web-vr-out-of-date",
+          dismiss: false,
+        });
       } else {
-        this.triggerError_({ code: "web-vr-not-supported", dismiss: false });
+        this.triggerError_({
+          code: "web-vr-not-supported",
+          dismiss: false,
+        });
+      }
+
+      if (this.options_.omnitone) {
+        var audiocontext = AudioContext.getContext();
+        this.omniController = new OmnitoneController(
+          audiocontext,
+          this.options_.omnitone,
+          this.getVideoEl_(),
+          this.options_.omnitoneOptions
+        );
+        this.omniController.one("audiocontext-suspended", function () {
+          _this4.player.pause();
+
+          _this4.player.one("playing", function () {
+            audiocontext.resume();
+          });
+        });
       }
 
       this.on(this.player_, "fullscreenchange", this.handleResize_);
-      window_1.addEventListener(
+      window$1.addEventListener(
         "vrdisplaypresentchange",
         this.handleResize_,
         true
       );
-      window_1.addEventListener("resize", this.handleResize_, true);
-      window_1.addEventListener(
+      window$1.addEventListener("resize", this.handleResize_, true);
+      window$1.addEventListener(
         "vrdisplayactivate",
         this.handleVrDisplayActivate_,
         true
       );
-      window_1.addEventListener(
+      window$1.addEventListener(
         "vrdisplaydeactivate",
         this.handleVrDisplayDeactivate_,
         true
       );
-
       this.initialized_ = true;
+      this.trigger("initialized");
     };
 
-    VR.prototype.addCardboardButton_ = function addCardboardButton_() {
+    _proto.addCardboardButton_ = function addCardboardButton_() {
       if (!this.player_.controlBar.getChild("CardboardButton")) {
         this.player_.controlBar.addChild("CardboardButton", {});
       }
     };
 
-    VR.prototype.getVideoEl_ = function getVideoEl_() {
+    _proto.getVideoEl_ = function getVideoEl_() {
       return this.player_.el().getElementsByTagName("video")[0];
     };
 
-    VR.prototype.reset = function reset() {
+    _proto.reset = function reset() {
       if (!this.initialized_) {
         return;
       }
 
+      if (this.omniController) {
+        this.omniController.off("audiocontext-suspended");
+        this.omniController.dispose();
+        this.omniController = undefined;
+      }
+
       if (this.controls3d) {
         this.controls3d.dispose();
+        this.controls3d = null;
       }
+
+      if (this.canvasPlayerControls) {
+        this.canvasPlayerControls.dispose();
+        this.canvasPlayerControls = null;
+      }
+
       if (this.effect) {
         this.effect.dispose();
+        this.effect = null;
       }
 
-      window_1.removeEventListener("resize", this.handleResize_);
-      window_1.removeEventListener(
+      window$1.removeEventListener("resize", this.handleResize_, true);
+      window$1.removeEventListener(
         "vrdisplaypresentchange",
-        this.handleResize_
+        this.handleResize_,
+        true
       );
-      window_1.removeEventListener(
+      window$1.removeEventListener(
         "vrdisplayactivate",
-        this.handleVrDisplayActivate_
+        this.handleVrDisplayActivate_,
+        true
       );
-      window_1.removeEventListener(
+      window$1.removeEventListener(
         "vrdisplaydeactivate",
-        this.handleVrDisplayDeactivate_
-      );
+        this.handleVrDisplayDeactivate_,
+        true
+      ); // re-add the big play button to player
 
-      // re-add the big play button to player
       if (!this.player_.getChild("BigPlayButton")) {
         this.player_.addChild("BigPlayButton", {}, this.bigPlayButtonIndex_);
       }
 
       if (this.player_.getChild("BigVrPlayButton")) {
         this.player_.removeChild("BigVrPlayButton");
-      }
+      } // remove the cardboard button
 
-      // remove the cardboard button
       if (this.player_.getChild("CardboardButton")) {
         this.player_.controlBar.removeChild("CardboardButton");
-      }
+      } // show the fullscreen again
 
-      // show the fullscreen again
-      if (videojs.browser.IS_IOS) {
+      if (
+        videojs.browser.IS_IOS &&
+        this.player_.controlBar &&
+        this.player_.controlBar.fullscreenToggle
+      ) {
         this.player_.controlBar.fullscreenToggle.show();
-      }
+      } // reset the video element style so that it will be displayed
 
-      // reset the video element style so that it will be displayed
-      this.getVideoEl_().style.display = "";
+      var videoElStyle = this.getVideoEl_().style;
+      videoElStyle.zIndex = "";
+      videoElStyle.opacity = ""; // set the current projection to the default
 
-      // set the current projection to the default
-      this.currentProjection_ = this.defaultProjection_;
+      this.currentProjection_ = this.defaultProjection_; // reset the ios touch to click workaround
 
-      if (this.observer_) {
-        this.observer_.disconnect();
-      }
-
-      // reset the ios touch to click workaround
       if (this.iosRevertTouchToClick_) {
         this.iosRevertTouchToClick_();
-      }
+      } // remove the old canvas
 
-      // remove the old canvas
       if (this.renderedCanvas) {
         this.renderedCanvas.parentNode.removeChild(this.renderedCanvas);
       }
@@ -49195,12 +50733,13 @@
       this.initialized_ = false;
     };
 
-    VR.prototype.dispose = function dispose() {
+    _proto.dispose = function dispose() {
       _Plugin.prototype.dispose.call(this);
+
       this.reset();
     };
 
-    VR.prototype.polyfillVersion = function polyfillVersion() {
+    _proto.polyfillVersion = function polyfillVersion() {
       return WebVRPolyfill.version;
     };
 
@@ -49209,9 +50748,7 @@
 
   VR.prototype.setTimeout = Component.prototype.setTimeout;
   VR.prototype.clearTimeout = Component.prototype.clearTimeout;
-
   VR.VERSION = version;
-
   videojs.registerPlugin("vr", VR);
 
   return VR;
