@@ -30,7 +30,11 @@ from django.contrib.sites.shortcuts import get_current_site
 LINK_SUPERPOSITION = getattr(settings, "LINK_SUPERPOSITION", False)
 ACTION = ["new", "save", "modify", "delete"]
 CAPTION_MAKER_ACTION = ["save"]
-LANG_CHOICES = getattr(settings, "LANG_CHOICES", ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)), )
+LANG_CHOICES = getattr(
+    settings,
+    "LANG_CHOICES",
+    ((" ", PREF_LANG_CHOICES), ("----------", ALL_LANG_CHOICES)),
+)
 LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOICES[1][1]}
 
 
@@ -60,7 +64,7 @@ def video_caption_maker(request, slug):
         return eval("video_caption_maker_{0}".format(action))(request, video)
     else:
         track_language = LANGUAGE_CODE
-        captionFileId = request.GET.get('src')
+        captionFileId = request.GET.get("src")
         if captionFileId:
             captionFile = CustomFileModel.objects.filter(id=captionFileId).first()
             if captionFile:
@@ -103,7 +107,7 @@ def video_caption_maker_save(request, video):
             else:
                 Track(
                     video=video,
-                    kind='captions',
+                    kind="captions",
                     lang=lang,
                     src=captFile,
                 ).save()

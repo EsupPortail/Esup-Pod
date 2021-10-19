@@ -528,7 +528,11 @@ def file_edit_save(request, folder):
             request,
         )
 
-        list_element = {"list_element": rendered, "folder_id": folder.id, "file_id": customfile.id}
+        list_element = {
+            "list_element": rendered,
+            "folder_id": folder.id,
+            "file_id": customfile.id,
+        }
         data = json.dumps(list_element)
         return HttpResponse(data, content_type="application/json")
     else:
