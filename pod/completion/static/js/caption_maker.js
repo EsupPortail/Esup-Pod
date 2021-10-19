@@ -21,11 +21,10 @@ $(document).ready(function () {
       csrfmiddlewaretoken: Cookies.get("csrftoken"),
     };
     send_form_data(url, data, "ProcessProxyVttResponse");
-  }
-  else {
+  } else {
     $("#captionFilename").val(`${file_prefix}_captions_${Date.now()}`);
   }
-  
+
   let placeholder = gettext(
     "WEBVTT\n\nstart time(00:00.000) --> end time(00:00.000)\ncaption text"
   );
@@ -37,10 +36,12 @@ $(document).ready(function () {
       .substring(this.selectionStart, this.selectionEnd);
     playSelectedCaption(selectedText.trim());
   });
-  
-  captionContent.bind('input propertychange', function () {
+
+  captionContent.bind("input propertychange", function () {
     captionsArray.length = 0;
-    $(".newEditorBlock").each(function() {this.remove()});
+    $(".newEditorBlock").each(function () {
+      this.remove();
+    });
     if (this.value.match(/^WEBVTT/)) {
       ParseAndLoadWebVTT(this.value);
     } else {
@@ -52,8 +53,7 @@ $(document).ready(function () {
 $(document).on("submit", "#form_save_captions", function (e) {
   e.preventDefault();
 
-  if (!oldModeSelected)
-    $("#captionContent").val(GenerateWEBVTT());
+  if (!oldModeSelected) $("#captionContent").val(GenerateWEBVTT());
 
   if ($("#captionContent").val().trim() === "") {
     showalert(gettext("There is no captions to save"), "alert-danger");
@@ -68,9 +68,8 @@ $(document).on("submit", "#form_save_captions", function (e) {
 });
 
 $(document).on("click", "#modal-btn-new, #modal-btn-override", function () {
-  if (!oldModeSelected)
-    $("#captionContent").val(GenerateWEBVTT());
-  
+  if (!oldModeSelected) $("#captionContent").val(GenerateWEBVTT());
+
   $("#saveCaptionsModal").modal("hide");
   if (this.id == "modal-btn-override") {
     $("#form_save_captions").find('input[name="file_id"]').val(file_loaded_id);
@@ -83,7 +82,7 @@ $(document).on("click", "#modal-btn-new, #modal-btn-override", function () {
 });
 
 const send_form_save_captions = function () {
-  let fileName = $("#captionFilename").val()
+  let fileName = $("#captionFilename").val();
   if (fileName.length == 0) {
     fileName = `${file_prefix}_captions_${Date.now()}`;
   }
@@ -158,8 +157,7 @@ let shortcutsDisplayed = false;
 $("#showShortcutTips").on("click", function (e) {
   if (shortcutsDisplayed) {
     $("#shortcutsBlock").hide();
-  }
-  else {
+  } else {
     $("#shortcutsBlock").show();
   }
 
@@ -169,7 +167,11 @@ $("#showShortcutTips").on("click", function (e) {
 $("#addSubtitle").on("click", function (e) {
   var playTime = $("#podvideoplayer").get(0).player.currentTime();
   var captionsEndTime = existingCaptionsEndTime();
-  AddCaption(captionsEndTime, playTime > captionsEndTime ? playTime : parseInt(captionsEndTime) + 2, "");
+  AddCaption(
+    captionsEndTime,
+    playTime > captionsEndTime ? playTime : parseInt(captionsEndTime) + 2,
+    ""
+  );
 });
 
 $("#clearAllCaptions").on("click", function (e) {
@@ -184,7 +186,9 @@ $("#clearAllCaptions").on("click", function (e) {
     $("#captionContent").val("");
     $("#captionTitle").html("&nbsp;");
     $("#textCaptionEntry").val("");
-    $(".newEditorBlock").each(function() {this.remove()});
+    $(".newEditorBlock").each(function () {
+      this.remove();
+    });
   }
 });
 
@@ -235,7 +239,9 @@ function existingCaptionsEndTime() {
 let updateCaptionsArray = (vtt) => {
   let arr = vtt.split("\n\n");
   captionsArray = [];
-  $(".newEditorBlock").each(function() {this.remove()});
+  $(".newEditorBlock").each(function () {
+    this.remove();
+  });
   arr.forEach((text) => {
     if (text.trim().toLowerCase() !== "webvtt") {
       let data = text.split("\n");
@@ -366,19 +372,16 @@ $("#pauseButton").on("click", function () {
 
 function GenerateWEBVTT() {
   let vtt = "";
-  $("#newCaptionsEditor > .newEditorBlock").each(function() {
+  $("#newCaptionsEditor > .newEditorBlock").each(function () {
     let captionText = this.querySelector(".captionTextInput").value;
     let startTime = this.querySelector(".startTimeBtn").text;
     let endTime = this.querySelector(".endTimeBtn").text;
 
-    vtt += `\n\n${startTime} --> ${endTime}\n${
-      captionText
-    }`;
-  })
+    vtt += `\n\n${startTime} --> ${endTime}\n${captionText}`;
+  });
 
-  if (vtt.length > 0)
-    vtt = "WEBVTT" + vtt;
-  
+  if (vtt.length > 0) vtt = "WEBVTT" + vtt;
+
   return vtt;
 }
 
@@ -406,7 +409,7 @@ $("#saveCaptionAndPlay").on("click", function () {
 });
 
 $("#textCaptionEntry").keypress(function (e) {
-  var code = e.keyCode ?? e.which
+  var code = e.keyCode ?? e.which;
   if (code == 13 && !e.shiftKey) {
     $("#saveCaptionAndPlay").click();
     return false;
@@ -438,21 +441,27 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
   let captionText = newCaption.caption;
   let start = FormatTime(newCaption.start);
   let end = FormatTime(newCaption.end);
-  
+
   let block = {
     // parent
     div: $(`<div class='newEditorBlock'></div>`),
 
     // circle buttons
     buttonsDiv: $("<div class='captionButtons'></div>"),
-    insertBtn: $(`<button><i data-feather='plus' width='28px' height='28px'></i></button>`),
-    deleteBtn: $(`<button><i data-feather='x' width='28px' height='28px'></i></button>`),
+    insertBtn: $(
+      `<button><i data-feather='plus' width='28px' height='28px'></i></button>`
+    ),
+    deleteBtn: $(
+      `<button><i data-feather='x' width='28px' height='28px'></i></button>`
+    ),
 
     // textarea
     captionTextInput: $(`<textarea class='captionTextInput'></textarea>`),
 
     // time editable
-    timeBlockEditable: $(`<div class='captionTimestamps' style='display:none'></div>"`),
+    timeBlockEditable: $(
+      `<div class='captionTimestamps' style='display:none'></div>"`
+    ),
     startTimeInput: $(`<input type='text'>`),
     endTimeInput: $(`<input type='text'>`),
 
@@ -465,19 +474,15 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
     isEditEnabled: false,
 
     // methods
-    enableEdit: function() {
+    enableEdit: function () {
       if (!this.isEditEnabled) {
         if (lastEditedBlock) {
           lastEditedBlock.disableEdit();
         }
 
-        this.startTimeInput.val(
-          this.startTimeBtn.text()
-        );
+        this.startTimeInput.val(this.startTimeBtn.text());
 
-        this.endTimeInput.val(
-          this.endTimeBtn.text()
-        );
+        this.endTimeInput.val(this.endTimeBtn.text());
 
         this.timeBlockEditable.css("display", "");
         this.timeBlock.css("display", "none");
@@ -489,7 +494,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
       }
     },
 
-    disableEdit: function() {
+    disableEdit: function () {
       if (this.isEditEnabled) {
         let newStartTime = ParseTime(this.startTimeInput.val());
         let newEndTime = ParseTime(this.endTimeInput.val());
@@ -508,11 +513,12 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
       }
     },
 
-    spawnNew: function() {
+    spawnNew: function () {
       let playTime = $("#podvideoplayer").get(0).player.currentTime();
       let captionObj = {
         start: newCaption.end,
-        end: playTime > newCaption.end ? playTime : parseInt(newCaption.end) + 2,
+        end:
+          playTime > newCaption.end ? playTime : parseInt(newCaption.end) + 2,
         caption: "",
       };
 
@@ -520,12 +526,12 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
       CreateCaptionBlock(captionObj, (newDiv) => this.div.after(newDiv));
     },
 
-    delete: function() {
+    delete: function () {
       captionsArray.splice(this.div.index(), 1);
       this.div.remove();
     },
 
-    init: function() {
+    init: function () {
       this.div.captionBlockObject = this;
       this.captionTextInput.val(captionText);
 
@@ -541,49 +547,48 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
 
       this.div.append(
         this.buttonsDiv,
-        this.captionTextInput, 
-        this.timeBlock, 
+        this.captionTextInput,
+        this.timeBlock,
         this.timeBlockEditable
       );
 
       this.startTimeInput.keypress((e) => {
-        if (e.which == 13)
-          this.disableEdit();
+        if (e.which == 13) this.disableEdit();
       });
 
       this.endTimeInput.keypress((e) => {
-        if (e.which == 13)
-          this.disableEdit();
+        if (e.which == 13) this.disableEdit();
       });
 
-      $(document).click((e) => { 
+      $(document).click((e) => {
         var target = $(e.target);
-        if (!target.closest(this.div).length) 
-          this.disableEdit();
+        if (!target.closest(this.div).length) this.disableEdit();
       });
-    }
-  }
+    },
+  };
 
   block.init();
 
   if (spawnFunction) {
     spawnFunction(block.div);
-  }
-  else {
+  } else {
     $("#addSubtitle").before(block.div);
   }
 
   feather.replace();
 
-  block.captionTextInput.bind("input propertychange", function() {
+  block.captionTextInput.bind("input propertychange", function () {
     captionsArray[block.div.index()].caption = this.value;
   });
-  
-  block.div.hover(function() {
-    highlightVideoRegion(newCaption.start, newCaption.end);
-  }, function() {
-    clearVideoRegion();
-  })
+
+  block.div.hover(
+    function () {
+      highlightVideoRegion(newCaption.start, newCaption.end);
+    },
+    function () {
+      clearVideoRegion();
+    }
+  );
 
   $("#noCaptionsText").remove();
 
@@ -591,13 +596,13 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
 }
 
 let editorShortcuts = {
-  "Delete": function(e) {
+  Delete: function (e) {
     if (e.altKey && lastEditedBlock) {
       lastEditedBlock.delete();
       return false;
     }
   },
-  "PageUp": function(e) {
+  PageUp: function (e) {
     if (lastEditedBlock) {
       let prev = lastEditedBlock.div.prev();
       if (prev) {
@@ -607,7 +612,7 @@ let editorShortcuts = {
       }
     }
   },
-  "PageDown": function(e) {
+  PageDown: function (e) {
     if (lastEditedBlock) {
       let next = lastEditedBlock.div.next();
       if (next) {
@@ -617,67 +622,65 @@ let editorShortcuts = {
       }
     }
   },
-  "ArrowLeft": function(e) {
+  ArrowLeft: function (e) {
     if (this.notFocused()) {
       seekVideo(-10);
       return false;
     }
   },
-  "ArrowRight": function(e) {
+  ArrowRight: function (e) {
     if (this.notFocused()) {
       seekVideo(10);
       return false;
     }
   },
-  " ": function(e) { // space
+  " ": function (e) {
+    // space
     if (this.notFocused()) {
-      let player = $("#podvideoplayer").get(0).player
-      if (player.paused())
-        player.play(); 
-      else 
-        player.pause();
+      let player = $("#podvideoplayer").get(0).player;
+      if (player.paused()) player.play();
+      else player.pause();
 
       return false;
     }
   },
-  "m": function(e) {
+  m: function (e) {
     if (this.notFocused()) {
-      let player = $("#podvideoplayer").get(0).player
+      let player = $("#podvideoplayer").get(0).player;
       player.muted(!player.muted());
       return false;
     }
   },
-  "?": function(e) {
+  "?": function (e) {
     if (this.notFocused()) {
       $("#showShortcutTips").click();
       return false;
     }
   },
-  "Insert": function(e) {
+  Insert: function (e) {
     if (lastEditedBlock) {
       lastEditedBlock.spawnNew();
-    }
-    else {
+    } else {
       $("#addSubtitle").click();
     }
 
     return false;
   },
 
-  notFocused: function() {
+  notFocused: function () {
     var focused = $(":focus");
     return focused.length == 0;
   },
 
-  init: function() {
+  init: function () {
     let self = this;
-    $(document).bind("keydown", function(e) {
+    $(document).bind("keydown", function (e) {
       if (self[e.key]) {
         return self[e.key](e);
       }
     });
-  }
-}
+  },
+};
 
 editorShortcuts.init();
 
@@ -710,7 +713,7 @@ function AddCaption(captionStart, captionEnd, captionText) {
     end: captionEnd,
     caption: captionText.trim(),
   };
-  
+
   captionsArray.push(newCaption);
   AddCaptionListRow(captionsArray.length - 1, newCaption);
 }
@@ -829,7 +832,9 @@ function LoadCaptionFile(fileObject) {
     try {
       reader.readAsText(fileObject);
     } catch (exc) {
-      alert(gettext("Exception thrown reading caption file. Code = ") + exc.code);
+      alert(
+        gettext("Exception thrown reading caption file. Code = ") + exc.code
+      );
     }
   } else {
     alert(gettext("Your browser does not support FileReader."));
@@ -846,10 +851,12 @@ function ProcessProxyVttResponse(obj) {
     file_loaded = true;
     file_loaded_id = obj.id_file;
     current_folder = obj.id_folder;
-    $(".newEditorBlock").each(function() {this.remove()});
+    $(".newEditorBlock").each(function () {
+      this.remove();
+    });
 
     // strip file extension and set as title
-    $("#captionFilename").val(obj.file_name.replace(/\.[^/.]+$/, ""))
+    $("#captionFilename").val(obj.file_name.replace(/\.[^/.]+$/, ""));
 
     if (obj.response.match(/^WEBVTT/)) {
       ParseAndLoadWebVTT(obj.response);
@@ -872,7 +879,9 @@ function ParseAndLoadWebVTT(vtt) {
     return;
   }
 
-  $(".newEditorBlock").each(function() {this.remove()});
+  $(".newEditorBlock").each(function () {
+    this.remove();
+  });
 
   var rxTimeLine = /^([\d\.:]+)\s+-->\s+([\d\.:]+)(?:\s.*)?$/;
   var rxCaptionLine = /^(?:<v\s+([^>]+)>)?([^\r\n]+)$/;
@@ -931,30 +940,29 @@ function ParseAndLoadWebVTT(vtt) {
   $("#captionContent").val(vtt);
 }
 
-// videojs region highlighting 
+// videojs region highlighting
 
 var highlightVideoRegion;
 var clearVideoRegion;
 
 const registerPlugin = videojs.registerPlugin || videojs.plugin;
 
-const onPlayerReady = function(player, options) {
+const onPlayerReady = function (player, options) {
   let startKeyframe;
   let endKeyframe;
   let regionHighlight;
-  
+
   const clearVideoRegion = () => {
+    startKeyframe?.remove();
 
-    startKeyframe?.remove()
+    endKeyframe?.remove();
 
-    endKeyframe?.remove()
-
-    regionHighlight?.remove()
+    regionHighlight?.remove();
 
     player.userActive(false);
-  }
+  };
 
-  highlightVideoRegion = function(startTime, endTime) {
+  highlightVideoRegion = function (startTime, endTime) {
     clearVideoRegion();
     player.userActive(true);
 
@@ -964,43 +972,47 @@ const onPlayerReady = function(player, options) {
     startPercent = Math.max(Math.min(startPercent, 100), 0);
     endPercent = Math.max(Math.min(endPercent, 100), 0);
 
-    startKeyframe = $(`<svg class='keyframe keyframe-left' xmlns="http://www.w3.org/2000/svg" width="6" height="11" viewBox="0 0 6 11">
+    startKeyframe =
+      $(`<svg class='keyframe keyframe-left' xmlns="http://www.w3.org/2000/svg" width="6" height="11" viewBox="0 0 6 11">
         <path id="Path_4" data-name="Path 4" d="M4.667,0H1.333A1.281,1.281,0,0,0,0,1.222V6.256L6,11V1.222A1.281,1.281,0,0,0,4.667,0Z" fill="#ad327a"/>
       </svg>`);
-    startKeyframe.css('left', `${startPercent}%`);
-    $(player.controlBar.progressControl.seekBar.playProgressBar.el_).before(startKeyframe);
+    startKeyframe.css("left", `${startPercent}%`);
+    $(player.controlBar.progressControl.seekBar.playProgressBar.el_).before(
+      startKeyframe
+    );
 
     regionHighlight = $("<div class='regionHighligh'></div>");
-    regionHighlight.css('left', `${startPercent}%`);
-    regionHighlight.css('width', `${endPercent - startPercent}%`);
+    regionHighlight.css("left", `${startPercent}%`);
+    regionHighlight.css("width", `${endPercent - startPercent}%`);
     startKeyframe.after(regionHighlight);
 
-    endKeyframe = $(`<svg class='keyframe keyframe-right' xmlns="http://www.w3.org/2000/svg" width="6" height="11" viewBox="0 0 6 11">
+    endKeyframe =
+      $(`<svg class='keyframe keyframe-right' xmlns="http://www.w3.org/2000/svg" width="6" height="11" viewBox="0 0 6 11">
         <path id="Path_5" data-name="Path 5" d="M1.333,0H4.667A1.281,1.281,0,0,1,6,1.222V6.256L0,11V1.222A1.281,1.281,0,0,1,1.333,0Z" fill="#ad327a"/>
       </svg>`);
-    endKeyframe.css('left', `${endPercent}%`);
+    endKeyframe.css("left", `${endPercent}%`);
     regionHighlight.after(endKeyframe);
-  }
+  };
 
-  seekVideoTo = function(time) {
+  seekVideoTo = function (time) {
     player.userActive(true);
     player.currentTime(time);
-  }
+  };
 
-  seekVideo = function(time) {
+  seekVideo = function (time) {
     player.userActive(true);
     player.currentTime(player.currentTime() + time);
-  }
+  };
 };
 
-const timelineRegions = function(options) {
-  this.ready(function() {
+const timelineRegions = function (options) {
+  this.ready(function () {
     onPlayerReady(this, options);
   });
 };
 
-registerPlugin('timelineRegions', timelineRegions);
+registerPlugin("timelineRegions", timelineRegions);
 
-videojs.hook('setup', function(player) {
+videojs.hook("setup", function (player) {
   player.timelineRegions();
 });
