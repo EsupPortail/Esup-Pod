@@ -366,10 +366,10 @@ $("#pauseButton").on("click", function () {
 
 function GenerateWEBVTT() {
   let vtt = "";
-  $('#newCaptionsEditor > .newEditorBlock').each(function() {
-    let captionText = this.querySelector('textarea').value;
-    let startTime = this.querySelectorAll('a')[0].text;
-    let endTime = this.querySelectorAll('a')[1].text;
+  $("#newCaptionsEditor > .newEditorBlock").each(function() {
+    let captionText = this.querySelector(".captionTextInput").value;
+    let startTime = this.querySelector(".startTimeBtn").text;
+    let endTime = this.querySelector(".endTimeBtn").text;
 
     vtt += `\n\n${startTime} --> ${endTime}\n${
       captionText
@@ -449,7 +449,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
     deleteBtn: $(`<button><i data-feather='x' width='28px' height='28px'></i></button>`),
 
     // textarea
-    captionTextInput: $(`<textarea></textarea>`),
+    captionTextInput: $(`<textarea class='captionTextInput'></textarea>`),
 
     // time editable
     timeBlockEditable: $(`<div class='captionTimestamps' style='display:none'></div>"`),
@@ -458,8 +458,8 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
 
     // time links
     timeBlock: $(`<div class='captionTimestamps'></div>`),
-    startTimeBtn: $(`<a href='#'>${start}</a>`),
-    endTimeBtn: $(`<a href='#'>${end}</a>`),
+    startTimeBtn: $(`<a class='startTimeBtn' href='#'>${start}</a>`),
+    endTimeBtn: $(`<a class='endTimeBtn' href='#'>${end}</a>`),
 
     // flags
     isEditEnabled: false,
