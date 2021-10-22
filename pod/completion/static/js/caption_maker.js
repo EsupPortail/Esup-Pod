@@ -176,10 +176,7 @@ $("#addSubtitle").on("click", function (e) {
 
 $("#clearAllCaptions").on("click", function (e) {
   e.preventDefault();
-  let deleteConfirm = confirm(
-    gettext("Are you sure you want to delete all caption?")
-  );
-  if (deleteConfirm) {
+  if (confirm(gettext("Are you sure you want to delete all caption?"))) {
     captionsArray.length = 0;
     autoPauseAtTime = -1;
 
@@ -664,6 +661,16 @@ let editorShortcuts = {
       $("#addSubtitle").click();
     }
 
+    return false;
+  },
+  "s": function(e) {
+    if (e.ctrlKey) {
+      $("#justSaveCaption").click();
+      return false;
+    }
+  },
+  "End": function(e) {
+    $("#saveCaptionAndPlay").click();
     return false;
   },
 
