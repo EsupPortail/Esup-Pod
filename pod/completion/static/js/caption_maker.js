@@ -965,7 +965,6 @@ function ParseAndLoadWebVTT(vtt) {
     }
   }
   appendCurrentCaption();
-  $("#captionContent").val("");
   $("#captionContent").val(vtt);
 }
 
