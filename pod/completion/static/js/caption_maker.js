@@ -326,6 +326,10 @@ function videoTimeUpdateEventHandler() {
         FormatTime(playTime) +
         ":"
     );
+
+    let divs = document.querySelectorAll(".vjs-text-track-display div");
+    divs[divs.length - 1].innerText = '';
+
     if (captionBeingDisplayed != -1) {
       $("#textCaptionEntry").val("");
       captionBeingDisplayed = -1;
