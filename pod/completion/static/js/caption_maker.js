@@ -127,6 +127,8 @@ $("#podvideoplayer").on("error", function (event) {
   var vh = $(this).height();
 
   // error handling straight from the HTML5 video spec (http://dev.w3.org/html5/spec-author-view/video.html)
+  if (!event.originalEvent.target.error) return;
+
   switch (event.originalEvent.target.error.code) {
     case event.originalEvent.target.error.MEDIA_ERR_ABORTED:
       $("#videoError").text("You aborted the video playback.");
@@ -501,8 +503,32 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
         this.timeBlock.css("display", "");
         this.div.removeClass("captionBeingEdited");
 
+        this.placeInOrder();
+
         this.isEditEnabled = false;
       }
+    },
+
+    placeInOrder: function() {
+      for (let i in captionsArray) {
+        let cap = captionsArray[i];
+        if (cap.start > newCaption.start) {
+          // move caption object in captionsArray
+          let fromI = this.div.index();
+          let toI = fromI < i ? i - 1 : i;
+          captionsArray.splice(fromI, 1);
+          captionsArray.splice(toI, 0, newCaption);
+
+          // move the element in DOM
+          this.div.detach().insertBefore(cap.blockObject.div);
+          return;
+        }
+      }
+
+      // if this caption is the last, move it to the end
+      captionsArray.splice(this.div.index(), 1);
+      captionsArray.push(newCaption);
+      $("#addSubtitle").before(this.div);
     },
 
     spawnNew: function() {
@@ -562,6 +588,7 @@ function CreateCaptionBlock(newCaption, spawnFunction) {
   }
 
   block.init();
+  newCaption.blockObject = block;
 
   if (spawnFunction) {
     spawnFunction(block.div);
@@ -736,7 +763,7 @@ function hmsToSecondsOnly(str) {
 // parses webvtt time string format into floating point seconds
 function ParseTime(sTime) {
   let seconds = hmsToSecondsOnly(sTime);
-  return seconds + "." + (sTime.split(".")[1] || 0);
+  return parseFloat(seconds + "." + (sTime.split(".")[1] || 0));
   /*//  parse time formatted as hours:mm:ss.sss where hours are optional
     if (sTime) {
         if (m != null) {
@@ -950,7 +977,7 @@ const onPlayerReady = function(player, options) {
   let endKeyframe;
   let regionHighlight;
   
-  const clearVideoRegion = () => {
+  clearVideoRegion = () => {
 
     startKeyframe?.remove()
 
