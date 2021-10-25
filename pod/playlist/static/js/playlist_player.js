@@ -1,5 +1,4 @@
 let PlaylistPlayer = {
-  staticdir: null,
   invalid_feedback_value: "Please provide a valid value for this field",
   invalid_feedback_password: "The password is incorrect.",
   getParameters: function() {
@@ -16,7 +15,7 @@ let PlaylistPlayer = {
       .children(".vdata")
       .text(this.current_position);
   },
-  setCurrent: function(position) {
+  setCurrent: function(position) { // console.log('Inn set current: '+$(this.elements[this.current_position-1]).parent().children(".vdata").data('info')+'\n'+this.chevron_up)
     this.current_position = position
     $(this.elements[this.current_position-1]).parent().addClass("on");
     $(this.elements[this.current_position-1])
@@ -29,11 +28,16 @@ let PlaylistPlayer = {
       .data("info")
         , vurl = this.elements[this.current_position-1].children[1].children[0].href
     history.pushState( {title: vtitle}, "", vurl );
-    this.titlectn.innerHTML = vtitle
+    // this.titlectns.each(function() {
+    //   console.log('ctn: '+$(this)[0]+' ---- '+vtitle)
+    // })
+    for(let c in this.titlectns) { console.log('vtitle: '+this.titlectns[c]+'\n'+this.titlectns[c].innerHTML)
+      this.titlectns[c].innerHTML = vtitle
+    }
   },
   onPlayerEnd: function () {
     const _this = this
-    console.log('On player end current_position : '+this.current_position)
+    // console.log('On player end current_position : '+this.current_position)
     if (this.current_position != this.length || this.loop_on) {
       if (this.current_position != this.length) {
         this.loadVideo(this.current_position + 1)
@@ -117,9 +121,8 @@ let PlaylistPlayer = {
     });
   },
   init: function (o) {
-    this.staticdir = o.static;
     this.version = o.version;
-    this.current_element = o.current_element;
+    // this.current_element = o.current_element;
     this.current_position = o.current_position;
     this.length = o.length;
     this.baseurl = o.baseurl;
@@ -127,11 +130,11 @@ let PlaylistPlayer = {
     this.is_360 = o.is_360;
     this.vjsLogo = o.vjsLogo;
     this.formctn = o.formctn;
-    this.titlectn = o.vtitlectn;
+    this.titlectns = o.vtitlectns;
     this.headFiles.set(o.head_files);
     this.controls = o.controls;
     this.strings = o.strings ? o.strings : this.strings;
-    this.chevron_up = $(this.current_element)
+    this.chevron_up = $(o.elements[o.current_position-1])//$('.playlist-videos div.row .on .card')
       .parent()
       .children(".vdata")
       .html();
@@ -172,10 +175,23 @@ let PlaylistPlayer = {
       this.controls[c].onclick = toogleOption;
     }
 
-    let p = 1
-    $('.playlist-videos div.row .card').each(function() {
-      _this.elements.push(this)
-      $(this).find('a').data('position', p).on('click', function(e) {
+    // let p = 1
+    // $(o.elements).each(function() {
+    //   _this.elements.push(this)
+    //   $(this).find('a').data('position', p).on('click', function(e) {
+    //     if($(this).data('position') == _this.current_position) {
+    //       e.preventDefault();//e.stopPropagation();
+    //       player.play()
+    //     } else /*if(_this.auto_on)*/{
+    //       e.preventDefault();//e.stopPropagation();
+    //       _this.loadVideo($(this).data('position'))
+    //     }
+    //   })
+    //   p++;
+    // })
+    for(let i = 0, p = 1, nbe = o.elements.length; i < nbe; i++, p++) {
+      _this.elements.push(o.elements[i])
+      $(o.elements[i]).find('a').data('position', p).on('click', function(e) {
         if($(this).data('position') == _this.current_position) {
           e.preventDefault();//e.stopPropagation();
           player.play()
@@ -184,8 +200,7 @@ let PlaylistPlayer = {
           _this.loadVideo($(this).data('position'))
         }
       })
-      p++;
-    })
+    }
     player.on("ended", function () {
       _this.onPlayerEnd();
     });
