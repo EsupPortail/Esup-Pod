@@ -505,7 +505,7 @@ function overlaptest() {
         $(this).attr("data-title") +
         '"';
       text += ", " + gettext("please change start and/or end values.");
-      msg += '<div class="alert alert-warning">' + text + '</div>';
+      msg += '<div class="alert alert-warning">' + text + "</div>";
     }
   });
   if (msg) {

@@ -41,6 +41,10 @@
 <meta name="twitter:player:width" content="640">
 <meta name="twitter:player:height" content="360">
 
+{% if video.is_draft == True %}
+  <meta name="robots" content="NONE,NOARCHIVE">
+{%endif%}
+
 {% endblock %}
 
 {% block page_extra_head %}

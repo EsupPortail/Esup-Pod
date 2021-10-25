@@ -48,11 +48,41 @@ textarea {
     border-radius: 4px;
 }
 
+.shortcutKey {
+    display: inline-block;
+    border: 2px solid #222;
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-weight: 600;
+    margin-right: 8px;
+    margin-left: 8px;
+    min-width: 35px;
+    text-align: center;
+}
+
+.shortcutKey svg {
+    transform: translateY(-2px);
+}
+
 /* the list of captions */
 .gray_no_video{
     display: flex;
     flex-wrap: wrap;
+    border-top: 1px solid #E1E1E1;
 }
+
+.videoSection {
+    float: left;  
+    min-height: 425px;
+    width: 49%;
+    padding: 24px 0px;
+    padding-right: 24px;
+}
+
+.caption_content {
+    border-left: 1px solid #E1E1E1;
+}
+
 .caption_content .caption_title{
    display: flex;
    position: relative;
@@ -79,9 +109,165 @@ textarea {
     line-height: 1.4;
 }
 
+.captions_editor {
+    height: 470px; 
+    overflow: auto; 
+    resize: none; 
+    width: 100%;
+    padding: 0;
+}
+
+#newCaptionsEditor {
+    margin-bottom: 6px;
+}
+
+.newEditorBlock {
+    border-bottom: 1px solid #E1E1E1;
+    padding: 8px;
+    transition: 0.2s;
+}
+
+.newEditorBlock:hover {
+    background-color: rgba(223, 230, 246, 0.4);
+}
+
+.newEditorBlock > textarea {
+    width: 77%;
+    height: 80px;
+    border-style: hidden;
+    background-color: transparent;
+    padding: 8px;
+    transition: 0.4s;
+}
+
+.captionBeingEdited {
+    border-left: 3px solid var(--primary);
+    background-color: rgba(223, 230, 246, 0.4);
+}
+
+.captionBeingEdited > textarea {
+    border: 1px solid var(--primary);
+    border-radius: 4px;
+    background-color: #FFF5FB;
+}
+
+.captionTimestamps {
+    float: right;
+    line-height: 32px;
+}
+
+.newEditorBlock a {
+    margin: 6px 0px;
+    max-width: 78px;
+    display: block;
+    color: #3EA6FF;
+    font-weight: 400;
+}
+
+.newEditorBlock input {
+    margin: 6px 0px;
+    max-width: 78px;
+    height: 32px;
+    padding: 0;
+    display: block;
+    padding: 0px 2px;
+}
+
+.captionButtons {
+    float: left;
+}
+
+.captionButtons button {
+    margin: 9px 2px 2px 2px;
+    display: block;
+    left: 0px;
+    left: 16px;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0px 0px 4px rgba(0,0,0,.15);
+    transition: 0.2s;
+}
+
+.captionButtons button:hover {
+    background: var(--primary);
+}
+
+.captionButtons button:hover svg {
+    color: #fff;
+}
+
+.captionButtons svg{
+    color: #707070;
+    margin: 0;
+}
+
+#addSubtitle svg {
+    color: var(--link-color);
+}
+
+.makerNavbarRight {
+    float: right;
+}
+
+@media only screen and (max-width: 1000px) {
+    .makerNavbarRight {
+        float: none;
+    }
+}
+
+#captionFilename {
+    width: 280px;
+    margin-left: 32px;
+    transform: translateY(-4px);
+    border-top-style: hidden;
+    border-right-style: hidden;
+    border-left-style: hidden;
+    border-bottom-style: groove;
+    background-color: transparent;
+}
+
+#switchOldEditMode {
+    margin-bottom: 8px;
+}
+
+#captionLanguageSelect {
+    margin-right: 10px;
+    height: 31px;
+    width: 120px;
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 20px;
+}
+
+#captionLanguageSelect:hover {
+    cursor: pointer;
+}
+
+#captionLanguageSelect option {
+    color: black;
+    text-align: left;
+    font-size: 16px;
+}
+
 #captionmakerModal.save > .modal-dialog {
     max-width: 1000px;
 }
+
+#editorTipsAndGoBack {
+    width: 100%; 
+    clear: both; 
+    padding-top: 24px; 
+    padding-bottom: 24px; 
+    display: block;
+    border-top: 1px solid #E1E1E1;
+}
+
 @media only screen and (max-width: 800px){
     .gray_no_video{
         display: flex;
@@ -96,4 +282,43 @@ textarea {
 	margin-bottom: 1em;
 	min-height: unset !important;
     }
+
+    .newEditorBlock > textarea {
+        width: 60%;
+    }
+}
+
+.keyframe {
+    position: absolute;
+    z-index: 2;
+    height: 11px;
+}
+
+.keyframe-left {
+    transform: translate(-6px, -11px);
+}
+
+.keyframe-right {
+    transform: translate(0px, -11px);
+}
+
+.regionHighligh {
+    position: absolute;
+    z-index: 1;
+    background-color: rgba(173, 50, 122, 0.5);
+    height: 3px;
+}
+
+::-webkit-scrollbar {
+    padding: 2px;
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: none;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 2px;
 }

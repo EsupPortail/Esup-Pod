@@ -1,28 +1,35 @@
-"""
-Unit tests for main views
+"""Unit tests for main views.
+
+*  run with 'python manage.py test pod.main.tests.test_views'
 """
 from django.test import override_settings
 from django.test import TestCase
 from django.test import Client
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from captcha.models import CaptchaStore
+from http import HTTPStatus
 from pod.main.models import Configuration
 import tempfile
 import os
 
 
 class MainViewsTestCase(TestCase):
+    """Main views test cases."""
+
     fixtures = [
         "initial_data.json",
     ]
 
     def setUp(self):
+        """Create fictive user who will make tests."""
         User.objects.create(username="pod", password="podv2")
-        print(" --->  SetUp of MainViewsTestCase : OK !")
+        print(" --->  SetUp of MainViewsTestCase: OK!")
 
     @override_settings(MEDIA_ROOT=tempfile.gettempdir())
     def test_download_file(self):
+        """Test download folder."""
         self.client = Client()
 
         # GET method is used
@@ -42,12 +49,13 @@ class MainViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-        print("   --->  download_file of mainViewsTestCase : OK !")
+        print("   --->  download_file of mainViewsTestCase: OK!")
 
     def test_contact_us(self):
+        """Test the "contact us" form."""
         self.client = Client()
 
-        # GET method is used
+        # GET method is used.
         response = self.client.get("/contact_us/")
         self.assertTemplateUsed(response, "contact_us.html")
 
@@ -69,9 +77,9 @@ class MainViewsTestCase(TestCase):
         )
         messages = list(response.wsgi_request._messages)
         self.assertEqual(len(messages), 1)
-        self.assertEqual(str(messages[0]), u"Your message have been sent.")
+        self.assertEqual(str(messages[0]), _("Your message has been sent."))
         self.assertRedirects(response, "http://localhost:8000/")
-        print("   --->  test_contact_us of mainViewsTestCase : OK !")
+        print("   --->  test_contact_us of mainViewsTestCase: OK!")
         # Form is not valid
         #  /!\  voir fonction clean de ContactUsForm segment if
         response = self.client.post(
@@ -88,11 +96,11 @@ class MainViewsTestCase(TestCase):
         messages = list(response.wsgi_request._messages)
         self.assertEqual(len(messages), 1)
         self.assertEqual(
-            str(messages[0]), u"One or more errors have been found in the form."
+            str(messages[0]), _("One or more errors have been found in the form.")
         )
         self.assertTemplateUsed(response, "contact_us.html")
 
-        print("   --->  test_contact_us of mainViewsTestCase : OK !")
+        print("   --->  test_contact_us of mainViewsTestCase: OK!")
 
 
 class MaintenanceViewsTestCase(TestCase):
@@ -104,6 +112,7 @@ class MaintenanceViewsTestCase(TestCase):
         User.objects.create(username="pod", password="podv2")
 
     def test_maintenance(self):
+        """Test Pod maintenance mode."""
         self.client = Client()
         self.user = User.objects.get(username="pod")
         self.client.force_login(self.user)
@@ -118,4 +127,23 @@ class MaintenanceViewsTestCase(TestCase):
         response = self.client.get("/video_edit/")
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, "/maintenance/")
-        print("   --->  test_maintenance of MaintenanceViewsTestCase : OK !")
+        print("   --->  test_maintenance of MaintenanceViewsTestCase: OK!")
+
+
+class RobotsTxtTests(TestCase):
+    """Robots.txt test cases."""
+
+    def test_robots_get(self):
+        """Test if we get a robot.txt file."""
+        response = self.client.get("/robots.txt")
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response["content-type"], "text/plain")
+        lines = response.content.decode().splitlines()
+        self.assertEqual(lines[0], "User-Agent: *")
+
+    def test_robots_post_disallowed(self):
+        """Test if POST method is disallowed when getting robot.txt file."""
+        response = self.client.post("/robots.txt")
+
+        self.assertEqual(HTTPStatus.METHOD_NOT_ALLOWED, response.status_code)

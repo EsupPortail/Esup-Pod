@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Esup-Pod\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-28 15:16+0200\n"
+"POT-Creation-Date: 2021-10-14 19:18+0000\n"
 "PO-Revision-Date: 2021-01-22 12:27+0100\n"
 "Last-Translator: obado <bado@unice.fr>\n"
 "Language-Team: \n"
@@ -92,20 +92,46 @@ msgid ""
 "caption text"
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:41
+#: pod/completion/static/js/caption_maker.js:42
+#: pod/completion/static/js/caption_maker.js:740
+msgid "Unrecognized caption file format."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:54
 msgid "There is no captions to save"
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:90
+#: pod/completion/static/js/caption_maker.js:85
+#: pod/completion/static/js/caption_maker.js:754
+msgid "Not a valid time track file."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:106
 msgid "error during exchange"
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:94
+#: pod/completion/static/js/caption_maker.js:110
 msgid "no data could be stored."
 msgstr ""
 
-#: pod/completion/static/js/caption_maker.js:134
+#: pod/completion/static/js/caption_maker.js:162
 msgid "Are you sure you want to delete all caption?"
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:713
+msgid "Error reading caption file. Code = "
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:719
+msgid "Exception thrown reading caption file. Code = "
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:722
+msgid "Your browser does not support FileReader."
+msgstr ""
+
+#: pod/completion/static/js/caption_maker.js:729
+msgid "Error loading caption file: "
 msgstr ""
 
 #: pod/completion/static/js/completion.js:175

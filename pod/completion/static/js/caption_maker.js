@@ -21,7 +21,10 @@ $(document).ready(function () {
       csrfmiddlewaretoken: Cookies.get("csrftoken"),
     };
     send_form_data(url, data, "ProcessProxyVttResponse");
+  } else {
+    $("#captionFilename").val(`${file_prefix}_captions_${Date.now()}`);
   }
+
   let placeholder = gettext(
     "WEBVTT\n\nstart time(00:00.000) --> end time(00:00.000)\ncaption text"
   );
@@ -33,10 +36,25 @@ $(document).ready(function () {
       .substring(this.selectionStart, this.selectionEnd);
     playSelectedCaption(selectedText.trim());
   });
+
+  captionContent.bind("input propertychange", function () {
+    captionsArray.length = 0;
+    $(".newEditorBlock").each(function () {
+      this.remove();
+    });
+    if (this.value.match(/^WEBVTT/)) {
+      ParseAndLoadWebVTT(this.value);
+    } else {
+      alert(gettext("Unrecognized caption file format."));
+    }
+  });
 });
 
 $(document).on("submit", "#form_save_captions", function (e) {
   e.preventDefault();
+
+  if (!oldModeSelected) $("#captionContent").val(GenerateWEBVTT());
+
   if ($("#captionContent").val().trim() === "") {
     showalert(gettext("There is no captions to save"), "alert-danger");
     return;
@@ -45,32 +63,39 @@ $(document).on("submit", "#form_save_captions", function (e) {
     $("#saveCaptionsModal").modal("show");
   } else {
     $(this).find('input[name="file_id"]').val("");
-    send_form_save_captions(`${file_prefix}_captions_${Date.now()}`);
+    send_form_save_captions();
   }
 });
 
 $(document).on("click", "#modal-btn-new, #modal-btn-override", function () {
+  if (!oldModeSelected) $("#captionContent").val(GenerateWEBVTT());
+
   $("#saveCaptionsModal").modal("hide");
   if (this.id == "modal-btn-override") {
     $("#form_save_captions").find('input[name="file_id"]').val(file_loaded_id);
     updateCaptionsArray($("#captionContent").val());
-    send_form_save_captions(file_loaded_name);
+    send_form_save_captions();
   } else if (this.id == "modal-btn-new") {
     $("#form_save_captions").find('input[name="file_id"]').val("");
-    send_form_save_captions(`${file_prefix}_captions_${Date.now()}`);
+    send_form_save_captions();
   }
 });
 
-var send_form_save_captions = function (name) {
+const send_form_save_captions = function () {
+  let fileName = $("#captionFilename").val();
+  if (fileName.length == 0) {
+    fileName = `${file_prefix}_captions_${Date.now()}`;
+  }
+
   rxSignatureLine = /^WEBVTT(?:\s.*)?$/;
   vttContent = $("#captionContent").val().trim();
   vttLines = vttContent.split(/\r\n|\r|\n/);
   if (!rxSignatureLine.test(vttLines[0])) {
-    alert("Not a valid time track file.");
+    alert(gettext("Not a valid time track file."));
     return;
   }
-  let n = name;
-  let f = new File([vttContent], n + ".vtt", { type: "text/vtt" });
+
+  let f = new File([vttContent], fileName + ".vtt", { type: "text/vtt" });
   let data_form = new FormData($("#form_save_captions")[0]);
   data_form.append("folder", current_folder);
   data_form.append("file", f);
@@ -128,18 +153,52 @@ $("#podvideoplayer").on("error", function (event) {
   $(this).css("display", "none");
 });
 
+let shortcutsDisplayed = false;
+$("#showShortcutTips").on("click", function (e) {
+  if (shortcutsDisplayed) {
+    $("#shortcutsBlock").hide();
+  } else {
+    $("#shortcutsBlock").show();
+  }
+
+  shortcutsDisplayed = !shortcutsDisplayed;
+});
+
+$("#addSubtitle").on("click", function (e) {
+  var playTime = $("#podvideoplayer").get(0).player.currentTime();
+  var captionsEndTime = existingCaptionsEndTime();
+  AddCaption(
+    captionsEndTime,
+    playTime > captionsEndTime ? playTime : parseInt(captionsEndTime) + 2,
+    ""
+  );
+});
+
 $("#clearAllCaptions").on("click", function (e) {
   e.preventDefault();
-  var deleteConfirm = confirm(
-    gettext("Are you sure you want to delete all caption?")
-  );
-  if (deleteConfirm) {
+  if (confirm(gettext("Are you sure you want to delete all caption?"))) {
     captionsArray.length = 0;
     autoPauseAtTime = -1;
+
     $("#captionContent").val("");
     $("#captionTitle").html("&nbsp;");
     $("#textCaptionEntry").val("");
+    $(".newEditorBlock").each(function () {
+      this.remove();
+    });
   }
+});
+
+let oldModeSelected = false;
+
+$("#switchOldEditMode").on("click", function (e) {
+  oldModeSelected = !oldModeSelected;
+
+  if (oldModeSelected) {
+    $("#captionContent").val(GenerateWEBVTT());
+  }
+  $("#captionContent").toggle(oldModeSelected);
+  $("#newCaptionsEditor").toggle(!oldModeSelected);
 });
 
 //  index into captionsArray of the caption being displayed. -1 if none.
@@ -177,15 +236,21 @@ function existingCaptionsEndTime() {
 let updateCaptionsArray = (vtt) => {
   let arr = vtt.split("\n\n");
   captionsArray = [];
+  $(".newEditorBlock").each(function () {
+    this.remove();
+  });
   arr.forEach((text) => {
     if (text.trim().toLowerCase() !== "webvtt") {
       let data = text.split("\n");
       let times = data[0].split("-->");
-      captionsArray.push({
+      let newCaption = {
         start: ParseTime(times[0]),
         end: ParseTime(times[1]),
         caption: data[1],
-      });
+      };
+
+      captionsArray.push(newCaption);
+      CreateCaptionBlock(newCaption);
     }
   });
 };
@@ -243,7 +308,7 @@ function videoPauseEventHandler() {
     captionBeingDisplayed = -1;
   }
 
-  $("#textCaptionEntry").focus().get(0).setSelectionRange(1000, 1000); // set focus and selection point to end
+  //$("#textCaptionEntry").focus().get(0).setSelectionRange(1000, 1000); // set focus and selection point to end
 }
 
 function videoTimeUpdateEventHandler() {
@@ -302,6 +367,21 @@ $("#pauseButton").on("click", function () {
   $("#podvideoplayer").get(0).player.pause();
 });
 
+function GenerateWEBVTT() {
+  let vtt = "";
+  $("#newCaptionsEditor > .newEditorBlock").each(function () {
+    let captionText = this.querySelector(".captionTextInput").value;
+    let startTime = this.querySelector(".startTimeBtn").text;
+    let endTime = this.querySelector(".endTimeBtn").text;
+
+    vtt += `\n\n${startTime} --> ${endTime}\n${captionText}`;
+  });
+
+  if (vtt.length > 0) vtt = "WEBVTT" + vtt;
+
+  return vtt;
+}
+
 function SaveCurrentCaption() {
   var playTime = $("#podvideoplayer").get(0).player.currentTime();
   var captionsEndTime = existingCaptionsEndTime();
@@ -325,6 +405,14 @@ $("#saveCaptionAndPlay").on("click", function () {
   $("#podvideoplayer").get(0).player.play();
 });
 
+$("#textCaptionEntry").keypress(function (e) {
+  var code = e.keyCode ?? e.which;
+  if (code == 13 && !e.shiftKey) {
+    $("#saveCaptionAndPlay").click();
+    return false;
+  }
+});
+
 /**
  * Updat caption html content
  */
@@ -344,7 +432,266 @@ function UpdateCaption(ci, captionText) {
   updateCaptionHtmlContent();
 }
 
-function AddCaptionListRow(ci) {
+let lastEditedBlock = null;
+
+function CreateCaptionBlock(newCaption, spawnFunction) {
+  let captionText = newCaption.caption;
+  let start = FormatTime(newCaption.start);
+  let end = FormatTime(newCaption.end);
+
+  let block = {
+    // parent
+    div: $(`<div class='newEditorBlock'></div>`),
+
+    // circle buttons
+    buttonsDiv: $("<div class='captionButtons'></div>"),
+    insertBtn: $(
+      `<button><i data-feather='plus' width='28px' height='28px'></i></button>`
+    ),
+    deleteBtn: $(
+      `<button><i data-feather='x' width='28px' height='28px'></i></button>`
+    ),
+
+    // textarea
+    captionTextInput: $(`<textarea class='captionTextInput'></textarea>`),
+
+    // time editable
+    timeBlockEditable: $(
+      `<div class='captionTimestamps' style='display:none'></div>"`
+    ),
+    startTimeInput: $(`<input type='text'>`),
+    endTimeInput: $(`<input type='text'>`),
+
+    // time links
+    timeBlock: $(`<div class='captionTimestamps'></div>`),
+    startTimeBtn: $(`<a class='startTimeBtn' href='#'>${start}</a>`),
+    endTimeBtn: $(`<a class='endTimeBtn' href='#'>${end}</a>`),
+
+    // flags
+    isEditEnabled: false,
+
+    // methods
+    enableEdit: function () {
+      if (!this.isEditEnabled) {
+        if (lastEditedBlock) {
+          lastEditedBlock.disableEdit();
+        }
+
+        this.startTimeInput.val(this.startTimeBtn.text());
+
+        this.endTimeInput.val(this.endTimeBtn.text());
+
+        this.timeBlockEditable.css("display", "");
+        this.timeBlock.css("display", "none");
+        this.div.addClass("captionBeingEdited");
+
+        lastEditedBlock = this;
+
+        this.isEditEnabled = true;
+      }
+    },
+
+    disableEdit: function () {
+      if (this.isEditEnabled) {
+        let newStartTime = ParseTime(this.startTimeInput.val());
+        let newEndTime = ParseTime(this.endTimeInput.val());
+
+        newCaption.start = newStartTime;
+        newCaption.end = newEndTime;
+
+        this.startTimeBtn.text(FormatTime(newStartTime));
+        this.endTimeBtn.text(FormatTime(newEndTime));
+
+        this.timeBlockEditable.css("display", "none");
+        this.timeBlock.css("display", "");
+        this.div.removeClass("captionBeingEdited");
+
+        this.isEditEnabled = false;
+      }
+    },
+
+    spawnNew: function () {
+      let playTime = $("#podvideoplayer").get(0).player.currentTime();
+      let captionObj = {
+        start: newCaption.end,
+        end:
+          playTime > newCaption.end ? playTime : parseInt(newCaption.end) + 2,
+        caption: "",
+      };
+
+      captionsArray.splice(this.div.index() + 1, 0, captionObj);
+      CreateCaptionBlock(captionObj, (newDiv) => this.div.after(newDiv));
+    },
+
+    delete: function () {
+      captionsArray.splice(this.div.index(), 1);
+      this.div.remove();
+    },
+
+    init: function () {
+      this.div.captionBlockObject = this;
+      this.captionTextInput.val(captionText);
+
+      this.insertBtn.click(() => this.spawnNew());
+      this.deleteBtn.click(() => this.delete());
+      this.startTimeBtn.click(() => seekVideoTo(newCaption.start));
+      this.endTimeBtn.click(() => seekVideoTo(newCaption.end));
+      this.captionTextInput.focus(() => this.enableEdit());
+
+      this.timeBlock.append(this.startTimeBtn, this.endTimeBtn);
+      this.timeBlockEditable.append(this.startTimeInput, this.endTimeInput);
+      this.buttonsDiv.append(this.insertBtn, this.deleteBtn);
+
+      this.div.append(
+        this.buttonsDiv,
+        this.captionTextInput,
+        this.timeBlock,
+        this.timeBlockEditable
+      );
+
+      this.startTimeInput.keypress((e) => {
+        if (e.which == 13) this.disableEdit();
+      });
+
+      this.endTimeInput.keypress((e) => {
+        if (e.which == 13) this.disableEdit();
+      });
+
+      $(document).click((e) => {
+        var target = $(e.target);
+        if (!target.closest(this.div).length) this.disableEdit();
+      });
+    },
+  };
+
+  block.init();
+
+  if (spawnFunction) {
+    spawnFunction(block.div);
+  } else {
+    $("#addSubtitle").before(block.div);
+  }
+
+  feather.replace();
+
+  block.captionTextInput.bind("input propertychange", function () {
+    captionsArray[block.div.index()].caption = this.value;
+  });
+
+  block.div.hover(
+    function () {
+      highlightVideoRegion(newCaption.start, newCaption.end);
+    },
+    function () {
+      clearVideoRegion();
+    }
+  );
+
+  $("#noCaptionsText").remove();
+
+  return block;
+}
+
+let editorShortcuts = {
+  Delete: function (e) {
+    if (e.altKey && lastEditedBlock) {
+      lastEditedBlock.delete();
+      return false;
+    }
+  },
+  PageUp: function (e) {
+    if (lastEditedBlock) {
+      let prev = lastEditedBlock.div.prev();
+      if (prev) {
+        let textarea = prev.find("textarea");
+        textarea.focus();
+        return false;
+      }
+    }
+  },
+  PageDown: function (e) {
+    if (lastEditedBlock) {
+      let next = lastEditedBlock.div.next();
+      if (next) {
+        let textarea = next.find("textarea");
+        textarea.focus();
+        return false;
+      }
+    }
+  },
+  ArrowLeft: function (e) {
+    if (this.notFocused()) {
+      seekVideo(-10);
+      return false;
+    }
+  },
+  ArrowRight: function (e) {
+    if (this.notFocused()) {
+      seekVideo(10);
+      return false;
+    }
+  },
+  " ": function (e) {
+    // space
+    if (this.notFocused()) {
+      let player = $("#podvideoplayer").get(0).player;
+      if (player.paused()) player.play();
+      else player.pause();
+
+      return false;
+    }
+  },
+  m: function (e) {
+    if (this.notFocused()) {
+      let player = $("#podvideoplayer").get(0).player;
+      player.muted(!player.muted());
+      return false;
+    }
+  },
+  "?": function (e) {
+    if (this.notFocused()) {
+      $("#showShortcutTips").click();
+      return false;
+    }
+  },
+  Insert: function (e) {
+    if (lastEditedBlock) {
+      lastEditedBlock.spawnNew();
+    } else {
+      $("#addSubtitle").click();
+    }
+
+    return false;
+  },
+  "s": function(e) {
+    if (e.ctrlKey) {
+      $("#justSaveCaption").click();
+      return false;
+    }
+  },
+  "End": function(e) {
+    $("#saveCaptionAndPlay").click();
+    return false;
+  },
+
+  notFocused: function () {
+    var focused = $(":focus");
+    return focused.length == 0;
+  },
+
+  init: function () {
+    let self = this;
+    $(document).bind("keydown", function (e) {
+      if (self[e.key]) {
+        return self[e.key](e);
+      }
+    });
+  },
+};
+
+editorShortcuts.init();
+
+function AddCaptionListRow(ci, newCaption) {
   let vtt = $("#captionContent");
   let vtt_entry = $("#textCaptionEntry").val().trim();
   let start = caption_memories.start_time;
@@ -357,17 +704,25 @@ function AddCaptionListRow(ci) {
     } else {
       vtt.val(`${vtt.val()}\n\n${caption_text}`);
     }
-    caption_memories.start_time = end;
   }
+
+  CreateCaptionBlock(newCaption);
+  caption_memories.start_time = end;
 }
 
 function AddCaption(captionStart, captionEnd, captionText) {
-  captionsArray.push({
+  let videoDuration = $("#podvideoplayer").get(0).player.duration();
+  captionStart = Math.max(Math.min(captionStart, videoDuration), 0);
+  captionEnd = Math.max(Math.min(captionEnd, videoDuration), 0);
+
+  let newCaption = {
     start: captionStart,
     end: captionEnd,
     caption: captionText.trim(),
-  });
-  AddCaptionListRow(captionsArray.length - 1);
+  };
+
+  captionsArray.push(newCaption);
+  AddCaptionListRow(captionsArray.length - 1, newCaption);
 }
 
 function hmsToSecondsOnly(str) {
@@ -375,7 +730,7 @@ function hmsToSecondsOnly(str) {
     s = 0,
     m = 1;
   while (p.length > 0) {
-    s += m * parseInt(p.pop(), 10);
+    s += m * (parseInt(p.pop(), 10) || 0);
     m *= 60;
   }
   return s;
@@ -384,7 +739,7 @@ function hmsToSecondsOnly(str) {
 // parses webvtt time string format into floating point seconds
 function ParseTime(sTime) {
   let seconds = hmsToSecondsOnly(sTime);
-  return seconds + "." + sTime.split(".")[1];
+  return seconds + "." + (sTime.split(".")[1] || 0);
   /*//  parse time formatted as hours:mm:ss.sss where hours are optional
     if (sTime) {
         if (m != null) {
@@ -478,34 +833,42 @@ function LoadCaptionFile(fileObject) {
     };
 
     reader.onerror = function (evt) {
-      alert("Error reading caption file. Code = " + evt.code);
+      alert(gettext("Error reading caption file. Code = ") + evt.code);
     };
 
     try {
       reader.readAsText(fileObject);
     } catch (exc) {
-      alert("Exception thrown reading caption file. Code = " + exc.code);
+      alert(
+        gettext("Exception thrown reading caption file. Code = ") + exc.code
+      );
     }
   } else {
-    alert("Your browser does not support FileReader.");
+    alert(gettext("Your browser does not support FileReader."));
   }
 }
 
 // invoked by script insertion of proxyvtt.ashx
 function ProcessProxyVttResponse(obj) {
   if (obj.status == "error")
-    alert("Error loading caption file: " + obj.message);
+    alert(gettext("Error loading caption file: ") + obj.message);
   else if (obj.status == "success") {
     //  delete any captions we've got
     captionsArray.length = 0;
     file_loaded = true;
-    file_loaded_name = obj.file_name;
     file_loaded_id = obj.id_file;
     current_folder = obj.id_folder;
+    $(".newEditorBlock").each(function () {
+      this.remove();
+    });
+
+    // strip file extension and set as title
+    $("#captionFilename").val(obj.file_name.replace(/\.[^/.]+$/, ""));
+
     if (obj.response.match(/^WEBVTT/)) {
       ParseAndLoadWebVTT(obj.response);
     } else {
-      alert("Unrecognized caption file format.");
+      alert(gettext("Unrecognized caption file format."));
     }
   }
 }
@@ -519,9 +882,13 @@ function ParseAndLoadWebVTT(vtt) {
 
   if (vttLines[0].trim().toLowerCase() != "webvtt") {
     // must start with a signature line
-    alert("Not a valid time track file.");
+    alert(gettext("Not a valid time track file."));
     return;
   }
+
+  $(".newEditorBlock").each(function () {
+    this.remove();
+  });
 
   var rxTimeLine = /^([\d\.:]+)\s+-->\s+([\d\.:]+)(?:\s.*)?$/;
   var rxCaptionLine = /^(?:<v\s+([^>]+)>)?([^\r\n]+)$/;
@@ -534,11 +901,13 @@ function ParseAndLoadWebVTT(vtt) {
 
   function appendCurrentCaption() {
     if (cueStart && cueEnd && cueText) {
-      captionsArray.push({
+      let newCaption = {
         start: cueStart,
         end: cueEnd,
         caption: cueText.trim(),
-      });
+      };
+      captionsArray.push(newCaption);
+      CreateCaptionBlock(newCaption);
     }
     cueStart = cueEnd = cueText = null;
   }
@@ -577,3 +946,80 @@ function ParseAndLoadWebVTT(vtt) {
   $("#captionContent").val("");
   $("#captionContent").val(vtt);
 }
+
+// videojs region highlighting
+
+var highlightVideoRegion;
+var clearVideoRegion;
+
+const registerPlugin = videojs.registerPlugin || videojs.plugin;
+
+const onPlayerReady = function (player, options) {
+  let startKeyframe;
+  let endKeyframe;
+  let regionHighlight;
+
+  const clearVideoRegion = () => {
+    startKeyframe?.remove();
+
+    endKeyframe?.remove();
+
+    regionHighlight?.remove();
+
+    player.userActive(false);
+  };
+
+  highlightVideoRegion = function (startTime, endTime) {
+    clearVideoRegion();
+    player.userActive(true);
+
+    let startPercent = (startTime / player.duration()) * 100;
+    let endPercent = (endTime / player.duration()) * 100;
+
+    startPercent = Math.max(Math.min(startPercent, 100), 0);
+    endPercent = Math.max(Math.min(endPercent, 100), 0);
+
+    startKeyframe =
+      $(`<svg class='keyframe keyframe-left' xmlns="http://www.w3.org/2000/svg" width="6" height="11" viewBox="0 0 6 11">
+        <path id="Path_4" data-name="Path 4" d="M4.667,0H1.333A1.281,1.281,0,0,0,0,1.222V6.256L6,11V1.222A1.281,1.281,0,0,0,4.667,0Z" fill="#ad327a"/>
+      </svg>`);
+    startKeyframe.css("left", `${startPercent}%`);
+    $(player.controlBar.progressControl.seekBar.playProgressBar.el_).before(
+      startKeyframe
+    );
+
+    regionHighlight = $("<div class='regionHighligh'></div>");
+    regionHighlight.css("left", `${startPercent}%`);
+    regionHighlight.css("width", `${endPercent - startPercent}%`);
+    startKeyframe.after(regionHighlight);
+
+    endKeyframe =
+      $(`<svg class='keyframe keyframe-right' xmlns="http://www.w3.org/2000/svg" width="6" height="11" viewBox="0 0 6 11">
+        <path id="Path_5" data-name="Path 5" d="M1.333,0H4.667A1.281,1.281,0,0,1,6,1.222V6.256L0,11V1.222A1.281,1.281,0,0,1,1.333,0Z" fill="#ad327a"/>
+      </svg>`);
+    endKeyframe.css("left", `${endPercent}%`);
+    regionHighlight.after(endKeyframe);
+  };
+
+  seekVideoTo = function (time) {
+    player.userActive(true);
+    player.currentTime(time);
+  };
+
+  seekVideo = function (time) {
+    player.userActive(true);
+    player.currentTime(player.currentTime() + time);
+  };
+};
+
+const timelineRegions = function (options) {
+  this.ready(function () {
+    onPlayerReady(this, options);
+  });
+};
+
+registerPlugin("timelineRegions", timelineRegions);
+
+videojs.hook("setup", function (player) {
+  player.timelineRegions();
+});
