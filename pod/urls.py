@@ -43,7 +43,7 @@ from pod.main.views import (
     download_file,
     user_autocomplete,
     maintenance,
-    robots_txt
+    robots_txt,
 )
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
