@@ -12,23 +12,17 @@ class ChapterAdmin(admin.ModelAdmin):
     autocomplete_fields = ["video"]
 
     class Media:
-        css = {
-            "all": (
-                'css/pod.css',
-            )
-        }
+        css = {"all": ("css/pod.css",)}
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(video__sites=get_current_site(
-                request))
+            qs = qs.filter(video__sites=get_current_site(request))
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "video":
-            kwargs["queryset"] = Video.objects.filter(
-                    sites=Site.objects.get_current())
+            kwargs["queryset"] = Video.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 

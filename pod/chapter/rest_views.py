@@ -5,11 +5,9 @@ from rest_framework import serializers, viewsets
 
 
 class ChapterSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = Chapter
-        fields = ('id', 'url', 'video', 'title',
-                  'time_start')
+        fields = ("id", "url", "video", "title", "time_start")
 
 
 #############################################################################
@@ -18,5 +16,5 @@ class ChapterSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ChapterViewSet(viewsets.ModelViewSet):
-    queryset = Chapter.objects.all().order_by('video', 'time_start')
+    queryset = Chapter.objects.all().order_by("video", "time_start")
     serializer_class = ChapterSerializer

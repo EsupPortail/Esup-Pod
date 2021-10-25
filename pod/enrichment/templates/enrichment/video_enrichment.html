@@ -127,19 +127,19 @@
 {% endblock video-element %}
 
 {% block page_aside %}
-  <div class="card card-body p-2 mt-1" id="card-enrichmentinformations">
-    <h5 class="card-title pl-2">
+  <div class="card mt-1" id="card-enrichmentinformations">
+    <h5 class="card-header card-title pl-2">
       <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
     </h5>
-    <div class="card-text">
+    <div class="card-body card-text">
       <p>{% trans 'To help you, the different types of enrichments have specific colors:' %}</p>
       <p>
         <ul>
-          <li style="color:var(--purple)">{% trans 'Image' %}</li>
-          <li style="color:var(--orange)">{% trans 'Document' %}</li>
-          <li style="color:var(--blue)">{% trans 'Richtext' %}</li>
-          <li style="color:var(--red)">{% trans 'Weblink' %}</li>
-          <li style="color:var(--green)">{% trans 'Embed' %}</li>
+          <li class="enrich_image">{% trans 'Image' %}</li>
+          <li class="enrich_document">{% trans 'Document' %}</li>
+          <li class="enrich_richtext">{% trans 'Richtext' %}</li>
+          <li class="enrich_weblink">{% trans 'Weblink' %}</li>
+          <li class="enrich_embed">{% trans 'Embed' %}</li>
         </ul>
       </p>
       <p>{% trans 'They are visible on the video playback bar.' %}</p>

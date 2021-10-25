@@ -12,58 +12,67 @@ from pod.video.models import Type
 
 # Register your models here.
 
-RECORDER_ADDITIONAL_FIELDS = getattr(settings,
-                                     'RECORDER_ADDITIONAL_FIELDS', ())
-TRANSCRIPT = getattr(settings, 'USE_TRANSCRIPTION', False)
+RECORDER_ADDITIONAL_FIELDS = getattr(settings, "RECORDER_ADDITIONAL_FIELDS", ())
+TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
 
 
 class RecordingAdmin(admin.ModelAdmin):
+<<<<<<< HEAD
     list_display = ('title', 'user', 'source_file', 'date_added')
     list_display_links = ('title',)
     list_filter = ('type',)
     autocomplete_fields = ['recorder', 'user']
+=======
+    list_display = ("title", "user", "source_file", "date_added")
+    list_display_links = ("title",)
+    list_filter = ("type",)
+>>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "recorder":
-            kwargs["queryset"] = Recorder.objects.filter(
-                    sites=Site.objects.get_current())
+            kwargs["queryset"] = Recorder.objects.filter(sites=Site.objects.get_current())
         if (db_field.name) == "user":
             kwargs["queryset"] = User.objects.filter(
-                    owner__sites=Site.objects.get_current())
+                owner__sites=Site.objects.get_current()
+            )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(recorder__sites=get_current_site(
-                request))
+            qs = qs.filter(recorder__sites=get_current_site(request))
         return qs
 
 
 class RecordingFileTreatmentAdmin(admin.ModelAdmin):
+<<<<<<< HEAD
     list_display = ('id', 'file')
     actions = ['delete_source']
     autocomplete_fields = ['recorder']
+=======
+    list_display = ("id", "file")
+    actions = ["delete_source"]
+>>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def delete_source(self, request, queryset):
         for item in queryset:
             if os.path.exists(item.file):
                 os.remove(item.file)
             item.delete()
-    delete_source.short_description = _('Delete selected Recording file '
-                                        'treatments + source files')
+
+    delete_source.short_description = _(
+        "Delete selected Recording file " "treatments + source files"
+    )
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "recorder":
-            kwargs["queryset"] = Recorder.objects.filter(
-                    sites=Site.objects.get_current())
+            kwargs["queryset"] = Recorder.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(recorder__sites=get_current_site(
-                request))
+            qs = qs.filter(recorder__sites=get_current_site(request))
         return qs
 
 
@@ -73,38 +82,50 @@ class RecorderAdmin(admin.ModelAdmin):
                            'channel', 'theme']
 
     def Description(self, obj):
-        return mark_safe('%s' % obj.description)
+        return mark_safe("%s" % obj.description)
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(sites=get_current_site(
-                request))
+            qs = qs.filter(sites=get_current_site(request))
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "user":
             kwargs["queryset"] = User.objects.filter(
-                    owner__sites=Site.objects.get_current())
+                owner__sites=Site.objects.get_current()
+            )
         if (db_field.name) == "type":
-            kwargs["queryset"] = Type.objects.filter(
-                    sites=Site.objects.get_current())
+            kwargs["queryset"] = Type.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
     def get_form(self, request, obj=None, **kwargs):
         exclude = ()
-        available_fields = ('additional_users', 'is_draft', 'password',
-                            'is_restricted', 'restrict_access_to_groups',
-                            'cursus', 'main_lang', 'tags', 'discipline',
-                            'licence', 'channel', 'theme', 'transcript',
-                            'allow_downloading', 'is_360', 'disable_comment',)
+        available_fields = (
+            "additional_users",
+            "is_draft",
+            "password",
+            "is_restricted",
+            "restrict_access_to_groups",
+            "cursus",
+            "main_lang",
+            "tags",
+            "discipline",
+            "licence",
+            "channel",
+            "theme",
+            "transcript",
+            "allow_downloading",
+            "is_360",
+            "disable_comment",
+        )
         for f in available_fields:
             if f not in RECORDER_ADDITIONAL_FIELDS:
                 exclude += (f,)
-        if not TRANSCRIPT and 'transcript' not in exclude:
-            exclude += ('transcript',)
+        if not TRANSCRIPT and "transcript" not in exclude:
+            exclude += ("transcript",)
         if not request.user.is_superuser:
-            exclude += ('sites',)
+            exclude += ("sites",)
 
         self.exclude = exclude
         form = super(RecorderAdmin, self).get_form(request, obj, **kwargs)
@@ -117,27 +138,35 @@ class RecorderAdmin(admin.ModelAdmin):
             obj.save()
 
     list_display = (
-        'name', 'Description', 'address_ip', 'user', 'type', 'recording_type',
-        'directory')
-    list_display_links = ('name',)
+        "name",
+        "Description",
+        "address_ip",
+        "user",
+        "type",
+        "recording_type",
+        "directory",
+    )
+    list_display_links = ("name",)
     readonly_fields = []
 
 
 class RecordingFileAdmin(admin.ModelAdmin):
+<<<<<<< HEAD
     list_display = ('id', 'file', 'recorder')
     autocomplete_fields = ['recorder']
+=======
+    list_display = ("id", "file", "recorder")
+>>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:
-            qs = qs.filter(recorder__sites=get_current_site(
-                request))
+            qs = qs.filter(recorder__sites=get_current_site(request))
         return qs
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "recorder":
-            kwargs["queryset"] = Recorder.objects.filter(
-                    sites=Site.objects.get_current())
+            kwargs["queryset"] = Recorder.objects.filter(sites=Site.objects.get_current())
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 

@@ -19,7 +19,7 @@ SITE_ID = 1
 # https://docs.djangoproject.com/en/1.11/ref/settings/#secret-key
 #
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'A_CHANGER'
+SECRET_KEY = "A_CHANGER"
 
 ##
 # Base folder
@@ -39,7 +39,7 @@ DEBUG = True
 # that this Django site is allowed to serve.
 #
 # https://docs.djangoproject.com/en/1.11/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ["localhost"]
 
 ##
 # Session settings
@@ -59,9 +59,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 #
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-ADMINS
 #
-ADMINS = (
-    ('Name', 'adminmail@univ.fr'),
-)
+ADMINS = (("Name", "adminmail@univ.fr"),)
 ##
 # A tuple that lists people who get other notifications
 #   email from contact_us / end of encoding / report video
@@ -74,9 +72,9 @@ MANAGERS = ADMINS
 #
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
 
@@ -85,18 +83,18 @@ DATABASES = {
 #
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 # https://github.com/django/django/blob/master/django/conf/global_settings.py
-LANGUAGE_CODE = 'fr'
+LANGUAGE_CODE = "fr"
 LANGUAGES = (
-    ('fr', 'Français'),
-    ('en', 'English'),
-    ('nl', 'Dutch (Netherlands)')
+    ("fr", "Français"),
+    ("en", "English"),
+    ("nl", "Dutch (Netherlands)"),
 )
 
 ##
 # A string representing the time zone for this installation.
 #
 # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 ##
 # The directory to temporarily store data while uploading files.
@@ -106,7 +104,7 @@ TIME_ZONE = 'UTC'
 #
 # https://docs.djangoproject.com/en/1.11/ref/settings/#file-upload-temp-dir
 #
-FILE_UPLOAD_TEMP_DIR = os.path.join(os.path.sep, 'var', 'tmp')
+FILE_UPLOAD_TEMP_DIR = os.path.join(os.path.sep, "var", "tmp")
 # https://github.com/ouhouhsami/django-progressbarupload
 FILE_UPLOAD_HANDLERS = (
     "django.core.files.uploadhandler.MemoryFileUploadHandler",
@@ -118,8 +116,8 @@ PROGRESSBARUPLOAD_INCLUDE_JQUERY = False
 # Static files (assets, CSS, JavaScript, fonts...)
 #
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 ##
 # Dynamic files (user managed content: videos, subtitles, documents, etc...)
@@ -128,41 +126,60 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/1.11/ref/settings/#media-root
 #
 # WARNING: this folder must have previously been created.
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 ##
 # CKeditor settings
 #
 # CKEDITOR_BASEPATH = os.path.join(STATIC_URL, 'ckeditor', "/")
-CKEDITOR_UPLOAD_PATH = os.path.join(MEDIA_ROOT, 'uploads')
+CKEDITOR_UPLOAD_PATH = os.path.join(MEDIA_ROOT, "uploads")
 CKEDITOR_CONFIGS = {
-    'complete': {
-        'toolbar': 'full',
-        'height': 300,
-        'width': '100%'
-    },
-    'default': {
-        'height': 300,
-        'width': '100%',
-        'toolbar': 'custom',
-        'language': 'fr',
-        'toolbar_custom': [
-            {'name': 'basicstyles', 'items': [
-                'Bold', 'Italic', 'Underline', 'Strike', 'Subscript',
-                'Superscript', '-', 'RemoveFormat'
-            ]
+    "complete": {"toolbar": "full", "height": 300, "width": "100%"},
+    "default": {
+        "height": 300,
+        "width": "100%",
+        "toolbar": "custom",
+        "language": "fr",
+        "toolbar_custom": [
+            {
+                "name": "basicstyles",
+                "items": [
+                    "Bold",
+                    "Italic",
+                    "Underline",
+                    "Strike",
+                    "Subscript",
+                    "Superscript",
+                    "-",
+                    "RemoveFormat",
+                ],
             },
-            {'name': 'paragraph', 'items': [
-                'NumberedList', 'BulletedList',
-                '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv',
-                '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight',
-                'JustifyBlock', '-', 'BidiLtr', 'BidiRtl'
-            ]},
-            {'name': 'links', 'items': ['Link', 'Unlink', 'Anchor']},
-            {'name': 'tools', 'items': ['Maximize']}
+            {
+                "name": "paragraph",
+                "items": [
+                    "NumberedList",
+                    "BulletedList",
+                    "-",
+                    "Outdent",
+                    "Indent",
+                    "-",
+                    "Blockquote",
+                    "CreateDiv",
+                    "-",
+                    "JustifyLeft",
+                    "JustifyCenter",
+                    "JustifyRight",
+                    "JustifyBlock",
+                    "-",
+                    "BidiLtr",
+                    "BidiRtl",
+                ],
+            },
+            {"name": "links", "items": ["Link", "Unlink", "Anchor"]},
+            {"name": "tools", "items": ["Maximize"]},
         ],
-    }
+    },
 }
 
 
@@ -175,7 +192,7 @@ MAX_TAG_LENGTH = 50
 ##
 # AUTH CAS
 #
-LOGIN_URL = '/authentication_login/'
+LOGIN_URL = "/authentication_login/"
 
 
 ##
@@ -188,23 +205,25 @@ LOGIN_URL = '/authentication_login/'
 #   username: EMAIL_HOST_USER
 #   password: EMAIL_HOST_PASSWORD
 #
-EMAIL_HOST = 'smtp.univ.fr'
+EMAIL_HOST = "smtp.univ.fr"
 EMAIL_PORT = 25
-DEFAULT_FROM_EMAIL = 'noreply@univ.fr'
+DEFAULT_FROM_EMAIL = "noreply@univ.fr"
 
 # https://docs.djangoproject.com/fr/1.11/ref/settings/#std:setting-SERVER_EMAIL
-SERVER_EMAIL = 'noreply@univ.fr'
+SERVER_EMAIL = "noreply@univ.fr"
 
 ##
 # Captcha config
 #
-CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+CAPTCHA_CHALLENGE_FUNCT = "captcha.helpers.math_challenge"
 # ('captcha.helpers.noise_arcs','captcha.helpers.noise_dots',)
 CAPTCHA_NOISE_FUNCTIONS = (
-    'captcha.helpers.noise_arcs', 'captcha.helpers.noise_dots',)
+    "captcha.helpers.noise_arcs",
+    "captcha.helpers.noise_dots",
+)
 # ('captcha.helpers.noise_null',)
 CAPTCHA_FONT_SIZE = 32
-CAPTCHA_MATH_CHALLENGE_OPERATOR = 'x'
+CAPTCHA_MATH_CHALLENGE_OPERATOR = "x"
 ##
 # THIRD PARTY APPS OPTIONNAL
 #
@@ -214,7 +233,7 @@ THIRD_PARTY_APPS = []
 ##
 # https://docs.djangoproject.com/fr/1.11/ref/clickjacking/
 #
-X_FRAME_OPTIONS = 'EXEMPT'  # SAMEORIGIN, DENY OR EXEMPT
+X_FRAME_OPTIONS = "EXEMPT"  # SAMEORIGIN, DENY OR EXEMPT
 
 ###
 # Enable LTI Provider
@@ -223,41 +242,34 @@ X_FRAME_OPTIONS = 'EXEMPT'  # SAMEORIGIN, DENY OR EXEMPT
 # LTI_ENABLED=False default
 
 LTI_TOOL_CONFIGURATION = {
-    'title': 'LTI Pod',
-    'description': 'Pod description',
-    'launch_url': 'lti/',
-    'embed_url': '',
-    'embed_icon_url': '',
-    'embed_tool_id': '',
-    'landing_url': '/',
-    'course_aware': False,
-    'course_navigation': True,
-    'new_tab': True,
-    'frame_width': 640,
-    'frame_height': 360,
-    'assignments': {
-        'addvideo': '/assignment/addvideo/',
-        'getvideo': '/assignment/getvideo/'
-
-    }
+    "title": "LTI Pod",
+    "description": "Pod description",
+    "launch_url": "lti/",
+    "embed_url": "",
+    "embed_icon_url": "",
+    "embed_tool_id": "",
+    "landing_url": "/",
+    "course_aware": False,
+    "course_navigation": True,
+    "new_tab": True,
+    "frame_width": 640,
+    "frame_height": 360,
+    "assignments": {
+        "addvideo": "/assignment/addvideo/",
+        "getvideo": "/assignment/getvideo/",
+    },
 }
 
-PYLTI_CONFIG = {
-    'consumers': {
-        'azerty': {
-            'secret': 'azerty'
-        }
-    }
-}
+PYLTI_CONFIG = {"consumers": {"azerty": {"secret": "azerty"}}}
 LTI_PROPERTY_LIST_EX = [
-    'custom_canvas_user_login_id',
-    'ext_user_username',
-    'context_title',
-    'lis_course_offering_sourcedid',
-    'custom_canvas_api_domain',
-    'custom_video'
+    "custom_canvas_user_login_id",
+    "ext_user_username",
+    "context_title",
+    "lis_course_offering_sourcedid",
+    "custom_canvas_api_domain",
+    "custom_video",
 ]
-LTI_PROPERTY_USER_USERNAME = 'ext_user_username'
+LTI_PROPERTY_USER_USERNAME = "ext_user_username"
 
 # SOLR Thumbnail use in video model to create thumbnail for video
 # https://sorl-thumbnail.readthedocs.io/en/latest/reference/settings.html

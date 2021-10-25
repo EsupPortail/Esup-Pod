@@ -9,57 +9,61 @@ from django.contrib.sites.models import Site
 import hashlib
 import logging
 import traceback
+
 logger = logging.getLogger(__name__)
 
-if getattr(settings, 'USE_PODFILE', False):
+if getattr(settings, "USE_PODFILE", False):
     from pod.podfile.models import CustomImageModel
 else:
     from pod.main.models import CustomImageModel
 
-HIDE_USERNAME = getattr(settings, 'HIDE_USERNAME', False)
+HIDE_USERNAME = getattr(settings, "HIDE_USERNAME", False)
 
 AUTH_TYPE = getattr(
-    settings, 'AUTH_TYPE', (
-        ('local', _('local')),
-        ('CAS', 'CAS'),
-        ('OIDC', "OIDC"),
-        ("Shibboleth", "Shibboleth")
-    )
+    settings,
+    "AUTH_TYPE",
+    (
+        ("local", _("local")),
+        ("CAS", "CAS"),
+        ("OIDC", "OIDC"),
+        ("Shibboleth", "Shibboleth"),
+    ),
 )
 AFFILIATION = getattr(
-    settings, 'AFFILIATION',
+    settings,
+    "AFFILIATION",
     (
-        ('student', _('student')),
-        ('faculty', _('faculty')),
-        ('staff', _('staff')),
-        ('employee', _('employee')),
-        ('member', _('member')),
-        ('affiliate', _('affiliate')),
-        ('alum', _('alum')),
-        ('library-walk-in', _('library-walk-in')),
-        ('researcher', _('researcher')),
-        ('retired', _('retired')),
-        ('emeritus', _('emeritus')),
-        ('teacher', _('teacher')),
-        ('registered-reader', _('registered-reader'))
-    )
+        ("student", _("student")),
+        ("faculty", _("faculty")),
+        ("staff", _("staff")),
+        ("employee", _("employee")),
+        ("member", _("member")),
+        ("affiliate", _("affiliate")),
+        ("alum", _("alum")),
+        ("library-walk-in", _("library-walk-in")),
+        ("researcher", _("researcher")),
+        ("retired", _("retired")),
+        ("emeritus", _("emeritus")),
+        ("teacher", _("teacher")),
+        ("registered-reader", _("registered-reader")),
+    ),
 )
 ESTABLISHMENTS = getattr(
-    settings, "ESTABLISHMENTS",
+    settings,
+    "ESTABLISHMENTS",
     (
-        ('Etab_1', 'Etab_1'),
-        ('Etab_2', 'Etab_2'),
-    )
+        ("Etab_1", "Etab_1"),
+        ("Etab_2", "Etab_2"),
+    ),
 )
-SECRET_KEY = getattr(settings, 'SECRET_KEY', '')
-FILES_DIR = getattr(
-    settings, 'FILES_DIR', 'files')
+SECRET_KEY = getattr(settings, "SECRET_KEY", "")
+FILES_DIR = getattr(settings, "FILES_DIR", "files")
 
 
 def get_name(self):
     if HIDE_USERNAME:
-        return '%s %s' % (self.first_name, self.last_name)
-    return '%s %s (%s)' % (self.first_name, self.last_name, self.username)
+        return "%s %s" % (self.first_name, self.last_name)
+    return "%s %s (%s)" % (self.first_name, self.last_name, self.username)
 
 
 User.add_to_class("__str__", get_name)
@@ -68,7 +72,8 @@ User.add_to_class("__str__", get_name)
 class Owner(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     auth_type = models.CharField(
-        max_length=20, choices=AUTH_TYPE, default=AUTH_TYPE[0][0])
+        max_length=20, choices=AUTH_TYPE, default=AUTH_TYPE[0][0]
+    )
     affiliation = models.CharField(
         max_length=50, choices=AFFILIATION, default=AFFILIATION[0][0])
     commentaire = models.TextField(_('Comment'), blank=True, default="")
@@ -88,21 +93,28 @@ class Owner(models.Model):
     def __str__(self):
         if HIDE_USERNAME:
             return "%s %s" % (self.user.first_name, self.user.last_name)
-        return "%s %s (%s)" % (self.user.first_name, self.user.last_name,
-                               self.user.username)
+        return "%s %s (%s)" % (
+            self.user.first_name,
+            self.user.last_name,
+            self.user.username,
+        )
 
     def save(self, *args, **kwargs):
         self.hashkey = hashlib.sha256(
-            (SECRET_KEY + self.user.username).encode('utf-8')).hexdigest()
+            (SECRET_KEY + self.user.username).encode("utf-8")
+        ).hexdigest()
         super(Owner, self).save(*args, **kwargs)
 
     def is_manager(self):
-        group_ids = self.user.groups.all().filter(
-            groupsite__sites=Site.objects.get_current()).values_list(
-                'id', flat=True)
+        group_ids = (
+            self.user.groups.all()
+            .filter(groupsite__sites=Site.objects.get_current())
+            .values_list("id", flat=True)
+        )
         return (
             self.user.is_staff
-            and Permission.objects.filter(group__id__in=group_ids).count() > 0)
+            and Permission.objects.filter(group__id__in=group_ids).count() > 0
+        )
 
     @property
     def email(self):
@@ -121,8 +133,8 @@ def create_owner_profile(sender, instance, created, **kwargs):
         try:
             Owner.objects.create(user=instance)
         except Exception as e:
-            msg = u'\n Create owner profile ***** Error:%r' % e
-            msg += '\n%s' % traceback.format_exc()
+            msg = u"\n Create owner profile ***** Error:%r" % e
+            msg += "\n%s" % traceback.format_exc()
             logger.error(msg)
             print(msg)
 
@@ -144,26 +156,29 @@ def create_groupsite_profile(sender, instance, created, **kwargs):
         try:
             GroupSite.objects.create(group=instance)
         except Exception as e:
-            msg = u'\n Create groupsite profile ***** Error:%r' % e
-            msg += '\n%s' % traceback.format_exc()
+            msg = u"\n Create groupsite profile ***** Error:%r" % e
+            msg += "\n%s" % traceback.format_exc()
             logger.error(msg)
             print(msg)
 
 
 class AccessGroup(models.Model):
-    display_name = models.CharField(
-        max_length=128, blank=True, default="")
-    code_name = models.CharField(
-        max_length=128, unique=True)
+    display_name = models.CharField(max_length=128, blank=True, default="")
+    code_name = models.CharField(max_length=128, unique=True)
     sites = models.ManyToManyField(Site)
     users = models.ManyToManyField(
         Owner,
         blank=True,
-        through='Owner_accessgroups')
+        ajax=True,
+        search_field=lambda q: Q(user__username__icontains=q)
+        | Q(user__first_name__icontains=q)
+        | Q(user__last_name__icontains=q),
+        through="Owner_accessgroups",
+    )
 
     def __str__(self):
         return "%s" % (self.display_name)
 
     class Meta:
-        verbose_name = _('Access Groups')
-        verbose_name_plural = _('Access Groups')
+        verbose_name = _("Access Groups")
+        verbose_name_plural = _("Access Groups")

@@ -10,11 +10,6 @@
 {% endblock %}
 
 {% block breadcrumbs %}{{ block.super }}
-  {% if USE_BBB_LIVE %}
-    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'bbb:list_meeting' %}" title="{% trans 'My BigBlueButton records and lives' %}">{% trans 'My BigBlueButton records and lives' %}</a></li>
-  {% else %}
-    <li class="breadcrumb-item" aria-current="page"><a href="{% url 'bbb:list_meeting' %}" title="{% trans 'My BigBlueButton records' %}">{% trans 'My BigBlueButton records' %}</a></li>
-  {% endif %}
   <li class="breadcrumb-item active" aria-current="page">{% trans 'Perform a BigBlueButton live' %}</li>
 {% endblock %}
 
