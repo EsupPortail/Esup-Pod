@@ -4,8 +4,6 @@
 
 {% block page_extra_head %}
 {% include 'videos/video-header.html' with enrichment=True %}
-<link rel="stylesheet" href="{% static 'css/videojs-slides.css' %}?ver={{VERSION}}"/>
-<script src="{% static 'js/videojs-slides.js' %}?ver={{VERSION}}"></script>
 {% endblock page_extra_head %}
 
 {% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
