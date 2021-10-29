@@ -46,24 +46,39 @@
         </a>
       </li>
     {%endif%}
-    {% with video.get_other_version as versions %}
-    {% if versions|length > 0 %}
-      <li class="nav-item dropdown" id="list_third_apps">
-        <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
-          <i data-feather="layers"></i>&nbsp;<span class="sr-only">{% trans 'Other versions' %}</span>
-        </a>
-        <div class="dropdown-menu" >
-          {% for version in versions %}
-            {% if video.get_hashkey in request.get_full_path %}
-              <a href="{{version.url}}{{ video.get_hashkey }}/?redirect=false" title="{{version.app}}" class="dropdown-item" >{{version.link}}</a>
-            {% else %}
-              <a href="{{version.url}}?redirect=false" title="{{version.app}}" class="dropdown-item" >{{version.link}}</a>
-            {% endif %}
-          {% endfor %}
-        </div>
-      </li>
-    {% endif %}
-    {% endwith %}
+    {% if third_app %}
+    <li class="nav-item dropdown" id="list_third_apps">
+      <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
+        <i data-feather="layers"></i>&nbsp;<span class="sr-only">{% trans 'Other versions' %}</span>
+      </a>
+      <div class="dropdown-menu" >
+      {% if video.get_hashkey in request.get_full_path %}
+        <a href="{% url 'video' slug=video.slug %}{{ video.get_hashkey }}/?redirect=false" title="{% trans 'Original version' %}" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
+        {% else %}
+        <a href="{% url 'video' slug=video.slug %}?redirect=false" title="{% trans 'Original version' %}" class="dropdown-item" target="_blank">{% trans 'Original version' %}</a>
+      {% endif %}
+      </div>
+    </li>
+    {% else %}
+      {% with video.get_other_version as versions %}
+      {% if versions|length > 0 %}
+        <li class="nav-item dropdown" id="list_third_apps">
+          <a  href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  title="{% trans 'Other versions' %}">
+            <i data-feather="layers"></i>&nbsp;<span class="sr-only">{% trans 'Other versions' %}</span>
+          </a>
+          <div class="dropdown-menu" >
+            {% for version in versions %}
+              {% if video.get_hashkey in request.get_full_path %}
+                <a href="{{version.url}}{{ video.get_hashkey }}/?redirect=false" title="{{version.app}}" class="dropdown-item" >{{version.link}}</a>
+              {% else %}
+                <a href="{{version.url}}?redirect=false" title="{{version.app}}" class="dropdown-item" >{{version.link}}</a>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </li>
+      {% endif %}
+      {% endwith %}
+    {%endif%}
 
     {% if request.user.playlist_set.all and video.is_draft == False %}
     <li class="nav-item dropdown dropright">

@@ -15,11 +15,11 @@ window.onmessage = function(event) {
     }
     if(evt.data.type == 'player:mute') {
       player.muted(true);
-      evt.source.postMessage({paused: player.muted(), data: {}}, evt.origin);
+      evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
     }
     if(evt.data.type == 'player:unmute') {
       player.muted(false);
-      evt.source.postMessage({paused: player.muted(), data: {}}, evt.origin);
+      evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
     }
 };
 const seektime = 10;

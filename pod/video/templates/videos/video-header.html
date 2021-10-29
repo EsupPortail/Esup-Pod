@@ -41,11 +41,6 @@
   <script src="{% static 'js/playlist.js' %}?ver={{VERSION}}"></script>
 {% endif %}
 
-{% if video.enrichment_set.all %}
-  <link id="enrichment_style_id" href="{% static 'css/videojs-slides.css' %}?ver={{VERSION}}" rel="stylesheet">
-  <script id="enrichment_script_id" src="{% static 'js/videojs-slides.js' %}?ver={{VERSION}}"></script>
-{% endif %}
-
 {% if video.is_360 %}
   <link id="vr360_style_id" href="{% static 'videojs-vr/videojs-vr.css' %}?ver={{VERSION}}" rel="stylesheet">
   <script id="vr360_script_id" src="{% static 'videojs-vr/videojs-vr.min.js' %}?ver={{VERSION}}"></script>
