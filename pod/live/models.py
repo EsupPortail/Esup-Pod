@@ -73,28 +73,17 @@ class Broadcaster(models.Model):
         max_length=200,
         help_text=_(
             u'Used to access this instance, the "slug" is a short label '
-<<<<<<< HEAD
             + 'containing only letters, numbers, underscore or dash top.'),
         editable=False, default="")  # default empty, fill it in save
     building = models.ForeignKey('Building', verbose_name=_(
         'Building'), on_delete=models.CASCADE)
     description = RichTextField(
         _('description'), config_name='complete', blank=True)
-=======
-            + "containing only letters, numbers, underscore or dash top."
-        ),
-        editable=False,
-        default="",
-    )  # default empty, fill it in save
-    building = models.ForeignKey("Building", verbose_name=_("Building"))
-    description = RichTextField(_("description"), config_name="complete", blank=True)
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     poster = models.ForeignKey(
         CustomImageModel,
         models.SET_NULL,
         blank=True,
         null=True,
-<<<<<<< HEAD
         verbose_name=_('Poster'))
     url = models.URLField(_('URL'), help_text=_(
         'Url of the stream'), unique=True)
@@ -106,24 +95,6 @@ class Broadcaster(models.Model):
         on_delete=models.CASCADE)
     iframe_url = models.URLField(_('Embedded Site URL'), help_text=_(
         'Url of the embedded site to display'), null=True, blank=True)
-=======
-        verbose_name=_("Poster"),
-    )
-    url = models.URLField(_("URL"), help_text=_("Url of the stream"), unique=True)
-    video_on_hold = select2_fields.ForeignKey(
-        Video,
-        help_text=_("This video will be displayed when there is no live stream."),
-        blank=True,
-        null=True,
-        verbose_name=_("Video on hold"),
-    )
-    iframe_url = models.URLField(
-        _("Embedded Site URL"),
-        help_text=_("Url of the embedded site to display"),
-        null=True,
-        blank=True,
-    )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     iframe_height = models.IntegerField(
         _("Embedded Site Height"),
         null=True,
@@ -193,7 +164,6 @@ class Broadcaster(models.Model):
 
 
 class HeartBeat(models.Model):
-<<<<<<< HEAD
     user = models.ForeignKey(
         User,
         null=True,
@@ -207,14 +177,6 @@ class HeartBeat(models.Model):
         on_delete=models.CASCADE)
     last_heartbeat = models.DateTimeField(
         _('Last heartbeat'), default=timezone.now)
-=======
-    user = models.ForeignKey(User, null=True, verbose_name=_("Viewer"))
-    viewkey = models.CharField(_("Viewkey"), max_length=200, unique=True)
-    broadcaster = models.ForeignKey(
-        Broadcaster, null=False, verbose_name=_("Broadcaster")
-    )
-    last_heartbeat = models.DateTimeField(_("Last heartbeat"), default=timezone.now)
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     class Meta:
         verbose_name = _("Heartbeat")

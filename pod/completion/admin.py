@@ -32,22 +32,11 @@ class ContributorInline(admin.TabularInline):
 
 class ContributorAdmin(admin.ModelAdmin):
 
-<<<<<<< HEAD
     list_display = ('name', 'role', 'video',)
     list_display_links = ('name',)
     list_filter = ('role',)
     search_fields = ['id', 'name', 'role', 'video__title']
     autocomplete_fields = ['video']
-=======
-    list_display = (
-        "name",
-        "role",
-        "video",
-    )
-    list_display_links = ("name",)
-    list_filter = ("role",)
-    search_fields = ["id", "name", "role", "video__title"]
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "video":
@@ -83,19 +72,10 @@ class DocumentAdmin(admin.ModelAdmin):
 
     if FILEPICKER:
         form = DocumentAdminForm
-<<<<<<< HEAD
     list_display = ('document', 'video',)
     list_display_links = ('document',)
     search_fields = ['id', 'document__name', 'video__title']
     autocomplete_fields = ['video']
-=======
-    list_display = (
-        "document",
-        "video",
-    )
-    list_display_links = ("document",)
-    search_fields = ["id", "document__name", "video__title"]
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -145,22 +125,11 @@ class TrackAdmin(admin.ModelAdmin):
 
     if FILEPICKER:
         form = TrackAdminForm
-<<<<<<< HEAD
     list_display = ('src', 'kind', 'video',)
     list_display_links = ('src',)
     list_filter = ('kind',)
     search_fields = ['id', 'src__name', 'kind', 'video__title']
     autocomplete_fields = ['video']
-=======
-    list_display = (
-        "src",
-        "kind",
-        "video",
-    )
-    list_display_links = ("src",)
-    list_filter = ("kind",)
-    search_fields = ["id", "src__name", "kind", "video__title"]
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -212,19 +181,10 @@ class OverlayInline(admin.TabularInline):
 
 class OverlayAdmin(admin.ModelAdmin):
 
-<<<<<<< HEAD
     list_display = ('title', 'video',)
     list_display_links = ('title',)
     search_fields = ['id', 'title', 'video__title']
     autocomplete_fields = ['video']
-=======
-    list_display = (
-        "title",
-        "video",
-    )
-    list_display_links = ("title",)
-    search_fields = ["id", "title", "video__title"]
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

@@ -23,16 +23,8 @@ class EnrichmentInline(admin.TabularInline):
 class EnrichmentAdmin(admin.ModelAdmin):
 
     form = EnrichmentAdminForm
-<<<<<<< HEAD
     list_display = ('title', 'type', 'video',)
     autocomplete_fields = ['video']
-=======
-    list_display = (
-        "title",
-        "type",
-        "video",
-    )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -68,12 +60,8 @@ else:
 
 
 class EnrichmentGroupAdmin(admin.ModelAdmin):
-<<<<<<< HEAD
     list_display = ('video', 'get_groups')
     autocomplete_fields = ['video']
-=======
-    list_display = ("video", "get_groups")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

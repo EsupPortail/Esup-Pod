@@ -98,14 +98,6 @@ class ChapterViewsTestCase(TestCase):
         self.assertContains(response, "list_chapter")
         self.assertContains(response, "form_chapter")
         response = self.client.post(
-<<<<<<< HEAD
-            '/video_chapter/{0}/'.format(video.slug),
-            data={'action': 'save',
-                  'video': 1,
-                  'title': 'testchapter',
-                  'time_start': 1,
-                  'time_end': 3})
-=======
             "/video_chapter/{0}/".format(video.slug),
             data={
                 "action": "save",
@@ -116,7 +108,6 @@ class ChapterViewsTestCase(TestCase):
                 "time_end": 3,
             },
         )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         self.assertEqual(response.status_code, 200)
         result = Chapter.objects.all()
         self.assertTrue(result)
@@ -133,14 +124,6 @@ class ChapterViewsTestCase(TestCase):
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
         response = self.client.post(
-<<<<<<< HEAD
-            '/video_chapter/{0}/'.format(video.slug),
-            data={'action': 'save',
-                  'video': 1,
-                  'title': 'testchapter',
-                  'time_start': 1,
-                  'time_end': 3})
-=======
             "/video_chapter/{0}/".format(video.slug),
             data={
                 "action": "save",
@@ -151,7 +134,6 @@ class ChapterViewsTestCase(TestCase):
                 "time_end": 3,
             },
         )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         self.assertEqual(response.status_code, 200)
         result = Chapter.objects.all()
         self.assertTrue(result)
@@ -181,14 +163,6 @@ class ChapterViewsTestCase(TestCase):
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
         response = self.client.post(
-<<<<<<< HEAD
-            '/video_chapter/{0}/'.format(video.slug),
-            data={'action': 'save',
-                  'video': 1,
-                  'title': 'testchapter',
-                  'time_start': 1,
-                  'time_end': 3})
-=======
             "/video_chapter/{0}/".format(video.slug),
             data={
                 "action": "save",
@@ -199,7 +173,6 @@ class ChapterViewsTestCase(TestCase):
                 "time_end": 3,
             },
         )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         self.assertEqual(response.status_code, 200)
         result = Chapter.objects.all()
         self.assertTrue(result)

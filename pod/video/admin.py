@@ -113,7 +113,6 @@ class VideoVersionInline(admin.StackedInline):
 
 
 class VideoAdmin(admin.ModelAdmin):
-<<<<<<< HEAD
 
     list_display = ('id', 'title', 'get_owner_by_name', 'type', 'date_added',
                     'viewcount', 'is_draft', 'is_restricted',
@@ -125,35 +124,6 @@ class VideoAdmin(admin.ModelAdmin):
                    'encoding_in_progress', EncodedFilter, 'owner')
     autocomplete_fields = ['type', 'owner', 'additional_owners', 'discipline',
                            'channel', 'theme', 'restrict_access_to_groups']
-=======
-    change_form_template = "progressbarupload/change_form.html"
-    add_form_template = "progressbarupload/change_form.html"
-
-    list_display = (
-        "id",
-        "title",
-        "get_owner_by_name",
-        "type",
-        "date_added",
-        "viewcount",
-        "is_draft",
-        "is_restricted",
-        "password",
-        "duration_in_time",
-        "encoding_in_progress",
-        "get_encoding_step",
-        "get_thumbnail_admin",
-    )
-    list_display_links = ("id", "title")
-    list_filter = (
-        "date_added",
-        ("channel", admin.RelatedOnlyFieldListFilter),
-        ("type", admin.RelatedOnlyFieldListFilter),
-        "is_draft",
-        "encoding_in_progress",
-        EncodedFilter,
-    )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     # Ajout de l'attribut 'date_delete'
     if USE_OBSOLESCENCE:
         list_filter = list_filter + ("date_delete",)
@@ -205,12 +175,8 @@ class VideoAdmin(admin.ModelAdmin):
     def get_owner_by_name(self, obj):
         owner = obj.owner
         url = url_to_edit_object(owner)
-<<<<<<< HEAD
         return mark_safe(
             u'%s %s (%s)' % (owner.first_name, owner.last_name, url))
-=======
-        return u"%s %s (%s)" % (owner.first_name, owner.last_name, url)
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     get_owner_by_name.allow_tags = True
     get_owner_by_name.short_description = _("Owner")
@@ -222,11 +188,8 @@ class VideoAdmin(admin.ModelAdmin):
             kwargs["form"] = VideoAdminForm
 
         exclude = ()
-<<<<<<< HEAD
-=======
         if not getattr(settings, "ACTIVE_VIDEO_COMMENT", False):
             exclude += ("disable_comment",)
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
         if obj and obj.encoding_in_progress:
             exclude += (
@@ -238,13 +201,7 @@ class VideoAdmin(admin.ModelAdmin):
         if request.user.is_staff is False or obj is None or USE_OBSOLESCENCE is False:
             exclude += ("date_delete",)
         if not request.user.is_superuser:
-<<<<<<< HEAD
-            exclude += ('sites',)
-        if not ACTIVE_VIDEO_COMMENT:
-            exclude += ('disable_comment',)
-=======
             exclude += ("sites",)
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         self.exclude = exclude
         form = super(VideoAdmin, self).get_form(request, obj, **kwargs)
         return form
@@ -340,11 +297,8 @@ class ChannelAdminForm(ChannelForm):
 
 
 class ChannelAdmin(admin.ModelAdmin):
-<<<<<<< HEAD
     search_fields = ['name']
 
-=======
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     def get_owners(self, obj):
         owners = []
         for owner in obj.owners.all():
@@ -413,17 +367,11 @@ class ChannelAdmin(admin.ModelAdmin):
 
 class ThemeAdmin(admin.ModelAdmin):
     form = ThemeForm
-<<<<<<< HEAD
     list_display = ('title', 'channel')
     list_filter = (('channel', admin.RelatedOnlyFieldListFilter),)
     ordering = ('channel', 'title')
     search_fields = ['name']
     autocomplete_fields = ['parentId', 'channel']
-=======
-    list_display = ("title", "channel")
-    list_filter = (("channel", admin.RelatedOnlyFieldListFilter),)
-    ordering = ("channel", "title")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     class Media:
         css = {
@@ -459,12 +407,8 @@ class ThemeAdmin(admin.ModelAdmin):
 
 class TypeAdmin(TranslationAdmin):
     form = TypeForm
-<<<<<<< HEAD
     prepopulated_fields = {'slug': ('title',)}
     search_fields = ['name']
-=======
-    prepopulated_fields = {"slug": ("title",)}
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     class Media:
         css = {
@@ -504,12 +448,8 @@ class TypeAdmin(TranslationAdmin):
 
 class DisciplineAdmin(TranslationAdmin):
     form = DisciplineForm
-<<<<<<< HEAD
     prepopulated_fields = {'slug': ('title',)}
     search_fields = ['name']
-=======
-    prepopulated_fields = {"slug": ("title",)}
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     class Media:
         css = {
@@ -591,15 +531,12 @@ class EncodingAudioAdmin(admin.ModelAdmin):
 
 
 class PlaylistVideoAdmin(admin.ModelAdmin):
-<<<<<<< HEAD
+
     autocomplete_fields = ['video']
-    search_fields = ['id', 'video__id', 'video__title']
-    list_filter = ['encoding_format']
-=======
     list_display = ("name", "video", "encoding_format")
     search_fields = ["id", "video__id", "video__title"]
     list_filter = ["encoding_format"]
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
+
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -675,12 +612,8 @@ class EncodingStepAdmin(admin.ModelAdmin):
 
 
 class NotesAdmin(admin.ModelAdmin):
-<<<<<<< HEAD
     list_display = ('video', 'user')
     autocomplete_fields = ['video', 'user']
-=======
-    list_display = ("video", "user")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     class Media:
         css = {"all": ("css/pod.css",)}
@@ -703,21 +636,10 @@ class NotesAdmin(admin.ModelAdmin):
 
 
 class AdvancedNotesAdmin(admin.ModelAdmin):
-<<<<<<< HEAD
     list_display = ('video', 'user', 'timestamp',
                     'status', 'added_on', 'modified_on')
     search_fields = ['note']
     autocomplete_fields = ['user', 'video']
-=======
-    list_display = (
-        "video",
-        "user",
-        "timestamp",
-        "status",
-        "added_on",
-        "modified_on",
-    )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     class Media:
         css = {"all": ("css/pod.css",)}
@@ -740,13 +662,9 @@ class AdvancedNotesAdmin(admin.ModelAdmin):
 
 
 class NoteCommentsAdmin(admin.ModelAdmin):
-<<<<<<< HEAD
     autocomplete_fields = ['user', 'parentNote', 'parentCom']
     search_fields = ["comment"]
     list_display = ('parentNote', 'user', 'added_on', 'modified_on')
-=======
-    list_display = ("parentNote", "user", "added_on", "modified_on")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     class Media:
         css = {"all": ("css/pod.css",)}
@@ -774,14 +692,9 @@ class NoteCommentsAdmin(admin.ModelAdmin):
 
 
 class VideoToDeleteAdmin(admin.ModelAdmin):
-<<<<<<< HEAD
     list_display = ('date_deletion', 'get_videos')
     list_filter = ['date_deletion']
     autocomplete_fields = ['video']
-=======
-    list_display = ("date_deletion", "get_videos")
-    list_filter = ["date_deletion"]
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def get_videos(self, obj):
         return obj.video.count()

@@ -47,12 +47,6 @@ from pod.main.views import (
 )
 from pod.main.rest_router import urlpatterns as rest_urlpatterns
 from pod.video_search.views import search_videos
-<<<<<<< HEAD
-from pod.recorder.views import add_recording, recorder_notify, claim_record,\
-    delete_record
-# from pod.lti.views import LTIAssignmentAddVideoView,
-# LTIAssignmentGetVideoView
-=======
 from pod.recorder.views import (
     add_recording,
     recorder_notify,
@@ -60,7 +54,6 @@ from pod.recorder.views import (
     delete_record,
 )
 from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 from pod.video.views import PodChunkedUploadView, PodChunkedUploadCompleteView
 from django.urls import path
 
@@ -76,7 +69,6 @@ if USE_CAS:
 
 
 urlpatterns = [
-<<<<<<< HEAD
     path("select2/", include("django_select2.urls")),
     url(r'^admin/', admin.site.urls),
 
@@ -84,15 +76,6 @@ urlpatterns = [
     url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^jsi18n/$', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
-=======
-    url("robots.txt", robots_txt),
-    url(r"^admin/", admin.site.urls),
-    # Translation
-    url(r"^i18n/", include("django.conf.urls.i18n")),
-    url(r"^jsi18n/$", JavaScriptCatalog.as_view(), name="javascript-catalog"),
-    # progressbar
-    url(r"^progressbarupload/", include("progressbarupload.urls")),
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     # App video
     url(r"^videos/$", videos, name="videos"),
     url(r"^rss-video/$", RssSiteVideosFeed(), name="rss-video"),
@@ -213,19 +196,11 @@ urlpatterns = [
     url(r"^api-auth/", include("rest_framework.urls")),
     url(r"^rest/", include(rest_urlpatterns)),
     # contact_us
-<<<<<<< HEAD
     url(r'^contact_us/$', contact_us, name='contact_us'),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^download/$', download_file, name='download_file'),
 
 
-=======
-    url(r"^contact_us/$", contact_us, name="contact_us"),
-    url(r"^captcha/", include("captcha.urls")),
-    url(r"^download/$", download_file, name="download_file"),
-    # django-select2-form
-    url(r"^select2/", include("select2.urls")),
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     # custom
     url(r"^custom/", include("pod.custom.urls")),
 ]
@@ -288,7 +263,6 @@ for apps in settings.THIRD_PARTY_APPS:
 ##
 # LTI feature patterns
 #
-<<<<<<< HEAD
 # if getattr(settings, 'LTI_ENABLED', False):
 #    # LTI href
 #    urlpatterns += [
@@ -298,15 +272,6 @@ for apps in settings.THIRD_PARTY_APPS:
 #        url(r'^assignment/getvideo/',
 #            LTIAssignmentGetVideoView.as_view()),
 #    ]
-=======
-if getattr(settings, "LTI_ENABLED", False):
-    # LTI href
-    urlpatterns += [
-        url(r"^lti/", include("lti_provider.urls")),
-        url(r"^assignment/addvideo/", LTIAssignmentAddVideoView.as_view()),
-        url(r"^assignment/getvideo/", LTIAssignmentGetVideoView.as_view()),
-    ]
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 ##
 # H5P feature patterns
 #

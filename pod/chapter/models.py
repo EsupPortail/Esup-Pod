@@ -10,14 +10,9 @@ from pod.main.models import get_nextautoincrement
 
 
 class Chapter(models.Model):
-<<<<<<< HEAD
     video = models.ForeignKey(Video, verbose_name=_('video'),
                               on_delete=models.CASCADE)
     title = models.CharField(_('title'), max_length=100)
-=======
-    video = select2_fields.ForeignKey(Video, verbose_name=_("video"))
-    title = models.CharField(_("title"), max_length=100)
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     slug = models.SlugField(
         _("slug"),
         unique=True,

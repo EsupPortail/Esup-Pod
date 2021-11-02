@@ -17,16 +17,10 @@ TRANSCRIPT = getattr(settings, "USE_TRANSCRIPTION", False)
 
 
 class RecordingAdmin(admin.ModelAdmin):
-<<<<<<< HEAD
     list_display = ('title', 'user', 'source_file', 'date_added')
     list_display_links = ('title',)
     list_filter = ('type',)
     autocomplete_fields = ['recorder', 'user']
-=======
-    list_display = ("title", "user", "source_file", "date_added")
-    list_display_links = ("title",)
-    list_filter = ("type",)
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "recorder":
@@ -45,14 +39,9 @@ class RecordingAdmin(admin.ModelAdmin):
 
 
 class RecordingFileTreatmentAdmin(admin.ModelAdmin):
-<<<<<<< HEAD
     list_display = ('id', 'file')
     actions = ['delete_source']
     autocomplete_fields = ['recorder']
-=======
-    list_display = ("id", "file")
-    actions = ["delete_source"]
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def delete_source(self, request, queryset):
         for item in queryset:
@@ -151,12 +140,8 @@ class RecorderAdmin(admin.ModelAdmin):
 
 
 class RecordingFileAdmin(admin.ModelAdmin):
-<<<<<<< HEAD
     list_display = ('id', 'file', 'recorder')
     autocomplete_fields = ['recorder']
-=======
-    list_display = ("id", "file", "recorder")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

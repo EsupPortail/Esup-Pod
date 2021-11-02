@@ -76,15 +76,11 @@ class RecordingForm(forms.ModelForm):
 
     class Meta:
         model = Recording
-<<<<<<< HEAD
         exclude = ('comment', 'date_added')
         widgets = {
             'recorder': RecorderWidget,
             'user': UserWidget
         }
-=======
-        exclude = ("comment", "date_added")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     delete = forms.BooleanField(
         required=False,

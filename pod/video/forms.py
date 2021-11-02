@@ -658,19 +658,6 @@ class VideoForm(forms.ModelForm):
         # remove required=True for videofield if instance
         if self.fields.get("video") and self.instance and self.instance.video:
             del self.fields["video"].widget.attrs["required"]
-<<<<<<< HEAD
-        if self.fields.get('owner'):
-            self.fields['owner'].queryset = self.fields['owner']. \
-                queryset.filter(owner__sites=Site.objects.get_current())
-        if self.fields.get('additional_owners'):
-            self.fields['additional_owners'].queryset = self.fields[
-                'additional_owners'].queryset.filter(
-                    owner__sites=Site.objects.get_current())
-
-    def custom_video_form(self):
-        if FILEPICKER and self.fields.get('thumbnail'):
-            self.fields['thumbnail'].widget = CustomFileWidget(type="image")
-=======
         if self.fields.get("owner"):
             self.fields["owner"].queryset = self.fields["owner"].queryset.filter(
                 owner__sites=Site.objects.get_current()
@@ -683,7 +670,6 @@ class VideoForm(forms.ModelForm):
 
         if FILEPICKER and self.fields.get("thumbnail"):
             self.fields["thumbnail"].widget = CustomFileWidget(type="image")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
         if not TRANSCRIPT:
             self.remove_field("transcript")
@@ -775,15 +761,7 @@ class VideoForm(forms.ModelForm):
         fields = VIDEO_FORM_FIELDS
         widgets = {
             # 'date_added': widgets.AdminSplitDateTime,
-<<<<<<< HEAD
-            'date_evt': widgets.AdminDateWidget,
-            'owner': OwnerWidget,
-            'additional_owners': AddOwnerWidget,
-            'channel': ChannelWidget,
-            'discipline': DisciplineWidget
-=======
             "date_evt": widgets.AdminDateWidget,
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         }
         initial = {
             "date_added": TODAY,

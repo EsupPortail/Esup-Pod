@@ -18,12 +18,8 @@ class HeartBeatAdmin(admin.ModelAdmin):
 
 class BuildingAdmin(admin.ModelAdmin):
     form = BuildingAdminForm
-<<<<<<< HEAD
     list_display = ('name', 'gmapurl')
     search_fields = ['name']
-=======
-    list_display = ("name", "gmapurl")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

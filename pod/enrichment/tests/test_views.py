@@ -61,15 +61,6 @@ class EnrichmentViewsTestCase(TestCase):
         self.assertContains(response, "form_enrich")
         response = self.client.post(
             url,
-<<<<<<< HEAD
-            data={'action': 'save',
-                  'video': 1,
-                  'title': 'testenrich',
-                  'start': 1,
-                  'end': 2,
-                  'type': 'weblink',
-                  'weblink': 'http://test.com'})
-=======
             data={
                 "action": "save",
                 "enrich_id": None,
@@ -81,7 +72,6 @@ class EnrichmentViewsTestCase(TestCase):
                 "weblink": "http://test.com",
             },
         )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         self.assertEqual(response.status_code, 200)
         result = Enrichment.objects.all()
         self.assertTrue(result)
@@ -101,15 +91,6 @@ class EnrichmentViewsTestCase(TestCase):
         url = reverse("enrichment:edit_enrichment", kwargs={"slug": video.slug})
         response = self.client.post(
             url,
-<<<<<<< HEAD
-            data={'action': 'save',
-                  'video': 1,
-                  'title': 'testenrich',
-                  'start': 1,
-                  'end': 2,
-                  'type': 'weblink',
-                  'weblink': 'http://test.com'})
-=======
             data={
                 "action": "save",
                 "enrich_id": None,
@@ -121,7 +102,6 @@ class EnrichmentViewsTestCase(TestCase):
                 "weblink": "http://test.com",
             },
         )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         self.assertEqual(response.status_code, 200)
         result = Enrichment.objects.all()
         self.assertTrue(result)
@@ -155,7 +135,6 @@ class EnrichmentViewsTestCase(TestCase):
         url = reverse("enrichment:edit_enrichment", kwargs={"slug": video.slug})
         response = self.client.post(
             url,
-<<<<<<< HEAD
             data={'action': 'save',
                   'video': 1,
                   'title': 'testenrich',
@@ -163,19 +142,6 @@ class EnrichmentViewsTestCase(TestCase):
                   'end': 2,
                   'type': 'weblink',
                   'weblink': 'http://test.com'})
-=======
-            data={
-                "action": "save",
-                "enrich_id": None,
-                "video": 1,
-                "title": "testenrich",
-                "start": 1,
-                "end": 2,
-                "type": "weblink",
-                "weblink": "http://test.com",
-            },
-        )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         self.assertEqual(response.status_code, 200)
         result = Enrichment.objects.all()
         self.assertTrue(result)

@@ -11,26 +11,12 @@ from pod.authentication.models import AccessGroup
 
 
 class UserFolderAdmin(admin.ModelAdmin):
-<<<<<<< HEAD
     list_display = ('name', 'owner',)
     list_display_links = ('name',)
     list_filter = (('owner', admin.RelatedOnlyFieldListFilter),)
     ordering = ('name', 'owner',)
     search_fields = ['id', 'name', 'owner__username']
     autocomplete_fields = ['owner', 'users']
-=======
-    list_display = (
-        "name",
-        "owner",
-    )
-    list_display_links = ("name",)
-    list_filter = (("owner", admin.RelatedOnlyFieldListFilter),)
-    ordering = (
-        "name",
-        "owner",
-    )
-    search_fields = ["id", "name", "owner__username"]
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "owner":
@@ -65,22 +51,10 @@ class CustomImageModelAdmin(admin.ModelAdmin):
     )
     list_display_links = ("name",)
     # list_filter = ('file_type',)
-<<<<<<< HEAD
     ordering = ('created_by', 'name', )
     readonly_fields = ('file_size', 'file_type',)
     search_fields = ['id', 'name', 'created_by__username']
     autocomplete_fields = ['folder', 'created_by']
-=======
-    ordering = (
-        "created_by",
-        "name",
-    )
-    readonly_fields = (
-        "file_size",
-        "file_type",
-    )
-    search_fields = ["id", "name", "created_by__username"]
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -112,22 +86,10 @@ class CustomFileModelAdmin(admin.ModelAdmin):
     )
     list_display_links = ("name",)
     # list_filter = ('file_type',)
-<<<<<<< HEAD
     ordering = ('created_by', 'name', )
     readonly_fields = ('file_size', 'file_type',)
     search_fields = ['id', 'name', 'created_by__username']
     autocomplete_fields = ['folder', 'created_by']
-=======
-    ordering = (
-        "created_by",
-        "name",
-    )
-    readonly_fields = (
-        "file_size",
-        "file_type",
-    )
-    search_fields = ["id", "name", "created_by__username"]
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

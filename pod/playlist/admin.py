@@ -9,7 +9,6 @@ from pod.video.models import Video
 
 class PlaylistAdmin(admin.ModelAdmin):
 
-<<<<<<< HEAD
     list_display = ('title', 'owner', 'visible',)
     list_display_links = ('title',)
     list_editable = ('visible',)
@@ -17,20 +16,6 @@ class PlaylistAdmin(admin.ModelAdmin):
     list_filter = ['visible']
     autocomplete_fields = ['owner']
     search_fields = ['name']
-=======
-    list_display = (
-        "title",
-        "owner",
-        "visible",
-    )
-    list_display_links = ("title",)
-    list_editable = ("visible",)
-    ordering = (
-        "title",
-        "id",
-    )
-    list_filter = ["visible"]
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if (db_field.name) == "owner":
@@ -51,25 +36,11 @@ admin.site.register(Playlist, PlaylistAdmin)
 
 class PlaylistElementAdmin(admin.ModelAdmin):
 
-<<<<<<< HEAD
     list_display = ('playlist', 'video', 'position',)
     list_display_links = ('playlist',)
     list_editable = ('position',)
     ordering = ('playlist__title', 'id',)
     autocomplete_fields = ['playlist', 'video']
-=======
-    list_display = (
-        "playlist",
-        "video",
-        "position",
-    )
-    list_display_links = ("playlist",)
-    list_editable = ("position",)
-    ordering = (
-        "playlist__title",
-        "id",
-    )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

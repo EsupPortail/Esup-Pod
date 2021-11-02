@@ -108,14 +108,9 @@ class Enrichment(models.Model):
         ("embed", _("embed")),
     )
 
-<<<<<<< HEAD
     video = models.ForeignKey(Video, verbose_name=_('video'),
                               on_delete=models.CASCADE)
     title = models.CharField(_('title'), max_length=100)
-=======
-    video = select2_fields.ForeignKey(Video, verbose_name=_("video"))
-    title = models.CharField(_("title"), max_length=100)
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     slug = models.SlugField(
         _("slug"),
         unique=True,
@@ -147,30 +142,18 @@ class Enrichment(models.Model):
     )
 
     image = models.ForeignKey(
-<<<<<<< HEAD
         CustomImageModel, verbose_name=_(
             'Image'), null=True, on_delete=models.CASCADE, blank=True)
-=======
-        CustomImageModel, verbose_name=_("Image"), null=True, blank=True
-    )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     document = models.ForeignKey(
         CustomFileModel,
         verbose_name=_("Document"),
         null=True,
         blank=True,
-<<<<<<< HEAD
         on_delete=models.CASCADE,
         help_text=_(u'Integrate an document (PDF, text, html)'))
     richtext = RichTextField(_('Richtext'), config_name='complete', blank=True)
     weblink = models.URLField(
         _(u'Web link'), max_length=200, null=True, blank=True)
-=======
-        help_text=_(u"Integrate a document (PDF, text, html)"),
-    )
-    richtext = RichTextField(_("Richtext"), config_name="complete", blank=True)
-    weblink = models.URLField(_(u"Web link"), max_length=200, null=True, blank=True)
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     embed = models.TextField(
         _("Embed code"),
         null=True,
@@ -335,7 +318,6 @@ def delete_vtt(sender, instance=None, created=False, **kwargs):
 
 
 class EnrichmentVtt(models.Model):
-<<<<<<< HEAD
     video = models.OneToOneField(Video, verbose_name=_('Video'),
                                  editable=False, null=True,
                                  on_delete=models.CASCADE)
@@ -344,18 +326,6 @@ class EnrichmentVtt(models.Model):
                             null=True,
                             on_delete=models.CASCADE,
                             verbose_name=_('Subtitle file'))
-=======
-    video = models.OneToOneField(
-        Video,
-        verbose_name=_("Video"),
-        editable=False,
-        null=True,
-        on_delete=models.CASCADE,
-    )
-    src = models.ForeignKey(
-        CustomFileModel, blank=True, null=True, verbose_name=_("Subtitle file")
-    )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     @property
     def sites(self):
@@ -380,7 +350,6 @@ class EnrichmentVtt(models.Model):
 
 
 class EnrichmentGroup(models.Model):
-<<<<<<< HEAD
     video = models.OneToOneField(Video, verbose_name=_('Video'),
                                  on_delete=models.CASCADE)
     groups = models.ManyToManyField(
@@ -388,24 +357,6 @@ class EnrichmentGroup(models.Model):
         help_text=_('Select one or more groups who'
                     ' can access to the'
                     ' enrichment of the video'))
-=======
-    video = select2_fields.OneToOneField(
-        Video,
-        verbose_name=_("Video"),
-        # editable=False, null=True,
-        on_delete=models.CASCADE,
-    )
-    groups = select2_fields.ManyToManyField(
-        Group,
-        blank=True,
-        verbose_name=_("Groups"),
-        help_text=_(
-            "Select one or more groups who"
-            " can access to the"
-            " enrichment of the video"
-        ),
-    )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     class Meta:
         ordering = ["video"]

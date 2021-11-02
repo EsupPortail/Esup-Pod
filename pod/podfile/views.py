@@ -69,7 +69,6 @@ FOLDER_FILE_TYPE = ["image", "file"]
 @staff_member_required(redirect_field_name="referrer")
 def home(request, type=None):
     if type is not None and type not in FOLDER_FILE_TYPE:
-<<<<<<< HEAD
         raise SuspiciousOperation('--> Invalid type')
     user_home_folder = get_object_or_404(
         UserFolder, name="home", owner=request.user)
@@ -96,41 +95,6 @@ def home(request, type=None):
                       'type': type
                   }
                   )
-=======
-        raise SuspiciousOperation("--> Invalid type")
-    user_home_folder = get_object_or_404(UserFolder, name="home", owner=request.user)
-
-    share_folder = (
-        UserFolder.objects.filter(access_groups=request.user.owner.accessgroup_set.all())
-        .exclude(owner=request.user)
-        .order_by("owner", "id")
-    )
-
-    share_folder_user = (
-        UserFolder.objects.filter(users=request.user)
-        .exclude(owner=request.user)
-        .order_by("owner", "id")
-    )
-
-    current_session_folder = get_current_session_folder(request)
-
-    template = "podfile/home_content.html" if (request.is_ajax()) else "podfile/home.html"
-
-    return render(
-        request,
-        template,
-        {
-            "user_home_folder": user_home_folder,
-            "user_folder": [],
-            "share_folder": share_folder,
-            "share_folder_user": share_folder_user,
-            "current_session_folder": current_session_folder,
-            "form_file": CustomFileModelForm(),
-            "form_image": CustomImageModelForm(),
-            "type": type,
-        },
-    )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
 
 def get_current_session_folder(request):
@@ -139,16 +103,6 @@ def get_current_session_folder(request):
     print("TEST COUCOU 1")
     try:
         current_session_folder = UserFolder.objects.filter(
-<<<<<<< HEAD
-           Q(owner=request.user, name=request.session.get(
-              'current_session_folder', "home")) | Q(
-                 users=request.user, name=request.session.get(
-                    'current_session_folder', "home")) | Q(
-                 access_groups__in=request.user.owner.accessgroup_set.all(
-                 ), name=request.session.get(
-                         'current_session_folder', "home")))
-        print(current_session_folder)
-=======
             Q(
                 owner=request.user,
                 name=request.session.get("current_session_folder", "home"),
@@ -162,7 +116,6 @@ def get_current_session_folder(request):
                 name=request.session.get("current_session_folder", "home"),
             )
         )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     except ObjectDoesNotExist:
         if request.user.is_superuser:
             try:
@@ -552,22 +505,6 @@ def changefile(request):
 def file_edit_save(request, folder):
     print(request.FILES)
     form_file = None
-<<<<<<< HEAD
-    if (request.POST.get("file_id")
-            and request.POST.get("file_id") is not None
-            and request.POST.get("file_id") != "None"):
-        customfile = get_object_or_404(
-            CustomFileModel, id=request.POST['file_id'])
-        form_file = CustomFileModelForm(
-            request.POST, request.FILES, instance=customfile)
-    else:
-        form_file = CustomFileModelForm(request.POST, request.FILES)
-    if form_file.is_valid():
-        print(form_file.cleaned_data["folder"])
-        print(folder)
-        # if form_file.cleaned_data["folder"] != folder:
-        #    raise SuspiciousOperation('Folder must be the same')
-=======
     if request.POST.get("file_id") and request.POST.get("file_id") != "None":
         customfile = get_object_or_404(CustomFileModel, id=request.POST["file_id"])
         form_file = CustomFileModelForm(request.POST, request.FILES, instance=customfile)
@@ -576,7 +513,6 @@ def file_edit_save(request, folder):
     if form_file.is_valid():
         if form_file.cleaned_data["folder"] != folder:
             raise SuspiciousOperation("Folder must be the same")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         customfile = form_file.save(commit=False)
         if hasattr(form_file.instance, "created_by"):
             customfile.created_by = form_file.instance.created_by

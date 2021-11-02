@@ -13,22 +13,11 @@ class Playlist(models.Model):
         _("Slug"),
         unique=True,
         max_length=100,
-<<<<<<< HEAD
         help_text=_('Used to access this instance, the "slug" is a short' +
                     ' label containing only letters, numbers, underscore' +
                     ' or dash top.'))
     owner = models.ForeignKey(User, verbose_name=_('Owner'),
                               on_delete=models.CASCADE)
-=======
-        help_text=_(
-            'Used to access this instance, the "slug" is a short'
-            + " label containing only letters, numbers, underscore"
-            + " or dash top."
-        ),
-        editable=False,
-    )
-    owner = select2_fields.ForeignKey(User, verbose_name=_("Owner"))
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     description = models.TextField(
         _("Description"),
         max_length=255,
@@ -88,15 +77,10 @@ class Playlist(models.Model):
 
 
 class PlaylistElement(models.Model):
-<<<<<<< HEAD
     playlist = models.ForeignKey(Playlist, verbose_name=_('Playlist'),
                                  on_delete=models.CASCADE)
     video = models.ForeignKey(Video, verbose_name=_('Video'),
                               on_delete=models.CASCADE)
-=======
-    playlist = select2_fields.ForeignKey(Playlist, verbose_name=_("Playlist"))
-    video = select2_fields.ForeignKey(Video, verbose_name=_("Video"))
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     position = models.PositiveSmallIntegerField(
         _("Position"),
         default=1,

@@ -118,7 +118,6 @@ class Recorder(models.Model):
         default=RECORDER_TYPE[0][0],
     )
     # Manager of the recorder who received mails
-<<<<<<< HEAD
     user = models.ForeignKey(
         User, on_delete=models.CASCADE,
         limit_choices_to={'is_staff': True}, help_text=_(
@@ -126,35 +125,12 @@ class Recorder(models.Model):
             'emails and he will be the owner of the published videos. If no '
             'user is selected, this recorder will use manual assign system.'),
         verbose_name=_('User'), null=True, blank=True)
-=======
-    user = select2_fields.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        limit_choices_to={"is_staff": True},
-        help_text=_(
-            "Manager of this recorder. This manager will receive recorder "
-            "emails and he will be the owner of the published videos. If no "
-            "user is selected, this recorder will use manual assign system."
-        ),
-        verbose_name=_("User"),
-        null=True,
-        blank=True,
-    )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     # Additionnal additional_users
     additional_users = models.ManyToManyField(
         User,
         blank=True,
-<<<<<<< HEAD
         verbose_name=_('Additional users'),
         related_name='users_recorders',
-=======
-        ajax=True,
-        js_options={"width": "off"},
-        verbose_name=_("Additional users"),
-        search_field=select_recorder_user(),
-        related_name="users_recorders",
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         help_text=_(
             "You can add additionals users to the recorder. They "
             "will become the additionnals owners of the published videos "
@@ -178,26 +154,12 @@ class Recorder(models.Model):
     is_restricted = models.BooleanField(
         verbose_name=_("Restricted access"),
         help_text=_(
-<<<<<<< HEAD
             'If this box is checked, '
             'the video will only be accessible to authenticated users.'),
         default=False)
     restrict_access_to_groups = models.ManyToManyField(
         Group, blank=True, verbose_name=_('Groups'),
         help_text=_('Select one or more groups who can access to this video'))
-=======
-            "If this box is checked, "
-            "the video will only be accessible to authenticated users."
-        ),
-        default=False,
-    )
-    restrict_access_to_groups = select2_fields.ManyToManyField(
-        Group,
-        blank=True,
-        verbose_name=_("Groups"),
-        help_text=_("Select one or more groups who can access to this video"),
-    )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     password = models.CharField(
         _("password"),
         help_text=_("Viewing this video will not be possible without this password."),
@@ -220,7 +182,6 @@ class Recorder(models.Model):
         help_text=_("Select the main language used in the content."),
     )
     transcript = models.BooleanField(
-<<<<<<< HEAD
         _('Transcript'), default=False, help_text=_(
             "Check this box if you want to transcript the audio."
             "(beta version)"))
@@ -239,32 +200,6 @@ class Recorder(models.Model):
         Channel,
         verbose_name=_('Channels'),
         blank=True)
-=======
-        _("Transcript"),
-        default=False,
-        help_text=_("Check this box if you want to transcript the audio. (beta version)"),
-    )
-    tags = TagField(
-        help_text=_(
-            "Separate tags with spaces, "
-            "enclose the tags consist of several words in quotation marks."
-        ),
-        verbose_name=_("Tags"),
-    )
-    discipline = select2_fields.ManyToManyField(
-        Discipline, blank=True, verbose_name=_("Disciplines")
-    )
-    licence = models.CharField(
-        _("Licence"),
-        max_length=8,
-        choices=LICENCE_CHOICES,
-        blank=True,
-        null=True,
-    )
-    channel = select2_fields.ManyToManyField(
-        Channel, verbose_name=_("Channels"), blank=True
-    )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     theme = models.ManyToManyField(
         Theme,
         verbose_name=_("Themes"),
@@ -323,7 +258,6 @@ def default_site(sender, instance, created, **kwargs):
 
 
 class Recording(models.Model):
-<<<<<<< HEAD
     recorder = models.ForeignKey(Recorder,
                                  on_delete=models.CASCADE,
                                  verbose_name=_('Recorder'),
@@ -339,29 +273,6 @@ class Recording(models.Model):
     type = models.CharField(_('Recording Type'), max_length=50,
                             choices=RECORDER_TYPE,
                             default=RECORDER_TYPE[0][0])
-=======
-    recorder = models.ForeignKey(
-        Recorder,
-        on_delete=models.CASCADE,
-        verbose_name=_("Recorder"),
-        default=DEFAULT_RECORDER_ID,
-        help_text=_("Recorder that made this recording."),
-    )
-    user = select2_fields.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        limit_choices_to={"is_staff": True},
-        default=DEFAULT_RECORDER_USER_ID,
-        help_text=_("User who has made the recording"),
-    )
-    title = models.CharField(_("title"), max_length=200, unique=True)
-    type = models.CharField(
-        _("Recording Type"),
-        max_length=50,
-        choices=RECORDER_TYPE,
-        default=RECORDER_TYPE[0][0],
-    )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     source_file = models.FilePathField(
         path=DEFAULT_RECORDER_PATH, unique=True, recursive=True
     )

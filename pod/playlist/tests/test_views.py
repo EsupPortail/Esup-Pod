@@ -70,14 +70,6 @@ class PlaylistViewsTestCase(TestCase):
         self.assertContains(response, "playlist_form")
         self.assertContains(response, _("Add a new playlist"))
         response = self.client.post(
-<<<<<<< HEAD
-            '/playlist/',
-            data={'action': 'edit',
-                  'title': 'playlist1',
-                  'owner': owner.id,
-                  'description': 'test',
-                  'visible': False})
-=======
             "/playlist/",
             data={
                 "action": "edit",
@@ -88,7 +80,6 @@ class PlaylistViewsTestCase(TestCase):
                 "visible": False,
             },
         )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         self.assertEqual(response.status_code, 200)
         result = Playlist.objects.all()
         self.assertTrue(result)

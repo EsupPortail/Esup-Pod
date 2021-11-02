@@ -140,7 +140,6 @@ class CompletionContributorViewsTestCase(TestCase):
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
         response = self.client.post(
-<<<<<<< HEAD
             '/video_completion_contributor/{0}/'.format(video.slug),
             data={'action': 'new'})
         self.assertEqual(response.status_code, 200)
@@ -152,37 +151,15 @@ class CompletionContributorViewsTestCase(TestCase):
                   'role': 'author',
                   'video': 1,
                   'email_address': 'test@test.com',
-                  'weblink': ''
+                  'weblink': '',
+                  "contributor_id": None,
                   })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
         self.assertContains(response, 'list_contributor')
         self.assertContains(response, 'testcontributor')
         self.assertContains(response, 'test@test.com')
-=======
-            "/video_completion_contributor/{0}/".format(video.slug),
-            data={"action": "new"},
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_contributor")
-        response = self.client.post(
-            "/video_completion_contributor/{0}/".format(video.slug),
-            data={
-                "action": "save",
-                "name": "testcontributor",
-                "role": "author",
-                "video": 1,
-                "email_address": "test@test.com",
-                "weblink": "",
-                "contributor_id": None,
-            },
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "video_completion.html")
-        self.assertContains(response, "list_contributor")
-        self.assertContains(response, "testcontributor")
-        self.assertContains(response, "test@test.com")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
+
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, "testcontributor")
 
@@ -199,7 +176,6 @@ class CompletionContributorViewsTestCase(TestCase):
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
-<<<<<<< HEAD
         self.assertContains(response, 'form_contributor')
         response = self.client.post(
             '/video_completion_contributor/{0}/'.format(video.slug),
@@ -208,23 +184,9 @@ class CompletionContributorViewsTestCase(TestCase):
                   'role': 'author',
                   'video': 1,
                   'email_address': 'test@test.com',
-                  'weblink': ''
+                  'weblink': '',
+                  "contributor_id": None,
                   })
-=======
-        self.assertContains(response, "form_contributor")
-        response = self.client.post(
-            "/video_completion_contributor/{0}/".format(video.slug),
-            data={
-                "action": "save",
-                "name": "testcontributor",
-                "role": "author",
-                "video": 1,
-                "email_address": "test@test.com",
-                "weblink": "",
-                "contributor_id": None,
-            },
-        )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "list_contributor")
         result = Contributor.objects.get(id=1)
@@ -266,7 +228,6 @@ class CompletionContributorViewsTestCase(TestCase):
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
-<<<<<<< HEAD
         self.assertContains(response, 'form_contributor')
         response = self.client.post(
             '/video_completion_contributor/{0}/'.format(video.slug),
@@ -275,28 +236,12 @@ class CompletionContributorViewsTestCase(TestCase):
                   'role': 'author',
                   'video': 1,
                   'email_address': 'test@test.com',
-                  'weblink': ''
+                  'weblink': '',
+                  "contributor_id": None,
                   })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_contributor')
 
-=======
-        self.assertContains(response, "form_contributor")
-        response = self.client.post(
-            "/video_completion_contributor/{0}/".format(video.slug),
-            data={
-                "action": "save",
-                "name": "testcontributor",
-                "role": "author",
-                "video": 1,
-                "email_address": "test@test.com",
-                "weblink": "",
-                "contributor_id": None,
-            },
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "list_contributor")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         result = Contributor.objects.get(id=1)
         self.assertEqual(result.name, "testcontributor")
         response = self.client.post(
@@ -377,7 +322,6 @@ class CompletionTrackViewsTestCase(TestCase):
                 file=testfile,
             )
         else:
-<<<<<<< HEAD
             document = CustomFileModel.objects.create(
                 file=testfile
             )
@@ -387,28 +331,12 @@ class CompletionTrackViewsTestCase(TestCase):
                   'kind': 'subtitles',
                   'lang': 'fr',
                   'src': document.id,
-                  'video': 1
+                  'video': 1,
+                  "track_id": None,
                   })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
         self.assertContains(response, 'list_track')
-=======
-            document = CustomFileModel.objects.create(file=testfile)
-        response = self.client.post(
-            "/video_completion_track/{0}/".format(video.slug),
-            data={
-                "action": "save",
-                "kind": "subtitles",
-                "lang": "fr",
-                "src": document.id,
-                "video": 1,
-                "track_id": None,
-            },
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "video_completion.html")
-        self.assertContains(response, "list_track")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         result = Track.objects.get(id=1)
         self.assertEqual(result.kind, "subtitles")
         self.assertTrue("testfile" in result.src.name)
@@ -443,7 +371,6 @@ class CompletionTrackViewsTestCase(TestCase):
                 file=testfile,
             )
         else:
-<<<<<<< HEAD
             document = CustomFileModel.objects.create(
                 file=testfile
             )
@@ -453,22 +380,9 @@ class CompletionTrackViewsTestCase(TestCase):
                   'kind': 'subtitles',
                   'lang': 'fr',
                   'src': document.id,
-                  'video': 1
+                  'video': 1,
+                  "track_id": None,
                   })
-=======
-            document = CustomFileModel.objects.create(file=testfile)
-        response = self.client.post(
-            "/video_completion_track/{0}/".format(video.slug),
-            data={
-                "action": "save",
-                "kind": "subtitles",
-                "lang": "fr",
-                "src": document.id,
-                "video": 1,
-                "track_id": None,
-            },
-        )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "list_track")
         result = Track.objects.get(id=1)
@@ -525,7 +439,6 @@ class CompletionTrackViewsTestCase(TestCase):
                 file=testfile,
             )
         else:
-<<<<<<< HEAD
             document = CustomFileModel.objects.create(
                 file=testfile
             )
@@ -535,22 +448,9 @@ class CompletionTrackViewsTestCase(TestCase):
                   'kind': 'subtitles',
                   'lang': 'fr',
                   'src': document.id,
-                  'video': 1
+                  'video': 1,
+                  "track_id": None,
                   })
-=======
-            document = CustomFileModel.objects.create(file=testfile)
-        response = self.client.post(
-            "/video_completion_track/{0}/".format(video.slug),
-            data={
-                "action": "save",
-                "kind": "subtitles",
-                "lang": "fr",
-                "src": document.id,
-                "video": 1,
-                "track_id": None,
-            },
-        )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "list_track")
         result = Track.objects.get(id=1)
@@ -634,7 +534,6 @@ class CompletionDocumentViewsTestCase(TestCase):
                 file=testfile,
             )
         else:
-<<<<<<< HEAD
             document = CustomFileModel.objects.create(
                 file=testfile
             )
@@ -642,20 +541,10 @@ class CompletionDocumentViewsTestCase(TestCase):
             '/video_completion_document/{0}/'.format(video.slug),
             data={'action': 'save',
                   'document': document.id,
-                  'video': 1
+                  'video': 1,
+                  "track_id": None,
                   })
-=======
-            document = CustomFileModel.objects.create(file=testfile)
-        response = self.client.post(
-            "/video_completion_document/{0}/".format(video.slug),
-            data={
-                "action": "save",
-                "document": document.id,
-                "video": 1,
-                "track_id": None,
-            },
-        )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "list_document")
@@ -692,7 +581,6 @@ class CompletionDocumentViewsTestCase(TestCase):
                 file=testfile,
             )
         else:
-<<<<<<< HEAD
             document = CustomFileModel.objects.create(
                 file=testfile
             )
@@ -701,19 +589,9 @@ class CompletionDocumentViewsTestCase(TestCase):
             data={'action': 'save',
                   'document': document.id,
                   'video': 1,
+                  "track_id": None,    
                   })
-=======
-            document = CustomFileModel.objects.create(file=testfile)
-        response = self.client.post(
-            "/video_completion_document/{0}/".format(video.slug),
-            data={
-                "action": "save",
-                "document": document.id,
-                "video": 1,
-                "track_id": None,
-            },
-        )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
+
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "video_completion.html")
         self.assertContains(response, "list_document")
@@ -784,7 +662,6 @@ class CompletionDocumentViewsTestCase(TestCase):
                 file=testfile,
             )
         else:
-<<<<<<< HEAD
             document = CustomFileModel.objects.create(
                 file=testfile
             )
@@ -792,20 +669,9 @@ class CompletionDocumentViewsTestCase(TestCase):
             '/video_completion_document/{0}/'.format(video.slug),
             data={'action': 'save',
                   'document': document.id,
-                  'video': 1
+                  'video': 1,
+                  "track_id": None,
                   })
-=======
-            document = CustomFileModel.objects.create(file=testfile)
-        response = self.client.post(
-            "/video_completion_document/{0}/".format(video.slug),
-            data={
-                "action": "save",
-                "document": document.id,
-                "video": 1,
-                "track_id": None,
-            },
-        )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "list_document")
         result = Document.objects.get(id=1)
@@ -866,7 +732,6 @@ class CompletionOverlayViewsTestCase(TestCase):
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
         response = self.client.post(
-<<<<<<< HEAD
             '/video_completion_overlay/{0}/'.format(video.slug),
             data={'action': 'new'})
         self.assertEqual(response.status_code, 200)
@@ -880,35 +745,13 @@ class CompletionOverlayViewsTestCase(TestCase):
                   'content': 'testoverlay',
                   'position': 'bottom-right',
                   'background': 'on',
-                  'video': 1
+                  'video': 1,
+                  "overlay_id": None,
                   })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
         self.assertContains(response, 'list_overlay')
-=======
-            "/video_completion_overlay/{0}/".format(video.slug),
-            data={"action": "new"},
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_overlay")
-        response = self.client.post(
-            "/video_completion_overlay/{0}/".format(video.slug),
-            data={
-                "action": "save",
-                "title": "testoverlay",
-                "time_start": 1,
-                "time_end": 2,
-                "content": "testoverlay",
-                "position": "bottom-right",
-                "background": "on",
-                "video": 1,
-                "overlay_id": None,
-            },
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "video_completion.html")
-        self.assertContains(response, "list_overlay")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
+
         result = Overlay.objects.get(id=1)
         self.assertEqual(result.title, "testoverlay")
         self.assertEqual(result.content, "testoverlay")
@@ -922,7 +765,6 @@ class CompletionOverlayViewsTestCase(TestCase):
         login = self.client.login(username="staff", password="hello")
         self.assertTrue(login)
         response = self.client.post(
-<<<<<<< HEAD
             '/video_completion_overlay/{0}/'.format(video.slug),
             data={'action': 'new'})
         self.assertEqual(response.status_code, 200)
@@ -936,35 +778,12 @@ class CompletionOverlayViewsTestCase(TestCase):
                   'content': 'testoverlay',
                   'position': 'bottom-right',
                   'background': 'on',
-                  'video': 1
+                  'video': 1,
+                  "overlay_id": None,
                   })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
         self.assertContains(response, 'list_overlay')
-=======
-            "/video_completion_overlay/{0}/".format(video.slug),
-            data={"action": "new"},
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "form_overlay")
-        response = self.client.post(
-            "/video_completion_overlay/{0}/".format(video.slug),
-            data={
-                "action": "save",
-                "title": "testoverlay",
-                "time_start": 1,
-                "time_end": 2,
-                "content": "testoverlay",
-                "position": "bottom-right",
-                "background": "on",
-                "video": 1,
-                "overlay_id": None,
-            },
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "video_completion.html")
-        self.assertContains(response, "list_overlay")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         result = Overlay.objects.get(id=1)
         self.assertEqual(result.title, "testoverlay")
         response = self.client.post(
@@ -1006,7 +825,6 @@ class CompletionOverlayViewsTestCase(TestCase):
             data={"action": "new"},
         )
         self.assertEqual(response.status_code, 200)
-<<<<<<< HEAD
         self.assertContains(response, 'form_overlay')
         response = self.client.post(
             '/video_completion_overlay/{0}/'.format(video.slug),
@@ -1017,25 +835,9 @@ class CompletionOverlayViewsTestCase(TestCase):
                   'content': 'testoverlay',
                   'position': 'bottom-right',
                   'background': 'on',
-                  'video': 1
+                  'video': 1,
+                  "overlay_id": None,
                   })
-=======
-        self.assertContains(response, "form_overlay")
-        response = self.client.post(
-            "/video_completion_overlay/{0}/".format(video.slug),
-            data={
-                "action": "save",
-                "title": "testoverlay",
-                "time_start": 1,
-                "time_end": 2,
-                "content": "testoverlay",
-                "position": "bottom-right",
-                "background": "on",
-                "video": 1,
-                "overlay_id": None,
-            },
-        )
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "list_overlay")
         result = Overlay.objects.get(id=1)

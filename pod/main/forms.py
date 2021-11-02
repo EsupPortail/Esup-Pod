@@ -81,19 +81,11 @@ class ContactUsForm(forms.Form):
         """Init contact us form."""
         super(ContactUsForm, self).__init__(*args, **kwargs)
 
-<<<<<<< HEAD
         if request.user and request.user.is_authenticated:
             self.fields['name'].widget = forms.HiddenInput()
             self.fields['email'].widget = forms.HiddenInput()
             self.initial['name'] = "%s" % request.user
             self.initial['email'] = "%s" % request.user.email
-=======
-        if request.user and request.user.is_authenticated():
-            self.fields["name"].widget = forms.HiddenInput()
-            self.fields["email"].widget = forms.HiddenInput()
-            self.initial["name"] = "%s" % request.user
-            self.initial["email"] = "%s" % request.user.email
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
             # del self.fields['captcha']
 
         self.fields = add_placeholder_and_asterisk(self.fields)

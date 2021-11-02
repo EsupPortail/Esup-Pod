@@ -54,17 +54,11 @@ LANG_CHOICES_DICT = {key: value for key, value in LANG_CHOICES[0][1] + LANG_CHOI
 
 class Contributor(models.Model):
 
-<<<<<<< HEAD
     video = models.ForeignKey(Video, verbose_name=_('video'),
                               on_delete=models.CASCADE)
     name = models.CharField(_('lastname / firstname'), max_length=200)
     email_address = models.EmailField(
         _('mail'), null=True, blank=True, default='')
-=======
-    video = select2_fields.ForeignKey(Video, verbose_name=_("video"))
-    name = models.CharField(_("lastname / firstname"), max_length=200)
-    email_address = models.EmailField(_("mail"), null=True, blank=True, default="")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     role = models.CharField(
         _(u"role"), max_length=200, choices=ROLE_CHOICES, default="author"
     )
@@ -128,7 +122,6 @@ class Contributor(models.Model):
 
 
 class Document(models.Model):
-<<<<<<< HEAD
     video = models.ForeignKey(Video, verbose_name=_('Video'),
                               on_delete=models.CASCADE)
     document = models.ForeignKey(
@@ -137,11 +130,6 @@ class Document(models.Model):
         blank=True,
         verbose_name=_('Document'),
         on_delete=models.CASCADE
-=======
-    video = select2_fields.ForeignKey(Video, verbose_name=_("Video"))
-    document = models.ForeignKey(
-        CustomFileModel, null=True, blank=True, verbose_name=_("Document")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     )
 
     class Meta:
@@ -186,28 +174,17 @@ class Document(models.Model):
 
 class Track(models.Model):
 
-<<<<<<< HEAD
     video = models.ForeignKey(Video, verbose_name=_('Video'),
                               on_delete=models.CASCADE)
-=======
-    video = select2_fields.ForeignKey(Video, verbose_name=_("Video"))
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     kind = models.CharField(
         _("Kind"), max_length=10, choices=KIND_CHOICES, default="subtitles"
     )
     lang = models.CharField(_("Language"), max_length=2, choices=LANG_CHOICES)
-    src = models.ForeignKey(
-        CustomFileModel, blank=True, null=True, verbose_name=_("Subtitle file")
-    )
-<<<<<<< HEAD
-    lang = models.CharField(_('Language'), max_length=2, choices=LANG_CHOICES)
     src = models.ForeignKey(CustomFileModel,
                             blank=True,
                             null=True,
                             verbose_name=_('Subtitle file'),
                             on_delete=models.CASCADE)
-=======
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
     @property
     def sites(self):
@@ -279,14 +256,9 @@ class Overlay(models.Model):
         ("left", _(u"left")),
     )
 
-<<<<<<< HEAD
     video = models.ForeignKey(Video, verbose_name=_('Video'),
                               on_delete=models.CASCADE)
     title = models.CharField(_('Title'), max_length=100)
-=======
-    video = select2_fields.ForeignKey(Video, verbose_name=_("Video"))
-    title = models.CharField(_("Title"), max_length=100)
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     slug = models.SlugField(
         _("Slug"),
         unique=True,

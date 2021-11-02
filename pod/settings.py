@@ -28,7 +28,6 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.flatpages",
     # Exterior Applications
-<<<<<<< HEAD
     'ckeditor',
     'sorl.thumbnail',
     'tagging',
@@ -57,54 +56,12 @@ INSTALLED_APPS = [
     'shibboleth',
     'chunked_upload',
     'mozilla_django_oidc',
-=======
-    "ckeditor",
-    "sorl.thumbnail",
-    "tagging",
-    "cas",
-    "captcha",
-    "progressbarupload",
-    "rest_framework",
-    "rest_framework.authtoken",
-    "django_filters",
-    "lti_provider",
-    "select2",
-    # Pod Applications
-    "pod.main",
-    "django.contrib.admin",  # put it here for template override
-    "pod.authentication",
-    "pod.video",
-    "pod.podfile",
-    "pod.playlist",
-    "pod.completion",
-    "pod.chapter",
-    "pod.enrichment",
-    "pod.video_search",
-    "pod.live",
-    "pod.recorder",
-    "pod.lti",
-    "pod.custom",
-    "shibboleth",
-    "chunked_upload",
-    "pod.bbb",
-    "mozilla_django_oidc",
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 ]
 
 ##
 # Activated middleware components
 #
 MIDDLEWARE = [
-<<<<<<< HEAD
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-=======
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
@@ -115,20 +72,15 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     # Pages statiques
     "django.contrib.flatpages.middleware.FlatpageFallbackMiddleware",
 ]
 
 
-<<<<<<< HEAD
 AUTHENTICATION_BACKENDS = (
     'pod.main.auth_backend.SiteBackend',
 
 )
-=======
-AUTHENTICATION_BACKENDS = ("pod.main.auth_backend.SiteBackend",)
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
 
 ##
 # Full Python import path to root URL file
@@ -255,7 +207,6 @@ LOGGING = {
     },
 }
 
-<<<<<<< HEAD
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
@@ -269,9 +220,7 @@ CACHES = {
         }
     }
 }
-=======
-MODELTRANSLATION_FALLBACK_LANGUAGES = ("fr", "en", "nl")
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
+
 
 # Tell select2 which cache configuration to use:
 SELECT2_CACHE_BACKEND = "select2"
@@ -303,12 +252,8 @@ for application in INSTALLED_APPS:
 #
 if "USE_CAS" in globals() and eval("USE_CAS") is True:
     AUTHENTICATION_BACKENDS = (
-<<<<<<< HEAD
-        'cas.backends.CASBackend',
-=======
         "pod.main.auth_backend.SiteBackend",
         "cas.backends.CASBackend",
->>>>>>> 95782682b7c5d157bd691fca076b10627806b2fd
     )
     CAS_RESPONSE_CALLBACKS = (
         "pod.authentication.populatedCASbackend.populateUser",
