@@ -9,13 +9,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     {% block opengraph %}
-      <meta name="description" content="">
+      <meta name="description" content="{{ DESC_SITE }}">
       <!-- Open Graph data -->
       <meta property="og:title" content="{{ TITLE_SITE }}" />
       <meta property="og:type" content="website" />
       <meta property="og:url" content="{{ request.build_absolute_uri }}" />
       <meta property="og:image" content="//{{ request.META.HTTP_HOST }}{% static LOGO_SITE %}" />
-      <meta property="og:description" content="" />
+      <meta property="og:description" content="{{ DESC_SITE }}" />
       <meta property="og:site_name" content="{{ TITLE_SITE }}" />
     {% endblock %}
     {% if FAVICON %}
