@@ -4,7 +4,6 @@ from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User
 from pod.authentication.models import AccessGroup
-from django.urls import reverse
 from django.contrib.sites.models import Site
 
 from .. import views
@@ -14,7 +13,6 @@ from ..models import Video
 from ..models import Channel
 from ..models import Discipline
 from ..models import AdvancedNotes
-from pod.authentication.models import AccessGroup
 
 import re
 import json

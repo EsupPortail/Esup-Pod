@@ -537,7 +537,6 @@ class PlaylistVideoAdmin(admin.ModelAdmin):
     search_fields = ["id", "video__id", "video__title"]
     list_filter = ["encoding_format"]
 
-
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if not request.user.is_superuser:

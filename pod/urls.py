@@ -53,7 +53,7 @@ from pod.recorder.views import (
     claim_record,
     delete_record,
 )
-from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
+#from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
 from pod.video.views import PodChunkedUploadView, PodChunkedUploadCompleteView
 from django.urls import path
 
@@ -69,7 +69,7 @@ if USE_CAS:
 
 
 urlpatterns = [
-    path("select2/", include("django_select2.urls")),
+    url("robots.txt", robots_txt),
     url(r'^admin/', admin.site.urls),
 
     # Translation

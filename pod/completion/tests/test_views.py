@@ -589,7 +589,7 @@ class CompletionDocumentViewsTestCase(TestCase):
             data={'action': 'save',
                   'document': document.id,
                   'video': 1,
-                  "track_id": None,    
+                  "track_id": None,
                   })
 
         self.assertEqual(response.status_code, 200)
