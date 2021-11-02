@@ -626,7 +626,7 @@ def get_video_access(request, video, slug_private):
     )
     if is_access_protected:
         access_granted_for_private = slug_private and slug_private == video.get_hashkey()
-        access_granted_for_draft = request.user.is_authenticated() and (
+        access_granted_for_draft = request.user.is_authenticated and (
             request.user == video.owner
             or request.user.is_superuser
             or request.user.has_perm("video.change_video")
