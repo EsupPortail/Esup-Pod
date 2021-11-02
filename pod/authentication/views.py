@@ -65,7 +65,7 @@ def authentication_login(request):
     if not referrer.startswith(("/", host)):
         raise SuspiciousOperation("referrer is not internal")
     iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
-    if request.user.is_authenticated():
+    if request.user.is_authenticated:
         return redirect(referrer)
     if USE_CAS and CAS_GATEWAY:
         url = reverse("authentication_login_gateway")
