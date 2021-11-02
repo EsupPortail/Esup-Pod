@@ -302,24 +302,16 @@ class Channel(models.Model):
         blank=True,
         help_text=_("The style will be added to your channel to show it"),
     )
-    owners = select2_fields.ManyToManyField(
+    owners = models.ManyToManyField(
         User,
         related_name="owners_channels",
         verbose_name=_("Owners"),
-        ajax=True,
-        search_field=lambda q: Q(username__icontains=q)
-        | Q(first_name__icontains=q)
-        | Q(last_name__icontains=q),
         blank=True,
     )
-    users = select2_fields.ManyToManyField(
+    users = models.ManyToManyField(
         User,
         related_name="users_channels",
         verbose_name=_("Users"),
-        ajax=True,
-        search_field=lambda q: Q(username__icontains=q)
-        | Q(first_name__icontains=q)
-        | Q(last_name__icontains=q),
         blank=True,
     )
     visible = models.BooleanField(
@@ -330,15 +322,13 @@ class Channel(models.Model):
         ),
         default=False,
     )
-    allow_to_groups = select2_fields.ManyToManyField(
+    allow_to_groups = models.ManyToManyField(
         AccessGroup,
         blank=True,
         verbose_name=_("Groups"),
-        ajax=True,
-        search_field=lambda q: Q(code_name__icontains=q) | Q(display_name__icontains=q),
         help_text=_("Select one or more groups who can upload video to this channel."),
     )
-    add_channels_tab = select2_fields.ManyToManyField(
+    add_channels_tab = models.ManyToManyField(
         AdditionalChannelTab, verbose_name=_("Additionals channels tab"), blank=True
     )
     sites = models.ManyToManyField(Site)
@@ -389,6 +379,7 @@ class Theme(models.Model):
         null=True,
         blank=True,
         related_name="children",
+        on_delete=models.CASCADE,
         verbose_name=_("Theme parent"),
     )
     title = models.CharField(
@@ -624,24 +615,18 @@ class Video(models.Model):
     additional_owners = models.ManyToManyField(
         User,
         blank=True,
-        ajax=True,
-        js_options={"width": "off"},
         verbose_name=_("Additional owners"),
-        search_field=select_video_owner(),
         related_name="owners_videos",
         help_text=_(
-            "You can add additional owners to the video. They "
-            "will have the same rights as you except that they "
-            "can't delete this video."
+            "You can add additional owners to the video. They will have the same rights as you except that they can't delete this video."
         ),
+    )
     description = RichTextField(
         _("Description"),
         config_name="complete",
         blank=True,
         help_text=_(
-            "In this field you can describe your content, "
-            "add all needed related information, and "
-            "format the result using the toolbar."
+            "In this field you can describe your content, add all needed related information, and format the result using the toolbar."
         ),
     )
     date_added = models.DateTimeField(_("Date added"), default=timezone.now)
@@ -1177,7 +1162,7 @@ def video_files_removal(sender, instance, using, **kwargs):
 
 
 class ViewCount(models.Model):
-    video = models.ForeignKey(Video, verbose_name=_("Video"), editable=False)
+    video = models.ForeignKey(Video, verbose_name=_("Video"), editable=False, on_delete=models.CASCADE)
     date = models.DateField(_(u"Date"), default=date.today, editable=False)
     count = models.IntegerField(_("Number of view"), default=0, editable=False)
 

@@ -53,9 +53,8 @@ from pod.recorder.views import (
     claim_record,
     delete_record,
 )
-#from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
+# from pod.lti.views import LTIAssignmentAddVideoView, LTIAssignmentGetVideoView
 from pod.video.views import PodChunkedUploadView, PodChunkedUploadCompleteView
-from django.urls import path
 
 
 USE_CAS = getattr(settings, "USE_CAS", False)
