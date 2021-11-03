@@ -678,15 +678,15 @@ def video_json_response(request, video):
     rendered_video = render_to_string(template_video_element, {"video": video}, request)
     listNotes = get_adv_note_list(request, video)
     rendered_note = render_to_string(
-        "videos/video_notes.html",
-        {"video": video, "listNotes": listNotes},
-        request
+        "videos/video_notes.html", {"video": video, "listNotes": listNotes}, request
     )
-    return video.get_json_to_video_view({
-        "html_video_info": rendered_info,
-        "html_video_element": rendered_video,
-        "html_video_note": rendered_note
-    })
+    return video.get_json_to_video_view(
+        {
+            "html_video_info": rendered_info,
+            "html_video_element": rendered_video,
+            "html_video_note": rendered_note,
+        }
+    )
 
 
 @ajax_required
@@ -766,10 +766,7 @@ def video(request, slug, slug_c=None, slug_t=None, slug_private=None):
         raise SuspiciousOperation("Invalid video id")
 
     video = get_object_or_404(Video, id=id, sites=get_current_site(request))
-    if (
-        video.get_version != "O"
-        and request.GET.get("redirect") != "false"
-    ):
+    if video.get_version != "O" and request.GET.get("redirect") != "false":
         return redirect(video.get_default_version_link(slug_private))
     return render_video(request, id, slug_c, slug_t, slug_private, template_video, params)
 

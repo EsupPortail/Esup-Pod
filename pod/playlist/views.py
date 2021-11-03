@@ -85,11 +85,7 @@ def playlist(request, slug=None):
         if (request.GET.get("is_iframe"))
         else "playlist_player.html"
     )
-    playlist = (
-        get_object_or_404(Playlist, slug=slug)
-        if slug is not None
-        else None
-    )
+    playlist = get_object_or_404(Playlist, slug=slug) if slug is not None else None
     if playlist and request.user != playlist.owner and not playlist.visible:
         # not (request.user.is_superuser or request.user.has_perm(
         #        "video.change_theme")
@@ -102,11 +98,12 @@ def playlist(request, slug=None):
     video = None
     position = (
         int(request.GET.get("p", 1)) - 1
-        if int(request.GET.get("p", 1)) > 0 and int(request.GET.get("p", 1)) <= playlist.playlistelement_set.all().count()
+        if int(request.GET.get("p", 1)) > 0
+        and int(request.GET.get("p", 1)) <= playlist.playlistelement_set.all().count()
         else 0
     )
 
-    if playlist.playlistelement_set.all().count() > position :
+    if playlist.playlistelement_set.all().count() > position:
         video = list(playlist.playlistelement_set.all())[position].video
         # video = playlist.playlistelement_set.first().video
     else:
@@ -119,7 +116,9 @@ def playlist(request, slug=None):
 
     listNotes = get_video_adv_note_list(request, video)
     return render(
-        request, template_video, {"playlist": playlist, "video": video, "listNotes": listNotes}
+        request,
+        template_video,
+        {"playlist": playlist, "video": video, "listNotes": listNotes},
     )
 
 

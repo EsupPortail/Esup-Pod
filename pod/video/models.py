@@ -1112,7 +1112,10 @@ class Video(models.Model):
                     }
             else:
                 m4a = video.get_video_m4a()
-                video_src["m4a"] = {"src": m4a.source_file.url, "type": m4a.encoding_format}
+                video_src["m4a"] = {
+                    "src": m4a.source_file.url,
+                    "type": m4a.encoding_format,
+                }
 
             list_track = list(
                 map(
@@ -1122,7 +1125,10 @@ class Video(models.Model):
                         "src": t.src.file.url,
                         "srclang": t.lang,
                         "label": t.get_label_lang(),
-                    }, video.track_set.all()),)
+                    },
+                    video.track_set.all(),
+                ),
+            )
             list_overlay = list(
                 map(
                     lambda o: {
@@ -1131,14 +1137,16 @@ class Video(models.Model):
                         "content": o.content,
                         "align": o.position,
                         "showBackground": o.background,
-                    }, video.overlay_set.all()),)
+                    },
+                    video.overlay_set.all(),
+                ),
+            )
             list_chapter = list(
                 map(
-                    lambda c: {
-                        "time_start": c.time_start,
-                        "id": c.id,
-                        "title": c.title
-                    }, video.chapter_set.all()),)
+                    lambda c: {"time_start": c.time_start, "id": c.id, "title": c.title},
+                    video.chapter_set.all(),
+                ),
+            )
             overview = video.overview.url if (video.overview) else ""
             data_to_dump = {
                 "status": "ok",
@@ -1152,7 +1160,7 @@ class Video(models.Model):
                 "thumbnail": video.get_thumbnail_url(),
                 "overview": overview,
                 "overlay": list_overlay,
-                "chapter": list_chapter
+                "chapter": list_chapter,
             }
             if hasattr(video, "enrichmentvtt"):
                 data_to_dump["enrichtracksrc"] = video.enrichmentvtt.src.file.url
