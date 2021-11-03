@@ -15,10 +15,10 @@
 					<p class="card-text">{{playlist.description}}</p>
 				</div>
 				<div class="btn-group">
-				<a href="{% url 'playlist' slug=playlist.slug %}" class="btn btn-sm btn-primary">{% trans 'Edit' %}</a>
+				<a href="{% url 'edit_playlist' slug=playlist.slug %}" class="btn btn-sm btn-primary">{% trans 'Edit' %}</a>
 				&nbsp;
 				{% if playlist.first.video.slug %}
-				<a href="{% url 'video' slug=playlist.first.video.slug %}?playlist={{playlist.slug}}" class="btn btn-sm btn-primary">{% trans 'Launch' %}</a>
+				<a href="{% url 'playlist' slug=playlist.slug %}" class="btn btn-sm btn-primary">{% trans 'Launch' %}</a>
 				{% endif %}
 			</div>
 			</div>

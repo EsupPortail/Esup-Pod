@@ -10,10 +10,11 @@ from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_protect
+from django.db.models import Q
 from pod.playlist.models import Playlist
 from pod.playlist.models import PlaylistElement
 from pod.playlist.forms import PlaylistForm
-from pod.video.models import Video
+from pod.video.models import Video, AdvancedNotes
 
 import json
 
@@ -50,7 +51,7 @@ def my_playlists(request):
 
 @login_required
 @csrf_protect
-def playlist(request, slug=None):
+def edit_playlist(request, slug=None):
     if slug:
         playlist = get_object_or_404(Playlist, slug=slug)
         list_videos = playlist.playlistelement_set.all()
@@ -74,6 +75,73 @@ def playlist(request, slug=None):
         return render(
             request, "playlist.html", {"form": form, "list_videos": list_videos}
         )
+
+
+# @login_required
+# @csrf_protect
+def playlist(request, slug=None):
+    template_video = (
+        "playlist_player-iframe.html"
+        if (request.GET.get("is_iframe"))
+        else "playlist_player.html"
+    )
+    playlist = (
+        get_object_or_404(Playlist, slug=slug)
+        if slug is not None
+        else None
+    )
+    if playlist and request.user != playlist.owner and not playlist.visible:
+        # not (request.user.is_superuser or request.user.has_perm(
+        #        "video.change_theme")
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("You don't have access to this playlist."),
+        )
+        raise PermissionDenied
+    video = None
+    position = (
+        int(request.GET.get("p", 1)) - 1
+        if int(request.GET.get("p", 1)) > 0 and int(request.GET.get("p", 1)) <= playlist.playlistelement_set.all().count()
+        else 0
+    )
+
+    if playlist.playlistelement_set.all().count() > position :
+        video = list(playlist.playlistelement_set.all())[position].video
+        # video = playlist.playlistelement_set.first().video
+    else:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            _("You don't have access to this playlist."),
+        )
+        raise PermissionDenied
+
+    listNotes = get_video_adv_note_list(request, video)
+    return render(
+        request, template_video, {"playlist": playlist, "video": video, "listNotes": listNotes}
+    )
+
+
+def get_video_adv_note_list(request, video):
+    """
+    Return the list of AdvancedNotes of video
+      that can be seen by the current user
+    """
+    if request.user.is_authenticated:
+        filter = (
+            Q(user=request.user)
+            | (Q(video__owner=request.user) & Q(status="1"))
+            | Q(status="2")
+        )
+    else:
+        filter = Q(status="2")
+    return (
+        AdvancedNotes.objects.all()
+        .filter(video=video)
+        .filter(filter)
+        .order_by("timestamp", "added_on")
+    )
 
 
 def check_playlist_videos(playlist, data):
