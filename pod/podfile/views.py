@@ -98,9 +98,6 @@ def home(request, type=None):
 
 
 def get_current_session_folder(request):
-    print("TEST COUCOU")
-    print(request.session.get('current_session_folder', "home"))
-    print("TEST COUCOU 1")
     try:
         current_session_folder = UserFolder.objects.filter(
             Q(
@@ -112,7 +109,7 @@ def get_current_session_folder(request):
                 name=request.session.get("current_session_folder", "home"),
             )
             | Q(
-                access_groups=request.user.owner.accessgroup_set.all(),
+                access_groups__in=request.user.owner.accessgroup_set.all(),
                 name=request.session.get("current_session_folder", "home"),
             )
         )
@@ -128,9 +125,6 @@ def get_current_session_folder(request):
         current_session_folder = UserFolder.objects.filter(
             owner=request.user, name="home"
         )
-    print("TEST COUCOU2")
-    print(current_session_folder)
-    print("TEST COUCOU3")
     return current_session_folder.first()
 
 
