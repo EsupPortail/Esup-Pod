@@ -68,6 +68,7 @@ if USE_CAS:
 
 
 urlpatterns = [
+    url("select2/", include("django_select2.urls")),
     url("robots.txt", robots_txt),
     url(r'^admin/', admin.site.urls),
 
