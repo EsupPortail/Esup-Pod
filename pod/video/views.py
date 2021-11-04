@@ -633,10 +633,10 @@ def get_video_access(request, video, slug_private):
             or (request.user in video.additional_owners.all())
         )
         access_granted_for_restricted = (
-            request.user.is_authenticated() and not is_restricted_to_group
+            request.user.is_authenticated and not is_restricted_to_group
         )
         access_granted_for_group = (
-            (request.user.is_authenticated() and is_in_video_groups(request.user, video))
+            (request.user.is_authenticated and is_in_video_groups(request.user, video))
             or request.user == video.owner
             or request.user.is_superuser
             or request.user.has_perm("recorder.add_recording")
