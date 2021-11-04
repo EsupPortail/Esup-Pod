@@ -1,11 +1,16 @@
 {% load i18n %}
 {% load thumbnail %}
+{% load custom_tags %}
 {% spaceless %}
+
 <div class="modal fade chaines-modal" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-pod-full">
     <div class="modal-content">
       <div class="modal-header">
-        <h2 class="modal-title"><i data-feather="youtube"></i>&nbsp;{% blocktrans count counter=CHANNELS.count %}{{ counter }} Channel{% plural %}{{ counter }} Channels{% endblocktrans %}</h2>
+        {% if CHANNELS.count|get_type == 'int' %}
+          <h2 class="modal-title"><i data-feather="youtube"></i>&nbsp;{% blocktrans count counter=CHANNELS.count %}{{ counter }} Channel{% plural %}{{ counter }} Channels{% endblocktrans %}</h2>
+        {% endif %}
+        
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
