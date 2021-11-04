@@ -26,9 +26,11 @@ def str_to_dict(value):
     """Convert Json string to python dict."""
     return json.loads(value)
 
+
 @register.filter
 def get_type(value):
     return type(value)
+
 
 @register.simple_tag
 def get_url_referrer(request):
