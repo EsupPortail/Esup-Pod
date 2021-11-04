@@ -152,7 +152,6 @@ class CompletionContributorViewsTestCase(TestCase):
                   'video': 1,
                   'email_address': 'test@test.com',
                   'weblink': '',
-                  "contributor_id": None,
                   })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
@@ -185,7 +184,6 @@ class CompletionContributorViewsTestCase(TestCase):
                   'video': 1,
                   'email_address': 'test@test.com',
                   'weblink': '',
-                  "contributor_id": None,
                   })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "list_contributor")
@@ -237,7 +235,6 @@ class CompletionContributorViewsTestCase(TestCase):
                   'video': 1,
                   'email_address': 'test@test.com',
                   'weblink': '',
-                  "contributor_id": None,
                   })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'list_contributor')
@@ -332,7 +329,6 @@ class CompletionTrackViewsTestCase(TestCase):
                   'lang': 'fr',
                   'src': document.id,
                   'video': 1,
-                  "track_id": None,
                   })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
@@ -381,7 +377,6 @@ class CompletionTrackViewsTestCase(TestCase):
                   'lang': 'fr',
                   'src': document.id,
                   'video': 1,
-                  "track_id": None,
                   })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "list_track")
@@ -449,7 +444,6 @@ class CompletionTrackViewsTestCase(TestCase):
                   'lang': 'fr',
                   'src': document.id,
                   'video': 1,
-                  "track_id": None,
                   })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "list_track")
@@ -542,7 +536,6 @@ class CompletionDocumentViewsTestCase(TestCase):
             data={'action': 'save',
                   'document': document.id,
                   'video': 1,
-                  "track_id": None,
                   })
 
         self.assertEqual(response.status_code, 200)
@@ -589,7 +582,6 @@ class CompletionDocumentViewsTestCase(TestCase):
             data={'action': 'save',
                   'document': document.id,
                   'video': 1,
-                  "track_id": None,
                   })
 
         self.assertEqual(response.status_code, 200)
@@ -670,7 +662,6 @@ class CompletionDocumentViewsTestCase(TestCase):
             data={'action': 'save',
                   'document': document.id,
                   'video': 1,
-                  "track_id": None,
                   })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "list_document")
@@ -746,7 +737,6 @@ class CompletionOverlayViewsTestCase(TestCase):
                   'position': 'bottom-right',
                   'background': 'on',
                   'video': 1,
-                  "overlay_id": None,
                   })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
@@ -779,7 +769,6 @@ class CompletionOverlayViewsTestCase(TestCase):
                   'position': 'bottom-right',
                   'background': 'on',
                   'video': 1,
-                  "overlay_id": None,
                   })
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'video_completion.html')
@@ -836,7 +825,6 @@ class CompletionOverlayViewsTestCase(TestCase):
                   'position': 'bottom-right',
                   'background': 'on',
                   'video': 1,
-                  "overlay_id": None,
                   })
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "list_overlay")

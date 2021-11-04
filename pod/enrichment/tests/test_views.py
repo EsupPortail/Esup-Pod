@@ -63,7 +63,6 @@ class EnrichmentViewsTestCase(TestCase):
             url,
             data={
                 "action": "save",
-                "enrich_id": None,
                 "video": 1,
                 "title": "testenrich",
                 "start": 1,
@@ -93,7 +92,6 @@ class EnrichmentViewsTestCase(TestCase):
             url,
             data={
                 "action": "save",
-                "enrich_id": None,
                 "video": 1,
                 "title": "testenrich",
                 "start": 1,

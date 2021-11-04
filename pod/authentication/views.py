@@ -99,7 +99,7 @@ def local_logout(request):
 
 def authentication_logout(request):
     """Logout a user."""
-    if request.user.is_anonymous():
+    if request.user.is_anonymous:
         return local_logout(request)
     if request.user.owner.auth_type == "CAS":
         return redirect(reverse("cas-logout"))
