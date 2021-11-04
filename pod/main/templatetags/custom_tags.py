@@ -31,6 +31,12 @@ def str_to_dict(value):
 def get_url_referrer(request):
     """Return the authentication login url with cleaned referrer."""
     # Split url into uri components
+
+    #Temp for fix
+    if isinstance(request, str) or request is None:
+        return "/"
+
+
     uri = urlparse(request.build_absolute_uri())
     # Parse the query string part of uri
     query = parse_qs(uri.query, keep_blank_values=True)
