@@ -52,10 +52,6 @@ def my_playlists(request):
 @login_required
 @csrf_protect
 def playlist(request, slug=None):
-
-    # f=open('/home/pod/django_projects/podv2-dev/pod/log/custom.log', 'a')
-    # f.write('Action posted !!!\n')
-    # f.close()
     if slug:
         playlist = get_object_or_404(Playlist, slug=slug)
         list_videos = playlist.playlistelement_set.all()
@@ -73,9 +69,6 @@ def playlist(request, slug=None):
         raise PermissionDenied
     form = PlaylistForm(instance=playlist, initial={"owner": request.user})
     if request.POST and request.POST.get("action"):
-        # f=open('/home/pod/django_projects/podv2-dev/pod/log/custom.log', 'a')
-        # f.write('Action posted :'+request.POST.get("action")+'\n')
-        # f.close()
         if request.POST["action"] in ACTION:
             return eval("playlist_{0}(request, playlist)".format(request.POST["action"]))
     else:
