@@ -52,28 +52,10 @@
 	 height: auto;
 	 border-radius: 0;
  }
-.playlist-videos .row .card-group.on .video-card .card-body a .card-thumbnail::before {
-	content: ''; display: block; position: absolute; width: 30px; height:20px; left: 50%; top: 50%;
-	border: solid white 1px;
-	background:rgba(0,0,0,.3);
-	z-index: 1;
-	margin-left: -15px;
-	margin-top: -10px;
-	border-radius: .25em;
-}
 
-.playlist-videos .row .card-group.on .video-card .card-body a .card-thumbnail::after {
-	content: ''; display: block; position: absolute; width: 0; height: 0; left: 50%; top: 50%;
- border-top: solid transparent 5px;
- border-left: solid var(--white) 8px;
- border-bottom: solid transparent 5px;
- z-index: 2;
- margin-left: -3px;
- margin-top: -5px;
-}
  .playlist-videos .row .card-group .video-card .card-body a span.small {
 	 word-break: break-all;
-	 font-size: 90%;
+	 font-size: 85%;
  }
 
 .playlist-videos .row .card-group a {
@@ -103,17 +85,18 @@
 	display: inline-block;
 	height: auto;
 	overflow: hidden;
-	background: var(--gray) center no-repeat;
+	background: var(--gray) right center no-repeat;
 	color: var(--white);
 	padding: 0 .5em 0 .5em;
 	margin: .4em .5em -.4em -.5em;
 	border-radius: 0 .25em .25em 0;
 }
 .playlist-videos .row .card-group.on > .video-card .vdata {
-	text-indent:50px;width:1.5em;
+	padding-right: 1.075rem;
 	background-color: var(--primary);
-	background-size: contain;
-	background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>');
+	background-size: 15px;
+	/* background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>'); */
+	background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 5 4 19 14 12"></polyline></svg>');
 
 }
 .playlist-counter {

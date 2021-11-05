@@ -162,13 +162,21 @@ $(window).ready(function () {
   });
 
   $(".playlist-item").on("click", function () {
+    const vmslug = window.location.href.match(/video\/(\d{4}\-[^/?]*)/)
+    if(!vmslug) {
+      showalert(
+        "Video can not be insert from this url.",
+        "alert-danger"
+      );
+      return;
+    }
     var slug = $(this).attr("data-slug");
     var jqxhr = $.ajax({
       method: "POST",
-      url: "/playlist/" + slug + "/",
+      url: "/playlist/edit/" + slug + "/",
       data: {
         action: "add",
-        video: window.location.href.split("/")[4],
+        video: vmslug[1],
         csrfmiddlewaretoken: $(this)
           .parents(".dropdown-menu")
           .find("input")

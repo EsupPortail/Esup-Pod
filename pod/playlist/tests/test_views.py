@@ -59,18 +59,18 @@ class PlaylistViewsTestCase(TestCase):
 
     def test_playlist_create(self):
         owner = User.objects.get(id=1)
-        response = self.client.get("/playlist/")
+        response = self.client.get("/playlist/edit/")
         self.assertEqual(response.status_code, 302)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
-        response = self.client.get("/playlist/")
+        response = self.client.get("/playlist/edit/")
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "playlist.html")
         self.assertContains(response, "playlist_form")
         self.assertContains(response, _("Add a new playlist"))
         response = self.client.post(
-            "/playlist/",
+            "/playlist/edit/",
             data={
                 "action": "edit",
                 "playlist_id": None,
@@ -96,24 +96,24 @@ class PlaylistViewsTestCase(TestCase):
         )
         video1 = Video.objects.get(id=1)
         video2 = Video.objects.get(id=2)
-        response = self.client.get("/playlist/{0}/".format(playlist.slug))
+        response = self.client.get("/playlist/edit/{0}/".format(playlist.slug))
         self.assertEqual(response.status_code, 302)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
-        response = self.client.get("/playlist/{0}/".format(playlist.slug))
+        response = self.client.get("/playlist/edit/{0}/".format(playlist.slug))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "playlist.html")
         self.assertContains(response, "playlist_form")
         self.assertContains(response, _("Editing the playlist"))
         self.assertContains(response, "playlist1")
         response = self.client.post(
-            "/playlist/{0}/".format(playlist.slug),
+            "/playlist/edit/{0}/".format(playlist.slug),
             data={"action": "add", "video": video1.slug},
         )
         self.assertEqual(response.status_code, 400)
         response = self.client.post(
-            "/playlist/{0}/".format(playlist.slug),
+            "/playlist/edit/{0}/".format(playlist.slug),
             {"action": "add", "video": video1.slug},
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
@@ -122,7 +122,7 @@ class PlaylistViewsTestCase(TestCase):
         result = PlaylistElement.objects.get(playlist=playlist, video=video1, position=1)
         self.assertTrue(result)
         response = self.client.post(
-            "/playlist/{0}/".format(playlist.slug),
+            "/playlist/edit/{0}/".format(playlist.slug),
             {"action": "add", "video": video2.slug},
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
@@ -142,12 +142,12 @@ class PlaylistViewsTestCase(TestCase):
         video2 = Video.objects.get(id=2)
         PlaylistElement.objects.create(playlist=playlist, video=video1, position=1)
         PlaylistElement.objects.create(playlist=playlist, video=video2, position=2)
-        response = self.client.get("/playlist/{0}/".format(playlist.slug))
+        response = self.client.get("/playlist/edit/{0}/".format(playlist.slug))
         self.assertEqual(response.status_code, 302)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
-        response = self.client.get("/playlist/{0}/".format(playlist.slug))
+        response = self.client.get("/playlist/edit/{0}/".format(playlist.slug))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "playlist.html")
         self.assertContains(response, "playlist_form")
@@ -156,12 +156,12 @@ class PlaylistViewsTestCase(TestCase):
         self.assertContains(response, "video1")
         self.assertContains(response, "video2")
         response = self.client.post(
-            "/playlist/{0}/".format(playlist.slug),
+            "/playlist/edit/{0}/".format(playlist.slug),
             data={"action": "remove", "video": video1.slug},
         )
         self.assertEqual(response.status_code, 400)
         response = self.client.post(
-            "/playlist/{0}/".format(playlist.slug),
+            "/playlist/edit/{0}/".format(playlist.slug),
             {"action": "remove", "video": video1.slug},
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
@@ -183,12 +183,12 @@ class PlaylistViewsTestCase(TestCase):
         video2 = Video.objects.get(id=2)
         PlaylistElement.objects.create(playlist=playlist, video=video1, position=1)
         PlaylistElement.objects.create(playlist=playlist, video=video2, position=2)
-        response = self.client.get("/playlist/{0}/".format(playlist.slug))
+        response = self.client.get("/playlist/edit/{0}/".format(playlist.slug))
         self.assertEqual(response.status_code, 302)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
-        response = self.client.get("/playlist/{0}/".format(playlist.slug))
+        response = self.client.get("/playlist/edit/{0}/".format(playlist.slug))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "playlist.html")
         self.assertContains(response, "playlist_form")
@@ -197,13 +197,13 @@ class PlaylistViewsTestCase(TestCase):
         self.assertContains(response, "video1")
         self.assertContains(response, "video2")
         response = self.client.post(
-            "/playlist/{0}/".format(playlist.slug),
+            "/playlist/edit/{0}/".format(playlist.slug),
             data={"action": "move", "videos": {"video1": 2, "video2": 1}},
         )
         self.assertEqual(response.status_code, 400)
         json_data = json.dumps({video1.slug: 2, video2.slug: 1})
         response = self.client.post(
-            "/playlist/{0}/".format(playlist.slug),
+            "/playlist/edit/{0}/".format(playlist.slug),
             data={"action": "move", "videos": json_data},
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
@@ -223,12 +223,12 @@ class PlaylistViewsTestCase(TestCase):
         )
         video1 = Video.objects.get(id=1)
         PlaylistElement.objects.create(playlist=playlist, video=video1, position=1)
-        response = self.client.get("/playlist/{0}/".format(playlist.slug))
+        response = self.client.get("/playlist/edit/{0}/".format(playlist.slug))
         self.assertEqual(response.status_code, 302)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
-        response = self.client.get("/playlist/{0}/".format(playlist.slug))
+        response = self.client.get("/playlist/edit/{0}/".format(playlist.slug))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "playlist.html")
         self.assertContains(response, "playlist_form")
@@ -236,11 +236,11 @@ class PlaylistViewsTestCase(TestCase):
         self.assertContains(response, "playlist1")
         self.assertContains(response, "video1")
         response = self.client.post(
-            "/playlist/{0}/".format(playlist.slug), data={"action": "delete"}
+            "/playlist/edit/{0}/".format(playlist.slug), data={"action": "delete"}
         )
         self.assertEqual(response.status_code, 400)
         response = self.client.post(
-            "/playlist/{0}/".format(playlist.slug),
+            "/playlist/edit/{0}/".format(playlist.slug),
             {"action": "delete"},
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
