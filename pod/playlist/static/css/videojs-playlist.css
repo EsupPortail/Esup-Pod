@@ -117,7 +117,7 @@
 	cursor: pointer;
 }
 .card-controls > .playlist-options > .fill-color-pod{
-	fill:var(--light);
+	fill:var(--dark-gray);
 	height: 1.25em;
 	width: auto;
 }
