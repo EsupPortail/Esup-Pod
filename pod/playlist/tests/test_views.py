@@ -23,6 +23,9 @@ class PlaylistViewsTestCase(TestCase):
         owner = User.objects.create(username="test", password="azerty")
         owner.set_password("hello")
         owner.save()
+        user = User.objects.create(username="utest", password="azerty")
+        user.set_password("uhello")
+        user.save()
         videotype = Type.objects.create(title="others")
         Video.objects.create(
             title="video1",
@@ -40,7 +43,6 @@ class PlaylistViewsTestCase(TestCase):
             duration=30,
             is_draft=False,
         )
-
         owner.owner.sites.add(Site.objects.get_current())
         owner.owner.save()
 
@@ -63,13 +65,10 @@ class PlaylistViewsTestCase(TestCase):
             owner=User.objects.get(username='test'),
             visible=True,
         )
+        video1 = Video.objects.get(id=1)
+        PlaylistElement.objects.create(playlist=playlist, video=video1, position=1)
         playlist_url = "/playlist/" + playlist.slug + "/"
         playlist_url_iframe = playlist_url + "?is_iframe=true"
-        pe = PlaylistElement()
-        pe.playlist = playlist
-        pe.video = Video.objects.get(id=1)
-        pe.position = playlist.last()
-        pe.save()
         response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "playlist_player.html")
@@ -78,6 +77,7 @@ class PlaylistViewsTestCase(TestCase):
         self.assertTemplateUsed(response, "playlist_player-iframe.html")
         playlist.visible = False
         playlist.save()
+        print('\n-> Check if unvisible playlist is not accessible by not authenticate user')
         response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 403)
         authenticate(username="test", password="hello")
@@ -85,6 +85,12 @@ class PlaylistViewsTestCase(TestCase):
         self.assertTrue(login)
         response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 200)
+        print('-> Check if unvisible playlist is not accessible by authenticate but not owner user')
+        authenticate(username="utest", password="uhello")
+        login = self.client.login(username="utest", password="uhello")
+        self.assertTrue(login)
+        response = self.client.get(playlist_url)
+        self.assertEqual(response.status_code, 403)
 
         print(" ---> test_playlist_play : OK!")
 
