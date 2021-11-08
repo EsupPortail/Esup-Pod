@@ -1,6 +1,10 @@
-{% extends 'videos/video-element.html' %}
-{% block extratrack %}
-{% if video.enrichment_set.all %}
-<track kind="metadata" src="{{video.enrichmentvtt.src.file.url}}?{% now "U" %}" label="enrichment">
-{% endif %}
-{% endblock extratrack %}
+{% load i18n %}
+<video id="podvideoplayer" class="video-js vjs-default-skin {% if not request.GET.is_iframe %}vjs-16-9{% endif %} vjs-big-play-centered" {% if request.GET.is_iframe %}preload="none"{% else %}preload="auto"{% endif %} {% if not request.GET.is_iframe %}height="360"{% endif %}
+poster="{{video.get_thumbnail_url}}">
+  <p class="vjs-no-js">
+    {%blocktrans%}To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>{%endblocktrans%}
+  </p>
+</video>
+<form method="post" action="" id="video_count_form">
+{% csrf_token %}
+</form>

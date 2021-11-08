@@ -62,7 +62,7 @@ let PlaylistPlayer = {
           $("#card-takenote").html(json.html_video_note)
         }
         _this.setCurrent(position)
-        try {feather.replace();} catch(e) { 
+        try {feather.replace();} catch(e) {
           //console.warn('Failled to call feeather function...');
         }
       } else if (json.error == "password") {
@@ -114,10 +114,13 @@ let PlaylistPlayer = {
         });
       } else if (json.error == "access") {
         //Acces restrict by authentication => Redirect to loggin page
-        window.location.href = json.url;
+        window.location.href = json.url.replace(/(\?|&)p=\d*/g, function() {return arguments[1]})
+                             + (json.url.lastIndexOf('?') > 0 ? '&' : '?')
+                             + 'p='+position;
       } else if (json.error == "deny") {
         //User is authenticate but not allowed => Go next (TODO... actualy just reload page)
-        window.location.href = video_url;
+        const nposition = position < _this.elements.length ? (position + 1): 1;
+        _this.loadVideo(nposition);
       }
     });
   },
@@ -186,6 +189,8 @@ let PlaylistPlayer = {
     player.on("ended", function () {
       _this.onPlayerEnd();
     });
+    console.log('Shoul load video '+this.current_position)
+    this.loadVideo(this.current_position);
   },
   headFiles: {
     plugins: {
