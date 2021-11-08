@@ -1,0 +1,147 @@
+body{
+  margin: 0;
+  padding: 0;
+  background: #000;
+  height: 100%;
+}
+/* Add extra classes for a variable width / height*/
+#div-video-wrapper {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+#podvideoplayer {
+  margin-left: auto;
+  margin-right: auto;
+}
+#info-video-wrapper {
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 30px;
+  width: 100%;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  background-color: rgba(250, 250, 250, 0.75) !important;
+  z-index: 2;
+}
+#info-video {
+  padding: 1em;
+  box-sizing: border-box;
+  overflow: auto;
+  position: absolute;
+  /* top: 3em; */
+  width: 100%;
+  bottom: 0px;
+  z-index: 1000;
+  border-radius: 0;
+  margin: 0;
+}
+
+.tab-title {
+  font-size: 1.5em;
+}
+.meta-title {
+  font-size: 1.2rem;
+}
+.list-group-item {
+  background-color: rgba(250, 250, 250, 0.90) !important;
+}
+
+.iframe-header {
+  padding: 0 .5rem 0 1.25rem;
+  margin: 0;
+  border-radius: 0;
+  overflow: hidden;
+}
+.iframe-header >  h2 {
+  display: inline-block;
+  font-size: 1.25em;
+  padding: .25em 5em 0 0;
+}
+
+.iframe-header .close {
+  /* position: absolute;
+  top: .5em;
+  right: .5em; */
+  float:right;
+  margin: .395em 0rem 0 0.75em;
+  border: 1px solid var(--light) !important;
+  color: var(--light) !important;
+  padding: 0 .25em .15em !important;
+  background-color: var(--dark)!important;
+  border-radius: .1em;
+  overflow: hidden;
+  opacity: 1;
+  font-size: 1.1em;
+}
+.iframe-header .close: hover {
+  background-color: white!important;color: black!important;
+  opacity: 1;
+}
+
+
+#div-video-wrapper #overlay-footer {
+  position: absolute;
+  /* bottom: 0px; */
+  background-color: #2b333f;
+  background-color: rgba(43,51,63,.7);
+  z-index: 10;
+  height: 30px;
+  padding: 0 .5em;
+  width: 100%;
+  color: #fff;
+  display: none;
+  text-align: right;
+}
+#div-video-wrapper #overlay-footer > p {
+  float: left;
+  text-align: left;
+  line-height: 30px;
+  max-width: calc(100% - 75px);
+  /* margin-right: 70px; */
+  overflow: auto;
+}
+/* Info button with current color */
+#overlay-footer .vjs-button {
+  display: inline-block;
+  height: 30px;
+  min-width: 30px;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  box-sizing: border-box;
+  margin: 0 -.1em 0 .5em;
+  padding: 0;
+}
+#overlay-footer .vjs-button:focus,
+#overlay-footer .vjs-button:active {outline: none}
+
+#overlay-footer .vjs-control-text {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+#overlay-footer .vjs-info-button::before,
+.video-js .vjs-info-button::before {
+  content: '';display: block;width: 100%;height: 100%;
+  background-color: #FFF;
+  mask: url("../feather-icons/icons/info.svg") no-repeat 50% 50%;
+  -webkit-mask: url("../feather-icons/icons/info.svg") no-repeat 50% 50%;
+  mask-size: 20px;
+  -webkit-mask-size: 20px;
+}
+
+#div-video-wrapper #info-video-wrapper {display: none}
+#div-video-wrapper.overlay.info #info-video-wrapper,
+#div-video-wrapper.overlay #overlay-footer,
+#div-video-wrapper.vjs-not-started #overlay-footer {display: block}

@@ -15,9 +15,6 @@
 {% if form %}
     {% include 'videos/video-form.html' %}
 {% else %}
-  {% if playlistVideoForm %}
-  <div id="video-form-wrapper">{% include 'videos/video-form.html' %}</div>
-  {% endif %}
   {% include 'enrichment/video-element-enrichment.html' %}
 {%endif%}
 {% endblock video-element %}

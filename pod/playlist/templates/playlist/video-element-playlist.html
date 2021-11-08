@@ -1,0 +1,6 @@
+{% extends 'videos/video-element.html' %}
+{% block extratrack %}
+{% if video.enrichment_set.all %}
+<track kind="metadata" src="{{video.enrichmentvtt.src.file.url}}?{% now "U" %}" label="enrichment">
+{% endif %}
+{% endblock extratrack %}

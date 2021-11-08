@@ -1,0 +1,99 @@
+<!-- HTML for playlist list. Don't use this file alone it must be integrated into another template ! -->
+{% load i18n staticfiles %}
+
+{% if is_iframe %}
+<div class="card" id="card-playlist">
+  <div class="iframe-header card-title bg-dark text-white">
+  <h2 class=""> <i data-feather="play-circle"></i>&nbsp;<span>{{ playlist.title }}</span> <small>(&nbsp;{{ playlist.videos|length }}&nbsp;{% trans 'Video' %}{% if playlist.videos|length > 1 %}s{% endif %}&nbsp;)</small></h2>
+  <button type="button" class="close playlist hidden" aria-label="Close">
+        <span aria-hidden="true">×</span>
+  </button>
+  {% include 'playlist/player_controls.html' %}
+  </div>
+{% else %}
+<div class="card mt-1" id="card-playlist">
+  <h5 class="card-header card-title pl-2"> <i data-feather="play-circle"></i>&nbsp;<span>{% trans 'Playlist' %}</span> <small>(&nbsp;{{ playlist.videos|length }}&nbsp;{% trans 'Video' %}{% if playlist.videos|length > 1 %}s{% endif %}&nbsp;)</small>
+  {% include 'playlist/player_controls.html' %}
+  </h5>
+{% endif %}
+  <div class="card-body playlist-videos">
+    <div class="row">
+      {% with pllength=playlist.videos|length %}
+      {% for pvideo in playlist.videos %}
+      <div class="card-group{% if pvideo.id == video.id %} on{% endif %}">
+      {% comment %}<p class="vdata" {% spaceless %}
+      data-info="{{ pvideo.title|safe }} - {{forloop.counter}} / {{pllength}}"
+      data-vid="{{ pvideo.id }}"{% endspaceless %}>
+      {% if pvideo.id == video.id %}
+        <i data-feather="chevron-up"></i>
+      {% else %}
+        {{forloop.counter}}
+      {% endif %}
+      </p>{% endcomment %}
+        {% include 'playlist/playlist_video_card.html' with video=pvideo playlist=playlist position=forloop.counter %}
+      </div>
+      {% endfor %}
+      {% endwith %}
+    </div>
+  </div>
+</div>
+
+<script type="text/JavaScript">
+var metadataTrack;
+  {% if request.GET.is_iframe and request.GET.is_iframe == 'true' %}
+  $('#playlist div').first()
+                    .append('<button type="button" class="close playlist hidden" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
+  $('#playlist .close.hidden').removeClass('hidden');
+  $('#playlist h5').append(' <small><i>('+$('#playlist div.row > div:eq(1) > p').html()+')</i></small>')
+  $('#div-video-wrapper').append('<div id="overlay-footer"><p class="playlist-video-title">'
+    + '{{ video.title|safe}}'
+    + '</p>'
+    + '</div>')
+  $('#playlist .card-header div.row').remove()
+  const formctn = $('body')
+      , vtitleselector = '.playlist-video-title'
+      , is_iframe = true
+      , on_player_cb = function(pp) {
+
+      }
+  {% else %}
+  const formctn = $('#mainContent')
+      , vtitleselector = '.playlist-video-title'
+      , is_iframe = false
+      , on_player_cb = null
+  {% endif %}
+  $(window).ready(function() {
+    const length = parseInt({{playlist.videos|length}});
+    const current_position = parseInt($('.playlist-videos div.row .on').index()) + 1;
+    PlaylistPlayer.init({
+      length: length,
+      is_iframe: is_iframe,
+      formctn: formctn,
+      vtitlectns: $(vtitleselector),
+      current_position: parseInt($('.playlist-videos div.row .on').index()) + 1,
+      elements: $('.playlist-videos div.row .video-card'),
+      baseurl: '{% if request.is_secure %}https://{%else%}http://{% endif %}{{request.get_host}}',
+      controls: {loop:$('#pl_loop')[0],auto:$('#pl_auto')[0]},
+      head_files: {
+        overlay: {
+          js:'{% static 'js/videojs-overlay.js' %}?ver={{VERSION}}',
+          css: '{% static 'css/videojs-overlay.css' %}?ver={{VERSION}}'},
+        enrichment: {
+          js: '{% static 'js/videojs-slides.js' %}?ver={{VERSION}}',
+          css: '{% static 'css/videojs-slides.css' %}?ver={{VERSION}}'},
+        overview: {
+          js: '{% static 'js/videojs-vtt-thumbnails.min.js' %}?ver={{VERSION}}',
+          css: '{% static 'css/videojs-vtt-thumbnails.css' %}?ver={{VERSION}}'},
+        chapter: {
+          js:'{% static 'js/videojs-chapters.js' %}?ver={{VERSION}}',
+          css: '{% static 'css/videojs-chapters.css' %}?ver={{VERSION}}'},
+        vr360: {
+          js:'{% static 'videojs-vr/videojs-vr.js' %}?ver={{VERSION}}',
+          css: '{% static 'videojs-vr/videojs-vr.css' %}?ver={{VERSION}}'},
+      },
+      on_player_cb: on_player_cb,
+      strings:{invalid_feedback_value:'{% trans "Please provide a valid value for this field" %}'
+              ,invalid_feedback_password:'{% trans "The password is incorrect." %}'}
+    })
+  });
+</script>
