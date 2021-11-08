@@ -57,32 +57,33 @@ class PlaylistViewsTestCase(TestCase):
         print(" [ BEGIN PLAYLIST VIEWS ] ")
         print(" ---> test_myplaylist : OK!")
 
-
     def test_playlist_play(self):
         playlist = Playlist.objects.create(
-            title = 'Playlist 1',
-            owner = User.objects.get(username='test'),
-            visible = True,
+            title='Playlist 1',
+            owner=User.objects.get(username='test'),
+            visible=True,
         )
-        new = PlaylistElement()
-        new.playlist = playlist
-        new.video = Video.objects.get(id=1)
-        new.position = playlist.last()
-        new.save()
-        response = self.client.get("/playlist/"+playlist.slug+'/')
+        playlist_url = "/playlist/" + playlist.slug + "/"
+        playlist_url_iframe = playlist_url + "?is_iframe=true"
+        pe = PlaylistElement()
+        pe.playlist = playlist
+        pe.video = Video.objects.get(id=1)
+        pe.position = playlist.last()
+        pe.save()
+        response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "playlist_player.html")
-        response = self.client.get("/playlist/"+playlist.slug+'/?is_iframe=true')
+        response = self.client.get(playlist_url_iframe)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "playlist_player-iframe.html")
         playlist.visible = False
         playlist.save()
-        response = self.client.get("/playlist/"+playlist.slug+'/')
+        response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 403)
         authenticate(username="test", password="hello")
         login = self.client.login(username="test", password="hello")
         self.assertTrue(login)
-        response = self.client.get("/playlist/"+playlist.slug+'/')
+        response = self.client.get(playlist_url)
         self.assertEqual(response.status_code, 200)
 
         print(" ---> test_playlist_play : OK!")

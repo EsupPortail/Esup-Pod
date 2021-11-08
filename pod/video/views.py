@@ -689,8 +689,8 @@ def video_json_response(request, video):
     )
 
 
-# @ajax_required
-# @csrf_protect
+@ajax_required
+@csrf_protect
 def video_xhr(request, slug, slug_private=None):
     video = get_object_or_404(Video, slug=slug, sites=get_current_site(request))
     is_password_protected = video.password is not None and video.password != ""
@@ -741,14 +741,11 @@ def video_xhr(request, slug, slug_private=None):
             return HttpResponse(data, content_type="application/json")
         else:
             iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
-            # url = "%s?%sreferrer=%s" % (
-            #     settings.LOGIN_URL,
-            #     iframe_param,
-            #     request.get_full_path()
-            #     .replace("/video_xhr/", "/video/")
-            #     .replace("&", "%26"),
-            # )
-            url = "%s?%sreferrer=%s" % (settings.LOGIN_URL,iframe_param, request.META.get('HTTP_REFERER'))
+            url = "%s?%sreferrer=%s" % (
+                settings.LOGIN_URL,
+                iframe_param,
+                request.META.get('HTTP_REFERER')
+            )
             response = {"status": 302, "error": "access", "url": url}
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
