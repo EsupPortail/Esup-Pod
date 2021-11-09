@@ -7,10 +7,6 @@
 <link href="{% static 'css/videojs-playlist.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'js/videojs-playlist-controlbar.js' %}?ver={{VERSION}}"></script>
 <script src="{% static 'js/playlist_player.js' %}?ver={{VERSION}}"></script>
-{% if video.enrichment_set.all %}
-<link id="enrichment_style_id" href="{% static 'css/videojs-slides.css' %}?ver={{VERSION}}" rel="stylesheet">
-<script id="enrichment_script_id" src="{% static 'js/videojs-slides.js' %}?ver={{VERSION}}"></script>
-{% endif %}
 <link rel="stylesheet" href="{% static 'css/playlist-iframe.css' %}?ver={{VERSION}}">
 {% endblock page_extra_head %}
 
@@ -26,7 +22,7 @@
 {% if form %}
   {% include 'videos/video-form.html' %}
 {% else %}
-  {% include 'playlist/video-element-playlist.html' %}
+  <video id="podvideoplayer"></video>
 {%endif%}
 {% endblock video-element %}
 
@@ -37,9 +33,7 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <div id="info-video">
-    {% include 'videos/video-info.html'%}
-    </div>
+    <div id="info-video"></div>
   </div>
 
 </div>
@@ -174,10 +168,5 @@ var show_info_video = function() { // Call by videojs-playlist-controllbar
 }
 $('#video-meta .tab-pane').addClass('show').show();
 </script>
-
-{% comment %}{% if video.enrichment_set.all %}
-{% include 'enrichment/video_enrichment-script.html' %}
-{% endif %}{% endcomment %}
-
 {% endblock more_script %}
 {% endblock page_content %}

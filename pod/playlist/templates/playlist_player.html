@@ -10,11 +10,6 @@
 </style>
 <link href="{% static 'css/videojs-playlist.css' %}?ver={{VERSION}}" rel="stylesheet">
 <script src="{% static 'js/playlist_player.js' %}?ver={{VERSION}}"></script>
-{% if video.enrichment_set.all %}
-<link id="enrichment_style_id" href="{% static 'css/videojs-slides.css' %}?ver={{VERSION}}" rel="stylesheet">
-<script id="enrichment_script_id" src="{% static 'js/videojs-slides.js' %}?ver={{VERSION}}"></script>
-{% endif %}
-
 {% endblock page_extra_head %}
 
 {% block breadcrumbs %}
@@ -26,23 +21,19 @@
 
 {% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
 
-
 {% block page_content %}
-
 {% block video-element %}
 {% if form %}
     {% include 'videos/video-form.html' %}
 {% else %}
-  {% include 'playlist/video-element-playlist.html' %}
-  <div id="info-video">{% include 'videos/video-all-info.html' with third_app=True %}</div>
+  <video id="podvideoplayer"></video>
+  <div id="info-video"></div>
 {%endif%}
 {% endblock video-element %}
-
-
 {% endblock page_content %}
+
 {% block page_aside %}
 {% include 'playlist/playlist_video_list.html' %}
-
   <div class="card mt-1{% if not video.enrichment_set.all %} off{% endif %}" id="card-enrichmentinformations">
     <h5 class="card-header card-title pl-2">
       <i data-feather="info"></i>&nbsp;{% trans 'Informations' %}
@@ -66,7 +57,4 @@
 
 {% block more_script %}
 {{block.super}}
-{% comment %}{% if video.enrichment_set.all %}
-{% include 'enrichment/video_enrichment-script.html' %}
-{% endif %}{% endcomment %}
 {% endblock more_script %}

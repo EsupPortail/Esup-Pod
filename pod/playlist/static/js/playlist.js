@@ -161,11 +161,11 @@ $(window).ready(function () {
     }
   });
 
-  $(".playlist-item").on("click", function () {
+  $("#info-video").on("click", ".playlist-item", function () {
     const vmslug = window.location.href.match(/video\/(\d{4}\-[^/?]*)/)
     if(!vmslug) {
       showalert(
-        "Video can not be insert from this url.",
+        gettext("The video can not be added from this page."),
         "alert-danger"
       );
       return;
