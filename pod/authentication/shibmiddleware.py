@@ -5,49 +5,59 @@ REMOTE_USER_HEADER = getattr(
     settings, 'REMOTE_USER_HEADER', "REMOTE_USER")
 
 AFFILIATION_STAFF = getattr(
-    settings, 'AFFILIATION_STAFF', ('employee', 'faculty','staff'))
+    settings, 'AFFILIATION_STAFF', ('employee', 'faculty', 'staff'))
 
 SHIBBOLETH_STAFF_ALLOWED_DOMAINS = getattr(
     settings, 'SHIBBOLETH_STAFF_ALLOWED_DOMAINS', None)
 
 AFFILIATION = getattr(
     settings, 'AFFILIATION', (
-    ('student', ''),
-    ('faculty', ''),
-    ('staff', ''),
-    ('employee', ''),
-    ('member', ''),
-    ('affiliate', ''),
-    ('alum', ''),
-    ('library-walk-in',''),
-    ('researcher', ''),
-    ('retired', ''),
-    ('emeritus', ''),
-    ('teacher', ''),
-    ('registered-reader', '')))
+        ('student', ''),
+        ('faculty', ''),
+        ('staff', ''),
+        ('employee', ''),
+        ('member', ''),
+        ('affiliate', ''),
+        ('alum', ''),
+        ('library-walk-in', ''),
+        ('researcher', ''),
+        ('retired', ''),
+        ('emeritus', ''),
+        ('teacher', ''),
+        ('registered-reader', '')))
+
 
 class ShibbMiddleware(ShibbolethRemoteUserMiddleware):
     header = REMOTE_USER_HEADER
 
+    def check_user_meta(self, user, shib_meta):
+        if(
+            user and user.owner
+            and shib_meta['affiliation'] in [A[0] for A in AFFILIATION]
+            and user.owner.affiliation != shib_meta['affiliation']
+        ):
+            return True
+        return False
+
+    def is_staffable(self, user):
+        if(
+            SHIBBOLETH_STAFF_ALLOWED_DOMAINS is None
+            or len(SHIBBOLETH_STAFF_ALLOWED_DOMAINS) == 0
+        ):
+            return True
+        else:
+            for d in SHIBBOLETH_STAFF_ALLOWED_DOMAINS:
+                if(user.username.endswith('@' + d)):
+                    return True
+        return False
+
     def make_profile(self, user, shib_meta):
         if('affiliation' in shib_meta):
-            if(user and user.owner
-            and shib_meta['affiliation'] in [A[0] for A in AFFILIATION]
-            and user.owner.affiliation != shib_meta['affiliation']):
+            if self.check_user_meta(self, user, shib_meta):
                 user.owner.affiliation = shib_meta['affiliation']
                 user.owner.save()
 
-        isStaffableUser = False
-        if(SHIBBOLETH_STAFF_ALLOWED_DOMAINS is None
-        or len(SHIBBOLETH_STAFF_ALLOWED_DOMAINS) == 0):
-            isStaffableUser = True
-        else:
-            for d in SHIBBOLETH_STAFF_ALLOWED_DOMAINS:
-                if(user.username.endswith('@'+d)):
-                    isStaffableUser = True
-                    break
-
-        if(isStaffableUser and 'affiliations' in shib_meta):
+        if(self.is_staffable(user) and 'affiliations' in shib_meta):
             for affiliation in shib_meta['affiliations'].split(';'):
                 if affiliation in AFFILIATION_STAFF:
                     user.is_staff = True
