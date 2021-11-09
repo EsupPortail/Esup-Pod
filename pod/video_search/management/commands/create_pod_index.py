@@ -6,16 +6,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-ES_URL = getattr(settings, 'ES_URL', ['http://127.0.0.1:9200/'])
+ES_URL = getattr(settings, "ES_URL", ["http://127.0.0.1:9200/"])
 
 
 class Command(BaseCommand):
-    args = ''
-    help = 'Creates the Elasticsearch Pod index.'
+    args = ""
+    help = "Creates the Elasticsearch Pod index."
 
     def handle(self, *args, **options):
         delete_index_es()
         create_index_es()
-        self.stdout.write(
-            self.style.SUCCESS('Successfully create index Video')
-        )
+        self.stdout.write(self.style.SUCCESS("Successfully create index Video"))

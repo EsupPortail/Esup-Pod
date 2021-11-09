@@ -8,20 +8,14 @@ from django.conf import settings
 from pod.video.models import Video, get_storage_path_video
 from pod.video import encode
 
-DEFAULT_RECORDER_TYPE_ID = getattr(
-    settings, 'DEFAULT_RECORDER_TYPE_ID',
-    1
-)
-ENCODE_VIDEO = getattr(settings,
-                       'ENCODE_VIDEO',
-                       "start_encode")
+DEFAULT_RECORDER_TYPE_ID = getattr(settings, "DEFAULT_RECORDER_TYPE_ID", 1)
+ENCODE_VIDEO = getattr(settings, "ENCODE_VIDEO", "start_encode")
 log = logging.getLogger(__name__)
 
 
 def process(recording):
     log.info("START PROCESS OF RECORDING %s" % recording)
-    t = threading.Thread(target=encode_recording,
-                         args=[recording])
+    t = threading.Thread(target=encode_recording, args=[recording])
     t.setDaemon(True)
     t.start()
 
@@ -33,13 +27,13 @@ def encode_recording(recording):
     video.owner = recording.user
     video.type = recorder.type
     # gestion de la video
-    storage_path = get_storage_path_video(
-        video, os.path.basename(recording.source_file))
+    storage_path = get_storage_path_video(video, os.path.basename(recording.source_file))
     dt = str(datetime.datetime.now()).replace(":", "-")
     nom, ext = os.path.splitext(os.path.basename(recording.source_file))
     ext = ext.lower()
     video.video = os.path.join(
-        os.path.dirname(storage_path), nom + "_" + dt.replace(" ", "_") + ext)
+        os.path.dirname(storage_path), nom + "_" + dt.replace(" ", "_") + ext
+    )
     # deplacement du fichier source vers destination
     os.makedirs(os.path.dirname(video.video.path), exist_ok=True)
     os.rename(recording.source_file, video.video.path)
@@ -50,8 +44,7 @@ def encode_recording(recording):
     video.is_draft = recorder.is_draft
     # Accès restreint (eventuellement à des groupes ou par mot de passe)
     video.is_restricted = recorder.is_restricted
-    video.restrict_access_to_groups.add(
-        *recorder.restrict_access_to_groups.all())
+    video.restrict_access_to_groups.add(*recorder.restrict_access_to_groups.all())
     video.password = recorder.password
     # on ajoute les eventuelles chaines
     video.channel.add(*recorder.channel.all())
@@ -66,7 +59,7 @@ def encode_recording(recording):
     # mot clefs
     video.tags = recorder.tags
     # transcript
-    if getattr(settings, 'USE_TRANSCRIPTION', False):
+    if getattr(settings, "USE_TRANSCRIPTION", False):
         video.transcript = recorder.transcript
     # Licence
     video.licence = recorder.licence

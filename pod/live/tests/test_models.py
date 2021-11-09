@@ -7,7 +7,7 @@ from pod.video.models import Video
 from ..models import Building, Broadcaster, HeartBeat
 from django.utils import timezone
 
-if getattr(settings, 'USE_PODFILE', False):
+if getattr(settings, "USE_PODFILE", False):
     FILEPICKER = True
     from pod.podfile.models import CustomImageModel
     from pod.podfile.models import UserFolder
@@ -17,7 +17,6 @@ else:
 
 
 class BuildingTestCase(TestCase):
-
     def setUp(self):
         Building.objects.create(name="building1")
         print(" --->  SetUp of BuildingTestCase : OK !")
@@ -34,20 +33,16 @@ class BuildingTestCase(TestCase):
         self.assertEqual(building.gmapurl, "b")
         if FILEPICKER:
             user = User.objects.create(username="pod")
-            homedir, created = UserFolder.objects.get_or_create(
-                name='Home',
-                owner=user)
+            homedir, created = UserFolder.objects.get_or_create(name="Home", owner=user)
             headband = CustomImageModel.objects.create(
-                folder=homedir,
-                created_by=user,
-                file="blabla.jpg")
+                folder=homedir, created_by=user, file="blabla.jpg"
+            )
         else:
             headband = CustomImageModel.objects.create(file="blabla.jpg")
         building.headband = headband
         building.save()
         self.assertTrue("blabla" in building.headband.name)
-        print(
-            "   --->  test_attributs of BuildingTestCase : OK !")
+        print("   --->  test_attributs of BuildingTestCase : OK !")
 
     """
         test delete object
@@ -57,8 +52,7 @@ class BuildingTestCase(TestCase):
         Building.objects.get(id=1).delete()
         self.assertEquals(Building.objects.all().count(), 0)
 
-        print(
-            "   --->  test_delete_object of BuildingTestCase : OK !")
+        print("   --->  test_delete_object of BuildingTestCase : OK !")
 
 
 """
@@ -67,19 +61,18 @@ class BuildingTestCase(TestCase):
 
 
 class BroadcasterTestCase(TestCase):
-    fixtures = ['initial_data.json', ]
+    fixtures = [
+        "initial_data.json",
+    ]
 
     def setUp(self):
         building = Building.objects.create(name="building1")
         if FILEPICKER:
             user = User.objects.create(username="pod")
-            homedir, created = UserFolder.objects.get_or_create(
-                name='Home',
-                owner=user)
+            homedir, created = UserFolder.objects.get_or_create(name="Home", owner=user)
             poster = CustomImageModel.objects.create(
-                folder=homedir,
-                created_by=user,
-                file="blabla.jpg")
+                folder=homedir, created_by=user, file="blabla.jpg"
+            )
         else:
             poster = CustomImageModel.objects.create(file="blabla.jpg")
         Broadcaster.objects.create(
@@ -91,11 +84,15 @@ class BroadcasterTestCase(TestCase):
             building=building,
             iframe_url="http://iframe.live",
             iframe_height=120,
-            public=False)
+            public=False,
+        )
         # Test with a video on hold
         video_on_hold = Video.objects.create(
-            title="VideoOnHold", owner=user, video="test.mp4",
-            type=Type.objects.get(id=1))
+            title="VideoOnHold",
+            owner=user,
+            video="test.mp4",
+            type=Type.objects.get(id=1),
+        )
         Broadcaster.objects.create(
             name="broadcaster2",
             poster=poster,
@@ -106,7 +103,8 @@ class BroadcasterTestCase(TestCase):
             building=building,
             iframe_url="http://iframe2.live",
             iframe_height=140,
-            password="mot2passe")
+            password="mot2passe",
+        )
         print(" --->  SetUp of BroadcasterTestCase : OK !")
 
     """
@@ -124,13 +122,14 @@ class BroadcasterTestCase(TestCase):
         self.assertEqual(broadcaster.public, False)
         self.assertEqual(broadcaster.is_restricted, True)
         self.assertEqual(broadcaster.building.id, 1)
-        self.assertEqual(broadcaster.__str__(), "%s - %s" %
-                         (broadcaster.name, broadcaster.url))
+        self.assertEqual(
+            broadcaster.__str__(),
+            "%s - %s" % (broadcaster.name, broadcaster.url),
+        )
         broadcaster2 = Broadcaster.objects.get(id=2)
         self.assertEqual(broadcaster2.video_on_hold.id, 1)
         self.assertEqual(broadcaster2.password, "mot2passe")
-        print(
-            "   --->  test_attributs of BroadcasterTestCase : OK !")
+        print("   --->  test_attributs of BroadcasterTestCase : OK !")
 
     """
         test delete object
@@ -141,12 +140,10 @@ class BroadcasterTestCase(TestCase):
         Broadcaster.objects.get(id=2).delete()
         self.assertEquals(Broadcaster.objects.all().count(), 0)
 
-        print(
-            "   --->  test_delete_object of BroadcasterTestCase : OK !")
+        print("   --->  test_delete_object of BroadcasterTestCase : OK !")
 
 
 class HeartbeatTestCase(TestCase):
-
     def setUp(self):
         building = Building.objects.create(name="building1")
         broad = Broadcaster.objects.create(
@@ -157,11 +154,15 @@ class HeartbeatTestCase(TestCase):
             building=building,
             iframe_url="http://iframe.live",
             iframe_height=120,
-            public=False)
+            public=False,
+        )
         user = User.objects.create(username="pod")
-        HeartBeat.objects.create(user=user, viewkey="testkey",
-                                 broadcaster=broad,
-                                 last_heartbeat=timezone.now())
+        HeartBeat.objects.create(
+            user=user,
+            viewkey="testkey",
+            broadcaster=broad,
+            last_heartbeat=timezone.now(),
+        )
         print(" --->  SetUp of HeartbeatTestCase : OK !")
 
     """
@@ -173,5 +174,4 @@ class HeartbeatTestCase(TestCase):
         self.assertEqual(hb.user.username, "pod")
         self.assertEqual(hb.viewkey, "testkey")
         self.assertEqual(hb.broadcaster.name, "broadcaster1")
-        print(
-            "   --->  test_attributs of HeartbeatTestCase : OK !")
+        print("   --->  test_attributs of HeartbeatTestCase : OK !")

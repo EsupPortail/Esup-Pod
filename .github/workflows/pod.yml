@@ -2,55 +2,68 @@ name: Django Pod CI
 
 on:
   push:
-    branches: [ master , dev]
+    branches: [master, dev]
   pull_request:
-    branches: [ '*' ]
+    branches: ["*"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.5, 3.6, 3.7]
+        python-version: [3.6, 3.7, 3.8, 3.9]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Configure sysctl limits (for ES)
-      run: |
-        sudo swapoff -a
-        sudo sysctl -w vm.swappiness=1
-        sudo sysctl -w fs.file-max=262144
-        sudo sysctl -w vm.max_map_count=262144
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install ffmpeg
-        sudo apt-get install -y ffmpegthumbnailer
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install flake8
-        pip install coveralls
-    - name: Flake8 compliance
-      run: |
-        flake8 --max-complexity=7 --exclude .git,pod/*/migrations/*.py,test_settings.py
-    - name: Runs Elasticsearch
-      uses: elastic/elastic-github-actions/elasticsearch@master
-      with:
-        stack-version: 7.6.0
-    - name: Setup Pod
-      run: |
-        python manage.py create_pod_index
-        python manage.py makemigrations
-        python manage.py migrate
-    - name: Run Tests and coveralls
-      env:
+      - uses: actions/checkout@v2
+
+      - name: Configure sysctl limits (for ES)
+        run: |
+          sudo swapoff -a
+          sudo sysctl -w vm.swappiness=1
+          sudo sysctl -w fs.file-max=262144
+          sudo sysctl -w vm.max_map_count=262144
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Remove apt repos that are known to break from time to time
+      # See https://github.com/actions/virtual-environments/issues/323
+      - name: Remove broken apt repos [Ubuntu]
+        run: |
+          for apt_file in `grep -lr microsoft /etc/apt/sources.list.d/`; do sudo rm $apt_file; done
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get clean
+          sudo apt-get update
+          sudo apt-get install ffmpeg
+          sudo apt-get install -y ffmpegthumbnailer
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8
+          pip install coveralls
+
+      - name: Flake8 compliance
+        run: |
+          flake8 --max-complexity=7 --ignore=E501,W503,E203 --exclude .git,pod/*/migrations/*.py,test_settings.py
+
+      - name: Runs Elasticsearch
+        uses: elastic/elastic-github-actions/elasticsearch@master
+        with:
+          stack-version: 7.6.0
+
+      - name: Setup Pod
+        run: |
+          python manage.py create_pod_index
+          python manage.py makemigrations
+          python manage.py migrate
+
+      - name: Run Tests and coveralls
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        coverage run --source='.' manage.py test --settings=pod.main.test_settings
-        coveralls  --service=github
+        run: |
+          coverage run --source='.' manage.py test -v 3 --settings=pod.main.test_settings
+          coveralls  --service=github

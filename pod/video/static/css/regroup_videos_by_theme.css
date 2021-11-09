@@ -1,0 +1,58 @@
+.scroll_wrapper {
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+}
+
+.list-children-theme {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding: 0;
+    flex-grow: 1;
+    width: 100%;
+    min-width: 100%;
+    transition: transform .5s ease-in-out;
+}
+
+.list-children-theme.scroll-left {
+    transform: translateX(-100%);
+}
+
+.list-children-theme.scroll-right {
+    transform: translateX(100%);
+}
+
+.paginator,
+.headband-description {
+    margin-bottom: 1em;
+}
+
+.channelheader {
+    float: left;
+    margin-right: 1em;
+    margin-bottom: .8em;
+}
+
+.channelheader .img-responsive {
+    width: 300px;
+    max-width: 100%;
+}
+
+li.child-theme {
+    padding: 0;
+    margin: .4em 0;
+    margin-right: .8em;
+    max-width: 200px;
+    min-width: 200px
+}
+
+.child-theme a {
+    padding: .4em;
+    max-width: 100%;
+    width: 100%;
+    display: block;
+    color: inherit !important;
+}
