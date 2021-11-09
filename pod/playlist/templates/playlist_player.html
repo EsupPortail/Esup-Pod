@@ -38,13 +38,7 @@
 {%endif%}
 {% endblock video-element %}
 
-{% block more_script %}
-{{block.super}}
-{% comment %}{% if video.enrichment_set.all %}
-{% include 'enrichment/video_enrichment-script.html' %}
-{% endif %}{% endcomment %}
 
-{% endblock more_script %}
 {% endblock page_content %}
 {% block page_aside %}
 {% include 'playlist/playlist_video_list.html' %}
@@ -69,3 +63,10 @@
   </div>
   {{ block.super }}
 {% endblock page_aside %}
+
+{% block more_script %}
+{{block.super}}
+{% comment %}{% if video.enrichment_set.all %}
+{% include 'enrichment/video_enrichment-script.html' %}
+{% endif %}{% endcomment %}
+{% endblock more_script %}

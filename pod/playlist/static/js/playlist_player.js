@@ -113,10 +113,12 @@ let PlaylistPlayer = {
           });
         });
       } else if (json.error == "access") {
-        //Acces restrict by authentication => Redirect to loggin page
-        window.location.href = json.url.replace(/(\?|&)p=\d*/g, function() {return arguments[1]})
-                             + (json.url.lastIndexOf('?') > 0 ? '&' : '?')
-                             + 'p='+position;
+        rurl = json.url+'?'
+        if(_this.is_iframe) { rurl += 'is_iframe=true&' }
+        rurl += 'referrer=' + _this.baseurl
+              + '/playlist/' + _this.slug + '/?p='+position
+              + _this.getParameters().replace(/&/g, '%26')
+        window.location.href = rurl;
       } else if (json.error == "deny") {
         //User is authenticate but not allowed => Go next (TODO... actualy just reload page)
         const nposition = position < _this.elements.length ? (position + 1): 1;
@@ -129,6 +131,7 @@ let PlaylistPlayer = {
     this.current_position = o.current_position;
     this.length = o.length;
     this.baseurl = o.baseurl;
+    this.slug = o.slug;
     this.is_iframe = o.is_iframe;
     this.is_360 = o.is_360;
     this.vjsLogo = o.vjsLogo;

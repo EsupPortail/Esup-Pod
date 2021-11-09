@@ -22,8 +22,8 @@ window.onmessage = function(event) {
       evt.source.postMessage({muted: player.muted(), data: {}}, evt.origin);
     }
 };
-var seektime = 10;
-var options = {
+const seektime = 10;
+const options = {
   notSupportedMessage: "{% trans 'Please use different browser' %} (Mozzila Firefox, Google Chrome, Safari, Microsoft Edge)",
   //language: "fr", //en or nl
   {% if request.GET.is_iframe %}
@@ -31,15 +31,13 @@ var options = {
   {% else %}
     fluid: true,
   {% endif %}
-  //playbackRates: [0.5, 1, 1.5, 2],
   playbackRates: {{video_playbackrates}},
   userActions: {
     hotkeys: function(event) {
       // `this` is the player in this context
       if (event.code === 'Space') {
         event.preventDefault();
-        var isPlaying = !this.paused();
-        if(isPlaying) this.pause();
+        if(!this.paused()) this.pause();
         else this.play();
       }
       if (event.key === 'm') {

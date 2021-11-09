@@ -21,15 +21,6 @@
       {% with pllength=playlist.videos|length %}
       {% for pvideo in playlist.videos %}
       <div class="card-group{% if pvideo.id == video.id %} on{% endif %}">
-      {% comment %}<p class="vdata" {% spaceless %}
-      data-info="{{ pvideo.title|safe }} - {{forloop.counter}} / {{pllength}}"
-      data-vid="{{ pvideo.id }}"{% endspaceless %}>
-      {% if pvideo.id == video.id %}
-        <i data-feather="chevron-up"></i>
-      {% else %}
-        {{forloop.counter}}
-      {% endif %}
-      </p>{% endcomment %}
         {% include 'playlist/playlist_video_card.html' with video=pvideo playlist=playlist position=forloop.counter %}
       </div>
       {% endfor %}
@@ -39,7 +30,6 @@
 </div>
 
 <script type="text/JavaScript">
-var metadataTrack;
   {% if request.GET.is_iframe and request.GET.is_iframe == 'true' %}
   $('#playlist div').first()
                     .append('<button type="button" class="close playlist hidden" aria-label="Close"><span aria-hidden="true">&times;</span></button>')
@@ -73,6 +63,7 @@ var metadataTrack;
       current_position: parseInt($('.playlist-videos div.row .on').index()) + 1,
       elements: $('.playlist-videos div.row .video-card'),
       baseurl: '{% if request.is_secure %}https://{%else%}http://{% endif %}{{request.get_host}}',
+      slug: '{{ playlist.slug }}',
       controls: {loop:$('#pl_loop')[0],auto:$('#pl_auto')[0]},
       head_files: {
         overlay: {

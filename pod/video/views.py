@@ -740,13 +740,7 @@ def video_xhr(request, slug, slug_private=None):
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
         else:
-            iframe_param = "is_iframe=true&" if (request.GET.get("is_iframe")) else ""
-            url = "%s?%sreferrer=%s" % (
-                settings.LOGIN_URL,
-                iframe_param,
-                request.META.get('HTTP_REFERER')
-            )
-            response = {"status": 302, "error": "access", "url": url}
+            response = {"status": 302, "error": "access", "url": settings.LOGIN_URL}
             data = json.dumps(response)
             return HttpResponse(data, content_type="application/json")
 

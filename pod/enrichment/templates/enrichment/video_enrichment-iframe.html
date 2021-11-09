@@ -4,16 +4,13 @@
 
 {% block page_extra_head %}
 {% include 'videos/video-header.html' with enrichment=True %}
-<style type="text/css">
-
-</style>
 {% endblock page_extra_head %}
 
 {% block page_title %}{%if channel %}{{channel.title}} - {%endif%}{%if theme %}{{theme.title}} - {%endif%}({% trans 'Enriched' %}) {{video.title}}{% endblock %}
 
 {% block video-element %}
 {% if form %}
-    {% include 'videos/video-form.html' %}
+  {% include 'videos/video-form.html' %}
 {% else %}
   {% include 'enrichment/video-element-enrichment.html' %}
 {%endif%}
